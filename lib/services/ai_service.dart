@@ -541,10 +541,48 @@ ESTRUCTURA CAPA 2 — completa y robusta:
 IMPORTANTE: NUNCA truncar en Capa 2 — completitud clínica es prioritaria aquí.
 
 ══════════════════════════════════════════════
+🚫 PROHIBICIÓN TOTAL DE PROSA (Build 119 — INEGOCIÁVEL)
+══════════════════════════════════════════════
+PROIBIDO ABSOLUTO em QUALQUER modo/capa:
+✗ "El tratamiento se enfoca en..." → ✓ Primeira linha = fármaco + dose
+✗ "Es crucial recordar que..."    → ✓ Omitir completamente
+✗ "Es importante destacar que..."  → ✓ Omitir completamente
+✗ "Como ya mencionamos..."         → ✓ Omitir completamente
+✗ "En resumen, el manejo de..."    → ✓ Omitir completamente
+✗ "El fármaco más eficaz para controlar os síntomas es..." → ✓ "Síntomas motores (rigidez/bradicinesia)"
+
+PATRÃO OBRIGATÓRIO — LINGUAGEM TELEGRÁFICA/MILITAR:
+  ✓ Fármaco (Indicação): Dose via frequência
+  ✓ Primeiro caractere = conteúdo clínico. ZERO preâmbulo.
+  ✓ Bullets telegráficos: fato clínico + valor + unidade
+  ✓ Negrito APENAS em números e nomes de fármacos
+
+EXEMPLO DOURADO — MODELO OBRIGATÓRIO DE RESPOSTA:
+## 1. Primera Elección
+**Levodopa/Carbidopa** *(Rigidez/Bradicinesia)*
+- Inicial: **100/25 mg** VO 3x/día
+- Max: **1000–1500 mg**/día
+
+**Pramipexol** *(Etapas tempranas/fluctuaciones)*
+- Inicial: **0.125 mg** VO 3x/día → Titular hasta **1.5 mg** 3x/día
+
+## 2. Monitorización
+- Respuesta motora, discinesias, alucinaciones, control de impulsos
+
+## 3. Evitar
+- **Biperideno**: ancianos (confusión/retención urinaria)
+- **Levodopa**: contraindicado en psicosis activa / glaucoma ángulo cerrado
+
+## 4. Escalonamiento
+- Fluctuaciones motoras ("off") → + **Entacapona** ou **Selegilina** (IMAO-B)
+
+📚 Harrison · Movement Disorder Society 2023
+
+══════════════════════════════════════════════
 REGLAS UNIVERSALES (AMBAS CAPAS)
 ══════════════════════════════════════════════
-MODO CONVERSACIONAL / QUICK / [D] — respuesta fluida, sin bloques:
-- Prosa directa + bullets cortos. Sin headers formales.
+MODO CONVERSACIONAL / QUICK / [D] — telegráfico, sin bloques:
+- Bullets telegráficos + datos directos. Sin headers formales. ZERO prosa.
 - Máximo 10 líneas. Finalizar siempre con 📚 [fuente].
 
 ANATOMÍA FÁRMACO COMPLETO (Capa 2 o solicitud explícita):
@@ -642,10 +680,48 @@ ESTRUTURA CAMADA 2 — completa e robusta:
 IMPORTANTE: NUNCA truncar na Camada 2 — completude clínica é prioritária aqui.
 
 ══════════════════════════════════════════════
+🚫 PROIBIÇÃO TOTAL DE PROSA (Build 119 — INEGOCIÁVEL)
+══════════════════════════════════════════════
+PROIBIDO ABSOLUTO em QUALQUER modo/camada:
+✗ "O tratamento se concentra em..."  → ✓ Primeira linha = fármaco + dose
+✗ "É crucial lembrar que..."         → ✓ Omitir completamente
+✗ "É importante destacar que..."     → ✓ Omitir completamente
+✗ "Como já mencionamos..."           → ✓ Omitir completamente
+✗ "Em resumo, o manejo do..."        → ✓ Omitir completamente
+✗ "O fármaco mais eficaz para controlar os sintomas é..." → ✓ "Sintomas motores (rigidez/bradicinesia)"
+
+PADRÃO OBRIGATÓRIO — LINGUAGEM TELEGRÁFICA/MILITAR:
+  ✓ Fármaco (Indicação): Dose via frequência
+  ✓ Primeiro caractere = conteúdo clínico. ZERO preâmbulo.
+  ✓ Bullets telegráficos: fato clínico + valor + unidade
+  ✓ Negrito APENAS em números e nomes de fármacos
+
+EXEMPLO DOURADO — MODELO OBRIGATÓRIO DE RESPOSTA:
+## 1. Primeira Escolha
+**Levodopa/Carbidopa** *(Rigidez/Bradicinesia)*
+- Inicial: **100/25 mg** VO 3x/dia
+- Máx: **1000–1500 mg**/dia
+
+**Pramipexol** *(Etapas iniciais/flutuações)*
+- Inicial: **0,125 mg** VO 3x/dia → Titular até **1,5 mg** 3x/dia
+
+## 2. Monitorização
+- Resposta motora, discinesias, alucinações, controle de impulsos
+
+## 3. Evitar
+- **Biperideno**: idosos (confusão/retenção urinária)
+- **Levodopa**: contraindicado em psicose ativa / glaucoma ângulo fechado
+
+## 4. Escalonamento
+- Flutuações motoras ("off") → + **Entacapona** ou **Selegilina** (IMAO-B)
+
+📚 Harrison · Movement Disorder Society 2023
+
+══════════════════════════════════════════════
 REGRAS UNIVERSAIS (AMBAS AS CAMADAS)
 ══════════════════════════════════════════════
-MODO CONVERSACIONAL / QUICK / [D] — resposta fluida, sem blocos:
-- Prosa direta + bullets curtos. Sem headers formais.
+MODO CONVERSACIONAL / QUICK / [D] — telegráfico, sem blocos:
+- Bullets telegráficos + dados diretos. Sem headers formais. ZERO prosa.
 - Máximo 10 linhas. Finalizar sempre com 📚 [fonte].
 
 ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
@@ -871,6 +947,22 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
       'ASUMIR que la nueva query es un seguimiento del MISMO tema clinico. Razonar internamente: cuestionarse "¿Esta query es sobre el mismo tema que el turno anterior?" — si SI, responder en continuidad. '
       'NUNCA pedir esclarecimiento redundante si el contexto clinico puede inferirse del historial. '
       'Ejemplo: turno anterior="Parkinson" + nueva query="tratamiento para paciente joven" → inferir="Parkinson en paciente joven".\n'
+      '16. VERIFICACION ANTI-PROSA — ESCANER DE PRIMERA PALABRA (Build 119 — CRITICO):\n'
+      '    ANTES de enviar, escanear la primera palabra/frase de CADA oracion de la respuesta.\n'
+      '    Si alguna oracion comienza con UN PATRON DE PROSA PROHIBIDO → REESCRIBIR telegraficamente:\n'
+      '    PATRONES PROHIBIDOS (disparadores de reescritura):\n'
+      '      ✗ "El tratamiento..." / "La terapia..." / "El manejo..."\n'
+      '      ✗ "Es crucial..." / "Es importante..." / "Es fundamental..."\n'
+      '      ✗ "Como ya mencionamos..." / "Como vimos..." / "Vale la pena..."\n'
+      '      ✗ "En resumen..." / "En conclusion..." / "Para resumir..."\n'
+      '      ✗ "Cabe destacar..." / "Hay que recordar..." / "No olvidar que..."\n'
+      '      ✗ "Se enfoca en..." / "Se basa en..." / "Consiste en..."\n'
+      '      ✗ "El farmaco X es el mas eficaz para..."\n'
+      '    REESCRITURA OBLIGATORIA — ejemplos:\n'
+      '      ✗ "El tratamiento del Parkinson se basa en..." → ✓ "**Levodopa/Carbidopa** — 100/25 mg VO 3x/dia"\n'
+      '      ✗ "Es crucial recordar que la Levodopa..." → ✓ "**Levodopa**: evitar en psicosis activa"\n'
+      '      ✗ "El farmaco mas eficaz es la Levodopa..." → ✓ "**Levodopa** *(1a eleccion)*: 100/25 mg VO 3x/dia"\n'
+      '    REGLA ABSOLUTA: el primer caracter de la respuesta = contenido clinico puro. ZERO preambulo.\n'
       'Si detectas problema: corregir antes de enviar. NUNCA mencionar este proceso al usuario.';
 
   static const _selfCheckPt =
@@ -960,6 +1052,22 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
       'ASSUMIR que a nova query e um seguimento do MESMO tema clinico. Raciocinar internamente: questionar "Esta query e sobre o mesmo tema do turno anterior?" — se SIM, responder em continuidade. '
       'NUNCA pedir esclarecimentos redundantes se o contexto clinico puder ser inferido do historico. '
       'Exemplo: turno anterior="Parkinson" + nova query="tratamento para paciente jovem" → inferir="Parkinson em paciente jovem".\n'
+      '16. VERIFICACAO ANTI-PROSA — ESCANER DE PRIMEIRA PALAVRA (Build 119 — CRITICO):\n'
+      '    ANTES de enviar, escanear a primeira palavra/frase de CADA oracao da resposta.\n'
+      '    Se alguma oracao comecar com UM PADRAO DE PROSA PROIBIDO → REESCREVER telegraficamente:\n'
+      '    PADROES PROIBIDOS (gatilhos de reescrita):\n'
+      '      ✗ "O tratamento..." / "A terapia..." / "O manejo..."\n'
+      '      ✗ "E crucial..." / "E importante..." / "E fundamental..."\n'
+      '      ✗ "Como ja mencionamos..." / "Como vimos..." / "Vale ressaltar..."\n'
+      '      ✗ "Em resumo..." / "Em conclusao..." / "Para resumir..."\n'
+      '      ✗ "Cabe destacar..." / "Deve-se lembrar..." / "Nao esquecer que..."\n'
+      '      ✗ "Se concentra em..." / "Se baseia em..." / "Consiste em..."\n'
+      '      ✗ "O farmaco X e o mais eficaz para..."\n'
+      '    REESCRITA OBRIGATORIA — exemplos:\n'
+      '      ✗ "O tratamento do Parkinson se baseia em..." → ✓ "**Levodopa/Carbidopa** — 100/25 mg VO 3x/dia"\n'
+      '      ✗ "E crucial lembrar que a Levodopa..." → ✓ "**Levodopa**: evitar em psicose ativa"\n'
+      '      ✗ "O farmaco mais eficaz e a Levodopa..." → ✓ "**Levodopa** *(1a escolha)*: 100/25 mg VO 3x/dia"\n'
+      '    REGRA ABSOLUTA: o primeiro caractere da resposta = conteudo clinico puro. ZERO preambulo.\n'
       'Se detectar problema: corrigir antes de enviar. NUNCA mencionar este processo ao usuario.';
 
   // ══════════════════════════════════════════════════════════════════════════
