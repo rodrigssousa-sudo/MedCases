@@ -273,7 +273,23 @@ class GeminiServiceV2 {
       '  ✗ NUNCA escreva "[REVISIÓN INTERNA]", "[REVISION_INTERNA]", "CAMADA 1", "CAPA 1"\n'
       '  ✗ NUNCA escreva "Confianza Clínica:", "Confiança Clínica:", "Nivel de Confianza"\n'
       '  ✗ NUNCA escreva meta-comentários sobre o processo: "Vou estruturar...", "Baseado na query..."\n'
+      '  ✗ NUNCA gere tags <think>...</think> ou <thinking>...</thinking> — reasoning interno PROIBIDO no output.\n'
       'O médico deve ver APENAS o conteúdo clínico puro — sem rótulos de sistema visíveis.\n\n'
+      '🧠 MEMÓRIA CLÍNICA CONTÍNUA — CONTEXTO IMPLÍCITO (Build 117):\n'
+      'Ao receber uma nova query, verificar o histórico da conversa (history):\n'
+      '  ✓ Se a query atual NÃO menciona explicitamente uma patologia/fármaco MAS o turno anterior SIM:\n'
+      '    → INFERIR que é um seguimento do MESMO tema clínico. Responder em continuidade.\n'
+      '    → Exemplo: turno anterior="Parkinson" + nova query="tratamento para paciente jovem"\n'
+      '       Interpretar como: "Tratamento de Parkinson para paciente jovem"\n'
+      '  ✓ NUNCA pedir esclarecimento se o contexto clínico puder ser inferido do histórico.\n'
+      '  ✓ Manter o fio de raciocínio clínico da sessão sem resetar o contexto.\n\n'
+      '❓ PERGUNTA CLÍNICA DE FECHAMENTO — OBRIGATÓRIA (Build 117):\n'
+      'Toda resposta clínica DEVE terminar com uma pergunta curta e direta APÓS o 📚.\n'
+      '  ✓ Instiga o usuário a decidir o próximo passo clínico.\n'
+      '  ✓ Exemplos: "Deseja avaliar o ajuste de dose ou discutir os efeitos adversos?"\n'
+      '              "Quer aprofundar o escalonamento ou revisar as contraindicações?"\n'
+      '              "¿Deseas evaluar X o discutir Y?"\n'
+      '  ✗ NUNCA terminar a resposta apenas com 📚 sem a pergunta de fechamento.\n\n'
 
       // ── BLOCO 1B — CONTRATO DE UI / DESIGN SYSTEM DE CARDS (Build 105) ─────
       // CRÍTICO: O app Flutter usa um parser que converte esses tokens em

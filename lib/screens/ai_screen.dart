@@ -2493,6 +2493,14 @@ class _UserBubble extends StatelessWidget {
 String _stripMetadataHeaders(String accumulated) {
   if (accumulated.isEmpty) return accumulated;
 
+  // ── CAMADA 0 — Build 117: filtro <think>...</think> e tags órfãs ─────────
+  // Remove blocos completos <think>...</think> (reasoning models como DeepSeek)
+  // e tags órfãs <think> / </think> que possam vazar no início do stream.
+  accumulated = accumulated.replaceAll(
+    RegExp(r'<think>.*?</think>', caseSensitive: false, dotAll: true), '');
+  accumulated = accumulated.replaceAll(
+    RegExp(r'</?think[^>]*>', caseSensitive: false), '');
+
   // ── CAMADA 1a v6.0 — catch-all bilíngue (Build 96) ─────────────────────
   //
   // REGRA PRINCIPAL: qualquer linha que CONTENHA "Confian" + "Clínica/Clinica"
@@ -3066,10 +3074,10 @@ Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
     return Text(
       label,
       style: TextStyle(
-        fontSize: 13.5,
+        fontSize: 15,             // Build 117: 13.5→15
         fontWeight: FontWeight.w700,
         color: textColor,
-        height: 1.45,
+        height: 1.6,              // Build 117: 1.45→1.6
       ),
     );
   }
@@ -3097,10 +3105,10 @@ Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
   return RichText(
     text: TextSpan(
       style: TextStyle(
-        fontSize: 13.5,
+        fontSize: 15,             // Build 117: 13.5→15
         fontWeight: FontWeight.w400,
         color: textColor,
-        height: 1.5,
+        height: 1.6,              // Build 117: 1.5→1.6
       ),
       children: parts,
     ),
@@ -3226,250 +3234,274 @@ class _AiBlockBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ConnectMind AI — AI bubble background (navy in dark)
-    final bubbleBg  = dark ? const Color(0xFF252930) : Colors.white;
+    // Build 117 — Fluid Document Design:
+    // Removed bubbleBg + boxShadow + outer Container entirely.
+    // Text flows directly on app background — no cards, no bubbles.
     final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
 
-    // ConnectMind AI palette — section headers
+    // ConnectMind AI palette — semantic color bars (Build 117)
     const kGreen      = Color(0xFF008CA4);
     const kGreenLight = Color(0xFF00E5FF);
     const kRed        = Color(0xFFB91C1C);
-    const kRedLight   = Color(0xFFFFEEEE);
-    const kRedDark    = Color(0xFF3A0000);
     const kAmber      = Color(0xFFB45309);
     const kRef        = Color(0xFF64748B);
 
     final lines = block.split('\n');
 
-    // ── Detecta se o bloco inteiro é HARD STOP ────────────────────────────
-    final bool isHardStopBlock = lines.any(_isHardStop);
-
     return Padding(
       padding: EdgeInsets.only(
-        bottom: isLast ? 5 : 2,
-        right: 48,
+        bottom: isLast ? 8 : 4,
+        right: 16, // Build 117: reduced from 48 — no bubble indent needed
       ),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(11, 8, 11, 6),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft:     Radius.circular(4),
-              topRight:    Radius.circular(16),
-              bottomLeft:  Radius.circular(16),
-              bottomRight: Radius.circular(16),
-            ),
-            color: isHardStopBlock
-                ? (dark ? kRedDark : kRedLight)
-                : bubbleBg,
-            border: isHardStopBlock
-                ? Border.all(color: kRed.withValues(alpha: 0.35), width: 1.0)
-                : null,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: dark ? 0.3 : 0.08),
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Renderização linha a linha com hierarquia visual ─────────
-              ...lines.map((line) {
-                final trimmed = line.trim();
-                if (trimmed.isEmpty) return const SizedBox(height: 1);
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Renderização linha a linha com hierarquia visual ─────────
+            ...lines.map((line) {
+              final trimmed = line.trim();
+              // Build 117: generous empty-line spacing (was height:1)
+              if (trimmed.isEmpty) return const SizedBox(height: 8);
 
-                // HARD STOP — destaque vermelho máximo
-                if (_isHardStop(line)) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 3, top: 2),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: kRed.withValues(alpha: dark ? 0.25 : 0.12),
-                        border: Border.all(color: kRed.withValues(alpha: 0.5)),
-                      ),
-                      child: Row(children: [
-                        const Icon(Icons.dangerous_rounded, size: 13, color: kRed),
-                        const SizedBox(width: 6),
-                        Expanded(child: _buildInlineText(
-                          trimmed.replaceAll(RegExp(r'\*\*HARD.STOP[:\s]*', caseSensitive: false), '').trim(),
-                          kRed, isBold: true,
-                        )),
-                      ]),
-                    ),
-                  );
-                }
-
-                // H2 — cabeçalho markdown '## Título' em cyan oficial
-                if (_isH2(line)) {
-                  final label = line.trim().replaceFirst(RegExp(r'^##\s+'), '');
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 3, top: 6),
-                    child: Text(
-                      label,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF38BDF8), // cyan oficial
-                        letterSpacing: 0.1,
-                        height: 1.35,
-                      ),
-                    ),
-                  );
-                }
-
-                // ── 🟥 CARD VERMELHO — Conduta / Prescrição Medicamentosa (Build 106) ──
-                // Widget especial com fundo vermelho tênue + ícone medicamento.
-                // Renderizado ANTES do _isSectionHeader genérico para sobrepor o
-                // estilo de barra lateral com um card completo (background + borda).
-                if (trimmed.startsWith('🟥')) {
-                  final label = trimmed
-                      .replaceFirst('🟥', '')
-                      .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
-                      .trim();
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 3, top: 4),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: kRed.withValues(alpha: dark ? 0.18 : 0.08),
-                        border: Border.all(color: kRed.withValues(alpha: 0.40), width: 1.0),
-                      ),
-                      child: Row(children: [
-                        const Icon(Icons.medication_rounded, size: 14, color: kRed),
-                        const SizedBox(width: 7),
-                        Expanded(child: _buildInlineText(
-                          label.isEmpty ? trimmed : label,
-                          dark ? const Color(0xFFFF8080) : kRed,
-                          isBold: true,
-                        )),
-                      ]),
-                    ),
-                  );
-                }
-
-                // Linha de seção principal — hierarquia visual por emoji de bloco
-                if (_isSectionHeader(line)) {
-                  final label = trimmed.replaceFirst(RegExp(r'^###?\s*'), '');
-                  // Cor da barra lateral baseada no bloco oficial
-                  final Color barColor;
-                  final Color labelColor;
-                  if (trimmed.startsWith('🚨')) {
-                    barColor   = kRed;
-                    labelColor = dark ? const Color(0xFFFF8080) : kRed;
-                  } else if (trimmed.startsWith('⛔')) {
-                    barColor   = kAmber;
-                    labelColor = dark ? const Color(0xFFFFD580) : kAmber;
-                  } else if (trimmed.startsWith('📌')) {
-                    barColor   = const Color(0xFF4A90D9);
-                    labelColor = dark ? const Color(0xFF89C4FF) : const Color(0xFF2563EB);
-                  } else {
-                    // 💊 e padrão → ConnectMind cyan
-                    barColor   = kGreenLight;
-                    labelColor = dark ? const Color(0xFF00E5FF) : kGreen;
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 2, top: 5),
-                    child: Row(children: [
-                      Container(
-                        width: 3, height: 13,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(2),
-                          color: barColor,
-                        ),
-                      ),
-                      const SizedBox(width: 7),
-                      Expanded(child: Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w700,
-                          color: labelColor,
-                          letterSpacing: 0.1,
-                          height: 1.3,
-                        ),
-                      )),
-                    ]),
-                  );
-                }
-
-                // Linha de alerta/atenção — destaque âmbar
-                if (_isWarning(line)) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 2, top: 1),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: kAmber.withValues(alpha: dark ? 0.15 : 0.08),
-                        border: Border.all(color: kAmber.withValues(alpha: 0.25)),
-                      ),
-                      child: _buildInlineText(trimmed, dark ? const Color(0xFFFFD580) : kAmber),
-                    ),
-                  );
-                }
-
-                // Linha de referência — texto compacto cinza
-                if (_isReference(line)) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 1, top: 1),
-                    child: Text(
-                      trimmed,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: dark ? Colors.white38 : kRef,
-                        fontStyle: FontStyle.italic,
-                        height: 1.4,
-                      ),
-                    ),
-                  );
-                }
-
-                // Item de lista — bullet com indent (suporta '- ', '* ', '• ', '→', '▸', '1. ')
-                if (_isListItem(line)) {
-                  // Strip do marcador: remove '- ', '* ', '• ', '→ ', '▸ ', '1. '
-                  // Build 115: também remove '*' sem espaço e '* **' (asterisco + negrito)
-                  final content = trimmed
-                      .replaceFirst(RegExp(r'^\*\s*(?=\*\*)'), '') // '* **' ou '*  **'
-                      .replaceFirst(RegExp(r'^[-\*•→▸]\s*'), '')   // marcador + espaço opcional
-                      .replaceFirst(RegExp(r'^\d+\.\s+'), '')
-                      .trimLeft();
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 2, left: 6),
+              // ── HARD STOP — barra semântica VERMELHA 4px à esquerda ───
+              // Build 117: remove Container/border → IntrinsicHeight + Row + 4px bar
+              if (_isHardStop(line)) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6, top: 4),
+                  child: IntrinsicHeight(
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6, right: 7),
-                          child: Container(
-                            width: 5, height: 5,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: const Color(0xFF38BDF8).withValues(alpha: 0.85),
-                            ),
+                        Container(
+                          width: 4,
+                          decoration: BoxDecoration(
+                            color: kRed,
+                            borderRadius: BorderRadius.circular(2),
                           ),
                         ),
-                        Expanded(child: _buildInlineText(content, textColor)),
+                        const SizedBox(width: 12),
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.dangerous_rounded, size: 14, color: kRed),
+                              const SizedBox(width: 6),
+                              Expanded(child: _buildInlineText(
+                                trimmed.replaceAll(RegExp(r'\*\*HARD.STOP[:\s]*', caseSensitive: false), '').trim(),
+                                kRed, isBold: true,
+                              )),
+                            ],
+                          ),
+                        )),
                       ],
                     ),
-                  );
-                }
-
-                // Texto normal
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 1),
-                  child: _buildInlineText(trimmed, textColor),
+                  ),
                 );
-              }),
+              }
 
-              // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
-              if (isLast) ...[
+              // ── H2 — cabeçalho markdown '## Título' em cyan ──────────
+              // Build 117: fontSize 15→18, fontWeight w700→w800
+              if (_isH2(line)) {
+                final label = line.trim().replaceFirst(RegExp(r'^##\s+'), '');
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4, top: 10),
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF38BDF8), // cyan oficial
+                      letterSpacing: 0.1,
+                      height: 1.3,
+                    ),
+                  ),
+                );
+              }
+
+              // ── 🟥 Conduta / Prescrição — barra semântica CYAN 4px ───
+              // Build 117: remove Container red bg → 4px cyan left bar
+              // (posologia/condutas → barra azul/cyan conforme design spec)
+              if (trimmed.startsWith('🟥')) {
+                final label = trimmed
+                    .replaceFirst('🟥', '')
+                    .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
+                    .trim();
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6, top: 4),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          width: 4,
+                          decoration: BoxDecoration(
+                            color: kGreenLight,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.medication_rounded, size: 14,
+                                  color: Color(0xFF00E5FF)),
+                              const SizedBox(width: 6),
+                              Expanded(child: _buildInlineText(
+                                label.isEmpty ? trimmed : label,
+                                dark ? const Color(0xFF00E5FF) : kGreen,
+                                isBold: true,
+                              )),
+                            ],
+                          ),
+                        )),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              // ── Linha de seção principal — barra semântica 4px full ───
+              // Build 117: upgrade 3px→4px, fontSize 12.5→14, w700→w800
+              if (_isSectionHeader(line)) {
+                final label = trimmed.replaceFirst(RegExp(r'^###?\s*'), '');
+                final Color barColor;
+                final Color labelColor;
+                if (trimmed.startsWith('🚨')) {
+                  barColor   = kRed;
+                  labelColor = dark ? const Color(0xFFFF8080) : kRed;
+                } else if (trimmed.startsWith('⛔')) {
+                  barColor   = kAmber;
+                  labelColor = dark ? const Color(0xFFFFD580) : kAmber;
+                } else if (trimmed.startsWith('📌')) {
+                  barColor   = const Color(0xFF4A90D9);
+                  labelColor = dark ? const Color(0xFF89C4FF) : const Color(0xFF2563EB);
+                } else {
+                  // 💊 e padrão → ConnectMind cyan
+                  barColor   = kGreenLight;
+                  labelColor = dark ? const Color(0xFF00E5FF) : kGreen;
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4, top: 10),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          width: 4, // Build 117: 3→4px
+                          decoration: BoxDecoration(
+                            color: barColor,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: 14,       // Build 117: 12.5→14
+                              fontWeight: FontWeight.w800, // Build 117: w700→w800
+                              color: labelColor,
+                              letterSpacing: 0.1,
+                              height: 1.3,
+                            ),
+                          ),
+                        )),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              // ── Linha de alerta/atenção — barra semântica ÂMBAR 4px ──
+              // Build 117: remove Container amber bg → 4px amber left bar
+              if (_isWarning(line)) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4, top: 2),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          width: 4,
+                          decoration: BoxDecoration(
+                            color: kAmber,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: _buildInlineText(
+                            trimmed,
+                            dark ? const Color(0xFFFFD580) : kAmber,
+                          ),
+                        )),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              // Linha de referência — texto compacto cinza
+              if (_isReference(line)) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 1, top: 1),
+                  child: Text(
+                    trimmed,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: dark ? Colors.white38 : kRef,
+                      fontStyle: FontStyle.italic,
+                      height: 1.4,
+                    ),
+                  ),
+                );
+              }
+
+              // Item de lista — bullet com indent (suporta '- ', '* ', '• ', '→', '▸', '1. ')
+              if (_isListItem(line)) {
+                // Strip do marcador: remove '- ', '* ', '• ', '→ ', '▸ ', '1. '
+                // Build 115: também remove '*' sem espaço e '* **' (asterisco + negrito)
+                final content = trimmed
+                    .replaceFirst(RegExp(r'^\*\s*(?=\*\*)'), '') // '* **' ou '*  **'
+                    .replaceFirst(RegExp(r'^[-\*•→▸]\s*'), '')   // marcador + espaço opcional
+                    .replaceFirst(RegExp(r'^\d+\.\s+'), '')
+                    .trimLeft();
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 2, left: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7, right: 7),
+                        child: Container(
+                          width: 5, height: 5,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(0xFF38BDF8).withValues(alpha: 0.85),
+                          ),
+                        ),
+                      ),
+                      Expanded(child: _buildInlineText(content, textColor)),
+                    ],
+                  ),
+                );
+              }
+
+              // Texto normal — flui direto sobre o fundo sem container
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: _buildInlineText(trimmed, textColor),
+              );
+            }),
+
+            // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
+            if (isLast) ...[
                 const SizedBox(height: 5),
                 Row(children: [
                   Text(

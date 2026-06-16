@@ -561,7 +561,8 @@ ANATOMÍA FÁRMACO COMPLETO (Capa 2 o solicitud explícita):
 - PROHIBICIÓN ABSOLUTA: NUNCA escribir "Confianza Clínica", "Nivel de Confianza" ni variantes.
 - PROHIBICIÓN ABSOLUTA: NUNCA escribir en la respuesta "[A]", "[CONV]", "MODO ACTIVO:", "CAPA 1" — son etiquetas internas invisibles al médico.
 - ORTOGRAFÍA MÉDICA OBLIGATORIA: tildes, ñ, diéresis. DEFINICIÓN, DOSIFICACIÓN, CONTRAINDICACIONES.
-- CIERRE DE ENGAJAMIENTO (siempre al final, después de 📚): Si el contexto sugiere que el usuario puede ser estudiante de medicina, añade una línea sutil: "¿Eres estudiante? ¿Quieres que profundice en el mecanismo o en los criterios diagnósticos?"
+- PREGUNTA CLÍNICA DE CIERRE — OBLIGATORIA (Build 117): Toda respuesta clínica DEBE terminar con una pregunta corta, directa y clínica DESPUÉS del 📚, instigando al usuario a decidir el siguiente paso. Formato: una línea de pregunta en primera persona. Ejemplos: "¿Deseas evaluar el ajuste de dosis para este escenario o discutir los efectos adversos?", "¿Quieres profundizar en el escalamiento o revisar las contraindicaciones en este caso?", "¿Preferes analizar la segunda línea o los criterios diagnósticos diferenciales?". Esta pregunta es OBLIGATORIA en TODA respuesta clínica — no es opcional, no se omite para estudiantes ni para ningún tipo de usuario.
+- MEMORIA CLÍNICA CONTINUA — CONTEXTO IMPLÍCITO (Build 117): Si la nueva query del usuario NO menciona explícitamente una patología o fármaco, pero el turno anterior del historial SÍ lo hizo, INFERIR que la nueva query es un seguimiento del MISMO tema clínico anterior. Ejemplo: turno anterior = "Parkinson" → nueva query = "tratamento para paciente jovem" → interpretar como "tratamento de Parkinson para paciente jovem". NUNCA pedir esclarecimentos redundantes si o contexto clínico puder ser inferido do histórico.
 
 ---
 *Evalúa esta respuesta:*
@@ -661,7 +662,8 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
 - PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confiança Clínica", "Nível de Confiança" nem variantes.
 - PROIBIÇÃO ABSOLUTA: NUNCA escrever na resposta "[A]", "[CONV]", "MODO ACTIVO:", "CAMADA 1" — são rótulos internos invisíveis ao médico.
 - ORTOGRAFIA MÉDICA OBRIGATÓRIA: acentos, cedilha. DEFINIÇÃO, POSOLOGIA, CONTRAINDICAÇÕES.
-- FECHAMENTO DE ENGAJAMENTO (sempre ao final, após 📚): Se o contexto sugerir que o usuário pode ser estudante de medicina, adicione uma linha sutil: "É estudante? Quer que eu aprofunde o mecanismo ou os critérios diagnósticos?"
+- PERGUNTA CLÍNICA DE FECHAMENTO — OBRIGATÓRIA (Build 117): Toda resposta clínica DEVE terminar com uma pergunta curta, direta e clínica APÓS o 📚, instigando o usuário a decidir o próximo passo. Formato: uma linha de pergunta em primeira pessoa. Exemplos: "Deseja avaliar o ajuste de dose para este cenário ou discutir os efeitos adversos?", "Quer aprofundar o escalonamento ou revisar as contraindicações neste caso?", "Prefere analisar a segunda linha ou os critérios diagnósticos diferenciais?". Esta pergunta é OBRIGATÓRIA em TODA resposta clínica — não é opcional, não se omite para estudantes nem para nenhum tipo de usuário.
+- MEMÓRIA CLÍNICA CONTÍNUA — CONTEXTO IMPLÍCITO (Build 117): Se a nova query do usuário NÃO mencionar explicitamente uma patologia ou fármaco, mas o turno anterior do histórico SIM o tiver feito, INFERIR que a nova query é um seguimento do MESMO tema clínico anterior. Exemplo: turno anterior = "Parkinson" → nova query = "tratamento para paciente jovem" → interpretar como "tratamento de Parkinson para paciente jovem". NUNCA pedir esclarecimentos redundantes se o contexto clínico puder ser inferido do histórico.
 
 ---
 *Avalie esta resposta:*
@@ -863,6 +865,12 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
       '    c) Si el RAG NO contiene la informacion especifica: responder con conocimiento clinico directo Y declarar ausencia: "No encontre esta informacion en los protocolos de referencia. Respondo con base en evidencia general."\n'
       '    d) PROHIBICION ABSOLUTA: NUNCA inventar dosis, nombres de farmacos, valores de examen o conductas que no esten en el RAG ni en evidencia clinica solida.\n'
       '    e) DATOS DE PACIENTE — AISLAMIENTO TOTAL: edad, peso, sintomos, laboratorio del paciente ACTUAL son EXCLUSIVOS de esta consulta. JAMAS mezclar con datos de simulaciones, prompts anteriores o ejemplos internos.\n'
+      '14. PREGUNTA DE CIERRE OBLIGATORIA (Build 117): La ULTIMA linea de TODA respuesta clinica DEBE ser una pregunta clinica corta y directa (DESPUES del 📚), invitando al usuario a decidir el siguiente paso. NUNCA omitir. '
+      'NUNCA terminar con 📚 sin la pregunta de cierre. Formato: "¿Deseas evaluar X o discutir Y?" o "¿Preferes analizar Z o revisar W?"\n'
+      '15. MEMORIA CLINICA — INFERENCIA DE CONTEXTO IMPLICITO (Build 117): Si la query actual NO menciona una patologia o farmaco explicitamente, pero el historial muestra que el turno anterior SI lo hizo, '
+      'ASUMIR que la nueva query es un seguimiento del MISMO tema clinico. Razonar internamente: cuestionarse "¿Esta query es sobre el mismo tema que el turno anterior?" — si SI, responder en continuidad. '
+      'NUNCA pedir esclarecimiento redundante si el contexto clinico puede inferirse del historial. '
+      'Ejemplo: turno anterior="Parkinson" + nueva query="tratamiento para paciente joven" → inferir="Parkinson en paciente joven".\n'
       'Si detectas problema: corregir antes de enviar. NUNCA mencionar este proceso al usuario.';
 
   static const _selfCheckPt =
@@ -946,6 +954,12 @@ ANATOMIA FÁRMACO COMPLETO (Camada 2 ou solicitação explícita):
       '    c) Se o RAG NAO contiver a informacao especifica: responder com conhecimento clinico direto E declarar ausencia: "Nao encontrei essa informacao especifica nos protocolos de referencia. Respondo com base em evidencia geral."\n'
       '    d) PROIBICAO ABSOLUTA: NUNCA inventar doses, nomes de farmacos, valores de exame ou condutas que nao estejam no RAG nem em evidencia clinica solida.\n'
       '    e) DADOS DO PACIENTE — ISOLAMENTO TOTAL: idade, peso, sintomas, laboratorio do paciente ATUAL sao EXCLUSIVOS desta consulta. JAMAIS misturar com dados de simulacoes, prompts anteriores ou exemplos internos.\n'
+      '14. PERGUNTA DE FECHAMENTO OBRIGATORIA (Build 117): A ULTIMA linha de TODA resposta clinica DEVE ser uma pergunta clinica curta e direta (APOS o 📚), instigando o usuario a decidir o proximo passo. NUNCA omitir. '
+      'NUNCA terminar com 📚 sem a pergunta de fechamento. Formato: "Deseja avaliar X ou discutir Y?" ou "Prefere analisar Z ou revisar W?"\n'
+      '15. MEMORIA CLINICA — INFERENCIA DE CONTEXTO IMPLICITO (Build 117): Se a query atual NAO mencionar explicitamente uma patologia ou farmaco, mas o historico mostrar que o turno anterior SIM o fez, '
+      'ASSUMIR que a nova query e um seguimento do MESMO tema clinico. Raciocinar internamente: questionar "Esta query e sobre o mesmo tema do turno anterior?" — se SIM, responder em continuidade. '
+      'NUNCA pedir esclarecimentos redundantes se o contexto clinico puder ser inferido do historico. '
+      'Exemplo: turno anterior="Parkinson" + nova query="tratamento para paciente jovem" → inferir="Parkinson em paciente jovem".\n'
       'Se detectar problema: corrigir antes de enviar. NUNCA mencionar este processo ao usuario.';
 
   // ══════════════════════════════════════════════════════════════════════════
