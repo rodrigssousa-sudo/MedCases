@@ -3365,6 +3365,42 @@ class _AiBlockBubble extends StatelessWidget {
 
     final lines = block.split('\n');
 
+    // ── Build 120: pre-process lines to group 📚 REFERENCIAS into collapsible ─
+    // Detects the "📚 REFERENCIAS" / "📚 REFERÊNCIAS" header and collects all
+    // subsequent non-empty lines into a _CollapsibleReferencesBlock widget.
+    bool inRefBlock = false;
+    final List<String> refLines = [];
+    final List<String> bodyLines = [];
+    for (final line in lines) {
+      final t = line.trim();
+      if (!inRefBlock) {
+        // Detect exact reference-block header patterns (Build 120)
+        if (t == '📚 REFERENCIAS' || t == '📚 REFERÊNCIAS' ||
+            t == '📚 REFERENCIAS:' || t == '📚 REFERÊNCIAS:') {
+          inRefBlock = true;
+        } else {
+          bodyLines.add(line);
+        }
+      } else {
+        // Collect reference lines (stop on next section header or hard divider)
+        if (t.isEmpty && refLines.isNotEmpty) {
+          // allow one blank line inside ref block
+          refLines.add(line);
+        } else if (t.startsWith('##') || t.startsWith('🟥') ||
+                   t.startsWith('⛔') || t.startsWith('📌') ||
+                   t.startsWith('🎯') || t.startsWith('🚨') ||
+                   t.startsWith('💊')) {
+          // New clinical section — stop ref block, resume body
+          inRefBlock = false;
+          bodyLines.add(line);
+        } else {
+          refLines.add(line);
+        }
+      }
+    }
+    final bool hasRefBlock = refLines.isNotEmpty;
+    final renderLines = bodyLines;
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: isLast ? 8 : 4,
@@ -3376,7 +3412,7 @@ class _AiBlockBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Renderização linha a linha com hierarquia visual ─────────
-            ...lines.map((line) {
+            ...renderLines.map((line) {
               final trimmed = line.trim();
               // Build 117: generous empty-line spacing (was height:1)
               if (trimmed.isEmpty) return const SizedBox(height: 8);
@@ -3616,6 +3652,14 @@ class _AiBlockBubble extends StatelessWidget {
                 child: _buildInlineText(trimmed, textColor),
               );
             }),
+
+            // ── Build 120: Bloco de Referências Colapsável ────────────────
+            if (hasRefBlock)
+              _CollapsibleReferencesBlock(
+                lines: refLines,
+                dark: dark,
+                lang: lang,
+              ),
 
             // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
             if (isLast) ...[
@@ -5355,6 +5399,141 @@ class _ChatHistorySheet extends StatelessWidget {
                 ),
               ),
       ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _CollapsibleReferencesBlock — Build 120
+// Chip colapsável para o bloco "📚 REFERENCIAS / REFERÊNCIAS" gerado pela IA.
+// Padrão: chip "📚 Ver Referencias Médicas ▾" (collapsed)
+// Expandido: lista de bullets de referência em texto compacto cinza
+// ─────────────────────────────────────────────────────────────────────────────
+class _CollapsibleReferencesBlock extends StatefulWidget {
+  final List<String> lines; // linhas de referência (sem o cabeçalho 📚)
+  final bool dark;
+  final String lang; // 'es' ou 'pt'
+  const _CollapsibleReferencesBlock({
+    required this.lines,
+    required this.dark,
+    this.lang = 'pt',
+  });
+
+  @override
+  State<_CollapsibleReferencesBlock> createState() =>
+      _CollapsibleReferencesBlockState();
+}
+
+class _CollapsibleReferencesBlockState
+    extends State<_CollapsibleReferencesBlock> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+    final isEs = widget.lang == 'es';
+
+    // Paleta neutra — não compete com conteúdo clínico
+    final chipBg     = dark ? const Color(0xFF1E2733) : const Color(0xFFF1F5F9);
+    final chipBorder = dark ? const Color(0xFF334155) : const Color(0xFFCBD5E1);
+    final labelColor = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final textColor  = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+
+    // Label localizado
+    final chipLabel = isEs ? 'Ver Referencias Médicas' : 'Ver Referências Médicas';
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Chip colapsável ────────────────────────────────────────────────
+          GestureDetector(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: chipBg,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: chipBorder, width: 1),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('📚', style: TextStyle(fontSize: 13)),
+                  const SizedBox(width: 6),
+                  Text(
+                    chipLabel,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w600,
+                      color: labelColor,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  AnimatedRotation(
+                    turns: _expanded ? 0.5 : 0.0,
+                    duration: const Duration(milliseconds: 220),
+                    child: Icon(Icons.keyboard_arrow_down_rounded,
+                        size: 16, color: labelColor),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // ── Conteúdo expandido ─────────────────────────────────────────────
+          AnimatedSize(
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeInOut,
+            child: _expanded
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 8, left: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.lines
+                          .where((l) => l.trim().isNotEmpty)
+                          .map((l) {
+                        // Strip de marcadores de bullet (* - •)
+                        final content = l.trim()
+                            .replaceFirst(RegExp(r'^[-\*•]\s*'), '');
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 3),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5, right: 6),
+                                child: Container(
+                                  width: 3, height: 3,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: textColor.withValues(alpha: 0.6),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  content,
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    color: textColor,
+                                    fontStyle: FontStyle.italic,
+                                    height: 1.45,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }

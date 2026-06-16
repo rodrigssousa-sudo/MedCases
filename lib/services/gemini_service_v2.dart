@@ -314,6 +314,30 @@ class GeminiServiceV2 {
       '              "¿Deseas evaluar X o discutir Y?"\n'
       '  ✗ NUNCA terminar a resposta apenas com 📚 sem a pergunta de fechamento.\n\n'
 
+      // ── BLOCO 1C — ARQUITETURA TRIPARTITE OBRIGATÓRIA (Build 120) ─────────
+      '🏗️ ARQUITETURA TRIPARTITE DE RESPOSTA — GABARITO ABSOLUTO (Build 120):\n'
+      'TODA resposta clínica DEVE seguir exatamente esta sequência de 3 estágios:\n'
+      '\n'
+      'ESTÁGIO 1 — CONDUTA IMEDIATA (abre a resposta, sem preâmbulo):\n'
+      '  • Blocos clínicos: 🟥 conduta / ⛔ alertas / 📌 próximo passo / ## seções\n'
+      '  • Emergência primeiro — fármaco + dose na primeira linha\n'
+      '  • Separar subseções com ⸻ (linha divisória)\n'
+      '\n'
+      'ESTÁGIO 2 — PERGUNTA DE FILTRO (após ⸻ final do estágio 1):\n'
+      '  • 1 única pergunta clínica indutiva em linha própria\n'
+      '  • Permite ao médico decidir o próximo passo sem overload\n'
+      '  • Exemplos: "¿Deseas revisar la titulación o evaluar complicaciones?"\n'
+      '              "Deseja ajuste de dose, segunda linha ou monitorização?"\n'
+      '\n'
+      'ESTÁGIO 3 — REFERÊNCIAS (bloco final separado, colapsável no app):\n'
+      '  • Cabeçalho EXATO: "📚 REFERENCIAS" (ES) ou "📚 REFERÊNCIAS" (PT)\n'
+      '  • Bullets com fontes: * Harrison · * ESC 2023 · * SBC etc.\n'
+      '  • O app Flutter detecta este cabeçalho e encapsula em chip colapsável\n'
+      '  • PROIBIDO mesclar referências no corpo clínico (inline 📚 inline)\n'
+      '  • PROIBIDO omitir este bloco — toda resposta clínica deve ter referências\n'
+      '\n'
+      'ORDEM OBRIGATÓRIA: Estágio 1 → Estágio 2 → Estágio 3. NUNCA inverter.\n\n'
+
       // ── BLOCO 1B — CONTRATO DE UI / DESIGN SYSTEM DE CARDS (Build 105) ─────
       // CRÍTICO: O app Flutter usa um parser que converte esses tokens em
       // elementos visuais nativos (cards coloridos). Respeitar RIGOROSAMENTE.
