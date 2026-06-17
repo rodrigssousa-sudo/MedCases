@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -701,6 +702,9 @@ class _AiScreenState extends State<AiScreen> {
     }
 
     // ── 4. Dispose de controllers e FocusNode ─────────────────────────────
+    // Build 135: cancela timer de debounce pendente — evita callback após dispose
+    _submitDebounceTimer?.cancel();
+    _submitDebounceTimer = null;
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
@@ -997,6 +1001,30 @@ class _AiScreenState extends State<AiScreen> {
 
   // Streaming V2: true enquanto chunks chegam (controla cursor ▌ na bolha ativa)
   bool _isStreaming = false;
+
+  // ── Build 135: Debounce de 300ms no submit ─────────────────────────────────
+  // Fecha a janela residual (~50ms) entre finally() e listen() registration
+  // em que um clique ultra-rápido poderia passar pelo _aiCallInFlight.
+  //
+  // REGRA: atua SOMENTE no submit (botão + Enter) — não afeta digitação.
+  // O debounce NÃO atrasa o primeiro envio perceptivelmente (300ms < threshold
+  // de percepção humana de latência em tap rápido). Em dispositivos médicos
+  // (tablet de plantão), 300ms é imperceptível e seguro.
+  //
+  // Cadeia de proteção (3 camadas):
+  //   Layer 1: _submitDebounceTimer (300ms, aqui)
+  //   Layer 2: _sendGuard (local, nesta screen)
+  //   Layer 3: _aiCallInFlight (provider, app_provider.dart Build 134)
+  Timer? _submitDebounceTimer;
+
+  // Wrapper de debounce: agenda _send com 300ms de delay.
+  // Chamadas repetidas dentro da janela reiniciam o timer (último vence).
+  void _sendDebounced(String text, AppProvider p) {
+    _submitDebounceTimer?.cancel();
+    _submitDebounceTimer = Timer(const Duration(milliseconds: 300), () {
+      _send(text, p);
+    });
+  }
 
   Future<void> _send(String text, AppProvider p) async {
     final trimmed = text.trim();
@@ -1731,7 +1759,8 @@ class _AiScreenState extends State<AiScreen> {
                   dark: dark,
                   hasFocus: _hasFocus,
                   thinking: _thinking,
-                  onSend: () => _send(_queryCtrl.text, context.read<AppProvider>()),
+                  // Build 135: debounce 300ms — fecha janela residual de concorrência
+                  onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
                   hint: p.t('ai_placeholder'),
                   onVoice: _toggleStt,
                   sttListening: _sttListening,
@@ -1746,7 +1775,8 @@ class _AiScreenState extends State<AiScreen> {
               dark: dark,
               hasFocus: _hasFocus,
               thinking: _thinking,
-              onSend: () => _send(_queryCtrl.text, context.read<AppProvider>()),
+              // Build 135: debounce 300ms — fecha janela residual de concorrência
+              onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
               hint: p.t('ai_placeholder'),
               onVoice: _toggleStt,
               sttListening: _sttListening,

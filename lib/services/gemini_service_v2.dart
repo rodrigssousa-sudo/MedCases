@@ -78,6 +78,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -169,6 +170,52 @@ class GeminiServiceV2 {
     Duration(seconds: 15),
     Duration(seconds: 30),
   ];
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // BUILD 135 — AUTO-RETRY TRANSITÓRIO: Backoff & Jitter
+  //
+  // Erros TRANSITÓRIOS (infra Google instável, rate-limit temporário):
+  //   → Retentar automaticamente antes de propagar erro para a UI.
+  //   → Máximo 3 tentativas com backoff exponencial + jitter aleatório.
+  //
+  // Erros NÃO-TRANSITÓRIOS (401/403/400/prompt inválido):
+  //   → Propagar imediatamente — retry não adianta.
+  //
+  // Backoff schedule (base ± 500ms jitter):
+  //   Tentativa 1: 2s ± 500ms  (1.500ms — 2.500ms)
+  //   Tentativa 2: 4s ± 500ms  (3.500ms — 4.500ms)
+  //   Tentativa 3: 8s ± 500ms  (7.500ms — 8.500ms)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Número máximo de tentativas para erros transitórios (5xx/gRPC/rede instável).
+  static const _maxTransientRetries = 3;
+
+  /// Delays base para cada tentativa transitória (sem jitter).
+  static const _transientRetryBaseDelays = [
+    Duration(seconds: 2),
+    Duration(seconds: 4),
+    Duration(seconds: 8),
+  ];
+
+  /// Jitter máximo em ms aplicado a cada delay (± 500ms).
+  static const _transientJitterMs = 500;
+
+  /// RNG para jitter — instanciado uma vez para performance.
+  static final _rng = math.Random();
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // BUILD 135 — WATCHDOG TIMEOUT MID-STREAM
+  //
+  // Se o stream SSE abrir mas congelar silenciosamente (sem chunks por 45s):
+  //   → Timer dispara → encerra conexão de forma controlada
+  //   → Emite GeminiChunk.error('timeout') → card nativo de instabilidade
+  //
+  // O timer é RESETADO a cada chunk válido recebido.
+  // O timer é CANCELADO em onDone, onError e finally.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Tempo máximo de inatividade mid-stream antes do watchdog disparar.
+  static const _watchdogTimeout = Duration(seconds: 45);
 
   /// Janela de cooldown após 429 definitivo (esgotou todas as tentativas).
   /// Bloqueia requisições por 60s para não desperdiçar tokens em requests
@@ -796,11 +843,37 @@ class GeminiServiceV2 {
   // ══════════════════════════════════════════════════════════════════════════
   // _executeWithRetry — Wrapper de retry recursivo para o stream
   //
-  // Delega para _streamRequest. Se ocorrer exceção não tratada internamente,
-  // captura e emite GeminiChunk.error('unexpected').
+  // Build 135: expandido com Auto-Retry Transitório (Exponential Backoff + Jitter).
   //
-  // O retry de 429 é tratado DENTRO de _streamRequest (não aqui), porque
-  // a resposta HTTP (statusCode 429) só é conhecida após a requisição.
+  // ARQUITETURA DE RETRY DUPLA:
+  //
+  //   Camada A — Retry 429 (rate-limit): tratado DENTRO de _streamRequest.
+  //     → statusCode 429 com Retry-After header; backoff 5/15/30s.
+  //     → Não passa por aqui (acontece no nível HTTP).
+  //
+  //   Camada B — Retry Transitório 5xx/gRPC (Build 135): tratado AQUI.
+  //     → Erros de INFRA que chegam via GeminiChunk.error('http_503') ou 'timeout'.
+  //     → Detectados após _streamRequest retornar (o chunk de erro já foi gerado).
+  //     → PROBLEMA: o chunk de erro já foi adicionado ao controller antes do retry.
+  //     → SOLUÇÃO: usar um controller intermediário por tentativa para capturar
+  //       o resultado SEM expor erro prematuro ao controller final do caller.
+  //       Se a tentativa falha com erro transitório → espera + nova tentativa.
+  //       Se a tentativa falha com erro permanente → propaga ao controller final.
+  //       Se a tentativa sucede → pipe chunks para o controller final.
+  //
+  // ERROS TRANSITÓRIOS (retry permitido):
+  //   'http_503'  → HTTP 500/502/503/504 + gRPC RESOURCE_EXHAUSTED/INTERNAL/ABORTED/UNAVAILABLE
+  //   'timeout'   → HTTP TimeoutException + gRPC DEADLINE_EXCEEDED
+  //   'network'   → SocketException + gRPC CANCELLED (rede instável pode recuperar)
+  //   'stream_error' → erro mid-stream (pode ser transiente)
+  //
+  // ERROS NÃO-TRANSITÓRIOS (sem retry — falha imediata):
+  //   'quota'          → quota esgotada + cooldown global já ativado
+  //   'api_key_invalid'→ 401/403 — chave errada, retry não adianta
+  //   'unexpected'     → exceção desconhecida
+  //   Erros com conteúdo parcial → exibir parcial ao invés de retry
+  //
+  // CANCELAMENTO: se controller.isClosed durante o wait → aborta imediatamente.
   // ══════════════════════════════════════════════════════════════════════════
   static Future<void> _executeWithRetry({
     required StreamController<GeminiChunk> controller,
@@ -810,12 +883,42 @@ class GeminiServiceV2 {
     required List<Map<String, String>> history,
     required bool useGrounding,
     required int attempt,
+    // Build 135: contagem de tentativas transitórias (separada da contagem 429)
+    int transientAttempt = 0,
   }) async {
     if (controller.isClosed) return;
 
+    // ── Usa controller intermediário para interceptar erros antes de expor ──
+    // Isso permite que o retry transitório aconteça SEM enviar chunk de erro
+    // ao controller final enquanto ainda há tentativas disponíveis.
+    final intermediate = StreamController<GeminiChunk>();
+    GeminiChunk? capturedError;
+    final chunks = <GeminiChunk>[];
+    bool hadContent = false;
+
+    // Subscrevemos o intermediário para capturar tudo
+    final completer = Completer<void>();
+    intermediate.stream.listen(
+      (chunk) {
+        if (chunk.isError) {
+          capturedError = chunk;
+        } else {
+          if (chunk.text.isNotEmpty) hadContent = true;
+          chunks.add(chunk);
+        }
+      },
+      onDone: () {
+        if (!completer.isCompleted) completer.complete();
+      },
+      onError: (e) {
+        if (!completer.isCompleted) completer.completeError(e);
+      },
+      cancelOnError: false,
+    );
+
     try {
       await _streamRequest(
-        controller: controller,
+        controller: intermediate,
         apiKey: apiKey,
         userMessage: userMessage,
         systemPrompt: systemPrompt,
@@ -825,11 +928,99 @@ class GeminiServiceV2 {
       );
     } catch (e) {
       _log('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
-      if (!controller.isClosed) {
-        controller
+      if (!intermediate.isClosed) {
+        intermediate
           ..add(GeminiChunk.error('unexpected'))
           ..close();
       }
+    }
+
+    // Aguarda o intermediate finalizar
+    try {
+      await completer.future;
+    } catch (_) {}
+
+    // ── Verifica se houve erro transitório e se vale retry ───────────────────
+    final isTransientError = capturedError != null &&
+        (capturedError!.errorCode == 'http_503' ||
+         capturedError!.errorCode == 'timeout'  ||
+         capturedError!.errorCode == 'network'  ||
+         capturedError!.errorCode == 'stream_error');
+
+    // Se houve conteúdo parcial substancial (>40 chars) → não retentamos,
+    // entregamos o parcial (compatível com a lógica do AppProvider).
+    final partialCharsTotal = chunks.fold<int>(0, (sum, c) => sum + c.text.length);
+    final hasPartialContent  = hadContent && partialCharsTotal > 40;
+
+    if (isTransientError && !hasPartialContent &&
+        transientAttempt < _maxTransientRetries) {
+
+      if (controller.isClosed) return; // cancelamento manual durante retry
+
+      // ── Backoff Exponencial + Jitter ──────────────────────────────────────
+      final baseDelay = _transientRetryBaseDelays[transientAttempt];
+      final jitterMs  = _rng.nextInt(_transientJitterMs * 2 + 1) - _transientJitterMs;
+      final waitMs    = (baseDelay.inMilliseconds + jitterMs).clamp(500, 30000);
+      final waitDur   = Duration(milliseconds: waitMs);
+
+      _log(
+        '[GeminiV2] Build 135: erro transitório (${capturedError!.errorCode}) — '
+        'retry ${transientAttempt + 1}/$_maxTransientRetries em ${waitDur.inMilliseconds}ms '
+        '(base ${baseDelay.inSeconds}s ± ${jitterMs}ms jitter)',
+      );
+
+      // Aguarda com verificação de cancelamento a cada 500ms
+      final waitEnd = DateTime.now().add(waitDur);
+      while (DateTime.now().isBefore(waitEnd)) {
+        if (controller.isClosed) {
+          _log('[GeminiV2] Build 135: retry cancelado — controller fechado durante wait');
+          return;
+        }
+        final remaining = waitEnd.difference(DateTime.now());
+        await Future.delayed(
+          remaining > const Duration(milliseconds: 500)
+              ? const Duration(milliseconds: 500)
+              : remaining,
+        );
+      }
+
+      if (controller.isClosed) return;
+
+      _log('[GeminiV2] Build 135: iniciando tentativa transitória ${transientAttempt + 2}');
+      return _executeWithRetry(
+        controller: controller,
+        apiKey: apiKey,
+        userMessage: userMessage,
+        systemPrompt: systemPrompt,
+        history: history,
+        useGrounding: useGrounding,
+        attempt: attempt,                        // attempt 429 preservado
+        transientAttempt: transientAttempt + 1,  // contagem transitória avança
+      );
+    }
+
+    // ── Propaga todos os chunks coletados para o controller final ─────────────
+    // Se chegamos aqui: sucesso, erro não-transitório, ou esgotou retries.
+    if (controller.isClosed) return;
+
+    for (final chunk in chunks) {
+      if (controller.isClosed) break;
+      controller.add(chunk);
+    }
+
+    if (capturedError != null && !controller.isClosed) {
+      // Esgotou retries ou erro não-transitório → propaga erro original
+      if (isTransientError && transientAttempt >= _maxTransientRetries) {
+        _log(
+          '[GeminiV2] Build 135: ${_maxTransientRetries} retries transitórios esgotados — '
+          'propagando ${capturedError!.errorCode} para UI',
+        );
+      }
+      controller
+        ..add(capturedError!)
+        ..close();
+    } else if (!controller.isClosed) {
+      controller.close();
     }
   }
 
@@ -1168,9 +1359,50 @@ class GeminiServiceV2 {
     bool hadContent = false;
     bool finishEmitted = false; // guarda anti-done-duplo
 
+    // ── Build 135: Watchdog Timer Mid-Stream ─────────────────────────────────
+    // Detecta streams congelados: SSE abriu mas não emite novos chunks por 45s.
+    //
+    // Comportamento:
+    //   • Timer criado imediatamente antes do loop SSE.
+    //   • RESETADO a cada chunk válido recebido (qualquer bytes > 0).
+    //   • DISPARADO se 45s passarem sem chunks → encerra controller com 'timeout'.
+    //   • CANCELADO em onDone, onError e no finally externo.
+    //   • Nunca dispara se controller já foi fechado (guard isClosed).
+    //
+    // Proteções anti-memory-leak:
+    //   • watchdogTimer é sempre cancelado no finally abaixo.
+    //   • Guard !controller.isClosed antes de emitir evento.
+    Timer? watchdogTimer;
+    bool watchdogFired = false;
+
+    void resetWatchdog() {
+      watchdogTimer?.cancel();
+      if (controller.isClosed || finishEmitted || watchdogFired) return;
+      watchdogTimer = Timer(_watchdogTimeout, () {
+        if (controller.isClosed || finishEmitted) return;
+        watchdogFired = true;
+        _log(
+          '[GeminiV2] Build 135: WATCHDOG disparado — stream congelado por '
+          '${_watchdogTimeout.inSeconds}s sem chunks (Build 135)',
+        );
+        if (!controller.isClosed) {
+          controller
+            ..add(GeminiChunk.error('timeout'))
+            ..close();
+        }
+      });
+    }
+
+    // Inicia watchdog antes do loop
+    resetWatchdog();
+
     try {
       await for (final bytes in response.stream) {
         if (controller.isClosed) break;
+        if (watchdogFired) break; // watchdog já encerrou — para o loop
+
+        // Reset watchdog a cada chunk recebido (qualquer bytes > 0)
+        if (bytes.isNotEmpty) resetWatchdog();
 
         final rawChunk = utf8.decode(bytes, allowMalformed: true);
 
@@ -1280,16 +1512,23 @@ class GeminiServiceV2 {
       }
     } catch (streamError) {
       _log('[GeminiV2] erro durante leitura do stream: $streamError');
+      watchdogTimer?.cancel(); // cancela watchdog em erro de stream
       if (!hadContent && !controller.isClosed) {
         controller.add(GeminiChunk.error('stream_error'));
       }
+    } finally {
+      // Build 135: garante cancelamento do watchdog em TODOS os caminhos de saída.
+      // Evita memory leak de Timer mesmo em casos excepcionais.
+      watchdogTimer?.cancel();
+      watchdogTimer = null;
     }
 
     // ── Fecha o controller ao terminar o stream ───────────────────────────────
     // Emite GeminiChunk.done apenas se finishReason não foi detectado no stream
     // (ex: stream encerrou abruptamente sem enviar finishReason).
     // Guarda anti-duplicata garante que AppProvider sempre receba o sinal final.
-    if (!controller.isClosed) {
+    // Build 135: se watchdog disparou, controller já foi fechado — não re-fechar.
+    if (!controller.isClosed && !watchdogFired) {
       if (!finishEmitted) {
         // Stream encerrado sem finishReason explícito — trata como done normal
         controller.add(GeminiChunk.done);
