@@ -3175,15 +3175,24 @@ class AppProvider extends ChangeNotifier {
     _aiStreamSub = stream.listen(
       (chunk) {
         if (chunk.isError) {
-          // ── NETWORK SAFETY: erro de rede — limpa histórico contaminado ────
-          // CRÍTICO: _aiHistory NÃO deve reter a troca anterior quando há falha
+          // Build 126 — TOLERÂNCIA A FALHAS: se já acumulamos texto válido antes
+          // do erro (ex: SAFETY parcial, stream truncado), exibir o que temos.
+          // Só descartamos e emitimos contingência se NÃO há conteúdo acumulado.
           if (completionFired) return;
           completionFired = true;
           _aiStreamActive = false;
           _aiStreamSub = null;
-          accumulator.clear(); // descarta texto parcial — nunca exibir fragmento
-          // Build 111: preserva _aiHistory mesmo em erro de rede.
-          // Trocas anteriores bem-sucedidas continuam válidas para o próximo turno.
+          final partialText = accumulator.toString().trim();
+          // Conteúdo parcial com substância (>40 chars) → exibir ao invés de contingência
+          if (partialText.length > 40) {
+            _aiHistory
+              ..add({'role': 'user',      'content': input})
+              ..add({'role': 'assistant', 'content': partialText});
+            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            onDone(partialText);
+            return;
+          }
+          accumulator.clear();
           final msg = GeminiServiceV2.errorMessage(chunk.errorCode!, _lang);
           onError(msg);
           return;
@@ -3395,6 +3404,29 @@ class AppProvider extends ChangeNotifier {
 
       // Gemini falhou — logar o erro para diagnóstico
       debugPrint('[buildAIAnswer] Gemini ERRO: code=${geminiResult.errorCode} text=${geminiResult.text.substring(0, geminiResult.text.length.clamp(0, 100))}');
+
+      // Build 126 — TOLERÂNCIA A FALHAS DE FORMATO:
+      // Se o Gemini retornou texto bruto mesmo com isError=true (ex: formato
+      // inesperado, SAFETY parcial mas com conteúdo válido, ou erro de parsing
+      // interno), exibir o texto bruto é sempre melhor que a mensagem de contingência.
+      // A mensagem de contingência só é reservada para falhas de rede reais
+      // (timeout, HTTP 500, api_key_invalid, quota) — sem payload textual.
+      final rawContent = geminiResult.text.trim();
+      final hasUsableRawContent = rawContent.length > 20 &&
+          !rawContent.startsWith('CONTEXTO_') &&
+          !rawContent.startsWith('INSTRUCAO_') &&
+          !rawContent.startsWith('INSTRUCCION_');
+
+      if (hasUsableRawContent) {
+        // Texto bruto com conteúdo real → exibir diretamente, sem contingência.
+        // Preserva histórico para que a sessão continue coerente.
+        _aiHistory
+          ..add({'role': 'user',      'content': input})
+          ..add({'role': 'assistant', 'content': rawContent});
+        while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        return rawContent;
+      }
+
       final localFallback = _buildLocalAnswer(input);
       // Se o contexto local tem conteúdo médico real (FASE 0/1/2a/2b/3) → exibir
       // Se é contexto interno técnico (FASE 2e/2f) → mostrar mensagem amigável
@@ -3411,13 +3443,21 @@ class AppProvider extends ChangeNotifier {
           return _lang == 'es'
               ? 'Límite de consultas alcanzado. Intenta nuevamente en unos minutos. ⚕ Apoyo educacional.'
               : 'Limite de consultas atingido. Tente novamente em alguns minutos. ⚕ Apoio educacional.';
+        case 'timeout':
+        case 'network':
+          // Falha de rede real — contingência justificada
+          return _lang == 'es'
+              ? 'Sin conexión. Verifica tu red e intenta nuevamente. ⚕ Apoyo educacional.'
+              : 'Sem conexão. Verifique sua rede e tente novamente. ⚕ Apoio educacional.';
         case 'blocked':
+          // SAFETY: sem texto gerado → localFallback ou mensagem mínima
           return isInternalContext
               ? (_lang == 'es'
                   ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
                   : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
               : localFallback;
         default:
+          // Erro desconhecido sem texto bruto → localFallback (conteúdo médico local)
           return isInternalContext
               ? (_lang == 'es'
                   ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
