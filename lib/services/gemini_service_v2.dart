@@ -1405,6 +1405,24 @@ class GeminiServiceV2 {
     if (lower.contains('o usuário forneceu os seguintes')) return true;
     if (lower.contains('o usuário indicou que')) return true;
 
+    // Build 128 — Firewall de strings: captura vazamentos de pseudocódigo estrutural
+    // que o Gemini 2.5 Flash-Lite pode ecoar diretamente no output da UI.
+    if (lower.contains('detector de capa')) return true;
+    if (lower.contains('detector de camada')) return true;
+    if (lower.contains('capa 1 obligatoria')) return true;
+    if (lower.contains('camada 1 obrigatoria')) return true;
+    if (lower.contains('bloque 1')) return true;
+    if (lower.contains('bloque 2')) return true;
+    if (lower.contains('bloque 3')) return true;
+    if (lower.contains('bloco 1')) return true;
+    if (lower.contains('bloco 2')) return true;
+    if (lower.contains('bloco 3')) return true;
+    if (lower.contains('▶▶▶')) return true;
+    if (lower.contains('◀◀◀')) return true;
+    if (lower.contains('item 0 —')) return true;
+    if (lower.contains('fin item 0')) return true;
+    if (lower.contains('fim item 0')) return true;
+
     // Padrão meta-comentário: SOMENTE quando a sentença ABRE com "El usuario solicita..."
     // (primeiros 80 chars do chunk — não aplica se é meio de uma resposta)
     final head = lower.length > 80 ? lower.substring(0, 80) : lower;
@@ -1494,6 +1512,22 @@ class GeminiServiceV2 {
               '• ⚠️ Interações — motor offline ativo\n'
               '• 🧮 Calculadoras — sem necessidade de rede\n\n'
               'Verifique seu sinal e tente novamente.',
+      // 5xx = instabilidade na infraestrutura do Google Gemini (503, 500, 502, 504)
+      'http_503' || 'http_500' || 'http_502' || 'http_504' => isEs
+          ? '🚨 Servidor de IA Inestable\n\n'
+              'El servicio de Google Gemini está experimentando una sobrecarga temporal.\n\n'
+              'El resto de tus herramientas sigue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interacciones — motor offline activo\n'
+              '• 🧮 Calculadoras — sin necesidad de red\n\n'
+              'Inténtalo de nuevo en unos instantes.'
+          : '🚨 Servidor de IA Instável\n\n'
+              'O serviço do Google Gemini está enfrentando uma sobrecarga temporária.\n\n'
+              'O restante das suas ferramentas segue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interações — motor offline ativo\n'
+              '• 🧮 Calculadoras — sem necessidade de rede\n\n'
+              'Tente novamente em alguns instantes.',
       // stream_error = SSE caiu no meio → tratado como falha de rede
       'stream_error' => isEs
           ? '🚨 Conexión Requerida\n\n'
