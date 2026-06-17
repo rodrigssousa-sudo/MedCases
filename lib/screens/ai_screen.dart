@@ -5499,9 +5499,7 @@ class _CollapsibleReferencesBlockState
     final dark = widget.dark;
     final isEs = widget.lang == 'es';
 
-    // Paleta neutra — não compete com conteúdo clínico
-    final chipBg     = dark ? const Color(0xFF1E2733) : const Color(0xFFF1F5F9);
-    final chipBorder = dark ? const Color(0xFF334155) : const Color(0xFFCBD5E1);
+    // Build 127 — Flat UI: sem fundo sólido, apenas label sutil flutuando no scaffold
     final labelColor = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
     final textColor  = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
@@ -5517,11 +5515,9 @@ class _CollapsibleReferencesBlockState
           GestureDetector(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: chipBg,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: chipBorder, width: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -5625,18 +5621,10 @@ class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
 
-    // Build 120 — Ultra-delicate premium visual
-    // Trigger: zero fill, label + tiny caret only
-    // Expanded: 0.6px hairline border, ghost tint background, 6px rounded
+    // Build 127 — Flat UI total: sem fundo sólido, label colorido flutuante no scaffold
     final labelColor = dark
         ? const Color(0xFF34D399)
         : const Color(0xFF059669);
-    final borderColor = dark
-        ? const Color(0xFF34D399).withValues(alpha: 0.22)
-        : const Color(0xFF059669).withValues(alpha: 0.16);
-    final expandedBg = dark
-        ? const Color(0xFF34D399).withValues(alpha: 0.04)
-        : const Color(0xFF059669).withValues(alpha: 0.025);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -5675,18 +5663,16 @@ class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
           ),
         ),
 
-        // ── Conteúdo expandido — hairline border, ghost fill ─────────────────
+        // ── Conteúdo expandido — flat, sem borda ou fundo ────────────────────
         AnimatedSize(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
           child: _expanded
               ? Container(
                   margin: const EdgeInsets.only(top: 2, bottom: 4),
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                  decoration: BoxDecoration(
-                    color: expandedBg,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: borderColor, width: 0.6),
+                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
