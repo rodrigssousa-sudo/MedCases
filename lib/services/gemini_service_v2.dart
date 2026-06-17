@@ -1423,6 +1423,16 @@ class GeminiServiceV2 {
     if (lower.contains('fin item 0')) return true;
     if (lower.contains('fim item 0')) return true;
 
+    // Build 130 — Firewall adicional: captura marcadores de prompt que
+    // o Gemini 2.5 Flash-Lite pode ecoar após refatoração do contextAnchor/RAG.
+    if (lower.contains('datos_verificados')) return true;
+    if (lower.contains('dados_verificados')) return true;
+    if (lower.contains('contexto_interno')) return true;
+    if (lower.contains('verificacion interna')) return true;
+    if (lower.contains('verificacao interna')) return true;
+    if (lower.contains('silenciosa')) return true;
+    if (lower.contains('rag cross-check')) return true;
+
     // Padrão meta-comentário: SOMENTE quando a sentença ABRE com "El usuario solicita..."
     // (primeiros 80 chars do chunk — não aplica se é meio de uma resposta)
     final head = lower.length > 80 ? lower.substring(0, 80) : lower;
