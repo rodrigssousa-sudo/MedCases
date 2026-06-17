@@ -1494,6 +1494,22 @@ class GeminiServiceV2 {
               '• ⚠️ Interações — motor offline ativo\n'
               '• 🧮 Calculadoras — sem necessidade de rede\n\n'
               'Verifique seu sinal e tente novamente.',
+      // 5xx = instabilidade na infraestrutura do Google Gemini (503, 500, 502, 504)
+      'http_503' || 'http_500' || 'http_502' || 'http_504' => isEs
+          ? '🚨 Servidor de IA Inestable\n\n'
+              'El servicio de Google Gemini está experimentando una sobrecarga temporal.\n\n'
+              'El resto de tus herramientas sigue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interacciones — motor offline activo\n'
+              '• 🧮 Calculadoras — sin necesidad de red\n\n'
+              'Inténtalo de nuevo en unos instantes.'
+          : '🚨 Servidor de IA Instável\n\n'
+              'O serviço do Google Gemini está enfrentando uma sobrecarga temporária.\n\n'
+              'O restante das suas ferramentas segue operando 100% offline:\n'
+              '• 💊 Fármacos — base completa embarcada\n'
+              '• ⚠️ Interações — motor offline ativo\n'
+              '• 🧮 Calculadoras — sem necessidade de rede\n\n'
+              'Tente novamente em alguns instantes.',
       // stream_error = SSE caiu no meio → tratado como falha de rede
       'stream_error' => isEs
           ? '🚨 Conexión Requerida\n\n'
