@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '15.0.0';
-const CACHE_APP    = 'medcases-app-v15.0.0';  // ← Build 121: força limpeza total
+const SW_VERSION   = '16.0.0';
+const CACHE_APP    = 'medcases-app-v16.0.0';  // ← Build 122: força limpeza total
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)

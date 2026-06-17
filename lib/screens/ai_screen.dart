@@ -1,5 +1,6 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
@@ -3357,309 +3358,228 @@ class _AiBlockBubble extends StatelessWidget {
     return false;
   }
 
+  // ── Build 122: Separa linhas do bloco de referências (📚) ────────────────
+  // Retorna [bodyLines, refLines] pré-separados.
+  (List<String>, List<String>) _splitRefLines(List<String> lines) {
+    bool inRef = false;
+    final body = <String>[];
+    final refs = <String>[];
+    for (final line in lines) {
+      final t = line.trim();
+      if (!inRef) {
+        if (t == '📚 REFERENCIAS' || t == '📚 REFERÊNCIAS' ||
+            t == '📚 REFERENCIAS:' || t == '📚 REFERÊNCIAS:') {
+          inRef = true;
+        } else {
+          body.add(line);
+        }
+      } else {
+        if (t.startsWith('##') || t.startsWith('🟥') || t.startsWith('⛔') ||
+            t.startsWith('📌') || t.startsWith('🎯') || t.startsWith('🚨') ||
+            t.startsWith('💊')) {
+          inRef = false;
+          body.add(line);
+        } else {
+          refs.add(line);
+        }
+      }
+    }
+    return (body, refs);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Build 117 — Fluid Document Design:
-    // Removed bubbleBg + boxShadow + outer Container entirely.
-    // Text flows directly on app background — no cards, no bubbles.
+    // Build 122 — Single MarkdownBody renderer:
+    // Flat UI: 100% transparent, no BoxDecoration, no bubble.
+    // Semantic bars: 4px inline decorators ONLY for lines starting with
+    //   🟥 (cyan bar — conduta) and ⛔ / HARD STOP (amber/red bar — alert).
+    // All other content rendered as a single fluid MarkdownBody.
+
     final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
 
-    // ConnectMind AI palette — semantic color bars (Build 117)
+    // ConnectMind AI palette — semantic color bars
     const kGreen      = Color(0xFF008CA4);
     const kGreenLight = Color(0xFF00E5FF);
     const kRed        = Color(0xFFB91C1C);
     const kAmber      = Color(0xFFB45309);
-    const kRef        = Color(0xFF64748B);
 
     final lines = block.split('\n');
+    final (bodyLines, refLines) = _splitRefLines(lines);
+    final bool hasRefBlock = refLines.isNotEmpty;
 
-    // ── Build 120: pre-process lines to group 📚 REFERENCIAS into collapsible ─
-    // Detects the "📚 REFERENCIAS" / "📚 REFERÊNCIAS" header and collects all
-    // subsequent non-empty lines into a _CollapsibleReferencesBlock widget.
-    bool inRefBlock = false;
-    final List<String> refLines = [];
-    final List<String> bodyLines = [];
-    for (final line in lines) {
-      final t = line.trim();
-      if (!inRefBlock) {
-        // Detect exact reference-block header patterns (Build 120)
-        if (t == '📚 REFERENCIAS' || t == '📚 REFERÊNCIAS' ||
-            t == '📚 REFERENCIAS:' || t == '📚 REFERÊNCIAS:') {
-          inRefBlock = true;
-        } else {
-          bodyLines.add(line);
-        }
+    // Build list of widgets: semantic bar lines rendered individually,
+    // runs of plain markdown text collected and rendered as MarkdownBody.
+    final widgets = <Widget>[];
+    final mdBuffer = StringBuffer();
+
+    void flushMd() {
+      final md = mdBuffer.toString().trim();
+      mdBuffer.clear();
+      if (md.isEmpty) return;
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: MarkdownBody(
+          data: md,
+          selectable: false,
+          styleSheet: MarkdownStyleSheet(
+            p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
+            strong: TextStyle(
+              fontSize: 13.5,
+              fontWeight: FontWeight.w700,
+              color: dark ? const Color(0xFF00E5FF) : kGreen,
+            ),
+            em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
+            listBullet: TextStyle(fontSize: 13.5, color: textColor),
+            h2: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF38BDF8),
+              letterSpacing: 0.1,
+              height: 1.3,
+            ),
+            h3: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: dark ? const Color(0xFF00E5FF) : kGreen,
+              height: 1.3,
+            ),
+            blockquote: TextStyle(fontSize: 13, color: textColor.withValues(alpha: 0.8)),
+            horizontalRuleDecoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: dark ? Colors.white12 : Colors.black12,
+                  width: 1,
+                ),
+              ),
+            ),
+            blockSpacing: 6,
+            listIndent: 18,
+          ),
+          softLineBreak: true,
+        ),
+      ));
+    }
+
+    for (final line in bodyLines) {
+      final trimmed = line.trim();
+
+      // ── 🟥 header — cyan 4px bar ─────────────────────────────────────────
+      if (trimmed.startsWith('🟥')) {
+        flushMd();
+        final label = trimmed
+            .replaceFirst('🟥', '')
+            .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
+            .trim();
+        widgets.add(Padding(
+          padding: const EdgeInsets.only(bottom: 6, top: 8),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: 4,
+                  decoration: BoxDecoration(
+                    color: kGreenLight,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 3),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.medication_rounded, size: 14,
+                          color: Color(0xFF00E5FF)),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(
+                        label.isEmpty ? trimmed : label,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: dark ? const Color(0xFF00E5FF) : kGreen,
+                          height: 1.3,
+                        ),
+                      )),
+                    ],
+                  ),
+                )),
+              ],
+            ),
+          ),
+        ));
+        continue;
+      }
+
+      // ── ⛔ / HARD STOP — amber or red 4px bar ───────────────────────────
+      if (trimmed.startsWith('⛔') || _isHardStop(line)) {
+        flushMd();
+        final isHs = _isHardStop(line);
+        final barColor = isHs ? kRed : kAmber;
+        final labelColor = isHs
+            ? (dark ? const Color(0xFFFF8080) : kRed)
+            : (dark ? const Color(0xFFFFD580) : kAmber);
+        final label = trimmed
+            .replaceAll(RegExp(r'\*\*HARD.STOP[:\s]*', caseSensitive: false), '')
+            .replaceFirst('⛔', '')
+            .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
+            .trim();
+        widgets.add(Padding(
+          padding: const EdgeInsets.only(bottom: 4, top: 6),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: 4,
+                  decoration: BoxDecoration(
+                    color: barColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 3),
+                  child: Text(
+                    label.isEmpty ? trimmed : label,
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w600,
+                      color: labelColor,
+                      height: 1.45,
+                    ),
+                  ),
+                )),
+              ],
+            ),
+          ),
+        ));
+        continue;
+      }
+
+      // ── Tudo o mais → acumula no buffer de Markdown ──────────────────────
+      // Linhas em branco viram '\n\n' para separar parágrafos no MD.
+      if (trimmed.isEmpty) {
+        mdBuffer.write('\n\n');
       } else {
-        // Collect reference lines (stop on next section header or hard divider)
-        if (t.isEmpty && refLines.isNotEmpty) {
-          // allow one blank line inside ref block
-          refLines.add(line);
-        } else if (t.startsWith('##') || t.startsWith('🟥') ||
-                   t.startsWith('⛔') || t.startsWith('📌') ||
-                   t.startsWith('🎯') || t.startsWith('🚨') ||
-                   t.startsWith('💊')) {
-          // New clinical section — stop ref block, resume body
-          inRefBlock = false;
-          bodyLines.add(line);
-        } else {
-          refLines.add(line);
-        }
+        mdBuffer.writeln(line);
       }
     }
-    final bool hasRefBlock = refLines.isNotEmpty;
-    final renderLines = bodyLines;
+
+    // Flush qualquer MD restante no buffer
+    flushMd();
 
     return Padding(
       padding: EdgeInsets.only(
         bottom: isLast ? 8 : 4,
-        right: 16, // Build 117: reduced from 48 — no bubble indent needed
+        right: 16,
       ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Renderização linha a linha com hierarquia visual ─────────
-            ...renderLines.map((line) {
-              final trimmed = line.trim();
-              // Build 117: generous empty-line spacing (was height:1)
-              if (trimmed.isEmpty) return const SizedBox(height: 8);
-
-              // ── HARD STOP — barra semântica VERMELHA 4px à esquerda ───
-              // Build 117: remove Container/border → IntrinsicHeight + Row + 4px bar
-              if (_isHardStop(line)) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 6, top: 4),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          width: 4,
-                          decoration: BoxDecoration(
-                            color: kRed,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(Icons.dangerous_rounded, size: 14, color: kRed),
-                              const SizedBox(width: 6),
-                              Expanded(child: _buildInlineText(
-                                trimmed.replaceAll(RegExp(r'\*\*HARD.STOP[:\s]*', caseSensitive: false), '').trim(),
-                                kRed, isBold: true,
-                              )),
-                            ],
-                          ),
-                        )),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              // ── H2 — cabeçalho markdown '## Título' em cyan ──────────
-              // Build 117: fontSize 15→18, fontWeight w700→w800
-              if (_isH2(line)) {
-                final label = line.trim().replaceFirst(RegExp(r'^##\s+'), '');
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 4, top: 10),
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF38BDF8), // cyan oficial
-                      letterSpacing: 0.1,
-                      height: 1.3,
-                    ),
-                  ),
-                );
-              }
-
-              // ── 🟥 Conduta / Prescrição — barra semântica CYAN 4px ───
-              // Build 117: remove Container red bg → 4px cyan left bar
-              // (posologia/condutas → barra azul/cyan conforme design spec)
-              if (trimmed.startsWith('🟥')) {
-                final label = trimmed
-                    .replaceFirst('🟥', '')
-                    .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
-                    .trim();
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 6, top: 4),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          width: 4,
-                          decoration: BoxDecoration(
-                            color: kGreenLight,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(Icons.medication_rounded, size: 14,
-                                  color: Color(0xFF00E5FF)),
-                              const SizedBox(width: 6),
-                              Expanded(child: _buildInlineText(
-                                label.isEmpty ? trimmed : label,
-                                dark ? const Color(0xFF00E5FF) : kGreen,
-                                isBold: true,
-                              )),
-                            ],
-                          ),
-                        )),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              // ── Linha de seção principal — barra semântica 4px full ───
-              // Build 117: upgrade 3px→4px, fontSize 12.5→14, w700→w800
-              if (_isSectionHeader(line)) {
-                final label = trimmed.replaceFirst(RegExp(r'^###?\s*'), '');
-                final Color barColor;
-                final Color labelColor;
-                if (trimmed.startsWith('🚨')) {
-                  barColor   = kRed;
-                  labelColor = dark ? const Color(0xFFFF8080) : kRed;
-                } else if (trimmed.startsWith('⛔')) {
-                  barColor   = kAmber;
-                  labelColor = dark ? const Color(0xFFFFD580) : kAmber;
-                } else if (trimmed.startsWith('📌')) {
-                  barColor   = const Color(0xFF4A90D9);
-                  labelColor = dark ? const Color(0xFF89C4FF) : const Color(0xFF2563EB);
-                } else {
-                  // 💊 e padrão → ConnectMind cyan
-                  barColor   = kGreenLight;
-                  labelColor = dark ? const Color(0xFF00E5FF) : kGreen;
-                }
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 4, top: 10),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          width: 4, // Build 117: 3→4px
-                          decoration: BoxDecoration(
-                            color: barColor,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Text(
-                            label,
-                            style: TextStyle(
-                              fontSize: 14,       // Build 117: 12.5→14
-                              fontWeight: FontWeight.w800, // Build 117: w700→w800
-                              color: labelColor,
-                              letterSpacing: 0.1,
-                              height: 1.3,
-                            ),
-                          ),
-                        )),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              // ── Linha de alerta/atenção — barra semântica ÂMBAR 4px ──
-              // Build 117: remove Container amber bg → 4px amber left bar
-              if (_isWarning(line)) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 4, top: 2),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          width: 4,
-                          decoration: BoxDecoration(
-                            color: kAmber,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          child: _buildInlineText(
-                            trimmed,
-                            dark ? const Color(0xFFFFD580) : kAmber,
-                          ),
-                        )),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              // Linha de referência — texto compacto cinza
-              if (_isReference(line)) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 1, top: 1),
-                  child: Text(
-                    trimmed,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: dark ? Colors.white38 : kRef,
-                      fontStyle: FontStyle.italic,
-                      height: 1.4,
-                    ),
-                  ),
-                );
-              }
-
-              // Item de lista — bullet com indent (suporta '- ', '* ', '• ', '→', '▸', '1. ')
-              if (_isListItem(line)) {
-                // Strip do marcador: remove '- ', '* ', '• ', '→ ', '▸ ', '1. '
-                // Build 115: também remove '*' sem espaço e '* **' (asterisco + negrito)
-                final content = trimmed
-                    .replaceFirst(RegExp(r'^\*\s*(?=\*\*)'), '') // '* **' ou '*  **'
-                    .replaceFirst(RegExp(r'^[-\*•→▸]\s*'), '')   // marcador + espaço opcional
-                    .replaceFirst(RegExp(r'^\d+\.\s+'), '')
-                    .trimLeft();
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 2, left: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 7, right: 7),
-                        child: Container(
-                          width: 5, height: 5,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF38BDF8).withValues(alpha: 0.85),
-                          ),
-                        ),
-                      ),
-                      Expanded(child: _buildInlineText(content, textColor)),
-                    ],
-                  ),
-                );
-              }
-
-              // Texto normal — flui direto sobre o fundo sem container
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 2),
-                child: _buildInlineText(trimmed, textColor),
-              );
-            }),
+            ...widgets,
 
             // ── Build 120: Bloco de Referências Colapsável ────────────────
             if (hasRefBlock)
@@ -3671,73 +3591,72 @@ class _AiBlockBubble extends StatelessWidget {
 
             // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
             if (isLast) ...[
-                const SizedBox(height: 5),
-                Row(children: [
-                  Text(
-                    _fakeTime(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: dark ? Colors.white24 : Colors.black26,
-                    ),
+              const SizedBox(height: 5),
+              Row(children: [
+                Text(
+                  _fakeTime(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: dark ? Colors.white24 : Colors.black26,
                   ),
-                  const Spacer(),
-                  if (onTts != null && ttsReady) ...[
-                    GestureDetector(
-                      onTap: onTts,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
+                ),
+                const Spacer(),
+                if (onTts != null && ttsReady) ...[
+                  GestureDetector(
+                    onTap: onTts,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: ttsPlaying
+                            ? kGreen.withValues(alpha: 0.15)
+                            : Colors.transparent,
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(
+                          ttsPlaying
+                              ? Icons.stop_circle_rounded
+                              : Icons.volume_up_rounded,
+                          size: 13,
                           color: ttsPlaying
-                              ? kGreen.withValues(alpha: 0.15)
-                              : Colors.transparent,
+                              ? kGreen
+                              : (dark ? Colors.white38 : Colors.black38),
                         ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(
-                            ttsPlaying
-                                ? Icons.stop_circle_rounded
-                                : Icons.volume_up_rounded,
-                            size: 13,
+                        const SizedBox(width: 3),
+                        Text(
+                          ttsPlaying
+                              ? (lang == 'es' ? 'Detener' : 'Parar')
+                              : (lang == 'es' ? 'Escuchar' : 'Ouvir'),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
                             color: ttsPlaying
                                 ? kGreen
                                 : (dark ? Colors.white38 : Colors.black38),
                           ),
-                          const SizedBox(width: 3),
-                          Text(
-                            ttsPlaying
-                                ? (lang == 'es' ? 'Detener' : 'Parar')
-                                : (lang == 'es' ? 'Escuchar' : 'Ouvir'),
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: ttsPlaying
-                                  ? kGreen
-                                  : (dark ? Colors.white38 : Colors.black38),
-                            ),
-                          ),
-                        ]),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  if (onCopy != null)
-                    GestureDetector(
-                      onTap: onCopy,
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.copy_rounded, size: 12,
-                          color: dark ? Colors.white24 : Colors.black26),
-                        const SizedBox(width: 3),
-                        Text(lang == 'es' ? 'Copiar' : 'Copiar',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: dark ? Colors.white24 : Colors.black26)),
+                        ),
                       ]),
                     ),
-                ]),
-              ],
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                if (onCopy != null)
+                  GestureDetector(
+                    onTap: onCopy,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.copy_rounded, size: 12,
+                        color: dark ? Colors.white24 : Colors.black26),
+                      const SizedBox(width: 3),
+                      Text(lang == 'es' ? 'Copiar' : 'Copiar',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: dark ? Colors.white24 : Colors.black26)),
+                    ]),
+                  ),
+              ]),
             ],
-          ),
+          ],
         ),
       ),
     );
