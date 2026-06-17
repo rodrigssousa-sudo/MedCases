@@ -1,14 +1,14 @@
 /**
- * MedCases Pro — PWA Service Worker v7.0.0
- * BREAKING CHANGE: cache bumped para forçar evicção total em todos os devices.
+ * MedCases Pro — PWA Service Worker v10.0.0
+ * Build 116: bloco único contínuo, smart scroll, supressão de rótulos de modo, flutter_markdown.
  * Estratégia: network-first para main.dart.js e index.html (sempre frescos)
  *             cache-first para assets estáticos, ícones e fontes.
  */
 
 'use strict';
 
-const SW_VERSION   = '7.0.0';
-const CACHE_APP    = 'medcases-app-v7.0.0';   // ← BUMPED: força limpeza total
+const SW_VERSION   = '27.0.0';
+const CACHE_APP    = 'medcases-app-v27.0.0';  // ← Build 133: Purga artefato zumbi build/web — unifica Web+Mobile no Padrão-Ouro 4 Blocos
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
@@ -69,7 +69,7 @@ self.addEventListener('activate', event => {
     caches.keys()
       .then(keys => Promise.all(
         keys.filter(k => !keep.includes(k)).map(k => {
-          console.log('[SW v7] deletando cache antigo:', k);
+          console.log('[SW v10] deletando cache antigo:', k);
           return caches.delete(k);
         })
       ))

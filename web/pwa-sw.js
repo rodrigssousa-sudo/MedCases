@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '26.0.0';
-const CACHE_APP    = 'medcases-app-v26.0.0';  // ← Build 132: Padrão-Ouro 4 blocos + blindagem 5xx + firewall mutantes
+const SW_VERSION   = '27.0.0';
+const CACHE_APP    = 'medcases-app-v27.0.0';  // ← Build 133: Purga artefato zumbi build/web — unifica Web+Mobile no Padrão-Ouro 4 Blocos
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)

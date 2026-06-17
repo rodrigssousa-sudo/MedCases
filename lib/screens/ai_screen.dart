@@ -694,10 +694,10 @@ class _AiScreenState extends State<AiScreen> {
     // acessar _tts causaria LateInitializationError. Usamos _ttsReady como sentinela.
     if (_ttsReady) {
       _tts.stop();
-      // Limpa handlers para desancorar closures e prevenir callbacks pós-dispose
-      _tts.setCompletionHandler(null);
-      _tts.setCancelHandler(null);
-      _tts.setErrorHandler(null);
+      // Build 133: limpa handlers com no-ops (flutter_tts não aceita null em 3.32+)
+      _tts.setCompletionHandler(() {});
+      _tts.setCancelHandler(() {});
+      _tts.setErrorHandler((_) {});
     }
 
     // ── 4. Dispose de controllers e FocusNode ─────────────────────────────
