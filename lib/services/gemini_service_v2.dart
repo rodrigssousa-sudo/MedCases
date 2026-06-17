@@ -1379,37 +1379,33 @@ class GeminiServiceV2 {
       return true;
     }
 
-    // ── Build 100: padrões de CoT adicionais capturados em produção ──────────
-    // Variantes não cobertas pela regex anterior — encontradas em TestFlight
-    if (lower.contains('el usuario ha indicado')) return true;
+    // ── Build 126: padrões de CoT — calibração conservadora ─────────────────
+    // Build 126 REMOVE os seguintes padrões por causarem falsos-positivos críticos:
+    //   'vou responder'    → "Vou responder ao seu caso de IAM com..."  (LEGÍTIMO)
+    //   'voy a responder'  → "Voy a responder sobre el IAM..."          (LEGÍTIMO)
+    //   'conforme solicitado' → texto clínico normal                    (LEGÍTIMO)
+    //   'según lo solicitado' → idem                                    (LEGÍTIMO)
+    //   'a consulta é sobre' / 'la consulta es sobre' → intro legítima  (LEGÍTIMO)
+    //   'para responder a esta' / 'para responder esta' → clínico       (LEGÍTIMO)
+    //   'a pergunta do usuário' → pode ser em resposta educativa        (LEGÍTIMO)
+    //
+    // Mantidos apenas os inequívocos e longos (só aparecem em CoT real):
+    if (lower.contains('el usuario ha indicado que')) return true;
     if (lower.contains('el usuario ha proporcionado')) return true;
-    if (lower.contains('el usuario ha solicitado')) return true;
-    if (lower.contains('o usuário informou')) return true;
-    if (lower.contains('o usuário forneceu')) return true;
-    if (lower.contains('o usuário indicou')) return true;
-    if (lower.contains('a consulta é sobre')) return true;
-    if (lower.contains('la consulta es sobre')) return true;
-    if (lower.contains('según lo solicitado')) return true;
-    if (lower.contains('conforme solicitado')) return true;
-    if (lower.contains('para responder a esta')) return true;
-    if (lower.contains('para responder esta')) return true;
-    if (lower.contains('vou responder')) return true;
-    if (lower.contains('voy a responder')) return true;
-    if (lower.contains('la pregunta del usuario')) return true;
-    if (lower.contains('a pergunta do usuário')) return true;
-    if (lower.contains('a pergunta do usuario')) return true;
+    if (lower.contains('el usuario ha solicitado que')) return true;
+    if (lower.contains('o usuário informou que')) return true;
+    if (lower.contains('o usuário forneceu os seguintes')) return true;
+    if (lower.contains('o usuário indicou que')) return true;
 
-    // Padrão meta-comentário: "El usuario solicita/proporciona/pregunta..."
-    // como sentença de abertura (primeiros 120 chars do chunk)
-    final head = lower.length > 120 ? lower.substring(0, 120) : lower;
+    // Padrão meta-comentário: SOMENTE quando a sentença ABRE com "El usuario solicita..."
+    // (primeiros 80 chars do chunk — não aplica se é meio de uma resposta)
+    final head = lower.length > 80 ? lower.substring(0, 80) : lower;
     if (RegExp(
       r'^\s*(?:el\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado|proporcionado|solicitado))'
       r'|o\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|informou|forneceu)'
       r'|the\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
       r'|baseado\s+(?:no|na)\s+(?:contexto|conversa)'
-      r'|basado\s+en\s+(?:el\s+contexto|la\s+conversaci)'
-      r'|vou\s+(?:responder|elaborar|fornecer|apresentar|descrever)'
-      r'|voy\s+a\s+(?:responder|elaborar|proporcionar|presentar|describir))',
+      r'|basado\s+en\s+(?:el\s+contexto|la\s+conversaci))',
       caseSensitive: false,
     ).hasMatch(head)) {
       return true;

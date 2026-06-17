@@ -2544,80 +2544,95 @@ class _UserBubble extends StatelessWidget {
 // começam com esses padrões, preservando o restante do texto médico.
 // A _cleanAiText() (CAMADA 2) faz a limpeza profunda na renderização.
 // ─────────────────────────────────────────────────────────────────────────────
+// ── Build 126: STRIP POLICY — NON-DESTRUCTIVE, PREFIX-ANCHORED ONLY ─────────
+//
+// REGRA MESTRA: Nenhum filtro pode usar `.*` (greedy dot-star) no meio de uma
+// linha. Todo match é estritamente ancorado ao INÍCIO da linha (^) ou a um
+// bloco fechado literal (ex: <think>...</think>).
+//
+// Racional: padrões como `^.*Confian[zç]a.*$` destroem linhas clínicas legítimas
+// que CONTÊM a palavra "confiança" (ex: "dose titulada com confiança clínica"),
+// produzindo o artefato "ElEl" relatado em produção.
+//
+// Unique exception: blocos XML fechados <think>...</think> são de estrutura
+// delimitada e inequívoca — remoção segura com dotAll.
+// ─────────────────────────────────────────────────────────────────────────────
 String _stripMetadataHeaders(String accumulated) {
   if (accumulated.isEmpty) return accumulated;
 
   // ── CAMADA 0 — Build 117: filtro <think>...</think> e tags órfãs ─────────
-  // Remove blocos completos <think>...</think> (reasoning models como DeepSeek)
-  // e tags órfãs <think> / </think> que possam vazar no início do stream.
+  // Bloco delimitado inequívoco — seguro remover com dotAll.
   accumulated = accumulated.replaceAll(
     RegExp(r'<think>.*?</think>', caseSensitive: false, dotAll: true), '');
   accumulated = accumulated.replaceAll(
     RegExp(r'</?think[^>]*>', caseSensitive: false), '');
 
-  // ── CAMADA 1a v6.0 — catch-all bilíngue (Build 96) ─────────────────────
+  // ── CAMADA 1a v7.0 (Build 126) — PREFIX-ANCHORED, SEM GREEDY ────────────
   //
-  // REGRA PRINCIPAL: qualquer linha que CONTENHA "Confian" + "Clínica/Clinica"
-  // (independente de posição, prefixos pipe/espaço, idioma ou pontuação).
-  // Exemplos reais capturados em produção (junho 2026):
-  //   "Confianza Clínica: Alta — El usuario solicita..."
-  //   "| Confiança Clínica: Alta — O usuário solicita..."
-  //   "Confiança Clínica Alta"          ← sem dois-pontos
-  //   "**Confianza Clínica**: Alta"     ← com markdown
-  //   "Nivel de Confianza Clínica: ..."
+  // MUDANÇA CRÍTICA: substituímos `^.*Confian....*$` por matches de PREFIXO
+  // que só disparam quando a linha COMEÇA com o metadado.
+  // Uma linha como "IAM — dose com confiança clínica alta" NÃO é removida.
+  // Uma linha como "Confianza Clínica: Alta — El usuario..." É removida.
   //
-  // Regex 1: linha inteira com Confian[za|ça] ... Clínica em qualquer posição
+  // Padrões capturados (linha começa com):
+  //   "Confianza Clínica: ..."  / "Confiança Clínica: ..."
+  //   "| Confianza Clínica: ..." (com pipe de tabela)
+  //   "Nivel de Confianza: ..."  / "Nível de Confiança: ..."
+  //   "El usuario solicita/proporciona/pregunta..." (abertura em 3ª pessoa)
+  //   "O usuário solicita/fornece/pergunta..." (idem PT)
+  //   "The user is asking / asks / wants / requests..."
+  //   "Let me think/analyze..."  / "I'll provide/address..."
+  //   "Okay, so / First, I..."
+  //   "El médico solicita/pregunta..." / "O médico solicita/pergunta..."
+  //   "Para proporcionar una respuesta..." / "Para fornecer uma resposta..."
+  //   "La base de datos local no contiene..." / "A base de dados local não possui..."
+  //   "Por lo tanto, la mejor..." / "Portanto, a melhor abordagem..."
+  //   "El/La prompt es vago/incompleto..." / "O prompt é vago/incompleto..."
+  //   "A continuación presento..." / "A seguir apresentarei..."
+  //   "Baseado no contexto..." / "Basado en el contexto..."
+  //   "Vou estruturar/organizar/responder..." / "Preciso analisar..."
+  //   "Analisando o caso..." / "Pensando sobre isso..."
+  //   "Motivo: ..." / "Motivos: ..." / "Motivo (...): ..."
+  //   "Motivo del modo: ..." / "Motivo del activación: ..."
   String result = accumulated.replaceAll(
     RegExp(
-      r'^.*Confian[zç]a\s*(?:Cl[íi]nica)?.*$',
-      caseSensitive: false,
-      multiLine: true,
-    ),
-    '',
-  );
-
-  // Regex 2: padrões complementares de abertura de linha (3ª pessoa / metadados)
-  // Build 112: expandido com padrões de "thinking aloud" em inglês que vazam
-  // quando o modelo copia tom enciclopédico de textos RAG injetados.
-  result = result.replaceAll(
-    RegExp(
-      r'^[|\s]*(?:'
-      r'Cl[íi]nica\s*[:–—]'
+      r'^[|\s*]*(?:'                                                          // prefixo: pipe, espaço, asterisco
+      r'Confian[zç]a\s*(?:Cl[íi]nica)?\s*(?:[:–—]|Alta|M[eé]dia|Baixa)'    // "Confianza Clínica: Alta"
+      r'|Confianza\s+Clinica\s*[:\s]'                                        // sem acento
+      r'|Confianca\s+Clinica\s*[:\s]'                                        // PT sem acento
       r'|Clinical\s+Confidence\s*:'
       r'|Nivel\s+de\s+Confianza\s*:'
       r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
-      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado)|solicit[oó])'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado|proporcionado|solicitado)|solicit[oó])'
       r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[aá]\s+perguntando)'
       r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
       r'|The\s+(?:doctor|physician|clinician)\s+(?:is\s+asking|asks|wants|requests)'
       r'|Let\s+me\s+(?:think|analyze|structure|break|consider|address|provide|help)'
       r"|I(?:'ll|'m|\s+will|\s+should|\s+need\s+to|\s+can)\s+(?:provide|address|help|structure|analyze|respond|answer|focus)"
-      r'|Okay[,.]?\s+(?:so|the|I|let|this)'
-      r'|First[,.]?\s+(?:I|let|the|this)'
-      r'|Looking\s+at\s+(?:the|this)'
-      r'|Based\s+on\s+(?:the|this|my)'
+      r'|Okay[,.]?\s+(?:so|the|I|let|this)\s'
+      r'|First[,.]?\s+(?:I|let|the|this)\s'
+      r'|Looking\s+at\s+(?:the|this)\s'
+      r'|Based\s+on\s+(?:the|this|my)\s'
       r'|El\s+m[eé]dico\s+(?:solicita|pregunta|pide|quiere|ha\s+(?:pedido|indicado))'
       r'|O\s+m[eé]dico\s+(?:solicita|pergunta|pede|quer|solicitou)'
       r'|Para\s+proporcionar\s+una\s+respuesta'
       r'|Para\s+fornecer\s+uma\s+resposta'
-      r'|La\s+base\s+de\s+datos\s+(?:local\s+)?(?:no\s+)?(?:contiene|tiene|posee)'
+      r'|La\s+base\s+de\s+datos\s+(?:local\s+)?no\s+(?:contiene|tiene|posee)'
       r'|A\s+base\s+de\s+dados\s+(?:local\s+)?n[aã]o\s+(?:possui|cont[eé]m|tem)'
       r'|Por\s+lo\s+tanto,\s+(?:la\s+mejor|el\s+mejor)'
       r'|Portanto,\s+a\s+melhor\s+abordagem'
       r'|(?:El|La)\s+prompt\s+(?:es|parece)\s+(?:vago|incompleto|ambiguo)'
-      r'|O\s+prompt\s+(?:é|parece)\s+(?:vago|incompleto|ambiguo)'
+      r'|O\s+prompt\s+(?:[eé]|parece)\s+(?:vago|incompleto|ambiguo)'
       r'|A\s+continuaci[oó]n\s+(?:presento|presentar[eé]|describir[eé])'
-      r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento)'
-      r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicita|que\s+(?:o|foi))'
+      r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento|fornecerei)'
+      r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicitac|que\s+(?:o\s+usu|foi))'
       r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud|lo\s+que)'
-      r'|Vou\s+(?:estruturar|organizar|responder|formatar|abordar|analisar)'
-      r'|Preciso\s+(?:analisar|considerar|estruturar|organizar|fornecer)'
+      r'|Vou\s+(?:estruturar|organizar|formatar|abordar|analisar)\s'
+      r'|Preciso\s+(?:analisar|considerar|estruturar|organizar|fornecer)\s'
       r'|Analisando\s+(?:o|a|os|as|esta|este|esse)\s+(?:caso|consulta|pedido|pergunta)'
       r'|Pensando\s+(?:sobre|em|na|no)\s+(?:isso|esta|este|essa)'
-      r'|Motivos?\s*(?:\([^)]*\))?\s*:'   // "Motivo:" / "Motivos:" / "Motivo (...):" — Build 120
-      r'|Motivo\s+del\s+(?:modo|activaci[oó]n)\s*:'  // "Motivo del modo:" — Build 120
-      r'|Confianza\s+Clinica\s*:'         // sem acento — Build 120
-      r'|Confianca\s+Clinica\s*:'         // PT sem acento — Build 120
+      r'|Motivos?\s*(?:\([^)]*\))?\s*:'
+      r'|Motivo\s+del\s+(?:modo|activaci[oó]n)\s*:'
       r').*$',
       caseSensitive: false,
       multiLine: true,
@@ -2625,21 +2640,20 @@ String _stripMetadataHeaders(String accumulated) {
     '',
   );
 
-  // Build 112: remove linhas que contêm APENAS frases de "thinking"
-  // sem conteúdo clínico (ex: "This is a case of heart failure." sem conduta)
+  // Build 112: remove linhas que COMEÇAM com frases de "thinking"
   result = result.replaceAll(
     RegExp(
-      r'^(?:This\s+is\s+(?:a\s+case|an?\s+(?:urgent|emergency|case))\s+of|'
-      r'Here\s+is\s+(?:the|a|my)\s+(?:response|answer|clinical)|'
-      r'The\s+(?:response|answer|clinical\s+response)\s+(?:below|is|will)|'
-      r'I\s+have\s+(?:analyzed|reviewed|considered|structured)).*$',
+      r'^(?:This\s+is\s+(?:a\s+case|an?\s+(?:urgent|emergency|case))\s+of\s'
+      r'|Here\s+is\s+(?:the|a|my)\s+(?:response|answer|clinical)\s'
+      r'|The\s+(?:response|answer|clinical\s+response)\s+(?:below|is|will)\s'
+      r'|I\s+have\s+(?:analyzed|reviewed|considered|structured)\s).*$',
       caseSensitive: false,
       multiLine: true,
     ),
     '',
   );
 
-  return result.trimLeft(); // Remove linhas em branco iniciais
+  return result.trimLeft();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2700,46 +2714,64 @@ String _cleanAiText(String raw) {
     '',
   );
 
-  // ── 2b. Rótulos de modo interno vazados (Build 116) ──────────────────────
-  // O modelo às vezes vaza rótulos do sistema de controle interno como
-  // "MODO ACTIVO: MODO [A] CONDUCTA DIRECTA" ou "[REVISIÓN INTERNA]".
-  // Estas linhas são pura instrução de sistema — jamais devem aparecer na UI.
+  // ── 2b. Rótulos de modo interno vazados (Build 126 — PREFIX-ANCHORED) ─────
+  // Build 126: cada alternativa agora usa prefixo EXATO de início de linha.
+  // REMOVIDAS as alternativas perigosas: CAMADA\s+\d+.* e CAPA\s+\d+.* pois
+  // produzem falsos-positivos em texto clínico como "CAMADA MUSCULAR CARDÍACA".
+  // Mantidos apenas rótulos do sistema absolutamente inequívocos.
   s = s.replaceAll(
     RegExp(
-      r'^(MODO ACTIVO:?.*|MODO\s+\[.\].*|MODO CONDUCTA.*|MODO CONVERSACIONAL.*|'
-      r'MODO GUARDIA.*|MODO PRESCRI.*|MODO DETALHE.*|MODO PLANTAO.*|'
-      r'CAMADA\s+\d+.*|CAPA\s+\d+.*|'
-      r'\[REVISIÓN INTERNA\].*|\[REVISION_INTERNA\].*|\[REVISAO_INTERNA\].*|'
-      r'VERIFICACAO INTERNA.*|VERIFICACIÓN INTERNA.*|'
-      r'Confianza Clínica:.*|Confiança Clínica:.*|Nivel de Confianza:.*|'
-      r'Confianza Clinica:.*|Confianca Clinica:.*|'
-      r'Motivos?:.*|Motivo \(.*\):.*|Motivo del modo:.*|'
-      r'▶▶▶.*◀◀◀.*|ITEM \d+ —.*DETECTOR.*)',
+      r'^(?:'
+      r'MODO\s+ACTIVO\s*:?'                     // "MODO ACTIVO:" — rótulo interno
+      r'|MODO\s+\[.\]\s+'                        // "MODO [A] ..." — rótulo interno
+      r'|MODO\s+CONDUCTA\s'                      // "MODO CONDUCTA DIRECTA"
+      r'|MODO\s+CONVERSACIONAL\s'                // "MODO CONVERSACIONAL ..."
+      r'|MODO\s+GUARDIA\s'                       // "MODO GUARDIA ..."
+      r'|MODO\s+PLANTAO\s'                       // "MODO PLANTAO ..."
+      r'|\[REVISIÓN\s+INTERNA\]'                 // tag literal colchete
+      r'|\[REVISION_INTERNA\]'
+      r'|\[REVISAO_INTERNA\]'
+      r'|VERIFICACAO\s+INTERNA\s*:'              // "VERIFICACAO INTERNA:"
+      r'|VERIFICACIÓN\s+INTERNA\s*:'
+      r'|Confianza\s+Cl[íi]nica\s*:'            // "Confianza Clínica:"
+      r'|Confian[çc]a\s+Cl[íi]nica\s*:'         // "Confiança Clínica:"
+      r'|Nivel\s+de\s+Confianza\s*:'
+      r'|Confianza\s+Clinica\s*:'                // sem acento
+      r'|Confianca\s+Clinica\s*:'
+      r'|Motivos?\s*(?:\([^)]*\))?\s*:'          // "Motivo:" "Motivos:"
+      r'|Motivo\s+del\s+(?:modo|activaci[oó]n)\s*:'
+      r'|▶▶▶'                                    // marcador interno do selfCheck
+      r').*$',
       caseSensitive: false,
       multiLine: true,
     ),
     '',
   );
 
-  // ── 3. Prefixos de planning/estruturação vazados ──────────────────────────
-  // Padrões comuns de CoT que o modelo deixa escapar:
+  // ── 3. Prefixos de planning/estruturação vazados (Build 126 — TIGHTENED) ──
+  // Build 126: removidos prefixos ambíguos curtos ("I need to", "Let me",
+  // "Para responder", "Deixe-me") que geravam falsos-positivos em texto clínico.
+  // Mantidos apenas os inequívocos e longos.
   final _cotPhrases = RegExp(
-    r"^(My response should|I will structure|I need to|Let me think|I'll organize|"
-    r"I should focus|I'm going to|Para responder|Vou estruturar|Devo focar|"
-    r"Mi respuesta debe|Voy a estructurar|Estructurando|Pensando en|"
-    r"Analizando el caso|Analisando o caso|Antes de responder|Before responding|"
+    r"^(My response should\s|I will structure\s|Let me think\s|I'll organize\s|"
+    r"I should focus on\s|I'm going to\s|Vou estruturar\s|Devo focar\s|"
+    r"Mi respuesta debe\s|Voy a estructurar\s|Estructurando la respuesta|"
+    r"Pensando en la respuesta|Analizando el caso cl[íi]nico|Analisando o caso cl[íi]nico|"
+    r"Antes de responder a\s|Before responding to\s|"
     r"Step \d+:|Paso \d+:|Etapa \d+:|Planning:|Reasoning:|Chain of thought:).*",
     caseSensitive: false,
     multiLine: true,
   );
   s = s.replaceAll(_cotPhrases, '');
 
-  // ── 4. Linhas de meta-comentário sobre o processo de resposta ─────────────
+  // ── 4. Linhas de meta-comentário (Build 126 — removidos "Let me"/"Deixe-me") ──
+  // "Let me" é ambíguo: "Let me clarify the dose..." é texto clínico legítimo.
+  // "Deixe-me ver os critérios de Framingham..." também é legítimo.
+  // Mantidos apenas os padrões mais longos e inequívocos.
   s = s.replaceAll(
     RegExp(
-      r'^(Agora vou|Now I will|I will now|Vou agora|Ahora voy a|'
-      r'Deixe-me|Let me|Permíteme|Deixa eu pensar|'
-      r'Thinking\.\.\.|Analyzing\.\.\.|Processing\.\.\.).*$',
+      r'^(Agora vou\s|Now I will\s|I will now\s|Vou agora\s|Ahora voy a\s|'
+      r'Deixa eu pensar\s|Thinking\.\.\.|Analyzing\.\.\.|Processing\.\.\.).*$',
       caseSensitive: false,
       multiLine: true,
     ),
@@ -2802,36 +2834,30 @@ String _cleanAiText(String raw) {
     '',
   );
 
-  // ── 4b. EXPURGO DE METADADOS — Confianza/Confiança Clínica (CAMADA 2 v6.0, Build 96)
+  // ── 4b. EXPURGO DE METADADOS (Build 126 — PREFIX-ANCHORED, SEM GREEDY) ────
   //
-  // REGRA CATCH-ALL: qualquer linha que CONTENHA "Confian[za|ça]" + "Clínica"
-  // é deletada por completo — independente de posição, prefixo ou pontuação.
-  // Inclui variantes sem dois-pontos, com markdown (**), pipe, espaços extras.
+  // Build 126 FIX CRÍTICO: substituída regex `^.*Confian[zç]a.*$` (catch-all
+  // destrutivo) por match de prefixo exato. A versão anterior apagava linhas
+  // clínicas legítimas que continham "confiança" como parte do texto médico,
+  // gerando o artefato "ElEl" em produção.
+  //
+  // NOVA POLÍTICA: eliminar SOMENTE linhas que COMEÇAM com o metadado.
+  // Uma linha como "IAM — diagnóstico com alta confiança clínica" passa intacta.
   s = s.replaceAll(
     RegExp(
-      r'^.*Confian[zç]a\s*(?:Cl[íi]nica)?.*$',
-      caseSensitive: false,
-      multiLine: true,
-    ),
-    '',
-  );
-
-  // Padrões complementares de metadados internos + 3ª pessoa
-  s = s.replaceAll(
-    RegExp(
-      r'^[|\s]*(?:'
-      r'Confianza\s*[:–—]'
-      r'|Confiança\s*[:–—]'
+      r'^[|\s*]*(?:'
+      r'Confian[zç]a\s*(?:Cl[íi]nica)?\s*(?:[:–—]|Alta|M[eé]dia|Baixa)'    // "Confiança Clínica: Alta"
+      r'|Confianza\s+Clinica\s*[:\s]'
+      r'|Confianca\s+Clinica\s*[:\s]'
       r'|Clinical\s+Confidence\s*:'
       r'|Nivel\s+de\s+Confianza\s*:'
       r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
-      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:indicado|pedido)|solicit[oó])'
+      r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:indicado|pedido|proporcionado|solicitado)|solicit[oó])'
       r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|est[aá]\s+perguntando)'
       r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
-      r'|El\s+usuario\s+ha\s+pedido'
       r'|El\s+m[eé]dico\s+(?:solicita|pregunta|pide|ha\s+pedido)'
       r'|O\s+m[eé]dico\s+(?:solicita|pergunta|pede|solicitou)'
-      r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicita|que\s+(?:o|foi))'
+      r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicitac|que\s+(?:o\s+usu|foi))'
       r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud|lo\s+que)'
       r'|Para\s+proporcionar\s+una\s+respuesta'
       r'|Para\s+fornecer\s+uma\s+resposta'
@@ -2840,13 +2866,11 @@ String _cleanAiText(String raw) {
       r'|Por\s+lo\s+tanto,\s+(?:la\s+mejor|el\s+mejor)'
       r'|Portanto,\s+a\s+melhor\s+abordagem'
       r'|(?:El|La)\s+prompt\s+(?:es|parece)\s+(?:vago|incompleto)'
-      r'|O\s+prompt\s+(?:é|parece)\s+(?:vago|incompleto)'
+      r'|O\s+prompt\s+(?:[eé]|parece)\s+(?:vago|incompleto)'
       r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento)'
       r'|A\s+continuaci[oó]n\s+(?:presento|presentar[eé])'
-      r'|Motivos?\s*(?:\([^)]*\))?\s*:'      // "Motivo:" / "Motivos:" / "Motivo (...):" — Build 120
-      r'|Motivo\s+del\s+(?:modo|activaci[oó]n)\s*:'  // "Motivo del modo:" — Build 120
-      r'|Confianza\s+Clinica\s*:'            // sem acento — Build 120
-      r'|Confianca\s+Clinica\s*:'            // PT sem acento — Build 120
+      r'|Motivos?\s*(?:\([^)]*\))?\s*:'
+      r'|Motivo\s+del\s+(?:modo|activaci[oó]n)\s*:'
       r').*$',
       caseSensitive: false,
       multiLine: true,
