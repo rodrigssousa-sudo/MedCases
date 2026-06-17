@@ -1505,6 +1505,14 @@ class _AiScreenState extends State<AiScreen> {
                       onBlockRevealed: _onBlockRevealed,
                       // Mostra cursor ▌ apenas na bolha que está sendo preenchida
                       isStreaming: _isStreaming && i == _lastAiIndex,
+                      // Build 120 — ActionChip: injeta pergunta no input e dispara send
+                      onChipTap: _isStreaming ? null : (chipText) {
+                        _queryCtrl.text = chipText;
+                        _queryCtrl.selection = TextSelection.fromPosition(
+                          TextPosition(offset: chipText.length),
+                        );
+                        _send(chipText, p);
+                      },
                     ),
                     // Tarjeta de evidencia si el mensaje menciona un fármaco
                     if (detectedEv != null)
@@ -2606,9 +2614,10 @@ String _stripMetadataHeaders(String accumulated) {
       r'|Preciso\s+(?:analisar|considerar|estruturar|organizar|fornecer)'
       r'|Analisando\s+(?:o|a|os|as|esta|este|esse)\s+(?:caso|consulta|pedido|pergunta)'
       r'|Pensando\s+(?:sobre|em|na|no)\s+(?:isso|esta|este|essa)'
-      r'|Motivo\s*(?:\([^)]*\))?\s*:'    // "Motivo:" / "Motivo (...):" — Build 121
-      r'|Confianza\s+Clinica\s*:'         // sem acento — Build 121
-      r'|Confianca\s+Clinica\s*:'         // PT sem acento — Build 121
+      r'|Motivos?\s*(?:\([^)]*\))?\s*:'   // "Motivo:" / "Motivos:" / "Motivo (...):" — Build 120
+      r'|Motivo\s+del\s+(?:modo|activaci[oó]n)\s*:'  // "Motivo del modo:" — Build 120
+      r'|Confianza\s+Clinica\s*:'         // sem acento — Build 120
+      r'|Confianca\s+Clinica\s*:'         // PT sem acento — Build 120
       r').*$',
       caseSensitive: false,
       multiLine: true,
@@ -2704,7 +2713,7 @@ String _cleanAiText(String raw) {
       r'VERIFICACAO INTERNA.*|VERIFICACIÓN INTERNA.*|'
       r'Confianza Clínica:.*|Confiança Clínica:.*|Nivel de Confianza:.*|'
       r'Confianza Clinica:.*|Confianca Clinica:.*|'
-      r'Motivo:.*|Motivo \(.*\):.*|'
+      r'Motivos?:.*|Motivo \(.*\):.*|Motivo del modo:.*|'
       r'▶▶▶.*◀◀◀.*|ITEM \d+ —.*DETECTOR.*)',
       caseSensitive: false,
       multiLine: true,
@@ -2834,9 +2843,10 @@ String _cleanAiText(String raw) {
       r'|O\s+prompt\s+(?:é|parece)\s+(?:vago|incompleto)'
       r'|A\s+seguir\s+(?:apresentarei|descrevo|apresento)'
       r'|A\s+continuaci[oó]n\s+(?:presento|presentar[eé])'
-      r'|Motivo\s*(?:\([^)]*\))?\s*:'       // "Motivo:" / "Motivo (...):" — Build 121
-      r'|Confianza\s+Clinica\s*:'            // sem acento — Build 121
-      r'|Confianca\s+Clinica\s*:'            // PT sem acento — Build 121
+      r'|Motivos?\s*(?:\([^)]*\))?\s*:'      // "Motivo:" / "Motivos:" / "Motivo (...):" — Build 120
+      r'|Motivo\s+del\s+(?:modo|activaci[oó]n)\s*:'  // "Motivo del modo:" — Build 120
+      r'|Confianza\s+Clinica\s*:'            // sem acento — Build 120
+      r'|Confianca\s+Clinica\s*:'            // PT sem acento — Build 120
       r').*$',
       caseSensitive: false,
       multiLine: true,
@@ -3252,6 +3262,8 @@ class _AiBlockBubble extends StatelessWidget {
   final bool ttsPlaying;
   final bool ttsReady;
   final String lang;  // globalLanguageLock — controla textos da UI
+  /// Build 120 — ActionChip: ao clicar, injeta texto no input e dispara _send()
+  final void Function(String chipText)? onChipTap;
 
   const _AiBlockBubble({
     required this.block,
@@ -3262,6 +3274,7 @@ class _AiBlockBubble extends StatelessWidget {
     this.ttsPlaying = false,
     this.ttsReady = false,
     this.lang = 'pt',
+    this.onChipTap,
   });
 
   // ── Detectores de tipo de linha para hierarquia visual hospitalar ────────
@@ -3358,6 +3371,27 @@ class _AiBlockBubble extends StatelessWidget {
     return false;
   }
 
+  // ── Build 120: Detecta pergunta de fechamento clínica ────────────────────
+  // Uma linha é considerada pergunta de fechamento se:
+  //   • começa com '¿' (PT/ES interrogativa direta) OU
+  //   • começa com um dos verbos de convite clínico padrão e termina com '?'
+  // Usado para renderizar como ActionChip interativo em vez de texto plano.
+  static bool _isClosingQuestion(String line) {
+    final t = line.trim();
+    if (t.isEmpty) return false;
+    // Interrogativa espanhola direta
+    if (t.startsWith('¿') && t.endsWith('?')) return true;
+    // Verbos de convite clínico (PT + ES) com '?' no final
+    if (t.endsWith('?') && RegExp(
+      r'^(Deseja|Quer |Prefere|Gostaria|Quieres|¿Deseas|Preferes|Quer ajust|'
+      r'Quer titular|Quer aprofund|Quer revisar|Quer avali|'
+      r'Deseas|Preferes|Queres|Ajustamos|Evaluamos|'
+      r'¿Ajust|¿Eval|¿Quieres)',
+      caseSensitive: false,
+    ).hasMatch(t)) return true;
+    return false;
+  }
+
   // ── Build 122: Separa linhas do bloco de referências (📚) ────────────────
   // Retorna [bodyLines, refLines] pré-separados.
   (List<String>, List<String>) _splitRefLines(List<String> lines) {
@@ -3411,6 +3445,8 @@ class _AiBlockBubble extends StatelessWidget {
     // runs of plain markdown text collected and rendered as MarkdownBody.
     final widgets = <Widget>[];
     final mdBuffer = StringBuffer();
+    // Build 120 — ActionChip: última pergunta de fechamento interceptada
+    String? _chipQuestion;
 
     void flushMd() {
       final md = mdBuffer.toString().trim();
@@ -3557,6 +3593,12 @@ class _AiBlockBubble extends StatelessWidget {
         continue;
       }
 
+      // ── Build 120: intercepta pergunta de fechamento → ActionChip ────────
+      if (_isClosingQuestion(trimmed) && onChipTap != null) {
+        _chipQuestion = trimmed;
+        continue; // não acumula no buffer — será renderizado como chip
+      }
+
       // ── Tudo o mais → acumula no buffer de Markdown ──────────────────────
       // Linhas em branco viram '\n\n' para separar parágrafos no MD.
       if (trimmed.isEmpty) {
@@ -3580,6 +3622,17 @@ class _AiBlockBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ...widgets,
+
+            // ── Build 120: ActionChip da pergunta de fechamento ───────────
+            if (_chipQuestion != null && onChipTap != null) ...[
+              const SizedBox(height: 10),
+              _ClosingQuestionChip(
+                question: _chipQuestion!,
+                dark: dark,
+                onTap: () => onChipTap!(_chipQuestion!),
+              ),
+              const SizedBox(height: 4),
+            ],
 
             // ── Build 120: Bloco de Referências Colapsável ────────────────
             if (hasRefBlock)
@@ -3686,6 +3739,8 @@ class _AiBubble extends StatefulWidget {
   /// true enquanto esta bolha está sendo preenchida por streaming V2
   /// (exibe cursor piscante ▌ após o texto)
   final bool isStreaming;
+  /// Build 120 — ActionChip: dispara _send() com o texto da pergunta de fechamento
+  final void Function(String chipText)? onChipTap;
   const _AiBubble({
     super.key,
     required this.text,
@@ -3699,6 +3754,7 @@ class _AiBubble extends StatefulWidget {
     this.scrollGeneration = 0,
     this.onBlockRevealed,
     this.isStreaming = false,
+    this.onChipTap,
   });
 
   @override
@@ -4016,6 +4072,7 @@ class _AiBubbleState extends State<_AiBubble> {
         ttsPlaying: widget.ttsPlaying,
         ttsReady: widget.ttsReady,
         lang: widget.lang,
+        onChipTap: widget.onChipTap,
       ),
     );
   }
@@ -5326,6 +5383,68 @@ class _ChatHistorySheet extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// _ClosingQuestionChip — Build 120
+// Botão interativo que renderiza a pergunta de fechamento clínica.
+// Ao tocar, injeta o texto no input e dispara _send() automaticamente.
+// Visual: outlined chip com ícone de seta, cor accent do tema.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ClosingQuestionChip extends StatelessWidget {
+  final String question;
+  final bool dark;
+  final VoidCallback onTap;
+
+  const _ClosingQuestionChip({
+    required this.question,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Clean question text — strip leading ¿ or trailing ? for display if very long
+    final display = question.length > 80
+        ? '${question.substring(0, 77)}…'
+        : question;
+
+    final accentColor = dark
+        ? const Color(0xFF38BDF8)   // sky-400
+        : const Color(0xFF0284C7);  // sky-600
+    final borderColor = accentColor.withValues(alpha: 0.35);
+    final bgColor = accentColor.withValues(alpha: dark ? 0.07 : 0.05);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(10, 7, 12, 7),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor, width: 0.8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.send_rounded, size: 12, color: accentColor),
+            const SizedBox(width: 7),
+            Flexible(
+              child: Text(
+                display,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w500,
+                  color: accentColor,
+                  height: 1.35,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // _CollapsibleReferencesBlock — Build 120
 // Chip colapsável para o bloco "📚 REFERENCIAS / REFERÊNCIAS" gerado pela IA.
 // Padrão: chip "📚 Ver Referencias Médicas ▾" (collapsed)
@@ -5481,57 +5600,69 @@ class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
 
-    // Cores
-    final chipBg     = dark ? const Color(0xFF1A2E22) : const Color(0xFFE8F5EE);
-    final chipBorder = dark ? const Color(0xFF2E7D52) : const Color(0xFF81C784);
-    final labelColor = dark ? const Color(0xFF10B981) : const Color(0xFF2E7D52);
+    // Build 120 — Ultra-delicate premium visual
+    // Trigger: zero fill, label + tiny caret only
+    // Expanded: 0.6px hairline border, ghost tint background, 6px rounded
+    final labelColor = dark
+        ? const Color(0xFF34D399)
+        : const Color(0xFF059669);
+    final borderColor = dark
+        ? const Color(0xFF34D399).withValues(alpha: 0.22)
+        : const Color(0xFF059669).withValues(alpha: 0.16);
+    final expandedBg = dark
+        ? const Color(0xFF34D399).withValues(alpha: 0.04)
+        : const Color(0xFF059669).withValues(alpha: 0.025);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Chip colapsável ──────────────────────────────────────────────────
+        // ── Trigger: label flutuante, zero container fill ────────────────────
         GestureDetector(
           onTap: () => setState(() => _expanded = !_expanded),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: chipBg,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: chipBorder, width: 1),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('📊', style: TextStyle(fontSize: 14)),
-                const SizedBox(width: 6),
+                Text('📊',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: labelColor.withValues(alpha: 0.8))),
+                const SizedBox(width: 5),
                 Text(
-                  'EVIDENCIA CIENTÍFICA',
+                  'EVIDÊNCIA CIENTÍFICA',
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w600,
                     color: labelColor,
-                    letterSpacing: 0.5,
+                    letterSpacing: 0.65,
                   ),
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 4),
                 AnimatedRotation(
                   turns: _expanded ? 0.5 : 0.0,
-                  duration: const Duration(milliseconds: 250),
-                  child: Icon(Icons.keyboard_arrow_down_rounded,
-                      size: 18, color: labelColor),
+                  duration: const Duration(milliseconds: 220),
+                  child: Icon(Icons.expand_more_rounded,
+                      size: 14, color: labelColor.withValues(alpha: 0.65)),
                 ),
               ],
             ),
           ),
         ),
 
-        // ── Conteúdo expandido ───────────────────────────────────────────────
+        // ── Conteúdo expandido — hairline border, ghost fill ─────────────────
         AnimatedSize(
-          duration: const Duration(milliseconds: 280),
+          duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
           child: _expanded
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 8),
+              ? Container(
+                  margin: const EdgeInsets.only(top: 2, bottom: 4),
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                  decoration: BoxDecoration(
+                    color: expandedBg,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: borderColor, width: 0.6),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
