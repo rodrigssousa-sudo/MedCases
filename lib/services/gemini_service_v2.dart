@@ -1433,6 +1433,21 @@ class GeminiServiceV2 {
     if (lower.contains('silenciosa')) return true;
     if (lower.contains('rag cross-check')) return true;
 
+    // Build 131 — Firewall anti-preâmbulo: captura frases de raciocínio introdutório
+    // que o modelo ecoa antes de abrir os blocos clínicos visuais.
+    if (lower.contains('sin contexto adicional')) return true;
+    if (lower.contains('sem contexto adicional')) return true;
+    if (lower.contains('activa el protocolo')) return true;
+    if (lower.contains('ativa o protocolo')) return true;
+    if (lower.contains('protocolo de emergencia estándar')) return true;
+    if (lower.contains('protocolo de emergência padrão')) return true;
+    if (lower.contains('acionar emergência')) return true;
+    if (lower.contains('acionar emergencia')) return true;
+    if (lower.contains('llame al samu')) return true;
+    if (lower.contains('ligue para o samu')) return true;
+    if (lower.contains('conf de alta prioridad')) return true;
+    if (lower.contains('conf de alta prioridade')) return true;
+
     // Padrão meta-comentário: SOMENTE quando a sentença ABRE com "El usuario solicita..."
     // (primeiros 80 chars do chunk — não aplica se é meio de uma resposta)
     final head = lower.length > 80 ? lower.substring(0, 80) : lower;
