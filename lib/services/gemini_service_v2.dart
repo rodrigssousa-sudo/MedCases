@@ -987,9 +987,25 @@ class GeminiServiceV2 {
       return;
     } catch (e) {
       // Classifica o tipo de erro de rede para melhor feedback ao usuário.
+      // Build 132 — Blindagem 5xx: Google Gemini pode lançar exceção bruta com
+      // "503"/"500"/"unavailable" no toString() antes de retornar uma resposta HTTP.
+      // Interceptado aqui para exibir o card de suporte offline nativo do app.
+      final errStr = e.toString().toLowerCase();
+      if (errStr.contains('503') ||
+          errStr.contains('500') ||
+          errStr.contains('unavailable') ||
+          errStr.contains('service unavailable') ||
+          errStr.contains('overloaded')) {
+        _log('[GeminiV2] infraestrutura Google instável (5xx raw exception): $e');
+        if (!controller.isClosed) {
+          controller
+            ..add(GeminiChunk.error('http_503'))
+            ..close();
+        }
+        return;
+      }
       // SocketException → perda total de conectividade (Wi-Fi/4G desconectado)
       // Outros → falha de conexão genérica
-      final errStr = e.toString().toLowerCase();
       final isSocket = errStr.contains('socketexception') ||
           errStr.contains('connection refused') ||
           errStr.contains('no address associated') ||
@@ -1447,6 +1463,13 @@ class GeminiServiceV2 {
     if (lower.contains('ligue para o samu')) return true;
     if (lower.contains('conf de alta prioridad')) return true;
     if (lower.contains('conf de alta prioridade')) return true;
+
+    // Build 132 — Firewall anti-preâmbulo mutante: captura novos padrões de
+    // raciocínio introdutório observados em produção (iOS/Web, Gemini Flash-Lite).
+    if (lower.contains('motivo:')) return true;
+    if (lower.contains('sigla médica')) return true;
+    if (lower.contains('sigla medica')) return true;
+    if (lower.contains('protocolo de manejo')) return true;
 
     // Padrão meta-comentário: SOMENTE quando a sentença ABRE com "El usuario solicita..."
     // (primeiros 80 chars do chunk — não aplica se é meio de uma resposta)

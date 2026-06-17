@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '25.0.0';
-const CACHE_APP    = 'medcases-app-v25.0.0';  // ← Build 131: extinção preâmbulos raciocínio + remoção SAMU + firewall streaming
+const SW_VERSION   = '26.0.0';
+const CACHE_APP    = 'medcases-app-v26.0.0';  // ← Build 132: Padrão-Ouro 4 blocos + blindagem 5xx + firewall mutantes
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
