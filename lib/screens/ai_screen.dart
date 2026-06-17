@@ -3480,6 +3480,21 @@ class _AiBlockBubble extends StatelessWidget {
               height: 1.3,
             ),
             blockquote: TextStyle(fontSize: 13, color: textColor.withValues(alpha: 0.8)),
+            // Build 125 — force transparent backgrounds on all block elements
+            // to prevent flutter_markdown from inheriting ThemeData.cardColor
+            // (which is Colors.white in light mode → white card regression)
+            blockquoteDecoration: BoxDecoration(
+              color: Colors.transparent,
+              border: Border(
+                left: BorderSide(
+                  color: dark ? Colors.white24 : Colors.black26,
+                  width: 3,
+                ),
+              ),
+            ),
+            codeblockDecoration: const BoxDecoration(
+              color: Colors.transparent,
+            ),
             horizontalRuleDecoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
@@ -4107,27 +4122,13 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
 
   @override
   Widget build(BuildContext context) {
-    final bg = widget.dark ? const Color(0xFF252930) : Colors.white;
+    // Build 125 — flat indicator: zero bg, zero shadow, flutuates on scaffold
     return Padding(
       padding: const EdgeInsets.only(bottom: 6, right: 52),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(4),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
-              bottomRight: Radius.circular(16),
-            ),
-            color: bg,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: widget.dark ? 0.3 : 0.08),
-                blurRadius: 4, offset: const Offset(0, 1)),
-            ],
-          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
           child: Row(mainAxisSize: MainAxisSize.min,
             children: List.generate(3, (i) {
               return AnimatedBuilder(
