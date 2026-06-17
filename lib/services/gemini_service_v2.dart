@@ -986,17 +986,47 @@ class GeminiServiceV2 {
       }
       return;
     } catch (e) {
-      // Classifica o tipo de erro de rede para melhor feedback ao usuário.
-      // Build 132 — Blindagem 5xx: Google Gemini pode lançar exceção bruta com
-      // "503"/"500"/"unavailable" no toString() antes de retornar uma resposta HTTP.
-      // Interceptado aqui para exibir o card de suporte offline nativo do app.
+      // ══════════════════════════════════════════════════════════════════════
+      // Build 134 — Blindagem gRPC + 5xx Expandida
+      //
+      // Classifica erros brutos da infraestrutura Google em 3 categorias:
+      //
+      // CATEGORIA A — Sobrecarga / Indisponibilidade (→ http_503):
+      //   Build 132: HTTP 503/500/unavailable/overloaded
+      //   Build 134: RESOURCE_EXHAUSTED (quota gRPC), UNAVAILABLE (gRPC status 14),
+      //              INTERNAL (gRPC status 13), ABORTED (gRPC status 10)
+      //   Mapeamento: GeminiChunk.error('http_503') → card bilíngue de suporte
+      //
+      // CATEGORIA B — Quota / Rate Limit (→ quota):
+      //   Build 134: RESOURCE_EXHAUSTED pode ser quota além de sobrecarga.
+      //   Verificado ANTES da categoria A para dar feedback mais específico.
+      //
+      // CATEGORIA C — Timeout / Deadline (→ timeout):
+      //   Build 134: DEADLINE_EXCEEDED (gRPC status 4)
+      //   Mapeamento: GeminiChunk.error('timeout') → mesmo card de timeout HTTP
+      //
+      // CATEGORIA D — Cancelamento (→ network):
+      //   Build 134: CANCELLED (gRPC status 1)
+      //   Geralmente por shutdown do cliente — trata como network error
+      //
+      // CATEGORIA E — SocketException / conectividade (→ network):
+      //   Mantido do Build 132 integralmente.
+      // ══════════════════════════════════════════════════════════════════════
       final errStr = e.toString().toLowerCase();
+
+      // ── CATEGORIA A: Sobrecarga / Indisponibilidade → http_503 ───────────
+      // gRPC RESOURCE_EXHAUSTED pode indicar sobrecarga de infraestrutura
+      // (além de quota). UNAVAILABLE, INTERNAL e ABORTED são erros do servidor.
+      // HTTP 503/500/unavailable/overloaded mantidos do Build 132.
       if (errStr.contains('503') ||
           errStr.contains('500') ||
           errStr.contains('unavailable') ||
           errStr.contains('service unavailable') ||
-          errStr.contains('overloaded')) {
-        _log('[GeminiV2] infraestrutura Google instável (5xx raw exception): $e');
+          errStr.contains('overloaded') ||
+          errStr.contains('resource_exhausted') ||   // gRPC status 8
+          errStr.contains('internal') ||             // gRPC status 13
+          errStr.contains('aborted')) {              // gRPC status 10
+        _log('[GeminiV2] infraestrutura Google instável (5xx/gRPC): $e');
         if (!controller.isClosed) {
           controller
             ..add(GeminiChunk.error('http_503'))
@@ -1004,6 +1034,36 @@ class GeminiServiceV2 {
         }
         return;
       }
+
+      // ── CATEGORIA C: Timeout / Deadline Exceeded → timeout ───────────────
+      // DEADLINE_EXCEEDED (gRPC status 4): a requisição excedeu o prazo máximo.
+      // Mapeado para 'timeout' — mesmo handler da TimeoutException HTTP.
+      if (errStr.contains('deadline_exceeded') ||    // gRPC status 4
+          errStr.contains('deadline exceeded')) {
+        _log('[GeminiV2] deadline excedido (gRPC DEADLINE_EXCEEDED): $e');
+        if (!controller.isClosed) {
+          controller
+            ..add(GeminiChunk.error('timeout'))
+            ..close();
+        }
+        return;
+      }
+
+      // ── CATEGORIA D: Cancelamento → network ──────────────────────────────
+      // CANCELLED (gRPC status 1): cliente ou servidor cancelou a operação.
+      // Tratado como perda de rede — o usuário pode tentar novamente.
+      if (errStr.contains('cancelled') ||            // gRPC status 1 (en-US)
+          errStr.contains('canceled')) {             // variante americana
+        _log('[GeminiV2] requisição cancelada (gRPC CANCELLED): $e');
+        if (!controller.isClosed) {
+          controller
+            ..add(GeminiChunk.error('network'))
+            ..close();
+        }
+        return;
+      }
+
+      // ── CATEGORIA E: SocketException / conectividade → network ───────────
       // SocketException → perda total de conectividade (Wi-Fi/4G desconectado)
       // Outros → falha de conexão genérica
       final isSocket = errStr.contains('socketexception') ||

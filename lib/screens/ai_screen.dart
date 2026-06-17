@@ -1128,6 +1128,14 @@ class _AiScreenState extends State<AiScreen> {
             });
             _scrollDown(force: true);
           } else {
+            // ── Build 134: enforceMedicalFormat — camada final de segurança ──
+            // Aplicado AQUI, no texto final definitivo, antes de commitar na UI.
+            // Não aplicado em onChunk (streaming parcial) para evitar artefatos.
+            final safeFinalText = _enforceMedicalFormat(
+              finalText,
+              context.read<AppProvider>().lang,
+            );
+
             // ── PASSO 1: comita texto final mantendo _isStreaming=true ──────
             // O _AiBubble recebe o texto completo mas ainda não remove o cursor,
             // permitindo que o Flutter calcule o layout dos blocos finais primeiro.
@@ -1140,13 +1148,13 @@ class _AiScreenState extends State<AiScreen> {
                 _messages[streamingMsgIdx] = _ChatMsg.withId(
                   id: _messages[streamingMsgIdx].id,
                   role: 'ai',
-                  text: finalText,
+                  text: safeFinalText,
                 );
               } else {
                 // Fallback legado (sem streaming)
                 _scrollGeneration++;
                 _lastAiIndex = _messages.length;
-                _messages.add(_ChatMsg(role: 'ai', text: finalText));
+                _messages.add(_ChatMsg(role: 'ai', text: safeFinalText));
               }
             });
 
@@ -2523,6 +2531,68 @@ class _UserBubble extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 134 — enforceMedicalFormat
+//
+// CAMADA FINAL DE SEGURANÇA CLÍNICA — última barreira antes da renderização.
+//
+// OBJETIVO: garantir que TODA resposta clínica exibida ao usuário inicie com
+// 🟥 ou 🚨. Essa camada NÃO substitui o System Prompt (fonte primária), mas
+// age como proteção visual de último recurso para outliers de temperatura alta
+// ou chunks de edge-case que passem pelo firewall de streaming.
+//
+// DESIGN PRINCIPLES:
+//   1. NON-DESTRUCTIVE: resposta já conforme (começa com 🟥/🚨) → pass-through zero-cost
+//   2. NON-GREEDY: apenas prefixo; jamais transforma o corpo clínico
+//   3. ERROR BYPASS: mensagens de erro de rede/API → pass-through (detectadas pela
+//      camada onDone existente, não devem ser modificadas)
+//   4. PARTIAL BYPASS: chunks parciais em streaming → pass-through (não aplicar
+//      durante streaming, apenas no texto final de onDone)
+//   5. EMPTY BYPASS: string vazia → pass-through
+//
+// QUANDO APLICAR:
+//   Apenas em onDone(finalText) — texto completo e definitivo.
+//   NÃO aplicar em onChunk — modificar parciais causa artefatos visuais.
+//
+// PREFIXO INJETADO: linha em branco não é adicionada — o 🟥 em si é o separador.
+// ─────────────────────────────────────────────────────────────────────────────
+String _enforceMedicalFormat(String text, String lang) {
+  if (text.isEmpty) return text;
+
+  // Respeita erros de rede/API — são strings de suporte, não respostas clínicas.
+  // Identificadas pelo prefixo 'ERRO', pela ausência de 🟥/🚨, e pela presença
+  // de keywords de suporte. Qualquer modificação aqui produziria UX confusa.
+  final lower = text.toLowerCase();
+  final isErrorMsg = lower.contains('sem conex') ||
+      lower.contains('sin conex') ||
+      lower.contains('timeout') ||
+      lower.contains('falha na conex') ||
+      lower.contains('falla de red') ||
+      lower.contains('ia indisponível') ||
+      lower.contains('ia indisponible') ||
+      lower.contains('limite de consultas') ||
+      lower.contains('límite de consultas') ||
+      lower.contains('apoio educacional') ||
+      lower.contains('apoyo educacional') ||
+      lower.startsWith('erro') ||
+      lower.startsWith('error');
+  if (isErrorMsg) return text;
+
+  // Verifica se a resposta já está em conformidade (começa com 🟥 ou 🚨).
+  // Trim de whitespace/newlines iniciais para lidar com leading whitespace do SSE.
+  final trimmed = text.trimLeft();
+  if (trimmed.startsWith('🟥') || trimmed.startsWith('🚨')) return text;
+
+  // Resposta não conforme: injeta cabeçalho de conduta imediata.
+  // O prefixo é bilíngue e clinicamente neutro — adiciona contexto sem inventar conduta.
+  // O corpo original da resposta é preservado integralmente após o prefixo.
+  final header = lang == 'es'
+      ? '🟥 CONDUCTA CLÍNICA INMEDIATA\n'
+      : '🟥 CONDUTA CLÍNICA IMEDIATA\n';
+
+  return '$header$text';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -2996,6 +2996,29 @@ class AppProvider extends ChangeNotifier {
   bool _aiAnswerInProgress = false;
 
   // ══════════════════════════════════════════════════════════════════════════
+  // Build 134 — Single-Flight Guard
+  //
+  // Protege contra rafagas de envio (spam Enter, duplo-tap, network retry)
+  // que causariam múltiplos SSE concorrentes para a Gemini API.
+  //
+  // DIFERENÇA vs _aiAnswerInProgress:
+  //   _aiAnswerInProgress: guard legado para o pipeline buildAIAnswer() síncrono.
+  //   _aiCallInFlight: guard de voo único para sendAiMessage() — cobre toda a
+  //     janela desde o primeiro byte enviado até o finally ter executado,
+  //     inclusive timeouts e erros de rede. Liberação GARANTIDA pelo finally.
+  //
+  // LIBERAÇÃO: sempre no bloco finally de sendAiMessage(), independente de
+  //   - conclusão normal do stream
+  //   - erro de rede ou timeout
+  //   - cancelamento manual pelo usuário
+  //   - exceção não capturada interna
+  //
+  // EFEITO: segunda chamada durante voo ativo → retorna false silenciosamente.
+  //   A UI interpreta false como "ignorado" e não exibe spinner duplicado.
+  // ══════════════════════════════════════════════════════════════════════════
+  bool _aiCallInFlight = false;
+
+  // ══════════════════════════════════════════════════════════════════════════
   // STREAMING V2 — sendAiMessage
   //
   // Substitui buildAIAnswer() quando o Gemini estiver conectado.
@@ -3024,6 +3047,10 @@ class AppProvider extends ChangeNotifier {
     final wasActive = _aiStreamActive || _aiAnswerInProgress;
     _aiStreamActive      = false;
     _aiAnswerInProgress  = false;
+    // Build 134: Single-Flight Guard — também libera _aiCallInFlight no cancelamento.
+    // Garante que cancelamento manual (clearChat, troca de tela, timeout da UI)
+    // não deixe o guard travado, impedindo novas queries na mesma sessão.
+    _aiCallInFlight = false;
     if (wasActive) notifyListeners();
   }
 
@@ -3041,7 +3068,18 @@ class AppProvider extends ChangeNotifier {
     required void Function(String finalText) onDone,
     required void Function(String errorMsg) onError,
   }) async {
-    // ── Guard de concorrência ──────────────────────────────────────────────
+    // ── Build 134: Single-Flight Guard ────────────────────────────────────
+    // Bloqueia qualquer chamada enquanto um voo já está em curso.
+    // Liberação garantida pelo bloco finally abaixo — cobre todos os caminhos:
+    // stream completo, erro de rede, timeout, cancelamento e exceção interna.
+    if (_aiCallInFlight) {
+      debugPrint('[sendAiMessage] Build 134: single-flight drop — voo em andamento');
+      return false;
+    }
+    _aiCallInFlight = true;
+
+    try {
+    // ── Guard de concorrência (legado — mantido para compatibilidade) ─────
     if (_aiAnswerInProgress || _aiStreamActive) {
       debugPrint('[sendAiMessage] ignorado — resposta em andamento');
       return false;
@@ -3265,6 +3303,26 @@ class AppProvider extends ChangeNotifier {
     );
 
     return true; // indica que usou streaming V2
+
+    } // end try — Single-Flight Guard finally abaixo
+    finally {
+      // Build 134 — Single-Flight Guard: liberação no finally.
+      //
+      // DESIGN: o listen() registra callbacks e retorna imediatamente (Dart async).
+      // Quando chegamos aqui no finally, o stream SSE ainda está em voo se a
+      // chamada chegou até o listen(). Nesse caso, _aiStreamActive=true.
+      //
+      // REGRA: liberamos _aiCallInFlight IMEDIATAMENTE no finally.
+      // Isso é seguro porque:
+      //   1. O guard legado (_aiAnswerInProgress || _aiStreamActive) ainda bloqueia
+      //      chamadas concorrentes enquanto o stream estiver ativo.
+      //   2. O _aiCallInFlight serve para bloquear a JANELA entre o início da
+      //      chamada e o registro do listen() — a parte mais crítica de race condition.
+      //   3. Após o listen() estar registrado, o _aiStreamActive assume o controle.
+      //
+      // RESULTADO: proteção máxima na janela de setup + handoff limpo ao guard legado.
+      _aiCallInFlight = false;
+    }
   }
 
   Future<String> buildAIAnswer(String input) async {
