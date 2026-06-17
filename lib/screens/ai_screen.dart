@@ -5355,9 +5355,7 @@ class _CollapsibleReferencesBlockState
     final dark = widget.dark;
     final isEs = widget.lang == 'es';
 
-    // Paleta neutra — não compete com conteúdo clínico
-    final chipBg     = dark ? const Color(0xFF1E2733) : const Color(0xFFF1F5F9);
-    final chipBorder = dark ? const Color(0xFF334155) : const Color(0xFFCBD5E1);
+    // Flat UI — sem fundo sólido, apenas label sutil
     final labelColor = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
     final textColor  = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
@@ -5369,15 +5367,13 @@ class _CollapsibleReferencesBlockState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Chip colapsável ────────────────────────────────────────────────
+          // ── Chip colapsável — 100% transparente, sem card sólido ──────────
           GestureDetector(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: chipBg,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: chipBorder, width: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -5481,23 +5477,19 @@ class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
 
-    // Cores
-    final chipBg     = dark ? const Color(0xFF1A2E22) : const Color(0xFFE8F5EE);
-    final chipBorder = dark ? const Color(0xFF2E7D52) : const Color(0xFF81C784);
+    // Flat UI — sem fundo sólido, apenas label colorido flutuante
     final labelColor = dark ? const Color(0xFF10B981) : const Color(0xFF2E7D52);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Chip colapsável ──────────────────────────────────────────────────
+        // ── Chip colapsável — 100% transparente ─────────────────────────────
         GestureDetector(
           onTap: () => setState(() => _expanded = !_expanded),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: chipBg,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: chipBorder, width: 1),
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,

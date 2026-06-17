@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '17.0.0';
-const CACHE_APP    = 'medcases-app-v17.0.0';  // ← Build 123: limpeza total de cache
+const SW_VERSION   = '18.0.0';
+const CACHE_APP    = 'medcases-app-v18.0.0';  // ← Build 124: flat UI total + anti-encyclopedia
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
