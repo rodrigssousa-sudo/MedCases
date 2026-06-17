@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '22.0.0';
-const CACHE_APP    = 'medcases-app-v22.0.0';  // ← Build 128: prompt leak fix + pseudocode purge + 5xx firewall
+const SW_VERSION   = '24.0.0';
+const CACHE_APP    = 'medcases-app-v24.0.0';  // ← Build 130: cirurgia mínima 5 vetores prompt leak + firewall streaming
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
