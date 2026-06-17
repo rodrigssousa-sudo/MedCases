@@ -3797,26 +3797,20 @@ class _AiBubbleState extends State<_AiBubble> {
   }
 
   List<String> _computeBlocks(String text) {
-    // Build 114: try-catch defensivo — token SSE cortado no meio não pode
-    // derrubar o paint do browser móvel. Em caso de exceção, retorna o
-    // cache anterior (se existir) ou o texto bruto como bloco único.
+    // Build 123 — DESTRUIÇÃO DO SPLIT:
+    // _splitIntoBlocks() foi removido do pipeline de renderização.
+    // 100% do texto da IA é retornado como UM ÚNICO elemento de lista.
+    // _AiBlockBubble recebe o texto completo e renderiza com MarkdownBody fluido.
+    // ZERO fatiamento. ZERO containers escuros múltiplos. ZERO fallback de blocos.
     try {
-      // Durante streaming: append cursor ▌ ao texto para feedback visual.
-      // O cursor é removido automaticamente quando isStreaming vai para false
-      // (didUpdateWidget regenera os blocos sem o cursor).
       final displayText = widget.isStreaming ? '$text\u258c' : text;
-
-      // Durante streaming: sanitiza markdown parcial ANTES de processar.
-      // Evita exibir asteriscos soltos e marcadores incompletos enquanto a IA digita.
       final safeText = widget.isStreaming
           ? _sanitizePartialMarkdown(displayText)
           : displayText;
-
       final cleaned = _cleanAiText(safeText);
-      return _splitIntoBlocks(cleaned.isEmpty ? safeText.trim() : cleaned);
+      final result = cleaned.isEmpty ? safeText.trim() : cleaned;
+      return result.isEmpty ? [] : [result];
     } catch (_) {
-      // Token malformado ou meio-cortado: recuperação silenciosa.
-      // Preserva o último estado estável da tela — sem crash, sem tela branca.
       if (_cachedBlocks.isNotEmpty) return _cachedBlocks;
       final fallback = text.trim();
       return fallback.isEmpty ? [] : [fallback];
@@ -4000,14 +3994,15 @@ class _AiBubbleState extends State<_AiBubble> {
     // _computeBlocks() ainda roda para: limpeza de CoT, sanitização de markdown
     // parcial, e normalização. Apenas a fragmentação em N containers foi removida.
 
+    // Build 123: _visibleCount não bloqueia mais — sempre exibe se há texto.
+    // (o mecanismo de reveal animado foi mantido para compatibilidade,
+    //  mas com bloco único sempre há exatamente 1 bloco = sem delay.)
     if (_visibleCount == 0) return const SizedBox.shrink();
 
-    // Reconstrói o texto unificado a partir dos blocos pré-processados
-    // (já passou por _cleanAiText, _sanitizePartialMarkdown, filtro de CoT).
-    // Usa \n\n para preservar espaçamento entre seções dentro do container único.
-    final unified = _cachedBlocks.isEmpty
-        ? widget.text.trim()
-        : _cachedBlocks.join('\n\n');
+    // Build 123 — texto único direto: sem join, sem fragmentação.
+    final unified = _cachedBlocks.isNotEmpty
+        ? _cachedBlocks.first
+        : widget.text.trim();
 
     if (unified.isEmpty) return const SizedBox.shrink();
 

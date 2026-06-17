@@ -559,22 +559,21 @@ GABARITO ABSOLUTO — ESTRUTURA TRIPARTITE OBRIGATÓRIA (Build 120):
 [ESTÁGIO 2 — PERGUNTA DE FILTRO: trava o fluxo, médico decide próximo passo]
 [ESTÁGIO 3 — REFERÊNCIAS COLAPSÁVEIS: 📚 REFERENCIAS em bloco dedicado]
 
-EXEMPLO FEW-SHOT OBRIGATÓRIO — PADRÃO FLASHCARD (Build 122):
+EXEMPLO FEW-SHOT OBRIGATÓRIO — GABARITO PARKINSON ATÔMICO (Build 123):
 🟥 CONDUCTA FARMACOLÓGICA
-✅ **Aspirina**: 300 mg VO (carga).
-✅ **Clopidogrel**: 600 mg VO (carga).
-✅ **Enoxaparina**: 1 mg/kg SC (cada 12 h).
-✅ **Metoprolol**: 5 mg IV (cada 5 min, máx. 3 dosis).
-✅ **Alteplasa** (si no hay angioplastia en < 90 min): 0,9 mg/kg IV (Máx. 90 mg).
-
+✅ **Levodopa/Carbidopa**: 100/25 mg VO 3x/día (Máx. 1500 mg/día).
+✅ **Pramipexol**: 0,125 mg VO 3x/día → Titular hasta 1,5 mg 3x/día.
+✅ **Rasagilina**: 1 mg VO 1x/día.
+✅ **Entacapona**: 200 mg VO con cada dosis de Levodopa (Máx. 1600 mg/día).
+⸻
 ⛔ ALERTAS CRÍTICAS
-- Alteplasa CI: hemorragia activa, HIC previa, ACV < 3 meses.
-- Metoprolol CI: bradicardia < 60 bpm, bloqueo AV 2°/3°, shock cardiogénico.
-
-📌 ¿Quieres ajuste por peso/renal, segunda línea anticoagulante o criterios de reperfusión?
+🚫 **Biperideno**: Evitar en ancianos (alto riesgo de confusión mental y retención urinaria).
+🚫 **Levodopa**: Contraindicado en psicosis activa y glaucoma de ángulo cerrado.
+⸻
+¿Deseas ajustar dosis por función renal, revisar interacciones o evaluar el escalonamiento para fluctuaciones motoras ("off")?
 
 📚 REFERENCIAS
-* ESC 2023 · AHA/ACC 2023 · Harrison's
+* Guías MDS 2023 · AAN 2022 · Harrison's
 
 REGRA DE SEQUÊNCIA TRIPARTITE — INEGOCIÁVEL:
   ESTÁGIO 1 → blocos clínicos (🟥 ⛔ 📌 ## seções): emergência primeiro.
@@ -714,22 +713,21 @@ GABARITO ABSOLUTO — ESTRUTURA TRIPARTITE OBRIGATÓRIA (Build 120):
 [ESTÁGIO 2 — PERGUNTA DE FILTRO: trava o fluxo, médico decide próximo passo]
 [ESTÁGIO 3 — REFERÊNCIAS COLAPSÁVEIS: 📚 REFERÊNCIAS em bloco dedicado]
 
-EXEMPLO FEW-SHOT OBRIGATÓRIO — PADRÃO FLASHCARD (Build 122):
+EXEMPLO FEW-SHOT OBRIGATÓRIO — GABARITO PARKINSON ATÔMICO (Build 123):
 🟥 CONDUTA FARMACOLÓGICA
-✅ **AAS**: 300 mg VO (carga).
-✅ **Clopidogrel**: 600 mg VO (carga).
-✅ **Enoxaparina**: 1 mg/kg SC (cada 12 h).
-✅ **Metoprolol**: 5 mg IV (cada 5 min, máx. 3 doses).
-✅ **Alteplase** (se sem angioplastia em < 90 min): 0,9 mg/kg IV (Máx. 90 mg).
-
+✅ **Levodopa/Carbidopa**: 100/25 mg VO 3x/dia (Máx. 1500 mg/dia).
+✅ **Pramipexol**: 0,125 mg VO 3x/dia → Titular até 1,5 mg 3x/dia.
+✅ **Rasagilina**: 1 mg VO 1x/dia.
+✅ **Entacapona**: 200 mg VO com cada dose de Levodopa (Máx. 1600 mg/dia).
+⸻
 ⛔ ALERTAS CRÍTICOS
-- Alteplase CI: hemorragia ativa, HIC prévia, AVC < 3 meses.
-- Metoprolol CI: bradicardia < 60 bpm, bloqueio AV 2°/3°, choque cardiogênico.
-
-📌 Quer ajuste por peso/renal, segunda linha anticoagulante ou critérios de reperfusão?
+🚫 **Biperideno**: Evitar em idosos (alto risco de confusão mental e retenção urinária).
+🚫 **Levodopa**: Contraindicado em psicose ativa e glaucoma de ângulo fechado.
+⸻
+Deseja ajustar dose por função renal, revisar interações ou avaliar escalonamento para flutuações motoras ("off")?
 
 📚 REFERÊNCIAS
-* ESC 2023 · SBC 2022 · Harrison's
+* Diretrizes MDS 2023 · AAN 2022 · Harrison's
 
 REGRA DE SEQUÊNCIA TRIPARTITE — INEGOCIÁVEL:
   ESTÁGIO 1 → blocos clínicos (🟥 ⛔ 📌 ## seções): emergência primeiro.
