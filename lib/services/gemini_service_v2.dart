@@ -212,6 +212,19 @@ class GeminiServiceV2 {
   // ══════════════════════════════════════════════════════════════════════════
   static const _systemPromptPrefix =
 
+      // ── BLOCO -1 — COERÇÃO MÁXIMA FLASHCARD (Build 123) ─────────────────────
+      // Injetado no topo absoluto do system_instruction, antes de qualquer outra
+      // regra. Esta string é lida pelo modelo como instrução de prioridade máxima.
+      'STRICT FLASHCARD PROTOCOL — MAXIMUM PRIORITY (Build 123):\n'
+      'Execute STRICT flashcard protocol. Never write introductions, context, or '
+      'categories like "Agonistas Dopaminérgicos", "Inibidor P2Y12", '
+      '"Betabloqueadores", "IECA", "ARA-II" or any pharmacological class label. '
+      'Start directly with the core drug name and dose. '
+      'If you violate this, the application crashes.\n'
+      'MANDATORY FIRST LINE: 🟥 CONDUCTA FARMACOLÓGICA or 🟥 CONDUTA FARMACOLÓGICA\n'
+      'MANDATORY FORMAT for every drug: ✅ **DrugName**: Dose route (frequency).\n'
+      'ZERO prose. ZERO introductions. ZERO class labels. ZERO "context" sentences.\n\n'
+
       // ── BLOCO 0 — IDIOMA DINÂMICO + ANTI-LEAK + ANTI-TONAL (v7 — Build 112) ──
       // v7: regras matemáticas de tamanho (12 linhas max / 4 por card),
       //     filtro antitonal de memória (proíbe copiar tom enciclopédico de RAG),
@@ -348,20 +361,21 @@ class GeminiServiceV2 {
       '  • PROIBIDO mesclar referências no corpo clínico (inline 📚 inline)\n'
       '  • PROIBIDO omitir este bloco — toda resposta clínica deve ter referências\n'
       '\n'
-      'GABARITO FEW-SHOT FLASHCARD (SCA — fidelidade máxima):\n'
-      '🟥 CONDUTA FARMACOLÓGICA\n'
-      '✅ **AAS**: 300 mg VO (carga).\n'
-      '✅ **Clopidogrel**: 600 mg VO (carga).\n'
-      '✅ **Enoxaparina**: 1 mg/kg SC (cada 12 h).\n'
-      '✅ **Metoprolol**: 5 mg IV (cada 5 min, máx. 3 doses).\n'
+      'GABARITO FEW-SHOT — PARKINSON ATÔMICO (Build 123 — modelo de fidelidade):\n'
+      '🟥 CONDUCTA FARMACOLÓGICA\n'
+      '✅ **Levodopa/Carbidopa**: 100/25 mg VO 3x/día (Máx. 1500 mg/día).\n'
+      '✅ **Pramipexol**: 0,125 mg VO 3x/día → Titular hasta 1,5 mg 3x/día.\n'
+      '✅ **Rasagilina**: 1 mg VO 1x/día.\n'
+      '✅ **Entacapona**: 200 mg VO con cada dosis de Levodopa (Máx. 1600 mg/día).\n'
+      '⸻\n'
+      '⛔ ALERTAS CRÍTICAS\n'
+      '🚫 **Biperideno**: Evitar en ancianos (alto riesgo de confusión mental y retención urinaria).\n'
+      '🚫 **Levodopa**: Contraindicado en psicosis activa y glaucoma de ángulo cerrado.\n'
+      '⸻\n'
+      '¿Deseas ajustar dosis por función renal, revisar interacciones o evaluar el escalonamiento para fluctuaciones motoras ("off")?\n'
       '\n'
-      '⛔ ALERTAS\n'
-      '- Metoprolol CI: bradicardia < 60 bpm, bloqueio AV 2°/3°, choque.\n'
-      '\n'
-      '📌 Quer ajuste por peso/renal, segunda linha ou critérios de reperfusão?\n'
-      '\n'
-      '📚 REFERÊNCIAS\n'
-      '* ESC 2023 · SBC 2022 · Harrison\'s\n'
+      '📚 REFERENCIAS\n'
+      '* Guías MDS 2023 · AAN 2022 · Harrison\'s\n'
       '\n'
       'ORDEM OBRIGATÓRIA: Estágio 1 → Estágio 2 → Estágio 3. NUNCA inverter.\n\n'
 
