@@ -235,11 +235,11 @@ class MedCasesApp extends StatelessWidget {
         : ColorScheme.light(
             primary: const Color(0xFF0F1116),
             secondary: const Color(0xFF10B981),
-            surface: const Color(0xFFFFFDF8),
+            surface: const Color(0xFFFFFFFF),
             onSurface: const Color(0xFF0F1116),
-            surfaceContainerHighest: const Color(0xFFF0EDE6),
+            surfaceContainerHighest: const Color(0xFFF9F9F9),
           ),
-    scaffoldBackgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8),
+    scaffoldBackgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
     cardColor:               dark ? const Color(0xFF252930) : Colors.white,
     dividerColor:            dark ? const Color(0xFF2D3340) : const Color(0xFFE2E6EA),
     // Textos padrão do tema
@@ -1425,7 +1425,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   /// Layout desktop: Row(sidebar | conteúdo) — sem AppHeader (barra superior removida)
   Widget _buildDesktopShell(BuildContext context, bool dark, AppProvider p) {
-    final bg       = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    final bg       = dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
     // Desktop sidebar + content area — usa o bg principal
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
 
@@ -1457,7 +1457,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           // ── Divisor vertical sutil ─────────────────────────────────────────
           Container(
             width: 1,
-            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2), // divisor sutil
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB), // divisor sutil
           ),
 
           // ── Conteúdo principal — sem header, SafeArea apenas no topo ────────
@@ -1493,9 +1493,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   /// Layout mobile/tablet: Scaffold com AppBar no topo + bottom nav
   Widget _buildMobileShell(BuildContext context, bool dark, AppProvider p) {
-    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
     final navBg = dark ? const Color(0xFF0F1116) : Colors.white;
-    final navBorder = dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
+    final navBorder = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
     final isHome   = _tab == 0;
 
@@ -2409,7 +2409,7 @@ class _RxProtoComboState extends State<_RxProtoCombo> {
     final dark = context.select<AppProvider, bool>((p) => p.darkMode);
     // p via read — usado somente para p.t() (só muda quando lang muda)
     final p = context.read<AppProvider>();
-    final bg = dark ? const Color(0xFF121E18) : const Color(0xFFF5F6F8);
+    final bg = dark ? const Color(0xFF121E18) : const Color(0xFFFFFFFF);
     final borderCol = dark ? const Color(0xFF2A3A30) : const Color(0xFFE0E4E8);
 
     return Column(children: [
@@ -5073,7 +5073,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
     final bg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final titleColor = dark ? Colors.white : const Color(0xFF0F1116);
     final subColor = dark ? Colors.white54 : const Color(0xFF6B7280);
-    final borderColor = dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
+    final borderColor = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -5232,10 +5232,10 @@ class _SheetField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fillColor = dark ? const Color(0xFF252930) : const Color(0xFFF5F0E8);
+    final fillColor = dark ? const Color(0xFF252930) : const Color(0xFFF9F9F9);
     final textColor = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
-    final borderColor = dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
+    final borderColor = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
 
     return TextField(
       controller: controller,
@@ -5906,7 +5906,7 @@ void showNotesSheet(BuildContext context) {
         final dark = Theme.of(ctx).brightness == Brightness.dark;
         return Container(
           decoration: BoxDecoration(
-            color: dark ? const Color(0xFF161616) : const Color(0xFFF7F8FA),
+            color: dark ? const Color(0xFF161616) : const Color(0xFFFFFFFF),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(children: [
@@ -6094,7 +6094,7 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    final panelBg   = dark ? const Color(0xFF161616) : const Color(0xFFF7F8FA);
+    final panelBg   = dark ? const Color(0xFF161616) : const Color(0xFFFFFFFF);
     final searchBg  = dark ? const Color(0xFF222222) : Colors.white;
     final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE0E0E0);
     final textCol   = dark ? Colors.white             : const Color(0xFF0F1116);

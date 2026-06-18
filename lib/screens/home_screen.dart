@@ -515,7 +515,7 @@ class _HomeSafeLoadingShell extends StatelessWidget {
     // Detecta dark mode via Brightness do tema — sem ler o AppProvider
     // (que pode estar em estado inválido, por isso chegamos aqui).
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg     = isDark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8);
+    final bg     = isDark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
     final spinnerColor = isDark ? const Color(0xFF10B981) : const Color(0xFF075f45);
 
     return Container(
@@ -2070,7 +2070,7 @@ class _AiBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bubbleBg = dark ? const Color(0xFF161616) : const Color(0xFFF8F9FA);
+    final bubbleBg = dark ? const Color(0xFF161616) : const Color(0xFFF9F9F9);
     final bubbleBorder = isError
         ? Colors.red.withValues(alpha: 0.3)
         : (dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFE2E8F0));
@@ -4964,7 +4964,7 @@ class _PediatricsShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
@@ -4995,7 +4995,7 @@ class _AdultoShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
@@ -5042,7 +5042,7 @@ class _FarmacosShellState extends State<_FarmacosShell> {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
@@ -5106,7 +5106,7 @@ class _CalculadorasShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
@@ -5136,7 +5136,7 @@ class _PrescripcionesShell extends StatelessWidget {
     final isEs = p.lang == 'es';
 
     return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA),
+      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
         _ShellHeader(
           gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],

@@ -323,7 +323,6 @@ class GeminiServiceV2 {
       '⚡ CONTRATO DE TAMANHO — LIMITES MATEMÁTICOS RÍGIDOS (v7):\n'
       '  📏 LIMITE GLOBAL: Toda a resposta = MÁXIMO 12 LINHAS NO TOTAL.\n'
       '  📏 LIMITE POR CARD: Cada bloco (🟥 ⛔ 📌) = MÁXIMO 4 LINHAS.\n'
-      '  📏 LIMITE RODAPÉ: 📚 = EXATAMENTE 1 linha de referências.\n'
       '  ⚠️ Se ultrapassar 12 linhas, CORTE — priorize 🟥 (conduta) sobre tudo.\n\n'
       '🚫 FILTRO ANTITONAL DE MEMÓRIA (v7 — CRÍTICO):\n'
       '  Quando o sistema injetar textos longos de histórico, RAG ou memória interna:\n'
@@ -331,7 +330,7 @@ class GeminiServiceV2 {
       '  ✗ PROIBIDO copiar seções como "Causas e Fatores de Risco", "Fisiopatologia",\n'
       '    "Epidemiologia", "Diagnóstico Diferencial" ou qualquer bloco conceitual.\n'
       '  ✓ OBRIGATÓRIO: filtrar essas informações e reformatá-las no molde cirúrgico\n'
-      '    dos tokens 🟥 ⛔ 📌 📚 com máximo 4 linhas cada.\n'
+      '    dos tokens 🟥 ⛔ 📌 com máximo 4 linhas cada.\n'
       '  ✓ Memória/histórico = matéria-prima para extração de conduta. Nunca copiar.\n\n'
       '🚫 FILTRO ANTI-PROSA CIRÚRGICO (Build 119 — INEGOCIÁVEL):\n'
       'ANTES de gerar qualquer linha de output, verificar se a frase começa com prosa proibida.\n'
@@ -384,12 +383,11 @@ class GeminiServiceV2 {
       '  ✓ NUNCA pedir esclarecimento se o contexto clínico puder ser inferido do histórico.\n'
       '  ✓ Manter o fio de raciocínio clínico da sessão sem resetar o contexto.\n\n'
       '❓ PERGUNTA CLÍNICA DE FECHAMENTO — OBRIGATÓRIA (Build 117):\n'
-      'Toda resposta clínica DEVE terminar com uma pergunta curta e direta APÓS o 📚.\n'
+      'Toda resposta clínica DEVE terminar com uma pergunta curta e direta.\n'
       '  ✓ Instiga o usuário a decidir o próximo passo clínico.\n'
       '  ✓ Exemplos: "Deseja avaliar o ajuste de dose ou discutir os efeitos adversos?"\n'
       '              "Quer aprofundar o escalonamento ou revisar as contraindicações?"\n'
-      '              "¿Deseas evaluar X o discutir Y?"\n'
-      '  ✗ NUNCA terminar a resposta apenas com 📚 sem a pergunta de fechamento.\n\n'
+      '              "¿Deseas evaluar X o discutir Y?"\n\n'
 
       // ── BLOCO 1C — ARQUITETURA TRIPARTITE + GABARITO FLASHCARD (Build 122) ──
       '🏗️ ARQUITETURA TRIPARTITE DE RESPOSTA — GABARITO FLASHCARD (Build 122):\n'
@@ -410,13 +408,6 @@ class GeminiServiceV2 {
       '  • Exemplos: "¿Deseas revisar la titulación o evaluar complicaciones?"\n'
       '              "Deseja ajuste de dose, segunda linha ou monitorização?"\n'
       '\n'
-      'ESTÁGIO 3 — REFERÊNCIAS (bloco final separado, colapsável no app):\n'
-      '  • Cabeçalho EXATO: "📚 REFERENCIAS" (ES) ou "📚 REFERÊNCIAS" (PT)\n'
-      '  • Bullets com fontes: * Harrison · * ESC 2023 · * SBC etc.\n'
-      '  • O app Flutter detecta este cabeçalho e encapsula em chip colapsável\n'
-      '  • PROIBIDO mesclar referências no corpo clínico (inline 📚 inline)\n'
-      '  • PROIBIDO omitir este bloco — toda resposta clínica deve ter referências\n'
-      '\n'
       'GABARITO FEW-SHOT — PARKINSON ATÔMICO (Build 123 — modelo de fidelidade):\n'
       '🟥 CONDUCTA FARMACOLÓGICA\n'
       '✅ **Levodopa/Carbidopa**: 100/25 mg VO 3x/día (Máx. 1500 mg/día).\n'
@@ -430,10 +421,7 @@ class GeminiServiceV2 {
       '⸻\n'
       '¿Deseas ajustar dosis por función renal, revisar interacciones o evaluar el escalonamiento para fluctuaciones motoras ("off")?\n'
       '\n'
-      '📚 REFERENCIAS\n'
-      '* Guías MDS 2023 · AAN 2022 · Harrison\'s\n'
-      '\n'
-      'ORDEM OBRIGATÓRIA: Estágio 1 → Estágio 2 → Estágio 3. NUNCA inverter.\n\n'
+      'ORDEM OBRIGATÓRIA: Estágio 1 → Estágio 2. NUNCA inverter.\n\n'
 
       // ── BLOCO 1B — CONTRATO DE UI / DESIGN SYSTEM DE CARDS (Build 105) ─────
       // CRÍTICO: O app Flutter usa um parser que converte esses tokens em
@@ -458,11 +446,6 @@ class GeminiServiceV2 {
       '     Exemplo: 📌 Quer ajuste por peso/renal ou titulação progressiva?\n'
       '     Use para: perguntas de refinamento, próxima conduta, decisão compartilhada.\n'
       '\n'
-      '  📚 RODAPÉ DE EVIDÊNCIA — Linha final de cada resposta:\n'
-      '     Formato: 📚 Guideline1 · Guideline2 · PubMed · Harrison\n'
-      '     Exemplo: 📚 Harrison · PubMed · Guidelines de Emergência · SBC 2023\n'
-      '     OBRIGATÓRIO: finalizar TODA resposta com esta linha de referências.\n'
-      '\n'
       'REGRA DE SAUDAÇÃO: Se o histórico já contiver mensagens anteriores,\n'
       'NÃO repita "Bom dia", "Olá", "Claro", "Com prazer" — vá direto ao conteúdo clínico.\n\n'
 
@@ -482,8 +465,7 @@ class GeminiServiceV2 {
       '  § 4 — OUTROS PONTOS\n'
       '    Máx. 4 bullets: efeitos adversos relevantes, interações, monitoramento.\n'
       '\n'
-      '  § 5 — RODAPÉ DE EVIDÊNCIA\n'
-      '    📚 Referências base: Harrison · PubMed · [guideline relevante]\n\n'
+      
 
       // ── BLOCO 3 — MATRIZ DE ACRÔNIMOS CRÍTICOS DE PLANTÃO (Build 113) ──────
       // Build 112: adicionado IC = INSUFICIÊNCIA CARDÍACA

@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '29.0.0';
-const CACHE_APP    = 'medcases-app-v29.0.0';  // ← Build 135: Resiliência Ativa — Auto-Retry Backoff+Jitter + Watchdog Mid-Stream + Debounce 300ms + firebase flutter_service_worker no-cache
+const SW_VERSION   = '30.0.0';
+const CACHE_APP    = 'medcases-app-v30.0.0';  // ← Build 136: Visual Light Mode — Pure White Palette + Remove 📚 footer instructions from AI prompts
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
