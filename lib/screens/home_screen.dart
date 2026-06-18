@@ -130,37 +130,16 @@ class _HomeScreenState extends State<HomeScreen> {
     void push(Widget page) => Navigator.of(context).push(_HomeScreenState._slide(page));
 
     // Definição dos cards principais para o grid desktop
-    // Ordem: FÁRMACOS → INTERAÇÕES → SIMULAÇÕES → PEDIATRIA → ADULTO
+    // Build 138: FÁRMACOS/INTERACCIONES removidos como cards independentes.
+    // Nova ordem: ADULTO → PEDIATRIA → BIBLIOTECA → H.CLÍNICA → SIMULAÇÕES
     final mainCards = [
       _HomeCardData(
-        icon: Icons.medication_rounded,
-        label: 'FÁRMACOS',
-        subtitle: isEs
-            ? 'Actualizados en 2026'
-            : 'Atualizados em 2026',
-        gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
-        accentColor: const Color(0xFFFBBF24),
-        onTap: () => push(const _FarmacosShell()),
-      ),
-      _HomeCardData(
-        icon: Icons.compare_arrows_rounded,
-        label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
-        subtitle: isEs
-            ? '+${DrugInteractionService.totalInteractions} pares con evidencia'
-            : '+${DrugInteractionService.totalInteractions} pares com evidência',
-        gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
-        accentColor: const Color(0xFFFF6BA0),
-        onTap: () => push(const DrugInteractionsScreen()),
-      ),
-      _HomeCardData(
-        icon: Icons.description_rounded,
-        label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
-        subtitle: isEs
-            ? '${prescriptionModels(true).length} ejemplos'
-            : '${prescriptionModels(false).length} exemplos',
-        gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
-        accentColor: const Color(0xFFA78BFA),
-        onTap: () => push(const _PrescripcionesShell()),
+        icon: Icons.person_rounded,
+        label: 'ADULTO',
+        subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
+        gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
+        accentColor: const Color(0xFF10B981),
+        onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
       ),
       _HomeCardData(
         icon: Icons.child_care_rounded,
@@ -171,12 +150,30 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () => push(const _PediatricsShell()),
       ),
       _HomeCardData(
-        icon: Icons.person_rounded,
-        label: 'ADULTO',
-        subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
-        gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
-        accentColor: const Color(0xFF10B981),
-        onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
+        icon: Icons.menu_book_rounded,
+        label: 'BIBLIOTECA',
+        subtitle: isEs ? 'Referencias clínicas' : 'Referências clínicas',
+        gradientColors: const [Color(0xFF0F1E3D), Color(0xFF1A3460), Color(0xFF1D4ED8)],
+        accentColor: const Color(0xFF93C5FD),
+        onTap: () => widget.onTabChange(5),
+      ),
+      _HomeCardData(
+        icon: Icons.assignment_ind_outlined,
+        label: 'H. CLÍNICA',
+        subtitle: isEs ? 'Historial del paciente' : 'Histórico do paciente',
+        gradientColors: const [Color(0xFF1F0A2E), Color(0xFF3B1460), Color(0xFF6D28D9)],
+        accentColor: const Color(0xFFC4B5FD),
+        onTap: () => widget.onTabChange(3),
+      ),
+      _HomeCardData(
+        icon: Icons.description_rounded,
+        label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
+        subtitle: isEs
+            ? '${prescriptionModels(true).length} ejemplos'
+            : '${prescriptionModels(false).length} exemplos',
+        gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
+        accentColor: const Color(0xFFA78BFA),
+        onTap: () => push(const _PrescripcionesShell()),
       ),
     ];
 
@@ -201,6 +198,12 @@ class _HomeScreenState extends State<HomeScreen> {
         // ── Timer Rápido de Plantão ───────────────────────────────────────
         _ShiftTimerBar(dark: dark, isEs: isEs),
         const SizedBox(height: 24),
+
+        // ── Build 138: CALCULADORA E FÁRMACOS — card unificado full-width ─
+        if (kIsWeb) ...[
+          _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
+          const SizedBox(height: 16),
+        ],
 
         // ── Grid de cards principais — 3 colunas no desktop ─────────────
         // BUILD 93: apenas Web exibe ferramentas clínicas (Apple 1.4.1)
@@ -341,19 +344,22 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     // ══════════════════════════════════════════════════════════════════════════
-    // BUILD 93 — Apple App Store compliance (Guidelines 1.4.1 & 1.4.2)
+    // BUILD 138 — "Cockpit de Emergência" — Redesign completo da Home Screen
     //
-    // ORDEM ESTRITA DA UI MOBILE:
-    //   1. IA INLINE CHAT  — hero ~40% da área vertical (chat real, streaming)
-    //   2. GRID 1          — FÁRMACOS + INTERACCIONES lado a lado
-    //   3. HISTORIAL CLÍNICO — título de seção + 4 atalhos utilitários
-    //                          NOTAS · RECIENTES · FAVORITOS · EVALUACIÓN
+    // NOVA ORDEM (mobile):
+    //   1. IA INLINE CHAT  — hero (chat real, streaming) — azul MedCases IA
+    //   2. LINHA 1 (full)  — CALCULADORA E FÁRMACOS (card unificado)
+    //   3. LINHA 2         — [ADULTO] + [PEDIATRÍA] lado a lado
+    //   4. LINHA 3         — [BIBLIOTECA] + [H. CLÍNICA] lado a lado
+    //   5. QUICK ACCESS BAR — BUSCAR | NOTAS | RECIENTES | FAVORITOS | EVALUACIÓN
+    //   6. MI GUARDIA      — bloco de gerenciamento de plantão
+    //
+    // REMOVIDOS como blocos independentes (lógica preservada):
+    //   • FÁRMACOS card standalone  → integrado em CALCULADORA E FÁRMACOS (Linha 1)
+    //   • INTERACCIONES card standalone → acessível via BUSCAR / Ferramentas
     //
     // ITENS OCULTOS PARA REVISÃO APPLE (lógica preservada, UI invisível):
     //   • Simulaciones / Simulações  → Apple Guideline 1.4.1
-    //   • Herramientas / Ferramentas → Apple Guideline 1.4.1
-    //   • Pediatría / Pediatria      → oculto até reativação via In-App Browser
-    //   • Adulto                     → oculto até reativação via In-App Browser
     //   • Mi Guardia / Meu Plantão   → Apple Guideline 1.4.2
     //   • Emergências Rápidas        → Apple Guideline 1.4.1
     //
@@ -365,19 +371,12 @@ class _HomeScreenState extends State<HomeScreen> {
       behavior: HitTestBehavior.translucent,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        // Build 103: padding bottom = 24px apenas para espaço visual após o
-        // último card. O Scaffold já reserva automaticamente o espaço do
-        // bottomNavigationBar — não precisamos compensar nada aqui.
-        // (A tentativa de compensar com valores maiores causava scroll desnecessário
-        // e não resolvia o overflow, que era interno ao BottomAppBar — ver main.dart)
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
-          // Build 100+: sem SizedBox de altura fixa. O widget usa mainAxisSize.min
-          // + ListView(shrinkWrap:true, physics:NeverScrollableScrollPhysics).
-          // O chat cresce naturalmente com cada turno, empurrando os blocos
-          // abaixo (FÁRMACOS, INTERACCIONES, MI GUARDIA) para baixo no scroll.
+          // Azul MedCases IA após Build 138. O chat cresce naturalmente com
+          // cada turno, empurrando os cards abaixo no scroll.
           _HomeInlineChat(
             dark: dark,
             isEs: isEs,
@@ -385,46 +384,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
 
-          // ── BLOCO 2: GRID 1 — FÁRMACOS + INTERACCIONES (row horizontal) ─────
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // FÁRMACOS
-              Expanded(
-                child: _HomeCard(
-                  icon: Icons.medication_rounded,
-                  label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
-                  subtitle: isEs ? 'Referencia farmacológica' : 'Referência farmacológica',
-                  gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
-                  accentColor: const Color(0xFFFBBF24),
-                  dark: dark,
-                  onTap: () => Navigator.of(context).push(
-                    _HomeScreenState._slide(const _FarmacosShell()),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              // INTERACCIONES / INTERAÇÕES — referência de pares de interação
-              Expanded(
-                child: _HomeCard(
-                  icon: Icons.compare_arrows_rounded,
-                  label: isEs ? 'INTERACCIONES' : 'INTERAÇÕES',
-                  subtitle: isEs
-                      ? '+${DrugInteractionService.totalInteractions} pares'
-                      : '+${DrugInteractionService.totalInteractions} pares',
-                  gradientColors: const [Color(0xFF3B0A1E), Color(0xFF5E1234), Color(0xFF8B1E4F)],
-                  accentColor: const Color(0xFFFF6BA0),
-                  dark: dark,
-                  onTap: () => Navigator.of(context).push(
-                    _HomeScreenState._slide(const DrugInteractionsScreen()),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
+          _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
           const SizedBox(height: 10),
 
-          // ── BLOCO 3: ADULTO + PEDIATRÍA — navegação para telas clínicas ─────
+          // ── LINHA 2: ADULTO + PEDIATRÍA — dois cards paralelos ──────────────
           _HomeAdultoPediatriaRow(
             dark: dark,
             isEs: isEs,
@@ -437,11 +401,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
 
-          // ── BLOCO 3b: CALCULADORA — card full-width premium ──────────────────
-          _HomeCalculadoraCard(dark: dark, isEs: isEs),
+          // ── LINHA 3: BIBLIOTECA + H. CLÍNICA — dois cards paralelos ─────────
+          _HomeBibliotecaHClinicaRow(
+            dark: dark,
+            isEs: isEs,
+            onTabChange: widget.onTabChange,
+          ),
           const SizedBox(height: 10),
 
-          // ── BLOCO 4: HISTORIAL CLÍNICO — barra de atalhos horizontal ────────
+          // ── QUICK ACCESS BAR — BUSCAR | NOTAS | RECIENTES | FAVORITOS | EVAL ─
           _HistorialCompactCard(
             dark: dark,
             isEs: isEs,
@@ -451,7 +419,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
 
-          // ── BLOCO 5: MI GUARDIA — visível em TODAS as plataformas ──────────────
+          // ── MI GUARDIA — visível em TODAS as plataformas ────────────────────
           _HomeMiGuardiaSection(
             dark: dark,
             isEs: isEs,
@@ -477,10 +445,10 @@ class _HomeScreenState extends State<HomeScreen> {
             _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
           ],
 
-          // ── ITENS OCULTOS PERMANENTEMENTE NO iOS (Apple review) ─────────────
-          // Simulaciones / Herramientas / Adulto / Pediatria standalone:
+          // ── ITENS PRESERVADOS MAS OCULTOS (Apple review) ─────────────────────
+          // Fármacos standalone, Interacciones, Simulaciones, Herramientas:
           // Código e lógica 100% intactos. Apenas removidos da árvore de widgets.
-          // (see: _PrescripcionesShell, _PediatricsShell, _AdultoShell,
+          // (see: _FarmacosShell, DrugInteractionsScreen, _PrescripcionesShell,
           //       _CalculadorasShell, ToolsScreen, _HomeMiGuardiaSection)
         ]),
       ),
@@ -1047,10 +1015,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   final _focus      = FocusNode();
   final _scrollCtrl = ScrollController();
 
-  // ConnectMind AI palette
-  static const _kGreen     = Color(0xFF008CA4);
-  static const _kGreenBg   = Color(0xFF252930);
-  static const _kGreenBord = Color(0xFF00E5FF);
+  // MedCases IA Official Blue palette — Build 138
+  static const _kAiBlue     = Color(0xFF1B6FD8);
+  static const _kAiBlueBg   = Color(0xFF252930);
+  static const _kAiBlueBord = Color(0xFF60A5FA);
 
   // ── Histórico de mensagens (multi-turn inline) ────────────────────────────
   // Cada item: {'role': 'user'|'ai', 'text': '...', 'isError': bool}
@@ -1331,15 +1299,15 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     final isEs  = widget.isEs;
 
     final cardBg      = dark ? const Color(0xFF252930) : Colors.white;
-    final borderColor = dark ? _kGreenBord.withValues(alpha: 0.35) : _kGreenBord.withValues(alpha: 0.22);
-    final fieldBg     = dark ? const Color(0xFF162A1C) : const Color(0xFFF4FAF7);
-    final fieldBorder = dark ? _kGreenBord.withValues(alpha: 0.22) : _kGreenBord.withValues(alpha: 0.18);
+    final borderColor = dark ? _kAiBlueBord.withValues(alpha: 0.35) : _kAiBlueBord.withValues(alpha: 0.22);
+    final fieldBg     = dark ? const Color(0xFF0D1B2E) : const Color(0xFFF0F5FF);
+    final fieldBorder = dark ? _kAiBlueBord.withValues(alpha: 0.22) : _kAiBlueBord.withValues(alpha: 0.18);
     final textColor   = dark ? Colors.white : const Color(0xFF0F1116);
-    final hintColor   = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF7A9E8E);
-    final chipBg      = dark ? const Color(0xFF162A1C) : _kGreen.withValues(alpha: 0.07);
-    final chipBorder  = dark ? _kGreenBord.withValues(alpha: 0.25) : _kGreenBord.withValues(alpha: 0.22);
-    final chipText    = dark ? const Color(0xFF10B981) : _kGreen;
-    final subText     = dark ? Colors.white38 : const Color(0xFF8BA898);
+    final hintColor   = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF6B7280);
+    final chipBg      = dark ? const Color(0xFF0D1B2E) : _kAiBlue.withValues(alpha: 0.07);
+    final chipBorder  = dark ? _kAiBlueBord.withValues(alpha: 0.25) : _kAiBlueBord.withValues(alpha: 0.22);
+    final chipText    = dark ? const Color(0xFF60A5FA) : _kAiBlue;
+    final subText     = dark ? Colors.white38 : const Color(0xFF6B8ABE);
 
     final hasHistory  = _messages.isNotEmpty;
     final hasStream   = _thinking && _streaming.isNotEmpty;
@@ -1401,12 +1369,12 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
                 decoration: BoxDecoration(
-                  color: dark ? const Color(0xFF1A3D28) : const Color(0xFFE6F7EF),
+                  color: dark ? const Color(0xFF0F2340) : const Color(0xFFE8EFFF),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(14), topRight: Radius.circular(14),
                     bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
                   ),
-                  border: Border.all(color: _kGreenBord.withValues(alpha: 0.25)),
+                  border: Border.all(color: _kAiBlueBord.withValues(alpha: 0.25)),
                 ),
                 child: Text(text,
                   style: TextStyle(fontSize: 13, color: textColor, height: 1.45)),
@@ -1441,7 +1409,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.psychology_rounded, size: 32,
-                color: _kGreen.withValues(alpha: 0.25)),
+                color: _kAiBlue.withValues(alpha: 0.25)),
               const SizedBox(height: 8),
               Text(
                 isEs
@@ -1462,10 +1430,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: borderColor, width: 1.2),
         boxShadow: dark
-            ? [BoxShadow(color: _kGreenBg.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))]
+            ? [BoxShadow(color: _kAiBlueBg.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))]
             : [
                 BoxShadow(color: Colors.black.withValues(alpha: 0.07), blurRadius: 16, offset: const Offset(0, 4)),
-                BoxShadow(color: _kGreen.withValues(alpha: 0.06),      blurRadius: 24, offset: const Offset(0, 6)),
+                BoxShadow(color: _kAiBlue.withValues(alpha: 0.06),     blurRadius: 24, offset: const Offset(0, 6)),
               ],
       ),
       child: Padding(
@@ -1487,24 +1455,24 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                   colors: [Color(0xFF252930), Color(0xFF252930), Color(0xFF374151)],
                 ),
                 border: Border.all(
-                  color: Color(0xFF00E5FF).withValues(alpha: 0.22),
+                  color: Color(0xFF60A5FA).withValues(alpha: 0.22),
                   width: 1,
                 ),
               ),
               child: const Center(
                 child: Icon(Icons.psychology_alt_rounded,
-                  size: 20, color: Color(0xFF00E5FF)),
+                  size: 20, color: Color(0xFF60A5FA)),
               ),
             ),
             const SizedBox(width: 10),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Text('MedCases IA',
-                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930))),
+                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: dark ? const Color(0xFF60A5FA) : const Color(0xFF1B6FD8))),
                 const SizedBox(width: 6),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(color: _kGreen, borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(color: _kAiBlue, borderRadius: BorderRadius.circular(20)),
                   child: const Text('CHAT',
                     style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.8)),
                 ),
@@ -1615,8 +1583,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     borderRadius: BorderRadius.circular(28),
                     borderSide: BorderSide(
                       color: dark
-                          ? const Color(0xFF008CA4)
-                          : const Color(0xFF008CA4),
+                          ? const Color(0xFF60A5FA)
+                          : const Color(0xFF1B6FD8),
                       width: 1.5,
                     ),
                   ),
@@ -1637,20 +1605,20 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                           shape: BoxShape.circle,
                           color: _thinking
                               ? (dark
-                                  ? const Color(0xFF162A1C)
-                                  : const Color(0xFFDDEFE6))
+                                  ? const Color(0xFF0D1B2E)
+                                  : const Color(0xFFDDE8F9))
                               : isEmpty
                                   ? (dark
                                       ? Colors.white.withValues(alpha: 0.10)
                                       : Colors.black.withValues(alpha: 0.07))
-                                  : const Color(0xFF008CA4),
+                                  : const Color(0xFF1B6FD8),
                         ),
                         child: _thinking
                             ? const Padding(
                                 padding: EdgeInsets.all(10),
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(_kGreen),
+                                  valueColor: AlwaysStoppedAnimation<Color>(_kAiBlue),
                                 ),
                               )
                             : Icon(
@@ -2808,7 +2776,10 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
                       widget.subtitle,
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: Colors.white.withValues(alpha: 0.60),
+                        // Build 138: dark mode → branco puro para máximo contraste
+                        color: widget.dark
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.75),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -2824,6 +2795,205 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
         ),
       ),
     );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BUILD 138 — CALCULADORA E FÁRMACOS (Linha 1 — card unificado full-width)
+// Substitui os antigos cards independentes de FÁRMACOS e CALCULADORA.
+// Gradiente purple-royal com acesso direto a CalculadoraScreen.
+// Sub-chip de FÁRMACOS permite acesso rápido a _FarmacosShell.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeCalculadoraFarmacosCard extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  const _HomeCalculadoraFarmacosCard({required this.dark, required this.isEs});
+  @override
+  State<_HomeCalculadoraFarmacosCard> createState() => _HomeCalculadoraFarmacosCardState();
+}
+
+class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl  = AnimationController(vsync: this, duration: const Duration(milliseconds: 120));
+    _scale = Tween<double>(begin: 1.0, end: 0.96)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() { _ctrl.dispose(); super.dispose(); }
+
+  void _openCalc() {
+    AppHaptics.light(context);
+    Navigator.of(context, rootNavigator: true).push(
+      _HomeScreenState._slide(const CalculadoraScreen()),
+    );
+  }
+
+  void _openFarmacos() {
+    AppHaptics.light(context);
+    Navigator.of(context).push(
+      _HomeScreenState._slide(const _FarmacosShell()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const gradientColors = [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)];
+    const accentColor = Color(0xFFA78BFA);
+    const farmacosAccent = Color(0xFFFBBF24);
+
+    return GestureDetector(
+      onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
+      onTapUp:     (_) { _ctrl.reverse(); _openCalc(); },
+      onTapCancel: ()  => _ctrl.reverse(),
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end:   Alignment.bottomRight,
+              colors: gradientColors,
+            ),
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: gradientColors.last.withValues(alpha: 0.40),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Linha principal ────────────────────────────────────────────
+              Row(children: [
+                Container(
+                  width: 52, height: 52,
+                  decoration: BoxDecoration(
+                    color: accentColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Icon(Icons.calculate_rounded, size: 26, color: accentColor),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.isEs ? 'CALCULADORA E FÁRMACOS' : 'CALCULADORA E FÁRMACOS',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        widget.isEs
+                            ? 'Cálculos · Fórmulas · Fármacos'
+                            : 'Cálculos · Fórmulas · Fármacos',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: accentColor.withValues(alpha: 0.80),
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right_rounded,
+                    size: 24, color: accentColor.withValues(alpha: 0.65)),
+              ]),
+              // ── Sub-chip FÁRMACOS ─────────────────────────────────────────
+              const SizedBox(height: 12),
+              GestureDetector(
+                onTap: () { _ctrl.reverse(); _openFarmacos(); },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: farmacosAccent.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: farmacosAccent.withValues(alpha: 0.30)),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(Icons.medication_rounded, size: 15, color: farmacosAccent),
+                    const SizedBox(width: 6),
+                    Text(
+                      widget.isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: farmacosAccent,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(Icons.chevron_right_rounded, size: 13, color: farmacosAccent.withValues(alpha: 0.70)),
+                  ]),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BUILD 138 — BIBLIOTECA + H. CLÍNICA (Linha 3 — dois cards paralelos)
+// Biblioteca → tab 5 (LibraryScreen) / H. Clínica → tab 3 (HistoryScreen)
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeBibliotecaHClinicaRow extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final Function(int) onTabChange;
+
+  const _HomeBibliotecaHClinicaRow({
+    required this.dark,
+    required this.isEs,
+    required this.onTabChange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      // ── BIBLIOTECA ────────────────────────────────────────────────────────
+      Expanded(child: _AgeCard(
+        icon: Icons.menu_book_rounded,
+        label: 'BIBLIOTECA',
+        subtitle: isEs ? 'Referencias clínicas' : 'Referências clínicas',
+        gradientColors: const [Color(0xFF0F1E3D), Color(0xFF1A3460), Color(0xFF1D4ED8)],
+        accentColor: const Color(0xFF93C5FD),
+        dark: dark,
+        onTap: () => onTabChange(5),
+      )),
+      const SizedBox(width: 10),
+      // ── H. CLÍNICA ────────────────────────────────────────────────────────
+      Expanded(child: _AgeCard(
+        icon: Icons.assignment_ind_outlined,
+        label: 'H. CLÍNICA',
+        subtitle: isEs ? 'Historial del paciente' : 'Histórico do paciente',
+        gradientColors: const [Color(0xFF1F0A2E), Color(0xFF3B1460), Color(0xFF6D28D9)],
+        accentColor: const Color(0xFFC4B5FD),
+        dark: dark,
+        onTap: () => onTabChange(3),
+      )),
+    ]);
   }
 }
 
@@ -4476,8 +4646,7 @@ class _HomeCardState extends State<_HomeCard>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // FittedBox garante que textos longos (ex: INTERACCIONES)
-                    // nunca quebrem nem overflow — encolhe o fontSize dinamicamente.
+                    // FittedBox garante que textos longos nunca quebrem
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
@@ -4487,7 +4656,8 @@ class _HomeCardState extends State<_HomeCard>
                           fontSize: 13,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.4,
-                          color: widget.accentColor,
+                          // Build 138: dark mode → branco puro para máximo contraste
+                          color: widget.dark ? Colors.white : widget.accentColor,
                         ),
                       ),
                     ),
@@ -4496,7 +4666,10 @@ class _HomeCardState extends State<_HomeCard>
                       widget.subtitle,
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: Colors.white.withValues(alpha: 0.60),
+                        // Build 138: dark mode → branco puro para máximo contraste
+                        color: widget.dark
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.70),
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),

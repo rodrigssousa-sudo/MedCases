@@ -1647,30 +1647,16 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // 0 — INICIO
+                // 0 — HOME
                 _buildNavBtn(
                   0,
                   Icons.home_rounded,
                   p.lang == 'es' ? 'Inicio' : 'Início',
                   dark, p,
                 ),
-                // 3 — HISTÓRIA CLÍNICA
-                _buildNavBtn(
-                  3,
-                  Icons.assignment_ind_outlined,
-                  'H. Clínica',
-                  dark, p,
-                ),
                 // ── Slot central — FAB docked ─────────────────────────────
                 const SizedBox(width: 60),
-                // 5 — BIBLIOTECA
-                _buildNavBtn(
-                  5,
-                  Icons.menu_book_rounded,
-                  'Biblioteca',
-                  dark, p,
-                ),
-                // 4 — FERRAMENTAS
+                // 4 — HERRAMIENTAS
                 _buildNavBtn(
                   4,
                   Icons.calculate_rounded,
@@ -1929,36 +1915,44 @@ class _MobileAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // AppBar: header escuro uniforme em todos os contextos (dark mode)
-    final bg = dark ? const Color(0xFF0F1116) : (isHome ? const Color(0xFF0A7C4E) : const Color(0xFFF0F5F1));
-    final borderCol = dark ? const Color(0xFF2D3340) : (isHome ? const Color(0xFF085E3A) : const Color(0xFFD4E0D8));
+    // Build 138: HOME usa fundo neutro com título MEDCASES PRO centralizado
+    final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
+    final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
+    final iconColor = dark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF0F1116);
+
+    // Build 138 — Hamburger dinâmico:
+    //   Light mode → filled (preenchido, máximo contraste no fundo branco)
+    //   Dark mode  → outline/vazado (borda visível no fundo escuro)
+    final hamburgerBg = dark
+        ? Colors.white.withValues(alpha: 0.08)     // dark = vazado (outline)
+        : const Color(0xFF0F1116);                  // light = filled (preenchido)
+    final hamburgerBorder = dark
+        ? Colors.white.withValues(alpha: 0.18)
+        : Colors.transparent;
+    final hamburgerIconColor = dark
+        ? Colors.white.withValues(alpha: 0.85)
+        : Colors.white;
+
+    // Ícones AI (histórico/etc) — adapta ao novo fundo neutro
     final iconBg = dark
         ? Colors.white.withValues(alpha: 0.08)
-        : (isHome ? Colors.white.withValues(alpha: 0.15) : const Color(0xFF0A7C4E).withValues(alpha: 0.08));
+        : const Color(0xFF0F1116).withValues(alpha: 0.07);
     final iconBorder = dark
         ? Colors.white.withValues(alpha: 0.12)
-        : (isHome ? Colors.white.withValues(alpha: 0.30) : const Color(0xFF0A7C4E).withValues(alpha: 0.20));
-    final iconColor = dark
-        ? Colors.white.withValues(alpha: 0.85)
-        : (isHome ? Colors.white : const Color(0xFF0A7C4E));
+        : const Color(0xFF0F1116).withValues(alpha: 0.12);
 
     // ── AppBar decoration ─────────────────────────────────────────────────────
-    // Dark mode: header escuro uniforme (#0F1116) + sutil glow cyan na HOME.
-    // Light mode: verde médico na HOME, neutro nas demais.
+    // Build 138: fundo neutro (branco/escuro) em todos os modos.
+    // Removido: glow cyan e verde médico na HOME.
     final BoxDecoration barDecoration = BoxDecoration(
       color: bg,
       border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: dark ? 0.40 : 0.12),
-          blurRadius: 8.0,
-          offset: const Offset(0, 3),
+          color: Colors.black.withValues(alpha: dark ? 0.35 : 0.06),
+          blurRadius: 6.0,
+          offset: const Offset(0, 2),
         ),
-        if (dark && isHome)
-          BoxShadow(
-            color: const Color(0xFF00E5FF).withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
       ],
     );
 
@@ -1970,7 +1964,23 @@ class _MobileAppBar extends StatelessWidget {
           height: 48,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // ── Título centralizado (só na HOME) ──────────────────────
+                if (isHome)
+                  Text(
+                    'MEDCASES PRO',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2,
+                      color: dark ? Colors.white : const Color(0xFF0F1116),
+                    ),
+                  ),
+
+                // ── Row com logo + botões ──────────────────────────────────
+                Row(
               children: [
                 // ── Logo / Brand clicável → volta para Home ────────────────
                 GestureDetector(
@@ -2104,6 +2114,7 @@ class _MobileAppBar extends StatelessWidget {
                 ],
 
                 // ── Botão hambúrguer → abre endDrawer ─────────────────────
+                // Build 138: filled (dark bg) no light mode, outline no dark mode
                 GestureDetector(
                   onTap: onMenuTap,
                   child: Container(
@@ -2111,14 +2122,16 @@ class _MobileAppBar extends StatelessWidget {
                     height: 38,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: iconBg,
-                      border: Border.all(color: iconBorder, width: 1),
+                      color: hamburgerBg,
+                      border: Border.all(color: hamburgerBorder, width: 1),
                     ),
-                    child: Icon(Icons.menu_rounded, size: 20, color: iconColor),
+                    child: Icon(Icons.menu_rounded, size: 20, color: hamburgerIconColor),
                   ),
                 ),
               ],
-            ),
+            ), // end inner Row
+              ], // end Stack children
+            ), // end Stack
           ),
         ),
       ),

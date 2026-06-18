@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '31.0.0';
-const CACHE_APP    = 'medcases-app-v31.0.0';  // ← Build 137: Split-View iPad Fix — HomeDashboard 40% + AiScreen 60% on width≥1024px
+const SW_VERSION   = '32.0.0';
+const CACHE_APP    = 'medcases-app-v32.0.0';  // ← Build 138: Cockpit de Emergência — redesign Home + 3-tab nav + MedCases IA Blue + Linha 3 Biblioteca/H.Clínica
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
