@@ -134529,8 +134529,7 @@ l===$&&A.c()
 s=A.j(18)
 r=A.a([new A.aL(0,B.W,B.d.gY(B.PK).j(0.4),B.pX,16)],t.V)
 q=A.l(m,B.aBz,B.i,m,m,new A.h(B.qO.j(0.15),m,m,A.j(14),m,m,B.m),m,52,m,m,m,m,m,52)
-n.a.toString
-p=A.e("CALCULADORA E F\xc1RMACOS",m,m,m,m,m,B.dYV,m,m,m)
+p=A.e(n.a.d?"CALCULADORA Y F\xc1RMACOS":"CALCULADORA E F\xc1RMACOS",m,m,m,m,m,B.dYV,m,m,m)
 o=t.p
 return A.ae(m,A.zp(B.al,A.l(m,A.A(A.a([q,B.eh,A.K(A.B(A.a([p,B.bu,A.e("C\xe1lculos \xb7 F\xf3rmulas \xb7 F\xe1rmacos",m,m,m,m,m,A.n(m,m,B.qO.j(0.8),m,m,m,m,m,m,m,m,11,m,m,B.Y,m,1.3,!0,m,m,m,m,m,m,m,m),m,m,m)],o),B.r,B.aE,B.f),1),A.U(B.dv,B.qO.j(0.65),m,24)],o),B.k,B.e,B.f,m,m),B.i,m,m,new A.h(m,m,m,s,r,B.aGo,B.m),m,m,m,m,B.yO,m,m,1/0),m,l),B.u,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,m,new A.bgK(n),new A.bgL(n,a),new A.bgM(n),m,m,m)}}
 A.bgL.prototype={

@@ -2835,7 +2835,7 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    widget.isEs ? 'CALCULADORA E FÁRMACOS' : 'CALCULADORA E FÁRMACOS',
+                    widget.isEs ? 'CALCULADORA Y FÁRMACOS' : 'CALCULADORA E FÁRMACOS',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
