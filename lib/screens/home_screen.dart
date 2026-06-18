@@ -107,14 +107,18 @@ class _HomeScreenState extends State<HomeScreen> {
       return LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
-          // Desktop: layout em 2 colunas (largura ≥ 1024 px)
-          if (width >= 1024) {
+          // Desktop: layout em 2 colunas — EXCLUSIVO para Web ≥ 1024 px.
+          // Nativo (iOS/Android/iPad): sempre usa _buildMobileLayout, mesmo em
+          // landscape com largura ≥ 1024 px — os cards estão por trás de
+          // guard `if (kIsWeb)` no desktop layout e ficariam invisíveis.
+          // Fix B143: kIsWeb garante que iPad nativo nunca entra aqui.
+          if (width >= 1024 && kIsWeb) {
             // MedBreakpoints.fromWidth para não ler MediaQuery (evita stale)
             final bp = MedBreakpoints.fromWidth(width);
             return _buildDesktopLayout(context, dark, isEs, p, bp);
           }
-          // Mobile / tablet / browser redimensionado — layout nativo
-          return _buildMobileLayout(context, dark, isEs, p);
+          // Mobile / tablet / iPad nativo — layout nativo com max-width no tablet
+          return _buildMobileLayout(context, dark, isEs, p, availableWidth: width);
         },
       );
     } catch (e, st) {
@@ -334,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ── HOME V2 — layout mobile ───────────────────────────────────────────────
-  Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p) {
+  Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p, {double availableWidth = 0}) {
     // ── NULL-SAFETY: valida estado do provider antes de renderizar ────────────
     // Após flutter clean, SharedPreferences pode não ter retornado ainda.
     // Se isLoadingPublic (dados remotos carregando) → mostra skeleton sem crash.
@@ -371,12 +375,21 @@ class _HomeScreenState extends State<HomeScreen> {
     // Versão Web mantém todos os elementos via guard kIsWeb.
     // ══════════════════════════════════════════════════════════════════════════
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      behavior: HitTestBehavior.translucent,
-      child: SingleChildScrollView(
+    // B143 — iPad/tablet nativo em landscape: centraliza o conteúdo com
+    // maxWidth de 800 px para evitar cards muito esticados, mantendo todos
+    // os módulos visíveis (Calculadora, Adulto, Pediatria, etc.).
+    // Em iPhone / tela estreita: availableWidth < 600 → sem restrição.
+    final bool isTabletLandscape = !kIsWeb && availableWidth >= 600;
+    final double contentMaxWidth = isTabletLandscape ? 800.0 : double.infinity;
+
+    Widget mobileContent = SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+        padding: EdgeInsets.fromLTRB(
+          isTabletLandscape ? 20 : 12,
+          8,
+          isTabletLandscape ? 20 : 12,
+          24,
+        ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
@@ -456,7 +469,22 @@ class _HomeScreenState extends State<HomeScreen> {
           // (see: _FarmacosShell, DrugInteractionsScreen, _PrescripcionesShell,
           //       _CalculadorasShell, ToolsScreen, _HomeMiGuardiaSection)
         ]),
-      ),
+      );
+
+    // B143: tablet/iPad nativo em landscape → centraliza com maxWidth 800 px
+    if (isTabletLandscape) {
+      mobileContent = Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: contentMaxWidth),
+          child: mobileContent,
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.translucent,
+      child: mobileContent,
     );
   }
 
