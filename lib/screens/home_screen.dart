@@ -1443,68 +1443,12 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-          // ── Header ────────────────────────────────────────────────────────
-          Row(children: [
-            Container(
-              width: 36, height: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF252930), Color(0xFF252930), Color(0xFF374151)],
-                ),
-                border: Border.all(
-                  color: Color(0xFF60A5FA).withValues(alpha: 0.22),
-                  width: 1,
-                ),
-              ),
-              child: const Center(
-                child: Icon(Icons.psychology_alt_rounded,
-                  size: 20, color: Color(0xFF60A5FA)),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Text('MedCases IA',
-                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, letterSpacing: 0.4, color: dark ? const Color(0xFF60A5FA) : const Color(0xFF1B6FD8))),
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(color: _kAiBlue, borderRadius: BorderRadius.circular(20)),
-                  child: const Text('CHAT',
-                    style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.8)),
-                ),
-              ]),
-              const SizedBox(height: 1),
-              Text(
-                isEs ? 'Conexión Cognitiva Avanzada' : 'Conexão Cognitiva Avançada',
-                style: TextStyle(fontSize: 10, color: subText, height: 1.3),
-              ),
-            ])),
-            // "Ver más" / "Ver mais" + botão × Limpar — aparecem quando há histórico
-            if (hasHistory) ...[
-              GestureDetector(
-                onTap: () => _goToAiTab(null, true),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: chipBg,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: chipBorder),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(isEs ? 'Ver más' : 'Ver mais',
-                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: chipText)),
-                    const SizedBox(width: 3),
-                    Icon(Icons.open_in_new_rounded, size: 10, color: chipText),
-                  ]),
-                ),
-              ),
-              const SizedBox(width: 6),
-              // ── Botão × Limpar: reseta mini-chat ao estado inicial ──────────
-              GestureDetector(
+          // ── B139: Header removido — card limpo com apenas campo de entrada ──
+          // Botão × Limpar (só aparece quando há histórico) — mantido flutuando
+          if (hasHistory)
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
                 onTap: _thinking ? null : () {
                   AppHaptics.light(context);
                   setState(() {
@@ -1535,14 +1479,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                         : const Color(0xFF6B7280)),
                 ),
               ),
-            ],
-          ]),
+            ),
 
           // ── Área de conversa — cresce dinamicamente com as mensagens ──────
-          // shrinkWrap + NeverScrollableScrollPhysics: o ListView não faz
-          // scroll próprio — deixa o SingleChildScrollView externo da Home
-          // gerenciar o scroll, empurrando FÁRMACOS/MI GUARDIA para baixo.
-          const SizedBox(height: 10),
           conversationArea,
 
           const SizedBox(height: 10),
@@ -2846,7 +2785,6 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
   Widget build(BuildContext context) {
     const gradientColors = [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)];
     const accentColor = Color(0xFFA78BFA);
-    const farmacosAccent = Color(0xFFFBBF24);
 
     return GestureDetector(
       onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
@@ -2856,7 +2794,7 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
         scale: _scale,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
@@ -2872,82 +2810,49 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Linha principal ────────────────────────────────────────────
-              Row(children: [
-                Container(
-                  width: 52, height: 52,
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(Icons.calculate_rounded, size: 26, color: accentColor),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.isEs ? 'CALCULADORA E FÁRMACOS' : 'CALCULADORA E FÁRMACOS',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        widget.isEs
-                            ? 'Cálculos · Fórmulas · Fármacos'
-                            : 'Cálculos · Fórmulas · Fármacos',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: accentColor.withValues(alpha: 0.80),
-                          height: 1.3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(Icons.chevron_right_rounded,
-                    size: 24, color: accentColor.withValues(alpha: 0.65)),
-              ]),
-              // ── Sub-chip FÁRMACOS ─────────────────────────────────────────
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: () { _ctrl.reverse(); _openFarmacos(); },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: farmacosAccent.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: farmacosAccent.withValues(alpha: 0.30)),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.medication_rounded, size: 15, color: farmacosAccent),
-                    const SizedBox(width: 6),
-                    Text(
-                      widget.isEs ? 'FÁRMACOS' : 'FÁRMACOS',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: farmacosAccent,
-                        letterSpacing: 0.4,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(Icons.chevron_right_rounded, size: 13, color: farmacosAccent.withValues(alpha: 0.70)),
-                  ]),
-                ),
+          // B139: sub-chip FÁRMACOS removido — card limpo com apenas a linha principal
+          child: Row(children: [
+            Container(
+              width: 52, height: 52,
+              decoration: BoxDecoration(
+                color: accentColor.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(14),
               ),
-            ],
-          ),
+              child: const Icon(Icons.calculate_rounded, size: 26, color: accentColor),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.isEs ? 'CALCULADORA E FÁRMACOS' : 'CALCULADORA E FÁRMACOS',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    widget.isEs
+                        ? 'Cálculos · Fórmulas · Fármacos'
+                        : 'Cálculos · Fórmulas · Fármacos',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: accentColor.withValues(alpha: 0.80),
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded,
+                size: 24, color: accentColor.withValues(alpha: 0.65)),
+          ]),
         ),
       ),
     );

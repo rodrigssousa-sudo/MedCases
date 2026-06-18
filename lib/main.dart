@@ -1637,6 +1637,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         mainAxisSize: MainAxisSize.min,
         children: [
           // ── BottomAppBar: APENAS ícones (48pt fixo, sem SafeArea, sem overflow) ──
+          // B139: borda superior fina em light mode para delimitar visualmente a barra
+          if (!dark)
+            Container(
+              height: 0.5,
+              color: Colors.grey.shade300,
+            ),
           BottomAppBar(
             color: navBg,
             shape: const CircularNotchedRectangle(),
@@ -1969,13 +1975,28 @@ class _MobileAppBar extends StatelessWidget {
               children: [
                 // ── Título centralizado (só na HOME) ──────────────────────
                 if (isHome)
-                  Text(
-                    'MEDCASES PRO',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.2,
-                      color: dark ? Colors.white : const Color(0xFF0F1116),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                            color: dark ? Colors.white : const Color(0xFF0F1116),
+                          ),
+                        ),
+                        const TextSpan(
+                          text: 'PRO',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                            color: Color(0xFFFFD700), // Golden
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
