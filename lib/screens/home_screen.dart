@@ -132,37 +132,42 @@ class _HomeScreenState extends State<HomeScreen> {
     // Definição dos cards principais para o grid desktop
     // Build 138: FÁRMACOS/INTERACCIONES removidos como cards independentes.
     // Nova ordem: ADULTO → PEDIATRIA → BIBLIOTECA → H.CLÍNICA → SIMULAÇÕES
+    // B141: paleta atualizada — mesma dos cards mobile
     final mainCards = [
       _HomeCardData(
         icon: Icons.person_rounded,
         label: 'ADULTO',
         subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
-        gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
-        accentColor: const Color(0xFF10B981),
+        // B141: Emerald Green #059669 → #10b981
+        gradientColors: const [Color(0xFF022c22), Color(0xFF059669), Color(0xFF10b981)],
+        accentColor: const Color(0xFF6ee7b7),
         onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
       ),
       _HomeCardData(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
         subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
-        gradientColors: const [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
-        accentColor: const Color(0xFF93C5FD),
+        // B141: Soft Baby Blue #7dd3fc → #bae6fd
+        gradientColors: const [Color(0xFF0c4a6e), Color(0xFF7dd3fc), Color(0xFFbae6fd)],
+        accentColor: const Color(0xFF1e3a5f),
         onTap: () => push(const _PediatricsShell()),
       ),
       _HomeCardData(
         icon: Icons.menu_book_rounded,
         label: 'BIBLIOTECA',
         subtitle: isEs ? 'Referencias clínicas' : 'Referências clínicas',
-        gradientColors: const [Color(0xFF0F1E3D), Color(0xFF1A3460), Color(0xFF1D4ED8)],
-        accentColor: const Color(0xFF93C5FD),
+        // B141: Elegant Gray #475569 → #64748b
+        gradientColors: const [Color(0xFF1e293b), Color(0xFF475569), Color(0xFF64748b)],
+        accentColor: const Color(0xFFe2e8f0),
         onTap: () => widget.onTabChange(5),
       ),
       _HomeCardData(
         icon: Icons.assignment_ind_outlined,
         label: 'H. CLÍNICA',
         subtitle: isEs ? 'Historial del paciente' : 'Histórico do paciente',
-        gradientColors: const [Color(0xFF1F0A2E), Color(0xFF3B1460), Color(0xFF6D28D9)],
-        accentColor: const Color(0xFFC4B5FD),
+        // B141: Orange Vibrant #ea580c → #fb923c
+        gradientColors: const [Color(0xFF431407), Color(0xFFea580c), Color(0xFFfb923c)],
+        accentColor: const Color(0xFFfed7aa),
         onTap: () => widget.onTabChange(3),
       ),
       _HomeCardData(
@@ -2467,22 +2472,24 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
+      // B141: Emerald Green — #059669 → #10b981
       Expanded(child: _AgeCard(
         icon: Icons.person_rounded,
         label: 'ADULTO',
         subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
-        gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
-        accentColor: const Color(0xFF10B981),
+        gradientColors: const [Color(0xFF022c22), Color(0xFF059669), Color(0xFF10b981)],
+        accentColor: const Color(0xFF6ee7b7),
         dark: dark,
         onTap: onTapAdulto,
       )),
       const SizedBox(width: 10),
+      // B141: Soft Baby Blue — #7dd3fc → #bae6fd
       Expanded(child: _AgeCard(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
         subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
-        gradientColors: const [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
-        accentColor: const Color(0xFF93C5FD),
+        gradientColors: const [Color(0xFF0c4a6e), Color(0xFF7dd3fc), Color(0xFFbae6fd)],
+        accentColor: const Color(0xFF1e3a5f),
         dark: dark,
         onTap: onTapPediatria,
       )),
@@ -2783,8 +2790,9 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
 
   @override
   Widget build(BuildContext context) {
-    const gradientColors = [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)];
-    const accentColor = Color(0xFFA78BFA);
+    // B141: Vibrant Purple — #7e22ce → #a855f7
+    const gradientColors = [Color(0xFF3B0764), Color(0xFF7e22ce), Color(0xFFa855f7)];
+    const accentColor = Color(0xFFe9d5ff);
 
     return GestureDetector(
       onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
@@ -2877,24 +2885,24 @@ class _HomeBibliotecaHClinicaRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      // ── BIBLIOTECA ────────────────────────────────────────────────────────
+      // ── BIBLIOTECA — B141: Elegant Gray #475569 → #64748b ───────────────
       Expanded(child: _AgeCard(
         icon: Icons.menu_book_rounded,
         label: 'BIBLIOTECA',
         subtitle: isEs ? 'Referencias clínicas' : 'Referências clínicas',
-        gradientColors: const [Color(0xFF0F1E3D), Color(0xFF1A3460), Color(0xFF1D4ED8)],
-        accentColor: const Color(0xFF93C5FD),
+        gradientColors: const [Color(0xFF1e293b), Color(0xFF475569), Color(0xFF64748b)],
+        accentColor: const Color(0xFFe2e8f0),
         dark: dark,
         onTap: () => onTabChange(5),
       )),
       const SizedBox(width: 10),
-      // ── H. CLÍNICA ────────────────────────────────────────────────────────
+      // ── H. CLÍNICA — B141: Orange Vibrant #ea580c → #fb923c ─────────────
       Expanded(child: _AgeCard(
         icon: Icons.assignment_ind_outlined,
         label: 'H. CLÍNICA',
         subtitle: isEs ? 'Historial del paciente' : 'Histórico do paciente',
-        gradientColors: const [Color(0xFF1F0A2E), Color(0xFF3B1460), Color(0xFF6D28D9)],
-        accentColor: const Color(0xFFC4B5FD),
+        gradientColors: const [Color(0xFF431407), Color(0xFFea580c), Color(0xFFfb923c)],
+        accentColor: const Color(0xFFfed7aa),
         dark: dark,
         onTap: () => onTabChange(3),
       )),
@@ -5044,9 +5052,10 @@ class _PediatricsShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
+        // B141: Baby Blue — sincronizado com card da Home
         _ShellHeader(
-          gradientColors: const [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
-          accentColor:    const Color(0xFF93C5FD),
+          gradientColors: const [Color(0xFF0c4a6e), Color(0xFF7dd3fc), Color(0xFFbae6fd)],
+          accentColor:    const Color(0xFF1e3a5f),
           icon:    Icons.child_care_rounded,
           label:   isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
           subtitle: isEs
@@ -5075,9 +5084,10 @@ class _AdultoShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
+        // B141: Emerald Green — sincronizado com card da Home
         _ShellHeader(
-          gradientColors: const [Color(0xFF1A2E20), Color(0xFF0A5C2E), Color(0xFF15803D)],
-          accentColor:    const Color(0xFF10B981),
+          gradientColors: const [Color(0xFF022c22), Color(0xFF059669), Color(0xFF10b981)],
+          accentColor:    const Color(0xFF6ee7b7),
           icon:    Icons.person_rounded,
           label:   'ADULTO',
           subtitle: isEs
