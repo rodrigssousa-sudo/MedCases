@@ -1467,8 +1467,8 @@ class _AiScreenState extends State<AiScreen> {
     final p    = context.watch<AppProvider>();
     final dark = p.darkMode;
     final bp   = MedBreakpoints.of(context);
-    // Fundo estilo WhatsApp — levíssimo padrão
-    final chatBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECE5DD);
+    // B140: fundo branco absoluto em light mode (remove bege WhatsApp)
+    final chatBg = dark ? const Color(0xFF1A1D23) : Colors.white;
 
     // Fix #5: detecta teclado via viewInsets (cobre Web Mobile onde focus events
     // podem não ser confiáveis). Propaga ao ValueNotifier para o FAB em main.dart.
@@ -1836,10 +1836,14 @@ class _MobileAiActionBar extends StatelessWidget {
         ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
         : const Color(0xFF008CA4).withValues(alpha: 0.22);
 
+    // B140: paleta atualizada — fundo branco em light, escuro em dark
+    // Badge de conexão integrado ao título como subtítulo clicável
+    const kGreenLive   = Color(0xFF00E676); // verde vivo Conectado
+
     return Container(
-      height: 44,
+      height: 52,
       decoration: BoxDecoration(
-        color: dark ? _kBg1 : const Color(0xFFF8F8F8),
+        color: dark ? _kBg1 : Colors.white,
         border: Border(bottom: BorderSide(color: borderColor, width: 0.5)),
         gradient: dark
             ? const LinearGradient(
@@ -1850,92 +1854,62 @@ class _MobileAiActionBar extends StatelessWidget {
             : null,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── Logo MedCases IA (mini) ──────────────────────────────────────
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Container(
-                width: 22, height: 22,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF252930), Color(0xFF374151)],
+            // ── B140: Título + subtítulo de conexão (sem avatar) ─────────────
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'MedCases IA',
+                    style: TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w900,
+                      color: dark ? const Color(0xFF00E5FF) : const Color(0xFF1A1D23),
+                      letterSpacing: -0.3,
+                    ),
                   ),
-                  border: Border.all(
-                    color: Color(0xFF00E5FF).withValues(alpha: 0.25),
-                    width: 0.8,
-                  ),
-                ),
-                child: const Center(
-                  child: Icon(Icons.psychology_alt_rounded, size: 13,
-                    color: Color(0xFF00E5FF)),
-                ),
-              ),
-              const SizedBox(width: 5),
-              Text(
-                'MedCases IA',
-                style: TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w800,
-                  color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
-                  letterSpacing: -0.2,
-                ),
-              ),
-            ]),
-
-            // ── Badge conexão ────────────────────────────────────────────────
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: onSettings,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: hasRealAi
-                      ? const Color(0xFF00E5FF).withValues(alpha: 0.12)
-                      : Colors.white.withValues(alpha: 0.07),
-                  border: Border.all(
-                    color: hasRealAi
-                        ? const Color(0xFF00E5FF).withValues(alpha: 0.45)
-                        : Colors.white.withValues(alpha: 0.18),
-                  ),
-                ),
-                child: keyLoading
-                    ? SizedBox(
-                        width: 10, height: 10,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.5,
-                          color: dark ? Colors.white54 : Colors.black38,
-                        ),
-                      )
-                    : Row(mainAxisSize: MainAxisSize.min, children: [
-                        Container(
-                          width: 6, height: 6,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: hasRealAi ? const Color(0xFF00E5FF) : Colors.white38,
+                  const SizedBox(height: 1),
+                  GestureDetector(
+                    onTap: onSettings,
+                    child: keyLoading
+                        ? Row(mainAxisSize: MainAxisSize.min, children: [
+                            SizedBox(
+                              width: 8, height: 8,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.2,
+                                color: dark ? Colors.white54 : Colors.black38,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Conectando...',
+                              style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.w600,
+                                color: dark ? Colors.white54 : Colors.black45,
+                              ),
+                            ),
+                          ])
+                        : Text(
+                            hasRealAi
+                                ? (lang == 'es' ? '• Conectado' : '• Conectado')
+                                : (lang == 'es' ? '• Conectar IA' : '• Conectar IA'),
+                            style: TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.w700,
+                              color: hasRealAi
+                                  ? kGreenLive
+                                  : (dark
+                                      ? Colors.white.withValues(alpha: 0.40)
+                                      : Colors.grey.shade500),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          hasRealAi
-                              ? (lang == 'es' ? 'Conectado' : 'Conectado')
-                              : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
-                          style: TextStyle(
-                            fontSize: 10, fontWeight: FontWeight.w700,
-                            color: hasRealAi
-                                ? const Color(0xFF00E5FF)
-                                : (dark ? Colors.white54 : Colors.black45),
-                          ),
-                        ),
-                      ]),
+                  ),
+                ],
               ),
             ),
-
-            const Spacer(),
 
             // ── Botão Histórico ──────────────────────────────────────────────
             GestureDetector(
@@ -3560,6 +3534,8 @@ class _AiBlockBubble extends StatelessWidget {
     const kGreenLight = Color(0xFF00E5FF);
     const kRed        = Color(0xFFB91C1C);
     const kAmber      = Color(0xFFB45309);
+    // B140: Vermelho Ferrari — cor de destaque para títulos e nomes de fármacos
+    const kFerrariRed = Color(0xFFFF2400);
 
     final lines = block.split('\n');
     final (bodyLines, refLines) = _splitRefLines(lines);
@@ -3583,17 +3559,19 @@ class _AiBlockBubble extends StatelessWidget {
           selectable: false,
           styleSheet: MarkdownStyleSheet(
             p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
-            strong: TextStyle(
+            // B140: nomes de fármacos e termos em negrito → Vermelho Ferrari
+            strong: const TextStyle(
               fontSize: 13.5,
               fontWeight: FontWeight.w700,
-              color: dark ? const Color(0xFF00E5FF) : kGreen,
+              color: kFerrariRed,
             ),
             em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
             listBullet: TextStyle(fontSize: 13.5, color: textColor),
+            // B140: título principal da resposta → Vermelho Ferrari bold
             h2: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF38BDF8),
+              color: kFerrariRed,
               letterSpacing: 0.1,
               height: 1.3,
             ),

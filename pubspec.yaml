@@ -1,7 +1,7 @@
 name: flutter_app
 description: MedCases PRO - App médico clínico com cockpit, calculadora de doses, protocolos de emergência e IA clínica.
 publish_to: 'none'
-version: 6.2.1+139
+version: 6.2.2+140
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
