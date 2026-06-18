@@ -151,9 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
         subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
-        // B141: Soft Baby Blue #7dd3fc → #bae6fd
-        gradientColors: const [Color(0xFF0c4a6e), Color(0xFF7dd3fc), Color(0xFFbae6fd)],
-        accentColor: const Color(0xFF1e3a5f),
+        // B144: Azul Petróleo — dark teal elegante, nunca chega ao ciano
+        gradientColors: const [Color(0xFF042f2e), Color(0xFF0f766e), Color(0xFF134e4a)],
+        accentColor: const Color(0xFFccfbf1),
         onTap: () => push(const _PediatricsShell()),
       ),
       _HomeCardData(
@@ -1189,13 +1189,29 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   }
 
   /// Botão enviar — comportamento inteligente:
-  ///   campo VAZIO  → navegação direta para tela cheia de IA
+  ///   campo VAZIO + sem histórico  → navegação direta para tela cheia de IA
+  ///   campo VAZIO + com histórico  → navega para IA tab carregando APENAS a
+  ///                                   primeira query do fluxo Home (limpa histórico anterior da IA tab)
   ///   campo CHEIO  → dispara stream do mini-chat inline
   void _onSendPressed() {
     final text = _ctrl.text.trim();
     if (text.isEmpty) {
-      // Campo vazio: atalho de navegação para a tela cheia da IA
-      _goToAiTab(null, false);
+      if (_messages.isNotEmpty) {
+        // B144: hasHistory + campo vazio → IA tab com apenas a query original
+        // Extrai a primeira mensagem do usuário que iniciou o fluxo na Home.
+        // pendingQuery substitui qualquer histórico anterior aberto na IA tab.
+        final firstUserMsg = _messages
+            .firstWhere(
+              (m) => m['role'] == 'user',
+              orElse: () => <String, dynamic>{},
+            )['text'] as String? ?? '';
+        if (firstUserMsg.isNotEmpty) {
+          // Limpa histórico pendente e define apenas a primeira query
+          AiScreen.pendingHistory.value = [];          // limpa histórico anterior da IA tab
+          AiScreen.pendingQuery.value   = firstUserMsg;
+        }
+      }
+      widget.onNavigateToAi(2);
       return;
     }
     _send(text);
@@ -1476,7 +1492,18 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-          // ── B139: Header removido — card limpo com apenas campo de entrada ──
+          // ── B144: Rótulo 'IA Chat' no canto superior esquerdo ───────────────
+          Text(
+            'IA Chat',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: dark ? const Color(0xFF60A5FA) : _kAiBlue,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 8),
+
           // Botão × Limpar (só aparece quando há histórico) — mantido flutuando
           if (hasHistory)
             Align(
@@ -2511,13 +2538,13 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
         onTap: onTapAdulto,
       )),
       const SizedBox(width: 10),
-      // B141: Soft Baby Blue — #7dd3fc → #bae6fd
+      // B144: Azul Petróleo — dark teal elegante, nunca chega ao ciano
       Expanded(child: _AgeCard(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
         subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
-        gradientColors: const [Color(0xFF0c4a6e), Color(0xFF7dd3fc), Color(0xFFbae6fd)],
-        accentColor: const Color(0xFF1e3a5f),
+        gradientColors: const [Color(0xFF042f2e), Color(0xFF0f766e), Color(0xFF134e4a)],
+        accentColor: const Color(0xFFccfbf1),
         dark: dark,
         onTap: onTapPediatria,
       )),
@@ -2707,13 +2734,6 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
               colors: g,
             ),
             borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: g.last.withValues(alpha: 0.40),
-                blurRadius: 14,
-                offset: const Offset(0, 5),
-              ),
-            ],
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -2737,23 +2757,21 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
                       alignment: Alignment.centerLeft,
                       child: Text(
                         widget.label,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.4,
-                          color: widget.accentColor,
+                          color: Colors.white,
                         ),
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       widget.subtitle,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 10.5,
-                        // Build 138: dark mode → branco puro para máximo contraste
-                        color: widget.dark
-                            ? Colors.white
-                            : Colors.white.withValues(alpha: 0.75),
+                        // B144: sempre branco puro para máximo contraste
+                        color: Colors.white,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -2761,9 +2779,9 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right_rounded,
-                  size: 18,
-                  color: widget.accentColor.withValues(alpha: 0.65)),
+              const Icon(Icons.chevron_right_rounded,
+                  size: 20,
+                  color: Colors.white),
             ]),
           ),
         ),
@@ -2838,13 +2856,6 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
               colors: gradientColors,
             ),
             borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: gradientColors.last.withValues(alpha: 0.40),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-            ],
           ),
           // B139: sub-chip FÁRMACOS removido — card limpo com apenas a linha principal
           child: Row(children: [
@@ -2879,15 +2890,15 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color: accentColor.withValues(alpha: 0.80),
+                      color: Colors.white.withValues(alpha: 0.80),
                       height: 1.3,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right_rounded,
-                size: 24, color: accentColor.withValues(alpha: 0.65)),
+            const Icon(Icons.chevron_right_rounded,
+                size: 24, color: Colors.white),
           ]),
         ),
       ),
@@ -5080,10 +5091,10 @@ class _PediatricsShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
-        // B141: Baby Blue — sincronizado com card da Home
+        // B144: Azul Petróleo — sincronizado com card da Home
         _ShellHeader(
-          gradientColors: const [Color(0xFF0c4a6e), Color(0xFF7dd3fc), Color(0xFFbae6fd)],
-          accentColor:    const Color(0xFF1e3a5f),
+          gradientColors: const [Color(0xFF042f2e), Color(0xFF0f766e), Color(0xFF134e4a)],
+          accentColor:    const Color(0xFFccfbf1),
           icon:    Icons.child_care_rounded,
           label:   isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
           subtitle: isEs

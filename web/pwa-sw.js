@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '37.0.0';
-const CACHE_APP    = 'medcases-app-v37.0.0';  // ← Build 141: RichText golden PRO title + clean chat card + remove FÁRMACOS sub-chip + BottomNav separator
+const SW_VERSION   = '38.0.0';
+const CACHE_APP    = 'medcases-app-v38.0.0';  // ← Build 144: remove boxShadow cards, PEDIATRÍA azul petróleo, text white, IA Chat label, new send logic
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
