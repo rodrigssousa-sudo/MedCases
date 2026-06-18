@@ -1400,22 +1400,21 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // do Chrome DevTools (F12 → device toolbar). LayoutBuilder reage frame-a-frame
     // às BoxConstraints do Scaffold pai — não depende do cache do MediaQuery.
     //
-    // BREAKPOINTS:
-    //   < 1024 px  → mobile shell (BottomNav + AppBar — idêntico ao iOS/Android)
-    //   ≥ 1024 px  → desktop shell (sidebar lateral, sem bottom nav)
-    //
-    // NOTA: o threshold 1024 foi mantido igual ao de HomeScreen para consistência.
-    // Chrome DevTools presets (iPhone SE 375, Pixel 7 412, Galaxy S23 360, iPad
-    // mini 768) ficam todos abaixo de 1024 → mobile shell correto em todos eles.
+    // BREAKPOINTS (Build 136-B — Split-View iPad Fix):
+    //   < 768 px   → mobile shell (BottomNav + AppBar — idêntico ao iOS/Android)
+    //   768–1023px → desktop shell (sidebar + IndexedStack normal)
+    //   ≥ 1024 px  → desktop shell com Split-View quando na tab AI:
+    //                  40% HomeDashboard (sempre visível) + 60% AiScreen
+    //                  Em qualquer outra tab: sidebar + IndexedStack normal.
+    // iPad 13" (≈1366px) → sempre Split-View quando usuário abre IA.
+    // iPad mini (768px) → desktop shell normal sem split.
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
 
-        // Desktop: sidebar lateral + conteúdo expandido sem bottom nav
-        // Threshold 768px — Chrome DevTools phone emulators (360–414px) e
-        // tablets estreitos ficam corretamente no mobile shell.
+        // Desktop/tablet largo: sidebar lateral + conteúdo (com ou sem split)
         if (width >= 768) {
-          return _buildDesktopShell(context, dark, p);
+          return _buildDesktopShell(context, dark, p, width);
         }
         // Mobile / tablet estreito / browser redimensionado — layout nativo
         return _buildMobileShell(context, dark, p);
@@ -1424,10 +1423,16 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   }
 
   /// Layout desktop: Row(sidebar | conteúdo) — sem AppHeader (barra superior removida)
-  Widget _buildDesktopShell(BuildContext context, bool dark, AppProvider p) {
-    final bg       = dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
-    // Desktop sidebar + content area — usa o bg principal
-    final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
+  /// Build 136-B: width >= 1024 + tab == 2 (AI) → Split-View 40/60
+  Widget _buildDesktopShell(BuildContext context, bool dark, AppProvider p, double width) {
+    final bg        = dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
+    final divColor  = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
+    final stackIdx  = _tab.clamp(0, _staticScreens.length - 1);
+
+    // Split-View: iPad 13" / desktop largo quando na tela de IA (tab 2)
+    // Exibe HomeDashboard (40%) + AiScreen (60%) simultaneamente.
+    // Em outras tabs o IndexedStack normal garante a tela selecionada.
+    final bool showSplit = width >= 1024 && _tab == 2;
 
     return Scaffold(
       backgroundColor: bg,
@@ -1454,28 +1459,28 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             ),
           ),
 
-          // ── Divisor vertical sutil ─────────────────────────────────────────
-          Container(
-            width: 1,
-            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB), // divisor sutil
-          ),
+          // ── Divisor vertical sutil (sidebar → conteúdo) ───────────────────
+          Container(width: 1, color: divColor),
 
-          // ── Conteúdo principal — sem header, SafeArea apenas no topo ────────
+          // ── Área de conteúdo principal ─────────────────────────────────────
           Expanded(
             child: SafeArea(
               left: false,
               child: Column(
                 children: [
                   Expanded(
-                    child: RepaintBoundary(
-                      child: IndexedStack(
-                        index: stackIdx,
-                        children: _staticScreens,
-                      ),
-                    ),
+                    child: showSplit
+                        // ── SPLIT-VIEW: HomeDashboard 40% | AiScreen 60% ──────
+                        ? _buildSplitView(dark, divColor)
+                        // ── IndexedStack normal para todas as outras tabs ──────
+                        : RepaintBoundary(
+                            child: IndexedStack(
+                              index: stackIdx,
+                              children: _staticScreens,
+                            ),
+                          ),
                   ),
-                  // Banner de auto-update: exibido entre o conteúdo e a LegalBar.
-                  // ValueListenableBuilder garante rebuild mínimo — só o banner muda.
+                  // Banner de auto-update
                   ValueListenableBuilder<bool>(
                     valueListenable: UpdateService.swUpdateAvailable,
                     builder: (_, hasUpdate, __) =>
@@ -1488,6 +1493,34 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           ),
         ],
       ),
+    );
+  }
+
+  /// Build 136-B — Split-View para iPad 13" / desktop largo na tab IA.
+  /// HomeDashboard (40%) + divisor + AiScreen (60%).
+  /// Ambos os painéis ficam vivos — sem remontar ao alternar.
+  Widget _buildSplitView(bool dark, Color divColor) {
+    return Row(
+      children: [
+        // ── Painel esquerdo: HomeDashboard (40%) ──────────────────────────────
+        Flexible(
+          flex: 40,
+          child: RepaintBoundary(
+            child: _staticScreens[0], // HomeScreen — sempre visível no split
+          ),
+        ),
+
+        // ── Divisor central ───────────────────────────────────────────────────
+        Container(width: 1, color: divColor),
+
+        // ── Painel direito: AiScreen (60%) ────────────────────────────────────
+        Flexible(
+          flex: 60,
+          child: RepaintBoundary(
+            child: _staticScreens[2], // AiScreen — sempre ativo no split
+          ),
+        ),
+      ],
     );
   }
 

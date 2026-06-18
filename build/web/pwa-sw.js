@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '30.0.0';
-const CACHE_APP    = 'medcases-app-v30.0.0';  // ← Build 136: Visual Light Mode — Pure White Palette + Remove 📚 footer instructions from AI prompts
+const SW_VERSION   = '31.0.0';
+const CACHE_APP    = 'medcases-app-v31.0.0';  // ← Build 137: Split-View iPad Fix — HomeDashboard 40% + AiScreen 60% on width≥1024px
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
