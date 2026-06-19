@@ -651,8 +651,14 @@ class _AiScreenState extends State<AiScreen> {
   void _onScroll() {
     if (!_scrollCtrl.hasClients) return;
     final pos = _scrollCtrl.position;
-    // Considera "perto do fundo" se estiver a menos de 120px do máximo
-    final nearBottom = pos.pixels >= pos.maxScrollExtent - 120;
+    // Build 145 — threshold reduzido 120 → 80px:
+    // Detecta intenção de leitura de histórico mais cedo.
+    // Com 120px, o usuário precisava subir quase 2 swipes antes de o
+    // auto-scroll ser suspenso — durante esse tempo a UI saltava para baixo.
+    // 80px corresponde a ~1 gesto leve de swipe-up e é suficientemente
+    // distante do fundo para não suprimir o auto-scroll acidentalmente
+    // por variações de layout do cursor ▌ durante streaming.
+    final nearBottom = pos.pixels >= pos.maxScrollExtent - 80;
     // ⚡ Sem setState aqui — usa variável simples para evitar rebuild no scroll
     final wasUp = _userScrolledUp;
     _userScrolledUp = !nearBottom;
@@ -1498,7 +1504,12 @@ class _AiScreenState extends State<AiScreen> {
               bp.isDesktop ? 24 : 12,
               8,
             ),
-            cacheExtent: 2000,
+            // Build 145 — cacheExtent aumentado 2000 → 2500:
+            // Mantém ~3 telas extras de cards pré-renderizados acima e abaixo
+            // da viewport. Elimina o re-layout de MarkdownBody que causava o
+            // "scroll stutter" ao subir no histórico durante o streaming.
+            // Impacto de memória negligenciável: ~5 bolhas fora da viewport.
+            cacheExtent: 2500,
             physics: const ClampingScrollPhysics(),
             // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -1561,6 +1572,57 @@ class _AiScreenState extends State<AiScreen> {
               );
             },
           );
+
+    // Build 145 — NotificationListener de scroll-up com prioridade imediata:
+    //
+    // PROBLEMA RAIZ DO STUTTER:
+    //   O _onScroll listener (via _scrollCtrl.addListener) é chamado DEPOIS
+    //   que o frame de animação já foi agendado. Na janela entre o início
+    //   do gesto de scroll-up e a atualização de _userScrolledUp, _scrollDown()
+    //   ainda achava que o usuário estava no fundo e acionava animateTo().
+    //   O resultado: o ListView subia (gesto do usuário) E descia (auto-scroll)
+    //   no mesmo frame → "salto" visual / stutter.
+    //
+    // SOLUÇÃO:
+    //   NotificationListener<ScrollStartNotification> captura o INÍCIO do gesto
+    //   de scroll do usuário no Flutter dispatch cycle, ANTES de qualquer
+    //   animação ser calculada. Ao detectar um ScrollStartNotification com
+    //   dragDetails != null (gesto manual, não animação programática),
+    //   setamos _userScrolledUp = true IMEDIATAMENTE — bloqueando o próximo
+    //   _scrollDown() antes que ele dispare.
+    //
+    //   ScrollEndNotification: quando o usuário solta o dedo, verificamos
+    //   se voltou ao fundo — se sim, re-ativa o auto-scroll.
+    //
+    // COMPATIBILIDADE: não afeta o comportamento de outros scrolláveis aninhados
+    // (sugestões, histórico) pois usam ScrollControllers diferentes.
+    chatList = NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        // Só processa notificações do ScrollController principal do chat
+        if (notification.metrics.axisDirection != AxisDirection.down) return false;
+
+        if (notification is ScrollStartNotification) {
+          // Gesto manual do usuário (dragDetails != null) → bloqueia auto-scroll
+          if (notification.dragDetails != null && !_userScrolledUp) {
+            _userScrolledUp = true;
+            // Sem setState: a flag é lida pelo _scrollDown() que roda no próximo frame.
+            // O rebuild pelo scroll-to-bottom indicator acontece via _onScroll listener.
+          }
+        } else if (notification is ScrollEndNotification) {
+          // Usuário soltou o dedo → verifica posição para re-ativar auto-scroll
+          if (_scrollCtrl.hasClients) {
+            final pos = _scrollCtrl.position;
+            final nearBottom = pos.pixels >= pos.maxScrollExtent - 80;
+            if (nearBottom && _userScrolledUp) {
+              _userScrolledUp = false;
+              if (mounted) setState(() {}); // atualiza botão scroll-to-bottom
+            }
+          }
+        }
+        return false; // não consume a notificação — deixa o scroll funcionar
+      },
+      child: chatList,
+    );
 
     // No desktop: envolve o chat em coluna centralizada com max-width
     if (chatMaxWidth != null) {

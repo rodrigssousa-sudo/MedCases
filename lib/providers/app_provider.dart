@@ -21,6 +21,7 @@ import '../services/ai_service.dart';
 import '../services/clinical_session_memory.dart';
 import '../services/gemini_service.dart';
 import '../services/gemini_service_v2.dart';
+import '../services/ai_gateway_service.dart';
 
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
@@ -3201,14 +3202,38 @@ class AppProvider extends ChangeNotifier {
     // Sem este guard, o listener dispararia onDone duas vezes → bolha duplicada.
     bool completionFired = false;
 
+    // ── Build 145: seleção de backend de streaming ─────────────────────────
+    // PRIORIDADE:
+    //   1. AiGatewayService (servidor Node.js) — quando configurado e ativo:
+    //      • API key gerenciada exclusivamente no servidor
+    //      • ANTI_COGNITION_LEAK_PROMPT injetado server-side
+    //      • Rate limit + retry no servidor
+    //   2. GeminiServiceV2 (BYOA) — quando gateway não configurado/forçado.
+    //
+    // AiGatewayService.forceGateway permite usar o servidor mesmo com BYOA key.
+    // Útil para testes A/B ou quando o servidor tem quota maior.
+    final bool useGateway =
+        AiGatewayService.isConfigured && AiGatewayService.forceGateway;
+
     // ── Subscreve o stream de chunks ───────────────────────────────────────
-    final stream = GeminiServiceV2.sendStream(
-      apiKey:       apiKey,
-      userMessage:  input,
-      systemPrompt: systemPrompt,
-      history:      List.unmodifiable(_aiHistory),
-      useGrounding: true,
-    );
+    final stream = useGateway
+        ? AiGatewayService.sendStream(
+            userMessage:  input,
+            systemPrompt: systemPrompt,
+            history:      List.unmodifiable(_aiHistory),
+            useGrounding: true,
+          )
+        : GeminiServiceV2.sendStream(
+            apiKey:       apiKey,
+            userMessage:  input,
+            systemPrompt: systemPrompt,
+            history:      List.unmodifiable(_aiHistory),
+            useGrounding: true,
+          );
+
+    if (useGateway) {
+      debugPrint('[sendAiMessage] Build 145: usando AiGatewayService → ${AiGatewayService.isConfigured ? 'gateway configurado' : 'N/A'}');
+    }
 
     _aiStreamSub = stream.listen(
       (chunk) {

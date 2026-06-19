@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '38.0.0';
-const CACHE_APP    = 'medcases-app-v38.0.0';  // ← Build 144: remove boxShadow cards, PEDIATRÍA azul petróleo, text white, IA Chat label, new send logic
+const SW_VERSION   = '39.0.0';
+const CACHE_APP    = 'medcases-app-v39.0.0';  // ← Build 145: SSE gateway client, cacheExtent 2500, NotificationListener scroll-up priority
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
