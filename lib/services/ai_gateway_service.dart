@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// AiGatewayService — Build 145
+// AiGatewayService — Build 146
 // Cliente SSE para o MedCases AI Gateway (servidor Node.js/Express)
 //
 // ARQUITETURA:
@@ -29,6 +29,17 @@
 // MODO DE ATIVAÇÃO:
 //   Primário: quando baseUrl configurada E usuário NÃO tem BYOA key
 //   Opt-in:   pode ser forçado via AiGatewayService.forceGateway = true
+//
+// ANTI-BUFFERING (Build 146):
+//   Importação condicional por plataforma:
+//     • IO  (iOS/Android/desktop): ai_gateway_service_io.dart
+//         → usa package:http com http.Client.send() streaming — dart:io lê
+//           o socket TCP de forma incremental, sem buffering extra.
+//     • Web (Flutter Web / dart2js): ai_gateway_service_web.dart
+//         → usa dart:js_interop + window.fetch() nativo com ReadableStream,
+//           bypassando o BrowserClient do http.dart e eliminando o
+//           micro-batching do Dart VM na Web.
+//   A função runSseStreamPlatform() é o ponto de entrada de cada arquivo.
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'dart:async';
@@ -36,6 +47,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
 import 'gemini_service_v2.dart' show GeminiChunk;
+
+// ── Importação condicional por plataforma (Build 146) ────────────────────────
+// Na Web: ai_gateway_service_web.dart (dart:js_interop + fetch nativo)
+// Nas demais plataformas: ai_gateway_service_io.dart (http.Client streaming)
+import 'ai_gateway_service_io.dart'
+    if (dart.library.js_interop) 'ai_gateway_service_web.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AiGatewayService
@@ -70,15 +87,6 @@ class AiGatewayService {
   /// Endpoint síncrono (Context Classifier).
   static String get _syncUrl => '$_baseUrl/api/ai/sync';
 
-  // ── Timeouts ────────────────────────────────────────────────────────────────
-
-  /// Timeout para estabelecer a conexão inicial com o servidor.
-  static const _connectTimeout = Duration(seconds: 15);
-
-  /// Timeout para receber o primeiro chunk após conexão.
-  /// O servidor tem watchdog de 45s — alinhado para ser um pouco maior.
-  static const _firstChunkTimeout = Duration(seconds: 50);
-
   // ── Stream SSE principal ────────────────────────────────────────────────────
 
   /// Envia uma mensagem ao servidor e retorna um [Stream<GeminiChunk>].
@@ -111,7 +119,7 @@ class AiGatewayService {
     return controller.stream;
   }
 
-  // ── Pipeline interno ────────────────────────────────────────────────────────
+  // ── Pipeline interno — delega à implementação de plataforma (Build 146) ─────
 
   static Future<void> _runSseStream({
     required StreamController<GeminiChunk> controller,
@@ -123,9 +131,9 @@ class AiGatewayService {
     if (controller.isClosed) return;
 
     final requestId = 'gw_${DateTime.now().millisecondsSinceEpoch}';
-    debugPrint('[AiGatewayService][$requestId] Iniciando stream SSE → $_streamUrl');
+    debugPrint('[AiGatewayService][$requestId] iniciando stream → $_streamUrl');
 
-    // ── Monta payload ──────────────────────────────────────────────────────
+    // Monta o payload JSON que será enviado ao servidor
     final payload = jsonEncode({
       'userMessage':  userMessage,
       'systemPrompt': systemPrompt,
@@ -133,193 +141,22 @@ class AiGatewayService {
       'useGrounding': useGrounding,
     });
 
-    // ── http.Client com suporte a streaming ───────────────────────────────
-    // Usamos http.Client.send() com Request em vez de http.post() porque
-    // precisamos acessar response.stream (body como Stream<List<int>>)
-    // que não está disponível no Response estático do http.post().
-    final client = http.Client();
-    final request = http.Request('POST', Uri.parse(_streamUrl))
-      ..headers.addAll({
-        'Content-Type':  'application/json',
-        'Accept':        'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'X-Request-ID':  requestId,
-      })
-      ..body = payload;
-
-    // ── Watchdog de primeiro chunk ─────────────────────────────────────────
-    // Se o servidor não responder dentro de _firstChunkTimeout, emite timeout.
-    Timer? firstChunkTimer;
-    bool firstChunkReceived = false;
-
-    firstChunkTimer = Timer(_firstChunkTimeout, () {
-      if (!firstChunkReceived && !controller.isClosed) {
-        debugPrint('[AiGatewayService][$requestId] Timeout — sem primeiro chunk após ${_firstChunkTimeout.inSeconds}s');
-        _emitError(controller, 'timeout');
-        client.close();
-      }
-    });
-
-    try {
-      // ── Conecta com timeout ────────────────────────────────────────────
-      final streamedResponse = await client.send(request).timeout(
-        _connectTimeout,
-        onTimeout: () {
-          firstChunkTimer?.cancel();
-          client.close();
-          throw TimeoutException('Conexão com o servidor expirou', _connectTimeout);
-        },
-      );
-
-      // ── Erros HTTP ────────────────────────────────────────────────────
-      if (streamedResponse.statusCode == 401 || streamedResponse.statusCode == 403) {
-        firstChunkTimer?.cancel();
-        client.close();
-        _emitError(controller, 'api_key_invalid');
-        return;
-      }
-      if (streamedResponse.statusCode == 400) {
-        firstChunkTimer?.cancel();
-        client.close();
-        _emitError(controller, 'bad_request');
-        return;
-      }
-      if (streamedResponse.statusCode == 429) {
-        firstChunkTimer?.cancel();
-        client.close();
-        _emitError(controller, 'quota');
-        return;
-      }
-      if (streamedResponse.statusCode == 500) {
-        firstChunkTimer?.cancel();
-        client.close();
-        _emitError(controller, 'server_error');
-        return;
-      }
-      if (streamedResponse.statusCode != 200) {
-        firstChunkTimer?.cancel();
-        client.close();
-        _emitError(controller, 'http_${streamedResponse.statusCode}');
-        return;
-      }
-
-      // ── Lê stream SSE chunk a chunk ───────────────────────────────────
-      // O servidor envia linhas no formato SSE padrão.
-      // Acumula bytes até encontrar '\n\n' (fim de evento SSE).
-      final decoder   = utf8.decoder;
-      String buffer   = '';
-      bool completionFired = false;
-
-      await for (final bytes in streamedResponse.stream) {
-        if (controller.isClosed) break;
-
-        // Primeiro chunk recebido — cancela watchdog
-        if (!firstChunkReceived) {
-          firstChunkReceived = true;
-          firstChunkTimer?.cancel();
-          firstChunkTimer = null;
-          debugPrint('[AiGatewayService][$requestId] Primeiro chunk recebido');
-        }
-
-        buffer += decoder.convert(bytes);
-
-        // Processa eventos SSE completos (delimitados por '\n\n')
-        while (true) {
-          final eventEnd = buffer.indexOf('\n\n');
-          if (eventEnd == -1) break; // evento incompleto — aguarda mais bytes
-
-          final eventBlock = buffer.substring(0, eventEnd);
-          buffer = buffer.substring(eventEnd + 2);
-
-          for (final line in eventBlock.split('\n')) {
-            final trimmed = line.trim();
-
-            // Ignora linhas de comentário (heartbeat ': ping')
-            if (trimmed.isEmpty || trimmed.startsWith(':')) continue;
-
-            // Processa linha 'data: {...}'
-            if (!trimmed.startsWith('data:')) continue;
-
-            final jsonStr = trimmed.substring(5).trim();
-            if (jsonStr == '[DONE]') {
-              completionFired = true;
-              if (!controller.isClosed) {
-                controller
-                  ..add(GeminiChunk.done)
-                  ..close();
-              }
-              return;
-            }
-
-            // Parseia JSON do evento
-            Map<String, dynamic> event;
-            try {
-              event = jsonDecode(jsonStr) as Map<String, dynamic>;
-            } catch (e) {
-              debugPrint('[AiGatewayService][$requestId] JSON inválido ignorado: ${jsonStr.substring(0, jsonStr.length.clamp(0, 80))}');
-              continue;
-            }
-
-            // ── Evento de erro do servidor ──────────────────────────────
-            if (event.containsKey('error')) {
-              final code = event['error']?.toString() ?? 'server_error';
-              debugPrint('[AiGatewayService][$requestId] Erro recebido: $code');
-              if (!completionFired) {
-                completionFired = true;
-                _emitError(controller, code);
-              }
-              return;
-            }
-
-            // ── Evento de conclusão ────────────────────────────────────
-            if (event['done'] == true) {
-              if (!completionFired) {
-                completionFired = true;
-                if (!controller.isClosed) {
-                  controller
-                    ..add(GeminiChunk.done)
-                    ..close();
-                }
-              }
-              return;
-            }
-
-            // ── Chunk de texto ─────────────────────────────────────────
-            final text = event['text']?.toString() ?? '';
-            if (text.isNotEmpty && !controller.isClosed) {
-              controller.add(GeminiChunk(text: text));
-            }
-          }
-
-          if (completionFired) return;
-        }
-      }
-
-      // Stream encerrado pelo servidor sem evento done explícito
-      if (!completionFired && !controller.isClosed) {
-        debugPrint('[AiGatewayService][$requestId] Stream encerrado sem done explícito');
-        controller
-          ..add(GeminiChunk.done)
-          ..close();
-      }
-
-    } on TimeoutException catch (e) {
-      firstChunkTimer?.cancel();
-      debugPrint('[AiGatewayService][$requestId] TimeoutException: $e');
-      _emitError(controller, 'timeout');
-    } catch (e) {
-      firstChunkTimer?.cancel();
-      debugPrint('[AiGatewayService][$requestId] Erro inesperado: $e');
-      _emitError(controller, 'network');
-    } finally {
-      firstChunkTimer?.cancel();
-      client.close();
-      debugPrint('[AiGatewayService][$requestId] Stream encerrado. client.close()');
-    }
+    // Delega à função runSseStreamPlatform() do arquivo de plataforma
+    // selecionado em compile-time pela importação condicional acima:
+    //   • Web  → ai_gateway_service_web.dart  (fetch nativo via dart:js_interop)
+    //   • IO   → ai_gateway_service_io.dart   (http.Client streaming)
+    await runSseStreamPlatform(
+      controller: controller,
+      streamUrl:  _streamUrl,
+      payload:    payload,
+      requestId:  requestId,
+    );
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
+  // Mantido para compatibilidade caso algum código externo referencie.
+  // Na Build 146 os erros são emitidos dentro de runSseStreamPlatform().
   static void _emitError(StreamController<GeminiChunk> ctrl, String code) {
     if (!ctrl.isClosed) {
       ctrl

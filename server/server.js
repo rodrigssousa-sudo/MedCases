@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * MedCases Pro — AI Gateway Server  v2.0.0
+ * MedCases Pro — AI Gateway Server  v2.1.0  (Build 146)
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * ARQUITETURA:
@@ -16,6 +16,30 @@
  *   2. Streaming nativo          → streamGenerateContent com alt=sse
  *   3. Raciocínio em inglês      → filtros de parágrafo + prefixo fixo
  *   4. Abertura com metadados    → FIRST_CHARACTER_CONSTRAINT + cleanChunk()
+ *   5. SSE Buffering (B146)      → socket.write direto + TCP_NODELAY + flush
+ *
+ * ANTI-BUFFERING (Build 146):
+ *   O Digital Ocean App Platform usa um proxy Nginx interno que pode segurar
+ *   dados TCP antes de enviá-los ao cliente em lotes (Nagle's Algorithm).
+ *   Três camadas de desbloqueio, em ordem de prioridade:
+ *
+ *   CAMADA A — Headers corretos:
+ *     Cache-Control: no-cache, no-transform   (no-transform é crítico: impede
+ *       que proxies intermediários comprimam/modifiquem o payload SSE)
+ *     X-Accel-Buffering: no                   (instrução direta ao Nginx)
+ *
+ *   CAMADA B — TCP_NODELAY no socket:
+ *     res.socket.setNoDelay(true) desativa o Algoritmo de Nagle no nível TCP.
+ *     Nagle agrupa pacotes pequenos em um único pacote maior para eficiência —
+ *     comportamento correto para HTTP convencional mas catastrófico para SSE,
+ *     onde cada chunk deve sair imediatamente. Com TCP_NODELAY cada write()
+ *     vira um pacote TCP independente, sem esperar por mais dados.
+ *
+ *   CAMADA C — Write direto ao socket (bypass do buffer do Express):
+ *     _writeSseRaw() escreve o frame SSE como string ASCII no socket TCP
+ *     subjacente em vez de usar res.write() (que pode enfileirar no buffer
+ *     interno do stream writable do Node). Garante saída no mesmo tick do
+ *     event loop em que o chunk chegou do Gemini.
  *
  * DEPLOY (Digital Ocean App Platform):
  *   Variável de ambiente obrigatória:
@@ -96,6 +120,46 @@ Analyze the user's query intent immediately and self-assign the strict maximum l
 // ════════════════════════════════════════════════════════════════════════════
 // GENERATION CONFIG
 // ════════════════════════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════════════════════
+// HELPER ANTI-BUFFERING — escrita direta no socket TCP
+//
+// res.write() em Node.js passa pelo buffer interno do stream writable.
+// Em situações de alta carga, o stream pode decidir enfileirar vários
+// writes antes de chamar socket.write() — produzindo o efeito de "bursts".
+//
+// _writeSseRaw() bypassa esse buffer: escreve diretamente no socket TCP,
+// garantindo que cada evento SSE saia no wire imediatamente.
+//
+// Fallback gracioso: se socket não estiver disponível ou já fechado, usa
+// res.write() como caminho alternativo (nunca lança exceção).
+// ════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Escreve um frame SSE diretamente no socket TCP subjacente.
+ * Evita o buffer interno do stream writable do Node/Express.
+ *
+ * @param {import('http').ServerResponse} res - objeto de resposta HTTP
+ * @param {string} frame - string SSE já formatada (ex: "data: {...}\n\n")
+ */
+function _writeSseRaw(res, frame) {
+  if (res.writableEnded) return;
+
+  const socket = res.socket;
+  // Caminho 1: socket ativo → write direto (bypass do buffer Express)
+  if (socket && socket.writable && !socket.destroyed) {
+    try {
+      socket.write(frame, 'utf8');
+      return;
+    } catch (_) {
+      // Socket fechou entre o check e o write → cai no fallback
+    }
+  }
+  // Caminho 2 (fallback): sem socket → usa res.write() convencional
+  try {
+    res.write(frame);
+  } catch (_) { /* res já encerrado */ }
+}
 
 const GENERATION_CONFIG = {
   maxOutputTokens: 3200,
@@ -353,7 +417,8 @@ async function relayStream(res, body, apiKey, attempt = 0) {
 
   function startHeartbeat() {
     heartbeat = setInterval(() => {
-      if (!res.writableEnded) res.write(': ping\n\n');
+      // Build 146: heartbeat também via _writeSseRaw para saída imediata
+      _writeSseRaw(res, ': ping\n\n');
     }, HEARTBEAT_MS);
   }
 
@@ -503,9 +568,9 @@ async function relayStream(res, body, apiKey, attempt = 0) {
 // ── Helpers SSE ───────────────────────────────────────────────────────────────
 
 function _sendSseData(res, payload) {
-  if (!res.writableEnded) {
-    res.write(`data: ${JSON.stringify(payload)}\n\n`);
-  }
+  // Build 146: usa _writeSseRaw para bypass do buffer interno do Express.
+  // Cada evento SSE sai no wire imediatamente, sem esperar outros writes.
+  _writeSseRaw(res, `data: ${JSON.stringify(payload)}\n\n`);
 }
 
 function _sendSseDone(res) {
@@ -688,12 +753,48 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
   log.debug(`[${requestId}] system_instruction len=${systemInstruction.length} useGrounding=${useGrounding}`);
 
   // ── Configura cabeçalhos SSE ──────────────────────────────────────────────
-  res.setHeader('Content-Type',  'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache, no-store');
-  res.setHeader('Connection',    'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no');   // desativa buffer do Nginx
+  // ── Build 146: Headers anti-buffering completos ────────────────────────
+  //
+  // Cache-Control: no-cache, no-transform
+  //   • no-cache: sem cache de resposta SSE em proxies
+  //   • no-transform: CRÍTICO — impede que proxies Nginx/CDN comprimam o
+  //     payload (gzip/deflate em SSE quebra o framing de eventos).
+  //     Anteriormente era "no-store" — que não instrui proxies sobre transform.
+  //
+  // X-Accel-Buffering: no
+  //   Instrução direta ao Nginx para não usar proxy_buffering nesta conexão.
+  //   O Digital Ocean App Platform usa Nginx como proxy reverso interno.
+  //
+  // Transfer-Encoding: chunked
+  //   Força modo chunked explicitamente. Sem Content-Length definido, Node
+  //   já usa chunked por padrão, mas declarar é garantia para proxies.
+  res.setHeader('Content-Type',       'text/event-stream; charset=utf-8');
+  res.setHeader('Cache-Control',      'no-cache, no-transform');
+  res.setHeader('Connection',         'keep-alive');
+  res.setHeader('X-Accel-Buffering',  'no');
+  res.setHeader('Transfer-Encoding',  'chunked');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Request-ID', requestId);
-  res.flushHeaders();                          // envia headers imediatamente
+
+  // ── Build 146: TCP_NODELAY — desativa Algoritmo de Nagle ────────────────
+  //
+  // O Algoritmo de Nagle (RFC 896) agrupa pacotes TCP pequenos em um lote
+  // maior para reduzir overhead de rede. Correto para HTTP REST, mas
+  // catastrófico para SSE: cada chunk do Gemini pode ficar represado até
+  // que o buffer TCP acumule ~1460 bytes (MTU padrão).
+  //
+  // setNoDelay(true) = TCP_NODELAY = cada socket.write() vira um pacote
+  // TCP independente enviado imediatamente, sem esperar outros dados.
+  //
+  // Deve ser chamado ANTES de flushHeaders() para garantir que o handshake
+  // HTTP inicial também seja enviado imediatamente.
+  if (res.socket) {
+    res.socket.setNoDelay(true);
+    log.debug(`[${requestId}] TCP_NODELAY ativado`);
+  }
+
+  // Envia headers imediatamente (antes do primeiro chunk)
+  res.flushHeaders();
 
   // Detecta desconexão do cliente
   req.on('close', () => {
@@ -798,7 +899,7 @@ function sleep(ms) {
 
 app.listen(PORT, '0.0.0.0', () => {
   log.info('══════════════════════════════════════════════════════');
-  log.info('  MedCases Pro — AI Gateway Server v2.0.0');
+  log.info('  MedCases Pro — AI Gateway Server v2.1.0 (Build 146)');
   log.info(`  Porta:         ${PORT}`);
   log.info(`  Ambiente:      ${IS_PROD ? 'production' : 'development'}`);
   log.info(`  Modelo Gemini: ${GEMINI_MODEL}`);

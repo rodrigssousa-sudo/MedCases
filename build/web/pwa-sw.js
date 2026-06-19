@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '39.0.0';
-const CACHE_APP    = 'medcases-app-v39.0.0';  // ← Build 145: SSE gateway client, cacheExtent 2500, NotificationListener scroll-up priority
+const SW_VERSION   = '40.0.0';
+const CACHE_APP    = 'medcases-app-v40.0.0';  // ← Build 146: anti-buffering SSE (fetch nativo Web, TCP_NODELAY, socket.write direto)
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
