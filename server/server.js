@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * MedCases Pro — AI Gateway Server  v2.1.0  (Build 146)
+ * MedCases Pro — AI Gateway Server  v2.2.0  (Build 147)
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * ARQUITETURA:
@@ -17,6 +17,8 @@
  *   3. Raciocínio em inglês      → filtros de parágrafo + prefixo fixo
  *   4. Abertura com metadados    → FIRST_CHARACTER_CONSTRAINT + cleanChunk()
  *   5. SSE Buffering (B146)      → socket.write direto + TCP_NODELAY + flush
+ *   6. CoT Leakage via lista    → ANTI_COGNITION_LEAK_PROMPT simplificado (B147)
+ *   7. Metalinguagem inglesa    → cleanChunk() heurística de idioma (B147)
  *
  * ANTI-BUFFERING (Build 146):
  *   O Digital Ocean App Platform usa um proxy Nginx interno que pode segurar
@@ -86,36 +88,55 @@ const ENDPOINT_STREAM   = `${GEMINI_BASE}:streamGenerateContent?alt=sse`;
 const ENDPOINT_SYNC     = `${GEMINI_BASE}:generateContent`;
 
 // ════════════════════════════════════════════════════════════════════════════
-// ANTI_COGNITION_LEAK_PROMPT — BLINDAGEM CRÍTICA (Build 144)
+// ANTI_COGNITION_LEAK_PROMPT — BLINDAGEM CRÍTICA (Build 147 — redesigned)
 //
 // Injeta como PRIMEIRO BLOCO do system_instruction, antes de qualquer
-// instrução da AiService. Endereça o bug de CoT Leakage diretamente na
-// camada de configuração da API, sem depender do filtro de cliente.
+// instrução da AiService. Endereça o CoT Leakage diretamente na camada
+// de configuração da API, sem depender do filtro de cliente.
 //
-// Estratégia dupla:
+// Estratégia dupla (ambas as camadas atuam em sinergia):
 //   [A] Instrução textual direta no system prompt (ANTI_COGNITION_LEAK_PROMPT)
-//   [B] Filtro de streaming _cleanChunk() descarta padrões CoT residuais
+//       Build 147: redesigned sem DYNAMIC RESPONSE MATRIX numerada — a lista
+//       numerada era o padrão que o modelo recitava literalmente em sobrecarga.
+//   [B] Filtro de streaming cleanChunk() — Build 147: adicionada heurística
+//       de metalinguagem inglesa ([D1] regex estrutural + [D2] density gate).
 //
 // Por que inglês? A instrução de blindagem DEVE estar no idioma nativo do
-// modelo (inglês) para máxima aderência — o próprio prompt solicita que o
-// modelo responda em PT/ES depois.
+// modelo (inglês) para máxima aderência — o prompt do cliente instrui PT/ES.
 // ════════════════════════════════════════════════════════════════════════════
 
-const ANTI_COGNITION_LEAK_PROMPT = `You are the core Clinical Decision Support engine for MedCases Pro. Your responses must be authoritative, highly precise, and strictly concise.
+// ════════════════════════════════════════════════════════════════════════════
+// ANTI_COGNITION_LEAK_PROMPT — Build 147 (redesigned)
+//
+// PROBLEMA ANTERIOR (Build 144-146):
+//   O prompt listava uma "DYNAMIC RESPONSE MATRIX" numerada com LEVEL 1/2/3.
+//   Sob sobrecarga cognitiva, o Gemini 2.5 Flash Lite começava a RECITAR essa
+//   lista em voz alta na resposta ("1. Identify the core request..."),
+//   burlando o cleanChunk() porque não usou <thinking> — usou lista numerada.
+//
+// REDESIGN (Build 147):
+//   1. REMOVIDA completamente a Response Matrix numerada — eliminada a fonte
+//      de "recitação de regras" que o modelo copiava literalmente.
+//   2. ADICIONADA proibição explícita de listar passos de execução ou regras.
+//   3. TETO DE LINHAS agora embutido como fato neutro, não como lista a recitar.
+//   4. SIMPLIFICADO: menos tokens = menos carga cognitiva = menos vazamento.
+//   5. IDIOMA: mantido em inglês (máxima aderência no modelo base), pois o
+//      prompt do cliente (Flutter) já instrui PT/ES em detalhe.
+// ════════════════════════════════════════════════════════════════════════════
 
-[CRITICAL MANDATE: ANTI-COGNITION LEAK & IMMEDIATE INITIALIZATION]
-- DO NOT generate any introductory phrases, greetings, conversational filler, or meta-commentary (e.g., "Sure, here is...", "Let's structure this response").
-- DO NOT display any internal reasoning, chain of thought, planning steps, or translation notes. Process all formatting rules in absolute silence.
-- FIRST CHARACTER CONSTRAINT: The very first character of your output payload MUST be the primary Markdown header or the first emoji of the clinical response. Absolute zero whitespace or setup text before it.
+const ANTI_COGNITION_LEAK_PROMPT = `You are the Clinical Decision Support engine embedded in MedCases Pro, a medical application used exclusively by licensed physicians in Brazil and Latin America. All responses are to physicians, never to patients.
 
-[DYNAMIC RESPONSE MATRIX & LINE LIMITS]
-Analyze the user's query intent immediately and self-assign the strict maximum line limits:
-- LEVEL 1 (Objective Data - Max 12 lines): Drug dosages, weight-based calculations (mg/kg), or rapid drug-drug interactions. Style: Ultra-direct flashcard.
-- LEVEL 2 (Emergency Protocols - Max 18 lines): Acute ER protocols (e.g., Stroke/ACV, Acute Coronary Syndrome, Severe Hyperkalemia). Style: Action checklist.
-- LEVEL 3 (Theoretical Reviews - Max 22 lines): Broad study queries ("Háblame sobre Pericarditis", pathophysiology breakdowns). Style: Fluid yet scannable breakdown.
+ABSOLUTE OUTPUT RULES — violating any of these is a critical failure:
 
-[LANGUAGE COMPLIANCE]
-- Strictly maintain and respect the language context injected by the mobile application framework (Português or Español).`;
+1. ZERO pre-text. Your very first output character must be the opening of the clinical answer itself — a Markdown heading (###) or the first word of the direct clinical response. No greetings, no "Sure", no "Here is", no "Let me", no "I will", no "I need to", no preamble of any kind.
+
+2. YOU ARE FORBIDDEN from listing, describing, or narrating your own execution steps, planning process, formatting rules, or internal guidelines. Do not number or bullet your reasoning. Process all instructions internally and silently — the physician sees only the final clinical output.
+
+3. LANGUAGE: respond entirely in the language used in the system prompt sent by the application (Português or Español). Never respond in English. Never mix languages.
+
+4. LINE BUDGET: keep responses concise. Simple drug facts or doses: max 12 lines. Emergency protocols: max 18 lines. Broad clinical reviews: max 22 lines. Never exceed the budget with filler, repetition, or academic narrative.
+
+5. MARKDOWN ONLY: use clean Markdown headings (###), bold (**drug name**), and bullets (-). No emojis in the structural output unless they appear in the client system prompt's examples.`;
 
 // ════════════════════════════════════════════════════════════════════════════
 // GENERATION CONFIG
@@ -180,40 +201,114 @@ const SAFETY_SETTINGS = [
 ];
 
 // ════════════════════════════════════════════════════════════════════════════
-// FILTRO DE CoT — _cleanChunk()
+// FILTRO DE CoT + HEURÍSTICA DE IDIOMA — cleanChunk()  (Build 147)
 //
-// Camada 2 de defesa: descarta fragmentos SSE que são raciocínio interno
-// vazado, mesmo após as instruções do system prompt.
+// CAMADA 2 DE DEFESA — descarta fragmentos SSE que são:
+//   (A) Raciocínio interno CoT (API flags ou padrões textuais)
+//   (B) Metalinguagem em inglês — o novo vetor de vazamento (Build 147)
 //
-// Padrões detectados:
-//   • thought == true          → CoT explícito do Gemini (API flag)
+// NOVO VETOR (Build 147):
+//   O modelo burlou cleanChunk() porque não usou <thinking> — em vez disso,
+//   gerou uma lista numerada RECITANDO as regras do system prompt em inglês:
+//   "1. Identify the core request... 2. Structure the response..."
+//   Isso passou pela filtragem de prefixos anterior porque "1." não estava
+//   na lista de COT_LEAK_PREFIXES.
+//
+// SOLUÇÃO — Dois detectores novos:
+//   [D1] METALANGUAGE DETECTOR: regex que detecta sentenças em inglês com
+//        alta densidade de stop-words COMBINADAS com palavras-chave de prompt
+//        (request, structure, response, mode, language, format, guidelines).
+//        Estas combinações são o fingerprint de "recitação de instrução".
+//
+//   [D2] ENGLISH DENSITY GATE: heurística refinada (50% → threshold adaptativo)
+//        que considera o tamanho do segmento e a presença de QUALQUER termo
+//        médico (PT ou ES) como âncora de segurança — evita falsos positivos
+//        em casos onde o modelo mistura idiomas com termos técnicos válidos.
+//
+// COMPORTAMENTO DO BUFFER ANTI-VAZAMENTO:
+//   Quando um segmento É detectado como metalinguagem inglesa, o cleanChunk()
+//   retorna '' (string vazia). O relayStream() já trata '' como chunk ignorado
+//   — o frontend NÃO recebe nada, streaming continua transparente até que
+//   chegue conteúdo clínico em PT/ES (ex: "### 1. Conduta Imediata").
+//
+// PADRÕES DETECTADOS (acumulativos, ordem de custo crescente):
+//   • thought == true          → CoT explícito da API Gemini
 //   • thoughtSignature key     → Assinatura criptográfica de CoT
 //   • functionCall key         → Chamada interna de ferramenta
 //   • executableCode key       → Código gerado internamente
 //   • codeExecutionResult key  → Resultado de execução interna
-//   • inlineData key           → Dados binários
-//
-// Padrões textuais em inglês que indicam raciocínio interno:
-//   "I will", "I need to", "Let me", "The user asked", "Given the prompt"...
+//   • inlineData key           → Dados binários embutidos
+//   • <thinking>…</thinking>   → Bloco estruturado de raciocínio
+//   • ```tool_code / thinking  → Bloco de código interno
+//   • COT_LEAK_PREFIXES        → Prefixos de sentença em inglês (i will, let me…)
+//   • METALANGUAGE_RX [D1]     → Recitação de regras/prompt em inglês  ← NOVO
+//   • English density gate [D2]→ Alta proporção de stop-words inglesas  ← REFINADO
 // ════════════════════════════════════════════════════════════════════════════
 
-/** Prefixos de parágrafo que indicam raciocínio interno vazado (inglês) */
+// ── [D1] Regex de metalinguagem inglesa (fingerprint de recitação de prompt) ──
+//
+// Detecta SENTENÇAS (não apenas parágrafos) que combinam:
+//   • Stop-words de planejamento em inglês (I, the, this, will, need, must…)
+//   • + Palavras-chave de prompt/instrução (request, response, structure,
+//     format, language, mode, guidelines, rules, output, provide, ensure,
+//     identify, analyze, consider, generate, follow, based, given)
+//
+// O padrão é formulado como OU-lógico de combinações de alto sinal:
+//   grupo A: pronome/artigo de sujeito ativo
+//   grupo B: verbo modal ou de ação de metalinguagem
+//   grupo C: objeto direto relacionado a instrução/prompt
+//
+// Calibrado para NÃO disparar em texto clínico em inglês legítimo
+// (ex: "SpO2 must be monitored") — por isso exige OBJETO de prompt, não clínico.
+const RX_METALANGUAGE_EN = /\b(?:i(?:'ll| will| need to| should| must| am going to| have to)|(?:the|this|my)\s+(?:user|prompt|request|query|question|response|output|task|instruction|guideline|rule|format|structure|mode|language|approach|goal|plan|step))\b.*?\b(?:provide|ensure|include|address|structure|format|follow|generate|create|identify|analyze|consider|respond|handle|process|organize|determine|present|discuss|mention|describe|detail|explain|note|remember|understand|apply|implement|use|make|start|begin)\b/gi;
+
+// ── Regex complementar: listas numeradas de metalinguagem ──────────────────
+// Detecta especificamente o padrão "1. Identify..." / "2. Structure..."
+// que o modelo gerou recitando a DYNAMIC RESPONSE MATRIX.
+// Gatilho: linha começa com dígito + ponto/parêntese + verbo de metalinguagem em inglês.
+const RX_NUMBERED_METALANG = /^[ \t]*\d+[.)]\s+(?:identify|structure|analyze|consider|provide|ensure|include|address|format|follow|generate|create|respond|handle|process|organize|determine|present|discuss|note|understand|apply|implement|use|start|begin|check|verify|confirm|review|assess|evaluate)/im;
+
+// ── Stop-words de inglês para o density gate ─────────────────────────────────
+// Lista focada em palavras FUNCIONAIS (artigos, preposições, pronomes, auxiliares)
+// que são marcadores confiáveis de inglês nativo vs. termos médicos internacionais
+const RX_ENG_STOPWORDS = /\b(?:the|this|that|these|those|with|from|they|their|there|when|where|what|which|would|could|should|about|after|before|also|some|each|into|than|then|more|over|only|both|other|through|during|including|without|however|therefore|furthermore|additionally|specifically|importantly|regarding|concerning|considering|following|based|will|have|been|has|was|were|are|and|but|for|not|you|your|our|we|can|may|might|shall|its|it)\b/gi;
+
+// ── Palavras-chave de prompt (alto sinal de metalinguagem) ───────────────────
+const RX_PROMPT_KEYWORDS = /\b(?:request|response|output|format|structure|guideline|rule|mode|language|prompt|instruction|task|query|approach|plan|step|goal|user|system|model|template|example|provide|ensure|generate|identify|analyze|consider|respond|organize|determine|present|discuss|implement|apply|follow)\b/gi;
+
+// ── Termos médicos em PT/ES como âncoras de segurança ──────────────────────
+// Se o segmento contém QUALQUER destes → assumir texto clínico legítimo mesmo
+// que tenha palavras em inglês (termos internacionais como SpO2, PEEP, etc.)
+const RX_MED_ANCHOR = /\b(?:dose|dosis|mg|mcg|µg|mL|mEq|UI|bpm|mmHg|EV|VO|SC|IM|SL|IV|BIC|infus[aã]o|infusión|paciente|tratament[oa]|tratamiento|f[aá]rmaco|medicament[oa]|protocolo|urgên?cia|urgencia|clín?ic[oa]|diagnóst?ico|síntoma|sintoma|antibiótico|antibiotico|corticoide|vasopress?or|anticoagul|trombólise|trombólisis|cardiovers[aã]o|desfibril|ressuscit|resucit|ventila[cç][aã]o|ventilación|intuba[cç][aã]o|intubación|sepse|sepsis|choque|shock|lactato|leucócit|leucocit|hemograma|creatinina|potássi|potassio|sódio|sodio|glicemia|glucemia|hemoglob|pressão|presión|frequência|frecuencia|saturação|saturación|débito|debito)\b/i;
+
+/** Prefixos de INÍCIO DE SENTENÇA que indicam CoT/metalinguagem em inglês */
 const COT_LEAK_PREFIXES = [
-  'i will ', "i'll ", 'i need to ', 'i should ', 'i have ',
-  'i am going', 'i must ', 'i want to ',
-  'let me ', "let's ", 'let\'s ',
-  'the user ', 'the prompt ', 'the question ',
+  // Pronome + verbo ativo de metalinguagem
+  'i will ', "i'll ", 'i need to ', 'i should ', 'i have to ',
+  'i am going', 'i must ', 'i want to ', 'i can ', 'i am ',
+  // "Let me / Let's" — geralmente precede planejamento
+  'let me ', "let's ", "let's ",
+  // Referência a artefatos do prompt
+  'the user ', 'the prompt ', 'the question ', 'the request ',
+  'the response ', 'the output ', 'the format ', 'the language ',
+  'the system ', 'the model ', 'the instruction ',
+  // Conectivos de raciocínio em inglês
   'given the ', 'given that ', 'given this ',
-  'based on ', 'since the ',
-  'first, i ', 'now, i ', 'next, i ', 'then, i ',
-  'for each ', 'for the ',
-  'my goal ', 'my approach ', 'my plan ',
-  'this is a ', 'this requires ',
-  'it seems ', 'it looks ',
+  'based on ', 'since the ', 'as per ', 'according to ',
+  // Sequenciadores de lista de passos
+  'first, i ', 'now, i ', 'next, i ', 'then, i ', 'finally, i ',
+  'step 1', 'step 2', 'step 3',
+  // Metalinguagem direta
+  'my goal ', 'my approach ', 'my plan ', 'my task ',
+  'this is a ', 'this requires ', 'this response ',
+  'it seems ', 'it looks like ', 'it appears ',
+  // API / código interno
   'thought:', 'note:', 'tool_code', 'print(google',
   'search_query', 'queries=[',
+  // Metadados proibidos (português/espanhol)
   'confianza clínica:', 'confiança clínica:', 'clinical confidence:',
   'el usuario ', 'el prompt ', 'o usuário ', 'o prompt ',
+  // Conectivos de enumeração de regras
   'a seguir ', 'a continuación ',
 ];
 
@@ -224,7 +319,7 @@ const RX_TOOL_CODE_RAW  = /tool_code\s*\n[\s\S]*?(?=\n\n|$)/gim;
 
 /**
  * Extrai texto limpo de um part do SSE.
- * Retorna null se o part for raciocínio interno.
+ * Retorna null se o part for raciocínio interno (API flags).
  *
  * @param {Object} part - part de um candidate do Gemini
  * @returns {string|null}
@@ -232,7 +327,7 @@ const RX_TOOL_CODE_RAW  = /tool_code\s*\n[\s\S]*?(?=\n\n|$)/gim;
 function extractPartText(part) {
   if (!part || typeof part !== 'object') return null;
 
-  // Descarta flags estruturais de CoT
+  // Descarta flags estruturais de CoT (nível de API)
   if (part.thought === true)                  return null;
   if ('thoughtSignature' in part)             return null;
   if ('functionCall' in part)                 return null;
@@ -248,55 +343,133 @@ function extractPartText(part) {
 }
 
 /**
- * Limpa um fragmento de texto bruto recebido do stream SSE:
- * 1. Remove blocos <thinking>, ```tool_code```, etc.
- * 2. Divide em parágrafos e descarta os que parecem raciocínio interno.
- * 3. Retorna string limpa (pode ser vazia se o chunk inteiro era CoT).
+ * Testa se um segmento de texto é metalinguagem em inglês (recitação de prompt).
  *
- * @param {string} raw - texto bruto do part
- * @returns {string}
+ * Critério composto:
+ *   1. Contém padrão [D1] de metalanguage regex, OU
+ *   2. Começa com lista numerada de verbo de metalinguagem [D1b], OU
+ *   3. Density gate [D2]: stop-words inglesas > 45% das palavras totais
+ *      E palavras-chave de prompt > 10% das palavras totais
+ *      E NENHUM termo médico PT/ES detectado (âncora de segurança)
+ *
+ * O threshold duplo (stop-words + prompt keywords) evita falsos positivos
+ * em frases médicas com terminologia internacional em inglês (SpO2, PEEP…).
+ *
+ * @param {string} segment - segmento de texto a testar
+ * @returns {boolean} true = é metalinguagem inglesa → descartar
+ */
+function _isEnglishMetalanguage(segment) {
+  const trimmed = segment.trim();
+  if (!trimmed) return false;
+
+  // Âncora de segurança: conteúdo médico PT/ES → NUNCA descartar
+  if (RX_MED_ANCHOR.test(trimmed)) {
+    RX_MED_ANCHOR.lastIndex = 0;
+    return false;
+  }
+  RX_MED_ANCHOR.lastIndex = 0;
+
+  // [D1] Regex de metalinguagem estruturada
+  RX_METALANGUAGE_EN.lastIndex = 0;
+  if (RX_METALANGUAGE_EN.test(trimmed)) return true;
+
+  // [D1b] Lista numerada de metalinguagem
+  if (RX_NUMBERED_METALANG.test(trimmed)) return true;
+
+  // [D2] Density gate
+  const words = trimmed.split(/\s+/).filter(w => w.length > 1);
+  if (words.length < 5) return false; // segmento muito curto — não filtrar
+
+  RX_ENG_STOPWORDS.lastIndex = 0;
+  const stopCount = (trimmed.match(RX_ENG_STOPWORDS) || []).length;
+  const stopRatio = stopCount / words.length;
+
+  RX_PROMPT_KEYWORDS.lastIndex = 0;
+  const promptCount = (trimmed.match(RX_PROMPT_KEYWORDS) || []).length;
+  const promptRatio = promptCount / words.length;
+
+  // Threshold: >45% stop-words inglesas E >10% prompt-keywords → metalinguagem
+  return stopRatio > 0.45 && promptRatio > 0.10;
+}
+
+/**
+ * Limpa um fragmento de texto bruto recebido do stream SSE (Build 147).
+ *
+ * Pipeline de filtros em ordem de custo crescente:
+ *   1. Remove blocos estruturados (<thinking>, ```tool_code```)
+ *   2. Divide em segmentos por linha dupla (parágrafos SSE)
+ *   3. Para cada segmento:
+ *      a. Verifica prefixo de CoT em inglês (COT_LEAK_PREFIXES)
+ *      b. Verifica metalinguagem inglesa estruturada [D1] e density gate [D2]
+ *   4. Se TODOS os segmentos foram filtrados E nenhum contém cabeçalho ### →
+ *      retorna '' (buffer mantido — aguarda conteúdo clínico PT/ES)
+ *   5. Se ao menos UM segmento passou → retorna conteúdo limpo
+ *
+ * O retorno de '' é INTENCIONAL: o relayStream() descarta o chunk e continua
+ * aguardando. A resposta clínica começa a fluir quando o modelo produz o
+ * primeiro cabeçalho ### ou bullet em PT/ES.
+ *
+ * @param {string} raw - texto bruto do part SSE
+ * @returns {string} texto limpo (pode ser '' se tudo foi filtrado)
  */
 function cleanChunk(raw) {
   if (!raw || typeof raw !== 'string') return '';
 
   let text = raw;
 
-  // 1. Remove blocos estruturados de CoT/código
+  // ── Passo 1: Remove blocos estruturados de CoT/código ─────────────────────
   text = text.replace(RX_THINKING_BLOCK, '');
   text = text.replace(RX_CODE_BLOCK, '');
   text = text.replace(RX_TOOL_CODE_RAW, '');
 
-  // 2. Filtra parágrafo a parágrafo
-  const paragraphs = text.split(/\n\n+/);
-  const clean = paragraphs.filter(para => {
-    const trimmed = para.trim();
-    if (!trimmed) return false;
+  if (!text.trim()) return '';
+
+  // ── Passo 2: Divide em segmentos (parágrafos ou linhas individuais) ────────
+  // Usa \n\n como delimitador principal mas também processa linhas isoladas
+  // quando o chunk é uma linha única (streaming token-by-token do Gemini).
+  const segments = text.split(/\n\n+/);
+
+  // ── Passo 3: Filtra segmento a segmento ────────────────────────────────────
+  const clean = [];
+
+  for (const seg of segments) {
+    const trimmed = seg.trim();
+    if (!trimmed) continue;
 
     const lower = trimmed.toLowerCase();
 
-    // Descarta parágrafo que começa com padrão de CoT em inglês
+    // [F1] Prefixo de CoT (verificação de string rápida — O(n) nas prefixes)
+    let isCotPrefix = false;
     for (const prefix of COT_LEAK_PREFIXES) {
-      if (lower.startsWith(prefix)) return false;
+      if (lower.startsWith(prefix)) { isCotPrefix = true; break; }
     }
+    if (isCotPrefix) continue;
 
-    // Heurística: >55% palavras genéricas em inglês e sem números/termos médicos
-    const words = trimmed.split(/\s+/);
-    if (words.length > 4) {
-      const engWords = /\b(the|and|or|but|with|from|that|this|will|have|been|they|their|there|when|where|what|which|would|could|should|about|after|before|also|some|each|into|than|then|more|over|only|both|other|these|those|through|during|including|without|however|therefore|furthermore|additionally|specifically|importantly|regarding|concerning|considering|following|based|approach|provide|ensure|include|address|mention|structure|discuss|explain|describe|detail|start|begin|continue|finish|complete|summarize|note|remember|understand|know|think|feel|believe|assume|suppose|consider|determine|decide|choose|use|make|take|give|get|go|come|see|look|try|need|want|ask|tell|say|write|read|find|show|help|work|create|build|develop|implement|design|plan|organize|prepare|manage|handle|process|analyze|evaluate|assess|review|check|test|verify|confirm|ensure|guarantee|achieve|accomplish|succeed|fail|error|issue|problem|solution|answer|response|reply|result|output|input|data|information|content|text|message|question|request|prompt)\b/gi;
-      const engCount = (trimmed.match(engWords) || []).length;
-      const ratio = engCount / words.length;
+    // [F2] Metalinguagem inglesa (regex + density gate)
+    if (_isEnglishMetalanguage(trimmed)) continue;
 
-      const hasMedNums = /\d+\s*(?:mg|mcg|µg|mL|g|UI|h|min|kg|%)/.test(trimmed);
-      const hasMedTerms = /\b(?:dose|dosis|mg|mcg|EV|VO|SC|IM|paciente|patient|tratamento|tratamiento|fármaco|medicamento|protocolo|urgencia|urgência|clínico|clínica|diagnóstico|síntoma|sintoma)\b/i.test(trimmed);
+    clean.push(seg);
+  }
 
-      if (ratio > 0.55 && !hasMedNums && !hasMedTerms) return false;
-    }
-
-    return true;
-  });
-
-  // Se filtrou tudo, retorna original (melhor ter CoT que nada — UI descarta)
-  if (clean.length === 0) return raw.trim();
+  // ── Passo 4: Decisão final ─────────────────────────────────────────────────
+  //
+  // Se filtrou TUDO e nenhum segmento sobrou:
+  //   → retorna '' (vazio intencional — o relayStream descarta este chunk)
+  //   → NÃO retorna o raw original (diferente da versão anterior)
+  //   → Raciocínio: é melhor ter silêncio que vazar metalinguagem para o médico
+  //
+  // Exceção: se o raw contém cabeçalho Markdown (###) ou bullet (-) em
+  //   posição inicial → provavelmente é conteúdo clínico legítimo fragmentado
+  //   (o chunk chegou partido no meio de uma linha). Nesse caso, retorna raw.
+  if (clean.length === 0) {
+    // Verifica se o raw original tem início de conteúdo clínico legítimo
+    const rawTrimmed = raw.trim();
+    const hasMarkdownAnchor = /^#{1,3}\s+\S/.test(rawTrimmed)  // ### Título
+                           || /^-\s+\*?\*?\S/.test(rawTrimmed)  // - **Fármaco**
+                           || /^\*\*\S/.test(rawTrimmed);       // **Negrito direto
+    if (hasMarkdownAnchor) return rawTrimmed;
+    return ''; // descarte silencioso — aguarda próximo chunk com PT/ES
+  }
 
   return clean.join('\n\n').trim();
 }
@@ -866,7 +1039,7 @@ app.get('/health', (_req, res) => {
   res.json({
     status:    'ok',
     service:   'MedCases Pro AI Gateway',
-    version:   '2.0.0',
+    version:   '2.2.0',
     model:     GEMINI_MODEL,
     timestamp: new Date().toISOString(),
     uptime:    Math.floor(process.uptime()),
@@ -899,7 +1072,7 @@ function sleep(ms) {
 
 app.listen(PORT, '0.0.0.0', () => {
   log.info('══════════════════════════════════════════════════════');
-  log.info('  MedCases Pro — AI Gateway Server v2.1.0 (Build 146)');
+  log.info('  MedCases Pro — AI Gateway Server v2.2.0 (Build 147)');
   log.info(`  Porta:         ${PORT}`);
   log.info(`  Ambiente:      ${IS_PROD ? 'production' : 'development'}`);
   log.info(`  Modelo Gemini: ${GEMINI_MODEL}`);

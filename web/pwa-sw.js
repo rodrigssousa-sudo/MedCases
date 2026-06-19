@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '40.0.0';
-const CACHE_APP    = 'medcases-app-v40.0.0';  // ← Build 146: anti-buffering SSE (fetch nativo Web, TCP_NODELAY, socket.write direto)
+const SW_VERSION   = '41.0.0';
+const CACHE_APP    = 'medcases-app-v41.0.0';  // ← Build 147: ANTI_COGNITION_LEAK_PROMPT redesign + cleanChunk() heurística de idioma inglês
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
