@@ -1,0 +1,60 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Digital Ocean App Platform — AI Gateway Service
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# Deploy:
+#   doctl apps create --spec do-app.yaml
+#   doctl apps update <APP_ID> --spec do-app.yaml
+#
+# IMPORTANTE: GEMINI_API_KEY deve ser configurada como secret no painel DO,
+# não em plaintext aqui. Use o painel ou:
+#   doctl apps update <APP_ID> --set-env GEMINI_API_KEY=<value>
+# ══════════════════════════════════════════════════════════════════════════════
+
+name:   medcases-ai-gateway
+region: nyc
+
+services:
+  - name: ai-gateway
+    github:
+      repo:           rodrigssousa-sudo/MedCases
+      branch:         main
+      deploy_on_push: true
+    dockerfile_path: server/Dockerfile
+    http_port:       8080
+    instance_count:  1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+
+    health_check:
+      http_path:              /health
+      initial_delay_seconds:  15
+      period_seconds:         30
+      timeout_seconds:        5
+      success_threshold:      1
+      failure_threshold:      3
+
+    routes:
+      - path: /
+
+    envs:
+      # ── Obrigatória — configurar como SECRET no painel DO ─────────────────
+      - key:   GEMINI_API_KEY
+        scope: RUN_TIME
+        type:  SECRET       # valor definido fora do YAML (painel/CLI)
+
+      # ── Configurações de runtime ──────────────────────────────────────────
+      - key:   PORT
+        value: "8080"
+        scope: RUN_TIME
+
+      - key:   NODE_ENV
+        value: production
+        scope: RUN_TIME
+
+      - key:   LOG_LEVEL
+        value: info
+        scope: RUN_TIME
+
+      - key:   ALLOWED_ORIGIN
+        value: https://medcasespro.com
+        scope: RUN_TIME
