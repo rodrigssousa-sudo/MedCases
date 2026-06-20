@@ -1804,11 +1804,13 @@ class GeminiServiceV2 {
               'Intenta de nuevo en un momento. ⚕ Apoyo educacional.'
           : 'Limite de consultas atingido$cooldownHint. '
               'Tente novamente em instantes. ⚕ Apoio educacional.',
+      // Build 156.2: o médico não configura API — erro genérico de conectividade.
+      // A chave é do app (admin → Firestore), não do usuário individual.
       'api_key_invalid' => isEs
           ? 'No se pudo conectar al asistente. '
-              'Verifica la configuración de la API. ⚕ Apoyo educacional.'
+              'Intenta nuevamente en unos instantes. ⚕ Apoyo educacional.'
           : 'Não foi possível conectar ao assistente. '
-              'Verifique a configuração da API. ⚕ Apoio educacional.',
+              'Tente novamente em instantes. ⚕ Apoio educacional.',
       'timeout' => isEs
           ? '🚨 Conexión Requerida\n\n'
               'La consulta tardó demasiado — posible señal débil en el hospital.\n\n'

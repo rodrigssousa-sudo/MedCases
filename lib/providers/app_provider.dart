@@ -362,15 +362,20 @@ class AppProvider extends ChangeNotifier {
 
   // ── Getters — IA ─────────────────────────────────────────────────────────
   String get openAiKey => _openAiKey;
-  bool get hasAiKey => _openAiKey.isNotEmpty;
+  // Build 156.2: hasAiKey inclui a chave Gemini do app (carregada do Firestore
+  // pelo admin) — não depende mais apenas de _openAiKey (chave OpenAI legada).
+  bool get hasAiKey => _openAiKey.isNotEmpty || GeminiService.hasApiKey;
   bool get aiKeyLoading => _aiKeyLoading;
 
   // ── Getters — Gemini OAuth ────────────────────────────────────────────────
   bool get geminiConnected => _geminiConnected;
   bool get geminiLoading   => _geminiLoading;
   String get geminiEmail   => _geminiEmail;
-  /// true quando qualquer IA real está disponível (OpenAI OU Gemini)
-  bool get hasAnyAi => _openAiKey.isNotEmpty || _geminiConnected;
+  /// true quando qualquer IA real está disponível (chave Gemini do app OU OpenAI legada OU sessão OAuth Gemini)
+  /// Build 156.2: inclui GeminiService.hasApiKey — chave do app carregada silenciosamente
+  /// do Firestore após o login do médico via Google Sign-In / Firebase Auth.
+  /// O médico nunca configura nada manualmente — fluxo 100% automático e invisível.
+  bool get hasAnyAi => GeminiService.hasApiKey || _openAiKey.isNotEmpty || _geminiConnected;
 
   // ── Getters — Modo Offline ────────────────────────────────────────────────
   bool   get offlineMode      => _offlineMode;
@@ -3089,7 +3094,7 @@ class AppProvider extends ChangeNotifier {
 
     // ── Build 156: Client-Side Intelligence — sem gateway intermediário ───
     // AiGatewayService é agora um shim que injeta âncora de modo e delega
-    // para GeminiServiceV2.sendStream() com a chave BYOA local do usuário.
+    // para GeminiServiceV2.sendStream() com a chave do app (carregada do Firestore).
     // Não há servidor intermediário — o Flutter fala direto com o Google.
     debugPrint('[sendAiMessage] Build 156: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — direto Google');
 
@@ -3144,43 +3149,57 @@ class AppProvider extends ChangeNotifier {
       isFirstMessage:     _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
     );
 
-    // Build 156: guard explícito — se a chave BYOA não estiver configurada,
-    // dispara onError imediatamente com mensagem amigável e retorna false.
-    // Isso evita que AiGatewayService.sendStream() receba apiKey vazia
-    // e emita GeminiChunk.error('api_key_invalid') silenciosamente.
-    if (_openAiKey.isEmpty) {
-      debugPrint('[sendAiMessage] Build 156: _openAiKey vazia — abortando stream');
-      _aiStreamActive = false;
-      _aiCallInFlight = false;
-      onError(_lang == 'es'
-          ? 'Configura tu clave de API Gemini para usar el asistente clínico. ⚕ Apoyo educacional.'
-          : 'Configure sua chave de API Gemini para usar o assistente clínico. ⚕ Apoio educacional.');
-      return false;
+    // ── Build 156.2: Resolução automática da chave Gemini ───────────────
+    // A chave NÃO é BYOA do usuário — é a chave do app, salva pelo admin
+    // em app_config/global.apiKey no Firestore e carregada automaticamente
+    // após o login via _loadAiKeyFromFirestore() → GeminiService.setGeminiApiKey().
+    // O médico nunca vê ou configura nada — fluxo 100% invisível.
+    //
+    // Hierarquia de recuperação (igual ao buildAIAnswer):
+    //   1. GeminiService._geminiApiKey (em memória — caminho feliz)
+    //   2. FirestoreService.loadGeminiApiKey() (se saiu da memória por reload)
+    //   3. GeminiService.initFromStorage() (SharedPrefs/localStorage — fallback offline)
+    if (!GeminiService.hasApiKey) {
+      debugPrint('[sendAiMessage] Build 156.2: chave ausente — recuperando automaticamente...');
+      try {
+        final geminiKey = await FirestoreService.loadGeminiApiKey()
+            .timeout(const Duration(seconds: 5));
+        if (geminiKey.isNotEmpty) {
+          GeminiService.setGeminiApiKey(geminiKey);
+          debugPrint('[sendAiMessage] Build 156.2: chave recarregada do Firestore ✓');
+        } else {
+          await GeminiService.initFromStorage();
+          if (GeminiService.hasApiKey) {
+            debugPrint('[sendAiMessage] Build 156.2: chave restaurada do SharedPrefs ✓');
+          }
+        }
+      } catch (e) {
+        debugPrint('[sendAiMessage] Build 156.2: Firestore falhou ($e) — tentando SharedPrefs...');
+        await GeminiService.initFromStorage();
+      }
     }
+
+    // Resolve a chave final — usa GeminiService (chave do app, carregada pelo admin)
+    // em vez de _openAiKey (chave OpenAI, diferente). Se ainda vazia após todas as
+    // tentativas, o GeminiServiceV2 emitirá chunk.error('api_key_invalid') e o
+    // listener abaixo o tratará normalmente — sem mensagem visível ao usuário.
+    final geminiApiKey = GeminiService.apiKeyForLab;
+    debugPrint('[sendAiMessage] Build 156.2: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — chave=${geminiApiKey.isNotEmpty ? "✓" : "✗ vazia"}');
 
     final accumulator = StringBuffer();
 
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
     bool completionFired = false;
 
-    // ── Build 156: Client-Side Intelligence — direto para Google ──────────
-    // O gateway Node.js (server.js) foi desativado — medcasespro.com é
-    // apenas um servidor estático Flutter Web e retorna 405 para POSTs.
-    //
-    // AiGatewayService.sendStream() agora é um shim que:
-    //   1. Injeta a âncora de modo (ModeAnchorEngine) no systemPrompt
-    //   2. Delega para GeminiServiceV2.sendStream() com BYOA key local
-    //   3. Faz SSE direto para generativelanguage.googleapis.com
-    //
-    // A chave _openAiKey é a chave Gemini BYOA do usuário — armazenada
-    // localmente e nunca enviada para nenhum servidor intermediário.
-    debugPrint('[sendAiMessage] Build 156: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} → Google direto');
-
-    // ── Subscreve o stream de chunks via AiGatewayService (shim Build 156) ─
+    // ── Subscreve o stream via AiGatewayService (shim Build 156) ──────────
+    // AiGatewayService.sendStream():
+    //   1. Injeta âncora de modo (ModeAnchorEngine) no systemPrompt
+    //   2. Delega para GeminiServiceV2.sendStream() com chave do app
+    //   3. SSE direto para generativelanguage.googleapis.com — sem intermediário
     final stream = AiGatewayService.sendStream(
       userMessage:  input,
       systemPrompt: systemPrompt,
-      apiKey:       _openAiKey,    // ← BYOA key local — era gerenciada server-side
+      apiKey:       geminiApiKey,  // ← chave do app (admin), carregada do Firestore
       history:      List.unmodifiable(_aiHistory),
       useGrounding: true,
       longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
@@ -3393,10 +3412,14 @@ class AppProvider extends ChangeNotifier {
     );
 
     // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────
-    if (_geminiConnected) {
+    // Build 156.2: usa Gemini sempre que a chave do app estiver disponível,
+    // independente de _geminiConnected (OAuth de conta Google do usuário).
+    // A chave é do APP (admin → Firestore), não do usuário individual.
+    // _geminiConnected = flag de OAuth legada; GeminiService.hasApiKey = real.
+    if (_geminiConnected || GeminiService.hasApiKey) {
       // Garante API Key presente antes de chamar — pode ter sido perdida por reload
       if (!GeminiService.hasApiKey) {
-        debugPrint('[buildAIAnswer] API Key ausente — tentando Firestore...');
+        debugPrint('[buildAIAnswer] API Key ausente — recuperando automaticamente...');
         try {
           final geminiKey = await FirestoreService.loadGeminiApiKey()
               .timeout(const Duration(seconds: 5));
@@ -3472,9 +3495,11 @@ class AppProvider extends ChangeNotifier {
       // caia em um case conhecido, eliminando risco de Null check operator.
       switch (geminiResult.errorCode ?? 'unknown') {
         case 'api_key_invalid':
+          // Build 156.2: o médico não configura API — mensagem genérica de erro temporário.
+          // Se a chave do app (admin/Firestore) estiver inválida, sair silenciosamente.
           return _lang == 'es'
-              ? 'No se pudo conectar al asistente clínico. Verifica la configuración de la API. ⚕ Apoyo educacional.'
-              : 'Não foi possível conectar ao assistente clínico. Verifique a configuração da API. ⚕ Apoio educacional.';
+              ? 'No se pudo conectar al asistente clínico. Intenta nuevamente en unos instantes. ⚕ Apoyo educacional.'
+              : 'Não foi possível conectar ao assistente clínico. Tente novamente em instantes. ⚕ Apoio educacional.';
         case 'quota':
           return _lang == 'es'
               ? 'Límite de consultas alcanzado. Intenta nuevamente en unos minutos. ⚕ Apoyo educacional.'
@@ -3503,6 +3528,8 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Passo 6: OpenAI (legado) ───────────────────────────────────────────
+    // Build 156.2: se chegou aqui sem Gemini disponível, tenta OpenAI legada.
+    // Fallback silencioso — sem mensagem de erro visível ao médico.
     if (_openAiKey.isEmpty) {
       final localFallback = _buildLocalAnswer(input);
       final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
@@ -3510,8 +3537,8 @@ class AppProvider extends ChangeNotifier {
           localFallback.startsWith('INSTRUCCION_INTERNA');
       return isInternalContext
           ? (_lang == 'es'
-              ? 'Hola. Para consultas clínicas, asegúrate de tener la API configurada. Puedo ayudarte con protocolos, fármacos y casos clínicos. ⚕ Apoyo educacional.'
-              : 'Olá. Para consultas clínicas, certifique-se de ter a API configurada. Posso ajudar com protocolos, fármacos e casos clínicos. ⚕ Apoio educacional.')
+              ? 'Hola. Puedo ayudarte con protocolos, fármacos y casos clínicos. ⚕ Apoyo educacional.'
+              : 'Olá. Posso ajudar com protocolos, fármacos e casos clínicos. ⚕ Apoio educacional.')
           : localFallback;
     }
 

@@ -9,7 +9,7 @@
 // │  Flutter Web e retorna 405 Method Not Allowed para qualquer POST.       │
 // │                                                                         │
 // │  NOVA ARQUITETURA (Serverless / Descentralizado):                       │
-// │    Flutter → generativelanguage.googleapis.com (direto, com BYOA key)  │
+// │    Flutter → generativelanguage.googleapis.com (direto, chave do app)  │
 // │    GeminiServiceV2.sendStream() é o canal principal de novo.            │
 // └─────────────────────────────────────────────────────────────────────────┘
 //
@@ -40,7 +40,7 @@
 //     → AiGatewayService.sendStream()            [shim]
 //       → ModeAnchorEngine.injectModeAnchor()   [injeta âncora de modo]
 //       → GeminiServiceV2.sendStream()           [SSE direto para Google]
-//         → generativelanguage.googleapis.com   [API Google — BYOA]
+//         → generativelanguage.googleapis.com   [API Google — chave do app]
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'dart:async';
@@ -176,7 +176,7 @@ class AiGatewayService {
   static set forceGateway(bool _) {} // no-op
 
   /// Build 156: isConfigured é sempre true — sem pré-requisito de servidor.
-  /// A chave BYOA é validada no momento da chamada via GeminiServiceV2.
+  /// A chave é validada no momento da chamada via GeminiServiceV2.
   static bool get isConfigured => true;
 
   /// Build 156: configure() é no-op — URL de gateway não existe mais.
@@ -196,20 +196,25 @@ class AiGatewayService {
   ///
   /// [userMessage]  — pergunta clínica do usuário
   /// [systemPrompt] — prompt base montado pelo AiService (sem âncora)
-  /// [apiKey]       — chave Gemini BYOA do usuário (NOVO parâmetro Build 156)
+  /// [apiKey]       — chave Gemini do app, carregada do Firestore pelo admin.
+  ///                   Nunca é inserida manualmente pelo médico — fluxo invisível.
   /// [history]      — histórico de turnos [{role, content}]
   /// [useGrounding] — repassado ao GeminiServiceV2 (Google Search Grounding)
   /// [longResponse] — false=Motor Plantão / true=Motor Estudos
   static Stream<GeminiChunk> sendStream({
     required String userMessage,
     required String systemPrompt,
-    required String apiKey,                // ← NOVO em Build 156 (era server-side)
+    required String apiKey,
     List<Map<String, String>> history = const [],
     bool useGrounding = true,
     bool longResponse = false,
   }) {
+    // Chave vazia: passa o erro para o GeminiServiceV2 que já tem
+    // handler robusto — sem mensagem visível ao médico.
+    // O app_provider já tentou todas as formas de recuperação automática
+    // antes de chegar aqui (Firestore → SharedPrefs → localStorage).
     if (apiKey.isEmpty) {
-      debugPrint('[AiGatewayService] Build 156: apiKey vazia → erro');
+      debugPrint('[AiGatewayService] chave ausente após tentativas de recuperação → api_key_invalid');
       return Stream.value(GeminiChunk.error('api_key_invalid'));
     }
 
