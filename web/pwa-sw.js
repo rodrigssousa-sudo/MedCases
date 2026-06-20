@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '45.0.0';
-const CACHE_APP    = 'medcases-app-v45.0.0';  // ← Build 151: PROMPT_MODO_PLANTAO / PROMPT_MODO_ESTUDO monolíticos isolados
+const SW_VERSION   = '46.0.0';
+const CACHE_APP    = 'medcases-app-v46.0.0';  // ← Build 152: Flutter state-binding fix _ResponseModeToggle prop value + explicit setState
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)

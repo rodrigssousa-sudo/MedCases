@@ -1813,12 +1813,17 @@ class _AiScreenState extends State<AiScreen> {
             : const SizedBox.shrink(),
       ),
 
-      // ── Motor de Partida — toggle Plantão / Estudos (Build 149) ──────────
+      // ── Motor de Partida — toggle Plantão / Estudos (Build 149, fix B152) ──
       _ResponseModeToggle(
-        longResponse: _longResponse,
+        value: _longResponse,          // Build 152: prop renamed value (binding fix)
         dark: dark,
         lang: p.lang,
-        onChanged: (val) => setState(() => _longResponse = val),
+        onChanged: (newValue) {        // Build 152: explicit block garante setState + log
+          setState(() {
+            _longResponse = newValue;
+          });
+          debugPrint('[MedCases UI] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} (longResponse=$newValue)');
+        },
       ),
 
       // ── Barra de input — centralizada no desktop ───────────────────────
@@ -4400,13 +4405,13 @@ class _AudioWave extends StatelessWidget {
 // Mantém estado em _AiScreenState._longResponse e passa ao sendAiMessage().
 // ─────────────────────────────────────────────────────────────────────────────
 class _ResponseModeToggle extends StatelessWidget {
-  final bool longResponse;
+  final bool value;        // Build 152: renamed from longResponse → value (state-binding fix)
   final bool dark;
   final String lang;
   final ValueChanged<bool> onChanged;
 
   const _ResponseModeToggle({
-    required this.longResponse,
+    required this.value,
     required this.dark,
     required this.lang,
     required this.onChanged,
@@ -4488,13 +4493,13 @@ class _ResponseModeToggle extends StatelessWidget {
                 children: [
                   _segment(
                     label: labelGuardia,
-                    isActive: !longResponse,
+                    isActive: !value,
                     isLeft: true,
                     onTap: () => onChanged(false),
                   ),
                   _segment(
                     label: labelEstudio,
-                    isActive: longResponse,
+                    isActive: value,
                     isLeft: false,
                     onTap: () => onChanged(true),
                   ),
