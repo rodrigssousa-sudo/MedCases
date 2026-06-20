@@ -3144,9 +3144,20 @@ class AppProvider extends ChangeNotifier {
       isFirstMessage:     _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
     );
 
-    // Build 156: a _openAiKey (BYOA Gemini key) é a chave local do usuário.
-    // É passada diretamente para AiGatewayService.sendStream() que a repassa
-    // para GeminiServiceV2. Sem servidor intermediário. Sem gateway.
+    // Build 156: guard explícito — se a chave BYOA não estiver configurada,
+    // dispara onError imediatamente com mensagem amigável e retorna false.
+    // Isso evita que AiGatewayService.sendStream() receba apiKey vazia
+    // e emita GeminiChunk.error('api_key_invalid') silenciosamente.
+    if (_openAiKey.isEmpty) {
+      debugPrint('[sendAiMessage] Build 156: _openAiKey vazia — abortando stream');
+      _aiStreamActive = false;
+      _aiCallInFlight = false;
+      onError(_lang == 'es'
+          ? 'Configura tu clave de API Gemini para usar el asistente clínico. ⚕ Apoyo educacional.'
+          : 'Configure sua chave de API Gemini para usar o assistente clínico. ⚕ Apoio educacional.');
+      return false;
+    }
+
     final accumulator = StringBuffer();
 
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
@@ -3456,7 +3467,10 @@ class AppProvider extends ChangeNotifier {
           localFallback.startsWith('INSTRUCAO_INTERNA') ||
           localFallback.startsWith('INSTRUCCION_INTERNA');
 
-      switch (geminiResult.errorCode) {
+      // Build 156: null-safe switch — errorCode é String? e pode ser null
+      // em chunks malformados. Usar ?? 'unknown' garante que o switch sempre
+      // caia em um case conhecido, eliminando risco de Null check operator.
+      switch (geminiResult.errorCode ?? 'unknown') {
         case 'api_key_invalid':
           return _lang == 'es'
               ? 'No se pudo conectar al asistente clínico. Verifica la configuración de la API. ⚕ Apoyo educacional.'
@@ -3479,7 +3493,7 @@ class AppProvider extends ChangeNotifier {
                   : 'Não consegui processar essa consulta. Pode reformulá-la com mais contexto clínico? ⚕ Apoio educacional.')
               : localFallback;
         default:
-          // Erro desconhecido sem texto bruto → localFallback (conteúdo médico local)
+          // Erro desconhecido ou null → localFallback (conteúdo médico local)
           return isInternalContext
               ? (_lang == 'es'
                   ? 'No pude procesar esa consulta. ¿Puedes reformularla con más contexto clínico? ⚕ Apoyo educacional.'
@@ -3510,7 +3524,8 @@ class AppProvider extends ChangeNotifier {
     );
 
     if (result.isError) {
-      switch (result.errorCode) {
+      // Build 156: null-safe switch — errorCode é String? no AiResult também
+      switch (result.errorCode ?? 'unknown') {
         case 'invalid_key':
           return _lang == 'es'
               ? 'Clave de API inválida. Verifica la configuración en el menú. ⚕ Apoyo educacional.'

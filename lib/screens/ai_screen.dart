@@ -1823,10 +1823,11 @@ class _AiScreenState extends State<AiScreen> {
           setState(() {
             _longResponse = newValue;
           });
-          // Build 153: limpar histórico ao trocar de modo evita que o Gemini
+          // Build 153/156: limpar histórico ao trocar de modo evita que o Gemini
           // use respostas do modo antigo para calibrar o estilo do novo modo.
-          // O MODE ANCHOR do servidor já ancora o comportamento; o reset do
-          // histórico garante contexto limpo para a primeira mensagem do novo modo.
+          // Build 156: o MODE ANCHOR agora é injetado client-side via ModeAnchorEngine
+          // (ai_gateway_service.dart) — não mais pelo servidor Node.js.
+          // O reset do histórico garante contexto limpo para a primeira mensagem.
           p.clearAiHistory();
           debugPrint('[MedCases UI] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} — histórico limpo para calibração de modo.');
         },
@@ -4400,12 +4401,16 @@ class _AudioWave extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Motor de Partida — toggle de modo de resposta (Build 149)
+// Motor de Partida — toggle de modo de resposta (Build 149, atualizado B156)
 //
 // Dois modos mutuamente exclusivos exibidos como pill-toggle compacto:
-//   🏥 Plantão  → longResponse=false → flashcard ≤12 linhas (padrão)
-//   📖 Estudos  → longResponse=true  → revisão técnica 22-24 linhas
+//   🏥 Plantão  → longResponse=false → ModeAnchorEngine injeta MODE_ANCHOR_PLANTAO
+//                  → flashcard ≤14 linhas, 🟥 obrigatório, zero enciclopédia
+//   📖 Estudos  → longResponse=true  → ModeAnchorEngine injeta MODE_ANCHOR_ESTUDO
+//                  → revisão técnica ≤24 linhas, RAG Override Rule ativa
 //
+// Build 156: os motores vivem no Dart (ModeAnchorEngine em ai_gateway_service.dart),
+// não mais em rotas separadas do servidor Node.js.
 // Design: pill com dois segmentos, estado ativo em gradiente teal.
 // Posicionado entre o carrossel de sugestões e a barra de input.
 // Mantém estado em _AiScreenState._longResponse e passa ao sendAiMessage().

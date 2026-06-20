@@ -39,7 +39,8 @@ import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
 import 'services/activity_service.dart';
 import 'services/gemini_service.dart';
-import 'services/ai_gateway_service.dart';  // Build 155.2: gateway sempre primário
+// ai_gateway_service.dart — Build 156: importado apenas como shim de compatibilidade.
+// O gateway Node.js foi desativado; o shim delega para GeminiServiceV2 (BYOA direto).
 import 'services/notification_service.dart';
 import 'services/update_service.dart';
 import 'widgets/brand_mark.dart';
@@ -103,18 +104,14 @@ Future<void> _bootInBackground(AppProvider provider) async {
   } catch (_) {}
 
   // 2. Gemini key do storage local (síncrono, sem rede)
-  // Nota: a key local é usada exclusivamente para o Lab (análise de exames).
-  // O fluxo de chat principal usa o AiGatewayService — sem key no cliente.
+  // Build 156: a key BYOA é usada tanto para o Lab quanto para o chat principal.
+  // GeminiServiceV2.sendStream() recebe a key por parâmetro em cada chamada.
+  // GeminiService.initFromStorage() carrega a key do SharedPreferences/LocalStorage.
   try {
     await GeminiService.initFromStorage().timeout(const Duration(seconds: 2));
   } catch (_) {}
-
-  // 2c. Build 155.2: AiGatewayService — canal primário e único para chat IA
-  // A URL é hardcoded em kAiGatewayBaseUrl (ai_gateway_service.dart).
-  // Nenhuma chave de API é necessária no cliente — gerenciada server-side.
-  // Esta chamada é um no-op se a URL já foi configurada (idempotente).
-  AiGatewayService.configure(baseUrl: kAiGatewayBaseUrl);
-  debugPrint('[MedCases] AiGatewayService configurado → $kAiGatewayBaseUrl');
+  // Build 156: AiGatewayService.configure() REMOVIDO — gateway Node.js desativado.
+  // O Flutter fala diretamente com generativelanguage.googleapis.com (BYOA).
 
   // 2b. NotificationService — sem await para não atrasar boot; timezone init
   //     é síncrono mas leve (~20ms). Não faz nada no Web.
