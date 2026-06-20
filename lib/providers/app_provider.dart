@@ -3096,7 +3096,7 @@ class AppProvider extends ChangeNotifier {
     // AiGatewayService é agora um shim que injeta âncora de modo e delega
     // para GeminiServiceV2.sendStream() com a chave do app (carregada do Firestore).
     // Não há servidor intermediário — o Flutter fala direto com o Google.
-    debugPrint('[sendAiMessage] Build 156: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — direto Google');
+    debugPrint('[sendAiMessage] Build 157: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — direto Google');
 
     // ── Streaming via AiGatewayService ────────────────────────────────────
     _aiStreamActive = true;
@@ -3160,21 +3160,21 @@ class AppProvider extends ChangeNotifier {
     //   2. FirestoreService.loadGeminiApiKey() (se saiu da memória por reload)
     //   3. GeminiService.initFromStorage() (SharedPrefs/localStorage — fallback offline)
     if (!GeminiService.hasApiKey) {
-      debugPrint('[sendAiMessage] Build 156.2: chave ausente — recuperando automaticamente...');
+      debugPrint('[sendAiMessage] Build 157: chave ausente — recuperando automaticamente...');
       try {
         final geminiKey = await FirestoreService.loadGeminiApiKey()
             .timeout(const Duration(seconds: 5));
         if (geminiKey.isNotEmpty) {
           GeminiService.setGeminiApiKey(geminiKey);
-          debugPrint('[sendAiMessage] Build 156.2: chave recarregada do Firestore ✓');
+          debugPrint('[sendAiMessage] Build 157: chave recarregada do Firestore ✓');
         } else {
           await GeminiService.initFromStorage();
           if (GeminiService.hasApiKey) {
-            debugPrint('[sendAiMessage] Build 156.2: chave restaurada do SharedPrefs ✓');
+            debugPrint('[sendAiMessage] Build 157: chave restaurada do SharedPrefs ✓');
           }
         }
       } catch (e) {
-        debugPrint('[sendAiMessage] Build 156.2: Firestore falhou ($e) — tentando SharedPrefs...');
+        debugPrint('[sendAiMessage] Build 157: Firestore falhou ($e) — tentando SharedPrefs...');
         await GeminiService.initFromStorage();
       }
     }
@@ -3184,7 +3184,7 @@ class AppProvider extends ChangeNotifier {
     // tentativas, o GeminiServiceV2 emitirá chunk.error('api_key_invalid') e o
     // listener abaixo o tratará normalmente — sem mensagem visível ao usuário.
     final geminiApiKey = GeminiService.apiKeyForLab;
-    debugPrint('[sendAiMessage] Build 156.2: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — chave=${geminiApiKey.isNotEmpty ? "✓" : "✗ vazia"}');
+    debugPrint('[sendAiMessage] Build 157: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — chave=${geminiApiKey.isNotEmpty ? "✓" : "✗ vazia"}');
 
     final accumulator = StringBuffer();
 

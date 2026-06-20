@@ -192,7 +192,7 @@ const String _modeAnchorEstudo =
     '\n';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ModeAnchorEngine — Injeção de âncora de modo (Build 156)
+// ModeAnchorEngine — Injeção de âncora de modo (Build 157)
 // ─────────────────────────────────────────────────────────────────────────────
 class ModeAnchorEngine {
   ModeAnchorEngine._(); // utilitário estático
@@ -210,7 +210,7 @@ class ModeAnchorEngine {
   }) {
     final anchor = longResponse ? _modeAnchorEstudo : _modeAnchorPlantao;
     debugPrint(
-      '[ModeAnchorEngine] motor=${longResponse ? "ESTUDO" : "PLANTÃO"} '
+      '[ModeAnchorEngine] Build 157: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} '
       'injetado (${anchor.length} chars)',
     );
     return '$anchor\n$systemPrompt';
@@ -218,7 +218,7 @@ class ModeAnchorEngine {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// AiGatewayService — Shim de compatibilidade reversa (Build 156)
+// AiGatewayService — Shim de compatibilidade reversa (Build 157)
 //
 // Mantém a interface pública exata do Build 155.2 para zero breaking changes
 // em app_provider.dart e qualquer outro arquivo que referencie esta classe.
@@ -231,19 +231,19 @@ class AiGatewayService {
 
   // ── Propriedades de legado ─────────────────────────────────────────────────
 
-  /// Build 156: sempre false — gateway Node.js desativado.
+  /// Build 157: sempre false — gateway Node.js desativado.
   static bool get forceGateway => false;
   // ignore: avoid_setters_without_getters
   static set forceGateway(bool _) {} // no-op
 
-  /// Build 156: isConfigured é sempre true — sem pré-requisito de servidor.
+  /// Build 157: isConfigured é sempre true — sem pré-requisito de servidor.
   /// A chave é validada no momento da chamada via GeminiServiceV2.
   static bool get isConfigured => true;
 
-  /// Build 156: configure() é no-op — URL de gateway não existe mais.
+  /// Build 157: configure() é no-op — URL de gateway não existe mais.
   static void configure({required String baseUrl}) {
     debugPrint(
-      '[AiGatewayService] Build 156: configure() ignorado — '
+      '[AiGatewayService] Build 157: configure() ignorado — '
       'gateway desativado. Flutter fala direto com Google.',
     );
   }
@@ -252,7 +252,7 @@ class AiGatewayService {
 
   /// Envia mensagem ao Gemini com motor selecionado.
   ///
-  /// Build 156: delega para ModeAnchorEngine + GeminiServiceV2.sendStream().
+  /// Build 157: delega para ModeAnchorEngine + GeminiServiceV2.sendStream().
   /// A âncora de modo é injetada internamente no [systemPrompt].
   ///
   /// [userMessage]  — pergunta clínica do usuário
@@ -287,7 +287,7 @@ class AiGatewayService {
 
     final motor = longResponse ? 'ESTUDO' : 'PLANTÃO';
     debugPrint(
-      '[AiGatewayService] Build 156: motor=$motor → '
+      '[AiGatewayService] Build 157: motor=$motor → '
       'GeminiServiceV2.sendStream() direto',
     );
 

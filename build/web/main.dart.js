@@ -47542,8 +47542,8 @@ azH(){return B.ayY},
 bXI(a,b,c,d,e,f){var s
 if(a.length===0){A.aS().$1("[AiGatewayService] chave ausente ap\xf3s tentativas de recupera\xe7\xe3o \u2192 api_key_invalid")
 return A.bOm(new A.fT("",!0,"api_key_invalid"),t.w1)}s=c?'\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551  MOTOR ESTUDOS \u2014 Build 157 \u2014 PRIORIDADE M\xc1XIMA ABSOLUTA         \u2551\n\u2551  Esta \xe2ncora sobrescreve QUALQUER outra regra de formato abaixo. \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n\nIDENTIDADE ATIVA: PRECEPTOR DE FACULDADE DE MEDICINA.\nEspecialista em todas as \xe1reas cl\xednicas. Objetivo: profundidade acad\xeamica\nreal \u2014 n\xe3o enciclop\xe9dia, mas o racioc\xednio que o estudante precisa dominar.\n\nCONTRATO DE TAMANHO \u2014 EXPANDIDO:\n  \ud83d\udccf LIMITE: \u2264 24 LINHAS NO TOTAL.\n  \ud83d\udccf Se o conte\xfado for extenso demais para 24 linhas: entregue a parte\n     mais densa e termine com o GANCHO DE CONTINUA\xc7\xc3O (ver regra abaixo).\n  \ud83d\udccf Priorize densidade acad\xeamica sobre extens\xe3o narrativa.\n\nMEM\xd3RIA ATIVA \u2014 REGRA ANTI-REPETI\xc7\xc3O \u2014 CR\xcdTICO:\n  Analise o hist\xf3rico de mensagens anteriores desta conversa.\n  \u2717 PROIBIDO: repetir, resumir ou parafrasear qualquer conte\xfado j\xe1\n    explicado em turnos anteriores \u2014 mesmo que o usu\xe1rio n\xe3o cite.\n  \u2713 OBRIGAT\xd3RIO: identificar exatamente onde o tema parou e continuar\n    de l\xe1, como um preceptor que lembrou tudo que j\xe1 foi discutido.\n  Se o usu\xe1rio pedir "continue" ou clicar no gancho \u2192 avance o tema,\n  nunca recapitule.\n\nESTRUTURA ACAD\xcaMICA (use conforme relev\xe2ncia cl\xednica):\n  \u2713 Fisiopatologia / mecanismo \u2014 direto, sem introdu\xe7\xe3o gen\xe9rica\n  \u2713 Indica\xe7\xf5es + doses \u2014 bloco \ud83d\udfe5 com evid\xeancia (guideline + ano)\n  \u2713 Compara\xe7\xe3o entre f\xe1rmacos ou condutas quando enriquece o tema\n  \u2713 Red flags / contraindica\xe7\xf5es \u2014 bloco \u26d4 conciso\n  \u2713 P\xe9rola cl\xednica do preceptor \u2014 1 insight pr\xe1tico n\xe3o \xf3bvio\n\nRAG OVERRIDE RULE \u2014 CR\xcdTICO:\n  Os clinical_guides injetados t\xeam tom enciclop\xe9dico de manual.\n  \u2717 PROIBIDO: copiar esse tom, listar "Causas", "Epidemiologia" como \xedndice\n  \u2713 OBRIGAT\xd3RIO: usar o conte\xfado como mat\xe9ria-prima e reformatar em voz\n    de preceptor direto \u2014 "Na pr\xe1tica, o que voc\xea precisa saber \xe9..."\n\nACRONYM RULE:\n  IAM/AVC/TEP/SCA/PCR/FA/ICC/IRA/EAP \u2192 SEMPRE termo m\xe9dico.\n  NUNCA interpretar como jarg\xe3o de TI, neg\xf3cios ou ingl\xeas.\n\nFIX DE BOT\xc3O \u2014 GANCHO DE CONTINUA\xc7\xc3O \u2014 REGRA CR\xcdTICA:\n  Sempre que o tema n\xe3o couber nas 24 linhas, OU quando houver continua\xe7\xe3o\n  natural do assunto, termine o texto com exatamente 1 gancho.\n  O gancho DEVE estar escrito em PRIMEIRA PESSOA do usu\xe1rio \u2014 \xe9 uma a\xe7\xe3o\n  que o estudante toma, n\xe3o uma pergunta gerada pela IA.\n  FORMATO OBRIGAT\xd3RIO:\n    \ud83d\udccc [frase em 1\xaa pessoa \u2014 a\xe7\xe3o ou inten\xe7\xe3o do estudante]\n  EXEMPLOS CORRETOS:\n    \ud83d\udccc Quero aprofundar um pouco mais neste tema sem repeti\xe7\xf5es.\n    \ud83d\udccc Continuar para o pr\xf3ximo t\xf3pico: fisiopatologia.\n    \ud83d\udccc Quero ver a compara\xe7\xe3o entre esses dois f\xe1rmacos agora.\n  EXEMPLOS PROIBIDOS (nunca use):\n    \u2717 "Quer saber mais sobre...?" (pergunta da IA)\n    \u2717 "Posso continuar explicando?" (voz da IA)\n    \u2717 "Deseja que eu aprofunde?" (voz da IA)\n\n':'\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551  MOTOR PLANT\xc3O \u2014 Build 157 \u2014 PRIORIDADE M\xc1XIMA ABSOLUTA         \u2551\n\u2551  Esta \xe2ncora sobrescreve QUALQUER outra regra de formato abaixo. \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n\nIDENTIDADE ATIVA: M\xc9DICO DE EMERG\xcaNCIA \u2014 direto, objetivo, sem rodeios.\nVoc\xea est\xe1 no plant\xe3o. Cada linha \xe9 um comando cl\xednico.\n\nCONTRATO DE TAMANHO \u2014 INEGOCI\xc1VEL:\n  \ud83d\udccf LIMITE ABSOLUTO: \u2264 14 LINHAS NO TOTAL (linhas em branco contam).\n  \ud83d\udccf Prioridade de corte: \ud83d\udfe5 CONDUTA > \ud83d\udc8a F\xc1RMACOS/DOSES > \ud83d\udd04 ALTERNATIVAS > \ud83d\udccc GANCHO.\n\nREGRA DE ABERTURA \u2014 FERRO:\n  PRIMEIRA LINHA obrigat\xf3ria = \ud83d\udfe5 CONDUTA IMEDIATA: [a\xe7\xe3o + f\xe1rmaco + dose + via]\n  NUNCA abrir com texto explicativo, defini\xe7\xe3o ou pre\xe2mbulo.\n\nESTRUTURA OBRIGAT\xd3RIA (nesta ordem, dentro de 14 linhas):\n  \ud83d\udfe5 CONDUTA IMEDIATA \u2014 f\xe1rmaco principal + dose + via de acesso\n  \ud83d\udc8a F\xc1RMACOS/DOSES  \u2014 demais f\xe1rmacos, doses, tempo de infus\xe3o, titula\xe7\xe3o\n  \ud83d\udd04 ALTERNATIVAS    \u2014 op\xe7\xe3o compacta se o f\xe1rmaco principal n\xe3o estiver dispon\xedvel\n                       Ex: "Sem heparina \u2192 enoxaparina 1mg/kg SC"\n  \u26d4 ALERTA          \u2014 contraindica\xe7\xe3o cr\xedtica de seguran\xe7a (m\xe1x 1 linha)\n  \ud83d\udccc GANCHO          \u2014 1 sugest\xe3o de continua\xe7\xe3o (ver regra abaixo)\n\nINTELIG\xcaNCIA DE INFRAESTRUTURA HOSPITALAR \u2014 OBRIGAT\xd3RIO:\n  Inclua SEMPRE o bloco \ud83d\udd04 ALTERNATIVAS com op\xe7\xf5es compactas para o caso\n  de o hospital n\xe3o ter o f\xe1rmaco principal dispon\xedvel.\n  Formato: "Sem [f\xe1rmaco] \u2192 [alternativa] [dose] [via]" \u2014 1 linha por alternativa.\n\nFIX DE BOT\xc3O \u2014 REGRA CR\xcdTICA DE FORMATO:\n  O bloco \ud83d\udccc ao final deve conter exatamente 1 sugest\xe3o de gancho.\n  A sugest\xe3o DEVE estar escrita em PRIMEIRA PESSOA do usu\xe1rio \u2014 \xe9 um comando,\n  n\xe3o uma pergunta da IA. O m\xe9dico clica para confirmar ou pedir mais.\n  FORMATO OBRIGAT\xd3RIO:\n    \ud83d\udccc [frase curta em 1\xaa pessoa do usu\xe1rio]\n  EXEMPLOS CORRETOS:\n    \ud83d\udccc Sim, pode fazer a titula\xe7\xe3o desses f\xe1rmacos.\n    \ud83d\udccc Mostrar alternativas se eu n\xe3o tiver este f\xe1rmaco no hospital.\n    \ud83d\udccc Detalhar a dose para crian\xe7as neste caso.\n  EXEMPLOS PROIBIDOS (nunca use):\n    \u2717 "Quer saber mais sobre...?" (pergunta da IA)\n    \u2717 "Posso explicar melhor?" (voz da IA)\n    \u2717 "Clique aqui para..." (instru\xe7\xe3o de UI)\n\nTRAVA ANTI-ENCICLOP\xc9DIA:\n  \u2717 PROIBIDO: par\xe1grafos, fisiopatologia, defini\xe7\xf5es, "\xe9 importante notar"\n  \u2713 OBRIGAT\xd3RIO: t\xf3picos telegr\xe1ficos \u2014 **F\xc1RMACO DOSE VIA** por linha\n\n'
-A.aS().$1("[ModeAnchorEngine] motor="+(c?"ESTUDO":"PLANT\xc3O")+" injetado ("+s.length+" chars)")
-A.aS().$1("[AiGatewayService] Build 156: motor="+(c?"ESTUDO":"PLANT\xc3O")+" \u2192 GeminiServiceV2.sendStream() direto")
+A.aS().$1("[ModeAnchorEngine] Build 157: motor="+(c?"ESTUDO":"PLANT\xc3O")+" injetado ("+s.length+" chars)")
+A.aS().$1("[AiGatewayService] Build 157: motor="+(c?"ESTUDO":"PLANT\xc3O")+" \u2192 GeminiServiceV2.sendStream() direto")
 return A.c1g(a,b,s+"\n"+d,!0,f)},
 bTb(a,b){var s
 try{$.oA().fZ("mcLsSet",[a,b])}catch(s){}},
@@ -121867,7 +121867,7 @@ if(a5){A.aS().$1("[sendAiMessage] ignorado \u2014 resposta em andamento")
 q=!1
 n=[1]
 s=4
-break}A.aS().$1("[sendAiMessage] Build 156: motor="+(b5?"ESTUDO":"PLANT\xc3O")+" \u2014 direto Google")
+break}A.aS().$1("[sendAiMessage] Build 157: motor="+(b5?"ESTUDO":"PLANT\xc3O")+" \u2014 direto Google")
 m.x2=!0
 a5=m.id
 l=a5.aQn(b4)
@@ -121894,7 +121894,7 @@ b1=m.go
 b=A.bXJ(b1.length===0,k,c,f,g,a5,a7,a9,b0,a8,a6,j,b4)
 s=$.fj.length===0?6:7
 break
-case 6:A.aS().$1("[sendAiMessage] Build 156.2: chave ausente \u2014 recuperando automaticamente...")
+case 6:A.aS().$1("[sendAiMessage] Build 157: chave ausente \u2014 recuperando automaticamente...")
 p=9
 s=12
 return A.q(A.Ll().ee(0,B.jU),$async$r1)
@@ -121902,19 +121902,19 @@ case 12:a=c0
 s=J.aB(a)!==0?13:15
 break
 case 13:A.bF3(a)
-A.aS().$1("[sendAiMessage] Build 156.2: chave recarregada do Firestore \u2713")
+A.aS().$1("[sendAiMessage] Build 157: chave recarregada do Firestore \u2713")
 s=14
 break
 case 15:s=16
 return A.q(A.qV(),$async$r1)
-case 16:if($.fj.length!==0)A.aS().$1("[sendAiMessage] Build 156.2: chave restaurada do SharedPrefs \u2713")
+case 16:if($.fj.length!==0)A.aS().$1("[sendAiMessage] Build 157: chave restaurada do SharedPrefs \u2713")
 case 14:p=3
 s=11
 break
 case 9:p=8
 b3=o.pop()
 a0=A.ad(b3)
-A.aS().$1("[sendAiMessage] Build 156.2: Firestore falhou ("+A.C(a0)+") \u2014 tentando SharedPrefs...")
+A.aS().$1("[sendAiMessage] Build 157: Firestore falhou ("+A.C(a0)+") \u2014 tentando SharedPrefs...")
 s=17
 return A.q(A.qV(),$async$r1)
 case 17:s=11
@@ -121924,7 +121924,7 @@ break
 case 11:case 7:a1=$.fj
 a5=b5?"ESTUDO":"PLANT\xc3O"
 a6=J.aB(a1)!==0?"\u2713":"\u2717 vazia"
-A.aS().$1("[sendAiMessage] Build 156.2: motor="+a5+" \u2014 chave="+a6)
+A.aS().$1("[sendAiMessage] Build 157: motor="+a5+" \u2014 chave="+a6)
 a2=new A.dg("")
 a4.a=!1
 a3=A.bXI(a1,A.ii(b1,t.GU),b5,b,!0,b4)
