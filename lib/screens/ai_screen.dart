@@ -1684,6 +1684,30 @@ class _AiScreenState extends State<AiScreen> {
                 onConnectApi: _openAiSettings,
               ),
 
+            // ── Build 158.1: Mode Pills — centralizados no espaço vazio ──────
+            // Aparecem APENAS quando o chat está vazio (sem msg do usuário).
+            // Posicionados no centro da tela, acima da InputBar e LONGE da
+            // _FloatingBottomNav, para evitar colisão visual.
+            if (!_messages.any((m) => m.role == 'user'))
+              Positioned.fill(
+                child: Align(
+                  alignment: const Alignment(0, -0.15),
+                  child: _ResponseModeToggle(
+                    value: _longResponse,
+                    dark: dark,
+                    lang: p.lang,
+                    onChanged: (newValue) {
+                      if (newValue == _longResponse) return;
+                      setState(() {
+                        _longResponse = newValue;
+                      });
+                      p.clearAiHistory();
+                      debugPrint('[MedCases UI Build 158.1] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} — histórico limpo.');
+                    },
+                  ),
+                ),
+              ),
+
             // ── Build 116: Smart Scroll Indicator ─────────────────────────
             // Aparece quando o usuário subiu para revisar o histórico E a IA
             // está gerando uma resposta. Indica que o auto-scroll está pausado
@@ -1835,32 +1859,10 @@ class _AiScreenState extends State<AiScreen> {
             : const SizedBox.shrink(),
       ),
 
-      // ── Motor de Partida — toggle Plantão/Estudos (Build 158: só no chat vazio) ──
-      // Build 158 UX PREMIUM: O seletor de modo aparece APENAS quando o chat está
-      // vazio (nova sessão). Assim que o usuário envia a primeira mensagem, o seletor
-      // desaparece — o modo fica travado para aquela sessão.
-      // Lógica: !_messages.any((m) => m.role == 'user') = nenhuma msg do usuário ainda.
-      AnimatedSize(
-        duration: const Duration(milliseconds: 240),
-        curve: Curves.easeInOut,
-        child: !_messages.any((m) => m.role == 'user')
-            ? _ResponseModeToggle(
-                value: _longResponse,
-                dark: dark,
-                lang: p.lang,
-                onChanged: (newValue) {
-                  if (newValue == _longResponse) return;
-                  setState(() {
-                    _longResponse = newValue;
-                  });
-                  p.clearAiHistory();
-                  debugPrint('[MedCases UI Build 158] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} — histórico limpo.');
-                },
-              )
-            : const SizedBox.shrink(),
-      ),
-
       // ── Barra de input — centralizada no desktop ───────────────────────
+      // Build 158.1: Padding inferior de segurança para nunca ser coberto
+      // pela _FloatingBottomNav (~56pt nav + 36pt LegalBar = 92pt total).
+      // Aplicado apenas em mobile (bp.isDesktop → sem floating nav).
       chatMaxWidth != null
           ? Center(
               child: ConstrainedBox(
@@ -1881,19 +1883,24 @@ class _AiScreenState extends State<AiScreen> {
                 ),
               ),
             )
-          : _InputBar(
-              ctrl: _queryCtrl,
-              focusNode: _focusNode,
-              dark: dark,
-              hasFocus: _hasFocus,
-              thinking: _thinking,
-              // Build 135: debounce 300ms — fecha janela residual de concorrência
-              onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
-              hint: p.t('ai_placeholder'),
-              onVoice: _toggleStt,
-              sttListening: _sttListening,
-              sttSoundLevel: _sttSoundLevel,
-              lang: p.lang,
+          : Padding(
+              // Build 158.1: espaço de segurança abaixo do TextField para não
+              // ser coberto pela _FloatingBottomNav quando ela reaparecer.
+              padding: const EdgeInsets.only(bottom: 92),
+              child: _InputBar(
+                ctrl: _queryCtrl,
+                focusNode: _focusNode,
+                dark: dark,
+                hasFocus: _hasFocus,
+                thinking: _thinking,
+                // Build 135: debounce 300ms — fecha janela residual de concorrência
+                onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
+                hint: p.t('ai_placeholder'),
+                onVoice: _toggleStt,
+                sttListening: _sttListening,
+                sttSoundLevel: _sttSoundLevel,
+                lang: p.lang,
+              ),
             ),
     ]);
   }
