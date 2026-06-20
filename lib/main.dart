@@ -1590,21 +1590,19 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   ),
                 ),
 
-                // ── Floating Bottom Navigation Bar (Build 158) ────────────
-                // Hide-on-scroll: esconde quando AI está ativa E usuário
-                // está scrollando para baixo para ler o histórico.
-                // Reapare quando sobe ou quando não está na aba IA.
+                // ── Build 158.3: Floating footer unificado ────────────────
+                // FloatingBottomNav + LegalBar formam um ÚNICO bloco que
+                // desliza para fora da tela juntos (AnimatedSlide).
+                // Quando hidden=true → slide para baixo → rodapé = zero px.
+                // O chat expande para 100% da altura — imersão total.
                 ValueListenableBuilder<bool>(
                   valueListenable: AiScreen.chatKeyboardOpen,
                   builder: (_, kbOpen, __) =>
                   ValueListenableBuilder<bool>(
                     valueListenable: AiScreen.scrollingDown,
                     builder: (_, scrollingDown, __) {
-                      // Oculta a barra quando:
-                      // 1. Teclado do chat está aberto, OU
-                      // 2. Usuário está scrollando para baixo na aba IA
                       final hidden = kbOpen || (isAiTab && scrollingDown);
-                      return _FloatingBottomNav(
+                      return _FloatingFooter(
                         hidden: hidden,
                         dark: dark,
                         currentTab: _tab,
@@ -1623,14 +1621,6 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       );
                     },
                   ),
-                ),
-
-                // ── LegalBar: abaixo do floating nav, sempre visível ──────
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: _LegalBar(dark: dark, insideSafeArea: true),
                 ),
               ],
             ),
@@ -1730,10 +1720,15 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 //   • Scroll para cima / não está na aba IA → barra reaparece (slide-up suave)
 //   • Teclado aberto → barra desaparece (comportamento existente)
 //
-// Posicionamento: Positioned no Stack do body (não usa bottomNavigationBar
-// nativo do Scaffold) para controle total sobre animação e glassmorphism.
 // ─────────────────────────────────────────────────────────────────────────────
-class _FloatingBottomNav extends StatelessWidget {
+// Build 158.3 — _FloatingFooter
+//
+// Bloco unificado: FloatingBottomNav (42px) + LegalBar, posicionado em
+// Positioned(bottom:0) e animado como UM único AnimatedSlide.
+// Quando hidden=true → ambos deslizam juntos para fora da tela → zero espaço
+// no rodapé → chat ocupa 100% da altura → imersão total.
+// ─────────────────────────────────────────────────────────────────────────────
+class _FloatingFooter extends StatelessWidget {
   final bool hidden;
   final bool dark;
   final int  currentTab;
@@ -1743,7 +1738,7 @@ class _FloatingBottomNav extends StatelessWidget {
   final VoidCallback onFabDoubleTap;
   final bool isAiActive;
 
-  const _FloatingBottomNav({
+  const _FloatingFooter({
     required this.hidden,
     required this.dark,
     required this.currentTab,
@@ -1754,158 +1749,154 @@ class _FloatingBottomNav extends StatelessWidget {
     required this.isAiActive,
   });
 
-  static const _neonCyan   = Color(0xFF00E5FF);
-  static const _neonDark   = Color(0xFF007A8A);
+  static const _neonCyan = Color(0xFF00E5FF);
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).padding.bottom;
-    // Altura total: barra (56pt) + safe area bottom (home indicator)
-    // A LegalBar fica abaixo via Positioned separado
-    const barHeight = 56.0;
+    final navBg = dark
+        ? const Color(0xFF0F1116).withValues(alpha: 0.93)
+        : Colors.white.withValues(alpha: 0.96);
 
-    final navBg     = dark
-        ? const Color(0xFF0F1116).withValues(alpha: 0.92)
-        : Colors.white.withValues(alpha: 0.94);
-    final borderCol = dark
-        ? _neonCyan.withValues(alpha: 0.08)
-        : const Color(0xFFE5E7EB);
-
-    // Slide offset: quando hidden, AnimatedSlide desloca a barra para fora da tela.
+    // Build 158.3: barra ultra-thin 42px
+    const barHeight = 42.0;
 
     return Positioned(
       left: 0,
       right: 0,
-      // Posiciona acima do LegalBar (que tem ~36pt) + safe area
-      bottom: 36 + bottomInset,
+      bottom: 0,
       child: AnimatedSlide(
-        offset: Offset(0, hidden ? 1.5 : 0.0),
+        // Desliza TODO o bloco (nav + legal) para baixo quando hidden
+        offset: Offset(0, hidden ? 1.0 : 0.0),
         duration: const Duration(milliseconds: 300),
         curve: hidden ? Curves.easeInCubic : Curves.easeOutCubic,
         child: AnimatedOpacity(
           opacity: hidden ? 0.0 : 1.0,
           duration: const Duration(milliseconds: 250),
-          child: Padding(
-            // Margens laterais para o efeito "flutuante" do mockup
-            padding: const EdgeInsets.symmetric(horizontal: 0),
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                child: Container(
-                  height: barHeight,
-                  decoration: BoxDecoration(
-                    color: navBg,
-                    border: Border(
-                      top: BorderSide(
-                        color: dark
-                            ? _neonCyan.withValues(alpha: 0.12)
-                            : const Color(0xFFE5E7EB),
-                        width: 0.5,
-                      ),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: dark
-                            ? Colors.black.withValues(alpha: 0.45)
-                            : Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 20,
-                        offset: const Offset(0, -4),
-                      ),
-                      if (dark)
-                        BoxShadow(
-                          color: _neonCyan.withValues(alpha: 0.06),
-                          blurRadius: 30,
-                          offset: const Offset(0, -6),
-                        ),
-                    ],
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // ── INICIO (esquerda) ──────────────────────────────────
-                      Expanded(
-                        child: _NavItem(
-                          icon: Icons.home_rounded,
-                          label: lang == 'es' ? 'Inicio' : 'Início',
-                          isActive: currentTab == 0,
-                          dark: dark,
-                          onTap: () => onTabChange(0),
-                        ),
-                      ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
 
-                      // ── FAB CENTRAL — IA com glow neon ────────────────────
-                      SizedBox(
-                        width: 72,
-                        child: Center(
-                          child: GestureDetector(
-                            onTap: onFabTap,
-                            onDoubleTap: onFabDoubleTap,
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 220),
-                              curve: Curves.easeOutCubic,
-                              width: 54,
-                              height: 54,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: isAiActive
-                                      ? [const Color(0xFF008CA4), const Color(0xFF004D5E)]
-                                      : [const Color(0xFF374151), const Color(0xFF1A1D23)],
+              // ── Nav Bar 42px ────────────────────────────────────────────
+              ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  child: Container(
+                    height: barHeight,
+                    decoration: BoxDecoration(
+                      color: navBg,
+                      border: Border(
+                        top: BorderSide(
+                          color: dark
+                              ? _neonCyan.withValues(alpha: 0.12)
+                              : const Color(0xFFE5E7EB),
+                          width: 0.5,
+                        ),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: dark
+                              ? Colors.black.withValues(alpha: 0.45)
+                              : Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 20,
+                          offset: const Offset(0, -4),
+                        ),
+                        if (dark)
+                          BoxShadow(
+                            color: _neonCyan.withValues(alpha: 0.05),
+                            blurRadius: 24,
+                            offset: const Offset(0, -4),
+                          ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+
+                        // ── INICIO ────────────────────────────────────────
+                        Expanded(
+                          child: _NavItem(
+                            icon: Icons.home_rounded,
+                            label: lang == 'es' ? 'Inicio' : 'Início',
+                            isActive: currentTab == 0,
+                            dark: dark,
+                            onTap: () => onTabChange(0),
+                          ),
+                        ),
+
+                        // ── FAB CENTRAL IA ────────────────────────────────
+                        SizedBox(
+                          width: 64,
+                          height: barHeight,
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: onFabTap,
+                              onDoubleTap: onFabDoubleTap,
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 220),
+                                curve: Curves.easeOutCubic,
+                                // FAB ligeiramente menor para caber em 42px
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: isAiActive
+                                        ? [const Color(0xFF008CA4), const Color(0xFF005566)]
+                                        : [const Color(0xFF374151), const Color(0xFF1E2330)],
+                                  ),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isAiActive
+                                        ? _neonCyan.withValues(alpha: 0.80)
+                                        : const Color(0xFF4B5563),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: isAiActive
+                                      ? [
+                                          BoxShadow(
+                                            color: _neonCyan.withValues(alpha: 0.50),
+                                            blurRadius: 14,
+                                            spreadRadius: 0,
+                                          ),
+                                        ]
+                                      : [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(alpha: 0.35),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
                                 ),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isAiActive
-                                      ? _neonCyan.withValues(alpha: 0.80)
-                                      : const Color(0xFF4B5563),
-                                  width: 1.5,
+                                child: Icon(
+                                  Icons.psychology_rounded,
+                                  size: 20,
+                                  color: isAiActive ? _neonCyan : Colors.white70,
                                 ),
-                                boxShadow: isAiActive
-                                    ? [
-                                        BoxShadow(
-                                          color: _neonCyan.withValues(alpha: 0.55),
-                                          blurRadius: 18,
-                                          spreadRadius: 1,
-                                        ),
-                                        BoxShadow(
-                                          color: _neonCyan.withValues(alpha: 0.25),
-                                          blurRadius: 32,
-                                          spreadRadius: 3,
-                                        ),
-                                      ]
-                                    : [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.40),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                              ),
-                              child: Icon(
-                                Icons.psychology_rounded,
-                                size: 24,
-                                color: isAiActive ? _neonCyan : Colors.white70,
                               ),
                             ),
                           ),
                         ),
-                      ),
 
-                      // ── HERRAMIENTAS (direita) ─────────────────────────────
-                      Expanded(
-                        child: _NavItem(
-                          icon: Icons.calculate_rounded,
-                          label: lang == 'es' ? 'Herramientas' : 'Ferramentas',
-                          isActive: currentTab == 4,
-                          dark: dark,
-                          onTap: () => onTabChange(4),
+                        // ── HERRAMIENTAS ──────────────────────────────────
+                        Expanded(
+                          child: _NavItem(
+                            icon: Icons.calculate_rounded,
+                            label: lang == 'es' ? 'Herramientas' : 'Ferramentas',
+                            isActive: currentTab == 4,
+                            dark: dark,
+                            onTap: () => onTabChange(4),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+
+              // ── LegalBar — faz parte do bloco animado ────────────────
+              _LegalBar(dark: dark, insideSafeArea: true),
+            ],
           ),
         ),
       ),
@@ -1935,6 +1926,7 @@ class _NavItem extends StatelessWidget {
     final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
     final color = isActive ? activeColor : inactiveColor;
 
+    // Build 158.3: layout compacto para caber em barHeight=42px
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -1942,26 +1934,14 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: isActive
-                  ? (dark
-                      ? const Color(0xFF00E5FF).withValues(alpha: 0.10)
-                      : const Color(0xFF008CA4).withValues(alpha: 0.08))
-                  : Colors.transparent,
-            ),
-            child: Icon(icon, size: 22, color: color),
-          ),
-          const SizedBox(height: 2),
+          Icon(icon, size: 18, color: color),
+          const SizedBox(height: 1),
           Text(
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 9.5,
+              fontSize: 9.0,
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
               color: color,
               height: 1.0,

@@ -1860,10 +1860,12 @@ class _AiScreenState extends State<AiScreen> {
       ),
 
       // ── Barra de input — centralizada no desktop ───────────────────────
-      // Build 158.2: Padding inferior DINÂMICO sincronizado com scrollingDown.
-      // - Nav visível (scrollingDown=false): 92px → InputBar acima da nav bar
-      // - Nav sumindo (scrollingDown=true) : 16px → InputBar desce junto, 300ms
-      // Desktop (chatMaxWidth != null): sem floating nav → sem padding dinâmico.
+      // Build 158.3: Padding inferior DINÂMICO sincronizado com scrollingDown.
+      // - Nav visível (scrollingDown=false): 78px → InputBar acima do footer
+      //   (42px nav + 36px LegalBar = 78px total)
+      // - Nav sumindo (scrollingDown=true) : 0px → imersão total, zero espaço
+      //   no rodapé, o chat chega até a borda física da tela
+      // Desktop (chatMaxWidth != null): sem floating footer → sem padding.
       chatMaxWidth != null
           ? Center(
               child: ConstrainedBox(
@@ -1884,14 +1886,16 @@ class _AiScreenState extends State<AiScreen> {
               ),
             )
           : ValueListenableBuilder<bool>(
-              // Build 158.2: anima o padding inferior em 300ms junto com a nav
+              // Build 158.3: anima padding 300ms easeInOut junto com o footer
               valueListenable: AiScreen.scrollingDown,
               builder: (_, scrollingDown, child) {
                 return AnimatedPadding(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   padding: EdgeInsets.only(
-                    bottom: scrollingDown ? 16.0 : 92.0,
+                    // Nav visível: 78px (42 nav + 36 legal)
+                    // Nav sumida:  0px → imersão total
+                    bottom: scrollingDown ? 0.0 : 78.0,
                   ),
                   child: child,
                 );
