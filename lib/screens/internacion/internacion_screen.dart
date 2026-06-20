@@ -1,15 +1,16 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 164 — Motor DDI integrado
+// InternacionScreen — Build 165 — Bugs Críticos Classe 1 Corrigidos
 //
-// Build 160: CopilotButton, Persistence, SessionBanner, applyAiDraft
-// Build 161: Data Binding Demográfico — demografias atualizadas ao [Aprobar]
-// Build 162: Botão voltar, nome dinâmico, grid 2-col, FarmacosAccordion, purga neon
+// FIX 165-A: "Apagão O-A-P" — schema flat no soap_copilot_service.dart
+// FIX 165-B: Botão ✕ faz HARD DELETE no SharedPreferences antes de setState
+//            (sem isso, o paciente ressuscitava ao salvar nova sessão)
+// FIX 165-C: Chave de persistência única — nunca mais colisão 'default'
+//            Sessões sem nome+cama recebem timestamp único na chave
+// FIX 165-D: FloatingActionButton estendido "Nueva Evolución" proeminente
+//            Remove botão miniaturizado do AppBar — FAB impossível de não ver
+//
+// Build 164: Motor DDI integrado
 // Build 163: Protocolo Clean Slate
-//   1. Botão "Nueva Evolución" no AppBar (Icons.cleaning_services_rounded)
-//   2. AlertDialog de confirmação com UX de segurança
-//   3. _confirmAndReset(): limpa _paciente, _historial, _draftEvolucion
-//   4. InternacionPersistence.clearActiveSession() — apaga rascunho do SharedPreferences
-//   5. SoapSectionWidgetState.resetSoap() — reconstrói todos os controllers via _draftVersion++
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -141,6 +142,21 @@ class _InternacionScreenState extends State<InternacionScreen> {
               ? draft.pacienteDiaInternacion!
               : _paciente.diaInternacao,
         );
+      });
+    }
+  }
+
+  // ── FIX 165-B: Hard delete da sessão — apaga do SharedPreferences ────────
+  // Antes: onDismiss só fazia setState → ao salvar nova sessão o paciente
+  // deletado voltava (o dado permanecia no disco).
+  // Agora: delete físico PRIMEIRO, depois remove da lista em memória.
+  Future<void> _deleteSession(PacienteSession session) async {
+    await InternacionPersistence.deleteSession(session.sessionKey);
+    if (mounted) {
+      setState(() {
+        _savedSessions = _savedSessions
+            .where((s) => s.sessionKey != session.sessionKey)
+            .toList();
       });
     }
   }
@@ -409,55 +425,35 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     ),
                   const SizedBox(width: 4),
 
-                  // ── Build 163: Botão "Nueva Evolución" ──────────────────
-                  Tooltip(
-                    message: isEs ? 'Nueva Evolución' : 'Nova Evolução',
-                    child: InkWell(
-                      onTap: _confirmAndReset,
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          gradient: theme.accentGradient,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: theme.accent.withValues(alpha: 0.28),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.cleaning_services_rounded,
-                              size: 14,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              isEs ? 'Nueva' : 'Novo',
-                              style: const TextStyle(
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
+                  // FIX 165-D: Botão "Nueva Evolución" REMOVIDO do AppBar
+                  // → Substituído por FAB estendido (ver floatingActionButton abaixo)
                 ],
               ),
             ),
           ),
         ),
       ),
+
+      // ── FIX 165-D: FAB estendido "Nueva Evolución" — impossível não ver ──────
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _confirmAndReset,
+        backgroundColor: InternacionTheme.accentLight,
+        foregroundColor: Colors.white,
+        elevation: 6,
+        icon: const Icon(Icons.cleaning_services_rounded, size: 20),
+        label: Text(
+          isEs ? 'Nueva Evolución' : 'Nova Evolução',
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 13.5,
+            letterSpacing: 0.3,
+          ),
+        ),
+        tooltip: isEs
+            ? 'Limpiar pizarrón e iniciar nueva evolución'
+            : 'Limpar pizarrão e iniciar nova evolução',
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
@@ -550,11 +546,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
                 lang: lang,
                 theme: theme,
                 onResume: _resumeSession,
-                onDismiss: (session) => setState(() {
-                  _savedSessions = _savedSessions
-                      .where((s) => s.sessionKey != session.sessionKey)
-                      .toList();
-                }),
+                onDismiss: _deleteSession, // FIX 165-B: hard delete físico
               ),
             ],
           ],
@@ -571,7 +563,7 @@ class _SessionsGrid extends StatelessWidget {
   final String lang;
   final InternacionTheme theme;
   final ValueChanged<PacienteSession> onResume;
-  final ValueChanged<PacienteSession> onDismiss;
+  final Future<void> Function(PacienteSession) onDismiss; // FIX 165-B: async
 
   const _SessionsGrid({
     required this.sessions, required this.dark, required this.lang,
@@ -595,7 +587,7 @@ class _SessionsGrid extends StatelessWidget {
         lang: lang,
         theme: theme,
         onResume: () => onResume(s),
-        onDismiss: () => onDismiss(s),
+        onDismiss: () => onDismiss(s), // delega ao _deleteSession (hard delete)
       )).toList(),
     );
   }

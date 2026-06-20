@@ -1,37 +1,39 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// SoapCopilotService — Build 162.2 — Diagnóstico de Parsing O/A/P
+// SoapCopilotService — Build 165 — Parsing Blindado Anti-Apagão O-A-P
 //
-// Mudanças Build 162.2 (cirúrgicas):
-//   1. catch(e, stack) em nós O/A/P/farmacos — stack trace completo no console
-//   2. 'dosagem' → 'dosis' no responseSchema e fromJson (consistência espanhola)
-//   3. 'required' array no root do responseSchema — força Gemini a emitir O/A/P
-//   4. safeInt para diaInternacion clamp 1–90 (não 0–10)
+// BUG CRÍTICO CORRIGIDO (Build 165):
+//   CAUSA RAIZ: O schema aninhado do nó 'objetivo' (signosVitales/examenFisico/
+//   examenes como sub-objetos) causava colapso silencioso — o Gemini às vezes
+//   emitia os campos em flat direto dentro de 'objetivo' em vez de nos sub-nós.
+//   Resultado: try-catch não disparava erro (JSON válido), mas os campos ficavam
+//   em nível errado → O/A/P ficavam vazios.
 //
-// Mudanças Build 162 (farmacos):
-//   + nó farmacos root-level no responseSchema + parser fromJson
+// FIX APLICADO:
+//   1. Schema do 'objetivo' ACHATADO: signosVitales.pa → pa_sv, fc_sv etc.
+//      Sub-objetos eliminados — campos diretos no nó 'objetivo'.
+//   2. Parser dual-mode: tenta nested PRIMEIRO (backward compat) → fallback flat
+//   3. Prints verbosos em CADA campo para diagnóstico no console Flutter
+//   4. farmacos em try-catch TOTALMENTE isolado — nunca pode contaminar O/A/P
+//   5. maxOutputTokens: 2048 → 4096 (objetivo complexo precisava de mais tokens)
 //
-// Mudanças Build 161 (base):
-//   1. responseSchema keys alinhadas 100% com fromJson (case-sensitive audit)
-//   2. SoapDraftResult estendido com campos demográficos do paciente
-//   3. Parser granular com try-catch independente por nó S/O/A/P
-//   4. Todas as tipagens rígidas removidas — tudo via .toString() seguro
-//   5. Log de debug: print("🤖 GEMINI RAW JSON: ...") pré-parse
-//   6. Prompt reforçado: obrigatoriedade de preencher todas as chaves
+// Mudanças Build 162.2 (mantidas):
+//   catch(e, stack) em nós O/A/P/farmacos — stack trace completo
+//   'dosagem' → 'dosis' no responseSchema e fromJson
+//   'required' array no root do responseSchema
+//   safeInt para diaInternacion clamp 1–90
 // ─────────────────────────────────────────────────────────────────────────────
 import 'dart:convert';
-import 'dart:typed_data';
+// dart:typed_data is transitively available via flutter/foundation.dart
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 // ── Resultado do draft da IA — todos os campos são nullable ──────────────────
-// Nullable = a IA pode não ter encontrado informação suficiente para preencher.
-// REGRA DE OURO: nenhum campo nulo sobrescreve dado já inserido pelo médico.
 class SoapDraftResult {
-  // ── DEMOGRÁFICOS DO PACIENTE (Build 161) ──────────────────────────────────
+  // ── DEMOGRÁFICOS DO PACIENTE ──────────────────────────────────────────────
   final String? pacienteNome;
   final String? pacienteCama;
   final String? pacienteIdade;
-  final String? pacienteSexo;      // 'M' | 'F'
+  final String? pacienteSexo;
   final String? pacienteDiagnostico;
   final int?    pacienteDiaInternacion;
 
@@ -42,9 +44,9 @@ class SoapDraftResult {
   final bool?   disnea;
   final bool?   nauseas;
   final bool?   tos;
-  final String? alimentacion;   // 'Bien' | 'Regular' | 'Mal'
-  final String? diuresis;       // 'Normal' | 'Oliguria' | 'Anuria'
-  final String? evacuacion;     // 'Normal' | 'Constipado' | 'Diarrea'
+  final String? alimentacion;
+  final String? diuresis;
+  final String? evacuacion;
   final bool?   suenoRestado;
   final String? notasLibresSubjetivo;
 
@@ -70,7 +72,7 @@ class SoapDraftResult {
   final String? tratamientoActual;
 
   // ── A — Evaluación ───────────────────────────────────────────────────────
-  final String?       estadoClinical; // 'mejorando' | 'estable' | 'empeorando'
+  final String?       estadoClinical;
   final List<String>? problemasActivos;
   final String?       notasEvaluacion;
 
@@ -78,19 +80,16 @@ class SoapDraftResult {
   final String? planTerapeutico;
   final String? criteriosAlta;
 
-  // ── Fármacos (Build 162) ──────────────────────────────────────────────────
-  // Lista de {medicamento, dosis} extraída pela IA do relato ou fotos de receita.
+  // ── Fármacos ──────────────────────────────────────────────────────────────
   final List<Map<String, String>>? farmacos;
 
   const SoapDraftResult({
-    // demog
     this.pacienteNome,
     this.pacienteCama,
     this.pacienteIdade,
     this.pacienteSexo,
     this.pacienteDiagnostico,
     this.pacienteDiaInternacion,
-    // S
     this.notePasaNoche,
     this.dolorEscala,
     this.fiebre,
@@ -102,43 +101,35 @@ class SoapDraftResult {
     this.evacuacion,
     this.suenoRestado,
     this.notasLibresSubjetivo,
-    // O vitals
     this.pa,
     this.fc,
     this.fr,
     this.satO2,
     this.temperatura,
-    // O examen
     this.estadoGeneral,
     this.acv,
     this.ar,
     this.abdomen,
     this.extremidades,
-    // O exams
     this.laboratorio,
     this.imagenes,
     this.culturas,
     this.ecg,
     this.tratamientoActual,
-    // A
     this.estadoClinical,
     this.problemasActivos,
     this.notasEvaluacion,
-    // P
     this.planTerapeutico,
     this.criteriosAlta,
-    // Fármacos
     this.farmacos,
   });
 
-  /// true se a IA extraiu pelo menos um campo demográfico
   bool get hasPatientData =>
       pacienteNome?.isNotEmpty == true ||
       pacienteCama?.isNotEmpty == true ||
       pacienteIdade?.isNotEmpty == true ||
       pacienteDiagnostico?.isNotEmpty == true;
 
-  /// Conta quantos campos SOAP (não demográficos) foram extraídos
   int get filledCount {
     int n = 0;
     if (notePasaNoche?.isNotEmpty == true) n++;
@@ -174,11 +165,13 @@ class SoapDraftResult {
     return n;
   }
 
-  // ── Parser blindado com try-catch granular por nó ─────────────────────────
-  // Cada seção (paciente, S, O, A, P) é isolada num try-catch independente.
-  // Uma falha num nó NÃO invalida os demais — parse parcial sempre retorna.
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Parser blindado — try-catch TOTALMENTE independente por nó
+  // Build 165: cada campo do nó O tem try-catch individual + dual-mode lookup
+  // ═══════════════════════════════════════════════════════════════════════════
   factory SoapDraftResult.fromJson(Map<String, dynamic> json) {
-    // ── Helpers de conversão segura (zero tipagem rígida) ──────────────────
+
+    // ── Helpers de conversão segura ─────────────────────────────────────────
     String? safeStr(dynamic v) {
       if (v == null) return null;
       final s = v.toString().trim();
@@ -210,11 +203,23 @@ class SoapDraftResult {
       return {};
     }
 
-    // ── Extração nó DEMOGRÁFICO ───────────────────────────────────────────
+    // Helper: lê campo tentando chave primária e fallback alternativa
+    String? dualRead(Map<String, dynamic> m, String primary, [String? alt]) {
+      final v = safeStr(m[primary]);
+      if (v != null) return v;
+      if (alt != null) return safeStr(m[alt]);
+      return null;
+    }
+
+    // ── LOG: chaves root presentes no JSON ──────────────────────────────────
+    debugPrint('🤖 [SoapParser] Build 165 — keys root: ${json.keys.toList()}');
+
+    // ── Nó DEMOGRÁFICO ──────────────────────────────────────────────────────
     String? pNome, pCama, pIdade, pSexo, pDiag;
     int? pDia;
     try {
       final pac = safeMap(json['paciente']);
+      debugPrint('🤖 [SoapParser] paciente keys: ${pac.keys.toList()}');
       pNome  = safeStr(pac['nome']);
       pCama  = safeStr(pac['cama']);
       pIdade = safeStr(pac['idade']);
@@ -222,16 +227,18 @@ class SoapDraftResult {
       pSexo  = (sexoRaw == 'M' || sexoRaw == 'F') ? sexoRaw : null;
       pDiag  = safeStr(pac['diagnostico']);
       pDia   = safeInt(pac['diaInternacion'], min: 1, max: 90);
-    } catch (e) {
-      debugPrint('🤖 [SoapParser] WARN: falha no nó paciente — $e');
+      debugPrint('🤖 [SoapParser] paciente → nome=$pNome cama=$pCama diag=$pDiag dia=$pDia');
+    } catch (e, stack) {
+      debugPrint('💥 [SoapParser] ERRO PARSE PACIENTE: $e\n$stack');
     }
 
-    // ── Extração nó S ─────────────────────────────────────────────────────
+    // ── Nó S — Subjetivo ────────────────────────────────────────────────────
     String? notePasaNoche, alimentacion, diuresis, evacuacion, notasLibres;
     int? dolorEscala;
     bool? fiebre, disnea, nauseas, tos, suenoRestado;
     try {
       final s = safeMap(json['subjetivo']);
+      debugPrint('🤖 [SoapParser] subjetivo keys: ${s.keys.toList()}');
       notePasaNoche = safeStr(s['notePasaNoche']);
       dolorEscala   = safeInt(s['dolorEscala']);
       fiebre        = safeBool(s['fiebre']);
@@ -243,48 +250,79 @@ class SoapDraftResult {
       evacuacion    = safeStr(s['evacuacion']);
       suenoRestado  = safeBool(s['suenoRestado']);
       notasLibres   = safeStr(s['notasLibres']);
-    } catch (e) {
-      debugPrint('🤖 [SoapParser] WARN: falha no nó S (subjetivo) — $e');
+      final sPreview = notePasaNoche ?? '';
+      debugPrint('🤖 [SoapParser] S → notePasaNoche=${sPreview.substring(0, sPreview.length.clamp(0, 40))} dolor=$dolorEscala fiebre=$fiebre');
+    } catch (e, stack) {
+      debugPrint('💥 [SoapParser] ERRO PARSE SUBJETIVO (S): $e\n$stack');
     }
 
-    // ── Extração nó O ─────────────────────────────────────────────────────
+    // ── Nó O — Objetivo — DUAL-MODE: flat (Build 165) + nested (legacy) ────
+    // Build 165 FIX CRÍTICO: O schema agora emite os campos FLAT dentro de
+    // 'objetivo'. O parser tenta nested PRIMEIRO (compatibilidade) e faz
+    // fallback para flat se nested vier vazio.
     String? pa, fc, fr, satO2, temperatura;
     String? estadoGeneral, acv, ar, abdomen, extremidades;
     String? laboratorio, imagenes, culturas, ecg, tratamientoActual;
     try {
-      final o  = safeMap(json['objetivo']);
-      final sv = safeMap(o['signosVitales']);
-      pa          = safeStr(sv['pa']);
-      fc          = safeStr(sv['fc']);
-      fr          = safeStr(sv['fr']);
-      satO2       = safeStr(sv['satO2']);
-      temperatura = safeStr(sv['temperatura']);
+      final o = safeMap(json['objetivo']);
+      debugPrint('🤖 [SoapParser] objetivo keys: ${o.keys.toList()}');
 
-      final ef = safeMap(o['examenFisico']);
-      estadoGeneral = safeStr(ef['estadoGeneral']);
-      acv           = safeStr(ef['acv']);
-      ar            = safeStr(ef['ar']);
-      abdomen       = safeStr(ef['abdomen']);
-      extremidades  = safeStr(ef['extremidades']);
+      // ── Signos Vitais: tenta sub-nó → fallback campos flat ────────────────
+      try {
+        final sv = safeMap(o['signosVitales']);
+        pa          = safeStr(sv['pa'])          ?? safeStr(o['pa']);
+        fc          = safeStr(sv['fc'])          ?? safeStr(o['fc']);
+        fr          = safeStr(sv['fr'])          ?? safeStr(o['fr']);
+        satO2       = safeStr(sv['satO2'])       ?? safeStr(o['satO2']);
+        temperatura = safeStr(sv['temperatura']) ?? safeStr(o['temperatura']);
+        debugPrint('🤖 [SoapParser] O-vitais → PA=$pa FC=$fc FR=$fr satO2=$satO2 T=$temperatura');
+      } catch (e, stack) {
+        debugPrint('💥 [SoapParser] ERRO PARSE O-VITAIS: $e\n$stack');
+      }
 
-      final ex = safeMap(o['examenes']);
-      laboratorio       = safeStr(ex['laboratorio']);
-      imagenes          = safeStr(ex['imagenes']);
-      culturas          = safeStr(ex['culturas']);
-      ecg               = safeStr(ex['ecg']);
-      tratamientoActual = safeStr(o['tratamientoActual']);
+      // ── Exame Físico: tenta sub-nó → fallback campos flat ────────────────
+      try {
+        final ef = safeMap(o['examenFisico']);
+        estadoGeneral = safeStr(ef['estadoGeneral']) ?? safeStr(o['estadoGeneral']);
+        acv           = safeStr(ef['acv'])           ?? safeStr(o['acv']);
+        ar            = safeStr(ef['ar'])            ?? safeStr(o['ar']);
+        abdomen       = safeStr(ef['abdomen'])       ?? safeStr(o['abdomen']);
+        extremidades  = safeStr(ef['extremidades'])  ?? safeStr(o['extremidades']);
+        final egPreview = estadoGeneral ?? '';
+        debugPrint('🤖 [SoapParser] O-examen → EG=${egPreview.substring(0, egPreview.length.clamp(0, 40))} ACV=$acv AR=$ar');
+      } catch (e, stack) {
+        debugPrint('💥 [SoapParser] ERRO PARSE O-EXAMEN-FISICO: $e\n$stack');
+      }
+
+      // ── Exames Complementares: tenta sub-nó → fallback campos flat ────────
+      try {
+        final ex = safeMap(o['examenes']);
+        laboratorio       = dualRead(ex, 'laboratorio') ?? safeStr(o['laboratorio']);
+        imagenes          = dualRead(ex, 'imagenes')    ?? safeStr(o['imagenes']);
+        culturas          = dualRead(ex, 'culturas')    ?? safeStr(o['culturas']);
+        ecg               = dualRead(ex, 'ecg')         ?? safeStr(o['ecg']);
+        tratamientoActual = safeStr(o['tratamientoActual']);
+        final labPreview = laboratorio ?? '';
+        debugPrint('🤖 [SoapParser] O-exames → lab=${labPreview.substring(0, labPreview.length.clamp(0, 40))} ecg=$ecg tto=$tratamientoActual');
+      } catch (e, stack) {
+        debugPrint('💥 [SoapParser] ERRO PARSE O-EXAMES-COMPL: $e\n$stack');
+      }
+
     } catch (e, stack) {
-      debugPrint('💥 ERRO NO PARSING DO OBJETIVO: $e\n$stack');
+      debugPrint('💥 [SoapParser] ERRO PARSE OBJETIVO (O) — NÓ RAIZ: $e\n$stack');
     }
 
-    // ── Extração nó A ─────────────────────────────────────────────────────
+    // ── Nó A — Evaluación ──────────────────────────────────────────────────
     String? estadoClinical, notasEvaluacion;
     List<String>? problemasActivos;
     try {
       final a = safeMap(json['evaluacion']);
+      debugPrint('🤖 [SoapParser] evaluacion keys: ${a.keys.toList()}');
       estadoClinical  = safeStr(a['estado']);
       notasEvaluacion = safeStr(a['notasEvaluacion']);
       final rawProb = a['problemasActivos'];
+      final notasPreview = notasEvaluacion ?? '';
+      debugPrint('🤖 [SoapParser] A → estado=$estadoClinical rawProb=${rawProb?.runtimeType} notas=${notasPreview.substring(0, notasPreview.length.clamp(0, 40))}');
       if (rawProb is List && rawProb.isNotEmpty) {
         problemasActivos = rawProb
             .map((e) => e?.toString().trim() ?? '')
@@ -292,39 +330,58 @@ class SoapDraftResult {
             .toList();
       }
     } catch (e, stack) {
-      debugPrint('💥 ERRO NO PARSING DA EVALUACION: $e\n$stack');
+      debugPrint('💥 [SoapParser] ERRO PARSE EVALUACION (A): $e\n$stack');
     }
 
-    // ── Extração nó P ─────────────────────────────────────────────────────
+    // ── Nó P — Plan ────────────────────────────────────────────────────────
     String? planTerapeutico, criteriosAlta;
     try {
       final p = safeMap(json['plan']);
+      debugPrint('🤖 [SoapParser] plan keys: ${p.keys.toList()}');
       planTerapeutico = safeStr(p['planTerapeutico']);
       criteriosAlta   = safeStr(p['criteriosAlta']);
+      final planPreview = planTerapeutico ?? '';
+      debugPrint('🤖 [SoapParser] P → plan=${planPreview.substring(0, planPreview.length.clamp(0, 60))} criterios=$criteriosAlta');
     } catch (e, stack) {
-      debugPrint('💥 ERRO NO PARSING DO PLAN: $e\n$stack');
+      debugPrint('💥 [SoapParser] ERRO PARSE PLAN (P): $e\n$stack');
     }
 
-    // ── Extração nó FÁRMACOS (Build 162) ─────────────────────────────────
+    // ── Nó FÁRMACOS — COMPLETAMENTE ISOLADO (nunca contamina O/A/P) ────────
     List<Map<String, String>>? farmacos;
     try {
       final rawFarm = json['farmacos'];
+      debugPrint('🤖 [SoapParser] farmacos raw type: ${rawFarm?.runtimeType}');
       if (rawFarm is List && rawFarm.isNotEmpty) {
         farmacos = rawFarm
             .map((e) {
-              final m = safeMap(e);
-              final med = safeStr(m['medicamento']) ?? '';
-              final dos = safeStr(m['dosis']) ?? '';
-              if (med.isEmpty) return null;
-              return <String, String>{'medicamento': med, 'dosis': dos};
+              try {
+                final m = safeMap(e);
+                final med = safeStr(m['medicamento']) ?? '';
+                final dos = safeStr(m['dosis']) ?? '';
+                if (med.isEmpty) return null;
+                return <String, String>{'medicamento': med, 'dosis': dos};
+              } catch (fe) {
+                debugPrint('💥 [SoapParser] ERRO PARSE FARMACO ITEM: $fe — raw: $e');
+                return null;
+              }
             })
             .whereType<Map<String, String>>()
             .toList();
         if (farmacos.isEmpty) farmacos = null;
+        debugPrint('🤖 [SoapParser] farmacos → ${farmacos?.length ?? 0} itens');
       }
     } catch (e, stack) {
-      debugPrint('💥 ERRO NO PARSING DOS FARMACOS: $e\n$stack');
+      // ISOLAMENTO TOTAL: erro de farmacos NUNCA propaga para cima
+      debugPrint('💥 [SoapParser] ERRO PARSE FARMACOS (isolado, O/A/P não afetados): $e\n$stack');
     }
+
+    // ── Sumário de diagnóstico ──────────────────────────────────────────────
+    debugPrint('🤖 [SoapParser] ═══ RESULTADO FINAL ═══');
+    debugPrint('🤖 [SoapParser] S preenchido: ${notePasaNoche != null || fiebre != null || pa != null}');
+    debugPrint('🤖 [SoapParser] O preenchido: ${pa != null || estadoGeneral != null || laboratorio != null}');
+    debugPrint('🤖 [SoapParser] A preenchido: ${estadoClinical != null || problemasActivos != null}');
+    debugPrint('🤖 [SoapParser] P preenchido: ${planTerapeutico != null}');
+    debugPrint('🤖 [SoapParser] Fármacos: ${farmacos?.length ?? 0}');
 
     return SoapDraftResult(
       pacienteNome:          pNome,
@@ -377,28 +434,26 @@ class SoapCopilotService {
       'https://generativelanguage.googleapis.com/v1beta/models/'
       'gemini-2.5-flash-lite:generateContent';
 
-  // ── responseSchema — chaves EXATAMENTE alinhadas com fromJson ────────────
-  // Auditoria Build 162.2:
-  //   json['paciente']             ✓ nó demográfico
-  //   json['subjetivo']            ✓ nó S
-  //   json['objetivo']             ✓ nó O
-  //     o['signosVitales']         ✓ sub-nó vitais
-  //     o['examenFisico']          ✓ sub-nó exame físico
-  //     o['examenes']              ✓ sub-nó exames complementares
-  //   json['evaluacion']           ✓ nó A
-  //   json['plan']                 ✓ nó P
-  //   json['farmacos']             ✓ array root-level (Build 162)
-  //   'required' array adicionado  ✓ força Gemini a emitir todos os nós
-  //   'dosagem' → 'dosis'          ✓ consistência espanhola (Build 162.2)
-  //   Todos os enums: sem strings vazias (fix 160.1 mantido)
+  // ── responseSchema Build 165 — ACHATADO para máxima confiabilidade ─────────
+  // MUDANÇA CRÍTICA: nó 'objetivo' agora tem TODOS os campos FLAT (sem sub-objetos).
+  // Elimina o problema de colapso de sub-objetos pelo Gemini.
+  // O parser faz dual-mode: tenta nested → fallback flat.
+  //
+  // Mapeamento flat do 'objetivo':
+  //   pa, fc, fr, satO2, temperatura       ← antigo signosVitales.*
+  //   estadoGeneral, acv, ar, abdomen,
+  //   extremidades                          ← antigo examenFisico.*
+  //   laboratorio, imagenes, culturas, ecg  ← antigo examenes.*
+  //   tratamientoActual                     ← direto
   static const Map<String, dynamic> _responseSchema = {
     'type': 'object',
     'required': ['paciente', 'subjetivo', 'objetivo', 'evaluacion', 'plan', 'farmacos'],
     'properties': {
 
-      // ── DEMOGRÁFICO ──────────────────────────────────────────────────────
+      // ── DEMOGRÁFICO ────────────────────────────────────────────────────────
       'paciente': {
         'type': 'object',
+        'required': ['nome', 'cama', 'diagnostico'],
         'properties': {
           'nome':           {'type': 'string'},
           'cama':           {'type': 'string'},
@@ -409,9 +464,10 @@ class SoapCopilotService {
         },
       },
 
-      // ── S — SUBJETIVO ────────────────────────────────────────────────────
+      // ── S — SUBJETIVO ──────────────────────────────────────────────────────
       'subjetivo': {
         'type': 'object',
+        'required': ['notePasaNoche'],
         'properties': {
           'notePasaNoche': {'type': 'string'},
           'dolorEscala':   {'type': 'integer', 'minimum': 0, 'maximum': 10},
@@ -427,46 +483,41 @@ class SoapCopilotService {
         },
       },
 
-      // ── O — OBJETIVO ─────────────────────────────────────────────────────
+      // ── O — OBJETIVO — FLAT (Build 165 FIX) ──────────────────────────────
+      // TODOS os campos num único nível dentro de 'objetivo'.
+      // Sem sub-objetos aninhados para evitar colapso de nós pelo Gemini.
       'objetivo': {
         'type': 'object',
+        'required': ['pa', 'fc', 'estadoGeneral', 'planTerapeutico_ob'],
         'properties': {
-          'signosVitales': {
-            'type': 'object',
-            'properties': {
-              'pa':          {'type': 'string'},
-              'fc':          {'type': 'string'},
-              'fr':          {'type': 'string'},
-              'satO2':       {'type': 'string'},
-              'temperatura': {'type': 'string'},
-            },
-          },
-          'examenFisico': {
-            'type': 'object',
-            'properties': {
-              'estadoGeneral': {'type': 'string'},
-              'acv':           {'type': 'string'},
-              'ar':            {'type': 'string'},
-              'abdomen':       {'type': 'string'},
-              'extremidades':  {'type': 'string'},
-            },
-          },
-          'examenes': {
-            'type': 'object',
-            'properties': {
-              'laboratorio': {'type': 'string'},
-              'imagenes':    {'type': 'string'},
-              'culturas':    {'type': 'string'},
-              'ecg':         {'type': 'string'},
-            },
-          },
-          'tratamientoActual': {'type': 'string'},
+          // Signos vitais (flat)
+          'pa':               {'type': 'string'},
+          'fc':               {'type': 'string'},
+          'fr':               {'type': 'string'},
+          'satO2':            {'type': 'string'},
+          'temperatura':      {'type': 'string'},
+          // Exame físico (flat)
+          'estadoGeneral':    {'type': 'string'},
+          'acv':              {'type': 'string'},
+          'ar':               {'type': 'string'},
+          'abdomen':          {'type': 'string'},
+          'extremidades':     {'type': 'string'},
+          // Exames complementares (flat)
+          'laboratorio':      {'type': 'string'},
+          'imagenes':         {'type': 'string'},
+          'culturas':         {'type': 'string'},
+          'ecg':              {'type': 'string'},
+          // Tratamento atual
+          'tratamientoActual':  {'type': 'string'},
+          // Campo auxiliar para forçar emissão (descartado no parse)
+          'planTerapeutico_ob': {'type': 'string'},
         },
       },
 
-      // ── A — EVALUACIÓN ───────────────────────────────────────────────────
+      // ── A — EVALUACIÓN ────────────────────────────────────────────────────
       'evaluacion': {
         'type': 'object',
+        'required': ['estado', 'notasEvaluacion'],
         'properties': {
           'estado': {
             'type': 'string',
@@ -480,19 +531,17 @@ class SoapCopilotService {
         },
       },
 
-      // ── P — PLAN ─────────────────────────────────────────────────────────
+      // ── P — PLAN ──────────────────────────────────────────────────────────
       'plan': {
         'type': 'object',
+        'required': ['planTerapeutico'],
         'properties': {
           'planTerapeutico': {'type': 'string'},
           'criteriosAlta':   {'type': 'string'},
         },
       },
 
-      // ── FÁRMACOS ATUAIS (Build 162) ───────────────────────────────────────
-      // Extrair qualquer medicamento mencionado no texto ou visível em fotos
-      // de receitas, prescrições ou telas de sistemas de saúde.
-      // Build 162.2: renomeado 'dosagem' → 'dosis' (consistência espanhola)
+      // ── FÁRMACOS ──────────────────────────────────────────────────────────
       'farmacos': {
         'type': 'array',
         'items': {
@@ -507,71 +556,76 @@ class SoapCopilotService {
     },
   };
 
-  // ── Prompt reforçado (Build 161) ──────────────────────────────────────────
+  // ── Prompt reforçado Build 165 ─────────────────────────────────────────────
   static const String _systemPrompt =
-      'Eres un asistente clínico especializado en evoluciones médicas SOAP para hospitales. '
-      'Analiza TODA la información disponible en el input (texto, imágenes de monitor, '
-      'resultados de laboratorio, fotos de epicrisis) y extrae los datos al JSON estructurado.\n\n'
+      'Eres un asistente clínico especializado en evoluciones médicas SOAP. '
+      'Analiza TODA la información disponible y extrae los datos al JSON estructurado.\n\n'
+      'CRÍTICO — ESTRUCTURA DEL JSON:\n'
+      'El nodo "objetivo" es PLANO (flat). Todos sus campos van DIRECTAMENTE dentro '
+      'de "objetivo" sin sub-objetos. Ejemplo correcto:\n'
+      '{\n'
+      '  "objetivo": {\n'
+      '    "pa": "120/80",\n'
+      '    "fc": "72",\n'
+      '    "fr": "16",\n'
+      '    "satO2": "98%",\n'
+      '    "temperatura": "36.5",\n'
+      '    "estadoGeneral": "Paciente en buen estado general",\n'
+      '    "acv": "Ruidos cardíacos rítmicos",\n'
+      '    "ar": "Murmullo vesicular conservado",\n'
+      '    "abdomen": "Blando, depresible",\n'
+      '    "extremidades": "Sin edemas",\n'
+      '    "laboratorio": "Hemograma normal",\n'
+      '    "imagenes": "",\n'
+      '    "culturas": "",\n'
+      '    "ecg": "",\n'
+      '    "tratamientoActual": "Continúa plan previo",\n'
+      '    "planTerapeutico_ob": ""\n'
+      '  }\n'
+      '}\n\n'
       'OBLIGATORIO — INSTRUCCIÓN CRÍTICA:\n'
-      'Es OBLIGATORIO procesar y rellenar TODAS las claves estructurales del JSON. '
-      'Cruza RIGUROSAMENTE el relato de texto con los datos extraídos de las imágenes. '
-      'Si una clave no tiene información disponible, usa una cadena vacía "", false o '
-      'el valor por defecto — pero NUNCA omitas una clave del JSON de respuesta.\n\n'
+      'Es OBLIGATORIO procesar y rellenar TODAS las claves. '
+      'Nunca uses sub-objetos dentro de "objetivo". '
+      'Si una clave no tiene datos, usa cadena vacía "". '
+      'NUNCA omitas un nodo del JSON.\n\n'
       'REGLAS ESPECÍFICAS:\n'
-      '1. PACIENTE: Si el texto menciona nombre, cama/leito, edad, sexo o diagnóstico '
-      'principal, extráelos al nodo "paciente". Esto actualiza el encabezado del prontuario.\n'
-      '2. SOLO extrae información EXPLÍCITA. NO inventes datos clínicos.\n'
-      '3. Textos libres (notePasaNoche, estadoGeneral, planTerapeutico): redactar en '
-      'español médico profesional, convirtiendo abreviaturas (pa→PA, fc→FC, fr→FR, '
-      'spo2/sat→satO2, t→temperatura).\n'
-      '4. SIGNOS VITALES: cada valor en su campo específico exacto. '
-      'PA formato "120/80", FC solo número, temperatura en °C, satO2 con o sin %.\n'
-      '5. dolorEscala: sin dolor=0, leve=1-3, moderado=4-6, intenso=7-9, máximo=10.\n'
-      '6. estado clínico: mejora/bien→mejorando, sin cambios→estable, empeora/crítico→empeorando.\n'
-      '7. problemasActivos: lista LIMPIA de diagnósticos activos. Si el input menciona '
-      'un nuevo paciente diferente, la lista debe contener SOLO sus diagnósticos, '
-      'sin mezclar con casos anteriores.\n'
-      '8. Si hay imágenes de monitores o resultados, extrae TODOS los valores visibles.\n'
-      '9. planTerapeutico: consolida TODAS las indicaciones y cambios de tratamiento.\n'
-      '10. farmacos: extrae TODOS los medicamentos mencionados en texto o visibles en '
-      'imágenes de recetas, prescripciones, pantallas de sistemas hospitalarios o '
-      'hojas de medicación. Para cada fármaco incluye "medicamento" (nombre) y '
-      '"dosis" completa (ej: "Metformina 850 mg VO 12/12h", "Omeprazol 40 mg EV 1x/día"). '
-      'Si no hay fármacos, devuelve array vacío [].\n'
-      '11. Responde SIEMPRE con JSON válido completo. NUNCA texto libre fuera del JSON.';
+      '1. PACIENTE: extrae nombre, cama, edad, sexo y diagnóstico principal.\n'
+      '2. SOLO extrae información EXPLÍCITA. NO inventes datos.\n'
+      '3. Textos libres: redactar en español médico profesional.\n'
+      '4. SIGNOS VITALES: PA formato "120/80", FC solo número, T en °C.\n'
+      '5. dolorEscala: 0=sin dolor, 1-3=leve, 4-6=moderado, 7-9=intenso, 10=máximo.\n'
+      '6. estado clínico: mejora→mejorando, sin cambios→estable, empeora→empeorando.\n'
+      '7. problemasActivos: lista LIMPIA de diagnósticos activos del paciente actual.\n'
+      '8. planTerapeutico: consolida TODAS las indicaciones y cambios de tratamiento.\n'
+      '9. farmacos: extrae TODOS los medicamentos con nombre y dosis completa.\n'
+      '10. Si hay imágenes de monitores, extrae TODOS los valores visibles.\n';
 
-  /// Extrai SOAP + dados demográficos a partir de texto e/ou imagens.
-  /// [text]           — texto livre do médico (nota de guardia, voz transcrita, etc.)
-  /// [images]         — bytes de imagens (fotos de monitor, exame, epicrisis)
-  /// [imagesMimeType] — MIME de cada imagem ('image/jpeg', 'image/png')
-  /// [apiKey]         — GeminiService.apiKeyForLab
+  // ── Método principal ───────────────────────────────────────────────────────
+  // Alias de compatibilidade com copilot_button.dart (Build ≤ 164)
   static Future<SoapDraftResult> extractSoap({
-    required String text,
+    required String apiKey,
+    String? text,
     List<Uint8List>? images,
     List<String>? imagesMimeType,
-    required String apiKey,
-  }) async {
-    if (apiKey.isEmpty) {
-      throw Exception(
-          'API Key do Gemini não configurada. '
-          'Acesse Configurações e insira sua chave Gemini.');
-    }
+  }) => analyze(apiKey: apiKey, textInput: text, images: images);
 
-    // ── Monta partes do conteúdo multimodal ──────────────────────────────
+  static Future<SoapDraftResult> analyze({
+    required String apiKey,
+    String? textInput,
+    List<Uint8List>? images,
+  }) async {
+    // ── Monta partes do request ────────────────────────────────────────────
     final parts = <Map<String, dynamic>>[];
 
-    if (text.trim().isNotEmpty) {
-      parts.add({'text': text.trim()});
+    if (textInput != null && textInput.trim().isNotEmpty) {
+      parts.add({'text': textInput.trim()});
     }
 
-    if (images != null && images.isNotEmpty) {
-      for (int i = 0; i < images.length; i++) {
-        final mime = (imagesMimeType != null && i < imagesMimeType.length)
-            ? imagesMimeType[i]
-            : 'image/jpeg';
+    if (images != null) {
+      for (var i = 0; i < images.length; i++) {
         parts.add({
-          'inlineData': {
-            'mimeType': mime,
+          'inline_data': {
+            'mime_type': 'image/jpeg',
             'data': base64Encode(images[i]),
           }
         });
@@ -582,7 +636,7 @@ class SoapCopilotService {
       throw Exception('Nenhum conteúdo fornecido ao Copiloto.');
     }
 
-    // ── Corpo da requisição com responseSchema ────────────────────────────
+    // ── Corpo da requisição ────────────────────────────────────────────────
     final body = jsonEncode({
       'system_instruction': {
         'parts': [{'text': _systemPrompt}],
@@ -597,11 +651,11 @@ class SoapCopilotService {
         'responseMimeType': 'application/json',
         'responseSchema': _responseSchema,
         'temperature': 0.1,
-        'maxOutputTokens': 2048,
+        'maxOutputTokens': 4096,  // Build 165: aumentado 2048→4096
       },
     });
 
-    // ── Chamada HTTP síncrona ─────────────────────────────────────────────
+    // ── Chamada HTTP ───────────────────────────────────────────────────────
     final uri = Uri.parse('$_endpointSync?key=$apiKey');
 
     http.Response response;
@@ -628,7 +682,7 @@ class SoapCopilotService {
           '${detail.isNotEmpty ? detail : response.body}');
     }
 
-    // ── Extrai texto bruto do response ───────────────────────────────────
+    // ── Extrai rawText ─────────────────────────────────────────────────────
     String rawText = '';
     try {
       final decoded = jsonDecode(response.body);
@@ -646,16 +700,14 @@ class SoapCopilotService {
       throw Exception('Erro ao extrair texto da resposta Gemini: $e');
     }
 
-    // ── LOG DE AUDITORIA (Build 161) — visível no console Flutter ────────
-    // ignore: avoid_print
-    debugPrint('🤖 GEMINI RAW JSON: $rawText');
+    // ── LOG AUDITORIA ──────────────────────────────────────────────────────
+    debugPrint('🤖 GEMINI RAW JSON (Build 165): $rawText');
 
-    // ── Parse do JSON SOAP ────────────────────────────────────────────────
+    // ── Parse JSON ─────────────────────────────────────────────────────────
     Map<String, dynamic> soapJson;
     try {
       soapJson = jsonDecode(rawText) as Map<String, dynamic>;
     } catch (e) {
-      // Tentativa de limpeza: remove markdown code fences se presentes
       final cleaned = rawText
           .replaceAll(RegExp(r'^```json\s*', multiLine: true), '')
           .replaceAll(RegExp(r'^```\s*$', multiLine: true), '')

@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionPersistence — Build 163 — SharedPreferences save/load + clearActiveSession
+// InternacionPersistence — Build 165 — Chave única anti-default-bleed
 //
 // Build 163: clearActiveSession() — apaga a sessão "default" (paciente ativo)
 //   Usado pelo Protocolo Clean Slate ao iniciar nova evolução.
@@ -61,12 +61,16 @@ class InternacionPersistence {
   static const _prefix = 'internacion_session_';
   static const _keysListKey = 'internacion_session_keys';
 
-  /// Gera chave única a partir de nome+cama (sanitizado)
+  /// Gera chave única a partir de nome+cama (sanitizado).
+  /// FIX 165-C: Quando nome+cama estão vazios, usa timestamp para evitar que
+  /// sessões "default" se sobreponham entre pacientes diferentes.
+  /// Isso impede que paciente B ressuscite ao sobrescrever a chave do paciente A.
   static String _sessionKey(PacienteInternacaoData p) {
-    final nome = p.nome.trim().replaceAll(' ', '_').toLowerCase();
-    final cama = p.cama.trim().replaceAll(' ', '_').toLowerCase();
+    final nome = p.nome.trim().replaceAll(RegExp(r'\s+'), '_').toLowerCase();
+    final cama = p.cama.trim().replaceAll(RegExp(r'\s+'), '_').toLowerCase();
     if (nome.isEmpty && cama.isEmpty) {
-      return '${_prefix}default';
+      // Chave única por timestamp — nunca mais colisão entre sessões anônimas
+      return '${_prefix}anon_${DateTime.now().millisecondsSinceEpoch}';
     }
     return '$_prefix${nome}_${cama}';
   }
