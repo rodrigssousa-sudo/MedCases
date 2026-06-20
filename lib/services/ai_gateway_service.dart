@@ -63,6 +63,20 @@ import 'ai_gateway_service_io.dart'
     if (dart.library.js_interop) 'ai_gateway_service_web.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Constante de produção — URL do servidor Digital Ocean App Platform
+//
+// Build 155.2: URL hardcoded aqui para garantir que o gateway seja sempre
+// usado, independentemente de qualquer chamada a configure(). O servidor
+// em produção roda em https://medcasespro.com/api/* via reverse-proxy,
+// ou no endpoint direto do Digital Ocean App Platform abaixo.
+// Para alterar o endpoint basta mudar esta constante e recompilar.
+// ─────────────────────────────────────────────────────────────────────────────
+const String kAiGatewayBaseUrl = 'https://medcases-ai-gateway-xxxxx.ondigitalocean.app';
+// ↑ ATENÇÃO: substitua pelo URL real do seu app no Digital Ocean App Platform.
+//   Acesse: https://cloud.digitalocean.com/apps → seu app → Settings → Domains
+//   Exemplo real: 'https://medcases-ai-gateway-abcd1.ondigitalocean.app'
+
+// ─────────────────────────────────────────────────────────────────────────────
 // AiGatewayService
 // ─────────────────────────────────────────────────────────────────────────────
 class AiGatewayService {
@@ -70,24 +84,28 @@ class AiGatewayService {
 
   // ── Configuração ───────────────────────────────────────────────────────────
 
-  /// URL base do servidor AI Gateway (ex: 'https://medcases-ai.ondigitalocean.app').
-  /// Deve ser definida via [configure()] antes do primeiro uso.
-  static String? _baseUrl;
+  /// URL base do servidor AI Gateway.
+  /// Build 155.2: inicializado com kAiGatewayBaseUrl — sempre configurado.
+  /// Pode ser sobrescrito via [configure()] em runtime (ex: testes / staging).
+  static String _baseUrl = kAiGatewayBaseUrl;
 
-  /// true → usa o gateway mesmo quando BYOA key estiver disponível.
-  /// Útil para testes comparativos ou quando o servidor tem quota maior.
-  static bool forceGateway = false;
+  /// Build 155.2: removido forceGateway — o gateway é SEMPRE o canal primário.
+  /// Mantido como getter constante true para retrocompatibilidade de código
+  /// que ainda referencia a propriedade (sem quebrar a compilação).
+  static bool get forceGateway => true;
+  // ignore: avoid_setters_without_getters
+  static set forceGateway(bool _) {} // no-op — gateway sempre ativo
 
-  /// Configura o endpoint base do servidor.
+  /// Permite sobrescrever a URL em runtime (staging, testes).
   /// [baseUrl] deve incluir protocolo e host, sem barra no final.
-  /// Exemplo: 'https://medcases-pro-ai.ondigitalocean.app'
   static void configure({required String baseUrl}) {
     _baseUrl = baseUrl.trimRight().replaceAll(RegExp(r'/$'), '');
-    debugPrint('[AiGatewayService] Configurado → $_baseUrl');
+    debugPrint('[AiGatewayService] URL sobrescrita → $_baseUrl');
   }
 
-  /// true se o gateway foi configurado e está pronto para uso.
-  static bool get isConfigured => _baseUrl != null && _baseUrl!.isNotEmpty;
+  /// Build 155.2: sempre true — URL hardcoded garante que o gateway
+  /// nunca fique não-configurado.
+  static bool get isConfigured => _baseUrl.isNotEmpty;
 
   // ── Endpoints de streaming SSE (Build 155 — dois motores independentes) ──
 
@@ -185,18 +203,6 @@ class AiGatewayService {
       payload:    payload,
       requestId:  requestId,
     );
-  }
-
-  // ── Helpers ────────────────────────────────────────────────────────────────
-
-  // Mantido para compatibilidade caso algum código externo referencie.
-  // Na Build 146 os erros são emitidos dentro de runSseStreamPlatform().
-  static void _emitError(StreamController<GeminiChunk> ctrl, String code) {
-    if (!ctrl.isClosed) {
-      ctrl
-        ..add(GeminiChunk.error(code))
-        ..close();
-    }
   }
 
   // ── Context Classifier síncrono (opcional) ─────────────────────────────────

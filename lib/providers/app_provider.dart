@@ -3087,43 +3087,17 @@ class AppProvider extends ChangeNotifier {
       return false;
     }
 
-    // ── Build 112: Race-condition guard — primeira mensagem com Gemini ────────
-    // Problema: no ambiente web, _geminiConnected pode ser false no primeiro
-    // carregamento devido a race condition entre checkGeminiSession() (assíncrono)
-    // e o primeiro sendAiMessage(). Se tiver API Key mas _geminiConnected=false,
-    // tenta reconectar silenciosamente antes de cair no fallback legado.
-    // Isso garante que o system_instruction seja sempre enviado na PRIMEIRA chamada.
-    if (!_geminiConnected && GeminiService.hasApiKey) {
-      debugPrint('[sendAiMessage] Build 112: _geminiConnected=false mas apiKey presente — tentando reconectar...');
-      try {
-        final connected = await GeminiService.isConnected()
-            .timeout(const Duration(seconds: 4), onTimeout: () => false);
-        if (connected) {
-          final email = await GeminiService.connectedEmail() ?? '';
-          _setGeminiConnectionState(connected: true, email: email);
-          debugPrint('[sendAiMessage] Build 112: reconexão silenciosa OK — $email');
-        }
-      } catch (e) {
-        debugPrint('[sendAiMessage] Build 112: reconexão silenciosa falhou: $e');
-      }
-    }
+    // ── Build 155.2: Gateway sempre disponível — sem pré-requisito de Gemini ──
+    // O AiGatewayService usa o servidor Node.js/Express no Digital Ocean.
+    // Nenhuma chave de API é necessária no cliente — tudo é gerenciado server-side.
+    // O bloco de reconexão do Build 112 e o guard _geminiConnected foram
+    // removidos do caminho principal: o gateway não depende de OAuth nem de BYOA key.
+    //
+    // Fallback legado (OpenAI/local) só é ativado se o gateway falhar em runtime
+    // via chunk.isError no listener — nunca como pré-condição de entrada.
+    debugPrint('[sendAiMessage] Build 155.2: rota gateway → ${longResponse ? "ESTUDO" : "PLANTÃO"}');
 
-    // ── Fallback: sem Gemini → usa pipeline legado (OpenAI / local) ────────
-    // O buildAIAnswer() legado cuida de OpenAI e do contexto local.
-    // Build 112: só cai aqui se REALMENTE não há Gemini após tentativa de reconexão.
-    if (!_geminiConnected || !GeminiService.hasApiKey) {
-      _aiAnswerInProgress = true;
-      try {
-        final answer = await _buildAIAnswerImpl(input);
-        if (answer.isEmpty) return false;
-        onDone(answer);
-        return false; // indica que usou fallback, não streaming
-      } finally {
-        _aiAnswerInProgress = false;
-      }
-    }
-
-    // ── Streaming V2 via GeminiServiceV2 ───────────────────────────────────
+    // ── Streaming via AiGatewayService ────────────────────────────────────
     _aiStreamActive = true;
 
     // ── Reutiliza todo o pipeline de contexto do buildAIAnswer ─────────────
@@ -3174,81 +3148,43 @@ class AppProvider extends ChangeNotifier {
       isFirstMessage:     _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
     );
 
-    // Garante API key presente
-    if (!GeminiService.hasApiKey) {
-      try {
-        final key = await FirestoreService.loadGeminiApiKey()
-            .timeout(const Duration(seconds: 5));
-        if (key.isNotEmpty) GeminiService.setGeminiApiKey(key);
-        else await GeminiService.initFromStorage();
-      } catch (_) {
-        await GeminiService.initFromStorage();
-      }
-    }
+    // Build 155.2: API key não necessária no cliente para o fluxo de chat.
+    // O gateway gerencia a chave server-side. GeminiService.hasApiKey continua
+    // sendo carregado em background para uso exclusivo do Lab (análise de exames)
+    // mas NÃO bloqueia mais o fluxo de chat principal com send+return antecipado.
 
-    if (!GeminiService.hasApiKey) {
-      _aiStreamActive = false;
-      onError(_lang == 'es'
-          ? 'No se pudo conectar al asistente. Configura la API. ⚕ Apoyo educacional.'
-          : 'Não foi possível conectar ao assistente. Configure a API. ⚕ Apoio educacional.');
-      return true;
-    }
-
-    final apiKey      = GeminiService.apiKeyForLab;
+    // Build 155.2: sem apiKey no cliente — o gateway gerencia a chave server-side.
+    // apiKey local é preservado para uso exclusivo do lab (análises de exames)
+    // e NÃO é necessário para o fluxo de chat principal.
     final accumulator = StringBuffer();
 
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
-    // O stream emite chunk(text, isDone=true) com o último texto E depois
-    // GeminiChunk.done (vazio, isDone=true) como sentinela de fechamento.
-    // Sem este guard, o listener dispararia onDone duas vezes → bolha duplicada.
     bool completionFired = false;
 
-    // ── Build 145: seleção de backend de streaming ─────────────────────────
-    // PRIORIDADE:
-    //   1. AiGatewayService (servidor Node.js) — quando configurado e ativo:
-    //      • API key gerenciada exclusivamente no servidor
-    //      • ANTI_COGNITION_LEAK_PROMPT injetado server-side
-    //      • Rate limit + retry no servidor
-    //   2. GeminiServiceV2 (BYOA) — quando gateway não configurado/forçado.
-    //
-    // AiGatewayService.forceGateway permite usar o servidor mesmo com BYOA key.
-    // Útil para testes A/B ou quando o servidor tem quota maior.
-    final bool useGateway =
-        AiGatewayService.isConfigured && AiGatewayService.forceGateway;
+    // ── Build 155.2: Gateway é SEMPRE o canal primário ─────────────────────
+    // Não há mais alternância entre gateway e BYOA no fluxo de chat principal.
+    // AiGatewayService.isConfigured é sempre true (URL hardcoded em kAiGatewayBaseUrl).
+    // GeminiServiceV2 não é mais usado para o chat — apenas para o lab se necessário.
+    debugPrint('[sendAiMessage] Build 155.2: AiGateway → motor=${longResponse ? "ESTUDO" : "PLANTÃO"}');
 
-    // ── Subscreve o stream de chunks ───────────────────────────────────────
-    final stream = useGateway
-        ? AiGatewayService.sendStream(
-            userMessage:  input,
-            systemPrompt: systemPrompt,
-            history:      List.unmodifiable(_aiHistory),
-            useGrounding: true,
-            longResponse: longResponse,  // Motor de Partida (Build 149)
-          )
-        : GeminiServiceV2.sendStream(
-            apiKey:       apiKey,
-            userMessage:  input,
-            systemPrompt: systemPrompt,
-            history:      List.unmodifiable(_aiHistory),
-            useGrounding: true,
-          );
-
-    if (useGateway) {
-      debugPrint('[sendAiMessage] Build 145: usando AiGatewayService → ${AiGatewayService.isConfigured ? 'gateway configurado' : 'N/A'}');
-    }
+    // ── Subscreve o stream de chunks via Gateway ────────────────────────────
+    final stream = AiGatewayService.sendStream(
+      userMessage:  input,
+      systemPrompt: systemPrompt,
+      history:      List.unmodifiable(_aiHistory),
+      useGrounding: true,
+      longResponse: longResponse,  // chave de rota: false=/plantao  true=/estudo
+    );
 
     _aiStreamSub = stream.listen(
       (chunk) {
         if (chunk.isError) {
-          // Build 126 — TOLERÂNCIA A FALHAS: se já acumulamos texto válido antes
-          // do erro (ex: SAFETY parcial, stream truncado), exibir o que temos.
-          // Só descartamos e emitimos contingência se NÃO há conteúdo acumulado.
+          // Build 126 — TOLERÂNCIA A FALHAS: conteúdo parcial válido → exibir.
           if (completionFired) return;
           completionFired = true;
           _aiStreamActive = false;
           _aiStreamSub = null;
           final partialText = accumulator.toString().trim();
-          // Conteúdo parcial com substância (>40 chars) → exibir ao invés de contingência
           if (partialText.length > 40) {
             _aiHistory
               ..add({'role': 'user',      'content': input})
@@ -3258,7 +3194,9 @@ class AppProvider extends ChangeNotifier {
             return;
           }
           accumulator.clear();
-          final msg = GeminiServiceV2.errorMessage(chunk.errorCode!, _lang);
+          // Build 155.2: null-safe — errorCode pode ser null em chunks malformados
+          final errCode = chunk.errorCode ?? 'network';
+          final msg = GeminiServiceV2.errorMessage(errCode, _lang);
           onError(msg);
           return;
         }
