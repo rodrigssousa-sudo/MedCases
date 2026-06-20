@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * MedCases Pro — AI Gateway Server  v2.4.0  (Build 151)
+ * MedCases Pro — AI Gateway Server  v2.5.0  (Build 153)
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * ARQUITETURA:
@@ -22,6 +22,8 @@
  *   8. LINE BUDGET dinâmico    → PROMPT_MODO_PLANTAO/ESTUDO Motor de Partida (B149-B151)
  *   9. TRAVA DE FALLBACK       → Modo Plantão recusa termos sem conduta direta (B150)
  *  10. Prompts monolíticos     → PROMPT_MODO_PLANTAO / PROMPT_MODO_ESTUDO isolados (B151)
+ *  11. Mode Anchor Injection   → Par sintético user/model injetado em contents[0] (B153)
+ *                                Força calibração de estilo independente do histórico
  *
  * ANTI-BUFFERING (Build 146):
  *   O Digital Ocean App Platform usa um proxy Nginx interno que pode segurar
@@ -580,16 +582,67 @@ function cleanChunk(raw) {
 // MONTAGEM DO PAYLOAD GEMINI
 // ════════════════════════════════════════════════════════════════════════════
 
+// ════════════════════════════════════════════════════════════════════════════
+// MODE ANCHOR PAIRS — Build 153
+//
+// PROBLEMA: O Gemini usa o histórico de mensagens (contents[]) para calibrar
+// o estilo e comportamento da próxima resposta. Quando o usuário muda o modo
+// (Plantão ↔ Estudos) no meio de um chat, o modelo ignora a nova
+// systemInstruction porque o histórico anterior está "ancorando" o estilo
+// antigo. Isso é um comportamento confirmado da API Gemini — o modelo
+// interpreta o padrão semântico do histórico como sinal mais forte que a SI.
+//
+// SOLUÇÃO — MODE ANCHOR INJECTION:
+// Injetar um par sintético user/model no INÍCIO de contents[] (antes de todo
+// o histórico real) como "priming turn". O modelo recebe explicitamente um
+// exemplo do comportamento esperado no modo atual, ancorando o estilo de
+// saída antes de ler o histórico. Isso é equivalente a um few-shot example
+// posicionado estrategicamente no topo do contexto.
+//
+// PARES DEFINIDOS:
+//   PLANTAO: user pede conduta → model responde com flashcard ≤14 linhas
+//   ESTUDO:  user pede revisão → model responde com overview acadêmico
+//
+// INVARIANTES:
+//   • O par sintético é SEMPRE o primeiro turno em contents[]
+//   • Nunca aparece no histórico real (é construído por buildContents)
+//   • Texto do modelo sintético começa com ### (âncora Markdown obrigatória)
+//   • Não conta para o limite de 20 turnos do _aiHistory Flutter
+// ════════════════════════════════════════════════════════════════════════════
+
+const MODE_ANCHOR_PLANTAO = {
+  user:  'Conduta para sepse grave?',
+  model: '### Sepse Grave — Conduta Imediata\n\n- **Colher culturas** (hemo x2, urina) ANTES dos antibióticos\n- **Antibiótico EV em até 1h:** Piperacilina-Tazobactam 4,5 g EV 8/8h + Vancomicina 25-30 mg/kg EV (se MRSA suspeito)\n- **Ressuscitação volêmica:** SF 0,9% 30 mL/kg EV em 3h (reavaliar após 1L)\n- **Vasopressor:** Norepinefrina 0,1–0,3 mcg/kg/min se PAM < 65 mmHg após volume\n- **Monitorizar:** Lactato (alvo < 2 mmol/L), débito urinário ≥ 0,5 mL/kg/h, SvO₂\n- **Solicitar:** Hemograma, PCR, Procalcitonina, Creatinina, Bilirrubinas, Coagulograma\n\nDeseja ajustar antibiótico por foco suspeito ou resultado de culturas?',
+};
+
+const MODE_ANCHOR_ESTUDO = {
+  user:  'Revisão sobre SIRS',
+  model: '### SIRS — Síndrome da Resposta Inflamatória Sistêmica\n\n**Definição:** Resposta inflamatória desregulada do hospedeiro a um estímulo (infeccioso ou não), definida pela presença de ≥ 2 critérios clínicos.\n\n**Critérios diagnósticos (≥ 2):**\n- Temperatura > 38°C ou < 36°C\n- FC > 90 bpm\n- FR > 20 rpm ou PaCO₂ < 32 mmHg\n- Leucócitos > 12.000/mm³, < 4.000/mm³ ou > 10% de bastões\n\n**Fisiopatologia:** Ativação maciça de macrófagos → liberação de TNF-α, IL-1, IL-6 → cascata de coagulação, vasodilatação periférica, aumento da permeabilidade capilar.\n\n**Distinção clínica:**\n- SIRS + foco infeccioso confirmado/suspeito = **Sepse**\n- SIRS sem infecção = pancreatite, trauma, queimadura, cirurgia major\n\n**Aplicação prática:** SIRS é sensível mas pouco específico; use qSOFA (≥ 2 pontos) para triagem de disfunção orgânica em pacientes com suspeita infecciosa.\n\nQuer aprofundar os critérios do Sepsis-3 ou comparar SIRS vs qSOFA vs SOFA?',
+};
+
 /**
  * Converte o histórico do formato Flutter (role/content ou role/text)
  * para o formato Gemini (role: 'user'|'model', parts: [{text}]).
  *
- * @param {Array} history - histórico de mensagens do cliente
- * @returns {Array}
+ * Build 153: injeta MODE ANCHOR como primeiro par sintético user/model
+ * para calibrar o estilo de resposta independentemente do histórico acumulado.
+ *
+ * @param {Array}   history      - histórico de mensagens do cliente
+ * @param {string}  userMessage  - mensagem atual do usuário
+ * @param {boolean} longResponse - false=PLANTAO | true=ESTUDO
+ * @returns {Array} contents formatado para a API Gemini
  */
-function buildContents(history, userMessage) {
+function buildContents(history, userMessage, longResponse) {
   const contents = [];
 
+  // ── MODE ANCHOR INJECTION (Build 153) ────────────────────────────────────
+  // Par sintético no topo do contexto: ancora o comportamento do modelo
+  // no modo correto ANTES de processar qualquer histórico real.
+  const anchor = longResponse ? MODE_ANCHOR_ESTUDO : MODE_ANCHOR_PLANTAO;
+  contents.push({ role: 'user',  parts: [{ text: anchor.user  }] });
+  contents.push({ role: 'model', parts: [{ text: anchor.model }] });
+
+  // ── Histórico real do cliente ─────────────────────────────────────────────
   for (const msg of (history ?? [])) {
     const role = (msg.role === 'assistant' || msg.role === 'model') ? 'model' : 'user';
     const text = String(msg.content ?? msg.text ?? '');
@@ -598,6 +651,7 @@ function buildContents(history, userMessage) {
     }
   }
 
+  // ── Mensagem atual do usuário ─────────────────────────────────────────────
   contents.push({ role: 'user', parts: [{ text: userMessage }] });
   return contents;
 }
@@ -1005,7 +1059,8 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
 
   // ── Monta payload ─────────────────────────────────────────────────────────
   const systemInstruction = buildSystemInstruction(systemPrompt, longResponse);
-  const contents          = buildContents(history, userMessage);
+  // Build 153: buildContents recebe longResponse para MODE ANCHOR INJECTION
+  const contents          = buildContents(history, userMessage, longResponse);
   const body              = buildGeminiPayload({
     systemInstruction,
     contents,
@@ -1014,7 +1069,7 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
   });
 
   const modo = longResponse ? 'ESTUDO' : 'PLANTAO';
-  log.info(`[${requestId}] modo=${modo} useGrounding=${useGrounding} si_len=${systemInstruction.length}`);
+  log.info(`[${requestId}] modo=${modo} useGrounding=${useGrounding} si_len=${systemInstruction.length} contents_turns=${contents.length} anchor=${longResponse ? 'ESTUDO' : 'PLANTAO'}`);
 
   // ── Configura cabeçalhos SSE ──────────────────────────────────────────────
   // ── Build 146: Headers anti-buffering completos ────────────────────────

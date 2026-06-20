@@ -1813,16 +1813,22 @@ class _AiScreenState extends State<AiScreen> {
             : const SizedBox.shrink(),
       ),
 
-      // ── Motor de Partida — toggle Plantão / Estudos (Build 149, fix B152) ──
+      // ── Motor de Partida — toggle Plantão / Estudos (Build 149, fix B152/B153) ──
       _ResponseModeToggle(
         value: _longResponse,          // Build 152: prop renamed value (binding fix)
         dark: dark,
         lang: p.lang,
-        onChanged: (newValue) {        // Build 152: explicit block garante setState + log
+        onChanged: (newValue) {        // Build 153: mode-switch limpa _aiHistory para evitar
+          if (newValue == _longResponse) return; // lock de estilo do modo anterior
           setState(() {
             _longResponse = newValue;
           });
-          debugPrint('[MedCases UI] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} (longResponse=$newValue)');
+          // Build 153: limpar histórico ao trocar de modo evita que o Gemini
+          // use respostas do modo antigo para calibrar o estilo do novo modo.
+          // O MODE ANCHOR do servidor já ancora o comportamento; o reset do
+          // histórico garante contexto limpo para a primeira mensagem do novo modo.
+          p.clearAiHistory();
+          debugPrint('[MedCases UI] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} — histórico limpo para calibração de modo.');
         },
       ),
 

@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '46.0.0';
-const CACHE_APP    = 'medcases-app-v46.0.0';  // ← Build 152: Flutter state-binding fix _ResponseModeToggle prop value + explicit setState
+const SW_VERSION   = '47.0.0';
+const CACHE_APP    = 'medcases-app-v47.0.0';  // ← Build 153: Mode lock fix — MODE ANCHOR INJECTION server + clearAiHistory on mode switch
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
