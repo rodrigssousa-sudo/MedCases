@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// ModeAnchorEngine / AiGatewayService — Build 157 (Prompt Refinement)
+// ModeAnchorEngine / AiGatewayService — Build 157.1 (Fix Mode Anchor Dominance)
 //
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │  PIVÔ ARQUITETURAL — Build 156                                          │
@@ -121,6 +121,21 @@ const String _modeAnchorPlantao =
     'TRAVA ANTI-ENCICLOPÉDIA:\n'
     '  ✗ PROIBIDO: parágrafos, fisiopatologia, definições, "é importante notar"\n'
     '  ✓ OBRIGATÓRIO: tópicos telegráficos — **FÁRMACO DOSE VIA** por linha\n'
+    '\n'
+
+    // Build 157.1 — PROIBIÇÃO ABSOLUTA DE PERGUNTAS (fix do bug ¿Desea...?)
+    '╔══════════════════════════════════════════════════════════════════╗\n'
+    '║  REGRA FINAL ABSOLUTA — BUILD 157.1 — PROIBIÇÃO DE PERGUNTAS    ║\n'
+    '╚══════════════════════════════════════════════════════════════════╝\n'
+    'PROIBIDO ABSOLUTO: fazer qualquer pergunta ao usuário.\n'
+    'NUNCA gerar: "¿Desea...?", "Quer...?", "Deseja...?", "¿Quieres...?",\n'
+    '             ou qualquer frase terminada em "?".\n'
+    'O bloco 📌 DEVE ser um comando em PRIMEIRA PESSOA do usuário:\n'
+    '  CORRETO: "📌 Mostrar alternativas de fármacos."\n'
+    '  CORRETO: "📌 Detalhar a dose para crianças neste caso."\n'
+    '  PROIBIDO: "📌 ¿Desea ver más opciones?"\n'
+    '  PROIBIDO: "📌 Quer saber mais sobre este fármaco?"\n'
+    'Violar esta regra quebra o botão de sugestão do app — impacto crítico em produção.\n'
     '\n';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -189,6 +204,21 @@ const String _modeAnchorEstudo =
     '    ✗ "Quer saber mais sobre...?" (pergunta da IA)\n'
     '    ✗ "Posso continuar explicando?" (voz da IA)\n'
     '    ✗ "Deseja que eu aprofunde?" (voz da IA)\n'
+    '\n'
+
+    // Build 157.1 — PROIBIÇÃO ABSOLUTA DE PERGUNTAS (fix do bug ¿Desea...?)
+    '╔══════════════════════════════════════════════════════════════════╗\n'
+    '║  REGRA FINAL ABSOLUTA — BUILD 157.1 — PROIBIÇÃO DE PERGUNTAS    ║\n'
+    '╚══════════════════════════════════════════════════════════════════╝\n'
+    'PROIBIDO ABSOLUTO: fazer qualquer pergunta ao usuário.\n'
+    'NUNCA gerar: "¿Desea...?", "Quer...?", "Deseja...?", "¿Quieres...?",\n'
+    '             ou qualquer frase terminada em "?".\n'
+    'O bloco 📌 DEVE ser um comando em PRIMEIRA PESSOA do usuário:\n'
+    '  CORRETO: "📌 Quero aprofundar na fisiopatologia deste caso."\n'
+    '  CORRETO: "📌 Continuar para o próximo tópico: fisiopatologia."\n'
+    '  PROIBIDO: "📌 ¿Desea continuar con la fisiopatología?"\n'
+    '  PROIBIDO: "📌 Quer que eu explique mais?"\n'
+    'Violar esta regra quebra o botão de sugestão do app — impacto crítico em produção.\n'
     '\n';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -197,23 +227,35 @@ const String _modeAnchorEstudo =
 class ModeAnchorEngine {
   ModeAnchorEngine._(); // utilitário estático
 
-  /// Injeta a âncora de modo no TOPO do [systemPrompt].
+  /// Retorna a âncora de modo correspondente ao motor selecionado.
   ///
-  /// [longResponse]=false → MODE_ANCHOR_PLANTAO (≤14 linhas, flashcard)
-  /// [longResponse]=true  → MODE_ANCHOR_ESTUDO  (≤24 linhas, preceptor)
+  /// Build 157.1: NÃO mais concatena com systemPrompt — a âncora é
+  /// passada como PART SEPARADO (modeAnchor) para GeminiServiceV2,
+  /// onde será a PRIMEIRA parte de system_instruction.parts[] e terá
+  /// PRIORIDADE ABSOLUTA sobre o _systemPromptPrefix.
   ///
-  /// A âncora é posicionada ANTES de todo o restante do prompt para
-  /// garantir prioridade máxima — o modelo a lê primeiro.
+  /// [longResponse]=false → _modeAnchorPlantao (≤14 linhas, médico emergência)
+  /// [longResponse]=true  → _modeAnchorEstudo  (≤24 linhas, preceptor)
+  static String getModeAnchor({bool longResponse = false}) {
+    final anchor = longResponse ? _modeAnchorEstudo : _modeAnchorPlantao;
+    debugPrint(
+      '[ModeAnchorEngine] Build 157.1: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} '
+      'âncora obtida (${anchor.length} chars) — enviada como PART 0 do system_instruction',
+    );
+    return anchor;
+  }
+
+  /// Compatibilidade reversa — Build 157.1: retorna apenas o systemPrompt
+  /// sem concatenar a âncora (a âncora vai como part separado via GeminiServiceV2).
+  /// @deprecated Use getModeAnchor() + GeminiServiceV2.sendStream(modeAnchor: ...)
   static String injectModeAnchor(
     String systemPrompt, {
     bool longResponse = false,
   }) {
-    final anchor = longResponse ? _modeAnchorEstudo : _modeAnchorPlantao;
-    debugPrint(
-      '[ModeAnchorEngine] Build 157: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} '
-      'injetado (${anchor.length} chars)',
-    );
-    return '$anchor\n$systemPrompt';
+    // Build 157.1: a âncora NÃO é mais concatenada aqui —
+    // é passada como modeAnchor para GeminiServiceV2.sendStream()
+    // para garantir prioridade máxima sobre _systemPromptPrefix.
+    return systemPrompt; // retorna prompt sem âncora concatenada
   }
 }
 
@@ -279,25 +321,27 @@ class AiGatewayService {
       return Stream.value(GeminiChunk.error('api_key_invalid'));
     }
 
-    // Injeta âncora de modo no topo do systemPrompt
-    final anchoredPrompt = ModeAnchorEngine.injectModeAnchor(
-      systemPrompt,
-      longResponse: longResponse,
-    );
+    // Build 157.1: obtém âncora de modo como string separada
+    // A âncora NÃO é mais concatenada ao systemPrompt —
+    // é passada como 'modeAnchor' para GeminiServiceV2 que a
+    // coloca como PART 0 (prioridade máxima) em system_instruction.
+    final anchor = ModeAnchorEngine.getModeAnchor(longResponse: longResponse);
 
     final motor = longResponse ? 'ESTUDO' : 'PLANTÃO';
     debugPrint(
-      '[AiGatewayService] Build 157: motor=$motor → '
-      'GeminiServiceV2.sendStream() direto',
+      '[AiGatewayService] Build 157.1: motor=$motor → '
+      'GeminiServiceV2.sendStream() direto | âncora como PART 0 (${anchor.length} chars)',
     );
 
     // Delega para GeminiServiceV2 — SSE direto para Google
+    // modeAnchor é injetado como PRIMEIRA parte de system_instruction.parts[]
     return GeminiServiceV2.sendStream(
       apiKey:       apiKey,
       userMessage:  userMessage,
-      systemPrompt: anchoredPrompt,
+      systemPrompt: systemPrompt,  // prompt base sem âncora concatenada
       history:      history,
       useGrounding: useGrounding,
+      modeAnchor:   anchor,        // âncora como PART 0 — prioridade máxima
     );
   }
 

@@ -382,16 +382,16 @@ class GeminiServiceV2 {
       '       Interpretar como: "Tratamento de Parkinson para paciente jovem"\n'
       '  ✓ NUNCA pedir esclarecimento se o contexto clínico puder ser inferido do histórico.\n'
       '  ✓ Manter o fio de raciocínio clínico da sessão sem resetar o contexto.\n\n'
-      '❓ PERGUNTA CLÍNICA DE FECHAMENTO — OBRIGATÓRIA (Build 117):\n'
-      'Toda resposta clínica DEVE terminar com uma pergunta curta e direta.\n'
-      '  ✓ Instiga o usuário a decidir o próximo passo clínico.\n'
-      '  ✓ Exemplos: "Deseja avaliar o ajuste de dose ou discutir os efeitos adversos?"\n'
-      '              "Quer aprofundar o escalonamento ou revisar as contraindicações?"\n'
-      '              "¿Deseas evaluar X o discutir Y?"\n\n'
+      // Build 157.1: REMOVIDO — PERGUNTA DE FECHAMENTO (Build 117) EXCLUÍDA.
+      // Era a causa raiz do bug '¿Desea...?'. Substituída pela regra de
+      // PROIBIÇÃO ABSOLUTA DE PERGUNTAS no modeAnchor (primeira parte do system_instruction).
+      // A âncora de modo agora comanda o gancho 📌 em PRIMEIRA PESSOA do usuário.
 
-      // ── BLOCO 1C — ARQUITETURA TRIPARTITE + GABARITO FLASHCARD (Build 122) ──
-      '🏗️ ARQUITETURA TRIPARTITE DE RESPOSTA — GABARITO FLASHCARD (Build 122):\n'
-      'TODA resposta clínica DEVE seguir exatamente esta sequência de 3 estágios:\n'
+      // ── BLOCO 1C — ARQUITETURA DE RESPOSTA (Build 157.1 — sem pergunta de estágio 2) ──
+      // Build 157.1: ESTÁGIO 2 PERGUNTA DE FILTRO REMOVIDO — era causa raiz do bug ¿Desea?
+      // O gabarito few-shot foi atualizado: sem pergunta de fechamento, com gancho 📌 1ª pessoa.
+      '🏗️ ARQUITETURA DE RESPOSTA — GABARITO FLASHCARD (Build 157.1):\n'
+      'TODA resposta clínica DEVE seguir exatamente esta sequência:\n'
       '\n'
       'ESTÁGIO 1 — CONDUTA FARMACOLÓGICA (abre a resposta, sem preâmbulo):\n'
       '  • PADRÃO OBRIGATÓRIO para cada fármaco:\n'
@@ -402,26 +402,29 @@ class GeminiServiceV2 {
       '    "IECA", "ARA-II", "Antagonista de Ca²⁺", "Anticoagulante" — apenas o NOME.\n'
       '  • Separar subseções com ⸻ (linha divisória)\n'
       '\n'
-      'ESTÁGIO 2 — PERGUNTA DE FILTRO (após ⸻ final do estágio 1):\n'
-      '  • 1 única pergunta clínica indutiva em linha própria\n'
-      '  • Permite ao médico decidir o próximo passo sem overload\n'
-      '  • Exemplos: "¿Deseas revisar la titulación o evaluar complicaciones?"\n'
-      '              "Deseja ajuste de dose, segunda linha ou monitorização?"\n'
+      'ESTÁGIO 2 — GANCHO 📌 EM PRIMEIRA PESSOA (substituiu a pergunta de filtro):\n'
+      '  • 1 único comando em PRIMEIRA PESSOA do usuário iniciando com 📌\n'
+      '  • NÃO é uma pergunta da IA — é uma ação que o médico/estudante pode clicar\n'
+      '  • EXEMPLOS CORRETOS:\n'
+      '    📌 Mostrar alternativas se eu não tiver este fármaco no hospital.\n'
+      '    📌 Quero aprofundar na fisiopatologia deste caso.\n'
+      '  • EXEMPLOS PROIBIDOS (NUNCA USE):\n'
+      '    ✗ "¿Deseas revisar la titulación?" ← PERGUNTA DA IA — PROIBIDO\n'
+      '    ✗ "Deseja ajuste de dose?" ← PERGUNTA DA IA — PROIBIDO\n'
       '\n'
-      'GABARITO FEW-SHOT — PARKINSON ATÔMICO (Build 123 — modelo de fidelidade):\n'
+      'GABARITO FEW-SHOT — PARKINSON ATÔMICO (Build 157.1 — sem pergunta de filtro):\n'
       '🟥 CONDUCTA FARMACOLÓGICA\n'
       '✅ **Levodopa/Carbidopa**: 100/25 mg VO 3x/día (Máx. 1500 mg/día).\n'
       '✅ **Pramipexol**: 0,125 mg VO 3x/día → Titular hasta 1,5 mg 3x/día.\n'
       '✅ **Rasagilina**: 1 mg VO 1x/día.\n'
-      '✅ **Entacapona**: 200 mg VO con cada dosis de Levodopa (Máx. 1600 mg/día).\n'
       '⸻\n'
       '⛔ ALERTAS CRÍTICAS\n'
       '🚫 **Biperideno**: Evitar en ancianos (alto riesgo de confusión mental y retención urinaria).\n'
       '🚫 **Levodopa**: Contraindicado en psicosis activa y glaucoma de ángulo cerrado.\n'
       '⸻\n'
-      '¿Deseas ajustar dosis por función renal, revisar interacciones o evaluar el escalonamiento para fluctuaciones motoras ("off")?\n'
+      '📌 Mostrar el escalonamiento de dosis para fluctuaciones motoras.\n'
       '\n'
-      'ORDEM OBRIGATÓRIA: Estágio 1 → Estágio 2. NUNCA inverter.\n\n'
+      'ORDEM OBRIGATÓRIA: Estágio 1 → Gancho 📌. NUNCA terminar com pergunta.\n\n'
 
       // ── BLOCO 1B — CONTRATO DE UI / DESIGN SYSTEM DE CARDS (Build 105) ─────
       // CRÍTICO: O app Flutter usa um parser que converte esses tokens em
@@ -536,6 +539,7 @@ class GeminiServiceV2 {
     required String systemPrompt,
     List<Map<String, String>> history = const [],
     bool useGrounding = true,
+    String modeAnchor = '',  // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
   }) {
     final controller = StreamController<GeminiChunk>();
 
@@ -559,6 +563,7 @@ class GeminiServiceV2 {
       systemPrompt: systemPrompt,
       history: history,
       useGrounding: useGrounding,
+      modeAnchor: modeAnchor,  // Build 157.1
     );
 
     return controller.stream;
@@ -583,6 +588,7 @@ class GeminiServiceV2 {
     required String systemPrompt,
     required List<Map<String, String>> history,
     required bool useGrounding,
+    String modeAnchor = '',  // Build 157.1
   }) async {
     if (controller.isClosed) return;
 
@@ -606,6 +612,7 @@ class GeminiServiceV2 {
         history: windowedHistory,
         useGrounding: useGrounding,
         attempt: 0,
+        modeAnchor: modeAnchor,  // Build 157.1
       );
     } catch (e) {
       _log('[GeminiV2] _runPipeline erro inesperado: $e');
@@ -867,6 +874,7 @@ class GeminiServiceV2 {
     required int attempt,
     // Build 135: contagem de tentativas transitórias (separada da contagem 429)
     int transientAttempt = 0,
+    String modeAnchor = '',  // Build 157.1
   }) async {
     if (controller.isClosed) return;
 
@@ -907,6 +915,7 @@ class GeminiServiceV2 {
         history: history,
         useGrounding: useGrounding,
         attempt: attempt,
+        modeAnchor: modeAnchor,  // Build 157.1
       );
     } catch (e) {
       _log('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
@@ -978,6 +987,7 @@ class GeminiServiceV2 {
         useGrounding: useGrounding,
         attempt: attempt,                        // attempt 429 preservado
         transientAttempt: transientAttempt + 1,  // contagem transitória avança
+        modeAnchor: modeAnchor,                  // Build 157.1
       );
     }
 
@@ -1044,12 +1054,14 @@ class GeminiServiceV2 {
     required List<Map<String, String>> history,
     required bool useGrounding,
     required int attempt,
+    String modeAnchor = '',  // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
   }) async {
     final url = Uri.parse('$_endpointStream&key=$apiKey');
 
-    // ── CAMADA 3: Injeta prefixo de ferro ANTES do systemPrompt ──────────────
-    // O modelo lê _systemPromptPrefix antes de qualquer instrução do AiService.
-    // Garante proibição de CoT visível mesmo sem thinkingBudget funcionar.
+    // ── CAMADA 3: Injeta prefixo de ferro DEPOIS da âncora de modo ───────────
+    // Build 157.1: modeAnchor vai como PRIMEIRA parte em system_instruction.parts[]
+    // para garantir PRIORIDADE MÁXIMA sobre _systemPromptPrefix.
+    // Ordem de autoridade: modeAnchor (1ª) > _systemPromptPrefix (2ª) > systemPrompt (3ª)
     final blindedSystemPrompt = '$_systemPromptPrefix$systemPrompt';
 
     // ── Monta contents: histórico janelado (já calibrado) + nova mensagem ─────
@@ -1076,11 +1088,25 @@ class GeminiServiceV2 {
       // system_instruction — isolado do histórico, lido pelo modelo como
       // instrução de sistema (não como turno de conversa). Esta é a forma
       // correta de injetar system prompts na API REST do Gemini.
-      'system_instruction': {
-        'parts': [
-          {'text': blindedSystemPrompt}
-        ],
-      },
+      //
+      // Build 157.1: MULTI-PART system_instruction
+      // O Gemini lê parts[] em ordem — o primeiro part tem PRIORIDADE MÁXIMA.
+      // Ordem de autoridade:
+      //   Part 0: modeAnchor    → âncora de modo (PRIORIDADE ABSOLUTA)
+      //   Part 1: _systemPromptPrefix + systemPrompt → prefixo + prompt base
+      // Se modeAnchor estiver vazio (ex: classifyContext), usa single-part.
+      'system_instruction': modeAnchor.isNotEmpty
+          ? {
+              'parts': [
+                {'text': modeAnchor},          // Part 0: âncora de modo (PRIORIDADE 1)
+                {'text': blindedSystemPrompt},  // Part 1: prefixo + prompt do AiService
+              ],
+            }
+          : {
+              'parts': [
+                {'text': blindedSystemPrompt},  // single-part (modo sem âncora)
+              ],
+            },
       'contents': contents,
       'generationConfig': {
         // maxOutputTokens: 3200
@@ -1283,6 +1309,7 @@ class GeminiServiceV2 {
           history: history,
           useGrounding: useGrounding,
           attempt: attempt + 1,
+          modeAnchor: modeAnchor,  // Build 157.1
         );
       }
       // Esgotou todas as tentativas → cooldown global
@@ -1473,6 +1500,7 @@ class GeminiServiceV2 {
                         history: history,
                         useGrounding: false, // desativa grounding no retry
                         attempt: attempt,
+                        modeAnchor: modeAnchor,  // Build 157.1
                       );
                     }
                     // Já estava sem grounding — encerra sem retry adicional
