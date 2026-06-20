@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
@@ -1531,21 +1532,18 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     );
   }
 
-  /// Layout mobile/tablet: Scaffold com AppBar no topo + bottom nav
+  /// Layout mobile/tablet: Scaffold com AppBar no topo + floating bottom nav (Build 158)
   Widget _buildMobileShell(BuildContext context, bool dark, AppProvider p) {
     final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
-    final navBg = dark ? const Color(0xFF0F1116) : Colors.white;
-    final navBorder = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
     final isHome   = _tab == 0;
+    final isAiTab  = _tab == 2;
 
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
-      // Scrim escuro explícito para iPad/tablet (reforça o DrawerTheme global)
       drawerScrimColor: Colors.black.withValues(alpha: 0.52),
-      // ── AppBar HOME: sempre visível, cor verde luxury ─────────────────────
-      // Tabs 1-5: sem appBar fixo — scroll-reveal via overlay no body.
+      // ── AppBar HOME: sempre visível ───────────────────────────────────────
       appBar: isHome
           ? PreferredSize(
               preferredSize: const Size.fromHeight(48),
@@ -1561,19 +1559,22 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               ),
             )
           : null,
-      // ── Body: IndexedStack + scroll-reveal bar para tabs não-HOME ────────
+
+      // ── Body: IndexedStack + floating bottom nav overlay (Build 158) ──────
+      // A bottom nav é agora um overlay flutuante posicionado com Positioned,
+      // em vez de bottomNavigationBar nativo. Isso permite:
+      //   1. Animação de slide-down quando usuário lê histórico (hide-on-scroll)
+      //   2. Fundo blur glassmorphism com cantos arredondados
+      //   3. Controle total sobre o posicionamento e animação
       body: NotificationListener<ScrollNotification>(
         onNotification: (n) { _onScrollNotification(n); return false; },
         child: MediaQuery.removePadding(
           context: context,
-          removeTop: true, // Sempre remove o top do MediaQuery — cada camada gerencia o próprio inset
+          removeTop: true,
           child: SizedBox.expand(
             child: Stack(
               children: [
-                // ── Conteúdo principal — deslocado para baixo da status bar ──
-                // Padding.top = statusBarHeight garante que TODAS as telas do
-                // IndexedStack começam abaixo da status bar do dispositivo,
-                // sem depender de SafeArea(top:true) em cada tela individualmente.
+                // ── Conteúdo principal ─────────────────────────────────────
                 Padding(
                   padding: EdgeInsets.only(
                     top: isHome ? 0 : MediaQuery.of(context).padding.top,
@@ -1589,151 +1590,51 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   ),
                 ),
 
-                // Scroll-reveal AppBar removido — não aparece mais nas telas internas.
-              ],
-            ),
-          ),
-        ),
-      ),
-      // ── Bottom navigation bar (native notch) + FAB docked ─────────────────
-      // Build 99 — substituído o Stack manual por BottomAppBar nativo com
-      // CircularNotchedRectangle + FloatingActionButtonLocation.centerDocked.
-      // Isso elimina o bug TestFlight onde o FAB sobrepunha H.Clínica e
-      // bloqueava o 5.º ícone (Ferramentas).
-      //   • floatingActionButton: _NavFab (widget separado)
-      //   • floatingActionButtonLocation: centerDocked
-      //   • BottomAppBar: notchMargin 5, Row com SizedBox(width:60) no centro
-      //   • _LegalBar abaixo do BottomAppBar via bottomNavigationBar Column
-      // Fix #5: oculta o FAB quando o teclado do chat está aberto.
-      // ValueListenableBuilder reage ao ValueNotifier estático do AiScreen
-      // sem forçar rebuild de todo o Scaffold — apenas o FAB é reconstruído.
-      floatingActionButton: ValueListenableBuilder<bool>(
-        valueListenable: AiScreen.chatKeyboardOpen,
-        builder: (_, kbOpen, child) => AnimatedScale(
-          scale: kbOpen ? 0.0 : 1.0,
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeInOut,
-          child: AnimatedOpacity(
-            opacity: kbOpen ? 0.0 : 1.0,
-            duration: const Duration(milliseconds: 160),
-            child: child,
-          ),
-        ),
-        child: _buildAiCenterFab(dark, p),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // ── Bottom nav: BottomAppBar nativo + LegalBar ────────────────────────
-      // Build 103 FIX: A Column interna tinha 48(icons) + ~38.6(LegalBar) = 86.6pt
-      // mas o BottomAppBar padrão Flutter 3.x tem height mínimo 80pt — clampeia
-      // e causa BOTTOM OVERFLOWED BY 6.5 PIXELS na Column interna.
-      //
-      // SOLUÇÃO: BottomAppBar contém APENAS os ícones (48pt fixo, sem overflow).
-      // A _LegalBar é movida para o bottomNavigationBar como Column envolvente:
-      //   Column[
-      //     BottomAppBar (48pt, só ícones),
-      //     SafeArea(top:false) > _LegalBar (absorve homeIndicator + disclaimer)
-      //   ]
-      // O Scaffold lê a altura total da Column corretamente via IntrinsicHeight
-      // e aloca body = screen - appBar - (48 + legalBar + homeIndicator).
-      bottomNavigationBar: SafeArea(
-        bottom: true,
-        top: false,
-        left: false,
-        right: false,
-        child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── BottomAppBar: APENAS ícones (48pt fixo, sem SafeArea, sem overflow) ──
-          // B139: borda superior fina em light mode para delimitar visualmente a barra
-          if (!dark)
-            Container(
-              height: 0.5,
-              color: Colors.grey.shade300,
-            ),
-          BottomAppBar(
-            color: navBg,
-            shape: const CircularNotchedRectangle(),
-            notchMargin: 5.0,
-            elevation: 0,
-            padding: EdgeInsets.zero,
-            height: 42, // 42pt — padrão premium Bruno: barra fina, ícone+label colados
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // 0 — HOME
-                _buildNavBtn(
-                  0,
-                  Icons.home_rounded,
-                  p.lang == 'es' ? 'Inicio' : 'Início',
-                  dark, p,
+                // ── Floating Bottom Navigation Bar (Build 158) ────────────
+                // Hide-on-scroll: esconde quando AI está ativa E usuário
+                // está scrollando para baixo para ler o histórico.
+                // Reapare quando sobe ou quando não está na aba IA.
+                ValueListenableBuilder<bool>(
+                  valueListenable: AiScreen.chatKeyboardOpen,
+                  builder: (_, kbOpen, __) =>
+                  ValueListenableBuilder<bool>(
+                    valueListenable: AiScreen.scrollingDown,
+                    builder: (_, scrollingDown, __) {
+                      // Oculta a barra quando:
+                      // 1. Teclado do chat está aberto, OU
+                      // 2. Usuário está scrollando para baixo na aba IA
+                      final hidden = kbOpen || (isAiTab && scrollingDown);
+                      return _FloatingBottomNav(
+                        hidden: hidden,
+                        dark: dark,
+                        currentTab: _tab,
+                        lang: p.lang,
+                        onTabChange: (t) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          setState(() => _tab = t);
+                        },
+                        onFabTap: () {
+                          AppHaptics.light(context);
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          setState(() => _tab = 2);
+                        },
+                        onFabDoubleTap: () => _resetAndStartNewChat(),
+                        isAiActive: isAiTab,
+                      );
+                    },
+                  ),
                 ),
-                // ── Slot central — FAB docked ─────────────────────────────
-                const SizedBox(width: 60),
-                // 4 — HERRAMIENTAS
-                _buildNavBtn(
-                  4,
-                  Icons.calculate_rounded,
-                  p.lang == 'es' ? 'Herramientas' : 'Ferramentas',
-                  dark, p,
+
+                // ── LegalBar: abaixo do floating nav, sempre visível ──────
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: _LegalBar(dark: dark, insideSafeArea: true),
                 ),
               ],
             ),
           ),
-          // ── Disclaimer legal fora do BottomAppBar — sem risco de overflow ──
-          _LegalBar(dark: dark, insideSafeArea: true),
-        ],
-        ),
-      ),
-    );
-  }
-
-  // Build 104c — barra premium Bruno: 42pt, ícone 20pt + label 9pt colados (1pt gap).
-  // Geometria mínima: padding vertical zero no ícone, tudo centralizado nos 42pt.
-  Widget _buildNavBtn(int idx, IconData icon, String label, bool dark, dynamic p) {
-    final active        = _tab == idx;
-    final activeColor   = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
-    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
-
-    return Expanded(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          FocusManager.instance.primaryFocus?.unfocus();
-          setState(() => _tab = idx);
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 160),
-              curve: Curves.easeOut,
-              // padding vertical zero — ícone ocupa apenas 20pt dos 42pt da barra
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: active
-                    ? (dark
-                        ? const Color(0xFF10B981).withValues(alpha: 0.14)
-                        : const Color(0xFF0A7C4E).withValues(alpha: 0.09))
-                    : Colors.transparent,
-              ),
-              child: Icon(icon, size: 21,
-                color: active ? activeColor : inactiveColor),
-            ),
-            const SizedBox(height: 1), // 1pt entre ícone e label — colados
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 9,
-                fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-                color: active ? activeColor : inactiveColor,
-                height: 1.0,
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -1813,87 +1714,263 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     }
   }
 
-  // ── FAB ConnectMind AI — Build 100: nativo centerDocked, 46×46 (-20%) ──────────
-  // Retorna um widget pill autónomo que o Scaffold encaixa na entalhação do
-  // BottomAppBar via FloatingActionButtonLocation.centerDocked.
-  // Não usa mais Transform.translate manual — o Flutter posiciona o FAB
-  // corretamente acima da barra sem sobrepor os botões laterais.
-  Widget _buildAiCenterFab(bool dark, dynamic p) {
-    final isAiActive = _tab == 2;
-    final gradStart  = isAiActive
-        ? const Color(0xFF008CA4)
-        : (dark ? const Color(0xFF374151) : const Color(0xFF0A2540));
-    final gradEnd    = isAiActive
-        ? const Color(0xFF0A2540)
-        : (dark ? const Color(0xFF252930) : const Color(0xFF0F3B68));
-    final glowColor  = const Color(0xFF00E5FF);
+}
 
-    return GestureDetector(
-      // Tap simples: navega para a aba de IA
-      onTap: () {
-        AppHaptics.light(context);
-        FocusManager.instance.primaryFocus?.unfocus();
-        setState(() => _tab = 2);
-      },
-      // Double-tap: reset completo da sessão clínica (Build 105)
-      // O médico sente que o chat foi zerado via haptic sutil +
-      // SnackBar informativo. Nenhum contexto residual da consulta
-      // anterior contamina a próxima resposta da IA.
-      onDoubleTap: () => _resetAndStartNewChat(),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOutCubic,
-        width: 46,
-        height: 46,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [gradStart, gradEnd],
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 158 — FLOATING BOTTOM NAVIGATION BAR com Hide-on-Scroll
+//
+// Design baseado no mockup premium (IMG_3206 + Captura de Tela):
+//   • Fundo dark semitransparente com blur glassmorphism
+//   • 3 itens: Inicio (esquerda) | FAB IA central com glow neon | Herramientas (direita)
+//   • FAB central: círculo proeminente, gradiente teal, glow ciano pulsante
+//   • Disclaimer legal abaixo da barra (sempre visível)
+//
+// Comportamento Hide-on-Scroll:
+//   • Scroll para baixo na aba IA → barra desliza para fora da tela (slide-down)
+//   • Scroll para cima / não está na aba IA → barra reaparece (slide-up suave)
+//   • Teclado aberto → barra desaparece (comportamento existente)
+//
+// Posicionamento: Positioned no Stack do body (não usa bottomNavigationBar
+// nativo do Scaffold) para controle total sobre animação e glassmorphism.
+// ─────────────────────────────────────────────────────────────────────────────
+class _FloatingBottomNav extends StatelessWidget {
+  final bool hidden;
+  final bool dark;
+  final int  currentTab;
+  final String lang;
+  final ValueChanged<int> onTabChange;
+  final VoidCallback onFabTap;
+  final VoidCallback onFabDoubleTap;
+  final bool isAiActive;
+
+  const _FloatingBottomNav({
+    required this.hidden,
+    required this.dark,
+    required this.currentTab,
+    required this.lang,
+    required this.onTabChange,
+    required this.onFabTap,
+    required this.onFabDoubleTap,
+    required this.isAiActive,
+  });
+
+  static const _neonCyan   = Color(0xFF00E5FF);
+  static const _neonDark   = Color(0xFF007A8A);
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+    // Altura total: barra (56pt) + safe area bottom (home indicator)
+    // A LegalBar fica abaixo via Positioned separado
+    const barHeight = 56.0;
+
+    final navBg     = dark
+        ? const Color(0xFF0F1116).withValues(alpha: 0.92)
+        : Colors.white.withValues(alpha: 0.94);
+    final borderCol = dark
+        ? _neonCyan.withValues(alpha: 0.08)
+        : const Color(0xFFE5E7EB);
+
+    // Slide offset: quando hidden, AnimatedSlide desloca a barra para fora da tela.
+
+    return Positioned(
+      left: 0,
+      right: 0,
+      // Posiciona acima do LegalBar (que tem ~36pt) + safe area
+      bottom: 36 + bottomInset,
+      child: AnimatedSlide(
+        offset: Offset(0, hidden ? 1.5 : 0.0),
+        duration: const Duration(milliseconds: 300),
+        curve: hidden ? Curves.easeInCubic : Curves.easeOutCubic,
+        child: AnimatedOpacity(
+          opacity: hidden ? 0.0 : 1.0,
+          duration: const Duration(milliseconds: 250),
+          child: Padding(
+            // Margens laterais para o efeito "flutuante" do mockup
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                child: Container(
+                  height: barHeight,
+                  decoration: BoxDecoration(
+                    color: navBg,
+                    border: Border(
+                      top: BorderSide(
+                        color: dark
+                            ? _neonCyan.withValues(alpha: 0.12)
+                            : const Color(0xFFE5E7EB),
+                        width: 0.5,
+                      ),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: dark
+                            ? Colors.black.withValues(alpha: 0.45)
+                            : Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 20,
+                        offset: const Offset(0, -4),
+                      ),
+                      if (dark)
+                        BoxShadow(
+                          color: _neonCyan.withValues(alpha: 0.06),
+                          blurRadius: 30,
+                          offset: const Offset(0, -6),
+                        ),
+                    ],
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // ── INICIO (esquerda) ──────────────────────────────────
+                      Expanded(
+                        child: _NavItem(
+                          icon: Icons.home_rounded,
+                          label: lang == 'es' ? 'Inicio' : 'Início',
+                          isActive: currentTab == 0,
+                          dark: dark,
+                          onTap: () => onTabChange(0),
+                        ),
+                      ),
+
+                      // ── FAB CENTRAL — IA com glow neon ────────────────────
+                      SizedBox(
+                        width: 72,
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: onFabTap,
+                            onDoubleTap: onFabDoubleTap,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 220),
+                              curve: Curves.easeOutCubic,
+                              width: 54,
+                              height: 54,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: isAiActive
+                                      ? [const Color(0xFF008CA4), const Color(0xFF004D5E)]
+                                      : [const Color(0xFF374151), const Color(0xFF1A1D23)],
+                                ),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isAiActive
+                                      ? _neonCyan.withValues(alpha: 0.80)
+                                      : const Color(0xFF4B5563),
+                                  width: 1.5,
+                                ),
+                                boxShadow: isAiActive
+                                    ? [
+                                        BoxShadow(
+                                          color: _neonCyan.withValues(alpha: 0.55),
+                                          blurRadius: 18,
+                                          spreadRadius: 1,
+                                        ),
+                                        BoxShadow(
+                                          color: _neonCyan.withValues(alpha: 0.25),
+                                          blurRadius: 32,
+                                          spreadRadius: 3,
+                                        ),
+                                      ]
+                                    : [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.40),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                              ),
+                              child: Icon(
+                                Icons.psychology_rounded,
+                                size: 24,
+                                color: isAiActive ? _neonCyan : Colors.white70,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // ── HERRAMIENTAS (direita) ─────────────────────────────
+                      Expanded(
+                        child: _NavItem(
+                          icon: Icons.calculate_rounded,
+                          label: lang == 'es' ? 'Herramientas' : 'Ferramentas',
+                          isActive: currentTab == 4,
+                          dark: dark,
+                          onTap: () => onTabChange(4),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-          shape: BoxShape.circle,
-          boxShadow: isAiActive
-              ? [
-                  BoxShadow(
-                    color: glowColor.withValues(alpha: 0.60),
-                    blurRadius: 16,
-                    spreadRadius: 1,
-                    offset: const Offset(0, 3),
-                  ),
-                  BoxShadow(
-                    color: glowColor.withValues(alpha: 0.28),
-                    blurRadius: 28,
-                    offset: const Offset(0, 8),
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: const Color(0xFF0A2540).withValues(alpha: 0.45),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                  BoxShadow(
-                    color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-          border: Border.all(
-            color: isAiActive
-                ? const Color(0xFF00E5FF).withValues(alpha: 0.75)
-                : const Color(0xFF005E9C).withValues(alpha: 0.55),
-            width: 1.5,
-          ),
-        ),
-        child: Icon(
-          Icons.psychology_rounded,
-          size: 22,
-          color: isAiActive ? const Color(0xFF00E5FF) : Colors.white,
         ),
       ),
     );
   }
+}
 
+// ── Item individual da bottom nav ─────────────────────────────────────────────
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final String   label;
+  final bool     isActive;
+  final bool     dark;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final activeColor   = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
+    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
+    final color = isActive ? activeColor : inactiveColor;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: isActive
+                  ? (dark
+                      ? const Color(0xFF00E5FF).withValues(alpha: 0.10)
+                      : const Color(0xFF008CA4).withValues(alpha: 0.08))
+                  : Colors.transparent,
+            ),
+            child: Icon(icon, size: 22, color: color),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+              color: color,
+              height: 1.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -198,6 +198,11 @@ class AiScreen extends StatefulWidget {
   /// em main.dart para sumir suavemente durante a digitação (Fix #5 PR #65).
   static final chatKeyboardOpen = ValueNotifier<bool>(false);
 
+  /// Build 158 — Hide-on-scroll: true quando o usuário está scrollando para
+  /// baixo (lendo histórico). O shell main.dart usa este notifier para ocultar
+  /// a bottom nav bar e liberar espaço máximo para leitura dos casos clínicos.
+  static final scrollingDown = ValueNotifier<bool>(false);
+
   // ── Home V2: Injeção de query a partir da Home ─────────────────────────
   /// Query pendente para ser disparada automaticamente ao montar a tela de IA.
   /// A HomeScreen seta este valor antes de navegar para a aba 2.
@@ -650,6 +655,8 @@ class _AiScreenState extends State<AiScreen> {
     });
   }
 
+  double _lastScrollOffset = 0.0; // Build 158: rastreia offset anterior para detectar direção
+
   void _onScroll() {
     if (!_scrollCtrl.hasClients) return;
     final pos = _scrollCtrl.position;
@@ -668,6 +675,20 @@ class _AiScreenState extends State<AiScreen> {
     if (wasUp != _userScrolledUp && mounted) {
       setState(() {});
     }
+
+    // Build 158 — Hide-on-scroll: detecta direção do scroll para hide/show bottom nav.
+    // Scroll para BAIXO (ler histórico, aumentando pixels) → oculta barra
+    // Scroll para CIMA (voltar ao presente) → mostra barra
+    // Atualiza apenas quando há mudança real (evita churn de notifier).
+    final currentOffset = pos.pixels;
+    final isScrollingDown = currentOffset > _lastScrollOffset + 4; // threshold anti-bounce
+    final isScrollingUp   = currentOffset < _lastScrollOffset - 4;
+    if (isScrollingDown && !AiScreen.scrollingDown.value) {
+      AiScreen.scrollingDown.value = true;
+    } else if ((isScrollingUp || nearBottom) && AiScreen.scrollingDown.value) {
+      AiScreen.scrollingDown.value = false;
+    }
+    _lastScrollOffset = currentOffset;
   }
 
   @override
@@ -726,6 +747,7 @@ class _AiScreenState extends State<AiScreen> {
     AiScreen.historyCountNotifier.value = 0;
     AiScreen.aiConnectedNotifier.value  = false;
     AiScreen.chatKeyboardOpen.value     = false;
+    AiScreen.scrollingDown.value        = false; // Build 158: reset hide-on-scroll
 
     super.dispose();
   }
@@ -1813,24 +1835,29 @@ class _AiScreenState extends State<AiScreen> {
             : const SizedBox.shrink(),
       ),
 
-      // ── Motor de Partida — toggle Plantão / Estudos (Build 149, fix B152/B153) ──
-      _ResponseModeToggle(
-        value: _longResponse,          // Build 152: prop renamed value (binding fix)
-        dark: dark,
-        lang: p.lang,
-        onChanged: (newValue) {        // Build 153: mode-switch limpa _aiHistory para evitar
-          if (newValue == _longResponse) return; // lock de estilo do modo anterior
-          setState(() {
-            _longResponse = newValue;
-          });
-          // Build 153/156: limpar histórico ao trocar de modo evita que o Gemini
-          // use respostas do modo antigo para calibrar o estilo do novo modo.
-          // Build 156: o MODE ANCHOR agora é injetado client-side via ModeAnchorEngine
-          // (ai_gateway_service.dart) — não mais pelo servidor Node.js.
-          // O reset do histórico garante contexto limpo para a primeira mensagem.
-          p.clearAiHistory();
-          debugPrint('[MedCases UI] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} — histórico limpo para calibração de modo.');
-        },
+      // ── Motor de Partida — toggle Plantão/Estudos (Build 158: só no chat vazio) ──
+      // Build 158 UX PREMIUM: O seletor de modo aparece APENAS quando o chat está
+      // vazio (nova sessão). Assim que o usuário envia a primeira mensagem, o seletor
+      // desaparece — o modo fica travado para aquela sessão.
+      // Lógica: !_messages.any((m) => m.role == 'user') = nenhuma msg do usuário ainda.
+      AnimatedSize(
+        duration: const Duration(milliseconds: 240),
+        curve: Curves.easeInOut,
+        child: !_messages.any((m) => m.role == 'user')
+            ? _ResponseModeToggle(
+                value: _longResponse,
+                dark: dark,
+                lang: p.lang,
+                onChanged: (newValue) {
+                  if (newValue == _longResponse) return;
+                  setState(() {
+                    _longResponse = newValue;
+                  });
+                  p.clearAiHistory();
+                  debugPrint('[MedCases UI Build 158] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} — histórico limpo.');
+                },
+              )
+            : const SizedBox.shrink(),
       ),
 
       // ── Barra de input — centralizada no desktop ───────────────────────
@@ -4432,53 +4459,64 @@ class _ResponseModeToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isEs = lang == 'es';
 
-    // Labels bilíngues
+    // Labels bilíngues — ícones de livro/hospital como no mockup
     final labelGuardia = isEs ? '🏥 Guardia' : '🏥 Plantão';
     final labelEstudio = isEs ? '📖 Estudio'  : '📖 Estudos';
 
-    // Paleta — alinha com o glassmorphism da InputBar
-    final activeBg   = const LinearGradient(
-      colors: [Color(0xFF00B4CC), Color(0xFF007A8A)],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
-    final inactiveCol = dark
+    // Build 158 — Premium Neon Glow Pills (mockup IMG_3206)
+    // Ativo: fundo transparente + borda neon ciano com glow
+    // Inativo: fundo cinza sólido, sem borda especial
+    const neonCyan       = Color(0xFF00E5FF);
+    const neonCyanGlow   = Color(0xFF00B4CC);
+    final inactiveText   = dark
         ? Colors.white.withValues(alpha: 0.55)
         : Colors.black.withValues(alpha: 0.45);
-    final pillBg = dark
-        ? const Color(0xFF1E2229).withValues(alpha: 0.75)
-        : Colors.white.withValues(alpha: 0.70);
-    final pillBorder = dark
-        ? const Color(0xFF00E5FF).withValues(alpha: 0.10)
-        : const Color(0xFF008CA4).withValues(alpha: 0.15);
+    final inactiveBg     = dark
+        ? const Color(0xFF374151)           // cinza sólido dark
+        : const Color(0xFFE0E0E0);          // cinza sólido light
 
-    Widget _segment({
+    Widget _pill({
       required String label,
       required bool isActive,
-      required bool isLeft,
       required VoidCallback onTap,
     }) {
-      final radius = BorderRadius.horizontal(
-        left:  isLeft  ? const Radius.circular(20) : Radius.zero,
-        right: !isLeft ? const Radius.circular(20) : Radius.zero,
-      );
       return GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 220),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           decoration: BoxDecoration(
-            gradient: isActive ? activeBg : null,
-            borderRadius: radius,
+            // Ativo: transparente com borda neon
+            // Inativo: cinza sólido sem borda especial
+            color: isActive ? Colors.transparent : inactiveBg,
+            borderRadius: BorderRadius.circular(24),
+            border: isActive
+                ? Border.all(color: neonCyan, width: 1.5)
+                : Border.all(color: Colors.transparent, width: 1.5),
+            boxShadow: isActive
+                ? [
+                    // Glow neon externo — efeito da imagem
+                    BoxShadow(
+                      color: neonCyan.withValues(alpha: 0.35),
+                      blurRadius: 12,
+                      spreadRadius: 1,
+                    ),
+                    BoxShadow(
+                      color: neonCyanGlow.withValues(alpha: 0.20),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : null,
           ),
           child: Text(
             label,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-              color: isActive ? Colors.white : inactiveCol,
-              letterSpacing: 0.2,
+              color: isActive ? neonCyan : inactiveText,
+              letterSpacing: 0.1,
             ),
           ),
         ),
@@ -4486,38 +4524,24 @@ class _ResponseModeToggle extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4, left: 16, right: 16),
+      padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
       child: Align(
-        alignment: Alignment.centerLeft,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-            child: Container(
-              decoration: BoxDecoration(
-                color: pillBg,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: pillBorder, width: 0.8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _segment(
-                    label: labelGuardia,
-                    isActive: !value,
-                    isLeft: true,
-                    onTap: () => onChanged(false),
-                  ),
-                  _segment(
-                    label: labelEstudio,
-                    isActive: value,
-                    isLeft: false,
-                    onTap: () => onChanged(true),
-                  ),
-                ],
-              ),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _pill(
+              label: labelGuardia,
+              isActive: !value,
+              onTap: () => onChanged(false),
             ),
-          ),
+            const SizedBox(width: 8),
+            _pill(
+              label: labelEstudio,
+              isActive: value,
+              onTap: () => onChanged(true),
+            ),
+          ],
         ),
       ),
     );
