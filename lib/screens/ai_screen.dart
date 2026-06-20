@@ -1893,9 +1893,9 @@ class _AiScreenState extends State<AiScreen> {
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                   padding: EdgeInsets.only(
-                    // Nav visível: 78px (42 nav + 36 legal)
-                    // Nav sumida:  0px → imersão total
-                    bottom: scrollingDown ? 0.0 : 78.0,
+                    // Build 158.4: 42px nav + 20px LegalBar = 62px visível
+                    // Nav sumida: 0px → imersão total, zero espaço no rodapé
+                    bottom: scrollingDown ? 0.0 : 62.0,
                   ),
                   child: child,
                 );

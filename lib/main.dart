@@ -2933,21 +2933,22 @@ class _LegalBar extends StatelessWidget {
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
-      // Apple 1.4.1 — texto legível mas compacto
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      // Build 158.4 — LegalBar micro-tipográfica 20px total
+      // padding vertical 3px × 2 = 6px + texto 10px × 1.1 ≈ 11px → ~20px
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 11, color: textColor.withValues(alpha: 0.7)),
-        const SizedBox(width: 5),
+        Icon(Icons.info_outline_rounded, size: 9, color: textColor.withValues(alpha: 0.6)),
+        const SizedBox(width: 4),
         Expanded(
           child: Text(
             disclaimer,
             style: TextStyle(
-              // Apple 1.4.1 — mínimo 10px; 11px garante leitura
-              fontSize: 11, color: textColor,
-              height: 1.3, letterSpacing: 0.1,
+              // Micro-tipografia discreta: 10px, single line, sem height extra
+              fontSize: 10, color: textColor,
+              height: 1.1, letterSpacing: 0.0,
               fontWeight: FontWeight.w400,
             ),
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
         ),
