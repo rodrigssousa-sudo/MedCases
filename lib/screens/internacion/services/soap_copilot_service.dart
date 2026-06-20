@@ -226,15 +226,15 @@ class SoapCopilotService {
           'tos': {'type': 'boolean'},
           'alimentacion': {
             'type': 'string',
-            'enum': ['Bien', 'Regular', 'Mal', '']
+            'enum': ['Bien', 'Regular', 'Mal']
           },
           'diuresis': {
             'type': 'string',
-            'enum': ['Normal', 'Oliguria', 'Anuria', '']
+            'enum': ['Normal', 'Oliguria', 'Anuria']
           },
           'evacuacion': {
             'type': 'string',
-            'enum': ['Normal', 'Constipado', 'Diarrea', '']
+            'enum': ['Normal', 'Constipado', 'Diarrea']
           },
           'suenoRestado': {'type': 'boolean'},
           'notasLibres': {'type': 'string'},
@@ -280,7 +280,7 @@ class SoapCopilotService {
         'properties': {
           'estado': {
             'type': 'string',
-            'enum': ['mejorando', 'estable', 'empeorando', '']
+            'enum': ['mejorando', 'estable', 'empeorando']
           },
           'problemasActivos': {
             'type': 'array',
