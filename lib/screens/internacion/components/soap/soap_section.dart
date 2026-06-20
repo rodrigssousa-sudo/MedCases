@@ -1,11 +1,18 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // SoapSection — orquestrador da evolução SOAP completa.
 // Renderiza os 4 blocos S/O/A/P como AccordionCards colapsáveis e independentes.
-// Estado local via InternacionNotifier — ZERO rebuild da árvore pai.
+// Estado local via SoapNotifier — ZERO rebuild da árvore pai.
+//
+// Build 160 additions:
+//   • SoapNotifier.applyAiDraft(SoapDraftResult) — injeta draft da IA
+//   • _draftVersion counter — força reconstrução dos controllers após AI fill
+//   • _CopyButton — compila todos os campos em texto e copia para clipboard
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
+import '../../services/soap_copilot_service.dart';
 import 'soap_subjetivo.dart';
 import 'soap_objetivo.dart';
 import 'soap_evaluacion.dart';
@@ -38,8 +45,147 @@ class SoapNotifier extends ChangeNotifier {
     _evolucion = _evolucion.copyWith(plan: d);
     notifyListeners();
   }
+
+  // ── Build 160: Injeta draft da IA no modelo ─────────────────────────────
+  // Chamado somente após aprovação explícita no RevisionSheet.
+  // Campos nulos no draft NÃO sobrescrevem o que já foi digitado.
+  void applyAiDraft(SoapDraftResult draft) {
+    final s = _evolucion.subjetivo;
+    final o = _evolucion.objetivo;
+    final a = _evolucion.evaluacion;
+    final p = _evolucion.plan;
+
+    // S — usa draft se não-nulo, mantém existente se já preenchido
+    final newSubjetivo = s.copyWith(
+      notePasaNoche: draft.notePasaNoche?.isNotEmpty == true
+          ? draft.notePasaNoche : (s.notePasaNoche.isEmpty ? '' : s.notePasaNoche),
+      dolorEscala: draft.dolorEscala ?? s.dolorEscala,
+      fiebre: draft.fiebre ?? s.fiebre,
+      disnea: draft.disnea ?? s.disnea,
+      nauseas: draft.nauseas ?? s.nauseas,
+      tos: draft.tos ?? s.tos,
+      alimentacion: _mapAiAlimentacion(draft.alimentacion) ?? s.alimentacion,
+      diuresis: _mapAiDiuresis(draft.diuresis) ?? s.diuresis,
+      evacuacion: _mapAiEvacuacion(draft.evacuacion) ?? s.evacuacion,
+      suenoRestado: draft.suenoRestado ?? s.suenoRestado,
+      notasLibres: draft.notasLibresSubjetivo?.isNotEmpty == true
+          ? draft.notasLibresSubjetivo : (s.notasLibres.isEmpty ? '' : s.notasLibres),
+    );
+
+    // O — Signos vitales
+    final sv = o.signosVitales;
+    final newSv = sv.copyWith(
+      pa: draft.pa?.isNotEmpty == true ? draft.pa : (sv.pa.isEmpty ? '' : sv.pa),
+      fc: draft.fc?.isNotEmpty == true ? draft.fc : (sv.fc.isEmpty ? '' : sv.fc),
+      fr: draft.fr?.isNotEmpty == true ? draft.fr : (sv.fr.isEmpty ? '' : sv.fr),
+      satO2: draft.satO2?.isNotEmpty == true ? draft.satO2 : (sv.satO2.isEmpty ? '' : sv.satO2),
+      temperatura: draft.temperatura?.isNotEmpty == true
+          ? draft.temperatura : (sv.temperatura.isEmpty ? '' : sv.temperatura),
+    );
+
+    // O — Examen físico
+    final ef = o.examenFisico;
+    final newEf = ef.copyWith(
+      estadoGeneral: draft.estadoGeneral?.isNotEmpty == true
+          ? draft.estadoGeneral : (ef.estadoGeneral.isEmpty ? '' : ef.estadoGeneral),
+      acv: draft.acv?.isNotEmpty == true ? draft.acv : (ef.acv.isEmpty ? '' : ef.acv),
+      ar: draft.ar?.isNotEmpty == true ? draft.ar : (ef.ar.isEmpty ? '' : ef.ar),
+      abdomen: draft.abdomen?.isNotEmpty == true
+          ? draft.abdomen : (ef.abdomen.isEmpty ? '' : ef.abdomen),
+      extremidades: draft.extremidades?.isNotEmpty == true
+          ? draft.extremidades : (ef.extremidades.isEmpty ? '' : ef.extremidades),
+    );
+
+    // O — Exámenes complementarios
+    final ex = o.examenes;
+    final newEx = ex.copyWith(
+      laboratorio: draft.laboratorio?.isNotEmpty == true
+          ? draft.laboratorio : (ex.laboratorio.isEmpty ? '' : ex.laboratorio),
+      imagenes: draft.imagenes?.isNotEmpty == true
+          ? draft.imagenes : (ex.imagenes.isEmpty ? '' : ex.imagenes),
+      culturas: draft.culturas?.isNotEmpty == true
+          ? draft.culturas : (ex.culturas.isEmpty ? '' : ex.culturas),
+      ecg: draft.ecg?.isNotEmpty == true ? draft.ecg : (ex.ecg.isEmpty ? '' : ex.ecg),
+    );
+
+    final newObjetivo = o.copyWith(
+      signosVitales: newSv,
+      examenFisico: newEf,
+      examenes: newEx,
+      tratamientoActual: draft.tratamientoActual?.isNotEmpty == true
+          ? draft.tratamientoActual : (o.tratamientoActual.isEmpty ? '' : o.tratamientoActual),
+    );
+
+    // A — Evaluación
+    EstadoClinical? newEstado = a.estado;
+    if (draft.estadoClinical?.isNotEmpty == true) {
+      for (final e in EstadoClinical.values) {
+        if (e.name == draft.estadoClinical!.toLowerCase()) {
+          newEstado = e;
+          break;
+        }
+      }
+    }
+
+    List<String> newProblemas = a.problemasActivos;
+    if (draft.problemasActivos?.isNotEmpty == true) {
+      // Merge: adiciona novos problemas sem duplicar
+      final merged = List<String>.from(newProblemas);
+      for (final prob in draft.problemasActivos!) {
+        if (!merged.contains(prob)) merged.add(prob);
+      }
+      newProblemas = merged;
+    }
+
+    final newEvaluacion = a.copyWith(
+      estado: newEstado,
+      problemasActivos: newProblemas,
+      notasEvaluacion: draft.notasEvaluacion?.isNotEmpty == true
+          ? draft.notasEvaluacion : (a.notasEvaluacion.isEmpty ? '' : a.notasEvaluacion),
+    );
+
+    // P — Plan
+    final newPlan = p.copyWith(
+      planTerapeutico: draft.planTerapeutico?.isNotEmpty == true
+          ? draft.planTerapeutico : (p.planTerapeutico.isEmpty ? '' : p.planTerapeutico),
+      criteriosAlta: draft.criteriosAlta?.isNotEmpty == true
+          ? draft.criteriosAlta : (p.criteriosAlta.isEmpty ? '' : p.criteriosAlta),
+    );
+
+    _evolucion = _evolucion.copyWith(
+      subjetivo: newSubjetivo,
+      objetivo: newObjetivo,
+      evaluacion: newEvaluacion,
+      plan: newPlan,
+    );
+
+    notifyListeners();
+  }
+
+  // ── Mapeadores: IA usa "Bien/Boa" → modelo usa "Bien/Boa" conforme idioma ─
+  String? _mapAiAlimentacion(String? v) {
+    if (v == null || v.isEmpty) return null;
+    final lower = v.toLowerCase();
+    if (lower.contains('bien') || lower.contains('boa') || lower.contains('buen')) return v;
+    if (lower.contains('mal') || lower.contains('ruim')) return v;
+    if (lower.contains('regular')) return v;
+    return v; // passa como está
+  }
+
+  String? _mapAiDiuresis(String? v) {
+    if (v == null || v.isEmpty) return null;
+    return v;
+  }
+
+  String? _mapAiEvacuacion(String? v) {
+    if (v == null || v.isEmpty) return null;
+    return v;
+  }
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// SoapSectionWidget — orquestra os 4 acordeões SOAP
+// ═════════════════════════════════════════════════════════════════════════════
 class SoapSectionWidget extends StatefulWidget {
   final EvolucionModel evolucion;
   final bool dark;
@@ -56,19 +202,22 @@ class SoapSectionWidget extends StatefulWidget {
   });
 
   @override
-  State<SoapSectionWidget> createState() => _SoapSectionWidgetState();
+  State<SoapSectionWidget> createState() => SoapSectionWidgetState();
 }
 
-class _SoapSectionWidgetState extends State<SoapSectionWidget> {
+class SoapSectionWidgetState extends State<SoapSectionWidget> {
   late final SoapNotifier _notifier;
   // Qual accordion está aberto: 0=S 1=O 2=A 3=P null=nenhum
   int? _openIdx = 0;
+
+  // Build 160: versão do draft — incrementada ao aplicar IA para forçar
+  // reconstrução dos sub-widgets (e portanto seus TextEditingControllers)
+  int _draftVersion = 0;
 
   @override
   void initState() {
     super.initState();
     _notifier = SoapNotifier(widget.evolucion);
-    // Rebuild local apenas quando o notifier muda
     _notifier.addListener(_onNotifierChanged);
   }
 
@@ -85,6 +234,15 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
 
   bool get isEs => widget.lang == 'es';
 
+  // ── Build 160: chamado pelo InternacionScreen após aprovação do RevisionSheet
+  void applyAiDraft(SoapDraftResult draft) {
+    _notifier.applyAiDraft(draft);
+    setState(() {
+      _draftVersion++;
+      _openIdx = 0; // abre S para o médico verificar
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ev = _notifier.evolucion;
@@ -93,6 +251,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
 
     final sections = [
       _SoapAccordion(
+        key: ValueKey('s_$_draftVersion'),
         section: SoapSection.s,
         isOpen: _openIdx == 0,
         dark: dark,
@@ -100,6 +259,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
         theme: theme,
         onToggle: () => setState(() => _openIdx = _openIdx == 0 ? null : 0),
         child: SoapSubjetivo(
+          key: ValueKey('subj_$_draftVersion'),
           data: ev.subjetivo,
           onChanged: _notifier.updateSubjetivo,
           dark: dark,
@@ -107,6 +267,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
         ),
       ),
       _SoapAccordion(
+        key: ValueKey('o_$_draftVersion'),
         section: SoapSection.o,
         isOpen: _openIdx == 1,
         dark: dark,
@@ -114,6 +275,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
         theme: theme,
         onToggle: () => setState(() => _openIdx = _openIdx == 1 ? null : 1),
         child: SoapObjetivo(
+          key: ValueKey('obj_$_draftVersion'),
           data: ev.objetivo,
           onChanged: _notifier.updateObjetivo,
           dark: dark,
@@ -121,6 +283,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
         ),
       ),
       _SoapAccordion(
+        key: ValueKey('a_$_draftVersion'),
         section: SoapSection.a,
         isOpen: _openIdx == 2,
         dark: dark,
@@ -128,6 +291,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
         theme: theme,
         onToggle: () => setState(() => _openIdx = _openIdx == 2 ? null : 2),
         child: SoapEvaluacion(
+          key: ValueKey('eval_$_draftVersion'),
           data: ev.evaluacion,
           onChanged: _notifier.updateEvaluacion,
           dark: dark,
@@ -135,6 +299,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
         ),
       ),
       _SoapAccordion(
+        key: ValueKey('p_$_draftVersion'),
         section: SoapSection.p,
         isOpen: _openIdx == 3,
         dark: dark,
@@ -142,6 +307,7 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
         theme: theme,
         onToggle: () => setState(() => _openIdx = _openIdx == 3 ? null : 3),
         child: SoapPlan(
+          key: ValueKey('plan_$_draftVersion'),
           data: ev.plan,
           onChanged: _notifier.updatePlan,
           dark: dark,
@@ -163,8 +329,16 @@ class _SoapSectionWidgetState extends State<SoapSectionWidget> {
           child: s,
         )),
 
-        // ── Botão salvar evolução ─────────────────────────────────────────────
+        // ── Botão Copiar Evolución Completa ───────────────────────────────────
         const SizedBox(height: 4),
+        _CopyButton(
+          dark: dark,
+          lang: widget.lang,
+          getEvolucion: () => _notifier.evolucion,
+        ),
+        const SizedBox(height: 8),
+
+        // ── Botão salvar evolução ─────────────────────────────────────────────
         _SaveButton(
           dark: dark,
           lang: widget.lang,
@@ -218,6 +392,7 @@ class _SoapAccordion extends StatelessWidget {
   final Widget child;
 
   const _SoapAccordion({
+    super.key,
     required this.section, required this.isOpen, required this.dark,
     required this.lang, required this.theme, required this.onToggle,
     required this.child,
@@ -315,6 +490,205 @@ class _SoapAccordion extends StatelessWidget {
                 : const SizedBox.shrink(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Build 160: Botão Copiar Evolución Completa ────────────────────────────────
+class _CopyButton extends StatefulWidget {
+  final bool dark;
+  final String lang;
+  final EvolucionModel Function() getEvolucion;
+
+  const _CopyButton({
+    required this.dark,
+    required this.lang,
+    required this.getEvolucion,
+  });
+
+  @override
+  State<_CopyButton> createState() => _CopyButtonState();
+}
+
+class _CopyButtonState extends State<_CopyButton> {
+  bool _copied = false;
+
+  bool get isEs => widget.lang == 'es';
+
+  Future<void> _copy() async {
+    final ev = widget.getEvolucion();
+    final text = _compileSoapText(ev, isEs);
+
+    await Clipboard.setData(ClipboardData(text: text));
+
+    setState(() => _copied = true);
+    await Future.delayed(const Duration(seconds: 2));
+    if (mounted) setState(() => _copied = false);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.copy_rounded, color: Colors.white, size: 15),
+          const SizedBox(width: 8),
+          Text(isEs
+              ? 'Evolución copiada al portapapeles'
+              : 'Evolução copiada para a área de transferência'),
+        ]),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
+    }
+  }
+
+  /// Compila todos os campos SOAP em texto formatado para clipboard
+  static String _compileSoapText(EvolucionModel ev, bool isEs) {
+    final buf = StringBuffer();
+    final sep = '─' * 40;
+
+    buf.writeln(isEs
+        ? '📋 EVOLUCIÓN MÉDICA · ${ev.fechaFormatada}'
+        : '📋 EVOLUÇÃO MÉDICA · ${ev.fechaFormatada}');
+    buf.writeln(isEs ? 'Responsable: ${ev.autorNombre}' : 'Responsável: ${ev.autorNombre}');
+    buf.writeln(sep);
+
+    // S
+    buf.writeln(isEs
+        ? '\n🔵 S — SUBJETIVO'
+        : '\n🔵 S — SUBJETIVO');
+    final s = ev.subjetivo;
+    if (s.notePasaNoche.isNotEmpty)
+      buf.writeln(isEs ? '• Noche: ${s.notePasaNoche}' : '• Noite: ${s.notePasaNoche}');
+    if (s.dolorEscala != null)
+      buf.writeln('• EVA: ${s.dolorEscala}/10');
+
+    final syms = <String>[];
+    if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
+    if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
+    if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
+    if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
+    if (s.suenoRestado) syms.add(isEs ? 'Sueño alterado' : 'Sono alterado');
+    if (syms.isNotEmpty)
+      buf.writeln(isEs ? '• Síntomas: ${syms.join(', ')}' : '• Sintomas: ${syms.join(', ')}');
+
+    if (s.alimentacion.isNotEmpty)
+      buf.writeln(isEs ? '• Alimentación: ${s.alimentacion}' : '• Alimentação: ${s.alimentacion}');
+    if (s.diuresis.isNotEmpty) buf.writeln('• Diuresis: ${s.diuresis}');
+    if (s.evacuacion.isNotEmpty)
+      buf.writeln(isEs ? '• Evacuación: ${s.evacuacion}' : '• Evacuação: ${s.evacuacion}');
+    if (s.notasLibres.isNotEmpty)
+      buf.writeln(isEs ? '• Notas: ${s.notasLibres}' : '• Notas: ${s.notasLibres}');
+
+    // O
+    buf.writeln(isEs ? '\n🟢 O — OBJETIVO' : '\n🟢 O — OBJETIVO');
+    final sv = ev.objetivo.signosVitales;
+    if (!sv.isEmpty) {
+      buf.write(isEs ? '• Signos vitales: ' : '• Sinais vitais: ');
+      final parts = <String>[];
+      if (sv.pa.isNotEmpty) parts.add('PA: ${sv.pa}');
+      if (sv.fc.isNotEmpty) parts.add('FC: ${sv.fc}');
+      if (sv.fr.isNotEmpty) parts.add('FR: ${sv.fr}');
+      if (sv.satO2.isNotEmpty) parts.add('SpO₂: ${sv.satO2}');
+      if (sv.temperatura.isNotEmpty) parts.add('T°: ${sv.temperatura}');
+      buf.writeln(parts.join(' | '));
+    }
+
+    final ef = ev.objetivo.examenFisico;
+    if (ef.estadoGeneral.isNotEmpty)
+      buf.writeln(isEs ? '• Estado general: ${ef.estadoGeneral}' : '• Estado geral: ${ef.estadoGeneral}');
+    if (ef.acv.isNotEmpty) buf.writeln('• ACV: ${ef.acv}');
+    if (ef.ar.isNotEmpty) buf.writeln('• AR: ${ef.ar}');
+    if (ef.abdomen.isNotEmpty) buf.writeln(isEs ? '• Abdomen: ${ef.abdomen}' : '• Abdome: ${ef.abdomen}');
+    if (ef.extremidades.isNotEmpty) buf.writeln('• MMII: ${ef.extremidades}');
+
+    final ex = ev.objetivo.examenes;
+    if (ex.laboratorio.isNotEmpty)
+      buf.writeln(isEs ? '• Laboratorio: ${ex.laboratorio}' : '• Laboratório: ${ex.laboratorio}');
+    if (ex.imagenes.isNotEmpty)
+      buf.writeln(isEs ? '• Imágenes: ${ex.imagenes}' : '• Imagens: ${ex.imagenes}');
+    if (ex.culturas.isNotEmpty) buf.writeln('• Culturas: ${ex.culturas}');
+    if (ex.ecg.isNotEmpty) buf.writeln('• ECG: ${ex.ecg}');
+    if (ev.objetivo.tratamientoActual.isNotEmpty)
+      buf.writeln(isEs ? '• Tratamiento: ${ev.objetivo.tratamientoActual}' : '• Tratamento: ${ev.objetivo.tratamientoActual}');
+
+    // A
+    buf.writeln(isEs ? '\n🟡 A — EVALUACIÓN' : '\n🟡 A — AVALIAÇÃO');
+    final a = ev.evaluacion;
+    if (a.estado != null) buf.writeln('• Estado: ${a.estado!.label(isEs ? 'es' : 'pt')}');
+    if (a.problemasActivos.isNotEmpty)
+      buf.writeln(isEs
+          ? '• Problemas activos:\n  - ${a.problemasActivos.join('\n  - ')}'
+          : '• Problemas ativos:\n  - ${a.problemasActivos.join('\n  - ')}');
+    if (a.notasEvaluacion.isNotEmpty) buf.writeln('• ${a.notasEvaluacion}');
+
+    // P
+    buf.writeln('\n🟣 P — PLAN');
+    final p = ev.plan;
+    if (p.planTerapeutico.isNotEmpty)
+      buf.writeln(isEs ? '• Plan terapéutico:\n${p.planTerapeutico}' : '• Plano terapêutico:\n${p.planTerapeutico}');
+    if (p.criteriosAlta.isNotEmpty)
+      buf.writeln(isEs ? '• Criterios de alta:\n${p.criteriosAlta}' : '• Critérios de alta:\n${p.criteriosAlta}');
+
+    buf.writeln('\n$sep');
+    buf.writeln('MedCases Pro · Generado ${DateTime.now().toIso8601String().substring(0, 16)}');
+
+    return buf.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+
+    return GestureDetector(
+      onTap: _copy,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: _copied
+              ? InternacionTheme.green.withValues(alpha: dark ? 0.15 : 0.10)
+              : (dark ? const Color(0xFF1A1E28) : const Color(0xFFF0F2F5)),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: _copied
+                ? InternacionTheme.green.withValues(alpha: 0.50)
+                : (dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6)),
+            width: 0.9,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                _copied
+                    ? Icons.check_circle_rounded
+                    : Icons.copy_rounded,
+                key: ValueKey(_copied),
+                size: 16,
+                color: _copied
+                    ? InternacionTheme.green
+                    : (dark ? Colors.white54 : Colors.black45),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              _copied
+                  ? (isEs ? '¡Copiado!' : 'Copiado!')
+                  : (isEs ? 'Copiar Evolución Completa' : 'Copiar Evolução Completa'),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: _copied
+                    ? InternacionTheme.green
+                    : (dark ? Colors.white54 : Colors.black45),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
