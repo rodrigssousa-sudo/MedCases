@@ -1860,9 +1860,10 @@ class _AiScreenState extends State<AiScreen> {
       ),
 
       // ── Barra de input — centralizada no desktop ───────────────────────
-      // Build 158.1: Padding inferior de segurança para nunca ser coberto
-      // pela _FloatingBottomNav (~56pt nav + 36pt LegalBar = 92pt total).
-      // Aplicado apenas em mobile (bp.isDesktop → sem floating nav).
+      // Build 158.2: Padding inferior DINÂMICO sincronizado com scrollingDown.
+      // - Nav visível (scrollingDown=false): 92px → InputBar acima da nav bar
+      // - Nav sumindo (scrollingDown=true) : 16px → InputBar desce junto, 300ms
+      // Desktop (chatMaxWidth != null): sem floating nav → sem padding dinâmico.
       chatMaxWidth != null
           ? Center(
               child: ConstrainedBox(
@@ -1873,7 +1874,6 @@ class _AiScreenState extends State<AiScreen> {
                   dark: dark,
                   hasFocus: _hasFocus,
                   thinking: _thinking,
-                  // Build 135: debounce 300ms — fecha janela residual de concorrência
                   onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
                   hint: p.t('ai_placeholder'),
                   onVoice: _toggleStt,
@@ -1883,17 +1883,25 @@ class _AiScreenState extends State<AiScreen> {
                 ),
               ),
             )
-          : Padding(
-              // Build 158.1: espaço de segurança abaixo do TextField para não
-              // ser coberto pela _FloatingBottomNav quando ela reaparecer.
-              padding: const EdgeInsets.only(bottom: 92),
+          : ValueListenableBuilder<bool>(
+              // Build 158.2: anima o padding inferior em 300ms junto com a nav
+              valueListenable: AiScreen.scrollingDown,
+              builder: (_, scrollingDown, child) {
+                return AnimatedPadding(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  padding: EdgeInsets.only(
+                    bottom: scrollingDown ? 16.0 : 92.0,
+                  ),
+                  child: child,
+                );
+              },
               child: _InputBar(
                 ctrl: _queryCtrl,
                 focusNode: _focusNode,
                 dark: dark,
                 hasFocus: _hasFocus,
                 thinking: _thinking,
-                // Build 135: debounce 300ms — fecha janela residual de concorrência
                 onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
                 hint: p.t('ai_placeholder'),
                 onVoice: _toggleStt,
@@ -4466,21 +4474,20 @@ class _ResponseModeToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isEs = lang == 'es';
 
-    // Labels bilíngues — ícones de livro/hospital como no mockup
-    final labelGuardia = isEs ? '🏥 Guardia' : '🏥 Plantão';
-    final labelEstudio = isEs ? '📖 Estudio'  : '📖 Estudos';
+    // Build 158.2 — Labels texto puro, sem emojis/ícones (visual sóbrio e profissional)
+    final labelGuardia = isEs ? 'Guardia' : 'Plantão';
+    final labelEstudio = isEs ? 'Estudio'  : 'Estudos';
 
-    // Build 158 — Premium Neon Glow Pills (mockup IMG_3206)
-    // Ativo: fundo transparente + borda neon ciano com glow
-    // Inativo: fundo cinza sólido, sem borda especial
-    const neonCyan       = Color(0xFF00E5FF);
-    const neonCyanGlow   = Color(0xFF00B4CC);
-    final inactiveText   = dark
+    // Build 158.2 — Pills minimalistas:
+    // Ativo: fundo transparente + borda ciano fina e nítida (SEM glow/sombra)
+    // Inativo: fundo cinza sólido discreto, sem borda especial
+    const neonCyan   = Color(0xFF00E5FF);
+    final inactiveText = dark
         ? Colors.white.withValues(alpha: 0.55)
         : Colors.black.withValues(alpha: 0.45);
-    final inactiveBg     = dark
-        ? const Color(0xFF374151)           // cinza sólido dark
-        : const Color(0xFFE0E0E0);          // cinza sólido light
+    final inactiveBg   = dark
+        ? const Color(0xFF374151)
+        : const Color(0xFFE0E0E0);
 
     Widget _pill({
       required String label,
@@ -4492,30 +4499,16 @@ class _ResponseModeToggle extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
           decoration: BoxDecoration(
-            // Ativo: transparente com borda neon
+            // Ativo: transparente + borda ciano sólida e nítida (sem glow)
             // Inativo: cinza sólido sem borda especial
             color: isActive ? Colors.transparent : inactiveBg,
             borderRadius: BorderRadius.circular(24),
             border: isActive
                 ? Border.all(color: neonCyan, width: 1.5)
                 : Border.all(color: Colors.transparent, width: 1.5),
-            boxShadow: isActive
-                ? [
-                    // Glow neon externo — efeito da imagem
-                    BoxShadow(
-                      color: neonCyan.withValues(alpha: 0.35),
-                      blurRadius: 12,
-                      spreadRadius: 1,
-                    ),
-                    BoxShadow(
-                      color: neonCyanGlow.withValues(alpha: 0.20),
-                      blurRadius: 20,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : null,
+            // Build 158.2: sem boxShadow — eliminado glow neon por completo
           ),
           child: Text(
             label,
@@ -4523,7 +4516,7 @@ class _ResponseModeToggle extends StatelessWidget {
               fontSize: 13,
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
               color: isActive ? neonCyan : inactiveText,
-              letterSpacing: 0.1,
+              letterSpacing: 0.2,
             ),
           ),
         ),
@@ -4611,26 +4604,14 @@ class _InputBarState extends State<_InputBar> {
     final bool isListening = widget.sttListening;
     final double level     = widget.sttSoundLevel;
 
-    // ── Cores do campo de texto — ConnectMind AI palette
-    final fieldBg = dark ? const Color(0xFF252930) : Colors.white;
-    final borderCol = widget.hasFocus
-        ? const Color(0xFF00E5FF)
-        : (dark ? const Color(0xFF374151) : const Color(0xFFD1D6DC));
+    // ── Cores do campo de texto — cápsula unificada Build 158.2
     final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
     final hintCol = dark ? Colors.white30 : Colors.black38;
 
-    // ── Cores do microfone
-    final micCol    = isListening
+    // ── Cor do microfone
+    final micCol = isListening
         ? const Color(0xFFEF4444)
         : (dark ? Colors.white60 : Colors.black45);
-    final micBgCol  = isListening
-        ? const Color(0xFFEF4444).withValues(alpha: 0.15)
-        : (dark
-            ? Colors.white.withValues(alpha: 0.07)
-            : Colors.black.withValues(alpha: 0.05));
-    final micBorder = isListening
-        ? const Color(0xFFEF4444).withValues(alpha: 0.55)
-        : Colors.transparent;
 
     // ── Cor das barras de onda
     final waveColor = isListening
@@ -4648,210 +4629,203 @@ class _InputBarState extends State<_InputBar> {
         : (isEs ? 'Micrófono listo. Toca para dictar.'
                 : 'Microfone pronto. Toque para ditar.');
 
-    // ── Glassmorphism: fundo semitransparente + blur ───────────────────────
-    // O ClipRRect é necessário para que o BackdropFilter respeite o borderRadius
-    // e não vaze para fora do card flutuante.
-    // Build 99 — removido SafeArea(top: false) que causava espaço em branco duplo
-    // entre o campo de input e o BottomAppBar. O BottomAppBar já lida com o
-    // safe area do home indicator nativamente — adicionar SafeArea aqui causava
-    // um segundo padding bottom que criava o grande vazio branco visível no screenshot.
+    // ── Build 158.2: Cápsula unificada — mic + campo + envio em UMA pílula ──
+    // Design baseado no mockup image_84dcca: BorderRadius.circular(30),
+    // fundo escuro translúcido, sem bordas internas, sem caixas separadas.
+    // O mic, TextField e seta vivem juntos na mesma Row interna da pílula.
     return Padding(
-      // Padding vertical -50%: 8→4 top/bottom — barra mais compacta
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(30),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                // Fundo semitransparente — ConnectMind navy glassmorphism
-                color: dark
-                    ? const Color(0xFF252930).withValues(alpha: 0.82)
-                    : Colors.white.withValues(alpha: 0.88),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: dark
-                      ? const Color(0xFF00E5FF).withValues(alpha: 0.12)
-                      : const Color(0xFF008CA4).withValues(alpha: 0.18),
-                  width: 0.8,
-                ),
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              // Cápsula única — fundo dark translúcido ou light branco suave
+              color: dark
+                  ? const Color(0xFF1E2330).withValues(alpha: 0.90)
+                  : const Color(0xFFF0F2F5).withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: widget.hasFocus
+                    ? const Color(0xFF00E5FF).withValues(alpha: 0.55)
+                    : (dark
+                        ? const Color(0xFF374151).withValues(alpha: 0.60)
+                        : const Color(0xFFD1D6DC).withValues(alpha: 0.80)),
+                width: widget.hasFocus ? 1.4 : 0.9,
               ),
-              // Padding interno vertical -50%: 8→4 — mantém mic+texto centrados
-              padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
 
-                  // ── Painel STT — onda de áudio ou campo de texto ─────────
-                  AnimatedCrossFade(
-                    duration: const Duration(milliseconds: 220),
-                    crossFadeState: isListening
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
+                // ── Painel STT — onda de áudio ou campo de texto ─────────
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 220),
+                  crossFadeState: isListening
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
 
-                    // ── Estado normal: campo de texto ──────────────────────
-                    firstChild: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
+                  // ── Estado normal: mic + TextField + send dentro da pílula
+                  firstChild: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
 
-                        // Botão microfone — ícone outline delicado
-                        Tooltip(
-                          message: micTip,
-                          child: GestureDetector(
-                            onTap: widget.onVoice,
+                      // Botão microfone — sem container separado, ícone direto
+                      Tooltip(
+                        message: micTip,
+                        child: GestureDetector(
+                          onTap: widget.onVoice,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8, left: 2),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
-                              // Mic -50% vertical: 38→32
                               width: 32, height: 32,
-                              margin: const EdgeInsets.only(right: 6, bottom: 0),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: micBgCol,
-                                border: Border.all(color: micBorder, width: 1.2),
+                                color: isListening
+                                    ? const Color(0xFFEF4444).withValues(alpha: 0.15)
+                                    : Colors.transparent,
                               ),
                               child: Center(
                                 child: Icon(
-                                  Icons.mic_none_outlined,
-                                  size: 18,
+                                  isListening
+                                      ? Icons.mic_rounded
+                                      : Icons.mic_none_rounded,
+                                  size: 20,
                                   color: micCol,
                                 ),
                               ),
                             ),
                           ),
                         ),
+                      ),
 
-                        // Campo de texto
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: fieldBg,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: borderCol,
-                                width: widget.hasFocus ? 1.4 : 0.9,
-                              ),
+                      // TextField — sem borda, sem fundo próprio, vive dentro da pílula
+                      Expanded(
+                        child: KeyboardListener(
+                          focusNode: _keyboardListenerNode,
+                          onKeyEvent: (event) {
+                            if (kIsWeb &&
+                                event is KeyDownEvent &&
+                                event.logicalKey == LogicalKeyboardKey.enter &&
+                                !HardwareKeyboard.instance.isShiftPressed &&
+                                !HardwareKeyboard.instance.isControlPressed &&
+                                !widget.thinking) {
+                              widget.onSend();
+                            }
+                          },
+                          child: TextField(
+                            controller: widget.ctrl,
+                            focusNode: widget.focusNode,
+                            maxLines: 5,
+                            minLines: 1,
+                            textInputAction: TextInputAction.newline,
+                            keyboardType: TextInputType.multiline,
+                            autofillHints: const [],
+                            enableSuggestions: true,
+                            autocorrect: true,
+                            textCapitalization: TextCapitalization.sentences,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: textCol,
+                              height: 1.5,
                             ),
-                            child: KeyboardListener(
-                              focusNode: _keyboardListenerNode,
-                              onKeyEvent: (event) {
-                                if (kIsWeb &&
-                                    event is KeyDownEvent &&
-                                    event.logicalKey == LogicalKeyboardKey.enter &&
-                                    !HardwareKeyboard.instance.isShiftPressed &&
-                                    !HardwareKeyboard.instance.isControlPressed &&
-                                    !widget.thinking) {
-                                  widget.onSend();
-                                }
-                              },
-                              child: TextField(
-                                controller: widget.ctrl,
-                                focusNode: widget.focusNode,
-                                maxLines: 5,
-                                minLines: 1,
-                                textInputAction: TextInputAction.newline,
-                                keyboardType: TextInputType.multiline,
-                                autofillHints: const [],
-                                enableSuggestions: true,
-                                autocorrect: true,
-                                textCapitalization: TextCapitalization.sentences,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: textCol,
-                                  height: 1.5,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: widget.hint,
-                                  hintStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: hintCol,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  border: InputBorder.none,
-                                  // ContentPadding -50% vertical: 9→4
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 4,
-                                  ),
-                                ),
+                            decoration: InputDecoration(
+                              hintText: widget.hint,
+                              hintStyle: TextStyle(
+                                fontSize: 14,
+                                color: hintCol,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              // Sem borda, sem fundo: faz parte da cápsula
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 6,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 7),
+                      ),
 
-                        // Botão enviar — ConnectMind cyan
-                        GestureDetector(
-                          onTap: widget.thinking ? null : widget.onSend,
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 150),
-                            // Send btn -50% vertical: 42→34
-                            width: 34, height: 34,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: widget.thinking
-                                  ? const Color(0xFF008CA4).withValues(alpha: 0.45)
-                                  : const Color(0xFF008CA4),
-                            ),
-                            child: Center(
-                              child: widget.thinking
-                                  ? const SizedBox(
-                                      width: 17, height: 17,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1.8,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.arrow_upward_rounded,
+                      const SizedBox(width: 6),
+
+                      // Botão enviar — círculo ciano dentro da pílula
+                      GestureDetector(
+                        onTap: widget.thinking ? null : widget.onSend,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
+                          width: 34, height: 34,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: widget.thinking
+                                ? const Color(0xFF008CA4).withValues(alpha: 0.45)
+                                : const Color(0xFF008CA4),
+                          ),
+                          child: Center(
+                            child: widget.thinking
+                                ? const SizedBox(
+                                    width: 17, height: 17,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1.8,
                                       color: Colors.white,
-                                      size: 19,
                                     ),
-                            ),
+                                  )
+                                : const Icon(
+                                    Icons.arrow_upward_rounded,
+                                    color: Colors.white,
+                                    size: 19,
+                                  ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
 
-                    // ── Estado STT ativo: onda de áudio centralizada ────────
-                    secondChild: SizedBox(
-                      height: 56,
-                      child: Row(
-                        children: [
+                  // ── Estado STT ativo: onda de áudio centralizada ────────
+                  secondChild: SizedBox(
+                    height: 48,
+                    child: Row(
+                      children: [
 
-                          // Botão parar ditado — ícone mic vermelho outline
-                          Tooltip(
-                            message: micTip,
-                            child: GestureDetector(
-                              onTap: widget.onVoice,
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                width: 38, height: 38,
-                                margin: const EdgeInsets.only(right: 10),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFFEF4444).withValues(alpha: 0.12),
-                                  border: Border.all(
-                                    color: const Color(0xFFEF4444).withValues(alpha: 0.50),
-                                    width: 1.2,
-                                  ),
+                        // Botão parar ditado
+                        Tooltip(
+                          message: micTip,
+                          child: GestureDetector(
+                            onTap: widget.onVoice,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 36, height: 36,
+                              margin: const EdgeInsets.only(right: 10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: const Color(0xFFEF4444).withValues(alpha: 0.12),
+                                border: Border.all(
+                                  color: const Color(0xFFEF4444).withValues(alpha: 0.50),
+                                  width: 1.2,
                                 ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.mic_off_outlined,
-                                    size: 17,
-                                    color: Color(0xFFEF4444),
-                                  ),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.mic_off_outlined,
+                                  size: 17,
+                                  color: Color(0xFFEF4444),
                                 ),
                               ),
                             ),
                           ),
+                        ),
 
-                          // Onda de áudio + texto de status
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                        // Onda de áudio + texto de status
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                                 // Onda animada
                                 _AudioWave(
                                   level: level,
