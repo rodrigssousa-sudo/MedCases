@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '41.0.0';
-const CACHE_APP    = 'medcases-app-v41.0.0';  // ← Build 147: ANTI_COGNITION_LEAK_PROMPT redesign + cleanChunk() heurística de idioma inglês
+const SW_VERSION   = '42.0.0';
+const CACHE_APP    = 'medcases-app-v42.0.0';  // ← Build 148: LINE BUDGET rule flexível (12 linhas diretas / 18-22 revisões explícitas)
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)

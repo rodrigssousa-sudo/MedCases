@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * MedCases Pro — AI Gateway Server  v2.2.0  (Build 147)
+ * MedCases Pro — AI Gateway Server  v2.2.1  (Build 148)
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * ARQUITETURA:
@@ -134,7 +134,7 @@ ABSOLUTE OUTPUT RULES — violating any of these is a critical failure:
 
 3. LANGUAGE: respond entirely in the language used in the system prompt sent by the application (Português or Español). Never respond in English. Never mix languages.
 
-4. LINE BUDGET: keep responses concise. Simple drug facts or doses: max 12 lines. Emergency protocols: max 18 lines. Broad clinical reviews: max 22 lines. Never exceed the budget with filler, repetition, or academic narrative.
+4. LINE BUDGET: Use up to 12 lines for direct clinical management and drug flashcards. Use between 18 and 22 full lines strictly when the user explicitly requests a 'review', 'discussion', or 'complete breakdown' of a pathology. Default to concise for all other queries.
 
 5. MARKDOWN ONLY: use clean Markdown headings (###), bold (**drug name**), and bullets (-). No emojis in the structural output unless they appear in the client system prompt's examples.`;
 
@@ -1072,7 +1072,7 @@ function sleep(ms) {
 
 app.listen(PORT, '0.0.0.0', () => {
   log.info('══════════════════════════════════════════════════════');
-  log.info('  MedCases Pro — AI Gateway Server v2.2.0 (Build 147)');
+  log.info('  MedCases Pro — AI Gateway Server v2.2.1 (Build 148)');
   log.info(`  Porta:         ${PORT}`);
   log.info(`  Ambiente:      ${IS_PROD ? 'production' : 'development'}`);
   log.info(`  Modelo Gemini: ${GEMINI_MODEL}`);
