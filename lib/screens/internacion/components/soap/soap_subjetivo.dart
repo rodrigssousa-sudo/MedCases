@@ -269,7 +269,7 @@ class _SymptomChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const cyan = Color(0xFF00E5FF);
+    const cyan = Color(0xFF059669);
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -338,12 +338,12 @@ class _QuickSelector extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xFF00E5FF).withValues(alpha: dark ? 0.15 : 0.10)
+                    ? const Color(0xFF059669).withValues(alpha: dark ? 0.15 : 0.10)
                     : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFF00E5FF)
+                      ? const Color(0xFF059669)
                       : Colors.transparent,
                   width: 1.2,
                 ),
@@ -352,7 +352,7 @@ class _QuickSelector extends StatelessWidget {
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
                 color: isSelected
-                    ? const Color(0xFF00E5FF)
+                    ? const Color(0xFF059669)
                     : (dark ? Colors.white60 : Colors.black54),
               )),
             ),

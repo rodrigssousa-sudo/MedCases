@@ -1,10 +1,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Internación y Evolución (Build 161)
+// InternacionScreen — Build 162 — Refinamento Estético e Funcional
 //
 // Build 160: CopilotButton, Persistence, SessionBanner, applyAiDraft
-// Build 161: Data Binding Demográfico — ao [Aprobar y Rellenar], os campos
-//   nome/cama/idade/sexo/diagnóstico/dia extraídos pela IA atualizam
-//   imediatamente _paciente → ResumenHeader + PatientAccordion via setState.
+// Build 161: Data Binding Demográfico — demografias atualizadas ao [Aprobar]
+// Build 162:
+//   1. Botão VOLTAR explícito no AppBar (Icons.arrow_back_ios_new)
+//   2. Nome do médico dinâmico via AppProvider.userName
+//   3. Grid 2 colunas de sessões salvas MOVIDO para baixo do SOAP
+//   4. Acordeão "Fármacos que el paciente está tomando" (FarmacosAccordion)
+//   5. Purga completa dos tokens neon — verde corporativo em todo AppBar
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +19,7 @@ import 'components/historial_section.dart';
 import 'components/patient_accordion.dart';
 import 'components/internacion_theme.dart';
 import 'components/copilot_button.dart';
+import 'components/farmacos_accordion.dart';
 import 'components/soap/soap_section.dart';
 import 'services/internacion_persistence.dart';
 import 'services/soap_copilot_service.dart';
@@ -37,9 +42,6 @@ class _InternacionScreenState extends State<InternacionScreen> {
   // Key para acessar applyAiDraft() do SoapSectionWidget
   final _soapKey = GlobalKey<SoapSectionWidgetState>();
 
-  // Accordion interações aberto/fechado
-  bool _interaccionesOpen = false;
-
   // Sessões salvas do dia anterior (para continuidade)
   List<PacienteSession> _savedSessions = [];
   bool _sessionsLoaded = false;
@@ -61,6 +63,15 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
+  /// Build 162 — nome do médico logado via AppProvider
+  String _doctorName(AppProvider p) {
+    final name = p.userName.trim();
+    if (name.isEmpty) return 'Dr.';
+    // Garante prefixo "Dr."/"Dra." se não presente
+    if (name.toLowerCase().startsWith('dr')) return name;
+    return 'Dr. $name';
+  }
+
   EvolucionModel _newDraft() => EvolucionModel(
     id: DateTime.now().millisecondsSinceEpoch.toString(),
     fecha: DateTime.now(),
@@ -78,7 +89,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
       paciente: _paciente,
       historial: _historial,
     );
-    // Recarrega sessões para atualizar banner
+    // Recarrega sessões para atualizar grid
     await _loadSessions();
 
     if (mounted) {
@@ -89,7 +100,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
             const SizedBox(width: 8),
             Text(_isEs ? 'Evolución guardada y persistida' : 'Evolução salva e persistida'),
           ]),
-          backgroundColor: const Color(0xFF22C55E),
+          backgroundColor: InternacionTheme.green,
           duration: const Duration(seconds: 3),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -99,12 +110,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
   }
 
   // ── IA aprovada — injeta SOAP + atualiza dados demográficos (Build 161) ──
-  // Data Binding: ao [Aprobar y Rellenar], se a IA extraiu nome/cama/idade/
-  // sexo/diagnóstico, esses campos são refletidos imediatamente no
-  // ResumenHeader e PatientAccordion via setState — reconfiguração completa
-  // da tela quando a IA detecta um novo paciente no relato.
   void _onAiApproved(SoapDraftResult draft) {
-    // 1. Injeta campos SOAP no motor (S/O/A/P) com reset de state bleed
+    // 1. Injeta campos SOAP (S/O/A/P + fármacos) com anti-state-bleed
     _soapKey.currentState?.applyAiDraft(draft);
 
     // 2. Atualiza dados demográficos se a IA extraiu pelo menos um campo
@@ -155,7 +162,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
               : 'Dia ${session.nextDayPaciente.diaInternacao} — Sessão de ${session.paciente.nome.isNotEmpty ? session.paciente.nome : "Paciente"} carregada'),
         ),
       ]),
-      backgroundColor: InternacionTheme.cyan,
+      backgroundColor: InternacionTheme.accentLight,
       duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -177,15 +184,16 @@ class _InternacionScreenState extends State<InternacionScreen> {
     final lang = p.lang;
     final theme = InternacionTheme(dark);
     final isEs = lang == 'es';
+    final doctorName = _doctorName(p);   // Build 162: nome dinâmico
 
     return Scaffold(
       backgroundColor: theme.surface,
-      // ── AppBar ultra-thin premium ──────────────────────────────────────────
+      // ── AppBar premium — sem neon (Build 162) ────────────────────────────
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(52),
         child: Container(
           decoration: BoxDecoration(
-            color: dark ? const Color(0xFF0F1116) : Colors.white,
+            color: dark ? const Color(0xFF0D0F14) : Colors.white,
             border: Border(
               bottom: BorderSide(color: theme.border, width: 0.8),
             ),
@@ -193,60 +201,73 @@ class _InternacionScreenState extends State<InternacionScreen> {
           child: SafeArea(
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Row(
                 children: [
-                  // Ícone e título
+                  // ── Build 162: Botão VOLTAR explícito ───────────────────
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 18,
+                      color: theme.accent,
+                    ),
+                    tooltip: isEs ? 'Volver' : 'Voltar',
+                    onPressed: () => Navigator.maybePop(context),
+                    padding: const EdgeInsets.all(8),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  ),
+
+                  // Ícone da seção
                   Container(
-                    width: 30, height: 30,
+                    width: 28, height: 28,
                     decoration: BoxDecoration(
-                      color: InternacionTheme.cyan.withValues(alpha: dark ? 0.15 : 0.10),
+                      color: theme.accent.withValues(alpha: dark ? 0.15 : 0.09),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.local_hospital_rounded,
-                        size: 16, color: InternacionTheme.cyan),
+                    child: Icon(Icons.local_hospital_rounded,
+                        size: 15, color: theme.accent),
                   ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        isEs ? 'INTERNACIÓN Y EVOLUCIÓN' : 'INTERNAÇÃO E EVOLUÇÃO',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.5,
-                          color: theme.textPrimary,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          isEs ? 'INTERNACIÓN Y EVOLUCIÓN' : 'INTERNAÇÃO E EVOLUÇÃO',
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.4,
+                            color: theme.textPrimary,
+                          ),
                         ),
-                      ),
-                      Text(
-                        isEs ? 'Modelo SOAP · MedCases Pro' : 'Modelo SOAP · MedCases Pro',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: theme.textSecondary,
+                        Text(
+                          isEs ? 'Modelo SOAP · MedCases Pro' : 'Modelo SOAP · MedCases Pro',
+                          style: TextStyle(fontSize: 10, color: theme.textSecondary),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const Spacer(),
+
                   // Badge de evoluções salvas
                   if (_historial.isNotEmpty)
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: InternacionTheme.cyan.withValues(alpha: dark ? 0.15 : 0.10),
+                        color: theme.accent.withValues(alpha: dark ? 0.15 : 0.09),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         '${_historial.length} ${isEs ? 'evoluciones' : 'evoluções'}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w600,
-                          color: InternacionTheme.cyan,
+                          color: theme.accent,
                         ),
                       ),
                     ),
+                  const SizedBox(width: 4),
                 ],
               ),
             ),
@@ -260,28 +281,11 @@ class _InternacionScreenState extends State<InternacionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // ── 0. BANNER — sessões do dia anterior ────────────────────────
-            if (_sessionsLoaded && _savedSessions.isNotEmpty)
-              ..._savedSessions.map((session) => _SessionBanner(
-                session: session,
-                dark: dark,
-                lang: lang,
-                theme: theme,
-                onResume: () => _resumeSession(session),
-                onDismiss: () => setState(() {
-                  _savedSessions = _savedSessions
-                      .where((s) => s.sessionKey != session.sessionKey)
-                      .toList();
-                }),
-              )).toList(),
-            if (_sessionsLoaded && _savedSessions.isNotEmpty)
-              const SizedBox(height: 12),
-
             // ── 1. RESUMEN CLÍNICO ──────────────────────────────────────────
             ResumenHeader(
-              pacienteId:     _paciente.nome,
-              cama:           _paciente.cama,
-              diagnostico:    _paciente.diagnostico,
+              pacienteId:       _paciente.nome,
+              cama:             _paciente.cama,
+              diagnostico:      _paciente.diagnostico,
               diadeInternacion: _paciente.diaInternacao,
               dark: dark,
               lang: lang,
@@ -296,7 +300,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
             ),
             const SizedBox(height: 12),
 
-            // ── 3. HISTORIAL — zero espaço se vazio (sênior pattern) ────────
+            // ── 3. HISTORIAL — zero espaço se vazio ─────────────────────────
             HistorialSection(
               evoluciones: _historial,
               dark: dark,
@@ -304,7 +308,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
             ),
             if (_historial.isNotEmpty) const SizedBox(height: 12),
 
-            // ── 4. DATOS DEL PACIENTE (colapsável) ─────────────────────────
+            // ── 4. DADOS DO PACIENTE (colapsável) ───────────────────────────
             PatientAccordion(
               data: _paciente,
               dark: dark,
@@ -313,14 +317,14 @@ class _InternacionScreenState extends State<InternacionScreen> {
             ),
             const SizedBox(height: 10),
 
-            // ── 5. INTERACCIONES DEL PACIENTE (colapsável) ─────────────────
-            _InteraccionesAccordion(
-              isOpen: _interaccionesOpen,
+            // ── 5. FÁRMACOS ATUAIS (Build 162 — substitui Interacciones) ────
+            FarmacosAccordion(
+              farmacos: _draftEvolucion.farmacos,
               dark: dark,
               lang: lang,
-              onToggle: () => setState(() =>
-                  _interaccionesOpen = !_interaccionesOpen),
-              p: p,
+              onChanged: (list) => setState(() {
+                _draftEvolucion = _draftEvolucion.copyWith(farmacos: list);
+              }),
             ),
             const SizedBox(height: 16),
 
@@ -339,8 +343,36 @@ class _InternacionScreenState extends State<InternacionScreen> {
               evolucion: _draftEvolucion,
               dark: dark,
               lang: lang,
+              autorNombre: doctorName,   // Build 162: nome dinâmico
               onSave: _onSaveEvolucion,
             ),
+
+            // ── 8. GRID DE PACIENTES SALVOS (Build 162 — MOVIDO PARA BAIXO) ─
+            // Posição: abaixo de TODA a evolução SOAP — UX dashboard ao final.
+            if (_sessionsLoaded && _savedSessions.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              _SectionDivider(
+                label: isEs ? 'PACIENTES INTERNADOS GUARDADOS' : 'PACIENTES INTERNADOS SALVOS',
+                sublabel: isEs
+                    ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''} activa${_savedSessions.length > 1 ? 's' : ''}'
+                    : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''} ativa${_savedSessions.length > 1 ? 's' : ''}',
+                dark: dark,
+                theme: theme,
+              ),
+              const SizedBox(height: 12),
+              _SessionsGrid(
+                sessions: _savedSessions,
+                dark: dark,
+                lang: lang,
+                theme: theme,
+                onResume: _resumeSession,
+                onDismiss: (session) => setState(() {
+                  _savedSessions = _savedSessions
+                      .where((s) => s.sessionKey != session.sessionKey)
+                      .toList();
+                }),
+              ),
+            ],
           ],
         ),
       ),
@@ -348,8 +380,45 @@ class _InternacionScreenState extends State<InternacionScreen> {
   }
 }
 
-// ── Banner de sessão salva (continuidade entre dias) ─────────────────────────
-class _SessionBanner extends StatelessWidget {
+// ── Build 162: Grid 2 colunas de sessões salvas ───────────────────────────────
+class _SessionsGrid extends StatelessWidget {
+  final List<PacienteSession> sessions;
+  final bool dark;
+  final String lang;
+  final InternacionTheme theme;
+  final ValueChanged<PacienteSession> onResume;
+  final ValueChanged<PacienteSession> onDismiss;
+
+  const _SessionsGrid({
+    required this.sessions, required this.dark, required this.lang,
+    required this.theme, required this.onResume, required this.onDismiss,
+  });
+
+  bool get isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: 1.10,
+      children: sessions.map((s) => _SessionCard(
+        session: s,
+        dark: dark,
+        lang: lang,
+        theme: theme,
+        onResume: () => onResume(s),
+        onDismiss: () => onDismiss(s),
+      )).toList(),
+    );
+  }
+}
+
+// ── Card compacto de sessão (célula do grid 2-col) ────────────────────────────
+class _SessionCard extends StatelessWidget {
   final PacienteSession session;
   final bool dark;
   final String lang;
@@ -357,7 +426,7 @@ class _SessionBanner extends StatelessWidget {
   final VoidCallback onResume;
   final VoidCallback onDismiss;
 
-  const _SessionBanner({
+  const _SessionCard({
     required this.session, required this.dark, required this.lang,
     required this.theme, required this.onResume, required this.onDismiss,
   });
@@ -366,108 +435,115 @@ class _SessionBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = session.paciente;
+    final p    = session.paciente;
     final nome = p.nome.isNotEmpty ? p.nome : (isEs ? 'Paciente' : 'Paciente');
-    final cama = p.cama.isNotEmpty ? ' · ${isEs ? 'Cama' : 'Leito'} ${p.cama}' : '';
-    final diasLabel = isEs
-        ? 'Día ${p.diaInternacao} → Día ${session.nextDayPaciente.diaInternacao}'
-        : 'Dia ${p.diaInternacao} → Dia ${session.nextDayPaciente.diaInternacao}';
-    final evolLabel = '${session.historial.length} ${isEs
-        ? 'evolucione${session.historial.length != 1 ? 's' : ''}'
-        : 'evolução${session.historial.length != 1 ? 'ões' : ''}'}';
+    final cama = p.cama.isNotEmpty ? (isEs ? 'Cama ${p.cama}' : 'Leito ${p.cama}') : '';
+    final dia  = isEs
+        ? 'Día ${p.diaInternacao}→${session.nextDayPaciente.diaInternacao}'
+        : 'Dia ${p.diaInternacao}→${session.nextDayPaciente.diaInternacao}';
+    final evol = '${session.historial.length} evol.';
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: dark ? const Color(0xFF0A1628) : const Color(0xFFEEF7FF),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: InternacionTheme.cyan.withValues(alpha: 0.35),
-            width: 1.2,
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF0E1420) : const Color(0xFFF0F7F4),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: InternacionTheme(dark).accent.withValues(alpha: 0.30),
+          width: 1.1,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
+        boxShadow: [theme.softShadow],
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header: ícone + dismiss ──────────────────────────────────────
+          Row(
             children: [
-              // Ícone
               Container(
-                width: 40, height: 40,
+                width: 28, height: 28,
                 decoration: BoxDecoration(
-                  color: InternacionTheme.cyan.withValues(alpha: dark ? 0.15 : 0.10),
-                  borderRadius: BorderRadius.circular(11),
+                  color: InternacionTheme(dark).accent.withValues(alpha: dark ? 0.18 : 0.12),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.history_rounded,
-                    size: 20, color: InternacionTheme.cyan),
+                child: Icon(Icons.history_rounded,
+                    size: 14, color: InternacionTheme(dark).accent),
               ),
-              const SizedBox(width: 12),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$nome$cama',
-                      style: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w700,
-                        color: theme.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      '$diasLabel · $evolLabel guardada${isEs ? 's' : ''}',
-                      style: TextStyle(fontSize: 11.5, color: InternacionTheme.cyan),
-                    ),
-                    if (p.diagnostico.isNotEmpty)
-                      Text(
-                        p.diagnostico,
-                        style: TextStyle(
-                          fontSize: 11, color: theme.textSecondary, height: 1.3,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-
-              // Botão retomar
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: onResume,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF00C6E0), Color(0xFF0051C3)],
-                        ),
-                        borderRadius: BorderRadius.circular(9),
-                      ),
-                      child: Text(
-                        isEs ? 'Retomar' : 'Retomar',
-                        style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  GestureDetector(
-                    onTap: onDismiss,
-                    child: Text(
-                      isEs ? 'Ignorar' : 'Ignorar',
-                      style: TextStyle(fontSize: 10.5, color: theme.textSecondary),
-                    ),
-                  ),
-                ],
+              const Spacer(),
+              GestureDetector(
+                onTap: onDismiss,
+                child: Icon(Icons.close_rounded, size: 14, color: theme.labelColor),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 8),
+
+          // ── Nome ─────────────────────────────────────────────────────────
+          Text(
+            nome,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: theme.textPrimary,
+              height: 1.2,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (cama.isNotEmpty)
+            Text(cama, style: TextStyle(fontSize: 10.5, color: theme.textSecondary)),
+
+          // ── Diagnóstico ───────────────────────────────────────────────────
+          if (p.diagnostico.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                p.diagnostico,
+                style: TextStyle(fontSize: 10, color: theme.labelColor, height: 1.3),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+          const Spacer(),
+
+          // ── Chips: dia + evoluções + botão Retomar ────────────────────────
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  '$dia · $evol',
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    color: InternacionTheme(dark).accent,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          GestureDetector(
+            onTap: onResume,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              decoration: BoxDecoration(
+                gradient: InternacionTheme(dark).accentGradient,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                isEs ? 'Retomar' : 'Retomar',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -495,7 +571,7 @@ class _SectionDivider extends StatelessWidget {
           children: [
             Text(label, style: TextStyle(
               fontSize: 10, fontWeight: FontWeight.w800,
-              letterSpacing: 0.8, color: InternacionTheme.cyan,
+              letterSpacing: 0.8, color: InternacionTheme(dark).accent,
             )),
             Text(sublabel, style: TextStyle(
               fontSize: 9, color: theme.labelColor,
@@ -505,167 +581,6 @@ class _SectionDivider extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(child: Divider(color: theme.border, height: 1, thickness: 0.8)),
       ],
-    );
-  }
-}
-
-// ── Interações do Paciente — accordion de segurança farmacológica ─────────────
-class _InteraccionesAccordion extends StatelessWidget {
-  final bool isOpen;
-  final bool dark;
-  final String lang;
-  final VoidCallback onToggle;
-  final AppProvider p;
-
-  const _InteraccionesAccordion({
-    required this.isOpen, required this.dark, required this.lang,
-    required this.onToggle, required this.p,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = InternacionTheme(dark);
-    final isEs  = lang == 'es';
-
-    final drugCount = p.selectedDrugs.length;
-    final subtitle  = drugCount == 0
-        ? (isEs ? 'Sin fármacos registrados' : 'Sem fármacos registrados')
-        : '$drugCount ${isEs ? 'fármaco${drugCount > 1 ? 's' : ''} activo${drugCount > 1 ? 's' : ''}' : 'fármaco${drugCount > 1 ? 's' : ''} ativo${drugCount > 1 ? 's' : ''}'}';
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      decoration: BoxDecoration(
-        color: theme.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isOpen
-              ? InternacionTheme.amber.withValues(alpha: 0.40)
-              : theme.border,
-          width: 0.8,
-        ),
-        boxShadow: [theme.softShadow],
-      ),
-      child: Column(
-        children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onToggle,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Row(
-                children: [
-                  Container(
-                    width: 36, height: 36,
-                    decoration: BoxDecoration(
-                      color: InternacionTheme.amber.withValues(alpha: dark ? 0.12 : 0.08),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.compare_arrows_rounded,
-                        size: 18, color: InternacionTheme.amber),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isEs ? 'Interacciones del Paciente' : 'Interações do Paciente',
-                          style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w700,
-                            color: theme.textPrimary,
-                          ),
-                        ),
-                        Text(
-                          subtitle,
-                          style: TextStyle(fontSize: 11, color: theme.textSecondary),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (drugCount > 0)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: InternacionTheme.amber.withValues(alpha: dark ? 0.15 : 0.10),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text('$drugCount', style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w700,
-                        color: InternacionTheme.amber,
-                      )),
-                    ),
-                  const SizedBox(width: 6),
-                  AnimatedRotation(
-                    turns: isOpen ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                        size: 20, color: theme.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeInOut,
-            child: isOpen
-                ? Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Divider(color: theme.divider, height: 1, thickness: 0.8),
-                        const SizedBox(height: 12),
-                        if (p.selectedDrugs.isEmpty)
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              child: Text(
-                                isEs
-                                    ? 'Agregar fármacos en la calculadora de dosis'
-                                    : 'Adicione fármacos na calculadora de doses',
-                                style: TextStyle(
-                                  fontSize: 13, color: theme.textSecondary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                        else
-                          ...p.selectedDrugs.map((drug) => Container(
-                            margin: const EdgeInsets.only(bottom: 8),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: dark
-                                  ? const Color(0xFF1E2330)
-                                  : const Color(0xFFF8F9FA),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: theme.border, width: 0.8),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.medication_rounded,
-                                    size: 16, color: InternacionTheme.amber),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    drug.nameL10n(lang),
-                                    style: TextStyle(
-                                      fontSize: 13, fontWeight: FontWeight.w600,
-                                      color: theme.textPrimary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )),
-                      ],
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -54,8 +54,8 @@ class RevisionSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = InternacionTheme(dark);
     final bg = dark ? const Color(0xFF0F1116) : Colors.white;
-    // Conta SOAP + campos demográficos extraídos
-    int filled = draft.filledCount;
+    // Conta SOAP + demográficos + fármacos extraídos
+    int filled = draft.filledCount; // já inclui farmacos via filledCount
     if (draft.pacienteNome?.isNotEmpty == true) filled++;
     if (draft.pacienteCama?.isNotEmpty == true) filled++;
     if (draft.pacienteIdade?.isNotEmpty == true) filled++;
@@ -73,7 +73,7 @@ class RevisionSheet extends StatelessWidget {
           color: bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: const Color(0xFF00E5FF).withValues(alpha: 0.30),
+            color: InternacionTheme.cyan.withValues(alpha: 0.30),
             width: 1.2,
           ),
         ),
@@ -99,7 +99,7 @@ class RevisionSheet extends StatelessWidget {
                     width: 36, height: 36,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF00E5FF), Color(0xFF0070FF)],
+                        colors: [Color(0xFF059669), Color(0xFF047857)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -239,14 +239,14 @@ class RevisionSheet extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF00C6E0), Color(0xFF0051C3)],
+                            colors: [Color(0xFF059669), Color(0xFF047857)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF00E5FF).withValues(alpha: 0.30),
+                              color: InternacionTheme.cyan.withValues(alpha: 0.25),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -506,6 +506,27 @@ class RevisionSheet extends StatelessWidget {
           value: draft.criteriosAlta!,
           theme: theme, section: SoapSection.p,
         ));
+    }
+
+    // ─── FÁRMACOS (Build 162) ──────────────────────────────────────────────
+    if (draft.farmacos?.isNotEmpty == true) {
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(_sectionHeader(
+        isEs ? '💊 Fármacos detectados' : '💊 Fármacos detectados',
+        SoapSection.o, theme,
+      ));
+      for (final f in draft.farmacos!) {
+        final med = f['medicamento'] ?? '';
+        final dos = f['dosagem']     ?? '';
+        if (med.isEmpty) continue;
+        widgets.add(_fieldCard(
+          icon: Icons.medication_outlined,
+          label: med,
+          value: dos.isNotEmpty ? dos : (isEs ? '(sin dosificación)' : '(sem dosagem)'),
+          theme: theme,
+          section: SoapSection.o,
+        ));
+      }
     }
 
     if (widgets.isEmpty || (widgets.length == 1)) {

@@ -5,12 +5,15 @@
 //
 // Build 160: applyAiDraft, _draftVersion, _CopyButton
 // Build 161: State Bleed fix — problemasActivos LIMPA antes de injetar draft IA
+// Build 162: farmacos injetados via applyAiDraft; autorNombre dinâmico no CopyButton
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
 import '../../services/soap_copilot_service.dart';
+// FarmacoEntry usado no applyAiDraft (Build 162)
+// ignore: unused_import (re-exportado via evolucion_model)
 import 'soap_subjetivo.dart';
 import 'soap_objetivo.dart';
 import 'soap_evaluacion.dart';
@@ -41,6 +44,11 @@ class SoapNotifier extends ChangeNotifier {
 
   void updatePlan(PlanData d) {
     _evolucion = _evolucion.copyWith(plan: d);
+    notifyListeners();
+  }
+
+  void updateFarmacos(List<FarmacoEntry> farmacos) {
+    _evolucion = _evolucion.copyWith(farmacos: farmacos);
     notifyListeners();
   }
 
@@ -155,11 +163,26 @@ class SoapNotifier extends ChangeNotifier {
           ? draft.criteriosAlta : (p.criteriosAlta.isEmpty ? '' : p.criteriosAlta),
     );
 
+    // Fármacos (Build 162) — substitui completamente se IA forneceu dados
+    List<FarmacoEntry> newFarmacos;
+    if (draft.farmacos != null && draft.farmacos!.isNotEmpty) {
+      newFarmacos = draft.farmacos!
+          .map((m) => FarmacoEntry(
+                medicamento: m['medicamento'] ?? '',
+                dosagem:     m['dosagem']     ?? '',
+              ))
+          .where((f) => f.medicamento.isNotEmpty)
+          .toList();
+    } else {
+      newFarmacos = List<FarmacoEntry>.from(_evolucion.farmacos);
+    }
+
     _evolucion = _evolucion.copyWith(
       subjetivo: newSubjetivo,
       objetivo: newObjetivo,
       evaluacion: newEvaluacion,
       plan: newPlan,
+      farmacos: newFarmacos,
     );
 
     notifyListeners();
@@ -193,6 +216,8 @@ class SoapSectionWidget extends StatefulWidget {
   final EvolucionModel evolucion;
   final bool dark;
   final String lang;
+  /// Nome do médico logado — preenche o cabeçalho do texto copiado (Build 162)
+  final String autorNombre;
   /// Callback chamado quando o médico confirma o save da evolução
   final ValueChanged<EvolucionModel> onSave;
 
@@ -202,6 +227,7 @@ class SoapSectionWidget extends StatefulWidget {
     required this.dark,
     required this.lang,
     required this.onSave,
+    this.autorNombre = 'Dr.',
   });
 
   @override
@@ -337,6 +363,7 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
         _CopyButton(
           dark: dark,
           lang: widget.lang,
+          autorNombre: widget.autorNombre,
           getEvolucion: () => _notifier.evolucion,
         ),
         const SizedBox(height: 8),
@@ -502,12 +529,14 @@ class _SoapAccordion extends StatelessWidget {
 class _CopyButton extends StatefulWidget {
   final bool dark;
   final String lang;
+  final String autorNombre;    // Build 162: nome dinâmico do médico logado
   final EvolucionModel Function() getEvolucion;
 
   const _CopyButton({
     required this.dark,
     required this.lang,
     required this.getEvolucion,
+    this.autorNombre = 'Dr.',
   });
 
   @override
@@ -521,7 +550,7 @@ class _CopyButtonState extends State<_CopyButton> {
 
   Future<void> _copy() async {
     final ev = widget.getEvolucion();
-    final text = _compileSoapText(ev, isEs);
+    final text = _compileSoapText(ev, isEs, widget.autorNombre);
 
     await Clipboard.setData(ClipboardData(text: text));
 
@@ -545,15 +574,18 @@ class _CopyButtonState extends State<_CopyButton> {
     }
   }
 
-  /// Compila todos os campos SOAP em texto formatado para clipboard
-  static String _compileSoapText(EvolucionModel ev, bool isEs) {
+  /// Compila todos os campos SOAP em texto formatado para clipboard.
+  /// [autorNombre] — nome do médico logado (Build 162: dinâmico, não hardcoded).
+  static String _compileSoapText(EvolucionModel ev, bool isEs, String autorNombre) {
     final buf = StringBuffer();
     final sep = '─' * 40;
 
     buf.writeln(isEs
         ? '📋 EVOLUCIÓN MÉDICA · ${ev.fechaFormatada}'
         : '📋 EVOLUÇÃO MÉDICA · ${ev.fechaFormatada}');
-    buf.writeln(isEs ? 'Responsable: ${ev.autorNombre}' : 'Responsável: ${ev.autorNombre}');
+    // Build 162: usa autorNombre dinâmico — nunca mais "Responsable: Dr. "
+    final nomeDisplay = autorNombre.trim().isNotEmpty ? autorNombre : ev.autorNombre;
+    buf.writeln(isEs ? 'Responsable: $nomeDisplay' : 'Responsável: $nomeDisplay');
     buf.writeln(sep);
 
     // S
@@ -632,6 +664,15 @@ class _CopyButtonState extends State<_CopyButton> {
       buf.writeln(isEs ? '• Plan terapéutico:\n${p.planTerapeutico}' : '• Plano terapêutico:\n${p.planTerapeutico}');
     if (p.criteriosAlta.isNotEmpty)
       buf.writeln(isEs ? '• Criterios de alta:\n${p.criteriosAlta}' : '• Critérios de alta:\n${p.criteriosAlta}');
+
+    // Fármacos (Build 162)
+    if (ev.farmacos.isNotEmpty) {
+      buf.writeln(isEs ? '\n💊 FÁRMACOS ACTUALES' : '\n💊 FÁRMACOS ATUAIS');
+      for (final f in ev.farmacos) {
+        final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
+        buf.writeln('• ${f.medicamento}$dos');
+      }
+    }
 
     buf.writeln('\n$sep');
     buf.writeln('MedCases Pro · Generado ${DateTime.now().toIso8601String().substring(0, 16)}');
@@ -715,14 +756,14 @@ class _SaveButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF008CA4), Color(0xFF005566)],
+            colors: [Color(0xFF059669), Color(0xFF047857)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF00E5FF).withValues(alpha: 0.25),
+              color: InternacionTheme.cyan.withValues(alpha: 0.20),
               blurRadius: 14,
               offset: const Offset(0, 4),
             ),

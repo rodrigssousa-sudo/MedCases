@@ -1,13 +1,39 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // EvolucionModel — modelo SOAP imutável
 //
-// Representa UMA evolução médica completa no formato SOAP.
-// Imutável por design: qualquer edição cria uma nova instância via copyWith(),
-// evitando mutações silenciosas e facilitando diff/histórico.
+// Build 162: FarmacoEntry adicionado — medicamento + dosagem com CRUD manual
+// e extração automática pela IA. EvolucionModel estendido com List<FarmacoEntry>.
 // ─────────────────────────────────────────────────────────────────────────────
 library internacion.models;
 
 import 'package:flutter/foundation.dart';
+
+// ── Fármaco com dosagem (Build 162) ──────────────────────────────────────────
+@immutable
+class FarmacoEntry {
+  final String medicamento; // nome do fármaco
+  final String dosagem;     // ex: "500 mg VO 8/8h", "40 mg EV 1x/dia"
+
+  const FarmacoEntry({
+    required this.medicamento,
+    this.dosagem = '',
+  });
+
+  FarmacoEntry copyWith({String? medicamento, String? dosagem}) =>
+      FarmacoEntry(
+        medicamento: medicamento ?? this.medicamento,
+        dosagem:     dosagem     ?? this.dosagem,
+      );
+
+  // JSON round-trip (para SharedPreferences)
+  Map<String, dynamic> toJson() =>
+      {'medicamento': medicamento, 'dosagem': dosagem};
+
+  factory FarmacoEntry.fromJson(Map<String, dynamic> j) => FarmacoEntry(
+        medicamento: j['medicamento']?.toString() ?? '',
+        dosagem:     j['dosagem']?.toString()     ?? '',
+      );
+}
 
 // ── Status clínico do paciente ────────────────────────────────────────────────
 enum EstadoClinical { mejorando, estable, empeorando }
@@ -245,6 +271,8 @@ class EvolucionModel {
   final ObjetivoData objetivo;
   final EvaluacionData evaluacion;
   final PlanData plan;
+  /// Build 162: lista de fármacos atuais do paciente (medicamento + dosagem).
+  final List<FarmacoEntry> farmacos;
 
   const EvolucionModel({
     required this.id,
@@ -254,6 +282,7 @@ class EvolucionModel {
     this.objetivo = const ObjetivoData(),
     this.evaluacion = const EvaluacionData(),
     this.plan = const PlanData(),
+    this.farmacos = const [],
   });
 
   EvolucionModel copyWith({
@@ -264,6 +293,7 @@ class EvolucionModel {
     ObjetivoData? objetivo,
     EvaluacionData? evaluacion,
     PlanData? plan,
+    List<FarmacoEntry>? farmacos,
   }) => EvolucionModel(
     id:          id ?? this.id,
     fecha:       fecha ?? this.fecha,
@@ -272,6 +302,7 @@ class EvolucionModel {
     objetivo:    objetivo ?? this.objetivo,
     evaluacion:  evaluacion ?? this.evaluacion,
     plan:        plan ?? this.plan,
+    farmacos:    farmacos ?? this.farmacos,
   );
 
   String get fechaFormatada {

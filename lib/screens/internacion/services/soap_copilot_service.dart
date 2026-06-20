@@ -70,6 +70,10 @@ class SoapDraftResult {
   final String? planTerapeutico;
   final String? criteriosAlta;
 
+  // ── Fármacos (Build 162) ──────────────────────────────────────────────────
+  // Lista de {medicamento, dosagem} extraída pela IA do relato ou fotos de receita.
+  final List<Map<String, String>>? farmacos;
+
   const SoapDraftResult({
     // demog
     this.pacienteNome,
@@ -115,6 +119,8 @@ class SoapDraftResult {
     // P
     this.planTerapeutico,
     this.criteriosAlta,
+    // Fármacos
+    this.farmacos,
   });
 
   /// true se a IA extraiu pelo menos um campo demográfico
@@ -156,6 +162,7 @@ class SoapDraftResult {
     if (notasEvaluacion?.isNotEmpty == true) n++;
     if (planTerapeutico?.isNotEmpty == true) n++;
     if (criteriosAlta?.isNotEmpty == true) n++;
+    if (farmacos?.isNotEmpty == true) n++;
     return n;
   }
 
@@ -290,6 +297,27 @@ class SoapDraftResult {
       debugPrint('🤖 [SoapParser] WARN: falha no nó P (plan) — $e');
     }
 
+    // ── Extração nó FÁRMACOS (Build 162) ─────────────────────────────────
+    List<Map<String, String>>? farmacos;
+    try {
+      final rawFarm = json['farmacos'];
+      if (rawFarm is List && rawFarm.isNotEmpty) {
+        farmacos = rawFarm
+            .map((e) {
+              final m = safeMap(e);
+              final med = safeStr(m['medicamento']) ?? '';
+              final dos = safeStr(m['dosagem']) ?? '';
+              if (med.isEmpty) return null;
+              return <String, String>{'medicamento': med, 'dosagem': dos};
+            })
+            .whereType<Map<String, String>>()
+            .toList();
+        if (farmacos.isEmpty) farmacos = null;
+      }
+    } catch (e) {
+      debugPrint('🤖 [SoapParser] WARN: falha no nó farmacos — $e');
+    }
+
     return SoapDraftResult(
       pacienteNome:          pNome,
       pacienteCama:          pCama,
@@ -328,6 +356,7 @@ class SoapDraftResult {
       notasEvaluacion:       notasEvaluacion,
       planTerapeutico:       planTerapeutico,
       criteriosAlta:         criteriosAlta,
+      farmacos:              farmacos,
     );
   }
 }
@@ -447,6 +476,20 @@ class SoapCopilotService {
           'criteriosAlta':   {'type': 'string'},
         },
       },
+
+      // ── FÁRMACOS ATUAIS (Build 162) ───────────────────────────────────────
+      // Extrair qualquer medicamento mencionado no texto ou visível em fotos
+      // de receitas, prescrições ou telas de sistemas de saúde.
+      'farmacos': {
+        'type': 'array',
+        'items': {
+          'type': 'object',
+          'properties': {
+            'medicamento': {'type': 'string'},
+            'dosagem':     {'type': 'string'},
+          },
+        },
+      },
     },
   };
 
@@ -476,7 +519,12 @@ class SoapCopilotService {
       'sin mezclar con casos anteriores.\n'
       '8. Si hay imágenes de monitores o resultados, extrae TODOS los valores visibles.\n'
       '9. planTerapeutico: consolida TODAS las indicaciones y cambios de tratamiento.\n'
-      '10. Responde SIEMPRE con JSON válido completo. NUNCA texto libre fuera del JSON.';
+      '10. farmacos: extrae TODOS los medicamentos mencionados en texto o visibles en '
+      'imágenes de recetas, prescripciones, pantallas de sistemas hospitalarios o '
+      'hojas de medicación. Para cada fármaco incluye nombre y dosagem completa '
+      '(ej: "Metformina 850 mg VO 12/12h", "Omeprazol 40 mg EV 1x/día"). '
+      'Si no hay fármacos, devuelve array vacío [].\n'
+      '11. Responde SIEMPRE con JSON válido completo. NUNCA texto libre fuera del JSON.';
 
   /// Extrai SOAP + dados demográficos a partir de texto e/ou imagens.
   /// [text]           — texto livre do médico (nota de guardia, voz transcrita, etc.)

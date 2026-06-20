@@ -186,15 +186,15 @@ class _CopilotButtonState extends State<CopilotButton>
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: _isLoading
-                ? const Color(0xFF00E5FF).withValues(alpha: 0.40)
-                : const Color(0xFF00E5FF).withValues(alpha: 0.60),
+                ? const Color(0xFF059669).withValues(alpha: 0.40)
+                : const Color(0xFF059669).withValues(alpha: 0.60),
             width: 1.5,
           ),
           boxShadow: _isLoading
               ? []
               : [
                   BoxShadow(
-                    color: const Color(0xFF00E5FF).withValues(alpha: 0.20),
+                    color: const Color(0xFF059669).withValues(alpha: 0.20),
                     blurRadius: 20,
                     offset: const Offset(0, 6),
                   ),
@@ -214,7 +214,7 @@ class _CopilotButtonState extends State<CopilotButton>
           width: 40, height: 40,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF00E5FF), Color(0xFF0051C3)],
+              colors: [Color(0xFF059669), Color(0xFF047857)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -256,10 +256,10 @@ class _CopilotButtonState extends State<CopilotButton>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFF00E5FF).withValues(alpha: 0.20),
+            color: const Color(0xFF059669).withValues(alpha: 0.20),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: const Color(0xFF00E5FF).withValues(alpha: 0.50),
+              color: const Color(0xFF059669).withValues(alpha: 0.50),
               width: 0.8,
             ),
           ),
@@ -267,12 +267,12 @@ class _CopilotButtonState extends State<CopilotButton>
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.bolt_rounded,
-                  size: 12, color: Color(0xFF00E5FF)),
+                  size: 12, color: Color(0xFF059669)),
               const SizedBox(width: 3),
               const Text('IA', style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF00E5FF),
+                color: Color(0xFF059669),
               )),
             ],
           ),
@@ -292,7 +292,7 @@ class _CopilotButtonState extends State<CopilotButton>
             Container(
               width: 40, height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFF00E5FF).withValues(alpha: 0.15),
+                color: const Color(0xFF059669).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Center(
@@ -300,7 +300,7 @@ class _CopilotButtonState extends State<CopilotButton>
                   width: 20, height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(Color(0xFF00E5FF)),
+                    valueColor: AlwaysStoppedAnimation(Color(0xFF059669)),
                   ),
                 ),
               ),
@@ -456,7 +456,7 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
           color: bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: const Color(0xFF00E5FF).withValues(alpha: 0.30),
+            color: const Color(0xFF059669).withValues(alpha: 0.30),
             width: 1.2,
           ),
         ),
@@ -486,7 +486,7 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                     width: 32, height: 32,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF00E5FF), Color(0xFF0051C3)],
+                        colors: [Color(0xFF059669), Color(0xFF047857)],
                       ),
                       borderRadius: BorderRadius.circular(9),
                     ),
@@ -589,7 +589,7 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                       decoration: BoxDecoration(
                         gradient: _canSubmit
                             ? const LinearGradient(
-                                colors: [Color(0xFF00C6E0), Color(0xFF0051C3)],
+                                colors: [Color(0xFF34D399), Color(0xFF047857)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               )
@@ -601,7 +601,7 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                         boxShadow: _canSubmit
                             ? [
                                 BoxShadow(
-                                  color: const Color(0xFF00E5FF)
+                                  color: const Color(0xFF059669)
                                       .withValues(alpha: 0.35),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
