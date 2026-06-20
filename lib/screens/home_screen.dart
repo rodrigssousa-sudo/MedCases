@@ -15,6 +15,7 @@ import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import '../services/notification_service.dart';
 import 'cockpit_screen.dart';
+import 'internacion/internacion_screen.dart';
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
 import 'prescripciones_screen.dart' show PrescripcionesScreen, prescriptionModels;
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen, toolsScreenTabNotifier;
@@ -5110,32 +5111,21 @@ class _PediatricsShell extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // ADULTO SHELL
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 159 — _AdultoShell pivotado para InternacionScreen
+// Substitui CockpitScreen (emergência) pelo motor SOAP de internação.
+// O Scaffold agora é gerenciado internamente pelo InternacionScreen
+// (AppBar próprio com título "INTERNACIÓN Y EVOLUCIÓN").
+// ─────────────────────────────────────────────────────────────────────────────
 class _AdultoShell extends StatelessWidget {
+  // openProtocol mantido para compatibilidade com assinatura existente
   final Function(String) openProtocol;
   const _AdultoShell({required this.openProtocol});
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
-    final dark = p.darkMode;
-    final isEs = p.lang == 'es';
-
-    return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
-      body: Column(children: [
-        // B141: Emerald Green — sincronizado com card da Home
-        _ShellHeader(
-          gradientColors: const [Color(0xFF022c22), Color(0xFF059669), Color(0xFF10b981)],
-          accentColor:    const Color(0xFF6ee7b7),
-          icon:    Icons.person_rounded,
-          label:   'ADULTO',
-          subtitle: isEs
-              ? 'Dosis · Protocolos · Calculadora'
-              : 'Doses · Protocolos · Calculadora',
-        ),
-        Expanded(child: CockpitScreen(openProtocol: openProtocol)),
-      ]),
-    );
+    // InternacionScreen tem seu próprio Scaffold + AppBar
+    return const InternacionScreen();
   }
 }
 
