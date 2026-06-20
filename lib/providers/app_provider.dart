@@ -3087,15 +3087,11 @@ class AppProvider extends ChangeNotifier {
       return false;
     }
 
-    // ── Build 155.2: Gateway sempre disponível — sem pré-requisito de Gemini ──
-    // O AiGatewayService usa o servidor Node.js/Express no Digital Ocean.
-    // Nenhuma chave de API é necessária no cliente — tudo é gerenciado server-side.
-    // O bloco de reconexão do Build 112 e o guard _geminiConnected foram
-    // removidos do caminho principal: o gateway não depende de OAuth nem de BYOA key.
-    //
-    // Fallback legado (OpenAI/local) só é ativado se o gateway falhar em runtime
-    // via chunk.isError no listener — nunca como pré-condição de entrada.
-    debugPrint('[sendAiMessage] Build 155.2: rota gateway → ${longResponse ? "ESTUDO" : "PLANTÃO"}');
+    // ── Build 156: Client-Side Intelligence — sem gateway intermediário ───
+    // AiGatewayService é agora um shim que injeta âncora de modo e delega
+    // para GeminiServiceV2.sendStream() com a chave BYOA local do usuário.
+    // Não há servidor intermediário — o Flutter fala direto com o Google.
+    debugPrint('[sendAiMessage] Build 156: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — direto Google');
 
     // ── Streaming via AiGatewayService ────────────────────────────────────
     _aiStreamActive = true;
@@ -3148,32 +3144,35 @@ class AppProvider extends ChangeNotifier {
       isFirstMessage:     _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
     );
 
-    // Build 155.2: API key não necessária no cliente para o fluxo de chat.
-    // O gateway gerencia a chave server-side. GeminiService.hasApiKey continua
-    // sendo carregado em background para uso exclusivo do Lab (análise de exames)
-    // mas NÃO bloqueia mais o fluxo de chat principal com send+return antecipado.
-
-    // Build 155.2: sem apiKey no cliente — o gateway gerencia a chave server-side.
-    // apiKey local é preservado para uso exclusivo do lab (análises de exames)
-    // e NÃO é necessário para o fluxo de chat principal.
+    // Build 156: a _openAiKey (BYOA Gemini key) é a chave local do usuário.
+    // É passada diretamente para AiGatewayService.sendStream() que a repassa
+    // para GeminiServiceV2. Sem servidor intermediário. Sem gateway.
     final accumulator = StringBuffer();
 
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
     bool completionFired = false;
 
-    // ── Build 155.2: Gateway é SEMPRE o canal primário ─────────────────────
-    // Não há mais alternância entre gateway e BYOA no fluxo de chat principal.
-    // AiGatewayService.isConfigured é sempre true (URL hardcoded em kAiGatewayBaseUrl).
-    // GeminiServiceV2 não é mais usado para o chat — apenas para o lab se necessário.
-    debugPrint('[sendAiMessage] Build 155.2: AiGateway → motor=${longResponse ? "ESTUDO" : "PLANTÃO"}');
+    // ── Build 156: Client-Side Intelligence — direto para Google ──────────
+    // O gateway Node.js (server.js) foi desativado — medcasespro.com é
+    // apenas um servidor estático Flutter Web e retorna 405 para POSTs.
+    //
+    // AiGatewayService.sendStream() agora é um shim que:
+    //   1. Injeta a âncora de modo (ModeAnchorEngine) no systemPrompt
+    //   2. Delega para GeminiServiceV2.sendStream() com BYOA key local
+    //   3. Faz SSE direto para generativelanguage.googleapis.com
+    //
+    // A chave _openAiKey é a chave Gemini BYOA do usuário — armazenada
+    // localmente e nunca enviada para nenhum servidor intermediário.
+    debugPrint('[sendAiMessage] Build 156: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} → Google direto');
 
-    // ── Subscreve o stream de chunks via Gateway ────────────────────────────
+    // ── Subscreve o stream de chunks via AiGatewayService (shim Build 156) ─
     final stream = AiGatewayService.sendStream(
       userMessage:  input,
       systemPrompt: systemPrompt,
+      apiKey:       _openAiKey,    // ← BYOA key local — era gerenciada server-side
       history:      List.unmodifiable(_aiHistory),
       useGrounding: true,
-      longResponse: longResponse,  // chave de rota: false=/plantao  true=/estudo
+      longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
     );
 
     _aiStreamSub = stream.listen(
