@@ -19,6 +19,7 @@
  *   5. SSE Buffering (B146)      → socket.write direto + TCP_NODELAY + flush
  *   6. CoT Leakage via lista    → ANTI_COGNITION_LEAK_PROMPT simplificado (B147)
  *   7. Metalinguagem inglesa    → cleanChunk() heurística de idioma (B147)
+ *   8. LINE BUDGET dinâmico    → buildAntiLeakPrompt(longResponse) Motor de Partida (B149)
  *
  * ANTI-BUFFERING (Build 146):
  *   O Digital Ocean App Platform usa um proxy Nginx interno que pode segurar
@@ -106,25 +107,30 @@ const ENDPOINT_SYNC     = `${GEMINI_BASE}:generateContent`;
 // ════════════════════════════════════════════════════════════════════════════
 
 // ════════════════════════════════════════════════════════════════════════════
-// ANTI_COGNITION_LEAK_PROMPT — Build 147 (redesigned)
+// ANTI_COGNITION_LEAK_PROMPT — Build 149 (Motor de Partida)
 //
-// PROBLEMA ANTERIOR (Build 144-146):
-//   O prompt listava uma "DYNAMIC RESPONSE MATRIX" numerada com LEVEL 1/2/3.
-//   Sob sobrecarga cognitiva, o Gemini 2.5 Flash Lite começava a RECITAR essa
-//   lista em voz alta na resposta ("1. Identify the core request..."),
-//   burlando o cleanChunk() porque não usou <thinking> — usou lista numerada.
+// MUDANÇA (Build 149):
+//   A regra LINE BUDGET passou de estática (Build 148) para dinâmica.
+//   O cliente Flutter envia o booleano `longResponse` no payload:
+//     false → Modo Plantão/Emergência: flashcard ultra-direto, ≤12 linhas
+//     true  → Modo Estudos: revisão aprofundada, 22–24 linhas
 //
-// REDESIGN (Build 147):
-//   1. REMOVIDA completamente a Response Matrix numerada — eliminada a fonte
-//      de "recitação de regras" que o modelo copiava literalmente.
-//   2. ADICIONADA proibição explícita de listar passos de execução ou regras.
-//   3. TETO DE LINHAS agora embutido como fato neutro, não como lista a recitar.
-//   4. SIMPLIFICADO: menos tokens = menos carga cognitiva = menos vazamento.
-//   5. IDIOMA: mantido em inglês (máxima aderência no modelo base), pois o
-//      prompt do cliente (Flutter) já instrui PT/ES em detalhe.
+//   buildAntiLeakPrompt(longResponse) injeta a regra correta no sistema.
+//   As demais regras (ZERO pre-text, FORBIDDEN steps, LANGUAGE, MARKDOWN)
+//   permanecem estáticas — apenas a regra 4 é interpolada.
+//
+// RETROCOMPATIBILIDADE:
+//   Se `longResponse` vier ausente/undefined no payload → false (plantão).
+//   O servidor NUNCA quebra por ausência do campo.
+//
+// HISTÓRIO:
+//   B147: Removida DYNAMIC RESPONSE MATRIX (fonte de recitação de regras)
+//   B148: Regra 4 ajustada para context-sensitive (sem split de modo)
+//   B149: Regra 4 completamente dinâmica via buildAntiLeakPrompt()
 // ════════════════════════════════════════════════════════════════════════════
 
-const ANTI_COGNITION_LEAK_PROMPT = `You are the Clinical Decision Support engine embedded in MedCases Pro, a medical application used exclusively by licensed physicians in Brazil and Latin America. All responses are to physicians, never to patients.
+// Partes estáticas do prompt — separam a regra 4 dinâmica do restante.
+const _ANTI_LEAK_PREFIX = `You are the Clinical Decision Support engine embedded in MedCases Pro, a medical application used exclusively by licensed physicians in Brazil and Latin America. All responses are to physicians, never to patients.
 
 ABSOLUTE OUTPUT RULES — violating any of these is a critical failure:
 
@@ -132,11 +138,31 @@ ABSOLUTE OUTPUT RULES — violating any of these is a critical failure:
 
 2. YOU ARE FORBIDDEN from listing, describing, or narrating your own execution steps, planning process, formatting rules, or internal guidelines. Do not number or bullet your reasoning. Process all instructions internally and silently — the physician sees only the final clinical output.
 
-3. LANGUAGE: respond entirely in the language used in the system prompt sent by the application (Português or Español). Never respond in English. Never mix languages.
+3. LANGUAGE: respond entirely in the language used in the system prompt sent by the application (Português or Español). Never respond in English. Never mix languages.`;
 
-4. LINE BUDGET: Use up to 12 lines for direct clinical management and drug flashcards. Use between 18 and 22 full lines strictly when the user explicitly requests a 'review', 'discussion', or 'complete breakdown' of a pathology. Default to concise for all other queries.
+// Regra 4 — Modo Plantão (longResponse = false)
+const _LINE_BUDGET_GUARDIA = `4. LINE BUDGET: Respond in ultra-direct clinical flashcard format, focused exclusively on immediate actions and doses. HARD LIMIT of 12 lines maximum. No academic narrative, no expanded explanations.`;
 
-5. MARKDOWN ONLY: use clean Markdown headings (###), bold (**drug name**), and bullets (-). No emojis in the structural output unless they appear in the client system prompt's examples.`;
+// Regra 4 — Modo Estudos (longResponse = true)
+const _LINE_BUDGET_ESTUDO  = `4. LINE BUDGET: Respond in deep, detailed technical review format. Expand medical density and use a flexible ceiling of 22 to 24 lines to provide breadth and depth, covering diagnostic criteria and pathophysiology when relevant.`;
+
+const _ANTI_LEAK_SUFFIX = `5. MARKDOWN ONLY: use clean Markdown headings (###), bold (**drug name**), and bullets (-). No emojis in the structural output unless they appear in the client system prompt's examples.`;
+
+/**
+ * Constrói o prompt de blindagem anti-CoT com a regra LINE BUDGET correta.
+ *
+ * Motor de Partida (Build 149): a regra 4 é injetada dinamicamente com base
+ * no modo de resposta escolhido pelo médico no frontend Flutter.
+ *
+ * @param {boolean} longResponse
+ *   false (padrão) → Modo Plantão: flashcard ≤12 linhas
+ *   true            → Modo Estudos: revisão 22-24 linhas
+ * @returns {string} system instruction completo
+ */
+function buildAntiLeakPrompt(longResponse) {
+  const budget = longResponse ? _LINE_BUDGET_ESTUDO : _LINE_BUDGET_GUARDIA;
+  return `${_ANTI_LEAK_PREFIX}\n\n${budget}\n\n${_ANTI_LEAK_SUFFIX}`;
+}
 
 // ════════════════════════════════════════════════════════════════════════════
 // GENERATION CONFIG
@@ -480,18 +506,22 @@ function cleanChunk(raw) {
 
 /**
  * Monta o system_instruction final concatenando:
- *   1. ANTI_COGNITION_LEAK_PROMPT (blindagem CoT — Build 144)
+ *   1. buildAntiLeakPrompt(longResponse) — blindagem CoT com LINE BUDGET dinâmico
  *   2. systemPromptFromClient (prompt completo da AiService — módulos 1-10)
  *
  * A concatenação mantém o cliente como fonte de verdade para persona,
  * RAG, módulos de especialidade, etc., enquanto o servidor injeta a
  * blindagem anti-CoT com máxima prioridade (posição inicial).
  *
- * @param {string} clientPrompt - system prompt enviado pelo Flutter
+ * Motor de Partida (Build 149): longResponse controla a regra 4 do prompt.
+ *
+ * @param {string}  clientPrompt  - system prompt enviado pelo Flutter
+ * @param {boolean} longResponse  - false=Plantão (≤12 linhas) | true=Estudos (22-24)
  * @returns {string}
  */
-function buildSystemInstruction(clientPrompt) {
-  return `${ANTI_COGNITION_LEAK_PROMPT}\n\n---\n\n${clientPrompt ?? ''}`.trim();
+function buildSystemInstruction(clientPrompt, longResponse) {
+  const antiLeak = buildAntiLeakPrompt(!!longResponse);
+  return `${antiLeak}\n\n---\n\n${clientPrompt ?? ''}`.trim();
 }
 
 /**
@@ -876,6 +906,9 @@ const streamLimiter = rateLimit({
 //     history:      Array,      // histórico de mensagens (opcional)
 //     useGrounding: boolean,    // ativar Google Search (padrão: true)
 //     maxTokens:    number,     // tokens máximos (padrão: 3200)
+//     longResponse: boolean,    // Motor de Partida (Build 149):
+//                               //   false (padrão) → Modo Plantão: flashcard ≤12 linhas
+//                               //   true           → Modo Estudos: revisão 22-24 linhas
 //   }
 //
 // Saída (SSE):
@@ -911,10 +944,11 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
     history      = [],
     useGrounding = true,
     maxTokens,
+    longResponse = false,  // Motor de Partida (Build 149): false=Plantão | true=Estudos
   } = req.body;
 
   // ── Monta payload ─────────────────────────────────────────────────────────
-  const systemInstruction = buildSystemInstruction(systemPrompt);
+  const systemInstruction = buildSystemInstruction(systemPrompt, longResponse);
   const contents          = buildContents(history, userMessage);
   const body              = buildGeminiPayload({
     systemInstruction,
@@ -923,7 +957,7 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
     maxTokens,
   });
 
-  log.debug(`[${requestId}] system_instruction len=${systemInstruction.length} useGrounding=${useGrounding}`);
+  log.debug(`[${requestId}] system_instruction len=${systemInstruction.length} useGrounding=${useGrounding} longResponse=${longResponse}`);
 
   // ── Configura cabeçalhos SSE ──────────────────────────────────────────────
   // ── Build 146: Headers anti-buffering completos ────────────────────────
@@ -1039,7 +1073,7 @@ app.get('/health', (_req, res) => {
   res.json({
     status:    'ok',
     service:   'MedCases Pro AI Gateway',
-    version:   '2.2.0',
+    version:   '2.3.0',
     model:     GEMINI_MODEL,
     timestamp: new Date().toISOString(),
     uptime:    Math.floor(process.uptime()),

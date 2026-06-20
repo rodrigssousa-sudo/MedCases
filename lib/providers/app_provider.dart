@@ -3068,6 +3068,7 @@ class AppProvider extends ChangeNotifier {
     required void Function(String accumulated) onChunk,
     required void Function(String finalText) onDone,
     required void Function(String errorMsg) onError,
+    bool longResponse = false,  // Motor de Partida (Build 149)
   }) async {
     // ── Build 134: Single-Flight Guard ────────────────────────────────────
     // Bloqueia qualquer chamada enquanto um voo já está em curso.
@@ -3222,6 +3223,7 @@ class AppProvider extends ChangeNotifier {
             systemPrompt: systemPrompt,
             history:      List.unmodifiable(_aiHistory),
             useGrounding: true,
+            longResponse: longResponse,  // Motor de Partida (Build 149)
           )
         : GeminiServiceV2.sendStream(
             apiKey:       apiKey,

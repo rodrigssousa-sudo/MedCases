@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// AiGatewayService — Build 146
+// AiGatewayService — Build 149 (Motor de Partida)
 // Cliente SSE para o MedCases AI Gateway (servidor Node.js/Express)
 //
 // ARQUITETURA:
@@ -95,14 +95,19 @@ class AiGatewayService {
   /// [systemPrompt] — prompt de sistema montado pelo AiService (19 seções)
   /// [history]      — histórico de turnos [{role, content}]
   /// [useGrounding] — ativar Google Search no servidor (padrão: true)
+  /// [longResponse] — Motor de Partida (Build 149):
+  ///                    false (padrão) = Modo Plantão: flashcard ≤12 linhas
+  ///                    true           = Modo Estudos: revisão 22-24 linhas
   ///
   /// O servidor injeta automaticamente o ANTI_COGNITION_LEAK_PROMPT ANTES
   /// do [systemPrompt], garantindo a blindagem anti-CoT server-side.
+  /// A regra LINE BUDGET é injetada dinamicamente com base em [longResponse].
   static Stream<GeminiChunk> sendStream({
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
     bool useGrounding = true,
+    bool longResponse = false,
   }) {
     if (!isConfigured) {
       return Stream.value(GeminiChunk.error('gateway_not_configured'));
@@ -115,6 +120,7 @@ class AiGatewayService {
       systemPrompt: systemPrompt,
       history: history,
       useGrounding: useGrounding,
+      longResponse: longResponse,
     );
     return controller.stream;
   }
@@ -127,18 +133,22 @@ class AiGatewayService {
     required String systemPrompt,
     required List<Map<String, String>> history,
     required bool useGrounding,
+    bool longResponse = false,
   }) async {
     if (controller.isClosed) return;
 
     final requestId = 'gw_${DateTime.now().millisecondsSinceEpoch}';
-    debugPrint('[AiGatewayService][$requestId] iniciando stream → $_streamUrl');
+    final mode = longResponse ? 'ESTUDO' : 'PLANTÃO';
+    debugPrint('[AiGatewayService][$requestId] modo=$mode → $_streamUrl');
 
     // Monta o payload JSON que será enviado ao servidor
+    // longResponse (Build 149): Motor de Partida — controla LINE BUDGET server-side
     final payload = jsonEncode({
       'userMessage':  userMessage,
       'systemPrompt': systemPrompt,
       'history':      history,
       'useGrounding': useGrounding,
+      'longResponse': longResponse,
     });
 
     // Delega à função runSseStreamPlatform() do arquivo de plataforma

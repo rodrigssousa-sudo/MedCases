@@ -232,6 +232,8 @@ class _AiScreenState extends State<AiScreen> {
   // Task 11 — network error banner: true quando a última chamada da IA falhou
   // por problema de conexão (timeout, socket, etc.) vs. erro de chave API.
   bool _networkError  = false;
+  // Motor de Partida (Build 149): false=Plantão (≤12 linhas) | true=Estudos (22-24)
+  bool _longResponse  = false;
   bool _greetingDone  = false; // garante saudação só uma vez por sessão
   int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
   // Auto-scroll: só desce automaticamente se usuário estiver perto do fundo
@@ -1065,6 +1067,7 @@ class _AiScreenState extends State<AiScreen> {
       // Retorna true se usou streaming (Gemini conectado), false se usou fallback.
       await p.sendAiMessage(
         trimmed,
+        longResponse: _longResponse,  // Motor de Partida (Build 149)
         onChunk: (accumulated) {
           if (!mounted) return;
           // ── STREAM SANITIZER: expurga metadados antes de exibir ────────────
@@ -1808,6 +1811,14 @@ class _AiScreenState extends State<AiScreen> {
                 onTap: _insertSuggestion,
               )
             : const SizedBox.shrink(),
+      ),
+
+      // ── Motor de Partida — toggle Plantão / Estudos (Build 149) ──────────
+      _ResponseModeToggle(
+        longResponse: _longResponse,
+        dark: dark,
+        lang: p.lang,
+        onChanged: (val) => setState(() => _longResponse = val),
       ),
 
       // ── Barra de input — centralizada no desktop ───────────────────────
@@ -4373,6 +4384,126 @@ class _AudioWave extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Motor de Partida — toggle de modo de resposta (Build 149)
+//
+// Dois modos mutuamente exclusivos exibidos como pill-toggle compacto:
+//   🏥 Plantão  → longResponse=false → flashcard ≤12 linhas (padrão)
+//   📖 Estudos  → longResponse=true  → revisão técnica 22-24 linhas
+//
+// Design: pill com dois segmentos, estado ativo em gradiente teal.
+// Posicionado entre o carrossel de sugestões e a barra de input.
+// Mantém estado em _AiScreenState._longResponse e passa ao sendAiMessage().
+// ─────────────────────────────────────────────────────────────────────────────
+class _ResponseModeToggle extends StatelessWidget {
+  final bool longResponse;
+  final bool dark;
+  final String lang;
+  final ValueChanged<bool> onChanged;
+
+  const _ResponseModeToggle({
+    required this.longResponse,
+    required this.dark,
+    required this.lang,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isEs = lang == 'es';
+
+    // Labels bilíngues
+    final labelGuardia = isEs ? '🏥 Guardia' : '🏥 Plantão';
+    final labelEstudio = isEs ? '📖 Estudio'  : '📖 Estudos';
+
+    // Paleta — alinha com o glassmorphism da InputBar
+    final activeBg   = const LinearGradient(
+      colors: [Color(0xFF00B4CC), Color(0xFF007A8A)],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+    final inactiveCol = dark
+        ? Colors.white.withValues(alpha: 0.55)
+        : Colors.black.withValues(alpha: 0.45);
+    final pillBg = dark
+        ? const Color(0xFF1E2229).withValues(alpha: 0.75)
+        : Colors.white.withValues(alpha: 0.70);
+    final pillBorder = dark
+        ? const Color(0xFF00E5FF).withValues(alpha: 0.10)
+        : const Color(0xFF008CA4).withValues(alpha: 0.15);
+
+    Widget _segment({
+      required String label,
+      required bool isActive,
+      required bool isLeft,
+      required VoidCallback onTap,
+    }) {
+      final radius = BorderRadius.horizontal(
+        left:  isLeft  ? const Radius.circular(20) : Radius.zero,
+        right: !isLeft ? const Radius.circular(20) : Radius.zero,
+      );
+      return GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          decoration: BoxDecoration(
+            gradient: isActive ? activeBg : null,
+            borderRadius: radius,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+              color: isActive ? Colors.white : inactiveCol,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4, left: 16, right: 16),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+            child: Container(
+              decoration: BoxDecoration(
+                color: pillBg,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: pillBorder, width: 0.8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _segment(
+                    label: labelGuardia,
+                    isActive: !longResponse,
+                    isLeft: true,
+                    onTap: () => onChanged(false),
+                  ),
+                  _segment(
+                    label: labelEstudio,
+                    isActive: longResponse,
+                    isLeft: false,
+                    onTap: () => onChanged(true),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

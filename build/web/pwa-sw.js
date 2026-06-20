@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '42.0.0';
-const CACHE_APP    = 'medcases-app-v42.0.0';  // ← Build 148: LINE BUDGET rule flexível (12 linhas diretas / 18-22 revisões explícitas)
+const SW_VERSION   = '43.0.0';
+const CACHE_APP    = 'medcases-app-v43.0.0';  // ← Build 149: Motor de Partida — toggle Plantão/Estudos + LINE BUDGET dinâmico server-side
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
