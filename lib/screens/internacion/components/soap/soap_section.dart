@@ -6,6 +6,7 @@
 // Build 160: applyAiDraft, _draftVersion, _CopyButton
 // Build 161: State Bleed fix — problemasActivos LIMPA antes de injetar draft IA
 // Build 162: farmacos injetados via applyAiDraft; autorNombre dinâmico no CopyButton
+// Build 163: resetAll() no SoapNotifier + resetSoap() no SoapSectionWidgetState (Clean Slate)
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,6 +50,16 @@ class SoapNotifier extends ChangeNotifier {
 
   void updateFarmacos(List<FarmacoEntry> farmacos) {
     _evolucion = _evolucion.copyWith(farmacos: farmacos);
+    notifyListeners();
+  }
+
+  // ── Build 163: Protocolo Clean Slate ─────────────────────────────────────
+  // Recebe o novo EvolucionModel vazio e reinicia TUDO:
+  //   S, O, A, P → valores default; farmacos → []; problemasActivos → []
+  // O incremento de _draftVersion no SoapSectionWidgetState garante que
+  // todos os TextEditingControllers são reconstruídos com strings vazias.
+  void resetAll(EvolucionModel freshDraft) {
+    _evolucion = freshDraft;
     notifyListeners();
   }
 
@@ -269,6 +280,19 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
     setState(() {
       _draftVersion++;
       _openIdx = 0; // abre S para o médico verificar
+    });
+  }
+
+  // ── Build 163: Protocolo Clean Slate ─────────────────────────────────────
+  // Recebe um EvolucionModel completamente novo (todos os campos default/vazios).
+  // Incrementa _draftVersion → força ValueKey a mudar → todos os sub-widgets
+  // (SoapSubjetivo, SoapObjetivo, etc.) reconstruídos com controllers zerados.
+  // _openIdx = 0 → painel S fica aberto para nova entrada imediata.
+  void resetSoap(EvolucionModel freshDraft) {
+    _notifier.resetAll(freshDraft);
+    setState(() {
+      _draftVersion++;
+      _openIdx = 0;
     });
   }
 

@@ -1,14 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 162 — Refinamento Estético e Funcional
+// InternacionScreen — Build 163 — Protocolo Clean Slate
 //
 // Build 160: CopilotButton, Persistence, SessionBanner, applyAiDraft
 // Build 161: Data Binding Demográfico — demografias atualizadas ao [Aprobar]
-// Build 162:
-//   1. Botão VOLTAR explícito no AppBar (Icons.arrow_back_ios_new)
-//   2. Nome do médico dinâmico via AppProvider.userName
-//   3. Grid 2 colunas de sessões salvas MOVIDO para baixo do SOAP
-//   4. Acordeão "Fármacos que el paciente está tomando" (FarmacosAccordion)
-//   5. Purga completa dos tokens neon — verde corporativo em todo AppBar
+// Build 162: Botão voltar, nome dinâmico, grid 2-col, FarmacosAccordion, purga neon
+// Build 163: Protocolo Clean Slate
+//   1. Botão "Nueva Evolución" no AppBar (Icons.cleaning_services_rounded)
+//   2. AlertDialog de confirmação com UX de segurança
+//   3. _confirmAndReset(): limpa _paciente, _historial, _draftEvolucion
+//   4. InternacionPersistence.clearActiveSession() — apaga rascunho do SharedPreferences
+//   5. SoapSectionWidgetState.resetSoap() — reconstrói todos os controllers via _draftVersion++
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -169,6 +170,142 @@ class _InternacionScreenState extends State<InternacionScreen> {
     ));
   }
 
+  // ── Build 163: Protocolo Clean Slate ─────────────────────────────────────
+  // Exibe AlertDialog de confirmação → se OK:
+  //   1. clearActiveSession() — apaga o rascunho do SharedPreferences
+  //   2. Reseta _paciente → estado default
+  //   3. Reseta _historial → []
+  //   4. Cria novo _draftEvolucion vazio
+  //   5. Chama SoapSectionWidgetState.resetSoap() → _draftVersion++ → rebuilds
+  //   6. Recarrega grid de sessões salvas
+  Future<void> _confirmAndReset() async {
+    final isEs = _isEs;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: Theme.of(ctx).brightness == Brightness.dark
+            ? const Color(0xFF0D1117)
+            : Colors.white,
+        title: Row(
+          children: [
+            Container(
+              width: 36, height: 36,
+              decoration: BoxDecoration(
+                color: InternacionTheme.accentLight.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.cleaning_services_rounded,
+                size: 18,
+                color: InternacionTheme.accentLight,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                isEs ? '¿Iniciar Nueva Evolución?' : 'Iniciar Nova Evolução?',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(ctx).brightness == Brightness.dark
+                      ? Colors.white
+                      : const Color(0xFF111827),
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          isEs
+              ? 'Se descartarán todos los datos no guardados del paciente actual. Esta acción no se puede deshacer.'
+              : 'Todos os dados não salvos do paciente atual serão descartados. Esta ação não pode ser desfeita.',
+          style: TextStyle(
+            fontSize: 13.5,
+            height: 1.5,
+            color: Theme.of(ctx).brightness == Brightness.dark
+                ? Colors.white70
+                : const Color(0xFF374151),
+          ),
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        actions: [
+          // Cancelar — neutro
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(ctx).brightness == Brightness.dark
+                  ? Colors.white54
+                  : const Color(0xFF6B7280),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            ),
+            child: Text(
+              isEs ? 'Cancelar' : 'Cancelar',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          const SizedBox(width: 4),
+          // Confirmar — verde esmeralda
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: InternacionTheme.accentLight,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              isEs ? 'Confirmar y Limpiar' : 'Confirmar e Limpar',
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    // 1. Apaga rascunho do SharedPreferences (anti-reload ao reabrir app)
+    await InternacionPersistence.clearActiveSession(_paciente);
+
+    // 2. Deep reset do estado local
+    final freshDraft = _newDraft();
+    setState(() {
+      _paciente       = const PacienteInternacaoData(diaInternacao: 1);
+      _historial      = [];
+      _draftEvolucion = freshDraft;
+    });
+
+    // 3. Força reconstrução de todos os TextControllers via _draftVersion++
+    _soapKey.currentState?.resetSoap(freshDraft);
+
+    // 4. Recarrega grid de sessões salvas
+    await _loadSessions();
+
+    // 5. Feedback visual
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(children: [
+            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 16),
+            const SizedBox(width: 8),
+            Text(isEs
+                ? 'Pizarrón limpio. Listo para el próximo paciente.'
+                : 'Slate limpo. Pronto para o próximo paciente.'),
+          ]),
+          backgroundColor: InternacionTheme.accentLight,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+    }
+  }
+
   bool get _isEs {
     try {
       return context.read<AppProvider>().lang == 'es';
@@ -267,6 +404,50 @@ class _InternacionScreenState extends State<InternacionScreen> {
                         ),
                       ),
                     ),
+                  const SizedBox(width: 4),
+
+                  // ── Build 163: Botão "Nueva Evolución" ──────────────────
+                  Tooltip(
+                    message: isEs ? 'Nueva Evolución' : 'Nova Evolução',
+                    child: InkWell(
+                      onTap: _confirmAndReset,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          gradient: theme.accentGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.accent.withValues(alpha: 0.28),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.cleaning_services_rounded,
+                              size: 14,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              isEs ? 'Nueva' : 'Novo',
+                              style: const TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(width: 4),
                 ],
               ),

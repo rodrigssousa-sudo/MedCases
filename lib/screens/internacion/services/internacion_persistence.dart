@@ -1,5 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionPersistence — Build 160 — SharedPreferences save/load
+// InternacionPersistence — Build 163 — SharedPreferences save/load + clearActiveSession
+//
+// Build 163: clearActiveSession() — apaga a sessão "default" (paciente ativo)
+//   Usado pelo Protocolo Clean Slate ao iniciar nova evolução.
 //
 // Persiste sessões de pacientes em internação entre aberturas do app.
 // Cada sessão = (PacienteInternacaoData + List<EvolucionModel>).
@@ -152,6 +155,29 @@ class InternacionPersistence {
       final keysList = prefs.getStringList(_keysListKey) ?? [];
       keysList.remove(sessionKey);
       await prefs.setStringList(_keysListKey, keysList);
+    } catch (_) {}
+  }
+
+  // ── Build 163: Protocolo Clean Slate ─────────────────────────────────────
+  // Apaga a sessão ativa do paciente atual (chave derivada de nome+cama).
+  // Garante que ao reabrir o app, o paciente anterior NÃO é recarregado.
+  // Chame ANTES de resetar o estado local da InternacionScreen.
+  static Future<void> clearActiveSession(PacienteInternacaoData paciente) async {
+    try {
+      final key = _sessionKey(paciente);
+      await deleteSession(key);
+    } catch (_) {}
+  }
+
+  // Apaga TODAS as sessões persistidas (uso futuro / testes).
+  static Future<void> clearAllSessions() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final keysList = prefs.getStringList(_keysListKey) ?? [];
+      for (final key in keysList) {
+        await prefs.remove(key);
+      }
+      await prefs.remove(_keysListKey);
     } catch (_) {}
   }
 
