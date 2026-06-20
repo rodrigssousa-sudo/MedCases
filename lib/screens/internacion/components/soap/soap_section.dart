@@ -3,10 +3,8 @@
 // Renderiza os 4 blocos S/O/A/P como AccordionCards colapsáveis e independentes.
 // Estado local via SoapNotifier — ZERO rebuild da árvore pai.
 //
-// Build 160 additions:
-//   • SoapNotifier.applyAiDraft(SoapDraftResult) — injeta draft da IA
-//   • _draftVersion counter — força reconstrução dos controllers após AI fill
-//   • _CopyButton — compila todos os campos em texto e copia para clipboard
+// Build 160: applyAiDraft, _draftVersion, _CopyButton
+// Build 161: State Bleed fix — problemasActivos LIMPA antes de injetar draft IA
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -127,14 +125,19 @@ class SoapNotifier extends ChangeNotifier {
       }
     }
 
-    List<String> newProblemas = a.problemasActivos;
-    if (draft.problemasActivos?.isNotEmpty == true) {
-      // Merge: adiciona novos problemas sem duplicar
-      final merged = List<String>.from(newProblemas);
-      for (final prob in draft.problemasActivos!) {
-        if (!merged.contains(prob)) merged.add(prob);
-      }
-      newProblemas = merged;
+    // ── BUILD 161: ANTI-STATE-BLEED ────────────────────────────────────
+    // A lista de problemas é COMPLETAMENTE SUBSTITUÍDA pelo draft da IA.
+    // Nunca fazemos merge: isso eliminaria diagnósticos de pacientes
+    // anteriores que pudessem ter persistido erroneamente na sessão.
+    // Se a IA não trouxer problemas, mantemos apenas os que o médico
+    // já digitou manualmente (preservados em a.problemasActivos).
+    List<String> newProblemas;
+    if (draft.problemasActivos != null) {
+      // IA forneceu lista → SUBSTITUI completamente (zero bleed)
+      newProblemas = List<String>.from(draft.problemasActivos!);
+    } else {
+      // IA não forneceu → preserva o que o médico digitou
+      newProblemas = List<String>.from(a.problemasActivos);
     }
 
     final newEvaluacion = a.copyWith(

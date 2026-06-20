@@ -54,7 +54,14 @@ class RevisionSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = InternacionTheme(dark);
     final bg = dark ? const Color(0xFF0F1116) : Colors.white;
-    final filled = draft.filledCount;
+    // Conta SOAP + campos demográficos extraídos
+    int filled = draft.filledCount;
+    if (draft.pacienteNome?.isNotEmpty == true) filled++;
+    if (draft.pacienteCama?.isNotEmpty == true) filled++;
+    if (draft.pacienteIdade?.isNotEmpty == true) filled++;
+    if (draft.pacienteSexo?.isNotEmpty == true) filled++;
+    if (draft.pacienteDiagnostico?.isNotEmpty == true) filled++;
+    if (draft.pacienteDiaInternacion != null) filled++;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.88,
@@ -277,6 +284,57 @@ class RevisionSheet extends StatelessWidget {
   List<Widget> _buildAllFields(InternacionTheme theme) {
     final widgets = <Widget>[];
 
+    // ─── DEMOGRÁFICO DO PACIENTE (Build 161) ─────────────────────────────
+    final hasDemog = draft.hasPatientData;
+    if (hasDemog) {
+      widgets.add(_demogSectionHeader(theme));
+      if (draft.pacienteNome?.isNotEmpty == true)
+        widgets.add(_fieldCard(
+          icon: Icons.person_rounded,
+          label: isEs ? 'Nombre del paciente' : 'Nome do paciente',
+          value: draft.pacienteNome!,
+          theme: theme, section: SoapSection.s,
+        ));
+      if (draft.pacienteCama?.isNotEmpty == true)
+        widgets.add(_fieldCard(
+          icon: Icons.bed_rounded,
+          label: isEs ? 'Cama / Leito' : 'Leito / Cama',
+          value: draft.pacienteCama!,
+          theme: theme, section: SoapSection.s,
+        ));
+      if (draft.pacienteIdade?.isNotEmpty == true)
+        widgets.add(_fieldCard(
+          icon: Icons.cake_rounded,
+          label: isEs ? 'Edad' : 'Idade',
+          value: draft.pacienteIdade!,
+          theme: theme, section: SoapSection.s,
+        ));
+      if (draft.pacienteSexo?.isNotEmpty == true)
+        widgets.add(_fieldCard(
+          icon: Icons.wc_rounded,
+          label: isEs ? 'Sexo' : 'Sexo',
+          value: draft.pacienteSexo == 'M'
+              ? (isEs ? 'Masculino' : 'Masculino')
+              : (isEs ? 'Femenino' : 'Feminino'),
+          theme: theme, section: SoapSection.s,
+        ));
+      if (draft.pacienteDiagnostico?.isNotEmpty == true)
+        widgets.add(_fieldCard(
+          icon: Icons.local_hospital_rounded,
+          label: isEs ? 'Diagnóstico principal' : 'Diagnóstico principal',
+          value: draft.pacienteDiagnostico!,
+          theme: theme, section: SoapSection.s,
+        ));
+      if (draft.pacienteDiaInternacion != null)
+        widgets.add(_fieldCard(
+          icon: Icons.calendar_today_rounded,
+          label: isEs ? 'Día de internación' : 'Dia de internação',
+          value: '${isEs ? 'Día' : 'Dia'} ${draft.pacienteDiaInternacion}',
+          theme: theme, section: SoapSection.s,
+        ));
+      widgets.add(const SizedBox(height: 8));
+    }
+
     // ─── S — SUBJETIVO ────────────────────────────────────────────────────
     widgets.add(_sectionHeader(
       'S — ${isEs ? 'Subjetivo' : 'Subjetivo'}',
@@ -456,6 +514,47 @@ class RevisionSheet extends StatelessWidget {
 
     widgets.add(const SizedBox(height: 16));
     return widgets;
+  }
+
+  // ── Header de seção DEMOGRÁFICO (Build 161) ───────────────────────────────
+  Widget _demogSectionHeader(InternacionTheme theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+            decoration: BoxDecoration(
+              color: InternacionTheme.cyan.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.person_pin_rounded,
+                    size: 12, color: InternacionTheme.cyan),
+                const SizedBox(width: 5),
+                Text(
+                  isEs ? 'DATOS DEL PACIENTE' : 'DADOS DO PACIENTE',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: InternacionTheme.cyan,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              height: 1,
+              color: InternacionTheme.cyan.withValues(alpha: 0.25),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // ── Header de seção SOAP ──────────────────────────────────────────────────

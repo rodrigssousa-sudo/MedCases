@@ -1,12 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Internación y Evolución (Build 160)
+// InternacionScreen — Internación y Evolución (Build 161)
 //
-// Build 160 additions:
-//   • CopilotButton — botão Medcases Inteligente (IA multimodal SOAP)
-//   • InternacionPersistence — save/load SharedPreferences
-//   • Next-day continuation — reaproveitamento demográfico + reset vitals
-//   • _soapKey / SoapSectionWidgetState — acesso ao applyAiDraft()
-//   • Sessões salvas exibidas no historial para retomada rápida
+// Build 160: CopilotButton, Persistence, SessionBanner, applyAiDraft
+// Build 161: Data Binding Demográfico — ao [Aprobar y Rellenar], os campos
+//   nome/cama/idade/sexo/diagnóstico/dia extraídos pela IA atualizam
+//   imediatamente _paciente → ResumenHeader + PatientAccordion via setState.
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -100,9 +98,40 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
-  // ── IA aprovada — injeta draft no SoapSectionWidget ──────────────────────
+  // ── IA aprovada — injeta SOAP + atualiza dados demográficos (Build 161) ──
+  // Data Binding: ao [Aprobar y Rellenar], se a IA extraiu nome/cama/idade/
+  // sexo/diagnóstico, esses campos são refletidos imediatamente no
+  // ResumenHeader e PatientAccordion via setState — reconfiguração completa
+  // da tela quando a IA detecta um novo paciente no relato.
   void _onAiApproved(SoapDraftResult draft) {
+    // 1. Injeta campos SOAP no motor (S/O/A/P) com reset de state bleed
     _soapKey.currentState?.applyAiDraft(draft);
+
+    // 2. Atualiza dados demográficos se a IA extraiu pelo menos um campo
+    if (draft.hasPatientData) {
+      setState(() {
+        _paciente = _paciente.copyWith(
+          nome: draft.pacienteNome?.isNotEmpty == true
+              ? draft.pacienteNome!
+              : _paciente.nome,
+          cama: draft.pacienteCama?.isNotEmpty == true
+              ? draft.pacienteCama!
+              : _paciente.cama,
+          idade: draft.pacienteIdade?.isNotEmpty == true
+              ? draft.pacienteIdade!
+              : _paciente.idade,
+          sexo: draft.pacienteSexo?.isNotEmpty == true
+              ? draft.pacienteSexo!
+              : _paciente.sexo,
+          diagnostico: draft.pacienteDiagnostico?.isNotEmpty == true
+              ? draft.pacienteDiagnostico!
+              : _paciente.diagnostico,
+          diaInternacao: draft.pacienteDiaInternacion != null
+              ? draft.pacienteDiaInternacion!
+              : _paciente.diaInternacao,
+        );
+      });
+    }
   }
 
   // ── Retoma sessão salva (dia seguinte) ────────────────────────────────────
