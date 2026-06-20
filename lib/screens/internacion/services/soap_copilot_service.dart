@@ -1,10 +1,18 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// SoapCopilotService — Build 161 — Motor IA Blindado do Copiloto Medcases
+// SoapCopilotService — Build 162.2 — Diagnóstico de Parsing O/A/P
 //
-// Mudanças Build 161:
+// Mudanças Build 162.2 (cirúrgicas):
+//   1. catch(e, stack) em nós O/A/P/farmacos — stack trace completo no console
+//   2. 'dosagem' → 'dosis' no responseSchema e fromJson (consistência espanhola)
+//   3. 'required' array no root do responseSchema — força Gemini a emitir O/A/P
+//   4. safeInt para diaInternacion clamp 1–90 (não 0–10)
+//
+// Mudanças Build 162 (farmacos):
+//   + nó farmacos root-level no responseSchema + parser fromJson
+//
+// Mudanças Build 161 (base):
 //   1. responseSchema keys alinhadas 100% com fromJson (case-sensitive audit)
 //   2. SoapDraftResult estendido com campos demográficos do paciente
-//      (nome, cama, idade, sexo, diagnostico, diaInternacion)
 //   3. Parser granular com try-catch independente por nó S/O/A/P
 //   4. Todas as tipagens rígidas removidas — tudo via .toString() seguro
 //   5. Log de debug: print("🤖 GEMINI RAW JSON: ...") pré-parse
@@ -71,7 +79,7 @@ class SoapDraftResult {
   final String? criteriosAlta;
 
   // ── Fármacos (Build 162) ──────────────────────────────────────────────────
-  // Lista de {medicamento, dosagem} extraída pela IA do relato ou fotos de receita.
+  // Lista de {medicamento, dosis} extraída pela IA do relato ou fotos de receita.
   final List<Map<String, String>>? farmacos;
 
   const SoapDraftResult({
@@ -177,11 +185,11 @@ class SoapDraftResult {
       return s.isEmpty ? null : s;
     }
 
-    int? safeInt(dynamic v) {
+    int? safeInt(dynamic v, {int min = 0, int max = 10}) {
       if (v == null) return null;
-      if (v is num) return v.toInt().clamp(0, 10);
+      if (v is num) return v.toInt().clamp(min, max);
       final parsed = int.tryParse(v.toString().trim());
-      return parsed?.clamp(0, 10);
+      return parsed?.clamp(min, max);
     }
 
     bool? safeBool(dynamic v) {
@@ -213,7 +221,7 @@ class SoapDraftResult {
       final sexoRaw = safeStr(pac['sexo'])?.toUpperCase();
       pSexo  = (sexoRaw == 'M' || sexoRaw == 'F') ? sexoRaw : null;
       pDiag  = safeStr(pac['diagnostico']);
-      pDia   = safeInt(pac['diaInternacion']);
+      pDia   = safeInt(pac['diaInternacion'], min: 1, max: 90);
     } catch (e) {
       debugPrint('🤖 [SoapParser] WARN: falha no nó paciente — $e');
     }
@@ -265,8 +273,8 @@ class SoapDraftResult {
       culturas          = safeStr(ex['culturas']);
       ecg               = safeStr(ex['ecg']);
       tratamientoActual = safeStr(o['tratamientoActual']);
-    } catch (e) {
-      debugPrint('🤖 [SoapParser] WARN: falha no nó O (objetivo) — $e');
+    } catch (e, stack) {
+      debugPrint('💥 ERRO NO PARSING DO OBJETIVO: $e\n$stack');
     }
 
     // ── Extração nó A ─────────────────────────────────────────────────────
@@ -283,8 +291,8 @@ class SoapDraftResult {
             .where((e) => e.isNotEmpty)
             .toList();
       }
-    } catch (e) {
-      debugPrint('🤖 [SoapParser] WARN: falha no nó A (evaluacion) — $e');
+    } catch (e, stack) {
+      debugPrint('💥 ERRO NO PARSING DA EVALUACION: $e\n$stack');
     }
 
     // ── Extração nó P ─────────────────────────────────────────────────────
@@ -293,8 +301,8 @@ class SoapDraftResult {
       final p = safeMap(json['plan']);
       planTerapeutico = safeStr(p['planTerapeutico']);
       criteriosAlta   = safeStr(p['criteriosAlta']);
-    } catch (e) {
-      debugPrint('🤖 [SoapParser] WARN: falha no nó P (plan) — $e');
+    } catch (e, stack) {
+      debugPrint('💥 ERRO NO PARSING DO PLAN: $e\n$stack');
     }
 
     // ── Extração nó FÁRMACOS (Build 162) ─────────────────────────────────
@@ -306,16 +314,16 @@ class SoapDraftResult {
             .map((e) {
               final m = safeMap(e);
               final med = safeStr(m['medicamento']) ?? '';
-              final dos = safeStr(m['dosagem']) ?? '';
+              final dos = safeStr(m['dosis']) ?? '';
               if (med.isEmpty) return null;
-              return <String, String>{'medicamento': med, 'dosagem': dos};
+              return <String, String>{'medicamento': med, 'dosis': dos};
             })
             .whereType<Map<String, String>>()
             .toList();
         if (farmacos.isEmpty) farmacos = null;
       }
-    } catch (e) {
-      debugPrint('🤖 [SoapParser] WARN: falha no nó farmacos — $e');
+    } catch (e, stack) {
+      debugPrint('💥 ERRO NO PARSING DOS FARMACOS: $e\n$stack');
     }
 
     return SoapDraftResult(
@@ -370,8 +378,8 @@ class SoapCopilotService {
       'gemini-2.5-flash-lite:generateContent';
 
   // ── responseSchema — chaves EXATAMENTE alinhadas com fromJson ────────────
-  // Auditoria Build 161:
-  //   json['paciente']             ✓ novo nó demográfico
+  // Auditoria Build 162.2:
+  //   json['paciente']             ✓ nó demográfico
   //   json['subjetivo']            ✓ nó S
   //   json['objetivo']             ✓ nó O
   //     o['signosVitales']         ✓ sub-nó vitais
@@ -379,9 +387,13 @@ class SoapCopilotService {
   //     o['examenes']              ✓ sub-nó exames complementares
   //   json['evaluacion']           ✓ nó A
   //   json['plan']                 ✓ nó P
+  //   json['farmacos']             ✓ array root-level (Build 162)
+  //   'required' array adicionado  ✓ força Gemini a emitir todos os nós
+  //   'dosagem' → 'dosis'          ✓ consistência espanhola (Build 162.2)
   //   Todos os enums: sem strings vazias (fix 160.1 mantido)
   static const Map<String, dynamic> _responseSchema = {
     'type': 'object',
+    'required': ['paciente', 'subjetivo', 'objetivo', 'evaluacion', 'plan', 'farmacos'],
     'properties': {
 
       // ── DEMOGRÁFICO ──────────────────────────────────────────────────────
@@ -480,13 +492,15 @@ class SoapCopilotService {
       // ── FÁRMACOS ATUAIS (Build 162) ───────────────────────────────────────
       // Extrair qualquer medicamento mencionado no texto ou visível em fotos
       // de receitas, prescrições ou telas de sistemas de saúde.
+      // Build 162.2: renomeado 'dosagem' → 'dosis' (consistência espanhola)
       'farmacos': {
         'type': 'array',
         'items': {
           'type': 'object',
+          'required': ['medicamento', 'dosis'],
           'properties': {
             'medicamento': {'type': 'string'},
-            'dosagem':     {'type': 'string'},
+            'dosis':       {'type': 'string'},
           },
         },
       },
@@ -521,8 +535,8 @@ class SoapCopilotService {
       '9. planTerapeutico: consolida TODAS las indicaciones y cambios de tratamiento.\n'
       '10. farmacos: extrae TODOS los medicamentos mencionados en texto o visibles en '
       'imágenes de recetas, prescripciones, pantallas de sistemas hospitalarios o '
-      'hojas de medicación. Para cada fármaco incluye nombre y dosagem completa '
-      '(ej: "Metformina 850 mg VO 12/12h", "Omeprazol 40 mg EV 1x/día"). '
+      'hojas de medicación. Para cada fármaco incluye "medicamento" (nombre) y '
+      '"dosis" completa (ej: "Metformina 850 mg VO 12/12h", "Omeprazol 40 mg EV 1x/día"). '
       'Si no hay fármacos, devuelve array vacío [].\n'
       '11. Responde SIEMPRE con JSON válido completo. NUNCA texto libre fuera del JSON.';
 

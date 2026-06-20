@@ -517,7 +517,7 @@ class RevisionSheet extends StatelessWidget {
       ));
       for (final f in draft.farmacos!) {
         final med = f['medicamento'] ?? '';
-        final dos = f['dosagem']     ?? '';
+        final dos = f['dosis']       ?? '';
         if (med.isEmpty) continue;
         widgets.add(_fieldCard(
           icon: Icons.medication_outlined,

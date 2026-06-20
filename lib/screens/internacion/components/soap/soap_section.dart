@@ -169,7 +169,7 @@ class SoapNotifier extends ChangeNotifier {
       newFarmacos = draft.farmacos!
           .map((m) => FarmacoEntry(
                 medicamento: m['medicamento'] ?? '',
-                dosagem:     m['dosagem']     ?? '',
+                dosagem:     m['dosis']       ?? '',
               ))
           .where((f) => f.medicamento.isNotEmpty)
           .toList();
