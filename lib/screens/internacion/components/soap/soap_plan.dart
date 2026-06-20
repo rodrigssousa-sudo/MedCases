@@ -33,8 +33,12 @@ class _SoapPlanState extends State<SoapPlan> {
   @override
   void initState() {
     super.initState();
-    _planCtrl = TextEditingController(text: widget.data.planTerapeutico);
-    _altaCtrl = TextEditingController(text: widget.data.criteriosAlta);
+    _planCtrl = TextEditingController(text: widget.data.planTerapeutico)
+      ..selection = TextSelection.collapsed(
+          offset: widget.data.planTerapeutico.length);
+    _altaCtrl = TextEditingController(text: widget.data.criteriosAlta)
+      ..selection = TextSelection.collapsed(
+          offset: widget.data.criteriosAlta.length);
   }
 
   @override

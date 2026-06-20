@@ -7,11 +7,14 @@
 // Build 161: State Bleed fix — problemasActivos LIMPA antes de injetar draft IA
 // Build 162: farmacos injetados via applyAiDraft; autorNombre dinâmico no CopyButton
 // Build 163: resetAll() no SoapNotifier + resetSoap() no SoapSectionWidgetState (Clean Slate)
+// Build 167: _CopyMenuButton (ModalBottomSheet duplo), formatação hospitalar argentina,
+//            PacienteInternacaoData threading, TextEditingControllers com cursor ao final
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
+import '../patient_accordion.dart';
 import '../../services/soap_copilot_service.dart';
 // FarmacoEntry usado no applyAiDraft (Build 162)
 // ignore: unused_import (re-exportado via evolucion_model)
@@ -229,6 +232,8 @@ class SoapSectionWidget extends StatefulWidget {
   final String lang;
   /// Nome do médico logado — preenche o cabeçalho do texto copiado (Build 162)
   final String autorNombre;
+  /// Dados demográficos do paciente — necessário para "Copiar Todo" (Build 167)
+  final PacienteInternacaoData? paciente;
   /// Callback chamado quando o médico confirma o save da evolução
   final ValueChanged<EvolucionModel> onSave;
 
@@ -239,6 +244,7 @@ class SoapSectionWidget extends StatefulWidget {
     required this.lang,
     required this.onSave,
     this.autorNombre = 'Dr.',
+    this.paciente,
   });
 
   @override
@@ -382,12 +388,13 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
           child: s,
         )),
 
-        // ── Botão Copiar Evolución Completa ───────────────────────────────────
+        // ── Botão Copiar Evolución — Build 167: ModalBottomSheet duplo ─────────
         const SizedBox(height: 4),
-        _CopyButton(
+        _CopyMenuButton(
           dark: dark,
           lang: widget.lang,
           autorNombre: widget.autorNombre,
+          paciente: widget.paciente,
           getEvolucion: () => _notifier.evolucion,
         ),
         const SizedBox(height: 8),
@@ -549,35 +556,61 @@ class _SoapAccordion extends StatelessWidget {
   }
 }
 
-// ── Build 160: Botão Copiar Evolución Completa ────────────────────────────────
-class _CopyButton extends StatefulWidget {
+// ── Build 167: Botão Copiar com ModalBottomSheet (2 opções) ──────────────────
+class _CopyMenuButton extends StatefulWidget {
   final bool dark;
   final String lang;
-  final String autorNombre;    // Build 162: nome dinâmico do médico logado
+  final String autorNombre;
+  final PacienteInternacaoData? paciente;
   final EvolucionModel Function() getEvolucion;
 
-  const _CopyButton({
+  const _CopyMenuButton({
     required this.dark,
     required this.lang,
     required this.getEvolucion,
     this.autorNombre = 'Dr.',
+    this.paciente,
   });
 
   @override
-  State<_CopyButton> createState() => _CopyButtonState();
+  State<_CopyMenuButton> createState() => _CopyMenuButtonState();
 }
 
-class _CopyButtonState extends State<_CopyButton> {
+class _CopyMenuButtonState extends State<_CopyMenuButton> {
   bool _copied = false;
 
   bool get isEs => widget.lang == 'es';
 
-  Future<void> _copy() async {
+  /// Mostra o ModalBottomSheet com as duas opções de cópia.
+  void _showCopyMenu() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => _CopyOptionsSheet(
+        dark: widget.dark,
+        lang: widget.lang,
+        onCopyFull: () {
+          Navigator.of(ctx).pop();
+          _executeCopy(full: true);
+        },
+        onCopyDaily: () {
+          Navigator.of(ctx).pop();
+          _executeCopy(full: false);
+        },
+      ),
+    );
+  }
+
+  Future<void> _executeCopy({required bool full}) async {
     final ev = widget.getEvolucion();
-    final text = _compileSoapText(ev, isEs, widget.autorNombre);
+    final text = full
+        ? _compileFullRecord(ev, isEs, widget.autorNombre, widget.paciente)
+        : _compileDailyEvolution(ev, isEs, widget.autorNombre);
 
     await Clipboard.setData(ClipboardData(text: text));
 
+    if (!mounted) return;
     setState(() => _copied = true);
     await Future.delayed(const Duration(seconds: 2));
     if (mounted) setState(() => _copied = false);
@@ -587,9 +620,11 @@ class _CopyButtonState extends State<_CopyButton> {
         content: Row(children: [
           const Icon(Icons.copy_rounded, color: Colors.white, size: 15),
           const SizedBox(width: 8),
-          Text(isEs
-              ? 'Evolución copiada al portapapeles'
-              : 'Evolução copiada para a área de transferência'),
+          Expanded(
+            child: Text(full
+                ? (isEs ? 'Ficha completa copiada al portapapeles' : 'Ficha completa copiada para a área de transferência')
+                : (isEs ? 'Evolución diaria copiada al portapapeles' : 'Evolução diária copiada para a área de transferência')),
+          ),
         ]),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
@@ -598,108 +633,197 @@ class _CopyButtonState extends State<_CopyButton> {
     }
   }
 
-  /// Compila todos os campos SOAP em texto formatado para clipboard.
-  /// [autorNombre] — nome do médico logado (Build 162: dinâmico, não hardcoded).
-  static String _compileSoapText(EvolucionModel ev, bool isEs, String autorNombre) {
+  // ────────────────────────────────────────────────────────────────────────────
+  // Build 167 — OPÇÃO 1: Ficha completa (cabeçalho + bloco clínico)
+  // Formato hospitalar argentino com dados do paciente
+  // ────────────────────────────────────────────────────────────────────────────
+  static String _compileFullRecord(
+    EvolucionModel ev,
+    bool isEs,
+    String autorNombre,
+    PacienteInternacaoData? paciente,
+  ) {
     final buf = StringBuffer();
-    final sep = '─' * 40;
-
-    buf.writeln(isEs
-        ? '📋 EVOLUCIÓN MÉDICA · ${ev.fechaFormatada}'
-        : '📋 EVOLUÇÃO MÉDICA · ${ev.fechaFormatada}');
-    // Build 162: usa autorNombre dinâmico — nunca mais "Responsable: Dr. "
+    final now = DateTime.now();
+    final fecha = '${now.day.toString().padLeft(2,'0')}/${now.month.toString().padLeft(2,'0')}/${now.year}';
+    final hora  = '${now.hour.toString().padLeft(2,'0')}:${now.minute.toString().padLeft(2,'0')}';
     final nomeDisplay = autorNombre.trim().isNotEmpty ? autorNombre : ev.autorNombre;
-    buf.writeln(isEs ? 'Responsable: $nomeDisplay' : 'Responsável: $nomeDisplay');
-    buf.writeln(sep);
 
-    // S
-    buf.writeln(isEs
-        ? '\n🔵 S — SUBJETIVO'
-        : '\n🔵 S — SUBJETIVO');
-    final s = ev.subjetivo;
-    if (s.notePasaNoche.isNotEmpty)
-      buf.writeln(isEs ? '• Noche: ${s.notePasaNoche}' : '• Noite: ${s.notePasaNoche}');
-    if (s.dolorEscala != null)
-      buf.writeln('• EVA: ${s.dolorEscala}/10');
+    // ── Cabeçalho hospitalar ─────────────────────────────────────────────────
+    buf.writeln('EVOLUCIÓN MÉDICA');
+    buf.writeln('Fecha: $fecha  Hora: $hora');
+
+    if (paciente != null) {
+      final nomePart   = paciente.nome.isNotEmpty     ? 'Paciente: ${paciente.nome}' : '';
+      final camaPart   = paciente.cama.isNotEmpty     ? 'Cama: ${paciente.cama}'     : '';
+      final diaPart    = 'Día de internación: ${paciente.diaInternacao}';
+      final headerLine = [nomePart, camaPart, diaPart]
+          .where((s) => s.isNotEmpty).join('  ');
+      if (headerLine.isNotEmpty) buf.writeln(headerLine);
+
+      final diag = paciente.diagnostico.isNotEmpty
+          ? paciente.diagnostico
+          : (ev.evaluacion.problemasActivos.isNotEmpty
+              ? ev.evaluacion.problemasActivos.first
+              : '');
+      if (diag.isNotEmpty) buf.writeln('Diagnóstico: $diag');
+    }
+
+    buf.writeln('');
+
+    // ── Bloco clínico ────────────────────────────────────────────────────────
+    buf.write(_buildClinicalBlock(ev, isEs));
+
+    // ── Firma ────────────────────────────────────────────────────────────────
+    buf.writeln('Firma:');
+    buf.writeln('Dr/Dra. $nomeDisplay');
+
+    return buf.toString().trimRight();
+  }
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // Build 167 — OPÇÃO 2: Evolução diária (somente bloco clínico, sem cabeçalho)
+  // ────────────────────────────────────────────────────────────────────────────
+  static String _compileDailyEvolution(
+    EvolucionModel ev,
+    bool isEs,
+    String autorNombre,
+  ) {
+    final buf = StringBuffer();
+    final nomeDisplay = autorNombre.trim().isNotEmpty ? autorNombre : ev.autorNombre;
+
+    buf.write(_buildClinicalBlock(ev, isEs));
+
+    buf.writeln('Firma:');
+    buf.writeln('Dr/Dra. $nomeDisplay');
+
+    return buf.toString().trimRight();
+  }
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // Bloco clínico no formato hospitalar argentino (sem títulos SOAP)
+  // ────────────────────────────────────────────────────────────────────────────
+  static String _buildClinicalBlock(EvolucionModel ev, bool isEs) {
+    final buf = StringBuffer();
+    final s  = ev.subjetivo;
+    final o  = ev.objetivo;
+    final sv = o.signosVitales;
+    final ef = o.examenFisico;
+    final ex = o.examenes;
+    final a  = ev.evaluacion;
+    final p  = ev.plan;
+
+    // ── Evolución (subjetivo) ────────────────────────────────────────────────
+    final evolParts = <String>[];
+    if (s.notePasaNoche.isNotEmpty) evolParts.add(s.notePasaNoche);
+    if (s.dolorEscala != null) evolParts.add('EVA ${s.dolorEscala}/10');
 
     final syms = <String>[];
-    if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
-    if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
-    if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
-    if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
-    if (s.suenoRestado) syms.add(isEs ? 'Sueño alterado' : 'Sono alterado');
-    if (syms.isNotEmpty)
-      buf.writeln(isEs ? '• Síntomas: ${syms.join(', ')}' : '• Sintomas: ${syms.join(', ')}');
+    if (s.fiebre)       syms.add(isEs ? 'fiebre' : 'febre');
+    if (s.disnea)       syms.add(isEs ? 'disnea' : 'dispneia');
+    if (s.nauseas)      syms.add(isEs ? 'náuseas' : 'náuseas');
+    if (s.tos)          syms.add(isEs ? 'tos' : 'tosse');
+    if (s.suenoRestado) syms.add(isEs ? 'sueño alterado' : 'sono alterado');
+    if (syms.isNotEmpty) evolParts.add('${isEs ? 'Refiere' : 'Refere'}: ${syms.join(', ')}');
 
-    if (s.alimentacion.isNotEmpty)
-      buf.writeln(isEs ? '• Alimentación: ${s.alimentacion}' : '• Alimentação: ${s.alimentacion}');
-    if (s.diuresis.isNotEmpty) buf.writeln('• Diuresis: ${s.diuresis}');
-    if (s.evacuacion.isNotEmpty)
-      buf.writeln(isEs ? '• Evacuación: ${s.evacuacion}' : '• Evacuação: ${s.evacuacion}');
-    if (s.notasLibres.isNotEmpty)
-      buf.writeln(isEs ? '• Notas: ${s.notasLibres}' : '• Notas: ${s.notasLibres}');
+    if (s.alimentacion.isNotEmpty) evolParts.add('${isEs ? 'Alimentación' : 'Alimentação'}: ${s.alimentacion}');
+    if (s.diuresis.isNotEmpty)     evolParts.add('Diuresis: ${s.diuresis}');
+    if (s.evacuacion.isNotEmpty)   evolParts.add('${isEs ? 'Evacuación' : 'Evacuação'}: ${s.evacuacion}');
+    if (s.notasLibres.isNotEmpty)  evolParts.add(s.notasLibres);
 
-    // O
-    buf.writeln(isEs ? '\n🟢 O — OBJETIVO' : '\n🟢 O — OBJETIVO');
-    final sv = ev.objetivo.signosVitales;
+    buf.writeln('Evolución:');
+    if (evolParts.isNotEmpty) {
+      buf.writeln(evolParts.join('. '));
+    } else {
+      buf.writeln('');
+    }
+    buf.writeln('');
+
+    // ── SV (Signos Vitales) ──────────────────────────────────────────────────
     if (!sv.isEmpty) {
-      buf.write(isEs ? '• Signos vitales: ' : '• Sinais vitais: ');
-      final parts = <String>[];
-      if (sv.pa.isNotEmpty) parts.add('PA: ${sv.pa}');
-      if (sv.fc.isNotEmpty) parts.add('FC: ${sv.fc}');
-      if (sv.fr.isNotEmpty) parts.add('FR: ${sv.fr}');
-      if (sv.satO2.isNotEmpty) parts.add('SpO₂: ${sv.satO2}');
-      if (sv.temperatura.isNotEmpty) parts.add('T°: ${sv.temperatura}');
-      buf.writeln(parts.join(' | '));
+      buf.writeln('SV:');
+      final svParts = <String>[];
+      if (sv.pa.isNotEmpty)          svParts.add('TA: ${sv.pa} mmHg');
+      if (sv.fc.isNotEmpty)          svParts.add('FC: ${sv.fc} lpm');
+      if (sv.fr.isNotEmpty)          svParts.add('FR: ${sv.fr} rpm');
+      if (sv.satO2.isNotEmpty)       svParts.add('SatO₂: ${sv.satO2}%');
+      if (sv.temperatura.isNotEmpty) svParts.add('Temp: ${sv.temperatura}°C');
+      buf.writeln(svParts.join('  '));
+      buf.writeln('');
     }
 
-    final ef = ev.objetivo.examenFisico;
-    if (ef.estadoGeneral.isNotEmpty)
-      buf.writeln(isEs ? '• Estado general: ${ef.estadoGeneral}' : '• Estado geral: ${ef.estadoGeneral}');
-    if (ef.acv.isNotEmpty) buf.writeln('• ACV: ${ef.acv}');
-    if (ef.ar.isNotEmpty) buf.writeln('• AR: ${ef.ar}');
-    if (ef.abdomen.isNotEmpty) buf.writeln(isEs ? '• Abdomen: ${ef.abdomen}' : '• Abdome: ${ef.abdomen}');
-    if (ef.extremidades.isNotEmpty) buf.writeln('• MMII: ${ef.extremidades}');
+    // ── EF (Examen Físico) ───────────────────────────────────────────────────
+    final hasEf = ef.estadoGeneral.isNotEmpty || ef.acv.isNotEmpty ||
+        ef.ar.isNotEmpty || ef.abdomen.isNotEmpty || ef.extremidades.isNotEmpty;
+    if (hasEf) {
+      buf.writeln('EF:');
+      if (ef.estadoGeneral.isNotEmpty) buf.writeln('EG: ${ef.estadoGeneral}');
+      if (ef.acv.isNotEmpty)           buf.writeln('Neurológico/CV: ${ef.acv}');
+      if (ef.ar.isNotEmpty)            buf.writeln('Resp: ${ef.ar}');
+      if (ef.abdomen.isNotEmpty)       buf.writeln('Abd: ${ef.abdomen}');
+      if (ef.extremidades.isNotEmpty)  buf.writeln('MMII: ${ef.extremidades}');
+      buf.writeln('');
+    }
 
-    final ex = ev.objetivo.examenes;
-    if (ex.laboratorio.isNotEmpty)
-      buf.writeln(isEs ? '• Laboratorio: ${ex.laboratorio}' : '• Laboratório: ${ex.laboratorio}');
-    if (ex.imagenes.isNotEmpty)
-      buf.writeln(isEs ? '• Imágenes: ${ex.imagenes}' : '• Imagens: ${ex.imagenes}');
-    if (ex.culturas.isNotEmpty) buf.writeln('• Culturas: ${ex.culturas}');
-    if (ex.ecg.isNotEmpty) buf.writeln('• ECG: ${ex.ecg}');
-    if (ev.objetivo.tratamientoActual.isNotEmpty)
-      buf.writeln(isEs ? '• Tratamiento: ${ev.objetivo.tratamientoActual}' : '• Tratamento: ${ev.objetivo.tratamientoActual}');
+    // ── Laboratorio ──────────────────────────────────────────────────────────
+    final hasLab = ex.laboratorio.isNotEmpty || ex.imagenes.isNotEmpty ||
+        ex.culturas.isNotEmpty || ex.ecg.isNotEmpty;
+    if (hasLab) {
+      buf.writeln('Laboratorio:');
+      if (ex.laboratorio.isNotEmpty) buf.writeln(ex.laboratorio);
+      if (ex.imagenes.isNotEmpty)    buf.writeln('${isEs ? 'Imágenes' : 'Imagens'}: ${ex.imagenes}');
+      if (ex.culturas.isNotEmpty)    buf.writeln('Culturas: ${ex.culturas}');
+      if (ex.ecg.isNotEmpty)         buf.writeln('ECG: ${ex.ecg}');
+      buf.writeln('');
+    }
 
-    // A
-    buf.writeln(isEs ? '\n🟡 A — EVALUACIÓN' : '\n🟡 A — AVALIAÇÃO');
-    final a = ev.evaluacion;
-    if (a.estado != null) buf.writeln('• Estado: ${a.estado!.label(isEs ? 'es' : 'pt')}');
-    if (a.problemasActivos.isNotEmpty)
-      buf.writeln(isEs
-          ? '• Problemas activos:\n  - ${a.problemasActivos.join('\n  - ')}'
-          : '• Problemas ativos:\n  - ${a.problemasActivos.join('\n  - ')}');
-    if (a.notasEvaluacion.isNotEmpty) buf.writeln('• ${a.notasEvaluacion}');
-
-    // P
-    buf.writeln('\n🟣 P — PLAN');
-    final p = ev.plan;
-    if (p.planTerapeutico.isNotEmpty)
-      buf.writeln(isEs ? '• Plan terapéutico:\n${p.planTerapeutico}' : '• Plano terapêutico:\n${p.planTerapeutico}');
-    if (p.criteriosAlta.isNotEmpty)
-      buf.writeln(isEs ? '• Criterios de alta:\n${p.criteriosAlta}' : '• Critérios de alta:\n${p.criteriosAlta}');
-
-    // Fármacos (Build 162)
-    if (ev.farmacos.isNotEmpty) {
-      buf.writeln(isEs ? '\n💊 FÁRMACOS ACTUALES' : '\n💊 FÁRMACOS ATUAIS');
-      for (final f in ev.farmacos) {
-        final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
-        buf.writeln('• ${f.medicamento}$dos');
+    // ── Impresión (Avaliação) ─────────────────────────────────────────────────
+    final hasImpresion = a.notasEvaluacion.isNotEmpty || a.estado != null ||
+        a.problemasActivos.isNotEmpty;
+    if (hasImpresion) {
+      buf.writeln('Impresión:');
+      if (a.notasEvaluacion.isNotEmpty) {
+        buf.writeln(a.notasEvaluacion);
+      } else {
+        final estadoLabel = a.estado != null ? a.estado!.label(isEs ? 'es' : 'pt') : '';
+        final probStr = a.problemasActivos.isNotEmpty
+            ? a.problemasActivos.join(', ')
+            : '';
+        final parts = [estadoLabel, probStr].where((s) => s.isNotEmpty).join(' — ');
+        if (parts.isNotEmpty) buf.writeln(parts);
       }
+      buf.writeln('');
     }
 
-    buf.writeln('\n$sep');
-    buf.writeln('MedCases Pro · Generado ${DateTime.now().toIso8601String().substring(0, 16)}');
+    // ── Conducta (Plan) ───────────────────────────────────────────────────────
+    final hasPlan = p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty ||
+        ev.farmacos.isNotEmpty;
+    if (hasPlan) {
+      buf.writeln('Conducta:');
+      if (p.planTerapeutico.isNotEmpty) {
+        // Cada linha do plano vira um bullet
+        final lines = p.planTerapeutico
+            .split('\n')
+            .map((l) => l.trim())
+            .where((l) => l.isNotEmpty);
+        for (final line in lines) {
+          final bullet = line.startsWith('•') || line.startsWith('-')
+              ? line
+              : '• $line';
+          buf.writeln(bullet);
+        }
+      }
+      if (p.criteriosAlta.isNotEmpty) {
+        buf.writeln('• ${isEs ? 'Criterios de alta' : 'Critérios de alta'}: ${p.criteriosAlta}');
+      }
+      if (ev.farmacos.isNotEmpty) {
+        for (final f in ev.farmacos) {
+          final dos = f.dosagem.isNotEmpty ? ' ${f.dosagem}' : '';
+          buf.writeln('• ${f.medicamento}$dos');
+        }
+      }
+      buf.writeln('');
+    }
 
     return buf.toString();
   }
@@ -709,7 +833,7 @@ class _CopyButtonState extends State<_CopyButton> {
     final dark = widget.dark;
 
     return GestureDetector(
-      onTap: _copy,
+      onTap: _showCopyMenu,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: double.infinity,
@@ -734,7 +858,7 @@ class _CopyButtonState extends State<_CopyButton> {
               child: Icon(
                 _copied
                     ? Icons.check_circle_rounded
-                    : Icons.copy_rounded,
+                    : Icons.copy_all_rounded,
                 key: ValueKey(_copied),
                 size: 16,
                 color: _copied
@@ -746,7 +870,7 @@ class _CopyButtonState extends State<_CopyButton> {
             Text(
               _copied
                   ? (isEs ? '¡Copiado!' : 'Copiado!')
-                  : (isEs ? 'Copiar Evolución Completa' : 'Copiar Evolução Completa'),
+                  : (isEs ? 'Copiar Evolución…' : 'Copiar Evolução…'),
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -755,6 +879,258 @@ class _CopyButtonState extends State<_CopyButton> {
                     : (dark ? Colors.white54 : Colors.black45),
               ),
             ),
+            if (!_copied) ...[
+              const SizedBox(width: 6),
+              Icon(
+                Icons.expand_more_rounded,
+                size: 14,
+                color: dark ? Colors.white38 : Colors.black38,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Build 167: ModalBottomSheet premium com 2 opções de cópia ─────────────────
+class _CopyOptionsSheet extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  final VoidCallback onCopyFull;
+  final VoidCallback onCopyDaily;
+
+  const _CopyOptionsSheet({
+    required this.dark,
+    required this.lang,
+    required this.onCopyFull,
+    required this.onCopyDaily,
+  });
+
+  bool get isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
+    final theme = InternacionTheme(dark);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(
+          color: InternacionTheme.cyan.withValues(alpha: 0.25),
+          width: 1.0,
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        20, 12, 20,
+        20 + MediaQuery.of(context).viewPadding.bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Handle ──────────────────────────────────────────────────────────
+          Center(
+            child: Container(
+              width: 36, height: 4,
+              decoration: BoxDecoration(
+                color: theme.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+
+          // ── Título ───────────────────────────────────────────────────────────
+          Row(
+            children: [
+              Container(
+                width: 34, height: 34,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF059669), Color(0xFF047857)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.copy_all_rounded,
+                    size: 17, color: Colors.white),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isEs ? 'Exportar Evolución' : 'Exportar Evolução',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: theme.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      isEs
+                          ? 'Seleccioná el formato de exportación'
+                          : 'Selecione o formato de exportação',
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        color: theme.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // ── Opção 1: Ficha Completa ──────────────────────────────────────────
+          _CopyOptionTile(
+            dark: dark,
+            icon: Icons.description_rounded,
+            iconColor: const Color(0xFF3B82F6),
+            iconBg: const Color(0xFF3B82F6),
+            title: isEs
+                ? 'Copiar Todo (Ingreso/Ficha Completa)'
+                : 'Copiar Tudo (Internação/Ficha Completa)',
+            subtitle: isEs
+                ? 'Incluye datos del paciente + evolución clínica completa'
+                : 'Inclui dados do paciente + evolução clínica completa',
+            badgeLabel: isEs ? 'COMPLETO' : 'COMPLETO',
+            badgeColor: const Color(0xFF3B82F6),
+            onTap: onCopyFull,
+            theme: theme,
+          ),
+          const SizedBox(height: 10),
+
+          // ── Opção 2: Solo Evolución Diaria ───────────────────────────────────
+          _CopyOptionTile(
+            dark: dark,
+            icon: Icons.event_note_rounded,
+            iconColor: const Color(0xFF059669),
+            iconBg: const Color(0xFF059669),
+            title: isEs
+                ? 'Copiar Solo Evolución Diaria'
+                : 'Copiar Apenas Evolução Diária',
+            subtitle: isEs
+                ? 'Solo el bloque clínico del día — listo para pegar en evoluciones secuenciales'
+                : 'Apenas o bloco clínico do dia — pronto para colar em evoluções sequenciais',
+            badgeLabel: isEs ? 'RÁPIDO' : 'RÁPIDO',
+            badgeColor: const Color(0xFF059669),
+            onTap: onCopyDaily,
+            theme: theme,
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Tile de opção de cópia ────────────────────────────────────────────────────
+class _CopyOptionTile extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final Color iconColor;
+  final Color iconBg;
+  final String title;
+  final String subtitle;
+  final String badgeLabel;
+  final Color badgeColor;
+  final VoidCallback onTap;
+  final InternacionTheme theme;
+
+  const _CopyOptionTile({
+    required this.dark,
+    required this.icon,
+    required this.iconColor,
+    required this.iconBg,
+    required this.title,
+    required this.subtitle,
+    required this.badgeLabel,
+    required this.badgeColor,
+    required this.onTap,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: theme.card,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: theme.border, width: 0.9),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42, height: 42,
+              decoration: BoxDecoration(
+                color: iconBg.withValues(alpha: dark ? 0.15 : 0.10),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 20, color: iconColor),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w700,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: badgeColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          badgeLabel,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: badgeColor,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: theme.textSecondary,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.chevron_right_rounded,
+                size: 18, color: theme.textSecondary),
           ],
         ),
       ),

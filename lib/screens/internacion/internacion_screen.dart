@@ -524,6 +524,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
               dark: dark,
               lang: lang,
               autorNombre: doctorName,   // Build 162: nome dinâmico
+              paciente: _paciente,       // Build 167: dados para "Copiar Todo"
               onSave: _onSaveEvolucion,
             ),
 

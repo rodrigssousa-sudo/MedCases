@@ -33,7 +33,9 @@ class _SoapEvaluacionState extends State<SoapEvaluacion> {
   @override
   void initState() {
     super.initState();
-    _notasCtrl   = TextEditingController(text: widget.data.notasEvaluacion);
+    _notasCtrl = TextEditingController(text: widget.data.notasEvaluacion)
+      ..selection = TextSelection.collapsed(
+          offset: widget.data.notasEvaluacion.length);
     _problemaCtrl = TextEditingController();
   }
 

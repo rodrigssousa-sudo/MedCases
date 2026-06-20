@@ -34,8 +34,12 @@ class _SoapSubjetivoState extends State<SoapSubjetivo> {
   @override
   void initState() {
     super.initState();
-    _nocheCtrl = TextEditingController(text: widget.data.notePasaNoche);
-    _notasCtrl = TextEditingController(text: widget.data.notasLibres);
+    _nocheCtrl = TextEditingController(text: widget.data.notePasaNoche)
+      ..selection = TextSelection.collapsed(
+          offset: widget.data.notePasaNoche.length);
+    _notasCtrl = TextEditingController(text: widget.data.notasLibres)
+      ..selection = TextSelection.collapsed(
+          offset: widget.data.notasLibres.length);
   }
 
   @override

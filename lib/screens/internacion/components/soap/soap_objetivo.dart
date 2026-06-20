@@ -50,30 +50,37 @@ class _SoapObjetivoState extends State<SoapObjetivo> {
 
   bool get isEs => widget.lang == 'es';
 
+  // Helper: cria controller com cursor no final do texto existente.
+  // Garante edição fluida ao retomar/carregar rascunho IA (Build 167-C).
+  static TextEditingController _ctrl(String text) {
+    return TextEditingController(text: text)
+      ..selection = TextSelection.collapsed(offset: text.length);
+  }
+
   @override
   void initState() {
     super.initState();
     final sv = widget.data.signosVitales;
-    _paCtrl   = TextEditingController(text: sv.pa);
-    _fcCtrl   = TextEditingController(text: sv.fc);
-    _frCtrl   = TextEditingController(text: sv.fr);
-    _satCtrl  = TextEditingController(text: sv.satO2);
-    _tempCtrl = TextEditingController(text: sv.temperatura);
+    _paCtrl   = _ctrl(sv.pa);
+    _fcCtrl   = _ctrl(sv.fc);
+    _frCtrl   = _ctrl(sv.fr);
+    _satCtrl  = _ctrl(sv.satO2);
+    _tempCtrl = _ctrl(sv.temperatura);
 
     final ef = widget.data.examenFisico;
-    _egCtrl   = TextEditingController(text: ef.estadoGeneral);
-    _acvCtrl  = TextEditingController(text: ef.acv);
-    _arCtrl   = TextEditingController(text: ef.ar);
-    _abdCtrl  = TextEditingController(text: ef.abdomen);
-    _extCtrl  = TextEditingController(text: ef.extremidades);
+    _egCtrl   = _ctrl(ef.estadoGeneral);
+    _acvCtrl  = _ctrl(ef.acv);
+    _arCtrl   = _ctrl(ef.ar);
+    _abdCtrl  = _ctrl(ef.abdomen);
+    _extCtrl  = _ctrl(ef.extremidades);
 
     final ex = widget.data.examenes;
-    _labCtrl  = TextEditingController(text: ex.laboratorio);
-    _imgCtrl  = TextEditingController(text: ex.imagenes);
-    _cultCtrl = TextEditingController(text: ex.culturas);
-    _ecgCtrl  = TextEditingController(text: ex.ecg);
+    _labCtrl  = _ctrl(ex.laboratorio);
+    _imgCtrl  = _ctrl(ex.imagenes);
+    _cultCtrl = _ctrl(ex.culturas);
+    _ecgCtrl  = _ctrl(ex.ecg);
 
-    _tratCtrl = TextEditingController(text: widget.data.tratamientoActual);
+    _tratCtrl = _ctrl(widget.data.tratamientoActual);
   }
 
   @override
