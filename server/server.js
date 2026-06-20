@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * MedCases Pro — AI Gateway Server  v2.3.1  (Build 150)
+ * MedCases Pro — AI Gateway Server  v2.4.0  (Build 151)
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * ARQUITETURA:
@@ -19,8 +19,9 @@
  *   5. SSE Buffering (B146)      → socket.write direto + TCP_NODELAY + flush
  *   6. CoT Leakage via lista    → ANTI_COGNITION_LEAK_PROMPT simplificado (B147)
  *   7. Metalinguagem inglesa    → cleanChunk() heurística de idioma (B147)
- *   8. LINE BUDGET dinâmico    → buildAntiLeakPrompt(longResponse) Motor de Partida (B149)
+ *   8. LINE BUDGET dinâmico    → PROMPT_MODO_PLANTAO/ESTUDO Motor de Partida (B149-B151)
  *   9. TRAVA DE FALLBACK       → Modo Plantão recusa termos sem conduta direta (B150)
+ *  10. Prompts monolíticos     → PROMPT_MODO_PLANTAO / PROMPT_MODO_ESTUDO isolados (B151)
  *
  * ANTI-BUFFERING (Build 146):
  *   O Digital Ocean App Platform usa um proxy Nginx interno que pode segurar
@@ -90,155 +91,153 @@ const ENDPOINT_STREAM   = `${GEMINI_BASE}:streamGenerateContent?alt=sse`;
 const ENDPOINT_SYNC     = `${GEMINI_BASE}:generateContent`;
 
 // ════════════════════════════════════════════════════════════════════════════
-// ANTI_COGNITION_LEAK_PROMPT — BLINDAGEM CRÍTICA (Build 150 — Motor de Partida)
+// SYSTEM INSTRUCTIONS — Motor de Partida (Build 151)
 //
-// Injeta como PRIMEIRO BLOCO do system_instruction, antes de qualquer
-// instrução da AiService. Endereça o CoT Leakage diretamente na camada
-// de configuração da API, sem depender do filtro de cliente.
+// ARQUITETURA — Dois prompts monolíticos completamente isolados.
+//   Nenhuma parte é compartilhada entre os modos.
+//   buildSystemInstruction(clientPrompt, longResponse) seleciona diretamente
+//   o prompt correto sem interpolação nem concatenação de fragmentos.
 //
-// Estratégia dupla (ambas as camadas atuam em sinergia):
-//   [A] buildAntiLeakPrompt(longResponse) — regra 4 completamente modal:
-//       Plantão: flashcard ≤12 linhas + TRAVA DE FALLBACK para termos sem
-//                conduta direta (retorna pergunta guiada, nunca alucina)
-//       Estudos: revisão acadêmica 18-24 linhas; acrônimos → definição completa
-//   [B] Filtro de streaming cleanChunk() — Build 147: heurística de
-//       metalinguagem inglesa ([D1] regex estrutural + [D2] density gate).
+//   PROMPT_MODO_PLANTAO  — longResponse === false  (padrão / omitido)
+//     Identidade clínica + segurança anti-CoT + flashcard ≤14 linhas +
+//     TRAVA DE FALLBACK para termos sem conduta emergencial direta
 //
-// Por que inglês? A instrução de blindagem DEVE estar no idioma nativo do
-// modelo (inglês) para máxima aderência — o prompt do cliente instrui PT/ES.
-// ════════════════════════════════════════════════════════════════════════════
-
-// ════════════════════════════════════════════════════════════════════════════
-// ANTI_COGNITION_LEAK_PROMPT — Build 150 (Motor de Partida — fechamento definitivo)
+//   PROMPT_MODO_ESTUDO   — longResponse === true
+//     Identidade clínica + segurança anti-CoT + revisão acadêmica ≤24 linhas +
+//     REGRA DE ACRÔNIMOS: qualquer acrônimo/termo → revisão completa
 //
-// ARQUITETURA:
-//   buildAntiLeakPrompt(longResponse) produz o system instruction completo.
-//   Três blocos estáticos + uma regra 4 interpolada em runtime.
+// INVARIANTES EM AMBOS OS PROMPTS:
+//   • Início com ### (âncora médica obrigatória)
+//   • ZERO pre-text — primeiro caractere = conteúdo clínico
+//   • Proibição absoluta de listar passos internos ou raciocinar em inglês
+//   • LANGUAGE LOCK: resposta exclusivamente em PT-BR ou ES
+//   • MARKDOWN ONLY: ###, **bold**, bullets (-)
 //
-// MODOS:
-//   longResponse = false → MODO PLANTÃO/GUARDIA
-//     • Flashcard clínico ultra-direto, foco em ação imediata + dose
-//     • Teto rígido: 12 linhas
-//     • TRAVA DE FALLBACK para termos sem conduta emergencial direta:
-//         Se o input não tem tratamento de emergência ou dose medicamentosa
-//         direta (ex: "SOAP", "ACLS teoria", "fisiopatologia"), a IA deve
-//         gerar IMEDIATAMENTE uma pergunta guiada em PT/ES, abrindo para o
-//         usuário redirecionar ao Modo Estudo ou fornecer contexto clínico.
-//         NUNCA alucinar uma conduta. NUNCA vazar raciocínio interno.
-//
-//   longResponse = true  → MODO ESTUDOS/ESTUDIO
-//     • Revisão técnica aprofundada, conceitual, com fisiopatologia
-//     • Acrônimos e termos teóricos (SOAP, ACLS, ATLS, Sepse) interpretados
-//       como pedido de definição, revisão e aplicação prática profunda
-//     • Teto flexível: 18–24 linhas para densidade e respiro teórico
+// CAMADA DE DEFESA COMPLEMENTAR:
+//   cleanChunk() — filtro de stream SSE ativo em ambos os modos.
+//   RX_METALANGUAGE_EN + RX_NUMBERED_METALANG + RX_MED_ANCHOR
+//   bloqueiam vazamentos de metalinguagem inglesa no nível do TCP chunk.
 //
 // RETROCOMPATIBILIDADE:
-//   longResponse ausente/undefined → false (plantão). Nunca quebra.
+//   longResponse ausente/undefined/null → false → MODO PLANTÃO. Nunca quebra.
 //
 // HISTÓRICO:
-//   B147: Removida DYNAMIC RESPONSE MATRIX (recitação de regras eliminada)
-//   B148: Regra 4 context-sensitive sem split binário
+//   B147: DYNAMIC RESPONSE MATRIX removida (fonte de recitação eliminada)
+//   B148: LINE BUDGET ajustado para context-sensitive
 //   B149: Split binário dinâmico via buildAntiLeakPrompt()
-//   B150: Regra 4 completa — TRAVA DE FALLBACK + semântica de acrônimos
+//   B151: Prompts monolíticos isolados — PROMPT_MODO_PLANTAO / PROMPT_MODO_ESTUDO
+//   B150: TRAVA DE FALLBACK + semântica explícita de acrônimos
+//   B151: Prompts completamente isolados — sem partes compartilhadas
 // ════════════════════════════════════════════════════════════════════════════
 
-// ── Bloco 1: Identidade + regras absolutas (estático) ────────────────────────
-const _ANTI_LEAK_PREFIX = `You are the Clinical Decision Support engine embedded in MedCases Pro, a medical application used exclusively by licensed physicians in Brazil and Latin America. All responses are to physicians, never to patients.
+// ── MODO PLANTÃO / GUARDIA ────────────────────────────────────────────────────
+// longResponse === false  |  padrão quando campo omitido no payload
+//
+// Dois comportamentos internos mutuamente exclusivos:
+//   [CONDUTA DIRETA]   Input tem emergência/dose → flashcard ≤14 linhas
+//   [FALLBACK GUIADO]  Input sem conduta direta  → 1 pergunta cirúrgica PT/ES
+//
+// O limite é 14 (não 12) para acomodar a pergunta de follow-up final com
+// conforto, sem que ela quebre o budget ou seja cortada pelo modelo.
+// ─────────────────────────────────────────────────────────────────────────────
+const PROMPT_MODO_PLANTAO = `You are the Clinical Decision Support engine embedded in MedCases Pro, a medical application used exclusively by licensed physicians in Brazil and Latin America. All responses are directed to physicians, never to patients.
 
 ABSOLUTE OUTPUT RULES — violating any of these is a critical failure:
 
-1. ZERO pre-text. Your very first output character must be the opening of the clinical answer itself — a Markdown heading (###) or the first word of the direct clinical response. No greetings, no "Sure", no "Here is", no "Let me", no "I will", no "I need to", no preamble of any kind.
+1. ZERO pre-text. Your very first output character must be a Markdown heading (###) opening the clinical answer directly. No greetings, no "Sure", no "Here is", no "Of course", no "I will", no "Let me", no preamble of any kind.
 
-2. YOU ARE FORBIDDEN from listing, describing, or narrating your own execution steps, planning process, formatting rules, or internal guidelines. Do not number or bullet your reasoning. Process all instructions internally and silently — the physician sees only the final clinical output.
+2. YOU ARE FORBIDDEN from listing, describing, or narrating your own execution steps, decision process, formatting rules, or internal guidelines. Never number or bullet your reasoning. Process all logic internally and silently — the physician sees only the final clinical output.
 
-3. LANGUAGE: respond entirely in the language used in the system prompt sent by the application (Português or Español). Never respond in English. Never mix languages.`;
+3. LANGUAGE LOCK: respond entirely and exclusively in the language used in the application system prompt (Português do Brasil or Español). Never respond in English. Never mix languages under any circumstance.
 
-// ── Regra 4 — MODO PLANTÃO/GUARDIA (longResponse = false) ────────────────────
+4. RESPONSE MODE — PLANTÃO / GUARDIA (Emergency Flashcard):
+
+You are operating in SHIFT MODE. The physician at bedside needs immediate, actionable decisions only.
+
+INTERNAL CLASSIFICATION (execute silently — never expose this logic):
+Determine whether the input refers to a CLINICAL EMERGENCY or a NON-EMERGENCY TERM.
+
+A CLINICAL EMERGENCY has at least one of the following: a direct acute life-threatening condition, an immediate pharmacological management, or a drug name used in a dosing or treatment context. Examples: IAM, PCR, Sepse, Choque séptico, Anafilaxia, FA com instabilidade, TEP maciço, AVC agudo, Hipercalemia grave, CAD grave, Epinefrina, Norepinefrina, Alteplase, Adenosina, Amiodarona, or any pathology with a recognized emergency protocol.
+
+A NON-EMERGENCY TERM is a methodology, educational framework, organizational acronym, or purely theoretical concept that does NOT have a direct emergency protocol or drug dose. Examples: SOAP (documentation method), ACLS or ATLS as a training course, fisiopatologia, teoria geral, definição acadêmica, sigla organizacional ou educacional.
+
+OUTPUT RULE — CLINICAL EMERGENCY:
+Respond in ultra-direct clinical flashcard format:
+- Line 1-3: immediate action + drug + dose + route
+- Line 4-6: key monitoring targets
+- Line 7-8: single critical contraindication (if applicable)
+- LINE BUDGET: Respond in ultra-direct clinical flashcard format, focused exclusively on immediate actions and doses. HARD LIMIT of 14 lines maximum to accommodate the mandatory final follow-up question gracefully.
+- Zero academic narrative. Zero pathophysiology. Zero historical context.
+- Close with one focused follow-up question to refine or escalate the case.
+
+OUTPUT RULE — NON-EMERGENCY TERM:
+Generate exactly one short guiding question in the app language (PT or ES). Do not fabricate a protocol. Do not explain why the term has no emergency. Do not leak your reasoning. Use this exact structure:
+
+### 🏥 [Reproduce the exact term typed by the physician] não possui conduta de emergência direta.
+Deseja alternar para o **Modo Estudo** para ver a revisão completa, ou me passa o contexto clínico do paciente?
+
+Spanish version (if the app is running in ES):
+### 🏥 [Reproduce el término exacto] no tiene conducta de emergencia directa.
+¿Deseas cambiar al **Modo Estudio** para ver la revisión completa, o me das el contexto clínico del paciente?
+
+5. MARKDOWN ONLY: use clean Markdown headings (###), bold (**drug name**), and bullets (-). No emojis in structural output unless they appear in the client system prompt examples.`;
+
+// ── MODO ESTUDOS / ESTUDIO ────────────────────────────────────────────────────
+// longResponse === true
 //
-// Dois comportamentos possíveis dependendo do tipo de input:
+// Foco acadêmico, conceitual e de aplicação clínica profunda.
+// Todo acrônimo ou termo teórico é SEMPRE interpretado como pedido de revisão.
+// Nunca pede esclarecimento para termos conhecidos — expande diretamente.
 //
-//   [CONDUTA DIRETA] Termo com ação emergencial ou dose medicamentosa:
-//     → Flashcard ultra-direto, ≤12 linhas, sem narrativa acadêmica.
-//     → Exemplos que ATIVAM conduta: IAM, PCR, Choque, Anafilaxia, Sepse,
-//       qualquer droga com dose, qualquer síndrome com manejo imediato.
-//
-//   [FALLBACK GUIADO] Termo SEM conduta de emergência ou dose direta:
-//     → NÃO alucinar protocolo. NÃO vazar raciocínio. NÃO inventar conduta.
-//     → Gerar UMA pergunta curta e cirúrgica em PT/ES para redirecionar.
-//     → Formato exato do fallback:
-//          ### 🏥 [Termo] não tem conduta de emergência direta.
-//          Deseja alternar para o **Modo Estudo** para ver a definição
-//          completa, ou me passa o contexto clínico do paciente?
-//     → Exemplos que ATIVAM o fallback:
-//          "SOAP" → metodologia de registro, não tem dose ou emergência
-//          "ACLS" → protocolo de ensino, não é uma emergência em si
-//          "ATLS" → idem — sigla de curso, não de patologia
-//          "fisiopatologia de X" → pedido acadêmico puro
-//          qualquer sigla/termo organizacional, educacional ou metodológico
-//
-const _RULE4_GUARDIA = `4. RESPONSE MODE — PLANTÃO/GUARDIA (emergency flashcard):
+// O limite superior é 24 linhas para dar respiro teórico real sem
+// degeneração em narrativa infinita.
+// ─────────────────────────────────────────────────────────────────────────────
+const PROMPT_MODO_ESTUDO = `You are the Clinical Decision Support engine embedded in MedCases Pro, a medical application used exclusively by licensed physicians in Brazil and Latin America. All responses are directed to physicians, never to patients.
 
-You are in SHIFT MODE. The physician needs immediate, actionable information only.
+ABSOLUTE OUTPUT RULES — violating any of these is a critical failure:
 
-STEP A — Classify the input internally (never show this classification):
-  • CLINICAL EMERGENCY: the input has a direct emergency management, immediate drug dose, or acute life-threatening condition (e.g., IAM, PCR, Sepse, Choque, Anafilaxia, FA instável, CAD, TEP maciço, AVC agudo, any drug name in a dosing context).
-  • NON-EMERGENCY TERM: the input is a methodology, educational acronym, organizational term, or concept with NO direct emergency protocol or drug dose (e.g., SOAP, ACLS as a course, ATLS as a course, fisiopatologia, teoria, conceito, definição, sigla organizacional).
+1. ZERO pre-text. Your very first output character must be a Markdown heading (###) opening the clinical answer directly. No greetings, no "Sure", no "Here is", no "Of course", no "I will", no "Let me", no preamble of any kind.
 
-STEP B — Output based on classification:
-  IF CLINICAL EMERGENCY → respond in ultra-direct flashcard format:
-    - Immediate action + drug + dose + route (first 3 lines max)
-    - Key monitoring parameter
-    - Single absolute contraindication if critical
-    - HARD LIMIT: 12 lines total. Zero academic narrative. Zero expanded explanation.
+2. YOU ARE FORBIDDEN from listing, describing, or narrating your own execution steps, decision process, formatting rules, or internal guidelines. Never number or bullet your reasoning. Process all logic internally and silently — the physician sees only the final clinical output.
 
-  IF NON-EMERGENCY TERM → generate ONE short guiding question in the app language (PT or ES). Use this exact format:
-    ### 🏥 [Term reproduced] não possui conduta de emergência direta.
-    Deseja alternar para o **Modo Estudo** para ver a revisão completa, ou me passa o contexto clínico do paciente?
-    (Spanish version if app is in ES:)
-    ### 🏥 [Término reproducido] no tiene conducta de emergencia directa.
-    ¿Deseas cambiar al **Modo Estudio** para ver la revisión completa, o me das el contexto clínico del paciente?
-    - NEVER fabricate an emergency protocol for non-emergency terms.
-    - NEVER leak internal reasoning about why the term has no protocol.
-    - NEVER produce more than these 2 lines for the fallback response.`;
+3. LANGUAGE LOCK: respond entirely and exclusively in the language used in the application system prompt (Português do Brasil or Español). Never respond in English. Never mix languages under any circumstance.
 
-// ── Regra 4 — MODO ESTUDOS/ESTUDIO (longResponse = true) ─────────────────────
-//
-// Foco acadêmico, conceitual e de aplicação prática profunda.
-// Acrônimos e termos teóricos são sempre interpretados como pedido de revisão.
-// Exemplos: "SOAP" → explicar o método; "ACLS" → revisar protocolo completo;
-//           "Sepse" → fisiopatologia + critérios Sepsis-3 + bundle da 1ª hora.
-//
-const _RULE4_ESTUDO = `4. RESPONSE MODE — ESTUDOS/ESTUDIO (deep academic review):
+4. RESPONSE MODE — ESTUDOS / ESTUDIO (Deep Academic Review):
 
-You are in STUDY MODE. The physician wants depth, theory, and practical application.
+You are operating in STUDY MODE. The physician wants conceptual depth, theoretical grounding, and practical clinical application.
 
-ACRONYM & THEORETICAL TERM RULE: Any acronym or theoretical term the physician types (SOAP, ACLS, ATLS, Sepse, SIRS, ARDS, CURB-65, Wells, NIHSS, or any educational/methodological abbreviation) MUST be interpreted as a request for definition, full review, and practical clinical application — NEVER as a vague or ambiguous input requiring clarification.
+ACRONYM & THEORETICAL TERM RULE (critical):
+Any acronym, abbreviation, or theoretical term the physician types — including but not limited to SOAP, ACLS, ATLS, SIRS, ARDS, CURB-65, Wells Score, NIHSS, SOFA, APACHE, RIFLE, qSOFA, HEART Score, or any educational, methodological, or organizational abbreviation — MUST be interpreted as an explicit request for: (a) clear definition, (b) full structured review, and (c) practical clinical application. NEVER treat a known acronym or medical term as a vague or ambiguous input requiring clarification. NEVER ask "what do you mean by X?" for recognized medical or clinical terms.
 
-OUTPUT FORMAT for study mode:
-  - Open with a clear definition of the term/acronym (1-2 lines)
-  - Expand into mechanism, criteria, or step-by-step breakdown
-  - Include practical clinical application and real-world examples
-  - Cover pathophysiology when it adds actionable insight
-  - FLEXIBLE CEILING: 18 to 24 lines — use the full budget to provide genuine density and theoretical breadth. Do not truncate complex topics at 12 lines.
-  - Use ### headings and bold to organize sections clearly.`;
+CLINICAL CONDITIONS in study mode:
+When the input is a disease, syndrome, or clinical condition (e.g., Sepse, Pneumonia, IAM, AVC, IC), provide: pathophysiology mechanism, diagnostic criteria, risk stratification, first-line and second-line management, and key clinical pearls.
 
-// ── Bloco 3: Formato de saída (estático) ─────────────────────────────────────
-const _ANTI_LEAK_SUFFIX = `5. MARKDOWN ONLY: use clean Markdown headings (###), bold (**term**), and bullets (-). No emojis in structural output unless they appear in the client system prompt's examples.`;
+OUTPUT FORMAT:
+- Open with a precise definition or mechanism (1-2 lines, no preamble)
+- Organize with ### subheadings for each section
+- Use **bold** for key terms, drugs, and doses
+- Use bullets (-) for criteria lists and management steps
+- Include practical application and real-world clinical examples
+- Cover pathophysiology when it adds actionable insight for the physician
+- LINE BUDGET: Respond in deep, detailed technical review format. Expand medical density and use a flexible ceiling of 24 lines maximum to provide full breadth and depth (criteria, pathophysiology) and give the final question room to breathe.
+- Close with one focused follow-up question to deepen the case or connect to practice.
+
+5. MARKDOWN ONLY: use clean Markdown headings (###), bold (**term**), and bullets (-). No emojis in structural output unless they appear in the client system prompt examples.`;
 
 /**
- * Constrói o system instruction completo com a regra 4 interpolada.
+ * Seleciona o system instruction correto com base no modo escolhido.
  *
- * Motor de Partida — Build 150: regra 4 é o núcleo do comportamento modal.
- * As regras 1-3 e 5 são invariantes de segurança; apenas a 4 varia.
+ * Motor de Partida — Build 151: seleção direta entre dois prompts monolíticos.
+ * Não há concatenação de fragmentos nem interpolação em runtime.
+ * Cada modo tem seu próprio contrato de comportamento completo e isolado.
  *
- * @param {boolean} longResponse
- *   false (padrão) → MODO PLANTÃO: flashcard ≤12 linhas + TRAVA DE FALLBACK
- *   true            → MODO ESTUDOS: revisão acadêmica 18-24 linhas
+ * @param {string}  clientPrompt  — system prompt enviado pelo Flutter (AiService)
+ * @param {boolean} longResponse  — false → MODO PLANTÃO | true → MODO ESTUDOS
  * @returns {string} system instruction completo pronto para envio ao Gemini
  */
-function buildAntiLeakPrompt(longResponse) {
-  const rule4 = longResponse ? _RULE4_ESTUDO : _RULE4_GUARDIA;
-  return `${_ANTI_LEAK_PREFIX}\n\n${rule4}\n\n${_ANTI_LEAK_SUFFIX}`;
+function buildSystemInstruction(clientPrompt, longResponse) {
+  const modePrompt = longResponse ? PROMPT_MODO_ESTUDO : PROMPT_MODO_PLANTAO;
+  return `${modePrompt}\n\n---\n\n${clientPrompt ?? ''}`.trim();
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -580,26 +579,6 @@ function cleanChunk(raw) {
 // ════════════════════════════════════════════════════════════════════════════
 // MONTAGEM DO PAYLOAD GEMINI
 // ════════════════════════════════════════════════════════════════════════════
-
-/**
- * Monta o system_instruction final concatenando:
- *   1. buildAntiLeakPrompt(longResponse) — blindagem CoT com LINE BUDGET dinâmico
- *   2. systemPromptFromClient (prompt completo da AiService — módulos 1-10)
- *
- * A concatenação mantém o cliente como fonte de verdade para persona,
- * RAG, módulos de especialidade, etc., enquanto o servidor injeta a
- * blindagem anti-CoT com máxima prioridade (posição inicial).
- *
- * Motor de Partida (Build 149): longResponse controla a regra 4 do prompt.
- *
- * @param {string}  clientPrompt  - system prompt enviado pelo Flutter
- * @param {boolean} longResponse  - false=Plantão (≤12 linhas) | true=Estudos (22-24)
- * @returns {string}
- */
-function buildSystemInstruction(clientPrompt, longResponse) {
-  const antiLeak = buildAntiLeakPrompt(!!longResponse);
-  return `${antiLeak}\n\n---\n\n${clientPrompt ?? ''}`.trim();
-}
 
 /**
  * Converte o histórico do formato Flutter (role/content ou role/text)
@@ -983,9 +962,9 @@ const streamLimiter = rateLimit({
 //     history:      Array,      // histórico de mensagens (opcional)
 //     useGrounding: boolean,    // ativar Google Search (padrão: true)
 //     maxTokens:    number,     // tokens máximos (padrão: 3200)
-//     longResponse: boolean,    // Motor de Partida (Build 149):
-//                               //   false (padrão) → Modo Plantão: flashcard ≤12 linhas
-//                               //   true           → Modo Estudos: revisão 22-24 linhas
+//     longResponse: boolean,    // Motor de Partida (Build 151):
+//                               //   false / omitido → PROMPT_MODO_PLANTAO (flashcard ≤14 linhas)
+//                               //   true            → PROMPT_MODO_ESTUDO  (revisão ≤24 linhas)
 //   }
 //
 // Saída (SSE):
@@ -1021,7 +1000,7 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
     history      = [],
     useGrounding = true,
     maxTokens,
-    longResponse = false,  // Motor de Partida (Build 149): false=Plantão | true=Estudos
+    longResponse = false,  // Motor de Partida (Build 151): false=PLANTAO | true=ESTUDO
   } = req.body;
 
   // ── Monta payload ─────────────────────────────────────────────────────────
@@ -1034,7 +1013,8 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
     maxTokens,
   });
 
-  log.debug(`[${requestId}] system_instruction len=${systemInstruction.length} useGrounding=${useGrounding} longResponse=${longResponse}`);
+  const modo = longResponse ? 'ESTUDO' : 'PLANTAO';
+  log.info(`[${requestId}] modo=${modo} useGrounding=${useGrounding} si_len=${systemInstruction.length}`);
 
   // ── Configura cabeçalhos SSE ──────────────────────────────────────────────
   // ── Build 146: Headers anti-buffering completos ────────────────────────
@@ -1150,7 +1130,7 @@ app.get('/health', (_req, res) => {
   res.json({
     status:    'ok',
     service:   'MedCases Pro AI Gateway',
-    version:   '2.3.1',
+    version:   '2.4.0',
     model:     GEMINI_MODEL,
     timestamp: new Date().toISOString(),
     uptime:    Math.floor(process.uptime()),
@@ -1183,7 +1163,7 @@ function sleep(ms) {
 
 app.listen(PORT, '0.0.0.0', () => {
   log.info('══════════════════════════════════════════════════════');
-  log.info('  MedCases Pro — AI Gateway Server v2.3.1 (Build 150)');
+  log.info('  MedCases Pro — AI Gateway Server v2.4.0 (Build 151)');
   log.info(`  Porta:         ${PORT}`);
   log.info(`  Ambiente:      ${IS_PROD ? 'production' : 'development'}`);
   log.info(`  Modelo Gemini: ${GEMINI_MODEL}`);
