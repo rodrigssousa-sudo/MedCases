@@ -71,10 +71,8 @@ import 'ai_gateway_service_io.dart'
 // ou no endpoint direto do Digital Ocean App Platform abaixo.
 // Para alterar o endpoint basta mudar esta constante e recompilar.
 // ─────────────────────────────────────────────────────────────────────────────
-const String kAiGatewayBaseUrl = 'https://medcases-ai-gateway-xxxxx.ondigitalocean.app';
-// ↑ ATENÇÃO: substitua pelo URL real do seu app no Digital Ocean App Platform.
-//   Acesse: https://cloud.digitalocean.com/apps → seu app → Settings → Domains
-//   Exemplo real: 'https://medcases-ai-gateway-abcd1.ondigitalocean.app'
+const String kAiGatewayBaseUrl = 'https://medcasespro.com';
+// ↑ URL oficial de produção — domínio principal do Digital Ocean (sem barra no final).
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AiGatewayService
