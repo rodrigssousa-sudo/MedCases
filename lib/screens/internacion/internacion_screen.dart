@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 163 — Protocolo Clean Slate
+// InternacionScreen — Build 164 — Motor DDI integrado
 //
 // Build 160: CopilotButton, Persistence, SessionBanner, applyAiDraft
 // Build 161: Data Binding Demográfico — demografias atualizadas ao [Aprobar]
@@ -24,6 +24,7 @@ import 'components/farmacos_accordion.dart';
 import 'components/soap/soap_section.dart';
 import 'services/internacion_persistence.dart';
 import 'services/soap_copilot_service.dart';
+import 'services/drug_interaction_service.dart';
 
 class InternacionScreen extends StatefulWidget {
   const InternacionScreen({super.key});
@@ -52,6 +53,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
     super.initState();
     _draftEvolucion = _newDraft();
     _loadSessions();
+    // Pre-warm DDI engine na inicialização (idempotente, TTL 24h)
+    DrugInteractionService.instance.init();
   }
 
   Future<void> _loadSessions() async {
