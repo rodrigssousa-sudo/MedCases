@@ -1,15 +1,27 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// AiGatewayService — Build 149 (Motor de Partida)
+// AiGatewayService — Build 155 (Dois Motores Independentes)
 // Cliente SSE para o MedCases AI Gateway (servidor Node.js/Express)
 //
-// ARQUITETURA:
-//   Flutter → POST /api/ai/stream → servidor Express → Gemini SSE → Flutter
+// ARQUITETURA (Build 155):
+//   Modo Plantão → POST /api/ai/stream/plantao → Motor Plantão exclusivo
+//   Modo Estudos → POST /api/ai/stream/estudo  → Motor Estudos exclusivo
 //
-// VANTAGENS vs. BYOA (GeminiServiceV2):
-//   • API key gerenciada exclusivamente no servidor (não exposta no cliente)
-//   • ANTI_COGNITION_LEAK_PROMPT injetado server-side como primeiro bloco
-//   • Rate limit e retry no servidor (60 req/min por IP, 3 retries)
-//   • Filtros duplos de CoT no servidor (API flags + padrão textual)
+//   O campo `longResponse` NÃO é mais enviado no payload JSON.
+//   O motor é determinado pela URL da rota — não pelo payload do cliente.
+//   Isso elimina conflitos de regras e bugs de validação de payload.
+//
+// ROTAS DO SERVIDOR (Build 155):
+//   POST /api/ai/stream/plantao → PROMPT_MODO_PLANTAO + MODE_ANCHOR_PLANTAO
+//                                  LINE BUDGET ≤14 linhas, TRAVA DE FALLBACK
+//   POST /api/ai/stream/estudo  → PROMPT_MODO_ESTUDO  + MODE_ANCHOR_ESTUDO
+//                                  LINE BUDGET ≤24 linhas, ACRONYM RULE
+//   POST /api/ai/stream         → alias legado (retrocompat. builds <155)
+//
+// VANTAGENS vs. rota única com longResponse:
+//   • Modo determinado server-side pela URL — impossível de divergir
+//   • Payload mais limpo: sem campo booleano de controle de modo
+//   • Logs do servidor identificam o motor pelo endpoint, não pelo payload
+//   • Dois motores completamente isolados sem risco de contaminação
 //
 // PROTOCOLO SSE DO SERVIDOR:
 //   Eventos recebidos:
@@ -25,10 +37,6 @@
 // CONFIGURAÇÃO:
 //   AiGatewayService.configure(baseUrl: 'https://seu-servidor.ondigitalocean.app')
 //   AiGatewayService.isConfigured → true se baseUrl foi definida
-//
-// MODO DE ATIVAÇÃO:
-//   Primário: quando baseUrl configurada E usuário NÃO tem BYOA key
-//   Opt-in:   pode ser forçado via AiGatewayService.forceGateway = true
 //
 // ANTI-BUFFERING (Build 146):
 //   Importação condicional por plataforma:
@@ -81,8 +89,20 @@ class AiGatewayService {
   /// true se o gateway foi configurado e está pronto para uso.
   static bool get isConfigured => _baseUrl != null && _baseUrl!.isNotEmpty;
 
-  /// Endpoint de streaming SSE.
-  static String get _streamUrl => '$_baseUrl/api/ai/stream';
+  // ── Endpoints de streaming SSE (Build 155 — dois motores independentes) ──
+
+  /// Motor Plantão: flashcard ≤14 linhas, TRAVA DE FALLBACK.
+  /// Usa EXCLUSIVAMENTE PROMPT_MODO_PLANTAO + MODE_ANCHOR_PLANTAO server-side.
+  static String get _streamUrlPlantao => '$_baseUrl/api/ai/stream/plantao';
+
+  /// Motor Estudos: revisão ≤24 linhas, ACRONYM RULE.
+  /// Usa EXCLUSIVAMENTE PROMPT_MODO_ESTUDO + MODE_ANCHOR_ESTUDO server-side.
+  static String get _streamUrlEstudo  => '$_baseUrl/api/ai/stream/estudo';
+
+  /// Chave dinâmica de URL por modo — ponto central de chaveamento.
+  /// [longResponse] false → /stream/plantao | true → /stream/estudo
+  static String _streamUrlFor(bool longResponse) =>
+      longResponse ? _streamUrlEstudo : _streamUrlPlantao;
 
   /// Endpoint síncrono (Context Classifier).
   static String get _syncUrl => '$_baseUrl/api/ai/sync';
@@ -92,16 +112,16 @@ class AiGatewayService {
   /// Envia uma mensagem ao servidor e retorna um [Stream<GeminiChunk>].
   ///
   /// [userMessage]  — pergunta clínica do usuário
-  /// [systemPrompt] — prompt de sistema montado pelo AiService (19 seções)
+  /// [systemPrompt] — prompt de sistema montado pelo AiService
   /// [history]      — histórico de turnos [{role, content}]
   /// [useGrounding] — ativar Google Search no servidor (padrão: true)
-  /// [longResponse] — Motor de Partida (Build 149):
-  ///                    false (padrão) = Modo Plantão: flashcard ≤12 linhas
-  ///                    true           = Modo Estudos: revisão 22-24 linhas
+  /// [longResponse] — chave de motor (Build 155):
+  ///                    false (padrão) → bate em /api/ai/stream/plantao
+  ///                    true           → bate em /api/ai/stream/estudo
   ///
-  /// O servidor injeta automaticamente o ANTI_COGNITION_LEAK_PROMPT ANTES
-  /// do [systemPrompt], garantindo a blindagem anti-CoT server-side.
-  /// A regra LINE BUDGET é injetada dinamicamente com base em [longResponse].
+  ///   IMPORTANTE: `longResponse` NÃO é mais enviado no payload JSON.
+  ///   O motor é selecionado pela URL da rota — determinístico server-side.
+  ///   O servidor nunca lê esse campo das rotas dedicadas (Build 155).
   static Stream<GeminiChunk> sendStream({
     required String userMessage,
     required String systemPrompt,
@@ -115,12 +135,12 @@ class AiGatewayService {
 
     final controller = StreamController<GeminiChunk>();
     _runSseStream(
-      controller: controller,
-      userMessage: userMessage,
+      controller:   controller,
+      userMessage:  userMessage,
       systemPrompt: systemPrompt,
-      history: history,
+      history:      history,
       useGrounding: useGrounding,
-      longResponse: longResponse,
+      longResponse: longResponse,  // usado apenas para escolher a URL da rota
     );
     return controller.stream;
   }
@@ -137,27 +157,31 @@ class AiGatewayService {
   }) async {
     if (controller.isClosed) return;
 
+    // Build 155: URL chaveada pela rota — motor determinístico server-side
+    final targetUrl = _streamUrlFor(longResponse);
+    final motor     = longResponse ? 'ESTUDO' : 'PLANTÃO';
     final requestId = 'gw_${DateTime.now().millisecondsSinceEpoch}';
-    final mode = longResponse ? 'ESTUDO' : 'PLANTÃO';
-    debugPrint('[AiGatewayService][$requestId] modo=$mode → $_streamUrl');
+    debugPrint('[AiGatewayService][$requestId] motor=$motor → $targetUrl');
 
-    // Monta o payload JSON que será enviado ao servidor
-    // longResponse (Build 149): Motor de Partida — controla LINE BUDGET server-side
+    // Build 155: `longResponse` NÃO enviado no payload.
+    // O motor é determinado pela URL da rota — não pelo payload JSON.
+    // Isso elimina o vetor de conflito onde o campo booleano poderia
+    // divergir do comportamento esperado server-side.
     final payload = jsonEncode({
       'userMessage':  userMessage,
       'systemPrompt': systemPrompt,
       'history':      history,
       'useGrounding': useGrounding,
-      'longResponse': longResponse,
+      // longResponse omitido intencionalmente — motor selecionado pela URL
     });
 
     // Delega à função runSseStreamPlatform() do arquivo de plataforma
-    // selecionado em compile-time pela importação condicional acima:
-    //   • Web  → ai_gateway_service_web.dart  (fetch nativo via dart:js_interop)
-    //   • IO   → ai_gateway_service_io.dart   (http.Client streaming)
+    // selecionado em compile-time pela importação condicional:
+    //   • Web → ai_gateway_service_web.dart (fetch nativo via dart:js_interop)
+    //   • IO  → ai_gateway_service_io.dart  (http.Client streaming)
     await runSseStreamPlatform(
       controller: controller,
-      streamUrl:  _streamUrl,
+      streamUrl:  targetUrl,   // ← URL dinâmica por motor (Build 155)
       payload:    payload,
       requestId:  requestId,
     );

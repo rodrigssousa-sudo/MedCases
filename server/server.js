@@ -1,15 +1,17 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * MedCases Pro — AI Gateway Server  v2.5.0  (Build 153)
+ * MedCases Pro — AI Gateway Server  v3.0.0  (Build 155)
  * ═══════════════════════════════════════════════════════════════════════════
  *
  * ARQUITETURA:
  *   Express.js + Fetch Streams (Node 18+) → SSE para Flutter
  *
  * ENDPOINTS:
- *   POST /api/ai/stream   → Streaming SSE (resposta principal ao usuário)
- *   POST /api/ai/sync     → Resposta síncrona (Context Classifier interno)
- *   GET  /health          → Health check (Digital Ocean App Platform)
+ *   POST /api/ai/stream/plantao → Motor Plantão exclusivo (Build 155)
+ *   POST /api/ai/stream/estudo  → Motor Estudos exclusivo (Build 155)
+ *   POST /api/ai/stream         → Alias legado (retrocompat. clientes antigos)
+ *   POST /api/ai/sync           → Resposta síncrona (Context Classifier interno)
+ *   GET  /health                → Health check (Digital Ocean App Platform)
  *
  * PROBLEMAS RESOLVIDOS:
  *   1. Chain-of-Thought Leakage  → ANTI_COGNITION_LEAK_PROMPT + filtro SSE
@@ -24,6 +26,8 @@
  *  10. Prompts monolíticos     → PROMPT_MODO_PLANTAO / PROMPT_MODO_ESTUDO isolados (B151)
  *  11. Mode Anchor Injection   → Par sintético user/model injetado em contents[0] (B153)
  *                                Força calibração de estilo independente do histórico
+ *  12. Dois motores isolados   → /stream/plantao + /stream/estudo sem longResponse (B155)
+ *                                Elimina conflitos de regras e bugs de validação de payload
  *
  * ANTI-BUFFERING (Build 146):
  *   O Digital Ocean App Platform usa um proxy Nginx interno que pode segurar
@@ -1007,32 +1011,42 @@ const streamLimiter = rateLimit({
 });
 
 // ════════════════════════════════════════════════════════════════════════════
-// ROTA: POST /api/ai/stream
+// HANDLER COMPARTILHADO: handleStreamRequest  (Build 155)
 //
-// Entrada (JSON):
+// Ambas as rotas dedicadas (/stream/plantao e /stream/estudo) delegam aqui.
+// O parâmetro `forcedMode` é fixado em compile-time pela rota — nunca lido
+// do req.body. Isso elimina o vetor de conflito onde `longResponse` vindo
+// do cliente poderia divergir do motor esperado e gerar bugs de validação.
+//
+// Entrada (JSON) — idêntico para ambas as rotas:
 //   {
-//     userMessage:  string,     // pergunta clínica do usuário
-//     systemPrompt: string,     // system prompt montado pelo Flutter (AiService)
-//     history:      Array,      // histórico de mensagens (opcional)
-//     useGrounding: boolean,    // ativar Google Search (padrão: true)
-//     maxTokens:    number,     // tokens máximos (padrão: 3200)
-//     longResponse: boolean,    // Motor de Partida (Build 151):
-//                               //   false / omitido → PROMPT_MODO_PLANTAO (flashcard ≤14 linhas)
-//                               //   true            → PROMPT_MODO_ESTUDO  (revisão ≤24 linhas)
+//     userMessage:  string,   // pergunta clínica do usuário
+//     systemPrompt: string,   // system prompt montado pelo Flutter (AiService)
+//     history:      Array,    // histórico de mensagens (opcional)
+//     useGrounding: boolean,  // ativar Google Search (padrão: true)
+//     maxTokens:    number,   // tokens máximos (padrão: 3200, opcional)
 //   }
 //
 // Saída (SSE):
 //   data: {"text":"fragmento"}\n\n
 //   data: {"done":true}\n\n
 //   data: {"error":"código"}\n\n
+//   : ping\n\n
 // ════════════════════════════════════════════════════════════════════════════
 
-app.post('/api/ai/stream', streamLimiter, async (req, res) => {
+/**
+ * Handler central das rotas SSE de streaming.
+ *
+ * @param {import('express').Request}  req
+ * @param {import('express').Response} res
+ * @param {boolean} forcedMode  false = MOTOR PLANTÃO | true = MOTOR ESTUDOS
+ */
+async function handleStreamRequest(req, res, forcedMode) {
   const requestId = req.headers['x-request-id'] ?? `req_${Date.now()}`;
-  log.info(`[${requestId}] POST /api/ai/stream`);
+  const routeName = forcedMode ? '/stream/estudo' : '/stream/plantao';
+  log.info(`[${requestId}] POST ${routeName}`);
 
   // ── Validação da API key ──────────────────────────────────────────────────
-  // Prioridade: header Authorization > variável de ambiente
   const bearerKey = (req.headers.authorization ?? '').replace(/^Bearer\s+/i, '').trim();
   const apiKey    = bearerKey || GEMINI_API_KEY;
 
@@ -1048,81 +1062,98 @@ app.post('/api/ai/stream', streamLimiter, async (req, res) => {
     return res.status(400).json({ error: 'bad_request', message: validationErr });
   }
 
+  // ── Extrai campos (longResponse jamais vem do cliente nas rotas B155) ─────
   const {
     userMessage,
     systemPrompt,
     history      = [],
     useGrounding = true,
     maxTokens,
-    longResponse = false,  // Motor de Partida (Build 151): false=PLANTAO | true=ESTUDO
   } = req.body;
 
-  // ── Monta payload ─────────────────────────────────────────────────────────
+  // forcedMode é determinístico pela rota — nunca pelo payload do cliente
+  const longResponse = forcedMode;
+
+  // ── Monta payload Gemini ──────────────────────────────────────────────────
   const systemInstruction = buildSystemInstruction(systemPrompt, longResponse);
-  // Build 153: buildContents recebe longResponse para MODE ANCHOR INJECTION
   const contents          = buildContents(history, userMessage, longResponse);
-  const body              = buildGeminiPayload({
+  const geminiBody        = buildGeminiPayload({
     systemInstruction,
     contents,
     useGrounding,
     maxTokens,
   });
 
-  const modo = longResponse ? 'ESTUDO' : 'PLANTAO';
-  log.info(`[${requestId}] modo=${modo} useGrounding=${useGrounding} si_len=${systemInstruction.length} contents_turns=${contents.length} anchor=${longResponse ? 'ESTUDO' : 'PLANTAO'}`);
+  const modo = forcedMode ? 'ESTUDO' : 'PLANTAO';
+  log.info(`[${requestId}] motor=${modo} grounding=${useGrounding} si_len=${systemInstruction.length} turns=${contents.length}`);
 
-  // ── Configura cabeçalhos SSE ──────────────────────────────────────────────
-  // ── Build 146: Headers anti-buffering completos ────────────────────────
-  //
-  // Cache-Control: no-cache, no-transform
-  //   • no-cache: sem cache de resposta SSE em proxies
-  //   • no-transform: CRÍTICO — impede que proxies Nginx/CDN comprimam o
-  //     payload (gzip/deflate em SSE quebra o framing de eventos).
-  //     Anteriormente era "no-store" — que não instrui proxies sobre transform.
-  //
-  // X-Accel-Buffering: no
-  //   Instrução direta ao Nginx para não usar proxy_buffering nesta conexão.
-  //   O Digital Ocean App Platform usa Nginx como proxy reverso interno.
-  //
-  // Transfer-Encoding: chunked
-  //   Força modo chunked explicitamente. Sem Content-Length definido, Node
-  //   já usa chunked por padrão, mas declarar é garantia para proxies.
-  res.setHeader('Content-Type',       'text/event-stream; charset=utf-8');
-  res.setHeader('Cache-Control',      'no-cache, no-transform');
-  res.setHeader('Connection',         'keep-alive');
-  res.setHeader('X-Accel-Buffering',  'no');
-  res.setHeader('Transfer-Encoding',  'chunked');
+  // ── Headers SSE anti-buffering (Build 146) ────────────────────────────────
+  //   Cache-Control: no-transform → impede compressão por proxies Nginx/CDN.
+  //   X-Accel-Buffering: no      → instrui Nginx do Digital Ocean.
+  //   TCP_NODELAY                → desativa Algoritmo de Nagle no socket TCP.
+  //   X-Motor                   → identifica o motor ativo na resposta HTTP.
+  res.setHeader('Content-Type',           'text/event-stream; charset=utf-8');
+  res.setHeader('Cache-Control',          'no-cache, no-transform');
+  res.setHeader('Connection',             'keep-alive');
+  res.setHeader('X-Accel-Buffering',      'no');
+  res.setHeader('Transfer-Encoding',      'chunked');
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Request-ID', requestId);
+  res.setHeader('X-Request-ID',           requestId);
+  res.setHeader('X-Motor',                modo);  // B155: identifica motor na resposta
 
-  // ── Build 146: TCP_NODELAY — desativa Algoritmo de Nagle ────────────────
-  //
-  // O Algoritmo de Nagle (RFC 896) agrupa pacotes TCP pequenos em um lote
-  // maior para reduzir overhead de rede. Correto para HTTP REST, mas
-  // catastrófico para SSE: cada chunk do Gemini pode ficar represado até
-  // que o buffer TCP acumule ~1460 bytes (MTU padrão).
-  //
-  // setNoDelay(true) = TCP_NODELAY = cada socket.write() vira um pacote
-  // TCP independente enviado imediatamente, sem esperar outros dados.
-  //
-  // Deve ser chamado ANTES de flushHeaders() para garantir que o handshake
-  // HTTP inicial também seja enviado imediatamente.
   if (res.socket) {
     res.socket.setNoDelay(true);
     log.debug(`[${requestId}] TCP_NODELAY ativado`);
   }
 
-  // Envia headers imediatamente (antes do primeiro chunk)
   res.flushHeaders();
+  req.on('close', () => log.debug(`[${requestId}] Cliente desconectou`));
 
-  // Detecta desconexão do cliente
-  req.on('close', () => {
-    log.debug(`[${requestId}] Cliente desconectou`);
-  });
+  // ── Relay do stream Gemini → SSE ─────────────────────────────────────────
+  await relayStream(res, geminiBody, apiKey);
+  log.info(`[${requestId}] Stream encerrado [${modo}]`);
+}
 
-  // ── Relay do stream ───────────────────────────────────────────────────────
-  await relayStream(res, body, apiKey);
-  log.info(`[${requestId}] Stream encerrado`);
+// ════════════════════════════════════════════════════════════════════════════
+// ROTA: POST /api/ai/stream/plantao  (Build 155 — Motor Plantão exclusivo)
+//
+// Motor completamente isolado: usa EXCLUSIVAMENTE PROMPT_MODO_PLANTAO +
+// MODE_ANCHOR_PLANTAO. Não aceita nem lê `longResponse` do payload.
+// LINE BUDGET: ≤14 linhas (flashcard de conduta imediata).
+// TRAVA DE FALLBACK: termos não-clínicos (SOAP, ACLS-curso) → pergunta guiada.
+// ════════════════════════════════════════════════════════════════════════════
+
+app.post('/api/ai/stream/plantao', streamLimiter, (req, res) =>
+  handleStreamRequest(req, res, false),
+);
+
+// ════════════════════════════════════════════════════════════════════════════
+// ROTA: POST /api/ai/stream/estudo   (Build 155 — Motor Estudos exclusivo)
+//
+// Motor completamente isolado: usa EXCLUSIVAMENTE PROMPT_MODO_ESTUDO +
+// MODE_ANCHOR_ESTUDO. Não aceita nem lê `longResponse` do payload.
+// LINE BUDGET: flexível ≤24 linhas (revisão acadêmica profunda).
+// ACRONYM RULE: qualquer acrônimo (SOAP, ACLS, ATLS...) → definição completa.
+// ════════════════════════════════════════════════════════════════════════════
+
+app.post('/api/ai/stream/estudo', streamLimiter, (req, res) =>
+  handleStreamRequest(req, res, true),
+);
+
+// ════════════════════════════════════════════════════════════════════════════
+// ROTA: POST /api/ai/stream  (alias legado — Build 155)
+//
+// Preserva retrocompatibilidade com clientes antigos que enviam `longResponse`
+// no payload. Roteia para o motor correto lendo o campo.
+// Novos clientes Flutter (B155+) NUNCA usam esta rota — batem diretamente
+// em /stream/plantao ou /stream/estudo.
+// ════════════════════════════════════════════════════════════════════════════
+
+app.post('/api/ai/stream', streamLimiter, (req, res) => {
+  const legacyMode = req.body?.longResponse === true;
+  const requestId  = req.headers['x-request-id'] ?? `req_${Date.now()}`;
+  log.warn(`[${requestId}] rota legada /api/ai/stream → motor ${legacyMode ? 'ESTUDO' : 'PLANTAO'}`);
+  return handleStreamRequest(req, res, legacyMode);
 });
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -1185,8 +1216,15 @@ app.get('/health', (_req, res) => {
   res.json({
     status:    'ok',
     service:   'MedCases Pro AI Gateway',
-    version:   '2.4.0',
+    version:   '3.0.0',
+    build:     '155',
     model:     GEMINI_MODEL,
+    endpoints: [
+      'POST /api/ai/stream/plantao',
+      'POST /api/ai/stream/estudo',
+      'POST /api/ai/stream (legado)',
+      'POST /api/ai/sync',
+    ],
     timestamp: new Date().toISOString(),
     uptime:    Math.floor(process.uptime()),
   });
@@ -1218,12 +1256,13 @@ function sleep(ms) {
 
 app.listen(PORT, '0.0.0.0', () => {
   log.info('══════════════════════════════════════════════════════');
-  log.info('  MedCases Pro — AI Gateway Server v2.4.0 (Build 151)');
+  log.info('  MedCases Pro — AI Gateway Server v3.0.0 (Build 155)');
   log.info(`  Porta:         ${PORT}`);
   log.info(`  Ambiente:      ${IS_PROD ? 'production' : 'development'}`);
   log.info(`  Modelo Gemini: ${GEMINI_MODEL}`);
   log.info(`  GEMINI_KEY:    ${GEMINI_API_KEY ? '✓ configurada' : '✗ AUSENTE — servidor não funcionará'}`);
   log.info(`  CORS origem:   ${ALLOWED_ORIGIN}`);
+  log.info('  Rotas SSE:     /stream/plantao  /stream/estudo  /stream(legado)');
   log.info('══════════════════════════════════════════════════════');
 });
 
