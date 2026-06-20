@@ -253,8 +253,9 @@ class SoapSectionWidget extends StatefulWidget {
 
 class SoapSectionWidgetState extends State<SoapSectionWidget> {
   late final SoapNotifier _notifier;
-  // Qual accordion está aberto: 0=S 1=O 2=A 3=P null=nenhum
-  int? _openIdx = 0;
+  // R2: Todos os accordions iniciam FECHADOS — interface 100% limpa ao carregar.
+  // null = nenhum aberto. O médico abre o que precisa.
+  int? _openIdx;
 
   // Build 160: versão do draft — incrementada ao aplicar IA para forçar
   // reconstrução dos sub-widgets (e portanto seus TextEditingControllers)

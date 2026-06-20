@@ -1,14 +1,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 165 — Bugs Críticos Classe 1 Corrigidos
+// InternacionScreen — Build 167-R (Refinamento UX)
 //
-// FIX 165-A: "Apagão O-A-P" — schema flat no soap_copilot_service.dart
-// FIX 165-B: Botão ✕ faz HARD DELETE no SharedPreferences antes de setState
-//            (sem isso, o paciente ressuscitava ao salvar nova sessão)
-// FIX 165-C: Chave de persistência única — nunca mais colisão 'default'
-//            Sessões sem nome+cama recebem timestamp único na chave
-// FIX 165-D: FloatingActionButton estendido "Nueva Evolución" proeminente
-//            Remove botão miniaturizado do AppBar — FAB impossível de não ver
+// R1: FAB removido — botão "Nueva" compacto de volta ao AppBar
+// R2: Accordion S inicia fechado (openIdx = null)
+// R3: Motor de Auditoria — HistorialSection com viewer read-only
+// R4: Retomar corrigido — carrega mesmo dia, SEM auto-avanço de dia
 //
+// Build 165: Hard delete, key collision fix, FAB (revertido em R1)
 // Build 164: Motor DDI integrado
 // Build 163: Protocolo Clean Slate
 // ─────────────────────────────────────────────────────────────────────────────
@@ -161,25 +159,47 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
-  // ── Retoma sessão salva (dia seguinte) ────────────────────────────────────
+  // ── R4: Retoma sessão salva — MESMO DIA, SEM avanço automático ───────────
+  // Antes: usava session.nextDayPaciente (diaInternacao+1) e nextDayDraft (zerado)
+  // Agora: restaura o paciente e historial exatamente como foram salvos.
+  //        O médico decide manualmente quando avançar o dia.
   void _resumeSession(PacienteSession session) {
+    // Cria draft do MESMO dia: herda autorNombre mas mantém S/O/A/P limpos
+    // para uma nova entrada clínica, preservando o contexto do paciente.
+    final sameDayDraft = EvolucionModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      fecha: DateTime.now(),
+      autorNombre: session.historial.isNotEmpty
+          ? session.historial.last.autorNombre
+          : 'Dr.',
+      subjetivo: const SubjetivoData(),
+      objetivo: const ObjetivoData(),
+      evaluacion: const EvaluacionData(),
+      plan: const PlanData(),
+    );
+
     setState(() {
-      _paciente = session.nextDayPaciente;
-      _historial = session.historial;
-      _draftEvolucion = session.nextDayDraft();
-      _savedSessions = _savedSessions
+      _paciente       = session.paciente;       // MESMO paciente, MESMO dia
+      _historial      = session.historial;      // historial anterior preservado
+      _draftEvolucion = sameDayDraft;           // novo draft do dia atual
+      _savedSessions  = _savedSessions
           .where((s) => s.sessionKey != session.sessionKey)
           .toList();
     });
 
+    // Força rebuild dos TextControllers com estado limpo
+    _soapKey.currentState?.resetSoap(sameDayDraft);
+
+    final isEs = _isEs;
+    final nome = session.paciente.nome.isNotEmpty ? session.paciente.nome : (isEs ? 'Paciente' : 'Paciente');
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(children: [
         const Icon(Icons.history_rounded, color: Colors.white, size: 16),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(_isEs
-              ? 'Día ${session.nextDayPaciente.diaInternacao} — Sesión de ${session.paciente.nome.isNotEmpty ? session.paciente.nome : "Paciente"} cargada'
-              : 'Dia ${session.nextDayPaciente.diaInternacao} — Sessão de ${session.paciente.nome.isNotEmpty ? session.paciente.nome : "Paciente"} carregada'),
+          child: Text(isEs
+              ? 'Día ${session.paciente.diaInternacao} — Sesión de $nome cargada'
+              : 'Dia ${session.paciente.diaInternacao} — Sessão de $nome carregada'),
         ),
       ]),
       backgroundColor: InternacionTheme.accentLight,
@@ -325,6 +345,23 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
+  // ── R3: Motor de Auditoria — viewer read-only de evolução histórica ─────────
+  // Abre ModalBottomSheet com os dados completos e IMUTÁVEIS do registro
+  // selecionado. Nenhum campo é editável: protege integridade da auditoria clínica.
+  void _showAuditoriaModal(
+    BuildContext ctx,
+    EvolucionModel ev,
+    bool dark,
+    String lang,
+  ) {
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _AuditoriaViewer(ev: ev, dark: dark, lang: lang),
+    );
+  }
+
   bool get _isEs {
     try {
       return context.read<AppProvider>().lang == 'es';
@@ -344,7 +381,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
     return Scaffold(
       backgroundColor: theme.surface,
-      // ── AppBar premium — sem neon (Build 162) ────────────────────────────
+      // ── R1: AppBar premium com botão "Nueva" compacto integrado ────────────
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(52),
         child: Container(
@@ -360,7 +397,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Row(
                 children: [
-                  // ── Build 162: Botão VOLTAR explícito ───────────────────
+                  // Botão VOLTAR
                   IconButton(
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
@@ -415,7 +452,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        '${_historial.length} ${isEs ? 'evoluciones' : 'evoluções'}',
+                        '${_historial.length} ${isEs ? 'evol.' : 'evol.'}',
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w600,
@@ -423,10 +460,47 @@ class _InternacionScreenState extends State<InternacionScreen> {
                         ),
                       ),
                     ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 6),
 
-                  // FIX 165-D: Botão "Nueva Evolución" REMOVIDO do AppBar
-                  // → Substituído por FAB estendido (ver floatingActionButton abaixo)
+                  // R1: Botão "Nueva" compacto — metade do tamanho do FAB anterior
+                  GestureDetector(
+                    onTap: _confirmAndReset,
+                    child: Container(
+                      height: 32,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: InternacionTheme.accentLight
+                            .withValues(alpha: dark ? 0.18 : 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: InternacionTheme.accentLight
+                              .withValues(alpha: 0.40),
+                          width: 0.9,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.cleaning_services_rounded,
+                            size: 13,
+                            color: InternacionTheme.accentLight,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            isEs ? 'Nueva' : 'Nova',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: InternacionTheme.accentLight,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
                 ],
               ),
             ),
@@ -434,29 +508,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
         ),
       ),
 
-      // ── FIX 165-D: FAB estendido "Nueva Evolución" — impossível não ver ──────
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _confirmAndReset,
-        backgroundColor: InternacionTheme.accentLight,
-        foregroundColor: Colors.white,
-        elevation: 6,
-        icon: const Icon(Icons.cleaning_services_rounded, size: 20),
-        label: Text(
-          isEs ? 'Nueva Evolución' : 'Nova Evolução',
-          style: const TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 13.5,
-            letterSpacing: 0.3,
-          ),
-        ),
-        tooltip: isEs
-            ? 'Limpiar pizarrón e iniciar nueva evolución'
-            : 'Limpar pizarrão e iniciar nova evolução',
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -480,11 +533,12 @@ class _InternacionScreenState extends State<InternacionScreen> {
             ),
             const SizedBox(height: 12),
 
-            // ── 3. HISTORIAL — zero espaço se vazio ─────────────────────────
+            // ── 3. HISTORIAL — R3: onTap abre Auditor read-only ────────────
             HistorialSection(
               evoluciones: _historial,
               dark: dark,
               lang: lang,
+              onTap: (ev) => _showAuditoriaModal(context, ev, dark, lang),
             ),
             if (_historial.isNotEmpty) const SizedBox(height: 12),
 
@@ -615,9 +669,10 @@ class _SessionCard extends StatelessWidget {
     final p    = session.paciente;
     final nome = p.nome.isNotEmpty ? p.nome : (isEs ? 'Paciente' : 'Paciente');
     final cama = p.cama.isNotEmpty ? (isEs ? 'Cama ${p.cama}' : 'Leito ${p.cama}') : '';
+    // R4: mostra apenas o dia atual (sem seta "→Día X+1")
     final dia  = isEs
-        ? 'Día ${p.diaInternacao}→${session.nextDayPaciente.diaInternacao}'
-        : 'Dia ${p.diaInternacao}→${session.nextDayPaciente.diaInternacao}';
+        ? 'Día ${p.diaInternacao}'
+        : 'Dia ${p.diaInternacao}';
     final evol = '${session.historial.length} evol.';
 
     return Container(
@@ -721,6 +776,514 @@ class _SessionCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── R3: Auditoria Clínica — ModalBottomSheet read-only ────────────────────────
+// Exibe o registro histórico completo de forma imutável.
+// Nenhum TextField: todos os dados são Text() somente-leitura.
+class _AuditoriaViewer extends StatelessWidget {
+  final EvolucionModel ev;
+  final bool dark;
+  final String lang;
+
+  const _AuditoriaViewer({
+    required this.ev,
+    required this.dark,
+    required this.lang,
+  });
+
+  bool get isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = InternacionTheme(dark);
+    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.88,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, scrollCtrl) => Container(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: InternacionTheme.amber.withValues(alpha: 0.35),
+            width: 1.2,
+          ),
+        ),
+        child: Column(
+          children: [
+            // ── Handle ────────────────────────────────────────────────────────
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 36, height: 4,
+                decoration: BoxDecoration(
+                  color: theme.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // ── Header ────────────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36, height: 36,
+                    decoration: BoxDecoration(
+                      color: InternacionTheme.amber.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.lock_clock_rounded,
+                        size: 18, color: InternacionTheme.amber),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs ? 'Auditoría Clínica' : 'Auditoria Clínica',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          ev.fechaFormatada,
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            color: InternacionTheme.amber,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Badge leitura somente
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: InternacionTheme.amber.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: InternacionTheme.amber.withValues(alpha: 0.40),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Text(
+                      isEs ? 'READ-ONLY' : 'READ-ONLY',
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        color: InternacionTheme.amber,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Aviso imutabilidade
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color:
+                      InternacionTheme.amber.withValues(alpha: dark ? 0.10 : 0.07),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: InternacionTheme.amber.withValues(alpha: 0.30),
+                    width: 0.8,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.shield_rounded,
+                        size: 13, color: InternacionTheme.amber),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        isEs
+                            ? 'Registro histórico protegido. Visualización de solo lectura.'
+                            : 'Registro histórico protegido. Visualização somente leitura.',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: InternacionTheme.amber,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Divider(color: theme.border, height: 1, thickness: 0.8),
+
+            // ── Conteúdo scrollável ───────────────────────────────────────────
+            Expanded(
+              child: ListView(
+                controller: scrollCtrl,
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
+                children: _buildFields(theme),
+              ),
+            ),
+
+            // ── Botão fechar ─────────────────────────────────────────────────
+            Divider(color: theme.border, height: 1, thickness: 0.8),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                20, 12, 20,
+                12 + MediaQuery.of(context).viewPadding.bottom,
+              ),
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  decoration: BoxDecoration(
+                    color: theme.card,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: theme.border, width: 0.9),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.close_rounded,
+                          size: 16, color: theme.textSecondary),
+                      const SizedBox(width: 6),
+                      Text(
+                        isEs ? 'Cerrar' : 'Fechar',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: theme.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildFields(InternacionTheme theme) {
+    final widgets = <Widget>[];
+    final s  = ev.subjetivo;
+    final sv = ev.objetivo.signosVitales;
+    final ef = ev.objetivo.examenFisico;
+    final ex = ev.objetivo.examenes;
+    final a  = ev.evaluacion;
+    final p  = ev.plan;
+
+    // ── Evolução (Subjetivo) ─────────────────────────────────────────────────
+    widgets.add(_auditSection(
+      isEs ? 'Evolución' : 'Evolução',
+      Icons.chat_bubble_outline_rounded,
+      InternacionTheme.cyan,
+      theme,
+    ));
+    if (s.notePasaNoche.isNotEmpty) {
+      widgets.add(_auditField(
+        isEs ? 'Cómo pasó la noche' : 'Como passou a noite',
+        s.notePasaNoche,
+        theme,
+      ));
+    }
+    if (s.dolorEscala != null) {
+      widgets.add(_auditField('EVA', '${s.dolorEscala}/10', theme));
+    }
+    final syms = <String>[];
+    if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
+    if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
+    if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
+    if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
+    if (s.suenoRestado) syms.add(isEs ? 'Sueño alterado' : 'Sono alterado');
+    if (syms.isNotEmpty) {
+      widgets.add(_auditField(
+        isEs ? 'Síntomas' : 'Sintomas', syms.join(', '), theme));
+    }
+    if (s.alimentacion.isNotEmpty) {
+      widgets.add(_auditField(
+        isEs ? 'Alimentación' : 'Alimentação', s.alimentacion, theme));
+    }
+    if (s.diuresis.isNotEmpty) {
+      widgets.add(_auditField('Diuresis', s.diuresis, theme));
+    }
+    if (s.evacuacion.isNotEmpty) {
+      widgets.add(_auditField(
+        isEs ? 'Evacuación' : 'Evacuação', s.evacuacion, theme));
+    }
+    if (s.notasLibres.isNotEmpty) {
+      widgets.add(_auditField(
+        isEs ? 'Notas libres' : 'Notas livres', s.notasLibres, theme));
+    }
+
+    // ── SV ───────────────────────────────────────────────────────────────────
+    if (!sv.isEmpty) {
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(_auditSection(
+        isEs ? 'Signos Vitales' : 'Sinais Vitais',
+        Icons.monitor_heart_rounded,
+        const Color(0xFFEF4444),
+        theme,
+      ));
+      final svParts = <String>[];
+      if (sv.pa.isNotEmpty) svParts.add('TA: ${sv.pa} mmHg');
+      if (sv.fc.isNotEmpty) svParts.add('FC: ${sv.fc} lpm');
+      if (sv.fr.isNotEmpty) svParts.add('FR: ${sv.fr} rpm');
+      if (sv.satO2.isNotEmpty) svParts.add('SatO₂: ${sv.satO2}%');
+      if (sv.temperatura.isNotEmpty) svParts.add('Temp: ${sv.temperatura}°C');
+      widgets.add(_auditField('SV', svParts.join('   '), theme));
+    }
+
+    // ── Examen Físico ────────────────────────────────────────────────────────
+    final hasEf = ef.estadoGeneral.isNotEmpty || ef.acv.isNotEmpty ||
+        ef.ar.isNotEmpty || ef.abdomen.isNotEmpty || ef.extremidades.isNotEmpty;
+    if (hasEf) {
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(_auditSection(
+        isEs ? 'Examen Físico' : 'Exame Físico',
+        Icons.accessibility_rounded,
+        const Color(0xFF60A5FA),
+        theme,
+      ));
+      if (ef.estadoGeneral.isNotEmpty) {
+        widgets.add(_auditField('EG', ef.estadoGeneral, theme));
+      }
+      if (ef.acv.isNotEmpty) widgets.add(_auditField('CV/Neuro', ef.acv, theme));
+      if (ef.ar.isNotEmpty) widgets.add(_auditField('Resp', ef.ar, theme));
+      if (ef.abdomen.isNotEmpty) {
+        widgets.add(_auditField('Abd', ef.abdomen, theme));
+      }
+      if (ef.extremidades.isNotEmpty) {
+        widgets.add(_auditField('MMII', ef.extremidades, theme));
+      }
+    }
+
+    // ── Exames Complementares ────────────────────────────────────────────────
+    final hasEx = ex.laboratorio.isNotEmpty || ex.imagenes.isNotEmpty ||
+        ex.culturas.isNotEmpty || ex.ecg.isNotEmpty;
+    if (hasEx) {
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(_auditSection(
+        isEs ? 'Laboratorio / Exámenes' : 'Laboratório / Exames',
+        Icons.biotech_rounded,
+        const Color(0xFF4ADE80),
+        theme,
+      ));
+      if (ex.laboratorio.isNotEmpty) {
+        widgets.add(_auditField(isEs ? 'Lab' : 'Lab', ex.laboratorio, theme));
+      }
+      if (ex.imagenes.isNotEmpty) {
+        widgets.add(_auditField(
+          isEs ? 'Imágenes' : 'Imagens', ex.imagenes, theme));
+      }
+      if (ex.culturas.isNotEmpty) {
+        widgets.add(_auditField('Culturas', ex.culturas, theme));
+      }
+      if (ex.ecg.isNotEmpty) widgets.add(_auditField('ECG', ex.ecg, theme));
+    }
+
+    // ── Impresión ────────────────────────────────────────────────────────────
+    final hasA = a.notasEvaluacion.isNotEmpty || a.estado != null ||
+        a.problemasActivos.isNotEmpty;
+    if (hasA) {
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(_auditSection(
+        isEs ? 'Impresión Clínica' : 'Impressão Clínica',
+        Icons.trending_up_rounded,
+        const Color(0xFFF59E0B),
+        theme,
+      ));
+      if (a.estado != null) {
+        widgets.add(_auditField(
+          isEs ? 'Estado' : 'Estado',
+          a.estado!.label(lang),
+          theme,
+        ));
+      }
+      if (a.problemasActivos.isNotEmpty) {
+        widgets.add(_auditField(
+          isEs ? 'Problemas' : 'Problemas',
+          a.problemasActivos.join('\n'),
+          theme,
+        ));
+      }
+      if (a.notasEvaluacion.isNotEmpty) {
+        widgets.add(_auditField(
+          isEs ? 'Notas' : 'Notas', a.notasEvaluacion, theme));
+      }
+    }
+
+    // ── Plan / Conducta ───────────────────────────────────────────────────────
+    final hasP = p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty;
+    if (hasP) {
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(_auditSection(
+        isEs ? 'Conducta / Plan' : 'Conduta / Plano',
+        Icons.assignment_rounded,
+        const Color(0xFFA78BFA),
+        theme,
+      ));
+      if (p.planTerapeutico.isNotEmpty) {
+        widgets.add(_auditField(
+          isEs ? 'Plan' : 'Plano', p.planTerapeutico, theme));
+      }
+      if (p.criteriosAlta.isNotEmpty) {
+        widgets.add(_auditField(
+          isEs ? 'Criterios alta' : 'Critérios alta',
+          p.criteriosAlta,
+          theme,
+        ));
+      }
+    }
+
+    // ── Fármacos ─────────────────────────────────────────────────────────────
+    if (ev.farmacos.isNotEmpty) {
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(_auditSection(
+        isEs ? 'Fármacos' : 'Fármacos',
+        Icons.medication_rounded,
+        const Color(0xFF059669),
+        theme,
+      ));
+      for (final f in ev.farmacos) {
+        final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
+        widgets.add(_auditField(f.medicamento, dos.isEmpty ? '—' : f.dosagem, theme));
+      }
+    }
+
+    // ── Autor ─────────────────────────────────────────────────────────────────
+    widgets.add(const SizedBox(height: 12));
+    widgets.add(Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: theme.card,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: theme.border, width: 0.8),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.person_rounded, size: 14, color: theme.labelColor),
+          const SizedBox(width: 8),
+          Text(
+            '${isEs ? 'Firma' : 'Assinatura'}: ${ev.autorNombre}',
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    ));
+
+    return widgets;
+  }
+
+  Widget _auditSection(
+    String label,
+    IconData icon,
+    Color color,
+    InternacionTheme theme,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 11, color: color),
+                const SizedBox(width: 5),
+                Text(
+                  label.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: color,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              height: 1,
+              color: color.withValues(alpha: 0.20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _auditField(String label, String value, InternacionTheme theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(11),
+        decoration: BoxDecoration(
+          color: theme.card,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: theme.border, width: 0.8),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 80,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w600,
+                  color: theme.textSecondary,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: theme.textPrimary,
+                  height: 1.4,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
