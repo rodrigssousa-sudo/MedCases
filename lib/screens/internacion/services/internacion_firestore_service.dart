@@ -57,6 +57,7 @@
 //   • Lixeira filtra status == 'trashed'
 //   • TTL real via Firestore TTL policy no campo deletedAt (configurar no console)
 // ─────────────────────────────────────────────────────────────────────────────
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../models/evolucion_model.dart';
@@ -359,6 +360,82 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
+  // STREAM DA LIXEIRA — tempo real (Build 202)
+  //
+  // Problema anterior: _TrashModal usava getDeletedSessions() (one-shot Future).
+  // Ao clicar em "Restaurar", o Firestore atualizava o doc (status → active),
+  // mas a UI da lixeira só removia o card via setState local — não havia garantia
+  // de consistência se outro dispositivo deletasse/restaurasse ao mesmo tempo.
+  //
+  // Solução: Stream reativo da query status=='archived' com .snapshots().
+  // O Firestore empurra updates em tempo real — card desaparece da lixeira
+  // INSTANTANEAMENTE após restoreSession() sem precisar de setState manual.
+  //
+  // Para backward-compat (docs legados com status=='trashed'), o stream
+  // inclui AMBAS as queries via Streams.merge (sem rxdart: usa StreamController
+  // + listeners independentes, deduplicando por doc.id no map()).
+  //
+  // IMPORTANTE: Cada query usa single-field index (sem composite) — garante
+  // que o stream não lança FirebaseException por índice ausente.
+  // ─────────────────────────────────────────────────────────────────────────
+  static Stream<List<DeletedSession>> deletedSessionsStream(String uid) {
+    // Combina dois streams Firestore (archived + trashed legado) via
+    // StreamController broadcast — cada snap de qualquer query re-emite a lista
+    // fundida e ordenada. Sem rxdart, sem composite index.
+    QuerySnapshot<Map<String, dynamic>>? snapArchived;
+    QuerySnapshot<Map<String, dynamic>>? snapTrashed;
+
+    final controller = StreamController<List<DeletedSession>>.broadcast();
+
+    void emit() {
+      final seen = <String>{};
+      final all  = <DeletedSession>[];
+      for (final doc in [
+        ...(snapArchived?.docs ?? []),
+        ...(snapTrashed?.docs  ?? []),
+      ]) {
+        if (seen.contains(doc.id)) continue;
+        final st = (doc.data())['status'] as String?;
+        if (st == kStatusActive) continue; // exclui docs ativos que escapem
+        seen.add(doc.id);
+        final ds = _deletedFromDoc(doc);
+        if (ds != null) all.add(ds);
+      }
+      all.sort((a, b) => b.deletedAt.compareTo(a.deletedAt));
+      if (!controller.isClosed) controller.add(all);
+    }
+
+    // Query 1 — status=='archived' (Build 201+)
+    final subA = _col(uid)
+        .where('status', isEqualTo: kStatusArchived)
+        .snapshots()
+        .listen(
+          (snap) { snapArchived = snap; emit(); },
+          onError: (Object e) {
+            debugPrint('[InternFire] deletedStream(archived) err: $e');
+          },
+        );
+
+    // Query 2 — status=='trashed' (legado)
+    final subT = _col(uid)
+        .where('status', isEqualTo: kStatusTrashed)
+        .snapshots()
+        .listen(
+          (snap) { snapTrashed = snap; emit(); },
+          onError: (Object e) {
+            debugPrint('[InternFire] deletedStream(trashed) err: $e');
+          },
+        );
+
+    controller.onCancel = () {
+      subA.cancel();
+      subT.cancel();
+    };
+
+    return controller.stream;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // HARD DELETE — remoção definitiva APENAS na tela de Lixeira
   // BUILD 186: único lugar legítimo para chamar .delete(). O botão
   // 'Excluir' na aba Adulto usa SEMPRE softDelete(), nunca este método.
@@ -611,7 +688,7 @@ class InternacionFirestoreService {
   static EvolucionModel _evolFromJson(Map<String, dynamic> j) {
     // Build 199: helper seguro para extrair sub-mapas sem lançar exceção.
     Map<String, dynamic> safe(dynamic v) =>
-        (v is Map) ? Map<String, dynamic>.from(v as Map) : {};
+        (v is Map) ? Map<String, dynamic>.from(v) : {};
 
     final s  = safe(j['subjetivo']);
     final o  = safe(j['objetivo']);
@@ -652,7 +729,7 @@ class InternacionFirestoreService {
       final result = <FarmacoEntry>[];
       for (final f in raw) {
         try {
-          final fm = f is Map ? Map<String, dynamic>.from(f as Map) : <String, dynamic>{};
+          final fm = f is Map ? Map<String, dynamic>.from(f) : <String, dynamic>{};
           result.add(FarmacoEntry(
             medicamento: _toStr(fm['medicamento']),
             dosagem: _toStr(fm['dosagem']),

@@ -3363,45 +3363,44 @@ class _TrashModal extends StatefulWidget {
 }
 
 class _TrashModalState extends State<_TrashModal> {
-  List<DeletedSession> _items = [];
-  bool _loading = true;
-  String? _processingKey; // chave do item em operação (loading indicator)
+  // Build 202: Stream reativo — substitui FutureBuilder one-shot.
+  // O card sai da lixeira INSTANTANEAMENTE quando Firestore confirma o update,
+  // sem depender de setState manual nem de widget.onRestored() para a lixeira.
+  late final Stream<List<DeletedSession>> _stream;
+  String? _processingKey; // chave do item em operação (spinner local)
 
   bool get isEs => widget.lang == 'es';
 
   @override
   void initState() {
     super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    setState(() => _loading = true);
-    final items =
-        await InternacionFirestoreService.getDeletedSessions(widget.uid);
-    if (mounted) setState(() { _items = items; _loading = false; });
+    _stream = InternacionFirestoreService.deletedSessionsStream(widget.uid);
   }
 
   Future<void> _restore(DeletedSession item) async {
+    if (_processingKey != null) return; // evita duplo clique
     setState(() => _processingKey = item.sessionKey);
     await InternacionFirestoreService.restoreSession(
         widget.uid, item.sessionKey);
+    // O StreamBuilder detecta a mudança automaticamente — não precisa
+    // remover o item via setState. O card some quando o Firestore confirma.
+    // Chamamos onRestored() para que o grid do painel pai também reaja.
     if (mounted) {
-      setState(() {
-        _items = _items
-            .where((i) => i.sessionKey != item.sessionKey)
-            .toList();
-        _processingKey = null;
-      });
-      widget.onRestored(); // atualiza grid principal
+      setState(() => _processingKey = null);
+      widget.onRestored();
+      final nomePac = item.paciente.nome.isNotEmpty
+          ? item.paciente.nome
+          : (isEs ? 'Paciente' : 'Paciente');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(children: [
-          const Icon(Icons.unarchive_rounded, color: Colors.white, size: 15),
+          const Icon(Icons.restore_rounded, color: Colors.white, size: 15),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(isEs
-                ? '${item.paciente.nome.isNotEmpty ? item.paciente.nome : 'Paciente'} restaurado(a) com sucesso'
-                : '${item.paciente.nome.isNotEmpty ? item.paciente.nome : 'Paciente'} restaurado(a) com sucesso'),
+            child: Text(
+              isEs
+                  ? '$nomePac restaurado(a) — aparece em MI GUARDIA'
+                  : '$nomePac restaurado(a) — aparece em MI GUARDIA',
+            ),
           ),
         ]),
         backgroundColor: InternacionTheme.accentLight,
@@ -3483,19 +3482,18 @@ class _TrashModalState extends State<_TrashModal> {
     setState(() => _processingKey = item.sessionKey);
     await InternacionFirestoreService.hardDeleteSession(
         widget.uid, item.sessionKey);
+    // StreamBuilder detecta a remoção automaticamente via Firestore.
+    // Não precisamos manipular _items manualmente.
     if (mounted) {
-      setState(() {
-        _items = _items
-            .where((i) => i.sessionKey != item.sessionKey)
-            .toList();
-        _processingKey = null;
-      });
+      setState(() => _processingKey = null);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(children: [
           const Icon(Icons.delete_forever_rounded,
               color: Colors.white, size: 15),
           const SizedBox(width: 8),
-          Text(isEs ? 'Registro eliminado definitivamente' : 'Registro eliminado definitivamente'),
+          Text(isEs
+              ? 'Registro eliminado definitivamente'
+              : 'Registro eliminado definitivamente'),
         ]),
         backgroundColor: InternacionTheme.red,
         duration: const Duration(seconds: 3),
@@ -3581,16 +3579,16 @@ class _TrashModalState extends State<_TrashModal> {
                       ],
                     ),
                   ),
-                  // Recarregar
-                  IconButton(
-                    icon: Icon(Icons.refresh_rounded,
-                        size: 19, color: theme.textSecondary),
-                    onPressed: _load,
-                    tooltip: isEs ? 'Recargar' : 'Recarregar',
-                    padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                  // Indicador de stream ativo (Build 202: refresh automático via Firestore)
+                  Tooltip(
+                    message: isEs
+                        ? 'Actualización automática en tiempo real'
+                        : 'Atualização automática em tempo real',
+                    child: Icon(Icons.wifi_rounded,
+                        size: 16,
+                        color: InternacionTheme.accentLight.withValues(alpha: 0.7)),
                   ),
+                  const SizedBox(width: 4),
                   IconButton(
                     icon: Icon(Icons.close_rounded,
                         size: 19, color: theme.textSecondary),
@@ -3605,10 +3603,18 @@ class _TrashModalState extends State<_TrashModal> {
             const SizedBox(height: 10),
             Divider(color: theme.border, height: 1, thickness: 0.8),
 
-            // ── Corpo ────────────────────────────────────────────────────────
+            // ── Corpo — StreamBuilder reativo (Build 202) ─────────────────
+            // O StreamBuilder escuta deletedSessionsStream() em tempo real.
+            // Quando restoreSession() altera status→active no Firestore, o
+            // snapshot muda imediatamente e o card desaparece sem setState.
             Expanded(
-              child: _loading
-                  ? Center(
+              child: StreamBuilder<List<DeletedSession>>(
+                stream: _stream,
+                builder: (context, snapshot) {
+                  // ── Loading (primeiro frame ainda sem dados) ──────────────
+                  if (snapshot.connectionState == ConnectionState.waiting
+                      && !snapshot.hasData) {
+                    return Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -3625,153 +3631,158 @@ class _TrashModalState extends State<_TrashModal> {
                           ),
                         ],
                       ),
-                    )
-                  : _items.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.delete_outline_rounded,
-                                  size: 48,
-                                  color: theme.border),
-                              const SizedBox(height: 12),
-                              Text(
-                                isEs
-                                    ? 'Papelera vacía'
-                                    : 'Lixeira vazia',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: theme.textSecondary,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                isEs
-                                    ? 'No hay registros eliminados en los últimos 30 días.'
-                                    : 'Nenhum registro excluído nos últimos 30 dias.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 11.5,
-                                    color: theme.labelColor,
-                                    height: 1.4),
-                              ),
-                            ],
+                    );
+                  }
+
+                  final items = snapshot.data ?? [];
+
+                  // ── Lixeira vazia ─────────────────────────────────────────
+                  if (items.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.delete_outline_rounded,
+                              size: 48, color: theme.border),
+                          const SizedBox(height: 12),
+                          Text(
+                            isEs ? 'Papelera vacía' : 'Lixeira vazia',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: theme.textSecondary,
+                            ),
                           ),
-                        )
-                      : ListView.separated(
-                          controller: scrollCtrl,
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                          itemCount: _items.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 8),
-                          itemBuilder: (_, i) {
-                            final item = _items[i];
-                            final isProcessing =
-                                _processingKey == item.sessionKey;
-                            final nome = item.paciente.nome.isNotEmpty
-                                ? item.paciente.nome
-                                : (isEs ? 'Paciente' : 'Paciente');
-                            final cama = item.paciente.cama.isNotEmpty
-                                ? (isEs
-                                    ? 'Cama ${item.paciente.cama}'
-                                    : 'Leito ${item.paciente.cama}')
-                                : '';
-                            final diag = item.paciente.diagnostico;
+                          const SizedBox(height: 4),
+                          Text(
+                            isEs
+                                ? 'No hay registros eliminados en los últimos 30 días.'
+                                : 'Nenhum registro excluído nos últimos 30 dias.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 11.5,
+                                color: theme.labelColor,
+                                height: 1.4),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
 
-                            return Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: theme.card,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: InternacionTheme.red
-                                      .withValues(alpha: 0.18),
-                                  width: 0.9,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  // ── Ícone ─────────────────────────────
-                                  Container(
-                                    width: 38,
-                                    height: 38,
-                                    decoration: BoxDecoration(
-                                      color: InternacionTheme.red
-                                          .withValues(alpha: 0.10),
-                                      borderRadius:
-                                          BorderRadius.circular(10),
-                                    ),
-                                    child: const Icon(
-                                        Icons.person_off_rounded,
-                                        size: 18,
-                                        color: InternacionTheme.red),
+                  // ── Lista de itens ────────────────────────────────────────
+                  return ListView.separated(
+                    controller: scrollCtrl,
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                    itemCount: items.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (_, i) {
+                      final item = items[i];
+                      final isProcessing = _processingKey == item.sessionKey;
+                      final nome = item.paciente.nome.isNotEmpty
+                          ? item.paciente.nome
+                          : (isEs ? 'Paciente' : 'Paciente');
+                      final cama = item.paciente.cama.isNotEmpty
+                          ? (isEs
+                              ? 'Cama ${item.paciente.cama}'
+                              : 'Leito ${item.paciente.cama}')
+                          : '';
+                      final diag = item.paciente.diagnostico;
+
+                      return Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: theme.card,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: InternacionTheme.red.withValues(alpha: 0.18),
+                            width: 0.9,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ── Linha superior: ícone + info ────────────────
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Ícone
+                                Container(
+                                  width: 38,
+                                  height: 38,
+                                  decoration: BoxDecoration(
+                                    color: InternacionTheme.red
+                                        .withValues(alpha: 0.10),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  const SizedBox(width: 12),
+                                  child: const Icon(Icons.person_off_rounded,
+                                      size: 18, color: InternacionTheme.red),
+                                ),
+                                const SizedBox(width: 12),
 
-                                  // ── Info ──────────────────────────────
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
+                                // Info textual
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        nome,
+                                        style: TextStyle(
+                                          fontSize: 13.5,
+                                          fontWeight: FontWeight.w700,
+                                          color: theme.textPrimary,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        [
+                                          if (cama.isNotEmpty) cama,
+                                          '${item.historialCount} evol.',
+                                        ].join('  ·  '),
+                                        style: TextStyle(
+                                            fontSize: 10.5,
+                                            color: theme.textSecondary),
+                                      ),
+                                      if (diag.isNotEmpty) ...[
+                                        const SizedBox(height: 1),
                                         Text(
-                                          nome,
+                                          diag,
                                           style: TextStyle(
-                                            fontSize: 13.5,
-                                            fontWeight: FontWeight.w700,
-                                            color: theme.textPrimary,
-                                          ),
+                                              fontSize: 10,
+                                              color: theme.labelColor,
+                                              height: 1.3),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          [
-                                            if (cama.isNotEmpty) cama,
-                                            '${item.historialCount} evol.',
-                                          ].join('  ·  '),
-                                          style: TextStyle(
-                                              fontSize: 10.5,
-                                              color: theme.textSecondary),
-                                        ),
-                                        if (diag.isNotEmpty) ...[
-                                          const SizedBox(height: 1),
-                                          Text(
-                                            diag,
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                color: theme.labelColor,
-                                                height: 1.3),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                        const SizedBox(height: 4),
-                                        Row(children: [
-                                          Icon(Icons.schedule_rounded,
-                                              size: 10,
-                                              color: InternacionTheme.red
-                                                  .withValues(alpha: 0.7)),
-                                          const SizedBox(width: 3),
-                                          Text(
-                                            item.deletedAtLabel,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              color: InternacionTheme.red
-                                                  .withValues(alpha: 0.7),
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ]),
                                       ],
-                                    ),
+                                      const SizedBox(height: 4),
+                                      Row(children: [
+                                        Icon(Icons.schedule_rounded,
+                                            size: 10,
+                                            color: InternacionTheme.red
+                                                .withValues(alpha: 0.7)),
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          item.deletedAtLabel,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: InternacionTheme.red
+                                                .withValues(alpha: 0.7),
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ]),
+                                    ],
                                   ),
-                                  const SizedBox(width: 10),
+                                ),
 
-                                  // ── Ações ─────────────────────────────
-                                  if (isProcessing)
-                                    const SizedBox(
+                                // Spinner quando processando
+                                if (isProcessing)
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: SizedBox(
                                       width: 20,
                                       height: 20,
                                       child: CircularProgressIndicator(
@@ -3781,86 +3792,95 @@ class _TrashModalState extends State<_TrashModal> {
                                           InternacionTheme.accentLight,
                                         ),
                                       ),
-                                    )
-                                  else
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        // Restaurar
-                                        Tooltip(
-                                          message: isEs
-                                              ? 'Restaurar'
-                                              : 'Restaurar',
-                                          child: GestureDetector(
-                                            onTap: () => _restore(item),
-                                            child: Container(
-                                              width: 34,
-                                              height: 34,
-                                              decoration: BoxDecoration(
-                                                color: InternacionTheme
-                                                    .accentLight
-                                                    .withValues(
-                                                        alpha: widget.dark
-                                                            ? 0.15
-                                                            : 0.10),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                  color: InternacionTheme
-                                                      .accentLight
-                                                      .withValues(alpha: 0.35),
-                                                  width: 0.8,
-                                                ),
-                                              ),
-                                              child: const Icon(
-                                                Icons.unarchive_rounded,
-                                                size: 16,
-                                                color: InternacionTheme
-                                                    .accentLight,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        // Hard Delete
-                                        Tooltip(
-                                          message: isEs
-                                              ? 'Eliminar definitivamente'
-                                              : 'Eliminar definitivamente',
-                                          child: GestureDetector(
-                                            onTap: () => _hardDelete(item),
-                                            child: Container(
-                                              width: 34,
-                                              height: 34,
-                                              decoration: BoxDecoration(
-                                                color: InternacionTheme.red
-                                                    .withValues(
-                                                        alpha: widget.dark
-                                                            ? 0.15
-                                                            : 0.09),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                  color: InternacionTheme.red
-                                                      .withValues(alpha: 0.30),
-                                                  width: 0.8,
-                                                ),
-                                              ),
-                                              child: const Icon(
-                                                Icons.delete_forever_rounded,
-                                                size: 16,
-                                                color: InternacionTheme.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                                ],
-                              ),
-                            );
-                          },
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+
+                            // ── Linha inferior: botões visíveis ─────────────
+                            Row(
+                              children: [
+                                // ── Botão RESTAURAR (principal, visível) ──
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: isProcessing
+                                        ? null
+                                        : () => _restore(item),
+                                    child: Container(
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: InternacionTheme.accentLight
+                                            .withValues(
+                                                alpha: widget.dark ? 0.15 : 0.10),
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: InternacionTheme.accentLight
+                                              .withValues(alpha: 0.45),
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            Icons.restore_rounded,
+                                            size: 15,
+                                            color: InternacionTheme.accentLight,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            isEs ? 'Restaurar' : 'Restaurar',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              color:
+                                                  InternacionTheme.accentLight,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+
+                                // ── Botão ELIMINAR (secundário, ícone apenas)
+                                GestureDetector(
+                                  onTap: isProcessing
+                                      ? null
+                                      : () => _hardDelete(item),
+                                  child: Container(
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                      color: InternacionTheme.red.withValues(
+                                          alpha: widget.dark ? 0.15 : 0.09),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: InternacionTheme.red
+                                            .withValues(alpha: 0.35),
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.delete_forever_rounded,
+                                      size: 16,
+                                      color: InternacionTheme.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
