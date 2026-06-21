@@ -318,9 +318,7 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isEs
-                              ? 'Fármacos que el paciente está tomando'
-                              : 'Fármacos que o paciente está tomando',
+                          isEs ? 'Fármacos' : 'Fármacos',
                           style: TextStyle(
                             fontSize: 13.5, fontWeight: FontWeight.w700,
                             color: hasAlert
@@ -334,10 +332,8 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
                                   ? '${_alerts.length} interacción${_alerts.length > 1 ? 'es' : ''} detectada${_alerts.length > 1 ? 's' : ''}'
                                   : '${_alerts.length} interação${_alerts.length > 1 ? 'ões' : ''} detectada${_alerts.length > 1 ? 's' : ''}')
                               : (count == 0
-                                  ? (isEs
-                                      ? 'Sin fármacos — agrega o deja a la IA'
-                                      : 'Sem fármacos — adicione ou deixe a IA')
-                                  : '$count fármaco${count > 1 ? 's' : ''} registrado${count > 1 ? 's' : ''}'),
+                                  ? (isEs ? 'Uso actual' : 'Uso atual')
+                                  : '$count fármaco${count > 1 ? 's' : ''} activo${count > 1 ? 's' : ''}'),
                           style: TextStyle(
                             fontSize: 11,
                             color: hasAlert ? const Color(0xFFB91C1C) : theme.textSecondary,

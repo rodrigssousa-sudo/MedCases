@@ -760,7 +760,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
             // ── BARRA DE AÇÕES (25% Copiar | 50% Guardar | 25% Papelera) ──
             Row(
               children: [
-                // 25% — Copiar (abre document preview)
+                // 25% — Copiar (abre ModalBottomSheet duplo Completo/Diário)
                 Expanded(
                   flex: 25,
                   child: _ActionButton(
@@ -771,7 +771,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
                         : const Color(0xFFE5E7EB),
                     textColor: theme.textPrimary,
                     dark: dark,
-                    onTap: () => _showDocumentPreview(context, dark, lang),
+                    onTap: () =>
+                        _soapKey.currentState?.showCopyMenu(context),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -835,31 +836,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
               ),
             ],
 
-            // ── Lixeira mesmo sem sessões ativas ──────────────────────────
-            if (_sessionsLoaded && _savedSessions.isEmpty && _uid != null) ...[
-              const SizedBox(height: 8),
-              Center(
-                child: GestureDetector(
-                  onTap: () => _showTrashModal(context, dark, lang),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.restore_from_trash_rounded,
-                          size: 13, color: theme.labelColor),
-                      const SizedBox(width: 5),
-                      Text(
-                        isEs ? 'Papelera de Reciclaje' : 'Lixeira',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: theme.labelColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            // Papelera: agora exclusivamente no botão de 25% da Action Bar acima.
           ],
         ),
       ),
