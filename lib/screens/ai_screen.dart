@@ -1404,6 +1404,29 @@ class _AiScreenState extends State<AiScreen> {
     );
   }
 
+  /// Build 170 — Editar mensagem do usuário
+  /// Remove todas as mensagens a partir do índice [msgIndex] (a mensagem editada
+  /// e todas as respostas subsequentes), substitui pelo novo texto e re-dispara
+  /// o stream como se o usuário tivesse enviado [newText] diretamente.
+  void _editUserMessage(int msgIndex, String newText, AppProvider p) {
+    if (!mounted) return;
+    // Cancela qualquer stream ativo
+    p.cancelAiStream();
+    setState(() {
+      // Remove mensagens a partir do índice editado (inclusive)
+      if (msgIndex < _messages.length) {
+        _messages.removeRange(msgIndex, _messages.length);
+      }
+      // Reseta estados de streaming
+      _thinking    = false;
+      _isStreaming  = false;
+      _aiError     = false;
+      _networkError = false;
+    });
+    // Re-dispara o envio com o texto editado
+    _send(newText, p);
+  }
+
   void _clearChat() {
     final p = context.read<AppProvider>();
     // Salva sessão atual no histórico antes de limpar
@@ -1549,9 +1572,16 @@ class _AiScreenState extends State<AiScreen> {
               }
               final msg = _messages[i];
               if (msg.role == 'user') {
+                // Build 170: passa callbacks de cópia e edição para o balão
+                final msgIndex = i; // captura o índice para edição
                 return KeyedSubtree(
                   key: ValueKey('msg_${msg.id}'),
-                  child: _UserBubble(text: msg.text, dark: dark),
+                  child: _UserBubble(
+                    text: msg.text,
+                    dark: dark,
+                    onCopy: () => _copyMsg(msg.text),
+                    onEdit: (newText) => _editUserMessage(msgIndex, newText, p),
+                  ),
                 );
               }
               // ── AI message — detectar fármaco en texto ──────────────────
@@ -1885,17 +1915,24 @@ class _AiScreenState extends State<AiScreen> {
                 ),
               ),
             )
+          // Build 170: Fix GAP do teclado — escuta kbOpen + scrollingDown
+          // Quando teclado está aberto (kbOpen=true) → bottom=0 (footer já sumiu,
+          // sem necessidade de compensar 62px; o próprio sistema de insets cuida).
+          // Quando teclado fechado + footer visível → bottom=62px conforme B158.4.
           : ValueListenableBuilder<bool>(
+              valueListenable: AiScreen.chatKeyboardOpen,
+              builder: (_, kbOpenVal, __) =>
+              ValueListenableBuilder<bool>(
               // Build 158.3: anima padding 300ms easeInOut junto com o footer
               valueListenable: AiScreen.scrollingDown,
               builder: (_, scrollingDown, child) {
                 return AnimatedPadding(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
                   padding: EdgeInsets.only(
-                    // Build 158.4: 42px nav + 20px LegalBar = 62px visível
-                    // Nav sumida: 0px → imersão total, zero espaço no rodapé
-                    bottom: scrollingDown ? 0.0 : 62.0,
+                    // Build 170: teclado aberto → 0px (sem duplicação de insets)
+                    // Nav sumida → 0px | Nav visível → 62px
+                    bottom: (kbOpenVal || scrollingDown) ? 0.0 : 62.0,
                   ),
                   child: child,
                 );
@@ -1914,6 +1951,7 @@ class _AiScreenState extends State<AiScreen> {
                 lang: p.lang,
               ),
             ),
+            ), // close ValueListenableBuilder<chatKeyboardOpen>
     ]);
   }
 }
@@ -2633,35 +2671,302 @@ class _SuggestionCarousel extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Bolha do usuário — direita, verde escuro
+// Bolha do usuário — Build 170
+// Long-press → modal de ações: [Copiar Mensaje] [Editar Mensaje]
+// Editar: transforma o balão em campo de input inline. Ao salvar,
+// apaga o histórico dali em diante e re-dispara o stream com o prompt editado.
 // ─────────────────────────────────────────────────────────────────────────────
-class _UserBubble extends StatelessWidget {
+class _UserBubble extends StatefulWidget {
   final String text;
   final bool dark;
-  const _UserBubble({super.key, required this.text, required this.dark});
+  // Build 170: callbacks para copiar e editar
+  final VoidCallback? onCopy;
+  final void Function(String newText)? onEdit;
+  const _UserBubble({
+    super.key,
+    required this.text,
+    required this.dark,
+    this.onCopy,
+    this.onEdit,
+  });
+
+  @override
+  State<_UserBubble> createState() => _UserBubbleState();
+}
+
+class _UserBubbleState extends State<_UserBubble> {
+  bool _editing = false;
+  late final TextEditingController _editCtrl;
+  late final FocusNode _editFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _editCtrl = TextEditingController(text: widget.text);
+    _editFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _editCtrl.dispose();
+    _editFocus.dispose();
+    super.dispose();
+  }
+
+  void _startEdit() {
+    setState(() {
+      _editing = true;
+      _editCtrl.text = widget.text;
+      _editCtrl.selection = TextSelection(
+        baseOffset: 0, extentOffset: widget.text.length);
+    });
+    // Abre teclado no próximo frame
+    WidgetsBinding.instance.addPostFrameCallback((_) => _editFocus.requestFocus());
+  }
+
+  void _saveEdit() {
+    final newText = _editCtrl.text.trim();
+    setState(() => _editing = false);
+    if (newText.isNotEmpty && newText != widget.text) {
+      widget.onEdit?.call(newText);
+    }
+  }
+
+  void _cancelEdit() => setState(() => _editing = false);
+
+  void _showActions(BuildContext ctx) {
+    final isEs = Localizations.localeOf(ctx).languageCode == 'es';
+    showModalBottomSheet(
+      context: ctx,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _UserBubbleActionsSheet(
+        dark: widget.dark,
+        isEs: isEs,
+        onCopy: () { Navigator.pop(_); widget.onCopy?.call(); },
+        onEdit: () { Navigator.pop(_); _startEdit(); },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    const bubbleColor = Color(0xFF008CA4);
+    const borderRadius = BorderRadius.only(
+      topLeft:     Radius.circular(16),
+      topRight:    Radius.circular(16),
+      bottomLeft:  Radius.circular(16),
+      bottomRight: Radius.circular(4),
+    );
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 6, left: 52),
       child: Align(
         alignment: Alignment.centerRight,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
-              bottomRight: Radius.circular(4),
-            ),
-            // Verde WhatsApp característico
-            color: Color(0xFF008CA4),
+        child: _editing
+            // ── Modo edição inline ─────────────────────────────────────────
+            ? Container(
+                constraints: const BoxConstraints(maxWidth: 320),
+                decoration: BoxDecoration(
+                  color: bubbleColor.withValues(alpha: 0.12),
+                  borderRadius: borderRadius,
+                  border: Border.all(color: bubbleColor, width: 1.2),
+                ),
+                padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    TextField(
+                      controller: _editCtrl,
+                      focusNode: _editFocus,
+                      maxLines: null,
+                      style: TextStyle(
+                        fontSize: 14, height: 1.45,
+                        color: widget.dark ? Colors.white : const Color(0xFF1A1D23),
+                      ),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: _cancelEdit,
+                          child: Text(
+                            'Cancelar',
+                            style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w600,
+                              color: widget.dark ? Colors.white54 : Colors.black45),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        GestureDetector(
+                          onTap: _saveEdit,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: bubbleColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text('Enviar',
+                              style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w700,
+                                color: Colors.white)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            // ── Modo normal — balão com long-press ────────────────────────
+            : GestureDetector(
+                onLongPress: () => _showActions(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+                  decoration: const BoxDecoration(
+                    borderRadius: borderRadius,
+                    color: Color(0xFF008CA4),
+                  ),
+                  child: Text(
+                    widget.text,
+                    style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w400,
+                      color: Colors.white, height: 1.45)),
+                ),
+              ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _UserBubbleActionsSheet — Build 170
+// Modal de ações ao pressionar longo o balão do usuário.
+// ─────────────────────────────────────────────────────────────────────────────
+class _UserBubbleActionsSheet extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final VoidCallback onCopy;
+  final VoidCallback onEdit;
+
+  const _UserBubbleActionsSheet({
+    required this.dark,
+    required this.isEs,
+    required this.onCopy,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = dark ? const Color(0xFF252930) : Colors.white;
+    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
+    final subCol = dark ? Colors.white54 : Colors.black45;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(
+          color: Colors.black.withValues(alpha: 0.18),
+          blurRadius: 20, offset: const Offset(0, -4),
+        )],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle
+          Container(
+            width: 36, height: 4,
+            margin: const EdgeInsets.only(top: 12, bottom: 18),
+            decoration: BoxDecoration(
+              color: dark ? Colors.white24 : Colors.black12,
+              borderRadius: BorderRadius.circular(2)),
           ),
-          child: Text(text,
-            style: const TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w400,
-              color: Colors.white, height: 1.45)),
+          // Copiar
+          _ActionTile(
+            icon: Icons.copy_rounded,
+            label: isEs ? 'Copiar mensaje' : 'Copiar mensagem',
+            sub: isEs ? 'Copia el texto al portapapeles' : 'Copia o texto para a área de transferência',
+            textCol: textCol,
+            subCol: subCol,
+            iconColor: const Color(0xFF008CA4),
+            onTap: onCopy,
+          ),
+          Divider(height: 1, color: dark ? Colors.white12 : Colors.black12),
+          // Editar
+          _ActionTile(
+            icon: Icons.edit_rounded,
+            label: isEs ? 'Editar mensaje' : 'Editar mensagem',
+            sub: isEs
+                ? 'Modifica y reenvía borrando el historial posterior'
+                : 'Modifique e reenvie apagando o histórico posterior',
+            textCol: textCol,
+            subCol: subCol,
+            iconColor: const Color(0xFFF59E0B),
+            onTap: onEdit,
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String sub;
+  final Color textCol;
+  final Color subCol;
+  final Color iconColor;
+  final VoidCallback onTap;
+
+  const _ActionTile({
+    required this.icon,
+    required this.label,
+    required this.sub,
+    required this.textCol,
+    required this.subCol,
+    required this.iconColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          child: Row(children: [
+            Container(
+              width: 38, height: 38,
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: iconColor, size: 18),
+            ),
+            const SizedBox(width: 14),
+            Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w700, color: textCol)),
+                const SizedBox(height: 2),
+                Text(sub, style: TextStyle(
+                  fontSize: 11.5, color: subCol, height: 1.3)),
+              ],
+            )),
+            Icon(Icons.chevron_right_rounded, size: 18,
+              color: textCol.withValues(alpha: 0.35)),
+          ]),
         ),
       ),
     );
@@ -3600,14 +3905,19 @@ class _AiBlockBubble extends StatelessWidget {
     return false;
   }
 
-  // ── Build 120: Detecta pergunta de fechamento clínica ────────────────────
-  // Uma linha é considerada pergunta de fechamento se:
-  //   • começa com '¿' (PT/ES interrogativa direta) OU
-  //   • começa com um dos verbos de convite clínico padrão e termina com '?'
-  // Usado para renderizar como ActionChip interativo em vez de texto plano.
+  // ── Build 170: Detecta linha de ação interativa ──────────────────────────
+  // Uma linha é considerada ação de fechamento interativa se:
+  //   • começa com '📌' (marcador oficial dos prompts Plantão + Estudio)  ← NEW
+  //   • começa com '¿' (PT/ES interrogativa direta)
+  //   • começa com verbos de convite clínico padrão e termina com '?'
+  // Build 170: PRIMÁRIA — qualquer linha '📌 ...' é sempre um chip de ação.
+  // Isso garante retrocompatibilidade com modelo que gera "📌 Deseja..." (texto).
   static bool _isClosingQuestion(String line) {
     final t = line.trim();
     if (t.isEmpty) return false;
+    // Build 170: 📌 é o marcador primário de ação interativa (Plantão + Estudio)
+    // → qualquer linha iniciada com 📌 vira chip clicável, independente de '?'
+    if (t.startsWith('📌')) return true;
     // Interrogativa espanhola direta
     if (t.startsWith('¿') && t.endsWith('?')) return true;
     // Verbos de convite clínico (PT + ES) com '?' no final
@@ -5704,10 +6014,11 @@ class _ChatHistorySheet extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _ClosingQuestionChip — Build 120
-// Botão interativo que renderiza a pergunta de fechamento clínica.
+// _ClosingQuestionChip — Build 170
+// Botão interativo que renderiza a ação de continuação clínica.
+// Build 170: detecta linhas 📌 como chips primários (não requer '?').
 // Ao tocar, injeta o texto no input e dispara _send() automaticamente.
-// Visual: outlined chip com ícone de seta, cor accent do tema.
+// Visual: chip verde-teal com ícone de toque, efeito InkWell.
 // ─────────────────────────────────────────────────────────────────────────────
 class _ClosingQuestionChip extends StatelessWidget {
   final String question;
@@ -5722,43 +6033,55 @@ class _ClosingQuestionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Clean question text — strip leading ¿ or trailing ? for display if very long
-    final display = question.length > 80
-        ? '${question.substring(0, 77)}…'
-        : question;
+    // Limpa o emoji 📌 do display (é o marcador de protocolo, não precisa aparecer)
+    String display = question.trim();
+    if (display.startsWith('📌')) {
+      display = display.substring('📌'.length).trim();
+    }
+    if (display.length > 90) display = '${display.substring(0, 87)}…';
 
+    // Build 170: verde-teal primário — consistente com a identidade MedCases IA
     final accentColor = dark
-        ? const Color(0xFF38BDF8)   // sky-400
-        : const Color(0xFF0284C7);  // sky-600
-    final borderColor = accentColor.withValues(alpha: 0.35);
-    final bgColor = accentColor.withValues(alpha: dark ? 0.07 : 0.05);
+        ? const Color(0xFF00E5FF)   // ciano teal (dark)
+        : const Color(0xFF008CA4);  // petróleo (light)
+    final borderColor = accentColor.withValues(alpha: 0.40);
+    final bgColor = accentColor.withValues(alpha: dark ? 0.09 : 0.06);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 7, 12, 7),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: borderColor, width: 0.8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.send_rounded, size: 12, color: accentColor),
-            const SizedBox(width: 7),
-            Flexible(
-              child: Text(
-                display,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w500,
-                  color: accentColor,
-                  height: 1.35,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(22),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(22),
+        splashColor: accentColor.withValues(alpha: 0.18),
+        highlightColor: accentColor.withValues(alpha: 0.10),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(12, 8, 14, 8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: borderColor, width: 1.0),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.touch_app_rounded, size: 13, color: accentColor),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  display,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    color: accentColor,
+                    height: 1.35,
+                  ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(width: 4),
+              Icon(Icons.arrow_forward_rounded, size: 11, color: accentColor.withValues(alpha: 0.70)),
+            ],
+          ),
         ),
       ),
     );
