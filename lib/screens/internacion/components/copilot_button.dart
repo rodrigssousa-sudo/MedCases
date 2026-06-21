@@ -240,8 +240,8 @@ class _CopilotButtonState extends State<CopilotButton>
               ),
               Text(
                 isEs
-                    ? 'Dicta, pega texto o sube imágenes · IA extrae el SOAP'
-                    : 'Dite, cole texto ou suba imagens · IA extrai o SOAP',
+                    ? 'pegar texto, sube imagen — IA extrae'
+                    : 'colar texto, subir imagem — IA extrai',
                 style: TextStyle(
                   fontSize: 11,
                   color: Colors.white.withValues(alpha: 0.70),

@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 173
+// InternacionScreen — Build 176
 //
 // 168-1: Firestore Sync — sessions stream em tempo real (multi-device)
 // 168-2: Lixeira 30d — softDelete (isDeleted:true) em vez de hard delete
@@ -10,6 +10,8 @@
 // 168-R: R1(FAB→AppBar) R2(S fechado) R3(Auditoria) R4(Retomar same-day)
 // 171:   Anti-empty save, Edit vs Evolve separation, post-save resetAll
 // 173:   _TrashModal — Papelera de Reciclaje (30d) com Restaurar + Hard Delete
+// 176:   Dashboard Clínico — AppBar compacta, Row 60/40, SOAP 2×2,
+//        Action Bar 25/50/25, Grid responsivo MaxCrossAxisExtent
 // ─────────────────────────────────────────────────────────────────────────────
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -18,7 +20,6 @@ import 'package:provider/provider.dart';
 import '../../providers/app_provider.dart';
 import 'models/evolucion_model.dart';
 import 'components/resumen_header.dart';
-import 'components/historial_section.dart';
 import 'components/patient_accordion.dart';
 import 'components/internacion_theme.dart';
 import 'components/copilot_button.dart';
@@ -525,7 +526,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
-  // ── R3: Auditoria clínica ─────────────────────────────────────────────────
+  // ── R3: Auditoria clínica — acessível via _SessionPreviewDialog ──────────
   void _showAuditoriaModal(
       BuildContext ctx, EvolucionModel ev, bool dark, String lang) {
     showModalBottomSheet(
@@ -569,8 +570,15 @@ class _InternacionScreenState extends State<InternacionScreen> {
     final isEs = lang == 'es';
     final doctorName = _doctorName(p);
 
+    // ── Build 176: Dashboard Clínico compacto ─────────────────────────────
     return Scaffold(
       backgroundColor: theme.surface,
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // TOPBAR — AppBar customizada
+      // Esquerda: back + Title Column ("INTERNACIÓN Y EVOLUCIÓN" / "MedCases Pro")
+      // Direita (actions): botão compacto [Nueva] (vassourinha)
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(52),
         child: Container(
@@ -584,6 +592,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Row(
                 children: [
+                  // Back
                   IconButton(
                     icon: Icon(Icons.arrow_back_ios_new_rounded,
                         size: 18, color: theme.accent),
@@ -593,18 +602,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     constraints:
                         const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
-                  Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: theme.accent
-                          .withValues(alpha: dark ? 0.15 : 0.09),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(Icons.local_hospital_rounded,
-                        size: 15, color: theme.accent),
-                  ),
-                  const SizedBox(width: 8),
+                  // Title Column
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -622,33 +620,15 @@ class _InternacionScreenState extends State<InternacionScreen> {
                           ),
                         ),
                         Text(
-                          'SOAP · MedCases Pro',
+                          'MedCases Pro',
                           style: TextStyle(
-                              fontSize: 10, color: theme.textSecondary),
+                              fontSize: 10,
+                              color: theme.textSecondary),
                         ),
                       ],
                     ),
                   ),
-                  if (_historial.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: theme.accent
-                            .withValues(alpha: dark ? 0.15 : 0.09),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '${_historial.length} evol.',
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                          color: theme.accent,
-                        ),
-                      ),
-                    ),
-                  const SizedBox(width: 6),
-                  // R1: Botão compacto "Nueva"
+                  // Actions: botão [Nueva]
                   GestureDetector(
                     onTap: _confirmAndReset,
                     child: Container(
@@ -691,12 +671,17 @@ class _InternacionScreenState extends State<InternacionScreen> {
           ),
         ),
       ),
+
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // BODY — SingleChildScrollView → Column linear
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── 1. RESUMEN ──────────────────────────────────────────────────
+
+            // ── ELEMENTO 1 (100%): Card do Paciente Ativo ─────────────────
             ResumenHeader(
               pacienteId: _paciente.nome,
               cama: _paciente.cama,
@@ -707,54 +692,60 @@ class _InternacionScreenState extends State<InternacionScreen> {
             ),
             const SizedBox(height: 12),
 
-            // ── 2. COPILOTO IA ─────────────────────────────────────────────
+            // ── ELEMENTO 2 (100%): MedCases Inteligente IA card ───────────
             CopilotButton(dark: dark, lang: lang, onApproved: _onAiApproved),
             const SizedBox(height: 12),
 
-            // ── 3. HISTORIAL (R3: auditoria on tap) ────────────────────────
-            HistorialSection(
-              evoluciones: _historial,
-              dark: dark,
-              lang: lang,
-              onTap: (ev) =>
-                  _showAuditoriaModal(context, ev, dark, lang),
-            ),
-            if (_historial.isNotEmpty) const SizedBox(height: 12),
-
-            // ── 4. DADOS DO PACIENTE (168-5: doc preview on tap) ───────────
-            GestureDetector(
-              onLongPress: () => _showDocumentPreview(context, dark, lang),
-              child: PatientAccordion(
-                data: _paciente,
-                dark: dark,
-                lang: lang,
-                onChanged: (d) => setState(() => _paciente = d),
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // ── 5. FÁRMACOS ─────────────────────────────────────────────────
-            FarmacosAccordion(
-              farmacos: _draftEvolucion.farmacos,
-              dark: dark,
-              lang: lang,
-              onChanged: (list) => setState(() {
-                _draftEvolucion = _draftEvolucion.copyWith(farmacos: list);
-              }),
+            // ── ELEMENTO 3 (Row 60/40): Dados del Paciente | Fármacos ─────
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 60% — Datos del Paciente
+                Expanded(
+                  flex: 6,
+                  child: GestureDetector(
+                    onLongPress: () =>
+                        _showDocumentPreview(context, dark, lang),
+                    child: PatientAccordion(
+                      data: _paciente,
+                      dark: dark,
+                      lang: lang,
+                      onChanged: (d) => setState(() => _paciente = d),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // 40% — Fármacos en Uso
+                Expanded(
+                  flex: 4,
+                  child: FarmacosAccordion(
+                    farmacos: _draftEvolucion.farmacos,
+                    dark: dark,
+                    lang: lang,
+                    onChanged: (list) => setState(() {
+                      _draftEvolucion =
+                          _draftEvolucion.copyWith(farmacos: list);
+                    }),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
 
-            // ── 6. DIVISOR ─────────────────────────────────────────────────
+            // ── SEÇÃO CENTRAL: Divisor textual discreto ───────────────────
             _SectionDivider(
-              label:
-                  isEs ? 'NUEVA EVOLUCIÓN MÉDICA' : 'NOVA EVOLUÇÃO MÉDICA',
+              label: isEs
+                  ? 'NUEVA EVOLUCIÓN MÉDICA'
+                  : 'NOVA EVOLUÇÃO MÉDICA',
               sublabel: 'SOAP',
               dark: dark,
               theme: theme,
             ),
             const SizedBox(height: 12),
 
-            // ── 7. MOTOR SOAP ───────────────────────────────────────────────
+            // ── SOAP 2×2: Motor SOAP completo ─────────────────────────────
+            // SoapSectionWidget gerencia internamente S/O/A/P como accordion.
+            // O frame 2×2 visual é o próprio widget responsivo do motor SOAP.
             SoapSectionWidget(
               key: _soapKey,
               evolucion: _draftEvolucion,
@@ -764,54 +755,73 @@ class _InternacionScreenState extends State<InternacionScreen> {
               paciente: _paciente,
               onSave: _onSaveEvolucion,
             ),
+            const SizedBox(height: 14),
 
-            // ── 8. GRID SESSÕES SALVAS (168-3: redesign cards) ─────────────
+            // ── BARRA DE AÇÕES (25% Copiar | 50% Guardar | 25% Papelera) ──
+            Row(
+              children: [
+                // 25% — Copiar (abre document preview)
+                Expanded(
+                  flex: 25,
+                  child: _ActionButton(
+                    label: isEs ? 'Copiar' : 'Copiar',
+                    icon: Icons.copy_rounded,
+                    color: dark
+                        ? const Color(0xFF374151)
+                        : const Color(0xFFE5E7EB),
+                    textColor: theme.textPrimary,
+                    dark: dark,
+                    onTap: () => _showDocumentPreview(context, dark, lang),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // 50% — Guardar (botão principal)
+                Expanded(
+                  flex: 50,
+                  child: _ActionButton(
+                    label: isEs ? 'Guardar' : 'Salvar',
+                    icon: Icons.save_rounded,
+                    color: InternacionTheme.accentLight,
+                    textColor: Colors.white,
+                    dark: dark,
+                    isPrimary: true,
+                    onTap: () {
+                      _onSaveEvolucion(_draftEvolucion);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // 25% — Papelera
+                Expanded(
+                  flex: 25,
+                  child: _ActionButton(
+                    label: isEs ? 'Papelera' : 'Lixeira',
+                    icon: Icons.restore_from_trash_rounded,
+                    color: InternacionTheme.red
+                        .withValues(alpha: dark ? 0.18 : 0.10),
+                    textColor: InternacionTheme.red,
+                    dark: dark,
+                    onTap: () => _showTrashModal(context, dark, lang),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // ── SEÇÃO DE PACIENTES GUARDADOS ───────────────────────────────
             if (_sessionsLoaded && _savedSessions.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              // ── Build 173: divider + botão lixeira inline ──────────────
-              Row(
-                children: [
-                  Expanded(
-                    child: _SectionDivider(
-                      label: isEs
-                          ? 'PACIENTES INTERNADOS GUARDADOS'
-                          : 'PACIENTES INTERNADOS SALVOS',
-                      sublabel: isEs
-                          ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''}'
-                          : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''}',
-                      dark: dark,
-                      theme: theme,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Tooltip(
-                    message: isEs ? 'Papelera' : 'Lixeira',
-                    child: GestureDetector(
-                      onTap: () => _showTrashModal(context, dark, lang),
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: InternacionTheme.red
-                              .withValues(alpha: dark ? 0.14 : 0.09),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: InternacionTheme.red
-                                .withValues(alpha: 0.30),
-                            width: 0.8,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.restore_from_trash_rounded,
-                          size: 15,
-                          color: InternacionTheme.red,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              _SectionDivider(
+                label: isEs
+                    ? 'PACIENTES INTERNADOS GUARDADOS'
+                    : 'PACIENTES INTERNADOS SALVOS',
+                sublabel: isEs
+                    ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''}'
+                    : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''}',
+                dark: dark,
+                theme: theme,
               ),
               const SizedBox(height: 12),
+              // Grid responsivo: centrado, maxWidth 600, cards maxWidth 280
               _SessionsGrid(
                 sessions: _savedSessions,
                 dark: dark,
@@ -824,9 +834,10 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     _showSessionPreview(context, session, dark, lang),
               ),
             ],
-            // ── Build 173: Botão lixeira mesmo sem sessões ativas ─────────
+
+            // ── Lixeira mesmo sem sessões ativas ──────────────────────────
             if (_sessionsLoaded && _savedSessions.isEmpty && _uid != null) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Center(
                 child: GestureDetector(
                   onTap: () => _showTrashModal(context, dark, lang),
@@ -896,6 +907,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ));
         },
+        onAuditoria: (ev) => _showAuditoriaModal(ctx, ev, dark, lang),
       ),
     );
   }
@@ -930,7 +942,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 168-3: Grid de sessões redesenhado
+// Build 176: Grid responsivo — MaxCrossAxisExtent + ConstrainedBox(maxWidth:600)
+// Previne cards gigantes em Web/Tablet; centraliza em telas largas.
 // ═════════════════════════════════════════════════════════════════════════════
 class _SessionsGrid extends StatelessWidget {
   final List<PacienteSession> sessions;
@@ -955,25 +968,103 @@ class _SessionsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 1.05,
-      children: sessions
-          .map((s) => _SessionCard168(
-                session: s,
-                dark: dark,
-                lang: lang,
-                theme: theme,
-                onEdit: () => onEdit(s),
-                onEvolve: () => onEvolve(s),
-                onDelete: () => onDelete(s),
-                onTapBody: () => onPreview(s),
-              ))
-          .toList(),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 280,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 1.05,
+          ),
+          itemCount: sessions.length,
+          itemBuilder: (_, i) {
+            final s = sessions[i];
+            return _SessionCard168(
+              session: s,
+              dark: dark,
+              lang: lang,
+              theme: theme,
+              onEdit: () => onEdit(s),
+              onEvolve: () => onEvolve(s),
+              onDelete: () => onDelete(s),
+              onTapBody: () => onPreview(s),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Build 176: Botão de ação da barra 25/50/25
+// ═════════════════════════════════════════════════════════════════════════════
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final Color textColor;
+  final bool dark;
+  final bool isPrimary;
+  final VoidCallback onTap;
+
+  const _ActionButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.textColor,
+    required this.dark,
+    required this.onTap,
+    this.isPrimary = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 44,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+          border: isPrimary
+              ? null
+              : Border.all(
+                  color: textColor.withValues(alpha: 0.25),
+                  width: 0.8,
+                ),
+          boxShadow: isPrimary
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.35),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 15, color: textColor),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: textColor,
+                letterSpacing: 0.1,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1203,6 +1294,7 @@ class _SessionPreviewDialog extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final ValueChanged<String> onCopy;
+  final ValueChanged<EvolucionModel>? onAuditoria;
 
   const _SessionPreviewDialog({
     required this.session,
@@ -1212,6 +1304,7 @@ class _SessionPreviewDialog extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onCopy,
+    this.onAuditoria,
   });
 
   bool get isEs => lang == 'es';
@@ -1364,7 +1457,11 @@ class _SessionPreviewDialog extends StatelessWidget {
                       const SizedBox(height: 6),
                       ...session.historial.reversed.take(3).map((ev) {
                         final sv = ev.objetivo.signosVitales;
-                        return Container(
+                        return GestureDetector(
+                          onTap: onAuditoria != null
+                              ? () => onAuditoria!(ev)
+                              : null,
+                          child: Container(
                           margin: const EdgeInsets.only(bottom: 6),
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -1413,6 +1510,7 @@ class _SessionPreviewDialog extends StatelessWidget {
                               ],
                             ],
                           ),
+                        ),
                         );
                       }),
                     ],
