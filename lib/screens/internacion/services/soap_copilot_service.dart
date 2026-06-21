@@ -430,9 +430,10 @@ class SoapDraftResult {
 // SoapCopilotService — Serviço principal
 // ═════════════════════════════════════════════════════════════════════════════
 class SoapCopilotService {
+  // Build 181: gemini-2.5-flash para OCR/NLP de maior precisão
   static const _endpointSync =
       'https://generativelanguage.googleapis.com/v1beta/models/'
-      'gemini-2.5-flash-lite:generateContent';
+      'gemini-2.5-flash:generateContent';
 
   // ── responseSchema Build 165 — ACHATADO para máxima confiabilidade ─────────
   // MUDANÇA CRÍTICA: nó 'objetivo' agora tem TODOS os campos FLAT (sem sub-objetos).
@@ -556,49 +557,160 @@ class SoapCopilotService {
     },
   };
 
-  // ── Prompt reforçado Build 165 ─────────────────────────────────────────────
+  // ── Prompt de Extração Exaustiva — Build 181 ──────────────────────────────
+  // Motor NLP/OCR máximo: minera TODOS os dados disponíveis em texto livre
+  // ou imagem (monitor, planilha, prontuário manuscrito, tela de HIS).
+  // Zero perda de dados — data-binding completo para todos os controladores.
   static const String _systemPrompt =
-      'Eres un asistente clínico especializado en evoluciones médicas SOAP. '
-      'Analiza TODA la información disponible y extrae los datos al JSON estructurado.\n\n'
-      'CRÍTICO — ESTRUCTURA DEL JSON:\n'
-      'El nodo "objetivo" es PLANO (flat). Todos sus campos van DIRECTAMENTE dentro '
-      'de "objetivo" sin sub-objetos. Ejemplo correcto:\n'
+      'Eres un motor de extraccion clinica de precision maxima (NLP + OCR). '
+      'Tu unica tarea: leer el texto libre o imagen proporcionados y mapear '
+      'CADA dato encontrado al campo JSON exacto. Tolera caos: texto fragmentado, '
+      'abreviaturas medicas, datos fuera de orden, imagenes de monitores o '
+      'planillas manuscritas — extrae TODO sin omitir ni inventar.\n\n'
+
+      '═══════════════════════════════════════════════════════════════\n'
+      'REGLA ABSOLUTA — ESTRUCTURA FLAT DEL NODO "objetivo":\n'
+      '═══════════════════════════════════════════════════════════════\n'
+      'El nodo "objetivo" es PLANO. TODOS sus campos van DIRECTAMENTE '
+      'dentro de "objetivo", SIN sub-objetos anidados. Ejemplo CORRECTO:\n'
       '{\n'
       '  "objetivo": {\n'
-      '    "pa": "120/80",\n'
-      '    "fc": "72",\n'
-      '    "fr": "16",\n'
-      '    "satO2": "98%",\n'
-      '    "temperatura": "36.5",\n'
-      '    "estadoGeneral": "Paciente en buen estado general",\n'
-      '    "acv": "Ruidos cardíacos rítmicos",\n'
-      '    "ar": "Murmullo vesicular conservado",\n'
-      '    "abdomen": "Blando, depresible",\n'
-      '    "extremidades": "Sin edemas",\n'
-      '    "laboratorio": "Hemograma normal",\n'
-      '    "imagenes": "",\n'
-      '    "culturas": "",\n'
-      '    "ecg": "",\n'
-      '    "tratamientoActual": "Continúa plan previo",\n'
+      '    "pa": "120/80", "fc": "72", "fr": "18", "satO2": "97",\n'
+      '    "temperatura": "36.8", "estadoGeneral": "RADS, consciente",\n'
+      '    "acv": "RsCsRs SF", "ar": "MVC bilateral",\n'
+      '    "abdomen": "Blando, RHA+", "extremidades": "Sin edemas",\n'
+      '    "laboratorio": "Hb 10.2 | Leucos 8500 | PCR 12",\n'
+      '    "imagenes": "Rx torax sin condensaciones",\n'
+      '    "culturas": "", "ecg": "RS FC 72",\n'
+      '    "tratamientoActual": "Hidratacion IV + antibiotico",\n'
       '    "planTerapeutico_ob": ""\n'
       '  }\n'
       '}\n\n'
-      'OBLIGATORIO — INSTRUCCIÓN CRÍTICA:\n'
-      'Es OBLIGATORIO procesar y rellenar TODAS las claves. '
-      'Nunca uses sub-objetos dentro de "objetivo". '
-      'Si una clave no tiene datos, usa cadena vacía "". '
-      'NUNCA omitas un nodo del JSON.\n\n'
-      'REGLAS ESPECÍFICAS:\n'
-      '1. PACIENTE: extrae nombre, cama, edad, sexo y diagnóstico principal.\n'
-      '2. SOLO extrae información EXPLÍCITA. NO inventes datos.\n'
-      '3. Textos libres: redactar en español médico profesional.\n'
-      '4. SIGNOS VITALES: PA formato "120/80", FC solo número, T en °C.\n'
-      '5. dolorEscala: 0=sin dolor, 1-3=leve, 4-6=moderado, 7-9=intenso, 10=máximo.\n'
-      '6. estado clínico: mejora→mejorando, sin cambios→estable, empeora→empeorando.\n'
-      '7. problemasActivos: lista LIMPIA de diagnósticos activos del paciente actual.\n'
-      '8. planTerapeutico: consolida TODAS las indicaciones y cambios de tratamiento.\n'
-      '9. farmacos: extrae TODOS los medicamentos con nombre y dosis completa.\n'
-      '10. Si hay imágenes de monitores, extrae TODOS los valores visibles.\n';
+
+      '═══════════════════════════════════════════════════════════════\n'
+      'DIRECTIVAS DE EXTRACCION EXAUSTIVA — CAMPO POR CAMPO:\n'
+      '═══════════════════════════════════════════════════════════════\n'
+
+      'PACIENTE (demografico):\n'
+      '• nome: nombre completo del paciente. Busca: "Paciente:", "Nombre:", '
+      '"Apellido:", etiquetas de pulsera, cabezal de planilla.\n'
+      '• cama: numero de cama, habitacion o leito. Busca: "Cama", "Hab.", '
+      '"Room", "Leito", "Box".\n'
+      '• idade: edad en años. Busca: "años", "a.", "anos", "age", fecha de '
+      'nacimiento para calcular si se muestra explicitamente.\n'
+      '• sexo: "M" o "F" unicamente. Busca: "masculino", "femenino", '
+      '"male", "female", "M/F" check, iniciales de genero.\n'
+      '• diagnostico: diagnostico principal de ingreso o el mas relevante '
+      'actual. Busca: "Dx:", "Diagnostico:", "Motivo de consulta:", '
+      '"CIE-10", primera linea del cuadro clinico.\n'
+      '• diaInternacion: dia de internacion/hospitalizacion (entero 1-90). '
+      'Busca: "Dia X de internacion", "D+X", "HD#X", "DH".\n\n'
+
+      'SUBJETIVO (S):\n'
+      '• notePasaNoche: como paso la noche el paciente — texto libre completo '
+      'del medico o enfermeria. Consolida frases como "paso noche tranquila", '
+      '"durmio bien", "refiere dolor", "llama por..."\n'
+      '• dolorEscala: EVA 0-10. Busca: "EVA", "dolor x/10", "NRS", '
+      '"escala de dolor", "VAS score".\n'
+      '• fiebre: true si menciona "fiebre", "febril", "T > 38", "pico febril".\n'
+      '• disnea: true si menciona "disnea", "dificultad respiratoria", '
+      '"SOB", "shortness of breath", "dispneia".\n'
+      '• nauseas: true si menciona "nauseas", "vomitos", "nausea".\n'
+      '• tos: true si menciona "tos", "cough", "tosse".\n'
+      '• alimentacion: "Bien"/"Regular"/"Mal". Busca: "tolera dieta", '
+      '"ingiere bien", "sin apetito", "NPO", "nada por boca".\n'
+      '• diuresis: "Normal"/"Oliguria"/"Anuria". Busca: "diuresis", '
+      '"orina bien", "anuria", "oliguria", "coluria", "hematuria".\n'
+      '• evacuacion: "Normal"/"Constipado"/"Diarrea". Busca: "catarsis", '
+      '"evacuacion normal", "constipacion", "diarrea", "deposiciones".\n'
+      '• suenoRestado: true si menciona "insomnio", "sueno alterado", '
+      '"no durmio", "sono mal", "agitado en la noche".\n'
+      '• notasLibres: cualquier informacion subjetiva relevante no capturada '
+      'arriba — texto medico libre, quejas del paciente, novedades.\n\n'
+
+      'OBJETIVO — SIGNOS VITALES (campos flat en "objetivo"):\n'
+      '• pa: presion arterial en formato "120/80". Busca: "PA", "TA", "BP", '
+      '"tension arterial", "presion", "SBP/DBP".\n'
+      '• fc: frecuencia cardiaca (solo numero). Busca: "FC", "HR", "pulso", '
+      '"heart rate", "freq cardiaca".\n'
+      '• fr: frecuencia respiratoria (solo numero). Busca: "FR", "RR", '
+      '"resp", "respiraciones por minuto".\n'
+      '• satO2: saturacion de oxigeno (solo numero sin %). Busca: "SatO2", '
+      '"SpO2", "sat", "O2 sat", "oximetria", "pulsioximetria". '
+      'Si hay FiO2 o litros O2, incluir en notasLibres.\n'
+      '• temperatura: temperatura corporal en grados C (solo numero). '
+      'Busca: "T", "Temp", "temperatura", "febril", "afebril". '
+      'Si dice "afebril" estimar 36.5.\n\n'
+
+      'OBJETIVO — EXAMEN FISICO (campos flat en "objetivo"):\n'
+      '• estadoGeneral: descripcion del estado general. Busca: "EG:", '
+      '"RADS", "RAEG", "estado general", "aspecto general", '
+      '"consciente", "orientado", "lucido", "somnoliento".\n'
+      '• acv: auscultacion cardiovascular. Busca: "ACV", "CV:", '
+      '"corazon", "ruidos cardiacos", "RsCsRs", "soplo", "arritmia".\n'
+      '• ar: auscultacion respiratoria / pulmonar. Busca: "AR", "AP", '
+      '"torax", "pulmones", "MVC", "rales", "sibilancias", "matidez".\n'
+      '• abdomen: examen abdominal. Busca: "abdomen", "abd", "blando", '
+      '"depresible", "RHA", "dolor a palpacion", "hepato", "esplenomegalia".\n'
+      '• extremidades: examen de extremidades. Busca: "MMII", "MMSS", '
+      '"edemas", "pulsos", "relleno capilar", "cianosis", "varices".\n\n'
+
+      'OBJETIVO — EXAMENES COMPLEMENTARIOS (campos flat en "objetivo"):\n'
+      '• laboratorio: TODOS los valores de laboratorio encontrados — '
+      'hemograma (Hb, leucocitos, plaquetas), bioquimica (glucosa, urea, '
+      'creatinina, ionograma, bilirrubina, transaminasas), coagulacion '
+      '(Quick, KPTT), marcadores (PCR, VHS, procalcitonina, troponina, '
+      'BNP, dDimero, lactato), gases arteriales (pH, pCO2, pO2, BE, '
+      'HCO3). Formato: "Hb 10.2 | Leucos 8500 | PCR 12.3". '
+      'Si hay tabla de resultados, transcribir completa.\n'
+      '• imagenes: resultados de imagenologia. Busca: "Rx", "ECO", '
+      '"TAC", "TC", "RMN", "radiografia", "ecografia", "tomografia".\n'
+      '• culturas: resultados de cultivos y microbiologia. Busca: '
+      '"hemocultivo", "urocultivo", "cultivo", "antibiograma", '
+      '"germen", "sensible", "resistente".\n'
+      '• ecg: hallazgos del electrocardiograma. Busca: "ECG", "EKG", '
+      '"electrocardiograma", "RS", "FA", "bloqueo", "PR", "QTc".\n'
+      '• tratamientoActual: medicacion o tratamiento en curso mencionado '
+      'en el objetivo. Busca: "tratamiento actual", "medicacion actual", '
+      '"drogas", "infusion", "goteo".\n\n'
+
+      'EVALUACION (A):\n'
+      '• estado: "mejorando"/"estable"/"empeorando". Infiere del contexto '
+      'clinico si no esta explicito.\n'
+      '• problemasActivos: lista LIMPIA de diagnosticos activos. '
+      'Busca: "problemas activos", "lista de problemas", "Dx:", '
+      '"diagnosticos", "CIE-10". SUBSTITUYE completamente — no mezcles.\n'
+      '• notasEvaluacion: impresion clinica del medico, interpretacion de '
+      'resultados, razonamiento diagnostico, conclusion del pase de guardia.\n\n'
+
+      'PLAN (P):\n'
+      '• planTerapeutico: TODAS las indicaciones medicas, ordenes, cambios '
+      'de tratamiento. Busca: "indicaciones", "plan:", "conducta:", '
+      '"ordenes:", "continue", "iniciar", "suspender", "solicitar". '
+      'Formato bullet separado por newlines.\n'
+      '• criteriosAlta: criterios o condiciones para el alta hospitalaria. '
+      'Busca: "alta si", "criterios de alta", "condiciones para alta", '
+      '"puede irse cuando".\n\n'
+
+      'FARMACOS:\n'
+      '• farmacos[]: lista de TODOS los medicamentos. Para cada uno:\n'
+      '  - medicamento: nombre generico o comercial completo.\n'
+      '  - dosis: dosis + via + frecuencia completa '
+      '(ej: "500mg VO c/8h", "1g EV c/12h", "20mg/h BIC IV").\n'
+      'Busca en: recetas, indicaciones, hoja de medicacion, planilla de '
+      'enfermeria, cualquier listado de drogas con dosis.\n\n'
+
+      '═══════════════════════════════════════════════════════════════\n'
+      'REGLAS CRITICAS FINALES:\n'
+      '═══════════════════════════════════════════════════════════════\n'
+      '1. NUNCA inventes datos — solo extrae lo EXPLICITO o razonablemente inferable.\n'
+      '2. Campo sin datos → cadena vacia "" (NUNCA omitir la clave).\n'
+      '3. Redactar en espanol medico profesional conciso.\n'
+      '4. Si hay imagen de monitor: extrae TODOS los valores del display.\n'
+      '5. Si hay tabla de laboratorio: transcribir CADA valor con su unidad.\n'
+      '6. Frases ambiguas: registrar en notasLibres o notasEvaluacion.\n'
+      '7. El nodo "objetivo" es FLAT — NO usar sub-objetos dentro de el.\n'
+      '8. NUNCA omitas ningun nodo raiz del JSON.\n';
 
   // ── Método principal ───────────────────────────────────────────────────────
   // Alias de compatibilidade com copilot_button.dart (Build ≤ 164)
@@ -651,7 +763,7 @@ class SoapCopilotService {
         'responseMimeType': 'application/json',
         'responseSchema': _responseSchema,
         'temperature': 0.1,
-        'maxOutputTokens': 4096,  // Build 165: aumentado 2048→4096
+        'maxOutputTokens': 8192,  // Build 181: aumentado 4096→8192 para lab extenso
       },
     });
 
