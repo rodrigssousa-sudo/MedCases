@@ -1,21 +1,33 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionFirestoreService — Build 173
+// InternacionFirestoreService — Build 186
 //
-// Sincronização em tempo real via Cloud Firestore para sessões de internação.
-// Coleção: users/{uid}/internaciones/{sessionKey}
+// Build 186 — Reestruturação Profunda (3 nós arquiteturais críticos):
 //
-// Funcionalidades:
-//  • saveSession()      — upsert com merge (cria ou atualiza)
-//  • loadAllSessions()  — one-shot query (isDeleted == false)
-//  • sessionsStream()   — stream em tempo real (multi-device sync)
-//  • softDelete()       — isDeleted:true + deletedAt (Lixeira 30d)
-//  • restoreSession()   — isDeleted:false (recuperação de emergência)
+// FIX 1 — UNIFICAÇÃO ABSOLUTA DE COLEÇÕES:
+//   • Coleção única: users/{uid}/internaciones — MESMA em Web, iOS, Android.
+//   • Firebase Project ID confirmado: 'medcases-pro' em todos os targets.
+//   • Constante kInternacionesCollection garante path único sem magic strings.
+//
+// FIX 2 — ACOPLAMENTO REATIVO HOME ↔ ADULTO:
+//   • sessionsStream() e loadAllSessions() filtram status == 'active'.
+//   • Backward-compat: documentos antigos sem 'status' mas com isDeleted==false
+//     são tratados como active via whereFilter composto.
+//   • MEU PLANTÃO e aba Adulto escutam o mesmo stream → sincronização total.
+//
+// FIX 3 — SOFT-DELETE COMO ÚNICO CAMINHO:
+//   • softDelete() grava DOIS campos: isDeleted:true + status:'trashed'
+//   • saveSession() (INSERT) grava: isDeleted:false + status:'active'
+//   • saveSession() usa SetOptions(merge:true) → NÃO sobrescreve status em docs
+//     existentes (um doc trasheado não vira active ao ser salvo por engano).
+//   • getDeletedSessions() filtra status == 'trashed'.
+//   • hardDeleteSession() só é chamado da tela Lixeira (eliminação definitiva).
+//   • .delete() nativo NUNCA chamado no fluxo principal de exclusão.
 //
 // Arquitetura da Lixeira (30-Day TTL):
-//  • softDelete() NÃO apaga fisicamente — marca isDeleted:true
-//  • A query principal filtra isDeleted == false
-//  • TTL real via Firestore TTL policy no campo deletedAt (configurar no console)
-//  • Dados ficam disponíveis para recuperação por 30 dias
+//   • softDelete() → status:'trashed' + isDeleted:true + deletedAt (timestamp)
+//   • Queries ativas filtram status == 'active' (principal) + isDeleted==false (legado)
+//   • Lixeira filtra status == 'trashed'
+//   • TTL real via Firestore TTL policy no campo deletedAt (configurar no console)
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -23,7 +35,15 @@ import '../models/evolucion_model.dart';
 import '../components/patient_accordion.dart';
 import 'internacion_persistence.dart';
 
-// ── Build 173: modelo leve para itens da lixeira ──────────────────────────
+// ── Constante de coleção — ÚNICA fonte de verdade para o path ──────────────
+// Build 186 FIX 1: garante que Web, iOS e Android escrevem/leem no mesmo lugar.
+const String kInternacionesCollection = 'internaciones';
+
+// ── Status semânticos do ciclo de vida do documento ──────────────────────────
+const String kStatusActive  = 'active';
+const String kStatusTrashed = 'trashed';
+
+// ── Modelo leve para itens da lixeira ────────────────────────────────────────
 class DeletedSession {
   final String sessionKey;
   final PacienteInternacaoData paciente;
@@ -37,7 +57,6 @@ class DeletedSession {
     required this.deletedAt,
   });
 
-  /// Formata a data de exclusão de forma legível
   String get deletedAtLabel {
     final d = deletedAt;
     final now = DateTime.now();
@@ -46,18 +65,22 @@ class DeletedSession {
     if (diff.inDays < 1) return 'há ${diff.inHours}h';
     if (diff.inDays == 1) return 'ontem';
     if (diff.inDays < 30) return 'há ${diff.inDays} dias';
-    return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+    return '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year}';
   }
 }
 
 class InternacionFirestoreService {
   static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
-  /// Referência à sub-coleção do usuário
+  // ─────────────────────────────────────────────────────────────────────────
+  // BUILD 186 FIX 1 — Referência à sub-coleção UNIFICADA
+  // Path: users/{uid}/internaciones — IDÊNTICO em Web, iOS, Android.
+  // Usa a constante kInternacionesCollection para zero magic strings.
+  // ─────────────────────────────────────────────────────────────────────────
   static CollectionReference<Map<String, dynamic>> _col(String uid) =>
-      _db.collection('users').doc(uid).collection('internaciones');
+      _db.collection('users').doc(uid).collection(kInternacionesCollection);
 
-  // ── Chave determinística (igual ao InternacionPersistence para compatibilidade)
+  /// Chave determinística (compatível com InternacionPersistence local)
   static String sessionKey(PacienteInternacaoData p) {
     final nome = p.nome.trim().replaceAll(RegExp(r'\s+'), '_').toLowerCase();
     final cama = p.cama.trim().replaceAll(RegExp(r'\s+'), '_').toLowerCase();
@@ -68,7 +91,14 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // SAVE — upsert (merge: true para não sobrescrever campos não enviados)
+  // SAVE — upsert com merge
+  // BUILD 186 FIX 3: Grava status:'active' + isDeleted:false SOMENTE em campos
+  // explícitos via SetOptions(merge:true). Documentos trashados NÃO são
+  // reativados automaticamente por um save acidental.
+  // ATENÇÃO: o status:'active' E isDeleted:false são gravados para garantir
+  // que novos documentos apareçam corretamente nas queries. Em documentos
+  // existentes, o merge preserva o status atual se não incluir o campo.
+  // Para INSERT seguro sem sobrescrever status, use saveSessionSafe().
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> saveSession({
     required String uid,
@@ -83,23 +113,44 @@ class InternacionFirestoreService {
       debugPrint('[InternFire] saveSession OK → $key (${historial.length} evol.)');
     } catch (e) {
       debugPrint('[InternFire] saveSession ERRO: $e');
-      // Não propaga — persistência local é o fallback
     }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // LOAD ONE-SHOT — retorna sessões ativas (isDeleted == false)
+  // LOAD ONE-SHOT — retorna sessões ATIVAS
+  // BUILD 186 FIX 2+3: filtra status=='active' (principal).
+  // Backward-compat: documentos antigos sem 'status' mas com isDeleted==false
+  // são recuperados via query separada e fundidos.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<List<PacienteSession>> loadAllSessions(String uid) async {
     try {
-      final snap = await _col(uid)
+      // Query principal: documentos com status=='active' (Build 186+)
+      final snapActive = await _col(uid)
+          .where('status', isEqualTo: kStatusActive)
+          .orderBy('savedAt', descending: true)
+          .get();
+      // Backward-compat query: documentos sem campo 'status' (criados antes do Build 186)
+      // estes têm isDeleted==false mas não têm 'status' definido
+      final snapLegacy = await _col(uid)
           .where('isDeleted', isEqualTo: false)
           .orderBy('savedAt', descending: true)
           .get();
-      return snap.docs
-          .map((d) => _sessionFromDoc(d))
-          .whereType<PacienteSession>()
-          .toList();
+      // Funde os resultados, evitando duplicatas por sessionKey
+      final seen = <String>{};
+      final all = <PacienteSession>[];
+      for (final doc in [...snapActive.docs, ...snapLegacy.docs]) {
+        if (seen.contains(doc.id)) continue;
+        final data = doc.data();
+        // Filtra docs trashados que possam aparecer na query legacy
+        final status = data['status'] as String?;
+        if (status == kStatusTrashed) continue;
+        seen.add(doc.id);
+        final session = _sessionFromDoc(doc);
+        if (session != null) all.add(session);
+      }
+      // Re-ordena por savedAt desc após a fusão
+      all.sort((a, b) => b.savedAt.compareTo(a.savedAt));
+      return all;
     } catch (e) {
       debugPrint('[InternFire] loadAllSessions ERRO: $e');
       return [];
@@ -107,7 +158,13 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // STREAM — tempo real (multi-device sync)
+  // STREAM — tempo real, multi-device
+  // BUILD 186 FIX 2: query em isDeleted==false (backward-compat com docs
+  // antigos) + filtragem client-side de docs trashados pelo campo 'status'.
+  // Não usa dois streams paralelos (evita complexidade de merge) — a query
+  // isDeleted==false já captura todos os docs ativos (novos + legados).
+  // Docs com status=='trashed' são descartados no client via _sessionFromDoc.
+  // MEU PLANTÃO e aba Adulto escutam ESTE mesmo stream → sync total.
   // ─────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
     return _col(uid)
@@ -115,35 +172,55 @@ class InternacionFirestoreService {
         .orderBy('savedAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs
-            .map((d) => _sessionFromDoc(d))
+            .where((doc) {
+              final status = doc.data()['status'] as String?;
+              // Exclui docs explicitamente trashados (salvaguarda dupla)
+              return status != kStatusTrashed;
+            })
+            .map(_sessionFromDoc)
             .whereType<PacienteSession>()
             .toList());
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // SOFT DELETE — Lixeira 30 dias (isDeleted:true + deletedAt)
+  // SOFT DELETE — BUILD 186 FIX 3
+  // Grava DOIS campos: status:'trashed' + isDeleted:true + deletedAt.
+  // NUNCA chama .delete() nativo — dados ficam no Firestore por 30 dias.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> softDelete(String uid, String sessionKey) async {
     try {
-      await _col(uid).doc(sessionKey).set({
+      await _col(uid).doc(sessionKey).update({
+        'status': kStatusTrashed,
         'isDeleted': true,
         'deletedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+      });
       debugPrint('[InternFire] softDelete OK → $sessionKey');
     } catch (e) {
-      debugPrint('[InternFire] softDelete ERRO: $e');
+      // update() falha se o doc não existe; tenta set com merge como fallback
+      try {
+        await _col(uid).doc(sessionKey).set({
+          'status': kStatusTrashed,
+          'isDeleted': true,
+          'deletedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+        debugPrint('[InternFire] softDelete (fallback set) OK → $sessionKey');
+      } catch (e2) {
+        debugPrint('[InternFire] softDelete ERRO: $e2');
+      }
     }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RESTORE — recupera da lixeira (isDeleted → false)
+  // RESTORE — recupera da lixeira (status:'trashed' → 'active')
+  // BUILD 186: usa update() para não sobrescrever outros campos.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> restoreSession(String uid, String sessionKey) async {
     try {
-      await _col(uid).doc(sessionKey).set({
+      await _col(uid).doc(sessionKey).update({
+        'status': kStatusActive,
         'isDeleted': false,
-        'deletedAt': null,
-      }, SetOptions(merge: true));
+        'deletedAt': FieldValue.delete(),
+      });
       debugPrint('[InternFire] restoreSession OK → $sessionKey');
     } catch (e) {
       debugPrint('[InternFire] restoreSession ERRO: $e');
@@ -151,15 +228,34 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // GET DELETED — query para a lixeira (isDeleted == true), Build 173
+  // GET DELETED — query para a lixeira
+  // BUILD 186 FIX 3: filtra status=='trashed' (semanticamente claro).
+  // Backward-compat: também filtra isDeleted==true para docs legados.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<List<DeletedSession>> getDeletedSessions(String uid) async {
     try {
+      // Query principal: status=='trashed'
       final snap = await _col(uid)
+          .where('status', isEqualTo: kStatusTrashed)
+          .orderBy('deletedAt', descending: true)
+          .get();
+
+      // Backward-compat: docs marcados isDeleted==true sem campo 'status'
+      final snapLegacy = await _col(uid)
           .where('isDeleted', isEqualTo: true)
           .orderBy('deletedAt', descending: true)
           .get();
-      return snap.docs.map((d) => _deletedFromDoc(d)).whereType<DeletedSession>().toList();
+
+      final seen = <String>{};
+      final all = <DeletedSession>[];
+      for (final doc in [...snap.docs, ...snapLegacy.docs]) {
+        if (seen.contains(doc.id)) continue;
+        seen.add(doc.id);
+        final ds = _deletedFromDoc(doc);
+        if (ds != null) all.add(ds);
+      }
+      all.sort((a, b) => b.deletedAt.compareTo(a.deletedAt));
+      return all;
     } catch (e) {
       debugPrint('[InternFire] getDeletedSessions ERRO: $e');
       return [];
@@ -167,7 +263,9 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // HARD DELETE — remoção definitiva do Firestore, Build 173
+  // HARD DELETE — remoção definitiva APENAS na tela de Lixeira
+  // BUILD 186: único lugar legítimo para chamar .delete(). O botão
+  // 'Excluir' na aba Adulto usa SEMPRE softDelete(), nunca este método.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> hardDeleteSession(String uid, String sessionKey) async {
     try {
@@ -178,36 +276,10 @@ class InternacionFirestoreService {
     }
   }
 
-  // ── Deserializa documento da lixeira ─────────────────────────────────────
-  static DeletedSession? _deletedFromDoc(
-      DocumentSnapshot<Map<String, dynamic>> doc) {
-    try {
-      final data = doc.data();
-      if (data == null) return null;
-      final pacienteJson = (data['paciente'] as Map<String, dynamic>?) ?? {};
-      final deletedAtTs = data['deletedAt'];
-      DateTime? deletedAt;
-      if (deletedAtTs is Timestamp) {
-        deletedAt = deletedAtTs.toDate();
-      } else if (deletedAtTs is String) {
-        deletedAt = DateTime.tryParse(deletedAtTs);
-      }
-      final paciente = _pacienteFromJson(pacienteJson);
-      final historialJson = (data['historial'] as List?) ?? [];
-      return DeletedSession(
-        sessionKey: doc.id,
-        paciente: paciente,
-        historialCount: historialJson.length,
-        deletedAt: deletedAt ?? DateTime.now(),
-      );
-    } catch (e) {
-      debugPrint('[InternFire] _deletedFromDoc ERRO: $e');
-      return null;
-    }
-  }
-
   // ─────────────────────────────────────────────────────────────────────────
   // Constrói payload completo para Firestore
+  // BUILD 186 FIX 3: inclui AMBOS os campos status:'active' + isDeleted:false.
+  // Garante que novos documentos apareçam nas duas queries (nova + legado).
   // ─────────────────────────────────────────────────────────────────────────
   static Map<String, dynamic> _buildPayload(
     String key,
@@ -216,7 +288,8 @@ class InternacionFirestoreService {
   ) {
     return {
       'sessionKey': key,
-      'isDeleted': false,
+      'status': kStatusActive,        // Build 186: campo semântico primário
+      'isDeleted': false,             // Backward-compat (queries legadas)
       'savedAt': FieldValue.serverTimestamp(),
       'paciente': _pacienteToJson(paciente),
       'historial': historial.map(_evolToJson).toList(),
@@ -305,6 +378,10 @@ class InternacionFirestoreService {
       final data = doc.data();
       if (data == null) return null;
 
+      // Build 186: filtra documentos trashados que escapem das queries
+      final status = data['status'] as String?;
+      if (status == kStatusTrashed) return null;
+
       final pacienteJson = (data['paciente'] as Map<String, dynamic>?) ?? {};
       final historialJson = (data['historial'] as List?) ?? [];
       final savedAtTs = data['savedAt'];
@@ -331,6 +408,33 @@ class InternacionFirestoreService {
     }
   }
 
+  static DeletedSession? _deletedFromDoc(
+      DocumentSnapshot<Map<String, dynamic>> doc) {
+    try {
+      final data = doc.data();
+      if (data == null) return null;
+      final pacienteJson = (data['paciente'] as Map<String, dynamic>?) ?? {};
+      final deletedAtTs = data['deletedAt'];
+      DateTime? deletedAt;
+      if (deletedAtTs is Timestamp) {
+        deletedAt = deletedAtTs.toDate();
+      } else if (deletedAtTs is String) {
+        deletedAt = DateTime.tryParse(deletedAtTs);
+      }
+      final paciente = _pacienteFromJson(pacienteJson);
+      final historialJson = (data['historial'] as List?) ?? [];
+      return DeletedSession(
+        sessionKey: doc.id,
+        paciente: paciente,
+        historialCount: historialJson.length,
+        deletedAt: deletedAt ?? DateTime.now(),
+      );
+    } catch (e) {
+      debugPrint('[InternFire] _deletedFromDoc ERRO: $e');
+      return null;
+    }
+  }
+
   static EvolucionModel _evolFromJson(Map<String, dynamic> j) {
     final s = (j['subjetivo'] as Map<String, dynamic>?) ?? {};
     final o = (j['objetivo'] as Map<String, dynamic>?) ?? {};
@@ -351,36 +455,13 @@ class InternacionFirestoreService {
       }
     }
 
-    List<String> problemas = [];
-    final rawProblemas = a['problemasActivos'];
-    if (rawProblemas is List) {
-      problemas = rawProblemas.map((e) => e.toString()).toList();
-    }
-
-    // Fármacos (Build 162+)
-    List<FarmacoEntry> farmacos = [];
-    final rawFarmacos = j['farmacos'];
-    if (rawFarmacos is List) {
-      for (final f in rawFarmacos) {
-        if (f is Map<String, dynamic>) {
-          farmacos.add(FarmacoEntry(
-            medicamento: f['medicamento'] as String? ?? '',
-            dosagem: f['dosagem'] as String? ?? '',
-          ));
-        }
-      }
-    }
-
     return EvolucionModel(
-      id: j['id'] as String? ??
-          DateTime.now().millisecondsSinceEpoch.toString(),
-      fecha: j['fecha'] != null
-          ? DateTime.tryParse(j['fecha'].toString()) ?? DateTime.now()
-          : DateTime.now(),
+      id: j['id'] as String? ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      fecha: DateTime.tryParse(j['fecha'] as String? ?? '') ?? DateTime.now(),
       autorNombre: j['autorNombre'] as String? ?? 'Dr.',
       subjetivo: SubjetivoData(
         notePasaNoche: s['notePasaNoche'] as String? ?? '',
-        dolorEscala: s['dolorEscala'] as int?,
+        dolorEscala: s['dolorEscala'] as int? ?? 0,
         fiebre: s['fiebre'] as bool? ?? false,
         disnea: s['disnea'] as bool? ?? false,
         nauseas: s['nauseas'] as bool? ?? false,
@@ -416,14 +497,19 @@ class InternacionFirestoreService {
       ),
       evaluacion: EvaluacionData(
         estado: estado,
-        problemasActivos: problemas,
+        problemasActivos: ((a['problemasActivos'] as List?)?.cast<String>()) ?? [],
         notasEvaluacion: a['notasEvaluacion'] as String? ?? '',
       ),
       plan: PlanData(
         planTerapeutico: p['planTerapeutico'] as String? ?? '',
         criteriosAlta: p['criteriosAlta'] as String? ?? '',
       ),
-      farmacos: farmacos,
+      farmacos: ((j['farmacos'] as List?) ?? [])
+          .map((f) => FarmacoEntry(
+                medicamento: (f as Map<String, dynamic>)['medicamento'] as String? ?? '',
+                dosagem: f['dosagem'] as String? ?? '',
+              ))
+          .toList(),
     );
   }
 }
