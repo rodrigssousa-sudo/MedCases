@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 171
+// InternacionScreen — Build 173
 //
 // 168-1: Firestore Sync — sessions stream em tempo real (multi-device)
 // 168-2: Lixeira 30d — softDelete (isDeleted:true) em vez de hard delete
@@ -8,6 +8,8 @@
 // 168-5: PatientAccordion tap → _DocumentPreviewModal (paper-style viewer)
 // 168-6: Auto-save on Nueva — salva silencioso se dirty, skip se vazio
 // 168-R: R1(FAB→AppBar) R2(S fechado) R3(Auditoria) R4(Retomar same-day)
+// 171:   Anti-empty save, Edit vs Evolve separation, post-save resetAll
+// 173:   _TrashModal — Papelera de Reciclaje (30d) com Restaurar + Hard Delete
 // ─────────────────────────────────────────────────────────────────────────────
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -766,15 +768,48 @@ class _InternacionScreenState extends State<InternacionScreen> {
             // ── 8. GRID SESSÕES SALVAS (168-3: redesign cards) ─────────────
             if (_sessionsLoaded && _savedSessions.isNotEmpty) ...[
               const SizedBox(height: 24),
-              _SectionDivider(
-                label: isEs
-                    ? 'PACIENTES INTERNADOS GUARDADOS'
-                    : 'PACIENTES INTERNADOS SALVOS',
-                sublabel: isEs
-                    ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''}'
-                    : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''}',
-                dark: dark,
-                theme: theme,
+              // ── Build 173: divider + botão lixeira inline ──────────────
+              Row(
+                children: [
+                  Expanded(
+                    child: _SectionDivider(
+                      label: isEs
+                          ? 'PACIENTES INTERNADOS GUARDADOS'
+                          : 'PACIENTES INTERNADOS SALVOS',
+                      sublabel: isEs
+                          ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''}'
+                          : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''}',
+                      dark: dark,
+                      theme: theme,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Tooltip(
+                    message: isEs ? 'Papelera' : 'Lixeira',
+                    child: GestureDetector(
+                      onTap: () => _showTrashModal(context, dark, lang),
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: InternacionTheme.red
+                              .withValues(alpha: dark ? 0.14 : 0.09),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: InternacionTheme.red
+                                .withValues(alpha: 0.30),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.restore_from_trash_rounded,
+                          size: 15,
+                          color: InternacionTheme.red,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               _SessionsGrid(
@@ -787,6 +822,31 @@ class _InternacionScreenState extends State<InternacionScreen> {
                 onDelete: _deleteSession,
                 onPreview: (session) =>
                     _showSessionPreview(context, session, dark, lang),
+              ),
+            ],
+            // ── Build 173: Botão lixeira mesmo sem sessões ativas ─────────
+            if (_sessionsLoaded && _savedSessions.isEmpty && _uid != null) ...[
+              const SizedBox(height: 16),
+              Center(
+                child: GestureDetector(
+                  onTap: () => _showTrashModal(context, dark, lang),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.restore_from_trash_rounded,
+                          size: 13, color: theme.labelColor),
+                      const SizedBox(width: 5),
+                      Text(
+                        isEs ? 'Papelera de Reciclaje' : 'Lixeira',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: theme.labelColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ],
@@ -835,6 +895,34 @@ class _InternacionScreenState extends State<InternacionScreen> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ));
+        },
+      ),
+    );
+  }
+
+  // ── Build 173: Abre a Papelera de Reciclaje ───────────────────────────────
+  void _showTrashModal(BuildContext ctx, bool dark, String lang) {
+    final uid = _uid;
+    if (uid == null || uid.isEmpty) {
+      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+        content: Text(lang == 'es'
+            ? 'Inicia sesión para acceder a la papelera.'
+            : 'Faça login para acessar a lixeira.'),
+        behavior: SnackBarBehavior.floating,
+      ));
+      return;
+    }
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _TrashModal(
+        uid: uid,
+        dark: dark,
+        lang: lang,
+        onRestored: () {
+          // Atualiza o grid principal após restauração
+          _loadSessionsLocal();
         },
       ),
     );
@@ -2395,6 +2483,534 @@ class _SectionDivider extends StatelessWidget {
             child:
                 Divider(color: theme.border, height: 1, thickness: 0.8)),
       ],
+    );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Build 173: _TrashModal — Papelera de Reciclaje (30 días)
+// StatefulWidget para estado reativo interno (sem depender do pai)
+// ═════════════════════════════════════════════════════════════════════════════
+class _TrashModal extends StatefulWidget {
+  final String uid;
+  final bool dark;
+  final String lang;
+  final VoidCallback onRestored; // callback para refresh do grid principal
+
+  const _TrashModal({
+    required this.uid,
+    required this.dark,
+    required this.lang,
+    required this.onRestored,
+  });
+
+  @override
+  State<_TrashModal> createState() => _TrashModalState();
+}
+
+class _TrashModalState extends State<_TrashModal> {
+  List<DeletedSession> _items = [];
+  bool _loading = true;
+  String? _processingKey; // chave do item em operação (loading indicator)
+
+  bool get isEs => widget.lang == 'es';
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() => _loading = true);
+    final items =
+        await InternacionFirestoreService.getDeletedSessions(widget.uid);
+    if (mounted) setState(() { _items = items; _loading = false; });
+  }
+
+  Future<void> _restore(DeletedSession item) async {
+    setState(() => _processingKey = item.sessionKey);
+    await InternacionFirestoreService.restoreSession(
+        widget.uid, item.sessionKey);
+    if (mounted) {
+      setState(() {
+        _items = _items
+            .where((i) => i.sessionKey != item.sessionKey)
+            .toList();
+        _processingKey = null;
+      });
+      widget.onRestored(); // atualiza grid principal
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.unarchive_rounded, color: Colors.white, size: 15),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(isEs
+                ? '${item.paciente.nome.isNotEmpty ? item.paciente.nome : 'Paciente'} restaurado(a) com sucesso'
+                : '${item.paciente.nome.isNotEmpty ? item.paciente.nome : 'Paciente'} restaurado(a) com sucesso'),
+          ),
+        ]),
+        backgroundColor: InternacionTheme.accentLight,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
+    }
+  }
+
+  Future<void> _hardDelete(DeletedSession item) async {
+    // Confirmação antes do hard delete
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: widget.dark ? const Color(0xFF0F1116) : Colors.white,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: InternacionTheme.red.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.delete_forever_rounded,
+                size: 17, color: InternacionTheme.red),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              isEs ? 'Eliminar Definitivamente' : 'Eliminar Definitivamente',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: widget.dark ? Colors.white : const Color(0xFF111827),
+              ),
+            ),
+          ),
+        ]),
+        content: Text(
+          isEs
+              ? 'Esta acción es irreversible. El registro será eliminado permanentemente del sistema.'
+              : 'Esta ação é irreversível. O registro será eliminado permanentemente do sistema.',
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.5,
+            color: widget.dark ? Colors.white70 : const Color(0xFF374151),
+          ),
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            style: TextButton.styleFrom(
+              foregroundColor: widget.dark ? Colors.white54 : Colors.grey,
+            ),
+            child: Text(isEs ? 'Cancelar' : 'Cancelar',
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: InternacionTheme.red,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: Text(isEs ? 'Eliminar' : 'Eliminar',
+                style: const TextStyle(fontWeight: FontWeight.w700)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _processingKey = item.sessionKey);
+    await InternacionFirestoreService.hardDeleteSession(
+        widget.uid, item.sessionKey);
+    if (mounted) {
+      setState(() {
+        _items = _items
+            .where((i) => i.sessionKey != item.sessionKey)
+            .toList();
+        _processingKey = null;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.delete_forever_rounded,
+              color: Colors.white, size: 15),
+          const SizedBox(width: 8),
+          Text(isEs ? 'Registro eliminado definitivamente' : 'Registro eliminado definitivamente'),
+        ]),
+        backgroundColor: InternacionTheme.red,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = InternacionTheme(widget.dark);
+    final bg = widget.dark ? const Color(0xFF0F1116) : Colors.white;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.70,
+      minChildSize: 0.40,
+      maxChildSize: 0.94,
+      expand: false,
+      builder: (_, scrollCtrl) => Container(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: InternacionTheme.red.withValues(alpha: 0.25),
+            width: 1.0,
+          ),
+        ),
+        child: Column(
+          children: [
+            // ── Handle ──────────────────────────────────────────────────────
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // ── Header ───────────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color:
+                          InternacionTheme.red.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.restore_from_trash_rounded,
+                        size: 18, color: InternacionTheme.red),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs
+                              ? 'Papelera de Reciclaje'
+                              : 'Lixeira de Reciclagem',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          isEs
+                              ? 'Últimos 30 días · restaurar o eliminar'
+                              : 'Últimos 30 dias · restaurar ou eliminar',
+                          style: TextStyle(
+                              fontSize: 11, color: theme.textSecondary),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Recarregar
+                  IconButton(
+                    icon: Icon(Icons.refresh_rounded,
+                        size: 19, color: theme.textSecondary),
+                    onPressed: _load,
+                    tooltip: isEs ? 'Recargar' : 'Recarregar',
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded,
+                        size: 19, color: theme.textSecondary),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Divider(color: theme.border, height: 1, thickness: 0.8),
+
+            // ── Corpo ────────────────────────────────────────────────────────
+            Expanded(
+              child: _loading
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                InternacionTheme.red),
+                            strokeWidth: 2.5,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            isEs ? 'Buscando...' : 'Buscando...',
+                            style: TextStyle(
+                                fontSize: 12, color: theme.textSecondary),
+                          ),
+                        ],
+                      ),
+                    )
+                  : _items.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.delete_outline_rounded,
+                                  size: 48,
+                                  color: theme.border),
+                              const SizedBox(height: 12),
+                              Text(
+                                isEs
+                                    ? 'Papelera vacía'
+                                    : 'Lixeira vazia',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.textSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                isEs
+                                    ? 'No hay registros eliminados en los últimos 30 días.'
+                                    : 'Nenhum registro excluído nos últimos 30 dias.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 11.5,
+                                    color: theme.labelColor,
+                                    height: 1.4),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.separated(
+                          controller: scrollCtrl,
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                          itemCount: _items.length,
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 8),
+                          itemBuilder: (_, i) {
+                            final item = _items[i];
+                            final isProcessing =
+                                _processingKey == item.sessionKey;
+                            final nome = item.paciente.nome.isNotEmpty
+                                ? item.paciente.nome
+                                : (isEs ? 'Paciente' : 'Paciente');
+                            final cama = item.paciente.cama.isNotEmpty
+                                ? (isEs
+                                    ? 'Cama ${item.paciente.cama}'
+                                    : 'Leito ${item.paciente.cama}')
+                                : '';
+                            final diag = item.paciente.diagnostico;
+
+                            return Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: theme.card,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: InternacionTheme.red
+                                      .withValues(alpha: 0.18),
+                                  width: 0.9,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  // ── Ícone ─────────────────────────────
+                                  Container(
+                                    width: 38,
+                                    height: 38,
+                                    decoration: BoxDecoration(
+                                      color: InternacionTheme.red
+                                          .withValues(alpha: 0.10),
+                                      borderRadius:
+                                          BorderRadius.circular(10),
+                                    ),
+                                    child: const Icon(
+                                        Icons.person_off_rounded,
+                                        size: 18,
+                                        color: InternacionTheme.red),
+                                  ),
+                                  const SizedBox(width: 12),
+
+                                  // ── Info ──────────────────────────────
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          nome,
+                                          style: TextStyle(
+                                            fontSize: 13.5,
+                                            fontWeight: FontWeight.w700,
+                                            color: theme.textPrimary,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          [
+                                            if (cama.isNotEmpty) cama,
+                                            '${item.historialCount} evol.',
+                                          ].join('  ·  '),
+                                          style: TextStyle(
+                                              fontSize: 10.5,
+                                              color: theme.textSecondary),
+                                        ),
+                                        if (diag.isNotEmpty) ...[
+                                          const SizedBox(height: 1),
+                                          Text(
+                                            diag,
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: theme.labelColor,
+                                                height: 1.3),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                        const SizedBox(height: 4),
+                                        Row(children: [
+                                          Icon(Icons.schedule_rounded,
+                                              size: 10,
+                                              color: InternacionTheme.red
+                                                  .withValues(alpha: 0.7)),
+                                          const SizedBox(width: 3),
+                                          Text(
+                                            item.deletedAtLabel,
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: InternacionTheme.red
+                                                  .withValues(alpha: 0.7),
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ]),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+
+                                  // ── Ações ─────────────────────────────
+                                  if (isProcessing)
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          InternacionTheme.accentLight,
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // Restaurar
+                                        Tooltip(
+                                          message: isEs
+                                              ? 'Restaurar'
+                                              : 'Restaurar',
+                                          child: GestureDetector(
+                                            onTap: () => _restore(item),
+                                            child: Container(
+                                              width: 34,
+                                              height: 34,
+                                              decoration: BoxDecoration(
+                                                color: InternacionTheme
+                                                    .accentLight
+                                                    .withValues(
+                                                        alpha: widget.dark
+                                                            ? 0.15
+                                                            : 0.10),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: InternacionTheme
+                                                      .accentLight
+                                                      .withValues(alpha: 0.35),
+                                                  width: 0.8,
+                                                ),
+                                              ),
+                                              child: const Icon(
+                                                Icons.unarchive_rounded,
+                                                size: 16,
+                                                color: InternacionTheme
+                                                    .accentLight,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        // Hard Delete
+                                        Tooltip(
+                                          message: isEs
+                                              ? 'Eliminar definitivamente'
+                                              : 'Eliminar definitivamente',
+                                          child: GestureDetector(
+                                            onTap: () => _hardDelete(item),
+                                            child: Container(
+                                              width: 34,
+                                              height: 34,
+                                              decoration: BoxDecoration(
+                                                color: InternacionTheme.red
+                                                    .withValues(
+                                                        alpha: widget.dark
+                                                            ? 0.15
+                                                            : 0.09),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: InternacionTheme.red
+                                                      .withValues(alpha: 0.30),
+                                                  width: 0.8,
+                                                ),
+                                              ),
+                                              child: const Icon(
+                                                Icons.delete_forever_rounded,
+                                                size: 16,
+                                                color: InternacionTheme.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

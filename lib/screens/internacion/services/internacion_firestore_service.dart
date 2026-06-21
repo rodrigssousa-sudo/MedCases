@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionFirestoreService — Build 168
+// InternacionFirestoreService — Build 173
 //
 // Sincronização em tempo real via Cloud Firestore para sessões de internação.
 // Coleção: users/{uid}/internaciones/{sessionKey}
@@ -22,6 +22,33 @@ import 'package:flutter/foundation.dart';
 import '../models/evolucion_model.dart';
 import '../components/patient_accordion.dart';
 import 'internacion_persistence.dart';
+
+// ── Build 173: modelo leve para itens da lixeira ──────────────────────────
+class DeletedSession {
+  final String sessionKey;
+  final PacienteInternacaoData paciente;
+  final int historialCount;
+  final DateTime deletedAt;
+
+  const DeletedSession({
+    required this.sessionKey,
+    required this.paciente,
+    required this.historialCount,
+    required this.deletedAt,
+  });
+
+  /// Formata a data de exclusão de forma legível
+  String get deletedAtLabel {
+    final d = deletedAt;
+    final now = DateTime.now();
+    final diff = now.difference(d);
+    if (diff.inHours < 1) return 'há ${diff.inMinutes}min';
+    if (diff.inDays < 1) return 'há ${diff.inHours}h';
+    if (diff.inDays == 1) return 'ontem';
+    if (diff.inDays < 30) return 'há ${diff.inDays} dias';
+    return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+  }
+}
 
 class InternacionFirestoreService {
   static FirebaseFirestore get _db => FirebaseFirestore.instance;
@@ -109,7 +136,7 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RESTORE — recupera da lixeira
+  // RESTORE — recupera da lixeira (isDeleted → false)
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> restoreSession(String uid, String sessionKey) async {
     try {
@@ -120,6 +147,62 @@ class InternacionFirestoreService {
       debugPrint('[InternFire] restoreSession OK → $sessionKey');
     } catch (e) {
       debugPrint('[InternFire] restoreSession ERRO: $e');
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // GET DELETED — query para a lixeira (isDeleted == true), Build 173
+  // ─────────────────────────────────────────────────────────────────────────
+  static Future<List<DeletedSession>> getDeletedSessions(String uid) async {
+    try {
+      final snap = await _col(uid)
+          .where('isDeleted', isEqualTo: true)
+          .orderBy('deletedAt', descending: true)
+          .get();
+      return snap.docs.map((d) => _deletedFromDoc(d)).whereType<DeletedSession>().toList();
+    } catch (e) {
+      debugPrint('[InternFire] getDeletedSessions ERRO: $e');
+      return [];
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // HARD DELETE — remoção definitiva do Firestore, Build 173
+  // ─────────────────────────────────────────────────────────────────────────
+  static Future<void> hardDeleteSession(String uid, String sessionKey) async {
+    try {
+      await _col(uid).doc(sessionKey).delete();
+      debugPrint('[InternFire] hardDeleteSession OK → $sessionKey');
+    } catch (e) {
+      debugPrint('[InternFire] hardDeleteSession ERRO: $e');
+    }
+  }
+
+  // ── Deserializa documento da lixeira ─────────────────────────────────────
+  static DeletedSession? _deletedFromDoc(
+      DocumentSnapshot<Map<String, dynamic>> doc) {
+    try {
+      final data = doc.data();
+      if (data == null) return null;
+      final pacienteJson = (data['paciente'] as Map<String, dynamic>?) ?? {};
+      final deletedAtTs = data['deletedAt'];
+      DateTime? deletedAt;
+      if (deletedAtTs is Timestamp) {
+        deletedAt = deletedAtTs.toDate();
+      } else if (deletedAtTs is String) {
+        deletedAt = DateTime.tryParse(deletedAtTs);
+      }
+      final paciente = _pacienteFromJson(pacienteJson);
+      final historialJson = (data['historial'] as List?) ?? [];
+      return DeletedSession(
+        sessionKey: doc.id,
+        paciente: paciente,
+        historialCount: historialJson.length,
+        deletedAt: deletedAt ?? DateTime.now(),
+      );
+    } catch (e) {
+      debugPrint('[InternFire] _deletedFromDoc ERRO: $e');
+      return null;
     }
   }
 
