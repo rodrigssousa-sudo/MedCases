@@ -1,16 +1,17 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 167-R (Refinamento UX)
+// InternacionScreen — Build 168
 //
-// R1: FAB removido — botão "Nueva" compacto de volta ao AppBar
-// R2: Accordion S inicia fechado (openIdx = null)
-// R3: Motor de Auditoria — HistorialSection com viewer read-only
-// R4: Retomar corrigido — carrega mesmo dia, SEM auto-avanço de dia
-//
-// Build 165: Hard delete, key collision fix, FAB (revertido em R1)
-// Build 164: Motor DDI integrado
-// Build 163: Protocolo Clean Slate
+// 168-1: Firestore Sync — sessions stream em tempo real (multi-device)
+// 168-2: Lixeira 30d — softDelete (isDeleted:true) em vez de hard delete
+// 168-3: _SessionCard redesenhado — severity border + [Editar][Excluir] + [Evoluir]
+// 168-4: Card body tap → _SessionPreviewDialog (read-only + ações)
+// 168-5: PatientAccordion tap → _DocumentPreviewModal (paper-style viewer)
+// 168-6: Auto-save on Nueva — salva silencioso se dirty, skip se vazio
+// 168-R: R1(FAB→AppBar) R2(S fechado) R3(Auditoria) R4(Retomar same-day)
 // ─────────────────────────────────────────────────────────────────────────────
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../providers/app_provider.dart';
 import 'models/evolucion_model.dart';
@@ -22,6 +23,7 @@ import 'components/copilot_button.dart';
 import 'components/farmacos_accordion.dart';
 import 'components/soap/soap_section.dart';
 import 'services/internacion_persistence.dart';
+import 'services/internacion_firestore_service.dart';
 import 'services/soap_copilot_service.dart';
 import 'services/drug_interaction_service.dart';
 
@@ -33,30 +35,53 @@ class InternacionScreen extends StatefulWidget {
 }
 
 class _InternacionScreenState extends State<InternacionScreen> {
-  // ── Estado persistente na sessão ────────────────────────────────────────────
-  PacienteInternacaoData _paciente = const PacienteInternacaoData(diaInternacao: 1);
-  List<EvolucionModel>   _historial = [];
-
-  // Evolução em andamento (draft)
+  PacienteInternacaoData _paciente =
+      const PacienteInternacaoData(diaInternacao: 1);
+  List<EvolucionModel> _historial = [];
   late EvolucionModel _draftEvolucion;
 
-  // Key para acessar applyAiDraft() do SoapSectionWidget
   final _soapKey = GlobalKey<SoapSectionWidgetState>();
 
-  // Sessões salvas do dia anterior (para continuidade)
+  // 168-1: Firestore stream
   List<PacienteSession> _savedSessions = [];
   bool _sessionsLoaded = false;
+  StreamSubscription<List<PacienteSession>>? _sessionsSub;
+  String? _currentSessionKey; // chave da sessão ativa em edição
 
   @override
   void initState() {
     super.initState();
     _draftEvolucion = _newDraft();
-    _loadSessions();
-    // Pre-warm DDI engine na inicialização (idempotente, TTL 24h)
     DrugInteractionService.instance.init();
+    // Aguarda o primeiro frame para ter acesso ao provider
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initSessions());
   }
 
-  Future<void> _loadSessions() async {
+  @override
+  void dispose() {
+    _sessionsSub?.cancel();
+    super.dispose();
+  }
+
+  // ── 168-1: Inicia stream Firestore (com fallback local) ──────────────────
+  void _initSessions() {
+    final uid = _uid;
+    if (uid != null && uid.isNotEmpty) {
+      _sessionsSub = InternacionFirestoreService.sessionsStream(uid)
+          .listen((sessions) {
+        if (mounted) {
+          setState(() {
+            _savedSessions = sessions;
+            _sessionsLoaded = true;
+          });
+        }
+      }, onError: (_) => _loadSessionsLocal());
+    } else {
+      _loadSessionsLocal();
+    }
+  }
+
+  Future<void> _loadSessionsLocal() async {
     final sessions = await InternacionPersistence.loadAllSessions();
     if (mounted) {
       setState(() {
@@ -66,58 +91,71 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
-  /// Build 162 — nome do médico logado via AppProvider
+  String? get _uid {
+    try {
+      return context.read<AppProvider>().currentUser?.uid;
+    } catch (_) {
+      return null;
+    }
+  }
+
   String _doctorName(AppProvider p) {
     final name = p.userName.trim();
     if (name.isEmpty) return 'Dr.';
-    // Garante prefixo "Dr."/"Dra." se não presente
     if (name.toLowerCase().startsWith('dr')) return name;
     return 'Dr. $name';
   }
 
   EvolucionModel _newDraft() => EvolucionModel(
-    id: DateTime.now().millisecondsSinceEpoch.toString(),
-    fecha: DateTime.now(),
-    autorNombre: 'Dr.',
-  );
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        fecha: DateTime.now(),
+        autorNombre: 'Dr.',
+      );
+
+  // ── 168-1: Salva na nuvem (com fallback local) ───────────────────────────
+  Future<void> _persistSession() async {
+    final uid = _uid;
+    if (uid != null && uid.isNotEmpty) {
+      await InternacionFirestoreService.saveSession(
+        uid: uid,
+        paciente: _paciente,
+        historial: _historial,
+        existingKey: _currentSessionKey,
+      );
+      _currentSessionKey ??= InternacionFirestoreService.sessionKey(_paciente);
+    }
+    // Fallback local sempre (offline resilience)
+    await InternacionPersistence.saveSession(
+      paciente: _paciente,
+      historial: _historial,
+    );
+  }
 
   void _onSaveEvolucion(EvolucionModel ev) async {
     setState(() {
       _historial = [..._historial, ev];
       _draftEvolucion = _newDraft();
     });
-
-    // Persiste automaticamente
-    await InternacionPersistence.saveSession(
-      paciente: _paciente,
-      historial: _historial,
-    );
-    // Recarrega sessões para atualizar grid
-    await _loadSessions();
-
+    await _persistSession();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(children: [
-            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 16),
-            const SizedBox(width: 8),
-            Text(_isEs ? 'Evolución guardada y persistida' : 'Evolução salva e persistida'),
-          ]),
-          backgroundColor: InternacionTheme.green,
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.check_circle_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Text(_isEs
+              ? 'Evolución guardada y sincronizada'
+              : 'Evolução salva e sincronizada'),
+        ]),
+        backgroundColor: InternacionTheme.green,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
     }
   }
 
-  // ── IA aprovada — injeta SOAP + atualiza dados demográficos (Build 161) ──
   void _onAiApproved(SoapDraftResult draft) {
-    // 1. Injeta campos SOAP (S/O/A/P + fármacos) com anti-state-bleed
     _soapKey.currentState?.applyAiDraft(draft);
-
-    // 2. Atualiza dados demográficos se a IA extraiu pelo menos um campo
     if (draft.hasPatientData) {
       setState(() {
         _paciente = _paciente.copyWith(
@@ -144,11 +182,13 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
-  // ── FIX 165-B: Hard delete da sessão — apaga do SharedPreferences ────────
-  // Antes: onDismiss só fazia setState → ao salvar nova sessão o paciente
-  // deletado voltava (o dado permanecia no disco).
-  // Agora: delete físico PRIMEIRO, depois remove da lista em memória.
+  // ── 168-2: Soft Delete (Lixeira 30d) ─────────────────────────────────────
   Future<void> _deleteSession(PacienteSession session) async {
+    final uid = _uid;
+    if (uid != null && uid.isNotEmpty) {
+      await InternacionFirestoreService.softDelete(uid, session.sessionKey);
+    }
+    // Também remove do local para consistência offline
     await InternacionPersistence.deleteSession(session.sessionKey);
     if (mounted) {
       setState(() {
@@ -156,16 +196,26 @@ class _InternacionScreenState extends State<InternacionScreen> {
             .where((s) => s.sessionKey != session.sessionKey)
             .toList();
       });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.delete_outline_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(_isEs
+                ? 'Paciente movido a la papelera (30 días)'
+                : 'Paciente movido para a lixeira (30 dias)'),
+          ),
+        ]),
+        backgroundColor: InternacionTheme.amber,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
     }
   }
 
-  // ── R4: Retoma sessão salva — MESMO DIA, SEM avanço automático ───────────
-  // Antes: usava session.nextDayPaciente (diaInternacao+1) e nextDayDraft (zerado)
-  // Agora: restaura o paciente e historial exatamente como foram salvos.
-  //        O médico decide manualmente quando avançar o dia.
+  // ── 168-R4: Retomar — mesmo dia, sem auto-avanço ─────────────────────────
   void _resumeSession(PacienteSession session) {
-    // Cria draft do MESMO dia: herda autorNombre mas mantém S/O/A/P limpos
-    // para uma nova entrada clínica, preservando o contexto do paciente.
     final sameDayDraft = EvolucionModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       fecha: DateTime.now(),
@@ -177,21 +227,21 @@ class _InternacionScreenState extends State<InternacionScreen> {
       evaluacion: const EvaluacionData(),
       plan: const PlanData(),
     );
-
     setState(() {
-      _paciente       = session.paciente;       // MESMO paciente, MESMO dia
-      _historial      = session.historial;      // historial anterior preservado
-      _draftEvolucion = sameDayDraft;           // novo draft do dia atual
-      _savedSessions  = _savedSessions
+      _paciente = session.paciente;
+      _historial = session.historial;
+      _draftEvolucion = sameDayDraft;
+      _currentSessionKey = session.sessionKey;
+      _savedSessions = _savedSessions
           .where((s) => s.sessionKey != session.sessionKey)
           .toList();
     });
-
-    // Força rebuild dos TextControllers com estado limpo
     _soapKey.currentState?.resetSoap(sameDayDraft);
 
     final isEs = _isEs;
-    final nome = session.paciente.nome.isNotEmpty ? session.paciente.nome : (isEs ? 'Paciente' : 'Paciente');
+    final nome = session.paciente.nome.isNotEmpty
+        ? session.paciente.nome
+        : (isEs ? 'Paciente' : 'Paciente');
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(children: [
         const Icon(Icons.history_rounded, color: Colors.white, size: 16),
@@ -209,14 +259,31 @@ class _InternacionScreenState extends State<InternacionScreen> {
     ));
   }
 
-  // ── Build 163: Protocolo Clean Slate ─────────────────────────────────────
-  // Exibe AlertDialog de confirmação → se OK:
-  //   1. clearActiveSession() — apaga o rascunho do SharedPreferences
-  //   2. Reseta _paciente → estado default
-  //   3. Reseta _historial → []
-  //   4. Cria novo _draftEvolucion vazio
-  //   5. Chama SoapSectionWidgetState.resetSoap() → _draftVersion++ → rebuilds
-  //   6. Recarrega grid de sessões salvas
+  // ── 168-6: Auto-save preventivo + Reset ──────────────────────────────────
+  // Se há dados preenchidos → salva silenciosamente antes de limpar.
+  // Se tela está vazia → apenas limpa (sem criar registro fantasma).
+  bool get _isDirty {
+    final s = _draftEvolucion.subjetivo;
+    final o = _draftEvolucion.objetivo;
+    final a = _draftEvolucion.evaluacion;
+    final p = _draftEvolucion.plan;
+    return s.notePasaNoche.isNotEmpty ||
+        s.dolorEscala != null ||
+        s.fiebre || s.disnea || s.nauseas || s.tos || s.suenoRestado ||
+        s.alimentacion.isNotEmpty || s.diuresis.isNotEmpty ||
+        s.evacuacion.isNotEmpty || s.notasLibres.isNotEmpty ||
+        !o.signosVitales.isEmpty ||
+        o.examenFisico.estadoGeneral.isNotEmpty ||
+        o.examenFisico.acv.isNotEmpty || o.examenFisico.ar.isNotEmpty ||
+        o.examenFisico.abdomen.isNotEmpty ||
+        o.examenFisico.extremidades.isNotEmpty ||
+        o.examenes.laboratorio.isNotEmpty ||
+        a.notasEvaluacion.isNotEmpty || a.problemasActivos.isNotEmpty ||
+        p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty ||
+        _paciente.nome.isNotEmpty || _paciente.cama.isNotEmpty ||
+        _historial.isNotEmpty;
+  }
+
   Future<void> _confirmAndReset() async {
     final isEs = _isEs;
     final confirmed = await showDialog<bool>(
@@ -227,39 +294,35 @@ class _InternacionScreenState extends State<InternacionScreen> {
         backgroundColor: Theme.of(ctx).brightness == Brightness.dark
             ? const Color(0xFF0D1117)
             : Colors.white,
-        title: Row(
-          children: [
-            Container(
-              width: 36, height: 36,
-              decoration: BoxDecoration(
-                color: InternacionTheme.accentLight.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.cleaning_services_rounded,
-                size: 18,
-                color: InternacionTheme.accentLight,
+        title: Row(children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: InternacionTheme.accentLight.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.cleaning_services_rounded,
+                size: 18, color: InternacionTheme.accentLight),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              isEs ? '¿Iniciar Nueva Evolución?' : 'Iniciar Nova Evolução?',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(ctx).brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF111827),
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                isEs ? '¿Iniciar Nueva Evolución?' : 'Iniciar Nova Evolução?',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(ctx).brightness == Brightness.dark
-                      ? Colors.white
-                      : const Color(0xFF111827),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ]),
         content: Text(
           isEs
-              ? 'Se descartarán todos los datos no guardados del paciente actual. Esta acción no se puede deshacer.'
-              : 'Todos os dados não salvos do paciente atual serão descartados. Esta ação não pode ser desfeita.',
+              ? 'Si hay datos, se guardarán automáticamente antes de limpiar.'
+              : 'Se houver dados, serão salvos automaticamente antes de limpar.',
           style: TextStyle(
             fontSize: 13.5,
             height: 1.5,
@@ -270,37 +333,27 @@ class _InternacionScreenState extends State<InternacionScreen> {
         ),
         actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
-          // Cancelar — neutro
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(ctx).brightness == Brightness.dark
                   ? Colors.white54
                   : const Color(0xFF6B7280),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             ),
-            child: Text(
-              isEs ? 'Cancelar' : 'Cancelar',
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
+            child: Text(isEs ? 'Cancelar' : 'Cancelar',
+                style: const TextStyle(fontWeight: FontWeight.w600)),
           ),
-          const SizedBox(width: 4),
-          // Confirmar — verde esmeralda
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: InternacionTheme.accentLight,
               foregroundColor: Colors.white,
               elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+                  borderRadius: BorderRadius.circular(10)),
             ),
-            child: Text(
-              isEs ? 'Confirmar y Limpiar' : 'Confirmar e Limpar',
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-            ),
+            child: Text(isEs ? 'Confirmar' : 'Confirmar',
+                style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -308,57 +361,62 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
     if (confirmed != true || !mounted) return;
 
-    // 1. Apaga rascunho do SharedPreferences (anti-reload ao reabrir app)
-    await InternacionPersistence.clearActiveSession(_paciente);
+    // 168-6: Auto-save silencioso se dirty
+    if (_isDirty && _historial.isNotEmpty) {
+      await _persistSession();
+    }
 
-    // 2. Deep reset do estado local
+    await InternacionPersistence.clearActiveSession(_paciente);
     final freshDraft = _newDraft();
     setState(() {
-      _paciente       = const PacienteInternacaoData(diaInternacao: 1);
-      _historial      = [];
+      _paciente = const PacienteInternacaoData(diaInternacao: 1);
+      _historial = [];
       _draftEvolucion = freshDraft;
+      _currentSessionKey = null;
     });
-
-    // 3. Força reconstrução de todos os TextControllers via _draftVersion++
     _soapKey.currentState?.resetSoap(freshDraft);
 
-    // 4. Recarrega grid de sessões salvas
-    await _loadSessions();
-
-    // 5. Feedback visual
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(children: [
-            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 16),
-            const SizedBox(width: 8),
-            Text(isEs
-                ? 'Pizarrón limpio. Listo para el próximo paciente.'
-                : 'Slate limpo. Pronto para o próximo paciente.'),
-          ]),
-          backgroundColor: InternacionTheme.accentLight,
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.check_circle_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Text(isEs
+              ? 'Pizarrón limpio. Listo para el próximo paciente.'
+              : 'Slate limpo. Pronto para o próximo paciente.'),
+        ]),
+        backgroundColor: InternacionTheme.accentLight,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
     }
   }
 
-  // ── R3: Motor de Auditoria — viewer read-only de evolução histórica ─────────
-  // Abre ModalBottomSheet com os dados completos e IMUTÁVEIS do registro
-  // selecionado. Nenhum campo é editável: protege integridade da auditoria clínica.
+  // ── R3: Auditoria clínica ─────────────────────────────────────────────────
   void _showAuditoriaModal(
-    BuildContext ctx,
-    EvolucionModel ev,
-    bool dark,
-    String lang,
-  ) {
+      BuildContext ctx, EvolucionModel ev, bool dark, String lang) {
     showModalBottomSheet(
       context: ctx,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _AuditoriaViewer(ev: ev, dark: dark, lang: lang),
+    );
+  }
+
+  // ── 168-5: Document Preview Modal (paper-style) ──────────────────────────
+  void _showDocumentPreview(BuildContext ctx, bool dark, String lang) {
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _DocumentPreviewModal(
+        paciente: _paciente,
+        historial: _historial,
+        draftEvolucion: _draftEvolucion,
+        dark: dark,
+        lang: lang,
+      ),
     );
   }
 
@@ -372,24 +430,21 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = Theme.of(context).brightness == Brightness.dark;
     final lang = p.lang;
     final theme = InternacionTheme(dark);
     final isEs = lang == 'es';
-    final doctorName = _doctorName(p);   // Build 162: nome dinâmico
+    final doctorName = _doctorName(p);
 
     return Scaffold(
       backgroundColor: theme.surface,
-      // ── R1: AppBar premium com botão "Nueva" compacto integrado ────────────
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(52),
         child: Container(
           decoration: BoxDecoration(
             color: dark ? const Color(0xFF0D0F14) : Colors.white,
-            border: Border(
-              bottom: BorderSide(color: theme.border, width: 0.8),
-            ),
+            border: Border(bottom: BorderSide(color: theme.border, width: 0.8)),
           ),
           child: SafeArea(
             bottom: false,
@@ -397,24 +452,21 @@ class _InternacionScreenState extends State<InternacionScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Row(
                 children: [
-                  // Botão VOLTAR
                   IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 18,
-                      color: theme.accent,
-                    ),
+                    icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        size: 18, color: theme.accent),
                     tooltip: isEs ? 'Volver' : 'Voltar',
                     onPressed: () => Navigator.maybePop(context),
                     padding: const EdgeInsets.all(8),
-                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
-
-                  // Ícone da seção
                   Container(
-                    width: 28, height: 28,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
-                      color: theme.accent.withValues(alpha: dark ? 0.15 : 0.09),
+                      color: theme.accent
+                          .withValues(alpha: dark ? 0.15 : 0.09),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(Icons.local_hospital_rounded,
@@ -427,7 +479,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          isEs ? 'INTERNACIÓN Y EVOLUCIÓN' : 'INTERNAÇÃO E EVOLUÇÃO',
+                          isEs
+                              ? 'INTERNACIÓN Y EVOLUCIÓN'
+                              : 'INTERNAÇÃO E EVOLUÇÃO',
                           style: TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w800,
@@ -436,23 +490,24 @@ class _InternacionScreenState extends State<InternacionScreen> {
                           ),
                         ),
                         Text(
-                          isEs ? 'Modelo SOAP · MedCases Pro' : 'Modelo SOAP · MedCases Pro',
-                          style: TextStyle(fontSize: 10, color: theme.textSecondary),
+                          'SOAP · MedCases Pro',
+                          style: TextStyle(
+                              fontSize: 10, color: theme.textSecondary),
                         ),
                       ],
                     ),
                   ),
-
-                  // Badge de evoluções salvas
                   if (_historial.isNotEmpty)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: theme.accent.withValues(alpha: dark ? 0.15 : 0.09),
+                        color: theme.accent
+                            .withValues(alpha: dark ? 0.15 : 0.09),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        '${_historial.length} ${isEs ? 'evol.' : 'evol.'}',
+                        '${_historial.length} evol.',
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w600,
@@ -461,8 +516,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
                       ),
                     ),
                   const SizedBox(width: 6),
-
-                  // R1: Botão "Nueva" compacto — metade do tamanho do FAB anterior
+                  // R1: Botão compacto "Nueva"
                   GestureDetector(
                     onTap: _confirmAndReset,
                     child: Container(
@@ -481,11 +535,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.cleaning_services_rounded,
-                            size: 13,
-                            color: InternacionTheme.accentLight,
-                          ),
+                          Icon(Icons.cleaning_services_rounded,
+                              size: 13,
+                              color: InternacionTheme.accentLight),
                           const SizedBox(width: 5),
                           Text(
                             isEs ? 'Nueva' : 'Nova',
@@ -507,51 +559,49 @@ class _InternacionScreenState extends State<InternacionScreen> {
           ),
         ),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // ── 1. RESUMEN CLÍNICO ──────────────────────────────────────────
+            // ── 1. RESUMEN ──────────────────────────────────────────────────
             ResumenHeader(
-              pacienteId:       _paciente.nome,
-              cama:             _paciente.cama,
-              diagnostico:      _paciente.diagnostico,
+              pacienteId: _paciente.nome,
+              cama: _paciente.cama,
+              diagnostico: _paciente.diagnostico,
               diadeInternacion: _paciente.diaInternacao,
               dark: dark,
               lang: lang,
             ),
             const SizedBox(height: 12),
 
-            // ── 2. BOTÃO COPILOTO IA ────────────────────────────────────────
-            CopilotButton(
-              dark: dark,
-              lang: lang,
-              onApproved: _onAiApproved,
-            ),
+            // ── 2. COPILOTO IA ─────────────────────────────────────────────
+            CopilotButton(dark: dark, lang: lang, onApproved: _onAiApproved),
             const SizedBox(height: 12),
 
-            // ── 3. HISTORIAL — R3: onTap abre Auditor read-only ────────────
+            // ── 3. HISTORIAL (R3: auditoria on tap) ────────────────────────
             HistorialSection(
               evoluciones: _historial,
               dark: dark,
               lang: lang,
-              onTap: (ev) => _showAuditoriaModal(context, ev, dark, lang),
+              onTap: (ev) =>
+                  _showAuditoriaModal(context, ev, dark, lang),
             ),
             if (_historial.isNotEmpty) const SizedBox(height: 12),
 
-            // ── 4. DADOS DO PACIENTE (colapsável) ───────────────────────────
-            PatientAccordion(
-              data: _paciente,
-              dark: dark,
-              lang: lang,
-              onChanged: (d) => setState(() => _paciente = d),
+            // ── 4. DADOS DO PACIENTE (168-5: doc preview on tap) ───────────
+            GestureDetector(
+              onLongPress: () => _showDocumentPreview(context, dark, lang),
+              child: PatientAccordion(
+                data: _paciente,
+                dark: dark,
+                lang: lang,
+                onChanged: (d) => setState(() => _paciente = d),
+              ),
             ),
             const SizedBox(height: 10),
 
-            // ── 5. FÁRMACOS ATUAIS (Build 162 — substitui Interacciones) ────
+            // ── 5. FÁRMACOS ─────────────────────────────────────────────────
             FarmacosAccordion(
               farmacos: _draftEvolucion.farmacos,
               dark: dark,
@@ -562,10 +612,11 @@ class _InternacionScreenState extends State<InternacionScreen> {
             ),
             const SizedBox(height: 16),
 
-            // ── 6. DIVISOR — "Nueva Evolución" ─────────────────────────────
+            // ── 6. DIVISOR ─────────────────────────────────────────────────
             _SectionDivider(
-              label: isEs ? 'NUEVA EVOLUCIÓN MÉDICA' : 'NOVA EVOLUÇÃO MÉDICA',
-              sublabel: isEs ? 'Modelo SOAP' : 'Modelo SOAP',
+              label:
+                  isEs ? 'NUEVA EVOLUCIÓN MÉDICA' : 'NOVA EVOLUÇÃO MÉDICA',
+              sublabel: 'SOAP',
               dark: dark,
               theme: theme,
             ),
@@ -577,20 +628,21 @@ class _InternacionScreenState extends State<InternacionScreen> {
               evolucion: _draftEvolucion,
               dark: dark,
               lang: lang,
-              autorNombre: doctorName,   // Build 162: nome dinâmico
-              paciente: _paciente,       // Build 167: dados para "Copiar Todo"
+              autorNombre: doctorName,
+              paciente: _paciente,
               onSave: _onSaveEvolucion,
             ),
 
-            // ── 8. GRID DE PACIENTES SALVOS (Build 162 — MOVIDO PARA BAIXO) ─
-            // Posição: abaixo de TODA a evolução SOAP — UX dashboard ao final.
+            // ── 8. GRID SESSÕES SALVAS (168-3: redesign cards) ─────────────
             if (_sessionsLoaded && _savedSessions.isNotEmpty) ...[
               const SizedBox(height: 24),
               _SectionDivider(
-                label: isEs ? 'PACIENTES INTERNADOS GUARDADOS' : 'PACIENTES INTERNADOS SALVOS',
+                label: isEs
+                    ? 'PACIENTES INTERNADOS GUARDADOS'
+                    : 'PACIENTES INTERNADOS SALVOS',
                 sublabel: isEs
-                    ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''} activa${_savedSessions.length > 1 ? 's' : ''}'
-                    : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''} ativa${_savedSessions.length > 1 ? 's' : ''}',
+                    ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''}'
+                    : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''}',
                 dark: dark,
                 theme: theme,
               ),
@@ -601,7 +653,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
                 lang: lang,
                 theme: theme,
                 onResume: _resumeSession,
-                onDismiss: _deleteSession, // FIX 165-B: hard delete físico
+                onDelete: _deleteSession,
+                onPreview: (session) =>
+                    _showSessionPreview(context, session, dark, lang),
               ),
             ],
           ],
@@ -609,23 +663,70 @@ class _InternacionScreenState extends State<InternacionScreen> {
       ),
     );
   }
+
+  // ── 168-4: Session Preview Dialog ────────────────────────────────────────
+  void _showSessionPreview(
+    BuildContext ctx,
+    PacienteSession session,
+    bool dark,
+    String lang,
+  ) {
+    showDialog(
+      context: ctx,
+      builder: (_) => _SessionPreviewDialog(
+        session: session,
+        dark: dark,
+        lang: lang,
+        onResume: () {
+          Navigator.of(ctx).pop();
+          _resumeSession(session);
+        },
+        onDelete: () {
+          Navigator.of(ctx).pop();
+          _deleteSession(session);
+        },
+        onCopy: (text) {
+          Clipboard.setData(ClipboardData(text: text));
+          ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+            content: Row(children: [
+              const Icon(Icons.copy_rounded, color: Colors.white, size: 15),
+              const SizedBox(width: 8),
+              Text(lang == 'es'
+                  ? 'Ficha copiada al portapapeles'
+                  : 'Ficha copiada para a área de transferência'),
+            ]),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ));
+        },
+      ),
+    );
+  }
 }
 
-// ── Build 162: Grid 2 colunas de sessões salvas ───────────────────────────────
+// ═════════════════════════════════════════════════════════════════════════════
+// 168-3: Grid de sessões redesenhado
+// ═════════════════════════════════════════════════════════════════════════════
 class _SessionsGrid extends StatelessWidget {
   final List<PacienteSession> sessions;
   final bool dark;
   final String lang;
   final InternacionTheme theme;
   final ValueChanged<PacienteSession> onResume;
-  final Future<void> Function(PacienteSession) onDismiss; // FIX 165-B: async
+  final Future<void> Function(PacienteSession) onDelete;
+  final ValueChanged<PacienteSession> onPreview;
 
   const _SessionsGrid({
-    required this.sessions, required this.dark, required this.lang,
-    required this.theme, required this.onResume, required this.onDismiss,
+    required this.sessions,
+    required this.dark,
+    required this.lang,
+    required this.theme,
+    required this.onResume,
+    required this.onDelete,
+    required this.onPreview,
   });
-
-  bool get isEs => lang == 'es';
 
   @override
   Widget build(BuildContext context) {
@@ -635,142 +736,224 @@ class _SessionsGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
-      childAspectRatio: 1.10,
-      children: sessions.map((s) => _SessionCard(
-        session: s,
-        dark: dark,
-        lang: lang,
-        theme: theme,
-        onResume: () => onResume(s),
-        onDismiss: () => onDismiss(s), // delega ao _deleteSession (hard delete)
-      )).toList(),
+      childAspectRatio: 1.05,
+      children: sessions
+          .map((s) => _SessionCard168(
+                session: s,
+                dark: dark,
+                lang: lang,
+                theme: theme,
+                onResume: () => onResume(s),
+                onDelete: () => onDelete(s),
+                onTapBody: () => onPreview(s),
+              ))
+          .toList(),
     );
   }
 }
 
-// ── Card compacto de sessão (célula do grid 2-col) ────────────────────────────
-class _SessionCard extends StatelessWidget {
+// ── 168-3: Card redesenhado com severity border ───────────────────────────────
+class _SessionCard168 extends StatelessWidget {
   final PacienteSession session;
   final bool dark;
   final String lang;
   final InternacionTheme theme;
   final VoidCallback onResume;
-  final VoidCallback onDismiss;
+  final VoidCallback onDelete;
+  final VoidCallback onTapBody;
 
-  const _SessionCard({
-    required this.session, required this.dark, required this.lang,
-    required this.theme, required this.onResume, required this.onDismiss,
+  const _SessionCard168({
+    required this.session,
+    required this.dark,
+    required this.lang,
+    required this.theme,
+    required this.onResume,
+    required this.onDelete,
+    required this.onTapBody,
   });
 
   bool get isEs => lang == 'es';
 
+  // Cor de severidade baseada no estado clínico da última evolução
+  Color _severityColor() {
+    if (session.historial.isEmpty) return InternacionTheme.accentLight;
+    final last = session.historial.last;
+    final estado = last.evaluacion.estado;
+    if (estado == null) return InternacionTheme.accentLight;
+    return Color(estado.colorValue);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final p    = session.paciente;
-    final nome = p.nome.isNotEmpty ? p.nome : (isEs ? 'Paciente' : 'Paciente');
-    final cama = p.cama.isNotEmpty ? (isEs ? 'Cama ${p.cama}' : 'Leito ${p.cama}') : '';
-    // R4: mostra apenas o dia atual (sem seta "→Día X+1")
-    final dia  = isEs
-        ? 'Día ${p.diaInternacao}'
-        : 'Dia ${p.diaInternacao}';
-    final evol = '${session.historial.length} evol.';
+    final p = session.paciente;
+    final nome =
+        p.nome.isNotEmpty ? p.nome : (isEs ? 'Paciente' : 'Paciente');
+    final cama = p.cama.isNotEmpty
+        ? (isEs ? 'Cama ${p.cama}' : 'Leito ${p.cama}')
+        : '';
+    final evol = session.historial.length;
+    final severityColor = _severityColor();
 
     return Container(
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF0E1420) : const Color(0xFFF0F7F4),
+        color: dark ? const Color(0xFF0E1420) : const Color(0xFFF8FFFE),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: InternacionTheme(dark).accent.withValues(alpha: 0.30),
-          width: 1.1,
-        ),
-        boxShadow: [theme.softShadow],
+        border: Border.all(color: severityColor, width: 2.0),
+        boxShadow: [
+          BoxShadow(
+            color: severityColor.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header: ícone + dismiss ──────────────────────────────────────
-          Row(
-            children: [
-              Container(
-                width: 28, height: 28,
-                decoration: BoxDecoration(
-                  color: InternacionTheme(dark).accent.withValues(alpha: dark ? 0.18 : 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.history_rounded,
-                    size: 14, color: InternacionTheme(dark).accent),
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: onDismiss,
-                child: Icon(Icons.close_rounded, size: 14, color: theme.labelColor),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-
-          // ── Nome ─────────────────────────────────────────────────────────
-          Text(
-            nome,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: theme.textPrimary,
-              height: 1.2,
+          // ── Topbar: [Editar] [Excluir] ──────────────────────────────────
+          Container(
+            decoration: BoxDecoration(
+              color: severityColor.withValues(alpha: dark ? 0.12 : 0.08),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          if (cama.isNotEmpty)
-            Text(cama, style: TextStyle(fontSize: 10.5, color: theme.textSecondary)),
-
-          // ── Diagnóstico ───────────────────────────────────────────────────
-          if (p.diagnostico.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Text(
-                p.diagnostico,
-                style: TextStyle(fontSize: 10, color: theme.labelColor, height: 1.3),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-
-          const Spacer(),
-
-          // ── Chips: dia + evoluções + botão Retomar ────────────────────────
-          Row(
-            children: [
-              Flexible(
-                child: Text(
-                  '$dia · $evol',
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    color: InternacionTheme(dark).accent,
-                    fontWeight: FontWeight.w600,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: Row(
+              children: [
+                Icon(Icons.circle, size: 8, color: severityColor),
+                const Spacer(),
+                // Editar
+                GestureDetector(
+                  onTap: onResume,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: severityColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      isEs ? 'Editar' : 'Editar',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: severityColor,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 4),
+                // Excluir
+                GestureDetector(
+                  onTap: onDelete,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: InternacionTheme.red.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      isEs ? 'Excluir' : 'Excluir',
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: InternacionTheme.red,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 6),
-          GestureDetector(
-            onTap: onResume,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              decoration: BoxDecoration(
-                gradient: InternacionTheme(dark).accentGradient,
-                borderRadius: BorderRadius.circular(8),
+
+          // ── Corpo (clicável → preview) ────────────────────────────────
+          Expanded(
+            child: GestureDetector(
+              onTap: onTapBody,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nome
+                    Text(
+                      nome,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w800,
+                        color: theme.textPrimary,
+                        height: 1.2,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (cama.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(cama,
+                          style: TextStyle(
+                              fontSize: 10.5, color: theme.textSecondary)),
+                    ],
+                    if (p.diagnostico.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        p.diagnostico,
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: theme.labelColor,
+                            height: 1.3),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                    const Spacer(),
+                    // Día · Evoluciones
+                    Row(
+                      children: [
+                        Icon(Icons.calendar_today_rounded,
+                            size: 9, color: severityColor),
+                        const SizedBox(width: 3),
+                        Text(
+                          isEs
+                              ? 'Día ${p.diaInternacao} · $evol evol.'
+                              : 'Dia ${p.diaInternacao} · $evol evol.',
+                          style: TextStyle(
+                            fontSize: 9.5,
+                            color: severityColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              child: Text(
-                isEs ? 'Retomar' : 'Retomar',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+            ),
+          ),
+
+          // ── Bottom: [Evoluir] ────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+            child: GestureDetector(
+              onTap: onResume,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                decoration: BoxDecoration(
+                  color: severityColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  isEs ? 'Evolucionar' : 'Evoluir',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -781,19 +964,805 @@ class _SessionCard extends StatelessWidget {
   }
 }
 
-// ── R3: Auditoria Clínica — ModalBottomSheet read-only ────────────────────────
-// Exibe o registro histórico completo de forma imutável.
-// Nenhum TextField: todos os dados são Text() somente-leitura.
+// ═════════════════════════════════════════════════════════════════════════════
+// 168-4: Session Preview Dialog
+// ═════════════════════════════════════════════════════════════════════════════
+class _SessionPreviewDialog extends StatelessWidget {
+  final PacienteSession session;
+  final bool dark;
+  final String lang;
+  final VoidCallback onResume;
+  final VoidCallback onDelete;
+  final ValueChanged<String> onCopy;
+
+  const _SessionPreviewDialog({
+    required this.session,
+    required this.dark,
+    required this.lang,
+    required this.onResume,
+    required this.onDelete,
+    required this.onCopy,
+  });
+
+  bool get isEs => lang == 'es';
+
+  String _buildPreviewText() {
+    final p = session.paciente;
+    final buf = StringBuffer();
+    buf.writeln('FICHA DE INTERNACIÓN — MedCases Pro');
+    buf.writeln('');
+    if (p.nome.isNotEmpty) buf.writeln('Paciente: ${p.nome}');
+    if (p.cama.isNotEmpty) buf.writeln('Cama: ${p.cama}');
+    if (p.diagnostico.isNotEmpty) buf.writeln('Diagnóstico: ${p.diagnostico}');
+    buf.writeln('Día de internación: ${p.diaInternacao}');
+    buf.writeln('Evoluciones: ${session.historial.length}');
+    buf.writeln('');
+    for (final ev in session.historial) {
+      buf.writeln('── ${ev.fechaFormatada} ──');
+      final sv = ev.objetivo.signosVitales;
+      if (!sv.isEmpty) {
+        final parts = <String>[];
+        if (sv.pa.isNotEmpty) parts.add('TA: ${sv.pa}');
+        if (sv.fc.isNotEmpty) parts.add('FC: ${sv.fc}');
+        if (sv.satO2.isNotEmpty) parts.add('SatO₂: ${sv.satO2}%');
+        if (sv.temperatura.isNotEmpty) parts.add('T: ${sv.temperatura}°C');
+        buf.writeln('SV: ${parts.join('  ')}');
+      }
+      if (ev.evaluacion.notasEvaluacion.isNotEmpty) {
+        buf.writeln('Impresión: ${ev.evaluacion.notasEvaluacion}');
+      }
+      if (ev.plan.planTerapeutico.isNotEmpty) {
+        buf.writeln('Conducta: ${ev.plan.planTerapeutico}');
+      }
+    }
+    return buf.toString().trimRight();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = InternacionTheme(dark);
+    final p = session.paciente;
+    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+      child: Container(
+        constraints: const BoxConstraints(maxHeight: 520),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: InternacionTheme.accentLight.withValues(alpha: 0.35),
+            width: 1.2,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Header ──────────────────────────────────────────────────────
+            Container(
+              padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
+              decoration: BoxDecoration(
+                color: InternacionTheme.accentLight
+                    .withValues(alpha: dark ? 0.12 : 0.07),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(19)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: InternacionTheme.accentLight
+                          .withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.person_rounded,
+                        size: 18, color: InternacionTheme.accentLight),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          p.nome.isNotEmpty
+                              ? p.nome
+                              : (isEs ? 'Paciente' : 'Paciente'),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          [
+                            if (p.cama.isNotEmpty)
+                              isEs ? 'Cama ${p.cama}' : 'Leito ${p.cama}',
+                            isEs
+                                ? 'Día ${p.diaInternacao}'
+                                : 'Dia ${p.diaInternacao}',
+                            '${session.historial.length} evol.',
+                          ].join('  ·  '),
+                          style: TextStyle(
+                              fontSize: 11.5,
+                              color: InternacionTheme.accentLight),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded,
+                        size: 20, color: theme.textSecondary),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                        minWidth: 32, minHeight: 32),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Corpo scrollável ─────────────────────────────────────────────
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (p.diagnostico.isNotEmpty)
+                      _previewRow(
+                          theme,
+                          Icons.local_hospital_rounded,
+                          isEs ? 'Diagnóstico' : 'Diagnóstico',
+                          p.diagnostico),
+                    if (session.historial.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        isEs
+                            ? 'ÚLTIMAS EVOLUCIONES'
+                            : 'ÚLTIMAS EVOLUÇÕES',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.7,
+                          color: theme.labelColor,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      ...session.historial.reversed.take(3).map((ev) {
+                        final sv = ev.objetivo.signosVitales;
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 6),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: theme.card,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: theme.border, width: 0.8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(ev.fechaFormatada,
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: InternacionTheme.accentLight,
+                                  )),
+                              if (!sv.isEmpty) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  [
+                                    if (sv.pa.isNotEmpty) 'TA: ${sv.pa}',
+                                    if (sv.fc.isNotEmpty) 'FC: ${sv.fc}',
+                                    if (sv.satO2.isNotEmpty)
+                                      'SatO₂: ${sv.satO2}%',
+                                    if (sv.temperatura.isNotEmpty)
+                                      'T: ${sv.temperatura}°C',
+                                  ].join('   '),
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      color: theme.textSecondary),
+                                ),
+                              ],
+                              if (ev.evaluacion.notasEvaluacion
+                                  .isNotEmpty) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  ev.evaluacion.notasEvaluacion,
+                                  style: TextStyle(
+                                      fontSize: 11.5,
+                                      color: theme.textPrimary,
+                                      height: 1.3),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+
+            // ── Ações: [Copiar] [Excluir] [Evolucionar] ──────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+              child: Row(
+                children: [
+                  // Copiar
+                  _actionBtn(
+                    icon: Icons.copy_rounded,
+                    label: isEs ? 'Copiar' : 'Copiar',
+                    color: InternacionTheme.cyan,
+                    dark: dark,
+                    theme: theme,
+                    onTap: () => onCopy(_buildPreviewText()),
+                  ),
+                  const SizedBox(width: 6),
+                  // Excluir
+                  _actionBtn(
+                    icon: Icons.delete_outline_rounded,
+                    label: isEs ? 'Excluir' : 'Excluir',
+                    color: InternacionTheme.red,
+                    dark: dark,
+                    theme: theme,
+                    onTap: onDelete,
+                  ),
+                  const SizedBox(width: 6),
+                  // Evolucionar (primário)
+                  Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: onResume,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 11),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF059669),
+                              Color(0xFF047857),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.edit_rounded,
+                                size: 14, color: Colors.white),
+                            const SizedBox(width: 5),
+                            Text(
+                              isEs ? 'Evolucionar' : 'Evoluir',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _previewRow(
+      InternacionTheme theme, IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 13, color: theme.labelColor),
+          const SizedBox(width: 6),
+          SizedBox(
+            width: 80,
+            child: Text(label,
+                style: TextStyle(
+                    fontSize: 11,
+                    color: theme.textSecondary,
+                    fontWeight: FontWeight.w600)),
+          ),
+          Expanded(
+            child: Text(value,
+                style: TextStyle(fontSize: 12, color: theme.textPrimary)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionBtn({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required bool dark,
+    required InternacionTheme theme,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: dark ? 0.12 : 0.08),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.30), width: 0.9),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(height: 2),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: color)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// 168-5: Document Preview Modal — paper-style viewer
+// ═════════════════════════════════════════════════════════════════════════════
+class _DocumentPreviewModal extends StatelessWidget {
+  final PacienteInternacaoData paciente;
+  final List<EvolucionModel> historial;
+  final EvolucionModel draftEvolucion;
+  final bool dark;
+  final String lang;
+
+  const _DocumentPreviewModal({
+    required this.paciente,
+    required this.historial,
+    required this.draftEvolucion,
+    required this.dark,
+    required this.lang,
+  });
+
+  bool get isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
+    final paperBg = dark ? const Color(0xFF161B24) : const Color(0xFFFAFAFA);
+    final theme = InternacionTheme(dark);
+
+    // Todas as evoluções + draft atual se tiver dados
+    final allEvols = [
+      ...historial,
+      if (_draftHasData()) draftEvolucion,
+    ];
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.92,
+      minChildSize: 0.5,
+      maxChildSize: 0.97,
+      expand: false,
+      builder: (_, scrollCtrl) => Container(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: InternacionTheme.cyan.withValues(alpha: 0.20),
+            width: 1.0,
+          ),
+        ),
+        child: Column(
+          children: [
+            // Handle
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: InternacionTheme.cyan.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.description_rounded,
+                        size: 17, color: InternacionTheme.cyan),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs
+                              ? 'Vista Previa del Documento'
+                              : 'Prévia do Documento',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: theme.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          isEs
+                              ? 'Formato hospitalar argentino'
+                              : 'Formato hospitalar argentino',
+                          style: TextStyle(
+                              fontSize: 11, color: theme.textSecondary),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded,
+                        size: 20, color: theme.textSecondary),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Divider(color: theme.border, height: 1, thickness: 0.8),
+
+            // ── Folha de papel ─────────────────────────────────────────────
+            Expanded(
+              child: ListView(
+                controller: scrollCtrl,
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: paperBg,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                          color: dark
+                              ? const Color(0xFF2D3340)
+                              : const Color(0xFFE0E0E0),
+                          width: 0.8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(
+                              alpha: dark ? 0.30 : 0.08),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ── Cabeçalho do documento ─────────────────────────
+                        Center(
+                          child: Text(
+                            'HISTORIA CLÍNICA DE INTERNACIÓN',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.0,
+                              color: theme.textPrimary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Center(
+                          child: Text(
+                            'MedCases Pro · ${_today()}',
+                            style: TextStyle(
+                                fontSize: 10, color: theme.textSecondary),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _docDivider(theme),
+                        const SizedBox(height: 12),
+
+                        // ── Dados do paciente ──────────────────────────────
+                        _docSection(
+                            isEs ? 'DATOS DEL PACIENTE' : 'DADOS DO PACIENTE',
+                            theme),
+                        _docField(
+                            isEs ? 'Paciente' : 'Paciente',
+                            paciente.nome.isNotEmpty
+                                ? paciente.nome
+                                : '—',
+                            theme),
+                        if (paciente.cama.isNotEmpty)
+                          _docField('Cama', paciente.cama, theme),
+                        if (paciente.idade.isNotEmpty)
+                          _docField(isEs ? 'Edad' : 'Idade', paciente.idade,
+                              theme),
+                        if (paciente.diagnostico.isNotEmpty)
+                          _docField(
+                              isEs ? 'Diagnóstico' : 'Diagnóstico',
+                              paciente.diagnostico,
+                              theme),
+                        _docField(
+                            isEs ? 'Día internación' : 'Dia internação',
+                            '${paciente.diaInternacao}',
+                            theme),
+                        const SizedBox(height: 16),
+
+                        // ── Evoluciones ────────────────────────────────────
+                        if (allEvols.isNotEmpty) ...[
+                          _docSection(
+                              isEs
+                                  ? 'EVOLUCIONES MÉDICAS'
+                                  : 'EVOLUÇÕES MÉDICAS',
+                              theme),
+                          ...allEvols.asMap().entries.map((e) =>
+                              _buildEvolBlock(e.value, e.key + 1, theme)),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _draftHasData() {
+    final s = draftEvolucion.subjetivo;
+    final o = draftEvolucion.objetivo;
+    return s.notePasaNoche.isNotEmpty ||
+        s.dolorEscala != null ||
+        !o.signosVitales.isEmpty ||
+        o.examenFisico.estadoGeneral.isNotEmpty ||
+        draftEvolucion.evaluacion.notasEvaluacion.isNotEmpty ||
+        draftEvolucion.plan.planTerapeutico.isNotEmpty;
+  }
+
+  Widget _buildEvolBlock(
+      EvolucionModel ev, int num, InternacionTheme theme) {
+    final s = ev.subjetivo;
+    final sv = ev.objetivo.signosVitales;
+    final ef = ev.objetivo.examenFisico;
+    final ex = ev.objetivo.examenes;
+    final a = ev.evaluacion;
+    final p = ev.plan;
+
+    // Compute symptoms before building children list (Dart syntax requirement)
+    final syms = _symptoms(s, isEs);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.card,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: theme.border, width: 0.8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Fecha / Número
+          Row(
+            children: [
+              Text(
+                'EVOLUCIÓN $num',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: InternacionTheme.accentLight,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const Spacer(),
+              Text(ev.fechaFormatada,
+                  style: TextStyle(
+                      fontSize: 10.5, color: theme.textSecondary)),
+            ],
+          ),
+          _docDivider(theme),
+          const SizedBox(height: 8),
+
+          // Evolución (subjetivo)
+          if (s.notePasaNoche.isNotEmpty)
+            _docParagraph(
+                isEs ? 'Evolución:' : 'Evolução:', s.notePasaNoche, theme),
+
+          // Síntomas
+          if (syms.isNotEmpty)
+            _docParagraph(
+                isEs ? 'Síntomas:' : 'Sintomas:', syms, theme),
+
+          // SV
+          if (!sv.isEmpty)
+            _docParagraph('SV:', _formatSv(sv), theme),
+
+          // EF
+          if (ef.estadoGeneral.isNotEmpty)
+            _docParagraph('EG:', ef.estadoGeneral, theme),
+          if (ef.acv.isNotEmpty) _docParagraph('CV:', ef.acv, theme),
+          if (ef.ar.isNotEmpty) _docParagraph('Resp:', ef.ar, theme),
+          if (ef.abdomen.isNotEmpty)
+            _docParagraph('Abd:', ef.abdomen, theme),
+          if (ef.extremidades.isNotEmpty)
+            _docParagraph('MMII:', ef.extremidades, theme),
+
+          // Lab
+          if (ex.laboratorio.isNotEmpty)
+            _docParagraph(
+                isEs ? 'Laboratorio:' : 'Laboratório:',
+                ex.laboratorio,
+                theme),
+
+          // Impresión
+          if (a.notasEvaluacion.isNotEmpty)
+            _docParagraph(
+                isEs ? 'Impresión:' : 'Impressão:', a.notasEvaluacion, theme),
+
+          // Conducta
+          if (p.planTerapeutico.isNotEmpty)
+            _docParagraph(
+                isEs ? 'Conducta:' : 'Conduta:', p.planTerapeutico, theme),
+
+          // Firma
+          const SizedBox(height: 6),
+          Text(
+            'Dr/Dra. ${ev.autorNombre}',
+            style: TextStyle(
+              fontSize: 11.5,
+              fontStyle: FontStyle.italic,
+              color: theme.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _symptoms(SubjetivoData s, bool isEs) {
+    final syms = <String>[];
+    if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
+    if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
+    if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
+    if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
+    if (s.suenoRestado) syms.add(isEs ? 'Sueño alterado' : 'Sono alterado');
+    return syms.join(', ');
+  }
+
+  String _formatSv(SignosVitales sv) {
+    final parts = <String>[];
+    if (sv.pa.isNotEmpty) parts.add('TA: ${sv.pa} mmHg');
+    if (sv.fc.isNotEmpty) parts.add('FC: ${sv.fc} lpm');
+    if (sv.fr.isNotEmpty) parts.add('FR: ${sv.fr} rpm');
+    if (sv.satO2.isNotEmpty) parts.add('SatO₂: ${sv.satO2}%');
+    if (sv.temperatura.isNotEmpty) parts.add('T: ${sv.temperatura}°C');
+    return parts.join('  ');
+  }
+
+  String _today() {
+    final n = DateTime.now();
+    return '${n.day.toString().padLeft(2, '0')}/${n.month.toString().padLeft(2, '0')}/${n.year}';
+  }
+
+  Widget _docSection(String label, InternacionTheme theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.8,
+          color: InternacionTheme.accentLight,
+        ),
+      ),
+    );
+  }
+
+  Widget _docField(String label, String value, InternacionTheme theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 110,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+                color: theme.textSecondary,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 12, color: theme.textPrimary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _docParagraph(String label, String value, InternacionTheme theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: '$label ',
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                color: theme.textSecondary,
+              ),
+            ),
+            TextSpan(
+              text: value,
+              style: TextStyle(
+                fontSize: 12,
+                color: theme.textPrimary,
+                height: 1.4,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _docDivider(InternacionTheme theme) {
+    return Container(
+      height: 0.8,
+      color: theme.border,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+    );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// R3: Auditoria Clínica — read-only viewer
+// ═════════════════════════════════════════════════════════════════════════════
 class _AuditoriaViewer extends StatelessWidget {
   final EvolucionModel ev;
   final bool dark;
   final String lang;
 
-  const _AuditoriaViewer({
-    required this.ev,
-    required this.dark,
-    required this.lang,
-  });
+  const _AuditoriaViewer(
+      {required this.ev, required this.dark, required this.lang});
 
   bool get isEs => lang == 'es';
 
@@ -810,19 +1779,19 @@ class _AuditoriaViewer extends StatelessWidget {
       builder: (_, scrollCtrl) => Container(
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: InternacionTheme.amber.withValues(alpha: 0.35),
-            width: 1.2,
-          ),
+              color: InternacionTheme.amber.withValues(alpha: 0.35),
+              width: 1.2),
         ),
         child: Column(
           children: [
-            // ── Handle ────────────────────────────────────────────────────────
             const SizedBox(height: 10),
             Center(
               child: Container(
-                width: 36, height: 4,
+                width: 36,
+                height: 4,
                 decoration: BoxDecoration(
                   color: theme.border,
                   borderRadius: BorderRadius.circular(2),
@@ -830,16 +1799,16 @@ class _AuditoriaViewer extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-
-            // ── Header ────────────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
                   Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
-                      color: InternacionTheme.amber.withValues(alpha: 0.15),
+                      color:
+                          InternacionTheme.amber.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(Icons.lock_clock_rounded,
@@ -853,63 +1822,53 @@ class _AuditoriaViewer extends StatelessWidget {
                         Text(
                           isEs ? 'Auditoría Clínica' : 'Auditoria Clínica',
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: theme.textPrimary,
-                          ),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: theme.textPrimary),
                         ),
-                        Text(
-                          ev.fechaFormatada,
-                          style: TextStyle(
-                            fontSize: 11.5,
-                            color: InternacionTheme.amber,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        Text(ev.fechaFormatada,
+                            style: TextStyle(
+                                fontSize: 11.5,
+                                color: InternacionTheme.amber,
+                                fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
-                  // Badge leitura somente
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: InternacionTheme.amber.withValues(alpha: 0.12),
+                      color:
+                          InternacionTheme.amber.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: InternacionTheme.amber.withValues(alpha: 0.40),
-                        width: 0.8,
-                      ),
+                          color: InternacionTheme.amber
+                              .withValues(alpha: 0.40),
+                          width: 0.8),
                     ),
-                    child: Text(
-                      isEs ? 'READ-ONLY' : 'READ-ONLY',
-                      style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w800,
-                        color: InternacionTheme.amber,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
+                    child: Text('READ-ONLY',
+                        style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: InternacionTheme.amber,
+                            letterSpacing: 0.5)),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 10),
-
-            // Aviso imutabilidade
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color:
-                      InternacionTheme.amber.withValues(alpha: dark ? 0.10 : 0.07),
+                  color: InternacionTheme.amber
+                      .withValues(alpha: dark ? 0.10 : 0.07),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: InternacionTheme.amber.withValues(alpha: 0.30),
-                    width: 0.8,
-                  ),
+                      color: InternacionTheme.amber.withValues(alpha: 0.30),
+                      width: 0.8),
                 ),
                 child: Row(
                   children: [
@@ -922,10 +1881,9 @@ class _AuditoriaViewer extends StatelessWidget {
                             ? 'Registro histórico protegido. Visualización de solo lectura.'
                             : 'Registro histórico protegido. Visualização somente leitura.',
                         style: TextStyle(
-                          fontSize: 11.5,
-                          color: InternacionTheme.amber,
-                          height: 1.4,
-                        ),
+                            fontSize: 11.5,
+                            color: InternacionTheme.amber,
+                            height: 1.4),
                       ),
                     ),
                   ],
@@ -934,8 +1892,6 @@ class _AuditoriaViewer extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Divider(color: theme.border, height: 1, thickness: 0.8),
-
-            // ── Conteúdo scrollável ───────────────────────────────────────────
             Expanded(
               child: ListView(
                 controller: scrollCtrl,
@@ -943,14 +1899,10 @@ class _AuditoriaViewer extends StatelessWidget {
                 children: _buildFields(theme),
               ),
             ),
-
-            // ── Botão fechar ─────────────────────────────────────────────────
             Divider(color: theme.border, height: 1, thickness: 0.8),
             Padding(
               padding: EdgeInsets.fromLTRB(
-                20, 12, 20,
-                12 + MediaQuery.of(context).viewPadding.bottom,
-              ),
+                  20, 12, 20, 12 + MediaQuery.of(context).viewPadding.bottom),
               child: GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
                 child: Container(
@@ -967,14 +1919,11 @@ class _AuditoriaViewer extends StatelessWidget {
                       Icon(Icons.close_rounded,
                           size: 16, color: theme.textSecondary),
                       const SizedBox(width: 6),
-                      Text(
-                        isEs ? 'Cerrar' : 'Fechar',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: theme.textSecondary,
-                        ),
-                      ),
+                      Text(isEs ? 'Cerrar' : 'Fechar',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: theme.textSecondary)),
                     ],
                   ),
                 ),
@@ -988,195 +1937,209 @@ class _AuditoriaViewer extends StatelessWidget {
 
   List<Widget> _buildFields(InternacionTheme theme) {
     final widgets = <Widget>[];
-    final s  = ev.subjetivo;
+    final s = ev.subjetivo;
     final sv = ev.objetivo.signosVitales;
     final ef = ev.objetivo.examenFisico;
     final ex = ev.objetivo.examenes;
-    final a  = ev.evaluacion;
-    final p  = ev.plan;
+    final a = ev.evaluacion;
+    final p = ev.plan;
 
-    // ── Evolução (Subjetivo) ─────────────────────────────────────────────────
-    widgets.add(_auditSection(
-      isEs ? 'Evolución' : 'Evolução',
-      Icons.chat_bubble_outline_rounded,
-      InternacionTheme.cyan,
-      theme,
-    ));
-    if (s.notePasaNoche.isNotEmpty) {
-      widgets.add(_auditField(
-        isEs ? 'Cómo pasó la noche' : 'Como passou a noite',
-        s.notePasaNoche,
-        theme,
+    void addSection(String label, IconData icon, Color color) {
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Row(
+          children: [
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 11, color: color),
+                  const SizedBox(width: 5),
+                  Text(label.toUpperCase(),
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: color,
+                          letterSpacing: 0.4)),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Container(
+                  height: 1, color: color.withValues(alpha: 0.20)),
+            ),
+          ],
+        ),
       ));
     }
-    if (s.dolorEscala != null) {
-      widgets.add(_auditField('EVA', '${s.dolorEscala}/10', theme));
+
+    void addField(String label, String value) {
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(11),
+          decoration: BoxDecoration(
+            color: theme.card,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: theme.border, width: 0.8),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 80,
+                child: Text(label,
+                    style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: theme.textSecondary)),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(value,
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: theme.textPrimary,
+                        height: 1.4)),
+              ),
+            ],
+          ),
+        ),
+      ));
     }
+
+    // Subjetivo
+    addSection(isEs ? 'Evolución' : 'Evolução',
+        Icons.chat_bubble_outline_rounded, InternacionTheme.cyan);
+    if (s.notePasaNoche.isNotEmpty) {
+      addField(isEs ? 'Noche' : 'Noite', s.notePasaNoche);
+    }
+    if (s.dolorEscala != null) addField('EVA', '${s.dolorEscala}/10');
     final syms = <String>[];
     if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
     if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
-    if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
+    if (s.nauseas) syms.add('Náuseas');
     if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
-    if (s.suenoRestado) syms.add(isEs ? 'Sueño alterado' : 'Sono alterado');
+    if (s.suenoRestado) syms.add(isEs ? 'Sueño alt.' : 'Sono alt.');
     if (syms.isNotEmpty) {
-      widgets.add(_auditField(
-        isEs ? 'Síntomas' : 'Sintomas', syms.join(', '), theme));
+      addField(isEs ? 'Síntomas' : 'Sintomas', syms.join(', '));
     }
     if (s.alimentacion.isNotEmpty) {
-      widgets.add(_auditField(
-        isEs ? 'Alimentación' : 'Alimentação', s.alimentacion, theme));
+      addField(isEs ? 'Alimentación' : 'Alimentação', s.alimentacion);
     }
-    if (s.diuresis.isNotEmpty) {
-      widgets.add(_auditField('Diuresis', s.diuresis, theme));
-    }
+    if (s.diuresis.isNotEmpty) addField('Diuresis', s.diuresis);
     if (s.evacuacion.isNotEmpty) {
-      widgets.add(_auditField(
-        isEs ? 'Evacuación' : 'Evacuação', s.evacuacion, theme));
+      addField(isEs ? 'Evacuación' : 'Evacuação', s.evacuacion);
     }
     if (s.notasLibres.isNotEmpty) {
-      widgets.add(_auditField(
-        isEs ? 'Notas libres' : 'Notas livres', s.notasLibres, theme));
+      addField(isEs ? 'Notas' : 'Notas', s.notasLibres);
     }
 
-    // ── SV ───────────────────────────────────────────────────────────────────
+    // SV
     if (!sv.isEmpty) {
       widgets.add(const SizedBox(height: 8));
-      widgets.add(_auditSection(
-        isEs ? 'Signos Vitales' : 'Sinais Vitais',
-        Icons.monitor_heart_rounded,
-        const Color(0xFFEF4444),
-        theme,
-      ));
+      addSection(isEs ? 'Signos Vitales' : 'Sinais Vitais',
+          Icons.monitor_heart_rounded, const Color(0xFFEF4444));
       final svParts = <String>[];
       if (sv.pa.isNotEmpty) svParts.add('TA: ${sv.pa} mmHg');
       if (sv.fc.isNotEmpty) svParts.add('FC: ${sv.fc} lpm');
       if (sv.fr.isNotEmpty) svParts.add('FR: ${sv.fr} rpm');
       if (sv.satO2.isNotEmpty) svParts.add('SatO₂: ${sv.satO2}%');
-      if (sv.temperatura.isNotEmpty) svParts.add('Temp: ${sv.temperatura}°C');
-      widgets.add(_auditField('SV', svParts.join('   '), theme));
+      if (sv.temperatura.isNotEmpty) svParts.add('T: ${sv.temperatura}°C');
+      addField('SV', svParts.join('   '));
     }
 
-    // ── Examen Físico ────────────────────────────────────────────────────────
-    final hasEf = ef.estadoGeneral.isNotEmpty || ef.acv.isNotEmpty ||
-        ef.ar.isNotEmpty || ef.abdomen.isNotEmpty || ef.extremidades.isNotEmpty;
+    // EF
+    final hasEf = ef.estadoGeneral.isNotEmpty ||
+        ef.acv.isNotEmpty ||
+        ef.ar.isNotEmpty ||
+        ef.abdomen.isNotEmpty ||
+        ef.extremidades.isNotEmpty;
     if (hasEf) {
       widgets.add(const SizedBox(height: 8));
-      widgets.add(_auditSection(
-        isEs ? 'Examen Físico' : 'Exame Físico',
-        Icons.accessibility_rounded,
-        const Color(0xFF60A5FA),
-        theme,
-      ));
-      if (ef.estadoGeneral.isNotEmpty) {
-        widgets.add(_auditField('EG', ef.estadoGeneral, theme));
-      }
-      if (ef.acv.isNotEmpty) widgets.add(_auditField('CV/Neuro', ef.acv, theme));
-      if (ef.ar.isNotEmpty) widgets.add(_auditField('Resp', ef.ar, theme));
-      if (ef.abdomen.isNotEmpty) {
-        widgets.add(_auditField('Abd', ef.abdomen, theme));
-      }
-      if (ef.extremidades.isNotEmpty) {
-        widgets.add(_auditField('MMII', ef.extremidades, theme));
-      }
+      addSection(isEs ? 'Examen Físico' : 'Exame Físico',
+          Icons.accessibility_rounded, const Color(0xFF60A5FA));
+      if (ef.estadoGeneral.isNotEmpty) addField('EG', ef.estadoGeneral);
+      if (ef.acv.isNotEmpty) addField('CV', ef.acv);
+      if (ef.ar.isNotEmpty) addField('Resp', ef.ar);
+      if (ef.abdomen.isNotEmpty) addField('Abd', ef.abdomen);
+      if (ef.extremidades.isNotEmpty) addField('MMII', ef.extremidades);
     }
 
-    // ── Exames Complementares ────────────────────────────────────────────────
-    final hasEx = ex.laboratorio.isNotEmpty || ex.imagenes.isNotEmpty ||
-        ex.culturas.isNotEmpty || ex.ecg.isNotEmpty;
+    // Exames
+    final hasEx = ex.laboratorio.isNotEmpty ||
+        ex.imagenes.isNotEmpty ||
+        ex.culturas.isNotEmpty ||
+        ex.ecg.isNotEmpty;
     if (hasEx) {
       widgets.add(const SizedBox(height: 8));
-      widgets.add(_auditSection(
-        isEs ? 'Laboratorio / Exámenes' : 'Laboratório / Exames',
-        Icons.biotech_rounded,
-        const Color(0xFF4ADE80),
-        theme,
-      ));
-      if (ex.laboratorio.isNotEmpty) {
-        widgets.add(_auditField(isEs ? 'Lab' : 'Lab', ex.laboratorio, theme));
-      }
+      addSection(isEs ? 'Laboratorio' : 'Laboratório',
+          Icons.biotech_rounded, const Color(0xFF4ADE80));
+      if (ex.laboratorio.isNotEmpty) addField('Lab', ex.laboratorio);
       if (ex.imagenes.isNotEmpty) {
-        widgets.add(_auditField(
-          isEs ? 'Imágenes' : 'Imagens', ex.imagenes, theme));
+        addField(isEs ? 'Imágenes' : 'Imagens', ex.imagenes);
       }
-      if (ex.culturas.isNotEmpty) {
-        widgets.add(_auditField('Culturas', ex.culturas, theme));
-      }
-      if (ex.ecg.isNotEmpty) widgets.add(_auditField('ECG', ex.ecg, theme));
+      if (ex.culturas.isNotEmpty) addField('Culturas', ex.culturas);
+      if (ex.ecg.isNotEmpty) addField('ECG', ex.ecg);
     }
 
-    // ── Impresión ────────────────────────────────────────────────────────────
-    final hasA = a.notasEvaluacion.isNotEmpty || a.estado != null ||
+    // Impresión
+    final hasA = a.notasEvaluacion.isNotEmpty ||
+        a.estado != null ||
         a.problemasActivos.isNotEmpty;
     if (hasA) {
       widgets.add(const SizedBox(height: 8));
-      widgets.add(_auditSection(
-        isEs ? 'Impresión Clínica' : 'Impressão Clínica',
-        Icons.trending_up_rounded,
-        const Color(0xFFF59E0B),
-        theme,
-      ));
+      addSection(isEs ? 'Impresión Clínica' : 'Impressão Clínica',
+          Icons.trending_up_rounded, const Color(0xFFF59E0B));
       if (a.estado != null) {
-        widgets.add(_auditField(
-          isEs ? 'Estado' : 'Estado',
-          a.estado!.label(lang),
-          theme,
-        ));
+        addField(isEs ? 'Estado' : 'Estado', a.estado!.label(lang));
       }
       if (a.problemasActivos.isNotEmpty) {
-        widgets.add(_auditField(
-          isEs ? 'Problemas' : 'Problemas',
-          a.problemasActivos.join('\n'),
-          theme,
-        ));
+        addField(isEs ? 'Problemas' : 'Problemas',
+            a.problemasActivos.join('\n'));
       }
-      if (a.notasEvaluacion.isNotEmpty) {
-        widgets.add(_auditField(
-          isEs ? 'Notas' : 'Notas', a.notasEvaluacion, theme));
-      }
+      if (a.notasEvaluacion.isNotEmpty) addField('Notas', a.notasEvaluacion);
     }
 
-    // ── Plan / Conducta ───────────────────────────────────────────────────────
-    final hasP = p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty;
+    // Plan
+    final hasP =
+        p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty;
     if (hasP) {
       widgets.add(const SizedBox(height: 8));
-      widgets.add(_auditSection(
-        isEs ? 'Conducta / Plan' : 'Conduta / Plano',
-        Icons.assignment_rounded,
-        const Color(0xFFA78BFA),
-        theme,
-      ));
+      addSection(isEs ? 'Conducta / Plan' : 'Conduta / Plano',
+          Icons.assignment_rounded, const Color(0xFFA78BFA));
       if (p.planTerapeutico.isNotEmpty) {
-        widgets.add(_auditField(
-          isEs ? 'Plan' : 'Plano', p.planTerapeutico, theme));
+        addField(isEs ? 'Plan' : 'Plano', p.planTerapeutico);
       }
       if (p.criteriosAlta.isNotEmpty) {
-        widgets.add(_auditField(
-          isEs ? 'Criterios alta' : 'Critérios alta',
-          p.criteriosAlta,
-          theme,
-        ));
+        addField(isEs ? 'Alta' : 'Alta', p.criteriosAlta);
       }
     }
 
-    // ── Fármacos ─────────────────────────────────────────────────────────────
+    // Fármacos
     if (ev.farmacos.isNotEmpty) {
       widgets.add(const SizedBox(height: 8));
-      widgets.add(_auditSection(
-        isEs ? 'Fármacos' : 'Fármacos',
-        Icons.medication_rounded,
-        const Color(0xFF059669),
-        theme,
-      ));
+      addSection('Fármacos', Icons.medication_rounded,
+          const Color(0xFF059669));
       for (final f in ev.farmacos) {
-        final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
-        widgets.add(_auditField(f.medicamento, dos.isEmpty ? '—' : f.dosagem, theme));
+        final dos = f.dosagem.isNotEmpty ? f.dosagem : '—';
+        addField(f.medicamento, dos);
       }
     }
 
-    // ── Autor ─────────────────────────────────────────────────────────────────
+    // Autor
     widgets.add(const SizedBox(height: 12));
     widgets.add(Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: theme.card,
         borderRadius: BorderRadius.circular(10),
@@ -1189,10 +2152,9 @@ class _AuditoriaViewer extends StatelessWidget {
           Text(
             '${isEs ? 'Firma' : 'Assinatura'}: ${ev.autorNombre}',
             style: TextStyle(
-              fontSize: 12,
-              color: theme.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
+                fontSize: 12,
+                color: theme.textSecondary,
+                fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -1200,96 +2162,11 @@ class _AuditoriaViewer extends StatelessWidget {
 
     return widgets;
   }
-
-  Widget _auditSection(
-    String label,
-    IconData icon,
-    Color color,
-    InternacionTheme theme,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 11, color: color),
-                const SizedBox(width: 5),
-                Text(
-                  label.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    color: color,
-                    letterSpacing: 0.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              height: 1,
-              color: color.withValues(alpha: 0.20),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _auditField(String label, String value, InternacionTheme theme) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(11),
-        decoration: BoxDecoration(
-          color: theme.card,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: theme.border, width: 0.8),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 80,
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w600,
-                  color: theme.textSecondary,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                value,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: theme.textPrimary,
-                  height: 1.4,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
-// ── Divisor de seção com título ───────────────────────────────────────────────
+// ═════════════════════════════════════════════════════════════════════════════
+// Divisor de seção com título
+// ═════════════════════════════════════════════════════════════════════════════
 class _SectionDivider extends StatelessWidget {
   final String label;
   final String sublabel;
@@ -1297,29 +2174,37 @@ class _SectionDivider extends StatelessWidget {
   final InternacionTheme theme;
 
   const _SectionDivider({
-    required this.label, required this.sublabel,
-    required this.dark, required this.theme,
+    required this.label,
+    required this.sublabel,
+    required this.dark,
+    required this.theme,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: Divider(color: theme.border, height: 1, thickness: 0.8)),
+        Expanded(
+            child:
+                Divider(color: theme.border, height: 1, thickness: 0.8)),
         const SizedBox(width: 10),
         Column(
           children: [
-            Text(label, style: TextStyle(
-              fontSize: 10, fontWeight: FontWeight.w800,
-              letterSpacing: 0.8, color: InternacionTheme(dark).accent,
-            )),
-            Text(sublabel, style: TextStyle(
-              fontSize: 9, color: theme.labelColor,
-            )),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.8,
+                  color: InternacionTheme(dark).accent,
+                )),
+            Text(sublabel,
+                style: TextStyle(fontSize: 9, color: theme.labelColor)),
           ],
         ),
         const SizedBox(width: 10),
-        Expanded(child: Divider(color: theme.border, height: 1, thickness: 0.8)),
+        Expanded(
+            child:
+                Divider(color: theme.border, height: 1, thickness: 0.8)),
       ],
     );
   }
