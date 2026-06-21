@@ -69,8 +69,8 @@ class MeuPlantaoDashboard extends StatefulWidget {
   final void Function(DrugModel drug) onOpenDrug;
   final void Function(String calcId) onOpenCalc;
   final void Function() onManageTap;
-  // Build 187: navega para a aba Adulto (InternacionScreen) ao tocar card
-  final void Function()? onOpenInternacion;
+  // Build 195: passa PacienteSession para pré-carregar ao navegar para InternacionScreen
+  final void Function(PacienteSession session)? onOpenInternacion;
 
   const MeuPlantaoDashboard({
     super.key,
@@ -519,8 +519,8 @@ class _PlantaoContent extends StatelessWidget {
   final void Function(String) onOpenCalc;
   final VoidCallback onAddPatient;
   final void Function(PlantaoPatient) onEditPatient;
-  // Build 187: navega para InternacionScreen ao tocar card
-  final void Function()? onOpenInternacion;
+  // Build 195: passa PacienteSession para pré-carregar ao navegar para InternacionScreen
+  final void Function(PacienteSession session)? onOpenInternacion;
 
   const _PlantaoContent({
     required this.isEs,
@@ -701,8 +701,8 @@ class _FirestoreSessionsColumn extends StatelessWidget {
   final List<PacienteSession> sessions;
   final bool isEs;
   final AppColors colors;
-  // Build 187: callback para navegar até InternacionScreen
-  final void Function()? onOpenInternacion;
+  // Build 195: passa PacienteSession para pré-carregar ao navegar para InternacionScreen
+  final void Function(PacienteSession session)? onOpenInternacion;
 
   const _FirestoreSessionsColumn({
     required this.sessions,
@@ -711,18 +711,43 @@ class _FirestoreSessionsColumn extends StatelessWidget {
     this.onOpenInternacion,
   });
 
+  // Build 195: agrupa sessões por paciente (nome normalizado) e retorna apenas
+  // a mais recente por paciente — elimina duplicidade de cards na Home.
+  // Critério de deduplicação: nome em minúsculas sem espaços extras.
+  // Critério de "mais recente": maior savedAt (que desde Build 191 reflete updatedAt).
+  // Fallback: se nomes vazios, usa sessionKey como chave única (preserva todos).
+  List<PacienteSession> _deduplicated() {
+    final Map<String, PacienteSession> byPatient = {};
+    for (final s in sessions) {
+      // Chave de agrupamento: nome normalizado do paciente
+      // Se nome vazio, usa sessionKey — cada sessão sem nome aparece individualmente
+      final key = s.paciente.nome.trim().toLowerCase().isNotEmpty
+          ? s.paciente.nome.trim().toLowerCase()
+          : s.sessionKey;
+      final existing = byPatient[key];
+      if (existing == null || s.savedAt.isAfter(existing.savedAt)) {
+        byPatient[key] = s;
+      }
+    }
+    // Preserva a ordem original (mais recente primeiro) entre grupos
+    final result = byPatient.values.toList()
+      ..sort((a, b) => b.savedAt.compareTo(a.savedAt));
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final deduped = _deduplicated();
     return Column(
       children: [
-        for (int i = 0; i < sessions.length; i++) ...[
+        for (int i = 0; i < deduped.length; i++) ...[
           _FirestoreSessionCard(
-            session: sessions[i],
+            session: deduped[i],
             isEs: isEs,
             colors: colors,
             onOpenInternacion: onOpenInternacion,
           ),
-          if (i < sessions.length - 1) const SizedBox(height: 8),
+          if (i < deduped.length - 1) const SizedBox(height: 8),
         ],
       ],
     );
@@ -738,8 +763,8 @@ class _FirestoreSessionCard extends StatelessWidget {
   final PacienteSession session;
   final bool isEs;
   final AppColors colors;
-  // Build 187: navega para InternacionScreen ao tocar o card
-  final void Function()? onOpenInternacion;
+  // Build 195: passa PacienteSession para pré-carregar ao navegar para InternacionScreen
+  final void Function(PacienteSession session)? onOpenInternacion;
 
   const _FirestoreSessionCard({
     required this.session,
@@ -783,7 +808,7 @@ class _FirestoreSessionCard extends StatelessWidget {
         onTap: onOpenInternacion != null
             ? () {
                 AppHaptics.selection(context);
-                onOpenInternacion!();
+                onOpenInternacion!(session);
               }
             : null,
         onLongPress: () {

@@ -16,6 +16,7 @@ import '../services/drug_interaction_service.dart';
 import '../services/notification_service.dart';
 import 'cockpit_screen.dart';
 import 'internacion/internacion_screen.dart';
+import 'internacion/services/internacion_persistence.dart' show PacienteSession;
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
 import 'prescripciones_screen.dart' show PrescripcionesScreen, prescriptionModels;
 import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen, toolsScreenTabNotifier;
@@ -313,8 +314,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           widget.onTabChange(4);
                         },
                         onManageTap: () => showPlantaoManageSheet(ctx),
-                        // Build 187: tap no card → aba Adulto (InternacionScreen)
-                        onOpenInternacion: () => widget.onTabChange(3),
+                        // Build 195 FIX: usa Navigator.push com sessão pré-selecionada
+                        onOpenInternacion: (session) => Navigator.of(ctx).push(
+                          HomeScreen.slideRoute(
+                            _AdultoShell(
+                              openProtocol: widget.openProtocol,
+                              initialSession: session,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ]),
@@ -458,8 +466,15 @@ class _HomeScreenState extends State<HomeScreen> {
               widget.onTabChange(4);
             },
             onManageTap: () => showPlantaoManageSheet(context),
-            // Build 187: tap no card → aba Adulto (index 3 = InternacionScreen)
-            onOpenInternacion: () => widget.onTabChange(3),
+            // Build 195 FIX: usa Navigator.push com sessão pré-selecionada
+            onOpenInternacion: (session) => Navigator.of(context).push(
+              HomeScreen.slideRoute(
+                _AdultoShell(
+                  openProtocol: widget.openProtocol,
+                  initialSession: session,
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 10),
 
@@ -2964,8 +2979,8 @@ class _HomeMiGuardiaSection extends StatelessWidget {
   final Function(dynamic) onOpenDrug;
   final Function(String) onOpenCalc;
   final VoidCallback onManageTap;
-  // Build 187: atalho de card → aba Adulto (InternacionScreen)
-  final VoidCallback? onOpenInternacion;
+  // Build 195: passa PacienteSession para pr\u00e9-carregar ao navegar para InternacionScreen
+  final void Function(PacienteSession session)? onOpenInternacion;
 
   const _HomeMiGuardiaSection({
     required this.dark,
@@ -5128,12 +5143,18 @@ class _PediatricsShell extends StatelessWidget {
 class _AdultoShell extends StatelessWidget {
   // openProtocol mantido para compatibilidade com assinatura existente
   final Function(String) openProtocol;
-  const _AdultoShell({required this.openProtocol});
+  // Build 195: sessão pré-selecionada ao abrir via card Mi Guardia
+  final PacienteSession? initialSession;
+
+  const _AdultoShell({
+    required this.openProtocol,
+    this.initialSession,
+  });
 
   @override
   Widget build(BuildContext context) {
     // InternacionScreen tem seu próprio Scaffold + AppBar
-    return const InternacionScreen();
+    return InternacionScreen(initialSession: initialSession);
   }
 }
 

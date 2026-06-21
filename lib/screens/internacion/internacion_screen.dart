@@ -31,7 +31,10 @@ import 'services/soap_copilot_service.dart';
 import 'services/drug_interaction_service.dart';
 
 class InternacionScreen extends StatefulWidget {
-  const InternacionScreen({super.key});
+  // Build 195: sessão pré-selecionada ao abrir via card Mi Guardia
+  final PacienteSession? initialSession;
+
+  const InternacionScreen({super.key, this.initialSession});
 
   @override
   State<InternacionScreen> createState() => _InternacionScreenState();
@@ -66,7 +69,16 @@ class _InternacionScreenState extends State<InternacionScreen> {
     _draftEvolucion = _newDraft();
     DrugInteractionService.instance.init();
     // Aguarda o primeiro frame para ter acesso ao provider
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initSessions());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initSessions();
+      // Build 195: pré-carrega a sessão passada pelo Mi Guardia card
+      // Usa _evolveSession para colocar o paciente em modo de nova evolução
+      // com o histórico completo carregado no painel lateral.
+      final initial = widget.initialSession;
+      if (initial != null) {
+        _evolveSession(initial);
+      }
+    });
   }
 
   @override
