@@ -755,8 +755,9 @@ class _FirestoreSessionCard extends StatelessWidget {
     // FIX 2: triage color — keyword-based on diagnosis
     final triageColor = _triageColorFromDiag(diag);
 
+    // Build 188: RepaintBoundary isola cada card do grid — 120Hz fluido
     // Build 187: wraps card with Material+InkWell for tap-to-navigate
-    return Material(
+    return RepaintBoundary(child: Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
@@ -874,7 +875,7 @@ class _FirestoreSessionCard extends StatelessWidget {
       ),
     ),  // end InkWell child (AnimatedContainer)
       ),  // end InkWell
-    );  // end Material
+    ));  // end Material + RepaintBoundary
   }
 }
 

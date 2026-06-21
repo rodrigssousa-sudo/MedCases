@@ -737,6 +737,9 @@ class _AiScreenState extends State<AiScreen> {
     _queryCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
+    // Build 188: descarta ValueNotifier de streaming se ainda ativo
+    _streamingTextNotifier?.dispose();
+    _streamingTextNotifier = null;
 
     // ── 5. Limpa ValueNotifiers estáticos do shell AppBar ──────────────────
     // Callbacks do widget desmontado — evita referências mortas no shell.
@@ -902,6 +905,9 @@ class _AiScreenState extends State<AiScreen> {
   void _restoreSession(_ChatSession session, AppProvider p) {
     // Build 107: cancela streaming ativo para liberar os guards
     p.cancelAiStream();
+    // Build 188: descarta notifier de streaming ao restaurar sessão
+    _streamingTextNotifier?.dispose();
+    _streamingTextNotifier = null;
     setState(() {
       _messages.clear();
       _messages.addAll(session.messages);
@@ -1032,6 +1038,11 @@ class _AiScreenState extends State<AiScreen> {
   // Streaming V2: true enquanto chunks chegam (controla cursor ▌ na bolha ativa)
   bool _isStreaming = false;
 
+  // Build 188 — ValueNotifier para streaming ultra-localizado:
+  // Atualiza APENAS o widget da bolha ativa em vez de reconstruir toda a tela.
+  // Criado ao iniciar streaming, descartado ao terminar.
+  ValueNotifier<String>? _streamingTextNotifier;
+
   // ── Build 135: Debounce de 300ms no submit ─────────────────────────────────
   // Fecha a janela residual (~50ms) entre finally() e listen() registration
   // em que um clique ultra-rápido poderia passar pelo _aiCallInFlight.
@@ -1100,25 +1111,35 @@ class _AiScreenState extends State<AiScreen> {
           // ignoramos silenciosamente e aguardamos o próximo chunk completo.
           try {
             final cleanedChunk = _stripMetadataHeaders(accumulated);
-            setState(() {
-              if (streamingMsgIdx == -1) {
-                // Primeiro chunk: substitui ThinkingBubble por bolha em streaming
+            if (streamingMsgIdx == -1) {
+              // ── PRIMEIRO CHUNK: wide setState apenas UMA VEZ ────────────────
+              // Substitui ThinkingBubble por bolha de streaming real.
+              // Este é o único setState() largo — ocorre apenas no primeiro chunk.
+              // Cria ValueNotifier para chunks subsequentes (ultra-localizado).
+              _streamingTextNotifier?.dispose();
+              _streamingTextNotifier = ValueNotifier<String>(cleanedChunk);
+              setState(() {
                 _thinking = false;
                 _isStreaming = true;
                 _scrollGeneration++;
                 _lastAiIndex = _messages.length;
                 _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
                 streamingMsgIdx = _messages.length - 1;
-              } else {
-                // Chunks subsequentes: atualiza texto da bolha existente in-place
-                _isStreaming = true;
+              });
+            } else {
+              // ── CHUNKS SUBSEQUENTES: atualiza APENAS o notifier ─────────────
+              // Build 188: zero setState() na tela pai — apenas o notifier é
+              // atualizado, reconstruindo exclusivamente o widget da bolha ativa.
+              _streamingTextNotifier?.value = cleanedChunk;
+              // Sincroniza _messages para que onDone tenha o texto correto
+              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
                 _messages[streamingMsgIdx] = _ChatMsg.withId(
                   id: _messages[streamingMsgIdx].id,
                   role: 'ai',
                   text: cleanedChunk,
                 );
               }
-            });
+            }
             _scrollDown();
           } catch (_) {
             // Chunk inválido: descartado silenciosamente.
@@ -1167,6 +1188,9 @@ class _AiScreenState extends State<AiScreen> {
 
           if (isNetErr) {
             // Casos de erro: mantenha comportamento original para evitar regressão
+            // Build 188: descarta notifier de streaming no caso de erro de rede
+            _streamingTextNotifier?.dispose();
+            _streamingTextNotifier = null;
             setState(() {
               _thinking    = false;
               _isStreaming  = false;
@@ -1223,10 +1247,13 @@ class _AiScreenState extends State<AiScreen> {
             // ── PASSO 2: remove cursor no próximo frame ──────────────────
             // Após o Flutter calcular o layout dos blocos finais (com cursor),
             // remove o cursor setando _isStreaming=false. Neste ponto o
-            // _computeBlocks() vai recomputar sem cursor — mas o maxScrollExtent
+            // _computeBlocksFromText() vai recomputar sem cursor — mas o maxScrollExtent
             // já está estável porque os blocos-base já foram medidos.
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
+              // Build 188: descarta o notifier de streaming — streaming encerrado
+              _streamingTextNotifier?.dispose();
+              _streamingTextNotifier = null;
               setState(() {
                 _isStreaming = false;
               });
@@ -1256,6 +1283,9 @@ class _AiScreenState extends State<AiScreen> {
         },
         onError: (errorMsg) {
           if (!mounted) return;
+          // Build 188: descarta notifier de streaming no onError
+          _streamingTextNotifier?.dispose();
+          _streamingTextNotifier = null;
           // Guard do provider retornou '' — ignora (não adiciona bubble vazia)
           if (errorMsg.isEmpty) {
             setState(() {
@@ -1327,6 +1357,9 @@ class _AiScreenState extends State<AiScreen> {
     } on Exception catch (e) {
       // Captura exceções não tratadas (ex: TimeoutException, SocketException)
       if (!mounted) return;
+      // Build 188: descarta notifier de streaming em exceção não tratada
+      _streamingTextNotifier?.dispose();
+      _streamingTextNotifier = null;
       final errStr = e.toString().toLowerCase();
       final isNetworkException = errStr.contains('socket') ||
           errStr.contains('timeout') ||
@@ -1561,6 +1594,9 @@ class _AiScreenState extends State<AiScreen> {
             physics: const ClampingScrollPhysics(),
             // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            // Build 188: isolamento de repaint e keep-alive explícitos
+            addRepaintBoundaries: true,
+            addAutomaticKeepAlives: true,
             itemCount: _messages.length + (_thinking ? 1 : 0) + 1, // +1 sentinela
             itemBuilder: (context, i) {
               // Sentinela invisível — âncora para Scrollable.ensureVisible
@@ -1568,25 +1604,30 @@ class _AiScreenState extends State<AiScreen> {
                 return SizedBox(key: _bottomKey, height: 1);
               }
               if (_thinking && i == _messages.length) {
-                return _ThinkingBubble(dark: dark);
+                // Build 188: RepaintBoundary isola o ThinkingBubble animado
+                return RepaintBoundary(child: _ThinkingBubble(dark: dark));
               }
               final msg = _messages[i];
               if (msg.role == 'user') {
                 // Build 170: passa callbacks de cópia e edição para o balão
                 final msgIndex = i; // captura o índice para edição
-                return KeyedSubtree(
-                  key: ValueKey('msg_${msg.id}'),
-                  child: _UserBubble(
-                    text: msg.text,
-                    dark: dark,
-                    onCopy: () => _copyMsg(msg.text),
-                    onEdit: (newText) => _editUserMessage(msgIndex, newText, p),
+                return RepaintBoundary(
+                  child: KeyedSubtree(
+                    key: ValueKey('msg_${msg.id}'),
+                    child: _UserBubble(
+                      text: msg.text,
+                      dark: dark,
+                      onCopy: () => _copyMsg(msg.text),
+                      onEdit: (newText) => _editUserMessage(msgIndex, newText, p),
+                    ),
                   ),
                 );
               }
               // ── AI message — detectar fármaco en texto ──────────────────
+              final isActiveStreamingBubble = _isStreaming && i == _lastAiIndex;
               final detectedEv = _detectDrugEvidence(msg.text);
-              return KeyedSubtree(
+              return RepaintBoundary(
+                child: KeyedSubtree(
                 key: ValueKey('msg_${msg.id}'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1606,7 +1647,12 @@ class _AiScreenState extends State<AiScreen> {
                       scrollGeneration: _scrollGeneration,
                       onBlockRevealed: _onBlockRevealed,
                       // Mostra cursor ▌ apenas na bolha que está sendo preenchida
-                      isStreaming: _isStreaming && i == _lastAiIndex,
+                      isStreaming: isActiveStreamingBubble,
+                      // Build 188: passa o notifier APENAS para a bolha ativa —
+                      // chunks chegam diretamente nela sem reconstruir a tela.
+                      streamingTextNotifier: isActiveStreamingBubble
+                          ? _streamingTextNotifier
+                          : null,
                       // Build 184 — Auto-Submit: chip tap → direto para _send().
                       // Remove o pre-fill; o médico toca o chip e a resposta é enviada
                       // imediatamente sem precisar clicar no botão de envio.
@@ -1646,6 +1692,7 @@ class _AiScreenState extends State<AiScreen> {
                         child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
                       ),
                   ],
+                ),
                 ),
               );
             },
@@ -1755,7 +1802,6 @@ class _AiScreenState extends State<AiScreen> {
                         _longResponse = newValue;
                       });
                       p.clearAiHistory();
-                      debugPrint('[MedCases UI Build 158.1] Modo alterado → ${newValue ? 'ESTUDOS' : 'PLANTÃO'} — histórico limpo.');
                     },
                   ),
                 ),
@@ -4380,6 +4426,10 @@ class _AiBubble extends StatefulWidget {
   final bool isStreaming;
   /// Build 120 — ActionChip: dispara _send() com o texto da pergunta de fechamento
   final void Function(String chipText)? onChipTap;
+  /// Build 188 — ValueNotifier para streaming ultra-localizado:
+  /// Quando não-nulo, a bolha escuta este notifier diretamente em vez de
+  /// depender de widget.text para atualizar chunks — zero rebuild na tela pai.
+  final ValueNotifier<String>? streamingTextNotifier;
   const _AiBubble({
     super.key,
     required this.text,
@@ -4394,6 +4444,7 @@ class _AiBubble extends StatefulWidget {
     this.onBlockRevealed,
     this.isStreaming = false,
     this.onChipTap,
+    this.streamingTextNotifier,
   });
 
   @override
@@ -4409,17 +4460,71 @@ class _AiBubbleState extends State<_AiBubble> {
   // Evita reprocessar _cleanAiText + _splitIntoBlocks em cada rebuild do scroll
   late List<String> _cachedBlocks;
 
+  // Build 188: texto exibido — pode ser alimentado por widget.text (estático)
+  // ou por _streamingNotifier (streaming ultra-localizado).
+  String _displayText = '';
+
+  // Referência ao notifier atual — para removeListener no dispose/update
+  ValueNotifier<String>? _attachedNotifier;
+
+  void _onStreamingChunk() {
+    if (!mounted) return;
+    final notifier = _attachedNotifier;
+    if (notifier == null) return;
+    final newText = notifier.value;
+    try {
+      setState(() {
+        _displayText = newText;
+        _cachedBlocks = _computeBlocksFromText(newText);
+        if (widget.isStreaming && _cachedBlocks.isNotEmpty && _visibleCount < 1) {
+          _visibleCount = 1;
+        }
+        if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
+          _visibleCount = _cachedBlocks.length;
+        }
+      });
+    } catch (_) {}
+    // Notifica scroll apenas se streaming ativo
+    if (widget.isStreaming && widget.onBlockRevealed != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        widget.onBlockRevealed!(widget.scrollGeneration);
+      });
+    }
+  }
+
+  void _attachNotifier(ValueNotifier<String>? notifier) {
+    if (_attachedNotifier == notifier) return;
+    _attachedNotifier?.removeListener(_onStreamingChunk);
+    _attachedNotifier = notifier;
+    _attachedNotifier?.addListener(_onStreamingChunk);
+  }
+
   @override
   void initState() {
     super.initState();
-    _cachedBlocks = _computeBlocks(widget.text);
+    _displayText = widget.text;
+    _cachedBlocks = _computeBlocksFromText(_displayText);
+    _attachNotifier(widget.streamingTextNotifier);
     // Inicia a sequência de exibição após o primeiro frame
     WidgetsBinding.instance.addPostFrameCallback((_) => _startSequence());
   }
 
   @override
+  void dispose() {
+    _attachedNotifier?.removeListener(_onStreamingChunk);
+    _attachedNotifier = null;
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(_AiBubble old) {
     super.didUpdateWidget(old);
+
+    // Build 188: atualiza o listener do notifier se mudou
+    if (old.streamingTextNotifier != widget.streamingTextNotifier) {
+      _attachNotifier(widget.streamingTextNotifier);
+    }
 
     final textChanged      = old.text != widget.text;
     final streamingChanged = old.isStreaming != widget.isStreaming;
@@ -4427,47 +4532,47 @@ class _AiBubbleState extends State<_AiBubble> {
     if (!textChanged && !streamingChanged) return;
 
     // ── CORREÇÃO CRÍTICA DE REATIVIDADE ─────────────────────────────────────
-    // BUG: didUpdateWidget atualizava _cachedBlocks mas NÃO chamava setState.
-    // Flutter só executa build() quando setState é chamado. Sem setState aqui,
-    // o widget recebia o novo texto do chunk mas a tela não se redesenhava —
-    // a bolha ficava congelada até o usuário fechar e reabrir a tela.
-    //
-    // SOLUÇÃO: setState dentro de didUpdateWidget força o rebuild imediato
-    // a cada chunk recebido, renderizando o texto crescente em tempo real.
-    // Build 114: try-catch em torno do setState + _computeBlocks.
-    // Se um chunk SSE malformado explodir dentro de _computeBlocks,
-    // o setState nunca completa e o mobile browser não crasha.
-    try {
-      setState(() {
-        _cachedBlocks = _computeBlocks(widget.text);
+    // Build 188: quando o notifier está ativo e streaming, os chunks chegam via
+    // _onStreamingChunk() — não precisamos processar widget.text aqui.
+    // Só processa widget.text quando: (a) não há notifier, ou (b) streaming acabou.
+    final hasActiveNotifier = _attachedNotifier != null && widget.isStreaming;
 
-        // Durante streaming: garante que _visibleCount >= 1 assim que o
-        // primeiro bloco existe, mesmo que _startSequence ainda não rodou.
-        // Sem isso, o primeiro chunk ficava invisível (visibleCount=0).
-        if (widget.isStreaming && _cachedBlocks.isNotEmpty && _visibleCount < 1) {
-          _visibleCount = 1;
-        }
+    // Sempre atualiza _displayText a partir de widget.text quando streaming termina
+    // ou quando não há notifier (bolha histórica).
+    if (!hasActiveNotifier || (!widget.isStreaming && old.isStreaming)) {
+      try {
+        setState(() {
+          _displayText = widget.text;
+          _cachedBlocks = _computeBlocksFromText(_displayText);
 
-        // Quando novos blocos aparecem (quebras de parágrafo no stream),
-        // avança _visibleCount para revelar imediatamente — sem delay de animação.
-        // A animação de "revelação em sequência" só se aplica à resposta final,
-        // não ao texto chegando em tempo real.
-        if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
-          _visibleCount = _cachedBlocks.length;
-        }
+          // Durante streaming: garante que _visibleCount >= 1 assim que o
+          // primeiro bloco existe, mesmo que _startSequence ainda não rodou.
+          // Sem isso, o primeiro chunk ficava invisível (visibleCount=0).
+          if (widget.isStreaming && _cachedBlocks.isNotEmpty && _visibleCount < 1) {
+            _visibleCount = 1;
+          }
 
-        // ── BUILD 101 FIX: garante visibilidade total ao fim do stream ────────
-        // Quando isStreaming muda de true → false (cursor removido), o
-        // _computeBlocks() pode gerar um nº diferente de blocos (sem o ▌).
-        // Garante que _visibleCount cobre TODOS os blocos finais — evita que
-        // o último bloco fique invisível se o count anterior era para blocos-com-cursor.
-        if (!widget.isStreaming && old.isStreaming && _cachedBlocks.isNotEmpty) {
-          _visibleCount = _cachedBlocks.length;
-        }
-      });
-    } catch (_) {
-      // Falha de render silenciosa: mantém estado anterior da bolha intacto.
-      // O próximo chunk válido aciona novo didUpdateWidget e recupera a tela.
+          // Quando novos blocos aparecem (quebras de parágrafo no stream),
+          // avança _visibleCount para revelar imediatamente — sem delay de animação.
+          // A animação de "revelação em sequência" só se aplica à resposta final,
+          // não ao texto chegando em tempo real.
+          if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
+            _visibleCount = _cachedBlocks.length;
+          }
+
+          // ── BUILD 101 FIX: garante visibilidade total ao fim do stream ────────
+          // Quando isStreaming muda de true → false (cursor removido), o
+          // _computeBlocksFromText() pode gerar um nº diferente de blocos (sem o ▌).
+          // Garante que _visibleCount cobre TODOS os blocos finais — evita que
+          // o último bloco fique invisível se o count anterior era para blocos-com-cursor.
+          if (!widget.isStreaming && old.isStreaming && _cachedBlocks.isNotEmpty) {
+            _visibleCount = _cachedBlocks.length;
+          }
+        });
+      } catch (_) {
+        // Falha de render silenciosa: mantém estado anterior da bolha intacto.
+        // O próximo chunk válido aciona novo didUpdateWidget e recupera a tela.
+      }
     }
 
     // Scroll para o fim a cada chunk — texto cresce e médico acompanha
@@ -4491,7 +4596,10 @@ class _AiBubbleState extends State<_AiBubble> {
     }
   }
 
-  List<String> _computeBlocks(String text) {
+  /// Build 188: renomeado de _computeBlocks para aceitar texto como parâmetro
+  /// explícito (em vez de sempre usar widget.text) — necessário para que
+  /// _onStreamingChunk possa computar blocos do texto do notifier.
+  List<String> _computeBlocksFromText(String text) {
     // Build 123 — DESTRUIÇÃO DO SPLIT:
     // _splitIntoBlocks() foi removido do pipeline de renderização.
     // 100% do texto da IA é retornado como UM ÚNICO elemento de lista.
@@ -4712,9 +4820,10 @@ class _AiBubbleState extends State<_AiBubble> {
     if (_visibleCount == 0) return const SizedBox.shrink();
 
     // Build 123 — texto único direto: sem join, sem fragmentação.
+    // Build 188: usa _displayText (pode vir do notifier) em vez de widget.text.
     final unified = _cachedBlocks.isNotEmpty
         ? _cachedBlocks.first
-        : widget.text.trim();
+        : _displayText.trim();
 
     if (unified.isEmpty) return const SizedBox.shrink();
 
@@ -5382,7 +5491,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
       // Redirect iniciado — mostra feedback e aguarda o reload
       // O modal HTML já está visível; o usuário está vendo "Entrar com Google"
       // Não mostramos SnackBar de erro aqui — a página vai recarregar em breve
-      debugPrint('[_handleGoogleConnect] redirect OAuth iniciado — aguardando reload');
+      // Build 188: debugPrint removido do hot path
     } else if (result == false && _connectTriggeredByUser) {
       // Falha real — mostra erro
       ScaffoldMessenger.of(context).showSnackBar(
