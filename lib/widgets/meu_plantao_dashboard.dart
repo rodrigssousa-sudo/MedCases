@@ -17,6 +17,7 @@ import '../models/drug_model.dart';
 import '../widgets/common_widgets.dart';
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/services/internacion_persistence.dart';
+import '../screens/internacion/models/evolucion_model.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MODELO DE ATALHO DE CALCULADORA
@@ -728,6 +729,11 @@ class _FirestoreSessionsColumn extends StatelessWidget {
   }
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// Build 192 Fix 3: _FirestoreSessionCard
+// Toque curto → onOpenInternacion (navega para aba Adulto)
+// Toque longo → showDialog com prévia SOAP completa + seletor de histórico
+// ═════════════════════════════════════════════════════════════════════════════
 class _FirestoreSessionCard extends StatelessWidget {
   final PacienteSession session;
   final bool isEs;
@@ -743,6 +749,18 @@ class _FirestoreSessionCard extends StatelessWidget {
     super.key,
   });
 
+  // Abre o pop-up de prévia SOAP completa com seletor de histórico
+  void _showSoapPreview(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => _SoapPreviewDialog(
+        session: session,
+        isEs: isEs,
+        dark: colors.dark,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = colors;
@@ -757,6 +775,7 @@ class _FirestoreSessionCard extends StatelessWidget {
 
     // Build 188: RepaintBoundary isola cada card do grid — 120Hz fluido
     // Build 187: wraps card with Material+InkWell for tap-to-navigate
+    // Build 192 Fix 3: onLongPress abre pop-up de prévia SOAP
     return RepaintBoundary(child: Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(14),
@@ -767,6 +786,10 @@ class _FirestoreSessionCard extends StatelessWidget {
                 onOpenInternacion!();
               }
             : null,
+        onLongPress: () {
+          AppHaptics.medium(context);
+          _showSoapPreview(context);
+        },
         borderRadius: BorderRadius.circular(14),
         splashColor: triageColor.withValues(alpha: 0.10),
         highlightColor: triageColor.withValues(alpha: 0.06),
@@ -868,15 +891,464 @@ class _FirestoreSessionCard extends StatelessWidget {
             ),
           ),
 
-          // ── Ícone indicador de triagem ────────────────────────────────
+          // ── Ícone de prévia (toque longo) + indicador de triagem ──────
           const SizedBox(width: 6),
-          Icon(Icons.circle, size: 8, color: triageColor),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.circle, size: 8, color: triageColor),
+              if (evol > 0) ...[
+                const SizedBox(height: 6),
+                Icon(Icons.preview_rounded, size: 13, color: triageColor.withValues(alpha: 0.60)),
+              ],
+            ],
+          ),
         ],
       ),
     ),  // end InkWell child (AnimatedContainer)
       ),  // end InkWell
     ));  // end Material + RepaintBoundary
   }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Build 192 Fix 3: _SoapPreviewDialog
+// Pop-up reativamente atualizável com seletor de histórico.
+// Exibe a SOAP completa da evolução selecionada + cópia para clipboard.
+// ═════════════════════════════════════════════════════════════════════════════
+class _SoapPreviewDialog extends StatefulWidget {
+  final PacienteSession session;
+  final bool isEs;
+  final bool dark;
+
+  const _SoapPreviewDialog({
+    required this.session,
+    required this.isEs,
+    required this.dark,
+  });
+
+  @override
+  State<_SoapPreviewDialog> createState() => _SoapPreviewDialogState();
+}
+
+class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
+  late int _selectedEvolIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicia na evolução mais recente (última do historial)
+    _selectedEvolIndex = widget.session.historial.isNotEmpty
+        ? widget.session.historial.length - 1
+        : -1;
+  }
+
+  bool get isEs => widget.isEs;
+  bool get dark => widget.dark;
+
+  // Formata a data de uma evolução para o DropdownButton
+  String _evolLabel(int index) {
+    final ev = widget.session.historial[index];
+    final d = ev.fecha;
+    final dateStr =
+        '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+    return isEs ? 'Día $dateStr' : 'Dia $dateStr';
+  }
+
+  // Constrói o texto SOAP completo de uma evolução específica
+  String _buildSoapText(EvolucionModel ev) {
+    final buf = StringBuffer();
+    final s = ev.subjetivo;
+    final o = ev.objetivo;
+    final sv = o.signosVitales;
+    final ef = o.examenFisico;
+    final ex = o.examenes;
+    final a = ev.evaluacion;
+    final p = ev.plan;
+
+    buf.writeln(isEs ? '── S — SUBJETIVO ──' : '── S — SUBJETIVO ──');
+    if (s.notePasaNoche.isNotEmpty) buf.writeln(s.notePasaNoche);
+    final syms = <String>[];
+    if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
+    if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
+    if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
+    if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
+    if (syms.isNotEmpty) buf.writeln(syms.join(' · '));
+    if (s.dolorEscala != null && s.dolorEscala! > 0)
+      buf.writeln('EVA: ${s.dolorEscala}/10');
+    if (s.notasLibres.isNotEmpty) buf.writeln(s.notasLibres);
+
+    buf.writeln('');
+    buf.writeln(isEs ? '── O — OBJETIVO ──' : '── O — OBJETIVO ──');
+    if (!sv.isEmpty) {
+      final parts = <String>[];
+      if (sv.pa.isNotEmpty) parts.add('PA: ${sv.pa}');
+      if (sv.fc.isNotEmpty) parts.add('FC: ${sv.fc}');
+      if (sv.fr.isNotEmpty) parts.add('FR: ${sv.fr}');
+      if (sv.satO2.isNotEmpty) parts.add('SatO₂: ${sv.satO2}%');
+      if (sv.temperatura.isNotEmpty) parts.add('T: ${sv.temperatura}°C');
+      buf.writeln(parts.join('  '));
+    }
+    if (ef.estadoGeneral.isNotEmpty) buf.writeln('EG: ${ef.estadoGeneral}');
+    if (ef.acv.isNotEmpty) buf.writeln('CV: ${ef.acv}');
+    if (ef.ar.isNotEmpty) buf.writeln('Resp: ${ef.ar}');
+    if (ef.abdomen.isNotEmpty) buf.writeln('Abd: ${ef.abdomen}');
+    if (ef.extremidades.isNotEmpty) buf.writeln('MMII: ${ef.extremidades}');
+    if (ex.laboratorio.isNotEmpty)
+      buf.writeln('${isEs ? 'Lab' : 'Lab'}: ${ex.laboratorio}');
+    if (ex.imagenes.isNotEmpty)
+      buf.writeln('${isEs ? 'Imágenes' : 'Imagens'}: ${ex.imagenes}');
+    if (ex.culturas.isNotEmpty) buf.writeln('Culturas: ${ex.culturas}');
+    if (ex.ecg.isNotEmpty) buf.writeln('ECG: ${ex.ecg}');
+    if (o.tratamientoActual.isNotEmpty)
+      buf.writeln('${isEs ? 'Tto. actual' : 'Tto. atual'}: ${o.tratamientoActual}');
+
+    buf.writeln('');
+    buf.writeln(isEs ? '── A — EVALUACIÓN ──' : '── A — AVALIAÇÃO ──');
+    if (a.problemasActivos.isNotEmpty)
+      buf.writeln(a.problemasActivos.join(', '));
+    if (a.notasEvaluacion.isNotEmpty) buf.writeln(a.notasEvaluacion);
+    if (a.estado != null) buf.writeln(a.estado!.label(isEs ? 'es' : 'pt'));
+
+    buf.writeln('');
+    buf.writeln(isEs ? '── P — PLAN ──' : '── P — PLANO ──');
+    if (p.planTerapeutico.isNotEmpty) buf.writeln(p.planTerapeutico);
+    if (p.criteriosAlta.isNotEmpty)
+      buf.writeln('${isEs ? 'Criterios de alta' : 'Critérios de alta'}: ${p.criteriosAlta}');
+
+    // metadadosAdicionais — exibe se houver dados extras capturados pela IA
+    if (ev.metadadosAdicionais.isNotEmpty) {
+      buf.writeln('');
+      buf.writeln(isEs ? '── DADOS ADICIONAIS ──' : '── DADOS ADICIONAIS ──');
+      ev.metadadosAdicionais.forEach((k, v) => buf.writeln('$k: $v'));
+    }
+
+    return buf.toString().trim();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final session = widget.session;
+    final p = session.paciente;
+    final nome = p.nome.isNotEmpty ? p.nome : (isEs ? 'Paciente' : 'Paciente');
+    final hasHistorial = session.historial.isNotEmpty;
+    final selectedEv =
+        hasHistorial && _selectedEvolIndex >= 0 && _selectedEvolIndex < session.historial.length
+            ? session.historial[_selectedEvolIndex]
+            : null;
+    final soapText = selectedEv != null ? _buildSoapText(selectedEv) : '';
+    final triageColor = _triageColorFromDiag(p.diagnostico);
+
+    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
+    final textPrimary = dark ? Colors.white : const Color(0xFF0D1117);
+    final textSecondary = dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final cardBg = dark ? const Color(0xFF1A1F2E) : const Color(0xFFF8F9FA);
+    final borderColor = dark ? const Color(0xFF2D3748) : const Color(0xFFE5E7EB);
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 28),
+      child: Container(
+        constraints: const BoxConstraints(maxHeight: 560, maxWidth: 520),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: triageColor.withValues(alpha: 0.35),
+            width: 1.4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.40 : 0.12),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Header ────────────────────────────────────────────────────
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 14, 12, 12),
+              decoration: BoxDecoration(
+                color: triageColor.withValues(alpha: dark ? 0.12 : 0.07),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(19)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36, height: 36,
+                    decoration: BoxDecoration(
+                      color: triageColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.bed_rounded, size: 18, color: triageColor),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          nome,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: textPrimary,
+                            letterSpacing: -0.2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          [
+                            if (p.cama.isNotEmpty)
+                              isEs ? 'Cama ${p.cama}' : 'Leito ${p.cama}',
+                            if (p.diagnostico.isNotEmpty) p.diagnostico,
+                          ].join('  ·  '),
+                          style: TextStyle(fontSize: 11, color: textSecondary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Botão Copiar SOAP
+                  if (selectedEv != null)
+                    IconButton(
+                      icon: Icon(Icons.copy_rounded, size: 18, color: triageColor),
+                      tooltip: isEs ? 'Copiar evolución' : 'Copiar evolução',
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: soapText));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(isEs
+                              ? 'Evolución copiada al portapapeles'
+                              : 'Evolução copiada para a área de transferência'),
+                          behavior: SnackBarBehavior.floating,
+                          duration: const Duration(seconds: 2),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ));
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    ),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, size: 20, color: textSecondary),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Seletor de histórico (DropdownButton) ────────────────────
+            if (hasHistorial && session.historial.length > 1) ...[
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  border: Border(bottom: BorderSide(color: borderColor, width: 0.8)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.history_rounded, size: 14, color: triageColor),
+                    const SizedBox(width: 6),
+                    Text(
+                      isEs ? 'Evolución:' : 'Evolução:',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: DropdownButton<int>(
+                        value: _selectedEvolIndex,
+                        isExpanded: true,
+                        underline: const SizedBox.shrink(),
+                        dropdownColor: bg,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: textPrimary,
+                        ),
+                        icon: Icon(Icons.expand_more_rounded, size: 18, color: triageColor),
+                        items: List.generate(session.historial.length, (i) {
+                          final label = _evolLabel(i);
+                          final isLatest = i == session.historial.length - 1;
+                          return DropdownMenuItem<int>(
+                            value: i,
+                            child: Text(
+                              isLatest
+                                  ? '$label  ${isEs ? '(más reciente)' : '(mais recente)'}'
+                                  : label,
+                              style: TextStyle(
+                                fontSize: 12.5,
+                                color: textPrimary,
+                                fontWeight: isLatest ? FontWeight.w700 : FontWeight.w500,
+                              ),
+                            ),
+                          );
+                        }),
+                        onChanged: (idx) {
+                          if (idx != null) setState(() => _selectedEvolIndex = idx);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else if (hasHistorial) ...[
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                child: Row(
+                  children: [
+                    Icon(Icons.access_time_rounded, size: 13, color: triageColor),
+                    const SizedBox(width: 5),
+                    Text(
+                      _evolLabel(0),
+                      style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: triageColor),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            // ── Corpo scrollável — SOAP completo ─────────────────────────
+            Flexible(
+              child: !hasHistorial
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(
+                          isEs ? 'Sin evoluciones registradas.' : 'Sem evoluções registradas.',
+                          style: TextStyle(fontSize: 13, color: textSecondary),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Texto SOAP formatado em blocos visuais
+                          ...soapText.split('\n──').map((block) {
+                            if (block.trim().isEmpty) return const SizedBox.shrink();
+                            final lines = ('──$block').split('\n');
+                            final header = lines.isNotEmpty ? lines.first.trim() : '';
+                            final body = lines.skip(1).join('\n').trim();
+                            final isHeader = header.startsWith('──');
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (isHeader)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10, bottom: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: triageColor.withValues(alpha: 0.10),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      header.replaceAll('──', '').replaceAll('─', '').trim(),
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                        color: triageColor,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                if (body.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Text(
+                                      body,
+                                      style: TextStyle(
+                                        fontSize: 12.5,
+                                        color: textPrimary,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
+                    ),
+            ),
+
+            // ── Footer com informações do paciente ───────────────────────
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius:
+                    const BorderRadius.vertical(bottom: Radius.circular(19)),
+                border: Border(top: BorderSide(color: borderColor, width: 0.8)),
+              ),
+              child: Row(
+                children: [
+                  // Dados demográficos
+                  Expanded(
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
+                        if (p.idade.isNotEmpty)
+                          _infoPill(isEs ? 'Edad: ${p.idade}' : 'Idade: ${p.idade}',
+                              triageColor, dark),
+                        if (p.sexo.isNotEmpty)
+                          _infoPill(p.sexo == 'M'
+                              ? (isEs ? 'Masculino' : 'Masculino')
+                              : (isEs ? 'Femenino' : 'Feminino'),
+                              triageColor, dark),
+                        _infoPill(
+                            isEs
+                                ? 'Día ${p.diaInternacao}'
+                                : 'Dia ${p.diaInternacao}',
+                            triageColor, dark),
+                        _infoPill(
+                            isEs
+                                ? '${session.historial.length} evol.'
+                                : '${session.historial.length} evol.',
+                            triageColor, dark),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoPill(String label, Color color, bool dark) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: dark ? 0.15 : 0.08),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: color.withValues(alpha: 0.30), width: 0.8),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(
+        fontSize: 10.5,
+        fontWeight: FontWeight.w600,
+        color: color,
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -1,5 +1,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionFirestoreService — Build 191
+// InternacionFirestoreService — Build 192
+//
+// Build 192 — Blindagem contra vazamento de campos (Fix 4):
+//   • _evolToJson: preserva metadadosAdicionais existentes no modelo.
+//   • _evolFromJson: qualquer chave do JSON da IA não mapeada nos campos
+//     fixos é injetada em metadadosAdicionais — perda ZERO de dados.
+//   • EvolucionModel não precisa ser alterado: o mapa de segurança vive
+//     apenas na camada de serialização Firestore.
+//
+// Build 191 — Correção de sincronização reversa (3 nós críticos):
 //
 // Build 191 — Correção de sincronização reversa (3 nós críticos):
 //
@@ -389,59 +398,69 @@ class InternacionFirestoreService {
       );
 
   // ── Serialização evolução ─────────────────────────────────────────────────
-  static Map<String, dynamic> _evolToJson(EvolucionModel e) => {
-        'id': e.id,
-        'fecha': e.fecha.toIso8601String(),
-        'autorNombre': e.autorNombre,
-        'subjetivo': {
-          'notePasaNoche': e.subjetivo.notePasaNoche,
-          'dolorEscala': e.subjetivo.dolorEscala,
-          'fiebre': e.subjetivo.fiebre,
-          'disnea': e.subjetivo.disnea,
-          'nauseas': e.subjetivo.nauseas,
-          'tos': e.subjetivo.tos,
-          'alimentacion': e.subjetivo.alimentacion,
-          'diuresis': e.subjetivo.diuresis,
-          'evacuacion': e.subjetivo.evacuacion,
-          'suenoRestado': e.subjetivo.suenoRestado,
-          'notasLibres': e.subjetivo.notasLibres,
+  // Build 192 Fix 4: metadadosAdicionais incluso no payload para preservar
+  // campos extras capturados pela IA que não têm campo fixo no schema.
+  static Map<String, dynamic> _evolToJson(EvolucionModel e) {
+    final json = <String, dynamic>{
+      'id': e.id,
+      'fecha': e.fecha.toIso8601String(),
+      'autorNombre': e.autorNombre,
+      'subjetivo': {
+        'notePasaNoche': e.subjetivo.notePasaNoche,
+        'dolorEscala': e.subjetivo.dolorEscala,
+        'fiebre': e.subjetivo.fiebre,
+        'disnea': e.subjetivo.disnea,
+        'nauseas': e.subjetivo.nauseas,
+        'tos': e.subjetivo.tos,
+        'alimentacion': e.subjetivo.alimentacion,
+        'diuresis': e.subjetivo.diuresis,
+        'evacuacion': e.subjetivo.evacuacion,
+        'suenoRestado': e.subjetivo.suenoRestado,
+        'notasLibres': e.subjetivo.notasLibres,
+      },
+      'objetivo': {
+        'signosVitales': {
+          'pa': e.objetivo.signosVitales.pa,
+          'fc': e.objetivo.signosVitales.fc,
+          'fr': e.objetivo.signosVitales.fr,
+          'satO2': e.objetivo.signosVitales.satO2,
+          'temperatura': e.objetivo.signosVitales.temperatura,
         },
-        'objetivo': {
-          'signosVitales': {
-            'pa': e.objetivo.signosVitales.pa,
-            'fc': e.objetivo.signosVitales.fc,
-            'fr': e.objetivo.signosVitales.fr,
-            'satO2': e.objetivo.signosVitales.satO2,
-            'temperatura': e.objetivo.signosVitales.temperatura,
-          },
-          'examenFisico': {
-            'estadoGeneral': e.objetivo.examenFisico.estadoGeneral,
-            'acv': e.objetivo.examenFisico.acv,
-            'ar': e.objetivo.examenFisico.ar,
-            'abdomen': e.objetivo.examenFisico.abdomen,
-            'extremidades': e.objetivo.examenFisico.extremidades,
-          },
-          'examenes': {
-            'laboratorio': e.objetivo.examenes.laboratorio,
-            'imagenes': e.objetivo.examenes.imagenes,
-            'culturas': e.objetivo.examenes.culturas,
-            'ecg': e.objetivo.examenes.ecg,
-          },
-          'tratamientoActual': e.objetivo.tratamientoActual,
+        'examenFisico': {
+          'estadoGeneral': e.objetivo.examenFisico.estadoGeneral,
+          'acv': e.objetivo.examenFisico.acv,
+          'ar': e.objetivo.examenFisico.ar,
+          'abdomen': e.objetivo.examenFisico.abdomen,
+          'extremidades': e.objetivo.examenFisico.extremidades,
         },
-        'evaluacion': {
-          'estado': e.evaluacion.estado?.name,
-          'problemasActivos': e.evaluacion.problemasActivos,
-          'notasEvaluacion': e.evaluacion.notasEvaluacion,
+        'examenes': {
+          'laboratorio': e.objetivo.examenes.laboratorio,
+          'imagenes': e.objetivo.examenes.imagenes,
+          'culturas': e.objetivo.examenes.culturas,
+          'ecg': e.objetivo.examenes.ecg,
         },
-        'plan': {
-          'planTerapeutico': e.plan.planTerapeutico,
-          'criteriosAlta': e.plan.criteriosAlta,
-        },
-        'farmacos': e.farmacos
-            .map((f) => {'medicamento': f.medicamento, 'dosagem': f.dosagem})
-            .toList(),
-      };
+        'tratamientoActual': e.objetivo.tratamientoActual,
+      },
+      'evaluacion': {
+        'estado': e.evaluacion.estado?.name,
+        'problemasActivos': e.evaluacion.problemasActivos,
+        'notasEvaluacion': e.evaluacion.notasEvaluacion,
+      },
+      'plan': {
+        'planTerapeutico': e.plan.planTerapeutico,
+        'criteriosAlta': e.plan.criteriosAlta,
+      },
+      'farmacos': e.farmacos
+          .map((f) => {'medicamento': f.medicamento, 'dosagem': f.dosagem})
+          .toList(),
+    };
+    // Build 192 Fix 4: preserva metadadosAdicionais se presentes no modelo
+    // Estes dados sobrevivem ao round-trip Firestore→modelo→Firestore sem perda.
+    if (e.metadadosAdicionais.isNotEmpty) {
+      json['metadadosAdicionais'] = e.metadadosAdicionais;
+    }
+    return json;
+  }
 
   // ── Deserialização de documento Firestore ─────────────────────────────────
   static PacienteSession? _sessionFromDoc(
@@ -517,6 +536,14 @@ class InternacionFirestoreService {
     }
   }
 
+  // ── Build 192 Fix 4: campos conhecidos (schema fixo) ──────────────────────
+  // Quaisquer chaves presentes no JSON da IA que não sejam mapeadas abaixo
+  // são automaticamente capturadas em metadadosAdicionais — perda ZERO.
+  static const _kKnownEvolKeys = {
+    'id', 'fecha', 'autorNombre', 'subjetivo', 'objetivo',
+    'evaluacion', 'plan', 'farmacos', 'metadadosAdicionais',
+  };
+
   static EvolucionModel _evolFromJson(Map<String, dynamic> j) {
     final s = (j['subjetivo'] as Map<String, dynamic>?) ?? {};
     final o = (j['objetivo'] as Map<String, dynamic>?) ?? {};
@@ -525,6 +552,16 @@ class InternacionFirestoreService {
     final ex = (o['examenes'] as Map<String, dynamic>?) ?? {};
     final a = (j['evaluacion'] as Map<String, dynamic>?) ?? {};
     final p = (j['plan'] as Map<String, dynamic>?) ?? {};
+
+    // Build 192 Fix 4: captura campos extras não mapeados no schema fixo.
+    // Campos desconhecidos → metadadosAdicionais (mapa de segurança).
+    final existingMeta = (j['metadadosAdicionais'] as Map<String, dynamic>?) ?? {};
+    final extraKeys = j.keys.where((k) => !_kKnownEvolKeys.contains(k));
+    final metadados = <String, dynamic>{...existingMeta};
+    for (final k in extraKeys) {
+      metadados[k] = j[k];
+      debugPrint('[InternFire] Build192: campo extra capturado em metadadosAdicionais → "$k"');
+    }
 
     EstadoClinical? estado;
     final estadoStr = a['estado'] as String?;
@@ -592,6 +629,7 @@ class InternacionFirestoreService {
                 dosagem: f['dosagem'] as String? ?? '',
               ))
           .toList(),
+      metadadosAdicionais: metadados,
     );
   }
 }

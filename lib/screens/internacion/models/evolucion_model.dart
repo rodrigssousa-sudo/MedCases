@@ -273,6 +273,9 @@ class EvolucionModel {
   final PlanData plan;
   /// Build 162: lista de fármacos atuais do paciente (medicamento + dosagem).
   final List<FarmacoEntry> farmacos;
+  /// Build 192 Fix 4: mapa de segurança para campos extras capturados pela IA
+  /// que não possuem campo fixo no schema SOAP. Perda ZERO de dados clínicos.
+  final Map<String, dynamic> metadadosAdicionais;
 
   const EvolucionModel({
     required this.id,
@@ -283,6 +286,7 @@ class EvolucionModel {
     this.evaluacion = const EvaluacionData(),
     this.plan = const PlanData(),
     this.farmacos = const [],
+    this.metadadosAdicionais = const {},
   });
 
   EvolucionModel copyWith({
@@ -294,15 +298,17 @@ class EvolucionModel {
     EvaluacionData? evaluacion,
     PlanData? plan,
     List<FarmacoEntry>? farmacos,
+    Map<String, dynamic>? metadadosAdicionais,
   }) => EvolucionModel(
-    id:          id ?? this.id,
-    fecha:       fecha ?? this.fecha,
-    autorNombre: autorNombre ?? this.autorNombre,
-    subjetivo:   subjetivo ?? this.subjetivo,
-    objetivo:    objetivo ?? this.objetivo,
-    evaluacion:  evaluacion ?? this.evaluacion,
-    plan:        plan ?? this.plan,
-    farmacos:    farmacos ?? this.farmacos,
+    id:                  id ?? this.id,
+    fecha:               fecha ?? this.fecha,
+    autorNombre:         autorNombre ?? this.autorNombre,
+    subjetivo:           subjetivo ?? this.subjetivo,
+    objetivo:            objetivo ?? this.objetivo,
+    evaluacion:          evaluacion ?? this.evaluacion,
+    plan:                plan ?? this.plan,
+    farmacos:            farmacos ?? this.farmacos,
+    metadadosAdicionais: metadadosAdicionais ?? this.metadadosAdicionais,
   );
 
   String get fechaFormatada {

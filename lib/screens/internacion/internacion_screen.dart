@@ -54,6 +54,11 @@ class _InternacionScreenState extends State<InternacionScreen> {
   // ── Build 171: Edit vs Evolve mode ───────────────────────────────────────
   bool _isEditMode = false;        // true → Guardar sobrescreve; false → append
   String? _editingEvolucionId;     // id do EvolucionModel sendo editado
+  // Build 192 Fix 2: contador incremental que força recriação do PatientAccordion
+  // ao chamar _editSession() ou _evolveSession() com a mesma sessionKey.
+  // Sem isso, os TextEditingControllers do accordion ficam estáticos quando
+  // _currentSessionKey não muda (ex: evoluir o mesmo paciente consecutivamente).
+  int _accordionGeneration = 0;
 
   @override
   void initState() {
@@ -312,6 +317,10 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _currentSessionKey = session.sessionKey;
       _isEditMode = true;
       _editingEvolucionId = lastEv.id;
+      // Build 192 Fix 2: incrementa generation para forçar recriação
+      // do PatientAccordion e hidratar seus TextEditingControllers
+      // com os dados corretos da sessão sendo editada.
+      _accordionGeneration++;
       _savedSessions = _savedSessions
           .where((s) => s.sessionKey != session.sessionKey)
           .toList();
@@ -362,6 +371,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _currentSessionKey = session.sessionKey;
       _isEditMode = false;
       _editingEvolucionId = null;
+      // Build 192 Fix 2: incrementa generation para forçar recriação
+      // do PatientAccordion com carry-over correto de nome/cama/diag.
+      _accordionGeneration++;
       _savedSessions = _savedSessions
           .where((s) => s.sessionKey != session.sessionKey)
           .toList();
@@ -703,7 +715,11 @@ class _InternacionScreenState extends State<InternacionScreen> {
               // changes the active session. Without this, controllers stay stale
               // from the previous session and Copy sends empty text.
               child: PatientAccordion(
-                key: ValueKey(_currentSessionKey ?? 'new'),
+                // Build 192 Fix 2: inclui _accordionGeneration na key para
+                // garantir recriação dos TextEditingControllers sempre que
+                // _editSession() ou _evolveSession() forem chamados,
+                // mesmo que _currentSessionKey permaneça igual.
+                key: ValueKey('${_currentSessionKey ?? 'new'}_$_accordionGeneration'),
                 data: _paciente,
                 dark: dark,
                 lang: lang,
@@ -1297,9 +1313,11 @@ class _SessionCard168 extends StatelessWidget {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 168-4: Session Preview Dialog
+// 168-4: Session Preview Dialog — Build 192 Fix 1 + Fix 3
+// Convertido para StatefulWidget com seletor de histórico reativo.
+// Prévia SOAP completa com TODOS os campos (S/O/A/P) exibidos e copiáveis.
 // ═════════════════════════════════════════════════════════════════════════════
-class _SessionPreviewDialog extends StatelessWidget {
+class _SessionPreviewDialog extends StatefulWidget {
   final PacienteSession session;
   final bool dark;
   final String lang;
@@ -1320,38 +1338,125 @@ class _SessionPreviewDialog extends StatelessWidget {
     this.onAuditoria,
   });
 
-  bool get isEs => lang == 'es';
+  @override
+  State<_SessionPreviewDialog> createState() => _SessionPreviewDialogState();
+}
 
+class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
+  late int _selectedEvolIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    // Build 192 Fix 3: inicia na evolução mais recente
+    _selectedEvolIndex = widget.session.historial.isNotEmpty
+        ? widget.session.historial.length - 1
+        : -1;
+  }
+
+  bool get isEs => widget.lang == 'es';
+  bool get dark => widget.dark;
+  PacienteSession get session => widget.session;
+
+  // Build 192 Fix 1: _buildPreviewText inclui TODOS os campos SOAP
+  // (não apenas notasEvaluacion e planTerapeutico como antes).
+  // Cobre: subjetivo, signos vitales, examen físico, exámenes, avaliação, plan.
   String _buildPreviewText() {
     final p = session.paciente;
     final buf = StringBuffer();
-    buf.writeln('FICHA DE INTERNACIÓN — MedCases Pro');
+    final header = isEs ? 'FICHA DE INTERNACIÓN — MedCases Pro' : 'FICHA DE INTERNAÇÃO — MedCases Pro';
+    buf.writeln(header);
     buf.writeln('');
-    if (p.nome.isNotEmpty) buf.writeln('Paciente: ${p.nome}');
-    if (p.cama.isNotEmpty) buf.writeln('Cama: ${p.cama}');
-    if (p.diagnostico.isNotEmpty) buf.writeln('Diagnóstico: ${p.diagnostico}');
-    buf.writeln('Día de internación: ${p.diaInternacao}');
-    buf.writeln('Evoluciones: ${session.historial.length}');
+    if (p.nome.isNotEmpty) buf.writeln('${isEs ? 'Paciente' : 'Paciente'}: ${p.nome}');
+    if (p.cama.isNotEmpty) buf.writeln('${isEs ? 'Cama' : 'Leito'}: ${p.cama}');
+    if (p.idade.isNotEmpty) buf.writeln('${isEs ? 'Edad' : 'Idade'}: ${p.idade}');
+    if (p.sexo.isNotEmpty) buf.writeln('${isEs ? 'Sexo' : 'Sexo'}: ${p.sexo}');
+    if (p.diagnostico.isNotEmpty) buf.writeln('${isEs ? 'Diagnóstico' : 'Diagnóstico'}: ${p.diagnostico}');
+    buf.writeln('${isEs ? 'Día de internación' : 'Dia de internação'}: ${p.diaInternacao}');
+    buf.writeln('${isEs ? 'Evoluciones' : 'Evoluções'}: ${session.historial.length}');
     buf.writeln('');
     for (final ev in session.historial) {
-      buf.writeln('── ${ev.fechaFormatada} ──');
-      final sv = ev.objetivo.signosVitales;
+      buf.writeln('━━ ${ev.fechaFormatada} ━━');
+      final s = ev.subjetivo;
+      final o = ev.objetivo;
+      final sv = o.signosVitales;
+      final ef = o.examenFisico;
+      final ex = o.examenes;
+      final a = ev.evaluacion;
+      final plan = ev.plan;
+
+      // S — Subjetivo
+      if (s.notePasaNoche.isNotEmpty)
+        buf.writeln('${isEs ? 'Evolución' : 'Evolução'}: ${s.notePasaNoche}');
+      final syms = <String>[];
+      if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
+      if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
+      if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
+      if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
+      if (syms.isNotEmpty)
+        buf.writeln('${isEs ? 'Síntomas' : 'Sintomas'}: ${syms.join(', ')}');
+      if (s.dolorEscala != null && s.dolorEscala! > 0)
+        buf.writeln('EVA: ${s.dolorEscala}/10');
+      if (s.alimentacion.isNotEmpty)
+        buf.writeln('${isEs ? 'Alimentación' : 'Alimentação'}: ${s.alimentacion}');
+      if (s.diuresis.isNotEmpty) buf.writeln('${isEs ? 'Diuresis' : 'Diurese'}: ${s.diuresis}');
+      if (s.notasLibres.isNotEmpty) buf.writeln(s.notasLibres);
+
+      // O — Signos Vitales
       if (!sv.isEmpty) {
         final parts = <String>[];
-        if (sv.pa.isNotEmpty) parts.add('TA: ${sv.pa}');
+        if (sv.pa.isNotEmpty) parts.add('PA: ${sv.pa}');
         if (sv.fc.isNotEmpty) parts.add('FC: ${sv.fc}');
+        if (sv.fr.isNotEmpty) parts.add('FR: ${sv.fr}');
         if (sv.satO2.isNotEmpty) parts.add('SatO₂: ${sv.satO2}%');
         if (sv.temperatura.isNotEmpty) parts.add('T: ${sv.temperatura}°C');
         buf.writeln('SV: ${parts.join('  ')}');
       }
-      if (ev.evaluacion.notasEvaluacion.isNotEmpty) {
-        buf.writeln('Impresión: ${ev.evaluacion.notasEvaluacion}');
+      // O — Examen Físico
+      if (ef.estadoGeneral.isNotEmpty) buf.writeln('EG: ${ef.estadoGeneral}');
+      if (ef.acv.isNotEmpty) buf.writeln('CV: ${ef.acv}');
+      if (ef.ar.isNotEmpty) buf.writeln('Resp: ${ef.ar}');
+      if (ef.abdomen.isNotEmpty) buf.writeln('Abd: ${ef.abdomen}');
+      if (ef.extremidades.isNotEmpty) buf.writeln('MMII: ${ef.extremidades}');
+      // O — Exámenes Complementarios
+      if (ex.laboratorio.isNotEmpty)
+        buf.writeln('${isEs ? 'Lab' : 'Lab'}: ${ex.laboratorio}');
+      if (ex.imagenes.isNotEmpty)
+        buf.writeln('${isEs ? 'Imágenes' : 'Imagens'}: ${ex.imagenes}');
+      if (ex.culturas.isNotEmpty) buf.writeln('Culturas: ${ex.culturas}');
+      if (ex.ecg.isNotEmpty) buf.writeln('ECG: ${ex.ecg}');
+      if (o.tratamientoActual.isNotEmpty)
+        buf.writeln('${isEs ? 'Tto. actual' : 'Tto. atual'}: ${o.tratamientoActual}');
+      // A — Evaluación
+      if (a.problemasActivos.isNotEmpty)
+        buf.writeln('${isEs ? 'Problemas activos' : 'Problemas ativos'}: ${a.problemasActivos.join(', ')}');
+      if (a.notasEvaluacion.isNotEmpty)
+        buf.writeln('${isEs ? 'Impresión' : 'Impressão'}: ${a.notasEvaluacion}');
+      if (a.estado != null) buf.writeln(a.estado!.label(isEs ? 'es' : 'pt'));
+      // P — Plan
+      if (plan.planTerapeutico.isNotEmpty)
+        buf.writeln('${isEs ? 'Conducta' : 'Conduta'}: ${plan.planTerapeutico}');
+      if (plan.criteriosAlta.isNotEmpty)
+        buf.writeln('${isEs ? 'Criterios de alta' : 'Critérios de alta'}: ${plan.criteriosAlta}');
+      // Fármacos
+      if (ev.farmacos.isNotEmpty) {
+        buf.writeln(isEs ? 'Medicamentos:' : 'Medicamentos:');
+        for (final f in ev.farmacos) {
+          buf.writeln('  • ${f.medicamento}${f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : ''}');
+        }
       }
-      if (ev.plan.planTerapeutico.isNotEmpty) {
-        buf.writeln('Conducta: ${ev.plan.planTerapeutico}');
-      }
+      buf.writeln('');
     }
     return buf.toString().trimRight();
+  }
+
+  // Build 192 Fix 3: label para o DropdownButton de histórico
+  String _evolLabel(int index) {
+    final ev = session.historial[index];
+    final d = ev.fecha;
+    final dateStr =
+        '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+    return isEs ? 'Día $dateStr' : 'Dia $dateStr';
   }
 
   @override
@@ -1359,12 +1464,17 @@ class _SessionPreviewDialog extends StatelessWidget {
     final theme = InternacionTheme(dark);
     final p = session.paciente;
     final bg = dark ? const Color(0xFF0F1116) : Colors.white;
+    final hasHistorial = session.historial.isNotEmpty;
+    final selectedEv =
+        hasHistorial && _selectedEvolIndex >= 0 && _selectedEvolIndex < session.historial.length
+            ? session.historial[_selectedEvolIndex]
+            : null;
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 28),
       child: Container(
-        constraints: const BoxConstraints(maxHeight: 520),
+        constraints: const BoxConstraints(maxHeight: 560, maxWidth: 520),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(20),
@@ -1417,6 +1527,8 @@ class _SessionPreviewDialog extends StatelessWidget {
                           [
                             if (p.cama.isNotEmpty)
                               isEs ? 'Cama ${p.cama}' : 'Leito ${p.cama}',
+                            if (p.idade.isNotEmpty) p.idade,
+                            if (p.sexo.isNotEmpty) p.sexo,
                             isEs
                                 ? 'Día ${p.diaInternacao}'
                                 : 'Dia ${p.diaInternacao}',
@@ -1441,7 +1553,74 @@ class _SessionPreviewDialog extends StatelessWidget {
               ),
             ),
 
-            // ── Corpo scrollável ─────────────────────────────────────────────
+            // ── Build 192 Fix 3: Seletor de histórico (DropdownButton) ────
+            if (hasHistorial && session.historial.length > 1)
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
+                decoration: BoxDecoration(
+                  color: theme.card,
+                  border: Border(
+                      bottom: BorderSide(color: theme.border, width: 0.8)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.history_rounded,
+                        size: 13, color: InternacionTheme.accentLight),
+                    const SizedBox(width: 6),
+                    Text(
+                      isEs ? 'Evolución:' : 'Evolução:',
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: theme.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButton<int>(
+                        value: _selectedEvolIndex,
+                        isExpanded: true,
+                        underline: const SizedBox.shrink(),
+                        dropdownColor: bg,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: theme.textPrimary,
+                        ),
+                        icon: Icon(Icons.expand_more_rounded,
+                            size: 16,
+                            color: InternacionTheme.accentLight),
+                        items: List.generate(session.historial.length, (i) {
+                          final label = _evolLabel(i);
+                          final isLatest = i == session.historial.length - 1;
+                          return DropdownMenuItem<int>(
+                            value: i,
+                            child: Text(
+                              isLatest
+                                  ? '$label  ${isEs ? '(más reciente)' : '(mais recente)'}'
+                                  : label,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: theme.textPrimary,
+                                fontWeight: isLatest
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                          );
+                        }),
+                        onChanged: (idx) {
+                          if (idx != null) {
+                            setState(() => _selectedEvolIndex = idx);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // ── Corpo scrollável — SOAP completo da evolução selecionada ──
             Flexible(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
@@ -1454,79 +1633,150 @@ class _SessionPreviewDialog extends StatelessWidget {
                           Icons.local_hospital_rounded,
                           isEs ? 'Diagnóstico' : 'Diagnóstico',
                           p.diagnostico),
-                    if (session.historial.isNotEmpty) ...[
+                    if (selectedEv != null) ...[
                       const SizedBox(height: 10),
-                      Text(
-                        isEs
-                            ? 'ÚLTIMAS EVOLUCIONES'
-                            : 'ÚLTIMAS EVOLUÇÕES',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.7,
-                          color: theme.labelColor,
+                      // ── Data da evolução selecionada
+                      Row(
+                        children: [
+                          Icon(Icons.access_time_rounded,
+                              size: 12,
+                              color: InternacionTheme.accentLight),
+                          const SizedBox(width: 4),
+                          Text(
+                            selectedEv.fechaFormatada,
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                              color: InternacionTheme.accentLight,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      // S — Subjetivo
+                      _soapSectionHeader(isEs ? 'S — SUBJETIVO' : 'S — SUBJETIVO', theme),
+                      if (selectedEv.subjetivo.notePasaNoche.isNotEmpty)
+                        _soapField(isEs ? 'Evolución' : 'Evolução',
+                            selectedEv.subjetivo.notePasaNoche, theme),
+                      if (selectedEv.subjetivo.notasLibres.isNotEmpty)
+                        _soapField(isEs ? 'Notas' : 'Notas',
+                            selectedEv.subjetivo.notasLibres, theme),
+                      if (selectedEv.subjetivo.dolorEscala != null &&
+                          selectedEv.subjetivo.dolorEscala! > 0)
+                        _soapField('EVA',
+                            '${selectedEv.subjetivo.dolorEscala}/10', theme),
+                      () {
+                        final s = selectedEv.subjetivo;
+                        final syms = <String>[];
+                        if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
+                        if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
+                        if (s.nauseas) syms.add(isEs ? 'Náuseas' : 'Náuseas');
+                        if (s.tos) syms.add(isEs ? 'Tos' : 'Tosse');
+                        if (syms.isEmpty) return const SizedBox.shrink();
+                        return _soapField(
+                            isEs ? 'Síntomas' : 'Sintomas', syms.join(', '), theme);
+                      }(),
+                      // O — Objetivo
+                      const SizedBox(height: 6),
+                      _soapSectionHeader(isEs ? 'O — OBJETIVO' : 'O — OBJETIVO', theme),
+                      if (!selectedEv.objetivo.signosVitales.isEmpty) ...[
+                        () {
+                          final sv = selectedEv.objetivo.signosVitales;
+                          final parts = <String>[];
+                          if (sv.pa.isNotEmpty) parts.add('PA: ${sv.pa}');
+                          if (sv.fc.isNotEmpty) parts.add('FC: ${sv.fc}');
+                          if (sv.fr.isNotEmpty) parts.add('FR: ${sv.fr}');
+                          if (sv.satO2.isNotEmpty)
+                            parts.add('SatO₂: ${sv.satO2}%');
+                          if (sv.temperatura.isNotEmpty)
+                            parts.add('T: ${sv.temperatura}°C');
+                          return _soapField('SV', parts.join('  '), theme);
+                        }(),
+                      ],
+                      if (selectedEv.objetivo.examenFisico.estadoGeneral.isNotEmpty)
+                        _soapField('EG',
+                            selectedEv.objetivo.examenFisico.estadoGeneral, theme),
+                      if (selectedEv.objetivo.examenFisico.acv.isNotEmpty)
+                        _soapField('CV', selectedEv.objetivo.examenFisico.acv, theme),
+                      if (selectedEv.objetivo.examenFisico.ar.isNotEmpty)
+                        _soapField('Resp', selectedEv.objetivo.examenFisico.ar, theme),
+                      if (selectedEv.objetivo.examenFisico.abdomen.isNotEmpty)
+                        _soapField('Abd',
+                            selectedEv.objetivo.examenFisico.abdomen, theme),
+                      if (selectedEv.objetivo.examenFisico.extremidades.isNotEmpty)
+                        _soapField('MMII',
+                            selectedEv.objetivo.examenFisico.extremidades, theme),
+                      if (selectedEv.objetivo.examenes.laboratorio.isNotEmpty)
+                        _soapField(isEs ? 'Lab' : 'Lab',
+                            selectedEv.objetivo.examenes.laboratorio, theme),
+                      if (selectedEv.objetivo.examenes.imagenes.isNotEmpty)
+                        _soapField(isEs ? 'Imágenes' : 'Imagens',
+                            selectedEv.objetivo.examenes.imagenes, theme),
+                      if (selectedEv.objetivo.examenes.culturas.isNotEmpty)
+                        _soapField('Culturas',
+                            selectedEv.objetivo.examenes.culturas, theme),
+                      if (selectedEv.objetivo.examenes.ecg.isNotEmpty)
+                        _soapField('ECG',
+                            selectedEv.objetivo.examenes.ecg, theme),
+                      if (selectedEv.objetivo.tratamientoActual.isNotEmpty)
+                        _soapField(isEs ? 'Tto. actual' : 'Tto. atual',
+                            selectedEv.objetivo.tratamientoActual, theme),
+                      // A — Avaliação
+                      const SizedBox(height: 6),
+                      _soapSectionHeader(isEs ? 'A — EVALUACIÓN' : 'A — AVALIAÇÃO', theme),
+                      if (selectedEv.evaluacion.problemasActivos.isNotEmpty)
+                        _soapField(
+                            isEs ? 'Problemas' : 'Problemas',
+                            selectedEv.evaluacion.problemasActivos.join(', '),
+                            theme),
+                      if (selectedEv.evaluacion.notasEvaluacion.isNotEmpty)
+                        _soapField(isEs ? 'Impresión' : 'Impressão',
+                            selectedEv.evaluacion.notasEvaluacion, theme),
+                      if (selectedEv.evaluacion.estado != null)
+                        _soapField(isEs ? 'Estado' : 'Estado',
+                            selectedEv.evaluacion.estado!.label(isEs ? 'es' : 'pt'), theme),
+                      // P — Plan
+                      const SizedBox(height: 6),
+                      _soapSectionHeader(isEs ? 'P — PLAN' : 'P — PLANO', theme),
+                      if (selectedEv.plan.planTerapeutico.isNotEmpty)
+                        _soapField(isEs ? 'Conducta' : 'Conduta',
+                            selectedEv.plan.planTerapeutico, theme),
+                      if (selectedEv.plan.criteriosAlta.isNotEmpty)
+                        _soapField(
+                            isEs ? 'Criterios de alta' : 'Critérios de alta',
+                            selectedEv.plan.criteriosAlta,
+                            theme),
+                      // Fármacos
+                      if (selectedEv.farmacos.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        _soapSectionHeader(
+                            isEs ? 'MEDICAMENTOS' : 'MEDICAMENTOS', theme),
+                        ...selectedEv.farmacos.map((f) => _soapField(
+                            '•',
+                            '${f.medicamento}${f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : ''}',
+                            theme)),
+                      ],
+                      // metadadosAdicionais (Build 192 Fix 4)
+                      if (selectedEv.metadadosAdicionais.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        _soapSectionHeader(
+                            isEs ? 'DADOS ADICIONAIS' : 'DADOS ADICIONAIS', theme),
+                        ...selectedEv.metadadosAdicionais.entries.map((e) =>
+                            _soapField(e.key, e.value.toString(), theme)),
+                      ],
+                    ] else if (!hasHistorial)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          isEs
+                              ? 'Sin evoluciones registradas.'
+                              : 'Sem evoluções registradas.',
+                          style: TextStyle(
+                              fontSize: 13, color: theme.textSecondary),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      ...session.historial.reversed.take(3).map((ev) {
-                        final sv = ev.objetivo.signosVitales;
-                        return GestureDetector(
-                          onTap: onAuditoria != null
-                              ? () => onAuditoria!(ev)
-                              : null,
-                          child: Container(
-                          margin: const EdgeInsets.only(bottom: 6),
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: theme.card,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color: theme.border, width: 0.8),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(ev.fechaFormatada,
-                                  style: TextStyle(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w700,
-                                    color: InternacionTheme.accentLight,
-                                  )),
-                              if (!sv.isEmpty) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  [
-                                    if (sv.pa.isNotEmpty) 'TA: ${sv.pa}',
-                                    if (sv.fc.isNotEmpty) 'FC: ${sv.fc}',
-                                    if (sv.satO2.isNotEmpty)
-                                      'SatO₂: ${sv.satO2}%',
-                                    if (sv.temperatura.isNotEmpty)
-                                      'T: ${sv.temperatura}°C',
-                                  ].join('   '),
-                                  style: TextStyle(
-                                      fontSize: 11,
-                                      color: theme.textSecondary),
-                                ),
-                              ],
-                              if (ev.evaluacion.notasEvaluacion
-                                  .isNotEmpty) ...[
-                                const SizedBox(height: 2),
-                                Text(
-                                  ev.evaluacion.notasEvaluacion,
-                                  style: TextStyle(
-                                      fontSize: 11.5,
-                                      color: theme.textPrimary,
-                                      height: 1.3),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                        );
-                      }),
-                    ],
+                    const SizedBox(height: 12),
                   ],
                 ),
               ),
@@ -1540,14 +1790,14 @@ class _SessionPreviewDialog extends StatelessWidget {
                   // Linha 1: [Copiar] [Excluir]
                   Row(
                     children: [
-                      // Copiar
+                      // Copiar — Build 192: copia TODOS os campos SOAP
                       _actionBtn(
                         icon: Icons.copy_rounded,
                         label: isEs ? 'Copiar' : 'Copiar',
                         color: InternacionTheme.cyan,
                         dark: dark,
                         theme: theme,
-                        onTap: () => onCopy(_buildPreviewText()),
+                        onTap: () => widget.onCopy(_buildPreviewText()),
                       ),
                       const SizedBox(width: 6),
                       // Excluir
@@ -1557,7 +1807,7 @@ class _SessionPreviewDialog extends StatelessWidget {
                         color: InternacionTheme.red,
                         dark: dark,
                         theme: theme,
-                        onTap: onDelete,
+                        onTap: widget.onDelete,
                       ),
                     ],
                   ),
@@ -1568,7 +1818,7 @@ class _SessionPreviewDialog extends StatelessWidget {
                       // Editar última evolução
                       Expanded(
                         child: GestureDetector(
-                          onTap: onEdit,
+                          onTap: widget.onEdit,
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
@@ -1606,7 +1856,7 @@ class _SessionPreviewDialog extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: GestureDetector(
-                          onTap: onEvolve,
+                          onTap: widget.onEvolve,
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
@@ -1649,6 +1899,55 @@ class _SessionPreviewDialog extends StatelessWidget {
       ),
     );
   }
+
+  // Build 192 Fix 1: helper para campos SOAP na prévia
+  Widget _soapSectionHeader(String label, InternacionTheme theme) => Container(
+    margin: const EdgeInsets.only(bottom: 4),
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    decoration: BoxDecoration(
+      color: InternacionTheme.accentLight.withValues(alpha: 0.10),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(
+        fontSize: 9.5,
+        fontWeight: FontWeight.w800,
+        color: InternacionTheme.accentLight,
+        letterSpacing: 0.5,
+      ),
+    ),
+  );
+
+  Widget _soapField(String label, String value, InternacionTheme theme) => Padding(
+    padding: const EdgeInsets.only(bottom: 3),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 72,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: theme.textSecondary,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 11.5,
+              color: theme.textPrimary,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 
   Widget _previewRow(
       InternacionTheme theme, IconData icon, String label, String value) {
