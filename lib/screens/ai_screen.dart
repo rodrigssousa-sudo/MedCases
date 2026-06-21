@@ -1607,13 +1607,26 @@ class _AiScreenState extends State<AiScreen> {
                       onBlockRevealed: _onBlockRevealed,
                       // Mostra cursor ▌ apenas na bolha que está sendo preenchida
                       isStreaming: _isStreaming && i == _lastAiIndex,
-                      // Build 120 — ActionChip: injeta pergunta no input e dispara send
+                      // Build 175 — Chip: injeta texto no TextField SEM auto-send.
+                      // O médico lê a pergunta da IA, digita a resposta clínica
+                      // e envia manualmente — evita loop de perguntas ↔ perguntas.
                       onChipTap: _isStreaming ? null : (chipText) {
-                        _queryCtrl.text = chipText;
+                        // Remove o prefixo 📌 para o TextField mostrar texto limpo
+                        String injectText = chipText.trim();
+                        if (injectText.startsWith('📌')) {
+                          injectText = injectText.substring('📌'.length).trim();
+                        }
+                        // Remove "?" final se houver (a linha é uma sugestão de ação,
+                        // não deve ser reenviada como pergunta ao modelo)
+                        if (injectText.endsWith('?')) {
+                          injectText = injectText.substring(0, injectText.length - 1).trim();
+                        }
+                        _queryCtrl.text = injectText;
                         _queryCtrl.selection = TextSelection.fromPosition(
-                          TextPosition(offset: chipText.length),
+                          TextPosition(offset: injectText.length),
                         );
-                        _send(chipText, p);
+                        // Foca o campo para o médico editar/completar antes de enviar
+                        _focusNode.requestFocus();
                       },
                     ),
                     // Tarjeta de evidencia si el mensaje menciona un fármaco
@@ -3116,7 +3129,16 @@ String _stripMetadataHeaders(String accumulated) {
       r'|El\s+usuario\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\s+(?:pedido|indicado|proporcionado|solicitado)|solicit[oó])'
       r'|O\s+usu[aá]rio\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[aá]\s+perguntando)'
       r'|The\s+user\s+(?:is\s+asking|asks|wants|requests|provides|has\s+indicated|has\s+asked)'
+      r"|The\s+user(?:'s|s)\s+input\s+(?:is|was)\s"
       r'|The\s+(?:doctor|physician|clinician)\s+(?:is\s+asking|asks|wants|requests)'
+      r'|The\s+previous\s+(?:turn|response|message)\s+(?:ended|was|contained)'
+      r'|This\s+implies?\s+(?:the\s+user|that\s+the)\s'
+      r'|User\s+Input\s+Analysis\s*:'
+      r'|Assumed\s+Patient\s+Data\s*:'
+      r'|Constructing\s+(?:the\s+)?(?:response|answer)\s*:'
+      r'|Since\s+the\s+(?:user|question|prompt)\s+(?:is|was|has)\s'
+      r'|As\s+the\s+previous\s+(?:turn|response)\s'
+      r'|Given\s+(?:the\s+)?(?:context|previous)\s'
       r'|Let\s+me\s+(?:think|analyze|structure|break|consider|address|provide|help)'
       r"|I(?:'ll|'m|\s+will|\s+should|\s+need\s+to|\s+can)\s+(?:provide|address|help|structure|analyze|respond|answer|focus)"
       r'|Okay[,.]?\s+(?:so|the|I|let|this)\s'
@@ -3159,6 +3181,54 @@ String _stripMetadataHeaders(String accumulated) {
       r'|I\s+have\s+(?:analyzed|reviewed|considered|structured)\s).*$',
       caseSensitive: false,
       multiLine: true,
+    ),
+    '',
+  );
+
+  // ── Build 175: CAMADA EXTRA — padrões de CoT vazado observados em produção ─
+  // Padrões confirmados por screenshots (8.06–8.08 AM, 2026-06-21):
+  //   "< IAM. The previous response ended with..."
+  //   "User Input Analysis:"
+  //   "The user's input is ..."
+  //   "The previous response ended with..."
+  //   "I need to provide a response that..."
+  //   "This implies the user is providing..."
+  //   Linhas em inglês que começam com análise de contexto
+  result = result.replaceAll(
+    RegExp(
+      r'^(?:'
+      // Padrão "<" de raciocínio semi-oculto: "< IAM. The previous..."
+      r'<\s*[A-Za-z\s,\.]+\.\s+(?:The|I|This|Based)\s'
+      // Rótulos de análise em inglês
+      r'|User\s+Input\s+Analysis\s*:'
+      r"|The\s+user(?:'s|s)?\s+input\s+is\s"
+      r'|The\s+previous\s+response\s+(?:ended|was|contained|had)\s'
+      r'|This\s+implies?\s+(?:the\s+user|that\s+the)\s'
+      r'|I\s+need\s+to\s+provide\s+a\s+response\s'
+      r'|Assumed\s+Patient\s+Data\s*:'
+      r'|Constructing\s+(?:the\s+)?(?:response|answer)\s'
+      r'|Since\s+the\s+(?:user|question|prompt)\s+(?:is|was|has)\s'
+      r'|As\s+the\s+previous\s+(?:turn|response|message)\s'
+      r'|Given\s+(?:the\s+)?(?:context|previous\s+turn|user\s+input)\s'
+      r'|Interpreting\s+(?:the\s+)?(?:user|input|query)\s'
+      r'|The\s+question\s+(?:asked|posed|is)\s'
+      r'|My\s+task\s+(?:is|here)\s'
+      r'|To\s+address\s+(?:the\s+)?(?:user|question|this)\s'
+      r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // Bloco completo de raciocínio em inglês delimitado por texto em MAIÚSCULAS:
+  // "User Input Analysis:\n...\nConstructing the Response:\n" etc.
+  // Remove o bloco inteiro se aparecer antes do conteúdo clínico real.
+  result = result.replaceAll(
+    RegExp(
+      r'(?:^|\n)(?:User\s+Input\s+Analysis|Assumed\s+Patient\s+Data|Constructing\s+the\s+Response)\s*:.*?(?=\n(?:🟥|⛔|💊|🔄|📌|##\s|\*\*[A-Z])|$)',
+      caseSensitive: false,
+      dotAll: true,
     ),
     '',
   );
@@ -4529,9 +4599,26 @@ class _AiBubbleState extends State<_AiBubble> {
         lower.startsWith("i will ") ||
         lower.startsWith("first, i") ||
         lower.startsWith("the user ") ||
+        lower.startsWith("the user's ") ||
         lower.startsWith("the doctor ") ||
         lower.startsWith("this is a ") ||
-        lower.startsWith("looking at ")) {
+        lower.startsWith("this implies") ||
+        lower.startsWith("looking at ") ||
+        lower.startsWith("user input analysis") ||
+        lower.startsWith("assumed patient") ||
+        lower.startsWith("constructing ") ||
+        lower.startsWith("since the user") ||
+        lower.startsWith("as the previous") ||
+        lower.startsWith("given the context") ||
+        lower.startsWith("given the previous") ||
+        lower.startsWith("interpreting ") ||
+        lower.startsWith("the previous response") ||
+        lower.startsWith("my task ") ||
+        lower.startsWith("to address ") ||
+        lower.startsWith("the question asked") ||
+        lower.startsWith("based on the previous") ||
+        // Padrão "< DIAGNÓSTICO. texto análise..."
+        (line.startsWith('<') && lower.contains(" the ") && lower.contains("response"))) {
       return true;
     }
     // Padrões em português (meta-comentário de intenção)
