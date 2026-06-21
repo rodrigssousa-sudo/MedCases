@@ -331,7 +331,7 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
     );
   }
 
-  // ── Motor de cópia unificado — Build 181 ─────────────────────────────────
+  // ── Motor de cópia unificado — Build 193 (Refatorado) ───────────────────
   Future<void> _executeCopy(_CopyModel model) async {
     final ev   = _notifier.evolucion;
     final isEs = widget.lang == 'es';
@@ -340,20 +340,20 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
 
     switch (model) {
       case _CopyModel.completa:
-        text      = _compileFullSoapRecord(ev, isEs, widget.autorNombre, widget.paciente);
+        text      = _toCompletoString(ev, isEs, widget.autorNombre, widget.paciente);
         snackLabel = isEs
-            ? 'Evolucion completa copiada al portapapeles'
-            : 'Evolucao completa copiada para a area de transferencia';
+            ? '📋 Prontuario completo copiado al portapapeles'
+            : '📋 Prontuário completo copiado para a área de transferência';
       case _CopyModel.resumida:
-        text      = _compileResumidaInline(ev, isEs, widget.autorNombre, widget.paciente);
+        text      = _toResumidoString(ev, isEs, widget.autorNombre, widget.paciente);
         snackLabel = isEs
-            ? 'Evolucion resumida copiada al portapapeles'
-            : 'Evolucao resumida copiada para a area de transferencia';
+            ? '⚡ Resumen ejecutivo copiado al portapapeles'
+            : '⚡ Resumo executivo copiado para a área de transferência';
       case _CopyModel.pasaje:
-        text      = _compilePasajeGuardia(ev, isEs, widget.paciente);
+        text      = _toPassagemString(ev, isEs, widget.paciente);
         snackLabel = isEs
-            ? 'Pasaje de guardia copiado al portapapeles'
-            : 'Passagem de plantao copiada para a area de transferencia';
+            ? '🔄 Pasaje de guardia copiado al portapapeles'
+            : '🔄 Passagem de plantão copiada para a área de transferência';
     }
 
     await Clipboard.setData(ClipboardData(text: text));
@@ -617,13 +617,6 @@ class _SoapAccordion extends StatelessWidget {
 }
 
 
-// ═══════════════════════════════════════════════════════════════════════════
-// Build 181 — Motor Tri-Modelo de Cópia
-// Modelo 1 (Completa): SOAP Tradicional com cabeçalho hospitalar hierárquico
-// Modelo 2 (Resumida): Inline compacto para sistemas legados
-// Modelo 3 (Pasaje):   Ultra-objetivo para passagem de plantão < 30s
-// ═══════════════════════════════════════════════════════════════════════════
-
 // ── Enum de modelo de cópia ──────────────────────────────────────────────────
 enum _CopyModel { completa, resumida, pasaje }
 
@@ -637,12 +630,67 @@ String _fmtHora() {
   return '${now.hour.toString().padLeft(2,'0')}:${now.minute.toString().padLeft(2,'0')}';
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// MODELO 1 — Evolución Completa (SOAP Tradicional Hierárquico)
-// Cabeçalho hospitalar completo + S/O/A/P estruturado com labels + firma.
-// Pronto para prontuário eletrônico ou impressão.
-// ────────────────────────────────────────────────────────────────────────────
-String _compileFullSoapRecord(
+// ═══════════════════════════════════════════════════════════════════════════
+// Build 193 — Motor Tri-Modelo de Exportação (Refatoração Completa)
+// Substitui _compileFullSoapRecord / _compileResumidaInline / _compilePasajeGuardia
+// por três métodos isolados e conceitualmente distintos:
+//   _toCompletoString()  → SOAP Tradicional Expandida (espelho vertical completo)
+//   _toResumidoString()  → Painel Clínico Compacto (1 linha por bloco)
+//   _toPassagemString()  → Passagem de Plantão (ação/alerta, sem histórico longo)
+//
+// Regra de Ouro: _splitNumberedList() quebra "1. Foo 2. Bar" → ["Foo","Bar"]
+//               _toBullets() converte qualquer bloco de texto em linhas "• …"
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── Utilitário: quebra strings com listas numeradas emendadas ────────────────
+// Exemplos de entrada:
+//   "1. Paracetamol 500mg 2. Omeprazol 20mg 3. Heparina SC"
+//   "1. Controle glicêmico\n2. ECG de controle"
+// Saída: ["Paracetamol 500mg", "Omeprazol 20mg", "Heparina SC"]
+List<String> _splitNumberedList(String text) {
+  if (text.trim().isEmpty) return [];
+  // Captura padrões "1. ", "2. ", "1) ", "2) " em qualquer posição do texto
+  final parts = text
+      .split(RegExp(r'\d+[\.\)]\s+'))
+      .map((s) => s.trim())
+      .where((s) => s.isNotEmpty)
+      .toList();
+  // Se não havia numeração, retorna o texto original como único item
+  return parts.isEmpty ? [text.trim()] : parts;
+}
+
+// ── Utilitário: converte qualquer bloco de texto em linhas "• …" ─────────────
+// Estratégia:
+//   1. Tenta quebrar por lista numerada emendada ("1. Foo 2. Bar")
+//   2. Depois quebra por "\n" para capturar listas já verticais
+//   3. Strips de prefixos "- ", "• ", "* " existentes antes de recolocar "• "
+String _toBullets(String text) {
+  if (text.trim().isEmpty) return '';
+  final buf = StringBuffer();
+  // Primeiro expande listas numeradas inline se detectadas
+  final hasInlineList = RegExp(r'\d+[\.\)]\s+').hasMatch(text);
+  final lines = hasInlineList
+      ? _splitNumberedList(text)
+      : text
+          .split('\n')
+          .map((l) => l.trim())
+          .where((l) => l.isNotEmpty)
+          .toList();
+  for (final line in lines) {
+    // Remove prefixos já existentes antes de normalizar
+    final clean = line.replaceFirst(RegExp(r'^[-•*]\s*'), '').trim();
+    if (clean.isNotEmpty) buf.writeln('• $clean');
+  }
+  return buf.toString().trimRight();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MODELO 1 — _toCompletoString()
+// SOAP Tradicional Expandida: espelho vertical e limpo de todo o prontuário.
+// Emoji headers, "• " bullets, regex split de listas numeradas.
+// Proibido usar barras horizontais dentro dos dados (apenas no frame de borda).
+// ─────────────────────────────────────────────────────────────────────────────
+String _toCompletoString(
   EvolucionModel ev,
   bool isEs,
   String autorNombre,
@@ -650,155 +698,170 @@ String _compileFullSoapRecord(
 ) {
   final buf  = StringBuffer();
   final p    = paciente;
-  final a    = ev.evaluacion;
+  final s    = ev.subjetivo;
   final o    = ev.objetivo;
   final sv   = o.signosVitales;
   final ef   = o.examenFisico;
   final ex   = o.examenes;
-  final s    = ev.subjetivo;
+  final a    = ev.evaluacion;
   final plan = ev.plan;
   final nomeDoc = autorNombre.trim().isNotEmpty ? autorNombre : ev.autorNombre;
+  const sep  = '=========================================';
+  const dash = '-----------------------------------------';
 
-  // ── Cabeçalho ──────────────────────────────────────────────────────────────
-  buf.writeln('Fecha: ${_fmtFecha()} - ${_fmtHora()} hs');
+  // ── Frame superior ──────────────────────────────────────────────────────────
+  buf.writeln(sep);
+  buf.writeln('📋 MEDCASES PRO - ${isEs ? 'PRONTUARIO COMPLETO' : 'PRONTUÁRIO COMPLETO'}');
+  buf.writeln(sep);
 
+  // ── Cabeçalho demográfico ───────────────────────────────────────────────────
   if (p != null) {
-    if (p.nome.isNotEmpty)  buf.writeln('Paciente: ${p.nome}');
-    buf.writeln('HC: ______________________');
-    final idadeSexo = [
-      if (p.idade.isNotEmpty) '${isEs ? 'Edad' : 'Idade'}: ${p.idade} ${isEs ? 'años' : 'anos'}',
-      if (p.sexo.isNotEmpty)  '${isEs ? 'Sexo' : 'Sexo'}: ${p.sexo}',
-    ].join(' | ');
-    if (idadeSexo.isNotEmpty) buf.writeln(idadeSexo);
-    if (p.cama.isNotEmpty)  buf.writeln('${isEs ? 'Habitacion/Cama' : 'Leito/Quarto'}: ${p.cama}');
-    buf.writeln('Servicio: ______________________');
-    buf.writeln('${isEs ? 'Dia de internacion' : 'Dia de internacao'}: ${p.diaInternacao}');
+    final nome  = p.nome.isNotEmpty  ? p.nome  : '---';
+    final cama  = p.cama.isNotEmpty  ? p.cama  : '---';
+    final servico = isEs ? 'Servicio' : 'Serviço';
+    buf.writeln('👤 ${isEs ? 'PACIENTE' : 'PACIENTE'}: $nome | 🆔 HC: ______ | 🛏️ LEITO: $cama');
+    buf.writeln('📆 ${isEs ? 'INTERNACION' : 'INTERNAÇÃO'}: Dia ${p.diaInternacao} | 🩺 $servico: ______');
+  } else {
+    buf.writeln('👤 PACIENTE: --- | 🆔 HC: ______ | 🛏️ LEITO: ---');
+    buf.writeln('📆 ${isEs ? 'INTERNACION' : 'INTERNAÇÃO'}: Dia --- | 🩺 ${isEs ? 'Servicio' : 'Serviço'}: ______');
   }
 
-  // ── Diagnósticos activos ────────────────────────────────────────────────────
-  final allDx = <String>[
+  buf.writeln(dash);
+
+  // ── Diagnósticos ativos ─────────────────────────────────────────────────────
+  final allDx = <String>{
     if (p != null && p.diagnostico.isNotEmpty) p.diagnostico,
     ...a.problemasActivos,
-  ].toSet().toList();
+  }.toList();
+  buf.writeln('🩺 ${isEs ? 'DIAGNÓSTICOS ACTIVOS' : 'DIAGNÓSTICOS ATIVOS'}:');
   if (allDx.isNotEmpty) {
-    buf.writeln('${isEs ? 'Diagnosticos activos' : 'Diagnosticos ativos'}:');
-    for (final dx in allDx) { buf.writeln('- $dx'); }
+    for (final dx in allDx) { buf.writeln('• $dx'); }
+  } else {
+    buf.writeln(isEs ? '• (Sin diagnósticos registrados)' : '• (Sem diagnósticos registrados)');
   }
-
   buf.writeln('');
 
-  // ── S — Subjetivo ───────────────────────────────────────────────────────────
-  buf.writeln('S - ${isEs ? 'Subjetivo' : 'Subjetivo'}');
-  final sParts = <String>[];
-  if (s.notePasaNoche.isNotEmpty)  sParts.add(s.notePasaNoche);
-  if (s.dolorEscala != null)       sParts.add('EVA ${s.dolorEscala}/10');
+  // ── S — SUBJETIVO ───────────────────────────────────────────────────────────
+  buf.writeln('S - ${isEs ? 'SUBJETIVO' : 'SUBJETIVO'}:');
+  final sBuf = StringBuffer();
+  if (s.notePasaNoche.isNotEmpty)  sBuf.writeln(_toBullets(s.notePasaNoche));
+  if (s.dolorEscala != null)       sBuf.writeln('• EVA ${s.dolorEscala}/10');
   final syms = <String>[];
   if (s.fiebre)       syms.add(isEs ? 'fiebre' : 'febre');
   if (s.disnea)       syms.add(isEs ? 'disnea' : 'dispneia');
   if (s.nauseas)      syms.add(isEs ? 'nauseas' : 'nauseas');
   if (s.tos)          syms.add(isEs ? 'tos' : 'tosse');
-  if (s.suenoRestado) syms.add(isEs ? 'sueno alterado' : 'sono alterado');
-  if (syms.isNotEmpty) sParts.add('${isEs ? 'Refiere' : 'Refere'}: ${syms.join(', ')}');
-  if (s.alimentacion.isNotEmpty) sParts.add('${isEs ? 'Alimentacion' : 'Alimentacao'}: ${s.alimentacion}');
-  if (s.diuresis.isNotEmpty)    sParts.add('${isEs ? 'Diuresis' : 'Diurese'}: ${s.diuresis}');
-  if (s.evacuacion.isNotEmpty)  sParts.add('${isEs ? 'Evacuacion' : 'Evacuacao'}: ${s.evacuacion}');
-  if (s.notasLibres.isNotEmpty) sParts.add(s.notasLibres);
-  buf.writeln(sParts.isNotEmpty ? sParts.join('. ') : (isEs ? 'Sin datos.' : 'Sem dados.'));
+  if (s.suenoRestado) syms.add(isEs ? 'sueño alterado' : 'sono alterado');
+  if (syms.isNotEmpty) sBuf.writeln('• ${isEs ? 'Refiere' : 'Refere'}: ${syms.join(', ')}');
+  if (s.alimentacion.isNotEmpty) sBuf.writeln('• ${isEs ? 'Alimentación' : 'Alimentação'}: ${s.alimentacion}');
+  if (s.diuresis.isNotEmpty)     sBuf.writeln('• ${isEs ? 'Diuresis' : 'Diurese'}: ${s.diuresis}');
+  if (s.evacuacion.isNotEmpty)   sBuf.writeln('• ${isEs ? 'Evacuación' : 'Evacuação'}: ${s.evacuacion}');
+  if (s.notasLibres.isNotEmpty)  sBuf.writeln(_toBullets(s.notasLibres));
+  final sResult = sBuf.toString().trim();
+  buf.writeln(sResult.isNotEmpty ? sResult : (isEs ? '• (Sin datos)' : '• (Sem dados)'));
   buf.writeln('');
 
-  // ── O — Objetivo ────────────────────────────────────────────────────────────
-  buf.writeln('O - ${isEs ? 'Objetivo' : 'Objetivo'}');
+  // ── O — OBJETIVO ────────────────────────────────────────────────────────────
+  buf.writeln('O - ${isEs ? 'OBJETIVO' : 'OBJETIVO'}:');
 
-  // Signos vitales
+  // Sinais Vitais
   if (!sv.isEmpty) {
-    buf.writeln(isEs ? 'Signos vitales' : 'Sinais vitais');
     final svParts = <String>[];
-    if (sv.pa.isNotEmpty)          svParts.add('TA: ${sv.pa} mmHg');
-    if (sv.fc.isNotEmpty)          svParts.add('FC: ${sv.fc} lpm');
-    if (sv.fr.isNotEmpty)          svParts.add('FR: ${sv.fr} rpm');
-    if (sv.temperatura.isNotEmpty) svParts.add('${isEs ? 'Temperatura' : 'Temperatura'}: ${sv.temperatura} °C');
-    if (sv.satO2.isNotEmpty)       svParts.add('SatO2: ${sv.satO2}%');
-    buf.writeln(svParts.join(' | '));
+    if (sv.pa.isNotEmpty)          svParts.add('TA ${sv.pa}');
+    if (sv.fc.isNotEmpty)          svParts.add('FC ${sv.fc}');
+    if (sv.fr.isNotEmpty)          svParts.add('FR ${sv.fr}');
+    if (sv.temperatura.isNotEmpty) svParts.add('T ${sv.temperatura} °C');
+    if (sv.satO2.isNotEmpty)       svParts.add('SatO2 ${sv.satO2}%');
+    buf.writeln('• ${isEs ? 'Signos Vitales' : 'Sinais Vitais'}: ${svParts.join(' | ')}');
   }
 
-  // Examen físico
-  final hasEf = ef.estadoGeneral.isNotEmpty || ef.acv.isNotEmpty ||
-      ef.ar.isNotEmpty || ef.abdomen.isNotEmpty || ef.extremidades.isNotEmpty;
-  if (hasEf) {
-    buf.writeln(isEs ? 'Examen fisico' : 'Exame fisico');
-    if (ef.estadoGeneral.isNotEmpty) buf.writeln('EG: ${ef.estadoGeneral}');
-    if (ef.acv.isNotEmpty)           buf.writeln('CV: ${ef.acv}');
-    if (ef.ar.isNotEmpty)            buf.writeln('Resp: ${ef.ar}');
-    if (ef.abdomen.isNotEmpty)       buf.writeln('Abd: ${ef.abdomen}');
-    if (ef.extremidades.isNotEmpty)  buf.writeln('MMII: ${ef.extremidades}');
+  // Exame Físico
+  final efParts = <String>[];
+  if (ef.estadoGeneral.isNotEmpty) efParts.add(ef.estadoGeneral);
+  if (ef.acv.isNotEmpty)           efParts.add('CV: ${ef.acv}');
+  if (ef.ar.isNotEmpty)            efParts.add('Resp: ${ef.ar}');
+  if (ef.abdomen.isNotEmpty)       efParts.add('Abd: ${ef.abdomen}');
+  if (ef.extremidades.isNotEmpty)  efParts.add('MMII: ${ef.extremidades}');
+  if (efParts.isNotEmpty) {
+    buf.writeln('• ${isEs ? 'Examen Físico' : 'Exame Físico'}: ${efParts.join('. ')}');
   }
 
-  // Laboratorio y estudios
-  final hasLab = ex.laboratorio.isNotEmpty || ex.imagenes.isNotEmpty ||
-      ex.culturas.isNotEmpty || ex.ecg.isNotEmpty;
-  if (hasLab) {
-    buf.writeln(isEs ? 'Laboratorio y Estudios' : 'Laboratorio e Estudos');
-    if (ex.laboratorio.isNotEmpty) buf.writeln(ex.laboratorio);
-    if (ex.imagenes.isNotEmpty)    buf.writeln('${isEs ? 'Imagenes' : 'Imagens'}: ${ex.imagenes}');
-    if (ex.culturas.isNotEmpty)    buf.writeln('Culturas: ${ex.culturas}');
-    if (ex.ecg.isNotEmpty)         buf.writeln('ECG: ${ex.ecg}');
-  }
-
-  if (o.tratamientoActual.isNotEmpty) {
-    buf.writeln('${isEs ? 'Tratamiento actual' : 'Tratamento atual'}: ${o.tratamientoActual}');
-  }
-  buf.writeln('');
-
-  // ── A — Análisis ────────────────────────────────────────────────────────────
-  buf.writeln('A - ${isEs ? 'Analisis' : 'Avaliacao'}');
-  if (a.notasEvaluacion.isNotEmpty) buf.writeln(a.notasEvaluacion);
-  if (a.estado != null) {
-    buf.writeln('${isEs ? 'Estado clinico' : 'Estado clinico'}: ${a.estado!.label(isEs ? 'es' : 'pt')}');
-  }
-  if (a.problemasActivos.isNotEmpty) {
-    buf.writeln('${isEs ? 'Problemas activos' : 'Problemas ativos'}: ${a.problemasActivos.join(', ')}');
-  }
-  if (a.notasEvaluacion.isEmpty && a.estado == null && a.problemasActivos.isEmpty) {
-    buf.writeln(isEs ? 'Sin datos.' : 'Sem dados.');
-  }
-  buf.writeln('');
-
-  // ── P — Plan ────────────────────────────────────────────────────────────────
-  buf.writeln('P - ${isEs ? 'Plan' : 'Plano'}');
-  if (plan.planTerapeutico.isNotEmpty) {
-    for (final line in plan.planTerapeutico.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty)) {
-      buf.writeln(line.startsWith('-') ? line : '- $line');
+  // Laboratório / Estudos
+  if (ex.laboratorio.isNotEmpty) {
+    final labBullets = _toBullets(ex.laboratorio);
+    if (labBullets.isNotEmpty) {
+      buf.writeln('• ${isEs ? 'Laboratorio/Estudios' : 'Laboratório/Estudos'}:');
+      buf.writeln(labBullets.split('\n').map((l) => '  $l').join('\n'));
     }
   }
+  if (ex.imagenes.isNotEmpty) {
+    buf.writeln('• ${isEs ? 'Imágenes' : 'Imagens'}: ${ex.imagenes}');
+  }
+  if (ex.culturas.isNotEmpty) {
+    buf.writeln('• Culturas: ${ex.culturas}');
+  }
+  if (ex.ecg.isNotEmpty) {
+    buf.writeln('• ECG: ${ex.ecg}');
+  }
+  if (o.tratamientoActual.isNotEmpty) {
+    buf.writeln('• ${isEs ? 'Tratamiento actual' : 'Tratamento atual'}: ${o.tratamientoActual}');
+  }
+
+  // Fallback se O completamente vazio
+  final hasO = !sv.isEmpty || efParts.isNotEmpty || ex.laboratorio.isNotEmpty ||
+      ex.imagenes.isNotEmpty || ex.culturas.isNotEmpty || ex.ecg.isNotEmpty ||
+      o.tratamientoActual.isNotEmpty;
+  if (!hasO) buf.writeln(isEs ? '• (Sin datos)' : '• (Sem dados)');
+  buf.writeln('');
+
+  // ── A — AVALIAÇÃO ───────────────────────────────────────────────────────────
+  buf.writeln('A - ${isEs ? 'ANÁLISIS' : 'AVALIAÇÃO'}:');
+  if (a.estado != null) {
+    buf.writeln('• ${isEs ? 'Estado Clínico' : 'Status Clínico'}: ${a.estado!.label(isEs ? 'es' : 'pt')}');
+  }
+  if (a.notasEvaluacion.isNotEmpty) {
+    buf.writeln('• ${isEs ? 'Análisis' : 'Análise'}: ${a.notasEvaluacion}');
+  }
+  if (a.estado == null && a.notasEvaluacion.isEmpty) {
+    buf.writeln(isEs ? '• (Sin datos)' : '• (Sem dados)');
+  }
+  buf.writeln('');
+
+  // ── P — PLANO & MEDICAÇÃO ───────────────────────────────────────────────────
+  buf.writeln('P - ${isEs ? 'PLAN & MEDICACIÓN' : 'PLANO & MEDICAÇÃO'}:');
+  if (plan.planTerapeutico.isNotEmpty) {
+    buf.writeln(_toBullets(plan.planTerapeutico));
+  }
   if (plan.criteriosAlta.isNotEmpty) {
-    buf.writeln('- ${isEs ? 'Criterios de alta' : 'Criterios de alta'}: ${plan.criteriosAlta}');
+    buf.writeln('• ${isEs ? 'Criterios de alta' : 'Critérios de alta'}: ${plan.criteriosAlta}');
   }
   if (ev.farmacos.isNotEmpty) {
-    buf.writeln(isEs ? 'Medicacion prescripta:' : 'Medicacao prescrita:');
+    buf.writeln('• ${isEs ? 'Medicación prescripta' : 'Medicação prescrita'}:');
     for (final f in ev.farmacos) {
-      final dos = f.dosagem.isNotEmpty ? ' - ${f.dosagem}' : '';
-      buf.writeln('- ${f.medicamento}$dos');
+      final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
+      buf.writeln('  • ${f.medicamento}$dos');
     }
   }
   if (plan.planTerapeutico.isEmpty && plan.criteriosAlta.isEmpty && ev.farmacos.isEmpty) {
-    buf.writeln(isEs ? 'Sin datos.' : 'Sem dados.');
+    buf.writeln(isEs ? '• (Sin datos)' : '• (Sem dados)');
   }
   buf.writeln('');
 
-  // ── Firma ─────────────────────────────────────────────────────────────────
-  final sigLine = nomeDoc.trim().isNotEmpty
-      ? 'Dr/Dra. $nomeDoc'
-      : '______________________';
-  buf.writeln('${isEs ? 'Medico responsable' : 'Medico responsavel'}: $sigLine');
+  // ── Assinatura ──────────────────────────────────────────────────────────────
+  final sigLine = nomeDoc.trim().isNotEmpty ? 'Dr/Dra. $nomeDoc' : '______________________';
+  buf.writeln('📅 Data: ${_fmtFecha()} — ${_fmtHora()} hs');
+  buf.writeln('✍️  ${isEs ? 'Médico responsable' : 'Médico responsável'}: $sigLine');
+  buf.writeln(sep);
 
   return buf.toString().trimRight();
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// MODELO 2 — Evolución Resumida (Inline Compacto)
-// Formato horizontal denso para sistemas hospitalares legados.
-// ────────────────────────────────────────────────────────────────────────────
-String _compileResumidaInline(
+// ─────────────────────────────────────────────────────────────────────────────
+// MODELO 2 — _toResumidoString()
+// Painel Clínico Compacto: aglutinaçãocirúrgica — 1 linha por bloco SOAP.
+// Omite detalhes; mantém apenas essenciais escaneáveis por colega de equipe.
+// ─────────────────────────────────────────────────────────────────────────────
+String _toResumidoString(
   EvolucionModel ev,
   bool isEs,
   String autorNombre,
@@ -806,35 +869,40 @@ String _compileResumidaInline(
 ) {
   final buf  = StringBuffer();
   final p    = paciente;
-  final a    = ev.evaluacion;
+  final s    = ev.subjetivo;
   final o    = ev.objetivo;
   final sv   = o.signosVitales;
   final ef   = o.examenFisico;
   final ex   = o.examenes;
-  final s    = ev.subjetivo;
+  final a    = ev.evaluacion;
   final plan = ev.plan;
+  const sep  = '=========================================';
+  const dash = '-----------------------------------------';
 
-  // ── Linha 1: Identidade ─────────────────────────────────────────────────
-  final id1Parts = <String>[];
-  if (p != null && p.nome.isNotEmpty) id1Parts.add('Paciente: ${p.nome}');
-  id1Parts.add('HC: ______');
-  if (p != null && p.cama.isNotEmpty) id1Parts.add('${isEs ? 'Habitacion' : 'Leito'}: ${p.cama}');
-  buf.writeln(id1Parts.join(' | '));
+  // ── Frame superior ──────────────────────────────────────────────────────────
+  buf.writeln(sep);
+  buf.writeln('⚡ MEDCASES PRO - ${isEs ? 'RESUMEN EJECUTIVO' : 'RESUMO EXECUTIVO'}');
+  buf.writeln(sep);
 
-  // ── Linha 2: Serviço + Dia ──────────────────────────────────────────────
-  final dia = p?.diaInternacao ?? 1;
-  buf.writeln('Servicio: ______ | ${isEs ? 'Dia $dia de internacion' : 'Dia $dia de internacao'}');
+  // ── Linha 1: Identidade compacta ───────────────────────────────────────────
+  final nome  = p?.nome.isNotEmpty  == true ? p!.nome  : '---';
+  final idade = p?.idade.isNotEmpty == true ? p!.idade : '---';
+  final cama  = p?.cama.isNotEmpty  == true ? p!.cama  : '---';
+  final dia   = p?.diaInternacao ?? 1;
+  buf.writeln('👤 $nome • $idade ${isEs ? 'años' : 'anos'} • Leito: $cama • Dia $dia');
 
-  // ── Linha 3: Dx inline ─────────────────────────────────────────────────
-  final allDx = <String>[
+  // ── Linha 2: Diagnósticos inline com separador "•" ─────────────────────────
+  final allDx = <String>{
     if (p != null && p.diagnostico.isNotEmpty) p.diagnostico,
     ...a.problemasActivos,
-  ].toSet().toList();
+  }.toList();
   if (allDx.isNotEmpty) {
     buf.writeln('Dx: ${allDx.join(' • ')}');
   }
 
-  // ── S (resumido) ────────────────────────────────────────────────────────
+  buf.writeln(dash);
+
+  // ── S (1 linha condensada) ──────────────────────────────────────────────────
   final sParts = <String>[];
   if (s.notePasaNoche.isNotEmpty) sParts.add(s.notePasaNoche);
   if (s.dolorEscala != null)      sParts.add('EVA ${s.dolorEscala}/10');
@@ -843,134 +911,191 @@ String _compileResumidaInline(
   if (s.disnea)       syms.add(isEs ? 'disnea' : 'dispneia');
   if (s.nauseas)      syms.add(isEs ? 'nauseas' : 'nauseas');
   if (s.tos)          syms.add(isEs ? 'tos' : 'tosse');
-  if (s.suenoRestado) syms.add(isEs ? 'sueno alt.' : 'sono alt.');
-  if (syms.isNotEmpty) sParts.add(syms.join(', '));
+  if (s.suenoRestado) syms.add(isEs ? 'sueño alt.' : 'sono alt.');
+  if (syms.isNotEmpty) sParts.add('${isEs ? 'Refiere' : 'Refere'}: ${syms.join(', ')}');
   if (s.alimentacion.isNotEmpty) sParts.add('${isEs ? 'Alim' : 'Alim'}: ${s.alimentacion}');
   if (s.diuresis.isNotEmpty)     sParts.add('${isEs ? 'Diur' : 'Diur'}: ${s.diuresis}');
   if (s.notasLibres.isNotEmpty)  sParts.add(s.notasLibres);
-  buf.writeln('S: ${sParts.isNotEmpty ? sParts.join('. ') : (isEs ? 'Sin datos.' : 'Sem dados.')}');
+  buf.writeln('• S: ${sParts.isNotEmpty ? sParts.join('. ') : (isEs ? 'Sin datos' : 'Sem dados')}');
 
-  // ── O (SV inline + exame comprimido) ───────────────────────────────────
+  // ── O (SV comprimido + labs críticos) ──────────────────────────────────────
   final svParts = <String>[];
-  if (sv.pa.isNotEmpty)          svParts.add('TA ${sv.pa} mmHg');
-  if (sv.fc.isNotEmpty)          svParts.add('FC ${sv.fc} lpm');
-  if (sv.fr.isNotEmpty)          svParts.add('FR ${sv.fr} rpm');
-  if (sv.temperatura.isNotEmpty) svParts.add('T ${sv.temperatura} °C');
+  if (sv.pa.isNotEmpty)          svParts.add('TA ${sv.pa}');
+  if (sv.fc.isNotEmpty)          svParts.add('FC ${sv.fc}');
   if (sv.satO2.isNotEmpty)       svParts.add('SatO2 ${sv.satO2}%');
-  final efParts = <String>[];
-  if (ef.estadoGeneral.isNotEmpty) efParts.add(ef.estadoGeneral);
-  if (ef.acv.isNotEmpty)           efParts.add('CV: ${ef.acv}');
-  if (ef.ar.isNotEmpty)            efParts.add('Resp: ${ef.ar}');
-  if (ef.abdomen.isNotEmpty)       efParts.add('Abd: ${ef.abdomen}');
-  if (ef.extremidades.isNotEmpty)  efParts.add('MMII: ${ef.extremidades}');
-  final labParts = <String>[];
-  if (ex.laboratorio.isNotEmpty) labParts.add(ex.laboratorio);
-  if (ex.imagenes.isNotEmpty)    labParts.add('${isEs ? 'Img' : 'Img'}: ${ex.imagenes}');
-  if (ex.ecg.isNotEmpty)         labParts.add('ECG: ${ex.ecg}');
-  final oStr = svParts.isNotEmpty
-      ? 'SV: ${svParts.join(' | ')}. ${[...efParts, ...labParts].join('. ')}'
-      : [...efParts, ...labParts].join('. ');
-  buf.writeln('O: ${oStr.isNotEmpty ? oStr.trim() : (isEs ? 'Sin datos.' : 'Sem dados.')}');
+  final svStr = svParts.isNotEmpty ? 'SV: ${svParts.join(', ')}' : '';
 
-  // ── A (comprimido) ──────────────────────────────────────────────────────
+  // Apenas alterações críticas de exame físico
+  final efCrit = <String>[];
+  if (ef.estadoGeneral.isNotEmpty) efCrit.add(ef.estadoGeneral);
+
+  // Apenas labs com valores
+  final labCrit = <String>[];
+  if (ex.laboratorio.isNotEmpty) labCrit.add(ex.laboratorio);
+  if (ex.ecg.isNotEmpty)         labCrit.add('ECG: ${ex.ecg}');
+
+  final oChunks = <String>[
+    if (svStr.isNotEmpty) svStr,
+    if (efCrit.isNotEmpty) efCrit.join(', '),
+    if (labCrit.isNotEmpty) labCrit.join(' | '),
+  ];
+  buf.writeln('• O: ${oChunks.isNotEmpty ? oChunks.join('. ') : (isEs ? 'Sin datos' : 'Sem dados')}');
+
+  // ── A (conclusão + status em 1 linha) ──────────────────────────────────────
   final aParts = <String>[];
-  if (a.notasEvaluacion.isNotEmpty) aParts.add(a.notasEvaluacion);
   if (a.estado != null) aParts.add(a.estado!.label(isEs ? 'es' : 'pt'));
-  buf.writeln('A: ${aParts.isNotEmpty ? aParts.join('. ') : (isEs ? 'Sin datos.' : 'Sem dados.')}');
+  if (a.notasEvaluacion.isNotEmpty) aParts.add(a.notasEvaluacion);
+  buf.writeln('• A: ${aParts.isNotEmpty ? aParts.join('. ') : (isEs ? 'Sin datos' : 'Sem dados')}');
 
-  // ── P (comprimido) ──────────────────────────────────────────────────────
-  final pParts = <String>[];
+  // ── P (condutas por linha, cada item em bullet próprio) ────────────────────
+  buf.writeln('• P:');
   if (plan.planTerapeutico.isNotEmpty) {
-    pParts.add(plan.planTerapeutico.replaceAll('\n', ' / '));
+    final planLines = _splitNumberedList(plan.planTerapeutico.isNotEmpty
+        && RegExp(r'\d+[\.\)]\s+').hasMatch(plan.planTerapeutico)
+        ? plan.planTerapeutico
+        : plan.planTerapeutico);
+    if (planLines.length > 1) {
+      // Era lista numerada → cada item em linha própria
+      for (final item in planLines) {
+        buf.writeln('  • $item');
+      }
+    } else {
+      // Texto livre ou já vertical → quebra por \n
+      for (final line in plan.planTerapeutico.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty)) {
+        final clean = line.replaceFirst(RegExp(r'^[-•*\d+\.]\s*'), '').trim();
+        buf.writeln('  • $clean');
+      }
+    }
   }
-  if (plan.criteriosAlta.isNotEmpty) pParts.add('Alta: ${plan.criteriosAlta}');
+  if (plan.criteriosAlta.isNotEmpty) {
+    buf.writeln('  • ${isEs ? 'Alta si' : 'Alta se'}: ${plan.criteriosAlta}');
+  }
   if (ev.farmacos.isNotEmpty) {
-    pParts.add(ev.farmacos.map((f) {
-      return f.dosagem.isNotEmpty ? '${f.medicamento} ${f.dosagem}' : f.medicamento;
-    }).join(' | '));
+    for (final f in ev.farmacos) {
+      final dos = f.dosagem.isNotEmpty ? ' ${f.dosagem}' : '';
+      buf.writeln('  • ${f.medicamento}$dos');
+    }
   }
-  buf.writeln('P: ${pParts.isNotEmpty ? pParts.join('. ') : (isEs ? 'Sin datos.' : 'Sem dados.')}');
+  if (plan.planTerapeutico.isEmpty && plan.criteriosAlta.isEmpty && ev.farmacos.isEmpty) {
+    buf.writeln(isEs ? '  • (Sin datos)' : '  • (Sem dados)');
+  }
 
-  buf.writeln('${isEs ? 'Medico' : 'Medico'}: ____________________');
-
+  buf.writeln(sep);
   return buf.toString().trimRight();
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// MODELO 3 — Pasaje de Guardia (Ultra-objetivo < 30s)
-// Formato para transição de turno rápida — apenas variáveis críticas.
-// ────────────────────────────────────────────────────────────────────────────
-String _compilePasajeGuardia(
+// ─────────────────────────────────────────────────────────────────────────────
+// MODELO 3 — _toPassagemString()
+// Passagem de Plantão: foco total em AÇÃO e ALERTA.
+// OMITE histórico longo de anamnese. O médico entrante só quer saber:
+//   1. Estado atual do paciente
+//   2. O que ele DEVE FAZER agora (to-do list)
+// ─────────────────────────────────────────────────────────────────────────────
+String _toPassagemString(
   EvolucionModel ev,
   bool isEs,
   PacienteInternacaoData? paciente,
 ) {
-  final buf = StringBuffer();
-  final p   = paciente;
-  final a   = ev.evaluacion;
-  final o   = ev.objetivo;
-  final sv  = o.signosVitales;
+  final buf  = StringBuffer();
+  final p    = paciente;
+  final o    = ev.objetivo;
+  final sv   = o.signosVitales;
+  final ex   = o.examenes;
+  final a    = ev.evaluacion;
   final plan = ev.plan;
+  const sep  = '=========================================';
+  const dash = '-----------------------------------------';
 
-  // ── Linha 1: ID ultra-compacta ──────────────────────────────────────────
-  final id1 = <String>[];
-  if (p != null && p.nome.isNotEmpty) id1.add('Paciente: ${p.nome}');
-  id1.add('HC: ______');
-  if (p != null && p.cama.isNotEmpty) id1.add('${isEs ? 'Habitacion' : 'Leito'}: ${p.cama}');
-  buf.writeln(id1.join(' • '));
+  // ── Frame superior ──────────────────────────────────────────────────────────
+  buf.writeln(sep);
+  buf.writeln('🔄 MEDCASES PRO - ${isEs ? 'PASAJE DE GUARDIA' : 'PASSAGEM DE PLANTÃO'}');
+  buf.writeln(sep);
 
-  // ── Dx ─────────────────────────────────────────────────────────────────
-  final allDx = <String>[
+  // ── Identidade ultra-compacta ───────────────────────────────────────────────
+  final cama  = p?.cama.isNotEmpty  == true ? p!.cama  : '---';
+  final nome  = p?.nome.isNotEmpty  == true ? p!.nome  : '---';
+  final idade = p?.idade.isNotEmpty == true ? p!.idade : '---';
+  final sexo  = p?.sexo.isNotEmpty  == true ? p!.sexo  : '---';
+  buf.writeln('🛏️ LEITO: $cama • 👤 PACIENTE: $nome (${idade}a, $sexo)');
+
+  // ── Diagnósticos ────────────────────────────────────────────────────────────
+  final allDx = <String>{
     if (p != null && p.diagnostico.isNotEmpty) p.diagnostico,
     ...a.problemasActivos,
-  ].toSet().toList();
-  if (allDx.isNotEmpty) {
-    buf.writeln('Dx: ${allDx.join(' | ')}');
+  }.toList();
+  final dxStr = allDx.isNotEmpty
+      ? allDx.join(' | ')
+      : (isEs ? 'Não registrado' : 'Não registrado');
+  buf.writeln('🩺 ${isEs ? 'DX PRINCIPAL' : 'DX PRINCIPAL'}: $dxStr');
+  buf.writeln(dash);
+
+  // ── Estado atual (status + SV) ──────────────────────────────────────────────
+  final estadoLabel = a.estado?.label(isEs ? 'es' : 'pt')
+      ?? (isEs ? 'Sem registro' : 'Sem registro');
+  buf.writeln('🚨 ${isEs ? 'ESTADO ACTUAL' : 'ESTADO ATUAL'}: $estadoLabel');
+
+  if (!sv.isEmpty) {
+    final svParts = <String>[];
+    if (sv.pa.isNotEmpty)          svParts.add('TA ${sv.pa}');
+    if (sv.fc.isNotEmpty)          svParts.add('FC ${sv.fc}');
+    if (sv.fr.isNotEmpty)          svParts.add('FR ${sv.fr}');
+    if (sv.satO2.isNotEmpty)       svParts.add('SatO2 ${sv.satO2}%');
+    if (sv.temperatura.isNotEmpty) svParts.add('T ${sv.temperatura} °C');
+    buf.writeln('📈 ${isEs ? 'SIGNOS VITALES' : 'SINAIS VITAIS'}: ${svParts.join(', ')}');
   }
 
-  // ── Estado actual ───────────────────────────────────────────────────────
-  final estadoParts = <String>[];
-  if (a.estado != null) estadoParts.add(a.estado!.label(isEs ? 'es' : 'pt'));
-  final svParts = <String>[];
-  if (sv.pa.isNotEmpty)    svParts.add('TA ${sv.pa}');
-  if (sv.fc.isNotEmpty)    svParts.add('FC ${sv.fc}');
-  if (sv.satO2.isNotEmpty) svParts.add('SatO2 ${sv.satO2}%');
-  if (sv.temperatura.isNotEmpty) svParts.add('T ${sv.temperatura} °C');
-  if (svParts.isNotEmpty)  estadoParts.add(svParts.join(', '));
-  if (o.tratamientoActual.isNotEmpty) estadoParts.add(o.tratamientoActual);
-  final estadoStr = estadoParts.isNotEmpty
-      ? estadoParts.join('. ')
-      : (isEs ? 'Sin cambios registrados.' : 'Sem alteracoes registradas.');
-  buf.writeln('${isEs ? 'Estado actual' : 'Estado atual'}: $estadoStr');
+  // ── Suporte ativo (O2 / DVA / Infusões) — apenas tratamientoActual ─────────
+  if (o.tratamientoActual.isNotEmpty) {
+    buf.writeln('💊 ${isEs ? 'SOPORTE ACTIVO' : 'SUPORTE ATIVO'}: ${o.tratamientoActual}');
+  } else {
+    buf.writeln('💊 ${isEs ? 'SOPORTE ACTIVO' : 'SUPORTE ATIVO'}: ${isEs ? 'Sin suporte activo registrado' : 'Sem suporte ativo registrado'}');
+  }
+  buf.writeln('');
 
-  // ── Últimos cambios (A + O relevante) ──────────────────────────────────
-  final ultParts = <String>[];
-  if (a.notasEvaluacion.isNotEmpty) ultParts.add(a.notasEvaluacion);
-  if (o.examenes.laboratorio.isNotEmpty) ultParts.add(o.examenes.laboratorio);
-  buf.writeln('${isEs ? 'Ultimos cambios' : 'Ultimas alteracoes'}: '
-      '${ultParts.isNotEmpty ? ultParts.join('. ') : (isEs ? 'Sin novedades.' : 'Sem novidades.')}');
+  // ── Labs críticos / Últimas alterações (OMITE anamnese longa) ───────────────
+  buf.writeln('🔬 ${isEs ? 'ÚLTIMAS ALTERACIONES / LABS CRÍTICOS' : 'ÚLTIMAS ALTERAÇÕES / LABS CRÍTICOS'}:');
+  final labBullets = ex.laboratorio.isNotEmpty ? _toBullets(ex.laboratorio) : '';
+  final imgBullets = ex.imagenes.isNotEmpty    ? _toBullets(ex.imagenes)    : '';
+  final ecgStr     = ex.ecg.isNotEmpty         ? '• ECG: ${ex.ecg}'         : '';
+  final cultStr    = ex.culturas.isNotEmpty     ? '• Culturas: ${ex.culturas}' : '';
+  final hasLabs    = labBullets.isNotEmpty || imgBullets.isNotEmpty
+      || ecgStr.isNotEmpty || cultStr.isNotEmpty;
+  if (hasLabs) {
+    if (labBullets.isNotEmpty) buf.writeln(labBullets);
+    if (imgBullets.isNotEmpty) buf.writeln(imgBullets);
+    if (ecgStr.isNotEmpty)     buf.writeln(ecgStr);
+    if (cultStr.isNotEmpty)    buf.writeln(cultStr);
+  } else {
+    buf.writeln(isEs ? '• (Sin alteraciones registradas)' : '• (Sem alterações registradas)');
+  }
+  buf.writeln('');
 
-  // ── Pendientes (P crítico) ──────────────────────────────────────────────
-  final pendParts = <String>[];
+  // ── Pendências & Próximos Passos (TO-DO LIST) ───────────────────────────────
+  buf.writeln('🛑 ${isEs ? 'PENDIENTES & PRÓXIMOS PASOS (TO-DO LIST)' : 'PENDÊNCIAS & PRÓXIMOS PASSOS (TO-DO LIST)'}:');
+  bool hasPendencias = false;
+
   if (plan.planTerapeutico.isNotEmpty) {
-    for (final line in plan.planTerapeutico.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty)) {
-      pendParts.add(line.startsWith('-') ? line : '- $line');
-    }
+    hasPendencias = true;
+    buf.writeln(_toBullets(plan.planTerapeutico));
   }
   if (plan.criteriosAlta.isNotEmpty) {
-    pendParts.add('- ${isEs ? 'Alta si' : 'Alta se'}: ${plan.criteriosAlta}');
+    hasPendencias = true;
+    buf.writeln('• ${isEs ? 'Alta si' : 'Alta se'}: ${plan.criteriosAlta}');
   }
-  buf.writeln('${isEs ? 'Pendientes' : 'Pendencias'}:');
-  if (pendParts.isNotEmpty) {
-    for (final item in pendParts) { buf.writeln(item); }
-  } else {
-    buf.writeln(isEs ? '- Sin pendientes documentados.' : '- Sem pendencias documentadas.');
+  if (ev.farmacos.isNotEmpty) {
+    hasPendencias = true;
+    for (final f in ev.farmacos) {
+      final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
+      buf.writeln('• ${f.medicamento}$dos');
+    }
+  }
+  if (!hasPendencias) {
+    buf.writeln(isEs ? '• (Sin pendientes documentados)' : '• (Sem pendências documentadas)');
   }
 
+  buf.writeln(sep);
   return buf.toString().trimRight();
 }
-
-
 
 // ── Build 181: ModalBottomSheet Tri-Modelo de Cópia ──────────────────────────
 class _CopyOptionsSheet extends StatelessWidget {
