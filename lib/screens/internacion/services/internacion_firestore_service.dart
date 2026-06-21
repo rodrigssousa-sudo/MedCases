@@ -68,8 +68,9 @@ import 'internacion_persistence.dart';
 const String kInternacionesCollection = 'internaciones';
 
 // ── Status semânticos do ciclo de vida do documento ──────────────────────────
-const String kStatusActive  = 'active';
-const String kStatusTrashed = 'trashed';
+const String kStatusActive   = 'active';
+const String kStatusTrashed  = 'trashed';   // legado — mantido para docs antigos
+const String kStatusArchived = 'archived';  // Build 201: novo status de soft-delete
 
 // ── Modelo leve para itens da lixeira ────────────────────────────────────────
 class DeletedSession {
@@ -196,9 +197,10 @@ class InternacionFirestoreService {
       for (final doc in [...snapActive.docs, ...snapLegacy.docs]) {
         if (seen.contains(doc.id)) continue;
         final data = doc.data();
-        // Filtra docs trashados que possam aparecer na query legacy
+        // Filtra docs trashados ou arquivados que possam aparecer na query legacy
         final status = data['status'] as String?;
         if (status == kStatusTrashed) continue;
+        if (status == kStatusArchived) continue;
         seen.add(doc.id);
         final session = _sessionFromDoc(doc);
         if (session != null) all.add(session);
@@ -233,8 +235,9 @@ class InternacionFirestoreService {
           final sessions = snap.docs
               .where((doc) {
                 final data = doc.data();
-                // Salvaguarda dupla: exclui trashados + isDeleted==true legados
+                // Salvaguarda tripla: exclui archived + trashed + isDeleted==true
                 final status = data['status'] as String?;
+                if (status == kStatusArchived) return false;
                 if (status == kStatusTrashed) return false;
                 final isDeleted = data['isDeleted'];
                 if (isDeleted == true) return false;
@@ -251,23 +254,25 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // SOFT DELETE — BUILD 186 FIX 3
-  // Grava DOIS campos: status:'trashed' + isDeleted:true + deletedAt.
+  // SOFT DELETE — Build 201
+  // Grava status:'archived' + isDeleted:true + deletedAt.
   // NUNCA chama .delete() nativo — dados ficam no Firestore por 30 dias.
+  // Nota: kStatusArchived ('archived') é o novo padrão semântico (Build 201).
+  //       Docs legados com status:'trashed' ainda são suportados na lixeira.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> softDelete(String uid, String sessionKey) async {
     try {
       await _col(uid).doc(sessionKey).update({
-        'status': kStatusTrashed,
+        'status': kStatusArchived,
         'isDeleted': true,
         'deletedAt': FieldValue.serverTimestamp(),
       });
-      debugPrint('[InternFire] softDelete OK → $sessionKey');
+      debugPrint('[InternFire] softDelete OK → $sessionKey (archived)');
     } catch (e) {
       // update() falha se o doc não existe; tenta set com merge como fallback
       try {
         await _col(uid).doc(sessionKey).set({
-          'status': kStatusTrashed,
+          'status': kStatusArchived,
           'isDeleted': true,
           'deletedAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
@@ -279,50 +284,73 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RESTORE — recupera da lixeira (status:'trashed' → 'active')
-  // BUILD 186: usa update() para não sobrescrever outros campos.
+  // RESTORE — recupera da lixeira (status:'archived'|'trashed' → 'active')
+  // Build 201: funciona com ambos kStatusArchived e kStatusTrashed (legado).
+  // Usa update() para não sobrescrever outros campos.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> restoreSession(String uid, String sessionKey) async {
     try {
       await _col(uid).doc(sessionKey).update({
         'status': kStatusActive,
         'isDeleted': false,
-        'deletedAt': FieldValue.delete(),
+        'deletedAt': FieldValue.delete(), // remove o timestamp de exclusão
       });
-      debugPrint('[InternFire] restoreSession OK → $sessionKey');
+      debugPrint('[InternFire] restoreSession OK → $sessionKey (active)');
     } catch (e) {
       debugPrint('[InternFire] restoreSession ERRO: $e');
     }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // GET DELETED — query para a lixeira
-  // BUILD 186 FIX 3: filtra status=='trashed' (semanticamente claro).
-  // Backward-compat: também filtra isDeleted==true para docs legados.
+  // GET DELETED — query para a lixeira (Build 201)
+  //
+  // CORREÇÃO DE ÍNDICE COMPOSTO:
+  //   O bug anterior usava .where(...).orderBy('deletedAt') — isso requer um
+  //   índice composto {campo, deletedAt} que frequentemente não existe no
+  //   projeto Firestore, fazendo a query lançar FirebaseException silenciosa
+  //   (capturada pelo catch) e retornar [] — lixeira sempre vazia.
+  //
+  // SOLUÇÃO: Remove .orderBy() das queries Firestore (single-field queries
+  // usam índices automáticos). Ordena client-side após receber os docs.
+  //
+  // MULTI-STATUS: Query agora inclui TRÊS queries para cobertura total:
+  //   1. status=='archived'  (Build 201 — novo padrão)  ← single-field index
+  //   2. status=='trashed'   (legado — docs antigos)    ← single-field index
+  //   3. isDeleted==true     (backward-compat)           ← single-field index
   // ─────────────────────────────────────────────────────────────────────────
   static Future<List<DeletedSession>> getDeletedSessions(String uid) async {
     try {
-      // Query principal: status=='trashed'
-      final snap = await _col(uid)
-          .where('status', isEqualTo: kStatusTrashed)
-          .orderBy('deletedAt', descending: true)
+      // Query 1: status=='archived' (Build 201 — novo padrão, SEM .orderBy)
+      final snapArchived = await _col(uid)
+          .where('status', isEqualTo: kStatusArchived)
           .get();
 
-      // Backward-compat: docs marcados isDeleted==true sem campo 'status'
+      // Query 2: status=='trashed' (legado — docs criados antes do Build 201)
+      final snapTrashed = await _col(uid)
+          .where('status', isEqualTo: kStatusTrashed)
+          .get();
+
+      // Query 3: isDeleted==true (backward-compat — docs sem campo 'status')
       final snapLegacy = await _col(uid)
           .where('isDeleted', isEqualTo: true)
-          .orderBy('deletedAt', descending: true)
           .get();
 
       final seen = <String>{};
       final all = <DeletedSession>[];
-      for (final doc in [...snap.docs, ...snapLegacy.docs]) {
+      // Processa archived + trashed + legacy, deduplicando por doc.id
+      for (final doc in [...snapArchived.docs, ...snapTrashed.docs, ...snapLegacy.docs]) {
         if (seen.contains(doc.id)) continue;
+        // Exclui docs ativos que possam aparecer na query legacy (isDeleted:true legado)
+        final docData = doc.data();
+        final docStatus = docData['status'] as String?;
+        if (docStatus == kStatusActive) continue;
         seen.add(doc.id);
         final ds = _deletedFromDoc(doc);
         if (ds != null) all.add(ds);
       }
+      // Ordena client-side por deletedAt desc (sem depender de índice Firestore)
       all.sort((a, b) => b.deletedAt.compareTo(a.deletedAt));
+      debugPrint('[InternFire] getDeletedSessions OK → ${all.length} itens na lixeira');
       return all;
     } catch (e) {
       debugPrint('[InternFire] getDeletedSessions ERRO: $e');
@@ -478,9 +506,10 @@ class InternacionFirestoreService {
       final data = doc.data();
       if (data == null) return null;
 
-      // Build 186: filtra documentos trashados que escapem das queries
+      // Build 186+201: filtra docs trashados ou arquivados que escapem das queries
       final status = data['status'] as String?;
       if (status == kStatusTrashed) return null;
+      if (status == kStatusArchived) return null;
 
       final pacienteJson = (data['paciente'] as Map<String, dynamic>?) ?? {};
       final historialJson = (data['historial'] as List?) ?? [];
