@@ -1611,7 +1611,23 @@ class _AiScreenState extends State<AiScreen> {
                       // Remove o pre-fill; o médico toca o chip e a resposta é enviada
                       // imediatamente sem precisar clicar no botão de envio.
                       onChipTap: _isStreaming ? null : (chipText) {
-                        // Clean up the text for sending
+                        // Build 187: Detallar... uses sentinel '__DETAIL__:<question>'
+                        // → focus TextField + prefill context prefix (no auto-send)
+                        if (chipText.startsWith('__DETAIL__:')) {
+                          final rawQ = chipText.substring('__DETAIL__:'.length).trim();
+                          // Build context prefix from the question text
+                          final prefix = rawQ.isNotEmpty
+                              ? '$rawQ: '
+                              : '';
+                          _queryCtrl.text = prefix;
+                          // Move cursor to end of pre-filled text
+                          _queryCtrl.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _queryCtrl.text.length),
+                          );
+                          _focusNode.requestFocus();
+                          return;
+                        }
+                        // Clean up the text for auto-sending
                         String sendText = chipText.trim();
                         if (sendText.startsWith('📌')) {
                           sendText = sendText.substring('📌'.length).trim();
@@ -6156,7 +6172,9 @@ class _InteractiveChipGroup extends StatelessWidget {
         accentColor: accentColor,
         onYes: () => onChipTap(_isEs ? 'Sí' : 'Sim'),
         onNo:  () => onChipTap(_isEs ? 'No' : 'Não'),
-        onFull: () => onChipTap(display),
+        // Build 187: Detallar... sends sentinel — upstream handler focuses
+        // the TextField with context prefix instead of auto-submitting.
+        onDetail: () => onChipTap('__DETAIL__:$display'),
       );
     } else {
       // Single action chip — send the action text directly
@@ -6180,7 +6198,8 @@ class _BinaryChipGroup extends StatelessWidget {
   final Color accentColor;
   final VoidCallback onYes;
   final VoidCallback onNo;
-  final VoidCallback onFull; // send the full question text as fallback
+  /// Build 187: 'Detallar...' → focus TextField with context prefix (no auto-send)
+  final VoidCallback onDetail;
 
   const _BinaryChipGroup({
     required this.questionLabel,
@@ -6189,7 +6208,7 @@ class _BinaryChipGroup extends StatelessWidget {
     required this.accentColor,
     required this.onYes,
     required this.onNo,
-    required this.onFull,
+    required this.onDetail,
   });
 
   @override
@@ -6262,7 +6281,7 @@ class _BinaryChipGroup extends StatelessWidget {
                 bgColor: accentColor.withValues(alpha: dark ? 0.10 : 0.06),
                 borderColor: accentColor.withValues(alpha: 0.35),
                 textColor: accentColor,
-                onTap: onFull,
+                onTap: onDetail,
               ),
             ],
           ),

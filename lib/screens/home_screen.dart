@@ -313,6 +313,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           widget.onTabChange(4);
                         },
                         onManageTap: () => showPlantaoManageSheet(ctx),
+                        // Build 187: tap no card → aba Adulto (InternacionScreen)
+                        onOpenInternacion: () => widget.onTabChange(3),
                       ),
                     ),
                   ]),
@@ -456,6 +458,8 @@ class _HomeScreenState extends State<HomeScreen> {
               widget.onTabChange(4);
             },
             onManageTap: () => showPlantaoManageSheet(context),
+            // Build 187: tap no card → aba Adulto (index 3 = InternacionScreen)
+            onOpenInternacion: () => widget.onTabChange(3),
           ),
           const SizedBox(height: 10),
 
@@ -2960,6 +2964,8 @@ class _HomeMiGuardiaSection extends StatelessWidget {
   final Function(dynamic) onOpenDrug;
   final Function(String) onOpenCalc;
   final VoidCallback onManageTap;
+  // Build 187: atalho de card → aba Adulto (InternacionScreen)
+  final VoidCallback? onOpenInternacion;
 
   const _HomeMiGuardiaSection({
     required this.dark,
@@ -2967,6 +2973,7 @@ class _HomeMiGuardiaSection extends StatelessWidget {
     required this.onOpenDrug,
     required this.onOpenCalc,
     required this.onManageTap,
+    this.onOpenInternacion,
   });
 
   @override
@@ -3006,6 +3013,7 @@ class _HomeMiGuardiaSection extends StatelessWidget {
                   onOpenDrug:  onOpenDrug,
                   onOpenCalc:  onOpenCalc,
                   onManageTap: onManageTap,
+                  onOpenInternacion: onOpenInternacion,
                 ),
               ),
             ),

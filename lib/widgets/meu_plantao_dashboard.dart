@@ -68,12 +68,15 @@ class MeuPlantaoDashboard extends StatefulWidget {
   final void Function(DrugModel drug) onOpenDrug;
   final void Function(String calcId) onOpenCalc;
   final void Function() onManageTap;
+  // Build 187: navega para a aba Adulto (InternacionScreen) ao tocar card
+  final void Function()? onOpenInternacion;
 
   const MeuPlantaoDashboard({
     super.key,
     required this.onOpenDrug,
     required this.onOpenCalc,
     required this.onManageTap,
+    this.onOpenInternacion,
   });
 
   @override
@@ -307,6 +310,7 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
                           onOpenCalc: widget.onOpenCalc,
                           onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
                           onEditPatient: (pt) => _showPatientEditSheet(context, isEs, c, p, existing: pt),
+                          onOpenInternacion: widget.onOpenInternacion,
                         ),
                 )
               : const SizedBox.shrink(),
@@ -514,6 +518,8 @@ class _PlantaoContent extends StatelessWidget {
   final void Function(String) onOpenCalc;
   final VoidCallback onAddPatient;
   final void Function(PlantaoPatient) onEditPatient;
+  // Build 187: navega para InternacionScreen ao tocar card
+  final void Function()? onOpenInternacion;
 
   const _PlantaoContent({
     required this.isEs,
@@ -524,6 +530,7 @@ class _PlantaoContent extends StatelessWidget {
     required this.onOpenCalc,
     required this.onAddPatient,
     required this.onEditPatient,
+    this.onOpenInternacion,
   });
 
   @override
@@ -546,6 +553,7 @@ class _PlantaoContent extends StatelessWidget {
             sessions: firestoreSessions,
             isEs: isEs,
             colors: c,
+            onOpenInternacion: onOpenInternacion,
           ),
           if (hasDrugs || hasCalcs) const SizedBox(height: 12),
         ] else ...[
@@ -692,11 +700,14 @@ class _FirestoreSessionsColumn extends StatelessWidget {
   final List<PacienteSession> sessions;
   final bool isEs;
   final AppColors colors;
+  // Build 187: callback para navegar até InternacionScreen
+  final void Function()? onOpenInternacion;
 
   const _FirestoreSessionsColumn({
     required this.sessions,
     required this.isEs,
     required this.colors,
+    this.onOpenInternacion,
   });
 
   @override
@@ -708,6 +719,7 @@ class _FirestoreSessionsColumn extends StatelessWidget {
             session: sessions[i],
             isEs: isEs,
             colors: colors,
+            onOpenInternacion: onOpenInternacion,
           ),
           if (i < sessions.length - 1) const SizedBox(height: 8),
         ],
@@ -720,11 +732,14 @@ class _FirestoreSessionCard extends StatelessWidget {
   final PacienteSession session;
   final bool isEs;
   final AppColors colors;
+  // Build 187: navega para InternacionScreen ao tocar o card
+  final void Function()? onOpenInternacion;
 
   const _FirestoreSessionCard({
     required this.session,
     required this.isEs,
     required this.colors,
+    this.onOpenInternacion,
     super.key,
   });
 
@@ -740,7 +755,21 @@ class _FirestoreSessionCard extends StatelessWidget {
     // FIX 2: triage color — keyword-based on diagnosis
     final triageColor = _triageColorFromDiag(diag);
 
-    return AnimatedContainer(
+    // Build 187: wraps card with Material+InkWell for tap-to-navigate
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onOpenInternacion != null
+            ? () {
+                AppHaptics.selection(context);
+                onOpenInternacion!();
+              }
+            : null,
+        borderRadius: BorderRadius.circular(14),
+        splashColor: triageColor.withValues(alpha: 0.10),
+        highlightColor: triageColor.withValues(alpha: 0.06),
+        child: AnimatedContainer(
       duration: const Duration(milliseconds: 220),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -843,7 +872,9 @@ class _FirestoreSessionCard extends StatelessWidget {
           Icon(Icons.circle, size: 8, color: triageColor),
         ],
       ),
-    );
+    ),  // end InkWell child (AnimatedContainer)
+      ),  // end InkWell
+    );  // end Material
   }
 }
 
