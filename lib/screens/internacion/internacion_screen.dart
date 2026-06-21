@@ -196,40 +196,60 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
 
     // ── Build 171: Edit mode → overwrite; else → append ──────────────────
+    final List<EvolucionModel> updatedHistorial;
+    if (_isEditMode && _editingEvolucionId != null) {
+      updatedHistorial = [
+        for (final e in _historial)
+          if (e.id == _editingEvolucionId) ev.copyWith(id: _editingEvolucionId) else e,
+      ];
+    } else {
+      updatedHistorial = [..._historial, ev];
+    }
+
     setState(() {
-      if (_isEditMode && _editingEvolucionId != null) {
-        // Sobrescreve o registro existente (mesmo id)
-        _historial = [
-          for (final e in _historial)
-            if (e.id == _editingEvolucionId) ev.copyWith(id: _editingEvolucionId) else e,
-        ];
-      } else {
-        // Nova evolução — append normal
-        _historial = [..._historial, ev];
-      }
+      _historial = updatedHistorial;
       _draftEvolucion = _newDraft();
       _isEditMode = false;
       _editingEvolucionId = null;
     });
 
+    // ── Build 197: Captura snapshot ANTES do reset para injeção otimista ──
+    // Constrói o PacienteSession que acabará de ser gravado no Firestore,
+    // usando os dados que ainda estão vivos no estado antes do reset.
+    // Isso evita esperar o round-trip do Firestore para atualizar o grid.
+    final savedPaciente = _paciente;
+    final savedHistorial = List<EvolucionModel>.unmodifiable(updatedHistorial);
+    final sessionKeyForNew = _currentSessionKey ??
+        InternacionFirestoreService.sessionKey(savedPaciente);
+    final optimisticSession = PacienteSession(
+      sessionKey: sessionKeyForNew,
+      paciente: savedPaciente,
+      historial: savedHistorial,
+      savedAt: DateTime.now(),
+    );
+
     await _persistSession();
 
-    // Build 191 FIX C: NÃO chamar _loadSessionsLocal() após save.
-    // O Firestore stream (sessionsStream) é a ÚNICA fonte de verdade —
-    // chamar _loadSessionsLocal() aqui sobreescrevia _savedSessions com dados
-    // do SQLite local (potencialmente desatualizados), quebrando a reatividade.
-    // O StreamBuilder em _initSessions() atualiza _savedSessions automaticamente
-    // quando o Firestore confirma a gravação.
-
-    // ── Reset completo do workspace após salvar ────────────────────────────
+    // Build 191 FIX C + Build 197: Inject optimistic session immediately.
+    // Injeta a sessão recém-salva diretamente em _savedSessions SEM esperar
+    // o round-trip do Firestore. O stream confirmará e substituirá depois.
+    // Estratégia: remove a versão antiga (se existia) e insere a nova no topo.
+    if (!mounted) return;
     final freshDraft = _newDraft();
     setState(() {
+      // Workspace reset
       _paciente = const PacienteInternacaoData(diaInternacao: 1);
       _historial = [];
       _draftEvolucion = freshDraft;
       _currentSessionKey = null;
       _isEditMode = false;
       _editingEvolucionId = null;
+      // Injeção otimista: insere sessão no topo de _savedSessions
+      // Remove versão antiga (mesma chave) + insere versão nova atualizada
+      final otherSessions = _savedSessions
+          .where((s) => s.sessionKey != sessionKeyForNew)
+          .toList();
+      _savedSessions = [optimisticSession, ...otherSessions];
     });
     _soapKey.currentState?.resetSoap(freshDraft);
 
@@ -285,7 +305,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
     try {
       final Map<String, PacienteSession> byPatient = {};
       for (final s in _savedSessions) {
-        final nome = s.paciente?.nome?.trim().toLowerCase() ?? '';
+        final nome = s.paciente.nome.trim().toLowerCase();
         final key = nome.isNotEmpty ? nome : s.sessionKey;
         final existing = byPatient[key];
         if (existing == null || s.savedAt.isAfter(existing.savedAt)) {
@@ -540,7 +560,17 @@ class _InternacionScreenState extends State<InternacionScreen> {
     if (confirmed != true || !mounted) return;
 
     // 168-6: Auto-save silencioso se dirty
+    // Build 197: captura snapshot pré-reset para injeção otimista (igual ao _onSaveEvolucion)
+    PacienteSession? autoSaveOptimistic;
     if (_isDirty && _historial.isNotEmpty) {
+      final autoKeyForNew = _currentSessionKey ??
+          InternacionFirestoreService.sessionKey(_paciente);
+      autoSaveOptimistic = PacienteSession(
+        sessionKey: autoKeyForNew,
+        paciente: _paciente,
+        historial: List<EvolucionModel>.unmodifiable(_historial),
+        savedAt: DateTime.now(),
+      );
       await _persistSession();
     }
 
@@ -551,6 +581,14 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _historial = [];
       _draftEvolucion = freshDraft;
       _currentSessionKey = null;
+      // Build 197: injeta sessão auto-salva otimisticamente no grid
+      if (autoSaveOptimistic != null) {
+        final snap = autoSaveOptimistic;
+        final otherSessions = _savedSessions
+            .where((s) => s.sessionKey != snap.sessionKey)
+            .toList();
+        _savedSessions = [snap, ...otherSessions];
+      }
     });
     _soapKey.currentState?.resetSoap(freshDraft);
 
