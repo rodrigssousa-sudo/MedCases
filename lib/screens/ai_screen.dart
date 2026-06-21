@@ -6223,18 +6223,28 @@ class _ChatHistorySheet extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────────────────────────────
 // Build 184: _InteractiveChipGroup — Dynamic Choice Chips with Auto-Submit
+// Build 190: Smart Question Classification (BINARY_QUERY vs OPEN_QUERY)
 //
 // Replaces the old _ClosingQuestionChip (single pill → prefill).
 // Architecture:
-//   1. BINARY question (contains "?"): renders question label + [Sim ✓] [Não ✗]
-//      chips (or [Sí] / [No] for ES). Tapping any chip calls onChipTap(answer)
-//      immediately — no prefill, direct _send() upstream.
-//   2. ACTION chip (📌 first-person, no "?"): renders single "continue →" pill.
+//   1. BINARY_QUERY — yes/no confirmatory question (ex: "Tem febre?", "Há dispneia?"):
+//      renders question label + [Sim ✓] [Não ✗] [💬 Detalhar…]
+//   2. OPEN_QUERY — quantitative/open-ended question (ex: "Qual a pontuação?"):
+//      renders question label + [💬 Responder…] ONLY — Sim/Não are FORBIDDEN.
+//      Tapping Responder fires __DETAIL__ sentinel → focus + prefill TextField.
+//   3. ACTION chip (📌 first-person, no "?"): renders single "continue →" pill.
 //      Tapping sends the full action text.
 //
-// The onChipTap callback receives the ANSWER text (e.g. "Sim" or "Não"),
-// not the question. The upstream handler in _AiScreenState auto-sends it.
+// Classification uses keyword detection in PT + ES to identify open questions.
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Question type classification for adaptive chip rendering (Build 190)
+enum _QuestionType {
+  binary,   // yes/no confirmatory → [Sim][Não][Detalhar]
+  open,     // quantitative/open   → [Responder…] only
+  action,   // first-person 📌     → single action pill
+}
+
 class _InteractiveChipGroup extends StatelessWidget {
   final String question;   // raw 📌 line from AI
   final bool dark;
@@ -6257,43 +6267,181 @@ class _InteractiveChipGroup extends StatelessWidget {
     return d;
   }
 
-  // A binary question is one that ends with '?' or contains '¿'
-  bool _isBinaryQuestion(String clean) {
-    if (clean.endsWith('?')) return true;
-    if (clean.contains('¿')) return true;
-    return false;
+  // Build 190: Classify question into binary, open, or action
+  _QuestionType _classifyQuestion(String clean) {
+    // No "?" → action chip (first-person continuation)
+    if (!clean.endsWith('?') && !clean.contains('¿') && !clean.contains('?')) {
+      return _QuestionType.action;
+    }
+
+    // Open/quantitative question detection — PT + ES keywords
+    // These indicate the answer is a value, score, list, or description,
+    // NOT a simple yes/no confirmation.
+    final lower = clean.toLowerCase();
+
+    // Portuguese open-question triggers
+    const openKeywordsPt = [
+      'qual ', 'quais ', 'quanto ', 'quantos ', 'quantas ',
+      'qual a', 'qual o', 'quais os', 'quais as',
+      'qual foi', 'qual é', 'quais são',
+      'valores', 'valor ', 'escore', 'score',
+      'pontuação', 'pontuacao', 'resultado',
+      'nível', 'nivel', 'dose', 'doses',
+      'número', 'numero', 'quantidade',
+      'data ', 'quando ', 'como ', 'como está',
+      'em que', 'por que', 'por quê',
+      'descreva', 'descrever', 'informe', 'liste',
+      'taxa', 'frequência', 'frequencia',
+      'pressão', 'pressao', 'temperatura',
+      'saturação', 'saturacao', 'glasgow',
+    ];
+
+    // Spanish open-question triggers
+    const openKeywordsEs = [
+      'cuál ', 'cuáles ', 'cuánto ', 'cuántos ', 'cuántas ',
+      'cual ', 'cuales ', 'cuanto ', 'cuantos ', 'cuantas ',
+      'cuál es', 'cuáles son', 'cuál fue',
+      'valores', 'valor ', 'puntaje', 'puntuación', 'puntuacion',
+      'escore', 'score', 'resultado',
+      'nivel ', 'niveles', 'dosis ',
+      'número', 'numero', 'cantidad',
+      'fecha ', 'cuándo ', 'cuando ', 'cómo ', 'como está',
+      'en qué', 'por qué', 'por que',
+      'describa', 'describir', 'informe', 'liste',
+      'tasa ', 'frecuencia ', 'frecuencia',
+      'presión', 'presion', 'temperatura',
+      'saturación', 'saturacion', 'glasgow',
+    ];
+
+    final keywords = _isEs ? openKeywordsEs : openKeywordsPt;
+    for (final kw in keywords) {
+      if (lower.contains(kw)) return _QuestionType.open;
+    }
+
+    // Default: binary confirmatory question
+    return _QuestionType.binary;
   }
 
   @override
   Widget build(BuildContext context) {
     final display = _cleanDisplay(question);
-    final isBinary = _isBinaryQuestion(display);
+    final qType   = _classifyQuestion(display);
 
     final accentColor = dark
         ? const Color(0xFF00E5FF)
         : const Color(0xFF008CA4);
 
-    if (isBinary) {
-      return _BinaryChipGroup(
-        questionLabel: display,
-        dark: dark,
-        isEs: _isEs,
-        accentColor: accentColor,
-        onYes: () => onChipTap(_isEs ? 'Sí' : 'Sim'),
-        onNo:  () => onChipTap(_isEs ? 'No' : 'Não'),
-        // Build 187: Detallar... sends sentinel — upstream handler focuses
-        // the TextField with context prefix instead of auto-submitting.
-        onDetail: () => onChipTap('__DETAIL__:$display'),
-      );
-    } else {
-      // Single action chip — send the action text directly
-      return _ActionPillChip(
-        label: display,
-        dark: dark,
-        accentColor: accentColor,
-        onTap: () => onChipTap(display),
-      );
+    switch (qType) {
+      case _QuestionType.binary:
+        return _BinaryChipGroup(
+          questionLabel: display,
+          dark: dark,
+          isEs: _isEs,
+          accentColor: accentColor,
+          onYes: () => onChipTap(_isEs ? 'Sí' : 'Sim'),
+          onNo:  () => onChipTap(_isEs ? 'No' : 'Não'),
+          // Build 187: Detallar... sends sentinel — upstream handler focuses
+          // the TextField with context prefix instead of auto-submitting.
+          onDetail: () => onChipTap('__DETAIL__:$display'),
+        );
+
+      case _QuestionType.open:
+        // Build 190: OPEN question — only [💬 Responder…] button
+        // Fires __DETAIL__ sentinel → same focus+prefill path as Detalhar
+        return _OpenQueryChipGroup(
+          questionLabel: display,
+          dark: dark,
+          isEs: _isEs,
+          accentColor: accentColor,
+          onResponder: () => onChipTap('__DETAIL__:$display'),
+        );
+
+      case _QuestionType.action:
+        // Single action chip — send the action text directly
+        return _ActionPillChip(
+          label: display,
+          dark: dark,
+          accentColor: accentColor,
+          onTap: () => onChipTap(display),
+        );
     }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 190: _OpenQueryChipGroup
+// Rendered for OPEN/QUANTITATIVE questions (Qual, Quanto, Escore, etc.)
+// Shows the question label + single [💬 Responder…] button.
+// Tapping fires the __DETAIL__ sentinel → focus TextField + prefill.
+// Sim/Não are EXPRESSLY FORBIDDEN for open questions.
+// ─────────────────────────────────────────────────────────────────────────────
+class _OpenQueryChipGroup extends StatelessWidget {
+  final String questionLabel;
+  final bool dark;
+  final bool isEs;
+  final Color accentColor;
+  final VoidCallback onResponder;
+
+  const _OpenQueryChipGroup({
+    required this.questionLabel,
+    required this.dark,
+    required this.isEs,
+    required this.accentColor,
+    required this.onResponder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelColor = dark ? const Color(0xFFCDD8E3) : const Color(0xFF374151);
+    final subBgColor = dark
+        ? Colors.white.withValues(alpha: 0.05)
+        : const Color(0xFFF0F9FF);
+    final borderColor = accentColor.withValues(alpha: 0.28);
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+      decoration: BoxDecoration(
+        color: subBgColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: 1.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Question label ─────────────────────────────────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.edit_note_rounded, size: 14, color: accentColor),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  questionLabel,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    color: labelColor,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // ── Single [💬 Responder…] button ──────────────────────────────
+          _AnswerChip(
+            label: isEs ? 'Responder…' : 'Responder…',
+            emoji: '💬',
+            bgColor: accentColor.withValues(alpha: dark ? 0.10 : 0.06),
+            borderColor: accentColor.withValues(alpha: 0.35),
+            textColor: accentColor,
+            onTap: onResponder,
+          ),
+        ],
+      ),
+    );
   }
 }
 
