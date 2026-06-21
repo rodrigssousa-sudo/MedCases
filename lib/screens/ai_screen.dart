@@ -1607,26 +1607,20 @@ class _AiScreenState extends State<AiScreen> {
                       onBlockRevealed: _onBlockRevealed,
                       // Mostra cursor ▌ apenas na bolha que está sendo preenchida
                       isStreaming: _isStreaming && i == _lastAiIndex,
-                      // Build 175 — Chip: injeta texto no TextField SEM auto-send.
-                      // O médico lê a pergunta da IA, digita a resposta clínica
-                      // e envia manualmente — evita loop de perguntas ↔ perguntas.
+                      // Build 184 — Auto-Submit: chip tap → direto para _send().
+                      // Remove o pre-fill; o médico toca o chip e a resposta é enviada
+                      // imediatamente sem precisar clicar no botão de envio.
                       onChipTap: _isStreaming ? null : (chipText) {
-                        // Remove o prefixo 📌 para o TextField mostrar texto limpo
-                        String injectText = chipText.trim();
-                        if (injectText.startsWith('📌')) {
-                          injectText = injectText.substring('📌'.length).trim();
+                        // Clean up the text for sending
+                        String sendText = chipText.trim();
+                        if (sendText.startsWith('📌')) {
+                          sendText = sendText.substring('📌'.length).trim();
                         }
-                        // Remove "?" final se houver (a linha é uma sugestão de ação,
-                        // não deve ser reenviada como pergunta ao modelo)
-                        if (injectText.endsWith('?')) {
-                          injectText = injectText.substring(0, injectText.length - 1).trim();
-                        }
-                        _queryCtrl.text = injectText;
-                        _queryCtrl.selection = TextSelection.fromPosition(
-                          TextPosition(offset: injectText.length),
-                        );
-                        // Foca o campo para o médico editar/completar antes de enviar
-                        _focusNode.requestFocus();
+                        if (sendText.isEmpty) return;
+                        // AUTO-SUBMIT: scroll + send immediately — no prefill
+                        _userScrolledUp = false;
+                        _scrollDown(force: true);
+                        _sendDebounced(sendText, context.read<AppProvider>());
                       },
                     ),
                     // Tarjeta de evidencia si el mensaje menciona un fármaco
@@ -4251,13 +4245,14 @@ class _AiBlockBubble extends StatelessWidget {
           children: [
             ...widgets,
 
-            // ── Build 120: ActionChip da pergunta de fechamento ───────────
+            // ── Build 184: Interactive Choice Chips — auto-submit ─────────
             if (_chipQuestion != null && onChipTap != null) ...[
               const SizedBox(height: 10),
-              _ClosingQuestionChip(
+              _InteractiveChipGroup(
                 question: _chipQuestion!,
                 dark: dark,
-                onTap: () => onChipTap!(_chipQuestion!),
+                lang: lang,
+                onChipTap: onChipTap!,
               ),
               const SizedBox(height: 4),
             ],
@@ -6101,36 +6096,262 @@ class _ChatHistorySheet extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _ClosingQuestionChip — Build 170
-// Botão interativo que renderiza a ação de continuação clínica.
-// Build 170: detecta linhas 📌 como chips primários (não requer '?').
-// Ao tocar, injeta o texto no input e dispara _send() automaticamente.
-// Visual: chip verde-teal com ícone de toque, efeito InkWell.
 // ─────────────────────────────────────────────────────────────────────────────
-class _ClosingQuestionChip extends StatelessWidget {
-  final String question;
+// Build 184: _InteractiveChipGroup — Dynamic Choice Chips with Auto-Submit
+//
+// Replaces the old _ClosingQuestionChip (single pill → prefill).
+// Architecture:
+//   1. BINARY question (contains "?"): renders question label + [Sim ✓] [Não ✗]
+//      chips (or [Sí] / [No] for ES). Tapping any chip calls onChipTap(answer)
+//      immediately — no prefill, direct _send() upstream.
+//   2. ACTION chip (📌 first-person, no "?"): renders single "continue →" pill.
+//      Tapping sends the full action text.
+//
+// The onChipTap callback receives the ANSWER text (e.g. "Sim" or "Não"),
+// not the question. The upstream handler in _AiScreenState auto-sends it.
+// ─────────────────────────────────────────────────────────────────────────────
+class _InteractiveChipGroup extends StatelessWidget {
+  final String question;   // raw 📌 line from AI
   final bool dark;
-  final VoidCallback onTap;
+  final String lang;       // 'es' or 'pt'
+  final void Function(String chipText) onChipTap;
 
-  const _ClosingQuestionChip({
+  const _InteractiveChipGroup({
     required this.question,
     required this.dark,
+    required this.lang,
+    required this.onChipTap,
+  });
+
+  bool get _isEs => lang == 'es';
+
+  // Strips 📌 prefix from the question for display
+  String _cleanDisplay(String raw) {
+    String d = raw.trim();
+    if (d.startsWith('📌')) d = d.substring('📌'.length).trim();
+    return d;
+  }
+
+  // A binary question is one that ends with '?' or contains '¿'
+  bool _isBinaryQuestion(String clean) {
+    if (clean.endsWith('?')) return true;
+    if (clean.contains('¿')) return true;
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final display = _cleanDisplay(question);
+    final isBinary = _isBinaryQuestion(display);
+
+    final accentColor = dark
+        ? const Color(0xFF00E5FF)
+        : const Color(0xFF008CA4);
+
+    if (isBinary) {
+      return _BinaryChipGroup(
+        questionLabel: display,
+        dark: dark,
+        isEs: _isEs,
+        accentColor: accentColor,
+        onYes: () => onChipTap(_isEs ? 'Sí' : 'Sim'),
+        onNo:  () => onChipTap(_isEs ? 'No' : 'Não'),
+        onFull: () => onChipTap(display),
+      );
+    } else {
+      // Single action chip — send the action text directly
+      return _ActionPillChip(
+        label: display,
+        dark: dark,
+        accentColor: accentColor,
+        onTap: () => onChipTap(display),
+      );
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Binary chip group: question label + [Sim / Sí] [Não / No] buttons
+// ─────────────────────────────────────────────────────────────────────────────
+class _BinaryChipGroup extends StatelessWidget {
+  final String questionLabel;
+  final bool dark;
+  final bool isEs;
+  final Color accentColor;
+  final VoidCallback onYes;
+  final VoidCallback onNo;
+  final VoidCallback onFull; // send the full question text as fallback
+
+  const _BinaryChipGroup({
+    required this.questionLabel,
+    required this.dark,
+    required this.isEs,
+    required this.accentColor,
+    required this.onYes,
+    required this.onNo,
+    required this.onFull,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final labelColor = dark ? const Color(0xFFCDD8E3) : const Color(0xFF374151);
+    final subBgColor = dark
+        ? Colors.white.withValues(alpha: 0.05)
+        : const Color(0xFFF0F9FF);
+    final borderColor = accentColor.withValues(alpha: 0.28);
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+      decoration: BoxDecoration(
+        color: subBgColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: 1.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Question label ─────────────────────────────────────────────
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.help_outline_rounded, size: 13, color: accentColor),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  questionLabel,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    color: labelColor,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // ── Binary answer chips ────────────────────────────────────────
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              // YES chip — teal/green
+              _AnswerChip(
+                label: isEs ? 'Sí' : 'Sim',
+                emoji: '✅',
+                bgColor: const Color(0xFF059669).withValues(alpha: dark ? 0.18 : 0.10),
+                borderColor: const Color(0xFF059669).withValues(alpha: 0.50),
+                textColor: dark ? const Color(0xFF34D399) : const Color(0xFF047857),
+                onTap: onYes,
+              ),
+              // NO chip — red/rose
+              _AnswerChip(
+                label: isEs ? 'No' : 'Não',
+                emoji: '❌',
+                bgColor: const Color(0xFFDC2626).withValues(alpha: dark ? 0.15 : 0.08),
+                borderColor: const Color(0xFFDC2626).withValues(alpha: 0.45),
+                textColor: dark ? const Color(0xFFF87171) : const Color(0xFFB91C1C),
+                onTap: onNo,
+              ),
+              // FULL QUESTION chip — for open-ended elaboration
+              _AnswerChip(
+                label: isEs ? 'Detallar…' : 'Detalhar…',
+                emoji: '💬',
+                bgColor: accentColor.withValues(alpha: dark ? 0.10 : 0.06),
+                borderColor: accentColor.withValues(alpha: 0.35),
+                textColor: accentColor,
+                onTap: onFull,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Single answer chip — used by _BinaryChipGroup and action chips
+// ─────────────────────────────────────────────────────────────────────────────
+class _AnswerChip extends StatelessWidget {
+  final String label;
+  final String emoji;
+  final Color bgColor;
+  final Color borderColor;
+  final Color textColor;
+  final VoidCallback onTap;
+
+  const _AnswerChip({
+    required this.label,
+    required this.emoji,
+    required this.bgColor,
+    required this.borderColor,
+    required this.textColor,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Limpa o emoji 📌 do display (é o marcador de protocolo, não precisa aparecer)
-    String display = question.trim();
-    if (display.startsWith('📌')) {
-      display = display.substring('📌'.length).trim();
-    }
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        splashColor: textColor.withValues(alpha: 0.15),
+        highlightColor: textColor.withValues(alpha: 0.08),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor, width: 1.1),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(emoji, style: const TextStyle(fontSize: 12)),
+              const SizedBox(width: 5),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: textColor,
+                  letterSpacing: 0.1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Single action pill chip — for 📌 first-person action chips (no binary)
+// ─────────────────────────────────────────────────────────────────────────────
+class _ActionPillChip extends StatelessWidget {
+  final String label;
+  final bool dark;
+  final Color accentColor;
+  final VoidCallback onTap;
+
+  const _ActionPillChip({
+    required this.label,
+    required this.dark,
+    required this.accentColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String display = label;
     if (display.length > 90) display = '${display.substring(0, 87)}…';
 
-    // Build 170: verde-teal primário — consistente com a identidade MedCases IA
-    final accentColor = dark
-        ? const Color(0xFF00E5FF)   // ciano teal (dark)
-        : const Color(0xFF008CA4);  // petróleo (light)
     final borderColor = accentColor.withValues(alpha: 0.40);
     final bgColor = accentColor.withValues(alpha: dark ? 0.09 : 0.06);
 
@@ -6152,7 +6373,7 @@ class _ClosingQuestionChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.touch_app_rounded, size: 13, color: accentColor),
+              Icon(Icons.flash_on_rounded, size: 13, color: accentColor),
               const SizedBox(width: 6),
               Flexible(
                 child: Text(
@@ -6166,7 +6387,7 @@ class _ClosingQuestionChip extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 4),
-              Icon(Icons.arrow_forward_rounded, size: 11, color: accentColor.withValues(alpha: 0.70)),
+              Icon(Icons.send_rounded, size: 11, color: accentColor.withValues(alpha: 0.70)),
             ],
           ),
         ),
