@@ -1,12 +1,13 @@
-// meu_plantao_dashboard.dart — v4
+// meu_plantao_dashboard.dart — v5 (Build 183)
 // Feature "Meu Plantão / Mi Guardia" — UI CLEAN MODULAR
 //
-// v4 CHANGES:
-//   • Header: título único sem subtítulo, gear icon discreto, botão Paciente sempre visível
-//   • Body: sem labels de seção (PACIENTES/FÁRMACOS/CALCULADORAS) — conteúdo direto
-//   • Calcs: grid 3 colunas com wrap, sem scroll horizontal forçado
-//   • Espaçamento limpo e consistente entre seções
+// v5 CHANGES (Build 183):
+//   • FIX 1: StreamBuilder listening to InternacionFirestoreService.sessionsStream(uid)
+//            — MEU PLANTÃO now shows exact same data as the Adulto tab (real-time sync)
+//   • FIX 2: Triage color mapping based on diagnosis keywords (red/yellow/green)
+//   • FIX 3: PatientAccordion hydration fixed via ValueKey(sessionKey)
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,8 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/drug_model.dart';
 import '../widgets/common_widgets.dart';
+import '../screens/internacion/services/internacion_firestore_service.dart';
+import '../screens/internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MODELO DE ATALHO DE CALCULADORA
@@ -88,6 +91,11 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   // Cache do último isEmpty para evitar chamadas redundantes de didChangeDependencies
   bool _lastIsEmpty = true;
 
+  // ── Build 183 FIX 1: Firestore stream for real-time patient sync ───────────
+  StreamSubscription<List<PacienteSession>>? _sessionsSub;
+  List<PacienteSession> _firestoreSessions = [];
+  String? _lastStreamUid;
+
   @override
   void initState() {
     super.initState();
@@ -102,8 +110,49 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
 
   @override
   void dispose() {
+    _sessionsSub?.cancel();
     _chevronCtrl.dispose();
     super.dispose();
+  }
+
+  // ── Subscribes (or re-subscribes) to the Firestore sessions stream ──────────
+  void _subscribeToSessions(String uid) {
+    if (_lastStreamUid == uid) return; // already subscribed to this uid
+    _lastStreamUid = uid;
+    _sessionsSub?.cancel();
+    _sessionsSub = InternacionFirestoreService.sessionsStream(uid).listen(
+      (sessions) {
+        if (!mounted) return;
+        setState(() => _firestoreSessions = sessions);
+        // Update isEmpty for auto-expand / auto-collapse
+        _notifyEmptyChange();
+      },
+      onError: (e) {
+        debugPrint('[MeuPlantao] sessionsStream error: $e');
+      },
+    );
+  }
+
+  void _notifyEmptyChange() {
+    AppProvider p;
+    try { p = context.read<AppProvider>(); } catch (_) { return; }
+    final hasDrugs = p.pinnedDrugs.isNotEmpty;
+    final filteredIds = p.pinnedCalcIds
+        .where((id) => !_kForbiddenCalcIds.contains(id))
+        .toList();
+    final hasPatients = _firestoreSessions.isNotEmpty;
+    final isEmpty = !hasPatients && !hasDrugs && !filteredIds.isNotEmpty;
+    if (isEmpty == _lastIsEmpty) return;
+    _lastIsEmpty = isEmpty;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (isEmpty && _expanded) {
+        setState(() { _expanded = false; _chevronCtrl.reverse(); });
+      } else if (_wasEmpty && !isEmpty && !_expanded) {
+        setState(() { _expanded = true; _chevronCtrl.forward(); });
+      }
+      _wasEmpty = isEmpty;
+    });
   }
 
   // ── Reage a mudanças no provider SEM estar dentro do build() ──────────────
@@ -127,7 +176,12 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       debugPrint('ERRO CRÍTICO MI GUARDIA [didChangeDependencies/read]: $e');
       return; // aborta silenciosamente — build() também tem guard
     }
-    final hasPatients = (p.plantaoPatients).isNotEmpty;
+
+    // ── Build 183 FIX 1: subscribe to Firestore stream when uid is available ──
+    final uid = p.currentUser?.uid;
+    if (uid != null) _subscribeToSessions(uid);
+
+    final hasPatients = _firestoreSessions.isNotEmpty;
     final hasDrugs    = (p.pinnedDrugs).isNotEmpty;
     final filteredIds = (p.pinnedCalcIds)
         .where((id) => !_kForbiddenCalcIds.contains(id))
@@ -194,10 +248,15 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     final c    = AppColors.of(context);
     final isEs = p.lang == 'es';
 
+    // ── Build 183 FIX 1: patients come from Firestore stream ─────────────────
+    final uid = p.currentUser?.uid;
+    // Subscribe in case build() is called before didChangeDependencies fires
+    if (uid != null) _subscribeToSessions(uid);
+    final firestoreSessions = _firestoreSessions;
+
     // ── Leitura defensiva de listas — nunca acessa null diretamente ──────────
-    final patients        = p.plantaoPatients;   // List.unmodifiable([]) se vazio
     final drugs           = p.pinnedDrugs;        // List.unmodifiable([]) se vazio
-    final hasPatients     = patients.isNotEmpty;
+    final hasPatients     = firestoreSessions.isNotEmpty;
     final hasDrugs        = drugs.isNotEmpty;
     // ── Filtra IDs proibidos ao nível do estado raiz ──────────────────────────
     // Garante que hasCalcs seja consistente com o que _PlantaoContent renderiza.
@@ -243,6 +302,7 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
                           isEs: isEs,
                           colors: c,
                           p: p,
+                          firestoreSessions: firestoreSessions,
                           onOpenDrug: widget.onOpenDrug,
                           onOpenCalc: widget.onOpenCalc,
                           onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
@@ -407,10 +467,49 @@ class _PlantaoHeader extends StatelessWidget {
 // CORPO COM CONTEÚDO — 3 sub-seções
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── Build 183 FIX 2: Triage color mapping based on diagnosis keywords ────────
+// RED = critical/emergency, YELLOW = urgent/intermediate, GREEN = stable
+Color _triageColorFromDiag(String diag) {
+  final d = diag.toLowerCase();
+  // RED — critical / emergency
+  const redTerms = [
+    'shock', 'choque', 'sca', 'síndromo coronario agudo', 'síndrome coronariano agudo',
+    'infarto', 'iamcsst', 'iamssst', 'parada', 'pcrce', 'sepsis severa',
+    'falla orgánica', 'falla organica', 'falha orgânica', 'falha organica',
+    'iam', 'tep instável', 'tep instavel', 'edema agudo', 'insuficiencia respiratoria aguda',
+    'insuficiência respiratória aguda', 'status epileptico', 'status epilético',
+    'coma', 'stroke', 'avc isquemico', 'avc hemorragico', 'hemorragia',
+    'hemorragia cerebral', 'iam com supra', 'emergencia hipertensiva',
+    'emergencia hipertensíva', 'emergencia hipertensiva', 'anafilaxia', 'anafilaxis',
+    'tamponamento', 'pericardico', 'pericardi', 'eap', 'insuficiencia cardíaca aguda',
+  ];
+  // YELLOW — urgent / intermediate
+  const yellowTerms = [
+    'sepsis', 'sepse', 'pneumonia', 'neumonía', 'neumonia', 'pielonefritis',
+    'pielonefrite', 'celulitis', 'celulite', 'ictericia', 'ictericia obstructiva',
+    'icterícia', 'colangitis', 'colangite', 'sdra', 'ards', 'irc descompensada',
+    'dra', 'irc', 'insuficiencia renal', 'insuficiência renal',
+    'epoc', 'epoc agudizado', 'dpoc', 'dpoc agudizado', 'crisis asmatica',
+    'crise asmática', 'hta', 'hipertension urgencia', 'hipertensão urgencia',
+    'disritmia', 'fibrilacão atrial', 'fibrilacion auricular', 'icpp', 'icc',
+    'diabetes descompensada', 'cetoacidose', 'cetoacidosis',
+    'meningitis', 'meningite', 'encefalitis', 'encefalite',
+    'trombosis', 'tvp', 'tep', 'embolismo pulmonar', 'embolia pulmonar',
+  ];
+  for (final term in redTerms) {
+    if (d.contains(term)) return const Color(0xFFEF4444); // red
+  }
+  for (final term in yellowTerms) {
+    if (d.contains(term)) return const Color(0xFFF59E0B); // amber/yellow
+  }
+  return const Color(0xFF10B981); // green = stable
+}
+
 class _PlantaoContent extends StatelessWidget {
   final bool isEs;
   final AppColors colors;
   final AppProvider p;
+  final List<PacienteSession> firestoreSessions;
   final void Function(DrugModel) onOpenDrug;
   final void Function(String) onOpenCalc;
   final VoidCallback onAddPatient;
@@ -420,6 +519,7 @@ class _PlantaoContent extends StatelessWidget {
     required this.isEs,
     required this.colors,
     required this.p,
+    required this.firestoreSessions,
     required this.onOpenDrug,
     required this.onOpenCalc,
     required this.onAddPatient,
@@ -429,28 +529,23 @@ class _PlantaoContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = colors;
-    final hasPatients = p.plantaoPatients.isNotEmpty;
+    final hasPatients = firestoreSessions.isNotEmpty; // FIX 1: Firestore-sourced
     final hasDrugs    = p.pinnedDrugs.isNotEmpty;
     // Filtra IDs proibidos antes de checar se há calcs para exibir
-    final _filteredCalcIds = p.pinnedCalcIds
+    final filteredCalcIds = p.pinnedCalcIds
         .where((id) => !_kForbiddenCalcIds.contains(id))
         .toList();
-    final hasCalcs = _filteredCalcIds.isNotEmpty;
+    final hasCalcs = filteredCalcIds.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── PACIENTES — sem label, conteúdo direto ──────────────────────────
+        // ── PACIENTES — sem label, conteúdo direto (Firestore stream) ────────
         if (hasPatients) ...[
-          _PatientsColumn(
-            patients: p.plantaoPatients,
+          _FirestoreSessionsColumn(
+            sessions: firestoreSessions,
             isEs: isEs,
             colors: c,
-            onEdit: onEditPatient,
-            onRemove: (pt) {
-              AppHaptics.medium(context);
-              p.removePlantaoPatient(pt.id);
-            },
           ),
           if (hasDrugs || hasCalcs) const SizedBox(height: 12),
         ] else ...[
@@ -478,7 +573,7 @@ class _PlantaoContent extends StatelessWidget {
         // calc_infusao e calc_prescricoes filtrados via _kForbiddenCalcIds.
         if (hasCalcs) ...[
           _PinnedCalcsGrid(
-            calcIds: _filteredCalcIds,
+            calcIds: filteredCalcIds,
             isEs: isEs,
             colors: c,
             onTap: onOpenCalc,
@@ -589,7 +684,171 @@ class _PatientsColumn extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CARD DE PACIENTE
+// BUILD 183 FIX 1+2: COLUNA DE SESSÕES FIRESTORE (MEU PLANTÃO)
+// Renderiza PacienteSession com triage color dinâmico baseado em diagnóstico
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _FirestoreSessionsColumn extends StatelessWidget {
+  final List<PacienteSession> sessions;
+  final bool isEs;
+  final AppColors colors;
+
+  const _FirestoreSessionsColumn({
+    required this.sessions,
+    required this.isEs,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (int i = 0; i < sessions.length; i++) ...[
+          _FirestoreSessionCard(
+            session: sessions[i],
+            isEs: isEs,
+            colors: colors,
+          ),
+          if (i < sessions.length - 1) const SizedBox(height: 8),
+        ],
+      ],
+    );
+  }
+}
+
+class _FirestoreSessionCard extends StatelessWidget {
+  final PacienteSession session;
+  final bool isEs;
+  final AppColors colors;
+
+  const _FirestoreSessionCard({
+    required this.session,
+    required this.isEs,
+    required this.colors,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = colors;
+    final p = session.paciente;
+    final nome = p.nome.isNotEmpty ? p.nome : (isEs ? 'Paciente' : 'Paciente');
+    final cama = p.cama.isNotEmpty ? p.cama : '';
+    final diag = p.diagnostico;
+    final evol = session.historial.length;
+
+    // FIX 2: triage color — keyword-based on diagnosis
+    final triageColor = _triageColorFromDiag(diag);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: c.cardBg,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: triageColor.withValues(alpha: 0.70),
+          width: 1.8,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: triageColor.withValues(alpha: 0.12),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Ícone com cor de triagem ────────────────────────────────────
+          Column(
+            children: [
+              Container(
+                width: 42, height: 42,
+                decoration: BoxDecoration(
+                  color: triageColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.bed_rounded, size: 20, color: triageColor),
+              ),
+              if (cama.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: triageColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    cama,
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: triageColor),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(width: 12),
+
+          // ── Dados do paciente ─────────────────────────────────────────
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Nome
+                Text(
+                  nome,
+                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w800, color: c.textPrimary, letterSpacing: -0.2),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (diag.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Dx: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: c.textHint)),
+                      Expanded(
+                        child: Text(
+                          diag,
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.textSecondary),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (evol > 0) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.history_rounded, size: 10, color: triageColor),
+                      const SizedBox(width: 3),
+                      Text(
+                        isEs
+                            ? 'Día ${p.diaInternacao} · $evol evol.'
+                            : 'Dia ${p.diaInternacao} · $evol evol.',
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: triageColor),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          // ── Ícone indicador de triagem ────────────────────────────────
+          const SizedBox(width: 6),
+          Icon(Icons.circle, size: 8, color: triageColor),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARD DE PACIENTE (legacy — kept for PlantaoPatient edit sheet compatibility)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _PatientCard extends StatefulWidget {

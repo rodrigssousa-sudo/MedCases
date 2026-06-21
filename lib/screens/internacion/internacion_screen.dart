@@ -679,7 +679,12 @@ class _InternacionScreenState extends State<InternacionScreen> {
             // Row 60/40 removida — ambos os cards ocupam 100% da largura no mobile.
             GestureDetector(
               onLongPress: () => _showDocumentPreview(context, dark, lang),
+              // Build 183 FIX 3: ValueKey(_currentSessionKey) forces PatientAccordion
+              // to fully rebuild (fresh TextEditingControllers) when _editSession()
+              // changes the active session. Without this, controllers stay stale
+              // from the previous session and Copy sends empty text.
               child: PatientAccordion(
+                key: ValueKey(_currentSessionKey ?? 'new'),
                 data: _paciente,
                 dark: dark,
                 lang: lang,
@@ -1011,6 +1016,46 @@ class _ActionButton extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 183 FIX 2: Triage color mapping based on diagnosis keywords
+// RED = critical/emergency, YELLOW = urgent/intermediate, GREEN = stable
+// ─────────────────────────────────────────────────────────────────────────────
+Color _triageColorFromDiagnosis(String diag) {
+  final d = diag.toLowerCase();
+  // RED — critical / emergency
+  const redTerms = [
+    'shock', 'choque', 'sca', 'síndrome coronario agudo', 'síndrome coronariano agudo',
+    'infarto', 'iamcsst', 'iamssst', 'parada', 'pcrce', 'sepsis severa',
+    'falla orgánica', 'falla organica', 'falha orgânica', 'falha organica',
+    'iam', 'tep instável', 'tep instavel', 'edema agudo', 'insuficiencia respiratoria aguda',
+    'insuficiência respiratória aguda', 'status epileptico', 'status epilético',
+    'coma', 'stroke', 'avc isquemico', 'avc hemorragico', 'hemorragia',
+    'hemorragia cerebral', 'iam com supra', 'emergencia hipertensiva',
+    'emergencia hipertensíva', 'anafilaxia', 'anafilaxis',
+    'tamponamento', 'pericardico', 'pericardi', 'eap', 'insuficiencia cardíaca aguda',
+  ];
+  // YELLOW — urgent / intermediate
+  const yellowTerms = [
+    'sepsis', 'sepse', 'pneumonia', 'neumonía', 'neumonia', 'pielonefritis',
+    'pielonefrite', 'celulitis', 'celulite', 'ictericia', 'ictericia obstructiva',
+    'icterícia', 'colangitis', 'colangite', 'sdra', 'ards', 'irc descompensada',
+    'dra', 'irc', 'insuficiencia renal', 'insuficiência renal',
+    'epoc', 'epoc agudizado', 'dpoc', 'dpoc agudizado', 'crisis asmatica',
+    'crise asmática', 'hta', 'hipertension urgencia', 'hipertensão urgencia',
+    'disritmia', 'fibrilação atrial', 'fibrilacion auricular', 'icpp', 'icc',
+    'diabetes descompensada', 'cetoacidose', 'cetoacidosis',
+    'meningitis', 'meningite', 'encefalitis', 'encefalite',
+    'trombosis', 'tvp', 'tep', 'embolismo pulmonar', 'embolia pulmonar',
+  ];
+  for (final term in redTerms) {
+    if (d.contains(term)) return const Color(0xFFEF4444);
+  }
+  for (final term in yellowTerms) {
+    if (d.contains(term)) return const Color(0xFFF59E0B);
+  }
+  return InternacionTheme.accentLight; // green = stable
+}
+
 // ── 168-3: Card redesenhado com severity border ───────────────────────────────
 class _SessionCard168 extends StatelessWidget {
   final PacienteSession session;
@@ -1035,13 +1080,20 @@ class _SessionCard168 extends StatelessWidget {
 
   bool get isEs => lang == 'es';
 
-  // Cor de severidade baseada no estado clínico da última evolução
+  // Cor de severidade: estado clínico da última evolução OU triage por diagnóstico
+  // Build 183 FIX 2: fallback to keyword-based triage when estado is null
   Color _severityColor() {
-    if (session.historial.isEmpty) return InternacionTheme.accentLight;
-    final last = session.historial.last;
-    final estado = last.evaluacion.estado;
-    if (estado == null) return InternacionTheme.accentLight;
-    return Color(estado.colorValue);
+    // Priority 1: explicit clinical state from SOAP evolution
+    if (session.historial.isNotEmpty) {
+      final last = session.historial.last;
+      final estado = last.evaluacion.estado;
+      if (estado != null) return Color(estado.colorValue);
+    }
+    // Priority 2: keyword-based triage from diagnosis string
+    final diag = session.paciente.diagnostico;
+    if (diag.isNotEmpty) return _triageColorFromDiagnosis(diag);
+    // Fallback: green (stable)
+    return InternacionTheme.accentLight;
   }
 
   @override
