@@ -138,31 +138,10 @@ class _InternacionScreenState extends State<InternacionScreen> {
     );
   }
 
-  // ── Build 171: getter SOAP-only dirty (ignora paciente e histórico) ────────────
-  bool get _isSoapDirty {
-    final s = _draftEvolucion.subjetivo;
-    final o = _draftEvolucion.objetivo;
-    final a = _draftEvolucion.evaluacion;
-    final p = _draftEvolucion.plan;
-    return s.notePasaNoche.isNotEmpty ||
-        s.dolorEscala != null ||
-        s.fiebre || s.disnea || s.nauseas || s.tos || s.suenoRestado ||
-        s.alimentacion.isNotEmpty || s.diuresis.isNotEmpty ||
-        s.evacuacion.isNotEmpty || s.notasLibres.isNotEmpty ||
-        !o.signosVitales.isEmpty ||
-        o.examenFisico.estadoGeneral.isNotEmpty ||
-        o.examenFisico.acv.isNotEmpty || o.examenFisico.ar.isNotEmpty ||
-        o.examenFisico.abdomen.isNotEmpty ||
-        o.examenFisico.extremidades.isNotEmpty ||
-        o.examenes.laboratorio.isNotEmpty ||
-        a.notasEvaluacion.isNotEmpty || a.problemasActivos.isNotEmpty ||
-        p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty ||
-        _draftEvolucion.farmacos.isNotEmpty;
-  }
-
   void _onSaveEvolucion(EvolucionModel ev) async {
-    // ── Build 171: Anti-empty validation ───────────────────────────────
-    if (!_isSoapDirty) {
+    // ── Build 180: Admit First, Evolve Later ────────────────────────────
+    // Exige apenas nome OU cama preenchidos; SOAP pode estar em branco.
+    if (_paciente.nome.trim().isEmpty && _paciente.cama.trim().isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(children: [
@@ -171,8 +150,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(_isEs
-                ? 'Preencha ao menos um campo SOAP antes de salvar.'
-                : 'Complete al menos un campo SOAP antes de guardar.'),
+                ? 'Ingresa al menos el nombre o la cama del paciente.'
+                : 'Informe ao menos o nome ou o leito do paciente.'),
           ),
         ]),
         backgroundColor: InternacionTheme.amber,
@@ -696,39 +675,25 @@ class _InternacionScreenState extends State<InternacionScreen> {
             CopilotButton(dark: dark, lang: lang, onApproved: _onAiApproved),
             const SizedBox(height: 12),
 
-            // ── ELEMENTO 3 (Row 60/40): Dados del Paciente | Fármacos ─────
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 60% — Datos del Paciente
-                Expanded(
-                  flex: 6,
-                  child: GestureDetector(
-                    onLongPress: () =>
-                        _showDocumentPreview(context, dark, lang),
-                    child: PatientAccordion(
-                      data: _paciente,
-                      dark: dark,
-                      lang: lang,
-                      onChanged: (d) => setState(() => _paciente = d),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // 40% — Fármacos en Uso
-                Expanded(
-                  flex: 4,
-                  child: FarmacosAccordion(
-                    farmacos: _draftEvolucion.farmacos,
-                    dark: dark,
-                    lang: lang,
-                    onChanged: (list) => setState(() {
-                      _draftEvolucion =
-                          _draftEvolucion.copyWith(farmacos: list);
-                    }),
-                  ),
-                ),
-              ],
+            // ── ELEMENTO 3 (Build 180 — Vertical Stack 100%): Dados del Paciente + Fármacos ─
+            // Row 60/40 removida — ambos os cards ocupam 100% da largura no mobile.
+            GestureDetector(
+              onLongPress: () => _showDocumentPreview(context, dark, lang),
+              child: PatientAccordion(
+                data: _paciente,
+                dark: dark,
+                lang: lang,
+                onChanged: (d) => setState(() => _paciente = d),
+              ),
+            ),
+            const SizedBox(height: 8),
+            FarmacosAccordion(
+              farmacos: _draftEvolucion.farmacos,
+              dark: dark,
+              lang: lang,
+              onChanged: (list) => setState(() {
+                _draftEvolucion = _draftEvolucion.copyWith(farmacos: list);
+              }),
             ),
             const SizedBox(height: 16),
 

@@ -22,6 +22,9 @@ import '../services/clinical_session_memory.dart';
 import '../services/gemini_service.dart';
 import '../services/gemini_service_v2.dart';
 import '../services/ai_gateway_service.dart';
+// Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
+import '../screens/internacion/services/internacion_firestore_service.dart';
+import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
 
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
@@ -1244,6 +1247,7 @@ class AppProvider extends ChangeNotifier {
   // ── Pacientes do Plantão ──────────────────────────────────────────────────
 
   /// Adiciona ou actualiza um paciente no plantão.
+  /// Build 180: dual-write → SharedPreferences (local) + Firestore (sync Adulto tab).
   void savePlantaoPatient(PlantaoPatient patient) {
     final idx = _plantaoPatients.indexWhere((p) => p.id == patient.id);
     if (idx >= 0) {
@@ -1253,13 +1257,51 @@ class AppProvider extends ChangeNotifier {
     }
     _savePlantaoLocal();
     notifyListeners();
+
+    // ── Build 180: Firestore dual-write para sync em tempo real com aba Adulto ──
+    final uid = _currentUser?.uid;
+    if (uid != null) {
+      _syncPlantaoPatientToFirestore(uid, patient);
+    }
   }
 
   /// Remove um paciente do plantão pelo id.
+  /// Build 180: dual-write → remove do local + soft-delete no Firestore.
   void removePlantaoPatient(String id) {
+    // Busca chave Firestore antes de remover da lista local
+    final sessionKey = 'miguardia_$id';
     _plantaoPatients.removeWhere((p) => p.id == id);
     _savePlantaoLocal();
     notifyListeners();
+
+    // ── Build 180: soft-delete no Firestore para refletir na aba Adulto ───────
+    final uid = _currentUser?.uid;
+    if (uid != null) {
+      InternacionFirestoreService.softDelete(uid, sessionKey).catchError((_) {});
+    }
+  }
+
+  /// Build 180: Sincroniza um PlantaoPatient para o Firestore como PacienteSession mínima.
+  /// Usa prefixo 'miguardia_' para distinguir de sessões de internação completas.
+  void _syncPlantaoPatientToFirestore(String uid, PlantaoPatient patient) {
+    try {
+      final paciente = PacienteInternacaoData(
+        nome: patient.name,
+        cama: patient.room,
+        diagnostico: patient.diagnosis,
+        // Notas e tratamento mapeados para campos disponíveis
+        idade: '',
+        sexo: '',
+        diaInternacao: 1,
+      );
+      final existingKey = 'miguardia_${patient.id}';
+      InternacionFirestoreService.saveSession(
+        uid: uid,
+        paciente: paciente,
+        historial: const [],
+        existingKey: existingKey,
+      ).catchError((_) {});
+    } catch (_) {}
   }
 
   /// Limpa todos os pacientes do plantão.

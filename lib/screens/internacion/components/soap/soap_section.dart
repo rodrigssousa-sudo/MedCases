@@ -457,30 +457,16 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
         _SoapProgressBar(openIdx: _openIdx, dark: dark),
         const SizedBox(height: 12),
 
-        // ── Accordions em grade 2×2 ──────────────────────────────────────────
-        // Linha 1: [S] Subjetivo | [O] Objetivo
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: sections[0]),
-              const SizedBox(width: 8),
-              Expanded(child: sections[1]),
-            ],
-          ),
-        ),
+        // ── Build 180: Vertical Stack 100% — cada bloco SOAP ocupa 100% da largura ──
+        // Grade 2×2 (IntrinsicHeight + Row) removida — subcomponentes largos
+        // (escalas de dor, chips, seletores) não cabem em meia coluna mobile.
+        sections[0], // [S] Subjetivo — 100% largura
         const SizedBox(height: 8),
-        // Linha 2: [A] Avaliação | [P] Plano
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: sections[2]),
-              const SizedBox(width: 8),
-              Expanded(child: sections[3]),
-            ],
-          ),
-        ),
+        sections[1], // [O] Objetivo  — 100% largura
+        const SizedBox(height: 8),
+        sections[2], // [A] Avaliação — 100% largura
+        const SizedBox(height: 8),
+        sections[3], // [P] Plano     — 100% largura
       ],
     );
   }
