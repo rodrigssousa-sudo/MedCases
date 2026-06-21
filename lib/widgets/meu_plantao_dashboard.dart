@@ -18,6 +18,10 @@ import '../widgets/common_widgets.dart';
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/services/internacion_persistence.dart';
 import '../screens/internacion/models/evolucion_model.dart';
+import '../screens/internacion/components/soap/soap_section.dart'
+    show soapCompletoString, soapResumidoString, soapPassagemString;
+import '../screens/internacion/components/patient_accordion.dart'
+    show PacienteInternacaoData;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MODELO DE ATALHO DE CALCULADORA
@@ -716,23 +720,29 @@ class _FirestoreSessionsColumn extends StatelessWidget {
   // Critério de deduplicação: nome em minúsculas sem espaços extras.
   // Critério de "mais recente": maior savedAt (que desde Build 191 reflete updatedAt).
   // Fallback: se nomes vazios, usa sessionKey como chave única (preserva todos).
+  // Build 196: null-safe com try-catch para blindar contra edge cases do Firestore.
+  // s.paciente pode ser null em documentos corrompidos ou parcialmente escritos.
   List<PacienteSession> _deduplicated() {
-    final Map<String, PacienteSession> byPatient = {};
-    for (final s in sessions) {
-      // Chave de agrupamento: nome normalizado do paciente
-      // Se nome vazio, usa sessionKey — cada sessão sem nome aparece individualmente
-      final key = s.paciente.nome.trim().toLowerCase().isNotEmpty
-          ? s.paciente.nome.trim().toLowerCase()
-          : s.sessionKey;
-      final existing = byPatient[key];
-      if (existing == null || s.savedAt.isAfter(existing.savedAt)) {
-        byPatient[key] = s;
+    try {
+      final Map<String, PacienteSession> byPatient = {};
+      for (final s in sessions) {
+        // Null-safe via try-catch (paciente/nome non-nullable em teoria, mas
+        // documentos do Firestore podem ser corrompidos — o try-catch captura isso)
+        final nome = s.paciente.nome.trim().toLowerCase();
+        final key = nome.isNotEmpty ? nome : s.sessionKey;
+        final existing = byPatient[key];
+        if (existing == null || s.savedAt.isAfter(existing.savedAt)) {
+          byPatient[key] = s;
+        }
       }
+      // Preserva a ordem original (mais recente primeiro) entre grupos
+      final result = byPatient.values.toList()
+        ..sort((a, b) => b.savedAt.compareTo(a.savedAt));
+      return result;
+    } catch (e) {
+      debugPrint('[MeuPlantao] _deduplicated error: $e');
+      return sessions; // fallback: retorna lista sem deduplicar
     }
-    // Preserva a ordem original (mais recente primeiro) entre grupos
-    final result = byPatient.values.toList()
-      ..sort((a, b) => b.savedAt.compareTo(a.savedAt));
-    return result;
   }
 
   @override
@@ -1051,6 +1061,46 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
     return buf.toString().trim();
   }
 
+  // Build 196: abre ModalBottomSheet com 3 formatos (Completo, Resumido, Passagem)
+  void _showCopySheet(
+    BuildContext context,
+    EvolucionModel ev,
+    PacienteInternacaoData paciente,
+  ) {
+    final lang = isEs ? 'es' : 'pt';
+    final autorNombre = ev.autorNombre;
+
+    void doCopy(String text) {
+      Navigator.of(context).pop(); // fecha o sheet
+      Clipboard.setData(ClipboardData(text: text));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.copy_rounded, color: Colors.white, size: 15),
+          const SizedBox(width: 8),
+          Text(isEs
+              ? 'Evolución copiada al portapapeles'
+              : 'Evolução copiada para a área de transferência'),
+        ]),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _SoapCopySheet(
+        dark: dark,
+        lang: lang,
+        onCopyFull: () => doCopy(soapCompletoString(ev, isEs, autorNombre, paciente)),
+        onCopyResumida: () => doCopy(soapResumidoString(ev, isEs, autorNombre, paciente)),
+        onCopyPasaje: () => doCopy(soapPassagemString(ev, isEs, paciente)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final session = widget.session;
@@ -1139,23 +1189,12 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                       ],
                     ),
                   ),
-                  // Botão Copiar SOAP
+                  // Build 196: Botão Copiar — abre tri-format ModalBottomSheet
                   if (selectedEv != null)
                     IconButton(
-                      icon: Icon(Icons.copy_rounded, size: 18, color: triageColor),
-                      tooltip: isEs ? 'Copiar evolución' : 'Copiar evolução',
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: soapText));
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(isEs
-                              ? 'Evolución copiada al portapapeles'
-                              : 'Evolução copiada para a área de transferência'),
-                          behavior: SnackBarBehavior.floating,
-                          duration: const Duration(seconds: 2),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                        ));
-                      },
+                      icon: Icon(Icons.copy_all_rounded, size: 18, color: triageColor),
+                      tooltip: isEs ? 'Exportar evolución' : 'Exportar evolução',
+                      onPressed: () => _showCopySheet(context, selectedEv, session.paciente),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     ),
@@ -1261,50 +1300,81 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Build 196: empty-state global quando soapText vazio
+                          if (soapText.trim().isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Text(
+                                isEs
+                                    ? 'Sin datos completados en esta evolución.'
+                                    : 'Sem dados preenchidos nesta evolução.',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey[500],
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
                           // Texto SOAP formatado em blocos visuais
-                          ...soapText.split('\n──').map((block) {
-                            if (block.trim().isEmpty) return const SizedBox.shrink();
-                            final lines = ('──$block').split('\n');
-                            final header = lines.isNotEmpty ? lines.first.trim() : '';
-                            final body = lines.skip(1).join('\n').trim();
-                            final isHeader = header.startsWith('──');
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (isHeader)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 10, bottom: 4),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: triageColor.withValues(alpha: 0.10),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      header.replaceAll('──', '').replaceAll('─', '').trim(),
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w800,
-                                        color: triageColor,
-                                        letterSpacing: 0.5,
+                          if (soapText.trim().isNotEmpty)
+                            ...soapText.split('\n──').map((block) {
+                              if (block.trim().isEmpty) return const SizedBox.shrink();
+                              final lines = ('──$block').split('\n');
+                              final header = lines.isNotEmpty ? lines.first.trim() : '';
+                              final body = lines.skip(1).join('\n').trim();
+                              final isHeader = header.startsWith('──');
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (isHeader)
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 10, bottom: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: triageColor.withValues(alpha: 0.10),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        header.replaceAll('──', '').replaceAll('─', '').trim(),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w800,
+                                          color: triageColor,
+                                          letterSpacing: 0.5,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                if (body.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 4),
-                                    child: Text(
-                                      body,
-                                      style: TextStyle(
-                                        fontSize: 12.5,
-                                        color: textPrimary,
-                                        height: 1.5,
+                                  // Build 196: fallback "Sem dados preenchidos" por seção
+                                  if (body.isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 4),
+                                      child: Text(
+                                        body,
+                                        style: TextStyle(
+                                          fontSize: 12.5,
+                                          color: textPrimary,
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                    )
+                                  else if (isHeader)
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 6),
+                                      child: Text(
+                                        isEs ? 'Sin datos completados' : 'Sem dados preenchidos',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[500],
+                                          fontStyle: FontStyle.italic,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                              ],
-                            );
-                          }),
+                                ],
+                              );
+                            }),
                           const SizedBox(height: 8),
                         ],
                       ),
@@ -1374,6 +1444,270 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
       ),
     ),
   );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 196: _SoapCopySheet — ModalBottomSheet tri-formato de cópia SOAP
+// Exibido quando médico toca o botão copiar no _SoapPreviewDialog.
+// Formatos: Completo (SOAP full) | Resumido (inline) | Passagem de Plantão (30s)
+// ─────────────────────────────────────────────────────────────────────────────
+class _SoapCopySheet extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  final VoidCallback onCopyFull;
+  final VoidCallback onCopyResumida;
+  final VoidCallback onCopyPasaje;
+
+  const _SoapCopySheet({
+    required this.dark,
+    required this.lang,
+    required this.onCopyFull,
+    required this.onCopyResumida,
+    required this.onCopyPasaje,
+  });
+
+  bool get isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
+    final textPrimary = dark ? Colors.white : const Color(0xFF0D1117);
+    final textSecondary = dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final cardBg = dark ? const Color(0xFF1A1F2E) : const Color(0xFFF8F9FA);
+    final borderColor = dark ? const Color(0xFF2D3748) : const Color(0xFFE5E7EB);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(color: const Color(0xFF059669).withValues(alpha: 0.25)),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        20, 12, 20,
+        20 + MediaQuery.of(context).viewPadding.bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle
+          Center(
+            child: Container(
+              width: 36, height: 4,
+              decoration: BoxDecoration(
+                color: borderColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+
+          // Título
+          Row(
+            children: [
+              Container(
+                width: 34, height: 34,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF059669), Color(0xFF047857)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.copy_all_rounded, size: 17, color: Colors.white),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isEs ? 'Exportar Evolución' : 'Exportar Evolução',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: textPrimary,
+                      ),
+                    ),
+                    Text(
+                      isEs
+                          ? 'Selecciona el formato de exportación'
+                          : 'Selecione o formato de exportação',
+                      style: TextStyle(fontSize: 11.5, color: textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Modelo 1: Completo
+          _SoapCopyTile(
+            dark: dark,
+            icon: Icons.description_rounded,
+            iconColor: const Color(0xFF3B82F6),
+            cardBg: cardBg,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+            title: isEs ? 'Evolucion Completa' : 'Evolução Completa',
+            subtitle: isEs
+                ? 'Encabezado hospitalar + S/O/A/P jerárquico + firma'
+                : 'Cabeçalho hospitalar + S/O/A/P hierárquico + assinatura',
+            badgeLabel: 'SOAP',
+            badgeColor: const Color(0xFF3B82F6),
+            onTap: onCopyFull,
+          ),
+          const SizedBox(height: 8),
+
+          // Modelo 2: Resumido
+          _SoapCopyTile(
+            dark: dark,
+            icon: Icons.compress_rounded,
+            iconColor: const Color(0xFF059669),
+            cardBg: cardBg,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+            title: isEs ? 'Evolucion Resumida' : 'Evolução Resumida',
+            subtitle: isEs
+                ? 'Formato horizontal denso — ideal para sistemas legados'
+                : 'Formato horizontal denso — ideal para sistemas legados',
+            badgeLabel: 'INLINE',
+            badgeColor: const Color(0xFF059669),
+            onTap: onCopyResumida,
+          ),
+          const SizedBox(height: 8),
+
+          // Modelo 3: Passagem de Plantão
+          _SoapCopyTile(
+            dark: dark,
+            icon: Icons.transfer_within_a_station_rounded,
+            iconColor: const Color(0xFFF59E0B),
+            cardBg: cardBg,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+            title: isEs ? 'Pasaje de Guardia' : 'Passagem de Plantão',
+            subtitle: isEs
+                ? 'Ultra-objetivo para transición de turno en menos de 30s'
+                : 'Ultra-objetivo para passagem de plantão em menos de 30s',
+            badgeLabel: '30s',
+            badgeColor: const Color(0xFFF59E0B),
+            onTap: onCopyPasaje,
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _SoapCopyTile extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final Color iconColor;
+  final Color cardBg;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+  final String title;
+  final String subtitle;
+  final String badgeLabel;
+  final Color badgeColor;
+  final VoidCallback onTap;
+
+  const _SoapCopyTile({
+    required this.dark,
+    required this.icon,
+    required this.iconColor,
+    required this.cardBg,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.title,
+    required this.subtitle,
+    required this.badgeLabel,
+    required this.badgeColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: borderColor, width: 0.9),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42, height: 42,
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: dark ? 0.15 : 0.10),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 20, color: iconColor),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w700,
+                            color: textPrimary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: badgeColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          badgeLabel,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: badgeColor,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: textSecondary,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.chevron_right_rounded, size: 18, color: textSecondary),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

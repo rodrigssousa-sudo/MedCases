@@ -340,17 +340,17 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
 
     switch (model) {
       case _CopyModel.completa:
-        text      = _toCompletoString(ev, isEs, widget.autorNombre, widget.paciente);
+        text      = soapCompletoString(ev, isEs, widget.autorNombre, widget.paciente);
         snackLabel = isEs
             ? '📋 Prontuario completo copiado al portapapeles'
             : '📋 Prontuário completo copiado para a área de transferência';
       case _CopyModel.resumida:
-        text      = _toResumidoString(ev, isEs, widget.autorNombre, widget.paciente);
+        text      = soapResumidoString(ev, isEs, widget.autorNombre, widget.paciente);
         snackLabel = isEs
             ? '⚡ Resumen ejecutivo copiado al portapapeles'
             : '⚡ Resumo executivo copiado para a área de transferência';
       case _CopyModel.pasaje:
-        text      = _toPassagemString(ev, isEs, widget.paciente);
+        text      = soapPassagemString(ev, isEs, widget.paciente);
         snackLabel = isEs
             ? '🔄 Pasaje de guardia copiado al portapapeles'
             : '🔄 Passagem de plantão copiada para a área de transferência';
@@ -647,7 +647,7 @@ String _fmtHora() {
 //   "1. Paracetamol 500mg 2. Omeprazol 20mg 3. Heparina SC"
 //   "1. Controle glicêmico\n2. ECG de controle"
 // Saída: ["Paracetamol 500mg", "Omeprazol 20mg", "Heparina SC"]
-List<String> _splitNumberedList(String text) {
+List<String> splitNumberedList(String text) {
   if (text.trim().isEmpty) return [];
   // Captura padrões "1. ", "2. ", "1) ", "2) " em qualquer posição do texto
   final parts = text
@@ -664,13 +664,13 @@ List<String> _splitNumberedList(String text) {
 //   1. Tenta quebrar por lista numerada emendada ("1. Foo 2. Bar")
 //   2. Depois quebra por "\n" para capturar listas já verticais
 //   3. Strips de prefixos "- ", "• ", "* " existentes antes de recolocar "• "
-String _toBullets(String text) {
+String soapToBullets(String text) {
   if (text.trim().isEmpty) return '';
   final buf = StringBuffer();
   // Primeiro expande listas numeradas inline se detectadas
   final hasInlineList = RegExp(r'\d+[\.\)]\s+').hasMatch(text);
   final lines = hasInlineList
-      ? _splitNumberedList(text)
+      ? splitNumberedList(text)
       : text
           .split('\n')
           .map((l) => l.trim())
@@ -690,7 +690,7 @@ String _toBullets(String text) {
 // Emoji headers, "• " bullets, regex split de listas numeradas.
 // Proibido usar barras horizontais dentro dos dados (apenas no frame de borda).
 // ─────────────────────────────────────────────────────────────────────────────
-String _toCompletoString(
+String soapCompletoString(
   EvolucionModel ev,
   bool isEs,
   String autorNombre,
@@ -744,7 +744,7 @@ String _toCompletoString(
   // ── S — SUBJETIVO ───────────────────────────────────────────────────────────
   buf.writeln('S - ${isEs ? 'SUBJETIVO' : 'SUBJETIVO'}:');
   final sBuf = StringBuffer();
-  if (s.notePasaNoche.isNotEmpty)  sBuf.writeln(_toBullets(s.notePasaNoche));
+  if (s.notePasaNoche.isNotEmpty)  sBuf.writeln(soapToBullets(s.notePasaNoche));
   if (s.dolorEscala != null)       sBuf.writeln('• EVA ${s.dolorEscala}/10');
   final syms = <String>[];
   if (s.fiebre)       syms.add(isEs ? 'fiebre' : 'febre');
@@ -756,7 +756,7 @@ String _toCompletoString(
   if (s.alimentacion.isNotEmpty) sBuf.writeln('• ${isEs ? 'Alimentación' : 'Alimentação'}: ${s.alimentacion}');
   if (s.diuresis.isNotEmpty)     sBuf.writeln('• ${isEs ? 'Diuresis' : 'Diurese'}: ${s.diuresis}');
   if (s.evacuacion.isNotEmpty)   sBuf.writeln('• ${isEs ? 'Evacuación' : 'Evacuação'}: ${s.evacuacion}');
-  if (s.notasLibres.isNotEmpty)  sBuf.writeln(_toBullets(s.notasLibres));
+  if (s.notasLibres.isNotEmpty)  sBuf.writeln(soapToBullets(s.notasLibres));
   final sResult = sBuf.toString().trim();
   buf.writeln(sResult.isNotEmpty ? sResult : (isEs ? '• (Sin datos)' : '• (Sem dados)'));
   buf.writeln('');
@@ -788,7 +788,7 @@ String _toCompletoString(
 
   // Laboratório / Estudos
   if (ex.laboratorio.isNotEmpty) {
-    final labBullets = _toBullets(ex.laboratorio);
+    final labBullets = soapToBullets(ex.laboratorio);
     if (labBullets.isNotEmpty) {
       buf.writeln('• ${isEs ? 'Laboratorio/Estudios' : 'Laboratório/Estudos'}:');
       buf.writeln(labBullets.split('\n').map((l) => '  $l').join('\n'));
@@ -830,7 +830,7 @@ String _toCompletoString(
   // ── P — PLANO & MEDICAÇÃO ───────────────────────────────────────────────────
   buf.writeln('P - ${isEs ? 'PLAN & MEDICACIÓN' : 'PLANO & MEDICAÇÃO'}:');
   if (plan.planTerapeutico.isNotEmpty) {
-    buf.writeln(_toBullets(plan.planTerapeutico));
+    buf.writeln(soapToBullets(plan.planTerapeutico));
   }
   if (plan.criteriosAlta.isNotEmpty) {
     buf.writeln('• ${isEs ? 'Criterios de alta' : 'Critérios de alta'}: ${plan.criteriosAlta}');
@@ -861,7 +861,7 @@ String _toCompletoString(
 // Painel Clínico Compacto: aglutinaçãocirúrgica — 1 linha por bloco SOAP.
 // Omite detalhes; mantém apenas essenciais escaneáveis por colega de equipe.
 // ─────────────────────────────────────────────────────────────────────────────
-String _toResumidoString(
+String soapResumidoString(
   EvolucionModel ev,
   bool isEs,
   String autorNombre,
@@ -950,7 +950,7 @@ String _toResumidoString(
   // ── P (condutas por linha, cada item em bullet próprio) ────────────────────
   buf.writeln('• P:');
   if (plan.planTerapeutico.isNotEmpty) {
-    final planLines = _splitNumberedList(plan.planTerapeutico.isNotEmpty
+    final planLines = splitNumberedList(plan.planTerapeutico.isNotEmpty
         && RegExp(r'\d+[\.\)]\s+').hasMatch(plan.planTerapeutico)
         ? plan.planTerapeutico
         : plan.planTerapeutico);
@@ -991,7 +991,7 @@ String _toResumidoString(
 //   1. Estado atual do paciente
 //   2. O que ele DEVE FAZER agora (to-do list)
 // ─────────────────────────────────────────────────────────────────────────────
-String _toPassagemString(
+String soapPassagemString(
   EvolucionModel ev,
   bool isEs,
   PacienteInternacaoData? paciente,
@@ -1054,8 +1054,8 @@ String _toPassagemString(
 
   // ── Labs críticos / Últimas alterações (OMITE anamnese longa) ───────────────
   buf.writeln('🔬 ${isEs ? 'ÚLTIMAS ALTERACIONES / LABS CRÍTICOS' : 'ÚLTIMAS ALTERAÇÕES / LABS CRÍTICOS'}:');
-  final labBullets = ex.laboratorio.isNotEmpty ? _toBullets(ex.laboratorio) : '';
-  final imgBullets = ex.imagenes.isNotEmpty    ? _toBullets(ex.imagenes)    : '';
+  final labBullets = ex.laboratorio.isNotEmpty ? soapToBullets(ex.laboratorio) : '';
+  final imgBullets = ex.imagenes.isNotEmpty    ? soapToBullets(ex.imagenes)    : '';
   final ecgStr     = ex.ecg.isNotEmpty         ? '• ECG: ${ex.ecg}'         : '';
   final cultStr    = ex.culturas.isNotEmpty     ? '• Culturas: ${ex.culturas}' : '';
   final hasLabs    = labBullets.isNotEmpty || imgBullets.isNotEmpty
@@ -1076,7 +1076,7 @@ String _toPassagemString(
 
   if (plan.planTerapeutico.isNotEmpty) {
     hasPendencias = true;
-    buf.writeln(_toBullets(plan.planTerapeutico));
+    buf.writeln(soapToBullets(plan.planTerapeutico));
   }
   if (plan.criteriosAlta.isNotEmpty) {
     hasPendencias = true;

@@ -278,6 +278,29 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
+  // Build 196: Agrupa sessões por paciente (nome normalizado) e retorna apenas
+  // a mais recente por paciente — elimina duplicidade de cards no grid.
+  // Null-safe: usa ?. para blindar contra edge cases do Firestore.
+  List<PacienteSession> _deduplicatedSessions() {
+    try {
+      final Map<String, PacienteSession> byPatient = {};
+      for (final s in _savedSessions) {
+        final nome = s.paciente?.nome?.trim().toLowerCase() ?? '';
+        final key = nome.isNotEmpty ? nome : s.sessionKey;
+        final existing = byPatient[key];
+        if (existing == null || s.savedAt.isAfter(existing.savedAt)) {
+          byPatient[key] = s;
+        }
+      }
+      final result = byPatient.values.toList()
+        ..sort((a, b) => b.savedAt.compareTo(a.savedAt));
+      return result;
+    } catch (e) {
+      debugPrint('[InternacionScreen] _deduplicatedSessions error: $e');
+      return _savedSessions; // fallback: retorna lista sem deduplicar
+    }
+  }
+
   // ── 168-2: Soft Delete (Lixeira 30d) ─────────────────────────────────────
   Future<void> _deleteSession(PacienteSession session) async {
     final uid = _uid;
@@ -828,29 +851,38 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
             // ── SEÇÃO DE PACIENTES GUARDADOS ───────────────────────────────
             if (_sessionsLoaded && _savedSessions.isNotEmpty) ...[
-              _SectionDivider(
-                label: isEs
-                    ? 'PACIENTES INTERNADOS GUARDADOS'
-                    : 'PACIENTES INTERNADOS SALVOS',
-                sublabel: isEs
-                    ? '${_savedSessions.length} sesión${_savedSessions.length > 1 ? 'es' : ''}'
-                    : '${_savedSessions.length} sessão${_savedSessions.length > 1 ? 'ões' : ''}',
-                dark: dark,
-                theme: theme,
-              ),
-              const SizedBox(height: 12),
-              // Grid responsivo: centrado, maxWidth 600, cards maxWidth 280
-              _SessionsGrid(
-                sessions: _savedSessions,
-                dark: dark,
-                lang: lang,
-                theme: theme,
-                onEdit: _editSession,
-                onEvolve: _evolveSession,
-                onDelete: _deleteSession,
-                onPreview: (session) =>
-                    _showSessionPreview(context, session, dark, lang),
-              ),
+              // Build 196: deduplication antes de renderizar o grid
+              Builder(builder: (context) {
+                final deduped = _deduplicatedSessions();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionDivider(
+                      label: isEs
+                          ? 'PACIENTES INTERNADOS GUARDADOS'
+                          : 'PACIENTES INTERNADOS SALVOS',
+                      sublabel: isEs
+                          ? '${deduped.length} paciente${deduped.length > 1 ? 's' : ''}'
+                          : '${deduped.length} paciente${deduped.length > 1 ? 's' : ''}',
+                      dark: dark,
+                      theme: theme,
+                    ),
+                    const SizedBox(height: 12),
+                    // Grid responsivo: centrado, maxWidth 600, cards maxWidth 280
+                    _SessionsGrid(
+                      sessions: deduped,
+                      dark: dark,
+                      lang: lang,
+                      theme: theme,
+                      onEdit: _editSession,
+                      onEvolve: _evolveSession,
+                      onDelete: _deleteSession,
+                      onPreview: (session) =>
+                          _showSessionPreview(context, session, dark, lang),
+                    ),
+                  ],
+                );
+              }),
             ],
 
             // Papelera: agora exclusivamente no botão de 25% da Action Bar acima.
