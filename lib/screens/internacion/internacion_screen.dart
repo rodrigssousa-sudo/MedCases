@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionScreen — Build 168
+// InternacionScreen — Build 171
 //
 // 168-1: Firestore Sync — sessions stream em tempo real (multi-device)
 // 168-2: Lixeira 30d — softDelete (isDeleted:true) em vez de hard delete
@@ -47,6 +47,10 @@ class _InternacionScreenState extends State<InternacionScreen> {
   bool _sessionsLoaded = false;
   StreamSubscription<List<PacienteSession>>? _sessionsSub;
   String? _currentSessionKey; // chave da sessão ativa em edição
+
+  // ── Build 171: Edit vs Evolve mode ───────────────────────────────────────
+  bool _isEditMode = false;        // true → Guardar sobrescreve; false → append
+  String? _editingEvolucionId;     // id do EvolucionModel sendo editado
 
   @override
   void initState() {
@@ -131,12 +135,86 @@ class _InternacionScreenState extends State<InternacionScreen> {
     );
   }
 
+  // ── Build 171: getter SOAP-only dirty (ignora paciente e histórico) ────────────
+  bool get _isSoapDirty {
+    final s = _draftEvolucion.subjetivo;
+    final o = _draftEvolucion.objetivo;
+    final a = _draftEvolucion.evaluacion;
+    final p = _draftEvolucion.plan;
+    return s.notePasaNoche.isNotEmpty ||
+        s.dolorEscala != null ||
+        s.fiebre || s.disnea || s.nauseas || s.tos || s.suenoRestado ||
+        s.alimentacion.isNotEmpty || s.diuresis.isNotEmpty ||
+        s.evacuacion.isNotEmpty || s.notasLibres.isNotEmpty ||
+        !o.signosVitales.isEmpty ||
+        o.examenFisico.estadoGeneral.isNotEmpty ||
+        o.examenFisico.acv.isNotEmpty || o.examenFisico.ar.isNotEmpty ||
+        o.examenFisico.abdomen.isNotEmpty ||
+        o.examenFisico.extremidades.isNotEmpty ||
+        o.examenes.laboratorio.isNotEmpty ||
+        a.notasEvaluacion.isNotEmpty || a.problemasActivos.isNotEmpty ||
+        p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty ||
+        _draftEvolucion.farmacos.isNotEmpty;
+  }
+
   void _onSaveEvolucion(EvolucionModel ev) async {
+    // ── Build 171: Anti-empty validation ───────────────────────────────
+    if (!_isSoapDirty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.warning_amber_rounded,
+              color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(_isEs
+                ? 'Preencha ao menos um campo SOAP antes de salvar.'
+                : 'Complete al menos un campo SOAP antes de guardar.'),
+          ),
+        ]),
+        backgroundColor: InternacionTheme.amber,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
+      return;
+    }
+
+    // ── Build 171: Edit mode → overwrite; else → append ──────────────────
     setState(() {
-      _historial = [..._historial, ev];
+      if (_isEditMode && _editingEvolucionId != null) {
+        // Sobrescreve o registro existente (mesmo id)
+        _historial = [
+          for (final e in _historial)
+            if (e.id == _editingEvolucionId) ev.copyWith(id: _editingEvolucionId) else e,
+        ];
+      } else {
+        // Nova evolução — append normal
+        _historial = [..._historial, ev];
+      }
       _draftEvolucion = _newDraft();
+      _isEditMode = false;
+      _editingEvolucionId = null;
     });
+
     await _persistSession();
+
+    // ── Build 171: Força atualização reativa do grid ──────────────────────
+    await _loadSessionsLocal();
+
+    // ── Build 171: Reset completo do workspace após salvar ─────────────────
+    final freshDraft = _newDraft();
+    setState(() {
+      _paciente = const PacienteInternacaoData(diaInternacao: 1);
+      _historial = [];
+      _draftEvolucion = freshDraft;
+      _currentSessionKey = null;
+      _isEditMode = false;
+      _editingEvolucionId = null;
+    });
+    _soapKey.currentState?.resetSoap(freshDraft);
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(children: [
@@ -214,9 +292,58 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
-  // ── 168-R4: Retomar — mesmo dia, sem auto-avanço ─────────────────────────
-  void _resumeSession(PacienteSession session) {
-    final sameDayDraft = EvolucionModel(
+  // ── Build 171: EDITAR — carrega última evolução para sobrescrita ──────────
+  void _editSession(PacienteSession session) {
+    if (session.historial.isEmpty) {
+      // Sem evolução prévia: cai em _evolveSession por segurança
+      _evolveSession(session);
+      return;
+    }
+    final lastEv = session.historial.last;
+    final editDraft = lastEv.copyWith(
+      // Mantém o mesmo id para sobrescrever depois
+      fecha: DateTime.now(),
+    );
+    setState(() {
+      _paciente = session.paciente; // preserva diaInternacao original
+      _historial = session.historial;
+      _draftEvolucion = editDraft;
+      _currentSessionKey = session.sessionKey;
+      _isEditMode = true;
+      _editingEvolucionId = lastEv.id;
+      _savedSessions = _savedSessions
+          .where((s) => s.sessionKey != session.sessionKey)
+          .toList();
+    });
+    _soapKey.currentState?.resetSoap(editDraft);
+
+    final isEs = _isEs;
+    final nome = session.paciente.nome.isNotEmpty
+        ? session.paciente.nome
+        : (isEs ? 'Paciente' : 'Paciente');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(children: [
+        const Icon(Icons.edit_rounded, color: Colors.white, size: 16),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(isEs
+              ? 'Modo EDITAR — Día ${session.paciente.diaInternacao} de $nome'
+              : 'Modo EDITAR — Dia ${session.paciente.diaInternacao} de $nome'),
+        ),
+      ]),
+      backgroundColor: InternacionTheme.amber,
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    ));
+  }
+
+  // ── Build 171: EVOLUIR — nova folha em branco, dia + 1 ───────────────────
+  void _evolveSession(PacienteSession session) {
+    final nextPaciente = session.paciente.copyWith(
+      diaInternacao: session.paciente.diaInternacao + 1,
+    );
+    final blankDraft = EvolucionModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       fecha: DateTime.now(),
       autorNombre: session.historial.isNotEmpty
@@ -228,15 +355,17 @@ class _InternacionScreenState extends State<InternacionScreen> {
       plan: const PlanData(),
     );
     setState(() {
-      _paciente = session.paciente;
+      _paciente = nextPaciente; // dia + 1; nome/cama/diag preservados
       _historial = session.historial;
-      _draftEvolucion = sameDayDraft;
+      _draftEvolucion = blankDraft;
       _currentSessionKey = session.sessionKey;
+      _isEditMode = false;
+      _editingEvolucionId = null;
       _savedSessions = _savedSessions
           .where((s) => s.sessionKey != session.sessionKey)
           .toList();
     });
-    _soapKey.currentState?.resetSoap(sameDayDraft);
+    _soapKey.currentState?.resetSoap(blankDraft);
 
     final isEs = _isEs;
     final nome = session.paciente.nome.isNotEmpty
@@ -244,12 +373,13 @@ class _InternacionScreenState extends State<InternacionScreen> {
         : (isEs ? 'Paciente' : 'Paciente');
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(children: [
-        const Icon(Icons.history_rounded, color: Colors.white, size: 16),
+        const Icon(Icons.add_circle_outline_rounded,
+            color: Colors.white, size: 16),
         const SizedBox(width: 8),
         Expanded(
           child: Text(isEs
-              ? 'Día ${session.paciente.diaInternacao} — Sesión de $nome cargada'
-              : 'Dia ${session.paciente.diaInternacao} — Sessão de $nome carregada'),
+              ? 'Nova folha — Día ${nextPaciente.diaInternacao} de $nome'
+              : 'Nova folha — Dia ${nextPaciente.diaInternacao} de $nome'),
         ),
       ]),
       backgroundColor: InternacionTheme.accentLight,
@@ -652,7 +782,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
                 dark: dark,
                 lang: lang,
                 theme: theme,
-                onResume: _resumeSession,
+                onEdit: _editSession,
+                onEvolve: _evolveSession,
                 onDelete: _deleteSession,
                 onPreview: (session) =>
                     _showSessionPreview(context, session, dark, lang),
@@ -677,9 +808,13 @@ class _InternacionScreenState extends State<InternacionScreen> {
         session: session,
         dark: dark,
         lang: lang,
-        onResume: () {
+        onEvolve: () {
           Navigator.of(ctx).pop();
-          _resumeSession(session);
+          _evolveSession(session);
+        },
+        onEdit: () {
+          Navigator.of(ctx).pop();
+          _editSession(session);
         },
         onDelete: () {
           Navigator.of(ctx).pop();
@@ -714,7 +849,8 @@ class _SessionsGrid extends StatelessWidget {
   final bool dark;
   final String lang;
   final InternacionTheme theme;
-  final ValueChanged<PacienteSession> onResume;
+  final ValueChanged<PacienteSession> onEdit;
+  final ValueChanged<PacienteSession> onEvolve;
   final Future<void> Function(PacienteSession) onDelete;
   final ValueChanged<PacienteSession> onPreview;
 
@@ -723,7 +859,8 @@ class _SessionsGrid extends StatelessWidget {
     required this.dark,
     required this.lang,
     required this.theme,
-    required this.onResume,
+    required this.onEdit,
+    required this.onEvolve,
     required this.onDelete,
     required this.onPreview,
   });
@@ -743,7 +880,8 @@ class _SessionsGrid extends StatelessWidget {
                 dark: dark,
                 lang: lang,
                 theme: theme,
-                onResume: () => onResume(s),
+                onEdit: () => onEdit(s),
+                onEvolve: () => onEvolve(s),
                 onDelete: () => onDelete(s),
                 onTapBody: () => onPreview(s),
               ))
@@ -758,7 +896,8 @@ class _SessionCard168 extends StatelessWidget {
   final bool dark;
   final String lang;
   final InternacionTheme theme;
-  final VoidCallback onResume;
+  final VoidCallback onEdit;
+  final VoidCallback onEvolve;
   final VoidCallback onDelete;
   final VoidCallback onTapBody;
 
@@ -767,7 +906,8 @@ class _SessionCard168 extends StatelessWidget {
     required this.dark,
     required this.lang,
     required this.theme,
-    required this.onResume,
+    required this.onEdit,
+    required this.onEvolve,
     required this.onDelete,
     required this.onTapBody,
   });
@@ -825,7 +965,7 @@ class _SessionCard168 extends StatelessWidget {
                 const Spacer(),
                 // Editar
                 GestureDetector(
-                  onTap: onResume,
+                  onTap: onEdit,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 7, vertical: 3),
@@ -938,7 +1078,7 @@ class _SessionCard168 extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
             child: GestureDetector(
-              onTap: onResume,
+              onTap: onEvolve,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 7),
@@ -971,7 +1111,8 @@ class _SessionPreviewDialog extends StatelessWidget {
   final PacienteSession session;
   final bool dark;
   final String lang;
-  final VoidCallback onResume;
+  final VoidCallback onEvolve;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
   final ValueChanged<String> onCopy;
 
@@ -979,7 +1120,8 @@ class _SessionPreviewDialog extends StatelessWidget {
     required this.session,
     required this.dark,
     required this.lang,
-    required this.onResume,
+    required this.onEvolve,
+    required this.onEdit,
     required this.onDelete,
     required this.onCopy,
   });
@@ -1191,67 +1333,114 @@ class _SessionPreviewDialog extends StatelessWidget {
               ),
             ),
 
-            // ── Ações: [Copiar] [Excluir] [Evolucionar] ──────────────────
+            // ── Ações: [Copiar] [Excluir] | [Editar] [Evolucionar] ───────
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
-              child: Row(
+              child: Column(
                 children: [
-                  // Copiar
-                  _actionBtn(
-                    icon: Icons.copy_rounded,
-                    label: isEs ? 'Copiar' : 'Copiar',
-                    color: InternacionTheme.cyan,
-                    dark: dark,
-                    theme: theme,
-                    onTap: () => onCopy(_buildPreviewText()),
+                  // Linha 1: [Copiar] [Excluir]
+                  Row(
+                    children: [
+                      // Copiar
+                      _actionBtn(
+                        icon: Icons.copy_rounded,
+                        label: isEs ? 'Copiar' : 'Copiar',
+                        color: InternacionTheme.cyan,
+                        dark: dark,
+                        theme: theme,
+                        onTap: () => onCopy(_buildPreviewText()),
+                      ),
+                      const SizedBox(width: 6),
+                      // Excluir
+                      _actionBtn(
+                        icon: Icons.delete_outline_rounded,
+                        label: isEs ? 'Excluir' : 'Excluir',
+                        color: InternacionTheme.red,
+                        dark: dark,
+                        theme: theme,
+                        onTap: onDelete,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 6),
-                  // Excluir
-                  _actionBtn(
-                    icon: Icons.delete_outline_rounded,
-                    label: isEs ? 'Excluir' : 'Excluir',
-                    color: InternacionTheme.red,
-                    dark: dark,
-                    theme: theme,
-                    onTap: onDelete,
-                  ),
-                  const SizedBox(width: 6),
-                  // Evolucionar (primário)
-                  Expanded(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: onResume,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 11),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color(0xFF059669),
-                              Color(0xFF047857),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.edit_rounded,
-                                size: 14, color: Colors.white),
-                            const SizedBox(width: 5),
-                            Text(
-                              isEs ? 'Evolucionar' : 'Evoluir',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                  const SizedBox(height: 8),
+                  // Linha 2: [Editar última] [Evolucionar →]
+                  Row(
+                    children: [
+                      // Editar última evolução
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: onEdit,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: InternacionTheme.amber
+                                  .withValues(alpha: dark ? 0.18 : 0.12),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: InternacionTheme.amber
+                                    .withValues(alpha: 0.45),
+                                width: 0.9,
                               ),
                             ),
-                          ],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.edit_note_rounded,
+                                    size: 14,
+                                    color: InternacionTheme.amber),
+                                const SizedBox(width: 5),
+                                Text(
+                                  isEs ? 'Editar' : 'Editar',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: InternacionTheme.amber,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      // Evolucionar (primário)
+                      Expanded(
+                        flex: 2,
+                        child: GestureDetector(
+                          onTap: onEvolve,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF059669),
+                                  Color(0xFF047857),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.add_circle_outline_rounded,
+                                    size: 14, color: Colors.white),
+                                const SizedBox(width: 5),
+                                Text(
+                                  isEs ? 'Evolucionar' : 'Evoluir',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
