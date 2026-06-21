@@ -2622,6 +2622,34 @@ class _AuditoriaViewer extends StatelessWidget {
     );
   }
 
+  // Build 194: verifica se TODOS os campos SOAP estão vazios
+  bool _isSoapEmpty() {
+    final s = ev.subjetivo;
+    final sv = ev.objetivo.signosVitales;
+    final ef = ev.objetivo.examenFisico;
+    final ex = ev.objetivo.examenes;
+    final a = ev.evaluacion;
+    final p = ev.plan;
+    final hasSubjetivo = s.notePasaNoche.isNotEmpty ||
+        s.notasLibres.isNotEmpty ||
+        s.alimentacion.isNotEmpty ||
+        s.diuresis.isNotEmpty ||
+        s.evacuacion.isNotEmpty ||
+        s.fiebre || s.disnea || s.nauseas || s.tos || s.suenoRestado ||
+        (s.dolorEscala != null && s.dolorEscala! > 0);
+    final hasObjetivo = !sv.isEmpty ||
+        ef.estadoGeneral.isNotEmpty || ef.acv.isNotEmpty ||
+        ef.ar.isNotEmpty || ef.abdomen.isNotEmpty || ef.extremidades.isNotEmpty ||
+        ex.laboratorio.isNotEmpty || ex.imagenes.isNotEmpty ||
+        ex.culturas.isNotEmpty || ex.ecg.isNotEmpty ||
+        ev.objetivo.tratamientoActual.isNotEmpty;
+    final hasAvaliacao = a.notasEvaluacion.isNotEmpty ||
+        a.estado != null || a.problemasActivos.isNotEmpty;
+    final hasPlano = p.planTerapeutico.isNotEmpty || p.criteriosAlta.isNotEmpty;
+    final hasFarmacos = ev.farmacos.isNotEmpty;
+    return !hasSubjetivo && !hasObjetivo && !hasAvaliacao && !hasPlano && !hasFarmacos;
+  }
+
   List<Widget> _buildFields(InternacionTheme theme) {
     final widgets = <Widget>[];
     final s = ev.subjetivo;
@@ -2630,6 +2658,43 @@ class _AuditoriaViewer extends StatelessWidget {
     final ex = ev.objetivo.examenes;
     final a = ev.evaluacion;
     final p = ev.plan;
+
+    // Build 194: Fallback — nunca exibe bloco vazio
+    if (_isSoapEmpty()) {
+      widgets.add(Container(
+        margin: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: InternacionTheme.amber.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: InternacionTheme.amber.withValues(alpha: 0.30),
+            width: 0.9,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.info_outline_rounded,
+                size: 16, color: InternacionTheme.amber),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                isEs
+                    ? 'Contenido de la evolucion no disponible o en procesamiento.\nEs posible que el registro sea de una version anterior del sistema.'
+                    : 'Conteudo da evolucao indisponivel ou em processamento.\nO registro pode ser de uma versao anterior do sistema.',
+                style: TextStyle(
+                  fontSize: 12.5,
+                  color: InternacionTheme.amber,
+                  height: 1.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ));
+      return widgets;
+    }
 
     void addSection(String label, IconData icon, Color color) {
       widgets.add(Padding(
@@ -2709,7 +2774,7 @@ class _AuditoriaViewer extends StatelessWidget {
     if (s.notePasaNoche.isNotEmpty) {
       addField(isEs ? 'Noche' : 'Noite', s.notePasaNoche);
     }
-    if (s.dolorEscala != null) addField('EVA', '${s.dolorEscala}/10');
+    if (s.dolorEscala != null && s.dolorEscala! > 0) addField('EVA', '${s.dolorEscala}/10');
     final syms = <String>[];
     if (s.fiebre) syms.add(isEs ? 'Fiebre' : 'Febre');
     if (s.disnea) syms.add(isEs ? 'Disnea' : 'Dispneia');
