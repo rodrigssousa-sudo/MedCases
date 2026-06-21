@@ -14,6 +14,9 @@ class GuideModel {
   final String uploadedBy;
   final bool isPublished;
   final int downloadCount;
+  /// URL opcional da imagem de capa — Build 169: thumbnail dinâmico no card.
+  /// Nulo ou vazio → exibe ícone PDF clássico (fallback retrocompatível).
+  final String coverUrl;
 
   const GuideModel({
     required this.id,
@@ -29,6 +32,7 @@ class GuideModel {
     this.uploadedBy = '',
     this.isPublished = true,
     this.downloadCount = 0,
+    this.coverUrl = '',
   });
 
   static const List<String> categories = [
@@ -70,6 +74,7 @@ class GuideModel {
     'uploadedBy': uploadedBy,
     'isPublished': isPublished,
     'downloadCount': downloadCount,
+    'coverUrl': coverUrl,
   };
 
   /// Parse seguro: aceita campos alternativos de URL e título.
@@ -105,6 +110,10 @@ class GuideModel {
       'isPublished=$isPublished rawPublished=$rawPublished',
     );
 
+    // ── coverUrl: aceita coverUrl, imageUrl, thumbnailUrl, coverImageUrl ─────
+    final coverUrl = _firstNonEmpty(
+        json, ['coverUrl', 'imageUrl', 'thumbnailUrl', 'coverImageUrl']);
+
     return GuideModel(
       id:            json['id']?.toString() ?? '',
       title:         title,
@@ -119,6 +128,7 @@ class GuideModel {
       uploadedBy:    json['uploadedBy']?.toString() ?? '',
       isPublished:   isPublished,
       downloadCount: downloadCount,
+      coverUrl:      coverUrl,
     );
   }
 
@@ -135,7 +145,7 @@ class GuideModel {
     String? id, String? title, String? description, String? category,
     String? authors, String? year, String? pdfUrl, String? fileName,
     int? fileSize, String? uploadedAt, String? uploadedBy,
-    bool? isPublished, int? downloadCount,
+    bool? isPublished, int? downloadCount, String? coverUrl,
   }) => GuideModel(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -150,5 +160,6 @@ class GuideModel {
     uploadedBy: uploadedBy ?? this.uploadedBy,
     isPublished: isPublished ?? this.isPublished,
     downloadCount: downloadCount ?? this.downloadCount,
+    coverUrl: coverUrl ?? this.coverUrl,
   );
 }

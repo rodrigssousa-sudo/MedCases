@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
@@ -1511,19 +1511,62 @@ class _GuideCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(
-                width: 48, height: 56,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: catColor.withValues(alpha: 0.12),
-                  border: Border.all(color: catColor.withValues(alpha: 0.3)),
+              // ── Thumbnail dinâmico (Build 169) ─────────────────────────────
+              // Se coverUrl preenchida → CachedNetworkImage com bordas arredondadas
+              // Se vazia → fallback ao ícone clássico verde de PDF (retrocompat.)
+              if (guide.coverUrl.isNotEmpty)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: guide.coverUrl,
+                    width: 56, height: 64,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      width: 56, height: 64,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: catColor.withValues(alpha: 0.12),
+                      ),
+                      child: Center(
+                        child: SizedBox(
+                          width: 18, height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(catColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      width: 56, height: 64,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: catColor.withValues(alpha: 0.12),
+                        border: Border.all(color: catColor.withValues(alpha: 0.3)),
+                      ),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
+                        Text('PDF', style: TextStyle(
+                          fontSize: 8, fontWeight: FontWeight.w900, color: catColor)),
+                      ]),
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  width: 56, height: 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: catColor.withValues(alpha: 0.12),
+                    border: Border.all(color: catColor.withValues(alpha: 0.3)),
+                  ),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
+                    Text('PDF', style: TextStyle(
+                      fontSize: 8, fontWeight: FontWeight.w900, color: catColor)),
+                  ]),
                 ),
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
-                  Text('PDF', style: TextStyle(
-                    fontSize: 8, fontWeight: FontWeight.w900, color: catColor)),
-                ]),
-              ),
+              // ───────────────────────────────────────────────────────────────
               const SizedBox(width: 14),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Container(

@@ -70,6 +70,10 @@ dependencies:
   # Usado por _AiBubble (Build 116) para bloco único contínuo sem fragmentação
   flutter_markdown: ^0.7.7
 
+  # Imagens de capa das guias PDF — cache eficiente em web + mobile
+  # Build 169: GuideModel.coverUrl → thumbnail dinâmico no _GuideCard
+  cached_network_image: ^3.4.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
