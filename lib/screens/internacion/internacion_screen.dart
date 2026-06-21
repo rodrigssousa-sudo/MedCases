@@ -120,16 +120,31 @@ class _InternacionScreenState extends State<InternacionScreen> {
       );
 
   // ── 168-1: Salva na nuvem (com fallback local) ───────────────────────────
+  // Build 191 FIX A+C: distingue INSERT (novo) de UPDATE (existente).
+  // - UPDATE usa .update() preservando savedAt + gravando updatedAt.
+  // - INSERT usa .set(merge:true) com savedAt (novo doc).
+  // Ambos garantem isDeleted:false + status:'active' no payload.
   Future<void> _persistSession() async {
     final uid = _uid;
     if (uid != null && uid.isNotEmpty) {
-      await InternacionFirestoreService.saveSession(
-        uid: uid,
-        paciente: _paciente,
-        historial: _historial,
-        existingKey: _currentSessionKey,
-      );
-      _currentSessionKey ??= InternacionFirestoreService.sessionKey(_paciente);
+      if (_currentSessionKey != null) {
+        // Prontuário existente — UPDATE cirúrgico (preserva savedAt, grava updatedAt)
+        await InternacionFirestoreService.updateSession(
+          uid: uid,
+          existingKey: _currentSessionKey!,
+          paciente: _paciente,
+          historial: _historial,
+        );
+      } else {
+        // Novo prontuário — INSERT
+        await InternacionFirestoreService.saveSession(
+          uid: uid,
+          paciente: _paciente,
+          historial: _historial,
+          existingKey: null,
+        );
+        _currentSessionKey = InternacionFirestoreService.sessionKey(_paciente);
+      }
     }
     // Fallback local sempre (offline resilience)
     await InternacionPersistence.saveSession(
@@ -182,10 +197,14 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
     await _persistSession();
 
-    // ── Build 171: Força atualização reativa do grid ──────────────────────
-    await _loadSessionsLocal();
+    // Build 191 FIX C: NÃO chamar _loadSessionsLocal() após save.
+    // O Firestore stream (sessionsStream) é a ÚNICA fonte de verdade —
+    // chamar _loadSessionsLocal() aqui sobreescrevia _savedSessions com dados
+    // do SQLite local (potencialmente desatualizados), quebrando a reatividade.
+    // O StreamBuilder em _initSessions() atualiza _savedSessions automaticamente
+    // quando o Firestore confirma a gravação.
 
-    // ── Build 171: Reset completo do workspace após salvar ─────────────────
+    // ── Reset completo do workspace após salvar ────────────────────────────
     final freshDraft = _newDraft();
     setState(() {
       _paciente = const PacienteInternacaoData(diaInternacao: 1);

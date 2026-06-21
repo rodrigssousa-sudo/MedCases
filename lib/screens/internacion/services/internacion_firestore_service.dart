@@ -1,5 +1,24 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionFirestoreService — Build 186
+// InternacionFirestoreService — Build 191
+//
+// Build 191 — Correção de sincronização reversa (3 nós críticos):
+//
+// FIX A — SEPARAÇÃO INSERT vs UPDATE:
+//   • saveSession()   → INSERT puro (.set com merge, preserva savedAt original).
+//   • updateSession() → UPDATE cirúrgico (.update) usando doc ID existente.
+//     - Usa .doc(existingKey).update() — JAMAIS .add() para docs existentes.
+//     - Grava updatedAt:serverTimestamp() separado de savedAt (criação).
+//     - Mantém status:'active' + isDeleted:false explicitamente no payload.
+//
+// FIX B — ORDENAÇÃO HÍBRIDA DO STREAM:
+//   • sessionsStream ordena por updatedAt desc (se disponível) ou savedAt desc.
+//   • _sessionFromDoc lê updatedAt para populars PacienteSession.savedAt
+//     → docs recém-atualizados sobem ao topo imediatamente.
+//
+// FIX C — PAYLOAD ATÔMICO:
+//   • _buildInsertPayload: primeiro save — inclui savedAt (criação).
+//   • _buildUpdatePayload: saves subsequentes — inclui updatedAt (modificação),
+//     NÃO sobrescreve savedAt para preservar ordem de criação intacta.
 //
 // Build 186 — Reestruturação Profunda (3 nós arquiteturais críticos):
 //
@@ -91,14 +110,10 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // SAVE — upsert com merge
-  // BUILD 186 FIX 3: Grava status:'active' + isDeleted:false SOMENTE em campos
-  // explícitos via SetOptions(merge:true). Documentos trashados NÃO são
-  // reativados automaticamente por um save acidental.
-  // ATENÇÃO: o status:'active' E isDeleted:false são gravados para garantir
-  // que novos documentos apareçam corretamente nas queries. Em documentos
-  // existentes, o merge preserva o status atual se não incluir o campo.
-  // Para INSERT seguro sem sobrescrever status, use saveSessionSafe().
+  // SAVE — INSERT puro (novo documento)
+  // Build 191 FIX A: Usado EXCLUSIVAMENTE para criar novos prontuários.
+  // Grava savedAt (timestamp de criação) + status:'active' + isDeleted:false.
+  // NÃO use para pacientes existentes — use updateSession() para isso.
   // ─────────────────────────────────────────────────────────────────────────
   static Future<void> saveSession({
     required String uid,
@@ -108,11 +123,42 @@ class InternacionFirestoreService {
   }) async {
     try {
       final key = existingKey ?? sessionKey(paciente);
-      final payload = _buildPayload(key, paciente, historial);
+      final payload = _buildInsertPayload(key, paciente, historial);
       await _col(uid).doc(key).set(payload, SetOptions(merge: true));
-      debugPrint('[InternFire] saveSession OK → $key (${historial.length} evol.)');
+      debugPrint('[InternFire] saveSession (INSERT) OK → $key (${historial.length} evol.)');
     } catch (e) {
       debugPrint('[InternFire] saveSession ERRO: $e');
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // UPDATE — atualização cirúrgica de prontuário existente (Build 191 FIX A)
+  // Usa .doc(existingKey).update() — JAMAIS .add() para docs já existentes.
+  // Preserva savedAt original (timestamp de criação) — só adiciona updatedAt.
+  // Reforça status:'active' + isDeleted:false para manter o doc no stream.
+  // O Firestore stream (sessionsStream) reage imediatamente a este update.
+  // ─────────────────────────────────────────────────────────────────────────
+  static Future<void> updateSession({
+    required String uid,
+    required String existingKey,
+    required PacienteInternacaoData paciente,
+    required List<EvolucionModel> historial,
+  }) async {
+    try {
+      final payload = _buildUpdatePayload(existingKey, paciente, historial);
+      // .update() preserva todos os campos não incluídos (ex: savedAt, sessionKey)
+      // Garante que isDeleted:false + status:'active' estejam presentes
+      await _col(uid).doc(existingKey).update(payload);
+      debugPrint('[InternFire] updateSession (UPDATE) OK → $existingKey (${historial.length} evol.)');
+    } catch (e) {
+      // .update() falha se o doc não existe ainda — cai no saveSession como fallback
+      debugPrint('[InternFire] updateSession WARN (doc não existe?): $e — tentando saveSession');
+      await saveSession(
+        uid: uid,
+        paciente: paciente,
+        historial: historial,
+        existingKey: existingKey,
+      );
     }
   }
 
@@ -158,12 +204,10 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // STREAM — tempo real, multi-device
-  // BUILD 186 FIX 2: query em isDeleted==false (backward-compat com docs
-  // antigos) + filtragem client-side de docs trashados pelo campo 'status'.
-  // Não usa dois streams paralelos (evita complexidade de merge) — a query
-  // isDeleted==false já captura todos os docs ativos (novos + legados).
-  // Docs com status=='trashed' são descartados no client via _sessionFromDoc.
+  // STREAM — tempo real, multi-device (Build 191 FIX B)
+  // Query: isDeleted==false (backward-compat) + filtragem client-side de trashed.
+  // Ordenação: savedAt desc (Firestore index) — client-side re-sort por
+  // updatedAt desc quando disponível para que updates subam ao topo.
   // MEU PLANTÃO e aba Adulto escutam ESTE mesmo stream → sync total.
   // ─────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
@@ -171,15 +215,21 @@ class InternacionFirestoreService {
         .where('isDeleted', isEqualTo: false)
         .orderBy('savedAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs
-            .where((doc) {
-              final status = doc.data()['status'] as String?;
-              // Exclui docs explicitamente trashados (salvaguarda dupla)
-              return status != kStatusTrashed;
-            })
-            .map(_sessionFromDoc)
-            .whereType<PacienteSession>()
-            .toList());
+        .map((snap) {
+          final sessions = snap.docs
+              .where((doc) {
+                final status = doc.data()['status'] as String?;
+                // Exclui docs explicitamente trashados (salvaguarda dupla)
+                return status != kStatusTrashed;
+              })
+              .map(_sessionFromDoc)
+              .whereType<PacienteSession>()
+              .toList();
+          // Build 191 FIX B: re-sort client-side por updatedAt (se presente)
+          // para que docs recém-editados subam ao topo imediatamente.
+          sessions.sort((a, b) => b.savedAt.compareTo(a.savedAt));
+          return sessions;
+        });
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -277,20 +327,42 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Constrói payload completo para Firestore
-  // BUILD 186 FIX 3: inclui AMBOS os campos status:'active' + isDeleted:false.
-  // Garante que novos documentos apareçam nas duas queries (nova + legado).
+  // Build 191: Payload de INSERT (novo documento)
+  // Inclui savedAt (timestamp de criação) — NÃO deve ser sobrescrito em updates.
   // ─────────────────────────────────────────────────────────────────────────
-  static Map<String, dynamic> _buildPayload(
+  static Map<String, dynamic> _buildInsertPayload(
     String key,
     PacienteInternacaoData paciente,
     List<EvolucionModel> historial,
   ) {
     return {
       'sessionKey': key,
-      'status': kStatusActive,        // Build 186: campo semântico primário
-      'isDeleted': false,             // Backward-compat (queries legadas)
-      'savedAt': FieldValue.serverTimestamp(),
+      'status': kStatusActive,               // campo semântico primário
+      'isDeleted': false,                    // backward-compat (queries legadas)
+      'savedAt': FieldValue.serverTimestamp(), // timestamp de CRIAÇÃO
+      'updatedAt': FieldValue.serverTimestamp(), // também preenche no insert
+      'paciente': _pacienteToJson(paciente),
+      'historial': historial.map(_evolToJson).toList(),
+    };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Build 191: Payload de UPDATE (documento existente)
+  // NÃO inclui savedAt — preserva o timestamp de criação original.
+  // Inclui updatedAt para que o stream reactive mova o doc ao topo.
+  // Reforça status:'active' + isDeleted:false — garante visibilidade no stream.
+  // ─────────────────────────────────────────────────────────────────────────
+  static Map<String, dynamic> _buildUpdatePayload(
+    String key,
+    PacienteInternacaoData paciente,
+    List<EvolucionModel> historial,
+  ) {
+    return {
+      'sessionKey': key,
+      'status': kStatusActive,                // reforça — doc volta ao stream
+      'isDeleted': false,                     // reforça — backward-compat
+      'updatedAt': FieldValue.serverTimestamp(), // timestamp de MODIFICAÇÃO
+      // savedAt NÃO incluído — preserva timestamp de criação original
       'paciente': _pacienteToJson(paciente),
       'historial': historial.map(_evolToJson).toList(),
     };
@@ -394,13 +466,23 @@ class InternacionFirestoreService {
         savedAt = DateTime.now();
       }
 
+      // Build 191 FIX B: usa updatedAt se disponível para o sort do stream,
+      // pois updatedAt reflete a edição mais recente (não só a criação).
+      final updatedAtTs = data['updatedAt'];
+      DateTime effectiveDate;
+      if (updatedAtTs is Timestamp) {
+        effectiveDate = updatedAtTs.toDate();
+      } else {
+        effectiveDate = savedAt; // docs legados: usa savedAt como fallback
+      }
+
       return PacienteSession(
         sessionKey: doc.id,
         paciente: _pacienteFromJson(pacienteJson),
         historial: historialJson
             .map((e) => _evolFromJson(e as Map<String, dynamic>))
             .toList(),
-        savedAt: savedAt,
+        savedAt: effectiveDate, // usa updatedAt quando disponível
       );
     } catch (e) {
       debugPrint('[InternFire] _sessionFromDoc ERRO: $e');
