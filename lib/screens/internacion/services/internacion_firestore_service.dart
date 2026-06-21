@@ -213,29 +213,38 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // STREAM — tempo real, multi-device (Build 191 FIX B)
-  // Query: isDeleted==false (backward-compat) + filtragem client-side de trashed.
-  // Ordenação: savedAt desc (Firestore index) — client-side re-sort por
-  // updatedAt desc quando disponível para que updates subam ao topo.
+  // STREAM — tempo real, multi-device (Build 199)
+  // Build 199: Usa status=='active' como query primária (índice de campo único
+  // — sem composite index obrigatório). Client-side filtra isDeleted==false
+  // como salvaguarda adicional para docs legados sem campo 'status'.
+  // Motivo da mudança: .where('isDeleted',...).orderBy('savedAt') exige composite
+  // index {isDeleted ASC, savedAt DESC} que pode não existir no projeto Firestore,
+  // fazendo o stream lançar silenciosamente e a Home ficar vazia para sempre.
+  // Fallback: se a query status=='active' também falhar (índice ausente), o
+  // onError no listener chama loadAllSessions() como one-shot de recuperação.
   // MEU PLANTÃO e aba Adulto escutam ESTE mesmo stream → sync total.
   // ─────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
     return _col(uid)
-        .where('isDeleted', isEqualTo: false)
+        .where('status', isEqualTo: kStatusActive)
         .orderBy('savedAt', descending: true)
         .snapshots()
         .map((snap) {
           final sessions = snap.docs
               .where((doc) {
-                final status = doc.data()['status'] as String?;
-                // Exclui docs explicitamente trashados (salvaguarda dupla)
-                return status != kStatusTrashed;
+                final data = doc.data();
+                // Salvaguarda dupla: exclui trashados + isDeleted==true legados
+                final status = data['status'] as String?;
+                if (status == kStatusTrashed) return false;
+                final isDeleted = data['isDeleted'];
+                if (isDeleted == true) return false;
+                return true;
               })
               .map(_sessionFromDoc)
               .whereType<PacienteSession>()
               .toList();
-          // Build 191 FIX B: re-sort client-side por updatedAt (se presente)
-          // para que docs recém-editados subam ao topo imediatamente.
+          // Re-sort client-side por updatedAt para que docs recém-editados
+          // subam ao topo imediatamente sem depender da ordem do Firestore.
           sessions.sort((a, b) => b.savedAt.compareTo(a.savedAt));
           return sessions;
         });
@@ -544,91 +553,138 @@ class InternacionFirestoreService {
     'evaluacion', 'plan', 'farmacos', 'metadadosAdicionais',
   };
 
+  // ── Build 199: Helpers de coerção numérica/booleana ──────────────────────
+  // Firestore/JavaScript não distingue int de double: um campo gravado como
+  // int:0 pode voltar como double:0.0. O cast `as int?` lança TypeError nesse
+  // caso, corrompendo _sessionFromDoc inteiro. Esses helpers são à prova de bala.
+  static int _toInt(dynamic v, {int fallback = 0}) {
+    if (v == null) return fallback;
+    if (v is int) return v;
+    if (v is double) return v.toInt();
+    if (v is String) return int.tryParse(v) ?? fallback;
+    return fallback;
+  }
+
+  static bool _toBool(dynamic v, {bool fallback = false}) {
+    if (v == null) return fallback;
+    if (v is bool) return v;
+    if (v is int) return v != 0;
+    if (v is String) return v == 'true' || v == '1';
+    return fallback;
+  }
+
+  static String _toStr(dynamic v, {String fallback = ''}) {
+    if (v == null) return fallback;
+    if (v is String) return v;
+    return v.toString();
+  }
+
   static EvolucionModel _evolFromJson(Map<String, dynamic> j) {
-    final s = (j['subjetivo'] as Map<String, dynamic>?) ?? {};
-    final o = (j['objetivo'] as Map<String, dynamic>?) ?? {};
-    final sv = (o['signosVitales'] as Map<String, dynamic>?) ?? {};
-    final ef = (o['examenFisico'] as Map<String, dynamic>?) ?? {};
-    final ex = (o['examenes'] as Map<String, dynamic>?) ?? {};
-    final a = (j['evaluacion'] as Map<String, dynamic>?) ?? {};
-    final p = (j['plan'] as Map<String, dynamic>?) ?? {};
+    // Build 199: helper seguro para extrair sub-mapas sem lançar exceção.
+    Map<String, dynamic> safe(dynamic v) =>
+        (v is Map) ? Map<String, dynamic>.from(v as Map) : {};
+
+    final s  = safe(j['subjetivo']);
+    final o  = safe(j['objetivo']);
+    final sv = safe(o['signosVitales']);
+    final ef = safe(o['examenFisico']);
+    final ex = safe(o['examenes']);
+    final a  = safe(j['evaluacion']);
+    final p  = safe(j['plan']);
 
     // Build 192 Fix 4: captura campos extras não mapeados no schema fixo.
     // Campos desconhecidos → metadadosAdicionais (mapa de segurança).
-    final existingMeta = (j['metadadosAdicionais'] as Map<String, dynamic>?) ?? {};
+    final existingMeta = safe(j['metadadosAdicionais']);
     final extraKeys = j.keys.where((k) => !_kKnownEvolKeys.contains(k));
     final metadados = <String, dynamic>{...existingMeta};
     for (final k in extraKeys) {
       metadados[k] = j[k];
-      debugPrint('[InternFire] Build192: campo extra capturado em metadadosAdicionais → "$k"');
     }
 
     EstadoClinical? estado;
-    final estadoStr = a['estado'] as String?;
-    if (estadoStr != null) {
+    final estadoStr = a['estado'];
+    if (estadoStr is String) {
       for (final e in EstadoClinical.values) {
-        if (e.name == estadoStr) {
-          estado = e;
-          break;
-        }
+        if (e.name == estadoStr) { estado = e; break; }
       }
     }
 
+    // Build 199: problemasActivos — Firestore pode gravar como List<dynamic>
+    // ou List<String>; cast seguro via whereType.
+    List<String> safeStrList(dynamic v) {
+      if (v is! List) return [];
+      return v.whereType<String>().toList();
+    }
+
+    // Build 199: farmacos — cada entrada parseada com try/catch individual
+    // para que uma entrada corrompida não apague o historial inteiro.
+    List<FarmacoEntry> parseFarmacos(dynamic raw) {
+      if (raw is! List) return [];
+      final result = <FarmacoEntry>[];
+      for (final f in raw) {
+        try {
+          final fm = f is Map ? Map<String, dynamic>.from(f as Map) : <String, dynamic>{};
+          result.add(FarmacoEntry(
+            medicamento: _toStr(fm['medicamento']),
+            dosagem: _toStr(fm['dosagem']),
+          ));
+        } catch (_) { /* pula entrada corrompida sem perder as restantes */ }
+      }
+      return result;
+    }
+
     return EvolucionModel(
-      id: j['id'] as String? ?? DateTime.now().millisecondsSinceEpoch.toString(),
-      fecha: DateTime.tryParse(j['fecha'] as String? ?? '') ?? DateTime.now(),
-      autorNombre: j['autorNombre'] as String? ?? 'Dr.',
+      id: _toStr(j['id'], fallback: DateTime.now().millisecondsSinceEpoch.toString()),
+      fecha: DateTime.tryParse(_toStr(j['fecha'])) ?? DateTime.now(),
+      autorNombre: _toStr(j['autorNombre'], fallback: 'Dr.'),
       subjetivo: SubjetivoData(
-        notePasaNoche: s['notePasaNoche'] as String? ?? '',
-        dolorEscala: s['dolorEscala'] as int? ?? 0,
-        fiebre: s['fiebre'] as bool? ?? false,
-        disnea: s['disnea'] as bool? ?? false,
-        nauseas: s['nauseas'] as bool? ?? false,
-        tos: s['tos'] as bool? ?? false,
-        alimentacion: s['alimentacion'] as String? ?? '',
-        diuresis: s['diuresis'] as String? ?? '',
-        evacuacion: s['evacuacion'] as String? ?? '',
-        suenoRestado: s['suenoRestado'] as bool? ?? false,
-        notasLibres: s['notasLibres'] as String? ?? '',
+        notePasaNoche: _toStr(s['notePasaNoche']),
+        // Build 199: dolorEscala é int? — null = não informado, 0 = sem dor.
+        // Firestore pode gravar int como double(0.0); convertemos e preservamos null.
+        dolorEscala: s['dolorEscala'] == null ? null : _toInt(s['dolorEscala']),
+        fiebre:       _toBool(s['fiebre']),
+        disnea:       _toBool(s['disnea']),
+        nauseas:      _toBool(s['nauseas']),
+        tos:          _toBool(s['tos']),
+        alimentacion: _toStr(s['alimentacion']),
+        diuresis:     _toStr(s['diuresis']),
+        evacuacion:   _toStr(s['evacuacion']),
+        suenoRestado: _toBool(s['suenoRestado']),
+        notasLibres:  _toStr(s['notasLibres']),
       ),
       objetivo: ObjetivoData(
         signosVitales: SignosVitales(
-          pa: sv['pa'] as String? ?? '',
-          fc: sv['fc'] as String? ?? '',
-          fr: sv['fr'] as String? ?? '',
-          satO2: sv['satO2'] as String? ?? '',
-          temperatura: sv['temperatura'] as String? ?? '',
+          pa:          _toStr(sv['pa']),
+          fc:          _toStr(sv['fc']),
+          fr:          _toStr(sv['fr']),
+          satO2:       _toStr(sv['satO2']),
+          temperatura: _toStr(sv['temperatura']),
         ),
         examenFisico: ExamenFisico(
-          estadoGeneral: ef['estadoGeneral'] as String? ?? '',
-          acv: ef['acv'] as String? ?? '',
-          ar: ef['ar'] as String? ?? '',
-          abdomen: ef['abdomen'] as String? ?? '',
-          extremidades: ef['extremidades'] as String? ?? '',
+          estadoGeneral: _toStr(ef['estadoGeneral']),
+          acv:           _toStr(ef['acv']),
+          ar:            _toStr(ef['ar']),
+          abdomen:       _toStr(ef['abdomen']),
+          extremidades:  _toStr(ef['extremidades']),
         ),
         examenes: ExamenesComplementarios(
-          laboratorio: ex['laboratorio'] as String? ?? '',
-          imagenes: ex['imagenes'] as String? ?? '',
-          culturas: ex['culturas'] as String? ?? '',
-          ecg: ex['ecg'] as String? ?? '',
+          laboratorio: _toStr(ex['laboratorio']),
+          imagenes:    _toStr(ex['imagenes']),
+          culturas:    _toStr(ex['culturas']),
+          ecg:         _toStr(ex['ecg']),
         ),
-        tratamientoActual: o['tratamientoActual'] as String? ?? '',
+        tratamientoActual: _toStr(o['tratamientoActual']),
       ),
       evaluacion: EvaluacionData(
         estado: estado,
-        problemasActivos: ((a['problemasActivos'] as List?)?.cast<String>()) ?? [],
-        notasEvaluacion: a['notasEvaluacion'] as String? ?? '',
+        problemasActivos: safeStrList(a['problemasActivos']),
+        notasEvaluacion:  _toStr(a['notasEvaluacion']),
       ),
       plan: PlanData(
-        planTerapeutico: p['planTerapeutico'] as String? ?? '',
-        criteriosAlta: p['criteriosAlta'] as String? ?? '',
+        planTerapeutico: _toStr(p['planTerapeutico']),
+        criteriosAlta:   _toStr(p['criteriosAlta']),
       ),
-      farmacos: ((j['farmacos'] as List?) ?? [])
-          .map((f) => FarmacoEntry(
-                medicamento: (f as Map<String, dynamic>)['medicamento'] as String? ?? '',
-                dosagem: f['dosagem'] as String? ?? '',
-              ))
-          .toList(),
+      farmacos: parseFarmacos(j['farmacos']),
       metadadosAdicionais: metadados,
     );
   }
