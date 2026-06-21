@@ -1532,6 +1532,36 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
     return buf.toString().trimRight();
   }
 
+  // Build 198: abre ModalBottomSheet tri-formato para a evolução selecionada.
+  // Usa as funções públicas de soap_section.dart (soapCompletoString, etc.)
+  // que já têm fallbacks "• (Sem dados)" para cada bloco vazio — nunca
+  // produzem texto esqueleto.
+  void _showCopySheet(BuildContext context, EvolucionModel ev) {
+    final p       = session.paciente;
+    final isEsVal = isEs;
+    final darkVal = dark;
+    final autor   = ev.autorNombre.isNotEmpty ? ev.autorNombre : 'Dr.';
+
+    void doCopy(String text) {
+      Navigator.of(context).pop(); // fecha o sheet
+      Clipboard.setData(ClipboardData(text: text));
+      widget.onCopy(text); // notifica o host (SnackBar)
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _CopyFormatSheet(
+        dark: darkVal,
+        lang: isEsVal ? 'es' : 'pt',
+        onCopyFull:     () => doCopy(soapCompletoString(ev, isEsVal, autor, p)),
+        onCopyResumida: () => doCopy(soapResumidoString(ev, isEsVal, autor, p)),
+        onCopyPasaje:   () => doCopy(soapPassagemString(ev, isEsVal, p)),
+      ),
+    );
+  }
+
   // Build 192 Fix 3: label para o DropdownButton de histórico
   String _evolLabel(int index) {
     final ev = session.historial[index];
@@ -1872,14 +1902,16 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
                   // Linha 1: [Copiar] [Excluir]
                   Row(
                     children: [
-                      // Copiar — Build 192: copia TODOS os campos SOAP
+                      // Build 198: copia via tri-formato ModalBottomSheet
                       _actionBtn(
-                        icon: Icons.copy_rounded,
+                        icon: Icons.copy_all_rounded,
                         label: isEs ? 'Copiar' : 'Copiar',
                         color: InternacionTheme.cyan,
                         dark: dark,
                         theme: theme,
-                        onTap: () => widget.onCopy(_buildPreviewText()),
+                        onTap: selectedEv != null
+                            ? () => _showCopySheet(context, selectedEv)
+                            : () => widget.onCopy(_buildPreviewText()),
                       ),
                       const SizedBox(width: 6),
                       // Excluir
@@ -2084,6 +2116,271 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     color: color)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 198: _CopyFormatSheet — tri-formato de cópia para _SessionPreviewDialog
+// ─────────────────────────────────────────────────────────────────────────────
+class _CopyFormatSheet extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  final VoidCallback onCopyFull;
+  final VoidCallback onCopyResumida;
+  final VoidCallback onCopyPasaje;
+
+  const _CopyFormatSheet({
+    required this.dark,
+    required this.lang,
+    required this.onCopyFull,
+    required this.onCopyResumida,
+    required this.onCopyPasaje,
+  });
+
+  bool get isEs => lang == 'es';
+
+  @override
+  Widget build(BuildContext context) {
+    final bg           = dark ? const Color(0xFF0F1116) : Colors.white;
+    final textPrimary  = dark ? Colors.white : const Color(0xFF0D1117);
+    final textSecondary= dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final cardBg       = dark ? const Color(0xFF1A1F2E) : const Color(0xFFF8F9FA);
+    final borderColor  = dark ? const Color(0xFF2D3748) : const Color(0xFFE5E7EB);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(color: const Color(0xFF059669).withValues(alpha: 0.25)),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        20, 12, 20,
+        20 + MediaQuery.of(context).viewPadding.bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Handle ──────────────────────────────────────────────────────────
+          Center(
+            child: Container(
+              width: 36, height: 4,
+              decoration: BoxDecoration(
+                color: borderColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+
+          // ── Título ──────────────────────────────────────────────────────────
+          Row(
+            children: [
+              Container(
+                width: 34, height: 34,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF059669), Color(0xFF047857)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.copy_all_rounded, size: 17, color: Colors.white),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isEs ? 'Exportar Evolución' : 'Exportar Evolução',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: textPrimary,
+                      ),
+                    ),
+                    Text(
+                      isEs
+                          ? 'Selecciona el formato de exportación'
+                          : 'Selecione o formato de exportação',
+                      style: TextStyle(fontSize: 11.5, color: textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // ── Opção 1: Completa ────────────────────────────────────────────────
+          _CopyFormatTile(
+            dark: dark,
+            icon: Icons.description_rounded,
+            iconColor: const Color(0xFF3B82F6),
+            cardBg: cardBg,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+            title: isEs ? 'Evolucion Completa' : 'Evolução Completa',
+            subtitle: isEs
+                ? 'Encabezado hospitalar + S/O/A/P jerárquico + firma'
+                : 'Cabeçalho hospitalar + S/O/A/P hierárquico + assinatura',
+            badgeLabel: 'SOAP',
+            badgeColor: const Color(0xFF3B82F6),
+            onTap: onCopyFull,
+          ),
+          const SizedBox(height: 8),
+
+          // ── Opção 2: Resumida ────────────────────────────────────────────────
+          _CopyFormatTile(
+            dark: dark,
+            icon: Icons.compress_rounded,
+            iconColor: const Color(0xFF059669),
+            cardBg: cardBg,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+            title: isEs ? 'Evolucion Resumida' : 'Evolução Resumida',
+            subtitle: isEs
+                ? 'Formato horizontal denso — ideal para sistemas legados'
+                : 'Formato horizontal denso — ideal para sistemas legados',
+            badgeLabel: 'INLINE',
+            badgeColor: const Color(0xFF059669),
+            onTap: onCopyResumida,
+          ),
+          const SizedBox(height: 8),
+
+          // ── Opção 3: Passagem de Plantão ─────────────────────────────────────
+          _CopyFormatTile(
+            dark: dark,
+            icon: Icons.transfer_within_a_station_rounded,
+            iconColor: const Color(0xFFF59E0B),
+            cardBg: cardBg,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+            title: isEs ? 'Pasaje de Guardia' : 'Passagem de Plantão',
+            subtitle: isEs
+                ? 'Ultra-objetivo para transición de turno en menos de 30s'
+                : 'Ultra-objetivo para passagem de plantão em menos de 30s',
+            badgeLabel: '30s',
+            badgeColor: const Color(0xFFF59E0B),
+            onTap: onCopyPasaje,
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 198: _CopyFormatTile — item de lista reutilizável para _CopyFormatSheet
+// ─────────────────────────────────────────────────────────────────────────────
+class _CopyFormatTile extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final Color iconColor;
+  final Color cardBg;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+  final String title;
+  final String subtitle;
+  final String badgeLabel;
+  final Color badgeColor;
+  final VoidCallback onTap;
+
+  const _CopyFormatTile({
+    required this.dark,
+    required this.icon,
+    required this.iconColor,
+    required this.cardBg,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.title,
+    required this.subtitle,
+    required this.badgeLabel,
+    required this.badgeColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: borderColor, width: 0.9),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42, height: 42,
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: dark ? 0.15 : 0.10),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 20, color: iconColor),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w700,
+                            color: textPrimary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: badgeColor.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          badgeLabel,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: badgeColor,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: textSecondary,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.chevron_right_rounded, size: 18, color: textSecondary),
           ],
         ),
       ),

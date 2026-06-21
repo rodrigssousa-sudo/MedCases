@@ -124,6 +124,10 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   }
 
   // ── Subscribes (or re-subscribes) to the Firestore sessions stream ──────────
+  // Build 198: onError fallback carrega sessões via loadAllSessions() em vez de
+  // engolir o erro silenciosamente. Isso resolve o caso em que o índice composto
+  // (isDeleted + savedAt) do Firestore ainda não existe — o stream lança exceção
+  // e _firestoreSessions fica em [] para sempre.
   void _subscribeToSessions(String uid) {
     if (_lastStreamUid == uid) return; // already subscribed to this uid
     _lastStreamUid = uid;
@@ -136,9 +140,22 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
         _notifyEmptyChange();
       },
       onError: (e) {
-        debugPrint('[MeuPlantao] sessionsStream error: $e');
+        debugPrint('[MeuPlantao] sessionsStream error: $e — falling back to loadAllSessions');
+        // Fallback: carrega via one-shot se o stream falhar (ex: índice ausente)
+        _loadSessionsFallback(uid);
       },
     );
+  }
+
+  Future<void> _loadSessionsFallback(String uid) async {
+    try {
+      final sessions = await InternacionFirestoreService.loadAllSessions(uid);
+      if (!mounted) return;
+      setState(() => _firestoreSessions = sessions);
+      _notifyEmptyChange();
+    } catch (e) {
+      debugPrint('[MeuPlantao] loadAllSessions fallback error: $e');
+    }
   }
 
   void _notifyEmptyChange() {
@@ -715,33 +732,28 @@ class _FirestoreSessionsColumn extends StatelessWidget {
     this.onOpenInternacion,
   });
 
-  // Build 195: agrupa sessões por paciente (nome normalizado) e retorna apenas
-  // a mais recente por paciente — elimina duplicidade de cards na Home.
-  // Critério de deduplicação: nome em minúsculas sem espaços extras.
-  // Critério de "mais recente": maior savedAt (que desde Build 191 reflete updatedAt).
-  // Fallback: se nomes vazios, usa sessionKey como chave única (preserva todos).
-  // Build 196: null-safe com try-catch para blindar contra edge cases do Firestore.
-  // s.paciente pode ser null em documentos corrompidos ou parcialmente escritos.
+  // Build 198: deduplicação à prova de balas — null-safe em todos os campos.
+  // Agrupa por nome normalizado, mantém a sessão mais recente por paciente.
+  // Em caso de qualquer erro, retorna a lista original sem deduplicar.
   List<PacienteSession> _deduplicated() {
     try {
       final Map<String, PacienteSession> byPatient = {};
       for (final s in sessions) {
-        // Null-safe via try-catch (paciente/nome non-nullable em teoria, mas
-        // documentos do Firestore podem ser corrompidos — o try-catch captura isso)
-        final nome = s.paciente.nome.trim().toLowerCase();
-        final key = nome.isNotEmpty ? nome : s.sessionKey;
+        // Null-safe máximo: paciente pode ser nulo; nome é String não-nula
+        final nome = s.paciente?.nome.trim() ?? '';
+        final key = nome.isNotEmpty ? nome.toLowerCase() : s.sessionKey;
         final existing = byPatient[key];
-        if (existing == null || s.savedAt.isAfter(existing.savedAt)) {
+        if (existing == null ||
+            (s.savedAt.isAfter(existing.savedAt))) {
           byPatient[key] = s;
         }
       }
-      // Preserva a ordem original (mais recente primeiro) entre grupos
       final result = byPatient.values.toList()
         ..sort((a, b) => b.savedAt.compareTo(a.savedAt));
       return result;
     } catch (e) {
       debugPrint('[MeuPlantao] _deduplicated error: $e');
-      return sessions; // fallback: retorna lista sem deduplicar
+      return List<PacienteSession>.from(sessions); // fallback: cópia defensiva
     }
   }
 
