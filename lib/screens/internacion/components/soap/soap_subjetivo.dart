@@ -40,10 +40,53 @@ class _SoapSubjetivoState extends State<SoapSubjetivo> {
     _notasCtrl = TextEditingController(text: widget.data.notasLibres)
       ..selection = TextSelection.collapsed(
           offset: widget.data.notasLibres.length);
+    // Build 205 FIX: addListener captura mudanças programáticas (.text = valor)
+    // que NÃO disparam onChanged do TextField. Isso garante que injeção IA
+    // via applyAiDraft (que modifica widget.data → didUpdateWidget → ctrl.text=)
+    // seja imediatamente refletida no SoapNotifier.
+    _nocheCtrl.addListener(_onNocheChanged);
+    _notasCtrl.addListener(_onNotasChanged);
+  }
+
+  void _onNocheChanged() {
+    final v = _nocheCtrl.text;
+    if (v != widget.data.notePasaNoche) {
+      widget.onChanged(widget.data.copyWith(notePasaNoche: v));
+    }
+  }
+
+  void _onNotasChanged() {
+    final v = _notasCtrl.text;
+    if (v != widget.data.notasLibres) {
+      widget.onChanged(widget.data.copyWith(notasLibres: v));
+    }
+  }
+
+  // Build 205 FIX: sincroniza controllers quando widget.data muda externamente
+  // (injeção IA via applyAiDraft ou resetSoap). Sem este override, os
+  // TextEditingControllers mantêm o valor antigo mesmo quando o notifier é
+  // atualizado — causando salvamento de texto obsoleto no Firestore.
+  @override
+  void didUpdateWidget(SoapSubjetivo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final d    = widget.data;
+    final oldD = oldWidget.data;
+    if (d.notePasaNoche != oldD.notePasaNoche &&
+        d.notePasaNoche != _nocheCtrl.text) {
+      _nocheCtrl.text = d.notePasaNoche;
+      _nocheCtrl.selection = TextSelection.collapsed(offset: d.notePasaNoche.length);
+    }
+    if (d.notasLibres != oldD.notasLibres &&
+        d.notasLibres != _notasCtrl.text) {
+      _notasCtrl.text = d.notasLibres;
+      _notasCtrl.selection = TextSelection.collapsed(offset: d.notasLibres.length);
+    }
   }
 
   @override
   void dispose() {
+    _nocheCtrl.removeListener(_onNocheChanged);
+    _notasCtrl.removeListener(_onNotasChanged);
     _nocheCtrl.dispose();
     _notasCtrl.dispose();
     super.dispose();

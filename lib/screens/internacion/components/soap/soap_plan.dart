@@ -39,10 +39,51 @@ class _SoapPlanState extends State<SoapPlan> {
     _altaCtrl = TextEditingController(text: widget.data.criteriosAlta)
       ..selection = TextSelection.collapsed(
           offset: widget.data.criteriosAlta.length);
+    // Build 205 FIX: addListener captura mudanças programáticas (.text = valor)
+    // que NÃO disparam onChanged do TextField (ex: injeção IA via applyAiDraft).
+    _planCtrl.addListener(_onPlanChanged);
+    _altaCtrl.addListener(_onAltaChanged);
+  }
+
+  void _onPlanChanged() {
+    final v = _planCtrl.text;
+    if (v != widget.data.planTerapeutico) {
+      widget.onChanged(widget.data.copyWith(planTerapeutico: v));
+    }
+  }
+
+  void _onAltaChanged() {
+    final v = _altaCtrl.text;
+    if (v != widget.data.criteriosAlta) {
+      widget.onChanged(widget.data.copyWith(criteriosAlta: v));
+    }
+  }
+
+  // Build 205 FIX: sincroniza _planCtrl e _altaCtrl quando widget.data muda
+  // externamente. Caso de uso principal: injeção via IA (applyAiDraft) que
+  // seta controller.text programaticamente — Flutter não dispara onChanged,
+  // então o notifier ficaria desatualizado sem este override.
+  @override
+  void didUpdateWidget(SoapPlan oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final plan    = widget.data.planTerapeutico;
+    final oldPlan = oldWidget.data.planTerapeutico;
+    if (plan != oldPlan && plan != _planCtrl.text) {
+      _planCtrl.text = plan;
+      _planCtrl.selection = TextSelection.collapsed(offset: plan.length);
+    }
+    final alta    = widget.data.criteriosAlta;
+    final oldAlta = oldWidget.data.criteriosAlta;
+    if (alta != oldAlta && alta != _altaCtrl.text) {
+      _altaCtrl.text = alta;
+      _altaCtrl.selection = TextSelection.collapsed(offset: alta.length);
+    }
   }
 
   @override
   void dispose() {
+    _planCtrl.removeListener(_onPlanChanged);
+    _altaCtrl.removeListener(_onAltaChanged);
     _planCtrl.dispose();
     _altaCtrl.dispose();
     super.dispose();

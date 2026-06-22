@@ -37,10 +37,35 @@ class _SoapEvaluacionState extends State<SoapEvaluacion> {
       ..selection = TextSelection.collapsed(
           offset: widget.data.notasEvaluacion.length);
     _problemaCtrl = TextEditingController();
+    // Build 205 FIX: addListener captura mudanças programáticas (.text = valor)
+    // que NÃO disparam onChanged do TextField (ex: injeção IA).
+    _notasCtrl.addListener(_onNotasEvalChanged);
+  }
+
+  void _onNotasEvalChanged() {
+    final v = _notasCtrl.text;
+    if (v != widget.data.notasEvaluacion) {
+      widget.onChanged(widget.data.copyWith(notasEvaluacion: v));
+    }
+  }
+
+  // Build 205 FIX: sincroniza _notasCtrl quando widget.data.notasEvaluacion
+  // muda externamente (injeção IA). _problemaCtrl é campo de entrada temporário
+  // (não representa estado persistido), portanto não precisa de sync.
+  @override
+  void didUpdateWidget(SoapEvaluacion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newNotas = widget.data.notasEvaluacion;
+    if (newNotas != oldWidget.data.notasEvaluacion &&
+        newNotas != _notasCtrl.text) {
+      _notasCtrl.text = newNotas;
+      _notasCtrl.selection = TextSelection.collapsed(offset: newNotas.length);
+    }
   }
 
   @override
   void dispose() {
+    _notasCtrl.removeListener(_onNotasEvalChanged);
     _notasCtrl.dispose();
     _problemaCtrl.dispose();
     super.dispose();

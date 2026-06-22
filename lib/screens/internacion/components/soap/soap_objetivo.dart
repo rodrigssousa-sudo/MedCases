@@ -81,10 +81,95 @@ class _SoapObjetivoState extends State<SoapObjetivo> {
     _ecgCtrl  = _ctrl(ex.ecg);
 
     _tratCtrl = _ctrl(widget.data.tratamientoActual);
+
+    // Build 205 FIX: addListener em cada controller para capturar mudanças
+    // programáticas (.text = valor) que NÃO disparam onChanged do TextField.
+    // Garante que injeção IA (applyAiDraft → didUpdateWidget → ctrl.text=)
+    // seja imediatamente refletida no SoapNotifier.
+    _paCtrl.addListener(_emitSv);
+    _fcCtrl.addListener(_emitSv);
+    _frCtrl.addListener(_emitSv);
+    _satCtrl.addListener(_emitSv);
+    _tempCtrl.addListener(_emitSv);
+    _egCtrl.addListener(_emitEf);
+    _acvCtrl.addListener(_emitEf);
+    _arCtrl.addListener(_emitEf);
+    _abdCtrl.addListener(_emitEf);
+    _extCtrl.addListener(_emitEf);
+    _labCtrl.addListener(_emitEx);
+    _imgCtrl.addListener(_emitEx);
+    _cultCtrl.addListener(_emitEx);
+    _ecgCtrl.addListener(_emitEx);
+    _tratCtrl.addListener(_emitTrat);
+  }
+
+  void _emitTrat() {
+    final v = _tratCtrl.text;
+    if (v != widget.data.tratamientoActual) {
+      widget.onChanged(widget.data.copyWith(tratamientoActual: v));
+    }
+  }
+
+  // Build 205 FIX: sincroniza todos os controllers quando widget.data muda
+  // externamente (injeção IA / resetSoap). A comparação tripla garante:
+  //   1. O dado externo mudou (oldWidget → widget)
+  //   2. O controller ainda não reflete o novo valor (evita loop)
+  // Sem este override, settar controller.text via IA não dispara onChanged e
+  // o notifier permanece com os dados antigos até o médico editar manualmente.
+  @override
+  void didUpdateWidget(SoapObjetivo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final sv    = widget.data.signosVitales;
+    final oldSv = oldWidget.data.signosVitales;
+    void _sync(TextEditingController c, String nv, String ov) {
+      if (nv != ov && nv != c.text) {
+        c.text = nv;
+        c.selection = TextSelection.collapsed(offset: nv.length);
+      }
+    }
+    // Sinais vitais
+    _sync(_paCtrl,   sv.pa,          oldSv.pa);
+    _sync(_fcCtrl,   sv.fc,          oldSv.fc);
+    _sync(_frCtrl,   sv.fr,          oldSv.fr);
+    _sync(_satCtrl,  sv.satO2,       oldSv.satO2);
+    _sync(_tempCtrl, sv.temperatura, oldSv.temperatura);
+    // Exame físico
+    final ef    = widget.data.examenFisico;
+    final oldEf = oldWidget.data.examenFisico;
+    _sync(_egCtrl,  ef.estadoGeneral, oldEf.estadoGeneral);
+    _sync(_acvCtrl, ef.acv,           oldEf.acv);
+    _sync(_arCtrl,  ef.ar,            oldEf.ar);
+    _sync(_abdCtrl, ef.abdomen,       oldEf.abdomen);
+    _sync(_extCtrl, ef.extremidades,  oldEf.extremidades);
+    // Exames complementares
+    final ex    = widget.data.examenes;
+    final oldEx = oldWidget.data.examenes;
+    _sync(_labCtrl,  ex.laboratorio, oldEx.laboratorio);
+    _sync(_imgCtrl,  ex.imagenes,    oldEx.imagenes);
+    _sync(_cultCtrl, ex.culturas,    oldEx.culturas);
+    _sync(_ecgCtrl,  ex.ecg,         oldEx.ecg);
+    // Tratamento atual
+    _sync(_tratCtrl, widget.data.tratamientoActual, oldWidget.data.tratamientoActual);
   }
 
   @override
   void dispose() {
+    // Remove listeners antes de dispose para evitar callbacks pós-desmontagem
+    _paCtrl.removeListener(_emitSv);
+    _fcCtrl.removeListener(_emitSv);
+    _frCtrl.removeListener(_emitSv);
+    _satCtrl.removeListener(_emitSv);
+    _tempCtrl.removeListener(_emitSv);
+    _egCtrl.removeListener(_emitEf);
+    _acvCtrl.removeListener(_emitEf);
+    _arCtrl.removeListener(_emitEf);
+    _abdCtrl.removeListener(_emitEf);
+    _extCtrl.removeListener(_emitEf);
+    _labCtrl.removeListener(_emitEx);
+    _imgCtrl.removeListener(_emitEx);
+    _cultCtrl.removeListener(_emitEx);
+    _ecgCtrl.removeListener(_emitEx);
+    _tratCtrl.removeListener(_emitTrat);
     for (final c in [
       _paCtrl, _fcCtrl, _frCtrl, _satCtrl, _tempCtrl,
       _egCtrl, _acvCtrl, _arCtrl, _abdCtrl, _extCtrl,
@@ -93,26 +178,46 @@ class _SoapObjetivoState extends State<SoapObjetivo> {
     super.dispose();
   }
 
-  void _emitSv() => widget.onChanged(widget.data.copyWith(
-    signosVitales: SignosVitales(
+  // _emitSv/Ef/Ex: chamados tanto pelo addListener (mudança programática via IA)
+  // quanto pelo onChanged do TextField (digitação manual). A chamada dupla é
+  // idempotente pois o notifier compara os dados antes de rebuildar.
+  void _emitSv() {
+    final sv = SignosVitales(
       pa: _paCtrl.text, fc: _fcCtrl.text, fr: _frCtrl.text,
       satO2: _satCtrl.text, temperatura: _tempCtrl.text,
-    ),
-  ));
+    );
+    // Evita loop: só emite se os dados realmente mudaram
+    final cur = widget.data.signosVitales;
+    if (sv.pa != cur.pa || sv.fc != cur.fc || sv.fr != cur.fr ||
+        sv.satO2 != cur.satO2 || sv.temperatura != cur.temperatura) {
+      widget.onChanged(widget.data.copyWith(signosVitales: sv));
+    }
+  }
 
-  void _emitEf() => widget.onChanged(widget.data.copyWith(
-    examenFisico: ExamenFisico(
+  void _emitEf() {
+    final ef = ExamenFisico(
       estadoGeneral: _egCtrl.text, acv: _acvCtrl.text, ar: _arCtrl.text,
       abdomen: _abdCtrl.text, extremidades: _extCtrl.text,
-    ),
-  ));
+    );
+    final cur = widget.data.examenFisico;
+    if (ef.estadoGeneral != cur.estadoGeneral || ef.acv != cur.acv ||
+        ef.ar != cur.ar || ef.abdomen != cur.abdomen ||
+        ef.extremidades != cur.extremidades) {
+      widget.onChanged(widget.data.copyWith(examenFisico: ef));
+    }
+  }
 
-  void _emitEx() => widget.onChanged(widget.data.copyWith(
-    examenes: ExamenesComplementarios(
+  void _emitEx() {
+    final ex = ExamenesComplementarios(
       laboratorio: _labCtrl.text, imagenes: _imgCtrl.text,
       culturas: _cultCtrl.text, ecg: _ecgCtrl.text,
-    ),
-  ));
+    );
+    final cur = widget.data.examenes;
+    if (ex.laboratorio != cur.laboratorio || ex.imagenes != cur.imagenes ||
+        ex.culturas != cur.culturas || ex.ecg != cur.ecg) {
+      widget.onChanged(widget.data.copyWith(examenes: ex));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
