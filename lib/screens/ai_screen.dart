@@ -3463,6 +3463,17 @@ String _stripMetadataHeaders(String accumulated) {
     '',
   );
 
+  // Build 235 Step 5B — second-line defence: strip bracket system tags
+  // that may leak through as first line of the streamed response.
+  result = result.replaceAll(
+    RegExp(
+      r'^\s*\[(?:MODO|PLANT[ÃA]O|PLANTAO|ESTUDO|DIRETRIZ|SOBERANIA|CONTEXTO|TRAVA|SYSTEM)[^\]]*\]\s*',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
   return result.trimLeft();
 }
 
@@ -6531,13 +6542,8 @@ class _InteractiveChipGroup extends StatelessWidget {
         );
 
       case _QuestionType.action:
-        // Single action chip — send the action text directly
-        return _ActionPillChip(
-          label: display,
-          dark: dark,
-          accentColor: accentColor,
-          onTap: () => onChipTap(display),
-        );
+        // Build 235: Legacy ⚡ _ActionPillChip suppressed — _SmartNextActionChip ✨ handles this below the bubble.
+        return const SizedBox.shrink();
     }
   }
 }
