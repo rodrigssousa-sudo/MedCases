@@ -165,6 +165,35 @@ class NextActionEngine {
   // ──────────────────────────────────────────────────────────────────────────
   static ClinicalTopic _detectTopic(String corpus) {
     // Verificar em ordem de especificidade (temas mais raros primeiro)
+    //
+    // Build 236 — Reordenamento anti-colisão léxica:
+    // ISRS/IRSN e Parkinson sobem para o TOPO da função, antes de Sepse e Choque.
+    // Isso impede que 'norepinefrina' (neurotransmissor em venlafaxina/duloxetina)
+    // acione o bloco de vasopressores/sepse. Adicionalmente, 'noradrenalina' e
+    // 'norepinefrina' foram removidos do bloco de Sepse; substituídos por tokens
+    // exclusivamente septêmicos com contexto clínico ('noradrenalina iv',
+    // 'vasopressor iv', etc.) — impossíveis de ocorrer em contexto psiquiátrico.
+
+    // ★ PRIORIDADE 0-A: Antidepressivos / ISRS / IRSN
+    // (DEVE vir antes de Sepse: 'norepinefrina' e 'noradrenalina' são usadas
+    //  nesses textos como NEUROTRANSMISSORES, não vasopressores sistêmicos)
+    if (_any(corpus, ['isrs', 'irsn', 'snri', 'ssri', 'fluoxetina',
+        'sertralina', 'escitalopram', 'paroxetina', 'venlafaxina',
+        'duloxetina', 'antidepressivo', 'antidepresivo', 'depressão',
+        'depresión', 'síndrome serotoninérgica', 'sindrome serotonergico',
+        'mirtazapina', 'desvenlafaxina', 'fluvoxamina'])) {
+      return ClinicalTopic.antidepressivos;
+    }
+
+    // ★ PRIORIDADE 0-B: Parkinson
+    // (DEVE vir antes de Sepse: 'dopaminergíco' pode aparecer em contextos
+    //  de choque, mas levodopa/pramipexol são exclusivos de neurologia)
+    if (_any(corpus, ['parkinson', 'levodopa', 'carbidopa', 'benserazida',
+        'pramipexol', 'rotigotina', 'rasagilina', 'discinesia',
+        'fenômeno on-off', 'fenomeno on-off', 'agonista dopaminérgico',
+        'agonista dopaminergico'])) {
+      return ClinicalTopic.parkinson;
+    }
 
     // 41. Hipercalemia (antes de potássio genérico)
     if (_any(corpus, ['hipercalemia', 'hipercalcemia', 'k+ 6', 'k+ 7',
@@ -184,10 +213,15 @@ class NextActionEngine {
     }
 
     // 2. Sepse
+    // Build 236: removidos 'noradrenalina' e 'norepinefrina' — tokens ambíguos
+    // que colidiam com contextos de IRSN (venlafaxina, duloxetina).
+    // Substituídos por variantes com contexto exclusivamente septêmico.
     if (_any(corpus, ['sepse', 'sepsis', 'choque séptico', 'choque septico',
-        'lactato', 'noradrenalina', 'norepinefrina', 'vasopressor',
-        'pressores', 'bundle de sepse', 'bundle sepsis', 'qsofa',
-        'sofa', 'critério de sepse'])) {
+        'lactato', 'noradrenalina iv', 'vasopressor iv', 'vasopressor em bolo',
+        'vasopressor sistêmico', 'pressores iv', 'pressores vasopressor',
+        'bundle de sepse', 'bundle sepsis', 'qsofa', 'sofa',
+        'critério de sepse', 'critério de sepsis', 'pac sepse',
+        'drenagem de foco', 'antibiotico sepse', 'antibiótico sepse'])) {
       return ClinicalTopic.sepse;
     }
 
@@ -203,24 +237,8 @@ class NextActionEngine {
       return ClinicalTopic.potassio;
     }
 
-    // 4. Antidepressivos / ISRS / IRSN
-    if (_any(corpus, ['isrs', 'irsn', 'snri', 'ssri', 'fluoxetina',
-        'sertralina', 'escitalopram', 'paroxetina', 'venlafaxina',
-        'duloxetina', 'antidepressivo', 'antidepresivo', 'depressão',
-        'depresión', 'síndrome serotoninérgica', 'sindrome serotonergico',
-        'mirtazapina', 'desvenlafaxina', 'fluvoxamina'])) {
-      return ClinicalTopic.antidepressivos;
-    }
-
-    // 5. Parkinson
-    if (_any(corpus, ['parkinson', 'levodopa', 'carbidopa', 'benserazida',
-        'pramipexol', 'rotigotina', 'rasagilina', 'discinesia',
-        'fenômeno on-off', 'fenomeno on-off', 'agonista dopaminérgico',
-        'agonista dopaminergico'])) {
-      return ClinicalTopic.parkinson;
-    }
-
     // 6. Anticoagulação
+    // (Antidepressivos #4 e Parkinson #5 movidos para PRIORIDADE 0-A/0-B acima)
     if (_any(corpus, ['heparina', 'warfarina', 'apixabana', 'apixaban',
         'rivaroxabana', 'rivaroxaban', 'dabigatrana', 'dabigatran',
         'enoxaparina', 'hbpm', 'anticoagulação', 'anticoagulacion',

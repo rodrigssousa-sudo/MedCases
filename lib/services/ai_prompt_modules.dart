@@ -88,7 +88,12 @@ class PromptModules {
       'do sistema, metadados, tags, contratos, headings artificiais, textos entre colchetes, '
       'ou termos como \'MODO PLANTÃO\' e \'MODO ESTUDO\'. Esses elementos pertencem '
       'exclusivamente ao prompt interno e nunca à resposta clínica. '
-      'A resposta deve iniciar diretamente pelo conteúdo médico.\n';
+      'A resposta deve iniciar diretamente pelo conteúdo médico.\n'
+      'PROIBIÇÃO ABSOLUTA DE SUGESTÕES TEXTUAIS: É terminantemente proibido gerar qualquer '
+      'linha de sugestão, ação futura ou texto que contenha o caractere de raio \'⚡\' ou '
+      'que termine com o caractere \'>\'. O modelo não deve tentar criar botões ou chamadas '
+      'de ação na resposta de texto. A resposta deve iniciar diretamente pelo conteúdo médico '
+      'e terminar no último parágrafo clínico.\n';
 
   // ════════════════════════════════════════════════════════════════════════════
   // MÓDULO: antiLeak
@@ -108,6 +113,8 @@ class PromptModules {
       '[CONTEXTO...], [SOBERANIA...] em qualquer parte da resposta final.\n'
       '  ✗ Nunca imprima headings artificiais como ##, ###, #### quando representarem '
       'estrutura interna do sistema ou metadados de configuração.\n'
+      '  ✗ Nunca imprima o caractere \'⚡\' em qualquer parte da resposta.\n'
+      '  ✗ Nunca termine uma linha com o caractere \'>\' (marcação antiga de botão sugerido).\n'
       'REGRA DE SIGLA ISOLADA: query de 1-5 chars → abrir 🟥 direto, sem análise.\n';
 
   // ════════════════════════════════════════════════════════════════════════════
@@ -160,6 +167,7 @@ class PromptModules {
       'LIMITE FÍSICO: MÁXIMO 14 linhas de conteúdo (linhas em branco não contam).\n'
       'IGNORA COMPLETAMENTE: hierarquia didática, prosa acadêmica.\n'
       'PROIBIDO iniciar a resposta com: [, #, ##, MODO, PLANTÃO, SOBERANIA ou qualquer tag de sistema.\n'
+      'NUNCA gere o caractere \'⚡\' nem linhas terminadas em \'>\' na resposta.\n'
       '\n'
       'CASO A — CONDUTA CLÍNICA (manejo/tratamento): conduta ESCALONADA obrigatória:\n'
       '  🟥 [1ª opção — conservadora/entrada: dose via freq]\n'
@@ -193,6 +201,7 @@ class PromptModules {
       'LIMITE FÍSICO: entre 6 e 30 linhas de conteúdo (linhas em branco não contam).\n'
       'IGNORA COMPLETAMENTE: templates flashcard, emojis 🟥/🔄B/🔄C, layout de Plantão.\n'
       'PROIBIDO iniciar a resposta com: [, #, ##, ###, MODO, ESTUDO, SOBERANIA ou qualquer tag de sistema.\n'
+      'NUNCA gere o caractere \'⚡\' nem linhas terminadas em \'>\' na resposta de estudo.\n'
       'PRIMEIRO ELEMENTO obrigatório: **Nome do Tema** (em negrito puro). NUNCA ## ou 🟥.\n'
       '\n'
       'HIERARQUIA DIDÁTICA OBRIGATÓRIA (use negrito puro, sem ##):\n'

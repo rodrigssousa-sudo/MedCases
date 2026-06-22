@@ -606,6 +606,10 @@ class _AiScreenState extends State<AiScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       setState(() {
+        // Build 236: marca saudação como feita para evitar dupla injeção
+        // se _injectGreeting() for chamado após a restauração do histórico.
+        _greetingDone = true;
+
         // Preserva apenas a saudação automática (primeiro msg de 'ai')
         // e acrescenta os pares do mini-chat logo depois.
         final greeting = _messages.isNotEmpty && _messages.first.role == 'ai'
@@ -3473,6 +3477,17 @@ String _stripMetadataHeaders(String accumulated) {
     ),
     '',
   );
+
+  // Build 236 Step 5 — terceira linha de defesa: remove linhas fantasmas que
+  // contenham '⚡' ou terminem em '>' (botões textuais gerados acidentalmente
+  // pelo modelo ao tentar imitar a UI de sugestões do app).
+  final lines = result.split('\n');
+  final filtered = lines.where((line) {
+    final trimmed = line.trim();
+    if (trimmed.isEmpty) return true; // preserva linhas em branco (espaçamento)
+    return !trimmed.contains('⚡') && !trimmed.endsWith('>');
+  }).toList();
+  result = filtered.join('\n');
 
   return result.trimLeft();
 }

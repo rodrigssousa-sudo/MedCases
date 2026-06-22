@@ -1318,13 +1318,25 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       // Chip de atalho ou campo preenchido: dispara nova query na tela de IA
       AiScreen.pendingQuery.value = q;
     } else if (withHistory && _messages.isNotEmpty) {
-      // "Ver más" / "Ver resposta completa": injeta histórico do mini-chat.
+      // Build 236 Fix: "Ver resposta completa" — injeta histórico COMPLETO do mini-chat.
+      // Inclui a resposta em streaming (_streaming) se ainda não foi commitada em
+      // _messages (race condition: usuário clicou antes do onDone fechar o stream).
       // Filtra apenas pares user+ai sem erros para uma continuação limpa.
       final clean = _messages.where((m) => m['isError'] != true).toList();
-      if (clean.isNotEmpty) {
-        AiScreen.pendingHistory.value = clean
-            .map((m) => {'role': m['role'] as String, 'text': m['text'] as String})
-            .toList();
+
+      // Snapshot das mensagens base
+      final pairs = clean
+          .map((m) => {'role': m['role'] as String, 'text': m['text'] as String})
+          .toList();
+
+      // Se há texto em streaming que ainda não virou mensagem, inclui como 'ai'
+      final streamingSnapshot = _streaming.trim();
+      if (streamingSnapshot.isNotEmpty) {
+        pairs.add({'role': 'ai', 'text': streamingSnapshot});
+      }
+
+      if (pairs.isNotEmpty) {
+        AiScreen.pendingHistory.value = pairs;
       }
     }
     widget.onNavigateToAi(2);
