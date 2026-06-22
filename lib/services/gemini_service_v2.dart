@@ -540,7 +540,7 @@ class GeminiServiceV2 {
     required String systemPrompt,
     List<Map<String, String>> history = const [],
     bool useGrounding = true,
-    String modeAnchor = '',  // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
+    // Build 221: modeAnchor removido — âncora já concatenada em systemPrompt
   }) {
     final controller = StreamController<GeminiChunk>();
 
@@ -564,7 +564,7 @@ class GeminiServiceV2 {
       systemPrompt: systemPrompt,
       history: history,
       useGrounding: useGrounding,
-      modeAnchor: modeAnchor,  // Build 157.1
+      // Build 221: modeAnchor não passado — já está dentro de systemPrompt
     );
 
     return controller.stream;

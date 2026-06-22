@@ -264,17 +264,15 @@ class ModeAnchorEngine {
     return anchor;
   }
 
-  /// Compatibilidade reversa — Build 157.1: retorna apenas o systemPrompt
-  /// sem concatenar a âncora (a âncora vai como part separado via GeminiServiceV2).
-  /// @deprecated Use getModeAnchor() + GeminiServiceV2.sendStream(modeAnchor: ...)
+  /// Build 221: concatenação brutal — âncora no topo absoluto do systemPrompt.
+  /// Resolve Gemini attention-deficit com multi-part system_instruction:
+  /// string monolítica única garante que o LLM nunca ignore a âncora.
   static String injectModeAnchor(
     String systemPrompt, {
     bool longResponse = false,
   }) {
-    // Build 157.1: a âncora NÃO é mais concatenada aqui —
-    // é passada como modeAnchor para GeminiServiceV2.sendStream()
-    // para garantir prioridade máxima sobre _systemPromptPrefix.
-    return systemPrompt; // retorna prompt sem âncora concatenada
+    final anchor = getModeAnchor(longResponse: longResponse);
+    return '$anchor\n\n[INÍCIO DO CONTEXTO CLÍNICO (RAG)]\n$systemPrompt';
   }
 }
 
@@ -313,8 +311,8 @@ class AiGatewayService {
 
   /// Envia mensagem ao Gemini com motor selecionado.
   ///
-  /// Build 157: delega para ModeAnchorEngine + GeminiServiceV2.sendStream().
-  /// A âncora de modo é injetada internamente no [systemPrompt].
+  /// Build 221: delega para ModeAnchorEngine.injectModeAnchor() + GeminiServiceV2.sendStream().
+  /// A âncora é concatenada brutalmente ao topo do [systemPrompt] — string monolítica.
   ///
   /// [userMessage]  — pergunta clínica do usuário
   /// [systemPrompt] — prompt base montado pelo AiService (sem âncora)
@@ -340,27 +338,28 @@ class AiGatewayService {
       return Stream.value(GeminiChunk.error('api_key_invalid'));
     }
 
-    // Build 157.1: obtém âncora de modo como string separada
-    // A âncora NÃO é mais concatenada ao systemPrompt —
-    // é passada como 'modeAnchor' para GeminiServiceV2 que a
-    // coloca como PART 0 (prioridade máxima) em system_instruction.
-    final anchor = ModeAnchorEngine.getModeAnchor(longResponse: longResponse);
+    // Build 221: concatenação brutal — âncora injetada diretamente no topo
+    // do systemPrompt como string monolítica. Resolve o Gemini attention-deficit
+    // que ignorava o modeAnchor quando enviado como Part 0 separado.
+    final finalSystemPrompt = ModeAnchorEngine.injectModeAnchor(
+      systemPrompt,
+      longResponse: longResponse,
+    );
 
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
-      '[AiGatewayService] Build 178: motor=$motor → '
-      'GeminiServiceV2.sendStream() direto | âncora como PART 0 (${anchor.length} chars)',
+      '[AiGatewayService] Build 221: motor=$motor → '
+      'GeminiServiceV2.sendStream() | âncora concatenada em systemPrompt (${finalSystemPrompt.length} chars)',
     );
 
-    // Delega para GeminiServiceV2 — SSE direto para Google
-    // modeAnchor é injetado como PRIMEIRA parte de system_instruction.parts[]
+    // Delega para GeminiServiceV2 — string monolítica única (sem modeAnchor separado)
     return GeminiServiceV2.sendStream(
       apiKey:       apiKey,
       userMessage:  userMessage,
-      systemPrompt: systemPrompt,  // prompt base sem âncora concatenada
+      systemPrompt: finalSystemPrompt,  // âncora já concatenada no topo
       history:      history,
       useGrounding: useGrounding,
-      modeAnchor:   anchor,        // âncora como PART 0 — prioridade máxima
+      // Build 221: modeAnchor removido — já está dentro de finalSystemPrompt
     );
   }
 
