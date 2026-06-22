@@ -306,8 +306,72 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
     });
   }
 
+  // ── Build 204: Expõe o EvolucionModel atual do notifier interno ──────────
+  // O SoapNotifier é o único source-of-truth dos campos S/O/A/P digitados
+  // pelo médico. O pai (_InternacionScreenState) deve usar este getter ao
+  // salvar, garantindo que os dados preenchidos nos TextFields sejam
+  // capturados — não o _draftEvolucion do pai (que nunca recebe os updates
+  // S/O/A/P, apenas farmacos via onChanged próprio).
+  EvolucionModel get currentEvolucion => _notifier.evolucion;
+
   // ── Build 181: Abre o ModalBottomSheet Tri-Modelo — chamado pela Action Bar ──
+  // Build 204: guard de workspace vazio — se nenhum campo S/O/A/P foi
+  // preenchido e não há fármacos, exibe SnackBar orientativo em vez de
+  // gerar texto com todos os blocos "(Sem dados)".
+  bool _hasAnyContent() {
+    final ev = _notifier.evolucion;
+    final s  = ev.subjetivo;
+    final o  = ev.objetivo;
+    final sv = o.signosVitales;
+    final ef = o.examenFisico;
+    final ex = o.examenes;
+    final a  = ev.evaluacion;
+    final p  = ev.plan;
+    return s.notePasaNoche.isNotEmpty    ||
+           s.notasLibres.isNotEmpty       ||
+           s.fiebre || s.disnea || s.nauseas || s.tos || s.suenoRestado ||
+           s.dolorEscala != null          ||
+           s.alimentacion.isNotEmpty      ||
+           s.diuresis.isNotEmpty          ||
+           s.evacuacion.isNotEmpty        ||
+           !sv.isEmpty                    ||
+           ef.estadoGeneral.isNotEmpty    ||
+           ef.acv.isNotEmpty              ||
+           ef.ar.isNotEmpty               ||
+           ef.abdomen.isNotEmpty          ||
+           ef.extremidades.isNotEmpty     ||
+           ex.laboratorio.isNotEmpty      ||
+           ex.imagenes.isNotEmpty         ||
+           ex.culturas.isNotEmpty         ||
+           ex.ecg.isNotEmpty              ||
+           o.tratamientoActual.isNotEmpty ||
+           a.estado != null               ||
+           a.notasEvaluacion.isNotEmpty   ||
+           a.problemasActivos.isNotEmpty  ||
+           p.planTerapeutico.isNotEmpty   ||
+           p.criteriosAlta.isNotEmpty     ||
+           ev.farmacos.isNotEmpty;
+  }
+
   void showCopyMenu(BuildContext ctx) {
+    // Guard: workspace completamente vazio → orienta o médico
+    if (!_hasAnyContent()) {
+      final isEs = widget.lang == 'es';
+      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.info_outline_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Expanded(child: Text(isEs
+              ? 'Preencha ao menos um campo antes de copiar.'
+              : 'Preencha ao menos um campo antes de copiar.')),
+        ]),
+        backgroundColor: const Color(0xFF374151),
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
+      return;
+    }
     showModalBottomSheet(
       context: ctx,
       backgroundColor: Colors.transparent,

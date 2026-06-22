@@ -905,7 +905,18 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     dark: dark,
                     isPrimary: true,
                     onTap: () {
-                      _onSaveEvolucion(_draftEvolucion);
+                      // Build 204 FIX: mescla dados do SoapSectionWidget (S/O/A/P)
+                      // com farmacos do _draftEvolucion (gerenciado no pai).
+                      // • currentEvolucion = source-of-truth dos campos SOAP digitados
+                      // • _draftEvolucion.farmacos = source-of-truth da lista de fármacos
+                      // Sem este merge, o salvar usava _draftEvolucion do pai (S/O/A/P
+                      // vazios) e perdia tudo que o médico digitou no accordion.
+                      final soapEv = _soapKey.currentState?.currentEvolucion
+                          ?? _draftEvolucion;
+                      final ev = soapEv.copyWith(
+                        farmacos: _draftEvolucion.farmacos,
+                      );
+                      _onSaveEvolucion(ev);
                     },
                   ),
                 ),
