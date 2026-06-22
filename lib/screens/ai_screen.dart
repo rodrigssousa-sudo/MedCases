@@ -19,6 +19,7 @@ import '../data/drugs_database.dart';
 import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
 import '../services/activity_service.dart';
+import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action Engine
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1718,6 +1719,27 @@ class _AiScreenState extends State<AiScreen> {
                         padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
                         child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
                       ),
+
+                    // ── Build 233: Smart Next Action Engine ───────────────
+                    // Aparece apenas na última bolha AI quando não há streaming.
+                    // Motor 100% local — sem IA, sem rede, sem RAG.
+                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2)
+                      _SmartNextActionChip(
+                        lastUserMessage: _messages
+                            .lastWhere((m) => m.role == 'user',
+                                orElse: () => _ChatMsg(role: 'user', text: ''))
+                            .text,
+                        lastAiResponse: msg.text,
+                        isPlantaoMode: !_longResponse,
+                        lang: p.lang,
+                        dark: dark,
+                        onTap: (prompt) {
+                          if (_isStreaming) return;
+                          _userScrolledUp = false;
+                          _scrollDown(force: true);
+                          _sendDebounced(prompt, context.read<AppProvider>());
+                        },
+                      ),
                   ],
                 ),
                 ),
@@ -2760,6 +2782,94 @@ class _SuggestionCarousel extends StatelessWidget {
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _SmartNextActionChip — Build 233: Smart Next Action Engine
+//
+// Chip de continuidade clínica contextual, exibido abaixo da última bolha AI.
+// Motor 100% local: NextActionEngine.build() — sem IA, sem rede, sem RAG.
+// Bilíngue PT/ES. Modo-consciente (Plantão vs Estudo).
+// ─────────────────────────────────────────────────────────────────────────────
+class _SmartNextActionChip extends StatelessWidget {
+  final String lastUserMessage;
+  final String lastAiResponse;
+  final bool isPlantaoMode;
+  final String lang;
+  final bool dark;
+  final void Function(String prompt) onTap;
+
+  const _SmartNextActionChip({
+    required this.lastUserMessage,
+    required this.lastAiResponse,
+    required this.isPlantaoMode,
+    required this.lang,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Motor local — determinístico, zero rede
+    final action = NextActionEngine.build(
+      lastUserMessage: lastUserMessage,
+      lastAiResponse: lastAiResponse,
+      isPlantaoMode: isPlantaoMode,
+      currentLanguage: lang,
+    );
+
+    const accentColor = Color(0xFF00BCD4); // teal médico
+    final chipBg = dark
+        ? accentColor.withValues(alpha: 0.10)
+        : accentColor.withValues(alpha: 0.07);
+    final chipBorder = dark
+        ? accentColor.withValues(alpha: 0.45)
+        : accentColor.withValues(alpha: 0.35);
+    final textColor = dark
+        ? accentColor.withValues(alpha: 0.90)
+        : const Color(0xFF006064);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 16, 4),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: GestureDetector(
+          onTap: () => onTap(action.promptToSend),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: chipBg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: chipBorder, width: 1.2),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.auto_awesome_rounded, size: 14, color: textColor),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    action.label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: textColor,
+                      letterSpacing: 0.1,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: textColor),
+              ],
+            ),
+          ),
         ),
       ),
     );
