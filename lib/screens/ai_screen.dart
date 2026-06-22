@@ -1095,6 +1095,15 @@ class _AiScreenState extends State<AiScreen> {
     // ── Índice da bolha de streaming (-1 = não iniciada ainda) ──────────────
     int streamingMsgIdx = -1;
 
+    // ── Build 230: Anti-Freezing — trava de header strip após chunk 12 ────────
+    // _stripMetadataHeaders() usa RegEx pesado com dotAll=true e múltiplas
+    // alternâncias — rodar em CADA chunk bloqueia o main thread e congela o
+    // stream visual. Estratégia: rodar apenas nos primeiros 12 chunks onde
+    // prompt-leak pode aparecer (primeiras linhas da resposta, ~600 chars).
+    // Após 12 chunks sem leak, _metaHeadersConfirmedClean=true: fast path.
+    bool metaHeadersConfirmedClean = false;
+    int  chunksSinceStart = 0;
+
     try {
       // ── Streaming V2 via sendAiMessage ────────────────────────────────────
       // Retorna true se usou streaming (Gemini conectado), false se usou fallback.
@@ -1109,8 +1118,21 @@ class _AiScreenState extends State<AiScreen> {
           // Build 114: try-catch defensivo em torno de todo o bloco onChunk.
           // Token SSE malformado/cortado não pode crashar o browser móvel —
           // ignoramos silenciosamente e aguardamos o próximo chunk completo.
+          //
+          // Build 230 — Anti-Freezing (Pilar 4):
+          //   _stripMetadataHeaders() é pesado (dotAll multi-alternância RegEx).
+          //   Roda APENAS nos primeiros 12 chunks onde leaks são detectáveis.
+          //   Após chunk 12, fast path: accumulated vai direto ao notifier.
           try {
-            final cleanedChunk = _stripMetadataHeaders(accumulated);
+            chunksSinceStart++;
+            final String cleanedChunk;
+            if (metaHeadersConfirmedClean) {
+              // Fast path: zero RegEx, zero bloqueio de main thread.
+              cleanedChunk = accumulated;
+            } else {
+              cleanedChunk = _stripMetadataHeaders(accumulated);
+              if (chunksSinceStart >= 12) metaHeadersConfirmedClean = true;
+            }
             if (streamingMsgIdx == -1) {
               // ── PRIMEIRO CHUNK: wide setState apenas UMA VEZ ────────────────
               // Substitui ThinkingBubble por bolha de streaming real.
@@ -1214,10 +1236,15 @@ class _AiScreenState extends State<AiScreen> {
             // ── Build 134: enforceMedicalFormat — camada final de segurança ──
             // Aplicado AQUI, no texto final definitivo, antes de commitar na UI.
             // Não aplicado em onChunk (streaming parcial) para evitar artefatos.
-            final safeFinalText = _enforceMedicalFormat(
-              finalText,
-              context.read<AppProvider>().lang,
-            );
+            // Build 230: _enforceMedicalFormat SOMENTE no Modo Plantão.
+            // No Modo Estudo, o texto começa com ## e não com 🟥 — injetar
+            // o cabeçalho 🟥 CONDUTA quebraria a hierarquia didática.
+            final safeFinalText = _longResponse
+                ? finalText  // Modo Estudo: texto sem modificação
+                : _enforceMedicalFormat(
+                    finalText,
+                    context.read<AppProvider>().lang,
+                  );
 
             // ── PASSO 1: comita texto final mantendo _isStreaming=true ──────
             // O _AiBubble recebe o texto completo mas ainda não remove o cursor,

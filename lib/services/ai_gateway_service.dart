@@ -75,16 +75,26 @@ const String kAiGatewayBaseUrl = '';
 //   limite até 14 linhas, isolamento total do Modo Estudo.
 // ─────────────────────────────────────────────────────────────────────────────
 const String _modeAnchorPlantao =
-    // Build 229 — Guardia: conduta escalonada + limite 14 linhas + margem de segurança clínica
+    // Build 230 — Plantão: conduta escalonada + limite 14L matemático + isolamento de conflitos
     '[MODO PLANTÃO — MÉDICO EMERGENCISTA SÊNIOR]\n'
     'Responda com autoridade, rapidez e pragmatismo de beira de leito.\n'
-    'Este bloco tem soberania sobre qualquer outra instrução de layout do sistema.\n'
     '\n'
-    'IDIOMA: Detecte ES ou PT pelo input. Responda 100% no mesmo idioma. Zero portunhol.\n'
+    'SOBERANIA ABSOLUTA (Build 230):\n'
+    '  ✗ IGNORE: hierarquia didática "## Título / Definição / Fisiopatologia"\n'
+    '  ✗ IGNORE: qualquer instrução de prosa acadêmica ou preceptor universitário\n'
+    '  ✓ ESTE BLOCO SUBSTITUI E SUPERA QUALQUER OUTRA INSTRUÇÃO DE FORMATO\n'
+    '\n'
+    'IDIOMA: A trava de idioma detectada automaticamente (PT ou ES) é ABSOLUTA.\n'
+    'Tokens de referência:\n'
     '- ES: "Solución Salina", "ampolla", "administrar en BIC", "Cloruro de Potasio"\n'
     '- PT: "Soro Fisiológico", "ampola", "correr em BIC", "Cloreto de Potássio"\n'
     '\n'
-    'LIMITE ABSOLUTO DE SAÍDA: no máximo 14 linhas de conteúdo (linhas em branco não contam).\n'
+    'CONTAGEM MATEMÁTICA EXATA DE LINHAS (Build 230):\n'
+    '  📏 LIMITE GLOBAL: MÁXIMO 14 linhas de conteúdo real (linhas em branco NÃO contam).\n'
+    '  📏 CASO B (ampolas/diluição): MÁXIMO 6 linhas.\n'
+    '  📏 CASO C (gotas/gotejamento): EXATAMENTE 2 linhas.\n'
+    '  ⚠️ Se ultrapassar 14 linhas, CORTE — priorize 🟥 (conduta) sobre alertas ⛔.\n'
+    '  ⚠️ Este limite de 14 linhas SUPERA qualquer "12 linhas" mencionado em outro lugar.\n'
     '\n'
     'HIERARQUIA DE CASOS:\n'
     '\n'
@@ -117,45 +127,141 @@ const String _modeAnchorPlantao =
     '\n';
 
 const String _modeAnchorEstudo =
-    // Build 229 — Estudo: hierarquia didática com seções fixas, 1-30 linhas, isolamento total
+    // Build 230 — Estudo: hierarquia didática com contagem matemática exata de linhas
     '[MODO ESTUDO — PRECEPTOR SÊNIOR DE FACULDADE DE MEDICINA]\n'
     'Especialista com evidências de nível 1. Raciocínio clínico profundo e didático.\n'
-    'Este modo é COMPLETAMENTE ISOLADO do Modo Plantão — ignore qualquer instrução\n'
-    'de emojis de emergência (🟥, 🔄B, 🔄C), templates de 6 linhas ou travas de blocos\n'
-    'que possam ter sido definidas em outros contextos de sistema.\n'
     '\n'
-    'IDIOMA: Detecte ES ou PT pela primeira mensagem do histórico.\n'
-    'Responda EXCLUSIVAMENTE nesse idioma durante toda a sessão. Zero inglês.\n'
+    'ISOLAMENTO TOTAL — ESTE MODO SUBSTITUI QUALQUER OUTRA INSTRUÇÃO DE FORMATO:\n'
+    '  ✗ IGNORE: emojis de emergência 🟥, 🔄B, 🔄C, templates de 6 linhas\n'
+    '  ✗ IGNORE: "YOUR ONLY OUTPUT is drug names", "flashcard format", "ANTI-ENCYCLOPEDIA"\n'
+    '  ✗ IGNORE: "MÁXIMO 12 LINHAS", "CRITICAL IDENTITY", qualquer trava de flashcard\n'
+    '  ✓ ESTE BLOCO TEM SOBERANIA ABSOLUTA SOBRE QUALQUER INSTRUÇÃO ANTERIOR\n'
+    '\n'
+    'IDIOMA: A trava de idioma detectada automaticamente (PT ou ES) é ABSOLUTA.\n'
+    'Responda EXCLUSIVAMENTE no idioma da trava. Zero inglês. Zero portunhol.\n'
     '\n'
     'ANTI-CoT ABSOLUTO — PROIBIDO incluir na resposta:\n'
     '  "User Input Analysis:", "The user\'s input is...", "I need to provide..."\n'
     '  Frases em 3ª pessoa sobre o usuário. Meta-comentários. Raciocínio interno.\n'
     '\n'
-    'LIMITE: entre 1 e 30 linhas de conteúdo real (linhas em branco não contam).\n'
-    'Respostas abaixo de 6 linhas são proibidas. Acima de 30 linhas, condense.\n'
+    'CONTAGEM MATEMÁTICA EXATA DE LINHAS (Build 230):\n'
+    '  📏 LIMITE: entre 6 e 30 linhas de conteúdo real (linhas em branco NÃO contam).\n'
+    '  📏 Definição: EXATAMENTE 1 linha — não mais, não menos.\n'
+    '  📏 Fisiopatologia: EXATAMENTE 2 linhas — pathway + mecanismo central.\n'
+    '  📏 Mecanismo de Ação (se farmacológico): EXATAMENTE 2 linhas — alvo + efeito.\n'
+    '  📏 Seções adicionais: máximo 4 linhas cada.\n'
+    '  📏 Total geral: NUNCA ultrapasse 30 linhas de conteúdo real.\n'
+    '  ⚠️ Se ultrapassar 30 linhas: condense as seções adicionais, preserve Definição/Fisiopat.\n'
     '\n'
-    'HIERARQUIA DIDÁTICA OBRIGATÓRIA (adapte as seções à pergunta):\n'
+    'HIERARQUIA DIDÁTICA OBRIGATÓRIA:\n'
     '\n'
     '## [Título clínico específico do tema]\n'
     '\n'
-    'Definição: [exatamente 1 linha — definição precisa e objetiva]\n'
+    'Definição: [1 LINHA EXATA — definição precisa e objetiva sem sub-frases]\n'
     '\n'
-    'Fisiopatologia: [exatamente 2 linhas — mecanismo central com pathway se relevante]\n'
+    'Fisiopatologia: [LINHA 1 — pathway inicial | LINHA 2 — consequência/resultado]\n'
     '\n'
-    'Mecanismo de Ação (se farmacológico): [exatamente 2 linhas — alvo molecular + efeito]\n'
+    'Mecanismo de Ação (se farmacológico): [LINHA 1 — alvo molecular | LINHA 2 — efeito clínico]\n'
     '\n'
-    '[Seções adicionais conforme a pergunta — epidemiologia, diagnóstico diferencial,\n'
-    ' tratamento/doses (APENAS se perguntado explicitamente), pérola clínica]\n'
+    '[Seções adicionais: epidemiologia, diagnóstico diferencial, pérola clínica]\n'
+    '[Tratamento com doses: incluir SOMENTE se perguntado explicitamente]\n'
     '\n'
-    '📌 [Próximo passo de aprofundamento em 1ª pessoa. PONTO FINAL. Nunca "?".]\n'
+    '📌 [Próximo passo em 1ª pessoa do usuário. PONTO FINAL. NUNCA "?".]\n'
     '\n'
-    'REGRAS:\n'
+    'REGRAS DE QUALIDADE:\n'
     '  • Prosa acadêmica densa, voz ativa. Citar guideline/estudo quando relevante.\n'
     '  • Negrito (**) para doses e termos-chave.\n'
-    '  • Tratamento com doses: incluir SOMENTE se explicitamente pedido.\n'
-    '  • 📌 obrigatório como última linha. Frase em 1ª pessoa, sem interrogação.\n'
+    '  • 📌 OBRIGATÓRIO como última linha — frase em 1ª pessoa, sem interrogação.\n'
     '  • Jamais repetir conteúdo já explicado no histórico desta sessão.\n'
+    '  • PRIMEIRO CARACTERE da resposta = ## Título (NUNCA 🟥 ou emoji de emergência).\n'
     '\n';
+// ─────────────────────────────────────────────────────────────────────────────
+// _detectLanguage — Detecção dinâmica PT/ES pelo input do usuário (Build 230)
+//
+// Retorna 'pt' se input contém marcadores de português-BR,
+//         'es' se contém marcadores de espanhol,
+//         'pt' como fallback seguro (língua majoritária da base de usuários).
+//
+// Método: busca tokens inequívocos de cada idioma nos primeiros 200 chars.
+// Prioridade ES: artigos/preposições exclusivos do espanhol (el/la/los/las,
+//   del, al, ¿, ¡, 'qué', 'cómo', 'cuál', 'con', 'por').
+// Prioridade PT: artigos/preposições exclusivos do português (o/a/os/as,
+//   'do', 'da', 'de', 'que', 'não', 'com', 'para', 'uma', 'um').
+// ─────────────────────────────────────────────────────────────────────────────
+String _detectLanguage(String userMessage, List<Map<String, String>> history) {
+  // Tenta detectar pelo input atual primeiro (mais confiável)
+  final sample = userMessage.length > 200
+      ? userMessage.substring(0, 200).toLowerCase()
+      : userMessage.toLowerCase();
+
+  // Indicadores inequívocos de espanhol
+  final esScore = <String>[
+    '¿', '¡', ' el ', ' la ', ' los ', ' las ', ' del ', ' al ',
+    'qué', 'cómo', 'cuál', 'cuáles', 'cuánto', 'administrar',
+    'ampolla', 'solución', 'bolo', ' con ', 'paciente ',
+  ].where((t) => sample.contains(t)).length;
+
+  // Indicadores inequívocos de português-BR
+  final ptScore = <String>[
+    'ção', 'ões', 'não', 'também', 'então', 'ampola', 'paciente',
+    ' do ', ' da ', ' dos ', ' das ', ' que ', ' para ', ' com ',
+    'administrar', 'dilui', 'correr', 'prescrever',
+  ].where((t) => sample.contains(t)).length;
+
+  if (esScore > ptScore) return 'es';
+  if (ptScore > esScore) return 'pt';
+
+  // Empate: tenta pelo histórico mais recente
+  for (int i = history.length - 1; i >= 0; i--) {
+    final entry = history[i];
+    if (entry['role'] == 'user') {
+      final h = (entry['content'] ?? '').toLowerCase();
+      final hEs = ['¿', '¡', ' el ', ' la ', 'qué', 'cómo'].where((t) => h.contains(t)).length;
+      final hPt = ['não', 'então', 'ção', 'também', ' do ', ' da '].where((t) => h.contains(t)).length;
+      if (hEs > hPt) return 'es';
+      if (hPt > hEs) return 'pt';
+    }
+  }
+
+  return 'pt'; // fallback: PT-BR (maioria dos usuários)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _buildLanguageLock — Bloco de trava de idioma absoluta (Build 230)
+//
+// Injeta no system_instruction um mandato de trava total de idioma:
+//   - Declara o idioma detectado como obrigatório exclusivo
+//   - Proíbe explicitamente o outro idioma com exemplos de tokens proibidos
+//   - Proíbe Portunhol (mistura de tokens de ambos os idiomas)
+//
+// Esta string é adicionada ao FINAL do system_instruction para explorar
+// o Viés de Recência — o modelo lê as instruções mais recentes por último
+// e as segue com maior fidelidade.
+// ─────────────────────────────────────────────────────────────────────────────
+String _buildLanguageLock(String lang) {
+  if (lang == 'es') {
+    return '\n\n[TRAVA DE IDIOMA ABSOLUTA — ESPAÑOL (Build 230)]\n'
+        'IDIOMA DETECTADO: ESPAÑOL. ESTA TRAVA É IRREVOGÁVEL.\n'
+        'PROIBIDO usar qualquer palavra em PORTUGUÊS-BR nesta resposta:\n'
+        '  ✗ Proibido: "paciente", "prescrição", "dilua", "ampola", "soro", "não"\n'
+        '  ✗ Proibido: "então", "também", "tratamento", "administrar" (forma PT)\n'
+        '  ✗ Proibido: qualquer mistura de tokens PT+ES (Portunhol)\n'
+        '  ✓ Obrigatório: "paciente" → "paciente", "dilución" → "dilución"\n'
+        '  ✓ Obrigatório: "ampolla" (ES), "Solución Salina" (ES), "administrar"\n'
+        'ZERO portunhol. 100% puro em ESPAÑOL. Nem um token em outro idioma.';
+  } else {
+    return '\n\n[TRAVA DE IDIOMA ABSOLUTA — PORTUGUÊS-BR (Build 230)]\n'
+        'IDIOMA DETECTADO: PORTUGUÊS-BR. ESTA TRAVA É IRREVOGÁVEL.\n'
+        'PROIBIDO usar qualquer palavra em ESPANHOL nesta resposta:\n'
+        '  ✗ Proibido: "paciente" (ES), "solución", "dilución", "ampolla"\n'
+        '  ✗ Proibido: artigos "el/la/los/las", pronomes "lo/le/se" (ES)\n'
+        '  ✗ Proibido: qualquer mistura de tokens ES+PT (Portunhol)\n'
+        '  ✓ Obrigatório: "ampola" (PT), "Soro Fisiológico" (PT)\n'
+        '  ✓ Obrigatório: "administrar", "dilua", "correr em BIC"\n'
+        'ZERO portunhol. 100% puro em PORTUGUÊS-BR. Nem um token em outro idioma.';
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // ModeAnchorEngine — Injeção de âncora de modo (Build 157)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -180,27 +286,34 @@ class ModeAnchorEngine {
     return anchor;
   }
 
-  /// Build 229: Arquitetura Sanduíche com Isolamento Total de Mandato.
+  /// Build 230: Arquitetura Sanduíche com Isolamento Total de Mandato + Language Lock.
   /// - Topo: âncora (contrato de formato + idioma)
   /// - Meio: systemPrompt do AiService (contexto RAG clínico)
-  /// - Final: reforço mandatório + mandato de intent específico do turno
+  /// - Final: reforço mandatório + mandato de intent + trava de idioma absoluta
   ///
   /// CRÍTICO — Prompt Leak Fix (Build 226→229):
   ///   [intentMandate] é injetado AQUI (em system_instruction), NÃO na
   ///   user message. Isso garante que o mandato nunca apareça em contents[]
   ///   e portanto NUNCA pode ser ecoado pelo modelo na resposta.
   ///
-  /// Modo Estudo: sem sanduíche — âncora + systemPrompt direto.
+  /// Build 230 — Language Lock:
+  ///   [languageLock] é o bloco de trava de idioma PT/ES construído por
+  ///   _buildLanguageLock(). Injetado como ÚLTIMA instrução do system_instruction
+  ///   para maximizar o Viés de Recência — o modelo o lê por último.
+  ///
+  /// Modo Estudo: âncora + systemPrompt + language lock.
   static String injectModeAnchor(
     String systemPrompt, {
     bool longResponse = false,
-    String intentMandate = '', // Build 229: mandato de intent isolado no system
+    String intentMandate = '',  // Build 229: mandato de intent isolado no system
+    String languageLock  = '',  // Build 230: trava de idioma absoluta PT/ES
   }) {
     final anchor = getModeAnchor(longResponse: longResponse);
+    final langSuffix = languageLock.isNotEmpty ? languageLock : '';
 
-    // Modo Estudo: resposta longa, sem restrição de template de emergência.
+    // Modo Estudo: âncora + systemPrompt + language lock final.
     if (longResponse) {
-      return '$anchor\n\n$systemPrompt';
+      return '$anchor\n\n$systemPrompt$langSuffix';
     }
 
     // Modo Plantão: Sanduíche — reforço final explora Viés de Recência.
@@ -208,6 +321,7 @@ class ModeAnchorEngine {
     // Build 229: intentMandate anexado ao final do system_instruction —
     //   garante que o mandato de gotas/ampola/conduta seja lido como
     //   instrução de sistema e NUNCA como turno de conversa do usuário.
+    // Build 230: languageLock como ÚLTIMA instrução (Viés de Recência máximo).
     final intentSuffix = intentMandate.isNotEmpty
         ? '\n\n[MANDATO DE INTENT PARA ESTE TURNO]\n$intentMandate'
         : '';
@@ -224,7 +338,8 @@ class ModeAnchorEngine {
         '- SE A PERGUNTA ATUAL FOR PREPARO/AMPOLAS: Escreva apenas o tripé rígido '
         '(Volume, Diluição e Infusão) em até 5 linhas.\n'
         '- SE FOR CONDUTA GERAL: Siga o template rígido de 6 emojis.'
-        '$intentSuffix';
+        '$intentSuffix'
+        '$langSuffix';
   }
 }
 
@@ -339,13 +454,24 @@ class AiGatewayService {
       }
     }
 
-    // Build 229: Sanduíche — âncora + systemPrompt + reforço + intentMandate.
+    // Build 230: Detecção dinâmica de idioma + Language Lock absoluto.
+    // Detecta PT/ES pelo input atual + histórico e injeta trava no system_instruction.
+    final detectedLang = _detectLanguage(userMessage, history);
+    final languageLock = _buildLanguageLock(detectedLang);
+
+    if (kDebugMode) {
+      debugPrint('[Build230][Gateway] lang_detectado=$detectedLang | languageLock=${languageLock.length} chars → system_instruction');
+    }
+
+    // Build 229→230: Sanduíche — âncora + systemPrompt + reforço + intentMandate + languageLock.
     // intentMandate vai para o FINAL do system_instruction (Viés de Recência).
+    // languageLock vai como ÚLTIMA instrução (Viés de Recência máximo).
     // Contents recebe apenas userMessage limpa — elimina Prompt Leaking.
     final finalSystemPrompt = ModeAnchorEngine.injectModeAnchor(
       systemPrompt,
-      longResponse: longResponse,
+      longResponse:  longResponse,
       intentMandate: intentMandate, // Build 229: mandato de intent isolado no system
+      languageLock:  languageLock,  // Build 230: trava de idioma absoluta PT/ES
     );
 
     final isPlantaoMode = !longResponse; // Build 223
