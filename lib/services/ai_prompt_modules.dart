@@ -34,6 +34,11 @@
 
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 
+// ── Build 232: Auditoria temporária de tamanho de prompt ─────────────────────
+// Remover após diagnóstico. Espelha kPromptSizeAudit de ai_gateway_service.dart.
+// ignore: constant_identifier_names
+const bool _kPromptSizeAudit = true;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // IntentFlags — resultado da análise semântica da user message
 // ─────────────────────────────────────────────────────────────────────────────
@@ -429,33 +434,36 @@ class PromptModules {
           + truncatedContext
           + langSection;
 
-      if (kDebugMode) {
+      if (kDebugMode || _kPromptSizeAudit) {
         debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL: prompt excedeu 8000 chars → módulos não-essenciais descartados');
       }
     }
 
-    // ── 7. Log de diagnóstico ───────────────────────────────────────────────
-    if (kDebugMode) {
-      final coreSize    = core.length;
-      final modeSize    = modeModule.length;
-      final taskSize    = taskModules.length;
-      final ctxSize     = contextSection.length;
-      final langSize    = langSection.length;
-      final totalSize   = candidate.length;
-      final modeLabel   = isPlantaoMode ? 'plantao' : 'estudo';
+    // ── 7. Log de diagnóstico (Build 232: PM_SIZE audit sempre visível) ──────
+    if (kDebugMode || _kPromptSizeAudit) {
+      final modeLabel = isPlantaoMode ? 'plantao' : 'estudo';
 
-      debugPrint(
-        '[AI_PROMPT_SIZE] core=${coreSize}c '
-        'antiLeak=${antiLeak.length}c '
-        'ui=${uiContract.length}c '
-        'mode($modeLabel)=${modeSize}c '
-        'task(${intent.taskLabel})=${taskSize}c '
-        'ctx=${ctxSize}c '
-        'lang=${langSize}c '
-        'total=${totalSize}c',
-      );
-      debugPrint('[AI_MODE] ${modeLabel.toUpperCase()}');
-      debugPrint('[AI_TASK] ${intent.taskLabel}');
+      debugPrint('[PM_SIZE] ══════════════════════════════════════');
+      debugPrint('[PM_SIZE] incomingSystemPrompt=${systemPrompt.length} chars');
+      debugPrint('[PM_SIZE] cleanContextAfterSanitize=${cleanContext.length} chars');
+      debugPrint('[PM_SIZE] core=${core.length} chars');
+      debugPrint('[PM_SIZE] antiLeak=${antiLeak.length} chars');
+      debugPrint('[PM_SIZE] uiContract=${uiContract.length} chars');
+      debugPrint('[PM_SIZE] modeModule($modeLabel)=${modeModule.length} chars');
+      debugPrint('[PM_SIZE] taskModules(${intent.taskLabel})=${taskModules.length} chars');
+      debugPrint('[PM_SIZE] contextSection=${contextSection.length} chars');
+      debugPrint('[PM_SIZE] languageLock(param)=${languageLock.length} chars');
+      debugPrint('[PM_SIZE] finalPromptToGemini=${candidate.length} chars');
+      debugPrint('[PM_TASK] dose=${intent.isDose} diluicao=${intent.isDilution} interacao=${intent.isInteraction} sigla=${intent.isAcronym}');
+      debugPrint('[PM_MODE] $modeLabel');
+      debugPrint('[PM_SIZE] ══════════════════════════════════════');
+
+      // Logs legados (kDebugMode only)
+      if (kDebugMode) {
+        debugPrint('[AI_PROMPT_SIZE] core=${core.length}c antiLeak=${antiLeak.length}c ui=${uiContract.length}c mode($modeLabel)=${modeModule.length}c task(${intent.taskLabel})=${taskModules.length}c ctx=${contextSection.length}c lang=${languageLock.length}c total=${candidate.length}c');
+        debugPrint('[AI_MODE] ${modeLabel.toUpperCase()}');
+        debugPrint('[AI_TASK] ${intent.taskLabel}');
+      }
     }
 
     return candidate;

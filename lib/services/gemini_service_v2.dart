@@ -83,6 +83,11 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'ai_prompt_modules.dart'; // Build 231: Modular Prompt Engine V2
 
+// ── Build 232: Auditoria temporária de tamanho de prompt ─────────────────────
+// Remover após diagnóstico. Espelha kPromptSizeAudit dos outros serviços.
+// ignore: constant_identifier_names
+const bool _kPromptSizeAuditV2 = true;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // GeminiChunk — unidade de dado do stream
 // ─────────────────────────────────────────────────────────────────────────────
@@ -865,6 +870,24 @@ class GeminiServiceV2 {
         {'text': userMessage}
       ],
     });
+
+    // ── Build 232: [GEMINI_SIZE] audit logs — tamanhos do payload final ───────
+    if (kDebugMode || _kPromptSizeAuditV2) {
+      // Calcula tamanho total do conteúdo histórico (apenas texto, sem JSON overhead)
+      int contentsHistoryChars = 0;
+      for (final entry in history) {
+        contentsHistoryChars += (entry['content'] ?? '').length;
+      }
+      final totalApproxPayload = blindedSystemPrompt.length
+          + contentsHistoryChars
+          + userMessage.length;
+      debugPrint('[GEMINI_SIZE] ══════════════════════════════════════');
+      debugPrint('[GEMINI_SIZE] blindedSystemPrompt=${blindedSystemPrompt.length} chars');
+      debugPrint('[GEMINI_SIZE] contentsHistory=${contentsHistoryChars} chars (${history.length} entradas)');
+      debugPrint('[GEMINI_SIZE] userMessage=${userMessage.length} chars');
+      debugPrint('[GEMINI_SIZE] totalApproxPayload=$totalApproxPayload chars');
+      debugPrint('[GEMINI_SIZE] ══════════════════════════════════════');
+    }
 
     // ── Corpo da requisição blindado ──────────────────────────────────────────
     final body = <String, dynamic>{

@@ -62,6 +62,11 @@ import 'gemini_service_v2.dart';
 import 'ai_gateway_service_io.dart'
     if (dart.library.js_interop) 'ai_gateway_service_web.dart';
 
+// ── Build 232: Auditoria temporária de tamanho de prompt ─────────────────────
+// Remover após diagnóstico. NÃO imprime conteúdo clínico — apenas tamanhos.
+// ignore: constant_identifier_names
+const bool kPromptSizeAudit = true;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Constante de legado — mantida para zero breaking changes
 // Build 156: VAZIO — não há servidor gateway.
@@ -467,6 +472,48 @@ class AiGatewayService {
     // intentMandate vai para o FINAL do system_instruction (Viés de Recência).
     // languageLock vai como ÚLTIMA instrução (Viés de Recência máximo).
     // Contents recebe apenas userMessage limpa — elimina Prompt Leaking.
+
+    // ── Build 232: [GW_SIZE] audit logs (kPromptSizeAudit) — apenas tamanhos ──
+    // Calcular componentes individuais ANTES do injectModeAnchor para isolamento.
+    if (kDebugMode || kPromptSizeAudit) {
+      final modeAnchorStr = longResponse ? _modeAnchorEstudo : _modeAnchorPlantao;
+      // Reforço mandatório (Plantão only) — texto fixo dentro de injectModeAnchor
+      const reforcoText =
+          '[REFORÇO MANDATÓRIO DE FORMATO DE SAÍDA - LEIA ISTO POR ÚLTIMO]\n'
+          'Você está TERMINANTEMENTE PROIBIDO de seguir o estilo de prosa ou tamanho '
+          'das respostas dadas nos turnos anteriores deste chat. IGNORE o histórico '
+          'visual e responda este turno de forma isolada:\n'
+          '- SE A PERGUNTA ATUAL FOR CÁLCULO DE GOTAS: Escreva apenas as duas linhas '
+          '(Fórmula e Resultado em negrito usando **).\n'
+          '- SE A PERGUNTA ATUAL FOR PREPARO/AMPOLAS: Escreva apenas o tripé rígido '
+          '(Volume, Diluição e Infusão) em até 5 linhas.\n'
+          '- SE FOR CONDUTA GERAL: Siga o template rígido de 6 emojis.';
+      final reforcoSize = longResponse ? 0 : reforcoText.length;
+      debugPrint('[GW_SIZE] ══════════════════════════════════════');
+      debugPrint('[GW_SIZE] modeAnchor=${modeAnchorStr.length} chars');
+      debugPrint('[GW_SIZE] ragContext(systemPrompt_raw)=${systemPrompt.length} chars');
+      debugPrint('[GW_SIZE] reforcoMandatorio=$reforcoSize chars');
+      debugPrint('[GW_SIZE] intentMandate=${intentMandate.length} chars');
+      debugPrint('[GW_SIZE] languageLock=${languageLock.length} chars');
+      debugPrint('[GW_SIZE] userMessage=${userMessage.length} chars');
+      debugPrint('[GW_SIZE] historyEntries=${history.length}');
+      // Estimate finalSystemPrompt size (assembled by injectModeAnchor)
+      // Plantão: anchor + \n\n + [INÍCIO] + systemPrompt + \n\n + [REFORÇO] + reforco + intentSuffix + langSuffix
+      // Estudo:  anchor + \n\n + systemPrompt + langSuffix
+      final intentSuffixSize = intentMandate.isNotEmpty
+          ? '\n\n[MANDATO DE INTENT PARA ESTE TURNO]\n'.length + intentMandate.length
+          : 0;
+      final estimatedFinal = modeAnchorStr.length
+          + 2  // \n\n
+          + (longResponse ? 0 : '[INÍCIO DO CONTEXTO CLÍNICO DO APLICATIVO]\n'.length)
+          + systemPrompt.length
+          + (longResponse ? 0 : '\n\n'.length + reforcoSize)
+          + intentSuffixSize
+          + languageLock.length;
+      debugPrint('[GW_SIZE] finalSystemPrompt_estimate=$estimatedFinal chars (antes do PromptModules sanitize)');
+      debugPrint('[GW_SIZE] ══════════════════════════════════════');
+    }
+
     final finalSystemPrompt = ModeAnchorEngine.injectModeAnchor(
       systemPrompt,
       longResponse:  longResponse,
@@ -483,6 +530,11 @@ class AiGatewayService {
       'system=${finalSystemPrompt.length} chars | '
       'userMsg_limpa=${userMessage.length} chars (sem mandato)',
     );
+
+    // ── Build 232: log confirmação do finalSystemPrompt real ─────────────────
+    if (kDebugMode || kPromptSizeAudit) {
+      debugPrint('[GW_SIZE] finalSystemPrompt_real=${finalSystemPrompt.length} chars → enviado ao PromptModules.build()');
+    }
 
     // Build 229: log de auditoria — confirma isolamento do mandato
     if (kDebugMode && isPlantaoMode) {
