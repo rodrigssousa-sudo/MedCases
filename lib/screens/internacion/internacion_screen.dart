@@ -143,6 +143,10 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
+  // Build 209: helper de validação de conteúdo profundo.
+  // Retorna true se o texto não for nulo e tiver caracteres além de espaço.
+  bool _hasText(String? text) => text != null && text.trim().isNotEmpty;
+
   // Build 208: _newDraft aceita doctorName para que 'autorNombre' nunca
   // seja o fallback hardcoded 'Dr.' quando o médico está logado.
   // Chamadas sem argumento continuam funcionando (param opcional).
@@ -189,6 +193,66 @@ class _InternacionScreenState extends State<InternacionScreen> {
   }
 
   void _onSaveEvolucion(EvolucionModel ev) async {
+    // ── Build 209: Sovereign Parent re-merge ────────────────────────────
+    // O _draftEvolucion (Pai) é a fonte de verdade absoluta para metadados.
+    // O widget filho só substitui seções SOAP se tiver conteúdo textual real.
+    // Mapeia campos reais do modelo — sem phantom fields do pseudocódigo.
+    {
+      final medicoLogado = _safeDoctorName; // via AppProvider.userName — sem hardcode
+      final child = _soapKey.currentState?.currentEvolucion;
+      final parent = _draftEvolucion;
+
+      final evolucionToSave = parent.copyWith(
+        autorNombre: medicoLogado,
+        // Subjetivo: filho substitui apenas se tem nota de passagem ou notas livres
+        subjetivo: (child != null &&
+                (_hasText(child.subjetivo.notePasaNoche) ||
+                 _hasText(child.subjetivo.notasLibres)))
+            ? child.subjetivo
+            : parent.subjetivo,
+        // Objetivo: filho substitui apenas se tem sinais vitais OU exame físico
+        objetivo: (child != null &&
+                (!child.objetivo.signosVitales.isEmpty ||
+                 _hasText(child.objetivo.examenFisico.estadoGeneral)))
+            ? child.objetivo
+            : parent.objetivo,
+        // Avaliação: filho substitui apenas se tem notas de avaliação
+        evaluacion: (child != null &&
+                _hasText(child.evaluacion.notasEvaluacion))
+            ? child.evaluacion
+            : parent.evaluacion,
+        // Plano: filho substitui apenas se tem plano terapêutico
+        plan: (child != null && _hasText(child.plan.planTerapeutico))
+            ? child.plan
+            : parent.plan,
+        // farmacos: pai é sempre a fonte (já mantido pelo Save button do Build 208)
+        farmacos: parent.farmacos,
+        // id e fecha: imutáveis — sempre do pai
+        id: parent.id,
+        fecha: parent.fecha,
+      );
+
+      // Logs de diagnóstico (removidos em release por tree-shaking de debugPrint)
+      debugPrint('[SAVE_209] medico=${evolucionToSave.autorNombre}');
+      debugPrint('[SAVE_209] S_pasaNoche=${evolucionToSave.subjetivo.notePasaNoche}');
+      debugPrint('[SAVE_209] S_notasLibres=${evolucionToSave.subjetivo.notasLibres}');
+      debugPrint('[SAVE_209] O_signosVitalesEmpty=${evolucionToSave.objetivo.signosVitales.isEmpty}');
+      debugPrint('[SAVE_209] O_estadoGeral=${evolucionToSave.objetivo.examenFisico.estadoGeneral}');
+      debugPrint('[SAVE_209] A_notas=${evolucionToSave.evaluacion.notasEvaluacion}');
+      debugPrint('[SAVE_209] P_plan=${evolucionToSave.plan.planTerapeutico}');
+
+      // Guard anti-regressão: nunca salva evolução com autorNombre genérico
+      // (stripped em release — safe em produção, ativo apenas em debug/test)
+      assert(
+        _hasText(evolucionToSave.autorNombre) &&
+            evolucionToSave.autorNombre != 'Dr.',
+        '[Build 209] autorNombre genérico interceptado: "${evolucionToSave.autorNombre}"',
+      );
+
+      // Substitui ev pelo payload blindado antes de qualquer lógica downstream
+      ev = evolucionToSave;
+    }
+
     // ── Build 180: Admit First, Evolve Later ────────────────────────────
     // Exige apenas nome OU cama preenchidos; SOAP pode estar em branco.
     if (_paciente.nome.trim().isEmpty && _paciente.cama.trim().isEmpty) {
