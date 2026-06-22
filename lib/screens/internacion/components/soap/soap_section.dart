@@ -396,20 +396,38 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
   }
 
   // ── Motor de cópia unificado — Build 193 (Refatorado) ───────────────────
+  // Build 211: autorNombre resolvido a partir do notifier (ev.autorNombre),
+  // que reflete o estado vivo após IA ou edição manual — não o prop estático
+  // widget.autorNombre, que pode estar desatualizado/vazio no momento do clique.
   Future<void> _executeCopy(_CopyModel model) async {
-    final ev   = _notifier.evolucion;
+    final ev   = _notifier.evolucion;  // fonte viva: notifier (não _draftEvolucion estático)
     final isEs = widget.lang == 'es';
+
+    // Build 211: cadeia de resolução do nome do médico para o clipboard.
+    // 1º ev.autorNombre (notifier — atualizado pela IA e pelo save)
+    // 2º widget.autorNombre (prop do pai — doctorName do AppProvider)
+    // Nunca usa 'Dr.' isolado se houver nome real em qualquer das fontes.
+    final String evAutor     = ev.autorNombre.trim();
+    final String widgetAutor = widget.autorNombre.trim();
+    final String autorFinal  = (evAutor.length > 3 && evAutor != 'Dr.')
+        ? evAutor
+        : (widgetAutor.length > 3 && widgetAutor != 'Dr.')
+            ? widgetAutor
+            : evAutor.isNotEmpty ? evAutor : widgetAutor;
+
+    debugPrint('[COPY_211] autorFinal=$autorFinal (ev=$evAutor / widget=$widgetAutor)');
+
     final String text;
     final String snackLabel;
 
     switch (model) {
       case _CopyModel.completa:
-        text      = soapCompletoString(ev, isEs, widget.autorNombre, widget.paciente);
+        text      = soapCompletoString(ev, isEs, autorFinal, widget.paciente);
         snackLabel = isEs
             ? '📋 Prontuario completo copiado al portapapeles'
             : '📋 Prontuário completo copiado para a área de transferência';
       case _CopyModel.resumida:
-        text      = soapResumidoString(ev, isEs, widget.autorNombre, widget.paciente);
+        text      = soapResumidoString(ev, isEs, autorFinal, widget.paciente);
         snackLabel = isEs
             ? '⚡ Resumen ejecutivo copiado al portapapeles'
             : '⚡ Resumo executivo copiado para a área de transferência';
