@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// ModeAnchorEngine / AiGatewayService — Build 175 (CoT Shield + Language Lock + Chip Fix)
+// ModeAnchorEngine / AiGatewayService — Build 225 (Remove HTML font-color → negrito markdown puro)
 //
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │  PIVÔ ARQUITETURAL — Build 156                                          │
@@ -128,7 +128,7 @@ const String _modeAnchorPlantao =
     '(Ex: Proibido "Para calcular...", "En este caso...", "Sustituyendo...")\n'
     'Sua saída deve conter ÚNICA e EXCLUSIVAMENTE as duas linhas abaixo:\n'
     'Fórmula: (Volumen total mL / Tiempo en minutos) * Factor de goteo\n'
-    'Resultado: <font color="red">**[X] gotas/min**</font>\n'
+    '**Resultado: [X] gotas/min**\n'
     '\n'
     'TABELA DE CONVERSÃO DE MERCADO:\n'
     '- KCl 19,1% (10 mL = 25 mEq) → 1 mL = 2,5 mEq. (Ex: 40 mEq = 16 mL [1 ampola + 6 mL])\n'
@@ -293,7 +293,7 @@ class ModeAnchorEngine {
         'das respostas dadas nos turnos anteriores deste chat. IGNORE o histórico '
         'visual e responda este turno de forma isolada:\n'
         '- SE A PERGUNTA ATUAL FOR CÁLCULO DE GOTAS: Escreva apenas as duas linhas '
-        '(Fórmula e Resultado em vermelho).\n'
+        '(Fórmula e Resultado em negrito usando **).\n'
         '- SE A PERGUNTA ATUAL FOR PREPARO/AMPOLAS: Escreva apenas o tripé rígido '
         '(Volume, Diluição e Infusão) em até 5 linhas.\n'
         '- SE FOR CONDUTA GERAL: Siga o template rígido de 6 emojis.';
@@ -335,7 +335,8 @@ class AiGatewayService {
 
   /// Envia mensagem ao Gemini com motor selecionado.
   ///
-  /// Build 224: Interceptor de intent por turno (gotas/ampolas/conduta) + anti-History-Style-Bleeding.
+  /// Build 225: Interceptor de intent por turno (gotas/ampolas/conduta) + anti-History-Style-Bleeding.
+  /// Gotejamento: mandato usa negrito markdown puro (**) — remove <font color=red> que vazava como texto.
   /// Modo Plantão: grounding=false, userMessage com mandato de formato injetado por intent.
   ///
   /// [userMessage]  — pergunta clínica do usuário
@@ -365,8 +366,9 @@ class AiGatewayService {
     // Build 222: Modo Plantão força useGrounding=false obrigatoriamente.
     final effectiveGrounding = longResponse ? useGrounding : false;
 
-    // Build 224: Interceptor de intent por turno — classifica a mensagem atual
+    // Build 225: Interceptor de intent por turno — classifica a mensagem atual
     // independentemente do histórico, quebrando o arrasto de estilo (History Style Bleeding).
+    // Gotejamento: usa negrito markdown (**) — <font color=red> eliminado (não suportado pelo flutter_markdown).
     // Aplicado apenas no Modo Plantão; Modo Estudo usa a mensagem sem modificação.
     String processedUserMessage = userMessage;
     if (!longResponse) {
@@ -379,9 +381,9 @@ class AiGatewayService {
         processedUserMessage =
             '$userMessage\n\n'
             '[MANDATO CRÍTICO: Responda ÚNICA e EXCLUSIVAMENTE com as duas linhas '
-            'abaixo, sem nenhuma outra palavra ou introdução:\n'
+            'abaixo, usando negrito estrito do markdown (**), sem nenhuma outra palavra:\n'
             'Fórmula: (Volumen total mL / Tiempo en minutos) * Factor de goteo\n'
-            'Resultado: <font color="red">**[X] gotas/min**</font>]';
+            '**Resultado: [X] gotas/min**]';
       } else if (isAmpoule) {
         processedUserMessage =
             '$userMessage\n\n'
@@ -400,7 +402,7 @@ class AiGatewayService {
 
       if (kDebugMode) {
         final intent = isDrops ? 'GOTAS' : isAmpoule ? 'AMPOLA' : history.isEmpty ? 'PRIMEIRO_GIRO' : 'FOLLOW_UP';
-        debugPrint('[Build224][Gateway] intent=$intent | msg_processada=${processedUserMessage.length} chars');
+        debugPrint('[Build225][Gateway] intent=$intent | msg_processada=${processedUserMessage.length} chars');
       }
     }
 
@@ -413,7 +415,7 @@ class AiGatewayService {
     final isPlantaoMode = !longResponse; // Build 223
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
-      '[AiGatewayService] Build 224: motor=$motor | '
+      '[AiGatewayService] Build 225: motor=$motor | '
       'isPlantaoMode=$isPlantaoMode | '
       'grounding=$effectiveGrounding | '
       'prompt=${finalSystemPrompt.length} chars',
@@ -425,13 +427,13 @@ class AiGatewayService {
           finalSystemPrompt.contains('TRATAMIENTO FARMACOLÓGICO') ||
           finalSystemPrompt.contains('ALERTA CRÍTICO') ||
           finalSystemPrompt.contains('ALERTAS CRÍTICOS');
-      debugPrint('[Build224][Gateway] prompt_final_sem_conflito=${!hasConflict} (${finalSystemPrompt.length} chars)');
+      debugPrint('[Build225][Gateway] prompt_final_sem_conflito=${!hasConflict} (${finalSystemPrompt.length} chars)');
     }
 
     // Delega para GeminiServiceV2 — mensagem processada + prompt monolítico + isPlantaoMode
     return GeminiServiceV2.sendStream(
       apiKey:         apiKey,
-      userMessage:    processedUserMessage, // Build 224: com mandato de intent injetado
+      userMessage:    processedUserMessage, // Build 225: com mandato de intent injetado (negrito MD puro)
       systemPrompt:   finalSystemPrompt,    // âncora + RAG neutro + reforço anti-bleeding
       history:        history,
       useGrounding:   effectiveGrounding,   // Build 222: false fixo no Modo Plantão
