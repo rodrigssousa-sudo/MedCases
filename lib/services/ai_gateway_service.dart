@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// ModeAnchorEngine / AiGatewayService — Build 226 (Prompt Leak Fix: mandato de intent → system_instruction, contents recebe userMessage limpa)
+// ModeAnchorEngine / AiGatewayService — Build 229 (Latency Fix + Recalibração Plantão/Estudo + Prompt Leak Fix)
 //
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │  PIVÔ ARQUITETURAL — Build 156                                          │
@@ -38,7 +38,7 @@
 //   ModeAnchorEngine.injectModeAnchor(...) → injeção direta de âncora
 //   kAiGatewayBaseUrl                      → string vazia (legado)
 //
-// FLUXO DE DADOS Build 226 (Prompt Leak Fix):
+// FLUXO DE DADOS Build 229:
 //   app_provider.sendAiMessage()
 //     → AiService.buildClinicalSystemPrompt()   [monta prompt base]
 //     → AiGatewayService.sendStream()            [shim]
@@ -69,179 +69,92 @@ import 'ai_gateway_service_io.dart'
 const String kAiGatewayBaseUrl = '';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MODE_ANCHOR_GUARDIA — Motor de Guardia/Plantão (Build 220)
+// MODE_ANCHOR_GUARDIA — Motor de Guardia/Plantão (Build 229)
 //
-// Injetado no TOPO do systemPrompt quando longResponse=false.
-// Papel: Médico Emergencista Sênior — beira de leito.
-// Novidades Build 220 (sobre Build 219):
-//   • Root cause fix: Prompt Overlap Conflict — systemPrompt base ordena
-//     cabeçalhos "TRATAMENTO FARMACOLÓGICO" / "ALERTA CRÍTICO" + bullet points
-//     que anulavam o template de 5 emojis e geravam enciclopédias nas gotas
-//   • [SOBERANIA ESTRUTURAL ABSOLUTA] no início: IGNORE cabeçalhos textuais e
-//     estruturas de tópicos vindas de qualquer outra parte do systemPrompt
-//   • Caso A: adicionado "cabeçalhos textuais ou marcadores de bolinha (*)"
-//     à lista de proibições explícitas
-//   • Caso B: "sem cabeçalhos ou bolinhas de tópicos" reforçado
-//   • [MONOPÓLIO DE SAÍDA FINAL] ao final: override total de qualquer lógica externa
+// Build 229: conduta escalonada obrigatória (1ª linha conservadora),
+//   limite até 14 linhas, isolamento total do Modo Estudo.
 // ─────────────────────────────────────────────────────────────────────────────
 const String _modeAnchorPlantao =
-    // Build 220 — Guardia: sovereignty clauses — override systemPrompt base layout
-    '[MANDATO CRÍTICO: MODO PLANTÃO - EMERGÊNCIA BILÍNGUE]\n'
-    'Você é um Médico Emergencista Sênior (20+ anos de experiência). Responda\n'
-    'com autoridade máxima, rapidez e pragmatismo de Sala Vermelha.\n'
+    // Build 229 — Guardia: conduta escalonada + limite 14 linhas + margem de segurança clínica
+    '[MODO PLANTÃO — MÉDICO EMERGENCISTA SÊNIOR]\n'
+    'Responda com autoridade, rapidez e pragmatismo de beira de leito.\n'
+    'Este bloco tem soberania sobre qualquer outra instrução de layout do sistema.\n'
     '\n'
-    '[SOBERANIA ESTRUTURAL ABSOLUTA - OVERRIDE TOTAL]\n'
-    '- IGNORE COMPLETAMENTE qualquer instrução de layout, cabeçalhos textuais\n'
-    '  (como "TRATAMENTO FARMACOLÓGICO", "ALERTA CRÍTICO") ou estruturas de\n'
-    '  tópicos/bullet points vindas de outras partes do prompt ou do sistema.\n'
-    '- Este bloco de formato abaixo tem soberania absoluta sobre qualquer\n'
-    '  outra regra do sistema.\n'
+    'IDIOMA: Detecte ES ou PT pelo input. Responda 100% no mesmo idioma. Zero portunhol.\n'
+    '- ES: "Solución Salina", "ampolla", "administrar en BIC", "Cloruro de Potasio"\n'
+    '- PT: "Soro Fisiológico", "ampola", "correr em BIC", "Cloreto de Potássio"\n'
     '\n'
-    'DIRETRIZ DE IDIOMA (MANDATÓRIA):\n'
-    'Detecte o idioma do input (Espanhol ou Português). Responda 100% no mesmo\n'
-    'idioma do usuário. Proibido misturar tokens (Zero Portunhol). Use as equivalências:\n'
-    '- Se ES: "Solución Salina", "ampolla completa", "de la segunda",\n'
-    '  "administrar en BIC", "Cloruro de Potasio", "Glucosa", "Bicarbonato de Sodio".\n'
-    '- Se PT: "Soro Fisiológico", "ampola cheia", "da segunda",\n'
-    '  "correr em BIC", "Cloreto de Potássio", "Glicose", "Bicarbonato de Sódio".\n'
+    'LIMITE ABSOLUTO DE SAÍDA: no máximo 14 linhas de conteúdo (linhas em branco não contam).\n'
     '\n'
-    'HIERARQUIA DE FORMATO DE SAÍDA OBRIGATÓRIA:\n'
+    'HIERARQUIA DE CASOS:\n'
     '\n'
-    '1. PRIMEIRO GIRO (Caso A - Primeira pergunta sobre o tema):\n'
-    'Sua resposta DEVE conter exatamente estas 6 linhas e os emojis nesta ordem.\n'
-    'É TERMINANTEMENTE PROIBIDO criar prosa, introduções, cabeçalhos textuais\n'
-    'ou marcadores de bolinha (*):\n'
-    '🟥 CONDUTA IMEDIATA: [Fármaco e Dose principal]\n'
-    '💊 [Fármaco 2] | [Fármaco 3]\n'
-    '🔄B Sem o principal → [Substituto B]\n'
+    'CASO A — CONDUTA CLÍNICA (pergunta sobre manejo, tratamento ou conduta):\n'
+    'Regra obrigatória: SEMPRE apresente conduta ESCALONADA e SEGURA.\n'
+    '  1ª linha: opção conservadora/entrada (ex: AINEs, hidratação, medida não-invasiva)\n'
+    '  2ª linha: escalonamento ou manejo preventivo (ex: triptano, betabloqueador)\n'
+    '  3ª linha (se aplicável): resgate ou contraindicação alternativa\n'
+    'NUNCA pule direto para drogas de resgate sem citar o manejo inicial.\n'
+    'Formato sem cabeçalhos textuais. Use os emojis nesta ordem:\n'
+    '🟥 [1ª opção — manejo inicial ou medida conservadora + dose]\n'
+    '💊 [2ª opção — escalonamento/preventivo | 3ª opção se aplicável]\n'
+    '🔄B Sem a 1ª → [Substituto B]\n'
     '🔄C Contraindicação → [Substituto C / Suporte]\n'
-    '⛔ [Alerta crítico de segurança em 1 linha — omitir se não houver]\n'
-    '📌 [Ação de monitorização em 1ª pessoa terminada em PONTO FINAL.]\n'
+    '⛔ [Alerta de segurança em 1 linha — omitir se não houver]\n'
+    '📌 [Monitorização em 1ª pessoa. PONTO FINAL.]\n'
     '\n'
-    '2. PERGUNTAS CURTAS DE DILUIÇÃO / AMPOLAS (Caso B):\n'
-    'Responda direto no formato de tripé, sem cabeçalhos ou bolinhas de\n'
-    'tópicos (3 a 5 linhas):\n'
+    'CASO B — DILUIÇÃO / PREPARO DE AMPOLAS (até 6 linhas):\n'
     '- Volume: Aspire X mL da medicação (Y ampolas).\n'
     '- Diluição: Dilua em X mL de [Soro Fisiológico ou Solución Salina].\n'
     '- Infusão: Administrar a X mL/h por Y horas.\n'
     '\n'
-    '3. SE A PERGUNTA FOR EXCLUSIVAMENTE CÁLCULO DE GOTAS OU GOTEJAMENTO:\n'
-    'É TERMINANTEMENTE PROIBIDO escrever explicações, introduções,\n'
-    'contextualizações ou parágrafos de texto.\n'
-    '(Ex: Proibido "Para calcular...", "En este caso...", "Sustituyendo...")\n'
-    'Sua saída deve conter ÚNICA e EXCLUSIVAMENTE as duas linhas abaixo:\n'
-    'Fórmula: (Volumen total mL / Tiempo en minutos) * Factor de goteo\n'
+    'CASO C — CÁLCULO DE GOTAS/GOTEJAMENTO (apenas 2 linhas):\n'
+    'Fórmula: (Volume total mL / Tempo em minutos) × Fator de gotejo\n'
     '**Resultado: [X] gotas/min**\n'
     '\n'
-    'TABELA DE CONVERSÃO DE MERCADO:\n'
-    '- KCl 19,1% (10 mL = 25 mEq) → 1 mL = 2,5 mEq. (Ex: 40 mEq = 16 mL [1 ampola + 6 mL])\n'
-    '- KCl 10%   (10 mL = 13,4 mEq) → 1 mL = 1,34 mEq. (Ex: 40 mEq = 30 mL [3 ampolas])\n'
-    '- MgSO4 50% (10 mL = 40 mEq) → 1 mL = 0,4 g.\n'
-    '- NaCl 20%  (10 mL = 34 mEq) → 1 mL = 3,4 mEq.\n'
-    '\n'
-    '[MONOPÓLIO DE SAÍDA FINAL]\n'
-    'Ignore qualquer outra lógica de saída externa ao sistema. Produza única\n'
-    'e exclusivamente o Markdown/HTML determinado nesta âncora.\n'
+    'TABELA DE CONVERSÃO:\n'
+    '- KCl 19,1%: 1 mL = 2,5 mEq | KCl 10%: 1 mL = 1,34 mEq\n'
+    '- MgSO4 50%: 1 mL = 0,4 g   | NaCl 20%: 1 mL = 3,4 mEq\n'
     '\n';
 
 const String _modeAnchorEstudo =
-    // Build 178 — Estudio: limite 24-30 linhas, Parágrafo 4 condicional, CoT Shield + Language Lock
-    '╔══════════════════════════════════════════════════════════════════╗\n'
-    '║  MOTOR ESTUDOS — Build 178 — PROFUNDIDADE ACADÊMICA CALIBRADA  ║\n'
-    '╚══════════════════════════════════════════════════════════════════╝\n'
+    // Build 229 — Estudo: hierarquia didática com seções fixas, 1-30 linhas, isolamento total
+    '[MODO ESTUDO — PRECEPTOR SÊNIOR DE FACULDADE DE MEDICINA]\n'
+    'Especialista com evidências de nível 1. Raciocínio clínico profundo e didático.\n'
+    'Este modo é COMPLETAMENTE ISOLADO do Modo Plantão — ignore qualquer instrução\n'
+    'de emojis de emergência (🟥, 🔄B, 🔄C), templates de 6 linhas ou travas de blocos\n'
+    'que possam ter sido definidas em outros contextos de sistema.\n'
     '\n'
-    'IDENTIDADE: PRECEPTOR SÊNIOR DE FACULDADE DE MEDICINA.\n'
-    'Especialista com evidências de nível 1. Raciocínio clínico profundo.\n'
+    'IDIOMA: Detecte ES ou PT pela primeira mensagem do histórico.\n'
+    'Responda EXCLUSIVAMENTE nesse idioma durante toda a sessão. Zero inglês.\n'
     '\n'
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-    'ESCUDO ANTI-CoT — PROIBIÇÃO ABSOLUTA (Build 178):\n'
-    '  TERMINANTEMENTE PROIBIDO incluir na resposta:\n'
-    '  • Qualquer texto em INGLÊS (exceto termos médicos internacionais)\n'
-    '  • "User Input Analysis:", "Assumed Patient Data:", "Constructing the Response:"\n'
-    '  • "The user\'s input is...", "The previous response ended with..."\n'
-    '  • "I need to provide...", "This implies the user is..."\n'
-    '  • "< IAM.", "< SCA.", ou qualquer prefixo "<" de raciocínio interno\n'
-    '  • Qualquer análise de turnos anteriores, meta-comentário ou debugging\n'
-    '  • Frases em 3ª pessoa: "El usuario solicita...", "O usuário informou..."\n'
-    '  SAÍDA: ÚNICA E EXCLUSIVAMENTE conteúdo médico acadêmico limpo em Markdown.\n'
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    'ANTI-CoT ABSOLUTO — PROIBIDO incluir na resposta:\n'
+    '  "User Input Analysis:", "The user\'s input is...", "I need to provide..."\n'
+    '  Frases em 3ª pessoa sobre o usuário. Meta-comentários. Raciocínio interno.\n'
     '\n'
-    'LANGUAGE LOCK — CRÍTICO:\n'
-    '  Detecte o idioma da PRIMEIRA mensagem do histórico (Espanhol ou Português).\n'
-    '  Responda EXCLUSIVAMENTE nesse idioma durante TODA a sessão.\n'
-    '  NUNCA mude para inglês. NUNCA misture idiomas.\n'
-    '  Se o usuário escrever em espanhol → responder em espanhol SEMPRE.\n'
-    '  Se o usuário escrever em português → responder em português SEMPRE.\n'
+    'LIMITE: entre 1 e 30 linhas de conteúdo real (linhas em branco não contam).\n'
+    'Respostas abaixo de 6 linhas são proibidas. Acima de 30 linhas, condense.\n'
     '\n'
-    'LIMITE DE TELA — BOUNDARY INTELIGENTE (Build 178):\n'
-    '  Ajuste a resposta para ocupar entre 24 e 30 linhas de conteúdo máximo.\n'
-    '  REGRA DE PRIORIDADE quando o tema for muito denso e exigir síntese:\n'
-    '    1. Preservar integralmente: Parágrafo 1 (fisiopatologia) e Parágrafo 3 (diferenciais).\n'
-    '    2. Sintetizar se necessário: Parágrafo 2 (epidemiologia) e Parágrafo 5 (pérola).\n'
-    '    3. Parágrafo 4 segue a regra condicional abaixo (pode ser omitido).\n'
-    '  Respostas abaixo de 12 linhas de conteúdo são proibidas neste modo.\n'
-    '  Respostas acima de 30 linhas devem ser condensadas antes de enviar.\n'
+    'HIERARQUIA DIDÁTICA OBRIGATÓRIA (adapte as seções à pergunta):\n'
     '\n'
-    'ESTRUTURA ACADÊMICA OBRIGATÓRIA:\n'
+    '## [Título clínico específico do tema]\n'
     '\n'
-    '## [Título clínico do tema — bold, específico]\n'
+    'Definição: [exatamente 1 linha — definição precisa e objetiva]\n'
     '\n'
-    '[Parágrafo 1: fisiopatologia/mecanismo — DETALHADO, com pathway molecular se relevante]\n'
-    '[Parágrafo 2: epidemiologia e fatores de risco com dados numéricos reais]\n'
-    '[Parágrafo 3: diagnóstico diferencial — critérios + sensibilidade/especificidade]\n'
-    '[Parágrafo 4: CONDICIONAL — ver regra abaixo]\n'
-    '[Parágrafo 5: pérola clínica do preceptor — 1 insight prático de alta densidade]\n'
+    'Fisiopatologia: [exatamente 2 linhas — mecanismo central com pathway se relevante]\n'
     '\n'
-    '📌 [Ação de aprofundamento em 1ª pessoa. PONTO FINAL. Sem "?".]\n'
+    'Mecanismo de Ação (se farmacológico): [exatamente 2 linhas — alvo molecular + efeito]\n'
     '\n'
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-    'PARÁGRAFO 4 — REGRA CONDICIONAL ESTRITA (Build 178):\n'
+    '[Seções adicionais conforme a pergunta — epidemiologia, diagnóstico diferencial,\n'
+    ' tratamento/doses (APENAS se perguntado explicitamente), pérola clínica]\n'
     '\n'
-    '  OMITIR COMPLETAMENTE o Parágrafo 4 (tratamento, doses, fármacos) se\n'
-    '  a pergunta for puramente teórica, acadêmica ou focada em:\n'
-    '    • fisiopatologia / mecanismo\n'
-    '    • epidemiologia / fatores de risco\n'
-    '    • diagnóstico diferencial / critérios diagnósticos\n'
-    '    • conceito geral / "o que é" / "explica"\n'
-    '    • comparações sem pedido explícito de dose\n'
+    '📌 [Próximo passo de aprofundamento em 1ª pessoa. PONTO FINAL. Nunca "?".]\n'
     '\n'
-    '  INCLUIR o Parágrafo 4 COM doses e duração SOMENTE se:\n'
-    '    (a) O prompt do usuário contém EXPLICITAMENTE palavras como:\n'
-    '        "tratamento", "tratamiento", "dose", "dosis", "manejo",\n'
-    '        "fármacos", "terapia", "esquema", "prescrição", "prescripción",\n'
-    '        "primeira linha", "primera línea", "protocolo terapêutico"\n'
-    '    (b) O usuário pede revisão terapêutica completa do tema\n'
-    '    (c) O contexto é explicitamente um caso clínico com pedido de conduta\n'
-    '\n'
-    '  REGRA DE OURO: dúvida sobre incluir Parágrafo 4? → OMITIR.\n'
-    '  Perguntas teóricas recebem APENAS Parágrafos 1, 2, 3 e 5.\n'
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-    '\n'
-    'REGRAS GERAIS:\n'
-    '  • Parágrafos corridos — prosa acadêmica densa com voz ativa.\n'
-    '  • Citar estudos/guidelines quando relevante (NEJM, JAMA, ESC, AHA etc.).\n'
-    '  • É PERMITIDO usar **negrito** para doses (quando incluídas) e termos-chave.\n'
-    '  • É PERMITIDO usar listas quando a clareza clínica exige.\n'
-    '  • 📌 — ÚLTIMA linha OBRIGATÓRIA. Frase em 1ª pessoa. PONTO FINAL.\n'
-    '         NUNCA terminar com "?". NUNCA omitir esta linha.\n'
-    '\n'
-    'EXEMPLOS DE FECHAMENTO 📌 ACEITOS:\n'
-    '  📌 Quero aprofundar a farmacologia dos betabloqueadores neste caso.\n'
-    '  📌 Continuar para o manejo pós-IAM e prevenção secundária.\n'
-    '  📌 Quero ver a comparação entre esses dois fármacos com evidências.\n'
-    '  📌 Detalhar as indicações de intervenção cirúrgica neste cenário.\n'
-    '\n'
-    'FECHAMENTOS 📌 PROIBIDOS:\n'
-    '  ✗ Qualquer linha com "?" no final\n'
-    '  ✗ "📌 ¿Desea continuar?" — frases interrogativas\n'
-    '  ✗ "📌 Quer que eu explique?" — convite vago\n'
-    '\n'
-    'MEMÓRIA ATIVA — ANTI-REPETIÇÃO:\n'
-    '  Analise o histórico completo. Jamais repita conteúdo já explicado.\n'
-    '  Continue do ponto exato onde parou, como preceptor que lembra tudo.\n'
-    '\n'
-    'RAG OVERRIDE: reformate conteúdo de guias em voz de preceptor.\n'
-    'Transforme listas secas em raciocínio clínico narrativo e embasado.\n'
+    'REGRAS:\n'
+    '  • Prosa acadêmica densa, voz ativa. Citar guideline/estudo quando relevante.\n'
+    '  • Negrito (**) para doses e termos-chave.\n'
+    '  • Tratamento com doses: incluir SOMENTE se explicitamente pedido.\n'
+    '  • 📌 obrigatório como última linha. Frase em 1ª pessoa, sem interrogação.\n'
+    '  • Jamais repetir conteúdo já explicado no histórico desta sessão.\n'
     '\n';
 // ─────────────────────────────────────────────────────────────────────────────
 // ModeAnchorEngine — Injeção de âncora de modo (Build 157)
@@ -261,18 +174,18 @@ class ModeAnchorEngine {
   static String getModeAnchor({bool longResponse = false}) {
     final anchor = longResponse ? _modeAnchorEstudo : _modeAnchorPlantao;
     debugPrint(
-      '[ModeAnchorEngine] Build 178: motor=${longResponse ? "ESTUDO" : "GUARDIA"} '
-      'âncora obtida (${anchor.length} chars) — enviada como PART 0 do system_instruction',
+      '[ModeAnchorEngine] Build 229: motor=${longResponse ? "ESTUDO" : "GUARDIA"} '
+      'âncora obtida (${anchor.length} chars) — isolada em system_instruction',
     );
     return anchor;
   }
 
-  /// Build 226: Arquitetura Sanduíche com Isolamento Total de Mandato.
+  /// Build 229: Arquitetura Sanduíche com Isolamento Total de Mandato.
   /// - Topo: âncora (contrato de formato + idioma)
   /// - Meio: systemPrompt do AiService (contexto RAG clínico)
   /// - Final: reforço mandatório + mandato de intent específico do turno
   ///
-  /// CRÍTICO — Prompt Leak Fix (Build 226):
+  /// CRÍTICO — Prompt Leak Fix (Build 226→229):
   ///   [intentMandate] é injetado AQUI (em system_instruction), NÃO na
   ///   user message. Isso garante que o mandato nunca apareça em contents[]
   ///   e portanto NUNCA pode ser ecoado pelo modelo na resposta.
@@ -281,7 +194,7 @@ class ModeAnchorEngine {
   static String injectModeAnchor(
     String systemPrompt, {
     bool longResponse = false,
-    String intentMandate = '', // Build 226: mandato de intent isolado no system
+    String intentMandate = '', // Build 229: mandato de intent isolado no system
   }) {
     final anchor = getModeAnchor(longResponse: longResponse);
 
@@ -292,7 +205,7 @@ class ModeAnchorEngine {
 
     // Modo Plantão: Sanduíche — reforço final explora Viés de Recência.
     // Build 224: cláusula anti-History-Style-Bleeding.
-    // Build 226: intentMandate anexado ao final do system_instruction —
+    // Build 229: intentMandate anexado ao final do system_instruction —
     //   garante que o mandato de gotas/ampola/conduta seja lido como
     //   instrução de sistema e NUNCA como turno de conversa do usuário.
     final intentSuffix = intentMandate.isNotEmpty
@@ -350,7 +263,7 @@ class AiGatewayService {
 
   /// Envia mensagem ao Gemini com motor selecionado.
   ///
-  /// Build 226: Interceptor de intent por turno — PROMPT LEAK FIX.
+  /// Build 229: Interceptor de intent por turno — PROMPT LEAK FIX.
   /// O mandato de intent (gotas/ampolas/conduta) vai EXCLUSIVAMENTE para
   /// system_instruction (via injectModeAnchor). A user message enviada
   /// nos contents[] é SEMPRE a mensagem limpa original — elimina eco do
@@ -384,12 +297,12 @@ class AiGatewayService {
     // Build 222: Modo Plantão força useGrounding=false obrigatoriamente.
     final effectiveGrounding = longResponse ? useGrounding : false;
 
-    // Build 226: Interceptor de intent — ARQUITETURA CORRIGIDA (Prompt Leak Fix).
+    // Build 229: Interceptor de intent — ARQUITETURA CORRIGIDA.
     //
     // ANTES (Build 224-225): mandato era concatenado na userMessage → ia para
     //   contents[role='user'] → Gemini ecoava o texto do mandato na resposta.
     //
-    // AGORA (Build 226): mandato é uma string separada (intentMandate) que vai
+    // Build 229: mandato é uma string separada (intentMandate) que vai
     //   EXCLUSIVAMENTE para system_instruction via injectModeAnchor().
     //   A userMessage enviada nos contents[] é SEMPRE a mensagem limpa do médico.
     //   Resultado: mandato é instrução de sistema — jamais aparece no output.
@@ -422,30 +335,30 @@ class AiGatewayService {
 
       if (kDebugMode) {
         final intent = isDrops ? 'GOTAS' : isAmpoule ? 'AMPOLA' : history.isEmpty ? 'PRIMEIRO_GIRO' : 'FOLLOW_UP';
-        debugPrint('[Build226][Gateway] intent=$intent | intentMandate=${intentMandate.length} chars (no system_instruction, NOT in contents)');
+        debugPrint('[Build229][Gateway] intent=$intent | intentMandate=${intentMandate.length} chars (no system_instruction, NOT in contents)');
       }
     }
 
-    // Build 226: Sanduíche — âncora + systemPrompt + reforço + intentMandate.
+    // Build 229: Sanduíche — âncora + systemPrompt + reforço + intentMandate.
     // intentMandate vai para o FINAL do system_instruction (Viés de Recência).
     // Contents recebe apenas userMessage limpa — elimina Prompt Leaking.
     final finalSystemPrompt = ModeAnchorEngine.injectModeAnchor(
       systemPrompt,
       longResponse: longResponse,
-      intentMandate: intentMandate, // Build 226: mandato de intent isolado no system
+      intentMandate: intentMandate, // Build 229: mandato de intent isolado no system
     );
 
     final isPlantaoMode = !longResponse; // Build 223
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
-      '[AiGatewayService] Build 226: motor=$motor | '
+      '[AiGatewayService] Build 229: motor=$motor | '
       'isPlantaoMode=$isPlantaoMode | '
       'grounding=$effectiveGrounding | '
       'system=${finalSystemPrompt.length} chars | '
       'userMsg_limpa=${userMessage.length} chars (sem mandato)',
     );
 
-    // Build 226: log de auditoria — confirma isolamento do mandato
+    // Build 229: log de auditoria — confirma isolamento do mandato
     if (kDebugMode && isPlantaoMode) {
       final hasConflict = finalSystemPrompt.contains('TRATAMENTO FARMACOLÓGICO') ||
           finalSystemPrompt.contains('TRATAMIENTO FARMACOLÓGICO') ||
@@ -454,16 +367,16 @@ class AiGatewayService {
       final mandatoNoSystem = intentMandate.isNotEmpty
           ? finalSystemPrompt.contains(intentMandate.substring(0, 20))
           : true;
-      debugPrint('[Build226][Gateway] prompt_sem_conflito=${!hasConflict} | mandato_no_system=$mandatoNoSystem (${finalSystemPrompt.length} chars)');
+      debugPrint('[Build229][Gateway] prompt_sem_conflito=${!hasConflict} | mandato_no_system=$mandatoNoSystem (${finalSystemPrompt.length} chars)');
     }
 
-    // Build 226: Delega para GeminiServiceV2.
+    // Build 229: Delega para GeminiServiceV2.
     // CRÍTICO: userMessage (limpa, sem mandato) → contents[role='user']
     //          finalSystemPrompt (com mandato de intent no final) → system_instruction
     // O modelo NUNCA verá o mandato como parte do histórico de conversa.
     return GeminiServiceV2.sendStream(
       apiKey:         apiKey,
-      userMessage:    userMessage,       // Build 226: mensagem LIMPA — mandato está no system
+      userMessage:    userMessage,       // Build 229: mensagem LIMPA — mandato está no system
       systemPrompt:   finalSystemPrompt, // âncora + RAG + reforço + intentMandate
       history:        history,
       useGrounding:   effectiveGrounding, // Build 222: false fixo no Modo Plantão

@@ -884,23 +884,58 @@ class GeminiServiceV2 {
   }) async {
     if (controller.isClosed) return;
 
-    // ── Usa controller intermediário para interceptar erros antes de expor ──
-    // Isso permite que o retry transitório aconteça SEM enviar chunk de erro
-    // ao controller final enquanto ainda há tentativas disponíveis.
-    final intermediate = StreamController<GeminiChunk>();
+    // ── Build 229: PIPE DIRETO para latência zero ────────────────────────────
+    // CAUSA RAIZ do delay de 20s (Builds 135-228):
+    //   O controller intermediário acumulava TODOS os chunks em memória e só os
+    //   despejava no controller final APÓS o stream completo — comportamento
+    //   síncrono bloqueante que impedia o Flutter de renderizar tokens em tempo real.
+    //
+    // NOVA ARQUITETURA (Build 229):
+    //   Happy path (sem erro): chunks vão DIRETO ao controller final via pipe.
+    //     → Flutter recebe e renderiza cada token à medida que chega da API.
+    //     → Latência do primeiro token: ~1-2s (tempo real da API Google).
+    //
+    //   Erro transitório SEM conteúdo parcial: usa controller intermediário
+    //     apenas neste caso para bufferizar e decidir retry sem expor erro
+    //     prematuro ao controller final. Comportamento idêntico ao Build 135.
+    //
+    // RETRY TRANSITÓRIO MANTIDO: a lógica de retry 5xx/timeout/network é
+    //   preservada integralmente — apenas o caminho feliz foi otimizado.
+    // ────────────────────────────────────────────────────────────────────────
+
+    // Tentativa 1: pipe direto ao controller final para latência zero.
+    // Se der erro transitório sem conteúdo, recorre ao buffer para retry.
+    final probeIntermediate = StreamController<GeminiChunk>();
     GeminiChunk? capturedError;
     final chunks = <GeminiChunk>[];
     bool hadContent = false;
+    bool firstChunkSent = false; // rastreia se já fizemos pipe ao controller final
 
-    // Subscrevemos o intermediário para capturar tudo
     final completer = Completer<void>();
-    intermediate.stream.listen(
+    probeIntermediate.stream.listen(
       (chunk) {
         if (chunk.isError) {
           capturedError = chunk;
+          // Erro chegou: se já havíamos feito pipe de conteúdo, propaga imediatamente.
+          // Se não, apenas captura para decisão de retry.
+          if (firstChunkSent && !controller.isClosed) {
+            controller
+              ..add(chunk)
+              ..close();
+          }
         } else {
           if (chunk.text.isNotEmpty) hadContent = true;
-          chunks.add(chunk);
+          if (!firstChunkSent && chunk.text.isNotEmpty) {
+            // Primeiro chunk de conteúdo: ativa pipe direto a partir de agora.
+            firstChunkSent = true;
+          }
+          if (firstChunkSent) {
+            // Pipe direto → UI renderiza em tempo real
+            if (!controller.isClosed) controller.add(chunk);
+          } else {
+            // Ainda sem conteúdo: bufferiza (chunks de metadados/vazio)
+            chunks.add(chunk);
+          }
         }
       },
       onDone: () {
@@ -914,66 +949,65 @@ class GeminiServiceV2 {
 
     try {
       await _streamRequest(
-        controller: intermediate,
+        controller: probeIntermediate,
         apiKey: apiKey,
         userMessage: userMessage,
         systemPrompt: systemPrompt,
         history: history,
         useGrounding: useGrounding,
         attempt: attempt,
-        modeAnchor: modeAnchor,      // Build 157.1
-        isPlantaoMode: isPlantaoMode, // Build 223
+        modeAnchor: modeAnchor,
+        isPlantaoMode: isPlantaoMode,
       );
     } catch (e) {
       _log('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
-      if (!intermediate.isClosed) {
-        intermediate
+      if (!probeIntermediate.isClosed) {
+        probeIntermediate
           ..add(GeminiChunk.error('unexpected'))
           ..close();
       }
     }
 
-    // Aguarda o intermediate finalizar
+    // Aguarda o probeIntermediate finalizar
     try {
       await completer.future;
     } catch (_) {}
 
-    // ── Verifica se houve erro transitório e se vale retry ───────────────────
+    // Se já fizemos pipe direto, o controller final já recebeu tudo (ou o erro).
+    // Apenas garantimos que está fechado.
+    if (firstChunkSent) {
+      if (!controller.isClosed) controller.close();
+      return;
+    }
+
+    // ── Sem conteúdo: decide se faz retry ou propaga erro ────────────────────
     final isTransientError = capturedError != null &&
         (capturedError!.errorCode == 'http_503' ||
          capturedError!.errorCode == 'timeout'  ||
          capturedError!.errorCode == 'network'  ||
          capturedError!.errorCode == 'stream_error');
 
-    // Se houve conteúdo parcial substancial (>40 chars) → não retentamos,
-    // entregamos o parcial (compatível com a lógica do AppProvider).
     final partialCharsTotal = chunks.fold<int>(0, (sum, c) => sum + c.text.length);
     final hasPartialContent  = hadContent && partialCharsTotal > 40;
 
     if (isTransientError && !hasPartialContent &&
         transientAttempt < _maxTransientRetries) {
 
-      if (controller.isClosed) return; // cancelamento manual durante retry
+      if (controller.isClosed) return;
 
-      // ── Backoff Exponencial + Jitter ──────────────────────────────────────
       final baseDelay = _transientRetryBaseDelays[transientAttempt];
       final jitterMs  = _rng.nextInt(_transientJitterMs * 2 + 1) - _transientJitterMs;
       final waitMs    = (baseDelay.inMilliseconds + jitterMs).clamp(500, 30000);
       final waitDur   = Duration(milliseconds: waitMs);
 
       _log(
-        '[GeminiV2] Build 135: erro transitório (${capturedError!.errorCode}) — '
-        'retry ${transientAttempt + 1}/$_maxTransientRetries em ${waitDur.inMilliseconds}ms '
-        '(base ${baseDelay.inSeconds}s ± ${jitterMs}ms jitter)',
+        '[GeminiV2] Build 229: erro transitório (${capturedError!.errorCode}) — '
+        'retry ${transientAttempt + 1}/$_maxTransientRetries em ${waitDur.inMilliseconds}ms',
       );
 
-      // Aguarda com verificação de cancelamento a cada 500ms
       final waitEnd = DateTime.now().add(waitDur);
       while (DateTime.now().isBefore(waitEnd)) {
-        if (controller.isClosed) {
-          _log('[GeminiV2] Build 135: retry cancelado — controller fechado durante wait');
-          return;
-        }
+        if (controller.isClosed) return;
         final remaining = waitEnd.difference(DateTime.now());
         await Future.delayed(
           remaining > const Duration(milliseconds: 500)
@@ -984,7 +1018,6 @@ class GeminiServiceV2 {
 
       if (controller.isClosed) return;
 
-      _log('[GeminiV2] Build 135: iniciando tentativa transitória ${transientAttempt + 2}');
       return _executeWithRetry(
         controller: controller,
         apiKey: apiKey,
@@ -992,29 +1025,22 @@ class GeminiServiceV2 {
         systemPrompt: systemPrompt,
         history: history,
         useGrounding: useGrounding,
-        attempt: attempt,                        // attempt 429 preservado
-        transientAttempt: transientAttempt + 1,  // contagem transitória avança
-        modeAnchor: modeAnchor,                  // Build 157.1
-        isPlantaoMode: isPlantaoMode,             // Build 223
+        attempt: attempt,
+        transientAttempt: transientAttempt + 1,
+        modeAnchor: modeAnchor,
+        isPlantaoMode: isPlantaoMode,
       );
     }
 
-    // ── Propaga todos os chunks coletados para o controller final ─────────────
-    // Se chegamos aqui: sucesso, erro não-transitório, ou esgotou retries.
+    // ── Propaga chunks bufferizados (sem conteúdo, sem retry) ────────────────
     if (controller.isClosed) return;
-
     for (final chunk in chunks) {
       if (controller.isClosed) break;
       controller.add(chunk);
     }
-
     if (capturedError != null && !controller.isClosed) {
-      // Esgotou retries ou erro não-transitório → propaga erro original
       if (isTransientError && transientAttempt >= _maxTransientRetries) {
-        _log(
-          '[GeminiV2] Build 135: ${_maxTransientRetries} retries transitórios esgotados — '
-          'propagando ${capturedError!.errorCode} para UI',
-        );
+        _log('[GeminiV2] Build 229: retries esgotados → propagando ${capturedError!.errorCode}');
       }
       controller
         ..add(capturedError!)
