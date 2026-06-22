@@ -66,6 +66,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
   @override
   void initState() {
     super.initState();
+    // Build 208: _newDraft() sem argumento aqui pois o context/provider
+    // ainda não está disponível em initState. O doctorName será injetado
+    // no first build via _ensureDoctorName().
     _draftEvolucion = _newDraft();
     DrugInteractionService.instance.init();
     // Aguarda o primeiro frame para ter acesso ao provider
@@ -130,10 +133,25 @@ class _InternacionScreenState extends State<InternacionScreen> {
     return 'Dr. $name';
   }
 
-  EvolucionModel _newDraft() => EvolucionModel(
+  // Build 208: getter seguro que lê o nome do médico do provider sem watch.
+  // Usado em métodos que não têm acesso ao BuildContext do build() (ex: após callbacks).
+  String get _safeDoctorName {
+    try {
+      return _doctorName(context.read<AppProvider>());
+    } catch (_) {
+      return 'Dr.';
+    }
+  }
+
+  // Build 208: _newDraft aceita doctorName para que 'autorNombre' nunca
+  // seja o fallback hardcoded 'Dr.' quando o médico está logado.
+  // Chamadas sem argumento continuam funcionando (param opcional).
+  EvolucionModel _newDraft([String? doctorName]) => EvolucionModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         fecha: DateTime.now(),
-        autorNombre: 'Dr.',
+        autorNombre: (doctorName != null && doctorName.trim().isNotEmpty)
+            ? doctorName
+            : 'Dr.',
       );
 
   // ── 168-1: Salva na nuvem (com fallback local) ───────────────────────────
@@ -216,7 +234,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
     setState(() {
       _historial = updatedHistorial;
-      _draftEvolucion = _newDraft();
+      // Build 208: usa _safeDoctorName para que o próximo draft já tenha
+      // o nome real do médico, sem depender do addPostFrameCallback.
+      _draftEvolucion = _newDraft(_safeDoctorName);
       _isEditMode = false;
       _editingEvolucionId = null;
     });
@@ -275,7 +295,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
     // o round-trip do Firestore. O stream confirmará e substituirá depois.
     // Estratégia: remove a versão antiga (se existia) e insere a nova no topo.
     if (!mounted) return;
-    final freshDraft = _newDraft();
+    // Build 208: _safeDoctorName disponível aqui (context mounted e provider ativo).
+    final freshDraft = _newDraft(_safeDoctorName);
     setState(() {
       // Workspace reset — só acontece após _persistSession() bem-sucedido
       _paciente = const PacienteInternacaoData(diaInternacao: 1);
@@ -448,12 +469,15 @@ class _InternacionScreenState extends State<InternacionScreen> {
     final nextPaciente = session.paciente.copyWith(
       diaInternacao: session.paciente.diaInternacao + 1,
     );
+    // Build 208: usa autorNombre do último historial OU o médico logado agora.
+    // Nunca usa o fallback hardcoded 'Dr.' se o médico está disponível.
+    final evolveAutor = session.historial.isNotEmpty
+        ? session.historial.last.autorNombre
+        : _safeDoctorName;
     final blankDraft = EvolucionModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       fecha: DateTime.now(),
-      autorNombre: session.historial.isNotEmpty
-          ? session.historial.last.autorNombre
-          : 'Dr.',
+      autorNombre: evolveAutor,
       subjetivo: const SubjetivoData(),
       objetivo: const ObjetivoData(),
       evaluacion: const EvaluacionData(),
@@ -615,7 +639,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
 
     await InternacionPersistence.clearActiveSession(_paciente);
-    final freshDraft = _newDraft();
+    // Build 208: usa _safeDoctorName para preservar nome do médico no próximo draft.
+    final freshDraft = _newDraft(_safeDoctorName);
     setState(() {
       _paciente = const PacienteInternacaoData(diaInternacao: 1);
       _historial = [];
@@ -692,6 +717,22 @@ class _InternacionScreenState extends State<InternacionScreen> {
     final theme = InternacionTheme(dark);
     final isEs = lang == 'es';
     final doctorName = _doctorName(p);
+
+    // Build 208: injeta doctorName no _draftEvolucion na primeira oportunidade
+    // em que o provider está disponível (build). Se o draft ainda tem o fallback
+    // 'Dr.' e o médico está logado, atualiza sem reconstruir o SOAP do filho.
+    // Usa addPostFrameCallback para não chamar setState dentro do build.
+    if (_draftEvolucion.autorNombre == 'Dr.' &&
+        doctorName.isNotEmpty &&
+        doctorName != 'Dr.') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _draftEvolucion.autorNombre == 'Dr.') {
+          setState(() {
+            _draftEvolucion = _draftEvolucion.copyWith(autorNombre: doctorName);
+          });
+        }
+      });
+    }
 
     // ── Build 176: Dashboard Clínico compacto ─────────────────────────────
     return Scaffold(
@@ -905,16 +946,22 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     dark: dark,
                     isPrimary: true,
                     onTap: () {
-                      // Build 204 FIX: mescla dados do SoapSectionWidget (S/O/A/P)
-                      // com farmacos do _draftEvolucion (gerenciado no pai).
-                      // • currentEvolucion = source-of-truth dos campos SOAP digitados
-                      // • _draftEvolucion.farmacos = source-of-truth da lista de fármacos
-                      // Sem este merge, o salvar usava _draftEvolucion do pai (S/O/A/P
-                      // vazios) e perdia tudo que o médico digitou no accordion.
-                      final soapEv = _soapKey.currentState?.currentEvolucion
-                          ?? _draftEvolucion;
-                      final ev = soapEv.copyWith(
-                        farmacos: _draftEvolucion.farmacos,
+                      // Build 208 FIX INVERSÃO DE FONTE DE VERDADE:
+                      // O PAI (_draftEvolucion) é a fonte absoluta de metadados:
+                      //   id, fecha, autorNombre, farmacos.
+                      // O FILHO (currentEvolucion) é a fonte dos blocos SOAP
+                      //   (subjetivo, objetivo, evaluacion, plan) — que foram
+                      //   sincronizados via addListener+didUpdateWidget (Build 205).
+                      // copyWith do PAI sobrescreve apenas SOAP com dados do filho,
+                      // preservando autorNombre, id, fecha e farmacos do pai.
+                      final childEv = _soapKey.currentState?.currentEvolucion;
+                      final ev = _draftEvolucion.copyWith(
+                        subjetivo:  childEv?.subjetivo  ?? _draftEvolucion.subjetivo,
+                        objetivo:   childEv?.objetivo   ?? _draftEvolucion.objetivo,
+                        evaluacion: childEv?.evaluacion ?? _draftEvolucion.evaluacion,
+                        plan:       childEv?.plan       ?? _draftEvolucion.plan,
+                        // farmacos: mantido do pai (_draftEvolucion) — não sobrescrever
+                        // autorNombre, id, fecha: NUNCA sobrescrevidos pelo filho
                       );
                       _onSaveEvolucion(ev);
                     },
