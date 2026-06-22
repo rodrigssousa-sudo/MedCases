@@ -193,61 +193,123 @@ class _InternacionScreenState extends State<InternacionScreen> {
   }
 
   void _onSaveEvolucion(EvolucionModel ev) async {
-    // ── Build 209: Sovereign Parent re-merge ────────────────────────────
-    // O _draftEvolucion (Pai) é a fonte de verdade absoluta para metadados.
-    // O widget filho só substitui seções SOAP se tiver conteúdo textual real.
-    // Mapeia campos reais do modelo — sem phantom fields do pseudocódigo.
+    // ── Build 210: Freio de Mão Absoluto + Sovereign Parent corrigido ────
+    //
+    // DIAGNÓSTICO B209 (crime):
+    //   _draftEvolucion NUNCA recebe dados da IA — a IA só escreve no
+    //   SoapNotifier. Usar _draftEvolucion como base SOAP descartava o
+    //   `ev` parâmetro (que vinha correto do botão) e gravava lixo sobre
+    //   o prontuário bom. B210 inverte a prioridade:
+    //
+    // REGRA B210:
+    //   • `ev` (parâmetro)        → fonte primária dos dados SOAP (S/O/A/P)
+    //   • `_soapKey.currentState` → confirmação direta do notifier
+    //   • `_draftEvolucion`       → fornece APENAS metadados (id, fecha, farmacos)
+    //   • `medicoFinal`           → cadeia de resolução sem fallback para 'Dr.'
+    //   • Freio de mão            → se payload ficou vazio, ABORT
     {
-      final medicoLogado = _safeDoctorName; // via AppProvider.userName — sem hardcode
-      final child = _soapKey.currentState?.currentEvolucion;
+      // ── 1. Leitura direta do notifier (fonte de verdade do SOAP) ─────
+      // Obtemos o estado vivo do SoapNotifier e usamos como reforço do ev.
+      // Se o notifier tiver conteúdo mais rico (ex: IA preencheu e o
+      // botão capturou), ele já está em `ev` — currentEvolucion confirma.
+      final notifierEv = _soapKey.currentState?.currentEvolucion;
+
+      // Escolhe a versão SOAP com mais conteúdo: notifier se preenchido,
+      // senão ev parâmetro (que veio do botão com currentEvolucion).
+      bool _evTemConteudo(EvolucionModel e) =>
+        _hasText(e.subjetivo.notePasaNoche)   ||
+        _hasText(e.subjetivo.notasLibres)      ||
+        !e.objetivo.signosVitales.isEmpty      ||
+        _hasText(e.objetivo.examenFisico.estadoGeneral) ||
+        _hasText(e.evaluacion.notasEvaluacion) ||
+        _hasText(e.plan.planTerapeutico);
+
+      // Extrai notifierEv para variável local — Dart promove o tipo para
+      // EvolucionModel (non-null) dentro do bloco if, evitando warnings.
+      EvolucionModel fonteSOAP = ev;
+      bool notifierTemConteudo = false;
+      if (notifierEv != null && _evTemConteudo(notifierEv)) {
+        notifierTemConteudo = true;
+        fonteSOAP = notifierEv; // tipo promovido: EvolucionModel (non-null)
+      }
+      final bool evParamTemConteudo = _evTemConteudo(ev);
+
+      // ── 2. Resolução compulsória do nome do médico ────────────────────
+      // Cadeia de fallback sem NUNCA gravar 'Dr.' se houver nome real:
+      //   1º _safeDoctorName (AppProvider)
+      //   2º ev.autorNombre (capturado pelo botão)
+      //   3º _draftEvolucion.autorNombre (estado do pai)
+      // Só usa 'Dr.' se as três fontes falharem.
+      final String providerName  = _safeDoctorName; // pode retornar 'Dr.' se provider falhar
+      final String evAutorName   = ev.autorNombre;
+      final String draftAutor    = _draftEvolucion.autorNombre;
+      final String medicoFinal = (providerName.trim().length > 3 && providerName != 'Dr.')
+          ? providerName
+          : (evAutorName.trim().length > 3 && evAutorName != 'Dr.')
+              ? evAutorName
+              : (draftAutor.trim().length > 3 && draftAutor != 'Dr.')
+                  ? draftAutor
+                  : providerName; // último recurso: aceita o que tiver
+
+      // ── 3. Monta payload final: metadados do pai + SOAP da fonte viva ─
       final parent = _draftEvolucion;
-
       final evolucionToSave = parent.copyWith(
-        autorNombre: medicoLogado,
-        // Subjetivo: filho substitui apenas se tem nota de passagem ou notas livres
-        subjetivo: (child != null &&
-                (_hasText(child.subjetivo.notePasaNoche) ||
-                 _hasText(child.subjetivo.notasLibres)))
-            ? child.subjetivo
-            : parent.subjetivo,
-        // Objetivo: filho substitui apenas se tem sinais vitais OU exame físico
-        objetivo: (child != null &&
-                (!child.objetivo.signosVitales.isEmpty ||
-                 _hasText(child.objetivo.examenFisico.estadoGeneral)))
-            ? child.objetivo
-            : parent.objetivo,
-        // Avaliação: filho substitui apenas se tem notas de avaliação
-        evaluacion: (child != null &&
-                _hasText(child.evaluacion.notasEvaluacion))
-            ? child.evaluacion
-            : parent.evaluacion,
-        // Plano: filho substitui apenas se tem plano terapêutico
-        plan: (child != null && _hasText(child.plan.planTerapeutico))
-            ? child.plan
-            : parent.plan,
-        // farmacos: pai é sempre a fonte (já mantido pelo Save button do Build 208)
-        farmacos: parent.farmacos,
-        // id e fecha: imutáveis — sempre do pai
-        id: parent.id,
-        fecha: parent.fecha,
+        // Metadados: SEMPRE do pai (id, fecha imutáveis; farmacos gerenciados pelo pai)
+        id:          parent.id,
+        fecha:       parent.fecha,
+        farmacos:    parent.farmacos,
+        // Nome: cadeia de resolução compulsória acima
+        autorNombre: medicoFinal,
+        // SOAP: da fonteSOAP (notifier vivo ou ev parâmetro — nunca _draftEvolucion vazio)
+        subjetivo:   fonteSOAP.subjetivo,
+        objetivo:    fonteSOAP.objetivo,
+        evaluacion:  fonteSOAP.evaluacion,
+        plan:        fonteSOAP.plan,
       );
 
-      // Logs de diagnóstico (removidos em release por tree-shaking de debugPrint)
-      debugPrint('[SAVE_209] medico=${evolucionToSave.autorNombre}');
-      debugPrint('[SAVE_209] S_pasaNoche=${evolucionToSave.subjetivo.notePasaNoche}');
-      debugPrint('[SAVE_209] S_notasLibres=${evolucionToSave.subjetivo.notasLibres}');
-      debugPrint('[SAVE_209] O_signosVitalesEmpty=${evolucionToSave.objetivo.signosVitales.isEmpty}');
-      debugPrint('[SAVE_209] O_estadoGeral=${evolucionToSave.objetivo.examenFisico.estadoGeneral}');
-      debugPrint('[SAVE_209] A_notas=${evolucionToSave.evaluacion.notasEvaluacion}');
-      debugPrint('[SAVE_209] P_plan=${evolucionToSave.plan.planTerapeutico}');
+      // ── 4. Logs de diagnóstico ────────────────────────────────────────
+      debugPrint('[SAVE_210] fonte=${notifierTemConteudo ? "notifier" : evParamTemConteudo ? "evParam" : "VAZIO"}');
+      debugPrint('[SAVE_210] medico=$medicoFinal (provider=$providerName / evAutor=$evAutorName)');
+      debugPrint('[SAVE_210] S_pasaNoche=${evolucionToSave.subjetivo.notePasaNoche.isNotEmpty}');
+      debugPrint('[SAVE_210] S_notasLibres=${evolucionToSave.subjetivo.notasLibres.isNotEmpty}');
+      debugPrint('[SAVE_210] O_signosVitalesEmpty=${evolucionToSave.objetivo.signosVitales.isEmpty}');
+      debugPrint('[SAVE_210] O_estadoGeral=${evolucionToSave.objetivo.examenFisico.estadoGeneral.isNotEmpty}');
+      debugPrint('[SAVE_210] A_notas=${evolucionToSave.evaluacion.notasEvaluacion.isNotEmpty}');
+      debugPrint('[SAVE_210] P_plan=${evolucionToSave.plan.planTerapeutico.isNotEmpty}');
 
-      // Guard anti-regressão: nunca salva evolução com autorNombre genérico
-      // (stripped em release — safe em produção, ativo apenas em debug/test)
-      assert(
-        _hasText(evolucionToSave.autorNombre) &&
-            evolucionToSave.autorNombre != 'Dr.',
-        '[Build 209] autorNombre genérico interceptado: "${evolucionToSave.autorNombre}"',
-      );
+      // ── 5. FREIO DE MÃO ANTI-DELEÇÃO ────────────────────────────────
+      // Se o payload final ficou completamente vazio MAS o ev original
+      // ou o notifier tinham conteúdo, o merge falhou — ABORT para não
+      // sobrescrever prontuário bom com objeto nulo.
+      final bool payloadTemConteudo =
+        _hasText(evolucionToSave.subjetivo.notePasaNoche)   ||
+        _hasText(evolucionToSave.subjetivo.notasLibres)      ||
+        !evolucionToSave.objetivo.signosVitales.isEmpty      ||
+        _hasText(evolucionToSave.objetivo.examenFisico.estadoGeneral) ||
+        _hasText(evolucionToSave.evaluacion.notasEvaluacion) ||
+        _hasText(evolucionToSave.plan.planTerapeutico)       ||
+        evolucionToSave.farmacos.isNotEmpty;
+
+      if (!payloadTemConteudo && (notifierTemConteudo || evParamTemConteudo)) {
+        debugPrint('[SAVE_210] ⛔ FREIO DE MÃO: payload ficou vazio mas fonte tinha conteúdo — ABORT');
+        // Não salva: mostra aviso e retorna sem tocar no Firestore
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Row(children: [
+              const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 16),
+              const SizedBox(width: 8),
+              Expanded(child: Text(_isEs
+                  ? 'Error interno: datos no capturados. Intente de nuevo.'
+                  : 'Erro interno: dados não capturados. Tente novamente.')),
+            ]),
+            backgroundColor: InternacionTheme.red,
+            duration: const Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ));
+        }
+        return;
+      }
 
       // Substitui ev pelo payload blindado antes de qualquer lógica downstream
       ev = evolucionToSave;
