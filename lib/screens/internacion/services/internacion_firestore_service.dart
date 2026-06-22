@@ -182,15 +182,17 @@ class InternacionFirestoreService {
   static Future<List<PacienteSession>> loadAllSessions(String uid) async {
     try {
       // Query principal: documentos com status=='active' (Build 186+)
+      // Build 203 FIX DT-002: removido .orderBy() para evitar FirebaseException
+      // por índice composto ausente {status, savedAt}. A ordenação é feita
+      // client-side logo abaixo, exatamente como na getDeletedSessions().
       final snapActive = await _col(uid)
           .where('status', isEqualTo: kStatusActive)
-          .orderBy('savedAt', descending: true)
           .get();
       // Backward-compat query: documentos sem campo 'status' (criados antes do Build 186)
       // estes têm isDeleted==false mas não têm 'status' definido
+      // Build 203 FIX DT-002: idem — removido .orderBy() de {isDeleted, savedAt}.
       final snapLegacy = await _col(uid)
           .where('isDeleted', isEqualTo: false)
-          .orderBy('savedAt', descending: true)
           .get();
       // Funde os resultados, evitando duplicatas por sessionKey
       final seen = <String>{};
@@ -226,11 +228,14 @@ class InternacionFirestoreService {
   // Fallback: se a query status=='active' também falhar (índice ausente), o
   // onError no listener chama loadAllSessions() como one-shot de recuperação.
   // MEU PLANTÃO e aba Adulto escutam ESTE mesmo stream → sync total.
+  //
+  // Build 203 FIX DT-003: removido .orderBy('savedAt') para eliminar dependência
+  // de índice composto {status, savedAt}. Query single-field usa auto-index.
+  // Ordenação client-side no .map() abaixo — idêntico ao padrão da Lixeira.
   // ─────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
     return _col(uid)
         .where('status', isEqualTo: kStatusActive)
-        .orderBy('savedAt', descending: true)
         .snapshots()
         .map((snap) {
           final sessions = snap.docs
@@ -508,7 +513,7 @@ class InternacionFirestoreService {
         idade: j['idade'] as String? ?? '',
         sexo: j['sexo'] as String? ?? '',
         diagnostico: j['diagnostico'] as String? ?? '',
-        diaInternacao: (j['diaInternacao'] as int?) ?? 1,
+        diaInternacao: _toInt(j['diaInternacao'], fallback: 1),
       );
 
   // ── Serialização evolução ─────────────────────────────────────────────────

@@ -735,8 +735,11 @@ String soapCompletoString(
       }
       return;
     }
-    // 3. Explode por '. ' (ponto final + espaço = separador de sentenças)
-    final bySentence = field.split(RegExp(r'\.\s+')).map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    // 3. Explode por '. ' com lookahead positivo: só quebra quando o próximo
+    // caractere é letra maiúscula (início real de nova frase).
+    // Build 203 FIX DT-011: regex r'\.\s+' → r'\.\s+(?=[A-ZÁÉÍÓÚÀÂÊÔÃÕÜ])'
+    // para preservar abreviações médicas: P.A., Dr., E.V., sat., Amp., etc.
+    final bySentence = field.split(RegExp(r'\.\s+(?=[A-ZÁÉÍÓÚÀÂÊÔÃÕÜ])')).map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
     if (bySentence.length > 1) {
       for (final sentence in bySentence) {
         final clean = sentence.replaceFirst(RegExp(r'^[-•*]\s*'), '').trim();
@@ -983,7 +986,9 @@ String soapResumidoString(
       }
       return;
     }
-    final sentences = field.split(RegExp(r'\.\s+')).map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    // Build 203 FIX DT-011: lookahead maiúscula para não fragmentar abreviações
+    // médicas (P.A., Dr., E.V., sat., Amp., etc.) em bullets separados.
+    final sentences = field.split(RegExp(r'\.\s+(?=[A-ZÁÉÍÓÚÀÂÊÔÃÕÜ])')).map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
     if (sentences.length > 1) {
       for (final sent in sentences) {
         final clean = sent.replaceFirst(RegExp(r'^[-•*]\s*'), '').trim();
@@ -1130,9 +1135,33 @@ String soapResumidoString(
   // ══ P — PLANO & MEDICAÇÃO (1 linha por item) ════════════════════════════════
   buf.writeln('P - ${isEs ? 'PLAN & MEDICACIÓN' : 'PLANO & MEDICAÇÃO'}:');
   bool hasP = false;
+  // Build 203 FIX DT-012: plano terapêutico limitado a 6 itens no Resumido
+  // para garantir meta de ~20 linhas. Excedente avisado em 1 linha compacta.
+  // Fármacos: exibe os 5 primeiros; excedente em linha de aviso.
+  const kMaxPlanoResumido    = 6;
+  const kMaxFarmacosResumido = 5;
+
   if (plan.planTerapeutico.isNotEmpty) {
     hasP = true;
-    addCompact(plan.planTerapeutico, indent: '');
+    // Extrai itens via splitNumberedList ou split por \n (mesmo padrão do addCompact)
+    List<String> planoItems;
+    if (RegExp(r'\d+[\.\)]\s+').hasMatch(plan.planTerapeutico)) {
+      planoItems = splitNumberedList(plan.planTerapeutico);
+    } else {
+      planoItems = plan.planTerapeutico
+          .split('\n')
+          .map((l) => l.trim())
+          .where((l) => l.isNotEmpty)
+          .toList();
+    }
+    final totalPlano = planoItems.length;
+    for (final item in planoItems.take(kMaxPlanoResumido)) {
+      final clean = item.replaceFirst(RegExp(r'^[-•*\d+\.]\s*'), '').trim();
+      if (clean.isNotEmpty) buf.writeln('• $clean');
+    }
+    if (totalPlano > kMaxPlanoResumido) {
+      buf.writeln('• + ${totalPlano - kMaxPlanoResumido} outras condutas (ver prontuário)');
+    }
   }
   if (plan.criteriosAlta.isNotEmpty) {
     hasP = true;
@@ -1140,9 +1169,13 @@ String soapResumidoString(
   }
   if (ev.farmacos.isNotEmpty) {
     hasP = true;
-    for (final f in ev.farmacos) {
+    final totalFarmacos = ev.farmacos.length;
+    for (final f in ev.farmacos.take(kMaxFarmacosResumido)) {
       final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
       buf.writeln('• ${f.medicamento}$dos');
+    }
+    if (totalFarmacos > kMaxFarmacosResumido) {
+      buf.writeln('• + ${totalFarmacos - kMaxFarmacosResumido} outros fármacos (ver prescrição)');
     }
   }
   if (!hasP) buf.writeln(isEs ? '• (Sin conductas registradas)' : '• (Sem condutas registradas)');
@@ -1245,7 +1278,11 @@ String soapPassagemString(
   buf.writeln('${isEs ? '🛑 PENDIENTES (TO-DO LIST):' : '🛑 PENDÊNCIAS (TO-DO LIST):'}');
   bool hasTodo = false;
 
-  // Plano terapêutico — cada item explodido em linha própria com 🚨
+  // Build 203 FIX DT-013: Plano terapêutico — cap de 6 condutas para respeitar
+  // o contrato de ~10 linhas. Itens excedentes resumidos em 1 linha de aviso.
+  const kMaxPlanoPassagem   = 6;
+  const kMaxFarmacosPassagem = 5;
+
   if (plan.planTerapeutico.isNotEmpty) {
     hasTodo = true;
     List<String> items;
@@ -1257,18 +1294,22 @@ String soapPassagemString(
           .map((l) => l.trim())
           .where((l) => l.isNotEmpty)
           .toList();
-      // Se ainda for 1 item, tenta por '. '
+      // Se ainda for 1 item, tenta por '. ' com lookahead maiúscula (FIX DT-011)
       if (items.length == 1) {
         items = plan.planTerapeutico
-            .split(RegExp(r'\.\s+'))
+            .split(RegExp(r'\.\s+(?=[A-ZÁÉÍÓÚÀÂÊÔÃÕÜ])'))
             .map((s) => s.trim())
             .where((s) => s.isNotEmpty)
             .toList();
       }
     }
-    for (final item in items) {
+    final totalPlano = items.length;
+    for (final item in items.take(kMaxPlanoPassagem)) {
       final clean = item.replaceFirst(RegExp(r'^[-•*\d+\.]\s*'), '').trim();
       if (clean.isNotEmpty) buf.writeln('🚨 $clean');
+    }
+    if (totalPlano > kMaxPlanoPassagem) {
+      buf.writeln('🚨 + ${totalPlano - kMaxPlanoPassagem} outras condutas (ver prontuário completo)');
     }
   }
 
@@ -1278,12 +1319,17 @@ String soapPassagemString(
     buf.writeln('🚨 ${isEs ? 'Alta si' : 'Alta se'}: ${plan.criteriosAlta}');
   }
 
-  // Fármacos — cada um em linha própria 🚨
+  // Build 203 FIX DT-010: Fármacos — cap de 5 itens. Excedente resumido em 1 linha.
+  // Paciente com polifarmácia (UTI) não deve gerar 20+ linhas de 🚨 na Passagem.
   if (ev.farmacos.isNotEmpty) {
     hasTodo = true;
-    for (final f in ev.farmacos) {
+    final totalFarmacos = ev.farmacos.length;
+    for (final f in ev.farmacos.take(kMaxFarmacosPassagem)) {
       final dos = f.dosagem.isNotEmpty ? ' — ${f.dosagem}' : '';
       buf.writeln('🚨 ${f.medicamento}$dos');
+    }
+    if (totalFarmacos > kMaxFarmacosPassagem) {
+      buf.writeln('🚨 + ${totalFarmacos - kMaxFarmacosPassagem} outros fármacos (ver prescrição)');
     }
   }
 

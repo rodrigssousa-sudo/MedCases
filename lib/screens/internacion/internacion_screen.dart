@@ -196,6 +196,14 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
 
     // ── Build 171: Edit mode → overwrite; else → append ──────────────────
+    // Build 203 FIX DT-006: Captura snapshots PRÉ-modificação para rollback.
+    // Se _persistSession() lançar, restauramos o estado exato pré-clique
+    // e exibimos SnackBar de erro — o formulário NUNCA é resetado em falha.
+    final preClickHistorial      = List<EvolucionModel>.unmodifiable(_historial);
+    final preClickIsEditMode     = _isEditMode;
+    final preClickEvolucionId    = _editingEvolucionId;
+    final preClickSessionKey     = _currentSessionKey;
+
     final List<EvolucionModel> updatedHistorial;
     if (_isEditMode && _editingEvolucionId != null) {
       updatedHistorial = [
@@ -228,7 +236,39 @@ class _InternacionScreenState extends State<InternacionScreen> {
       savedAt: DateTime.now(),
     );
 
-    await _persistSession();
+    // Build 203 FIX DT-006: try/catch robusto com rollback visual em falha.
+    // Caminho feliz: persiste → injeta otimisticamente → reseta workspace.
+    // Caminho de erro: restaura _historial e modo de edição, exibe erro vermelho.
+    try {
+      await _persistSession();
+    } catch (e) {
+      // Falha de rede ou Firestore — restaura estado pré-clique sem perda de dado.
+      if (!mounted) return;
+      setState(() {
+        _historial          = preClickHistorial;
+        _isEditMode         = preClickIsEditMode;
+        _editingEvolucionId = preClickEvolucionId;
+        _currentSessionKey  = preClickSessionKey;
+        // Devolve o rascunho ao SOAP para que o médico não perca o que digitou
+        _draftEvolucion     = ev;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(children: [
+          const Icon(Icons.cloud_off_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(_isEs
+                ? 'Error de conexión — evolución NO guardada. Intente de nuevo.'
+                : 'Erro de conexão — evolução NÃO salva. Tente novamente.'),
+          ),
+        ]),
+        backgroundColor: InternacionTheme.red,
+        duration: const Duration(seconds: 5),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ));
+      return;
+    }
 
     // Build 191 FIX C + Build 197: Inject optimistic session immediately.
     // Injeta a sessão recém-salva diretamente em _savedSessions SEM esperar
@@ -237,7 +277,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
     if (!mounted) return;
     final freshDraft = _newDraft();
     setState(() {
-      // Workspace reset
+      // Workspace reset — só acontece após _persistSession() bem-sucedido
       _paciente = const PacienteInternacaoData(diaInternacao: 1);
       _historial = [];
       _draftEvolucion = freshDraft;
