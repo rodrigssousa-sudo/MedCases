@@ -3189,6 +3189,7 @@ class AppProvider extends ChangeNotifier {
       userQuery:          input,
       memory:             _sessionMemory,
       isFirstMessage:     _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
+      isPlantaoMode:      !longResponse,       // Build 223: omite _responseFormat e _selfCheck padrão no Plantão
     );
 
     // ── Build 156.2: Resolução automática da chave Gemini ───────────────
@@ -3451,6 +3452,7 @@ class AppProvider extends ChangeNotifier {
       userQuery: input,    // ← RAG gate usa a query real (não expandida) para filtro temático
       memory: _sessionMemory, // ← Fix 3: memória clínica da sessão (já resetada se tema mudou)
       isFirstMessage: _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
+      isPlantaoMode: true, // Build 223: buildAIAnswer é sempre resposta curta (sem longResponse)
     );
 
     // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────

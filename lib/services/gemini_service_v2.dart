@@ -541,6 +541,8 @@ class GeminiServiceV2 {
     List<Map<String, String>> history = const [],
     bool useGrounding = true,
     // Build 221: modeAnchor removido — âncora já concatenada em systemPrompt
+    // Build 223: isPlantaoMode — remove instruções de bullets/## do prefixo
+    bool isPlantaoMode = false,
   }) {
     final controller = StreamController<GeminiChunk>();
 
@@ -564,7 +566,7 @@ class GeminiServiceV2 {
       systemPrompt: systemPrompt,
       history: history,
       useGrounding: useGrounding,
-      // Build 221: modeAnchor não passado — já está dentro de systemPrompt
+      isPlantaoMode: isPlantaoMode,  // Build 223
     );
 
     return controller.stream;
@@ -589,7 +591,8 @@ class GeminiServiceV2 {
     required String systemPrompt,
     required List<Map<String, String>> history,
     required bool useGrounding,
-    String modeAnchor = '',  // Build 157.1
+    String modeAnchor = '',      // Build 157.1
+    bool isPlantaoMode = false,  // Build 223
   }) async {
     if (controller.isClosed) return;
 
@@ -613,7 +616,8 @@ class GeminiServiceV2 {
         history: windowedHistory,
         useGrounding: useGrounding,
         attempt: 0,
-        modeAnchor: modeAnchor,  // Build 157.1
+        modeAnchor: modeAnchor,      // Build 157.1
+        isPlantaoMode: isPlantaoMode, // Build 223
       );
     } catch (e) {
       _log('[GeminiV2] _runPipeline erro inesperado: $e');
@@ -875,7 +879,8 @@ class GeminiServiceV2 {
     required int attempt,
     // Build 135: contagem de tentativas transitórias (separada da contagem 429)
     int transientAttempt = 0,
-    String modeAnchor = '',  // Build 157.1
+    String modeAnchor = '',      // Build 157.1
+    bool isPlantaoMode = false,  // Build 223
   }) async {
     if (controller.isClosed) return;
 
@@ -916,7 +921,8 @@ class GeminiServiceV2 {
         history: history,
         useGrounding: useGrounding,
         attempt: attempt,
-        modeAnchor: modeAnchor,  // Build 157.1
+        modeAnchor: modeAnchor,      // Build 157.1
+        isPlantaoMode: isPlantaoMode, // Build 223
       );
     } catch (e) {
       _log('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
@@ -989,6 +995,7 @@ class GeminiServiceV2 {
         attempt: attempt,                        // attempt 429 preservado
         transientAttempt: transientAttempt + 1,  // contagem transitória avança
         modeAnchor: modeAnchor,                  // Build 157.1
+        isPlantaoMode: isPlantaoMode,             // Build 223
       );
     }
 
@@ -1055,15 +1062,25 @@ class GeminiServiceV2 {
     required List<Map<String, String>> history,
     required bool useGrounding,
     required int attempt,
-    String modeAnchor = '',  // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
+    String modeAnchor = '',      // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
+    bool isPlantaoMode = false,  // Build 223: remove bullets/## do prefixo no Modo Plantão
   }) async {
     final url = Uri.parse('$_endpointStream&key=$apiKey');
 
-    // ── CAMADA 3: Injeta prefixo de ferro DEPOIS da âncora de modo ───────────
-    // Build 157.1: modeAnchor vai como PRIMEIRA parte em system_instruction.parts[]
-    // para garantir PRIORIDADE MÁXIMA sobre _systemPromptPrefix.
-    // Ordem de autoridade: modeAnchor (1ª) > _systemPromptPrefix (2ª) > systemPrompt (3ª)
-    final blindedSystemPrompt = '$_systemPromptPrefix$systemPrompt';
+    // ── CAMADA 3: Prefixo de ferro — condicional por isPlantaoMode ──────────
+    // Build 223: Modo Plantão usa prefixo sem instruções de bullets (* item) e
+    // sem incentivo a ## Título — remove conflito com contrato visual da âncora.
+    // Modo Estudo (isPlantaoMode=false): prefixo completo inalterado.
+    final effectivePrefix = isPlantaoMode
+        ? _systemPromptPrefix
+            .replaceAll('  ✅ * item → use para bullets de lista\n', '')
+            .replaceAll('  ✅ ## Título → use para cabeçalho de seção (Fármacos e Doses, Red Flags, etc.)\n', '')
+        : _systemPromptPrefix;
+    final blindedSystemPrompt = '$effectivePrefix$systemPrompt';
+
+    if (kDebugMode && isPlantaoMode) {
+      debugPrint('[Build223][GeminiV2] isPlantaoMode=true → bullets/## removidos do _systemPromptPrefix');
+    }
 
     // ── Monta contents: histórico janelado (já calibrado) + nova mensagem ─────
     // Mapeamento de roles: AppProvider usa 'assistant', Gemini API usa 'model'
@@ -1310,7 +1327,8 @@ class GeminiServiceV2 {
           history: history,
           useGrounding: useGrounding,
           attempt: attempt + 1,
-          modeAnchor: modeAnchor,  // Build 157.1
+          modeAnchor: modeAnchor,      // Build 157.1
+          isPlantaoMode: isPlantaoMode, // Build 223
         );
       }
       // Esgotou todas as tentativas → cooldown global
@@ -1501,7 +1519,8 @@ class GeminiServiceV2 {
                         history: history,
                         useGrounding: false, // desativa grounding no retry
                         attempt: attempt,
-                        modeAnchor: modeAnchor,  // Build 157.1
+                        modeAnchor: modeAnchor,      // Build 157.1
+                        isPlantaoMode: isPlantaoMode, // Build 223
                       );
                     }
                     // Já estava sem grounding — encerra sem retry adicional

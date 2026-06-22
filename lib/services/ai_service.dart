@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'package:http/http.dart' as http;
 import 'clinical_session_memory.dart';
 
@@ -1159,6 +1160,11 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     // true  → primeira mensagem da sessão: saudação PERMITIDA (apenas uma vez)
     // false → mensagem subsequente: saudação PROIBIDA (padrão seguro)
     bool isFirstMessage = false,
+    // Build 223: isPlantaoMode — quando true, omite _responseFormat e _selfCheck
+    // padrão (4 blocos / TRATAMENTO FARMACOLÓGICO / ALERTA CRÍTICO) para que
+    // o único contrato visual seja o _modeAnchorPlantao do AiGatewayService.
+    // Modo Estudo (longResponse=true) → isPlantaoMode=false → comportamento inalterado.
+    bool isPlantaoMode = false,
   }) {
     final isEs = lang == 'es';
 
@@ -1467,12 +1473,34 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     //   19. selfCheck           → revisão interna invisível + item 13 RAG cross-check
     //   20. contextAnchor       → ÂNCORA DE CONTEXTO ATUAL (Part C — última instrução)
     // ════════════════════════════════════════════════════════════════════════
-    final selfCheck = isEs ? _selfCheckEs : _selfCheckPt;
+    // Build 223: Modo Plantão suprime selfCheck padrão (ensina 4-blocos/bullets).
+    // Substitui por um self-check neutro sem cabeçalhos conflitantes.
+    final selfCheck = isPlantaoMode
+        ? (isEs
+            ? 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
+              '1. A resposta nao contem os cabeçalhos "TRATAMIENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
+              '2. Nao ha bullets livres nem listas explicativas passo a passo fora do formato soberano.\n'
+              '3. O idioma correto esta sendo aplicado conforme a instrucao de idioma dinamico.\n'
+              '4. Dados do paciente estao isolados desta sessao. Nenhum dado de sessoes anteriores foi herdado.\n'
+              '5. Dosis e alertas sao coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
+            : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
+              '1. A resposta nao contem os cabeçalhos "TRATAMENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
+              '2. Nao ha bullets livres nem listas explicativas passo a passo fora do formato soberano.\n'
+              '3. O idioma correto esta sendo aplicado conforme a instrucao de idioma dinamico.\n'
+              '4. Dados do paciente estao isolados desta sessao. Nenhum dado de sessoes anteriores foi herdado.\n'
+              '5. Doses e alertas sao coerentes com peso/renal/hepatico/idade do paciente ativo.\n')
+        : (isEs ? _selfCheckEs : _selfCheckPt);
+
     final evidenceRanking = isEs ? _evidenceRankingEs : _evidenceRankingPt;
     // RAG Cross-Check layer — injetado somente quando há dados RAG reais
     final ragCrossCheck = hasRagData
         ? (isEs ? _ragCrossCheckEs : _ragCrossCheckPt)
         : '';
+
+    // Build 223: Modo Plantão — log de diagnóstico em debug
+    if (kDebugMode && isPlantaoMode) {
+      debugPrint('[Build223][AiService] isPlantaoMode=true → _responseFormat OMITIDO, _selfCheck padrão OMITIDO');
+    }
 
     // ── USER PROMPT ANCHORING (Part C — context contamination fix) ───────────
     // Última instrução do prompt — máxima proximidade com a query do usuário.
@@ -1594,6 +1622,27 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
         'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n'
         '$_siglasBilingues';
 
+    // Build 223: responseFormat é omitido no Modo Plantão — único contrato
+    // visual é o _modeAnchorPlantao no AiGatewayService.
+    final responseFormat = isPlantaoMode
+        ? ''  // Plantão: zero gabarito 4-blocos / TRATAMENTO FARMACOLÓGICO
+        : (isEs ? '$_responseFormatEs\n\n' : '$_responseFormatPt\n\n');
+    final sources = isPlantaoMode
+        ? ''  // Plantão: sem seção de fontes (não relevante para resposta rápida)
+        : (isEs ? '$_sourcesEs\n\n' : '$_sourcesPt\n\n');
+
+    // Build 223: log de auditoria — confirma ausência dos cabeçalhos conflitantes
+    if (kDebugMode && isPlantaoMode) {
+      final assembled = '$langHeader'
+          '$_coreIdentityEs' // proxy — apenas para log de tamanho
+          '$responseFormat';
+      final hasConflict = assembled.contains('TRATAMENTO FARMACOLÓGICO') ||
+          assembled.contains('TRATAMIENTO FARMACOLÓGICO') ||
+          assembled.contains('ALERTA CRÍTICO') ||
+          assembled.contains('ALERTAS CRÍTICOS');
+      debugPrint('[Build223][AiService] responseFormat omitido. conflito_residual=$hasConflict');
+    }
+
     if (isEs) {
       return '$langHeader'
              '$_coreIdentityEs\n\n'
@@ -1604,8 +1653,8 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
              '$differentialSection'
              '$_safetyRulesEs\n\n'
              '$focusSection\n\n'
-             '$_responseFormatEs\n\n'
-             '$_sourcesEs\n\n'
+             '$responseFormat'    // Build 223: '' no Modo Plantão
+             '$sources'           // Build 223: '' no Modo Plantão
              '$memorySection'
              '$patientSection'
              '${ragAnchor.isNotEmpty ? "$ragAnchor\n" : ""}'
@@ -1623,8 +1672,8 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
              '$differentialSection'
              '$_safetyRulesPt\n\n'
              '$focusSection\n\n'
-             '$_responseFormatPt\n\n'
-             '$_sourcesPt\n\n'
+             '$responseFormat'    // Build 223: '' no Modo Plantão
+             '$sources'           // Build 223: '' no Modo Plantão
              '$memorySection'
              '$patientSection'
              '${ragAnchor.isNotEmpty ? "$ragAnchor\n" : ""}'

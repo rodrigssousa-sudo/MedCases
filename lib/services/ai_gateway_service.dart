@@ -48,7 +48,7 @@
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'dart:async';
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'gemini_service_v2.dart';
 
 // ── Import condicional — mantido apenas para compilação sem erros ─────────────
@@ -374,21 +374,32 @@ class AiGatewayService {
       longResponse: longResponse,
     );
 
+    final isPlantaoMode = !longResponse; // Build 223
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
-      '[AiGatewayService] Build 222: motor=$motor | '
+      '[AiGatewayService] Build 223: motor=$motor | '
+      'isPlantaoMode=$isPlantaoMode | '
       'grounding=$effectiveGrounding | '
       'prompt=${finalSystemPrompt.length} chars',
     );
 
-    // Delega para GeminiServiceV2 — string monolítica única (sem modeAnchor separado)
+    // Build 223: log de auditoria — confirma ausência dos cabeçalhos conflitantes no prompt final
+    if (kDebugMode && isPlantaoMode) {
+      final hasConflict = finalSystemPrompt.contains('TRATAMENTO FARMACOLÓGICO') ||
+          finalSystemPrompt.contains('TRATAMIENTO FARMACOLÓGICO') ||
+          finalSystemPrompt.contains('ALERTA CRÍTICO') ||
+          finalSystemPrompt.contains('ALERTAS CRÍTICOS');
+      debugPrint('[Build223][Gateway] prompt_final_sem_conflito=${!hasConflict} (${finalSystemPrompt.length} chars)');
+    }
+
+    // Delega para GeminiServiceV2 — string monolítica única + isPlantaoMode
     return GeminiServiceV2.sendStream(
-      apiKey:       apiKey,
-      userMessage:  userMessage,
-      systemPrompt: finalSystemPrompt,   // sanduíche: âncora + RAG + reforço
-      history:      history,
-      useGrounding: effectiveGrounding,  // Build 222: false fixo no Modo Plantão
-      // Build 221: modeAnchor removido — já está dentro de finalSystemPrompt
+      apiKey:         apiKey,
+      userMessage:    userMessage,
+      systemPrompt:   finalSystemPrompt,   // âncora + RAG neutro + reforço final
+      history:        history,
+      useGrounding:   effectiveGrounding,  // Build 222: false fixo no Modo Plantão
+      isPlantaoMode:  isPlantaoMode,       // Build 223: remove bullets/## do prefixo
     );
   }
 
