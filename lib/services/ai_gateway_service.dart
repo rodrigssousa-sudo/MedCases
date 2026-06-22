@@ -264,15 +264,39 @@ class ModeAnchorEngine {
     return anchor;
   }
 
-  /// Build 221: concatenação brutal — âncora no topo absoluto do systemPrompt.
-  /// Resolve Gemini attention-deficit com multi-part system_instruction:
-  /// string monolítica única garante que o LLM nunca ignore a âncora.
+  /// Build 222: Arquitetura Sanduíche para Modo Plantão.
+  /// - Topo: âncora (contrato de formato + idioma)
+  /// - Meio: systemPrompt do AiService (contexto RAG clínico)
+  /// - Final: reforço mandatório lido por último antes de responder
+  ///   → explora Viés de Recência do Gemini para sobrescrever cabeçalhos
+  ///     textuais e bullet points injetados pelo systemPrompt base.
+  /// Modo Estudo: sem sanduíche — âncora + systemPrompt direto (sem reforço).
   static String injectModeAnchor(
     String systemPrompt, {
     bool longResponse = false,
   }) {
     final anchor = getModeAnchor(longResponse: longResponse);
-    return '$anchor\n\n[INÍCIO DO CONTEXTO CLÍNICO (RAG)]\n$systemPrompt';
+
+    // Modo Estudo: resposta longa, sem restrição de template de emergência.
+    if (longResponse) {
+      return '$anchor\n\n$systemPrompt';
+    }
+
+    // Modo Plantão: Sanduíche — reforço final explora Viés de Recência.
+    return '$anchor\n\n'
+        '[INÍCIO DO CONTEXTO CLÍNICO DO APLICATIVO]\n'
+        '$systemPrompt\n\n'
+        '[REFORÇO MANDATÓRIO DE FORMATO DE SAÍDA - LEIA ISTO POR ÚLTIMO]\n'
+        'Você está TERMINANTEMENTE PROIBIDO de usar os cabeçalhos '
+        '"TRATAMENTO FARMACOLÓGICO" ou "ALERTA CRÍTICO" e de usar listas '
+        'de marcadores com bolinhas (*).\n'
+        'Gere sua resposta baseando-se unicamente nas seguintes regras de fechamento:\n'
+        '- SE FOR O PRIMEIRO GIRO: Escreva estritamente o template de 6 linhas '
+        'com os emojis 🟥, 💊, 🔄B, 🔄C, ⛔, 📌 sem nenhuma linha de introdução ou prosa.\n'
+        '- SE FOR CÁLCULO DE GOTAS/GOTEJAMENTO: Ignore o contexto de prosa acima. '
+        'Escreva ÚNICA e EXCLUSIVAMENTE duas linhas na tela:\n'
+        '  Fórmula: (Volumen total mL / Tiempo en minutos) * Factor de goteo\n'
+        '  Resultado: <font color="red">**[X] gotas/min**</font>';
   }
 }
 
@@ -311,8 +335,8 @@ class AiGatewayService {
 
   /// Envia mensagem ao Gemini com motor selecionado.
   ///
-  /// Build 221: delega para ModeAnchorEngine.injectModeAnchor() + GeminiServiceV2.sendStream().
-  /// A âncora é concatenada brutalmente ao topo do [systemPrompt] — string monolítica.
+  /// Build 222: Sanduíche (âncora + RAG + reforço final) + grounding=false no Modo Plantão.
+  /// Modo Plantão: useGrounding forçado false — elimina latência 14s e "EVIDÊNCIA CIENTÍFICA".
   ///
   /// [userMessage]  — pergunta clínica do usuário
   /// [systemPrompt] — prompt base montado pelo AiService (sem âncora)
@@ -338,9 +362,13 @@ class AiGatewayService {
       return Stream.value(GeminiChunk.error('api_key_invalid'));
     }
 
-    // Build 221: concatenação brutal — âncora injetada diretamente no topo
-    // do systemPrompt como string monolítica. Resolve o Gemini attention-deficit
-    // que ignorava o modeAnchor quando enviado como Part 0 separado.
+    // Build 222: Modo Plantão força useGrounding=false obrigatoriamente.
+    // Google Search Grounding adiciona ~14s de latência e polui a Sala Vermelha
+    // com dados externos da web (colapsável "EVIDÊNCIA CIENTÍFICA").
+    // Modo Estudo mantém o valor recebido (grounding pode ser útil para estudos).
+    final effectiveGrounding = longResponse ? useGrounding : false;
+
+    // Build 221/222: Sanduíche — âncora topo + systemPrompt + reforço final.
     final finalSystemPrompt = ModeAnchorEngine.injectModeAnchor(
       systemPrompt,
       longResponse: longResponse,
@@ -348,17 +376,18 @@ class AiGatewayService {
 
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
-      '[AiGatewayService] Build 221: motor=$motor → '
-      'GeminiServiceV2.sendStream() | âncora concatenada em systemPrompt (${finalSystemPrompt.length} chars)',
+      '[AiGatewayService] Build 222: motor=$motor | '
+      'grounding=$effectiveGrounding | '
+      'prompt=${finalSystemPrompt.length} chars',
     );
 
     // Delega para GeminiServiceV2 — string monolítica única (sem modeAnchor separado)
     return GeminiServiceV2.sendStream(
       apiKey:       apiKey,
       userMessage:  userMessage,
-      systemPrompt: finalSystemPrompt,  // âncora já concatenada no topo
+      systemPrompt: finalSystemPrompt,   // sanduíche: âncora + RAG + reforço
       history:      history,
-      useGrounding: useGrounding,
+      useGrounding: effectiveGrounding,  // Build 222: false fixo no Modo Plantão
       // Build 221: modeAnchor removido — já está dentro de finalSystemPrompt
     );
   }
