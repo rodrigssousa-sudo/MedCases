@@ -1,4 +1,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
+// InternacionPersistence — Build 207 — Anti-Type-Erasure na deserialização local
+//
+// Build 207: Todos os 'as Map<String, dynamic>?' no _evolFromJson e
+// _sessionFromJson substituídos por pattern 'is Map' + Map.from() imune
+// à minificação dart2js. Mesmo fix do internacion_firestore_service.dart.
+// Todos os 'as String?' / 'as bool?' / 'as int?' em campos primitivos
+// do sub-mapa substituídos por helpers _toStr/_toBool/_toInt seguros.
+//
 // InternacionPersistence — Build 165 — Chave única anti-default-bleed
 //
 // Build 163: clearActiveSession() — apaga a sessão "default" (paciente ativo)
@@ -195,14 +203,15 @@ class InternacionPersistence {
     'diaInternacao': p.diaInternacao,
   };
 
+  // Build 207: usa _str/_int imunes a type erasure dart2js.
   static PacienteInternacaoData _pacienteFromJson(Map<String, dynamic> j) =>
       PacienteInternacaoData(
-        nome: j['nome'] as String? ?? '',
-        cama: j['cama'] as String? ?? '',
-        idade: j['idade'] as String? ?? '',
-        sexo: j['sexo'] as String? ?? '',
-        diagnostico: j['diagnostico'] as String? ?? '',
-        diaInternacao: (j['diaInternacao'] as int?) ?? 1,
+        nome:         _str(j['nome']),
+        cama:         _str(j['cama']),
+        idade:        _str(j['idade']),
+        sexo:         _str(j['sexo']),
+        diagnostico:  _str(j['diagnostico']),
+        diaInternacao: _int(j['diaInternacao'], 1),
       );
 
   static Map<String, dynamic> _evolToJson(EvolucionModel e) => {
@@ -256,18 +265,55 @@ class InternacionPersistence {
     },
   };
 
+  // Build 207: helpers locais imunes à minificação dart2js.
+  // Nenhum 'as Map<String, dynamic>' — usa 'is Map' estrutural.
+  static Map<String, dynamic> _safe(dynamic v) =>
+      (v is Map) ? Map<String, dynamic>.from(v as Map) : {};
+
+  static String _str(dynamic v, [String fallback = '']) {
+    if (v == null) return fallback;
+    if (v is String) return v;
+    return v.toString();
+  }
+
+  static bool _bool(dynamic v, [bool fallback = false]) {
+    if (v == null) return fallback;
+    if (v is bool) return v;
+    if (v is int) return v != 0;
+    if (v is String) return v == 'true' || v == '1';
+    return fallback;
+  }
+
+  static int? _intOrNull(dynamic v) {
+    if (v == null) return null;
+    if (v is int) return v;
+    if (v is double) return v.toInt();
+    if (v is String) return int.tryParse(v);
+    return null;
+  }
+
+  static int _int(dynamic v, [int fallback = 0]) {
+    if (v == null) return fallback;
+    if (v is int) return v;
+    if (v is double) return v.toInt();
+    if (v is String) return int.tryParse(v) ?? fallback;
+    return fallback;
+  }
+
   static EvolucionModel _evolFromJson(Map<String, dynamic> j) {
-    final s = (j['subjetivo'] as Map<String, dynamic>?) ?? {};
-    final o = (j['objetivo'] as Map<String, dynamic>?) ?? {};
-    final sv = (o['signosVitales'] as Map<String, dynamic>?) ?? {};
-    final ef = (o['examenFisico'] as Map<String, dynamic>?) ?? {};
-    final ex = (o['examenes'] as Map<String, dynamic>?) ?? {};
-    final a = (j['evaluacion'] as Map<String, dynamic>?) ?? {};
-    final p = (j['plan'] as Map<String, dynamic>?) ?? {};
+    // Build 207: usa _safe() (is Map + Map.from()) — imune a type erasure dart2js.
+    // Todos os casts 'as Map<String, dynamic>?' eliminados.
+    final s  = _safe(j['subjetivo']);
+    final o  = _safe(j['objetivo']);
+    final sv = _safe(o['signosVitales']);
+    final ef = _safe(o['examenFisico']);
+    final ex = _safe(o['examenes']);
+    final a  = _safe(j['evaluacion']);
+    final p  = _safe(j['plan']);
 
     EstadoClinical? estado;
-    final estadoStr = a['estado'] as String?;
-    if (estadoStr != null) {
+    final estadoStr = a['estado'];
+    if (estadoStr is String) {
       for (final e in EstadoClinical.values) {
         if (e.name == estadoStr) { estado = e; break; }
       }
@@ -279,56 +325,57 @@ class InternacionPersistence {
       problemas = rawProblemas.map((e) => e.toString()).toList();
     }
 
+    // Build 207: todos 'as String?/bool?/int?' substituídos por _str/_bool/_intOrNull.
     return EvolucionModel(
-      id: j['id'] as String? ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _str(j['id'], DateTime.now().millisecondsSinceEpoch.toString()),
       fecha: j['fecha'] != null
           ? DateTime.tryParse(j['fecha'].toString()) ?? DateTime.now()
           : DateTime.now(),
-      autorNombre: j['autorNombre'] as String? ?? 'Dr.',
+      autorNombre: _str(j['autorNombre'], 'Dr.'),
       subjetivo: SubjetivoData(
-        notePasaNoche: s['notePasaNoche'] as String? ?? '',
-        dolorEscala: s['dolorEscala'] as int?,
-        fiebre: s['fiebre'] as bool? ?? false,
-        disnea: s['disnea'] as bool? ?? false,
-        nauseas: s['nauseas'] as bool? ?? false,
-        tos: s['tos'] as bool? ?? false,
-        alimentacion: s['alimentacion'] as String? ?? '',
-        diuresis: s['diuresis'] as String? ?? '',
-        evacuacion: s['evacuacion'] as String? ?? '',
-        suenoRestado: s['suenoRestado'] as bool? ?? false,
-        notasLibres: s['notasLibres'] as String? ?? '',
+        notePasaNoche: _str(s['notePasaNoche']),
+        dolorEscala:  _intOrNull(s['dolorEscala']),
+        fiebre:       _bool(s['fiebre']),
+        disnea:       _bool(s['disnea']),
+        nauseas:      _bool(s['nauseas']),
+        tos:          _bool(s['tos']),
+        alimentacion: _str(s['alimentacion']),
+        diuresis:     _str(s['diuresis']),
+        evacuacion:   _str(s['evacuacion']),
+        suenoRestado: _bool(s['suenoRestado']),
+        notasLibres:  _str(s['notasLibres']),
       ),
       objetivo: ObjetivoData(
         signosVitales: SignosVitales(
-          pa: sv['pa'] as String? ?? '',
-          fc: sv['fc'] as String? ?? '',
-          fr: sv['fr'] as String? ?? '',
-          satO2: sv['satO2'] as String? ?? '',
-          temperatura: sv['temperatura'] as String? ?? '',
+          pa:          _str(sv['pa']),
+          fc:          _str(sv['fc']),
+          fr:          _str(sv['fr']),
+          satO2:       _str(sv['satO2']),
+          temperatura: _str(sv['temperatura']),
         ),
         examenFisico: ExamenFisico(
-          estadoGeneral: ef['estadoGeneral'] as String? ?? '',
-          acv: ef['acv'] as String? ?? '',
-          ar: ef['ar'] as String? ?? '',
-          abdomen: ef['abdomen'] as String? ?? '',
-          extremidades: ef['extremidades'] as String? ?? '',
+          estadoGeneral: _str(ef['estadoGeneral']),
+          acv:           _str(ef['acv']),
+          ar:            _str(ef['ar']),
+          abdomen:       _str(ef['abdomen']),
+          extremidades:  _str(ef['extremidades']),
         ),
         examenes: ExamenesComplementarios(
-          laboratorio: ex['laboratorio'] as String? ?? '',
-          imagenes: ex['imagenes'] as String? ?? '',
-          culturas: ex['culturas'] as String? ?? '',
-          ecg: ex['ecg'] as String? ?? '',
+          laboratorio: _str(ex['laboratorio']),
+          imagenes:    _str(ex['imagenes']),
+          culturas:    _str(ex['culturas']),
+          ecg:         _str(ex['ecg']),
         ),
-        tratamientoActual: o['tratamientoActual'] as String? ?? '',
+        tratamientoActual: _str(o['tratamientoActual']),
       ),
       evaluacion: EvaluacionData(
         estado: estado,
         problemasActivos: problemas,
-        notasEvaluacion: a['notasEvaluacion'] as String? ?? '',
+        notasEvaluacion: _str(a['notasEvaluacion']),
       ),
       plan: PlanData(
-        planTerapeutico: p['planTerapeutico'] as String? ?? '',
-        criteriosAlta: p['criteriosAlta'] as String? ?? '',
+        planTerapeutico: _str(p['planTerapeutico']),
+        criteriosAlta:   _str(p['criteriosAlta']),
       ),
     );
   }
@@ -336,19 +383,28 @@ class InternacionPersistence {
   static PacienteSession? _sessionFromJson(
       Map<String, dynamic> json, String key) {
     try {
-      final pacienteJson =
-          json['paciente'] as Map<String, dynamic>? ?? {};
-      final historialJson = json['historial'] as List? ?? [];
-      final savedAtStr = json['savedAt'] as String?;
-      final savedAt = savedAtStr != null
-          ? DateTime.tryParse(savedAtStr) ?? DateTime.now()
-          : DateTime.now();
+      // Build 207: usa _safe() e 'is Map' sem genéricos — imune a type erasure.
+      final pacienteJson = _safe(json['paciente']);
+      final rawHistorial = json['historial'];
+      final historialList = (rawHistorial is List) ? rawHistorial : <dynamic>[];
+      final savedAtStr = json['savedAt'];
+      final savedAtParsed = savedAtStr is String
+          ? DateTime.tryParse(savedAtStr)
+          : null;
+      final savedAt = savedAtParsed ?? DateTime.now();
 
       return PacienteSession(
         sessionKey: key,
         paciente: _pacienteFromJson(pacienteJson),
-        historial: historialJson
-            .map((e) => _evolFromJson(e as Map<String, dynamic>))
+        // Build 207: 'e as Map<String, dynamic>' substituído por 'is Map' + Map.from()
+        historial: historialList
+            .map((e) {
+              if (e is Map) {
+                return _evolFromJson(Map<String, dynamic>.from(e as Map));
+              }
+              return null;
+            })
+            .whereType<EvolucionModel>()
             .toList(),
         savedAt: savedAt,
       );

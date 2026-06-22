@@ -1,5 +1,20 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// InternacionFirestoreService — Build 192
+// InternacionFirestoreService — Build 207
+//
+// BUILD 207 — CORRECÃO ANTI-TYPE-ERASURE NA DESERIALIZAÇÃO (LEITURA DO BANCO):
+//   Flutter Web --release (dart2js --minify) apaga parâmetros genéricos de tipo.
+//   Casts com genéricos como 'as Map<String, dynamic>' ou 'as Map<String, dynamic>?'
+//   retornam null ou lançam TypeError em release, fazendo todos os sub-mapas
+//   (subjetivo, objetivo, avaliação, plano, farmacos) chegarem vazios.
+//   Resultado visível: historial copiado retornava apenas '(Sem dados)'.
+//
+//   FIX: Toda deserialização de mapas aninhados usa o padrão imune:
+//     (v is Map) ? Map<String, dynamic>.from(v as Map) : {}
+//   e iteracão de listas usa:
+//     (item is Map) ? _evolFromJson(Map<String, dynamic>.from(item as Map)) : null
+//   Sem nenhum cast 'as Map<String, dynamic>' direto.
+//
+// InternacionFirestoreService — Build 192 (historial abaixo)
 //
 // Build 192 — Blindagem contra vazamento de campos (Fix 4):
 //   • _evolToJson: preserva metadadosAdicionais existentes no modelo.
@@ -200,8 +215,8 @@ class InternacionFirestoreService {
       for (final doc in [...snapActive.docs, ...snapLegacy.docs]) {
         if (seen.contains(doc.id)) continue;
         final data = doc.data();
-        // Filtra docs trashados ou arquivados que possam aparecer na query legacy
-        final status = data['status'] as String?;
+        // Build 207: usa _toStr() — imune a type erasure em dart2js.
+        final status = _toStr(data['status']);
         if (status == kStatusTrashed) continue;
         if (status == kStatusArchived) continue;
         seen.add(doc.id);
@@ -242,7 +257,8 @@ class InternacionFirestoreService {
               .where((doc) {
                 final data = doc.data();
                 // Salvaguarda tripla: exclui archived + trashed + isDeleted==true
-                final status = data['status'] as String?;
+                // Build 207: usa _toStr() — imune a type erasure em dart2js.
+                final status = _toStr(data['status']);
                 if (status == kStatusArchived) return false;
                 if (status == kStatusTrashed) return false;
                 final isDeleted = data['isDeleted'];
@@ -348,7 +364,8 @@ class InternacionFirestoreService {
         if (seen.contains(doc.id)) continue;
         // Exclui docs ativos que possam aparecer na query legacy (isDeleted:true legado)
         final docData = doc.data();
-        final docStatus = docData['status'] as String?;
+        // Build 207: usa _toStr() — imune a type erasure em dart2js.
+      final docStatus = _toStr(docData['status']);
         if (docStatus == kStatusActive) continue;
         seen.add(doc.id);
         final ds = _deletedFromDoc(doc);
@@ -400,7 +417,8 @@ class InternacionFirestoreService {
         ...(snapTrashed?.docs  ?? []),
       ]) {
         if (seen.contains(doc.id)) continue;
-        final st = (doc.data())['status'] as String?;
+        // Build 207: usa _toStr() — imune a type erasure em dart2js.
+        final st = _toStr((doc.data())['status']);
         if (st == kStatusActive) continue; // exclui docs ativos que escapem
         seen.add(doc.id);
         final ds = _deletedFromDoc(doc);
@@ -506,13 +524,16 @@ class InternacionFirestoreService {
         'diaInternacao': p.diaInternacao,
       };
 
+  // Build 207: usa _toStr() em vez de 'as String? ?? ""' — imune a type erasure.
+  // O cast 'as String?' pode lancar TypeError em dart2js para valores numéricos
+  // ou booleans salvos por engano em campos de texto.
   static PacienteInternacaoData _pacienteFromJson(Map<String, dynamic> j) =>
       PacienteInternacaoData(
-        nome: j['nome'] as String? ?? '',
-        cama: j['cama'] as String? ?? '',
-        idade: j['idade'] as String? ?? '',
-        sexo: j['sexo'] as String? ?? '',
-        diagnostico: j['diagnostico'] as String? ?? '',
+        nome: _toStr(j['nome']),
+        cama: _toStr(j['cama']),
+        idade: _toStr(j['idade']),
+        sexo: _toStr(j['sexo']),
+        diagnostico: _toStr(j['diagnostico']),
         diaInternacao: _toInt(j['diaInternacao'], fallback: 1),
       );
 
@@ -589,12 +610,23 @@ class InternacionFirestoreService {
       if (data == null) return null;
 
       // Build 186+201: filtra docs trashados ou arquivados que escapem das queries
-      final status = data['status'] as String?;
+      // Build 207: usa _toStr() em vez de 'as String?' — imune a type erasure.
+      final status = _toStr(data['status']);
       if (status == kStatusTrashed) return null;
       if (status == kStatusArchived) return null;
 
-      final pacienteJson = (data['paciente'] as Map<String, dynamic>?) ?? {};
-      final historialJson = (data['historial'] as List?) ?? [];
+      // Build 207 FIX TYPE-ERASURE: 'as Map<String, dynamic>?' falha em dart2js.
+      // Usa 'is Map' (sem genérico) + Map.from() explícito — 100% seguro em release.
+      final rawPaciente = data['paciente'];
+      final pacienteJson = (rawPaciente is Map)
+          ? Map<String, dynamic>.from(rawPaciente as Map)
+          : <String, dynamic>{};
+
+      // Build 207 FIX TYPE-ERASURE: 'e as Map<String, dynamic>' dentro do .map()
+      // é a CAUSA RAIZ do historial vazio. Substitui por is Map + Map.from().
+      final rawHistorial = data['historial'];
+      final historialList = (rawHistorial is List) ? rawHistorial : <dynamic>[];
+
       final savedAtTs = data['savedAt'];
       DateTime savedAt;
       if (savedAtTs is Timestamp) {
@@ -618,8 +650,16 @@ class InternacionFirestoreService {
       return PacienteSession(
         sessionKey: doc.id,
         paciente: _pacienteFromJson(pacienteJson),
-        historial: historialJson
-            .map((e) => _evolFromJson(e as Map<String, dynamic>))
+        // Build 207: cada item do historialList convertido com 'is Map' + Map.from()
+        // sem nenhum 'as Map<String, dynamic>' — imune à minificação dart2js.
+        historial: historialList
+            .map((e) {
+              if (e is Map) {
+                return _evolFromJson(Map<String, dynamic>.from(e as Map));
+              }
+              return null;
+            })
+            .whereType<EvolucionModel>()
             .toList(),
         savedAt: effectiveDate, // usa updatedAt quando disponível
       );
@@ -634,7 +674,11 @@ class InternacionFirestoreService {
     try {
       final data = doc.data();
       if (data == null) return null;
-      final pacienteJson = (data['paciente'] as Map<String, dynamic>?) ?? {};
+      // Build 207: usa 'is Map' + Map.from() — imune a type erasure em dart2js.
+      final rawPaciente = data['paciente'];
+      final pacienteJson = (rawPaciente is Map)
+          ? Map<String, dynamic>.from(rawPaciente as Map)
+          : <String, dynamic>{};
       final deletedAtTs = data['deletedAt'];
       DateTime? deletedAt;
       if (deletedAtTs is Timestamp) {
@@ -643,11 +687,12 @@ class InternacionFirestoreService {
         deletedAt = DateTime.tryParse(deletedAtTs);
       }
       final paciente = _pacienteFromJson(pacienteJson);
-      final historialJson = (data['historial'] as List?) ?? [];
+      final rawHistorial2 = data['historial'];
+      final historialCount2 = (rawHistorial2 is List) ? rawHistorial2.length : 0;
       return DeletedSession(
         sessionKey: doc.id,
         paciente: paciente,
-        historialCount: historialJson.length,
+        historialCount: historialCount2,
         deletedAt: deletedAt ?? DateTime.now(),
       );
     } catch (e) {
@@ -691,9 +736,11 @@ class InternacionFirestoreService {
   }
 
   static EvolucionModel _evolFromJson(Map<String, dynamic> j) {
-    // Build 199: helper seguro para extrair sub-mapas sem lançar exceção.
+    // Build 199+207: helper seguro para extrair sub-mapas sem lançar exceção.
+    // Build 207: usa 'is Map' (sem genérico) — imune à minificação dart2js.
+    // 'is Map' é checagem estrutural que sobrevive ao --minify do dart2js.
     Map<String, dynamic> safe(dynamic v) =>
-        (v is Map) ? Map<String, dynamic>.from(v) : {};
+        (v is Map) ? Map<String, dynamic>.from(v as Map) : {};
 
     final s  = safe(j['subjetivo']);
     final o  = safe(j['objetivo']);
@@ -702,6 +749,12 @@ class InternacionFirestoreService {
     final ex = safe(o['examenes']);
     final a  = safe(j['evaluacion']);
     final p  = safe(j['plan']);
+
+    // Build 207: log de diagnóstico para confirmar leitura dos sub-mapas em release.
+    debugPrint('[InternFire] _evolFromJson BUILD-207 → '
+        'S=${s.keys.length}k O=${o.keys.length}k sv=${sv.keys.length}k '
+        'ef=${ef.keys.length}k ex=${ex.keys.length}k '
+        'A=${a.keys.length}k P=${p.keys.length}k');
 
     // Build 192 Fix 4: captura campos extras não mapeados no schema fixo.
     // Campos desconhecidos → metadadosAdicionais (mapa de segurança).
