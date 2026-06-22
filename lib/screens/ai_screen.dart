@@ -3139,6 +3139,43 @@ String _enforceMedicalFormat(String text, String lang) {
 String _stripMetadataHeaders(String accumulated) {
   if (accumulated.isEmpty) return accumulated;
 
+  // ── CAMADA -1 — Build 226: Prompt Leak Emergency Filter ──────────────────
+  // Barreira de último recurso contra qualquer eco de mandato estrutural que
+  // vaze do system_instruction para o stream de resposta. Cobre:
+  //   • Blocos [MANDATO CRÍTICO: ...] e [MANDATO DE INTENT PARA ESTE TURNO]
+  //   • Âncoras de modo: [MANDATO CRÍTICO: MODO PLANTÃO...]
+  //   • Blocos [INÍCIO DO CONTEXTO CLÍNICO...] e [REFORÇO MANDATÓRIO...]
+  //   • Qualquer bloco entre colchetes que contenha MANDATO, SOBERANIA, MONOPÓLIO
+  accumulated = accumulated.replaceAll(
+    RegExp(
+      r'\[(?:MANDATO(?:\s+CR[IÍ]TICO)?|MANDATO\s+DE\s+INTENT|REFOR[ÇC]O\s+MANDAT[ÓO]RIO|'
+      r'IN[IÍ]CIO\s+DO\s+CONTEXTO|SOBERANIA\s+ESTRUTURAL|MONOP[ÓO]LIO\s+DE\s+SA[IÍ]DA)'
+      r'[^\]]{0,2000}\]',
+      caseSensitive: false,
+      dotAll: true,
+    ),
+    '',
+  );
+  // Remove também linhas que comecem com os cabeçalhos de âncora em texto plano
+  accumulated = accumulated.replaceAll(
+    RegExp(
+      r'^(?:'
+      r'\[MANDATO\s+CR[IÍ]TICO.*'
+      r'|\[SOBERANIA\s+ESTRUTURAL.*'
+      r'|\[MONOP[ÓO]LIO\s+DE\s+SA[IÍ]DA.*'
+      r'|\[IN[IÍ]CIO\s+DO\s+CONTEXTO.*'
+      r'|\[REFOR[ÇC]O\s+MANDAT[ÓO]RIO.*'
+      r'|\[MANDATO\s+DE\s+INTENT.*'
+      r'|DIRETRIZ\s+DE\s+IDIOMA\s+\(MANDAT[ÓO]RIA\).*'
+      r'|HIERARQUIA\s+DE\s+FORMATO\s+DE\s+SA[IÍ]DA\s+OBRIGAT[ÓO]RIA.*'
+      r'|TABELA\s+DE\s+CONVERS[ÃA]O\s+DE\s+MERCADO.*'
+      r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
   // ── CAMADA 0 — Build 117: filtro <think>...</think> e tags órfãs ─────────
   // Bloco delimitado inequívoco — seguro remover com dotAll.
   accumulated = accumulated.replaceAll(

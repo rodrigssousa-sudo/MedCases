@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// ModeAnchorEngine / AiGatewayService — Build 225 (Remove HTML font-color → negrito markdown puro)
+// ModeAnchorEngine / AiGatewayService — Build 226 (Prompt Leak Fix: mandato de intent → system_instruction, contents recebe userMessage limpa)
 //
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │  PIVÔ ARQUITETURAL — Build 156                                          │
@@ -38,12 +38,15 @@
 //   ModeAnchorEngine.injectModeAnchor(...) → injeção direta de âncora
 //   kAiGatewayBaseUrl                      → string vazia (legado)
 //
-// FLUXO DE DADOS Build 156:
+// FLUXO DE DADOS Build 226 (Prompt Leak Fix):
 //   app_provider.sendAiMessage()
 //     → AiService.buildClinicalSystemPrompt()   [monta prompt base]
 //     → AiGatewayService.sendStream()            [shim]
-//       → ModeAnchorEngine.injectModeAnchor()   [injeta âncora de modo]
+//       → _classifyIntent()                     [detecta gotas/ampola/conduta]
+//       → ModeAnchorEngine.injectModeAnchor()   [âncora + mandato de intent → system_instruction]
 //       → GeminiServiceV2.sendStream()           [SSE direto para Google]
+//         system_instruction: âncora + systemPrompt + mandato de intent (NUNCA vaza)
+//         contents:           userMessage LIMPA (sem mandato — elimina prompt leak)
 //         → generativelanguage.googleapis.com   [API Google — chave do app]
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -264,16 +267,21 @@ class ModeAnchorEngine {
     return anchor;
   }
 
-  /// Build 222: Arquitetura Sanduíche para Modo Plantão.
+  /// Build 226: Arquitetura Sanduíche com Isolamento Total de Mandato.
   /// - Topo: âncora (contrato de formato + idioma)
   /// - Meio: systemPrompt do AiService (contexto RAG clínico)
-  /// - Final: reforço mandatório lido por último antes de responder
-  ///   → explora Viés de Recência do Gemini para sobrescrever cabeçalhos
-  ///     textuais e bullet points injetados pelo systemPrompt base.
-  /// Modo Estudo: sem sanduíche — âncora + systemPrompt direto (sem reforço).
+  /// - Final: reforço mandatório + mandato de intent específico do turno
+  ///
+  /// CRÍTICO — Prompt Leak Fix (Build 226):
+  ///   [intentMandate] é injetado AQUI (em system_instruction), NÃO na
+  ///   user message. Isso garante que o mandato nunca apareça em contents[]
+  ///   e portanto NUNCA pode ser ecoado pelo modelo na resposta.
+  ///
+  /// Modo Estudo: sem sanduíche — âncora + systemPrompt direto.
   static String injectModeAnchor(
     String systemPrompt, {
     bool longResponse = false,
+    String intentMandate = '', // Build 226: mandato de intent isolado no system
   }) {
     final anchor = getModeAnchor(longResponse: longResponse);
 
@@ -283,8 +291,14 @@ class ModeAnchorEngine {
     }
 
     // Modo Plantão: Sanduíche — reforço final explora Viés de Recência.
-    // Build 224: cláusula anti-History-Style-Bleeding — quebra arrasto de estilo
-    // do histórico antes de cada turno, forçando isolamento de formato por mensagem.
+    // Build 224: cláusula anti-History-Style-Bleeding.
+    // Build 226: intentMandate anexado ao final do system_instruction —
+    //   garante que o mandato de gotas/ampola/conduta seja lido como
+    //   instrução de sistema e NUNCA como turno de conversa do usuário.
+    final intentSuffix = intentMandate.isNotEmpty
+        ? '\n\n[MANDATO DE INTENT PARA ESTE TURNO]\n$intentMandate'
+        : '';
+
     return '$anchor\n\n'
         '[INÍCIO DO CONTEXTO CLÍNICO DO APLICATIVO]\n'
         '$systemPrompt\n\n'
@@ -296,7 +310,8 @@ class ModeAnchorEngine {
         '(Fórmula e Resultado em negrito usando **).\n'
         '- SE A PERGUNTA ATUAL FOR PREPARO/AMPOLAS: Escreva apenas o tripé rígido '
         '(Volume, Diluição e Infusão) em até 5 linhas.\n'
-        '- SE FOR CONDUTA GERAL: Siga o template rígido de 6 emojis.';
+        '- SE FOR CONDUTA GERAL: Siga o template rígido de 6 emojis.'
+        '$intentSuffix';
   }
 }
 
@@ -335,9 +350,12 @@ class AiGatewayService {
 
   /// Envia mensagem ao Gemini com motor selecionado.
   ///
-  /// Build 225: Interceptor de intent por turno (gotas/ampolas/conduta) + anti-History-Style-Bleeding.
-  /// Gotejamento: mandato usa negrito markdown puro (**) — remove <font color=red> que vazava como texto.
-  /// Modo Plantão: grounding=false, userMessage com mandato de formato injetado por intent.
+  /// Build 226: Interceptor de intent por turno — PROMPT LEAK FIX.
+  /// O mandato de intent (gotas/ampolas/conduta) vai EXCLUSIVAMENTE para
+  /// system_instruction (via injectModeAnchor). A user message enviada
+  /// nos contents[] é SEMPRE a mensagem limpa original — elimina eco do
+  /// mandato pelo modelo (causa raiz do Prompt Leaking das 2:56–2:58 PM).
+  /// Modo Plantão: grounding=false.
   ///
   /// [userMessage]  — pergunta clínica do usuário
   /// [systemPrompt] — prompt base montado pelo AiService (sem âncora)
@@ -366,11 +384,16 @@ class AiGatewayService {
     // Build 222: Modo Plantão força useGrounding=false obrigatoriamente.
     final effectiveGrounding = longResponse ? useGrounding : false;
 
-    // Build 225: Interceptor de intent por turno — classifica a mensagem atual
-    // independentemente do histórico, quebrando o arrasto de estilo (History Style Bleeding).
-    // Gotejamento: usa negrito markdown (**) — <font color=red> eliminado (não suportado pelo flutter_markdown).
-    // Aplicado apenas no Modo Plantão; Modo Estudo usa a mensagem sem modificação.
-    String processedUserMessage = userMessage;
+    // Build 226: Interceptor de intent — ARQUITETURA CORRIGIDA (Prompt Leak Fix).
+    //
+    // ANTES (Build 224-225): mandato era concatenado na userMessage → ia para
+    //   contents[role='user'] → Gemini ecoava o texto do mandato na resposta.
+    //
+    // AGORA (Build 226): mandato é uma string separada (intentMandate) que vai
+    //   EXCLUSIVAMENTE para system_instruction via injectModeAnchor().
+    //   A userMessage enviada nos contents[] é SEMPRE a mensagem limpa do médico.
+    //   Resultado: mandato é instrução de sistema — jamais aparece no output.
+    String intentMandate = '';
     if (!longResponse) {
       final msgLower = userMessage.toLowerCase();
       final isDrops   = msgLower.contains('gota')  || msgLower.contains('gote');
@@ -378,66 +401,73 @@ class AiGatewayService {
                         msgLower.contains('dilu');
 
       if (isDrops) {
-        processedUserMessage =
-            '$userMessage\n\n'
-            '[MANDATO CRÍTICO: Responda ÚNICA e EXCLUSIVAMENTE com as duas linhas '
+        intentMandate =
+            'Responda ÚNICA e EXCLUSIVAMENTE com as duas linhas '
             'abaixo, usando negrito estrito do markdown (**), sem nenhuma outra palavra:\n'
             'Fórmula: (Volumen total mL / Tiempo en minutos) * Factor de goteo\n'
-            '**Resultado: [X] gotas/min**]';
+            '**Resultado: [X] gotas/min**';
       } else if (isAmpoule) {
-        processedUserMessage =
-            '$userMessage\n\n'
-            '[MANDATO CRÍTICO: Responda diretamente no formato de tripé de 3 a 5 '
+        intentMandate =
+            'Responda diretamente no formato de tripé de 3 a 5 '
             'linhas, sem introduções, parágrafos ou marcadores (*):\n'
             '- Volume: Aspire X mL da medicação (Y ampolas).\n'
             '- Diluição: Dilua em X mL de Soro Fisiológico.\n'
-            '- Infusão: Administrar a X mL/h por Y horas.]';
+            '- Infusão: Administrar a X mL/h por Y horas.';
       } else if (history.isEmpty) {
-        processedUserMessage =
-            '$userMessage\n\n'
-            '[MANDATO CRÍTICO: Responda ESTRITAMENTE usando o template de 6 linhas '
+        intentMandate =
+            'Responda ESTRITAMENTE usando o template de 6 linhas '
             'com os emojis 🟥, 💊, 🔄B, 🔄C, ⛔, 📌 nesta ordem exata. '
-            'Proibido criar introduções ou usar listas (*).]';
+            'Proibido criar introduções ou usar listas (*).';
       }
 
       if (kDebugMode) {
         final intent = isDrops ? 'GOTAS' : isAmpoule ? 'AMPOLA' : history.isEmpty ? 'PRIMEIRO_GIRO' : 'FOLLOW_UP';
-        debugPrint('[Build225][Gateway] intent=$intent | msg_processada=${processedUserMessage.length} chars');
+        debugPrint('[Build226][Gateway] intent=$intent | intentMandate=${intentMandate.length} chars (no system_instruction, NOT in contents)');
       }
     }
 
-    // Build 221/222/223: Sanduíche — âncora topo + systemPrompt neutro + reforço final.
+    // Build 226: Sanduíche — âncora + systemPrompt + reforço + intentMandate.
+    // intentMandate vai para o FINAL do system_instruction (Viés de Recência).
+    // Contents recebe apenas userMessage limpa — elimina Prompt Leaking.
     final finalSystemPrompt = ModeAnchorEngine.injectModeAnchor(
       systemPrompt,
       longResponse: longResponse,
+      intentMandate: intentMandate, // Build 226: mandato de intent isolado no system
     );
 
     final isPlantaoMode = !longResponse; // Build 223
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
-      '[AiGatewayService] Build 225: motor=$motor | '
+      '[AiGatewayService] Build 226: motor=$motor | '
       'isPlantaoMode=$isPlantaoMode | '
       'grounding=$effectiveGrounding | '
-      'prompt=${finalSystemPrompt.length} chars',
+      'system=${finalSystemPrompt.length} chars | '
+      'userMsg_limpa=${userMessage.length} chars (sem mandato)',
     );
 
-    // Build 223: log de auditoria — confirma ausência dos cabeçalhos conflitantes
+    // Build 226: log de auditoria — confirma isolamento do mandato
     if (kDebugMode && isPlantaoMode) {
       final hasConflict = finalSystemPrompt.contains('TRATAMENTO FARMACOLÓGICO') ||
           finalSystemPrompt.contains('TRATAMIENTO FARMACOLÓGICO') ||
           finalSystemPrompt.contains('ALERTA CRÍTICO') ||
           finalSystemPrompt.contains('ALERTAS CRÍTICOS');
-      debugPrint('[Build225][Gateway] prompt_final_sem_conflito=${!hasConflict} (${finalSystemPrompt.length} chars)');
+      final mandatoNoSystem = intentMandate.isNotEmpty
+          ? finalSystemPrompt.contains(intentMandate.substring(0, 20))
+          : true;
+      debugPrint('[Build226][Gateway] prompt_sem_conflito=${!hasConflict} | mandato_no_system=$mandatoNoSystem (${finalSystemPrompt.length} chars)');
     }
 
-    // Delega para GeminiServiceV2 — mensagem processada + prompt monolítico + isPlantaoMode
+    // Build 226: Delega para GeminiServiceV2.
+    // CRÍTICO: userMessage (limpa, sem mandato) → contents[role='user']
+    //          finalSystemPrompt (com mandato de intent no final) → system_instruction
+    // O modelo NUNCA verá o mandato como parte do histórico de conversa.
     return GeminiServiceV2.sendStream(
       apiKey:         apiKey,
-      userMessage:    processedUserMessage, // Build 225: com mandato de intent injetado (negrito MD puro)
-      systemPrompt:   finalSystemPrompt,    // âncora + RAG neutro + reforço anti-bleeding
+      userMessage:    userMessage,       // Build 226: mensagem LIMPA — mandato está no system
+      systemPrompt:   finalSystemPrompt, // âncora + RAG + reforço + intentMandate
       history:        history,
-      useGrounding:   effectiveGrounding,   // Build 222: false fixo no Modo Plantão
-      isPlantaoMode:  isPlantaoMode,        // Build 223: remove bullets/## do prefixo
+      useGrounding:   effectiveGrounding, // Build 222: false fixo no Modo Plantão
+      isPlantaoMode:  isPlantaoMode,      // Build 223: remove bullets/## do prefixo
     );
   }
 
