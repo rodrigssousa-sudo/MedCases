@@ -1,4 +1,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
+// SoapCopilotService — Build 206 — Anti-Minificação Web Release
+//
+// BUG CORRIGIDO (Build 206):
+//   Flutter Web --release usa dart2js --minify. Qualquer uso de
+//   .runtimeType.toString() retorna strings como 'minified:a_<dynamic>'.
+//   Substituído por operador 'is' nativo (imune à minificação) em todos
+//   os pontos, inclusive nos debugPrint (para logs legíveis em produção).
+//   safeMap() blindado: usa 'is Map' (sem genérico) + try/catch no cast.
+//
+// CORREÇÕES ANTERIORES (Build 165):
 // SoapCopilotService — Build 165 — Parsing Blindado Anti-Apagão O-A-P
 //
 // BUG CRÍTICO CORRIGIDO (Build 165):
@@ -195,8 +205,10 @@ class SoapDraftResult {
       }
     }
 
+    // Build 206: blindado contra minificação dart2js.
+    // 'is Map<String, dynamic>' pode falhar em release (genérico apagado).
+    // Usa apenas 'is Map' (sem parâmetro de tipo) + cast explícito.
     Map<String, dynamic> safeMap(dynamic v) {
-      if (v is Map<String, dynamic>) return v;
       if (v is Map) {
         try { return Map<String, dynamic>.from(v); } catch (_) {}
       }
@@ -322,7 +334,15 @@ class SoapDraftResult {
       notasEvaluacion = safeStr(a['notasEvaluacion']);
       final rawProb = a['problemasActivos'];
       final notasPreview = notasEvaluacion ?? '';
-      debugPrint('🤖 [SoapParser] A → estado=$estadoClinical rawProb=${rawProb?.runtimeType} notas=${notasPreview.substring(0, notasPreview.length.clamp(0, 40))}');
+      // Build 206: substituído rawProb?.runtimeType por descrição segura
+      // (runtimeType.toString() retorna 'minified:a_<dynamic>' em release).
+      final rawProbDesc = rawProb == null
+          ? 'null'
+          : (rawProb is List
+              ? 'List(${(rawProb as List).length})'
+              : 'non-List(${rawProb.toString().substring(0, rawProb.toString().length.clamp(0, 20))})'
+            );
+      debugPrint('🤖 [SoapParser] A → estado=$estadoClinical rawProb=$rawProbDesc notas=${notasPreview.substring(0, notasPreview.length.clamp(0, 40))}');
       if (rawProb is List && rawProb.isNotEmpty) {
         problemasActivos = rawProb
             .map((e) => e?.toString().trim() ?? '')
@@ -350,7 +370,15 @@ class SoapDraftResult {
     List<Map<String, String>>? farmacos;
     try {
       final rawFarm = json['farmacos'];
-      debugPrint('🤖 [SoapParser] farmacos raw type: ${rawFarm?.runtimeType}');
+      // Build 206: substituído rawFarm?.runtimeType por descrição segura
+      // (runtimeType.toString() retorna 'minified:a_<dynamic>' em release).
+      final rawFarmDesc = rawFarm == null
+          ? 'null'
+          : (rawFarm is List
+              ? 'List(${(rawFarm as List).length})'
+              : 'non-List'
+            );
+      debugPrint('🤖 [SoapParser] farmacos raw type: $rawFarmDesc');
       if (rawFarm is List && rawFarm.isNotEmpty) {
         farmacos = rawFarm
             .map((e) {
