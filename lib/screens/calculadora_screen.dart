@@ -176,7 +176,12 @@ const _kInjectJs = r"""
 // TELA DE CALCULADORA
 // ─────────────────────────────────────────────────────────────────────────────
 class CalculadoraScreen extends StatefulWidget {
-  const CalculadoraScreen({super.key});
+  // Build 189: parâmetro opcional — quando fornecido (via ExternalToolButton),
+  // abre diretamente na URL específica (tab, q, drug1/drug2 pré-preenchidos).
+  // Quando null, comportamento padrão: homepage da calculadora com lang do provider.
+  final String? initialUrl;
+
+  const CalculadoraScreen({super.key, this.initialUrl});
 
   @override
   State<CalculadoraScreen> createState() => _CalculadoraScreenState();
@@ -189,6 +194,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Build 1563: dark mode lido uma vez no initState (imutável por sessão)
   late final bool _dark;
   // Build 187: URL da calculadora — compartilhada entre Web (iframe) e native (WebView)
+  // Build 189: pode ser sobrescrita por initialUrl (ExternalToolButton deep link)
   late final String _webUrl;
 
   // Estado da barra de fontes nativa Flutter
@@ -203,7 +209,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     final langParam = lang == 'es' ? 'es' : 'pt';
     _isEs           = lang == 'es';
     _dark           = p.darkMode;
-    _webUrl         = '$_kBaseUrl?lang=$langParam';
+    // Build 189: initialUrl tem prioridade sobre URL padrão do provider.
+    // ExternalToolLinkEngine já injeta lang+tab+q — não sobrescrever.
+    _webUrl = widget.initialUrl ?? '$_kBaseUrl?lang=$langParam';
 
     // Build 187: Web não tem suporte a WebViewWidget — usa iframe (calcu_web.dart).
     // iOS/Android continuam com WebViewController nativo.

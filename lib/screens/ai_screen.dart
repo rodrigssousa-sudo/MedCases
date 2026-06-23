@@ -22,6 +22,7 @@ import '../services/activity_service.dart';
 import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action Engine
 import 'package:url_launcher/url_launcher.dart'; // Build 185: Deep Link Router
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
+import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela interna
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -3050,16 +3051,22 @@ class _ExternalToolButton extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
       child: GestureDetector(
         onTap: () async {
-          final uri = Uri.parse(link.url);
-          if (await canLaunchUrl(uri)) {
-            // Build 187: inAppBrowserView não funciona no Flutter Web —
-            // platformDefault abre no mesmo contexto do browser (sem nova aba forçada).
-            await launchUrl(
-              uri,
-              mode: kIsWeb
-                  ? LaunchMode.platformDefault
-                  : LaunchMode.inAppBrowserView,
+          if (kIsWeb) {
+            // Build 189: Web (desktop + mobile) → abre CalculadoraScreen interna
+            // com iframe/HtmlElementView — sem nova aba, sem navegação externa.
+            // A URL gerada pelo ExternalToolLinkEngine (lang+tab+q) é passada via
+            // initialUrl e usada diretamente pelo iframe sem sobrescrita.
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => CalculadoraScreen(initialUrl: link.url),
+              ),
             );
+          } else {
+            // iOS/Android: mantém WebView nativa interna (inAppBrowserView).
+            final uri = Uri.parse(link.url);
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+            }
           }
         },
         child: Container(
