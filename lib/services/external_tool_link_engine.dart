@@ -1,30 +1,36 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// external_tool_link_engine.dart — Deep Link Router v1 (Build 185)
+// external_tool_link_engine.dart — Deep Link Router v1.1 (Build 186)
 //
 // MOTOR 100% LOCAL — DETERMINÍSTICO — SEM IA — SEM REDE — SEM RAG
 //
 // Responsabilidade exclusiva:
 //   • Detectar termo técnico clínico em lastUserMessage + lastAiResponse.
 //   • Mapear para uma das 10 abas de medcasescalcu.com.
-//   • Gerar URL limpa com query param técnico (NUNCA dados do paciente).
+//   • Gerar URL limpa com lang (1º param) + tab + q (NUNCA dados do paciente).
 //   • Retornar label localizado (PT-BR / ES) para o botão _ExternalToolButton.
 //
 // Segurança absoluta:
 //   • Apenas termos técnicos isolados (nome do fármaco, score, calculadora).
 //   • NUNCA inclui: nome do paciente, idade, dados vitais, diagnóstico completo.
-//   • URL máxima: base + tab + 1-2 query params de máx 40 chars cada.
+//   • URL máxima: base + lang + tab + 1-2 query params de máx 40 chars cada.
 //
-// Rotas disponíveis em medcasescalcu.com:
-//   ?tab=farmacos&q=<nome>
-//   ?tab=interacoes&drug1=<d1>&drug2=<d2>
-//   ?tab=scores&q=<nome>
-//   ?tab=calculadoras&q=<nome>
-//   ?tab=eletrolitos&q=<nome>
-//   ?tab=infusao&q=<nome>
-//   ?tab=hemodinamica&q=<nome>
-//   ?tab=fluidos
-//   ?tab=pediatria
-//   ?tab=gestante
+// Rotas disponíveis em medcasescalcu.com (v1.1 — com ?lang=pt|es obrigatório):
+//   ?lang=pt|es&tab=farmacos&q=<nome>
+//   ?lang=pt|es&tab=interacoes&drug1=<d1>&drug2=<d2>
+//   ?lang=pt|es&tab=scores&q=<nome>
+//   ?lang=pt|es&tab=calculadoras&q=<nome>
+//   ?lang=pt|es&tab=eletrolitos&q=<nome>
+//   ?lang=pt|es&tab=infusao&q=<nome>
+//   ?lang=pt|es&tab=hemodinamica&q=<nome>
+//   ?lang=pt|es&tab=fluidos
+//   ?lang=pt|es&tab=pediatria
+//   ?lang=pt|es&tab=gestante
+//
+// Resolução de lang (em ordem de prioridade):
+//   1. currentLanguage == 'es*' → 'es'
+//   2. currentLanguage == 'pt*' → 'pt'
+//   3. currentLanguage vazio/nulo/inválido → detectar ES no texto combinado
+//   4. fallback final → 'pt'
 // ══════════════════════════════════════════════════════════════════════════════
 
 const String _kBase = 'https://medcasescalcu.com/';
@@ -34,7 +40,7 @@ const String _kBase = 'https://medcasescalcu.com/';
 // ─────────────────────────────────────────────────────────────────────────────
 class ExternalToolLink {
   final String label; // PT/ES button label shown to user
-  final String url;   // full https://medcasescalcu.com/?tab=...&q=...
+  final String url;   // full https://medcasescalcu.com/?lang=pt|es&tab=...&q=...
 
   const ExternalToolLink({required this.label, required this.url});
 }
@@ -53,7 +59,9 @@ class ExternalToolLinkEngine {
     required bool isPlantaoMode,
     required String currentLanguage,
   }) {
-    final bool isEs = currentLanguage.toLowerCase().startsWith('es');
+    // ── Resolve lang (priority: explicit > text-detect > fallback pt) ──────
+    final String lang = _resolveLang(currentLanguage, lastUserMessage, lastAiResponse);
+    final bool isEs = lang == 'es';
 
     // Combine user + AI text for detection (lowercase, no diacritics normalization)
     final String combined =
@@ -65,96 +73,96 @@ class ExternalToolLinkEngine {
       final label = isEs
           ? '💊 Verificar interacción'
           : '💊 Verificar interação';
+      _log(lang: lang, tab: 'interacoes', extra: 'drug1=${interacao.$1} drug2=${interacao.$2}');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=interacoes&drug1=${_enc(interacao.$1)}&drug2=${_enc(interacao.$2)}',
+        url: _url(lang: lang, tab: 'interacoes',
+            extra: 'drug1=${_enc(interacao.$1)}&drug2=${_enc(interacao.$2)}'),
       );
     }
 
     // ── 2. Scores / Escalas clínicas ──────────────────────────────────────
     final score = _detectScore(combined);
     if (score != null) {
-      final label = isEs
-          ? '📊 Abrir ${score.display}'
-          : '📊 Abrir ${score.display}';
+      final label = '📊 Abrir ${score.display}';
+      _log(lang: lang, tab: 'scores', extra: 'q=${score.param}');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=scores&q=${_enc(score.param)}',
+        url: _url(lang: lang, tab: 'scores', q: score.param),
       );
     }
 
     // ── 3. Calculadoras clínicas ───────────────────────────────────────────
     final calcu = _detectCalculadora(combined);
     if (calcu != null) {
-      final label = isEs
-          ? '🧮 Calcular ${calcu.display}'
-          : '🧮 Calcular ${calcu.display}';
+      final label = '🧮 Calcular ${calcu.display}';
+      _log(lang: lang, tab: 'calculadoras', extra: 'q=${calcu.param}');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=calculadoras&q=${_enc(calcu.param)}',
+        url: _url(lang: lang, tab: 'calculadoras', q: calcu.param),
       );
     }
 
     // ── 4. Eletrólitos ────────────────────────────────────────────────────
     final eletro = _detectEletrolito(combined);
     if (eletro != null) {
-      final label = isEs
-          ? '⚗️ Abrir electrolitos'
-          : '⚗️ Abrir eletrólitos';
+      final label = isEs ? '⚗️ Abrir electrolitos' : '⚗️ Abrir eletrólitos';
+      _log(lang: lang, tab: 'eletrolitos', extra: 'q=${eletro.param}');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=eletrolitos&q=${_enc(eletro.param)}',
+        url: _url(lang: lang, tab: 'eletrolitos', q: eletro.param),
       );
     }
 
     // ── 5. Infusão / Drogas vasoativas ────────────────────────────────────
     final infusao = _detectInfusao(combined);
     if (infusao != null) {
-      final label = isEs
-          ? '💉 Abrir infusión'
-          : '💉 Abrir infusão';
+      final label = isEs ? '💉 Abrir infusión' : '💉 Abrir infusão';
+      _log(lang: lang, tab: 'infusao', extra: 'q=${infusao.param}');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=infusao&q=${_enc(infusao.param)}',
+        url: _url(lang: lang, tab: 'infusao', q: infusao.param),
       );
     }
 
     // ── 6. Hemodinâmica ───────────────────────────────────────────────────
     final hemodi = _detectHemodinamica(combined);
     if (hemodi != null) {
-      final label = isEs
-          ? '❤️ Abrir hemodinámica'
-          : '❤️ Abrir hemodinâmica';
+      final label = isEs ? '❤️ Abrir hemodinámica' : '❤️ Abrir hemodinâmica';
+      _log(lang: lang, tab: 'hemodinamica', extra: 'q=${hemodi.param}');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=hemodinamica&q=${_enc(hemodi.param)}',
+        url: _url(lang: lang, tab: 'hemodinamica', q: hemodi.param),
       );
     }
 
     // ── 7. Fluidos / Reposição volêmica ───────────────────────────────────
     if (_detectFluidos(combined)) {
       final label = isEs ? '🩺 Fluidos y volumen' : '🩺 Fluidos e volume';
+      _log(lang: lang, tab: 'fluidos', extra: '');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=fluidos',
+        url: _url(lang: lang, tab: 'fluidos'),
       );
     }
 
     // ── 8. Pediatria ─────────────────────────────────────────────────────
     if (_detectPediatria(combined)) {
       final label = isEs ? '👶 Módulo pediatría' : '👶 Módulo pediatria';
+      _log(lang: lang, tab: 'pediatria', extra: '');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=pediatria',
+        url: _url(lang: lang, tab: 'pediatria'),
       );
     }
 
     // ── 9. Gestante / Obstetrícia ─────────────────────────────────────────
     if (_detectGestante(combined)) {
       final label = isEs ? '🤰 Módulo gestante' : '🤰 Módulo gestante';
+      _log(lang: lang, tab: 'gestante', extra: '');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=gestante',
+        url: _url(lang: lang, tab: 'gestante'),
       );
     }
 
@@ -164,9 +172,10 @@ class ExternalToolLinkEngine {
       final label = isEs
           ? '💊 Abrir ${drug.display} en la base'
           : '💊 Abrir ${drug.display} na base';
+      _log(lang: lang, tab: 'farmacos', extra: 'q=${drug.param}');
       return ExternalToolLink(
         label: label,
-        url: '${_kBase}?tab=farmacos&q=${_enc(drug.param)}',
+        url: _url(lang: lang, tab: 'farmacos', q: drug.param),
       );
     }
 
@@ -174,7 +183,65 @@ class ExternalToolLinkEngine {
   }
 
   // ───────────────────────────────────────────────────────────────────────────
-  // URL encoding helper — only technical term, max 40 chars, lowercase
+  // _resolveLang — determina 'pt' ou 'es' com fallback por detecção de texto
+  // Prioridade: currentLanguage explícito > detecção no texto > fallback 'pt'
+  // ───────────────────────────────────────────────────────────────────────────
+  static String _resolveLang(
+      String currentLanguage, String userMsg, String aiMsg) {
+    final raw = currentLanguage.trim().toLowerCase();
+    // 1. Explícito: aceita 'es', 'es-*', 'es_*'
+    if (raw.startsWith('es')) return 'es';
+    // 2. Explícito: aceita 'pt', 'pt-*', 'pt_*'
+    if (raw.startsWith('pt')) return 'pt';
+    // 3. Fallback: detectar espanhol no texto combinado
+    final combined = '${userMsg.toLowerCase()} ${aiMsg.toLowerCase()}';
+    if (_looksSpanish(combined)) return 'es';
+    // 4. Fallback final
+    return 'pt';
+  }
+
+  // Heurística leve: detecta ES pelo vocabulário clínico exclusivo do espanhol
+  static bool _looksSpanish(String text) {
+    const esMarkers = [
+      'paciente ', 'fármaco', 'medicamento', 'dosis', 'tratamiento',
+      'diagnóstico', 'presión', 'corazón', 'pulmón', 'riñón',
+      'infección', 'antibiótico', 'embarazo', 'gestación',
+      ' del ', ' una ', ' los ', ' las ', ' con ', ' por ',
+    ];
+    for (final m in esMarkers) {
+      if (text.contains(m)) return true;
+    }
+    return false;
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // _url — constrói URL com lang como PRIMEIRO param obrigatório
+  // Formato: https://medcasescalcu.com/?lang=pt|es&tab=X[&q=Y | &extra]
+  // ───────────────────────────────────────────────────────────────────────────
+  static String _url({
+    required String lang,
+    required String tab,
+    String? q,
+    String? extra,
+  }) {
+    final buf = StringBuffer('$_kBase?lang=$lang&tab=$tab');
+    if (q != null && q.isNotEmpty) buf.write('&q=${_enc(q)}');
+    if (extra != null && extra.isNotEmpty) buf.write('&$extra');
+    return buf.toString();
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // _log — safe diagnostic log (nunca loga dados do paciente)
+  // Formato: [EXT_TOOL] lang=pt tab=farmacos q=ceftriaxona
+  // ───────────────────────────────────────────────────────────────────────────
+  // ignore: avoid_print
+  static void _log({required String lang, required String tab, required String extra}) {
+    // ignore: avoid_print
+    print('[EXT_TOOL] lang=$lang tab=$tab${extra.isNotEmpty ? " $extra" : ""}');
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // _enc — URL encoding helper: technical term only, max 40 chars, lowercase
   // ───────────────────────────────────────────────────────────────────────────
   static String _enc(String term) {
     final safe = term.trim().toLowerCase().replaceAll(' ', '-');
