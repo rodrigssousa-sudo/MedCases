@@ -1730,6 +1730,8 @@ class _AiScreenState extends State<AiScreen> {
                         isPlantaoMode: !_longResponse,
                         lang: p.lang,
                         dark: dark,
+                        // Build 1558: injeta histórico completo para deduplicação
+                        chatHistory: _messages.map((m) => m.text).toList(),
                         onTap: (prompt) {
                           if (_isStreaming) return;
                           _userScrolledUp = false;
@@ -2806,6 +2808,8 @@ class _SmartNextActionChip extends StatelessWidget {
   final String lang;
   final bool dark;
   final void Function(String prompt) onTap;
+  // Build 1558: histórico do chat para deduplicação sequencial de sugestões
+  final List<String> chatHistory;
 
   const _SmartNextActionChip({
     required this.lastUserMessage,
@@ -2814,16 +2818,19 @@ class _SmartNextActionChip extends StatelessWidget {
     required this.lang,
     required this.dark,
     required this.onTap,
+    this.chatHistory = const [],
   });
 
   @override
   Widget build(BuildContext context) {
     // Motor local — determinístico, zero rede
+    // Build 1558: passa chatHistory para deduplicação histórico-baseada
     final action = NextActionEngine.build(
       lastUserMessage: lastUserMessage,
       lastAiResponse: lastAiResponse,
       isPlantaoMode: isPlantaoMode,
       currentLanguage: lang,
+      chatHistory: chatHistory,
     );
 
     const accentColor = Color(0xFF00BCD4); // teal médico
