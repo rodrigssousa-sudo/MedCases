@@ -387,25 +387,51 @@ class NextActionEngine {
       return _pickAction(targetList, chatHistory);
     }
 
-    return _pickAction([
-      SmartNextAction(
-        label: es ? 'Condutas e dosagens' : 'Condutas e dosagens',
-        promptToSend: es
-            ? 'Detalle el tratamento de primera línea para este tema, especificando dosis por peso, alternativas de fármacos y monitorización de efectos adversos.'
-            : 'Detalhe o tratamento de primeira linha para este tema, especificando doses por peso, alternativas de fármacos e monitorização de efeitos adversos.',
-      ),
-      SmartNextAction(
-        label: es ? 'Exames e evolução' : 'Exames e evolução',
-        promptToSend: es
-            ? '¿Cuáles son los exames diagnósticos primarios para evaluar la evolución del paciente y las interacciones de fármacos críticas?'
-            : 'Quais são os exames diagnósticos primários para avaliar a evolução do paciente e as interações de fármacos críticas?',
-      ),
-      SmartNextAction(
-        label: es ? 'Perguntas importantes' : 'Perguntas importantes',
-        promptToSend: es
-            ? '¿Cuáles son las perguntas críticas que se deben hacer en la historia clínica para guiar este caso y evitar complicaciones?'
-            : 'Quais são as perguntas críticas que devem ser feitas na história clínica para guiar este caso e evitar complicações?',
-      ),
-    ], chatHistory);
+    // ── Fallback Master: Plantão vs Estudo ─────────────────────────────────────
+    if (isPlantaoMode) {
+      // Plantão: esteira de condutas clínicas progressivas
+      return _pickAction([
+        SmartNextAction(
+          label: es ? 'Condutas e dosagens' : 'Condutas e dosagens',
+          promptToSend: es
+              ? 'Detalle el tratamiento de primera línea para este tema, especificando dosis por peso, alternativas de fármacos y monitorización de efectos adversos.'
+              : 'Detalhe o tratamento de primeira linha para este tema, especificando doses por peso, alternativas de fármacos e monitorização de efeitos adversos.',
+        ),
+        SmartNextAction(
+          label: es ? 'Exames e evolução' : 'Exames e evolução',
+          promptToSend: es
+              ? '¿Cuáles son los exames diagnósticos primarios para evaluar la evolución del paciente y las interacciones de fármacos críticas?'
+              : 'Quais são os exames diagnósticos primários para avaliar a evolução do paciente e as interações de fármacos críticas?',
+        ),
+        SmartNextAction(
+          label: es ? 'Perguntas importantes' : 'Perguntas importantes',
+          promptToSend: es
+              ? '¿Cuáles son las perguntas críticas que se deben hacer en la historia clínica para guiar este caso y evitar complicaciones?'
+              : 'Quais são as perguntas críticas que devem ser feitas na história clínica para guiar este caso e evitar complicações?',
+        ),
+      ], chatHistory);
+    } else {
+      // Estudo: esteira cronológica real de 3 passos — avança consultando chatHistory
+      return _pickAction([
+        SmartNextAction(
+          label: es ? '✨ Aprofundar Fisiopatologia >' : '✨ Aprofundar Fisiopatologia >',
+          promptToSend: es
+              ? 'Aprofunde de forma resumida (máx 15 linhas) el mecanismo de acción molecular y la fisiopatología de esta condición.'
+              : 'Aprofunde de forma resumida (máx 15 linhas) o mecanismo de ação molecular e a fisiopatologia desta condição.',
+        ),
+        SmartNextAction(
+          label: es ? '✨ Alternativas de 2ª Linha >' : '✨ Alternativas de 2ª Linha >',
+          promptToSend: es
+              ? 'Detalle de forma directa (máx 15 linhas) cuáles son las alternativas terapéuticas cuando falla el tratamiento inicial.'
+              : 'Detalhe de forma direta (máx 15 linhas) quais são as alternativas terapêuticas quando falha o tratamento inicial.',
+        ),
+        SmartNextAction(
+          label: es ? '✨ Comorbidades e Alertas >' : '✨ Comorbidades e Alertas >',
+          promptToSend: es
+              ? 'Indique las preguntas clínicas de descarte cruciales y el manejo de comorbilidades asociadas (máx 15 linhas).'
+              : 'Indique as perguntas clínicas de descarte cruciais e o manejo de comorbidades associadas (máx 15 linhas).',
+        ),
+      ], chatHistory);
+    }
   }
 }

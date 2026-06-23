@@ -252,6 +252,9 @@ class _AiScreenState extends State<AiScreen> {
   // sobrecarregar a engine de layout durante o streaming de chunks.
   bool _scrollPending = false;
   int _lastScrollMs = 0; // epoch ms da última chamada de scroll animado
+  // Fix 4 — Chunk Cadence: limita renders do notifier a ≥25ms entre atualizações.
+  // Cadencia a digitação visual e absorve picos de rede sem tremer a UI.
+  int _lastChunkRenderMs = 0;
   // Sentinela no fim da lista — Scrollable.ensureVisible garante layout calculado
   final _bottomKey = GlobalKey();
   // Histórico de sessões de chat (até 10)
@@ -746,6 +749,52 @@ class _AiScreenState extends State<AiScreen> {
     _streamingTextNotifier?.dispose();
     _streamingTextNotifier = null;
 
+    // ── Fix 1: Interceptação de Saída (Lifecycle) ─────────────────────────
+    // Quando o widget é destruído (troca de aba, navegação para Home, etc.),
+    // força o descarregamento da sessão ativa da RAM para o disco antes de morrer.
+    // Usa AppProvider via estáticos de Build — sem dependência de context morto.
+    // Fire-and-forget: não awaita (dispose() é síncrono no Flutter).
+    try {
+      // Somente persiste se há mensagens reais (não apenas saudação)
+      final hasRealMsgs = _messages.any((m) => m.role == 'user');
+      if (hasRealMsgs && _hasNewMessageAfterRestore) {
+        // Snapshot das mensagens para persistir sem depender do widget vivo
+        final msgsSnapshot = List<_ChatMsg>.from(_messages);
+        final now = DateTime.now();
+        final userMsgs = msgsSnapshot.where((m) => m.role == 'user').toList();
+        if (userMsgs.isNotEmpty) {
+          final summary = userMsgs.first.text;
+          final msgsToSave = msgsSnapshot.length > 20
+              ? msgsSnapshot.sublist(msgsSnapshot.length - 20)
+              : msgsSnapshot;
+          final existingIdx = _restoredSessionId != null
+              ? _chatHistory.indexWhere((s) => s.id == _restoredSessionId)
+              : -1;
+          final session = _ChatSession(
+            id: existingIdx >= 0 ? _restoredSessionId! : now.toIso8601String(),
+            savedAt: now,
+            summary: summary.length > 100 ? summary.substring(0, 100) : summary,
+            messages: msgsToSave,
+          );
+          // Persiste localmente (SharedPreferences) — Firestore requer context
+          SharedPreferences.getInstance().then((prefs) {
+            try {
+              // Insere no snapshot do histórico atual
+              final histSnapshot = List<_ChatSession>.from(_chatHistory);
+              if (existingIdx >= 0) histSnapshot.removeAt(existingIdx);
+              histSnapshot.insert(0, session);
+              if (histSnapshot.length > 10) {
+                histSnapshot.removeRange(10, histSnapshot.length);
+              }
+              final key = '\$_kHistKey';
+              final json = jsonEncode(histSnapshot.map((s) => s.toJson()).toList());
+              prefs.setString(key, json);
+            } catch (_) {}
+          }).catchError((_) {});
+        }
+      }
+    } catch (_) {}
+
     // ── 5. Limpa ValueNotifiers estáticos do shell AppBar ──────────────────
     // Callbacks do widget desmontado — evita referências mortas no shell.
     AiScreen.clearChatCallback.value    = null;
@@ -1025,13 +1074,13 @@ class _AiScreenState extends State<AiScreen> {
       // Já está no fundo (ou quase) → sem animação desnecessária
       if (pos.pixels >= target - 4) return;
 
-      // Scroll suave: 150ms + easeOutQuad — sem jumpTo, sem Scrollable.ensureVisible.
+      // Fix 4 — Scroll suave: 120ms + easeOut — cadenciado pelo debounce 80ms.
       // animateTo aguarda o layout estar calculado (addPostFrameCallback já garante isso)
-      // e produz transição fluida tipo WhatsApp/Telegram.
+      // e produz transição fluida tipo WhatsApp/Telegram sem saltos por letra.
       _scrollCtrl.animateTo(
         target,
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOutQuad,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
       );
     });
   }
@@ -1094,6 +1143,11 @@ class _AiScreenState extends State<AiScreen> {
       // Marca que o usuário enviou nova mensagem (relevante ao restaurar sessão)
       _hasNewMessageAfterRestore = true;
     });
+    // ── Fix 1: Persistência Imediata por Turno (pós-envio do usuário) ─────────
+    // Salva o estado corrente (incluindo a pergunta do usuário) ANTES de aguardar
+    // a resposta da IA. Garante que a mensagem não se perde se o usuário sair da
+    // aba imediatamente após enviar — o histórico já está no disco.
+    _saveCurrentSessionToHistory(context.read<AppProvider>());
     _queryCtrl.clear();
     _scrollDown(force: true); // força scroll ao enviar mensagem do usuário
 
@@ -1157,7 +1211,13 @@ class _AiScreenState extends State<AiScreen> {
               // ── CHUNKS SUBSEQUENTES: atualiza APENAS o notifier ─────────────
               // Build 188: zero setState() na tela pai — apenas o notifier é
               // atualizado, reconstruindo exclusivamente o widget da bolha ativa.
-              _streamingTextNotifier?.value = cleanedChunk;
+              //
+              // Fix 4 — Chunk Cadence (25ms throttle):
+              // Limita renders do notifier para no máximo 1 a cada 25ms.
+              // Cadencia a digitação visual (efeito typewriter suave) e absorve
+              // picos de latência de rede sem tremer ou saltar a UI.
+              // Sempre sincroniza _messages (buffer interno) independente do throttle.
+              final nowChunkMs = DateTime.now().millisecondsSinceEpoch;
               // Sincroniza _messages para que onDone tenha o texto correto
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
                 _messages[streamingMsgIdx] = _ChatMsg.withId(
@@ -1165,6 +1225,11 @@ class _AiScreenState extends State<AiScreen> {
                   role: 'ai',
                   text: cleanedChunk,
                 );
+              }
+              // Throttle de render: só atualiza o notifier se passaram ≥25ms
+              if (nowChunkMs - _lastChunkRenderMs >= 25) {
+                _lastChunkRenderMs = nowChunkMs;
+                _streamingTextNotifier?.value = cleanedChunk;
               }
             }
             _scrollDown();
@@ -1289,6 +1354,11 @@ class _AiScreenState extends State<AiScreen> {
               setState(() {
                 _isStreaming = false;
               });
+              // ── Fix 1: Persistência Imediata por Turno (pós-resposta da IA) ──
+              // Salva o par (pergunta + resposta) no histórico imediatamente após
+              // o stream finalizar. Garante que ao trocar de aba, o histórico
+              // completo do turno já está persistido no disco/Firestore.
+              _saveCurrentSessionToHistory(context.read<AppProvider>());
 
               // ── PASSO 3: scroll final após remoção do cursor (3 frames) ──
               // Frame 1: aguarda o rebuild do _AiBubble sem cursor (sem ▌)
@@ -1651,6 +1721,8 @@ class _AiScreenState extends State<AiScreen> {
                       dark: dark,
                       onCopy: () => _copyMsg(msg.text),
                       onEdit: (newText) => _editUserMessage(msgIndex, newText, p),
+                      // Fix 5: ícone de edição desabilitado durante streaming
+                      isAiStreaming: _isStreaming || _thinking,
                     ),
                   ),
                 );
@@ -2899,12 +2971,15 @@ class _UserBubble extends StatefulWidget {
   // Build 170: callbacks para copiar e editar
   final VoidCallback? onCopy;
   final void Function(String newText)? onEdit;
+  // Fix 5: desabilita ícone de edição durante streaming da IA
+  final bool isAiStreaming;
   const _UserBubble({
     super.key,
     required this.text,
     required this.dark,
     this.onCopy,
     this.onEdit,
+    this.isAiStreaming = false,
   });
 
   @override
@@ -3040,21 +3115,43 @@ class _UserBubbleState extends State<_UserBubble> {
                   ],
                 ),
               )
-            // ── Modo normal — balão com long-press ────────────────────────
-            : GestureDetector(
-                onLongPress: () => _showActions(context),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
-                  decoration: const BoxDecoration(
-                    borderRadius: borderRadius,
-                    color: Color(0xFF008CA4),
+            // ── Modo normal — balão com long-press + ícone de edição ─────
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onLongPress: () => _showActions(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+                      decoration: const BoxDecoration(
+                        borderRadius: borderRadius,
+                        color: Color(0xFF008CA4),
+                      ),
+                      child: Text(
+                        widget.text,
+                        style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w400,
+                          color: Colors.white, height: 1.45)),
+                    ),
                   ),
-                  child: Text(
-                    widget.text,
-                    style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w400,
-                      color: Colors.white, height: 1.45)),
-                ),
+                  // Fix 5: ícone de edição discreto abaixo do balão
+                  // Desabilitado e invisível durante streaming/thinking da IA
+                  if (!widget.isAiStreaming && widget.onEdit != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3, right: 2),
+                      child: GestureDetector(
+                        onTap: _startEdit,
+                        child: Icon(
+                          Icons.edit_outlined,
+                          size: 14,
+                          color: widget.dark
+                              ? Colors.white.withValues(alpha: 0.35)
+                              : const Color(0xFF008CA4).withValues(alpha: 0.50),
+                        ),
+                      ),
+                    ),
+                ],
               ),
       ),
     );
