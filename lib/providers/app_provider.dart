@@ -22,6 +22,7 @@ import '../services/clinical_session_memory.dart';
 import '../services/gemini_service.dart';
 import '../services/gemini_service_v2.dart';
 import '../services/ai_gateway_service.dart';
+import '../services/ai_smart_router.dart'; // Build 191: sanitizeResponse
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -3191,8 +3192,14 @@ class AppProvider extends ChangeNotifier {
           completionFired = true;
           _aiStreamActive = false;
           _aiStreamSub = null;
-          final partialText = accumulator.toString().trim();
-          if (partialText.length > 40) {
+          final rawPartial = accumulator.toString().trim();
+          if (rawPartial.length > 40) {
+            // Build 191: sanitiza parcial antes de exibir
+            final partialText = AiSmartRouter.sanitizeResponse(
+              rawPartial,
+              isPlantaoMode: !longResponse,
+              appLanguage: _lang,
+            );
             _aiHistory
               ..add({'role': 'user',      'content': input})
               ..add({'role': 'assistant', 'content': partialText});
@@ -3217,7 +3224,15 @@ class AppProvider extends ChangeNotifier {
           // Resposta completa — dispara somente uma vez (guard anti-duplicata)
           if (completionFired) return;
           completionFired = true;
-          final finalText = accumulator.toString().trim();
+          // Build 191: sanitiza metadados antes de exibir ao usuário
+          final rawText = accumulator.toString().trim();
+          final finalText = rawText.isNotEmpty
+              ? AiSmartRouter.sanitizeResponse(
+                  rawText,
+                  isPlantaoMode: !longResponse,
+                  appLanguage: _lang,
+                )
+              : rawText;
           if (finalText.isNotEmpty) {
             _aiHistory
               ..add({'role': 'user',      'content': input})

@@ -386,15 +386,13 @@ class AiGatewayService {
     // Build 222: Modo Plantão força useGrounding=false obrigatoriamente.
     final effectiveGrounding = longResponse ? useGrounding : false;
 
-    // Build 229: Interceptor de intent — ARQUITETURA CORRIGIDA.
+    // Build 191: Interceptor de intent — mandato compacto sem texto visível ao usuário.
     //
-    // ANTES (Build 224-225): mandato era concatenado na userMessage → ia para
-    //   contents[role='user'] → Gemini ecoava o texto do mandato na resposta.
-    //
-    // Build 229: mandato é uma string separada (intentMandate) que vai
-    //   EXCLUSIVAMENTE para system_instruction via injectModeAnchor().
-    //   A userMessage enviada nos contents[] é SEMPRE a mensagem limpa do médico.
-    //   Resultado: mandato é instrução de sistema — jamais aparece no output.
+    // REGRA DE OURO: o mandato vai EXCLUSIVAMENTE para system_instruction.
+    // A userMessage enviada nos contents[] é SEMPRE a mensagem limpa do médico.
+    // O mandato NUNCA deve conter texto que o modelo possa ecoar na resposta.
+    // Textos verbosos como "Responda ESTRITAMENTE usando o template de 6 linhas"
+    // são a causa raiz do vazamento — substituídos por instruções compactas.
     String intentMandate = '';
     if (!longResponse) {
       final msgLower = userMessage.toLowerCase();
@@ -403,28 +401,24 @@ class AiGatewayService {
                         msgLower.contains('dilu');
 
       if (isDrops) {
-        intentMandate =
-            'Responda ÚNICA e EXCLUSIVAMENTE com as duas linhas '
-            'abaixo, usando negrito estrito do markdown (**), sem nenhuma outra palavra:\n'
-            'Fórmula: (Volumen total mL / Tiempo en minutos) * Factor de goteo\n'
-            '**Resultado: [X] gotas/min**';
+        // Gotas: exatamente 2 linhas
+        intentMandate = 'Formato gotas: 2 linhas.\n'
+            'Linha 1: Fórmula: (Volume mL / Tempo min) × Fator gotejo\n'
+            'Linha 2: **Resultado: [X] gotas/min**';
       } else if (isAmpoule) {
-        intentMandate =
-            'Responda diretamente no formato de tripé de 3 a 5 '
-            'linhas, sem introduções, parágrafos ou marcadores (*):\n'
-            '- Volume: Aspire X mL da medicação (Y ampolas).\n'
-            '- Diluição: Dilua em X mL de Soro Fisiológico.\n'
-            '- Infusão: Administrar a X mL/h por Y horas.';
+        // Diluição: tripé Volume→Diluição→Infusão
+        intentMandate = 'Formato diluição: tripé direto.\n'
+            '- Volume: [X mL / Y ampolas]\n'
+            '- Diluição: [X mL SF/SG]\n'
+            '- Infusão: [X mL/h por Y horas]';
       } else if (history.isEmpty) {
-        intentMandate =
-            'Responda ESTRITAMENTE usando o template de 6 linhas '
-            'com os emojis 🟥, 💊, 🔄B, 🔄C, ⛔, 📌 nesta ordem exata. '
-            'Proibido criar introduções ou usar listas (*).';
+        // Primeira pergunta geral: usar formato Plantão padrão
+        intentMandate = 'Use o formato Plantão: 🟥 💊 🔄 ⛔ 📌 ⚠️';
       }
 
       if (kDebugMode) {
         final intent = isDrops ? 'GOTAS' : isAmpoule ? 'AMPOLA' : history.isEmpty ? 'PRIMEIRO_GIRO' : 'FOLLOW_UP';
-        debugPrint('[Build229][Gateway] intent=$intent | intentMandate=${intentMandate.length} chars (no system_instruction, NOT in contents)');
+        debugPrint('[AI_ROUTER][Gateway] Build191: intent=$intent | intentMandate=${intentMandate.length} chars → system_instruction only');
       }
     }
 
@@ -457,9 +451,10 @@ class AiGatewayService {
     );
 
     // ── intentMandate: injetado no final do prompt do SmartRouter ────────────
-    // Mantém isolamento: mandato vai para system_instruction, nunca para contents[].
+    // Build 191: sem tag [MANDATO TURNO] — era a causa raiz do vazamento.
+    // Mandato compacto, sem texto verboso que o modelo possa ecoar.
     final String finalSystemPrompt = intentMandate.isNotEmpty
-        ? '${routerResult.finalPrompt}\n\n[MANDATO TURNO]\n$intentMandate'
+        ? '${routerResult.finalPrompt}\n\n$intentMandate'
         : routerResult.finalPrompt;
 
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';

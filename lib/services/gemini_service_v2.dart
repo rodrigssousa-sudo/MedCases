@@ -1686,20 +1686,14 @@ class GeminiServiceV2 {
               '• 🧮 Calculadoras — sem necessidade de rede\n\n'
               'Verifique seu sinal e tente novamente.',
       // 5xx = instabilidade na infraestrutura do Google Gemini (503, 500, 502, 504)
+      // Build 191: mensagem clara de instabilidade de serviço — sem afirmar "offline"
+      // pois a base de fármacos e calculadoras dependem de conectividade no Web.
       'http_503' || 'http_500' || 'http_502' || 'http_504' => isEs
-          ? '🚨 Servidor de IA Inestable\n\n'
-              'El servicio de Google Gemini está experimentando una sobrecarga temporal.\n\n'
-              'El resto de tus herramientas sigue operando 100% offline:\n'
-              '• 💊 Fármacos — base completa embarcada\n'
-              '• ⚠️ Interacciones — motor offline activo\n'
-              '• 🧮 Calculadoras — sin necesidad de red\n\n'
-              'Inténtalo de nuevo en unos instantes.'
-          : '🚨 Servidor de IA Instável\n\n'
-              'O serviço do Google Gemini está enfrentando uma sobrecarga temporária.\n\n'
-              'O restante das suas ferramentas segue operando 100% offline:\n'
-              '• 💊 Fármacos — base completa embarcada\n'
-              '• ⚠️ Interações — motor offline ativo\n'
-              '• 🧮 Calculadoras — sem necessidade de rede\n\n'
+          ? 'Servicio de IA temporalmente sobrecargado. '
+              'Las herramientas clínicas siguen disponibles. '
+              'Intenta de nuevo en unos instantes.'
+          : 'Serviço de IA temporariamente sobrecarregado. '
+              'As ferramentas clínicas seguem disponíveis. '
               'Tente novamente em alguns instantes.',
       // stream_error = SSE caiu no meio → tratado como falha de rede
       'stream_error' => isEs
