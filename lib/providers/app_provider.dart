@@ -201,98 +201,23 @@ class AppProvider extends ChangeNotifier {
   // ── PRIORIDADE 3 — globalLanguageLock() ───────────────────────────────────
   // Bloqueia o idioma da IA na primeira mensagem da sessão.
   // Se o usuário iniciou em ES → toda a sessão responde em ES (vice-versa PT).
-  // Reset apenas ao limpar o histórico (clearAiHistory).
-  // Null = nenhuma mensagem ainda (detecta na primeira chamada).
+  // Build 190 — LANGUAGE LOCK ABSOLUTO:
+  // _sessionLockedLang mantido apenas por compatibilidade de interface.
+  // A única variável soberana é _lang (idioma configurado pelo usuário no app).
+  // A pergunta pode estar em QUALQUER idioma — a resposta SEMPRE usa _lang.
   String? _sessionLockedLang;
 
-  /// Detecta idioma predominante da mensagem e bloqueia para a sessão.
-  /// Retorna o lang a usar no system prompt (pode diferir de _lang global).
+  /// Build 190 — Language Lock Absoluto.
+  /// Retorna SEMPRE _lang (idioma do app). A detecção por idioma da pergunta
+  /// foi removida por ser a causa raiz de respostas mistas PT+ES.
+  /// A pergunta pode estar em qualquer idioma. A resposta usa exclusivamente o
+  /// idioma configurado pelo usuário (appLanguage = _lang: 'pt' | 'es').
   String _resolveSessionLang(String input) {
-    if (_sessionLockedLang != null) return _sessionLockedLang!;
-
-    final q = input.toLowerCase().trim();
-
-    // ── Nível 0: caracteres exclusivos do espanhol ─────────────────────────
-    // ñ, ¿, ¡ → ES com certeza. Nunca aparecem em PT.
-    if (RegExp(r'[ñ¿¡]').hasMatch(q)) {
-      _sessionLockedLang = 'es';
-      return 'es';
-    }
-
-    // ── Nível 0: caracteres exclusivos do português ───────────────────────
-    // ã, õ, â, ê, ô (com circunflexo) + ç — raramente usados em ES
-    // 'ão', 'ões', 'ãe' são sufixos exclusivamente PT
-    if (RegExp(r'[ãõ]').hasMatch(q) ||
-        q.contains('ão') || q.contains('ões') || q.contains('ção') ||
-        q.contains('ções') || q.contains('nha') || q.contains('nho')) {
-      _sessionLockedLang = 'pt';
-      return 'pt';
-    }
-
-    // ── Nível 1: palavras clínicas ES exclusivas (palavras soltas) ─────────
-    // Lista expandida — inclui termos de 1 palavra comuns em consultas curtas
-    final esSingleWords = [
-      // Sintomas ES
-      'diarrea', 'fiebre', 'dolor', 'sangrado', 'tension', 'vomito',
-      'nausea', 'tos', 'disnea', 'convulsion', 'cefalea', 'mareo',
-      'hematuria', 'ictericia', 'edema', 'disfagia', 'sincope',
-      'palpitaciones', 'epistaxis', 'hemoptisis', 'disuria',
-      // Condições ES
-      'hipertension', 'diabetes', 'asma', 'enfermedad', 'infeccion',
-      'sepsis', 'neumonia', 'bronquitis', 'gastritis', 'apendicitis',
-      'pancreatitis', 'colecistitis', 'pielonefritis', 'endocarditis',
-      'meningitis', 'encefalitis', 'tuberculosis', 'celulitis',
-      // Frases/verbos ES
-      'tratamiento', 'conducta', 'manejo', 'primera linea', 'dosis de',
-      'cual es', 'como tratar', 'que dar', 'que farmaco', 'cuanto',
-      'cuando', 'tambien', 'ademas', 'siempre', 'nunca', 'paciente con',
-    ];
-
-    // ── Nível 1: palavras clínicas PT exclusivas (palavras soltas) ─────────
-    final ptSingleWords = [
-      // Sintomas PT
-      'diarreia', 'febre', 'tosse', 'dispneia', 'cefale', 'tontura',
-      'hematuria', 'ictericia', 'edema', 'disfagia', 'sincope',
-      'palpitacoes', 'epistaxe', 'hemoptise', 'disuria', 'vomito',
-      // Condições PT
-      'hipertensao', 'diabetes', 'asma', 'doenca', 'infeccao',
-      'sepse', 'pneumonia', 'bronquite', 'gastrite', 'apendicite',
-      'pancreatite', 'colecistite', 'pielonefrite', 'endocardite',
-      'meningite', 'encefalite', 'tuberculose', 'celulite',
-      // Frases/verbos PT
-      'tratamento', 'conduta', 'primeira linha', 'dose de',
-      'qual e', 'como tratar', 'o que dar', 'qual farmaco', 'quanto',
-      'quando', 'tambem', 'alem', 'sempre', 'nunca', 'paciente com',
-    ];
-
-    int esScore = esSingleWords.where((t) => q.contains(t)).length;
-    int ptScore = ptSingleWords.where((t) => q.contains(t)).length;
-
-    // ── Nível 2: tokens multi-palavra ES/PT exclusivos ─────────────────────
-    final esMulti = ['paciente con', 'manejo de', 'tratamiento', 'conducta',
-        'dosis de', 'cual es', 'como tratar', 'primera linea', 'que dar',
-        'que farmaco', 'para que', 'cuanto', 'también', 'además',
-        'sangrado', 'tension arterial'];
-    final ptMulti = ['paciente com', 'manejo de', 'tratamento', 'conduta',
-        'dose de', 'qual é', 'como tratar', 'primeira linha', 'o que dar',
-        'qual farmaco', 'para que', 'sangramento', 'pressao arterial',
-        'febre alta', 'dor abdominal'];
-
-    esScore += esMulti.where((t) => q.contains(t)).length * 2; // peso dobrado
-    ptScore += ptMulti.where((t) => q.contains(t)).length * 2;
-
-    String detected;
-    if (esScore > ptScore) {
-      detected = 'es';
-    } else if (ptScore > esScore) {
-      detected = 'pt';
-    } else {
-      // Tiebreak: usa o idioma atual do app (_lang)
-      detected = _lang;
-    }
-
-    _sessionLockedLang = detected;
-    return detected;
+    // Build 190: _lang é soberano. Nunca detectamos idioma da pergunta.
+    // _sessionLockedLang agora apenas espelha _lang para compatibilidade.
+    _sessionLockedLang = _lang;
+    debugPrint('[LANG_LOCK] Build190: appLanguage=$_lang soberano (input ignorado para lang detection)');
+    return _lang;
   }
 
   // ── Estado — Gemini OAuth (paralelo ao OpenAI, nunca interfere) ───────────
@@ -3255,6 +3180,7 @@ class AppProvider extends ChangeNotifier {
       history:      List.unmodifiable(_aiHistory),
       useGrounding: true,
       longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
+      appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
     );
 
     _aiStreamSub = stream.listen(

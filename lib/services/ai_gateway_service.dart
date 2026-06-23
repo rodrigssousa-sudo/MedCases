@@ -53,6 +53,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'gemini_service_v2.dart';
+import 'ai_smart_router.dart'; // Build 190: Smart Context Router
 
 // ── Import condicional — mantido apenas para compilação sem erros ─────────────
 // Os arquivos _io e _web (implementações SSE para o gateway Node) não são
@@ -181,54 +182,20 @@ const String _modeAnchorEstudo =
     '  • PRIMEIRO CARACTERE da resposta = ## Título (NUNCA 🟥 ou emoji de emergência).\n'
     '\n';
 // ─────────────────────────────────────────────────────────────────────────────
-// _detectLanguage — Detecção dinâmica PT/ES pelo input do usuário (Build 230)
+// Build 190 — LANGUAGE LOCK ABSOLUTO
 //
-// Retorna 'pt' se input contém marcadores de português-BR,
-//         'es' se contém marcadores de espanhol,
-//         'pt' como fallback seguro (língua majoritária da base de usuários).
+// _detectLanguage foi REMOVIDA. A detecção por idioma da pergunta era a causa
+// raiz de respostas mistas PT+ES (o modelo seguia o idioma da query, não do app).
 //
-// Método: busca tokens inequívocos de cada idioma nos primeiros 200 chars.
-// Prioridade ES: artigos/preposições exclusivos do espanhol (el/la/los/las,
-//   del, al, ¿, ¡, 'qué', 'cómo', 'cuál', 'con', 'por').
-// Prioridade PT: artigos/preposições exclusivos do português (o/a/os/as,
-//   'do', 'da', 'de', 'que', 'não', 'com', 'para', 'uma', 'um').
+// Substituída por _resolveAppLanguage: retorna appLanguage diretamente.
+// appLanguage = _lang do AppProvider ('pt' | 'es') — configurado pelo usuário.
+// A pergunta pode estar em QUALQUER idioma. A resposta usa EXCLUSIVAMENTE appLanguage.
 // ─────────────────────────────────────────────────────────────────────────────
-String _detectLanguage(String userMessage, List<Map<String, String>> history) {
-  // Tenta detectar pelo input atual primeiro (mais confiável)
-  final sample = userMessage.length > 200
-      ? userMessage.substring(0, 200).toLowerCase()
-      : userMessage.toLowerCase();
-
-  // Indicadores inequívocos de espanhol
-  final esScore = <String>[
-    '¿', '¡', ' el ', ' la ', ' los ', ' las ', ' del ', ' al ',
-    'qué', 'cómo', 'cuál', 'cuáles', 'cuánto', 'administrar',
-    'ampolla', 'solución', 'bolo', ' con ', 'paciente ',
-  ].where((t) => sample.contains(t)).length;
-
-  // Indicadores inequívocos de português-BR
-  final ptScore = <String>[
-    'ção', 'ões', 'não', 'também', 'então', 'ampola', 'paciente',
-    ' do ', ' da ', ' dos ', ' das ', ' que ', ' para ', ' com ',
-    'administrar', 'dilui', 'correr', 'prescrever',
-  ].where((t) => sample.contains(t)).length;
-
-  if (esScore > ptScore) return 'es';
-  if (ptScore > esScore) return 'pt';
-
-  // Empate: tenta pelo histórico mais recente
-  for (int i = history.length - 1; i >= 0; i--) {
-    final entry = history[i];
-    if (entry['role'] == 'user') {
-      final h = (entry['content'] ?? '').toLowerCase();
-      final hEs = ['¿', '¡', ' el ', ' la ', 'qué', 'cómo'].where((t) => h.contains(t)).length;
-      final hPt = ['não', 'então', 'ção', 'também', ' do ', ' da '].where((t) => h.contains(t)).length;
-      if (hEs > hPt) return 'es';
-      if (hPt > hEs) return 'pt';
-    }
-  }
-
-  return 'pt'; // fallback: PT-BR (maioria dos usuários)
+String _resolveAppLanguage(String appLanguage) {
+  // Única variável soberana: appLanguage
+  // Aceita 'pt' ou 'es'. Qualquer outro valor → fallback 'pt'.
+  if (appLanguage == 'es') return 'es';
+  return 'pt'; // 'pt' e qualquer fallback
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -396,7 +363,8 @@ class AiGatewayService {
   ///                   Nunca é inserida manualmente pelo médico — fluxo invisível.
   /// [history]      — histórico de turnos [{role, content}]
   /// [useGrounding] — repassado ao GeminiServiceV2 (Google Search Grounding)
-  /// [longResponse] — false=Motor Plantão / true=Motor Estudos
+  /// [longResponse]  — false=Motor Plantão / true=Motor Estudos
+  /// [appLanguage]   — Build 190: idioma soberano do app ('pt'|'es'). NUNCA detectado da query.
   static Stream<GeminiChunk> sendStream({
     required String userMessage,
     required String systemPrompt,
@@ -404,6 +372,7 @@ class AiGatewayService {
     List<Map<String, String>> history = const [],
     bool useGrounding = true,
     bool longResponse = false,
+    String appLanguage = 'pt', // Build 190: Language Lock Absoluto
   }) {
     // Chave vazia: passa o erro para o GeminiServiceV2 que já tem
     // handler robusto — sem mensagem visível ao médico.
@@ -459,103 +428,58 @@ class AiGatewayService {
       }
     }
 
-    // Build 230: Detecção dinâmica de idioma + Language Lock absoluto.
-    // Detecta PT/ES pelo input atual + histórico e injeta trava no system_instruction.
-    final detectedLang = _detectLanguage(userMessage, history);
-    final languageLock = _buildLanguageLock(detectedLang);
+    // Build 190: Language Lock Absoluto — usa appLanguage diretamente.
+    // A detecção por idioma da pergunta foi removida (causa raiz de PT+ES misturado).
+    // appLanguage vem do AppProvider._lang — configurado pelo usuário, imutável por turno.
+    final resolvedLang = _resolveAppLanguage(appLanguage);
+    final languageLock = _buildLanguageLock(resolvedLang);
 
     if (kDebugMode) {
-      debugPrint('[Build230][Gateway] lang_detectado=$detectedLang | languageLock=${languageLock.length} chars → system_instruction');
+      debugPrint('[AI_ROUTER] Build190: appLanguage=$appLanguage → resolvedLang=$resolvedLang (Language Lock Absoluto)');
+      debugPrint('[AI_ROUTER] languageLock=${languageLock.length} chars → system_instruction');
     }
 
-    // Build 229→230: Sanduíche — âncora + systemPrompt + reforço + intentMandate + languageLock.
-    // intentMandate vai para o FINAL do system_instruction (Viés de Recência).
-    // languageLock vai como ÚLTIMA instrução (Viés de Recência máximo).
-    // Contents recebe apenas userMessage limpa — elimina Prompt Leaking.
-
-    // ── Build 232: [GW_SIZE] audit logs (kPromptSizeAudit) — apenas tamanhos ──
-    // Calcular componentes individuais ANTES do injectModeAnchor para isolamento.
-    if (kDebugMode || kPromptSizeAudit) {
-      final modeAnchorStr = longResponse ? _modeAnchorEstudo : _modeAnchorPlantao;
-      // Reforço mandatório (Plantão only) — texto fixo dentro de injectModeAnchor
-      const reforcoText =
-          '[REFORÇO MANDATÓRIO DE FORMATO DE SAÍDA - LEIA ISTO POR ÚLTIMO]\n'
-          'Você está TERMINANTEMENTE PROIBIDO de seguir o estilo de prosa ou tamanho '
-          'das respostas dadas nos turnos anteriores deste chat. IGNORE o histórico '
-          'visual e responda este turno de forma isolada:\n'
-          '- SE A PERGUNTA ATUAL FOR CÁLCULO DE GOTAS: Escreva apenas as duas linhas '
-          '(Fórmula e Resultado em negrito usando **).\n'
-          '- SE A PERGUNTA ATUAL FOR PREPARO/AMPOLAS: Escreva apenas o tripé rígido '
-          '(Volume, Diluição e Infusão) em até 5 linhas.\n'
-          '- SE FOR CONDUTA GERAL: Siga o template rígido de 6 emojis.';
-      final reforcoSize = longResponse ? 0 : reforcoText.length;
-      debugPrint('[GW_SIZE] ══════════════════════════════════════');
-      debugPrint('[GW_SIZE] modeAnchor=${modeAnchorStr.length} chars');
-      debugPrint('[GW_SIZE] ragContext(systemPrompt_raw)=${systemPrompt.length} chars');
-      debugPrint('[GW_SIZE] reforcoMandatorio=$reforcoSize chars');
-      debugPrint('[GW_SIZE] intentMandate=${intentMandate.length} chars');
-      debugPrint('[GW_SIZE] languageLock=${languageLock.length} chars');
-      debugPrint('[GW_SIZE] userMessage=${userMessage.length} chars');
-      debugPrint('[GW_SIZE] historyEntries=${history.length}');
-      // Estimate finalSystemPrompt size (assembled by injectModeAnchor)
-      // Plantão: anchor + \n\n + [INÍCIO] + systemPrompt + \n\n + [REFORÇO] + reforco + intentSuffix + langSuffix
-      // Estudo:  anchor + \n\n + systemPrompt + langSuffix
-      final intentSuffixSize = intentMandate.isNotEmpty
-          ? '\n\n[MANDATO DE INTENT PARA ESTE TURNO]\n'.length + intentMandate.length
-          : 0;
-      final estimatedFinal = modeAnchorStr.length
-          + 2  // \n\n
-          + (longResponse ? 0 : '[INÍCIO DO CONTEXTO CLÍNICO DO APLICATIVO]\n'.length)
-          + systemPrompt.length
-          + (longResponse ? 0 : '\n\n'.length + reforcoSize)
-          + intentSuffixSize
-          + languageLock.length;
-      debugPrint('[GW_SIZE] finalSystemPrompt_estimate=$estimatedFinal chars (antes do PromptModules sanitize)');
-      debugPrint('[GW_SIZE] ══════════════════════════════════════');
-    }
-
-    final finalSystemPrompt = ModeAnchorEngine.injectModeAnchor(
-      systemPrompt,
-      longResponse:  longResponse,
-      intentMandate: intentMandate, // Build 229: mandato de intent isolado no system
-      languageLock:  languageLock,  // Build 230: trava de idioma absoluta PT/ES
-    );
+    // Build 190: AiSmartRouter — Pipeline em 5 Camadas.
+    // Substitui ModeAnchorEngine.injectModeAnchor() + PromptModules.build().
+    // Contrato único selecionado; contexto capado; langLock dupla âncora.
+    // intentMandate continua sendo injetado via ModeAnchorEngine para Plantão.
 
     final isPlantaoMode = !longResponse; // Build 223
-    final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
-    debugPrint(
-      '[AiGatewayService] Build 229: motor=$motor | '
-      'isPlantaoMode=$isPlantaoMode | '
-      'grounding=$effectiveGrounding | '
-      'system=${finalSystemPrompt.length} chars | '
-      'userMsg_limpa=${userMessage.length} chars (sem mandato)',
+
+    // ── Build 190: SmartRouter — monta prompt final enxuto ──────────────────
+    // O SmartRouter: seleciona contrato único, lazy-loading de módulos,
+    // cap de contexto (1200 chars), Language Lock dupla âncora, logs AI_ROUTER.
+    final routerResult = AiSmartRouter.build(
+      userMessage: userMessage,
+      systemPrompt: systemPrompt, // contexto RAG bruto do AiService
+      isPlantaoMode: isPlantaoMode,
+      appLanguage: resolvedLang,  // Build 190: lang soberano do app
     );
 
-    // ── Build 232: log confirmação do finalSystemPrompt real ─────────────────
-    if (kDebugMode || kPromptSizeAudit) {
-      debugPrint('[GW_SIZE] finalSystemPrompt_real=${finalSystemPrompt.length} chars → enviado ao PromptModules.build()');
-    }
+    // ── intentMandate: injetado no final do prompt do SmartRouter ────────────
+    // Mantém isolamento: mandato vai para system_instruction, nunca para contents[].
+    final String finalSystemPrompt = intentMandate.isNotEmpty
+        ? '${routerResult.finalPrompt}\n\n[MANDATO TURNO]\n$intentMandate'
+        : routerResult.finalPrompt;
 
-    // Build 229: log de auditoria — confirma isolamento do mandato
-    if (kDebugMode && isPlantaoMode) {
-      final hasConflict = finalSystemPrompt.contains('TRATAMENTO FARMACOLÓGICO') ||
-          finalSystemPrompt.contains('TRATAMIENTO FARMACOLÓGICO') ||
-          finalSystemPrompt.contains('ALERTA CRÍTICO') ||
-          finalSystemPrompt.contains('ALERTAS CRÍTICOS');
-      final mandatoNoSystem = intentMandate.isNotEmpty
-          ? finalSystemPrompt.contains(intentMandate.substring(0, 20))
-          : true;
-      debugPrint('[Build229][Gateway] prompt_sem_conflito=${!hasConflict} | mandato_no_system=$mandatoNoSystem (${finalSystemPrompt.length} chars)');
-    }
+    final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
+    debugPrint(
+      '[AI_ROUTER] Build190: motor=$motor | '
+      'lang=$resolvedLang | contract=${routerResult.contractName} | '
+      'task=${routerResult.taskLabel} | '
+      'final=${finalSystemPrompt.length} chars | '
+      'contextSaved=${routerResult.contextSaved} chars | '
+      'modules=${routerResult.modulesLoaded}loaded/${routerResult.modulesSkipped}skipped | '
+      'grounding=$effectiveGrounding',
+    );
 
-    // Build 229: Delega para GeminiServiceV2.
+    // Build 229 (preservado): Delega para GeminiServiceV2.
     // CRÍTICO: userMessage (limpa, sem mandato) → contents[role='user']
-    //          finalSystemPrompt (com mandato de intent no final) → system_instruction
-    // O modelo NUNCA verá o mandato como parte do histórico de conversa.
+    //          finalSystemPrompt (SmartRouter + intentMandate) → system_instruction
     return GeminiServiceV2.sendStream(
       apiKey:         apiKey,
-      userMessage:    userMessage,       // Build 229: mensagem LIMPA — mandato está no system
-      systemPrompt:   finalSystemPrompt, // âncora + RAG + reforço + intentMandate
+      userMessage:    userMessage,       // mensagem LIMPA — mandato está no system
+      systemPrompt:   finalSystemPrompt, // SmartRouter: enxuto, contrato único, lang lock
       history:        history,
       useGrounding:   effectiveGrounding, // Build 222: false fixo no Modo Plantão
       isPlantaoMode:  isPlantaoMode,      // Build 223: remove bullets/## do prefixo

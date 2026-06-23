@@ -81,7 +81,11 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'ai_prompt_modules.dart'; // Build 231: Modular Prompt Engine V2
+// Build 190: ai_prompt_modules.dart não é mais chamado aqui.
+// PromptModules.build() foi substituído por AiSmartRouter.build() em ai_gateway_service.dart.
+// Import mantido comentado para referência histórica — pode ser removido após Build 190 estabilizar.
+// ignore: unused_import
+// import 'ai_prompt_modules.dart'; // Build 231 (DEPRECATED Build 190 — ver AiSmartRouter)
 
 // ── Build 232: Auditoria temporária de tamanho de prompt ─────────────────────
 // Remover após diagnóstico. Espelha kPromptSizeAudit dos outros serviços.
@@ -839,18 +843,19 @@ class GeminiServiceV2 {
   }) async {
     final url = Uri.parse('$_endpointStream&key=$apiKey');
 
-    // ── CAMADA 3: Build 231 — PromptModules.build() ──────────────────────────
-    // Modular Prompt Engine V2: substitui _systemPromptPrefix monolito (~267L).
-    // Detecta intenção + seleciona módulos + aplica language lock dinamicamente.
-    // Zero bytes de regras fixas neste arquivo — GeminiServiceV2 = puro transporte.
-    final blindedSystemPrompt = PromptModules.build(
-      userMessage: userMessage,
-      systemPrompt: systemPrompt,
-      isPlantaoMode: isPlantaoMode,
-    );
+    // ── CAMADA 3: Build 190 — AiSmartRouter bypass ────────────────────────────
+    // Build 190: systemPrompt já foi processado por AiSmartRouter.build() em
+    // ai_gateway_service.dart (Language Lock + Contract + Lazy Modules + Hard Cap).
+    // PromptModules.build() foi CONTORNADO intencionalmente para evitar
+    // double-processing: o prompt de ~3.200 chars seria re-inflado de volta a
+    // ~43.000 chars ao concatenar core + antiLeak + uiContract + modeModule + etc.
+    //
+    // GeminiServiceV2 = transporte puro SSE. Zero lógica de prompt aqui.
+    // A responsabilidade de montar o system_instruction é exclusiva de AiSmartRouter.
+    final blindedSystemPrompt = systemPrompt;
 
     if (kDebugMode) {
-      debugPrint('[Build231][GeminiV2] PromptModules.build() → blindedSystemPrompt=${blindedSystemPrompt.length}c isPlantao=$isPlantaoMode');
+      debugPrint('[AI_ROUTER] Build190: GeminiV2 pass-through (SmartRouter pré-built) → blindedSystemPrompt=${blindedSystemPrompt.length}c isPlantao=$isPlantaoMode');
     }
 
     // ── Monta contents: histórico janelado (já calibrado) + nova mensagem ─────
