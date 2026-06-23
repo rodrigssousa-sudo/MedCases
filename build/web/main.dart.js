@@ -41021,19 +41021,16 @@ if(r!=null){q=r.b
 return new A.mY("\ud83d\udcca Abrir "+q,"https://medcasescalcu.com/?tab=scores&q="+A.yv(r.a))}p=A.Mr(j,B.aYQ)
 if(p!=null){q=p.b
 return new A.mY("\ud83e\uddee Calcular "+q,"https://medcasescalcu.com/?tab=calculadoras&q="+A.yv(p.a))}o=A.Mr(j,B.bCG)
-if(o!=null){q=o.b
-s=k?"\u2697\ufe0f Ver electrolitos ("+q+")":"\u2697\ufe0f Ver eletr\xf3litos ("+q+")"
+if(o!=null){s=k?"\u2697\ufe0f Abrir electrolitos":"\u2697\ufe0f Abrir eletr\xf3litos"
 return new A.mY(s,"https://medcasescalcu.com/?tab=eletrolitos&q="+A.yv(o.a))}n=A.Mr(j,B.aQE)
-if(n!=null){q=n.b
-s=k?"\ud83d\udc89 Calcular infusi\xf3n ("+q+")":"\ud83d\udc89 Calcular infus\xe3o ("+q+")"
+if(n!=null){s=k?"\ud83d\udc89 Abrir infusi\xf3n":"\ud83d\udc89 Abrir infus\xe3o"
 return new A.mY(s,"https://medcasescalcu.com/?tab=infusao&q="+A.yv(n.a))}m=A.Mr(j,B.bHC)
-if(m!=null){q=m.b
-s=k?"\u2764\ufe0f Hemodinamia ("+q+")":"\u2764\ufe0f Hemodin\xe2mica ("+q+")"
+if(m!=null){s=k?"\u2764\ufe0f Abrir hemodin\xe1mica":"\u2764\ufe0f Abrir hemodin\xe2mica"
 return new A.mY(s,"https://medcasescalcu.com/?tab=hemodinamica&q="+A.yv(m.a))}if(A.c8r(j))return new A.mY(k?"\ud83e\ude7a Fluidos y volumen":"\ud83e\ude7a Fluidos e volume","https://medcasescalcu.com/?tab=fluidos")
 if(A.c8t(j))return new A.mY(k?"\ud83d\udc76 M\xf3dulo pediatr\xeda":"\ud83d\udc76 M\xf3dulo pediatria","https://medcasescalcu.com/?tab=pediatria")
 if(A.c8s(j))return new A.mY("\ud83e\udd30 M\xf3dulo gestante","https://medcasescalcu.com/?tab=gestante")
 l=A.Mr(j,B.M1)
-if(l!=null){q="\ud83d\udc8a Ver "+l.b
+if(l!=null){q="\ud83d\udc8a Abrir "+l.b
 s=k?q+" en la base":q+" na base"
 return new A.mY(s,"https://medcasescalcu.com/?tab=farmacos&q="+A.yv(l.a))}return null},
 yv(a){var s=B.c.G(a),r=A.q(s.toLowerCase()," ","-")

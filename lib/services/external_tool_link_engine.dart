@@ -99,8 +99,8 @@ class ExternalToolLinkEngine {
     final eletro = _detectEletrolito(combined);
     if (eletro != null) {
       final label = isEs
-          ? '⚗️ Ver electrolitos (${eletro.display})'
-          : '⚗️ Ver eletrólitos (${eletro.display})';
+          ? '⚗️ Abrir electrolitos'
+          : '⚗️ Abrir eletrólitos';
       return ExternalToolLink(
         label: label,
         url: '${_kBase}?tab=eletrolitos&q=${_enc(eletro.param)}',
@@ -111,8 +111,8 @@ class ExternalToolLinkEngine {
     final infusao = _detectInfusao(combined);
     if (infusao != null) {
       final label = isEs
-          ? '💉 Calcular infusión (${infusao.display})'
-          : '💉 Calcular infusão (${infusao.display})';
+          ? '💉 Abrir infusión'
+          : '💉 Abrir infusão';
       return ExternalToolLink(
         label: label,
         url: '${_kBase}?tab=infusao&q=${_enc(infusao.param)}',
@@ -123,8 +123,8 @@ class ExternalToolLinkEngine {
     final hemodi = _detectHemodinamica(combined);
     if (hemodi != null) {
       final label = isEs
-          ? '❤️ Hemodinamia (${hemodi.display})'
-          : '❤️ Hemodinâmica (${hemodi.display})';
+          ? '❤️ Abrir hemodinámica'
+          : '❤️ Abrir hemodinâmica';
       return ExternalToolLink(
         label: label,
         url: '${_kBase}?tab=hemodinamica&q=${_enc(hemodi.param)}',
@@ -162,8 +162,8 @@ class ExternalToolLinkEngine {
     final drug = _detectSingleDrug(combined);
     if (drug != null) {
       final label = isEs
-          ? '💊 Ver ${drug.display} en la base'
-          : '💊 Ver ${drug.display} na base';
+          ? '💊 Abrir ${drug.display} en la base'
+          : '💊 Abrir ${drug.display} na base';
       return ExternalToolLink(
         label: label,
         url: '${_kBase}?tab=farmacos&q=${_enc(drug.param)}',
