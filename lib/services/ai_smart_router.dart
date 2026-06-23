@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// ai_smart_router.dart — Smart Context Router v2.0 (Build 191)
+// ai_smart_router.dart — Smart Context Router v2.1 (Build 193)
 //
 // RESPONSABILIDADES EXCLUSIVAS:
 //   • ETAPA 2: Prompt Contract Lock — seleciona EXATAMENTE 1 contrato por modo
@@ -75,15 +75,62 @@ class AiSmartRouter {
 
   // ══ TOKENS BLOQUEADOS — linhas com estes padrões são removidas da resposta ═
   // Usados por sanitizeResponse() para filtrar vazamentos de metadados.
+  // Build 193: expandido com CoT phrases + bracket lines adicionais
   static final _metaLeakPatterns = RegExp(
+    // ── Marcadores técnicos de prompt (Build 191 — mantidos) ──────────────
     r'(\[MANDATO|\[MODO PLANT|\[MODO ESTU|\[CONTRACT|\[TRAVA DE IDIOMA'
     r'|\[AI_ROUTER|\[REFOR[ÇC]O|\[SOBERANIA|\[IN[ÍI]CIO'
+    r'|\[SYSTEM|\[PROMPT|\[CAMADA|\[SISTEMA|\[CONTEXTO RAG\]'
     r'|RESPONDA\s+ESTRITAMENTE|RESPONDA\s+[ÚU]NICA\s+E\s+EXCLUSIVAMENTE'
     r'|TEMPLATE\s+DE\s+\d+\s+LINHAS|NESTA\s+ORDEM\s+EXATA'
     r'|PROIBIDO\s+CRIAR\s+INTRODU'
     r'|INSTRUÇÃO\s+DE\s+SISTEMA|PROMPT\s+INTERNO'
-    r'|SYSTEM\s+INSTRUCTION|SMART\s+ROUTER|LAZY\s+M[ÓO]DULO)',
+    r'|SYSTEM\s+INSTRUCTION|SMART\s+ROUTER|LAZY\s+M[ÓO]DULO'
+    // ── Frases de CoT / raciocínio interno (Build 193 — novas) ───────────
+    // Português
+    r'|^Vou\s+responder'
+    r'|^Vamos\s+analisar'
+    r'|^Segue\s+abaixo'
+    r'|^Aqui\s+est[áa]'
+    r'|^Com\s+base\s+na\s+solicita[çc][ãa]o'
+    r'|^Resposta:'
+    r'|^An[áa]lise:'
+    r'|^Explica[çc][ãa]o:'
+    r'|^Racioc[íi]nio'
+    r'|^Pensamento'
+    r'|^Processando'
+    r'|^Modo\s+Plant[ãa]o'
+    r'|^Formato\s+Plant[ãa]o'
+    r'|^Primeiro,'
+    r'|^Primeiro\s+vou'
+    r'|^Primeiramente'
+    // Espanhol
+    r'|^Voy\s+a\s+responder'
+    r'|^Vamos\s+a\s+analizar'
+    r'|^Aqu[íi]\s+est[áa]'
+    r'|^Con\s+base\s+en\s+la\s+solicitud'
+    r'|^Respuesta:'
+    r'|^An[áa]lisis:'
+    r'|^Explicaci[oó]n:'
+    r'|^Razonamiento'
+    r'|^Pensamiento'
+    r'|^Procesando'
+    r'|^Modo\s+Guard[íi]a'
+    r'|^Formato\s+Guard[íi]a'
+    r'|^Primero,'
+    // Inglês (CoT leaked)
+    r'|^Let\s+me\s+'
+    r'|^I\s+will\s+'
+    r'|^I\s+need\s+to\s+'
+    r'|^Here\s+is\s+'
+    r'|^Here\s+are\s+'
+    r'|^Based\s+on\s+the\s+'
+    r'|^Analysis:'
+    r'|^Reasoning:'
+    r'|^Processing'
+    r')',
     caseSensitive: false,
+    multiLine: true,
   );
 
   // ══ CAMADA 1 — Intent Router ═══════════════════════════════════════════════

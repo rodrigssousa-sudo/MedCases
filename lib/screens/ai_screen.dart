@@ -23,6 +23,7 @@ import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action
 import 'package:url_launcher/url_launcher.dart'; // Build 185: Deep Link Router
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela interna
+import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1757,12 +1758,55 @@ class _AiScreenState extends State<AiScreen> {
               // ── AI message — detectar fármaco en texto ──────────────────
               final isActiveStreamingBubble = _isStreaming && i == _lastAiIndex;
               final detectedEv = _detectDrugEvidence(msg.text);
+
+              // ── Build 193: PlantaoRenderer — pipeline estrutural determinístico ──
+              // Aplica o pipeline completo (repair → validate → parse → render)
+              // APENAS na última bolha AI, fora do streaming, no Modo Plantão.
+              // Durante streaming: continua usando _AiBubble normalmente.
+              final bool isPlantaoFinalBubble =
+                  !_longResponse &&          // Modo Plantão ativo
+                  i == _lastAiIndex &&       // última bolha AI
+                  !_isStreaming;             // stream finalizado
+
+              // Executa o pipeline uma única vez por rebuild (cache via key)
+              // Fallback: se pipeline falhar, renderiza via _AiBubble padrão
+              PlantatoPipelineResult? plantaoPipelineResult;
+              if (isPlantaoFinalBubble) {
+                plantaoPipelineResult = PlantatoPipeline.run(msg.text);
+              }
+
+              // Decide se usa renderer estruturado ou bubble padrão
+              final bool useStructuredRenderer =
+                  isPlantaoFinalBubble &&
+                  plantaoPipelineResult?.response != null;
+
               return RepaintBoundary(
                 child: KeyedSubtree(
                 key: ValueKey('msg_${msg.id}'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // ── Renderer estruturado (Modo Plantão, stream concluído) ──
+                    if (useStructuredRenderer)
+                      _PlantaoRenderer(
+                        key: ValueKey('plantao_${msg.id}'),
+                        response: plantaoPipelineResult!.response!,
+                        dark: dark,
+                        lang: p.lang,
+                        onCopy: () => _copyMsg(msg.text),
+                        onChipTap: (chipText) {
+                          String sendText = chipText.trim();
+                          if (sendText.startsWith('📌')) {
+                            sendText = sendText.substring('📌'.length).trim();
+                          }
+                          if (sendText.isEmpty) return;
+                          _userScrolledUp = false;
+                          _scrollDown(force: true);
+                          _sendDebounced(sendText, context.read<AppProvider>());
+                        },
+                      )
+                    // ── Bubble padrão: streaming | Modo Estudo | fallback ──────
+                    else
                     _AiBubble(
                       key: ValueKey('ai_${msg.id}'),
                       text: msg.text,
@@ -4935,6 +4979,324 @@ class _AiBlockBubble extends StatelessWidget {
   String _fakeTime() {
     final now = DateTime.now();
     return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _PlantaoRenderer — renderizador determinístico do Modo Plantão (Build 193)
+//
+// Recebe um PlantaoResponse (campos já estruturados e validados) e renderiza
+// o layout fixo canônico: 🟥 → 💊 → 🔄 → ⛔ → 📌 → ⚠️
+//
+// GARANTIAS:
+//   • Ordem sempre canônica, independente da saída do Gemini
+//   • Campos opcionais null → não renderizados (nunca "⛔ —" ou "⛔ vazio")
+//   • Nenhuma linha iniciando com '[' é renderizada
+//   • Layout 100% controlado pelo Flutter
+//   • Estudo mode não usa este widget
+// ─────────────────────────────────────────────────────────────────────────────
+class _PlantaoRenderer extends StatelessWidget {
+  final PlantaoResponse response;
+  final bool dark;
+  final String lang;
+  final VoidCallback? onCopy;
+  final void Function(String chipText)? onChipTap;
+
+  const _PlantaoRenderer({
+    super.key,
+    required this.response,
+    required this.dark,
+    required this.lang,
+    this.onCopy,
+    this.onChipTap,
+  });
+
+  // ── Paleta semântica (espelha _AiBlockBubble) ────────────────────────────
+  static const _kCyan        = Color(0xFF008CA4);
+  static const _kCyanLight   = Color(0xFF00E5FF);
+  static const _kAmber       = Color(0xFFB45309);
+  static const _kAmberLight  = Color(0xFFFFB800);
+  static const _kRed         = Color(0xFFB91C1C);
+  static const _kRedLight    = Color(0xFFFF2400);
+  static const _kGreen       = Color(0xFF059669);
+  static const _kGreenLight  = Color(0xFF34D399);
+  static const _kPurple      = Color(0xFF7C3AED);
+  static const _kPurpleLight = Color(0xFFA78BFA);
+  static const _kSlate       = Color(0xFF475569);
+  static const _kSlateLight  = Color(0xFF94A3B8);
+
+  // ── Verificação de segurança: ignora linhas iniciando com '[' ────────────
+  static String _safeText(String text) {
+    final lines = text.split('\n');
+    final safe = lines.where((l) => !l.trim().startsWith('[')).toList();
+    return safe.join('\n').trim();
+  }
+
+  // ── Constrói uma linha de bloco com barra semântica lateral ──────────────
+  Widget _buildBlock({
+    required String emoji,
+    required String text,
+    required Color barColor,
+    required Color emojiColor,
+    required Color textColor,
+    required bool isHeader,
+    bool isChip = false,
+  }) {
+    final safeContent = _safeText(text);
+    if (safeContent.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Barra semântica lateral
+            Container(
+              width: 3,
+              decoration: BoxDecoration(
+                color: barColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Conteúdo
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: isChip
+                    ? _buildChip(emoji: emoji, text: safeContent, color: barColor)
+                    : _buildContent(
+                        emoji: emoji,
+                        text: safeContent,
+                        emojiColor: emojiColor,
+                        textColor: textColor,
+                        isHeader: isHeader,
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Renderiza o conteúdo de um bloco ─────────────────────────────────────
+  Widget _buildContent({
+    required String emoji,
+    required String text,
+    required Color emojiColor,
+    required Color textColor,
+    required bool isHeader,
+  }) {
+    if (isHeader) {
+      // Bloco 🟥 — cabeçalho em destaque
+      return RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: '$emoji ',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: emojiColor,
+                height: 1.4,
+              ),
+            ),
+            TextSpan(
+              text: text,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: emojiColor,
+                height: 1.4,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Blocos normais: emoji + texto
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$emoji ',
+            style: TextStyle(
+              fontSize: 14,
+              color: emojiColor,
+              height: 1.5,
+            ),
+          ),
+          TextSpan(
+            text: text,
+            style: TextStyle(
+              fontSize: 13.5,
+              color: textColor,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Chip clicável para bloco 📌 (monitorar / próximo passo) ──────────────
+  Widget _buildChip({
+    required String emoji,
+    required String text,
+    required Color color,
+  }) {
+    if (onChipTap == null) {
+      // Sem callback: renderiza como texto simples
+      return _buildContent(
+        emoji: emoji,
+        text: text,
+        emojiColor: color,
+        textColor: color,
+        isHeader: false,
+      );
+    }
+
+    return GestureDetector(
+      onTap: () => onChipTap?.call('$emoji $text'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withValues(alpha: 0.30), width: 1),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(emoji, style: TextStyle(fontSize: 14, color: color)),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                  height: 1.4,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = dark
+        ? const Color(0xFFE8F2F5)
+        : const Color(0xFF1A1D23);
+
+    final condutaColor  = dark ? _kCyanLight   : _kCyan;
+    final primeiraColor = dark ? _kGreenLight  : _kGreen;
+    final altColor      = dark ? _kSlateLight  : _kSlate;
+    final evitarColor   = dark ? _kAmberLight  : _kAmber;
+    final monitorarColor = dark ? _kPurpleLight : _kPurple;
+    final alertaColor   = dark ? _kRedLight    : _kRed;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── 🟥 CONDUTA — cabeçalho obrigatório ──────────────────────────
+          _buildBlock(
+            emoji: '🟥',
+            text: response.conduta,
+            barColor: condutaColor,
+            emojiColor: condutaColor,
+            textColor: condutaColor,
+            isHeader: true,
+          ),
+
+          // ── 💊 PRIMEIRA LINHA — obrigatório ─────────────────────────────
+          _buildBlock(
+            emoji: '💊',
+            text: response.primeiraLinha,
+            barColor: primeiraColor,
+            emojiColor: primeiraColor,
+            textColor: textColor,
+            isHeader: false,
+          ),
+
+          // ── 🔄 ALTERNATIVA — opcional ────────────────────────────────────
+          if (response.alternativa != null &&
+              response.alternativa!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '🔄',
+              text: response.alternativa!,
+              barColor: altColor,
+              emojiColor: altColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── ⛔ EVITAR — opcional ──────────────────────────────────────────
+          if (response.evitar != null &&
+              response.evitar!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '⛔',
+              text: response.evitar!,
+              barColor: evitarColor,
+              emojiColor: evitarColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── 📌 MONITORAR — obrigatório, renderizado como chip clicável ───
+          _buildBlock(
+            emoji: '📌',
+            text: response.monitorar,
+            barColor: monitorarColor,
+            emojiColor: monitorarColor,
+            textColor: monitorarColor,
+            isHeader: false,
+            isChip: true,
+          ),
+
+          // ── ⚠️ ALERTA — opcional ──────────────────────────────────────────
+          if (response.alerta != null &&
+              response.alerta!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '⚠️',
+              text: response.alerta!,
+              barColor: alertaColor,
+              emojiColor: alertaColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── Ação de cópia ─────────────────────────────────────────────────
+          if (onCopy != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: onCopy,
+                    child: Icon(
+                      Icons.copy_rounded,
+                      size: 16,
+                      color: textColor.withValues(alpha: 0.45),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
 
