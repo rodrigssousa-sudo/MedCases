@@ -559,20 +559,22 @@ class NextActionEngine {
 
     switch (topic) {
       // ── 1. SCA / IAM ──────────────────────────────────────────────────────
+      // Build 236 fix: Plantão → conduta operacional imediata (ECG + Troponina),
+      // NÃO comparação acadêmica IAMCSST × IAMSSST (movida para Modo Estudo).
       case ClinicalTopic.sca:
         if (isPlantaoMode) {
           return SmartNextAction(
-            label: es ? 'IAMCSST × IAMSSST' : 'IAMCSST × IAMSSST',
+            label: es ? 'ECG + Troponina urgente' : 'ECG + Troponina urgente',
             promptToSend: es
-                ? '¿Cuál es la diferencia en el manejo inicial entre IAMCSST y IAMSSST? Incluya tiempos puerta-balón y antiagregación.'
-                : 'Qual a diferença no manejo inicial entre IAMCSST e IAMSSST? Inclua tempos porta-balão e antiagregação.',
+                ? 'Paciente con dolor torácico agudo: protocolo de ECG de 12 derivaciones (tiempo puerta-ECG ≤10min), troponina ultrasensible, acceso venoso, monitorización y AAS 300mg.'
+                : 'Paciente com dor torácica aguda: protocolo de ECG de 12 derivações (tempo porta-ECG ≤10min), troponina ultrassensível, acesso venoso, monitorização e AAS 300mg.',
           );
         } else {
           return SmartNextAction(
-            label: es ? 'Fisiopatologia SCA' : 'Fisiopatologia SCA',
+            label: es ? 'IAMCSST × IAMSSST' : 'IAMCSST × IAMSSST',
             promptToSend: es
-                ? 'Explícame la fisiopatología del síndrome coronario agudo: ruptura de placa, trombosis y cascada isquémica.'
-                : 'Explique a fisiopatologia da síndrome coronariana aguda: ruptura de placa, trombose e cascata isquêmica.',
+                ? '¿Cuál es la diferencia en el manejo inicial entre IAMCSST y IAMSSST? Incluya tiempos puerta-balón, antiagregación y fisiopatología de la ruptura de placa.'
+                : 'Qual a diferença no manejo inicial entre IAMCSST e IAMSSST? Inclua tempos porta-balão, antiagregação e fisiopatologia da ruptura de placa.',
           );
         }
 
