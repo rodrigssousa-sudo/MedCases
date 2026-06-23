@@ -179,6 +179,8 @@ class CalculadoraScreen extends StatefulWidget {
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
   late final WebViewController _controller;
   late final bool _isEs;
+  // Build 1563: dark mode lido uma vez no initState (imutável por sessão)
+  late final bool _dark;
 
   // Estado da barra de fontes nativa Flutter
   bool _sourcesExpanded = false;
@@ -187,9 +189,11 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   void initState() {
     super.initState();
 
-    final lang      = context.read<AppProvider>().lang;
+    final p         = context.read<AppProvider>();
+    final lang      = p.lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
     _isEs           = lang == 'es';
+    _dark           = p.darkMode;
 
     final PlatformWebViewControllerCreationParams params;
     if (Platform.isIOS) {
@@ -228,15 +232,17 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final view       = View.of(context);
-    final topPadding = view.viewPadding.top / view.devicePixelRatio;
+    // ── Paleta dark/light ────────────────────────────────────────────────
+    final Color barBg       = _dark ? const Color(0xFF0D0F14) : Colors.white;
+    final Color scaffoldBg  = _dark ? const Color(0xFF0F091E) : const Color(0xFFF8F9FA);
+    final Color borderCol   = _dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
+    final Color textPrimary = _dark ? Colors.white : const Color(0xFF111827);
+    final Color textSecondary = _dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
-    // ── BARRA DE FONTES — dimensões ──────────────────────────────────────────
-    // Collapsed: 24px — linha única de texto pequeno flutuando ao centro.
-    // Expanded : 108px — título, sublabel e botão de abertura.
-    const double _kBarCollapsed = 24.0;
-    const double _kBarExpanded  = 108.0;
-    final double barHeight = _sourcesExpanded ? _kBarExpanded : _kBarCollapsed;
+    // ── BARRA DE FONTES — dimensões ──────────────────────────────────────
+    const double kBarCollapsed = 24.0;
+    const double kBarExpanded  = 108.0;
+    final double barHeight = _sourcesExpanded ? kBarExpanded : kBarCollapsed;
 
     final String labelBar = _isEs
         ? '\uD83D\uDD3C Ver Fuentes Acad\u00e9micas \u00b7 AHA \u00b7 ACC \u00b7 WHO...'
@@ -248,132 +254,116 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         ? 'Abrir referencias \u2197'
         : 'Abrir refer\u00eancias \u2197';
 
-    // ── LAYOUT ────────────────────────────────────────────────────────────────
-    //
-    // Column[
-    //   header (topPadding + 52px),
-    //   Expanded > Stack[
-    //     Positioned.fill(bottom: 24) → WebView  ← não fica atrás da barra
-    //     Positioned(bottom:0)        → barra Flutter nativa (24–108px)
-    //   ]
-    // ]
-    //
-    // • SafeArea(bottom:false): sem padding automático do SO na base.
-    // • Expanded: WebView + barra recebem TODO o espaço restante do Column.
-    // • WebView termina exatamente onde a barra começa — sem sobreposição.
-    // • Barra é um widget Flutter puro: zero JS, zero DOM, zero CSS.
-    // • Scaffold.backgroundColor cobre qualquer pixel não pintado pelo WebView.
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: _dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0F091E),
-        body: SafeArea(
-          top:    false,
-          bottom: false,
-          child: Column(
-            children: [
+        backgroundColor: scaffoldBg,
 
-              // ── Header gradiente ──────────────────────────────────────────
-              Container(
-                height: topPadding + 52,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end:   Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF1A0F2E),
-                      Color(0xFF2D1B5A),
-                      Color(0xFF4A2D8A),
-                    ],
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(top: topPadding),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios_rounded,
-                          size: 18,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      const Expanded(
-                        child: Text(
-                          'CALCULADORA CL\u00cdNICA',
-                          style: TextStyle(
-                            fontSize:      16,
-                            fontWeight:    FontWeight.w800,
-                            color:         Colors.white,
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+        // ── AppBar minimalista global (padrão internacion_screen) ─────────
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(52),
+          child: Container(
+            decoration: BoxDecoration(
+              color: barBg,
+              border: Border(
+                bottom: BorderSide(color: borderCol, width: 0.5),
               ),
-
-              // ── WebView + barra de fontes nativa ──────────────────────────
-              Expanded(
-                child: Stack(
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: Row(
                   children: [
-
-                    // WebView termina ACIMA da barra — sem sobreposição
-                    Positioned(
-                      top:    0,
-                      left:   0,
-                      right:  0,
-                      bottom: _kBarCollapsed, // reserva 24px permanentes para a barra
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return SizedBox(
-                            width:  constraints.maxWidth,
-                            height: constraints.maxHeight,
-                            child: WebViewWidget(controller: _controller),
-                          );
-                        },
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 18,
+                        color: Color(0xFFA78BFA),
                       ),
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      padding: const EdgeInsets.all(8),
+                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     ),
-
-                    // ── Barra de fontes Flutter nativa ────────────────────
-                    // Zero JS. Zero DOM. Zero CSS.
-                    // Widget Flutter puro — animado com AnimatedContainer.
-                    Positioned(
-                      left:   0,
-                      right:  0,
-                      bottom: 0,
-                      child: GestureDetector(
-                        onTap: () => setState(() => _sourcesExpanded = !_sourcesExpanded),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 280),
-                          curve: Curves.easeInOut,
-                          height: barHeight,
-                          decoration: BoxDecoration(
-                            // Fundo ligeiramente mais claro que o Scaffold (0xFF0F091E)
-                            // para criar separação sutil sem quebrar a unidade do tema.
-                            color: const Color(0xFF1A1035),
-                            border: const Border(
-                              top: BorderSide(
-                                color: Color(0x33A78BFA), // violeta 20% opacidade
-                                width: 1,
-                              ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'CALCULADORA CL\u00cdNICA',
+                            style: TextStyle(
+                              fontSize:      12.5,
+                              fontWeight:    FontWeight.w800,
+                              color:         textPrimary,
+                              letterSpacing: 0.4,
                             ),
                           ),
-                          child: _sourcesExpanded
-                              ? _buildExpandedSources(labelTitle, labelBtn)
-                              : _buildCollapsedSources(labelBar),
-                        ),
+                          Text(
+                            'MedCases Pro',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color:    textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-
                   ],
                 ),
               ),
-
-            ],
+            ),
           ),
+        ),
+
+        // ── Body: WebView + barra de fontes nativa ────────────────────────
+        body: Stack(
+          children: [
+
+            // WebView termina ACIMA da barra — sem sobreposição
+            Positioned(
+              top:    0,
+              left:   0,
+              right:  0,
+              bottom: kBarCollapsed,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SizedBox(
+                    width:  constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    child: WebViewWidget(controller: _controller),
+                  );
+                },
+              ),
+            ),
+
+            // ── Barra de fontes Flutter nativa ────────────────────────────
+            Positioned(
+              left:   0,
+              right:  0,
+              bottom: 0,
+              child: GestureDetector(
+                onTap: () => setState(() => _sourcesExpanded = !_sourcesExpanded),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeInOut,
+                  height: barHeight,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1035),
+                    border: const Border(
+                      top: BorderSide(
+                        color: Color(0x33A78BFA),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: _sourcesExpanded
+                      ? _buildExpandedSources(labelTitle, labelBtn)
+                      : _buildCollapsedSources(labelBar),
+                ),
+              ),
+            ),
+
+          ],
         ),
       ),
     );
