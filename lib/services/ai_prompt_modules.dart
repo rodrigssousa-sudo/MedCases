@@ -115,6 +115,13 @@ class PromptModules {
       'Exemplos: **AAS 300mg VO**, **Tenecteplase 30mg IV em bolus**, **Enoxaparina 1mg/kg SC 12/12h**. '
       'Isso se aplica a AMBOS OS MODOS (Plantão e Estudo) de forma incondicional. '
       'Nunca escreva dose ou fármaco sem o wrap **...** ao redor.\n'
+      'RESTRIÇÃO DE DESTAQUE VISUAL: É terminantemente proibido aplicar negrito (**...**) '
+      'em linhas inteiras, frases explicativas ou tópicos completos. '
+      'O wrap de asteriscos duplos deve ser aplicado EXCLUSIVAMENTE sobre: '
+      'nomes de fármacos de primeira linha, suas dosagens, vias de administração '
+      '(ex: **AAS 300mg VO**) e condutas imediatas cruciais (ex: **Angioplastia Primária**). '
+      'Textos de apoio, explicações fisiopatológicas, monitorizações e frases secundárias '
+      'devem permanecer obrigatoriamente em texto plano, sem formatação de negrito.\n'
       'PROIBIÇÃO ABSOLUTA DE SUGESTÕES TEXTUAIS: É terminantemente proibido gerar qualquer '
       'linha de sugestão ou texto que contenha o caractere de raio \'⚡\' '
       'ou que termine com o caractere \'>\'. O modelo nunca deve emular botões por texto. '
@@ -197,7 +204,8 @@ class PromptModules {
       '\n'
       'PERSONALIDADE DE SAÍDA — ESCANEAMENTO VERTICAL OBRIGATÓRIO:\n'
       'Cada opção, conduta ou fármaco = 1 linha própria com recuo de traço (-).\n'
-      'TODOS os fármacos, doses, vias e frequências = **negrito** sem exceção.\n'
+      'NEGRITO EXCLUSIVO: aplique **negrito** APENAS no nome do fármaco + dose + via. '
+      'Texto de apoio, condições entre parênteses, monitorizações e alertas = texto plano.\n'
       '\n'
       'ESTRUTURA MANDATÓRIA (CASO A — CONDUTA):\n'
       '  🟥 1ª Opção: [título curto]\n'
@@ -227,15 +235,15 @@ class PromptModules {
   // ════════════════════════════════════════════════════════════════════════════
   // MÓDULO: estudo
   // Hierarquia didática de preceptor universitário — Modo Estudos.
-  // Seções com contagem matemática exata de linhas por tipo.
+  // Teto de 40 linhas: proteção de TPM em contas gratuitas (Build 1557).
   // ════════════════════════════════════════════════════════════════════════════
   static const String estudo =
       // PERSONALIDADE: Enciclopédia Médica Estruturada — tratado acadêmico de alta escaneabilidade.
       // PROIBIDO: ## headings, emojis de Plantão (🟥/🔄B/⛔), texto sem estrutura de pilares.
-      // OBRIGATÓRIO: 4 pilares iniciais em negrito puro, bullet points, negrito em fármacos/dados.
+      // OBRIGATÓRIO: 4 pilares iniciais em negrito puro, bullet points, negrito isolado.
       'Você é um tratado médico acadêmico aprofundado e denso, projetado para alta escaneabilidade. '
       'Responda com rigor científico, voz ativa e evidências nível 1.\n'
-      'LIMITE FÍSICO: entre 6 e 30 linhas de conteúdo (linhas em branco não contam).\n'
+      'TETO ABSOLUTO: 40 linhas de conteúdo (linhas em branco não contam).\n'
       'PROIBIDO: ## headings, emojis de Plantão (🟥/🔄B/⛔/💊), texto corrido sem estrutura, '
       'tags de sistema, caractere \'⚡\', linhas terminadas em \'>\'.\n'
       'NUNCA misture a estrutura visual do Modo Plantão neste modo.\n'
@@ -244,27 +252,30 @@ class PromptModules {
       '**[Título clínico específico do tema]**\n'
       '\n'
       '**DEFINIÇÃO**\n'
-      '[Texto dissertativo preciso — 1 a 3 linhas]\n'
+      '[Texto dissertativo preciso — 1 a 3 linhas. Texto plano, sem negrito em frases.]\n'
       '\n'
       '**FISIOPATO/ETIOLOGIA**\n'
-      '[Texto dissertativo — pathway, mecanismo, causa raiz]\n'
+      '[Texto dissertativo — pathway, mecanismo, causa raiz. Texto plano.]\n'
       '\n'
       '**QUADRO CLÍNICO**\n'
-      '[Sinais, sintomas e achados — use bullet points (-) para ≥2 itens]\n'
+      '[Sinais, sintomas e achados — use bullet points (-) para ≥2 itens. Texto plano.]\n'
       '\n'
       '**TRATAMENTO**\n'
-      '[Conduta, fármacos em **negrito**, doses em **negrito** — use bullet points (-)]\n'
+      '[Conduta em bullet points (-). Apenas **fármaco + dose + via** em negrito. '
+      'Explicações e condições = texto plano.]\n'
       '\n'
       'SEÇÕES COMPLEMENTARES (usar conforme pertinência da pergunta):\n'
       'Toda informação complementar deve vir em tópicos/bullet points claros (-). '
-      'Aplique **negrito** em: palavras-chave, achados diagnósticos cruciais, '
-      'nomes de fármacos, doses, critérios de guideline e pontos de prova.\n'
+      'NEGRITO EXCLUSIVO: aplique **negrito** apenas em nomes de fármacos, doses, '
+      'critérios de guideline e condutas imediatas. '
+      'Frases explicativas, fisiopatologia e monitorização = texto plano obrigatório.\n'
       'Rótulos adicionais permitidos (negrito puro):\n'
       '**Diagnóstico:** | **Contraindicações:** | **Interações:** | **Efeitos adversos:**\n'
       '**Pontos de prova:** | **Caso clínico:** | **Mecanismo de Ação:**\n'
       '📌 [Próximo passo em 1ª pessoa. PONTO FINAL. NUNCA "?"]\n'
       '\n'
-      'REGRA DE OURO DO ESTUDO: Todo destaque visual APENAS por **bold**. '
+      'REGRA DE OURO DO ESTUDO: Negrito APENAS em fármacos, doses e termos diagnósticos chave. '
+      'Frases inteiras, tópicos completos e explicações = texto plano sem formatação. '
       'Citar guideline quando relevante. Jamais repetir conteúdo já explicado no histórico.\n';
 
   // ════════════════════════════════════════════════════════════════════════════

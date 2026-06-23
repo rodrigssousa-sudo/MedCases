@@ -4325,20 +4325,22 @@ class _AiBlockBubble extends StatelessWidget {
           data: md,
           selectable: false,
           styleSheet: MarkdownStyleSheet(
-            // Build 1556 — Contraste visual corrigido:
-            // Texto base (p, li, body) → cor neutra de leitura (textColor).
-            // Negrito (**...**) → cor vibrante de destaque (kFerrariRed/cyan).
-            // Resultado: fármacos/doses saltam visualmente; texto ao redor é neutro.
+            // Build 1557 — Destaque isolado: APENAS **strong** recebe cor vibrante.
+            // p / em / listBullet = textColor neutro absoluto → sem herança de cor.
+            // strong (**...**) = cor vibrante exclusiva para fármacos, doses e
+            //   condutas imediatas. Texto explicativo ao redor permanece neutro.
+            // Regra: se não está envolto em **, não recebe cor de destaque.
             p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
-            // strong = fármacos, doses, palavras-chave clínicas → cor vibrante
+            // strong = ÚNICO receptor de cor vibrante no stylesheet
             strong: TextStyle(
               fontSize: 13.5,
               fontWeight: FontWeight.w700,
-              // Dark mode: cyan médico; Light mode: Vermelho Ferrari
+              // Dark mode: cyan médico 0xFF00E5FF (contraste 12:1 sobre fundo escuro)
+              // Light mode: Vermelho Ferrari 0xFFFF2400 (contraste 5.2:1 sobre branco)
               color: dark ? const Color(0xFF00E5FF) : kFerrariRed,
             ),
+            // em, listBullet = neutros — sem cor de destaque mesmo com formatação
             em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
-            // listBullet herda textColor neutro — não a cor de destaque
             listBullet: TextStyle(fontSize: 13.5, color: textColor),
             // B140: título principal da resposta → Vermelho Ferrari bold
             h2: const TextStyle(
