@@ -20,6 +20,8 @@ import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
 import '../services/activity_service.dart';
 import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action Engine
+import 'package:url_launcher/url_launcher.dart'; // Build 185: Deep Link Router
+import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1835,6 +1837,20 @@ class _AiScreenState extends State<AiScreen> {
                           _sendDebounced(prompt, context.read<AppProvider>());
                         },
                       ),
+                    // ── Build 185: Deep Link Router ───────────────────────
+                    // Botão determinístico — abre ferramenta externa relevante
+                    // em medcasescalcu.com. Nunca envia dados do paciente.
+                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2)
+                      _ExternalToolButton(
+                        lastUserMessage: _messages
+                            .lastWhere((m) => m.role == 'user',
+                                orElse: () => _ChatMsg(role: 'user', text: ''))
+                            .text,
+                        lastAiResponse: msg.text,
+                        isPlantaoMode: !_longResponse,
+                        lang: p.lang,
+                        dark: dark,
+                      ),
                     // Tarjeta de evidencia si el mensaje menciona un fármaco
                     if (detectedEv != null)
                       Padding(
@@ -2976,6 +2992,97 @@ class _SmartNextActionChip extends StatelessWidget {
                 Icon(Icons.arrow_forward_ios_rounded, size: 10, color: textColor),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _ExternalToolButton — Build 185: Deep Link Router
+// Aparece abaixo do _SmartNextActionChip na última bolha AI.
+// Motor 100% local — sem IA, sem rede, sem RAG.
+// Abre medcasescalcu.com com tab + query param técnico específico.
+// NUNCA envia dados do paciente na URL.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ExternalToolButton extends StatelessWidget {
+  final String lastUserMessage;
+  final String lastAiResponse;
+  final bool isPlantaoMode;
+  final String lang;
+  final bool dark;
+
+  const _ExternalToolButton({
+    super.key,
+    required this.lastUserMessage,
+    required this.lastAiResponse,
+    required this.isPlantaoMode,
+    required this.lang,
+    required this.dark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final link = ExternalToolLinkEngine.build(
+      lastUserMessage: lastUserMessage,
+      lastAiResponse: lastAiResponse,
+      isPlantaoMode: isPlantaoMode,
+      currentLanguage: lang,
+    );
+
+    if (link == null) return const SizedBox.shrink();
+
+    final Color bgColor = dark
+        ? const Color(0xFF1E3A5F)   // azul marinho escuro — modo dark
+        : const Color(0xFFE8F4FD);  // azul claro suave — modo light
+    final Color borderColor = dark
+        ? const Color(0xFF2D6EA8)
+        : const Color(0xFF90CAF9);
+    final Color textColor = dark
+        ? const Color(0xFF90CAF9)
+        : const Color(0xFF1565C0);
+    final Color iconColor = dark
+        ? const Color(0xFF64B5F6)
+        : const Color(0xFF1976D2);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+      child: GestureDetector(
+        onTap: () async {
+          final uri = Uri.parse(link.url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: borderColor, width: 1),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.open_in_browser_rounded, size: 15, color: iconColor),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  link.label,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    color: textColor,
+                    letterSpacing: 0.1,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(Icons.arrow_forward_ios_rounded, size: 10, color: iconColor),
+            ],
           ),
         ),
       ),
