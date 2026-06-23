@@ -125087,7 +125087,7 @@ c8=J.as(d2)
 if(c8.gcd(d2)){c9=q
 d3=bd9?"Efectos adversos":"Efeitos adversos"
 c8="  **"+d3+":** "+c8.kf(d2,6).ai(0,", ")+"\n"
-c9.a+=c8}}if(!d||c2){a9=p.dH(p.ay,aa6.c)
+c9.a+=c8}}if(!d||!c6||c2){a9=p.dH(p.ay,aa6.c)
 c8=a9.length
 if(c8!==0){d4=c8>250?B.c.U(a9,0,250)+"...":a9
 c8=q
@@ -125122,14 +125122,17 @@ c9="  "+(bd9?"Sin interacciones registradas con los medicamentos actuales del pa
 c8.a+=c9}}c8=aa6.gnx()
 if(c8==null)c8=""
 e3=A.c1(A.q(c8,",","."))
-if(e3!=null&&e3>0&&e3<60){b2=p.dH(p.as,aa6.c)
+b2=p.dH(p.as,aa6.c)
 c8=b2.length
-if(c8!==0){if(e3<15)e4=az6
+if(c8!==0)if(e3!=null&&e3>0&&e3<60){if(e3<15)e4=az6
 else e4=e3<30?az7:az8
 e5=c8>200?B.c.U(b2,0,200)+"...":b2
 c8=q
 c9="  **"+e4+" (ClCr "+A.u(aa6.gnx())+" mL/min):** "+e5+"\n"
-c8.a+=c9}}e6=A.f7("",null)
+c8.a+=c9}else if(!c6||c2){e5=c8>200?B.c.U(b2,0,200)+"...":b2
+c8=q
+c9="  **"+(bd9?"Ajuste renal (si aplica)":"Ajuste renal (se aplic\xe1vel)")+":** "+e5+"\n"
+c8.a+=c9}e6=A.f7("",null)
 if(e6!=null&&e6>=75){e7=p.dH(p.at,aa6.c)
 if(e7.length!==0){c8=q
 c9="  **"+(bd9?"Alerta en adulto mayor":"Alerta em idoso")+":** "+e7+"\n"
