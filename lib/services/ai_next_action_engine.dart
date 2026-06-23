@@ -414,21 +414,21 @@ class NextActionEngine {
       // Estudo: esteira cronológica real de 3 passos — avança consultando chatHistory
       return _pickAction([
         SmartNextAction(
-          label: es ? '✨ Aprofundar Fisiopatologia >' : '✨ Aprofundar Fisiopatologia >',
+          label: es ? '✨ Profundizar Fisiopatología >' : '✨ Aprofundar Fisiopatologia >',
           promptToSend: es
-              ? 'Aprofunde de forma resumida (máx 15 linhas) el mecanismo de acción molecular y la fisiopatología de esta condición.'
+              ? 'Detalla de forma resumida (máx 15 líneas) el mecanismo de acción molecular y la fisiopatología de esta condición.'
               : 'Aprofunde de forma resumida (máx 15 linhas) o mecanismo de ação molecular e a fisiopatologia desta condição.',
         ),
         SmartNextAction(
-          label: es ? '✨ Alternativas de 2ª Linha >' : '✨ Alternativas de 2ª Linha >',
+          label: es ? '✨ Alternativas de 2ª Línea >' : '✨ Alternativas de 2ª Linha >',
           promptToSend: es
-              ? 'Detalle de forma directa (máx 15 linhas) cuáles son las alternativas terapéuticas cuando falla el tratamiento inicial.'
+              ? 'Detalla directamente (máx 15 líneas) las alternativas terapéuticas cuando falla el tratamiento inicial.'
               : 'Detalhe de forma direta (máx 15 linhas) quais são as alternativas terapêuticas quando falha o tratamento inicial.',
         ),
         SmartNextAction(
-          label: es ? '✨ Comorbidades e Alertas >' : '✨ Comorbidades e Alertas >',
+          label: es ? '✨ Comorbilidades y Alertas >' : '✨ Comorbidades e Alertas >',
           promptToSend: es
-              ? 'Indique las preguntas clínicas de descarte cruciales y el manejo de comorbilidades asociadas (máx 15 linhas).'
+              ? 'Indica las preguntas clínicas de descarte cruciales y el manejo de comorbilidades asociadas (máx 15 líneas).'
               : 'Indique as perguntas clínicas de descarte cruciais e o manejo de comorbidades associadas (máx 15 linhas).',
         ),
       ], chatHistory);

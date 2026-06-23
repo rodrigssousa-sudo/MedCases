@@ -465,6 +465,23 @@ class PromptModules {
   // Retorna:
   //   String → system_instruction final pronta para envio ao Gemini
   // ════════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════════
+  // build — Método principal de montagem dinâmica do prompt final (Build 184)
+  //
+  // Fluxo Build 184 (anti-503 / language-lock fix):
+  //   1. Detecta intenção na userMessage
+  //   2. Sanitiza systemPrompt externo (remove monolitos antigos)
+  //   3. Trunca contextSection HARD a 1800 chars (elimina o 30k chars → 503)
+  //   4. languageLock injetado no INÍCIO e no FIM — prioridade de sistema total
+  //   5. Loga tamanhos para rastreabilidade
+  //
+  // MUDANÇAS vs Build 232:
+  //   • Guardrail complexo de 8000 chars REMOVIDO — causava prompt de 30k chars
+  //     e zerava languageLock ao truncar (languageLock(param)=0 chars no log)
+  //   • contextSection limitado a HARD CAP de 1800 chars (suficiente para RAG)
+  //   • languageLock agora aparece 2× no prompt: início (Viés de Primazia) +
+  //     fim (Viés de Recência) — nunca mais é descartado nem zerado
+  // ════════════════════════════════════════════════════════════════════════════
   static String build({
     required String userMessage,
     required String systemPrompt,
@@ -488,120 +505,72 @@ class PromptModules {
     if (intent.isAcronym) taskModules.write('\n$siglasCriticas');
 
     // Siglas críticas também no Plantão quando não é sigla isolada
-    // (garante mapeamento correto de IAM/SCA mesmo em perguntas compostas)
     if (!intent.isAcronym && isPlantaoMode) {
       taskModules.write('\n$siglasCriticas');
     }
 
-    // ── 5. Montar prompt candidato ──────────────────────────────────────────
-    final contextSection = cleanContext.isNotEmpty
-        ? '\n\n[CONTEXTO CLÍNICO RAG]\n$cleanContext'
+    // ── 5. Build 184: Hard cap de 1800 chars no contextSection ───────────────
+    // Razão: RAG clínico irrestrito inflava prompt para 30k chars → Erro 503.
+    // 1800 chars = ~450 tokens — suficiente para o contexto clínico essencial.
+    // Nenhuma lógica complexa de budget/truncamento — apenas um cap direto.
+    const int kContextHardCap = 1800;
+    final String rawContext = cleanContext.length > kContextHardCap
+        ? cleanContext.substring(0, kContextHardCap)
+        : cleanContext;
+
+    final contextSection = rawContext.isNotEmpty
+        ? '\n\n[CONTEXTO CLÍNICO RAG]\n$rawContext'
         : '';
 
-    final langSection = languageLock.isNotEmpty ? '\n$languageLock' : '';
-
-    String candidate = core
-        + '\n'
-        + antiLeak
-        + '\n'
-        + uiContract
-        + '\n'
-        + modeModule
-        + taskModules.toString()
-        + contextSection
-        + langSection;
-
-    // ── 6. Guardrail de tamanho — Build 1556: PRIORIDADE DE DESCARTE INVERTIDA ─
-    //
-    // REGRA ABSOLUTA (Code Freeze):
-    //   NUNCA descartar: core, antiLeak, uiContract, modeModule (plantao/estudo),
-    //   taskModules (dose/diluicao/interacoes), langSection.
-    //   Esses módulos definem o comportamento estrutural do app — sem eles a IA
-    //   perde diretrizes e devolve uma única linha vazia para qualquer query.
-    //
-    // ORDEM DE TRUNCAMENTO (contextSection é a única variável em tamanho):
-    //   PASSO 1: Truncar contextSection progressivamente (48k → 4000 → 2000 → 0).
-    //   PASSO 2: Só se ainda exceder após contextSection=0, remover siglasCriticas
-    //            do taskModules (módulo menos crítico para conduta).
-    //   PASSO 3: Módulos estruturais (core/antiLeak/uiContract/modeModule) são INTOCÁVEIS.
-    //
-    // Motivação: contextSection é o único componente que pode crescer sem limite
-    // (RAG clínico pode chegar a 48k chars). Os módulos de instrução são < 6k chars total.
-    if (candidate.length > 8000) {
-      // Calcular orçamento disponível para o contexto RAG
-      final structuralBase = core.length
-          + 1  // '\n'
-          + antiLeak.length
-          + 1  // '\n'
-          + uiContract.length
-          + 1  // '\n'
-          + modeModule.length
-          + taskModules.length
-          + langSection.length;
-
-      // Budget restante para contextSection (mínimo 0)
-      final ctxBudget = (8000 - structuralBase).clamp(0, 8000);
-
-      String truncatedContext;
-      if (ctxBudget == 0) {
-        // Nenhum espaço para contexto RAG — descarta contextSection por completo
-        truncatedContext = '';
-        if (kDebugMode || _kPromptSizeAudit) {
-          debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL L3: contextSection=0 (structural modules preserved)');
-        }
-      } else if (cleanContext.length > ctxBudget) {
-        // Trunca contextSection ao budget disponível — módulos estruturais intactos
-        truncatedContext = '\n\n[CONTEXTO CLÍNICO RAG — TRUNCADO]\n'
-            '${cleanContext.substring(0, ctxBudget)}...';
-        if (kDebugMode || _kPromptSizeAudit) {
-          debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL L1: contextSection truncado '
-              '${cleanContext.length}→$ctxBudget chars | core+modeModule INTACTOS');
-        }
-      } else {
-        truncatedContext = contextSection;
-      }
-
-      // Remontar com módulos estruturais 100% preservados
-      candidate = core
-          + '\n'
-          + antiLeak
-          + '\n'
-          + uiContract
-          + '\n'
-          + modeModule
-          + taskModules.toString()   // dose/diluicao/interacoes/siglas — intactos
-          + truncatedContext
-          + langSection;
-
-      if (kDebugMode || _kPromptSizeAudit) {
-        debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL ATIVADO: '
-            'original=${candidate.length} chars | '
-            'core=${core.length} | modeModule=${modeModule.length} | '
-            'taskModules=${taskModules.length} | '
-            'ctxBudget=$ctxBudget | resultado=${candidate.length} chars');
+    if (kDebugMode || _kPromptSizeAudit) {
+      if (cleanContext.length > kContextHardCap) {
+        debugPrint('[PM_SIZE] Build184: contextSection truncado '
+            '${cleanContext.length}→$kContextHardCap chars (hard cap)');
       }
     }
 
-    // ── 7. Log de diagnóstico (Build 232: PM_SIZE audit sempre visível) ──────
+    // ── 6. Build 184: languageLock no início E no fim (dupla âncora) ─────────
+    // Início: Viés de Primazia — a IA lê como 1ª instrução de sistema
+    // Fim:    Viés de Recência — a IA lê como última instrução antes de responder
+    // NUNCA pode ser zerado — não passa por nenhum guardrail de truncamento.
+    final String langPrefix = languageLock.isNotEmpty
+        ? '$languageLock\n\n'
+        : '';
+    final String langSuffix = languageLock.isNotEmpty
+        ? '\n$languageLock'
+        : '';
+
+    // ── 7. Montar prompt final ─────────────────────────────────────────────
+    // language lock no INÍCIO (Primazia) + módulos + language lock no FIM (Recência)
+    final String candidate =
+        '$langPrefix'               // language lock no INÍCIO
+        '$core\n'
+        '$antiLeak\n'
+        '$uiContract\n'
+        '$modeModule'
+        '${taskModules.toString()}'
+        '$contextSection'
+        '$langSuffix';              // language lock no FIM
+
+    // ── 8. Log de diagnóstico ─────────────────────────────────────────────
     if (kDebugMode || _kPromptSizeAudit) {
       final modeLabel = isPlantaoMode ? 'plantao' : 'estudo';
 
       debugPrint('[PM_SIZE] ══════════════════════════════════════');
       debugPrint('[PM_SIZE] incomingSystemPrompt=${systemPrompt.length} chars');
       debugPrint('[PM_SIZE] cleanContextAfterSanitize=${cleanContext.length} chars');
+      debugPrint('[PM_SIZE] contextSectionAfterCap=${contextSection.length} chars (hardCap=$kContextHardCap)');
       debugPrint('[PM_SIZE] core=${core.length} chars');
       debugPrint('[PM_SIZE] antiLeak=${antiLeak.length} chars');
       debugPrint('[PM_SIZE] uiContract=${uiContract.length} chars');
       debugPrint('[PM_SIZE] modeModule($modeLabel)=${modeModule.length} chars');
       debugPrint('[PM_SIZE] taskModules(${intent.taskLabel})=${taskModules.length} chars');
-      debugPrint('[PM_SIZE] contextSection=${contextSection.length} chars');
-      debugPrint('[PM_SIZE] languageLock(param)=${languageLock.length} chars');
+      debugPrint('[PM_SIZE] languageLock(param)=${languageLock.length} chars [DUPLA ÂNCORA: início+fim]');
       debugPrint('[PM_SIZE] finalPromptToGemini=${candidate.length} chars');
       debugPrint('[PM_TASK] dose=${intent.isDose} diluicao=${intent.isDilution} interacao=${intent.isInteraction} sigla=${intent.isAcronym}');
       debugPrint('[PM_MODE] $modeLabel');
       debugPrint('[PM_SIZE] ══════════════════════════════════════');
 
-      // Logs legados (kDebugMode only)
       if (kDebugMode) {
         debugPrint('[AI_PROMPT_SIZE] core=${core.length}c antiLeak=${antiLeak.length}c ui=${uiContract.length}c mode($modeLabel)=${modeModule.length}c task(${intent.taskLabel})=${taskModules.length}c ctx=${contextSection.length}c lang=${languageLock.length}c total=${candidate.length}c');
         debugPrint('[AI_MODE] ${modeLabel.toUpperCase()}');

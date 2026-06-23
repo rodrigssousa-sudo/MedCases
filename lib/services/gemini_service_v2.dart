@@ -561,10 +561,11 @@ class GeminiServiceV2 {
       return [];
     }
 
-    // Mesmo assunto — Build 105: janela ampliada para 5 pares (era 3)
-    // Suporta diálogos de acompanhamento sem perda de memória conversacional.
-    const maxPairs = 5;
-    const maxEntries = maxPairs * 2; // 10 entradas = 5 user + 5 model
+    // Build 184: janela reduzida de 5 → 2 pares (anti-503 / anti-30k chars).
+    // 2 pares = 4 entradas ≈ ~800 tokens de contexto conversacional.
+    // Suficiente para follow-up imediato; elimina a causa raiz do Erro 503.
+    const maxPairs = 2;
+    const maxEntries = maxPairs * 2; // 4 entradas = 2 user + 2 model
 
     if (history.length <= maxEntries) {
       _log('[GeminiV2] MÉDICO: histórico completo (${history.length} entradas)');

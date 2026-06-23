@@ -1539,14 +1539,38 @@ class _AiScreenState extends State<AiScreen> {
     );
   }
 
-  /// Build 170 — Editar mensagem do usuário
+  /// Build 184 — Editar mensagem do usuário
   /// Remove todas as mensagens a partir do índice [msgIndex] (a mensagem editada
   /// e todas as respostas subsequentes), substitui pelo novo texto e re-dispara
   /// o stream como se o usuário tivesse enviado [newText] diretamente.
+  ///
+  /// Fix 2 Build 184: após removeRange() na lista visual, reconstrói o
+  /// _aiHistory interno do AppProvider com APENAS as mensagens sobreviventes.
+  /// Isso garante que o gateway (GeminiServiceV2) não envie turnos podados
+  /// como contexto poluído — o histórico da API fica sincronizado com a UI.
   void _editUserMessage(int msgIndex, String newText, AppProvider p) {
     if (!mounted) return;
     // Cancela qualquer stream ativo
     p.cancelAiStream();
+
+    // ── Fix 2: captura as msgs sobreviventes ANTES do setState ──────────────
+    // Apenas mensagens anteriores ao índice editado são válidas como histórico.
+    final survivingMsgs = msgIndex > 0
+        ? _messages.sublist(0, msgIndex)
+        : <_ChatMsg>[];
+
+    // Reconstrói _aiHistory com apenas as mensagens que restaram na UI.
+    // rebuildAiHistoryFromMessages() aceita [{role, content}] e limita a 10
+    // entradas (5 pares) — gateway nunca receberá turnos podados.
+    final historyPayload = survivingMsgs
+        .where((m) => m.role == 'user' || m.role == 'ai')
+        .map((m) => {
+              'role': m.role == 'ai' ? 'assistant' : 'user',
+              'content': m.text,
+            })
+        .toList();
+    p.rebuildAiHistoryFromMessages(historyPayload);
+
     setState(() {
       // Remove mensagens a partir do índice editado (inclusive)
       if (msgIndex < _messages.length) {
