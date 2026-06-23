@@ -4325,14 +4325,20 @@ class _AiBlockBubble extends StatelessWidget {
           data: md,
           selectable: false,
           styleSheet: MarkdownStyleSheet(
+            // Build 1556 — Contraste visual corrigido:
+            // Texto base (p, li, body) → cor neutra de leitura (textColor).
+            // Negrito (**...**) → cor vibrante de destaque (kFerrariRed/cyan).
+            // Resultado: fármacos/doses saltam visualmente; texto ao redor é neutro.
             p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
-            // B140: nomes de fármacos e termos em negrito → Vermelho Ferrari
-            strong: const TextStyle(
+            // strong = fármacos, doses, palavras-chave clínicas → cor vibrante
+            strong: TextStyle(
               fontSize: 13.5,
               fontWeight: FontWeight.w700,
-              color: kFerrariRed,
+              // Dark mode: cyan médico; Light mode: Vermelho Ferrari
+              color: dark ? const Color(0xFF00E5FF) : kFerrariRed,
             ),
             em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
+            // listBullet herda textColor neutro — não a cor de destaque
             listBullet: TextStyle(fontSize: 13.5, color: textColor),
             // B140: título principal da resposta → Vermelho Ferrari bold
             h2: const TextStyle(

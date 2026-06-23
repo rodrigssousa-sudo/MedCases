@@ -1317,27 +1317,41 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     if (q != null && q.isNotEmpty) {
       // Chip de atalho ou campo preenchido: dispara nova query na tela de IA
       AiScreen.pendingQuery.value = q;
-    } else if (withHistory && _messages.isNotEmpty) {
-      // Build 236 Fix: "Ver resposta completa" — injeta histórico COMPLETO do mini-chat.
-      // Inclui a resposta em streaming (_streaming) se ainda não foi commitada em
-      // _messages (race condition: usuário clicou antes do onDone fechar o stream).
-      // Filtra apenas pares user+ai sem erros para uma continuação limpa.
-      final clean = _messages.where((m) => m['isError'] != true).toList();
+    } else if (withHistory) {
+      // Build 1556 Fix: escopo local do _HomeInlineChatState corrigido.
+      //
+      // PROBLEMA ANTERIOR: a guard `_messages.isNotEmpty` bloqueava a injeção
+      // quando o usuário clicava "Ver resposta completa" durante streaming ativo
+      // (_thinking=true) — nesse estado _messages ainda pode estar vazio porque a
+      // resposta AI ainda não foi commitada pelo onDone. O resultado era AiScreen
+      // abrir completamente em branco.
+      //
+      // CORREÇÃO: avaliar _messages E _streaming de forma independente.
+      // Se _messages vazio mas _streaming não vazio → ainda há conteúdo local.
+      // Só pula a injeção se AMBOS estiverem vazios.
+      //
+      // ESCOPO: _messages e _streaming pertencem exclusivamente a
+      // _HomeInlineChatState (definidos nas linhas 1078-1079 desta classe).
+      // Não há acesso a nenhuma lista global da HomeScreen pai.
 
-      // Snapshot das mensagens base
+      // Snapshot das mensagens commitadas (sem erros)
+      final clean = _messages.where((m) => m['isError'] != true).toList();
       final pairs = clean
           .map((m) => {'role': m['role'] as String, 'text': m['text'] as String})
           .toList();
 
-      // Se há texto em streaming que ainda não virou mensagem, inclui como 'ai'
+      // Snapshot do streaming em vôo (race condition: onDone ainda não disparou)
       final streamingSnapshot = _streaming.trim();
       if (streamingSnapshot.isNotEmpty) {
         pairs.add({'role': 'ai', 'text': streamingSnapshot});
       }
 
+      // Injeta somente se há conteúdo real — evita AiScreen em branco
       if (pairs.isNotEmpty) {
         AiScreen.pendingHistory.value = pairs;
       }
+      // Se pairs ainda vazio (edge case: clique antes da primeira palavra AI),
+      // navega mesmo assim — AiScreen exibirá saudação padrão normalmente.
     }
     widget.onNavigateToAi(2);
   }

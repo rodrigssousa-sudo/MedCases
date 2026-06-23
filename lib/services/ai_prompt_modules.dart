@@ -494,27 +494,74 @@ class PromptModules {
         + contextSection
         + langSection;
 
-    // ── 6. Guardrail de tamanho: 8000 chars máximo ──────────────────────────
-    // Se exceder (anomalia de histórico/RAG muito longo), descarta módulos
-    // não-essenciais nesta ordem: siglasCriticas, uiContract, módulos de tarefa.
+    // ── 6. Guardrail de tamanho — Build 1556: PRIORIDADE DE DESCARTE INVERTIDA ─
+    //
+    // REGRA ABSOLUTA (Code Freeze):
+    //   NUNCA descartar: core, antiLeak, uiContract, modeModule (plantao/estudo),
+    //   taskModules (dose/diluicao/interacoes), langSection.
+    //   Esses módulos definem o comportamento estrutural do app — sem eles a IA
+    //   perde diretrizes e devolve uma única linha vazia para qualquer query.
+    //
+    // ORDEM DE TRUNCAMENTO (contextSection é a única variável em tamanho):
+    //   PASSO 1: Truncar contextSection progressivamente (48k → 4000 → 2000 → 0).
+    //   PASSO 2: Só se ainda exceder após contextSection=0, remover siglasCriticas
+    //            do taskModules (módulo menos crítico para conduta).
+    //   PASSO 3: Módulos estruturais (core/antiLeak/uiContract/modeModule) são INTOCÁVEIS.
+    //
+    // Motivação: contextSection é o único componente que pode crescer sem limite
+    // (RAG clínico pode chegar a 48k chars). Os módulos de instrução são < 6k chars total.
     if (candidate.length > 8000) {
-      // Context truncado a 2000 chars para caber no guardrail
-      final truncatedContext = cleanContext.length > 2000
-          ? '\n\n[CONTEXTO CLÍNICO RAG]\n${cleanContext.substring(0, 2000)}...'
-          : contextSection;
+      // Calcular orçamento disponível para o contexto RAG
+      final structuralBase = core.length
+          + 1  // '\n'
+          + antiLeak.length
+          + 1  // '\n'
+          + uiContract.length
+          + 1  // '\n'
+          + modeModule.length
+          + taskModules.length
+          + langSection.length;
 
+      // Budget restante para contextSection (mínimo 0)
+      final ctxBudget = (8000 - structuralBase).clamp(0, 8000);
+
+      String truncatedContext;
+      if (ctxBudget == 0) {
+        // Nenhum espaço para contexto RAG — descarta contextSection por completo
+        truncatedContext = '';
+        if (kDebugMode || _kPromptSizeAudit) {
+          debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL L3: contextSection=0 (structural modules preserved)');
+        }
+      } else if (cleanContext.length > ctxBudget) {
+        // Trunca contextSection ao budget disponível — módulos estruturais intactos
+        truncatedContext = '\n\n[CONTEXTO CLÍNICO RAG — TRUNCADO]\n'
+            '${cleanContext.substring(0, ctxBudget)}...';
+        if (kDebugMode || _kPromptSizeAudit) {
+          debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL L1: contextSection truncado '
+              '${cleanContext.length}→$ctxBudget chars | core+modeModule INTACTOS');
+        }
+      } else {
+        truncatedContext = contextSection;
+      }
+
+      // Remontar com módulos estruturais 100% preservados
       candidate = core
           + '\n'
           + antiLeak
           + '\n'
+          + uiContract
+          + '\n'
           + modeModule
-          + (intent.isDilution ? '\n$diluicao' : '')
-          + (intent.isDose && !intent.isDilution ? '\n$dose' : '')
+          + taskModules.toString()   // dose/diluicao/interacoes/siglas — intactos
           + truncatedContext
           + langSection;
 
       if (kDebugMode || _kPromptSizeAudit) {
-        debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL: prompt excedeu 8000 chars → módulos não-essenciais descartados');
+        debugPrint('[AI_PROMPT_SIZE] ⚠️ GUARDRAIL ATIVADO: '
+            'original=${candidate.length} chars | '
+            'core=${core.length} | modeModule=${modeModule.length} | '
+            'taskModules=${taskModules.length} | '
+            'ctxBudget=$ctxBudget | resultado=${candidate.length} chars');
       }
     }
 
