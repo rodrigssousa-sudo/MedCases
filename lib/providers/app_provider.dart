@@ -2308,12 +2308,21 @@ class AppProvider extends ChangeNotifier {
       return 'psicofarmaco';
     }
 
-    // ── Farmacológica — sobre fármaco específico ou lista por indicação ─────
-    if (_has(q, ['farmaco', 'farmacos', 'medicament', 'remedio ', 'remedios',
-                  'droga ', 'antibiot', 'antibio', 'antiviral', 'antifungic',
-                  'dose', 'dosagem', 'dosis', 'posolog', 'mecanismo de acao',
-                  'mecanismo de accion', 'indicac', 'contraindicac',
-                  'efeito adverso', 'efecto adverso', 'ajuste renal', 'gravidez'])) {
+    // ── Farmacológica — fármaco específico ou keywords de dose/posologia ────
+    // Build 188: prioridade correta — fármaco específico detectado na drugsDatabase
+    // > keywords genéricas de dose. "ceftriaxona" sozinho = farmaco.
+    // "ceftriaxona dose" = farmaco (não pediatria, não geral).
+    // Só classifica como 'pediatria' se não houver fármaco específico detectado.
+    final hasPharmacyKeyword = _has(q, [
+      'farmaco', 'farmacos', 'medicament', 'remedio ', 'remedios',
+      'droga ', 'antibiot', 'antibio', 'antiviral', 'antifungic',
+      'dose', 'dosagem', 'dosis', 'posolog', 'mecanismo de acao',
+      'mecanismo de accion', 'indicac', 'contraindicac',
+      'efeito adverso', 'efecto adverso', 'ajuste renal', 'gravidez',
+    ]);
+    // Detecta se a query contém um nome de fármaco específico da base
+    final hasDrugName = _matchDrugs(q).isNotEmpty;
+    if (hasPharmacyKeyword || hasDrugName) {
       return 'farmaco';
     }
 
@@ -5598,11 +5607,21 @@ class AppProvider extends ChangeNotifier {
 
     // ════════════════════════════════════════════════════════════════════════
     // FASE 0 — FARMACOLOGIA DIRETA (prioridade absoluta)
-    // Resposta completa sempre: classe, mecanismo, dose, via, efeitos adversos,
-    // contraindicações, interações com medicamentos do paciente, ajuste renal.
-    // Serve como contexto RAG estruturado para o Gemini.
+    // Build 188: Ativa quando:
+    //   a) Nome de fármaco específico detectado na drugsDatabase (prioridade máxima)
+    //   b) Keywords de dose/posologia/mecanismo presentes
+    // "ceftriaxona" sozinho = ficha completa (adulto + pediátrico + renal + alertas)
+    // "ceftriaxona dose" = idem, com foco em dose
+    // "ceftriaxona dose pediátrica" = idem, foco pediátrico
+    // NUNCA classifica como pediatria se há fármaco específico na query
     // ════════════════════════════════════════════════════════════════════════
-    final isPharmaQuestion = _has(qExpanded, [
+
+    // Build 188: verifica presença de nome de fármaco na query (antes das keywords)
+    // para garantir que "ceftriaxona" sozinho ativa a FASE 0
+    final drugNamesInQuery = _matchDrugs(_normalize(q));
+    final hasDrugNameInQuery = drugNamesInQuery.isNotEmpty;
+
+    final isPharmaKeyword = _has(qExpanded, [
       'via de admin', 'forma de admin', 'via admin', 'como admin',
       'como dar', 'como usar', 'modo de usar', 'modo de admin', 'rota de admin',
       'dose ', 'dosagem', 'posolog', 'dose maxima', 'dose minima',
@@ -5619,8 +5638,15 @@ class AppProvider extends ChangeNotifier {
       'interaccion', 'contraindicacion', 'para que sirve', 'alerta renal',
     ]);
 
+    // FASE 0 ativa se: fármaco específico detectado OU keyword de farmacologia
+    final isPharmaQuestion = hasDrugNameInQuery || isPharmaKeyword;
+
     if (isPharmaQuestion) {
-      final matchedDrugs = _matchDrugs(_normalize(qExpanded));
+      // Build 188: se fármaco detectado na query isolada → usa esse resultado
+      // senão expande para qExpanded (contexto histórico)
+      final matchedDrugs = hasDrugNameInQuery
+          ? drugNamesInQuery
+          : _matchDrugs(_normalize(qExpanded));
       if (matchedDrugs.isNotEmpty) {
         // Detectar foco da pergunta para priorizar seções no output
         final askingVia   = _has(qExpanded, ['via ', 'via de', 'forma de admin', 'como admin', 'como dar', 'rota', 'modo de', 'administracion']);
@@ -5689,8 +5715,11 @@ class AppProvider extends ChangeNotifier {
             }
           }
 
-          // ── Contraindicações / Alertas (sempre na ficha completa) ──────────
-          if (askingCI || showAll) {
+          // ── Contraindicações / Alertas ────────────────────────────────────
+          // Build 188: alertas críticos sempre exibidos quando perguntando dose
+          // (askingDose=true) — sem alertas a dose é informação incompleta.
+          // Também exibido quando pedido explicitamente (askingCI) ou ficha completa.
+          if (askingCI || askingDose || showAll) {
             final warn = drug.getField(drug.warning, _lang);
             if (warn.isNotEmpty) {
               final warnTrunc = warn.length > 250 ? '${warn.substring(0, 250)}...' : warn;
@@ -5730,14 +5759,22 @@ class AppProvider extends ChangeNotifier {
             }
           }
 
-          // ── Ajuste renal (sempre quando ClCr reduzido) ────────────────────
+          // ── Ajuste renal ──────────────────────────────────────────────────
+          // Build 188: quando ClCr reduzido → nível de alerta com valor.
+          // Quando perguntando dose (askingDose) ou ficha completa (showAll) →
+          // inclui o texto de ajuste renal mesmo sem ClCr (informação preventiva).
           final clcrPharma = double.tryParse((clcr ?? '').replaceAll(',', '.'));
-          if (clcrPharma != null && clcrPharma > 0 && clcrPharma < 60) {
-            final ra = drug.getField(drug.renalAlert, _lang);
-            if (ra.isNotEmpty) {
+          final ra = drug.getField(drug.renalAlert, _lang);
+          if (ra.isNotEmpty) {
+            if (clcrPharma != null && clcrPharma > 0 && clcrPharma < 60) {
+              // ClCr conhecido e reduzido — alerta com nível de gravidade
               final raLevel = clcrPharma < 15 ? '🔴 ALERTA RENAL GRAVE' : clcrPharma < 30 ? '🟠 Alerta renal' : '🟡 Atenção renal';
               final raTrunc = ra.length > 200 ? '${ra.substring(0, 200)}...' : ra;
               buf.writeln('  **$raLevel (ClCr $clcr mL/min):** $raTrunc');
+            } else if (askingDose || showAll) {
+              // ClCr desconhecido mas pedindo dose — mostra nota informativa
+              final raTrunc = ra.length > 200 ? '${ra.substring(0, 200)}...' : ra;
+              buf.writeln('  **${es ? "Ajuste renal (si aplica)" : "Ajuste renal (se aplicável)"}:** $raTrunc');
             }
           }
 

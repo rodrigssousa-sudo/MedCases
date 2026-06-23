@@ -146,8 +146,27 @@ class ExternalToolLinkEngine {
       );
     }
 
-    // ── 8. Pediatria ─────────────────────────────────────────────────────
-    if (_detectPediatria(combined)) {
+    // ── 8. Fármaco isolado — PRIORIDADE sobre Pediatria ───────────────────
+    // Build 188: fármaco específico na query do usuário tem prioridade absoluta
+    // sobre pediatria genérica. "ceftriaxona dose" → tab farmacos, nunca pediatria.
+    // Detectamos no userMessage (não no combined) para não confundir com resposta AI.
+    final drugUserMsg = _detectSingleDrug(lastUserMessage.toLowerCase());
+    if (drugUserMsg != null) {
+      final label = isEs
+          ? '💊 Abrir ${drugUserMsg.display} en la base'
+          : '💊 Abrir ${drugUserMsg.display} na base';
+      _log(lang: lang, tab: 'farmacos', extra: 'q=${drugUserMsg.param}');
+      return ExternalToolLink(
+        label: label,
+        url: _url(lang: lang, tab: 'farmacos', q: drugUserMsg.param),
+      );
+    }
+
+    // ── 9. Pediatria — só quando sem fármaco específico na user msg ────────
+    // Build 188: _detectPediatria agora exige termos pediátricos EXPLÍCITOS
+    // no lastUserMessage (não na resposta AI — evita falso positivo quando
+    // a resposta menciona "dose pediátrica" como seção complementar).
+    if (_detectPediatria(lastUserMessage.toLowerCase())) {
       final label = isEs ? '👶 Módulo pediatría' : '👶 Módulo pediatria';
       _log(lang: lang, tab: 'pediatria', extra: '');
       return ExternalToolLink(
@@ -156,7 +175,7 @@ class ExternalToolLinkEngine {
       );
     }
 
-    // ── 9. Gestante / Obstetrícia ─────────────────────────────────────────
+    // ── 10. Gestante / Obstetrícia ─────────────────────────────────────────
     if (_detectGestante(combined)) {
       final label = isEs ? '🤰 Módulo gestante' : '🤰 Módulo gestante';
       _log(lang: lang, tab: 'gestante', extra: '');
@@ -166,7 +185,8 @@ class ExternalToolLinkEngine {
       );
     }
 
-    // ── 10. Fármaco isolado (último pois menos específico) ────────────────
+    // ── 11. Fármaco isolado via combined (fallback AI response) ───────────
+    // Só chega aqui se userMessage não tinha fármaco específico.
     final drug = _detectSingleDrug(combined);
     if (drug != null) {
       final label = isEs
@@ -336,14 +356,30 @@ class ExternalToolLinkEngine {
   }
 
   // ───────────────────────────────────────────────────────────────────────────
-  // PEDIATRIA
+  // PEDIATRIA — Build 188: exige termos pediátricos EXPLÍCITOS no texto do
+  // usuário. Removido 'dose pediátrica' e 'laringite' (falsos positivos).
+  // Esta função agora é chamada APENAS com lastUserMessage (não combined)
+  // para evitar que a resposta AI contendo "dose pediátrica" como seção
+  // complementar dispare o módulo pediatria indevidamente.
   // ───────────────────────────────────────────────────────────────────────────
   static bool _detectPediatria(String text) {
     const kws = [
-      'pediatri', 'neonato', 'neonat', 'recém-nascido', 'recien nacido',
-      'lactente', 'criança', 'niño', 'pediátric', 'pediatric',
-      'bronquiolit', 'croup', 'laringite', 'garrotillo',
-      'kg/m²', 'dose pediátrica', 'dose pediatrica',
+      // Termos explicitamente pediátricos (sem ambiguidade)
+      'pediatri',          // pediatria, pediátrico, pediatric
+      'neonato', 'neonat', // neonato, neonatal
+      'recém-nascido', 'recien nacido', 'recem-nascido',
+      'lactente', 'lactant',
+      'criança', 'crianca',
+      'niño', 'niña', 'niños',
+      'pediátric', 'pediatric',  // pediátrico, pediatrico
+      'bronquiolit',             // bronquiolite — patologia pediátrica primária
+      'croup', 'garrotillo',     // laringotraqueobronquite viral pediátrica
+      'laringotraqueit',         // mais específico que 'laringite'
+      'pals ',                   // pediatric advanced life support
+      'peso em kg crianca', 'kg/dia crianca',
+      'dose para crianca', 'dose para bebe',
+      'dosis neonatal', 'dosis pediatrica',
+      'dosis para nino', 'dosis en ninos',
     ];
     for (final kw in kws) {
       if (text.contains(kw)) return true;
