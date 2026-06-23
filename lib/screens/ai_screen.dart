@@ -3144,8 +3144,10 @@ class _ActionButtonsRow extends StatelessWidget {
     // Label do botão IA
     final aiLabel = lang == 'es' ? 'Conductas y dosis' : 'Condutas e doses';
 
-    // Label do botão Calculadora
-    final calcLabel = lang == 'es' ? 'Abrir calculadora' : 'Abrir calculadora';
+    // Label do botão Calculadora — Build 223: usa link.label (context-aware)
+    // A decisão de qual calculadora abrir acontece no pipeline (ExternalToolLinkEngine),
+    // nunca aqui. A UI apenas consome o label já resolvido.
+    // Exemplos: '💊 Abrir Amiodarona na base', '⚗️ Abrir Potássio (eletrólitos)', etc.
 
     return Padding(
       // 16 px acima da resposta (spacing entre resposta e botões)
@@ -3167,7 +3169,7 @@ class _ActionButtonsRow extends StatelessWidget {
 
           final calcBtn = link != null
               ? ActionCardButton(
-                  title: calcLabel,
+                  title: link.label, // Build 223: context-aware label from pipeline
                   icon: Icons.calculate_rounded,
                   accentColor: _kPurpleCalc,
                   dark: dark,

@@ -33,16 +33,51 @@
 //   4. fallback final → 'pt'
 // ══════════════════════════════════════════════════════════════════════════════
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CalculatorContext — Build 223: identificador de contexto clínico
+// A decisão acontece NO PIPELINE, nunca na UI.
+// Expansível: adicionar novo valor sem quebrar chamadas existentes.
+// Nota: usa 'dflt' (não 'default') — 'default' é palavra reservada no Dart.
+// ─────────────────────────────────────────────────────────────────────────────
+enum CalculatorContext {
+  drug,         // Fármaco específico (ceftriaxona, amiodarona, etc.)
+  electrolytes, // Eletrólitos genérico (cloro, sem contexto específico)
+  potassium,    // Potássio / Hipocalemia / Hipercalemia
+  sodium,       // Sódio / Hiponatremia / Hipernatremia
+  calcium,      // Cálcio / Hipocalcemia / Hipercalcemia
+  magnesium,    // Magnésio / Hipomagnesemia
+  phosphorus,   // Fósforo / Hipofosfatemia
+  glucose,      // Glicose / CAD / EHH / Hipoglicemia / Insulina EV
+  insulin,      // Insulina (infusão contínua / protocolo)
+  acid_base,    // Equilíbrio ácido-base (ânion gap, BE, bicarbonato)
+  renal,        // Função renal / IRA / IRC / ajuste de dose
+  clcr,         // Clearance de creatinina (Cockcroft-Gault / CKD-EPI)
+  vasoactive,   // Drogas vasoativas / hemodinâmica
+  antibiotics,  // Antibióticos (sem interação específica)
+  infusion,     // Cálculo de infusão EV (mcg/kg/min → mL/h)
+  pediatric,    // Módulo pediátrico
+  weight,       // Peso / IMC / dose/kg / superfície corporal
+  fluid,        // Fluidos / reposição volêmica
+  heparin,      // Heparina / anticoagulação
+  nutrition,    // Nutrição parenteral / enteral
+  dflt,         // Geral / sem contexto específico identificado
+}
+
 const String _kBase = 'https://medcasescalcu.com/';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Output model
 // ─────────────────────────────────────────────────────────────────────────────
 class ExternalToolLink {
-  final String label; // PT/ES button label shown to user
-  final String url;   // full https://medcasescalcu.com/?lang=pt|es&tab=...&q=...
+  final String label;                       // PT/ES button label shown to user
+  final String url;                         // full https://medcasescalcu.com/?lang=pt|es&tab=...&q=...
+  final CalculatorContext calculatorContext; // Build 223: contexto clínico (pipeline-level, nunca UI)
 
-  const ExternalToolLink({required this.label, required this.url});
+  const ExternalToolLink({
+    required this.label,
+    required this.url,
+    this.calculatorContext = CalculatorContext.dflt,
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -73,11 +108,13 @@ class ExternalToolLinkEngine {
       final label = isEs
           ? '💊 Verificar interacción'
           : '💊 Verificar interação';
-      _log(lang: lang, tab: 'interacoes', extra: 'drug1=${interacao.$1} drug2=${interacao.$2}');
+      _log(lang: lang, tab: 'interacoes',
+          extra: 'drug1=${interacao.$1} drug2=${interacao.$2} ctx=drug');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'interacoes',
             extra: 'drug1=${_enc(interacao.$1)}&drug2=${_enc(interacao.$2)}'),
+        calculatorContext: CalculatorContext.drug,
       );
     }
 
@@ -85,43 +122,53 @@ class ExternalToolLinkEngine {
     final score = _detectScore(combined);
     if (score != null) {
       final label = '📊 Abrir ${score.display}';
-      _log(lang: lang, tab: 'scores', extra: 'q=${score.param}');
+      _log(lang: lang, tab: 'scores', extra: 'q=${score.param} ctx=dflt');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'scores', q: score.param),
+        calculatorContext: CalculatorContext.dflt,
       );
     }
 
     // ── 3. Calculadoras clínicas ───────────────────────────────────────────
     final calcu = _detectCalculadora(combined);
     if (calcu != null) {
+      final calcCtx = _calcContext(calcu.param);
       final label = '🧮 Calcular ${calcu.display}';
-      _log(lang: lang, tab: 'calculadoras', extra: 'q=${calcu.param}');
+      _log(lang: lang, tab: 'calculadoras', extra: 'q=${calcu.param} ctx=$calcCtx');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'calculadoras', q: calcu.param),
+        calculatorContext: calcCtx,
       );
     }
 
     // ── 4. Eletrólitos ────────────────────────────────────────────────────
     final eletro = _detectEletrolito(combined);
     if (eletro != null) {
-      final label = isEs ? '⚗️ Abrir electrolitos' : '⚗️ Abrir eletrólitos';
-      _log(lang: lang, tab: 'eletrolitos', extra: 'q=${eletro.param}');
+      final eletroCtx = _eletroliContext(eletro.param);
+      final label = isEs
+          ? '⚗️ Abrir ${eletro.display} (electrolitos)'
+          : '⚗️ Abrir ${eletro.display} (eletrólitos)';
+      _log(lang: lang, tab: 'eletrolitos', extra: 'q=${eletro.param} ctx=$eletroCtx');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'eletrolitos', q: eletro.param),
+        calculatorContext: eletroCtx,
       );
     }
 
     // ── 5. Infusão / Drogas vasoativas ────────────────────────────────────
     final infusao = _detectInfusao(combined);
     if (infusao != null) {
-      final label = isEs ? '💉 Abrir infusión' : '💉 Abrir infusão';
-      _log(lang: lang, tab: 'infusao', extra: 'q=${infusao.param}');
+      final label = isEs
+          ? '💉 Calcular infusión: ${infusao.display}'
+          : '💉 Calcular infusão: ${infusao.display}';
+      _log(lang: lang, tab: 'infusao', extra: 'q=${infusao.param} ctx=infusion');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'infusao', q: infusao.param),
+        calculatorContext: CalculatorContext.infusion,
       );
     }
 
@@ -129,20 +176,22 @@ class ExternalToolLinkEngine {
     final hemodi = _detectHemodinamica(combined);
     if (hemodi != null) {
       final label = isEs ? '❤️ Abrir hemodinámica' : '❤️ Abrir hemodinâmica';
-      _log(lang: lang, tab: 'hemodinamica', extra: 'q=${hemodi.param}');
+      _log(lang: lang, tab: 'hemodinamica', extra: 'q=${hemodi.param} ctx=vasoactive');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'hemodinamica', q: hemodi.param),
+        calculatorContext: CalculatorContext.vasoactive,
       );
     }
 
     // ── 7. Fluidos / Reposição volêmica ───────────────────────────────────
     if (_detectFluidos(combined)) {
       final label = isEs ? '🩺 Fluidos y volumen' : '🩺 Fluidos e volume';
-      _log(lang: lang, tab: 'fluidos', extra: '');
+      _log(lang: lang, tab: 'fluidos', extra: 'ctx=fluid');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'fluidos'),
+        calculatorContext: CalculatorContext.fluid,
       );
     }
 
@@ -152,13 +201,15 @@ class ExternalToolLinkEngine {
     // Detectamos no userMessage (não no combined) para não confundir com resposta AI.
     final drugUserMsg = _detectSingleDrug(lastUserMessage.toLowerCase());
     if (drugUserMsg != null) {
+      final drugCtxUser = _drugContext(drugUserMsg.param);
       final label = isEs
           ? '💊 Abrir ${drugUserMsg.display} en la base'
           : '💊 Abrir ${drugUserMsg.display} na base';
-      _log(lang: lang, tab: 'farmacos', extra: 'q=${drugUserMsg.param}');
+      _log(lang: lang, tab: 'farmacos', extra: 'q=${drugUserMsg.param} ctx=$drugCtxUser');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'farmacos', q: drugUserMsg.param),
+        calculatorContext: drugCtxUser,
       );
     }
 
@@ -168,20 +219,22 @@ class ExternalToolLinkEngine {
     // a resposta menciona "dose pediátrica" como seção complementar).
     if (_detectPediatria(lastUserMessage.toLowerCase())) {
       final label = isEs ? '👶 Módulo pediatría' : '👶 Módulo pediatria';
-      _log(lang: lang, tab: 'pediatria', extra: '');
+      _log(lang: lang, tab: 'pediatria', extra: 'ctx=pediatric');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'pediatria'),
+        calculatorContext: CalculatorContext.pediatric,
       );
     }
 
     // ── 10. Gestante / Obstetrícia ─────────────────────────────────────────
     if (_detectGestante(combined)) {
       final label = isEs ? '🤰 Módulo gestante' : '🤰 Módulo gestante';
-      _log(lang: lang, tab: 'gestante', extra: '');
+      _log(lang: lang, tab: 'gestante', extra: 'ctx=dflt');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'gestante'),
+        calculatorContext: CalculatorContext.dflt,
       );
     }
 
@@ -189,13 +242,15 @@ class ExternalToolLinkEngine {
     // Só chega aqui se userMessage não tinha fármaco específico.
     final drug = _detectSingleDrug(combined);
     if (drug != null) {
+      final drugCtx = _drugContext(drug.param);
       final label = isEs
           ? '💊 Abrir ${drug.display} en la base'
           : '💊 Abrir ${drug.display} na base';
-      _log(lang: lang, tab: 'farmacos', extra: 'q=${drug.param}');
+      _log(lang: lang, tab: 'farmacos', extra: 'q=${drug.param} ctx=$drugCtx');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'farmacos', q: drug.param),
+        calculatorContext: drugCtx,
       );
     }
 
@@ -252,12 +307,94 @@ class ExternalToolLinkEngine {
 
   // ───────────────────────────────────────────────────────────────────────────
   // _log — safe diagnostic log (nunca loga dados do paciente)
-  // Formato: [EXT_TOOL] lang=pt tab=farmacos q=ceftriaxona
+  // Formato: [EXT_TOOL][Build223] lang=pt tab=farmacos q=ceftriaxona ctx=drug
+  // Build 223: inclui calculatorContext em cada log para auditoria do pipeline
   // ───────────────────────────────────────────────────────────────────────────
   // ignore: avoid_print
   static void _log({required String lang, required String tab, required String extra}) {
     // ignore: avoid_print
-    print('[EXT_TOOL] lang=$lang tab=$tab${extra.isNotEmpty ? " $extra" : ""}');
+    print('[EXT_TOOL][Build223] lang=$lang tab=$tab${extra.isNotEmpty ? " $extra" : ""}');
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // _calcContext — mapeia param de calculadora → CalculatorContext (Build 223)
+  // Decisão determinística: nunca regex, nunca UI, nunca texto renderizado.
+  // ───────────────────────────────────────────────────────────────────────────
+  static CalculatorContext _calcContext(String param) {
+    switch (param) {
+      case 'clcr':
+      case 'tfg':
+      case 'dose-renal':      return CalculatorContext.clcr;
+      case 'anion-gap':
+      case 'be':
+      case 'bicarbonato':
+      case 'regra-de-22':     return CalculatorContext.acid_base;
+      case 'imc':
+      case 'peso-ideal':      return CalculatorContext.weight;
+      case 'osmolaridade':
+      case 'water-deficit':   return CalculatorContext.renal;
+      case 'sodio-corrigido': return CalculatorContext.sodium;
+      case 'calcio-corrigido': return CalculatorContext.calcium;
+      default:                return CalculatorContext.dflt;
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // _eletroliContext — mapeia param de eletrólito → CalculatorContext (Build 223)
+  // ───────────────────────────────────────────────────────────────────────────
+  static CalculatorContext _eletroliContext(String param) {
+    switch (param) {
+      case 'potassio':  return CalculatorContext.potassium;
+      case 'sodio':     return CalculatorContext.sodium;
+      case 'calcio':    return CalculatorContext.calcium;
+      case 'magnesio':  return CalculatorContext.magnesium;
+      case 'fosforo':   return CalculatorContext.phosphorus;
+      case 'cloro':     return CalculatorContext.electrolytes;
+      default:          return CalculatorContext.electrolytes;
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // _drugContext — mapeia param de fármaco → CalculatorContext (Build 223)
+  // Prioridade: fármaco específico (insulina/heparina/antibiótico/vasoativo) > drug
+  // ───────────────────────────────────────────────────────────────────────────
+  static CalculatorContext _drugContext(String param) {
+    // Insulina / Glicose
+    if (param == 'insulina' || param == 'metformina') {
+      return CalculatorContext.glucose;
+    }
+    // Heparina / anticoagulação
+    if (const [
+      'heparina', 'rivaroxabana', 'apixabana', 'dabigatrana', 'warfarina',
+    ].contains(param)) {
+      return CalculatorContext.heparin;
+    }
+    // Antibióticos
+    if (const [
+      'ceftriaxona', 'piperacilina-tazobactam', 'meropenem', 'vancomicina',
+      'ciprofloxacino', 'amoxicilina-clavulanato', 'azitromicina', 'metronidazol',
+      'doxiciclina', 'cefazolina', 'fluconazol', 'anfotericina', 'linezolida',
+      'colistina', 'levofloxacino', 'ertapenem', 'imipenem', 'rifampicina',
+      'ceftazidima',
+    ].contains(param)) {
+      return CalculatorContext.antibiotics;
+    }
+    // Vasoativos / sedação EV
+    if (const [
+      'norepinefrina', 'dopamina', 'dobutamina', 'vasopressina',
+      'nitroprussiato', 'nitroglicerina', 'adrenalina',
+    ].contains(param)) {
+      return CalculatorContext.vasoactive;
+    }
+    // Sedação/analgesia EV (sem tab infusao, mas contexto infusion)
+    if (const [
+      'midazolam', 'propofol', 'dexmedetomidina', 'fentanil',
+      'ketamina', 'morfina',
+    ].contains(param)) {
+      return CalculatorContext.infusion;
+    }
+    // Geral
+    return CalculatorContext.drug;
   }
 
   // ───────────────────────────────────────────────────────────────────────────
