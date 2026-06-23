@@ -3052,7 +3052,14 @@ class _ExternalToolButton extends StatelessWidget {
         onTap: () async {
           final uri = Uri.parse(link.url);
           if (await canLaunchUrl(uri)) {
-            await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+            // Build 187: inAppBrowserView não funciona no Flutter Web —
+            // platformDefault abre no mesmo contexto do browser (sem nova aba forçada).
+            await launchUrl(
+              uri,
+              mode: kIsWeb
+                  ? LaunchMode.platformDefault
+                  : LaunchMode.inAppBrowserView,
+            );
           }
         },
         child: Container(

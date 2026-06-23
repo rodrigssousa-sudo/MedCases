@@ -1,4 +1,6 @@
-import 'dart:io' show Platform;
+// Build 187: Gray Screen Fix — Web usa HtmlElementView/iframe; iOS/Android mantém WebView nativo.
+// dart:io Platform removido — usa kIsWeb para guards de plataforma.
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
+// Conditional import: calcu_web.dart (Web) vs calcu_stub.dart (iOS/Android).
+// Em iOS/Android buildCalculadoraWebView() é stub — o WebViewWidget é usado diretamente.
+import '../platform/calcu_stub.dart'
+    if (dart.library.html) '../platform/calcu_web.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // URL base — ?lang=pt ou ?lang=es injetado em initState() conforme AppProvider
@@ -177,10 +183,13 @@ class CalculadoraScreen extends StatefulWidget {
 }
 
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
+  // Native WebView controller — inicializado apenas em iOS/Android (!kIsWeb)
   late final WebViewController _controller;
   late final bool _isEs;
   // Build 1563: dark mode lido uma vez no initState (imutável por sessão)
   late final bool _dark;
+  // Build 187: URL da calculadora — compartilhada entre Web (iframe) e native (WebView)
+  late final String _webUrl;
 
   // Estado da barra de fontes nativa Flutter
   bool _sourcesExpanded = false;
@@ -194,33 +203,47 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     final langParam = lang == 'es' ? 'es' : 'pt';
     _isEs           = lang == 'es';
     _dark           = p.darkMode;
+    _webUrl         = '$_kBaseUrl?lang=$langParam';
 
-    final PlatformWebViewControllerCreationParams params;
-    if (Platform.isIOS) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
+    // Build 187: Web não tem suporte a WebViewWidget — usa iframe (calcu_web.dart).
+    // iOS/Android continuam com WebViewController nativo.
+    if (!kIsWeb) {
+      // ignore: avoid_web_libraries_in_flutter — guard kIsWeb garante que este
+      // bloco nunca compila para Web; dart:io Platform OK aqui.
+      final bool isIOSPlatform = _detectIOS();
+      final PlatformWebViewControllerCreationParams params;
+      if (isIOSPlatform) {
+        params = WebKitWebViewControllerCreationParams(
+          allowsInlineMediaPlayback: true,
+          mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+        );
+      } else {
+        params = const PlatformWebViewControllerCreationParams();
+      }
+
+      _controller = WebViewController.fromPlatformCreationParams(params)
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setUserAgent(
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
+        // Colors.transparent → scrollView.backgroundColor = UIColor.clear
+        // Scaffold.backgroundColor(0xFF0F091E) aparece atrás, sem layer sólido.
+        ..setBackgroundColor(Colors.transparent)
+        ..setNavigationDelegate(NavigationDelegate(
+          onPageStarted: (_) async {
+            await _controller.runJavaScript(_kEarlyInjectJs);
+          },
+          onPageFinished: (_) async {
+            await _controller.runJavaScript(_kInjectJs);
+          },
+        ))
+        ..loadRequest(Uri.parse(_webUrl));
     }
+  }
 
-    _controller = WebViewController.fromPlatformCreationParams(params)
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setUserAgent(
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
-      // Colors.transparent → scrollView.backgroundColor = UIColor.clear
-      // Scaffold.backgroundColor(0xFF0F091E) aparece atrás, sem layer sólido.
-      ..setBackgroundColor(Colors.transparent)
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (_) async {
-          await _controller.runJavaScript(_kEarlyInjectJs);
-        },
-        onPageFinished: (_) async {
-          await _controller.runJavaScript(_kInjectJs);
-        },
-      ))
-      ..loadRequest(Uri.parse('$_kBaseUrl?lang=$langParam'));
+  /// Detecta iOS sem usar dart:io Platform (compatível com Flutter Web).
+  bool _detectIOS() {
+    // defaultTargetPlatform é seguro em todas as plataformas.
+    return Theme.of(context).platform == TargetPlatform.iOS;
   }
 
   Future<void> _openSourcesUrl() async {
@@ -319,7 +342,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         body: Stack(
           children: [
 
-            // WebView termina ACIMA da barra — sem sobreposição
+            // Área de conteúdo principal — WebView (native) ou iframe (Web)
             Positioned(
               top:    0,
               left:   0,
@@ -330,7 +353,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                   return SizedBox(
                     width:  constraints.maxWidth,
                     height: constraints.maxHeight,
-                    child: WebViewWidget(controller: _controller),
+                    // Build 187: Web usa HtmlElementView/iframe; iOS/Android usa WebViewWidget.
+                    child: kIsWeb
+                        ? buildCalculadoraWebView(_webUrl, _dark)
+                        : WebViewWidget(controller: _controller),
                   );
                 },
               ),
