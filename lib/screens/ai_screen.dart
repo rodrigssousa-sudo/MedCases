@@ -1717,13 +1717,6 @@ class _AiScreenState extends State<AiScreen> {
                         _sendDebounced(sendText, context.read<AppProvider>());
                       },
                     ),
-                    // Tarjeta de evidencia si el mensaje menciona un fármaco
-                    if (detectedEv != null)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
-                        child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
-                      ),
-
                     // ── Build 233: Smart Next Action Engine ───────────────
                     // Aparece apenas na última bolha AI quando não há streaming.
                     // Motor 100% local — sem IA, sem rede, sem RAG.
@@ -1744,6 +1737,13 @@ class _AiScreenState extends State<AiScreen> {
                           _sendDebounced(prompt, context.read<AppProvider>());
                         },
                       ),
+                    // Tarjeta de evidencia si el mensaje menciona un fármaco
+                    if (detectedEv != null)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+                        child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
+                      ),
+
                   ],
                 ),
                 ),
