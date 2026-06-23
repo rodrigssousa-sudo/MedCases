@@ -1816,11 +1816,11 @@ class _AiScreenState extends State<AiScreen> {
                         _sendDebounced(sendText, context.read<AppProvider>());
                       },
                     ),
-                    // ── Build 233: Smart Next Action Engine ───────────────
-                    // Aparece apenas na última bolha AI quando não há streaming.
-                    // Motor 100% local — sem IA, sem rede, sem RAG.
+                    // ── Build 192: ActionButtonsRow — Smart Next Action + Deep Link ──
+                    // Ambos os botões lado a lado, mesmo componente visual.
+                    // Aparece apenas na última bolha AI sem streaming.
                     if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2)
-                      _SmartNextActionChip(
+                      _ActionButtonsRow(
                         lastUserMessage: _messages
                             .lastWhere((m) => m.role == 'user',
                                 orElse: () => _ChatMsg(role: 'user', text: ''))
@@ -1829,33 +1829,19 @@ class _AiScreenState extends State<AiScreen> {
                         isPlantaoMode: !_longResponse,
                         lang: p.lang,
                         dark: dark,
-                        // Build 1558: injeta histórico completo para deduplicação
                         chatHistory: _messages.map((m) => m.text).toList(),
-                        onTap: (prompt) {
+                        onActionTap: (prompt) {
                           if (_isStreaming) return;
                           _userScrolledUp = false;
                           _scrollDown(force: true);
                           _sendDebounced(prompt, context.read<AppProvider>());
                         },
                       ),
-                    // ── Build 185: Deep Link Router ───────────────────────
-                    // Botão determinístico — abre ferramenta externa relevante
-                    // em medcasescalcu.com. Nunca envia dados do paciente.
-                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2)
-                      _ExternalToolButton(
-                        lastUserMessage: _messages
-                            .lastWhere((m) => m.role == 'user',
-                                orElse: () => _ChatMsg(role: 'user', text: ''))
-                            .text,
-                        lastAiResponse: msg.text,
-                        isPlantaoMode: !_longResponse,
-                        lang: p.lang,
-                        dark: dark,
-                      ),
                     // Tarjeta de evidencia si el mensaje menciona un fármaco
+                    // Build 192: 20px gap entre botões e evidência (elimina espaço morto)
                     if (detectedEv != null)
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+                        padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
                         child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
                       ),
 
@@ -2908,77 +2894,134 @@ class _SuggestionCarousel extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _SmartNextActionChip — Build 233: Smart Next Action Engine
+// ═════════════════════════════════════════════════════════════════════════════
+// ActionCardButton — Build 192: componente único para todos os botões de ação
 //
-// Chip de continuidade clínica contextual, exibido abaixo da última bolha AI.
-// Motor 100% local: NextActionEngine.build() — sem IA, sem rede, sem RAG.
-// Bilíngue PT/ES. Modo-consciente (Plantão vs Estudo).
-// ─────────────────────────────────────────────────────────────────────────────
-class _SmartNextActionChip extends StatelessWidget {
-  final String lastUserMessage;
-  final String lastAiResponse;
-  final bool isPlantaoMode;
-  final String lang;
+// Design system premium: Linear / Notion / Arc Browser.
+// Mesmo raio, altura, sombra, padding, tipografia, hover e animação.
+// Diferenciação APENAS por cor (azul institucional vs roxo calculadora).
+// ═════════════════════════════════════════════════════════════════════════════
+class ActionCardButton extends StatefulWidget {
+  final String title;
+  final IconData icon;
+  final Color accentColor;    // cor de identidade do botão
+  final VoidCallback onTap;
   final bool dark;
-  final void Function(String prompt) onTap;
-  // Build 1558: histórico do chat para deduplicação sequencial de sugestões
-  final List<String> chatHistory;
 
-  const _SmartNextActionChip({
-    required this.lastUserMessage,
-    required this.lastAiResponse,
-    required this.isPlantaoMode,
-    required this.lang,
-    required this.dark,
+  const ActionCardButton({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.accentColor,
     required this.onTap,
-    this.chatHistory = const [],
+    required this.dark,
   });
 
   @override
-  Widget build(BuildContext context) {
-    // Motor local — determinístico, zero rede
-    // Build 1558: passa chatHistory para deduplicação histórico-baseada
-    final action = NextActionEngine.build(
-      lastUserMessage: lastUserMessage,
-      lastAiResponse: lastAiResponse,
-      isPlantaoMode: isPlantaoMode,
-      currentLanguage: lang,
-      chatHistory: chatHistory,
+  State<ActionCardButton> createState() => _ActionCardButtonState();
+}
+
+class _ActionCardButtonState extends State<ActionCardButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+  bool _hovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 110),
     );
+    _scale = Tween<double>(begin: 1.0, end: 0.97).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
+    );
+  }
 
-    const accentColor = Color(0xFF00BCD4); // teal médico
-    final chipBg = dark
-        ? accentColor.withValues(alpha: 0.10)
-        : accentColor.withValues(alpha: 0.07);
-    final chipBorder = dark
-        ? accentColor.withValues(alpha: 0.45)
-        : accentColor.withValues(alpha: 0.35);
-    final textColor = dark
-        ? accentColor.withValues(alpha: 0.90)
-        : const Color(0xFF006064);
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 16, 4),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: GestureDetector(
-          onTap: () => onTap(action.promptToSend),
+  void _onTapDown(_) => _ctrl.forward();
+  void _onTapUp(_)   { _ctrl.reverse(); widget.onTap(); }
+  void _onTapCancel() => _ctrl.reverse();
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = widget.accentColor;
+
+    // Backgrounds adaptativos dark/light
+    final bg = widget.dark
+        ? accent.withValues(alpha: 0.13)
+        : accent.withValues(alpha: 0.08);
+    final bgHover = widget.dark
+        ? accent.withValues(alpha: 0.20)
+        : accent.withValues(alpha: 0.14);
+    final border = widget.dark
+        ? accent.withValues(alpha: 0.40)
+        : accent.withValues(alpha: 0.30);
+    final borderHover = widget.dark
+        ? accent.withValues(alpha: 0.70)
+        : accent.withValues(alpha: 0.55);
+    final textColor = widget.dark
+        ? accent.withValues(alpha: 0.95)
+        : accent.withValues(alpha: 0.85);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit:  (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTapDown:   _onTapDown,
+        onTapUp:     _onTapUp,
+        onTapCancel: _onTapCancel,
+        child: AnimatedBuilder(
+          animation: _scale,
+          builder: (context, child) => Transform.scale(
+            scale: _scale.value,
+            child: child,
+          ),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            duration: const Duration(milliseconds: 160),
+            curve: Curves.easeOutCubic,
+            transform: _hovered
+                ? (Matrix4.identity()..translate(0.0, -2.0))
+                : Matrix4.identity(),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
             decoration: BoxDecoration(
-              color: chipBg,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: chipBorder, width: 1.2),
+              color: _hovered ? bgHover : bg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: _hovered ? borderHover : border,
+                width: 1.2,
+              ),
+              boxShadow: _hovered
+                  ? [
+                      BoxShadow(
+                        color: accent.withValues(alpha: widget.dark ? 0.25 : 0.18),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                  : [
+                      BoxShadow(
+                        color: accent.withValues(alpha: widget.dark ? 0.08 : 0.06),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
             ),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.auto_awesome_rounded, size: 14, color: textColor),
-                const SizedBox(width: 6),
+                Icon(widget.icon, size: 15, color: textColor),
+                const SizedBox(width: 7),
                 Flexible(
                   child: Text(
-                    action.label,
+                    widget.title,
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -2989,8 +3032,6 @@ class _SmartNextActionChip extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 4),
-                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: textColor),
               ],
             ),
           ),
@@ -3000,31 +3041,52 @@ class _SmartNextActionChip extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _ExternalToolButton — Build 185: Deep Link Router
-// Aparece abaixo do _SmartNextActionChip na última bolha AI.
-// Motor 100% local — sem IA, sem rede, sem RAG.
-// Abre medcasescalcu.com com tab + query param técnico específico.
-// NUNCA envia dados do paciente na URL.
-// ─────────────────────────────────────────────────────────────────────────────
-class _ExternalToolButton extends StatelessWidget {
+// ═════════════════════════════════════════════════════════════════════════════
+// _ActionButtonsRow — Build 192: linha de botões de ação unificados
+//
+// Substitui _SmartNextActionChip + _ExternalToolButton (stacked).
+// Layout: dois botões lado a lado. Empilha apenas se largura < 340 px.
+// Cor azul institucional (IA) vs roxo calculadora (Deep Link).
+// Espaçamento após resposta: 16 px acima. Espaçamento antes de evidência: 20 px.
+// ═════════════════════════════════════════════════════════════════════════════
+class _ActionButtonsRow extends StatelessWidget {
   final String lastUserMessage;
   final String lastAiResponse;
   final bool isPlantaoMode;
   final String lang;
   final bool dark;
+  final List<String> chatHistory;
+  final void Function(String prompt) onActionTap;
 
-  const _ExternalToolButton({
+  // Cores institucionais — imutáveis por design
+  // Azul institucional IA (mesmo do AppBar/primary)
+  static const _kBlueAI     = Color(0xFF1E88E5);
+  // Roxo calculadora (mesmo do card Calculadoras da Home)
+  static const _kPurpleCalc = Color(0xFF7e22ce);
+
+  const _ActionButtonsRow({
     super.key,
     required this.lastUserMessage,
     required this.lastAiResponse,
     required this.isPlantaoMode,
     required this.lang,
     required this.dark,
+    required this.onActionTap,
+    this.chatHistory = const [],
   });
 
   @override
   Widget build(BuildContext context) {
+    // ── Motor IA: Smart Next Action (local, zero rede) ────────────────────────
+    final action = NextActionEngine.build(
+      lastUserMessage: lastUserMessage,
+      lastAiResponse: lastAiResponse,
+      isPlantaoMode: isPlantaoMode,
+      currentLanguage: lang,
+      chatHistory: chatHistory,
+    );
+
+    // ── Motor Calculadora: External Tool Link (local, zero rede) ─────────────
     final link = ExternalToolLinkEngine.build(
       lastUserMessage: lastUserMessage,
       lastAiResponse: lastAiResponse,
@@ -3032,73 +3094,86 @@ class _ExternalToolButton extends StatelessWidget {
       currentLanguage: lang,
     );
 
-    if (link == null) return const SizedBox.shrink();
+    // Nenhum botão disponível → sem widget
+    if (action.label.isEmpty && link == null) return const SizedBox.shrink();
 
-    final Color bgColor = dark
-        ? const Color(0xFF1E3A5F)   // azul marinho escuro — modo dark
-        : const Color(0xFFE8F4FD);  // azul claro suave — modo light
-    final Color borderColor = dark
-        ? const Color(0xFF2D6EA8)
-        : const Color(0xFF90CAF9);
-    final Color textColor = dark
-        ? const Color(0xFF90CAF9)
-        : const Color(0xFF1565C0);
-    final Color iconColor = dark
-        ? const Color(0xFF64B5F6)
-        : const Color(0xFF1976D2);
+    // Label do botão IA
+    final aiLabel = lang == 'es' ? 'Conductas y dosis' : 'Condutas e doses';
+
+    // Label do botão Calculadora
+    final calcLabel = lang == 'es' ? 'Abrir calculadora' : 'Abrir calculadora';
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
-      child: GestureDetector(
-        onTap: () async {
-          if (kIsWeb) {
-            // Build 189: Web (desktop + mobile) → abre CalculadoraScreen interna
-            // com iframe/HtmlElementView — sem nova aba, sem navegação externa.
-            // A URL gerada pelo ExternalToolLinkEngine (lang+tab+q) é passada via
-            // initialUrl e usada diretamente pelo iframe sem sobrescrita.
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => CalculadoraScreen(initialUrl: link.url),
-              ),
-            );
-          } else {
-            // iOS/Android: mantém WebView nativa interna (inAppBrowserView).
-            final uri = Uri.parse(link.url);
-            if (await canLaunchUrl(uri)) {
-              await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
-            }
+      // 16 px acima da resposta (spacing entre resposta e botões)
+      padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Empilha somente em telas muito estreitas (< 340 px disponíveis)
+          final stacked = constraints.maxWidth < 340;
+
+          final aiBtn = action.label.isNotEmpty
+              ? ActionCardButton(
+                  title: aiLabel,
+                  icon: Icons.auto_awesome_rounded,
+                  accentColor: _kBlueAI,
+                  dark: dark,
+                  onTap: () => onActionTap(action.promptToSend),
+                )
+              : null;
+
+          final calcBtn = link != null
+              ? ActionCardButton(
+                  title: calcLabel,
+                  icon: Icons.calculate_rounded,
+                  accentColor: _kPurpleCalc,
+                  dark: dark,
+                  onTap: () async {
+                    if (kIsWeb) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => CalculadoraScreen(initialUrl: link.url),
+                        ),
+                      );
+                    } else {
+                      final uri = Uri.parse(link.url);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+                      }
+                    }
+                  },
+                )
+              : null;
+
+          // Apenas um botão presente
+          if (aiBtn == null && calcBtn != null) {
+            return SizedBox(width: double.infinity, child: calcBtn);
           }
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: borderColor, width: 1),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+          if (calcBtn == null && aiBtn != null) {
+            return SizedBox(width: double.infinity, child: aiBtn);
+          }
+          if (aiBtn == null || calcBtn == null) return const SizedBox.shrink();
+
+          // Ambos presentes
+          if (stacked) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                aiBtn,
+                const SizedBox(height: 8),
+                calcBtn,
+              ],
+            );
+          }
+
+          // Layout lado a lado — espaço igual, crescimento simétrico
+          return Row(
             children: [
-              Icon(Icons.open_in_browser_rounded, size: 15, color: iconColor),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  link.label,
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
-                    color: textColor,
-                    letterSpacing: 0.1,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Icon(Icons.arrow_forward_ios_rounded, size: 10, color: iconColor),
+              Expanded(child: aiBtn),
+              const SizedBox(width: 8),
+              Expanded(child: calcBtn),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
