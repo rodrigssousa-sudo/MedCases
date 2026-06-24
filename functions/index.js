@@ -4,23 +4,33 @@
  * 1. onNewUserRegistered  → onCreate  → notifica admin quando novo usuário se cadastra
  * 2. onUserApproved       → onUpdate  → e-mail de boas-vindas ao usuário aprovado
  * 3. onUserUnblocked      → onUpdate  → e-mail de reativação ao usuário desbloqueado
+ * 4. geminiPaidProxy      → onRequest → proxy seguro Gemini Paid (Build 226)
  *
  * Secrets (configurar UMA vez no terminal do Mac):
  *   firebase functions:secrets:set GMAIL_PASS
  *   firebase functions:secrets:set ADMIN_EMAIL
+ *   firebase functions:secrets:set GEMINI_PAID_API_KEY   ← Build 226
+ *
+ * SEGURANÇA Build 226:
+ *   GEMINI_PAID_API_KEY NUNCA é retornada ao cliente.
+ *   NUNCA é logada. NUNCA aparece no bundle web.
+ *   Apenas lida server-side no geminiPaidProxy.
  */
 
 const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
+const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const admin      = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const https      = require('https');
 
 admin.initializeApp();
 
 // ── Secrets (substitui o functions.config() depreciado) ───────────────────────
-const GMAIL_USER   = 'medcasespro@gmail.com';
-const GMAIL_PASS   = defineSecret('GMAIL_PASS');
-const ADMIN_EMAIL  = defineSecret('ADMIN_EMAIL');
+const GMAIL_USER        = 'medcasespro@gmail.com';
+const GMAIL_PASS        = defineSecret('GMAIL_PASS');
+const ADMIN_EMAIL       = defineSecret('ADMIN_EMAIL');
+const GEMINI_PAID_KEY   = defineSecret('GEMINI_PAID_API_KEY'); // Build 226 — NUNCA exposta ao cliente
 
 // ── Helper: cria transporter com a senha do secret ────────────────────────────
 function getTransporter(gmailPass) {
@@ -153,6 +163,306 @@ exports.onUserUnblocked = onDocumentUpdated(
     }
 
     return null;
+  }
+);
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 4. GEMINI PAID PROXY — Build 226
+//
+// ENDPOINT: POST /geminiPaidProxy
+//
+// SEGURANÇA:
+//   • GEMINI_PAID_API_KEY lida do Firebase Secret — NUNCA retornada ao cliente
+//   • Valida autenticação Firebase (token obrigatório)
+//   • Valida status do usuário no Firestore (approved)
+//   • Valida budget diário (paidFallbackMaxPerDay) e por usuário/hora
+//   • Responde APENAS com o texto gerado pelo Gemini — jamais com a chave
+//   • Nunca loga a chave (nem parcialmente)
+//
+// PAYLOAD (cliente → função):
+//   { userMessage, systemPrompt, history, mode, requestId, lang }
+//
+// RESPOSTA (função → cliente):
+//   { text, model, inputTokensApprox, outputTokensApprox, durationMs }
+//   ou { error: 'reason' }  (sem a chave)
+//
+// MODELO PREFERENCIAL: gemini-2.5-flash
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Constantes de budget ───────────────────────────────────────────────────
+const PAID_MAX_PER_DAY          = 4000;  // limite diário global
+const PAID_MAX_PER_USER_PER_HOUR = 20;   // limite por usuário por hora
+const GEMINI_PAID_MODEL         = 'gemini-2.5-flash';
+const GEMINI_API_BASE           = 'generativelanguage.googleapis.com';
+
+exports.geminiPaidProxy = onRequest(
+  {
+    region:        'us-central1',
+    secrets:       [GEMINI_PAID_KEY],
+    cors:          true,
+    timeoutSeconds: 60,
+    memory:        '256MiB',
+  },
+  async (req, res) => {
+    const startMs = Date.now();
+
+    // ── CORS preflight ──────────────────────────────────────────────────────
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+
+    if (req.method !== 'POST') {
+      res.status(405).json({ error: 'method_not_allowed' });
+      return;
+    }
+
+    // ── 1. Autenticação Firebase ────────────────────────────────────────────
+    const authHeader = req.headers.authorization || '';
+    if (!authHeader.startsWith('Bearer ')) {
+      console.warn('[PAID_PROXY] unauthenticated request');
+      res.status(401).json({ error: 'unauthenticated' });
+      return;
+    }
+    const idToken = authHeader.split('Bearer ')[1];
+    let decodedToken;
+    try {
+      decodedToken = await admin.auth().verifyIdToken(idToken);
+    } catch (e) {
+      console.warn('[PAID_PROXY] token inválido:', e.code);
+      res.status(401).json({ error: 'invalid_token' });
+      return;
+    }
+    const uid = decodedToken.uid;
+
+    // ── 2. Valida status do usuário (approved) ──────────────────────────────
+    let userDoc;
+    try {
+      userDoc = await admin.firestore().collection('users').doc(uid).get();
+    } catch (e) {
+      console.error('[PAID_PROXY] erro ao buscar usuário:', e.message);
+      res.status(500).json({ error: 'user_check_failed' });
+      return;
+    }
+    if (!userDoc.exists || userDoc.data().status !== 'approved') {
+      console.warn('[PAID_PROXY] usuário não aprovado uid=' + uid);
+      res.status(403).json({ error: 'user_not_approved' });
+      return;
+    }
+
+    // ── 3. Verifica se fallback pago está ativado no config ─────────────────
+    let paidEnabled = false;
+    try {
+      const cfgDoc = await admin.firestore()
+        .collection('app_config').doc('global').get();
+      paidEnabled = cfgDoc.exists && cfgDoc.data().geminiPaidEnabled === true;
+    } catch (e) {
+      console.error('[PAID_PROXY] erro ao ler config:', e.message);
+    }
+    if (!paidEnabled) {
+      console.log('[PAID_PROXY] fallback pago desativado no config');
+      res.status(503).json({ error: 'paid_fallback_disabled' });
+      return;
+    }
+
+    // ── 4. Budget guard ─────────────────────────────────────────────────────
+    const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const hourKey  = new Date().toISOString().slice(0, 13); // YYYY-MM-DDTHH
+    const budgetRef = admin.firestore().collection('app_config').doc('paid_budget');
+    let budgetData  = {};
+    try {
+      const budgetDoc = await budgetRef.get();
+      budgetData = budgetDoc.exists ? budgetDoc.data() : {};
+    } catch (e) {
+      console.error('[PAID_PROXY] erro ao ler budget:', e.message);
+    }
+
+    const dailyCount       = (budgetData.dailyCount   || 0);
+    const dailyDate        = (budgetData.dailyDate     || '');
+    const effectiveDailyCount = dailyDate === todayKey ? dailyCount : 0;
+
+    const userHourKey      = `${uid}_${hourKey}`;
+    const userHourCount    = (budgetData[userHourKey]  || 0);
+
+    const budgetOk = effectiveDailyCount < PAID_MAX_PER_DAY &&
+                     userHourCount       < PAID_MAX_PER_USER_PER_HOUR;
+
+    console.log('[BUDGET_GUARD] '
+      + `allowed=${budgetOk} `
+      + `paidFallbackCountToday=${effectiveDailyCount} `
+      + `paidFallbackMaxPerDay=${PAID_MAX_PER_DAY} `
+      + `userHourCount=${userHourCount} `
+      + `paidFallbackMaxPerUserPerHour=${PAID_MAX_PER_USER_PER_HOUR}`);
+
+    if (!budgetOk) {
+      console.log('[BUDGET_GUARD] reason=paid_budget_guard_triggered uid=' + uid);
+      res.status(429).json({ error: 'paid_budget_guard_triggered' });
+      return;
+    }
+
+    // ── 5. Valida payload ───────────────────────────────────────────────────
+    const { userMessage, systemPrompt, history = [], mode = 'plantao', requestId = '', lang = 'pt' } = req.body || {};
+    if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
+      res.status(400).json({ error: 'invalid_payload' });
+      return;
+    }
+
+    // ── 6. Lê a chave paga do Secret (NUNCA retornada ao cliente) ───────────
+    const paidApiKey = GEMINI_PAID_KEY.value();
+    if (!paidApiKey || paidApiKey.trim().length === 0) {
+      console.error('[PAID_PROXY] GEMINI_PAID_API_KEY secret não configurado');
+      res.status(503).json({ error: 'paid_key_not_configured' });
+      return;
+    }
+
+    // ── 7. Monta payload Gemini ─────────────────────────────────────────────
+    const contents = [];
+    // Histórico (máx 4 pares para reduzir tokens)
+    const recentHistory = Array.isArray(history) ? history.slice(-8) : [];
+    for (const turn of recentHistory) {
+      if (turn.role === 'user' || turn.role === 'model') {
+        contents.push({ role: turn.role, parts: [{ text: turn.content || turn.text || '' }] });
+      }
+    }
+    // Mensagem atual
+    contents.push({ role: 'user', parts: [{ text: userMessage.trim() }] });
+
+    const geminiPayload = {
+      system_instruction: {
+        parts: [{ text: systemPrompt || '' }],
+      },
+      contents,
+      generationConfig: {
+        temperature:     0.3,
+        maxOutputTokens: 1024,
+        topP:            0.9,
+        topK:            40,
+      },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      ],
+    };
+
+    const payloadStr   = JSON.stringify(geminiPayload);
+    const inputTokensApprox = Math.ceil(payloadStr.length / 4);
+
+    // ── 8. Chama Gemini Paid ────────────────────────────────────────────────
+    const path = `/v1beta/models/${GEMINI_PAID_MODEL}:generateContent?key=${paidApiKey}`;
+    let responseText = '';
+    let httpStatus   = 200;
+
+    try {
+      responseText = await new Promise((resolve, reject) => {
+        const postData = payloadStr;
+        const options  = {
+          hostname: GEMINI_API_BASE,
+          port:     443,
+          path,
+          method:   'POST',
+          headers:  {
+            'Content-Type':   'application/json',
+            'Content-Length': Buffer.byteLength(postData),
+          },
+        };
+        const apiReq = https.request(options, (apiRes) => {
+          httpStatus = apiRes.statusCode;
+          let body   = '';
+          apiRes.on('data', (chunk) => { body += chunk; });
+          apiRes.on('end', () => { resolve(body); });
+        });
+        apiReq.on('error', reject);
+        apiReq.setTimeout(45000, () => { apiReq.destroy(new Error('timeout')); });
+        apiReq.write(postData);
+        apiReq.end();
+      });
+    } catch (e) {
+      const durationMs = Date.now() - startMs;
+      console.error('[PAID_PROXY] requestId=' + requestId + ' error=' + e.message + ' durationMs=' + durationMs);
+      res.status(502).json({ error: 'upstream_error' });
+      return;
+    }
+
+    const durationMs = Date.now() - startMs;
+
+    // ── 9. Parse resposta Gemini ────────────────────────────────────────────
+    if (httpStatus !== 200) {
+      console.error('[PAID_PROXY] requestId=' + requestId
+        + ' gemini_status=' + httpStatus
+        + ' durationMs=' + durationMs);
+      // Não loga o body (pode conter info sensível em erros de autenticação)
+      res.status(502).json({ error: 'gemini_error', status: httpStatus });
+      return;
+    }
+
+    let parsedText = '';
+    try {
+      const parsed = JSON.parse(responseText);
+      parsedText = parsed?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    } catch (e) {
+      console.error('[PAID_PROXY] parse error requestId=' + requestId);
+      res.status(502).json({ error: 'parse_error' });
+      return;
+    }
+
+    if (!parsedText || parsedText.trim().length === 0) {
+      console.warn('[PAID_PROXY] resposta vazia requestId=' + requestId);
+      res.status(502).json({ error: 'empty_response' });
+      return;
+    }
+
+    const outputTokensApprox = Math.ceil(parsedText.length / 4);
+
+    // ── 10. Atualiza contadores de budget (fire-and-forget) ─────────────────
+    try {
+      const newDailyCount = (dailyDate === todayKey ? effectiveDailyCount : 0) + 1;
+      const newUserHour   = userHourCount + 1;
+      await budgetRef.set({
+        dailyCount:    newDailyCount,
+        dailyDate:     todayKey,
+        [userHourKey]: newUserHour,
+        lastRequestId: requestId,
+        lastUpdatedAt: new Date().toISOString(),
+        estimatedPaidCostUsd: ((newDailyCount * (inputTokensApprox + outputTokensApprox)) / 1_000_000 * 0.30).toFixed(6),
+      }, { merge: true });
+    } catch (e) {
+      console.warn('[PAID_PROXY] budget update error:', e.message);
+      // Não bloqueia a resposta — budget update é best-effort
+    }
+
+    // ── 11. Log de auditoria (SEM chave) ────────────────────────────────────
+    console.log('[PAID_PROXY] '
+      + `requestId=${requestId} `
+      + `success=true `
+      + `status=200 `
+      + `model=${GEMINI_PAID_MODEL} `
+      + `mode=${mode} `
+      + `lang=${lang} `
+      + `inputTokensApprox=${inputTokensApprox} `
+      + `outputTokensApprox=${outputTokensApprox} `
+      + `durationMs=${durationMs}`);
+
+    console.log('[PROVIDER_ROUTER] '
+      + `requestId=${requestId} `
+      + `mode=${mode} `
+      + `primary=gemini_free `
+      + `fallback=gemini_paid `
+      + `usedProvider=gemini_paid `
+      + `status=success `
+      + `inputTokensApprox=${inputTokensApprox} `
+      + `outputTokensApprox=${outputTokensApprox} `
+      + `durationMs=${durationMs}`);
+
+    // ── 12. Responde com APENAS o texto — NUNCA com a chave ─────────────────
+    res.status(200).json({
+      text:              parsedText,
+      model:             GEMINI_PAID_MODEL,
+      inputTokensApprox,
+      outputTokensApprox,
+      durationMs,
+    });
   }
 );
 

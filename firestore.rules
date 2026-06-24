@@ -11,6 +11,7 @@ rules_version = '2';
 //                           → escrita: apenas o dono do documento (uid == authorUid)
 //  • app_config/global      → leitura: apenas admin (contém Gemini API Key — NUNCA expor publicamente)
 //  • app_config/maintenance → leitura: qualquer autenticado; escrita: apenas admin
+//  • app_config/paid_budget → leitura/escrita: apenas admin (Build 226: contadores custo Gemini Paid)
 //  • app_updates/current    → leitura: qualquer autenticado; escrita: apenas admin
 //  • email_campaigns        → leitura/escrita: apenas admin
 // ══════════════════════════════════════════════════════════════════════════════
@@ -92,15 +93,21 @@ service cloud.firestore {
     // ATENÇÃO: app_config/global contém a Gemini API Key.
     // NUNCA permitir leitura pública. Apenas admin lê e escreve.
     // app_config/maintenance → qualquer autenticado pode LER (saber se há manutenção)
+    // app_config/paid_budget → APENAS admin lê e escreve (Build 226)
+    //   Contém: dailyCount, estimatedPaidCostUsd, contadores por usuário/hora.
+    //   A GEMINI_PAID_API_KEY NUNCA é armazenada aqui — fica no Firebase Secret.
+    //   A Cloud Function geminiPaidProxy lê e escreve este documento server-side.
     match /app_config/{docId} {
 
       // maintenance: leitura pública autenticada (todos precisam saber)
       allow read: if docId == 'maintenance' && isAuthed();
 
-      // global e emailjs: apenas admin
-      allow read: if (docId == 'global' || docId == 'emailjs') && isAdmin();
+      // global, emailjs e paid_budget: apenas admin
+      // paid_budget: contém contadores de custo — NUNCA expor a usuários comuns
+      allow read: if (docId == 'global' || docId == 'emailjs' || docId == 'paid_budget') && isAdmin();
 
       // Qualquer escrita em app_config: apenas admin
+      // (a Cloud Function usa Service Account — tem acesso implícito de admin)
       allow write: if isAdmin();
     }
 

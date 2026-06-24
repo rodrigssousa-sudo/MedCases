@@ -23,6 +23,7 @@ import '../services/gemini_service.dart';
 import '../services/gemini_service_v2.dart';
 import '../services/ai_gateway_service.dart';
 import '../services/ai_smart_router.dart'; // Build 191: sanitizeResponse
+import '../services/provider_router_service.dart'; // Build 226: Gemini Paid Fallback
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -3184,6 +3185,56 @@ class AppProvider extends ChangeNotifier {
       appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
     );
 
+    // ── Build 226: requestId único para rastreamento ─────────────────────────
+    final requestId = ProviderRouterService.generateRequestId();
+
+    // ── Build 226: helper para acionar Gemini Paid após falha do Free ────────
+    // Chamado tanto no chunk.isError quanto no onDone vazio.
+    // Nunca expõe a chave paga — usa proxy seguro (Cloud Function).
+    Future<void> tryPaidFallback(String reason) async {
+      debugPrint('[PROVIDER_ROUTER] '
+          'requestId=$requestId '
+          'mode=${longResponse ? "estudo" : "plantao"} '
+          'primary=gemini_free '
+          'fallback=gemini_paid '
+          'attempt=paid '
+          'reason=$reason');
+
+      final paidResult = await ProviderRouterService.callPaidProxy(
+        userMessage:  input,
+        systemPrompt: systemPrompt,
+        history:      List<Map<String, String>>.from(
+          _aiHistory.map((m) => {
+            'role':    m['role']    ?? '',
+            'content': m['content'] ?? '',
+          }),
+        ),
+        mode:      longResponse ? 'estudo' : 'plantao',
+        lang:      _lang,
+        requestId: requestId,
+      );
+
+      if (paidResult.success && paidResult.text.isNotEmpty) {
+        final paidText = AiSmartRouter.sanitizeResponse(
+          paidResult.text,
+          isPlantaoMode: !longResponse,
+          appLanguage:   _lang,
+        );
+        _aiHistory
+          ..add({'role': 'user',      'content': input})
+          ..add({'role': 'assistant', 'content': paidText});
+        while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        onDone(paidText);
+      } else {
+        // Paid também falhou — mostra mensagem de instabilidade
+        debugPrint('[PROVIDER_ROUTER] requestId=$requestId status=both_failed reason=${paidResult.errorCode}');
+        final instabilityMsg = _lang == 'es'
+            ? 'Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. ⚕'
+            : 'Estamos com instabilidade temporária na IA.\nTente novamente em alguns segundos. ⚕';
+        onError(instabilityMsg);
+      }
+    }
+
     _aiStreamSub = stream.listen(
       (chunk) {
         if (chunk.isError) {
@@ -3193,6 +3244,21 @@ class AppProvider extends ChangeNotifier {
           _aiStreamActive = false;
           _aiStreamSub = null;
           final rawPartial = accumulator.toString().trim();
+          final errCode = chunk.errorCode ?? 'network';
+
+          // ── Build 226: fallback pago para erros recuperáveis ──────────────
+          // Se o erro pode ser corrigido pelo Gemini Paid E não há conteúdo
+          // parcial significativo → tenta paid proxy antes de mostrar erro.
+          if (ProviderRouterService.shouldTriggerPaidFallback(errCode) &&
+              rawPartial.length <= 40) {
+            debugPrint('[PROVIDER_ROUTER] requestId=$requestId '
+                'primary=gemini_free status=error errCode=$errCode → aciona paid');
+            accumulator.clear();
+            unawaited(tryPaidFallback(errCode));
+            return;
+          }
+
+          // Conteúdo parcial significativo OU erro não-recuperável → exibe parcial
           if (rawPartial.length > 40) {
             // Build 191: sanitiza parcial antes de exibir
             final partialText = AiSmartRouter.sanitizeResponse(
@@ -3209,7 +3275,6 @@ class AppProvider extends ChangeNotifier {
           }
           accumulator.clear();
           // Build 155.2: null-safe — errorCode pode ser null em chunks malformados
-          final errCode = chunk.errorCode ?? 'network';
           final msg = GeminiServiceV2.errorMessage(errCode, _lang);
           onError(msg);
           return;
@@ -3255,7 +3320,8 @@ class AppProvider extends ChangeNotifier {
         _aiStreamActive = false;
         _aiStreamSub    = null;
         accumulator.clear();   // descarta texto parcial — nunca exibir
-        onError(GeminiServiceV2.errorMessage('network', _lang));
+        // Build 226: erro de stream → tenta paid fallback antes de mostrar erro
+        unawaited(tryPaidFallback('stream_exception'));
       },
       onDone: () {
         // onDone do StreamController — garante limpeza mesmo sem chunk isDone
@@ -3277,13 +3343,11 @@ class AppProvider extends ChangeNotifier {
           _aiStreamSub    = null;
           onDone(finalText);
         } else {
-          // Stream fechou vazio — NÃO limpa histórico (Build 110: manter contexto)
-          // Um stream vazio pontual não invalida o histórico da sessão.
+          // Stream fechou vazio — Build 226: tenta paid fallback
           _aiStreamActive = false;
           _aiStreamSub    = null;
-          onError(_lang == 'es'
-              ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
-              : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
+          debugPrint('[PROVIDER_ROUTER] requestId=$requestId stream closed empty → paid fallback');
+          unawaited(tryPaidFallback('empty_stream'));
         }
       },
       cancelOnError: false,

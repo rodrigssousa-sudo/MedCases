@@ -524,6 +524,65 @@ class FirestoreService {
     }
   }
 
+  // ── Gemini Paid Proxy — Build 226 ─────────────────────────────────────────
+  //
+  // SEGURANÇA: A GEMINI_PAID_API_KEY NUNCA é armazenada no Firestore.
+  // Apenas o FLAG de ativação (geminiPaidEnabled: bool) é armazenado em
+  // app_config/global — campo lido somente por admin e pela Cloud Function.
+  //
+  // A chave real fica exclusivamente no Firebase Secret (GEMINI_PAID_API_KEY),
+  // lida server-side pela função geminiPaidProxy — NUNCA pelo cliente.
+  //
+  // Usuários comuns NÃO conseguem ler app_config/global (regra Firestore).
+
+  /// Ativa ou desativa o fallback para Gemini Paid.
+  /// Armazena APENAS o flag booleano — a chave fica no Firebase Secret.
+  /// Apenas admin/master pode chamar este método.
+  static Future<void> saveGeminiPaidEnabled(bool enabled) async {
+    try {
+      await _db.collection('app_config').doc('global').set(
+        {'geminiPaidEnabled': enabled},
+        SetOptions(merge: true),
+      );
+      // Invalida cache para que o flag seja relido na próxima chamada
+      _cachedAppConfigGlobal.remove('geminiPaidEnabled');
+      debugPrint('[FirestoreService] saveGeminiPaidEnabled=$enabled OK → app_config/global');
+      debugPrint('[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}');
+    } catch (e) {
+      debugPrint('[FirestoreService] saveGeminiPaidEnabled ERRO: $e');
+      rethrow;
+    }
+  }
+
+  /// Carrega o flag de ativação do Gemini Paid.
+  /// Somente admin consegue ler (regra Firestore) — não-admin recebe false.
+  static Future<bool> loadGeminiPaidEnabled() async {
+    try {
+      final data = await _loadAppConfigGlobalData();
+      return data['geminiPaidEnabled'] == true;
+    } catch (e) {
+      debugPrint('[FirestoreService] loadGeminiPaidEnabled ERRO: $e');
+      return false;
+    }
+  }
+
+  /// Carrega contadores de budget do paid proxy.
+  /// Armazenado em app_config/paid_budget — leitura restrita a admin.
+  static Future<Map<String, dynamic>> loadPaidBudgetCounters() async {
+    try {
+      final doc = await _db
+          .collection('app_config')
+          .doc('paid_budget')
+          .get()
+          .timeout(const Duration(seconds: 4));
+      if (!doc.exists) return {};
+      return Map<String, dynamic>.from(doc.data() ?? {});
+    } catch (e) {
+      debugPrint('[FirestoreService] loadPaidBudgetCounters ERRO: $e');
+      return {};
+    }
+  }
+
   /// Salva (ou remove) a chave OpenAI no perfil Firestore do usuário.
   /// Passa [key] vazio para remover a chave (modo local).
   static Future<void> saveAiKey(String uid, String key) async {

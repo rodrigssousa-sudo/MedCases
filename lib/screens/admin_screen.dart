@@ -15,6 +15,7 @@ import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../services/storage_service.dart';
 import '../services/referral_service.dart';
+import '../services/provider_router_service.dart'; // Build 226
 import '../widgets/common_widgets.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -496,10 +497,24 @@ class _SystemTabState extends State<_SystemTab> {
   bool _aiKeyHidden  = true;
   String _aiKeyOriginal = '';
 
+  // ── Gemini Paid Proxy state — Build 226 ────────────────────────────────────
+  // SEGURANÇA: A GEMINI_PAID_API_KEY NUNCA é lida/exibida aqui.
+  // O painel apenas controla o FLAG de ativação (geminiPaidEnabled).
+  // A chave real fica no Firebase Secret (GEMINI_PAID_API_KEY), configurada
+  // via terminal: firebase functions:secrets:set GEMINI_PAID_API_KEY
+  bool _paidEnabled        = false;
+  bool _paidLoading        = false;
+  bool _paidTesting        = false;
+  bool _paidTestDone       = false;
+  bool _paidTestOnline     = false;
+  String _paidTestDetail   = '';
+  Map<String, dynamic> _paidBudgetCounters = {};
+
   @override
   void initState() {
     super.initState();
     _loadCurrentAiKey();
+    _loadPaidConfig();   // Build 226
   }
 
   @override
@@ -515,6 +530,58 @@ class _SystemTabState extends State<_SystemTab> {
       _aiKeyOriginal = key;
       if (key.isNotEmpty) _aiKeyCtrl.text = key;
     });
+  }
+
+  // ── Build 226: carrega config do Gemini Paid ───────────────────────────────
+  Future<void> _loadPaidConfig() async {
+    final enabled  = await FirestoreService.loadGeminiPaidEnabled();
+    final counters = await FirestoreService.loadPaidBudgetCounters();
+    if (!mounted) return;
+    setState(() {
+      _paidEnabled        = enabled;
+      _paidBudgetCounters = counters;
+    });
+  }
+
+  Future<void> _savePaidEnabled(bool value) async {
+    setState(() { _paidLoading = true; });
+    try {
+      await FirestoreService.saveGeminiPaidEnabled(value);
+      if (mounted) {
+        setState(() {
+          _paidEnabled = value;
+          _paidLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() { _paidLoading = false; });
+    }
+  }
+
+  Future<void> _testPaidProxy() async {
+    setState(() { _paidTesting = true; _paidTestDone = false; });
+    try {
+      final result = await ProviderRouterService.testPaidProxy();
+      if (mounted) {
+        setState(() {
+          _paidTesting    = false;
+          _paidTestDone   = true;
+          _paidTestOnline = result.online;
+          _paidTestDetail = result.detail;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _paidTesting    = false;
+          _paidTestDone   = true;
+          _paidTestOnline = false;
+          _paidTestDetail = e.toString();
+        });
+      }
+    }
+    await Future.delayed(const Duration(seconds: 5));
+    if (mounted) setState(() { _paidTestDone = false; });
   }
 
   Future<void> _saveAiKey() async {
@@ -542,6 +609,364 @@ class _SystemTabState extends State<_SystemTab> {
     } catch (_) {
       if (mounted) setState(() { _aiKeyLoading = false; });
     }
+  }
+
+  // ── Build 226: Widget do card IA Paga / Gemini Fallback ───────────────────
+  Widget _buildGeminiPaidCard() {
+    const kGeminiBlue  = Color(0xFF4285F4);
+    const kGeminiBlueBg = Color(0xFF4285F4);
+    final isActive = _paidEnabled;
+    final dailyDate     = _paidBudgetCounters['dailyDate'] as String? ?? '';
+    final todayKey      = DateTime.now().toIso8601String().substring(0, 10);
+    final dailyCount    = dailyDate == todayKey
+        ? (_paidBudgetCounters['dailyCount'] as num?)?.toInt() ?? 0
+        : 0;
+    final estimatedCost = _paidBudgetCounters['estimatedPaidCostUsd']?.toString() ?? '0.000000';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: _c.cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isActive
+              ? kGeminiBlue.withValues(alpha: 0.4)
+              : _c.border,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header ───────────────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              color: isActive
+                  ? kGeminiBlue.withValues(alpha: 0.07)
+                  : _c.surface,
+            ),
+            child: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: isActive
+                      ? kGeminiBlue.withValues(alpha: 0.12)
+                      : _c.surface,
+                  border: Border.all(
+                    color: isActive
+                        ? kGeminiBlue.withValues(alpha: 0.4)
+                        : _c.border,
+                  ),
+                ),
+                child: Icon(
+                  isActive ? Icons.bolt_rounded : Icons.bolt_outlined,
+                  size: 18,
+                  color: isActive ? kGeminiBlue : _c.textHint,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.isEs ? 'IA Paga / Gemini Fallback' : 'IA Paga / Gemini Fallback',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w900,
+                        color: _c.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      isActive
+                          ? (widget.isEs
+                              ? 'gemini-2.5-flash • fallback activo'
+                              : 'gemini-2.5-flash • fallback ativo')
+                          : (widget.isEs
+                              ? 'Fallback desactivado — solo Gemini gratuito'
+                              : 'Fallback desativado — apenas Gemini gratuito'),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: isActive ? kGeminiBlue : _c.textHint,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Badge Online/Offline
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: isActive
+                      ? kGeminiBlue.withValues(alpha: 0.12)
+                      : Colors.orange.withValues(alpha: 0.12),
+                ),
+                child: Text(
+                  isActive
+                      ? (widget.isEs ? 'Activo' : 'Ativo')
+                      : (widget.isEs ? 'Inactivo' : 'Inativo'),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: isActive ? kGeminiBlue : Colors.orange.shade600,
+                  ),
+                ),
+              ),
+            ]),
+          ),
+
+          // ── Toggle + info ─────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Toggle de ativação
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: _c.inputBg,
+                    border: Border.all(color: _c.border),
+                  ),
+                  child: Row(children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.isEs
+                                ? 'Activar fallback pagado'
+                                : 'Ativar fallback pago',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: _c.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            widget.isEs
+                                ? 'Usa Gemini Paid cuando Free falla (503/timeout/truncado)'
+                                : 'Usa Gemini Pago quando Free falha (503/timeout/truncado)',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: _c.textHint,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    _paidLoading
+                        ? const SizedBox(
+                            width: 24, height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Switch(
+                            value: _paidEnabled,
+                            activeColor: kGeminiBlue,
+                            onChanged: _savePaidEnabled,
+                          ),
+                  ]),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Botão Testar
+                GestureDetector(
+                  onTap: (_paidTesting || !_paidEnabled) ? null : _testPaidProxy,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(9),
+                      color: _paidTestDone
+                          ? (_paidTestOnline
+                              ? const Color(0xFF10A37F).withValues(alpha: 0.12)
+                              : Colors.red.withValues(alpha: 0.07))
+                          : (_paidEnabled
+                              ? kGeminiBlueBg.withValues(alpha: 0.08)
+                              : _c.surface),
+                      border: Border.all(
+                        color: _paidTestDone
+                            ? (_paidTestOnline
+                                ? const Color(0xFF10A37F).withValues(alpha: 0.4)
+                                : Colors.red.withValues(alpha: 0.3))
+                            : (_paidEnabled
+                                ? kGeminiBlue.withValues(alpha: 0.3)
+                                : _c.border),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_paidTesting)
+                          const SizedBox(
+                            width: 12, height: 12,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        else
+                          Icon(
+                            _paidTestDone
+                                ? (_paidTestOnline ? Icons.check_circle_rounded : Icons.error_outline_rounded)
+                                : Icons.wifi_tethering_rounded,
+                            size: 14,
+                            color: _paidTestDone
+                                ? (_paidTestOnline ? const Color(0xFF10A37F) : Colors.red.shade400)
+                                : (_paidEnabled ? kGeminiBlue : _c.textHint),
+                          ),
+                        const SizedBox(width: 6),
+                        Text(
+                          _paidTesting
+                              ? (widget.isEs ? 'Probando...' : 'Testando...')
+                              : _paidTestDone
+                                  ? (_paidTestOnline
+                                      ? (widget.isEs ? 'Online ✓' : 'Online ✓')
+                                      : (widget.isEs ? 'Offline ✗' : 'Offline ✗'))
+                                  : (widget.isEs ? 'Testar conexión' : 'Testar conexão'),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: _paidTestDone
+                                ? (_paidTestOnline ? const Color(0xFF10A37F) : Colors.red.shade400)
+                                : (_paidEnabled ? kGeminiBlue : _c.textHint),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                if (_paidTestDone && _paidTestDetail.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    _paidTestDetail,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: _paidTestOnline ? const Color(0xFF10A37F) : Colors.red.shade400,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ],
+
+                const SizedBox(height: 14),
+
+                // Contadores de budget
+                if (isActive) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(9),
+                      color: _c.surface,
+                      border: Border.all(color: _c.border),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.isEs ? 'USO HOY' : 'USO HOJE',
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                            color: _c.textHint,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(children: [
+                          _paidStatChip(
+                            widget.isEs ? 'Llamadas hoy' : 'Chamadas hoje',
+                            '$dailyCount / 4000',
+                            Icons.auto_graph_rounded,
+                          ),
+                          const SizedBox(width: 8),
+                          _paidStatChip(
+                            widget.isEs ? 'Costo aprox.' : 'Custo aprox.',
+                            'US\$ $estimatedCost',
+                            Icons.attach_money_rounded,
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ],
+            ),
+          ),
+
+          // ── Info de segurança ─────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: kGeminiBlue.withValues(alpha: 0.05),
+                border: Border.all(color: kGeminiBlue.withValues(alpha: 0.15)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.lock_outline_rounded, size: 12, color: kGeminiBlue),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      widget.isEs
+                          ? 'La clave GEMINI_PAID_API_KEY se configura solo una vez en el servidor (firebase functions:secrets:set GEMINI_PAID_API_KEY). Nunca se envía al app ni aparece en el bundle web. Este panel solo activa/desactiva el fallback.'
+                          : 'A chave GEMINI_PAID_API_KEY é configurada uma única vez no servidor (firebase functions:secrets:set GEMINI_PAID_API_KEY). Nunca é enviada ao app nem aparece no bundle web. Este painel apenas ativa/desativa o fallback.',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: kGeminiBlue.withValues(alpha: 0.85),
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _paidStatChip(String label, String value, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(7),
+          color: _c.cardBg,
+          border: Border.all(color: _c.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: TextStyle(fontSize: 9, color: _c.textHint, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 3),
+            Row(children: [
+              Icon(icon, size: 11, color: _c.textSecondary),
+              const SizedBox(width: 4),
+              Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: _c.textPrimary)),
+            ]),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -1131,6 +1556,11 @@ class _SystemTabState extends State<_SystemTab> {
                 ],
               ),
             ),
+
+            const SizedBox(height: 16),
+
+            // ── Build 226: Card IA Paga / Gemini Fallback ──────────────────
+            _buildGeminiPaidCard(),
 
             const SizedBox(height: 16),
 
