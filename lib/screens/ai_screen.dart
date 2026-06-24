@@ -5199,19 +5199,28 @@ class _PlantaoRenderer extends StatelessWidget {
         ? const Color(0xFFE8F2F5)
         : const Color(0xFF1A1D23);
 
-    final condutaColor  = dark ? _kCyanLight   : _kCyan;
-    final primeiraColor = dark ? _kGreenLight  : _kGreen;
-    final altColor      = dark ? _kSlateLight  : _kSlate;
-    final evitarColor   = dark ? _kAmberLight  : _kAmber;
+    // Paleta semântica — cores por papel clínico
+    final condutaColor   = dark ? _kCyanLight   : _kCyan;
+    final primeiraColor  = dark ? _kGreenLight  : _kGreen;
+    final altColor       = dark ? _kSlateLight  : _kSlate;
+    final evitarColor    = dark ? _kAmberLight  : _kAmber;
     final monitorarColor = dark ? _kPurpleLight : _kPurple;
-    final alertaColor   = dark ? _kRedLight    : _kRed;
+    final alertaColor    = dark ? _kRedLight    : _kRed;
+    // Build 224: cores para templates alternativos
+    final metasColor     = dark ? _kGreenLight  : _kGreen;    // 📈 metas — verde (positivo)
+    final proxPassoColor = dark ? _kCyanLight   : _kCyan;     // ✅ próximo passo — ciano
+    final evitarAltColor = dark ? _kAmberLight  : _kAmber;    // ❌ evitar alt — âmbar
+    final suspeitarColor = dark ? _kPurpleLight : _kPurple;   // 🔎 suspeitar — roxo
+    final confirmarColor = dark ? _kGreenLight  : _kGreen;    // 🧪 confirmar — verde
+    final calculoColor   = dark ? _kCyanLight   : _kCyan;     // 🧮 cálculo — ciano
+    final significadoColor = dark ? _kSlateLight : _kSlate;   // 📖 significado — slate
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── 🟥 CONDUTA — cabeçalho obrigatório ──────────────────────────
+          // ── 🟥 TÍTULO DINÂMICO — cabeçalho obrigatório ───────────────────
           _buildBlock(
             emoji: '🟥',
             text: response.conduta,
@@ -5221,17 +5230,67 @@ class _PlantaoRenderer extends StatelessWidget {
             isHeader: true,
           ),
 
-          // ── 💊 PRIMEIRA LINHA — obrigatório ─────────────────────────────
-          _buildBlock(
-            emoji: '💊',
-            text: response.primeiraLinha,
-            barColor: primeiraColor,
-            emojiColor: primeiraColor,
-            textColor: textColor,
-            isHeader: false,
-          ),
+          // ── 💊 PRIMEIRA LINHA / CORREÇÃO / DOSE — opcional (Build 224) ───
+          if (response.primeiraLinha != null &&
+              response.primeiraLinha!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '💊',
+              text: response.primeiraLinha!,
+              barColor: primeiraColor,
+              emojiColor: primeiraColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
 
-          // ── 🔄 ALTERNATIVA — opcional ────────────────────────────────────
+          // ── 🔎 SUSPEITAR SE — diagnóstico (Build 224) ────────────────────
+          if (response.suspeitar != null &&
+              response.suspeitar!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '🔎',
+              text: response.suspeitar!,
+              barColor: suspeitarColor,
+              emojiColor: suspeitarColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── 🧪 CONFIRMAR COM / DILUIÇÃO (Build 224) ──────────────────────
+          if (response.confirmar != null &&
+              response.confirmar!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '🧪',
+              text: response.confirmar!,
+              barColor: confirmarColor,
+              emojiColor: confirmarColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── 🧮 CÁLCULO / VELOCIDADE (Build 224) ──────────────────────────
+          if (response.calculo != null &&
+              response.calculo!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '🧮',
+              text: response.calculo!,
+              barColor: calculoColor,
+              emojiColor: calculoColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── 📖 SIGNIFICADO / INTERPRETAÇÃO (Build 224) ───────────────────
+          if (response.significado != null &&
+              response.significado!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '📖',
+              text: response.significado!,
+              barColor: significadoColor,
+              emojiColor: significadoColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── 🔄 ALTERNATIVA / TITULAÇÃO — opcional ────────────────────────
           if (response.alternativa != null &&
               response.alternativa!.trim().isNotEmpty)
             _buildBlock(
@@ -5243,7 +5302,7 @@ class _PlantaoRenderer extends StatelessWidget {
               isHeader: false,
             ),
 
-          // ── ⛔ EVITAR — opcional ──────────────────────────────────────────
+          // ── ⛔ EVITAR (template conduta) — opcional ───────────────────────
           if (response.evitar != null &&
               response.evitar!.trim().isNotEmpty)
             _buildBlock(
@@ -5255,7 +5314,31 @@ class _PlantaoRenderer extends StatelessWidget {
               isHeader: false,
             ),
 
-          // ── 📌 MONITORAR — obrigatório, renderizado como chip clicável ───
+          // ── ❌ EVITAR (template alternativo, Build 224) — opcional ─────────
+          if (response.evitarAlt != null &&
+              response.evitarAlt!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '❌',
+              text: response.evitarAlt!,
+              barColor: evitarAltColor,
+              emojiColor: evitarAltColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── 📈 METAS / VALORES ESPERADOS (Build 224) — opcional ───────────
+          if (response.metas != null &&
+              response.metas!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '📈',
+              text: response.metas!,
+              barColor: metasColor,
+              emojiColor: metasColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
+
+          // ── 📌 MONITORAR — obrigatório, chip clicável ─────────────────────
           _buildBlock(
             emoji: '📌',
             text: response.monitorar,
@@ -5265,6 +5348,18 @@ class _PlantaoRenderer extends StatelessWidget {
             isHeader: false,
             isChip: true,
           ),
+
+          // ── ✅ PRÓXIMO PASSO (Build 224) — opcional ───────────────────────
+          if (response.proxPasso != null &&
+              response.proxPasso!.trim().isNotEmpty)
+            _buildBlock(
+              emoji: '✅',
+              text: response.proxPasso!,
+              barColor: proxPassoColor,
+              emojiColor: proxPassoColor,
+              textColor: textColor,
+              isHeader: false,
+            ),
 
           // ── ⚠️ ALERTA — opcional ──────────────────────────────────────────
           if (response.alerta != null &&

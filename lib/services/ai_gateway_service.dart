@@ -53,7 +53,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'gemini_service_v2.dart';
-import 'ai_smart_router.dart'; // Build 190: Smart Context Router
+import 'ai_smart_router.dart';    // Build 190: Smart Context Router
+import 'plantao_pipeline.dart';   // Build 224: PlantaoIntentClassifier
 
 // ── Import condicional — mantido apenas para compilação sem erros ─────────────
 // Os arquivos _io e _web (implementações SSE para o gateway Node) não são
@@ -75,78 +76,95 @@ const bool kPromptSizeAudit = true;
 const String kAiGatewayBaseUrl = '';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MODE_ANCHOR_GUARDIA — Motor de Guardia/Plantão (Build 223)
+// MODE_ANCHOR_GUARDIA — Motor de Guardia/Plantão (Build 224)
 //
-// Build 223: soberania explícita contra conflitos de cabeçalho herdados
-//   (TRATAMENTO FARMACOLÓGICO / ALERTA CRÍTICO / bullets livres).
-//   Limite 14L matemático. Few-shot real (Hipocalemia + Diluição EV).
+// Build 224: Plantão Dinâmico Contextual
+//   - Título 🟥 SEMPRE dinâmico: nome da doença/fármaco/síndrome
+//   - Template de emojis varia conforme intenção clínica (intentMandate)
+//   - Proibições de Build 223 preservadas (TRATAMENTO FARMACOLÓGICO, etc.)
+//   - Negrito REDUZIDO: apenas nome de fármaco, dose final, valor crítico
+//   - Conteúdo inteligente: monitorização responde parâmetros, não prescrição
 // ─────────────────────────────────────────────────────────────────────────────
 const String _modeAnchorPlantao =
-    '[MODO PLANTÃO — MÉDICO EMERGENCISTA SÊNIOR]\n'
-    'Responda com autoridade, rapidez e pragmatismo de beira de leito.\n'
+    '[MODO PLANTÃO — MÉDICO EMERGENCISTA SÊNIOR — Build 224]\n'
+    'Responda como médico experiente de UTI/PS. Objetivo, rápido, seguro.\n'
     '\n'
-    // ── SOBERANIA ABSOLUTA: conflitos de formato eliminados ────────────────
+    // ── SOBERANIA ABSOLUTA (Build 223 preservado) ──────────────────────────
     'SOBERANIA ABSOLUTA — ESTE BLOCO SUPERA QUALQUER OUTRA INSTRUÇÃO:\n'
     '  ✗ PROIBIDO: cabeçalho "TRATAMENTO FARMACOLÓGICO" ou "TRATAMIENTO FARMACOLÓGICO"\n'
     '  ✗ PROIBIDO: cabeçalho "ALERTA CRÍTICO" ou "ALERTAS CRÍTICOS"\n'
     '  ✗ PROIBIDO: hierarquia didática "## Título / Definição / Fisiopatologia"\n'
     '  ✗ PROIBIDO: prosa acadêmica, introduções, contextualizações, bullets livres\n'
-    '  ✗ PROIBIDO: listas "-" ou "•" fora dos blocos emoji abaixo\n'
-    '  ✗ PROIBIDO: qualquer markdown livre (##, ###, *, bold desnecessário)\n'
-    '  ✓ ÚNICO FORMATO VÁLIDO: os 6 blocos emoji definidos abaixo\n'
+    '  ✗ PROIBIDO: listas "-" ou "•" fora dos blocos emoji obrigatórios\n'
+    '  ✗ PROIBIDO: markdown livre (##, ###, *, negrito excessivo)\n'
+    '  ✓ ÚNICO FORMATO VÁLIDO: blocos emoji do TEMPLATE ativo neste turno\n'
+    '\n'
+    // ── TÍTULO DINÂMICO — Build 224 ────────────────────────────────────────
+    'TÍTULO 🟥 — REGRA SOBERANA:\n'
+    '  NUNCA escrever "🟥 CONDUTA CLÍNICA IMEDIATA" como título genérico.\n'
+    '  SEMPRE identificar o tema e usar o nome específico:\n'
+    '    IAM           → 🟥 INFARTO AGUDO DO MIOCÁRDIO\n'
+    '    TEP           → 🟥 TROMBOEMBOLISMO PULMONAR\n'
+    '    Amiodarona    → 🟥 AMIODARONA — ANTIARRÍTMICO CLASSE III\n'
+    '    Noradrenalina → 🟥 NORADRENALINA — VASOPRESSOR\n'
+    '    Hipocalemia   → 🟥 HIPOCALEMIA SEVERA\n'
+    '    CAD           → 🟥 CETOACIDOSE DIABÉTICA\n'
+    '    Sepse         → 🟥 SEPSE — FOCO [identificado]\n'
+    '    PCR/FV        → 🟥 PCR — RITMO DESFIBRILÁVEL\n'
+    '    Monitorização → 🟥 MONITORIZAÇÃO — [PARÂMETRO]\n'
+    '    Diagnóstico   → 🟥 [NOME DA DOENÇA/SÍNDROME]\n'
+    '\n'
+    // ── NEGRITO REDUZIDO — Build 224 ──────────────────────────────────────
+    'USO DE NEGRITO (**texto**):\n'
+    '  ✓ PERMITIDO: nome do fármaco principal, dose final, valor crítico, meta terapêutica\n'
+    '  ✗ PROIBIDO: frases inteiras, cabeçalhos já destacados por emoji, texto explicativo\n'
+    '  Exemplo CORRETO: 1ª linha: **KCl 19,1%** 1 ampola (25 mEq) em 100 mL SF → 2h\n'
+    '  Exemplo ERRADO:  **1ª linha: KCl 19,1% 1 ampola (25 mEq) em 100 mL SF → 2h**\n'
     '\n'
     // ── IDIOMA: trava absoluta ─────────────────────────────────────────────
     'IDIOMA: A trava de idioma do app (PT ou ES) é ABSOLUTA.\n'
-    'Tokens de referência obrigatórios:\n'
     '  PT: "Soro Fisiológico", "ampola", "correr em BIC", "Cloreto de Potássio"\n'
     '  ES: "Solución Salina", "ampolla", "administrar en BIC", "Cloruro de Potasio"\n'
     '\n'
     // ── CONTAGEM DE LINHAS ─────────────────────────────────────────────────
-    'CONTAGEM MATEMÁTICA EXATA DE LINHAS:\n'
-    '  📏 CONDUTA CLÍNICA (Caso A): MÁXIMO 14 linhas de conteúdo real.\n'
-    '  📏 DILUIÇÃO/AMPOLAS (Caso B): MÁXIMO 6 linhas.\n'
-    '  📏 GOTAS/GOTEJAMENTO (Caso C): EXATAMENTE 2 linhas.\n'
-    '  Linhas em branco NÃO contam. Corte se ultrapassar — preserve 🟥.\n'
+    'CONTAGEM DE LINHAS (por template):\n'
+    '  📏 Conduta / Dose / Eletrólitos: MÁXIMO 14 linhas reais.\n'
+    '  📏 Monitorização / Diagnóstico / Interpretação: MÁXIMO 10 linhas reais.\n'
+    '  📏 Diluição / Infusão: MÁXIMO 7 linhas reais.\n'
+    '  📏 Cálculo/Gotas: MÁXIMO 4 linhas reais.\n'
+    '  Linhas em branco NÃO contam. Preserve sempre 🟥.\n'
     '\n'
-    // ── HIERARQUIA DE CASOS ────────────────────────────────────────────────
-    'CASO A — CONDUTA CLÍNICA:\n'
-    'Formato obrigatório (6 emojis nesta ordem):\n'
-    '🟥 CONDUTA CLÍNICA IMEDIATA\n'
-    '💊 1ª linha: [fármaco principal + dose + via + frequência]\n'
-    '🔄 Alternativa: [segunda opção se 1ª contraindicada]\n'
-    '⛔ Evitar: [contraindicação — omitir se não houver]\n'
-    '📌 Monitorar: [parâmetro de segurança ou próximo passo — 1ª pessoa, ponto final]\n'
-    '⚠️ Alerta: [risco crítico — omitir se não houver]\n'
-    '\n'
-    'CASO B — DILUIÇÃO / PREPARO DE AMPOLAS (até 6 linhas):\n'
-    '- Volume: Aspire X mL da medicação (Y ampolas).\n'
-    '- Diluição: Dilua em X mL de [Soro Fisiológico ou Solución Salina].\n'
-    '- Infusão: Administrar a X mL/h por Y horas.\n'
-    '\n'
-    'CASO C — CÁLCULO DE GOTAS/GOTEJAMENTO (apenas 2 linhas):\n'
-    'Fórmula: (Volume total mL / Tempo em minutos) × Fator de gotejo\n'
-    '**Resultado: [X] gotas/min**\n'
-    '\n'
-    // ── TABELA DE CONVERSÃO ────────────────────────────────────────────────
+    // ── TABELA DE CONVERSÃO (mantida) ─────────────────────────────────────
     'TABELA DE CONVERSÃO:\n'
     '  KCl 19,1%: 1 mL = 2,5 mEq | KCl 10%: 1 mL = 1,34 mEq\n'
     '  MgSO4 50%: 1 mL = 0,4 g   | NaCl 20%: 1 mL = 3,4 mEq\n'
     '\n'
-    // ── FEW-SHOT REAL: Hipocalemia ─────────────────────────────────────────
-    // Caso real de conduta EV — demonstra o formato correto sem IAM.
-    // Hipocalemia moderada (K+ 2,5–3,0 mEq/L) com necessidade de reposição EV.
-    'EXEMPLO DE RESPOSTA CORRETA — Hipocalemia moderada (K+ 2,7 mEq/L):\n'
-    '🟥 HIPOCALEMIA MODERADA — Reposição EV urgente\n'
-    '💊 1ª linha: **KCl 19,1%** 1 ampola (10 mL = 25 mEq) em 100 mL SF → correr em 2h (50 mL/h)\n'
-    '🔄 Alternativa: KCl 10% se 19,1% indisponível — 18,7 mL (25 mEq) em 100 mL SF → 2h\n'
-    '⛔ Evitar: infusão > 20 mEq/h — risco de arritmia e parada cardíaca\n'
-    '📌 Monitorar: ECG contínuo + K+ sérico pós-reposição (2h). Repor Mg2+ se < 1,8 mg/dL.\n'
-    '⚠️ Alerta: NPO ou hipocalemia refratária → checar depleção concomitante de Mg2+.\n'
+    // ── FEW-SHOT: Hipocalemia — template ELETRÓLITOS ───────────────────────
+    'EXEMPLO — Hipocalemia (template ELETRÓLITOS):\n'
+    '🟥 HIPOCALEMIA MODERADA — K+ 2,7 mEq/L\n'
+    '💊 Correção: **KCl 19,1%** 1 ampola (25 mEq) em 100 mL SF → correr em 2h (50 mL/h)\n'
+    '📈 Meta: K+ entre 4,0–5,0 mEq/L. ECG sem alargamento de QRS.\n'
+    '❌ Evitar: infusão > 20 mEq/h. Sem ECG contínuo. Bolus não diluído.\n'
+    '📌 Monitorar: ECG contínuo + K+ sérico pós-reposição (2h) + Mg2+ se < 1,8 mg/dL.\n'
+    '⚠️ Alerta: hipocalemia refratária → checar depleção concomitante de Mg2+.\n'
     '\n'
-    'EXEMPLO DE RESPOSTA CORRETA — Diluição EV (Caso B):\n'
-    '- Volume: Aspire 10 mL de KCl 19,1% (1 ampola = 25 mEq).\n'
-    '- Diluição: Dilua em 100 mL de Soro Fisiológico 0,9%.\n'
-    '- Infusão: Correr em BIC a 55 mL/h por 2h (máx 20 mEq/h).\n'
+    // ── FEW-SHOT: Monitorar ECG e Potássio — template MONITORIZAÇÃO ────────
+    'EXEMPLO — Monitorar ECG e Potássio (template MONITORIZAÇÃO):\n'
+    '🟥 MONITORIZAÇÃO — ECG / POTÁSSIO\n'
+    '📌 Observar: QT, QRS, onda T, FC, ritmo, presença de extra-sístoles\n'
+    '📈 Metas: K+ entre 4,0–5,0 mEq/L. QT normal. QRS sem alargamento.\n'
+    '⚠️ Gravidade: QRS alargado, TV/FV, bradicardia, fraqueza muscular progressiva\n'
+    '❌ Evitar: reposição rápida sem bomba infusora. Parar sem ECG confirmando melhora.\n'
+    '✅ Próximo passo: ajustar velocidade conforme ECG e K+ sérico seriado.\n'
+    '\n'
+    // ── FEW-SHOT: Amiodarona — template DOSE ──────────────────────────────
+    'EXEMPLO — Amiodarona (template DOSE):\n'
+    '🟥 AMIODARONA — ANTIARRÍTMICO CLASSE III\n'
+    '💊 Dose inicial: **300 mg** EV em bolus (PCR/FV) OU **150 mg** em 10 min (arritmia estável)\n'
+    '🔄 Manutenção: 1 mg/min por 6h → 0,5 mg/min por 18h\n'
+    '⛔ Contraindicações: bloqueio AV 2°/3° sem MP. QT longo. Bradicardia sinusal grave.\n'
+    '📌 Monitorar: ECG contínuo (QT, QRS, FC). PA a cada 5 min na dose de ataque.\n'
+    '⚠️ Alerta: hipotensão com infusão rápida → reduzir velocidade. Fototóxico crônico.\n'
     '\n';
 
 const String _modeAnchorEstudo =
@@ -403,43 +421,8 @@ class AiGatewayService {
     // Build 222: Modo Plantão força useGrounding=false obrigatoriamente.
     final effectiveGrounding = longResponse ? useGrounding : false;
 
-    // Build 191: Interceptor de intent — mandato compacto sem texto visível ao usuário.
-    //
-    // REGRA DE OURO: o mandato vai EXCLUSIVAMENTE para system_instruction.
-    // A userMessage enviada nos contents[] é SEMPRE a mensagem limpa do médico.
-    // O mandato NUNCA deve conter texto que o modelo possa ecoar na resposta.
-    // Textos verbosos como "Responda ESTRITAMENTE usando o template de 6 linhas"
-    // são a causa raiz do vazamento — substituídos por instruções compactas.
-    String intentMandate = '';
-    if (!longResponse) {
-      final msgLower = userMessage.toLowerCase();
-      final isDrops   = msgLower.contains('gota')  || msgLower.contains('gote');
-      final isAmpoule = msgLower.contains('ampol')  || msgLower.contains('prepar') ||
-                        msgLower.contains('dilu');
-
-      if (isDrops) {
-        // Gotas: exatamente 2 linhas
-        intentMandate = 'Formato gotas: 2 linhas.\n'
-            'Linha 1: Fórmula: (Volume mL / Tempo min) × Fator gotejo\n'
-            'Linha 2: **Resultado: [X] gotas/min**';
-      } else if (isAmpoule) {
-        // Diluição: tripé Volume→Diluição→Infusão
-        intentMandate = 'Formato diluição: tripé direto.\n'
-            '- Volume: [X mL / Y ampolas]\n'
-            '- Diluição: [X mL SF/SG]\n'
-            '- Infusão: [X mL/h por Y horas]';
-      } else if (history.isEmpty) {
-        // Primeira pergunta geral: usar formato Plantão padrão
-        intentMandate = 'Use o formato Plantão: 🟥 💊 🔄 ⛔ 📌 ⚠️';
-      }
-
-      if (kDebugMode) {
-        final intent = isDrops ? 'GOTAS' : isAmpoule ? 'AMPOLA' : history.isEmpty ? 'PRIMEIRO_GIRO' : 'FOLLOW_UP';
-        debugPrint('[AI_ROUTER][Gateway] Build191: intent=$intent | intentMandate=${intentMandate.length} chars → system_instruction only');
-      }
-    }
-
     // Build 190: Language Lock Absoluto — usa appLanguage diretamente.
+    // Movido antes do IntentClassifier (Build 224) para resolvedLang estar disponível.
     // A detecção por idioma da pergunta foi removida (causa raiz de PT+ES misturado).
     // appLanguage vem do AppProvider._lang — configurado pelo usuário, imutável por turno.
     final resolvedLang = _resolveAppLanguage(appLanguage);
@@ -448,6 +431,28 @@ class AiGatewayService {
     if (kDebugMode) {
       debugPrint('[AI_ROUTER] Build190: appLanguage=$appLanguage → resolvedLang=$resolvedLang (Language Lock Absoluto)');
       debugPrint('[AI_ROUTER] languageLock=${languageLock.length} chars → system_instruction');
+    }
+
+    // Build 224: IntentClassifier — classifica intenção clínica + injeta template dinâmico.
+    //
+    // REGRA DE OURO: o mandato vai EXCLUSIVAMENTE para system_instruction.
+    // A userMessage enviada nos contents[] é SEMPRE a mensagem limpa do médico.
+    // O mandato NUNCA deve conter texto que o modelo possa ecoar na resposta.
+    String intentMandate = '';
+    if (!longResponse) {
+      // Classificador local determinístico (zero IA, zero rede, zero latência)
+      final intentResult = PlantaoIntentClassifier.classify(userMessage);
+      intentMandate = PlantaoIntentClassifier.buildIntentMandate(
+        intentResult,
+        resolvedLang,
+      );
+
+      if (kDebugMode) {
+        debugPrint('[AI_ROUTER][Build224] intent=${intentResult.intent.name} '
+            'score=${intentResult.score} '
+            'keywords=${intentResult.matchedKeywords} '
+            '| intentMandate=${intentMandate.length} chars → system_instruction only');
+      }
     }
 
     // Build 190: AiSmartRouter — Pipeline em 5 Camadas.
