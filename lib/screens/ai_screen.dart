@@ -1313,12 +1313,23 @@ class _AiScreenState extends State<AiScreen> {
             // Build 230: _enforceMedicalFormat SOMENTE no Modo Plantão.
             // No Modo Estudo, o texto começa com ## e não com 🟥 — injetar
             // o cabeçalho 🟥 CONDUTA quebraria a hierarquia didática.
-            final safeFinalText = _longResponse
+            String safeFinalText = _longResponse
                 ? finalText  // Modo Estudo: texto sem modificação
                 : _enforceMedicalFormat(
                     finalText,
                     context.read<AppProvider>().lang,
                   );
+
+            // ── Build 226: Plantão Truncation Guard ──────────────────────────
+            // Detecta resposta truncada no Modo Plantão (ex: 503 mid-stream)
+            // e substitui por fallback seguro em vez de renderizar texto parcial.
+            // Critério: Modo Plantão + pipeline válida estrutura? Se não, fallback.
+            if (!_longResponse) {
+              safeFinalText = _plantaoTruncationGuard(
+                safeFinalText,
+                context.read<AppProvider>().lang,
+              );
+            }
 
             // ── PASSO 1: comita texto final mantendo _isStreaming=true ──────
             // O _AiBubble recebe o texto completo mas ainda não remove o cursor,
@@ -3554,6 +3565,78 @@ class _ActionTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Build 226 — _plantaoTruncationGuard
+//
+// CAMADA DE PROTEÇÃO CONTRA RESPOSTA TRUNCADA (Plantão)
+//
+// PROBLEMA: quando o Gemini retorna 503 mid-stream, a resposta parcial
+// (ex: "🟥 AMIODARONA\n💊 1ª") chega ao onDone como finalText.
+// O PlantatoPipeline.run() detecta valid=false / parse=null, mas o código
+// antigo caía no _AiBubble e renderizava o texto truncado visível ao médico.
+//
+// SOLUÇÃO:
+//   1. Executar PlantatoPipeline.run() aqui para validar a resposta final.
+//   2. Se valid=false OU parse=null → substituir por fallback seguro neutro.
+//   3. Se valid=true → pass-through (o renderer estruturado cuidará do resto).
+//   4. Emitir log [PLANTAO_FAILSAFE] com diagnóstico completo.
+//
+// FALLBACK SEGURO:
+//   Texto neutro em PT/ES que instrui o médico a tentar novamente.
+//   NÃO contém informação clínica inventada.
+//   NÃO é renderizado pelo _PlantaoRenderer (response=null) — cai no _AiBubble.
+//
+// PRESERVADO: se o texto começa com 'ERRO' ou keywords de rede → pass-through
+// (já tratado pelo bloco isNetErr em onDone).
+// ─────────────────────────────────────────────────────────────────────────────
+String _plantaoTruncationGuard(String text, String lang) {
+  if (text.trim().isEmpty) return text;
+
+  // Pass-through se for mensagem de erro de rede (já tratada pelo bloco isNetErr)
+  final lower = text.toLowerCase();
+  final isErrorMsg = lower.startsWith('erro') ||
+      lower.startsWith('error') ||
+      lower.contains('sem conex') ||
+      lower.contains('sin conex') ||
+      lower.contains('ia indisponível') ||
+      lower.contains('ia indisponible');
+  if (isErrorMsg) return text;
+
+  // Executa o pipeline para validar a estrutura
+  final pipelineResult = PlantatoPipeline.run(text);
+  final parserValid    = pipelineResult.response != null;
+  final validatorValid = pipelineResult.valid;
+
+  // Log estruturado [PLANTAO_FAILSAFE]
+  debugPrint('[PLANTAO_FAILSAFE] '
+      'parserValid=$parserValid '
+      'validatorValid=$validatorValid '
+      'repairAttempted=true '
+      'repairSuccess=${pipelineResult.repaired} '
+      'renderedFallback=${!parserValid && !validatorValid}');
+
+  // Se a pipeline produziu resposta válida → pass-through
+  if (parserValid) return text;
+
+  // Resposta truncada ou inválida → fallback seguro
+  // Mantém o 🟥 do título se disponível para contexto, mas avisa sobre a falha
+  final titleLine = text.split('\n').first.trim();
+  final hasTitleLine = titleLine.startsWith('🟥') && titleLine.length > 3;
+
+  final fallbackBody = lang == 'es'
+      ? 'No pude completar la respuesta clínica ahora.\n'
+        'Esto puede ocurrir por sobrecarga momentánea del servidor.\n'
+        'Intente nuevamente en algunos segundos.'
+      : 'Não consegui completar a resposta clínica agora.\n'
+        'Isso pode ocorrer por sobrecarga momentânea do servidor.\n'
+        'Tente novamente em alguns segundos.';
+
+  if (hasTitleLine) {
+    return '$titleLine\n📌 $fallbackBody';
+  }
+  return '🟥 —\n📌 $fallbackBody';
+}
+
 // Build 134 — enforceMedicalFormat
 //
 // CAMADA FINAL DE SEGURANÇA CLÍNICA — última barreira antes da renderização.

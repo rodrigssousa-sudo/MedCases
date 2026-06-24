@@ -948,10 +948,22 @@ class PlantaoIntentEngine {
     final titleInstruction = _buildTitleInstruction(qa, isEs);
 
     // ── Template de emojis baseado em primaryIntent ───────────────────────────
-    final template = PlantaoIntentClassifier.buildIntentMandate(
-      qa.toIntentResult(),
-      lang,
-    );
+    // Build 226 Fix B: fármaco isolado sem intenção explícita → template farmacológico
+    // Critério: primaryIntent=geral + topic não é genérico (drug foi detectado pelo _DrugMatcher)
+    // Isso evita que o LLM tente preencher "💊 1ª linha:" incompleta para nomes de fármacos isolados
+    final bool isFarmacoIsolado = qa.primaryIntent == PlantaoIntent.geral &&
+        qa.clinicalTopic != 'CONSULTA CLÍNICA' &&
+        qa.clinicalTopic.isNotEmpty;
+
+    final String template;
+    if (isFarmacoIsolado) {
+      template = _buildFarmacoResumoTemplate(qa, isEs);
+    } else {
+      template = PlantaoIntentClassifier.buildIntentMandate(
+        qa.toIntentResult(),
+        lang,
+      );
+    }
 
     // ── Adaptação de complexidade ─────────────────────────────────────────────
     final complexityAdaptation = _buildComplexityAdaptation(qa.complexity, isEs);
@@ -1037,6 +1049,52 @@ class PlantaoIntentEngine {
       case PlantaoComplexity.simples:
         return ''; // Sem instrução extra para respostas simples
     }
+  }
+
+  // ── Build 226 Fix B — template farmacológico para fármaco isolado ─────────
+  // Usado quando primaryIntent=geral e clinicalTopic é um fármaco reconhecido.
+  // Substitui o template conduta genérico (que gerava "💊 1ª linha:" truncado)
+  // por um template de RESUMO FARMACOLÓGICO completo e auto-suficiente.
+  //
+  // Estrutura (6 blocos):
+  //   🟥 NOME — CLASSE FARMACOLÓGICA        (linha título — gerada pelo titleInstruction)
+  //   💊 Uso principal: indicação + dose
+  //   🔄 Dose alternativa: outra apresentação (se houver)
+  //   ⛔ Contraindicações: absolutas principais
+  //   📌 Monitorar: parâmetros de segurança
+  //   ⚠️ Alerta: risco crítico principal
+  // ─────────────────────────────────────────────────────────────────────────
+  static String _buildFarmacoResumoTemplate(PlantaoQueryAnalysis qa, bool isEs) {
+    final topic = qa.clinicalTopic;
+    final subtitle = qa.clinicalSubtitle;
+    final classeFarm = subtitle.isNotEmpty ? subtitle : 'fármaco de uso clínico';
+
+    if (isEs) {
+      return 'TEMPLATE FARMACOLÓGICO (fármaco aislado sin intención explícita):\n'
+          '🟥 $topic — $classeFarm\n'
+          '💊 Uso principal: [indicación principal + dosis habitual + vía]\n'
+          '🔄 Dosis alternativa: [otra presentación o esquema si aplica]\n'
+          '⛔ Contraindicado: [contraindicaciones absolutas principales]\n'
+          '📌 Monitorar: [parámetros de seguridad — ECG, PA, función renal, etc.]\n'
+          '⚠️ Alerta: [riesgo crítico principal — interacción, toxicidad, etc.]\n'
+          '\n'
+          'REGLA: Completar TODOS los 6 blocos con información clínica real y precisa. '
+          'Nunca dejar bloco vacío o con "[...]" literal. '
+          'Si no hay alternativa relevante, omitir el bloco 🔄 en vez de inventar. '
+          'Nunca truncar la respuesta — completar siempre los blocos 📌 y ⚠️.';
+    }
+    return 'TEMPLATE FARMACOLÓGICO (fármaco isolado sem intenção explícita):\n'
+        '🟥 $topic — $classeFarm\n'
+        '💊 Uso principal: [indicação principal + dose usual + via]\n'
+        '🔄 Dose alternativa: [outra apresentação ou esquema se houver]\n'
+        '⛔ Contraindicado: [contraindicações absolutas principais]\n'
+        '📌 Monitorar: [parâmetros de segurança — ECG, PA, função renal, etc.]\n'
+        '⚠️ Alerta: [risco crítico principal — interação, toxicidade, etc.]\n'
+        '\n'
+        'REGRA: Preencher TODOS os 6 blocos com informação clínica real e precisa. '
+        'Nunca deixar bloco vazio ou com "[...]" literal. '
+        'Se não houver alternativa relevante, omitir o bloco 🔄 em vez de inventar. '
+        'Nunca truncar a resposta — completar sempre os blocos 📌 e ⚠️.';
   }
 }
 
