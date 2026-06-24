@@ -523,18 +523,21 @@ class AppProvider extends ChangeNotifier {
         }
       }
 
-      // ── Gemini API Key — injeta no GeminiService + cacheia localmente ──────
+      // ── Gemini Free Key — injeta no GeminiService + cacheia localmente ──────
+      // Fonte: app_config/global.apiKey (lido por todos os usuários aprovados)
+      // NÃO é a GEMINI_PAID_API_KEY — essa fica só no Firebase Secret server-side.
       if (geminiKey.isNotEmpty) {
         GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
-        debugPrint('[AppProvider] Gemini API Key carregada e cacheada ✓');
+        debugPrint('[AI_FREE_PROVIDER] source=app_config/global ready=true (login load)');
       } else {
-        // Firestore retornou vazio — tenta SharedPreferences (primário, sem dart:js)
+        // Firestore retornou vazio — tenta SharedPreferences/localStorage
         if (!GeminiService.hasApiKey) {
           await GeminiService.initFromStorage();
         }
         if (GeminiService.hasApiKey) {
-          debugPrint('[AppProvider] Gemini API Key restaurada do SharedPrefs/cache ✓');
+          debugPrint('[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true (login load)');
         } else {
+          debugPrint('[AI_FREE_PROVIDER] source=none ready=false — app_config/global vazio e sem cache local');
           debugPrint('[AppProvider] Gemini API Key não encontrada em nenhuma fonte');
         }
       }
@@ -3138,32 +3141,54 @@ class AppProvider extends ChangeNotifier {
     //   1. GeminiService._geminiApiKey (em memória — caminho feliz)
     //   2. FirestoreService.loadGeminiApiKey() (se saiu da memória por reload)
     //   3. GeminiService.initFromStorage() (SharedPrefs/localStorage — fallback offline)
+    // ── Build 226: Gemini Free Key — provider primário do usuário ─────────────
+    // A Gemini Free Key é a chave do app em app_config/global.apiKey.
+    // NÃO é a GEMINI_PAID_API_KEY (que fica só no Firebase Secret server-side).
+    // Todos os usuários aprovados podem ler app_config/global (rule: isApproved).
+    // Hierarquia de recuperação:
+    //   1. GeminiService._geminiApiKey em memória (caminho feliz — já carregada)
+    //   2. FirestoreService.loadGeminiApiKey() → app_config/global.apiKey
+    //   3. GeminiService.initFromStorage() → SharedPrefs/localStorage (fallback)
+    debugPrint('[AI_CONFIG] app_config_global_skipped_for_user=false source=app_config/global.apiKey');
+
     if (!GeminiService.hasApiKey) {
-      debugPrint('[sendAiMessage] Build 157: chave ausente — recuperando automaticamente...');
+      debugPrint('[AI_FREE_PROVIDER] source=loading ready=false — recuperando chave...');
       try {
         final geminiKey = await FirestoreService.loadGeminiApiKey()
             .timeout(const Duration(seconds: 5));
         if (geminiKey.isNotEmpty) {
           GeminiService.setGeminiApiKey(geminiKey);
-          debugPrint('[sendAiMessage] Build 157: chave recarregada do Firestore ✓');
+          debugPrint('[AI_FREE_PROVIDER] source=app_config/global ready=true');
         } else {
           await GeminiService.initFromStorage();
           if (GeminiService.hasApiKey) {
-            debugPrint('[sendAiMessage] Build 157: chave restaurada do SharedPrefs ✓');
+            debugPrint('[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true');
+          } else {
+            debugPrint('[AI_FREE_PROVIDER] source=none ready=false — chave não encontrada');
           }
         }
       } catch (e) {
-        debugPrint('[sendAiMessage] Build 157: Firestore falhou ($e) — tentando SharedPrefs...');
+        debugPrint('[AI_FREE_PROVIDER] source=firestore_error ready=false erro=$e — tentando localStorage...');
         await GeminiService.initFromStorage();
+        if (GeminiService.hasApiKey) {
+          debugPrint('[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true (fallback após erro)');
+        }
       }
+    } else {
+      debugPrint('[AI_FREE_PROVIDER] source=memory ready=true');
     }
 
-    // Resolve a chave final — usa GeminiService (chave do app, carregada pelo admin)
-    // em vez de _openAiKey (chave OpenAI, diferente). Se ainda vazia após todas as
-    // tentativas, o GeminiServiceV2 emitirá chunk.error('api_key_invalid') e o
-    // listener abaixo o tratará normalmente — sem mensagem visível ao usuário.
+    // Resolve a chave final — Gemini Free Key em memória.
+    // Se vazia: GeminiServiceV2 emitirá chunk.error('api_key_invalid') → tratado abaixo.
     final geminiApiKey = GeminiService.apiKeyForLab;
-    debugPrint('[sendAiMessage] Build 157: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — chave=${geminiApiKey.isNotEmpty ? "✓" : "✗ vazia"}');
+    debugPrint(
+      '[PROVIDER_ROUTER] '
+      'primary=gemini_free_user '
+      'fallback=gemini_paid_proxy '
+      'paidKeyExposed=false '
+      'freeKeyReady=${geminiApiKey.isNotEmpty} '
+      'motor=${longResponse ? "estudo" : "plantao"}',
+    );
 
     final accumulator = StringBuffer();
 

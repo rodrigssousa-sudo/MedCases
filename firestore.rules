@@ -2,22 +2,36 @@ rules_version = '2';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MedCases Pro — Firestore Security Rules
-// Versão: 2026-06-24d (Build 226 — isAdmin robusto + match explícito app_config)
+// Versão: 2026-06-24e (Build 226 — Fix Gemini Free Key para usuários aprovados)
 //
-// MECANISMO DE IDENTIDADE ADMIN:
-//  O app usa Firestore users/{uid}.role (string: 'master' | 'admin').
-//  Custom claims Firebase Auth NUNCA são setadas no app.
+// ARQUITETURA DE CHAVES AI:
 //
-//  isAdmin() usa get() inline no documento users/{uid}:
-//    1. isAuthed() — usuário autenticado
-//    2. exists() — documento users/{uid} existe
-//    3. .data.role in ['admin','master'] — campo role diretamente
+//  ┌─────────────────────────────────────────────────────────────────────────┐
+//  │  GEMINI FREE (Provider Primário)                                        │
+//  │  • Chave em app_config/global.apiKey (Gemini Free Key do app)           │
+//  │  • Carregada por TODOS os usuários aprovados — não só admin             │
+//  │  • Persiste em localStorage/SharedPrefs após primeiro load              │
+//  │  • Nunca é a GEMINI_PAID_API_KEY                                        │
+//  └─────────────────────────────────────────────────────────────────────────┘
+//  ┌─────────────────────────────────────────────────────────────────────────┐
+//  │  GEMINI PAID (Fallback — Build 226)                                     │
+//  │  • Chave EXCLUSIVAMENTE no Firebase Secret GEMINI_PAID_API_KEY          │
+//  │  • NUNCA no Firestore, NUNCA no cliente                                 │
+//  │  • Acionada apenas via Cloud Function geminiPaidProxy (server-side)     │
+//  │  • Flag de ativação em app_config/global.geminiPaidEnabled              │
+//  └─────────────────────────────────────────────────────────────────────────┘
+//
+// MECANISMO DE IDENTIDADE:
+//  isApproved() — lê users/{uid}.status via get() — para acesso à Gemini Free
+//  isAdmin()    — lê users/{uid}.role via get()   — para operações admin
+//  Ambas usam get() inline sem funções auxiliares (evita ambiguidade do engine)
 //
 // RESUMO DE ACESSO:
-//  • users/{uid}/**         → admin: read+write tudo; usuário: só o próprio
+//  • users/{uid}/**         → admin: tudo; usuário: só o próprio doc
 //  • clinical_guides        → leitura: PÚBLICA; escrita: admin
 //  • public_histories       → leitura: PÚBLICA; escrita: dono; delete: dono|admin
-//  • app_config/global      → leitura/escrita: admin only (Gemini Key + flags)
+//  • app_config/global      → leitura: aprovado; escrita: admin
+//                             (contém Gemini Free Key — necessária para IA)
 //  • app_config/emailjs     → leitura/escrita: admin only
 //  • app_config/paid_budget → leitura/escrita: admin only (Build 226)
 //  • app_config/maintenance → leitura: autenticado; escrita: admin
@@ -38,10 +52,20 @@ service cloud.firestore {
       return isAuthed() && request.auth.uid == uid;
     }
 
-    // ── isAdmin ──────────────────────────────────────────────────────────────
-    // Verifica Firestore users/{uid}.role via get() inline.
-    // Sem funções auxiliares — evita ambiguidade de contexto no Rules engine.
-    // Equivale a: UserModel.isAdmin = role=='admin' || role=='master'
+    // ── isApproved() — usuário com status=approved ────────────────────────────
+    // Usado para liberar leitura de app_config/global (Gemini Free Key).
+    // Todos os médicos aprovados precisam dessa chave para usar a IA.
+    // NÃO é admin — é qualquer usuário aprovado pelo painel.
+    // Corresponde a: UserModel.isApproved = status == UserStatus.approved
+    function isApproved() {
+      return isAuthed()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+    }
+
+    // ── isAdmin() — usuário com role=admin ou role=master ─────────────────────
+    // Usado para operações privilegiadas: escrever configs, listar users, etc.
+    // Corresponde a: UserModel.isAdmin = role=='admin' || role=='master'
     function isAdmin() {
       return isAuthed()
         && exists(/databases/$(database)/documents/users/$(request.auth.uid))
@@ -87,25 +111,33 @@ service cloud.firestore {
       );
     }
 
-    // ── Configuração Global — matches explícitos por documento ────────────────
+    // ── app_config/global ─────────────────────────────────────────────────────
+    // Contém:
+    //   apiKey         → Gemini Free Key do app (todos os aprovados precisam)
+    //   openAiKey      → OpenAI Key do app (todos os aprovados precisam)
+    //   geminiPaidEnabled → flag do fallback Paid (admin controla via toggle)
     //
-    // IMPORTANTE: cada documento tem seu próprio match explícito.
-    // Evita ambiguidade do engine ao avaliar condições sobre {docId} variável.
+    // LEITURA: qualquer usuário aprovado (status=approved)
+    //   Necessário para que o médico use a IA — a Gemini Free Key fica aqui.
+    //   Antes da Build 226, as rules nunca funcionavam (isAdmin = sempre false),
+    //   então todos liam via permission-denied silencioso + fallback localStorage.
+    //   Agora corrigimos: aprovados leem diretamente.
     //
-    // app_config/global: contém Gemini API Key + geminiPaidEnabled
-    //   NUNCA expor a usuários comuns. Admin lê e escreve.
+    // ESCRITA: apenas admin (configura as chaves e o flag Paid)
+    //
+    // NOTA: GEMINI_PAID_API_KEY NUNCA está aqui — fica no Firebase Secret.
     match /app_config/global {
-      allow read, write: if isAdmin();
+      allow read:  if isApproved();
+      allow write: if isAdmin();
     }
 
-    // app_config/emailjs: configuração EmailJS
+    // app_config/emailjs: apenas admin
     match /app_config/emailjs {
       allow read, write: if isAdmin();
     }
 
-    // app_config/paid_budget: contadores de custo Gemini Paid (Build 226)
-    //   GEMINI_PAID_API_KEY nunca aqui — fica no Firebase Secret.
-    //   Cloud Function geminiPaidProxy usa Service Account (acesso implícito).
+    // app_config/paid_budget: apenas admin (Build 226 — contadores de custo)
+    // GEMINI_PAID_API_KEY nunca aqui — fica no Firebase Secret.
     match /app_config/paid_budget {
       allow read, write: if isAdmin();
     }
@@ -116,7 +148,7 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Wildcard: bloqueia qualquer outro documento de app_config não listado
+    // Wildcard: qualquer outro doc de app_config não listado → admin only
     match /app_config/{docId} {
       allow read, write: if isAdmin();
     }
