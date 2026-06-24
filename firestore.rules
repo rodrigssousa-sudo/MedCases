@@ -2,21 +2,25 @@ rules_version = '2';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MedCases Pro — Firestore Security Rules
-// Versão: 2026-06-24c (Build 226 — Fix isAdmin circular + simplificado)
+// Versão: 2026-06-24d (Build 226 — isAdmin robusto + match explícito app_config)
 //
 // MECANISMO DE IDENTIDADE ADMIN:
 //  O app usa Firestore users/{uid}.role (string: 'master' | 'admin').
 //  Custom claims Firebase Auth NUNCA são setadas no app.
 //
-//  isAdmin() usa get() inline no documento users/{uid}.
-//  IMPORTANTE: sem funções auxiliares intermediárias (userDoc/userDocPath)
-//  para evitar ambiguidade no Rules engine ao avaliar match /users/{uid}.
+//  isAdmin() usa get() inline no documento users/{uid}:
+//    1. isAuthed() — usuário autenticado
+//    2. exists() — documento users/{uid} existe
+//    3. .data.role in ['admin','master'] — campo role diretamente
 //
 // RESUMO DE ACESSO:
 //  • users/{uid}/**         → admin: read+write tudo; usuário: só o próprio
 //  • clinical_guides        → leitura: PÚBLICA; escrita: admin
 //  • public_histories       → leitura: PÚBLICA; escrita: dono; delete: dono|admin
-//  • app_config/*           → manutenção: autenticado; resto: admin only
+//  • app_config/global      → leitura/escrita: admin only (Gemini Key + flags)
+//  • app_config/emailjs     → leitura/escrita: admin only
+//  • app_config/paid_budget → leitura/escrita: admin only (Build 226)
+//  • app_config/maintenance → leitura: autenticado; escrita: admin
 //  • app_updates            → leitura: autenticado; escrita: admin
 //  • email_campaigns        → admin only
 // ══════════════════════════════════════════════════════════════════════════════
@@ -35,16 +39,9 @@ service cloud.firestore {
     }
 
     // ── isAdmin ──────────────────────────────────────────────────────────────
-    // Verifica users/{uid}.role diretamente via get() inline.
-    //
-    // Decisões de design:
-    //  • get() inline (sem função auxiliar) — evita dupla avaliação do engine
-    //  • exists() antes do get() — evita erro se o doc não existir
-    //  • .data.role (acesso direto, sem .get()) — máxima compatibilidade
-    //  • SEM checar status — reduz condições que podem falhar silenciosamente
-    //    (o app já bloqueia usuários não-aprovados na camada Flutter)
-    //
-    // Equivale a: UserModel.isAdmin = role == 'admin' || role == 'master'
+    // Verifica Firestore users/{uid}.role via get() inline.
+    // Sem funções auxiliares — evita ambiguidade de contexto no Rules engine.
+    // Equivale a: UserModel.isAdmin = role=='admin' || role=='master'
     function isAdmin() {
       return isAuthed()
         && exists(/databases/$(database)/documents/users/$(request.auth.uid))
@@ -52,15 +49,14 @@ service cloud.firestore {
     }
 
     // ── Perfis de usuário ────────────────────────────────────────────────────
-    // Admin/master: leitura e escrita completa (inclui list — pageSize queries)
-    // Usuário: get/create/update apenas no próprio documento
+    // Admin: leitura e escrita completa incluindo list (pageSize queries)
+    // Usuário: get/create/update só no próprio documento
     match /users/{userId} {
       allow read, write: if isAdmin();
       allow get:         if isOwner(userId);
       allow create:      if isOwner(userId);
       allow update:      if isOwner(userId);
 
-      // Sub-coleções (casos, favoritos, histórico IA, prefs…)
       match /{subcollection}/{docId} {
         allow read, write: if isOwner(userId) || isAdmin();
 
@@ -91,23 +87,38 @@ service cloud.firestore {
       );
     }
 
-    // ── Configuração Global (app_config) ─────────────────────────────────────
-    // app_config/global     → Gemini API Key + geminiPaidEnabled — NUNCA expor
-    // app_config/emailjs    → configuração EmailJS — admin only
-    // app_config/paid_budget→ contadores Gemini Paid — admin only (Build 226)
-    // app_config/maintenance→ flag de manutenção — qualquer autenticado pode LER
+    // ── Configuração Global — matches explícitos por documento ────────────────
     //
-    // GEMINI_PAID_API_KEY nunca armazenada aqui — fica no Firebase Secret.
-    // Cloud Function geminiPaidProxy usa Service Account (acesso implícito).
-    match /app_config/{docId} {
-      // maintenance: leitura para qualquer autenticado
-      allow read:  if docId == 'maintenance' && isAuthed();
+    // IMPORTANTE: cada documento tem seu próprio match explícito.
+    // Evita ambiguidade do engine ao avaliar condições sobre {docId} variável.
+    //
+    // app_config/global: contém Gemini API Key + geminiPaidEnabled
+    //   NUNCA expor a usuários comuns. Admin lê e escreve.
+    match /app_config/global {
+      allow read, write: if isAdmin();
+    }
 
-      // global, emailjs, paid_budget: leitura restrita a admin
-      allow read:  if docId in ['global', 'emailjs', 'paid_budget'] && isAdmin();
+    // app_config/emailjs: configuração EmailJS
+    match /app_config/emailjs {
+      allow read, write: if isAdmin();
+    }
 
-      // Toda escrita: apenas admin
+    // app_config/paid_budget: contadores de custo Gemini Paid (Build 226)
+    //   GEMINI_PAID_API_KEY nunca aqui — fica no Firebase Secret.
+    //   Cloud Function geminiPaidProxy usa Service Account (acesso implícito).
+    match /app_config/paid_budget {
+      allow read, write: if isAdmin();
+    }
+
+    // app_config/maintenance: qualquer autenticado pode ler; escrita: admin
+    match /app_config/maintenance {
+      allow read:  if isAuthed();
       allow write: if isAdmin();
+    }
+
+    // Wildcard: bloqueia qualquer outro documento de app_config não listado
+    match /app_config/{docId} {
+      allow read, write: if isAdmin();
     }
 
     // ── Notificações de Atualização ──────────────────────────────────────────

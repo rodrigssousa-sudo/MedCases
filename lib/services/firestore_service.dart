@@ -424,19 +424,19 @@ class FirestoreService {
           }
           return Map<String, dynamic>.from(data);
         } on FirebaseException catch (e) {
-          // permission-denied = regras bloquearam (usuário não é admin).
-          // NÃO aplica cooldown para permission-denied: esse erro ocorre SEMPRE
-          // para usuários não-admin e aplicar cooldown impede retentativas após
-          // eventual elevação de privilégio ou mudança de conta.
-          // O cooldown é aplicado apenas para erros de rede/timeout.
           if (e.code == 'permission-denied') {
-            debugPrint('[FirestoreService] app_config/global permission-denied (usuário não é admin — comportamento esperado)');
+            // permission-denied ocorre para usuários não-admin (esperado)
+            // ou para admin com token expirado/não propagado (transitório).
+            // NÃO aplica cooldown — próxima tentativa deve ir ao Firestore.
+            // NÃO guarda em cache — resultado negativo não deve ser cacheado.
+            final uid = FirebaseAuth.instance.currentUser?.uid ?? 'null';
+            debugPrint('[FirestoreService] app_config/global permission-denied uid=$uid (não-admin ou token não propagado)');
           } else {
             debugPrint('[FirestoreService] app_config/global SDK erro: ${e.code}');
-            // Erros de rede/quota: aplica cooldown curto para evitar retry storm
+            // Erros de rede/quota: cooldown curto para evitar retry storm
             _appConfigGlobalRetryAfter = DateTime.now().add(const Duration(seconds: 30));
           }
-          return Map<String, dynamic>.from(_cachedAppConfigGlobal);
+          return <String, dynamic>{};
         }
       } catch (e) {
         debugPrint('[FirestoreService] _loadAppConfigGlobalData ERRO: $e');
@@ -539,9 +539,19 @@ class FirestoreService {
   /// Armazena APENAS o flag booleano — a chave fica no Firebase Secret.
   /// Apenas admin/master pode chamar este método.
   static Future<void> saveGeminiPaidEnabled(bool enabled) async {
-    // ── Log de diagnóstico antes do write ────────────────────────────────────
-    // Permite rastrear uid/email/role no console caso permission-denied persista.
+    // ── Forçar token fresco antes do write ───────────────────────────────────
+    // O Firestore SDK web usa o token Firebase Auth em memória.
+    // Se o token expirou ou ainda não propagou (ex: admin abre painel logo
+    // após login), a regra recebe um token antigo e nega o acesso.
+    // getIdToken(true) força o SDK a renovar o token antes do write.
     final fbUser = FirebaseAuth.instance.currentUser;
+    try {
+      await fbUser?.getIdToken(true);
+    } catch (tokenErr) {
+      debugPrint('[ADMIN_AI_TOGGLE] aviso: refresh de token falhou: $tokenErr');
+    }
+
+    // ── Log de diagnóstico ───────────────────────────────────────────────────
     debugPrint(
       '[ADMIN_AI_TOGGLE] '
       'path=app_config/global '
@@ -551,16 +561,20 @@ class FirestoreService {
       'email=${fbUser?.email ?? "null"} '
       'isAnon=${fbUser?.isAnonymous ?? true}',
     );
-    // roleLocal é lido do Firestore pelo UserModel — não disponível aqui via SDK.
-    // Para confirmar role em produção: Firebase Console → Firestore → users/{uid}
+    // roleLocal vem do Firestore UserModel — não disponível aqui via SDK.
+    // Conferir em produção: Firebase Console → Firestore → users/${uid}
+
+    // ── Limpar cache local para garantir leitura limpa após write ─────────────
+    // Evita que cache antigo (de tentativa anterior com permission-denied)
+    // mascare o resultado real após deploy de novas rules.
+    _cachedAppConfigGlobal.clear();
+    _appConfigGlobalRetryAfter = null;
 
     try {
       await _db.collection('app_config').doc('global').set(
         {'geminiPaidEnabled': enabled},
         SetOptions(merge: true),
       );
-      // Invalida cache para que o flag seja relido na próxima chamada
-      _cachedAppConfigGlobal.remove('geminiPaidEnabled');
       debugPrint('[ADMIN_AI_TOGGLE] OK → app_config/global.geminiPaidEnabled=$enabled');
       debugPrint('[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}');
     } catch (e) {
