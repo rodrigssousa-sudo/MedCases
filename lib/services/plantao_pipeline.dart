@@ -466,7 +466,7 @@ class _DrugMatcher {
         ['dabigatrana', 'pradaxa', 'dabigatran'], PlantaoContext.cardiovascular),
 
     // Antibióticos
-    _DrugEntry('VANCOMICINA', 'Glicopeptídeo — antibiota MRSA',
+    _DrugEntry('VANCOMICINA', 'Glicopeptídeo — antibiótico anti-MRSA',
         ['vancomicina', 'vancomycin'], PlantaoContext.sepse),
     _DrugEntry('PIPERACILINA-TAZOBACTAM', 'Penicilina + inibidor de β-lactamase',
         ['piperacilina', 'tazobactam', 'pip-tazo', 'tazocin'], PlantaoContext.sepse),
