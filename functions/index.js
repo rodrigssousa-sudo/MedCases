@@ -195,22 +195,64 @@ const PAID_MAX_PER_USER_PER_HOUR = 20;   // limite por usuário por hora
 const GEMINI_PAID_MODEL         = 'gemini-2.5-flash';
 const GEMINI_API_BASE           = 'generativelanguage.googleapis.com';
 
+// ── CORS: origens permitidas para geminiPaidProxy ─────────────────────────────
+// Authorization header obriga uso de origem explícita — wildcard '*' é rejeitado
+// pelo browser quando credentials (Authorization) estão presentes no request.
+const PAID_PROXY_ALLOWED_ORIGINS = [
+  'https://medcasespro.com',
+  'https://www.medcasespro.com',
+];
+
+/**
+ * Resolve a origem CORS para o response.
+ * - Se a origem do request está na allowlist → reflete ela (necessário para Auth header).
+ * - Se é localhost / 127.0.0.1 (qualquer porta) → permite para debug local.
+ * - Caso contrário → não emite o header (browser bloqueará).
+ */
+function resolveCorsOrigin(reqOrigin) {
+  if (!reqOrigin) return null;
+  if (PAID_PROXY_ALLOWED_ORIGINS.includes(reqOrigin)) return reqOrigin;
+  // Permite qualquer porta de localhost para desenvolvimento local
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(reqOrigin)) return reqOrigin;
+  return null;
+}
+
+/** Aplica os headers CORS obrigatórios em toda resposta. */
+function setCorsHeaders(req, res) {
+  const origin = resolveCorsOrigin(req.headers.origin);
+  if (origin) {
+    res.set('Access-Control-Allow-Origin',  origin);
+    res.set('Vary', 'Origin'); // instrui caches a variar por origin
+  }
+  res.set('Access-Control-Allow-Methods',  'POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers',  'Authorization, Content-Type');
+  res.set('Access-Control-Max-Age',        '86400'); // 24h — reduz preflights
+}
+
 exports.geminiPaidProxy = onRequest(
   {
-    region:        'us-central1',
-    secrets:       [GEMINI_PAID_KEY],
-    cors:          true,
+    region:         'us-central1',
+    secrets:        [GEMINI_PAID_KEY],
+    // cors: false — gerenciamos CORS manualmente para suportar origem explícita
+    // (necessário quando o request usa Authorization header com credentials).
+    cors:           false,
     timeoutSeconds: 60,
-    memory:        '256MiB',
+    memory:         '256MiB',
   },
   async (req, res) => {
     const startMs = Date.now();
 
-    // ── CORS preflight ──────────────────────────────────────────────────────
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+    // ── CORS: aplicar headers ANTES de qualquer lógica ou retorno ───────────
+    // Regra: nenhum throw/return pode acontecer antes daqui.
+    setCorsHeaders(req, res);
+
+    // ── CORS preflight (OPTIONS) ─────────────────────────────────────────────
+    // O browser envia OPTIONS antes do POST real quando há custom headers
+    // (ex: Authorization). Deve retornar 204 imediatamente, sem autenticar.
+    if (req.method === 'OPTIONS') {
+      res.status(204).send('');
+      return;
+    }
 
     if (req.method !== 'POST') {
       res.status(405).json({ error: 'method_not_allowed' });
