@@ -40,8 +40,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb;
 import 'package:http/http.dart' as http;
+import 'auth_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PaidProxyResult — resultado da chamada ao proxy pago
@@ -132,23 +133,40 @@ class ProviderRouterService {
     final startMs = DateTime.now().millisecondsSinceEpoch;
 
     // ── Obtém ID Token do usuário autenticado ─────────────────────────────
-    final firebaseUser = FirebaseAuth.instance.currentUser;
-    if (firebaseUser == null) {
-      debugPrint('[PAID_PROXY] requestId=$requestId error=unauthenticated');
-      return PaidProxyResult.failure('unauthenticated');
-    }
-
+    // Web: FirebaseAuth.instance.currentUser é sempre null (login via REST
+    // Identity Toolkit não injeta token no Firebase Auth SDK).
+    // Usamos AuthService.getAdminToken() como fonte única de token no Web.
+    // Nativo: Firebase Auth SDK — currentUser populado pelo signIn*.
     String idToken;
-    try {
-      idToken = await firebaseUser.getIdToken(true) ?? '';
-    } catch (e) {
-      debugPrint('[PAID_PROXY] requestId=$requestId token_error=$e');
-      return PaidProxyResult.failure('token_error');
-    }
-
-    if (idToken.isEmpty) {
-      debugPrint('[PAID_PROXY] requestId=$requestId error=empty_token');
-      return PaidProxyResult.failure('empty_token');
+    if (kIsWeb) {
+      try {
+        idToken = await AuthService.getAdminToken();
+        debugPrint('[WEB_AUTH] source=REST token=${idToken.isNotEmpty} endpoint=geminiPaidProxy');
+      } catch (e) {
+        debugPrint('[PAID_PROXY] requestId=$requestId token_error=$e');
+        return PaidProxyResult.failure('token_error');
+      }
+      if (idToken.isEmpty) {
+        debugPrint('[PAID_PROXY] requestId=$requestId error=unauthenticated (token REST vazio)');
+        return PaidProxyResult.failure('unauthenticated');
+      }
+    } else {
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${firebaseUser?.uid ?? 'null'} endpoint=geminiPaidProxy');
+      if (firebaseUser == null) {
+        debugPrint('[PAID_PROXY] requestId=$requestId error=unauthenticated (nativo)');
+        return PaidProxyResult.failure('unauthenticated');
+      }
+      try {
+        idToken = await firebaseUser.getIdToken(true) ?? '';
+      } catch (e) {
+        debugPrint('[PAID_PROXY] requestId=$requestId token_error=$e');
+        return PaidProxyResult.failure('token_error');
+      }
+      if (idToken.isEmpty) {
+        debugPrint('[PAID_PROXY] requestId=$requestId error=empty_token');
+        return PaidProxyResult.failure('empty_token');
+      }
     }
 
     // ── Monta payload (sem a chave — chave está server-side) ──────────────

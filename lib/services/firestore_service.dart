@@ -408,10 +408,47 @@ class FirestoreService {
 
     final future = () async {
       try {
-        // SDK sempre — web e nativo. app_config/global requer admin token via rules.
-        // Não usar REST neste endpoint: expõe a API Key do Gemini em logs de rede.
-        // Se o SDK retornar permission-denied: comportamento esperado para não-admin,
-        // NÃO aplica cooldown (ver tratamento abaixo).
+        if (kIsWeb) {
+          // ── WEB: REST com AuthService.getAdminToken() ─────────────────────
+          // FirebaseAuth.instance.currentUser é sempre null no Web (login via
+          // REST Identity Toolkit não injeta token no Firebase Auth SDK).
+          // Usamos AuthService.getAdminToken() como fonte única de token no Web.
+          final token = await AuthService.getAdminToken();
+          debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global');
+          if (token.isEmpty) {
+            debugPrint('[FirestoreService] app_config/global REST skipped — token vazio');
+            return <String, dynamic>{};
+          }
+          try {
+            final resp = await http.get(
+              Uri.parse('$_fsBase/app_config/global?key=$_firebaseApiKey'),
+              headers: _restGetHeaders(token),
+            ).timeout(const Duration(seconds: 4));
+            debugPrint('[FirestoreService] app_config/global REST status=${resp.statusCode}');
+            if (resp.statusCode == 200) {
+              final data = _decodeFirestoreFields(resp.body);
+              if (data.isNotEmpty) {
+                _cachedAppConfigGlobal = Map<String, dynamic>.from(data);
+                _appConfigGlobalRetryAfter = null;
+              }
+              return Map<String, dynamic>.from(data);
+            }
+            if (resp.statusCode == 403 || resp.statusCode == 401) {
+              debugPrint('[FirestoreService] app_config/global REST ${resp.statusCode} — sem permissão (não-admin)');
+              // NÃO aplica cooldown — próxima tentativa deve retentar
+              return <String, dynamic>{};
+            }
+            debugPrint('[FirestoreService] app_config/global REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+            _appConfigGlobalRetryAfter = DateTime.now().add(const Duration(seconds: 30));
+            return <String, dynamic>{};
+          } catch (e) {
+            debugPrint('[FirestoreService] app_config/global REST ERRO: $e');
+            return <String, dynamic>{};
+          }
+        }
+
+        // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ─────
+        debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=app_config/global');
         try {
           final doc = await _db.collection('app_config').doc('global').get()
               .timeout(const Duration(seconds: 4));
@@ -425,15 +462,12 @@ class FirestoreService {
           return Map<String, dynamic>.from(data);
         } on FirebaseException catch (e) {
           if (e.code == 'permission-denied') {
-            // permission-denied ocorre para usuários não-admin (esperado)
-            // ou para admin com token expirado/não propagado (transitório).
-            // NÃO aplica cooldown — próxima tentativa deve ir ao Firestore.
-            // NÃO guarda em cache — resultado negativo não deve ser cacheado.
+            // permission-denied ocorre para usuários não-admin (esperado).
+            // NÃO aplica cooldown — NÃO guarda em cache.
             final uid = FirebaseAuth.instance.currentUser?.uid ?? 'null';
             debugPrint('[FirestoreService] app_config/global permission-denied uid=$uid (não-admin ou token não propagado)');
           } else {
             debugPrint('[FirestoreService] app_config/global SDK erro: ${e.code}');
-            // Erros de rede/quota: cooldown curto para evitar retry storm
             _appConfigGlobalRetryAfter = DateTime.now().add(const Duration(seconds: 30));
           }
           return <String, dynamic>{};
@@ -539,21 +573,65 @@ class FirestoreService {
   /// Armazena APENAS o flag booleano — a chave fica no Firebase Secret.
   /// Apenas admin/master pode chamar este método.
   static Future<void> saveGeminiPaidEnabled(bool enabled) async {
-    // ── Forçar token fresco antes do write ───────────────────────────────────
-    // O Firestore SDK web usa o token Firebase Auth em memória.
-    // Se o token expirou ou ainda não propagou (ex: admin abre painel logo
-    // após login), a regra recebe um token antigo e nega o acesso.
-    // getIdToken(true) força o SDK a renovar o token antes do write.
+    // ── Limpar cache local para garantir leitura limpa após write ─────────────
+    _cachedAppConfigGlobal.clear();
+    _appConfigGlobalRetryAfter = null;
+
+    if (kIsWeb) {
+      // ── WEB: REST PATCH com AuthService.getAdminToken() ───────────────────
+      // FirebaseAuth.instance.currentUser é sempre null no Web.
+      // getAdminToken() retorna o token REST correto (auto-refresh incluído).
+      final token = await AuthService.getAdminToken();
+      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveGeminiPaidEnabled)');
+      if (token.isEmpty) {
+        debugPrint('[ADMIN_AI_TOGGLE] ERRO Web — token vazio, não é possível salvar');
+        throw Exception('saveGeminiPaidEnabled: token REST vazio');
+      }
+      debugPrint(
+        '[ADMIN_AI_TOGGLE] Web REST PATCH '
+        'path=app_config/global '
+        'field=geminiPaidEnabled '
+        'value=$enabled',
+      );
+      try {
+        const mask = 'updateMask.fieldPaths=geminiPaidEnabled';
+        final resp = await http.patch(
+          Uri.parse('$_fsBase/app_config/global?$mask'),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'fields': {
+              'geminiPaidEnabled': {'booleanValue': enabled},
+            },
+          }),
+        ).timeout(const Duration(seconds: 8));
+        if (resp.statusCode == 200) {
+          debugPrint('[ADMIN_AI_TOGGLE] OK → app_config/global.geminiPaidEnabled=$enabled');
+          debugPrint('[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}');
+        } else {
+          debugPrint('[ADMIN_AI_TOGGLE] ERRO REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+          throw Exception('saveGeminiPaidEnabled REST ${resp.statusCode}');
+        }
+      } catch (e) {
+        debugPrint('[ADMIN_AI_TOGGLE] ERRO REST: $e');
+        rethrow;
+      }
+      return;
+    }
+
+    // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ──────────
     final fbUser = FirebaseAuth.instance.currentUser;
+    debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${fbUser?.uid ?? 'null'} endpoint=app_config/global (saveGeminiPaidEnabled)');
+    // Força token fresco antes do write
     try {
       await fbUser?.getIdToken(true);
     } catch (tokenErr) {
       debugPrint('[ADMIN_AI_TOGGLE] aviso: refresh de token falhou: $tokenErr');
     }
-
-    // ── Log de diagnóstico ───────────────────────────────────────────────────
     debugPrint(
-      '[ADMIN_AI_TOGGLE] '
+      '[ADMIN_AI_TOGGLE] Nativo SDK '
       'path=app_config/global '
       'field=geminiPaidEnabled '
       'value=$enabled | '
@@ -561,15 +639,6 @@ class FirestoreService {
       'email=${fbUser?.email ?? "null"} '
       'isAnon=${fbUser?.isAnonymous ?? true}',
     );
-    // roleLocal vem do Firestore UserModel — não disponível aqui via SDK.
-    // Conferir em produção: Firebase Console → Firestore → users/${uid}
-
-    // ── Limpar cache local para garantir leitura limpa após write ─────────────
-    // Evita que cache antigo (de tentativa anterior com permission-denied)
-    // mascare o resultado real após deploy de novas rules.
-    _cachedAppConfigGlobal.clear();
-    _appConfigGlobalRetryAfter = null;
-
     try {
       await _db.collection('app_config').doc('global').set(
         {'geminiPaidEnabled': enabled},
@@ -1201,26 +1270,37 @@ class FirestoreService {
   /// Isso evita o 403 que o código compilado (avE() em main.dart.js) gerava
   /// ao chamar GET /public_histories?pageSize=100 sem Authorization header.
   static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesRest() async {
-    // ── GUARD: sem usuário logado → sem REST → evita 403 garantido ───────────
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      _debugPublicHistories('rest skipped — no authenticated user');
-      // Não define erro: ausência de login não é um erro de rede
-      return const <ClinicalHistoryModel>[];
-    }
-
-    // Obtém token — se falhar, aborta (não faz REST sem auth)
-    String? token;
-    try {
-      token = await currentUser.getIdToken();
-    } catch (e) {
-      _debugPublicHistories('rest skipped — getIdToken failed: $e');
-      return const <ClinicalHistoryModel>[];
-    }
-
-    if (token == null || token.isEmpty) {
-      _debugPublicHistories('rest skipped — token empty after getIdToken()');
-      return const <ClinicalHistoryModel>[];
+    // ── Obtém token: Web usa AuthService.getAdminToken(), Nativo usa SDK ─────
+    // No Web, FirebaseAuth.instance.currentUser é sempre null (login REST não
+    // injeta token no Firebase Auth SDK). Usamos getAdminToken() como fonte
+    // única de token no Web.
+    String token;
+    if (kIsWeb) {
+      token = await AuthService.getAdminToken();
+      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=public_histories');
+      if (token.isEmpty) {
+        _debugPublicHistories('rest skipped — token REST vazio (não autenticado)');
+        return const <ClinicalHistoryModel>[];
+      }
+    } else {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=public_histories');
+      if (currentUser == null) {
+        _debugPublicHistories('rest skipped — no authenticated user (nativo)');
+        return const <ClinicalHistoryModel>[];
+      }
+      String? sdkToken;
+      try {
+        sdkToken = await currentUser.getIdToken();
+      } catch (e) {
+        _debugPublicHistories('rest skipped — getIdToken failed: $e');
+        return const <ClinicalHistoryModel>[];
+      }
+      if (sdkToken == null || sdkToken.isEmpty) {
+        _debugPublicHistories('rest skipped — token empty after getIdToken()');
+        return const <ClinicalHistoryModel>[];
+      }
+      token = sdkToken;
     }
 
     final apiKey = _firebaseApiKey;
@@ -1269,9 +1349,17 @@ class FirestoreService {
 
       // 401/403: tenta refresh do token UMA vez
       if (resp.statusCode == 401 || resp.statusCode == 403) {
+        // Web: getAdminToken() já faz auto-refresh via securetoken.googleapis.com
+        // Nativo: getIdToken(true) força refresh no Firebase Auth SDK
         String? refreshed;
         try {
-          refreshed = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+          if (kIsWeb) {
+            refreshed = await AuthService.getAdminToken();
+            debugPrint('[WEB_AUTH] source=REST token=${(refreshed).isNotEmpty} endpoint=public_histories (retry)');
+          } else {
+            refreshed = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+            debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=public_histories (retry)');
+          }
         } catch (_) {}
         if (refreshed != null && refreshed.isNotEmpty) {
           _debugPublicHistories('rest auth retry with refreshed token');
@@ -2137,15 +2225,25 @@ class FirestoreService {
     debugPrint('[clinical_guides DEBUG] fsBase=$_fsBase');
 
     // ── AUTH DIAGNÓSTICO ────────────────────────────────────────────────────
-    final currentUser = FirebaseAuth.instance.currentUser;
-    debugPrint('[clinical_guides DEBUG] currentUser=${currentUser?.uid ?? 'null (não logado)'}');
-    debugPrint('[clinical_guides DEBUG] currentUser.email=${currentUser?.email ?? 'null'}');
+    // Web: AuthService.getAdminToken() — FirebaseAuth.instance.currentUser é
+    // sempre null no Web (login REST não injeta token no Firebase Auth SDK).
+    // Nativo: Firebase Auth SDK — currentUser populado pelo signIn*.
+    String token;
+    if (kIsWeb) {
+      token = await AuthService.getAdminToken();
+      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=clinical_guides');
+      debugPrint('[clinical_guides DEBUG] currentUser=WEB_REST_AUTH (getAdminToken)');
+    } else {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=clinical_guides');
+      debugPrint('[clinical_guides DEBUG] currentUser=${currentUser?.uid ?? 'null (não logado)'}');
+      debugPrint('[clinical_guides DEBUG] currentUser.email=${currentUser?.email ?? 'null'}');
+      token = await currentUser?.getIdToken() ?? '';
+    }
+    debugPrint('[clinical_guides DEBUG] tokenPresent=${token.isNotEmpty}');
+    debugPrint('[clinical_guides DEBUG] tokenLength=${token.length}');
 
-    final token = await currentUser?.getIdToken();
-    debugPrint('[clinical_guides DEBUG] tokenPresent=${token != null && token.isNotEmpty}');
-    debugPrint('[clinical_guides DEBUG] tokenLength=${token?.length ?? 0}');
-
-    final authHeaders = (token != null && token.isNotEmpty)
+    final authHeaders = token.isNotEmpty
         ? <String, String>{'Authorization': 'Bearer $token'}
         : <String, String>{};
     debugPrint('[clinical_guides DEBUG] authHeader=${authHeaders.containsKey('Authorization')}');
@@ -2255,7 +2353,18 @@ class FirestoreService {
       _debugGuides('rest load initial status=${resp.statusCode}');
 
       if (resp.statusCode == 401 || resp.statusCode == 403) {
-        final refreshedToken = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+        // Web: getAdminToken() já faz auto-refresh via securetoken.googleapis.com
+        // Nativo: getIdToken(true) força refresh no Firebase Auth SDK
+        String? refreshedToken;
+        try {
+          if (kIsWeb) {
+            refreshedToken = await AuthService.getAdminToken();
+            debugPrint('[WEB_AUTH] source=REST token=${(refreshedToken).isNotEmpty} endpoint=clinical_guides (retry)');
+          } else {
+            refreshedToken = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+            debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=clinical_guides (retry)');
+          }
+        } catch (_) {}
         final retryHeaders = (refreshedToken != null && refreshedToken.isNotEmpty)
             ? <String, String>{'Authorization': 'Bearer $refreshedToken'}
             : <String, String>{};
