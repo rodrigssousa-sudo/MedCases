@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/scheduler.dart' show SchedulerBinding;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-// BUILD 231 DEBUG ONLY — remove after audit
-// ignore_for_file: avoid_print
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints, PharmacologicalDisclaimer, EvidenceCardWidget, EvidenceBadgesRow;
 import '../models/drug_model.dart' show DrugEvidenceModel;
@@ -275,44 +272,13 @@ class _AiScreenState extends State<AiScreen> {
   /// Indica se o usuário enviou ao menos 1 mensagem nova após restaurar uma sessão.
   bool _hasNewMessageAfterRestore = false;
 
-  // ── BUILD 230B: Debug trace counters (TEMPORARY — remove after validation) ──
-  // Track how many times PlantatoPipeline.run() and ExternalToolLinkEngine.build()
-  // execute per messageId to confirm the duplication hypothesis.
-  final Map<String, int> _pipelineRunCounter = {};
-  int _renderFrameCounter = 0;
-  // ─────────────────────────────────────────────────────────────────────────────
-
-  // ── BUILD 231 DEBUG ONLY ─────────────────────────────────────────────────────
-  // Counters and identity tracking for full forensic audit.
-  // Remove after audit is complete.
-  int   _231_buildCount        = 0;   // how many times _AiScreenState.build() ran
-  int   _231_itemBuilderCount  = 0;   // how many times itemBuilder ran total
-  int   _231_pipelineTotal     = 0;   // total PlantatoPipeline.run() calls this session
-  int   _231_extToolTotal      = 0;   // total ExternalTool calls this session
-  int   _231_setStateCount     = 0;   // total setState calls (via overridden setState)
-  int   _231_pfcCount          = 0;   // total addPostFrameCallback scheduled
-  int   _231_notifyCount       = 0;   // provider notifyListeners count (via watch rebuild)
-  String _231_lastMsgId        = '';  // last AI message id seen in build()
-  int   _231_lastMsgHash       = 0;   // last AI message textHash seen in build()
-  int   _231_lastMsgIdentity   = 0;   // identityHashCode of last AI _ChatMsg object
-  // BUILD 231 DEBUG ONLY — central log function using print() to bypass debugPrint throttle
-  void _231log(String tag, String msg) {
-    final ts = DateTime.now().millisecondsSinceEpoch;
-    final frame = SchedulerBinding.instance.currentFrameTimeStamp.inMicroseconds;
-    // Use print() directly — bypasses debugPrint throttle, always visible in console
-    print('[231][$tag] $msg ts=$ts frame_us=$frame');
-  }
-
-  // BUILD 231 DEBUG ONLY — shortened stack trace (first 8 relevant frames)
-  String _231stack() {
-    final raw = StackTrace.current.toString();
-    final lines = raw.split('\n')
-        .where((l) => l.trim().isNotEmpty)
-        .take(12)
-        .toList();
-    return lines.join(' | ');
-  }
-  // ─────────────────────────────────────────────────────────────────────────────
+  // ── BUILD 232: Pipeline + ExtTool deduplication caches ──────────────────
+  // Key: messageId + ':' + textHash
+  // Garante que PlantatoPipeline.run() e ExternalToolLinkEngine.build()
+  // executem no máximo 1 vez por (messageId, textHash) por sessão.
+  final Map<String, PlantatoPipelineResult> _plantaoPipelineCache = {};
+  final Map<String, ExternalToolLink?> _extToolCache = {};
+  // ──────────────────────────────────────────────────────────────────────────
 
   // ── TTS (Text-to-Speech) ─────────────────────────────────────────────────
   late final FlutterTts _tts;
@@ -356,10 +322,6 @@ class _AiScreenState extends State<AiScreen> {
   /// setState que também sincroniza o shell AppBar.
   @override
   void setState(VoidCallback fn) {
-    // BUILD 231 DEBUG ONLY
-    _231_setStateCount++;
-    _231log('SET_STATE', 'count=$_231_setStateCount isStreaming=$_isStreaming lastAiIdx=$_lastAiIndex longResponse=$_longResponse stack=${_231stack()}');
-    // END BUILD 231
     super.setState(fn);
     // Agenda sync pós-frame para garantir que _messages/_chatHistory
     // já foram atualizados antes de notificar o shell.
@@ -953,21 +915,6 @@ class _AiScreenState extends State<AiScreen> {
       messages: msgsToSave,
     );
 
-    // ── BUILD 230B TRACE ──────────────────────────────────────────────────────
-    final _saveHistMsgId = _messages.isNotEmpty
-        ? _messages.lastWhere((m) => m.role == 'ai',
-            orElse: () => _ChatMsg(role: 'ai', text: '')).id
-        : 'unknown';
-    debugPrint('[RENDER_TRACE] event=save_history_setState '
-        'messageId=$_saveHistMsgId '
-        'frame=$_renderFrameCounter');
-    // ─────────────────────────────────────────────────────────────────────────
-    // BUILD 231 DEBUG ONLY — Part 11: _saveCurrentSessionToHistory setState
-    _231log('SAVE_HISTORY_SS3_BEFORE', 'msgId=$_saveHistMsgId '
-        'existingIdx=$existingIdx isStreaming=$_isStreaming '
-        'setState#=$_231_setStateCount build#=$_231_buildCount '
-        'frame_us=${SchedulerBinding.instance.currentFrameTimeStamp.inMicroseconds}');
-    // END BUILD 231
     setState(() {
       // Remove entrada antiga (se existia) antes de reinserir no topo
       if (existingIdx >= 0) {
@@ -979,11 +926,6 @@ class _AiScreenState extends State<AiScreen> {
         _chatHistory.removeRange(10, _chatHistory.length);
       }
     });
-    // BUILD 231 DEBUG ONLY — Part 11: after save_history setState
-    _231log('SAVE_HISTORY_SS3_AFTER', 'msgId=$_saveHistMsgId '
-        'historyLen=${_chatHistory.length} setState#=$_231_setStateCount '
-        'build#=$_231_buildCount isStreaming=$_isStreaming');
-    // END BUILD 231
 
     // Persiste em dual-write: Firestore (primário) + SharedPreferences (offline)
     final uid = p.currentUser?.uid;
@@ -1267,10 +1209,6 @@ class _AiScreenState extends State<AiScreen> {
               // Substitui ThinkingBubble por bolha de streaming real.
               // Este é o único setState() largo — ocorre apenas no primeiro chunk.
               // Cria ValueNotifier para chunks subsequentes (ultra-localizado).
-              // BUILD 231 DEBUG ONLY — Part 12: first chunk
-              _231log('FIRST_CHUNK', 'chunkLen=${cleanedChunk.length} '
-                  'chunkN=$chunksSinceStart setState#=$_231_setStateCount');
-              // END BUILD 231
               _streamingTextNotifier?.dispose();
               _streamingTextNotifier = ValueNotifier<String>(cleanedChunk);
               setState(() {
@@ -1314,23 +1252,6 @@ class _AiScreenState extends State<AiScreen> {
         },
         onDone: (finalText) {
           if (!mounted) return;
-          // ── BUILD 230B TRACE ──────────────────────────────────────────────
-          final _traceOnDoneTs = DateTime.now().millisecondsSinceEpoch;
-          final _traceMsg = _messages.isNotEmpty
-              ? _messages.lastWhere((m) => m.role == 'ai',
-                  orElse: () => _ChatMsg(role: 'ai', text: '')).id
-              : 'unknown';
-          debugPrint('[RENDER_TRACE] event=onDone_start '
-              'messageId=$_traceMsg '
-              'timestamp=$_traceOnDoneTs');
-          // ─────────────────────────────────────────────────────────────────
-          // BUILD 231 DEBUG ONLY — Part 12: onDone entry
-          _231log('ONDONE_ENTRY', 'msgId=$_traceMsg '
-              'finalTextLen=${finalText.length} finalTextHash=${finalText.hashCode} '
-              'isStreaming=$_isStreaming lastAiIdx=$_lastAiIndex '
-              'longResponse=$_longResponse streamingMsgIdx=$streamingMsgIdx '
-              'setState#=$_231_setStateCount build#=$_231_buildCount');
-          // END BUILD 231
           // ── Detecta tipo de resultado ─────────────────────────────────────
           final isKeyError = finalText.startsWith('ERRO') && finalText.contains('API');
           // Detecta erro de rede — NÃO usa finalText.contains('🚨') como critério
@@ -1412,12 +1333,6 @@ class _AiScreenState extends State<AiScreen> {
             // e substitui por fallback seguro em vez de renderizar texto parcial.
             // Critério: Modo Plantão + pipeline válida estrutura? Se não, fallback.
             if (!_longResponse) {
-              // ── BUILD 230B TRACE ────────────────────────────────────────────
-              debugPrint('[RENDER_TRACE] event=plantao_truncation_guard '
-                  'messageId=$_traceMsg '
-                  'frame=$_renderFrameCounter '
-                  'timestamp=${DateTime.now().millisecondsSinceEpoch}');
-              // ────────────────────────────────────────────────────────────────
               safeFinalText = _plantaoTruncationGuard(
                 safeFinalText,
                 context.read<AppProvider>().lang,
@@ -1427,11 +1342,6 @@ class _AiScreenState extends State<AiScreen> {
             // ── PASSO 1: comita texto final mantendo _isStreaming=true ──────
             // O _AiBubble recebe o texto completo mas ainda não remove o cursor,
             // permitindo que o Flutter calcule o layout dos blocos finais primeiro.
-            // BUILD 231 DEBUG ONLY — Part 12: onDone setState#1
-            _231log('ONDONE_SS1_BEFORE', 'streamingMsgIdx=$streamingMsgIdx '
-                'isStreaming=$_isStreaming lastAiIdx=$_lastAiIndex '
-                'textLen=${safeFinalText.length} textHash=${safeFinalText.hashCode}');
-            // END BUILD 231
             setState(() {
               _thinking     = false;
               _aiError      = isKeyError;
@@ -1450,10 +1360,6 @@ class _AiScreenState extends State<AiScreen> {
                 _messages.add(_ChatMsg(role: 'ai', text: safeFinalText));
               }
             });
-            // BUILD 231 DEBUG ONLY
-            _231log('ONDONE_SS1_AFTER', 'lastAiIdx=$_lastAiIndex '
-                'msgCount=${_messages.length} isStreaming=$_isStreaming');
-            // END BUILD 231
 
             // Scroll intermediário: avança para onde estamos agora
             _scrollDown();
@@ -1463,86 +1369,28 @@ class _AiScreenState extends State<AiScreen> {
             // remove o cursor setando _isStreaming=false. Neste ponto o
             // _computeBlocksFromText() vai recomputar sem cursor — mas o maxScrollExtent
             // já está estável porque os blocos-base já foram medidos.
-            // BUILD 231 DEBUG ONLY — Part 13: PFC scheduling
-            _231_pfcCount++;
-            _231log('PFC_SCHEDULE', 'pfcCount=$_231_pfcCount caller=onDone_passo2 '
-                'setState#=$_231_setStateCount build#=$_231_buildCount');
-            // END BUILD 231
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!mounted) return;
-              // BUILD 231 DEBUG ONLY — Part 13: PFC execution
-              _231log('PFC_EXECUTE', 'pfcCount=$_231_pfcCount caller=onDone_passo2 '
-                  'isStreaming=$_isStreaming lastAiIdx=$_lastAiIndex '
-                  'setState#=$_231_setStateCount build#=$_231_buildCount '
-                  'frame_us=${SchedulerBinding.instance.currentFrameTimeStamp.inMicroseconds}');
-              // END BUILD 231
               // Build 188: descarta o notifier de streaming — streaming encerrado
               _streamingTextNotifier?.dispose();
               _streamingTextNotifier = null;
-              // BUILD 231 DEBUG ONLY — Part 12: notifier dispose
-              _231log('NOTIFIER_DISPOSE', 'ts=${DateTime.now().millisecondsSinceEpoch}');
-              // END BUILD 231
-              // ── BUILD 230B TRACE ────────────────────────────────────────────
-              _renderFrameCounter++;
-              debugPrint('[RENDER_TRACE] event=setState_streaming_false_before '
-                  'messageId=$_traceMsg '
-                  'frame=$_renderFrameCounter');
-              // ────────────────────────────────────────────────────────────────
-              // BUILD 231 DEBUG ONLY — Part 12: onDone setState#2
-              _231log('ONDONE_SS2_BEFORE', 'renderFrame=$_renderFrameCounter '
-                  'isStreaming=$_isStreaming setState#=$_231_setStateCount');
-              // END BUILD 231
               setState(() {
                 _isStreaming = false;
               });
-              // ── BUILD 230B TRACE ────────────────────────────────────────────
-              debugPrint('[RENDER_TRACE] event=setState_streaming_false_after '
-                  'messageId=$_traceMsg '
-                  'frame=$_renderFrameCounter');
-              // ────────────────────────────────────────────────────────────────
-              // BUILD 231 DEBUG ONLY
-              _231log('ONDONE_SS2_AFTER', 'isStreaming=$_isStreaming '
-                  'setState#=$_231_setStateCount build#=$_231_buildCount');
-              // END BUILD 231
               // ── Fix 1: Persistência Imediata por Turno (pós-resposta da IA) ──
               // Salva o par (pergunta + resposta) no histórico imediatamente após
               // o stream finalizar. Garante que ao trocar de aba, o histórico
               // completo do turno já está persistido no disco/Firestore.
-              // ── BUILD 230B TRACE ────────────────────────────────────────────
-              debugPrint('[RENDER_TRACE] event=save_history_before '
-                  'messageId=$_traceMsg '
-                  'frame=$_renderFrameCounter');
-              // ────────────────────────────────────────────────────────────────
-              // BUILD 231 DEBUG ONLY — Part 11: before saveHistory
-              _231log('SAVE_HISTORY_CALL', 'setState#=$_231_setStateCount '
-                  'build#=$_231_buildCount isStreaming=$_isStreaming');
-              // END BUILD 231
               _saveCurrentSessionToHistory(context.read<AppProvider>());
-              // BUILD 231 DEBUG ONLY — Part 11: after saveHistory call (async, just fire-and-forget)
-              _231log('SAVE_HISTORY_FIRED', 'setState#=$_231_setStateCount '
-                  'note=fire_and_forget_async');
-              // END BUILD 231
 
               // ── PASSO 3: scroll final após remoção do cursor (3 frames) ──
               // Frame 1: aguarda o rebuild do _AiBubble sem cursor (sem ▌)
               // Frame 2: aguarda o segundo layout pass (altura dos blocos finais)
               // Frame 3: maxScrollExtent totalmente estabilizado → scroll seguro
-              // BUILD 231 DEBUG ONLY — Part 13: scroll PFC chains
-              _231_pfcCount++;
-              _231log('PFC_SCHEDULE', 'pfcCount=$_231_pfcCount caller=onDone_passo3_frame1');
-              // END BUILD 231
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!mounted || _userScrolledUp) return;
-                // BUILD 231 DEBUG ONLY
-                _231log('PFC_EXECUTE', 'pfcCount=$_231_pfcCount caller=onDone_passo3_frame1');
-                _231_pfcCount++;
-                _231log('PFC_SCHEDULE', 'pfcCount=$_231_pfcCount caller=onDone_passo3_frame2');
-                // END BUILD 231
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (!mounted || _userScrolledUp) return;
-                  // BUILD 231 DEBUG ONLY
-                  _231log('PFC_EXECUTE', 'pfcCount=$_231_pfcCount caller=onDone_passo3_frame2');
-                  // END BUILD 231
                   if (!_scrollCtrl.hasClients) return;
                   final pos = _scrollCtrl.position;
                   if (pos.pixels >= pos.maxScrollExtent - 4) return;
@@ -1850,49 +1698,10 @@ class _AiScreenState extends State<AiScreen> {
     _focusNode.requestFocus();
   }
 
-  // BUILD 231 DEBUG ONLY — Part 14: track last provider identity for rebuild detection
-  int _231_lastProviderIdentity = 0;
-  // END BUILD 231
 
   @override
   Widget build(BuildContext context) {
     final p    = context.watch<AppProvider>();
-    // BUILD 231 DEBUG ONLY
-    _231_buildCount++;
-    final _231_thisBuildN = _231_buildCount;
-    // Part 14: detect if this build was triggered by provider notifyListeners()
-    final _231_providerIdent = identityHashCode(p);
-    if (_231_providerIdent != _231_lastProviderIdentity && _231_buildCount > 1) {
-      _231_notifyCount++;
-      _231log('PROVIDER_REBUILD', 'notifyCount=$_231_notifyCount '
-          'providerIdent=$_231_providerIdent prevIdent=$_231_lastProviderIdentity '
-          'build#=$_231_thisBuildN setState#=$_231_setStateCount');
-    }
-    _231_lastProviderIdentity = _231_providerIdent;
-    // Identify last AI message for Part 5
-    final _231_lastAiMsg = _messages.isNotEmpty
-        ? _messages.lastWhere((m) => m.role == 'ai', orElse: () => _ChatMsg(role:'ai',text:''))
-        : _ChatMsg(role:'ai',text:'');
-    final _231_msgIdNow      = _231_lastAiMsg.id;
-    final _231_msgHashNow    = _231_lastAiMsg.text.hashCode;
-    final _231_msgIdentNow   = identityHashCode(_231_lastAiMsg);
-    final _231_msgLenNow     = _231_lastAiMsg.text.length;
-    final _231_frameNow      = SchedulerBinding.instance.currentFrameTimeStamp;
-    final _231_sameMsg       = _231_msgIdNow == _231_lastMsgId;
-    final _231_sameHash      = _231_msgHashNow == _231_lastMsgHash;
-    final _231_sameIdent     = _231_msgIdentNow == _231_lastMsgIdentity;
-    // Provider rebuild detection: if context.watch fired this, log it
-    _231log('BUILD', 'n=$_231_thisBuildN isStreaming=$_isStreaming '
-        'lastAiIdx=$_lastAiIndex longResponse=$_longResponse '
-        'msgId=$_231_msgIdNow msgHash=$_231_msgHashNow '
-        'msgLen=$_231_msgLenNow msgIdentity=$_231_msgIdentNow '
-        'sameMsg=$_231_sameMsg sameHash=$_231_sameHash sameIdent=$_231_sameIdent '
-        'msgCount=${_messages.length} setState#=$_231_setStateCount '
-        'frame_us=${_231_frameNow.inMicroseconds}');
-    _231_lastMsgId       = _231_msgIdNow;
-    _231_lastMsgHash     = _231_msgHashNow;
-    _231_lastMsgIdentity = _231_msgIdentNow;
-    // END BUILD 231
     final dark = p.darkMode;
     final bp   = MedBreakpoints.of(context);
     // B140: fundo branco absoluto em light mode (remove bege WhatsApp)
@@ -1940,13 +1749,6 @@ class _AiScreenState extends State<AiScreen> {
             addAutomaticKeepAlives: true,
             itemCount: _messages.length + (_thinking ? 1 : 0) + 1, // +1 sentinela
             itemBuilder: (context, i) {
-              // BUILD 231 DEBUG ONLY
-              _231_itemBuilderCount++;
-              _231log('ITEM_BUILDER', 'idx=$i build#=$_231_buildCount '
-                  'itemCall#=$_231_itemBuilderCount '
-                  'isStreaming=$_isStreaming lastAiIdx=$_lastAiIndex '
-                  'longResponse=$_longResponse msgCount=${_messages.length}');
-              // END BUILD 231
               // Sentinela invisível — âncora para Scrollable.ensureVisible
               if (i == _messages.length + (_thinking ? 1 : 0)) {
                 return SizedBox(key: _bottomKey, height: 1);
@@ -1956,16 +1758,6 @@ class _AiScreenState extends State<AiScreen> {
                 return RepaintBoundary(child: _ThinkingBubble(dark: dark));
               }
               final msg = _messages[i];
-              // BUILD 231 DEBUG ONLY — Part 5: message identity
-              if (msg.role == 'ai') {
-                _231log('MSG_IDENTITY', 'idx=$i id=${msg.id} '
-                    'textHash=${msg.text.hashCode} textLen=${msg.text.length} '
-                    'identity=${identityHashCode(msg)} '
-                    'runtimeType=${msg.runtimeType} '
-                    'isLastAi=${i == _lastAiIndex} '
-                    'isStreaming=$_isStreaming longResponse=$_longResponse');
-              }
-              // END BUILD 231
               if (msg.role == 'user') {
                 // Build 170: passa callbacks de cópia e edição para o balão
                 final msgIndex = i; // captura o índice para edição
@@ -1996,40 +1788,27 @@ class _AiScreenState extends State<AiScreen> {
                   i == _lastAiIndex &&       // última bolha AI
                   !_isStreaming;             // stream finalizado
 
-              // BUILD 231 DEBUG ONLY — gate evaluation (always logs, regardless of gate result)
-              _231log('GATE_EVAL', 'idx=$i isPlantaoFinalBubble=$isPlantaoFinalBubble '
-                  '_longResponse=$_longResponse isLastAi=${i == _lastAiIndex} '
-                  '_isStreaming=$_isStreaming msgId=${msg.id} '
-                  'msgHash=${msg.text.hashCode} build#=$_231_buildCount');
-              // END BUILD 231
 
-              // Executa o pipeline uma única vez por rebuild (cache via key)
-              // Fallback: se pipeline falhar, renderiza via _AiBubble padrão
+              // ── BUILD 232: PlantatoPipeline com cache de deduplicação ────────
+              // Key = messageId + ':' + textHash.
+              // Garante que PlantatoPipeline.run() execute no máximo 1 vez por
+              // (messageId, textHash) independente do número de rebuilds.
+              // _saveCurrentSessionToHistory() pode provocar rebuild adicional mas
+              // o cache garante que o pipeline NÃO roda novamente.
               PlantatoPipelineResult? plantaoPipelineResult;
               if (isPlantaoFinalBubble) {
-                // ── BUILD 230B TRACE ──────────────────────────────────────────
-                final _pipelineKey = msg.id;
-                _pipelineRunCounter[_pipelineKey] =
-                    (_pipelineRunCounter[_pipelineKey] ?? 0) + 1;
-                final _pipelineRunCount = _pipelineRunCounter[_pipelineKey]!;
-                final _textHash = msg.text.hashCode;
-                debugPrint('[PIPELINE_TRACE] '
-                    'messageId=$_pipelineKey '
-                    'runCount=$_pipelineRunCount '
-                    'source=itemBuilder '
-                    'frame=$_renderFrameCounter '
-                    'textHash=$_textHash');
-                // ──────────────────────────────────────────────────────────────
-                // BUILD 231 DEBUG ONLY — Part 6+8: pipeline with stack trace
-                _231_pipelineTotal++;
-                _231log('PIPELINE_RUN', 'total#=$_231_pipelineTotal '
-                    'msgId=$_pipelineKey runCount=$_pipelineRunCount '
-                    'textHash=$_textHash caller=itemBuilder '
-                    'build#=$_231_buildCount setState#=$_231_setStateCount '
-                    'stack=${_231stack()}');
-                // END BUILD 231
-                plantaoPipelineResult = PlantatoPipeline.run(msg.text);
+                final cacheKey = '${msg.id}:${msg.text.hashCode}';
+                final cached = _plantaoPipelineCache[cacheKey];
+                if (cached != null) {
+                  debugPrint('[PIPELINE_DEDUP] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
+                  plantaoPipelineResult = cached;
+                } else {
+                  debugPrint('[PIPELINE_DEDUP] hit=false messageId=${msg.id} textHash=${msg.text.hashCode}');
+                  plantaoPipelineResult = PlantatoPipeline.run(msg.text);
+                  _plantaoPipelineCache[cacheKey] = plantaoPipelineResult;
+                }
               }
+              // ─────────────────────────────────────────────────────────────────
 
               // Decide se usa renderer estruturado ou bubble padrão
               final bool useStructuredRenderer =
@@ -2116,27 +1895,41 @@ class _AiScreenState extends State<AiScreen> {
                         _sendDebounced(sendText, context.read<AppProvider>());
                       },
                     ),
-                    // ── Build 192: ActionButtonsRow — Smart Next Action + Deep Link ──
-                    // Ambos os botões lado a lado, mesmo componente visual.
+                    // ── Build 192 / BUILD 232: ActionButtonsRow + EXT_TOOL cache ───
                     // Aparece apenas na última bolha AI sem streaming.
-                    // BUILD 231 DEBUG ONLY — Part 7: ActionButtonsRow instantiation gate
+                    // BUILD 232: ExternalToolLink é resolvido aqui (no pai) com cache.
+                    // Assim _ActionButtonsRow.build() nunca chama ExternalToolLinkEngine
+                    // mais de 1 vez por (messageId, textHash) independente de rebuilds.
                     if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2)
-                      Builder(builder: (ctx) {
-                        _231_extToolTotal++;
-                        _231log('ACTION_ROW_INSTANTIATE', 'total#=$_231_extToolTotal '
-                            'idx=$i msgId=${msg.id} msgHash=${msg.text.hashCode} '
-                            'build#=$_231_buildCount setState#=$_231_setStateCount '
-                            'stack=${_231stack()}');
+                      Builder(builder: (_) {
+                        final lastUser = _messages
+                            .lastWhere((m) => m.role == 'user',
+                                orElse: () => _ChatMsg(role: 'user', text: ''))
+                            .text;
+                        // ── EXT_TOOL cache ───────────────────────────────────────
+                        final extKey = '${msg.id}:${msg.text.hashCode}';
+                        final ExternalToolLink? resolvedLink;
+                        if (_extToolCache.containsKey(extKey)) {
+                          debugPrint('[EXT_TOOL_DEDUP] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
+                          resolvedLink = _extToolCache[extKey];
+                        } else {
+                          debugPrint('[EXT_TOOL_DEDUP] hit=false messageId=${msg.id} textHash=${msg.text.hashCode}');
+                          resolvedLink = ExternalToolLinkEngine.build(
+                            lastUserMessage: lastUser,
+                            lastAiResponse: msg.text,
+                            isPlantaoMode: !_longResponse,
+                            currentLanguage: p.lang,
+                          );
+                          _extToolCache[extKey] = resolvedLink;
+                        }
                         return _ActionButtonsRow(
-                          lastUserMessage: _messages
-                              .lastWhere((m) => m.role == 'user',
-                                  orElse: () => _ChatMsg(role: 'user', text: ''))
-                              .text,
+                          lastUserMessage: lastUser,
                           lastAiResponse: msg.text,
                           isPlantaoMode: !_longResponse,
                           lang: p.lang,
                           dark: dark,
                           chatHistory: _messages.map((m) => m.text).toList(),
+                          cachedLink: resolvedLink,
                           onActionTap: (prompt) {
                             if (_isStreaming) return;
                             _userScrolledUp = false;
@@ -2144,9 +1937,9 @@ class _AiScreenState extends State<AiScreen> {
                             _sendDebounced(prompt, context.read<AppProvider>());
                           },
                         );
-                      }), // END BUILD 231 Builder wrapper
-                    // Tarjeta de evidencia si el mensaje menciona un fármaco
-                    // Build 192: 20px gap entre botões e evidência (elimina espaço morto)
+                      }),
+                    // ── Evidência farmacológica (card colapsível) ────────────────
+                    // Build 192: 20px gap entre botões e evidência
                     if (detectedEv != null)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
@@ -3365,8 +3158,10 @@ class _ActionButtonsRow extends StatelessWidget {
   final bool dark;
   final List<String> chatHistory;
   final void Function(String prompt) onActionTap;
+  // BUILD 232: link pre-resolvido pelo pai com cache de deduplicacao.
+  final ExternalToolLink? cachedLink;
 
-  // Cores institucionais — imutáveis por design
+  // Cores institucionais -- imutaveis por design
   // Azul institucional IA (mesmo do AppBar/primary)
   static const _kBlueAI     = Color(0xFF1E88E5);
   // Roxo calculadora (mesmo do card Calculadoras da Home)
@@ -3380,24 +3175,12 @@ class _ActionButtonsRow extends StatelessWidget {
     required this.lang,
     required this.dark,
     required this.onActionTap,
+    required this.cachedLink,
     this.chatHistory = const [],
   });
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 231 DEBUG ONLY — Part 4+7+8: ActionButtonsRow.build() with stack
-    final _231_ts = DateTime.now().millisecondsSinceEpoch;
-    final _231_frame = SchedulerBinding.instance.currentFrameTimeStamp.inMicroseconds;
-    final _231_aiRespHash = lastAiResponse.hashCode;
-    final _231_aiRespLen  = lastAiResponse.length;
-    final _231_stack231   = StackTrace.current.toString().split('\n')
-        .where((l) => l.trim().isNotEmpty).take(12).join(' | ');
-    print('[231][ACTION_ROW_BUILD] '
-        'aiRespHash=$_231_aiRespHash aiRespLen=$_231_aiRespLen '
-        'isPlantaoMode=$isPlantaoMode '
-        'ts=$_231_ts frame_us=$_231_frame '
-        'stack=$_231_stack231');
-    // END BUILD 231
 
     // ── Motor IA: Smart Next Action (local, zero rede) ────────────────────────
     final action = NextActionEngine.build(
@@ -3408,30 +3191,9 @@ class _ActionButtonsRow extends StatelessWidget {
       chatHistory: chatHistory,
     );
 
-    // ── Motor Calculadora: External Tool Link (local, zero rede) ─────────────
-    // ── BUILD 230B TRACE ──────────────────────────────────────────────────────
-    // Note: _ActionButtonsRow is a StatelessWidget — counters come from parent.
-    // We use a local key from lastAiResponse hash to track per-message call count.
-    final _extToolMsgKey = lastAiResponse.hashCode.toString();
-    debugPrint('[EXT_TOOL_TRACE] '
-        'messageId=$_extToolMsgKey '
-        'source=_ActionButtonsRow.build '
-        'frame=unknown '
-        'query=${lastUserMessage.length > 40 ? lastUserMessage.substring(0, 40) : lastUserMessage}');
-    // ─────────────────────────────────────────────────────────────────────────
-    // BUILD 231 DEBUG ONLY — Part 7+8: ExternalToolLinkEngine call with stack
-    print('[231][EXT_TOOL_CALL] '
-        'aiRespHash=$_231_aiRespHash '
-        'query=${lastUserMessage.length > 60 ? lastUserMessage.substring(0, 60) : lastUserMessage} '
-        'ts=$_231_ts frame_us=$_231_frame '
-        'stack=$_231_stack231');
-    // END BUILD 231
-    final link = ExternalToolLinkEngine.build(
-      lastUserMessage: lastUserMessage,
-      lastAiResponse: lastAiResponse,
-      isPlantaoMode: isPlantaoMode,
-      currentLanguage: lang,
-    );
+    // BUILD 232: ExternalToolLink vem pre-resolvido do cache do pai.
+    // Nao chama ExternalToolLinkEngine.build() aqui -- elimina duplicacao em rebuilds.
+    final link = cachedLink;
 
     // Nenhum botão disponível → sem widget
     if (action.label.isEmpty && link == null) return const SizedBox.shrink();
@@ -3887,27 +3649,6 @@ String _plantaoTruncationGuard(String text, String lang) {
   if (isErrorMsg) return text;
 
   // Executa o pipeline para validar a estrutura
-  // ── BUILD 230B TRACE ──────────────────────────────────────────────────────
-  debugPrint('[PIPELINE_TRACE] '
-      'messageId=truncationGuard '
-      'runCount=1 '
-      'source=truncationGuard '
-      'frame=pre-setState '
-      'textHash=${text.hashCode}');
-  // ─────────────────────────────────────────────────────────────────────────
-  // BUILD 231 DEBUG ONLY — Part 6+8: truncationGuard pipeline call
-  {
-    final _231_ts231 = DateTime.now().millisecondsSinceEpoch;
-    final _231_frame231 = SchedulerBinding.instance.currentFrameTimeStamp.inMicroseconds;
-    final _231_stack231 = StackTrace.current.toString().split('\n')
-        .where((l) => l.trim().isNotEmpty).take(12).join(' | ');
-    print('[231][PIPELINE_TRUNCGUARD] '
-        'textHash=${text.hashCode} textLen=${text.length} '
-        'caller=truncationGuard '
-        'ts=$_231_ts231 frame_us=$_231_frame231 '
-        'stack=$_231_stack231');
-  }
-  // END BUILD 231
   final pipelineResult = PlantatoPipeline.run(text);
   final parserValid    = pipelineResult.response != null;
   final validatorValid = pipelineResult.valid;
@@ -6179,19 +5920,6 @@ class _AiBubbleState extends State<_AiBubble> {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 231 DEBUG ONLY — Part 4+10: _AiBubble.build()
-    {
-      final _231_ts = DateTime.now().millisecondsSinceEpoch;
-      final _231_frame = SchedulerBinding.instance.currentFrameTimeStamp.inMicroseconds;
-      print('[231][AIBUBBLE_BUILD] '
-          'widgetIdent=${identityHashCode(widget)} '
-          'stateIdent=${identityHashCode(this)} '
-          'textHash=${widget.text.hashCode} textLen=${widget.text.length} '
-          'isStreaming=${widget.isStreaming} animate=${widget.animate} '
-          'visibleCount=$_visibleCount displayTextHash=${_displayText.hashCode} '
-          'ts=$_231_ts frame_us=$_231_frame');
-    }
-    // END BUILD 231
     // ── Build 116: BLOCO ÚNICO CONTÍNUO ─────────────────────────────────────
     // Antes: _cachedBlocks → N × _AiBlockBubble (múltiplos containers azuis)
     // Agora: texto completo → 1 × _AiBlockBubble (container único, sem fragmentação)

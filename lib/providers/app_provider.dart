@@ -3240,11 +3240,13 @@ class AppProvider extends ChangeNotifier {
       );
 
       if (paidResult.success && paidResult.text.isNotEmpty) {
-        final paidText = AiSmartRouter.sanitizeResponse(
+        // BUILD 232: sanitizeAndCheck bloqueia meta leak severo antes de onDone
+        final paidSanitized = AiSmartRouter.sanitizeAndCheck(
           paidResult.text,
           isPlantaoMode: !longResponse,
           appLanguage:   _lang,
         );
+        final paidText = paidSanitized.text;
         _aiHistory
           ..add({'role': 'user',      'content': input})
           ..add({'role': 'assistant', 'content': paidText});
@@ -3285,12 +3287,13 @@ class AppProvider extends ChangeNotifier {
 
           // Conteúdo parcial significativo OU erro não-recuperável → exibe parcial
           if (rawPartial.length > 40) {
-            // Build 191: sanitiza parcial antes de exibir
-            final partialText = AiSmartRouter.sanitizeResponse(
+            // BUILD 232: sanitizeAndCheck bloqueia meta leak severo antes de onDone
+            final partialSanitized = AiSmartRouter.sanitizeAndCheck(
               rawPartial,
               isPlantaoMode: !longResponse,
               appLanguage: _lang,
             );
+            final partialText = partialSanitized.text;
             _aiHistory
               ..add({'role': 'user',      'content': input})
               ..add({'role': 'assistant', 'content': partialText});
@@ -3314,15 +3317,17 @@ class AppProvider extends ChangeNotifier {
           // Resposta completa — dispara somente uma vez (guard anti-duplicata)
           if (completionFired) return;
           completionFired = true;
-          // Build 191: sanitiza metadados antes de exibir ao usuário
+          // BUILD 232: sanitizeAndCheck — bloqueia meta leak severo antes de onDone.
+          // Se isRecoverable=false, text já é o fallback clínico seguro.
           final rawText = accumulator.toString().trim();
-          final finalText = rawText.isNotEmpty
-              ? AiSmartRouter.sanitizeResponse(
+          final sanitized = rawText.isNotEmpty
+              ? AiSmartRouter.sanitizeAndCheck(
                   rawText,
                   isPlantaoMode: !longResponse,
                   appLanguage: _lang,
                 )
-              : rawText;
+              : null;
+          final finalText = sanitized?.text ?? rawText;
           if (finalText.isNotEmpty) {
             _aiHistory
               ..add({'role': 'user',      'content': input})

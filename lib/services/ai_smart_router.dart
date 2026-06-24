@@ -337,8 +337,102 @@ class AiSmartRouter {
   //   _validateResponse()  → detecta problemas internamente
   //   sanitizeResponse()   → remove linhas de metadados da resposta visível
   //
+  // BUILD 232: adicionado sanitizeAndCheck() que retorna SanitizeResult com
+  //   indicador de severidade do meta leak para decisão de fallback no chamador.
+  //
   // sanitizeResponse() é PÚBLICO e chamado pelo app_provider ANTES de exibir.
   // ─────────────────────────────────────────────────────────────────────────────
+
+  // ── Tokens de meta leak SEVERO (prompt instructions brutos — nunca clínico) ──
+  // Subset do _metaLeakPatterns que indica contaminação grave:
+  // a resposta contém instruções internas do prompt, não apenas CoT.
+  static final _severeLeakPatterns = RegExp(
+    r'(\[MANDATO|\[CONTRACT|\[AI_ROUTER|\[CAMADA|\[SISTEMA'
+    r'|RESPONDA\s+ESTRITAMENTE|RESPONDA\s+[ÚU]NICA\s+E\s+EXCLUSIVAMENTE'
+    r'|TEMPLATE\s+DE\s+\d+\s+LINHAS|NESTA\s+ORDEM\s+EXATA'
+    r'|PROIBIDO\s+CRIAR\s+INTRODU'
+    r'|INSTRUÇÃO\s+DE\s+SISTEMA|PROMPT\s+INTERNO'
+    r'|SYSTEM\s+INSTRUCTION|SMART\s+ROUTER)',
+    caseSensitive: false,
+    multiLine: true,
+  );
+
+  /// Fallback clínico seguro — exibido quando a resposta está irrecuperável.
+  static String _clinicalFallback(String lang) {
+    if (lang == 'es') {
+      return '🟥 RESPUESTA EN PROCESO\n'
+          '⚠️ Alerta: Estamos ajustando la respuesta para mantener la seguridad clínica.\n'
+          '📌 Monitorar: Reformule la pregunta en una frase objetiva (ej: "Dosis de amiodarona en PCR").';
+    }
+    return '🟥 RESPOSTA EM AJUSTE\n'
+        '⚠️ Alerta: Estamos ajustando a resposta para manter segurança clínica.\n'
+        '📌 Monitorar: Reformule a pergunta em uma frase objetiva (ex: "Dose de amiodarona em PCR").';
+  }
+
+  /// BUILD 232 — Sanitiza e avalia severidade do meta leak.
+  ///
+  /// Retorna [SanitizeResult] com:
+  ///   • [text]         → texto sanitizado (ou fallback se irrecuperável)
+  ///   • [hadMetaLeak]  → true se havia qualquer meta leak
+  ///   • [hadSevereLeak] → true se havia tokens críticos de prompt interno
+  ///   • [isRecoverable] → false se o texto pós-sanitização ficou vazio ou
+  ///                       ainda contém tokens severos (usar fallback clínico)
+  static SanitizeResult sanitizeAndCheck(
+    String response, {
+    bool isPlantaoMode = false,
+    String appLanguage = 'pt',
+  }) {
+    if (response.isEmpty) {
+      return SanitizeResult(text: response, hadMetaLeak: false, hadSevereLeak: false, isRecoverable: false);
+    }
+
+    // ── Detecta leak severo ANTES da sanitização ─────────────────────────────
+    final hadSevereLeak = _severeLeakPatterns.hasMatch(response);
+    final hadMetaLeak   = hadSevereLeak || _metaLeakPatterns.hasMatch(response);
+
+    if (hadMetaLeak) {
+      debugPrint('[RESPONSE_VALIDATOR] meta_leak=true severe=$hadSevereLeak — iniciando repair');
+    }
+
+    // ── Sanitização: remove linhas contaminadas ──────────────────────────────
+    final lines = response.split('\n');
+    final cleaned = <String>[];
+    int metaLinesRemoved = 0;
+
+    for (final line in lines) {
+      if (_metaLeakPatterns.hasMatch(line)) {
+        metaLinesRemoved++;
+        debugPrint('[RESPONSE_VALIDATOR] meta_leak removida: '
+            '"${line.trim().length > 60 ? line.trim().substring(0, 60) : line.trim()}..."');
+      } else {
+        cleaned.add(line);
+      }
+    }
+
+    String result = cleaned.join('\n').trim();
+
+    // ── Verifica se o resultado pós-repair ainda está contaminado ────────────
+    final stillContaminated = _severeLeakPatterns.hasMatch(result);
+    final contentLines = result.split('\n').where((l) => l.trim().isNotEmpty).length;
+    // Irrecuperável: vazio, ou ainda contaminado, ou restaram <2 linhas clínicas
+    final isRecoverable = result.isNotEmpty && !stillContaminated && contentLines >= 2;
+
+    debugPrint('[RESPONSE_VALIDATOR] '
+        'metaLeak=$hadMetaLeak severe=$hadSevereLeak '
+        'linesRemoved=$metaLinesRemoved '
+        'isRecoverable=$isRecoverable '
+        'contentLinesAfter=$contentLines');
+
+    // ── Se irrecuperável, usa fallback clínico seguro ────────────────────────
+    final finalText = isRecoverable ? result : _clinicalFallback(appLanguage);
+
+    return SanitizeResult(
+      text: finalText,
+      hadMetaLeak: hadMetaLeak,
+      hadSevereLeak: hadSevereLeak,
+      isRecoverable: isRecoverable,
+    );
+  }
 
   /// Sanitiza a resposta removendo linhas com metadados internos.
   /// Chamado ANTES de exibir ao usuário.
@@ -580,4 +674,25 @@ class _ValidationResult {
   final bool valid;
   final String reason;
   const _ValidationResult({required this.valid, required this.reason});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SanitizeResult — resultado de sanitizeAndCheck() (BUILD 232)
+// ─────────────────────────────────────────────────────────────────────────────
+class SanitizeResult {
+  /// Texto final: sanitizado se isRecoverable, fallback clínico se não.
+  final String text;
+  /// true se havia qualquer token de meta leak (incluindo CoT phrases).
+  final bool hadMetaLeak;
+  /// true se havia tokens de prompt interno críticos ([MANDATO], [CONTRACT], etc.).
+  final bool hadSevereLeak;
+  /// false se a resposta ficou irrecuperável após sanitização → usar fallback.
+  final bool isRecoverable;
+
+  const SanitizeResult({
+    required this.text,
+    required this.hadMetaLeak,
+    required this.hadSevereLeak,
+    required this.isRecoverable,
+  });
 }
