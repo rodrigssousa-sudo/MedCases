@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// ModeAnchorEngine / AiGatewayService — Build 223 (Sovereign Plantão Contract + CalculatorContext)
+// ModeAnchorEngine / AiGatewayService — Build 225 (Intent Engine Multidimensional)
 //
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │  PIVÔ ARQUITETURAL — Build 156                                          │
@@ -76,17 +76,17 @@ const bool kPromptSizeAudit = true;
 const String kAiGatewayBaseUrl = '';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MODE_ANCHOR_GUARDIA — Motor de Guardia/Plantão (Build 224)
+// MODE_ANCHOR_GUARDIA — Motor de Guardia/Plantão (Build 225)
 //
-// Build 224: Plantão Dinâmico Contextual
-//   - Título 🟥 SEMPRE dinâmico: nome da doença/fármaco/síndrome
-//   - Template de emojis varia conforme intenção clínica (intentMandate)
+// Build 225: Intent Engine Clínico Multidimensional
+//   - Título 🟥 SEMPRE específico: "FÁRMACO — classe farmacológica"
+//   - Template de emojis varia conforme intenção + contexto + complexidade
 //   - Proibições de Build 223 preservadas (TRATAMENTO FARMACOLÓGICO, etc.)
 //   - Negrito REDUZIDO: apenas nome de fármaco, dose final, valor crítico
-//   - Conteúdo inteligente: monitorização responde parâmetros, não prescrição
+//   - intentMandate Build 225 injeta: topic, subtitle, context, complexity
 // ─────────────────────────────────────────────────────────────────────────────
 const String _modeAnchorPlantao =
-    '[MODO PLANTÃO — MÉDICO EMERGENCISTA SÊNIOR — Build 224]\n'
+    '[MODO PLANTÃO — MÉDICO EMERGENCISTA SÊNIOR — Build 225]\n'
     'Responda como médico experiente de UTI/PS. Objetivo, rápido, seguro.\n'
     '\n'
     // ── SOBERANIA ABSOLUTA (Build 223 preservado) ──────────────────────────
@@ -385,11 +385,10 @@ class AiGatewayService {
 
   /// Envia mensagem ao Gemini com motor selecionado.
   ///
-  /// Build 229: Interceptor de intent por turno — PROMPT LEAK FIX.
-  /// O mandato de intent (gotas/ampolas/conduta) vai EXCLUSIVAMENTE para
-  /// system_instruction (via injectModeAnchor). A user message enviada
-  /// nos contents[] é SEMPRE a mensagem limpa original — elimina eco do
-  /// mandato pelo modelo (causa raiz do Prompt Leaking das 2:56–2:58 PM).
+  /// Build 225: PlantaoIntentEngine multidimensional — PROMPT LEAK FIX preservado.
+  /// O mandato rico (topic+subtitle+context+complexity+template) vai EXCLUSIVAMENTE
+  /// para system_instruction. A user message enviada nos contents[] é SEMPRE a
+  /// mensagem limpa original — elimina eco do mandato pelo modelo.
   /// Modo Plantão: grounding=false.
   ///
   /// [userMessage]  — pergunta clínica do usuário
@@ -433,24 +432,29 @@ class AiGatewayService {
       debugPrint('[AI_ROUTER] languageLock=${languageLock.length} chars → system_instruction');
     }
 
-    // Build 224: IntentClassifier — classifica intenção clínica + injeta template dinâmico.
+    // Build 225: PlantaoIntentEngine — engine multidimensional (tema+contexto+intenção+complexidade).
     //
     // REGRA DE OURO: o mandato vai EXCLUSIVAMENTE para system_instruction.
     // A userMessage enviada nos contents[] é SEMPRE a mensagem limpa do médico.
     // O mandato NUNCA deve conter texto que o modelo possa ecoar na resposta.
+    //
+    // Substitui PlantaoIntentClassifier.classify() (Build 224) com engine multidimensional.
+    // PlantaoIntentClassifier permanece no pipeline como shim de retrocompatibilidade.
     String intentMandate = '';
     if (!longResponse) {
-      // Classificador local determinístico (zero IA, zero rede, zero latência)
-      final intentResult = PlantaoIntentClassifier.classify(userMessage);
-      intentMandate = PlantaoIntentClassifier.buildIntentMandate(
-        intentResult,
-        resolvedLang,
-      );
+      // Engine multidimensional: 100% local, zero IA, zero rede, zero latência
+      final queryAnalysis = PlantaoIntentEngine.analyze(userMessage);
+      intentMandate = PlantaoIntentEngine.buildIntentMandateV2(queryAnalysis, resolvedLang);
 
       if (kDebugMode) {
-        debugPrint('[AI_ROUTER][Build224] intent=${intentResult.intent.name} '
-            'score=${intentResult.score} '
-            'keywords=${intentResult.matchedKeywords} '
+        debugPrint('[AI_ROUTER][Build225] '
+            'topic=${queryAnalysis.clinicalTopic} '
+            'subtitle="${queryAnalysis.clinicalSubtitle}" '
+            'primaryIntent=${queryAnalysis.primaryIntent.name} '
+            'secondaryIntent=${queryAnalysis.secondaryIntent?.name ?? "none"} '
+            'context=${queryAnalysis.clinicalContext.name} '
+            'complexity=${queryAnalysis.complexity.name} '
+            'confidence=${queryAnalysis.confidence.toStringAsFixed(2)} '
             '| intentMandate=${intentMandate.length} chars → system_instruction only');
       }
     }

@@ -1,18 +1,23 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// plantao_pipeline.dart — Plantão Pipeline v2.0 (Build 224)
+// plantao_pipeline.dart — Plantão Pipeline v3.0 (Build 225)
 //
 // RESPONSABILIDADES:
-//   • PlantaoIntentClassifier — classifica intenção clínica do usuário (Build 224)
+//   • PlantaoIntentEngine    — engine multidimensional Build 225 (tema+contexto+intenção+complexidade)
+//   • PlantaoIntentClassifier — shim Build 224 (retrocompatibilidade — não remover)
 //   • PlantaoResponse  — data class estruturada com campos clínicos dinâmicos
 //   • PlantaoParser    — extrai PlantaoResponse de texto validado via emoji-anchors
 //   • PlantaoValidator — valida estrutura mínima por template de intenção
 //   • PlantaoRepair    — reorganiza blocos, elimina duplicatas, normaliza espaços
 //                        (NUNCA inventa conteúdo clínico)
 //
-// PIPELINE COMPLETO (Build 224):
+// PIPELINE COMPLETO (Build 225):
 //   lastUserMessage
-//     → PlantaoIntentClassifier.classify()  [detecta intenção: conduta/dose/monitorização/...]
-//     → intentMandate injetado no system_instruction (gateway)
+//     → PlantaoIntentEngine.analyze()       [multidimensional: tema+ctx+intent+complexity]
+//       → matchers paralelos: DoseMatcher, InfusionMatcher, MonitoringMatcher, ...
+//       → DrugMatcher (entidade/tema) + ContextMatcher (cenário clínico)
+//       → ComplexityResolver → PlantaoQueryAnalysis
+//     → buildIntentMandateV2()              [mandato rico com topic+subtitle+context+complexity]
+//     → intentMandate injetado no system_instruction (gateway — anti-leak)
 //   LLM output
 //     → sanitizeResponse()       [ai_smart_router.dart — meta leak filter]
 //     → PlantaoRepair.repair()   [reorganiza blocos, deduplication]
@@ -48,9 +53,992 @@
 //   [PLANTAO_VALIDATOR] valid=true repaired=false removedLines=2
 //                       hiddenFields=1 orderFixed=true
 //   [PLANTAO_INTENT] intent=monitoramento score=3 keywords=[ecg, potassio, monitorar]
+//   [PLANTAO_ANALYSIS] topic=Amiodarona subtitle=Antiarrítmico classe III
+//                      primaryIntent=dose secondaryIntent=contraindicacao
+//                      context=pcr complexity=critica confidence=0.92
+//                      matched=[dose, amiodarona, pcr]
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'package:flutter/foundation.dart' show debugPrint;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 225 — INTENT ENGINE CLÍNICO MULTIDIMENSIONAL
+//
+// Modelo mental:
+//   userMessage → tema + contexto + intenção + complexidade → mandato rico
+//
+// Princípio de resolução de conflitos:
+//   1. Intenção explícita do usuário (palavras de ação: dose, monitorar, dilui)
+//   2. Entidade clínica / fármaco (amiodarona, noradrenalina, vancomicina)
+//   3. Contexto clínico grave (pcr, choque, sepse, via aérea)
+//   4. Complexidade derivada do contexto e sinais de gravidade
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PlantaoContext — contexto clínico do cenário (Build 225)
+// ─────────────────────────────────────────────────────────────────────────────
+enum PlantaoContext {
+  pcr,            // parada cardiorrespiratória / RCP / ACLS
+  arritmia,       // arritmias / cardioversão / antiarrítmicos
+  choque,         // choque (qualquer tipo) / vasopressores
+  sepse,          // sepse / infecção grave / bundle
+  viaAerea,       // intubação / IOT / RSI / via aérea difícil
+  ventilacao,     // ventilação mecânica / parâmetros
+  eletrolitos,    // distúrbios eletrolíticos / reposição iônica
+  glicemia,       // glicemia / CAD / DKA / hipoglicemia
+  renal,          // injúria renal / ajuste de dose / ClCr
+  cardiovascular, // IAM / TEP / IC / SCA / crise hipertensiva
+  neurologia,     // AVC / convulsão / meningite / rebaixamento
+  toxicologia,    // intoxicação / antídoto / overdose
+  trauma,         // trauma / cirurgia / hemorragia
+  farmacologia,   // farmacologia clínica geral / interação / CI
+  geral,          // contexto não especificado
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PlantaoComplexity — complexidade clínica da pergunta (Build 225)
+// ─────────────────────────────────────────────────────────────────────────────
+enum PlantaoComplexity {
+  simples,        // pergunta curta geral / definição / dose isolada sem gravidade
+  intermediaria,  // monitorização / ajuste / contraindicações / eletrólitos estáveis
+  critica,        // PCR / choque / sepse / via aérea / instabilidade hemodinâmica
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PlantaoQueryAnalysis — resultado multidimensional do IntentEngine (Build 225)
+//
+// Produto final de PlantaoIntentEngine.analyze().
+// Contém todos os eixos de análise: tema, subtítulo, intenção primária/secundária,
+// contexto clínico, complexidade, confiança e keywords para auditoria.
+//
+// Compatibilidade: PlantaoIntentResult (Build 224) permanece funcional.
+// PlantaoQueryAnalysis é a evolução que o ai_gateway_service.dart usa a partir
+// da Build 225 para montar o mandato rico.
+// ─────────────────────────────────────────────────────────────────────────────
+class PlantaoQueryAnalysis {
+  /// Tema principal — nome do fármaco/doença/síndrome identificado.
+  /// Ex: 'Amiodarona', 'Hipocalemia', 'Noradrenalina', 'PCR'
+  final String clinicalTopic;
+
+  /// Subtítulo clínico — classe/categoria farmacológica ou contexto breve.
+  /// Ex: 'Antiarrítmico classe III', 'Distúrbio eletrolítico', 'Vasopressor α1'
+  final String clinicalSubtitle;
+
+  /// Intenção primária — ação clínica dominante identificada pelo engine.
+  final PlantaoIntent primaryIntent;
+
+  /// Intenção secundária — ação clínica de suporte (pode ser null).
+  final PlantaoIntent? secondaryIntent;
+
+  /// Contexto clínico — cenário em que a pergunta se insere.
+  final PlantaoContext clinicalContext;
+
+  /// Complexidade clínica — derivada de contexto + sinais de gravidade.
+  final PlantaoComplexity complexity;
+
+  /// Keywords que dispararam a classificação (para auditoria/log).
+  final List<String> matchedKeywords;
+
+  /// Confiança do engine (0.0–1.0) — baseada em score total normalizado.
+  final double confidence;
+
+  const PlantaoQueryAnalysis({
+    required this.clinicalTopic,
+    required this.clinicalSubtitle,
+    required this.primaryIntent,
+    this.secondaryIntent,
+    required this.clinicalContext,
+    required this.complexity,
+    required this.matchedKeywords,
+    required this.confidence,
+  });
+
+  /// Converte para PlantaoIntentResult (retrocompatibilidade com Build 224).
+  PlantaoIntentResult toIntentResult() => PlantaoIntentResult(
+        intent: primaryIntent,
+        score: matchedKeywords.length,
+        matchedKeywords: matchedKeywords,
+      );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _MatcherResult — resultado interno de cada matcher modular (Build 225)
+// ─────────────────────────────────────────────────────────────────────────────
+class _MatcherResult {
+  final PlantaoIntent? intent;
+  final PlantaoContext? context;
+  final String topic;
+  final String subtitle;
+  final int score;
+  final List<String> matched;
+
+  const _MatcherResult({
+    this.intent,
+    this.context,
+    this.topic = '',
+    this.subtitle = '',
+    required this.score,
+    required this.matched,
+  });
+
+  bool get hasMatch => score > 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _IntentMatcher — base de todos os matchers modulares (Build 225)
+//
+// Cada matcher especializado define _keywords e opcionalmente sobrescreve
+// _contextKeywords, topic e subtitle. O método match() executa a contagem
+// e retorna _MatcherResult.
+// ─────────────────────────────────────────────────────────────────────────────
+abstract class _IntentMatcher {
+  PlantaoIntent get intent;
+  List<String> get keywords;
+  PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  String get defaultTopic => '';
+  String get defaultSubtitle => '';
+
+  _MatcherResult match(String msg) {
+    final matched = keywords.where((kw) => msg.contains(kw)).toList();
+    return _MatcherResult(
+      intent: intent,
+      context: defaultContext,
+      topic: defaultTopic,
+      subtitle: defaultSubtitle,
+      score: matched.length,
+      matched: matched,
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Matchers de INTENÇÃO (o que o usuário quer saber)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class DoseMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.dose;
+  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override List<String> get keywords => const [
+    'dose', 'dosagem', 'quanto', 'mg/kg', 'posologia', 'dosis',
+    'qual a dose', 'dose de', 'dose do', 'dose da', 'dosis de',
+    'quantos mg', 'quantos mcg', 'qual dose', 'dose máxima',
+    'dose mínima', 'dose de ataque', 'dose de manutenção',
+    'dose em', 'dose para', 'dose na',
+  ];
+}
+
+class InfusionMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.infusao;
+  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override List<String> get keywords => const [
+    'infusão', 'infusao', 'velocidade', 'ml/h', 'mcg/kg/min', 'mcg/min',
+    'drip', 'bic', 'bomba infusora', 'titulação', 'titular',
+    'calcular infusão', 'como calcular a infusão', 'calcular velocidade',
+    'taxa de infusão', 'mL por hora',
+  ];
+}
+
+class DiluitionMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.diluicao;
+  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override List<String> get keywords => const [
+    'dilui', 'diluição', 'preparo', 'preparar', 'ampola', 'ampolas',
+    'como preparar', 'como dilui', 'prepara', 'reconstituir',
+    'gota', 'gotejo', 'gotejamento', 'gotejar', 'macrogotas', 'microgotas',
+    'equipo de soro', 'equipo de infusão',
+  ];
+}
+
+class MonitoringMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.monitorizacao;
+  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override List<String> get keywords => const [
+    'monitorar', 'monitorizar', 'monitorização', 'monitoreo',
+    'o que observar', 'o que monitorar', 'parâmetros', 'parametros',
+    'metas', 'meta terapêutica', 'valores esperados',
+    'alvo', 'alvos', 'target', 'frequência de monitorar',
+    'quando preocupar', 'sinal de gravidade', 'sinais de gravidade',
+    'monitorar ecg', 'monitorar potassio', 'vigiar',
+  ];
+}
+
+class ContraindicationMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.contraindicacao;
+  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override List<String> get keywords => const [
+    // Variantes PT com e sem acentuação (substring matching seguro)
+    'contraindicaç', 'contraindicado', 'contra-indica',
+    'contraindicaciones', 'quando não usar', 'quando não dar', 'quando evitar',
+    'quem não pode', 'não pode usar', 'evitar em',
+    'contraindicado em', 'contraindicada', 'proibido em',
+    'não indicado', 'não recomendado',
+  ];
+}
+
+class DiagnosisMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.diagnostico;
+  @override PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override List<String> get keywords => const [
+    'diagnóstico', 'diagnosticar', 'como diagnosticar', 'suspeitar',
+    'como suspeitar', 'criterios', 'critérios',
+    'diferencial', 'diagnóstico diferencial', 'como identificar',
+    'sinais', 'sintomas', 'apresentação', 'quadro clínico',
+    'como reconhecer', 'diagnose', 'suspeita de', 'pensar em',
+  ];
+}
+
+class InterpretationMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.interpretacao;
+  @override PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override List<String> get keywords => const [
+    'interpretar', 'interpretação', 'o que significa', 'o que quer dizer',
+    'interpretar resultado', 'valor alto', 'valor baixo', 'resultado de',
+    'resultado do', 'laudo', 'exame alterado', 'analisar',
+    'o que fazer com', 'como interpretar', 'analizar',
+  ];
+}
+
+class InteractionMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.interacao;
+  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override List<String> get keywords => const [
+    'interação', 'interaçao', 'interação medicamentosa',
+    'pode usar com', 'pode dar com', 'combinar', 'associar',
+    'risco de interação', 'incompatível', 'incompatibilidade',
+    'junto com', 'associação de', 'combinar com',
+  ];
+}
+
+class CalculationMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.calculo;
+  @override PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override List<String> get keywords => const [
+    'calcular', 'cálculo', 'fórmula', 'calculo', 'formula',
+    'clcr', 'cockcroft', 'tfg', 'ckd-epi', 'egfr',
+    'clearance de creatinina', 'ajuste renal',
+    'ânion gap', 'anion gap', 'be', 'base excess',
+    'osmolaridade', 'água livre', 'déficit de sódio',
+    'peso ideal', 'imc', 'bmi', 'score',
+  ];
+}
+
+class ProcedureMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.procedimento;
+  @override PlantaoContext get defaultContext => PlantaoContext.trauma;
+  @override List<String> get keywords => const [
+    'procedimento', 'técnica', 'como fazer', 'como realizar',
+    'punção', 'dreno', 'toracocentese', 'paracentese', 'artrocentese',
+    'acesso venoso central', 'cateter', 'linha arterial',
+    'dissecção venosa', 'cricotireoidostomia', 'pericardiocentese',
+    'marca-passo', 'drenagem', 'biópsia', 'punção lombar',
+  ];
+}
+
+class ConductMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.conduta;
+  @override PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override List<String> get keywords => const [
+    'conduta', 'tratar', 'tratamento', 'como tratar', 'manejo',
+    'protocolo de', 'o que fazer', 'primeira linha',
+    'abordagem', 'manejo de', 'conduta em', 'tratar com',
+  ];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Matchers de CONTEXTO CLÍNICO (cenário/setting — entidade separada da intenção)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class ElectrolyteMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.eletrolitos;
+  @override PlantaoContext get defaultContext => PlantaoContext.eletrolitos;
+  @override List<String> get keywords => const [
+    'hipocalemia', 'hipercalemia', 'hypokale', 'hyperkale',
+    'hiponatremia', 'hipernatremia', 'hyponatremia',
+    'hipocalcemia', 'hipercalcemia', 'hypocalcemia',
+    'hipomagnesemia', 'hipofosfatemia',
+    'potássio', 'potassio', 'sódio', 'sodio', 'cálcio', 'calcio',
+    'magnésio', 'magnesio', 'fósforo', 'fosforo', 'cloro', 'cloreto',
+    'eletrólito', 'eletrolito', 'distúrbio eletrolítico',
+    'reposição de', 'reposição ev', 'repor potássio', 'repor sódio',
+    'kcl', 'k+', 'na+', 'ca2+', 'mg2+',
+  ];
+}
+
+class GlycemiaMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.glicemia;
+  @override PlantaoContext get defaultContext => PlantaoContext.glicemia;
+  @override List<String> get keywords => const [
+    'cad', 'cetoacidose', 'cetoacidose diabética', 'dka', 'ehh',
+    'estado hiperosmolar', 'insulina ev', 'insulina endovenosa',
+    'protocolo insulina', 'glicemia', 'hiperglicemia',
+    'glicose ev', 'controle glicêmico', 'glicemia capilar',
+    'insulinoterapia',
+  ];
+}
+
+class VentilationMatcher extends _IntentMatcher {
+  @override PlantaoIntent get intent => PlantaoIntent.ventilacao;
+  @override PlantaoContext get defaultContext => PlantaoContext.ventilacao;
+  @override List<String> get keywords => const [
+    'ventilação mecânica', 'vm', 'ventilador',
+    'peep', 'pressão plateau', 'volume corrente', 'fio2',
+    'modo ventilatório', 'pressão suporte', 'fr ventilatória',
+    'desmame', 'extubação', 'driving pressure', 'plateau',
+    'modo controlado', 'modo assistido', 'ciclado',
+  ];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _DrugMatcher — reconhece entidades farmacológicas (tema/subtítulo)
+//
+// NÃO define intenção — apenas extrai o tema clínico (drug name) e o
+// subtítulo (classe farmacológica). O engine usa esses dados para
+// construir o título 🟥 específico.
+// ─────────────────────────────────────────────────────────────────────────────
+class _DrugEntry {
+  final String name;          // Nome canônico para o título 🟥
+  final String subtitle;      // Classe farmacológica / descrição breve
+  final List<String> keys;    // Keywords que identificam este fármaco
+  final PlantaoContext ctx;   // Contexto padrão quando não há override
+  const _DrugEntry(this.name, this.subtitle, this.keys, this.ctx);
+}
+
+class _DrugMatcher {
+  _DrugMatcher._();
+
+  static const _kDrugs = <_DrugEntry>[
+    // Antiarrítmicos
+    _DrugEntry('AMIODARONA', 'Antiarrítmico classe III',
+        ['amiodarona', 'amiodarone'], PlantaoContext.arritmia),
+    _DrugEntry('ADENOSINA', 'Antiarrítmico — bloqueador AV',
+        ['adenosina', 'adenosine'], PlantaoContext.arritmia),
+    _DrugEntry('LIDOCAÍNA', 'Antiarrítmico classe IB',
+        ['lidocaína', 'lidocaina', 'xilocaína'], PlantaoContext.arritmia),
+    _DrugEntry('METOPROLOL', 'Betabloqueador seletivo β1',
+        ['metoprolol'], PlantaoContext.arritmia),
+    _DrugEntry('DIGOXINA', 'Glicosídeo cardíaco',
+        ['digoxina', 'digoxin'], PlantaoContext.arritmia),
+    _DrugEntry('ATROPINA', 'Anticolinérgico / Cronotrópico positivo',
+        ['atropina', 'atropine'], PlantaoContext.arritmia),
+
+    // Vasopressores / Inotrópicos
+    _DrugEntry('NORADRENALINA', 'Vasopressor α1 predominante',
+        ['noradrenalina', 'norepinefrina', 'norepinephrine', 'nora'], PlantaoContext.choque),
+    _DrugEntry('ADRENALINA', 'Catecolamina endógena — α1 + β1 + β2',
+        ['adrenalina', 'epinefrina', 'epinephrine', 'adrenalina ev'], PlantaoContext.choque),
+    _DrugEntry('DOPAMINA', 'Catecolamina — dopaminérgico + β1 + α1',
+        ['dopamina', 'dopamine'], PlantaoContext.choque),
+    _DrugEntry('DOBUTAMINA', 'Inotrópico β1 seletivo',
+        ['dobutamina', 'dobutamine'], PlantaoContext.choque),
+    _DrugEntry('VASOPRESSINA', 'Vasopressor não-adrenérgico (V1)',
+        ['vasopressina', 'vasopressin'], PlantaoContext.choque),
+    _DrugEntry('LEVOSIMENDANA', 'Sensibilizador de cálcio — inotrópico',
+        ['levosimendana', 'levosimendan'], PlantaoContext.choque),
+
+    // Sedação / Analgesia / Indutores
+    _DrugEntry('KETAMINA', 'Anestésico dissociativo — NMDA antagonista',
+        ['ketamina', 'ketamine'], PlantaoContext.viaAerea),
+    _DrugEntry('ETOMIDATO', 'Indutor anestésico — GABA agonista',
+        ['etomidato', 'etomidate'], PlantaoContext.viaAerea),
+    _DrugEntry('MIDAZOLAM', 'Benzodiazepínico sedativo',
+        ['midazolam', 'dormicum'], PlantaoContext.farmacologia),
+    _DrugEntry('PROPOFOL', 'Anestésico geral / Sedativo EV',
+        ['propofol', 'diprivan'], PlantaoContext.farmacologia),
+    _DrugEntry('FENTANIL', 'Opioide sintético — analgesia EV',
+        ['fentanil', 'fentanyl'], PlantaoContext.farmacologia),
+    _DrugEntry('MORFINA', 'Opioide — analgesia / broncodilatação',
+        ['morfina', 'morphine'], PlantaoContext.farmacologia),
+    _DrugEntry('SUCCINILCOLINA', 'Bloqueador neuromuscular despolarizante',
+        ['succinilcolina', 'succinylcholine', 'suxametônio'], PlantaoContext.viaAerea),
+    _DrugEntry('ROCURÔNIO', 'Bloqueador neuromuscular não-despolarizante',
+        ['rocurônio', 'rocuronio', 'rocuronium'], PlantaoContext.viaAerea),
+
+    // Anticoagulantes / Hemostáticos
+    _DrugEntry('HEPARINA NÃO FRACIONADA', 'Anticoagulante — inibidor da trombina',
+        ['heparina não fracionada', 'hnf', 'heparina ev', 'heparin'], PlantaoContext.cardiovascular),
+    _DrugEntry('ENOXAPARINA', 'HBPM — anticoagulante subcutâneo',
+        ['enoxaparina', 'clexane', 'enoxaparin'], PlantaoContext.cardiovascular),
+    _DrugEntry('VARFARINA', 'Anticoagulante oral — inibidor de vitamina K',
+        ['varfarina', 'warfarina', 'warfarin', 'coumadin'], PlantaoContext.cardiovascular),
+    _DrugEntry('RIVAROXABANA', 'DOAC — inibidor direto do fator Xa',
+        ['rivaroxabana', 'xarelto', 'rivaroxaban'], PlantaoContext.cardiovascular),
+    _DrugEntry('DABIGATRANA', 'DOAC — inibidor direto da trombina',
+        ['dabigatrana', 'pradaxa', 'dabigatran'], PlantaoContext.cardiovascular),
+
+    // Antibióticos
+    _DrugEntry('VANCOMICINA', 'Glicopeptídeo — antibiota MRSA',
+        ['vancomicina', 'vancomycin'], PlantaoContext.sepse),
+    _DrugEntry('PIPERACILINA-TAZOBACTAM', 'Penicilina + inibidor de β-lactamase',
+        ['piperacilina', 'tazobactam', 'pip-tazo', 'tazocin'], PlantaoContext.sepse),
+    _DrugEntry('MEROPENEM', 'Carbapenem — amplo espectro',
+        ['meropenem', 'meronem'], PlantaoContext.sepse),
+    _DrugEntry('IMIPENEM', 'Carbapenem — amplo espectro',
+        ['imipenem', 'tienam'], PlantaoContext.sepse),
+    _DrugEntry('CEFTRIAXONA', 'Cefalosporina 3ª geração',
+        ['ceftriaxona', 'rocefin', 'ceftriaxone'], PlantaoContext.sepse),
+    _DrugEntry('AZITROMICINA', 'Macrolídeo — atípicos',
+        ['azitromicina', 'zithromax', 'azithromycin'], PlantaoContext.sepse),
+    _DrugEntry('CIPROFLOXACINO', 'Fluoroquinolona — amplo espectro',
+        ['ciprofloxacino', 'ciprofloxacin', 'cipro'], PlantaoContext.sepse),
+    _DrugEntry('METRONIDAZOL', 'Nitroimidazol — anaeróbios / protozoários',
+        ['metronidazol', 'metronidazole', 'flagyl'], PlantaoContext.sepse),
+
+    // Eletrolíticos / Correção
+    _DrugEntry('CLORETO DE POTÁSSIO', 'Reposição de potássio EV',
+        ['kcl', 'cloreto de potássio', 'cloreto de potassio', 'kci 19,1%', 'kcl 19,1', 'potássio ev'], PlantaoContext.eletrolitos),
+    _DrugEntry('SULFATO DE MAGNÉSIO', 'Reposição de magnésio EV',
+        ['sulfato de magnésio', 'mgso4', 'magnésio ev', 'magnesio ev'], PlantaoContext.eletrolitos),
+    _DrugEntry('GLUCONATO DE CÁLCIO', 'Protetor de membrana / reposição de Ca2+',
+        ['gluconato de cálcio', 'gluconato de calcio', 'cálcio ev', 'calcio ev'], PlantaoContext.eletrolitos),
+    _DrugEntry('BICARBONATO DE SÓDIO', 'Tampão / correção de acidose',
+        ['bicarbonato', 'nahco3', 'bicarbonato de sódio', 'bicarbonato de sodio'], PlantaoContext.eletrolitos),
+    _DrugEntry('INSULINA REGULAR', 'Insulina de ação rápida — controle glicêmico',
+        ['insulina regular', 'insulina ev', 'insulina endovenosa', 'insulinoterapia ev'], PlantaoContext.glicemia),
+    _DrugEntry('GLICOSE 50%', 'Correção de hipoglicemia EV',
+        ['glicose 50%', 'glicose a 50', 'soro glicosado 50', 'sg50%'], PlantaoContext.glicemia),
+
+    // Cardiovasculares
+    _DrugEntry('NITROPRUSSIATO', 'Vasodilatador arteriovenoso — crise hipertensiva',
+        ['nitroprussiato', 'nipride', 'nitroprusside'], PlantaoContext.cardiovascular),
+    _DrugEntry('NITROGLICERINA', 'Nitrato — vasodilatador coronário',
+        ['nitroglicerina', 'nitroglicerin', 'ntg', 'isordil ev'], PlantaoContext.cardiovascular),
+    _DrugEntry('FUROSEMIDA', 'Diurético de alça — IC / congestão',
+        ['furosemida', 'lasix', 'furosemide'], PlantaoContext.cardiovascular),
+    _DrugEntry('LABETALOL', 'Alfabetabloqueador — crise hipertensiva',
+        ['labetalol', 'trandate'], PlantaoContext.cardiovascular),
+
+    // Neurologia
+    _DrugEntry('DIAZEPAM', 'Benzodiazepínico — anticonvulsivante',
+        ['diazepam', 'valium'], PlantaoContext.neurologia),
+    _DrugEntry('FENITOÍNA', 'Antiepiléptico — estabilizador de membrana',
+        ['fenitoína', 'fenitoina', 'phenytoin', 'hidantal'], PlantaoContext.neurologia),
+    _DrugEntry('FENOBARBITAL', 'Barbitúrico antiepiléptico',
+        ['fenobarbital', 'phenobarbital', 'gardenal'], PlantaoContext.neurologia),
+    _DrugEntry('LEVETIRACETAM', 'Antiepiléptico de nova geração',
+        ['levetiracetam', 'keppra'], PlantaoContext.neurologia),
+    _DrugEntry('ALTEPLASE', 'Trombolítico — rt-PA — AVC isquêmico / TEP',
+        ['alteplase', 'rtpa', 'rt-pa', 'actilyse', 'tenecteplase'], PlantaoContext.neurologia),
+    _DrugEntry('MANITOL', 'Diurético osmótico — hipertensão intracraniana',
+        ['manitol', 'mannitol'], PlantaoContext.neurologia),
+
+    // Broncodilatadores / Respiratórios
+    _DrugEntry('SALBUTAMOL', 'Broncodilatador β2 — broncoespasmo',
+        ['salbutamol', 'ventolin', 'albuterol'], PlantaoContext.ventilacao),
+    _DrugEntry('ADRENALINA NEBULIZADA', 'Vasoconstritora / broncodilatadora inalatória',
+        ['adrenalina nebulizada', 'adrenalina inalada'], PlantaoContext.ventilacao),
+    _DrugEntry('IPRATRÓPIO', 'Anticolinérgico broncodilatador',
+        ['ipratrópio', 'atrovent', 'ipratropium'], PlantaoContext.ventilacao),
+    _DrugEntry('AMINOFILINA', 'Xantina — broncodilatador',
+        ['aminofilina', 'aminophylline'], PlantaoContext.ventilacao),
+  ];
+
+  static _MatcherResult match(String msg) {
+    for (final drug in _kDrugs) {
+      final matched = drug.keys.where((k) => msg.contains(k)).toList();
+      if (matched.isNotEmpty) {
+        return _MatcherResult(
+          intent: null, // DrugMatcher nunca define intenção
+          context: drug.ctx,
+          topic: drug.name,
+          subtitle: drug.subtitle,
+          score: matched.length * 3, // peso maior: entidade é o tema
+          matched: matched,
+        );
+      }
+    }
+    return const _MatcherResult(score: 0, matched: []);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _ContextMatcher — reconhece contextos clínicos graves (Build 225)
+//
+// Contextos graves elevam a complexidade para `critica`.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ContextEntry {
+  final PlantaoContext context;
+  final String topicOverride;       // Override de tema se não houver drug match
+  final String subtitleOverride;    // Override de subtítulo
+  final List<String> keys;
+  final bool isCritical;            // true → eleva complexidade para critica
+  const _ContextEntry(
+      this.context, this.topicOverride, this.subtitleOverride, this.keys,
+      {this.isCritical = false});
+}
+
+class _ContextMatcher {
+  _ContextMatcher._();
+
+  static const _kContexts = <_ContextEntry>[
+    _ContextEntry(PlantaoContext.pcr, 'PCR', 'Parada cardiorrespiratória', [
+      'pcr', 'parada cardíaca', 'parada cardiaca', 'parada cardiorrespiratória',
+      'rcp', 'ressuscitação', 'acls', 'bls', 'reanimação',
+      'fv', 'fibrilação ventricular', 'tvsp', 'aesp', 'assistolia',
+      'sem pulso', 'choque elétrico',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.viaAerea, 'VIA AÉREA', 'Manejo da via aérea', [
+      'iot', 'intubar', 'intubação', 'sequência rápida', 'sri', 'rsi',
+      'laringoscopia', 'videolaringoscopia', 'via aérea difícil',
+      'cricotireoidostomia', 'cormack', 'mallampati',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.choque, 'CHOQUE', 'Choque circulatório', [
+      'choque', 'shock', 'hipotensão refratária',
+      'pam < 65', 'pam baixa', 'ressuscitação hemodinâmica',
+      'instabilidade hemodinâmica',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.sepse, 'SEPSE', 'Infecção grave / Sepse', [
+      'sepse', 'sepsis', 'septicemia', 'choque séptico',
+      'bundle sepse', 'hora 1', 'foco infeccioso',
+      'infecção grave', 'sofa', 'qsofa',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.viaAerea, 'VIA AÉREA', 'Suporte ventilatório', [
+      'saturação baixa', 'sato2', 'sat o2', 'spO2', 'spO2 < 90',
+      'hipóxia', 'hipoxia', 'hipoxemia',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.ventilacao, 'VENTILAÇÃO MECÂNICA', 'Suporte ventilatório invasivo', [
+      'ventilação mecânica', 'vm', 'ventilador', 'peep', 'fio2',
+      'volume corrente', 'pressão plateau', 'driving pressure',
+    ], isCritical: false),
+    _ContextEntry(PlantaoContext.arritmia, 'ARRITMIA', 'Distúrbio do ritmo cardíaco', [
+      'arritmia', 'taquicardia', 'fibrilação atrial', ' fa ',
+      'flutter atrial', 'tsvp', 'taqui supra', 'taqui ventricular',
+      'bradiarritmia', 'bloqueio av', 'bav',
+    ], isCritical: false),
+    _ContextEntry(PlantaoContext.cardiovascular, 'IAM', 'Síndrome coronariana aguda', [
+      'iam', 'infarto', 'sca', 'stemi', 'nstemi',
+      'dor torácica', 'sindrome coronariana', 'elevação de st',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.cardiovascular, 'TEP', 'Tromboembolismo pulmonar', [
+      'tep', 'embolia pulmonar', 'tromboembolismo',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.cardiovascular, 'CRISE HIPERTENSIVA', 'Emergência hipertensiva', [
+      'crise hipertensiva', 'emergência hipertensiva', 'encefalopatia hipertensiva',
+      'pa 220', 'pa 210', 'pa 200', 'pas ≥ 180', 'hipertensão grave',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.eletrolitos, 'DISTÚRBIO ELETROLÍTICO', 'Desequilíbrio iônico', [
+      'hipocalemia grave', 'hipercalemia grave', 'k+ 6', 'k+ 7', 'k+ < 2',
+      'hiponatremia grave', 'hipernatremia grave', 'hipocalcemia grave',
+      'ecg alterado', 'ondas t apiculadas', 'alargamento de qrs',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.eletrolitos, 'DISTÚRBIO ELETROLÍTICO', 'Desequilíbrio iônico', [
+      'hipocalemia', 'hipercalemia', 'hiponatremia', 'hipernatremia',
+      'hipocalcemia', 'hipercalcemia', 'hipomagnesemia',
+    ], isCritical: false),
+    _ContextEntry(PlantaoContext.glicemia, 'CETOACIDOSE DIABÉTICA', 'Emergência metabólica', [
+      'cad', 'cetoacidose', 'cetoacidose diabética', 'dka', 'ehh', 'estado hiperosmolar',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.glicemia, 'DISTÚRBIO GLICÊMICO', 'Controle glicêmico', [
+      'hipoglicemia', 'hiperglicemia', 'glicemia',
+    ], isCritical: false),
+    _ContextEntry(PlantaoContext.neurologia, 'AVC ISQUÊMICO', 'Acidente vascular cerebral', [
+      'avc', 'acidente vascular', 'avc isquêmico', 'stroke', 'nihss',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.neurologia, 'STATUS EPILÉPTICO', 'Estado de mal epiléptico', [
+      'status epiléptico', 'estado de mal epiléptico', 'convulsão', 'convulsão prolongada',
+      'convulsão há', 'crise convulsiva',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.neurologia, 'MENINGITE', 'Infecção do SNC', [
+      'meningite', 'meningismo', 'rigidez de nuca', 'kernig', 'brudzinski',
+    ], isCritical: true),
+    _ContextEntry(PlantaoContext.renal, 'INJÚRIA RENAL AGUDA', 'IRA / ajuste de dose renal', [
+      'ira', 'injúria renal', 'lesão renal aguda', 'clcr', 'clearance', 'creatinina elevada',
+      'ajuste renal', 'dose em insuficiência renal', 'nefrotoxicidade',
+    ], isCritical: false),
+    _ContextEntry(PlantaoContext.toxicologia, 'INTOXICAÇÃO', 'Toxicologia clínica', [
+      'intoxicação', 'overdose', 'antídoto', 'envenenamento', 'toxicidade',
+    ], isCritical: true),
+  ];
+
+  static ({PlantaoContext ctx, String topic, String subtitle, bool isCritical, List<String> matched})
+      match(String msg) {
+    for (final entry in _kContexts) {
+      final matched = entry.keys.where((k) => msg.contains(k)).toList();
+      if (matched.isNotEmpty) {
+        return (
+          ctx: entry.context,
+          topic: entry.topicOverride,
+          subtitle: entry.subtitleOverride,
+          isCritical: entry.isCritical,
+          matched: matched,
+        );
+      }
+    }
+    return (
+      ctx: PlantaoContext.geral,
+      topic: '',
+      subtitle: '',
+      isCritical: false,
+      matched: <String>[],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _ComplexityResolver — determina complexidade clínica (Build 225)
+//
+// Ordem de precedência:
+//   1. Sinais explícitos de gravidade na mensagem → critica
+//   2. Contexto crítico detectado pelo _ContextMatcher → critica
+//   3. Intenção de alto risco (pcr, via_aerea, choque, sepse, ventilacao) → critica
+//   4. Distúrbios eletrolíticos / glicemia / monitorização → intermediaria
+//   5. Resto → simples
+// ─────────────────────────────────────────────────────────────────────────────
+class _ComplexityResolver {
+  _ComplexityResolver._();
+
+  // Sinais de gravidade que elevam qualquer cenário para `critica`
+  static const _kCriticalSignals = [
+    'instabilidade', 'instável', 'sem pulso', 'apneia', 'glasgow < 8',
+    'glasgow 3', 'glasgow 4', 'glasgow 5', 'glasgow 6',
+    'rebaixamento', 'inconsciente', 'sem resposta', 'parada',
+    'pam < 65', 'pam baixa', 'pa 80', 'pa 70', 'pa 60',
+    'sat 80', 'sat 85', 'spo2 80', 'spo2 85', 'spo2 88',
+    'spo2 < 90', 'sat < 90', 'hipóxia grave', 'cianose',
+    'k+ 7', 'k+ 6,5', 'k+ 8', 'k+ < 2', 'k+ 1,',
+    'hemorragia grave', 'choque hemorrágico', 'exsanguinação',
+  ];
+
+  // Intenções que por natureza são críticas
+  static const _kCriticalIntents = {
+    PlantaoIntent.pcr,
+    PlantaoIntent.via_aerea,
+    PlantaoIntent.ventilacao,
+    PlantaoIntent.choque,
+    PlantaoIntent.sepse,
+  };
+
+  // Contextos que por natureza são críticos
+  static const _kCriticalContexts = {
+    PlantaoContext.pcr,
+    PlantaoContext.viaAerea,
+  };
+
+  // Intenções de complexidade intermediária
+  static const _kIntermediateIntents = {
+    PlantaoIntent.monitorizacao,
+    PlantaoIntent.contraindicacao,
+    PlantaoIntent.interpretacao,
+    PlantaoIntent.interacao,
+    PlantaoIntent.diagnostico,
+    PlantaoIntent.eletrolitos,
+    PlantaoIntent.glicemia,
+    PlantaoIntent.arritmia,
+    PlantaoIntent.calculo,
+  };
+
+  static PlantaoComplexity resolve({
+    required String msg,
+    required PlantaoIntent primaryIntent,
+    required PlantaoContext context,
+    required bool contextIsCritical,
+  }) {
+    // Passo 1: sinais de gravidade explícitos na mensagem
+    if (_kCriticalSignals.any((s) => msg.contains(s))) {
+      return PlantaoComplexity.critica;
+    }
+
+    // Passo 2: contexto marcado como crítico pelo _ContextMatcher
+    if (contextIsCritical) return PlantaoComplexity.critica;
+
+    // Passo 3: intenções intrinsecamente críticas
+    if (_kCriticalIntents.contains(primaryIntent)) return PlantaoComplexity.critica;
+    if (_kCriticalContexts.contains(context)) return PlantaoComplexity.critica;
+
+    // Passo 4: intenções intermediárias
+    if (_kIntermediateIntents.contains(primaryIntent)) return PlantaoComplexity.intermediaria;
+    if (context == PlantaoContext.eletrolitos ||
+        context == PlantaoContext.glicemia ||
+        context == PlantaoContext.renal ||
+        context == PlantaoContext.arritmia) {
+      return PlantaoComplexity.intermediaria;
+    }
+
+    // Passo 5: padrão — simples
+    return PlantaoComplexity.simples;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PlantaoIntentEngine — engine multidimensional principal (Build 225)
+//
+// 100% LOCAL — ZERO IA — ZERO REDE — ZERO LATÊNCIA
+//
+// Executa todos os matchers em paralelo (Dart síncrono — sem async),
+// resolve conflitos por regras de prioridade e retorna PlantaoQueryAnalysis.
+//
+// REGRA DE RESOLUÇÃO DE CONFLITOS:
+//   1. Palavras de ação (dose, monitorar, dilui) → intenção primária
+//   2. Entidade clínica/fármaco (amiodarona, noradrenalina) → tema + subtítulo
+//   3. Contexto clínico grave (pcr, choque, sepse) → contexto + complexidade
+//   4. Contexto eletrólito/glicemia/renal → contexto + complexidade intermediária
+// ─────────────────────────────────────────────────────────────────────────────
+class PlantaoIntentEngine {
+  PlantaoIntentEngine._(); // 100% estático
+
+  // Matchers de intenção — instâncias singleton (const não é possível com herança)
+  static final _intentMatchers = <_IntentMatcher>[
+    DiluitionMatcher(),   // prioridade máxima (gotejamento/preparo)
+    InfusionMatcher(),
+    MonitoringMatcher(),
+    ContraindicationMatcher(),
+    DiagnosisMatcher(),
+    InterpretationMatcher(),
+    InteractionMatcher(),
+    CalculationMatcher(),
+    ProcedureMatcher(),
+    DoseMatcher(),        // dose após os mais específicos
+    ConductMatcher(),     // conduta como fallback de intenção
+    ElectrolyteMatcher(), // contexto eletrolítico (eleva Intent + Context)
+    GlycemiaMatcher(),    // contexto glicêmico
+    VentilationMatcher(), // contexto ventilatório
+  ];
+
+  /// Analisa a mensagem do usuário em 4 dimensões: tema, contexto, intenção, complexidade.
+  ///
+  /// Retorna PlantaoQueryAnalysis — produto principal da Build 225.
+  static PlantaoQueryAnalysis analyze(String userMessage) {
+    final msg = userMessage.toLowerCase().trim();
+
+    if (msg.isEmpty) {
+      return const PlantaoQueryAnalysis(
+        clinicalTopic: 'CONSULTA CLÍNICA',
+        clinicalSubtitle: '',
+        primaryIntent: PlantaoIntent.geral,
+        clinicalContext: PlantaoContext.geral,
+        complexity: PlantaoComplexity.simples,
+        matchedKeywords: [],
+        confidence: 0.0,
+      );
+    }
+
+    // ── Passo 1: Drug/Entity Matcher — identifica o TEMA ─────────────────────
+    final drugResult = _DrugMatcher.match(msg);
+
+    // ── Passo 2: Context Matcher — identifica o CONTEXTO CLÍNICO ─────────────
+    final ctxResult = _ContextMatcher.match(msg);
+
+    // ── Passo 3: Intent Matchers — identifica a INTENÇÃO do usuário ──────────
+    // Executa todos; coleta scores de todos para encontrar primária + secundária
+    final intentScores = <(PlantaoIntent, int, List<String>)>[];
+    for (final matcher in _intentMatchers) {
+      final r = matcher.match(msg);
+      if (r.hasMatch) {
+        intentScores.add((r.intent!, r.score, r.matched));
+      }
+    }
+
+    // Ordena por score descendente
+    intentScores.sort((a, b) => b.$2.compareTo(a.$2));
+
+    // Intenção primária: maior score; secundária: segunda (se diferente)
+    PlantaoIntent primaryIntent;
+    PlantaoIntent? secondaryIntent;
+    final List<String> intentKeywords = [];
+
+    if (intentScores.isEmpty) {
+      primaryIntent = PlantaoIntent.geral;
+    } else {
+      primaryIntent = intentScores.first.$1;
+      intentKeywords.addAll(intentScores.first.$3);
+      if (intentScores.length > 1 &&
+          intentScores[1].$1 != primaryIntent) {
+        secondaryIntent = intentScores[1].$1;
+      }
+    }
+
+    // ── Passo 4: Resolução de Contexto Final ──────────────────────────────────
+    // Regra de prioridade:
+    //   1. Contexto clínico EXPLÍCITO na mensagem (ctxResult) — supera contexto do fármaco
+    //      quando o ctxResult não é genérico (ex: "clcr" → renal prevalece sobre Vancomicina→sepse)
+    //   2. Contexto padrão do fármaco (drugResult.context) — quando não há contexto explícito
+    //   3. Farmacologia geral como fallback
+    final PlantaoContext finalContext;
+    if (ctxResult.ctx != PlantaoContext.geral) {
+      // Contexto explícito tem prioridade — ex: "clcr" define renal mesmo com vancomicina
+      finalContext = ctxResult.ctx;
+    } else if (drugResult.hasMatch) {
+      // Sem contexto explícito → usa contexto padrão do fármaco
+      finalContext = drugResult.context!;
+    } else {
+      finalContext = PlantaoContext.farmacologia;
+    }
+
+    // ── Passo 5: Resolução de Tema + Subtítulo ────────────────────────────────
+    // Prioridade: drug (entidade) > contexto clínico grave > genérico
+    final String finalTopic = drugResult.hasMatch && drugResult.topic.isNotEmpty
+        ? drugResult.topic
+        : (ctxResult.topic.isNotEmpty ? ctxResult.topic : 'CONSULTA CLÍNICA');
+    final String finalSubtitle = drugResult.hasMatch && drugResult.subtitle.isNotEmpty
+        ? drugResult.subtitle
+        : ctxResult.subtitle;
+
+    // ── Passo 6: Complexidade ─────────────────────────────────────────────────
+    final complexity = _ComplexityResolver.resolve(
+      msg: msg,
+      primaryIntent: primaryIntent,
+      context: finalContext,
+      contextIsCritical: ctxResult.isCritical,
+    );
+
+    // ── Passo 7: Confiança ────────────────────────────────────────────────────
+    // Score total normalizado (0–1): drug(peso 3) + intent + context
+    final totalScore = (drugResult.score) +
+        (intentScores.isNotEmpty ? intentScores.first.$2 : 0) +
+        ctxResult.matched.length;
+    final confidence = (totalScore / 10.0).clamp(0.0, 1.0);
+
+    // ── Passo 8: Keywords consolidadas ───────────────────────────────────────
+    final allKeywords = <String>[
+      ...drugResult.matched,
+      ...intentKeywords,
+      ...ctxResult.matched,
+    ];
+
+    final analysis = PlantaoQueryAnalysis(
+      clinicalTopic: finalTopic,
+      clinicalSubtitle: finalSubtitle,
+      primaryIntent: primaryIntent,
+      secondaryIntent: secondaryIntent,
+      clinicalContext: finalContext,
+      complexity: complexity,
+      matchedKeywords: allKeywords,
+      confidence: confidence,
+    );
+
+    // ── Log [PLANTAO_ANALYSIS] ────────────────────────────────────────────────
+    debugPrint('[PLANTAO_ANALYSIS] '
+        'topic=${analysis.clinicalTopic} '
+        'subtitle="${analysis.clinicalSubtitle}" '
+        'primaryIntent=${analysis.primaryIntent.name} '
+        'secondaryIntent=${analysis.secondaryIntent?.name ?? "none"} '
+        'context=${analysis.clinicalContext.name} '
+        'complexity=${analysis.complexity.name} '
+        'confidence=${analysis.confidence.toStringAsFixed(2)} '
+        'matched=${analysis.matchedKeywords}');
+
+    return analysis;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // buildIntentMandateV2 — mandato rico para system_instruction (Build 225)
+  //
+  // Injeta: topic, subtitle, context, complexity, template de emojis.
+  // Vai EXCLUSIVAMENTE para system_instruction — NUNCA para contents[].
+  // ─────────────────────────────────────────────────────────────────────────
+  static String buildIntentMandateV2(PlantaoQueryAnalysis qa, String lang) {
+    final isEs = lang == 'es';
+
+    // ── Bloco de identidade do turno ──────────────────────────────────────────
+    final topicLine = isEs
+        ? 'TEMA DESTE TURNO: ${qa.clinicalTopic}'
+        : 'TEMA DESTE TURNO: ${qa.clinicalTopic}';
+    final subtitleLine = qa.clinicalSubtitle.isNotEmpty
+        ? (isEs
+            ? 'CATEGORÍA: ${qa.clinicalSubtitle}'
+            : 'CATEGORIA: ${qa.clinicalSubtitle}')
+        : '';
+    final contextLine = isEs
+        ? 'CONTEXTO CLÍNICO: ${_contextLabel(qa.clinicalContext, isEs)}'
+        : 'CONTEXTO CLÍNICO: ${_contextLabel(qa.clinicalContext, false)}';
+    final complexityLine = isEs
+        ? 'COMPLEJIDAD: ${_complexityLabel(qa.complexity, isEs)}'
+        : 'COMPLEXIDADE: ${_complexityLabel(qa.complexity, false)}';
+
+    // ── Construção do título 🟥 específico ────────────────────────────────────
+    final titleInstruction = _buildTitleInstruction(qa, isEs);
+
+    // ── Template de emojis baseado em primaryIntent ───────────────────────────
+    final template = PlantaoIntentClassifier.buildIntentMandate(
+      qa.toIntentResult(),
+      lang,
+    );
+
+    // ── Adaptação de complexidade ─────────────────────────────────────────────
+    final complexityAdaptation = _buildComplexityAdaptation(qa.complexity, isEs);
+
+    // ── Montagem final ────────────────────────────────────────────────────────
+    final lines = <String>[
+      topicLine,
+      if (subtitleLine.isNotEmpty) subtitleLine,
+      contextLine,
+      complexityLine,
+      titleInstruction,
+      template,
+      if (complexityAdaptation.isNotEmpty) complexityAdaptation,
+    ];
+
+    return lines.join('\n');
+  }
+
+  // ── Helpers privados ───────────────────────────────────────────────────────
+
+  static String _contextLabel(PlantaoContext ctx, bool isEs) {
+    switch (ctx) {
+      case PlantaoContext.pcr:         return isEs ? 'PCR / Reanimación' : 'PCR / Reanimação';
+      case PlantaoContext.arritmia:    return isEs ? 'Arritmia' : 'Arritmia';
+      case PlantaoContext.choque:      return isEs ? 'Shock circulatorio' : 'Choque circulatório';
+      case PlantaoContext.sepse:       return isEs ? 'Sepsis / Infección grave' : 'Sepse / Infecção grave';
+      case PlantaoContext.viaAerea:    return isEs ? 'Vía aérea / IOT' : 'Via aérea / IOT';
+      case PlantaoContext.ventilacao:  return isEs ? 'Ventilación mecánica' : 'Ventilação mecânica';
+      case PlantaoContext.eletrolitos: return isEs ? 'Trastorno electrolítico' : 'Distúrbio eletrolítico';
+      case PlantaoContext.glicemia:    return isEs ? 'Trastorno glucémico' : 'Distúrbio glicêmico';
+      case PlantaoContext.renal:       return isEs ? 'Injuria renal / Ajuste de dosis' : 'Injúria renal / Ajuste de dose';
+      case PlantaoContext.cardiovascular: return isEs ? 'Cardiovascular' : 'Cardiovascular';
+      case PlantaoContext.neurologia:  return isEs ? 'Neurología crítica' : 'Neurologia crítica';
+      case PlantaoContext.toxicologia: return isEs ? 'Toxicología' : 'Toxicologia';
+      case PlantaoContext.trauma:      return isEs ? 'Trauma / Cirugía' : 'Trauma / Cirurgia';
+      case PlantaoContext.farmacologia:return isEs ? 'Farmacología clínica' : 'Farmacologia clínica';
+      case PlantaoContext.geral:       return isEs ? 'General' : 'Geral';
+    }
+  }
+
+  static String _complexityLabel(PlantaoComplexity c, bool isEs) {
+    switch (c) {
+      case PlantaoComplexity.simples:       return isEs ? 'SIMPLE' : 'SIMPLES';
+      case PlantaoComplexity.intermediaria: return isEs ? 'INTERMEDIA' : 'INTERMEDIÁRIA';
+      case PlantaoComplexity.critica:       return isEs ? 'CRÍTICA — tom de urgência máxima' : 'CRÍTICA — tom de urgência máxima';
+    }
+  }
+
+  static String _buildTitleInstruction(PlantaoQueryAnalysis qa, bool isEs) {
+    final topic = qa.clinicalTopic;
+    final subtitle = qa.clinicalSubtitle;
+
+    // Título específico com subtítulo inline (estilo Build 225)
+    if (subtitle.isNotEmpty) {
+      return isEs
+          ? 'TÍTULO 🟥 OBRIGATÓRIO: "$topic — $subtitle"\n'
+              '  (Nunca usar título genérico. Nunca escrever apenas o nome do fármaco sem classe.)'
+          : 'TÍTULO 🟥 OBRIGATÓRIO: "$topic — $subtitle"\n'
+              '  (Nunca usar título genérico. Nunca escrever apenas o nome do fármaco sem classe.)';
+    }
+
+    return isEs
+        ? 'TÍTULO 🟥 OBRIGATÓRIO: "$topic"\n'
+            '  (Nunca usar "CONDUCTA CLÍNICA INMEDIATA" como título genérico.)'
+        : 'TÍTULO 🟥 OBRIGATÓRIO: "$topic"\n'
+            '  (Nunca usar "CONDUTA CLÍNICA IMEDIATA" como título genérico.)';
+  }
+
+  static String _buildComplexityAdaptation(PlantaoComplexity c, bool isEs) {
+    switch (c) {
+      case PlantaoComplexity.critica:
+        return isEs
+            ? 'URGENCIA MÁXIMA: Incluir ⚠️ Alerta siempre. Incluir bloque de monitorización. '
+                'Usar numeración explícita si hay secuencia de pasos críticos.'
+            : 'URGÊNCIA MÁXIMA: Incluir ⚠️ Alerta sempre. Incluir bloco de monitorização. '
+                'Usar numeração explícita se houver sequência de passos críticos.';
+      case PlantaoComplexity.intermediaria:
+        return isEs
+            ? 'COMPLEJIDAD INTERMEDIA: ⚠️ Alerta solo si hay riesgo real. '
+                'Priorizar precisión sobre exhaustividad.'
+            : 'COMPLEXIDADE INTERMEDIÁRIA: ⚠️ Alerta somente se houver risco real. '
+                'Priorizar precisão sobre completude.';
+      case PlantaoComplexity.simples:
+        return ''; // Sem instrução extra para respostas simples
+    }
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PlantaoIntent — enum de intenção clínica (Build 224)
@@ -125,10 +1113,10 @@ class PlantaoIntentClassifier {
   ];
 
   static const _kContraindicacao = [
-    'contraindicação', 'contraindicaçoes', 'contraindicado', 'contra-indicação',
+    'contraindicaç', 'contraindicado', 'contra-indica',
     'contraindicaciones', 'quando não usar', 'quando não dar', 'quando evitar',
     'quem não pode', 'proibido', 'não pode usar', 'evitar em',
-    'contraindicado em', 'contraindicada',
+    'contraindicado em', 'contraindicada', 'não indicado',
   ];
 
   static const _kDiagnostico = [
