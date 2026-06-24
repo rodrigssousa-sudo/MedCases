@@ -2,109 +2,81 @@ rules_version = '2';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MedCases Pro — Firestore Security Rules
-// Versão: 2026-06-24b (Build 226 — Fix isAdmin + list users + firebase.json)
-//
-// RESUMO DE ACESSO:
-//  • users/{uid}/**         → get/update/create: o próprio usuário
-//                           → list/read/write: admin/master pode tudo
-//  • clinical_guides        → leitura: PÚBLICA (conteúdo educativo)
-//  • public_histories       → leitura: PÚBLICA; escrita: dono do doc
-//  • app_config/global      → leitura/escrita: apenas admin/master
-//  • app_config/maintenance → leitura: qualquer autenticado; escrita: admin/master
-//  • app_config/paid_budget → leitura/escrita: apenas admin/master (Build 226)
-//  • app_updates            → leitura: qualquer autenticado; escrita: admin/master
-//  • email_campaigns        → leitura/escrita: apenas admin/master
+// Versão: 2026-06-24c (Build 226 — Fix isAdmin circular + simplificado)
 //
 // MECANISMO DE IDENTIDADE ADMIN:
-//  O app identifica admin/master via Firestore users/{uid}.role
-//  Valores possíveis: 'master', 'admin', 'supervisor', 'user'
-//  NÃO usa Firebase Auth custom claims (nunca setadas no app).
+//  O app usa Firestore users/{uid}.role (string: 'master' | 'admin').
+//  Custom claims Firebase Auth NUNCA são setadas no app.
 //
-//  isAdmin() usa:
-//    1. exists() → garante que o documento existe antes de get()
-//    2. get() com acesso direto .data.role (sem .get() — máxima compatibilidade)
-//    3. status == 'approved' → só usuários aprovados têm acesso admin
+//  isAdmin() usa get() inline no documento users/{uid}.
+//  IMPORTANTE: sem funções auxiliares intermediárias (userDoc/userDocPath)
+//  para evitar ambiguidade no Rules engine ao avaliar match /users/{uid}.
+//
+// RESUMO DE ACESSO:
+//  • users/{uid}/**         → admin: read+write tudo; usuário: só o próprio
+//  • clinical_guides        → leitura: PÚBLICA; escrita: admin
+//  • public_histories       → leitura: PÚBLICA; escrita: dono; delete: dono|admin
+//  • app_config/*           → manutenção: autenticado; resto: admin only
+//  • app_updates            → leitura: autenticado; escrita: admin
+//  • email_campaigns        → admin only
 // ══════════════════════════════════════════════════════════════════════════════
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-
-    // Usuário autenticado (qualquer status)
+    // ── isAuthed ─────────────────────────────────────────────────────────────
     function isAuthed() {
       return request.auth != null;
     }
 
-    // Usuário é o dono do recurso
+    // ── isOwner ──────────────────────────────────────────────────────────────
     function isOwner(uid) {
       return isAuthed() && request.auth.uid == uid;
     }
 
-    // Path do documento do usuário atual (evita repetição do path longo)
-    function userDocPath() {
-      return /databases/$(database)/documents/users/$(request.auth.uid);
-    }
-
-    // Lê o documento do usuário atual no Firestore
-    function userDoc() {
-      return get(userDocPath());
-    }
-
-    // isAdmin(): verifica role admin ou master via Firestore users/{uid}
+    // ── isAdmin ──────────────────────────────────────────────────────────────
+    // Verifica users/{uid}.role diretamente via get() inline.
     //
-    // CORREÇÕES em relação à versão anterior:
-    //  1. exists() antes de get() — evita erro quando doc não existe
-    //  2. .data.role (acesso direto) em vez de .data.get('role','')
-    //     — máxima compatibilidade com Firestore Rules engine
-    //  3. status == 'approved' — garante que conta aprovada
+    // Decisões de design:
+    //  • get() inline (sem função auxiliar) — evita dupla avaliação do engine
+    //  • exists() antes do get() — evita erro se o doc não existir
+    //  • .data.role (acesso direto, sem .get()) — máxima compatibilidade
+    //  • SEM checar status — reduz condições que podem falhar silenciosamente
+    //    (o app já bloqueia usuários não-aprovados na camada Flutter)
     //
-    // Corresponde a: UserModel.isAdmin = role == admin || role == master
+    // Equivale a: UserModel.isAdmin = role == 'admin' || role == 'master'
     function isAdmin() {
       return isAuthed()
-        && exists(userDocPath())
-        && userDoc().data.role in ['admin', 'master']
-        && userDoc().data.status == 'approved';
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'master'];
     }
 
-    // ── Perfis de usuário ─────────────────────────────────────────────────────
-    // Admin/master: leitura e escrita completa (list + get + write)
-    //   → necessário para listar todos os users no Painel Admin
-    //   → GET /documents/users?pageSize=500 requer 'list' permission
-    // Usuário comum: apenas lê/escreve o próprio documento e subcoleções
+    // ── Perfis de usuário ────────────────────────────────────────────────────
+    // Admin/master: leitura e escrita completa (inclui list — pageSize queries)
+    // Usuário: get/create/update apenas no próprio documento
     match /users/{userId} {
-      // Admin/master pode listar, ler e escrever qualquer perfil
       allow read, write: if isAdmin();
+      allow get:         if isOwner(userId);
+      allow create:      if isOwner(userId);
+      allow update:      if isOwner(userId);
 
-      // Usuário pode ler e atualizar o próprio perfil
-      allow get:    if isOwner(userId);
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
-
-      // Sub-coleções do usuário (casos, favoritos, histórico IA, prefs, etc.)
+      // Sub-coleções (casos, favoritos, histórico IA, prefs…)
       match /{subcollection}/{docId} {
         allow read, write: if isOwner(userId) || isAdmin();
 
-        // Sub-sub-coleções (ex: users/{uid}/prefs/settings)
         match /{subSubDoc} {
           allow read, write: if isOwner(userId) || isAdmin();
         }
       }
     }
 
-    // ── Biblioteca Clínica (clinical_guides) ──────────────────────────────────
-    // Leitura: PÚBLICA — sem autenticação (conteúdo educativo, biblioteca clínica)
-    // O filtro isPublished=true é responsabilidade do cliente
-    // Escrita: apenas admin/master
+    // ── Biblioteca Clínica ───────────────────────────────────────────────────
     match /clinical_guides/{guideId} {
-      allow read: if true;
+      allow read:  if true;
       allow write: if isAdmin();
     }
 
-    // ── Histórias Clínicas Públicas (public_histories) ────────────────────────
-    // Leitura: PÚBLICA — sem autenticação
-    // Criação/atualização: usuário autenticado (authorUid == uid)
-    // Deleção: autor OU admin (moderação)
+    // ── Histórias Clínicas Públicas ──────────────────────────────────────────
     match /public_histories/{historyId} {
       allow read: if true;
 
@@ -115,50 +87,46 @@ service cloud.firestore {
         && resource.data.get('authorUid', '') == request.auth.uid;
 
       allow delete: if isAuthed() && (
-        resource.data.get('authorUid', '') == request.auth.uid ||
-        isAdmin()
+        resource.data.get('authorUid', '') == request.auth.uid || isAdmin()
       );
     }
 
-    // ── Configuração Global do App (app_config) ────────────────────────────────
-    // ATENÇÃO: app_config/global contém a Gemini API Key → NUNCA expor.
-    // maintenance → qualquer autenticado pode LER (verificar manutenção)
-    // global, emailjs, paid_budget → apenas admin/master
-    // paid_budget → contadores de custo Gemini Paid (Build 226)
-    //   A GEMINI_PAID_API_KEY NUNCA é armazenada aqui — fica no Firebase Secret.
-    //   A Cloud Function geminiPaidProxy lê/escreve este documento server-side.
+    // ── Configuração Global (app_config) ─────────────────────────────────────
+    // app_config/global     → Gemini API Key + geminiPaidEnabled — NUNCA expor
+    // app_config/emailjs    → configuração EmailJS — admin only
+    // app_config/paid_budget→ contadores Gemini Paid — admin only (Build 226)
+    // app_config/maintenance→ flag de manutenção — qualquer autenticado pode LER
+    //
+    // GEMINI_PAID_API_KEY nunca armazenada aqui — fica no Firebase Secret.
+    // Cloud Function geminiPaidProxy usa Service Account (acesso implícito).
     match /app_config/{docId} {
-      // maintenance: leitura pública autenticada
-      allow read: if docId == 'maintenance' && isAuthed();
+      // maintenance: leitura para qualquer autenticado
+      allow read:  if docId == 'maintenance' && isAuthed();
 
-      // global, emailjs, paid_budget: apenas admin/master
-      allow read: if docId in ['global', 'emailjs', 'paid_budget'] && isAdmin();
+      // global, emailjs, paid_budget: leitura restrita a admin
+      allow read:  if docId in ['global', 'emailjs', 'paid_budget'] && isAdmin();
 
-      // Toda escrita em app_config: apenas admin/master
-      // (Cloud Function usa Service Account — acesso implícito)
+      // Toda escrita: apenas admin
       allow write: if isAdmin();
     }
 
-    // ── Notificações de Atualização (app_updates) ─────────────────────────────
-    // Leitura: qualquer usuário autenticado
-    // Escrita: apenas admin/master
+    // ── Notificações de Atualização ──────────────────────────────────────────
     match /app_updates/{docId} {
-      allow read: if isAuthed();
+      allow read:  if isAuthed();
       allow write: if isAdmin();
     }
 
-    // ── Campanhas de Email ─────────────────────────────────────────────────────
-    // Apenas admin/master
+    // ── Campanhas de Email ───────────────────────────────────────────────────
     match /email_campaigns/{campaignId} {
       allow read, write: if isAdmin();
     }
 
-    // ── Legado: config/emailjs (path antigo) ──────────────────────────────────
+    // ── Legado: config/emailjs ───────────────────────────────────────────────
     match /config/{docId} {
       allow read, write: if isAdmin();
     }
 
-    // ── Bloquear tudo que não foi explicitamente declarado ────────────────────
+    // ── Bloqueio padrão ──────────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }

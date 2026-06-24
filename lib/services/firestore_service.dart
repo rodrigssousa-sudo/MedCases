@@ -539,6 +539,21 @@ class FirestoreService {
   /// Armazena APENAS o flag booleano — a chave fica no Firebase Secret.
   /// Apenas admin/master pode chamar este método.
   static Future<void> saveGeminiPaidEnabled(bool enabled) async {
+    // ── Log de diagnóstico antes do write ────────────────────────────────────
+    // Permite rastrear uid/email/role no console caso permission-denied persista.
+    final fbUser = FirebaseAuth.instance.currentUser;
+    debugPrint(
+      '[ADMIN_AI_TOGGLE] '
+      'path=app_config/global '
+      'field=geminiPaidEnabled '
+      'value=$enabled | '
+      'uid=${fbUser?.uid ?? "null"} '
+      'email=${fbUser?.email ?? "null"} '
+      'isAnon=${fbUser?.isAnonymous ?? true}',
+    );
+    // roleLocal é lido do Firestore pelo UserModel — não disponível aqui via SDK.
+    // Para confirmar role em produção: Firebase Console → Firestore → users/{uid}
+
     try {
       await _db.collection('app_config').doc('global').set(
         {'geminiPaidEnabled': enabled},
@@ -546,9 +561,10 @@ class FirestoreService {
       );
       // Invalida cache para que o flag seja relido na próxima chamada
       _cachedAppConfigGlobal.remove('geminiPaidEnabled');
-      debugPrint('[FirestoreService] saveGeminiPaidEnabled=$enabled OK → app_config/global');
+      debugPrint('[ADMIN_AI_TOGGLE] OK → app_config/global.geminiPaidEnabled=$enabled');
       debugPrint('[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}');
     } catch (e) {
+      debugPrint('[ADMIN_AI_TOGGLE] ERRO path=app_config/global uid=${fbUser?.uid ?? "null"} erro=$e');
       debugPrint('[FirestoreService] saveGeminiPaidEnabled ERRO: $e');
       rethrow;
     }
