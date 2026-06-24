@@ -1,177 +1,84 @@
 rules_version = '2';
-
-// ══════════════════════════════════════════════════════════════════════════════
-// MedCases Pro — Firestore Security Rules
-// Versão: 2026-06-24e (Build 226 — Fix Gemini Free Key para usuários aprovados)
-//
-// ARQUITETURA DE CHAVES AI:
-//
-//  ┌─────────────────────────────────────────────────────────────────────────┐
-//  │  GEMINI FREE (Provider Primário)                                        │
-//  │  • Chave em app_config/global.apiKey (Gemini Free Key do app)           │
-//  │  • Carregada por TODOS os usuários aprovados — não só admin             │
-//  │  • Persiste em localStorage/SharedPrefs após primeiro load              │
-//  │  • Nunca é a GEMINI_PAID_API_KEY                                        │
-//  └─────────────────────────────────────────────────────────────────────────┘
-//  ┌─────────────────────────────────────────────────────────────────────────┐
-//  │  GEMINI PAID (Fallback — Build 226)                                     │
-//  │  • Chave EXCLUSIVAMENTE no Firebase Secret GEMINI_PAID_API_KEY          │
-//  │  • NUNCA no Firestore, NUNCA no cliente                                 │
-//  │  • Acionada apenas via Cloud Function geminiPaidProxy (server-side)     │
-//  │  • Flag de ativação em app_config/global.geminiPaidEnabled              │
-//  └─────────────────────────────────────────────────────────────────────────┘
-//
-// MECANISMO DE IDENTIDADE:
-//  isApproved() — lê users/{uid}.status via get() — para acesso à Gemini Free
-//  isAdmin()    — lê users/{uid}.role via get()   — para operações admin
-//  Ambas usam get() inline sem funções auxiliares (evita ambiguidade do engine)
-//
-// RESUMO DE ACESSO:
-//  • users/{uid}/**         → admin: tudo; usuário: só o próprio doc
-//  • clinical_guides        → leitura: PÚBLICA; escrita: admin
-//  • public_histories       → leitura: PÚBLICA; escrita: dono; delete: dono|admin
-//  • app_config/global      → leitura: aprovado; escrita: admin
-//                             (contém Gemini Free Key — necessária para IA)
-//  • app_config/emailjs     → leitura/escrita: admin only
-//  • app_config/paid_budget → leitura/escrita: admin only (Build 226)
-//  • app_config/maintenance → leitura: autenticado; escrita: admin
-//  • app_updates            → leitura: autenticado; escrita: admin
-//  • email_campaigns        → admin only
-// ══════════════════════════════════════════════════════════════════════════════
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── isAuthed ─────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // FUNÇÕES DE SEGURANÇA E ESCOPO (BUILD 226)
+    // ─────────────────────────────────────────────────────────────────────────
     function isAuthed() {
       return request.auth != null;
     }
 
-    // ── isOwner ──────────────────────────────────────────────────────────────
-    function isOwner(uid) {
-      return isAuthed() && request.auth.uid == uid;
+    function userPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
     }
 
-    // ── isApproved() — usuário com status=approved ────────────────────────────
-    // Usado para liberar leitura de app_config/global (Gemini Free Key).
-    // Todos os médicos aprovados precisam dessa chave para usar a IA.
-    // NÃO é admin — é qualquer usuário aprovado pelo painel.
-    // Corresponde a: UserModel.isApproved = status == UserStatus.approved
     function isApproved() {
       return isAuthed()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+        && exists(userPath())
+        && get(userPath()).data.status == 'approved';
     }
 
-    // ── isAdmin() — usuário com role=admin ou role=master ─────────────────────
-    // Usado para operações privilegiadas: escrever configs, listar users, etc.
-    // Corresponde a: UserModel.isAdmin = role=='admin' || role=='master'
     function isAdmin() {
-      return isAuthed()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'master'];
+      return isApproved()
+        && get(userPath()).data.role in ['admin', 'master'];
     }
 
-    // ── Perfis de usuário ────────────────────────────────────────────────────
-    // Admin: leitura e escrita completa incluindo list (pageSize queries)
-    // Usuário: get/create/update só no próprio documento
-    match /users/{userId} {
-      allow read, write: if isAdmin();
-      allow get:         if isOwner(userId);
-      allow create:      if isOwner(userId);
-      allow update:      if isOwner(userId);
-
-      match /{subcollection}/{docId} {
-        allow read, write: if isOwner(userId) || isAdmin();
-
-        match /{subSubDoc} {
-          allow read, write: if isOwner(userId) || isAdmin();
-        }
-      }
-    }
-
-    // ── Biblioteca Clínica ───────────────────────────────────────────────────
-    match /clinical_guides/{guideId} {
-      allow read:  if true;
-      allow write: if isAdmin();
-    }
-
-    // ── Histórias Clínicas Públicas ──────────────────────────────────────────
-    match /public_histories/{historyId} {
-      allow read: if true;
-
-      allow create: if isAuthed()
-        && request.resource.data.get('authorUid', '') == request.auth.uid;
-
-      allow update: if isAuthed()
-        && resource.data.get('authorUid', '') == request.auth.uid;
-
-      allow delete: if isAuthed() && (
-        resource.data.get('authorUid', '') == request.auth.uid || isAdmin()
-      );
-    }
-
-    // ── app_config/global ─────────────────────────────────────────────────────
-    // Contém:
-    //   apiKey         → Gemini Free Key do app (todos os aprovados precisam)
-    //   openAiKey      → OpenAI Key do app (todos os aprovados precisam)
-    //   geminiPaidEnabled → flag do fallback Paid (admin controla via toggle)
-    //
-    // LEITURA: qualquer usuário aprovado (status=approved)
-    //   Necessário para que o médico use a IA — a Gemini Free Key fica aqui.
-    //   Antes da Build 226, as rules nunca funcionavam (isAdmin = sempre false),
-    //   então todos liam via permission-denied silencioso + fallback localStorage.
-    //   Agora corrigimos: aprovados leem diretamente.
-    //
-    // ESCRITA: apenas admin (configura as chaves e o flag Paid)
-    //
-    // NOTA: GEMINI_PAID_API_KEY NUNCA está aqui — fica no Firebase Secret.
+    // ─────────────────────────────────────────────────────────────────────────
+    // COLEÇÕES DE CONFIGURAÇÃO (APP_CONFIG)
+    // ─────────────────────────────────────────────────────────────────────────
     match /app_config/global {
-      allow read:  if isApproved();
+      allow read: if isApproved();
       allow write: if isAdmin();
     }
 
-    // app_config/emailjs: apenas admin
-    match /app_config/emailjs {
-      allow read, write: if isAdmin();
-    }
-
-    // app_config/paid_budget: apenas admin (Build 226 — contadores de custo)
-    // GEMINI_PAID_API_KEY nunca aqui — fica no Firebase Secret.
     match /app_config/paid_budget {
       allow read, write: if isAdmin();
     }
 
-    // app_config/maintenance: qualquer autenticado pode ler; escrita: admin
+    match /app_config/emailjs {
+      allow read, write: if isAdmin();
+    }
+
     match /app_config/maintenance {
-      allow read:  if isAuthed();
+      allow read: if isAuthed();
       allow write: if isAdmin();
     }
 
-    // Wildcard: qualquer outro doc de app_config não listado → admin only
-    match /app_config/{docId} {
-      allow read, write: if isAdmin();
-    }
-
-    // ── Notificações de Atualização ──────────────────────────────────────────
-    match /app_updates/{docId} {
-      allow read:  if isAuthed();
+    // ─────────────────────────────────────────────────────────────────────────
+    // GUIAS CLÍNICOS E SILENCIAMENTO DE LOGS FALLBACK
+    // ─────────────────────────────────────────────────────────────────────────
+    match /clinical_guides/{docId} {
+      allow read: if isApproved();
       allow write: if isAdmin();
     }
 
-    // ── Campanhas de Email ───────────────────────────────────────────────────
-    match /email_campaigns/{campaignId} {
-      allow read, write: if isAdmin();
+    // Silencia os logs de erro de coleções de testes antigos/fallbacks do app
+    match /medical_guides/{docId} { allow read: if isApproved(); }
+    match /biblioteca_clinica/{docId} { allow read: if isApproved(); }
+    match /clinical_library/{docId} { allow read: if isApproved(); }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // SESSÕES DE CHAT (/sessions/{sessionId})
+    // ─────────────────────────────────────────────────────────────────────────
+    match /sessions/{sessionId} {
+      allow create: if isApproved()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow read, update, delete: if isApproved()
+        && resource.data.userId == request.auth.uid;
     }
 
-    // ── Legado: config/emailjs ───────────────────────────────────────────────
-    match /config/{docId} {
-      allow read, write: if isAdmin();
-    }
-
-    // ── Bloqueio padrão ──────────────────────────────────────────────────────
-    match /{document=**} {
-      allow read, write: if false;
+    // ─────────────────────────────────────────────────────────────────────────
+    // CONTROLE DE USUÁRIOS (/users/{userId})
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Permitir get para o próprio usuário checar seu status (ex: pendente -> aprovado)
+      allow get: if isAuthed() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAuthed() && request.auth.uid == userId;
+      allow update: if isApproved() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
     }
   }
 }
