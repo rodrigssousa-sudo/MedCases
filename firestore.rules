@@ -2,18 +2,24 @@ rules_version = '2';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MedCases Pro — Firestore Security Rules
-// Versão: 2025-05-28
+// Versão: 2026-06-24 (Build 226 — Fix permission-denied admin toggle)
 //
 // RESUMO DE ACESSO:
 //  • users/{uid}/**         → leitura/escrita: apenas o próprio usuário
 //  • clinical_guides        → leitura: PÚBLICA (conteúdo educativo — isPublished=true filtrado no client)
 //  • public_histories       → leitura: qualquer usuário autenticado
 //                           → escrita: apenas o dono do documento (uid == authorUid)
-//  • app_config/global      → leitura: apenas admin (contém Gemini API Key — NUNCA expor publicamente)
-//  • app_config/maintenance → leitura: qualquer autenticado; escrita: apenas admin
-//  • app_config/paid_budget → leitura/escrita: apenas admin (Build 226: contadores custo Gemini Paid)
-//  • app_updates/current    → leitura: qualquer autenticado; escrita: apenas admin
-//  • email_campaigns        → leitura/escrita: apenas admin
+//  • app_config/global      → leitura: apenas admin/master (contém Gemini API Key — NUNCA expor publicamente)
+//  • app_config/maintenance → leitura: qualquer autenticado; escrita: apenas admin/master
+//  • app_config/paid_budget → leitura/escrita: apenas admin/master (Build 226: contadores custo Gemini Paid)
+//  • app_updates/current    → leitura: qualquer autenticado; escrita: apenas admin/master
+//  • email_campaigns        → leitura/escrita: apenas admin/master
+//
+// MECANISMO DE IDENTIDADE ADMIN (Build 226 Fix):
+//  O app identifica admin/master via Firestore users/{uid}.role (valores: 'master', 'admin').
+//  NÃO usa Firebase Auth custom claims — custom claims NUNCA são setadas no app.
+//  isAdmin() usa get() no documento users/{uid} para verificar o campo role.
+//  Fallback mantido para custom claims (futuro), mas nunca será acionado no estado atual.
 // ══════════════════════════════════════════════════════════════════════════════
 
 service cloud.firestore {
@@ -31,12 +37,27 @@ service cloud.firestore {
       return isAuthed() && request.auth.uid == uid;
     }
 
-    // Admin: tem custom claim isAdmin=true OU é o uid do desenvolvedor
-    // SUBSTITUA 'SEU_UID_ADMIN_AQUI' pelo UID real do admin no Firebase Auth Console
+    // ── isAdmin(): verifica se o usuário tem role admin ou master ────────────
+    // MECANISMO PRINCIPAL: lê users/{uid}.role no Firestore (campo string).
+    // O app usa UserRole enum: 'master' e 'admin' → isAdmin=true.
+    // UserModel.isAdmin = role == UserRole.admin || role == UserRole.master
+    // NÃO usa custom claims — elas nunca são setadas no app atual.
+    // Fallback por custom claims mantido para compatibilidade futura.
+    //
+    // IMPORTANTE: get() conta como uma leitura de documento adicional por regra.
+    // É seguro usar aqui pois app_config só é acessado por admin, não em massa.
     function isAdmin() {
       return isAuthed() && (
+        // ── Abordagem 1 (PRIMÁRIA): Firestore users/{uid}.role ───────────────
+        // Corresponde exatamente a UserModel.isAdmin no Dart:
+        //   bool get isAdmin => role == UserRole.admin || role == UserRole.master
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') in ['admin', 'master'] ||
+
+        // ── Abordagem 2 (FALLBACK): custom claims Firebase Auth ───────────────
+        // Nunca acionado no estado atual (custom claims não são setadas).
+        // Mantido para futura migração gradual para custom claims se necessário.
         request.auth.token.get('isAdmin', false) == true ||
-        request.auth.token.get('role', '') == 'admin'
+        request.auth.token.get('role', '') in ['admin', 'master']
       );
     }
 
