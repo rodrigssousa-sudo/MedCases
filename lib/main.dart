@@ -45,6 +45,7 @@ import 'services/gemini_service.dart';
 import 'services/notification_service.dart';
 import 'services/update_service.dart';
 import 'services/offline_calculator_cache_service.dart'; // BUILD 240: smart offline cache
+import 'services/app_resume_coordinator.dart';           // BUILD 241: background/resume safety
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
 import 'platform/web_impl.dart'
@@ -807,7 +808,10 @@ class _TimedSplash extends StatefulWidget {
 }
 
 class _TimedSplashState extends State<_TimedSplash> {
-  static const _kMinMs = 1200; // mínimo 1.2s
+  static const _kMinMs = 1200;  // mínimo 1.2s
+  // BUILD 241: watchdog — se o bootstrap não terminar em 20s, força conclusão.
+  // Protege contra: browser throttle, Firebase timeout, aba inativa durante boot.
+  static const _kWatchdogMs = 20000;
 
   bool _minTimeDone = false;
   bool _bootDone    = false;
@@ -823,7 +827,36 @@ class _TimedSplashState extends State<_TimedSplash> {
 
     // Boot future (Firebase + prefs + auth)
     widget.bootFuture.whenComplete(() {
-      if (mounted) setState(() => _bootDone = true);
+      if (mounted) setState(() {
+        _bootDone    = true;
+        _minTimeDone = true; // se boot terminou, min também está OK
+      });
+      AppResumeCoordinator.instance.completeBootstrap(); // BUILD 241
+    });
+
+    // BUILD 241: watchdog independente — garante que bootstrap nunca trava.
+    // Usa DateTime.now() para medir tempo real, não um Timer que pode ser
+    // throttled pelo browser em abas inativas.
+    final bootStart = DateTime.now();
+    AppResumeCoordinator.instance.registerBootstrap(
+      onTimeout: () {
+        final elapsed = DateTime.now().difference(bootStart).inMilliseconds;
+        debugPrint('[BOOTSTRAP_WATCHDOG] elapsedMs=$elapsed '
+            'action=force_complete (resume timeout)');
+        if (mounted) setState(() { _bootDone = true; _minTimeDone = true; });
+      },
+    );
+
+    // Timer local como backup: se watchdog não disparou, garante
+    // que o splash nunca fica travado para sempre.
+    Future<void>.delayed(const Duration(milliseconds: _kWatchdogMs), () {
+      if (!mounted) return;
+      if (!_bootDone) {
+        final elapsed = DateTime.now().difference(bootStart).inMilliseconds;
+        debugPrint('[BOOTSTRAP_WATCHDOG] elapsedMs=$elapsed action=force_complete (timer)');
+        setState(() { _bootDone = true; _minTimeDone = true; });
+        AppResumeCoordinator.instance.completeBootstrap();
+      }
     });
   }
 
@@ -1126,9 +1159,32 @@ class _WebMainShellGate extends StatefulWidget {
 class _WebMainShellGateState extends State<_WebMainShellGate> {
   bool _ready = false;
 
+  // BUILD 241: timestamp de início para watchdog baseado em tempo real
+  late final DateTime _initStart;
+
   @override
   void initState() {
     super.initState();
+    _initStart = DateTime.now();
+    // BUILD 241: registra no coordinator — se o app voltar do background
+    // após 20s ainda carregando, força _ready=true para liberar a UI.
+    AppResumeCoordinator.instance.registerLoading(
+      '_webgate_${widget.user.uid}',
+      onTimeout: () {
+        final ms = DateTime.now().difference(_initStart).inMilliseconds;
+        debugPrint('[BOOTSTRAP_WATCHDOG] webGate elapsedMs=$ms '
+            'action=force_ready (resume timeout)');
+        if (mounted && !_ready) setState(() => _ready = true);
+      },
+    );
+    // Timer local de backup — garante liberação mesmo sem resume event
+    Future<void>.delayed(const Duration(seconds: 20), () {
+      if (!mounted || _ready) return;
+      final ms = DateTime.now().difference(_initStart).inMilliseconds;
+      debugPrint('[BOOTSTRAP_WATCHDOG] webGate elapsedMs=$ms action=force_ready (timer)');
+      setState(() => _ready = true);
+      AppResumeCoordinator.instance.completeLoading('_webgate_${widget.user.uid}');
+    });
     _initUser();
   }
 
@@ -1149,6 +1205,7 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
         onTimeout: () {},
       );
     }
+    AppResumeCoordinator.instance.completeLoading('_webgate_${widget.user.uid}'); // BUILD 241
     if (mounted) setState(() => _ready = true);
   }
 
@@ -1253,6 +1310,38 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Se um SW novo foi detectado antes do boot, a flag _mcUpdatePending já
     // está `true` → banner aparecerá assim que o widget for exibido.
     if (kIsWeb) UpdateService.setupUpdateListener();
+
+    // BUILD 241: visibilitychange handler (Web only).
+    // Flutter Web não envia AppLifecycleState.paused ao trocar de aba na maioria
+    // dos browsers — apenas quando a janela TODA perde o foco em alguns casos.
+    // Este handler garante que o AppResumeCoordinator seja notificado quando o
+    // usuário troca de aba, garantindo verificação de AI requests e bootstrap.
+    if (kIsWeb) {
+      webPlatform.setupVisibilityHandler(
+        onHidden:  () {
+          debugPrint('[VISIBILITY] hidden=true → coordinator.onBackground()');
+          AppResumeCoordinator.instance.onBackground();
+          // Also pause usage timer (fromVisibility=true skips duplicate
+          // coordinator.onBackground() call)
+          if (mounted) {
+            try {
+              context.read<AppProvider>().pauseUsageTimer(fromVisibility: true);
+            } catch (_) {}
+          }
+        },
+        onVisible: () {
+          debugPrint('[VISIBILITY] hidden=false → coordinator.onForeground()');
+          AppResumeCoordinator.instance.onForeground();
+          // Also resume usage timer if paused (fromVisibility=true skips
+          // duplicate coordinator.onForeground() call)
+          if (mounted) {
+            try {
+              context.read<AppProvider>().resumeUsageTimer(fromVisibility: true);
+            } catch (_) {}
+          }
+        },
+      );
+    }
 
     // Verifica novidades ao abrir o app (delay para não competir com splash)
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1366,10 +1455,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!mounted) return;
     final provider = context.read<AppProvider>();
+    debugPrint('[LIFECYCLE] state=${state.name}');
 
     switch (state) {
       case AppLifecycleState.resumed:
         // App voltou ao foreground — retoma contagem de tempo de tela
+        // BUILD 241: resumeUsageTimer() agora também chama
+        // AppResumeCoordinator.instance.onForeground() para verificar
+        // operações pendentes com base em tempo real.
         provider.resumeUsageTimer();
         break;
 
@@ -1378,6 +1471,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       case AppLifecycleState.hidden:
         // App foi para background ou ficou inativo — pausa o timer
         // (não cancela — mantém estado para retomar ao voltar)
+        // BUILD 241: pauseUsageTimer() agora também chama
+        // AppResumeCoordinator.instance.onBackground() para registrar timestamp.
         provider.pauseUsageTimer();
         // Logout automático apenas se usuário não marcou "Manter conectado"
         if (state == AppLifecycleState.paused) {

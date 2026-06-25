@@ -1,5 +1,6 @@
 // Stub para compilação Android/iOS — implementações reais estão em web_impl.dart
 // Nenhuma dessas funções é chamada fora de kIsWeb == true.
+// BUILD 241: stub para setupVisibilityHandler (no-op em iOS/Android)
 
 import 'dart:typed_data';
 
@@ -26,3 +27,11 @@ class WebSpeechRecognizer {
   void stop() {}
   void dispose() {}
 }
+
+/// Stub: no-op em iOS/Android — visibilitychange é evento de browser.
+void setupVisibilityHandler({
+  required void Function() onHidden,
+  required void Function() onVisible,
+}) {}
+
+void debugPrintVisibility(bool hidden) {}

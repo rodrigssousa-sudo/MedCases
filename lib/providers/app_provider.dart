@@ -24,6 +24,7 @@ import '../services/gemini_service_v2.dart';
 import '../services/ai_gateway_service.dart';
 import '../services/ai_smart_router.dart'; // Build 191: sanitizeResponse
 import '../services/provider_router_service.dart'; // Build 226: Gemini Paid Fallback
+import '../services/app_resume_coordinator.dart';   // BUILD 241: background/resume safety
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -414,8 +415,11 @@ class AppProvider extends ChangeNotifier {
   }
 
   /// Pausa o timer quando o app vai para background (não cancela — mantém estado).
-  /// Chamado pelo MainShell via didChangeAppLifecycleState(paused/hidden/inactive).
-  void pauseUsageTimer() {
+  /// Chamado pelo MainShell via didChangeAppLifecycleState(paused/hidden/inactive)
+  /// ou pelo visibilitychange handler (Web).
+  /// [fromVisibility]: true quando chamado via visibilitychange handler
+  ///   (coordinator.onBackground já foi chamado pelo handler diretamente).
+  void pauseUsageTimer({bool fromVisibility = false}) {
     if (_usageTimer == null || _usagePaused) return;
     _usagePaused = true;
     // Flush imediato dos segundos acumulados antes de pausar
@@ -426,20 +430,32 @@ class AppProvider extends ChangeNotifier {
       _sessionSeconds = (_sessionSeconds ~/ 60) * 60; // zera o residual
     }
     debugPrint('[UsageTimer] pausado — app em background');
+    // BUILD 241: notifica coordinator que app foi para background.
+    // Não chama se já foi chamado pelo visibilitychange handler.
+    if (!fromVisibility) {
+      AppResumeCoordinator.instance.onBackground();
+    }
   }
 
   /// Retoma o timer quando o app volta ao foreground.
-  /// Chamado pelo MainShell via didChangeAppLifecycleState(resumed).
-  void resumeUsageTimer() {
+  /// Chamado pelo MainShell via didChangeAppLifecycleState(resumed)
+  /// ou pelo visibilitychange handler (Web).
+  /// [fromVisibility]: true quando chamado via visibilitychange handler
+  ///   (coordinator.onForeground já foi chamado pelo handler diretamente).
+  void resumeUsageTimer({bool fromVisibility = false}) {
     if (_usageTimer == null) {
       // Timer não existe ainda — pode ter sido cancelado; reinicia
       final uid = _currentUser?.uid;
       if (uid != null) _startUsageTimer(uid);
-      return;
+    } else if (_usagePaused) {
+      _usagePaused = false;
+      debugPrint('[UsageTimer] retomado — app em foreground');
     }
-    if (!_usagePaused) return;
-    _usagePaused = false;
-    debugPrint('[UsageTimer] retomado — app em foreground');
+    // BUILD 241: verifica operações pendentes com base em tempo real.
+    // Não chama onForeground() se já foi chamado pelo visibilitychange handler.
+    if (!fromVisibility) {
+      AppResumeCoordinator.instance.onForeground();
+    }
   }
 
   void _stopUsageTimer() {
@@ -457,6 +473,7 @@ class AppProvider extends ChangeNotifier {
 
   void clearUser() {
     _stopUsageTimer();
+    AppResumeCoordinator.instance.clear(); // BUILD 241: clear pending ops on logout
     _currentUser = null;
     _firebaseReady = false;
     _favDrugs = {};
@@ -3088,6 +3105,27 @@ class AppProvider extends ChangeNotifier {
     final globalStartMs = DateTime.now().millisecondsSinceEpoch;
     debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
 
+    // BUILD 241: registra request no coordinator para verificação no resume.
+    // Se o app for para background e voltar após 15s, onForeground() dispara
+    // o onTimeout abaixo imediatamente via tempo real (sem depender de Timer).
+    AppResumeCoordinator.instance.registerAiRequest(
+      requestId: thisRequestId,
+      onTimeout: () {
+        debugPrint('[AI_RESUME] requestId=$thisRequestId '
+            'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs} '
+            'action=timeout_on_resume');
+        // Só age se este request ainda é o ativo (não foi completado antes)
+        if (_activeRequestId != thisRequestId) return;
+        _activeRequestId = '';
+        _aiStreamActive = false;
+        _aiStreamSub?.cancel();
+        _aiStreamSub = null;
+        _aiCallInFlight = false;
+        debugPrint('[AI_LOADING_STATE] thinking=false streaming=false inputEnabled=true (resume timeout)');
+        onDone(_timeoutSafeCard(_lang));
+      },
+    );
+
     try {
     // ── Guard de concorrência (legado — mantido para compatibilidade) ─────
     if (_aiAnswerInProgress || _aiStreamActive) {
@@ -3302,6 +3340,8 @@ class AppProvider extends ChangeNotifier {
       _aiStreamSub?.cancel();
       _aiStreamSub = null;
       accumulator.clear();
+      // BUILD 241: remove do coordinator (timer interno disparou antes do resume)
+      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
       debugPrint('[AI_LOADING_STATE] thinking=false streaming=false inputEnabled=true (timeout)');
       onDone(_timeoutSafeCard(_lang));
     });
@@ -3361,6 +3401,8 @@ class AppProvider extends ChangeNotifier {
           // Resposta completa — dispara somente uma vez (guard anti-duplicata)
           if (completionFired) return;
           completionFired = true;
+          _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
           // BUILD 232: sanitizeAndCheck — bloqueia meta leak severo antes de onDone.
           // Se isRecoverable=false, text já é o fallback clínico seguro.
           final rawText = accumulator.toString().trim();
@@ -3391,6 +3433,8 @@ class AppProvider extends ChangeNotifier {
         debugPrint('[sendAiMessage] stream error: $e');
         if (completionFired) return;
         completionFired = true;
+        _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
         _aiStreamActive = false;
         _aiStreamSub    = null;
         accumulator.clear();   // descarta texto parcial — nunca exibir
@@ -3407,6 +3451,8 @@ class AppProvider extends ChangeNotifier {
           return;
         }
         completionFired = true;
+        _globalTimeoutTimer?.cancel(); // BUILD 241
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
         final finalText = accumulator.toString().trim();
         if (finalText.isNotEmpty) {
           _aiHistory
@@ -3427,7 +3473,7 @@ class AppProvider extends ChangeNotifier {
       cancelOnError: false,
     );
 
-    // ── BUILD 238: cancela timer global ao concluir normalmente ──────────
+    // ── BUILD 238/241: cancela timer global ao concluir normalmente ───────
     // O timer é criado ANTES do listen() — cancela-o quando onDone/onError
     // disparam normalmente para evitar safe-card tardio.
     // NOTA: os callbacks internos já cancelam via completionFired=true.
@@ -3453,6 +3499,13 @@ class AppProvider extends ChangeNotifier {
       //
       // RESULTADO: proteção máxima na janela de setup + handoff limpo ao guard legado.
       _aiCallInFlight = false;
+      // BUILD 241: se sendAiMessage() saiu pelo finally antes de registrar o
+      // listen() (ex: exception no setup), o coordinator precisa ser limpo.
+      // Se o stream ainda estiver ativo, o completeAiRequest virá pelo onDone/timeout.
+      // Se _aiStreamActive=false aqui, o request já terminou ou falhou antes do listen.
+      if (!_aiStreamActive) {
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+      }
     }
   }
 

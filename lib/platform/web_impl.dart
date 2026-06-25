@@ -174,3 +174,53 @@ class WebSpeechRecognizer {
 
   void dispose() => stop();
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 241: visibilitychange handler
+// ─────────────────────────────────────────────────────────────────────────────
+// Registra listener para document.visibilityState em abas do browser.
+// Flutter Web não envia AppLifecycleState.paused quando o usuário muda de aba
+// (só envia quando a janela inteira perde foco em alguns browsers).
+// Este handler garante que o AppResumeCoordinator é notificado corretamente.
+
+bool _visibilityHandlerRegistered = false;
+
+/// Instala um único listener de visibilitychange no document.
+/// Deve ser chamado uma vez após o app inicializar (main.dart).
+/// [onHidden]  : aba ficou oculta  → coordinator.onBackground()
+/// [onVisible] : aba voltou a ser visível → coordinator.onForeground()
+void setupVisibilityHandler({
+  required void Function() onHidden,
+  required void Function() onVisible,
+}) {
+  if (_visibilityHandlerRegistered) return;
+  _visibilityHandlerRegistered = true;
+
+  try {
+    html.document.addEventListener('visibilitychange', (event) {
+      final hidden = html.document.hidden ?? false;
+      debugPrintVisibility(hidden);
+      if (hidden) {
+        onHidden();
+      } else {
+        onVisible();
+      }
+    });
+    // Also listen for page show/hide (bfcache restore on mobile browsers)
+    html.window.addEventListener('pageshow', (event) {
+      debugPrintVisibility(false);
+      onVisible();
+    });
+    html.window.addEventListener('pagehide', (event) {
+      debugPrintVisibility(true);
+      onHidden();
+    });
+  } catch (e) {
+    // Browser doesn't support visibility API — safe to ignore
+  }
+}
+
+void debugPrintVisibility(bool hidden) {
+  // ignore: avoid_print
+  print('[VISIBILITY] hidden=$hidden');
+}
