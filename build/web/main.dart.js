@@ -130450,12 +130450,8 @@ A.b1i.prototype={
 $0(){return this.a.x.$1(this.b.b)},
 $S:0}
 A.b1j.prototype={
-$0(){var s=0,r=A.C(t.H),q=this
-var $async$$0=A.y(function(a,b){if(a===1)return A.z(b,r)
-while(true)switch(s){case 0:A.aX(q.a,!1).ia(A.a9c(new A.b1h(q.b),null,t.z))
-return A.A(null,r)}})
-return A.B($async$$0,r)},
-$S:5}
+$0(){A.aX(this.a,!1).ia(A.a9c(new A.b1h(this.b),null,t.z))},
+$S:0}
 A.b1h.prototype={
 $1(a){return new A.u6(this.a.b,null)},
 $S:773}

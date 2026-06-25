@@ -20,7 +20,7 @@ import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
 import '../services/activity_service.dart';
 import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action Engine
-import 'package:url_launcher/url_launcher.dart'; // Build 185: Deep Link Router
+// url_launcher removido: botões da IA usam Navigator → CalculadoraScreen (WebView interna).
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela interna
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
@@ -3230,19 +3230,16 @@ class _ActionButtonsRow extends StatelessWidget {
                   icon: Icons.calculate_rounded,
                   accentColor: _kPurpleCalc,
                   dark: dark,
-                  onTap: () async {
-                    if (kIsWeb) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => CalculadoraScreen(initialUrl: link.url),
-                        ),
-                      );
-                    } else {
-                      final uri = Uri.parse(link.url);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
-                      }
-                    }
+                  onTap: () {
+                    // fix(ai): sempre abre WebView interna — NUNCA Safari/launchUrl externo.
+                    // Web usa iframe (CalculadoraScreen via calcu_web.dart);
+                    // iOS/Android usa WebViewController nativo (webview_flutter).
+                    // Regra: qualquer URL medcasescalcu.com vinda da IA → WebView interna.
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CalculadoraScreen(initialUrl: link.url),
+                      ),
+                    );
                   },
                 )
               : null;
