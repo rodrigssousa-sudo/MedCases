@@ -3398,6 +3398,14 @@ class AppProvider extends ChangeNotifier {
       );
 
       if (paidResult.success && paidResult.text.isNotEmpty) {
+        // BUILD 252: print do rawText pago ANTES de sanitizeAndCheck
+        // ignore: avoid_print
+        print('[RAW_AI_OUTPUT][PAID_PROXY] len=${paidResult.text.length} '
+            'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+        if (paidResult.text.length < 100) {
+          // ignore: avoid_print
+          print('[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta do Paid: "${paidResult.text.length < 200 ? paidResult.text : paidResult.text.substring(0, 200)}"');
+        }
         // BUILD 232: sanitizeAndCheck bloqueia meta leak severo antes de onDone
         final paidSanitized = AiSmartRouter.sanitizeAndCheck(
           paidResult.text,
@@ -3479,6 +3487,14 @@ class AppProvider extends ChangeNotifier {
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
 
         if (paidResult.success && paidResult.text.isNotEmpty) {
+          // BUILD 252: print raw antes de sanitizeAndCheck (caminho crítico)
+          // ignore: avoid_print
+          print('[RAW_AI_OUTPUT][CRITICAL_PAID] len=${paidResult.text.length} '
+              'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+          if (paidResult.text.length < 100) {
+            // ignore: avoid_print
+            print('[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta (critical): "${paidResult.text.length < 200 ? paidResult.text : paidResult.text.substring(0, 200)}"');
+          }
           final paidSanitized = AiSmartRouter.sanitizeAndCheck(
             paidResult.text,
             isPlantaoMode: !longResponse,
@@ -3610,9 +3626,17 @@ class AppProvider extends ChangeNotifier {
           completionFired = true;
           _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
+          // BUILD 252: print do rawText ANTES de sanitizeAndCheck — expõe saída bruta.
+          final rawText = accumulator.toString().trim();
+          // ignore: avoid_print
+          print('[RAW_AI_OUTPUT][FREE_STREAM] len=${rawText.length} '
+              'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+          if (rawText.length < 100) {
+            // ignore: avoid_print
+            print('[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta do Free: "${rawText.length < 200 ? rawText : rawText.substring(0, 200)}"');
+          }
           // BUILD 232: sanitizeAndCheck — bloqueia meta leak severo antes de onDone.
           // Se isRecoverable=false, text já é o fallback clínico seguro.
-          final rawText = accumulator.toString().trim();
           final sanitized = rawText.isNotEmpty
               ? AiSmartRouter.sanitizeAndCheck(
                   rawText,

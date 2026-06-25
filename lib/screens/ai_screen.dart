@@ -3779,6 +3779,22 @@ String _plantaoTruncationGuard(String text, String lang,
       lower.contains('ia indisponible');
   if (isErrorMsg) return text;
 
+  // ── BUILD 252: RAW_AI_OUTPUT — print do texto bruto ANTES de qualquer parser ─
+  // Expõe o que a IA realmente retornou, desmascarando o auto-reparo do Organizer.
+  // ignore: avoid_print
+  print('================ [RAW_AI_OUTPUT] ================');
+  // ignore: avoid_print
+  print(text);
+  // ignore: avoid_print
+  print('================================================= '
+      'len=${text.length} chars');
+  if (text.trim().length < 100) {
+    // Resposta suspeita (< 100 chars) — loga alerta explícito sem mascarar
+    // ignore: avoid_print
+    print('[RAW_AI_OUTPUT] ⚠️  ALERTA: resposta abaixo de 100 caracteres '
+        '(len=${text.trim().length}). Possível recusa, erro ou truncamento grave do modelo.');
+  }
+
   // ── Camada 1: PlantaoOrganizer via PlantatoPipeline ──────────────────────
   // Organiza, repara, detecta sinais clínicos. Não bloqueia.
   final pipelineResult = PlantatoPipeline.run(text);

@@ -183,6 +183,21 @@ class ProviderRouterService {
 
     final inputTokensApprox = (jsonEncode(payload).length / 4).ceil();
 
+    // BUILD 252: print diagnóstico do payload — expõe tamanho real do contexto.
+    // Sempre visível (não apenas kDebugMode) para diagnóstico de truncamento.
+    // ignore: avoid_print
+    print('[PAYLOAD_AUDIT] requestId=$requestId mode=$mode '
+        'historyEntries=${recentHistory.length} '
+        'userMsgLen=${userMessage.length} '
+        'systemPromptLen=${systemPrompt.length} '
+        'inputTokensApprox=$inputTokensApprox');
+    if (inputTokensApprox > 5000) {
+      // ignore: avoid_print
+      print('[PAYLOAD_AUDIT] ⚠️  ALERTA: payload acima de 5000 tokens '
+          '(inputTokensApprox=$inputTokensApprox) — risco de truncamento no proxy. '
+          'historyEntries=${recentHistory.length} requestId=$requestId');
+    }
+
     if (kDebugMode) {
       debugPrint('[PROVIDER_ROUTER] '
           'requestId=$requestId '
