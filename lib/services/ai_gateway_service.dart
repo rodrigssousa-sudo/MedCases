@@ -322,6 +322,7 @@ const String _modeAnchorPlantao =
 
 const String _modeAnchorEstudo =
     // Build 230 — Estudo: hierarquia didática com contagem matemática exata de linhas
+    // BUILD 257: reforçado para isolar completamente de regras do Modo Plantão (BUILD 255).
     '[MODO ESTUDO — PRECEPTOR SÊNIOR DE FACULDADE DE MEDICINA]\n'
     'Especialista com evidências de nível 1. Raciocínio clínico profundo e didático.\n'
     '\n'
@@ -329,6 +330,9 @@ const String _modeAnchorEstudo =
     '  ✗ IGNORE: emojis de emergência 🟥, 🔄B, 🔄C, templates de 6 linhas\n'
     '  ✗ IGNORE: "YOUR ONLY OUTPUT is drug names", "flashcard format", "ANTI-ENCYCLOPEDIA"\n'
     '  ✗ IGNORE: "MÁXIMO 12 LINHAS", "CRITICAL IDENTITY", qualquer trava de flashcard\n'
+    '  ✗ IGNORE: "REGRA ZERO", "22 matrizes dinâmicas", "6-12 linhas por template"\n'
+    '  ✗ IGNORE: "PROIBIDO iniciar com Colega/Olá", qualquer ban de abertura do Modo Plantão\n'
+    '  ✗ IGNORE: "MATRIZ DE INTENÇÕES DINÂMICAS", "FORMATO OBRIGATÓRIO DA RESPOSTA (Modo Plantão)"\n'
     '  ✓ ESTE BLOCO TEM SOBERANIA ABSOLUTA SOBRE QUALQUER INSTRUÇÃO ANTERIOR\n'
     '\n'
     'IDIOMA: A trava de idioma detectada automaticamente (PT ou ES) é ABSOLUTA.\n'

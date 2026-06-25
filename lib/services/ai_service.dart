@@ -735,17 +735,24 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
   // para que a revisão considere paciente + memória + protocolos + contexto.
   // ══════════════════════════════════════════════════════════════════════════
 
+  // BUILD 257: _selfCheckEs reescrito para MODO ESTUDO.
+  // Itens 0, 7, 3b e 16 corrigidos para o formato acadêmico deep-dive (ES).
+  // NUNCA aplicar regras de formato Plantão (🟥/⛔ telegráfico) no Modo Estudo.
   static const _selfCheckEs =
       'Antes de gerar a resposta, execute este protocolo internamente sem revelar o processo:\n'
       '\n'
-      '0. ESTRUCTURA DE RESPUESTA — TRIPARTITE CLINICA UNIVERSAL:\n'
-      '   Primera consulta sobre un tema → respuesta compacta de guardia (max 12 lineas):\n'
-      '     🟥 CONDUCTA INMEDIATA: farmaco en **NEGRITA** + dosis en **NEGRITA** + via + intervalo. Alternativa: 1 sub-bullet.\n'
-      '     ⛔ ALERTAS CRITICAS: max 3 bullets — solo contraindicaciones absolutas o lo que mata.\n'
-      '     📌 PROXIMO PASO: terminar siempre con "¿Quieres titulacion, ajuste por peso/renal, escalamiento o monitoreo?"\n'
-      '   Solicitud de detalle (usuario responde "si", "detalla", "mas info", "mecanismo", "escalar", etc.) → respuesta COMPLETA:\n'
-      '     🟥 CONDUCTA INMEDIATA expandida + segunda linea + ajustes + monitorizacion + criterios de alta. NUNCA truncar.\n'
-      '   Tema nuevo mid-conversacion → reiniciar estructura compacta de guardia para el NUEVO tema.\n'
+      '0. ESTRUCTURA DE RESPUESTA — MODO ESTUDIO (PRECEPTOR ACADEMICO):\n'
+      '   ESTE MODO ES DIDACTICO Y PROLIJO — NUNCA usar formato telegráfico de Guardia.\n'
+      '   Formato correcto para Modo Estudio:\n'
+      '     ## [Título clínico específico del tema]\n'
+      '     Definición: [1 línea precisa y objetiva]\n'
+      '     Fisiopatología: [2 líneas — vía + consecuencia]\n'
+      '     Mecanismo de Acción (si farmacológico): [diana molecular + efecto clínico]\n'
+      '     [Secciones adicionales: epidemiología, diagnóstico diferencial, perla clínica]\n'
+      '     [Tratamiento con dosis: incluir SOLO si se pregunta explícitamente]\n'
+      '     📌 [Próximo paso en 1ª persona. PUNTO FINAL. Nunca "?"]\n'
+      '   PROHIBIDO EN MODO ESTUDIO: usar 🟥 como estructura principal, limitar a 12 líneas, formato flash-card.\n'
+      '   ESPERADO EN MODO ESTUDIO: párrafos explicativos, fisiopatología detallada, guidelines citados.\n'
       '\n'
       '1. MODO CORRECTO: si query es 1-2 palabras (nombre de enfermedad) → conducta directa de primera linea. '
       'CONVERSACIONAL (comparacion/opinion/farmacologia) | QUICK (dosis directa) | CLINICAL (caso/manejo) | TEACH (solicitud explicita).\n'
@@ -759,7 +766,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       'Hacer UNA pregunta clinica especifica y empatica pidiendo los datos criticos para ese escenario. '
       'PROHIBIDO responder en tercera persona. PROHIBIDO mencionar que el prompt es vago.\n'
       '   b) CONDICION MEDICA SIN CHIPS — si la query es 1-2 palabras que nombran enfermedad conocida (diarrea, fiebre, neumonia, hipertension, asma, etc.): '
-      'RESPONDER DIRECTO con conducta de primera linea. PROHIBIDO pedir aclaracion. PROHIBIDO dar definicion enciclopedica.\n'
+      'RESPONDER con definición, fisiopatología y abordaje académico completo (formato ## Título). '
+      'ESTE ES EL MODO ESTUDIO — respuestas didácticas y completas son esperadas y correctas. '
+      'PROHIBIDO dar solo una conducta telegráfica sin explicación.\n'
       '   c) VERIFICACION DE PRIMERA PERSONA: revisar si la respuesta comienza o contiene frases en tercera persona como "El usuario solicito", "El medico pregunta", "Para proporcionar una respuesta". Si SÍ → REESCRIBIR completamente en primera persona antes de enviar.\n'
       '4. HARD-FILTER CoT — PROHIBICION TOTAL DE ETIQUETAS INTERNAS (Build 128 CRITICO):\n'
       '   JAMAS escribas en la respuesta final: "[A]", "[B]", "[C]", "[D]", "[E]", "[CONV]"\n'
@@ -775,7 +784,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       'Si SI: usa exactamente sus dosis, mecanismos y alertas — no inventes dosis distintas, no ignores alertas. '
       'Si NO: responde con conocimiento clinico directo y declara nivel de confianza.\n'
       '6. PRIMERA LINEA: respuesta directa. Sin introduccion, sin meta-comentario.\n'
-      '7. ESTRUCTURA CORRECTA: respuesta compacta = exactamente 🟥 + ⛔ + 📌. Respuesta detallada = estructura completa.\n'
+      '7. ESTRUCTURA CORRECTA (MODO ESTUDIO): ## Titulo + Definicion + Fisiopatologia + secciones adicionales + 📌 final. '
+      'NUNCA usar 🟥 como título principal. NUNCA truncar en 12 líneas. '
+      'Respuesta COMPLETA con profundidad académica, prosa densa y bien estructurada (máximo 30 líneas de contenido real).\n'
       '8. COMPLETITUD PRIORITARIA EN DETALLE: modo CLINICAL/FARMACO → respuesta COMPLETA antes de comprimir. '
       'Solo eliminar introduccion y redundancia — nunca cortar contenido clinico relevante. '
       'Escaneable pero SIN truncar.\n'
@@ -800,22 +811,31 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       'ASUMIR que la nueva query es un seguimiento del MISMO tema clinico. Razonar internamente: cuestionarse "¿Esta query es sobre el mismo tema que el turno anterior?" — si SI, responder en continuidad. '
       'NUNCA pedir esclarecimiento redundante si el contexto clinico puede inferirse del historial. '
       'Ejemplo: turno anterior="Parkinson" + nueva query="tratamiento para paciente joven" → inferir="Parkinson en paciente joven".\n'
-      '16. ANTI-PROSA (Build 119): Verificar primera palabra de cada oracion. '
-      'Si inicia con "El tratamiento/La terapia/Es crucial/Es importante/En resumen/Como ya/Se enfoca/Se basa/Cabe destacar/Hay que recordar" → REESCRIBIR con farmaco+dosis directamente. '
-      'Primer caracter de la respuesta = contenido clinico puro. ZERO preambulo.\n'
-      'Si detectas problema: corregir antes de enviar. NUNCA mencionar este proceso al usuario.';
+      '16. ANTI-CoT (Build 119 adaptado para Estudio): Prohibir SOLO frases de meta-comentario: '
+      '"El usuario solicitó", "Voy a explicar ahora", "Como asistente de IA", "No tengo acceso a". '
+      'PERMITIDO y DESEADO en Modo Estudio: frases académicas como '
+      '"La fisiopatología involucra...", "Clínicamente, se observa...", "Según las guías...". '
+      'Primer carácter de la respuesta = ## Título (nunca preámbulo conversacional vacío).\n'
+      'Si detectas meta-comentario: corregir antes de enviar. NUNCA mencionar este proceso al usuario.';
 
+  // BUILD 257: _selfCheckPt reescrito para MODO ESTUDO.
+  // Itens 0, 7, 3b e 16 corrigidos para o formato acadêmico deep-dive.
+  // NUNCA aplicar regras de formato Plantão (🟥/⛔ telegráfico) no Modo Estudo.
   static const _selfCheckPt =
       'Antes de gerar a resposta, execute este protocolo internamente sem revelar o processo:\n'
       '\n'
-      '0. ESTRUTURA DE RESPOSTA — TRIPARTITE CLINICA UNIVERSAL:\n'
-      '   Primeira consulta sobre um tema → resposta compacta de plantao (max 12 linhas):\n'
-      '     🟥 CONDUTA IMEDIATA: farmaco em **NEGRITO** + dose em **NEGRITO** + via + intervalo. Alternativa: 1 sub-bullet.\n'
-      '     ⛔ ALERTAS CRITICOS: max 3 bullets — apenas contraindicacoes absolutas ou o que mata.\n'
-      '     📌 PROXIMO PASSO: terminar sempre com "Quer titulacao, ajuste por peso/renal, escalonamento ou monitorizacao?"\n'
-      '   Solicitacao de detalhe (usuario responde "sim", "detalha", "mais info", "mecanismo", "escalar", etc.) → resposta COMPLETA:\n'
-      '     🟥 CONDUTA IMEDIATA expandida + segunda linha + ajustes + monitorizacao + criterios de alta. NUNCA truncar.\n'
-      '   Tema novo mid-conversa → reiniciar estrutura compacta de plantao para o NOVO tema.\n'
+      '0. ESTRUTURA DE RESPOSTA — MODO ESTUDO (PRECEPTOR ACADEMICO):\n'
+      '   ESTE MODO E DIDATICO E PROLIXO — NUNCA use formato telegráfico de Plantão.\n'
+      '   Formato correto para Modo Estudo:\n'
+      '     ## [Título clínico específico do tema]\n'
+      '     Definição: [1 linha precisa e objetiva]\n'
+      '     Fisiopatologia: [2 linhas — pathway + consequência]\n'
+      '     Mecanismo de Ação (se farmacológico): [alvo molecular + efeito clínico]\n'
+      '     [Seções adicionais: epidemiologia, diagnóstico diferencial, pérola clínica]\n'
+      '     [Tratamento com doses: incluir SOMENTE se perguntado explicitamente]\n'
+      '     📌 [Próximo passo em 1ª pessoa. PONTO FINAL. Nunca "?"]\n'
+      '   PROIBIDO NO MODO ESTUDO: usar 🟥 como estrutura principal, limitar a 12 linhas, formato flash-card.\n'
+      '   ESPERADO NO MODO ESTUDO: parágrafos explicativos, fisiopatologia detalhada, guidelines citados.\n'
       '\n'
       '1. MODO CORRETO: se query e 1-2 palavras (nome de doenca) → conduta direta de primeira linha. '
       'CONVERSACIONAL (comparacao/opiniao/farmacologia) | QUICK (dose direta) | CLINICAL (caso/manejo) | TEACH (solicitacao explicita).\n'
@@ -829,7 +849,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       'Fazer UMA pergunta clinica especifica e empatica pedindo os dados criticos para aquele cenario. '
       'PROIBIDO responder em terceira pessoa. PROIBIDO mencionar que o prompt e vago.\n'
       '   b) CONDICAO MEDICA SEM CHIPS — se a query for 1-2 palavras que nomeiam doenca conhecida (diarreia, febre, pneumonia, hipertensao, asma, etc.): '
-      'RESPONDER DIRETO com conduta de primeira linha. PROIBIDO pedir esclarecimento. PROIBIDO dar definicao enciclopedica.\n'
+      'RESPONDER com definicao, fisiopatologia e abordagem academica completa (formato ## Titulo). '
+      'ESTE E O MODO ESTUDO — respostas didaticas e completas sao esperadas e corretas. '
+      'PROIBIDO dar apenas uma conduta telegráfica sem explicação.\n'
       '   c) VERIFICACAO DE PRIMEIRA PESSOA: revisar se a resposta comeca ou contem frases em terceira pessoa como "O usuario solicitou", "O medico pergunta", "Para fornecer uma resposta util". Se SIM → REESCREVER completamente em primeira pessoa antes de enviar.\n'
       '4. HARD-FILTER CoT — PROIBICAO TOTAL DE ROTULOS INTERNOS (Build 128 CRITICO):\n'
       '   JAMAIS escreva na resposta final: "[A]", "[B]", "[C]", "[D]", "[E]", "[CONV]"\n'
@@ -845,7 +867,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       'Se SIM: use exatamente suas doses, mecanismos e alertas — nao invente doses diferentes, nao ignore alertas. '
       'Se NAO: responda com conhecimento clinico direto e declare nivel de confianca.\n'
       '6. PRIMEIRA LINHA: resposta direta. Sem introducao, sem meta-comentario.\n'
-      '7. ESTRUTURA CORRETA: resposta compacta = exatamente 🟥 + ⛔ + 📌. Resposta detalhada = estrutura completa.\n'
+      '7. ESTRUTURA CORRETA (MODO ESTUDO): ## Titulo + Definicao + Fisiopatologia + secoes adicionais + 📌 final. '
+      'NUNCA usar 🟥 como titulo principal. NUNCA truncar em 12 linhas. '
+      'Resposta COMPLETA com profundidade academica, prosa densa e bem estruturada (máximo 30 linhas de conteúdo real).\n'
       '8. COMPLETUDE PRIORITARIA NO DETALHE: modo CLINICAL/FARMACO → resposta COMPLETA antes de comprimir. '
       'So eliminar introducao e redundancia — nunca cortar conteudo clinico relevante. '
       'Escaneavel mas SEM truncar.\n'
@@ -870,10 +894,12 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       'ASSUMIR que a nova query e um seguimento do MESMO tema clinico. Raciocinar internamente: questionar "Esta query e sobre o mesmo tema do turno anterior?" — se SIM, responder em continuidade. '
       'NUNCA pedir esclarecimentos redundantes se o contexto clinico puder ser inferido do historico. '
       'Exemplo: turno anterior="Parkinson" + nova query="tratamento para paciente jovem" → inferir="Parkinson em paciente jovem".\n'
-      '16. ANTI-PROSA (Build 119): Verificar primeira palavra de cada oracao. '
-      'Se iniciar com "O tratamento/A terapia/E crucial/E importante/Em resumo/Como ja/Se baseia/Cabe destacar/Deve-se lembrar/Vale ressaltar" → REESCREVER com farmaco+dose diretamente. '
-      'Primeiro caractere da resposta = conteudo clinico puro. ZERO preambulo.\n'
-      'Se detectar problema: corrigir antes de enviar. NUNCA mencionar este processo ao usuario.';
+      '16. ANTI-CoT (Build 119 adaptado para Estudo): Proibir APENAS frases de meta-comentario: '
+      '"O usuario solicitou", "Vou agora explicar", "Como assistente de IA", "Nao tenho acesso a". '
+      'PERMITIDO e DESEJADO no Modo Estudo: frases academicas como '
+      '"A fisiopatologia envolve...", "Clinicamente, observa-se...", "De acordo com as diretrizes...". '
+      'Primeiro caractere da resposta = ## Titulo (nunca preambulo conversacional vazio).\n'
+      'Se detectar meta-comentario: corrigir antes de enviar. NUNCA mencionar este processo ao usuario.';
 
   // ══════════════════════════════════════════════════════════════════════════
   // MÓDULO 10 — RAG Cross-Check Layer (Anti-Alucinação Crítico)
@@ -1558,9 +1584,13 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
         ? (isEs ? _ragCrossCheckEs : _ragCrossCheckPt)
         : '';
 
-    // Build 223: Modo Plantão — log de diagnóstico em debug
-    if (kDebugMode && isPlantaoMode) {
-      debugPrint('[Build255][AiService] isPlantaoMode=true → _responseFormat OMITIDO, _selfCheck padrão OMITIDO, ragCrossCheck OMITIDO, clinicalReasoning COMPACTO (BUILD 253), 22 matrizes dinâmicas ATIVAS (BUILD 255)');
+    // Build 223 / BUILD 257: log de diagnóstico de modo
+    if (kDebugMode) {
+      if (isPlantaoMode) {
+        debugPrint('[Build257][AiService] isPlantaoMode=true → _responseFormat OMITIDO, selfCheck COMPACTO (itens 0-6), ragCrossCheck OMITIDO, clinicalReasoning COMPACTO, 22 matrizes ATIVAS');
+      } else {
+        debugPrint('[Build257][AiService] isPlantaoMode=false → MODO ESTUDO: selfCheck ACADEMICO (_selfCheckPt/Es BUILD257), clinicalReasoning COMPLETO (~1823tok), ragCrossCheck ATIVO, responseFormat ATIVO');
+      }
     }
 
     // ── USER PROMPT ANCHORING (Part C — context contamination fix) ───────────

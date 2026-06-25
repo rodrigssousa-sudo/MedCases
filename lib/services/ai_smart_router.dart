@@ -298,7 +298,7 @@ class AiSmartRouter {
       '• Gotas: APENAS 2 linhas (Fórmula + **Resultado em negrito**).\n'
       '• Diluição: Volume → Diluição → Infusão (máx 6 linhas).\n';
 
-  // ══ CONTRATO ESTUDO ═════════════════════════════════════════════════════════
+  // ══ CONTRATO ESTUDO — BUILD 257: isolamento explícito das regras do Plantão ══
   static const String _contractEstudo =
       'FORMATO OBRIGATÓRIO DA RESPOSTA (Modo Estudo — Preceptor Universitário):\n'
       '\n'
@@ -310,10 +310,13 @@ class AiSmartRouter {
       '📌 [Próximo passo em 1ª pessoa. PONTO FINAL. Nunca "?"]\n'
       '\n'
       'REGRAS:\n'
-      '• Máximo 26 linhas de conteúdo real.\n'
+      '• Máximo 30 linhas de conteúdo real. NUNCA truncar em 12 linhas.\n'
       '• Negrito apenas em fármacos, doses e critérios de guideline.\n'
-      '• Sem emojis de Plantão (🟥/🔄/⛔).\n'
-      '• Doses: incluir SOMENTE se explicitamente perguntado.\n';
+      '• Sem emojis de Plantão (🟥/🔄/⛔) como estrutura principal.\n'
+      '• Doses: incluir SOMENTE se explicitamente perguntado.\n'
+      '• Prosa acadêmica densa é ESPERADA e CORRETA neste modo.\n'
+      '• IGNORAR completamente: "22 matrizes dinâmicas", "6-12 linhas por template",\n'
+      '  "REGRA ZERO", "ban de abertura conversacional" — essas regras são EXCLUSIVAS do Plantão.\n';
 
   // ══ CAMADA 4 — Prompt Builder ════════════════════════════════════════════════
   static String _buildPrompt({
