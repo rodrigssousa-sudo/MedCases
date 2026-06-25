@@ -1143,14 +1143,14 @@ class _AiScreenState extends State<AiScreen> {
 
   // Wrapper de debounce: agenda _send com 300ms de delay.
   // Chamadas repetidas dentro da janela reiniciam o timer (último vence).
-  void _sendDebounced(String text, AppProvider p) {
+  void _sendDebounced(String text, AppProvider p, {bool fromButton = false}) {
     _submitDebounceTimer?.cancel();
     _submitDebounceTimer = Timer(const Duration(milliseconds: 300), () {
-      _send(text, p);
+      _send(text, p, fromButton: fromButton);
     });
   }
 
-  Future<void> _send(String text, AppProvider p) async {
+  Future<void> _send(String text, AppProvider p, {bool fromButton = false}) async {
     final trimmed = text.trim();
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
     if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
@@ -1204,7 +1204,8 @@ class _AiScreenState extends State<AiScreen> {
       // Retorna true se usou streaming (Gemini conectado), false se usou fallback.
       await p.sendAiMessage(
         trimmed,
-        longResponse: _longResponse,  // Motor de Partida (Build 149)
+        longResponse:  _longResponse,  // Motor de Partida (Build 149)
+        fromButton:    fromButton,      // BUILD 262: preserves thread on action buttons
         onChunk: (accumulated) {
           if (!mounted) return;
           // ── STREAM SANITIZER: expurga metadados antes de exibir ────────────
@@ -2030,7 +2031,9 @@ class _AiScreenState extends State<AiScreen> {
                             if (_isStreaming) return;
                             _userScrolledUp = false;
                             _scrollDown(force: true);
-                            _sendDebounced(prompt, context.read<AppProvider>());
+                            // BUILD 262: fromButton=true — preserves thread history,
+                            // prevents HARD RESET on clinical follow-up actions.
+                            _sendDebounced(prompt, context.read<AppProvider>(), fromButton: true);
                           },
                         );
                       }),

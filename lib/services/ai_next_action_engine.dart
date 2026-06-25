@@ -198,34 +198,80 @@ class NextActionEngine {
     );
   }
 
-  // ── BUILD 256: Extrai nome da patologia da linha 🟥 da resposta da IA ─────────
-  // Prioridade 1: título 🟥 do BUILD 255 (ex: "🟥 INFARTO AGUDO DO MIOCÁRDIO")
-  // Prioridade 2: primeira linha da resposta da IA (sem emoji)
-  // Prioridade 3: texto da query do usuário (trimmed, max 60 chars)
-  // Prioridade 4: string vazia (prompt genérico será usado)
-  static String _extractPathologyName(String lastAiResponse, String lastUserMessage) {
-    // Busca linha que começa com 🟥 e extrai o nome após o emoji
+  // ── BUILD 262: Extrai nome da patologia da linha 🟥 da resposta da IA ─────────
+  // Prioridade 1: PRIMEIRO 🟥 da resposta que NÃO seja termo genérico de layout.
+  //   Apenas a PRIMEIRA linha 🟥 é o título clínico real (ex: "🟥 AVC ISQUÊMICO").
+  //   Linhas subsequentes (ex: "🟥 CONDUTA CLÍNICA IMEDIATA") são subtítulos
+  //   de template visual — NÃO representam a patologia.
+  // Prioridade 2: lastUserMessage (query que gerou o chat).
+  // Prioridade 3: primeira mensagem do usuário em chatHistory (âncora absoluta).
+  // Prioridade 4: string vazia (prompt genérico será usado).
+  //
+  // BLOCKLIST de termos genéricos de layout que NÃO são nomes de patologia:
+  static const _kLayoutTerms = [
+    'conduta', 'tratamento', 'imediata', 'imediato', 'alerta', 'crítico',
+    'critico', 'farmacológico', 'farmacologico', 'manejo', 'diagnóstico',
+    'diagnostico', 'protocolo', 'conduta clínica', 'monitorar', 'monitoramento',
+    'evolução', 'evolucao', 'exames', 'resumo', 'orientações', 'orientacoes',
+    'seguimento', 'internação', 'internacao', 'alta', 'conduta imediata',
+    // ES equivalents
+    'conducta', 'tratamiento', 'inmediata', 'inmediato', 'monitoreo',
+    'diagnóstico', 'diagnostico', 'protocolo', 'manejo', 'seguimiento',
+  ];
+
+  static bool _isLayoutTerm(String name) {
+    final lower = name.toLowerCase();
+    // Exact match or starts-with against any layout term
+    return _kLayoutTerms.any((t) => lower == t || lower.startsWith('$t ') || lower.startsWith('$t:'));
+  }
+
+  static String _extractPathologyName(
+    String lastAiResponse,
+    String lastUserMessage, {
+    List<String> chatHistory = const [],
+  }) {
+    // ── Priority 1: first 🟥 line that is NOT a layout term ──────────────────
     final lines = lastAiResponse.split('\n');
     for (final line in lines) {
       final trimmed = line.trim();
       if (trimmed.startsWith('🟥')) {
-        // Remove o emoji 🟥 e espaços/hífens iniciais
         final name = trimmed
             .replaceFirst('🟥', '')
             .trim()
             .replaceFirst(RegExp(r'^[\-—–:\s]+'), '')
             .trim();
-        if (name.isNotEmpty && name.length >= 3) return name;
+        // Skip empty, too-short, or layout/template sub-headings
+        if (name.isNotEmpty && name.length >= 3 && !_isLayoutTerm(name)) {
+          return name;
+        }
+        // BUILD 262: stop after first 🟥 — subsequent ones are sub-titles, not the topic
+        break;
       }
     }
-    // Fallback: usa a query do usuário (trimmed, max 80 chars, sem quebras de linha)
-    final userQuery = lastUserMessage
-        .replaceAll('\n', ' ')
-        .trim();
-    if (userQuery.isNotEmpty) {
+
+    // ── Priority 2: lastUserMessage (the query that generated this response) ──
+    final userQuery = lastUserMessage.replaceAll('\n', ' ').trim();
+    if (userQuery.isNotEmpty && !_isLayoutTerm(userQuery)) {
       return userQuery.length > 80 ? '${userQuery.substring(0, 80)}…' : userQuery;
     }
-    return '';
+
+    // ── Priority 3: FIRST user message in chatHistory (session anchor) ────────
+    // chatHistory contains all messages (user + AI) in order.
+    // The FIRST user-authored message (odd index or detected by content) is the
+    // original clinical query that anchors this entire session.
+    // We scan until we find a non-empty, non-AI entry with clinical content.
+    for (final msg in chatHistory) {
+      final t = msg.replaceAll('\n', ' ').trim();
+      // Skip AI responses (they contain 🟥 or are long clinical texts)
+      if (t.startsWith('🟥') || t.length > 300) continue;
+      // Skip empty or layout terms
+      if (t.isEmpty || _isLayoutTerm(t)) continue;
+      // Skip greetings / bot opening messages
+      if (t.startsWith('Olá') || t.startsWith('Hola') || t.startsWith('👋')) continue;
+      return t.length > 80 ? '${t.substring(0, 80)}…' : t;
+    }
+
+    return ''; // prompt genérico will be used (hasTopicName = false)
   }
 
   static SmartNextAction _pickAction(List<SmartNextAction> options, List<String> history) {
@@ -430,7 +476,12 @@ class NextActionEngine {
     // BUILD 256: topicName extraído dinamicamente do título 🟥 da resposta da IA
     // ou do texto da query do usuário — elimina o "este tema" estático que
     // causava respostas inválidas (Card Roxo) quando o histórico estava limpo.
-    final topicName = _extractPathologyName(lastAiResponse, lastUserMessage);
+    // BUILD 262: pass chatHistory so fallback can anchor to first user message
+    final topicName = _extractPathologyName(
+      lastAiResponse,
+      lastUserMessage,
+      chatHistory: chatHistory,
+    );
     final hasTopicName = topicName.isNotEmpty;
 
     if (isPlantaoMode) {

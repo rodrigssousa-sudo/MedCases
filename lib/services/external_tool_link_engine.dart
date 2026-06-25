@@ -253,12 +253,23 @@ class ExternalToolLinkEngine {
           activeThreadTopic.toLowerCase().contains(drug.param);
 
       if (!drugInUserMsg && !drugInThread && activeThreadTopic.isNotEmpty) {
-        // Fármaco veio apenas da resposta AI (contaminação de contexto anterior)
-        // ignore: avoid_print
-        print('[EXT_TOOL_CONTEXT] blocked_stale_tool '
-            'old=${drug.param} reason=not_in_current_context '
-            'threadTopic=$activeThreadTopic');
-        return null;
+        // BUILD 262: in Plantão mode, stale-tool false-positive is common because
+        // rapid emergency queries change topic faster than the thread manager tracks.
+        // Bypass the null-return in Plantão so the drug link always reaches the UI.
+        if (isPlantaoMode) {
+          // ignore: avoid_print
+          print('[EXT_TOOL_CONTEXT] plantao_bypass_stale '
+              'drug=${drug.param} threadTopic=$activeThreadTopic '
+              'reason=plantao_false_positive_allowed');
+          // Allow through — do NOT return null
+        } else {
+          // Estudo: preserve strict stale-tool blocking (cross-case contamination)
+          // ignore: avoid_print
+          print('[EXT_TOOL_CONTEXT] blocked_stale_tool '
+              'old=${drug.param} reason=not_in_current_context '
+              'threadTopic=$activeThreadTopic');
+          return null;
+        }
       }
 
       final drugCtx = _drugContext(drug.param);

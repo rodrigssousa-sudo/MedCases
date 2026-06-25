@@ -3183,6 +3183,7 @@ class AppProvider extends ChangeNotifier {
     required void Function(String finalText) onDone,
     required void Function(String errorMsg) onError,
     bool longResponse = false,  // Motor de Partida (Build 149)
+    bool fromButton  = false,   // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
   }) async {
     // ── Build 134: Single-Flight Guard ────────────────────────────────────
     // Bloqueia qualquer chamada enquanto um voo já está em curso.
@@ -3264,7 +3265,8 @@ class AppProvider extends ChangeNotifier {
     // isPlantaoMode = !longResponse (Plantão=true → history mínimo ou vazio)
     final threadStatus = _threadManager.evaluate(
       currentUserText: input,
-      isPlantaoMode: !longResponse,
+      isPlantaoMode:   !longResponse,
+      cameFromButton:  fromButton,  // BUILD 262: bypasses HARD RESET on follow-up button taps
     );
     if (threadStatus.action == ThreadAction.newThread) {
       // BUILD 250: HARD RESET síncrono — ocorre ANTES de qualquer montagem de payload.
