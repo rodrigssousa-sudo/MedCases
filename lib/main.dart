@@ -1353,8 +1353,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // BUILD 240: inicia download em background da calculadora offline.
     // Não bloqueia a Home — roda após primeiro frame, nunca lança erro visível.
     // Apenas mobile (kIsWeb=false): path_provider não suporta Web.
+    // BUILD 242: injeta callback de AI-busy antes de iniciar o sync, para que
+    // o downloader throttle automaticamente quando a IA estiver em uso.
     if (!kIsWeb) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final provider = context.read<AppProvider>();
+        OfflineCalculatorCacheService.instance.setAiBusyCheck(
+          () => provider.aiStreaming || provider.offlineCaching,
+        );
         OfflineCalculatorCacheService.instance.startBackgroundSync();
       });
     }
@@ -7016,11 +7022,25 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
     super.dispose();
   }
 
-  String _statusLabel(CalcuCacheStatus status) {
+  String _statusLabel(CalcuCacheStatus status,
+      {int filesDownloaded = 0, int filesTotal = 0}) {
     final isEs = widget.lang == 'es';
+    final hasCount = filesTotal > 0;
     switch (status) {
       case CalcuCacheStatus.downloading:
+        if (hasCount) {
+          return isEs
+              ? 'Descargando… $filesDownloaded/$filesTotal archivos'
+              : 'Baixando… $filesDownloaded/$filesTotal arquivos';
+        }
         return isEs ? 'Descargando…' : 'Baixando…';
+      case CalcuCacheStatus.downloadPaused:
+        if (hasCount) {
+          return isEs
+              ? 'Pausado · $filesDownloaded/$filesTotal archivos'
+              : 'Pausado · $filesDownloaded/$filesTotal arquivos';
+        }
+        return isEs ? 'Pausado (IA ocupada)' : 'Pausado (IA em uso)';
       case CalcuCacheStatus.ready:
         return isEs ? 'Disponible offline' : 'Disponível offline';
       case CalcuCacheStatus.updateAvailable:
@@ -7034,11 +7054,12 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
 
   Color _statusColor(CalcuCacheStatus status) {
     switch (status) {
-      case CalcuCacheStatus.ready:        return const Color(0xFF059669); // green
-      case CalcuCacheStatus.downloading:  return _kPurple;
+      case CalcuCacheStatus.ready:           return const Color(0xFF059669); // green
+      case CalcuCacheStatus.downloading:     return _kPurple;
+      case CalcuCacheStatus.downloadPaused:  return const Color(0xFFD97706); // amber
       case CalcuCacheStatus.updateAvailable: return const Color(0xFFD97706); // amber
-      case CalcuCacheStatus.error:        return const Color(0xFFDC2626); // red
-      case CalcuCacheStatus.unknown:      return const Color(0xFF6B7280); // gray
+      case CalcuCacheStatus.error:           return const Color(0xFFDC2626); // red
+      case CalcuCacheStatus.unknown:         return const Color(0xFF6B7280); // gray
     }
   }
 
@@ -7059,8 +7080,10 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
     final dark   = widget.dark;
     final isEs   = widget.lang == 'es';
     final st     = _cacheState;
-    final isDown = st.status == CalcuCacheStatus.downloading;
-    final isOk   = st.isReady;
+    // isActive covers both downloading + downloadPaused — both show spinner + bar
+    final isActive    = st.isActive;
+    final isDown      = isActive; // kept for padding/layout logic
+    final isOk        = st.isReady;
     final statusColor = _statusColor(st.status);
 
     final cardBg = dark
@@ -7090,7 +7113,7 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                   // Ícone
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 250),
-                    child: isDown
+                    child: isActive
                         ? SizedBox(
                             key: const ValueKey('spin'),
                             width: 34, height: 34,
@@ -7098,15 +7121,25 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                               CircularProgressIndicator(
                                 value: st.progress > 0 ? st.progress : null,
                                 strokeWidth: 2.5,
-                                color: _kPurple,
-                                backgroundColor: _kPurple.withValues(alpha: 0.15),
+                                // Amber when paused, purple when downloading
+                                color: st.status == CalcuCacheStatus.downloadPaused
+                                    ? const Color(0xFFD97706)
+                                    : _kPurple,
+                                backgroundColor: (st.status ==
+                                            CalcuCacheStatus.downloadPaused
+                                        ? const Color(0xFFD97706)
+                                        : _kPurple)
+                                    .withValues(alpha: 0.15),
                               ),
                               if (st.progress > 0)
                                 Text('${(st.progress * 100).toInt()}',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 7.5,
                                       fontWeight: FontWeight.w900,
-                                      color: _kPurple,
+                                      color: st.status ==
+                                              CalcuCacheStatus.downloadPaused
+                                          ? const Color(0xFFD97706)
+                                          : _kPurple,
                                     )),
                             ]),
                           )
@@ -7167,7 +7200,9 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                           ),
                           Expanded(
                             child: Text(
-                              _statusLabel(st.status),
+                              _statusLabel(st.status,
+                                  filesDownloaded: st.filesDownloaded,
+                                  filesTotal: st.filesTotal),
                               style: TextStyle(
                                 fontSize: 10.5,
                                 color: statusColor,
@@ -7204,7 +7239,7 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
             ),
 
             // ── Barra de progresso ────────────────────────────────────────
-            if (isDown)
+            if (isActive)
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
                 child: ClipRRect(
@@ -7212,14 +7247,22 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                   child: LinearProgressIndicator(
                     value: st.progress > 0 ? st.progress : null,
                     minHeight: 3.5,
-                    backgroundColor: _kPurple.withValues(alpha: 0.12),
-                    valueColor: const AlwaysStoppedAnimation(_kPurple),
+                    // Amber when paused, purple when downloading
+                    backgroundColor: (st.status == CalcuCacheStatus.downloadPaused
+                            ? const Color(0xFFD97706)
+                            : _kPurple)
+                        .withValues(alpha: 0.12),
+                    valueColor: AlwaysStoppedAnimation(
+                      st.status == CalcuCacheStatus.downloadPaused
+                          ? const Color(0xFFD97706)
+                          : _kPurple,
+                    ),
                   ),
                 ),
               ),
 
             // ── Botões de ação ────────────────────────────────────────────
-            if (!isDown)
+            if (!isActive)
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
                 child: Row(
