@@ -2009,31 +2009,88 @@ class PlantaoParser {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PlantaoValidator — valida estrutura mínima da resposta Plantão (Build 224)
+// PlantaoValidator — BUILD 246: organizador, NÃO bloqueador
 //
-// Build 224: validação expandida para templates dinâmicos.
-// Regras base (invariáveis):
-//   1. Primeira linha não-vazia deve iniciar com 🟥
-//   2. Mínimo de 3 linhas de conteúdo real (templates mais curtos permitidos)
-//   3. Máximo de 18 linhas de conteúdo real (templates mais ricos)
+// RESPONSABILIDADE:
+//   1. organizador  — detecta intenção clínica e reorganiza o conteúdo
+//   2. normalizador — limpa espaçamento, emojis duplicados
+//   3. formatador   — garante estrutura canônica quando possível
+//   4. protetor     — bloqueia SOMENTE resposta vazia/cortada/meta-leak
 //
-// Regras dinâmicas por template:
-//   - Template conduta/dose: exige 💊 E 📌
-//   - Outros templates: exige ao menos 2 emojis âncora válidos (além de 🟥)
+// QUANDO BLOQUEAR (retorna false em isValid / hasUsefulClinicalContent):
+//   ✗ resposta vazia
+//   ✗ claramente truncada (termina em conector, mid-sentence)
+//   ✗ meta-leak (vazamento de raciocínio interno "[pensando...]")
+//   ✗ sem nenhum valor clínico
+//
+// NUNCA BLOQUEAR POR:
+//   ✓ resposta curta mas com conteúdo clínico
+//   ✓ sigla médica (IAM, TEP, PCR, AVC, SCA…)
+//   ✓ repaired=true, orderFixed=true, hiddenFields > 0
+//   ✓ ausência de emoji/subtítulo/estrutura perfeita
+//   ✓ falha parcial do parser
 // ─────────────────────────────────────────────────────────────────────────────
 class PlantaoValidator {
   PlantaoValidator._(); // 100% estático
 
-  // Emojis âncora válidos em todos os templates (Build 224)
+  // Emojis âncora válidos em todos os templates
   static const _kAllValidAnchors = [
     '🟥', '💊', '🔄', '⛔', '📌', '⚠️',
     '📈', '✅', '❌', '🔎', '🧪', '🧮', '📖',
   ];
 
-  /// Valida a resposta textual bruta (pós-sanitize, pré-parse)
-  /// Retorna true se a estrutura mínima estiver correta.
-  ///
-  /// Build 224: modo relaxado — aceita templates dinâmicos além do conduta.
+  // Siglas clínicas reconhecidas — nunca bloquear respostas contendo estas
+  static const _kClinicalAcronyms = [
+    'iam', 'tep', 'pcr', 'avc', 'sca', 'fa', 'tvp', 'eap',
+    'sepse', 'sepsis', 'choque', 'shock', 'icc', 'ira', 'dpoc',
+    'hipercalemia', 'hipocalemia', 'hiponatremia', 'hipernatremia',
+    'anafilaxia', 'anafilaxis', 'taqui', 'bradi', 'avch', 'avci',
+    'dissecc', 'tamponamento', 'pneumotorax', 'edema', 'infarto',
+    'tromboembolismo', 'embolismo', 'trombose', 'coagulação',
+  ];
+
+  // Palavras clínicas de alto valor — indicam conteúdo útil
+  static const _kClinicalKeywords = [
+    'dose', 'dosis', 'mg', 'mcg', 'ml', 'ui', 'ampola', 'ampolla',
+    'via', 'iv', 'sc', 'im', 'vo', 'sl', 'infusão', 'infusión',
+    'conduta', 'conducta', 'tratamento', 'tratamiento',
+    'contraindicado', 'contraindicado', 'evitar', 'precaução',
+    'monitorar', 'monitorizar', 'vigilar', 'observar',
+    'pressão', 'presión', 'saturação', 'saturación', 'frequência',
+    'diagnóstico', 'diagnóstico', 'suspeitar', 'confirmar',
+    'exame', 'examen', 'laborat', 'ecg', 'rx', 'tc ', 'rmn',
+    'antibiótico', 'antibiótico', 'anticoagul', 'antiarrítm',
+    'betabloq', 'diurético', 'vasopress', 'vasopressor',
+    'noradren', 'dopamina', 'dobutamina', 'adrenalina',
+    'amiodarona', 'heparina', 'varfarina', 'insulina',
+    'pressão arterial', 'frequência cardíaca', 'oxigenio',
+    'reposição', 'reposición', 'correção', 'corrección',
+    'intubação', 'intubación', 'cardioversão', 'desfibril',
+    'acesso venoso', 'acesso', 'soro', 'solução', 'solución',
+    'glasgow', 'sofa', 'apache', 'wells', 'curb',
+  ];
+
+  // Padrões de meta-leak — vazamento de raciocínio interno
+  static const _kMetaLeakPatterns = [
+    '[pensando', '[thinking', '[analisando', '[analyzing',
+    '[raciocínio]', '[reasoning]', '<thinking>', '</thinking>',
+    'vou pensar', 'deixa eu pensar', 'preciso analisar',
+    'como ia de', 'como modelo de', 'como assistente',
+    'não posso fornecer', 'não sou médico', 'consulte um médico',
+    'procure atendimento médico', 'busque atención médica',
+  ];
+
+  // Conectores que ao terminar a resposta indicam truncamento
+  static const _kTruncationConnectors = [
+    ' e', ' ou', ' com', ' para', ' de', ' da', ' do',
+    ' em', ' por', ' mas', ' se', ' que', ' a', ' o',
+    ' y', ' o ', ' con', ' para', ' de', ' en', ' por',
+    ' pero', ' si', ' que', ' la', ' el',
+  ];
+
+  /// BUILD 246: isValid() — LOOSE check para o pipeline estruturado.
+  /// Retorna true se há estrutura mínima para o parser do PlantaoRenderer.
+  /// NÃO bloqueia por falta de estrutura — isso é papel de hasUsefulClinicalContent().
   static bool isValid(String text) {
     if (text.trim().isEmpty) return false;
 
@@ -2045,21 +2102,88 @@ class PlantaoValidator {
 
     if (lines.isEmpty) return false;
 
-    // ── Regra 1: primeira linha inicia com 🟥 (invariável) ────────────────
-    if (!lines.first.startsWith('🟥')) return false;
+    // Critério loose: tem pelo menos uma linha de conteúdo e algum emoji âncora
+    // OU começa com 🟥/🚨 (estrutura básica presente)
+    final hasAnchorEmoji = lines.any(
+      (l) => _kAllValidAnchors.any((a) => l.startsWith(a)),
+    );
+    final startsWithClinicalHeader =
+        lines.first.startsWith('🟥') || lines.first.startsWith('🚨');
 
-    // ── Regra 2-3: limites de linhas (expandidos no Build 224) ───────────
-    final contentLineCount = lines.length;
-    if (contentLineCount < 3) return false;
-    if (contentLineCount > 18) return false;
+    // Passa se tiver header clínico OU pelo menos 1 emoji âncora com ≥1 linha conteúdo
+    if (startsWithClinicalHeader && lines.length >= 1) return true;
+    if (hasAnchorEmoji && lines.length >= 2) return true;
 
-    // ── Regra 4: tem ao menos 2 emojis âncora válidos (incluindo 🟥) ─────
-    final anchorCount = lines
-        .where((l) => _kAllValidAnchors.any((a) => l.startsWith(a)))
-        .length;
-    if (anchorCount < 2) return false;
+    return false;
+  }
 
-    return true;
+  /// BUILD 246: hasUsefulClinicalContent() — verifica conteúdo clínico real.
+  /// Usado por _plantaoTruncationGuard para decidir PRESERVAR vs BLOQUEAR.
+  /// Retorna true se a resposta tem valor clínico, mesmo sem estrutura perfeita.
+  static bool hasUsefulClinicalContent(String text) {
+    if (text.trim().isEmpty) return false;
+    if (text.trim().length < 10) return false;
+
+    final lower = text.toLowerCase();
+
+    // Sigla clínica reconhecida → sempre tem valor
+    if (_kClinicalAcronyms.any((a) => lower.contains(a))) return true;
+
+    // Palavra-chave clínica de alto valor → tem conteúdo útil
+    if (_kClinicalKeywords.any((k) => lower.contains(k))) return true;
+
+    // Tem emoji âncora (🟥, 💊, etc.) com conteúdo após ele
+    final lines = text.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
+    for (final line in lines) {
+      for (final anchor in _kAllValidAnchors) {
+        if (line.startsWith(anchor) && line.length > anchor.length + 2) {
+          return true; // âncora com conteúdo real
+        }
+      }
+    }
+
+    // Texto tem ≥ 3 linhas com conteúdo substancial (≥15 chars cada)
+    final substantialLines = lines.where((l) => l.length >= 15).length;
+    if (substantialLines >= 3) return true;
+
+    return false;
+  }
+
+  /// BUILD 246: isTruncated() — detecta resposta cortada/incompleta.
+  /// Retorna true SOMENTE para truncamento real (mid-sentence, conector final).
+  static bool isTruncated(String text) {
+    if (text.trim().isEmpty) return true;
+
+    final trimmed = text.trimRight();
+    if (trimmed.length < 5) return true;
+
+    final lower = trimmed.toLowerCase();
+
+    // Termina com conector sem pontuação → claramente truncada
+    for (final connector in _kTruncationConnectors) {
+      if (lower.endsWith(connector)) return true;
+    }
+
+    // Termina com vírgula, dois pontos, ponto-e-vírgula → truncada
+    if (trimmed.endsWith(',') || trimmed.endsWith(':') || trimmed.endsWith(';')) {
+      return true;
+    }
+
+    // Markdown quebrado: bloco de código não fechado
+    final codeBlockCount = '```'.allMatches(text).length;
+    if (codeBlockCount % 2 != 0) return true;
+
+    // Tem menos de 30 chars total sem emoji âncora → muito curta sem conteúdo
+    final hasAnyAnchor = _kAllValidAnchors.any((a) => text.contains(a));
+    if (trimmed.length < 30 && !hasAnyAnchor) return true;
+
+    return false;
+  }
+
+  /// BUILD 246: hasMetaLeak() — detecta vazamento de raciocínio interno.
+  static bool hasMetaLeak(String text) {
+    final lower = text.toLowerCase();
+    return _kMetaLeakPatterns.any((p) => lower.contains(p));
   }
 
   /// Valida um PlantaoResponse já parseado
@@ -2279,6 +2403,10 @@ class PlantatoPipelineResult {
   final int hiddenFields;
   final bool orderFixed;
   final String fallbackText; // texto original para fallback se response == null
+  // BUILD 246: sinais para _plantaoTruncationGuard
+  final bool hasClinicalContent; // tem valor clínico mesmo sem estrutura perfeita
+  final bool isTruncated;        // resposta claramente cortada
+  final bool hasMetaLeak;        // vazamento de raciocínio interno
 
   const PlantatoPipelineResult({
     required this.response,
@@ -2288,6 +2416,9 @@ class PlantatoPipelineResult {
     required this.hiddenFields,
     required this.orderFixed,
     required this.fallbackText,
+    this.hasClinicalContent = false,
+    this.isTruncated = false,
+    this.hasMetaLeak = false,
   });
 }
 
@@ -2301,14 +2432,17 @@ class PlantatoPipeline {
   /// e fallbackText conterá o texto original para renderização de fallback.
   static PlantatoPipelineResult run(String sanitizedText) {
     if (sanitizedText.trim().isEmpty) {
-      return PlantatoPipelineResult(
+      return const PlantatoPipelineResult(
         response: null,
         valid: false,
         repaired: false,
         removedLines: 0,
         hiddenFields: 0,
         orderFixed: false,
-        fallbackText: sanitizedText,
+        fallbackText: '',
+        hasClinicalContent: false,
+        isTruncated: true,
+        hasMetaLeak: false,
       );
     }
 
@@ -2329,19 +2463,39 @@ class PlantatoPipeline {
       hiddenFields = response?.hiddenFields ?? 0;
     }
 
-    // ── Log [PLANTAO_VALIDATOR] ────────────────────────────────────────────
+    // ── Log [PLANTAO_VALIDATOR] BUILD 246 ─────────────────────────────────
+    final hasClinical = PlantaoValidator.hasUsefulClinicalContent(sanitizedText);
+    final isTrunc     = PlantaoValidator.isTruncated(sanitizedText);
+    final hasMetaLk   = PlantaoValidator.hasMetaLeak(sanitizedText);
+
+    // Determina action para o log
+    final String logAction;
+    if (response != null) {
+      logAction = repairResult.repaired || repairResult.orderFixed ? 'organize' : 'preserve';
+    } else if (hasClinical && !isTrunc && !hasMetaLk) {
+      logAction = 'preserve'; // conteúdo útil sem estrutura — preservar como texto
+    } else {
+      logAction = 'fallback';
+    }
+
     debugPrint('[PLANTAO_VALIDATOR] '
+        'action=$logAction '
         'valid=$isValid '
         'repaired=${repairResult.repaired} '
         'removedLines=${repairResult.removedLines} '
         'hiddenFields=$hiddenFields '
-        'orderFixed=${repairResult.orderFixed}');
+        'orderFixed=${repairResult.orderFixed} '
+        'hasClinical=$hasClinical '
+        'isTruncated=$isTrunc '
+        'hasMetaLeak=$hasMetaLk');
 
     if (response != null) {
       debugPrint('[PLANTAO_VALIDATOR] parse=ok '
           'conduta="${response.conduta.length > 40 ? response.conduta.substring(0, 40) : response.conduta}…"');
+    } else if (hasClinical) {
+      debugPrint('[PLANTAO_VALIDATOR] parse=null reason=useful_content — preservar como texto plano');
     } else {
-      debugPrint('[PLANTAO_VALIDATOR] parse=null — fallback para renderização de texto');
+      debugPrint('[PLANTAO_VALIDATOR] parse=null reason=no_clinical_value — fallback');
     }
 
     return PlantatoPipelineResult(
@@ -2352,6 +2506,9 @@ class PlantatoPipeline {
       hiddenFields: hiddenFields,
       orderFixed: repairResult.orderFixed,
       fallbackText: sanitizedText,
+      hasClinicalContent: hasClinical,
+      isTruncated: isTrunc,
+      hasMetaLeak: hasMetaLk,
     );
   }
 }

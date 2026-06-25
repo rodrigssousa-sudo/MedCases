@@ -282,8 +282,10 @@ class _AiScreenState extends State<AiScreen> {
   // BUILD 244B: log-dedup sets — SAFE_CARD_GUARD e PLANTAO_RENDER_GUARD
   // são disparados no ListView item builder, que reconstrói muitas vezes.
   // Guardamos o messageId após o primeiro log para nunca repetir.
-  final Set<String> _loggedSafeCardIds = {};
-  final Set<String> _loggedPlantaoIds  = {};
+  // BUILD 246: _loggedEvidenceIds — dedup EVIDENCE_GUARD por messageId+textHash.
+  final Set<String> _loggedSafeCardIds  = {};
+  final Set<String> _loggedPlantaoIds   = {};
+  final Set<String> _loggedEvidenceIds  = {};
   // ──────────────────────────────────────────────────────────────────────────
 
   // ── TTS (Text-to-Speech) ─────────────────────────────────────────────────
@@ -626,9 +628,10 @@ class _AiScreenState extends State<AiScreen> {
     // Post-frame: garante que o widget está completamente montado
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      // BUILD 244B: limpa sets de log-dedup ao injetar histórico
+      // BUILD 244B/246: limpa sets de log-dedup ao injetar histórico
       _loggedSafeCardIds.clear();
       _loggedPlantaoIds.clear();
+      _loggedEvidenceIds.clear();
       setState(() {
         // Build 236: marca saudação como feita para evitar dupla injeção
         // se _injectGreeting() for chamado após a restauração do histórico.
@@ -983,9 +986,10 @@ class _AiScreenState extends State<AiScreen> {
     // Build 188: descarta notifier de streaming ao restaurar sessão
     _streamingTextNotifier?.dispose();
     _streamingTextNotifier = null;
-    // BUILD 244B: limpa sets de log-dedup ao restaurar sessão
+    // BUILD 244B/246: limpa sets de log-dedup ao restaurar sessão
     _loggedSafeCardIds.clear();
     _loggedPlantaoIds.clear();
+    _loggedEvidenceIds.clear();
     setState(() {
       _messages.clear();
       _messages.addAll(session.messages);
@@ -2020,9 +2024,17 @@ class _AiScreenState extends State<AiScreen> {
                     // BUILD 238 EVIDENCE_GUARD: suprimir quando _PlantaoRenderer já
                     // está ativo (ele embute a evidência internamente) ou quando é safe-card.
                     // Evita dupla renderização de "EVIDÊNCIA CIENTÍFICA".
+                    // BUILD 246: dedup por messageId+textHash — evita loop de log
+                    // no ListView item builder que reconstrói muitas vezes.
                     if (!useStructuredRenderer && detectedEv != null && !_isSafeCard)
                       Builder(builder: (_) {
-                        debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} alreadyShown=$useStructuredRenderer isSafeCard=$_isSafeCard showing=true');
+                        if (kDebugMode) {
+                          final evKey = '${msg.id}_${msg.text.hashCode}';
+                          if (!_loggedEvidenceIds.contains(evKey)) {
+                            _loggedEvidenceIds.add(evKey);
+                            debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} alreadyShown=$useStructuredRenderer isSafeCard=$_isSafeCard showing=true');
+                          }
+                        }
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
                           child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
@@ -3709,29 +3721,29 @@ class _ActionTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-// Build 226 — _plantaoTruncationGuard
+// BUILD 246 — _plantaoTruncationGuard (REESCRITO)
 //
-// CAMADA DE PROTEÇÃO CONTRA RESPOSTA TRUNCADA (Plantão)
+// NOVA RESPONSABILIDADE: organizador/normalizador, NÃO bloqueador.
 //
-// PROBLEMA: quando o Gemini retorna 503 mid-stream, a resposta parcial
-// (ex: "🟥 AMIODARONA\n💊 1ª") chega ao onDone como finalText.
-// O PlantatoPipeline.run() detecta valid=false / parse=null, mas o código
-// antigo caía no _AiBubble e renderizava o texto truncado visível ao médico.
+// REGRA PRINCIPAL:
+//   Se a resposta contém conteúdo clínico útil → PRESERVAR.
+//   Se estiver mal formatada → REORGANIZAR via PlantaoRepair.
+//   NUNCA substituir por "Não consegui completar…" para conteúdo útil.
 //
-// SOLUÇÃO:
-//   1. Executar PlantatoPipeline.run() aqui para validar a resposta final.
-//   2. Se valid=false OU parse=null → substituir por fallback seguro neutro.
-//   3. Se valid=true → pass-through (o renderer estruturado cuidará do resto).
-//   4. Emitir log [PLANTAO_FAILSAFE] com diagnóstico completo.
+// BLOQUEAR/FALLBACK somente quando:
+//   1. resposta vazia
+//   2. claramente truncada (termina em conector, mid-sentence)
+//   3. meta-leak (vazamento de raciocínio interno)
+//   4. sem nenhum valor clínico E sem estrutura
 //
-// FALLBACK SEGURO:
-//   Texto neutro em PT/ES que instrui o médico a tentar novamente.
-//   NÃO contém informação clínica inventada.
-//   NÃO é renderizado pelo _PlantaoRenderer (response=null) — cai no _AiBubble.
+// NUNCA BLOQUEAR POR:
+//   - resposta curta com conteúdo clínico
+//   - sigla médica (IAM, TEP, PCR…)
+//   - repaired=true, orderFixed=true, hiddenFields > 0
+//   - ausência de emoji/subtítulo/estrutura perfeita
+//   - falha parcial do parser
 //
-// PRESERVADO: se o texto começa com 'ERRO' ou keywords de rede → pass-through
-// (já tratado pelo bloco isNetErr em onDone).
+// LOG: [PLANTAO_FAILSAFE] action=preserve/organize/fallback reason=...
 // ─────────────────────────────────────────────────────────────────────────────
 String _plantaoTruncationGuard(String text, String lang) {
   if (text.trim().isEmpty) return text;
@@ -3746,24 +3758,64 @@ String _plantaoTruncationGuard(String text, String lang) {
       lower.contains('ia indisponible');
   if (isErrorMsg) return text;
 
-  // Executa o pipeline para validar a estrutura
+  // ── Executa o pipeline para organizar/reparar a estrutura ────────────────
   final pipelineResult = PlantatoPipeline.run(text);
   final parserValid    = pipelineResult.response != null;
-  final validatorValid = pipelineResult.valid;
+  final hasClinical    = pipelineResult.hasClinicalContent;
+  final isTruncated    = pipelineResult.isTruncated;
+  final hasMetaLeak    = pipelineResult.hasMetaLeak;
 
-  // Log estruturado [PLANTAO_FAILSAFE]
-  debugPrint('[PLANTAO_FAILSAFE] '
+  // ── Caminho 1: parser produziu resposta estruturada → preservar/organizar ─
+  if (parserValid) {
+    final action = (pipelineResult.repaired || pipelineResult.orderFixed)
+        ? 'organize'
+        : 'preserve';
+    debugPrint('[PLANTAO_FAILSAFE] action=$action '
+        'reason=parser_valid '
+        'repaired=${pipelineResult.repaired} '
+        'orderFixed=${pipelineResult.orderFixed} '
+        'hiddenFields=${pipelineResult.hiddenFields}');
+    return text; // pass-through — renderer estruturado cuidará do resto
+  }
+
+  // ── Caminho 2: sem parser mas tem conteúdo clínico útil → preservar ──────
+  // REGRA PRINCIPAL BUILD 246: conteúdo clínico útil = PRESERVAR,
+  // mesmo que a estrutura seja imperfeita e o parser tenha falhado.
+  if (hasClinical && !isTruncated && !hasMetaLeak) {
+    debugPrint('[PLANTAO_FAILSAFE] action=preserve '
+        'reason=useful_content '
+        'parserValid=false '
+        'hasClinical=$hasClinical '
+        'isTruncated=$isTruncated '
+        'hasMetaLeak=$hasMetaLeak');
+    return text; // preservar resposta útil sem substituição
+  }
+
+  // ── Caminho 3: truncada mas tem conteúdo clínico → tentar preservar ──────
+  // Se a resposta está truncada mas contém informação clínica valiosa,
+  // preservamos o que existe em vez de descartar tudo.
+  if (isTruncated && hasClinical) {
+    debugPrint('[PLANTAO_FAILSAFE] action=preserve '
+        'reason=truncated_with_clinical '
+        'parserValid=false '
+        'hasClinical=$hasClinical');
+    return text; // médico prefere ver conteúdo parcial do que fallback genérico
+  }
+
+  // ── Caminho 4: fallback real — vazio, meta-leak, ou sem valor clínico ─────
+  // Só chega aqui se: vazio OU meta-leak OU (truncado E sem conteúdo clínico)
+  final fallbackReason = hasMetaLeak
+      ? 'meta_leak'
+      : (isTruncated ? 'truncated_no_clinical' : 'no_clinical_value');
+
+  debugPrint('[PLANTAO_FAILSAFE] action=fallback '
+      'reason=$fallbackReason '
       'parserValid=$parserValid '
-      'validatorValid=$validatorValid '
-      'repairAttempted=true '
-      'repairSuccess=${pipelineResult.repaired} '
-      'renderedFallback=${!parserValid && !validatorValid}');
+      'hasClinical=$hasClinical '
+      'isTruncated=$isTruncated '
+      'hasMetaLeak=$hasMetaLeak');
 
-  // Se a pipeline produziu resposta válida → pass-through
-  if (parserValid) return text;
-
-  // Resposta truncada ou inválida → fallback seguro
-  // Mantém o 🟥 do título se disponível para contexto, mas avisa sobre a falha
+  // Mantém o 🟥 do título se disponível para contexto
   final titleLine = text.split('\n').first.trim();
   final hasTitleLine = titleLine.startsWith('🟥') && titleLine.length > 3;
 
