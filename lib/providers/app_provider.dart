@@ -3070,15 +3070,22 @@ class AppProvider extends ChangeNotifier {
   String _activeRequestId = '';
 
   // Safe-card de timeout (sem EvidenceBox, sem ActionButtons, sem ExternalToolLink)
+  //
+  // BUILD 244: prefixo canônico estável — ai_screen detecta via _kSafeCardMarker.
+  // NÃO alterar estas primeiras linhas sem atualizar _kSafeCardMarker em ai_screen.
+  // BUILD 244: public — ai_screen reads these to detect safe-card by canonical prefix
+  static const String kSafeCardMarkerPt = '🟥 TEMPO LIMITE ATINGIDO';
+  static const String kSafeCardMarkerEs = '🟥 TEMPO LÍMITE ALCANZADO';
+
   String _timeoutSafeCard(String lang) {
     if (lang == 'es') {
-      return '🟥 TEMPO LÍMITE ALCANZADO\n'
-          '⚠️ Alerta: Não consegui concluir a resposta com segurança dentro do tempo limite.\n'
-          '📌 Monitorar: Reformule com diagnóstico, sinais vitais ou exames principais.';
+      return '$kSafeCardMarkerEs\n'
+          '⚠️ No pude completar la respuesta con seguridad dentro del tiempo límite.\n'
+          '📌 Reformule con diagnóstico, signos vitales o estudios clave.';
     }
-    return '🟥 TEMPO LIMITE ATINGIDO\n'
-        '⚠️ Alerta: Não consegui concluir a resposta com segurança dentro do tempo limite.\n'
-        '📌 Monitorar: Reformule com diagnóstico, sinais vitais ou exames principais.';
+    return '$kSafeCardMarkerPt\n'
+        '⚠️ Não consegui concluir a resposta com segurança dentro do tempo limite.\n'
+        '📌 Reformule com diagnóstico, sinais vitais ou exames principais.';
   }
 
   Future<bool> sendAiMessage(
@@ -3103,7 +3110,7 @@ class AppProvider extends ChangeNotifier {
     final thisRequestId = ProviderRouterService.generateRequestId();
     _activeRequestId = thisRequestId;
     final globalStartMs = DateTime.now().millisecondsSinceEpoch;
-    debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
+    if (kDebugMode) debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
 
     // BUILD 241: registra request no coordinator para verificação no resume.
     // Se o app for para background e voltar após 15s, onForeground() dispara
@@ -3121,7 +3128,7 @@ class AppProvider extends ChangeNotifier {
         _aiStreamSub?.cancel();
         _aiStreamSub = null;
         _aiCallInFlight = false;
-        debugPrint('[AI_LOADING_STATE] thinking=false streaming=false inputEnabled=true (resume timeout)');
+        debugPrint('[AI_RESUME] timeout_on_resume requestId=$thisRequestId');
         onDone(_timeoutSafeCard(_lang));
       },
     );
@@ -3137,7 +3144,7 @@ class AppProvider extends ChangeNotifier {
     // AiGatewayService é agora um shim que injeta âncora de modo e delega
     // para GeminiServiceV2.sendStream() com a chave do app (carregada do Firestore).
     // Não há servidor intermediário — o Flutter fala direto com o Google.
-    debugPrint('[sendAiMessage] Build 157: motor=${longResponse ? "ESTUDO" : "PLANTÃO"} — direto Google');
+    if (kDebugMode) debugPrint('[sendAiMessage] motor=${longResponse ? "ESTUDO" : "PLANTÃO"}');
 
     // ── Streaming via AiGatewayService ────────────────────────────────────
     _aiStreamActive = true;
@@ -3209,46 +3216,28 @@ class AppProvider extends ChangeNotifier {
     //   1. GeminiService._geminiApiKey em memória (caminho feliz — já carregada)
     //   2. FirestoreService.loadGeminiApiKey() → app_config/global.apiKey
     //   3. GeminiService.initFromStorage() → SharedPrefs/localStorage (fallback)
-    debugPrint('[AI_CONFIG] app_config_global_skipped_for_user=false source=app_config/global.apiKey');
+    // [AI_CONFIG] verbose log removed BUILD 244 — not needed in production
 
     if (!GeminiService.hasApiKey) {
-      debugPrint('[AI_FREE_PROVIDER] source=loading ready=false — recuperando chave...');
+      // BUILD 244: verbose key-loading logs moved under kDebugMode guard
+      if (kDebugMode) debugPrint('[AI_FREE_PROVIDER] source=loading');
       try {
         final geminiKey = await FirestoreService.loadGeminiApiKey()
             .timeout(const Duration(seconds: 5));
         if (geminiKey.isNotEmpty) {
           GeminiService.setGeminiApiKey(geminiKey);
-          debugPrint('[AI_FREE_PROVIDER] source=app_config/global ready=true');
         } else {
           await GeminiService.initFromStorage();
-          if (GeminiService.hasApiKey) {
-            debugPrint('[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true');
-          } else {
-            debugPrint('[AI_FREE_PROVIDER] source=none ready=false — chave não encontrada');
-          }
         }
       } catch (e) {
-        debugPrint('[AI_FREE_PROVIDER] source=firestore_error ready=false erro=$e — tentando localStorage...');
         await GeminiService.initFromStorage();
-        if (GeminiService.hasApiKey) {
-          debugPrint('[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true (fallback após erro)');
-        }
       }
-    } else {
-      debugPrint('[AI_FREE_PROVIDER] source=memory ready=true');
     }
 
     // Resolve a chave final — Gemini Free Key em memória.
     // Se vazia: GeminiServiceV2 emitirá chunk.error('api_key_invalid') → tratado abaixo.
     final geminiApiKey = GeminiService.apiKeyForLab;
-    debugPrint(
-      '[PROVIDER_ROUTER] '
-      'primary=gemini_free_user '
-      'fallback=gemini_paid_proxy '
-      'paidKeyExposed=false '
-      'freeKeyReady=${geminiApiKey.isNotEmpty} '
-      'motor=${longResponse ? "estudo" : "plantao"}',
-    );
+    if (kDebugMode) debugPrint('[AI_ROUTER] freeKey=${geminiApiKey.isNotEmpty} motor=${longResponse ? "estudo" : "plantao"}');
 
     final accumulator = StringBuffer();
 
@@ -3277,13 +3266,7 @@ class AppProvider extends ChangeNotifier {
     // Chamado tanto no chunk.isError quanto no onDone vazio.
     // Nunca expõe a chave paga — usa proxy seguro (Cloud Function).
     Future<void> tryPaidFallback(String reason) async {
-      debugPrint('[PROVIDER_ROUTER] '
-          'requestId=$requestId '
-          'mode=${longResponse ? "estudo" : "plantao"} '
-          'primary=gemini_free '
-          'fallback=gemini_paid '
-          'attempt=paid '
-          'reason=$reason');
+      if (kDebugMode) debugPrint('[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId');
 
       final paidResult = await ProviderRouterService.callPaidProxy(
         userMessage:  input,
@@ -3314,7 +3297,7 @@ class AppProvider extends ChangeNotifier {
         onDone(paidText);
       } else {
         // Paid também falhou — mostra mensagem de instabilidade
-        debugPrint('[PROVIDER_ROUTER] requestId=$requestId status=both_failed reason=${paidResult.errorCode}');
+        debugPrint('[AI_PROVIDER] both_failed requestId=$requestId reason=${paidResult.errorCode}');
         final instabilityMsg = _lang == 'es'
             ? 'Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. ⚕'
             : 'Estamos com instabilidade temporária na IA.\nTente novamente em alguns segundos. ⚕';
@@ -3328,21 +3311,18 @@ class AppProvider extends ChangeNotifier {
     Timer? _globalTimeoutTimer;
     _globalTimeoutTimer = Timer(const Duration(seconds: 15), () {
       final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
-      debugPrint('[AI_TIMEOUT_GUARD] requestId=$thisRequestId globalLimitMs=15000 elapsedMs=$elapsedMs cancelled=true');
+      // BUILD 244: single-line timeout summary — no repeated invalidated= log
+      debugPrint('[AI_TIMEOUT_GUARD] elapsedMs=$elapsedMs timeout=15000 requestId=$thisRequestId');
       if (completionFired) return;
       completionFired = true;
       // Invalida o requestId — respostas chegando após isso são ignoradas
-      if (_activeRequestId == thisRequestId) {
-        _activeRequestId = '';
-        debugPrint('[AI_TIMEOUT_GUARD] requestId=$thisRequestId invalidated=true');
-      }
+      if (_activeRequestId == thisRequestId) _activeRequestId = '';
       _aiStreamActive = false;
       _aiStreamSub?.cancel();
       _aiStreamSub = null;
       accumulator.clear();
       // BUILD 241: remove do coordinator (timer interno disparou antes do resume)
       AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-      debugPrint('[AI_LOADING_STATE] thinking=false streaming=false inputEnabled=true (timeout)');
       onDone(_timeoutSafeCard(_lang));
     });
 
@@ -3362,8 +3342,7 @@ class AppProvider extends ChangeNotifier {
           // parcial significativo → tenta paid proxy antes de mostrar erro.
           if (ProviderRouterService.shouldTriggerPaidFallback(errCode) &&
               rawPartial.length <= 40) {
-            debugPrint('[PROVIDER_ROUTER] requestId=$requestId '
-                'primary=gemini_free status=error errCode=$errCode → aciona paid');
+            if (kDebugMode) debugPrint('[AI_ROUTER] free_error errCode=$errCode → aciona paid');
             accumulator.clear();
             unawaited(tryPaidFallback(errCode));
             return;
@@ -3466,7 +3445,7 @@ class AppProvider extends ChangeNotifier {
           // Stream fechou vazio — Build 226: tenta paid fallback
           _aiStreamActive = false;
           _aiStreamSub    = null;
-          debugPrint('[PROVIDER_ROUTER] requestId=$requestId stream closed empty → paid fallback');
+          if (kDebugMode) debugPrint('[AI_ROUTER] stream closed empty → paid fallback');
           unawaited(tryPaidFallback('empty_stream'));
         }
       },

@@ -88,9 +88,9 @@ import 'package:http/http.dart' as http;
 // import 'ai_prompt_modules.dart'; // Build 231 (DEPRECATED Build 190 — ver AiSmartRouter)
 
 // ── Build 232: Auditoria temporária de tamanho de prompt ─────────────────────
-// Remover após diagnóstico. Espelha kPromptSizeAudit dos outros serviços.
+// BUILD 244: desligado em produção — logs GEMINI_SIZE são apenas para debug local.
 // ignore: constant_identifier_names
-const bool _kPromptSizeAuditV2 = true;
+const bool _kPromptSizeAuditV2 = false;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GeminiChunk — unidade de dado do stream
@@ -854,8 +854,8 @@ class GeminiServiceV2 {
     // A responsabilidade de montar o system_instruction é exclusiva de AiSmartRouter.
     final blindedSystemPrompt = systemPrompt;
 
-    if (kDebugMode) {
-      debugPrint('[AI_ROUTER] Build190: GeminiV2 pass-through (SmartRouter pré-built) → blindedSystemPrompt=${blindedSystemPrompt.length}c isPlantao=$isPlantaoMode');
+    if (_debugGemini) {
+      _log('[AI_ROUTER] GeminiV2 pass-through → prompt=${blindedSystemPrompt.length}c isPlantao=$isPlantaoMode');
     }
 
     // ── Monta contents: histórico janelado (já calibrado) + nova mensagem ─────
@@ -1037,7 +1037,8 @@ class GeminiServiceV2 {
           errStr.contains('resource_exhausted') ||   // gRPC status 8
           errStr.contains('internal') ||             // gRPC status 13
           errStr.contains('aborted')) {              // gRPC status 10
-        _log('[GeminiV2] infraestrutura Google instável (5xx/gRPC): $e');
+        // BUILD 244: single-line 503 summary — no full exception in release
+        debugPrint('[AI_PROVIDER] free=503 fallback=paid');
         if (!controller.isClosed) {
           controller
             ..add(GeminiChunk.error('http_503'))
@@ -1149,7 +1150,12 @@ class GeminiServiceV2 {
     }
 
     if (response.statusCode != 200) {
-      _log('[GeminiV2] HTTP inesperado: ${response.statusCode}');
+      // BUILD 244: single-line summary — HTTP 5xx → one line, not verbose body
+      if (response.statusCode >= 500) {
+        debugPrint('[AI_PROVIDER] free=${response.statusCode} fallback=paid');
+      } else {
+        _log('[GeminiV2] HTTP inesperado: ${response.statusCode}');
+      }
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('http_${response.statusCode}'))
