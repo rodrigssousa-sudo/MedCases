@@ -1388,6 +1388,7 @@ class _AiScreenState extends State<AiScreen> {
               safeFinalText = _plantaoTruncationGuard(
                 safeFinalText,
                 context.read<AppProvider>().lang,
+                userQuery: trimmed, // BUILD 248B: passa query para detecção de intent
               );
             }
 
@@ -3722,20 +3723,29 @@ class _ActionTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BUILD 247 — _plantaoTruncationGuard (ARQUITETURA CONSOLIDADA)
+// BUILD 248B — _plantaoTruncationGuard (ARQUITETURA CONSOLIDADA + REFORMATTER)
 //
 // ARQUITETURA:
 //   Camada 1 — PlantaoOrganizer (via PlantatoPipeline.run()):
 //     organiza, repara, detecta sinais clínicos — NUNCA bloqueia
 //   Camada 2 — ResponseValidator (AiSmartRouter.shouldFallback()):
 //     ÚNICA fonte de decisão de bloqueio/fallback clínico
+//   Camada 2.5 — ResponseReformatter (BUILD 248B):
+//     quando !fallback e resposta é prosa → aplica template emoji canônico
+//     preserva conteúdo, reorganiza forma. Modo Estudo → pass-through.
 //   Camada 3 — SafetyFallback:
 //     substitui SOMENTE quando ResponseValidator decide fallback=true
 //
 // REGRA PRINCIPAL:
 //   Se a resposta contém conteúdo clínico útil → PRESERVAR.
 //   Se estiver mal formatada → REORGANIZAR via PlantaoRepair.
+//   Se for prosa → REFORMATAR via ResponseReformatter (BUILD 248B).
 //   NUNCA substituir por fallback para conteúdo útil.
+//
+// PARÂMETROS:
+//   text      — texto da resposta (pós-enforceMedicalFormat)
+//   lang      — 'pt' ou 'es'
+//   userQuery — mensagem original do usuário (para detecção de intent)
 //
 // BLOQUEAR/FALLBACK somente quando ResponseValidator decide:
 //   1. meta-leak irrecuperável
@@ -3749,11 +3759,12 @@ class _ActionTile extends StatelessWidget {
 //   - ausência de emoji/subtítulo/estrutura perfeita
 //   - falha parcial do parser
 //
-// LOG: [PLANTAO_ORGANIZER] action=organize/preserve/fallback
+// LOG: [PLANTAO_ORGANIZER] action=organize/preserve/template_applied/fallback
 //      [RESPONSE_VALIDATOR] fallback=false/true reason=...
 //      [SAFETY_FALLBACK] fallback=true reason=... (somente quando bloqueia)
 // ─────────────────────────────────────────────────────────────────────────────
-String _plantaoTruncationGuard(String text, String lang) {
+String _plantaoTruncationGuard(String text, String lang,
+    {String userQuery = ''}) {
   if (text.trim().isEmpty) return text;
 
   // Pass-through se for mensagem de erro de rede (já tratada pelo bloco isNetErr)
@@ -3800,6 +3811,41 @@ String _plantaoTruncationGuard(String text, String lang) {
 
   // ── Caminho PRESERVE: ResponseValidator decidiu manter resposta ───────────
   if (!fallback) {
+    // ── BUILD 248B — ResponseReformatter ─────────────────────────────────────
+    // Se a resposta é prosa (sem emojis âncora) e temos a query do usuário,
+    // aplicar o template canônico para a intenção detectada.
+    // Modo Estudo (longResponse=true) é protegido na chamada — não chega aqui.
+    final alreadyStructured = ResponseReformatter.isAlreadyStructured(text);
+
+    if (!alreadyStructured && userQuery.isNotEmpty && hasClinical) {
+      // Detecta intenção localmente a partir da query do usuário
+      final analysis = PlantaoIntentEngine.analyze(userQuery);
+      final intent = analysis.primaryIntent;
+
+      // Aplica template preservando conteúdo clínico
+      final reformatted =
+          ResponseReformatter.applyTemplate(text, lang, intent, userQuery);
+
+      // Verifica se o reformatter produziu estrutura válida (sanidade)
+      final isReformattedStructured =
+          ResponseReformatter.isAlreadyStructured(reformatted);
+
+      if (isReformattedStructured && reformatted.length >= text.length * 0.6) {
+        debugPrint('[PLANTAO_ORGANIZER] intent=${intent.name} '
+            'action=template_applied '
+            'preserved=true '
+            'reason=$reason '
+            'hiddenFields=${pipelineResult.hiddenFields}');
+        return reformatted;
+      }
+      // Se reformatter falhou na sanidade → preserva original com log
+      debugPrint('[PLANTAO_ORGANIZER] intent=${intent.name} '
+          'action=preserve '
+          'reason=reformatter_sanity_failed '
+          'hiddenFields=${pipelineResult.hiddenFields}');
+      return text;
+    }
+
     final organizeAction = (pipelineResult.repaired || pipelineResult.orderFixed)
         ? 'organize'
         : 'preserve';

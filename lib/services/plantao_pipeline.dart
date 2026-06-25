@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// plantao_pipeline.dart — Plantão Pipeline v3.0 (Build 225)
+// plantao_pipeline.dart — Plantão Pipeline v3.1 (Build 248B)
 //
 // RESPONSABILIDADES:
 //   • PlantaoIntentEngine    — engine multidimensional Build 225 (tema+contexto+intenção+complexidade)
@@ -9,6 +9,8 @@
 //   • PlantaoOrganizer — BUILD 247: organiza estrutura, expõe sinais clínicos
 //   • PlantaoRepair    — reorganiza blocos, elimina duplicatas, normaliza espaços
 //                        (NUNCA inventa conteúdo clínico)
+//   • ResponseReformatter — BUILD 248B: reformata prosa em template emoji canônico
+//                           (preserva conteúdo, reorganiza forma)
 //
 // PIPELINE COMPLETO (Build 225):
 //   lastUserMessage
@@ -2428,6 +2430,567 @@ class PlantatoPipelineResult {
     this.isTruncated = false,
     this.hasMetaLeak = false,
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ResponseReformatter — BUILD 248B
+//
+// RESPONSABILIDADE:
+//   Detecta respostas em prosa útil e as reformata no template canônico de
+//   emojis correspondente à intenção clínica detectada.
+//
+// PRINCÍPIOS:
+//   • Preserva conteúdo clínico — NUNCA substitui por fallback
+//   • Reorganiza forma — não altera substância
+//   • Atua SOMENTE quando shouldFallback=false e resposta está em prosa
+//   • Não altera respostas já estruturadas (com emojis âncora)
+//   • Modo Estudo (longResponse=true) → pass-through, sem reformatação
+//
+// PIPELINE:
+//   1. isAlreadyStructured() → skip se já há emojis âncora
+//   2. stripProse()          → remove prefixos de saudação/introdução
+//   3. applyTemplate()       → envolve prosa no template correto para a intenção
+//
+// LOG: [PLANTAO_ORGANIZER] intent=X action=template_applied preserved=true
+// ─────────────────────────────────────────────────────────────────────────────
+class ResponseReformatter {
+  ResponseReformatter._(); // 100% estático
+
+  // Emojis âncora que indicam resposta já estruturada
+  static const _kStructureAnchors = [
+    '🟥', '💊', '🔄', '⛔', '📌', '⚠️',
+    '📈', '✅', '❌', '🔎', '🧪', '🧮', '📖',
+  ];
+
+  // Prefixos de saudação/prosa a remover (insensível a maiúsculas)
+  static const _kProseGreetings = [
+    'Olá colega',
+    'Olá, colega',
+    'Entendido',
+    'Claro',
+    'Vamos analisar',
+    'Vou analisar',
+    'Com prazer',
+    'Certamente',
+    'Claro que sim',
+    'Sem dúvida',
+    'Excelente pergunta',
+    'Boa pergunta',
+    'Hola colega',
+    'Hola, colega',
+    'Por supuesto',
+    'Claro que sí',
+    'Vamos a analizar',
+    'Con mucho gusto',
+    'Ciertamente',
+  ];
+
+  /// Verifica se a resposta já está estruturada com emojis âncora.
+  /// Se true → não precisa reformatar.
+  static bool isAlreadyStructured(String text) {
+    final trimmed = text.trimLeft();
+    // Verifica se começa com emoji âncora OU tem pelo menos 2 âncoras no texto
+    if (_kStructureAnchors.any((a) => trimmed.startsWith(a))) return true;
+    int anchorCount = 0;
+    for (final a in _kStructureAnchors) {
+      if (text.contains(a)) {
+        anchorCount++;
+        if (anchorCount >= 2) return true;
+      }
+    }
+    return false;
+  }
+
+  /// Remove linhas de saudação/introdução em prosa antes do conteúdo clínico.
+  /// Preserva o restante do texto intacto.
+  static String stripProse(String text) {
+    final lines = text.split('\n');
+    final result = <String>[];
+    bool foundClinical = false;
+
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty) {
+        if (foundClinical) result.add('');
+        continue;
+      }
+
+      // Verifica se a linha é uma saudação/introdução
+      if (!foundClinical) {
+        final lower = trimmed.toLowerCase();
+        bool isGreeting = false;
+        for (final g in _kProseGreetings) {
+          if (lower.startsWith(g.toLowerCase())) {
+            isGreeting = true;
+            break;
+          }
+        }
+        if (isGreeting) continue; // Remove a linha de saudação
+      }
+
+      foundClinical = true;
+      result.add(line);
+    }
+
+    return result.join('\n').trim();
+  }
+
+  /// Aplica o template de emojis para a intenção detectada, preservando
+  /// todo o conteúdo clínico da prosa original.
+  ///
+  /// Estratégia:
+  ///   1. Remove prefixos de saudação
+  ///   2. Se a resposta é muito curta após remoção → retorna original
+  ///   3. Extrai título clínico (primeiro parágrafo/frase ou fallback)
+  ///   4. Mapeia o corpo da prosa para blocos emoji canônicos segundo a intenção
+  ///   5. Retorna texto reformatado
+  static String applyTemplate(
+      String text, String lang, PlantaoIntent intent, String userQuery) {
+    final isEs = lang == 'es';
+
+    // Passo 1: remove saudações
+    final stripped = stripProse(text);
+    if (stripped.trim().length < 20) return text; // muito curto pós-strip → preserva
+
+    // Passo 2: extrai título clínico
+    // Usa o análise da query do usuário para construir o título
+    final analysis = PlantaoIntentEngine.analyze(userQuery);
+    final topic = analysis.clinicalTopic.isNotEmpty &&
+            analysis.clinicalTopic != 'CONSULTA CLÍNICA'
+        ? analysis.clinicalTopic
+        : _extractTitleFromProse(stripped, isEs);
+
+    // Passo 3: particiona a prosa em segmentos temáticos
+    final segments = _segmentProse(stripped);
+
+    // Passo 4: monta template baseado na intenção
+    return _buildTemplateFromSegments(
+      segments: segments,
+      fullText: stripped,
+      topic: topic,
+      intent: intent,
+      isEs: isEs,
+    );
+  }
+
+  // ── Helpers privados ───────────────────────────────────────────────────────
+
+  /// Extrai um título clínico a partir da primeira frase/parágrafo da prosa.
+  static String _extractTitleFromProse(String text, bool isEs) {
+    final lines = text
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+    if (lines.isEmpty) return isEs ? 'CONSULTA CLÍNICA' : 'CONSULTA CLÍNICA';
+
+    // Primeira linha: truncar em 60 chars se longa, ou usar "CONSULTA CLÍNICA"
+    final first = lines.first;
+    // Remove markdown bold/italic/headers
+    final clean = first
+        .replaceAll(RegExp(r'\*+'), '')
+        .replaceAll(RegExp(r'^#+\s*'), '')
+        .trim();
+    if (clean.length > 5 && clean.length <= 60) return clean.toUpperCase();
+    if (clean.length > 60) return '${clean.substring(0, 57).toUpperCase()}...';
+    return isEs ? 'CONSULTA CLÍNICA' : 'CONSULTA CLÍNICA';
+  }
+
+  /// Divide a prosa em segmentos: lista de (tema, conteúdo) baseado em
+  /// palavras-chave clínicas. Cada segmento é uma linha ou parágrafo do original.
+  static List<String> _segmentProse(String text) {
+    // Divide por linhas não-vazias; preserva conteúdo intacto
+    return text
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+  }
+
+  /// Keywords indicativas para identificar o tipo de conteúdo de cada segmento
+  static bool _segmentContains(String seg, List<String> keywords) {
+    final lower = seg.toLowerCase();
+    return keywords.any((k) => lower.contains(k));
+  }
+
+  static const _kDoseKw = [
+    'dose', 'dosis', 'mg', 'mcg', 'g/', 'kg', 'posologia', 'dose inicial',
+    'dose de ataque', 'dose de manutenção', '1ª linha', 'primeira linha',
+    'administrar', 'infundir', 'dar', 'iniciar com',
+  ];
+  static const _kAltKw = [
+    'alternativa', 'alternativo', 'segunda opção', 'se não', 'caso contrário',
+    'pode-se usar', 'outra opção', 'outra alternativa', 'substituir por',
+  ];
+  static const _kCiKw = [
+    'contraindicado', 'contraindicação', 'não usar', 'evitar', 'proibido',
+    'não deve', 'contraindicado em', 'não indicado', 'não recomendado',
+  ];
+  static const _kMonKw = [
+    'monitorar', 'monitorizar', 'vigiar', 'observar', 'verificar',
+    'acompanhar', 'checar', 'controlar', 'parâmetro', 'meta', 'alvo',
+    'ecg', 'pa', 'fc', 'pressão', 'frequência',
+  ];
+  static const _kAlertKw = [
+    'atenção', 'alerta', 'risco', 'cuidado', 'importante', 'aviso',
+    'toxicidade', 'interação', 'grave', 'crítico', 'fatal',
+  ];
+  static const _kRiskKw = [
+    'mecanismo', 'causa', 'sinergismo', 'potencializ', 'antagoniz',
+    'prolongamento', 'qt', 'torsades', 'bradicardia', 'bloqueio',
+  ];
+
+  /// Monta o texto final com emojis baseado nos segmentos e na intenção
+  static String _buildTemplateFromSegments({
+    required List<String> segments,
+    required String fullText,
+    required String topic,
+    required PlantaoIntent intent,
+    required bool isEs,
+  }) {
+    final sb = StringBuffer();
+
+    // Linha de título 🟥 — sempre primeira
+    sb.writeln('🟥 $topic');
+
+    // Para intenção interação — template especializado
+    if (intent == PlantaoIntent.interacao) {
+      return _buildInteracaoTemplate(
+          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
+    }
+
+    // Para intenção diagnóstico
+    if (intent == PlantaoIntent.diagnostico) {
+      return _buildDiagnosticoTemplate(
+          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
+    }
+
+    // Para contraindicação
+    if (intent == PlantaoIntent.contraindicacao) {
+      return _buildContraindicacaoTemplate(
+          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
+    }
+
+    // Para monitorização
+    if (intent == PlantaoIntent.monitorizacao) {
+      return _buildMonitorizacaoTemplate(
+          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
+    }
+
+    // Template padrão (conduta/dose/infusão/geral): 💊 + 🔄 + ⛔ + 📌 + ⚠️
+    final List<String> doseLines = [];
+    final List<String> altLines = [];
+    final List<String> ciLines = [];
+    final List<String> monLines = [];
+    final List<String> alertLines = [];
+    final List<String> otherLines = [];
+
+    for (final seg in segments) {
+      if (_segmentContains(seg, _kDoseKw) && doseLines.isEmpty) {
+        doseLines.add(seg);
+      } else if (_segmentContains(seg, _kAltKw) && altLines.isEmpty) {
+        altLines.add(seg);
+      } else if (_segmentContains(seg, _kCiKw) && ciLines.isEmpty) {
+        ciLines.add(seg);
+      } else if (_segmentContains(seg, _kMonKw) && monLines.isEmpty) {
+        monLines.add(seg);
+      } else if (_segmentContains(seg, _kAlertKw) && alertLines.isEmpty) {
+        alertLines.add(seg);
+      } else if (seg != topic && !seg.toUpperCase().startsWith(topic)) {
+        otherLines.add(seg);
+      }
+    }
+
+    // Se não encontrou dose, usa todo o conteúdo no bloco 💊
+    if (doseLines.isEmpty && otherLines.isNotEmpty) {
+      doseLines.addAll(otherLines.take(2));
+      otherLines.removeRange(0, otherLines.length < 2 ? otherLines.length : 2);
+    }
+
+    // 💊 Dose / 1ª linha
+    if (doseLines.isNotEmpty) {
+      final label = isEs ? '💊 1ª línea' : '💊 1ª linha';
+      sb.writeln('$label: ${doseLines.join(' ')}');
+    }
+
+    // 🔄 Alternativa
+    if (altLines.isNotEmpty) {
+      final label = isEs ? '🔄 Alternativa' : '🔄 Alternativa';
+      sb.writeln('$label: ${altLines.join(' ')}');
+    }
+
+    // ⛔ Contraindicação
+    if (ciLines.isNotEmpty) {
+      final label = isEs ? '⛔ Contraindicado' : '⛔ Contraindicado';
+      sb.writeln('$label: ${ciLines.join(' ')}');
+    }
+
+    // 📌 Monitorar — se não encontrado, usa outras linhas restantes
+    if (monLines.isNotEmpty) {
+      final label = isEs ? '📌 Monitorizar' : '📌 Monitorar';
+      sb.writeln('$label: ${monLines.join(' ')}');
+    } else if (otherLines.isNotEmpty) {
+      final label = isEs ? '📌 Monitorizar' : '📌 Monitorar';
+      sb.writeln('$label: ${otherLines.join(' ')}');
+    }
+
+    // ⚠️ Alerta
+    if (alertLines.isNotEmpty) {
+      sb.writeln('⚠️ Alerta: ${alertLines.join(' ')}');
+    }
+
+    return sb.toString().trim();
+  }
+
+  /// Template especializado para intenção INTERAÇÃO medicamentosa
+  static String _buildInteracaoTemplate({
+    required List<String> segments,
+    required String fullText,
+    required String topic,
+    required bool isEs,
+  }) {
+    final sb = StringBuffer();
+
+    // 🟥 título
+    sb.writeln('🟥 ${isEs ? "INTERACCIÓN" : "INTERAÇÃO"}: $topic');
+
+    // Classifica segmentos
+    final List<String> riskLines = [];
+    final List<String> avoidLines = [];
+    final List<String> altLines = [];
+    final List<String> monLines = [];
+    final List<String> otherLines = [];
+
+    for (final seg in segments) {
+      if (_segmentContains(seg, _kRiskKw) || _segmentContains(seg, _kAlertKw)) {
+        riskLines.add(seg);
+      } else if (_segmentContains(seg, _kCiKw) || _segmentContains(seg, ['evitar', 'não combinar', 'não associar'])) {
+        avoidLines.add(seg);
+      } else if (_segmentContains(seg, _kAltKw)) {
+        altLines.add(seg);
+      } else if (_segmentContains(seg, _kMonKw)) {
+        monLines.add(seg);
+      } else if (!seg.toUpperCase().startsWith('INTERAÇÃO') &&
+          !seg.toUpperCase().startsWith('INTERACCIÓN')) {
+        otherLines.add(seg);
+      }
+    }
+
+    // ⚠️ Risco — obrigatório para interação
+    final riskContent = riskLines.isNotEmpty
+        ? riskLines.first
+        : (otherLines.isNotEmpty ? otherLines.first : fullText.split('\n').first.trim());
+    final riskLabel = isEs ? '⚠️ Riesgo' : '⚠️ Risco';
+    sb.writeln('$riskLabel: $riskContent');
+
+    // ❌ Evitar
+    if (avoidLines.isNotEmpty) {
+      final label = isEs ? '❌ Evitar' : '❌ Evitar';
+      sb.writeln('$label: ${avoidLines.first}');
+    }
+
+    // 🔄 Alternativa
+    if (altLines.isNotEmpty) {
+      final label = isEs ? '🔄 Alternativa' : '🔄 Alternativa';
+      sb.writeln('$label: ${altLines.first}');
+    }
+
+    // 📌 Monitorar se mantiver
+    final monContent = monLines.isNotEmpty
+        ? monLines.first
+        : (otherLines.length > 1 ? otherLines.last : '');
+    if (monContent.isNotEmpty) {
+      final label =
+          isEs ? '📌 Monitorizar si se mantiene' : '📌 Monitorar se mantiver';
+      sb.writeln('$label: $monContent');
+    }
+
+    return sb.toString().trim();
+  }
+
+  /// Template especializado para intenção DIAGNÓSTICO
+  static String _buildDiagnosticoTemplate({
+    required List<String> segments,
+    required String fullText,
+    required String topic,
+    required bool isEs,
+  }) {
+    final sb = StringBuffer();
+    sb.writeln('🟥 $topic');
+
+    const suspKw = ['suspeitar', 'sospechar', 'critério', 'critérios', 'sinal', 'sintoma', 'apresentação'];
+    const confKw = ['confirmar', 'exame', 'diagnóstico', 'laboratório', 'ecg', 'rx', 'tc', 'confirmar com'];
+    const gravKw = ['grave', 'gravidade', 'alarme', 'urgência', 'severo', 'critico'];
+
+    final List<String> suspLines = [];
+    final List<String> confLines = [];
+    final List<String> gravLines = [];
+    final List<String> otherLines = [];
+
+    for (final seg in segments) {
+      if (_segmentContains(seg, suspKw)) {
+        suspLines.add(seg);
+      } else if (_segmentContains(seg, confKw)) {
+        confLines.add(seg);
+      } else if (_segmentContains(seg, gravKw)) {
+        gravLines.add(seg);
+      } else {
+        otherLines.add(seg);
+      }
+    }
+
+    if (suspLines.isNotEmpty) {
+      final label = isEs ? '🔎 Sospechar si' : '🔎 Suspeitar se';
+      sb.writeln('$label: ${suspLines.first}');
+    } else if (otherLines.isNotEmpty) {
+      final label = isEs ? '🔎 Sospechar si' : '🔎 Suspeitar se';
+      sb.writeln('$label: ${otherLines.first}');
+    }
+
+    if (confLines.isNotEmpty) {
+      final label = isEs ? '🧪 Confirmar con' : '🧪 Confirmar com';
+      sb.writeln('$label: ${confLines.first}');
+    }
+
+    if (gravLines.isNotEmpty) {
+      final label = isEs ? '⚠️ Gravedad' : '⚠️ Gravidade';
+      sb.writeln('$label: ${gravLines.first}');
+    }
+
+    final nextLines = <String>[
+      ...confLines.skip(1),
+      ...otherLines.skip(suspLines.isEmpty ? 1 : 0),
+    ];
+    if (nextLines.isNotEmpty) {
+      final label = isEs ? '✅ Conducta inicial' : '✅ Conduta inicial';
+      sb.writeln('$label: ${nextLines.first}');
+    }
+
+    return sb.toString().trim();
+  }
+
+  /// Template especializado para intenção CONTRAINDICAÇÃO
+  static String _buildContraindicacaoTemplate({
+    required List<String> segments,
+    required String fullText,
+    required String topic,
+    required bool isEs,
+  }) {
+    final sb = StringBuffer();
+    sb.writeln('🟥 $topic');
+
+    const absKw = ['absoluta', 'nunca', 'proibido', 'sempre', 'incompatível'];
+    const relKw = ['relativa', 'cautela', 'cuidado', 'pode usar com', 'monitorar'];
+    const altKw = ['alternativa', 'usar no lugar', 'substituir', 'opção'];
+
+    final List<String> absLines = [];
+    final List<String> relLines = [];
+    final List<String> altLines = [];
+    final List<String> otherLines = [];
+
+    for (final seg in segments) {
+      if (_segmentContains(seg, absKw)) {
+        absLines.add(seg);
+      } else if (_segmentContains(seg, relKw)) {
+        relLines.add(seg);
+      } else if (_segmentContains(seg, altKw)) {
+        altLines.add(seg);
+      } else if (_segmentContains(seg, _kCiKw)) {
+        absLines.add(seg);
+      } else {
+        otherLines.add(seg);
+      }
+    }
+
+    // ❌ Contraindicado em (absolutas)
+    final ciContent = absLines.isNotEmpty
+        ? absLines.first
+        : (otherLines.isNotEmpty ? otherLines.first : fullText.split('\n').first.trim());
+    final ciLabel = isEs ? '❌ Contraindicado en' : '❌ Contraindicado em';
+    sb.writeln('$ciLabel: $ciContent');
+
+    if (relLines.isNotEmpty) {
+      final label = isEs ? '⛔ Usar con cautela' : '⛔ Usar com cautela';
+      sb.writeln('$label: ${relLines.first}');
+    }
+
+    if (altLines.isNotEmpty) {
+      final label = isEs ? '💊 Alternativa' : '💊 Alternativa';
+      sb.writeln('$label: ${altLines.first}');
+    }
+
+    final monContent = otherLines.isNotEmpty ? otherLines.last : '';
+    if (monContent.isNotEmpty) {
+      final label = isEs ? '📌 Monitorizar si se decide usar' : '📌 Monitorar se decidir usar';
+      sb.writeln('$label: $monContent');
+    }
+
+    return sb.toString().trim();
+  }
+
+  /// Template especializado para intenção MONITORIZAÇÃO
+  static String _buildMonitorizacaoTemplate({
+    required List<String> segments,
+    required String fullText,
+    required String topic,
+    required bool isEs,
+  }) {
+    final sb = StringBuffer();
+    sb.writeln('🟥 ${isEs ? "MONITORIZACIÓN — " : "MONITORIZAÇÃO — "}$topic');
+
+    const metaKw = ['meta', 'alvo', 'objetivo', 'valor esperado', 'normaliz', 'atingir'];
+    const gravKw = ['grave', 'alarme', 'urgência', 'preocup', 'anormal', 'alterado'];
+    const evitarKw = ['erro', 'evitar', 'não fazer', 'risco', 'iatrogenic'];
+
+    final List<String> obsLines = [];
+    final List<String> metaLines = [];
+    final List<String> gravLines = [];
+    final List<String> evitLines = [];
+    final List<String> otherLines = [];
+
+    for (final seg in segments) {
+      if (_segmentContains(seg, _kMonKw) && obsLines.isEmpty) {
+        obsLines.add(seg);
+      } else if (_segmentContains(seg, metaKw)) {
+        metaLines.add(seg);
+      } else if (_segmentContains(seg, gravKw)) {
+        gravLines.add(seg);
+      } else if (_segmentContains(seg, evitarKw)) {
+        evitLines.add(seg);
+      } else {
+        otherLines.add(seg);
+      }
+    }
+
+    final obsContent = obsLines.isNotEmpty
+        ? obsLines.first
+        : (otherLines.isNotEmpty ? otherLines.first : fullText.split('\n').first.trim());
+    final obsLabel = isEs ? '📌 Observar' : '📌 Observar';
+    sb.writeln('$obsLabel: $obsContent');
+
+    if (metaLines.isNotEmpty) {
+      final label = isEs ? '📈 Metas' : '📈 Metas';
+      sb.writeln('$label: ${metaLines.first}');
+    }
+
+    if (gravLines.isNotEmpty) {
+      final label = isEs ? '⚠️ Gravedad' : '⚠️ Gravidade';
+      sb.writeln('$label: ${gravLines.first}');
+    }
+
+    if (evitLines.isNotEmpty) {
+      final label = isEs ? '❌ Evitar' : '❌ Evitar';
+      sb.writeln('$label: ${evitLines.first}');
+    }
+
+    final nextLines = otherLines.where((l) => l != obsContent).toList();
+    if (nextLines.isNotEmpty) {
+      final label = isEs ? '✅ Próximo paso' : '✅ Próximo passo';
+      sb.writeln('$label: ${nextLines.first}');
+    }
+
+    return sb.toString().trim();
+  }
 }
 
 class PlantatoPipeline {
