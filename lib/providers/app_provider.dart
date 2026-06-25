@@ -19,6 +19,7 @@ import '../services/firestore_service.dart';
 import '../services/drug_interaction_service.dart';
 import '../services/ai_service.dart';
 import '../services/clinical_session_memory.dart';
+import '../services/clinical_thread_manager.dart'; // BUILD 249: cross-case contamination fix
 import '../services/gemini_service.dart';
 import '../services/gemini_service_v2.dart';
 import '../services/ai_gateway_service.dart';
@@ -258,6 +259,14 @@ class AppProvider extends ChangeNotifier {
   // Não persiste entre sessões (RAM only, by design).
   final ClinicalSessionMemory _sessionMemory = ClinicalSessionMemory();
 
+  // ── BUILD 249: ClinicalThreadManager — anti-cross-case contamination ──────
+  // Rastreia thread clínico ativo. Decide se nova query é follow-up do caso
+  // atual ou início de novo caso. Em Modo Plantão:
+  //   isContinuation=true  → envia contexto mínimo (últimos 3 pares)
+  //   isContinuation=false → limpa _aiHistory, envia histórico VAZIO
+  // Em Modo Estudo: não interfere, usa história completa sanitizada.
+  final ClinicalThreadManager _threadManager = ClinicalThreadManager();
+
   // ── PRIORIDADE 3 — globalLanguageLock() ───────────────────────────────────
   // Bloqueia o idioma da IA na primeira mensagem da sessão.
   // Se o usuário iniciou em ES → toda a sessão responde em ES (vice-versa PT).
@@ -310,6 +319,8 @@ class AppProvider extends ChangeNotifier {
   String get userName => _currentUser?.displayName ?? '';
   String get userEmail => _currentUser?.email ?? '';
   String get lang => _lang;
+  /// BUILD 249: expõe tópico ativo do thread clínico para EXT_TOOL guard
+  String get activeThreadTopic => _threadManager.activeTopic;
   bool get darkMode => _darkMode;
   bool get hapticEnabled => _hapticEnabled;
   PatientData get patient => _patient;
@@ -550,6 +561,7 @@ class AppProvider extends ChangeNotifier {
     // Limpa chave, histórico de IA e estado Gemini ao fazer logout
     _openAiKey = '';
     _aiHistory.clear();
+    _threadManager.reset(); // BUILD 249: reset thread clínico ao fazer logout
     _geminiConnected = false;
     _geminiEmail = '';
     _geminiRetryAfter = null;
@@ -1672,6 +1684,8 @@ class AppProvider extends ChangeNotifier {
     cancelAiStream(); // cancela streaming em curso se houver
     _aiHistory.clear();
     _sessionLockedLang = null; // reset language lock ao iniciar nova sessão
+    _threadManager.reset(); // BUILD 249: reset thread ao iniciar nova conversa
+    ClinicalThreadAudit.logFoundComponents(); // BUILD 249: audit log uma vez por sessão
   }
 
   /// Build 110 — Reconstrói _aiHistory a partir de uma lista de mensagens
@@ -1717,6 +1731,7 @@ class AppProvider extends ChangeNotifier {
     _aiHistory.clear();         // limpa histórico de mensagens enviadas à API
     _sessionLockedLang = null;  // libera language lock
     _sessionMemory.reset();     // zera memória clínica estruturada (diag, meds, labs)
+    _threadManager.reset();     // BUILD 249: reset thread clínico ativo
     debugPrint('[AppProvider] resetAiSessionFull — sessão clínica zerada');
   }
 
@@ -3231,9 +3246,27 @@ class AppProvider extends ChangeNotifier {
     // amnésia — o Gemini perdia o contexto conversacional. O system_instruction
     // já tem todo o contexto clínico via RAG; o histórico de turnos só ajuda.
     final topicReset  = _sessionMemory.resetIfTopicChanged(input);
-    // NÃO limpar _aiHistory em topicReset — preserva contexto conversacional.
+    // BUILD 249: ClinicalThreadManager — decide continuar ou iniciar novo thread.
+    // Se novo thread (novo caso clínico) → limpa _aiHistory para evitar
+    // contaminação cruzada entre casos (ex: amiodarona → gastroenterite).
+    // isPlantaoMode = !longResponse (Plantão=true → history mínimo ou vazio)
+    final threadStatus = _threadManager.evaluate(
+      currentUserText: input,
+      isPlantaoMode: !longResponse,
+    );
+    if (threadStatus.action == ThreadAction.newThread) {
+      final removed = _aiHistory.length;
+      _aiHistory.clear();
+      if (kDebugMode) {
+        debugPrint('[HISTORY_SANITIZER] mode=${longResponse ? "estudo" : "plantao"} '
+            'strategy=empty sent=0 removed=$removed '
+            'reason=${threadStatus.reason}');
+      }
+    }
     final sessionLang   = _resolveSessionLang(input);
     final intent        = _classifyIntent(input);
+    // BUILD 249: após clear de _aiHistory em newThread, _expandedQuery() lê
+    // histórico já limpo → sem contaminação de caso anterior.
     final expandedInput = topicReset ? input : _expandedQuery(input);
     final normalized    = _normalize(expandedInput);
 
@@ -3346,8 +3379,12 @@ class AppProvider extends ChangeNotifier {
       final paidResult = await ProviderRouterService.callPaidProxy(
         userMessage:  input,
         systemPrompt: systemPrompt,
-        history:      List<Map<String, String>>.from(
-          _sanitizedHistory.map((m) => {  // HOTFIX 247D: sanitized read
+        history:      List<Map<String, String>>.from(  // BUILD 249: thread-filtered history
+          ClinicalThreadManager.buildThreadHistory(
+            fullHistory: _sanitizedHistory,
+            status: threadStatus,
+            isPlantaoMode: !longResponse,
+          ).map((m) => {
             'role':    m['role']    ?? '',
             'content': m['content'] ?? '',
           }),
@@ -3416,8 +3453,12 @@ class AppProvider extends ChangeNotifier {
         final paidResult = await ProviderRouterService.callPaidProxy(
           userMessage:  input,
           systemPrompt: systemPrompt,
-          history: List<Map<String, String>>.from(
-            _sanitizedHistory.map((m) => {  // HOTFIX 247D: sanitized read
+          history: List<Map<String, String>>.from(  // BUILD 249: thread-filtered history
+            ClinicalThreadManager.buildThreadHistory(
+              fullHistory: _sanitizedHistory,
+              status: threadStatus,
+              isPlantaoMode: !longResponse,
+            ).map((m) => {
               'role':    m['role']    ?? '',
               'content': m['content'] ?? '',
             }),
@@ -3471,7 +3512,12 @@ class AppProvider extends ChangeNotifier {
       userMessage:  input,
       systemPrompt: systemPrompt,
       apiKey:       geminiApiKey,  // ← chave do app (admin), carregada do Firestore
-      history:      List.unmodifiable(_sanitizedHistory),  // HOTFIX 247D: sanitized read
+      // BUILD 249: thread-filtered history — empty on new case, minimal on continuation
+      history:      List.unmodifiable(ClinicalThreadManager.buildThreadHistory(
+        fullHistory: _sanitizedHistory,
+        status: threadStatus,
+        isPlantaoMode: !longResponse,
+      )),
       useGrounding: true,
       longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
       appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
@@ -3700,6 +3746,21 @@ class AppProvider extends ChangeNotifier {
     //   contaminem o novo caso (ex: "Betametasona" aparecendo num caso de TEP).
     // Build 111: igual sendAiMessage — preserva _aiHistory em topicReset.
     final topicReset = _sessionMemory.resetIfTopicChanged(input);
+    // BUILD 249: ClinicalThreadManager — decide continuar ou iniciar novo thread.
+    // buildAIAnswer é sempre Modo Plantão (isPlantaoMode=true).
+    final threadStatusAnswer = _threadManager.evaluate(
+      currentUserText: input,
+      isPlantaoMode: true,
+    );
+    if (threadStatusAnswer.action == ThreadAction.newThread) {
+      final removed = _aiHistory.length;
+      _aiHistory.clear();
+      if (kDebugMode) {
+        debugPrint('[HISTORY_SANITIZER] mode=plantao '
+            'strategy=empty sent=0 removed=$removed '
+            'reason=${threadStatusAnswer.reason}');
+      }
+    }
 
     // ── Passo 0: globalLanguageLock — bloqueia idioma da sessão ──────────────
     // Detecta idioma da primeira mensagem e bloqueia para toda a sessão.
@@ -3804,7 +3865,12 @@ class AppProvider extends ChangeNotifier {
       final geminiResult = await GeminiService.chat(
         userMessage: input,
         systemPrompt: systemPrompt,
-        history: List.unmodifiable(_sanitizedHistory),  // HOTFIX 247D: sanitized read
+        // BUILD 249: thread-filtered history — empty on new case, minimal on continuation
+        history: List.unmodifiable(ClinicalThreadManager.buildThreadHistory(
+          fullHistory: _sanitizedHistory,
+          status: threadStatusAnswer,
+          isPlantaoMode: true, // buildAIAnswer is always Plantão mode
+        )),
         maxTokens: 2200,  // Token base elevado — retry automático até 4000 se truncar
         useGrounding: true,
       );
@@ -3914,7 +3980,12 @@ class AppProvider extends ChangeNotifier {
       apiKey: _openAiKey,
       userMessage: input,
       systemPrompt: systemPrompt,
-      history: List.unmodifiable(_sanitizedHistory),  // HOTFIX 247D: sanitized read
+      // BUILD 249: thread-filtered history — empty on new case, minimal on continuation
+      history: List.unmodifiable(ClinicalThreadManager.buildThreadHistory(
+        fullHistory: _sanitizedHistory,
+        status: threadStatusAnswer,
+        isPlantaoMode: true, // buildAIAnswer is always Plantão mode
+      )),
       maxTokens: 1100,  // Passo 6 OpenAI legado — mesmo limite do Gemini
     );
 

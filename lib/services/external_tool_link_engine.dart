@@ -93,6 +93,7 @@ class ExternalToolLinkEngine {
     required String lastAiResponse,
     required bool isPlantaoMode,
     required String currentLanguage,
+    String activeThreadTopic = '', // BUILD 249: active thread topic for stale-detection guard
   }) {
     // ── Resolve lang (priority: explicit > text-detect > fallback pt) ──────
     final String lang = _resolveLang(currentLanguage, lastUserMessage, lastAiResponse);
@@ -240,12 +241,33 @@ class ExternalToolLinkEngine {
 
     // ── 11. Fármaco isolado via combined (fallback AI response) ───────────
     // Só chega aqui se userMessage não tinha fármaco específico.
+    // BUILD 249: validação de contaminação cruzada — se fármaco detectado vem
+    // APENAS da resposta AI (não da query do usuário) e NÃO está no activeThreadTopic,
+    // bloquear para evitar q=amiodarona em contexto de gastroenterite/novo caso.
     final drug = _detectSingleDrug(combined);
     if (drug != null) {
+      // Verifica se o fármaco está na mensagem atual do usuário
+      final drugInUserMsg = lastUserMessage.toLowerCase().contains(drug.param);
+      // Verifica se o fármaco está no tópico ativo do thread
+      final drugInThread = activeThreadTopic.isNotEmpty &&
+          activeThreadTopic.toLowerCase().contains(drug.param);
+
+      if (!drugInUserMsg && !drugInThread && activeThreadTopic.isNotEmpty) {
+        // Fármaco veio apenas da resposta AI (contaminação de contexto anterior)
+        // ignore: avoid_print
+        print('[EXT_TOOL_CONTEXT] blocked_stale_tool '
+            'old=${drug.param} reason=not_in_current_context '
+            'threadTopic=$activeThreadTopic');
+        return null;
+      }
+
       final drugCtx = _drugContext(drug.param);
       final label = isEs
           ? '💊 Abrir ${drug.display} en la base'
           : '💊 Abrir ${drug.display} na base';
+      // ignore: avoid_print
+      print('[EXT_TOOL_CONTEXT] source=${drugInUserMsg ? "user_msg" : "ai_response"} '
+          'q=${drug.param}');
       _log(lang: lang, tab: 'farmacos', extra: 'q=${drug.param} ctx=$drugCtx');
       return ExternalToolLink(
         label: label,

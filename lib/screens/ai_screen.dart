@@ -1997,11 +1997,13 @@ class _AiScreenState extends State<AiScreen> {
                           resolvedLink = _extToolCache[extKey];
                         } else {
                           debugPrint('[EXT_TOOL_DEDUP] hit=false messageId=${msg.id} textHash=${msg.text.hashCode}');
+                          // BUILD 249: pass activeThreadTopic to guard stale drug detection
                           resolvedLink = ExternalToolLinkEngine.build(
                             lastUserMessage: lastUser,
                             lastAiResponse: msg.text,
                             isPlantaoMode: !_longResponse,
                             currentLanguage: p.lang,
+                            activeThreadTopic: p.activeThreadTopic,
                           );
                           _extToolCache[extKey] = resolvedLink;
                         }
