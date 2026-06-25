@@ -1777,7 +1777,25 @@ class _AiScreenState extends State<AiScreen> {
               }
               // ── AI message — detectar fármaco en texto ──────────────────
               final isActiveStreamingBubble = _isStreaming && i == _lastAiIndex;
-              final detectedEv = _detectDrugEvidence(msg.text);
+
+              // ── BUILD 238 SAFE_CARD_GUARD: detectar se é safe-card ou fallback ──
+              // Safe-cards NÃO devem renderizar EvidenceBox, ActionButtons ou ExternalToolLink.
+              // Critério: texto contém marcadores de fallback clínico seguro.
+              final _msgLower = msg.text.toLowerCase();
+              final bool _isSafeCard =
+                  _msgLower.contains('resposta em ajuste') ||
+                  _msgLower.contains('respuesta en proceso') ||
+                  _msgLower.contains('não consegui concluir a resposta') ||
+                  _msgLower.contains('no pude completar la respuesta') ||
+                  _msgLower.contains('não consegui completar a resposta') ||
+                  _msgLower.contains('estamos ajustando a resposta') ||
+                  _msgLower.contains('estamos ajustando la respuesta') ||
+                  _msgLower.contains('tempo limite') ||
+                  _msgLower.contains('tente reformular com diagnóstico');
+              debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=$_isSafeCard');
+
+              // Evidência farmacológica: só detectar se NÃO for safe-card
+              final detectedEv = _isSafeCard ? null : _detectDrugEvidence(msg.text);
 
               // ── Build 193: PlantaoRenderer — pipeline estrutural determinístico ──
               // Aplica o pipeline completo (repair → validate → parse → render)
@@ -1787,6 +1805,7 @@ class _AiScreenState extends State<AiScreen> {
                   !_longResponse &&          // Modo Plantão ativo
                   i == _lastAiIndex &&       // última bolha AI
                   !_isStreaming;             // stream finalizado
+              debugPrint('[PLANTAO_RENDER_GUARD] messageId=${msg.id} isPlantaoFinalBubble=$isPlantaoFinalBubble textHash=${msg.text.hashCode}');
 
 
               // ── BUILD 232: PlantatoPipeline com cache de deduplicação ────────
@@ -1800,10 +1819,10 @@ class _AiScreenState extends State<AiScreen> {
                 final cacheKey = '${msg.id}:${msg.text.hashCode}';
                 final cached = _plantaoPipelineCache[cacheKey];
                 if (cached != null) {
-                  debugPrint('[PIPELINE_DEDUP] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
+                  debugPrint('[PIPELINE_CACHE] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
                   plantaoPipelineResult = cached;
                 } else {
-                  debugPrint('[PIPELINE_DEDUP] hit=false messageId=${msg.id} textHash=${msg.text.hashCode}');
+                  debugPrint('[PIPELINE_CACHE] hit=false messageId=${msg.id} textHash=${msg.text.hashCode} isSafeCard=$_isSafeCard');
                   plantaoPipelineResult = PlantatoPipeline.run(msg.text);
                   _plantaoPipelineCache[cacheKey] = plantaoPipelineResult;
                 }
@@ -1897,10 +1916,12 @@ class _AiScreenState extends State<AiScreen> {
                     ),
                     // ── Build 192 / BUILD 232: ActionButtonsRow + EXT_TOOL cache ───
                     // Aparece apenas na última bolha AI sem streaming.
+                    // BUILD 238 SAFE_CARD_GUARD: safe-cards NÃO mostram ActionButtons
+                    // nem ExternalToolLink — evita botões inválidos em respostas de fallback.
                     // BUILD 232: ExternalToolLink é resolvido aqui (no pai) com cache.
                     // Assim _ActionButtonsRow.build() nunca chama ExternalToolLinkEngine
                     // mais de 1 vez por (messageId, textHash) independente de rebuilds.
-                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2)
+                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2 && !_isSafeCard)
                       Builder(builder: (_) {
                         final lastUser = _messages
                             .lastWhere((m) => m.role == 'user',
@@ -1940,11 +1961,17 @@ class _AiScreenState extends State<AiScreen> {
                       }),
                     // ── Evidência farmacológica (card colapsível) ────────────────
                     // Build 192: 20px gap entre botões e evidência
-                    if (detectedEv != null)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
-                        child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
-                      ),
+                    // BUILD 238 EVIDENCE_GUARD: suprimir quando _PlantaoRenderer já
+                    // está ativo (ele embute a evidência internamente) ou quando é safe-card.
+                    // Evita dupla renderização de "EVIDÊNCIA CIENTÍFICA".
+                    if (!useStructuredRenderer && detectedEv != null && !_isSafeCard)
+                      Builder(builder: (_) {
+                        debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} alreadyShown=$useStructuredRenderer isSafeCard=$_isSafeCard showing=true');
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
+                          child: _CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
+                        );
+                      }),
 
                   ],
                 ),

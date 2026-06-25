@@ -2576,8 +2576,9 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
       // B141: Emerald Green — #059669 → #10b981
       Expanded(child: _AgeCard(
         icon: Icons.person_rounded,
-        label: 'ADULTO',
-        subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
+        // chore(home): renomeado ADULTO → PACIENTE (BUILD 238 PARTE 6)
+        label: 'PACIENTE',
+        subtitle: 'Explorar caso clínico',
         gradientColors: const [Color(0xFF022c22), Color(0xFF059669), Color(0xFF10b981)],
         accentColor: const Color(0xFF6ee7b7),
         dark: dark,

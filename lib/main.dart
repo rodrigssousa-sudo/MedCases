@@ -1757,8 +1757,8 @@ class _FloatingFooter extends StatelessWidget {
         ? const Color(0xFF0F1116).withValues(alpha: 0.93)
         : Colors.white.withValues(alpha: 0.96);
 
-    // Build 158.3: barra ultra-thin 42px
-    const barHeight = 42.0;
+    // Build 158.3: barra ultra-thin 42px → BUILD 238: +6px → 48px
+    const barHeight = 48.0;
 
     return Positioned(
       left: 0,
@@ -1934,7 +1934,11 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: color),
+          // BUILD 238: ícones +3px para cima via padding bottom
+          Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Icon(icon, size: 18, color: color),
+          ),
           const SizedBox(height: 1),
           Text(
             label,
@@ -2934,8 +2938,8 @@ class _LegalBar extends StatelessWidget {
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
       // Build 158.4 — LegalBar micro-tipográfica 20px total
-      // padding vertical 3px × 2 = 6px + texto 10px × 1.1 ≈ 11px → ~20px
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+      // BUILD 238: padding vertical 3→5 (+4px total) → ~24px total
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       child: Row(children: [
         Icon(Icons.info_outline_rounded, size: 9, color: textColor.withValues(alpha: 0.6)),
         const SizedBox(width: 4),

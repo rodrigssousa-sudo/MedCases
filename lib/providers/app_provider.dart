@@ -3049,6 +3049,21 @@ class AppProvider extends ChangeNotifier {
   ///   [onError]  — chamado em caso de falha; recebe mensagem de erro amigável
   ///
   /// Retorna true se usou streaming V2, false se delegou ao fallback legado.
+  // BUILD 238 ADENDO: requestId ativo — invalida respostas atrasadas
+  String _activeRequestId = '';
+
+  // Safe-card de timeout (sem EvidenceBox, sem ActionButtons, sem ExternalToolLink)
+  String _timeoutSafeCard(String lang) {
+    if (lang == 'es') {
+      return '🟥 TEMPO LÍMITE ALCANZADO\n'
+          '⚠️ Alerta: Não consegui concluir a resposta com segurança dentro do tempo limite.\n'
+          '📌 Monitorar: Reformule com diagnóstico, sinais vitais ou exames principais.';
+    }
+    return '🟥 TEMPO LIMITE ATINGIDO\n'
+        '⚠️ Alerta: Não consegui concluir a resposta com segurança dentro do tempo limite.\n'
+        '📌 Monitorar: Reformule com diagnóstico, sinais vitais ou exames principais.';
+  }
+
   Future<bool> sendAiMessage(
     String input, {
     required void Function(String accumulated) onChunk,
@@ -3065,6 +3080,13 @@ class AppProvider extends ChangeNotifier {
       return false;
     }
     _aiCallInFlight = true;
+
+    // ── BUILD 238 ADENDO: requestId único por pergunta ────────────────────
+    // Permite invalidar respostas atrasadas (stale) após timeout global.
+    final thisRequestId = ProviderRouterService.generateRequestId();
+    _activeRequestId = thisRequestId;
+    final globalStartMs = DateTime.now().millisecondsSinceEpoch;
+    debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
 
     try {
     // ── Guard de concorrência (legado — mantido para compatibilidade) ─────
@@ -3262,6 +3284,28 @@ class AppProvider extends ChangeNotifier {
       }
     }
 
+    // ── BUILD 238 ADENDO: Timer global de 15s ────────────────────────────
+    // Orçamento: Free1=5s + Free2=5s + Paid=5s = 15s total percebido.
+    // Se estourar → cancela tudo, invalida requestId, emite safe-card.
+    Timer? _globalTimeoutTimer;
+    _globalTimeoutTimer = Timer(const Duration(seconds: 15), () {
+      final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
+      debugPrint('[AI_TIMEOUT_GUARD] requestId=$thisRequestId globalLimitMs=15000 elapsedMs=$elapsedMs cancelled=true');
+      if (completionFired) return;
+      completionFired = true;
+      // Invalida o requestId — respostas chegando após isso são ignoradas
+      if (_activeRequestId == thisRequestId) {
+        _activeRequestId = '';
+        debugPrint('[AI_TIMEOUT_GUARD] requestId=$thisRequestId invalidated=true');
+      }
+      _aiStreamActive = false;
+      _aiStreamSub?.cancel();
+      _aiStreamSub = null;
+      accumulator.clear();
+      debugPrint('[AI_LOADING_STATE] thinking=false streaming=false inputEnabled=true (timeout)');
+      onDone(_timeoutSafeCard(_lang));
+    });
+
     _aiStreamSub = stream.listen(
       (chunk) {
         if (chunk.isError) {
@@ -3382,6 +3426,12 @@ class AppProvider extends ChangeNotifier {
       },
       cancelOnError: false,
     );
+
+    // ── BUILD 238: cancela timer global ao concluir normalmente ──────────
+    // O timer é criado ANTES do listen() — cancela-o quando onDone/onError
+    // disparam normalmente para evitar safe-card tardio.
+    // NOTA: os callbacks internos já cancelam via completionFired=true.
+    // O timer lê completionFired antes de agir, então é seguro.
 
     return true; // indica que usou streaming V2
 
