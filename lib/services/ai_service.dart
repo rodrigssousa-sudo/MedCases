@@ -1290,9 +1290,8 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     // Novos parâmetros opcionais — não quebram callers existentes
     ClinicalSessionMemory? memory,
     String? userQuery,
-    // Build 104: controla regra de saudação por turno
-    // true  → primeira mensagem da sessão: saudação PERMITIDA (apenas uma vez)
-    // false → mensagem subsequente: saudação PROIBIDA (padrão seguro)
+    // Build 104 / BUILD 264: isFirstMessage param retained for Estudo path context.
+    // BUILD 264: greeting instructions DELETED from ALL paths — param is now inert.
     bool isFirstMessage = false,
     // Build 223: isPlantaoMode — quando true, omite _responseFormat e _selfCheck
     // padrão (4 blocos / TRATAMENTO FARMACOLÓGICO / ALERTA CRÍTICO) para que
@@ -1375,13 +1374,8 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       final ptIdiomaProib = isEs
           ? 'PROHIBIDO: responder en portugues, ingles o cualquier otro idioma.'
           : 'PROIBIDO: responder em espanhol, ingles ou qualquer outro idioma.';
-      final ptGreeting = isFirstMessage
-          ? (isEs
-              ? 'PRIMERA RESPUESTA: puedes iniciar con un saludo breve y natural — solo en este primer mensaje.\n'
-              : 'PRIMEIRA RESPOSTA: pode iniciar com uma saudacao breve e natural — somente nesta primeira mensagem.\n')
-          : (isEs
-              ? 'ANTI-REPETICION: NO repetir saludos. Ve directo al contenido clinico.\n'
-              : 'ANTI-REPETICAO: NAO repetir saudacoes. Va direto ao conteudo clinico.\n');
+      // BUILD 264: ptGreeting DELETED — chatbot drift exorcised.
+      // No greeting, no preamble. REGRA DE SUPREMACIA enforced at assembly level.
       final ptSiglasMini = isEs
           ? 'IAM=Infarto | PCR=Paro | AVC=ACV | TEP=TEP | SEPSIS=Sepsis | UTI=UCI\n'
             'PROHIBIDO: siglas medicas como terminos de TI/negocio.\n'
@@ -1389,7 +1383,6 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'PROIBIDO: siglas medicas como termos de TI/negocio.\n';
       final ptLangHeader =
           '🔒 IDIOMA: $ptIdiomaLabel — ABSOLUTO. $ptIdiomaProib\n'
-          '$ptGreeting'
           '$ptSiglasMini';
 
       // Memory (compact)
@@ -1431,11 +1424,35 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build259][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
-          'Estudo constants NEVER TOUCHED in this path.');
+      debugPrint('[Build264][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+          'Estudo constants NEVER TOUCHED. ptGreeting DELETED. REGRA_SUPREMACIA INJECTED.');
+
+      // ── BUILD 264: REGRA DE SUPREMACIA — injected before all modules ────────
+      final ptSupremacyRule = isEs
+          ? 'REGLA DE SUPREMACIA: ERES UNA API MEDICA REACTIVA, NO UN CHATBOT. '
+            'CERO CONVERSACION. CERO SALUDOS. CERO PREAMBULOS. '
+            'NUNCA PIDAS MAS DATOS O CONTEXTO CLINICO AL USUARIO.\n'
+            'SI EL USUARIO ESCRIBE SOLO EL NOMBRE DE UNA ENFERMEDAD (Ej: "IAM", "ACV"), '
+            'ASUME UN ADULTO GENERICO GRAVE EN EMERGENCIA.\n'
+            'TU UNICO TRABAJO ES:\n'
+            '1. IDENTIFICAR A CUAL DE LOS 21 MODELOS (MATRICES) ABAJO SE AJUSTA LA QUERY.\n'
+            '2. LLENAR LOS DATOS CLINICOS Y FARMACOLOGICOS RIGUROSAMENTE DENTRO DE LA ESTRUCTURA DEL MODELO ELEGIDO.\n'
+            '3. ENTREGAR LA RESPUESTA COMENZANDO DIRECTAMENTE CON EL EMOJI 🟥. '
+            'NO ESCRIBAS ABSOLUTAMENTE NADA ANTES NI DESPUES DEL MODELO LLENADO.\n\n'
+          : 'REGRA DE SUPREMACIA: VOCE E UMA API MEDICA REATIVA, NAO UM CHATBOT. '
+            'ZERO CONVERSA. ZERO SAUDACOES. ZERO PREAMBULOS. '
+            'NUNCA PECA MAIS DADOS OU CONTEXTO CLINICO AO USUARIO.\n'
+            'SE O USUARIO DIGITAR APENAS O NOME DE UMA DOENCA (Ex: "IAM", "AVC"), '
+            'PRESUMA UM ADULTO GENERICO GRAVE NA EMERGENCIA.\n'
+            'SEU UNICO TRABALHO E:\n'
+            '1. IDENTIFICAR A QUAL DOS 21 MODELOS (MATRIZES) ABAIXO A QUERY SE ENCAIXA.\n'
+            '2. PREENCHER OS DADOS CLINICOS E FARMACOLOGICOS RIGOROSAMENTE DENTRO DA ESTRUTURA DO MODELO ESCOLHIDO.\n'
+            '3. ENTREGAR A RESPOSTA COMECANDO DIRETAMENTE COM O EMOJI 🟥. '
+            'NAO ESCREVA ABSOLUTAMENTE NADA ANTES OU DEPOIS DO MODELO PREENCHIDO.\n\n';
 
       // ── PLANTÃO ASSEMBLY — compact modules only ───────────────────────────
       return '$ptLangHeader'
+             '$ptSupremacyRule'
              '${isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt}\n\n'
              '${isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt}\n\n'
              '${isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt}\n\n'
@@ -1861,21 +1878,8 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
         ? 'PROHIBIDO: responder en portugues, ingles o cualquier otro idioma.'
         : 'PROIBIDO: responder em espanhol, ingles ou qualquer outro idioma.';
 
-    // Build 104 — Regra de saudação condicionada ao turno:
-    //   isFirstMessage=true  → saudação PERMITIDA (mas não obrigatória)
-    //   isFirstMessage=false → saudação PROIBIDA para preservar contexto conversacional
-    //
-    // PROBLEMA CORRIGIDO: a regra anterior ('SAUDACAO OBRIGATORIA') forçava
-    // "Bom dia"/"Boa tarde"/"Boa noite" em TODA resposta — inclusive em respostas
-    // de acompanhamento — criando a experiência de a IA "esquecer" a conversa
-    // e se reapresentar a cada mensagem.
-    final _idiomaGreeting = isFirstMessage
-        ? (isEs
-            ? 'PRIMERA RESPUESTA: puedes iniciar con un saludo breve y natural (ej: "Hola", "Buenos dias") — solo en este primer mensaje.\n'
-            : 'PRIMEIRA RESPOSTA: pode iniciar com uma saudacao breve e natural (ex: "Bom dia", "Ola, colega") — somente nesta primeira mensagem.\n')
-        : (isEs
-            ? 'REGLA ANTI-REPETICION (CRITICA): Esta NO es la primera respuesta de la sesion. PROHIBIDO repetir saludos ("Hola", "Buenos dias", "Buenas tardes", "Claro", "Por supuesto"). Ve directo al contenido clinico.\n'
-            : 'REGRA ANTI-REPETICAO (CRITICA): Esta NAO e a primeira resposta da sessao. PROIBIDO repetir saudacoes ("Bom dia", "Boa tarde", "Boa noite", "Ola", "Claro", "Com prazer"). Va direto ao conteudo clinico.\n');
+    // BUILD 264: _idiomaGreeting DELETED — chatbot drift exorcised globally.
+    // No greeting, no "saludo breve", no "saudacao breve" anywhere in the system.
 
     // BUILD 259: Estudo path only — full langHeader with siglasBilingues.
     final langHeader =
@@ -1884,7 +1888,6 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
         'Voce DEVE responder OBRIGATORIAMENTE, INTEGRALMENTE e ESTRITAMENTE neste idioma.\n'
         'NUNCA mude de idioma sob NENHUMA hipotese — independentemente do idioma de qualquer mensagem anterior ou do historico.\n'
         '$_idiomaProib\n'
-        '$_idiomaGreeting'
         'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n'
         '$_siglasBilingues';
 
