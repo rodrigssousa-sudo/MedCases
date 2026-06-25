@@ -108,14 +108,12 @@ class ProviderRouterService {
     return _fallbackTriggerCodes.contains(errorCode);
   }
 
-  /// Verifica se o stream do Gemini Free deve ser descartado (conteúdo inválido).
-  /// Acionado quando PlantaoParser detecta valid=false após truncation guard.
+  /// BUILD 267: shouldTriggerFallbackForInvalidContent — NEUTRALIZADO.
+  /// Princípio: TEXTO RECEBIDO = TEXTO RENDERIZADO.
+  /// Nunca descarta resposta médica por contagem de linhas ou estrutura.
+  /// Único caso de descarte: texto vazio (nada a exibir).
   static bool shouldTriggerFallbackForInvalidContent(String text) {
-    if (text.isEmpty) return true;
-    // Resposta claramente truncada (apenas título sem blocos clínicos)
-    final lines = text.trim().split('\n').where((l) => l.isNotEmpty).toList();
-    if (lines.length < 2) return true;
-    return false;
+    return text.trim().isEmpty; // BUILD 267: apenas vazio é inválido
   }
 
   // ── callPaidProxy — chama Firebase Function geminiPaidProxy ──────────────
@@ -162,7 +160,9 @@ class ProviderRouterService {
         return PaidProxyResult.failure('unauthenticated');
       }
       try {
-        idToken = await firebaseUser.getIdToken(true) ?? '';
+        // BUILD 267: getIdToken() sem force-refresh — evita 2s de latência de rede desnecessária.
+        // O token é renovado automaticamente pelo Firebase SDK quando necessario.
+        idToken = await firebaseUser.getIdToken() ?? '';
       } catch (e) {
         debugPrint('[PAID_PROXY] requestId=$requestId token_error=$e');
         return PaidProxyResult.failure('token_error');

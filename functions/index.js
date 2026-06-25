@@ -338,7 +338,7 @@ exports.onUserUnblocked = onDocumentUpdated(
 
 // ── Constantes de budget ───────────────────────────────────────────────────
 const PAID_MAX_PER_DAY          = 4000;  // limite diário global
-const PAID_MAX_PER_USER_PER_HOUR = 20;   // limite por usuário por hora
+const PAID_MAX_PER_USER_PER_HOUR = 100;  // BUILD 267: 20→100 — não bloquear médicos legítimos no lançamento
 const GEMINI_PAID_MODEL         = 'gemini-2.5-flash';
 const GEMINI_API_BASE           = 'generativelanguage.googleapis.com';
 
@@ -504,6 +504,8 @@ exports.geminiPaidProxy = onRequest(
       // Plantão=800 tok (liberdade clínica guiada), Estudo=2048 tok (full academic response).
       // Hard-clamped: min=200, max=2048 (Gemini paid safety ceiling).
       maxOutputTokens: rawMaxOut = 800,
+      // BUILD 267: tools passthrough — suporte a Function Calling
+      tools: rawTools,
     } = req.body || {};
     const maxOutClamped = Math.min(Math.max(Number(rawMaxOut) || 800, 200), 2048);
     if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
@@ -555,6 +557,12 @@ exports.geminiPaidProxy = onRequest(
         { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
       ],
     };
+
+    // BUILD 267: tools passthrough — injeta Function Calling schema se enviado pelo cliente.
+    // Permite RAG estrutural (function_declarations) quando o Flutter incluir tools no payload.
+    if (rawTools && Array.isArray(rawTools) && rawTools.length > 0) {
+      geminiPayload.tools = rawTools;
+    }
 
     const payloadStr   = JSON.stringify(geminiPayload);
     const inputTokensApprox = Math.ceil(payloadStr.length / 4);
