@@ -1302,6 +1302,154 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
   }) {
     final isEs = lang == 'es';
 
+    // ════════════════════════════════════════════════════════════════════════
+    // BUILD 259 — PLANTÃO EARLY-RETURN PATH
+    //
+    // ISOLAMENTO TOTAL: quando isPlantaoMode=true, monta SOMENTE os módulos
+    // compactos e retorna ANTES de qualquer referência às constantes de Estudo.
+    // Isso garante que _coreIdentityEs/Pt, _clinicalReasoningEs/Pt,
+    // _safetyRulesEs/Pt, _responseFormatEs/Pt, _evidenceRankingEs/Pt,
+    // _ragCrossCheckEs/Pt, _specialtyAdaptationEs/Pt, _selfCheckEs/Pt
+    // são FISICAMENTE INACESSÍVEIS no path Plantão — não existe ternário
+    // que possa vazar: o código retorna antes de as ler.
+    //
+    // Alvo: systemPromptChars ≤ 6000 (≤1500 tok) — mesmo com RAG.
+    // ════════════════════════════════════════════════════════════════════════
+    if (isPlantaoMode) {
+      // ── Shared sub-computations (Plantão only) ──────────────────────────
+      final ptBlock = StringBuffer();
+      if (patientAge != null && patientAge.isNotEmpty) {
+        ptBlock.write('- Paciente: $patientAge anos');
+        if (patientSex != null && patientSex.isNotEmpty) ptBlock.write(', $patientSex');
+        if (patientWeight != null && patientWeight.isNotEmpty) ptBlock.write(', $patientWeight kg');
+        if (patientClcr != null && patientClcr.isNotEmpty) ptBlock.write(' | ClCr: $patientClcr mL/min');
+        ptBlock.writeln();
+      }
+      if (patientMedications != null && patientMedications.isNotEmpty) {
+        ptBlock.writeln(isEs
+            ? '- Medicamentos en uso: $patientMedications'
+            : '- Medicamentos em uso: $patientMedications');
+      }
+      final ptPatientSection = ptBlock.isEmpty ? ''
+          : (isEs ? 'DATOS DEL PACIENTE:\n$ptBlock\n'
+                  : 'DADOS DO PACIENTE:\n$ptBlock\n');
+
+      // RAG gate (same threshold logic as Estudo path)
+      final qfg = userQuery ?? '';
+      final qwc = qfg.trim().split(RegExp(r'\s+')).where((w) => w.length > 2).length;
+      final rThr = qwc <= 2 ? 0.10 : 0.20;
+      final fProto = qfg.isEmpty
+          ? matchedProtocolSummaries
+          : matchedProtocolSummaries.where((p) => ragRelevanceScore(qfg, p) >= rThr).toList();
+      final fDrugs = qfg.isEmpty
+          ? matchedDrugSummaries
+          : matchedDrugSummaries.where((d) => ragRelevanceScore(qfg, d) >= rThr).toList();
+      final hasLocalCtx = localAnswerContext != null &&
+          localAnswerContext.isNotEmpty && localAnswerContext.length > 50 &&
+          (qfg.isEmpty || ragRelevanceScore(qfg, localAnswerContext) >= rThr);
+
+      final ptProtocol = fProto.isEmpty ? '' : (isEs
+          ? 'PROTOCOLOS VERIFICADOS (base local MedCases — priorizar sobre conocimiento propio):\n${fProto.join('\n')}\n\n'
+          : 'PROTOCOLOS VERIFICADOS (base local MedCases — priorizar sobre conhecimento proprio):\n${fProto.join('\n')}\n\n');
+      final ptDrugs = fDrugs.isEmpty ? '' : (isEs
+          ? 'FARMACOS VERIFICADOS (base local MedCases — usar dosis y alertas de esta base, no inventar):\n${fDrugs.join('\n')}\n\n'
+          : 'FARMACOS VERIFICADOS (base local MedCases — usar doses e alertas desta base, nao inventar):\n${fDrugs.join('\n')}\n\n');
+      final ptContext = hasLocalCtx
+          ? (isEs
+              ? '\nDATOS ADICIONALES VERIFICADOS BASE LOCAL:\n$localAnswerContext\nFIN DATOS LOCALES.'
+              : '\nDADOS ADICIONAIS VERIFICADOS BASE LOCAL:\n$localAnswerContext\nFIM DADOS LOCAIS.')
+          : '';
+      final hasRag = ptProtocol.isNotEmpty || ptDrugs.isNotEmpty || ptContext.isNotEmpty;
+
+      // Compact RAG anchor
+      final ptRagAnchor = hasRag
+          ? (isEs
+              ? 'RAG PRIORITARIO: usar EXACTAMENTE doses/alertas dos bloques PROTOCOLOS/FARMACOS VERIFICADOS. '
+                'PROHIBIDO inventar. RAG irrelevante → ignorar.\n'
+              : 'RAG PRIORITARIO: usar EXATAMENTE doses/alertas dos blocos PROTOCOLOS/FARMACOS VERIFICADOS. '
+                'PROIBIDO inventar. RAG irrelevante → ignorar.\n')
+          : '';
+
+      // Compact lang header
+      final ptIdiomaLabel = isEs ? 'ESPANOL (es-ES)' : 'PORTUGUES DO BRASIL (pt-BR)';
+      final ptIdiomaProib = isEs
+          ? 'PROHIBIDO: responder en portugues, ingles o cualquier otro idioma.'
+          : 'PROIBIDO: responder em espanhol, ingles ou qualquer outro idioma.';
+      final ptGreeting = isFirstMessage
+          ? (isEs
+              ? 'PRIMERA RESPUESTA: puedes iniciar con un saludo breve y natural — solo en este primer mensaje.\n'
+              : 'PRIMEIRA RESPOSTA: pode iniciar com uma saudacao breve e natural — somente nesta primeira mensagem.\n')
+          : (isEs
+              ? 'ANTI-REPETICION: NO repetir saludos. Ve directo al contenido clinico.\n'
+              : 'ANTI-REPETICAO: NAO repetir saudacoes. Va direto ao conteudo clinico.\n');
+      final ptSiglasMini = isEs
+          ? 'IAM=Infarto | PCR=Paro | AVC=ACV | TEP=TEP | SEPSIS=Sepsis | UTI=UCI\n'
+            'PROHIBIDO: siglas medicas como terminos de TI/negocio.\n'
+          : 'IAM=Infarto | PCR=Parada | AVC=AVC | TEP=TEP | SEPSE=Sepse | UTI=UTI\n'
+            'PROIBIDO: siglas medicas como termos de TI/negocio.\n';
+      final ptLangHeader =
+          '🔒 IDIOMA: $ptIdiomaLabel — ABSOLUTO. $ptIdiomaProib\n'
+          '$ptGreeting'
+          '$ptSiglasMini';
+
+      // Memory (compact)
+      final ptMemory = memory?.buildMemoryBlock(isEs) ?? '';
+      final ptMemorySection = ptMemory.isEmpty ? '' : '$ptMemory\n\n';
+
+      // Context anchor (compact)
+      final ptContextAnchor = isEs
+          ? '\n\nISOLAMIENTO: responde SOLO al tema de la query actual. '
+            'Amnesia total de consultas pasadas no relacionadas.\n'
+          : '\n\nISOLAMENTO: responda SOMENTE ao tema da query atual. '
+            'Amnesia total de consultas passadas nao relacionadas.\n';
+
+      // selfCheck compact (inline — items 0-6 only)
+      final ptSelfCheck = isEs
+          ? 'Antes de responder, verificar internamente (nunca revelar al usuario):\n'
+            '0. APERTURA PROHIBIDA — la respuesta DEBE iniciar con 🟥 en la primera linea. '
+            'PROHIBIDO: "Colega", "Hola", "Mi conducta", "Claro", "Entendido", "Por supuesto" antes de 🟥.\n'
+            '1. No contiene cabeceras "TRATAMIENTO FARMACOLÓGICO" ni "ALERTA CRÍTICO" — solo tokens visuales del contrato.\n'
+            '2. Sin bullets libres ni listas explicativas fuera del formato soberano.\n'
+            '3. Idioma correcto aplicado segun instruccion de idioma dinamico.\n'
+            '4. Datos del paciente aislados. Ningun dato de sesiones anteriores heredado.\n'
+            '5. Dosis coherentes con peso/renal/hepatico/edad del paciente activo.\n'
+            '6. Titulo 🟥 especifico (nunca generico). Respuesta entre 6-12 lineas.\n'
+          : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
+            '0. ABERTURA PROIBIDA — a resposta DEVE iniciar com 🟥 na primeira linha. '
+            'PROIBIDO: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza" antes de 🟥.\n'
+            '1. Nao contem cabecalhos "TRATAMENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — apenas tokens visuais do contrato.\n'
+            '2. Sem bullets livres nem listas explicativas fora do formato soberano.\n'
+            '3. Idioma correto aplicado conforme instrucao de idioma dinamico.\n'
+            '4. Dados do paciente isolados. Nenhum dado de sessoes anteriores herdado.\n'
+            '5. Doses coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
+            '6. Titulo 🟥 especifico (nunca generico). Resposta entre 6-12 linhas.\n';
+
+      // BUILD 259 audit log
+      final _ptChars = ptLangHeader.length +
+          (isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt).length +
+          (isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt).length +
+          (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
+          (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
+          (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
+      debugPrint('[Build259][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+          'Estudo constants NEVER TOUCHED in this path.');
+
+      // ── PLANTÃO ASSEMBLY — compact modules only ───────────────────────────
+      return '$ptLangHeader'
+             '${isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt}\n\n'
+             '${isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt}\n\n'
+             '${isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt}\n\n'
+             '${isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt}\n\n'
+             '${isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt}\n\n'
+             '$ptMemorySection'
+             '$ptPatientSection'
+             '${ptRagAnchor.isNotEmpty ? "$ptRagAnchor\n" : ""}'
+             '$ptProtocol$ptDrugs$ptContext${ptProtocol.isNotEmpty || ptDrugs.isNotEmpty || ptContext.isNotEmpty ? "\n\n" : ""}'
+             '$ptSelfCheck'
+             '$ptContextAnchor';
+      // ══ END PLANTÃO EARLY-RETURN — code below is ESTUDO only ══
+    }
+
     // ── Bloco paciente ───────────────────────────────────────────────────────
     final patientBlock = StringBuffer();
     if (patientAge != null && patientAge.isNotEmpty) {
@@ -1536,58 +1684,52 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     final memorySection = memoryBlock.isEmpty ? '' : '$memoryBlock\n\n';
 
     // ── RAG Anchor Block — instrução de uso prioritário dos dados locais ─────
-    // BUILD 258: versão compacta no Plantão (~200 chars) vs. completa (~1700 chars).
-    // Estudo: ragAnchor completo com 9 regras de grounding preservadas.
+    // BUILD 259: isPlantaoMode ternary REMOVED — Plantão already returned early above.
+    // This code is ESTUDO only. ragAnchor always uses the full 9-rule Estudo version.
     final hasRagData = protocolSection.isNotEmpty || drugsSection.isNotEmpty ||
                        contextSection.isNotEmpty;
     final ragAnchor = hasRagData
-        ? (isPlantaoMode
-            ? (isEs
-                ? 'RAG PRIORITARIO: usar EXACTAMENTE doses/alertas dos bloques PROTOCOLOS/FARMACOS VERIFICADOS. '
-                  'PROHIBIDO inventar. RAG irrelevante → ignorar.\n'
-                : 'RAG PRIORITARIO: usar EXATAMENTE doses/alertas dos blocos PROTOCOLOS/FARMACOS VERIFICADOS. '
-                  'PROIBIDO inventar. RAG irrelevante → ignorar.\n')
-            : (isEs
-                ? 'INSTRUCCION RAG — GROUNDING PRIORITARIO + REVISOR CRITICO ANTI-ALUCINACION:\n'
-                  'Los bloques PROTOCOLOS VERIFICADOS, FARMACOS VERIFICADOS y DATOS_VERIFICADOS_BASE_LOCAL '
-                  'contienen informacion extraida directamente de la base de datos clinica local de MedCases Pro. '
-                  'Esta informacion es VERDAD ABSOLUTA RESTRINGIDA para esta consulta — verificada, estructurada y especifica.\n'
-                  'REGLAS ABSOLUTAS:\n'
-                  '1. Dosis, mecanismos, alertas y conductas presentes en la base local SIEMPRE tienen '
-                  'prioridad sobre el conocimiento parametral del modelo. Usarlos EXACTAMENTE como aparecen.\n'
-                  '2. NUNCA contradigas, ignores ni modifiques datos de la base local cuando esten presentes.\n'
-                  '3. Si la base local tiene la dosis: usala exactamente — sin redondear, sin ajustar sin justificacion clinica explicita.\n'
-                  '4. Si la base local tiene un alerta HARD STOP: mencionarlo SIEMPRE, sin excepcion.\n'
-                  '5. Complementar con conocimiento propio SOLO para informacion AUSENTE en la base local, y declararlo.\n'
-                  '6. Si la base local esta VACIA para este tema especifico: responder con conocimiento clinico directo '
-                  'y declarar: "Informacion no encontrada en protocolos locales. Respuesta basada en evidencia general [fuente]."\n'
-                  '7. REVISOR CRITICO: antes de formular la respuesta, comparar las informaciones recuperadas con '
-                  'la pregunta del usuario. Si el RAG recuperado NO corresponde exactamente al tema preguntado → IGNORAR ese bloque.\n'
-                  '8. PROHIBICION DE INVENCION: NUNCA inventar dosis, nombres de farmacos, criterios de examen '
-                  'ni conductas que no esten en el RAG ni en evidencia clinica citaable.\n'
-                  '9. AISLAMIENTO DE DATOS DE PACIENTE: nombre, edad, peso, sintomas y laboratorio del paciente '
-                  'ACTUAL son EXCLUSIVOS de esta sesion. JAMAS mezclarlos con datos de simulaciones, '
-                  'prompts anteriores, ejemplos de entrenamiento o casos pasados.\n'
-                : 'INSTRUCAO RAG — GROUNDING PRIORITARIO + REVISOR CRITICO ANTI-ALUCINACAO:\n'
-                  'Os blocos PROTOCOLOS VERIFICADOS, FARMACOS VERIFICADOS e DADOS_VERIFICADOS_BASE_LOCAL '
-                  'contem informacao extraida diretamente da base de dados clinica local do MedCases Pro. '
-                  'Esta informacao e VERDADE ABSOLUTA RESTRITA para esta consulta — verificada, estruturada e especifica.\n'
-                  'REGRAS ABSOLUTAS:\n'
-                  '1. Doses, mecanismos, alertas e condutas presentes na base local SEMPRE tem '
-                  'prioridade sobre o conhecimento parametral do modelo. Usa-los EXATAMENTE como aparecem.\n'
-                  '2. NUNCA contradiga, ignore nem modifique dados da base local quando estiverem presentes.\n'
-                  '3. Se a base local tem a dose: use-a exatamente — sem arredondar, sem ajustar sem justificativa clinica explicita.\n'
-                  '4. Se a base local tem um alerta HARD STOP: mencionar SEMPRE, sem excecao.\n'
-                  '5. Complementar com conhecimento proprio SOMENTE para informacao AUSENTE na base local, e declara-lo.\n'
-                  '6. Se a base local estiver VAZIA para este tema especifico: responder com conhecimento clinico direto '
-                  'e declarar: "Informacao nao encontrada nos protocolos locais. Resposta baseada em evidencia geral [fonte]."\n'
-                  '7. REVISOR CRITICO: antes de formular a resposta, comparar as informacoes recuperadas com '
-                  'a pergunta do usuario. Se o RAG recuperado NAO corresponder exatamente ao tema perguntado → IGNORAR esse bloco.\n'
-                  '8. PROIBICAO DE INVENCAO: NUNCA inventar doses, nomes de farmacos, criterios de exame '
-                  'nem condutas que nao estejam no RAG nem em evidencia clinica citavel.\n'
-                  '9. ISOLAMENTO DE DADOS DO PACIENTE: nome, idade, peso, sintomas e laboratorio do paciente '
-                  'ATUAL sao EXCLUSIVOS desta sessao. JAMAIS mistura-los com dados de simulacoes, '
-                  'prompts anteriores, exemplos de treinamento ou casos passados.\n'))
+        ? (isEs
+            ? 'INSTRUCCION RAG — GROUNDING PRIORITARIO + REVISOR CRITICO ANTI-ALUCINACION:\n'
+              'Los bloques PROTOCOLOS VERIFICADOS, FARMACOS VERIFICADOS y DATOS_VERIFICADOS_BASE_LOCAL '
+              'contienen informacion extraida directamente de la base de datos clinica local de MedCases Pro. '
+              'Esta informacion es VERDAD ABSOLUTA RESTRINGIDA para esta consulta — verificada, estructurada y especifica.\n'
+              'REGLAS ABSOLUTAS:\n'
+              '1. Dosis, mecanismos, alertas y conductas presentes en la base local SIEMPRE tienen '
+              'prioridad sobre el conocimiento parametral del modelo. Usarlos EXACTAMENTE como aparecen.\n'
+              '2. NUNCA contradigas, ignores ni modifiques datos de la base local cuando esten presentes.\n'
+              '3. Si la base local tiene la dosis: usala exactamente — sin redondear, sin ajustar sin justificacion clinica explicita.\n'
+              '4. Si la base local tiene un alerta HARD STOP: mencionarlo SIEMPRE, sin excepcion.\n'
+              '5. Complementar con conocimiento propio SOLO para informacion AUSENTE en la base local, y declararlo.\n'
+              '6. Si la base local esta VACIA para este tema especifico: responder con conocimiento clinico directo '
+              'y declarar: "Informacion no encontrada en protocolos locales. Respuesta basada en evidencia general [fuente]."\n'
+              '7. REVISOR CRITICO: antes de formular la respuesta, comparar las informaciones recuperadas con '
+              'la pregunta del usuario. Si el RAG recuperado NO corresponde exactamente al tema preguntado → IGNORAR ese bloque.\n'
+              '8. PROHIBICION DE INVENCION: NUNCA inventar dosis, nombres de farmacos, criterios de examen '
+              'ni conductas que no esten en el RAG ni en evidencia clinica citaable.\n'
+              '9. AISLAMIENTO DE DATOS DE PACIENTE: nombre, edad, peso, sintomas y laboratorio del paciente '
+              'ACTUAL son EXCLUSIVOS de esta sesion. JAMAS mezclarlos con datos de simulaciones, '
+              'prompts anteriores, ejemplos de entrenamiento o casos pasados.\n'
+            : 'INSTRUCAO RAG — GROUNDING PRIORITARIO + REVISOR CRITICO ANTI-ALUCINACAO:\n'
+              'Os blocos PROTOCOLOS VERIFICADOS, FARMACOS VERIFICADOS e DADOS_VERIFICADOS_BASE_LOCAL '
+              'contem informacao extraida diretamente da base de dados clinica local do MedCases Pro. '
+              'Esta informacao e VERDADE ABSOLUTA RESTRITA para esta consulta — verificada, estruturada e especifica.\n'
+              'REGRAS ABSOLUTAS:\n'
+              '1. Doses, mecanismos, alertas e condutas presentes na base local SEMPRE tem '
+              'prioridade sobre o conhecimento parametral do modelo. Usa-los EXATAMENTE como aparecem.\n'
+              '2. NUNCA contradiga, ignore nem modifique dados da base local quando estiverem presentes.\n'
+              '3. Se a base local tem a dose: use-a exatamente — sem arredondar, sem ajustar sem justificativa clinica explicita.\n'
+              '4. Se a base local tem um alerta HARD STOP: mencionar SEMPRE, sem excecao.\n'
+              '5. Complementar com conhecimento proprio SOMENTE para informacao AUSENTE na base local, e declara-lo.\n'
+              '6. Se a base local estiver VAZIA para este tema especifico: responder com conhecimento clinico direto '
+              'e declarar: "Informacao nao encontrada nos protocolos locais. Resposta baseada em evidencia geral [fonte]."\n'
+              '7. REVISOR CRITICO: antes de formular a resposta, comparar as informacoes recuperadas com '
+              'a pergunta do usuario. Se o RAG recuperado NAO corresponder exatamente ao tema perguntado → IGNORAR esse bloco.\n'
+              '8. PROIBICAO DE INVENCAO: NUNCA inventar doses, nomes de farmacos, criterios de exame '
+              'nem condutas que nao estejam no RAG nem em evidencia clinica citavel.\n'
+              '9. ISOLAMENTO DE DADOS DO PACIENTE: nome, idade, peso, sintomas e laboratorio do paciente '
+              'ATUAL sao EXCLUSIVOS desta sessao. JAMAIS mistura-los com dados de simulacoes, '
+              'prompts anteriores, exemplos de treinamento ou casos passados.\n')
         : '';
 
     // ════════════════════════════════════════════════════════════════════════
@@ -1613,89 +1755,28 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     //   19. selfCheck           → revisão interna invisível + item 13 RAG cross-check
     //   20. contextAnchor       → ÂNCORA DE CONTEXTO ATUAL (Part C — última instrução)
     // ════════════════════════════════════════════════════════════════════════
-    // Build 223: Modo Plantão suprime selfCheck padrão (ensina 4-blocos/bullets).
-    // Substitui por um self-check neutro sem cabeçalhos conflitantes.
-    // BUILD 255: selfCheck compacto do Plantão recebe item 0 (proibição de abertura conversacional)
-    // e item 6 (verificação de template correto das 22 matrizes dinâmicas).
-    final selfCheck = isPlantaoMode
-        ? (isEs
-            ? 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
-              '0. ABERTURA PROIBIDA — verificar se a resposta inicia com 🟥 na primeira linha. '
-              'PROIBIDO ABSOLUTO: qualquer saudacao, introducao ou texto antes de 🟥. '
-              'Palavras proibidas na abertura: "Colega", "Hola", "Mi conducta", "Claro", "Entendido", "Por supuesto". '
-              'Se detectar qualquer texto antes de 🟥 → ELIMINAR completamente antes de enviar.\n'
-              '1. A resposta nao contem os cabecalhos "TRATAMIENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
-              '2. Nao ha bullets livres nem listas explicativas passo a passo fora do formato soberano.\n'
-              '3. O idioma correto esta sendo aplicado conforme a instrucao de idioma dinamico.\n'
-              '4. Datos del paciente estan aislados de esta sesion. Ningun dato de sesiones anteriores fue heredado.\n'
-              '5. Dosis e alertas son coherentes con peso/renal/hepatico/edad del paciente activo.\n'
-              '6. TEMPLATE CORRETO — a matriz selecionada (1–22) corresponde à intencao da query. '
-              'A resposta tem entre 6 e 12 linhas. O titulo 🟥 e especifico (nunca generico).\n'
-            : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
-              '0. ABERTURA PROIBIDA — verificar se a resposta inicia com 🟥 na primeira linha. '
-              'PROIBIDO ABSOLUTO: qualquer saudacao, introducao ou texto antes de 🟥. '
-              'Palavras proibidas na abertura: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza". '
-              'Se detectar qualquer texto antes de 🟥 → ELIMINAR completamente antes de enviar.\n'
-              '1. A resposta nao contem os cabecalhos "TRATAMENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
-              '2. Nao ha bullets livres nem listas explicativas passo a passo fora do formato soberano.\n'
-              '3. O idioma correto esta sendo aplicado conforme a instrucao de idioma dinamico.\n'
-              '4. Dados do paciente estao isolados desta sessao. Nenhum dado de sessoes anteriores foi herdado.\n'
-              '5. Doses e alertas sao coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
-              '6. TEMPLATE CORRETO — a matriz selecionada (1–22) corresponde a intencao da query. '
-              'A resposta tem entre 6 e 12 linhas. O titulo 🟥 e especifico (nunca generico).\n')
-        : (isEs ? _selfCheckEs : _selfCheckPt);
+    // BUILD 259: Plantão path returned early above — this code is ESTUDO only.
+    // isPlantaoMode is always false here. All ternaries removed: direct Estudo refs.
+    final selfCheck = isEs ? _selfCheckEs : _selfCheckPt;
 
-    // BUILD 258: todos os módulos são compactos no Modo Plantão para reduzir
-    // systemPrompt de 7035 → <3500 tokens. O path crítico (callPaidProxy) recebe
-    // o systemPrompt bruto — SmartRouter só é aplicado no path acadêmico (Free).
-    // Módulos compactos Plantão: coreIdentity, specialtyAdaptation, safetyRules,
-    // evidenceRanking + clinicalReasoning (já compacto desde BUILD 253).
-    final coreIdentity = isPlantaoMode
-        ? (isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt)
-        : (isEs ? _coreIdentityEs : _coreIdentityPt);
+    final coreIdentity = isEs ? _coreIdentityEs : _coreIdentityPt;
+    final specialtyAdaptation = isEs ? _specialtyAdaptationEs : _specialtyAdaptationPt;
+    final safetyRules = isEs ? _safetyRulesEs : _safetyRulesPt;
+    final evidenceRanking = isEs ? _evidenceRankingEs : _evidenceRankingPt;
+    final clinicalReasoning = isEs ? _clinicalReasoningEs : _clinicalReasoningPt;
 
-    final specialtyAdaptation = isPlantaoMode
-        ? (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt)
-        : (isEs ? _specialtyAdaptationEs : _specialtyAdaptationPt);
-
-    final safetyRules = isPlantaoMode
-        ? (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt)
-        : (isEs ? _safetyRulesEs : _safetyRulesPt);
-
-    final evidenceRanking = isPlantaoMode
-        ? (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt)
-        : (isEs ? _evidenceRankingEs : _evidenceRankingPt);
-
-    // BUILD 253: clinicalReasoning compacto no Modo Plantão.
-    // BUILD 258: todos os módulos agora têm variante compacta para Plantão.
-    final clinicalReasoning = isPlantaoMode
-        ? (isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt)
-        : (isEs ? _clinicalReasoningEs : _clinicalReasoningPt);
-
-    // BUILD 253: ragCrossCheck suprimido no Modo Plantão.
-    final ragCrossCheck = (!isPlantaoMode && hasRagData)
+    // ragCrossCheck: active in Estudo when RAG data is present
+    final ragCrossCheck = hasRagData
         ? (isEs ? _ragCrossCheckEs : _ragCrossCheckPt)
         : '';
 
-    // Build 223 / BUILD 258: log de diagnóstico de modo
     if (kDebugMode) {
-      if (isPlantaoMode) {
-        debugPrint('[Build258][AiService] isPlantaoMode=true → COMPACTO: coreIdentity+specialty+safety+evidence+clinReasoning+selfCheck(0-6) — alvo <3500tok');
-      } else {
-        debugPrint('[Build258][AiService] isPlantaoMode=false → MODO ESTUDO: todos módulos completos, selfCheck ACADEMICO BUILD257');
-      }
+      debugPrint('[Build259][AiService] ESTUDO PATH: todos módulos completos, selfCheck ACADEMICO BUILD257');
     }
 
     // ── USER PROMPT ANCHORING (Part C — context contamination fix) ───────────
-    // BUILD 258: contextAnchor compacto no Plantão (~150 chars) vs. completo (~950).
-    // Estudo: versão completa com 6 regras de isolamento preservadas.
-    final contextAnchor = isPlantaoMode
-        ? (isEs
-            ? '\n\nISOLAMIENTO: responde SOLO al tema de la query actual. '
-              'Amnesia total de consultas pasadas no relacionadas.\n'
-            : '\n\nISOLAMENTO: responda SOMENTE ao tema da query atual. '
-              'Amnesia total de consultas passadas nao relacionadas.\n')
-        : (isEs
+    // Estudo: contextAnchor completo com 6 regras de isolamento preservadas.
+    final contextAnchor = isEs
             ? '\n\nInstruccion de aislamiento de sesion. Tu respuesta DEBE basarse EXCLUSIVAMENTE '
               'en la query actual y en los mensajes inmediatamente presentes en este historial '
               'de conversacion.\n\n'
@@ -1723,7 +1804,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
               '   ou qualquer informacao externa a este historico visivel.\n'
               '5. Se detectar que o historico contem topicos distintos da query atual\n'
               '   → ignorar esses turnos. Responda exclusivamente ao tema da query presente.\n'
-              '6. Cada consulta e um ambiente clinico isolado. Seguranca clinica absoluta.\n');
+              '6. Cada consulta e um ambiente clinico isolado. Seguranca clinica absoluta.\n';
 
     // ── Cabeçalho de idioma obrigatório — injetado como PRIMEIRA instrução ──
     // Build 99: injeção DINÂMICA do idioma atual do app (pt ou es).
@@ -1796,58 +1877,33 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             ? 'REGLA ANTI-REPETICION (CRITICA): Esta NO es la primera respuesta de la sesion. PROHIBIDO repetir saludos ("Hola", "Buenos dias", "Buenas tardes", "Claro", "Por supuesto"). Ve directo al contenido clinico.\n'
             : 'REGRA ANTI-REPETICAO (CRITICA): Esta NAO e a primeira resposta da sessao. PROIBIDO repetir saudacoes ("Bom dia", "Boa tarde", "Boa noite", "Ola", "Claro", "Com prazer"). Va direto ao conteudo clinico.\n');
 
-    // BUILD 258: langHeader compacto no Plantão (siglas essenciais apenas).
-    // Estudo: langHeader completo com _siglasBilingues bilíngue (~1683 chars).
-    final _siglasMiniPt =
-        'IAM=Infarto | PCR=Parada | AVC=AVC | TEP=TEP | SEPSE=Sepse | UTI=UTI\n'
-        'PROIBIDO: siglas medicas como termos de TI/negocio.\n';
-    final _siglasMiniEs =
-        'IAM=Infarto | PCR=Paro | AVC=ACV | TEP=TEP | SEPSIS=Sepsis | UTI=UCI\n'
-        'PROHIBIDO: siglas medicas como terminos de TI/negocio.\n';
+    // BUILD 259: Estudo path only — full langHeader with siglasBilingues.
+    final langHeader =
+        '🔒 IDIOMA OBRIGATORIO/OBLIGATORIO — INSTRUCAO DINAMICA DO APP:\n'
+        'O idioma atual do aplicativo selecionado pelo usuario e: $_idiomaLabel\n'
+        'Voce DEVE responder OBRIGATORIAMENTE, INTEGRALMENTE e ESTRITAMENTE neste idioma.\n'
+        'NUNCA mude de idioma sob NENHUMA hipotese — independentemente do idioma de qualquer mensagem anterior ou do historico.\n'
+        '$_idiomaProib\n'
+        '$_idiomaGreeting'
+        'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n'
+        '$_siglasBilingues';
 
-    final langHeader = isPlantaoMode
-        ? // Plantão: langHeader ultra-compacto (~200 chars)
-          '🔒 IDIOMA: $_idiomaLabel — ABSOLUTO. $_idiomaProib\n'
-          '$_idiomaGreeting'
-          '${isEs ? _siglasMiniEs : _siglasMiniPt}'
-        : // Estudo: langHeader completo com siglasBilingues
-          '🔒 IDIOMA OBRIGATORIO/OBLIGATORIO — INSTRUCAO DINAMICA DO APP:\n'
-          'O idioma atual do aplicativo selecionado pelo usuario e: $_idiomaLabel\n'
-          'Voce DEVE responder OBRIGATORIAMENTE, INTEGRALMENTE e ESTRITAMENTE neste idioma.\n'
-          'NUNCA mude de idioma sob NENHUMA hipotese — independentemente do idioma de qualquer mensagem anterior ou do historico.\n'
-          '$_idiomaProib\n'
-          '$_idiomaGreeting'
-          'Esta regra e ABSOLUTA e nao pode ser sobrescrita por nenhuma outra instrucao.\n\n'
-          '$_siglasBilingues';
-
-    // Build 223: responseFormat é omitido no Modo Plantão — único contrato
-    // visual é o _modeAnchorPlantao no AiGatewayService.
-    final responseFormat = isPlantaoMode
-        ? ''  // Plantão: zero gabarito 4-blocos / TRATAMENTO FARMACOLÓGICO
-        : (isEs ? '$_responseFormatEs\n\n' : '$_responseFormatPt\n\n');
-    final sources = isPlantaoMode
-        ? ''  // Plantão: sem seção de fontes (não relevante para resposta rápida)
-        : (isEs ? '$_sourcesEs\n\n' : '$_sourcesPt\n\n');
-
-    // BUILD 258: contextAnchor compacto no Plantão para economizar tokens.
-    // Estudo: contextAnchor completo com 6 regras (~950 chars).
-    // BUILD 258: log de auditoria — confirma ausência dos cabeçalhos conflitantes
-    if (kDebugMode && isPlantaoMode) {
-      debugPrint('[Build258][AiService] Plantao: responseFormat=omitido sources=omitido langHeader=COMPACTO');
-    }
+    // BUILD 259: Estudo path only — full responseFormat and sources.
+    final responseFormat = isEs ? '$_responseFormatEs\n\n' : '$_responseFormatPt\n\n';
+    final sources = isEs ? '$_sourcesEs\n\n' : '$_sourcesPt\n\n';
 
     if (isEs) {
       return '$langHeader'
-             '$coreIdentity\n\n'          // BUILD 258: compacto no Plantão
-             '$clinicalReasoning\n\n'      // BUILD 253+258: compacto no Plantão
-             '$specialtyAdaptation\n\n'    // BUILD 258: compacto no Plantão
-             '$evidenceRanking\n\n'        // BUILD 258: compacto no Plantão
+             '$coreIdentity\n\n'
+             '$clinicalReasoning\n\n'
+             '$specialtyAdaptation\n\n'
+             '$evidenceRanking\n\n'
              '$toolsSection'
              '$differentialSection'
-             '$safetyRules\n\n'            // BUILD 258: compacto no Plantão
+             '$safetyRules\n\n'
              '$focusSection\n\n'
-             '$responseFormat'    // Build 223: '' no Modo Plantão
-             '$sources'           // Build 223: '' no Modo Plantão
+             '$responseFormat'
+             '$sources'
              '$memorySection'
              '$patientSection'
              '${ragAnchor.isNotEmpty ? "$ragAnchor\n" : ""}'
@@ -1857,16 +1913,16 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
              '$contextAnchor';
     } else {
       return '$langHeader'
-             '$coreIdentity\n\n'          // BUILD 258: compacto no Plantão
-             '$clinicalReasoning\n\n'      // BUILD 253+258: compacto no Plantão
-             '$specialtyAdaptation\n\n'    // BUILD 258: compacto no Plantão
-             '$evidenceRanking\n\n'        // BUILD 258: compacto no Plantão
+             '$coreIdentity\n\n'
+             '$clinicalReasoning\n\n'
+             '$specialtyAdaptation\n\n'
+             '$evidenceRanking\n\n'
              '$toolsSection'
              '$differentialSection'
-             '$safetyRules\n\n'            // BUILD 258: compacto no Plantão
+             '$safetyRules\n\n'
              '$focusSection\n\n'
-             '$responseFormat'    // Build 223: '' no Modo Plantão
-             '$sources'           // Build 223: '' no Modo Plantão
+             '$responseFormat'
+             '$sources'
              '$memorySection'
              '$patientSection'
              '${ragAnchor.isNotEmpty ? "$ragAnchor\n" : ""}'
