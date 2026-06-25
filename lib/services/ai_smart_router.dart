@@ -599,17 +599,13 @@ class AiSmartRouter {
 
     sw.stop();
 
-    // ── Log estruturado [AI_ROUTER] ───────────────────────────────────────────
-    debugPrint('[AI_ROUTER] ══════════════════════════════════════════');
-    debugPrint('[AI_ROUTER] Task: ${intent.taskLabel}');
-    debugPrint('[AI_ROUTER] Language: $lang (appLanguage=$appLanguage, Lock=ABSOLUTO)');
-    debugPrint('[AI_ROUTER] Contract: $contractName');
-    debugPrint('[AI_ROUTER] Modules: loaded=$loaded | skipped=$skipped');
-    debugPrint('[AI_ROUTER] PromptChars: rawContext=$rawContextLen → finalPrompt=${finalPrompt.length}${shrunk ? " (SHRUNK)" : ""}');
-    debugPrint('[AI_ROUTER] ContextSaved: $contextSaved chars removed');
-    debugPrint('[AI_ROUTER] Intent: drops=${intent.isDrops} dilution=${intent.isDilution} dose=${intent.isDose} interaction=${intent.isInteraction} acronym=${intent.isAcronym}');
-    debugPrint('[AI_ROUTER] BuildTime: ${sw.elapsedMilliseconds}ms');
-    debugPrint('[AI_ROUTER] ══════════════════════════════════════════');
+    // ── Log estruturado [AI_ROUTER] — BUILD 245: guardado com kDebugMode ────
+    if (kDebugMode) {
+      debugPrint('[AI_ROUTER] task=${intent.taskLabel} contract=$contractName '
+          'lang=$lang modules=${loaded}L/${skipped}S '
+          'prompt=${finalPrompt.length}c saved=${contextSaved}c '
+          'buildMs=${sw.elapsedMilliseconds}');
+    }
 
     return RouterResult(
       finalPrompt: finalPrompt,
@@ -622,6 +618,97 @@ class AiSmartRouter {
       modulesSkipped: skipped,
       repaired: false,
     );
+  }
+
+  // ══ BUILD 245 — SMART AI ROUTER: classifyPriority ═════════════════════════
+  //
+  // Classifica a requisição como 'critical' (vai direto ao pago) ou 'academic'
+  // (tenta Free primeiro, fallback pago se falhar).
+  //
+  // REGRAS:
+  //   1. isPlantaoMode == true  → sempre 'critical'
+  //   2. contractName == 'CONTRACT_PLANTAO' → sempre 'critical'
+  //   3. Mensagem contém keyword de urgência/conduta/dose → 'critical'
+  //   4. Mensagem contém keyword estritamente acadêmica E nenhuma crítica → 'academic'
+  //   5. Default → 'critical' (conservative — nunca arriscar Free em clínica)
+  //
+  // Retorna: ('critical'|'academic', reasonLabel)
+  // ──────────────────────────────────────────────────────────────────────────
+  static (String priority, String reason) classifyPriority({
+    required String userMessage,
+    required bool isPlantaoMode,
+    required String contractName,
+  }) {
+    // Regra 1 + 2: modo ou contrato Plantão → critical direto
+    if (isPlantaoMode || contractName == 'CONTRACT_PLANTAO') {
+      return ('critical', 'plantao_mode');
+    }
+
+    final m = userMessage.toLowerCase();
+
+    // ── Keywords de urgência/conduta clínica → critical ────────────────────
+    const criticalKeywords = [
+      // Intenção clínica direta
+      'dose', 'dosis', 'conduta', 'conducta', 'tratamento', 'tratamiento',
+      'urgência', 'urgencia', 'emergência', 'emergencia',
+      'interação', 'interacción', 'interacao', 'interaccion',
+      'cálculo', 'calculo', 'prescrição', 'prescripcion', 'prescricao',
+      'infusão', 'infusion', 'infusao',
+      'mg/kg', 'mcg/kg', 'ml/h', 'ui/kg',
+      // Acrônimos críticos isolados (como perguntas curtas "IAM", "TEP")
+      'pcr', 'iam', 'avc', 'tep', 'sepse', 'sepsis', 'choque', 'shock',
+      'hipercalemia', 'hipocalemia', 'hiponatremia', 'hipernatremia',
+      'hipoglicemia', 'hiperglic',
+      'anafilaxia', 'anafilaxia', 'anafilaxis',
+      'noradrenalina', 'norepinefrina', 'noradrenalin',
+      'amiodarona', 'amiodarone',
+      'dopamina', 'dobutamina',
+      'insulina', 'heparina', 'warfarina', 'varfarina',
+      'adrenalina', 'epinefrina',
+      'dilui', 'diluci',  // diluição de fármacos
+      'gota', 'gotejo',   // cálculo de gotejamento
+      'ampol',            // ampola (manejo prático)
+      'prescri',          // prescrever
+      'antidot',          // antídoto
+      'reverter', 'revert',
+      'cardiovert',
+      'intub', 'svm', 'ventil',
+      // Síndromes emergenciais
+      'sca', 'icc', 'ira', 'irc', 'dpoc', 'epoc', 'eap',
+      'dissecc', 'dissec',  // dissecção aórtica
+      'tamponamento', 'taponamiento',
+    ];
+
+    // ── Keywords estritamente acadêmicas → academic (apenas se SEM críticas) ──
+    const academicKeywords = [
+      'explique', 'explica ', 'explicar ', 'explique-me',
+      'explica ',  // ES: "explica esto"
+      'resumo', 'resumen',
+      'fisiopatologia', 'fisiopatología', 'fisiopatology',
+      'mecanismo de ação', 'mecanismo de acción', 'mecanismo de accion',
+      'diferença entre', 'diferencia entre',
+      'flashcard', 'flash card',
+      'conceito', 'concepto',
+      'história da', 'historia de',
+      'epidemiologia', 'epidemiología',
+      'classificação', 'clasificación', 'classificacao',
+      'diagnóstico diferencial', 'diagnóstico diferencial', 'diagnostico diferencial',
+    ];
+
+    final hasCritical = criticalKeywords.any((k) => m.contains(k));
+    final hasAcademic = academicKeywords.any((k) => m.contains(k));
+
+    if (hasCritical) {
+      return ('critical', 'critical_keyword');
+    }
+
+    if (hasAcademic && !hasCritical) {
+      return ('academic', 'academic_keyword');
+    }
+
+    // Default conservador: clínica → critical
+    // Perguntas ambíguas (ex: "AVC hemorrágico") podem ser críticas
+    return ('critical', 'default_conservative');
   }
 
   // ══ MÉTODO PÚBLICO: validateResponse ═══════════════════════════════════════

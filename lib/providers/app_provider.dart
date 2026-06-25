@@ -3244,26 +3244,27 @@ class AppProvider extends ChangeNotifier {
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
     bool completionFired = false;
 
-    // ── Subscreve o stream via AiGatewayService (shim Build 156) ──────────
-    // AiGatewayService.sendStream():
-    //   1. Injeta âncora de modo (ModeAnchorEngine) no systemPrompt
-    //   2. Delega para GeminiServiceV2.sendStream() com chave do app
-    //   3. SSE direto para generativelanguage.googleapis.com — sem intermediário
-    final stream = AiGatewayService.sendStream(
-      userMessage:  input,
-      systemPrompt: systemPrompt,
-      apiKey:       geminiApiKey,  // ← chave do app (admin), carregada do Firestore
-      history:      List.unmodifiable(_aiHistory),
-      useGrounding: true,
-      longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
-      appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
-    );
-
     // ── Build 226: requestId único para rastreamento ─────────────────────────
     final requestId = ProviderRouterService.generateRequestId();
 
+    // ── BUILD 245: Smart AI Router — classifica prioridade da requisição ─────
+    // Plantão / keywords críticas → pago direto (sem tentar Free primeiro).
+    // Acadêmico / conceitual → Free primeiro, pago como fallback.
+    final contractName = !longResponse ? 'CONTRACT_PLANTAO' : 'CONTRACT_ESTUDO';
+    final (aiPriority, aiPriorityReason) = AiSmartRouter.classifyPriority(
+      userMessage:  input,
+      isPlantaoMode: !longResponse,
+      contractName:  contractName,
+    );
+    if (kDebugMode) debugPrint(
+      '[AI_ROUTER] priority=$aiPriority reason=$aiPriorityReason '
+      'provider=${aiPriority == "critical" ? "paid" : "free"} '
+      'fallback=${aiPriority == "critical" ? "disabled" : "paid"}',
+    );
+
     // ── Build 226: helper para acionar Gemini Paid após falha do Free ────────
     // Chamado tanto no chunk.isError quanto no onDone vazio.
+    // BUILD 245: também chamado diretamente (sem Free) para requisições críticas.
     // Nunca expõe a chave paga — usa proxy seguro (Cloud Function).
     Future<void> tryPaidFallback(String reason) async {
       if (kDebugMode) debugPrint('[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId');
@@ -3304,6 +3305,91 @@ class AppProvider extends ChangeNotifier {
         onError(instabilityMsg);
       }
     }
+
+    // ── BUILD 245: Caminho crítico — vai direto ao pago, sem Free ───────────
+    // Se aiPriority == 'critical': Plantão/urgência/dose/sigla — nunca Free.
+    // Evita 503→fallback overhead (até 5s perdidos) em contexto de emergência.
+    //
+    // Proteções de concorrência:
+    //   • _criticalDone: bool local — garante onDone/onError disparam 1x.
+    //   • _aiStreamActive=true durante o voo → bloqueia nova chamada.
+    //   • Timer 15s → safe-card se proxy não responder a tempo.
+    if (aiPriority == 'critical') {
+      bool criticalDone = false;
+      Timer? criticalTimeoutTimer;
+
+      // Timer: 15s — idêntico ao timer do caminho Free/Fallback.
+      criticalTimeoutTimer = Timer(const Duration(seconds: 15), () {
+        if (criticalDone) return;
+        criticalDone = true;
+        final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
+        debugPrint('[AI_TIMEOUT_GUARD] elapsedMs=$elapsedMs timeout=15000 critical_path=true requestId=$thisRequestId');
+        if (_activeRequestId == thisRequestId) _activeRequestId = '';
+        _aiStreamActive = false;
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        onDone(_timeoutSafeCard(_lang));
+      });
+
+      // Chama proxy pago direto (sem stream Free).
+      unawaited(() async {
+        final paidResult = await ProviderRouterService.callPaidProxy(
+          userMessage:  input,
+          systemPrompt: systemPrompt,
+          history: List<Map<String, String>>.from(
+            _aiHistory.map((m) => {
+              'role':    m['role']    ?? '',
+              'content': m['content'] ?? '',
+            }),
+          ),
+          mode:      longResponse ? 'estudo' : 'plantao',
+          lang:      _lang,
+          requestId: requestId,
+        );
+
+        criticalTimeoutTimer?.cancel();
+        if (criticalDone) return; // timer já disparou — descarta resultado
+        criticalDone = true;
+        if (_activeRequestId == thisRequestId) _activeRequestId = '';
+        _aiStreamActive = false;
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+
+        if (paidResult.success && paidResult.text.isNotEmpty) {
+          final paidSanitized = AiSmartRouter.sanitizeAndCheck(
+            paidResult.text,
+            isPlantaoMode: !longResponse,
+            appLanguage:   _lang,
+          );
+          final paidText = paidSanitized.text;
+          _aiHistory
+            ..add({'role': 'user',      'content': input})
+            ..add({'role': 'assistant', 'content': paidText});
+          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          onDone(paidText);
+        } else {
+          debugPrint('[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}');
+          // Pago falhou → safe-card (sem tentar Free — intencional no modo crítico)
+          onDone(_timeoutSafeCard(_lang));
+        }
+      }());
+
+      return true;
+    }
+
+    // ── Caminho acadêmico: Free primeiro, pago como fallback ─────────────────
+    // Subscreve o stream via AiGatewayService (shim Build 156):
+    //   1. Injeta âncora de modo (ModeAnchorEngine) no systemPrompt
+    //   2. Delega para GeminiServiceV2.sendStream() com chave do app
+    //   3. SSE direto para generativelanguage.googleapis.com — sem intermediário
+    // NOTA: sendStream() inicia HTTP imediatamente (eagerly) — não é lazy.
+    final stream = AiGatewayService.sendStream(
+      userMessage:  input,
+      systemPrompt: systemPrompt,
+      apiKey:       geminiApiKey,  // ← chave do app (admin), carregada do Firestore
+      history:      List.unmodifiable(_aiHistory),
+      useGrounding: true,
+      longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
+      appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
+    );
 
     // ── BUILD 238 ADENDO: Timer global de 15s ────────────────────────────
     // Orçamento: Free1=5s + Free2=5s + Paid=5s = 15s total percebido.
