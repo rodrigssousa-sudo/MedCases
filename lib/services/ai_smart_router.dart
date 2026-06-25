@@ -379,20 +379,10 @@ class AiSmartRouter {
     multiLine: true,
   );
 
-  /// BUILD 247: SafetyFallback — exibido SOMENTE quando a resposta contém
-  /// meta-leak irrecuperável (vazamento de raciocínio interno severo).
-  /// NÃO deve ser usado para respostas com conteúdo clínico válido.
-  /// Decisão de uso: AiSmartRouter.shouldFallback() ou sanitizeAndCheck().
-  static String _clinicalFallback(String lang) {
-    if (lang == 'es') {
-      return '🟥 REVISANDO RESPOSTA\n'
-          '⚠️ Alerta: A resposta continha dados inconsistentes e foi bloqueada por segurança.\n'
-          '📌 Orientação: Reformule a pergunta em uma frase objetiva (ex: "Dosis de amiodarona en PCR").';
-    }
-    return '🟥 REVISANDO RESPOSTA\n'
-        '⚠️ Alerta: A resposta continha dados inconsistentes e foi bloqueada por segurança.\n'
-        '📌 Orientação: Reformule a pergunta em uma frase objetiva (ex: "Dose de amiodarona em PCR").';
-  }
+  // BUILD 267: _clinicalFallback DELETADO por diretiva do Arquiteto Chefe.
+  // REGRA ABSOLUTA DE GRACEFUL DEGRADATION: NUNCA substituir resposta médica
+  // por bloco de erro genérico. Meta-leak é sanitizado silenciosamente.
+  // O texto resultante vai direto para a tela — sempre.
 
   /// BUILD 232 — Sanitiza e avalia severidade do meta leak.
   ///
@@ -437,22 +427,24 @@ class AiSmartRouter {
     String result = cleaned.join('\n').trim();
 
     // ── Verifica se o resultado pós-repair ainda está contaminado ────────────
+    // BUILD 267: replaceAll final se tokens severos sobreviveram à limpeza linha-a-linha
     final stillContaminated = _severeLeakPatterns.hasMatch(result);
+    if (stillContaminated) {
+      result = result.replaceAll(_severeLeakPatterns, '').trim();
+    }
+    // BUILD 267: isRecoverable = sempre true se não vazio — sem fallback, sem bloqueio
+    final isRecoverable = result.isNotEmpty;
     final contentLines = result.split('\n').where((l) => l.trim().isNotEmpty).length;
-    // Irrecuperável: vazio, ou ainda contaminado, ou restaram <2 linhas clínicas
-    final isRecoverable = result.isNotEmpty && !stillContaminated && contentLines >= 2;
 
     debugPrint('[RESPONSE_VALIDATOR] '
         'metaLeak=$hadMetaLeak severe=$hadSevereLeak '
         'linesRemoved=$metaLinesRemoved '
-        'isRecoverable=$isRecoverable '
+        'action=sanitize_preserve '
         'contentLinesAfter=$contentLines');
 
-    // ── Se irrecuperável, usa fallback clínico seguro ────────────────────────
-    final finalText = isRecoverable ? result : _clinicalFallback(appLanguage);
-
+    // BUILD 267: SEMPRE retorna o texto sanitizado — _clinicalFallback EXTINTO
     return SanitizeResult(
-      text: finalText,
+      text: result,
       hadMetaLeak: hadMetaLeak,
       hadSevereLeak: hadSevereLeak,
       isRecoverable: isRecoverable,
@@ -556,14 +548,10 @@ class AiSmartRouter {
       return (fallback: false, reason: 'useful_content');
     }
 
-    // BUILD 266: FALLBACK SUPREMO — único bloqueio aceito é meta-leak irrecuperável.
-    // Toda resposta não-vazia do LLM deve ser exibida como texto corrido.
-    if (hasMetaLeak) {
-      return (fallback: true, reason: 'meta_leak');
-    }
-
-    // BUILD 266: truncada sem clínico → ainda preservar (texto bruto na tela).
-    // Princípio: NUNCA oculte uma resposta médica por falha de layout.
+    // BUILD 267: meta_leak já é sanitizado silenciosamente em sanitizeAndCheck().
+    // shouldFallback() NUNCA mais retorna fallback=true.
+    // _clinicalFallback EXTINTO — ZERO telas de erro genérico por meta-leak.
+    // Princípio absoluto: TEXTO RECEBIDO = TEXTO RENDERIZADO (pós-sanitização).
     return (fallback: false, reason: 'preserve_raw_text');
   }
 
@@ -574,9 +562,10 @@ class AiSmartRouter {
   ) {
     if (response.isEmpty) return _ValidationResult(valid: false, reason: 'empty');
 
-    // ── Detector de vazamento de metadados ───────────────────────────────────
+    // BUILD 267: meta_leak já sanitizado em sanitizeAndCheck() antes desta chamada.
+    // Não invalida a resposta — apenas loga para diagnóstico.
     if (_metaLeakPatterns.hasMatch(response)) {
-      return _ValidationResult(valid: false, reason: 'meta_leak');
+      debugPrint('[RESPONSE_VALIDATOR] meta_leak detectado mas sanitizado — preservar resposta');
     }
 
     // ── Detector de mistura de idiomas ────────────────────────────────────────

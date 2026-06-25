@@ -211,18 +211,10 @@ class AppProvider extends ChangeNotifier {
     if (t.contains('TEMPO LIMITE ATINGIDO'))       return true;
     if (t.contains('TIEMPO LÍMITE ALCANZADO'))      return true;
     if (t.contains('TEMPO LÍMITE ALCANZADO'))       return true;
-    // Fallback clínico do AiSmartRouter / PlantaoOrganizer
+    // BUILD 267: _clinicalFallback EXTINTO — strings abaixo nunca mais geradas.
+    // Mantidas APENAS como guard legado para históricos antigos em cache.
     if (t.contains('REVISANDO RESPOSTA'))           return true;
     if (t.contains('RESPOSTA EM AJUSTE'))           return true;
-    // Mensagens de instabilidade / não consegui completar
-    if (t.contains('Não consegui completar'))       return true;
-    if (t.contains('No pude completar'))            return true;
-    if (t.contains('Não consegui gerar'))           return true;
-    if (t.contains('No pude generar'))              return true;
-    if (t.contains('Reformule a pergunta'))         return true;
-    if (t.contains('Reformula la pregunta'))        return true;
-    if (t.contains('reformulá-la com mais contexto')) return true;
-    if (t.contains('reformularla con más contexto'))  return true;
     if (t.contains('resposta continha dados inconsistentes')) return true;
     if (t.contains('respuesta contenía datos inconsistentes')) return true;
     if (t.contains('bloqueada por segurança'))      return true;
