@@ -1459,6 +1459,13 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   //   detached  → processo sendo encerrado — para o timer e desconecta
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // 🛡️ BUILD 251: No ambiente Web, ignore completamente mudanças de ciclo de vida.
+    // Cliques no DevTools/Console causam window blur → Flutter dispara inactive/hidden
+    // erroneamente → coordinator.onBackground() decepava o stream SSE da IA no meio.
+    // O Web já usa o listener de visibilitychange (initState acima) como fonte de
+    // verdade para background/foreground — este handler é redundante e prejudicial.
+    if (kIsWeb) return;
+
     if (!mounted) return;
     final provider = context.read<AppProvider>();
     debugPrint('[LIFECYCLE] state=${state.name}');
