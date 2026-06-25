@@ -3,7 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../theme/app_theme.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -279,6 +279,11 @@ class _AiScreenState extends State<AiScreen> {
   // executem no máximo 1 vez por (messageId, textHash) por sessão.
   final Map<String, PlantatoPipelineResult> _plantaoPipelineCache = {};
   final Map<String, ExternalToolLink?> _extToolCache = {};
+  // BUILD 244B: log-dedup sets — SAFE_CARD_GUARD e PLANTAO_RENDER_GUARD
+  // são disparados no ListView item builder, que reconstrói muitas vezes.
+  // Guardamos o messageId após o primeiro log para nunca repetir.
+  final Set<String> _loggedSafeCardIds = {};
+  final Set<String> _loggedPlantaoIds  = {};
   // ──────────────────────────────────────────────────────────────────────────
 
   // ── TTS (Text-to-Speech) ─────────────────────────────────────────────────
@@ -621,6 +626,9 @@ class _AiScreenState extends State<AiScreen> {
     // Post-frame: garante que o widget está completamente montado
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      // BUILD 244B: limpa sets de log-dedup ao injetar histórico
+      _loggedSafeCardIds.clear();
+      _loggedPlantaoIds.clear();
       setState(() {
         // Build 236: marca saudação como feita para evitar dupla injeção
         // se _injectGreeting() for chamado após a restauração do histórico.
@@ -975,6 +983,9 @@ class _AiScreenState extends State<AiScreen> {
     // Build 188: descarta notifier de streaming ao restaurar sessão
     _streamingTextNotifier?.dispose();
     _streamingTextNotifier = null;
+    // BUILD 244B: limpa sets de log-dedup ao restaurar sessão
+    _loggedSafeCardIds.clear();
+    _loggedPlantaoIds.clear();
     setState(() {
       _messages.clear();
       _messages.addAll(session.messages);
@@ -1270,6 +1281,41 @@ class _AiScreenState extends State<AiScreen> {
               _ft.contains('verifique sua rede') ||
               _ft.contains('ia indisponível') ||
               _ft.contains('ia indisponible');
+
+          // ── BUILD 244B: safe-card path — caminho limpo antes de isNetErr ─────
+          // Detecta safe-card de timeout pelo prefixo canônico (AppProvider).
+          // Remove bolha parcial de streaming se existir, injeta uma única bolha
+          // limpa com o texto do safe-card, e retorna sem passar por:
+          //   _enforceMedicalFormat, _plantaoTruncationGuard, EvidenceBox,
+          //   ActionButtons, ExternalToolLink, PlantaoRenderer.
+          final isSafeCardDone =
+              finalText.startsWith(AppProvider.kSafeCardMarkerPt) ||
+              finalText.startsWith(AppProvider.kSafeCardMarkerEs);
+
+          if (isSafeCardDone) {
+            if (kDebugMode) debugPrint('[SAFE_CARD_GUARD] onDone safeCard=true removing partial streamingMsgIdx=$streamingMsgIdx');
+            _streamingTextNotifier?.dispose();
+            _streamingTextNotifier = null;
+            setState(() {
+              _thinking     = false;
+              _isStreaming   = false;
+              _aiError       = false;
+              _networkError  = false;
+              // Remove bolha parcial do mesmo request (se já havia chunks)
+              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
+                _messages.removeAt(streamingMsgIdx);
+                streamingMsgIdx = -1;
+              }
+              // Injeta safe-card como única bolha final — sem 2ª bolha
+              _scrollGeneration++;
+              _lastAiIndex = _messages.length;
+              _messages.add(_ChatMsg(role: 'ai', text: finalText));
+            });
+            _scrollDown(force: true);
+            // Persiste o turno (pergunta + safe-card) imediatamente
+            _saveCurrentSessionToHistory(context.read<AppProvider>());
+            return; // pula _enforceMedicalFormat, _plantaoTruncationGuard e renderers
+          }
 
           // ── BUILD 101 FIX: Desacopla texto final do flag _isStreaming ─────
           // PROBLEMA RAIZ: o setState anterior combinava _isStreaming=false +
@@ -1779,34 +1825,43 @@ class _AiScreenState extends State<AiScreen> {
               // ── AI message — detectar fármaco en texto ──────────────────
               final isActiveStreamingBubble = _isStreaming && i == _lastAiIndex;
 
-              // ── BUILD 238 SAFE_CARD_GUARD: detectar se é safe-card ou fallback ──
-              // Safe-cards NÃO devem renderizar EvidenceBox, ActionButtons ou ExternalToolLink.
-              // Critério: texto contém marcadores de fallback clínico seguro.
-              final _msgLower = msg.text.toLowerCase();
+              // ── BUILD 244B SAFE_CARD_GUARD: detectar safe-card por prefixo canônico ──
+              // BUILD 244: usa AppProvider.kSafeCardMarker* (prefixo estável) em vez
+              // de text-matching frágil em .toLowerCase(). Mantém legado para mensagens
+              // salvas no histórico com texto antigo.
+              // Safe-cards NÃO renderizam: EvidenceBox, ActionButtons, ExternalToolLink,
+              // PlantaoRenderer. Log limitado a 1x por messageId — sem spam em rebuilds.
               final bool _isSafeCard =
-                  _msgLower.contains('resposta em ajuste') ||
-                  _msgLower.contains('respuesta en proceso') ||
-                  _msgLower.contains('não consegui concluir a resposta') ||
-                  _msgLower.contains('no pude completar la respuesta') ||
-                  _msgLower.contains('não consegui completar a resposta') ||
-                  _msgLower.contains('estamos ajustando a resposta') ||
-                  _msgLower.contains('estamos ajustando la respuesta') ||
-                  _msgLower.contains('tempo limite') ||
-                  _msgLower.contains('tente reformular com diagnóstico');
-              debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=$_isSafeCard');
+                  msg.text.startsWith(AppProvider.kSafeCardMarkerPt) ||
+                  msg.text.startsWith(AppProvider.kSafeCardMarkerEs) ||
+                  // Legacy — backward compat com histórico salvo em builds anteriores
+                  msg.text.contains('não consegui completar a resposta') ||
+                  msg.text.contains('não consegui concluir a resposta') ||
+                  msg.text.contains('no pude completar la respuesta') ||
+                  msg.text.contains('estamos ajustando a resposta') ||
+                  msg.text.contains('estamos ajustando la respuesta');
+              if (kDebugMode && _isSafeCard && !_loggedSafeCardIds.contains(msg.id)) {
+                _loggedSafeCardIds.add(msg.id);
+                debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=true');
+              }
 
               // Evidência farmacológica: só detectar se NÃO for safe-card
               final detectedEv = _isSafeCard ? null : _detectDrugEvidence(msg.text);
 
               // ── Build 193: PlantaoRenderer — pipeline estrutural determinístico ──
-              // Aplica o pipeline completo (repair → validate → parse → render)
-              // APENAS na última bolha AI, fora do streaming, no Modo Plantão.
-              // Durante streaming: continua usando _AiBubble normalmente.
+              // BUILD 244B: safe-cards nunca entram no PlantaoRenderer — bypass direto.
+              // Log limitado a 1x por messageId — sem spam em rebuilds.
               final bool isPlantaoFinalBubble =
                   !_longResponse &&          // Modo Plantão ativo
                   i == _lastAiIndex &&       // última bolha AI
-                  !_isStreaming;             // stream finalizado
-              debugPrint('[PLANTAO_RENDER_GUARD] messageId=${msg.id} isPlantaoFinalBubble=$isPlantaoFinalBubble textHash=${msg.text.hashCode}');
+                  !_isStreaming &&            // stream finalizado
+                  !_isSafeCard;             // BUILD 244B: safe-card → bypass renderer
+              if (kDebugMode && isPlantaoFinalBubble &&
+                  !_loggedPlantaoIds.contains(msg.id)) {
+                _loggedPlantaoIds.add(msg.id);
+                debugPrint('[PLANTAO_RENDER_GUARD] messageId=${msg.id} '
+                    'textHash=${msg.text.hashCode}');
+              }
 
 
               // ── BUILD 232: PlantatoPipeline com cache de deduplicação ────────
@@ -1820,10 +1875,10 @@ class _AiScreenState extends State<AiScreen> {
                 final cacheKey = '${msg.id}:${msg.text.hashCode}';
                 final cached = _plantaoPipelineCache[cacheKey];
                 if (cached != null) {
-                  debugPrint('[PIPELINE_CACHE] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
+                  if (kDebugMode) debugPrint('[PIPELINE_CACHE] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
                   plantaoPipelineResult = cached;
                 } else {
-                  debugPrint('[PIPELINE_CACHE] hit=false messageId=${msg.id} textHash=${msg.text.hashCode} isSafeCard=$_isSafeCard');
+                  if (kDebugMode) debugPrint('[PIPELINE_CACHE] hit=false messageId=${msg.id} textHash=${msg.text.hashCode} isSafeCard=$_isSafeCard');
                   plantaoPipelineResult = PlantatoPipeline.run(msg.text);
                   _plantaoPipelineCache[cacheKey] = plantaoPipelineResult;
                 }
