@@ -3130,6 +3130,11 @@ class _ActionCardButtonState extends State<ActionCardButton>
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
   bool _hovered = false;
+  // BUILD 256: flag de debounce interno — bloqueia tap duplo durante a janela
+  // de 300ms entre o clique e o _isStreaming=true do provider.
+  // Sem esta flag, dois taps rápidos (<300ms de intervalo) podiam disparar dois
+  // sendAiMessage() consecutivos antes do guard de streaming ativar.
+  bool _tapping = false;
 
   @override
   void initState() {
@@ -3149,9 +3154,27 @@ class _ActionCardButtonState extends State<ActionCardButton>
     super.dispose();
   }
 
-  void _onTapDown(_) => _ctrl.forward();
-  void _onTapUp(_)   { _ctrl.reverse(); widget.onTap(); }
-  void _onTapCancel() => _ctrl.reverse();
+  void _onTapDown(_) {
+    if (_tapping) return; // BUILD 256: bloqueia segundo tap imediato
+    _ctrl.forward();
+  }
+
+  void _onTapUp(_) {
+    if (_tapping) return; // BUILD 256: ignora tap duplicado
+    _ctrl.reverse();
+    // Marca como processando por 500ms — cobre a janela do debounce (300ms)
+    // mais margem de segurança até _isStreaming=true ativar no provider.
+    setState(() => _tapping = true);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) setState(() => _tapping = false);
+    });
+    widget.onTap();
+  }
+
+  void _onTapCancel() {
+    _ctrl.reverse();
+    if (mounted) setState(() => _tapping = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -3174,69 +3197,75 @@ class _ActionCardButtonState extends State<ActionCardButton>
         ? accent.withValues(alpha: 0.95)
         : accent.withValues(alpha: 0.85);
 
+    // BUILD 256: reduz opacidade visual durante _tapping para feedback imediato
+    final effectiveOpacity = _tapping ? 0.55 : 1.0;
+
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor: _tapping ? SystemMouseCursors.basic : SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit:  (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTapDown:   _onTapDown,
-        onTapUp:     _onTapUp,
-        onTapCancel: _onTapCancel,
-        child: AnimatedBuilder(
-          animation: _scale,
-          builder: (context, child) => Transform.scale(
-            scale: _scale.value,
-            child: child,
-          ),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 160),
-            curve: Curves.easeOutCubic,
-            transform: _hovered
-                ? (Matrix4.identity()..translate(0.0, -2.0))
-                : Matrix4.identity(),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-            decoration: BoxDecoration(
-              color: _hovered ? bgHover : bg,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: _hovered ? borderHover : border,
-                width: 1.2,
-              ),
-              boxShadow: _hovered
-                  ? [
-                      BoxShadow(
-                        color: accent.withValues(alpha: widget.dark ? 0.25 : 0.18),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                  : [
-                      BoxShadow(
-                        color: accent.withValues(alpha: widget.dark ? 0.08 : 0.06),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+      child: Opacity(
+        opacity: effectiveOpacity,
+        child: GestureDetector(
+          onTapDown:   _onTapDown,
+          onTapUp:     _onTapUp,
+          onTapCancel: _onTapCancel,
+          child: AnimatedBuilder(
+            animation: _scale,
+            builder: (context, child) => Transform.scale(
+              scale: _scale.value,
+              child: child,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(widget.icon, size: 15, color: textColor),
-                const SizedBox(width: 7),
-                Flexible(
-                  child: Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: textColor,
-                      letterSpacing: 0.1,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              curve: Curves.easeOutCubic,
+              transform: _hovered && !_tapping
+                  ? (Matrix4.identity()..translate(0.0, -2.0))
+                  : Matrix4.identity(),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              decoration: BoxDecoration(
+                color: _hovered && !_tapping ? bgHover : bg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _hovered && !_tapping ? borderHover : border,
+                  width: 1.2,
                 ),
-              ],
+                boxShadow: _hovered && !_tapping
+                    ? [
+                        BoxShadow(
+                          color: accent.withValues(alpha: widget.dark ? 0.25 : 0.18),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : [
+                        BoxShadow(
+                          color: accent.withValues(alpha: widget.dark ? 0.08 : 0.06),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(widget.icon, size: 15, color: textColor),
+                  const SizedBox(width: 7),
+                  Flexible(
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: textColor,
+                        letterSpacing: 0.1,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

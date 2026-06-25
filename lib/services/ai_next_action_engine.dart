@@ -188,7 +188,44 @@ class NextActionEngine {
     final corpus = '${lastUserMessage.toLowerCase()} ${lastAiResponse.toLowerCase()}';
     final topic = _detectTopic(corpus);
 
-    return _selectAction(topic: topic, isPlantaoMode: isPlantaoMode, lang: lang, chatHistory: chatHistory);
+    return _selectAction(
+      topic: topic,
+      isPlantaoMode: isPlantaoMode,
+      lang: lang,
+      chatHistory: chatHistory,
+      lastUserMessage: lastUserMessage,
+      lastAiResponse: lastAiResponse,
+    );
+  }
+
+  // ── BUILD 256: Extrai nome da patologia da linha 🟥 da resposta da IA ─────────
+  // Prioridade 1: título 🟥 do BUILD 255 (ex: "🟥 INFARTO AGUDO DO MIOCÁRDIO")
+  // Prioridade 2: primeira linha da resposta da IA (sem emoji)
+  // Prioridade 3: texto da query do usuário (trimmed, max 60 chars)
+  // Prioridade 4: string vazia (prompt genérico será usado)
+  static String _extractPathologyName(String lastAiResponse, String lastUserMessage) {
+    // Busca linha que começa com 🟥 e extrai o nome após o emoji
+    final lines = lastAiResponse.split('\n');
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.startsWith('🟥')) {
+        // Remove o emoji 🟥 e espaços/hífens iniciais
+        final name = trimmed
+            .replaceFirst('🟥', '')
+            .trim()
+            .replaceFirst(RegExp(r'^[\-—–:\s]+'), '')
+            .trim();
+        if (name.isNotEmpty && name.length >= 3) return name;
+      }
+    }
+    // Fallback: usa a query do usuário (trimmed, max 80 chars, sem quebras de linha)
+    final userQuery = lastUserMessage
+        .replaceAll('\n', ' ')
+        .trim();
+    if (userQuery.isNotEmpty) {
+      return userQuery.length > 80 ? '${userQuery.substring(0, 80)}…' : userQuery;
+    }
+    return '';
   }
 
   static SmartNextAction _pickAction(List<SmartNextAction> options, List<String> history) {
@@ -346,6 +383,8 @@ class NextActionEngine {
     required bool isPlantaoMode,
     required String lang,
     List<String> chatHistory = const [],
+    String lastUserMessage = '',
+    String lastAiResponse = '',
   }) {
     final es = lang == 'es';
 
@@ -388,26 +427,44 @@ class NextActionEngine {
     }
 
     // ── Fallback Master: Plantão vs Estudo ─────────────────────────────────────
+    // BUILD 256: topicName extraído dinamicamente do título 🟥 da resposta da IA
+    // ou do texto da query do usuário — elimina o "este tema" estático que
+    // causava respostas inválidas (Card Roxo) quando o histórico estava limpo.
+    final topicName = _extractPathologyName(lastAiResponse, lastUserMessage);
+    final hasTopicName = topicName.isNotEmpty;
+
     if (isPlantaoMode) {
-      // Plantão: esteira de condutas clínicas progressivas
+      // Plantão: esteira de condutas clínicas progressivas com patologia específica
       return _pickAction([
         SmartNextAction(
           label: es ? 'Condutas e dosagens' : 'Condutas e dosagens',
           promptToSend: es
-              ? 'Detalle el tratamiento de primera línea para este tema, especificando dosis por peso, alternativas de fármacos y monitorización de efectos adversos.'
-              : 'Detalhe o tratamento de primeira linha para este tema, especificando doses por peso, alternativas de fármacos e monitorização de efeitos adversos.',
+              ? (hasTopicName
+                  ? 'Detalle el tratamiento de primera línea para $topicName, especificando dosis por peso, alternativas de fármacos y monitorización de efectos adversos.'
+                  : 'Detalle el tratamiento de primera línea de esta patología, especificando dosis por peso, alternativas de fármacos y monitorización de efectos adversos.')
+              : (hasTopicName
+                  ? 'Detalhe o tratamento de primeira linha para $topicName, especificando doses por peso, alternativas de fármacos e monitorização de efeitos adversos.'
+                  : 'Detalhe o tratamento de primeira linha desta patologia, especificando doses por peso, alternativas de fármacos e monitorização de efeitos adversos.'),
         ),
         SmartNextAction(
           label: es ? 'Exames e evolução' : 'Exames e evolução',
           promptToSend: es
-              ? '¿Cuáles son los exames diagnósticos primarios para evaluar la evolución del paciente y las interacciones de fármacos críticas?'
-              : 'Quais são os exames diagnósticos primários para avaliar a evolução do paciente e as interações de fármacos críticas?',
+              ? (hasTopicName
+                  ? '¿Cuáles son los exámenes diagnósticos primarios para evaluar la evolución en $topicName y las interacciones de fármacos críticas?'
+                  : '¿Cuáles son los exámenes diagnósticos primarios para evaluar la evolución del paciente y las interacciones de fármacos críticas?')
+              : (hasTopicName
+                  ? 'Quais são os exames diagnósticos primários para avaliar a evolução em $topicName e as interações de fármacos críticas?'
+                  : 'Quais são os exames diagnósticos primários para avaliar a evolução do paciente e as interações de fármacos críticas?'),
         ),
         SmartNextAction(
           label: es ? 'Perguntas importantes' : 'Perguntas importantes',
           promptToSend: es
-              ? '¿Cuáles son las perguntas críticas que se deben hacer en la historia clínica para guiar este caso y evitar complicaciones?'
-              : 'Quais são as perguntas críticas que devem ser feitas na história clínica para guiar este caso e evitar complicações?',
+              ? (hasTopicName
+                  ? '¿Cuáles son las preguntas críticas de la historia clínica para guiar el manejo de $topicName y evitar complicaciones?'
+                  : '¿Cuáles son las preguntas críticas que se deben hacer en la historia clínica para guiar este caso y evitar complicaciones?')
+              : (hasTopicName
+                  ? 'Quais são as perguntas críticas da história clínica para guiar o manejo de $topicName e evitar complicações?'
+                  : 'Quais são as perguntas críticas que devem ser feitas na história clínica para guiar este caso e evitar complicações?'),
         ),
       ], chatHistory);
     } else {
@@ -416,20 +473,32 @@ class NextActionEngine {
         SmartNextAction(
           label: es ? '✨ Profundizar Fisiopatología >' : '✨ Aprofundar Fisiopatologia >',
           promptToSend: es
-              ? 'Detalla de forma resumida (máx 15 líneas) el mecanismo de acción molecular y la fisiopatología de esta condición.'
-              : 'Aprofunde de forma resumida (máx 15 linhas) o mecanismo de ação molecular e a fisiopatologia desta condição.',
+              ? (hasTopicName
+                  ? 'Detalla de forma resumida (máx 15 líneas) el mecanismo de acción molecular y la fisiopatología de $topicName.'
+                  : 'Detalla de forma resumida (máx 15 líneas) el mecanismo de acción molecular y la fisiopatología de esta condición.')
+              : (hasTopicName
+                  ? 'Aprofunde de forma resumida (máx 15 linhas) o mecanismo de ação molecular e a fisiopatologia de $topicName.'
+                  : 'Aprofunde de forma resumida (máx 15 linhas) o mecanismo de ação molecular e a fisiopatologia desta condição.'),
         ),
         SmartNextAction(
           label: es ? '✨ Alternativas de 2ª Línea >' : '✨ Alternativas de 2ª Linha >',
           promptToSend: es
-              ? 'Detalla directamente (máx 15 líneas) las alternativas terapéuticas cuando falla el tratamiento inicial.'
-              : 'Detalhe de forma direta (máx 15 linhas) quais são as alternativas terapêuticas quando falha o tratamento inicial.',
+              ? (hasTopicName
+                  ? 'Detalla directamente (máx 15 líneas) las alternativas terapéuticas cuando falla el tratamiento inicial de $topicName.'
+                  : 'Detalla directamente (máx 15 líneas) las alternativas terapéuticas cuando falla el tratamiento inicial.')
+              : (hasTopicName
+                  ? 'Detalhe de forma direta (máx 15 linhas) as alternativas terapêuticas quando falha o tratamento inicial de $topicName.'
+                  : 'Detalhe de forma direta (máx 15 linhas) quais são as alternativas terapêuticas quando falha o tratamento inicial.'),
         ),
         SmartNextAction(
           label: es ? '✨ Comorbilidades y Alertas >' : '✨ Comorbidades e Alertas >',
           promptToSend: es
-              ? 'Indica las preguntas clínicas de descarte cruciales y el manejo de comorbilidades asociadas (máx 15 líneas).'
-              : 'Indique as perguntas clínicas de descarte cruciais e o manejo de comorbidades associadas (máx 15 linhas).',
+              ? (hasTopicName
+                  ? 'Indica las preguntas clínicas de descarte cruciales y el manejo de comorbilidades en $topicName (máx 15 líneas).'
+                  : 'Indica las preguntas clínicas de descarte cruciales y el manejo de comorbilidades asociadas (máx 15 líneas).')
+              : (hasTopicName
+                  ? 'Indique as perguntas clínicas de descarte cruciais e o manejo de comorbidades em $topicName (máx 15 linhas).'
+                  : 'Indique as perguntas clínicas de descarte cruciais e o manejo de comorbidades associadas (máx 15 linhas).'),
         ),
       ], chatHistory);
     }
