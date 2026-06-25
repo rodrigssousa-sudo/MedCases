@@ -1,6 +1,7 @@
 // Build 187: Gray Screen Fix — Web usa HtmlElementView/iframe; iOS/Android mantém WebView nativo.
 // dart:io Platform removido — usa kIsWeb para guards de plataforma.
-import 'package:flutter/foundation.dart' show kIsWeb;
+// BUILD 240: OfflineCalculatorCacheService resolve URL local antes de carregar WebView.
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
+import '../services/offline_calculator_cache_service.dart';
 // Conditional import: calcu_web.dart (Web) vs calcu_stub.dart (iOS/Android).
 // Em iOS/Android buildCalculadoraWebView() é stub — o WebViewWidget é usado diretamente.
 import '../platform/calcu_stub.dart'
@@ -244,7 +246,28 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             await _controller.runJavaScript(_kInjectJs);
           },
         ))
+        // BUILD 240: carrega online primeiro; addPostFrameCallback resolve cache local
+        // e redireciona se disponível (evita async em initState).
         ..loadRequest(Uri.parse(_webUrl));
+
+      // BUILD 240: resolve URL do cache local de forma assíncrona.
+      // Roda no primeiro frame após o widget ser montado para evitar setState
+      // em initState(). Se cache válido existir, recarrega com file://.
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        try {
+          final localUrl = await OfflineCalculatorCacheService.instance
+              .buildLocalUrl(_webUrl);
+          if (localUrl != null && mounted) {
+            debugPrint('[OFFLINE_CACHE] openSource=local url=$localUrl');
+            _controller.loadRequest(Uri.parse(localUrl));
+          } else {
+            debugPrint('[OFFLINE_CACHE] openSource=online url=$_webUrl');
+          }
+        } catch (e) {
+          debugPrint('[OFFLINE_CACHE] fallbackOnline=true error=$e');
+        }
+      });
     }
   }
 

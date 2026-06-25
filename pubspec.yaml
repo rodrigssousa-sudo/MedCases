@@ -78,6 +78,10 @@ dependencies:
   # Build 169: GuideModel.coverUrl → thumbnail dinâmico no _GuideCard
   cached_network_image: ^3.4.1
 
+  # Local file storage — getApplicationSupportDirectory() para calculator offline cache
+  # BUILD 240: OfflineCalculatorCacheService salva arquivos da calculadora localmente
+  path_provider: ^2.1.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

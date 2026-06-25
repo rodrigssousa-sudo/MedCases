@@ -44,6 +44,7 @@ import 'services/gemini_service.dart';
 // O gateway Node.js foi desativado; o shim delega para GeminiServiceV2 (BYOA direto).
 import 'services/notification_service.dart';
 import 'services/update_service.dart';
+import 'services/offline_calculator_cache_service.dart'; // BUILD 240: smart offline cache
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
 import 'platform/web_impl.dart'
@@ -1259,6 +1260,15 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         if (mounted) _checkAppUpdate();
       });
     });
+
+    // BUILD 240: inicia download em background da calculadora offline.
+    // Não bloqueia a Home — roda após primeiro frame, nunca lança erro visível.
+    // Apenas mobile (kIsWeb=false): path_provider não suporta Web.
+    if (!kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        OfflineCalculatorCacheService.instance.startBackgroundSync();
+      });
+    }
   }
 
   Future<void> _checkAppUpdate() async {
@@ -3537,6 +3547,16 @@ class _AppDrawerState extends State<_AppDrawer> {
                   color: const Color(0xFF1D4ED8),
                 ),
                 _OfflineDrawerCard(p: p, dark: dark),
+
+                // ─── 8b. Calculadora Offline (BUILD 240) ─────────────────
+                if (!kIsWeb) ...[
+                  _DrawerSectionLabel(
+                    label: p.lang == 'es' ? 'CALCULADORA OFFLINE' : 'CALCULADORA OFFLINE',
+                    dark: dark,
+                    color: const Color(0xFF7C3AED),
+                  ),
+                  _CalcuOfflineStatusCard(dark: dark, lang: p.lang),
+                ],
 
                 // ─── 9. Sobre + Legal (unificados) ───────────────────────
                 _DrawerSectionLabel(
@@ -6865,6 +6885,322 @@ class _OfflineDrawerCard extends StatelessWidget {
     if (p < 0.75) return lang == 'es' ? '📋 Guardando protocolos…'     : '📋 Salvando protocolos…';
     if (p < 0.95) return lang == 'es' ? '🩺 Guardando casos clínicos…' : '🩺 Salvando casos clínicos…';
     return lang == 'es' ? '✅ Finalizando…' : '✅ Finalizando…';
+  }
+}
+
+// ── BUILD 240: Calculadora Offline Status Card ─────────────────────────────
+/// Card no Drawer mostrando status do cache offline da calculadora.
+/// Permite "Atualizar agora" e "Limpar cache".
+class _CalcuOfflineStatusCard extends StatefulWidget {
+  final bool dark;
+  final String lang;
+  const _CalcuOfflineStatusCard({required this.dark, required this.lang});
+
+  @override
+  State<_CalcuOfflineStatusCard> createState() => _CalcuOfflineStatusCardState();
+}
+
+class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
+  static const _kPurple = Color(0xFF7C3AED);
+
+  late CalcuCacheState _cacheState;
+  StreamSubscription<CalcuCacheState>? _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _cacheState = OfflineCalculatorCacheService.instance.state;
+    _sub = OfflineCalculatorCacheService.instance.stateStream.listen((s) {
+      if (mounted) setState(() => _cacheState = s);
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  String _statusLabel(CalcuCacheStatus status) {
+    final isEs = widget.lang == 'es';
+    switch (status) {
+      case CalcuCacheStatus.downloading:
+        return isEs ? 'Descargando…' : 'Baixando…';
+      case CalcuCacheStatus.ready:
+        return isEs ? 'Disponible offline' : 'Disponível offline';
+      case CalcuCacheStatus.updateAvailable:
+        return isEs ? 'Actualización pendiente' : 'Atualização pendente';
+      case CalcuCacheStatus.error:
+        return isEs ? 'Error al actualizar' : 'Erro ao atualizar';
+      case CalcuCacheStatus.unknown:
+        return isEs ? 'Preparando…' : 'Preparando modo offline…';
+    }
+  }
+
+  Color _statusColor(CalcuCacheStatus status) {
+    switch (status) {
+      case CalcuCacheStatus.ready:        return const Color(0xFF059669); // green
+      case CalcuCacheStatus.downloading:  return _kPurple;
+      case CalcuCacheStatus.updateAvailable: return const Color(0xFFD97706); // amber
+      case CalcuCacheStatus.error:        return const Color(0xFFDC2626); // red
+      case CalcuCacheStatus.unknown:      return const Color(0xFF6B7280); // gray
+    }
+  }
+
+  String _formatDate(DateTime? dt) {
+    if (dt == null) return widget.lang == 'es' ? 'Nunca' : 'Nunca';
+    final diff = DateTime.now().difference(dt);
+    if (diff.inMinutes < 1)  return widget.lang == 'es' ? 'Ahora mismo' : 'Agora mesmo';
+    if (diff.inMinutes < 60) return widget.lang == 'es'
+        ? 'Hace ${diff.inMinutes} min' : 'Há ${diff.inMinutes} min';
+    if (diff.inHours < 24)   return widget.lang == 'es'
+        ? 'Hace ${diff.inHours}h' : 'Há ${diff.inHours}h';
+    return widget.lang == 'es'
+        ? 'Hace ${diff.inDays} día(s)' : 'Há ${diff.inDays} dia(s)';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark   = widget.dark;
+    final isEs   = widget.lang == 'es';
+    final st     = _cacheState;
+    final isDown = st.status == CalcuCacheStatus.downloading;
+    final isOk   = st.isReady;
+    final statusColor = _statusColor(st.status);
+
+    final cardBg = dark
+        ? (isOk ? _kPurple.withValues(alpha: 0.12) : const Color(0xFF1A2030))
+        : (isOk ? const Color(0xFFF5F3FF) : Colors.white);
+    final cardBorder = isOk
+        ? _kPurple.withValues(alpha: dark ? 0.45 : 0.30)
+        : (dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE8ECEF));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: cardBg,
+          border: Border.all(color: cardBorder, width: 1.2),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Linha principal ────────────────────────────────────────────
+            Padding(
+              padding: EdgeInsets.fromLTRB(14, 12, 12, isDown ? 4 : 12),
+              child: Row(
+                children: [
+                  // Ícone
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    child: isDown
+                        ? SizedBox(
+                            key: const ValueKey('spin'),
+                            width: 34, height: 34,
+                            child: Stack(alignment: Alignment.center, children: [
+                              CircularProgressIndicator(
+                                value: st.progress > 0 ? st.progress : null,
+                                strokeWidth: 2.5,
+                                color: _kPurple,
+                                backgroundColor: _kPurple.withValues(alpha: 0.15),
+                              ),
+                              if (st.progress > 0)
+                                Text('${(st.progress * 100).toInt()}',
+                                    style: const TextStyle(
+                                      fontSize: 7.5,
+                                      fontWeight: FontWeight.w900,
+                                      color: _kPurple,
+                                    )),
+                            ]),
+                          )
+                        : Container(
+                            key: const ValueKey('icon'),
+                            width: 34, height: 34,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isOk
+                                  ? _kPurple.withValues(alpha: 0.15)
+                                  : (dark ? Colors.white.withValues(alpha: 0.07)
+                                          : const Color(0xFFF0F4F8)),
+                              border: Border.all(
+                                color: isOk
+                                    ? _kPurple.withValues(alpha: 0.40)
+                                    : Colors.transparent,
+                              ),
+                            ),
+                            child: Icon(
+                              isOk
+                                  ? Icons.calculate_rounded
+                                  : Icons.download_for_offline_outlined,
+                              size: 17,
+                              color: isOk
+                                  ? _kPurple
+                                  : (dark ? Colors.white54
+                                          : const Color(0xFF6B7280)),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 12),
+
+                  // Textos
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs ? 'Calculadora offline' : 'Calculadora offline',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: isOk
+                                ? _kPurple
+                                : (dark ? Colors.white70
+                                        : const Color(0xFF374151)),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(children: [
+                          Container(
+                            width: 7, height: 7,
+                            margin: const EdgeInsets.only(right: 5),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: statusColor,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              _statusLabel(st.status),
+                              style: TextStyle(
+                                fontSize: 10.5,
+                                color: statusColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ]),
+                        if (st.localVersion != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            '${isEs ? 'Versión' : 'Versão'} ${st.localVersion}  ·  ${_formatDate(st.downloadedAt)}',
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              color: dark ? Colors.white38 : const Color(0xFF9CA3AF),
+                            ),
+                          ),
+                        ],
+                        if (st.fileCount > 0 && isOk) ...[
+                          const SizedBox(height: 1),
+                          Text(
+                            '${st.fileCount} ${isEs ? 'archivos en cache' : 'arquivos em cache'}',
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: dark ? Colors.white24 : const Color(0xFFB0B7C3),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Barra de progresso ────────────────────────────────────────
+            if (isDown)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: st.progress > 0 ? st.progress : null,
+                    minHeight: 3.5,
+                    backgroundColor: _kPurple.withValues(alpha: 0.12),
+                    valueColor: const AlwaysStoppedAnimation(_kPurple),
+                  ),
+                ),
+              ),
+
+            // ── Botões de ação ────────────────────────────────────────────
+            if (!isDown)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                child: Row(
+                  children: [
+                    // Atualizar agora
+                    GestureDetector(
+                      onTap: () => OfflineCalculatorCacheService.instance.forceUpdate(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: _kPurple.withValues(alpha: 0.10),
+                          border: Border.all(
+                              color: _kPurple.withValues(alpha: 0.28)),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(Icons.sync_rounded,
+                              size: 12, color: _kPurple),
+                          const SizedBox(width: 5),
+                          Text(
+                            isEs ? 'Actualizar' : 'Atualizar agora',
+                            style: const TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                              color: _kPurple,
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Limpar cache
+                    GestureDetector(
+                      onTap: () => OfflineCalculatorCacheService.instance.clearCache(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: dark
+                              ? Colors.white.withValues(alpha: 0.05)
+                              : const Color(0xFFF3F4F6),
+                          border: Border.all(
+                            color: dark
+                                ? Colors.white.withValues(alpha: 0.10)
+                                : const Color(0xFFD1D5DB),
+                          ),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.delete_outline_rounded,
+                              size: 12,
+                              color: dark
+                                  ? Colors.white54
+                                  : const Color(0xFF6B7280)),
+                          const SizedBox(width: 5),
+                          Text(
+                            isEs ? 'Limpiar cache' : 'Limpar cache',
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w600,
+                              color: dark
+                                  ? Colors.white54
+                                  : const Color(0xFF6B7280),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

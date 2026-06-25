@@ -24,6 +24,7 @@ import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela interna
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
+import '../services/offline_calculator_cache_service.dart'; // BUILD 240: local cache URL
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -3257,16 +3258,34 @@ class _ActionButtonsRow extends StatelessWidget {
                   icon: Icons.calculate_rounded,
                   accentColor: _kPurpleCalc,
                   dark: dark,
-                  onTap: () {
+                  onTap: () async {
                     // fix(ai): sempre abre WebView interna — NUNCA Safari/launchUrl externo.
                     // Web usa iframe (CalculadoraScreen via calcu_web.dart);
                     // iOS/Android usa WebViewController nativo (webview_flutter).
                     // Regra: qualquer URL medcasescalcu.com vinda da IA → WebView interna.
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CalculadoraScreen(initialUrl: link.url),
-                      ),
-                    );
+                    // BUILD 240: resolve URL local se cache offline disponível.
+                    String resolvedUrl = link.url;
+                    if (!kIsWeb) {
+                      try {
+                        final localUrl = await OfflineCalculatorCacheService.instance
+                            .buildLocalUrl(link.url);
+                        if (localUrl != null) {
+                          debugPrint('[OFFLINE_CACHE] openSource=local (IA button) url=$localUrl');
+                          resolvedUrl = localUrl;
+                        } else {
+                          debugPrint('[OFFLINE_CACHE] openSource=online (IA button) url=${link.url}');
+                        }
+                      } catch (e) {
+                        debugPrint('[OFFLINE_CACHE] fallbackOnline=true (IA button) error=$e');
+                      }
+                    }
+                    if (context.mounted) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => CalculadoraScreen(initialUrl: resolvedUrl),
+                        ),
+                      );
+                    }
                   },
                 )
               : null;
