@@ -53,9 +53,14 @@ exports.onNewUserRegistered = onDocumentCreated(
     const data = event.data?.data();
     if (!data) return null;
 
-    // Ignora admin (já aprovado automaticamente)
-    if (data.status === 'approved') {
-      console.log('Admin ou usuário auto-aprovado — ignorando notificação.');
+    // fix(auth): não ignora mais usuários auto-aprovados (status=approved).
+    // O app cria todos os usuários com status=approved para não bloquear login,
+    // mas o admin ainda precisa ser notificado de TODOS os novos cadastros.
+    // Apenas ignora se o e-mail for o do admin (approvedBy=system e e-mail admin).
+    const adminEmailSecret = ADMIN_EMAIL.value() || 'rodrigssousa@gmail.com';
+    const isAdminUser = data.email && data.email.toLowerCase() === adminEmailSecret.toLowerCase();
+    if (isAdminUser) {
+      console.log(`Admin próprio se cadastrou — ignorando notificação: ${data.email}`);
       return null;
     }
 
@@ -63,21 +68,21 @@ exports.onNewUserRegistered = onDocumentCreated(
     const userEmail       = data.email        || '(sem e-mail)';
     const userProfession  = data.profession   || '—';
     const userInstitution = data.institution  || '—';
+    const userStatus      = data.status       || 'approved';
     const uid             = event.params.uid;
     const createdAt       = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
-    const adminEmail  = ADMIN_EMAIL.value() || 'rodrigssousa@gmail.com';
     const transporter = getTransporter(GMAIL_PASS.value());
     if (!transporter) return null;
 
     try {
       await transporter.sendMail({
         from:    `"MedCases Pro" <${GMAIL_USER}>`,
-        to:      adminEmail,
-        subject: `🆕 Novo pedido de acesso — ${userName}`,
+        to:      adminEmailSecret,
+        subject: `🆕 Novo cadastro — ${userName} (status: ${userStatus})`,
         html:    buildAdminNotificationHtml({ userName, userEmail, userProfession, userInstitution, uid, createdAt }),
       });
-      console.log(`✅ Admin notificado sobre novo cadastro de ${userEmail}`);
+      console.log(`✅ Admin notificado sobre novo cadastro de ${userEmail} (status: ${userStatus})`);
     } catch (err) {
       console.error('❌ Erro ao notificar admin:', err);
     }

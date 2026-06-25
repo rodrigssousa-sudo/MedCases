@@ -73,11 +73,24 @@ service cloud.firestore {
     // CONTROLE DE USUÁRIOS (/users/{userId})
     // ─────────────────────────────────────────────────────────────────────────
     match /users/{userId} {
-      // Permitir get para o próprio usuário checar seu status (ex: pendente -> aprovado)
+      // get: dono (qualquer status) + admin — permite tela de aguardando aprovação
       allow get: if isAuthed() && (request.auth.uid == userId || isAdmin());
+
+      // list: somente admin — painel admin lista pending + approved + blocked
       allow list: if isAdmin();
+
+      // create: qualquer usuário autenticado pode criar o próprio documento.
+      // Não exige isApproved() — usuário recém-cadastrado ainda não tem doc.
+      // Não impõe status=pending aqui: o app cria com status=approved (auto-aprovação).
       allow create: if isAuthed() && request.auth.uid == userId;
-      allow update: if isApproved() && (request.auth.uid == userId || isAdmin());
+
+      // update:
+      //   • Admin pode atualizar qualquer campo de qualquer usuário (aprovação, bloqueio).
+      //   • O próprio usuário pode atualizar o seu documento independente de status
+      //     (pending → approved via _autoApproveInBackground; atualização de perfil).
+      //     Isso é necessário para que o auto-approve REST funcione sem loop de pending.
+      allow update: if isAuthed() && (request.auth.uid == userId || isAdmin());
+
       allow delete: if isAdmin();
     }
   }
