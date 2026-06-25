@@ -240,10 +240,19 @@ class ExternalToolLinkEngine {
     }
 
     // ── 11. Fármaco isolado via combined (fallback AI response) ───────────
-    // Só chega aqui se userMessage não tinha fármaco específico.
-    // BUILD 249: validação de contaminação cruzada — se fármaco detectado vem
-    // APENAS da resposta AI (não da query do usuário) e NÃO está no activeThreadTopic,
-    // bloquear para evitar q=amiodarona em contexto de gastroenterite/novo caso.
+    // Só chega aqui se userMessage não tinha fármaco específico (step 8 não disparou).
+    // BUILD 249: validação de contaminação cruzada — fármaco detectado APENAS na
+    // resposta AI (não na query do usuário) e NÃO no activeThreadTopic → bloquear.
+    //
+    // BUILD 270: EXTINÇÃO do plantao_bypass_stale (BUILD 262).
+    // O bypass anterior permitia fármacos da resposta AI vazarem no Plantão,
+    // causando "Zombie Amiodarona Injection" — amiodarona aparecia em toda resposta
+    // ACLS/protocolo e sempre vencia _matchFirst() independentemente da query real.
+    //
+    // NOVA REGRA (idêntica ao step 8 — user_msg soberano):
+    //   • drug deve estar na mensagem do usuário OU no activeThreadTopic
+    //   • drug encontrado APENAS na resposta AI → return null (sem exceção de modo)
+    //   • Plantão e Estudo: regra idêntica — não há bypass por modo
     final drug = _detectSingleDrug(combined);
     if (drug != null) {
       // Verifica se o fármaco está na mensagem atual do usuário
@@ -252,24 +261,15 @@ class ExternalToolLinkEngine {
       final drugInThread = activeThreadTopic.isNotEmpty &&
           activeThreadTopic.toLowerCase().contains(drug.param);
 
-      if (!drugInUserMsg && !drugInThread && activeThreadTopic.isNotEmpty) {
-        // BUILD 262: in Plantão mode, stale-tool false-positive is common because
-        // rapid emergency queries change topic faster than the thread manager tracks.
-        // Bypass the null-return in Plantão so the drug link always reaches the UI.
-        if (isPlantaoMode) {
-          // ignore: avoid_print
-          print('[EXT_TOOL_CONTEXT] plantao_bypass_stale '
-              'drug=${drug.param} threadTopic=$activeThreadTopic '
-              'reason=plantao_false_positive_allowed');
-          // Allow through — do NOT return null
-        } else {
-          // Estudo: preserve strict stale-tool blocking (cross-case contamination)
-          // ignore: avoid_print
-          print('[EXT_TOOL_CONTEXT] blocked_stale_tool '
-              'old=${drug.param} reason=not_in_current_context '
-              'threadTopic=$activeThreadTopic');
-          return null;
-        }
+      if (!drugInUserMsg && !drugInThread) {
+        // BUILD 270: HARD BLOCK — fármaco veio apenas da resposta AI.
+        // Sem bypass por modo (Plantão ou Estudo) — regra universal.
+        // Elimina zombie injection (ex: amiodarona em query de Sertralina/Enalapril).
+        // ignore: avoid_print
+        print('[EXT_TOOL_CONTEXT][Build270] blocked_ai_only_drug '
+            'drug=${drug.param} threadTopic=$activeThreadTopic '
+            'reason=drug_not_in_user_msg_nor_thread_topic');
+        return null;
       }
 
       final drugCtx = _drugContext(drug.param);
@@ -277,7 +277,7 @@ class ExternalToolLinkEngine {
           ? '💊 Abrir ${drug.display} en la base'
           : '💊 Abrir ${drug.display} na base';
       // ignore: avoid_print
-      print('[EXT_TOOL_CONTEXT] source=${drugInUserMsg ? "user_msg" : "ai_response"} '
+      print('[EXT_TOOL_CONTEXT][Build270] source=${drugInUserMsg ? "user_msg" : "thread_topic"} '
           'q=${drug.param}');
       _log(lang: lang, tab: 'farmacos', extra: 'q=${drug.param} ctx=$drugCtx');
       return ExternalToolLink(
@@ -337,13 +337,13 @@ class ExternalToolLinkEngine {
 
   // ───────────────────────────────────────────────────────────────────────────
   // _log — safe diagnostic log (nunca loga dados do paciente)
-  // Formato: [EXT_TOOL][Build223] lang=pt tab=farmacos q=ceftriaxona ctx=drug
-  // Build 223: inclui calculatorContext em cada log para auditoria do pipeline
+  // Formato: [EXT_TOOL][Build270] lang=pt tab=farmacos q=ceftriaxona ctx=drug
+  // Build 270: ZOMBIE_AMIODARONA_EXTERMINATED — plantao_bypass_stale DELETED
   // ───────────────────────────────────────────────────────────────────────────
   // ignore: avoid_print
   static void _log({required String lang, required String tab, required String extra}) {
     // ignore: avoid_print
-    print('[EXT_TOOL][Build223] lang=$lang tab=$tab${extra.isNotEmpty ? " $extra" : ""}');
+    print('[EXT_TOOL][Build270] lang=$lang tab=$tab${extra.isNotEmpty ? " $extra" : ""}');
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -692,23 +692,74 @@ const List<_TermMatch> _kDrugs = [
   _TermMatch(param: 'aas', display: 'AAS',
       keywords: ['ácido acetilsalicílico', 'aspirina', ' aas ', 'aspirin']),
 
-  // Neurologia / Psiquiatria
+  // Neurologia / Psiquiatria — anticonvulsivantes
   _TermMatch(param: 'fenitoina', display: 'Fenitoína',
       keywords: ['fenitoína', 'fenitoina', 'phenytoin', 'dilantin']),
   _TermMatch(param: 'valproato', display: 'Valproato',
       keywords: ['valproato', 'valproic', 'depakene', 'depakote']),
   _TermMatch(param: 'levetiracetam', display: 'Levetiracetam',
       keywords: ['levetiracetam', 'keppra']),
+  _TermMatch(param: 'carbamazepina', display: 'Carbamazepina',
+      keywords: ['carbamazepina', 'carbamazepine', 'tegretol']),
+  _TermMatch(param: 'lamotrigina', display: 'Lamotrigina',
+      keywords: ['lamotrigina', 'lamotrigine', 'lamictal']),
+  _TermMatch(param: 'clonazepam', display: 'Clonazepam',
+      keywords: ['clonazepam', 'rivotril']),
+  // Ansiolíticos / Hipnóticos / Sedativos
   _TermMatch(param: 'midazolam', display: 'Midazolam',
       keywords: ['midazolam', 'dormicum', 'versed']),
   _TermMatch(param: 'diazepam', display: 'Diazepam',
       keywords: ['diazepam', 'valium']),
   _TermMatch(param: 'lorazepam', display: 'Lorazepam',
       keywords: ['lorazepam', 'ativan']),
+  _TermMatch(param: 'alprazolam', display: 'Alprazolam',
+      keywords: ['alprazolam', 'xanax']),
+  // Antipsicóticos
   _TermMatch(param: 'haloperidol', display: 'Haloperidol',
       keywords: ['haloperidol', 'haldol']),
   _TermMatch(param: 'quetiapina', display: 'Quetiapina',
       keywords: ['quetiapina', 'quetiapine', 'seroquel']),
+  _TermMatch(param: 'olanzapina', display: 'Olanzapina',
+      keywords: ['olanzapina', 'olanzapine', 'zyprexa']),
+  _TermMatch(param: 'risperidona', display: 'Risperidona',
+      keywords: ['risperidona', 'risperidone', 'risperdal']),
+  _TermMatch(param: 'aripiprazol', display: 'Aripiprazol',
+      keywords: ['aripiprazol', 'aripiprazole', 'abilify']),
+  _TermMatch(param: 'clozapina', display: 'Clozapina',
+      keywords: ['clozapina', 'clozapine', 'clozaril']),
+  // BUILD 270: SSRI / SNRI / Antidepressivos — ausentes anteriormente causavam
+  // que queries (ex: "sertralina") não fossem capturadas em step 8,
+  // fazendo step 11 pegar amiodarona da resposta AI (zombie injection).
+  _TermMatch(param: 'sertralina', display: 'Sertralina',
+      keywords: ['sertralina', 'sertraline', 'zoloft']),
+  _TermMatch(param: 'fluoxetina', display: 'Fluoxetina',
+      keywords: ['fluoxetina', 'fluoxetine', 'prozac']),
+  _TermMatch(param: 'escitalopram', display: 'Escitalopram',
+      keywords: ['escitalopram', 'lexapro', 'cipralex']),
+  _TermMatch(param: 'citalopram', display: 'Citalopram',
+      keywords: ['citalopram', 'celexa']),
+  _TermMatch(param: 'paroxetina', display: 'Paroxetina',
+      keywords: ['paroxetina', 'paroxetine', 'paxil', 'aropax']),
+  _TermMatch(param: 'venlafaxina', display: 'Venlafaxina',
+      keywords: ['venlafaxina', 'venlafaxine', 'effexor']),
+  _TermMatch(param: 'duloxetina', display: 'Duloxetina',
+      keywords: ['duloxetina', 'duloxetine', 'cymbalta']),
+  _TermMatch(param: 'mirtazapina', display: 'Mirtazapina',
+      keywords: ['mirtazapina', 'mirtazapine', 'remeron']),
+  _TermMatch(param: 'bupropiona', display: 'Bupropiona',
+      keywords: ['bupropiona', 'bupropion', 'wellbutrin', 'zyban']),
+  _TermMatch(param: 'amitriptilina', display: 'Amitriptilina',
+      keywords: ['amitriptilina', 'amitriptyline', 'tryptanol']),
+  _TermMatch(param: 'nortriptilina', display: 'Nortriptilina',
+      keywords: ['nortriptilina', 'nortriptyline', 'pamelor']),
+  _TermMatch(param: 'clomipramina', display: 'Clomipramina',
+      keywords: ['clomipramina', 'clomipramine', 'anafranil']),
+  _TermMatch(param: 'trazodona', display: 'Trazodona',
+      keywords: ['trazodona', 'trazodone', 'desyrel']),
+  _TermMatch(param: 'desvenlafaxina', display: 'Desvenlafaxina',
+      keywords: ['desvenlafaxina', 'desvenlafaxine', 'pristiq']),
+  _TermMatch(param: 'lítio', display: 'Lítio',
+      keywords: ['lítio', 'litio', 'lithium', 'carbolithium']),
 
   // Analgesia / Sedação
   _TermMatch(param: 'morfina', display: 'Morfina',
