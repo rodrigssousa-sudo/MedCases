@@ -382,8 +382,11 @@ exports.geminiPaidProxy = onRequest(
     // cors: false — gerenciamos CORS manualmente para suportar origem explícita
     // (necessário quando o request usa Authorization header com credentials).
     cors:           false,
+    // BUILD 250: elevado de 256MiB→512MiB e timeout mantido 60s (já era adequado).
+    // 256MiB causava throttling de CPU em streams de alto contexto (~9k tokens),
+    // provocando corte de buffer e respostas truncadas no meio de frases.
     timeoutSeconds: 60,
-    memory:         '256MiB',
+    memory:         '512MiB',
   },
   async (req, res) => {
     const startMs = Date.now();
@@ -522,7 +525,10 @@ exports.geminiPaidProxy = onRequest(
       contents,
       generationConfig: {
         temperature:     0.3,
-        maxOutputTokens: 1024,
+        // BUILD 250: elevado de 1024→2048 tokens de saída.
+        // 1024 tokens cortava respostas Plantão com RAG (~300-400 words úteis).
+        // 2048 garante resposta completa com todos os blocos emoji (📌 Monitorar etc.).
+        maxOutputTokens: 2048,
         topP:            0.9,
         topK:            40,
       },

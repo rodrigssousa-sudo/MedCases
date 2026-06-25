@@ -3255,18 +3255,21 @@ class AppProvider extends ChangeNotifier {
       isPlantaoMode: !longResponse,
     );
     if (threadStatus.action == ThreadAction.newThread) {
+      // BUILD 250: HARD RESET síncrono — ocorre ANTES de qualquer montagem de payload.
+      // Limpa _aiHistory (contexto Gemini) + reseta memória clínica estruturada.
+      // Isso elimina os 8.9k tokens de contexto acumulado que causaram truncamento.
       final removed = _aiHistory.length;
-      _aiHistory.clear();
-      if (kDebugMode) {
-        debugPrint('[HISTORY_SANITIZER] mode=${longResponse ? "estudo" : "plantao"} '
-            'strategy=empty sent=0 removed=$removed '
-            'reason=${threadStatus.reason}');
-      }
+      _aiHistory.clear();           // contexto Gemini → zero
+      _sessionMemory.reset();       // memória clínica (diag, meds, labs) → zero
+      debugPrint('[HISTORY_SANITIZER] HARD RESET ATIVADO: Limpando _aiHistory de forma absoluta. '
+          'mode=${longResponse ? "estudo" : "plantao"} '
+          'strategy=empty sent=0 removed=$removed '
+          'reason=${threadStatus.reason}');
     }
     final sessionLang   = _resolveSessionLang(input);
     final intent        = _classifyIntent(input);
-    // BUILD 249: após clear de _aiHistory em newThread, _expandedQuery() lê
-    // histórico já limpo → sem contaminação de caso anterior.
+    // BUILD 249/250: após HARD RESET, _expandedQuery() lê histórico já vazio →
+    // zero contaminação de contexto anterior no payload enviado.
     final expandedInput = topicReset ? input : _expandedQuery(input);
     final normalized    = _normalize(expandedInput);
 
@@ -3753,13 +3756,14 @@ class AppProvider extends ChangeNotifier {
       isPlantaoMode: true,
     );
     if (threadStatusAnswer.action == ThreadAction.newThread) {
+      // BUILD 250: HARD RESET síncrono — ocorre ANTES da montagem do systemPrompt.
       final removed = _aiHistory.length;
-      _aiHistory.clear();
-      if (kDebugMode) {
-        debugPrint('[HISTORY_SANITIZER] mode=plantao '
-            'strategy=empty sent=0 removed=$removed '
-            'reason=${threadStatusAnswer.reason}');
-      }
+      _aiHistory.clear();           // contexto Gemini → zero
+      _sessionMemory.reset();       // memória clínica → zero (reset duplo seguro)
+      debugPrint('[HISTORY_SANITIZER] HARD RESET ATIVADO: Limpando _aiHistory de forma absoluta. '
+          'mode=plantao '
+          'strategy=empty sent=0 removed=$removed '
+          'reason=${threadStatusAnswer.reason}');
     }
 
     // ── Passo 0: globalLanguageLock — bloqueia idioma da sessão ──────────────

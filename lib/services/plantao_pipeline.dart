@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// plantao_pipeline.dart — Plantão Pipeline v3.1 (Build 248B)
+// plantao_pipeline.dart — Plantão Pipeline v3.2 (Build 250)
 //
 // RESPONSABILIDADES:
 //   • PlantaoIntentEngine    — engine multidimensional Build 225 (tema+contexto+intenção+complexidade)
@@ -2152,17 +2152,44 @@ class PlantaoOrganizer {
     return false;
   }
 
-  /// BUILD 247: isTruncated() — detecta resposta cortada/incompleta.
-  /// Retorna true SOMENTE para truncamento real (mid-sentence, conector final).
+  /// BUILD 250: isTruncated() — detector estrito de truncamento por caractere-alvo.
+  ///
+  /// CRITÉRIO SOBERANO (BUILD 250):
+  ///   Se o último caractere não for pontuação clínica de fechamento reconhecida,
+  ///   marcador markdown estrutural ou colchete, a resposta foi amputada.
+  ///   Captura casos que a varredura de conectores falhava: frases terminadas em
+  ///   artigos/preposições soltos ("...seria com a", "...dose de", "...paciente o").
+  ///
+  /// FALLBACK LEGADO:
+  ///   Mantém varredura de _kTruncationConnectors como segunda linha de defesa,
+  ///   cobrindo conectores longos que o critério de 1 char não captura.
   static bool isTruncated(String text) {
     if (text.trim().isEmpty) return true;
 
     final trimmed = text.trimRight();
     if (trimmed.length < 5) return true;
 
-    final lower = trimmed.toLowerCase();
+    // ── CRITÉRIO SOBERANO BUILD 250: terminação por caractere válido ──────────
+    // Pontuação clínica de fechamento: '.', '!', '?'
+    // Markdown estrutural: '*' (bold/italic fechado), '_' (ênfase), '`' (inline code)
+    // Colchete/parêntese de fechamento: ']', ')'
+    // Emoji final válido: detectado pelo código de ponto-final abaixo
+    const validEndingChars = {'.', '!', '?', '*', '_', ']', ')', '`'};
+    final lastChar = trimmed[trimmed.length - 1];
 
-    // Termina com conector sem pontuação → claramente truncada
+    // Permite emojis como terminação válida (codepoint > 127)
+    final lastCodeUnit = trimmed.codeUnitAt(trimmed.length - 1);
+    final endsWithEmoji = lastCodeUnit > 127;
+
+    if (!validEndingChars.contains(lastChar) && !endsWithEmoji) {
+      // Terminação inválida → resposta amputada no meio de palavra/artigo
+      return true;
+    }
+
+    // ── FALLBACK LEGADO: varredura de conectores linguísticos ─────────────────
+    // Cobre casos como "...deve ser administrado com" (termina com '.com' → não
+    // seria capturado pelo critério de char, mas conector o detecta)
+    final lower = trimmed.toLowerCase();
     for (final connector in _kTruncationConnectors) {
       if (lower.endsWith(connector)) return true;
     }
@@ -2172,7 +2199,7 @@ class PlantaoOrganizer {
       return true;
     }
 
-    // Markdown quebrado: bloco de código não fechado
+    // ── Markdown quebrado: bloco de código não fechado ────────────────────────
     final codeBlockCount = '```'.allMatches(text).length;
     if (codeBlockCount % 2 != 0) return true;
 
