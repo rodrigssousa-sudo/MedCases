@@ -272,6 +272,9 @@ class AuthService {
     required String email,
     required String password,
   }) async {
+    debugPrint('[Auth][LOGIN] REQUEST:');
+    debugPrint('[Auth][LOGIN]   EMAIL : ${email.trim()}');
+
     try {
       // Passo 1 — Auth REST
       final authResp = await http.post(
@@ -279,10 +282,16 @@ class AuthService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email.trim(), 'password': password, 'returnSecureToken': true}),
       );
+
+      debugPrint('[Auth][LOGIN] RESPONSE:');
+      debugPrint('[Auth][LOGIN]   STATUS : ${authResp.statusCode}');
+      debugPrint('[Auth][LOGIN]   BODY   : ${authResp.body}');
+
       final authBody = jsonDecode(authResp.body) as Map<String, dynamic>;
 
       if (authResp.statusCode != 200) {
         final msg = ((authBody['error']?['message'] as String?) ?? '').toUpperCase();
+        debugPrint('[Auth][LOGIN]   ERROR_CODE : $msg');
         if (msg.contains('EMAIL_NOT_FOUND') || msg.contains('INVALID_LOGIN_CREDENTIALS') ||
             msg.contains('WRONG_PASSWORD') || msg.contains('INVALID_PASSWORD')) {
           return AuthResult.error('E-mail ou senha incorretos.');
@@ -293,7 +302,7 @@ class AuthService {
         if (msg.contains('USER_DISABLED')) {
           return AuthResult.error('Conta desativada. Entre em contato com o administrador.');
         }
-        return AuthResult.error('E-mail ou senha incorretos.');
+        return AuthResult.error('E-mail ou senha incorretos. [$msg]');
       }
 
       final uid          = authBody['localId']      as String;
@@ -466,25 +475,49 @@ class AuthService {
     required String displayName, String? profession, String? institution,
     String? referredBy,
   }) async {
+    // ── DIAGNÓSTICO COMPLETO — log de request antes de enviar ──────────────
+    final endpoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_webApiKey';
+    final payload  = {'email': email.trim(), 'password': password, 'returnSecureToken': true};
+    debugPrint('[Auth][REGISTER] REQUEST:');
+    debugPrint('[Auth][REGISTER]   ENDPOINT : $endpoint');
+    debugPrint('[Auth][REGISTER]   EMAIL    : ${email.trim()}');
+    debugPrint('[Auth][REGISTER]   API_KEY  : ${_webApiKey.substring(0, 8)}...${_webApiKey.substring(_webApiKey.length - 4)}');
+    debugPrint('[Auth][REGISTER]   PAYLOAD  : ${jsonEncode(payload).replaceAll(password, '***')}');
+
     try {
       final resp = await http.post(
-        Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_webApiKey'),
+        Uri.parse(endpoint),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email.trim(), 'password': password, 'returnSecureToken': true}),
+        body: jsonEncode(payload),
       );
+
+      // ── DIAGNÓSTICO: loga SEMPRE status + body cru da Identity Toolkit ──
+      debugPrint('[Auth][REGISTER] RESPONSE:');
+      debugPrint('[Auth][REGISTER]   STATUS : ${resp.statusCode}');
+      debugPrint('[Auth][REGISTER]   BODY   : ${resp.body}');
+
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
 
       if (resp.statusCode != 200) {
         final msg = ((body['error']?['message'] as String?) ?? '').toUpperCase();
-        if (msg.contains('EMAIL_EXISTS')) return AuthResult.error('Este e-mail já está cadastrado.');
-        if (msg.contains('WEAK_PASSWORD'))  return AuthResult.error('Senha fraca. Use ao menos 6 caracteres.');
-        return AuthResult.error('Não foi possível criar a conta. Tente novamente.');
+        debugPrint('[Auth][REGISTER]   ERROR_CODE : $msg');
+        if (msg.contains('EMAIL_EXISTS'))        return AuthResult.error('Este e-mail já está cadastrado.');
+        if (msg.contains('WEAK_PASSWORD'))        return AuthResult.error('Senha fraca. Use ao menos 6 caracteres.');
+        if (msg.contains('INVALID_EMAIL'))        return AuthResult.error('Endereço de e-mail inválido.');
+        if (msg.contains('MISSING_PASSWORD'))     return AuthResult.error('Senha não informada.');
+        if (msg.contains('INVALID_API_KEY'))      return AuthResult.error('Erro de configuração (API key). Contate o suporte.');
+        if (msg.contains('OPERATION_NOT_ALLOWED')) return AuthResult.error('Cadastro por e-mail desabilitado. Contate o suporte.');
+        if (msg.contains('TOO_MANY_ATTEMPTS') || msg.contains('TOO_MANY_REQUESTS'))
+                                                  return AuthResult.error('Muitas tentativas. Aguarde alguns minutos.');
+        // fallback: retorna o código bruto para facilitar diagnóstico
+        return AuthResult.error('Erro ao criar conta [$msg]. Tente novamente.');
       }
 
       final uid          = body['localId']     as String;
       final idToken      = body['idToken']      as String;
       final refreshToken = body['refreshToken'] as String? ?? '';
 
+      debugPrint('[Auth][REGISTER]   UID : $uid');
       _cacheTokens(idToken: idToken, refreshToken: refreshToken);
 
       final user = _buildNewUser(
@@ -495,7 +528,9 @@ class AuthService {
       await _createUserDocRest(user: user, idToken: idToken);
       webUser.value = user;
       return AuthResult.success(user);
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('[Auth][REGISTER] EXCEPTION: $e');
+      debugPrint('[Auth][REGISTER] STACK: $st');
       return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
     }
   }
