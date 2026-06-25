@@ -231,6 +231,8 @@ class AiSmartRouter {
       'PCR=Parada Cardiorrespiratória | SCA=Síndrome Coronária Aguda\n';
 
   // MOD_ANTILEAK — sempre presente (Build 191: lista expandida)
+  // HOTFIX BUILD 247D: adicionado HISTORY_POISON_GUARD — previne parroting de
+  // mensagens de fallback/safe-card que possam ter entrado no histórico.
   static const String _modAntiLeak =
       '🚫 ANTI-LEAK ABSOLUTO — NUNCA escreva na resposta:\n'
       '✗ Qualquer linha com: [MANDATO] [MODO] [TRAVA] [REFORÇO] [SOBERANIA]\n'
@@ -238,7 +240,17 @@ class AiSmartRouter {
       '✗ Textos: "Responda ESTRITAMENTE" "template de 6 linhas" "nesta ordem exata"\n'
       '✗ Textos: "Proibido criar introduções" "instrução interna" "MANDATO TURNO"\n'
       '✗ Tags: <think> [REVISAO_INTERNA] "MODO ACTIVO:" ou qualquer meta-instrução\n'
-      'A resposta começa DIRETAMENTE no emoji 🟥 (Plantão) ou ## Título (Estudo).\n';
+      'A resposta começa DIRETAMENTE no emoji 🟥 (Plantão) ou ## Título (Estudo).\n'
+      '\n'
+      // HISTORY_POISON_GUARD (HOTFIX 247D): Impede parroting de safe-card/fallback
+      'HISTORY POISON GUARD — PROIBIDO REPETIR DO HISTÓRICO:\n'
+      '✗ Nunca repita mensagens de erro, fallback ou timeout do histórico anterior.\n'
+      '✗ Se o histórico contiver "REVISANDO RESPOSTA", "TEMPO LIMITE ATINGIDO",\n'
+      '  "TIEMPO LÍMITE ALCANZADO", "Reformule a pergunta", "Reformula la pregunta",\n'
+      '  "RESPOSTA EM AJUSTE", "dados inconsistentes", "bloqueada por segurança"\n'
+      '  → IGNORE completamente essas entradas. Não as ecoe. Não as repita.\n'
+      '✗ Nunca inicie a resposta com texto de safe-card ou mensagem técnica.\n'
+      'Responda APENAS ao pedido clínico atual. Zero repetição de erros anteriores.\n';
 
   // MOD_SIGLAS — somente isAcronym=true
   static const String _modSiglas =

@@ -196,6 +196,63 @@ class AppProvider extends ChangeNotifier {
   // Histórico de conversa para contexto multi-turn (máx 10 pares)
   final List<Map<String, String>> _aiHistory = [];
 
+  // ── HOTFIX BUILD 247D — HistorySanitizer ─────────────────────────────────
+  //
+  // Impede context poisoning / parroting: mensagens de fallback, safe-card,
+  // timeout e erro técnico NÃO são enviadas ao Gemini como contexto.
+  // Elas continuam visíveis na UI local, mas são excluídas do histórico da API.
+  //
+  // Padrões de fallback / safe-card / erro que envenenam o contexto:
+  static bool _isFallbackText(String text) {
+    if (text.isEmpty) return false;
+    final t = text;
+    // Safe-card de timeout (marcadores canônicos de AppProvider)
+    if (t.contains('TEMPO LIMITE ATINGIDO'))       return true;
+    if (t.contains('TIEMPO LÍMITE ALCANZADO'))      return true;
+    if (t.contains('TEMPO LÍMITE ALCANZADO'))       return true;
+    // Fallback clínico do AiSmartRouter / PlantaoOrganizer
+    if (t.contains('REVISANDO RESPOSTA'))           return true;
+    if (t.contains('RESPOSTA EM AJUSTE'))           return true;
+    // Mensagens de instabilidade / não consegui completar
+    if (t.contains('Não consegui completar'))       return true;
+    if (t.contains('No pude completar'))            return true;
+    if (t.contains('Não consegui gerar'))           return true;
+    if (t.contains('No pude generar'))              return true;
+    if (t.contains('Reformule a pergunta'))         return true;
+    if (t.contains('Reformula la pregunta'))        return true;
+    if (t.contains('reformulá-la com mais contexto')) return true;
+    if (t.contains('reformularla con más contexto'))  return true;
+    if (t.contains('resposta continha dados inconsistentes')) return true;
+    if (t.contains('respuesta contenía datos inconsistentes')) return true;
+    if (t.contains('bloqueada por segurança'))      return true;
+    if (t.contains('bloqueada por seguridad'))      return true;
+    if (t.contains('estamos ajustando'))            return true;
+    if (t.contains('instabilidade temporária'))     return true;
+    if (t.contains('inestabilidad temporal'))       return true;
+    if (t.contains('Tente novamente em alguns segundos')) return true;
+    if (t.contains('Intenta nuevamente en algunos segundos')) return true;
+    return false;
+  }
+
+  /// Retorna _aiHistory filtrado — sem mensagens de fallback/safe-card.
+  /// Usado como camada de segurança ao passar contexto ao Gemini.
+  /// Belt-and-suspenders: mesmo que algum push tenha escapado, o read é limpo.
+  List<Map<String, String>> get _sanitizedHistory {
+    final before = _aiHistory.length;
+    final filtered = _aiHistory.where((m) {
+      final role    = m['role']    ?? '';
+      final content = m['content'] ?? '';
+      // Só filtra mensagens da IA (assistant) — mensagens do usuário sempre entram
+      if (role != 'assistant') return true;
+      return !_isFallbackText(content);
+    }).toList();
+    final removed = before - filtered.length;
+    if (kDebugMode && removed > 0) {
+      debugPrint('[HISTORY_SANITIZER] removedFallbackMessages=$removed finalHistoryMessages=${filtered.length}');
+    }
+    return filtered;
+  }
+
   // ── Fix 3: Memória clínica estruturada da sessão ──────────────────────────
   // Instância única por sessão de chat — reseta automaticamente ao mudar de tema.
   // Não persiste entre sessões (RAM only, by design).
@@ -1625,13 +1682,27 @@ class AppProvider extends ChangeNotifier {
     cancelAiStream();
     _aiHistory.clear();
     // Filtra apenas pares válidos user/assistant com conteúdo
+    // HOTFIX 247D: exclui mensagens de fallback/safe-card ao restaurar sessão
     final valid = messages
-        .where((m) => (m['role'] == 'user' || m['role'] == 'assistant') &&
-            (m['content'] ?? '').isNotEmpty)
+        .where((m) {
+          final role    = m['role']    ?? '';
+          final content = m['content'] ?? '';
+          if (content.isEmpty) return false;
+          if (role != 'user' && role != 'assistant') return false;
+          // Mensagens da IA são filtradas se forem fallback/safe-card
+          if (role == 'assistant' && _isFallbackText(content)) return false;
+          return true;
+        })
         .toList();
     // Pega as últimas 10 entradas (5 pares) para não exceder o limite da janela
     final window = valid.length > 10 ? valid.sublist(valid.length - 10) : valid;
     _aiHistory.addAll(window);
+    if (kDebugMode) {
+      final removedCount = messages.length - valid.length;
+      if (removedCount > 0) {
+        debugPrint('[HISTORY_SANITIZER] rebuildFromMessages removed=$removedCount fallbackMessages finalHistoryMessages=${_aiHistory.length}');
+      }
+    }
     debugPrint('[AppProvider] rebuildAiHistoryFromMessages: ${_aiHistory.length} entradas restauradas no contexto');
   }
 
@@ -3276,7 +3347,7 @@ class AppProvider extends ChangeNotifier {
         userMessage:  input,
         systemPrompt: systemPrompt,
         history:      List<Map<String, String>>.from(
-          _aiHistory.map((m) => {
+          _sanitizedHistory.map((m) => {  // HOTFIX 247D: sanitized read
             'role':    m['role']    ?? '',
             'content': m['content'] ?? '',
           }),
@@ -3294,10 +3365,15 @@ class AppProvider extends ChangeNotifier {
           appLanguage:   _lang,
         );
         final paidText = paidSanitized.text;
-        _aiHistory
-          ..add({'role': 'user',      'content': input})
-          ..add({'role': 'assistant', 'content': paidText});
-        while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+        if (!_isFallbackText(paidText)) {
+          _aiHistory
+            ..add({'role': 'user',      'content': input})
+            ..add({'role': 'assistant', 'content': paidText});
+          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        } else if (kDebugMode) {
+          debugPrint('[HISTORY_SANITIZER] paid_fallback_blocked reason=isFallbackText');
+        }
         onDone(paidText);
       } else {
         // Paid também falhou — mostra mensagem de instabilidade
@@ -3341,7 +3417,7 @@ class AppProvider extends ChangeNotifier {
           userMessage:  input,
           systemPrompt: systemPrompt,
           history: List<Map<String, String>>.from(
-            _aiHistory.map((m) => {
+            _sanitizedHistory.map((m) => {  // HOTFIX 247D: sanitized read
               'role':    m['role']    ?? '',
               'content': m['content'] ?? '',
             }),
@@ -3365,10 +3441,15 @@ class AppProvider extends ChangeNotifier {
             appLanguage:   _lang,
           );
           final paidText = paidSanitized.text;
-          _aiHistory
-            ..add({'role': 'user',      'content': input})
-            ..add({'role': 'assistant', 'content': paidText});
-          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+          if (!_isFallbackText(paidText)) {
+            _aiHistory
+              ..add({'role': 'user',      'content': input})
+              ..add({'role': 'assistant', 'content': paidText});
+            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          } else if (kDebugMode) {
+            debugPrint('[HISTORY_SANITIZER] critical_paid_fallback_blocked reason=isFallbackText');
+          }
           onDone(paidText);
         } else {
           debugPrint('[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}');
@@ -3390,7 +3471,7 @@ class AppProvider extends ChangeNotifier {
       userMessage:  input,
       systemPrompt: systemPrompt,
       apiKey:       geminiApiKey,  // ← chave do app (admin), carregada do Firestore
-      history:      List.unmodifiable(_aiHistory),
+      history:      List.unmodifiable(_sanitizedHistory),  // HOTFIX 247D: sanitized read
       useGrounding: true,
       longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
       appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
@@ -3450,10 +3531,15 @@ class AppProvider extends ChangeNotifier {
               appLanguage: _lang,
             );
             final partialText = partialSanitized.text;
-            _aiHistory
-              ..add({'role': 'user',      'content': input})
-              ..add({'role': 'assistant', 'content': partialText});
-            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+            if (!_isFallbackText(partialText)) {
+              _aiHistory
+                ..add({'role': 'user',      'content': input})
+                ..add({'role': 'assistant', 'content': partialText});
+              while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            } else if (kDebugMode) {
+              debugPrint('[HISTORY_SANITIZER] partial_fallback_blocked reason=isFallbackText');
+            }
             onDone(partialText);
             return;
           }
@@ -3486,11 +3572,14 @@ class AppProvider extends ChangeNotifier {
                 )
               : null;
           final finalText = sanitized?.text ?? rawText;
-          if (finalText.isNotEmpty) {
+          // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+          if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
             _aiHistory
               ..add({'role': 'user',      'content': input})
               ..add({'role': 'assistant', 'content': finalText});
             while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          } else if (kDebugMode && finalText.isNotEmpty && _isFallbackText(finalText)) {
+            debugPrint('[HISTORY_SANITIZER] free_done_fallback_blocked reason=isFallbackText');
           }
           _aiStreamActive = false;
           _aiStreamSub    = null;
@@ -3526,11 +3615,18 @@ class AppProvider extends ChangeNotifier {
         _globalTimeoutTimer?.cancel(); // BUILD 241
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
         final finalText = accumulator.toString().trim();
-        if (finalText.isNotEmpty) {
+        // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+        if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
           _aiHistory
             ..add({'role': 'user',      'content': input})
             ..add({'role': 'assistant', 'content': finalText});
           while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          _aiStreamActive = false;
+          _aiStreamSub    = null;
+          onDone(finalText);
+        } else if (finalText.isNotEmpty && _isFallbackText(finalText)) {
+          // É texto de fallback — exibe na UI mas não entra no histórico da API
+          if (kDebugMode) debugPrint('[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText');
           _aiStreamActive = false;
           _aiStreamSub    = null;
           onDone(finalText);
@@ -3708,16 +3804,21 @@ class AppProvider extends ChangeNotifier {
       final geminiResult = await GeminiService.chat(
         userMessage: input,
         systemPrompt: systemPrompt,
-        history: List.unmodifiable(_aiHistory),
+        history: List.unmodifiable(_sanitizedHistory),  // HOTFIX 247D: sanitized read
         maxTokens: 2200,  // Token base elevado — retry automático até 4000 se truncar
         useGrounding: true,
       );
 
       if (!geminiResult.isError) {
-        _aiHistory
-          ..add({'role': 'user', 'content': input})
-          ..add({'role': 'assistant', 'content': geminiResult.text});
-        while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+        if (!_isFallbackText(geminiResult.text)) {
+          _aiHistory
+            ..add({'role': 'user', 'content': input})
+            ..add({'role': 'assistant', 'content': geminiResult.text});
+          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        } else if (kDebugMode) {
+          debugPrint('[HISTORY_SANITIZER] buildAIAnswer_fallback_blocked reason=isFallbackText');
+        }
         return geminiResult.text;
       }
 
@@ -3738,11 +3839,15 @@ class AppProvider extends ChangeNotifier {
 
       if (hasUsableRawContent) {
         // Texto bruto com conteúdo real → exibir diretamente, sem contingência.
-        // Preserva histórico para que a sessão continue coerente.
-        _aiHistory
-          ..add({'role': 'user',      'content': input})
-          ..add({'role': 'assistant', 'content': rawContent});
-        while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+        if (!_isFallbackText(rawContent)) {
+          _aiHistory
+            ..add({'role': 'user',      'content': input})
+            ..add({'role': 'assistant', 'content': rawContent});
+          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+        } else if (kDebugMode) {
+          debugPrint('[HISTORY_SANITIZER] buildAIAnswer_rawContent_blocked reason=isFallbackText');
+        }
         return rawContent;
       }
 
@@ -3809,7 +3914,7 @@ class AppProvider extends ChangeNotifier {
       apiKey: _openAiKey,
       userMessage: input,
       systemPrompt: systemPrompt,
-      history: List.unmodifiable(_aiHistory),
+      history: List.unmodifiable(_sanitizedHistory),  // HOTFIX 247D: sanitized read
       maxTokens: 1100,  // Passo 6 OpenAI legado — mesmo limite do Gemini
     );
 
@@ -3838,10 +3943,15 @@ class AppProvider extends ChangeNotifier {
       }
     }
 
-    _aiHistory
-      ..add({'role': 'user', 'content': input})
-      ..add({'role': 'assistant', 'content': result.text});
-    while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+    // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+    if (!_isFallbackText(result.text)) {
+      _aiHistory
+        ..add({'role': 'user', 'content': input})
+        ..add({'role': 'assistant', 'content': result.text});
+      while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+    } else if (kDebugMode) {
+      debugPrint('[HISTORY_SANITIZER] openai_result_blocked reason=isFallbackText');
+    }
     return result.text;
   }
 
