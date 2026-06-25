@@ -1817,10 +1817,8 @@ class PlantaoResponse {
     return count;
   }
 
-  /// Retorna true se todos os campos obrigatórios têm conteúdo
-  bool get isComplete =>
-      conduta.trim().isNotEmpty &&
-      monitorar.trim().isNotEmpty;
+  /// BUILD 265: isComplete — apenas 🟥 (conduta) obrigatória; monitorar agora opcional.
+  bool get isComplete => conduta.trim().isNotEmpty;
 
   @override
   String toString() =>
@@ -1970,17 +1968,19 @@ class PlantaoParser {
     final calculoBlock     = blocks[_kCalculo];
     final significadoBlock = blocks[_kSignificado];
 
-    // Campos obrigatórios: conduta (🟥) sempre, monitorar (📌) sempre
+    // BUILD 265: único campo obrigatório é conduta (🟥).
+    // monitorar/📌 agora OPCIONAL — parser aceita resposta com liberdade estrutural.
+    // Princípio: se tem 🟥, a resposta é válida e deve ser renderizada.
     final condutaText   = condutaBlock?.text ?? '';
-    // 📌 pode ser substituído por 📈 ou ✅ em alguns templates
+    // 📌 pode ser substituído por 📈 ou ✅ ou estar ausente (liberdade clínica guiada)
     final monitorarText = monitorarBlock?.text
         ?? metasBlock?.text
         ?? proxPassoBlock?.text
         ?? '';
 
-    // Se campos obrigatórios estiverem vazios, não podemos construir o objeto
-    if (condutaText.isEmpty || monitorarText.isEmpty) {
-      debugPrint('[PLANTAO_PARSER] parse falhou: campos obrigatórios ausentes '
+    // BUILD 265: só bloqueia se NÃO houver 🟥 algum (resposta realmente inválida)
+    if (condutaText.isEmpty) {
+      debugPrint('[PLANTAO_PARSER] parse falhou: 🟥 ausente '
           '(conduta=${condutaText.isNotEmpty} '
           'monitorar/metas=${monitorarText.isNotEmpty})');
       return null;
@@ -2216,11 +2216,10 @@ class PlantaoOrganizer {
     return _kMetaLeakPatterns.any((p) => lower.contains(p));
   }
 
-  /// Verifica se um PlantaoResponse parseado tem campos obrigatórios.
-  /// Nota: não é critério de fallback — parser pode falhar para resposta válida.
+  /// BUILD 265: isValidResponse — apenas 🟥 (conduta) obrigatória.
+  /// Monitorar agora opcional — liberdade estrutural clínica guiada.
   static bool isValidResponse(PlantaoResponse r) {
-    return r.conduta.trim().isNotEmpty &&
-        r.monitorar.trim().isNotEmpty;
+    return r.conduta.trim().isNotEmpty;
   }
 }
 

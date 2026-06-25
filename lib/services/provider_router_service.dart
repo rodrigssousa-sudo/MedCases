@@ -129,10 +129,10 @@ class ProviderRouterService {
     String mode = 'plantao',
     String lang = 'pt',
     String requestId = '',
-    // BUILD 261: maxOutputTokens forwarded to Cloud Function.
-    // Plantão: 450 tok (6-12 linhas formato Plantão = ~200-350 words).
+    // BUILD 265: maxOutputTokens 450→800 (liberdade clínica guiada Plantão).
+    // Plantão: 800 tok (liberdade de estrutura — até ~600 words).
     // Estudo: 2048 tok (resposta acadêmica completa).
-    int maxOutputTokens = 450,
+    int maxOutputTokens = 800,
   }) async {
     final startMs = DateTime.now().millisecondsSinceEpoch;
 

@@ -3421,7 +3421,7 @@ class AppProvider extends ChangeNotifier {
         mode:            longResponse ? 'estudo' : 'plantao',
         lang:            _lang,
         requestId:       requestId,
-        maxOutputTokens: longResponse ? 2048 : 450,  // BUILD 261: Plantão=450, Estudo=2048
+        maxOutputTokens: longResponse ? 2048 : 800,  // BUILD 265: Plantão=800 (liberdade clínica), Estudo=2048
       );
 
       if (paidResult.success && paidResult.text.isNotEmpty) {
@@ -3504,7 +3504,7 @@ class AppProvider extends ChangeNotifier {
           mode:            longResponse ? 'estudo' : 'plantao',
           lang:            _lang,
           requestId:       requestId,
-          maxOutputTokens: longResponse ? 2048 : 450,  // BUILD 261: Plantão=450, Estudo=2048
+          maxOutputTokens: longResponse ? 2048 : 800,  // BUILD 265: Plantão=800 (liberdade clínica), Estudo=2048
         );
 
         criticalTimeoutTimer?.cancel();

@@ -327,7 +327,7 @@ exports.onUserUnblocked = onDocumentUpdated(
 //
 // PAYLOAD (cliente → função):
 //   { userMessage, systemPrompt, history, mode, requestId, lang, maxOutputTokens }
-//   BUILD 261: maxOutputTokens — Plantão=450, Estudo=2048 (clamped 200–2048 server-side)
+//   BUILD 265: maxOutputTokens — Plantão=800, Estudo=2048 (clamped 200–2048 server-side)
 //
 // RESPOSTA (função → cliente):
 //   { text, model, inputTokensApprox, outputTokensApprox, durationMs }
@@ -500,12 +500,12 @@ exports.geminiPaidProxy = onRequest(
       mode = 'plantao',
       requestId = '',
       lang = 'pt',
-      // BUILD 261: maxOutputTokens forwarded from Flutter client.
-      // Plantão=450 tok (6-12 lines), Estudo=2048 tok (full academic response).
+      // BUILD 265: maxOutputTokens forwarded from Flutter client.
+      // Plantão=800 tok (liberdade clínica guiada), Estudo=2048 tok (full academic response).
       // Hard-clamped: min=200, max=2048 (Gemini paid safety ceiling).
-      maxOutputTokens: rawMaxOut = 450,
+      maxOutputTokens: rawMaxOut = 800,
     } = req.body || {};
-    const maxOutClamped = Math.min(Math.max(Number(rawMaxOut) || 450, 200), 2048);
+    const maxOutClamped = Math.min(Math.max(Number(rawMaxOut) || 800, 200), 2048);
     if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
       res.status(400).json({ error: 'invalid_payload' });
       return;
@@ -541,10 +541,9 @@ exports.geminiPaidProxy = onRequest(
       },
       contents,
       generationConfig: {
-        temperature:     0.3,
-        // BUILD 261: maxOutputTokens now client-controlled.
-        // Plantão=450 tok (compact 6-12 line format), Estudo=2048 tok (full academic).
-        // Hard-clamped server-side: min=200, max=2048.
+        temperature:     0.4,  // BUILD 265: 0.3→0.4 — liberdade clínica guiada
+        // BUILD 265: maxOutputTokens now 800 default (Plantão liberdade clínica).
+        // Estudo=2048 tok (full academic). Hard-clamped server-side: min=200, max=2048.
         maxOutputTokens: maxOutClamped,
         topP:            0.9,
         topK:            40,

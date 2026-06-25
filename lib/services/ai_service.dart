@@ -1427,28 +1427,24 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       debugPrint('[Build264][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
           'Estudo constants NEVER TOUCHED. ptGreeting DELETED. REGRA_SUPREMACIA INJECTED.');
 
-      // ── BUILD 264: REGRA DE SUPREMACIA — injected before all modules ────────
+      // ── BUILD 265: LIBERDADE CLÍNICA GUIADA — substitui rigidez do BUILD 264 ──
       final ptSupremacyRule = isEs
-          ? 'REGLA DE SUPREMACIA: ERES UNA API MEDICA REACTIVA, NO UN CHATBOT. '
-            'CERO CONVERSACION. CERO SALUDOS. CERO PREAMBULOS. '
-            'NUNCA PIDAS MAS DATOS O CONTEXTO CLINICO AL USUARIO.\n'
-            'SI EL USUARIO ESCRIBE SOLO EL NOMBRE DE UNA ENFERMEDAD (Ej: "IAM", "ACV"), '
-            'ASUME UN ADULTO GENERICO GRAVE EN EMERGENCIA.\n'
-            'TU UNICO TRABAJO ES:\n'
-            '1. IDENTIFICAR A CUAL DE LOS 21 MODELOS (MATRICES) ABAJO SE AJUSTA LA QUERY.\n'
-            '2. LLENAR LOS DATOS CLINICOS Y FARMACOLOGICOS RIGUROSAMENTE DENTRO DE LA ESTRUCTURA DEL MODELO ELEGIDO.\n'
-            '3. ENTREGAR LA RESPUESTA COMENZANDO DIRECTAMENTE CON EL EMOJI 🟥. '
-            'NO ESCRIBAS ABSOLUTAMENTE NADA ANTES NI DESPUES DEL MODELO LLENADO.\n\n'
-          : 'REGRA DE SUPREMACIA: VOCE E UMA API MEDICA REATIVA, NAO UM CHATBOT. '
-            'ZERO CONVERSA. ZERO SAUDACOES. ZERO PREAMBULOS. '
-            'NUNCA PECA MAIS DADOS OU CONTEXTO CLINICO AO USUARIO.\n'
-            'SE O USUARIO DIGITAR APENAS O NOME DE UMA DOENCA (Ex: "IAM", "AVC"), '
-            'PRESUMA UM ADULTO GENERICO GRAVE NA EMERGENCIA.\n'
-            'SEU UNICO TRABALHO E:\n'
-            '1. IDENTIFICAR A QUAL DOS 21 MODELOS (MATRIZES) ABAIXO A QUERY SE ENCAIXA.\n'
-            '2. PREENCHER OS DADOS CLINICOS E FARMACOLOGICOS RIGOROSAMENTE DENTRO DA ESTRUTURA DO MODELO ESCOLHIDO.\n'
-            '3. ENTREGAR A RESPOSTA COMECANDO DIRETAMENTE COM O EMOJI 🟥. '
-            'NAO ESCREVA ABSOLUTAMENTE NADA ANTES OU DEPOIS DO MODELO PREENCHIDO.\n\n';
+          ? 'GUIA CLINICO DE ESTRUTURA: usa las 21 matrices como guia de estructura, '
+            'no como camisa de fuerza. Tienes libertad para adaptar los subtitulos '
+            'segun la gravedad del caso.\n'
+            'REGLAS FIJAS (no negociables):\n'
+            '• Inicia SIEMPRE con 🟥 [NOMBRE DE LA ENFERMEDAD] en la primera linea.\n'
+            '• Usa 🚨 para destacar la conducta critica y 💊 para los farmacos.\n'
+            '• Sin saludos, sin preambulos — ve directo al punto clinico.\n'
+            '• Si la query es solo el nombre de una enfermedad, asume adulto generico grave en emergencia.\n\n'
+          : 'GUIA CLINICO DE ESTRUTURA: use as 21 matrizes como guia de estrutura, '
+            'nao como camisa de forca. Voce tem liberdade para adaptar os subtitulos '
+            'conforme a gravidade do caso.\n'
+            'REGRAS FIXAS (nao negociaveis):\n'
+            '• Inicie SEMPRE com 🟥 [NOME DA DOENCA] na primeira linha.\n'
+            '• Use 🚨 para destacar a conduta critica e 💊 para os farmacos.\n'
+            '• Sem saudacoes, sem preambulos — va direto ao ponto clinico.\n'
+            '• Se a query for apenas o nome de uma doenca, presuma adulto generico grave na emergencia.\n\n';
 
       // ── PLANTÃO ASSEMBLY — compact modules only ───────────────────────────
       return '$ptLangHeader'
