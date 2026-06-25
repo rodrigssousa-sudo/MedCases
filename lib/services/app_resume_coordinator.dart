@@ -10,12 +10,12 @@
 //
 // 1. TIMERS THROTTLED (Web/iOS):
 //    • Browsers suspendem/reduzem timers em abas inativas.
-//    • Flutter Timers internos (watchdog 45s, timeout global 15s) podem
+//    • Flutter Timers internos (watchdog 45s, timeout global 30s) podem
 //      "congelar" — o Timer dispara muito depois do tempo real.
 //    • Resultado: o usuário volta e o app ainda está "esperando".
 //
 // 2. AI REQUEST SEM DEADLINE REAL:
-//    • O globalTimeout de 15s no sendAiMessage usa Timer — sujeito a throttle.
+//    • O globalTimeout de 30s no sendAiMessage usa Timer — sujeito a throttle.
 //    • Ao voltar do background com Timer atrasado, o request pode estar
 //      "morto" na rede mas o Flutter ainda pensa que está dentro do prazo.
 //    • Resultado: spinner infinito.
@@ -40,7 +40,7 @@
 // AppResumeCoordinator é um singleton que:
 //   1. Registra timestamps reais (DateTime.now()) para cada operação crítica.
 //   2. Ao resumed/visibilitychange, verifica ELAPSED real com DateTime.now().
-//   3. Para IA: se elapsed > 15s → encerra com safe-card imediatamente.
+//   3. Para IA: se elapsed > 30s → encerra com safe-card imediatamente.
 //   4. Para bootstrap: se elapsed > kBootstrapTimeoutMs → força conclusão.
 //   5. Para qualquer loading: se elapsed > kLoadingWatchdogMs → libera UI.
 //
@@ -58,7 +58,8 @@ import 'package:flutter/foundation.dart' show debugPrint;
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Orçamento máximo para o request de IA (igual ao globalTimeout do provider).
-const _kAiDeadlineMs = 15000;
+/// BUILD 245 ADENDO: 30s — permite fallback pago concluir sem ser cortado.
+const _kAiDeadlineMs = 30000;
 
 /// Orçamento máximo para bootstrap inicial (Firebase + auth + setUser).
 const _kBootstrapDeadlineMs = 20000;

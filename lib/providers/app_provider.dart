@@ -3113,7 +3113,7 @@ class AppProvider extends ChangeNotifier {
     if (kDebugMode) debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
 
     // BUILD 241: registra request no coordinator para verificação no resume.
-    // Se o app for para background e voltar após 15s, onForeground() dispara
+    // Se o app for para background e voltar após 30s, onForeground() dispara
     // o onTimeout abaixo imediatamente via tempo real (sem depender de Timer).
     AppResumeCoordinator.instance.registerAiRequest(
       requestId: thisRequestId,
@@ -3311,19 +3311,21 @@ class AppProvider extends ChangeNotifier {
     // Evita 503→fallback overhead (até 5s perdidos) em contexto de emergência.
     //
     // Proteções de concorrência:
-    //   • _criticalDone: bool local — garante onDone/onError disparam 1x.
+    //   • criticalDone: bool local — garante onDone/onError disparam 1x.
     //   • _aiStreamActive=true durante o voo → bloqueia nova chamada.
-    //   • Timer 15s → safe-card se proxy não responder a tempo.
+    //   • Timer 30s → safe-card se proxy não responder a tempo.
+    //     BUILD 245 ADENDO: 30s (era 15s) — paid proxy pode demorar 15-25s.
     if (aiPriority == 'critical') {
       bool criticalDone = false;
       Timer? criticalTimeoutTimer;
 
-      // Timer: 15s — idêntico ao timer do caminho Free/Fallback.
-      criticalTimeoutTimer = Timer(const Duration(seconds: 15), () {
+      // Timer: 30s — Cloud Function pode ter cold start + Gemini inference.
+      // 15s anterior cortava respostas válidas antes do proxy concluir.
+      criticalTimeoutTimer = Timer(const Duration(seconds: 30), () {
         if (criticalDone) return;
         criticalDone = true;
         final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
-        debugPrint('[AI_TIMEOUT_GUARD] elapsedMs=$elapsedMs timeout=15000 critical_path=true requestId=$thisRequestId');
+        debugPrint('[AI_TIMEOUT] mode=plantao timeoutMs=30000 provider=paid elapsedMs=$elapsedMs requestId=$thisRequestId');
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
         _aiStreamActive = false;
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
@@ -3391,14 +3393,16 @@ class AppProvider extends ChangeNotifier {
       appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
     );
 
-    // ── BUILD 238 ADENDO: Timer global de 15s ────────────────────────────
-    // Orçamento: Free1=5s + Free2=5s + Paid=5s = 15s total percebido.
-    // Se estourar → cancela tudo, invalida requestId, emite safe-card.
+    // ── BUILD 238 ADENDO: Timer global — caminho acadêmico (Free→Fallback) ──
+    // Orçamento: Free1=5s + Free2=5s + Paid=20s = 30s total percebido.
+    // BUILD 245 ADENDO: 30s (era 15s) — fallback pago pode demorar 15-25s.
+    // NOTA: o timer só dispara se completionFired=false (stream Free travado).
+    // Quando Free falha e paid começa, completionFired=true → timer neutered.
+    // Útil apenas para hung stream (sem chunks, sem erro, sem done).
     Timer? _globalTimeoutTimer;
-    _globalTimeoutTimer = Timer(const Duration(seconds: 15), () {
+    _globalTimeoutTimer = Timer(const Duration(seconds: 30), () {
       final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
-      // BUILD 244: single-line timeout summary — no repeated invalidated= log
-      debugPrint('[AI_TIMEOUT_GUARD] elapsedMs=$elapsedMs timeout=15000 requestId=$thisRequestId');
+      debugPrint('[AI_TIMEOUT] mode=academic timeoutMs=30000 provider=free elapsedMs=$elapsedMs requestId=$thisRequestId');
       if (completionFired) return;
       completionFired = true;
       // Invalida o requestId — respostas chegando após isso são ignoradas
