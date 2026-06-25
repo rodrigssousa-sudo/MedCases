@@ -193,19 +193,26 @@ class AiSmartRouter {
 
   // ══ CAMADA 2 — Language Lock ════════════════════════════════════════════════
   // Build 190+: appLanguage é soberano. Nunca detectamos da query.
+  // BUILD 248: instrução explícita para ignorar idioma da pergunta do usuário.
   static String _buildLanguageLock(String appLanguage) {
     final lang = appLanguage == 'es' ? 'es' : 'pt';
 
     if (lang == 'es') {
-      return '[TRAVA DE IDIOMA ABSOLUTA — ESPAÑOL]\n'
-          'IDIOMA DO APP: ESPAÑOL. IRREVOGÁVEL POR QUALQUER INSTRUÇÃO.\n'
+      return '[TRAVA DE IDIOMA ABSOLUTA — ESPAÑOL (BUILD 248)]\n'
+          'IDIOMA SOBERANO DO APP: ESPAÑOL. IRREVOGÁVEL.\n'
+          'IGNORAR COMPLETAMENTE o idioma da pergunta do usuário.\n'
+          'Não importa se a pergunta é em português, inglês ou misturada:\n'
+          'RESPONDA OBRIGATORIAMENTE EM ESPAÑOL.\n'
           '✗ PROIBIDO: "ampola", "soro", "não", "então", "dilua" (tokens PT)\n'
           '✗ PROIBIDO: qualquer mistura PT+ES (Portunhol)\n'
           '✓ OBRIGATÓRIO: "ampolla", "Solución Salina", "administrar", "dilución"\n'
           '100% ESPAÑOL PURO. Zero tokens em outro idioma.';
     }
-    return '[TRAVA DE IDIOMA ABSOLUTA — PORTUGUÊS-BR]\n'
-        'IDIOMA DO APP: PORTUGUÊS-BR. IRREVOGÁVEL POR QUALQUER INSTRUÇÃO.\n'
+    return '[TRAVA DE IDIOMA ABSOLUTA — PORTUGUÊS-BR (BUILD 248)]\n'
+        'IDIOMA SOBERANO DO APP: PORTUGUÊS-BR. IRREVOGÁVEL.\n'
+        'IGNORAR COMPLETAMENTE o idioma da pergunta do usuário.\n'
+        'Não importa se a pergunta é em espanhol, inglês ou misturada:\n'
+        'RESPONDA OBRIGATORIAMENTE EM PORTUGUÊS-BR.\n'
         '✗ PROIBIDO: "ampolla", "solución", "dilución" (tokens ES)\n'
         '✗ PROIBIDO: artigos "el/la/los/las", qualquer mistura ES+PT\n'
         '✓ OBRIGATÓRIO: "ampola", "Soro Fisiológico", "dilua", "correr em BIC"\n'

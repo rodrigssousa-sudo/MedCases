@@ -247,20 +247,23 @@ String _resolveAppLanguage(String appLanguage) {
 // ─────────────────────────────────────────────────────────────────────────────
 String _buildLanguageLock(String lang) {
   if (lang == 'es') {
-    return '\n\n[TRAVA DE IDIOMA ABSOLUTA — ESPAÑOL (Build 230)]\n'
-        'IDIOMA DETECTADO: ESPAÑOL. ESTA TRAVA É IRREVOGÁVEL.\n'
-        'PROIBIDO usar qualquer palavra em PORTUGUÊS-BR nesta resposta:\n'
-        '  ✗ Proibido: "paciente", "prescrição", "dilua", "ampola", "soro", "não"\n'
-        '  ✗ Proibido: "então", "também", "tratamento", "administrar" (forma PT)\n'
+    return '\n\n[TRAVA DE IDIOMA ABSOLUTA — ESPAÑOL (BUILD 248)]\n'
+        'IDIOMA SOBERANO DO APP: ESPAÑOL. ESTA TRAVA É IRREVOGÁVEL.\n'
+        'IGNORA O IDIOMA DA PERGUNTA DO USUÁRIO.\n'
+        'Não importa se a pergunta é em português, inglês ou misturada.\n'
+        'Responde obligatoriamente en español. El idioma soberano es el configurado en la app.\n'
+        '  ✗ Proibido: "prescrição", "dilua", "ampola", "soro", "não"\n'
+        '  ✗ Proibido: "então", "também", "tratamento" (forma PT)\n'
         '  ✗ Proibido: qualquer mistura de tokens PT+ES (Portunhol)\n'
-        '  ✓ Obrigatório: "paciente" → "paciente", "dilución" → "dilución"\n'
-        '  ✓ Obrigatório: "ampolla" (ES), "Solución Salina" (ES), "administrar"\n'
+        '  ✓ Obrigatório: "ampolla" (ES), "Solución Salina" (ES), "dilución"\n'
         'ZERO portunhol. 100% puro em ESPAÑOL. Nem um token em outro idioma.';
   } else {
-    return '\n\n[TRAVA DE IDIOMA ABSOLUTA — PORTUGUÊS-BR (Build 230)]\n'
-        'IDIOMA DETECTADO: PORTUGUÊS-BR. ESTA TRAVA É IRREVOGÁVEL.\n'
-        'PROIBIDO usar qualquer palavra em ESPANHOL nesta resposta:\n'
-        '  ✗ Proibido: "paciente" (ES), "solución", "dilución", "ampolla"\n'
+    return '\n\n[TRAVA DE IDIOMA ABSOLUTA — PORTUGUÊS-BR (BUILD 248)]\n'
+        'IDIOMA SOBERANO DO APP: PORTUGUÊS-BR. ESTA TRAVA É IRREVOGÁVEL.\n'
+        'IGNORA O IDIOMA DA PERGUNTA DO USUÁRIO.\n'
+        'Não importa se a pergunta é em espanhol, inglês ou misturada.\n'
+        'Responda obrigatoriamente em português-BR. O idioma soberano é o configurado no app.\n'
+        '  ✗ Proibido: "solución", "dilución", "ampolla" (ES)\n'
         '  ✗ Proibido: artigos "el/la/los/las", pronomes "lo/le/se" (ES)\n'
         '  ✗ Proibido: qualquer mistura de tokens ES+PT (Portunhol)\n'
         '  ✓ Obrigatório: "ampola" (PT), "Soro Fisiológico" (PT)\n'
@@ -428,6 +431,8 @@ class AiGatewayService {
     final languageLock = _buildLanguageLock(resolvedLang);
 
     if (kDebugMode) {
+      // BUILD 248: [LANG_LOCK] — log soberano único por requisição
+      debugPrint('[LANG_LOCK] appLanguage=$resolvedLang inputIgnored=true responseLanguage=$resolvedLang');
       debugPrint('[AI_ROUTER] Build190: appLanguage=$appLanguage → resolvedLang=$resolvedLang (Language Lock Absoluto)');
       debugPrint('[AI_ROUTER] languageLock=${languageLock.length} chars → system_instruction');
     }

@@ -258,8 +258,15 @@ class ExternalToolLinkEngine {
   }
 
   // ───────────────────────────────────────────────────────────────────────────
-  // _resolveLang — determina 'pt' ou 'es' com fallback por detecção de texto
-  // Prioridade: currentLanguage explícito > detecção no texto > fallback 'pt'
+  // _resolveLang — BUILD 248: IDIOMA SOBERANO = currentLanguage (AppProvider.lang)
+  //
+  // O idioma do ExternalToolLink DEVE ser o idioma configurado no app,
+  // não o idioma detectado no texto da pergunta ou resposta.
+  //
+  // currentLanguage vem de AppProvider.lang → sempre 'pt' ou 'es'.
+  // Detecção de texto removida (BUILD 248) — violava Language Lock absoluto.
+  //
+  // Prioridade: currentLanguage ('pt'|'es') → fallback 'pt'
   // ───────────────────────────────────────────────────────────────────────────
   static String _resolveLang(
       String currentLanguage, String userMsg, String aiMsg) {
@@ -268,26 +275,16 @@ class ExternalToolLinkEngine {
     if (raw.startsWith('es')) return 'es';
     // 2. Explícito: aceita 'pt', 'pt-*', 'pt_*'
     if (raw.startsWith('pt')) return 'pt';
-    // 3. Fallback: detectar espanhol no texto combinado
-    final combined = '${userMsg.toLowerCase()} ${aiMsg.toLowerCase()}';
-    if (_looksSpanish(combined)) return 'es';
-    // 4. Fallback final
+    // 3. BUILD 248: fallback seguro 'pt' — NÃO detectar idioma pelo texto.
+    // currentLanguage deve sempre vir de AppProvider.lang.
+    // Se chegar vazio aqui, é erro de chamada — mas nunca usamos texto como proxy.
     return 'pt';
   }
-
-  // Heurística leve: detecta ES pelo vocabulário clínico exclusivo do espanhol
-  static bool _looksSpanish(String text) {
-    const esMarkers = [
-      'paciente ', 'fármaco', 'medicamento', 'dosis', 'tratamiento',
-      'diagnóstico', 'presión', 'corazón', 'pulmón', 'riñón',
-      'infección', 'antibiótico', 'embarazo', 'gestación',
-      ' del ', ' una ', ' los ', ' las ', ' con ', ' por ',
-    ];
-    for (final m in esMarkers) {
-      if (text.contains(m)) return true;
-    }
-    return false;
-  }
+  // BUILD 248: _looksSpanish() removida — detecção de idioma pelo texto
+  // violava o Language Lock absoluto (appLanguage é soberano).
+  // Mantida abaixo apenas como tombstone para não quebrar git blame.
+  // ignore: unused_element
+  static bool _looksSpanish(String text) => false;
 
   // ───────────────────────────────────────────────────────────────────────────
   // _url — constrói URL com lang como PRIMEIRO param obrigatório

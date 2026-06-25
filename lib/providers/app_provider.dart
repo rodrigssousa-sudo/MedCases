@@ -216,10 +216,13 @@ class AppProvider extends ChangeNotifier {
   /// A pergunta pode estar em qualquer idioma. A resposta usa exclusivamente o
   /// idioma configurado pelo usuário (appLanguage = _lang: 'pt' | 'es').
   String _resolveSessionLang(String input) {
-    // Build 190: _lang é soberano. Nunca detectamos idioma da pergunta.
+    // Build 190 / BUILD 248: _lang é soberano. Nunca detectamos idioma da pergunta.
     // _sessionLockedLang agora apenas espelha _lang para compatibilidade.
+    // O idioma da resposta é EXCLUSIVAMENTE o idioma configurado no app (_lang).
     _sessionLockedLang = _lang;
-    debugPrint('[LANG_LOCK] Build190: appLanguage=$_lang soberano (input ignorado para lang detection)');
+    if (kDebugMode) {
+      debugPrint('[LANG_LOCK] appLanguage=$_lang inputIgnored=true responseLanguage=$_lang');
+    }
     return _lang;
   }
 
