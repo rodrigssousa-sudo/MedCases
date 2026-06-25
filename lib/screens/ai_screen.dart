@@ -1392,11 +1392,30 @@ class _AiScreenState extends State<AiScreen> {
               );
             }
 
-            // ── PASSO 1: comita texto final mantendo _isStreaming=true ──────
-            // O _AiBubble recebe o texto completo mas ainda não remove o cursor,
-            // permitindo que o Flutter calcule o layout dos blocos finais primeiro.
+            // ── BUILD 254: SINCRONIZAÇÃO IMEDIATA DO TÉRMINO DO STREAM ────────
+            // PROBLEMA: o layout 2-passos do BUILD 101 (texto em setState#1 com
+            // _isStreaming=true, cursor removido em setState#2 via postFrameCallback)
+            // causava "Turn Lag": _isStreaming=false chegava apenas 1 frame tarde,
+            // impedindo o _PlantaoRenderer de montar até o próximo user-action.
+            //
+            // SOLUÇÃO BUILD 254: estado de término commitado em UM ÚNICO setState
+            // síncrono — texto final + _isStreaming=false + dispose do notifier —
+            // tudo no mesmo frame. O scroll final é delegado para o postFrameCallback
+            // (sem setState — apenas animateTo), preservando a estabilidade de layout.
+            //
+            // COMPATIBILIDADE BUILD 101: _visibleCount no _AiBubbleState já garante
+            // visibilidade total ao receber isStreaming=false → old.isStreaming=true
+            // (linha ~5904 de ai_screen). O cursor ▌ é removido corretamente pela
+            // transição isStreaming true→false no didUpdateWidget.
+
+            // Descarta notifier ANTES do setState — sem listener pendurado no rebuild.
+            _streamingTextNotifier?.dispose();
+            _streamingTextNotifier = null;
+
+            // ÚNICO setState de fechamento: texto final + fim de stream em um frame.
             setState(() {
               _thinking     = false;
+              _isStreaming   = false;   // BUILD 254: síncrono — sem postFrameCallback
               _aiError      = isKeyError;
               _networkError = false;
               if (streamingMsgIdx >= 0) {
@@ -1414,32 +1433,17 @@ class _AiScreenState extends State<AiScreen> {
               }
             });
 
-            // Scroll intermediário: avança para onde estamos agora
-            _scrollDown();
+            // ── Fix 1: Persistência Imediata por Turno (pós-resposta da IA) ──
+            // Salva o par (pergunta + resposta) no histórico imediatamente após
+            // o stream finalizar. Garante que ao trocar de aba, o histórico
+            // completo do turno já está persistido no disco/Firestore.
+            _saveCurrentSessionToHistory(context.read<AppProvider>());
 
-            // ── PASSO 2: remove cursor no próximo frame ──────────────────
-            // Após o Flutter calcular o layout dos blocos finais (com cursor),
-            // remove o cursor setando _isStreaming=false. Neste ponto o
-            // _computeBlocksFromText() vai recomputar sem cursor — mas o maxScrollExtent
-            // já está estável porque os blocos-base já foram medidos.
+            // ── Scroll final (3 frames encadeados) ──────────────────────────
+            // Aguarda o layout do _PlantaoRenderer estabilizar antes do scroll.
+            // Não usa setState — apenas animateTo no controller de scroll.
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) return;
-              // Build 188: descarta o notifier de streaming — streaming encerrado
-              _streamingTextNotifier?.dispose();
-              _streamingTextNotifier = null;
-              setState(() {
-                _isStreaming = false;
-              });
-              // ── Fix 1: Persistência Imediata por Turno (pós-resposta da IA) ──
-              // Salva o par (pergunta + resposta) no histórico imediatamente após
-              // o stream finalizar. Garante que ao trocar de aba, o histórico
-              // completo do turno já está persistido no disco/Firestore.
-              _saveCurrentSessionToHistory(context.read<AppProvider>());
-
-              // ── PASSO 3: scroll final após remoção do cursor (3 frames) ──
-              // Frame 1: aguarda o rebuild do _AiBubble sem cursor (sem ▌)
-              // Frame 2: aguarda o segundo layout pass (altura dos blocos finais)
-              // Frame 3: maxScrollExtent totalmente estabilizado → scroll seguro
+              if (!mounted || _userScrolledUp) return;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!mounted || _userScrolledUp) return;
                 WidgetsBinding.instance.addPostFrameCallback((_) {

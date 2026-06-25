@@ -3219,6 +3219,7 @@ class AppProvider extends ChangeNotifier {
         _aiCallInFlight = false;
         debugPrint('[AI_RESUME] timeout_on_resume requestId=$thisRequestId');
         onDone(_timeoutSafeCard(_lang));
+        notifyListeners(); // BUILD 254: sincroniza UI após timeout de resume
       },
     );
 
@@ -3228,6 +3229,17 @@ class AppProvider extends ChangeNotifier {
       debugPrint('[sendAiMessage] ignorado — resposta em andamento');
       return false;
     }
+
+    // ── BUILD 254: wrappers com notifyListeners() ao término do stream ────
+    // Cada vez que onDone/onError dispara, o Provider notifica a UI via
+    // notifyListeners() APÓS o callback do caller (ai_screen) ser processado.
+    // Isso garante que context.watch<AppProvider>() rebuildará a tela mesmo
+    // que o setState interno do screen tenha sido agendado de forma assíncrona.
+    // Combinado com o setState síncrono (BUILD 254, ai_screen.dart), elimina
+    // o "Turn Lag" onde _isStreaming=false chegava tarde demais para o
+    // _PlantaoRenderer montar no primeiro frame de conclusão.
+    final wrappedOnDone  = (String text) { onDone(text);  notifyListeners(); };
+    final wrappedOnError = (String err)  { onError(err);  notifyListeners(); };
 
     // ── Build 156: Client-Side Intelligence — sem gateway intermediário ───
     // AiGatewayService é agora um shim que injeta âncora de modo e delega
@@ -3434,14 +3446,14 @@ class AppProvider extends ChangeNotifier {
         } else if (kDebugMode) {
           debugPrint('[HISTORY_SANITIZER] paid_fallback_blocked reason=isFallbackText');
         }
-        onDone(paidText);
+        wrappedOnDone(paidText);          // BUILD 254: notifyListeners() incluso
       } else {
         // Paid também falhou — mostra mensagem de instabilidade
         debugPrint('[AI_PROVIDER] both_failed requestId=$requestId reason=${paidResult.errorCode}');
         final instabilityMsg = _lang == 'es'
             ? 'Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. ⚕'
             : 'Estamos com instabilidade temporária na IA.\nTente novamente em alguns segundos. ⚕';
-        onError(instabilityMsg);
+        wrappedOnError(instabilityMsg);      // BUILD 254
       }
     }
 
@@ -3468,7 +3480,7 @@ class AppProvider extends ChangeNotifier {
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
         _aiStreamActive = false;
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-        onDone(_timeoutSafeCard(_lang));
+        wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
       });
 
       // Chama proxy pago direto (sem stream Free).
@@ -3522,11 +3534,11 @@ class AppProvider extends ChangeNotifier {
           } else if (kDebugMode) {
             debugPrint('[HISTORY_SANITIZER] critical_paid_fallback_blocked reason=isFallbackText');
           }
-          onDone(paidText);
+          wrappedOnDone(paidText);             // BUILD 254
         } else {
           debugPrint('[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}');
           // Pago falhou → safe-card (sem tentar Free — intencional no modo crítico)
-          onDone(_timeoutSafeCard(_lang));
+          wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
         }
       }());
 
@@ -3574,7 +3586,7 @@ class AppProvider extends ChangeNotifier {
       accumulator.clear();
       // BUILD 241: remove do coordinator (timer interno disparou antes do resume)
       AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-      onDone(_timeoutSafeCard(_lang));
+      wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254: global timer
     });
 
     _aiStreamSub = stream.listen(
@@ -3617,13 +3629,13 @@ class AppProvider extends ChangeNotifier {
             } else if (kDebugMode) {
               debugPrint('[HISTORY_SANITIZER] partial_fallback_blocked reason=isFallbackText');
             }
-            onDone(partialText);
+            wrappedOnDone(partialText);   // BUILD 254
             return;
           }
           accumulator.clear();
           // Build 155.2: null-safe — errorCode pode ser null em chunks malformados
           final msg = GeminiServiceV2.errorMessage(errCode, _lang);
-          onError(msg);
+          wrappedOnError(msg);              // BUILD 254
           return;
         }
 
@@ -3668,7 +3680,7 @@ class AppProvider extends ChangeNotifier {
           }
           _aiStreamActive = false;
           _aiStreamSub    = null;
-          onDone(finalText.isNotEmpty ? finalText : _lang == 'es'
+          wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
               ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
               : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
         }
@@ -3708,13 +3720,13 @@ class AppProvider extends ChangeNotifier {
           while (_aiHistory.length > 20) _aiHistory.removeAt(0);
           _aiStreamActive = false;
           _aiStreamSub    = null;
-          onDone(finalText);
+          wrappedOnDone(finalText);   // BUILD 254
         } else if (finalText.isNotEmpty && _isFallbackText(finalText)) {
           // É texto de fallback — exibe na UI mas não entra no histórico da API
           if (kDebugMode) debugPrint('[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText');
           _aiStreamActive = false;
           _aiStreamSub    = null;
-          onDone(finalText);
+          wrappedOnDone(finalText);   // BUILD 254
         } else {
           // Stream fechou vazio — Build 226: tenta paid fallback
           _aiStreamActive = false;
