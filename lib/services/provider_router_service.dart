@@ -227,7 +227,7 @@ class ProviderRouterService {
           'Authorization': 'Bearer $idToken',
         },
         body: jsonEncode(payload),
-      ).timeout(const Duration(seconds: 55));
+      ).timeout(const Duration(seconds: 60)); // BUILD 266: 55s→60s (RAG reativado)
     } on TimeoutException {
       final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
       debugPrint('[PAID_PROXY] requestId=$requestId success=false status=timeout durationMs=$durationMs');

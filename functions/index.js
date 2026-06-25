@@ -584,7 +584,7 @@ exports.geminiPaidProxy = onRequest(
           apiRes.on('end', () => { resolve(body); });
         });
         apiReq.on('error', reject);
-        apiReq.setTimeout(45000, () => { apiReq.destroy(new Error('timeout')); });
+        apiReq.setTimeout(55000, () => { apiReq.destroy(new Error('timeout')); }); // BUILD 266: 45s→55s (RAG reativado)
         apiReq.write(postData);
         apiReq.end();
       });

@@ -154,7 +154,11 @@ class AiService {
       '   Formato: **HARD STOP: [motivo exacto]**\n'
       'G. ANTI-MONOLOGIO: JAMAS "El usuario solicito", "el prompt es vago". PRIMERA PERSONA.\n'
       'H. RAG PRIORITARIO: si hay datos PROTOCOLOS/FARMACOS VERIFICADOS → usar EXACTAMENTE.\n'
-      'I. ANTI-CONTRADICCION: farmaco aprobado en CONDUCTA debe ser coherente en HARD STOP.\n';
+      'I. ANTI-CONTRADICCION: farmaco aprobado en CONDUCTA debe ser coherente en HARD STOP.\n'
+      // BUILD 266: RAG motor farmacologico
+      'J. MOTOR RAG: si la query menciona medicamentos, dosis o diluciones, '
+      'prioriza OBLIGATORIAMENTE los datos de FARMACOS VERIFICADOS inyectados. '
+      'Solo si ausentes, usa conocimiento nativo. Ve directo a la conducta.\n';
 
   static const _safetyRulesPlantaoPt =
       'SEGURANCA — ABSOLUTA:\n'
@@ -167,7 +171,11 @@ class AiService {
       '   Formato: **HARD STOP: [motivo exato]**\n'
       'G. ANTI-MONOLOGO: JAMAIS "O usuario solicitou", "o prompt e vago". PRIMEIRA PESSOA.\n'
       'H. RAG PRIORITARIO: se ha dados PROTOCOLOS/FARMACOS VERIFICADOS → usar EXATAMENTE.\n'
-      'I. ANTI-CONTRADICAO: farmaco aprovado em CONDUTA deve ser coerente em HARD STOP.\n';
+      'I. ANTI-CONTRADICAO: farmaco aprovado em CONDUTA deve ser coerente em HARD STOP.\n'
+      // BUILD 266: Motor RAG farmacologico
+      'J. MOTOR RAG: se a query mencionar medicamentos, doses ou diluicoes, '
+      'priorize OBRIGATORIAMENTE os dados de FARMACOS VERIFICADOS injetados. '
+      'Somente se ausentes, use conhecimento nativo. Va direto a conduta.\n';
 
   // ── MÓDULO 7B — Evidência COMPACTA (Plantão) ─────────────────────────────
   static const _evidenceRankingPlantaoEs =
@@ -1424,8 +1432,8 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build264][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
-          'Estudo constants NEVER TOUCHED. ptGreeting DELETED. REGRA_SUPREMACIA INJECTED.');
+      debugPrint('[Build266][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+          'Estudo constants NEVER TOUCHED. RAG_MOTOR_J INJECTED. FALLBACK_SUPREMO ACTIVE.');
 
       // ── BUILD 265: LIBERDADE CLÍNICA GUIADA — substitui rigidez do BUILD 264 ──
       final ptSupremacyRule = isEs

@@ -225,7 +225,8 @@ class GeminiServiceV2 {
   // ══════════════════════════════════════════════════════════════════════════
 
   /// Tempo máximo de inatividade mid-stream antes do watchdog disparar.
-  static const _watchdogTimeout = Duration(seconds: 45);
+  /// BUILD 266: 45s → 60s (RAG reativado aumenta latência de resposta).
+  static const _watchdogTimeout = Duration(seconds: 60);
 
   /// Janela de cooldown após 429 definitivo (esgotou todas as tentativas).
   /// Bloqueia requisições por 60s para não desperdiçar tokens em requests

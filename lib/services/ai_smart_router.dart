@@ -518,22 +518,16 @@ class AiSmartRouter {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // BUILD 247: shouldFallback() — ÚNICA fonte de decisão de fallback clínico.
+  // BUILD 266: shouldFallback() — FALLBACK SUPREMO (GRACEFUL DEGRADATION ABSOLUTO).
   //
-  // Centraliza toda lógica de "bloquear resposta e usar fallback".
-  // Chamado por _plantaoTruncationGuard (ai_screen.dart).
+  // NUNCA oculte uma resposta médica por falha de layout.
+  // Princípio: SE o LLM respondeu algo não-vazio, preserve SEMPRE.
+  // Texto bruto/Markdown corrido deve ser exibido na tela.
   //
   // BLOQUEIA apenas se:
-  //   1. resposta vazia
-  //   2. claramente truncada (sem conteúdo clínico + sintaxe cortada)
-  //   3. meta-leak irrecuperável
-  //   4. sem nenhum valor clínico
+  //   1. meta-leak irrecuperável (IA revelando instruções internas)
   //
-  // PRESERVA se:
-  //   • tem sigla clínica (IAM, TEP, PCR…)
-  //   • tem keyword clínica (dose, mg, conduta, tratamento…)
-  //   • repaired=true, orderFixed=true, hiddenFields>0
-  //   • resposta curta com conteúdo real
+  // PRESERVA em TODOS os outros casos (mesmo sem estrutura, sem 🟥, sem clínico).
   //
   // LOG: [RESPONSE_VALIDATOR] fallback=true/false reason=...
   // ─────────────────────────────────────────────────────────────────────────
@@ -557,28 +551,20 @@ class AiSmartRouter {
       return (fallback: false, reason: 'repair_success');
     }
 
-    // Nunca bloquear se tem conteúdo clínico útil (mesmo sem estrutura)
-    if (hasClinicalContent && !hasMetaLeak) {
+    // Nunca bloquear se tem conteúdo clínico útil
+    if (hasClinicalContent) {
       return (fallback: false, reason: 'useful_content');
     }
 
-    // Bloquear: meta-leak irrecuperável
+    // BUILD 266: FALLBACK SUPREMO — único bloqueio aceito é meta-leak irrecuperável.
+    // Toda resposta não-vazia do LLM deve ser exibida como texto corrido.
     if (hasMetaLeak) {
       return (fallback: true, reason: 'meta_leak');
     }
 
-    // Bloquear: truncada E sem conteúdo clínico
-    if (isTruncated && !hasClinicalContent) {
-      return (fallback: true, reason: 'truncated_no_clinical');
-    }
-
-    // Bloquear: sem nenhum valor clínico
-    if (!hasClinicalContent) {
-      return (fallback: true, reason: 'no_clinical_value');
-    }
-
-    // Default conservador: preservar (conteúdo clínico presente)
-    return (fallback: false, reason: 'default_preserve');
+    // BUILD 266: truncada sem clínico → ainda preservar (texto bruto na tela).
+    // Princípio: NUNCA oculte uma resposta médica por falha de layout.
+    return (fallback: false, reason: 'preserve_raw_text');
   }
 
   static _ValidationResult _validateResponse(
