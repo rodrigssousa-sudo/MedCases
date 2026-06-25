@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import '../platform/pdf_picker_stub.dart'
     if (dart.library.html) '../platform/pdf_picker_web.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // PARTE 4 BUILD 238
 import 'package:shared_preferences/shared_preferences.dart';
 // file_picker e firebase_storage usados via StorageService — sem import direto aqui
 import '../models/user_model.dart';
@@ -38,7 +39,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   bool get _isMaster => widget.currentAdmin.isMaster;
 
   // ── Stream único compartilhado — evita N polls paralelos por tab ──────────
-  // Um único StreamSubscription alimenta _allUsers; as tabs filtram localmente.
   StreamSubscription<List<UserModel>>? _usersSub;
   List<UserModel> _allUsers  = [];
   bool            _usersLoading = true;
@@ -48,12 +48,53 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   bool _maintLoading = false;
   final TextEditingController _maintMsgCtrl = TextEditingController();
 
+  // ── PARTE 4 BUILD 238: Stream de admin_notifications ─────────────────────
+  StreamSubscription<List<Map<String, dynamic>>>? _notifSub;
+  List<Map<String, dynamic>> _adminNotifs = [];
+  int get _unreadNotifCount {
+    final adminUid = widget.currentAdmin.uid;
+    return _adminNotifs.where((n) {
+      final readBy = (n['readBy'] as List?) ?? [];
+      return !readBy.contains(adminUid);
+    }).length;
+  }
+
+  void _subscribeNotifications() {
+    final db = FirebaseFirestore.instance;
+    _notifSub = db
+        .collection('admin_notifications')
+        .orderBy('createdAt', descending: true)
+        .limit(50)
+        .snapshots()
+        .map((snap) => snap.docs.map((d) => {'id': d.id, ...d.data()}).toList())
+        .listen(
+      (notifs) {
+        if (mounted) setState(() => _adminNotifs = notifs);
+      },
+      onError: (e) => debugPrint('[ADMIN_NOTIF] stream error: $e'),
+    );
+  }
+
+  Future<void> _markNotifRead(String notifId) async {
+    try {
+      final adminUid = widget.currentAdmin.uid;
+      await FirebaseFirestore.instance
+          .collection('admin_notifications')
+          .doc(notifId)
+          .update({'readBy': FieldValue.arrayUnion([adminUid])});
+      debugPrint('[ADMIN_NOTIF] marcado lido: notifId=$notifId adminUid=$adminUid');
+    } catch (e) {
+      debugPrint('[ADMIN_NOTIF] erro mark-read: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 9, vsync: this);
+    _tabs = TabController(length: 10, vsync: this);
     _loadLang();
     _subscribeUsers();
+    _subscribeNotifications();
   }
 
   Future<void> _refreshUsers() async {
@@ -78,6 +119,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     _tabs.dispose();
     _maintMsgCtrl.dispose();
     _usersSub?.cancel();
+    _notifSub?.cancel();
     super.dispose();
   }
 
@@ -136,6 +178,33 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             const Tab(icon: Icon(Icons.mark_email_unread_rounded, size: 16), text: 'E-mail'),
             const Tab(icon: Icon(Icons.menu_book_rounded, size: 16), text: 'Biblioteca'),
             const Tab(icon: Icon(Icons.people_alt_rounded, size: 16), text: 'Indicações'),
+            // PARTE 4 BUILD 238 — Tab Notificações com badge de não-lidos
+            Tab(
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Icon(Icons.notifications_rounded, size: 16),
+                  if (_unreadNotifCount > 0)
+                    Positioned(
+                      right: -6, top: -4,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: const BoxDecoration(
+                          color: Colors.redAccent,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
+                        child: Text(
+                          '$_unreadNotifCount',
+                          style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w900),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              text: 'Notificações',
+            ),
           ],
         ),
       ),
@@ -143,7 +212,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         animation: _tabs,
         builder: (context, _) {
           // Tabs de "sistema" não têm barra de busca: 3=Sistema, 4=Novidades,
-          // 5=Stats, 6=E-mail, 7=Biblioteca, 8=Indicações
+          // 5=Stats, 6=E-mail, 7=Biblioteca, 8=Indicações, 9=Notificações
           final isSystemTab = _tabs.index >= 3;
           return Column(
             children: [
@@ -235,6 +304,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     _BibliotecaAdminTab(currentAdmin: widget.currentAdmin),
                     // ── Tab 8: Indicações ─────────────────────────────────
                     const _InfluencersTab(),
+                    // ── Tab 9: Notificações (PARTE 4 BUILD 238) ───────────
+                    _NotificationsTab(
+                      notifications: _adminNotifs,
+                      currentAdminUid: widget.currentAdmin.uid,
+                      onMarkRead: _markNotifRead,
+                    ),
                   ],
                 ),
               ),
@@ -4808,5 +4883,209 @@ class _Field extends StatelessWidget {
         ),
       ),
     ]);
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Tab 9 — NOTIFICAÇÕES ADMIN (PARTE 4 BUILD 238)
+// ═════════════════════════════════════════════════════════════════════════════
+//
+// Mostra as notificações em /admin_notifications, mais recentes primeiro.
+// Cada card tem botão "Marcar como lida" → readBy: arrayUnion(adminUid).
+// Notificações não lidas aparecem com borda dourada.
+// ─────────────────────────────────────────────────────────────────────────────
+class _NotificationsTab extends StatelessWidget {
+  final List<Map<String, dynamic>> notifications;
+  final String currentAdminUid;
+  final Future<void> Function(String notifId) onMarkRead;
+
+  const _NotificationsTab({
+    required this.notifications,
+    required this.currentAdminUid,
+    required this.onMarkRead,
+  });
+
+  static const kDark  = Color(0xFF07110d);
+  static const kGreen = Color(0xFF075f45);
+  static const kGold  = Color(0xFFC5A365);
+  static const kGoldL = Color(0xFFFFE8A6);
+
+  bool _isRead(Map<String, dynamic> notif) {
+    final readBy = (notif['readBy'] as List?) ?? [];
+    return readBy.contains(currentAdminUid);
+  }
+
+  String _formatTs(dynamic ts) {
+    if (ts == null) return '—';
+    if (ts is Timestamp) {
+      final dt = ts.toDate().toLocal();
+      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}  ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    }
+    return ts.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (notifications.isEmpty) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.notifications_none_rounded, size: 48, color: Colors.white24),
+          const SizedBox(height: 12),
+          const Text('Nenhuma notificação ainda.',
+              style: TextStyle(color: Colors.white38, fontSize: 14)),
+        ]),
+      );
+    }
+
+    final unread = notifications.where((n) => !_isRead(n)).length;
+
+    return Column(children: [
+      // ── Header com contagem de não lidas ─────────────────────────────────
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        color: kDark,
+        child: Row(children: [
+          Icon(Icons.notifications_active_rounded, color: kGoldL, size: 16),
+          const SizedBox(width: 8),
+          Text(
+            unread > 0
+                ? '$unread não lida${unread > 1 ? 's' : ''} · ${notifications.length} total'
+                : '${notifications.length} notificaç${notifications.length > 1 ? 'ões' : 'ão'} · todas lidas',
+            style: TextStyle(
+              color: unread > 0 ? kGoldL : Colors.white54,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ]),
+      ),
+      // ── Lista de notificações ─────────────────────────────────────────────
+      Expanded(
+        child: ListView.builder(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+          itemCount: notifications.length,
+          itemBuilder: (_, i) {
+            final n = notifications[i];
+            final notifId   = n['id'] as String;
+            final read      = _isRead(n);
+            final userName  = (n['userName']  as String?) ?? 'Usuário';
+            final userEmail = (n['userEmail'] as String?) ?? '—';
+            final profession= (n['userProfession'] as String?) ?? '—';
+            final institution=(n['userInstitution'] as String?) ?? '—';
+            final status    = (n['userStatus'] as String?) ?? 'approved';
+            final tsLabel   = _formatTs(n['createdAt']);
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: const Color(0xFF111a14),
+                border: Border.all(
+                  color: read
+                      ? Colors.white12
+                      : kGold.withValues(alpha: 0.6),
+                  width: read ? 0.5 : 1.5,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  // ── Linha de cabeçalho ──────────────────────────────────
+                  Row(children: [
+                    Icon(
+                      Icons.person_add_rounded,
+                      size: 16,
+                      color: read ? Colors.white38 : kGoldL,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '🆕  $userName',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: read ? FontWeight.w500 : FontWeight.w800,
+                          color: read ? Colors.white60 : Colors.white,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (!read)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.redAccent.withValues(alpha: 0.5)),
+                        ),
+                        child: const Text('NOVA',
+                            style: TextStyle(color: Colors.redAccent, fontSize: 9, fontWeight: FontWeight.w900)),
+                      ),
+                  ]),
+                  const SizedBox(height: 6),
+                  // ── Detalhes ────────────────────────────────────────────
+                  _notifRow(Icons.email_rounded, userEmail, read),
+                  _notifRow(Icons.work_rounded, profession, read),
+                  _notifRow(Icons.location_city_rounded, institution, read),
+                  Row(children: [
+                    Icon(Icons.circle, size: 6,
+                        color: status == 'approved' ? Colors.greenAccent : Colors.orange),
+                    const SizedBox(width: 6),
+                    Text(status,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: status == 'approved'
+                              ? Colors.greenAccent.withValues(alpha: 0.8)
+                              : Colors.orange,
+                          fontWeight: FontWeight.w600,
+                        )),
+                    const Spacer(),
+                    Text(tsLabel,
+                        style: const TextStyle(fontSize: 10, color: Colors.white24)),
+                  ]),
+                  // ── Botão marcar como lida ──────────────────────────────
+                  if (!read) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton.icon(
+                        onPressed: () => onMarkRead(notifId),
+                        icon: const Icon(Icons.done_all_rounded, size: 15, color: Color(0xFFFFE8A6)),
+                        label: const Text('Marcar como lida',
+                            style: TextStyle(color: Color(0xFFFFE8A6), fontSize: 12, fontWeight: FontWeight.w700)),
+                        style: TextButton.styleFrom(
+                          backgroundColor: kGold.withValues(alpha: 0.1),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ]),
+              ),
+            );
+          },
+        ),
+      ),
+    ]);
+  }
+
+  Widget _notifRow(IconData icon, String text, bool read) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 3),
+      child: Row(children: [
+        Icon(icon, size: 11, color: Colors.white24),
+        const SizedBox(width: 5),
+        Expanded(
+          child: Text(text,
+              style: TextStyle(
+                fontSize: 11,
+                color: read ? Colors.white38 : Colors.white60,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ),
+      ]),
+    );
   }
 }

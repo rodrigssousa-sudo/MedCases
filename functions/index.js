@@ -2,6 +2,8 @@
  * Cloud Functions — MedCases Pro  (firebase-functions v6 / Node 22)
  *
  * 1. onNewUserRegistered  → onCreate  → notifica admin quando novo usuário se cadastra
+ *                                       + grava admin_notifications (PARTE 4 BUILD 238)
+ *                                       + envia FCM push a todos admin/master (PARTE 5 BUILD 238)
  * 2. onUserApproved       → onUpdate  → e-mail de boas-vindas ao usuário aprovado
  * 3. onUserUnblocked      → onUpdate  → e-mail de reativação ao usuário desbloqueado
  * 4. geminiPaidProxy      → onRequest → proxy seguro Gemini Paid (Build 226)
@@ -45,7 +47,139 @@ function getTransporter(gmailPass) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// 1. NOVO USUÁRIO → notifica admin
+// PARTE 4+5 BUILD 238 — helpers
+// ══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Grava um documento em /admin_notifications/{notificationId} via Admin SDK.
+ * Admin SDK bypassa Firestore Rules (allow create: if false no cliente).
+ */
+async function createAdminNotification({ uid, userName, userEmail, userProfession, userInstitution, userStatus, createdAt }) {
+  try {
+    const db = admin.firestore();
+    await db.collection('admin_notifications').add({
+      type:            'new_user',
+      uid,
+      userName,
+      userEmail,
+      userProfession,
+      userInstitution,
+      userStatus,
+      createdAt:       admin.firestore.FieldValue.serverTimestamp(),
+      createdAtLabel:  createdAt,
+      readBy:          [],   // arrayUnion(adminUid) ao marcar como lido
+    });
+    console.log(`✅ [ADMIN_NOTIF] admin_notifications doc criado para uid=${uid}`);
+  } catch (err) {
+    console.error('❌ [ADMIN_NOTIF] Erro ao criar admin_notification:', err);
+  }
+}
+
+/**
+ * PARTE 5 — Envia FCM push a todos os usuários com role admin ou master.
+ * Lê subcoleção users/{uid}/fcmTokens/{tokenId} de cada admin/master.
+ * Usa admin.messaging().sendEachForMulticast() para envio em batch.
+ * Deep-link: tap na notificação → abre Painel Master / aba Notificações.
+ */
+async function sendFcmPushToAdmins({ userName, userEmail, uid }) {
+  try {
+    const db = admin.firestore();
+
+    // 1. Busca todos os usuários com role admin ou master
+    const adminsSnap = await db.collection('users')
+      .where('role', 'in', ['admin', 'master'])
+      .get();
+
+    if (adminsSnap.empty) {
+      console.log('[FCM_PUSH] Nenhum admin/master encontrado para enviar push.');
+      return;
+    }
+
+    // 2. Coleta todos os FCM tokens de todos os admins
+    const tokens = [];
+    for (const adminDoc of adminsSnap.docs) {
+      const adminUid = adminDoc.id;
+      const tokensSnap = await db
+        .collection('users').doc(adminUid)
+        .collection('fcmTokens').get();
+      tokensSnap.forEach(tDoc => {
+        const token = tDoc.data().token;
+        if (token) tokens.push(token);
+      });
+    }
+
+    if (tokens.length === 0) {
+      console.log('[FCM_PUSH] Nenhum FCM token de admin encontrado.');
+      return;
+    }
+
+    // 3. Envia multicast FCM com deep-link para aba Notificações
+    const message = {
+      notification: {
+        title: '🆕 Novo cadastro — MedCases Pro',
+        body:  `${userName} (${userEmail}) se cadastrou.`,
+      },
+      data: {
+        // deep-link tratado pelo app: abre AdminScreen tab=notifications
+        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        route:        '/admin/notifications',
+        uid:          uid,
+      },
+      apns: {
+        payload: {
+          aps: {
+            alert: {
+              title: '🆕 Novo cadastro — MedCases Pro',
+              body:  `${userName} (${userEmail}) se cadastrou.`,
+            },
+            sound: 'default',
+            badge: 1,
+          },
+        },
+      },
+      android: {
+        priority: 'high',
+        notification: { sound: 'default', channelId: 'admin_alerts' },
+      },
+      tokens,
+    };
+
+    const response = await admin.messaging().sendEachForMulticast(message);
+    console.log(`✅ [FCM_PUSH] successCount=${response.successCount} failureCount=${response.failureCount} totalTokens=${tokens.length}`);
+
+    // 4. Remove tokens inválidos (NotRegistered / InvalidRegistration)
+    const invalidTokens = [];
+    response.responses.forEach((resp, idx) => {
+      if (!resp.success) {
+        const errCode = resp.error?.code || '';
+        if (errCode.includes('registration-token-not-registered') ||
+            errCode.includes('invalid-registration-token')) {
+          invalidTokens.push(tokens[idx]);
+        }
+      }
+    });
+    if (invalidTokens.length > 0) {
+      console.log(`[FCM_PUSH] Removendo ${invalidTokens.length} token(s) inválido(s).`);
+      // Remove de todos os admins (varredura simples)
+      for (const adminDoc of adminsSnap.docs) {
+        const adminUid = adminDoc.id;
+        const tokensSnap = await db
+          .collection('users').doc(adminUid)
+          .collection('fcmTokens').get();
+        for (const tDoc of tokensSnap.docs) {
+          if (invalidTokens.includes(tDoc.data().token)) {
+            await tDoc.ref.delete();
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error('❌ [FCM_PUSH] Erro ao enviar push para admins:', err);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// 1. NOVO USUÁRIO → notifica admin (e-mail + admin_notifications + FCM push)
 // ══════════════════════════════════════════════════════════════════════════════
 exports.onNewUserRegistered = onDocumentCreated(
   { document: 'users/{uid}', region: 'us-central1', secrets: [GMAIL_PASS, ADMIN_EMAIL] },
@@ -72,6 +206,13 @@ exports.onNewUserRegistered = onDocumentCreated(
     const uid             = event.params.uid;
     const createdAt       = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
+    // ── PARTE 4: Gravar admin_notification no Firestore ───────────────────
+    await createAdminNotification({ uid, userName, userEmail, userProfession, userInstitution, userStatus, createdAt });
+
+    // ── PARTE 5: Enviar FCM push a todos admins/masters ───────────────────
+    await sendFcmPushToAdmins({ userName, userEmail, uid });
+
+    // ── E-mail para o admin (comportamento original) ───────────────────────
     const transporter = getTransporter(GMAIL_PASS.value());
     if (!transporter) return null;
 

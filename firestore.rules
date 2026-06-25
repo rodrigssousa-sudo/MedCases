@@ -93,5 +93,29 @@ service cloud.firestore {
 
       allow delete: if isAdmin();
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // FCM TOKENS — subcoleção /users/{userId}/fcmTokens/{tokenId}
+    // (PARTE 5 — BUILD 238)
+    // Cada usuário gerencia seus próprios tokens; admin pode ler (para enviar push).
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/fcmTokens/{tokenId} {
+      allow read:             if (isAuthed() && request.auth.uid == userId) || isAdmin();
+      allow create, update:   if isAuthed() && request.auth.uid == userId;
+      allow delete:           if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // NOTIFICAÇÕES ADMIN — /admin_notifications/{notificationId}
+    // (PARTE 4 — BUILD 238)
+    // Escrita exclusiva via Cloud Function (Admin SDK — sem regra de create).
+    // Leitura/update/delete apenas por admin/master.
+    // ─────────────────────────────────────────────────────────────────────────
+    match /admin_notifications/{notificationId} {
+      allow read:   if isAdmin();
+      allow create: if false;   // somente Cloud Function (Admin SDK bypassa rules)
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
   }
 }
