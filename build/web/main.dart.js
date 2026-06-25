@@ -45397,23 +45397,23 @@ aVR:function aVR(a){this.a=a},
 aVO:function aVO(a){this.a=a},
 cdb(a){if(B.e3Z.l(0,a))return!1
 return B.e2U.l(0,a)},
-F0(a,b,c,d,e,f){return A.cda(a,b,c,d,e,f)},
-cda(a9,b0,b1,b2,b3,b4){var s=0,r=A.C(t.lg),q,p=2,o=[],n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8
-var $async$F0=A.y(function(b6,b7){if(b6===1){o.push(b7)
-s=p}while(true)switch(s){case 0:a5=Date.now()
-a6=null
+F0(a,b,c,d,e,f,g){return A.cda(a,b,c,d,e,f,g)},
+cda(b0,b1,b2,b3,b4,b5,b6){var s=0,r=A.C(t.lg),q,p=2,o=[],n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9
+var $async$F0=A.y(function(b8,b9){if(b8===1){o.push(b9)
+s=p}while(true)switch(s){case 0:a6=Date.now()
+a7=null
 p=4
 s=7
 return A.n(A.fL(),$async$F0)
-case 7:a6=b7
-A.a1().$1("[WEB_AUTH] source=REST token="+(J.ar(a6)!==0)+" endpoint=geminiPaidProxy")
+case 7:a7=b9
+A.a1().$1("[WEB_AUTH] source=REST token="+(J.ar(a7)!==0)+" endpoint=geminiPaidProxy")
 p=2
 s=6
 break
 case 4:p=3
-a7=o.pop()
-n=A.ag(a7)
-A.a1().$1("[PAID_PROXY] requestId="+b2+" token_error="+A.t(n))
+a8=o.pop()
+n=A.ag(a8)
+A.a1().$1("[PAID_PROXY] requestId="+b4+" token_error="+A.t(n))
 q=new A.mk("",!1,"token_error","",0)
 s=1
 break
@@ -45421,81 +45421,82 @@ s=6
 break
 case 3:s=2
 break
-case 6:if(J.ar(a6)===0){A.a1().$1("[PAID_PROXY] requestId="+b2+" error=unauthenticated (token REST vazio)")
+case 6:if(J.ar(a7)===0){A.a1().$1("[PAID_PROXY] requestId="+b4+" error=unauthenticated (token REST vazio)")
 q=new A.mk("",!1,"unauthenticated","",0)
 s=1
-break}d=a9.length
-c=d>8?B.d.h3(a9,d-8):a9
-d=t.N
-m=A.T(["userMessage",b4,"systemPrompt",b3,"history",c,"mode",b1,"lang",b0,"requestId",b2],d,t.K)
-b=B.q.i3(B.al.e9(m,null).length/4)
-a=""+b
-A.e1("[PAYLOAD_AUDIT] requestId="+b2+" mode="+b1+" historyEntries="+c.length+" userMsgLen="+b4.length+" systemPromptLen="+b3.length+" inputTokensApprox="+a)
-if(b>5000)A.e1("[PAYLOAD_AUDIT] \u26a0\ufe0f  ALERTA: payload acima de 5000 tokens (inputTokensApprox="+a+") \u2014 risco de truncamento no proxy. historyEntries="+c.length+" requestId="+b2)
+break}d=b3==="plantao"?4:8
+c=b0.length
+b=c>d?B.d.h3(b0,c-d):b0
+c=t.N
+m=A.T(["userMessage",b6,"systemPrompt",b5,"history",b,"mode",b3,"lang",b1,"requestId",b4,"maxOutputTokens",b2],c,t.K)
+a=B.q.i3(B.al.e9(m,null).length/4)
+a0=""+a
+A.e1("[PAYLOAD_AUDIT] requestId="+b4+" mode="+b3+" historyEntries="+b.length+" userMsgLen="+b6.length+" systemPromptLen="+b5.length+" inputTokensApprox="+a0)
+if(a>5000)A.e1("[PAYLOAD_AUDIT] \u26a0\ufe0f  ALERTA: payload acima de 5000 tokens (inputTokensApprox="+a0+") \u2014 risco de truncamento no proxy. historyEntries="+b.length+" requestId="+b4)
 l=null
 p=9
-a0=A.cp("https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy",0,null)
-d=A.T(["Content-Type","application/json","Authorization","Bearer "+A.t(a6)],d,d)
+a1=A.cp("https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy",0,null)
+c=A.T(["Content-Type","application/json","Authorization","Bearer "+A.t(a7)],c,c)
 s=12
-return A.n(A.oT(a0,B.al.e9(m,null),d).dI(0,B.azU),$async$F0)
-case 12:l=b7
+return A.n(A.oT(a1,B.al.e9(m,null),c).dI(0,B.azU),$async$F0)
+case 12:l=b9
 p=2
 s=11
 break
 case 9:p=8
-a8=o.pop()
-d=A.ag(a8)
-if(d instanceof A.q1){k=Date.now()-a5
-A.a1().$1("[PAID_PROXY] requestId="+b2+" success=false status=timeout durationMs="+A.t(k))
+a9=o.pop()
+c=A.ag(a9)
+if(c instanceof A.q1){k=Date.now()-a6
+A.a1().$1("[PAID_PROXY] requestId="+b4+" success=false status=timeout durationMs="+A.t(k))
 q=new A.mk("",!1,"proxy_timeout","",0)
 s=1
-break}else{j=d
-d=Date.now()
-i=d-a5
-A.a1().$1("[PAID_PROXY] requestId="+b2+" success=false status=network_error durationMs="+A.t(i)+" error="+A.t(j))
+break}else{j=c
+c=Date.now()
+i=c-a6
+A.a1().$1("[PAID_PROXY] requestId="+b4+" success=false status=network_error durationMs="+A.t(i)+" error="+A.t(j))
 q=new A.mk("",!1,"proxy_network_error","",0)
 s=1
 break}s=11
 break
 case 8:s=2
 break
-case 11:k=Date.now()-a5
-if(l.b===429){A.a1().$1("[BUDGET_GUARD] allowed=false reason=paid_budget_guard_triggered requestId="+b2)
+case 11:k=Date.now()-a6
+if(l.b===429){A.a1().$1("[BUDGET_GUARD] allowed=false reason=paid_budget_guard_triggered requestId="+b4)
 q=new A.mk("",!1,"paid_budget_guard_triggered","",0)
 s=1
-break}if(l.b===503){A.a1().$1("[PAID_PROXY] requestId="+b2+" success=false status=paid_fallback_disabled")
+break}if(l.b===503){A.a1().$1("[PAID_PROXY] requestId="+b4+" success=false status=paid_fallback_disabled")
 q=new A.mk("",!1,"paid_fallback_disabled","",0)
 s=1
 break}if(l.b!==200){h="proxy_error_"+l.b
-try{d=l
-g=t.P.a(B.al.dz(0,A.di(A.dh(d.e)).cg(0,d.w),null))
-d=J.X(g,"error")
-a1=d==null?null:J.aD(d)
-h=a1==null?h:a1}catch(b5){}A.a1().$1("[PAID_PROXY] requestId="+b2+" success=false status="+l.b+" error="+A.t(h)+" durationMs="+A.t(k))
+try{c=l
+g=t.P.a(B.al.dz(0,A.di(A.dh(c.e)).cg(0,c.w),null))
+c=J.X(g,"error")
+a2=c==null?null:J.aD(c)
+h=a2==null?h:a2}catch(b7){}A.a1().$1("[PAID_PROXY] requestId="+b4+" success=false status="+l.b+" error="+A.t(h)+" durationMs="+A.t(k))
 q=new A.mk("",!1,h,"",0)
 s=1
 break}f=null
-try{d=l
-f=t.P.a(B.al.dz(0,A.di(A.dh(d.e)).cg(0,d.w),null))}catch(b5){A.a1().$1("[PAID_PROXY] requestId="+b2+" success=false status=parse_error")
+try{c=l
+f=t.P.a(B.al.dz(0,A.di(A.dh(c.e)).cg(0,c.w),null))}catch(b7){A.a1().$1("[PAID_PROXY] requestId="+b4+" success=false status=parse_error")
 q=new A.mk("",!1,"parse_error","",0)
 s=1
-break}d=J.X(f,"text")
-a2=d==null?null:J.aD(d)
-if(a2==null)a2=""
-d=J.X(f,"model")
-a3=d==null?null:J.aD(d)
+break}c=J.X(f,"text")
+a3=c==null?null:J.aD(c)
 if(a3==null)a3=""
-d=A.auT(J.X(f,"outputTokensApprox"))
-a4=d==null?null:B.q.ds(d)
-if(a4==null)a4=B.q.i3(a2.length/4)
-if(a2.length===0){A.a1().$1("[PAID_PROXY] requestId="+b2+" success=false status=empty_response")
+c=J.X(f,"model")
+a4=c==null?null:J.aD(c)
+if(a4==null)a4=""
+c=A.auT(J.X(f,"outputTokensApprox"))
+a5=c==null?null:B.q.ds(c)
+if(a5==null)a5=B.q.i3(a3.length/4)
+if(a3.length===0){A.a1().$1("[PAID_PROXY] requestId="+b4+" success=false status=empty_response")
 q=new A.mk("",!1,"empty_response","",0)
 s=1
-break}d=""+a4
-a0=A.t(k)
-A.a1().$1("[PAID_PROXY] requestId="+b2+" success=true status=200 model="+a3+" inputTokensApprox="+a+" outputTokensApprox="+d+" durationMs="+a0)
-A.a1().$1("[PROVIDER_ROUTER] requestId="+b2+" mode="+b1+" primary=gemini_free fallback=gemini_paid usedProvider=gemini_paid status=success inputTokensApprox="+a+" outputTokensApprox="+d+" durationMs="+a0)
-q=new A.mk(a2,!0,null,a3,k)
+break}c=""+a5
+a1=A.t(k)
+A.a1().$1("[PAID_PROXY] requestId="+b4+" success=true status=200 model="+a4+" inputTokensApprox="+a0+" outputTokensApprox="+c+" durationMs="+a1)
+A.a1().$1("[PROVIDER_ROUTER] requestId="+b4+" mode="+b3+" primary=gemini_free fallback=gemini_paid usedProvider=gemini_paid status=success inputTokensApprox="+a0+" outputTokensApprox="+c+" durationMs="+a1)
+q=new A.mk(a3,!0,null,a4,k)
 s=1
 break
 case 1:return A.A(q,r)
@@ -45505,7 +45506,7 @@ aTL(){var s=0,r=A.C(t.qu),q,p=2,o=[],n,m,l,k,j,i
 var $async$aTL=A.y(function(a,b){if(a===1){o.push(b)
 s=p}while(true)switch(s){case 0:p=4
 s=7
-return A.n(A.F0(B.Qx,"pt","test","admin_test_"+Date.now(),"Responda em uma palavra.","Teste de conectividade MedCases Pro. Responda apenas: OK"),$async$aTL)
+return A.n(A.F0(B.Qx,"pt",450,"test","admin_test_"+Date.now(),"Responda em uma palavra.","Teste de conectividade MedCases Pro. Responda apenas: OK"),$async$aTL)
 case 7:n=b
 if(n.b&&n.a.length!==0){A.a1().$1("[ADMIN_AI_KEY] test=true status=online model="+n.d)
 l=n.d
@@ -127097,31 +127098,33 @@ $1(a){this.b.$1(a)
 this.a.a9()},
 $S:71}
 A.aya.prototype={
-ae3(a){var s=0,r=A.C(t.H),q=this,p,o,n,m,l,k,j,i,h,g,f
+ae3(a){var s=0,r=A.C(t.H),q=this,p,o,n,m,l,k,j,i,h,g,f,e,d
 var $async$$1=A.y(function(b,c){if(b===1)return A.z(c,r)
-while(true)switch(s){case 0:j=q.b
-i=q.a
-h=q.e
-g=!h
-f=A.bLE(i.gPD(),g,q.d)
-f=A.dN(new A.P(f,new A.ayb(),A.S(f).i("P<1,@>")),!0,t.GU)
-l=h?"estudo":"plantao"
-k=q.f
+while(true)switch(s){case 0:h=q.b
+g=q.a
+f=q.e
+e=!f
+d=A.bLE(g.gPD(),e,q.d)
+d=A.dN(new A.P(d,new A.ayb(),A.S(d).i("P<1,@>")),!0,t.GU)
+l=f?"estudo":"plantao"
+k=g.c
+j=q.f
+i=f?2048:450
 s=2
-return A.n(A.F0(f,i.c,l,k,q.c,j),$async$$1)
+return A.n(A.F0(d,k,i,l,j,q.c,h),$async$$1)
 case 2:p=c
-if(p.b&&p.a.length!==0){f=p.a
-h=h?"estudo":"plantao"
-A.e1("[RAW_AI_OUTPUT][PAID_PROXY] len="+f.length+" requestId="+k+" mode="+h)
+if(p.b&&p.a.length!==0){d=p.a
+f=f?"estudo":"plantao"
+A.e1("[RAW_AI_OUTPUT][PAID_PROXY] len="+d.length+" requestId="+j+" mode="+f)
 if(p.a.length<100)A.e1('[RAW_AI_OUTPUT] \u26a0\ufe0f  ALERTA resposta curta do Paid: "'+(p.a.length<200?p.a:B.c.T(p.a,0,200))+'"')
-o=A.awt(p.a,i.c,g)
+o=A.awt(p.a,g.c,e)
 n=o.a
-if(!A.xi(n)){i=i.go
-h=t.N
-i.push(A.T(["role","user","content",j],h,h))
-i.push(A.T(["role","assistant","content",n],h,h))
-for(;i.length>20;)B.d.d9(i,0)}q.r.$1(n)}else{A.a1().$1("[AI_PROVIDER] both_failed requestId="+k+" reason="+A.t(p.c))
-m=i.c==="es"?"Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. \u2695":"Estamos com instabilidade tempor\xe1ria na IA.\nTente novamente em alguns segundos. \u2695"
+if(!A.xi(n)){g=g.go
+f=t.N
+g.push(A.T(["role","user","content",h],f,f))
+g.push(A.T(["role","assistant","content",n],f,f))
+for(;g.length>20;)B.d.d9(g,0)}q.r.$1(n)}else{A.a1().$1("[AI_PROVIDER] both_failed requestId="+j+" reason="+A.t(p.c))
+m=g.c==="es"?"Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. \u2695":"Estamos com instabilidade tempor\xe1ria na IA.\nTente novamente em alguns segundos. \u2695"
 q.w.$1(m)}return A.A(null,r)}})
 return A.B($async$$1,r)},
 $1(a){return this.ae3(a)},
@@ -127148,40 +127151,42 @@ $.jA().tu(p)
 q.e.$1(r.H6(r.c))},
 $S:0}
 A.ay5.prototype={
-$0(){var s=0,r=A.C(t.a),q,p=this,o,n,m,l,k,j,i,h,g,f
+$0(){var s=0,r=A.C(t.a),q,p=this,o,n,m,l,k,j,i,h,g,f,e,d
 var $async$$0=A.y(function(a,b){if(a===1)return A.z(b,r)
-while(true)switch(s){case 0:j=p.c
-i=p.b
-h=p.f
-g=!h
-f=A.bLE(i.gPD(),g,p.e)
-f=A.dN(new A.P(f,new A.ay0(),A.S(f).i("P<1,@>")),!0,t.GU)
-l=h?"estudo":"plantao"
-k=p.r
+while(true)switch(s){case 0:h=p.c
+g=p.b
+f=p.f
+e=!f
+d=A.bLE(g.gPD(),e,p.e)
+d=A.dN(new A.P(d,new A.ay0(),A.S(d).i("P<1,@>")),!0,t.GU)
+l=f?"estudo":"plantao"
+k=g.c
+j=p.r
+i=f?2048:450
 s=3
-return A.n(A.F0(f,i.c,l,k,p.d,j),$async$$0)
+return A.n(A.F0(d,k,i,l,j,p.d,h),$async$$0)
 case 3:o=b
 l=p.a
-f=l.b
-if(f!=null)f.aA(0)
+i=l.b
+if(i!=null)i.aA(0)
 if(l.a){s=1
 break}l.a=!0
-f=p.w
-if(i.y2===f)i.y2=""
-l=i.xr=!1
-$.jA().tu(f)
-if(o.b?o.a.length!==0:l){f=o.a
-h=h?"estudo":"plantao"
-A.e1("[RAW_AI_OUTPUT][CRITICAL_PAID] len="+f.length+" requestId="+k+" mode="+h)
+d=p.w
+if(g.y2===d)g.y2=""
+l=g.xr=!1
+$.jA().tu(d)
+if(o.b?o.a.length!==0:l){d=o.a
+f=f?"estudo":"plantao"
+A.e1("[RAW_AI_OUTPUT][CRITICAL_PAID] len="+d.length+" requestId="+j+" mode="+f)
 if(o.a.length<100)A.e1('[RAW_AI_OUTPUT] \u26a0\ufe0f  ALERTA resposta curta (critical): "'+(o.a.length<200?o.a:B.c.T(o.a,0,200))+'"')
-n=A.awt(o.a,i.c,g)
+n=A.awt(o.a,g.c,e)
 m=n.a
-if(!A.xi(m)){i=i.go
-h=t.N
-i.push(A.T(["role","user","content",j],h,h))
-i.push(A.T(["role","assistant","content",m],h,h))
-for(;i.length>20;)B.d.d9(i,0)}p.x.$1(m)}else{A.a1().$1("[AI_PROVIDER] critical_paid_failed requestId="+k+" reason="+A.t(o.c))
-p.x.$1(i.H6(i.c))}case 1:return A.A(q,r)}})
+if(!A.xi(m)){g=g.go
+f=t.N
+g.push(A.T(["role","user","content",h],f,f))
+g.push(A.T(["role","assistant","content",m],f,f))
+for(;g.length>20;)B.d.d9(g,0)}p.x.$1(m)}else{A.a1().$1("[AI_PROVIDER] critical_paid_failed requestId="+j+" reason="+A.t(o.c))
+p.x.$1(g.H6(g.c))}case 1:return A.A(q,r)}})
 return A.B($async$$0,r)},
 $S:139}
 A.ay0.prototype={

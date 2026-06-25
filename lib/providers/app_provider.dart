@@ -3416,9 +3416,10 @@ class AppProvider extends ChangeNotifier {
             'content': m['content'] ?? '',
           }),
         ),
-        mode:      longResponse ? 'estudo' : 'plantao',
-        lang:      _lang,
-        requestId: requestId,
+        mode:            longResponse ? 'estudo' : 'plantao',
+        lang:            _lang,
+        requestId:       requestId,
+        maxOutputTokens: longResponse ? 2048 : 450,  // BUILD 261: Plantão=450, Estudo=2048
       );
 
       if (paidResult.success && paidResult.text.isNotEmpty) {
@@ -3498,9 +3499,10 @@ class AppProvider extends ChangeNotifier {
               'content': m['content'] ?? '',
             }),
           ),
-          mode:      longResponse ? 'estudo' : 'plantao',
-          lang:      _lang,
-          requestId: requestId,
+          mode:            longResponse ? 'estudo' : 'plantao',
+          lang:            _lang,
+          requestId:       requestId,
+          maxOutputTokens: longResponse ? 2048 : 450,  // BUILD 261: Plantão=450, Estudo=2048
         );
 
         criticalTimeoutTimer?.cancel();

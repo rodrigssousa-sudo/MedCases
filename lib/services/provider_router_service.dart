@@ -129,6 +129,10 @@ class ProviderRouterService {
     String mode = 'plantao',
     String lang = 'pt',
     String requestId = '',
+    // BUILD 261: maxOutputTokens forwarded to Cloud Function.
+    // Plantão: 450 tok (6-12 linhas formato Plantão = ~200-350 words).
+    // Estudo: 2048 tok (resposta acadêmica completa).
+    int maxOutputTokens = 450,
   }) async {
     final startMs = DateTime.now().millisecondsSinceEpoch;
 
@@ -170,15 +174,20 @@ class ProviderRouterService {
     }
 
     // ── Monta payload (sem a chave — chave está server-side) ──────────────
-    // Passa apenas os últimos 4 pares de histórico para reduzir tokens
-    final recentHistory = history.length > 8 ? history.sublist(history.length - 8) : history;
+    // BUILD 261: Plantão history cap reduzido de 8→4 entries para reduzir tokens.
+    // Estudo mantém 8 entries (resposta acadêmica precisa de mais contexto).
+    // Cada entry de histórico = ~500-1500 chars → 4 entries ≈ 2000-6000 chars.
+    final isPlantao = mode == 'plantao';
+    final histCap = isPlantao ? 4 : 8;  // BUILD 261: 4 para Plantão, 8 para Estudo
+    final recentHistory = history.length > histCap ? history.sublist(history.length - histCap) : history;
     final payload = {
-      'userMessage':  userMessage,
-      'systemPrompt': systemPrompt,
-      'history':      recentHistory,
-      'mode':         mode,
-      'lang':         lang,
-      'requestId':    requestId,
+      'userMessage':     userMessage,
+      'systemPrompt':    systemPrompt,
+      'history':         recentHistory,
+      'mode':            mode,
+      'lang':            lang,
+      'requestId':       requestId,
+      'maxOutputTokens': maxOutputTokens,  // BUILD 261: forwarded to Cloud Function
     };
 
     final inputTokensApprox = (jsonEncode(payload).length / 4).ceil();

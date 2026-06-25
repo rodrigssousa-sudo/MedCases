@@ -326,7 +326,8 @@ exports.onUserUnblocked = onDocumentUpdated(
 //   • Nunca loga a chave (nem parcialmente)
 //
 // PAYLOAD (cliente → função):
-//   { userMessage, systemPrompt, history, mode, requestId, lang }
+//   { userMessage, systemPrompt, history, mode, requestId, lang, maxOutputTokens }
+//   BUILD 261: maxOutputTokens — Plantão=450, Estudo=2048 (clamped 200–2048 server-side)
 //
 // RESPOSTA (função → cliente):
 //   { text, model, inputTokensApprox, outputTokensApprox, durationMs }
@@ -492,7 +493,19 @@ exports.geminiPaidProxy = onRequest(
     }
 
     // ── 5. Valida payload ───────────────────────────────────────────────────
-    const { userMessage, systemPrompt, history = [], mode = 'plantao', requestId = '', lang = 'pt' } = req.body || {};
+    const {
+      userMessage,
+      systemPrompt,
+      history = [],
+      mode = 'plantao',
+      requestId = '',
+      lang = 'pt',
+      // BUILD 261: maxOutputTokens forwarded from Flutter client.
+      // Plantão=450 tok (6-12 lines), Estudo=2048 tok (full academic response).
+      // Hard-clamped: min=200, max=2048 (Gemini paid safety ceiling).
+      maxOutputTokens: rawMaxOut = 450,
+    } = req.body || {};
+    const maxOutClamped = Math.min(Math.max(Number(rawMaxOut) || 450, 200), 2048);
     if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
       res.status(400).json({ error: 'invalid_payload' });
       return;
@@ -508,8 +521,12 @@ exports.geminiPaidProxy = onRequest(
 
     // ── 7. Monta payload Gemini ─────────────────────────────────────────────
     const contents = [];
-    // Histórico (máx 4 pares para reduzir tokens)
-    const recentHistory = Array.isArray(history) ? history.slice(-8) : [];
+    // BUILD 261: Plantão history capped at 4 entries server-side (double-guard).
+    // Client already sends ≤4 for Plantão; this ensures correct behavior
+    // even if an older client version sends more entries.
+    const isPlantaoMode = (mode === 'plantao');
+    const serverHistCap = isPlantaoMode ? 4 : 8;
+    const recentHistory = Array.isArray(history) ? history.slice(-serverHistCap) : [];
     for (const turn of recentHistory) {
       if (turn.role === 'user' || turn.role === 'model') {
         contents.push({ role: turn.role, parts: [{ text: turn.content || turn.text || '' }] });
@@ -525,10 +542,10 @@ exports.geminiPaidProxy = onRequest(
       contents,
       generationConfig: {
         temperature:     0.3,
-        // BUILD 250: elevado de 1024→2048 tokens de saída.
-        // 1024 tokens cortava respostas Plantão com RAG (~300-400 words úteis).
-        // 2048 garante resposta completa com todos os blocos emoji (📌 Monitorar etc.).
-        maxOutputTokens: 2048,
+        // BUILD 261: maxOutputTokens now client-controlled.
+        // Plantão=450 tok (compact 6-12 line format), Estudo=2048 tok (full academic).
+        // Hard-clamped server-side: min=200, max=2048.
+        maxOutputTokens: maxOutClamped,
         topP:            0.9,
         topK:            40,
       },
