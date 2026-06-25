@@ -1507,20 +1507,34 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     // ════════════════════════════════════════════════════════════════════════
     // Build 223: Modo Plantão suprime selfCheck padrão (ensina 4-blocos/bullets).
     // Substitui por um self-check neutro sem cabeçalhos conflitantes.
+    // BUILD 255: selfCheck compacto do Plantão recebe item 0 (proibição de abertura conversacional)
+    // e item 6 (verificação de template correto das 22 matrizes dinâmicas).
     final selfCheck = isPlantaoMode
         ? (isEs
             ? 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
-              '1. A resposta nao contem os cabeçalhos "TRATAMIENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
+              '0. ABERTURA PROIBIDA — verificar se a resposta inicia com 🟥 na primeira linha. '
+              'PROIBIDO ABSOLUTO: qualquer saudacao, introducao ou texto antes de 🟥. '
+              'Palavras proibidas na abertura: "Colega", "Hola", "Mi conducta", "Claro", "Entendido", "Por supuesto". '
+              'Se detectar qualquer texto antes de 🟥 → ELIMINAR completamente antes de enviar.\n'
+              '1. A resposta nao contem os cabecalhos "TRATAMIENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
               '2. Nao ha bullets livres nem listas explicativas passo a passo fora do formato soberano.\n'
               '3. O idioma correto esta sendo aplicado conforme a instrucao de idioma dinamico.\n'
-              '4. Dados do paciente estao isolados desta sessao. Nenhum dado de sessoes anteriores foi herdado.\n'
-              '5. Dosis e alertas sao coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
+              '4. Datos del paciente estan aislados de esta sesion. Ningun dato de sesiones anteriores fue heredado.\n'
+              '5. Dosis e alertas son coherentes con peso/renal/hepatico/edad del paciente activo.\n'
+              '6. TEMPLATE CORRETO — a matriz selecionada (1–22) corresponde à intencao da query. '
+              'A resposta tem entre 6 e 12 linhas. O titulo 🟥 e especifico (nunca generico).\n'
             : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
-              '1. A resposta nao contem os cabeçalhos "TRATAMENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
+              '0. ABERTURA PROIBIDA — verificar se a resposta inicia com 🟥 na primeira linha. '
+              'PROIBIDO ABSOLUTO: qualquer saudacao, introducao ou texto antes de 🟥. '
+              'Palavras proibidas na abertura: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza". '
+              'Se detectar qualquer texto antes de 🟥 → ELIMINAR completamente antes de enviar.\n'
+              '1. A resposta nao contem os cabecalhos "TRATAMENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — usar somente os tokens visuais do contrato de formato.\n'
               '2. Nao ha bullets livres nem listas explicativas passo a passo fora do formato soberano.\n'
               '3. O idioma correto esta sendo aplicado conforme a instrucao de idioma dinamico.\n'
               '4. Dados do paciente estao isolados desta sessao. Nenhum dado de sessoes anteriores foi herdado.\n'
-              '5. Doses e alertas sao coerentes com peso/renal/hepatico/idade do paciente ativo.\n')
+              '5. Doses e alertas sao coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
+              '6. TEMPLATE CORRETO — a matriz selecionada (1–22) corresponde a intencao da query. '
+              'A resposta tem entre 6 e 12 linhas. O titulo 🟥 e especifico (nunca generico).\n')
         : (isEs ? _selfCheckEs : _selfCheckPt);
 
     final evidenceRanking = isEs ? _evidenceRankingEs : _evidenceRankingPt;
@@ -1546,7 +1560,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
 
     // Build 223: Modo Plantão — log de diagnóstico em debug
     if (kDebugMode && isPlantaoMode) {
-      debugPrint('[Build223][AiService] isPlantaoMode=true → _responseFormat OMITIDO, _selfCheck padrão OMITIDO, ragCrossCheck OMITIDO, clinicalReasoning COMPACTO (BUILD 253)');
+      debugPrint('[Build255][AiService] isPlantaoMode=true → _responseFormat OMITIDO, _selfCheck padrão OMITIDO, ragCrossCheck OMITIDO, clinicalReasoning COMPACTO (BUILD 253), 22 matrizes dinâmicas ATIVAS (BUILD 255)');
     }
 
     // ── USER PROMPT ANCHORING (Part C — context contamination fix) ───────────
