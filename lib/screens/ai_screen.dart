@@ -1155,6 +1155,13 @@ class _AiScreenState extends State<AiScreen> {
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
     if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
 
+    // BUILD 258: limpa _extToolCache na nova query para evitar stale drug slots.
+    // O cache acumula entradas de mensagens anteriores (old=amiodarona, etc.).
+    // Ao iniciar nova query, a resposta AI anterior gera novo extKey — o cache
+    // antigo é inócuo, mas limpar aqui previne crescimento ilimitado e garante
+    // que novos extKeys não colisão com chaves de sessões anteriores reutilizadas.
+    _extToolCache.clear();
+
     _sendGuard = true;
     _focusNode.unfocus();
     // Registra no histórico de atividades recentes

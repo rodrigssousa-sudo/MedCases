@@ -1549,13 +1549,16 @@ class FirestoreService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   /// Lê o documento app_updates/current via REST (web) ou SDK (nativo).
+  /// BUILD 258: substitui Map<String,dynamic>.from() por safeMap() em todos os
+  /// retornos — imune a TypeError em dart2js release quando os valores são
+  /// JavaScriptObject (minified:Ou is not a subtype of minified:E).
   static Future<Map<String, dynamic>> loadAppUpdate() async {
     if (_cachedAppUpdate.isNotEmpty) {
-      return Map<String, dynamic>.from(_cachedAppUpdate);
+      return safeMap(_cachedAppUpdate); // BUILD 258: safeMap em vez de .from()
     }
     if (_isRestCoolingDown(_appUpdateRetryAfter)) {
       debugPrint('[FirestoreService] app_updates/current em cooldown — retornando cache');
-      return Map<String, dynamic>.from(_cachedAppUpdate);
+      return safeMap(_cachedAppUpdate); // BUILD 258
     }
     final inFlight = _appUpdateInFlight;
     if (inFlight != null) return inFlight;
@@ -1569,14 +1572,15 @@ class FirestoreService {
         try {
           final doc = await _db.collection('app_updates').doc('current').get()
               .timeout(const Duration(seconds: 4));
-          // safeMap: protege contra tipos inesperados do SDK em dart2js release
-          final data = doc.exists ? safeMap(doc.data()) : <String, dynamic>{};
+          // BUILD 258: sdkDocToSafeMapAny — converte doc.data() (Map<String,Object?>)
+          // para Map<String,dynamic> seguro sem TypeError em dart2js release mode.
+          final data = doc.exists ? sdkDocToSafeMapAny(doc.data()) : <String, dynamic>{};
           if (data.isNotEmpty) {
-            _cachedAppUpdate = Map<String, dynamic>.from(data);
+            _cachedAppUpdate = data; // já é Map<String,dynamic> seguro
             _appUpdateRetryAfter = null;
           }
           debugPrint('[FirestoreService] app_updates/current SDK ok data.isNotEmpty=${data.isNotEmpty}');
-          return Map<String, dynamic>.from(data);
+          return safeMap(data); // BUILD 258
         } on FirebaseException catch (e) {
           if (e.code == 'permission-denied') {
             // permission-denied: usuário não está autenticado ainda ou token expirou.
@@ -1584,7 +1588,7 @@ class FirestoreService {
             // Não usar 2min: prejudica usuários que fazem login logo em seguida.
             _appUpdateRetryAfter = DateTime.now().add(const Duration(seconds: 15));
             debugPrint('[FirestoreService] app_updates/current permission-denied — aguardando autenticação (15s)');
-            return Map<String, dynamic>.from(_cachedAppUpdate);
+            return safeMap(_cachedAppUpdate); // BUILD 258
           }
           debugPrint('[FirestoreService] app_updates/current SDK erro: ${e.code} — tentando REST');
           // Outros erros SDK: tenta REST como fallback
@@ -1592,7 +1596,7 @@ class FirestoreService {
         }
       } catch (e) {
         debugPrint('[FirestoreService] loadAppUpdate ERRO: $e');
-        return Map<String, dynamic>.from(_cachedAppUpdate);
+        return safeMap(_cachedAppUpdate); // BUILD 258
       } finally {
         _appUpdateInFlight = null;
       }
@@ -1615,17 +1619,17 @@ class FirestoreService {
           _appUpdateRetryAfter = DateTime.now().add(_restRetryCooldown);
         }
         debugPrint('[FirestoreService] app_updates/current REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
-        return Map<String, dynamic>.from(_cachedAppUpdate);
+        return safeMap(_cachedAppUpdate); // BUILD 258
       }
       _appUpdateRetryAfter = null;
       final data = _decodeFirestoreFields(resp.body);
       if (data.isNotEmpty) {
-        _cachedAppUpdate = Map<String, dynamic>.from(data);
+        _cachedAppUpdate = data; // já é Map<String,dynamic> seguro
       }
       return data;
     } catch (e) {
       debugPrint('[FirestoreService] _loadAppUpdateRest ERRO: $e');
-      return Map<String, dynamic>.from(_cachedAppUpdate);
+      return safeMap(_cachedAppUpdate); // BUILD 258
     }
   }
 
