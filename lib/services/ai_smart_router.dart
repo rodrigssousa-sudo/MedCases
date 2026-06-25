@@ -357,16 +357,19 @@ class AiSmartRouter {
     multiLine: true,
   );
 
-  /// Fallback clínico seguro — exibido quando a resposta está irrecuperável.
+  /// BUILD 247: SafetyFallback — exibido SOMENTE quando a resposta contém
+  /// meta-leak irrecuperável (vazamento de raciocínio interno severo).
+  /// NÃO deve ser usado para respostas com conteúdo clínico válido.
+  /// Decisão de uso: AiSmartRouter.shouldFallback() ou sanitizeAndCheck().
   static String _clinicalFallback(String lang) {
     if (lang == 'es') {
-      return '🟥 RESPUESTA EN PROCESO\n'
-          '⚠️ Alerta: Estamos ajustando la respuesta para mantener la seguridad clínica.\n'
-          '📌 Monitorar: Reformule la pregunta en una frase objetiva (ej: "Dosis de amiodarona en PCR").';
+      return '🟥 REVISANDO RESPOSTA\n'
+          '⚠️ Alerta: A resposta continha dados inconsistentes e foi bloqueada por segurança.\n'
+          '📌 Orientação: Reformule a pergunta em uma frase objetiva (ex: "Dosis de amiodarona en PCR").';
     }
-    return '🟥 RESPOSTA EM AJUSTE\n'
-        '⚠️ Alerta: Estamos ajustando a resposta para manter segurança clínica.\n'
-        '📌 Monitorar: Reformule a pergunta em uma frase objetiva (ex: "Dose de amiodarona em PCR").';
+    return '🟥 REVISANDO RESPOSTA\n'
+        '⚠️ Alerta: A resposta continha dados inconsistentes e foi bloqueada por segurança.\n'
+        '📌 Orientação: Reformule a pergunta em uma frase objetiva (ex: "Dose de amiodarona em PCR").';
   }
 
   /// BUILD 232 — Sanitiza e avalia severidade do meta leak.
@@ -490,6 +493,70 @@ class AiSmartRouter {
     debugPrint('[RESPONSE_VALIDATOR] repaired=${metaLinesRemoved > 0}');
 
     return result;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // BUILD 247: shouldFallback() — ÚNICA fonte de decisão de fallback clínico.
+  //
+  // Centraliza toda lógica de "bloquear resposta e usar fallback".
+  // Chamado por _plantaoTruncationGuard (ai_screen.dart).
+  //
+  // BLOQUEIA apenas se:
+  //   1. resposta vazia
+  //   2. claramente truncada (sem conteúdo clínico + sintaxe cortada)
+  //   3. meta-leak irrecuperável
+  //   4. sem nenhum valor clínico
+  //
+  // PRESERVA se:
+  //   • tem sigla clínica (IAM, TEP, PCR…)
+  //   • tem keyword clínica (dose, mg, conduta, tratamento…)
+  //   • repaired=true, orderFixed=true, hiddenFields>0
+  //   • resposta curta com conteúdo real
+  //
+  // LOG: [RESPONSE_VALIDATOR] fallback=true/false reason=...
+  // ─────────────────────────────────────────────────────────────────────────
+  static ({bool fallback, String reason}) shouldFallback({
+    required bool parserValid,
+    required bool hasClinicalContent,
+    required bool isTruncated,
+    required bool hasMetaLeak,
+    required bool repaired,
+    required bool orderFixed,
+    required int hiddenFields,
+    required int removedLines,
+  }) {
+    // Nunca bloquear se o parser produziu resposta estruturada
+    if (parserValid) {
+      return (fallback: false, reason: 'parser_valid');
+    }
+
+    // Nunca bloquear se repair/organizer interveio com sucesso
+    if (repaired || orderFixed || hiddenFields > 0 || removedLines > 0) {
+      return (fallback: false, reason: 'repair_success');
+    }
+
+    // Nunca bloquear se tem conteúdo clínico útil (mesmo sem estrutura)
+    if (hasClinicalContent && !hasMetaLeak) {
+      return (fallback: false, reason: 'useful_content');
+    }
+
+    // Bloquear: meta-leak irrecuperável
+    if (hasMetaLeak) {
+      return (fallback: true, reason: 'meta_leak');
+    }
+
+    // Bloquear: truncada E sem conteúdo clínico
+    if (isTruncated && !hasClinicalContent) {
+      return (fallback: true, reason: 'truncated_no_clinical');
+    }
+
+    // Bloquear: sem nenhum valor clínico
+    if (!hasClinicalContent) {
+      return (fallback: true, reason: 'no_clinical_value');
+    }
+
+    // Default conservador: preservar (conteúdo clínico presente)
+    return (fallback: false, reason: 'default_preserve');
   }
 
   static _ValidationResult _validateResponse(

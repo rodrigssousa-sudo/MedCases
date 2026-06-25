@@ -6,7 +6,7 @@
 //   • PlantaoIntentClassifier — shim Build 224 (retrocompatibilidade — não remover)
 //   • PlantaoResponse  — data class estruturada com campos clínicos dinâmicos
 //   • PlantaoParser    — extrai PlantaoResponse de texto validado via emoji-anchors
-//   • PlantaoValidator — valida estrutura mínima por template de intenção
+//   • PlantaoOrganizer — BUILD 247: organiza estrutura, expõe sinais clínicos
 //   • PlantaoRepair    — reorganiza blocos, elimina duplicatas, normaliza espaços
 //                        (NUNCA inventa conteúdo clínico)
 //
@@ -21,7 +21,7 @@
 //   LLM output
 //     → sanitizeResponse()       [ai_smart_router.dart — meta leak filter]
 //     → PlantaoRepair.repair()   [reorganiza blocos, deduplication]
-//     → PlantaoValidator.isValid() [valida estrutura por template]
+//     → PlantaoOrganizer.isValid() [loose check — para parser tentar]
 //     → PlantaoParser.parse()    [constrói objeto estruturado]
 //     → _PlantaoRenderer         [renderiza layout canônico com emojis do template]
 //
@@ -50,8 +50,7 @@
 //   • Streaming: pipeline só é aplicado no chunk.isDone
 //
 // LOG ESTRUTURADO:
-//   [PLANTAO_VALIDATOR] valid=true repaired=false removedLines=2
-//                       hiddenFields=1 orderFixed=true
+//   [PLANTAO_ORGANIZER] action=organize/preserve/fallback hasClinical=true isTruncated=false
 //   [PLANTAO_INTENT] intent=monitoramento score=3 keywords=[ecg, potassio, monitorar]
 //   [PLANTAO_ANALYSIS] topic=Amiodarona subtitle=Antiarrítmico classe III
 //                      primaryIntent=dose secondaryIntent=contraindicacao
@@ -2009,7 +2008,7 @@ class PlantaoParser {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PlantaoValidator — BUILD 246: organizador, NÃO bloqueador
+// PlantaoOrganizer — BUILD 247: organizador, NÃO bloqueador
 //
 // RESPONSABILIDADE:
 //   1. organizador  — detecta intenção clínica e reorganiza o conteúdo
@@ -2030,8 +2029,8 @@ class PlantaoParser {
 //   ✓ ausência de emoji/subtítulo/estrutura perfeita
 //   ✓ falha parcial do parser
 // ─────────────────────────────────────────────────────────────────────────────
-class PlantaoValidator {
-  PlantaoValidator._(); // 100% estático
+class PlantaoOrganizer {
+  PlantaoOrganizer._(); // 100% estático
 
   // Emojis âncora válidos em todos os templates
   static const _kAllValidAnchors = [
@@ -2088,7 +2087,7 @@ class PlantaoValidator {
     ' pero', ' si', ' que', ' la', ' el',
   ];
 
-  /// BUILD 246: isValid() — LOOSE check para o pipeline estruturado.
+  /// BUILD 247: isValid() — LOOSE check para o pipeline estruturado.
   /// Retorna true se há estrutura mínima para o parser do PlantaoRenderer.
   /// NÃO bloqueia por falta de estrutura — isso é papel de hasUsefulClinicalContent().
   static bool isValid(String text) {
@@ -2110,15 +2109,17 @@ class PlantaoValidator {
     final startsWithClinicalHeader =
         lines.first.startsWith('🟥') || lines.first.startsWith('🚨');
 
-    // Passa se tiver header clínico OU pelo menos 1 emoji âncora com ≥1 linha conteúdo
+    // Loose check: passa se tiver header clínico OU pelo menos 1 emoji âncora + ≥2 linhas.
+    // Nota: este check é apenas para decidir se o PlantaoParser deve tentar parsear.
+    // NÃO determina se a resposta é válida clinicamente — isso é papel do ResponseValidator.
     if (startsWithClinicalHeader && lines.length >= 1) return true;
     if (hasAnchorEmoji && lines.length >= 2) return true;
 
     return false;
   }
 
-  /// BUILD 246: hasUsefulClinicalContent() — verifica conteúdo clínico real.
-  /// Usado por _plantaoTruncationGuard para decidir PRESERVAR vs BLOQUEAR.
+  /// BUILD 247: hasUsefulClinicalContent() — verifica conteúdo clínico real.
+  /// Sinal para ResponseValidator decidir PRESERVAR vs BLOQUEAR.
   /// Retorna true se a resposta tem valor clínico, mesmo sem estrutura perfeita.
   static bool hasUsefulClinicalContent(String text) {
     if (text.trim().isEmpty) return false;
@@ -2149,7 +2150,7 @@ class PlantaoValidator {
     return false;
   }
 
-  /// BUILD 246: isTruncated() — detecta resposta cortada/incompleta.
+  /// BUILD 247: isTruncated() — detecta resposta cortada/incompleta.
   /// Retorna true SOMENTE para truncamento real (mid-sentence, conector final).
   static bool isTruncated(String text) {
     if (text.trim().isEmpty) return true;
@@ -2180,18 +2181,25 @@ class PlantaoValidator {
     return false;
   }
 
-  /// BUILD 246: hasMetaLeak() — detecta vazamento de raciocínio interno.
+  /// BUILD 247: hasMetaLeak() — detecta vazamento de raciocínio interno.
   static bool hasMetaLeak(String text) {
     final lower = text.toLowerCase();
     return _kMetaLeakPatterns.any((p) => lower.contains(p));
   }
 
-  /// Valida um PlantaoResponse já parseado
+  /// Verifica se um PlantaoResponse parseado tem campos obrigatórios.
+  /// Nota: não é critério de fallback — parser pode falhar para resposta válida.
   static bool isValidResponse(PlantaoResponse r) {
     return r.conduta.trim().isNotEmpty &&
         r.monitorar.trim().isNotEmpty;
   }
 }
+
+/// BUILD 247: alias de retrocompatibilidade — mantido caso existam
+/// referências legadas em testes ou comentários externos.
+/// TODO: remover após estabilização da release.
+// ignore: camel_case_types
+typedef PlantaoValidator = PlantaoOrganizer;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PlantaoRepair — reorganiza blocos para a ordem canônica
@@ -2403,7 +2411,7 @@ class PlantatoPipelineResult {
   final int hiddenFields;
   final bool orderFixed;
   final String fallbackText; // texto original para fallback se response == null
-  // BUILD 246: sinais para _plantaoTruncationGuard
+  // BUILD 247: sinais para ResponseValidator / SafetyFallback
   final bool hasClinicalContent; // tem valor clínico mesmo sem estrutura perfeita
   final bool isTruncated;        // resposta claramente cortada
   final bool hasMetaLeak;        // vazamento de raciocínio interno
@@ -2450,8 +2458,8 @@ class PlantatoPipeline {
     final repairResult = PlantaoRepair.repair(sanitizedText);
     final repairedText = repairResult.text;
 
-    // ── Camada 2: PlantaoValidator ─────────────────────────────────────────
-    final isValid = PlantaoValidator.isValid(repairedText);
+    // ── Camada 2: PlantaoOrganizer ─────────────────────────────────────────
+    final isValid = PlantaoOrganizer.isValid(repairedText);
 
     // ── Camada 3: PlantaoParser ────────────────────────────────────────────
     PlantaoResponse? response;
@@ -2463,10 +2471,10 @@ class PlantatoPipeline {
       hiddenFields = response?.hiddenFields ?? 0;
     }
 
-    // ── Log [PLANTAO_VALIDATOR] BUILD 246 ─────────────────────────────────
-    final hasClinical = PlantaoValidator.hasUsefulClinicalContent(sanitizedText);
-    final isTrunc     = PlantaoValidator.isTruncated(sanitizedText);
-    final hasMetaLk   = PlantaoValidator.hasMetaLeak(sanitizedText);
+    // ── Log [PLANTAO_ORGANIZER] BUILD 247 ─────────────────────────────────
+    final hasClinical = PlantaoOrganizer.hasUsefulClinicalContent(sanitizedText);
+    final isTrunc     = PlantaoOrganizer.isTruncated(sanitizedText);
+    final hasMetaLk   = PlantaoOrganizer.hasMetaLeak(sanitizedText);
 
     // Determina action para o log
     final String logAction;
@@ -2478,7 +2486,7 @@ class PlantatoPipeline {
       logAction = 'fallback';
     }
 
-    debugPrint('[PLANTAO_VALIDATOR] '
+    debugPrint('[PLANTAO_ORGANIZER] '
         'action=$logAction '
         'valid=$isValid '
         'repaired=${repairResult.repaired} '
@@ -2490,12 +2498,12 @@ class PlantatoPipeline {
         'hasMetaLeak=$hasMetaLk');
 
     if (response != null) {
-      debugPrint('[PLANTAO_VALIDATOR] parse=ok '
+      debugPrint('[PLANTAO_ORGANIZER] parse=ok '
           'conduta="${response.conduta.length > 40 ? response.conduta.substring(0, 40) : response.conduta}…"');
     } else if (hasClinical) {
-      debugPrint('[PLANTAO_VALIDATOR] parse=null reason=useful_content — preservar como texto plano');
+      debugPrint('[PLANTAO_ORGANIZER] parse=null reason=useful_content — preservar como texto plano');
     } else {
-      debugPrint('[PLANTAO_VALIDATOR] parse=null reason=no_clinical_value — fallback');
+      debugPrint('[PLANTAO_ORGANIZER] parse=null reason=no_clinical_value — aguarda ResponseValidator');
     }
 
     return PlantatoPipelineResult(

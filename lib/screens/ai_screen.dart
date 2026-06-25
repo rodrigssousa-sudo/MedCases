@@ -24,6 +24,7 @@ import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela interna
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
+import '../services/ai_smart_router.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
 import '../services/offline_calculator_cache_service.dart'; // BUILD 240: local cache URL
 
 
@@ -3721,20 +3722,25 @@ class _ActionTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BUILD 246 — _plantaoTruncationGuard (REESCRITO)
+// BUILD 247 — _plantaoTruncationGuard (ARQUITETURA CONSOLIDADA)
 //
-// NOVA RESPONSABILIDADE: organizador/normalizador, NÃO bloqueador.
+// ARQUITETURA:
+//   Camada 1 — PlantaoOrganizer (via PlantatoPipeline.run()):
+//     organiza, repara, detecta sinais clínicos — NUNCA bloqueia
+//   Camada 2 — ResponseValidator (AiSmartRouter.shouldFallback()):
+//     ÚNICA fonte de decisão de bloqueio/fallback clínico
+//   Camada 3 — SafetyFallback:
+//     substitui SOMENTE quando ResponseValidator decide fallback=true
 //
 // REGRA PRINCIPAL:
 //   Se a resposta contém conteúdo clínico útil → PRESERVAR.
 //   Se estiver mal formatada → REORGANIZAR via PlantaoRepair.
-//   NUNCA substituir por "Não consegui completar…" para conteúdo útil.
+//   NUNCA substituir por fallback para conteúdo útil.
 //
-// BLOQUEAR/FALLBACK somente quando:
-//   1. resposta vazia
-//   2. claramente truncada (termina em conector, mid-sentence)
-//   3. meta-leak (vazamento de raciocínio interno)
-//   4. sem nenhum valor clínico E sem estrutura
+// BLOQUEAR/FALLBACK somente quando ResponseValidator decide:
+//   1. meta-leak irrecuperável
+//   2. truncada E sem conteúdo clínico
+//   3. sem nenhum valor clínico
 //
 // NUNCA BLOQUEAR POR:
 //   - resposta curta com conteúdo clínico
@@ -3743,7 +3749,9 @@ class _ActionTile extends StatelessWidget {
 //   - ausência de emoji/subtítulo/estrutura perfeita
 //   - falha parcial do parser
 //
-// LOG: [PLANTAO_FAILSAFE] action=preserve/organize/fallback reason=...
+// LOG: [PLANTAO_ORGANIZER] action=organize/preserve/fallback
+//      [RESPONSE_VALIDATOR] fallback=false/true reason=...
+//      [SAFETY_FALLBACK] fallback=true reason=... (somente quando bloqueia)
 // ─────────────────────────────────────────────────────────────────────────────
 String _plantaoTruncationGuard(String text, String lang) {
   if (text.trim().isEmpty) return text;
@@ -3758,59 +3766,53 @@ String _plantaoTruncationGuard(String text, String lang) {
       lower.contains('ia indisponible');
   if (isErrorMsg) return text;
 
-  // ── Executa o pipeline para organizar/reparar a estrutura ────────────────
+  // ── Camada 1: PlantaoOrganizer via PlantatoPipeline ──────────────────────
+  // Organiza, repara, detecta sinais clínicos. Não bloqueia.
   final pipelineResult = PlantatoPipeline.run(text);
   final parserValid    = pipelineResult.response != null;
   final hasClinical    = pipelineResult.hasClinicalContent;
   final isTruncated    = pipelineResult.isTruncated;
   final hasMetaLeak    = pipelineResult.hasMetaLeak;
 
-  // ── Caminho 1: parser produziu resposta estruturada → preservar/organizar ─
-  if (parserValid) {
-    final action = (pipelineResult.repaired || pipelineResult.orderFixed)
+  // ── Camada 2: ResponseValidator.shouldFallback() ─────────────────────────
+  // ÚNICA fonte de decisão de bloqueio/fallback (BUILD 247).
+  final (:fallback, :reason) = AiSmartRouter.shouldFallback(
+    parserValid:       parserValid,
+    hasClinicalContent: hasClinical,
+    isTruncated:       isTruncated,
+    hasMetaLeak:       hasMetaLeak,
+    repaired:          pipelineResult.repaired,
+    orderFixed:        pipelineResult.orderFixed,
+    hiddenFields:      pipelineResult.hiddenFields,
+    removedLines:      pipelineResult.removedLines,
+  );
+
+  // ── Log [RESPONSE_VALIDATOR] ─────────────────────────────────────────────
+  debugPrint('[RESPONSE_VALIDATOR] '
+      'fallback=$fallback '
+      'reason=$reason '
+      'parserValid=$parserValid '
+      'hasClinical=$hasClinical '
+      'isTruncated=$isTruncated '
+      'hasMetaLeak=$hasMetaLeak '
+      'repaired=${pipelineResult.repaired} '
+      'orderFixed=${pipelineResult.orderFixed}');
+
+  // ── Caminho PRESERVE: ResponseValidator decidiu manter resposta ───────────
+  if (!fallback) {
+    final organizeAction = (pipelineResult.repaired || pipelineResult.orderFixed)
         ? 'organize'
         : 'preserve';
-    debugPrint('[PLANTAO_FAILSAFE] action=$action '
-        'reason=parser_valid '
-        'repaired=${pipelineResult.repaired} '
-        'orderFixed=${pipelineResult.orderFixed} '
+    debugPrint('[PLANTAO_ORGANIZER] action=$organizeAction '
+        'reason=$reason '
         'hiddenFields=${pipelineResult.hiddenFields}');
-    return text; // pass-through — renderer estruturado cuidará do resto
+    return text; // pass-through — renderer estruturado ou texto plano
   }
 
-  // ── Caminho 2: sem parser mas tem conteúdo clínico útil → preservar ──────
-  // REGRA PRINCIPAL BUILD 246: conteúdo clínico útil = PRESERVAR,
-  // mesmo que a estrutura seja imperfeita e o parser tenha falhado.
-  if (hasClinical && !isTruncated && !hasMetaLeak) {
-    debugPrint('[PLANTAO_FAILSAFE] action=preserve '
-        'reason=useful_content '
-        'parserValid=false '
-        'hasClinical=$hasClinical '
-        'isTruncated=$isTruncated '
-        'hasMetaLeak=$hasMetaLeak');
-    return text; // preservar resposta útil sem substituição
-  }
-
-  // ── Caminho 3: truncada mas tem conteúdo clínico → tentar preservar ──────
-  // Se a resposta está truncada mas contém informação clínica valiosa,
-  // preservamos o que existe em vez de descartar tudo.
-  if (isTruncated && hasClinical) {
-    debugPrint('[PLANTAO_FAILSAFE] action=preserve '
-        'reason=truncated_with_clinical '
-        'parserValid=false '
-        'hasClinical=$hasClinical');
-    return text; // médico prefere ver conteúdo parcial do que fallback genérico
-  }
-
-  // ── Caminho 4: fallback real — vazio, meta-leak, ou sem valor clínico ─────
-  // Só chega aqui se: vazio OU meta-leak OU (truncado E sem conteúdo clínico)
-  final fallbackReason = hasMetaLeak
-      ? 'meta_leak'
-      : (isTruncated ? 'truncated_no_clinical' : 'no_clinical_value');
-
-  debugPrint('[PLANTAO_FAILSAFE] action=fallback '
-      'reason=$fallbackReason '
-      'parserValid=$parserValid '
+  // ── Caminho FALLBACK: ResponseValidator decidiu bloquear ─────────────────
+  // Só chega aqui para: meta-leak, truncado sem clínico, sem valor clínico.
+  debugPrint('[SAFETY_FALLBACK] fallback=true '
+      'reason=$reason '
       'hasClinical=$hasClinical '
       'isTruncated=$isTruncated '
       'hasMetaLeak=$hasMetaLeak');
