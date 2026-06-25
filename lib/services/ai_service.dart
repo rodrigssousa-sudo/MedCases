@@ -104,6 +104,38 @@ class AiService {
   //   4. Generation: modelo gera resposta FOCADA no intent classificado
   // ══════════════════════════════════════════════════════════════════════════
 
+  // ── MÓDULO 2B — Raciocínio Clínico COMPACTO (Plantão) ──────────────────
+  // BUILD 253: versão condensada (~100 tokens cada) para Plantão.
+  // Mantém APENAS o núcleo decisório (modos A/B/C/D/E + gravidade).
+  // Elimina os ~1,823 tokens do _clinicalReasoningPt/Es nesse modo,
+  // preservando toda a estrutura nos Modos Estudo (isPlantaoMode=false).
+
+  static const _clinicalReasoningPlantaoEs =
+      'RAZONAMIENTO CLINICO (interno, nunca revelar):\n'
+      '1. Gravedad: LEVE/MODERADO/GRAVE. GRAVE → MODO [B] inmediato.\n'
+      '2. "¿Que mata primero?" — excluir emergencias antes de responder.\n'
+      '3. MODO segun intencion:\n'
+      '   [CONV] opinion/comparacion → respuesta fluida, sin bloques formales.\n'
+      '   [A] tratamiento/conducta → Primera Eleccion+dosis / Monitor / Evitar / Escalar.\n'
+      '   [B] critico (choque/PCR/IAM/AVC/sepsis/EAP) → MOV/ABCDE + prescripcion inmediata.\n'
+      '   [C] prescripcion hospitalar → bloques 1.Dieta…7.Metas.\n'
+      '   [D] definicion/dosis puntual → max 8 lineas.\n'
+      '   [E] termino sin contexto → UNA pregunta clinica directa.\n'
+      '4. Max 2 hipotesis visibles. Validar dosis por peso/renal/hepatico/edad.\n';
+
+  static const _clinicalReasoningPlantaoPt =
+      'RACIOCINIO CLINICO (interno, nunca revelar):\n'
+      '1. Gravidade: LEVE/MODERADO/GRAVE. GRAVE → MODO [B] imediato.\n'
+      '2. "O que mata primeiro?" — excluir emergencias antes de responder.\n'
+      '3. MODO conforme intencao:\n'
+      '   [CONV] opiniao/comparacao → resposta fluida, sem blocos formais.\n'
+      '   [A] tratamento/conduta → Primeira Escolha+dose / Monitor / Evitar / Escalar.\n'
+      '   [B] critico (choque/PCR/IAM/AVC/sepse/EAP) → MOV/ABCDE + prescricao imediata.\n'
+      '   [C] prescricao hospitalar → blocos 1.Dieta…7.Metas.\n'
+      '   [D] definicao/dose pontual → max 8 linhas.\n'
+      '   [E] termo sem contexto → UMA pergunta clinica direta.\n'
+      '4. Max 2 hipoteses visiveis. Validar doses por peso/renal/hepatico/idade.\n';
+
   // ── MÓDULO 1 — Identidade e Princípio Central ────────────────────────────
 
   static const _coreIdentityEs = '''
@@ -1492,14 +1524,29 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
         : (isEs ? _selfCheckEs : _selfCheckPt);
 
     final evidenceRanking = isEs ? _evidenceRankingEs : _evidenceRankingPt;
-    // RAG Cross-Check layer — injetado somente quando há dados RAG reais
-    final ragCrossCheck = hasRagData
+
+    // BUILD 253: clinicalReasoning compacto no Modo Plantão.
+    // _clinicalReasoningPt/Es = ~1,823 tokens (7,293 chars) — segundo maior bloco.
+    // Em Plantão, substituído por versão condensada (~100 tokens, ~400 chars):
+    // mantém núcleo decisório (modos A/B/C/D/E + gravidade) sem o texto narrativo
+    // extenso que dilui atenção do Gemini sobre regras de formatação de UI (Cards).
+    // Em Modo Estudo (isPlantaoMode=false): mantido integralmente.
+    final clinicalReasoning = isPlantaoMode
+        ? (isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt)
+        : (isEs ? _clinicalReasoningEs : _clinicalReasoningPt);
+
+    // BUILD 253: ragCrossCheck suprimido no Modo Plantão.
+    // Motivo: _ragCrossCheckPt/Es = ~630 tokens de contexto que dilui as regras
+    // de formatação de UI (Cards). Em Plantão, o selfCheck compacto (item 5)
+    // e o contextAnchor já cobrem isolamento RAG com muito menos tokens.
+    // Em Modo Estudo (isPlantaoMode=false): mantido integralmente.
+    final ragCrossCheck = (!isPlantaoMode && hasRagData)
         ? (isEs ? _ragCrossCheckEs : _ragCrossCheckPt)
         : '';
 
     // Build 223: Modo Plantão — log de diagnóstico em debug
     if (kDebugMode && isPlantaoMode) {
-      debugPrint('[Build223][AiService] isPlantaoMode=true → _responseFormat OMITIDO, _selfCheck padrão OMITIDO');
+      debugPrint('[Build223][AiService] isPlantaoMode=true → _responseFormat OMITIDO, _selfCheck padrão OMITIDO, ragCrossCheck OMITIDO, clinicalReasoning COMPACTO (BUILD 253)');
     }
 
     // ── USER PROMPT ANCHORING (Part C — context contamination fix) ───────────
@@ -1646,7 +1693,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     if (isEs) {
       return '$langHeader'
              '$_coreIdentityEs\n\n'
-             '$_clinicalReasoningEs\n\n'
+             '$clinicalReasoning\n\n'    // BUILD 253: compacto no Plantão
              '$_specialtyAdaptationEs\n\n'
              '$evidenceRanking\n\n'
              '$toolsSection'
@@ -1665,7 +1712,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     } else {
       return '$langHeader'
              '$_coreIdentityPt\n\n'
-             '$_clinicalReasoningPt\n\n'
+             '$clinicalReasoning\n\n'    // BUILD 253: compacto no Plantão
              '$_specialtyAdaptationPt\n\n'
              '$evidenceRanking\n\n'
              '$toolsSection'

@@ -3308,6 +3308,18 @@ class AppProvider extends ChangeNotifier {
       isPlantaoMode:      !longResponse,       // Build 223: omite _responseFormat e _selfCheck padrão no Plantão
     );
 
+    // BUILD 253: log do tamanho real do systemPrompt (não gateado por kDebugMode).
+    // Permite confirmar redução de tokens atingida no modo Plantão.
+    final _spChars = systemPrompt.length;
+    final _spTokensApprox = (_spChars / 4).round();
+    print('[SYSTEM_PROMPT_AUDIT] requestId=${DateTime.now().millisecondsSinceEpoch} '
+        'mode=${longResponse ? "estudo" : "plantao"} '
+        'systemPromptChars=$_spChars systemPromptTokensApprox=$_spTokensApprox');
+    if (_spTokensApprox > 6000) {
+      print('[SYSTEM_PROMPT_AUDIT] ⚠️  ALERTA: systemPrompt acima de 6000 tokens '
+          '(approx=$_spTokensApprox) — risco de Context Dilution no Plantão.');
+    }
+
     // ── Build 156.2: Resolução automática da chave Gemini ───────────────
     // A chave NÃO é BYOA do usuário — é a chave do app, salva pelo admin
     // em app_config/global.apiKey no Firestore e carregada automaticamente
@@ -3858,6 +3870,16 @@ class AppProvider extends ChangeNotifier {
       isFirstMessage: _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
       isPlantaoMode: true, // Build 223: buildAIAnswer é sempre resposta curta (sem longResponse)
     );
+
+    // BUILD 253: log do tamanho real do systemPrompt no caminho buildAIAnswer.
+    final _spCharsAns = systemPrompt.length;
+    final _spTokensApproxAns = (_spCharsAns / 4).round();
+    print('[SYSTEM_PROMPT_AUDIT][buildAIAnswer] '
+        'systemPromptChars=$_spCharsAns systemPromptTokensApprox=$_spTokensApproxAns');
+    if (_spTokensApproxAns > 6000) {
+      print('[SYSTEM_PROMPT_AUDIT] ⚠️  ALERTA buildAIAnswer: systemPrompt acima de 6000 tokens '
+          '(approx=$_spTokensApproxAns) — risco de Context Dilution.');
+    }
 
     // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────
     // Build 156.2: usa Gemini sempre que a chave do app estiver disponível,
