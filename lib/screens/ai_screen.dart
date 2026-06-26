@@ -1874,10 +1874,11 @@ class _AiScreenState extends State<AiScreen> {
 
     Widget chatList = ListView.builder(
             controller: _scrollCtrl,
+            // BUILD 283 ORDEM 10.5: mobile padding 12→16 para respiração lateral
             padding: EdgeInsets.fromLTRB(
-              bp.isDesktop ? 24 : 12,
+              bp.isDesktop ? 24 : 16,
               12,
-              bp.isDesktop ? 24 : 12,
+              bp.isDesktop ? 24 : 16,
               8,
             ),
             // Build 145 — cacheExtent aumentado 2000 → 2500:
@@ -2571,15 +2572,9 @@ class _MobileAiActionBar extends StatelessWidget {
     return Container(
       height: 52,
       decoration: BoxDecoration(
-        color: dark ? _kBg1 : Colors.white,
-        border: Border(bottom: BorderSide(color: borderColor, width: 0.5)),
-        gradient: dark
-            ? const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [_kBg1, _kBg2],
-              )
-            : null,
+        // BUILD 283 ORDEM 10.1: Dark Graphite solid — paridade com tools/history headers
+        color: const Color(0xFF1A1D23),
+        border: const Border(bottom: BorderSide(color: Color(0xFF2A2D35), width: 0.5)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -2592,55 +2587,23 @@ class _MobileAiActionBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'MedCases IA',
+                  // BUILD 283 ORDEM 10.1: canonical title MEDCASES IA + MEDCASES PRO gold subtitle
+                  const Text(
+                    'MEDCASES IA',
                     style: TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w900,
-                      color: dark ? const Color(0xFF00E5FF) : const Color(0xFF1A1D23),
-                      letterSpacing: -0.3,
+                      fontSize: 20, fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: -0.2,
                     ),
                   ),
                   const SizedBox(height: 1),
-                  GestureDetector(
-                    onTap: onSettings,
-                    child: keyLoading
-                        ? Row(mainAxisSize: MainAxisSize.min, children: [
-                            SizedBox(
-                              width: 8, height: 8,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 1.2,
-                                color: dark ? Colors.white54 : Colors.black38,
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              'Conectando...',
-                              style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.w600,
-                                color: dark ? Colors.white54 : Colors.black45,
-                              ),
-                            ),
-                          ])
-                        : Text(
-                            // BUILD 277: non-admin disconnected → neutral grey '• IA Desconectada'
-                            hasRealAi
-                                ? (lang == 'es' ? '• Conectado' : '• Conectado')
-                                : (forceDisconnectedLabel
-                                    ? (lang == 'es' ? '• IA Desconectada' : '• IA Desconectada')
-                                    : (lang == 'es' ? '• Conectar IA' : '• Conectar IA')),
-                            style: TextStyle(
-                              fontSize: 11, fontWeight: FontWeight.w700,
-                              color: hasRealAi
-                                  ? kGreenLive
-                                  : (forceDisconnectedLabel
-                                      ? (dark   // BUILD 277: neutral grey (not red)
-                                          ? Colors.white.withValues(alpha: 0.38)
-                                          : Colors.grey.shade500)
-                                      : (dark
-                                          ? Colors.white.withValues(alpha: 0.40)
-                                          : Colors.grey.shade500)),
-                            ),
-                          ),
+                  const Text(
+                    'MEDCASES PRO',
+                    style: TextStyle(
+                      fontSize: 11, fontWeight: FontWeight.w600,
+                      color: Color(0xFFD4AF37),
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ],
               ),
@@ -2772,136 +2735,55 @@ class _WaHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final isConnected = geminiConnected || hasRealAi;
 
+    // BUILD 283 ORDEM 10.2: _WaHeader — Dark Graphite solid + canonical MEDCASES IA title
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [_kBg1, _kBg2, _kBg3],
-        ),
-        // Linha cyan MedCases IA na base do header
+        color: Color(0xFF1A1D23), // Dark Graphite solid — paridade total
         border: Border(
-          bottom: BorderSide(color: Color(0xFF005E9C), width: 1),
+          bottom: BorderSide(color: Color(0xFF2A2D35), width: 0.5),
         ),
       ),
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
+          padding: const EdgeInsets.fromLTRB(4, 10, 10, 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Linha 1: avatar + título + ações principais ──────────
+              // ── Linha 1: seta voltar + título + ações ──────────────────
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Avatar — só texto 'M+' dourado, sem fundo nem borda
-                  SizedBox(
-                    width: 38, height: 38,
-                    child: Center(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'M',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w900,
-                                color: _kGold,
-                                letterSpacing: -1,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '+',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w900,
-                                color: _kGoldL,
-                                letterSpacing: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  // Back arrow — consistência com todas as telas secundárias
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new,
+                        color: Colors.white, size: 20),
+                    onPressed: () => Navigator.maybePop(context),
+                    padding: const EdgeInsets.all(8),
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
-                  const SizedBox(width: 10),
 
-                  // Título + badge conexão como subtítulo (Column)
+                  // Título canônico + subtítulo ouro
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
-                          'MedCases IA',
+                          'MEDCASES IA',
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF00E5FF),
-                            letterSpacing: -0.3,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: -0.2,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        // Badge Conectado / Conectar IA — subtítulo clicável
-                        GestureDetector(
-                          onTap: onSettings,
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: isConnected
-                                  ? const Color(0xFF00E5FF).withValues(alpha: 0.12)
-                                  : Colors.white.withValues(alpha: 0.07),
-                              border: Border.all(
-                                color: isConnected
-                                    ? const Color(0xFF00E5FF).withValues(alpha: 0.45)
-                                    : Colors.white.withValues(alpha: 0.18),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (keyLoading)
-                                  SizedBox(
-                                    width: 8, height: 8,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1.2,
-                                      color: Colors.white.withValues(alpha: 0.5),
-                                    ),
-                                  )
-                                else
-                                  Icon(
-                                    isConnected
-                                        ? Icons.check_circle_rounded
-                                        : Icons.link_rounded,
-                                    size: 10,
-                                    color: isConnected
-                                        ? const Color(0xFF00E5FF)
-                                        : Colors.white.withValues(alpha: 0.5),
-                                  ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  // BUILD 277: neutral 'IA Desconectada' label for non-admin
-                                  keyLoading
-                                      ? 'Conectando...'
-                                      : isConnected
-                                          ? (lang == 'es' ? 'Conectado' : 'Conectado')
-                                          : (forceDisconnectedLabel
-                                              ? (lang == 'es' ? 'IA Desconectada' : 'IA Desconectada')
-                                              : (lang == 'es' ? 'Conectar IA' : 'Conectar IA')),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: isConnected
-                                        ? const Color(0xFF00E5FF)
-                                        : (forceDisconnectedLabel
-                                            ? Colors.white.withValues(alpha: 0.42) // BUILD 277: neutral grey
-                                            : Colors.white.withValues(alpha: 0.6)),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        const Text(
+                          'MEDCASES PRO',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFD4AF37), // ouro fosco canônico
+                            letterSpacing: 1.2,
                           ),
                         ),
                       ],
@@ -3036,144 +2918,63 @@ class _EmptyChat extends StatelessWidget {
 
     final isEs = lang == 'es';
 
-    // ── Paleta do card (combina com o _WaHeader escuro) ───────────────────
-    // Fundo escuro #1E1E1E independente do darkMode — combina com o header preto
-    const cardBg     = Color(0xFF252930);
-    const amberColor = Color(0xFFF59E0B);
-    const amberBg    = Color(0x1FF59E0B);   // âmbar 12% opacidade
-    const amberBorder = Color(0x52F59E0B);  // âmbar 32% opacidade
+    // BUILD 283 ORDEM 10.3: WiFi-off icon + "CONECTAR IA" gold — área clicável inteira
+    // Design minimalista: sem card box, apenas ícone grande + texto central clicável
+    return GestureDetector(
+      onTap: onConnectApi,
+      behavior: HitTestBehavior.opaque,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Ícone WiFi cortado em cinza claro ─────────────────────────
+            Icon(
+              Icons.wifi_off_rounded,
+              size: 72,
+              color: Colors.white.withValues(alpha: 0.22),
+            ),
+            const SizedBox(height: 20),
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: amberBorder, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.55),
-                blurRadius: 32,
-                offset: const Offset(0, 8),
-              ),
-              BoxShadow(
-                color: amberColor.withValues(alpha: 0.06),
-                blurRadius: 40,
-                offset: const Offset(0, 0),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Ícone de link quebrado em âmbar ───────────────────────
-              Container(
-                width: 76, height: 76,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: amberBg,
-                  border: Border.fromBorderSide(
-                    BorderSide(color: amberBorder, width: 1.5),
-                  ),
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.link_off_rounded,
-                    size: 36,
-                    color: amberColor,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // ── Título ────────────────────────────────────────────────
-              Text(
-                isEs ? 'IA Desconectada' : 'IA Desconectada',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: -0.4,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // ── Subtítulo ─────────────────────────────────────────────
-              Text(
-                isEs
-                    ? "Por favor, haga clic en el botón 'Conectar IA' en el menú superior negro para activar las guías clínicas y garantizar el funcionamiento 100% de los diagnósticos."
-                    : "Por favor, clique no botão 'Conectar IA' localizado no menu superior preto para ativar as diretrizes clínicas e garantir o funcionamento 100% dos diagnósticos.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withValues(alpha: 0.60),
-                  height: 1.6,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // ── Seta apontando para o botão "Conectar IA" no header ──
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            // ── "CONECTAR" branco + "IA" ouro fosco ───────────────────────
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
                 children: [
-                  const Icon(Icons.arrow_upward_rounded,
-                      color: amberColor, size: 14),
-                  const SizedBox(width: 6),
-                  Text(
-                    isEs ? 'Botón en el menú superior' : 'Botão no menu acima',
+                  TextSpan(
+                    text: isEs ? 'CONECTAR ' : 'CONECTAR ',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                  const TextSpan(
+                    text: 'IA',
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: amberColor.withValues(alpha: 0.80),
-                      letterSpacing: 0.3,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFFD4AF37), // ouro fosco canônico
+                      letterSpacing: 1.0,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 10),
 
-              // ── Botão alternativo direto ──────────────────────────────
-              GestureDetector(
-                onTap: onConnectApi,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: amberColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: amberColor.withValues(alpha: 0.30),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.bolt_rounded,
-                          color: Color(0xFF1A1100), size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        isEs ? 'Conectar IA Ahora' : 'Conectar IA Agora',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF1A1100),
-                          letterSpacing: 0.2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            // ── Instrução suave ───────────────────────────────────────────
+            Text(
+              isEs ? 'Toque para activar el asistente' : 'Toque para ativar o assistente',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withValues(alpha: 0.38),
+                letterSpacing: 0.2,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -6708,17 +6509,18 @@ class _ResponseModeToggle extends StatelessWidget {
         alignment: Alignment.center,
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          // BUILD 283 ORDEM 10.4: Estudos ESQUERDA (gratuito/padrão) | Plantão DIREITA
           children: [
-            _pill(
-              label: labelGuardia,
-              isActive: !value,
-              onTap: () => onChanged(false),
-            ),
-            const SizedBox(width: 8),
             _pill(
               label: labelEstudio,
               isActive: value,
               onTap: () => onChanged(true),
+            ),
+            const SizedBox(width: 8),
+            _pill(
+              label: labelGuardia,
+              isActive: !value,
+              onTap: () => onChanged(false),
             ),
           ],
         ),
