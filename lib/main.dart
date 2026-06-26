@@ -2191,13 +2191,14 @@ class _MobileAppBar extends StatelessWidget {
                   ),
 
                 // ── Row com logo + botões ──────────────────────────────────
+                // BUILD 282 — Logo M+ (BrandMark) removido da AppBar mobile.
+                // Título "MEDCASES PRO" fica centralizado pelo Stack acima.
+                // SizedBox(38) à esquerda espelha a largura do hambúrguer (38px)
+                // direito, garantindo simetria perfeita e título realmente centrado.
                 Row(
               children: [
-                // ── Logo / Brand clicável → volta para Home ────────────────
-                GestureDetector(
-                  onTap: onLogoTap,
-                  child: const BrandMark(small: true),
-                ),
+                // BUILD 282: Placeholder 38px (largura = hambúrguer) para simetria
+                const SizedBox(width: 38),
                 const Spacer(),
 
                 // ── Botões contextuais da IA (só na aba 2) ─────────────────
