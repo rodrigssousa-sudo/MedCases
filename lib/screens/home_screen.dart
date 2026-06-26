@@ -206,14 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(height: 14),
 
-        // ── BUILD 278: MEU PLANTÃO / MI GUARDIA — Card de acesso direto à IA ─
-        _HomeAiNavigatorCard(
-          dark: dark,
-          isEs: isEs,
-          onTap: () => widget.onTabChange(2),
-        ),
-        const SizedBox(height: 20),
-
         // ── Timer Rápido de Plantão ───────────────────────────────────────
         _ShiftTimerBar(dark: dark, isEs: isEs),
         const SizedBox(height: 24),
@@ -412,7 +404,7 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
           isTabletLandscape ? 20 : 12,
-          8,
+          6,  // ORDEM 12: compactado (era 8)
           isTabletLandscape ? 20 : 12,
           bottomPad,
         ),
@@ -426,21 +418,11 @@ class _HomeScreenState extends State<HomeScreen> {
             isEs: isEs,
             onNavigateToAi: widget.onTabChange,
           ),
-          const SizedBox(height: 10),
-
-          // ── BUILD 278: MEU PLANTÃO / MI GUARDIA — Card de acesso direto à IA ─
-          // Card premium full-width com glow Crimson (#AC2A2A) + monitor_heart.
-          // Navega diretamente para a aba de IA (tab 2) via onTabChange.
-          _HomeAiNavigatorCard(
-            dark: dark,
-            isEs: isEs,
-            onTap: () => widget.onTabChange(2),
-          ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),  // ORDEM 12: compactado
 
           // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
           _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),  // ORDEM 12: compactado
 
           // ── LINHA 2: ADULTO + PEDIATRÍA — dois cards paralelos ──────────────
           _HomeAdultoPediatriaRow(
@@ -453,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _HomeScreenState._slide(const _PediatricsShell()),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),  // ORDEM 12: compactado
 
           // ── LINHA 3: BIBLIOTECA + H. CLÍNICA — dois cards paralelos ─────────
           _HomeBibliotecaHClinicaRow(
@@ -461,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
             isEs: isEs,
             onTabChange: widget.onTabChange,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),  // ORDEM 12: compactado
 
           // ── QUICK ACCESS BAR — BUSCAR | NOTAS | RECIENTES | FAVORITOS | EVAL ─
           _HistorialCompactCard(
@@ -471,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onOpenNotes: widget.onOpenNotes,
             onCheckUpdate: widget.onCheckUpdate,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),  // ORDEM 12: trailer slim
 
           // ══════════════════════════════════════════════════════════════════
           // BUILD 281 — ISOLAMENTO DE ESCOPO: Meu Plantão / Mi Guardia
@@ -2858,17 +2840,17 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
       child: ScaleTransition(
         scale: _scale,
         child: Container(
-          height: 92,
+          height: 84,  // ORDEM 12: altura slim (era 92)
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: g,
             ),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),  // ORDEM 12: radius slim (era 18)
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),  // ORDEM 12: slim
             child: Row(children: [
               Container(
                 width: 42, height: 42,
@@ -2980,19 +2962,19 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
         scale: _scale,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),  // ORDEM 12: slim
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end:   Alignment.bottomRight,
               colors: gradientColors,
             ),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),  // ORDEM 12: radius slim
           ),
           // B139: sub-chip FÁRMACOS removido — card limpo com apenas a linha principal
           child: Row(children: [
             Container(
-              width: 52, height: 52,
+              width: 48, height: 48,  // ORDEM 12: ícone slim (era 52)
               decoration: BoxDecoration(
                 color: accentColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
@@ -4566,182 +4548,11 @@ class _FavoritosSheet extends StatelessWidget {
   }
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// BUILD 278 — MEU PLANTÃO / MI GUARDIA NAVIGATOR CARD
-// Card premium full-width de acesso direto à IA de plantão.
-// Design: fundo escuro #12161F com glow Crimson (#AC2A2A) + ícone monitor_heart.
-// Navega para tab 2 (AiScreen) via onTap callback.
-// ══════════════════════════════════════════════════════════════════════════════
-class _HomeAiNavigatorCard extends StatefulWidget {
-  final bool dark;
-  final bool isEs;
-  final VoidCallback onTap;
-
-  const _HomeAiNavigatorCard({
-    required this.dark,
-    required this.isEs,
-    required this.onTap,
-  });
-
-  @override
-  State<_HomeAiNavigatorCard> createState() => _HomeAiNavigatorCardState();
-}
-
-class _HomeAiNavigatorCardState extends State<_HomeAiNavigatorCard>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _scale;
-
-  // Crimson ECG palette — espelha ecg_loading.dart
-  static const _kCrimson     = Color(0xFFAC2A2A);
-  static const _kCrimsonGlow = Color(0xFF8B1A1A);
-  static const _kGold        = Color(0xFFD4AF37);
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl  = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 120));
-    _scale = Tween<double>(begin: 1.0, end: 0.97)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs = widget.isEs;
-
-    return GestureDetector(
-      onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
-      onTapUp:     (_) { _ctrl.reverse(); widget.onTap(); },
-      onTapCancel: ()  => _ctrl.reverse(),
-      child: ScaleTransition(
-        scale: _scale,
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color(0xFF12161F),
-            border: Border.all(
-              color: _kCrimson.withValues(alpha: 0.55),
-              width: 1.2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: _kCrimson.withValues(alpha: 0.28),
-                blurRadius: 18,
-                spreadRadius: 0,
-                offset: const Offset(0, 4),
-              ),
-              BoxShadow(
-                color: _kCrimsonGlow.withValues(alpha: 0.18),
-                blurRadius: 32,
-                spreadRadius: 4,
-                offset: const Offset(0, 0),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                // Ícone ECG / Monitor Cardíaco
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: _kCrimson.withValues(alpha: 0.18),
-                    border: Border.all(
-                      color: _kCrimson.withValues(alpha: 0.35),
-                      width: 1,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.monitor_heart_rounded,
-                    size: 24,
-                    color: _kCrimson,
-                  ),
-                ),
-                const SizedBox(width: 14),
-
-                // Textos: título + subtítulo
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'MEDCASES IA',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: 0.6,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        isEs
-                            ? 'Asistente IA de Guardia · MedCases'
-                            : 'Assistente IA de Plantão · MedCases',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.white.withValues(alpha: 0.55),
-                          letterSpacing: 0.1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Badge "MEDCASES PRO" + seta
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: _kGold.withValues(alpha: 0.15),
-                        border: Border.all(
-                          color: _kGold.withValues(alpha: 0.40),
-                          width: 0.8,
-                        ),
-                      ),
-                      child: const Text(
-                        'PRO',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w900,
-                          color: _kGold,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 14,
-                      color: _kCrimson.withValues(alpha: 0.70),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// ORDEM 12: _HomeAiNavigatorCard REMOVIDO (BUILD 278 → deprecated)
+// Motivo: card duplicado de acesso à IA — risco Apple Guideline 1.4.1.
+// O mini-chat _HomeInlineChat já fornece acesso completo ao assistente IA.
+// ─────────────────────────────────────────────────────────────────────────────
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Data class para lista de cards (usado no layout desktop)
