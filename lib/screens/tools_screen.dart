@@ -77,27 +77,19 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     final bp = MedBreakpoints.of(context);
     final showHeader = widget.hideHeader ? false : bp.isDesktop;
 
-    // BUILD 277-CROMATICO: Purple/Violet gradient accent
-    const Color kVioletLight = Color(0xFF8B5CF6); // violet-500
+    // BUILD 283 ORDEM 8: Dark Graphite constants
+    const Color kGraphiteDark = Color(0xFF1A1D23);
+    const Color kGraphiteBorder = Color(0xFF2A2D35);
 
     return Column(children: [
       // ── Header (visível apenas no desktop ou quando explicitamente solicitado)
       if (showHeader)
         Container(
-          // BUILD 282-CROMATICO: Purple gradient identico ao card home (topLeft→bottomRight)
-          // Cores: 3B0764 (roxo escuro) → 7E22CE (roxo vibrante) → A855F7 (lilás)
+          // BUILD 283 ORDEM 8: Dark Graphite solid — minimalista ultra premium
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF3B0764), // roxo escuro — topo esquerdo
-                Color(0xFF7E22CE), // roxo vibrante — meio
-                Color(0xFFA855F7), // lilás — baixo direito
-              ],
-            ),
+            color: kGraphiteDark,
             border: Border(
-              bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
+              bottom: BorderSide(color: kGraphiteBorder, width: 0.5),
             ),
           ),
           child: Padding(
@@ -114,7 +106,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Text(
-                    'CALCULADORA CLÍNICA',
+                    'FERRAMENTAS CLÍNICAS',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -140,9 +132,9 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
       // BUILD 278: pill tabs com BorderRadius.circular(12) unificados
       Container(
         decoration: const BoxDecoration(
-          color: Color(0xFF12161F),
+          color: kGraphiteDark,
           border: Border(
-            bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
+            bottom: BorderSide(color: kGraphiteBorder, width: 0.5),
           ),
         ),
         child: Padding(
@@ -151,11 +143,14 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             controller: _tabCtrl,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            // BUILD 278: pill indicator via BoxDecoration
+            // BUILD 283 ORDEM 8: pill sem cor chamativa, cinza escuro sutil
             indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              color: kVioletLight.withValues(alpha: 0.22),
-              border: Border.all(color: kVioletLight.withValues(alpha: 0.55), width: 1),
+              color: Colors.white.withValues(alpha: 0.10),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.28),
+                width: 1,
+              ),
             ),
             indicatorSize: TabBarIndicatorSize.tab,
             labelColor: Colors.white,

@@ -1001,22 +1001,21 @@ class _AvalHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            // Título
+            // Título — BUILD 283 ORDEM 7: padrão canônico (título w700/20 branco + subtítulo ouro)
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
                   isEs ? 'EVALUACIÓN FÍSICA' : 'AVALIAÇÃO FÍSICA',
                   style: const TextStyle(
-                    fontSize: 9, fontWeight: FontWeight.w900,
-                    color: Color(0xFFC5A365), letterSpacing: 2,
+                    fontSize: 20, fontWeight: FontWeight.w700,
+                    color: Colors.white, letterSpacing: -0.2,
                   ),
                 ),
-                Text(
-                  isEs
-                      ? 'Llenado asistido por sistema'
-                      : 'Preenchimento assistido por sistema',
-                  style: const TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w900, color: Colors.white,
+                const Text(
+                  'MEDCASES PRO',
+                  style: TextStyle(
+                    fontSize: 11, fontWeight: FontWeight.w600,
+                    color: Color(0xFFD4AF37), letterSpacing: 1.2,
                   ),
                 ),
               ]),
@@ -1093,7 +1092,19 @@ class _SectionNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: _kDark,
+      // BUILD 283 ORDEM 7: green gradient continuity + circular(12) canonical pills
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0F1116), // dark base — herda do TopBar
+            Color(0xFF1B3D2A), // verde médio
+            Color(0xFF10B981), // verde esmeralda
+          ],
+        ),
+        border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5)),
+      ),
       height: 52,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -1110,14 +1121,17 @@ class _SectionNav extends StatelessWidget {
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: active ? sec.color : Colors.white.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+                color: active
+                    ? Colors.white.withValues(alpha: 0.22)
+                    : Colors.white.withValues(alpha: 0.08),
                 border: Border.all(
                   color: active
-                      ? sec.color
+                      ? Colors.white.withValues(alpha: 0.70)
                       : (filled
-                          ? sec.color.withValues(alpha: 0.5)
-                          : Colors.white.withValues(alpha: 0.15)),
+                          ? const Color(0xFF10B981).withValues(alpha: 0.55)
+                          : Colors.white.withValues(alpha: 0.18)),
+                  width: active ? 1.5 : 1,
                 ),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
