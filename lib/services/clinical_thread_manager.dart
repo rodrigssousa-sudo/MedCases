@@ -72,7 +72,8 @@ class ClinicalThreadManager {
   String _threadStartQuery = '';
 
   // Máximo de turnos de histórico a enviar em modo continuation
-  static const int kMaxContinuationTurns = 3; // 3 pares user/assistant = 6 entradas
+  // SUPER ORDEM 18: aumentado de 3→5 pares (= 10 entradas = memória viva de 4-6 mensagens)
+  static const int kMaxContinuationTurns = 5; // 5 pares user/assistant = 10 entradas
 
   // Timeout de inatividade: 10 minutos sem mensagem → novo thread automaticamente
   static const int kThreadTimeoutMs = 10 * 60 * 1000;
