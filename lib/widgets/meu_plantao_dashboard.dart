@@ -258,9 +258,11 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       p = context.watch<AppProvider>();
     } catch (e, st) {
       debugPrint('ERRO CRÍTICO MI GUARDIA [build/watch]: $e\n$st');
-      // Retorna SizedBox vazio — o card host (_HomeMiGuardiaSection)
-      // ainda renderiza, mas sem conteúdo interno até o provider estar pronto.
-      return const SizedBox.shrink();
+      // BUILD 280: em vez de SizedBox.shrink() (que tornava o módulo invisível
+      // no mobile), retorna um placeholder mínimo com o cabeçalho MEU PLANTÃO
+      // até o provider estar pronto. Isso garante que o card seja sempre visível.
+      final c = AppColors.of(context);
+      return _PlantaoLoadingShell(colors: c);
     }
 
     final c    = AppColors.of(context);
@@ -2125,6 +2127,59 @@ class _RemoveConfirmRow extends StatelessWidget {
           child: const Text(
             'OK',
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.alertRed),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 280 — LOADING SHELL (substituição do SizedBox.shrink() no null-guard)
+// Exibido quando context.watch<AppProvider>() lança exceção no primeiro frame.
+// Garante que o card MEU PLANTÃO nunca seja invisível no mobile.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _PlantaoLoadingShell extends StatelessWidget {
+  final AppColors colors;
+  const _PlantaoLoadingShell({required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = colors;
+    return Row(
+      children: [
+        // Ícone verde (mesmo do _PlantaoHeader)
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF0A7C4E), Color(0xFF10B981)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(Icons.local_hospital_outlined, size: 16, color: kGoldLight),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            'MEU PLANTÃO',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2.0,
+              color: c.gold,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 16,
+          height: 16,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
+            valueColor: AlwaysStoppedAnimation<Color>(c.green.withValues(alpha: 0.60)),
           ),
         ),
       ],

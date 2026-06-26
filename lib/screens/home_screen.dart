@@ -401,13 +401,27 @@ class _HomeScreenState extends State<HomeScreen> {
     final bool isTabletLandscape = !kIsWeb && availableWidth >= 600;
     final double contentMaxWidth = isTabletLandscape ? 800.0 : double.infinity;
 
+    // BUILD 280 — FIX: bottom padding dinâmico para compensar o FloatingFooter.
+    // O _FloatingFooter é um overlay Positioned(bottom:0) com:
+    //   • barHeight: 48px (nav bar)
+    //   • _LegalBar: ~22px
+    //   • SafeArea bottom (iPhone home indicator): variável (~0–34px)
+    // Com apenas 24px de padding, o _HomeMiGuardiaSection ficava atrás do
+    // footer e invisível ao usuário — o scroll não chegava até ele.
+    // Fix: usa MediaQuery.padding.bottom para ler o safe-area real do dispositivo
+    // e adiciona a altura fixa do footer (48 nav + 22 legal = 70px) + margem (16px).
+    final double safeBottom = MediaQuery.of(context).padding.bottom;
+    // kIsWeb: o footer web está no fluxo normal (não overlay) — usa 24px fixo.
+    // Mobile: compensação total = footer (70px) + safe area + margem generosa.
+    final double bottomPad  = kIsWeb ? 24.0 : (safeBottom + 70.0 + 16.0).clamp(86.0, 160.0);
+
     Widget mobileContent = SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
           isTabletLandscape ? 20 : 12,
           8,
           isTabletLandscape ? 20 : 12,
-          24,
+          bottomPad,
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
