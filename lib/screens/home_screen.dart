@@ -28,6 +28,7 @@ import '../models/protocol_model.dart';
 import 'avaliacao_screen.dart';
 import '../widgets/meu_plantao_dashboard.dart';
 import 'ai_screen.dart' show AiScreen;
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
@@ -2022,85 +2023,9 @@ String _cleanHomeAiText(String raw) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MARKDOWN INLINE RENDERER — _AiBubble line-by-line parser
-//
-// Reconhece dois padrões do Markdown clínico emitido pelo modelo:
-//   • Linha bullet: começa com `* ` ou `- ` → bola cyan + texto com negrito
-//   • Negrito inline: `**texto**` → FontWeight.w700
-//
-// Não depende de nenhum pacote externo — 100% Flutter puro.
-// Mantém compatibilidade com o ai_screen.dart _buildInlineText existente.
+// ORDEM 13: Helpers inline _homeIsListItem / _homeStripBulletPrefix /
+//   _homeInlineSpans / _homeBuildLine removidos — substituídos por MarkdownBody.
 // ─────────────────────────────────────────────────────────────────────────────
-
-/// Detecta se uma linha é um item de lista Markdown (`* `, `- `, `• `, `→ `).
-bool _homeIsListItem(String line) {
-  final t = line.trimLeft();
-  return t.startsWith('* ')  || t.startsWith('- ')  ||
-         t.startsWith('• ')  || t.startsWith('→ ')  ||
-         RegExp(r'^\d+\.\s').hasMatch(t);
-}
-
-/// Remove o prefixo de bullet/lista de uma linha.
-String _homeStripBulletPrefix(String line) =>
-    line.trimLeft().replaceFirst(RegExp(r'^[*\-•→\d+\.]\s+'), '');
-
-/// Renderiza um inline span com suporte a **negrito**.
-/// Retorna um [InlineSpan] que pode ser inserido num [RichText].
-List<InlineSpan> _homeInlineSpans(String text, TextStyle base) {
-  final spans = <InlineSpan>[];
-  final regex = RegExp(r'\*\*(.+?)\*\*');
-  int cursor = 0;
-  for (final m in regex.allMatches(text)) {
-    if (m.start > cursor) {
-      spans.add(TextSpan(text: text.substring(cursor, m.start), style: base));
-    }
-    spans.add(TextSpan(
-      text: m.group(1)!,
-      style: base.copyWith(fontWeight: FontWeight.w700),
-    ));
-    cursor = m.end;
-  }
-  if (cursor < text.length) {
-    spans.add(TextSpan(text: text.substring(cursor), style: base));
-  }
-  return spans.isEmpty ? [TextSpan(text: text, style: base)] : spans;
-}
-
-/// Renderiza uma linha com possível negrito inline.
-/// Se a linha inteira é `**Título**`, retorna texto em negrito completo.
-Widget _homeBuildLine(String line, Color textColor) {
-  final trimmed = line.trim();
-  if (trimmed.isEmpty) return const SizedBox(height: 3);
-
-  // Linha inteira em negrito: **Título** ou **Título:**
-  final fullBold = RegExp(r'^\*\*(.+?)\*\*:?\s*$');
-  final fullMatch = fullBold.firstMatch(trimmed);
-  if (fullMatch != null) {
-    final label = fullMatch.group(1)! +
-        (trimmed.trimRight().endsWith(':') ? ':' : '');
-    return Text(
-      label,
-      style: TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
-        color: textColor,
-        height: 1.45,
-      ),
-    );
-  }
-
-  // Inline: mistura texto normal + **negrito**
-  final base = TextStyle(fontSize: 13, color: textColor, height: 1.5);
-  final spans = _homeInlineSpans(trimmed, base);
-  if (spans.length == 1 && spans[0] is TextSpan) {
-    final ts = spans[0] as TextSpan;
-    if (ts.style == base || (ts.children == null)) {
-      // Texto puro — Text widget mais leve
-      return Text(trimmed, style: base);
-    }
-  }
-  return RichText(text: TextSpan(children: spans));
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS INTERNOS — bolha de resposta IA + avatar
@@ -2129,6 +2054,57 @@ class _AiBubbleAvatar extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ORDEM 13: Sanitizador de markdown parcial para streaming (home mini-chat).
+// Idêntico ao _sanitizePartialMarkdown do ai_screen.dart, portado aqui para
+// garantir que tokens incompletos (**sem fechar) não apareçam como asteriscos
+// crús na UI enquanto o stream ainda está chegando.
+// ─────────────────────────────────────────────────────────────────────────────
+String _homeCleanPartialMd(String text) {
+  if (text.isEmpty) return text;
+  final lines   = text.split('\n');
+  final lastIdx = lines.length - 1;
+  String last   = lines[lastIdx];
+
+  // Retira o cursor ▌ temporariamente para analisar conteúdo real
+  final hasCursor = last.endsWith('\u258c');
+  if (hasCursor) last = last.substring(0, last.length - 1);
+
+  final trimmedLast = last.trimLeft();
+
+  // Marcador de lista sozinho sem texto → suprime para não gerar bullet vazio
+  if (RegExp(r'^[\*\-•]\s*$').hasMatch(trimmedLast)) {
+    last = '';
+  }
+  // Cabeçalho markdown vazio ("## " ou "### " sem título ainda)
+  else if (RegExp(r'^#{1,3}\s*$').hasMatch(trimmedLast)) {
+    last = '';
+  }
+  // Negrito não fechado: conta pares de "**" — se ímpar, fecha provisoriamente
+  // para que o MarkdownBody não renderize os asteriscos crús.
+  else {
+    final pairs = RegExp(r'\*\*').allMatches(last).length;
+    if (pairs.isOdd) {
+      last = '$last**';
+    }
+  }
+
+  if (hasCursor) last = '$last\u258c';
+  lines[lastIdx] = last;
+  return lines.join('\n');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _AiBubble — ORDEM 13: renderizador migrado para MarkdownBody (flutter_markdown)
+//
+// Antes: parser linha a linha (_homeBuildLine / _homeInlineSpans) — asteriscos
+//   crús apareciam durante streaming quando ** não estava fechado.
+// Agora: MarkdownBody com stylesheet idêntico ao ai_screen.dart — negrito real,
+//   listas nativas, h2/h3 com cor vibrante, sem asteriscos visíveis.
+//
+// Streaming safety: _homeCleanPartialMd() fecha ** ímpares antes de passar
+//   para o MarkdownBody — elimina artefatos de tokens incompletos.
+// ─────────────────────────────────────────────────────────────────────────────
 class _AiBubble extends StatelessWidget {
   final String text;
   final bool isError;
@@ -2146,7 +2122,10 @@ class _AiBubble extends StatelessWidget {
     this.onExpand,
   });
 
-  static const _kGreen = Color(0xFF0D7A55);
+  static const _kGreen     = Color(0xFF0D7A55);
+  static const _kCyan      = Color(0xFF00E5FF);
+  static const _kTeal      = Color(0xFF008CA4);
+  static const _kFerrari   = Color(0xFFFF2400);
 
   @override
   Widget build(BuildContext context) {
@@ -2159,67 +2138,106 @@ class _AiBubble extends StatelessWidget {
         : (dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1A202C));
 
     // CAMADA 2 (render-time) — limpa metadados, CoT e tags internas.
-    final displayText = isError ? text : _cleanHomeAiText(text);
+    // Para streaming: também aplica sanitização de markdown parcial.
+    String displayText = isError ? text : _cleanHomeAiText(text);
+    if (isStreaming && !isError) {
+      displayText = _homeCleanPartialMd(displayText);
+    }
+    // Remove cursor ▌ do texto antes de passar ao MarkdownBody
+    final mdText = displayText.replaceAll('\u258c', '');
 
-    // ── Renderização linha a linha com suporte a markdown clínico ───────────
-    // Converte bullets `* ` / `- ` e negrito `**...**` sem pacote externo.
-    // No modo streaming: mostra até 20 linhas com ellipsis para não recomputar
-    // o layout a cada chunk. No modo finalizado: sem limite de linhas.
+    // ── MarkdownBody com stylesheet clínico premium ──────────────────────────
     Widget buildBody() {
       if (isError) {
         return Text(
-          displayText,
+          mdText,
           style: TextStyle(fontSize: 13, color: textCol, height: 1.5),
         );
       }
 
-      final lines = displayText.split('\n');
-      // Limite de linhas no streaming para performance — o usuário verá
-      // "Ver resposta completa" para acessar o texto integral na AiScreen.
-      final visibleLines = isStreaming
-          ? (lines.length > 20 ? lines.sublist(0, 20) : lines)
-          : lines;
+      // Limite de linhas durante streaming para performance
+      // (garante que MarkdownBody não re-layout todo o texto a cada chunk)
+      final String renderText;
+      if (isStreaming) {
+        final lines = mdText.split('\n');
+        renderText = lines.length > 22
+            ? lines.sublist(0, 22).join('\n')
+            : mdText;
+      } else {
+        renderText = mdText;
+      }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: visibleLines.map((line) {
-          final trimmed = line.trim();
-          if (trimmed.isEmpty) return const SizedBox(height: 3);
-
-          // Bullet item: `* texto`, `- texto`, `• texto`, `→ texto`
-          if (_homeIsListItem(line)) {
-            final content = _homeStripBulletPrefix(line);
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 2, left: 1),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Bullet dot — cyan médico alinhado com a primeira linha
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6, right: 6),
-                    child: Container(
-                      width: 4, height: 4,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: (dark
-                            ? const Color(0xFF00E5FF)
-                            : const Color(0xFF008CA4))
-                            .withValues(alpha: 0.75),
-                      ),
-                    ),
-                  ),
-                  Expanded(child: _homeBuildLine(content, textCol)),
-                ],
+      return MarkdownBody(
+        data: renderText,
+        selectable: false,
+        softLineBreak: true,
+        styleSheet: MarkdownStyleSheet(
+          // Parágrafo base: mesma fonte, espaçamento respiro
+          p: TextStyle(
+            fontSize: 13.5,
+            color: textCol,
+            height: 1.55,
+          ),
+          // Negrito (**...***) — cor vibrante exclusiva para fármacos e condutas
+          // Dark: cyan médico / Light: vermelho Ferrari (contraste ≥ 5:1)
+          strong: TextStyle(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w700,
+            color: dark ? _kCyan : _kFerrari,
+          ),
+          // Itálico: neutro — sem destaque de cor
+          em: TextStyle(
+            fontSize: 13.5,
+            color: textCol,
+            fontStyle: FontStyle.italic,
+          ),
+          // Marcadores de lista — cor discreta, indentação precisa
+          listBullet: TextStyle(
+            fontSize: 13.5,
+            color: dark ? _kCyan.withValues(alpha: 0.70) : _kTeal,
+          ),
+          // Títulos — h2 Vermelho Ferrari negrito, h3 cyan/teal
+          h2: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
+            color: dark ? _kCyan : _kFerrari,
+            letterSpacing: 0.1,
+            height: 1.3,
+          ),
+          h3: TextStyle(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w700,
+            color: dark ? _kCyan : _kTeal,
+            height: 1.3,
+          ),
+          // Blocos de código — fundo transparente (sem caixas brancas)
+          codeblockDecoration: const BoxDecoration(
+            color: Colors.transparent,
+          ),
+          blockquote: TextStyle(
+            fontSize: 13,
+            color: textCol.withValues(alpha: 0.78),
+          ),
+          blockquoteDecoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border(
+              left: BorderSide(
+                color: dark ? Colors.white24 : Colors.black26,
+                width: 3,
               ),
-            );
-          }
-
-          // Linha normal (pode ter **negrito** inline)
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 1),
-            child: _homeBuildLine(trimmed, textCol),
-          );
-        }).toList(),
+            ),
+          ),
+          horizontalRuleDecoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: dark ? Colors.white12 : Colors.black12,
+                width: 1,
+              ),
+            ),
+          ),
+          blockSpacing: 5,
+          listIndent: 16,
+        ),
       );
     }
 
@@ -2241,10 +2259,16 @@ class _AiBubble extends StatelessWidget {
           GestureDetector(
             onTap: onExpand,
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Text(isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen)),
+              Text(
+                isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: _kGreen,
+                ),
+              ),
               const SizedBox(width: 3),
-              const Icon(Icons.arrow_forward_rounded, size: 11, color: Color(0xFF008CA4)),
+              const Icon(Icons.arrow_forward_rounded, size: 11, color: _kTeal),
             ]),
           ),
         ],
