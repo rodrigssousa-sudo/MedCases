@@ -543,8 +543,11 @@ exports.geminiPaidProxy = onRequest(
       },
       contents,
       generationConfig: {
-        temperature:     0.4,  // BUILD 265: 0.3→0.4 — liberdade clínica guiada
-        // BUILD 265: maxOutputTokens now 800 default (Plantão liberdade clínica).
+        // BUILD 271: temperature agora condicional por modo.
+        // Plantão (guardia): 0.2 — mais determinístico, fiel às 21 matrizes sem inventar layouts.
+        // Estudo: 0.4 — liberdade clínica guiada para resposta acadêmica completa.
+        temperature:     isPlantaoMode ? 0.2 : 0.4,
+        // BUILD 271: maxOutClamped agora pode chegar a 1600 (cliente envia 1600 no Plantão).
         // Estudo=2048 tok (full academic). Hard-clamped server-side: min=200, max=2048.
         maxOutputTokens: maxOutClamped,
         topP:            0.9,

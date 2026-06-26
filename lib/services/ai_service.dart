@@ -1410,6 +1410,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'Amnesia total de consultas passadas nao relacionadas.\n';
 
       // selfCheck compact (inline — items 0-6 only)
+      // BUILD 271: item 6 expandido com mandato anti-truncamento de matriz.
       final ptSelfCheck = isEs
           ? 'Antes de responder, verificar internamente (nunca revelar al usuario):\n'
             '0. APERTURA PROHIBIDA — la respuesta DEBE iniciar con 🟥 en la primera linea. '
@@ -1419,7 +1420,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '3. Idioma correcto aplicado segun instruccion de idioma dinamico.\n'
             '4. Datos del paciente aislados. Ningun dato de sesiones anteriores heredado.\n'
             '5. Dosis coherentes con peso/renal/hepatico/edad del paciente activo.\n'
-            '6. Titulo 🟥 especifico (nunca generico). Respuesta entre 6-12 lineas.\n'
+            '6. Titulo 🟥 especifico (nunca generico). '
+            'ES REQUISITO OBLIGATORIO concluir TODAS las secciones iniciadas de la matriz correspondiente. '
+            'JAMAS interrumpas el texto a la mitad — si iniciaste CONDUTA, DOSIS, MONITORIZACION o ALERTA, cierra cada bloque.\n'
           : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
             '0. ABERTURA PROIBIDA — a resposta DEVE iniciar com 🟥 na primeira linha. '
             'PROIBIDO: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza" antes de 🟥.\n'
@@ -1428,17 +1431,20 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '3. Idioma correto aplicado conforme instrucao de idioma dinamico.\n'
             '4. Dados do paciente isolados. Nenhum dado de sessoes anteriores herdado.\n'
             '5. Doses coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
-            '6. Titulo 🟥 especifico (nunca generico). Resposta entre 6-12 linhas.\n';
+            '6. Titulo 🟥 especifico (nunca generico). '
+            'E REQUISITO OBRIGATORIO concluir TODAS as secoes iniciadas da matriz correspondente. '
+            'JAMAIS interrompa o texto na metade — se iniciou CONDUTA, DOSE, MONITORIZACAO ou ALERTA, feche cada bloco.\n';
 
-      // BUILD 268 audit log
+      // BUILD 271 audit log (supersedes Build268 tag)
       final _ptChars = ptLangHeader.length +
           (isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt).length +
           (isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt).length +
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build268][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
-          'HARD_STOP_EXTERMINATED. ANTI_PARROTING_INJECTED. SCOPE_FREEDOM_ACTIVE.');
+      debugPrint('[Build271][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+          'MAX_OUTPUT_TOKENS=1600. TEMPERATURE=0.2(server). MATRIX_COMPLETION_INJECTED. '
+          'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE.');
 
       // ── BUILD 268: DIRETRIZ DE ESCOPO CLÍNICO GENEROSO — hotfix supremo ──
       // DIAGNÓSTICO: Gemini via HARD STOP (extinto acima) e gerava 10 tokens.
@@ -1503,7 +1509,27 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'Trate cada turno de mensagem como uma oportunidade pura de fornecer conduta medica real. '
             'Nunca simule uma mensagem de erro do aplicativo.\n';
 
+      // ── BUILD 271: MANDATO DE CONCLUSÃO DE MATRIZ ───────────────────────────
+      // Diagnóstico: [PLANTAO_ORGANIZER] isTruncated=true len=393 chars (Sertralina).
+      // Root cause: maxOutputTokens=800 insuficiente para matrizes complexas.
+      // Fix dual: 800→1600 tokens (app_provider + proxy) + mandato explícito aqui.
+      // Injeta como diretriz standalone (não embutida no selfCheck) para máxima força.
+      final ptMatrixCompletion = isEs
+          ? 'MANDATO DE COMPLETITUD DE RESPUESTA (BUILD 271): '
+            'Es OBLIGATORIO concluir TODAS las secciones iniciadas de la matriz correspondiente. '
+            'Si empezaste a escribir CONDUTA, DOSIS, MONITORIZACION, ALERTA CRITICA o cualquier bloque clinico, '
+            'DEBES completarlo integramente antes de cerrar la respuesta. '
+            'JAMAS interrumpas el texto a la mitad. '
+            'Este mandato es absoluto — mayor prioridad que brevedad o concision.\n'
+          : 'MANDATO DE COMPLETUDE DE RESPOSTA (BUILD 271): '
+            'E OBRIGATORIO concluir TODAS as secoes iniciadas da matriz correspondente. '
+            'Se voce iniciou CONDUTA, DOSE, MONITORIZACAO, ALERTA CRITICA ou qualquer bloco clinico, '
+            'DEVE completa-lo integramente antes de encerrar a resposta. '
+            'JAMAIS interrompa o texto na metade. '
+            'Este mandato e absoluto — prioridade maxima sobre brevidade ou concisao.\n';
+
       // ── PLANTÃO ASSEMBLY — compact modules only ───────────────────────────
+      // BUILD 271: ptMatrixCompletion injetado antes de ptSelfCheck para máxima força.
       return '$ptLangHeader'
              '$ptSupremacyRule'
              '${isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt}\n\n'
@@ -1516,6 +1542,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
              '$ptPatientSection'
              '${ptRagAnchor.isNotEmpty ? "$ptRagAnchor\n" : ""}'
              '$ptProtocol$ptDrugs$ptContext${ptProtocol.isNotEmpty || ptDrugs.isNotEmpty || ptContext.isNotEmpty ? "\n\n" : ""}'
+             '$ptMatrixCompletion'
              '$ptSelfCheck'
              '$ptContextAnchor';
       // ══ END PLANTÃO EARLY-RETURN — code below is ESTUDO only ══
