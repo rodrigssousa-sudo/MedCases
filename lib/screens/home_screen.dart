@@ -5273,11 +5273,13 @@ class _ShellHeader extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 6, 20, 14),
               child: Row(children: [
-                // Botão voltar — mesmo estilo dos cards
+                // BUILD 282 ORDEM 2/3: arrow_back_ios_new (canônico, size:20)
                 IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_rounded,
-                      size: 18, color: Colors.white),
+                  icon: const Icon(Icons.arrow_back_ios_new,
+                      size: 20, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
+                  padding: const EdgeInsets.all(8),
+                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                 ),
                 // Ícone container — idêntico ao _HomeCard
                 Container(
@@ -5294,7 +5296,7 @@ class _ShellHeader extends StatelessWidget {
                   child: Icon(icon, size: 24, color: accentColor),
                 ),
                 const SizedBox(width: 14),
-                // Textos — mesmas fontes do _HomeCard
+                // Textos — BUILD 282: tipografia canônica (w700/20px, ouro fosco)
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -5302,22 +5304,21 @@ class _ShellHeader extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white.withValues(alpha: 0.97),
-                          letterSpacing: -0.3,
-                          height: 1.1,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: -0.2,
                         ),
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 2),
                       Text(
                         subtitle,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white.withValues(alpha: 0.55),
-                          letterSpacing: 0.1,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFD4AF37), // ouro fosco canônico
+                          letterSpacing: 1.2,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -5487,11 +5488,13 @@ class _CalculadorasShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
+        // BUILD 282-CROMATICO: Gradiente idêntico ao card da Home (topLeft→bottomRight)
+        // 3B0764→7E22CE→A855F7 — mesmo cromatismo, continuidade visual perfeita.
         _ShellHeader(
-          gradientColors: const [Color(0xFF1A0F2E), Color(0xFF2D1B5A), Color(0xFF4A2D8A)],
-          accentColor:    const Color(0xFFA78BFA),
+          gradientColors: const [Color(0xFF3B0764), Color(0xFF7E22CE), Color(0xFFA855F7)],
+          accentColor:    const Color(0xFFE9D5FF), // lilás claro — consistente com home card
           icon:    Icons.calculate_rounded,
-          label:   isEs ? 'CALCULADORAS' : 'CALCULADORAS',
+          label:   'CALCULADORA CLÍNICA',
           subtitle: isEs
               ? 'Scores · Cardio · Electrolitos · Referencia'
               : 'Scores · Cardio · Eletrólitos · Referência',

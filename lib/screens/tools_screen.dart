@@ -84,17 +84,17 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
       // ── Header (visível apenas no desktop ou quando explicitamente solicitado)
       if (showHeader)
         Container(
-          // BUILD 277-CROMATICO: Purple/Violet gradient topbar fading to #12161F
+          // BUILD 282-CROMATICO: Purple gradient identico ao card home (topLeft→bottomRight)
+          // Cores: 3B0764 (roxo escuro) → 7E22CE (roxo vibrante) → A855F7 (lilás)
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                Color(0xFF5B21B6), // violet-800 top
-                Color(0xFF4C1D95), // violet-900 mid
-                Color(0xFF12161F), // app dark bottom
+                Color(0xFF3B0764), // roxo escuro — topo esquerdo
+                Color(0xFF7E22CE), // roxo vibrante — meio
+                Color(0xFFA855F7), // lilás — baixo direito
               ],
-              stops: [0.0, 0.45, 1.0],
             ),
             border: Border(
               bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
@@ -110,15 +110,15 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                 padding: const EdgeInsets.all(8),
                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               ),
-              // Title + subtitle
+              // Title + subtitle — alinhado à esquerda
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    isEs ? 'HERRAMIENTAS CLÍNICAS' : 'FERRAMENTAS CLÍNICAS',
-                    style: const TextStyle(
+                  const Text(
+                    'CALCULADORA CLÍNICA',
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: Colors.white, // branco puro — contraste absoluto
                       letterSpacing: -0.2,
                     ),
                   ),
@@ -127,7 +127,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFFD4AF37), // gold
+                      color: Color(0xFFD4AF37), // ouro fosco canônico
                       letterSpacing: 1.2,
                     ),
                   ),

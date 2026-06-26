@@ -866,23 +866,25 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       // TOPBAR — AppBar customizada
-      // Esquerda: back + Title Column ("INTERNACIÓN Y EVOLUCIÓN" / "MedCases Pro")
-      // Direita (actions): botão compacto [Nueva] (vassourinha)
+      // BUILD 282 ORDEM 3: Paridade tipográfica confirmada e explicitada.
+      // fontSize:20 w700 white | subtitle gold #D4AF37 | arrow_back_ios_new 20
+      // Row crossAxisAlignment:center → botão "+ Nova" alinhado verticalmente
+      // com a linha central do bloco de título. Gradiente verde mantido.
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(
-          // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao
+          // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao/Pacientes
+          // Gradiente verde mantido conforme ORDEM 3 (só tipografia sincronizada).
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                Color(0xFF0F4C3A), // teal-900 top
-                Color(0xFF065F45), // emerald-petróleo mid
-                Color(0xFF12161F), // app dark bottom
+                Color(0xFF0F4C3A), // teal-900 — topo esquerdo
+                Color(0xFF065F45), // emerald-petróleo — meio
+                Color(0xFF0D9488), // teal-600 — baixo direito (vibrância)
               ],
-              stops: [0.0, 0.45, 1.0],
             ),
             border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.8)),
           ),
@@ -891,6 +893,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center, // alinha botão c/ título
                 children: [
                   // Back
                   IconButton(
