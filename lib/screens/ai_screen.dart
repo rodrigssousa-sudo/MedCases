@@ -5138,13 +5138,15 @@ class _AiBlockBubble extends StatelessWidget {
                       const Icon(Icons.medication_rounded, size: 14,
                           color: Color(0xFF00E5FF)),
                       const SizedBox(width: 6),
-                      // ORDEM 14 — fail-safe: CAPSLOCK + preto sólido
+                      // ORDEM 17 — contraste dinâmico: ciano no dark, grafite no light
                       Expanded(child: Text(
                         (label.isEmpty ? trimmed : label).toUpperCase(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1A1A1A),
+                          color: dark
+                              ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
+                              : const Color(0xFF1A1A1A),  // grafite denso — contraste 18:1 sobre fundo claro
                           height: 1.3,
                           letterSpacing: 0.5,
                         ),
@@ -5226,6 +5228,10 @@ class _AiBlockBubble extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          // ORDEM 17 — mainAxisSize.min: permite crescimento ilimitado vertical
+          // sem disputar altura máxima com o ListView pai (evita truncação de
+          // respostas longas que paravam de renderizar no meio do texto).
+          mainAxisSize: MainAxisSize.min,
           children: [
             ...widgets,
 
@@ -5424,10 +5430,11 @@ class _PlantaoRenderer extends StatelessWidget {
     required bool isHeader,
   }) {
     if (isHeader) {
-      // ORDEM 14 — Blindagem fail-safe do cabeçalho 🟥
-      // Texto: CAPSLOCK + preto sólido 0xFF1A1A1A — imune a falhas de parse/streaming.
+      // ORDEM 17 — contraste dinâmico: ciano no dark, grafite denso no light
       // Emoji conserva a cor semântica (emojiColor) para manter a hierarquia visual.
-      const kHeaderTextColor = Color(0xFF1A1A1A);
+      final kHeaderTextColor = dark
+          ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
+          : const Color(0xFF1A1A1A);  // grafite denso — contraste 18:1 sobre fundo claro
       return RichText(
         text: TextSpan(
           children: [
@@ -5442,7 +5449,7 @@ class _PlantaoRenderer extends StatelessWidget {
             ),
             TextSpan(
               text: text.toUpperCase(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13.5,
                 fontWeight: FontWeight.w800,
                 color: kHeaderTextColor,
