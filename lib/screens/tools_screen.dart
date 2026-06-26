@@ -136,8 +136,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             ]),
           ),
         ),
-      // ── TabBar (sempre visível) ──────────────────────────────────
-      // BUILD 277-CROMATICO: violet underline indicator
+      // ── TabBar PILL (sempre visível) ─────────────────────────────
+      // BUILD 278: pill tabs com BorderRadius.circular(12) unificados
       Container(
         decoration: const BoxDecoration(
           color: Color(0xFF12161F),
@@ -145,27 +145,33 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
           ),
         ),
-        child: TabBar(
-          controller: _tabCtrl,
-          isScrollable: true,
-          tabAlignment: TabAlignment.start,
-          // BUILD 277-CROMATICO: violet underline
-          indicatorColor: kVioletLight,
-          indicatorWeight: 2.5,
-          indicatorSize: TabBarIndicatorSize.label,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white38,
-          labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.4),
-          unselectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, letterSpacing: 0.3),
-          dividerColor: Colors.transparent,
-          tabs: [
-            Tab(text: isEs ? 'BIOMETRÍA' : 'BIOMETRIA'),
-            // BUILD 277-CROMATICO: SCORES removed
-            Tab(text: isEs ? 'CARDIO' : 'CARDIO'),
-            Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
-            Tab(text: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS'),
-            Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: TabBar(
+            controller: _tabCtrl,
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            // BUILD 278: pill indicator via BoxDecoration
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: kVioletLight.withValues(alpha: 0.22),
+              border: Border.all(color: kVioletLight.withValues(alpha: 0.55), width: 1),
+            ),
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white38,
+            labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.3),
+            unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.2),
+            dividerColor: Colors.transparent,
+            padding: EdgeInsets.zero,
+            tabs: [
+              Tab(text: isEs ? 'BIOMETRÍA' : 'BIOMETRIA'),
+              Tab(text: isEs ? 'CARDIO' : 'CARDIO'),
+              Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
+              Tab(text: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS'),
+              Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
+            ],
+          ),
         ),
       ),
 

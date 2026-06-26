@@ -348,40 +348,39 @@ class _MobileLibraryTabBar extends StatelessWidget {
                 offset: const Offset(0, 2),
               )],
       ),
-      child: TabBar(
-        controller: tabCtrl,
-        indicatorColor: indicatorCol,
-        indicatorWeight: 2.5,
-        indicatorSize: TabBarIndicatorSize.tab,
-        labelColor: activeCol,
-        unselectedLabelColor: inactiveCol,
-        labelStyle: const TextStyle(
-          fontSize: 12.5,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.1,
+      // BUILD 278: pill tabs mobile
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: TabBar(
+          controller: tabCtrl,
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
+          indicator: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: indicatorCol.withValues(alpha: 0.18),
+            border: Border.all(color: indicatorCol.withValues(alpha: 0.60), width: 1),
+          ),
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelColor: activeCol,
+          unselectedLabelColor: inactiveCol,
+          labelStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.2,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+          dividerColor: Colors.transparent,
+          padding: EdgeInsets.zero,
+          // BUILD 278: 3 tabs em pílula — sem ícones (layout mais limpo)
+          tabs: [
+            const Tab(text: 'GENERAL'),
+            Tab(text: isEs ? 'GUÍAS PDF' : 'GUIAS PDF'),
+            Tab(text: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO'),
+          ],
         ),
-        unselectedLabelStyle: const TextStyle(
-          fontSize: 12.5,
-          fontWeight: FontWeight.w500,
-        ),
-        // BUILD 277-CROMATICO: 3 tabs
-        tabs: [
-          const Tab(
-            icon: Icon(Icons.auto_stories_rounded, size: 16),
-            text: 'GENERAL',
-            iconMargin: EdgeInsets.only(bottom: 2),
-          ),
-          Tab(
-            icon: const Icon(Icons.picture_as_pdf_rounded, size: 16),
-            text: isEs ? 'Guías PDF' : 'Guias PDF',
-            iconMargin: const EdgeInsets.only(bottom: 2),
-          ),
-          Tab(
-            icon: const Icon(Icons.school_outlined, size: 16),
-            text: isEs ? 'Casos de Estudio' : 'Casos de Estudo',
-            iconMargin: const EdgeInsets.only(bottom: 2),
-          ),
-        ],
       ),
     );
   }
@@ -489,21 +488,34 @@ class _LibraryHeader extends StatelessWidget {
               ),
             ]),
           ),
-          // TabBar — 3 abas (BUILD 277-CROMATICO: GENERAL added)
-          TabBar(
-            controller: tabCtrl,
-            indicatorColor: const Color(0xFF60A5FA), // blue-400
-            indicatorWeight: 2.5,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white38,
-            labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
-            unselectedLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            dividerColor: Colors.transparent,
-            tabs: [
-              Tab(text: 'GENERAL'),
-              Tab(text: isEs ? 'GUÍAS PDF' : 'GUIAS PDF'),
-              Tab(text: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO'),
-            ],
+          // TabBar PILL — 3 abas (BUILD 278: pill tabs unificados)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: TabBar(
+              controller: tabCtrl,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFF60A5FA).withValues(alpha: 0.20),
+                border: Border.all(
+                  color: const Color(0xFF60A5FA).withValues(alpha: 0.55),
+                  width: 1,
+                ),
+              ),
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white38,
+              labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.3),
+              unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.2),
+              dividerColor: Colors.transparent,
+              padding: EdgeInsets.zero,
+              tabs: [
+                const Tab(text: 'GENERAL'),
+                Tab(text: isEs ? 'GUÍAS PDF' : 'GUIAS PDF'),
+                Tab(text: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO'),
+              ],
+            ),
           ),
         ]),
     );

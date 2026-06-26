@@ -2159,8 +2159,9 @@ class _MobileAppBar extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // ── Título centralizado (só na HOME) ──────────────────────
-                if (isHome)
+                // ── Título centralizado (HOME e IA tab) ───────────────────
+                // BUILD 278: "MEDCASES IA" com "IA" em ouro fosco na aba AI
+                if (isHome || currentTab == _kAiTab)
                   RichText(
                     text: TextSpan(
                       children: [
@@ -2173,13 +2174,16 @@ class _MobileAppBar extends StatelessWidget {
                             color: dark ? Colors.white : const Color(0xFF0F1116),
                           ),
                         ),
-                        const TextSpan(
-                          text: 'PRO',
+                        TextSpan(
+                          // HOME → "PRO" | IA tab → "IA" em ouro fosco (#D4AF37)
+                          text: currentTab == _kAiTab ? 'IA' : 'PRO',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.2,
-                            color: Color(0xFFFFD700), // Golden
+                            color: currentTab == _kAiTab
+                                ? const Color(0xFFD4AF37) // ouro fosco canônico
+                                : const Color(0xFFFFD700), // Golden HOME
                           ),
                         ),
                       ],
@@ -2286,7 +2290,7 @@ class _MobileAppBar extends StatelessWidget {
                   ),
                   ), // fecha ValueListenableBuilder<VoidCallback?>
 
-                  // Botão Limpar — só aparece quando há mensagens reais
+                  // BUILD 278: Botão "➕ Novo Chat" — só aparece quando há mensagens reais
                   ValueListenableBuilder<bool>(
                     valueListenable: AiScreen.hasMessagesNotifier,
                     builder: (_, hasMessages, __) => hasMessages
@@ -2302,17 +2306,26 @@ class _MobileAppBar extends StatelessWidget {
                                 border: Border.all(
                                     color: _kGoldL.withValues(alpha: 0.4), width: 1),
                               ),
-                              child: Center(
-                                child: Text(
-                                  lang == 'es'
-                                      ? 'Limpiar'
-                                      : 'Limpar',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.add_rounded,
+                                    size: 14,
                                     color: Color(0xFF1A1100),
                                   ),
-                                ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    lang == 'es'
+                                        ? 'Nuevo Chat'
+                                        : 'Novo Chat',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF1A1100),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           )

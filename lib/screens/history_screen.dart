@@ -972,37 +972,46 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     ),
                   ]),
                 ),
+              // BUILD 278: pill tabs unificados — amber accent (#F59E0B) para Historia Clinica
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                 child: Container(
-                  height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
                     color: AppColors.of(context).cardBg,
                     border: Border.all(color: AppColors.of(context).border),
                   ),
-                  child: TabBar(
-                    controller: _tabCtrl,
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.of(context).darkBtn,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                    child: TabBar(
+                      controller: _tabCtrl,
+                      indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.18),
+                        border: Border.all(
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.60),
+                          width: 1,
+                        ),
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelStyle: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
+                      ),
+                      unselectedLabelStyle: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      labelColor: const Color(0xFFF59E0B),
+                      unselectedLabelColor: const Color(0xFF6B7280),
+                      dividerColor: Colors.transparent,
+                      padding: EdgeInsets.zero,
+                      tabs: [
+                        Tab(text: '${_hcT(lang, 'my_hcs')} (${mine.length})'),
+                        Tab(text: '${_hcT(lang, 'community')} (${visiblePub.length})'),
+                      ],
                     ),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelStyle: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w900,
-                    ),
-                    unselectedLabelStyle: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    labelColor: kGoldLight,
-                    unselectedLabelColor: const Color(0xFF6B7280),
-                    dividerColor: Colors.transparent,
-                    tabs: [
-                      Tab(text: '${_hcT(lang, 'my_hcs')} (${mine.length})'),
-                      Tab(text: '${_hcT(lang, 'community')} (${visiblePub.length})'),
-                    ],
                   ),
                 ),
               ),
