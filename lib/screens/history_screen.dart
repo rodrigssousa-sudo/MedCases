@@ -875,19 +875,34 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             const Text(
                               'HISTORIA CLINICA',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                                 letterSpacing: -0.2,
                               ),
                             ),
-                            const Text(
-                              'MEDCASES PRO',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFFD4AF37),
-                                letterSpacing: 1.2,
+                            RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'MEDCASES',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' PRO',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFFD4AF37),
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -939,8 +954,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   ),
                 ),
               ),
-              // BUILD 282 ORDEM 6: 3 pílulas laranja — MINHAS | PÚBLICAS | + NOVA HC
-              // Substitui barra azul (contadores + botão) por fileira simétrica de pílulas
+              // SUPER ORDEM: Header completo mobile com título + pílulas + divisores
               if (!showListHeader)
                 Container(
                   decoration: const BoxDecoration(
@@ -954,72 +968,145 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       ],
                     ),
                   ),
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                  child: Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Pílula 1: MINHAS
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _tabCtrl.animateTo(0),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            margin: const EdgeInsets.only(right: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.white.withValues(alpha: 0.18),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
+                      // Linha superior: seta + título
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                              onPressed: () => Navigator.maybePop(context),
+                              padding: const EdgeInsets.all(8),
+                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                             ),
-                            child: Text(
-                              '${mine.length} ${lang == 'es' ? "MIS HCs" : "MINHAS"}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                                color: Colors.white, letterSpacing: 0.3),
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Pílula 2: PÚBLICAS
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _tabCtrl.animateTo(1),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.white.withValues(alpha: 0.18),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
-                            ),
-                            child: Text(
-                              '${visiblePub.length} PÚBLICAS',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                                color: Colors.white, letterSpacing: 0.3),
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Pílula 3: + NOVA HC (ação principal)
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _startNewHistory(p, lang),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            margin: const EdgeInsets.only(left: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.white.withValues(alpha: 0.25),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.70), width: 1.5),
-                            ),
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                              const Icon(Icons.add_rounded, size: 13, color: Colors.white),
-                              const SizedBox(width: 3),
-                              Text(
-                                lang == 'es' ? 'NUEVA HC' : 'NOVA HC',
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                                  color: Colors.white, letterSpacing: 0.3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      letterSpacing: -0.2,
+                                    ),
+                                  ),
+                                  RichText(
+                                    text: const TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'MEDCASES',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            letterSpacing: 1.2,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' PRO',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFFD4AF37),
+                                            letterSpacing: 1.2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ]),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Pílulas com divisores verticais
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                        child: IntrinsicHeight(
+                          child: Row(
+                            children: [
+                              // Pílula 1: MINHAS
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () => _tabCtrl.animateTo(0),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white.withValues(alpha: 0.18),
+                                      border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
+                                    ),
+                                    child: Text(
+                                      '${mine.length} ${lang == 'es' ? "MIS HCs" : "MINHAS"}',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                                        color: Colors.white, letterSpacing: 0.3),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Divisor 1
+                              Container(
+                                width: 1,
+                                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                                color: Colors.white.withValues(alpha: 0.25),
+                              ),
+                              // Pílula 2: PÚBLICAS
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () => _tabCtrl.animateTo(1),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white.withValues(alpha: 0.18),
+                                      border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
+                                    ),
+                                    child: Text(
+                                      '${visiblePub.length} PÚBLICAS',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                                        color: Colors.white, letterSpacing: 0.3),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Divisor 2
+                              Container(
+                                width: 1,
+                                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                                color: Colors.white.withValues(alpha: 0.25),
+                              ),
+                              // Pílula 3: + NOVA HC
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () => _startNewHistory(p, lang),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colors.white.withValues(alpha: 0.25),
+                                      border: Border.all(color: Colors.white.withValues(alpha: 0.70), width: 1.5),
+                                    ),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                      const Icon(Icons.add_rounded, size: 13, color: Colors.white),
+                                      const SizedBox(width: 3),
+                                      Text(
+                                        lang == 'es' ? 'NUEVA HC' : 'NOVA HC',
+                                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                                          color: Colors.white, letterSpacing: 0.3),
+                                      ),
+                                    ]),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

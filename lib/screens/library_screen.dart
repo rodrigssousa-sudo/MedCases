@@ -325,8 +325,8 @@ class _MobileLibraryTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 282 ORDEM 5: mobile pill bar usa gradiente slate (1E293B→475569→64748B)
-    // topLeft→bottomRight — continuidade com o _LibraryHeader desktop
+    // SUPER ORDEM: mobile header completo com seta + título + pílulas com divisores
+    // Mesma peça única que o desktop, garantindo paridade visual total
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -338,38 +338,157 @@ class _MobileLibraryTabBar extends StatelessWidget {
             Color(0xFF64748B), // slate
           ],
         ),
+        boxShadow: [BoxShadow(color: Color(0x4D000000), blurRadius: 8)],
       ),
-      // BUILD 282: pill tabs mobile — branco sobre slate para contraste máximo
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: TabBar(
-          controller: tabCtrl,
-          isScrollable: true,
-          tabAlignment: TabAlignment.start,
-          indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.white.withValues(alpha: 0.18),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.55), width: 1),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Linha superior: seta + título
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
+            child: Row(children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                onPressed: () => Navigator.maybePop(context),
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              ),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Text(
+                    'BIBLIOTECA',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  RichText(
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' PRO',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFD4AF37),
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            ]),
           ),
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white38,
-          labelStyle: const TextStyle(
+          // Pílulas com divisores verticais
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(child: _LibPillTab(label: 'GENERAL', index: 0, tabCtrl: tabCtrl)),
+                  _LibTabDivider(),
+                  Expanded(child: _LibPillTab(label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF', index: 1, tabCtrl: tabCtrl)),
+                  _LibTabDivider(),
+                  Expanded(child: _LibPillTab(label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO', index: 2, tabCtrl: tabCtrl)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS: pílula de aba + divisória delicada (usados em desktop e mobile)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Divisória vertical finíssima entre as pílulas de aba da Biblioteca.
+/// Usa a cor do gradiente de fundo para parecer integrada e discreta.
+class _LibTabDivider extends StatelessWidget {
+  const _LibTabDivider();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      color: Colors.white.withValues(alpha: 0.18),
+    );
+  }
+}
+
+/// Pílula de aba individual para a Biblioteca — usa AnimatedBuilder para
+/// reagir ao TabController sem reconstruir o pai.
+class _LibPillTab extends StatefulWidget {
+  final String label;
+  final int index;
+  final TabController tabCtrl;
+  const _LibPillTab({required this.label, required this.index, required this.tabCtrl});
+  @override
+  State<_LibPillTab> createState() => _LibPillTabState();
+}
+
+class _LibPillTabState extends State<_LibPillTab> {
+  @override
+  void initState() {
+    super.initState();
+    widget.tabCtrl.addListener(_onTabChange);
+  }
+
+  void _onTabChange() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    widget.tabCtrl.removeListener(_onTabChange);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = widget.tabCtrl.index == widget.index;
+    return GestureDetector(
+      onTap: () => widget.tabCtrl.animateTo(widget.index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: isActive
+              ? Colors.white.withValues(alpha: 0.18)
+              : Colors.transparent,
+          border: Border.all(
+            color: isActive
+                ? Colors.white.withValues(alpha: 0.55)
+                : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: Text(
+          widget.label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
             fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.2,
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+            color: isActive ? Colors.white : Colors.white60,
+            letterSpacing: 0.3,
           ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-          dividerColor: Colors.transparent,
-          padding: EdgeInsets.zero,
-          tabs: [
-            const Tab(text: 'GENERAL'),
-            Tab(text: isEs ? 'GUÍAS PDF' : 'GUIAS PDF'),
-            Tab(text: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO'),
-          ],
         ),
       ),
     );
@@ -429,19 +548,34 @@ class _LibraryHeader extends StatelessWidget {
                   const Text(
                     'BIBLIOTECA',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                       letterSpacing: -0.2,
                     ),
                   ),
-                  const Text(
-                    'MEDCASES PRO',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFFD4AF37), // gold
-                      letterSpacing: 1.2,
+                  RichText(
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' PRO',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFD4AF37),
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ]),
@@ -478,34 +612,37 @@ class _LibraryHeader extends StatelessWidget {
               ),
             ]),
           ),
-          // TabBar PILL — 3 abas (BUILD 278: pill tabs unificados)
+          // TabBar PILL — 3 abas com divisórias verticais delicadas
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: TabBar(
-              controller: tabCtrl,
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              // BUILD 282 ORDEM 5: pill indicator slate — branco sobre gradiente cinza
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white.withValues(alpha: 0.18),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.55),
-                  width: 1,
-                ),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _LibPillTab(
+                      label: 'GENERAL',
+                      index: 0,
+                      tabCtrl: tabCtrl,
+                    ),
+                  ),
+                  _LibTabDivider(),
+                  Expanded(
+                    child: _LibPillTab(
+                      label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF',
+                      index: 1,
+                      tabCtrl: tabCtrl,
+                    ),
+                  ),
+                  _LibTabDivider(),
+                  Expanded(
+                    child: _LibPillTab(
+                      label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO',
+                      index: 2,
+                      tabCtrl: tabCtrl,
+                    ),
+                  ),
+                ],
               ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white38,
-              labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.3),
-              unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.2),
-              dividerColor: Colors.transparent,
-              padding: EdgeInsets.zero,
-              tabs: [
-                const Tab(text: 'GENERAL'),
-                Tab(text: isEs ? 'GUÍAS PDF' : 'GUIAS PDF'),
-                Tab(text: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO'),
-              ],
             ),
           ),
         ]),

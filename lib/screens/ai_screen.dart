@@ -2558,7 +2558,7 @@ class _MobileAiActionBar extends StatelessWidget {
         : const Color(0xFF008CA4).withValues(alpha: 0.22);
 
     return Container(
-      height: 52,
+      height: 55, // SUPER ORDEM: +3px de respiro vertical
       decoration: BoxDecoration(
         // BUILD 283 ORDEM 10.1: Dark Graphite solid — paridade com tools/history headers
         color: const Color(0xFF1A1D23),
@@ -2569,28 +2569,57 @@ class _MobileAiActionBar extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── B140: Título + subtítulo de conexão (sem avatar) ─────────────
+            // ── Título bicolor MEDCASES (branco) + IA (ouro) + subtítulo split ────
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // BUILD 283 ORDEM 10.1: canonical title MEDCASES IA + MEDCASES PRO gold subtitle
-                  const Text(
-                    'MEDCASES IA',
-                    style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: -0.2,
+                  // SUPER ORDEM: 'MEDCASES' branco puro + 'IA' ouro fosco, fonte -10%
+                  RichText(
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES',
+                          style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' IA',
+                          style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700,
+                            color: Color(0xFFD4AF37),
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 1),
-                  const Text(
-                    'MEDCASES PRO',
-                    style: TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.w600,
-                      color: Color(0xFFD4AF37),
-                      letterSpacing: 1.2,
+                  // Subtítulo split: MEDCASES branco + PRO ouro
+                  RichText(
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES',
+                          style: TextStyle(
+                            fontSize: 11, fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' PRO',
+                          style: TextStyle(
+                            fontSize: 11, fontWeight: FontWeight.bold,
+                            color: Color(0xFFD4AF37),
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -2713,7 +2742,7 @@ class _WaHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 283 ORDEM 10.2: _WaHeader — Dark Graphite solid + canonical MEDCASES IA title
+    // SUPER ORDEM: +3px respiro vertical, título bicolor MEDCASES/IA, subtítulo split
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xFF1A1D23), // Dark Graphite solid — paridade total
@@ -2722,7 +2751,7 @@ class _WaHeader extends StatelessWidget {
         ),
       ),
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(4, 10, 10, 10),
+          padding: const EdgeInsets.fromLTRB(4, 11, 10, 11),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -2740,28 +2769,58 @@ class _WaHeader extends StatelessWidget {
                         const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
 
-                  // Título canônico + subtítulo ouro
+                  // Título bicolor MEDCASES (branco) + IA (ouro) + subtítulo split
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'MEDCASES IA',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: -0.2,
+                        RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'MEDCASES',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' IA',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFFD4AF37),
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const Text(
-                          'MEDCASES PRO',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFFD4AF37), // ouro fosco canônico
-                            letterSpacing: 1.2,
+                        RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'MEDCASES',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' PRO',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFD4AF37),
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

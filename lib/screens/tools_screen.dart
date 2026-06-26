@@ -71,104 +71,99 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
-    // No desktop a sidebar substitui o shell AppBar → mantém o header próprio.
-    // Em mobile/tablet o shell AppBar já está visível → oculta o header próprio
-    // para evitar double-header (duas barras empilhadas).
-    final bp = MedBreakpoints.of(context);
-    final showHeader = widget.hideHeader ? false : bp.isDesktop;
+    // SUPER ORDEM: header sempre visível (mobile + desktop) quando não suprimido.
+    // Peça única solidária Dark Graphite com título + pílulas embutidas.
+    final showHeader = !widget.hideHeader;
 
     // BUILD 283 ORDEM 8: Dark Graphite constants
     const Color kGraphiteDark = Color(0xFF1A1D23);
     const Color kGraphiteBorder = Color(0xFF2A2D35);
 
     return Column(children: [
-      // ── Header (visível apenas no desktop ou quando explicitamente solicitado)
+      // ── Header + pílulas embutidas (peça única Dark Graphite) ────────────
+      // SUPER ORDEM: visível em todos os breakpoints quando não suprimido.
       if (showHeader)
         Container(
-          // BUILD 283 ORDEM 8: Dark Graphite solid — minimalista ultra premium
           decoration: const BoxDecoration(
             color: kGraphiteDark,
             border: Border(
               bottom: BorderSide(color: kGraphiteBorder, width: 0.5),
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 10, 16, 10),
-            child: Row(children: [
-              // Back arrow
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                onPressed: () => Navigator.maybePop(context),
-                padding: const EdgeInsets.all(8),
-                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-              ),
-              // Title + subtitle — alinhado à esquerda
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text(
-                    'FERRAMENTAS CLÍNICAS',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white, // branco puro — contraste absoluto
-                      letterSpacing: -0.2,
-                    ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Linha título
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
+                child: Row(children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                    onPressed: () => Navigator.maybePop(context),
+                    padding: const EdgeInsets.all(8),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
-                  const Text(
-                    'MEDCASES PRO',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFFD4AF37), // ouro fosco canônico
-                      letterSpacing: 1.2,
-                    ),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      const Text(
+                        'FERRAMENTAS CLÍNICAS',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                      RichText(
+                        text: const TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'MEDCASES',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' PRO',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFD4AF37),
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ]),
                   ),
                 ]),
               ),
-            ]),
-          ),
-        ),
-      // ── TabBar PILL (sempre visível) ─────────────────────────────
-      // BUILD 278: pill tabs com BorderRadius.circular(12) unificados
-      Container(
-        decoration: const BoxDecoration(
-          color: kGraphiteDark,
-          border: Border(
-            bottom: BorderSide(color: kGraphiteBorder, width: 0.5),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          child: TabBar(
-            controller: _tabCtrl,
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            // BUILD 283 ORDEM 8: pill sem cor chamativa, cinza escuro sutil
-            indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white.withValues(alpha: 0.10),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.28),
-                width: 1,
+              // Pílulas de aba com divisores verticais delicados
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Expanded(child: _ToolsPillTab(label: isEs ? 'BIOMETRÍA' : 'BIOMETRIA', index: 0, tabCtrl: _tabCtrl)),
+                      _ToolsTabDivider(),
+                      Expanded(child: _ToolsPillTab(label: 'CARDIO', index: 1, tabCtrl: _tabCtrl)),
+                      _ToolsTabDivider(),
+                      Expanded(child: _ToolsPillTab(label: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS', index: 2, tabCtrl: _tabCtrl)),
+                      _ToolsTabDivider(),
+                      Expanded(child: _ToolsPillTab(label: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS', index: 3, tabCtrl: _tabCtrl)),
+                      _ToolsTabDivider(),
+                      Expanded(child: _ToolsPillTab(label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA', index: 4, tabCtrl: _tabCtrl)),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white38,
-            labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.3),
-            unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.2),
-            dividerColor: Colors.transparent,
-            padding: EdgeInsets.zero,
-            tabs: [
-              Tab(text: isEs ? 'BIOMETRÍA' : 'BIOMETRIA'),
-              Tab(text: isEs ? 'CARDIO' : 'CARDIO'),
-              Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
-              Tab(text: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS'),
-              Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
             ],
           ),
         ),
-      ),
 
       // ── Content ─────────────────────────────────────────────────
       // GestureDetector com behavior translucent: um tap em qualquer área
@@ -192,6 +187,86 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
         ),
       ),
     ]);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────
+// HELPERS: pílula de aba + divisória delicada para Ferramentas
+// ──────────────────────────────────────────────────────────────────
+
+/// Divisória vertical finíssima entre as pílulas — discreta sobre Dark Graphite.
+class _ToolsTabDivider extends StatelessWidget {
+  const _ToolsTabDivider();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      color: Colors.white.withValues(alpha: 0.15),
+    );
+  }
+}
+
+/// Pílula de aba individual para Ferramentas — reage ao TabController.
+class _ToolsPillTab extends StatefulWidget {
+  final String label;
+  final int index;
+  final TabController tabCtrl;
+  const _ToolsPillTab({required this.label, required this.index, required this.tabCtrl});
+  @override
+  State<_ToolsPillTab> createState() => _ToolsPillTabState();
+}
+
+class _ToolsPillTabState extends State<_ToolsPillTab> {
+  @override
+  void initState() {
+    super.initState();
+    widget.tabCtrl.addListener(_onTabChange);
+  }
+
+  void _onTabChange() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    widget.tabCtrl.removeListener(_onTabChange);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = widget.tabCtrl.index == widget.index;
+    return GestureDetector(
+      onTap: () => widget.tabCtrl.animateTo(widget.index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: isActive
+              ? Colors.white.withValues(alpha: 0.10)
+              : Colors.transparent,
+          border: Border.all(
+            color: isActive
+                ? Colors.white.withValues(alpha: 0.28)
+                : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: Text(
+          widget.label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+            color: isActive ? Colors.white : Colors.white38,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+    );
   }
 }
 

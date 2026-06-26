@@ -872,7 +872,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
       // com a linha central do bloco de título. Gradiente verde mantido.
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
+        preferredSize: const Size.fromHeight(63),
         child: Container(
           // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao/Pacientes
           // Gradiente verde mantido conforme ORDEM 3 (só tipografia sincronizada).
@@ -914,19 +914,34 @@ class _InternacionScreenState extends State<InternacionScreen> {
                         Text(
                           isEs ? 'PACIENTES' : 'PACIENTES',
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.2,
                             color: Colors.white,
                           ),
                         ),
-                        const Text(
-                          'MEDCASES PRO',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFFD4AF37), // gold
-                            letterSpacing: 1.2,
+                        RichText(
+                          text: const TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'MEDCASES',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' PRO',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFD4AF37),
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
