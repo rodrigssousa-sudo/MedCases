@@ -271,6 +271,12 @@ class _AiScreenState extends State<AiScreen> {
   /// sem nenhuma mensagem nova do usuário, não deve ser re-salva ao limpar).
   String? _restoredSessionId;
 
+  // BUILD 274: _activeSessionId — ID único gerado na 1ª mensagem da sessão
+  // e reutilizado em TODOS os saves subsequentes do mesmo chat.
+  // Sem isso, cada _saveCurrentSessionToHistory() gerava novo DateTime.now()
+  // como ID, criando múltiplos docs Firestore para o mesmo chat (duplication).
+  String? _activeSessionId;
+
   /// Indica se o usuário enviou ao menos 1 mensagem nova após restaurar uma sessão.
   bool _hasNewMessageAfterRestore = false;
 
@@ -792,11 +798,18 @@ class _AiScreenState extends State<AiScreen> {
           final msgsToSave = msgsSnapshot.length > 20
               ? msgsSnapshot.sublist(msgsSnapshot.length - 20)
               : msgsSnapshot;
-          final existingIdx = _restoredSessionId != null
-              ? _chatHistory.indexWhere((s) => s.id == _restoredSessionId)
-              : -1;
+          // BUILD 274: usa o mesmo ID já fixado em _activeSessionId/_restoredSessionId
+          final String disposeSessionId;
+          if (_restoredSessionId != null) {
+            disposeSessionId = _restoredSessionId!;
+          } else if (_activeSessionId != null) {
+            disposeSessionId = _activeSessionId!;
+          } else {
+            disposeSessionId = now.toIso8601String();
+          }
+          final existingIdx = _chatHistory.indexWhere((s) => s.id == disposeSessionId);
           final session = _ChatSession(
-            id: existingIdx >= 0 ? _restoredSessionId! : now.toIso8601String(),
+            id: disposeSessionId,
             savedAt: now,
             summary: summary.length > 100 ? summary.substring(0, 100) : summary,
             messages: msgsToSave,
@@ -851,8 +864,13 @@ class _AiScreenState extends State<AiScreen> {
       if (uid != null && uid.isNotEmpty) {
         final remote = await FirestoreService.loadAiSessions(uid);
         if (remote.isNotEmpty) {
+          // BUILD 274: de-dup by ID before inserting — Firestore may return
+          // stale docs written before the session-ID fix. Keep the first
+          // occurrence of each ID (already ordered desc by updatedAt).
+          final seen = <String>{};
           final sessions = remote
               .map((e) => _ChatSession.fromJson(e))
+              .where((s) => seen.add(s.id))
               .toList();
           if (mounted) setState(() {
             _chatHistory.clear();
@@ -869,8 +887,11 @@ class _AiScreenState extends State<AiScreen> {
       final json = prefs.getString(_histKey(p));
       if (json == null || json.isEmpty) return;
       final list = jsonDecode(json) as List;
+      // BUILD 274: de-dup local cache too
+      final seenLocal = <String>{};
       final sessions = list
           .map((e) => _ChatSession.fromJson(e as Map<String, dynamic>))
+          .where((s) => seenLocal.add(s.id))
           .toList();
       if (mounted) setState(() {
         _chatHistory.clear();
@@ -899,6 +920,12 @@ class _AiScreenState extends State<AiScreen> {
   /// Só salva se houver ao menos 1 mensagem do usuário.
   /// Se a sessão foi restaurada do histórico e o usuário não enviou nenhuma
   /// mensagem nova, ela NÃO é re-salva (já estava salva, nada mudou).
+  ///
+  /// BUILD 274 — SESSION ID REUSE:
+  /// O ID da sessão é fixado em _activeSessionId na primeira chamada e
+  /// reutilizado em TODOS os saves seguintes do mesmo chat. Sem isso,
+  /// user-send save e AI-response save geravam IDs diferentes (timestamps
+  /// distintos), resultando em dois documentos Firestore para o mesmo chat.
   Future<void> _saveCurrentSessionToHistory(AppProvider p) async {
     // Filtra só mensagens reais (exclui saudação inicial)
     final userMsgs = _messages.where((m) => m.role == 'user').toList();
@@ -914,15 +941,28 @@ class _AiScreenState extends State<AiScreen> {
         ? _messages.sublist(_messages.length - 20)
         : List<_ChatMsg>.from(_messages);
 
-    // Se é uma sessão restaurada com novas mensagens, atualiza a entrada
-    // existente em vez de criar uma duplicata
-    final existingIdx = _restoredSessionId != null
-        ? _chatHistory.indexWhere((s) => s.id == _restoredSessionId)
-        : -1;
+    // BUILD 274: resolução de ID com prioridade:
+    //   1. Sessão restaurada do histórico → mantém ID original
+    //   2. Sessão nova com _activeSessionId já fixado → reutiliza o mesmo ID
+    //   3. Primeira save de sessão nova → gera ID único e fixa em _activeSessionId
+    final String sessionId;
+    if (_restoredSessionId != null) {
+      sessionId = _restoredSessionId!;
+    } else if (_activeSessionId != null) {
+      // Reutiliza ID gerado na primeira save — evita duplicação multi-save
+      sessionId = _activeSessionId!;
+    } else {
+      // Primeira save desta sessão: gera ID único e persiste no estado
+      sessionId = now.toIso8601String();
+      _activeSessionId = sessionId;
+      debugPrint('[BUILD274][SessionDedup] Nova sessão iniciada id=$sessionId');
+    }
+
+    // Se é uma sessão restaurada com novas mensagens, encontra a entrada existente
+    final existingIdx = _chatHistory.indexWhere((s) => s.id == sessionId);
 
     final session = _ChatSession(
-      // Mantém o ID original se for atualização, senso gera novo
-      id: existingIdx >= 0 ? _restoredSessionId! : now.toIso8601String(),
+      id: sessionId,
       savedAt: now,
       summary: summary.length > 100 ? summary.substring(0, 100) : summary,
       messages: msgsToSave,
@@ -940,7 +980,10 @@ class _AiScreenState extends State<AiScreen> {
       }
     });
 
+    debugPrint('[BUILD274][SessionDedup] save sessionId=$sessionId msgs=${session.messages.length} existingIdx=$existingIdx');
+
     // Persiste em dual-write: Firestore (primário) + SharedPreferences (offline)
+    // saveAiSession usa .doc(id).set(data) — upsert seguro, sem duplicação Firestore
     final uid = p.currentUser?.uid;
     if (uid != null && uid.isNotEmpty) {
       FirestoreService.saveAiSession(uid, session.toJson()).catchError((_) {});
@@ -998,6 +1041,7 @@ class _AiScreenState extends State<AiScreen> {
       _greetingDone = true;
       _userScrolledUp = false;
       _restoredSessionId = session.id;
+      _activeSessionId = null;         // BUILD 274: sessão restaurada usa _restoredSessionId, não _activeSessionId
       _hasNewMessageAfterRestore = false;
       _thinking   = false;
       _isStreaming = false;
@@ -1689,6 +1733,7 @@ class _AiScreenState extends State<AiScreen> {
       _networkError = false;
       _userScrolledUp = false;
       _restoredSessionId = null;
+      _activeSessionId = null;   // BUILD 274: reset para próxima sessão gerar novo ID
       _hasNewMessageAfterRestore = false;
       // Build 107 FIX: reseta guards para desbloquear _send() após limpar
       _thinking   = false;
@@ -1718,6 +1763,7 @@ class _AiScreenState extends State<AiScreen> {
       _networkError = false;
       _userScrolledUp = false;
       _restoredSessionId = null;
+      _activeSessionId = null;   // BUILD 274: reset para nova sessão gerar novo ID
       _hasNewMessageAfterRestore = false;
       _greetingDone = true;
       // Build 107 FIX: garante que _send() não fique bloqueado após novo chat

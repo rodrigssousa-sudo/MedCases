@@ -23,7 +23,11 @@ class AiService {
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
-    int maxTokens = 900,
+    // BUILD 274: aumentado de 900 → 2500 para suportar prompts densos do Estudo
+    // (systemPrompt > 12k chars) sem truncar a resposta na terceira linha.
+    // Call sites que precisam de menos tokens (transcript: 800, organizer: 1200,
+    // legado Plantão: 1100) já passam maxTokens explicitamente — não são afetados.
+    int maxTokens = 2500,
   }) async {
     if (apiKey.isEmpty) return AiResult.error('NO_KEY', 'no_key');
 
