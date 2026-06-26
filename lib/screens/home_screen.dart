@@ -3809,48 +3809,45 @@ class _HistorialCompactCard extends StatelessWidget {
             ),
           ];
 
-    final items = [
-      _ShortcutItem(
-        icon: Icons.sticky_note_2_rounded,
-        color: const Color(0xFFFF8A00),
-        label: isEs ? 'Notas' : 'Notas',
-        onTap: onOpenNotes,
-      ),
-      _ShortcutItem(
-        icon: Icons.history_rounded,
-        color: const Color(0xFF1F78FF),
-        label: isEs ? 'Recientes' : 'Recentes',
-        onTap: () {
-          final p = context.read<AppProvider>();
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => _RecentesSheet(dark: dark, isEs: isEs, p: p),
-          );
-        },
-      ),
-      _ShortcutItem(
-        icon: Icons.bookmark_rounded,
-        color: const Color(0xFF6C2BD9),
-        label: isEs ? 'Favoritos' : 'Favoritos',
-        onTap: () {
-          final p = context.read<AppProvider>();
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => _FavoritosSheet(dark: dark, isEs: isEs, p: p),
-          );
-        },
-      ),
-      _ShortcutItem(
-        icon: Icons.assignment_ind_rounded,
-        color: const Color(0xFFDC2626),
-        label: isEs ? 'Evaluación' : 'Avaliação',
-        onTap: () => HomeScreen._openAvaliacao(context),
-      ),
-    ];
+    // BUILD 283 ORDEM 9: 5 colunas simétricas — Avaliação|Notas|Buscar|Favoritos|Recentes
+    // Buscar integrado como coluna uniforme (sem container destacado), dividers 1px entre todas.
+    final kGreen = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
+
+    // Helpers para construir cada coluna de forma idêntica
+    Widget _col({
+      required IconData icon,
+      required Color color,
+      required String label,
+      required VoidCallback onTap,
+    }) {
+      return Expanded(
+        child: GestureDetector(
+          onTap: () { AppHaptics.selection(context); onTap(); },
+          behavior: HitTestBehavior.opaque,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 20, color: color),
+              const SizedBox(height: 3),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: dark
+                      ? Colors.white.withValues(alpha: 0.55)
+                      : const Color(0xFF6B7280),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget _div() => Container(width: 1, height: 34, color: dividerColor);
 
     return Container(
       height: 58,
@@ -3862,95 +3859,60 @@ class _HistorialCompactCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ── Busca — substitui label estático (Build 97) ─────────────────
-          // Abre o modal de busca global clínica (fármacos, protocolos, etc.)
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () { AppHaptics.light(context); showGlobalSearch(context); },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 34,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: dark
-                          ? const Color(0xFF0A7C4E).withValues(alpha: 0.15)
-                          : const Color(0xFF0A7C4E).withValues(alpha: 0.08),
-                      border: Border.all(
-                        color: dark
-                            ? const Color(0xFF10B981).withValues(alpha: 0.25)
-                            : const Color(0xFF0A7C4E).withValues(alpha: 0.20),
-                        width: 1,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.search_rounded,
-                      size: 18,
-                      color: dark
-                          ? const Color(0xFF10B981)
-                          : const Color(0xFF0A7C4E),
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    isEs ? 'Buscar' : 'Buscar',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: dark
-                          ? const Color(0xFF10B981).withValues(alpha: 0.80)
-                          : const Color(0xFF0A7C4E),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          // [1] EVALUACIÓN — vermelho #DC2626
+          _col(
+            icon: Icons.assignment_ind_rounded,
+            color: const Color(0xFFDC2626),
+            label: isEs ? 'Evaluación' : 'Avaliação',
+            onTap: () => HomeScreen._openAvaliacao(context),
           ),
-
-          // ── Divisor vertical ────────────────────────────────────────────
-          Container(width: 1, height: 34, color: dividerColor),
-
-          // ── 4 atalhos inline ────────────────────────────────────────────
-          Expanded(
-            child: Row(
-              children: List.generate(items.length * 2 - 1, (i) {
-                if (i.isOdd) {
-                  return Container(width: 1, height: 34, color: dividerColor);
-                }
-                final item = items[i ~/ 2];
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () { AppHaptics.selection(context); item.onTap(); },
-                    behavior: HitTestBehavior.opaque,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(item.icon, size: 20, color: item.color),
-                        const SizedBox(height: 3),
-                        Text(
-                          item.label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: dark
-                                ? Colors.white.withValues(alpha: 0.55)
-                                : const Color(0xFF6B7280),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-            ),
+          _div(),
+          // [2] NOTAS — laranja #FF8A00
+          _col(
+            icon: Icons.sticky_note_2_rounded,
+            color: const Color(0xFFFF8A00),
+            label: isEs ? 'Notas' : 'Notas',
+            onTap: onOpenNotes,
+          ),
+          _div(),
+          // [3] BUSCAR — verde (posição central, coluna uniforme)
+          _col(
+            icon: Icons.search_rounded,
+            color: kGreen,
+            label: isEs ? 'Buscar' : 'Buscar',
+            onTap: () { AppHaptics.light(context); showGlobalSearch(context); },
+          ),
+          _div(),
+          // [4] FAVORITOS — roxo #6C2BD9
+          _col(
+            icon: Icons.bookmark_rounded,
+            color: const Color(0xFF6C2BD9),
+            label: isEs ? 'Favoritos' : 'Favoritos',
+            onTap: () {
+              final p = context.read<AppProvider>();
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => _FavoritosSheet(dark: dark, isEs: isEs, p: p),
+              );
+            },
+          ),
+          _div(),
+          // [5] RECIENTES — azul #1F78FF
+          _col(
+            icon: Icons.history_rounded,
+            color: const Color(0xFF1F78FF),
+            label: isEs ? 'Recientes' : 'Recentes',
+            onTap: () {
+              final p = context.read<AppProvider>();
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => _RecentesSheet(dark: dark, isEs: isEs, p: p),
+              );
+            },
           ),
         ],
       ),
