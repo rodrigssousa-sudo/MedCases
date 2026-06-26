@@ -540,7 +540,7 @@ N. RACIOCINIO CLINICO PREVIO OBRIGATORIO — executar em silencio ANTES de qualq
   static const _responseFormatEs = '''PROTOCOLO DE RESPOSTA CLÍNICA — PADRÃO-OURO 4 BLOCOS (Build 132)
 
 REGRA ABSOLUTA: Toda resposta clínica DEVE seguir EXATAMENTE este modelo de 4 blocos.
-Máximo 15 linhas no total. O PRIMEIRO CARACTERE da resposta DEVE SER "🟥". SEM EXCEÇÕES.
+O PRIMEIRO CARACTERE da resposta DEVE SER "🟥". SEM EXCEÇÕES.
 
 MODELO OBRIGATÓRIO:
 
@@ -572,7 +572,7 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
    • CORRECTO: "📌 ¿Se realizó un ecocardiograma post-IAM?" — solo UNA pregunta.
    • Si necesita dos datos: haga la más crítica ahora. La segunda vendrá
      SOLO después de que el usuario responda la primera.
-7. MÁXIMO 15 LINHAS no total — contar todas as linhas incluindo cabeçalho 🟥.
+7. COMPLETAR O TEMPLATE INTEGRALMENTE — nunca cortar a resposta no meio.
 8. ZERO mecanismo de ação. ZERO fisiopatologia. ZERO classe farmacológica. ZERO introdução.
 10. REGRA ANTI-ENCICLOPÉDIA: "¿Qué es X?" → ignorar e responder com 🟥 direto.
 11. PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confianza Clínica", "Nivel de Confianza", "[A]", "[CONV]", "MODO ACTIVO:", "CAPA 1" — rótulos internos invisíveis ao médico.
@@ -639,7 +639,7 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
    • CORRETO: "📌 O ECG mostra supra de ST?" — apenas UMA pergunta.
    • Se precisar de dois dados: faça o mais crítico agora. O segundo virá
      SOMENTE após o usuário responder o primeiro.
-7. MÁXIMO 15 LINHAS no total — contar todas as linhas incluindo cabeçalho 🟥.
+7. COMPLETAR O TEMPLATE INTEGRALMENTE — nunca cortar a resposta no meio.
 8. ZERO mecanismo de ação. ZERO fisiopatologia. ZERO classe farmacológica. ZERO introdução.
 9. REGRA ANTI-ENCICLOPÉDIA: "O que é X?" → ignorar e responder com 🟥 direto.
 11. PROIBIÇÃO ABSOLUTA: NUNCA escrever "Confiança Clínica", "Nível de Confiança", "[A]", "[CONV]", "MODO ACTIVO:", "CAMADA 1" — rótulos internos invisíveis ao médico.
@@ -1377,7 +1377,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           'MAX_OUTPUT_TOKENS=1600. TEMPERATURE=0.2(server). MATRIX_COMPLETION_INJECTED. '
           'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE. '
           'COLUMN0_BINARY_PROHIBITION_ACTIVE. BAD_GOOD_EXAMPLES_INJECTED. '
-          'COMPACT_800CHARS_15LINES_ACTIVE. BOLD_NAME_ONLY_ACTIVE. '
+          'TETO_REMOVIDO_ORDEM23. BOLD_NAME_ONLY_ACTIVE. '
           'UX_FLOW_DOCTRINE_ACTIVE. GANCHO_CLOSED_QUESTION_ENFORCED. GENERIC_STABILIZATION_EXTERMINATED. '
           'PROPRIETARY_RAG_BYPASS_ACTIVE proprietaryContext=${(proprietaryDrugContext ?? '').length}chars.');
 
@@ -1462,7 +1462,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'REGLAS SOBERANAS:\n'
             '• DOBLE SALTO OBLIGATORIO: entre cada linea/bloque → \\n\\n, NUNCA \\n solo.\n'
             '• EMOJI 🟥 UNICO: aparece EXACTAMENTE UNA VEZ en la primera linea.\n'
-            '• TECHO ESTRICTO: MAX 15 LINEAS y MAX 800 CHARS. Si alcanzas el techo → cerrar con 📌.\n'
+            '• COMPLETAR SEMPRE: conclua TODAS as secoes iniciadas. Sem corte abrupto.\n'
           : '════ REGRA Nº1 — COLUNA ZERO ABSOLUTA ════\n'
             'PROIBICAO NIVEL BINARIO: o 1º char de CADA linha DEVE ser: *, 🟥, 🚨, 💊, ⛔, 📌, letra/numero. '
             'JAMAIS espaco (ASCII 32) ou tabulacao (ASCII 9) — Flutter renderiza como bloco <pre>.\n'
@@ -1471,7 +1471,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'REGRAS SOBERANAS:\n'
             '• DUPLA QUEBRA OBRIGATORIA: entre cada linha/bloco → \\n\\n, NUNCA \\n isolado.\n'
             '• EMOJI 🟥 UNICO: aparece EXATAMENTE UMA VEZ na primeira linha.\n'
-            '• TETO ESTRITO: MAX 15 LINHAS e MAX 800 CHARS. Se atingir o teto → encerrar com 📌.\n';
+            '• COMPLETAR SEMPRE: conclua TODAS as secoes iniciadas. Sem corte abrupto.\n';
 
       // ── BUILD 272: CONTEXTO PROPRIETÁRIO MedCases ────────────────────────
       // Se 'proprietaryDrugContext' não for vazio, injeta o conteúdo bruto
