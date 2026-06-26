@@ -1416,6 +1416,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
 
       // selfCheck compact (inline — items 0-6 only)
       // BUILD 271: item 6 expandido com mandato anti-truncamento de matriz.
+      // BUILD 273: item 7 adicionado — checklist de compliance de formato stream.
       final ptSelfCheck = isEs
           ? 'Antes de responder, verificar internamente (nunca revelar al usuario):\n'
             '0. APERTURA PROHIBIDA — la respuesta DEBE iniciar con 🟥 en la primera linea. '
@@ -1428,6 +1429,8 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '6. Titulo 🟥 especifico (nunca generico). '
             'ES REQUISITO OBLIGATORIO concluir TODAS las secciones iniciadas de la matriz correspondiente. '
             'JAMAS interrumpas el texto a la mitad — si iniciaste CONDUTA, DOSIS, MONITORIZACION o ALERTA, cierra cada bloque.\n'
+            '7. FORMATO STREAM (BUILD 273): ZERO lineas con sangria de espacio (ninguna linea empieza con \" \"). '
+            'TODOS los bloques separados por \\n\\n. 🟥 aparece exactamente UNA VEZ (primera linea).\n'
           : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
             '0. ABERTURA PROIBIDA — a resposta DEVE iniciar com 🟥 na primeira linha. '
             'PROIBIDO: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza" antes de 🟥.\n'
@@ -1438,7 +1441,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '5. Doses coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
             '6. Titulo 🟥 especifico (nunca generico). '
             'E REQUISITO OBRIGATORIO concluir TODAS as secoes iniciadas da matriz correspondente. '
-            'JAMAIS interrompa o texto na metade — se iniciou CONDUTA, DOSE, MONITORIZACAO ou ALERTA, feche cada bloco.\n';
+            'JAMAIS interrompa o texto na metade — se iniciou CONDUTA, DOSE, MONITORIZACAO ou ALERTA, feche cada bloco.\n'
+            '7. FORMATO STREAM (BUILD 273): ZERO linhas com recuo de espaco (nenhuma linha começa com \" \"). '
+            'TODOS os blocos separados por \\n\\n. 🟥 aparece exatamente UMA VEZ (primeira linha).\n';
 
       // BUILD 271 audit log (supersedes Build268 tag)
       final _ptChars = ptLangHeader.length +
@@ -1447,9 +1452,10 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build272][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+      debugPrint('[Build273][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
           'MAX_OUTPUT_TOKENS=1600. TEMPERATURE=0.2(server). MATRIX_COMPLETION_INJECTED. '
           'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE. '
+          'STREAM_FORMAT_RULES_ACTIVE. '
           'PROPRIETARY_RAG_BYPASS_ACTIVE proprietaryContext=${(proprietaryDrugContext ?? '').length}chars.');
 
       // ── BUILD 268: DIRETRIZ DE ESCOPO CLÍNICO GENEROSO — hotfix supremo ──
@@ -1534,6 +1540,51 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'JAMAIS interrompa o texto na metade. '
             'Este mandato e absoluto — prioridade maxima sobre brevidade ou concisao.\n';
 
+      // ── BUILD 273: STREAM MARKDOWN FORMATTING RULES ─────────────────────
+      // Diagnóstico: no stream em tempo real o Flutter Markdown engasga com:
+      //   1. Recuos de espaço à esquerda (ex: "   * sublista") — renderiza como
+      //      bloco de código pré-formatado em vez de bullet point.
+      //   2. Ausência de \n\n entre blocos — parágrafos/tópicos ficam colados,
+      //      criando "paredes de texto" ilegíveis durante a digitação viva.
+      //   3. 🟥 repetido mid-text — confunde o parser visual do Plantão.
+      // Fix: injeta regras soberanas de formatação no início do assembly,
+      // logo após o language lock, para máxima prioridade de obediência.
+      final ptStreamFormat = isEs
+          ? 'REGLAS SOBERANAS DE FORMATO MARKDOWN (BUILD 273 — CRITICAS PARA STREAM EN TIEMPO REAL):\n'
+            '• PROHIBICION ABSOLUTA DE SANGRIA: JAMAS inicies una linea con espacios en blanco '
+            'ni tabulaciones (ej: "   * sublista" esta TERMINANTEMENTE PROHIBIDO). '
+            'Todos los marcadores, bullets y sublistas deben comenzar en la columna 0 — '
+            'pegados al margen izquierdo de la linea, sin ningun espacio precedente.\n'
+            '• DOBLE SALTO DE LINEA OBLIGATORIO: Entre cada parrafo, topico, bloque clinico y titulo '
+            'es OBLIGATORIO insertar dos saltos de linea (\\n\\n). '
+            'NUNCA uses un solo \\n para separar bloques — el parser de Markdown en stream '
+            'colapsa los bloques sin \\n\\n, generando texto aplastado e ilegible.\n'
+            '• EMOJI 🟥 UNICO: El emoji 🟥 debe aparecer EXACTAMENTE UNA VEZ, en la primera linea '
+            'del texto, pegado al titulo del farmaco o caso clinico. '
+            'PROHIBIDO repetir 🟥 en el cuerpo del texto.\n'
+            '• ICONOGRAFIA MEDICA ESTANDAR (sin sangria, siempre en columna 0):\n'
+            '  — 🚨 **Topico Principal:** para acciones urgentes y diagnostico.\n'
+            '  — 💊 **Farmaco/Dosis:** para especificaciones farmacologicas.\n'
+            '  — ⛔ **Alerta Critico:** para contraindicaciones y riesgos fatales.\n'
+            '  — 📌 **Proximos Pasos:** para monitorizacion y seguimiento.\n'
+          : 'REGRAS SOBERANAS DE FORMATO MARKDOWN (BUILD 273 — CRITICAS PARA STREAM EM TEMPO REAL):\n'
+            '• PROIBICAO ABSOLUTA DE RECUO: JAMAIS inicie uma linha com espacos em branco '
+            'ou tabulacoes (ex: "   * sublista" esta TERMINANTEMENTE PROIBIDO). '
+            'Todos os marcadores, bullets e sublistas devem comecar na coluna 0 — '
+            'colados na margem esquerda da linha, sem nenhum espaco precedente.\n'
+            '• DUPLA QUEBRA DE LINHA OBRIGATORIA: Entre cada paragrafo, topico, bloco clinico e titulo '
+            'e OBRIGATORIO inserir duas quebras de linha (\\n\\n). '
+            'NUNCA use um unico \\n para separar blocos — o parser de Markdown no stream '
+            'colapsa os blocos sem \\n\\n, gerando texto esmagado e ilegivel.\n'
+            '• EMOJI 🟥 UNICO: O emoji 🟥 deve aparecer EXATAMENTE UMA VEZ, na primeira linha '
+            'do texto, colado ao titulo do farmaco ou caso clinico. '
+            'PROIBIDO repetir 🟥 no corpo do texto.\n'
+            '• ICONOGRAFIA MEDICA PADRAO (sem recuo, sempre na coluna 0):\n'
+            '  — 🚨 **Topico Principal:** para acoes urgentes e diagnostico.\n'
+            '  — 💊 **Farmaco/Dose:** para especificacoes farmacologicas.\n'
+            '  — ⛔ **Alerta Critico:** para contraindicacoes e riscos fatais.\n'
+            '  — 📌 **Proximos Passos:** para monitorizacao e acompanhamento.\n';
+
       // ── BUILD 272: CONTEXTO PROPRIETÁRIO MedCases ────────────────────────
       // Se 'proprietaryDrugContext' não for vazio, injeta o conteúdo bruto
       // do documento 'clinical_library/{drug}' sob a tag especial.
@@ -1571,7 +1622,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       // ── PLANTÃO ASSEMBLY — compact modules only ───────────────────────────
       // BUILD 271: ptMatrixCompletion injetado antes de ptSelfCheck para máxima força.
       // BUILD 272: ptProprietaryBlock injetado após RAG local, antes de ptMatrixCompletion.
+      // BUILD 273: ptStreamFormat injetado logo após ptLangHeader — máxima prioridade.
       return '$ptLangHeader'
+             '$ptStreamFormat'
              '$ptSupremacyRule'
              '${isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt}\n\n'
              '${isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt}\n\n'
