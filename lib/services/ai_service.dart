@@ -1434,17 +1434,19 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '6. Titulo 🟥 especifico (nunca generico). '
             'ES REQUISITO OBLIGATORIO concluir TODAS las secciones iniciadas de la matriz correspondente. '
             'JAMAS interrumpas el texto a la mitad — si iniciaste CONDUTA, DOSIS, MONITORIZACION o ALERTA, cierra cada bloque.\n'
-            '7. FORMATO STREAM (BUILD 273): ZERO lineas con sangria de espacio (ninguna linea empieza con \" \"). '
+            '7. COLUMNA CERO (BUILD 275-FIX — CRITICO): REVISAR CADA LINEA antes de emitirla. '
+            'Si cualquier linea empieza con espacio o tabulacion — BORRARLA y reescribirla sin sangria. '
+            'ZERO lineas con " * " o "  *" — el primer caracter debe ser *, emoji o letra. '
             'TODOS los bloques separados por \\n\\n. 🟥 aparece exactamente UNA VEZ (primera linea).\n'
             '8. COMPACTACION Y NEGRITAS (BUILD 275): Respuesta <= 15 lineas y <= 800 caracteres totales. '
             'ZERO frases de contextualizacion o conectivos literarios. '
-            'Negritas (**) SOLO en nombres de farmacos o clases — NUNCA en frases enteras ni parametros. '
-            'TODOS los topicos en columna 0 sin sangria. Formato: "* **Farmaco**: dosis via (Meta: valor)."\n'
+            'Negritas (**) SOLO en nombre limpio del farmaco: "* **AAS**: 300 mg VO." — '
+            'NUNCA en frases enteras, metas numericas ni titulos de bloque.\n'
             '9. FLUJO UX (BUILD 275-ADENDO): La respuesta NO explica lo que viene despues — '
             'los botones del front-end conducen el seguimiento. '
-            'ZERO listas de estabilizacion genericas si la query ya tiene datos clinicos explicitos. '
-            'La ultima linea ES 📌 + pregunta cerrada de bifurcacion de decision (Si/No, A/B). '
-            'PROHIBIDO terminar con "📌 Ver protocolo completo." — debe ser pregunta accionable.\n'
+            'ZERO listas de estabilizacion genericas si la query ya tiene datos clinicos. '
+            'La ultima linea ES 📌 + pregunta de bifurcacion cerrada (Si/No, A/B). '
+            'PROHIBIDO "📌 Ver protocolo completo." — debe ser pregunta accionable con opciones.\n'
           : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
             '0. ABERTURA PROIBIDA — a resposta DEVE iniciar com 🟥 na primeira linha. '
             'PROIBIDO: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza" antes de 🟥.\n'
@@ -1456,17 +1458,19 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '6. Titulo 🟥 especifico (nunca generico). '
             'E REQUISITO OBRIGATORIO concluir TODAS as secoes iniciadas da matriz correspondente. '
             'JAMAIS interrompa o texto na metade — se iniciou CONDUTA, DOSE, MONITORIZACAO ou ALERTA, feche cada bloco.\n'
-            '7. FORMATO STREAM (BUILD 273): ZERO linhas com recuo de espaco (nenhuma linha começa com \" \"). '
+            '7. COLUNA ZERO (BUILD 275-FIX — CRITICO): REVISAR CADA LINHA antes de emiti-la. '
+            'Se qualquer linha comecar com espaco ou tabulacao — APAGAR e reescrever sem recuo. '
+            'ZERO linhas com " * " ou "  *" — o primeiro caractere deve ser *, emoji ou letra. '
             'TODOS os blocos separados por \\n\\n. 🟥 aparece exatamente UMA VEZ (primeira linha).\n'
             '8. COMPACTACAO E NEGRITOS (BUILD 275): Resposta <= 15 linhas e <= 800 caracteres totais. '
             'ZERO frases de contextualizacao ou conectivos literarios. '
-            'Negritos (**) SOMENTE em nomes de farmacos ou classes — NUNCA em frases inteiras nem parametros. '
-            'TODOS os topicos na coluna 0 sem recuo. Formato: "* **Farmaco**: dose via (Alvo: valor)."\n'
+            'Negritos (**) SOMENTE no nome limpo do farmaco: "* **AAS**: 300 mg VO." — '
+            'NUNCA em frases inteiras, metas numericas nem titulos de bloco.\n'
             '9. FLUXO UX (BUILD 275-ADENDO): A resposta NAO explica o que vem depois — '
             'os botoes do front-end conduzem o seguimento. '
-            'ZERO listas de estabilizacao genericas se a query ja tiver dados clinicos explicitos. '
-            'A ultima linha E 📌 + pergunta fechada de bifurcacao de decisao (Sim/Nao, A/B). '
-            'PROIBIDO encerrar com "📌 Ver protocolo completo." — deve ser pergunta acionavel.\n';
+            'ZERO listas de estabilizacao genericas se a query ja tiver dados clinicos. '
+            'A ultima linha E 📌 + pergunta de bifurcacao fechada (Sim/Nao, A/B). '
+            'PROIBIDO "📌 Ver protocolo completo." — deve ser pergunta acionavel com opcoes.\n';
 
       // BUILD 271 audit log (supersedes Build268 tag)
       final _ptChars = ptLangHeader.length +
@@ -1475,11 +1479,11 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build275-ADENDO][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+      debugPrint('[Build275-FIX][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
           'MAX_OUTPUT_TOKENS=1600. TEMPERATURE=0.2(server). MATRIX_COMPLETION_INJECTED. '
           'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE. '
-          'STREAM_FORMAT_RULES_ACTIVE. COMPACT_800CHARS_15LINES_ACTIVE. '
-          'BOLD_DRUGS_ONLY_ACTIVE. TELEGRAPHIC_COL0_ACTIVE. '
+          'COLUMN0_BINARY_PROHIBITION_ACTIVE. BAD_GOOD_EXAMPLES_INJECTED. '
+          'COMPACT_800CHARS_15LINES_ACTIVE. BOLD_NAME_ONLY_ACTIVE. '
           'UX_FLOW_DOCTRINE_ACTIVE. GANCHO_CLOSED_QUESTION_ENFORCED. GENERIC_STABILIZATION_EXTERMINATED. '
           'PROPRIETARY_RAG_BYPASS_ACTIVE proprietaryContext=${(proprietaryDrugContext ?? '').length}chars.');
 
@@ -1614,80 +1618,65 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '"📌 Avaliar criterios de IOT ou continuar **VNI**?"\n'
             'Exemplo PROIBIDO: "📌 Ver protocolo completo." (nao e pergunta de decisao).\n';
 
-      // ── BUILD 273 + 275: STREAM MARKDOWN FORMATTING RULES + COMPACTION ─────
-      // BUILD 273 fixes: space-indent pre-block bug, \n\n mandatory, 🟥 once.
-      // BUILD 275 adds: 800-char/15-line hard cap, anti-verbose, bold-only-drugs,
-      //   telegraphic zero-indent format example.
-      // BUILD 275-ADENDO: UX flow doctrine injected as ptUxFlowDoctrine (above).
+      // ── BUILD 273 + 275 + 275-FIX: STREAM MARKDOWN — COLUMN-0 HARDENED ────────
+      // Root-cause: Gemini inserts invisible leading spaces before `*` bullets →
+      // Flutter Markdown parser reads space-at-column-0 as <pre> code block → raw
+      // asterisks and blue monospace box appear in the live stream UI.
+      // Fix: explicit byte-level prohibition, concrete BAD/GOOD examples,
+      // self-repair mandate, and removal of own indented taxonomy lines.
       final ptStreamFormat = isEs
-          ? 'REGLAS SOBERANAS DE FORMATO MARKDOWN Y COMPACTACION (BUILD 273+275 — CRITICAS PARA STREAM EN TIEMPO REAL):\n'
-            '• PROHIBICION ABSOLUTA DE SANGRIA: JAMAS inicies una linea con espacios en blanco '
-            'ni tabulaciones (ej: "   * sublista" esta TERMINANTEMENTE PROHIBIDO). '
-            'Todos los marcadores, bullets y sublistas deben comenzar en la columna 0 — '
-            'pegados al margen izquierdo de la linea, sin ningun espacio precedente.\n'
-            '• DOBLE SALTO DE LINEA OBLIGATORIO: Entre cada parrafo, topico, bloque clinico y titulo '
-            'es OBLIGATORIO insertar dos saltos de linea (\\n\\n). '
-            'NUNCA uses un solo \\n para separar bloques — el parser de Markdown en stream '
-            'colapsa los bloques sin \\n\\n, generando texto aplastado e ilegible.\n'
-            '• EMOJI 🟥 UNICO: El emoji 🟥 debe aparecer EXACTAMENTE UNA VEZ, en la primera linea '
-            'del texto, pegado al titulo del farmaco o caso clinico. '
-            'PROHIBIDO repetir 🟥 en el cuerpo del texto.\n'
-            '• ICONOGRAFIA MEDICA ESTANDAR (sin sangria, siempre en columna 0):\n'
-            '  — 🚨 **Topico Principal:** para acciones urgentes y diagnostico.\n'
-            '  — 💊 **Farmaco/Dosis:** para especificaciones farmacologicas.\n'
-            '  — ⛔ **Alerta Critico:** para contraindicaciones y riesgos fatales.\n'
-            '  — 📌 **Gancho de Decision:** SIEMPRE la ultima linea — pregunta cerrada Si/No o A/B para los botones del front-end.\n'
-            '• TECHO ESTRICTO DE RESPUESTA (BUILD 275 — PLANTAO MODO): '
-            'La respuesta del Modo Plantao esta limitada a MAXIMO 15 LINEAS y MAXIMO 800 CARACTERES TOTALES '
-            '(incluyendo cabeceras, emojis y espacios). Si la respuesta supera cualquiera de estos limites, '
-            'CORTA y cierra con "📌 Ver protocolo completo." — NUNCA excedas el techo.\n'
-            '• EXTERMINIO DE RELLENO VERBAL (BUILD 275): '
-            'TERMINANTEMENTE PROHIBIDO usar frases de contextualizacion, conectivos literarios '
-            'o adjetivos de precaucion (ej: "Precaucion con fluidos", "En casos seleccionados", '
-            '"Considerar ajuste segun evolucion", "Monitorizar de cerca"). '
-            'CADA linea debe ser una ORDEN EJECUTIVA CORTA de accion directa. Sin introducciones. Sin conclusiones. '
-            'Sin relleno. Telegrama medico puro.\n'
-            '• NEGRITAS SOLO PARA FARMACOS (BUILD 275 — UI LIMPIA): '
-            'El uso de negritas (**texto**) esta ESTRICTAMENTE LIMITADO a nombres de farmacos principales '
-            'o clases farmacologicas. PROHIBIDO usar negritas en frases enteras, parametros de metas, '
-            'valores numericos o titulos de bloque. Ejemplo correcto: "* **Norepinefrina**: 0,05-0,5 mcg/kg/min IV (Alvo: PAM > 65 mmHg)."\n'
-            '• FORMATO TELEGRAFICO COLUMNA 0 (BUILD 275): '
-            'Todos los topicos alineados en columna 0, pegados al margen izquierdo, sin ningun espacio de sangria. '
-            'Formato obligatorio: "* **Farmaco**: dosis via (Meta: valor)."\n'
-          : 'REGRAS SOBERANAS DE FORMATO MARKDOWN E COMPACTACAO (BUILD 273+275 — CRITICAS PARA STREAM EM TEMPO REAL):\n'
-            '• PROIBICAO ABSOLUTA DE RECUO: JAMAIS inicie uma linha com espacos em branco '
-            'ou tabulacoes (ex: "   * sublista" esta TERMINANTEMENTE PROIBIDO). '
-            'Todos os marcadores, bullets e sublistas devem comecar na coluna 0 — '
-            'colados na margem esquerda da linha, sem nenhum espaco precedente.\n'
-            '• DUPLA QUEBRA DE LINHA OBRIGATORIA: Entre cada paragrafo, topico, bloco clinico e titulo '
-            'e OBRIGATORIO inserir duas quebras de linha (\\n\\n). '
-            'NUNCA use um unico \\n para separar blocos — o parser de Markdown no stream '
-            'colapsa os blocos sem \\n\\n, gerando texto esmagado e ilegivel.\n'
-            '• EMOJI 🟥 UNICO: O emoji 🟥 deve aparecer EXATAMENTE UMA VEZ, na primeira linha '
-            'do texto, colado ao titulo do farmaco ou caso clinico. '
-            'PROIBIDO repetir 🟥 no corpo do texto.\n'
-            '• ICONOGRAFIA MEDICA PADRAO (sem recuo, sempre na coluna 0):\n'
-            '  — 🚨 **Topico Principal:** para acoes urgentes e diagnostico.\n'
-            '  — 💊 **Farmaco/Dose:** para especificacoes farmacologicas.\n'
-            '  — ⛔ **Alerta Critico:** para contraindicacoes e riscos fatais.\n'
-            '  — 📌 **Gancho de Decisao:** SEMPRE a ultima linha — pergunta fechada Sim/Nao ou A/B para os botoes do front-end.\n'
-            '• TETO ESTRITO DE RESPOSTA (BUILD 275 — MODO PLANTAO): '
-            'A resposta do Modo Plantao esta limitada a NO MAXIMO 15 LINHAS e NO MAXIMO 800 CARACTERES TOTAIS '
-            '(incluindo cabecalhos, emojis e espacos). Se a resposta ultrapassar qualquer um desses limites, '
-            'CORTE e encerre com "📌 Ver protocolo completo." — JAMAIS exceda o teto.\n'
-            '• EXTERMINIO DE GORDURA VERBAL (BUILD 275): '
-            'TERMINANTEMENTE PROIBIDO usar frases de contextualizacao, conectivos literarios '
-            'ou adjetivos de precaucao (ex: "Cautela com fluidos", "Em casos selecionados", '
-            '"Considerar ajuste conforme evolucao", "Monitorizar de perto"). '
-            'CADA linha deve ser uma ORDEM EXECUTIVA CURTA de acao direta. Sem introducoes. Sem conclusoes. '
-            'Sem gordura. Telegrama medico puro.\n'
-            '• NEGRITOS SOMENTE PARA FARMACOS (BUILD 275 — UI LIMPA): '
-            'O uso de negritos (**texto**) esta ESTRITAMENTE LIMITADO a nomes de farmacos principais '
-            'ou classes farmacologicas. PROIBIDO negritar frases inteiras, parametros de metas, '
-            'valores numericos ou titulos de bloco. Exemplo correto: "* **Norepinefrina**: 0,05-0,5 mcg/kg/min IV (Alvo: PAM > 65 mmHg)."\n'
-            '• FORMATO TELEGRAFICO MARGEM ZERO (BUILD 275): '
-            'Todos os topicos alinhados na coluna 0, colados na margem esquerda, sem nenhum espaco de recuo. '
-            'Formato obrigatorio: "* **Farmaco**: dose via (Alvo: valor)."\n';
+          ? '════ REGLA CRITICA Nº1 — COLUMNA CERO ABSOLUTA (BUILD 275-FIX) ════\n'
+            'FALLA FATAL DETECTADA: el modelo Gemini inserta espacios invisibles antes de los bullets '
+            '(ej: " * **AAS**" o "  * texto") y Flutter Markdown los renderiza como bloque de codigo '
+            '<pre> — el usuario ve asteriscos crudos y texto azul monoespaciado en lugar de formato.\n'
+            'PROHIBICION NIVEL BINARIO: el PRIMER caracter de CADA linea del cuerpo de la respuesta '
+            'DEBE ser uno de: *, 🟥, 🚨, 💊, ⛔, 📌, o letra/numero. '
+            'JAMAS un espacio (ASCII 32), tabulacion (ASCII 9), guion precedido de espacio, ni sangria de ningun tipo.\n'
+            'EJEMPLO DE SALIDA CORRECTA (copia exactamente esta estructura):\n'
+            '🟥 **IAM con SDST — Conducta Inmediata**\n\n'
+            '🚨 Reperfusion: **angioplastia primaria** < 90 min (preferida).\n\n'
+            '💊 **AAS**: 300 mg VO (mastigar).\n\n'
+            '💊 **Clopidogrel**: 300 mg VO.\n\n'
+            '💊 **Heparina**: 5000 UI IV bolo.\n\n'
+            '⛔ Contraindicacion **trombolisis**: sangrado activo, ACV < 3 meses.\n\n'
+            '📌 ¿Iniciar **trombólisis** o esperar **angioplastia** disponible?\n'
+            'INCORRECTO (JAMAS hagas esto): "  * **AAS**: 300 mg" — ese espacio inicial rompe el render.\n'
+            '════ FIN REGLA Nº1 ════\n'
+            'REGLAS SOBERANAS ADICIONALES DE FORMATO Y COMPACTACION (BUILD 275):\n'
+            '• DOBLE SALTO OBLIGATORIO: entre cada linea o bloque, inserta \\n\\n — NUNCA \\n solo.\n'
+            '• EMOJI 🟥 UNICO: aparece EXACTAMENTE UNA VEZ en la primera linea. PROHIBIDO repetirlo.\n'
+            '• TECHO ESTRICTO: MAXIMO 15 LINEAS y MAXIMO 800 CARACTERES TOTALES. '
+            'Si alcanzas el techo, corta y cierra con el gancho 📌.\n'
+            '• EXTERMINIO VERBAL: PROHIBIDO "Precaucion con fluidos", "En casos seleccionados", '
+            '"Considerar ajuste", "Monitorizar de cerca". Cada linea = orden ejecutiva corta.\n'
+            '• NEGRITAS SOLO EN NOMBRE DEL FARMACO: "* **Norepinefrina**: 0,05 mcg/kg/min IV (PAM > 65)." '
+            'PROHIBIDO negritar frases enteras, metas numericas o titulos de bloque.\n'
+          : '════ REGRA CRITICA Nº1 — COLUNA ZERO ABSOLUTA (BUILD 275-FIX) ════\n'
+            'FALHA FATAL DETECTADA: o modelo Gemini insere espacos invisiveis antes dos bullets '
+            '(ex: " * **AAS**" ou "  * texto") e o Flutter Markdown os renderiza como bloco de codigo '
+            '<pre> — o usuario ve asteriscos crus e texto azul monoespacado em vez de formatacao.\n'
+            'PROIBICAO NIVEL BINARIO: o PRIMEIRO caractere de CADA linha do corpo da resposta '
+            'DEVE ser um de: *, 🟥, 🚨, 💊, ⛔, 📌, ou letra/numero. '
+            'JAMAIS um espaco (ASCII 32), tabulacao (ASCII 9), tracinho precedido de espaco, nem recuo de nenhum tipo.\n'
+            'EXEMPLO DE SAIDA CORRETA (copie exatamente esta estrutura):\n'
+            '🟥 **IAM com SDST — Conduta Imediata**\n\n'
+            '🚨 Reperfusao: **angioplastia primaria** < 90 min (preferida).\n\n'
+            '💊 **AAS**: 300 mg VO (mastigar).\n\n'
+            '💊 **Clopidogrel**: 300 mg VO.\n\n'
+            '💊 **Heparina**: 5000 UI IV bolus.\n\n'
+            '⛔ Contraindicacao **trombólise**: sangramento ativo, AVC < 3 meses.\n\n'
+            '📌 Iniciar **trombólise** ou aguardar **angioplastia** disponivel?\n'
+            'INCORRETO (JAMAIS faca isso): "  * **AAS**: 300 mg" — esse espaco inicial quebra o render.\n'
+            '════ FIM REGRA Nº1 ════\n'
+            'REGRAS SOBERANAS ADICIONAIS DE FORMATO E COMPACTACAO (BUILD 275):\n'
+            '• DUPLA QUEBRA OBRIGATORIA: entre cada linha ou bloco, insira \\n\\n — NUNCA \\n isolado.\n'
+            '• EMOJI 🟥 UNICO: aparece EXATAMENTE UMA VEZ na primeira linha. PROIBIDO repeti-lo.\n'
+            '• TETO ESTRITO: MAXIMO 15 LINHAS e MAXIMO 800 CARACTERES TOTAIS. '
+            'Se atingir o teto, corte e encerre com o gancho 📌.\n'
+            '• EXTERMINIO VERBAL: PROIBIDO "Cautela com fluidos", "Em casos selecionados", '
+            '"Considerar ajuste", "Monitorizar de perto". Cada linha = ordem executiva curta.\n'
+            '• NEGRITOS SO NO NOME DO FARMACO: "* **Norepinefrina**: 0,05 mcg/kg/min IV (PAM > 65)." '
+            'PROIBIDO negritar frases inteiras, metas numericas ou titulos de bloco.\n';
 
       // ── BUILD 272: CONTEXTO PROPRIETÁRIO MedCases ────────────────────────
       // Se 'proprietaryDrugContext' não for vazio, injeta o conteúdo bruto
@@ -1727,9 +1716,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       // BUILD 271: ptMatrixCompletion injetado antes de ptSelfCheck para máxima força.
       // BUILD 272: ptProprietaryBlock injetado após RAG local, antes de ptMatrixCompletion.
       // BUILD 273: ptStreamFormat injetado logo após ptLangHeader — máxima prioridade.
-      // BUILD 275-ADENDO: ptUxFlowDoctrine injetado após ptStreamFormat — doutrina de fluxo UX:
-      //   resposta = gatilho inicial, gancho 📌 = pergunta fechada de decisão, sem listas genéricas.
-      // BUILD 275-ADENDO: ptUxFlowDoctrine injetado após ptStreamFormat — doutrina de fluxo UX.
+      // BUILD 275-ADENDO: ptUxFlowDoctrine após ptStreamFormat — doutrina UX: gatilho inicial + gancho 📌.
+      // BUILD 275-FIX: ptStreamFormat reescrito com REGRA Nº1 nível binário — exemplos BAD/GOOD,
+      //   proibição de ASCII 32/9 na coluna 0, self-repair mandate em ptSelfCheck item 7.
       return '$ptLangHeader'
              '$ptStreamFormat'
              '$ptUxFlowDoctrine'
