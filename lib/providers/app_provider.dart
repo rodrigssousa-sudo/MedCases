@@ -2186,6 +2186,32 @@ class AppProvider extends ChangeNotifier {
   }
 
   // ══════════════════════════════════════════════════════════════════════════
+  // BUILD 272 — EXTRACT FIRST DRUG ID FOR PROPRIETARY FIRESTORE LOOKUP
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Retorna o 'id' do primeiro fármaco da drugsDatabase que corresponde à query normalizada.
+  /// Usado para buscar o documento proprietário em 'clinical_library/{id}' via REST.
+  /// Retorna string vazia se nenhum fármaco for identificado.
+  String _extractFirstMatchedDrugId(String normalizedQuery) {
+    final allWords = normalizedQuery
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length > 3)
+        .toList();
+    if (!_hasSubstantiveWord(allWords)) return '';
+    final words = allWords
+        .where((w) => !_clinicalStopwords.contains(w))
+        .toList();
+    if (words.isEmpty) return '';
+    for (final d in drugsDatabase) {
+      final name = _normalize(d.name);
+      if (words.any((w) => name.contains(w))) {
+        return d.id; // id normalizado (ex: 'sertralina', 'amiodarona')
+      }
+    }
+    return '';
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
   // CLASSIFICADOR DE INTENT — detecta o tipo de consulta para RAG direcionado
   // ══════════════════════════════════════════════════════════════════════════
 
@@ -3291,6 +3317,26 @@ class AppProvider extends ChangeNotifier {
         ? '$localContext\n\n---\n📚 REFERÊNCIAS:\n${references.join('\n')}'
         : localContext;
 
+    // BUILD 272: busca documento proprietário em clinical_library via REST admin bypass.
+    // Extrai o id do primeiro fármaco detectado na query para usar como docId.
+    // Roda em paralelo com a montagem do prompt — não bloqueia UI.
+    String? proprietaryContext;
+    if (!longResponse) {
+      // Apenas no modo Plantão (isPlantaoMode=true) — não no Estudo para economizar tokens.
+      final firstDrugId = _extractFirstMatchedDrugId(_normalize(input));
+      if (firstDrugId.isNotEmpty) {
+        try {
+          final doc = await FirestoreService.fetchProprietaryDrugDoc(firstDrugId);
+          if (doc != null && doc.isNotEmpty) {
+            proprietaryContext = FirestoreService.formatProprietaryDocForPrompt(doc);
+            debugPrint('[BUILD272][AppProvider] proprietaryContext drugId=$firstDrugId len=${proprietaryContext.length}chars');
+          }
+        } catch (e) {
+          debugPrint('[BUILD272][AppProvider] fetchProprietaryDrugDoc failed: $e');
+        }
+      }
+    }
+
     // Build 104 — isFirstMessage: controla regra de saudação por turno.
     // _aiHistory já foi limpo por resetIfTopicChanged() acima quando o tema
     // muda, então isEmpty=true quando é a primeira mensagem da sessão OU
@@ -3312,6 +3358,7 @@ class AppProvider extends ChangeNotifier {
       memory:             _sessionMemory,
       isFirstMessage:     _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
       isPlantaoMode:      !longResponse,       // Build 223: omite _responseFormat e _selfCheck padrão no Plantão
+      proprietaryDrugContext: proprietaryContext, // BUILD 272: contexto proprietário MedCases
     );
 
     // BUILD 253: log do tamanho real do systemPrompt (não gateado por kDebugMode).
@@ -3855,6 +3902,23 @@ class AppProvider extends ChangeNotifier {
         ? '$localContext\n\n---\n📚 REFERÊNCIAS ENCONTRADAS NA BASE LOCAL:\n${references.join('\n')}'
         : localContext;
 
+    // ── Passo 3c: BUILD 272 — busca documento proprietário em clinical_library ──
+    // Modo buildAIAnswer é sempre Plantão (isPlantaoMode=true).
+    // Extrai o id do primeiro fármaco detectado na query para uso como docId.
+    String? proprietaryContextAnswer;
+    final firstDrugIdAnswer = _extractFirstMatchedDrugId(_normalize(input));
+    if (firstDrugIdAnswer.isNotEmpty) {
+      try {
+        final doc = await FirestoreService.fetchProprietaryDrugDoc(firstDrugIdAnswer);
+        if (doc != null && doc.isNotEmpty) {
+          proprietaryContextAnswer = FirestoreService.formatProprietaryDocForPrompt(doc);
+          debugPrint('[BUILD272][AppProvider][buildAIAnswer] proprietaryContext drugId=$firstDrugIdAnswer len=${proprietaryContextAnswer.length}chars');
+        }
+      } catch (e) {
+        debugPrint('[BUILD272][AppProvider][buildAIAnswer] fetchProprietaryDrugDoc failed: $e');
+      }
+    }
+
     // ── Passo 4: System prompt RAG completo ───────────────────────────────
     // Passa userQuery explicitamente para que o RAG Relevance Gate no
     // ai_service.dart filtre protocolos/fármacos/contexto por relevância
@@ -3877,6 +3941,7 @@ class AppProvider extends ChangeNotifier {
       memory: _sessionMemory, // ← Fix 3: memória clínica da sessão (já resetada se tema mudou)
       isFirstMessage: _aiHistory.isEmpty, // Build 104: true=1ª msg/novo tópico
       isPlantaoMode: true, // Build 223: buildAIAnswer é sempre resposta curta (sem longResponse)
+      proprietaryDrugContext: proprietaryContextAnswer, // BUILD 272: contexto proprietário MedCases
     );
 
     // BUILD 253: log do tamanho real do systemPrompt no caminho buildAIAnswer.

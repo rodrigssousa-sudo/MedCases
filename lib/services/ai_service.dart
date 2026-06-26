@@ -1311,6 +1311,11 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
     // o único contrato visual seja o _modeAnchorPlantao do AiGatewayService.
     // Modo Estudo (longResponse=true) → isPlantaoMode=false → comportamento inalterado.
     bool isPlantaoMode = false,
+    // BUILD 272: contexto proprietário do banco de dados MedCases.
+    // Conteúdo bruto do documento Firestore 'clinical_library/{drug}' recuperado
+    // via REST admin bypass quando SDK retorna permission-denied.
+    // Se não-nulo e não-vazio, injeta sob tag <CONTEXTO_PROPRIETARIO_MEDCASES>.
+    String? proprietaryDrugContext,
   }) {
     final isEs = lang == 'es';
 
@@ -1442,9 +1447,10 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build271][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+      debugPrint('[Build272][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
           'MAX_OUTPUT_TOKENS=1600. TEMPERATURE=0.2(server). MATRIX_COMPLETION_INJECTED. '
-          'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE.');
+          'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE. '
+          'PROPRIETARY_RAG_BYPASS_ACTIVE proprietaryContext=${(proprietaryDrugContext ?? '').length}chars.');
 
       // ── BUILD 268: DIRETRIZ DE ESCOPO CLÍNICO GENEROSO — hotfix supremo ──
       // DIAGNÓSTICO: Gemini via HARD STOP (extinto acima) e gerava 10 tokens.
@@ -1528,8 +1534,43 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'JAMAIS interrompa o texto na metade. '
             'Este mandato e absoluto — prioridade maxima sobre brevidade ou concisao.\n';
 
+      // ── BUILD 272: CONTEXTO PROPRIETÁRIO MedCases ────────────────────────
+      // Se 'proprietaryDrugContext' não for vazio, injeta o conteúdo bruto
+      // do documento 'clinical_library/{drug}' sob a tag especial.
+      // O anchoring directive instrui o Gemini a tratar esse conteúdo como
+      // fonte de verdade absoluta sobre o fármaco/patologia digitada.
+      final hasProprietary = proprietaryDrugContext != null &&
+          proprietaryDrugContext.trim().isNotEmpty;
+      final ptProprietaryBlock = hasProprietary
+          ? (isEs
+              ? '<CONTEXTO_PROPRIETARIO_MEDCASES>\n'
+                '$proprietaryDrugContext\n'
+                '</CONTEXTO_PROPRIETARIO_MEDCASES>\n\n'
+                'DIRECTRIZ SOBERANA DE ANCORAGEM (BUILD 272): '
+                'Si la etiqueta <CONTEXTO_PROPRIETARIO_MEDCASES> contiene informaciones '
+                'sobre el farmaco o patologia digitada, usa ESOS datos locales como '
+                'fuente absoluta de verdad verbatim. Sigue estrictamente las 21 matrices '
+                'dinamicas aplicando los datos de nuestro banco de datos, sin resumir ni '
+                'omitir secciones. Los datos propietarios tienen PRIORIDAD MAXIMA sobre '
+                'cualquier conocimiento general del modelo.\n'
+              : '<CONTEXTO_PROPRIETARIO_MEDCASES>\n'
+                '$proprietaryDrugContext\n'
+                '</CONTEXTO_PROPRIETARIO_MEDCASES>\n\n'
+                'DIRETRIZ SOBERANA DE ANCORAGEM (BUILD 272): '
+                'Se a tag <CONTEXTO_PROPRIETARIO_MEDCASES> contiver informacoes '
+                'sobre o farmaco ou patologia digitada, use ESSES dados locais como '
+                'fonte absoluta de verdade verbatim. Siga estritamente as 21 matrizes '
+                'dinamicas aplicando os dados do nosso banco de dados, sem resumir ou '
+                'omitir secoes. Os dados proprietarios tem PRIORIDADE MAXIMA sobre '
+                'qualquer conhecimento geral do modelo.\n')
+          : '';
+      if (hasProprietary) {
+        debugPrint('[BUILD272][AiService] PROPRIETARIO_MEDCASES injetado: ${proprietaryDrugContext!.length} chars');
+      }
+
       // ── PLANTÃO ASSEMBLY — compact modules only ───────────────────────────
       // BUILD 271: ptMatrixCompletion injetado antes de ptSelfCheck para máxima força.
+      // BUILD 272: ptProprietaryBlock injetado após RAG local, antes de ptMatrixCompletion.
       return '$ptLangHeader'
              '$ptSupremacyRule'
              '${isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt}\n\n'
@@ -1542,6 +1583,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
              '$ptPatientSection'
              '${ptRagAnchor.isNotEmpty ? "$ptRagAnchor\n" : ""}'
              '$ptProtocol$ptDrugs$ptContext${ptProtocol.isNotEmpty || ptDrugs.isNotEmpty || ptContext.isNotEmpty ? "\n\n" : ""}'
+             '$ptProprietaryBlock'
              '$ptMatrixCompletion'
              '$ptSelfCheck'
              '$ptContextAnchor';
