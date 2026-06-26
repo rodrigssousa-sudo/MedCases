@@ -1451,7 +1451,7 @@ class _PharmacologicalDisclaimerState extends State<PharmacologicalDisclaimer> {
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeInOut,
         margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), // BUILD 275: -2px vertical
         decoration: BoxDecoration(
           color: bgCol,
           borderRadius: BorderRadius.circular(10),
@@ -1471,7 +1471,7 @@ class _PharmacologicalDisclaimerState extends State<PharmacologicalDisclaimer> {
               maxLines: _expanded ? null : 1,
               overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 9.5,
+                fontSize: 7.5, // BUILD 275: -2px fontSize
                 fontWeight: FontWeight.w400,
                 color: subtleGrey,
                 height: 1.5,

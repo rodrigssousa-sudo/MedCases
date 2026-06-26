@@ -1199,6 +1199,21 @@ class _AiScreenState extends State<AiScreen> {
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
     if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
 
+    // ── BUILD 275: GOOGLE AUTH GATE ───────────────────────────────────────────
+    // Non-admin / non-master users: obrigatório conectar Google IA antes de chat.
+    // Se não há IA conectada (nem Gemini nem GPT) E o usuário não é admin/master,
+    // bloqueia o envio e abre o painel de conexão como obstrução mandatória.
+    // Admin/master: bypass livre — sem pop-up, sem bloqueio.
+    final bool isPrivileged = p.isAdmin || p.isMaster;
+    final bool hasAnyConnection = p.geminiConnected || p.hasAnyAi;
+    if (!isPrivileged && !hasAnyConnection) {
+      // Vibra (feedback tátil) e abre o status sheet obstrutor
+      _focusNode.unfocus();
+      _openAiSettings();
+      debugPrint('[BUILD275][AuthGate] Non-admin user blocked — firing mandatory Google Auth popup.');
+      return;
+    }
+
     // BUILD 258: limpa _extToolCache na nova query para evitar stale drug slots.
     // O cache acumula entradas de mensagens anteriores (old=amiodarona, etc.).
     // Ao iniciar nova query, a resposta AI anterior gera novo extKey — o cache
@@ -1838,6 +1853,12 @@ class _AiScreenState extends State<AiScreen> {
     final bool showDisconnectCard = !isConnected &&
         _messages.where((m) => m.role == 'user').isEmpty;
 
+    // BUILD 275: para usuários não-admin/não-master sem conexão, forçar badge
+    // 'Desconectado' (vermelho) em vez de 'Conectar IA' — sinaliza que chat está bloqueado.
+    // Admin/master: sem forceDisconnected — exibe 'Conectado'/'Conectar IA' normalmente.
+    final bool isPrivilegedUser = p.isAdmin || p.isMaster;
+    final bool forceDisconnectedLabel = !isPrivilegedUser && !isConnected;
+
     Widget chatList = ListView.builder(
             controller: _scrollCtrl,
             padding: EdgeInsets.fromLTRB(
@@ -2312,6 +2333,7 @@ class _AiScreenState extends State<AiScreen> {
         hasRealAi:       p.hasAnyAi,
         geminiConnected: p.geminiConnected,
         keyLoading: p.aiKeyLoading || p.geminiLoading,
+        forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
       ),
 
       // ── Mini barra de ações mobile — SEMPRE visível mesmo com teclado aberto
@@ -2328,6 +2350,7 @@ class _AiScreenState extends State<AiScreen> {
           onClear: _clearChat,
           onSettings: _openAiSettings,
           onNewChat: _startNewChat,
+          forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
         ),
 
       // ── Banner de erro de chave ───────────────────────────────────────────
@@ -2450,6 +2473,7 @@ class _MobileAiActionBar extends StatelessWidget {
   final bool hasMessages;
   final bool hasRealAi;
   final bool keyLoading;
+  final bool forceDisconnectedLabel; // BUILD 275: show 'Desconectado' for non-admin
   final VoidCallback onHistory;
   final VoidCallback onClear;
   final VoidCallback onSettings;
@@ -2466,6 +2490,7 @@ class _MobileAiActionBar extends StatelessWidget {
     required this.onHistory,
     required this.onClear,
     required this.onSettings,
+    this.forceDisconnectedLabel = false,
     this.onNewChat,
   });
 
@@ -2548,14 +2573,18 @@ class _MobileAiActionBar extends StatelessWidget {
                         : Text(
                             hasRealAi
                                 ? (lang == 'es' ? '• Conectado' : '• Conectado')
-                                : (lang == 'es' ? '• Conectar IA' : '• Conectar IA'),
+                                : (forceDisconnectedLabel
+                                    ? (lang == 'es' ? '• Desconectado' : '• Desconectado') // BUILD 275
+                                    : (lang == 'es' ? '• Conectar IA' : '• Conectar IA')),
                             style: TextStyle(
                               fontSize: 11, fontWeight: FontWeight.w700,
                               color: hasRealAi
                                   ? kGreenLive
-                                  : (dark
-                                      ? Colors.white.withValues(alpha: 0.40)
-                                      : Colors.grey.shade500),
+                                  : (forceDisconnectedLabel
+                                      ? const Color(0xFFEF4444) // red for Desconectado
+                                      : (dark
+                                          ? Colors.white.withValues(alpha: 0.40)
+                                          : Colors.grey.shade500)),
                             ),
                           ),
                   ),
@@ -2661,6 +2690,7 @@ class _WaHeader extends StatelessWidget {
   final bool hasRealAi;
   final bool geminiConnected;
   final bool keyLoading;
+  final bool forceDisconnectedLabel; // BUILD 275: 'Desconectado' for non-admin
   const _WaHeader({
     required this.dark,
     required this.hasMessages,
@@ -2673,6 +2703,7 @@ class _WaHeader extends StatelessWidget {
     required this.hasRealAi,
     this.geminiConnected = false,
     this.keyLoading = false,
+    this.forceDisconnectedLabel = false,
   });
 
   // ── Paleta MedCases IA ────────────────────────────────────────────────
@@ -2801,13 +2832,17 @@ class _WaHeader extends StatelessWidget {
                                       ? 'Conectando...'
                                       : isConnected
                                           ? (lang == 'es' ? 'Conectado' : 'Conectado')
-                                          : (lang == 'es' ? 'Conectar IA' : 'Conectar IA'),
+                                          : (forceDisconnectedLabel
+                                              ? (lang == 'es' ? 'Desconectado' : 'Desconectado') // BUILD 275
+                                              : (lang == 'es' ? 'Conectar IA' : 'Conectar IA')),
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w700,
                                     color: isConnected
                                         ? const Color(0xFF00E5FF)
-                                        : Colors.white.withValues(alpha: 0.6),
+                                        : (forceDisconnectedLabel
+                                            ? const Color(0xFFEF4444) // red BUILD 275
+                                            : Colors.white.withValues(alpha: 0.6)),
                                   ),
                                 ),
                               ],
@@ -6580,7 +6615,7 @@ class _InputBarState extends State<_InputBar> {
     // fundo escuro translúcido, sem bordas internas, sem caixas separadas.
     // O mic, TextField e seta vivem juntos na mesma Row interna da pílula.
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2.5), // BUILD 275: -3px height
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
         child: BackdropFilter(

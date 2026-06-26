@@ -1418,9 +1418,10 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           : '\n\nISOLAMENTO: responda SOMENTE ao tema da query atual. '
             'Amnesia total de consultas passadas nao relacionadas.\n';
 
-      // selfCheck compact (inline — items 0-6 only)
+      // selfCheck compact (inline — items 0-8)
       // BUILD 271: item 6 expandido com mandato anti-truncamento de matriz.
       // BUILD 273: item 7 adicionado — checklist de compliance de formato stream.
+      // BUILD 275: item 8 adicionado — checklist de compactacao e negritos.
       final ptSelfCheck = isEs
           ? 'Antes de responder, verificar internamente (nunca revelar al usuario):\n'
             '0. APERTURA PROHIBIDA — la respuesta DEBE iniciar con 🟥 en la primera linea. '
@@ -1431,10 +1432,14 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '4. Datos del paciente aislados. Ningun dato de sesiones anteriores heredado.\n'
             '5. Dosis coherentes con peso/renal/hepatico/edad del paciente activo.\n'
             '6. Titulo 🟥 especifico (nunca generico). '
-            'ES REQUISITO OBLIGATORIO concluir TODAS las secciones iniciadas de la matriz correspondiente. '
+            'ES REQUISITO OBLIGATORIO concluir TODAS las secciones iniciadas de la matriz correspondente. '
             'JAMAS interrumpas el texto a la mitad — si iniciaste CONDUTA, DOSIS, MONITORIZACION o ALERTA, cierra cada bloque.\n'
             '7. FORMATO STREAM (BUILD 273): ZERO lineas con sangria de espacio (ninguna linea empieza con \" \"). '
             'TODOS los bloques separados por \\n\\n. 🟥 aparece exactamente UNA VEZ (primera linea).\n'
+            '8. COMPACTACION Y NEGRITAS (BUILD 275): Respuesta <= 15 lineas y <= 800 caracteres totales. '
+            'ZERO frases de contextualizacion o conectivos literarios. '
+            'Negritas (**) SOLO en nombres de farmacos o clases — NUNCA en frases enteras ni parametros. '
+            'TODOS los topicos en columna 0 sin sangria. Formato: "* **Farmaco**: dosis via (Meta: valor)."\n'
           : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
             '0. ABERTURA PROIBIDA — a resposta DEVE iniciar com 🟥 na primeira linha. '
             'PROIBIDO: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza" antes de 🟥.\n'
@@ -1447,7 +1452,11 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'E REQUISITO OBRIGATORIO concluir TODAS as secoes iniciadas da matriz correspondente. '
             'JAMAIS interrompa o texto na metade — se iniciou CONDUTA, DOSE, MONITORIZACAO ou ALERTA, feche cada bloco.\n'
             '7. FORMATO STREAM (BUILD 273): ZERO linhas com recuo de espaco (nenhuma linha começa com \" \"). '
-            'TODOS os blocos separados por \\n\\n. 🟥 aparece exatamente UMA VEZ (primeira linha).\n';
+            'TODOS os blocos separados por \\n\\n. 🟥 aparece exatamente UMA VEZ (primeira linha).\n'
+            '8. COMPACTACAO E NEGRITOS (BUILD 275): Resposta <= 15 linhas e <= 800 caracteres totais. '
+            'ZERO frases de contextualizacao ou conectivos literarios. '
+            'Negritos (**) SOMENTE em nomes de farmacos ou classes — NUNCA em frases inteiras nem parametros. '
+            'TODOS os topicos na coluna 0 sem recuo. Formato: "* **Farmaco**: dose via (Alvo: valor)."\n';
 
       // BUILD 271 audit log (supersedes Build268 tag)
       final _ptChars = ptLangHeader.length +
@@ -1456,10 +1465,11 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build273][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+      debugPrint('[Build275][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
           'MAX_OUTPUT_TOKENS=1600. TEMPERATURE=0.2(server). MATRIX_COMPLETION_INJECTED. '
           'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE. '
-          'STREAM_FORMAT_RULES_ACTIVE. '
+          'STREAM_FORMAT_RULES_ACTIVE. COMPACT_800CHARS_15LINES_ACTIVE. '
+          'BOLD_DRUGS_ONLY_ACTIVE. TELEGRAPHIC_COL0_ACTIVE. '
           'PROPRIETARY_RAG_BYPASS_ACTIVE proprietaryContext=${(proprietaryDrugContext ?? '').length}chars.');
 
       // ── BUILD 268: DIRETRIZ DE ESCOPO CLÍNICO GENEROSO — hotfix supremo ──
@@ -1544,17 +1554,12 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'JAMAIS interrompa o texto na metade. '
             'Este mandato e absoluto — prioridade maxima sobre brevidade ou concisao.\n';
 
-      // ── BUILD 273: STREAM MARKDOWN FORMATTING RULES ─────────────────────
-      // Diagnóstico: no stream em tempo real o Flutter Markdown engasga com:
-      //   1. Recuos de espaço à esquerda (ex: "   * sublista") — renderiza como
-      //      bloco de código pré-formatado em vez de bullet point.
-      //   2. Ausência de \n\n entre blocos — parágrafos/tópicos ficam colados,
-      //      criando "paredes de texto" ilegíveis durante a digitação viva.
-      //   3. 🟥 repetido mid-text — confunde o parser visual do Plantão.
-      // Fix: injeta regras soberanas de formatação no início do assembly,
-      // logo após o language lock, para máxima prioridade de obediência.
+      // ── BUILD 273 + 275: STREAM MARKDOWN FORMATTING RULES + COMPACTION ─────
+      // BUILD 273 fixes: space-indent pre-block bug, \n\n mandatory, 🟥 once.
+      // BUILD 275 adds: 800-char/15-line hard cap, anti-verbose, bold-only-drugs,
+      //   telegraphic zero-indent format example.
       final ptStreamFormat = isEs
-          ? 'REGLAS SOBERANAS DE FORMATO MARKDOWN (BUILD 273 — CRITICAS PARA STREAM EN TIEMPO REAL):\n'
+          ? 'REGLAS SOBERANAS DE FORMATO MARKDOWN Y COMPACTACION (BUILD 273+275 — CRITICAS PARA STREAM EN TIEMPO REAL):\n'
             '• PROHIBICION ABSOLUTA DE SANGRIA: JAMAS inicies una linea con espacios en blanco '
             'ni tabulaciones (ej: "   * sublista" esta TERMINANTEMENTE PROHIBIDO). '
             'Todos los marcadores, bullets y sublistas deben comenzar en la columna 0 — '
@@ -1571,7 +1576,24 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '  — 💊 **Farmaco/Dosis:** para especificaciones farmacologicas.\n'
             '  — ⛔ **Alerta Critico:** para contraindicaciones y riesgos fatales.\n'
             '  — 📌 **Proximos Pasos:** para monitorizacion y seguimiento.\n'
-          : 'REGRAS SOBERANAS DE FORMATO MARKDOWN (BUILD 273 — CRITICAS PARA STREAM EM TEMPO REAL):\n'
+            '• TECHO ESTRICTO DE RESPUESTA (BUILD 275 — PLANTAO MODO): '
+            'La respuesta del Modo Plantao esta limitada a MAXIMO 15 LINEAS y MAXIMO 800 CARACTERES TOTALES '
+            '(incluyendo cabeceras, emojis y espacios). Si la respuesta supera cualquiera de estos limites, '
+            'CORTA y cierra con "📌 Ver protocolo completo." — NUNCA excedas el techo.\n'
+            '• EXTERMINIO DE RELLENO VERBAL (BUILD 275): '
+            'TERMINANTEMENTE PROHIBIDO usar frases de contextualizacion, conectivos literarios '
+            'o adjetivos de precaucion (ej: "Precaucion con fluidos", "En casos seleccionados", '
+            '"Considerar ajuste segun evolucion", "Monitorizar de cerca"). '
+            'CADA linea debe ser una ORDEN EJECUTIVA CORTA de accion directa. Sin introducciones. Sin conclusiones. '
+            'Sin relleno. Telegrama medico puro.\n'
+            '• NEGRITAS SOLO PARA FARMACOS (BUILD 275 — UI LIMPIA): '
+            'El uso de negritas (**texto**) esta ESTRICTAMENTE LIMITADO a nombres de farmacos principales '
+            'o clases farmacologicas. PROHIBIDO usar negritas en frases enteras, parametros de metas, '
+            'valores numericos o titulos de bloque. Ejemplo correcto: "* **Norepinefrina**: 0,05-0,5 mcg/kg/min IV (Alvo: PAM > 65 mmHg)."\n'
+            '• FORMATO TELEGRAFICO COLUMNA 0 (BUILD 275): '
+            'Todos los topicos alineados en columna 0, pegados al margen izquierdo, sin ningun espacio de sangria. '
+            'Formato obligatorio: "* **Farmaco**: dosis via (Meta: valor)."\n'
+          : 'REGRAS SOBERANAS DE FORMATO MARKDOWN E COMPACTACAO (BUILD 273+275 — CRITICAS PARA STREAM EM TEMPO REAL):\n'
             '• PROIBICAO ABSOLUTA DE RECUO: JAMAIS inicie uma linha com espacos em branco '
             'ou tabulacoes (ex: "   * sublista" esta TERMINANTEMENTE PROIBIDO). '
             'Todos os marcadores, bullets e sublistas devem comecar na coluna 0 — '
@@ -1587,7 +1609,24 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '  — 🚨 **Topico Principal:** para acoes urgentes e diagnostico.\n'
             '  — 💊 **Farmaco/Dose:** para especificacoes farmacologicas.\n'
             '  — ⛔ **Alerta Critico:** para contraindicacoes e riscos fatais.\n'
-            '  — 📌 **Proximos Passos:** para monitorizacao e acompanhamento.\n';
+            '  — 📌 **Proximos Passos:** para monitorizacao e acompanhamento.\n'
+            '• TETO ESTRITO DE RESPOSTA (BUILD 275 — MODO PLANTAO): '
+            'A resposta do Modo Plantao esta limitada a NO MAXIMO 15 LINHAS e NO MAXIMO 800 CARACTERES TOTAIS '
+            '(incluindo cabecalhos, emojis e espacos). Se a resposta ultrapassar qualquer um desses limites, '
+            'CORTE e encerre com "📌 Ver protocolo completo." — JAMAIS exceda o teto.\n'
+            '• EXTERMINIO DE GORDURA VERBAL (BUILD 275): '
+            'TERMINANTEMENTE PROIBIDO usar frases de contextualizacao, conectivos literarios '
+            'ou adjetivos de precaucao (ex: "Cautela com fluidos", "Em casos selecionados", '
+            '"Considerar ajuste conforme evolucao", "Monitorizar de perto"). '
+            'CADA linha deve ser uma ORDEM EXECUTIVA CURTA de acao direta. Sem introducoes. Sem conclusoes. '
+            'Sem gordura. Telegrama medico puro.\n'
+            '• NEGRITOS SOMENTE PARA FARMACOS (BUILD 275 — UI LIMPA): '
+            'O uso de negritos (**texto**) esta ESTRITAMENTE LIMITADO a nomes de farmacos principais '
+            'ou classes farmacologicas. PROIBIDO negritar frases inteiras, parametros de metas, '
+            'valores numericos ou titulos de bloco. Exemplo correto: "* **Norepinefrina**: 0,05-0,5 mcg/kg/min IV (Alvo: PAM > 65 mmHg)."\n'
+            '• FORMATO TELEGRAFICO MARGEM ZERO (BUILD 275): '
+            'Todos os topicos alinhados na coluna 0, colados na margem esquerda, sem nenhum espaco de recuo. '
+            'Formato obrigatorio: "* **Farmaco**: dose via (Alvo: valor)."\n';
 
       // ── BUILD 272: CONTEXTO PROPRIETÁRIO MedCases ────────────────────────
       // Se 'proprietaryDrugContext' não for vazio, injeta o conteúdo bruto
