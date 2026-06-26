@@ -840,89 +840,56 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               // Header — visível apenas no desktop (sem shell AppBar)
               if (showListHeader)
               Container(
-                // BUILD 277: flat dark header — no hard gradient
+                // BUILD 277-CROMATICO: Amber/burnt orange gradient for Historia Clinica
                 decoration: const BoxDecoration(
-                  color: Color(0xFF12161F),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF92400E), // amber-800 top
+                      Color(0xFF78350F), // amber-900 mid
+                      Color(0xFF12161F), // app dark bottom
+                    ],
+                    stops: [0.0, 0.45, 1.0],
+                  ),
                   border: Border(
                     bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(bp.hPadding, 10, bp.hPadding, 14),
+                  padding: EdgeInsets.fromLTRB(4, 10, bp.hPadding, 14),
                   child: Row(
                     children: [
+                      // Back arrow
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                        onPressed: () => Navigator.maybePop(context),
+                        padding: const EdgeInsets.all(8),
+                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      ),
+                      // Title block + action button
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: const Color(0xFF3B82F6).withValues(alpha: 0.25),
-                                  border: Border.all(color: const Color(0xFF60A5FA).withValues(alpha: 0.4)),
-                                ),
-                                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                  const Icon(Icons.folder_special_rounded, size: 9, color: Color(0xFF93C5FD)),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _hcT(lang, 'tab_title'),
-                                    style: const TextStyle(
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w900,
-                                      color: Color(0xFF93C5FD),
-                                      letterSpacing: 1.5,
-                                    ),
-                                  ),
-                                ]),
-                              ),
-                            ]),
-                            const SizedBox(height: 6),
-                            Text(
-                              _hcT(lang, 'tab_subtitle'),
-                              style: const TextStyle(
+                            const Text(
+                              'HISTORIA CLINICA',
+                              style: TextStyle(
                                 fontSize: 20,
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
                                 color: Colors.white,
-                                height: 1.15,
-                                letterSpacing: -0.3,
+                                letterSpacing: -0.2,
                               ),
                             ),
-                            const SizedBox(height: 5),
-                            Row(children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: Colors.white.withValues(alpha: 0.08),
-                                ),
-                                child: Text(
-                                  '${mine.length} ${_hcT(lang, 'my_hcs_count')}',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.white.withValues(alpha: 0.70),
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
+                            const Text(
+                              'MEDCASES PRO',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFD4AF37),
+                                letterSpacing: 1.2,
                               ),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: const Color(0xFF3B82F6).withValues(alpha: 0.18),
-                                ),
-                                child: Text(
-                                  '${visiblePub.length} ${_hcT(lang, 'pub_count')}',
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Color(0xFF93C5FD),
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ]),
+                            ),
                           ],
                         ),
                       ),
@@ -934,15 +901,15 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                              colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF3B82F6).withValues(alpha: 0.4),
+                                color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),

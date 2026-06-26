@@ -305,7 +305,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
             backgroundColor: InternacionTheme.red,
             duration: const Duration(seconds: 4),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ));
         }
         return;
@@ -411,7 +411,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
         backgroundColor: InternacionTheme.red,
         duration: const Duration(seconds: 5),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ));
       return;
     }
@@ -452,7 +452,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
         backgroundColor: InternacionTheme.green,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ));
     }
   }
@@ -535,7 +535,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
         backgroundColor: InternacionTheme.amber,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ));
     }
   }
@@ -586,7 +586,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
       backgroundColor: InternacionTheme.amber,
       duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ));
   }
 
@@ -643,7 +643,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
       backgroundColor: InternacionTheme.accentLight,
       duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ));
   }
 
@@ -795,7 +795,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
         backgroundColor: InternacionTheme.accentLight,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ));
     }
   }
@@ -870,22 +870,32 @@ class _InternacionScreenState extends State<InternacionScreen> {
       // Direita (actions): botão compacto [Nueva] (vassourinha)
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(52),
+        preferredSize: const Size.fromHeight(60),
         child: Container(
-          decoration: BoxDecoration(
-            color: dark ? const Color(0xFF0D0F14) : Colors.white,
-            border: Border(bottom: BorderSide(color: theme.border, width: 0.8)),
+          // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF0F4C3A), // teal-900 top
+                Color(0xFF065F45), // emerald-petróleo mid
+                Color(0xFF12161F), // app dark bottom
+              ],
+              stops: [0.0, 0.45, 1.0],
+            ),
+            border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.8)),
           ),
           child: SafeArea(
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
               child: Row(
                 children: [
                   // Back
                   IconButton(
-                    icon: Icon(Icons.arrow_back_ios_new_rounded,
-                        size: 18, color: theme.accent),
+                    icon: const Icon(Icons.arrow_back_ios_new,
+                        size: 20, color: Colors.white),
                     tooltip: isEs ? 'Volver' : 'Voltar',
                     onPressed: () => Navigator.maybePop(context),
                     padding: const EdgeInsets.all(8),
@@ -899,54 +909,55 @@ class _InternacionScreenState extends State<InternacionScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          isEs
-                              ? 'INTERNACIÓN Y EVOLUCIÓN'
-                              : 'INTERNAÇÃO E EVOLUÇÃO',
-                          style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.4,
-                            color: theme.textPrimary,
+                          isEs ? 'PACIENTES' : 'PACIENTES',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.2,
+                            color: Colors.white,
                           ),
                         ),
-                        Text(
-                          'MedCases Pro',
+                        const Text(
+                          'MEDCASES PRO',
                           style: TextStyle(
-                              fontSize: 10,
-                              color: theme.textSecondary),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFD4AF37), // gold
+                            letterSpacing: 1.2,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  // Actions: botão [Nueva]
+                  // Actions: botão [➕ Nova]
                   GestureDetector(
                     onTap: _confirmAndReset,
                     child: Container(
-                      height: 32,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: InternacionTheme.accentLight
-                            .withValues(alpha: dark ? 0.18 : 0.12),
-                        borderRadius: BorderRadius.circular(8),
+                        color: const Color(0xFF059669)
+                            .withValues(alpha: dark ? 0.28 : 0.20),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: InternacionTheme.accentLight
-                              .withValues(alpha: 0.40),
+                          color: const Color(0xFF059669)
+                              .withValues(alpha: 0.55),
                           width: 0.9,
                         ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.cleaning_services_rounded,
-                              size: 13,
-                              color: InternacionTheme.accentLight),
+                          const Icon(Icons.add_rounded,
+                              size: 15,
+                              color: Color(0xFF34D399)),
                           const SizedBox(width: 5),
                           Text(
                             isEs ? 'Nueva' : 'Nova',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
-                              color: InternacionTheme.accentLight,
+                              color: Color(0xFF34D399),
                               letterSpacing: 0.2,
                             ),
                           ),
@@ -1318,7 +1329,8 @@ class _ActionButton extends StatelessWidget {
         height: 44,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(10),
+          // BUILD 277-CROMATICO: BorderRadius.circular(12)
+          borderRadius: BorderRadius.circular(12),
           border: isPrimary
               ? null
               : Border.all(
@@ -3630,7 +3642,7 @@ class _TrashModalState extends State<_TrashModal> {
         backgroundColor: InternacionTheme.accentLight,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ));
     }
   }
@@ -3722,7 +3734,7 @@ class _TrashModalState extends State<_TrashModal> {
         backgroundColor: InternacionTheme.red,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ));
     }
   }

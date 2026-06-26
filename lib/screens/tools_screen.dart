@@ -42,7 +42,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
   void initState() {
     super.initState();
     // BUILD 93 — INFUSÃO (idx 4) e SIMULAÇÕES (idx 6) ocultas → 6 tabs visíveis
-    _tabCtrl = TabController(length: 6, vsync: this);
+    // BUILD 277-CROMATICO — 5 tabs: BIOMETRIA, CARDIO, ELETRÓLITOS, REFERÊNCIAS, PEDIATRIA (SCORES removed)
+    _tabCtrl = TabController(length: 5, vsync: this);
     // Ouve o notifier externo para mudar de aba
     toolsScreenTabNotifier.addListener(_onExternalTabRequest);
   }
@@ -53,7 +54,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     // Usa addPostFrameCallback para garantir que o widget já está montado
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _tabCtrl.animateTo(idx.clamp(0, 5)); // BUILD 93: 6 tabs visíveis (0-5)
+      _tabCtrl.animateTo(idx.clamp(0, 4)); // BUILD 277-CROMATICO: 5 tabs visíveis (0-4)
       // Reseta para null após consumir
       toolsScreenTabNotifier.value = null;
     });
@@ -76,40 +77,67 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     final bp = MedBreakpoints.of(context);
     final showHeader = widget.hideHeader ? false : bp.isDesktop;
 
+    // BUILD 277-CROMATICO: Purple/Violet gradient accent
+    const Color kVioletLight = Color(0xFF8B5CF6); // violet-500
+
     return Column(children: [
       // ── Header (visível apenas no desktop ou quando explicitamente solicitado)
       if (showHeader)
         Container(
-          // BUILD 277: flat dark topbar — no hard gradient
+          // BUILD 277-CROMATICO: Purple/Violet gradient topbar fading to #12161F
           decoration: const BoxDecoration(
-            color: Color(0xFF12161F),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF5B21B6), // violet-800 top
+                Color(0xFF4C1D95), // violet-900 mid
+                Color(0xFF12161F), // app dark bottom
+              ],
+              stops: [0.0, 0.45, 1.0],
+            ),
             border: Border(
               bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
             ),
           ),
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: Row(children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
-                  child: const Icon(Icons.calculate_rounded, color: kToolGold, size: 20),
-                ),
-                const SizedBox(width: 10),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(isEs ? 'Herramientas Clínicas' : 'Ferramentas Clínicas',
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.3)),
-                  Text(isEs ? 'Calculadoras con base científica' : 'Calculadoras com base científica',
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.6))),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(4, 10, 16, 10),
+            child: Row(children: [
+              // Back arrow
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                onPressed: () => Navigator.maybePop(context),
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              ),
+              // Title + subtitle
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    isEs ? 'HERRAMIENTAS CLÍNICAS' : 'FERRAMENTAS CLÍNICAS',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  const Text(
+                    'MEDCASES PRO',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFFD4AF37), // gold
+                      letterSpacing: 1.2,
+                    ),
+                  ),
                 ]),
-              ]),
-            ),
-            const SizedBox(height: 10),
-          ]),
+              ),
+            ]),
+          ),
         ),
       // ── TabBar (sempre visível) ──────────────────────────────────
-      // BUILD 277: flat dark container, no gradient
+      // BUILD 277-CROMATICO: violet underline indicator
       Container(
         decoration: const BoxDecoration(
           color: Color(0xFF12161F),
@@ -121,8 +149,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           controller: _tabCtrl,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          // BUILD 277: thin underline indicator, crimson brand colour
-          indicatorColor: const Color(0xFFAC2A2A),
+          // BUILD 277-CROMATICO: violet underline
+          indicatorColor: kVioletLight,
           indicatorWeight: 2.5,
           indicatorSize: TabBarIndicatorSize.label,
           labelColor: Colors.white,
@@ -132,14 +160,10 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           dividerColor: Colors.transparent,
           tabs: [
             Tab(text: isEs ? 'BIOMETRÍA' : 'BIOMETRIA'),
-            Tab(text: isEs ? 'SCORES' : 'SCORES'),
+            // BUILD 277-CROMATICO: SCORES removed
             Tab(text: isEs ? 'CARDIO' : 'CARDIO'),
             Tab(text: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS'),
-            // BUILD 93 — INFUSIÓN oculta (Apple Guideline 1.4.1: calculadora de dose)
-            // Tab(text: isEs ? 'INFUSIÓN' : 'INFUSÃO'),
-            Tab(text: isEs ? 'REFERENCIA' : 'REFERÊNCIA'),
-            // BUILD 93 — SIMULACIONES oculta (Apple Guideline 1.4.1: prescrições clínicas)
-            // Tab(text: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES'),
+            Tab(text: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS'),
             Tab(text: isEs ? 'PEDIATRÍA' : 'PEDIATRIA'),
           ],
         ),
@@ -157,14 +181,10 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             controller: _tabCtrl,
             children: [
               _BiometricsTab(),
-              _ScoresTab(),
+              // BUILD 277-CROMATICO: _ScoresTab() removed
               _CardioTab(),
               _ElectrolytesTab(),
-              // BUILD 93 — _InfusionTab oculta (Apple Guideline 1.4.1)
-              // _InfusionTab(),
               _ReferenceTab(),
-              // BUILD 93 — _PrescriptionsTab oculta (Apple Guideline 1.4.1)
-              // _PrescriptionsTab(),
               PediatricsTabContent(),
             ],
           ),
@@ -4579,13 +4599,19 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
     final c    = AppColors.of(context);
 
     return Column(children: [
-      // ── Sub-menu azul (igual ao header) — botões individuais full-width ──
+      // ── Sub-menu Pediatria (emerald/petróleo) — botões individuais full-width ──
+      // BUILD 277-CROMATICO: Emerald/Petróleo green gradient for Pediatria
       Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF252930), Color(0xFF103D70), Color(0xFF2563EB)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF064E3B), // emerald-900 top
+              Color(0xFF065F45), // petróleo mid
+              Color(0xFF12161F), // dark bottom
+            ],
+            stops: [0.0, 0.50, 1.0],
           ),
         ),
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),

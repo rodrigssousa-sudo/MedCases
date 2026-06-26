@@ -200,8 +200,8 @@ class _LibraryScreenState extends State<LibraryScreen>
   @override
   void initState() {
     super.initState();
-    // 2 abas apenas — "Protocolos" foi unificada com "Casos de Estudo"
-    _tabCtrl = TabController(length: 2, vsync: this);
+    // BUILD 277-CROMATICO: 3 abas — GENERAL, Guias PDF, Casos de Estudo
+    _tabCtrl = TabController(length: 3, vsync: this);
     _initGuides();
     _searchCtrl.addListener(() {
       if (mounted) setState(() => _search = _searchCtrl.text.toLowerCase());
@@ -279,7 +279,9 @@ class _LibraryScreenState extends State<LibraryScreen>
                 child: TabBarView(
                   controller: _tabCtrl,
                   children: [
-                    // Aba 0: Guias PDF (inalterada)
+                    // Aba 0: General (BUILD 277-CROMATICO)
+                    _GeneralTab(dark: dark, isEs: isEs),
+                    // Aba 1: Guias PDF (inalterada)
                     _GuidesTab(
                       dark: dark,
                       isEs: isEs,
@@ -293,7 +295,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                       onOpen: _openPdf,
                       onRetry: _handleManualRefresh,
                     ),
-                    // Aba 1: Casos de Estudo (fusão de Casos Clínicos + conteúdo pedagógico)
+                    // Aba 2: Casos de Estudo
                     _CasosDeEstudoTab(dark: dark, isEs: isEs, p: p),
                   ],
                 ),
@@ -331,7 +333,8 @@ class _MobileLibraryTabBar extends StatelessWidget {
     final inactiveCol= dark
         ? Colors.white.withValues(alpha: 0.40)
         : const Color(0xFF90A89E);
-    final indicatorCol = dark ? const Color(0xFF10B981) : const Color(0xFF075f45);
+    // BUILD 277-CROMATICO: blue accent for slate library theme
+    final indicatorCol = dark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB);
 
     return Container(
       decoration: BoxDecoration(
@@ -361,7 +364,13 @@ class _MobileLibraryTabBar extends StatelessWidget {
           fontSize: 12.5,
           fontWeight: FontWeight.w500,
         ),
+        // BUILD 277-CROMATICO: 3 tabs
         tabs: [
+          const Tab(
+            icon: Icon(Icons.auto_stories_rounded, size: 16),
+            text: 'GENERAL',
+            iconMargin: EdgeInsets.only(bottom: 2),
+          ),
           Tab(
             icon: const Icon(Icons.picture_as_pdf_rounded, size: 16),
             text: isEs ? 'Guías PDF' : 'Guias PDF',
@@ -397,36 +406,54 @@ class _LibraryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // BUILD 277-CROMATICO: Slate/industrial-blue gradient for Biblioteca
     return Container(
-      decoration: BoxDecoration(
-        color: _kDark,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 8)],
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF1E3A5F), // slate-blue top
+            Color(0xFF162B47), // industrial blue mid
+            Color(0xFF12161F), // app dark bottom
+          ],
+          stops: [0.0, 0.45, 1.0],
+        ),
+        boxShadow: [BoxShadow(color: Color(0x4D000000), blurRadius: 8)],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+            padding: const EdgeInsets.fromLTRB(4, 10, 16, 10),
             child: Row(children: [
-              Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: _kGreen.withValues(alpha: 0.3),
-                  border: Border.all(color: _kGreen.withValues(alpha: 0.5)),
-                ),
-                child: const Icon(Icons.menu_book_rounded, color: _kGoldL, size: 20),
+              // Back arrow
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                onPressed: () => Navigator.maybePop(context),
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
               ),
-              const SizedBox(width: 12),
+              // Title + subtitle
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    isEs ? 'Biblioteca Clínica' : 'Biblioteca Clínica',
-                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: Colors.white),
+                  const Text(
+                    'BIBLIOTECA',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      letterSpacing: -0.2,
+                    ),
                   ),
-                  Text(
-                    isEs ? 'Guías • Casos de Estudio • Artículos' : 'Guias • Casos de Estudo • Artigos',
-                    style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5)),
+                  const Text(
+                    'MEDCASES PRO',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFFD4AF37), // gold
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ]),
               ),
@@ -441,8 +468,8 @@ class _LibraryHeader extends StatelessWidget {
                     height: 38,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: _kGreen.withValues(alpha: 0.22),
-                      border: Border.all(color: _kGreen.withValues(alpha: 0.45)),
+                      color: Colors.white.withValues(alpha: 0.12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
                     ),
                     child: refreshing
                         ? const Padding(
@@ -462,18 +489,20 @@ class _LibraryHeader extends StatelessWidget {
               ),
             ]),
           ),
-          // TabBar — 2 abas
+          // TabBar — 3 abas (BUILD 277-CROMATICO: GENERAL added)
           TabBar(
             controller: tabCtrl,
-            indicatorColor: _kGold,
+            indicatorColor: const Color(0xFF60A5FA), // blue-400
             indicatorWeight: 2.5,
-            labelColor: _kGold,
+            labelColor: Colors.white,
             unselectedLabelColor: Colors.white38,
             labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
             unselectedLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            dividerColor: Colors.transparent,
             tabs: [
-              Tab(text: isEs ? 'Guías PDF' : 'Guias PDF'),
-              Tab(text: isEs ? 'Casos de Estudio' : 'Casos de Estudo'),
+              Tab(text: 'GENERAL'),
+              Tab(text: isEs ? 'GUÍAS PDF' : 'GUIAS PDF'),
+              Tab(text: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO'),
             ],
           ),
         ]),
@@ -1612,7 +1641,8 @@ class _GuideCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20), color: _kGreen,
+                      // BUILD 277-CROMATICO: BorderRadius.circular(12)
+                      borderRadius: BorderRadius.circular(12), color: _kGreen,
                     ),
                     child: const Row(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Icons.open_in_new_rounded, size: 13, color: Colors.white),
@@ -1801,4 +1831,122 @@ class _EmptyState extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ABA GENERAL — BUILD 277-CROMATICO
+// Overview / landing tab with key library information
+// ─────────────────────────────────────────────────────────────────────────────
+class _GeneralTab extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  const _GeneralTab({required this.dark, required this.isEs});
+
+  @override
+  Widget build(BuildContext context) {
+    final bg    = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    final card  = dark ? const Color(0xFF22262F) : Colors.white;
+    final text1 = dark ? Colors.white          : const Color(0xFF0F1116);
+    final text2 = dark ? Colors.white54        : Colors.black54;
+
+    final items = [
+      _GenItem(
+        icon: Icons.picture_as_pdf_rounded,
+        color: const Color(0xFF1E3A5F),
+        title: isEs ? 'Guías PDF Clínicas' : 'Guias PDF Clínicos',
+        subtitle: isEs
+            ? 'Protocolos clínicos en formato PDF de alta calidad.'
+            : 'Protocolos clínicos em formato PDF de alta qualidade.',
+      ),
+      _GenItem(
+        icon: Icons.school_rounded,
+        color: const Color(0xFF065F45),
+        title: isEs ? 'Casos de Estudio' : 'Casos de Estudo',
+        subtitle: isEs
+            ? 'Casos clínicos reales con discusión diagnóstica.'
+            : 'Casos clínicos reais com discussão diagnóstica.',
+      ),
+      _GenItem(
+        icon: Icons.update_rounded,
+        color: const Color(0xFF7C3AED),
+        title: isEs ? 'Actualización continua' : 'Atualização contínua',
+        subtitle: isEs
+            ? 'Contenido actualizado regularmente por el equipo MedCases.'
+            : 'Conteúdo atualizado regularmente pela equipa MedCases.',
+      ),
+      _GenItem(
+        icon: Icons.verified_rounded,
+        color: const Color(0xFFB45309),
+        title: isEs ? 'Fuentes científicas' : 'Fontes científicas',
+        subtitle: isEs
+            ? 'Basado en guías internacionales (WHO, AHA, ESC, PALS).'
+            : 'Baseado em guias internacionais (WHO, AHA, ESC, PALS).',
+      ),
+    ];
+
+    return ColoredBox(
+      color: bg,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            isEs ? 'Bienvenido a la Biblioteca' : 'Bem-vindo à Biblioteca',
+            style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w800, color: text1,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            isEs
+                ? 'Acceda a guías, protocolos y casos de estudio clínico.'
+                : 'Acesse guias, protocolos e casos de estudo clínico.',
+            style: TextStyle(fontSize: 13, color: text2),
+          ),
+          const SizedBox(height: 20),
+          ...items.map((item) => Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: card,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: dark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.black.withValues(alpha: 0.06),
+              ),
+            ),
+            child: Row(children: [
+              Container(
+                width: 44, height: 44,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: item.color.withValues(alpha: dark ? 0.22 : 0.12),
+                ),
+                child: Icon(item.icon, color: item.color, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.title,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: text1)),
+                  const SizedBox(height: 3),
+                  Text(item.subtitle,
+                    style: TextStyle(fontSize: 12, color: text2, height: 1.4)),
+                ],
+              )),
+            ]),
+          )),
+        ]),
+      ),
+    );
+  }
+}
+
+class _GenItem {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  const _GenItem({required this.icon, required this.color, required this.title, required this.subtitle});
 }
