@@ -158,6 +158,8 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     }
   }
 
+  // BUILD 279: módulo sempre expandido — auto-colapso removido.
+  // O dashboard exibe sempre o header + AddFirstPatientRow + atalhos padrão.
   void _notifyEmptyChange() {
     AppProvider p;
     try { p = context.read<AppProvider>(); } catch (_) { return; }
@@ -171,9 +173,9 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     _lastIsEmpty = isEmpty;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (isEmpty && _expanded) {
-        setState(() { _expanded = false; _chevronCtrl.reverse(); });
-      } else if (_wasEmpty && !isEmpty && !_expanded) {
+      // BUILD 279: apenas auto-expande ao transição vazio→com-conteúdo;
+      // NÃO colapsa quando fica vazio (módulo sempre visível).
+      if (_wasEmpty && !isEmpty && !_expanded) {
         setState(() { _expanded = true; _chevronCtrl.forward(); });
       }
       _wasEmpty = isEmpty;
@@ -219,13 +221,9 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (isEmpty && _expanded) {
-        // Todos os itens foram despinados: colapsa automaticamente
-        setState(() {
-          _expanded = false;
-          _chevronCtrl.reverse();
-        });
-      } else if (_wasEmpty && !isEmpty && !_expanded) {
+      // BUILD 279: apenas auto-expande ao transição vazio→com-conteúdo;
+      // NÃO colapsa quando fica vazio (módulo sempre visível na Home).
+      if (_wasEmpty && !isEmpty && !_expanded) {
         // Primeiro item pinado: expande para revelar conteúdo
         setState(() {
           _expanded = true;
@@ -238,13 +236,8 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
 
   void _toggle(bool hasContent) {
     AppHaptics.selection(context);
-    if (!hasContent) {
-      // Se vazio, tap abre o manage sheet
-      widget.onManageTap();
-      return;
-    }
-    // Toggle manual: imediato, definitivo, nunca revertido pelo didChangeDependencies
-    // porque este é um gesto do usuário, não uma mudança de dados do provider.
+    // BUILD 279: toggle normal para qualquer estado (vazio ou com conteúdo).
+    // O module sempre permanece expansível — não força manage sheet no vazio.
     final nowExpanded = !_expanded;
     setState(() => _expanded = nowExpanded);
     if (nowExpanded) {
@@ -309,21 +302,22 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
           expanded: _expanded,
           isEmpty: isEmpty,
           chevronAngle: _chevronAngle,
-          onHeaderTap: () => _toggle(!isEmpty),
+          // BUILD 279: _toggle agora sempre expand/colapsa, independente de isEmpty.
+          onHeaderTap: () => _toggle(true),
           onManageTap: widget.onManageTap,
           onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
         ),
 
         // ── Corpo animado ───────────────────────────────────────────────────
+        // BUILD 279: sempre mostra _PlantaoContent (com _AddFirstPatientRow
+        // quando vazio) em vez de _EmptyState com borda tracejada.
         AnimatedSize(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOutCubic,
           child: _expanded
               ? Padding(
                   padding: const EdgeInsets.only(top: 14),
-                  child: isEmpty
-                      ? _EmptyState(isEs: isEs, colors: c, onTap: widget.onManageTap)
-                      : _PlantaoContent(
+                  child: _PlantaoContent(
                           isEs: isEs,
                           colors: c,
                           p: p,
@@ -613,7 +607,153 @@ class _PlantaoContent extends StatelessWidget {
             },
           ),
         ],
+
+        // BUILD 279: sub-cards de atalho padrão (Biometria + Scores) —
+        // sempre visíveis quando não há calcs pinadas.
+        // Permitem acesso rápido às calculadoras mesmo com o plantão vazio.
+        if (!hasCalcs) ...[
+          const SizedBox(height: 12),
+          _DefaultCalcShortcutsGrid(isEs: isEs, colors: c, onOpenCalc: onOpenCalc),
+        ],
       ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 279 — SUB-CARDS DE ATALHO PADRÃO (Scores + Biometria)
+// Grid sempre visível quando nenhuma calculadora está pinada.
+// Representa os dois atalhos de acesso rápido exibidos no contrato visual
+// image_11.png: Card 1 = Scores (roxo, bar_chart), Card 2 = Biometria (azul, monitor_weight).
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _DefaultCalcShortcutsGrid extends StatelessWidget {
+  final bool isEs;
+  final AppColors colors;
+  final void Function(String calcId) onOpenCalc;
+
+  const _DefaultCalcShortcutsGrid({
+    required this.isEs,
+    required this.colors,
+    required this.onOpenCalc,
+  });
+
+  // IDs dos atalhos padrão exibidos na Home (Scores + Biometria)
+  static const _kDefaultIds = ['calc_scores', 'calc_biometria'];
+
+  @override
+  Widget build(BuildContext context) {
+    final c = colors;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const gap = 8.0;
+        const cols = 2;
+        final itemW = (constraints.maxWidth - gap * (cols - 1)) / cols;
+
+        return Row(
+          children: [
+            for (int i = 0; i < _kDefaultIds.length; i++) ...[
+              if (i > 0) const SizedBox(width: gap),
+              Builder(builder: (_) {
+                final shortcut = calcById(_kDefaultIds[i]);
+                if (shortcut == null) return SizedBox(width: itemW);
+                return SizedBox(
+                  width: itemW,
+                  child: _DefaultCalcCard(
+                    shortcut: shortcut,
+                    isEs: isEs,
+                    colors: c,
+                    onTap: () => onOpenCalc(shortcut.id),
+                  ),
+                );
+              }),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Card de atalho padrão — sem botão de unpin (não é pinada, é sempre visível).
+class _DefaultCalcCard extends StatefulWidget {
+  final CalcShortcut shortcut;
+  final bool isEs;
+  final AppColors colors;
+  final VoidCallback onTap;
+
+  const _DefaultCalcCard({
+    required this.shortcut,
+    required this.isEs,
+    required this.colors,
+    required this.onTap,
+  });
+
+  @override
+  State<_DefaultCalcCard> createState() => _DefaultCalcCardState();
+}
+
+class _DefaultCalcCardState extends State<_DefaultCalcCard> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = widget.colors;
+    final s = widget.shortcut;
+
+    return GestureDetector(
+      onTap: () { AppHaptics.selection(context); widget.onTap(); },
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp:   (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: s.color.withValues(alpha: 0.20), width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: c.dark ? 0.22 : 0.05),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: s.color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(s.icon, size: 18, color: s.color),
+              ),
+              const SizedBox(height: 7),
+              Text(
+                s.label(widget.isEs),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: c.textPrimary,
+                  letterSpacing: -0.1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

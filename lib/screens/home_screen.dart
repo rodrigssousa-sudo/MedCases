@@ -3048,7 +3048,7 @@ class _HomeMiGuardiaSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: border, width: 1),
         boxShadow: dark
             ? []
@@ -3061,7 +3061,7 @@ class _HomeMiGuardiaSection extends StatelessWidget {
               ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -4648,7 +4648,7 @@ class _HomeAiNavigatorCardState extends State<_HomeAiNavigatorCard>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
+                        'MEDCASES IA',
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w900,
