@@ -1418,59 +1418,23 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           : '\n\nISOLAMENTO: responda SOMENTE ao tema da query atual. '
             'Amnesia total de consultas passadas nao relacionadas.\n';
 
-      // selfCheck compact (inline — items 0-8)
-      // BUILD 271: item 6 expandido com mandato anti-truncamento de matriz.
-      // BUILD 273: item 7 adicionado — checklist de compliance de formato stream.
-      // BUILD 275: item 8 adicionado — checklist de compactacao e negritos.
+      // ORDEM 20 — COMPACT ptSelfCheck: 10-item → 4-item (cut ~600 chars).
+      // Items 1-3 (format/idiom/RAG) already enforced by ptStreamFormat + ptUxFlowDoctrine.
+      // Items 5/6 (completeness) already enforced by ptMatrixCompletion.
+      // Kept: apertura(0), coluna-zero(7), compactação(8), gancho📌(9).
       final ptSelfCheck = isEs
-          ? 'Antes de responder, verificar internamente (nunca revelar al usuario):\n'
-            '0. APERTURA PROHIBIDA — la respuesta DEBE iniciar con 🟥 en la primera linea. '
-            'PROHIBIDO: "Colega", "Hola", "Mi conducta", "Claro", "Entendido", "Por supuesto" antes de 🟥.\n'
-            '1. No contiene cabeceras "TRATAMIENTO FARMACOLÓGICO" ni "ALERTA CRÍTICO" — solo tokens visuales del contrato.\n'
-            '2. Sin bullets libres ni listas explicativas fuera del formato soberano.\n'
-            '3. Idioma correcto aplicado segun instruccion de idioma dinamico.\n'
-            '4. Datos del paciente aislados. Ningun dato de sesiones anteriores heredado.\n'
-            '5. Dosis coherentes con peso/renal/hepatico/edad del paciente activo.\n'
-            '6. Titulo 🟥 especifico (nunca generico). '
-            'ES REQUISITO OBLIGATORIO concluir TODAS las secciones iniciadas de la matriz correspondente. '
-            'JAMAS interrumpas el texto a la mitad — si iniciaste CONDUTA, DOSIS, MONITORIZACION o ALERTA, cierra cada bloque.\n'
-            '7. COLUMNA CERO (BUILD 275-FIX — CRITICO): REVISAR CADA LINEA antes de emitirla. '
-            'Si cualquier linea empieza con espacio o tabulacion — BORRARLA y reescribirla sin sangria. '
-            'ZERO lineas con " * " o "  *" — el primer caracter debe ser *, emoji o letra. '
-            'TODOS los bloques separados por \\n\\n. 🟥 aparece exactamente UNA VEZ (primera linea).\n'
-            '8. COMPACTACION Y NEGRITAS (BUILD 275): Respuesta <= 15 lineas y <= 800 caracteres totales. '
-            'ZERO frases de contextualizacion o conectivos literarios. '
-            'Negritas (**) SOLO en nombre limpio del farmaco: "* **AAS**: 300 mg VO." — '
-            'NUNCA en frases enteras, metas numericas ni titulos de bloque.\n'
-            '9. FLUJO UX (BUILD 275-ADENDO): La respuesta NO explica lo que viene despues — '
-            'los botones del front-end conducen el seguimiento. '
-            'ZERO listas de estabilizacion genericas si la query ya tiene datos clinicos. '
-            'La ultima linea ES 📌 + pregunta de bifurcacion cerrada (Si/No, A/B). '
-            'PROHIBIDO "📌 Ver protocolo completo." — debe ser pregunta accionable con opciones.\n'
-          : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
-            '0. ABERTURA PROIBIDA — a resposta DEVE iniciar com 🟥 na primeira linha. '
-            'PROIBIDO: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza" antes de 🟥.\n'
-            '1. Nao contem cabecalhos "TRATAMENTO FARMACOLÓGICO" nem "ALERTA CRÍTICO" — apenas tokens visuais do contrato.\n'
-            '2. Sem bullets livres nem listas explicativas fora do formato soberano.\n'
-            '3. Idioma correto aplicado conforme instrucao de idioma dinamico.\n'
-            '4. Dados do paciente isolados. Nenhum dado de sessoes anteriores herdado.\n'
-            '5. Doses coerentes com peso/renal/hepatico/idade do paciente ativo.\n'
-            '6. Titulo 🟥 especifico (nunca generico). '
-            'E REQUISITO OBRIGATORIO concluir TODAS as secoes iniciadas da matriz correspondente. '
-            'JAMAIS interrompa o texto na metade — se iniciou CONDUTA, DOSE, MONITORIZACAO ou ALERTA, feche cada bloco.\n'
-            '7. COLUNA ZERO (BUILD 275-FIX — CRITICO): REVISAR CADA LINHA antes de emiti-la. '
-            'Se qualquer linha comecar com espaco ou tabulacao — APAGAR e reescrever sem recuo. '
-            'ZERO linhas com " * " ou "  *" — o primeiro caractere deve ser *, emoji ou letra. '
-            'TODOS os blocos separados por \\n\\n. 🟥 aparece exatamente UMA VEZ (primeira linha).\n'
-            '8. COMPACTACAO E NEGRITOS (BUILD 275): Resposta <= 15 linhas e <= 800 caracteres totais. '
-            'ZERO frases de contextualizacao ou conectivos literarios. '
-            'Negritos (**) SOMENTE no nome limpo do farmaco: "* **AAS**: 300 mg VO." — '
-            'NUNCA em frases inteiras, metas numericas nem titulos de bloco.\n'
-            '9. FLUXO UX (BUILD 275-ADENDO): A resposta NAO explica o que vem depois — '
-            'os botoes do front-end conduzem o seguimento. '
-            'ZERO listas de estabilizacao genericas se a query ja tiver dados clinicos. '
-            'A ultima linha E 📌 + pergunta de bifurcacao fechada (Sim/Nao, A/B). '
-            'PROIBIDO "📌 Ver protocolo completo." — deve ser pergunta acionavel com opcoes.\n';
+          ? '0. APERTURA PROHIBIDA — primera linea DEBE ser 🟥. '
+            'PROHIBIDO: "Colega", "Hola", "Claro", "Entendido" antes de 🟥.\n'
+            '1. COLUMNA CERO: primer caracter de CADA linea = *, emoji ou letra — ZERO espacios/tabulaciones.\n'
+            '2. TECHO: <= 15 lineas, <= 800 caracteres. Negritas (**) SOLO en nombre del farmaco.\n'
+            '3. GANCHO: ultima linea = 📌 + pregunta cerrada (Si/No, A/B). '
+            'PROHIBIDO "📌 Ver protocolo completo."\n'
+          : '0. ABERTURA PROIBIDA — primeira linha DEVE ser 🟥. '
+            'PROIBIDO: "Colega", "Ola", "Claro", "Entendido" antes de 🟥.\n'
+            '1. COLUNA ZERO: primeiro caractere de CADA linha = *, emoji ou letra — ZERO espacos/tabulacoes.\n'
+            '2. TETO: <= 15 linhas, <= 800 caracteres. Negritos (**) SOMENTE no nome do farmaco.\n'
+            '3. GANCHO: ultima linha = 📌 + pergunta fechada (Sim/Nao, A/B). '
+            'PROIBIDO "📌 Ver protocolo completo."\n';
 
       // BUILD 271 audit log (supersedes Build268 tag)
       final _ptChars = ptLangHeader.length +

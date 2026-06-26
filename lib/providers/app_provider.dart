@@ -3328,37 +3328,23 @@ class AppProvider extends ChangeNotifier {
     final expandedInput = topicReset ? input : _expandedQuery(input);
     final normalized    = _normalize(expandedInput);
 
-    final finalProtocols = _matchProtocolsExtended(normalized).isNotEmpty
-        ? _matchProtocolsExtended(normalized)
-        : _matchProtocols(normalized);
-    final finalDrugs = _matchDrugsExtended(normalized).isNotEmpty
-        ? _matchDrugsExtended(normalized)
-        : _matchDrugs(normalized);
+    // ORDEM 20 — FIX: single call (was computing twice → wasted CPU)
+    final _extProtos = _matchProtocolsExtended(normalized);
+    final finalProtocols = _extProtos.isNotEmpty ? _extProtos : _matchProtocols(normalized);
+    final _extDrugs = _matchDrugsExtended(normalized);
+    final finalDrugs = _extDrugs.isNotEmpty ? _extDrugs : _matchDrugs(normalized);
     final references    = _findReferences(normalized);
     final localContext  = _buildLocalAnswer(input);
     final localContextWithRefs = references.isNotEmpty
         ? '$localContext\n\n---\n📚 REFERÊNCIAS:\n${references.join('\n')}'
         : localContext;
 
-    // BUILD 272: busca documento proprietário em clinical_library via REST admin bypass.
-    // Extrai o id do primeiro fármaco detectado na query para usar como docId.
-    // Roda em paralelo com a montagem do prompt — não bloqueia UI.
-    String? proprietaryContext;
-    if (!longResponse) {
-      // Apenas no modo Plantão (isPlantaoMode=true) — não no Estudo para economizar tokens.
-      final firstDrugId = _extractFirstMatchedDrugId(_normalize(input));
-      if (firstDrugId.isNotEmpty) {
-        try {
-          final doc = await FirestoreService.fetchProprietaryDrugDoc(firstDrugId);
-          if (doc != null && doc.isNotEmpty) {
-            proprietaryContext = FirestoreService.formatProprietaryDocForPrompt(doc);
-            debugPrint('[BUILD272][AppProvider] proprietaryContext drugId=$firstDrugId len=${proprietaryContext.length}chars');
-          }
-        } catch (e) {
-          debugPrint('[BUILD272][AppProvider] fetchProprietaryDrugDoc failed: $e');
-        }
-      }
-    }
+    // ORDEM 20 — LATENCY FIX: proprietaryContext fetch REMOVED from streaming path.
+    // BUILD 272 original: await fetchProprietaryDrugDoc() was a BLOCKING serial await
+    // that fired before stream start → primary 5–30 s latency source (audit confirmed).
+    // Fix: skip proprietary context in streaming path. The 20-template AI already has
+    // strong clinical knowledge via RAG + local context. Stream MUST start within <1 s.
+    const String? proprietaryContext = null; // always null → stream starts immediately
 
     // Build 104 — isFirstMessage: controla regra de saudação por turno.
     // _aiHistory já foi limpo por resetIfTopicChanged() acima quando o tema
