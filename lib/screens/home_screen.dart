@@ -5220,6 +5220,9 @@ class _ShellHeader extends StatelessWidget {
   final IconData icon;
   final String label;
   final String subtitle;
+  // BUILD 282 ORDEM 4: showIcon=false oculta o card-ícone lateral
+  // (usado na Pediatria para seguir o design canônico sem ícone no header).
+  final bool showIcon;
 
   const _ShellHeader({
     required this.gradientColors,
@@ -5227,6 +5230,7 @@ class _ShellHeader extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.subtitle,
+    this.showIcon = true,
   });
 
   @override
@@ -5281,21 +5285,23 @@ class _ShellHeader extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                 ),
-                // Ícone container — idêntico ao _HomeCard
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: accentColor.withValues(alpha: 0.14),
-                    border: Border.all(
-                      color: accentColor.withValues(alpha: 0.25),
-                      width: 1.0,
+                // BUILD 282 ORDEM 4: ícone condicional (showIcon=false na Pediatria)
+                if (showIcon) ...[
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      color: accentColor.withValues(alpha: 0.14),
+                      border: Border.all(
+                        color: accentColor.withValues(alpha: 0.25),
+                        width: 1.0,
+                      ),
                     ),
+                    child: Icon(icon, size: 24, color: accentColor),
                   ),
-                  child: Icon(icon, size: 24, color: accentColor),
-                ),
-                const SizedBox(width: 14),
+                  const SizedBox(width: 14),
+                ],
                 // Textos — BUILD 282: tipografia canônica (w700/20px, ouro fosco)
                 Expanded(
                   child: Column(
@@ -5349,15 +5355,15 @@ class _PediatricsShell extends StatelessWidget {
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
-        // B144: Azul Petróleo — sincronizado com card da Home
+        // BUILD 282 ORDEM 4: header sem ícone lateral, subtitle = MEDCASES PRO
+        // Gradiente verde esmeralda topLeft→bottomRight (sincronizado com pill bar)
         _ShellHeader(
-          gradientColors: const [Color(0xFF042f2e), Color(0xFF0f766e), Color(0xFF134e4a)],
-          accentColor:    const Color(0xFFccfbf1),
-          icon:    Icons.child_care_rounded,
+          gradientColors: const [Color(0xFF042F2E), Color(0xFF0F766E), Color(0xFF134E4A)],
+          accentColor:    const Color(0xFFCCFBF1),
+          icon:    Icons.child_care_rounded, // mantido para futura reativação
           label:   isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-          subtitle: isEs
-              ? 'Biometría · PEWS · Schwartz · Dosis'
-              : 'Biometria · PEWS · Schwartz · Doses',
+          subtitle: 'MEDCASES PRO', // BUILD 282: assinatura canônica ouro fosco
+          showIcon: false,          // BUILD 282 ORDEM 4: ícone removido da árvore
         ),
         const Expanded(child: PediatricsTabContent()),
       ]),

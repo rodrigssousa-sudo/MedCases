@@ -4605,22 +4605,23 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
     final c    = AppColors.of(context);
 
     return Column(children: [
-      // ── Sub-menu Pediatria (emerald/petróleo) — botões individuais full-width ──
-      // BUILD 277-CROMATICO: Emerald/Petróleo green gradient for Pediatria
+      // ── Sub-menu Pediatria — pill bar sincronizada com TopBar ──────────────
+      // BUILD 282 ORDEM 4: gradiente topLeft→bottomRight idêntico ao _ShellHeader
+      // Cores: 042F2E→0F766E→134E4A (verde esmeralda — continuidade visual)
+      // BorderRadius.circular(12) — padrão canônico unificado
       Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              Color(0xFF064E3B), // emerald-900 top
-              Color(0xFF065F45), // petróleo mid
-              Color(0xFF12161F), // dark bottom
+              Color(0xFF042F2E), // verde escuro — sincronizado com TopBar
+              Color(0xFF0F766E), // esmeralda médio
+              Color(0xFF134E4A), // teal profundo
             ],
-            stops: [0.0, 0.50, 1.0],
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         child: Row(
           children: List.generate(_sections.length, (i) {
             final active = _section == i;
@@ -4632,7 +4633,8 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    // BUILD 282 ORDEM 4: circular(12) — padrão canônico BUILD 278
+                    borderRadius: BorderRadius.circular(12),
                     color: active
                         ? Colors.white.withValues(alpha: 0.18)
                         : Colors.transparent,
