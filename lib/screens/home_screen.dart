@@ -1422,16 +1422,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     final dark  = widget.dark;
     final isEs  = widget.isEs;
 
-    final cardBg      = dark ? const Color(0xFF252930) : Colors.white;
-    final borderColor = dark ? _kAiBlueBord.withValues(alpha: 0.35) : _kAiBlueBord.withValues(alpha: 0.22);
-    final fieldBg     = dark ? const Color(0xFF0D1B2E) : const Color(0xFFF0F5FF);
-    final fieldBorder = dark ? _kAiBlueBord.withValues(alpha: 0.22) : _kAiBlueBord.withValues(alpha: 0.18);
-    final textColor   = dark ? Colors.white : const Color(0xFF0F1116);
-    final hintColor   = dark ? Colors.white.withValues(alpha: 0.38) : const Color(0xFF6B7280);
-    final chipBg      = dark ? const Color(0xFF0D1B2E) : _kAiBlue.withValues(alpha: 0.07);
-    final chipBorder  = dark ? _kAiBlueBord.withValues(alpha: 0.25) : _kAiBlueBord.withValues(alpha: 0.22);
-    final chipText    = dark ? const Color(0xFF60A5FA) : _kAiBlue;
-    final subText     = dark ? Colors.white38 : const Color(0xFF6B8ABE);
+    // SUPER ORDEM 11: sempre Dark Graphite — paridade total com AiScreen
+    const cardBg      = Color(0xFF1A1D23);
+    const borderColor = Color(0xFF2A2D35);
+    const fieldBg     = Color(0xFF252930);
+    final fieldBorder = Colors.white.withValues(alpha: 0.10);
+    const textColor   = Colors.white;
+    final hintColor   = Colors.white.withValues(alpha: 0.35);
+    const subText     = Color(0xFF6B8ABE);
 
     final hasHistory  = _messages.isNotEmpty;
     final hasStream   = _thinking && _streaming.isNotEmpty;
@@ -1493,7 +1491,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
                 decoration: BoxDecoration(
-                  color: dark ? const Color(0xFF0F2340) : const Color(0xFFE8EFFF),
+                  color: const Color(0xFF0F2340),  // SUPER ORDEM 11: dark imersivo sempre
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(14), topRight: Radius.circular(14),
                     bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
@@ -1548,82 +1546,145 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       );
     }
 
+    // SUPER ORDEM 11: Dark Graphite imersivo — paridade total com AiScreen
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor, width: 1.2),
-        boxShadow: dark
-            ? [BoxShadow(color: _kAiBlueBg.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 4))]
-            : [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.07), blurRadius: 16, offset: const Offset(0, 4)),
-                BoxShadow(color: _kAiBlue.withValues(alpha: 0.06),     blurRadius: 24, offset: const Offset(0, 6)),
-              ],
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        border: Border(
+          top:    BorderSide(color: borderColor, width: 1.2),
+          right:  BorderSide(color: borderColor, width: 1.2),
+          bottom: BorderSide(color: borderColor, width: 1.2),
+          left:   BorderSide(color: borderColor, width: 1.2),
+        ),
+        boxShadow: [
+          BoxShadow(color: Color(0x40000000), blurRadius: 20, offset: Offset(0, 6)),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,  // ← shrinks to content height
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-          // ── B144: Rótulo 'IA Chat' no canto superior esquerdo ───────────────
-          Text(
-            'IA Chat',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: dark ? const Color(0xFF60A5FA) : _kAiBlue,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Botão × Limpar (só aparece quando há histórico) — mantido flutuando
-          if (hasHistory)
-            Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: _thinking ? null : () {
-                  AppHaptics.light(context);
-                  setState(() {
-                    _messages.clear();
-                    _streaming = '';
-                    _thinking  = false;
-                    _sessionId = null;
-                    _ctrl.clear();
-                  });
-                  _focus.unfocus();
-                },
-                child: Container(
-                  width: 28, height: 28,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: dark
-                        ? Colors.white.withValues(alpha: 0.07)
-                        : Colors.black.withValues(alpha: 0.05),
-                    border: Border.all(
-                      color: dark
-                          ? Colors.white.withValues(alpha: 0.12)
-                          : Colors.black.withValues(alpha: 0.10),
-                    ),
-                  ),
-                  child: Icon(Icons.close_rounded, size: 14,
-                    color: dark
-                        ? Colors.white.withValues(alpha: 0.55)
-                        : const Color(0xFF6B7280)),
-                ),
+          // ── Header premium: ícone + MEDCASES IA + botão fechar + expandir ──
+          Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF1E2330),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              border: Border(
+                bottom: BorderSide(color: Color(0xFF2A2D35), width: 0.5),
               ),
             ),
+            padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 26, height: 26,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(7),
+                    color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
+                    border: Border.all(
+                      color: const Color(0xFF00E5FF).withValues(alpha: 0.22),
+                      width: 0.8,
+                    ),
+                  ),
+                  child: const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF00E5FF)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: RichText(
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' IA',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFFD4AF37),
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Botão fechar (limpar) — apenas com histórico
+                if (hasHistory) ...[
+                  GestureDetector(
+                    onTap: _thinking ? null : () {
+                      AppHaptics.light(context);
+                      setState(() {
+                        _messages.clear();
+                        _streaming = '';
+                        _thinking  = false;
+                        _sessionId = null;
+                        _ctrl.clear();
+                      });
+                      _focus.unfocus();
+                    },
+                    child: Container(
+                      width: 26, height: 26,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        color: Colors.white.withValues(alpha: 0.06),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.10),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Icon(Icons.close_rounded, size: 13,
+                        color: Colors.white.withValues(alpha: 0.45)),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
+                // Botão expandir — navega para aba IA com histórico injetado
+                GestureDetector(
+                  onTap: () => _goToAiTab(null, _messages.isNotEmpty || _thinking),
+                  child: Container(
+                    width: 26, height: 26,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7),
+                      color: Colors.white.withValues(alpha: 0.06),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.10),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Icon(Icons.open_in_full_rounded, size: 12,
+                      color: Colors.white.withValues(alpha: 0.45)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Conteúdo: conversa + input
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
           // ── Área de conversa — cresce dinamicamente com as mensagens ──────
           conversationArea,
 
           const SizedBox(height: 10),
 
-          // ── Campo de entrada + botão enviar (smart) ───────────────────────
-          // Campo VAZIO → navega para tela cheia de IA
-          // ── Campo de entrada estilo Gemini — botão embutido via suffixIcon ──
+          // ── Campo de entrada dark style ───────────────────────────────────
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: _ctrl,
             builder: (_, val, __) {
@@ -1655,10 +1716,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(28),
-                    borderSide: BorderSide(
-                      color: dark
-                          ? const Color(0xFF60A5FA)
-                          : const Color(0xFF1B6FD8),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF00E5FF),  // cyan MedCases IA on focus
                       width: 1.5,
                     ),
                   ),
@@ -1678,14 +1737,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: _thinking
-                              ? (dark
-                                  ? const Color(0xFF0D1B2E)
-                                  : const Color(0xFFDDE8F9))
+                              ? const Color(0xFF1A2335)  // dark send disabled
                               : isEmpty
-                                  ? (dark
-                                      ? Colors.white.withValues(alpha: 0.10)
-                                      : Colors.black.withValues(alpha: 0.07))
-                                  : const Color(0xFF1B6FD8),
+                                  ? Colors.white.withValues(alpha: 0.10)
+                                  : const Color(0xFF008CA4),  // teal MedCases IA
                         ),
                         child: _thinking
                             ? const Padding(
@@ -1701,9 +1756,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                                     ? Icons.open_in_full_rounded
                                     : Icons.arrow_upward_rounded,
                                 color: isEmpty
-                                    ? (dark
-                                        ? Colors.white.withValues(alpha: 0.35)
-                                        : Colors.black.withValues(alpha: 0.25))
+                                    ? Colors.white.withValues(alpha: 0.35)
                                     : Colors.white,
                                 size: 17,
                               ),
@@ -1715,7 +1768,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             },
           ),
 
-        ]),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -2269,7 +2269,7 @@ class _AiScreenState extends State<AiScreen> {
             if (!_messages.any((m) => m.role == 'user'))
               Positioned.fill(
                 child: Align(
-                  alignment: const Alignment(0, -0.15),
+                  alignment: const Alignment(0, 0.25),  // SUPER ORDEM 11: rebaixado, próximo ao input
                   child: _ResponseModeToggle(
                     value: _longResponse,
                     dark: dark,
@@ -6652,7 +6652,7 @@ class _InputBarState extends State<_InputBar> {
     // fundo escuro translúcido, sem bordas internas, sem caixas separadas.
     // O mic, TextField e seta vivem juntos na mesma Row interna da pílula.
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2.5), // BUILD 275: -3px height
+      padding: const EdgeInsets.fromLTRB(16, 2.5, 16, 12), // SUPER ORDEM 11: bottom:12 clearance
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
         child: BackdropFilter(
@@ -6738,10 +6738,10 @@ class _InputBarState extends State<_InputBar> {
                           child: TextField(
                             controller: widget.ctrl,
                             focusNode: widget.focusNode,
-                            maxLines: 5,
+                            maxLines: 1,  // SUPER ORDEM 11: slim single-line
                             minLines: 1,
-                            textInputAction: TextInputAction.newline,
-                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.send,
+                            keyboardType: TextInputType.text,
                             autofillHints: const [],
                             enableSuggestions: true,
                             autocorrect: true,
@@ -6763,7 +6763,7 @@ class _InputBarState extends State<_InputBar> {
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 6,
+                                horizontal: 0, vertical: 4,  // SUPER ORDEM 11: compacto
                               ),
                             ),
                           ),
