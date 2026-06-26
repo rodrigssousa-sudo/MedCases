@@ -26,6 +26,7 @@ import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela int
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
 import '../services/ai_smart_router.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
 import '../services/offline_calculator_cache_service.dart'; // BUILD 240: local cache URL
+import '../widgets/ecg_loading.dart'; // BUILD 276: ECG loading indicator
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1170,6 +1171,11 @@ class _AiScreenState extends State<AiScreen> {
   // Criado ao iniciar streaming, descartado ao terminar.
   ValueNotifier<String>? _streamingTextNotifier;
 
+  // BUILD 276 — Fade-in tracker: msgId of the bubble currently fading in.
+  // Set to the new AI message's id in onDone; cleared after the animation ends.
+  // Used by ListView.builder to wrap the bubble in AnimatedOpacity.
+  String? _fadingInMsgId;
+
   // ── Build 135: Debounce de 300ms no submit ─────────────────────────────────
   // Fecha a janela residual (~50ms) entre finally() e listen() registration
   // em que um clique ultra-rápido poderia passar pelo _aiCallInFlight.
@@ -1266,55 +1272,37 @@ class _AiScreenState extends State<AiScreen> {
         longResponse:  _longResponse,  // Motor de Partida (Build 149)
         fromButton:    fromButton,      // BUILD 262: preserves thread on action buttons
         onChunk: (accumulated) {
-          if (!mounted) return;
-          // ── STREAM SANITIZER: expurga metadados antes de exibir ────────────
-          // Remove "Confianza Clínica:", "El usuario solicita..." e variantes
-          // que o modelo às vezes emite como primeiras linhas do stream.
-          // Build 114: try-catch defensivo em torno de todo o bloco onChunk.
-          // Token SSE malformado/cortado não pode crashar o browser móvel —
-          // ignoramos silenciosamente e aguardamos o próximo chunk completo.
+          // ── BUILD 276: SUPPRESSED CHUNK RENDERING ─────────────────────────
+          // Architecture decision: keep _thinking=true and EcgLoadingBlock
+          // visible throughout the entire wait. Chunks are buffered internally
+          // into the _messages slot (created once on first chunk) without any
+          // UI state change. The response is committed in a single setState in
+          // onDone — creating the solid-block + fade-in experience.
           //
-          // Build 230 — Anti-Freezing (Pilar 4):
-          //   _stripMetadataHeaders() é pesado (dotAll multi-alternância RegEx).
-          //   Roda APENAS nos primeiros 12 chunks onde leaks são detectáveis.
-          //   Após chunk 12, fast path: accumulated vai direto ao notifier.
+          // This eliminates the "typewriter artefact" (raw asterisks rendered
+          // as <pre> blocks in Flutter Markdown during partial stream output)
+          // described in BUILD 275-FIX. The ECG indicator stays on screen
+          // until the full, post-processed response is ready.
+          if (!mounted) return;
           try {
             chunksSinceStart++;
+            // Metadata strip: still run on first 12 chunks so the buffered
+            // text is clean when onDone reads _messages[streamingMsgIdx].
             final String cleanedChunk;
             if (metaHeadersConfirmedClean) {
-              // Fast path: zero RegEx, zero bloqueio de main thread.
               cleanedChunk = accumulated;
             } else {
               cleanedChunk = _stripMetadataHeaders(accumulated);
               if (chunksSinceStart >= 12) metaHeadersConfirmedClean = true;
             }
             if (streamingMsgIdx == -1) {
-              // ── PRIMEIRO CHUNK: wide setState apenas UMA VEZ ────────────────
-              // Substitui ThinkingBubble por bolha de streaming real.
-              // Este é o único setState() largo — ocorre apenas no primeiro chunk.
-              // Cria ValueNotifier para chunks subsequentes (ultra-localizado).
-              _streamingTextNotifier?.dispose();
-              _streamingTextNotifier = ValueNotifier<String>(cleanedChunk);
-              setState(() {
-                _thinking = false;
-                _isStreaming = true;
-                _scrollGeneration++;
-                _lastAiIndex = _messages.length;
-                _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
-                streamingMsgIdx = _messages.length - 1;
-              });
+              // First chunk: create the internal buffer slot.
+              // NO setState — _thinking stays true, ECG stays visible.
+              _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
+              streamingMsgIdx = _messages.length - 1;
             } else {
-              // ── CHUNKS SUBSEQUENTES: atualiza APENAS o notifier ─────────────
-              // Build 188: zero setState() na tela pai — apenas o notifier é
-              // atualizado, reconstruindo exclusivamente o widget da bolha ativa.
-              //
-              // Fix 4 — Chunk Cadence (25ms throttle):
-              // Limita renders do notifier para no máximo 1 a cada 25ms.
-              // Cadencia a digitação visual (efeito typewriter suave) e absorve
-              // picos de latência de rede sem tremer ou saltar a UI.
-              // Sempre sincroniza _messages (buffer interno) independente do throttle.
-              final nowChunkMs = DateTime.now().millisecondsSinceEpoch;
-              // Sincroniza _messages para que onDone tenha o texto correto
+              // Subsequent chunks: update internal buffer only.
+              // NO notifier update, NO setState, NO UI repaint.
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
                 _messages[streamingMsgIdx] = _ChatMsg.withId(
                   id: _messages[streamingMsgIdx].id,
@@ -1322,16 +1310,9 @@ class _AiScreenState extends State<AiScreen> {
                   text: cleanedChunk,
                 );
               }
-              // Throttle de render: só atualiza o notifier se passaram ≥25ms
-              if (nowChunkMs - _lastChunkRenderMs >= 25) {
-                _lastChunkRenderMs = nowChunkMs;
-                _streamingTextNotifier?.value = cleanedChunk;
-              }
             }
-            _scrollDown();
           } catch (_) {
-            // Chunk inválido: descartado silenciosamente.
-            // O próximo chunk acumulado substituirá com o texto correto.
+            // Malformed chunk: silently discarded.
           }
         },
         onDone: (finalText) {
@@ -1459,6 +1440,19 @@ class _AiScreenState extends State<AiScreen> {
               );
             }
 
+            // ── BUILD 276: CLIENT-SIDE BULLET STRIP (safety net) ─────────────
+            // Final defence against Gemini emitting " * bullet" (ASCII-32 before *).
+            // Strips any leading whitespace from lines that start with optional
+            // spaces then `*` — the same pattern that causes Flutter Markdown to
+            // render as a <pre> code block instead of a bullet list.
+            // Runs once on the definitive final text (not on chunks) — zero cost.
+            safeFinalText = safeFinalText
+                .split('\n')
+                .map((line) => line.trimLeft().isEmpty ? line : (
+                  line.trimLeft().startsWith('*') ? line.trimLeft() : line
+                ))
+                .join('\n');
+
             // ── BUILD 254: SINCRONIZAÇÃO IMEDIATA DO TÉRMINO DO STREAM ────────
             // PROBLEMA: o layout 2-passos do BUILD 101 (texto em setState#1 com
             // _isStreaming=true, cursor removido em setState#2 via postFrameCallback)
@@ -1479,6 +1473,13 @@ class _AiScreenState extends State<AiScreen> {
             _streamingTextNotifier?.dispose();
             _streamingTextNotifier = null;
 
+            // BUILD 276: resolve which msgId will be the new AI bubble so we
+            // can attach the fade-in to it in ListView.builder.
+            String? newBubbleMsgId;
+            if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
+              newBubbleMsgId = _messages[streamingMsgIdx].id;
+            }
+
             // ÚNICO setState de fechamento: texto final + fim de stream em um frame.
             setState(() {
               _thinking     = false;
@@ -1492,12 +1493,24 @@ class _AiScreenState extends State<AiScreen> {
                   role: 'ai',
                   text: safeFinalText,
                 );
+                newBubbleMsgId = _messages[streamingMsgIdx].id;
               } else {
-                // Fallback legado (sem streaming)
+                // Fallback legado (sem streaming prévia de buffer)
                 _scrollGeneration++;
                 _lastAiIndex = _messages.length;
-                _messages.add(_ChatMsg(role: 'ai', text: safeFinalText));
+                final newMsg = _ChatMsg(role: 'ai', text: safeFinalText);
+                _messages.add(newMsg);
+                newBubbleMsgId = newMsg.id;
               }
+              // BUILD 276: register fade-in target
+              _fadingInMsgId = newBubbleMsgId;
+            });
+
+            // BUILD 276: auto-clear _fadingInMsgId after animation completes (400ms)
+            // so the AnimatedOpacity wrapper is removed on the next rebuild.
+            Future.delayed(const Duration(milliseconds: 450), () {
+              if (!mounted) return;
+              setState(() { _fadingInMsgId = null; });
             });
 
             // ── Fix 1: Persistência Imediata por Turno (pós-resposta da IA) ──
@@ -1886,8 +1899,15 @@ class _AiScreenState extends State<AiScreen> {
                 return SizedBox(key: _bottomKey, height: 1);
               }
               if (_thinking && i == _messages.length) {
-                // Build 188: RepaintBoundary isola o ThinkingBubble animado
-                return RepaintBoundary(child: _ThinkingBubble(dark: dark));
+                // BUILD 276: EcgLoadingBlock replaces the old 3-dot ThinkingBubble.
+                // RepaintBoundary isolates the animated CustomPainter so it does NOT
+                // trigger full-list repaints on every animation frame.
+                return RepaintBoundary(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 52, 8),
+                    child: EcgLoadingBlock(dark: dark, lang: p.lang),
+                  ),
+                );
               }
               final msg = _messages[i];
               if (msg.role == 'user') {
@@ -1975,7 +1995,12 @@ class _AiScreenState extends State<AiScreen> {
                   isPlantaoFinalBubble &&
                   plantaoPipelineResult?.response != null;
 
-              return RepaintBoundary(
+              // BUILD 276: Fade-in wrapper — applied only to the freshly committed
+              // AI bubble (msg.id == _fadingInMsgId). Starts at opacity 0 and
+              // animates to 1 over 380ms. After 450ms _fadingInMsgId is cleared
+              // via a delayed setState, removing the AnimatedOpacity overhead.
+              final bool isFadingIn = _fadingInMsgId != null && msg.id == _fadingInMsgId;
+              Widget bubbleContent = RepaintBoundary(
                 child: KeyedSubtree(
                 key: ValueKey('msg_${msg.id}'),
                 child: Column(
@@ -2130,6 +2155,23 @@ class _AiScreenState extends State<AiScreen> {
                 ),
                 ),
               );
+              // BUILD 276: wrap new bubble in TweenAnimationBuilder for smooth
+              // fade-in from 0→1 (380ms easeOut). AnimatedOpacity cannot tween
+              // from 0→1 on first build (it starts at whatever opacity it had
+              // before). TweenAnimationBuilder always animates from `begin` to
+              // `end` the first time it renders, guaranteeing the fade effect.
+              if (isFadingIn) {
+                return TweenAnimationBuilder<double>(
+                  key: ValueKey('fadein_${msg.id}'),
+                  tween: Tween<double>(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 380),
+                  curve: Curves.easeOut,
+                  builder: (_, opacity, child) =>
+                      Opacity(opacity: opacity, child: child),
+                  child: bubbleContent,
+                );
+              }
+              return bubbleContent;
             },
           );
 
