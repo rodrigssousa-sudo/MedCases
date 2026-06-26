@@ -5166,13 +5166,15 @@ class _AiBlockBubble extends StatelessWidget {
                       const Icon(Icons.medication_rounded, size: 14,
                           color: Color(0xFF00E5FF)),
                       const SizedBox(width: 6),
+                      // ORDEM 14 — fail-safe: CAPSLOCK + preto sólido
                       Expanded(child: Text(
-                        label.isEmpty ? trimmed : label,
-                        style: TextStyle(
-                          fontSize: 14,
+                        (label.isEmpty ? trimmed : label).toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 13.5,
                           fontWeight: FontWeight.w800,
-                          color: dark ? const Color(0xFF00E5FF) : kGreen,
+                          color: Color(0xFF1A1A1A),
                           height: 1.3,
+                          letterSpacing: 0.5,
                         ),
                       )),
                     ],
@@ -5468,7 +5470,10 @@ class _PlantaoRenderer extends StatelessWidget {
     required bool isHeader,
   }) {
     if (isHeader) {
-      // Bloco 🟥 — cabeçalho em destaque
+      // ORDEM 14 — Blindagem fail-safe do cabeçalho 🟥
+      // Texto: CAPSLOCK + preto sólido 0xFF1A1A1A — imune a falhas de parse/streaming.
+      // Emoji conserva a cor semântica (emojiColor) para manter a hierarquia visual.
+      const kHeaderTextColor = Color(0xFF1A1A1A);
       return RichText(
         text: TextSpan(
           children: [
@@ -5482,13 +5487,13 @@ class _PlantaoRenderer extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: text,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: emojiColor,
+              text: text.toUpperCase(),
+              style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w800,
+                color: kHeaderTextColor,
                 height: 1.4,
-                letterSpacing: 0.2,
+                letterSpacing: 0.5,
               ),
             ),
           ],
