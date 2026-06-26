@@ -296,33 +296,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 20),
                     _HomeDivider(dark: dark),
                     const SizedBox(height: 20),
-                    // ── Consumer garante rebuild do painel quando pinnedCalcIds /
-                    // pinnedDrugs / plantaoPatients mudam no Web desktop.
-                    // Sem este wrapper, o _HomeScreenState usa context.read e
-                    // não re-renderiza a coluna quando o usuário pina uma calc
-                    // via modal sheet — o Dashboard ficaria desatualizado.
+                    // ══════════════════════════════════════════════════════════
+                    // BUILD 281 — ISOLAMENTO DE ESCOPO: Meu Plantão (desktop)
+                    // OCULTO para submissão App Store / Google Play.
+                    // REVERSÃO: remover /* e */ para reativar o Consumer abaixo.
+                    // Estrutura: lib/widgets/meu_plantao_dashboard.dart (intacta)
+                    // ══════════════════════════════════════════════════════════
+                    /*
                     Consumer<AppProvider>(
                       builder: (ctx, _, __) => MeuPlantaoDashboard(
                         onOpenDrug: (drug) => showDrugDetailSheet(ctx, drug),
                         onOpenCalc: (calcId) {
-                          // Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
-                          //   3=Eletrólitos 4=Referência 5=Pediatria
-                          //   Infusão e Prescrições ocultas (Apple 1.4.1) → fallback 0
                           const calcTabMap = {
                             'calc_biometria':   0,
                             'calc_scores':      1,
                             'calc_cardio':      2,
                             'calc_eletrólitos': 3,
-                            'calc_infusao':     0, // oculta → fallback Biometria
+                            'calc_infusao':     0,
                             'calc_referencia':  4,
-                            'calc_prescricoes': 0, // oculta → fallback Biometria
+                            'calc_prescricoes': 0,
                             'calc_pediatria':   5,
                           };
                           toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
                           widget.onTabChange(4);
                         },
                         onManageTap: () => showPlantaoManageSheet(ctx),
-                        // Build 195 FIX: usa Navigator.push com sessão pré-selecionada
                         onOpenInternacion: (session) => Navigator.of(ctx).push(
                           HomeScreen.slideRoute(
                             _AdultoShell(
@@ -333,6 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
+                    */
                   ]),
                 ),
 
@@ -401,19 +400,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final bool isTabletLandscape = !kIsWeb && availableWidth >= 600;
     final double contentMaxWidth = isTabletLandscape ? 800.0 : double.infinity;
 
-    // BUILD 280 — FIX: bottom padding dinâmico para compensar o FloatingFooter.
-    // O _FloatingFooter é um overlay Positioned(bottom:0) com:
-    //   • barHeight: 48px (nav bar)
-    //   • _LegalBar: ~22px
-    //   • SafeArea bottom (iPhone home indicator): variável (~0–34px)
-    // Com apenas 24px de padding, o _HomeMiGuardiaSection ficava atrás do
-    // footer e invisível ao usuário — o scroll não chegava até ele.
-    // Fix: usa MediaQuery.padding.bottom para ler o safe-area real do dispositivo
-    // e adiciona a altura fixa do footer (48 nav + 22 legal = 70px) + margem (16px).
+    // BUILD 281 — bottomPad reajustado: módulo Meu Plantão isolado do layout.
+    // Footer overlay (48px nav + 22px legal) + safe area do dispositivo + 24px margem.
+    // Sem o painel MiGuardia, não há necessidade do clamp 160px anterior.
     final double safeBottom = MediaQuery.of(context).padding.bottom;
-    // kIsWeb: o footer web está no fluxo normal (não overlay) — usa 24px fixo.
-    // Mobile: compensação total = footer (70px) + safe area + margem generosa.
-    final double bottomPad  = kIsWeb ? 24.0 : (safeBottom + 70.0 + 16.0).clamp(86.0, 160.0);
+    // kIsWeb: footer no fluxo normal — 24px fixo.
+    // Mobile: nav(48) + legal(22) + safeArea + 24 margem = confortável sem excesso.
+    final double bottomPad  = kIsWeb ? 24.0 : (safeBottom + 24.0).clamp(24.0, 86.0);
 
     Widget mobileContent = SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -480,14 +473,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
 
-          // ── MI GUARDIA — visível em TODAS as plataformas ────────────────────
+          // ══════════════════════════════════════════════════════════════════
+          // BUILD 281 — ISOLAMENTO DE ESCOPO: Meu Plantão / Mi Guardia
+          // Módulo OCULTO para submissão App Store / Google Play.
+          // REVERSÃO: remover os comentários /* e */ abaixo para reativar.
+          // Estrutura interna intacta em: lib/widgets/meu_plantao_dashboard.dart
+          // ══════════════════════════════════════════════════════════════════
+          /*
           _HomeMiGuardiaSection(
             dark: dark,
             isEs: isEs,
             onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
             onOpenCalc: (calcId) {
-              // Tabs visíveis: 0=Biometria 1=Scores 2=Cardio
-              //   3=Eletrólitos 4=Referência 5=Pediatria
               const calcTabMap = {
                 'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
                 'calc_eletrólitos': 3, 'calc_infusao': 0,
@@ -498,7 +495,6 @@ class _HomeScreenState extends State<HomeScreen> {
               widget.onTabChange(4);
             },
             onManageTap: () => showPlantaoManageSheet(context),
-            // Build 195 FIX: usa Navigator.push com sessão pré-selecionada
             onOpenInternacion: (session) => Navigator.of(context).push(
               HomeScreen.slideRoute(
                 _AdultoShell(
@@ -509,6 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 10),
+          */
 
           // ── BLOCO WEB-ONLY — EMERGÊNCIAS RÁPIDAS ────────────────────────────
           if (kIsWeb) ...[
