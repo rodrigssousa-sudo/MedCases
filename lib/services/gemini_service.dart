@@ -272,6 +272,14 @@ class GeminiService {
     }
   }
 
+  /// BUILD 277: Wipes the in-memory cached API key without touching Firestore.
+  /// Called during checkGeminiSession() for non-privileged accounts to prevent
+  /// API key bleed from previous admin sessions.
+  static void clearCachedApiKey() {
+    _geminiApiKey = '';
+    debugPrint('[GeminiService] clearCachedApiKey() — in-memory key wiped');
+  }
+
   /// Verifica se a API Key foi carregada (sem expor a chave em si).
   static bool get hasApiKey => _geminiApiKey.isNotEmpty;
 

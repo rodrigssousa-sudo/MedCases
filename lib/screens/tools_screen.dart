@@ -80,11 +80,11 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
       // ── Header (visível apenas no desktop ou quando explicitamente solicitado)
       if (showHeader)
         Container(
+          // BUILD 277: flat dark topbar — no hard gradient
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF0F1116), Color(0xFF1B3D2A), Color(0xFF10B981)],
+            color: Color(0xFF12161F),
+            border: Border(
+              bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
             ),
           ),
           child: Column(children: [
@@ -109,24 +109,27 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           ]),
         ),
       // ── TabBar (sempre visível) ──────────────────────────────────
+      // BUILD 277: flat dark container, no gradient
       Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F1116), Color(0xFF1B3D2A), Color(0xFF10B981)],
+          color: Color(0xFF12161F),
+          border: Border(
+            bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
           ),
         ),
         child: TabBar(
           controller: _tabCtrl,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          indicatorColor: kToolGold,
-          indicatorWeight: 3,
-          labelColor: kToolGold,
-          unselectedLabelColor: Colors.white60,
-          labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-          unselectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+          // BUILD 277: thin underline indicator, crimson brand colour
+          indicatorColor: const Color(0xFFAC2A2A),
+          indicatorWeight: 2.5,
+          indicatorSize: TabBarIndicatorSize.label,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white38,
+          labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.4),
+          unselectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, letterSpacing: 0.3),
+          dividerColor: Colors.transparent,
           tabs: [
             Tab(text: isEs ? 'BIOMETRÍA' : 'BIOMETRIA'),
             Tab(text: isEs ? 'SCORES' : 'SCORES'),

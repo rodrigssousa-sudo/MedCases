@@ -1879,6 +1879,29 @@ class AppProvider extends ChangeNotifier {
 
     final future = () async {
       try {
+        // ── BUILD 277: SECURITY WIPE for non-admin/non-master accounts ────────
+        // On every boot, if the active account is NOT privileged, forcibly purge
+        // any cached API key from SharedPreferences and localStorage so that a
+        // key loaded during a previous admin session cannot bleed into a regular
+        // user's session. Admin/master accounts skip this wipe — their key
+        // loading proceeds normally through _ensureGeminiApiKey().
+        final bool isPrivileged = isAdmin || isMaster;
+        if (!isPrivileged) {
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.remove('medcases_gak');
+            if (kIsWeb) {
+              _webRemoveLS('medcases_gak');
+              _webRemoveLS('gemini_google_email');
+            }
+            // Zero out the in-memory key — GeminiService.hasApiKey becomes false
+            GeminiService.clearCachedApiKey();
+            debugPrint('[BUILD277][SecurityWipe] Non-privileged boot — cached API key purged');
+          } catch (e) {
+            debugPrint('[BUILD277][SecurityWipe] wipe error (non-fatal): $e');
+          }
+        }
+
         if (_geminiConnected && _geminiEmail.isNotEmpty && GeminiService.hasApiKey) {
           return;
         }

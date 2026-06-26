@@ -840,15 +840,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               // Header — visível apenas no desktop (sem shell AppBar)
               if (showListHeader)
               Container(
+                // BUILD 277: flat dark header — no hard gradient
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF0D1B2A),  // navy profundo
-                      Color(0xFF1A2F4A),  // azul meia-noite
-                      Color(0xFF1E3A5F),  // azul médico
-                    ],
+                  color: Color(0xFF12161F),
+                  border: Border(
+                    bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
                   ),
                 ),
                 child: Padding(
@@ -3690,14 +3686,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       )
       else
         // Mobile/tablet: header compacto — ações + progresso + tabs sem gradiente
+        // BUILD 277: flat dark header
         Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF07110d), Color(0xFF0F2D1C)],
-            ),
-            border: Border(bottom: BorderSide(color: Color(0xFF1A3A28), width: 1)),
+            color: Color(0xFF12161F),
+            border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5)),
           ),
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -3728,16 +3721,34 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                         }
                       }
                     }),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: active ? kGold : Colors.white.withValues(alpha: 0.1),
-                        border: Border.all(color: active ? kGold : Colors.white.withValues(alpha: 0.15)),
-                      ),
-                      child: Text(_sections[i].$2,
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                          color: active ? const Color(0xFF0F1116) : Colors.white.withValues(alpha: 0.85))),
+                    // BUILD 277: minimalist underline tab (no background, no border box)
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+                          child: Text(_sections[i].$2,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                              color: active
+                                  ? Colors.white
+                                  : Colors.white.withValues(alpha: 0.45),
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                        // Thin underline for active tab
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          height: 2,
+                          width: active ? 24 : 0,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFAC2A2A),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );

@@ -2437,6 +2437,14 @@ class _AiScreenState extends State<AiScreen> {
             : const SizedBox.shrink(),
       ),
 
+      // ── BUILD 277: INPUT LOCKOUT for disconnected non-privileged users ────
+      // When forceDisconnectedLabel=true the InputBar is replaced by a locked
+      // placeholder + obstruction connect button aligned with the spec:
+      //   • field shown at 0.3 opacity with AbsorbPointer (no interaction)
+      //   • centred "Acesso Restrito à IA" label + ElevatedButton in crimson
+      if (forceDisconnectedLabel)
+        _DisconnectedInputLock(dark: dark, lang: p.lang, onConnect: _openAiSettings),
+
       // ── Barra de input — centralizada no desktop ───────────────────────
       // Build 158.3: Padding inferior DINÂMICO sincronizado com scrollingDown.
       // - Nav visível (scrollingDown=false): 78px → InputBar acima do footer
@@ -2444,6 +2452,7 @@ class _AiScreenState extends State<AiScreen> {
       // - Nav sumindo (scrollingDown=true) : 0px → imersão total, zero espaço
       //   no rodapé, o chat chega até a borda física da tela
       // Desktop (chatMaxWidth != null): sem floating footer → sem padding.
+      if (!forceDisconnectedLabel)
       chatMaxWidth != null
           ? Center(
               child: ConstrainedBox(
@@ -2613,17 +2622,20 @@ class _MobileAiActionBar extends StatelessWidget {
                             ),
                           ])
                         : Text(
+                            // BUILD 277: non-admin disconnected → neutral grey '• IA Desconectada'
                             hasRealAi
                                 ? (lang == 'es' ? '• Conectado' : '• Conectado')
                                 : (forceDisconnectedLabel
-                                    ? (lang == 'es' ? '• Desconectado' : '• Desconectado') // BUILD 275
+                                    ? (lang == 'es' ? '• IA Desconectada' : '• IA Desconectada')
                                     : (lang == 'es' ? '• Conectar IA' : '• Conectar IA')),
                             style: TextStyle(
                               fontSize: 11, fontWeight: FontWeight.w700,
                               color: hasRealAi
                                   ? kGreenLive
                                   : (forceDisconnectedLabel
-                                      ? const Color(0xFFEF4444) // red for Desconectado
+                                      ? (dark   // BUILD 277: neutral grey (not red)
+                                          ? Colors.white.withValues(alpha: 0.38)
+                                          : Colors.grey.shade500)
                                       : (dark
                                           ? Colors.white.withValues(alpha: 0.40)
                                           : Colors.grey.shade500)),
@@ -2870,12 +2882,13 @@ class _WaHeader extends StatelessWidget {
                                   ),
                                 const SizedBox(width: 4),
                                 Text(
+                                  // BUILD 277: neutral 'IA Desconectada' label for non-admin
                                   keyLoading
                                       ? 'Conectando...'
                                       : isConnected
                                           ? (lang == 'es' ? 'Conectado' : 'Conectado')
                                           : (forceDisconnectedLabel
-                                              ? (lang == 'es' ? 'Desconectado' : 'Desconectado') // BUILD 275
+                                              ? (lang == 'es' ? 'IA Desconectada' : 'IA Desconectada')
                                               : (lang == 'es' ? 'Conectar IA' : 'Conectar IA')),
                                   style: TextStyle(
                                     fontSize: 10,
@@ -2883,7 +2896,7 @@ class _WaHeader extends StatelessWidget {
                                     color: isConnected
                                         ? const Color(0xFF00E5FF)
                                         : (forceDisconnectedLabel
-                                            ? const Color(0xFFEF4444) // red BUILD 275
+                                            ? Colors.white.withValues(alpha: 0.42) // BUILD 277: neutral grey
                                             : Colors.white.withValues(alpha: 0.6)),
                                   ),
                                 ),
@@ -6418,6 +6431,114 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
 // primeiro chunk chegar). Transição natural: ThinkingBubble → streaming bubble.
 // ─────────────────────────────────────────────────────────────────────────────
 typedef _TypingIndicator = _ThinkingBubble;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _DisconnectedInputLock — BUILD 277
+//
+// Replaces the InputBar for non-admin/non-master users when no AI connection
+// is active. Shows:
+//   • A ghosted, locked text field (AbsorbPointer + opacity 0.28)
+//   • "Acesso Restrito à IA" label in muted text
+//   • Premium ElevatedButton in MedCases crimson (#AC2A2A) to trigger Google Auth
+//
+// Design principle: the obstruction is intentional — it communicates clearly
+// that connecting is required, without being alarmist (no red banners).
+// ─────────────────────────────────────────────────────────────────────────────
+class _DisconnectedInputLock extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  final VoidCallback onConnect;
+
+  const _DisconnectedInputLock({
+    required this.dark,
+    required this.lang,
+    required this.onConnect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isEs = lang == 'es';
+    final bg   = dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F5F5);
+    final borderColor = dark
+        ? Colors.white.withValues(alpha: 0.08)
+        : Colors.black.withValues(alpha: 0.08);
+    final labelColor = dark
+        ? Colors.white.withValues(alpha: 0.38)
+        : Colors.black.withValues(alpha: 0.42);
+
+    return Container(
+      color: bg,
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Ghosted text field (visual only) ──────────────────────────────
+          Opacity(
+            opacity: 0.28,
+            child: AbsorbPointer(
+              child: Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: borderColor),
+                  color: dark ? const Color(0xFF252930) : Colors.white,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  isEs ? 'Conecta tu cuenta para usar la IA…'
+                       : 'Conecte sua conta para usar a IA…',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: dark ? Colors.white54 : Colors.black38,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // ── Access restricted label ─────────────────────────────────────
+          Text(
+            isEs ? 'Acceso Restringido a la IA'
+                 : 'Acesso Restrito à IA',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: labelColor,
+              letterSpacing: 0.2,
+            ),
+          ),
+          const SizedBox(height: 10),
+          // ── Premium connect button ───────────────────────────────────────
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onConnect,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFAC2A2A),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                elevation: 0,
+              ),
+              child: Text(
+                isEs ? '🔑 Conectar via Google para activar IA'
+                     : '🔑 Conectar via Google para ativar IA',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // _AudioWave — 5 barras verticais finas animadas pelo nível do microfone.
