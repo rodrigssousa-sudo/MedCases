@@ -4015,6 +4015,20 @@ String _plantaoTruncationGuard(String text, String lang,
     final alreadyStructured = ResponseReformatter.isAlreadyStructured(text);
 
     if (!alreadyStructured && userQuery.isNotEmpty && hasClinical) {
+      // BUILD 277-PATCH — GUARD hasInlineBold:
+      // Se a IA já emitiu marcadores de negrito ** no texto, significa que
+      // o RAW_AI_OUTPUT já possui formatação Markdown inline intacta.
+      // Nesse caso, NÃO aplicar ResponseReformatter.applyTemplate() — ele
+      // reconstrói a resposta do zero e pode perder os ** markers.
+      // Só reformatar quando o texto é prosa pura sem nenhum ** bold marker.
+      final hasInlineBold = text.contains('**');
+      if (hasInlineBold) {
+        debugPrint('[PLANTAO_ORGANIZER] action=preserve '
+            'reason=has_inline_bold_bypass '
+            'hiddenFields=${pipelineResult.hiddenFields}');
+        return text;
+      }
+
       // Detecta intenção localmente a partir da query do usuário
       final analysis = PlantaoIntentEngine.analyze(userQuery);
       final intent = analysis.primaryIntent;
@@ -6114,6 +6128,13 @@ class _AiBubbleState extends State<_AiBubble> {
   /// Build 188: renomeado de _computeBlocks para aceitar texto como parâmetro
   /// explícito (em vez de sempre usar widget.text) — necessário para que
   /// _onStreamingChunk possa computar blocos do texto do notifier.
+  ///
+  /// BUILD 277-PATCH: bypass transparente de _cleanAiText para o caminho
+  /// não-streaming (texto final commitado). O RAW_AI_OUTPUT é injetado
+  /// diretamente sem mutação de string intermediária — preserva marcadores
+  /// de negrito (**) e emojis adjacentes intactos.
+  /// _cleanAiText é mantido APENAS para o caminho de streaming (chunks parciais)
+  /// onde a sanitização de CoT/metadados ainda é necessária durante o stream.
   List<String> _computeBlocksFromText(String text) {
     // Build 123 — DESTRUIÇÃO DO SPLIT:
     // _splitIntoBlocks() foi removido do pipeline de renderização.
@@ -6125,8 +6146,22 @@ class _AiBubbleState extends State<_AiBubble> {
       final safeText = widget.isStreaming
           ? _sanitizePartialMarkdown(displayText)
           : displayText;
-      final cleaned = _cleanAiText(safeText);
-      final result = cleaned.isEmpty ? safeText.trim() : cleaned;
+
+      // BUILD 277-PATCH — BYPASS TRANSPARENTE:
+      // Caminho não-streaming (texto final): injeta RAW_AI_OUTPUT diretamente,
+      // sem passar por _cleanAiText. Isso preserva os marcadores ** de negrito
+      // e caracteres adjacentes a emojis que a regex step 5b destruía.
+      // Caminho streaming (chunks parciais): mantém _cleanAiText para filtrar
+      // CoT/metadados/asteriscos ornamentais que chegam no meio do stream.
+      final String result;
+      if (widget.isStreaming) {
+        final cleaned = _cleanAiText(safeText);
+        result = cleaned.isEmpty ? safeText.trim() : cleaned;
+      } else {
+        // Texto final: pass-through direto — preserva toda a formatação Markdown
+        result = safeText.trim();
+      }
+
       return result.isEmpty ? [] : [result];
     } catch (_) {
       if (_cachedBlocks.isNotEmpty) return _cachedBlocks;
