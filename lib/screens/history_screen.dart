@@ -840,17 +840,17 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               // Header — visível apenas no desktop (sem shell AppBar)
               if (showListHeader)
               Container(
-                // BUILD 277-CROMATICO: Amber/burnt orange gradient for Historia Clinica
+                // BUILD 282 ORDEM 6: Laranja queimado→vibrante topLeft→bottomRight
+              // Cores: 431407 (laranja escuro) → EA580C (laranja vibrante) → FB923C (laranja claro)
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFF92400E), // amber-800 top
-                      Color(0xFF78350F), // amber-900 mid
-                      Color(0xFF12161F), // app dark bottom
+                      Color(0xFF431407), // laranja queimado escuro
+                      Color(0xFFEA580C), // laranja vibrante
+                      Color(0xFFFB923C), // laranja claro
                     ],
-                    stops: [0.0, 0.45, 1.0],
                   ),
                   border: Border(
                     bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
@@ -939,42 +939,96 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   ),
                 ),
               ),
-              // Mobile: barra compacta com contadores + botão Nova HC
+              // BUILD 282 ORDEM 6: 3 pílulas laranja — MINHAS | PÚBLICAS | + NOVA HC
+              // Substitui barra azul (contadores + botão) por fileira simétrica de pílulas
               if (!showListHeader)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
-                  child: Row(children: [
-                    Text('${mine.length} ${_hcT(lang, 'my_hcs_count')}',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                        color: const Color(0xFF3B82F6).withValues(alpha: 0.9))),
-                    const SizedBox(width: 8),
-                    Text('${visiblePub.length} ${_hcT(lang, 'pub_count')}',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                        color: Color(0xFF93C5FD))),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => _startNewHistory(p, lang),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF431407), // laranja escuro
+                        Color(0xFFEA580C), // laranja vibrante
+                        Color(0xFFFB923C), // laranja claro
+                      ],
+                    ),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  child: Row(
+                    children: [
+                      // Pílula 1: MINHAS
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => _tabCtrl.animateTo(0),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            margin: const EdgeInsets.only(right: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white.withValues(alpha: 0.18),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
+                            ),
+                            child: Text(
+                              '${mine.length} ${lang == 'es' ? "MIS HCs" : "MINHAS"}',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                                color: Colors.white, letterSpacing: 0.3),
+                            ),
                           ),
                         ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.add_rounded, size: 14, color: Colors.white),
-                          const SizedBox(width: 4),
-                          Text(_hcT(lang, 'new_hc'),
-                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Colors.white)),
-                        ]),
                       ),
-                    ),
-                  ]),
+                      // Pílula 2: PÚBLICAS
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => _tabCtrl.animateTo(1),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white.withValues(alpha: 0.18),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
+                            ),
+                            child: Text(
+                              '${visiblePub.length} PÚBLICAS',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                                color: Colors.white, letterSpacing: 0.3),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Pílula 3: + NOVA HC (ação principal)
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => _startNewHistory(p, lang),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            margin: const EdgeInsets.only(left: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white.withValues(alpha: 0.25),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.70), width: 1.5),
+                            ),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                              const Icon(Icons.add_rounded, size: 13, color: Colors.white),
+                              const SizedBox(width: 3),
+                              Text(
+                                lang == 'es' ? 'NUEVA HC' : 'NOVA HC',
+                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                                  color: Colors.white, letterSpacing: 0.3),
+                              ),
+                            ]),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              // BUILD 278: pill tabs unificados — amber accent (#F59E0B) para Historia Clinica
+              // BUILD 282 ORDEM 6: TabBar laranja (EA580C) abaixo das pílulas
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
@@ -987,9 +1041,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                       controller: _tabCtrl,
                       indicator: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.18),
+                        // BUILD 282: laranja vibrante (EA580C) — consistente com gradiente
+                        color: const Color(0xFFEA580C).withValues(alpha: 0.18),
                         border: Border.all(
-                          color: const Color(0xFFF59E0B).withValues(alpha: 0.60),
+                          color: const Color(0xFFEA580C).withValues(alpha: 0.65),
                           width: 1,
                         ),
                       ),
@@ -1003,7 +1058,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
-                      labelColor: const Color(0xFFF59E0B),
+                      labelColor: const Color(0xFFEA580C),
                       unselectedLabelColor: const Color(0xFF6B7280),
                       dividerColor: Colors.transparent,
                       padding: EdgeInsets.zero,

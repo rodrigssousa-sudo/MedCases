@@ -325,30 +325,21 @@ class _MobileLibraryTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg         = dark ? const Color(0xFF1A1D23) : Colors.white;
-    final border     = dark
-        ? Colors.white.withValues(alpha: 0.07)
-        : const Color(0xFFDDE8E2);
-    final activeCol  = dark ? const Color(0xFF10B981) : const Color(0xFF075f45);
-    final inactiveCol= dark
-        ? Colors.white.withValues(alpha: 0.40)
-        : const Color(0xFF90A89E);
-    // BUILD 277-CROMATICO: blue accent for slate library theme
-    final indicatorCol = dark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB);
-
+    // BUILD 282 ORDEM 5: mobile pill bar usa gradiente slate (1E293B→475569→64748B)
+    // topLeft→bottomRight — continuidade com o _LibraryHeader desktop
     return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border(bottom: BorderSide(color: border, width: 1)),
-        boxShadow: dark
-            ? []
-            : [BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              )],
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E293B), // gray escuro
+            Color(0xFF475569), // gray médio
+            Color(0xFF64748B), // slate
+          ],
+        ),
       ),
-      // BUILD 278: pill tabs mobile
+      // BUILD 282: pill tabs mobile — branco sobre slate para contraste máximo
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: TabBar(
@@ -357,12 +348,12 @@ class _MobileLibraryTabBar extends StatelessWidget {
           tabAlignment: TabAlignment.start,
           indicator: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: indicatorCol.withValues(alpha: 0.18),
-            border: Border.all(color: indicatorCol.withValues(alpha: 0.60), width: 1),
+            color: Colors.white.withValues(alpha: 0.18),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.55), width: 1),
           ),
           indicatorSize: TabBarIndicatorSize.tab,
-          labelColor: activeCol,
-          unselectedLabelColor: inactiveCol,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white38,
           labelStyle: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
@@ -374,7 +365,6 @@ class _MobileLibraryTabBar extends StatelessWidget {
           ),
           dividerColor: Colors.transparent,
           padding: EdgeInsets.zero,
-          // BUILD 278: 3 tabs em pílula — sem ícones (layout mais limpo)
           tabs: [
             const Tab(text: 'GENERAL'),
             Tab(text: isEs ? 'GUÍAS PDF' : 'GUIAS PDF'),
@@ -405,18 +395,18 @@ class _LibraryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 277-CROMATICO: Slate/industrial-blue gradient for Biblioteca
+    // BUILD 282 ORDEM 5: Slate/cinza-ardósia gradiente topLeft→bottomRight
+    // Cores: 1E293B (gray escuro) → 475569 (gray médio) → 64748B (slate)
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            Color(0xFF1E3A5F), // slate-blue top
-            Color(0xFF162B47), // industrial blue mid
-            Color(0xFF12161F), // app dark bottom
+            Color(0xFF1E293B), // gray escuro — canto superior esquerdo
+            Color(0xFF475569), // gray médio
+            Color(0xFF64748B), // slate — canto inferior direito
           ],
-          stops: [0.0, 0.45, 1.0],
         ),
         boxShadow: [BoxShadow(color: Color(0x4D000000), blurRadius: 8)],
       ),
@@ -495,11 +485,12 @@ class _LibraryHeader extends StatelessWidget {
               controller: tabCtrl,
               isScrollable: true,
               tabAlignment: TabAlignment.start,
+              // BUILD 282 ORDEM 5: pill indicator slate — branco sobre gradiente cinza
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: const Color(0xFF60A5FA).withValues(alpha: 0.20),
+                color: Colors.white.withValues(alpha: 0.18),
                 border: Border.all(
-                  color: const Color(0xFF60A5FA).withValues(alpha: 0.55),
+                  color: Colors.white.withValues(alpha: 0.55),
                   width: 1,
                 ),
               ),
@@ -1878,22 +1869,8 @@ class _GeneralTab extends StatelessWidget {
             ? 'Casos clínicos reales con discusión diagnóstica.'
             : 'Casos clínicos reais com discussão diagnóstica.',
       ),
-      _GenItem(
-        icon: Icons.update_rounded,
-        color: const Color(0xFF7C3AED),
-        title: isEs ? 'Actualización continua' : 'Atualização contínua',
-        subtitle: isEs
-            ? 'Contenido actualizado regularmente por el equipo MedCases.'
-            : 'Conteúdo atualizado regularmente pela equipa MedCases.',
-      ),
-      _GenItem(
-        icon: Icons.verified_rounded,
-        color: const Color(0xFFB45309),
-        title: isEs ? 'Fuentes científicas' : 'Fontes científicas',
-        subtitle: isEs
-            ? 'Basado en guías internacionales (WHO, AHA, ESC, PALS).'
-            : 'Baseado em guias internacionais (WHO, AHA, ESC, PALS).',
-      ),
+      // BUILD 282 ORDEM 5: 'Actualización continua' e 'Fuentes científicas' REMOVIDOS
+      // Guideline Apple 2.1: não oferecer funcionalidades sem backend implementado.
     ];
 
     return ColoredBox(
