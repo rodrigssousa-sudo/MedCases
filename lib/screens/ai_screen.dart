@@ -2546,16 +2546,8 @@ class _MobileAiActionBar extends StatelessWidget {
     this.onNewChat,
   });
 
-  // MedCases IA — palette
-  static const _kGold  = Color(0xFFC5A365); // dourado (badge histórico)
-  static const _kGreen = Color(0xFF00E5FF);
-  static const _kBg1   = Color(0xFF1A1D23);
-  static const _kBg2   = Color(0xFF252930);
-
   @override
   Widget build(BuildContext context) {
-    final bgColor = dark ? _kBg2 : const Color(0xFFF5F5F5);
-    final borderColor = dark ? const Color(0xFF374151) : const Color(0xFFE0E0E0);
     // MedCases IA palette — icon teal
     final iconColor = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
     final iconBg = dark
@@ -2564,10 +2556,6 @@ class _MobileAiActionBar extends StatelessWidget {
     final iconBorder = dark
         ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
         : const Color(0xFF008CA4).withValues(alpha: 0.22);
-
-    // B140: paleta atualizada — fundo branco em light, escuro em dark
-    // Badge de conexão integrado ao título como subtítulo clicável
-    const kGreenLive   = Color(0xFF00E676); // verde vivo Conectado
 
     return Container(
       height: 52,
@@ -2723,18 +2711,8 @@ class _WaHeader extends StatelessWidget {
     this.forceDisconnectedLabel = false,
   });
 
-  // ── Paleta MedCases IA ────────────────────────────────────────────────
-  static const _kBg1   = Color(0xFF252930); // navy escuro
-  static const _kBg2   = Color(0xFF252930); // navy médio
-  static const _kBg3   = Color(0xFF374151); // navy claro
-  static const _kGold  = Color(0xFFC5A365); // dourado (badges)
-  static const _kGoldL = Color(0xFFFFE8A6); // dourado claro
-  static const _kGreen = Color(0xFF00E5FF); // cyan MedCases IA (status)
-
   @override
   Widget build(BuildContext context) {
-    final isConnected = geminiConnected || hasRealAi;
-
     // BUILD 283 ORDEM 10.2: _WaHeader — Dark Graphite solid + canonical MEDCASES IA title
     return Container(
       decoration: const BoxDecoration(
@@ -2815,7 +2793,7 @@ class _WaHeader extends StatelessWidget {
                               width: 15, height: 15,
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _kGold,
+                                color: const Color(0xFFC5A365),
                               ),
                               child: Center(
                                 child: Text(
