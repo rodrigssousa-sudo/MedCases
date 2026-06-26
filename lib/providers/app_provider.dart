@@ -3881,16 +3881,12 @@ class AppProvider extends ChangeNotifier {
     final expandedInput = topicReset ? input : _expandedQuery(input);
     final normalized    = _normalize(expandedInput);
 
-    // ── Passo 2: Retrieval local (protocolos + fármacos) ───────────────────
-    final protocols = _matchProtocols(normalized);
-    final drugs     = _matchDrugs(normalized);
-
-    // Retrieval expandido: até 6 protocolos e 6 fármacos para casos complexos
-    final protocolsExtended = _matchProtocolsExtended(normalized);
-    final drugsExtended     = _matchDrugsExtended(normalized);
-
-    final finalProtocols = protocolsExtended.isNotEmpty ? protocolsExtended : protocols;
-    final finalDrugs     = drugsExtended.isNotEmpty ? drugsExtended : drugs;
+    // ── Passo 2: Retrieval local (single-call pattern — ORDEM 21) ───────────
+    // Extended supersedes base when non-empty. 2 calls instead of 4.
+    final _extP = _matchProtocolsExtended(normalized);
+    final finalProtocols = _extP.isNotEmpty ? _extP : _matchProtocols(normalized);
+    final _extD = _matchDrugsExtended(normalized);
+    final finalDrugs     = _extD.isNotEmpty ? _extD : _matchDrugs(normalized);
 
     // ── Passo 2b: Busca em referências bibliográficas ──────────────────────
     // Extrai referências das bases de dados locais para inclusão no RAG

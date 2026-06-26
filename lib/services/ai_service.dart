@@ -1398,14 +1398,9 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           : 'PROIBIDO: responder em espanhol, ingles ou qualquer outro idioma.';
       // BUILD 264: ptGreeting DELETED — chatbot drift exorcised.
       // No greeting, no preamble. REGRA DE SUPREMACIA enforced at assembly level.
-      final ptSiglasMini = isEs
-          ? 'IAM=Infarto | PCR=Paro | AVC=ACV | TEP=TEP | SEPSIS=Sepsis | UTI=UCI\n'
-            'PROHIBIDO: siglas medicas como terminos de TI/negocio.\n'
-          : 'IAM=Infarto | PCR=Parada | AVC=AVC | TEP=TEP | SEPSE=Sepse | UTI=UTI\n'
-            'PROIBIDO: siglas medicas como termos de TI/negocio.\n';
-      final ptLangHeader =
-          '🔒 IDIOMA: $ptIdiomaLabel — ABSOLUTO. $ptIdiomaProib\n'
-          '$ptSiglasMini';
+      // ORDEM 21: ptSiglasMini removed — _coreIdentityPlantao already contains
+      // the identical sigla mapping. Eliminated ~80 chars of duplication.
+      final ptLangHeader = '🔒 IDIOMA: $ptIdiomaLabel — ABSOLUTO. $ptIdiomaProib\n';
 
       // Memory (compact)
       final ptMemory = memory?.buildMemoryBlock(isEs) ?? '';
@@ -1418,23 +1413,16 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           : '\n\nISOLAMENTO: responda SOMENTE ao tema da query atual. '
             'Amnesia total de consultas passadas nao relacionadas.\n';
 
-      // ORDEM 20 — COMPACT ptSelfCheck: 10-item → 4-item (cut ~600 chars).
-      // Items 1-3 (format/idiom/RAG) already enforced by ptStreamFormat + ptUxFlowDoctrine.
-      // Items 5/6 (completeness) already enforced by ptMatrixCompletion.
-      // Kept: apertura(0), coluna-zero(7), compactação(8), gancho📌(9).
+      // ORDEM 21: ptSelfCheck reduced to 1 item (abertura proibida only).
+      // Items 1 (coluna-zero) covered by ptStreamFormat REGRA Nº1.
+      // Item 2 (teto/negritos) covered by ptStreamFormat REGRAS SOBERANAS.
+      // Item 3 (gancho) covered by ptUxFlowDoctrine GANCHO block.
+      // Only abertura proibida has NO other canonical source → retained.
       final ptSelfCheck = isEs
-          ? '0. APERTURA PROHIBIDA — primera linea DEBE ser 🟥. '
-            'PROHIBIDO: "Colega", "Hola", "Claro", "Entendido" antes de 🟥.\n'
-            '1. COLUMNA CERO: primer caracter de CADA linea = *, emoji ou letra — ZERO espacios/tabulaciones.\n'
-            '2. TECHO: <= 15 lineas, <= 800 caracteres. Negritas (**) SOLO en nombre del farmaco.\n'
-            '3. GANCHO: ultima linea = 📌 + pregunta cerrada (Si/No, A/B). '
-            'PROHIBIDO "📌 Ver protocolo completo."\n'
-          : '0. ABERTURA PROIBIDA — primeira linha DEVE ser 🟥. '
-            'PROIBIDO: "Colega", "Ola", "Claro", "Entendido" antes de 🟥.\n'
-            '1. COLUNA ZERO: primeiro caractere de CADA linha = *, emoji ou letra — ZERO espacos/tabulacoes.\n'
-            '2. TETO: <= 15 linhas, <= 800 caracteres. Negritos (**) SOMENTE no nome do farmaco.\n'
-            '3. GANCHO: ultima linha = 📌 + pergunta fechada (Sim/Nao, A/B). '
-            'PROIBIDO "📌 Ver protocolo completo."\n';
+          ? 'ABERTURA: primeira linha DEVE ser 🟥. '
+            'PROIBIDO: "Colega", "Ola", "Claro", "Entendido", qualquer preambulo antes de 🟥.\n'
+          : 'APERTURA: primera linea DEBE ser 🟥. '
+            'PROHIBIDO: "Colega", "Hola", "Claro", "Entendido", cualquier preambulo antes de 🟥.\n';
 
       // BUILD 271 audit log (supersedes Build268 tag)
       final _ptChars = ptLangHeader.length +
@@ -1454,41 +1442,18 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       // ── BUILD 268: DIRETRIZ DE ESCOPO CLÍNICO GENEROSO — hotfix supremo ──
       // DIAGNÓSTICO: Gemini via HARD STOP (extinto acima) e gerava 10 tokens.
       // NOVO MANDATO: escopo generoso explícito + proibição total de recusa.
+      // ORDEM 21: REGRAS FIJAS bullets removed — all 4 covered by ptStreamFormat +
+      // _coreIdentityPlantao (🟥 opening, emoji usage, no greeting, query fallback).
+      // Kept: scope/fallback prose (unique — prevents AI refusals on off-label queries).
       final ptSupremacyRule = isEs
-          ? 'DIRETRIZ DE ESCOPO E FALLBACK CLINICO: Tu objetivo primario es proporcionar '
-            'respuestas clinicas inmediatas, seguras y de alta utilidad practica para el '
-            'medico en guardia. Las 21 matrices dinamicas sirven como guia preferencial de '
-            'estilo y concision, NO como una camisa de fuerza de programacion. '
-            'Si el usuario solicita un caso, escenario o medicamento (ej: Sertralina, '
-            'Amiodarona en la base, monitorizaciones complejas, preguntas psiquiatricas, '
-            'farmacologia off-label) que no se encuadre perfectamente en una de las matrices: '
-            'ESTAS TERMINANTEMENTE PROHIBIDO DE RECHAZAR, DETENERTE O GENERAR TEXTOS DE '
-            'ERROR TECNICO. Usa tu conocimiento clinico nativo avanzado de medicina de '
-            'emergencia y terapia intensiva (basado en guias actualizadas de SBC, AHA y AMIB) '
-            'y entrega la mejor conduta inmediata para el paciente, estructurando las '
-            'informaciones en topicos directos y objetivos.\n'
-            'REGLAS FIJAS (no negociables):\n'
-            '• Comienza la respuesta SIEMPRE con el caracter 🟥.\n'
-            '• Usa emojis medicos normales: 💊 para farmacos, 🚨 para conducta critica, 📌 para proximo paso.\n'
-            '• Sin saludos, sin preambulos — ve directo al punto clinico.\n'
-            '• Si la query es solo el nombre de una enfermedad o farmaco, asume adulto generico grave en emergencia y da la conducta directa.\n\n'
-          : 'DIRETRIZ DE ESCOPO E FALLBACK CLINICO: Seu objetivo primario e fornecer '
-            'respostas clinicas imediatas, seguras e de alta utilidade pratica para o '
-            'medico no plantao. As 21 matrizes dinamicas servem como guia preferencial de '
-            'estilo e concisao, NAO como uma camisa de forca de programacao. '
-            'Se o usuario solicitar um caso, cenario ou medicamento (ex: Sertralina, '
-            'Amiodarona na base, monitorizacoes complexas, perguntas psiquiatricas, '
-            'farmacologia off-label) que nao se enquadre perfeitamente em uma das matrizes: '
-            'VOCE ESTA TERMINANTEMENTE PROIBIDO DE RECUSAR, PARAR OU GERAR TEXTOS DE '
-            'ERRO TECNICO. Use seu conhecimento clinico nativo avancado de medicina de '
-            'emergencia e terapia intensiva (baseado nas diretrizes atualizadas da SBC, AHA e AMIB) '
-            'e entregue a melhor conduta imediata para o paciente, estruturando as '
-            'informacoes em topicos diretos e objetivos.\n'
-            'REGRAS FIXAS (nao negociaveis):\n'
-            '• Inicie a resposta SEMPRE com o caractere 🟥.\n'
-            '• Use emojis medicos normais: 💊 para farmacos, 🚨 para conduta critica, 📌 para proximo passo.\n'
-            '• Sem saudacoes, sem preambulos — va direto ao ponto clinico.\n'
-            '• Se a query for apenas o nome de uma doenca ou farmaco, presuma adulto generico grave na emergencia e de a conduta direta.\n\n';
+          ? 'FALLBACK CLINICO: As 21 matrizes sao guia — NAO camisa de forca. '
+            'Se o caso nao couber em nenhuma matriz (off-label, psiquiatria, farmacologia complexa): '
+            'PROIBIDO recusar ou gerar erro tecnico. Use conhecimento clinico avancado '
+            '(SBC, AHA, AMIB) e entregue conduta imediata estruturada em topicos diretos.\n\n'
+          : 'FALLBACK CLINICO: Las 21 matrices son guia — NO camisa de fuerza. '
+            'Si el caso no cabe en ninguna matriz (off-label, psiquiatria, farmacologia compleja): '
+            'PROHIBIDO rechazar o generar error tecnico. Usa conocimiento clinico avanzado '
+            '(SBC, AHA, AMIB) y entrega conduta inmediata estructurada en topicos directos.\n\n';
 
       // ── BUILD 268: ANTI-PARROTING BLINDAGEM ─────────────────────────────
       // Diagnóstico: modelo lê histórico, vê strings legadas de erro

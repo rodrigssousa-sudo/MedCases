@@ -605,26 +605,6 @@ class PromptModules {
   }
 
   // ════════════════════════════════════════════════════════════════════════════
-  // build — Método principal de montagem dinâmica do prompt final
-  //
-  // Fluxo:
-  //   1. Detecta intenção na userMessage (isDose / isDilution / etc.)
-  //   2. Sanitiza o systemPrompt externo (remove monolitos)
-  //   3. Seleciona e concatena módulos por modo + intenção
-  //   4. Aplica language lock (última instrução — Viés de Recência)
-  //   5. Verifica limite de 8000 chars; descarta módulos não-essenciais se exceder
-  //   6. Loga tamanhos para diagnóstico de latência
-  //
-  // Parâmetros:
-  //   userMessage     → mensagem atual do usuário (para detecção de intenção)
-  //   systemPrompt    → contexto RAG/clínico externo do AiService
-  //   isPlantaoMode   → true = Plantão / false = Estudo
-  //   languageLock    → bloco de trava PT/ES já montado pelo ai_gateway_service
-  //
-  // Retorna:
-  //   String → system_instruction final pronta para envio ao Gemini
-  // ════════════════════════════════════════════════════════════════════════════
-  // ════════════════════════════════════════════════════════════════════════════
   // build — Método principal de montagem dinâmica do prompt final (Build 184)
   //
   // Fluxo Build 184 (anti-503 / language-lock fix):
