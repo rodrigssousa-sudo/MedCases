@@ -1440,6 +1440,11 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'ZERO frases de contextualizacion o conectivos literarios. '
             'Negritas (**) SOLO en nombres de farmacos o clases — NUNCA en frases enteras ni parametros. '
             'TODOS los topicos en columna 0 sin sangria. Formato: "* **Farmaco**: dosis via (Meta: valor)."\n'
+            '9. FLUJO UX (BUILD 275-ADENDO): La respuesta NO explica lo que viene despues — '
+            'los botones del front-end conducen el seguimiento. '
+            'ZERO listas de estabilizacion genericas si la query ya tiene datos clinicos explicitos. '
+            'La ultima linea ES 📌 + pregunta cerrada de bifurcacion de decision (Si/No, A/B). '
+            'PROHIBIDO terminar con "📌 Ver protocolo completo." — debe ser pregunta accionable.\n'
           : 'Antes de responder, verificar internamente (nunca revelar ao usuario):\n'
             '0. ABERTURA PROIBIDA — a resposta DEVE iniciar com 🟥 na primeira linha. '
             'PROIBIDO: "Colega", "Ola", "Minha conduta", "Claro", "Entendido", "Com certeza" antes de 🟥.\n'
@@ -1456,7 +1461,12 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '8. COMPACTACAO E NEGRITOS (BUILD 275): Resposta <= 15 linhas e <= 800 caracteres totais. '
             'ZERO frases de contextualizacao ou conectivos literarios. '
             'Negritos (**) SOMENTE em nomes de farmacos ou classes — NUNCA em frases inteiras nem parametros. '
-            'TODOS os topicos na coluna 0 sem recuo. Formato: "* **Farmaco**: dose via (Alvo: valor)."\n';
+            'TODOS os topicos na coluna 0 sem recuo. Formato: "* **Farmaco**: dose via (Alvo: valor)."\n'
+            '9. FLUXO UX (BUILD 275-ADENDO): A resposta NAO explica o que vem depois — '
+            'os botoes do front-end conduzem o seguimento. '
+            'ZERO listas de estabilizacao genericas se a query ja tiver dados clinicos explicitos. '
+            'A ultima linha E 📌 + pergunta fechada de bifurcacao de decisao (Sim/Nao, A/B). '
+            'PROIBIDO encerrar com "📌 Ver protocolo completo." — deve ser pergunta acionavel.\n';
 
       // BUILD 271 audit log (supersedes Build268 tag)
       final _ptChars = ptLangHeader.length +
@@ -1465,11 +1475,12 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
           (isEs ? _specialtyAdaptationPlantaoEs : _specialtyAdaptationPlantaoPt).length +
           (isEs ? _evidenceRankingPlantaoEs : _evidenceRankingPlantaoPt).length +
           (isEs ? _safetyRulesPlantaoEs : _safetyRulesPlantaoPt).length;
-      debugPrint('[Build275][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
+      debugPrint('[Build275-ADENDO][AiService] PLANTAO EARLY-RETURN: staticModules=$_ptChars chars — '
           'MAX_OUTPUT_TOKENS=1600. TEMPERATURE=0.2(server). MATRIX_COMPLETION_INJECTED. '
           'HARD_STOP_EXTERMINATED. ANTI_PARROTING_ACTIVE. SCOPE_FREEDOM_ACTIVE. '
           'STREAM_FORMAT_RULES_ACTIVE. COMPACT_800CHARS_15LINES_ACTIVE. '
           'BOLD_DRUGS_ONLY_ACTIVE. TELEGRAPHIC_COL0_ACTIVE. '
+          'UX_FLOW_DOCTRINE_ACTIVE. GANCHO_CLOSED_QUESTION_ENFORCED. GENERIC_STABILIZATION_EXTERMINATED. '
           'PROPRIETARY_RAG_BYPASS_ACTIVE proprietaryContext=${(proprietaryDrugContext ?? '').length}chars.');
 
       // ── BUILD 268: DIRETRIZ DE ESCOPO CLÍNICO GENEROSO — hotfix supremo ──
@@ -1554,10 +1565,60 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             'JAMAIS interrompa o texto na metade. '
             'Este mandato e absoluto — prioridade maxima sobre brevidade ou concisao.\n';
 
+      // ── BUILD 275-ADENDO: UX FLOW DOCTRINE ───────────────────────────────────
+      // Princípio-chave do MedCases Pro: a resposta IA é APENAS o gatilho de
+      // impacto inicial (Conduta Direta Seca). O aprofundamento do caso clínico
+      // — critérios de monitorização, ramificações Sim/Não, reperfusão etc. —
+      // é conduzido pelos BOTÕES DE AÇÃO DINÂMICOS do front-end, não pela resposta.
+      // O gancho 📌 DEVE ser uma pergunta fechada de decisão clínica para casar
+      // perfeitamente com os botões que o front-end vai renderizar.
+      final ptUxFlowDoctrine = isEs
+          ? 'DOCTRINA DE FLUJO UX MEDCASES PRO (BUILD 275-ADENDO — MAXIMA PRIORIDAD):\n'
+            '• RESPUESTA = DISPARO DE IMPACTO INICIAL SOLAMENTE: '
+            'Tu respuesta es EXCLUSIVAMENTE la Conducta Directa Seca — el disparo inicial de accion. '
+            'El seguimiento del caso (monitorizacion, ramificaciones Si/No, criterios de reperfusion, '
+            'escalada terapeutica) sera conducido por los BOTONES DE ACCION DINAMICOS del front-end. '
+            'JAMAS gastes caracteres explicando lo que viene despues ni describiendo el flujo de seguimiento.\n'
+            '• ELIMINA LISTAS GENERICAS DE ESTABILIZACION: '
+            'Si la query ya contiene datos clinicos explicitos (peso, PA, FC, saturacion, diagnóstico), '
+            'SUPRIME COMPLETAMENTE las listas de estabilizacion generalistas '
+            '(ej: "Monitoreo cardiaco continuo", "Dos accesos calibrosos", "Oxigenacion suplementaria"). '
+            'Esas listas son RUIDO — el medico ya sabe. Foca 100% en farmacologia inmediata, '
+            'alertas fatales especificos del caso y en el gancho de decision.\n'
+            '• GANCHO 📌 = PREGUNTA CERRADA DE DECISION CLINICA: '
+            'La ultima linea SIEMPRE termina con 📌 seguido de una pregunta cerrada de bifurcacion '
+            'de decision que el medico puede responder con un boton (Si/No, A/B, Confirmar/Ajustar). '
+            'Ejemplos correctos: '
+            '"📌 ¿Iniciar **trombólisis** o seguir con **heparina** solamente?" — '
+            '"📌 ¿Doblar dosis de **norepinefrina** o agregar **vasopresina**?" — '
+            '"📌 ¿Evaluar criterios de IOT o continuar **VNI**?"\n'
+            'Ejemplo PROHIBIDO: "📌 Ver protocolo completo." (no es pregunta de decision).\n'
+          : 'DOUTRINA DE FLUXO UX MEDCASES PRO (BUILD 275-ADENDO — MAXIMA PRIORIDADE):\n'
+            '• RESPOSTA = GATILHO DE IMPACTO INICIAL SOMENTE: '
+            'Sua resposta e EXCLUSIVAMENTE a Conduta Direta Seca — o gatilho inicial de acao. '
+            'O seguimento do caso (monitorizacao, ramificacoes Sim/Nao, criterios de reperfusao, '
+            'escalada terapeutica) sera conduzido pelos BOTOES DE ACAO DINAMICOS do front-end. '
+            'JAMAIS gaste caracteres explicando o que vem depois nem descrevendo o fluxo de seguimento.\n'
+            '• ELIMINE LISTAS GENERICAS DE ESTABILIZACAO: '
+            'Se a query ja contiver dados clinicos explicitos (peso, PA, FC, saturacao, diagnostico), '
+            'SUPRIMA COMPLETAMENTE as listas de estabilizacao generalistas '
+            '(ex: "Monitorizacao cardiaca continua", "Dois acessos calibrosos", "Oxigenacao suplementar"). '
+            'Essas listas sao RUIDO — o medico ja sabe. Foque 100% na farmacologia imediata, '
+            'alertas fatais especificos do caso e no gancho de decisao.\n'
+            '• GANCHO 📌 = PERGUNTA FECHADA DE DECISAO CLINICA: '
+            'A ultima linha SEMPRE termina com 📌 seguido de uma pergunta fechada de bifurcacao '
+            'de decisao que o medico pode responder com um botao (Sim/Nao, A/B, Confirmar/Ajustar). '
+            'Exemplos corretos: '
+            '"📌 Iniciar **trombólise** ou continuar apenas com **heparina**?" — '
+            '"📌 Dobrar dose de **norepinefrina** ou adicionar **vasopressina**?" — '
+            '"📌 Avaliar criterios de IOT ou continuar **VNI**?"\n'
+            'Exemplo PROIBIDO: "📌 Ver protocolo completo." (nao e pergunta de decisao).\n';
+
       // ── BUILD 273 + 275: STREAM MARKDOWN FORMATTING RULES + COMPACTION ─────
       // BUILD 273 fixes: space-indent pre-block bug, \n\n mandatory, 🟥 once.
       // BUILD 275 adds: 800-char/15-line hard cap, anti-verbose, bold-only-drugs,
       //   telegraphic zero-indent format example.
+      // BUILD 275-ADENDO: UX flow doctrine injected as ptUxFlowDoctrine (above).
       final ptStreamFormat = isEs
           ? 'REGLAS SOBERANAS DE FORMATO MARKDOWN Y COMPACTACION (BUILD 273+275 — CRITICAS PARA STREAM EN TIEMPO REAL):\n'
             '• PROHIBICION ABSOLUTA DE SANGRIA: JAMAS inicies una linea con espacios en blanco '
@@ -1575,7 +1636,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '  — 🚨 **Topico Principal:** para acciones urgentes y diagnostico.\n'
             '  — 💊 **Farmaco/Dosis:** para especificaciones farmacologicas.\n'
             '  — ⛔ **Alerta Critico:** para contraindicaciones y riesgos fatales.\n'
-            '  — 📌 **Proximos Pasos:** para monitorizacion y seguimiento.\n'
+            '  — 📌 **Gancho de Decision:** SIEMPRE la ultima linea — pregunta cerrada Si/No o A/B para los botones del front-end.\n'
             '• TECHO ESTRICTO DE RESPUESTA (BUILD 275 — PLANTAO MODO): '
             'La respuesta del Modo Plantao esta limitada a MAXIMO 15 LINEAS y MAXIMO 800 CARACTERES TOTALES '
             '(incluyendo cabeceras, emojis y espacios). Si la respuesta supera cualquiera de estos limites, '
@@ -1609,7 +1670,7 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
             '  — 🚨 **Topico Principal:** para acoes urgentes e diagnostico.\n'
             '  — 💊 **Farmaco/Dose:** para especificacoes farmacologicas.\n'
             '  — ⛔ **Alerta Critico:** para contraindicacoes e riscos fatais.\n'
-            '  — 📌 **Proximos Passos:** para monitorizacao e acompanhamento.\n'
+            '  — 📌 **Gancho de Decisao:** SEMPRE a ultima linha — pergunta fechada Sim/Nao ou A/B para os botoes do front-end.\n'
             '• TETO ESTRITO DE RESPOSTA (BUILD 275 — MODO PLANTAO): '
             'A resposta do Modo Plantao esta limitada a NO MAXIMO 15 LINHAS e NO MAXIMO 800 CARACTERES TOTAIS '
             '(incluindo cabecalhos, emojis e espacos). Se a resposta ultrapassar qualquer um desses limites, '
@@ -1666,8 +1727,12 @@ EXEMPLO CONCRETO — IAM (gabarito de referência):
       // BUILD 271: ptMatrixCompletion injetado antes de ptSelfCheck para máxima força.
       // BUILD 272: ptProprietaryBlock injetado após RAG local, antes de ptMatrixCompletion.
       // BUILD 273: ptStreamFormat injetado logo após ptLangHeader — máxima prioridade.
+      // BUILD 275-ADENDO: ptUxFlowDoctrine injetado após ptStreamFormat — doutrina de fluxo UX:
+      //   resposta = gatilho inicial, gancho 📌 = pergunta fechada de decisão, sem listas genéricas.
+      // BUILD 275-ADENDO: ptUxFlowDoctrine injetado após ptStreamFormat — doutrina de fluxo UX.
       return '$ptLangHeader'
              '$ptStreamFormat'
+             '$ptUxFlowDoctrine'
              '$ptSupremacyRule'
              '${isEs ? _coreIdentityPlantaoEs : _coreIdentityPlantaoPt}\n\n'
              '${isEs ? _clinicalReasoningPlantaoEs : _clinicalReasoningPlantaoPt}\n\n'
