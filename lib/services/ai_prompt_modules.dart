@@ -99,33 +99,11 @@ class PromptModules {
       'O FORMAT e PROFUNDIDADE são determinados exclusivamente pelo MODO ATIVO.\n'
       '\n'
       '[OUTPUT CONTRACT]\n'
-      'Regra de ouro de saída: Antes de finalizar a resposta, valide internamente que o texto '
-      'NÃO inicia por nenhum destes caracteres ou termos: '
-      '[, #, ##, ###, ####, #####, ######, MODO, PLANTÃO, ESTUDO, SYSTEM, '
-      'SOBERANIA, DIRETRIZ, TRAVA, CONTEXTO, CONFIGURAÇÃO.\n'
-      'É expressamente proibido imprimir, repetir ou ecoar: nomes de módulos, nomes internos '
-      'do sistema, metadados, tags, contratos, headings artificiais, textos entre colchetes, '
-      'ou termos como \'MODO PLANTÃO\' e \'MODO ESTUDO\'. Esses elementos pertencem '
-      'exclusivamente ao prompt interno e nunca à resposta clínica. '
-      'A resposta deve iniciar diretamente pelo conteúdo médico.\n'
-      'OBRIGATORIEDADE DE NEGRITO EM FÁRMACOS E DOSES: Toda e qualquer menção a medicamentos, '
-      'princípios ativos, dosagens (ex: 300mg, 30mg), vias de administração '
-      '(ex: VO, IV, SC, IM) e esquemas posológicos DEVE ser formatada obrigatoriamente '
-      'em negrito puro usando a sintaxe Markdown de asteriscos duplos. '
-      'Exemplos: **AAS 300mg VO**, **Tenecteplase 30mg IV em bolus**, **Enoxaparina 1mg/kg SC 12/12h**. '
-      'Isso se aplica a AMBOS OS MODOS (Plantão e Estudo) de forma incondicional. '
-      'Nunca escreva dose ou fármaco sem o wrap **...** ao redor.\n'
-      'RESTRIÇÃO DE DESTAQUE VISUAL: É terminantemente proibido aplicar negrito (**...**) '
-      'em linhas inteiras, frases explicativas ou tópicos completos. '
-      'O wrap de asteriscos duplos deve ser aplicado EXCLUSIVAMENTE sobre: '
-      'nomes de fármacos de primeira linha, suas dosagens, vias de administração '
-      '(ex: **AAS 300mg VO**) e condutas imediatas cruciais (ex: **Angioplastia Primária**). '
-      'Textos de apoio, explicações fisiopatológicas, monitorizações e frases secundárias '
-      'devem permanecer obrigatoriamente em texto plano, sem formatação de negrito.\n'
-      'PROIBIÇÃO ABSOLUTA DE SUGESTÕES TEXTUAIS: É terminantemente proibido gerar qualquer '
-      'linha de sugestão ou texto que contenha o caractere de raio \'⚡\' '
-      'ou que termine com o caractere \'>\'. O modelo nunca deve emular botões por texto. '
-      'A resposta deve terminar no último parágrafo clínico.\n';
+      'ZERO metadados de sistema na resposta: proibido ecoar módulos, tags, contratos, headings artificiais, '
+      'termos como \'MODO PLANTÃO\'/\'MODO ESTUDO\' ou qualquer texto entre colchetes de sistema.\n'
+      'A resposta inicia diretamente pelo conteúdo médico.\n'
+      'NEGRITO: EXCLUSIVO em **fármaco + dose + via**. Texto plano para tudo o mais.\n'
+      'PROIBIDO: caractere \'⚡\' ou linhas terminadas em \'>\' (emulação de botão).\n';
 
   // ════════════════════════════════════════════════════════════════════════════
   // MÓDULO: antiLeak
@@ -133,21 +111,9 @@ class PromptModules {
   // Garante que o modelo nunca ecoe blocos de mandato na resposta ao usuário.
   // ════════════════════════════════════════════════════════════════════════════
   static const String antiLeak =
-      '🚫 ANTI-LEAK DE SISTEMA (PROIBIÇÃO TOTAL):\n'
-      'NUNCA escreva na resposta:\n'
-      '  ✗ "Confianza Clínica:" / "Confiança Clínica:" / "Clinical Confidence:"\n'
-      '  ✗ "Motivo:" / "Motivos:" / "Motivo del modo:" como primeira linha\n'
-      '  ✗ "[MANDATO" / "[MODO PLANTÃO" / "[MODO ESTUDO" / "[INÍCIO DO CONTEXTO"\n'
-      '  ✗ "[REFORÇO MANDATÓRIO" / "[SOBERANIA" / "[TRAVA DE IDIOMA"\n'
-      '  ✗ Qualquer rótulo de modo: "MODO ACTIVO:", "MODO [A]", "CAMADA 1"\n'
-      '  ✗ Tags: <think>...</think> / [REVISAO_INTERNA] / [REVISION_INTERNA]\n'
-      '  ✗ Nunca escreva: [MODO...], [SYSTEM...], [TRAVA...], [DIRETRIZ...], '
-      '[CONTEXTO...], [SOBERANIA...] em qualquer parte da resposta final.\n'
-      '  ✗ Nunca imprima headings artificiais como ##, ###, #### quando representarem '
-      'estrutura interna do sistema ou metadados de configuração.\n'
-      '  ✗ Nunca imprima o caractere \'⚡\' em qualquer parte da resposta.\n'
-      '  ✗ Nunca termine uma linha com o caractere \'>\' (marcação antiga de botão sugerido).\n'
-      'REGRA DE SIGLA ISOLADA: query de 1-5 chars → abrir 🟥 direto, sem análise.\n';
+      '🚫 ANTI-LEAK: NUNCA escreva na resposta: "Confiança Clínica:", "[MANDATO", "[MODO PLANTÃO", '
+      '"[MODO ESTUDO", "[SOBERANIA", "MODO ACTIVO:", <think>, [REVISAO_INTERNA], \'⚡\', linhas com \'>\' no fim.\n'
+      'Query de 1-5 chars → 🟥 direto, sem análise de idioma.\n';
 
   // ════════════════════════════════════════════════════════════════════════════
   // MÓDULO: uiContract
