@@ -302,13 +302,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         onOpenCalc: (calcId) {
                           const calcTabMap = {
                             'calc_biometria':   0,
-                            'calc_scores':      1,
-                            'calc_cardio':      2,
-                            'calc_eletrólitos': 3,
+                            'calc_scores':      0,
+                            'calc_cardio':      1,
+                            'calc_eletrólitos': 2,
                             'calc_infusao':     0,
-                            'calc_referencia':  4,
+                            'calc_referencia':  3, // SUPER ORDEM VISUAL 10: PEDIATRIA extinta, 4 tabs
                             'calc_prescricoes': 0,
-                            'calc_pediatria':   5,
+                            'calc_pediatria':   0, // SUPER ORDEM VISUAL 10: fallback → BIOMETRIA
                           };
                           toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
                           widget.onTabChange(4);
@@ -469,10 +469,10 @@ class _HomeScreenState extends State<HomeScreen> {
             onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
             onOpenCalc: (calcId) {
               const calcTabMap = {
-                'calc_biometria': 0, 'calc_scores': 1, 'calc_cardio': 2,
-                'calc_eletrólitos': 3, 'calc_infusao': 0,
-                'calc_referencia': 4, 'calc_prescricoes': 0,
-                'calc_pediatria': 5,
+                'calc_biometria': 0, 'calc_scores': 0, 'calc_cardio': 1,
+                'calc_eletrólitos': 2, 'calc_infusao': 0,
+                'calc_referencia': 3, 'calc_prescricoes': 0, // SUPER ORDEM VISUAL 10: 4 tabs
+                'calc_pediatria': 0, // SUPER ORDEM VISUAL 10: fallback → BIOMETRIA
               };
               toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
               widget.onTabChange(4);

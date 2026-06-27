@@ -43,7 +43,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     super.initState();
     // BUILD 93 — INFUSÃO (idx 4) e SIMULAÇÕES (idx 6) ocultas → 6 tabs visíveis
     // BUILD 277-CROMATICO — 5 tabs: BIOMETRIA, CARDIO, ELETRÓLITOS, REFERÊNCIAS, PEDIATRIA (SCORES removed)
-    _tabCtrl = TabController(length: 5, vsync: this);
+    // SUPER ORDEM VISUAL 10 — 4 tabs: PEDIATRIA extinta (classe mantida para home_screen.dart)
+    _tabCtrl = TabController(length: 4, vsync: this);
     // Ouve o notifier externo para mudar de aba
     toolsScreenTabNotifier.addListener(_onExternalTabRequest);
   }
@@ -54,7 +55,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     // Usa addPostFrameCallback para garantir que o widget já está montado
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _tabCtrl.animateTo(idx.clamp(0, 4)); // BUILD 277-CROMATICO: 5 tabs visíveis (0-4)
+      _tabCtrl.animateTo(idx.clamp(0, 3)); // SUPER ORDEM VISUAL 10: 4 tabs visíveis (0-3)
       // Reseta para null após consumir
       toolsScreenTabNotifier.value = null;
     });
@@ -136,8 +137,6 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                     Expanded(child: _ToolsFlatTab(label: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS', index: 2, tabCtrl: _tabCtrl)),
                     const _ToolsTabDivider(),
                     Expanded(child: _ToolsFlatTab(label: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS', index: 3, tabCtrl: _tabCtrl)),
-                    const _ToolsTabDivider(),
-                    Expanded(child: _ToolsFlatTab(label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA', index: 4, tabCtrl: _tabCtrl)),
                   ],
                 ),
               ),
@@ -161,7 +160,6 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
               _CardioTab(),
               _ElectrolytesTab(),
               _ReferenceTab(),
-              PediatricsTabContent(),
             ],
           ),
         ),
