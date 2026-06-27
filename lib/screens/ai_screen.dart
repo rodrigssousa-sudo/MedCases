@@ -1165,6 +1165,28 @@ class _AiScreenState extends State<AiScreen> {
               'content': m.text,
             })
         .toList());
+
+    // ── SUPER ORDEM 41 M2: PARIDADE DE CACHE NA RESTAURAÇÃO ─────────────────
+    // Pré-popula _plantaoPipelineCache para cada mensagem AI no formato Plantão
+    // (âncora 🟥) antes do primeiro build() pós-restore. Garante paridade
+    // visual absoluta com o estado ao vivo: layout restaurado == layout do stream.
+    // Limpa cache da sessão anterior para evitar colisão de chaves stale.
+    _plantaoPipelineCache.clear();
+    for (final _rm in session.messages) {
+      if (_rm.role != 'ai') continue;
+      if (!_rm.text.contains('🟥')) continue; // somente respostas Plantão
+      final _rk = '${_rm.id}:${_rm.text.hashCode}';
+      if (_plantaoPipelineCache.containsKey(_rk)) continue;
+      final _rr = PlantatoPipeline.run(_rm.text);
+      _plantaoPipelineCache[_rk] = _rr;
+      if (kDebugMode) {
+        debugPrint('[RESTORE_CACHE_PRIME] msgId=${_rm.id} '
+            'parsedOk=${_rr.response != null} '
+            'repaired=${_rr.repaired} '
+            'chars=${_rm.text.length}');
+      }
+    }
+
     _scrollDown(force: true);
   }
 
@@ -1560,6 +1582,16 @@ class _AiScreenState extends State<AiScreen> {
                 ))
                 .join('\n');
 
+            // ── SUPER ORDEM 41 M3: AESTHETIC GUARD ───────────────────────────
+            // Higienização estética exclusiva do Modo Plantão (após todos os
+            // guards de segurança): remove **bold** residuais, normaliza ALLCAPS
+            // de labels → Title Case, aplica teto de 12 linhas não-vazias.
+            // Executado ANTES do pipeline lock para que o texto cacheado já seja
+            // o texto esteticamente finalizado.
+            if (!_longResponse) {
+              safeFinalText = _applyPlantaoAestheticGuard(safeFinalText);
+            }
+
             // ── BUILD 254: SINCRONIZAÇÃO IMEDIATA DO TÉRMINO DO STREAM ────────
             // PROBLEMA: o layout 2-passos do BUILD 101 (texto em setState#1 com
             // _isStreaming=true, cursor removido em setState#2 via postFrameCallback)
@@ -1579,6 +1611,29 @@ class _AiScreenState extends State<AiScreen> {
             // Descarta notifier ANTES do setState — sem listener pendurado no rebuild.
             _streamingTextNotifier?.dispose();
             _streamingTextNotifier = null;
+
+            // ── SUPER ORDEM 41 M1: POST-STREAM PIPELINE LOCK ────────────────
+            // Executa PlantatoPipeline.run() sincronamente no fecho do stream —
+            // ANTES do setState. Grava resultado no _plantaoPipelineCache com
+            // chave (msgId:textHash). O ListView.builder encontra hit=true
+            // na primeira renderização pós-onDone → zero frames de latência.
+            if (!_longResponse && streamingMsgIdx >= 0 &&
+                streamingMsgIdx < _messages.length) {
+              final _streamMsg  = _messages[streamingMsgIdx];
+              final _cacheKey41 = '${_streamMsg.id}:${safeFinalText.hashCode}';
+              if (!_plantaoPipelineCache.containsKey(_cacheKey41)) {
+                final _pipelineResult41 = PlantatoPipeline.run(safeFinalText);
+                _plantaoPipelineCache[_cacheKey41] = _pipelineResult41;
+                if (kDebugMode) {
+                  debugPrint('[POST_STREAM_LOCK] pipeline cached BEFORE setState '
+                      'msgId=${_streamMsg.id} '
+                      'textHash=${safeFinalText.hashCode} '
+                      'parsedOk=${_pipelineResult41.response != null} '
+                      'repaired=${_pipelineResult41.repaired} '
+                      'chars=${safeFinalText.length}');
+                }
+              }
+            }
 
             // BUILD 276: resolve which msgId will be the new AI bubble so we
             // can attach the fade-in to it in ListView.builder.
@@ -3923,6 +3978,78 @@ class _ActionTile extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SUPER ORDEM 41 M3 — _applyPlantaoAestheticGuard
+//
+// Higienização estética do texto final do Modo Plantão:
+//   1. Remove marcadores **bold** residuais (Gemini às vezes emite '**Label:**')
+//      → extrai apenas o conteúdo interno (emojis âncora já presentes).
+//   2. Normaliza ALLCAPS de labels de matriz (DOSE:, ALERTA:, etc.)
+//      → Title Case canônico para consistência visual nativa iOS/Android.
+//   3. Aplica teto de 12 linhas não-vazias (resposta executiva Plantão).
+//
+// NUNCA inventa conteúdo clínico. Apenas normaliza forma visual.
+// Executado APÓS todos os guards de segurança e ANTES do POST-STREAM LOCK.
+// ─────────────────────────────────────────────────────────────────────────────
+String _applyPlantaoAestheticGuard(String text) {
+  if (text.trim().isEmpty) return text;
+
+  // ── 1. Strip **bold** markers (preserve content between **) ─────────────
+  // Regex strips **anything** → anything throughout the text.
+  // Safe: only strips the ** wrappers, never the content.
+  var lines = text
+      .split('\n')
+      .map((line) => line.replaceAllMapped(
+            RegExp(r'\*\*([^*]+)\*\*'),
+            (m) => m.group(1) ?? '',
+          ))
+      .toList();
+
+  // ── 2. ALLCAPS label → Title Case ────────────────────────────────────────
+  // Only matches standalone label tokens (WORD:) in all-caps.
+  // Preserves clinical acronyms (IAM, PCR, mg/kg…) that are mid-sentence.
+  const _kLabels = [
+    'DOSE', 'DOSAGEM', 'ALERTA', 'ALERTAS', 'ALTERNATIVA',
+    'CONDUTA', 'EVITAR', 'MONITORAR', 'MONITORAMENTO',
+    'CONTRAINDICACAO', 'CONTRAINDICAÇÕES', 'CONTRAINDICACION',
+    'DILUICAO', 'DILUIÇÃO', 'PREPARO', 'INFUSAO', 'INFUSÃO',
+    'TITULACAO', 'TITULAÇÃO', 'VELOCIDADE', 'CALCULO', 'CÁLCULO',
+    'INTERPRETACAO', 'INTERPRETAÇÃO', 'PROXIMO', 'PRÓXIMO',
+    'OBSERVAR', 'OBSERVACAO', 'OBSERVAÇÃO', 'VIGILAR',
+  ];
+  lines = lines.map((line) {
+    for (final label in _kLabels) {
+      if (line.contains('$label:')) {
+        final titled = label[0].toUpperCase() +
+            label.substring(1).toLowerCase();
+        line = line.replaceAll('$label:', '$titled:');
+      }
+    }
+    return line;
+  }).toList();
+
+  // ── 3. Teto de 12 linhas não-vazias ──────────────────────────────────────
+  const _kMaxLines = 12;
+  final nonEmpty = lines.where((l) => l.trim().isNotEmpty).length;
+  if (nonEmpty > _kMaxLines) {
+    int counted = 0;
+    final capped = <String>[];
+    for (final line in lines) {
+      capped.add(line);
+      if (line.trim().isNotEmpty) {
+        counted++;
+        if (counted >= _kMaxLines) break;
+      }
+    }
+    if (kDebugMode) {
+      debugPrint('[AESTHETIC_GUARD] line_cap: $nonEmpty → $_kMaxLines non-empty lines');
+    }
+    return capped.join('\n').trimRight();
+  }
+
+  return lines.join('\n');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
