@@ -1418,6 +1418,23 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   Future<void> _send(String text, AppProvider p, {bool fromButton = false}) async {
+    // ── BUILD 303 SECURITY PATCH: PRÉ-GUARDA ABSOLUTA (LAYER 0) ──────────────
+    // Interceptação SÍNCRONA antes de qualquer outra lógica — cobre TODAS as
+    // rotas de entrada: botão, Enter (KeyboardListener), onSubmitted, chip tap,
+    // retry de erro, consumePendingQuery, edição de mensagem, etc.
+    // Condição ESTRITA: sessionToken (currentUser Firebase) + auth real de IA.
+    // Qualquer ausência → teclado fecha, modal sobe, return IMEDIATO.
+    // Complementar ao Factor 2 abaixo — Layer 0 dispara antes de trimmed.trim().
+    if (p.currentUser == null || (!p.geminiConnected && p.openAiKey.isEmpty)) {
+      FocusScope.of(context).unfocus();
+      _openAiSettings();
+      debugPrint('[BUILD303_LAYER0] Bloqueio pré-guarda: '
+          'currentUser=${p.currentUser?.uid ?? "NULL"} '
+          'geminiConnected=${p.geminiConnected} '
+          'openAiKey=${p.openAiKey.isNotEmpty} → return imediato, zero bytes ao backend.');
+      return;
+    }
+
     final trimmed = text.trim();
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
     if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
@@ -6709,6 +6726,21 @@ class _InputBarState extends State<_InputBar> {
                             // ADENDO SEGURANÇA Factor 1: campo desativado quando não conectado
                             enabled: !locked,     // impede interação total
                             readOnly: locked,     // dupla redundância — teclado não sobe
+                            // ── BUILD 303 SECURITY PATCH: onSubmitted LOCKED ──────────────────
+                            // TextInputAction.send pode disparar onSubmitted em teclados mobile
+                            // mesmo com enabled:false em algumas implementações de plataforma.
+                            // Interceptamos AQUI com verificação explícita de locked e de auth
+                            // — zero confiança: se bloqueado, fecha teclado e retorna imediato.
+                            onSubmitted: (value) {
+                              if (locked) {
+                                // Bloqueio absoluto: fecha teclado e NÃO propaga nada
+                                FocusScope.of(context).unfocus();
+                                return;
+                              }
+                              if (!widget.thinking) {
+                                widget.onSend();
+                              }
+                            },
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
