@@ -3440,9 +3440,11 @@ class _SuggestionCarousel extends StatelessWidget {
 // ═════════════════════════════════════════════════════════════════════════════
 // ActionCardButton — Build 192: componente único para todos os botões de ação
 //
-// Design system premium: Linear / Notion / Arc Browser.
-// Mesmo raio, altura, sombra, padding, tipografia, hover e animação.
-// Diferenciação APENAS por cor (azul institucional vs roxo calculadora).
+// Design system flat premium: Linear / Arc Browser.
+// Mesmo raio, altura, padding, tipografia, hover e animação.
+// Diferenciação APENAS por cor (azul institucional IA vs verde esmeralda ferramenta).
+// ORDEM VISUAL 02: backgrounds ultra-elegantes alpha 0.06/0.12, bordas 1.0px
+// translúcidas, sombra mínima blurRadius:4, tap feedback escala 0.97.
 // ═════════════════════════════════════════════════════════════════════════════
 class ActionCardButton extends StatefulWidget {
   final String title;
@@ -3519,92 +3521,91 @@ class _ActionCardButtonState extends State<ActionCardButton>
   Widget build(BuildContext context) {
     final accent = widget.accentColor;
 
-    // Backgrounds adaptativos dark/light
+    // ── ORDEM VISUAL 02: flat premium backgrounds ─────────────────────────────
+    // Rest: alpha ultra-elegante 0.06 light / 0.12 dark
+    // Hover: slightly elevated 0.11 light / 0.20 dark
+    // Tap (_tapping): escurece fundo para feedback imediato
     final bg = widget.dark
-        ? accent.withValues(alpha: 0.13)
-        : accent.withValues(alpha: 0.08);
+        ? accent.withValues(alpha: 0.12)
+        : accent.withValues(alpha: 0.06);
     final bgHover = widget.dark
         ? accent.withValues(alpha: 0.20)
-        : accent.withValues(alpha: 0.14);
-    final border = widget.dark
-        ? accent.withValues(alpha: 0.40)
-        : accent.withValues(alpha: 0.30);
-    final borderHover = widget.dark
-        ? accent.withValues(alpha: 0.70)
-        : accent.withValues(alpha: 0.55);
-    final textColor = widget.dark
-        ? accent.withValues(alpha: 0.95)
-        : accent.withValues(alpha: 0.85);
+        : accent.withValues(alpha: 0.11);
+    final bgTap = widget.dark
+        ? accent.withValues(alpha: 0.28)
+        : accent.withValues(alpha: 0.16);
 
-    // BUILD 256: reduz opacidade visual durante _tapping para feedback imediato
-    final effectiveOpacity = _tapping ? 0.55 : 1.0;
+    // Bordas translúcidas — 1.0px sólida, quase invisível em repouso
+    final border = widget.dark
+        ? accent.withValues(alpha: 0.30)
+        : accent.withValues(alpha: 0.20);
+    final borderHover = widget.dark
+        ? accent.withValues(alpha: 0.55)
+        : accent.withValues(alpha: 0.38);
+
+    // Texto e ícone: accentColor puro (sólido) — sem opacidade fraca
+    final textColor = widget.dark
+        ? accent.withValues(alpha: 1.0)
+        : accent;
+
+    // Sombra mínima para descolar do fundo — sem sombra pesada em hover
+    final shadow = BoxShadow(
+      color: accent.withValues(alpha: widget.dark ? 0.15 : 0.04),
+      blurRadius: 4,
+      offset: const Offset(0, 2),
+    );
+
+    // Estado de fundo efetivo: tap > hover > rest
+    final effectiveBg = _tapping ? bgTap : (_hovered ? bgHover : bg);
+    final effectiveBorder = (_hovered && !_tapping) ? borderHover : border;
 
     return MouseRegion(
       cursor: _tapping ? SystemMouseCursors.basic : SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit:  (_) => setState(() => _hovered = false),
-      child: Opacity(
-        opacity: effectiveOpacity,
-        child: GestureDetector(
-          onTapDown:   _onTapDown,
-          onTapUp:     _onTapUp,
-          onTapCancel: _onTapCancel,
-          child: AnimatedBuilder(
-            animation: _scale,
-            builder: (context, child) => Transform.scale(
-              scale: _scale.value,
-              child: child,
+      child: GestureDetector(
+        onTapDown:   _onTapDown,
+        onTapUp:     _onTapUp,
+        onTapCancel: _onTapCancel,
+        child: AnimatedBuilder(
+          animation: _scale,
+          builder: (context, child) => Transform.scale(
+            scale: _scale.value,
+            child: child,
+          ),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: effectiveBg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: effectiveBorder,
+                width: 1.0,
+              ),
+              // Sombra mínima — apenas descola do fundo, sem glow
+              boxShadow: [shadow],
             ),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 160),
-              curve: Curves.easeOutCubic,
-              transform: _hovered && !_tapping
-                  ? (Matrix4.identity()..translate(0.0, -2.0))
-                  : Matrix4.identity(),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-              decoration: BoxDecoration(
-                color: _hovered && !_tapping ? bgHover : bg,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: _hovered && !_tapping ? borderHover : border,
-                  width: 1.2,
-                ),
-                boxShadow: _hovered && !_tapping
-                    ? [
-                        BoxShadow(
-                          color: accent.withValues(alpha: widget.dark ? 0.25 : 0.18),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
-                    : [
-                        BoxShadow(
-                          color: accent.withValues(alpha: widget.dark ? 0.08 : 0.06),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(widget.icon, size: 15, color: textColor),
-                  const SizedBox(width: 7),
-                  Flexible(
-                    child: Text(
-                      widget.title,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: textColor,
-                        letterSpacing: 0.1,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(widget.icon, size: 15, color: textColor),
+                const SizedBox(width: 7),
+                Flexible(
+                  child: Text(
+                    widget.title,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: textColor,
+                      letterSpacing: 0.2,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -3634,9 +3635,10 @@ class _ActionButtonsRow extends StatelessWidget {
 
   // Cores institucionais -- imutaveis por design
   // Azul institucional IA (mesmo do AppBar/primary)
-  static const _kBlueAI     = Color(0xFF1E88E5);
-  // Roxo calculadora (mesmo do card Calculadoras da Home)
-  static const _kPurpleCalc = Color(0xFF7e22ce);
+  static const _kBlueAI  = Color(0xFF1E88E5);
+  // Verde Esmeralda — identidade "Base de Dados Local/Segura"
+  // ORDEM VISUAL 02: substituição do roxo 0xFF7e22ce pelo verde 0xFF10B981
+  static const _kToolBtn = Color(0xFF10B981);
 
   const _ActionButtonsRow({
     super.key,
@@ -3672,10 +3674,19 @@ class _ActionButtonsRow extends StatelessWidget {
     // Label do botão IA
     final aiLabel = lang == 'es' ? 'Conductas y dosis' : 'Condutas e doses';
 
+    // ── ORDEM VISUAL 02 M2: Emoji Stripper ───────────────────────────────────
+    // Remove emojis e símbolos especiais do início dos labels antes de exibir.
+    // O ActionCardButton já tem ícone vetorial próprio — emoji no texto é poluição.
+    // Regex: strip qualquer char que não seja letra (incluindo acentos À-ÿ) ou dígito.
+    // Exemplos: '💊 Abrir Amiodarona' → 'Abrir Amiodarona'
+    //           '⚗️ Potássio (eletrólitos)' → 'Potássio (eletrólitos)'
+    //           '✨ Aprofundar Fisiopatologia >' → 'Aprofundar Fisiopatologia >'
+    final emojiStripRx   = RegExp(r'^[^a-zA-Z0-9À-ÿ]+');
+    final cleanLinkLabel = link?.label.replaceFirst(emojiStripRx, '').trim() ?? '';
     // Label do botão Calculadora — Build 223: usa link.label (context-aware)
+    // ORDEM VISUAL 02: emoji stripped antes de passar para ActionCardButton.title.
     // A decisão de qual calculadora abrir acontece no pipeline (ExternalToolLinkEngine),
-    // nunca aqui. A UI apenas consome o label já resolvido.
-    // Exemplos: '💊 Abrir Amiodarona na base', '⚗️ Abrir Potássio (eletrólitos)', etc.
+    // nunca aqui. A UI apenas consome o label já resolvido e higienizado.
 
     return Padding(
       // 16 px acima da resposta (spacing entre resposta e botões)
@@ -3697,9 +3708,9 @@ class _ActionButtonsRow extends StatelessWidget {
 
           final calcBtn = link != null
               ? ActionCardButton(
-                  title: link.label, // Build 223: context-aware label from pipeline
+                  title: cleanLinkLabel.isNotEmpty ? cleanLinkLabel : link.label, // ORDEM VISUAL 02: emoji stripped
                   icon: Icons.calculate_rounded,
-                  accentColor: _kPurpleCalc,
+                  accentColor: _kToolBtn,
                   dark: dark,
                   onTap: () async {
                     // fix(ai): sempre abre WebView interna — NUNCA Safari/launchUrl externo.
@@ -6436,25 +6447,25 @@ class _InputBarState extends State<_InputBar> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),  // ORDEM VISUAL 02: fosco limpo
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              // Cápsula única — fundo dark translúcido ou light branco suave
+              // ORDEM VISUAL 02: grafite escuro / off-white lêtoso
               color: dark
-                  ? const Color(0xFF1E2330).withValues(alpha: 0.90)
-                  : const Color(0xFFF0F2F5).withValues(alpha: 0.95),
+                  ? const Color(0xFF16181D).withValues(alpha: 0.75)
+                  : const Color(0xFFF9FAFB).withValues(alpha: 0.85),
               borderRadius: BorderRadius.circular(30),
               border: Border.all(
                 color: widget.hasFocus
                     ? const Color(0xFF00E5FF).withValues(alpha: 0.55)
                     : (dark
-                        ? const Color(0xFF374151).withValues(alpha: 0.60)
-                        : const Color(0xFFD1D6DC).withValues(alpha: 0.80)),
-                width: widget.hasFocus ? 1.4 : 0.9,
+                        ? const Color(0xFF374151).withValues(alpha: 0.45)
+                        : const Color(0xFFD1D6DC).withValues(alpha: 0.60)),
+                width: widget.hasFocus ? 1.2 : 0.5,  // ORDEM VISUAL 02: borda 0.5px em repouso
               ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),  // ORDEM VISUAL 02: slim
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -6543,7 +6554,7 @@ class _InputBarState extends State<_InputBar> {
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 4,  // SUPER ORDEM 11: compacto
+                                horizontal: 4, vertical: 8,  // ORDEM VISUAL 02: slim, não estica verticalmente
                               ),
                             ),
                           ),
