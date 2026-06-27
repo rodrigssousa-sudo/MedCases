@@ -1405,18 +1405,48 @@ class _AiScreenState extends State<AiScreen> {
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
     if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
 
-    // ── BUILD 275: GOOGLE AUTH GATE ───────────────────────────────────────────
-    // Non-admin / non-master users: obrigatório conectar Google IA antes de chat.
-    // Se não há IA conectada (nem Gemini nem GPT) E o usuário não é admin/master,
-    // bloqueia o envio e abre o painel de conexão como obstrução mandatória.
-    // Admin/master: bypass livre — sem pop-up, sem bloqueio.
-    final bool isPrivileged = p.isAdmin || p.isMaster;
+    // ── SUPER ORDEM ESTRUTURAL 11 M2: HARD BLOCKER UNIVERSAL DE AUTH ─────────
+    // REGRA DE NEGÓCIO CRÍTICA: TODOS os usuários (incluindo admin/master)
+    // DEVEM ter IA conectada (Gemini ou GPT) antes de disparar qualquer query.
+    // Não há bypass. A engine do Gemini não pode ser acionada sem token.
     final bool hasAnyConnection = p.geminiConnected || p.hasAnyAi;
-    if (!isPrivileged && !hasAnyConnection) {
-      // Vibra (feedback tátil) e abre o status sheet obstrutor
-      _focusNode.unfocus();
+    if (!hasAnyConnection) {
+      // 1. Return imediato — engine do Gemini bloqueada absolutamente
+      // 2. Fecha o teclado
+      FocusScope.of(context).unfocus();
+      // 3. SnackBar de aviso imediato
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Text('⚠️ ', style: TextStyle(fontSize: 16)),
+                Expanded(
+                  child: Text(
+                    p.lang == 'es'
+                        ? 'Conecta tu cuenta para usar la IA.'
+                        : 'Conecte sua conta para usar a IA.',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF1A1D23),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+      // 4. Levanta o modal de conexão da IA
       _openAiSettings();
-      debugPrint('[BUILD275][AuthGate] Non-admin user blocked — firing mandatory Google Auth popup.');
+      debugPrint('[HARD_BLOCKER] Auth gate acionado — sem conexão, modal levantado.');
       return;
     }
 
@@ -2694,26 +2724,8 @@ class _AiScreenState extends State<AiScreen> {
                   dark: dark,
                   hasFocus: _hasFocus,
                   thinking: _thinking,
-                  // SUPER ORDEM ESTRUTURAL 11 M2: gatekeeper de login
-                  onSend: () {
-                    if (!isConnected) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            p.lang == 'es'
-                                ? 'Conecta tu cuenta para usar la IA'
-                                : 'Conecte sua conta para usar a IA',
-                          ),
-                          backgroundColor: const Color(0xFF1A1D23),
-                          behavior: SnackBarBehavior.floating,
-                          duration: const Duration(seconds: 3),
-                        ),
-                      );
-                      _openAiSettings();
-                      return;
-                    }
-                    _sendDebounced(_queryCtrl.text, context.read<AppProvider>());
-                  },
+                  // SUPER ORDEM ESTRUTURAL 11 M2: Hard Blocker em _send() — onSend limpo
+                  onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
                   hint: p.t('ai_placeholder'),
                   onVoice: _toggleStt,
                   sttListening: _sttListening,
@@ -2750,26 +2762,8 @@ class _AiScreenState extends State<AiScreen> {
                 dark: dark,
                 hasFocus: _hasFocus,
                 thinking: _thinking,
-                // SUPER ORDEM ESTRUTURAL 11 M2: gatekeeper de login
-                onSend: () {
-                  if (!isConnected) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          p.lang == 'es'
-                              ? 'Conecta tu cuenta para usar la IA'
-                              : 'Conecte sua conta para usar a IA',
-                        ),
-                        backgroundColor: const Color(0xFF1A1D23),
-                        behavior: SnackBarBehavior.floating,
-                        duration: const Duration(seconds: 3),
-                      ),
-                    );
-                    _openAiSettings();
-                    return;
-                  }
-                  _sendDebounced(_queryCtrl.text, context.read<AppProvider>());
-                },
+                // SUPER ORDEM ESTRUTURAL 11 M2: Hard Blocker em _send() — onSend limpo
+                onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
                 hint: p.t('ai_placeholder'),
                 onVoice: _toggleStt,
                 sttListening: _sttListening,
