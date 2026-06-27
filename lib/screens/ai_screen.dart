@@ -2573,6 +2573,7 @@ class _AiScreenState extends State<AiScreen> {
         geminiConnected: p.geminiConnected,
         keyLoading: p.aiKeyLoading || p.geminiLoading,
         forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
+        isConnected: isConnected, // SUPER ORDEM ESTRUTURAL 11: M+ vivo
       ),
 
       // ── Mini barra de ações mobile — SEMPRE visível mesmo com teclado aberto
@@ -2590,6 +2591,7 @@ class _AiScreenState extends State<AiScreen> {
           onSettings: _openAiSettings,
           onNewChat: _startNewChat,
           forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
+          isConnected: isConnected, // SUPER ORDEM ESTRUTURAL 11: M+ vivo
         ),
 
       // ── Banner de erro de chave ───────────────────────────────────────────
@@ -2692,7 +2694,26 @@ class _AiScreenState extends State<AiScreen> {
                   dark: dark,
                   hasFocus: _hasFocus,
                   thinking: _thinking,
-                  onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
+                  // SUPER ORDEM ESTRUTURAL 11 M2: gatekeeper de login
+                  onSend: () {
+                    if (!isConnected) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            p.lang == 'es'
+                                ? 'Conecta tu cuenta para usar la IA'
+                                : 'Conecte sua conta para usar a IA',
+                          ),
+                          backgroundColor: const Color(0xFF1A1D23),
+                          behavior: SnackBarBehavior.floating,
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+                      _openAiSettings();
+                      return;
+                    }
+                    _sendDebounced(_queryCtrl.text, context.read<AppProvider>());
+                  },
                   hint: p.t('ai_placeholder'),
                   onVoice: _toggleStt,
                   sttListening: _sttListening,
@@ -2729,7 +2750,26 @@ class _AiScreenState extends State<AiScreen> {
                 dark: dark,
                 hasFocus: _hasFocus,
                 thinking: _thinking,
-                onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
+                // SUPER ORDEM ESTRUTURAL 11 M2: gatekeeper de login
+                onSend: () {
+                  if (!isConnected) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          p.lang == 'es'
+                              ? 'Conecta tu cuenta para usar la IA'
+                              : 'Conecte sua conta para usar a IA',
+                        ),
+                        backgroundColor: const Color(0xFF1A1D23),
+                        behavior: SnackBarBehavior.floating,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                    _openAiSettings();
+                    return;
+                  }
+                  _sendDebounced(_queryCtrl.text, context.read<AppProvider>());
+                },
                 hint: p.t('ai_placeholder'),
                 onVoice: _toggleStt,
                 sttListening: _sttListening,
@@ -2754,6 +2794,7 @@ class _MobileAiActionBar extends StatelessWidget {
   final bool hasRealAi;
   final bool keyLoading;
   final bool forceDisconnectedLabel; // BUILD 275: show 'Desconectado' for non-admin
+  final bool isConnected; // SUPER ORDEM ESTRUTURAL 11: M+ vivo
   final VoidCallback onHistory;
   final VoidCallback onClear;
   final VoidCallback onSettings;
@@ -2771,6 +2812,7 @@ class _MobileAiActionBar extends StatelessWidget {
     required this.onClear,
     required this.onSettings,
     this.forceDisconnectedLabel = false,
+    this.isConnected = false,
     this.onNewChat,
   });
 
@@ -2832,16 +2874,30 @@ class _MobileAiActionBar extends StatelessWidget {
             ),
           ),
 
-          // ── Leading: M+ logo dourado — assinatura premium ───────────────
+          // ── Leading: M+ VIVO — status da IA — SUPER ORDEM ESTRUTURAL 11 ──
+          // Conectado: verde pulsante (TweenAnimationBuilder respiração).
+          // Desconectado: 'Conectar IA' ciano estático.
+          // Ambos: GestureDetector → _openAiSettings (modal verde).
           Positioned(
-            left: 14,
-            child: Text(
-              'M+',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFFD4AF37).withValues(alpha: 0.72),
-                letterSpacing: -0.5,
+            left: 8,
+            child: GestureDetector(
+              onTap: onSettings,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                child: isConnected
+                    // ── M+ verde pulsante (IA conectada) — loop gerenciado por _MplusPulse
+                    ? const _MplusPulse()
+                    // ── 'Conectar IA' ciano (IA desconectada) ────────────
+                    : const Text(
+                        'Conectar IA',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF00E5FF),
+                          letterSpacing: -0.2,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -2919,6 +2975,67 @@ class _MobileAiActionBar extends StatelessWidget {
   }
 }
 // ─────────────────────────────────────────────────────────────────────────────
+// SUPER ORDEM ESTRUTURAL 11 — M+ VIVO
+// Widget de respiração: AnimationController loop forward↔reverse (1.5s).
+// Usado em _MobileAiActionBar e _WaHeader quando IA está conectada.
+// Dispose automático pelo ciclo de vida StatefulWidget — sem memory leak.
+// ─────────────────────────────────────────────────────────────────────────────
+class _MplusPulse extends StatefulWidget {
+  final double opacity; // ignorado internamente — mantido para compatibilidade de chamada
+  const _MplusPulse({this.opacity = 1.0});
+  @override
+  State<_MplusPulse> createState() => _MplusPulseState();
+}
+
+class _MplusPulseState extends State<_MplusPulse>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..addStatusListener((status) {
+        if (!mounted) return;
+        if (status == AnimationStatus.completed) _ctrl.reverse();
+        if (status == AnimationStatus.dismissed) _ctrl.forward();
+      });
+    _anim = Tween<double>(begin: 0.35, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+    _ctrl.forward();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Opacity(
+        opacity: _anim.value,
+        child: const Text(
+          'M+',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF10B981), // Verde Clínico — IA conectada
+            letterSpacing: -0.5,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Header fino — estilo WhatsApp
 // ─────────────────────────────────────────────────────────────────────────────
 class _WaHeader extends StatelessWidget {
@@ -2934,6 +3051,7 @@ class _WaHeader extends StatelessWidget {
   final bool geminiConnected;
   final bool keyLoading;
   final bool forceDisconnectedLabel; // BUILD 275: 'Desconectado' for non-admin
+  final bool isConnected; // SUPER ORDEM ESTRUTURAL 11: M+ vivo
   const _WaHeader({
     required this.dark,
     required this.hasMessages,
@@ -2947,6 +3065,7 @@ class _WaHeader extends StatelessWidget {
     this.geminiConnected = false,
     this.keyLoading = false,
     this.forceDisconnectedLabel = false,
+    this.isConnected = false,
   });
 
   @override
@@ -3010,33 +3129,32 @@ class _WaHeader extends StatelessWidget {
                             ],
                           ),
                         ),
-                        RichText(
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'MEDCASES',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' PRO',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFFD4AF37),
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // SUPER ORDEM ESTRUTURAL 11: subtítulo MEDCASES PRO
+                        // destruído — substituído pelo M+ vivo como leading direito.
                       ],
                     ),
                   ),
+
+                  // ── M+ VIVO — status da IA — SUPER ORDEM ESTRUTURAL 11 ────
+                  GestureDetector(
+                    onTap: onSettings,
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                      child: isConnected
+                          ? _MplusPulse(opacity: 1.0) // animação gerenciada internamente
+                          : const Text(
+                              'Conectar IA',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF00E5FF),
+                                letterSpacing: -0.2,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
 
                   // ── Ações direita ────────────────────────────────────
                   // Botão histórico
