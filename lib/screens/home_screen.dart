@@ -5298,18 +5298,52 @@ class _PediatricsShell extends StatelessWidget {
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
+    // ── MANDATO VISUAL BUILD 299: TopBar Cupertino — back left, title centered, NO subtitle ──
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
-        // BUILD 282 ORDEM 4: header sem ícone lateral, subtitle = MEDCASES PRO
-        // Gradiente verde esmeralda topLeft→bottomRight (sincronizado com pill bar)
-        _ShellHeader(
-          gradientColors: const [Color(0xFF042F2E), Color(0xFF0F766E), Color(0xFF134E4A)],
-          accentColor:    const Color(0xFFCCFBF1),
-          icon:    Icons.child_care_rounded, // mantido para futura reativação
-          label:   isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-          subtitle: 'MEDCASES PRO', // BUILD 282: assinatura canônica ouro fosco
-          showIcon: false,          // BUILD 282 ORDEM 4: ícone removido da árvore
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF042F2E), Color(0xFF0F766E), Color(0xFF134E4A)],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: SizedBox(
+              height: 52,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // LEFT — back button
+                  Positioned(
+                    left: 4,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new,
+                          size: 20, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
+                      padding: const EdgeInsets.all(8),
+                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    ),
+                  ),
+                  // CENTER ABSOLUTE — title only, no subtitle
+                  Center(
+                    child: Text(
+                      isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         const Expanded(child: PediatricsTabContent()),
       ]),

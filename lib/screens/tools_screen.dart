@@ -4650,60 +4650,77 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
     final c    = AppColors.of(context);
 
     return Column(children: [
-      // ── Sub-menu Pediatria — pill bar sincronizada com TopBar ──────────────
-      // BUILD 282 ORDEM 4: gradiente topLeft→bottomRight idêntico ao _ShellHeader
-      // Cores: 042F2E→0F766E→134E4A (verde esmeralda — continuidade visual)
-      // BorderRadius.circular(12) — padrão canônico unificado
+      // ── MANDATO VISUAL BUILD 299: Flat Underline Tab Pattern ──────────────
+      // Fundo 100% transparente — sem pill-shape / BoxDecoration arredondado
+      // Tab ativa: borda inferior ciano (0xFF00E5FF, 2px)
+      // Tab inativa: sem borda, texto Colors.white60
+      // Divisores verticais Container(w:1, h:14, color: Colors.white24) ENTRE items
       Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF042F2E), // verde escuro — sincronizado com TopBar
-              Color(0xFF0F766E), // esmeralda médio
-              Color(0xFF134E4A), // teal profundo
+              Color(0xFF042F2E),
+              Color(0xFF0F766E),
+              Color(0xFF134E4A),
             ],
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
-          children: List.generate(_sections.length, (i) {
-            final active = _section == i;
-            return Expanded(
-              child: GestureDetector(
-                onTap: () { AppHaptics.selection(context); setState(() => _section = i); },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 160),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    // BUILD 282 ORDEM 4: circular(12) — padrão canônico BUILD 278
-                    borderRadius: BorderRadius.circular(12),
-                    color: active
-                        ? Colors.white.withValues(alpha: 0.18)
-                        : Colors.transparent,
-                    border: Border.all(
-                      color: active
-                          ? Colors.white.withValues(alpha: 0.55)
-                          : Colors.white.withValues(alpha: 0.18),
-                      width: active ? 1.5 : 1,
-                    ),
-                  ),
-                  child: Text(
-                    _sections[i],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: active ? Colors.white : Colors.white.withValues(alpha: 0.55),
-                      letterSpacing: 0.4,
+          children: () {
+            final items = <Widget>[];
+            for (int i = 0; i < _sections.length; i++) {
+              final active = _section == i;
+              // Tab item
+              items.add(
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () { AppHaptics.selection(context); setState(() => _section = i); },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 160),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: active
+                            ? const Border(
+                                bottom: BorderSide(
+                                  color: Color(0xFF00E5FF),
+                                  width: 2.0,
+                                ),
+                              )
+                            : const Border(
+                                bottom: BorderSide.none,
+                              ),
+                      ),
+                      child: Text(
+                        _sections[i],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: active ? Colors.white : Colors.white60,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+              // Vertical divider BETWEEN items (not after last)
+              if (i < _sections.length - 1) {
+                items.add(
+                  Container(
+                    width: 1,
+                    height: 14,
+                    color: Colors.white24,
+                  ),
+                );
+              }
+            }
+            return items;
+          }(),
         ),
       ),
 
