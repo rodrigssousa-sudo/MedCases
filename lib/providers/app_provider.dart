@@ -1684,6 +1684,12 @@ class AppProvider extends ChangeNotifier {
   /// restauradas (ex: sessão do histórico de chats).
   /// Recebe lista de {role: 'user'/'assistant', content: '...'}.
   /// Limita a 10 entradas (5 pares) para não inflar o contexto.
+  ///
+  /// ORDEM 53 M1: Agora também chama _threadManager.primeFromHistory() para
+  /// reidratar o tópico ativo no ClinicalThreadManager. Sem isso, a próxima
+  /// mensagem do usuário cai em `_activeTopic.isEmpty → first_message →
+  /// ThreadAction.newThread → _aiHistory.clear()` — destruindo o histórico
+  /// recém-restaurado (amnésia ao voltar do background).
   void rebuildAiHistoryFromMessages(List<Map<String, String>> messages) {
     cancelAiStream();
     _aiHistory.clear();
@@ -1710,6 +1716,11 @@ class AppProvider extends ChangeNotifier {
       }
     }
     debugPrint('[AppProvider] rebuildAiHistoryFromMessages: ${_aiHistory.length} entradas restauradas no contexto');
+
+    // ORDEM 53 M1: Reidrata o ClinicalThreadManager com o tópico do histórico
+    // restaurado. Impede que a próxima mensagem seja classificada como
+    // 'first_message' e destrua o contexto restaurado com um hard reset.
+    _threadManager.primeFromHistory(window);
   }
 
   /// Reset completo da sessão clínica da IA — usado pelo double-tap no FAB.

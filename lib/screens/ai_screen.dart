@@ -27,6 +27,7 @@ import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipe
 import '../services/ai_smart_router.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
 import '../services/offline_calculator_cache_service.dart'; // BUILD 240: local cache URL
 import '../widgets/ecg_loading.dart'; // BUILD 276: ECG loading indicator
+import '../services/app_resume_coordinator.dart'; // ORDEM 53 M2/M3: backgroundSaveSignal + contextTimeoutSignal
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -305,6 +306,7 @@ class AiScreen extends StatefulWidget {
   /// Formato: [{'role': 'user', 'text': '...'}, {'role': 'ai', 'text': '...'}]
   static final pendingHistory =
       ValueNotifier<List<Map<String, String>>>([]);
+
 }
 
 class _AiScreenState extends State<AiScreen> {
@@ -477,6 +479,10 @@ class _AiScreenState extends State<AiScreen> {
     // Home V2: escuta pendingHistory — restaura o mini-chat da Home no AiScreen.
     // Disparado quando o usuário clica "Ver respuesta completa" / "Ver mais".
     AiScreen.pendingHistory.addListener(_onPendingHistory);
+    // ORDEM 53 M2: escuta sinal de background → auto-salva sessão silenciosamente.
+    AppResumeCoordinator.instance.backgroundSaveSignal.addListener(_onBackgroundSave);
+    // ORDEM 53 M3: escuta sinal de context timeout → hard reset de UI + sessão.
+    AppResumeCoordinator.instance.contextTimeoutSignal.addListener(_onContextTimeout);
     // Injeta saudação após o primeiro frame (AppProvider já disponível)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _injectGreeting();
@@ -748,6 +754,75 @@ class _AiScreenState extends State<AiScreen> {
     });
   }
 
+  // ── ORDEM 53 M2: Auto-Save silencioso no background ─────────────────────
+  /// Chamado quando AppProvider detecta que o app foi para background.
+  /// Salva a sessão atual no SharedPrefs + Firestore sem interromper o médico.
+  /// Fire-and-forget: o médico não vê nada — apenas a sessão é persistida.
+  void _onBackgroundSave() {
+    if (!mounted) return;
+    final hasRealMsgs = _messages.any((m) => m.role == 'user');
+    if (!hasRealMsgs) return; // nada a salvar — chat vazio ou só saudação
+    if (kDebugMode) {
+      debugPrint('[ORDEM53_M2] Auto-save silencioso — app foi para background '
+          'msgs=${_messages.length}');
+    }
+    // Usa post-frame para garantir que o context ainda é válido
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final p = context.read<AppProvider>();
+      _saveCurrentSessionToHistory(p);
+    });
+  }
+
+  // ── ORDEM 53 M3: Context Timeout — Hard Reset após 5 min de background ───
+  /// Chamado quando AppProvider detecta retorno do background após ≥ 5 minutos.
+  /// Executa hard reset completo:
+  ///   1. Salva sessão anterior (garantia de não perder dados)
+  ///   2. Limpa _messages (UI) → novo chat limpo na tela
+  ///   3. Reseta _aiHistory + sessionId → contexto Gemini zerado
+  ///   4. Reinicia saudação → médico vê interface pronta para novo paciente
+  void _onContextTimeout() {
+    if (!mounted) return;
+    if (kDebugMode) {
+      debugPrint('[ORDEM53_M3] Context Timeout ativado — ≥5 min de background '
+          '→ hard reset de sessão clínica');
+    }
+    final p = context.read<AppProvider>();
+
+    // 1. Salva sessão anterior antes de destruir
+    final hasRealMsgs = _messages.any((m) => m.role == 'user');
+    if (hasRealMsgs && _hasNewMessageAfterRestore) {
+      _saveCurrentSessionToHistory(p); // fire-and-forget
+    }
+
+    // 2. Hard reset de UI + IDs de sessão + estado interno
+    setState(() {
+      _messages.clear();
+      _greetingDone = false;
+      _restoredSessionId = null;
+      _activeSessionId   = null;
+      _hasNewMessageAfterRestore = false;
+      _thinking  = false;
+      _aiError   = false;
+      _networkError = false;
+      _userScrolledUp = false;
+      _loggedSafeCardIds.clear();
+      _loggedPlantaoIds.clear();
+      _loggedEvidenceIds.clear();
+    });
+
+    // 3. Hard reset do contexto Gemini no AppProvider
+    p.resetAiSessionFull();
+
+    // 4. Reinicia saudação para o novo chat limpo
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _injectGreeting();
+    });
+
+    debugPrint('[ORDEM53_M3] Hard reset concluído — nova sessão clínica pronta');
+  }
+
   void _consumePendingQuery() {
     final q = AiScreen.pendingQuery.value;
     if (q.isEmpty || !mounted) return;
@@ -830,6 +905,8 @@ class _AiScreenState extends State<AiScreen> {
     _scrollCtrl.removeListener(_onScroll);
     AiScreen.pendingQuery.removeListener(_onPendingQuery);
     AiScreen.pendingHistory.removeListener(_onPendingHistory);
+    AppResumeCoordinator.instance.backgroundSaveSignal.removeListener(_onBackgroundSave);  // ORDEM 53 M2
+    AppResumeCoordinator.instance.contextTimeoutSignal.removeListener(_onContextTimeout);  // ORDEM 53 M3
 
     // ── 3. TTS: para reprodução e limpa handlers antes de liberar ──────────
     // Guard: _tts é late final — inicializado de forma async em _initTts().

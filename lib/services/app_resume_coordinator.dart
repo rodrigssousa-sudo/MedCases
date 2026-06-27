@@ -50,8 +50,8 @@
 //
 // ═══════════════════════════════════════════════════════════════════════════
 
-import 'dart:async';
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
+import 'package:flutter/widgets.dart' show ValueNotifier;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constantes
@@ -101,6 +101,11 @@ class _PendingOp {
 // AppResumeCoordinator
 // ─────────────────────────────────────────────────────────────────────────────
 
+/// Duração máxima de background antes do Context Timeout (ORDEM 53 M3).
+/// Após 5 minutos de inatividade, a sessão clínica é resetada para impedir
+/// que o médico misture pacientes diferentes ao retornar.
+const Duration kContextTimeoutDuration = Duration(minutes: 5);
+
 class AppResumeCoordinator {
   AppResumeCoordinator._();
   static final AppResumeCoordinator instance = AppResumeCoordinator._();
@@ -110,6 +115,17 @@ class AppResumeCoordinator {
 
   // Timestamp da última vez que o app foi para background
   DateTime? _backgroundAt;
+
+  // ── ORDEM 53 M2: Auto-Save Signal ─────────────────────────────────────────
+  /// Incrementado toda vez que o app vai para background.
+  /// AiScreen escuta este notifier para salvar a sessão silenciosamente.
+  /// ValueNotifier(int) incrementável — evita colapso de múltiplos sinais iguais.
+  final backgroundSaveSignal = ValueNotifier<int>(0);
+
+  // ── ORDEM 53 M3: Context Timeout Signal ───────────────────────────────────
+  /// Incrementado quando o app retorna do background após ≥ 5 minutos.
+  /// AiScreen escuta este notifier e executa hard reset de sessão clínica.
+  final contextTimeoutSignal = ValueNotifier<int>(0);
 
   // ── API pública ─────────────────────────────────────────────────────────────
 
@@ -180,19 +196,42 @@ class AppResumeCoordinator {
   // ── Lifecycle hooks ─────────────────────────────────────────────────────────
 
   /// Chamado quando app/aba vai para background.
+  /// ORDEM 53 M2: dispara backgroundSaveSignal para auto-save silencioso.
   void onBackground() {
     _backgroundAt = DateTime.now();
     debugPrint('[LIFECYCLE] state=background pending=${_pending.length} ops');
+
+    // ORDEM 53 M2: notifica AiScreen para salvar sessão antes de o OS
+    // poder matar o processo. Incremento garante que cada background é um
+    // evento único mesmo que o valor anterior fosse idêntico.
+    backgroundSaveSignal.value = backgroundSaveSignal.value + 1;
+    if (kDebugMode) {
+      debugPrint('[ORDEM53_M2] backgroundSaveSignal disparado '
+          'signal=${backgroundSaveSignal.value}');
+    }
   }
 
   /// Chamado quando app/aba volta para foreground.
   /// Verifica cada operação pendente pelo elapsed real.
+  /// ORDEM 53 M3: se background ≥ 5 min → dispara contextTimeoutSignal.
   void onForeground() {
-    final bgMs = _backgroundAt != null
-        ? DateTime.now().difference(_backgroundAt!).inMilliseconds
+    final bgAt = _backgroundAt;
+    final bgMs = bgAt != null
+        ? DateTime.now().difference(bgAt).inMilliseconds
         : 0;
     debugPrint('[LIFECYCLE] state=foreground backgroundDurationMs=$bgMs '
         'pending=${_pending.length}');
+
+    // ORDEM 53 M3: Context Timeout — verifica se background excedeu 5 minutos
+    if (bgAt != null) {
+      final elapsed = DateTime.now().difference(bgAt);
+      if (elapsed >= kContextTimeoutDuration) {
+        debugPrint('[ORDEM53_M3] Context Timeout: elapsed=${elapsed.inSeconds}s '
+            '≥ ${kContextTimeoutDuration.inSeconds}s — disparando contextTimeoutSignal');
+        contextTimeoutSignal.value = contextTimeoutSignal.value + 1;
+      }
+    }
+
     _backgroundAt = null;
 
     if (_pending.isEmpty) return;
@@ -228,7 +267,11 @@ class AppResumeCoordinator {
   void clear() {
     _pending.clear();
     _backgroundAt = null;
-    debugPrint('[RESUME_COORDINATOR] cleared all pending ops');
+    // ORDEM 53: reset dos sinais ao fazer logout — evita disparo espúrio
+    // na próxima sessão de outro usuário no mesmo dispositivo.
+    backgroundSaveSignal.value = 0;
+    contextTimeoutSignal.value = 0;
+    debugPrint('[RESUME_COORDINATOR] cleared all pending ops + lifecycle signals');
   }
 
   /// Número de operações pendentes (para diagnóstico).

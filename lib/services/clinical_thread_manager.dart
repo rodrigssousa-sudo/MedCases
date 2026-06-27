@@ -436,6 +436,54 @@ class ClinicalThreadManager {
     _threadStartQuery = '';
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // primeFromHistory() — ORDEM 53 M1: reidrata thread a partir do histórico
+  // restaurado (ex: retorno do background, restore de sessão do DB).
+  //
+  // PROBLEMA RAIZ DA AMNÉSIA:
+  //   rebuildAiHistoryFromMessages() restaura _aiHistory (turnos de API), mas
+  //   _threadManager permanece com _activeTopic='' (RAM-only, não persiste).
+  //   A próxima mensagem do usuário cai em `_activeTopic.isEmpty → first_message`
+  //   → ThreadAction.newThread → _aiHistory.clear() → contexto restaurado destruído.
+  //
+  // SOLUÇÃO: extrair a assinatura temática do último par user/assistant restaurado
+  // e injetar em _activeTopic/_lastActivityMs para que evaluate() classifique
+  // a próxima mensagem como continueThread (ou topic_shift real, se mudar de tema).
+  //
+  // [messages] — lista idêntica à passada em rebuildAiHistoryFromMessages()
+  //              formato: [{role:'user', content:'...'}, {role:'assistant', content:'...'}]
+  // ─────────────────────────────────────────────────────────────────────────
+  void primeFromHistory(List<Map<String, String>> messages) {
+    // Encontra a última mensagem do usuário no histórico restaurado
+    final userMsgs = messages
+        .where((m) => (m['role'] ?? '') == 'user')
+        .toList();
+    if (userMsgs.isEmpty) return; // sem contexto — mantém estado atual
+
+    final lastUserText = userMsgs.last['content'] ?? '';
+    if (lastUserText.isEmpty) return;
+
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+    // Conta pares user/assistant como turnCount aproximado
+    final pairCount = userMsgs.length;
+
+    // Reidrata o thread com o tópico extraído da última pergunta do usuário
+    _activeTopic = _extractTopicSignature(lastUserText);
+    _activeThreadId = '${nowMs}_restored_${_activeTopic.hashCode.abs()}';
+    _turnCount = pairCount;
+    // Marca _lastActivityMs como agora — evita inactivity_timeout imediato.
+    // O Context Timeout de 5 min (O53 M3) aplica-se na camada de AppProvider,
+    // não aqui — este timestamp previne apenas o timeout de 10min do ThreadManager.
+    _lastActivityMs = nowMs;
+    _threadStartQuery = lastUserText;
+
+    if (kDebugMode) {
+      debugPrint('[THREAD_MANAGER] primeFromHistory: topic=$_activeTopic '
+          'turnCount=$_turnCount restoredPairs=$pairCount '
+          '— blindado contra first_message reset');
+    }
+  }
+
   // ── Getters públicos ──────────────────────────────────────────────────────
   String get activeTopic => _activeTopic;
   String get activeThreadId => _activeThreadId;
