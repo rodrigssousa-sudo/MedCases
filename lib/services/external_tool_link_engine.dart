@@ -106,15 +106,18 @@ class ExternalToolLinkEngine {
     // ── 1. Interações medicamentosas (dois fármacos detectados) ────────────
     final interacao = _detectDrugInteraction(combined);
     if (interacao != null) {
+      // ORDEM 29 V2: labels DINÂMICAS — nomes clínicos reais, nunca strings fixas.
+      final d1 = interacao.$1;  // _TermMatch com .display e .param
+      final d2 = interacao.$2;  // _TermMatch com .display e .param
       final label = isEs
-          ? '💊 Verificar interacción'
-          : '💊 Verificar interação';
+          ? '🚨 Interacción: ${d1.display} + ${d2.display}'
+          : '🚨 Interação: ${d1.display} + ${d2.display}';
       _log(lang: lang, tab: 'interacoes',
-          extra: 'drug1=${interacao.$1} drug2=${interacao.$2} ctx=drug');
+          extra: 'drug1=${d1.param} drug2=${d2.param} ctx=drug');
       return ExternalToolLink(
         label: label,
         url: _url(lang: lang, tab: 'interacoes',
-            extra: 'drug1=${_enc(interacao.$1)}&drug2=${_enc(interacao.$2)}'),
+            extra: 'drug1=${_enc(d1.param)}&drug2=${_enc(d2.param)}'),
         calculatorContext: CalculatorContext.drug,
       );
     }
@@ -203,9 +206,8 @@ class ExternalToolLinkEngine {
     final drugUserMsg = _detectSingleDrug(lastUserMessage.toLowerCase());
     if (drugUserMsg != null) {
       final drugCtxUser = _drugContext(drugUserMsg.param);
-      final label = isEs
-          ? '💊 Abrir ${drugUserMsg.display} en la base'
-          : '💊 Abrir ${drugUserMsg.display} na base';
+      // ORDEM 29 V2: label contextual baseada no CalculatorContext do fármaco.
+      final label = _buildDrugLabel(drugUserMsg.display, drugCtxUser, isEs);
       _log(lang: lang, tab: 'farmacos', extra: 'q=${drugUserMsg.param} ctx=$drugCtxUser');
       return ExternalToolLink(
         label: label,
@@ -273,9 +275,8 @@ class ExternalToolLinkEngine {
       }
 
       final drugCtx = _drugContext(drug.param);
-      final label = isEs
-          ? '💊 Abrir ${drug.display} en la base'
-          : '💊 Abrir ${drug.display} na base';
+      // ORDEM 29 V2: label contextual baseada no CalculatorContext do fármaco.
+      final label = _buildDrugLabel(drug.display, drugCtx, isEs);
       // ignore: avoid_print
       print('[EXT_TOOL_CONTEXT][Build270] source=${drugInUserMsg ? "user_msg" : "thread_topic"} '
           'q=${drug.param}');
@@ -450,9 +451,10 @@ class ExternalToolLinkEngine {
 
   // ───────────────────────────────────────────────────────────────────────────
   // DRUG INTERACTION — detects 2 drugs from combined text
-  // Returns (drug1_param, drug2_param) or null
+  // ORDEM 29 V2: retorna (_TermMatch, _TermMatch)? para preservar .display
+  // (nomes clínicos reais para labels dinâmicas — ex: "Sertralina", "Linezolida")
   // ───────────────────────────────────────────────────────────────────────────
-  static (String, String)? _detectDrugInteraction(String text) {
+  static (_TermMatch, _TermMatch)? _detectDrugInteraction(String text) {
     final List<_TermMatch> drugs = _kDrugs;
     final List<_TermMatch> found = [];
     for (final d in drugs) {
@@ -464,8 +466,51 @@ class ExternalToolLinkEngine {
       }
       if (found.length >= 2) break;
     }
-    if (found.length >= 2) return (found[0].param, found[1].param);
+    if (found.length >= 2) return (found[0], found[1]);
     return null;
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // _buildDrugLabel — ORDEM 29 V2: label contextual por CalculatorContext
+  // Elimina o padrão genérico "💊 Abrir X na base" — cada contexto clínico
+  // gera uma label com emoji e verbo de ação específico.
+  // Determinístico: nunca regex, nunca network, nunca UI.
+  // ───────────────────────────────────────────────────────────────────────────
+  static String _buildDrugLabel(
+      String display, CalculatorContext ctx, bool isEs) {
+    switch (ctx) {
+      case CalculatorContext.antibiotics:
+        // Antibióticos → ajuste de dose renal é a ação clínica mais frequente
+        return isEs
+            ? '⚠️ Ajuste Renal: $display'
+            : '⚠️ Ajuste Renal: $display';
+      case CalculatorContext.vasoactive:
+        // Vasoativos → titulação de dose em mcg/kg/min
+        return isEs
+            ? '📈 Titulación: $display'
+            : '📈 Titulação: $display';
+      case CalculatorContext.infusion:
+        // Sedação/analgesia EV → cálculo de infusão contínua
+        return isEs
+            ? '💉 Infusión: $display'
+            : '💉 Infusão: $display';
+      case CalculatorContext.heparin:
+        // Anticoagulantes → protocolo de anticoagulação
+        return isEs
+            ? '📋 Protocolo: $display'
+            : '📋 Protocolo: $display';
+      case CalculatorContext.glucose:
+        // Insulina / Metformina → protocolo glicêmico
+        return isEs
+            ? '📋 Protocolo Glicêmico: $display'
+            : '📋 Protocolo Glicêmico: $display';
+      case CalculatorContext.drug:
+      default:
+        // Fármaco geral → acesso à base de dados clínica
+        return isEs
+            ? '💊 Base: $display'
+            : '💊 Base: $display';
+    }
   }
 
   // ───────────────────────────────────────────────────────────────────────────

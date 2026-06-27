@@ -2268,6 +2268,12 @@ class _AiScreenState extends State<AiScreen> {
                     // BUILD 232: ExternalToolLink é resolvido aqui (no pai) com cache.
                     // Assim _ActionButtonsRow.build() nunca chama ExternalToolLinkEngine
                     // mais de 1 vez por (messageId, textHash) independente de rebuilds.
+                    // ORDEM 29 V2 — SUBORDINAÇÃO TEMPORAL (MÉTODO BRUNO):
+                    // !_isStreaming é o sinal soberano. Enquanto stream ativo, este bloco
+                    // NUNCA executa → sem injeção de botões durante produção de texto.
+                    // Só após onDone fechar o stream E _lastAiIndex ser sincronizado
+                    // (ORDEM 29 fix) é que ExternalToolLinkEngine.build() é chamado
+                    // com metadados completos do response final. Sem race condition.
                     if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2 && !_isSafeCard)
                       Builder(builder: (_) {
                         final lastUser = _messages
