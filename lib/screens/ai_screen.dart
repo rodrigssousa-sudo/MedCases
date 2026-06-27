@@ -2154,6 +2154,18 @@ class _AiScreenState extends State<AiScreen> {
                   !_isStreaming &&            // stream finalizado
                   !_isSafeCard;             // BUILD 244B: safe-card → bypass renderer
 
+              // ── ORDEM 44 M4: looksLikePlantaoBubble — JIT retroativo ─────────
+              // Dispara para TODAS as bolhas históricas do Plantão que contêm 🟥
+              // mas NÃO são a última bolha (já coberta por isPlantaoFinalBubble).
+              // Garante paridade visual pós-background: mesmo layout que o stream ativo.
+              // Pipeline JIT síncrono no itemBuilder — resultado cacheado imediatamente.
+              final bool looksLikePlantaoBubble =
+                  !_longResponse &&          // Modo Plantão ativo
+                  i != _lastAiIndex &&       // bolha histórica (não a última)
+                  !_isStreaming &&            // fora de stream ativo
+                  !_isSafeCard &&            // não é safe-card de fallback
+                  msg.text.contains('🟥'); // contém 🟥 — estrutura Plantão confirmada
+
               // ── ORDEM 29: looksLikePharmaBula — sentinela de bula residual ─────
               // Segunda camada de defesa: detecta formato de bula enciclopédica
               // clássica (* **CLASSE:** / * **DOSE:) que escapou da rota T-FARMACO-CARD
@@ -2195,7 +2207,8 @@ class _AiScreenState extends State<AiScreen> {
               // ORDEM 29: looksLikePharmaBula também activa o pipeline —
               // permite recuperar estrutura mesmo em bolhas históricas.
               PlantatoPipelineResult? plantaoPipelineResult;
-              if (isPlantaoFinalBubble || looksLikePharmaBula) {
+              // ORDEM 44 M4: looksLikePlantaoBubble added to JIT pipeline trigger
+              if (isPlantaoFinalBubble || looksLikePharmaBula || looksLikePlantaoBubble) {
                 final cacheKey = '${msg.id}:${msg.text.hashCode}';
                 final cached = _plantaoPipelineCache[cacheKey];
                 if (cached != null) {
@@ -2234,8 +2247,9 @@ class _AiScreenState extends State<AiScreen> {
               // ORDEM 29: looksLikePharmaBula também activa o renderer estruturado
               // se o pipeline conseguiu normalizar a bula → _PlantaoRenderer.
               // Se pipeline null mas looksLikePharmaBula → _PlantaoFallbackCard.
+              // ORDEM 44 M4: historical Plantão bubbles also use structured renderer
               final bool useStructuredRenderer =
-                  (isPlantaoFinalBubble || looksLikePharmaBula) &&
+                  (isPlantaoFinalBubble || looksLikePharmaBula || looksLikePlantaoBubble) &&
                   plantaoPipelineResult?.response != null;
 
               // BUILD 276: Fade-in wrapper — applied only to the freshly committed
@@ -2273,7 +2287,8 @@ class _AiScreenState extends State<AiScreen> {
                     // e o pipeline retornou null após tentativa de normalização antibula,
                     // usamos o _PlantaoFallbackCard (card estruturado degradado).
                     // NUNCA o _AiBubble cru em Modo Plantão com conteúdo clínico.
-                    else if (isPlantaoFinalBubble || looksLikePharmaBula)
+                    // ORDEM 44 M4: historical Plantão bubbles also degrade gracefully
+                    else if (isPlantaoFinalBubble || looksLikePharmaBula || looksLikePlantaoBubble)
                       _PlantaoFallbackCard(
                         text: msg.text,
                         dark: dark,
@@ -2512,10 +2527,11 @@ class _AiScreenState extends State<AiScreen> {
         child: Stack(
           children: [
             chatList,
-            // SUPER ORDEM 42 M4: Google Auth Barrier — card proeminente quando
-            // usuário não-autenticado tenta usar a IA (chat vazio + desconectado).
-            // Substitui o WiFi-off _EmptyChat para não-privilegiados sem conta.
-            if (forceDisconnectedLabel && _messages.isEmpty)
+            // SUPER ORDEM 42 M4 / ORDEM 44 M3: Google Auth Barrier — card proeminente
+            // quando usuário não-autenticado tenta usar a IA.
+            // ORDEM 44: condição pareia com toggle — desaparece no 1º envio do médico.
+            if (forceDisconnectedLabel &&
+                !_messages.any((m) => m.role == 'user'))
               _GoogleAuthBarrierCard(
                 dark: dark,
                 lang: p.lang,
@@ -2674,9 +2690,11 @@ class _AiScreenState extends State<AiScreen> {
       Expanded(child: chatArea),
 
         // ── ORDEM 36: Seletor de modo flutuante — fixo acima do InputBar ────────
-      // 25px acima da barra de digitação. Visível apenas com chat vazio.
-      // SUPER ORDEM 42 M3: some no milissegundo em que chega a primeira mensagem.
-      if (!forceDisconnectedLabel && _messages.isEmpty)
+      // ORDEM 44 M1: visível enquanto NÃO há mensagens do médico na sessão.
+      // Aparece mesmo com greeting de boas-vindas — desaparece no 1º envio.
+      // hasUserMessages = qualquer msg com role=='user' (exclui greeting AI).
+      if (!forceDisconnectedLabel &&
+          !_messages.any((m) => m.role == 'user'))
         Padding(
           padding: const EdgeInsets.only(top: 4, bottom: 0),
           child: _ResponseModeToggle(
@@ -2846,14 +2864,15 @@ class _MobileAiActionBar extends StatelessWidget {
                       TextSpan(
                         text: 'MEDCASES',
                         style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w700,
+                          // ORDEM 44 M2: 18→15.5 (−15%) — elegância minimalista
+                          fontSize: 15.5, fontWeight: FontWeight.w700,
                           color: Colors.white, letterSpacing: -0.2,
                         ),
                       ),
                       TextSpan(
                         text: ' IA',
                         style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w700,
+                          fontSize: 15.5, fontWeight: FontWeight.w700,
                           color: Color(0xFFD4AF37), letterSpacing: -0.2,
                         ),
                       ),
