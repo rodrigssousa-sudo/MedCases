@@ -921,22 +921,94 @@ class PlantaoIntentEngine {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
+  // ── ORDEM 52 M1: Tabela de roteamento PlantaoContext → Número da Matriz ─────
+  // Mapeia contexto clínico para o número exato da matriz no _modeAnchorPlantao.
+  // Usado pela cláusula de supremacia para ponteiro numérico direto ao LLM.
+  static const Map<PlantaoContext, int> _contextToMatriz = {
+    PlantaoContext.cardiovascular: 1,   // Caso clínico / Emergência (IAM, SCA)
+    PlantaoContext.farmacologia:   2,   // Efeitos adversos / Complicações
+    PlantaoContext.choque:         15,  // Choque / Vasopressores
+    PlantaoContext.arritmia:       4,   // Arritmia / FA / TV / FV
+    PlantaoContext.eletrolitos:    5,   // Distúrbio Eletrolítico
+    PlantaoContext.renal:          17,  // Insuficiência Renal Aguda
+    PlantaoContext.sepse:          8,   // Síndrome Complexa / Sepse
+    PlantaoContext.toxicologia:    9,   // Intoxicação Exógena
+    PlantaoContext.trauma:         10,  // Trauma
+    PlantaoContext.neurologia:     11,  // AVC / Neurologia crítica
+    PlantaoContext.ventilacao:     16,  // Ventilação Mecânica
+    PlantaoContext.viaAerea:       16,  // Via Aérea / IOT → Ventilação
+    PlantaoContext.pcr:            14,  // Parada Cardiorrespiratória
+    PlantaoContext.glicemia:       20,  // Alteração Laboratorial / CAD
+    PlantaoContext.geral:          21,  // Tema Livre (fallback)
+  };
+
+  // ── ORDEM 52 M1: Mapeamento PlantaoIntent → Número da Matriz ─────────────
+  // Refinamento por intenção quando o contexto não é suficientemente específico.
+  static const Map<PlantaoIntent, int> _intentToMatriz = {
+    PlantaoIntent.diluicao:        3,   // Diluição / Titulação / Desmame
+    PlantaoIntent.infusao:         3,   // Infusão contínua → Diluição
+    PlantaoIntent.eletrolitos:     5,   // Distúrbio Eletrolítico
+    PlantaoIntent.glicemia:        5,   // CAD → Eletrolítico/Metabólico
+    PlantaoIntent.ventilacao:      16,  // Ventilação Mecânica
+    PlantaoIntent.via_aerea:       16,  // Via Aérea
+    PlantaoIntent.pcr:             14,  // PCR / ACLS
+    PlantaoIntent.choque:          15,  // Choque
+    PlantaoIntent.sepse:           8,   // Sepse
+    PlantaoIntent.arritmia:        4,   // Arritmia
+    PlantaoIntent.contraindicacao: 2,   // Efeitos Adversos / CI
+    PlantaoIntent.interacao:       2,   // Interação → Efeitos Adversos
+    PlantaoIntent.interpretacao:   20,  // Interpretação Lab → Alteração Lab
+    PlantaoIntent.monitorizacao:   20,  // Monitorização → Alteração Lab
+    PlantaoIntent.calculo:         20,  // Cálculo → Alteração Lab/Fórmula
+    PlantaoIntent.procedimento:    10,  // Procedimento → Trauma/Cirurgia
+    PlantaoIntent.diagnostico:     1,   // Diagnóstico → Caso Clínico
+    PlantaoIntent.dose:            7,   // Dose → Antibiótico proxy
+    PlantaoIntent.conduta:         1,   // Conduta → Caso Clínico
+    PlantaoIntent.geral:           21,  // Geral → Tema Livre
+  };
+
   // buildIntentMandateV2 — mandato rico para system_instruction (Build 225)
   //
-  // Injeta: topic, subtitle, context, complexity, template de emojis.
+  // ORDEM 52 M1: agora inclui cláusula de supremacia com ponteiro numérico
+  // para a matriz exata — elimina o conflito entre _contractPlantao genérico
+  // e os templates específicos da Camada A (_modeAnchorPlantao).
+  //
   // Vai EXCLUSIVAMENTE para system_instruction — NUNCA para contents[].
   // ─────────────────────────────────────────────────────────────────────────
   static String buildIntentMandateV2(PlantaoQueryAnalysis qa, String lang) {
     final isEs = lang == 'es';
 
+    // ── ORDEM 52 M1: Resolução do número da matriz ────────────────────────────
+    // Prioridade: intent específico > contexto clínico > fallback 21
+    int matrizNum = _intentToMatriz[qa.primaryIntent] ??
+        _contextToMatriz[qa.clinicalContext] ??
+        21;
+    // Refinamento: se o intent é dose/conduta/geral mas o contexto é crítico,
+    // usa o contexto para dar uma matriz mais específica.
+    if ((qa.primaryIntent == PlantaoIntent.dose ||
+            qa.primaryIntent == PlantaoIntent.conduta ||
+            qa.primaryIntent == PlantaoIntent.geral) &&
+        qa.clinicalContext != PlantaoContext.geral &&
+        qa.clinicalContext != PlantaoContext.farmacologia) {
+      matrizNum = _contextToMatriz[qa.clinicalContext] ?? matrizNum;
+    }
+
+    // ── ORDEM 52 M1: Cláusula de Supremacia ──────────────────────────────────
+    // Ponteiro numérico direto à matriz + cancelamento do contrato genérico.
+    final supremacyClause = isEs
+        ? '⚡ AUTORIDADE MÁXIMA DESTE TURNO:\n'
+            'USE EXCLUSIVAMENTE A MATRIZ $matrizNum da lista acima.\n'
+            'DESCARTE todas as outras matrizes e o FORMATO GENÉRICO anterior.\n'
+            'O template desta matriz é o ÚNICO formato válido para esta resposta.'
+        : '⚡ AUTORIDADE MÁXIMA DESTE TURNO:\n'
+            'USE EXCLUSIVAMENTE A MATRIZ $matrizNum da lista acima.\n'
+            'DESCARTE todas as outras matrizes e o FORMATO GENÉRICO anterior.\n'
+            'O template desta matriz é o ÚNICO formato válido para esta resposta.';
+
     // ── Bloco de identidade do turno ──────────────────────────────────────────
-    final topicLine = isEs
-        ? 'TEMA DESTE TURNO: ${qa.clinicalTopic}'
-        : 'TEMA DESTE TURNO: ${qa.clinicalTopic}';
+    final topicLine = 'TEMA DESTE TURNO: ${qa.clinicalTopic}';
     final subtitleLine = qa.clinicalSubtitle.isNotEmpty
-        ? (isEs
-            ? 'CATEGORÍA: ${qa.clinicalSubtitle}'
-            : 'CATEGORIA: ${qa.clinicalSubtitle}')
+        ? (isEs ? 'CATEGORÍA: ${qa.clinicalSubtitle}' : 'CATEGORIA: ${qa.clinicalSubtitle}')
         : '';
     final contextLine = isEs
         ? 'CONTEXTO CLÍNICO: ${_contextLabel(qa.clinicalContext, isEs)}'
@@ -950,8 +1022,6 @@ class PlantaoIntentEngine {
 
     // ── Template de emojis baseado em primaryIntent ───────────────────────────
     // Build 226 Fix B: fármaco isolado sem intenção explícita → template farmacológico
-    // Critério: primaryIntent=geral + topic não é genérico (drug foi detectado pelo _DrugMatcher)
-    // Isso evita que o LLM tente preencher "💊 1ª linha:" incompleta para nomes de fármacos isolados
     final bool isFarmacoIsolado = qa.primaryIntent == PlantaoIntent.geral &&
         qa.clinicalTopic != 'CONSULTA CLÍNICA' &&
         qa.clinicalTopic.isNotEmpty;
@@ -969,7 +1039,7 @@ class PlantaoIntentEngine {
     // ── Adaptação de complexidade ─────────────────────────────────────────────
     final complexityAdaptation = _buildComplexityAdaptation(qa.complexity, isEs);
 
-    // ── Montagem final ────────────────────────────────────────────────────────
+    // ── Montagem final — cláusula de supremacia SEMPRE no final (viés de recência) ──
     final lines = <String>[
       topicLine,
       if (subtitleLine.isNotEmpty) subtitleLine,
@@ -978,6 +1048,8 @@ class PlantaoIntentEngine {
       titleInstruction,
       template,
       if (complexityAdaptation.isNotEmpty) complexityAdaptation,
+      '',
+      supremacyClause,  // ORDEM 52 M1: último — máximo viés de recência
     ];
 
     return lines.join('\n');

@@ -278,25 +278,42 @@ class AiSmartRouter {
       '⛔ INTERAÇÃO: Gravidade + mecanismo em 1 linha + conduta prática.\n'
       'Alertas renais: ClCr < X mL/min quando relevante.\n';
 
-  // ══ CONTRATO PLANTÃO — Build 191: formato clínico limpo ════════════════════
-  // CRÍTICO: não usar "B", "C", não mencionar "template", não listar regras.
-  // Apenas o formato visual final que o LLM deve produzir.
+  // ══ CONTRATO PLANTÃO FALLBACK — usado APENAS quando não há contexto clínico
+  // específico identificado pela Camada C (PlantaoIntentEngine).
+  // ORDEM 52 M1: foi o "tirano genérico" que sobrescrevia as 22 matrizes.
+  // Agora só é injetado como fallback real (geral/consulta clínica sem drug match).
   static const String _contractPlantao =
-      'FORMATO OBRIGATÓRIO DA RESPOSTA (Modo Plantão):\n'
+      'FORMATO OBRIGATÓRIO DA RESPOSTA (Modo Plantão — fallback geral):\n'
       '\n'
-      '🟥 CONDUTA CLÍNICA IMEDIATA\n'
-      '💊 1ª linha: [fármaco principal + dose + via + frequência]\n'
-      '🔄 Alternativa: [segunda opção ou conduta alternativa]\n'
-      '⛔ Evitar: [contraindicação — omitir se não houver]\n'
-      '📌 Monitorar: [parâmetro principal de segurança]\n'
-      '⚠️ Alerta: [risco crítico — omitir se não houver]\n'
+      '🟥 [DIAGNÓSTICO EM CAIXA ALTA — máx 5 palavras]\n'
+      '💊 1ª linha:\n'
+      '- **[Fármaco dose via]**\n'
+      '- [Segundo fármaco se houver]\n'
+      '🔄 Alternativa: - [opção alternativa]\n'
+      '⛔ Evitar: - [contraindicação]\n'
+      '📌 Monitorar: - [parâmetro]\n'
+      '⚠️ Alerta: - [risco]\n'
       '\n'
-      'REGRAS:\n'
-      '• Máximo 14 linhas de conteúdo real.\n'
-      '• Cada linha = UMA função clínica.\n'
-      '• Sem fisiopatologia, sem prosa acadêmica, sem ## headings.\n'
-      '• Gotas: APENAS 2 linhas (Fórmula + **Resultado em negrito**).\n'
-      '• Diluição: Volume → Diluição → Infusão (máx 6 linhas).\n';
+      'REGRAS ULTRA-PLANTÃO:\n'
+      '• Título 🟥: máx 5 palavras.\n'
+      '• Condutas: OBRIGATÓRIO bullet points (-). Máx 5 linhas. Máx 7 palavras/linha.\n'
+      '• Fármacos: **negrito** em nome + dose. Ex: - **Morfina 2–4 mg IV**.\n'
+      '• Sem prosa, sem fisiopatologia, sem ## headings.\n'
+      '• Gotas: APENAS 2 linhas (Fórmula + **Resultado**).\n'
+      '• Diluição: tripé — Volume → Diluição → Infusão (máx 6 linhas).\n';
+
+  // ══ CONTRATO PLANTÃO REFERÊNCIA — injetado quando há contexto clínico
+  // específico (intentMandate da Camada C já carrega o template da matriz).
+  // Este texto é mínimo — apenas reforça as regras visuais Ultra-Plantão
+  // sem redefinir estrutura (evita conflito com a cláusula de supremacia).
+  // ORDEM 52 M1: substituiu o _contractPlantao completo no caminho específico.
+  static const String _contractPlantaoRef =
+      'REGRAS ULTRA-PLANTÃO (reforço — a AUTORIDADE DE MATRIZ no final supera estas):\n'
+      '• Título 🟥: máx 5 palavras. NUNCA genérico.\n'
+      '• Condutas: bullet points (-). Máx 5 linhas. Máx 7 palavras/linha.\n'
+      '• Fármacos: **negrito** em nome + dose. Ex: - **Enoxaparina 1 mg/kg SC 12/12h**.\n'
+      '• Sem prosa. Sem parágrafos. Sem ##. Sem introduções.\n'
+      '• A AUTORIDADE DE MATRIZ ao final deste prompt define o template exato.\n';
 
   // ══ CONTRATO ESTUDO — BUILD 257: isolamento explícito das regras do Plantão ══
   static const String _contractEstudo =
@@ -324,8 +341,19 @@ class AiSmartRouter {
     required _IntentResult intent,
     required String langLock,
     required String cleanContext,
+    // ORDEM 52 M1: indica se há contexto clínico específico roteado pela
+    // Camada C (PlantaoIntentEngine) — quando true, _contractPlantao é
+    // SUPRIMIDO para evitar conflito com o template da matriz específica.
+    bool hasSpecificContext = false,
   }) {
-    final contract = isPlantaoMode ? _contractPlantao : _contractEstudo;
+    // ORDEM 52 M1: _contractPlantao só é injetado como FALLBACK quando não
+    // há contexto clínico específico identificado pelo IntentEngine.
+    // Com contexto específico, o intentMandate (Camada C) já carrega o
+    // template correto da matriz — inserir o genérico criaria conflito fatal.
+    final bool useFallbackContract = isPlantaoMode && !hasSpecificContext;
+    final contract = isPlantaoMode
+        ? (useFallbackContract ? _contractPlantao : _contractPlantaoRef)
+        : _contractEstudo;
 
     final buf = StringBuffer();
     buf.write('$langLock\n\n');    // Language Lock: topo (Viés de Primazia)
@@ -601,6 +629,9 @@ class AiSmartRouter {
     required String systemPrompt,
     required bool isPlantaoMode,
     required String appLanguage,
+    // ORDEM 52 M1: sinaliza que a Camada C (PlantaoIntentEngine) produziu
+    // um template específico de matriz — suprime o _contractPlantao genérico.
+    bool hasSpecificContext = false,
   }) {
     final sw = Stopwatch()..start();
 
@@ -631,11 +662,14 @@ class AiSmartRouter {
     final rawContextLen = systemPrompt.length;
 
     // ── Camadas 3 & 4: Module Loader + Prompt Builder ─────────────────────────
+    // ORDEM 52 M1: propaga hasSpecificContext para suprimir _contractPlantao
+    // quando a Camada C já carrega template específico de matriz.
     final candidate = _buildPrompt(
       isPlantaoMode: isPlantaoMode,
       intent: intent,
       langLock: langLock,
       cleanContext: cleanContext,
+      hasSpecificContext: hasSpecificContext,
     );
 
     // ── Shrink final — garante cap absoluto (sem remover langLock) ────────────

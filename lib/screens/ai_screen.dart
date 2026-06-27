@@ -5709,8 +5709,8 @@ class _AiBlockBubble extends StatelessWidget {
     final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
 
     // ConnectMind AI palette — semantic color bars
+    // ORDEM 52 M3: kGreenLight removido — barra 4px descontinuada, emoji é identidade
     const kGreen      = Color(0xFF008CA4);
-    const kGreenLight = Color(0xFF00E5FF);
     const kRed        = Color(0xFFB91C1C);
     const kAmber      = Color(0xFFB45309);
     // B140: Vermelho Ferrari — cor de destaque para títulos e nomes de fármacos
@@ -5810,67 +5810,49 @@ class _AiBlockBubble extends StatelessWidget {
             .trim();
         widgets.add(Padding(
           padding: const EdgeInsets.only(bottom: 6, top: 8),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: 4,
-                  decoration: BoxDecoration(
-                    color: kGreenLight,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.medication_rounded, size: 14,
+                  color: Color(0xFF00E5FF)),
+              const SizedBox(width: 6),
+              // ORDEM 17 — contraste dinâmico: ciano no dark, grafite no light
+              // ORDEM 52 M3: barra 4px removida — identidade visual via emoji 🟥
+              Expanded(child: Text(
+                // ORDEM 48 M1: caps condicional — síndrome pura → caps; conduta clínica → sentence case.
+                () {
+                  final raw = label.isEmpty ? trimmed : label;
+                  // ORDEM 50 M1: trimLeft() antes do startsWith() —
+                  // espaços/newlines iniciais mascaravam o emoji clínico
+                  // forçando toUpperCase() indevido (regressão tipográfica).
+                  final rawClean = raw.trimLeft();
+                  final startsWithClinic = rawClean.startsWith('🚨') ||
+                      rawClean.startsWith('💊') ||
+                      rawClean.startsWith('⛔') ||
+                      rawClean.startsWith('📌') ||
+                      rawClean.startsWith('⚠️');
+                  return startsWithClinic ? raw : raw.toUpperCase();
+                }(),
+                style: TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w800,
+                  color: dark
+                      ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
+                      : const Color(0xFF1A1A1A),  // grafite denso — contraste 18:1 sobre fundo claro
+                  height: 1.3,
+                  letterSpacing: 0.5,
                 ),
-                const SizedBox(width: 10),
-                Expanded(child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.medication_rounded, size: 14,
-                          color: Color(0xFF00E5FF)),
-                      const SizedBox(width: 6),
-                      // ORDEM 17 — contraste dinâmico: ciano no dark, grafite no light
-                      Expanded(child: Text(
-                        // ORDEM 48 M1: caps condicional — síndrome pura → caps; conduta clínica → sentence case.
-                        () {
-                          final raw = label.isEmpty ? trimmed : label;
-                          // ORDEM 50 M1: trimLeft() antes do startsWith() —
-                          // espaços/newlines iniciais mascaravam o emoji clínico
-                          // forçando toUpperCase() indevido (regressão tipográfica).
-                          final rawClean = raw.trimLeft();
-                          final startsWithClinic = rawClean.startsWith('🚨') ||
-                              rawClean.startsWith('💊') ||
-                              rawClean.startsWith('⛔') ||
-                              rawClean.startsWith('📌') ||
-                              rawClean.startsWith('⚠️');
-                          return startsWithClinic ? raw : raw.toUpperCase();
-                        }(),
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w800,
-                          color: dark
-                              ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
-                              : const Color(0xFF1A1A1A),  // grafite denso — contraste 18:1 sobre fundo claro
-                          height: 1.3,
-                          letterSpacing: 0.5,
-                        ),
-                      )),
-                    ],
-                  ),
-                )),
-              ],
-            ),
+              )),
+            ],
           ),
         ));
         continue;
       }
 
-      // ── ⛔ / HARD STOP — amber or red 4px bar ───────────────────────────
+      // ── ⛔ / HARD STOP — ORDEM 52 M3: barra lateral removida, cor via emoji ─
       if (trimmed.startsWith('⛔') || _isHardStop(line)) {
         flushMd();
         final isHs = _isHardStop(line);
-        final barColor = isHs ? kRed : kAmber;
         final labelColor = isHs
             ? (dark ? const Color(0xFFFF8080) : kRed)
             : (dark ? const Color(0xFFFFD580) : kAmber);
@@ -5881,31 +5863,14 @@ class _AiBlockBubble extends StatelessWidget {
             .trim();
         widgets.add(Padding(
           padding: const EdgeInsets.only(bottom: 4, top: 6),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: 4,
-                  decoration: BoxDecoration(
-                    color: barColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3),
-                  child: Text(
-                    label.isEmpty ? trimmed : label,
-                    style: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w600,
-                      color: labelColor,
-                      height: 1.45,
-                    ),
-                  ),
-                )),
-              ],
+          // ORDEM 52 M3: barra 4px removida — identidade visual via emoji ⛔
+          child: Text(
+            label.isEmpty ? trimmed : label,
+            style: TextStyle(
+              fontSize: 13.5,
+              fontWeight: FontWeight.w600,
+              color: labelColor,
+              height: 1.45,
             ),
           ),
         ));
@@ -6517,17 +6482,9 @@ class _PlantaoFallbackCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            left: BorderSide(
-              color: dark ? kCyan : const Color(0xFF008CA4),
-              width: 3,
-            ),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+      // ORDEM 52 M3: borda esquerda 3px removida — identidade visual via emoji 🟥
+      child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -6584,7 +6541,6 @@ class _PlantaoFallbackCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }
