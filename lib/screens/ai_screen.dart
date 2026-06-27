@@ -4883,8 +4883,8 @@ String _cleanAiText(String raw) {
 
   // ── 5. Sanitização final de formatação ───────────────────────────────────
   s = s
-      // ## e ### NÃO são removidos aqui — _AiBlockBubble renderiza H2/H3 com
-      // hierarquia visual própria (cyan para ##, barra lateral para ###)
+      // ## e ### NÃO são removidos aqui — MarkdownBody renderiza H2/H3
+      // nativamente via MarkdownStyleSheet (h2/h3 com tipografia clínica)
       .replaceAll('---', '')                                     // separadores HR
       .replaceAll('--', '')                                      // traços duplos
       .replaceAll(RegExp(r'\*{3,}'), '');                        // *** ou mais
@@ -5070,9 +5070,8 @@ List<String> _splitIntoBlocks(String text) {
       .toList();
 
   // ── Passo de fusão de cabeçalhos orfãos ──────────────────────────────
-  // Detector inline (espelha _isSectionHeader e _isH2 do _AiBlockBubble).
-  // Não temos acesso ao método de instância aqui (função top-level), então
-  // replicamos a mesma lógica de detecção de forma simples.
+  // Detector inline — replica a lógica de detecção de seção localmente
+  // (função top-level, sem acesso a métodos de instância).
   // Build 100: expandido para cobrir todos os emojis clínicos de header e
   // linhas de blockquote (>) que o modelo emite isoladas antes dos bullets.
   bool looksLikeHeaderOnly(String block) {
@@ -5221,7 +5220,7 @@ String _applyMedicalNbsp(String text) {
 /// Build 118: Smart Text-Wrap — NBSP entre número e unidade médica.
 Widget _buildInlineText(String line, Color textColor, {bool isBold = false}) {
   // Build 115: sanitização defensiva — remove asteriscos de bullet isolados
-  // que chegaram aqui sem passar pelo _isListItem.
+  // que possam escapar do parser Markdown.
   String sanitized = line
       .replaceAll(RegExp(r'^\*\s+'), '')           // '* ' no início
       .replaceAll(RegExp(r'^\*(?=\S)'), '')         // '*texto' sem espaço
@@ -5311,99 +5310,10 @@ class _AiBlockBubble extends StatelessWidget {
     this.onChipTap,
   });
 
-  // ── Detectores de tipo de linha para hierarquia visual hospitalar ────────
-
-  /// Linha HARD STOP — alerta de contraindicação crítica
-  // UNICODE-SAFE: toUpperCase() em Dart é Unicode-aware (não degrada acentos).
-  // As strings de comparação estão em UPPERCASE para match case-insensitive.
-  // Adicionadas variações sem acento como fallback de safety net.
-  bool _isHardStop(String line) {
-    final tu = line.trim().toUpperCase();
-    return tu.contains('HARD STOP') ||
-           tu.contains('HARD_STOP') ||
-           tu.contains('CONTRAINDICAÇÃO ABSOLUTA') ||  // com acento correto
-           tu.contains('CONTRAINDICACAO ABSOLUTA') ||  // fallback sem acento
-           tu.contains('CONTRAINDICACIÓN ABSOLUTA') || // espanhol com acento
-           tu.contains('CONTRAINDICACION ABSOLUTA');   // espanhol fallback
-  }
-
-  /// Título H2 — linhas que começam com '## ' (dois sustenidos + espaço)
-  /// Renderizado em cyan #38BDF8, fonte 13.5→15, bold — acima do _isSectionHeader
-  bool _isH2(String line) {
-    final t = line.trim();
-    return t.startsWith('## ') && !t.startsWith('### ');
-  }
-
-  /// Linha de seção principal (### ou marcador clínico padrão ou 4-blocos emoji)
-  bool _isSectionHeader(String line) {
-    final t = line.trim();
-    // Reconhece os 5 blocos oficiais premium: 🚨 💊 ⛔ 📌 🟥 (Build 106)
-    if (t.startsWith('🚨') || t.startsWith('💊') ||
-        t.startsWith('⛔') || t.startsWith('📌') ||
-        t.startsWith('🟥')) return true;
-    return t.startsWith('###') ||
-           RegExp(
-             // Aceita tanto versões acentuadas quanto não-acentuadas (safety net)
-             r'^(Hipótese|Hipóteses|Hipotese|Hipoteses|'
-             r'Hipotesis|Hipótesis|'
-             r'Conduta|Conducta|'
-             r'Exames|Examenes|'
-             r'Monitoriz|Monitorizaç|'  // PT: Monitorização/Monitorização
-             r'Evitar|'
-             r'Escalonamento|Escalonamiento|'
-             r'AGORA|AHORA|QUICK|CLINICAL|TEACH|'
-             r'Primeira Escolha|Primera Elección|Primera Eleccion)',
-             caseSensitive: false,
-           ).hasMatch(t);
-    // NOTA: 'Confiança|Confianza' removido — não deve renderizar como seção.
-    // _cleanAiText() e _stripMetadataHeaders() já eliminam essas linhas antes
-    // de chegar aqui. Manter no detector causava que linhas que escapassem das
-    // purgas fossem exibidas com destaque visual como seção clínica.
-  }
-
-  /// Linha de alerta/atenção (mas não hard stop)
-  // UNICODE-SAFE: não usa toUpperCase() antes de comparar com strings acentuadas
-  // como 'ATENÇÃO'/'ATENCIÓN' — toUpperCase() em Dart preserva maiúsculas Unicode
-  // corretas, mas a comparação com literal maiúsculo é segura. Checamos tanto
-  // a versão original quanto a uppercase para capturar "Atenção", "ATENÇÃO", etc.
-  bool _isWarning(String line) {
-    final t = line.trim();
-    final tu = t.toUpperCase();
-    return (t.startsWith('⚠') ||
-            tu.startsWith('ATENÇÃO') || tu.startsWith('ATENCIÓN') ||
-            tu.startsWith('ATENCION') ||   // fallback sem acento
-            tu.startsWith('ATENCAO') ||    // fallback sem acento
-            tu.startsWith('ALERTA') ||
-            tu.startsWith('CUIDADO') ||
-            tu.startsWith('NOTA:') ||
-            tu.startsWith('OBS:')) &&
-           !_isHardStop(line);
-  }
-
-  /// Linha de referência bibliográfica
-  bool _isReference(String line) {
-    final t = line.trim();
-    return t.startsWith('📚') || t.startsWith('Ref') || t.startsWith('Fonte') ||
-           t.startsWith('Fuente') || t.startsWith('[ESC') || t.startsWith('[AHA') ||
-           t.startsWith('[IDSA') || t.startsWith('[ACC') || t.startsWith('[GOLD') ||
-           (t.startsWith('[') && t.endsWith(']') && t.length < 60);
-  }
-
-  /// Linha de item de lista (bullet) — inclui markdown asterisco `* `
-  /// Build 115: expande para capturar `* **Negrito**` (asterisco + negrito sem espaço)
-  /// e `*Texto` (asterisco sem espaço), padrões emitidos pelo Gemini Flash-Lite.
-  bool _isListItem(String line) {
-    final t = line.trimLeft();
-    // Padrões normais: '* ', '- ', '• ', '→ ', '▸ ', '1. '
-    if (t.startsWith('* ') || t.startsWith('- ') || t.startsWith('• ') ||
-        t.startsWith('→ ') || t.startsWith('▸ ') ||
-        RegExp(r'^\d+\.\s').hasMatch(t)) return true;
-    // Build 115: '* **Negrito' — asterisco seguido direto de negrito (sem espaço)
-    if (RegExp(r'^\*\s*\*\*').hasMatch(t)) return true;
-    // Build 115: '*Texto' — asterisco sem espaço (Gemini Flash-Lite emite isso)
-    if (RegExp(r'^\*[^*\s]').hasMatch(t)) return true;
-    return false;
-  }
+  // ── ORDEM VISUAL 01: detectores de linha individuais EXTINTOS ───────────
+  // _isHardStop / _isH2 / _isSectionHeader / _isWarning / _isReference /
+  // _isListItem foram todos removidos. O MarkdownBody único processa o texto
+  // completo com softLineBreak:true — sem loop linha-a-linha na UI.
 
   // ── Build 122: Separa linhas do bloco de referências (📚) ────────────────
   // Retorna [bodyLines, refLines] pré-separados.
@@ -5436,199 +5346,111 @@ class _AiBlockBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Build 122 — Single MarkdownBody renderer:
-    // Flat UI: 100% transparent, no BoxDecoration, no bubble.
-    // Semantic bars: 4px inline decorators ONLY for lines starting with
-    //   🟥 (cyan bar — conduta) and ⛔ / HARD STOP (amber/red bar — alert).
-    // All other content rendered as a single fluid MarkdownBody.
+    // ── ORDEM VISUAL 01 — MarkdownBody ÚNICO, sem loop linha-a-linha ─────────
+    // Toda a lógica de detecção manual de 🟥 / ⛔ / HARD STOP foi extinta.
+    // O texto completo flui para um único MarkdownBody com softLineBreak:true.
+    // Identidade visual: cor dos emojis nativos do modelo — 100% flat, sem
+    // sub-containers, sem Row/Padding segregados por tipo de linha.
+
+    const kGreen      = Color(0xFF008CA4);
+    // B140: Vermelho Ferrari — títulos H2 e **strong** no light mode
+    const kFerrariRed = Color(0xFFFF2400);
 
     final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
 
-    // ConnectMind AI palette — semantic color bars
-    // ORDEM 52 M3: kGreenLight removido — barra 4px descontinuada, emoji é identidade
-    const kGreen      = Color(0xFF008CA4);
-    const kRed        = Color(0xFFB91C1C);
-    const kAmber      = Color(0xFFB45309);
-    // B140: Vermelho Ferrari — cor de destaque para títulos e nomes de fármacos
-    const kFerrariRed = Color(0xFFFF2400);
+    // ── M2: Normalização de soft-line-breaks ─────────────────────────────────
+    // Converte cada \n isolado em \n\n para que o MarkdownBody quebre a linha
+    // corretamente com softLineBreak:true, preservando parágrafos já duplos.
+    // Algoritmo: substitui qualquer \n que NÃO esteja já precedido por \n
+    // e NÃO esteja já seguido por \n → insere o segundo \n apenas onde falta.
+    final normalizedText = block
+        .replaceAll('\r\n', '\n')           // normaliza CRLF → LF
+        .replaceAll(RegExp(r'\n{3,}'), '\n\n')  // colapsa 3+ \n → 2
+        .replaceAllMapped(
+          RegExp(r'(?<!\n)\n(?!\n)'),       // \n isolado (não duplo)
+          (_) => '\n\n',                    // → duplo para MD paragraph break
+        );
 
-    final lines = block.split('\n');
+    final lines = normalizedText.split('\n');
     final (bodyLines, refLines) = _splitRefLines(lines);
     final bool hasRefBlock = refLines.isNotEmpty;
 
-    // Build list of widgets: semantic bar lines rendered individually,
-    // runs of plain markdown text collected and rendered as MarkdownBody.
-    final widgets = <Widget>[];
-    final mdBuffer = StringBuffer();
+    // Reconstrói o corpo normalizado para o MarkdownBody
+    final mdText = bodyLines.join('\n').trim();
 
-    void flushMd() {
-      final md = mdBuffer.toString().trim();
-      mdBuffer.clear();
-      if (md.isEmpty) return;
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: MarkdownBody(
-          data: md,
-          selectable: false,
-          styleSheet: MarkdownStyleSheet(
-            // Build 1557 — Destaque isolado: APENAS **strong** recebe cor vibrante.
-            // p / em / listBullet = textColor neutro absoluto → sem herança de cor.
-            // strong (**...**) = cor vibrante exclusiva para fármacos, doses e
-            //   condutas imediatas. Texto explicativo ao redor permanece neutro.
-            // Regra: se não está envolto em **, não recebe cor de destaque.
-            p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
-            // strong = ÚNICO receptor de cor vibrante no stylesheet
-            strong: TextStyle(
-              fontSize: 13.5,
-              fontWeight: FontWeight.w700,
-              // Dark mode: cyan médico 0xFF00E5FF (contraste 12:1 sobre fundo escuro)
-              // Light mode: Vermelho Ferrari 0xFFFF2400 (contraste 5.2:1 sobre branco)
-              color: dark ? const Color(0xFF00E5FF) : kFerrariRed,
-            ),
-            // em, listBullet = neutros — sem cor de destaque mesmo com formatação
-            em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
-            listBullet: TextStyle(fontSize: 13.5, color: textColor),
-            // B140: título principal da resposta → Vermelho Ferrari bold
-            h2: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
-              color: kFerrariRed,
-              letterSpacing: 0.1,
-              height: 1.3,
-            ),
-            h3: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: dark ? const Color(0xFF00E5FF) : kGreen,
-              height: 1.3,
-            ),
-            blockquote: TextStyle(fontSize: 13, color: textColor.withValues(alpha: 0.8)),
-            // Build 125 — force transparent backgrounds on all block elements
-            // to prevent flutter_markdown from inheriting ThemeData.cardColor
-            // (which is Colors.white in light mode → white card regression)
-            blockquoteDecoration: BoxDecoration(
-              color: Colors.transparent,
-              border: Border(
-                left: BorderSide(
-                  color: dark ? Colors.white24 : Colors.black26,
-                  width: 3,
-                ),
-              ),
-            ),
-            codeblockDecoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            horizontalRuleDecoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: dark ? Colors.white12 : Colors.black12,
-                  width: 1,
-                ),
-              ),
-            ),
-            blockSpacing: 6,
-            listIndent: 18,
+    // ── MarkdownStyleSheet premium — tipografia clínica flat ─────────────────
+    final sheet = MarkdownStyleSheet(
+      // p: height 1.55 — respiro clínico máximo para checklists de Plantão
+      p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
+      // strong (**...**) = ÚNICO receptor de cor vibrante
+      // Dark: cyan médico 0xFF00E5FF (contraste 12:1 sobre fundo escuro)
+      // Light: Vermelho Ferrari 0xFFFF2400 (contraste 5.2:1 sobre branco)
+      strong: TextStyle(
+        fontSize: 13.5,
+        fontWeight: FontWeight.w700,
+        color: dark ? const Color(0xFF00E5FF) : kFerrariRed,
+      ),
+      em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
+      listBullet: TextStyle(fontSize: 13.5, color: textColor),
+      // H2: título principal — Vermelho Ferrari bold (B140)
+      h2: const TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w800,
+        color: kFerrariRed,
+        letterSpacing: 0.1,
+        height: 1.3,
+      ),
+      // H3: sub-seção clínica — cyan no dark, verde médico no light
+      h3: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+        color: dark ? const Color(0xFF00E5FF) : kGreen,
+        height: 1.3,
+      ),
+      blockquote: TextStyle(fontSize: 13, color: textColor.withValues(alpha: 0.8)),
+      // Força fundos transparentes — evita herança de ThemeData.cardColor
+      blockquoteDecoration: BoxDecoration(
+        color: Colors.transparent,
+        border: Border(
+          left: BorderSide(
+            color: dark ? Colors.white24 : Colors.black26,
+            width: 3,
           ),
-          softLineBreak: true,
         ),
-      ));
-    }
-
-    for (final line in bodyLines) {
-      final trimmed = line.trim();
-
-      // ── 🟥 header — cyan 4px bar ─────────────────────────────────────────
-      if (trimmed.startsWith('🟥')) {
-        flushMd();
-        final label = trimmed
-            .replaceFirst('🟥', '')
-            .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
-            .trim();
-        widgets.add(Padding(
-          padding: const EdgeInsets.only(bottom: 6, top: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.medication_rounded, size: 14,
-                  color: Color(0xFF00E5FF)),
-              const SizedBox(width: 6),
-              // ORDEM 17 — contraste dinâmico: ciano no dark, grafite no light
-              // ORDEM 52 M3: barra 4px removida — identidade visual via emoji 🟥
-              // ORDEM 54 M3: toUpperCase() removido — preserva sentence case da IA.
-              // Ultra-Plantão Build 260 já entrega títulos formatados; forçar caps
-              // contradizia o formato das matrizes (regressão tipográfica).
-              Expanded(child: Text(
-                label.isEmpty ? trimmed : label,
-                style: TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w800,
-                  color: dark
-                      ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
-                      : const Color(0xFF1A1A1A),  // grafite denso — contraste 18:1 sobre fundo claro
-                  height: 1.3,
-                  letterSpacing: 0.5,
-                ),
-              )),
-            ],
+      ),
+      codeblockDecoration: const BoxDecoration(color: Colors.transparent),
+      horizontalRuleDecoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: dark ? Colors.white12 : Colors.black12,
+            width: 1,
           ),
-        ));
-        continue;
-      }
-
-      // ── ⛔ / HARD STOP — ORDEM 52 M3: barra lateral removida, cor via emoji ─
-      if (trimmed.startsWith('⛔') || _isHardStop(line)) {
-        flushMd();
-        final isHs = _isHardStop(line);
-        final labelColor = isHs
-            ? (dark ? const Color(0xFFFF8080) : kRed)
-            : (dark ? const Color(0xFFFFD580) : kAmber);
-        final label = trimmed
-            .replaceAll(RegExp(r'\*\*HARD.STOP[:\s]*', caseSensitive: false), '')
-            .replaceFirst('⛔', '')
-            .replaceFirst(RegExp(r'^[\s—\-:]+'), '')
-            .trim();
-        widgets.add(Padding(
-          padding: const EdgeInsets.only(bottom: 4, top: 6),
-          // ORDEM 52 M3: barra 4px removida — identidade visual via emoji ⛔
-          child: Text(
-            label.isEmpty ? trimmed : label,
-            style: TextStyle(
-              fontSize: 13.5,
-              fontWeight: FontWeight.w600,
-              color: labelColor,
-              height: 1.45,
-            ),
-          ),
-        ));
-        continue;
-      }
-
-      // ── Tudo o mais → acumula no buffer de Markdown ──────────────────────
-      // Linhas em branco viram '\n\n' para separar parágrafos no MD.
-      if (trimmed.isEmpty) {
-        mdBuffer.write('\n\n');
-      } else {
-        mdBuffer.writeln(line);
-      }
-    }
-
-    // Flush qualquer MD restante no buffer
-    flushMd();
+        ),
+      ),
+      blockSpacing: 6,
+      listIndent: 18,
+    );
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.0).copyWith(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0).copyWith(
         bottom: isLast ? 8 : 4,
       ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          // ORDEM 17 — mainAxisSize.min: permite crescimento ilimitado vertical
-          // sem disputar altura máxima com o ListView pai (evita truncação de
-          // respostas longas que paravam de renderizar no meio do texto).
+          // mainAxisSize.min: crescimento ilimitado vertical sem disputar
+          // altura máxima com o ListView pai (evita truncação de texto longo).
           mainAxisSize: MainAxisSize.min,
           children: [
-            ...widgets,
+            // ── ÚNICO MarkdownBody — processa tudo (🟥 ⛔ ## ### bullets) ──
+            if (mdText.isNotEmpty)
+              MarkdownBody(
+                data: mdText,
+                selectable: false,
+                softLineBreak: true,
+                styleSheet: sheet,
+              ),
 
             // ── Build 120: Bloco de Referências Colapsável ────────────────
             if (hasRefBlock)
