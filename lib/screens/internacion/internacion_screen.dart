@@ -866,16 +866,15 @@ class _InternacionScreenState extends State<InternacionScreen> {
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       // TOPBAR — AppBar customizada
-      // BUILD 282 ORDEM 3: Paridade tipográfica confirmada e explicitada.
-      // fontSize:20 w700 white | subtitle gold #D4AF37 | arrow_back_ios_new 20
-      // Row crossAxisAlignment:center → botão "+ Nova" alinhado verticalmente
-      // com a linha central do bloco de título. Gradiente verde mantido.
+      // SUPER ORDEM VISUAL 05: Topologia Cupertino/Linear Left-Center-Right.
+      // Stack: título absolutamente centrado, back à esquerda, "+ Nova" à direita.
+      // Subtítulo "MEDCASES PRO" destruído — título PACIENTES sozinho e limpo.
+      // Altura: 63 → 66 (+3px respiro vertical).
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(63),
+        preferredSize: const Size.fromHeight(66),
         child: Container(
           // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao/Pacientes
-          // Gradiente verde mantido conforme ORDEM 3 (só tipografia sincronizada).
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -892,98 +891,76 @@ class _InternacionScreenState extends State<InternacionScreen> {
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center, // alinha botão c/ título
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  // Back
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new,
-                        size: 20, color: Colors.white),
-                    tooltip: isEs ? 'Volver' : 'Voltar',
-                    onPressed: () => Navigator.maybePop(context),
-                    padding: const EdgeInsets.all(8),
-                    constraints:
-                        const BoxConstraints(minWidth: 36, minHeight: 36),
+                  // ── CENTER: título isolado e absolutamente centrado ───────
+                  const Center(
+                    child: Text(
+                      'PACIENTES',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.2,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                  // Title Column
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          isEs ? 'PACIENTES' : 'PACIENTES',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.2,
-                            color: Colors.white,
+                  // ── LEFT: botão de voltar ─────────────────────────────────
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new,
+                          size: 20, color: Colors.white),
+                      tooltip: isEs ? 'Volver' : 'Voltar',
+                      onPressed: () => Navigator.maybePop(context),
+                      padding: const EdgeInsets.all(8),
+                      constraints:
+                          const BoxConstraints(minWidth: 36, minHeight: 36),
+                    ),
+                  ),
+                  // ── RIGHT: botão [➕ Nova] ──────────────────────────────
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: GestureDetector(
+                        onTap: _confirmAndReset,
+                        child: Container(
+                          height: 36,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF059669)
+                                .withValues(alpha: dark ? 0.28 : 0.20),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: const Color(0xFF059669)
+                                  .withValues(alpha: 0.55),
+                              width: 0.9,
+                            ),
                           ),
-                        ),
-                        RichText(
-                          text: const TextSpan(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              TextSpan(
-                                text: 'MEDCASES',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' PRO',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFFD4AF37),
-                                  letterSpacing: 1.2,
+                              const Icon(Icons.add_rounded,
+                                  size: 15,
+                                  color: Color(0xFF34D399)),
+                              const SizedBox(width: 5),
+                              Text(
+                                isEs ? 'Nueva' : 'Nova',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF34D399),
+                                  letterSpacing: 0.2,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  // Actions: botão [➕ Nova]
-                  GestureDetector(
-                    onTap: _confirmAndReset,
-                    child: Container(
-                      height: 36,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF059669)
-                            .withValues(alpha: dark ? 0.28 : 0.20),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: const Color(0xFF059669)
-                              .withValues(alpha: 0.55),
-                          width: 0.9,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.add_rounded,
-                              size: 15,
-                              color: Color(0xFF34D399)),
-                          const SizedBox(width: 5),
-                          Text(
-                            isEs ? 'Nueva' : 'Nova',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF34D399),
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 4),
                 ],
               ),
             ),
