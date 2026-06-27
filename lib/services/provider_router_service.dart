@@ -291,7 +291,8 @@ class ProviderRouterService {
     if (response.statusCode != 200) {
       String errorCode = 'proxy_error_${response.statusCode}';
       try {
-        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        final decodedErr = utf8.decode(response.bodyBytes);
+        final body = jsonDecode(decodedErr) as Map<String, dynamic>;
         errorCode = body['error']?.toString() ?? errorCode;
       } catch (_) {}
       debugPrint('[PAID_PROXY] requestId=$requestId success=false status=${response.statusCode} '
@@ -301,7 +302,10 @@ class ProviderRouterService {
 
     Map<String, dynamic> body;
     try {
-      body = jsonDecode(response.body) as Map<String, dynamic>;
+      // ORDEM 46 M1: utf8.decode(bodyBytes) garante suporte correto a acentos
+      // (á, é, í, ó, ú, ñ) — evita mismatch ISO-8859-1 que corrompia output Plantão.
+      final decodedBody = utf8.decode(response.bodyBytes);
+      body = jsonDecode(decodedBody) as Map<String, dynamic>;
     } catch (e) {
       debugPrint('[PAID_PROXY] requestId=$requestId success=false status=parse_error');
       return PaidProxyResult.failure('parse_error');
