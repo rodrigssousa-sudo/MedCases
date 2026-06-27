@@ -2063,8 +2063,10 @@ class _AiScreenState extends State<AiScreen> {
     final p    = context.watch<AppProvider>();
     final dark = p.darkMode;
     final bp   = MedBreakpoints.of(context);
-    // B140: fundo branco absoluto em light mode (remove bege WhatsApp)
-    final chatBg = dark ? const Color(0xFF1A1D23) : Colors.white;
+    // ORDEM VISUAL 04 M1: canvas premium absoluto
+    // Dark: grafite noturno ultra-profundo 0xFF121418
+    // Light: branco gelo ultra-limpo 0xFFFCFDFD
+    final chatBg = dark ? const Color(0xFF121418) : const Color(0xFFFCFDFD);
 
     // Fix #5: detecta teclado via viewInsets (cobre Web Mobile onde focus events
     // podem não ser confiáveis). Propaga ao ValueNotifier para o FAB em main.dart.
@@ -2786,9 +2788,12 @@ class _MobileAiActionBar extends StatelessWidget {
     return Container(
       height: 55, // SUPER ORDEM: +3px de respiro vertical
       decoration: BoxDecoration(
-        // BUILD 283 ORDEM 10.1: Dark Graphite solid — paridade com tools/history headers
-        color: const Color(0xFF1A1D23),
-        border: const Border(bottom: BorderSide(color: Color(0xFF2A2D35), width: 0.5)),
+        // ORDEM VISUAL 04 M3: harmonia com chatBg premium
+        color: dark ? const Color(0xFF121418) : const Color(0xFFFCFDFD),
+        border: Border(bottom: BorderSide(
+          color: dark ? const Color(0xFF22252B) : const Color(0xFFF0F0F0),
+          width: 0.5,
+        )),
       ),
       // ORDEM 36: título CENTRALIZADO + trailing dark container com ícones
       child: Stack(
@@ -2800,17 +2805,19 @@ class _MobileAiActionBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RichText(
-                  text: const TextSpan(
+                  text: TextSpan(
                     children: [
                       TextSpan(
                         text: 'MEDCASES',
                         style: TextStyle(
                           // ORDEM 44 M2: 18→15.5 (−15%) — elegância minimalista
+                          // ORDEM VISUAL 04: adaptive dark/light
                           fontSize: 15.5, fontWeight: FontWeight.w700,
-                          color: Colors.white, letterSpacing: -0.2,
+                          color: dark ? Colors.white : const Color(0xFF1A1D23),
+                          letterSpacing: -0.2,
                         ),
                       ),
-                      TextSpan(
+                      const TextSpan(
                         text: ' IA',
                         style: TextStyle(
                           fontSize: 15.5, fontWeight: FontWeight.w700,
@@ -2945,12 +2952,14 @@ class _WaHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // SUPER ORDEM: +3px respiro vertical, título bicolor MEDCASES/IA, subtítulo split
+    // ORDEM VISUAL 04 M3: harmonia total com chatBg premium (dark/light aware)
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1D23), // Dark Graphite solid — paridade total
-        border: Border(
-          bottom: BorderSide(color: Color(0xFF2A2D35), width: 0.5),
-        ),
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF121418) : const Color(0xFFFCFDFD),
+        border: Border(bottom: BorderSide(
+          color: dark ? const Color(0xFF22252B) : const Color(0xFFF0F0F0),
+          width: 0.5,
+        )),
       ),
       child: Padding(
           padding: const EdgeInsets.fromLTRB(4, 11, 10, 11),
@@ -3862,7 +3871,21 @@ class _UserBubbleState extends State<_UserBubble> {
 
   @override
   Widget build(BuildContext context) {
-    const bubbleColor = Color(0xFF008CA4);
+    // ── ORDEM VISUAL 04 M2: iOS Flat / Minimalista ────────────────────────────
+    // Bolha neutra e suave — não compete com o conteúdo clínico da IA.
+    // dark: grafite suave 0xFF2A2D35 / light: cinza gelo 0xFFF0F2F5
+    // Sem borda desenhada — bloco sólido de cor plana.
+    final bubbleColor = widget.dark
+        ? const Color(0xFF2A2D35)
+        : const Color(0xFFF0F2F5);
+    final textColor = widget.dark
+        ? Colors.white
+        : const Color(0xFF1A1D23);
+    // Cor primária do botão "Enviar" (único elemento de destaque)
+    final sendColor = widget.dark
+        ? const Color(0xFF00E5FF)
+        : const Color(0xFF008CA4);
+
     const borderRadius = BorderRadius.only(
       topLeft:     Radius.circular(16),
       topRight:    Radius.circular(16),
@@ -3875,13 +3898,13 @@ class _UserBubbleState extends State<_UserBubble> {
       child: Align(
         alignment: Alignment.centerRight,
         child: _editing
-            // ── Modo edição inline ─────────────────────────────────────────
+            // ── Modo edição inline — paleta flat neutra ────────────────────
             ? Container(
                 constraints: const BoxConstraints(maxWidth: 320),
                 decoration: BoxDecoration(
-                  color: bubbleColor.withValues(alpha: 0.12),
+                  color: bubbleColor,
                   borderRadius: borderRadius,
-                  border: Border.all(color: bubbleColor, width: 1.2),
+                  // Sem borda — bloco sólido flat
                 ),
                 padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
                 child: Column(
@@ -3894,7 +3917,7 @@ class _UserBubbleState extends State<_UserBubble> {
                       maxLines: null,
                       style: TextStyle(
                         fontSize: 14, height: 1.45,
-                        color: widget.dark ? Colors.white : const Color(0xFF1A1D23),
+                        color: textColor,
                       ),
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -3921,7 +3944,7 @@ class _UserBubbleState extends State<_UserBubble> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                             decoration: BoxDecoration(
-                              color: bubbleColor,
+                              color: sendColor,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text('Enviar',
@@ -3935,7 +3958,7 @@ class _UserBubbleState extends State<_UserBubble> {
                   ],
                 ),
               )
-            // ── Modo normal — balão com long-press + ícone de edição ─────
+            // ── Modo normal — bolha flat sem borda ────────────────────────
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -3943,19 +3966,20 @@ class _UserBubbleState extends State<_UserBubble> {
                   GestureDetector(
                     onLongPress: () => _showActions(context),
                     child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
                         borderRadius: borderRadius,
-                        color: Color(0xFF008CA4),
+                        color: bubbleColor,
+                        // Sem border — design flat puro
                       ),
                       child: Text(
                         widget.text,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14, fontWeight: FontWeight.w400,
-                          color: Colors.white, height: 1.45)),
+                          color: textColor, height: 1.45)),
                     ),
                   ),
-                  // Fix 5: ícone de edição discreto abaixo do balão
+                  // Ícone de edição discreto abaixo do balão
                   // Desabilitado e invisível durante streaming/thinking da IA
                   if (!widget.isAiStreaming && widget.onEdit != null)
                     Padding(
@@ -3966,8 +3990,8 @@ class _UserBubbleState extends State<_UserBubble> {
                           Icons.edit_outlined,
                           size: 14,
                           color: widget.dark
-                              ? Colors.white.withValues(alpha: 0.35)
-                              : const Color(0xFF008CA4).withValues(alpha: 0.50),
+                              ? Colors.white.withValues(alpha: 0.30)
+                              : Colors.black.withValues(alpha: 0.28),
                         ),
                       ),
                     ),
