@@ -3469,7 +3469,7 @@ class AppProvider extends ChangeNotifier {
         mode:            longResponse ? 'estudo' : 'plantao',
         lang:            _lang,
         requestId:       requestId,
-        maxOutputTokens: longResponse ? 2048 : 3200,  // ORDEM 23: Plantão 1600→3200 — elimina corte abrupto de streaming (teto de prompt também removido)
+        maxOutputTokens: longResponse ? 2500 : 3200,  // ORDEM 47 M2: Estudo 2048→2500 (lock cognitivo — garante output completo no Pro)
       );
 
       if (paidResult.success && paidResult.text.isNotEmpty) {
@@ -3552,7 +3552,7 @@ class AppProvider extends ChangeNotifier {
           mode:            longResponse ? 'estudo' : 'plantao',
           lang:            _lang,
           requestId:       requestId,
-          maxOutputTokens: longResponse ? 2048 : 3200,  // ORDEM 23: Plantão 1600→3200 — elimina corte abrupto de streaming (teto de prompt também removido)
+          maxOutputTokens: longResponse ? 2500 : 3200,  // ORDEM 47 M2: Estudo 2048→2500 (lock cognitivo — garante output completo no Pro)
         );
 
         criticalTimeoutTimer?.cancel();

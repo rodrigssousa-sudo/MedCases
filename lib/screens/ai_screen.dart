@@ -2526,12 +2526,21 @@ class _AiScreenState extends State<AiScreen> {
         color: chatBg,
         child: Stack(
           children: [
-            chatList,
-            // SUPER ORDEM 42 M4 / ORDEM 44 M3: Google Auth Barrier — card proeminente
-            // quando usuário não-autenticado tenta usar a IA.
-            // ORDEM 44: condição pareia com toggle — desaparece no 1º envio do médico.
-            if (forceDisconnectedLabel &&
-                !_messages.any((m) => m.role == 'user'))
+            // ORDEM 47 M1: blur da timeline quando usuário não autenticado.
+            // ImageFilter.blur oculta o conteúdo da timeline visualmente,
+            // reforçando que a IA está bloqueada até a conexão Google ser feita.
+            if (forceDisconnectedLabel)
+              ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
+                child: IgnorePointer(child: chatList),
+              )
+            else
+              chatList,
+            // ORDEM 47 M1: Auth barrier SOBERANA — baseada EXCLUSIVAMENTE em
+            // forceDisconnectedLabel (= !isPrivilegedUser && !isConnected).
+            // Não depende mais de _messages.any(). O overlay cobre TODA a timeline
+            // independente de haver mensagens — proteção financeira de API absoluta.
+            if (forceDisconnectedLabel)
               _GoogleAuthBarrierCard(
                 dark: dark,
                 lang: p.lang,
@@ -7122,8 +7131,9 @@ class _DisconnectedInputLock extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  isEs ? 'Conecta tu cuenta para usar la IA…'
-                       : 'Conecte sua conta para usar a IA…',
+                  // ORDEM 47 M1: 🔒 prefix reforça o bloqueio visualmente
+                  isEs ? '🔒 Conecta Google para usar la IA...'
+                       : '🔒 Conecte o Google para usar a IA...',
                   style: TextStyle(
                     fontSize: 14,
                     color: dark ? Colors.white54 : Colors.black38,

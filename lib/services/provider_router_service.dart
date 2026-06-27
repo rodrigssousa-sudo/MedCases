@@ -214,12 +214,17 @@ class ProviderRouterService {
       'model':           _activeModel,      // override direto de modelo
       'model_tier':      _activeModelTier,  // tag de tier ('speed'|'pro')
       'temperature':     _activeTemp,       // temperatura por modo
+      // ORDEM 47 M2: 'tier' como terceira tag de bypass físico no servidor.
+      // 'cognitive' = Gemini 2.5 Pro (Estudo) | 'speed' = Flash (Plantão).
+      // Tripla sinalização: model + model_tier + tier → desvio garantido.
+      'tier':            isPlantao ? 'speed' : 'cognitive',
     };
 
     if (kDebugMode) {
-      debugPrint('[ORDEM42_PAYLOAD] mode=$mode '
+      debugPrint('[ORDEM47_PAYLOAD] mode=$mode '
           'model=$_activeModel '
           'model_tier=$_activeModelTier '
+          'tier=${isPlantao ? "speed" : "cognitive"} '
           'temperature=$_activeTemp '
           'maxOutputTokens=$maxOutputTokens');
     }
