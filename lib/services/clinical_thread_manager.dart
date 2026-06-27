@@ -139,6 +139,59 @@ class ClinicalThreadManager {
     'intoxicação', 'intoxicacion',
   ];
 
+  // ── ORDEM 33 — MANDATO 2: Termos clínicos isolados que SEMPRE iniciam novo thread ─
+  //
+  // DIAGNÓSTICO DO BUG "HISTÓRICO FANTASMA":
+  //   Quando o médico digita "ICC" (1 palavra, 3 chars):
+  //     wordCount=1 ≤ 3 → isTooShort=true → continueThread → history da Sertralina
+  //     vaza para o novo contexto de ICC → resposta mista / contaminação cruzada.
+  //
+  // SOLUÇÃO — PRE-CHECK DE ISOLAMENTO:
+  //   Antes de aplicar a regra isTooShort, verificar se a query é um termo
+  //   clínico ISOLADO de nova patologia (acrônimo ou nome de doença sem qualquer
+  //   palavra de follow-up). Se sim → newThread MESMO sendo curta.
+  //   Critério: query normalizada (sem pontuação) é exatamente um desses termos.
+  //
+  // COBERTURA: acrônimos PT-BR + ES + nomes por extensão comuns em Plantão.
+  static const _kIsolatedNewCaseTerms = <String>{
+    // Cardiovascular
+    'icc', 'icc.', 'iam', 'iam.', 'sca', 'sca.',
+    'fa', 'fa.', 'flutter', 'tep', 'tep.',
+    'tvp', 'tvp.',
+    'dissecção', 'diseccion',
+    'tam', 'bloqueio', 'bradicardia', 'taquicardia', 'fibrilação',
+    'fibrilacion', 'cardioversão',
+    // Neurológico
+    'avc', 'avc.', 'acv', 'acv.', 'ave', 'tia', 'tia.',
+    'meningite', 'meningitis', 'encefalite', 'encefalitis',
+    'crise', 'convulsão', 'convulsion', 'epilepsia',
+    // Respiratório
+    'dpoc', 'dpoc.', 'epoc', 'asma', 'asthma', 'beca',
+    'ards', 'srag', 'pcp',
+    'pneumotórax', 'pneumotorax', 'derrame', 'efusão',
+    // Renal / metabólico
+    'ira', 'ira.', 'lra', 'lra.', 'irc', 'drc',
+    'cad', 'cad.', 'hhns', 'hhs',
+    'hipoglicemia', 'hiperglicemia',
+    'hiponatremia', 'hipernatremia',
+    'hipocalemia', 'hipercalemia', 'hipercalcemia',
+    // Infecção / imunológico
+    'sepse', 'sepsis', 'sirs', 'choque', 'shock',
+    'anafilaxia', 'anafilaxis',
+    'endocardite', 'endocarditis',
+    // Trauma / emergência
+    'politrauma', 'tcce', 'tce', 'queimadura', 'quemadura',
+    'afogamento', 'ahogamiento',
+    'hemorragia', 'hemotórax', 'hemotorax',
+    // Digestivo / hepático
+    'cirrosis', 'cirrose',
+    'psa', 'psa.',  // pancreatite aguda severa
+    'hemorragia digestiva', 'hdab', 'hdai',
+    // Obstétrico
+    'eclampsia', 'preeclampsia',
+    'hellp',
+  };
+
   // ── Fármacos de alta especificidade (detectar mudança de fármaco-alvo) ─────
   static const _kHighSpecificityDrugs = <String>[
     'amiodarona', 'amiodarone',
@@ -212,6 +265,50 @@ class ClinicalThreadManager {
         reason: 'button_action',
         topic: _activeTopic,
         fromButton: true,
+      );
+    }
+
+    // ── ORDEM 33 — MANDATO 2: Termo clínico isolado de nova patologia ────────
+    // PRE-CHECK síncrono antes de qualquer regra de follow-up.
+    //
+    // BUG ALVO: "ICC" → wordCount=1 ≤ 3 → isTooShort=true → continueThread →
+    // history da Sertralina vaza para contexto de ICC → resposta mista.
+    //
+    // LÓGICA: se a query normalizada (trim + lowercase + sem pontuação) for
+    // EXATAMENTE um dos termos em _kIsolatedNewCaseTerms, ela é uma nova patologia
+    // isolada — independente de ser curta — e DEVE iniciar novo thread.
+    // Isso toma precedência sobre isTooShort e followUpPhrase.
+    //
+    // Também detecta termos de 1-2 palavras com fármaco diferente do ativo
+    // (ex: "Sertralina" quando thread ativo era "ICC").
+    final qNorm = q.replaceAll(RegExp(r'[^\w\s]'), '').trim();
+    final isIsolatedNewCase = _kIsolatedNewCaseTerms.contains(qNorm);
+
+    // Também detecta: query curta que contém OUTRO fármaco de alta especificidade
+    // diferente do fármaco ativo no thread (ex: thread=sertralina, query="ICC").
+    // Não se aplica: nenhum fármaco detectado → só isIsolatedNewCase decide.
+    final shortQueryDrugSwitch = (() {
+      if (!isPlantaoMode) return false;
+      final currentDrugShort = _detectPrimaryDrug(qNorm);
+      final activeDrugShort  = _detectPrimaryDrug(_activeTopic.toLowerCase());
+      // Fármaco diferente do ativo → switch, mesmo query curta
+      return currentDrugShort != null &&
+             activeDrugShort  != null &&
+             currentDrugShort != activeDrugShort;
+    })();
+
+    if (isIsolatedNewCase || shortQueryDrugSwitch) {
+      final oldTopic = _activeTopic;
+      _startNewThread(q, now);
+      debugPrint('[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
+          'action=new_thread '
+          'reason=${isIsolatedNewCase ? "isolated_new_case_term" : "short_drug_switch"} '
+          'oldTopic=$oldTopic newTopic=$_activeTopic '
+          'query="$q"');
+      return ClinicalThreadStatus(
+        action: ThreadAction.newThread,
+        reason: isIsolatedNewCase ? 'isolated_new_case_term' : 'short_drug_switch',
+        topic: _activeTopic,
       );
     }
 

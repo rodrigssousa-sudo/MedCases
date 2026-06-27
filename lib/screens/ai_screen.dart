@@ -1962,9 +1962,28 @@ class _AiScreenState extends State<AiScreen> {
 
     // Fix #5: detecta teclado via viewInsets (cobre Web Mobile onde focus events
     // podem não ser confiáveis). Propaga ao ValueNotifier para o FAB em main.dart.
+    //
+    // ORDEM 33 — MANDATO 1: CONGELAMENTO SÍNCRONO DO KEYBOARD_FIX NO PATH DE STREAMING.
+    // DIAGNÓSTICO: durante streaming cada chunk dispara setState → build() →
+    // releitura de viewInsets.bottom → se valor oscilou → addPostFrameCallback →
+    // ValueNotifier update → ValueListenableBuilder rebuild → AnimatedPadding
+    // reanimation em cascata a cada chunk → UI Thread sobrecarregada → chunks
+    // perdidos / truncamento da resposta (bug da Sertralina cortada em "hasta 200 mg/").
+    //
+    // SOLUÇÃO — TRAVA SÍNCRONA:
+    // Enquanto _isStreaming=true OU _thinking=true → CONGELAR o ValueNotifier
+    // de teclado no valor que tinha ao início do envio. Zero mutações de padding
+    // durante produção de texto. O sistema de insets do SO continua gerenciando
+    // o espaço do teclado; só o ValueNotifier (que aciona AnimatedPadding) é
+    // bloqueado. Após onDone() fechar o stream, a próxima build não-streaming
+    // sincroniza o valor normalmente.
     final kbOpen = MediaQuery.of(context).viewInsets.bottom > 50;
-    if (AiScreen.chatKeyboardOpen.value != kbOpen) {
-      // Schedula fora do build para evitar setState-during-build
+    // ORDEM 33: bypass completo de mutação quando streaming ativo.
+    // _isStreaming e _thinking são os sinais soberanos — ambos cobertos.
+    final bool streamingActive = _isStreaming || _thinking;
+    if (AiScreen.chatKeyboardOpen.value != kbOpen && !streamingActive) {
+      // Schedula fora do build para evitar setState-during-build.
+      // NUNCA executa enquanto streamingActive=true → padding congelado.
       WidgetsBinding.instance.addPostFrameCallback(
           (_) => AiScreen.chatKeyboardOpen.value = kbOpen);
     }
