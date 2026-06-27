@@ -1603,39 +1603,18 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     ),
                   ),
                 ),
-                // Botão fechar (limpar) — apenas com histórico
-                if (hasHistory) ...[
-                  GestureDetector(
-                    onTap: _thinking ? null : () {
-                      AppHaptics.light(context);
-                      setState(() {
-                        _messages.clear();
-                        _streaming = '';
-                        _thinking  = false;
-                        _sessionId = null;
-                        _ctrl.clear();
-                      });
-                      _focus.unfocus();
-                    },
-                    child: Container(
-                      width: 26, height: 26,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        color: Colors.white.withValues(alpha: 0.06),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.10),
-                          width: 0.8,
-                        ),
-                      ),
-                      child: Icon(Icons.close_rounded, size: 13,
-                        color: Colors.white.withValues(alpha: 0.45)),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                ],
-                // Botão expandir — navega para aba IA com histórico injetado
+                // ORDEM 34 — BOTÃO HISTÓRICO (era: fechar/limpar)
+                // Sempre visível — abre histórico de sessões na aba IA.
                 GestureDetector(
-                  onTap: () => _goToAiTab(null, _messages.isNotEmpty || _thinking),
+                  onTap: () {
+                    AppHaptics.light(context);
+                    // Navega para a aba IA e dispara o callback de histórico
+                    // após o frame em que o AiScreen já está montado.
+                    widget.onNavigateToAi(2);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      AiScreen.openHistoryCallback.value?.call();
+                    });
+                  },
                   child: Container(
                     width: 26, height: 26,
                     decoration: BoxDecoration(
@@ -1646,7 +1625,39 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                         width: 0.8,
                       ),
                     ),
-                    child: Icon(Icons.open_in_full_rounded, size: 12,
+                    child: Icon(Icons.history_rounded, size: 13,
+                      color: Colors.white.withValues(alpha: 0.45)),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                // ORDEM 34 — BOTÃO NOVO CHAT / HARD RESET (era: expandir)
+                // Limpa o mini-chat local e reseta o AiScreen para novo caso.
+                GestureDetector(
+                  onTap: _thinking ? null : () {
+                    AppHaptics.light(context);
+                    // Reset local do mini-chat inline
+                    setState(() {
+                      _messages.clear();
+                      _streaming = '';
+                      _thinking  = false;
+                      _sessionId = null;
+                      _ctrl.clear();
+                    });
+                    _focus.unfocus();
+                    // Propaga HARD RESET para o AiScreen (amnésia retrógrada)
+                    AiScreen.clearChatCallback.value?.call();
+                  },
+                  child: Container(
+                    width: 26, height: 26,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7),
+                      color: Colors.white.withValues(alpha: 0.06),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.10),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Icon(Icons.add_rounded, size: 14,
                       color: Colors.white.withValues(alpha: 0.45)),
                   ),
                 ),
