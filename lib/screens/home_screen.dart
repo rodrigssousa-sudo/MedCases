@@ -419,11 +419,11 @@ class _HomeScreenState extends State<HomeScreen> {
             isEs: isEs,
             onNavigateToAi: widget.onTabChange,
           ),
-          const SizedBox(height: 8),  // ORDEM 12: compactado
+          const SizedBox(height: 4),  // ORDEM 45: esmagamento soberano 8→4
 
           // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
           _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
-          const SizedBox(height: 12),  // ORDEM 43: 8→12 gap vertical premium
+          const SizedBox(height: 4),  // ORDEM 45: mosaico 12→4
 
           // ── LINHA 2: ADULTO + PEDIATRÍA — dois cards paralelos ──────────────
           _HomeAdultoPediatriaRow(
@@ -436,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _HomeScreenState._slide(const _PediatricsShell()),
             ),
           ),
-          const SizedBox(height: 12),  // ORDEM 43: 8→12 gap vertical premium
+          const SizedBox(height: 4),  // ORDEM 45: mosaico 12→4
 
           // ── LINHA 3: BIBLIOTECA + H. CLÍNICA — dois cards paralelos ─────────
           _HomeBibliotecaHClinicaRow(
@@ -444,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
             isEs: isEs,
             onTabChange: widget.onTabChange,
           ),
-          const SizedBox(height: 12),  // ORDEM 43: 8→12 gap vertical premium
+          const SizedBox(height: 4),  // ORDEM 45: mosaico 12→4
 
           // ── QUICK ACCESS BAR — BUSCAR | NOTAS | RECIENTES | FAVORITOS | EVAL ─
           _HistorialCompactCard(
@@ -1532,7 +1532,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     return Container(
       decoration: const BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderRadius: BorderRadius.all(Radius.circular(8)),  // ORDEM 45: mosaico
         border: Border(
           top:    BorderSide(color: borderColor, width: 1.2),
           right:  BorderSide(color: borderColor, width: 1.2),
@@ -2685,7 +2685,7 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
         dark: dark,
         onTap: onTapAdulto,
       )),
-      const SizedBox(width: 12),  // ORDEM 43: 10→12 gap horizontal cards
+      const SizedBox(width: 4),  // ORDEM 45: mosaico 12→4 gap horizontal
       // B144: Azul Petróleo — dark teal elegante, nunca chega ao ciano
       Expanded(child: _AgeCard(
         icon: Icons.child_care_rounded,
@@ -2764,7 +2764,7 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
               end:   Alignment.bottomRight,
               colors: gradientColors,
             ),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
             boxShadow: [
               BoxShadow(
                 color: gradientColors.last.withValues(alpha: 0.40),
@@ -2881,7 +2881,7 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
               end: Alignment.bottomRight,
               colors: g,
             ),
-            borderRadius: BorderRadius.circular(16),  // ORDEM 12: radius slim (era 18)
+            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),  // ORDEM 12: slim
@@ -3003,7 +3003,7 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
               end:   Alignment.bottomRight,
               colors: gradientColors,
             ),
-            borderRadius: BorderRadius.circular(16),  // ORDEM 12: radius slim
+            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
           ),
           // B139: sub-chip FÁRMACOS removido — card limpo com apenas a linha principal
           child: Row(children: [
@@ -3082,7 +3082,7 @@ class _HomeBibliotecaHClinicaRow extends StatelessWidget {
         dark: dark,
         onTap: () => onTabChange(5),
       )),
-      const SizedBox(width: 12),  // ORDEM 43: 10→12 gap horizontal cards
+      const SizedBox(width: 4),  // ORDEM 45: mosaico 12→4 gap horizontal
       // ── H. CLÍNICA — B141: Orange Vibrant #ea580c → #fb923c ─────────────
       Expanded(child: _AgeCard(
         icon: Icons.assignment_ind_outlined,
@@ -4669,7 +4669,7 @@ class _HomeCardState extends State<_HomeCard>
           width: double.infinity,
           height: 101,  // ORDEM 43: 92→101 (+10% proporção premium)
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
