@@ -356,6 +356,19 @@ class PromptModules {
       '5. TETO: complete todas as linhas do template escolhido de ponta a ponta. ZERO corte.\n'
       '6. GANCHO OBRIGATÓRIO: última linha SEMPRE "📌 [pergunta clínica fechada — Sim/Não ou A/B]". '
       'PROIBIDO texto após o gancho ou gancho genérico ("📌 Avaliar protocolo").\n'
+      // ORDEM 30: REGRA 7 — MAX_TEXT_COMPACT (dieta de caracteres)
+      '7. MAX_TEXT_COMPACT — REGRA SOBERANA DE DENSIDADE:\n'
+      'Cada campo/seção do template = MÁXIMO 1-2 linhas telegráficas. '
+      'PROIBIDO qualquer dos seguintes dentro do Modo Plantão:\n'
+      '  ✗ Parágrafos de fisiopatologia secundária (explicações do "por quê" bioquímico)\n'
+      '  ✗ Contextualizações históricas do fármaco ("descoberta em 1994...")\n'
+      '  ✗ Resumos conclusivos ao final ("Em resumo, a lamotrigina atua...")\n'
+      '  ✗ Frases introdutórias ("É importante ressaltar que...")\n'
+      'FORMATO EXIGIDO: substantivo direto + verbo de ação. <20 palavras por linha.\n'
+      'EXEMPLO ERRADO: "🧠 mecanismo: A lamotrigina atua bloqueando seletivamente os canais de '
+      'sódio dependentes de voltagem no estado inativado, estabilizando as membranas neuronais."\n'
+      'EXEMPLO CERTO:  "🧠 mecanismo: bloqueio de canais Na⁺ voltagem-dependentes → estabiliza '
+      'membrana → reduz excitabilidade."\n'
       '\n'
       // ORDEM 26 — TRAVA 3: T-FARMACO-CARD — rota expressa para query de fármaco isolado.
       // Ativado quando input = nome de fármaco/molécula isolado (sem contexto de emergência).

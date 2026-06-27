@@ -1392,6 +1392,15 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             '• RESPOSTA = GATILHO INICIAL: so Conduta Direta Seca. Seguimento = botoes dinamicos do front-end. '
             'JAMAIS descreva fluxo de seguimento ou repita monitorização generica.\n'
             '• SUPRIMA listas genericas se query ja tem dados clinicos (peso, PA, FC, sato2, diagnostico).\n'
+            // ORDEM 30: BAD/GOOD calibration — anchors prose-killing instinct
+            '• CALIBRACAO DE DENSIDADE (ORDEM 30) — REFERENCIA OBRIGATORIA:\n'
+            '  ERRADO (PROLIXO): "🧠 mecanismo: A lamotrigina atua bloqueando seletivamente os canais de sodio '
+            'dependentes de voltagem no estado inativado. Isso estabiliza as membranas neuronais e reduz a '
+            'excitabilidade neuronal excessiva que pode levar a episodios..."\n'
+            '  CERTO (CIRURGICO): "🧠 mecanismo: bloqueio de canais de Na⁺ voltagem-dependentes. '
+            'Estabiliza membrana neuronal. Reduz excitabilidade excessiva."\n'
+            'REGRA: cada linha de template = fato clinico util em <20 palavras. '
+            'EXTERMINAR: paragrafos de fisiopatologia, historico do farmaco, resumo conclusivo ("Em resumo...").\n'
             '• GANCHO 📌 OBRIGATORIO na ultima linha: pergunta fechada de decisao clinica (Sim/Nao, A/B). '
             'Ex: "📌 Iniciar **trombólise** ou manter **heparina**?" '
             'PROIBIDO: "📌 Ver protocolo completo."\n'
@@ -1399,6 +1408,15 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             '• RESPOSTA = GATILHO INICIAL: so Conduta Direta Seca. Seguimento = botoes dinamicos do front-end. '
             'JAMAIS descreva fluxo de seguimento ou repita monitorização generica.\n'
             '• SUPRIMA listas genericas se query ja tem dados clinicos (peso, PA, FC, sato2, diagnostico).\n'
+            // ORDEM 30: BAD/GOOD calibration — anchors prose-killing instinct
+            '• CALIBRACAO DE DENSIDADE (ORDEM 30) — REFERENCIA OBRIGATORIA:\n'
+            '  ERRADO (PROLIXO): "🧠 mecanismo: A lamotrigina actua bloqueando selectivamente los canales de sodio '
+            'dependientes de voltaje en estado inactivado. Esto estabiliza las membranas neuronales y reduce la '
+            'excitabilidad neuronal excesiva que puede llevar a episodios..."\n'
+            '  CERTO (CIRURGICO): "🧠 mecanismo: bloqueo de canales de Na⁺ voltaje-dependientes. '
+            'Estabiliza la membrana neuronal. Reduce excitabilidad excesiva."\n'
+            'REGRA: cada linha de template = fato clinico util em <20 palavras. '
+            'EXTERMINAR: paragrafos de fisiopatologia, historico do farmaco, resumo conclusivo ("En resumen...").\n'
             '• GANCHO 📌 OBRIGATORIO na ultima linha: pergunta fechada de decisao clinica (Sim/Nao, A/B). '
             'Ex: "📌 Iniciar **trombólise** ou manter **heparina**?" '
             'PROIBIDO: "📌 Ver protocolo completo."\n';
@@ -1419,6 +1437,10 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             '• DOBLE SALTO OBLIGATORIO: entre cada linea/bloque → \\n\\n, NUNCA \\n solo.\n'
             '• EMOJI 🟥 UNICO: aparece EXACTAMENTE UNA VEZ en la primera linea.\n'
             '• COMPLETAR SEMPRE: conclua TODAS as secoes iniciadas. Sem corte abrupto.\n'
+            // ORDEM 30: MAX_TEXT_COMPACT — dieta de caracteres
+            '• MAX_TEXT_COMPACT: cada campo/linha do template = MAXIMO 1-2 linhas telegraficas. '
+            'PROIBIDO: fisiopatologia didatica, contextualizacao historica, resumo redundante ao final. '
+            'Substantivos diretos + verbos de acao. Nada de "Em resumo..." ou "Cabe destacar que...".\n'
           : '════ REGRA Nº1 — COLUNA ZERO ABSOLUTA ════\n'
             'PROIBICAO NIVEL BINARIO: o 1º char de CADA linha DEVE ser: *, 🟥, 🚨, 💊, ⛔, 📌, letra/numero. '
             'JAMAIS espaco (ASCII 32) ou tabulacao (ASCII 9) — Flutter renderiza como bloco <pre>.\n'
@@ -1427,7 +1449,11 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             'REGRAS SOBERANAS:\n'
             '• DUPLA QUEBRA OBRIGATORIA: entre cada linha/bloco → \\n\\n, NUNCA \\n isolado.\n'
             '• EMOJI 🟥 UNICO: aparece EXATAMENTE UMA VEZ na primeira linha.\n'
-            '• COMPLETAR SEMPRE: conclua TODAS as secoes iniciadas. Sem corte abrupto.\n';
+            '• COMPLETAR SEMPRE: conclua TODAS as secoes iniciadas. Sem corte abrupto.\n'
+            // ORDEM 30: MAX_TEXT_COMPACT — dieta de caracteres
+            '• MAX_TEXT_COMPACT: cada campo/linha do template = MAXIMO 1-2 linhas telegraficas. '
+            'PROIBIDO: fisiopatologia didatica, contextualizacao historica, resumo redundante ao final. '
+            'Substantivos diretos + verbos de acao. Nada de "Em resumo..." ou "Vale destacar que...".\n';
 
       // ── BUILD 272: CONTEXTO PROPRIETÁRIO MedCases ────────────────────────
       // Se 'proprietaryDrugContext' não for vazio, injeta o conteúdo bruto
