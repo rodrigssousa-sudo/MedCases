@@ -200,8 +200,8 @@ class _LibraryScreenState extends State<LibraryScreen>
   @override
   void initState() {
     super.initState();
-    // BUILD 277-CROMATICO: 3 abas — GENERAL, Guias PDF, Casos de Estudo
-    _tabCtrl = TabController(length: 3, vsync: this);
+    // SUPER ORDEM VISUAL 07: 2 abas — Guias PDF (0), Casos de Estudo (1). GENERAL extinta.
+    _tabCtrl = TabController(length: 2, vsync: this);
     _initGuides();
     _searchCtrl.addListener(() {
       if (mounted) setState(() => _search = _searchCtrl.text.toLowerCase());
@@ -279,9 +279,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                 child: TabBarView(
                   controller: _tabCtrl,
                   children: [
-                    // Aba 0: General (BUILD 277-CROMATICO)
-                    _GeneralTab(dark: dark, isEs: isEs),
-                    // Aba 1: Guias PDF (inalterada)
+                    // Aba 0: Guias PDF
                     _GuidesTab(
                       dark: dark,
                       isEs: isEs,
@@ -295,7 +293,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                       onOpen: _openPdf,
                       onRetry: _handleManualRefresh,
                     ),
-                    // Aba 2: Casos de Estudo
+                    // Aba 1: Casos de Estudo
                     _CasosDeEstudoTab(dark: dark, isEs: isEs, p: p),
                   ],
                 ),
@@ -325,8 +323,9 @@ class _MobileLibraryTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // SUPER ORDEM: mobile header completo com seta + título + pílulas com divisores
-    // Mesma peça única que o desktop, garantindo paridade visual total
+    // SUPER ORDEM VISUAL 07: Topologia Cupertino/Linear.
+    // Stack: título centrado, back à esquerda. MEDCASES PRO destruído.
+    // Tabs: GENERAL extinta, pill-shape destruído → 2 abas com underline ciano.
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -343,68 +342,44 @@ class _MobileLibraryTabBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Linha superior: seta + título
+          // ── M1: Linha título — Stack Left-Center ──────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
-            child: Row(children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                onPressed: () => Navigator.maybePop(context),
-                padding: const EdgeInsets.all(8),
-                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-              ),
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text(
-                    'BIBLIOTECA',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: -0.2,
-                    ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // CENTER: título isolado e absolutamente centrado
+                const Text(
+                  'BIBLIOTECA',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: -0.2,
                   ),
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'MEDCASES',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' PRO',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFD4AF37),
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ],
-                    ),
+                ),
+                // LEFT: botão de voltar
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                    onPressed: () => Navigator.maybePop(context),
+                    padding: const EdgeInsets.all(8),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
-                ]),
-              ),
-            ]),
+                ),
+              ],
+            ),
           ),
-          // Pílulas com divisores verticais
+          // ── M2: 2 abas flat — GUIAS PDF + CASOS DE ESTUDO ─────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-            child: IntrinsicHeight(
-              child: Row(
-                children: [
-                  Expanded(child: _LibPillTab(label: 'GENERAL', index: 0, tabCtrl: tabCtrl)),
-                  _LibTabDivider(),
-                  Expanded(child: _LibPillTab(label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF', index: 1, tabCtrl: tabCtrl)),
-                  _LibTabDivider(),
-                  Expanded(child: _LibPillTab(label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO', index: 2, tabCtrl: tabCtrl)),
-                ],
-              ),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Row(
+              children: [
+                Expanded(child: _LibFlatTab(label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF', index: 0, tabCtrl: tabCtrl)),
+                const _LibTabDivider(),
+                Expanded(child: _LibFlatTab(label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO', index: 1, tabCtrl: tabCtrl)),
+              ],
             ),
           ),
         ],
@@ -414,35 +389,34 @@ class _MobileLibraryTabBar extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HELPERS: pílula de aba + divisória delicada (usados em desktop e mobile)
+// HELPERS: tab flat minimalista + divisória fio — SUPER ORDEM VISUAL 07
+// Pill-shape destruído: fundo transparente, indicador = underline 2px ciano.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Divisória vertical finíssima entre as pílulas de aba da Biblioteca.
-/// Usa a cor do gradiente de fundo para parecer integrada e discreta.
+/// Divisória vertical fio entre as abas — 1×14px, white24, discreta.
 class _LibTabDivider extends StatelessWidget {
   const _LibTabDivider();
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 1,
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      color: Colors.white.withValues(alpha: 0.18),
+      height: 14,
+      color: Colors.white24,
     );
   }
 }
 
-/// Pílula de aba individual para a Biblioteca — usa AnimatedBuilder para
-/// reagir ao TabController sem reconstruir o pai.
-class _LibPillTab extends StatefulWidget {
+/// Tab flat minimalista para a Biblioteca — underline ciano quando ativa.
+class _LibFlatTab extends StatefulWidget {
   final String label;
   final int index;
   final TabController tabCtrl;
-  const _LibPillTab({required this.label, required this.index, required this.tabCtrl});
+  const _LibFlatTab({required this.label, required this.index, required this.tabCtrl});
   @override
-  State<_LibPillTab> createState() => _LibPillTabState();
+  State<_LibFlatTab> createState() => _LibFlatTabState();
 }
 
-class _LibPillTabState extends State<_LibPillTab> {
+class _LibFlatTabState extends State<_LibFlatTab> {
   @override
   void initState() {
     super.initState();
@@ -466,26 +440,22 @@ class _LibPillTabState extends State<_LibPillTab> {
       onTap: () => widget.tabCtrl.animateTo(widget.index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: isActive
-              ? Colors.white.withValues(alpha: 0.18)
-              : Colors.transparent,
-          border: Border.all(
-            color: isActive
-                ? Colors.white.withValues(alpha: 0.55)
-                : Colors.transparent,
-            width: 1,
+          // Fundo 100% transparente — pill-shape destruído
+          color: Colors.transparent,
+          border: Border(
+            bottom: isActive
+                ? const BorderSide(color: Color(0xFF00E5FF), width: 2.0)
+                : BorderSide.none,
           ),
         ),
         child: Text(
           widget.label,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 12,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
             color: isActive ? Colors.white : Colors.white60,
             letterSpacing: 0.3,
           ),
@@ -532,54 +502,36 @@ class _LibraryHeader extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // ── M1: Desktop título — Stack Left-Center + refresh button ─────
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 10, 16, 10),
-            child: Row(children: [
-              // Back arrow
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                onPressed: () => Navigator.maybePop(context),
-                padding: const EdgeInsets.all(8),
-                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-              ),
-              // Title + subtitle
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text(
-                    'BIBLIOTECA',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: -0.2,
-                    ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // CENTER: título isolado e absolutamente centrado
+                const Text(
+                  'BIBLIOTECA',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: -0.2,
                   ),
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'MEDCASES',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' PRO',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFD4AF37),
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ],
-                    ),
+                ),
+                // LEFT: botão de voltar
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                    onPressed: () => Navigator.maybePop(context),
+                    padding: const EdgeInsets.all(8),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
-                ]),
-              ),
+                ),
+                // RIGHT: botão de refresh
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
               const SizedBox(width: 8),
               Tooltip(
                 message: isEs ? 'Actualizar guías' : 'Atualizar guias',
@@ -610,39 +562,32 @@ class _LibraryHeader extends StatelessWidget {
                   ),
                 ),
               ),
-            ]),
+                  ]),
+                ),
+              ],
+            ),
           ),
-          // TabBar PILL — 3 abas com divisórias verticais delicadas
+          // ── M2: Desktop 2 abas flat — GUIAS PDF + CASOS DE ESTUDO ──────
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: IntrinsicHeight(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _LibPillTab(
-                      label: 'GENERAL',
-                      index: 0,
-                      tabCtrl: tabCtrl,
-                    ),
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _LibFlatTab(
+                    label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF',
+                    index: 0,
+                    tabCtrl: tabCtrl,
                   ),
-                  _LibTabDivider(),
-                  Expanded(
-                    child: _LibPillTab(
-                      label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF',
-                      index: 1,
-                      tabCtrl: tabCtrl,
-                    ),
+                ),
+                const _LibTabDivider(),
+                Expanded(
+                  child: _LibFlatTab(
+                    label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO',
+                    index: 1,
+                    tabCtrl: tabCtrl,
                   ),
-                  _LibTabDivider(),
-                  Expanded(
-                    child: _LibPillTab(
-                      label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO',
-                      index: 2,
-                      tabCtrl: tabCtrl,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ]),
