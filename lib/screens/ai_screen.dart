@@ -362,18 +362,16 @@ class _AiScreenState extends State<AiScreen> {
   /// Indica se o usuário enviou ao menos 1 mensagem nova após restaurar uma sessão.
   bool _hasNewMessageAfterRestore = false;
 
-  // ── BUILD 232: Pipeline + ExtTool deduplication caches ──────────────────
+  // ── BUILD 232: ExtTool deduplication cache ───────────────────────────────
   // Key: messageId + ':' + textHash
-  // Garante que PlantatoPipeline.run() e ExternalToolLinkEngine.build()
-  // executem no máximo 1 vez por (messageId, textHash) por sessão.
-  final Map<String, PlantatoPipelineResult> _plantaoPipelineCache = {};
+  // Garante que ExternalToolLinkEngine.build() execute no máximo 1 vez por
+  // (messageId, textHash) por sessão. PlantatoPipelineCache removido (ORDEM 56).
   final Map<String, ExternalToolLink?> _extToolCache = {};
-  // BUILD 244B: log-dedup sets — SAFE_CARD_GUARD e PLANTAO_RENDER_GUARD
+  // BUILD 244B / ORDEM 56: log-dedup sets — SAFE_CARD_GUARD e EVIDENCE_GUARD
   // são disparados no ListView item builder, que reconstrói muitas vezes.
-  // Guardamos o messageId após o primeiro log para nunca repetir.
+  // _loggedPlantaoIds removido junto com _PlantaoRenderer (ORDEM 56).
   // BUILD 246: _loggedEvidenceIds — dedup EVIDENCE_GUARD por messageId+textHash.
   final Set<String> _loggedSafeCardIds  = {};
-  final Set<String> _loggedPlantaoIds   = {};
   final Set<String> _loggedEvidenceIds  = {};
   // ──────────────────────────────────────────────────────────────────────────
 
@@ -475,12 +473,12 @@ class _AiScreenState extends State<AiScreen> {
   @override
   void initState() {
     super.initState();
-    // ORDEM 55 M3 — BUILD 284: cache-buster no init log.
+    // ORDEM 56 M3 — BUILD 285: cache-buster no init log.
     // Incrementar este número em cada release força service-workers e CDNs
-    // a invalidade o cache da versão anterior.
+    // a invalidar o cache da versão anterior.
     if (kDebugMode) {
-      debugPrint('[AI_SCREEN][BUILD_284] ORDEM_55 init — '
-          'followUpBypass=true drugButtonLiberation=true');
+      debugPrint('[AI_SCREEN][BUILD_285] ORDEM_56 init — '
+          'unifiedMarkdownRender=true plasticPipelineExterminated=true');
     }
     _focusNode.addListener(_onFocusChange);
     _queryCtrl.addListener(_onQueryChange);
@@ -730,7 +728,6 @@ class _AiScreenState extends State<AiScreen> {
       if (!mounted) return;
       // BUILD 244B/246: limpa sets de log-dedup ao injetar histórico
       _loggedSafeCardIds.clear();
-      _loggedPlantaoIds.clear();
       _loggedEvidenceIds.clear();
       setState(() {
         // Build 236: marca saudação como feita para evitar dupla injeção
@@ -824,7 +821,6 @@ class _AiScreenState extends State<AiScreen> {
       _networkError = false;
       _userScrolledUp = false;
       _loggedSafeCardIds.clear();
-      _loggedPlantaoIds.clear();
       _loggedEvidenceIds.clear();
     });
 
@@ -1234,7 +1230,6 @@ class _AiScreenState extends State<AiScreen> {
     _streamingTextNotifier = null;
     // BUILD 244B/246: limpa sets de log-dedup ao restaurar sessão
     _loggedSafeCardIds.clear();
-    _loggedPlantaoIds.clear();
     _loggedEvidenceIds.clear();
     setState(() {
       _messages.clear();
@@ -1260,26 +1255,8 @@ class _AiScreenState extends State<AiScreen> {
             })
         .toList());
 
-    // ── SUPER ORDEM 41 M2: PARIDADE DE CACHE NA RESTAURAÇÃO ─────────────────
-    // Pré-popula _plantaoPipelineCache para cada mensagem AI no formato Plantão
-    // (âncora 🟥) antes do primeiro build() pós-restore. Garante paridade
-    // visual absoluta com o estado ao vivo: layout restaurado == layout do stream.
-    // Limpa cache da sessão anterior para evitar colisão de chaves stale.
-    _plantaoPipelineCache.clear();
-    for (final _rm in session.messages) {
-      if (_rm.role != 'ai') continue;
-      if (!_rm.text.contains('🟥')) continue; // somente respostas Plantão
-      final _rk = '${_rm.id}:${_rm.text.hashCode}';
-      if (_plantaoPipelineCache.containsKey(_rk)) continue;
-      final _rr = PlantatoPipeline.run(_rm.text);
-      _plantaoPipelineCache[_rk] = _rr;
-      if (kDebugMode) {
-        debugPrint('[RESTORE_CACHE_PRIME] msgId=${_rm.id} '
-            'parsedOk=${_rr.response != null} '
-            'repaired=${_rr.repaired} '
-            'chars=${_rm.text.length}');
-      }
-    }
+    // ORDEM 56: _plantaoPipelineCache removido — _AiBubble renderiza tudo via
+    // MarkdownBody diretamente. Sem cache de pipeline a pré-popular na restauração.
 
     _scrollDown(force: true);
   }
@@ -1706,28 +1683,8 @@ class _AiScreenState extends State<AiScreen> {
             _streamingTextNotifier?.dispose();
             _streamingTextNotifier = null;
 
-            // ── SUPER ORDEM 41 M1: POST-STREAM PIPELINE LOCK ────────────────
-            // Executa PlantatoPipeline.run() sincronamente no fecho do stream —
-            // ANTES do setState. Grava resultado no _plantaoPipelineCache com
-            // chave (msgId:textHash). O ListView.builder encontra hit=true
-            // na primeira renderização pós-onDone → zero frames de latência.
-            if (!_longResponse && streamingMsgIdx >= 0 &&
-                streamingMsgIdx < _messages.length) {
-              final _streamMsg  = _messages[streamingMsgIdx];
-              final _cacheKey41 = '${_streamMsg.id}:${safeFinalText.hashCode}';
-              if (!_plantaoPipelineCache.containsKey(_cacheKey41)) {
-                final _pipelineResult41 = PlantatoPipeline.run(safeFinalText);
-                _plantaoPipelineCache[_cacheKey41] = _pipelineResult41;
-                if (kDebugMode) {
-                  debugPrint('[POST_STREAM_LOCK] pipeline cached BEFORE setState '
-                      'msgId=${_streamMsg.id} '
-                      'textHash=${safeFinalText.hashCode} '
-                      'parsedOk=${_pipelineResult41.response != null} '
-                      'repaired=${_pipelineResult41.repaired} '
-                      'chars=${safeFinalText.length}');
-                }
-              }
-            }
+            // ORDEM 56: POST-STREAM PIPELINE LOCK removido — sem _plantaoPipelineCache.
+            // _AiBubble renderiza safeFinalText via MarkdownBody diretamente.
 
             // BUILD 276: resolve which msgId will be the new AI bubble so we
             // can attach the fade-in to it in ListView.builder.
@@ -2240,135 +2197,16 @@ class _AiScreenState extends State<AiScreen> {
               // Evidência farmacológica: só detectar se NÃO for safe-card
               final detectedEv = _isSafeCard ? null : _detectDrugEvidence(msg.text);
 
-              // ── ORDEM 26: RENDER ENGINE BLINDADO ─────────────────────────────
-              // Build 193: PlantaoRenderer — pipeline estrutural determinístico.
-              // BUILD 244B: safe-cards nunca entram no PlantaoRenderer — bypass direto.
-              // ORDEM 26: Quando isPlantaoFinalBubble=true, PROIBIDO cair no _AiBubble.
-              //   Se pipeline retorna null → _antibulaNormalize() converte bula clássica
-              //   em estrutura emoji antes de tentar o parse novamente.
-              // ORDEM 55 M1: follow-up turn bypass — respostas do 2º+ turno são texto
-              // clínico livre (Liberty Mandate em ai_gateway_service.dart) e NÃO devem
-              // ser fatiadas pelo PlantatoPipeline. Renderizamos direto via _AiBubble.
-              // Detecção: conta quantas mensagens de usuário precedem a bolha atual.
-              // ≥2 user msgs antes → esta é uma bolha de follow-up → bypass ativo.
-              final int userMsgsBefore =
-                  _messages.sublist(0, i).where((m) => m.role == 'user').length;
-              final bool isFollowUpAiBubble =
-                  !_longResponse &&    // Apenas Modo Plantão (não Estudo)
-                  !_isSafeCard &&      // Safe-cards já têm bypass próprio
-                  userMsgsBefore >= 2; // 2º turno em diante
-
-              final bool isPlantaoFinalBubble =
-                  !_longResponse &&          // Modo Plantão ativo
-                  i == _lastAiIndex &&       // última bolha AI
-                  !_isStreaming &&            // stream finalizado
-                  !_isSafeCard &&            // BUILD 244B: safe-card → bypass renderer
-                  !isFollowUpAiBubble;       // ORDEM 55 M1: follow-up → _AiBubble direto
-
-              // ── ORDEM 44 M4: looksLikePlantaoBubble — JIT retroativo ─────────
-              // Dispara para TODAS as bolhas históricas do Plantão que contêm 🟥
-              // mas NÃO são a última bolha (já coberta por isPlantaoFinalBubble).
-              // Garante paridade visual pós-background: mesmo layout que o stream ativo.
-              // Pipeline JIT síncrono no itemBuilder — resultado cacheado imediatamente.
-              final bool looksLikePlantaoBubble =
-                  !_longResponse &&          // Modo Plantão ativo
-                  i != _lastAiIndex &&       // bolha histórica (não a última)
-                  !_isStreaming &&            // fora de stream ativo
-                  !_isSafeCard &&            // não é safe-card de fallback
-                  !isFollowUpAiBubble &&     // ORDEM 55 M1: follow-up → _AiBubble direto
-                  msg.text.contains('🟥'); // contém 🟥 — estrutura Plantão confirmada
-
-              // ── ORDEM 29: looksLikePharmaBula — sentinela de bula residual ─────
-              // Segunda camada de defesa: detecta formato de bula enciclopédica
-              // clássica (* **CLASSE:** / * **DOSE:) que escapou da rota T-FARMACO-CARD
-              // do prompt e ainda chega ao render loop como _AiBubble cru.
-              // Usado em conjunção com isPlantaoFinalBubble para garantir que
-              // qualquer resposta de bula em Modo Plantão vá para _PlantaoFallbackCard.
-              // NÃO aplicado no Modo Estudo (_longResponse=true) — lá a bula em
-              // Markdown é o formato esperado e correto.
-              final bool looksLikePharmaBula = !_longResponse &&
-                  !_isStreaming &&
-                  !_isSafeCard &&
-                  !isFollowUpAiBubble && // ORDEM 55 M1: follow-up → _AiBubble direto
-                  (
-                  msg.text.contains(RegExp(r'\*\*CLASSE:\*\*', caseSensitive: false)) ||
-                  msg.text.contains(RegExp(r'\*\*MECANISMO DE A[ÇC][AÃ]O:\*\*', caseSensitive: false)) ||
-                  msg.text.contains(RegExp(r'\*\*VIA DE ADMINISTRA', caseSensitive: false)) ||
-                  msg.text.contains(RegExp(r'\*\*DOSE\b', caseSensitive: false)) ||
-                  msg.text.contains(RegExp(r'\*\*EFEITOS ADVERSOS:\*\*', caseSensitive: false)) ||
-                  msg.text.contains(RegExp(r'\*\*CONTRA-?INDICA[ÇC]', caseSensitive: false)));
-              if (kDebugMode && looksLikePharmaBula) {
-                debugPrint('[PHARMA_BULA_GUARD] messageId=${msg.id} looksLikePharmaBula=true — roteando para FallbackCard');
-              }
-
-              // ── TRAVA 4: TELEMETRIA BRUNO ────────────────────────────────────
+              // ── ORDEM 56 M1: RENDER UNIFICADO ────────────────────────────────
+              // SUPER ORDEM 56: PlantatoPipeline, _PlantaoRenderer e _PlantaoFallbackCard
+              // foram descontinuados. 100% das bolhas AI — 1º turno, follow-ups e
+              // histórico restaurado — fluem diretamente para _AiBubble (MarkdownBody).
+              // Ultra-Plantão Build 260: o design (🟥/💊/⛔/📌 + bullets) é gerado
+              // nativamente pelos prompts. Não há parsing nem slicing necessário.
+              // Elimina duplicação de cards pós-refresh e alivia o rebuild do histórico.
               if (kDebugMode) {
-                debugPrint('[RENDER] isStreaming=$_isStreaming');
-                debugPrint('[RENDER] isPlantaoFinalBubble=$isPlantaoFinalBubble');
-                if (isFollowUpAiBubble) {
-                  debugPrint('[ORDEM55_M1] followUp bypass: msgId=${msg.id} '
-                      'userMsgsBefore=$userMsgsBefore → _AiBubble direto');
-                }
+                debugPrint('[RENDER_56] msgId=${msg.id} → _AiBubble unificado');
               }
-
-              if (kDebugMode && isPlantaoFinalBubble &&
-                  !_loggedPlantaoIds.contains(msg.id)) {
-                _loggedPlantaoIds.add(msg.id);
-                debugPrint('[PLANTAO_RENDER_GUARD] messageId=${msg.id} '
-                    'textHash=${msg.text.hashCode}');
-              }
-
-              // ── BUILD 232 + ORDEM 26: PlantatoPipeline com cache + antibula ──
-              // Key = messageId + ':' + textHash.
-              // ORDEM 26: Se pipeline retorna null, tenta com texto normalizado
-              // pelo _antibulaNormalize() antes de confirmar fallback.
-              // ORDEM 29: looksLikePharmaBula também activa o pipeline —
-              // permite recuperar estrutura mesmo em bolhas históricas.
-              PlantatoPipelineResult? plantaoPipelineResult;
-              // ORDEM 44 M4: looksLikePlantaoBubble added to JIT pipeline trigger
-              if (isPlantaoFinalBubble || looksLikePharmaBula || looksLikePlantaoBubble) {
-                final cacheKey = '${msg.id}:${msg.text.hashCode}';
-                final cached = _plantaoPipelineCache[cacheKey];
-                if (cached != null) {
-                  if (kDebugMode) debugPrint('[PIPELINE_CACHE] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
-                  plantaoPipelineResult = cached;
-                } else {
-                  if (kDebugMode) debugPrint('[PIPELINE_CACHE] hit=false messageId=${msg.id} textHash=${msg.text.hashCode} isSafeCard=$_isSafeCard');
-                  // Tentativa primária: texto como recebido do Gemini
-                  plantaoPipelineResult = PlantatoPipeline.run(msg.text);
-                  // TRAVA 2: Se pipeline null → texto é bula clássica → normalizar e re-tentar
-                  if (plantaoPipelineResult.response == null) {
-                    final normalizedText = _antibulaNormalize(msg.text, p.lang);
-                    if (normalizedText != msg.text) {
-                      if (kDebugMode) debugPrint('[ANTIBULA] normalized text hash=${normalizedText.hashCode} — re-running pipeline');
-                      final retryResult = PlantatoPipeline.run(normalizedText);
-                      if (retryResult.response != null) {
-                        plantaoPipelineResult = retryResult;
-                        if (kDebugMode) debugPrint('[ANTIBULA] pipeline recovered after normalization');
-                      }
-                    }
-                  }
-                  _plantaoPipelineCache[cacheKey] = plantaoPipelineResult;
-                }
-              }
-              // ─────────────────────────────────────────────────────────────────
-
-              // TRAVA 4: log pipeline result
-              if (kDebugMode && (isPlantaoFinalBubble || looksLikePharmaBula)) {
-                debugPrint('[RENDER] useStructuredRenderer=${plantaoPipelineResult?.response != null}');
-                debugPrint('[RENDER] looksLikePharmaBula=$looksLikePharmaBula');
-                debugPrint('[PIPELINE] response null=${plantaoPipelineResult?.response == null}');
-              }
-
-              // Decide se usa renderer estruturado ou _PlantaoFallbackCard
-              // TRAVA 1: No modo Plantão, _AiBubble é PROIBIDO para a última bolha.
-              // ORDEM 29: looksLikePharmaBula também activa o renderer estruturado
-              // se o pipeline conseguiu normalizar a bula → _PlantaoRenderer.
-              // Se pipeline null mas looksLikePharmaBula → _PlantaoFallbackCard.
-              // ORDEM 44 M4: historical Plantão bubbles also use structured renderer
-              final bool useStructuredRenderer =
-                  (isPlantaoFinalBubble || looksLikePharmaBula || looksLikePlantaoBubble) &&
-                  plantaoPipelineResult?.response != null;
 
               // BUILD 276: Fade-in wrapper — applied only to the freshly committed
               // AI bubble (msg.id == _fadingInMsgId). Starts at opacity 0 and
@@ -2381,40 +2219,7 @@ class _AiScreenState extends State<AiScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── Renderer estruturado (Modo Plantão, stream concluído) ──
-                    if (useStructuredRenderer)
-                      _PlantaoRenderer(
-                        key: ValueKey('plantao_${msg.id}'),
-                        response: plantaoPipelineResult!.response!,
-                        dark: dark,
-                        lang: p.lang,
-                        onCopy: () => _copyMsg(msg.text),
-                        onChipTap: (chipText) {
-                          String sendText = chipText.trim();
-                          if (sendText.startsWith('📌')) {
-                            sendText = sendText.substring('📌'.length).trim();
-                          }
-                          if (sendText.isEmpty) return;
-                          _userScrolledUp = false;
-                          _scrollDown(force: true);
-                          _sendDebounced(sendText, context.read<AppProvider>());
-                        },
-                      )
-                    // ── TRAVA 1 ORDEM 26 + ORDEM 29: Plantão sem pipeline → FallbackCard ──
-                    // Quando isPlantaoFinalBubble=true OU looksLikePharmaBula=true
-                    // e o pipeline retornou null após tentativa de normalização antibula,
-                    // usamos o _PlantaoFallbackCard (card estruturado degradado).
-                    // NUNCA o _AiBubble cru em Modo Plantão com conteúdo clínico.
-                    // ORDEM 44 M4: historical Plantão bubbles also degrade gracefully
-                    else if (isPlantaoFinalBubble || looksLikePharmaBula || looksLikePlantaoBubble)
-                      _PlantaoFallbackCard(
-                        text: msg.text,
-                        dark: dark,
-                        lang: p.lang,
-                        onCopy: () => _copyMsg(msg.text),
-                      )
-                    // ── Bubble padrão: streaming | Modo Estudo | histórico ─────
-                    else
+                    // ── Bubble unificada: _AiBubble (MarkdownBody agnostico) ────
                     _AiBubble(
                       key: ValueKey('ai_${msg.id}'),
                       text: msg.text,
@@ -2525,18 +2330,16 @@ class _AiScreenState extends State<AiScreen> {
                       }),
                     // ── Evidência farmacológica (card colapsível) ────────────────
                     // Build 192: 20px gap entre botões e evidência
-                    // BUILD 238 EVIDENCE_GUARD: suprimir quando _PlantaoRenderer já
-                    // está ativo (ele embute a evidência internamente) ou quando é safe-card.
-                    // Evita dupla renderização de "EVIDÊNCIA CIENTÍFICA".
-                    // BUILD 246: dedup por messageId+textHash — evita loop de log
-                    // no ListView item builder que reconstrói muitas vezes.
-                    if (!useStructuredRenderer && detectedEv != null && !_isSafeCard)
+                    // ORDEM 56: _PlantaoRenderer removido — evidência sempre visível
+                    // quando detectada e não for safe-card. Sem risco de duplicação.
+                    // BUILD 246: dedup por messageId+textHash — evita loop de log.
+                    if (detectedEv != null && !_isSafeCard)
                       Builder(builder: (_) {
                         if (kDebugMode) {
                           final evKey = '${msg.id}_${msg.text.hashCode}';
                           if (!_loggedEvidenceIds.contains(evKey)) {
                             _loggedEvidenceIds.add(evKey);
-                            debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} alreadyShown=$useStructuredRenderer isSafeCard=$_isSafeCard showing=true');
+                            debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} isSafeCard=$_isSafeCard showing=true');
                           }
                         }
                         return Padding(
@@ -2830,26 +2633,18 @@ class _AiScreenState extends State<AiScreen> {
             lang: p.lang,
             onChanged: (newValue) {
               if (newValue == _longResponse) return;
-              // ORDEM 49 M1: Atomic mode-sync ao alternar toggle.
-              // Além de limpar _aiHistory (via clearAiHistory), limpa:
-              //   • _plantaoPipelineCache — previne render Plantão stale em
-              //     nova resposta Estudo (fantasma de estado visual).
-              //   • _lastAiIndex reset implícito via setState (nenhuma bolha
-              //     ativa → isPlantaoFinalBubble=false na próxima renderização).
-              // Tudo atômico dentro do mesmo setState para zero flash de UI.
+              // ORDEM 49 M1 / ORDEM 56: Atomic mode-sync ao alternar toggle.
+              // Limpa _aiHistory (via clearAiHistory) e log-dedup sets.
+              // _plantaoPipelineCache e _loggedPlantaoIds removidos (ORDEM 56).
               setState(() {
                 _longResponse = newValue;
-                // Limpa cache de pipeline para que a próxima bolha AI
-                // não herde resultado de parse Plantão de sessão anterior.
-                _plantaoPipelineCache.clear();
-                _loggedPlantaoIds.clear();
                 _loggedSafeCardIds.clear();
                 _loggedEvidenceIds.clear();
               });
               p.clearAiHistory();
               if (kDebugMode) {
                 debugPrint('[ORDEM49_TOGGLE] mode=${newValue ? "ESTUDO" : "PLANTÃO"} '
-                    'pipelineCache=cleared logSets=cleared history=clearing');
+                    'logSets=cleared history=clearing');
               }
             },
           ),
@@ -4642,183 +4437,6 @@ String _enforceMedicalFormat(String text, String lang) {
 // começam com esses padrões, preservando o restante do texto médico.
 // A _cleanAiText() (CAMADA 2) faz a limpeza profunda na renderização.
 // ─────────────────────────────────────────────────────────────────────────────
-// ── Build 126: STRIP POLICY — NON-DESTRUCTIVE, PREFIX-ANCHORED ONLY ─────────
-//
-// REGRA MESTRA: Nenhum filtro pode usar `.*` (greedy dot-star) no meio de uma
-// linha. Todo match é estritamente ancorado ao INÍCIO da linha (^) ou a um
-// bloco fechado literal (ex: <think>...</think>).
-//
-// Racional: padrões como `^.*Confian[zç]a.*$` destroem linhas clínicas legítimas
-// que CONTÊM a palavra "confiança" (ex: "dose titulada com confiança clínica"),
-// produzindo o artefato "ElEl" relatado em produção.
-//
-// Unique exception: blocos XML fechados <think>...</think> são de estrutura
-// delimitada e inequívoca — remoção segura com dotAll.
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-// _antibulaNormalize — TRAVA 2 (ORDEM 26): Conversor de Bula → Cards Semânticos
-//
-// Quando o Gemini emite formato bula clássica (* **CLASSE:** ...) em vez do
-// template T01-T20 com emoji-anchors, este conversor mapeia os tópicos padrão
-// para os tokens semânticos do MedCases antes de reprocessar via PlantatoPipeline.
-//
-// Mapeamento:
-//   * **CLASSE:**           → 💊 CLASSE:
-//   * **MECANISMO DE AÇÃO:** → 🧠 MECANISMO DE AÇÃO:
-//   * **DOSE HABITUAL:**    → 💉 DOSE HABITUAL:
-//   * **DOSE:**             → 💉 DOSE:
-//   * **CONTRAINDICAÇÕES:** → ⛔ CONTRAINDICAÇÕES:
-//   * **EFEITOS ADVERSOS:** → ⚠️ EFEITOS ADVERSOS:
-//   * **INTERAÇÕES:**       → 🚨 INTERAÇÕES CRÍTICAS:
-//   * **ALERTAS CRÍTICOS:** → 🚨 ALERTAS CRÍTICOS:
-//   * **AJUSTE RENAL:**     → ⚠️ AJUSTE RENAL:
-//   * **VIA DE ADMINISTRAÇÃO:** → 💊 VIA:
-//   * **CONDUTA PRÁTICA:**  → 📌 CONDUTA PRÁTICA:
-//   Título em primeira linha (NOME — INFORMAÇÕES) → 🟥 NOME — ...
-//
-// Retorna texto original se nenhum padrão for encontrado (sem bula detectada).
-// ─────────────────────────────────────────────────────────────────────────────
-String _antibulaNormalize(String raw, String lang) {
-  if (raw.trim().isEmpty) return raw;
-
-  // Fast-exit: se já tem emoji-anchor na primeira linha, não é bula clássica
-  final firstLine = raw.trim().split('\n').first.trim();
-  if (firstLine.startsWith('🟥') || firstLine.startsWith('🚨') ||
-      firstLine.startsWith('💊') || firstLine.startsWith('⛔') ||
-      firstLine.startsWith('📌')) {
-    return raw;
-  }
-
-  // Fast-exit: não tem nenhuma linha com padrão bula (* **PALAVRA:**)
-  if (!RegExp(r'^\*\s+\*\*[A-ZÀÁÂÃÉÊÍÓÔÕÚÜÇ]', multiLine: true).hasMatch(raw)) {
-    return raw;
-  }
-
-  // ── Passo 1: Converte título da primeira linha ────────────────────────────
-  // "🔵 SERTRALINA — INFORMAÇÕES FARMACOLÓGICAS" ou "## SERTRALINA — ..."
-  // ou simplesmente "SERTRALINA — INFORMAÇÕES FARMACOLÓGICAS"
-  final lines = raw.split('\n');
-  final result = <String>[];
-  bool titleConverted = false;
-
-  for (int i = 0; i < lines.length; i++) {
-    String line = lines[i];
-    final trimmed = line.trim();
-
-    // ── Título principal: qualquer linha sem emoji de card que parece título ──
-    if (!titleConverted && i <= 2 && trimmed.isNotEmpty &&
-        !trimmed.startsWith('*') && !trimmed.startsWith('-') &&
-        !trimmed.startsWith('🟥')) {
-      // Remove prefixos decorativos (## , 🔵 , 📋 , etc.)
-      final cleaned = trimmed
-          .replaceFirst(RegExp(r'^#{1,3}\s+'), '')
-          .replaceFirst(RegExp(r'^[🔵📋🏥💡📌⚕️]\s+'), '')
-          .trim();
-      if (cleaned.isNotEmpty && cleaned.length > 3) {
-        // ORDEM 54 M3: preserva sentence case — toUpperCase() removido
-        result.add('🟥 $cleaned');
-        titleConverted = true;
-        continue;
-      }
-    }
-
-    // ── Mapeamento de tópicos de bula ──────────────────────────────────────
-    // Padrão: "* **TÓPICO:** conteúdo" ou "* **TÓPICO:**\n  conteúdo"
-    final bulaRx = RegExp(r'^\*\s+\*\*([^*:]+):\*\*\s*(.*)', caseSensitive: false);
-    final match = bulaRx.firstMatch(trimmed);
-
-    if (match != null) {
-      final topic = match.group(1)!.trim().toUpperCase()
-          .replaceAll(RegExp(r'\s+'), ' ');
-      final content = match.group(2)!.trim();
-
-      // Normaliza content para caixa baixa (primeira letra maiúscula, resto minúscula)
-      final normContent = content.isNotEmpty
-          ? content[0].toUpperCase() + content.substring(1).toLowerCase()
-          : '';
-
-      final mappedLine = _mapBulaTopic(topic, normContent, lang);
-      result.add(mappedLine);
-      continue;
-    }
-
-    // ── Sub-tópicos e linhas de continuação ──────────────────────────────
-    // Linha de conteúdo que segue um tópico (indentada ou normal)
-    // Mantém como texto plano sob o card anterior
-    if (trimmed.startsWith('*') && !bulaRx.hasMatch(trimmed)) {
-      // Sub-bullet: preserva mas remove asterisco inicial para evitar <pre>
-      final sub = trimmed.replaceFirst(RegExp(r'^\*\s*'), '').trim();
-      if (sub.isNotEmpty) result.add('  $sub');
-      continue;
-    }
-
-    result.add(line);
-  }
-
-  final normalized = result.join('\n');
-
-  // Só retorna se a normalização produziu pelo menos um emoji-anchor 🟥
-  if (!normalized.contains('🟥')) return raw;
-
-  return normalized;
-}
-
-/// Mapeia um tópico de bula para o token semântico MedCases correspondente.
-String _mapBulaTopic(String topic, String content, String lang) {
-  // PT labels (também capturam ES por overlap)
-  if (topic.contains('CLASSE') || topic.contains('CLASE')) {
-    return '💊 CLASSE: $content';
-  }
-  if (topic.contains('MECANISMO')) {
-    return '🧠 MECANISMO DE AÇÃO: $content';
-  }
-  if (topic.contains('DOSE HABITUAL') || topic.contains('DOSIS HABITUAL')) {
-    return '💉 DOSE HABITUAL: $content';
-  }
-  if (topic.contains('DOSE') || topic.contains('DOSIS') || topic.contains('POSOLOGIA')) {
-    return '💉 DOSE: $content';
-  }
-  if (topic.contains('VIA DE ADMINISTRA') || topic.contains('VÍA DE ADMINISTRA')) {
-    return '💊 VIA: $content';
-  }
-  if (topic.contains('CONTRAINDICAÇ') || topic.contains('CONTRAINDICACI')) {
-    return '⛔ CONTRAINDICAÇÕES: $content';
-  }
-  if (topic.contains('EFEITOS ADVERSOS') || topic.contains('EFECTOS ADVERSOS') ||
-      topic.contains('REAÇÕES') || topic.contains('REACCIONES')) {
-    return '⚠️ EFEITOS ADVERSOS: $content';
-  }
-  if (topic.contains('INTERA') ) {
-    return '🚨 INTERAÇÕES CRÍTICAS: $content';
-  }
-  if (topic.contains('ALERTA') || topic.contains('SINAIS DE GRAVIDADE') ||
-      topic.contains('SÍNDROME') || topic.contains('SINDROME')) {
-    return '🚨 ALERTA CRÍTICO: $content';
-  }
-  if (topic.contains('AJUSTE RENAL') || topic.contains('AJUSTE HEPÁTICO') ||
-      topic.contains('AJUSTE HEPATICO')) {
-    return '⚠️ AJUSTE: $content';
-  }
-  if (topic.contains('IDEAÇ') || topic.contains('SUICID')) {
-    return '🚨 ALERTA CRÍTICO — IDEAÇÃO SUICIDA: $content';
-  }
-  if (topic.contains('DESCONTINUAÇ') || topic.contains('DESCONTINUACI')) {
-    return '⚠️ SÍNDROME DE DESCONTINUAÇÃO: $content';
-  }
-  if (topic.contains('CONDUTA') || topic.contains('MANEJO') || topic.contains('CONDUTA PRÁTICA')) {
-    return '📌 CONDUTA PRÁTICA: $content';
-  }
-  if (topic.contains('MONITORIZ')) {
-    return '⚠️ MONITORIZAÇÃO: $content';
-  }
-  if (topic.contains('SANGRAMENTO') || topic.contains('SANGRADO') ||
-      topic.contains('HIPONATREMIA')) {
-    return '⚠️ ${topic.trim()}: $content';
-  }
-  // Fallback genérico: preserva como item com ⚠️ para não perder informação
-  return '⚠️ ${topic.trim()}: $content';
-}
-
 String _stripMetadataHeaders(String accumulated) {
   if (accumulated.isEmpty) return accumulated;
 
@@ -6096,521 +5714,6 @@ class _AiBlockBubble extends StatelessWidget {
   String _fakeTime() {
     final now = DateTime.now();
     return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _PlantaoRenderer — renderizador determinístico do Modo Plantão (Build 193)
-//
-// Recebe um PlantaoResponse (campos já estruturados e validados) e renderiza
-// o layout fixo canônico: 🟥 → 💊 → 🔄 → ⛔ → 📌 → ⚠️
-//
-// GARANTIAS:
-//   • Ordem sempre canônica, independente da saída do Gemini
-//   • Campos opcionais null → não renderizados (nunca "⛔ —" ou "⛔ vazio")
-//   • Nenhuma linha iniciando com '[' é renderizada
-//   • Layout 100% controlado pelo Flutter
-//   • Estudo mode não usa este widget
-// ─────────────────────────────────────────────────────────────────────────────
-class _PlantaoRenderer extends StatelessWidget {
-  final PlantaoResponse response;
-  final bool dark;
-  final String lang;
-  final VoidCallback? onCopy;
-  final void Function(String chipText)? onChipTap;
-
-  const _PlantaoRenderer({
-    super.key,
-    required this.response,
-    required this.dark,
-    required this.lang,
-    this.onCopy,
-    this.onChipTap,
-  });
-
-  // ── Paleta semântica (espelha _AiBlockBubble) ────────────────────────────
-  static const _kCyan        = Color(0xFF008CA4);
-  static const _kCyanLight   = Color(0xFF00E5FF);
-  static const _kAmber       = Color(0xFFB45309);
-  static const _kAmberLight  = Color(0xFFFFB800);
-  static const _kRed         = Color(0xFFB91C1C);
-  static const _kRedLight    = Color(0xFFFF2400);
-  static const _kGreen       = Color(0xFF059669);
-  static const _kGreenLight  = Color(0xFF34D399);
-  static const _kPurple      = Color(0xFF7C3AED);
-  static const _kPurpleLight = Color(0xFFA78BFA);
-  static const _kSlate       = Color(0xFF475569);
-  static const _kSlateLight  = Color(0xFF94A3B8);
-
-  // ── Verificação de segurança: ignora linhas iniciando com '[' ────────────
-  static String _safeText(String text) {
-    final lines = text.split('\n');
-    final safe = lines.where((l) => !l.trim().startsWith('[')).toList();
-    return safe.join('\n').trim();
-  }
-
-  // ── Constrói uma linha de bloco — ORDEM 54 M3: sem barra lateral ────────
-  // Barras laterais coloridas removidas definitivamente. Identidade visual
-  // agora é exclusivamente via emojis (🟥/💊/⛔/📌/⚠️/✅ etc.).
-  Widget _buildBlock({
-    required String emoji,
-    required String text,
-    required Color barColor,
-    required Color emojiColor,
-    required Color textColor,
-    required bool isHeader,
-    bool isChip = false,
-  }) {
-    final safeContent = _safeText(text);
-    if (safeContent.isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: isChip
-          ? _buildChip(emoji: emoji, text: safeContent, color: barColor)
-          : _buildContent(
-              emoji: emoji,
-              text: safeContent,
-              emojiColor: emojiColor,
-              textColor: textColor,
-              isHeader: isHeader,
-            ),
-    );
-  }
-
-  // ── Renderiza o conteúdo de um bloco ─────────────────────────────────────
-  Widget _buildContent({
-    required String emoji,
-    required String text,
-    required Color emojiColor,
-    required Color textColor,
-    required bool isHeader,
-  }) {
-    if (isHeader) {
-      // ORDEM 17 — contraste dinâmico: ciano no dark, grafite denso no light
-      // Emoji conserva a cor semântica (emojiColor) para manter a hierarquia visual.
-      final kHeaderTextColor = dark
-          ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
-          : const Color(0xFF1A1A1A);  // grafite denso — contraste 18:1 sobre fundo claro
-      // ORDEM 54 M3: toUpperCase() removido — preserva sentence case da IA.
-      // Ultra-Plantão Build 260 já entrega títulos formatados corretamente;
-      // forçar caps era regressão tipográfica que contradizia o formato da Matriz.
-      final headerDisplayText = text;
-      return RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: '$emoji ',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
-                color: emojiColor,
-                height: 1.4,
-              ),
-            ),
-            TextSpan(
-              text: headerDisplayText,
-              style: TextStyle(
-                fontSize: 13.5,
-                fontWeight: FontWeight.w800,
-                color: kHeaderTextColor,
-                height: 1.4,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Blocos normais: emoji + texto
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: '$emoji ',
-            style: TextStyle(
-              fontSize: 14,
-              color: emojiColor,
-              height: 1.5,
-            ),
-          ),
-          TextSpan(
-            text: text,
-            style: TextStyle(
-              fontSize: 13.5,
-              color: textColor,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── Chip clicável para bloco 📌 (monitorar / próximo passo) ──────────────
-  Widget _buildChip({
-    required String emoji,
-    required String text,
-    required Color color,
-  }) {
-    if (onChipTap == null) {
-      // Sem callback: renderiza como texto simples
-      return _buildContent(
-        emoji: emoji,
-        text: text,
-        emojiColor: color,
-        textColor: color,
-        isHeader: false,
-      );
-    }
-
-    return GestureDetector(
-      onTap: () => onChipTap?.call('$emoji $text'),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withValues(alpha: 0.30), width: 1),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(emoji, style: TextStyle(fontSize: 14, color: color)),
-            const SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                  height: 1.4,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final textColor = dark
-        ? const Color(0xFFE8F2F5)
-        : const Color(0xFF1A1D23);
-
-    // Paleta semântica — cores por papel clínico
-    final condutaColor   = dark ? _kCyanLight   : _kCyan;
-    final primeiraColor  = dark ? _kGreenLight  : _kGreen;
-    final altColor       = dark ? _kSlateLight  : _kSlate;
-    final evitarColor    = dark ? _kAmberLight  : _kAmber;
-    final monitorarColor = dark ? _kPurpleLight : _kPurple;
-    final alertaColor    = dark ? _kRedLight    : _kRed;
-    // Build 224: cores para templates alternativos
-    final metasColor     = dark ? _kGreenLight  : _kGreen;    // 📈 metas — verde (positivo)
-    final proxPassoColor = dark ? _kCyanLight   : _kCyan;     // ✅ próximo passo — ciano
-    final evitarAltColor = dark ? _kAmberLight  : _kAmber;    // ❌ evitar alt — âmbar
-    final suspeitarColor = dark ? _kPurpleLight : _kPurple;   // 🔎 suspeitar — roxo
-    final confirmarColor = dark ? _kGreenLight  : _kGreen;    // 🧪 confirmar — verde
-    final calculoColor   = dark ? _kCyanLight   : _kCyan;     // 🧮 cálculo — ciano
-    final significadoColor = dark ? _kSlateLight : _kSlate;   // 📖 significado — slate
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── 🟥 TÍTULO DINÂMICO — cabeçalho obrigatório ───────────────────
-          _buildBlock(
-            emoji: '🟥',
-            text: response.conduta,
-            barColor: condutaColor,
-            emojiColor: condutaColor,
-            textColor: condutaColor,
-            isHeader: true,
-          ),
-
-          // ── 💊 PRIMEIRA LINHA / CORREÇÃO / DOSE — opcional (Build 224) ───
-          if (response.primeiraLinha != null &&
-              response.primeiraLinha!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '💊',
-              text: response.primeiraLinha!,
-              barColor: primeiraColor,
-              emojiColor: primeiraColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── 🔎 SUSPEITAR SE — diagnóstico (Build 224) ────────────────────
-          if (response.suspeitar != null &&
-              response.suspeitar!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '🔎',
-              text: response.suspeitar!,
-              barColor: suspeitarColor,
-              emojiColor: suspeitarColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── 🧪 CONFIRMAR COM / DILUIÇÃO (Build 224) ──────────────────────
-          if (response.confirmar != null &&
-              response.confirmar!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '🧪',
-              text: response.confirmar!,
-              barColor: confirmarColor,
-              emojiColor: confirmarColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── 🧮 CÁLCULO / VELOCIDADE (Build 224) ──────────────────────────
-          if (response.calculo != null &&
-              response.calculo!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '🧮',
-              text: response.calculo!,
-              barColor: calculoColor,
-              emojiColor: calculoColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── 📖 SIGNIFICADO / INTERPRETAÇÃO (Build 224) ───────────────────
-          if (response.significado != null &&
-              response.significado!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '📖',
-              text: response.significado!,
-              barColor: significadoColor,
-              emojiColor: significadoColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── 🔄 ALTERNATIVA / TITULAÇÃO — opcional ────────────────────────
-          if (response.alternativa != null &&
-              response.alternativa!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '🔄',
-              text: response.alternativa!,
-              barColor: altColor,
-              emojiColor: altColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── ⛔ EVITAR (template conduta) — opcional ───────────────────────
-          if (response.evitar != null &&
-              response.evitar!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '⛔',
-              text: response.evitar!,
-              barColor: evitarColor,
-              emojiColor: evitarColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── ❌ EVITAR (template alternativo, Build 224) — opcional ─────────
-          if (response.evitarAlt != null &&
-              response.evitarAlt!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '❌',
-              text: response.evitarAlt!,
-              barColor: evitarAltColor,
-              emojiColor: evitarAltColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── 📈 METAS / VALORES ESPERADOS (Build 224) — opcional ───────────
-          if (response.metas != null &&
-              response.metas!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '📈',
-              text: response.metas!,
-              barColor: metasColor,
-              emojiColor: metasColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── 📌 MONITORAR — obrigatório, chip clicável ─────────────────────
-          _buildBlock(
-            emoji: '📌',
-            text: response.monitorar,
-            barColor: monitorarColor,
-            emojiColor: monitorarColor,
-            textColor: monitorarColor,
-            isHeader: false,
-            isChip: true,
-          ),
-
-          // ── ✅ PRÓXIMO PASSO (Build 224) — opcional ───────────────────────
-          if (response.proxPasso != null &&
-              response.proxPasso!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '✅',
-              text: response.proxPasso!,
-              barColor: proxPassoColor,
-              emojiColor: proxPassoColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── ⚠️ ALERTA — opcional ──────────────────────────────────────────
-          if (response.alerta != null &&
-              response.alerta!.trim().isNotEmpty)
-            _buildBlock(
-              emoji: '⚠️',
-              text: response.alerta!,
-              barColor: alertaColor,
-              emojiColor: alertaColor,
-              textColor: textColor,
-              isHeader: false,
-            ),
-
-          // ── Ação de cópia ─────────────────────────────────────────────────
-          if (onCopy != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onTap: onCopy,
-                    child: Icon(
-                      Icons.copy_rounded,
-                      size: 16,
-                      color: textColor.withValues(alpha: 0.45),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _PlantaoFallbackCard — TRAVA 1 (ORDEM 26): Card de dignidade visual
-//
-// Renderizado quando isPlantaoFinalBubble=true mas pipeline retornou null
-// mesmo após tentativa de _antibulaNormalize(). Garante que o Modo Plantão
-// NUNCA exibe o _AiBubble cru com MarkdownBody sem parse semântico.
-//
-// Design: card único com barra lateral cyan, header 🟥, corpo em scroll fluido.
-// ─────────────────────────────────────────────────────────────────────────────
-class _PlantaoFallbackCard extends StatelessWidget {
-  final String text;
-  final bool dark;
-  final String lang;
-  final VoidCallback? onCopy;
-
-  const _PlantaoFallbackCard({
-    required this.text,
-    required this.dark,
-    this.lang = 'pt',
-    this.onCopy,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (kDebugMode) {
-      debugPrint('[PLANTAO_FALLBACK_CARD] Rendering fallback card — pipeline was null after antibula attempt');
-    }
-
-    final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
-    const kCyan = Color(0xFF00E5FF);
-    const kFerrariRed = Color(0xFFFF2400);
-
-    // Extract first line as header, rest as body
-    final allLines = text.trim().split('\n');
-    final headerRaw = allLines.isNotEmpty ? allLines.first.trim() : '';
-    // ORDEM 54 M3: toUpperCase() removido — preserva sentence case da IA.
-    // Ultra-Plantão Build 260 já entrega títulos formatados corretamente;
-    // forçar caps era regressão tipográfica que contradizia o formato das Matrizes.
-    final headerText = headerRaw
-        .replaceFirst(RegExp(r'^🟥\s*'), '')
-        .replaceFirst(RegExp(r'^#{1,3}\s*'), '')
-        .replaceFirst(RegExp(r'^[🔵📋🏥💡⚕️]\s*'), '')
-        .trim();
-    final bodyLines = allLines.length > 1 ? allLines.sublist(1) : <String>[];
-    final bodyText = bodyLines
-        .where((l) => l.trim().isNotEmpty)
-        .join('\n')
-        .trim();
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      // ORDEM 52 M3: borda esquerda 3px removida — identidade visual via emoji 🟥
-      child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header 🟥
-              Row(
-                children: [
-                  const Text('🟥 ', style: TextStyle(fontSize: 15)),
-                  Expanded(
-                    child: Text(
-                      headerText.isEmpty
-                          ? (lang == 'es' ? 'INFORMACIÓN FARMACOLÓGICA' : 'INFORMAÇÕES FARMACOLÓGICAS')
-                          : headerText,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: dark ? kCyan : kFerrariRed,
-                        height: 1.3,
-                      ),
-                    ),
-                  ),
-                  if (onCopy != null)
-                    GestureDetector(
-                      onTap: onCopy,
-                      child: Icon(
-                        Icons.copy_rounded,
-                        size: 16,
-                        color: textColor.withValues(alpha: 0.4),
-                      ),
-                    ),
-                ],
-              ),
-              if (bodyText.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                MarkdownBody(
-                  data: bodyText,
-                  selectable: false,
-                  styleSheet: MarkdownStyleSheet(
-                    p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
-                    strong: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w700,
-                      color: dark ? kCyan : kFerrariRed,
-                    ),
-                    em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
-                    listBullet: TextStyle(fontSize: 13.5, color: textColor),
-                    blockSpacing: 6,
-                    listIndent: 18,
-                    blockquoteDecoration: const BoxDecoration(color: Colors.transparent),
-                    codeblockDecoration: const BoxDecoration(color: Colors.transparent),
-                  ),
-                  softLineBreak: true,
-                ),
-              ],
-            ],
-          ),
-        ),
-    );
   }
 }
 
