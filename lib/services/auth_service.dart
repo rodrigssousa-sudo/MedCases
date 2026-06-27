@@ -34,6 +34,13 @@ class AuthService {
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
   static User? get currentUser => _auth.currentUser;
 
+  /// ORDEM 50 M3: True se há token em cache não expirado (sem I/O de rede).
+  /// Usado pelo FirestoreService._isUserAuthenticated para detectar auth
+  /// no Web sem chamar getAdminToken() (que faz refresh de rede).
+  static bool get hasCachedToken =>
+      _cachedIdToken.isNotEmpty &&
+      DateTime.now().isBefore(_tokenExpiresAt);
+
   // ═══════════════════════════════════════════════════════════════════════════
   // TOKEN ADMIN — cache + refresh automático
   // ═══════════════════════════════════════════════════════════════════════════

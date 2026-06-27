@@ -296,7 +296,9 @@ class ProviderRouterService {
     if (response.statusCode != 200) {
       String errorCode = 'proxy_error_${response.statusCode}';
       try {
-        final decodedErr = utf8.decode(response.bodyBytes);
+        // ORDEM 50 M2: allowMalformed:true tolera bytes órfãos na borda do
+        // stream (emojis truncados por timeout) sem travar o canvas de fontes.
+        final decodedErr = utf8.decode(response.bodyBytes, allowMalformed: true);
         final body = jsonDecode(decodedErr) as Map<String, dynamic>;
         errorCode = body['error']?.toString() ?? errorCode;
       } catch (_) {}
@@ -309,7 +311,9 @@ class ProviderRouterService {
     try {
       // ORDEM 46 M1: utf8.decode(bodyBytes) garante suporte correto a acentos
       // (á, é, í, ó, ú, ñ) — evita mismatch ISO-8859-1 que corrompia output Plantão.
-      final decodedBody = utf8.decode(response.bodyBytes);
+      // ORDEM 50 M2: allowMalformed:true — tolera bytes órfãos (�) na borda do chunk
+      // sem lançar FormatException que travava o canvas de fontes do Flutter.
+      final decodedBody = utf8.decode(response.bodyBytes, allowMalformed: true);
       body = jsonDecode(decodedBody) as Map<String, dynamic>;
     } catch (e) {
       debugPrint('[PAID_PROXY] requestId=$requestId success=false status=parse_error');

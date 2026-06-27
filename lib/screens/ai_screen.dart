@@ -5835,12 +5835,15 @@ class _AiBlockBubble extends StatelessWidget {
                         // ORDEM 48 M1: caps condicional — síndrome pura → caps; conduta clínica → sentence case.
                         () {
                           final raw = label.isEmpty ? trimmed : label;
-                          // Se o texto começa com emoji de bloco clínico → sentence case da IA
-                          final startsWithClinic = raw.startsWith('🚨') ||
-                              raw.startsWith('💊') ||
-                              raw.startsWith('⛔') ||
-                              raw.startsWith('📌') ||
-                              raw.startsWith('⚠️');
+                          // ORDEM 50 M1: trimLeft() antes do startsWith() —
+                          // espaços/newlines iniciais mascaravam o emoji clínico
+                          // forçando toUpperCase() indevido (regressão tipográfica).
+                          final rawClean = raw.trimLeft();
+                          final startsWithClinic = rawClean.startsWith('🚨') ||
+                              rawClean.startsWith('💊') ||
+                              rawClean.startsWith('⛔') ||
+                              rawClean.startsWith('📌') ||
+                              rawClean.startsWith('⚠️');
                           return startsWithClinic ? raw : raw.toUpperCase();
                         }(),
                         style: TextStyle(
@@ -6139,10 +6142,14 @@ class _PlantaoRenderer extends StatelessWidget {
       // ORDEM 48 M1: toUpperCase() condicional no header do PlantaoRenderer.
       // Síndrome pura (🟥) → caps para hierarquia visual (M2: permitido).
       // Blocos de conduta (🚨/💊/⛔/📌) → sentence case da IA preservado.
-      final isCondutaEmoji = text.startsWith('🚨') ||
-          text.startsWith('💊') ||
-          text.startsWith('⛔') ||
-          text.startsWith('📌');
+      // ORDEM 50 M1: trimLeft() antes do startsWith() — strings da API podem
+      // chegar com espaços/newlines iniciais que mascaravam o emoji e
+      // forçavam o fallback para .toUpperCase() (regressão tipográfica).
+      final cleanTextForHeader = text.trimLeft();
+      final isCondutaEmoji = cleanTextForHeader.startsWith('🚨') ||
+          cleanTextForHeader.startsWith('💊') ||
+          cleanTextForHeader.startsWith('⛔') ||
+          cleanTextForHeader.startsWith('📌');
       final headerDisplayText = isCondutaEmoji ? text : text.toUpperCase();
       return RichText(
         text: TextSpan(
@@ -6486,11 +6493,14 @@ class _PlantaoFallbackCard extends StatelessWidget {
     // ORDEM 48 M1: headerText capitalização condicional.
     // Síndrome pura (🟥 stripped ou texto direto) → toUpperCase() [M2: permitido].
     // Blocos de conduta clínica (🚨/💊/⛔/📌/⚠️) → preservar sentence case da IA.
-    final headerIsCondutaBlock = headerRaw.startsWith('🚨') ||
-        headerRaw.startsWith('💊') ||
-        headerRaw.startsWith('⛔') ||
-        headerRaw.startsWith('📌') ||
-        headerRaw.startsWith('⚠️');
+    // ORDEM 50 M1: trimLeft() antes do startsWith() — API pode entregar strings com
+    // espaços/newlines iniciais que mascaravam o emoji e ativavam toUpperCase() errado.
+    final headerRawClean = headerRaw.trimLeft();
+    final headerIsCondutaBlock = headerRawClean.startsWith('🚨') ||
+        headerRawClean.startsWith('💊') ||
+        headerRawClean.startsWith('⛔') ||
+        headerRawClean.startsWith('📌') ||
+        headerRawClean.startsWith('⚠️');
     final headerText = headerIsCondutaBlock
         ? headerRaw  // preserva sentence case da IA — NUNCA toUpperCase() em conduta clínica
         : headerRaw

@@ -256,6 +256,23 @@ class FirestoreService {
   static bool _isRestCoolingDown(DateTime? retryAfter) =>
       retryAfter != null && DateTime.now().isBefore(retryAfter);
 
+  // ── ORDEM 50 M3: Auth guard síncrono ─────────────────────────────────────
+  // Detecta se há sessão autenticada sem I/O:
+  //   • Nativo: FirebaseAuth SDK popula currentUser após signIn.
+  //   • Web: login via REST não injeta no SDK — detectamos via
+  //     FirebaseAuth.instance.currentUser primeiro; se null e kIsWeb,
+  //     verificamos AuthService.hasCachedToken (sem network).
+  // Retorna true = usuário autenticado; false = anonymous / pré-login.
+  // Usado para suprimir requests Firestore antes da barreira de auth
+  // transposta, eliminando o spam de 403 "permission-denied" no console.
+  static bool get _isUserAuthenticated {
+    // Nativo e Web (se SDK tiver usuário — casos de refresh com token válido)
+    if (FirebaseAuth.instance.currentUser != null) return true;
+    // Web REST: SDK currentUser sempre null — delegamos ao AuthService
+    if (kIsWeb) return AuthService.hasCachedToken;
+    return false;
+  }
+
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
   static const _publicHistoriesCacheKey = 'public_histories_cache_v1';
@@ -1222,6 +1239,13 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadPublicHistories({bool forceRemote = false}) async {
+    // ORDEM 50 M3: Auth guard — suprime requests Firestore antes da barreira
+    // de auth transposta, eliminando spam de 403 "permission-denied" no console.
+    if (!_isUserAuthenticated) {
+      _debugPublicHistories('ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier');
+      return const <ClinicalHistoryModel>[];
+    }
+
     final cached = await loadCachedPublicHistories();
     _debugPublicHistories(
       'loadPublicHistories start forceRemote=$forceRemote kIsWeb=$kIsWeb cached=${cached.length}',
@@ -2025,19 +2049,24 @@ class FirestoreService {
       final missingPdf   = g.pdfUrl.trim().isEmpty;
 
       if (missingId || missingTitle || missingPdf) {
-        // LOG diagnóstico: informa qual campo faltou para cada guia descartada
-        debugPrint(
-          '[clinical_guides DEBUG] guia IGNORADA '
-          'id="${g.id}" title="${g.title}" '
-          'pdfUrl="${g.pdfUrl}" '
-          'missingId=$missingId missingTitle=$missingTitle missingPdfUrl=$missingPdf',
-        );
+        if (kDebugMode) {
+          // ORDEM 50 M3: normalize probe gated to kDebugMode
+          debugPrint(
+            '[clinical_guides DEBUG] guia IGNORADA '
+            'id="${g.id}" title="${g.title}" '
+            'pdfUrl="${g.pdfUrl}" '
+            'missingId=$missingId missingTitle=$missingTitle missingPdfUrl=$missingPdf',
+          );
+        }
       } else {
         valid.add(g);
       }
     }
 
-    debugPrint('[clinical_guides DEBUG] _normalizeGuides: total=${all.length} valid=${valid.length}');
+    if (kDebugMode) {
+      // ORDEM 50 M3: normalizeGuides count probe gated to kDebugMode
+      debugPrint('[clinical_guides DEBUG] _normalizeGuides: total=${all.length} valid=${valid.length}');
+    }
     valid.sort((a, b) => b.uploadedAt.compareTo(a.uploadedAt));
     return valid;
   }
@@ -2104,33 +2133,40 @@ class FirestoreService {
 
   static Future<List<GuideModel>> _loadPublishedGuidesSdk({Source? source}) async {
     // ── LOG: projeto Firebase em uso (SDK) ──────────────────────────────────
-    try {
-      final opts = Firebase.app().options;
-      debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
-      debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
-      debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
-    } catch (e) {
-      debugPrint('[clinical_guides DEBUG] Firebase.app().options erro=$e');
+    // ORDEM 50 M3: probe logs gated to kDebugMode — suprimidos em release.
+    if (kDebugMode) {
+      try {
+        final opts = Firebase.app().options;
+        debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
+        debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
+        debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
+      } catch (e) {
+        debugPrint('[clinical_guides DEBUG] Firebase.app().options erro=$e');
+      }
+      debugPrint('[clinical_guides DEBUG] collection=clinical_guides');
     }
-    debugPrint('[clinical_guides DEBUG] collection=clinical_guides');
 
     // ── PROBE SDK: testa 5 coleções sem filtro para achar onde estão os docs ─
-    const probeCollections = [
-      'clinical_guides',
-      'guides',
-      'medical_guides',
-      'biblioteca_clinica',
-      'clinical_library',
-    ];
-    for (final col in probeCollections) {
-      try {
-        final snap = await _db.collection(col)
-            .limit(5)
-            .get()
-            .timeout(const Duration(seconds: 6));
-        debugPrint('[clinical_guides DEBUG] collection=$col docs=${snap.docs.length}');
-      } catch (e) {
-        debugPrint('[clinical_guides DEBUG] collection=$col erro=$e');
+    // ORDEM 50 M3: probe loop gated to kDebugMode — 5 extra Firestore queries
+    // suprimidas em release/produção, zero spam antes da autenticação.
+    if (kDebugMode) {
+      const probeCollections = [
+        'clinical_guides',
+        'guides',
+        'medical_guides',
+        'biblioteca_clinica',
+        'clinical_library',
+      ];
+      for (final col in probeCollections) {
+        try {
+          final snap = await _db.collection(col)
+              .limit(5)
+              .get()
+              .timeout(const Duration(seconds: 6));
+          debugPrint('[clinical_guides DEBUG] collection=$col docs=${snap.docs.length}');
+        } catch (e) {
+          debugPrint('[clinical_guides DEBUG] collection=$col erro=$e');
+        }
       }
     }
 
@@ -2218,15 +2254,18 @@ class FirestoreService {
 
   static Future<List<GuideModel>> _loadPublishedGuidesRest() async {
     // ── LOG: projeto Firebase em uso (REST) ──────────────────────────────────
-    try {
-      final opts = Firebase.app().options;
-      debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
-      debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
-      debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
-    } catch (e) {
-      debugPrint('[clinical_guides DEBUG] projectId=$_projectId (fallback — Firebase.app() erro=$e)');
+    // ORDEM 50 M3: probe logs gated to kDebugMode — suprimidos em release.
+    if (kDebugMode) {
+      try {
+        final opts = Firebase.app().options;
+        debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
+        debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
+        debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
+      } catch (e) {
+        debugPrint('[clinical_guides DEBUG] projectId=$_projectId (fallback — Firebase.app() erro=$e)');
+      }
+      debugPrint('[clinical_guides DEBUG] fsBase=$_fsBase');
     }
-    debugPrint('[clinical_guides DEBUG] fsBase=$_fsBase');
 
     // ── AUTH DIAGNÓSTICO ────────────────────────────────────────────────────
     // Web: AuthService.getAdminToken() — FirebaseAuth.instance.currentUser é
@@ -2235,64 +2274,91 @@ class FirestoreService {
     String token;
     if (kIsWeb) {
       token = await AuthService.getAdminToken();
-      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=clinical_guides');
-      debugPrint('[clinical_guides DEBUG] currentUser=WEB_REST_AUTH (getAdminToken)');
+      if (kDebugMode) {
+        // ORDEM 50 M3: auth probe gated to kDebugMode
+        debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=clinical_guides');
+        debugPrint('[clinical_guides DEBUG] currentUser=WEB_REST_AUTH (getAdminToken)');
+      }
     } else {
       final currentUser = FirebaseAuth.instance.currentUser;
-      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=clinical_guides');
-      debugPrint('[clinical_guides DEBUG] currentUser=${currentUser?.uid ?? 'null (não logado)'}');
-      debugPrint('[clinical_guides DEBUG] currentUser.email=${currentUser?.email ?? 'null'}');
+      if (kDebugMode) {
+        // ORDEM 50 M3: auth probe gated to kDebugMode
+        debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=clinical_guides');
+        debugPrint('[clinical_guides DEBUG] currentUser=${currentUser?.uid ?? 'null (não logado)'}');
+        debugPrint('[clinical_guides DEBUG] currentUser.email=${currentUser?.email ?? 'null'}');
+      }
       token = await currentUser?.getIdToken() ?? '';
     }
-    debugPrint('[clinical_guides DEBUG] tokenPresent=${token.isNotEmpty}');
-    debugPrint('[clinical_guides DEBUG] tokenLength=${token.length}');
+    if (kDebugMode) {
+      // ORDEM 50 M3: token probe gated to kDebugMode
+      debugPrint('[clinical_guides DEBUG] tokenPresent=${token.isNotEmpty}');
+      debugPrint('[clinical_guides DEBUG] tokenLength=${token.length}');
+    }
 
     final authHeaders = token.isNotEmpty
         ? <String, String>{'Authorization': 'Bearer $token'}
         : <String, String>{};
-    debugPrint('[clinical_guides DEBUG] authHeader=${authHeaders.containsKey('Authorization')}');
+    if (kDebugMode) {
+      // ORDEM 50 M3: header probe gated to kDebugMode
+      debugPrint('[clinical_guides DEBUG] authHeader=${authHeaders.containsKey('Authorization')}');
+    }
 
     // ── SDK DIRETO: teste isolado sem REST ───────────────────────────────────
     // Se SDK retornar docs e REST retornar 403 → problema exclusivo no endpoint REST.
-    try {
-      final sdkSnap = await FirebaseFirestore.instance
-          .collection('clinical_guides')
-          .limit(1)
-          .get()
-          .timeout(const Duration(seconds: 6));
-      debugPrint('[clinical_guides DEBUG] SDK direto docs=${sdkSnap.docs.length}');
-      if (sdkSnap.docs.isNotEmpty) {
-        final d = sdkSnap.docs.first;
-        debugPrint('[clinical_guides DEBUG] SDK primeiro doc id=${d.id} fields=${d.data().keys.toList()}');
+    // ORDEM 50 M3: probe gated to kDebugMode — suprime query extra em produção.
+    if (kDebugMode) {
+      try {
+        final sdkSnap = await FirebaseFirestore.instance
+            .collection('clinical_guides')
+            .limit(1)
+            .get()
+            .timeout(const Duration(seconds: 6));
+        debugPrint('[clinical_guides DEBUG] SDK direto docs=${sdkSnap.docs.length}');
+        if (sdkSnap.docs.isNotEmpty) {
+          final d = sdkSnap.docs.first;
+          debugPrint('[clinical_guides DEBUG] SDK primeiro doc id=${d.id} fields=${d.data().keys.toList()}');
+        }
+      } catch (e) {
+        debugPrint('[clinical_guides DEBUG] SDK direto ERRO=$e');
       }
-    } catch (e) {
-      debugPrint('[clinical_guides DEBUG] SDK direto ERRO=$e');
     }
 
     final apiKey = _firebaseApiKey;
-    debugPrint('[clinical_guides DEBUG] apiKey(10)=${apiKey.substring(0, apiKey.length.clamp(0, 10))}...');
+    if (kDebugMode) {
+      // ORDEM 50 M3: apiKey probe gated to kDebugMode
+      debugPrint('[clinical_guides DEBUG] apiKey(10)=${apiKey.substring(0, apiKey.length.clamp(0, 10))}...');
+    }
 
     // ── TAREFA 4: confirmar nome exato da coleção usada ──────────────────────
     const targetCollection = 'clinical_guides';
-    debugPrint('[clinical_guides DEBUG] coleção alvo=$targetCollection '
-        '(NÃO é: clinicalGuides, guides, medical_guides, biblioteca_clinica, clinical_library)');
+    if (kDebugMode) {
+      // ORDEM 50 M3: collection name probe gated to kDebugMode
+      debugPrint('[clinical_guides DEBUG] coleção alvo=$targetCollection '
+          '(NÃO é: clinicalGuides, guides, medical_guides, biblioteca_clinica, clinical_library)');
+    }
 
     Future<http.Response> doGet({Map<String, String>? headers, String collection = targetCollection}) {
       // GET: SOMENTE Authorization — nunca Content-Type nem X-Firebase-API-Key
       // (headers customizados causam preflight CORS que Firestore rejeita)
       final hdrs = <String, String>{...authHeaders, ...?headers};
       final url = '$_fsBase/$collection?pageSize=200&key=$apiKey';
-      debugPrint('[clinical_guides DEBUG] REST URL=$url');
-      debugPrint('[clinical_guides DEBUG] REST headers keys=${hdrs.keys.toList()}');
+      if (kDebugMode) {
+        // ORDEM 50 M3: URL + headers probe gated to kDebugMode
+        debugPrint('[clinical_guides DEBUG] REST URL=$url');
+        debugPrint('[clinical_guides DEBUG] REST headers keys=${hdrs.keys.toList()}');
+      }
       return http
           .get(Uri.parse(url), headers: hdrs)
           .timeout(const Duration(seconds: 12));
     }
 
     List<GuideModel> parseResponse(http.Response resp) {
-      // ── TAREFA 3: logar status e body bruto ──────────────────────────────
-      debugPrint('[clinical_guides DEBUG] REST status=${resp.statusCode}');
-      debugPrint('[clinical_guides DEBUG] REST body=${resp.body.length > 1500 ? resp.body.substring(0, 1500) : resp.body}');
+      if (kDebugMode) {
+        // ORDEM 50 M3: response body probe gated to kDebugMode
+        // ── TAREFA 3: logar status e body bruto ────────────────────────────
+        debugPrint('[clinical_guides DEBUG] REST status=${resp.statusCode}');
+        debugPrint('[clinical_guides DEBUG] REST body=${resp.body.length > 1500 ? resp.body.substring(0, 1500) : resp.body}');
+      }
 
       // safeMap: sem casts diretos — imune a TypeError em dart2js release
       final body      = safeMap(jsonDecode(resp.body));
@@ -2300,7 +2366,10 @@ class FirestoreService {
       final documents = docsList is List ? docsList : const <dynamic>[];
       final totalDocs = documents.length;
 
-      debugPrint('[clinical_guides DEBUG] totalDocs=$totalDocs');
+      if (kDebugMode) {
+        // ORDEM 50 M3: totalDocs probe gated to kDebugMode
+        debugPrint('[clinical_guides DEBUG] totalDocs=$totalDocs');
+      }
 
       final allParsed    = <GuideModel>[];
       final unpublished  = <String>[];
@@ -2316,17 +2385,19 @@ class FirestoreService {
             data['id'] = name.isNotEmpty ? name.split('/').last : '';
           }
 
-          // LOG amostra dos campos-chave de cada documento para diagnóstico
-          debugPrint(
-            '[clinical_guides DEBUG] sampleData: '
-            'id=${data['id']} '
-            'title=${data['title']} '
-            'pdfUrl=${data['pdfUrl']} '
-            'fileUrl=${data['fileUrl']} '
-            'url=${data['url']} '
-            'isPublished=${data['isPublished']} '
-            'fields=${data.keys.toList()}',
-          );
+          if (kDebugMode) {
+            // ORDEM 50 M3: per-doc sample probe gated to kDebugMode
+            debugPrint(
+              '[clinical_guides DEBUG] sampleData: '
+              'id=${data['id']} '
+              'title=${data['title']} '
+              'pdfUrl=${data['pdfUrl']} '
+              'fileUrl=${data['fileUrl']} '
+              'url=${data['url']} '
+              'isPublished=${data['isPublished']} '
+              'fields=${data.keys.toList()}',
+            );
+          }
 
           final guide = GuideModel.fromJson(data);
           allParsed.add(guide);
@@ -2340,14 +2411,20 @@ class FirestoreService {
       }
 
       final publishedGuides = allParsed.where((g) => g.isPublished).toList();
-      debugPrint('[clinical_guides DEBUG] parsed=${allParsed.length}');
-      debugPrint('[clinical_guides DEBUG] published=${publishedGuides.length}');
-      if (unpublished.isNotEmpty) {
-        debugPrint('[clinical_guides DEBUG] unpublished: $unpublished');
+      if (kDebugMode) {
+        // ORDEM 50 M3: final counts probe gated to kDebugMode
+        debugPrint('[clinical_guides DEBUG] parsed=${allParsed.length}');
+        debugPrint('[clinical_guides DEBUG] published=${publishedGuides.length}');
+        if (unpublished.isNotEmpty) {
+          debugPrint('[clinical_guides DEBUG] unpublished: $unpublished');
+        }
       }
 
       final normalized = _normalizeGuides(publishedGuides);
-      debugPrint('[clinical_guides DEBUG] validPdfTitle=${normalized.length}');
+      if (kDebugMode) {
+        // ORDEM 50 M3: normalized count probe gated to kDebugMode
+        debugPrint('[clinical_guides DEBUG] validPdfTitle=${normalized.length}');
+      }
       return normalized;
     }
 
@@ -2363,10 +2440,16 @@ class FirestoreService {
         try {
           if (kIsWeb) {
             refreshedToken = await AuthService.getAdminToken();
-            debugPrint('[WEB_AUTH] source=REST token=${(refreshedToken).isNotEmpty} endpoint=clinical_guides (retry)');
+            if (kDebugMode) {
+              // ORDEM 50 M3: retry auth probe gated to kDebugMode
+              debugPrint('[WEB_AUTH] source=REST token=${(refreshedToken).isNotEmpty} endpoint=clinical_guides (retry)');
+            }
           } else {
             refreshedToken = await FirebaseAuth.instance.currentUser?.getIdToken(true);
-            debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=clinical_guides (retry)');
+            if (kDebugMode) {
+              // ORDEM 50 M3: retry auth probe gated to kDebugMode
+              debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=clinical_guides (retry)');
+            }
           }
         } catch (_) {}
         final retryHeaders = (refreshedToken != null && refreshedToken.isNotEmpty)
@@ -2381,8 +2464,11 @@ class FirestoreService {
 
       if (resp.statusCode != 200) {
         // ── LOG COMPLETO DO ERRO ─────────────────────────────────────────────
-        debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR status=${resp.statusCode}');
-        debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR BODY: ${resp.body}');
+        if (kDebugMode) {
+          // ORDEM 50 M3: error detail probes gated to kDebugMode
+          debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR status=${resp.statusCode}');
+          debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR BODY: ${resp.body}');
+        }
         // Diagnóstico do tipo de 403:
         // - "Missing or insufficient permissions" → Firestore Rules negando acesso
         // - "UNAUTHENTICATED"                    → token ausente ou expirado
@@ -2407,32 +2493,36 @@ class FirestoreService {
       // ── TAREFA 5 & 6: clinical_guides vazia → probe coleções alternativas ──
       // Dispara apenas quando a coleção principal retornou 0 documentos.
       // Ordem de tentativa conforme especificado.
-      debugPrint('[clinical_guides DEBUG] clinical_guides vazia — iniciando probe de coleções alternativas');
-      const altCollections = [
-        'guides',
-        'medical_guides',
-        'biblioteca_clinica',
-        'clinical_library',
-      ];
-      for (final altCol in altCollections) {
-        try {
-          debugPrint('[clinical_guides DEBUG] probe: tentando coleção=$altCol');
-          final altResp = await doGet(collection: altCol)
-              .timeout(const Duration(seconds: 8));
-          debugPrint('[clinical_guides DEBUG] probe: $altCol status=${altResp.statusCode}');
-          if (altResp.statusCode == 200) {
-            final altBody = safeMap(jsonDecode(altResp.body));
-            final altDocs = altBody['documents'];
-            final altCount = altDocs is List ? altDocs.length : 0;
-            if (altCount > 0) {
-              // ── TAREFA 6: logar coleção encontrada ──────────────────────
-              debugPrint('[clinical_guides DEBUG] coleção encontrada: $altCol totalDocs=$altCount');
-            } else {
-              debugPrint('[clinical_guides DEBUG] probe: $altCol retornou 0 docs');
+      // ORDEM 50 M3: alt-collection probe block gated to kDebugMode —
+      // evita 4 queries Firestore extras em release/produção.
+      if (kDebugMode) {
+        debugPrint('[clinical_guides DEBUG] clinical_guides vazia — iniciando probe de coleções alternativas');
+        const altCollections = [
+          'guides',
+          'medical_guides',
+          'biblioteca_clinica',
+          'clinical_library',
+        ];
+        for (final altCol in altCollections) {
+          try {
+            debugPrint('[clinical_guides DEBUG] probe: tentando coleção=$altCol');
+            final altResp = await doGet(collection: altCol)
+                .timeout(const Duration(seconds: 8));
+            debugPrint('[clinical_guides DEBUG] probe: $altCol status=${altResp.statusCode}');
+            if (altResp.statusCode == 200) {
+              final altBody = safeMap(jsonDecode(altResp.body));
+              final altDocs = altBody['documents'];
+              final altCount = altDocs is List ? altDocs.length : 0;
+              if (altCount > 0) {
+                // ── TAREFA 6: logar coleção encontrada ────────────────────
+                debugPrint('[clinical_guides DEBUG] coleção encontrada: $altCol totalDocs=$altCount');
+              } else {
+                debugPrint('[clinical_guides DEBUG] probe: $altCol retornou 0 docs');
+              }
             }
+          } catch (e) {
+            debugPrint('[clinical_guides DEBUG] probe: $altCol erro=$e');
           }
-        } catch (e) {
-          debugPrint('[clinical_guides DEBUG] probe: $altCol erro=$e');
         }
       }
 
@@ -2464,6 +2554,13 @@ class FirestoreService {
   }
 
   static Future<List<GuideModel>> loadPublishedGuides({bool forceRemote = false}) async {
+    // ORDEM 50 M3: Auth guard — suprime requests Firestore antes da barreira
+    // de auth transposta, eliminando spam de 403 "permission-denied" no console.
+    if (!_isUserAuthenticated) {
+      _debugGuides('ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier');
+      return const <GuideModel>[];
+    }
+
     final cached = await loadCachedPublishedGuides();
     _debugGuides(
       'loadPublishedGuides start forceRemote=$forceRemote kIsWeb=$kIsWeb cached=${cached.length}',
