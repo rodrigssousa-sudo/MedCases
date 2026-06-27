@@ -339,6 +339,12 @@ class _AiScreenState extends State<AiScreen> {
   int _lastChunkRenderMs = 0;
   // Sentinela no fim da lista — Scrollable.ensureVisible garante layout calculado
   final _bottomKey = GlobalKey();
+
+  // ORDEM 54 M2: chave de epoch do chat — incrementada no context timeout para
+  // invalidar completamente o cache gráfico do Flutter Web e forçar rebuild zero.
+  // ValueKey(_chatEpoch) no ListView.builder garante que o Flutter descarte a
+  // árvore antiga e redesenhe do absoluto zero, eliminando o Stale UI.
+  int _chatEpoch = 0;
   // Histórico de sessões de chat (até 10)
   final List<_ChatSession> _chatHistory = [];
   static const _kHistKey = 'medcases_ia_chat_history_v1';
@@ -796,7 +802,11 @@ class _AiScreenState extends State<AiScreen> {
     }
 
     // 2. Hard reset de UI + IDs de sessão + estado interno
+    // ORDEM 54 M2: _chatEpoch++ invalida o ValueKey do ListView.builder,
+    // forçando o Flutter a descartar a árvore gráfica antiga e redesenhar
+    // do zero — elimina o Stale UI no Flutter Web após context timeout.
     setState(() {
+      _chatEpoch++;          // força rebuild completo da árvore de chat
       _messages.clear();
       _greetingDone = false;
       _restoredSessionId = null;
@@ -2138,6 +2148,10 @@ class _AiScreenState extends State<AiScreen> {
     final bool forceDisconnectedLabel = !isPrivilegedUser && !isConnected;
 
     Widget chatList = ListView.builder(
+            // ORDEM 54 M2: ValueKey(_chatEpoch) — quando _chatEpoch é incrementado
+            // pelo context timeout, o Flutter descarta a árvore de widgets antiga
+            // e reconstrói do zero (zero Stale UI no Flutter Web).
+            key: ValueKey(_chatEpoch),
             controller: _scrollCtrl,
             // BUILD 283 ORDEM 10.5: mobile padding 12→16 para respiração lateral
             padding: EdgeInsets.fromLTRB(
@@ -4674,8 +4688,8 @@ String _antibulaNormalize(String raw, String lang) {
           .replaceFirst(RegExp(r'^[🔵📋🏥💡📌⚕️]\s+'), '')
           .trim();
       if (cleaned.isNotEmpty && cleaned.length > 3) {
-        // Converte para caixa baixa exceto primeira palavra e acrônimos
-        result.add('🟥 ${cleaned.toUpperCase()}');
+        // ORDEM 54 M3: preserva sentence case — toUpperCase() removido
+        result.add('🟥 $cleaned');
         titleConverted = true;
         continue;
       }
@@ -5895,21 +5909,11 @@ class _AiBlockBubble extends StatelessWidget {
               const SizedBox(width: 6),
               // ORDEM 17 — contraste dinâmico: ciano no dark, grafite no light
               // ORDEM 52 M3: barra 4px removida — identidade visual via emoji 🟥
+              // ORDEM 54 M3: toUpperCase() removido — preserva sentence case da IA.
+              // Ultra-Plantão Build 260 já entrega títulos formatados; forçar caps
+              // contradizia o formato das matrizes (regressão tipográfica).
               Expanded(child: Text(
-                // ORDEM 48 M1: caps condicional — síndrome pura → caps; conduta clínica → sentence case.
-                () {
-                  final raw = label.isEmpty ? trimmed : label;
-                  // ORDEM 50 M1: trimLeft() antes do startsWith() —
-                  // espaços/newlines iniciais mascaravam o emoji clínico
-                  // forçando toUpperCase() indevido (regressão tipográfica).
-                  final rawClean = raw.trimLeft();
-                  final startsWithClinic = rawClean.startsWith('🚨') ||
-                      rawClean.startsWith('💊') ||
-                      rawClean.startsWith('⛔') ||
-                      rawClean.startsWith('📌') ||
-                      rawClean.startsWith('⚠️');
-                  return startsWithClinic ? raw : raw.toUpperCase();
-                }(),
+                label.isEmpty ? trimmed : label,
                 style: TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.w800,
@@ -6118,7 +6122,9 @@ class _PlantaoRenderer extends StatelessWidget {
     return safe.join('\n').trim();
   }
 
-  // ── Constrói uma linha de bloco com barra semântica lateral ──────────────
+  // ── Constrói uma linha de bloco — ORDEM 54 M3: sem barra lateral ────────
+  // Barras laterais coloridas removidas definitivamente. Identidade visual
+  // agora é exclusivamente via emojis (🟥/💊/⛔/📌/⚠️/✅ etc.).
   Widget _buildBlock({
     required String emoji,
     required String text,
@@ -6133,37 +6139,15 @@ class _PlantaoRenderer extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Barra semântica lateral
-            Container(
-              width: 3,
-              decoration: BoxDecoration(
-                color: barColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
+      child: isChip
+          ? _buildChip(emoji: emoji, text: safeContent, color: barColor)
+          : _buildContent(
+              emoji: emoji,
+              text: safeContent,
+              emojiColor: emojiColor,
+              textColor: textColor,
+              isHeader: isHeader,
             ),
-            const SizedBox(width: 10),
-            // Conteúdo
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: isChip
-                    ? _buildChip(emoji: emoji, text: safeContent, color: barColor)
-                    : _buildContent(
-                        emoji: emoji,
-                        text: safeContent,
-                        emojiColor: emojiColor,
-                        textColor: textColor,
-                        isHeader: isHeader,
-                      ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -6181,18 +6165,10 @@ class _PlantaoRenderer extends StatelessWidget {
       final kHeaderTextColor = dark
           ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
           : const Color(0xFF1A1A1A);  // grafite denso — contraste 18:1 sobre fundo claro
-      // ORDEM 48 M1: toUpperCase() condicional no header do PlantaoRenderer.
-      // Síndrome pura (🟥) → caps para hierarquia visual (M2: permitido).
-      // Blocos de conduta (🚨/💊/⛔/📌) → sentence case da IA preservado.
-      // ORDEM 50 M1: trimLeft() antes do startsWith() — strings da API podem
-      // chegar com espaços/newlines iniciais que mascaravam o emoji e
-      // forçavam o fallback para .toUpperCase() (regressão tipográfica).
-      final cleanTextForHeader = text.trimLeft();
-      final isCondutaEmoji = cleanTextForHeader.startsWith('🚨') ||
-          cleanTextForHeader.startsWith('💊') ||
-          cleanTextForHeader.startsWith('⛔') ||
-          cleanTextForHeader.startsWith('📌');
-      final headerDisplayText = isCondutaEmoji ? text : text.toUpperCase();
+      // ORDEM 54 M3: toUpperCase() removido — preserva sentence case da IA.
+      // Ultra-Plantão Build 260 já entrega títulos formatados corretamente;
+      // forçar caps era regressão tipográfica que contradizia o formato da Matriz.
+      final headerDisplayText = text;
       return RichText(
         text: TextSpan(
           children: [
@@ -6532,25 +6508,14 @@ class _PlantaoFallbackCard extends StatelessWidget {
     // Extract first line as header, rest as body
     final allLines = text.trim().split('\n');
     final headerRaw = allLines.isNotEmpty ? allLines.first.trim() : '';
-    // ORDEM 48 M1: headerText capitalização condicional.
-    // Síndrome pura (🟥 stripped ou texto direto) → toUpperCase() [M2: permitido].
-    // Blocos de conduta clínica (🚨/💊/⛔/📌/⚠️) → preservar sentence case da IA.
-    // ORDEM 50 M1: trimLeft() antes do startsWith() — API pode entregar strings com
-    // espaços/newlines iniciais que mascaravam o emoji e ativavam toUpperCase() errado.
-    final headerRawClean = headerRaw.trimLeft();
-    final headerIsCondutaBlock = headerRawClean.startsWith('🚨') ||
-        headerRawClean.startsWith('💊') ||
-        headerRawClean.startsWith('⛔') ||
-        headerRawClean.startsWith('📌') ||
-        headerRawClean.startsWith('⚠️');
-    final headerText = headerIsCondutaBlock
-        ? headerRaw  // preserva sentence case da IA — NUNCA toUpperCase() em conduta clínica
-        : headerRaw
-            .replaceFirst(RegExp(r'^🟥\s*'), '')
-            .replaceFirst(RegExp(r'^#{1,3}\s*'), '')
-            .replaceFirst(RegExp(r'^[🔵📋🏥💡⚕️]\s*'), '')
-            .trim()
-            .toUpperCase(); // síndrome pura — caps OK per M2
+    // ORDEM 54 M3: toUpperCase() removido — preserva sentence case da IA.
+    // Ultra-Plantão Build 260 já entrega títulos formatados corretamente;
+    // forçar caps era regressão tipográfica que contradizia o formato das Matrizes.
+    final headerText = headerRaw
+        .replaceFirst(RegExp(r'^🟥\s*'), '')
+        .replaceFirst(RegExp(r'^#{1,3}\s*'), '')
+        .replaceFirst(RegExp(r'^[🔵📋🏥💡⚕️]\s*'), '')
+        .trim();
     final bodyLines = allLines.length > 1 ? allLines.sublist(1) : <String>[];
     final bodyText = bodyLines
         .where((l) => l.trim().isNotEmpty)

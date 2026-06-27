@@ -662,22 +662,54 @@ class AiGatewayService {
     //
     // Substitui PlantaoIntentClassifier.classify() (Build 224) com engine multidimensional.
     // PlantaoIntentClassifier permanece no pipeline como shim de retrocompatibilidade.
+    //
+    // ORDEM 54 M1: a cláusula de supremacia (AUTORIDADE MÁXIMA / USE EXCLUSIVAMENTE
+    // A MATRIZ N) só é injetada no 1º turno (history vazio). Em turnos de follow-up
+    // (history.isNotEmpty), substituímos por instrução de liberdade conversacional
+    // para que a IA responda de forma direta e pontual sem re-enunciar a Matriz inteira.
     String intentMandate = '';
+    final bool isFollowUpTurn = history.isNotEmpty; // ORDEM 54 M1: turno de acompanhamento
     if (!longResponse) {
       // Engine multidimensional: 100% local, zero IA, zero rede, zero latência
       final queryAnalysis = PlantaoIntentEngine.analyze(userMessage);
-      intentMandate = PlantaoIntentEngine.buildIntentMandateV2(queryAnalysis, resolvedLang);
 
-      if (kDebugMode) {
-        debugPrint('[AI_ROUTER][Build225] '
-            'topic=${queryAnalysis.clinicalTopic} '
-            'subtitle="${queryAnalysis.clinicalSubtitle}" '
-            'primaryIntent=${queryAnalysis.primaryIntent.name} '
-            'secondaryIntent=${queryAnalysis.secondaryIntent?.name ?? "none"} '
-            'context=${queryAnalysis.clinicalContext.name} '
-            'complexity=${queryAnalysis.complexity.name} '
-            'confidence=${queryAnalysis.confidence.toStringAsFixed(2)} '
-            '| intentMandate=${intentMandate.length} chars → system_instruction only');
+      if (isFollowUpTurn) {
+        // ORDEM 54 M1: turno de follow-up — libera a IA das amarras da Matriz.
+        // A IA JÁ conhece o contexto clínico pelo histórico; exigir re-enunciação
+        // da Matriz inteira gera resposta engessada e verbosa.
+        intentMandate = resolvedLang == 'es'
+            ? 'TURNO DE SEGUIMIENTO:\n'
+                'El médico está continuando la misma consulta clínica.\n'
+                'ESTÁS COMPLETAMENTE LIBERADO de las estructuras fijas de las 22 Matrices de Emojis.\n'
+                'Responde la duda puntual del médico de forma directa, breve y precisa.\n'
+                'Usa texto clínico limpio, sin 🟥/💊/⛔/📌 salvo que el contexto los exija naturalmente.\n'
+                'Prioridad: velocidad, precisión, concisión. Sin repetir diagnóstico anterior.'
+            : 'TURNO DE ACOMPANHAMENTO:\n'
+                'O médico está continuando a mesma consulta clínica.\n'
+                'VOCÊ ESTÁ COMPLETAMENTE LIBERADO das amarras e estruturas fixas das 22 Matrizes de Emojis.\n'
+                'Responda a dúvida pontual do médico de forma direta, curta e precisa.\n'
+                'Use texto clínico limpo, sem 🟥/💊/⛔/📌 salvo se o contexto exigir naturalmente.\n'
+                'Prioridade: velocidade, precisão, concisão. Sem re-enunciar diagnóstico anterior.';
+
+        if (kDebugMode) {
+          debugPrint('[AI_ROUTER][O54_M1] follow-up turn → liberty mandate injected '
+              'historyLen=${history.length}');
+        }
+      } else {
+        // 1º turno (history vazio) — injeta mandato de matriz com supremacia
+        intentMandate = PlantaoIntentEngine.buildIntentMandateV2(queryAnalysis, resolvedLang);
+
+        if (kDebugMode) {
+          debugPrint('[AI_ROUTER][Build225] '
+              'topic=${queryAnalysis.clinicalTopic} '
+              'subtitle="${queryAnalysis.clinicalSubtitle}" '
+              'primaryIntent=${queryAnalysis.primaryIntent.name} '
+              'secondaryIntent=${queryAnalysis.secondaryIntent?.name ?? "none"} '
+              'context=${queryAnalysis.clinicalContext.name} '
+              'complexity=${queryAnalysis.complexity.name} '
+              'confidence=${queryAnalysis.confidence.toStringAsFixed(2)} '
+              '| intentMandate=${intentMandate.length} chars → system_instruction only');
+        }
       }
     }
 
