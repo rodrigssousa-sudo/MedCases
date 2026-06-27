@@ -214,14 +214,14 @@ class _HomeScreenState extends State<HomeScreen> {
         // ── Build 138: CALCULADORA E FÁRMACOS — card unificado full-width ─
         if (kIsWeb) ...[
           _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),  // ORDEM 43: 16→12 gap vertical compacto
         ],
 
         // ── Grid de cards principais — 3 colunas no desktop ─────────────
         // BUILD 93: apenas Web exibe ferramentas clínicas (Apple 1.4.1)
         if (kIsWeb) LayoutBuilder(builder: (context, constraints) {
           const cols   = 3;
-          const gap    = 14.0;
+          const gap    = 12.0;  // ORDEM 43: 14→12 crossAxisSpacing premium
           final width  = (constraints.maxWidth - gap * (cols - 1)) / cols;
           final rows   = (mainCards.length / cols).ceil();
 
@@ -265,9 +265,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // BUILD 93: seção 2 colunas (Plantão + Emergências) web-only
         if (kIsWeb) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),  // ORDEM 43: 24→12 vertical gap compacto
           _HomeDivider(dark: dark),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),  // ORDEM 43: 20→12 vertical gap compacto
 
           // ── Layout de 2 colunas: Shortcuts + Emergências ───────────────
           LayoutBuilder(builder: (context, constraints) {
@@ -404,9 +404,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget mobileContent = SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
-          isTabletLandscape ? 20 : 12,
+          isTabletLandscape ? 20 : 16,  // ORDEM 43: 12→16 margem lateral premium
           6,  // ORDEM 12: compactado (era 8)
-          isTabletLandscape ? 20 : 12,
+          isTabletLandscape ? 20 : 16,  // ORDEM 43: 12→16 margem lateral premium
           bottomPad,
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -423,7 +423,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
           _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
-          const SizedBox(height: 8),  // ORDEM 12: compactado
+          const SizedBox(height: 12),  // ORDEM 43: 8→12 gap vertical premium
 
           // ── LINHA 2: ADULTO + PEDIATRÍA — dois cards paralelos ──────────────
           _HomeAdultoPediatriaRow(
@@ -436,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _HomeScreenState._slide(const _PediatricsShell()),
             ),
           ),
-          const SizedBox(height: 8),  // ORDEM 12: compactado
+          const SizedBox(height: 12),  // ORDEM 43: 8→12 gap vertical premium
 
           // ── LINHA 3: BIBLIOTECA + H. CLÍNICA — dois cards paralelos ─────────
           _HomeBibliotecaHClinicaRow(
@@ -444,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
             isEs: isEs,
             onTabChange: widget.onTabChange,
           ),
-          const SizedBox(height: 8),  // ORDEM 12: compactado
+          const SizedBox(height: 12),  // ORDEM 43: 8→12 gap vertical premium
 
           // ── QUICK ACCESS BAR — BUSCAR | NOTAS | RECIENTES | FAVORITOS | EVAL ─
           _HistorialCompactCard(
@@ -2685,7 +2685,7 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
         dark: dark,
         onTap: onTapAdulto,
       )),
-      const SizedBox(width: 10),
+      const SizedBox(width: 12),  // ORDEM 43: 10→12 gap horizontal cards
       // B144: Azul Petróleo — dark teal elegante, nunca chega ao ciano
       Expanded(child: _AgeCard(
         icon: Icons.child_care_rounded,
@@ -2874,7 +2874,7 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
       child: ScaleTransition(
         scale: _scale,
         child: Container(
-          height: 84,  // ORDEM 12: altura slim (era 92)
+          height: 92,  // ORDEM 43: +10% altura premium (84×1.10=92.4→92)
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -2996,7 +2996,7 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
         scale: _scale,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),  // ORDEM 12: slim
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),  // ORDEM 43: 14→16 (+14% impacto visual ≈ 108%)
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
@@ -3082,7 +3082,7 @@ class _HomeBibliotecaHClinicaRow extends StatelessWidget {
         dark: dark,
         onTap: () => onTabChange(5),
       )),
-      const SizedBox(width: 10),
+      const SizedBox(width: 12),  // ORDEM 43: 10→12 gap horizontal cards
       // ── H. CLÍNICA — B141: Orange Vibrant #ea580c → #fb923c ─────────────
       Expanded(child: _AgeCard(
         icon: Icons.assignment_ind_outlined,
@@ -4667,7 +4667,7 @@ class _HomeCardState extends State<_HomeCard>
         scale: _scale,
         child: Container(
           width: double.infinity,
-          height: 92,
+          height: 101,  // ORDEM 43: 92→101 (+10% proporção premium)
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             gradient: LinearGradient(
