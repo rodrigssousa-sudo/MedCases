@@ -180,6 +180,28 @@ class ProviderRouterService {
     final isPlantao = mode == 'plantao';
     final histCap = isPlantao ? 4 : 8;  // BUILD 261: 4 para Plantão, 8 para Estudo
     final recentHistory = history.length > histCap ? history.sublist(history.length - histCap) : history;
+
+    // ORDEM 42: chaves de engine explícitas no payload para forçar o desvio
+    // correto de modelo no geminiPaidProxy.
+    //
+    // CAUSA RAIZ DETECTADA: o Cloud Function ignorava a chave 'mode' do cliente
+    // e forçava execução em gemini-2.5-flash independente do modo solicitado.
+    // O Flash aplicava o anticorpo da Ordem 32 (template Plantão) mesmo no
+    // Modo Estudo — matando o output acadêmico de 2500 tokens.
+    //
+    // SOLUÇÃO: três chaves redundantes de override para máxima robustez:
+    //   'model'      → nome canônico do modelo (lido diretamente pelo proxy)
+    //   'model_tier' → tag de segurança ('speed'|'pro') como bypass de tier
+    //   'temperature'→ temperatura correta por modo (0.2 Plantão / 0.4 Estudo)
+    //
+    // O servidor lê 'model' como override prioritário antes de aplicar seu
+    // mapeamento interno de mode→model. Se 'model' estiver presente e válido,
+    // o proxy deve usá-lo diretamente. 'model_tier' e 'temperature' são sinais
+    // secundários de confirmação para proxies que não lêem 'model' diretamente.
+    final _activeModel      = isPlantao ? 'gemini-2.5-flash' : 'gemini-2.5-pro';
+    final _activeModelTier  = isPlantao ? 'speed' : 'pro';
+    final _activeTemp       = isPlantao ? 0.2 : 0.4;
+
     final payload = {
       'userMessage':     userMessage,
       'systemPrompt':    systemPrompt,
@@ -188,7 +210,19 @@ class ProviderRouterService {
       'lang':            lang,
       'requestId':       requestId,
       'maxOutputTokens': maxOutputTokens,  // BUILD 261: forwarded to Cloud Function
+      // ORDEM 42: engine override keys — forçam o modelo correto server-side
+      'model':           _activeModel,      // override direto de modelo
+      'model_tier':      _activeModelTier,  // tag de tier ('speed'|'pro')
+      'temperature':     _activeTemp,       // temperatura por modo
     };
+
+    if (kDebugMode) {
+      debugPrint('[ORDEM42_PAYLOAD] mode=$mode '
+          'model=$_activeModel '
+          'model_tier=$_activeModelTier '
+          'temperature=$_activeTemp '
+          'maxOutputTokens=$maxOutputTokens');
+    }
 
     final inputTokensApprox = (jsonEncode(payload).length / 4).ceil();
 

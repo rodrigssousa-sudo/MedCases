@@ -45240,22 +45240,22 @@ aVX:function aVX(a){this.a=a},
 cba(a){if(B.e4K.k(0,a))return!1
 return B.e3F.k(0,a)},
 zF(a,b,c,d,e,f,g){return A.cb9(a,b,c,d,e,f,g)},
-cb9(b0,b1,b2,b3,b4,b5,b6){var s=0,r=A.C(t.lg),q,p=2,o=[],n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9
-var $async$zF=A.y(function(b8,b9){if(b8===1){o.push(b9)
-s=p}while(true)switch(s){case 0:a6=Date.now()
-a7=null
+cb9(b4,b5,b6,b7,b8,b9,c0){var s=0,r=A.C(t.lg),q,p=2,o=[],n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3
+var $async$zF=A.y(function(c2,c3){if(c2===1){o.push(c3)
+s=p}while(true)switch(s){case 0:b0=Date.now()
+b1=null
 p=4
 s=7
 return A.n(A.fK(),$async$zF)
-case 7:a7=b9
-A.a0().$1("[WEB_AUTH] source=REST token="+(J.ar(a7)!==0)+" endpoint=geminiPaidProxy")
+case 7:b1=c3
+A.a0().$1("[WEB_AUTH] source=REST token="+(J.ar(b1)!==0)+" endpoint=geminiPaidProxy")
 p=2
 s=6
 break
 case 4:p=3
-a8=o.pop()
-n=A.ag(a8)
-A.a0().$1("[PAID_PROXY] requestId="+b4+" token_error="+A.t(n))
+b2=o.pop()
+n=A.ag(b2)
+A.a0().$1("[PAID_PROXY] requestId="+b8+" token_error="+A.t(n))
 q=new A.mj("",!1,"token_error","",0)
 s=1
 break
@@ -45263,82 +45263,86 @@ s=6
 break
 case 3:s=2
 break
-case 6:if(J.ar(a7)===0){A.a0().$1("[PAID_PROXY] requestId="+b4+" error=unauthenticated (token REST vazio)")
+case 6:if(J.ar(b1)===0){A.a0().$1("[PAID_PROXY] requestId="+b8+" error=unauthenticated (token REST vazio)")
 q=new A.mj("",!1,"unauthenticated","",0)
 s=1
-break}d=b3==="plantao"?4:8
-c=b0.length
-b=c>d?B.d.fN(b0,c-d):b0
-c=t.N
-m=A.U(["userMessage",b6,"systemPrompt",b5,"history",b,"mode",b3,"lang",b1,"requestId",b4,"maxOutputTokens",b2],c,t.K)
-a=B.q.i0(B.ao.eg(m,null).length/4)
-a0=""+a
-A.e0("[PAYLOAD_AUDIT] requestId="+b4+" mode="+b3+" historyEntries="+b.length+" userMsgLen="+b6.length+" systemPromptLen="+b5.length+" inputTokensApprox="+a0)
-if(a>5000)A.e0("[PAYLOAD_AUDIT] \u26a0\ufe0f  ALERTA: payload acima de 5000 tokens (inputTokensApprox="+a0+") \u2014 risco de truncamento no proxy. historyEntries="+b.length+" requestId="+b4)
+break}d=b7==="plantao"
+c=d?4:8
+b=b4.length
+a=b>c?B.d.fN(b4,b-c):b4
+a0=d?"gemini-2.5-flash":"gemini-2.5-pro"
+a1=d?"speed":"pro"
+a2=d?0.2:0.4
+b=t.N
+m=A.U(["userMessage",c0,"systemPrompt",b9,"history",a,"mode",b7,"lang",b5,"requestId",b8,"maxOutputTokens",b6,"model",a0,"model_tier",a1,"temperature",a2],b,t.K)
+a3=B.q.i0(B.ao.eg(m,null).length/4)
+a4=""+a3
+A.e0("[PAYLOAD_AUDIT] requestId="+b8+" mode="+b7+" historyEntries="+a.length+" userMsgLen="+c0.length+" systemPromptLen="+b9.length+" inputTokensApprox="+a4)
+if(a3>5000)A.e0("[PAYLOAD_AUDIT] \u26a0\ufe0f  ALERTA: payload acima de 5000 tokens (inputTokensApprox="+a4+") \u2014 risco de truncamento no proxy. historyEntries="+a.length+" requestId="+b8)
 l=null
 p=9
-a1=A.cr("https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy",0,null)
-c=A.U(["Content-Type","application/json","Authorization","Bearer "+A.t(a7)],c,c)
+a5=A.cr("https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy",0,null)
+b=A.U(["Content-Type","application/json","Authorization","Bearer "+A.t(b1)],b,b)
 s=12
-return A.n(A.qv(a1,B.ao.eg(m,null),c).dP(0,B.tv),$async$zF)
-case 12:l=b9
+return A.n(A.qv(a5,B.ao.eg(m,null),b).dP(0,B.tv),$async$zF)
+case 12:l=c3
 p=2
 s=11
 break
 case 9:p=8
-a9=o.pop()
-c=A.ag(a9)
-if(c instanceof A.pY){k=Date.now()-a6
-A.a0().$1("[PAID_PROXY] requestId="+b4+" success=false status=timeout durationMs="+A.t(k))
+b3=o.pop()
+b=A.ag(b3)
+if(b instanceof A.pY){k=Date.now()-b0
+A.a0().$1("[PAID_PROXY] requestId="+b8+" success=false status=timeout durationMs="+A.t(k))
 q=new A.mj("",!1,"proxy_timeout","",0)
 s=1
-break}else{j=c
-c=Date.now()
-i=c-a6
-A.a0().$1("[PAID_PROXY] requestId="+b4+" success=false status=network_error durationMs="+A.t(i)+" error="+A.t(j))
+break}else{j=b
+b=Date.now()
+i=b-b0
+A.a0().$1("[PAID_PROXY] requestId="+b8+" success=false status=network_error durationMs="+A.t(i)+" error="+A.t(j))
 q=new A.mj("",!1,"proxy_network_error","",0)
 s=1
 break}s=11
 break
 case 8:s=2
 break
-case 11:k=Date.now()-a6
-if(l.b===429){A.a0().$1("[BUDGET_GUARD] allowed=false reason=paid_budget_guard_triggered requestId="+b4)
+case 11:k=Date.now()-b0
+if(l.b===429){A.a0().$1("[BUDGET_GUARD] allowed=false reason=paid_budget_guard_triggered requestId="+b8)
 q=new A.mj("",!1,"paid_budget_guard_triggered","",0)
 s=1
-break}if(l.b===503){A.a0().$1("[PAID_PROXY] requestId="+b4+" success=false status=paid_fallback_disabled")
+break}if(l.b===503){A.a0().$1("[PAID_PROXY] requestId="+b8+" success=false status=paid_fallback_disabled")
 q=new A.mj("",!1,"paid_fallback_disabled","",0)
 s=1
 break}if(l.b!==200){h="proxy_error_"+l.b
-try{c=l
-g=t.a.a(B.ao.dA(0,A.dj(A.di(c.e)).ci(0,c.w),null))
-c=J.X(g,"error")
-a2=c==null?null:J.aE(c)
-h=a2==null?h:a2}catch(b7){}A.a0().$1("[PAID_PROXY] requestId="+b4+" success=false status="+l.b+" error="+A.t(h)+" durationMs="+A.t(k))
+try{b=l
+g=t.a.a(B.ao.dA(0,A.dj(A.di(b.e)).ci(0,b.w),null))
+b=J.X(g,"error")
+a6=b==null?null:J.aE(b)
+h=a6==null?h:a6}catch(c1){}A.a0().$1("[PAID_PROXY] requestId="+b8+" success=false status="+l.b+" error="+A.t(h)+" durationMs="+A.t(k))
 q=new A.mj("",!1,h,"",0)
 s=1
 break}f=null
-try{c=l
-f=t.a.a(B.ao.dA(0,A.dj(A.di(c.e)).ci(0,c.w),null))}catch(b7){A.a0().$1("[PAID_PROXY] requestId="+b4+" success=false status=parse_error")
+try{b=l
+f=t.a.a(B.ao.dA(0,A.dj(A.di(b.e)).ci(0,b.w),null))}catch(c1){A.a0().$1("[PAID_PROXY] requestId="+b8+" success=false status=parse_error")
 q=new A.mj("",!1,"parse_error","",0)
 s=1
-break}c=J.X(f,"text")
-a3=c==null?null:J.aE(c)
-if(a3==null)a3=""
-c=J.X(f,"model")
-a4=c==null?null:J.aE(c)
-if(a4==null)a4=""
-c=A.av1(J.X(f,"outputTokensApprox"))
-a5=c==null?null:B.q.dw(c)
-if(a5==null)a5=B.q.i0(a3.length/4)
-if(a3.length===0){A.a0().$1("[PAID_PROXY] requestId="+b4+" success=false status=empty_response")
+break}b=J.X(f,"text")
+a7=b==null?null:J.aE(b)
+if(a7==null)a7=""
+b=J.X(f,"model")
+a8=b==null?null:J.aE(b)
+if(a8==null)a8=""
+b=A.av1(J.X(f,"outputTokensApprox"))
+a9=b==null?null:B.q.dw(b)
+if(a9==null)a9=B.q.i0(a7.length/4)
+if(a7.length===0){A.a0().$1("[PAID_PROXY] requestId="+b8+" success=false status=empty_response")
 q=new A.mj("",!1,"empty_response","",0)
 s=1
-break}c=""+a5
-a1=A.t(k)
-A.a0().$1("[PAID_PROXY] requestId="+b4+" success=true status=200 model="+a4+" inputTokensApprox="+a0+" outputTokensApprox="+c+" durationMs="+a1)
-A.a0().$1("[PROVIDER_ROUTER] requestId="+b4+" mode="+b3+" primary=gemini_free fallback=gemini_paid usedProvider=gemini_paid status=success inputTokensApprox="+a0+" outputTokensApprox="+c+" durationMs="+a1)
-q=new A.mj(a3,!0,null,a4,k)
+break}b=""+a9
+a5=A.t(k)
+A.a0().$1("[PAID_PROXY] requestId="+b8+" success=true status=200 model="+a8+" inputTokensApprox="+a4+" outputTokensApprox="+b+" durationMs="+a5)
+A.a0().$1("[PROVIDER_ROUTER] requestId="+b8+" mode="+b7+" primary=gemini_free fallback=gemini_paid usedProvider=gemini_paid status=success inputTokensApprox="+a4+" outputTokensApprox="+b+" durationMs="+a5)
+q=new A.mj(a7,!0,null,a8,k)
 s=1
 break
 case 1:return A.A(q,r)
