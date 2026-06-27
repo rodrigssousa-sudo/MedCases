@@ -2543,32 +2543,34 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                       });
                     }
                   },
-                  child: Container(
-                    width: 38, height: 38,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(11),
-                      color: const Color(0xFF0C0E12),
-                      border: Border.all(
-                        color: connected
-                            ? const Color(0xFF10B981).withValues(alpha: 0.35)
-                            : const Color(0xFF00E5FF).withValues(alpha: 0.22),
-                        width: 1,
-                      ),
-                    ),
-                    child: Center(
-                      child: connected
-                          ? const _HomeMplusPulse()
-                          : const Text(
-                              'M+',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF00E5FF),
-                                letterSpacing: -0.5,
-                              ),
+                  // SUPER ORDEM MASTER 12 M2: M+ vivo (conectado) ou 'Conectar IA' ciano (desconectado)
+                  // Conectado: M+ verde pulsante em container quadrado escuro
+                  // Desconectado: texto 'Conectar IA' ciano — clicável, sem container quadrado
+                  child: connected
+                      ? Container(
+                          width: 38, height: 38,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(11),
+                            color: const Color(0xFF0C0E12),
+                            border: Border.all(
+                              color: const Color(0xFF10B981).withValues(alpha: 0.35),
+                              width: 1,
                             ),
-                    ),
-                  ),
+                          ),
+                          child: const Center(child: _HomeMplusPulse()),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+                          child: const Text(
+                            'Conectar IA',
+                            style: TextStyle(
+                              fontSize: 13, // SUPER ORDEM MASTER 12 M2: 13px
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF00E5FF),
+                              letterSpacing: -0.1,
+                            ),
+                          ),
+                        ),
                 );
               }),
               const SizedBox(width: 10),

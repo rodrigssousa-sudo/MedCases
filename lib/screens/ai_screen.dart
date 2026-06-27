@@ -2864,10 +2864,10 @@ class _MobileAiActionBar extends StatelessWidget {
                       TextSpan(
                         text: 'MEDCASES',
                         style: TextStyle(
-                          // ORDEM 44 M2: 18→15.5 (−15%) — elegância minimalista
-                          // ORDEM VISUAL 04: adaptive dark/light
+                          // SUPER ORDEM MASTER 12 M1: SEMPRE branco — TopBar é preto absoluto
+                          // em ambos os modos. dark/light adaptive foi removido.
                           fontSize: 15.5, fontWeight: FontWeight.w700,
-                          color: dark ? Colors.white : const Color(0xFF1A1D23),
+                          color: Colors.white, // branco clínico fixo sobre preto 0xFF0C0E12
                           letterSpacing: -0.2,
                         ),
                       ),
@@ -2904,7 +2904,7 @@ class _MobileAiActionBar extends StatelessWidget {
                     : const Text(
                         'Conectar IA',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 13, // SUPER ORDEM MASTER 12 M2: 12→13
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF00E5FF),
                           letterSpacing: -0.2,
@@ -3157,7 +3157,7 @@ class _WaHeader extends StatelessWidget {
                           : const Text(
                               'Conectar IA',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 13, // SUPER ORDEM MASTER 12 M2: 12→13
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF00E5FF),
                                 letterSpacing: -0.2,
@@ -7037,26 +7037,36 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // Avatar + nome + badge
+                // SUPER ORDEM MASTER 12 M3: Logo M+ dourado premium substitui avatar de letra/ícone de cérebro
                 Row(children: [
                   Container(
                     width: 44, height: 44,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: hasAnyAi
-                          ? Colors.white.withValues(alpha: 0.15)
-                          : green.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(13),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF1A1100), Color(0xFF2C1E00)],
+                      ),
+                      border: Border.all(
+                        color: const Color(0xFFD4AF37).withValues(alpha: 0.40),
+                        width: 1.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFD4AF37).withValues(alpha: 0.18),
+                          blurRadius: 10, offset: const Offset(0, 3)),
+                      ],
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
-                        widget.userName.isNotEmpty
-                            ? widget.userName[0].toUpperCase()
-                            : (widget.userEmail.isNotEmpty
-                                ? widget.userEmail[0].toUpperCase()
-                                : '?'),
+                        'M+',
                         style: TextStyle(
-                          fontSize: 19, fontWeight: FontWeight.w800,
-                          color: hasAnyAi ? Colors.white : green),
+                          fontSize: 17,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFD4AF37), // ouro premium
+                          letterSpacing: -0.5,
+                        ),
                       ),
                     ),
                   ),
