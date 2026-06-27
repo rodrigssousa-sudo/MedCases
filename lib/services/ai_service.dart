@@ -1404,6 +1404,19 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             '• GANCHO 📌 OBRIGATORIO na ultima linha: pergunta fechada de decisao clinica (Sim/Nao, A/B). '
             'Ex: "📌 Iniciar **trombólise** ou manter **heparina**?" '
             'PROIBIDO: "📌 Ver protocolo completo."\n'
+            // ORDEM 31: BAD/GOOD de âncoras de formato — IAM como caso de referência
+            '• FORMATO DE ANCORAS (ORDEM 31) — CASO IAM COMO REFERENCIA:\n'
+            '  ERRADO (FORMAT LIVRE — QUEBRA PARSER): "* **CONDUTA INICIAL**: AAS 300mg VO\\n* **DOSE**: Heparina..."\n'
+            '  CERTO (ANCORAS SEMANTICAS — PARSER RECONHECE E FATIA EM CARDS):\n'
+            '    "🟥 IAM COM SUPRA DE ST — CONDUTA IMEDIATA\\n'
+            '💊 CLASSE: Antiagregante plaquetário\\n'
+            '🧠 MECANISMO DE ACAO: inibição COX-1 → bloqueia TXA₂ → antiagregacao\\n'
+            '💉 DOSIS HABITUAL: **AAS 300 mg VO** + **clopidogrel 300 mg** + **heparina 5000 UI IV**\\n'
+            '⛔ CONTRAINDICACIONES: alergia AAS, sangrado activo, plaquetas <50k\\n'
+            '⚠️ EFECTOS ADVERSOS: sangramiento GI, broncoespasmo em asmaticos\\n'
+            '📌 CONDUCTA PRATICA: Iniciar **fibrinolise** ou acionar **hemodinâmica**?"\n'
+            'REGRA: TODA resposta de Plantao em formato farmacologico DEVE usar as 7 ancoras acima. '
+            'A parser NAO reconhece asterisco + negrito (* **CAMPO**) — gera texto bruto sem card.\n'
           : 'DOUTRINA UX MEDCASES:\n'
             '• RESPOSTA = GATILHO INICIAL: so Conduta Direta Seca. Seguimento = botoes dinamicos do front-end. '
             'JAMAIS descreva fluxo de seguimento ou repita monitorização generica.\n'
@@ -1419,7 +1432,20 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             'EXTERMINAR: paragrafos de fisiopatologia, historico do farmaco, resumo conclusivo ("En resumen...").\n'
             '• GANCHO 📌 OBRIGATORIO na ultima linha: pergunta fechada de decisao clinica (Sim/Nao, A/B). '
             'Ex: "📌 Iniciar **trombólise** ou manter **heparina**?" '
-            'PROIBIDO: "📌 Ver protocolo completo."\n';
+            'PROIBIDO: "📌 Ver protocolo completo."\n'
+            // ORDEM 31: BAD/GOOD de âncoras de formato — IAM como caso de referência
+            '• FORMATO DE ÂNCORAS (ORDEM 31) — CASO IAM COMO REFERÊNCIA:\n'
+            '  ERRADO (FORMATO LIVRE — QUEBRA PARSER): "* **CONDUTA INICIAL**: AAS 300mg VO\\n* **DOSE**: Heparina..."\n'
+            '  CERTO (ÂNCORAS SEMÂNTICAS — PARSER RECONHECE E FATIA EM CARTÕES):\n'
+            '    "🟥 IAM COM SUPRA DE ST — CONDUTA IMEDIATA\\n'
+            '💊 CLASSE: Antiagregante plaquetário\\n'
+            '🧠 MECANISMO DE AÇÃO: inibição COX-1 → bloqueia TXA₂ → antiagregação\\n'
+            '💉 DOSE HABITUAL: **AAS 300 mg VO** + **clopidogrel 300 mg** + **heparina 5000 UI IV**\\n'
+            '⛔ CONTRAINDICAÇÕES: alergia AAS, sangramento ativo, plaquetas <50k\\n'
+            '⚠️ EFEITOS ADVERSOS: sangramento GI, broncoespasmo em asmáticos\\n'
+            '📌 CONDUTA PRÁTICA: Iniciar **fibrinólise** ou acionar **hemodinâmica**?"\n'
+            'REGRA: TODA resposta de Plantão em formato farmacológico DEVE usar as 7 âncoras acima. '
+            'O parser NÃO reconhece asterisco + negrito (* **CAMPO**) — gera texto bruto sem cartão.\n';
 
       // ── BUILD 273 + 275 + 275-FIX: STREAM MARKDOWN — COLUMN-0 HARDENED ────────
       // Root-cause: Gemini inserts invisible leading spaces before `*` bullets →
@@ -1441,6 +1467,22 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             '• MAX_TEXT_COMPACT: cada campo/linha do template = MAXIMO 1-2 linhas telegraficas. '
             'PROIBIDO: fisiopatologia didatica, contextualizacao historica, resumo redundante ao final. '
             'Substantivos diretos + verbos de acao. Nada de "Em resumo..." ou "Cabe destacar que...".\n'
+            // ORDEM 31: CONTRATO DE ÂNCORAS SEMÂNTICAS — compatibilidade com parser Flutter
+            '════ REGLA Nº2 — CONTRATO DE ANCORAS SEMANTICAS (ORDEM 31) ════\n'
+            'El parser Flutter de MedCases Pro fatiará los campos en tarjetas de color SOLO si '
+            'usas las anclas exactas con emoji al inicio (columna cero, sin asterisco, sin ##).\n'
+            'ANCLAS OBLIGATORIAS — usar exactamente este formato:\n'
+            '  🟥 [NOMBRE DEL CASO EN MAYUSCULAS] — CONDUTA INMEDIATA\n'
+            '  💊 CLASE: [texto conciso]\n'
+            '  🧠 MECANISMO DE ACCION: [texto conciso]\n'
+            '  💉 DOSIS HABITUAL: [texto conciso]\n'
+            '  ⛔ CONTRAINDICACIONES: [texto conciso]\n'
+            '  ⚠️ EFECTOS ADVERSOS: [texto conciso]\n'
+            '  📌 CONDUCTA PRACTICA: [pregunta clínica cerrada]\n'
+            'TERMINANTEMENTE PROHIBIDO usar formato libre: "* **DOSIS**", "* **CONDUTA**", "## DOSIS" '
+            '— esses formatos nao sao reconhecidos pelo parser e geram texto bruto sem cartoes visuais.\n'
+            'CADA LINEA de template = EMOJI + LABEL EM MAIUSCULAS + : + conteudo. Zero excecoes.\n'
+            '════ FIN REGLA Nº2 ════\n'
           : '════ REGRA Nº1 — COLUNA ZERO ABSOLUTA ════\n'
             'PROIBICAO NIVEL BINARIO: o 1º char de CADA linha DEVE ser: *, 🟥, 🚨, 💊, ⛔, 📌, letra/numero. '
             'JAMAIS espaco (ASCII 32) ou tabulacao (ASCII 9) — Flutter renderiza como bloco <pre>.\n'
@@ -1453,7 +1495,23 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
             // ORDEM 30: MAX_TEXT_COMPACT — dieta de caracteres
             '• MAX_TEXT_COMPACT: cada campo/linha do template = MAXIMO 1-2 linhas telegraficas. '
             'PROIBIDO: fisiopatologia didatica, contextualizacao historica, resumo redundante ao final. '
-            'Substantivos diretos + verbos de acao. Nada de "Em resumo..." ou "Vale destacar que...".\n';
+            'Substantivos diretos + verbos de acao. Nada de "Em resumo..." ou "Vale destacar que...".\n'
+            // ORDEM 31: CONTRATO DE ÂNCORAS SEMÂNTICAS — compatibilidade com parser Flutter
+            '════ REGRA Nº2 — CONTRATO DE ÂNCORAS SEMÂNTICAS (ORDEM 31) ════\n'
+            'O parser Flutter do MedCases Pro fatiará os campos em cartões coloridos SOMENTE se '
+            'você usar as âncoras exatas com emoji no início (coluna zero, sem asterisco, sem ##).\n'
+            'ÂNCORAS OBRIGATÓRIAS — usar exatamente este formato:\n'
+            '  🟥 [NOME DO CASO EM MAIÚSCULAS] — CONDUTA IMEDIATA\n'
+            '  💊 CLASSE: [texto conciso]\n'
+            '  🧠 MECANISMO DE AÇÃO: [texto conciso]\n'
+            '  💉 DOSE HABITUAL: [texto conciso]\n'
+            '  ⛔ CONTRAINDICAÇÕES: [texto conciso]\n'
+            '  ⚠️ EFEITOS ADVERSOS: [texto conciso]\n'
+            '  📌 CONDUTA PRÁTICA: [pergunta clínica fechada]\n'
+            'TERMINANTEMENTE PROIBIDO usar formato livre: "* **DOSE**", "* **CONDUTA**", "## DOSE" '
+            '— esses formatos NÃO são reconhecidos pelo parser e geram texto bruto sem cartões visuais.\n'
+            'CADA LINHA de template = EMOJI + LABEL EM MAIÚSCULAS + : + conteúdo. Zero exceções.\n'
+            '════ FIM REGRA Nº2 ════\n';
 
       // ── BUILD 272: CONTEXTO PROPRIETÁRIO MedCases ────────────────────────
       // Se 'proprietaryDrugContext' não for vazio, injeta o conteúdo bruto

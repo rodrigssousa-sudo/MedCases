@@ -370,24 +370,52 @@ class PromptModules {
       'EXEMPLO CERTO:  "🧠 mecanismo: bloqueio de canais Na⁺ voltagem-dependentes → estabiliza '
       'membrana → reduz excitabilidade."\n'
       '\n'
+      // ORDEM 31: REGRA 8 — CONTRATO DE ÂNCORAS SEMÂNTICAS
+      // Root-cause do bug de IAM: Gemini emite "* **CONDUTA INICIAL**" em vez de "📌 CONDUTA PRÁTICA:"
+      // O _mapBulaTopic do parser Flutter SOMENTE reconhece as âncoras emoji-prefixadas.
+      // Âncoras asterisco+negrito chegam ao _AiBubble como texto bruto sem fatiamento em cards.
+      '8. CONTRATO DE ÂNCORAS SEMÂNTICAS (ORDEM 31) — REGRA DE COMPATIBILIDADE DO PARSER:\n'
+      'O parser Flutter do MedCases Pro FATIARÁ os campos em cartões coloridos SOMENTE com âncoras emoji.\n'
+      'ÂNCORAS PARSER-COMPATÍVEIS — formato exato obrigatório (coluna zero, sem recuo):\n'
+      '  🟥 [NOME DO CASO EM MAIÚSCULAS] — CONDUTA IMEDIATA\n'
+      '  💊 CLASSE: [conteúdo]\n'
+      '  🧠 MECANISMO DE AÇÃO: [conteúdo]\n'
+      '  💉 DOSE HABITUAL: [conteúdo]\n'
+      '  ⛔ CONTRAINDICAÇÕES: [conteúdo]\n'
+      '  ⚠️ EFEITOS ADVERSOS: [conteúdo]\n'
+      '  📌 CONDUTA PRÁTICA: [pergunta fechada com ?]\n'
+      'TERMINANTEMENTE PROIBIDO — FORMATO LIVRE (não fatiável pelo parser):\n'
+      '  ✗ "* **CONDUTA INICIAL**:" — asterisco+negrito = texto bruto, sem card\n'
+      '  ✗ "* **DOSE**:" — idem\n'
+      '  ✗ "* **MONITORIZAÇÃO**:" — idem\n'
+      '  ✗ "## CONDUTA" — heading markdown = ignorado pelo parser\n'
+      '  ✗ "**CLASSE:**" sem emoji — sem card\n'
+      'Em respostas de condutas gerais (IAM, Sepse, AVC), MESMO SEM ser T-FARMACO-CARD,\n'
+      'injete as âncoras universais (💊 CLASSE, 🧠 MECANISMO DE AÇÃO, 💉 DOSE HABITUAL)\n'
+      'para que o pipeline quebre o layout em cartões semânticos coloridos automaticamente.\n'
+      '\n'
       // ORDEM 26 — TRAVA 3: T-FARMACO-CARD — rota expressa para query de fármaco isolado.
       // Ativado quando input = nome de fármaco/molécula isolado (sem contexto de emergência).
       // Exemplos de trigger: "Sertralina", "Amiodarona", "Carbonato de Lítio", "Metformina".
       // Regra de seleção: preferir T-FARMACO-CARD se NÃO há sinal de emergência ativa
       // (sem PA, FC, sat, peso, diagnóstico clínico imediato na query).
       // Corpo: caixa baixa — apenas primeira letra e siglas em maiúsculas.
+      // ORDEM 31: T-FARMACO-CARD field labels alinhados com _mapBulaTopic do parser Flutter.
+      // CLASSE, MECANISMO DE AÇÃO, DOSE HABITUAL, CONTRAINDICAÇÕES, EFEITOS ADVERSOS,
+      // CONDUTA PRÁTICA são reconhecidas nativamente — NUNCA usar formato livre (* **CAMPO**).
+      // DOSE HABITUAL substitui "dose usual" — parser reconhece DOSE HABITUAL com prioridade.
       'T-FARMACO-CARD (ROTA EXPRESSA — fármaco isolado, sem contexto de emergência):\n'
       '🟥 [NOME DO FÁRMACO EM CAIXA ALTA] — [classe farmacológica em caixa baixa]\n'
-      '💊 classe: [inibidor seletivo... / beta-bloqueador... / etc. — caixa baixa]\n'
-      '🧠 mecanismo: [como age — caixa baixa, 1 frase objetiva]\n'
-      '💉 dose usual: [dose inicial → dose máxima — via — frequência]\n'
-      '⛔ contraindicações: [principais — caixa baixa]\n'
-      '⚠️ efeitos adversos: [mais frequentes + mais graves — caixa baixa]\n'
-      '🚨 interações críticas: [associações proibidas ou de risco — caixa baixa]\n'
-      '📌 [pergunta clínica fechada: ex. "O paciente usa algum inibidor da MAO?" ou "Há insuficiência renal?"].\n'
-      'REGRA T-FARMACO-CARD: corpo INTEIRO em caixa baixa (minúsculas), '
-      'EXCETO nome do fármaco na linha 🟥 e siglas médicas (ISRS, MAO, TFG, PA). '
-      'PROIBIDO: bula enciclopédica, prosa corrida, texto em maiúsculas no corpo.\n'
+      '💊 CLASSE: [inibidor seletivo... / beta-bloqueador... / etc. — caixa baixa]\n'
+      '🧠 MECANISMO DE AÇÃO: [como age — caixa baixa, 1 frase objetiva]\n'
+      '💉 DOSE HABITUAL: [dose inicial → dose máxima — via — frequência]\n'
+      '⛔ CONTRAINDICAÇÕES: [principais — caixa baixa]\n'
+      '⚠️ EFEITOS ADVERSOS: [mais frequentes + mais graves — caixa baixa]\n'
+      '🚨 INTERAÇÕES CRÍTICAS: [associações proibidas ou de risco — caixa baixa]\n'
+      '📌 CONDUTA PRÁTICA: [pergunta clínica fechada: ex. "O paciente usa algum inibidor da MAO?" ou "Há insuficiência renal?"]\n'
+      'REGRA T-FARMACO-CARD: labels de seção EM MAIÚSCULAS (CLASSE, MECANISMO DE AÇÃO, etc.), '
+      'conteúdo após ":" em caixa baixa, EXCETO siglas médicas (ISRS, MAO, TFG, PA). '
+      'PROIBIDO: bula enciclopédica, prosa corrida, "* **CAMPO**" (asterisco+negrito = quebra parser).\n'
       '\n'
       'TABELA RÁPIDA: KCl 19,1%→1 mL=2,5 mEq | KCl 10%→1 mL=1,34 mEq | '
       'MgSO4 50%→1 mL=0,4 g | NaCl 20%→1 mL=3,4 mEq\n';
