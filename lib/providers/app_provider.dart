@@ -3237,6 +3237,24 @@ class AppProvider extends ChangeNotifier {
     bool longResponse = false,  // Motor de Partida (Build 149)
     bool fromButton  = false,   // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
   }) async {
+    // ── ADENDO SEGURANÇA Factor 3: SEGUNDA BARREIRA NO PROVIDER (backend guard) ─
+    // Verificação redundante e síncrona ANTES de qualquer operação assíncrona.
+    // Bloqueia chamadas que escaparam da UI (teclado físico, chip tap, retry,
+    // histórico injetado, etc.) sem autenticação real de usuário.
+    // Condição idêntica ao Factor 2 em ai_screen.dart → consistência absoluta.
+    // _geminiConnected: sessão OAuth Google válida (token real do usuário)
+    // _openAiKey:       chave OpenAI pessoal configurada pelo próprio usuário
+    // EXCLUÍDO: GeminiService.hasApiKey (chave servidor compartilhada — bypass confirmado)
+    final bool hasRealAuth = _geminiConnected || _openAiKey.isNotEmpty;
+    if (!hasRealAuth) {
+      debugPrint('[BACKEND_GUARD_FACTOR3] Tentativa de envio sem auth real bloqueada. '
+          'geminiConnected=$_geminiConnected openAiKey=${_openAiKey.isNotEmpty} '
+          'input="${input.substring(0, input.length.clamp(0, 40))}..." → return false');
+      // Notifica a UI com código de erro específico para tratamento correto
+      onError('AUTH_REQUIRED');
+      return false; // ← BARREIRA ABSOLUTA no provider — zero bytes ao backend
+    }
+
     // ── Build 134: Single-Flight Guard ────────────────────────────────────
     // Bloqueia qualquer chamada enquanto um voo já está em curso.
     // Liberação garantida pelo bloco finally abaixo — cobre todos os caminhos:

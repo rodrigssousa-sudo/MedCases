@@ -1422,16 +1422,18 @@ class _AiScreenState extends State<AiScreen> {
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
     if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
 
-    // ── SUPER ORDEM ESTRUTURAL 11 M2: HARD BLOCKER UNIVERSAL DE AUTH ─────────
-    // REGRA DE NEGÓCIO CRÍTICA: TODOS os usuários (incluindo admin/master)
-    // DEVEM ter IA conectada (Gemini ou GPT) antes de disparar qualquer query.
-    // Não há bypass. A engine do Gemini não pode ser acionada sem token.
-    final bool hasAnyConnection = p.geminiConnected || p.hasAnyAi;
-    if (!hasAnyConnection) {
-      // 1. Return imediato — engine do Gemini bloqueada absolutamente
+    // ── ADENDO SEGURANÇA Factor 2: HARD BLOCKER ABSOLUTO — verificação ESTRITA ─
+    // REGRA DE NEGÓCIO SOBERANA: nenhuma query pode chegar ao backend sem
+    // autenticação real do usuário. Condição estrita exclui GeminiService.hasApiKey
+    // (chave do servidor compartilhada) que antes permitia bypass silencioso.
+    // Condição válida: geminiConnected (OAuth Google real) OU openAiKey pessoal.
+    // NÃO: hasAnyAi (inclui chave servidor → brechaconfirmada nos logs de produção).
+    final bool hasRealAuth = p.geminiConnected || p.openAiKey.isNotEmpty;
+    if (!hasRealAuth) {
+      // 1. Return SÍNCRONO e IMEDIATO — engine bloqueada antes de qualquer await
       // 2. Fecha o teclado
       FocusScope.of(context).unfocus();
-      // 3. SnackBar de aviso imediato
+      // 3. SnackBar de aviso claro
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -1441,8 +1443,8 @@ class _AiScreenState extends State<AiScreen> {
                 Expanded(
                   child: Text(
                     p.lang == 'es'
-                        ? 'Conecta tu cuenta para usar la IA.'
-                        : 'Conecte sua conta para usar a IA.',
+                        ? 'Conecta tu cuenta Google para usar la IA.'
+                        : 'Conecte sua conta Google para usar a IA.',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -1461,10 +1463,11 @@ class _AiScreenState extends State<AiScreen> {
           ),
         );
       }
-      // 4. Levanta o modal de conexão da IA
+      // 4. Modal de conexão — oportunidade clara de autenticação
       _openAiSettings();
-      debugPrint('[HARD_BLOCKER] Auth gate acionado — sem conexão, modal levantado.');
-      return;
+      debugPrint('[HARD_BLOCKER_V2] Factor2 acionado — geminiConnected=${p.geminiConnected} '
+          'openAiKey=${p.openAiKey.isNotEmpty} → bloqueio total, modal levantado.');
+      return; // ← BARREIRA ABSOLUTA: nenhum código abaixo executa
     }
 
     // BUILD 258: limpa _extToolCache na nova query para evitar stale drug slots.
@@ -2751,6 +2754,8 @@ class _AiScreenState extends State<AiScreen> {
                           sttListening: _sttListening,
                           sttSoundLevel: _sttSoundLevel,
                           lang: p.lang,
+                          // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
+                          isConnected: isMplusConnected,
                         ),
                       ),
                     )
@@ -2782,6 +2787,8 @@ class _AiScreenState extends State<AiScreen> {
                           sttListening: _sttListening,
                           sttSoundLevel: _sttSoundLevel,
                           lang: p.lang,
+                          // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
+                          isConnected: isMplusConnected,
                         ),
                       ),
                     ),
@@ -6530,6 +6537,9 @@ class _InputBar extends StatefulWidget {
   final double sttSoundLevel;
   final String hint;
   final String lang;
+  // ADENDO SEGURANÇA: Factor 1 — isConnected desativa campo + botão + Enter
+  // false = usuário sem sessão de IA real → teclado bloqueado, seta cinza, nenhum envio
+  final bool isConnected;
   const _InputBar({
     required this.ctrl,
     required this.focusNode,
@@ -6542,6 +6552,7 @@ class _InputBar extends StatefulWidget {
     required this.sttSoundLevel,
     required this.hint,
     required this.lang,
+    this.isConnected = true, // default true para não quebrar call sites legados
   });
 
   @override
@@ -6560,10 +6571,12 @@ class _InputBarState extends State<_InputBar> {
 
   @override
   Widget build(BuildContext context) {
-    final bool dark        = widget.dark;
-    final bool isEs        = widget.lang == 'es';
-    final bool isListening = widget.sttListening;
-    final double level     = widget.sttSoundLevel;
+    final bool dark          = widget.dark;
+    final bool isEs          = widget.lang == 'es';
+    final bool isListening   = widget.sttListening;
+    final double level       = widget.sttSoundLevel;
+    // ADENDO SEGURANÇA Factor 1: campo completamente bloqueado quando desconectado
+    final bool locked        = !widget.isConnected;
 
     // ── Cores do campo de texto — cápsula unificada Build 158.2
     final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
@@ -6664,11 +6677,15 @@ class _InputBarState extends State<_InputBar> {
                         ),
                       ),
 
-                      // TextField — sem borda, sem fundo próprio, vive dentro da pílula
+                      // ADENDO SEGURANÇA Factor 1: TextField bloqueado quando desconectado
+                      // readOnly=true impede abertura do teclado físico
+                      // enabled=false desativa interação completa com o campo
                       Expanded(
                         child: KeyboardListener(
                           focusNode: _keyboardListenerNode,
                           onKeyEvent: (event) {
+                            // ADENDO SEGURANÇA: Enter bloqueado se desconectado
+                            if (locked) return; // Factor 1 — sem escape via teclado
                             if (kIsWeb &&
                                 event is KeyDownEvent &&
                                 event.logicalKey == LogicalKeyboardKey.enter &&
@@ -6681,7 +6698,7 @@ class _InputBarState extends State<_InputBar> {
                           child: TextField(
                             controller: widget.ctrl,
                             focusNode: widget.focusNode,
-                            maxLines: 1,  // SUPER ORDEM 11: slim single-line
+                            maxLines: 1,
                             minLines: 1,
                             textInputAction: TextInputAction.send,
                             keyboardType: TextInputType.text,
@@ -6689,24 +6706,32 @@ class _InputBarState extends State<_InputBar> {
                             enableSuggestions: true,
                             autocorrect: true,
                             textCapitalization: TextCapitalization.sentences,
+                            // ADENDO SEGURANÇA Factor 1: campo desativado quando não conectado
+                            enabled: !locked,     // impede interação total
+                            readOnly: locked,     // dupla redundância — teclado não sobe
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
-                              color: textCol,
+                              color: locked
+                                  ? (dark ? Colors.white24 : Colors.black26)
+                                  : textCol,
                               height: 1.5,
                             ),
                             decoration: InputDecoration(
-                              hintText: widget.hint,
+                              hintText: locked
+                                  ? (isEs ? 'Conecta la IA para escribir' : 'Conecte a IA para escrever')
+                                  : widget.hint,
                               hintStyle: TextStyle(
                                 fontSize: 14,
-                                color: hintCol,
+                                color: locked
+                                    ? (dark ? Colors.white24 : Colors.black26)
+                                    : hintCol,
                                 fontWeight: FontWeight.w400,
                               ),
-                              // Sem borda, sem fundo: faz parte da cápsula
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 8,  // ORDEM VISUAL 02: slim, não estica verticalmente
+                                horizontal: 4, vertical: 8,
                               ),
                             ),
                           ),
@@ -6715,17 +6740,23 @@ class _InputBarState extends State<_InputBar> {
 
                       const SizedBox(width: 6),
 
-                      // Botão enviar — círculo ciano dentro da pílula
+                      // ADENDO SEGURANÇA Factor 1: seta cinza desativada quando desconectado
+                      // onTap=null → nenhum evento de toque processa envio
                       GestureDetector(
-                        onTap: widget.thinking ? null : widget.onSend,
+                        onTap: (locked || widget.thinking) ? null : widget.onSend,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 150),
                           width: 34, height: 34,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: widget.thinking
-                                ? const Color(0xFF008CA4).withValues(alpha: 0.45)
-                                : const Color(0xFF008CA4),
+                            // locked: cinza escuro opaco (visual de desativado)
+                            // thinking: ciano desbotado (processando)
+                            // normal: ciano sólido (pronto para envio)
+                            color: locked
+                                ? (dark ? Colors.white12 : Colors.black12)
+                                : (widget.thinking
+                                    ? const Color(0xFF008CA4).withValues(alpha: 0.45)
+                                    : const Color(0xFF008CA4)),
                           ),
                           child: Center(
                             child: widget.thinking
@@ -6736,9 +6767,10 @@ class _InputBarState extends State<_InputBar> {
                                       color: Colors.white,
                                     ),
                                   )
-                                : const Icon(
+                                : Icon(
                                     Icons.arrow_upward_rounded,
-                                    color: Colors.white,
+                                    // ícone cinza quando bloqueado
+                                    color: locked ? Colors.white38 : Colors.white,
                                     size: 19,
                                   ),
                           ),
