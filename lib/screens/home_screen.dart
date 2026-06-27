@@ -2337,6 +2337,65 @@ class _ThinkingDotsState extends State<_ThinkingDots>
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SUPER ORDEM MASTER 12 M4 — _HomeMplusPulse
+// M+ verde pulsante para o card da Home — mesmo loop forward↔reverse da AI screen.
+// Dispose automático — sem memory leak.
+// ─────────────────────────────────────────────────────────────────────────────
+class _HomeMplusPulse extends StatefulWidget {
+  const _HomeMplusPulse();
+  @override
+  State<_HomeMplusPulse> createState() => _HomeMplusPulseState();
+}
+
+class _HomeMplusPulseState extends State<_HomeMplusPulse>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..addStatusListener((status) {
+        if (!mounted) return;
+        if (status == AnimationStatus.completed) _ctrl.reverse();
+        if (status == AnimationStatus.dismissed) _ctrl.forward();
+      });
+    _anim = Tween<double>(begin: 0.35, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+    _ctrl.forward();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Opacity(
+        opacity: _anim.value,
+        child: const Text(
+          'M+',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF10B981), // Verde Clínico
+            letterSpacing: -0.5,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // HOME V2 — IA MEDCASES CARD (item 1 da Home) — LEGADO, mantido para web
 // Card premium branco/escuro com campo de pergunta, chips rápidos e botão enviar.
@@ -2467,27 +2526,51 @@ class _HomeIaCardState extends State<_HomeIaCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // ── Header: logo ConnectMind + título + badge IA ──────────────────
+            // ── Header: M+ VIVO + título + badge IA — SUPER ORDEM MASTER 12 M4 ────
             Row(children: [
-              Container(
-                width: 38, height: 38,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(11),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF252930), Color(0xFF252930), Color(0xFF374151)],
+              // M+ VIVO: verde pulsante (conectado) ou 'Conectar IA' cyan (desconectado)
+              Builder(builder: (ctx) {
+                final connected = ctx.watch<AppProvider>().geminiConnected ||
+                    ctx.watch<AppProvider>().hasAnyAi;
+                return GestureDetector(
+                  onTap: () {
+                    // Navega para tela de IA
+                    widget.onNavigateToAi(2);
+                    // Se desconectado, abre modal de login automaticamente
+                    if (!connected) {
+                      Future.delayed(const Duration(milliseconds: 350), () {
+                        AiScreen.openSettingsCallback.value?.call();
+                      });
+                    }
+                  },
+                  child: Container(
+                    width: 38, height: 38,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(11),
+                      color: const Color(0xFF0C0E12),
+                      border: Border.all(
+                        color: connected
+                            ? const Color(0xFF10B981).withValues(alpha: 0.35)
+                            : const Color(0xFF00E5FF).withValues(alpha: 0.22),
+                        width: 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: connected
+                          ? const _HomeMplusPulse()
+                          : const Text(
+                              'M+',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF00E5FF),
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                    ),
                   ),
-                  border: Border.all(
-                    color: Color(0xFF00E5FF).withValues(alpha: 0.22),
-                    width: 1,
-                  ),
-                ),
-                child: const Center(
-                  child: Icon(Icons.psychology_alt_rounded,
-                    size: 21, color: Color(0xFF00E5FF)),
-                ),
-              ),
+                );
+              }),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(

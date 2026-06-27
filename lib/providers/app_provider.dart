@@ -3536,6 +3536,21 @@ class AppProvider extends ChangeNotifier {
       }
     }
 
+    // ── SUPER ORDEM MASTER 12 M1b: ROUTER BLINDAGEM ─────────────────────────
+    // Se o usuário tem sessão Gemini ativa (_geminiConnected), o proxy pago
+    // (geminiPaidProxy Cloud Function) retorna 503 — é inútil chamá-lo.
+    // Forçamos aiPriority='academic' para usar sempre o caminho Free (streaming
+    // direto com a app key), que funciona normalmente para usuários autenticados.
+    // O fallback pago ainda existe no caminho acadêmico caso o Free falhe por
+    // outros motivos (quota, network), mas o caminho crítico→pago direto é
+    // bypassado quando há sessão ativa — evitando o card de timeout falso.
+    final effectivePriority = _geminiConnected
+        ? 'academic' // blindagem: free path para usuários com sessão ativa
+        : aiPriority;
+    if (kDebugMode && _geminiConnected && aiPriority == 'critical') {
+      debugPrint('[ROUTER_BLINDAGEM] geminiConnected=true → override critical→academic requestId=$requestId');
+    }
+
     // ── BUILD 245: Caminho crítico — vai direto ao pago, sem Free ───────────
     // Se aiPriority == 'critical': Plantão/urgência/dose/sigla — nunca Free.
     // Evita 503→fallback overhead (até 5s perdidos) em contexto de emergência.
@@ -3545,7 +3560,7 @@ class AppProvider extends ChangeNotifier {
     //   • _aiStreamActive=true durante o voo → bloqueia nova chamada.
     //   • Timer 30s → safe-card se proxy não responder a tempo.
     //     BUILD 245 ADENDO: 30s (era 15s) — paid proxy pode demorar 15-25s.
-    if (aiPriority == 'critical') {
+    if (effectivePriority == 'critical') {
       bool criticalDone = false;
       Timer? criticalTimeoutTimer;
 

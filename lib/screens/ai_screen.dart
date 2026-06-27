@@ -528,6 +528,23 @@ class _AiScreenState extends State<AiScreen> {
         }
       });
     }
+
+    // SUPER ORDEM MASTER 12 M3: PROACTIVE AUTH GATE
+    // Se o usuário entrar na tela sem IA conectada, abre o modal de
+    // conexão automaticamente — aviso acolhedor antes de qualquer interação.
+    // Micro-delay de 2 frames garante que a UI já está renderizada.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Future.delayed(const Duration(milliseconds: 400), () {
+        if (!mounted) return;
+        final p = context.read<AppProvider>();
+        final bool connected = p.geminiConnected || p.hasAnyAi;
+        if (!connected) {
+          _openAiSettings(); // abre modal de conexão automaticamente
+          debugPrint('[PROACTIVE_GATE] Tela de IA sem conexão — modal disparado.');
+        }
+      });
+    });
   }
 
   // ── Inicialização TTS ───────────────────────────────────────────────────
@@ -2823,11 +2840,12 @@ class _MobileAiActionBar extends StatelessWidget {
 
     return Container(
       height: 55, // SUPER ORDEM: +3px de respiro vertical
-      decoration: BoxDecoration(
-        // ORDEM VISUAL 04 M3: harmonia com chatBg premium
-        color: dark ? const Color(0xFF121418) : const Color(0xFFFCFDFD),
+      decoration: const BoxDecoration(
+        // SUPER ORDEM MASTER 12 M1: BLACK TOPBAR FIXO — premium em qualquer modo
+        // Light Mode e Dark Mode recebem o mesmo preto absoluto para contraste do M+
+        color: Color(0xFF0C0E12),
         border: Border(bottom: BorderSide(
-          color: dark ? const Color(0xFF22252B) : const Color(0xFFF0F0F0),
+          color: Color(0xFF1E2128),
           width: 0.5,
         )),
       ),
@@ -3064,13 +3082,12 @@ class _WaHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // SUPER ORDEM: +3px respiro vertical, título bicolor MEDCASES/IA, subtítulo split
-    // ORDEM VISUAL 04 M3: harmonia total com chatBg premium (dark/light aware)
+    // SUPER ORDEM MASTER 12 M1: BLACK TOPBAR FIXO — mesmo preto absoluto em qualquer modo
     return Container(
-      decoration: BoxDecoration(
-        color: dark ? const Color(0xFF121418) : const Color(0xFFFCFDFD),
+      decoration: const BoxDecoration(
+        color: Color(0xFF0C0E12),
         border: Border(bottom: BorderSide(
-          color: dark ? const Color(0xFF22252B) : const Color(0xFFF0F0F0),
+          color: Color(0xFF1E2128),
           width: 0.5,
         )),
       ),
