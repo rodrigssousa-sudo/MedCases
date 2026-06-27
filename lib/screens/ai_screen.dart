@@ -2009,9 +2009,9 @@ class _AiScreenState extends State<AiScreen> {
             controller: _scrollCtrl,
             // BUILD 283 ORDEM 10.5: mobile padding 12→16 para respiração lateral
             padding: EdgeInsets.fromLTRB(
-              bp.isDesktop ? 24 : 16,
+              bp.isDesktop ? 24 : 6,
               12,
-              bp.isDesktop ? 24 : 16,
+              bp.isDesktop ? 24 : 6,
               8,
             ),
             // Build 145 — cacheExtent aumentado 2000 → 2500:
@@ -2467,28 +2467,7 @@ class _AiScreenState extends State<AiScreen> {
                 onConnectApi: _openAiSettings,
               ),
 
-            // ── Build 158.1: Mode Pills — centralizados no espaço vazio ──────
-            // Aparecem APENAS quando o chat está vazio (sem msg do usuário).
-            // Posicionados no centro da tela, acima da InputBar e LONGE da
-            // _FloatingBottomNav, para evitar colisão visual.
-            if (!_messages.any((m) => m.role == 'user'))
-              Positioned.fill(
-                child: Align(
-                  alignment: const Alignment(0, 0.25),  // SUPER ORDEM 11: rebaixado, próximo ao input
-                  child: _ResponseModeToggle(
-                    value: _longResponse,
-                    dark: dark,
-                    lang: p.lang,
-                    onChanged: (newValue) {
-                      if (newValue == _longResponse) return;
-                      setState(() {
-                        _longResponse = newValue;
-                      });
-                      p.clearAiHistory();
-                    },
-                  ),
-                ),
-              ),
+            // ORDEM 36: mode toggle movido para posição fixa acima do InputBar
 
             // ── Build 116: Smart Scroll Indicator ─────────────────────────
             // Aparece quando o usuário subiu para revisar o histórico E a IA
@@ -2630,7 +2609,26 @@ class _AiScreenState extends State<AiScreen> {
       // ── Área de chat ─────────────────────────────────────────────────────
       Expanded(child: chatArea),
 
-      // ── Carrossel de sugestões — some quando foca ─────────────────────
+        // ── ORDEM 36: Seletor de modo flutuante — fixo acima do InputBar ────────
+      // 25px acima da barra de digitação. Visível com ou sem mensagens.
+      // Oculto apenas quando forceDisconnectedLabel=true.
+      if (!forceDisconnectedLabel)
+        Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 0),
+          child: _ResponseModeToggle(
+            value: _longResponse,
+            dark: dark,
+            lang: p.lang,
+            onChanged: (newValue) {
+              if (newValue == _longResponse) return;
+              setState(() { _longResponse = newValue; });
+              p.clearAiHistory();
+            },
+          ),
+        ),
+      const SizedBox(height: 25), // 25px gap antes do TextField
+
+    // ── Carrossel de sugestões — some quando foca ─────────────────────
       AnimatedSize(
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeInOut,
@@ -2769,151 +2767,132 @@ class _MobileAiActionBar extends StatelessWidget {
         color: const Color(0xFF1A1D23),
         border: const Border(bottom: BorderSide(color: Color(0xFF2A2D35), width: 0.5)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ── Título bicolor MEDCASES (branco) + IA (ouro) + subtítulo split ────
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // SUPER ORDEM: 'MEDCASES' branco puro + 'IA' ouro fosco, fonte -10%
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'MEDCASES',
-                          style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: -0.2,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' IA',
-                          style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w700,
-                            color: Color(0xFFD4AF37),
-                            letterSpacing: -0.2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  // Subtítulo split: MEDCASES branco + PRO ouro
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'MEDCASES',
-                          style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        TextSpan(
-                          text: ' PRO',
-                          style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.bold,
-                            color: Color(0xFFD4AF37),
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // ── Botão Histórico ──────────────────────────────────────────────
-            GestureDetector(
-              onTap: onHistory,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    width: 34, height: 34,
-                    margin: const EdgeInsets.only(right: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: iconBg,
-                      border: Border.all(color: iconBorder, width: 1),
-                    ),
-                    child: Icon(Icons.history_rounded, size: 18, color: iconColor),
-                  ),
-                  if (historyCount > 0)
-                    Positioned(
-                      top: -3, right: 5,
-                      child: Container(
-                        width: 14, height: 14,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFFC5A365),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '$historyCount',
-                            style: const TextStyle(
-                              fontSize: 8, fontWeight: FontWeight.w900,
-                              color: Color(0xFF1A1100),
-                            ),
-                          ),
+      // ORDEM 36: título CENTRALIZADO + trailing dark container com ícones
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // ── Título centralizado ─────────────────────────────────────────
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'MEDCASES',
+                        style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w700,
+                          color: Colors.white, letterSpacing: -0.2,
                         ),
                       ),
+                      TextSpan(
+                        text: ' IA',
+                        style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w700,
+                          color: Color(0xFFD4AF37), letterSpacing: -0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 1),
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'MEDCASES',
+                        style: TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.bold,
+                          color: Colors.white, letterSpacing: 1.2,
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' PRO',
+                        style: TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.bold,
+                          color: Color(0xFFD4AF37), letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // ── Trailing: dark container com history + add ──────────────────
+          Positioned(
+            right: 14,
+            child: Container(
+              height: 34,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xFF252930),
+                border: Border.all(color: const Color(0xFF353840), width: 1),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Botão histórico com badge numérico
+                  GestureDetector(
+                    onTap: onHistory,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 7),
+                          child: Icon(Icons.history_rounded, size: 18,
+                              color: Colors.white.withValues(alpha: 0.75)),
+                        ),
+                        if (historyCount > 0)
+                          Positioned(
+                            top: -2, right: 2,
+                            child: Container(
+                              width: 13, height: 13,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFFC5A365),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$historyCount',
+                                  style: const TextStyle(
+                                    fontSize: 7, fontWeight: FontWeight.w900,
+                                    color: Color(0xFF1A1100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
+                  ),
+                  // Divisor vertical
+                  Container(
+                    width: 1, height: 16,
+                    color: Colors.white.withValues(alpha: 0.12),
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                  ),
+                  // Botão novo chat (hard reset)
+                  GestureDetector(
+                    onTap: onNewChat,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 7),
+                      child: Icon(Icons.add_rounded, size: 18,
+                          color: Colors.white.withValues(alpha: 0.75)),
+                    ),
+                  ),
                 ],
               ),
             ),
-
-            // ── Botão Nuevo Chat ────────────────────────────────────────────────
-            GestureDetector(
-              onTap: onNewChat,
-              child: Container(
-                height: 30,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: dark
-                      ? const Color(0xFF00E5FF).withValues(alpha: 0.10)
-                      : const Color(0xFF008CA4).withValues(alpha: 0.08),
-                  border: Border.all(
-                    color: dark
-                        ? const Color(0xFF00E5FF).withValues(alpha: 0.30)
-                        : const Color(0xFF008CA4).withValues(alpha: 0.25),
-                    width: 1,
-                  ),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(
-                    Icons.add_rounded,
-                    size: 14,
-                    color: dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    lang == 'es' ? 'Nuevo Chat' : 'Novo Chat',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Header fino — estilo WhatsApp
 // ─────────────────────────────────────────────────────────────────────────────

@@ -462,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // REVERSÃO: remover os comentários /* e */ abaixo para reativar.
           // Estrutura interna intacta em: lib/widgets/meu_plantao_dashboard.dart
           // ══════════════════════════════════════════════════════════════════
-          /*
+          // ORDEM 37 M1: Mi Guardia / Meu Plantão restaurado
           _HomeMiGuardiaSection(
             dark: dark,
             isEs: isEs,
@@ -488,7 +488,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          */
 
           // ── BLOCO WEB-ONLY — EMERGÊNCIAS RÁPIDAS ────────────────────────────
           if (kIsWeb) ...[
