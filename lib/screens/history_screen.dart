@@ -838,10 +838,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           child: Column(
             children: [
               // Header — visível apenas no desktop (sem shell AppBar)
+              // SUPER ORDEM VISUAL 08 M1: Topologia Cupertino/Linear.
+              // Stack: título centrado, back à esquerda, + Nova HC à direita.
+              // MEDCASES PRO destruído.
               if (showListHeader)
               Container(
-                // BUILD 282 ORDEM 6: Laranja queimado→vibrante topLeft→bottomRight
-              // Cores: 431407 (laranja escuro) → EA580C (laranja vibrante) → FB923C (laranja claro)
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -858,95 +859,60 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(4, 10, bp.hPadding, 14),
-                  child: Row(
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      // Back arrow
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                        onPressed: () => Navigator.maybePop(context),
-                        padding: const EdgeInsets.all(8),
-                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-                      ),
-                      // Title block + action button
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'HISTORIA CLINICA',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: -0.2,
-                              ),
-                            ),
-                            RichText(
-                              text: const TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'MEDCASES',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      letterSpacing: 1.2,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: ' PRO',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFD4AF37),
-                                      letterSpacing: 1.2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                      // CENTER: título isolado e absolutamente centrado
+                      Text(
+                        lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: -0.2,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => _startNewHistory(p, lang),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                      // LEFT: botão de voltar
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                          onPressed: () => Navigator.maybePop(context),
+                          padding: const EdgeInsets.all(8),
+                          constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                        ),
+                      ),
+                      // RIGHT: botão de ação — sem fundo gradiente, laranja no texto/ícone
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () => _startNewHistory(p, lang),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.35),
+                                width: 0.8,
+                              ),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.add_rounded,
-                                size: 16,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 5),
-                              Text(
-                                _hcT(lang, 'new_hc'),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.add_rounded, size: 14, color: Colors.white),
+                                const SizedBox(width: 4),
+                                Text(
+                                  _hcT(lang, 'new_hc'),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    letterSpacing: 0.2,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -954,7 +920,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   ),
                 ),
               ),
-              // SUPER ORDEM: Header completo mobile com título + pílulas + divisores
+              // SUPER ORDEM VISUAL 08 M2+M3: Mobile header Cupertino/Linear.
+              // Stack: título centrado, back à esquerda, + Nova HC à direita.
+              // MEDCASES PRO destruído. Pill-shape destruído → flat underline tabs.
+              // TabBar redundante inferior EXTERMINADA.
               if (!showListHeader)
                 Container(
                   decoration: const BoxDecoration(
@@ -971,192 +940,89 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Linha superior: seta + título
+                      // ── M1: Linha título — Stack Left-Center-Right ───────────
                       Padding(
                         padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
-                        child: Row(
+                        child: Stack(
+                          alignment: Alignment.center,
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                              onPressed: () => Navigator.maybePop(context),
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                            // CENTER: título isolado
+                            Text(
+                              lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: -0.2,
+                              ),
                             ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                      letterSpacing: -0.2,
+                            // LEFT: botão de voltar
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                                onPressed: () => Navigator.maybePop(context),
+                                padding: const EdgeInsets.all(8),
+                                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              ),
+                            ),
+                            // RIGHT: + Nova HC — botão de ação sem pill-shape
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () => _startNewHistory(p, lang),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.add_rounded, size: 14,
+                                        color: Color(0xFFFB923C)),
+                                    const SizedBox(width: 3),
+                                    Text(
+                                      lang == 'es' ? 'NUEVA HC' : 'NOVA HC',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFFFB923C),
+                                        letterSpacing: 0.2,
+                                      ),
                                     ),
-                                  ),
-                                  RichText(
-                                    text: const TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'MEDCASES',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            letterSpacing: 1.2,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: ' PRO',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFFD4AF37),
-                                            letterSpacing: 1.2,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      // Pílulas com divisores verticais
+                      // ── M2: Flat tabs — MINHAS + PÚBLICAS (underline branco) ──
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            children: [
-                              // Pílula 1: MINHAS
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => _tabCtrl.animateTo(0),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.white.withValues(alpha: 0.18),
-                                      border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
-                                    ),
-                                    child: Text(
-                                      '${mine.length} ${lang == 'es' ? "MIS HCs" : "MINHAS"}',
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                                        color: Colors.white, letterSpacing: 0.3),
-                                    ),
-                                  ),
-                                ),
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                        child: Row(
+                          children: [
+                            // Tab 0: MINHAS HCs
+                            Expanded(
+                              child: _HcFlatTab(
+                                label: '${mine.length} ${lang == 'es' ? "MIS HCs" : "MINHAS"}',
+                                index: 0,
+                                tabCtrl: _tabCtrl,
                               ),
-                              // Divisor 1
-                              Container(
-                                width: 1,
-                                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                                color: Colors.white.withValues(alpha: 0.25),
+                            ),
+                            // Divisor fio
+                            Container(width: 1, height: 14, color: Colors.white24),
+                            // Tab 1: PÚBLICAS
+                            Expanded(
+                              child: _HcFlatTab(
+                                label: '${visiblePub.length} PÚBLICAS',
+                                index: 1,
+                                tabCtrl: _tabCtrl,
                               ),
-                              // Pílula 2: PÚBLICAS
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => _tabCtrl.animateTo(1),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.white.withValues(alpha: 0.18),
-                                      border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 1),
-                                    ),
-                                    child: Text(
-                                      '${visiblePub.length} PÚBLICAS',
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                                        color: Colors.white, letterSpacing: 0.3),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              // Divisor 2
-                              Container(
-                                width: 1,
-                                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                                color: Colors.white.withValues(alpha: 0.25),
-                              ),
-                              // Pílula 3: + NOVA HC
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => _startNewHistory(p, lang),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.white.withValues(alpha: 0.25),
-                                      border: Border.all(color: Colors.white.withValues(alpha: 0.70), width: 1.5),
-                                    ),
-                                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                      const Icon(Icons.add_rounded, size: 13, color: Colors.white),
-                                      const SizedBox(width: 3),
-                                      Text(
-                                        lang == 'es' ? 'NUEVA HC' : 'NOVA HC',
-                                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                                          color: Colors.white, letterSpacing: 0.3),
-                                      ),
-                                    ]),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              // BUILD 282 ORDEM 6: TabBar laranja (EA580C) abaixo das pílulas
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: AppColors.of(context).cardBg,
-                    border: Border.all(color: AppColors.of(context).border),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                    child: TabBar(
-                      controller: _tabCtrl,
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        // BUILD 282: laranja vibrante (EA580C) — consistente com gradiente
-                        color: const Color(0xFFEA580C).withValues(alpha: 0.18),
-                        border: Border.all(
-                          color: const Color(0xFFEA580C).withValues(alpha: 0.65),
-                          width: 1,
-                        ),
-                      ),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      labelStyle: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.3,
-                      ),
-                      unselectedLabelStyle: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      labelColor: const Color(0xFFEA580C),
-                      unselectedLabelColor: const Color(0xFF6B7280),
-                      dividerColor: Colors.transparent,
-                      padding: EdgeInsets.zero,
-                      tabs: [
-                        Tab(text: '${_hcT(lang, 'my_hcs')} (${mine.length})'),
-                        Tab(text: '${_hcT(lang, 'community')} (${visiblePub.length})'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              // ── M3: TabBar redundante inferior EXTERMINADA — não existe mais ──
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                 child: Row(
@@ -1313,6 +1179,67 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ));
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPER: Tab flat minimalista para Historia Clínica — SUPER ORDEM VISUAL 08
+// Pill-shape destruído: fundo transparente, indicador = underline branco 2px.
+// ─────────────────────────────────────────────────────────────────────────────
+class _HcFlatTab extends StatefulWidget {
+  final String label;
+  final int index;
+  final TabController tabCtrl;
+  const _HcFlatTab({required this.label, required this.index, required this.tabCtrl});
+  @override
+  State<_HcFlatTab> createState() => _HcFlatTabState();
+}
+
+class _HcFlatTabState extends State<_HcFlatTab> {
+  @override
+  void initState() {
+    super.initState();
+    widget.tabCtrl.addListener(_onTabChange);
+  }
+
+  void _onTabChange() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    widget.tabCtrl.removeListener(_onTabChange);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = widget.tabCtrl.index == widget.index;
+    return GestureDetector(
+      onTap: () => widget.tabCtrl.animateTo(widget.index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border(
+            bottom: isActive
+                ? const BorderSide(color: Colors.white, width: 2.0)
+                : BorderSide.none,
+          ),
+        ),
+        child: Text(
+          widget.label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: isActive ? Colors.white : Colors.white60,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+    );
   }
 }
 
