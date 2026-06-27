@@ -136,6 +136,10 @@ class HemoData {
 }
 
 class AppProvider extends ChangeNotifier {
+  // SUPER ORDEM MASTER 14 M3: flag estática para redirecionar para aba IA pós-OAuth.
+  // connectGemini() seta true antes do redirect. MainShell lê e reseta em initState.
+  static bool postOAuthAiTab = false;
+
   // ── Idioma padrão baseado no locale do sistema operacional ────────────────
   /// Retorna 'pt' para português (pt, pt_BR) e 'es' para qualquer outro idioma.
   /// Usado apenas quando o usuário nunca escolheu um idioma explicitamente.
@@ -1770,7 +1774,11 @@ class AppProvider extends ChangeNotifier {
           final modalOpened = _webGetLS('medcases_gsi_modal_opened');
           if (modalOpened == 'true') {
             _webRemoveLS('medcases_gsi_modal_opened');
-            debugPrint('[connectGemini] redirect OAuth iniciado — aguardando reload');
+            // SUPER ORDEM MASTER 14 M3: salva flag de aba de origem antes do reload.
+            // checkGeminiSession() lê 'medcases_redirect_from_ai_tab' pós-redirect
+            // e dispara MainShell.pendingTab = 2 (IA) automaticamente.
+            _webSetLS('medcases_redirect_from_ai_tab', 'true');
+            debugPrint('[connectGemini] redirect OAuth iniciado — aguardando reload, flag ai_tab salva');
             return null; // null = redirect em andamento, não é falha
           }
         } catch (_) {}
@@ -1959,6 +1967,19 @@ class AppProvider extends ChangeNotifier {
               final hasKey = await _ensureGeminiApiKey(source: 'pós-redirect');
               if (!hasKey) return;
               _setGeminiConnectionState(connected: true, email: email);
+              // SUPER ORDEM MASTER 14 M3: restaura aba de origem pós-OAuth redirect.
+              // Antes do redirect, connectGemini() salva 'medcases_redirect_from_ai_tab'
+              // no localStorage. Se presente, notifica via callback para navegar para aba IA.
+              if (kIsWeb) {
+                final fromAiTab = _webGetLS('medcases_redirect_from_ai_tab');
+                if (fromAiTab == 'true') {
+                  _webRemoveLS('medcases_redirect_from_ai_tab');
+                  // Sinaliza via flag em memória que o app deve ir para aba IA (2) após reload.
+                  // MainShell verifica AppProvider.postOAuthAiTab em initState e navega.
+                  AppProvider.postOAuthAiTab = true;
+                  debugPrint('[MASTER14_M3] redirect pós-OAuth → aba IA (2) sinalizada');
+                }
+              }
               debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
               return;
             }

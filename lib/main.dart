@@ -1280,6 +1280,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Ouve pendingTab para navegação iniciada pelo Drawer (sem onTabChange no _AppDrawer)
     MainShell.pendingTab.addListener(_onPendingTab);
 
+    // SUPER ORDEM MASTER 14 M3: pós-OAuth redirect → volta para aba IA
+    if (AppProvider.postOAuthAiTab) {
+      AppProvider.postOAuthAiTab = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _tab = 2);
+      });
+    }
+
     // Instancia TODAS as telas UMA VEZ — IndexedStack reutiliza entre rebuilds.
     // Cada tela é envolta em RepaintBoundary — isola o repaint de cada screen,
     // evitando que a mudança de tab force repaint das telas não visíveis.
@@ -1664,7 +1672,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       // ── AppBar HOME: sempre visível ───────────────────────────────────────
       appBar: isHome
           ? PreferredSize(
-              preferredSize: const Size.fromHeight(48),
+              preferredSize: const Size.fromHeight(42), // SUPER ORDEM MASTER 14 M1: 42px
               child: Builder(
                 builder: (scaffoldCtx) => _MobileAppBar(
                   dark: dark,
@@ -1875,8 +1883,9 @@ class _FloatingFooter extends StatelessWidget {
         ? const Color(0xFF0F1116).withValues(alpha: 0.93)
         : Colors.white.withValues(alpha: 0.96);
 
-    // Build 158.3: barra ultra-thin 42px → BUILD 238: +6px → 48px
-    const barHeight = 48.0;
+    // SUPER ORDEM MASTER 14 M1: Floating Dock premium — 56px total com padding vertical
+    // Dock flutua com BorderRadius.circular(24) + glassmorphism blur + horizontal margin 16px
+    const barHeight = 56.0;
 
     return Positioned(
       left: 0,
@@ -1894,39 +1903,43 @@ class _FloatingFooter extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
 
-              // ── Nav Bar 42px ────────────────────────────────────────────
-              ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                  child: Container(
-                    height: barHeight,
-                    decoration: BoxDecoration(
-                      color: navBg,
-                      border: Border(
-                        top: BorderSide(
+              // ── Floating Dock premium — glassmorphism 24px corner radius ────
+              // SUPER ORDEM MASTER 14 M1: Padding horizontal 16px + vertical 8px
+              // para criar o efeito de barra flutuante separada do fundo.
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: Container(
+                      height: barHeight,
+                      decoration: BoxDecoration(
+                        color: navBg,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
                           color: dark
-                              ? _neonCyan.withValues(alpha: 0.12)
+                              ? _neonCyan.withValues(alpha: 0.14)
                               : const Color(0xFFE5E7EB),
-                          width: 0.5,
+                          width: 0.8,
                         ),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: dark
-                              ? Colors.black.withValues(alpha: 0.45)
-                              : Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 20,
-                          offset: const Offset(0, -4),
-                        ),
-                        if (dark)
+                        boxShadow: [
                           BoxShadow(
-                            color: _neonCyan.withValues(alpha: 0.05),
-                            blurRadius: 24,
+                            color: dark
+                                ? Colors.black.withValues(alpha: 0.45)
+                                : Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 20,
                             offset: const Offset(0, -4),
                           ),
-                      ],
-                    ),
-                    child: Row(
+                          if (dark)
+                            BoxShadow(
+                              color: _neonCyan.withValues(alpha: 0.05),
+                              blurRadius: 24,
+                              offset: const Offset(0, -4),
+                            ),
+                        ],
+                      ),
+                      child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
 
@@ -2011,6 +2024,7 @@ class _FloatingFooter extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
 
               // ── LegalBar — faz parte do bloco animado ────────────────
               _LegalBar(dark: dark, insideSafeArea: true),
@@ -3069,19 +3083,19 @@ class _LegalBar extends StatelessWidget {
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
-      // Build 158.4 — LegalBar micro-tipográfica 20px total
-      // BUILD 238: padding vertical 3→5 (+4px total) → ~24px total
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      // SUPER ORDEM MASTER 14 M1: LegalBar travada em 20px total
+      // padding vertical 1px + fontSize 9px = altura total ~20px
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 1),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 9, color: textColor.withValues(alpha: 0.6)),
-        const SizedBox(width: 4),
+        Icon(Icons.info_outline_rounded, size: 8, color: textColor.withValues(alpha: 0.55)),
+        const SizedBox(width: 3),
         Expanded(
           child: Text(
             disclaimer,
             style: TextStyle(
-              // Micro-tipografia discreta: 10px, single line, sem height extra
-              fontSize: 10, color: textColor,
-              height: 1.1, letterSpacing: 0.0,
+              // Micro-tipografia ultra-discreta: 9px, single line
+              fontSize: 9, color: textColor,
+              height: 1.0, letterSpacing: 0.0,
               fontWeight: FontWeight.w400,
             ),
             maxLines: 1,
