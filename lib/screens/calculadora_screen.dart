@@ -287,11 +287,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   @override
   Widget build(BuildContext context) {
     // ── Paleta dark/light ────────────────────────────────────────────────
-    final Color barBg       = _dark ? const Color(0xFF0D0F14) : Colors.white;
+    // SUPER ORDEM VISUAL 09: barBg/borderCol/textPrimary/textSecondary removidos
+    // — o AppBar agora usa gradiente roxo const; só scaffoldBg permanece.
     final Color scaffoldBg  = _dark ? const Color(0xFF0F091E) : const Color(0xFFF8F9FA);
-    final Color borderCol   = _dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
-    final Color textPrimary = _dark ? Colors.white : const Color(0xFF111827);
-    final Color textSecondary = _dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
     // ── BARRA DE FONTES — dimensões ──────────────────────────────────────
     const double kBarCollapsed = 24.0;
@@ -313,53 +311,77 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       child: Scaffold(
         backgroundColor: scaffoldBg,
 
-        // ── AppBar minimalista global (padrão internacion_screen) ─────────
+        // ── SUPER ORDEM VISUAL 09: AppBar Cupertino/Linear ────────────────
+        // M1: Stack Left-Center-Right. Subtítulo "MedCases Pro" destruído.
+        // M2: Gradiente roxo #3B0764→#7E22CE→#A855F7 (idêntico ao card Home).
+        // Direita: logotipo M+ dourado (app_icon.png, height 28).
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(52),
+          preferredSize: const Size.fromHeight(56),
           child: Container(
-            decoration: BoxDecoration(
-              color: barBg,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF3B0764), // roxo profundo
+                  Color(0xFF7E22CE), // roxo vibrante (idêntico ao card Home)
+                  Color(0xFFA855F7), // roxo claro
+                ],
+              ),
               border: Border(
-                bottom: BorderSide(color: borderCol, width: 0.5),
+                bottom: BorderSide(color: Color(0xFF4C1D95), width: 0.5),
               ),
             ),
             child: SafeArea(
               bottom: false,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Row(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 18,
-                        color: Color(0xFFA78BFA),
+                    // CENTER: título isolado e absolutamente centrado
+                    const Text(
+                      'CALCULADORA CLÍNICA',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: -0.2,
                       ),
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      padding: const EdgeInsets.all(8),
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     ),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'CALCULADORA CL\u00cdNICA',
+                    // LEFT: botão de voltar
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.of(context).maybePop(),
+                        padding: const EdgeInsets.all(8),
+                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      ),
+                    ),
+                    // RIGHT: logotipo M+ dourado
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Image.asset(
+                          'assets/icon/app_icon.png',
+                          height: 28,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const Text(
+                            'M+',
                             style: TextStyle(
-                              fontSize:      12.5,
-                              fontWeight:    FontWeight.w800,
-                              color:         textPrimary,
-                              letterSpacing: 0.4,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFFFFE8A6),
+                              letterSpacing: -0.5,
                             ),
                           ),
-                          Text(
-                            'MedCases Pro',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color:    textSecondary,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ],
@@ -368,6 +390,11 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             ),
           ),
         ),
+
+        // ── SUPER ORDEM VISUAL 09 M3: Barra de navegação inferior ───────────
+        // Permite ao usuário navegar de volta para o shell sem se sentir preso.
+        // Usa Navigator.maybePop() — retorna ao MainShell preservando o tab ativo.
+        bottomNavigationBar: _CalcBottomNav(dark: _dark, isEs: _isEs),
 
         // ── Body: WebView + barra de fontes nativa ────────────────────────
         body: Stack(
@@ -500,6 +527,139 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SUPER ORDEM VISUAL 09 M3: Barra de navegação inferior da Calculadora
+// Estilo visual idêntico ao FloatingFooter do MainShell (blur + dark α0.93).
+// Navegação: maybePop() retorna ao shell preservando o tab ativo.
+// ─────────────────────────────────────────────────────────────────────────────
+class _CalcBottomNav extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  const _CalcBottomNav({required this.dark, required this.isEs});
+
+  static const _neonCyan = Color(0xFF00E5FF);
+
+  @override
+  Widget build(BuildContext context) {
+    final navBg = dark
+        ? const Color(0xFF0F1116).withValues(alpha: 0.96)
+        : Colors.white.withValues(alpha: 0.98);
+    final borderColor = dark
+        ? _neonCyan.withValues(alpha: 0.12)
+        : const Color(0xFFE5E7EB);
+    final activeColor   = dark ? _neonCyan : const Color(0xFF008CA4);
+    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
+
+    // Wrap with SafeArea so the bar respects home indicator on iPhone
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 48,
+        decoration: BoxDecoration(
+          color: navBg,
+          border: Border(
+            top: BorderSide(color: borderColor, width: 0.5),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: dark
+                  ? Colors.black.withValues(alpha: 0.45)
+                  : Colors.black.withValues(alpha: 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // ── Início ───────────────────────────────────────────────────
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => Navigator.of(context).maybePop(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3),
+                      child: Icon(Icons.home_rounded, size: 18, color: inactiveColor),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      isEs ? 'Inicio' : 'Início',
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 9.0,
+                        fontWeight: FontWeight.w400,
+                        color: inactiveColor,
+                        height: 1.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // ── Calculadora — ativa ───────────────────────────────────────
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: Icon(Icons.calculate_rounded, size: 18, color: activeColor),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    isEs ? 'Calculadora' : 'Calculadora',
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 9.0,
+                      fontWeight: FontWeight.w700,
+                      color: activeColor,
+                      height: 1.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // ── Ferramentas ───────────────────────────────────────────────
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => Navigator.of(context).maybePop(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3),
+                      child: Icon(Icons.science_rounded, size: 18, color: inactiveColor),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      isEs ? 'Herramientas' : 'Ferramentas',
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 9.0,
+                        fontWeight: FontWeight.w400,
+                        color: inactiveColor,
+                        height: 1.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
