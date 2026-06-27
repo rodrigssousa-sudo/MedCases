@@ -148,6 +148,14 @@ class _ChatSession {
 
   /// Desserializa de JSON (SharedPreferences) ou de documento Firestore
   /// (já passado por sdkDocToSafeMap → todos os Timestamps vieram como ISO8601).
+  ///
+  /// ORDEM 27 — PARSER RESILIENTE:
+  /// Aceita retroativamente 3 formatos de payload sem quebrar a timeline:
+  ///   1. Legado (texto cru Markdown/bula gerado antes de ORDEM 22).
+  ///   2. Plantão estruturado T01-T20 (emoji-anchor 🟥 + seções clínicas).
+  ///   3. T-FARMACO-CARD (fármaco isolado — 🟥 + 💊🧠💉⛔⚠️🚨📌).
+  /// Cada mensagem é parseada em try/catch individual — uma mensagem corrompida
+  /// não interrompe o carregamento das demais. App nunca estoura Exception.
   factory _ChatSession.fromJson(Map<String, dynamic> j) {
     // ID: obrigatório. Se vier vazio usa timestamp local como fallback.
     final id = j['id']?.toString() ?? DateTime.now().toIso8601String();
@@ -164,19 +172,84 @@ class _ChatSession {
       savedAt = DateTime.now();
     }
 
+    // ORDEM 27 — PARSER POR MENSAGEM COM ISOLAMENTO DE EXCEÇÃO:
+    // Cada elemento da lista é parseado individualmente — se um entry estiver
+    // corrompido (campo ausente, tipo errado, null inesperado), apenas esse
+    // elemento é descartado; os demais são carregados normalmente.
+    final rawMessages = j['messages'] as List? ?? [];
+    final List<_ChatMsg> parsedMessages = [];
+    for (final m in rawMessages) {
+      try {
+        final map = m is Map ? Map<String, dynamic>.from(m) : <String, dynamic>{};
+        final msgId = map['id']?.toString()
+            ?? '${map['role'] ?? 'unknown'}_${DateTime.now().microsecondsSinceEpoch}';
+        final role = map['role']?.toString() ?? 'user';
+        final text = map['text']?.toString() ?? '';
+        parsedMessages.add(_ChatMsg.withId(id: msgId, role: role, text: text));
+      } catch (e) {
+        // Mensagem individual corrompida — descarta silenciosamente sem crashar.
+        if (kDebugMode) {
+          debugPrint('[MIGRATION] Skipped corrupt message entry in session $id: $e');
+        }
+      }
+    }
+
     return _ChatSession(
       id: id,
       savedAt: savedAt,
       summary: j['summary']?.toString() ?? '',
-      messages: (j['messages'] as List? ?? []).map((m) {
-        final map = m is Map ? Map<String, dynamic>.from(m) : <String, dynamic>{};
-        return _ChatMsg.withId(
-          id: map['id']?.toString() ?? '${map['role']}_${DateTime.now().microsecondsSinceEpoch}',
-          role: map['role']?.toString() ?? 'user',
-          text: map['text']?.toString() ?? '',
-        );
-      }).toList(),
+      messages: parsedMessages,
     );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _detectSessionFormat — ORDEM 27: Classificador retroativo de payloads
+//
+// Analisa as mensagens de uma sessão e retorna o formato dominante:
+//   'pharma_card'        — Resposta T-FARMACO-CARD: 🟥 + tokens 💊🧠💉⛔⚠️🚨📌
+//                          (fármaco isolado sem contexto de emergência)
+//   'plantao_structured' — Resposta T01-T20 clínica: 🟥 + seções multi-emoji
+//                          (template de emergência/conduta clínica)
+//   'legacy'             — Markdown cru / bula enciclopédica / builds anteriores
+//
+// Decisão: lê APENAS a última mensagem AI (role='model') da sessão — que é
+// a mais recente e define o "tipo" da sessão para fins de telemetria.
+// Nunca lança exceção — qualquer erro retorna 'legacy' como fallback seguro.
+// ─────────────────────────────────────────────────────────────────────────────
+String _detectSessionFormat(List<_ChatMsg> messages) {
+  try {
+    // Pega a última mensagem AI da sessão
+    final aiMessages = messages.where((m) => m.role == 'model').toList();
+    if (aiMessages.isEmpty) return 'legacy';
+    final lastAi = aiMessages.last.text;
+    if (lastAi.isEmpty) return 'legacy';
+
+    final firstLine = lastAi.trim().split('\n').first.trim();
+    final hasRedAnchor = firstLine.startsWith('🟥');
+
+    if (!hasRedAnchor) return 'legacy';
+
+    // Conta tokens semânticos do T-FARMACO-CARD no corpo
+    final pharmaTokens = ['💊', '🧠', '💉', '⛔', '⚠️', '🚨', '📌'];
+    // Um T-FARMACO-CARD tem todos os 7 tokens
+    int tokenCount = 0;
+    for (final tok in pharmaTokens) {
+      if (lastAi.contains(tok)) tokenCount++;
+    }
+
+    // T-FARMACO-CARD: tem 🟥 E pelo menos 5 dos 7 tokens farmacológicos
+    // E o corpo é curto (≤ 30 linhas — fármaco isolado, sem conduta multi-bloco)
+    final lineCount = lastAi.trim().split('\n').length;
+    if (tokenCount >= 5 && lineCount <= 30) return 'pharma_card';
+
+    // Plantão estruturado T01-T20: tem 🟥 + múltiplos tokens clínicos (conduta)
+    if (tokenCount >= 2) return 'plantao_structured';
+
+    // 🟥 presente mas poucos tokens semânticos — legado com 🟥 manual
+    return 'legacy';
+  } catch (_) {
+    return 'legacy';
   }
 }
 
@@ -873,6 +946,23 @@ class _AiScreenState extends State<AiScreen> {
               .map((e) => _ChatSession.fromJson(e))
               .where((s) => seen.add(s.id))
               .toList();
+
+          // ORDEM 27 — TELEMETRIA DE MIGRAÇÃO (Firestore path):
+          // Classifica cada sessão carregada e emite log por tipo de payload.
+          if (kDebugMode) {
+            for (final s in sessions) {
+              final fmt = _detectSessionFormat(s.messages);
+              switch (fmt) {
+                case 'pharma_card':
+                  debugPrint('[MIGRATION] Loaded pharma_card chat session format. id=${s.id}');
+                case 'plantao_structured':
+                  debugPrint('[MIGRATION] Loaded plantao_structured chat session format. id=${s.id}');
+                default:
+                  debugPrint('[MIGRATION] Loaded legacy chat session format. id=${s.id}');
+              }
+            }
+          }
+
           if (mounted) setState(() {
             _chatHistory.clear();
             _chatHistory.addAll(sessions);
@@ -894,6 +984,23 @@ class _AiScreenState extends State<AiScreen> {
           .map((e) => _ChatSession.fromJson(e as Map<String, dynamic>))
           .where((s) => seenLocal.add(s.id))
           .toList();
+
+      // ORDEM 27 — TELEMETRIA DE MIGRAÇÃO (SharedPreferences offline path):
+      // Classifica cada sessão carregada e emite log por tipo de payload.
+      if (kDebugMode) {
+        for (final s in sessions) {
+          final fmt = _detectSessionFormat(s.messages);
+          switch (fmt) {
+            case 'pharma_card':
+              debugPrint('[MIGRATION] Loaded pharma_card chat session format. id=${s.id}');
+            case 'plantao_structured':
+              debugPrint('[MIGRATION] Loaded plantao_structured chat session format. id=${s.id}');
+            default:
+              debugPrint('[MIGRATION] Loaded legacy chat session format. id=${s.id}');
+          }
+        }
+      }
+
       if (mounted) setState(() {
         _chatHistory.clear();
         _chatHistory.addAll(sessions);
@@ -4455,6 +4562,13 @@ String _stripMetadataHeaders(String accumulated) {
 //   5. Separadores decorativos: ---, --
 //   6. Asteriscos triplos ou mais: ***
 //   7. Comentários de auto-avaliação: "Let me think", "I'll structure", etc.
+//
+// ORDEM 27 — DEPRECATION STATUS:
+//   DEPRECATED IN PLANTÃO MODE — chamada activa APENAS no caminho de streaming
+//   parcial (isStreaming=true dentro de _computeBlocksFromText). Para texto
+//   final commitado o BUILD 277-PATCH já aplica bypass transparente (pass-through).
+//   MAINTAINED FOR: Estudo mode streaming chunks | legacy history _AiBubble display.
+//   NÃO REMOVER: remoção causaria regressão no Modo Estudo e no histórico retroativo.
 // ─────────────────────────────────────────────────────────────────────────────
 String _cleanAiText(String raw) {
   String s = raw;
@@ -4833,6 +4947,13 @@ String _cleanAiText(String raw) {
 /// em branco entre o cabeçalho e os bullets e os dois apareçam em cards
 /// separados (ex: "🚨 **TRATAMENTO FARMACOLÓGICO DO IAM** —" num card sozinho
 /// e os bullets de medicação num card separado).
+///
+/// ORDEM 27 — DEPRECATION STATUS:
+///   DEPRECATED IN PLANTÃO MODE — _splitIntoBlocks() foi REMOVIDO do pipeline
+///   de renderização do Plantão no Build 123. Modo Plantão envia texto único para
+///   PlantatoPipeline.run() diretamente; este bloco NUNCA é chamado em Plantão.
+///   MAINTAINED FOR: _AiBubble (Modo Estudo + histórico legado). Remoção causaria
+///   regressão na renderização multi-bloco do Modo Estudo. NÃO REMOVER.
 List<String> _splitIntoBlocks(String text) {
   // Normaliza quebras de linha múltiplas em duplas
   final normalized = text.replaceAll(RegExp(r'\n{3,}'), '\n\n');
@@ -6268,24 +6389,37 @@ class _AiBubbleState extends State<_AiBubble> {
     // 100% do texto da IA é retornado como UM ÚNICO elemento de lista.
     // _AiBlockBubble recebe o texto completo e renderiza com MarkdownBody fluido.
     // ZERO fatiamento. ZERO containers escuros múltiplos. ZERO fallback de blocos.
+    //
+    // ORDEM 27 — ISOLAMENTO ABSOLUTO DO PIPELINE DO PLANTÃO:
+    // _cleanAiText() É PROIBIDO para texto final do Plantão. O BUILD 277-PATCH
+    // já garante o bypass pelo gate isStreaming==false (pass-through direto).
+    // O único caminho legítimo para _cleanAiText() é o streaming parcial de chunks
+    // (isStreaming==true) — onde a sanitização de CoT/metadados ainda é necessária.
+    // Plantão finalizado (isPlantaoFinalBubble) nunca usa _AiBubble, portanto
+    // este método NUNCA é chamado pelo render engine do Plantão pós-ORDEM 26.
     try {
       final displayText = widget.isStreaming ? '$text\u258c' : text;
       final safeText = widget.isStreaming
           ? _sanitizePartialMarkdown(displayText)
           : displayText;
 
-      // BUILD 277-PATCH — BYPASS TRANSPARENTE:
-      // Caminho não-streaming (texto final): injeta RAW_AI_OUTPUT diretamente,
-      // sem passar por _cleanAiText. Isso preserva os marcadores ** de negrito
-      // e caracteres adjacentes a emojis que a regex step 5b destruía.
-      // Caminho streaming (chunks parciais): mantém _cleanAiText para filtrar
-      // CoT/metadados/asteriscos ornamentais que chegam no meio do stream.
+      // BUILD 277-PATCH — BYPASS TRANSPARENTE (ORDEM 27: isolamento Plantão):
+      // Caminho não-streaming (texto final commitado): pass-through RAW_AI_OUTPUT.
+      //   → _cleanAiText() NUNCA chamada → zero CPU desperdiçado em regex pesado
+      //     para texto já processado pelo PlantatoPipeline ou pelo Estudo renderer.
+      // Caminho streaming (chunks parciais): _cleanAiText() APENAS aqui,
+      //   filtrando CoT/metadados/asteriscos ornamentais durante o stream activo.
       final String result;
       if (widget.isStreaming) {
+        // ORDEM 27: _cleanAiText() chamada SOMENTE neste branch (streaming chunk).
+        // Confirma isolamento: se chegar aqui com isPlantaoFinalBubble=true seria
+        // impossível pois _AiBubble não é instanciado para bolhas finais do Plantão.
+        if (kDebugMode) debugPrint('[CPU_GUARD] _cleanAiText called — isStreaming=true (legítimo)');
         final cleaned = _cleanAiText(safeText);
         result = cleaned.isEmpty ? safeText.trim() : cleaned;
       } else {
-        // Texto final: pass-through direto — preserva toda a formatação Markdown
+        // Texto final: pass-through direto — preserva toda a formatação Markdown.
+        // _cleanAiText() NÃO é chamada — isolamento CPU garantido.
         result = safeText.trim();
       }
 
