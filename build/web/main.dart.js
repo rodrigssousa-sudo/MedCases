@@ -308,7 +308,7 @@ N6:function N6(){},
 rp:function rp(){}},A={
 ciu(){var s,r,q=$.bKF
 if(q!=null)return q
-s=A.U("Chrom(e|ium)\\/([0-9]+)\\.",!0,!1,!1,!1)
+s=A.S("Chrom(e|ium)\\/([0-9]+)\\.",!0,!1,!1,!1)
 q=$.cT().gAq()
 r=s.dU(q)
 if(r!=null){q=r.b[2]
@@ -409,7 +409,7 @@ break
 default:s=null}return s},
 cdW(){var s=A.j9().b,r=s==null?null:s.canvasKitVariant
 s=A.chY(A.c3d(B.blU,r==null?"auto":r))
-return new A.P(s,new A.bCw(),A.S(s).i("P<1,h>"))},
+return new A.P(s,new A.bCw(),A.T(s).i("P<1,h>"))},
 cgY(a,b){return b+a},
 auC(){var s=0,r=A.C(t.m),q,p,o,n
 var $async$auC=A.y(function(a,b){if(a===1)return A.z(b,r)
@@ -1122,7 +1122,7 @@ bVs(a){var s,r=v.G
 if(r.Intl.Segmenter==null)throw A.p(A.h3("Intl.Segmenter() is not supported."))
 r=r.Intl.Segmenter
 s=t.N
-s=A.bj(A.T(["granularity",a],s,s))
+s=A.bj(A.U(["granularity",a],s,s))
 s.toString
 return new r([],s)},
 bLB(){var s=0,r=A.C(t.H),q
@@ -1312,7 +1312,7 @@ if(A.bRJ(s)||A.bJz(s))return A.bRI(a)}return A.bQu(a)},
 bQu(a){var s=new A.NZ(a)
 s.als(a)
 return s},
-bRI(a){var s=new A.Qs(a,A.T(["flutter",!0],t.N,t.y))
+bRI(a){var s=new A.Qs(a,A.U(["flutter",!0],t.N,t.y))
 s.alD(a)
 return s},
 bRJ(a){return t.f.b(a)&&J.o(J.W(a,"origin"),!0)},
@@ -1369,7 +1369,7 @@ case 2:return 2
 default:return B.p.afK(1,a)}},
 bQ1(a,b,c,d){var s,r=A.cC(b)
 if(c==null)d.addEventListener(a,r)
-else{s=A.bj(A.T(["passive",c],t.N,t.K))
+else{s=A.bj(A.U(["passive",c],t.N,t.K))
 s.toString
 d.addEventListener(a,r,s)}return new A.a78(a,d,r)},
 GG(a){var s=B.q.dw(a)
@@ -1713,7 +1713,7 @@ f=b}if(!(f===-1&&f===e)){m=A.bKY(h,g,new A.dR(f,e))
 f=a1.a
 f.toString
 if(m!==f){l=B.c.k(g,".")
-for(e=A.U(A.bEZ(g),!0,!1,!1,!1).ju(0,f),e=new A.q3(e.a,e.b,e.c),d=t.Qz,b=h.length;e.C();){k=e.d
+for(e=A.S(A.bEZ(g),!0,!1,!1,!1).ju(0,f),e=new A.q3(e.a,e.b,e.c),d=t.Qz,b=h.length;e.C();){k=e.d
 a=(k==null?d.a(k):k).b
 r=a.index
 if(!(r>=0&&r+a[0].length<=b)){j=r+c-1
@@ -4720,9 +4720,9 @@ cii(a,b){var s
 if(A.bRx(b))if(a instanceof A.ud){s=A.auy(a)
 if(s!=null)return s}return A.dt(a)},
 dt(a){if(a instanceof A.a4)return A.G(a)
-if(Array.isArray(a))return A.S(a)
+if(Array.isArray(a))return A.T(a)
 return A.bKT(J.ju(a))},
-S(a){var s=a[v.arrayRti],r=t.ee
+T(a){var s=a[v.arrayRti],r=t.ee
 if(s==null)return r
 if(s.constructor!==r.constructor)return r
 return s},
@@ -4746,7 +4746,7 @@ if(a instanceof A.tw)return a.a0j()
 s=a instanceof A.ud?A.auy(a):null
 if(s!=null)return s
 if(t.zW.b(a))return J.aD(a).a
-if(Array.isArray(a))return A.S(a)
+if(Array.isArray(a))return A.T(a)
 return A.dt(a)},
 dA(a){var s=a.r
 return s==null?a.r=new A.YA(a):s},
@@ -6077,7 +6077,7 @@ return new A.TA(a,b,s,d.i("@<0>").d0(e).i("TA<1,2>"))},
 hV(a,b,c,d){if(b==null){if(a==null)return new A.jP(c.i("@<0>").d0(d).i("jP<1,2>"))
 b=A.bL7()}else{if(A.bVo()===b&&A.bVn()===a)return new A.N7(c.i("@<0>").d0(d).i("N7<1,2>"))
 if(a==null)a=A.bL6()}return A.ccm(a,b,null,c,d)},
-T(a,b,c){return A.bVB(a,new A.jP(b.i("@<0>").d0(c).i("jP<1,2>")))},
+U(a,b,c){return A.bVB(a,new A.jP(b.i("@<0>").d0(c).i("jP<1,2>")))},
 R(a,b){return new A.jP(a.i("@<0>").d0(b).i("jP<1,2>"))},
 ccm(a,b,c,d,e){return new A.Vs(a,b,new A.bou(d),d.i("@<0>").d0(e).i("Vs<1,2>"))},
 eA(a){return new A.qc(a.i("qc<0>"))},
@@ -6686,7 +6686,7 @@ bJH(a){return A.d5(a)},
 cal(a,b,c){var s=a.length
 if(b>=s)return""
 return A.c8G(a,b,c==null||c>s?s:c)},
-U(a,b,c,d,e){return new A.pj(a,A.bIF(a,d,b,e,c,""))},
+S(a,b,c,d,e){return new A.pj(a,A.bIF(a,d,b,e,c,""))},
 cib(a,b){return a==null?b==null:a===b},
 aZw(a,b,c){var s=J.bv(b)
 if(!s.C())return a
@@ -7953,7 +7953,7 @@ case 1:return A.qp(new q(A.k6(b[0])))
 case 2:return A.qp(new q(A.k6(b[0]),A.k6(b[1])))
 case 3:return A.qp(new q(A.k6(b[0]),A.k6(b[1]),A.k6(b[2])))
 case 4:return A.qp(new q(A.k6(b[0]),A.k6(b[1]),A.k6(b[2]),A.k6(b[3])))}s=[null]
-B.d.u(s,new A.P(b,A.bVW(),A.S(b).i("P<1,a4?>")))
+B.d.u(s,new A.P(b,A.bVW(),A.T(b).i("P<1,a4?>")))
 r=q.bind.apply(q,s)
 String(r)
 return A.qp(new r())},
@@ -8790,7 +8790,7 @@ return s},
 q5(a){var s=A.R(t.vT,t.z)
 a.aG(0,new A.b9Q(s))
 return s},
-cbN(a){var s=A.dP(a,!0,t.z),r=A.S(s).i("P<1,@>")
+cbN(a){var s=A.dP(a,!0,t.z),r=A.T(s).i("P<1,@>")
 s=A.O(new A.P(s,A.ch3(),r),r.i("al.E"))
 return s},
 bSY(a,b){var s
@@ -8798,7 +8798,7 @@ if(a==null)return null
 s=A.dE(a,t.N,t.z)
 s.lv(s,new A.b9P(b))
 return s},
-cbM(a,b){var s=A.dP(a,!0,t.z),r=A.S(s).i("P<1,@>")
+cbM(a,b){var s=A.dP(a,!0,t.z),r=A.T(s).i("P<1,@>")
 s=A.O(new A.P(s,new A.b9O(b),r),r.i("al.E"))
 return s},
 Te(a){if(a instanceof A.HO)return a.a
@@ -9249,7 +9249,7 @@ return s},
 c37(a){var s=A.R(t.e,t.z)
 a.aG(0,new A.aDO(s))
 return s},
-bOC(a){var s=A.dP(a,!0,t.z),r=A.S(s).i("P<1,@>")
+bOC(a){var s=A.dP(a,!0,t.z),r=A.T(s).i("P<1,@>")
 s=A.O(new A.P(s,A.chD(),r),r.i("al.E"))
 return s},
 lP(a){var s,r
@@ -9279,10 +9279,10 @@ aDO:function aDO(a){this.a=a},
 ci2(a){switch(a.a){case 0:return"none"
 case 1:return"estimate"
 case 2:return"previous"}},
-bVk(a,b,c){var s,r=b.ghM(),q=A.S(r).i("P<1,lL>")
+bVk(a,b,c){var s,r=b.ghM(),q=A.T(r).i("P<1,lL>")
 r=A.O(new A.P(r,new A.bDR(a,c),q),q.i("al.E"))
 q=b.aNQ()
-s=A.S(q).i("P<1,un>")
+s=A.T(q).i("P<1,un>")
 q=A.O(new A.P(q,new A.bDS(a,c),s),s.i("al.E"))
 return A.c8N(r,q,new A.aYk())},
 bLd(a,b,c){var s=b.a
@@ -9944,7 +9944,7 @@ n=h.tenantId
 if(n==null)n=k
 h=h.uid
 m=c.gUc()
-l=A.S(m).i("P<1,ai<h,@>>")
+l=A.T(m).i("P<1,ai<h,@>>")
 m=A.O(new A.P(m,new A.b0z(),l),l.i("al.E"))
 l=$.bGt()
 m=new A.q_(c,d,a,b,new A.EL(new A.zn(h,i,j,p,q,f,g,k,n,o,s,r),m))
@@ -10072,7 +10072,7 @@ if(q==null)q=f
 p=g.tenantId
 if(p==null)p=f
 e=new A.aQm(e).gaQe()
-o=A.S(e).i("P<1,mb>")
+o=A.T(e).i("P<1,mb>")
 A.O(new A.P(e,A.ck1(),o),o.i("al.E"))
 A.bOO()
 e=$.bM3()
@@ -10813,11 +10813,11 @@ baL(a,b,c){var s,r,q,p,o
 if(a==b)return a
 if(a==null){s=b.a
 if(s==null)s=b
-else{r=A.S(s).i("P<1,k>")
+else{r=A.T(s).i("P<1,k>")
 s=A.O(new A.P(s,new A.baM(c),r),r.i("al.E"))
 s=new A.oA(s)}return s}if(b==null){s=a.a
 if(s==null)s=a
-else{r=A.S(s).i("P<1,k>")
+else{r=A.T(s).i("P<1,k>")
 s=A.O(new A.P(s,new A.baN(c),r),r.i("al.E"))
 s=new A.oA(s)}return s}s=A.a([],t.O)
 for(r=b.a,q=a.a,p=0;p<r.length;++p){o=q==null?null:q[p]
@@ -11192,7 +11192,7 @@ s=$.bId
 if(s===0)A.chu(J.aE(a.a),100,a.b)
 else A.a1().$1("Another exception was thrown: "+a.gagm().l(0))
 $.bId=$.bId+1},
-bOZ(a){var s,r,q,p,o,n,m,l,k,j,i,h=A.T(["dart:async-patch",0,"dart:async",0,"package:stack_trace",0,"class _AssertionError",0,"class _FakeAsync",0,"class _FrameCallbackEntry",0,"class _Timer",0,"class _RawReceivePortImpl",0],t.N,t.S),g=A.cac(J.bGM(a,"\n"))
+bOZ(a){var s,r,q,p,o,n,m,l,k,j,i,h=A.U(["dart:async-patch",0,"dart:async",0,"package:stack_trace",0,"class _AssertionError",0,"class _FakeAsync",0,"class _FrameCallbackEntry",0,"class _Timer",0,"class _RawReceivePortImpl",0],t.N,t.S),g=A.cac(J.bGM(a,"\n"))
 for(s=0,r=0;q=g.length,r<q;++r){p=g[r]
 o="class "+p.w
 n=p.c+":"+p.d
@@ -11356,7 +11356,7 @@ kv:function kv(a,b){this.a=a
 this.b=b},
 bVv(a,b){var s=a==null?null:A.a(a.split("\n"),t.s)
 if(s==null)s=A.a(["null"],t.s)
-if(b!=null)$.a_J().u(0,new A.hn(s,new A.bDZ(b),A.S(s).i("hn<1,h>")))
+if(b!=null)$.a_J().u(0,new A.hn(s,new A.bDZ(b),A.T(s).i("hn<1,h>")))
 else $.a_J().u(0,s)
 if(!$.bKK)A.bUj()},
 bUj(){var s,r=$.bKK=!1,q=$.bMm()
@@ -11419,7 +11419,7 @@ cad(a){var s,r,q,p,o,n,m,l,k,j,i=null,h="<unknown>"
 if(a==="<asynchronous suspension>")return B.e6n
 else if(a==="...")return B.e6o
 if(!B.c.Y(a,"#"))return A.cab(a)
-s=A.U("^#(\\d+) +(.+) \\((.+?):?(\\d+){0,1}:?(\\d+){0,1}\\)$",!0,!1,!1,!1).dU(a).b
+s=A.S("^#(\\d+) +(.+) \\((.+?):?(\\d+){0,1}:?(\\d+){0,1}\\)$",!0,!1,!1,!1).dU(a).b
 r=s[2]
 r.toString
 q=A.q(r,".<anonymous closure>","")
@@ -11504,7 +11504,7 @@ _.r=g},
 bV4(a,b){switch(b.a){case 1:case 4:return a
 case 0:case 2:case 3:return a===0?1:a
 case 5:return a===0?1:a}},
-c8k(a,b){var s=A.S(a)
+c8k(a,b){var s=A.T(a)
 return new A.d1(new A.e7(new A.a5(a,new A.aSI(),s.i("a5<1>")),new A.aSJ(b),s.i("e7<1,cu?>")),t.FI)},
 aSI:function aSI(){},
 aSJ:function aSJ(a){this.a=a},
@@ -12654,15 +12654,15 @@ case 9:s=""
 break
 default:s=null}return s}},
 c0b(a,b){var s,r,q,p,o,n,m=null
-switch(A.K(a).w.a){case 2:return new A.P(b,new A.avK(),A.S(b).i("P<1,f>"))
+switch(A.K(a).w.a){case 2:return new A.P(b,new A.avK(),A.T(b).i("P<1,f>"))
 case 1:case 0:s=A.a([],t.p)
 for(r=0;q=b.length,r<q;++r){p=b[r]
 o=A.caW(r,q)
 q=A.caV(o)
 n=A.caX(o)
 s.push(new A.Rw(A.e(A.avN(a,p),m,m,m,m,m,m,m,m,m),p.a,new A.N(q,0,n,0),B.i4,m))}return s
-case 3:case 5:return new A.P(b,new A.avL(a),A.S(b).i("P<1,f>"))
-case 4:return new A.P(b,new A.avM(a),A.S(b).i("P<1,f>"))}},
+case 3:case 5:return new A.P(b,new A.avL(a),A.T(b).i("P<1,f>"))
+case 4:return new A.P(b,new A.avM(a),A.T(b).i("P<1,f>"))}},
 a_Z:function a_Z(a,b,c){this.c=a
 this.e=b
 this.a=c},
@@ -13309,7 +13309,7 @@ _.fr=a4
 _.fx=a5},
 ahr:function ahr(){},
 lG(a,b){if((a==null?b:a)==null)return null
-return new A.j3(A.T([B.al,b,B.kZ,a],t.Ag,t.c),t.GC)},
+return new A.j3(A.U([B.al,b,B.kZ,a],t.Ag,t.c),t.GC)},
 xt(a,b,c,d){var s
 $label0$0:{if(d<=1){s=a
 break $label0$0}if(d<2){s=A.f4(a,b,d-1)
@@ -15258,9 +15258,9 @@ if(a3==null)break $label0$0
 r=g
 q=t.n8.b(a3)
 if(q)r=a3
-if(q){s=new A.j3(A.T([B.aS,r.bf(0.1),B.at,r.bf(0.08),B.ax,r.bf(0.1)],t.EK,t.c),t.GC)
+if(q){s=new A.j3(A.U([B.aS,r.bf(0.1),B.at,r.bf(0.08),B.ax,r.bf(0.1)],t.EK,t.c),t.GC)
 break $label0$0}}if(a0!=null){q=a0+2
-p=new A.j3(A.T([B.al,0,B.aS,a0+6,B.at,q,B.ax,q,B.kZ,a0],t.Ag,t.i),t.JI)}else p=g
+p=new A.j3(A.U([B.al,0,B.aS,a0+6,B.at,q,B.ax,q,B.kZ,a0],t.Ag,t.i),t.JI)}else p=g
 q=A.lG(c,d)
 o=A.lG(a3,e)
 n=a7==null?g:new A.bT(a7,t.De)
@@ -15270,7 +15270,7 @@ k=a5==null?g:new A.bT(a5,t.CG)
 j=a4==null?g:new A.bT(a4,t.CG)
 i=a9==null?g:new A.bT(a9,t.z_)
 h=a8==null?g:new A.bT(a8,t.li)
-return A.u9(a,b,g,q,p,a1,g,g,o,g,m,g,j,k,new A.j3(A.T([B.al,f,B.kZ,a2],t.Ag,t.WV),t.ZX),s,l,n,h,i,b0,g,b1,new A.bT(b2,t.RP),b3)},
+return A.u9(a,b,g,q,p,a1,g,g,o,g,m,g,j,k,new A.j3(A.U([B.al,f,B.kZ,a2],t.Ag,t.WV),t.ZX),s,l,n,h,i,b0,g,b1,new A.bT(b2,t.RP),b3)},
 cg5(a){var s=A.K(a),r=s.ok.as,q=r==null?null:r.r
 if(q==null)q=14
 r=A.cL(a,B.cU)
@@ -15407,14 +15407,14 @@ r=k
 q=t.n8.b(b)
 if(q)r=b
 if(q){s=B.q.b9(25.5)
-s=new A.j3(A.T([B.aS,A.bk(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.at,A.bk(20,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.ax,A.bk(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255)],t.EK,t.c),t.GC)
+s=new A.j3(A.U([B.aS,A.bk(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.at,A.bk(20,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.ax,A.bk(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255)],t.EK,t.c),t.GC)
 break $label0$0}}q=A.lG(a,k)
 p=A.lG(b,k)
 o=A.lG(k,k)
 n=c==null?k:new A.bT(c,t.mD)
 m=e==null?k:new A.bT(e,t.z_)
 l=d==null?k:new A.bT(d,t.li)
-return A.u9(k,k,k,q,k,k,k,k,p,k,o,k,k,k,new A.j3(A.T([B.al,null,B.kZ,null],t.Ag,t.WV),t.ZX),s,n,k,l,m,k,k,k,new A.bT(k,t.RP),k)},
+return A.u9(k,k,k,q,k,k,k,k,p,k,o,k,k,k,new A.j3(A.U([B.al,null,B.kZ,null],t.Ag,t.WV),t.ZX),s,n,k,l,m,k,k,k,new A.bT(k,t.RP),k)},
 cg7(a){var s=A.K(a).ok.as,r=s==null?null:s.r
 if(r==null)r=14
 s=A.cL(a,B.cU)
@@ -15644,7 +15644,7 @@ DD(a,b,c,d,e,f,g,h,i,j,a0,a1,a2,a3,a4,a5,a6){var s,r,q,p,o,n,m,l,k=null
 if(h!=null){$label0$0:{s=h.bf(0.1)
 r=h.bf(0.08)
 q=h.bf(0.1)
-q=new A.j3(A.T([B.aS,s,B.at,r,B.ax,q],t.EK,t.c),t.GC)
+q=new A.j3(A.U([B.aS,s,B.at,r,B.ax,q],t.EK,t.c),t.GC)
 s=q
 break $label0$0}p=s}else p=k
 s=A.lG(b,k)
@@ -15654,7 +15654,7 @@ o=a2==null?k:new A.bT(a2,t.CG)
 n=a1==null?k:new A.bT(a1,t.CG)
 m=a0==null?k:new A.bT(a0,t.XR)
 l=a4==null?k:new A.bT(a4,t.z_)
-return A.u9(a,k,k,s,k,e,k,k,r,k,k,m,n,o,new A.j3(A.T([B.al,d,B.kZ,f],t.Ag,t.WV),t.ZX),p,q,k,k,l,k,k,a5,k,a6)},
+return A.u9(a,k,k,s,k,e,k,k,r,k,k,m,n,o,new A.j3(A.U([B.al,d,B.kZ,f],t.Ag,t.WV),t.ZX),p,q,k,k,l,k,k,a5,k,a6)},
 blr:function blr(a,b){this.a=a
 this.b=b},
 MK:function MK(a,b,c,d,e,f,g,h,i,j,k){var _=this
@@ -16868,7 +16868,7 @@ if(a4==null)break $label1$1
 q=f
 p=t.n8.b(a4)
 if(p)q=a4
-if(p){r=new A.j3(A.T([B.aS,q.bf(0.1),B.at,q.bf(0.08),B.ax,q.bf(0.1)],t.EK,t.c),t.GC)
+if(p){r=new A.j3(A.U([B.aS,q.bf(0.1),B.at,q.bf(0.08),B.ax,q.bf(0.1)],t.EK,t.c),t.GC)
 break $label1$1}}p=b3==null?f:new A.bT(b3,t.uE)
 o=A.lG(a4,e)
 n=a8==null?f:new A.bT(a8,t.De)
@@ -16879,7 +16879,7 @@ j=a6==null?f:new A.bT(a6,t.CG)
 i=a5==null?f:new A.bT(a5,t.CG)
 h=b0==null?f:new A.bT(b0,t.z_)
 g=a9==null?f:new A.bT(a9,t.li)
-return A.u9(a,b,f,s,l,a2,f,f,o,f,m,f,i,j,new A.j3(A.T([B.al,a0,B.kZ,a3],t.Ag,t.WV),t.ZX),r,k,n,g,h,b1,f,b2,p,b4)},
+return A.u9(a,b,f,s,l,a2,f,f,o,f,m,f,i,j,new A.j3(A.U([B.al,a0,B.kZ,a3],t.Ag,t.WV),t.ZX),r,k,n,g,h,b1,f,b2,p,b4)},
 cg8(a){var s=A.K(a),r=s.ok.as,q=r==null?null:r.r
 if(q==null)q=14
 r=A.cL(a,B.cU)
@@ -18501,7 +18501,7 @@ if(p){l=q?o:a9
 if(l==null)l=m.a(l)}else l=d
 if(!p){p=m.b(a6)
 if(p)l=a6}else p=!0
-if(p){p=new A.j3(A.T([B.aS,l.bf(0.1),B.at,l.bf(0.08),B.ax,l.bf(0.1)],t.EK,t.c),t.GC)
+if(p){p=new A.j3(A.U([B.aS,l.bf(0.1),B.at,l.bf(0.08),B.ax,l.bf(0.1)],t.EK,t.c),t.GC)
 break $label2$2}p=n}n=b6==null?d:new A.bT(b6,t.uE)
 m=A.lG(a6,a1)
 k=b1==null?d:new A.bT(b1,t.De)
@@ -18511,7 +18511,7 @@ h=a8==null?d:new A.bT(a8,t.CG)
 g=a7==null?d:new A.bT(a7,t.CG)
 f=b3==null?d:new A.bT(b3,t.z_)
 e=b2==null?d:new A.bT(b2,t.li)
-return A.u9(a,b,d,s,j,a4,d,d,m,d,r,d,g,h,new A.j3(A.T([B.al,a2,B.kZ,a5],t.Ag,t.WV),t.ZX),p,i,k,e,f,b4,d,b5,n,b7)},
+return A.u9(a,b,d,s,j,a4,d,d,m,d,r,d,g,h,new A.j3(A.U([B.al,a2,B.kZ,a5],t.Ag,t.WV),t.ZX),p,i,k,e,f,b4,d,b5,n,b7)},
 cg6(a){var s=A.K(a).ok.as,r=s==null?null:s.r
 if(r==null)r=14
 s=A.cL(a,B.cU)
@@ -19145,7 +19145,7 @@ caZ(){var s=null
 return A.os(B.cM,s,s,s,s,s,s,s,s,s)},
 cb_(a){var s,r,q=A.R(t.G,t.gj)
 for(s=0;!1;++s){r=a[s]
-q.p(0,A.dA(A.S(r).i("qA.T")),r)}return q},
+q.p(0,A.dA(A.T(r).i("qA.T")),r)}return q},
 cb3(a,b){return $.bYj().cD(0,new A.HF(a,b),new A.b_Q(a,b))},
 b_P(a){var s=a.Rg()+0.05
 if(s*s>0.15)return B.cM
@@ -19494,7 +19494,7 @@ as3:function as3(){},
 bT5(a,b,c,d){return new A.aka(c,null,d,b,a,null)},
 t7(a,b,c,d){return new A.RH(b,c,a,d,null)},
 cba(){var s,r,q
-if($.Al.length!==0){s=A.a($.Al.slice(0),A.S($.Al))
+if($.Al.length!==0){s=A.a($.Al.slice(0),A.T($.Al))
 for(r=s.length,q=0;q<s.length;s.length===r||(0,A.a2)(s),++q)s[q].A8(B.aU)
 return!0}return!1},
 bSp(a){var s
@@ -20471,7 +20471,7 @@ q.u(0,d)
 s=A.O(q,q.$ti.c)
 s.$flags=1
 r=s
-s=A.S(r).i("P<1,k>")
+s=A.T(r).i("P<1,k>")
 s=A.O(new A.P(r,new A.bD4(a,b,c,d,e),s),s.i("al.E"))
 s.$flags=1
 return new A.b9Y(s,r)},
@@ -21354,7 +21354,7 @@ e=J.W(i,f)
 if(e!=null)o.gJj(o)
 else j=e}q[g]=A.bRo(j,o);++g}s.gA(a)
 while(!0){if(!!1)break
-q[g]=A.bRo(s.h(a,l),b[g]);++g;++l}return new A.eG(q,A.S(q).i("eG<1,e3>"))},
+q[g]=A.bRo(s.h(a,l),b[g]);++g;++l}return new A.eG(q,A.T(q).i("eG<1,e3>"))},
 bRo(a,b){var s,r=a==null?A.A2(b.gJj(b),null):a,q=b.gacj(),p=A.jk()
 q.gaUJ(q)
 p.to=q.gaUJ(q)
@@ -22113,7 +22113,7 @@ a=a4.gUi()
 a0=a4.glq(a4)
 a1=a4.gUB()
 a3=A.c8j(j,k,m,g,f,a4.gIj(),0,n,!1,a0,o,l,h,i,d,a,b,c,e,a4.gyE(),a1,p,q).d2(a4.gdQ(a4))
-for(q=A.S(a2).i("dk<1>"),p=new A.dk(a2,q),p=new A.bD(p,p.gA(0),q.i("bD<al.E>")),q=q.i("al.E");p.C();){o=p.d
+for(q=A.T(a2).i("dk<1>"),p=new A.dk(a2,q),p=new A.bD(p,p.gA(0),q.i("bD<al.E>")),q=q.i("al.E");p.C();){o=p.d
 if(o==null)o=q.a(o)
 if(o.gKV()){n=o.gTK(o)
 if(n!=null)n.$1(a3.d2(r.h(0,o)))}}},
@@ -24248,7 +24248,7 @@ lI(a){return A.c1r(a)},
 c1r(a){var s=0,r=A.C(t.H)
 var $async$lI=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:s=2
-return A.n(B.ei.dP("Clipboard.setData",A.T(["text",a.a],t.N,t.z),t.H),$async$lI)
+return A.n(B.ei.dP("Clipboard.setData",A.U(["text",a.a],t.N,t.z),t.H),$async$lI)
 case 2:return A.A(null,r)}})
 return A.B($async$lI,r)},
 aAg(a){return A.c1q(a)},
@@ -24495,7 +24495,7 @@ aZI(a){return A.cav(a)},
 cav(a){var s=0,r=A.C(t.H)
 var $async$aZI=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:s=2
-return A.n(B.ei.dP(u.Fj,A.T(["label",a.a,"primaryColor",a.b],t.N,t.z),t.H),$async$aZI)
+return A.n(B.ei.dP(u.Fj,A.U(["label",a.a,"primaryColor",a.b],t.N,t.z),t.H),$async$aZI)
 case 2:return A.A(null,r)}})
 return A.B($async$aZI,r)},
 bJJ(a){if($.FO!=null){$.FO=a
@@ -25892,7 +25892,7 @@ break
 case 1:s=B.G
 break
 default:s=null}return s},
-c2B(a){var s=a.cx,r=A.S(s)
+c2B(a){var s=a.cx,r=A.T(s)
 return new A.e7(new A.a5(s,new A.aBW(),r.i("a5<1>")),new A.aBX(),r.i("e7<1,ab>"))},
 c2z(a,b){var s,r,q,p,o=B.d.gW(a),n=A.bOk(b,o)
 for(s=a.length,r=0;r<a.length;a.length===s||(0,A.a2)(a),++r){q=a[r]
@@ -26598,7 +26598,7 @@ s.h(0,m).c.push(n)}}return s},
 bIg(a,b){var s,r,q,p,o=A.aH6(a),n=A.c4Q(a,o,b)
 for(s=new A.dV(n,n.r,n.e,A.G(n).i("dV<1>"));s.C();){r=s.d
 q=n.h(0,r).b.ag5(n.h(0,r).c,b)
-q=A.a(q.slice(0),A.S(q))
+q=A.a(q.slice(0),A.T(q))
 B.d.a5(n.h(0,r).c)
 B.d.u(n.h(0,r).c,q)}p=A.a([],t.bp)
 if(n.a!==0&&n.ao(0,o)){s=n.h(0,o)
@@ -26621,7 +26621,7 @@ return s},
 bOf(a,b){var s=J.lC(b)
 A.tQ(s,new A.aBQ(a),t.mx)
 return s},
-ccE(a){var s,r,q,p,o=A.S(a).i("P<1,ck<mM>>"),n=new A.P(a,new A.buQ(),o)
+ccE(a){var s,r,q,p,o=A.T(a).i("P<1,ck<mM>>"),n=new A.P(a,new A.buQ(),o)
 for(s=new A.bD(n,n.gA(0),o.i("bD<al.E>")),o=o.i("al.E"),r=null;s.C();){q=s.d
 p=q==null?o.a(q):q
 r=(r==null?p:r).m4(0,p)}if(r.gaj(r))return B.d.gW(a).a
@@ -26787,7 +26787,7 @@ if(r!==0)return r
 q=b.as
 if(a.as!==q)return q?-1:1
 return 0},
-c33(a,b){var s=A.S(b).i("P<1,hB>")
+c33(a,b){var s=A.T(b).i("P<1,hB>")
 s=A.O(new A.P(b,new A.aDF(),s),s.i("al.E"))
 return A.c2q(!0,s,a,B.bxX,!0,B.alV,null)},
 c31(a){a.bV()
@@ -27540,7 +27540,7 @@ else{n=k.a
 if(n==null)n=k.a=A.a([],o)
 n.push(new A.If(p,l))}}j=k.a
 if(j==null)return new A.dF(h,t.rh)
-return A.mS(new A.P(j,new A.bDf(),A.S(j).i("P<1,aG<@>>")),i).bM(new A.bDg(k,h),t.e3)},
+return A.mS(new A.P(j,new A.bDf(),A.T(j).i("P<1,aG<@>>")),i).bM(new A.bDg(k,h),t.e3)},
 Ns(a){var s=a.a6(t.Gk)
 return s==null?null:s.r.f},
 ei(a,b,c){var s=a.a6(t.Gk)
@@ -28833,7 +28833,7 @@ _.O$=0
 _.T$=e
 _.an$=_.bq$=0},
 bUH(a,b){return b},
-acI(a,b,c,d){return new A.aYa(!0,c,!0,a,A.T([null,0],t.LO,t.S))},
+acI(a,b,c,d){return new A.aYa(!0,c,!0,a,A.U([null,0],t.LO,t.S))},
 aY9:function aY9(){},
 IA:function IA(a){this.a=a},
 ng:function ng(a,b,c,d,e,f,g){var _=this
@@ -29756,7 +29756,7 @@ for(s=J.at(c),r=a.length,q=0,p=0,o=0;q<s.gA(c);){n=s.h(c,q)
 m=n.a
 l=m.a
 m=m.b
-k=A.U("\\b"+A.bEZ(B.c.S(b,l,m))+"\\b",!0,!1,!1,!1)
+k=A.S("\\b"+A.bEZ(B.c.S(b,l,m))+"\\b",!0,!1,!1,!1)
 j=B.c.fc(B.c.c3(a,o),k)
 i=j+o
 h=l+p
@@ -29839,7 +29839,7 @@ a6h:function a6h(){},
 a6e:function a6e(){},
 a6g:function a6g(){},
 bS2(a,b,c,d,e){var s
-if(B.d.c2(b,new A.aZS())){s=A.S(b).i("P<1,jH?>")
+if(B.d.c2(b,new A.aZS())){s=A.T(b).i("P<1,jH?>")
 s=A.O(new A.P(b,new A.aZT(),s),s.i("al.E"))
 s.$flags=1
 s=s}else s=null
@@ -30840,7 +30840,7 @@ case 15:A.aRs().es(new A.bCt())
 q=18
 h=$.be
 h=(h==null?$.be=$.cw():h).ga7g()
-g=A.S(h).i("P<1,ci>")
+g=A.T(h).i("P<1,ci>")
 h=A.O(new A.P(h,A.chM(),g),g.i("al.E"))
 h.$flags=1
 s=h.length===0?21:22
@@ -31506,9 +31506,9 @@ r=g.$1(f.h(a,"title"))
 q=f.h(a,"patientAge")
 q=q==null?i:J.aE(q)
 if(q==null){q=J.qw(g.$1(f.h(a,"patient")),"\u2022")
-q=A.a6I(A.d0(q,1,i,A.S(q).c))
+q=A.a6I(A.d0(q,1,i,A.T(q).c))
 if(q==null)q=i
-else{p=A.U("[^\\d]",!0,!1,!1,!1)
+else{p=A.S("[^\\d]",!0,!1,!1,!1)
 q=B.c.B(A.q(q,p,""))}}if(q==null)q=""
 p=f.h(a,"patientSex")
 p=p==null?i:J.aE(p)
@@ -32874,26 +32874,26 @@ cdv(a,b){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c=B.c.B(a)
 if(c.length===0)return a
 s=J.kH(B.d.gW(c.split("\n")))
 if(B.c.Y(s,"\ud83d\udfe5")||B.c.Y(s,"\ud83d\udea8")||B.c.Y(s,"\ud83d\udc8a")||B.c.Y(s,"\u26d4")||B.c.Y(s,"\ud83d\udccc"))return a
-c=A.U("^\\*\\s+\\*\\*[A-Z\xc0\xc1\xc2\xc3\xc9\xca\xcd\xd3\xd4\xd5\xda\xdc\xc7]",!0,!1,!0,!1)
+c=A.S("^\\*\\s+\\*\\*[A-Z\xc0\xc1\xc2\xc3\xc9\xca\xcd\xd3\xd4\xd5\xda\xdc\xc7]",!0,!1,!0,!1)
 if(!c.b.test(a))return a
 r=a.split("\n")
 q=A.a([],t.s)
 for(p=!1,o=0;o<r.length;++o){n=r[o]
 m=B.c.B(n)
-if(!p&&o<=2&&m.length!==0&&!B.c.Y(m,"*")&&!B.c.Y(m,"-")&&!B.c.Y(m,"\ud83d\udfe5")){c=A.U("^#{1,3}\\s+",!0,!1,!1,!1)
+if(!p&&o<=2&&m.length!==0&&!B.c.Y(m,"*")&&!B.c.Y(m,"-")&&!B.c.Y(m,"\ud83d\udfe5")){c=A.S("^#{1,3}\\s+",!0,!1,!1,!1)
 c=A.k9(m,c,"",0)
-l=A.U("^[\ud83d\udd35\ud83d\udccb\ud83c\udfe5\ud83d\udca1\ud83d\udccc\u2695\ufe0f]\\s+",!0,!1,!1,!1)
+l=A.S("^[\ud83d\udd35\ud83d\udccb\ud83c\udfe5\ud83d\udca1\ud83d\udccc\u2695\ufe0f]\\s+",!0,!1,!1,!1)
 k=B.c.B(A.k9(c,l,"",0))
 c=k.length
 if(c!==0&&c>3){q.push("\ud83d\udfe5 "+k.toUpperCase())
 p=!0
-continue}}j=A.U("^\\*\\s+\\*\\*([^*:]+):\\*\\*\\s*(.*)",!1,!1,!1,!1)
+continue}}j=A.S("^\\*\\s+\\*\\*([^*:]+):\\*\\*\\s*(.*)",!1,!1,!1,!1)
 i=j.dU(m)
 if(i!=null){c=i.b
 l=c[1]
 l.toString
 l=B.c.B(l)
-h=A.U("\\s+",!0,!1,!1,!1)
+h=A.S("\\s+",!0,!1,!1,!1)
 g=A.q(l.toUpperCase(),h," ")
 c=c[2]
 c.toString
@@ -32901,7 +32901,7 @@ f=B.c.B(c)
 q.push(A.cfI(g,f.length!==0?f[0].toUpperCase()+B.c.c3(f,1).toLowerCase():"",b))
 continue}if(B.c.Y(m,"*"))c=!j.b.test(m)
 else c=!1
-if(c){c=A.U("^\\*\\s*",!0,!1,!1,!1)
+if(c){c=A.S("^\\*\\s*",!0,!1,!1,!1)
 e=B.c.B(A.k9(m,c,"",0))
 if(e.length!==0)q.push("  "+e)
 continue}q.push(n)}d=B.d.a1(q,"\n")
@@ -32925,260 +32925,260 @@ if(B.c.k(a,"SANGRAMENTO")||B.c.k(a,"SANGRADO")||B.c.k(a,"HIPONATREMIA"))return"\
 return"\u26a0\ufe0f "+B.c.B(a)+": "+b},
 cgh(a){var s,r,q,p
 if(a.length===0)return a
-s=A.U("\\[(?:MANDATO(?:\\s+CR[I\xcd]TICO)?|MANDATO\\s+DE\\s+INTENT|REFOR[\xc7C]O\\s+MANDAT[\xd3O]RIO|IN[I\xcd]CIO\\s+DO\\s+CONTEXTO|SOBERANIA\\s+ESTRUTURAL|MONOP[\xd3O]LIO\\s+DE\\s+SA[I\xcd]DA)[^\\]]{0,2000}\\]",!1,!0,!1,!1)
+s=A.S("\\[(?:MANDATO(?:\\s+CR[I\xcd]TICO)?|MANDATO\\s+DE\\s+INTENT|REFOR[\xc7C]O\\s+MANDAT[\xd3O]RIO|IN[I\xcd]CIO\\s+DO\\s+CONTEXTO|SOBERANIA\\s+ESTRUTURAL|MONOP[\xd3O]LIO\\s+DE\\s+SA[I\xcd]DA)[^\\]]{0,2000}\\]",!1,!0,!1,!1)
 a=A.q(a,s,"")
-s=A.U("^(?:\\[MANDATO\\s+CR[I\xcd]TICO.*|\\[SOBERANIA\\s+ESTRUTURAL.*|\\[MONOP[\xd3O]LIO\\s+DE\\s+SA[I\xcd]DA.*|\\[IN[I\xcd]CIO\\s+DO\\s+CONTEXTO.*|\\[REFOR[\xc7C]O\\s+MANDAT[\xd3O]RIO.*|\\[MANDATO\\s+DE\\s+INTENT.*|DIRETRIZ\\s+DE\\s+IDIOMA\\s+\\(MANDAT[\xd3O]RIA\\).*|HIERARQUIA\\s+DE\\s+FORMATO\\s+DE\\s+SA[I\xcd]DA\\s+OBRIGAT[\xd3O]RIA.*|TABELA\\s+DE\\s+CONVERS[\xc3A]O\\s+DE\\s+MERCADO.*).*$",!1,!1,!0,!1)
+s=A.S("^(?:\\[MANDATO\\s+CR[I\xcd]TICO.*|\\[SOBERANIA\\s+ESTRUTURAL.*|\\[MONOP[\xd3O]LIO\\s+DE\\s+SA[I\xcd]DA.*|\\[IN[I\xcd]CIO\\s+DO\\s+CONTEXTO.*|\\[REFOR[\xc7C]O\\s+MANDAT[\xd3O]RIO.*|\\[MANDATO\\s+DE\\s+INTENT.*|DIRETRIZ\\s+DE\\s+IDIOMA\\s+\\(MANDAT[\xd3O]RIA\\).*|HIERARQUIA\\s+DE\\s+FORMATO\\s+DE\\s+SA[I\xcd]DA\\s+OBRIGAT[\xd3O]RIA.*|TABELA\\s+DE\\s+CONVERS[\xc3A]O\\s+DE\\s+MERCADO.*).*$",!1,!1,!0,!1)
 a=A.q(a,s,"")
-s=A.U("<think>.*?</think>",!1,!0,!1,!1)
+s=A.S("<think>.*?</think>",!1,!0,!1,!1)
 a=A.q(a,s,"")
-s=A.U("</?think[^>]*>",!1,!1,!1,!1)
+s=A.S("</?think[^>]*>",!1,!1,!1,!1)
 a=A.q(a,s,"")
-s=A.U("^[|\\s*]*(?:Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?\\s*(?:[:\u2013\u2014]|Alta|M[e\xe9]dia|Baixa)|Confianza\\s+Clinica\\s*[:\\s]|Confianca\\s+Clinica\\s*[:\\s]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:pedido|indicado|proporcionado|solicitado)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|The\\s+user(?:'s|s)\\s+input\\s+(?:is|was)\\s|The\\s+(?:doctor|physician|clinician)\\s+(?:is\\s+asking|asks|wants|requests)|The\\s+previous\\s+(?:turn|response|message)\\s+(?:ended|was|contained)|This\\s+implies?\\s+(?:the\\s+user|that\\s+the)\\s|User\\s+Input\\s+Analysis\\s*:|Assumed\\s+Patient\\s+Data\\s*:|Constructing\\s+(?:the\\s+)?(?:response|answer)\\s*:|Since\\s+the\\s+(?:user|question|prompt)\\s+(?:is|was|has)\\s|As\\s+the\\s+previous\\s+(?:turn|response)\\s|Given\\s+(?:the\\s+)?(?:context|previous)\\s|Let\\s+me\\s+(?:think|analyze|structure|break|consider|address|provide|help)|I(?:'ll|'m|\\s+will|\\s+should|\\s+need\\s+to|\\s+can)\\s+(?:provide|address|help|structure|analyze|respond|answer|focus)|Okay[,.]?\\s+(?:so|the|I|let|this)\\s|First[,.]?\\s+(?:I|let|the|this)\\s|Looking\\s+at\\s+(?:the|this)\\s|Based\\s+on\\s+(?:the|this|my)\\s|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|quiere|ha\\s+(?:pedido|indicado))|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|quer|solicitou)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?no\\s+(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto|ambiguo)|O\\s+prompt\\s+(?:[e\xe9]|parece)\\s+(?:vago|incompleto|ambiguo)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9]|describir[e\xe9])|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento|fornecerei)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicitac|que\\s+(?:o\\s+usu|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)|Vou\\s+(?:estruturar|organizar|formatar|abordar|analisar)\\s|Preciso\\s+(?:analisar|considerar|estruturar|organizar|fornecer)\\s|Analisando\\s+(?:o|a|os|as|esta|este|esse)\\s+(?:caso|consulta|pedido|pergunta)|Pensando\\s+(?:sobre|em|na|no)\\s+(?:isso|esta|este|essa)|Motivos?\\s*(?:\\([^)]*\\))?\\s*:|Motivo\\s+del\\s+(?:modo|activaci[o\xf3]n)\\s*:).*$",!1,!1,!0,!1)
+s=A.S("^[|\\s*]*(?:Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?\\s*(?:[:\u2013\u2014]|Alta|M[e\xe9]dia|Baixa)|Confianza\\s+Clinica\\s*[:\\s]|Confianca\\s+Clinica\\s*[:\\s]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:pedido|indicado|proporcionado|solicitado)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|The\\s+user(?:'s|s)\\s+input\\s+(?:is|was)\\s|The\\s+(?:doctor|physician|clinician)\\s+(?:is\\s+asking|asks|wants|requests)|The\\s+previous\\s+(?:turn|response|message)\\s+(?:ended|was|contained)|This\\s+implies?\\s+(?:the\\s+user|that\\s+the)\\s|User\\s+Input\\s+Analysis\\s*:|Assumed\\s+Patient\\s+Data\\s*:|Constructing\\s+(?:the\\s+)?(?:response|answer)\\s*:|Since\\s+the\\s+(?:user|question|prompt)\\s+(?:is|was|has)\\s|As\\s+the\\s+previous\\s+(?:turn|response)\\s|Given\\s+(?:the\\s+)?(?:context|previous)\\s|Let\\s+me\\s+(?:think|analyze|structure|break|consider|address|provide|help)|I(?:'ll|'m|\\s+will|\\s+should|\\s+need\\s+to|\\s+can)\\s+(?:provide|address|help|structure|analyze|respond|answer|focus)|Okay[,.]?\\s+(?:so|the|I|let|this)\\s|First[,.]?\\s+(?:I|let|the|this)\\s|Looking\\s+at\\s+(?:the|this)\\s|Based\\s+on\\s+(?:the|this|my)\\s|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|quiere|ha\\s+(?:pedido|indicado))|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|quer|solicitou)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?no\\s+(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto|ambiguo)|O\\s+prompt\\s+(?:[e\xe9]|parece)\\s+(?:vago|incompleto|ambiguo)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9]|describir[e\xe9])|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento|fornecerei)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicitac|que\\s+(?:o\\s+usu|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)|Vou\\s+(?:estruturar|organizar|formatar|abordar|analisar)\\s|Preciso\\s+(?:analisar|considerar|estruturar|organizar|fornecer)\\s|Analisando\\s+(?:o|a|os|as|esta|este|esse)\\s+(?:caso|consulta|pedido|pergunta)|Pensando\\s+(?:sobre|em|na|no)\\s+(?:isso|esta|este|essa)|Motivos?\\s*(?:\\([^)]*\\))?\\s*:|Motivo\\s+del\\s+(?:modo|activaci[o\xf3]n)\\s*:).*$",!1,!1,!0,!1)
 r=A.q(a,s,"")
-s=A.U("^(?:This\\s+is\\s+(?:a\\s+case|an?\\s+(?:urgent|emergency|case))\\s+of\\s|Here\\s+is\\s+(?:the|a|my)\\s+(?:response|answer|clinical)\\s|The\\s+(?:response|answer|clinical\\s+response)\\s+(?:below|is|will)\\s|I\\s+have\\s+(?:analyzed|reviewed|considered|structured)\\s).*$",!1,!1,!0,!1)
+s=A.S("^(?:This\\s+is\\s+(?:a\\s+case|an?\\s+(?:urgent|emergency|case))\\s+of\\s|Here\\s+is\\s+(?:the|a|my)\\s+(?:response|answer|clinical)\\s|The\\s+(?:response|answer|clinical\\s+response)\\s+(?:below|is|will)\\s|I\\s+have\\s+(?:analyzed|reviewed|considered|structured)\\s).*$",!1,!1,!0,!1)
 r=A.q(r,s,"")
-s=A.U("^(?:<\\s*[A-Za-z\\s,\\.]+\\.\\s+(?:The|I|This|Based)\\s|User\\s+Input\\s+Analysis\\s*:|The\\s+user(?:'s|s)?\\s+input\\s+is\\s|The\\s+previous\\s+response\\s+(?:ended|was|contained|had)\\s|This\\s+implies?\\s+(?:the\\s+user|that\\s+the)\\s|I\\s+need\\s+to\\s+provide\\s+a\\s+response\\s|Assumed\\s+Patient\\s+Data\\s*:|Constructing\\s+(?:the\\s+)?(?:response|answer)\\s|Since\\s+the\\s+(?:user|question|prompt)\\s+(?:is|was|has)\\s|As\\s+the\\s+previous\\s+(?:turn|response|message)\\s|Given\\s+(?:the\\s+)?(?:context|previous\\s+turn|user\\s+input)\\s|Interpreting\\s+(?:the\\s+)?(?:user|input|query)\\s|The\\s+question\\s+(?:asked|posed|is)\\s|My\\s+task\\s+(?:is|here)\\s|To\\s+address\\s+(?:the\\s+)?(?:user|question|this)\\s).*$",!1,!1,!0,!1)
+s=A.S("^(?:<\\s*[A-Za-z\\s,\\.]+\\.\\s+(?:The|I|This|Based)\\s|User\\s+Input\\s+Analysis\\s*:|The\\s+user(?:'s|s)?\\s+input\\s+is\\s|The\\s+previous\\s+response\\s+(?:ended|was|contained|had)\\s|This\\s+implies?\\s+(?:the\\s+user|that\\s+the)\\s|I\\s+need\\s+to\\s+provide\\s+a\\s+response\\s|Assumed\\s+Patient\\s+Data\\s*:|Constructing\\s+(?:the\\s+)?(?:response|answer)\\s|Since\\s+the\\s+(?:user|question|prompt)\\s+(?:is|was|has)\\s|As\\s+the\\s+previous\\s+(?:turn|response|message)\\s|Given\\s+(?:the\\s+)?(?:context|previous\\s+turn|user\\s+input)\\s|Interpreting\\s+(?:the\\s+)?(?:user|input|query)\\s|The\\s+question\\s+(?:asked|posed|is)\\s|My\\s+task\\s+(?:is|here)\\s|To\\s+address\\s+(?:the\\s+)?(?:user|question|this)\\s).*$",!1,!1,!0,!1)
 r=A.q(r,s,"")
-s=A.U("(?:^|\\n)(?:User\\s+Input\\s+Analysis|Assumed\\s+Patient\\s+Data|Constructing\\s+the\\s+Response)\\s*:.*?(?=\\n(?:\ud83d\udfe5|\u26d4|\ud83d\udc8a|\ud83d\udd04|\ud83d\udccc|##\\s|\\*\\*[A-Z])|$)",!1,!0,!1,!1)
+s=A.S("(?:^|\\n)(?:User\\s+Input\\s+Analysis|Assumed\\s+Patient\\s+Data|Constructing\\s+the\\s+Response)\\s*:.*?(?=\\n(?:\ud83d\udfe5|\u26d4|\ud83d\udc8a|\ud83d\udd04|\ud83d\udccc|##\\s|\\*\\*[A-Z])|$)",!1,!0,!1,!1)
 r=A.q(r,s,"")
-s=A.U("^\\s*\\[(?:MODO|PLANT[\xc3A]O|PLANTAO|ESTUDO|DIRETRIZ|SOBERANIA|CONTEXTO|TRAVA|SYSTEM)[^\\]]*\\]\\s*",!1,!1,!0,!1)
+s=A.S("^\\s*\\[(?:MODO|PLANT[\xc3A]O|PLANTAO|ESTUDO|DIRETRIZ|SOBERANIA|CONTEXTO|TRAVA|SYSTEM)[^\\]]*\\]\\s*",!1,!1,!0,!1)
 q=t.gD
 p=A.O(new A.a5(A.a(A.q(r,s,"").split("\n"),t.s),new A.bDy(),q),q.i("F.E"))
 return B.c.mj(B.d.a1(p,"\n"))},
-ce2(a){var s,r,q,p,o="CONTRAINDICA\xc7\xd5ES",n="\\bINDICACION\\b",m="INDICACI\xd3N",l="\\bINSUFICIENCIA CARDIACA\\b",k="\\bINSUFICIENCIA RENAL\\b",j="\\bINSUFICIENCIA RESPIRATORIA\\b",i="\\bDIAGNOSTICO DIFERENCIAL\\b",h="DIAGN\xd3STICO DIFERENCIAL",g="\\bEMERGENCIA\\b",f="ASSOCIA\xc7\xc3O",e="ASOCIACI\xd3N",d=A.U(u.qb,!1,!0,!1,!1),c=A.q(a,d,"")
-d=A.U(u.pu,!1,!1,!1,!1)
+ce2(a){var s,r,q,p,o="CONTRAINDICA\xc7\xd5ES",n="\\bINDICACION\\b",m="INDICACI\xd3N",l="\\bINSUFICIENCIA CARDIACA\\b",k="\\bINSUFICIENCIA RENAL\\b",j="\\bINSUFICIENCIA RESPIRATORIA\\b",i="\\bDIAGNOSTICO DIFERENCIAL\\b",h="DIAGN\xd3STICO DIFERENCIAL",g="\\bEMERGENCIA\\b",f="ASSOCIA\xc7\xc3O",e="ASOCIACI\xd3N",d=A.S(u.qb,!1,!0,!1,!1),c=A.q(a,d,"")
+d=A.S(u.pu,!1,!1,!1,!1)
 c=A.q(c,d,"")
-d=A.U(u.Ci,!1,!1,!1,!1)
+d=A.S(u.Ci,!1,!1,!1,!1)
 c=A.q(c,d,"")
-d=A.U(u.F1,!1,!1,!0,!1)
+d=A.S(u.F1,!1,!1,!0,!1)
 c=A.q(c,d,"")
-d=A.U("^(?:MODO\\s+ACTIVO\\s*:?|MODO\\s+\\[.\\]\\s+|MODO\\s+CONDUCTA\\s|MODO\\s+CONVERSACIONAL\\s|MODO\\s+GUARDIA\\s|MODO\\s+PLANTAO\\s|\\[REVISI\xd3N\\s+INTERNA\\]|\\[REVISION_INTERNA\\]|\\[REVISAO_INTERNA\\]|VERIFICACAO\\s+INTERNA\\s*:|VERIFICACI\xd3N\\s+INTERNA\\s*:|Confianza\\s+Cl[\xedi]nica\\s*:|Confian[\xe7c]a\\s+Cl[\xedi]nica\\s*:|Nivel\\s+de\\s+Confianza\\s*:|Confianza\\s+Clinica\\s*:|Confianca\\s+Clinica\\s*:|Motivos?\\s*(?:\\([^)]*\\))?\\s*:|Motivo\\s+del\\s+(?:modo|activaci[o\xf3]n)\\s*:|\u25b6\u25b6\u25b6).*$",!1,!1,!0,!1)
+d=A.S("^(?:MODO\\s+ACTIVO\\s*:?|MODO\\s+\\[.\\]\\s+|MODO\\s+CONDUCTA\\s|MODO\\s+CONVERSACIONAL\\s|MODO\\s+GUARDIA\\s|MODO\\s+PLANTAO\\s|\\[REVISI\xd3N\\s+INTERNA\\]|\\[REVISION_INTERNA\\]|\\[REVISAO_INTERNA\\]|VERIFICACAO\\s+INTERNA\\s*:|VERIFICACI\xd3N\\s+INTERNA\\s*:|Confianza\\s+Cl[\xedi]nica\\s*:|Confian[\xe7c]a\\s+Cl[\xedi]nica\\s*:|Nivel\\s+de\\s+Confianza\\s*:|Confianza\\s+Clinica\\s*:|Confianca\\s+Clinica\\s*:|Motivos?\\s*(?:\\([^)]*\\))?\\s*:|Motivo\\s+del\\s+(?:modo|activaci[o\xf3]n)\\s*:|\u25b6\u25b6\u25b6).*$",!1,!1,!0,!1)
 c=A.q(c,d,"")
-s=A.U("^(My response should\\s|I will structure\\s|Let me think\\s|I'll organize\\s|I should focus on\\s|I'm going to\\s|Vou estruturar\\s|Devo focar\\s|Mi respuesta debe\\s|Voy a estructurar\\s|Estructurando la respuesta|Pensando en la respuesta|Analizando el caso cl[\xedi]nico|Analisando o caso cl[\xedi]nico|Antes de responder a\\s|Before responding to\\s|Step \\d+:|Paso \\d+:|Etapa \\d+:|Planning:|Reasoning:|Chain of thought:).*",!1,!1,!0,!1)
+s=A.S("^(My response should\\s|I will structure\\s|Let me think\\s|I'll organize\\s|I should focus on\\s|I'm going to\\s|Vou estruturar\\s|Devo focar\\s|Mi respuesta debe\\s|Voy a estructurar\\s|Estructurando la respuesta|Pensando en la respuesta|Analizando el caso cl[\xedi]nico|Analisando o caso cl[\xedi]nico|Antes de responder a\\s|Before responding to\\s|Step \\d+:|Paso \\d+:|Etapa \\d+:|Planning:|Reasoning:|Chain of thought:).*",!1,!1,!0,!1)
 c=A.q(c,s,"")
-d=A.U("^(Agora vou\\s|Now I will\\s|I will now\\s|Vou agora\\s|Ahora voy a\\s|Deixa eu pensar\\s|Thinking\\.\\.\\.|Analyzing\\.\\.\\.|Processing\\.\\.\\.).*$",!1,!1,!0,!1)
+d=A.S("^(Agora vou\\s|Now I will\\s|I will now\\s|Vou agora\\s|Ahora voy a\\s|Deixa eu pensar\\s|Thinking\\.\\.\\.|Analyzing\\.\\.\\.|Processing\\.\\.\\.).*$",!1,!1,!0,!1)
 c=A.q(c,d,"")
-d=A.U(u.qY,!1,!1,!0,!1)
+d=A.S(u.qY,!1,!1,!0,!1)
 c=A.q(c,d,"")
-d=A.U(u.Cn,!1,!1,!0,!1)
+d=A.S(u.Cn,!1,!1,!0,!1)
 c=A.q(c,d,"")
-d=A.U("^[|\\s*]*(?:Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?\\s*(?:[:\u2013\u2014]|Alta|M[e\xe9]dia|Baixa)|Confianza\\s+Clinica\\s*[:\\s]|Confianca\\s+Clinica\\s*[:\\s]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:indicado|pedido|proporcionado|solicitado)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|ha\\s+pedido)|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|solicitou)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicitac|que\\s+(?:o\\s+usu|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?no\\s+(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto)|O\\s+prompt\\s+(?:[e\xe9]|parece)\\s+(?:vago|incompleto)|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9])|Motivos?\\s*(?:\\([^)]*\\))?\\s*:|Motivo\\s+del\\s+(?:modo|activaci[o\xf3]n)\\s*:).*$",!1,!1,!0,!1)
+d=A.S("^[|\\s*]*(?:Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?\\s*(?:[:\u2013\u2014]|Alta|M[e\xe9]dia|Baixa)|Confianza\\s+Clinica\\s*[:\\s]|Confianca\\s+Clinica\\s*[:\\s]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:indicado|pedido|proporcionado|solicitado)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|ha\\s+pedido)|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|solicitou)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicitac|que\\s+(?:o\\s+usu|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?no\\s+(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto)|O\\s+prompt\\s+(?:[e\xe9]|parece)\\s+(?:vago|incompleto)|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9])|Motivos?\\s*(?:\\([^)]*\\))?\\s*:|Motivo\\s+del\\s+(?:modo|activaci[o\xf3]n)\\s*:).*$",!1,!1,!0,!1)
 c=A.q(c,d,"")
 d=A.q(c,"---","")
 d=A.q(d,"--","")
-r=A.U("\\*{3,}",!0,!1,!1,!1)
+r=A.S("\\*{3,}",!0,!1,!1,!1)
 q=t.a4
 p=A.O(new A.P(A.a(A.q(d,r,"").split("\n"),t.s),new A.bCy(),q),q.i("al.E"))
 c=B.d.a1(p,"\n")
-d=A.U("\\n{3,}",!0,!1,!1,!1)
+d=A.S("\\n{3,}",!0,!1,!1,!1)
 c=A.q(c,d,"\n\n")
-d=A.U("\\bDEFINICAO\\b",!0,!1,!1,!1)
+d=A.S("\\bDEFINICAO\\b",!0,!1,!1,!1)
 d=A.q(c,d,"DEFINI\xc7\xc3O")
-r=A.U("\\bINDICACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bINDICACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INDICA\xc7\xc3O")
-r=A.U("\\bINDICACOES\\b",!0,!1,!1,!1)
+r=A.S("\\bINDICACOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INDICA\xc7\xd5ES")
-r=A.U("\\bPOSOLOGIA\\b",!0,!1,!1,!1)
+r=A.S("\\bPOSOLOGIA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"POSOLOGIA")
-r=A.U("\\bADMINISTRACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bADMINISTRACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ADMINISTRA\xc7\xc3O")
-r=A.U("\\bMONITORIZACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bMONITORIZACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"MONITORIZA\xc7\xc3O")
-r=A.U("\\bMONITORIZACOES\\b",!0,!1,!1,!1)
+r=A.S("\\bMONITORIZACOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"MONITORIZA\xc7\xd5ES")
-r=A.U("\\bCONTRAINDICACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bCONTRAINDICACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"CONTRAINDICA\xc7\xc3O")
-r=A.U("\\bCONTRAINDICACAOES\\b",!0,!1,!1,!1)
+r=A.S("\\bCONTRAINDICACAOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,o)
-r=A.U("\\bCONTRAINDICACOES\\b",!0,!1,!1,!1)
+r=A.S("\\bCONTRAINDICACOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,o)
-r=A.U("\\bPRESCRICAO\\b",!0,!1,!1,!1)
+r=A.S("\\bPRESCRICAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"PRESCRI\xc7\xc3O")
-r=A.U("\\bINTERACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bINTERACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTERA\xc7\xc3O")
-r=A.U("\\bINTERACOES\\b",!0,!1,!1,!1)
+r=A.S("\\bINTERACOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTERA\xc7\xd5ES")
-r=A.U("\\bAVALIACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bAVALIACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"AVALIA\xc7\xc3O")
-r=A.U("\\bEFEITOS ADVERSOS\\b",!0,!1,!1,!1)
+r=A.S("\\bEFEITOS ADVERSOS\\b",!0,!1,!1,!1)
 d=A.q(d,r,"EFEITOS ADVERSOS")
-r=A.U("\\bMEDICACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bMEDICACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"MEDICA\xc7\xc3O")
-r=A.U("\\bMEDICACOES\\b",!0,!1,!1,!1)
+r=A.S("\\bMEDICACOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"MEDICA\xc7\xd5ES")
-r=A.U("\\bESCALONAMENTO\\b",!0,!1,!1,!1)
+r=A.S("\\bESCALONAMENTO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ESCALONAMENTO")
-r=A.U("\\bFARMACO\\b",!0,!1,!1,!1)
+r=A.S("\\bFARMACO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"F\xc1RMACO")
-r=A.U("\\bFARMACOS\\b",!0,!1,!1,!1)
+r=A.S("\\bFARMACOS\\b",!0,!1,!1,!1)
 d=A.q(d,r,"F\xc1RMACOS")
-r=A.U("\\bDEFINICION\\b",!0,!1,!1,!1)
+r=A.S("\\bDEFINICION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"DEFINICI\xd3N")
-r=A.U(n,!0,!1,!1,!1)
+r=A.S(n,!0,!1,!1,!1)
 d=A.q(d,r,m)
-r=A.U("\\bINDICACIONES\\b",!0,!1,!1,!1)
+r=A.S("\\bINDICACIONES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INDICACIONES")
-r=A.U("\\bDOSIFICACION\\b",!0,!1,!1,!1)
+r=A.S("\\bDOSIFICACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"DOSIFICACI\xd3N")
-r=A.U("\\bADMINISTRACION\\b",!0,!1,!1,!1)
+r=A.S("\\bADMINISTRACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ADMINISTRACI\xd3N")
-r=A.U("\\bMONITORIZACION\\b",!0,!1,!1,!1)
+r=A.S("\\bMONITORIZACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"MONITORIZACI\xd3N")
-r=A.U("\\bINTERACCION\\b",!0,!1,!1,!1)
+r=A.S("\\bINTERACCION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTERACCI\xd3N")
-r=A.U("\\bINTERACCIONES\\b",!0,!1,!1,!1)
+r=A.S("\\bINTERACCIONES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTERACCIONES")
-r=A.U("\\bCONTRAINDICACION\\b",!0,!1,!1,!1)
+r=A.S("\\bCONTRAINDICACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"CONTRAINDICACI\xd3N")
-r=A.U("\\bCONTRAINDICACIONES\\b",!0,!1,!1,!1)
+r=A.S("\\bCONTRAINDICACIONES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"CONTRAINDICACIONES")
-r=A.U("\\bPRESCRIPCION\\b",!0,!1,!1,!1)
+r=A.S("\\bPRESCRIPCION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"PRESCRIPCI\xd3N")
-r=A.U(n,!0,!1,!1,!1)
+r=A.S(n,!0,!1,!1,!1)
 d=A.q(d,r,m)
-r=A.U("\\bREACCION\\b",!0,!1,!1,!1)
+r=A.S("\\bREACCION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"REACCI\xd3N")
-r=A.U("\\bREACCIONES ADVERSAS\\b",!0,!1,!1,!1)
+r=A.S("\\bREACCIONES ADVERSAS\\b",!0,!1,!1,!1)
 d=A.q(d,r,"REACCIONES ADVERSAS")
-r=A.U("\\bFARMACOLOGIA\\b",!0,!1,!1,!1)
+r=A.S("\\bFARMACOLOGIA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"FARMACOLOG\xcdA")
-r=A.U("\\bINTERACCIONES FARMACOLOGICAS\\b",!0,!1,!1,!1)
+r=A.S("\\bINTERACCIONES FARMACOLOGICAS\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTERACCIONES FARMACOL\xd3GICAS")
-r=A.U("\\bHIDRATACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bHIDRATACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"HIDRATA\xc7\xc3O")
-r=A.U("\\bVENTILACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bVENTILACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"VENTILA\xc7\xc3O")
-r=A.U("\\bINTUBACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bINTUBACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTUBA\xc7\xc3O")
-r=A.U("\\bCOAGULACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bCOAGULACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"COAGULA\xc7\xc3O")
-r=A.U("\\bINTOXICACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bINTOXICACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTOXICA\xc7\xc3O")
-r=A.U("\\bFIBRILACAO ATRIAL\\b",!0,!1,!1,!1)
+r=A.S("\\bFIBRILACAO ATRIAL\\b",!0,!1,!1,!1)
 d=A.q(d,r,"FIBRILA\xc7\xc3O ATRIAL")
-r=A.U("\\bFIBRILACAO VENTRICULAR\\b",!0,!1,!1,!1)
+r=A.S("\\bFIBRILACAO VENTRICULAR\\b",!0,!1,!1,!1)
 d=A.q(d,r,"FIBRILA\xc7\xc3O VENTRICULAR")
-r=A.U("\\bFIBRILACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bFIBRILACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"FIBRILA\xc7\xc3O")
-r=A.U("\\bDISFUNCAO\\b",!0,!1,!1,!1)
+r=A.S("\\bDISFUNCAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"DISFUN\xc7\xc3O")
-r=A.U("\\bHIPOGLICEMIA\\b",!0,!1,!1,!1)
+r=A.S("\\bHIPOGLICEMIA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"HIPOGLICEMIA")
-r=A.U("\\bHIPERGLICEMIA\\b",!0,!1,!1,!1)
+r=A.S("\\bHIPERGLICEMIA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"HIPERGLICEMIA")
-r=A.U(l,!0,!1,!1,!1)
+r=A.S(l,!0,!1,!1,!1)
 d=A.q(d,r,"INSUFICI\xcaNCIA CARD\xcdACA")
-r=A.U(k,!0,!1,!1,!1)
+r=A.S(k,!0,!1,!1,!1)
 d=A.q(d,r,"INSUFICI\xcaNCIA RENAL")
-r=A.U(j,!0,!1,!1,!1)
+r=A.S(j,!0,!1,!1,!1)
 d=A.q(d,r,"INSUFICI\xcaNCIA RESPIRAT\xd3RIA")
-r=A.U("\\bINSUFICIENCIA HEPATICA\\b",!0,!1,!1,!1)
+r=A.S("\\bINSUFICIENCIA HEPATICA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INSUFICI\xcaNCIA HEP\xc1TICA")
-r=A.U("\\bTROMBOEMBOLISMO PULMONAR\\b",!0,!1,!1,!1)
+r=A.S("\\bTROMBOEMBOLISMO PULMONAR\\b",!0,!1,!1,!1)
 d=A.q(d,r,"TROMBOEMBOLISMO PULMONAR")
-r=A.U("\\bACIDENTE VASCULAR CEREBRAL\\b",!0,!1,!1,!1)
+r=A.S("\\bACIDENTE VASCULAR CEREBRAL\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ACIDENTE VASCULAR CEREBRAL")
-r=A.U("\\bPROFILAXIA\\b",!0,!1,!1,!1)
+r=A.S("\\bPROFILAXIA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"PROFILAXIA")
-r=A.U(i,!0,!1,!1,!1)
+r=A.S(i,!0,!1,!1,!1)
 d=A.q(d,r,h)
-r=A.U("\\bDIAGNOSTICO\\b",!0,!1,!1,!1)
+r=A.S("\\bDIAGNOSTICO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"DIAGN\xd3STICO")
-r=A.U(g,!0,!1,!1,!1)
+r=A.S(g,!0,!1,!1,!1)
 d=A.q(d,r,"EMERG\xcaNCIA")
-r=A.U("\\bTRATAMENTO EMPIRICO\\b",!0,!1,!1,!1)
+r=A.S("\\bTRATAMENTO EMPIRICO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"TRATAMENTO EMP\xcdRICO")
-r=A.U("\\bTRATAMENTO FARMACOLOGICO\\b",!0,!1,!1,!1)
+r=A.S("\\bTRATAMENTO FARMACOLOGICO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"TRATAMENTO FARMACOL\xd3GICO")
-r=A.U("\\bESTABILIZACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bESTABILIZACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ESTABILIZA\xc7\xc3O")
-r=A.U("\\bEVOLUCAO\\b",!0,!1,!1,!1)
+r=A.S("\\bEVOLUCAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"EVOLU\xc7\xc3O")
-r=A.U("\\bSEDASAO\\b",!0,!1,!1,!1)
+r=A.S("\\bSEDASAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"SEDA\xc7\xc3O")
-r=A.U("\\bSEDASAO E ANALGESIA\\b",!0,!1,!1,!1)
+r=A.S("\\bSEDASAO E ANALGESIA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"SEDA\xc7\xc3O E ANALGESIA")
-r=A.U("\\bANALGESIA\\b",!0,!1,!1,!1)
+r=A.S("\\bANALGESIA\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ANALGESIA")
-r=A.U("\\bANTICOAGULACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bANTICOAGULACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ANTICOAGULA\xc7\xc3O")
-r=A.U("\\bTRANSFUSAO\\b",!0,!1,!1,!1)
+r=A.S("\\bTRANSFUSAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"TRANSFUS\xc3O")
-r=A.U("\\bINFECCAO\\b",!0,!1,!1,!1)
+r=A.S("\\bINFECCAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INFEC\xc7\xc3O")
-r=A.U("\\bINFECCAO DO TRATO\\b",!0,!1,!1,!1)
+r=A.S("\\bINFECCAO DO TRATO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INFEC\xc7\xc3O DO TRATO")
-r=A.U("\\bCOMPLICACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bCOMPLICACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"COMPLICA\xc7\xc3O")
-r=A.U("\\bCOMPLICACOES\\b",!0,!1,!1,!1)
+r=A.S("\\bCOMPLICACOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"COMPLICA\xc7\xd5ES")
-r=A.U("\\bATENCAO\\b",!0,!1,!1,!1)
+r=A.S("\\bATENCAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ATEN\xc7\xc3O")
-r=A.U("\\bRECOMENDACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bRECOMENDACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"RECOMENDA\xc7\xc3O")
-r=A.U("\\bRECOMENDACOES\\b",!0,!1,!1,!1)
+r=A.S("\\bRECOMENDACOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"RECOMENDA\xc7\xd5ES")
-r=A.U("\\bINFUSOES\\b",!0,!1,!1,!1)
+r=A.S("\\bINFUSOES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INFUS\xd5ES")
-r=A.U("\\bINFUSAO\\b",!0,!1,!1,!1)
+r=A.S("\\bINFUSAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INFUS\xc3O")
-r=A.U("\\bASSICIACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bASSICIACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,f)
-r=A.U("\\bASSOCIACAO\\b",!0,!1,!1,!1)
+r=A.S("\\bASSOCIACAO\\b",!0,!1,!1,!1)
 d=A.q(d,r,f)
-r=A.U("\\bHIDRATACION\\b",!0,!1,!1,!1)
+r=A.S("\\bHIDRATACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"HIDRATACI\xd3N")
-r=A.U("\\bVENTILACION\\b",!0,!1,!1,!1)
+r=A.S("\\bVENTILACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"VENTILACI\xd3N")
-r=A.U("\\bINTUBACION\\b",!0,!1,!1,!1)
+r=A.S("\\bINTUBACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTUBACI\xd3N")
-r=A.U("\\bCOAGULACION\\b",!0,!1,!1,!1)
+r=A.S("\\bCOAGULACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"COAGULACI\xd3N")
-r=A.U("\\bINTOXICACION\\b",!0,!1,!1,!1)
+r=A.S("\\bINTOXICACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INTOXICACI\xd3N")
-r=A.U("\\bFIBRILACION AURICULAR\\b",!0,!1,!1,!1)
+r=A.S("\\bFIBRILACION AURICULAR\\b",!0,!1,!1,!1)
 d=A.q(d,r,"FIBRILACI\xd3N AURICULAR")
-r=A.U("\\bFIBRILACION VENTRICULAR\\b",!0,!1,!1,!1)
+r=A.S("\\bFIBRILACION VENTRICULAR\\b",!0,!1,!1,!1)
 d=A.q(d,r,"FIBRILACI\xd3N VENTRICULAR")
-r=A.U("\\bFIBRILACION\\b",!0,!1,!1,!1)
+r=A.S("\\bFIBRILACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"FIBRILACI\xd3N")
-r=A.U("\\bDISFUNCION\\b",!0,!1,!1,!1)
+r=A.S("\\bDISFUNCION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"DISFUNCI\xd3N")
-r=A.U(l,!0,!1,!1,!1)
+r=A.S(l,!0,!1,!1,!1)
 d=A.q(d,r,"INSUFICIENCIA CARD\xcdACA")
-r=A.U(k,!0,!1,!1,!1)
+r=A.S(k,!0,!1,!1,!1)
 d=A.q(d,r,"INSUFICIENCIA RENAL")
-r=A.U(j,!0,!1,!1,!1)
+r=A.S(j,!0,!1,!1,!1)
 d=A.q(d,r,"INSUFICIENCIA RESPIRATORIA")
-r=A.U(i,!0,!1,!1,!1)
+r=A.S(i,!0,!1,!1,!1)
 d=A.q(d,r,h)
-r=A.U(g,!0,!1,!1,!1)
+r=A.S(g,!0,!1,!1,!1)
 d=A.q(d,r,"EMERGENCIA")
-r=A.U("\\bESTABILIZACION\\b",!0,!1,!1,!1)
+r=A.S("\\bESTABILIZACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ESTABILIZACI\xd3N")
-r=A.U("\\bEVOLUCION\\b",!0,!1,!1,!1)
+r=A.S("\\bEVOLUCION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"EVOLUCI\xd3N")
-r=A.U("\\bSEDACION\\b",!0,!1,!1,!1)
+r=A.S("\\bSEDACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"SEDACI\xd3N")
-r=A.U("\\bANTICOAGULACION\\b",!0,!1,!1,!1)
+r=A.S("\\bANTICOAGULACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ANTICOAGULACI\xd3N")
-r=A.U("\\bTRANSFUSION\\b",!0,!1,!1,!1)
+r=A.S("\\bTRANSFUSION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"TRANSFUSI\xd3N")
-r=A.U("\\bINFECCION\\b",!0,!1,!1,!1)
+r=A.S("\\bINFECCION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INFECCI\xd3N")
-r=A.U("\\bCOMPLICACION\\b",!0,!1,!1,!1)
+r=A.S("\\bCOMPLICACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"COMPLICACI\xd3N")
-r=A.U("\\bCOMPLICACIONES\\b",!0,!1,!1,!1)
+r=A.S("\\bCOMPLICACIONES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"COMPLICACIONES")
-r=A.U("\\bATENCION\\b",!0,!1,!1,!1)
+r=A.S("\\bATENCION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"ATENCI\xd3N")
-r=A.U("\\bINFUSION\\b",!0,!1,!1,!1)
+r=A.S("\\bINFUSION\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INFUSI\xd3N")
-r=A.U("\\bINFUSIONES\\b",!0,!1,!1,!1)
+r=A.S("\\bINFUSIONES\\b",!0,!1,!1,!1)
 d=A.q(d,r,"INFUSIONES")
-r=A.U("\\bASSOCIACION\\b",!0,!1,!1,!1)
+r=A.S("\\bASSOCIACION\\b",!0,!1,!1,!1)
 d=A.q(d,r,e)
-r=A.U("\\bASOCIACION\\b",!0,!1,!1,!1)
+r=A.S("\\bASOCIACION\\b",!0,!1,!1,!1)
 return B.c.B(A.q(d,r,e))},
 ccz(a){var s=t.gD,r=A.O(new A.a5(A.a(a.split("\n"),t.s),new A.bsJ(),s),s.i("F.E"))
 return B.c.B(B.d.a1(r,"\n"))},
@@ -33190,14 +33190,14 @@ q=s[r]
 p=B.c.eF(q,"\u258c")
 if(p)q=B.c.S(q,0,q.length-1)
 o=B.c.mj(q)
-n=A.U("^(\ud83d\udfe5|\u26d4|\ud83d\udccc|\ud83d\udcda|\ud83d\udea8|\ud83d\udc8a)",!0,!1,!1,!1)
+n=A.S("^(\ud83d\udfe5|\u26d4|\ud83d\udccc|\ud83d\udcda|\ud83d\udea8|\ud83d\udc8a)",!0,!1,!1,!1)
 if(n.b.test(o)){if(B.c.B(B.c.i7(o,n,"")).length===0)q=o+" "}else{m=""
 if(A.cbw(o))q=m
-else{l=A.U("^[\\*\\-\u2022]\\s*$",!0,!1,!1,!1)
+else{l=A.S("^[\\*\\-\u2022]\\s*$",!0,!1,!1,!1)
 if(l.b.test(o))q=m
-else{l=A.U("^#{1,3}\\s*$",!0,!1,!1,!1)
+else{l=A.S("^#{1,3}\\s*$",!0,!1,!1,!1)
 if(l.b.test(o))q=m
-else if((A.U("\\*\\*",!0,!1,!1,!1).ju(0,q).gA(0)&1)===1)q+="**"}}}s[r]=p?q+"\u258c":q
+else if((A.S("\\*\\*",!0,!1,!1,!1).ju(0,q).gA(0)&1)===1)q+="**"}}}s[r]=p?q+"\u258c":q
 return B.d.a1(s,"\n")},
 cbw(a){var s,r
 if(a.length===0)return!1
@@ -35147,40 +35147,40 @@ alf(a){return A.bQO(new A.blg(a),B.le,new A.blh(),t.z)},
 bTy(a,b,c,d,e,f,g){return new A.wE(c,d,g,f,a,b,e,null)},
 bUC(a){var s,r
 if(a.length===0)return a
-s=A.U("^.*Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?.*$",!1,!1,!0,!1)
+s=A.S("^.*Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?.*$",!1,!1,!0,!1)
 r=A.q(a,s,"")
-s=A.U("^[|\\s]*(?:Cl[\xedi]nica\\s*[:\u2013\u2014]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:pedido|indicado)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|quiere|ha\\s+(?:pedido|indicado))|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|quer|solicitou)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?(?:no\\s+)?(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto|ambiguo)|O\\s+prompt\\s+(?:\xe9|parece)\\s+(?:vago|incompleto|ambiguo)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9]|describir[e\xe9])|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento|fornecerei)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicita|que\\s+(?:o|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)).*$",!1,!1,!0,!1)
+s=A.S("^[|\\s]*(?:Cl[\xedi]nica\\s*[:\u2013\u2014]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:pedido|indicado)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|forneceu|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|quiere|ha\\s+(?:pedido|indicado))|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|quer|solicitou)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?(?:no\\s+)?(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto|ambiguo)|O\\s+prompt\\s+(?:\xe9|parece)\\s+(?:vago|incompleto|ambiguo)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9]|describir[e\xe9])|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento|fornecerei)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicita|que\\s+(?:o|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)).*$",!1,!1,!0,!1)
 r=A.q(r,s,"")
-s=A.U(u.jT,!1,!1,!0,!1)
+s=A.S(u.jT,!1,!1,!0,!1)
 return B.c.mj(A.q(r,s,""))},
-bUc(a){var s,r=A.U(u.qb,!1,!0,!1,!1),q=A.q(a,r,"")
-r=A.U(u.pu,!1,!1,!1,!1)
+bUc(a){var s,r=A.S(u.qb,!1,!0,!1,!1),q=A.q(a,r,"")
+r=A.S(u.pu,!1,!1,!1,!1)
 q=A.q(q,r,"")
-r=A.U(u.Ci,!1,!1,!1,!1)
+r=A.S(u.Ci,!1,!1,!1,!1)
 q=A.q(q,r,"")
-r=A.U(u.F1,!1,!1,!0,!1)
+r=A.S(u.F1,!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U(u.jT,!1,!1,!0,!1)
+r=A.S(u.jT,!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U("^(My response should|I will structure|I need to|Let me think|I'll organize|I should focus|I'm going to|Para responder|Vou estruturar|Devo focar|Mi respuesta debe|Voy a estructurar|Estructurando|Pensando en|Analizando el caso|Analisando o caso|Antes de responder|Before responding|Step \\d+:|Paso \\d+:|Etapa \\d+:|Planning:|Reasoning:|Chain of thought:).*",!1,!1,!0,!1)
+r=A.S("^(My response should|I will structure|I need to|Let me think|I'll organize|I should focus|I'm going to|Para responder|Vou estruturar|Devo focar|Mi respuesta debe|Voy a estructurar|Estructurando|Pensando en|Analizando el caso|Analisando o caso|Antes de responder|Before responding|Step \\d+:|Paso \\d+:|Etapa \\d+:|Planning:|Reasoning:|Chain of thought:).*",!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U("^(Agora vou|Now I will|I will now|Vou agora|Ahora voy a|Deixe-me|Let me|Perm\xedteme|Deixa eu pensar|Thinking\\.\\.\\.|Analyzing\\.\\.\\.|Processing\\.\\.\\.).*$",!1,!1,!0,!1)
+r=A.S("^(Agora vou|Now I will|I will now|Vou agora|Ahora voy a|Deixe-me|Let me|Perm\xedteme|Deixa eu pensar|Thinking\\.\\.\\.|Analyzing\\.\\.\\.|Processing\\.\\.\\.).*$",!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U(u.qY,!1,!1,!0,!1)
+r=A.S(u.qY,!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U(u.Cn,!1,!1,!0,!1)
+r=A.S(u.Cn,!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U("^.*Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?.*$",!1,!1,!0,!1)
+r=A.S("^.*Confian[z\xe7]a\\s*(?:Cl[\xedi]nica)?.*$",!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U("^[|\\s]*(?:Confianza\\s*[:\u2013\u2014]|Confian\xe7a\\s*[:\u2013\u2014]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:indicado|pedido)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|El\\s+usuario\\s+ha\\s+pedido|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|ha\\s+pedido)|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|solicitou)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicita|que\\s+(?:o|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?no\\s+(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto)|O\\s+prompt\\s+(?:\xe9|parece)\\s+(?:vago|incompleto)|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9])).*$",!1,!1,!0,!1)
+r=A.S("^[|\\s]*(?:Confianza\\s*[:\u2013\u2014]|Confian\xe7a\\s*[:\u2013\u2014]|Clinical\\s+Confidence\\s*:|Nivel\\s+de\\s+Confianza\\s*:|N[\xedi]vel\\s+de\\s+Confian[\xe7c]a\\s*:|El\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:indicado|pedido)|solicit[o\xf3])|O\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|solicitou|informou|est[a\xe1]\\s+perguntando)|The\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|El\\s+usuario\\s+ha\\s+pedido|El\\s+m[e\xe9]dico\\s+(?:solicita|pregunta|pide|ha\\s+pedido)|O\\s+m[e\xe9]dico\\s+(?:solicita|pergunta|pede|solicitou)|Baseado\\s+(?:no|na|em)\\s+(?:contexto|conversa|solicita|que\\s+(?:o|foi))|Basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci[o\xf3]n|la\\s+solicitud|lo\\s+que)|Para\\s+proporcionar\\s+una\\s+respuesta|Para\\s+fornecer\\s+uma\\s+resposta|La\\s+base\\s+de\\s+datos\\s+(?:local\\s+)?no\\s+(?:contiene|tiene|posee)|A\\s+base\\s+de\\s+dados\\s+(?:local\\s+)?n[a\xe3]o\\s+(?:possui|cont[e\xe9]m|tem)|Por\\s+lo\\s+tanto,\\s+(?:la\\s+mejor|el\\s+mejor)|Portanto,\\s+a\\s+melhor\\s+abordagem|(?:El|La)\\s+prompt\\s+(?:es|parece)\\s+(?:vago|incompleto)|O\\s+prompt\\s+(?:\xe9|parece)\\s+(?:vago|incompleto)|A\\s+seguir\\s+(?:apresentarei|descrevo|apresento)|A\\s+continuaci[o\xf3]n\\s+(?:presento|presentar[e\xe9])).*$",!1,!1,!0,!1)
 q=A.q(q,r,"")
-r=A.U("^#{1,3}\\s*",!0,!1,!0,!1)
+r=A.S("^#{1,3}\\s*",!0,!1,!0,!1)
 r=A.q(q,r,"")
 r=A.q(r,"---","")
 r=A.q(r,"--","")
-s=A.U("\\*{3,}",!0,!1,!1,!1)
+s=A.S("\\*{3,}",!0,!1,!1,!1)
 q=A.q(r,s,"")
-r=A.U("\\n{3,}",!0,!1,!1,!1)
+r=A.S("\\n{3,}",!0,!1,!1,!1)
 return B.c.B(A.q(q,r,"\n\n"))},
 cf7(a){var s,r,q,p,o,n,m
 if(a.length===0)return a
@@ -35190,12 +35190,12 @@ q=s[r]
 p=B.c.eF(q,"\u258c")
 if(p)q=B.c.S(q,0,q.length-1)
 o=B.c.mj(q)
-n=A.U("^[\\*\\-\u2022]\\s*$",!0,!1,!1,!1)
+n=A.S("^[\\*\\-\u2022]\\s*$",!0,!1,!1,!1)
 m=""
 if(n.b.test(o))q=m
-else{n=A.U("^#{1,3}\\s*$",!0,!1,!1,!1)
+else{n=A.S("^#{1,3}\\s*$",!0,!1,!1,!1)
 if(n.b.test(o))q=m
-else if((A.U("\\*\\*",!0,!1,!1,!1).ju(0,q).gA(0)&1)===1)q+="**"}s[r]=p?q+"\u258c":q
+else if((A.S("\\*\\*",!0,!1,!1,!1).ju(0,q).gA(0)&1)===1)q+="**"}s[r]=p?q+"\u258c":q
 return B.d.a1(s,"\n")},
 b23(a,b,c,d,e,f,g){return new A.So(d,e,g,c,a,f,null)},
 auH(a,b,c,d){return A.ci8(a,b,c,d)},
@@ -36107,18 +36107,18 @@ bUt(){var s=new A.aM(Date.now(),0,!1)
 return B.c.b0(B.p.l(A.hY(s)),2,"0")+"/"+B.c.b0(B.p.l(A.fg(s)),2,"0")+"/"+A.f7(s)},
 bFM(a){var s,r,q=B.c.B(a)
 if(q.length===0)return A.a([],t.s)
-s=B.c.ej(a,A.U("\\d+[\\.\\)]\\s+",!0,!1,!1,!1))
-s=new A.P(s,new A.bFN(),A.S(s).i("P<1,h>")).f5(0,new A.bFO())
+s=B.c.ej(a,A.S("\\d+[\\.\\)]\\s+",!0,!1,!1,!1))
+s=new A.P(s,new A.bFN(),A.T(s).i("P<1,h>")).f5(0,new A.bFO())
 r=A.O(s,s.$ti.i("F.E"))
 return r.length===0?A.a([q],t.s):r},
 bWq(a){var s,r,q,p,o,n,m
 if(B.c.B(a).length===0)return""
 s=new A.cD("")
-r=A.U("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
+r=A.S("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
 if(r.b.test(a))q=A.bFM(a)
 else{r=new A.P(A.a(a.split("\n"),t.s),new A.bFK(),t.a4).f5(0,new A.bFL())
 q=A.O(r,r.$ti.i("F.E"))}for(r=q.length,p=0;p<q.length;q.length===r||(0,A.a2)(q),++p){o=q[p]
-n=A.U("^[-\u2022*]\\s*",!0,!1,!1,!1)
+n=A.S("^[-\u2022*]\\s*",!0,!1,!1,!1)
 m=B.c.B(A.k9(o,n,"",0))
 if(m.length!==0)s.a+="\u2022 "+m+"\n"}r=s.a
 return B.c.jc(r.charCodeAt(0)==0?r:r)},
@@ -36308,13 +36308,13 @@ j=A.O(n,n.$ti.i("F.E"))
 if(j.length===1){b8+="\u2022 Nota: "+A.t(B.d.gW(j))+"\n"
 a9.a=b8}else{b8+="\u2022 Nota:\n"
 a9.a=b8
-for(n=A.d0(j,0,A.dy(3,a7,t.S),A.S(j).c),i=n.$ti,n=new A.bD(n,n.gA(0),i.i("bD<al.E>")),i=i.i("al.E");n.C();){h=n.d
+for(n=A.d0(j,0,A.dy(3,a7,t.S),A.T(j).c),i=n.$ti,n=new A.bD(n,n.gA(0),i.i("bD<al.E>")),i=i.i("al.E");n.C();){h=n.d
 b8+="  "+(h==null?i.a(h):h)+"\n"
 a9.a=b8}}}n=b0.z
 i=n.length===0
 if(!i){n=new A.P(A.a(n.split(a6),o),new A.bFD(),t.a4).f5(0,new A.bFE())
 g=A.O(n,n.$ti.i("F.E"))
-for(n=A.d0(g,0,A.dy(2,a7,t.S),A.S(g).c),h=n.$ti,n=new A.bD(n,n.gA(0),h.i("bD<al.E>")),h=h.i("al.E");n.C();){f=n.d
+for(n=A.d0(g,0,A.dy(2,a7,t.S),A.T(g).c),h=n.$ti,n=new A.bD(n,n.gA(0),h.i("bD<al.E>")),h=h.i("al.E");n.C();){f=n.d
 b8+="\u2022 "+(f==null?h.a(f):f)+"\n"
 a9.a=b8}}if(l.length===0&&k&&i)b8=a9.a=b8+((c0?"\u2022 (Sin datos subjetivos)":"\u2022 (Sem dados subjetivos)")+"\n")
 b8+="\n"
@@ -36373,8 +36373,8 @@ k=n==null
 if(!k){b8+="\u2022 Status: "+A.LK(n,c0?"es":"pt")+"\n"
 a9.a=b8}n=b5.c
 i=n.length===0
-if(!i){n=B.c.ej(n,A.U("[\\n.]",!0,!1,!1,!1))
-n=new A.P(n,new A.bFG(),A.S(n).i("P<1,h>")).f5(0,new A.bFH())
+if(!i){n=B.c.ej(n,A.S("[\\n.]",!0,!1,!1,!1))
+n=new A.P(n,new A.bFG(),A.T(n).i("P<1,h>")).f5(0,new A.bFH())
 n=A.oq(n,2,n.$ti.i("F.E"))
 j=A.O(n,A.G(n).i("F.E"))
 for(n=j.length,b=0;b<n;++b){b8+="\u2022 "+j[b]+"\n"
@@ -36384,20 +36384,20 @@ a9.a=b8
 a9.a=b8+("P - "+(c0?"PLAN & MEDICACI\xd3N":"PLANO & MEDICA\xc7\xc3O")+":\n")
 b8=b6.a
 a0=b8.length!==0
-if(a0){n=A.U("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
+if(a0){n=A.S("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
 if(n.b.test(b8))a1=A.bFM(b8)
 else{b8=new A.P(A.a(b8.split(a6),o),new A.bFI(),t.a4).f5(0,new A.bFJ())
 a1=A.O(b8,b8.$ti.i("F.E"))}a2=a1.length
-for(b8=A.d0(a1,0,A.dy(6,a7,t.S),A.S(a1).c),o=b8.$ti,b8=new A.bD(b8,b8.gA(0),o.i("bD<al.E>")),o=o.i("al.E");b8.C();){n=b8.d
+for(b8=A.d0(a1,0,A.dy(6,a7,t.S),A.T(a1).c),o=b8.$ti,b8=new A.bD(b8,b8.gA(0),o.i("bD<al.E>")),o=o.i("al.E");b8.C();){n=b8.d
 if(n==null)n=o.a(n)
-k=A.U("^[-\u2022*\\d+\\.]\\s*",!0,!1,!1,!1)
+k=A.S("^[-\u2022*\\d+\\.]\\s*",!0,!1,!1,!1)
 a3=B.c.B(A.k9(n,k,"",0))
 if(a3.length!==0)a9.a+="\u2022 "+a3+"\n"}if(a2>6)a9.a+="\u2022 + "+(a2-6)+" outras condutas (ver prontu\xe1rio)\n"}b8=b6.b
 if(b8.length!==0){b8="\u2022 "+(c0?"Alta si":"Alta se")+": "+b8+"\n"
 a9.a+=b8
 a0=!0}b8=b9.w
 o=b8.length
-if(o!==0){for(b8=A.d0(b8,0,A.dy(5,a7,t.S),A.S(b8).c),n=b8.$ti,b8=new A.bD(b8,b8.gA(0),n.i("bD<al.E>")),n=n.i("al.E");b8.C();){k=b8.d
+if(o!==0){for(b8=A.d0(b8,0,A.dy(5,a7,t.S),A.T(b8).c),n=b8.$ti,b8=new A.bD(b8,b8.gA(0),n.i("bD<al.E>")),n=n.i("al.E");b8.C();){k=b8.d
 if(k==null)k=n.a(k)
 i=k.b
 a4=i.length!==0?" \u2014 "+i:""
@@ -36473,31 +36473,31 @@ a4.a=b0
 a4.a=b0+((b2?"\ud83d\uded1 PENDIENTES (TO-DO LIST):":"\ud83d\uded1 PEND\xcaNCIAS (TO-DO LIST):")+"\n")
 b0=a9.a
 g=b0.length!==0
-if(g){m=A.U("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
+if(g){m=A.S("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
 if(m.b.test(b0))f=A.bFM(b0)
 else{n=new A.P(A.a(b0.split("\n"),n),new A.bFv(),t.a4).f5(0,new A.bFw())
 f=A.O(n,n.$ti.i("F.E"))
-if(f.length===1){b0=B.c.ej(b0,A.U("\\.\\s+(?=[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc2\xca\xd4\xc3\xd5\xdc])",!0,!1,!1,!1))
-b0=new A.P(b0,new A.bFx(),A.S(b0).i("P<1,h>")).f5(0,new A.bFy())
+if(f.length===1){b0=B.c.ej(b0,A.S("\\.\\s+(?=[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc2\xca\xd4\xc3\xd5\xdc])",!0,!1,!1,!1))
+b0=new A.P(b0,new A.bFx(),A.T(b0).i("P<1,h>")).f5(0,new A.bFy())
 f=A.O(b0,b0.$ti.i("F.E"))}}e=f.length
-for(b0=A.d0(f,0,A.dy(6,"count",t.S),A.S(f).c),n=b0.$ti,b0=new A.bD(b0,b0.gA(0),n.i("bD<al.E>")),n=n.i("al.E");b0.C();){m=b0.d
+for(b0=A.d0(f,0,A.dy(6,"count",t.S),A.T(f).c),n=b0.$ti,b0=new A.bD(b0,b0.gA(0),n.i("bD<al.E>")),n=n.i("al.E");b0.C();){m=b0.d
 if(m==null)m=n.a(m)
-d=A.U("^[-\u2022*\\d+\\.]\\s*",!0,!1,!1,!1)
+d=A.S("^[-\u2022*\\d+\\.]\\s*",!0,!1,!1,!1)
 c=B.c.B(A.k9(m,d,"",0))
 if(c.length!==0)a4.a+="\ud83d\udea8 "+c+"\n"}if(e>6)a4.a+="\ud83d\udea8 + "+(e-6)+" outras condutas (ver prontu\xe1rio completo)\n"}b0=a9.b
 if(b0.length!==0){b0="\ud83d\udea8 "+(b2?"Alta si":"Alta se")+": "+b0+"\n"
 a4.a+=b0
 g=!0}b0=b1.w
 n=b0.length
-if(n!==0){for(b0=A.d0(b0,0,A.dy(5,"count",t.S),A.S(b0).c),m=b0.$ti,b0=new A.bD(b0,b0.gA(0),m.i("bD<al.E>")),m=m.i("al.E");b0.C();){d=b0.d
+if(n!==0){for(b0=A.d0(b0,0,A.dy(5,"count",t.S),A.T(b0).c),m=b0.$ti,b0=new A.bD(b0,b0.gA(0),m.i("bD<al.E>")),m=m.i("al.E");b0.C();){d=b0.d
 if(d==null)d=m.a(d)
 b=d.b
 a=b.length!==0?" \u2014 "+b:""
 d="\ud83d\udea8 "+d.a+a+"\n"
 a4.a+=d}if(n>5)a4.a+="\ud83d\udea8 + "+(n-5)+" outros f\xe1rmacos (ver prescri\xe7\xe3o)\n"
 g=!0}b0=a8.c
-if(b0.length!==0){b0=B.c.ej(b0,A.U("[\\n.]",!0,!1,!1,!1))
-b0=new A.P(b0,new A.bFz(),A.S(b0).i("P<1,h>")).f5(0,new A.bFA())
+if(b0.length!==0){b0=B.c.ej(b0,A.S("[\\n.]",!0,!1,!1,!1))
+b0=new A.P(b0,new A.bFz(),A.T(b0).i("P<1,h>")).f5(0,new A.bFA())
 b0=A.oq(b0,3,b0.$ti.i("F.E"))
 a0=A.O(b0,A.G(b0).i("F.E"))
 for(b0=a0.length,a1=0;a1<b0;++a1)a4.a+="\ud83d\udea8 "+a0[a1]+"\n"
@@ -37066,9 +37066,9 @@ uM(a){var s=$.be,r=(s==null?$.be=$.cw():s).cw("[DEFAULT]")
 A.bK(r,$.cv(),!0)
 s=A.e1(new A.ci(r))
 return A.e4(s,s.gcV().cP("users")).cr(a).cP("internaciones")},
-aKR(a){var s,r=B.c.B(a.a),q=A.U("\\s+",!0,!1,!1,!1),p=A.q(r,q,"_").toLowerCase()
+aKR(a){var s,r=B.c.B(a.a),q=A.S("\\s+",!0,!1,!1,!1),p=A.q(r,q,"_").toLowerCase()
 r=B.c.B(a.b)
-q=A.U("\\s+",!0,!1,!1,!1)
+q=A.S("\\s+",!0,!1,!1,!1)
 s=A.q(r,q,"_").toLowerCase()
 if(p.length===0&&s.length===0)return"anon_"+Date.now()
 return p+"_"+s},
@@ -37081,9 +37081,9 @@ l=$.lA()
 k=l.ki()
 l=l.ki()
 j=A.bPw(c)
-i=A.S(b).i("P<1,ai<h,@>>")
+i=A.T(b).i("P<1,ai<h,@>>")
 i=A.O(new A.P(b,A.bVQ(),i),i.i("al.E"))
-n=A.T(["sessionKey",o,"status","active","isDeleted",!1,"savedAt",new A.h4(k,k),"updatedAt",new A.h4(l,l),"paciente",j,"historial",i],t.N,t.z)
+n=A.U(["sessionKey",o,"status","active","isDeleted",!1,"savedAt",new A.h4(k,k),"updatedAt",new A.h4(l,l),"paciente",j,"historial",i],t.N,t.z)
 l=A.uM(d).cr(o)
 k=A.Qh(!0)
 j=A.jZ(n)
@@ -37111,9 +37111,9 @@ var $async$a6E=A.y(function(e,f){if(e===1){p.push(f)
 s=q}while(true)switch(s){case 0:q=3
 m=$.lA().ki()
 l=A.bPw(c)
-k=A.S(b).i("P<1,ai<h,@>>")
+k=A.T(b).i("P<1,ai<h,@>>")
 k=A.O(new A.P(b,A.bVQ(),k),k.i("al.E"))
-o=A.T(["sessionKey",a,"status","active","isDeleted",!1,"updatedAt",new A.h4(m,m),"paciente",l,"historial",k],t.N,t.z)
+o=A.U(["sessionKey",a,"status","active","isDeleted",!1,"updatedAt",new A.h4(m,m),"paciente",l,"historial",k],t.N,t.z)
 m=A.uM(d).cr(a)
 l=A.q5(o)
 l.toString
@@ -37144,7 +37144,7 @@ var $async$a6D=A.y(function(c,d){if(c===1){p.push(d)
 s=q}while(true)switch(s){case 0:q=3
 n=A.uM(a).cr(b)
 m=$.lA().ki()
-m=A.q5(A.T(["status","archived","isDeleted",!0,"deletedAt",new A.h4(m,m)],t.K,t.X))
+m=A.q5(A.U(["status","archived","isDeleted",!0,"deletedAt",new A.h4(m,m)],t.K,t.X))
 m.toString
 s=6
 return A.n(n.a.cB(0,m),$async$a6D)
@@ -37157,7 +37157,7 @@ j=p.pop()
 q=8
 n=A.uM(a).cr(b)
 m=$.lA().ki()
-m=A.T(["status","archived","isDeleted",!0,"deletedAt",new A.h4(m,m)],t.N,t.z)
+m=A.U(["status","archived","isDeleted",!0,"deletedAt",new A.h4(m,m)],t.N,t.z)
 k=A.Qh(!0)
 m=A.jZ(m)
 m.toString
@@ -37188,7 +37188,7 @@ var $async$aKQ=A.y(function(c,d){if(c===1){p.push(d)
 s=q}while(true)switch(s){case 0:q=3
 n=A.uM(a).cr(b)
 m=$.lA().hr(0)
-m=A.q5(A.T(["status","active","isDeleted",!1,"deletedAt",new A.h4(m,m)],t.K,t.X))
+m=A.q5(A.U(["status","active","isDeleted",!1,"deletedAt",new A.h4(m,m)],t.K,t.X))
 m.toString
 s=6
 return A.n(n.a.cB(0,m),$async$aKQ)
@@ -37235,25 +37235,25 @@ break
 case 5:return A.A(null,r)
 case 1:return A.z(p.at(-1),r)}})
 return A.B($async$aKP,r)},
-bPw(a){return A.T(["nome",a.a,"cama",a.b,"idade",a.c,"sexo",a.d,"diagnostico",a.e,"diaInternacao",a.f],t.N,t.z)},
+bPw(a){return A.U(["nome",a.a,"cama",a.b,"idade",a.c,"sexo",a.d,"diagnostico",a.e,"diaInternacao",a.f],t.N,t.z)},
 bPv(a){return new A.ve(A.eg(a.h(0,"nome"),""),A.eg(a.h(0,"cama"),""),A.eg(a.h(0,"idade"),""),A.eg(a.h(0,"sexo"),""),A.eg(a.h(0,"diagnostico"),""),A.bPx(a.h(0,"diaInternacao"),1))},
 c5L(a){var s,r,q,p,o,n=a.b.ei(),m=a.d,l=t.N,k=t.X
-m=A.T(["notePasaNoche",m.a,"dolorEscala",m.b,"fiebre",m.c,"disnea",m.d,"nauseas",m.e,"tos",m.f,"alimentacion",m.r,"diuresis",m.w,"evacuacion",m.x,"suenoRestado",m.y,"notasLibres",m.z],l,k)
+m=A.U(["notePasaNoche",m.a,"dolorEscala",m.b,"fiebre",m.c,"disnea",m.d,"nauseas",m.e,"tos",m.f,"alimentacion",m.r,"diuresis",m.w,"evacuacion",m.x,"suenoRestado",m.y,"notasLibres",m.z],l,k)
 s=a.e
 r=s.a
 q=s.b
 p=s.c
-s=A.T(["signosVitales",A.T(["pa",r.a,"fc",r.b,"fr",r.c,"satO2",r.d,"temperatura",r.e],l,l),"examenFisico",A.T(["estadoGeneral",q.a,"acv",q.b,"ar",q.c,"abdomen",q.d,"extremidades",q.e],l,l),"examenes",A.T(["laboratorio",p.a,"imagenes",p.b,"culturas",p.c,"ecg",p.d],l,l),"tratamientoActual",s.d],l,t.K)
+s=A.U(["signosVitales",A.U(["pa",r.a,"fc",r.b,"fr",r.c,"satO2",r.d,"temperatura",r.e],l,l),"examenFisico",A.U(["estadoGeneral",q.a,"acv",q.b,"ar",q.c,"abdomen",q.d,"extremidades",q.e],l,l),"examenes",A.U(["laboratorio",p.a,"imagenes",p.b,"culturas",p.c,"ecg",p.d],l,l),"tratamientoActual",s.d],l,t.K)
 p=a.f
 q=p.a
 r=q==null?null:q.b
-k=A.T(["estado",r,"problemasActivos",p.b,"notasEvaluacion",p.c],l,k)
+k=A.U(["estado",r,"problemasActivos",p.b,"notasEvaluacion",p.c],l,k)
 p=a.r
-p=A.T(["planTerapeutico",p.a,"criteriosAlta",p.b],l,l)
+p=A.U(["planTerapeutico",p.a,"criteriosAlta",p.b],l,l)
 r=a.w
-q=A.S(r).i("P<1,ai<h,h>>")
+q=A.T(r).i("P<1,ai<h,h>>")
 r=A.O(new A.P(r,new A.aKG(),q),q.i("al.E"))
-o=A.T(["id",a.a,"fecha",n,"autorNombre",a.c,"subjetivo",m,"objetivo",s,"evaluacion",k,"plan",p,"farmacos",r],l,t.z)
+o=A.U(["id",a.a,"fecha",n,"autorNombre",a.c,"subjetivo",m,"objetivo",s,"evaluacion",k,"plan",p,"farmacos",r],l,t.z)
 n=a.x
 if(n.gcb(n))o.p(0,"metadadosAdicionais",n)
 return o},
@@ -37361,9 +37361,9 @@ aKE:function aKE(){},
 aKC:function aKC(){},
 aKF:function aKF(){},
 aKD:function aKD(){},
-bPy(a){var s,r=B.c.B(a.a),q=A.U("\\s+",!0,!1,!1,!1),p=A.q(r,q,"_").toLowerCase()
+bPy(a){var s,r=B.c.B(a.a),q=A.S("\\s+",!0,!1,!1,!1),p=A.q(r,q,"_").toLowerCase()
 r=B.c.B(a.b)
-q=A.U("\\s+",!0,!1,!1,!1)
+q=A.S("\\s+",!0,!1,!1,!1)
 s=A.q(r,q,"_").toLowerCase()
 if(p.length===0&&s.length===0)return"internacion_session_anon_"+Date.now()
 return"internacion_session_"+p+"_"+s},
@@ -37376,11 +37376,11 @@ return A.n(A.cJ(),$async$MZ)
 case 6:o=a0
 n=A.bPy(b)
 i=t.N
-m=A.T(["nome",b.a,"cama",b.b,"idade",b.c,"sexo",b.d,"diagnostico",b.e,"diaInternacao",b.f],i,t.z)
-h=A.S(a).i("P<1,ai<h,@>>")
+m=A.U(["nome",b.a,"cama",b.b,"idade",b.c,"sexo",b.d,"diagnostico",b.e,"diaInternacao",b.f],i,t.z)
+h=A.T(a).i("P<1,ai<h,@>>")
 g=A.O(new A.P(a,A.cim(),h),h.i("al.E"))
 l=g
-k=A.T(["sessionKey",n,"paciente",m,"historial",l,"savedAt",new A.aM(Date.now(),0,!1).ei()],i,t.K)
+k=A.U(["sessionKey",n,"paciente",m,"historial",l,"savedAt",new A.aM(Date.now(),0,!1).ei()],i,t.K)
 s=7
 return A.n(o.d4("String",n,B.aj.e7(k,null)),$async$MZ)
 case 7:f=o.ia("internacion_session_keys")
@@ -37482,17 +37482,17 @@ case 5:return A.A(null,r)
 case 1:return A.z(p.at(-1),r)}})
 return A.B($async$aKX,r)},
 c5V(a){var s,r,q,p,o=a.b.ei(),n=a.d,m=t.N,l=t.X
-n=A.T(["notePasaNoche",n.a,"dolorEscala",n.b,"fiebre",n.c,"disnea",n.d,"nauseas",n.e,"tos",n.f,"alimentacion",n.r,"diuresis",n.w,"evacuacion",n.x,"suenoRestado",n.y,"notasLibres",n.z],m,l)
+n=A.U(["notePasaNoche",n.a,"dolorEscala",n.b,"fiebre",n.c,"disnea",n.d,"nauseas",n.e,"tos",n.f,"alimentacion",n.r,"diuresis",n.w,"evacuacion",n.x,"suenoRestado",n.y,"notasLibres",n.z],m,l)
 s=a.e
 r=s.a
 q=s.b
 p=s.c
-s=A.T(["signosVitales",A.T(["pa",r.a,"fc",r.b,"fr",r.c,"satO2",r.d,"temperatura",r.e],m,m),"examenFisico",A.T(["estadoGeneral",q.a,"acv",q.b,"ar",q.c,"abdomen",q.d,"extremidades",q.e],m,m),"examenes",A.T(["laboratorio",p.a,"imagenes",p.b,"culturas",p.c,"ecg",p.d],m,m),"tratamientoActual",s.d],m,t.K)
+s=A.U(["signosVitales",A.U(["pa",r.a,"fc",r.b,"fr",r.c,"satO2",r.d,"temperatura",r.e],m,m),"examenFisico",A.U(["estadoGeneral",q.a,"acv",q.b,"ar",q.c,"abdomen",q.d,"extremidades",q.e],m,m),"examenes",A.U(["laboratorio",p.a,"imagenes",p.b,"culturas",p.c,"ecg",p.d],m,m),"tratamientoActual",s.d],m,t.K)
 p=a.f
 q=p.a
 r=q==null?null:q.b
 q=a.r
-return A.T(["id",a.a,"fecha",o,"autorNombre",a.c,"subjetivo",n,"objetivo",s,"evaluacion",A.T(["estado",r,"problemasActivos",p.b,"notasEvaluacion",p.c],m,l),"plan",A.T(["planTerapeutico",q.a,"criteriosAlta",q.b],m,m)],m,t.z)},
+return A.U(["id",a.a,"fecha",o,"autorNombre",a.c,"subjetivo",n,"objetivo",s,"evaluacion",A.U(["estado",r,"problemasActivos",p.b,"notasEvaluacion",p.c],m,l),"plan",A.U(["planTerapeutico",q.a,"criteriosAlta",q.b],m,m)],m,t.z)},
 yG(a){var s=t.N,r=t.z
 return t.f.b(a)?A.dE(a,s,r):A.R(s,r)},
 fd(a,b){if(a==null)return b
@@ -37732,17 +37732,17 @@ ca3(a9,b0,b1){var s=0,r=A.C(t.J9),q,p=2,o=[],n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a
 var $async$aYl=A.y(function(b3,b4){if(b3===1){o.push(b4)
 s=p}while(true)switch(s){case 0:a6=A.a([],t.H7)
 a7=B.c.B(b1)
-if(a7.length!==0)a6.push(A.T(["text",a7],t.N,t.z))
+if(a7.length!==0)a6.push(A.U(["text",a7],t.N,t.z))
 if(b0!=null)for(a7=t.N,a0=t.z,a1=0;a1<b0.length;++a1){a2=b0[a1]
-a6.push(A.T(["inline_data",A.T(["mime_type","image/jpeg","data",B.rr.gBy().e6(a2)],a7,a7)],a7,a0))}if(a6.length===0)throw A.p(A.cZ("Nenhum conte\xfado fornecido ao Copiloto."))
+a6.push(A.U(["inline_data",A.U(["mime_type","image/jpeg","data",B.rr.gBy().e6(a2)],a7,a7)],a7,a0))}if(a6.length===0)throw A.p(A.cZ("Nenhum conte\xfado fornecido ao Copiloto."))
 a7=t.N
 a0=t.K
-n=B.aj.e7(A.T(["system_instruction",A.T(["parts",A.a([A.T(["text",'Eres un motor de extraccion clinica de precision maxima (NLP + OCR). Tu unica tarea: leer el texto libre o imagen proporcionados y mapear CADA dato encontrado al campo JSON exacto. Tolera caos: texto fragmentado, abreviaturas medicas, datos fuera de orden, imagenes de monitores o planillas manuscritas \u2014 extrae TODO sin omitir ni inventar.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nREGLA ABSOLUTA \u2014 ESTRUCTURA FLAT DEL NODO "objetivo":\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nEl nodo "objetivo" es PLANO. TODOS sus campos van DIRECTAMENTE dentro de "objetivo", SIN sub-objetos anidados. Ejemplo CORRECTO:\n{\n  "objetivo": {\n    "pa": "120/80", "fc": "72", "fr": "18", "satO2": "97",\n    "temperatura": "36.8", "estadoGeneral": "RADS, consciente",\n    "acv": "RsCsRs SF", "ar": "MVC bilateral",\n    "abdomen": "Blando, RHA+", "extremidades": "Sin edemas",\n    "laboratorio": "Hb 10.2 | Leucos 8500 | PCR 12",\n    "imagenes": "Rx torax sin condensaciones",\n    "culturas": "", "ecg": "RS FC 72",\n    "tratamientoActual": "Hidratacion IV + antibiotico",\n    "planTerapeutico_ob": ""\n  }\n}\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nDIRECTIVAS DE EXTRACCION EXAUSTIVA \u2014 CAMPO POR CAMPO:\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nPACIENTE (demografico):\n\u2022 nome: nombre completo del paciente. Busca: "Paciente:", "Nombre:", "Apellido:", etiquetas de pulsera, cabezal de planilla.\n\u2022 cama: numero de cama, habitacion o leito. Busca: "Cama", "Hab.", "Room", "Leito", "Box".\n\u2022 idade: edad en a\xf1os. Busca: "a\xf1os", "a.", "anos", "age", fecha de nacimiento para calcular si se muestra explicitamente.\n\u2022 sexo: "M" o "F" unicamente. Busca: "masculino", "femenino", "male", "female", "M/F" check, iniciales de genero.\n\u2022 diagnostico: diagnostico principal de ingreso o el mas relevante actual. Busca: "Dx:", "Diagnostico:", "Motivo de consulta:", "CIE-10", primera linea del cuadro clinico.\n\u2022 diaInternacion: dia de internacion/hospitalizacion (entero 1-90). Busca: "Dia X de internacion", "D+X", "HD#X", "DH".\n\nSUBJETIVO (S):\n\u2022 notePasaNoche: como paso la noche el paciente \u2014 texto libre completo del medico o enfermeria. Consolida frases como "paso noche tranquila", "durmio bien", "refiere dolor", "llama por..."\n\u2022 dolorEscala: EVA 0-10. Busca: "EVA", "dolor x/10", "NRS", "escala de dolor", "VAS score".\n\u2022 fiebre: true si menciona "fiebre", "febril", "T > 38", "pico febril".\n\u2022 disnea: true si menciona "disnea", "dificultad respiratoria", "SOB", "shortness of breath", "dispneia".\n\u2022 nauseas: true si menciona "nauseas", "vomitos", "nausea".\n\u2022 tos: true si menciona "tos", "cough", "tosse".\n\u2022 alimentacion: "Bien"/"Regular"/"Mal". Busca: "tolera dieta", "ingiere bien", "sin apetito", "NPO", "nada por boca".\n\u2022 diuresis: "Normal"/"Oliguria"/"Anuria". Busca: "diuresis", "orina bien", "anuria", "oliguria", "coluria", "hematuria".\n\u2022 evacuacion: "Normal"/"Constipado"/"Diarrea". Busca: "catarsis", "evacuacion normal", "constipacion", "diarrea", "deposiciones".\n\u2022 suenoRestado: true si menciona "insomnio", "sueno alterado", "no durmio", "sono mal", "agitado en la noche".\n\u2022 notasLibres: cualquier informacion subjetiva relevante no capturada arriba \u2014 texto medico libre, quejas del paciente, novedades.\n\nOBJETIVO \u2014 SIGNOS VITALES (campos flat en "objetivo"):\n\u2022 pa: presion arterial en formato "120/80". Busca: "PA", "TA", "BP", "tension arterial", "presion", "SBP/DBP".\n\u2022 fc: frecuencia cardiaca (solo numero). Busca: "FC", "HR", "pulso", "heart rate", "freq cardiaca".\n\u2022 fr: frecuencia respiratoria (solo numero). Busca: "FR", "RR", "resp", "respiraciones por minuto".\n\u2022 satO2: saturacion de oxigeno (solo numero sin %). Busca: "SatO2", "SpO2", "sat", "O2 sat", "oximetria", "pulsioximetria". Si hay FiO2 o litros O2, incluir en notasLibres.\n\u2022 temperatura: temperatura corporal en grados C (solo numero). Busca: "T", "Temp", "temperatura", "febril", "afebril". Si dice "afebril" estimar 36.5.\n\nOBJETIVO \u2014 EXAMEN FISICO (campos flat en "objetivo"):\n\u2022 estadoGeneral: descripcion del estado general. Busca: "EG:", "RADS", "RAEG", "estado general", "aspecto general", "consciente", "orientado", "lucido", "somnoliento".\n\u2022 acv: auscultacion cardiovascular. Busca: "ACV", "CV:", "corazon", "ruidos cardiacos", "RsCsRs", "soplo", "arritmia".\n\u2022 ar: auscultacion respiratoria / pulmonar. Busca: "AR", "AP", "torax", "pulmones", "MVC", "rales", "sibilancias", "matidez".\n\u2022 abdomen: examen abdominal. Busca: "abdomen", "abd", "blando", "depresible", "RHA", "dolor a palpacion", "hepato", "esplenomegalia".\n\u2022 extremidades: examen de extremidades. Busca: "MMII", "MMSS", "edemas", "pulsos", "relleno capilar", "cianosis", "varices".\n\nOBJETIVO \u2014 EXAMENES COMPLEMENTARIOS (campos flat en "objetivo"):\n\u2022 laboratorio: TODOS los valores de laboratorio encontrados \u2014 hemograma (Hb, leucocitos, plaquetas), bioquimica (glucosa, urea, creatinina, ionograma, bilirrubina, transaminasas), coagulacion (Quick, KPTT), marcadores (PCR, VHS, procalcitonina, troponina, BNP, dDimero, lactato), gases arteriales (pH, pCO2, pO2, BE, HCO3). Formato: "Hb 10.2 | Leucos 8500 | PCR 12.3". Si hay tabla de resultados, transcribir completa.\n\u2022 imagenes: resultados de imagenologia. Busca: "Rx", "ECO", "TAC", "TC", "RMN", "radiografia", "ecografia", "tomografia".\n\u2022 culturas: resultados de cultivos y microbiologia. Busca: "hemocultivo", "urocultivo", "cultivo", "antibiograma", "germen", "sensible", "resistente".\n\u2022 ecg: hallazgos del electrocardiograma. Busca: "ECG", "EKG", "electrocardiograma", "RS", "FA", "bloqueo", "PR", "QTc".\n\u2022 tratamientoActual: medicacion o tratamiento en curso mencionado en el objetivo. Busca: "tratamiento actual", "medicacion actual", "drogas", "infusion", "goteo".\n\nEVALUACION (A):\n\u2022 estado: "mejorando"/"estable"/"empeorando". Infiere del contexto clinico si no esta explicito.\n\u2022 problemasActivos: lista LIMPIA de diagnosticos activos. Busca: "problemas activos", "lista de problemas", "Dx:", "diagnosticos", "CIE-10". SUBSTITUYE completamente \u2014 no mezcles.\n\u2022 notasEvaluacion: impresion clinica del medico, interpretacion de resultados, razonamiento diagnostico, conclusion del pase de guardia.\n\nPLAN (P):\n\u2022 planTerapeutico: TODAS las indicaciones medicas, ordenes, cambios de tratamiento. Busca: "indicaciones", "plan:", "conducta:", "ordenes:", "continue", "iniciar", "suspender", "solicitar". Formato bullet separado por newlines.\n\u2022 criteriosAlta: criterios o condiciones para el alta hospitalaria. Busca: "alta si", "criterios de alta", "condiciones para alta", "puede irse cuando".\n\nFARMACOS:\n\u2022 farmacos[]: lista de TODOS los medicamentos. Para cada uno:\n  - medicamento: nombre generico o comercial completo.\n  - dosis: dosis + via + frecuencia completa (ej: "500mg VO c/8h", "1g EV c/12h", "20mg/h BIC IV").\nBusca en: recetas, indicaciones, hoja de medicacion, planilla de enfermeria, cualquier listado de drogas con dosis.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nREGLAS CRITICAS FINALES:\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n1. NUNCA inventes datos \u2014 solo extrae lo EXPLICITO o razonablemente inferable.\n2. Campo sin datos \u2192 cadena vacia "" (NUNCA omitir la clave).\n3. Redactar en espanol medico profesional conciso.\n4. Si hay imagen de monitor: extrae TODOS los valores del display.\n5. Si hay tabla de laboratorio: transcribir CADA valor con su unidad.\n6. Frases ambiguas: registrar en notasLibres o notasEvaluacion.\n7. El nodo "objetivo" es FLAT \u2014 NO usar sub-objetos dentro de el.\n8. NUNCA omitas ningun nodo raiz del JSON.\n'],a7,a7)],t.SN)],a7,t.xW),"contents",A.a([A.T(["role","user","parts",a6],a7,a0)],t.Mq),"generationConfig",A.T(["responseMimeType","application/json","responseSchema",B.c1T,"temperature",0.1,"maxOutputTokens",8192],a7,a0)],a7,a0),null)
+n=B.aj.e7(A.U(["system_instruction",A.U(["parts",A.a([A.U(["text",'Eres un motor de extraccion clinica de precision maxima (NLP + OCR). Tu unica tarea: leer el texto libre o imagen proporcionados y mapear CADA dato encontrado al campo JSON exacto. Tolera caos: texto fragmentado, abreviaturas medicas, datos fuera de orden, imagenes de monitores o planillas manuscritas \u2014 extrae TODO sin omitir ni inventar.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nREGLA ABSOLUTA \u2014 ESTRUCTURA FLAT DEL NODO "objetivo":\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nEl nodo "objetivo" es PLANO. TODOS sus campos van DIRECTAMENTE dentro de "objetivo", SIN sub-objetos anidados. Ejemplo CORRECTO:\n{\n  "objetivo": {\n    "pa": "120/80", "fc": "72", "fr": "18", "satO2": "97",\n    "temperatura": "36.8", "estadoGeneral": "RADS, consciente",\n    "acv": "RsCsRs SF", "ar": "MVC bilateral",\n    "abdomen": "Blando, RHA+", "extremidades": "Sin edemas",\n    "laboratorio": "Hb 10.2 | Leucos 8500 | PCR 12",\n    "imagenes": "Rx torax sin condensaciones",\n    "culturas": "", "ecg": "RS FC 72",\n    "tratamientoActual": "Hidratacion IV + antibiotico",\n    "planTerapeutico_ob": ""\n  }\n}\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nDIRECTIVAS DE EXTRACCION EXAUSTIVA \u2014 CAMPO POR CAMPO:\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nPACIENTE (demografico):\n\u2022 nome: nombre completo del paciente. Busca: "Paciente:", "Nombre:", "Apellido:", etiquetas de pulsera, cabezal de planilla.\n\u2022 cama: numero de cama, habitacion o leito. Busca: "Cama", "Hab.", "Room", "Leito", "Box".\n\u2022 idade: edad en a\xf1os. Busca: "a\xf1os", "a.", "anos", "age", fecha de nacimiento para calcular si se muestra explicitamente.\n\u2022 sexo: "M" o "F" unicamente. Busca: "masculino", "femenino", "male", "female", "M/F" check, iniciales de genero.\n\u2022 diagnostico: diagnostico principal de ingreso o el mas relevante actual. Busca: "Dx:", "Diagnostico:", "Motivo de consulta:", "CIE-10", primera linea del cuadro clinico.\n\u2022 diaInternacion: dia de internacion/hospitalizacion (entero 1-90). Busca: "Dia X de internacion", "D+X", "HD#X", "DH".\n\nSUBJETIVO (S):\n\u2022 notePasaNoche: como paso la noche el paciente \u2014 texto libre completo del medico o enfermeria. Consolida frases como "paso noche tranquila", "durmio bien", "refiere dolor", "llama por..."\n\u2022 dolorEscala: EVA 0-10. Busca: "EVA", "dolor x/10", "NRS", "escala de dolor", "VAS score".\n\u2022 fiebre: true si menciona "fiebre", "febril", "T > 38", "pico febril".\n\u2022 disnea: true si menciona "disnea", "dificultad respiratoria", "SOB", "shortness of breath", "dispneia".\n\u2022 nauseas: true si menciona "nauseas", "vomitos", "nausea".\n\u2022 tos: true si menciona "tos", "cough", "tosse".\n\u2022 alimentacion: "Bien"/"Regular"/"Mal". Busca: "tolera dieta", "ingiere bien", "sin apetito", "NPO", "nada por boca".\n\u2022 diuresis: "Normal"/"Oliguria"/"Anuria". Busca: "diuresis", "orina bien", "anuria", "oliguria", "coluria", "hematuria".\n\u2022 evacuacion: "Normal"/"Constipado"/"Diarrea". Busca: "catarsis", "evacuacion normal", "constipacion", "diarrea", "deposiciones".\n\u2022 suenoRestado: true si menciona "insomnio", "sueno alterado", "no durmio", "sono mal", "agitado en la noche".\n\u2022 notasLibres: cualquier informacion subjetiva relevante no capturada arriba \u2014 texto medico libre, quejas del paciente, novedades.\n\nOBJETIVO \u2014 SIGNOS VITALES (campos flat en "objetivo"):\n\u2022 pa: presion arterial en formato "120/80". Busca: "PA", "TA", "BP", "tension arterial", "presion", "SBP/DBP".\n\u2022 fc: frecuencia cardiaca (solo numero). Busca: "FC", "HR", "pulso", "heart rate", "freq cardiaca".\n\u2022 fr: frecuencia respiratoria (solo numero). Busca: "FR", "RR", "resp", "respiraciones por minuto".\n\u2022 satO2: saturacion de oxigeno (solo numero sin %). Busca: "SatO2", "SpO2", "sat", "O2 sat", "oximetria", "pulsioximetria". Si hay FiO2 o litros O2, incluir en notasLibres.\n\u2022 temperatura: temperatura corporal en grados C (solo numero). Busca: "T", "Temp", "temperatura", "febril", "afebril". Si dice "afebril" estimar 36.5.\n\nOBJETIVO \u2014 EXAMEN FISICO (campos flat en "objetivo"):\n\u2022 estadoGeneral: descripcion del estado general. Busca: "EG:", "RADS", "RAEG", "estado general", "aspecto general", "consciente", "orientado", "lucido", "somnoliento".\n\u2022 acv: auscultacion cardiovascular. Busca: "ACV", "CV:", "corazon", "ruidos cardiacos", "RsCsRs", "soplo", "arritmia".\n\u2022 ar: auscultacion respiratoria / pulmonar. Busca: "AR", "AP", "torax", "pulmones", "MVC", "rales", "sibilancias", "matidez".\n\u2022 abdomen: examen abdominal. Busca: "abdomen", "abd", "blando", "depresible", "RHA", "dolor a palpacion", "hepato", "esplenomegalia".\n\u2022 extremidades: examen de extremidades. Busca: "MMII", "MMSS", "edemas", "pulsos", "relleno capilar", "cianosis", "varices".\n\nOBJETIVO \u2014 EXAMENES COMPLEMENTARIOS (campos flat en "objetivo"):\n\u2022 laboratorio: TODOS los valores de laboratorio encontrados \u2014 hemograma (Hb, leucocitos, plaquetas), bioquimica (glucosa, urea, creatinina, ionograma, bilirrubina, transaminasas), coagulacion (Quick, KPTT), marcadores (PCR, VHS, procalcitonina, troponina, BNP, dDimero, lactato), gases arteriales (pH, pCO2, pO2, BE, HCO3). Formato: "Hb 10.2 | Leucos 8500 | PCR 12.3". Si hay tabla de resultados, transcribir completa.\n\u2022 imagenes: resultados de imagenologia. Busca: "Rx", "ECO", "TAC", "TC", "RMN", "radiografia", "ecografia", "tomografia".\n\u2022 culturas: resultados de cultivos y microbiologia. Busca: "hemocultivo", "urocultivo", "cultivo", "antibiograma", "germen", "sensible", "resistente".\n\u2022 ecg: hallazgos del electrocardiograma. Busca: "ECG", "EKG", "electrocardiograma", "RS", "FA", "bloqueo", "PR", "QTc".\n\u2022 tratamientoActual: medicacion o tratamiento en curso mencionado en el objetivo. Busca: "tratamiento actual", "medicacion actual", "drogas", "infusion", "goteo".\n\nEVALUACION (A):\n\u2022 estado: "mejorando"/"estable"/"empeorando". Infiere del contexto clinico si no esta explicito.\n\u2022 problemasActivos: lista LIMPIA de diagnosticos activos. Busca: "problemas activos", "lista de problemas", "Dx:", "diagnosticos", "CIE-10". SUBSTITUYE completamente \u2014 no mezcles.\n\u2022 notasEvaluacion: impresion clinica del medico, interpretacion de resultados, razonamiento diagnostico, conclusion del pase de guardia.\n\nPLAN (P):\n\u2022 planTerapeutico: TODAS las indicaciones medicas, ordenes, cambios de tratamiento. Busca: "indicaciones", "plan:", "conducta:", "ordenes:", "continue", "iniciar", "suspender", "solicitar". Formato bullet separado por newlines.\n\u2022 criteriosAlta: criterios o condiciones para el alta hospitalaria. Busca: "alta si", "criterios de alta", "condiciones para alta", "puede irse cuando".\n\nFARMACOS:\n\u2022 farmacos[]: lista de TODOS los medicamentos. Para cada uno:\n  - medicamento: nombre generico o comercial completo.\n  - dosis: dosis + via + frecuencia completa (ej: "500mg VO c/8h", "1g EV c/12h", "20mg/h BIC IV").\nBusca en: recetas, indicaciones, hoja de medicacion, planilla de enfermeria, cualquier listado de drogas con dosis.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nREGLAS CRITICAS FINALES:\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n1. NUNCA inventes datos \u2014 solo extrae lo EXPLICITO o razonablemente inferable.\n2. Campo sin datos \u2192 cadena vacia "" (NUNCA omitir la clave).\n3. Redactar en espanol medico profesional conciso.\n4. Si hay imagen de monitor: extrae TODOS los valores del display.\n5. Si hay tabla de laboratorio: transcribir CADA valor con su unidad.\n6. Frases ambiguas: registrar en notasLibres o notasEvaluacion.\n7. El nodo "objetivo" es FLAT \u2014 NO usar sub-objetos dentro de el.\n8. NUNCA omitas ningun nodo raiz del JSON.\n'],a7,a7)],t.SN)],a7,t.xW),"contents",A.a([A.U(["role","user","parts",a6],a7,a0)],t.Mq),"generationConfig",A.U(["responseMimeType","application/json","responseSchema",B.c1T,"temperature",0.1,"maxOutputTokens",8192],a7,a0)],a7,a0),null)
 m=A.cp(u.qC+a9,0,null)
 l=null
 p=4
 s=7
-return A.n(A.oN(m,n,A.T(["Content-Type","application/json"],a7,a7)).dH(0,B.IL),$async$aYl)
+return A.n(A.oN(m,n,A.U(["Content-Type","application/json"],a7,a7)).dH(0,B.IL),$async$aYl)
 case 7:l=b4
 p=2
 s=6
@@ -37780,9 +37780,9 @@ a7=A.cZ("Erro ao extrair texto da resposta Gemini: "+A.t(c))
 throw A.p(a7)}A.a1().$1("\ud83e\udd16 GEMINI RAW JSON (Build 165): "+A.t(h))
 b=null
 try{b=t.P.a(B.aj.dt(0,h,null))}catch(b2){a7=h
-a0=A.U("^```json\\s*",!0,!1,!0,!1)
+a0=A.S("^```json\\s*",!0,!1,!0,!1)
 a7=A.q(a7,a0,"")
-a0=A.U("^```\\s*$",!0,!1,!0,!1)
+a0=A.S("^```\\s*$",!0,!1,!0,!1)
 a=B.c.B(A.q(a7,a0,""))
 try{b=t.P.a(B.aj.dt(0,a,null))}catch(b2){throw A.p(A.cZ("Erro ao parsear JSON da IA. Resposta bruta: "+A.t(J.ar(h)>200?J.qx(h,0,200):h)))}}q=A.ca4(b)
 s=1
@@ -39338,14 +39338,14 @@ j=$.a_q()
 i=A.dP(j.a,!0,t.MK)
 if(i.length!==0&&B.d.gW(i).a===c&&B.d.gW(i).b===g)B.d.d7(i,0)
 B.d.hy(i,0,new A.iQ(c,g,B.c.B(a),new A.aM(k,0,!1)))
-n=A.d0(i,0,A.dy(20,"count",t.S),A.S(i).c).d8(0)
+n=A.d0(i,0,A.dy(20,"count",t.S),A.T(i).c).d8(0)
 j.sv(0,n)
 p=4
 s=7
 return A.n(A.cJ(),$async$Cb)
 case 7:m=e
 k=n
-j=A.S(k).i("P<1,ai<h,@>>")
+j=A.T(k).i("P<1,ai<h,@>>")
 k=A.O(new A.P(k,new A.avJ(),j),j.i("al.E"))
 s=8
 return A.n(m.d4("String","med_recent_activity_v1",B.aj.e7(k,null)),$async$Cb)
@@ -39400,7 +39400,7 @@ bJ3(a){return B.d.c2(B.aPm,new A.aQZ(a.toLowerCase()))},
 c7z(a,b,c){var s,r,q,p,o,n,m,l,k=a.split("\n")
 for(s=k.length,r=0;r<s;++r){q=B.c.B(k[r])
 if(B.c.Y(q,"\ud83d\udfe5")){s=B.c.B(A.k9(q,"\ud83d\udfe5","",0))
-p=A.U("^[\\-\u2014\u2013:\\s]+",!0,!1,!1,!1)
+p=A.S("^[\\-\u2014\u2013:\\s]+",!0,!1,!1,!1)
 o=B.c.B(A.k9(s,p,"",0))
 s=o.length
 if(s!==0&&s>=3&&!A.bJ3(o))return o
@@ -39416,7 +39416,7 @@ if(B.c.Y(l,"Ol\xe1")||B.c.Y(l,"Hola")||B.c.Y(l,"\ud83d\udc4b"))continue
 return p>80?B.c.S(l,0,80)+"\u2026":l}return""},
 bJ4(a,b){var s,r,q,p,o
 if(a.length===0)return B.e68
-s=A.S(b).i("P<1,h>")
+s=A.T(b).i("P<1,h>")
 r=A.O(new A.P(b,new A.aR_(),s),s.i("al.E"))
 for(s=a.length,q=0;q<a.length;a.length===s||(0,A.a2)(a),++q){p=a[q]
 o=p.b.toLowerCase()
@@ -39554,12 +39554,12 @@ s=k?"\xbfC\xf3mo diagnosticar y tratar de inmediato las causas reversibles de PC
 s=A.a([new A.hq("Algoritmo ACLS Choc\xe1vel",j),new A.hq("Manejo de causas: 5Hs e 5Ts",s)],g)
 j=t.Se
 r=t.iV
-q=A.T([B.xU,h,B.xV,i,B.FT,s,B.FR,A.a([new A.hq("Doses da Sequ\xeancia R\xe1pida",k?"SIR completa: especifique dosis de inductores (Etomidato/Ketamina) y bloqueadores (Rocuronio/Succinilcolina).":"SRI completa: especifique doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocur\xf4nio/Succinilcolina).")],g)],j,r)
+q=A.U([B.xU,h,B.xV,i,B.FT,s,B.FR,A.a([new A.hq("Doses da Sequ\xeancia R\xe1pida",k?"SIR completa: especifique dosis de inductores (Etomidato/Ketamina) y bloqueadores (Rocuronio/Succinilcolina).":"SRI completa: especifique doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocur\xf4nio/Succinilcolina).")],g)],j,r)
 i=k?"Explique la diferencia fisiopatol\xf3gica y de diagn\xf3stico diferencial entre IAMCSST e IAMSSST.":"Explique a diferen\xe7a fisiopatol\xf3gica e de diagn\xf3stico diferencial entre IAMCSST e IAMSSST."
 h=k?"\xbfCu\xe1les son las variables y el valor pron\xf3stico de los escores GRACE, TIMI e HEART no SCA?":"Quais s\xe3o as vari\xe1veis e o valor progn\xf3stico dos escores GRACE, TIMI e HEART no SCA?"
 h=A.a([new A.hq("IAMCSST \xd7 IAMSSST: diagn\xf3stico",i),new A.hq("Escores de risco e progn\xf3stico",h)],g)
 i=A.a([new A.hq("Crit\xe9rios Sepsis-3 e SOFA",k?"Realice una revisi\xf3n acad\xe9mica sobre los criterios Sepsis-3 e la puntuaci\xf3n completa del score SOFA.":"Realize uma revis\xe3o acad\xeamica sobre os crit\xe9rios Sepsis-3 e a pontua\xe7\xe3o completa do score SOFA.")],g)
-p=A.T([B.xU,h,B.xV,i,B.FS,A.a([new A.hq("ISRS \xd7 IRSN: farmacodin\xe2mica",k?"An\xe1lisis comparativo enciclop\xe9dico entre ISRS e IRSN: receptores e interacciones de CYP3A4.":"An\xe1lise comparativa enciclop\xe9dica entre ISRS e IRSN: receptores e intera\xe7\xf5es de CYP3A4.")],g)],j,r)
+p=A.U([B.xU,h,B.xV,i,B.FS,A.a([new A.hq("ISRS \xd7 IRSN: farmacodin\xe2mica",k?"An\xe1lisis comparativo enciclop\xe9dico entre ISRS e IRSN: receptores e interacciones de CYP3A4.":"An\xe1lise comparativa enciclop\xe9dica entre ISRS e IRSN: receptores e intera\xe7\xf5es de CYP3A4.")],g)],j,r)
 o=b?q.h(0,f):p.h(0,f)
 if(o!=null)return A.bJ4(o,a)
 n=A.c7z(d,e,a)
@@ -39596,15 +39596,15 @@ var $async$a01=A.y(function(a0,a1){if(a0===1){o.push(a1)
 s=p}while(true)switch(s){case 0:if(a.length===0){q=new A.oT("NO_KEY",!0)
 s=1
 break}i=t.N
-h=A.a([A.T(["role","system","content",c],i,i)],t.SN)
+h=A.a([A.U(["role","system","content",c],i,i)],t.SN)
 B.d.u(h,B.Q6)
-h.push(A.T(["role","user","content",d],i,i))
+h.push(A.U(["role","user","content",d],i,i))
 n=h
 p=4
 h=A.cp("https://api.openai.com/v1/chat/completions",0,null)
-g=A.T(["Content-Type","application/json","Authorization","Bearer "+a],i,i)
+g=A.U(["Content-Type","application/json","Authorization","Bearer "+a],i,i)
 s=7
-return A.n(A.oN(h,B.aj.e7(A.T(["model","gpt-4o-mini","messages",n,"max_tokens",b,"temperature",0.4],i,t.K),null),g).dH(0,B.IL),$async$a01)
+return A.n(A.oN(h,B.aj.e7(A.U(["model","gpt-4o-mini","messages",n,"max_tokens",b,"temperature",0.4],i,t.K),null),g).dH(0,B.IL),$async$a01)
 case 7:m=a1
 if(m.b===200){i=m
 l=B.aj.dt(0,A.de(A.dd(i.e)).ce(0,i.w),null)
@@ -39654,27 +39654,27 @@ if(A.nE(r,A.a(["risco cardiovascular","riesgo cardiovascular","framingham","scor
 if(A.nE(r,A.a(["glicemia","glucemia","hiperglicemia","hiperglucemia","insulina uti","insulina uci","controle glicemico","control glucemico","hba1c","hemoglobina glicada"],q)))return b?"HERRAMIENTA ACTIVA \u2014 CONTROL GLUCEMICO: meta glucemica en UTI: 140-180 mg/dL (ADA/AACE). En paciente no critico: individualizar segun HbA1c, comorbilidades y riesgo de hipoglucemia. Calcular dosis de insulina si datos disponibles.":"FERRAMENTA ATIVA \u2014 CONTROLE GLICEMICO: meta glicemica em UTI: 140-180 mg/dL (ADA/SBEM). Em paciente nao critico: individualizar conforme HbA1c, comorbidades e risco hipoglicemico. Calcular dose de insulina se dados disponiveis."
 return""},
 nE(a,b){return B.d.c2(b,new A.avO(a))},
-bN5(a){var s,r=A.U("[\xe0\xe1\xe2\xe3\xe4\xe5]",!0,!1,!1,!1)
+bN5(a){var s,r=A.S("[\xe0\xe1\xe2\xe3\xe4\xe5]",!0,!1,!1,!1)
 r=A.q(a.toLowerCase(),r,"a")
-s=A.U("[\xe8\xe9\xea\xeb]",!0,!1,!1,!1)
+s=A.S("[\xe8\xe9\xea\xeb]",!0,!1,!1,!1)
 r=A.q(r,s,"e")
-s=A.U("[\xec\xed\xee\xef]",!0,!1,!1,!1)
+s=A.S("[\xec\xed\xee\xef]",!0,!1,!1,!1)
 r=A.q(r,s,"i")
-s=A.U("[\xf2\xf3\xf4\xf5\xf6]",!0,!1,!1,!1)
+s=A.S("[\xf2\xf3\xf4\xf5\xf6]",!0,!1,!1,!1)
 r=A.q(r,s,"o")
-s=A.U("[\xf9\xfa\xfb\xfc]",!0,!1,!1,!1)
+s=A.S("[\xf9\xfa\xfb\xfc]",!0,!1,!1,!1)
 r=A.q(r,s,"u")
-s=A.U("[\xe7]",!0,!1,!1,!1)
+s=A.S("[\xe7]",!0,!1,!1,!1)
 r=A.q(r,s,"c")
-s=A.U("[\xf1]",!0,!1,!1,!1)
+s=A.S("[\xf1]",!0,!1,!1,!1)
 return A.q(r,s,"n")},
 JB(a,b){var s,r,q,p,o,n,m
 if(a.length===0||b.length===0)return 0
 s=A.bN5(a)
 r=A.bN5(b)
-q=A.U("[^a-z0-9\\s]",!0,!1,!1,!1)
-q=B.c.ej(A.q(s,q," "),A.U("\\s+",!0,!1,!1,!1))
-p=A.S(q).i("a5<1>")
+q=A.S("[^a-z0-9\\s]",!0,!1,!1,!1)
+q=B.c.ej(A.q(s,q," "),A.S("\\s+",!0,!1,!1,!1))
+p=A.T(q).i("a5<1>")
 o=A.fN(new A.a5(q,new A.avV(),p),p.i("F.E"))
 if(o.a===0)return 0
 for(q=A.dT(o,o.r,A.G(o).c),p=q.$ti.c,n=0;q.C();){m=q.d
@@ -39693,13 +39693,13 @@ s.a=r}else r=""
 if(h1!=null&&h1.length!==0)r=s.a=r+((g1?d9+h1:e0+h1)+"\n")
 if(r.length===0)q=""
 else q=g1?e1+s.l(0)+"\n":e2+s.l(0)+"\n"
-r=B.c.ej(B.c.B(h6),A.U("\\s+",!0,!1,!1,!1))
-p=new A.a5(r,new A.avP(),A.S(r).i("a5<1>")).gA(0)<=2?0.1:0.2
+r=B.c.ej(B.c.B(h6),A.S("\\s+",!0,!1,!1,!1))
+p=new A.a5(r,new A.avP(),A.T(r).i("a5<1>")).gA(0)<=2?0.1:0.2
 r=h6.length===0
 if(r)o=g7
-else{n=A.S(g7).i("a5<1>")
+else{n=A.T(g7).i("a5<1>")
 o=A.O(new A.a5(g7,new A.avQ(h6,p),n),n.i("F.E"))}if(r)m=g6
-else{n=A.S(g6).i("a5<1>")
+else{n=A.T(g6).i("a5<1>")
 m=A.O(new A.a5(g6,new A.avR(h6,p),n),n.i("F.E"))}l=!1
 n=g5.length
 if(n!==0){if(n>50)r=r||A.JB(h6,g5)>=p
@@ -39740,14 +39740,14 @@ a7.a=r}if(h3!=null&&h3.length!==0){r+=", "+h3+" kg"
 a7.a=r}r=(h0!=null&&h0.length!==0?a7.a=r+(" | ClCr: "+h0+" mL/min"):r)+"\n"
 a7.a=r}else r=""
 if(h1!=null&&h1.length!==0)r=a7.a=r+((g1?d9+h1:e0+h1)+"\n")
-n=B.c.ej(B.c.B(h6),A.U("\\s+",!0,!1,!1,!1))
-a8=new A.a5(n,new A.avS(),A.S(n).i("a5<1>")).gA(0)<=2?0.1:0.2
+n=B.c.ej(B.c.B(h6),A.S("\\s+",!0,!1,!1,!1))
+a8=new A.a5(n,new A.avS(),A.T(n).i("a5<1>")).gA(0)<=2?0.1:0.2
 n=h6.length===0
 if(n)a9=g7.length!==0?B.d.a1(g7,d8):""
-else{a0=A.S(g7).i("a5<1>")
+else{a0=A.T(g7).i("a5<1>")
 b0=A.O(new A.a5(g7,new A.avT(h6,a8),a0),a0.i("F.E"))
 a9=b0.length!==0?B.d.a1(b0,d8):""}if(n)b1=g6.length!==0?B.d.a1(g6,d8):""
-else{a0=A.S(g6).i("a5<1>")
+else{a0=A.T(g6).i("a5<1>")
 b2=A.O(new A.a5(g6,new A.avU(h6,a8),a0),a0.i("F.E"))
 b1=b2.length!==0?B.d.a1(b2,d8):""}b3=!1
 a0=g5.length
@@ -39888,7 +39888,7 @@ break
 case 3:p=6
 h=A.cp(u.vW,0,null)
 k=t.N
-k=A.T(["Content-Type","application/x-www-form-urlencoded"],k,k)
+k=A.U(["Content-Type","application/x-www-form-urlencoded"],k,k)
 s=9
 return A.n(A.oN(h,"grant_type=refresh_token&refresh_token="+$.qD,k),$async$fJ)
 case 9:n=b
@@ -39964,7 +39964,7 @@ if(J.ar(l)===0||J.ar(k)===0){q=null
 s=1
 break}a1=A.cp(u.vW,0,null)
 a4=t.N
-a5=A.T(["Content-Type","application/x-www-form-urlencoded"],a4,a4)
+a5=A.U(["Content-Type","application/x-www-form-urlencoded"],a4,a4)
 s=8
 return A.n(A.oN(a1,"grant_type=refresh_token&refresh_token="+A.t(l),a5).dH(0,B.cy),$async$u1)
 case 8:j=d0
@@ -39998,7 +39998,7 @@ s=J.ar(e)!==0&&J.ar(h)!==0?13:14
 break
 case 13:p=16
 s=19
-return A.n(A.mB(A.cp(u.W+A.t(e),0,null),A.T(["Authorization","Bearer "+A.t(h)],a4,a4)).dH(0,B.eu),$async$u1)
+return A.n(A.mB(A.cp(u.W+A.t(e),0,null),A.U(["Authorization","Bearer "+A.t(h)],a4,a4)).dH(0,B.eu),$async$u1)
 case 19:c=d0
 s=c.b===200?20:21
 break
@@ -40099,9 +40099,9 @@ A.a1().$1("[Auth][LOGIN]   EMAIL : "+a4)
 p=4
 a5=A.cp("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18",0,null)
 a6=t.N
-a7=A.T(["Content-Type","application/json"],a6,a6)
+a7=A.U(["Content-Type","application/json"],a6,a6)
 s=7
-return A.n(A.oN(a5,B.aj.e7(A.T(["email",a4,"password",b2,"returnSecureToken",!0],a6,t.K),null),a7),$async$u_)
+return A.n(A.oN(a5,B.aj.e7(A.U(["email",a4,"password",b2,"returnSecureToken",!0],a6,t.K),null),a7),$async$u_)
 case 7:n=b4
 A.a1().$1("[Auth][LOGIN] RESPONSE:")
 A.a1().$1("[Auth][LOGIN]   STATUS : "+n.b)
@@ -40132,7 +40132,7 @@ $.oV=j
 $.qD=i
 $.K0=new A.aM(Date.now(),0,!1).iV(33e8)
 s=8
-return A.n(A.mB(A.cp(u.W+A.t(k),0,null),A.T(["Authorization","Bearer "+A.t(j)],a6,a6)),$async$u_)
+return A.n(A.mB(A.cp(u.W+A.t(k),0,null),A.U(["Authorization","Bearer "+A.t(j)],a6,a6)),$async$u_)
 case 8:h=b4
 s=h.b===404?9:10
 break
@@ -40148,7 +40148,7 @@ break
 case 12:s=14
 return A.n(A.eq(B.th,null,t.z),$async$u_)
 case 14:s=15
-return A.n(A.mB(A.cp(u.W+A.t(k),0,null),A.T(["Authorization","Bearer "+A.t(j)],a6,a6)),$async$u_)
+return A.n(A.mB(A.cp(u.W+A.t(k),0,null),A.U(["Authorization","Bearer "+A.t(j)],a6,a6)),$async$u_)
 case 15:f=b4
 if(f.b===200){a5=f
 e=a4.a(B.aj.dt(0,A.de(A.dd(a5.e)).ce(0,a5.w),null))
@@ -40214,7 +40214,7 @@ var $async$a0p=A.y(function(a8,a9){if(a8===1){o.push(a9)
 s=p}while(true)switch(s){case 0:c="https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18"
 b=B.c.B(a3)
 a=t.N
-a0=A.T(["email",b,"password",a5,"returnSecureToken",!0],a,t.K)
+a0=A.U(["email",b,"password",a5,"returnSecureToken",!0],a,t.K)
 A.a1().$1("[Auth][REGISTER] REQUEST:")
 A.a1().$1("[Auth][REGISTER]   ENDPOINT : "+A.t(c))
 A.a1().$1("[Auth][REGISTER]   EMAIL    : "+b)
@@ -40223,7 +40223,7 @@ b=B.aj.e7(a0,null)
 A.a1().$1("[Auth][REGISTER]   PAYLOAD  : "+A.q(b,a5,"***"))
 p=4
 b=A.cp(c,0,null)
-a=A.T(["Content-Type","application/json"],a,a)
+a=A.U(["Content-Type","application/json"],a,a)
 s=7
 return A.n(A.oN(b,B.aj.e7(a0,null),a),$async$a0p)
 case 7:n=a9
@@ -40303,9 +40303,9 @@ var $async$ay0=A.y(function(b,c){if(b===1){o.push(c)
 s=p}while(true)switch(s){case 0:p=4
 m=A.cp("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18",0,null)
 l=t.N
-k=A.T(["Content-Type","application/json"],l,l)
+k=A.U(["Content-Type","application/json"],l,l)
 s=7
-return A.n(A.oN(m,B.aj.e7(A.T(["requestType","PASSWORD_RESET","email",B.c.B(a)],l,l),null),k),$async$ay0)
+return A.n(A.oN(m,B.aj.e7(A.U(["requestType","PASSWORD_RESET","email",B.c.B(a)],l,l),null),k),$async$ay0)
 case 7:n=c
 if(n.b===200){q=new A.fy(!0,null,null)
 s=1
@@ -40361,7 +40361,7 @@ a0q(a,b){return A.c0C(a,b)},
 c0C(a,b){var s=0,r=A.C(t.H),q
 var $async$a0q=A.y(function(c,d){if(c===1)return A.z(d,r)
 while(true)switch(s){case 0:s=3
-return A.n(A.nJ(a,A.T(["status","approved","approvedAt",new A.aM(Date.now(),0,!1).kV().ei(),"approvedBy",b],t.N,t.z)),$async$a0q)
+return A.n(A.nJ(a,A.U(["status","approved","approvedAt",new A.aM(Date.now(),0,!1).kV().ei(),"approvedBy",b],t.N,t.z)),$async$a0q)
 case 3:s=1
 break
 case 1:return A.A(q,r)}})
@@ -40370,7 +40370,7 @@ ay1(a){return A.c0D(a)},
 c0D(a){var s=0,r=A.C(t.H),q
 var $async$ay1=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:s=3
-return A.n(A.nJ(a,A.T(["status","blocked"],t.N,t.z)),$async$ay1)
+return A.n(A.nJ(a,A.U(["status","blocked"],t.N,t.z)),$async$ay1)
 case 3:s=1
 break
 case 1:return A.A(q,r)}})
@@ -40379,7 +40379,7 @@ ay5(a,b){return A.c0O(a,b)},
 c0O(a,b){var s=0,r=A.C(t.H),q
 var $async$ay5=A.y(function(c,d){if(c===1)return A.z(d,r)
 while(true)switch(s){case 0:s=3
-return A.n(A.nJ(a,A.T(["status","approved","approvedAt",new A.aM(Date.now(),0,!1).kV().ei(),"approvedBy",b],t.N,t.z)),$async$ay5)
+return A.n(A.nJ(a,A.U(["status","approved","approvedAt",new A.aM(Date.now(),0,!1).kV().ei(),"approvedBy",b],t.N,t.z)),$async$ay5)
 case 3:s=1
 break
 case 1:return A.A(q,r)}})
@@ -40388,7 +40388,7 @@ ay3(a){return A.c0J(a)},
 c0J(a){var s=0,r=A.C(t.H),q
 var $async$ay3=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:s=3
-return A.n(A.nJ(a,A.T(["role","admin"],t.N,t.z)),$async$ay3)
+return A.n(A.nJ(a,A.U(["role","admin"],t.N,t.z)),$async$ay3)
 case 3:s=1
 break
 case 1:return A.A(q,r)}})
@@ -40397,7 +40397,7 @@ ay4(a){return A.c0K(a)},
 c0K(a){var s=0,r=A.C(t.H),q
 var $async$ay4=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:s=3
-return A.n(A.nJ(a,A.T(["role","supervisor"],t.N,t.z)),$async$ay4)
+return A.n(A.nJ(a,A.U(["role","supervisor"],t.N,t.z)),$async$ay4)
 case 3:s=1
 break
 case 1:return A.A(q,r)}})
@@ -40406,7 +40406,7 @@ ay2(a){return A.c0G(a)},
 c0G(a){var s=0,r=A.C(t.H),q
 var $async$ay2=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:s=3
-return A.n(A.nJ(a,A.T(["role","user"],t.N,t.z)),$async$ay2)
+return A.n(A.nJ(a,A.U(["role","user"],t.N,t.z)),$async$ay2)
 case 3:s=1
 break
 case 1:return A.A(q,r)}})
@@ -40428,7 +40428,7 @@ case 8:if(!(a6<a.length)){s=10
 break}l=a[a6]
 p=12
 s=15
-return A.n(A.mB(A.cp(a2+A.t(l)+"?pageSize=300",0,null),A.T(["Authorization","Bearer "+A.t(m)],a3,a3)).dH(0,B.f9),$async$qF)
+return A.n(A.mB(A.cp(a2+A.t(l)+"?pageSize=300",0,null),A.U(["Authorization","Bearer "+A.t(m)],a3,a3)).dH(0,B.f9),$async$qF)
 case 15:k=b9
 s=k.b===200?16:17
 break
@@ -40444,7 +40444,7 @@ g=a9==null?"":a9
 if(J.ar(g)===0){s=18
 break}f=B.d.gZ(J.qw(g,"/documents/"))
 s=20
-return A.n(A.a_p(A.cp(u.rh+A.t(f),0,null),A.T(["Authorization","Bearer "+A.t(m)],a3,a3)).dH(0,B.ir),$async$qF)
+return A.n(A.a_p(A.cp(u.rh+A.t(f),0,null),A.U(["Authorization","Bearer "+A.t(m)],a3,a3)).dH(0,B.ir),$async$qF)
 case 20:s=18
 break
 case 19:case 17:p=4
@@ -40460,7 +40460,7 @@ case 14:case 9:a.length===a0||(0,A.a2)(a),++a6
 s=8
 break
 case 10:s=21
-return A.n(A.a_p(A.cp(a1,0,null),A.T(["Authorization","Bearer "+A.t(m)],a3,a3)).dH(0,B.f9),$async$qF)
+return A.n(A.a_p(A.cp(a1,0,null),A.U(["Authorization","Bearer "+A.t(m)],a3,a3)).dH(0,B.f9),$async$qF)
 case 21:e=b9
 if(e.b>=300&&e.b!==404){d=""
 try{a=e
@@ -40476,9 +40476,9 @@ s=J.ar(b)!==0?22:23
 break
 case 22:p=25
 a=A.cp("https://identitytoolkit.googleapis.com/v1/accounts:delete?key=AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18",0,null)
-a0=A.T(["Content-Type","application/json"],a3,a3)
+a0=A.U(["Content-Type","application/json"],a3,a3)
 s=28
-return A.n(A.oN(a,B.aj.e7(A.T(["idToken",b],a3,a3),null),a0).dH(0,B.f9),$async$qF)
+return A.n(A.oN(a,B.aj.e7(A.U(["idToken",b],a3,a3),null),a0).dH(0,B.f9),$async$qF)
 case 28:p=4
 s=27
 break
@@ -40521,7 +40521,7 @@ case 3:m=c
 if(m.length===0)throw A.p(A.cZ(u.mG))
 l=t.N
 s=4
-return A.n(A.a_p(A.cp(u.W+a,0,null),A.T(["Authorization","Bearer "+m],l,l)),$async$a0r)
+return A.n(A.a_p(A.cp(u.W+a,0,null),A.U(["Authorization","Bearer "+m],l,l)),$async$a0r)
 case 4:p=c
 if(p.b<200||p.b>=300){o=""
 try{l=p
@@ -40546,10 +40546,10 @@ m=A.R(n,t.z)
 b.aG(0,new A.axZ(m))
 l=A.G(b).i("bM<1>")
 l=A.cp(u.W+a+"?"+A.h6(new A.bM(b,l),new A.ay_(),l.i("F.E"),n).a1(0,"&"),0,null)
-k=A.T(["Authorization","Bearer "+g,"Content-Type","application/json"],n,n)
+k=A.U(["Authorization","Bearer "+g,"Content-Type","application/json"],n,n)
 j=t.P
 s=3
-return A.n(A.BZ(l,B.aj.e7(A.T(["fields",m],n,j),null),k),$async$nJ)
+return A.n(A.BZ(l,B.aj.e7(A.U(["fields",m],n,j),null),k),$async$nJ)
 case 3:q=d
 if(q.b<200||q.b>=300){p=""
 try{n=q
@@ -40564,7 +40564,7 @@ ay6(a,b){return A.c0P(a,b)},
 c0P(a,b){var s=0,r=A.C(t.H)
 var $async$ay6=A.y(function(c,d){if(c===1)return A.z(d,r)
 while(true)switch(s){case 0:s=2
-return A.n(A.nJ(b,A.T(["acceptedTerms",!0,"acceptedTermsAt",new A.aM(Date.now(),0,!1).kV().ei(),"professionalCategory",a],t.N,t.z)),$async$ay6)
+return A.n(A.nJ(b,A.U(["acceptedTerms",!0,"acceptedTermsAt",new A.aM(Date.now(),0,!1).kV().ei(),"professionalCategory",a],t.N,t.z)),$async$ay6)
 case 2:return A.A(null,r)}})
 return A.B($async$ay6,r)},
 xl(a,b){return A.c0v(a,b)},
@@ -40577,9 +40577,9 @@ n=b.Dc()
 J.hh(n,new A.axW(o))
 j=b.a
 i=A.cp(u.W+j,0,null)
-h=A.T(["Authorization","Bearer "+a,"Content-Type","application/json"],k,k)
+h=A.U(["Authorization","Bearer "+a,"Content-Type","application/json"],k,k)
 s=6
-return A.n(A.BZ(i,B.aj.e7(A.T(["fields",o],k,t.P),null),h),$async$xl)
+return A.n(A.BZ(i,B.aj.e7(A.U(["fields",o],k,t.P),null),h),$async$xl)
 case 6:m=d
 if(m.b<200||m.b>=300){k=m
 A.a1().$1("[Auth] _createUserDocRest FALHOU HTTP "+m.b+": "+A.de(A.dd(k.e)).ce(0,k.w))}else A.a1().$1("[Auth] _createUserDocRest OK \u2014 uid="+j+" status="+b.e.b)
@@ -40661,7 +40661,7 @@ a2=J.kH(a5).toLowerCase()==="rodrigssousa@gmail.com".toLowerCase()?B.j7:B.oD
 j=A.RX(!1,null,m,"system",m,!1,n,e.toLowerCase(),a9,"pt",null,0,b1,null,null,a2,B.h5,0,a3)
 e=t.N
 a2=t.z
-i=A.T(["plan","free","subscriptionStatus","trial","onboardingCompleted",!1,"preferredLanguage","es","platformCreated",b0,"accountStatus","active","updatedAt",A.pW(m.ghU())],e,a2)
+i=A.U(["plan","free","subscriptionStatus","trial","onboardingCompleted",!1,"preferredLanguage","es","platformCreated",b0,"accountStatus","active","updatedAt",A.pW(m.ghU())],e,a2)
 h=A.m6(j.Dc(),e,a2)
 J.a_P(h,i)
 g=h
@@ -41050,11 +41050,11 @@ case 22:return b?"Otro":"Outro"}},
 bHK(){var s=J.lC(B.h0.gdf(B.h0))
 B.d.km(s)
 return s},
-bHI(a){var s,r,q,p,o,n,m,l,k=A.U("[\\d]+\\s*(mg|mcg|ml|ui|g|%)",!0,!1,!1,!1)
+bHI(a){var s,r,q,p,o,n,m,l,k=A.S("[\\d]+\\s*(mg|mcg|ml|ui|g|%)",!0,!1,!1,!1)
 k=A.q(a.toLowerCase(),k,"")
-s=A.U("[,;/\\n\\r\\t+&]",!0,!1,!1,!1)
+s=A.S("[,;/\\n\\r\\t+&]",!0,!1,!1,!1)
 k=A.q(k,s," ")
-s=A.U("\\s+",!0,!1,!1,!1)
+s=A.S("\\s+",!0,!1,!1,!1)
 r=B.c.B(A.q(k,s," ")).split(" ")
 q=A.aQ(t.N)
 for(p=0;k=r.length,p<k;++p){o=B.c.B(r[p])
@@ -41071,7 +41071,7 @@ if(B.h0.ao(0,l)){k=B.h0.h(0,l)
 k.toString
 q.E(0,k)}}}k=A.O(q,q.$ti.c)
 return k},
-bHJ(a,b){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=A.bHI(a),c=A.S(b).i("hn<1,h>")
+bHJ(a,b){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=A.bHI(a),c=A.T(b).i("hn<1,h>")
 c=A.fN(new A.hn(b,new A.aCF(),c),c.i("F.E"))
 s=A.O(c,A.G(c).c)
 c=t.N
@@ -41097,7 +41097,7 @@ p.push(new A.p5(A.bOv(m,b,a),A.bOv(l,b,a),r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9
 return p},
 bOv(a,b,c){var s,r,q,p,o
 for(s=b.length,r=0;r<b.length;b.length===s||(0,A.a2)(b),++r){q=b[r]
-if(B.d.k(A.bHI(q),a))return J.kH(B.d.gW(q.split("/")))}p=B.c.ej(c.toLowerCase(),A.U("[\\s,;/]+",!0,!1,!1,!1))
+if(B.d.k(A.bHI(q),a))return J.kH(B.d.gW(q.split("/")))}p=B.c.ej(c.toLowerCase(),A.S("[\\s,;/]+",!0,!1,!1,!1))
 for(s=p.length,r=0;r<p.length;p.length===s||(0,A.a2)(p),++r){o=p[r]
 if(B.h0.h(0,o)===a)return o[0].toUpperCase()+B.c.c3(o,1)}return a[0].toUpperCase()+B.c.c3(a,1)},
 uK:function uK(a,b){this.a=a
@@ -41354,7 +41354,7 @@ case 2:return A.z(o.at(-1),r)}})
 return A.B($async$Mf,r)},
 bI5(a){var s
 if(a.length!==0){s=t.N
-return A.T(["Authorization","Bearer "+a],s,s)}return B.cB},
+return A.U(["Authorization","Bearer "+a],s,s)}return B.cB},
 bOT(a){var s,r,q,p,o
 try{s=A.eR(B.aj.dt(0,a,null))
 r=A.eR(J.W(s,"fields"))
@@ -41478,7 +41478,7 @@ m=(n==null?$.be=$.cw():n).cw("[DEFAULT]")
 A.bK(m,$.cv(),!0)
 n=A.e1(new A.ci(m))
 n=A.e4(n,n.gcV().cP("app_config")).cr("global")
-l=A.T(["openAiKey",B.c.B(a)],t.N,t.z)
+l=A.U(["openAiKey",B.c.B(a)],t.N,t.z)
 k=A.Qh(!0)
 l=A.jZ(l)
 l.toString
@@ -41514,9 +41514,9 @@ A.a1().$1("[ADMIN_AI_TOGGLE] Web REST PATCH path=app_config/global field=geminiP
 p=5
 j=A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_config/global?updateMask.fieldPaths=geminiPaidEnabled",0,null)
 i=t.N
-h=A.T(["Authorization","Bearer "+A.t(n),"Content-Type","application/json"],i,i)
+h=A.U(["Authorization","Bearer "+A.t(n),"Content-Type","application/json"],i,i)
 s=8
-return A.n(A.BZ(j,B.aj.e7(A.T(["fields",A.T(["geminiPaidEnabled",A.T(["booleanValue",a],i,t.y)],i,t.Yl)],i,t.XB),null),h).dH(0,B.f9),$async$a5f)
+return A.n(A.BZ(j,B.aj.e7(A.U(["fields",A.U(["geminiPaidEnabled",A.U(["booleanValue",a],i,t.y)],i,t.Yl)],i,t.XB),null),h).dH(0,B.f9),$async$a5f)
 case 8:m=c
 if(m.b===200){A.a1().$1("[ADMIN_AI_TOGGLE] OK \u2192 app_config/global.geminiPaidEnabled="+k)
 A.a1().$1("[ADMIN_AI_KEY] saved=true provider=gemini_paid status="+(a?"online":"offline"))}else{k=m
@@ -41613,7 +41613,7 @@ if(!n.glV()){q=A.aQ(t.N)
 s=1
 break}m=J.oQ(n)
 m=A.a59(m==null?null:m.h(0,"ids"))
-m=A.hF(m,A.S(m).c)
+m=A.hF(m,A.T(m).c)
 q=m
 s=1
 break
@@ -41637,7 +41637,7 @@ c4s(a,b){var s=0,r=A.C(t.H),q=1,p=[],o,n,m,l
 var $async$a5c=A.y(function(c,d){if(c===1){p.push(d)
 s=q}while(true)switch(s){case 0:q=3
 o=A.ye(a).cr("drugs")
-n=A.jZ(A.T(["ids",b.d8(0)],t.N,t.z))
+n=A.jZ(A.U(["ids",b.d8(0)],t.N,t.z))
 n.toString
 s=6
 return A.n(o.a.fj(0,n,null),$async$a5c)
@@ -41664,7 +41664,7 @@ if(!n.glV()){q=A.aQ(t.N)
 s=1
 break}m=J.oQ(n)
 m=A.a59(m==null?null:m.h(0,"ids"))
-m=A.hF(m,A.S(m).c)
+m=A.hF(m,A.T(m).c)
 q=m
 s=1
 break
@@ -41688,7 +41688,7 @@ c4u(a,b){var s=0,r=A.C(t.H),q=1,p=[],o,n,m,l
 var $async$a5e=A.y(function(c,d){if(c===1){p.push(d)
 s=q}while(true)switch(s){case 0:q=3
 o=A.ye(a).cr("protocols")
-n=A.jZ(A.T(["ids",b.d8(0)],t.N,t.z))
+n=A.jZ(A.U(["ids",b.d8(0)],t.N,t.z))
 n.toString
 s=6
 return A.n(o.a.fj(0,n,null),$async$a5e)
@@ -41715,7 +41715,7 @@ if(!n.glV()){q=A.aQ(t.N)
 s=1
 break}m=J.oQ(n)
 m=A.a59(m==null?null:m.h(0,"ids"))
-m=A.hF(m,A.S(m).c)
+m=A.hF(m,A.T(m).c)
 q=m
 s=1
 break
@@ -41739,7 +41739,7 @@ c4t(a,b){var s=0,r=A.C(t.H),q=1,p=[],o,n,m,l
 var $async$a5d=A.y(function(c,d){if(c===1){p.push(d)
 s=q}while(true)switch(s){case 0:q=3
 o=A.ye(a).cr("prescriptions")
-n=A.jZ(A.T(["ids",b.d8(0)],t.N,t.z))
+n=A.jZ(A.U(["ids",b.d8(0)],t.N,t.z))
 n.toString
 s=6
 return A.n(o.a.fj(0,n,null),$async$a5d)
@@ -41811,7 +41811,7 @@ s=7
 return A.n(A.bI7(a).um("updatedAt",!0).p8(20).hE(0),$async$aG4)
 case 7:n=c
 m=n.ghM()
-l=A.S(m).i("P<1,ai<h,@>>")
+l=A.T(m).i("P<1,ai<h,@>>")
 m=A.O(new A.P(m,new A.aG5(),l),l.i("al.E"))
 q=m
 s=1
@@ -41842,7 +41842,7 @@ var $async$Me=A.y(function(c,d){if(c===1){p.push(d)
 s=q}while(true)switch(s){case 0:q=3
 o=A.bOW(a)
 n=$.lA().ki()
-n=A.jZ(A.T(["items",b,"updatedAt",new A.h4(n,n)],t.N,t.z))
+n=A.jZ(A.U(["items",b,"updatedAt",new A.h4(n,n)],t.N,t.z))
 n.toString
 s=6
 return A.n(o.a.fj(0,n,null),$async$Me)
@@ -41900,7 +41900,7 @@ if(!n.glV()){q=A.aQ(t.N)
 s=1
 break}m=J.oQ(n)
 m=A.a59(m==null?null:m.h(0,"ids"))
-m=A.hF(m,A.S(m).c)
+m=A.hF(m,A.T(m).c)
 q=m
 s=1
 break
@@ -41924,7 +41924,7 @@ c4r(a,b){var s=0,r=A.C(t.H),q=1,p=[],o,n,m,l
 var $async$a5b=A.y(function(c,d){if(c===1){p.push(d)
 s=q}while(true)switch(s){case 0:q=3
 o=A.ye(a).cr("fav_cases")
-n=A.jZ(A.T(["ids",b.d8(0)],t.N,t.z))
+n=A.jZ(A.U(["ids",b.d8(0)],t.N,t.z))
 n.toString
 s=6
 return A.n(o.a.fj(0,n,null),$async$a5b)
@@ -42015,7 +42015,7 @@ return A.e4(s,s.gcV().cP("users")).cr(a).cP("clinical_histories")},
 M8(a){$.M6=B.c.B(a)},
 bI4(a){var s=J.hi(a,new A.aFJ()),r=A.O(s,s.$ti.i("F.E"))
 B.d.ed(r,new A.aFK())
-return A.d0(r,0,A.dy(50,"count",t.S),A.S(r).c).d8(0)},
+return A.d0(r,0,A.dy(50,"count",t.S),A.T(r).c).d8(0)},
 aG7(){var s=0,r=A.C(t.yc),q,p=2,o=[],n,m,l,k,j,i,h,g
 var $async$aG7=A.y(function(a,b){if(a===1){o.push(b)
 s=p}while(true)switch(s){case 0:p=4
@@ -42059,7 +42059,7 @@ break}p=4
 s=7
 return A.n(A.cJ(),$async$M7)
 case 7:n=c
-l=A.S(a).i("P<1,ai<h,@>>")
+l=A.T(a).i("P<1,ai<h,@>>")
 l=A.O(new A.P(a,new A.aFO(),l),l.i("al.E"))
 s=8
 return A.n(n.d4("String","public_histories_cache_v1",B.aj.e7(l,null)),$async$M7)
@@ -42108,17 +42108,17 @@ bOU(a){var s=A.R(t.N,t.z)
 J.hh(a,new A.aFu(s))
 return s},
 bOV(a){var s,r
-if(a==null)return A.T(["nullValue",null],t.N,t.z)
-if(A.i4(a))return A.T(["booleanValue",a],t.N,t.z)
-if(A.hd(a))return A.T(["integerValue",B.p.l(a)],t.N,t.z)
-if(typeof a=="number")return A.T(["doubleValue",a],t.N,t.z)
-if(typeof a=="string")return A.T(["stringValue",a],t.N,t.z)
+if(a==null)return A.U(["nullValue",null],t.N,t.z)
+if(A.i4(a))return A.U(["booleanValue",a],t.N,t.z)
+if(A.hd(a))return A.U(["integerValue",B.p.l(a)],t.N,t.z)
+if(typeof a=="number")return A.U(["doubleValue",a],t.N,t.z)
+if(typeof a=="string")return A.U(["stringValue",a],t.N,t.z)
 if(t.j.b(a)){s=J.dj(a,A.chP(),t.P)
 s=A.O(s,s.$ti.i("al.E"))
 r=t.N
-return A.T(["arrayValue",A.T(["values",s],r,t.b5)],r,t.z)}s=t.P
+return A.U(["arrayValue",A.U(["values",s],r,t.b5)],r,t.z)}s=t.P
 if(s.b(a)){r=t.N
-return A.T(["mapValue",A.T(["fields",A.bOU(a)],r,s)],r,t.z)}return A.T(["stringValue",J.aE(a)],t.N,t.z)},
+return A.U(["mapValue",A.U(["fields",A.bOU(a)],r,s)],r,t.z)}return A.U(["stringValue",J.aE(a)],t.N,t.z)},
 a57(a){return A.c4f(a)},
 c4f(a){var s=0,r=A.C(t.yc),q,p=2,o=[],n,m,l,k,j,i,h
 var $async$a57=A.y(function(b,c){if(b===1){o.push(c)
@@ -42127,7 +42127,7 @@ s=7
 return A.n(A.bI9(a).hE(0),$async$a57)
 case 7:n=c
 l=n.ghM()
-k=A.S(l).i("P<1,hl>")
+k=A.T(l).i("P<1,hl>")
 j=A.O(new A.P(l,new A.aGj(),k),k.i("al.E"))
 m=j
 J.tU(m,new A.aGk())
@@ -42194,9 +42194,9 @@ k=A.G(b).i("bM<1>")
 j=t.N
 l=A.h6(new A.bM(b,k),new A.aFQ(),k.i("F.E"),j).a1(0,"&")
 k=A.cp(u.fV+a+"?"+A.t(l),0,null)
-i=A.T(["Authorization","Bearer "+A.t(n),"Content-Type","application/json"],j,j)
+i=A.U(["Authorization","Bearer "+A.t(n),"Content-Type","application/json"],j,j)
 s=8
-return A.n(A.BZ(k,B.aj.e7(A.T(["fields",m],j,t.P),null),i),$async$a50)
+return A.n(A.BZ(k,B.aj.e7(A.U(["fields",m],j,t.P),null),i),$async$a50)
 case 8:p=2
 s=6
 break
@@ -42219,7 +42219,7 @@ case 7:n=c
 if(J.ar(n)===0){s=1
 break}m=t.N
 s=8
-return A.n(A.a_p(A.cp(u.fV+a,0,null),A.T(["Authorization","Bearer "+A.t(n)],m,m)),$async$a4U)
+return A.n(A.a_p(A.cp(u.fV+a,0,null),A.U(["Authorization","Bearer "+A.t(n)],m,m)),$async$a4U)
 case 8:p=2
 s=6
 break
@@ -42278,7 +42278,7 @@ m=(n==null?$.be=$.cw():n).cw("[DEFAULT]")
 A.bK(m,$.cv(),!0)
 n=A.e1(new A.ci(m))
 n=A.e4(n,n.gcV().cP("public_histories")).cr(a)
-l=A.q5(A.T(["isHidden",!0,"hiddenBy",b,"hiddenAt",o],t.K,t.X))
+l=A.q5(A.U(["isHidden",!0,"hiddenBy",b,"hiddenAt",o],t.K,t.X))
 l.toString
 s=6
 return A.n(n.a.cB(0,l),$async$aG0)
@@ -42303,7 +42303,7 @@ n=(o==null?$.be=$.cw():o).cw("[DEFAULT]")
 A.bK(n,$.cv(),!0)
 o=A.e1(new A.ci(n))
 o=A.e4(o,o.gcV().cP("public_histories")).cr(a)
-m=A.q5(A.T(["isHidden",!1,"hiddenBy",null,"hiddenAt",null],t.K,t.X))
+m=A.q5(A.U(["isHidden",!1,"hiddenBy",null,"hiddenAt",null],t.K,t.X))
 m.toString
 s=6
 return A.n(o.a.cB(0,m),$async$aGB)
@@ -42363,7 +42363,7 @@ case 11:case 8:m=a2
 l=null
 try{l=A.c3P(m.ghM())}catch(a0){l=B.iM}k=null
 try{e=l
-k=A.bI4(new A.a5(e,new A.aFz(),A.S(e).i("a5<1>")))}catch(a0){d=l
+k=A.bI4(new A.a5(e,new A.aFz(),A.T(e).i("a5<1>")))}catch(a0){d=l
 k=d}s=J.ar(k)!==0?12:13
 break
 case 12:p=15
@@ -42457,7 +42457,7 @@ if(b){q=B.iM
 s=1
 break}b=A.a3R()
 f=t.N
-n=new A.aFx(A.T(["Authorization","Bearer "+c],f,f),b.a)
+n=new A.aFx(A.U(["Authorization","Bearer "+c],f,f),b.a)
 m=new A.aFy()
 p=5
 s=8
@@ -42484,7 +42484,7 @@ break
 case 14:s=k!=null&&k.length!==0?16:18
 break
 case 16:s=19
-return A.n(n.$1$extraHeaders(A.T(["Authorization","Bearer "+k],f,f)),$async$yd)
+return A.n(n.$1$extraHeaders(A.U(["Authorization","Bearer "+k],f,f)),$async$yd)
 case 19:l=a2
 l.toString
 s=17
@@ -42625,17 +42625,17 @@ return A.n(A.fJ(),$async$a4Z)
 case 3:i=g
 if(i.length===0){s=1
 break}p=t.N
-o=A.T(["stringValue",e],p,p)
-n=A.T(["stringValue",d],p,p)
-m=A.T(["stringValue",b],p,p)
-l=A.T(["booleanValue",a],p,t.y)
-k=A.S(c).i("P<1,ai<h,h>>")
+o=A.U(["stringValue",e],p,p)
+n=A.U(["stringValue",d],p,p)
+m=A.U(["stringValue",b],p,p)
+l=A.U(["booleanValue",a],p,t.y)
+k=A.T(c).i("P<1,ai<h,h>>")
 k=A.O(new A.P(c,new A.aFN(),k),k.i("al.E"))
-j=A.T(["version",o,"title",n,"date",m,"active",l,"items",A.T(["arrayValue",A.T(["values",k],p,t.xW)],p,t.XT)],p,t.nf)
+j=A.U(["version",o,"title",n,"date",m,"active",l,"items",A.U(["arrayValue",A.U(["values",k],p,t.xW)],p,t.XT)],p,t.nf)
 o=A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_updates/current?updateMask.fieldPaths=version&updateMask.fieldPaths=title&updateMask.fieldPaths=date&updateMask.fieldPaths=active&updateMask.fieldPaths=items",0,null)
-n=A.T(["Authorization","Bearer "+i,"Content-Type","application/json"],p,p)
+n=A.U(["Authorization","Bearer "+i,"Content-Type","application/json"],p,p)
 s=4
-return A.n(A.BZ(o,B.aj.e7(A.T(["fields",j],p,t.cd),null),n),$async$a4Z)
+return A.n(A.BZ(o,B.aj.e7(A.U(["fields",j],p,t.cd),null),n),$async$a4Z)
 case 4:case 1:return A.A(q,r)}})
 return A.B($async$a4Z,r)},
 Ma(a,b){return A.c47(a,b)},
@@ -42651,7 +42651,7 @@ n=A.e4(n,n.gcV().cP("users")).cr(a)
 l=$.lA()
 k=l.J4(b)
 l=l.ki()
-l=A.q5(A.T(["totalUsageSeconds",new A.h4(k,k),"lastSeenAt",new A.h4(l,l)],t.K,t.X))
+l=A.q5(A.U(["totalUsageSeconds",new A.h4(k,k),"lastSeenAt",new A.h4(l,l)],t.K,t.X))
 l.toString
 s=7
 return A.n(n.a.cB(0,l),$async$Ma)
@@ -42680,7 +42680,7 @@ n=A.e4(n,n.gcV().cP("users")).cr(a)
 l=$.lA()
 k=l.J4(1)
 l=l.ki()
-l=A.q5(A.T(["loginCount",new A.h4(k,k),"lastSeenAt",new A.h4(l,l)],t.K,t.X))
+l=A.q5(A.U(["loginCount",new A.h4(k,k),"lastSeenAt",new A.h4(l,l)],t.K,t.X))
 l.toString
 s=7
 return A.n(n.a.cB(0,l),$async$aG2)
@@ -42707,7 +42707,7 @@ s=7
 return A.n(A.e4(m,m.gcV().cP("users")).pp(0,"role","master").hE(0),$async$aFX)
 case 7:n=b
 m=n.ghM()
-k=A.S(m).i("P<1,h>")
+k=A.T(m).i("P<1,h>")
 m=A.O(new A.P(m,new A.aFY(),k),k.i("al.E"))
 q=m
 s=1
@@ -42740,7 +42740,7 @@ n=A.e1(new A.ci(m))
 n=A.e4(n,n.gcV().cP("notifications")).cr(d).cP("items")
 l=$.lA().ki()
 s=7
-return A.n(n.E(0,A.T(["title",c,"body",a,"payload",b,"read",!1,"createdAt",new A.h4(l,l)],t.N,t.z)),$async$aGC)
+return A.n(n.E(0,A.U(["title",c,"body",a,"payload",b,"read",!1,"createdAt",new A.h4(l,l)],t.N,t.z)),$async$aGC)
 case 7:p=2
 s=6
 break
@@ -42763,7 +42763,7 @@ p=A.e1(new A.ci(o))
 p=A.e4(p,p.gcV().cP("email_campaigns"))
 q=$.lA().ki()
 s=2
-return A.n(p.E(0,A.T(["subject",g,"body",a,"sentBy",e,"recipients",d,"recipientCount",c,"status",f,"errorMsg",b,"sentAt",new A.h4(q,q)],t.N,t.z)),$async$aGs)
+return A.n(p.E(0,A.U(["subject",g,"body",a,"sentBy",e,"recipients",d,"recipientCount",c,"status",f,"errorMsg",b,"sentAt",new A.h4(q,q)],t.N,t.z)),$async$aGs)
 case 2:return A.A(null,r)}})
 return A.B($async$aGs,r)},
 aGc(){var s=0,r=A.C(t.b5),q,p=2,o=[],n,m,l,k,j,i
@@ -42777,7 +42777,7 @@ s=7
 return A.n(A.e4(m,m.gcV().cP("email_campaigns")).um("sentAt",!0).p8(20).hE(0),$async$aGc)
 case 7:n=b
 m=n.ghM()
-k=A.S(m).i("P<1,ai<h,@>>")
+k=A.T(m).i("P<1,ai<h,@>>")
 m=A.O(new A.P(m,new A.aGd(),k),k.i("al.E"))
 q=m
 s=1
@@ -42815,11 +42815,11 @@ return A.n(A.fJ(),$async$a5_)
 case 2:l=e
 if(l.length===0){A.a1().$1("[FirestoreService] _saveEmailJsConfigRest: token vazio \u2014 abortando")
 throw A.p(A.cZ("N\xe3o autenticado \u2014 token de admin ausente"))}q=t.N
-p=A.T(["serviceId",A.T(["stringValue",b],q,q),"templateId",A.T(["stringValue",c],q,q),"publicKey",A.T(["stringValue",a],q,q),"updatedAt",A.T(["stringValue",new A.aM(Date.now(),0,!1).kV().ei()],q,q)],q,t.GU)
+p=A.U(["serviceId",A.U(["stringValue",b],q,q),"templateId",A.U(["stringValue",c],q,q),"publicKey",A.U(["stringValue",a],q,q),"updatedAt",A.U(["stringValue",new A.aM(Date.now(),0,!1).kV().ei()],q,q)],q,t.GU)
 o=A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_config/emailjs?updateMask.fieldPaths=serviceId&updateMask.fieldPaths=templateId&updateMask.fieldPaths=publicKey&updateMask.fieldPaths=updatedAt",0,null)
-n=A.T(["Authorization","Bearer "+l,"Content-Type","application/json"],q,q)
+n=A.U(["Authorization","Bearer "+l,"Content-Type","application/json"],q,q)
 s=3
-return A.n(A.BZ(o,B.aj.e7(A.T(["fields",p],q,t.hB),null),n),$async$a5_)
+return A.n(A.BZ(o,B.aj.e7(A.U(["fields",p],q,t.hB),null),n),$async$a5_)
 case 3:m=e
 n=m.b
 q=""+n
@@ -42842,7 +42842,7 @@ s=7
 return A.n(A.fJ(),$async$a4X)
 case 7:n=b
 i=t.N
-m=J.ar(n)!==0?A.T(["Authorization","Bearer "+A.t(n)],i,i):A.R(i,i)
+m=J.ar(n)!==0?A.U(["Authorization","Bearer "+A.t(n)],i,i):A.R(i,i)
 s=8
 return A.n(A.mB(A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_config/emailjs",0,null),m).dH(0,B.f9),$async$a4X)
 case 8:l=b
@@ -42853,7 +42853,7 @@ s=1
 break}h=l
 k=A.eR(B.aj.dt(0,A.de(A.dd(h.e)).ce(0,h.w),null))
 j=A.eR(J.W(k,"fields"))
-i=A.T(["serviceId",A.lU(J.W(A.eR(J.W(j,"serviceId")),"stringValue")),"templateId",A.lU(J.W(A.eR(J.W(j,"templateId")),"stringValue")),"publicKey",A.lU(J.W(A.eR(J.W(j,"publicKey")),"stringValue"))],i,i)
+i=A.U(["serviceId",A.lU(J.W(A.eR(J.W(j,"serviceId")),"stringValue")),"templateId",A.lU(J.W(A.eR(J.W(j,"templateId")),"stringValue")),"publicKey",A.lU(J.W(A.eR(J.W(j,"publicKey")),"stringValue"))],i,i)
 q=i
 s=1
 break
@@ -42878,9 +42878,9 @@ c4A(a,b,c,d,e,f,g,h){var s=0,r=A.C(t.H),q,p,o,n
 var $async$aGy=A.y(function(i,j){if(i===1)return A.z(j,r)
 while(true)switch(s){case 0:q=A.cp("https://api.emailjs.com/api/v1.0/email/send",0,null)
 p=t.N
-o=A.T(["Content-Type","application/json"],p,p)
+o=A.U(["Content-Type","application/json"],p,p)
 s=2
-return A.n(A.oN(q,B.aj.e7(A.T(["service_id",d,"template_id",f,"user_id",c,"template_params",A.T(["to_email",g,"to_name",h,"subject",e,"message",b,"from_name",a],p,p)],p,t.K),null),o),$async$aGy)
+return A.n(A.oN(q,B.aj.e7(A.U(["service_id",d,"template_id",f,"user_id",c,"template_params",A.U(["to_email",g,"to_name",h,"subject",e,"message",b,"from_name",a],p,p)],p,t.K),null),o),$async$aGy)
 case 2:n=j
 q=n.b
 if(q!==200)throw A.p(A.cZ("EmailJS error "+q+": "+n.gwr(0)))
@@ -42895,7 +42895,7 @@ c4y(a,b,c,d,e,f){var s=0,r=A.C(t.N),q,p,o,n,m,l
 var $async$a5h=A.y(function(g,h){if(g===1)return A.z(h,r)
 while(true)switch(s){case 0:o=$.lA()
 n=o.ki()
-m=A.T(["title",e,"content",b,"color",a,"tags",d,"updatedAt",new A.h4(n,n)],t.N,t.K)
+m=A.U(["title",e,"content",b,"color",a,"tags",d,"updatedAt",new A.h4(n,n)],t.N,t.K)
 s=c==null?3:5
 break
 case 3:o=o.ki()
@@ -43264,7 +43264,7 @@ A.a1().$1("[clinical_guides DEBUG] currentUser=WEB_REST_AUTH (getAdminToken)")
 A.a1().$1("[clinical_guides DEBUG] tokenPresent="+b5)
 A.a1().$1("[clinical_guides DEBUG] tokenLength="+b0)
 b0=t.N
-l=b4?A.T(["Authorization","Bearer "+b3],b0,b0):A.R(b0,b0)
+l=b4?A.U(["Authorization","Bearer "+b3],b0,b0):A.R(b0,b0)
 A.a1().$1("[clinical_guides DEBUG] authHeader="+J.ex(l,"Authorization"))
 p=5
 b4=$.be
@@ -43321,7 +43321,7 @@ s=19
 break
 case 16:s=10
 break
-case 19:d=e!=null&&e.length!==0?A.T(["Authorization","Bearer "+e],b0,b0):A.R(b0,b0)
+case 19:d=e!=null&&e.length!==0?A.U(["Authorization","Bearer "+e],b0,b0):A.R(b0,b0)
 d.toString
 s=d.a!==0?21:22
 break
@@ -43504,7 +43504,7 @@ o=(p==null?$.be=$.cw():p).cw("[DEFAULT]")
 A.bK(o,$.cv(),!0)
 p=A.e1(new A.ci(o))
 p=A.e4(p,p.gcV().cP("clinical_guides")).cr(a)
-q=A.q5(A.T(["isPublished",b],t.K,t.X))
+q=A.q5(A.U(["isPublished",b],t.K,t.X))
 q.toString
 s=2
 return A.n(p.a.cB(0,q),$async$aGA)
@@ -43531,7 +43531,7 @@ A.bK(n,$.cv(),!0)
 o=A.e1(new A.ci(n))
 o=A.e4(o,o.gcV().cP("clinical_guides")).cr(a)
 m=$.lA().J4(1)
-m=A.q5(A.T(["downloadCount",new A.h4(m,m)],t.K,t.X))
+m=A.q5(A.U(["downloadCount",new A.h4(m,m)],t.K,t.X))
 m.toString
 s=6
 return A.n(o.a.cB(0,m),$async$aG1)
@@ -43555,11 +43555,11 @@ return A.n(A.fJ(),$async$a51)
 case 3:l=e
 if(l.length===0){s=1
 break}p=t.N
-o=A.T(["enabled",A.T(["booleanValue",a],p,t.y),"message",A.T(["stringValue",B.c.B(b)],p,p),"updatedBy",A.T(["stringValue",c],p,p),"updatedAt",A.T(["stringValue",new A.aM(Date.now(),0,!1).kV().ei()],p,p)],p,t.nf)
+o=A.U(["enabled",A.U(["booleanValue",a],p,t.y),"message",A.U(["stringValue",B.c.B(b)],p,p),"updatedBy",A.U(["stringValue",c],p,p),"updatedAt",A.U(["stringValue",new A.aM(Date.now(),0,!1).kV().ei()],p,p)],p,t.nf)
 n=A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_config/maintenance?updateMask.fieldPaths=enabled&updateMask.fieldPaths=message&updateMask.fieldPaths=updatedBy&updateMask.fieldPaths=updatedAt",0,null)
-m=A.T(["Authorization","Bearer "+l,"Content-Type","application/json"],p,p)
+m=A.U(["Authorization","Bearer "+l,"Content-Type","application/json"],p,p)
 s=4
-return A.n(A.BZ(n,B.aj.e7(A.T(["fields",o],p,t.cd),null),m),$async$a51)
+return A.n(A.BZ(n,B.aj.e7(A.U(["fields",o],p,t.cd),null),m),$async$a51)
 case 4:case 1:return A.A(q,r)}})
 return A.B($async$a51,r)},
 aGn:function aGn(a){this.a=a},
@@ -43897,11 +43897,11 @@ for(a7=d2.length,a8=t.N,a9=t.SN,b0=t.z,b1=0;b1<d2.length;d2.length===a7||(0,A.a2
 b3=J.at(b2)
 b4=b3.h(b2,"role")==="assistant"?"model":"user"
 b3=b3.h(b2,"content")
-c5.push(A.T(["role",b4,"parts",A.a([A.T(["text",b3==null?"":b3],a8,a8)],a9)],a8,b0))}c5.push(A.T(["role","user","parts",A.a([A.T(["text",d7],a8,a8)],a9)],a8,b0))
+c5.push(A.U(["role",b4,"parts",A.a([A.U(["text",b3==null?"":b3],a8,a8)],a9)],a8,b0))}c5.push(A.U(["role","user","parts",A.a([A.U(["text",d7],a8,a8)],a9)],a8,b0))
 a7=t.xW
-a7=d4.length!==0?A.T(["parts",A.a([A.T(["text",d4],a8,a8),A.T(["text",d5],a8,a8)],a9)],a8,a7):A.T(["parts",A.a([A.T(["text",d5],a8,a8)],a9)],a8,a7)
-m=A.T(["system_instruction",a7,"contents",c5,"generationConfig",A.T(["maxOutputTokens",3200,"temperature",0.4,"topP",0.95,"topK",40],a8,t.Ci),"safetySettings",A.a([A.T(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],a8,a8),A.T(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],a8,a8),A.T(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],a8,a8),A.T(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],a8,a8)],a9)],a8,b0)
-if(d6)J.dm(m,"tools",A.a([A.T(["google_search",A.R(b0,b0)],a8,t.f)],t.ae))
+a7=d4.length!==0?A.U(["parts",A.a([A.U(["text",d4],a8,a8),A.U(["text",d5],a8,a8)],a9)],a8,a7):A.U(["parts",A.a([A.U(["text",d5],a8,a8)],a9)],a8,a7)
+m=A.U(["system_instruction",a7,"contents",c5,"generationConfig",A.U(["maxOutputTokens",3200,"temperature",0.4,"topP",0.95,"topK",40],a8,t.Ci),"safetySettings",A.a([A.U(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],a8,a8),A.U(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],a8,a8),A.U(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],a8,a8),A.U(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],a8,a8)],a9)],a8,b0)
+if(d6)J.dm(m,"tools",A.a([A.U(["google_search",A.R(b0,b0)],a8,t.f)],t.ae))
 l=A.c3("response")
 p=4
 b5=A.bJq("POST",c4)
@@ -44102,7 +44102,7 @@ if(B.c.k(q,"[an\xe1lise_interna]"))return!0
 if(B.c.k(q,"[revis\xe3o_interna]"))return!0
 if(B.c.k(q,"scratchpad"))return!0
 if(B.c.k(q,"confianza cl")||B.c.k(q,"confian\xe7a cl")||B.c.k(q,"confianza:")||B.c.k(q,"confian\xe7a:")||B.c.k(q,"clinical confidence")||B.c.k(q,"nivel de confianza")||B.c.k(q,"n\xedvel de confian\xe7a")||B.c.k(q,"nivel de confian\xe7a")||B.c.k(q,"n\xedvel de confianza"))return!0
-s=A.U("confian[z\xe7]a",!1,!1,!1,!1)
+s=A.S("confian[z\xe7]a",!1,!1,!1,!1)
 if(s.b.test(q))return!0
 if(B.c.k(q,"el usuario ha indicado que"))return!0
 if(B.c.k(q,"el usuario ha proporcionado"))return!0
@@ -44149,7 +44149,7 @@ if(B.c.k(q,"sigla m\xe9dica"))return!0
 if(B.c.k(q,"sigla medica"))return!0
 if(B.c.k(q,"protocolo de manejo"))return!0
 r=q.length>80?B.c.S(q,0,80):q
-s=A.U("^\\s*(?:el\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:pedido|indicado|proporcionado|solicitado))|o\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|informou|forneceu)|the\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|baseado\\s+(?:no|na)\\s+(?:contexto|conversa)|basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci))",!1,!1,!1,!1)
+s=A.S("^\\s*(?:el\\s+usuario\\s+(?:solicita|proporciona|pregunta|pide|quiere|busca|ha\\s+(?:pedido|indicado|proporcionado|solicitado))|o\\s+usu[a\xe1]rio\\s+(?:solicita|fornece|pergunta|pede|quer|busca|indicou|informou|forneceu)|the\\s+user\\s+(?:is\\s+asking|asks|wants|requests|provides|has\\s+indicated|has\\s+asked)|baseado\\s+(?:no|na)\\s+(?:contexto|conversa)|basado\\s+en\\s+(?:el\\s+contexto|la\\s+conversaci))",!1,!1,!1,!1)
 if(s.b.test(r))return!0
 return!1},
 c52(a){var s,r,q,p
@@ -44358,7 +44358,7 @@ o=p.r
 k.push(new A.iA("urea",r,q,"mg/dL","15\u201340",B.kj,o,l?"Calculada a partir del BUN (\xd7 2.14)":"Calculada a partir do BUN (\xd7 2,14)"))}return k},
 bPO(a){var s,r=B.c.B(a.toLowerCase())
 r=A.q(r,",",".")
-s=A.U("\\s+",!0,!1,!1,!1)
+s=A.S("\\s+",!0,!1,!1,!1)
 r=A.q(r,s," ")
 r=A.q(r,"\xe1","a")
 r=A.q(r,"\xe2","a")
@@ -44382,7 +44382,7 @@ c6t(a,b){var s=0,r=A.C(t.wy),q,p
 var $async$bIN=A.y(function(c,d){if(c===1)return A.z(d,r)
 while(true)switch(s){case 0:if($.fr.length===0)A.aB(A.a6U(u.Fx))
 p=t.N
-q=A.Nd(A.T(["contents",A.a([A.T(["parts",A.a([A.T(["text",A.bIK(b)],p,p),A.T(["text","Laudo/texto para an\xe1lise:\n\n"+a],p,p)],t.SN)],p,t.xW)],t.Ud),"generationConfig",A.T(["temperature",0.05,"maxOutputTokens",4096,"responseMimeType","application/json"],p,t.K),"safetySettings",A.bIJ()],p,t.z),b)
+q=A.Nd(A.U(["contents",A.a([A.U(["parts",A.a([A.U(["text",A.bIK(b)],p,p),A.U(["text","Laudo/texto para an\xe1lise:\n\n"+a],p,p)],t.SN)],p,t.xW)],t.Ud),"generationConfig",A.U(["temperature",0.05,"maxOutputTokens",4096,"responseMimeType","application/json"],p,t.K),"safetySettings",A.bIJ()],p,t.z),b)
 s=1
 break
 case 1:return A.A(q,r)}})
@@ -44392,7 +44392,7 @@ c6r(a,b,c){var s=0,r=A.C(t.wy),q,p
 var $async$bIL=A.y(function(d,e){if(d===1)return A.z(e,r)
 while(true)switch(s){case 0:if($.fr.length===0)A.aB(A.a6U(u.Fx))
 p=t.N
-q=A.Nd(A.T(["contents",A.a([A.T(["parts",A.a([A.T(["text",A.bIK(b)],p,p),A.T(["inlineData",A.T(["mimeType",c,"data",B.rr.gBy().e6(a)],p,p)],p,t.GU)],t.Mq)],p,t.JD)],t.gz),"generationConfig",A.T(["temperature",0.05,"maxOutputTokens",4096,"responseMimeType","application/json"],p,t.K),"safetySettings",A.bIJ()],p,t.z),b)
+q=A.Nd(A.U(["contents",A.a([A.U(["parts",A.a([A.U(["text",A.bIK(b)],p,p),A.U(["inlineData",A.U(["mimeType",c,"data",B.rr.gBy().e6(a)],p,p)],p,t.GU)],t.Mq)],p,t.JD)],t.gz),"generationConfig",A.U(["temperature",0.05,"maxOutputTokens",4096,"responseMimeType","application/json"],p,t.K),"safetySettings",A.bIJ()],p,t.z),b)
 s=1
 break
 case 1:return A.A(q,r)}})
@@ -44402,7 +44402,7 @@ c6s(a,b){var s=0,r=A.C(t.wy),q,p
 var $async$bIM=A.y(function(c,d){if(c===1)return A.z(d,r)
 while(true)switch(s){case 0:if($.fr.length===0)A.aB(A.a6U(u.Fx))
 p=t.N
-q=A.Nd(A.T(["contents",A.a([A.T(["parts",A.a([A.T(["text",A.bIK(b)],p,p),A.T(["inlineData",A.T(["mimeType","application/pdf","data",B.rr.gBy().e6(a)],p,p)],p,t.GU)],t.Mq)],p,t.JD)],t.gz),"generationConfig",A.T(["temperature",0.05,"maxOutputTokens",4096,"responseMimeType","application/json"],p,t.K),"safetySettings",A.bIJ()],p,t.z),b)
+q=A.Nd(A.U(["contents",A.a([A.U(["parts",A.a([A.U(["text",A.bIK(b)],p,p),A.U(["inlineData",A.U(["mimeType","application/pdf","data",B.rr.gBy().e6(a)],p,p)],p,t.GU)],t.Mq)],p,t.JD)],t.gz),"generationConfig",A.U(["temperature",0.05,"maxOutputTokens",4096,"responseMimeType","application/json"],p,t.K),"safetySettings",A.bIJ()],p,t.z),b)
 s=1
 break
 case 1:return A.A(q,r)}})
@@ -44414,7 +44414,7 @@ s=p}while(true)switch(s){case 0:h=b.toLowerCase()==="es"
 p=4
 k=A.cp(u.qC+$.fr,0,null)
 j=t.N
-j=A.T(["Content-Type","application/json"],j,j)
+j=A.U(["Content-Type","application/json"],j,j)
 s=7
 return A.n(A.oN(k,B.aj.e7(a,null),j).dH(0,B.tk),$async$Nd)
 case 7:n=d
@@ -44450,9 +44450,9 @@ if(r==null||J.di(r))return n
 q=J.hi(r,new A.aLy())
 q=new A.e7(q,new A.aLz(),q.$ti.i("e7<1,h>")).mW(0)
 return q}catch(o){return n}},
-c6q(a,b){var s,r,q,p,o=A.U("```json\\s*",!0,!1,!0,!1)
+c6q(a,b){var s,r,q,p,o=A.S("```json\\s*",!0,!1,!0,!1)
 o=A.q(a,o,"")
-s=A.U("```\\s*",!0,!1,!0,!1)
+s=A.S("```\\s*",!0,!1,!0,!1)
 r=B.aj.dt(0,B.c.B(A.q(o,s,"")),null)
 q=t.j.b(r)?r:[]
 o=J.dj(q,new A.aLA(),t.nv)
@@ -44488,7 +44488,7 @@ if(r==="inr"&&q>5)return B.dP
 return a.f},
 bIK(a){return'Voc\xea \xe9 um extrator especializado de laudos laboratoriais m\xe9dicos para o MedCases Pro.\n\nTAREFA: Analise o conte\xfado fornecido (texto, imagem ou PDF) e retorne EXCLUSIVAMENTE um array JSON.\nCada objeto do array representa UM par\xe2metro laboratorial com os campos abaixo:\n\n{\n  "examKey":        string  // OBRIGAT\xd3RIO \u2014 chave inglesa snake_case (ex: "sodium", "potassium", "hemoglobin")\n  "examName":       string  // OBRIGAT\xd3RIO \u2014 nome leg\xedvel no idioma do usu\xe1rio (ver instru\xe7\xe3o abaixo)\n  "value":          number  // OBRIGAT\xd3RIO \u2014 valor num\xe9rico (use ponto como decimal, nunca v\xedrgula)\n  "unit":           string  // OBRIGAT\xd3RIO \u2014 unidade (ex: "mEq/L", "mg/dL", "g/dL", "%", "x10\xb3/\xb5L")\n  "referenceRange": string  // OPCIONAL \u2014 faixa de refer\xeancia do laudo (ex: "135-145")\n  "status":         string  // OBRIGAT\xd3RIO \u2014 "low" | "normal" | "high" | "critical"\n  "confidence":     number  // OBRIGAT\xd3RIO \u2014 0.0 a 1.0: certeza da extra\xe7\xe3o OCR\n  "originalText":   string  // OBRIGAT\xd3RIO \u2014 trecho literal capturado do laudo\n}\n\nINSTRU\xc7\xd5ES CR\xcdTICAS:\n1. examKey: sempre em ingl\xeas snake_case min\xfasculo. Nunca em PT ou ES.\n   Exemplos corretos: "sodium", "potassium", "creatinine", "base_excess", "paco2"\n   Exemplos ERRADOS: "sodio", "pot\xe1ssio", "creatinina"\n\n2. '+(a.toLowerCase()==="es"?'Preencha "examName" obrigatoriamente em ESPANHOL (ex: S\xf3dio \u2192 Sodio, Ureia \u2192 Urea, Hemoglobina \u2192 Hemoglobina, Plaquetas \u2192 Plaquetas, Leuc\xf3citos \u2192 Leucocitos).':'Preencha "examName" obrigatoriamente em PORTUGU\xcaS (ex: Sodium \u2192 S\xf3dio, Urea \u2192 Ureia, Hemoglobin \u2192 Hemoglobina, Platelets \u2192 Plaquetas, WBC \u2192 Leuc\xf3citos).')+'\n\n3. value: converta v\xedrgula decimal para ponto. Se o valor for amb\xedguo ou ileg\xedvel, use 0 e confidence < 0.5.\n\n4. status: avalie conforme a faixa de refer\xeancia do laudo. Se n\xe3o houver refer\xeancia, use limites cl\xednicos universais.\n\n5. confidence: reflita a legibilidade real:\n   - Texto digital n\xedtido: 0.95\u20131.0\n   - Texto manuscrito ou PDF escaneado: 0.75\u20130.90\n   - Foto com ru\xeddo/borramento: 0.50\u20130.75\n   - Valor ileg\xedvel: < 0.50\n\n6. Inclua TODOS os par\xe2metros encontrados, mesmo os normais.\n\n7. Retorne APENAS o array JSON limpo. Sem markdown, sem coment\xe1rios, sem texto introdut\xf3rio.\n   Exemplo de sa\xedda v\xe1lida: [{"examKey":"sodium","examName":"S\xf3dio",...}, ...]\n'},
 bIJ(){var s=t.N
-return A.a([A.T(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],s,s),A.T(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],s,s),A.T(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],s,s),A.T(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],s,s)],t.SN)},
+return A.a([A.U(["category","HARM_CATEGORY_HARASSMENT","threshold","BLOCK_NONE"],s,s),A.U(["category","HARM_CATEGORY_HATE_SPEECH","threshold","BLOCK_NONE"],s,s),A.U(["category","HARM_CATEGORY_SEXUALLY_EXPLICIT","threshold","BLOCK_NONE"],s,s),A.U(["category","HARM_CATEGORY_DANGEROUS_CONTENT","threshold","BLOCK_NONE"],s,s)],t.SN)},
 a6U(a){return new A.uR(a)},
 aLy:function aLy(){},
 aLz:function aLz(){},
@@ -44570,14 +44570,14 @@ _.a=f},
 cbW(a){var s,r,q,p,o
 for(s=0;s<53;++s){r=B.bY_[s]
 q=r.c
-p=A.S(q).i("a5<1>")
+p=A.T(q).i("a5<1>")
 o=A.O(new A.a5(q,new A.bd0(a),p),p.i("F.E"))
 q=o.length
 if(q!==0)return new A.Vx(null,r.d,r.a,r.b,q*3,o)}return B.epi},
 cbP(a){var s,r,q,p,o
 for(s=0;s<19;++s){r=B.bUl[s]
 q=r.d
-p=A.S(q).i("a5<1>")
+p=A.T(q).i("a5<1>")
 o=A.O(new A.a5(q,new A.bai(a),p),p.i("F.E"))
 if(o.length!==0)return new A.WD([r.a,r.e,o,r.c,r.b])}return new A.WD([B.lZ,!1,A.a([],t.s),"",""])},
 cbO(a,b,c,d){if(B.d.c2(B.aWZ,new A.b9Z(c)))return B.vS
@@ -44745,7 +44745,7 @@ l=new A.P(A.a(a.split("\n"),t.s),new A.aSe(),t.a4).f5(0,new A.aSf())
 r=A.O(l,l.$ti.i("F.E"))
 for(l=r.length,q=0;q<l;++q){p=r[q]
 for(o=p.length,n=0;n<13;++n){m=B.nG[n]
-if(B.c.Y(p,m)&&o>m.length+2)return!0}}if(new A.a5(r,new A.aSg(),A.S(r).i("a5<1>")).gA(0)>=3)return!0
+if(B.c.Y(p,m)&&o>m.length+2)return!0}}if(new A.a5(r,new A.aSg(),A.T(r).i("a5<1>")).gA(0)>=3)return!0
 return!1},
 c87(a){var s,r,q,p,o,n
 if(B.c.B(a).length===0)return!0
@@ -44836,9 +44836,9 @@ return A.c9e(q,c,r,A.c9g(q),s)},
 c9f(a,b){var s,r,q,p="CONSULTA CL\xcdNICA",o=new A.P(A.a(a.split("\n"),t.s),new A.aV9(),t.a4).f5(0,new A.aVa()),n=A.O(o,o.$ti.i("F.E"))
 if(n.length===0)return p
 s=B.d.gW(n)
-o=A.U("\\*+",!0,!1,!1,!1)
+o=A.S("\\*+",!0,!1,!1,!1)
 o=A.q(s,o,"")
-r=A.U("^#+\\s*",!0,!1,!1,!1)
+r=A.S("^#+\\s*",!0,!1,!1,!1)
 q=B.c.B(A.q(o,r,""))
 o=q.length
 if(o>5&&o<=60)return q.toUpperCase()
@@ -45156,7 +45156,7 @@ break}d=b3==="plantao"?4:8
 c=b0.length
 b=c>d?B.d.fN(b0,c-d):b0
 c=t.N
-m=A.T(["userMessage",b6,"systemPrompt",b5,"history",b,"mode",b3,"lang",b1,"requestId",b4,"maxOutputTokens",b2],c,t.K)
+m=A.U(["userMessage",b6,"systemPrompt",b5,"history",b,"mode",b3,"lang",b1,"requestId",b4,"maxOutputTokens",b2],c,t.K)
 a=B.q.i0(B.aj.e7(m,null).length/4)
 a0=""+a
 A.dZ("[PAYLOAD_AUDIT] requestId="+b4+" mode="+b3+" historyEntries="+b.length+" userMsgLen="+b6.length+" systemPromptLen="+b5.length+" inputTokensApprox="+a0)
@@ -45164,7 +45164,7 @@ if(a>5000)A.dZ("[PAYLOAD_AUDIT] \u26a0\ufe0f  ALERTA: payload acima de 5000 toke
 l=null
 p=9
 a1=A.cp("https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy",0,null)
-c=A.T(["Content-Type","application/json","Authorization","Bearer "+A.t(a7)],c,c)
+c=A.U(["Content-Type","application/json","Authorization","Bearer "+A.t(a7)],c,c)
 s=12
 return A.n(A.oN(a1,B.aj.e7(m,null),c).dH(0,B.tk),$async$EW)
 case 12:l=b9
@@ -45275,15 +45275,15 @@ bRl(a){var s,r,q,p={}
 p.a=a.toLowerCase()
 B.c0n.aG(0,new A.aTN(p))
 s=p.a
-r=A.U("[^a-z0-9]+",!0,!1,!1,!1)
+r=A.S("[^a-z0-9]+",!0,!1,!1,!1)
 q=A.q(s,r,"_")
 p.a=q
-s=A.U("_+",!0,!1,!1,!1)
+s=A.S("_+",!0,!1,!1,!1)
 s=A.q(q,s,"_")
-r=A.U("^_|_$",!0,!1,!1,!1)
+r=A.S("^_|_$",!0,!1,!1,!1)
 q=p.a=A.q(s,r,"")
 if(q.length>40){s=B.c.S(q,0,40)
-r=A.U("_$",!0,!1,!1,!1)
+r=A.S("_$",!0,!1,!1,!1)
 p=p.a=A.q(s,r,"")}else p=q
 return p},
 c8V(a){var s,r=t.nA.a(J.W(a,"fields"))
@@ -45310,9 +45310,9 @@ case 4:m=e
 if(m.length===0)throw A.p(A.cZ("N\xe3o autenticado. Fa\xe7a login novamente."))
 l=A.cp(u.xa+i,0,null)
 k=t.N
-j=A.T(["Authorization","Bearer "+m,"Content-Type","application/json"],k,k)
+j=A.U(["Authorization","Bearer "+m,"Content-Type","application/json"],k,k)
 s=5
-return A.n(A.BZ(l,B.aj.e7(A.T(["fields",A.c8U(A.T(["id",i,"name",p,"couponCode",o,"discountPercent",b,"createdAt",A.pW(n.ghU())],k,t.z))],k,t.P),null),j),$async$Pb)
+return A.n(A.BZ(l,B.aj.e7(A.U(["fields",A.c8U(A.U(["id",i,"name",p,"couponCode",o,"discountPercent",b,"createdAt",A.pW(n.ghU())],k,t.z))],k,t.P),null),j),$async$Pb)
 case 5:l=e.b
 if(l!==200)throw A.p(A.cZ("Erro ao criar influenciador: HTTP "+l))
 q=new A.ix(i,p,o,b,n)
@@ -45328,7 +45328,7 @@ case 3:l=b
 if(l.length===0)throw A.p(A.cZ("N\xe3o autenticado."))
 p=t.N
 s=4
-return A.n(A.mB(A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/influencers",0,null),A.T(["Authorization","Bearer "+l],p,p)),$async$ab4)
+return A.n(A.mB(A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/influencers",0,null),A.U(["Authorization","Bearer "+l],p,p)),$async$ab4)
 case 4:o=b
 p=o.b
 if(p===401||p===403)throw A.p(A.cZ("[cloud_firestore/permission-denied] REST: sem permiss\xe3o ("+p+")"))
@@ -45352,7 +45352,7 @@ case 2:p=c
 if(p.length===0)throw A.p(A.cZ("N\xe3o autenticado."))
 q=t.N
 s=3
-return A.n(A.a_p(A.cp(u.xa+a,0,null),A.T(["Authorization","Bearer "+p],q,q)),$async$ab2)
+return A.n(A.a_p(A.cp(u.xa+a,0,null),A.U(["Authorization","Bearer "+p],q,q)),$async$ab2)
 case 3:q=c.b
 if(q!==200)throw A.p(A.cZ("Erro ao remover influenciador: HTTP "+q))
 return A.A(null,r)}})
@@ -45368,12 +45368,12 @@ if(J.ar(n)===0){q=0
 s=1
 break}m=A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents:runQuery",0,null)
 j=t.N
-i=A.T(["Authorization","Bearer "+A.t(n),"Content-Type","application/json"],j,j)
+i=A.U(["Authorization","Bearer "+A.t(n),"Content-Type","application/json"],j,j)
 h=t.SN
 g=t.K
 f=t.nf
 s=8
-return A.n(A.oN(m,B.aj.e7(A.T(["structuredQuery",A.T(["from",A.a([A.T(["collectionId","users"],j,j)],h),"where",A.T(["fieldFilter",A.T(["field",A.T(["fieldPath","referred_by"],j,j),"op","EQUAL","value",A.T(["stringValue",a],j,j)],j,g)],j,f),"select",A.T(["fields",A.a([A.T(["fieldPath","uid"],j,j)],h)],j,t.xW)],j,g)],j,f),null),i),$async$ab3)
+return A.n(A.oN(m,B.aj.e7(A.U(["structuredQuery",A.U(["from",A.a([A.U(["collectionId","users"],j,j)],h),"where",A.U(["fieldFilter",A.U(["field",A.U(["fieldPath","referred_by"],j,j),"op","EQUAL","value",A.U(["stringValue",a],j,j)],j,g)],j,f),"select",A.U(["fields",A.a([A.U(["fieldPath","uid"],j,j)],h)],j,t.xW)],j,g)],j,f),null),i),$async$ab3)
 case 8:l=c
 if(l.b!==200){q=0
 s=1
@@ -45403,7 +45403,7 @@ c8Y(a){var s=0,r=A.C(t._P),q,p
 var $async$aTO=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:p=A
 s=3
-return A.n(A.mS(new A.P(a,new A.aTQ(),A.S(a).i("P<1,aG<b3<h,D>>>")),t.aM),$async$aTO)
+return A.n(A.mS(new A.P(a,new A.aTQ(),A.T(a).i("P<1,aG<b3<h,D>>>")),t.aM),$async$aTO)
 case 3:q=p.bQ5(c,t.N,t.S)
 s=1
 break
@@ -45420,7 +45420,7 @@ if(J.ar(n)===0){q=!1
 s=1
 break}l=t.N
 s=8
-return A.n(A.mB(A.cp(u.xa+a,0,null),A.T(["Authorization","Bearer "+A.t(n)],l,l)),$async$ab5)
+return A.n(A.mB(A.cp(u.xa+a,0,null),A.U(["Authorization","Bearer "+A.t(n)],l,l)),$async$ab5)
 case 8:m=c
 l=m.b
 q=l===200
@@ -45452,7 +45452,7 @@ aTP:function aTP(a){this.a=a},
 adi(a,b,c){return A.cag(a,b,c)},
 cag(a,b,c){var s=0,r=A.C(t.Xt),q,p,o,n,m,l,k,j,i,h,g
 var $async$adi=A.y(function(d,e){if(d===1)return A.z(e,r)
-while(true)switch(s){case 0:k=A.U("[^a-zA-Z0-9._-]",!0,!1,!1,!1)
+while(true)switch(s){case 0:k=A.S("[^a-zA-Z0-9._-]",!0,!1,!1,!1)
 j=A.q(b,k,"_")
 i="clinical_guides/"+Date.now()+"_"+j
 k=$.be
@@ -45541,7 +45541,7 @@ if(!B.d.c2(n,new A.aZD(i)))B.d.hy(n,0,i)
 else{k&1&&A.br(n,16)
 B.d.Gd(n,new A.aZE(i),!0)
 B.d.hy(n,0,i)}}s=4
-return A.n(p.d4("StringList",o,A.d0(n,0,A.dy(60,"count",t.S),A.S(n).c).d8(0)),$async$adp)
+return A.n(p.d4("StringList",o,A.d0(n,0,A.dy(60,"count",t.S),A.T(n).c).d8(0)),$async$adp)
 case 4:case 1:return A.A(q,r)}})
 return A.B($async$adp,r)},
 aZC(a,b,c){return A.cap(a,b,c)},
@@ -45562,12 +45562,12 @@ j=k.toLowerCase()
 if(B.c.Y(j,i))n.push(k)
 else if(A.f_(j,i,0))m.push(k)}o=A.O(n,t.N)
 B.d.u(o,m)
-q=A.d0(o,0,A.dy(c,"count",t.S),A.S(o).c).d8(0)
+q=A.d0(o,0,A.dy(c,"count",t.S),A.T(o).c).d8(0)
 s=1
 break
 case 1:return A.A(q,r)}})
 return A.B($async$aZC,r)},
-cao(a){var s,r,q,p=B.c.ej(a,A.U("[.;\\n]+",!0,!1,!1,!1)),o=A.a([],t.s)
+cao(a){var s,r,q,p=B.c.ej(a,A.S("[.;\\n]+",!0,!1,!1,!1)),o=A.a([],t.s)
 for(s=p.length,r=0;r<p.length;p.length===s||(0,A.a2)(p),++r){q=B.c.B(p[r])
 if(q.length>=3)o.push(q)}s=B.c.B(a)
 if(s.length<=120&&!B.d.k(o,s))o.push(s)
@@ -47579,7 +47579,7 @@ this.c=this.a=null},
 a7m(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,d0,d1,d2,d3,d4,d5,d6){var s
 if(d5==null)s=null
 else s=d5
-return new A.yY(a,b9,c0,h,n,p,q,a0,a1,a3,a4,a6,a7,a9,b0,b2,m,c1,l,c,b4,g,b,b7,b5,b6,c8,c3,c9,d0,c4,c7,d1,c6,c5,d2,f,e,k,j,b3,d3,o,r,a2,a5,a8,b1,d6,b8,d,i,s,d4,c2,A.T(["a",a,"p",b9,"li",b9,"code",h,"pre",b9,"h1",n,"h2",q,"h3",a1,"h4",a4,"h5",a7,"h6",b0,"em",m,"strong",c1,"del",l,"blockquote",c,"img",b4,"table",b9,"th",c8,"tr",c3,"td",c3],t.N,t.p8))},
+return new A.yY(a,b9,c0,h,n,p,q,a0,a1,a3,a4,a6,a7,a9,b0,b2,m,c1,l,c,b4,g,b,b7,b5,b6,c8,c3,c9,d0,c4,c7,d1,c6,c5,d2,f,e,k,j,b3,d3,o,r,a2,a5,a8,b1,d6,b8,d,i,s,d4,c2,A.U(["a",a,"p",b9,"li",b9,"code",h,"pre",b9,"h1",n,"h2",q,"h3",a1,"h4",a4,"h5",a7,"h6",b0,"em",m,"strong",c1,"del",l,"blockquote",c,"img",b4,"table",b9,"th",c8,"tr",c3,"td",c3],t.N,t.p8))},
 yY:function yY(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,d0,d1,d2,d3,d4,d5,d6){var _=this
 _.a=a
 _.b=b
@@ -48757,7 +48757,7 @@ r.push(new A.cK("sup",s,l))
 return r},
 aHj:function aHj(a){this.a=a},
 aHk:function aHk(){},
-c5w(a){return new A.a6q(new A.a75(),!1,!1,null,A.U("!\\[",!0,!1,!0,!1),33)},
+c5w(a){return new A.a6q(new A.a75(),!1,!1,null,A.S("!\\[",!0,!1,!0,!1),33)},
 a6q:function a6q(a,b,c,d,e,f){var _=this
 _.w=a
 _.c=b
@@ -48766,13 +48766,13 @@ _.e=d
 _.a=e
 _.b=f},
 aKd:function aKd(){},
-c5I(){return new A.a6y(A.U("(?:<[a-z][a-z0-9-]*(?:\\s+[a-z_:][a-z0-9._:-]*(?:\\s*=\\s*(?:[^\\s\"'=<>`]+?|'[^']*?'|\"[^\"]*?\"))?)*\\s*/?>|</[a-z][a-z0-9-]*\\s*>)|<!--(?:(?:[^-<>]+-[^-<>]+)+|[^-<>]+)-->|<\\?.*?\\?>|(<![a-z]+.*?>)|(<!\\[CDATA\\[.*?]]>)",!1,!1,!0,!1),60)},
+c5I(){return new A.a6y(A.S("(?:<[a-z][a-z0-9-]*(?:\\s+[a-z_:][a-z0-9._:-]*(?:\\s*=\\s*(?:[^\\s\"'=<>`]+?|'[^']*?'|\"[^\"]*?\"))?)*\\s*/?>|</[a-z][a-z0-9-]*\\s*>)|<!--(?:(?:[^-<>]+-[^-<>]+)+|[^-<>]+)-->|<\\?.*?\\?>|(<![a-z]+.*?>)|(<!\\[CDATA\\[.*?]]>)",!1,!1,!0,!1),60)},
 a6y:function a6y(a,b){this.a=a
 this.b=b},
 hE:function hE(){},
 a74:function a74(a,b){this.a=a
 this.b=b},
-c6x(a,b,c){return new A.yR(new A.a75(),!1,!1,null,A.U(b,!0,!1,!0,!1),c)},
+c6x(a,b,c){return new A.yR(new A.a75(),!1,!1,null,A.S(b,!0,!1,!0,!1),c)},
 aLM:function aLM(a,b,c){this.a=a
 this.b=b
 this.c=c},
@@ -48813,7 +48813,7 @@ bW2(a){var s,r,q,p=B.c.B(a),o=$.bZL(),n=A.q(p,o," ")
 for(s=0;p=n.length,s<p;++s){r=B.dAh.h(0,n[s])
 if(r!=null){q=A.eU(s,s+1,p,null,null)
 n=n.substring(0,s)+r+n.substring(q)}}return n},
-bLv(a){return A.Jq(a,A.U("%[0-9A-Fa-f]{2}",!0,!1,!1,!1),new A.bEM(),new A.bEN())},
+bLv(a){return A.Jq(a,A.S("%[0-9A-Fa-f]{2}",!0,!1,!1,!1),new A.bEM(),new A.bEN())},
 bVw(a){var s,r,q,p,o,n,m=a.h(0,0)
 m.toString
 s=a.h(0,1)
@@ -48835,7 +48835,7 @@ for(s=new A.iS(a),r=t.Hz,s=new A.bD(s,s.gA(0),r.i("bD<aO.E>")),r=r.i("aO.E"),q=0
 if(p==null)p=r.a(p)
 if(p!==32&&p!==9)break
 q+=p===9?4-B.p.am(q,4):1}return q},
-bRY(a,b){var s,r,q,p=A.U("^[ \t]{0,"+b+"}",!0,!1,!1,!1).dU(a),o=p==null?null:p.b[0],n=null,m=0
+bRY(a,b){var s,r,q,p=A.S("^[ \t]{0,"+b+"}",!0,!1,!1,!1).dU(a),o=p==null?null:p.b[0],n=null,m=0
 if(o!=null)for(s=o.length,r=0;m<s;++m){q=o[m]==="\t"
 if(q){r+=4
 n=4}else ++r
@@ -49400,7 +49400,7 @@ for(;s>=1;s=q){q=s-1
 if(b[q]!=null)break}p=new A.cD("")
 o=""+(a+"(")
 p.a=o
-n=A.S(b)
+n=A.T(b)
 m=n.i("hr<1>")
 l=new A.hr(b,0,s,m)
 l.ol(b,0,s,n.c)
@@ -49729,7 +49729,7 @@ aST:function aST(a,b){this.a=a
 this.b=b},
 aIn:function aIn(a){this.a=a},
 ceW(a){var s=A.c6h(v.G.window.localStorage)
-return new A.a5(s,new A.bCY(a),A.S(s).i("a5<1>"))},
+return new A.a5(s,new A.bCY(a),A.T(s).i("a5<1>"))},
 cef(a){var s,r=null
 try{r=B.aj.ce(0,a)}catch(s){if(t.bE.b(A.ah(s)))return null
 else throw s}if(t.j.b(r))return J.hx(r,t.N)
@@ -49750,7 +49750,7 @@ this.b=b},
 Hi:function Hi(a,b,c){this.a=a
 this.b=b
 this.c=c},
-c5k(a,b){var s=A.c5l(A.a([A.cc8(a,!0)],t._Y)),r=new A.aJ1(b).$0(),q=B.p.l(B.d.gZ(s).b+1),p=A.c5m(s)?0:3,o=A.S(s)
+c5k(a,b){var s=A.c5l(A.a([A.cc8(a,!0)],t._Y)),r=new A.aJ1(b).$0(),q=B.p.l(B.d.gZ(s).b+1),p=A.c5m(s)?0:3,o=A.T(s)
 return new A.aII(s,r,null,1+Math.max(q.length,p),new A.P(s,new A.aIK(),o.i("P<1,D>")).xC(0,B.aat),!A.cis(new A.P(s,new A.aIL(),o.i("P<1,a4?>"))),new A.cD(""))},
 c5m(a){var s,r,q
 for(s=0;s<a.length-1;){r=a[s];++s
@@ -50395,7 +50395,7 @@ while(true)switch(s){case 0:s=2
 return A.n(B.ei.dP("SystemNavigator.pop",null,t.H),$async$aZO)
 case 2:return A.A(null,r)}})
 return A.B($async$aZO,r)},
-cay(a,b,c){return B.Co.dP("routeInformationUpdated",A.T(["uri",c.l(0),"state",b,"replace",a],t.N,t.z),t.H)},
+cay(a,b,c){return B.Co.dP("routeInformationUpdated",A.U(["uri",c.l(0),"state",b,"replace",a],t.N,t.z),t.H)},
 bSd(a){switch(a){case 9:case 10:case 11:case 12:case 13:case 28:case 29:case 30:case 31:case 32:case 160:case 5760:case 8192:case 8193:case 8194:case 8195:case 8196:case 8197:case 8198:case 8199:case 8200:case 8201:case 8202:case 8239:case 8287:case 12288:break
 default:return!1}return!0},
 bJO(a){switch(a){case 10:case 11:case 12:case 13:case 133:case 8232:case 8233:return!0
@@ -50431,7 +50431,7 @@ o=A.q(o,"\xea","e")
 o=A.q(o,"\xf4","o")
 o=A.q(o,"\xe7","c")
 o=A.q(o,"\xf1","n")
-s=A.U("\\(.*?\\)",!0,!1,!1,!1)
+s=A.S("\\(.*?\\)",!0,!1,!1,!1)
 r=B.c.B(A.q(o,s,""))
 if(B.kw.ao(0,r))return B.kw.h(0,r)
 q=B.d.gW(r.split(" "))
@@ -50484,7 +50484,7 @@ a=!1
 if(o)if(!b){n=B.c.k(d,"dose")||B.c.k(d,"dosis")||B.c.k(d," mg")||B.c.k(d," mcg")||B.c.k(d,"prescrever")||B.c.k(d,"prescribir")||B.c.k(d,"farmaco")||B.c.k(d,"f\xe1rmaco")||B.c.k(d,"medicamento")
 a=n}a0=B.c.k(d,"intera\xe7")||B.c.k(d,"interacci")||B.c.k(d,"contraindica\xe7")||B.c.k(d,"contraindicaci")||B.c.k(d,"efeito adverso")||B.c.k(d,"efecto adverso")||B.c.k(d,"seguran\xe7a")||B.c.k(d,"seguridad")
 a1=B.c.B(c4)
-if(a1.length<=6){n=A.U("^[A-Za-z\xc0-\xff]+$",!0,!1,!1,!1)
+if(a1.length<=6){n=A.S("^[A-Za-z\xc0-\xff]+$",!0,!1,!1,!1)
 a2=n.b.test(a1)}else a2=!1
 a3=!1
 if(!a)if(!b){if(o)n=B.c.k(d,"mecanismo")||B.c.k(d,"mechanism")||B.c.k(d,"indica\xe7")||B.c.k(d,"indicaci")
@@ -50496,9 +50496,9 @@ else if(a)n="dose"
 else if(a2)n="sigla"
 else n=a3?"farmaco":"geral"
 a4=n}a5=A.c0g(s==="es"?"es":"pt")
-n=A.U("\\[(?:MODO\\s+PLANT[\xc3A]O|MODO\\s+ESTUDO|MANDATO\\s+CR[I\xcd]TICO|MANDATO\\s+DE\\s+INTENT|MANDATO\\s+TURNO|IN[I\xcd]CIO\\s+DO\\s+CONTEXTO|REFOR[\xc7C]O\\s+MANDAT[\xd3O]RIO|SOBERANIA)[^\\]]{0,3000}\\]",!1,!0,!1,!1)
+n=A.S("\\[(?:MODO\\s+PLANT[\xc3A]O|MODO\\s+ESTUDO|MANDATO\\s+CR[I\xcd]TICO|MANDATO\\s+DE\\s+INTENT|MANDATO\\s+TURNO|IN[I\xcd]CIO\\s+DO\\s+CONTEXTO|REFOR[\xc7C]O\\s+MANDAT[\xd3O]RIO|SOBERANIA)[^\\]]{0,3000}\\]",!1,!0,!1,!1)
 n=A.q(c2,n,"")
-i=A.U("^(?:\\[MODO\\s+PLANT[\xc3A]O|\\[MODO\\s+ESTUDO|\\[MANDATO|\\[REFOR[\xc7C]O|\\[IN[I\xcd]CIO\\s+DO\\s+CONTEXTO|CRITICAL\\s+IDENTITY|ANTI-ENCYCLOPEDIA|YOUR\\s+ONLY\\s+OUTPUT).*$",!1,!1,!0,!1)
+i=A.S("^(?:\\[MODO\\s+PLANT[\xc3A]O|\\[MODO\\s+ESTUDO|\\[MANDATO|\\[REFOR[\xc7C]O|\\[IN[I\xcd]CIO\\s+DO\\s+CONTEXTO|CRITICAL\\s+IDENTITY|ANTI-ENCYCLOPEDIA|YOUR\\s+ONLY\\s+OUTPUT).*$",!1,!1,!0,!1)
 a6=B.c.B(A.q(n,i,""))
 a7=c2.length
 a8=r?"FORMATO OBRIGAT\xd3RIO DA RESPOSTA (Modo Plant\xe3o):\n\n\ud83d\udfe5 CONDUTA CL\xcdNICA IMEDIATA\n\ud83d\udc8a 1\xaa linha: [f\xe1rmaco principal + dose + via + frequ\xeancia]\n\ud83d\udd04 Alternativa: [segunda op\xe7\xe3o ou conduta alternativa]\n\u26d4 Evitar: [contraindica\xe7\xe3o \u2014 omitir se n\xe3o houver]\n\ud83d\udccc Monitorar: [par\xe2metro principal de seguran\xe7a]\n\u26a0\ufe0f Alerta: [risco cr\xedtico \u2014 omitir se n\xe3o houver]\n\nREGRAS:\n\u2022 M\xe1ximo 14 linhas de conte\xfado real.\n\u2022 Cada linha = UMA fun\xe7\xe3o cl\xednica.\n\u2022 Sem fisiopatologia, sem prosa acad\xeamica, sem ## headings.\n\u2022 Gotas: APENAS 2 linhas (F\xf3rmula + **Resultado em negrito**).\n\u2022 Dilui\xe7\xe3o: Volume \u2192 Dilui\xe7\xe3o \u2192 Infus\xe3o (m\xe1x 6 linhas).\n":'FORMATO OBRIGAT\xd3RIO DA RESPOSTA (Modo Estudo \u2014 Preceptor Universit\xe1rio):\n\n## [T\xedtulo cl\xednico espec\xedfico]\nDefini\xe7\xe3o: [1 linha exata]\nFisiopatologia: [2 linhas \u2014 pathway + consequ\xeancia]\nMecanismo de A\xe7\xe3o (se farmacol\xf3gico): [2 linhas \u2014 alvo + efeito]\n[Se\xe7\xf5es adicionais: epidemiologia, diagn\xf3stico, tratamento com doses]\n\ud83d\udccc [Pr\xf3ximo passo em 1\xaa pessoa. PONTO FINAL. Nunca "?"]\n\nREGRAS:\n\u2022 M\xe1ximo 30 linhas de conte\xfado real. NUNCA truncar em 12 linhas.\n\u2022 Negrito apenas em f\xe1rmacos, doses e crit\xe9rios de guideline.\n\u2022 Sem emojis de Plant\xe3o (\ud83d\udfe5/\ud83d\udd04/\u26d4) como estrutura principal.\n\u2022 Doses: incluir SOMENTE se explicitamente perguntado.\n\u2022 Prosa acad\xeamica densa \xe9 ESPERADA e CORRETA neste modo.\n\u2022 IGNORAR completamente: "22 matrizes din\xe2micas", "6-12 linhas por template",\n  "REGRA ZERO", "ban de abertura conversacional" \u2014 essas regras s\xe3o EXCLUSIVAS do Plant\xe3o.\n'
@@ -51062,7 +51062,7 @@ B.d.a5(s)}}
 A.a62.prototype={
 aet(){var s=this.c.d
 s.toString
-return new A.P(s,new A.aJj(),A.S(s).i("P<1,mH>"))},
+return new A.P(s,new A.aJj(),A.T(s).i("P<1,mH>"))},
 aTM(a,b){var s=this,r=s.d
 if(J.o(r.h(0,a),b)){if(!B.d.k(s.w,a))s.f.E(0,a)
 return}r.p(0,a,b)
@@ -51075,7 +51075,7 @@ s=r.aqi(b.c)
 if(s!==q.c){q.a=r.aE2(s,p,q.a)
 q.c=s}r.amX(b,p,a)},
 aqi(a){var s,r,q,p
-for(s=a.a,r=A.S(s).i("dk<1>"),s=new A.dk(s,r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=0;s.C();){p=s.d
+for(s=a.a,r=A.T(s).i("dk<1>"),s=new A.dk(s,r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=0;s.C();){p=s.d
 p=(p==null?r.a(p):p).a
 if(p===B.Zy||p===B.Zz||p===B.ZA)++q}return q},
 aE2(a,b,c){var s,r,q,p,o,n=c.parentNode!=null
@@ -51104,7 +51104,7 @@ if(a1.m(0,B.G))s=A.rt()
 else{s=A.rt()
 s.od(a1.a,a1.b,0)}a0.aEC(a3)
 a0.Z3(a4)
-for(a1=a2.c.a,r=A.S(a1).i("dk<1>"),a1=new A.dk(a1,r),a1=new A.bD(a1,a1.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=v.G,p=a0.at,o=t.Pj,n=a3,m=1;a1.C();){l=a1.d
+for(a1=a2.c.a,r=A.T(a1).i("dk<1>"),a1=new A.dk(a1,r),a1=new A.bD(a1,a1.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=v.G,p=a0.at,o=t.Pj,n=a3,m=1;a1.C();){l=a1.d
 if(l==null)l=r.a(l)
 switch(l.a.a){case 3:l=l.e
 l.toString
@@ -51302,7 +51302,7 @@ return l},
 aIZ(a){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=this
 if(a.tK(d.x))return
 s=d.atB(d.x,a)
-r=A.S(s).i("a5<1>")
+r=A.T(s).i("a5<1>")
 q=A.O(new A.a5(s,new A.aJh(),r),r.i("F.E"))
 p=A.bVZ(q)
 for(r=p.length,o=0;o<r;++o)p[o]=q[p[o]]
@@ -51417,7 +51417,7 @@ m(a,b){if(b==null)return!1
 if(b===this)return!0
 return b instanceof A.zd&&A.x2(b.a,this.a)},
 gK(a){return A.d_(this.a)},
-gaF(a){var s=this.a,r=A.S(s).i("dk<1>")
+gaF(a){var s=this.a,r=A.T(s).i("dk<1>")
 s=new A.dk(s,r)
 return new A.bD(s,s.gA(0),r.i("bD<al.E>"))}}
 A.Fh.prototype={}
@@ -51877,7 +51877,7 @@ A.a1z.prototype={}
 A.aLF.prototype={}
 A.aaJ.prototype={
 gaNa(){var s,r,q,p,o
-$label0$1:for(s=this.a.a,r=A.S(s).i("dk<1>"),s=new A.dk(s,r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=B.m4;s.C();){p=s.d
+$label0$1:for(s=this.a.a,r=A.T(s).i("dk<1>"),s=new A.dk(s,r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=B.m4;s.C();){p=s.d
 if(p==null)p=r.a(p)
 switch(p.a.a){case 0:p=p.b
 p.toString
@@ -52046,7 +52046,7 @@ r=m.aem()
 s=a.c.a
 s===$&&A.c()
 n.a=A.a_n(new A.l1(r),A.bEd(s.a.cullRect()))
-for(q=this.a,p=A.S(q).i("dk<1>"),q=new A.dk(q,p),q=new A.bD(q,q.gA(0),p.i("bD<al.E>")),p=p.i("al.E");q.C();){o=q.d
+for(q=this.a,p=A.T(q).i("dk<1>"),q=new A.dk(q,p),q=new A.bD(q,q.gA(0),p.i("bD<al.E>")),p=p.i("al.E");q.C();){o=q.d
 if(o==null)o=p.a(o)
 o.o5(new A.aP0(n),B.a63)}a.r=n.a
 a.w=m.a.quickReject(A.du(A.bEd(s.a.cullRect())))
@@ -53112,7 +53112,7 @@ s.toString
 s.$1(B.cN.e0(["copy_fail","Clipboard.setData failed",null]))}},
 $S:13}
 A.aA9.prototype={
-$1(a){var s=A.T(["text",a],t.N,t.z),r=this.a
+$1(a){var s=A.U(["text",a],t.N,t.z),r=this.a
 r.toString
 r.$1(B.cN.e0([s]))},
 $S:89}
@@ -53129,14 +53129,14 @@ $1(a){var s=this.a
 if(s!=null)s.$1(null)},
 $S:34}
 A.aAc.prototype={
-$1(a){var s=A.T(["value",a.length!==0],t.N,t.z),r=this.a
+$1(a){var s=A.U(["value",a.length!==0],t.N,t.z),r=this.a
 r.toString
 r.$1(B.cN.e0([s]))},
 $S:89}
 A.aAd.prototype={
 $1(a){var s,r
 if(a instanceof A.An){A.eq(B.aU,null,t.H).bM(new A.aAb(this.a),t.a)
-return}s=A.T(["value",!1],t.N,t.z)
+return}s=A.U(["value",!1],t.N,t.z)
 r=this.a
 r.toString
 r.$1(B.cN.e0([s]))},
@@ -54172,7 +54172,7 @@ als(a){var s,r=this,q=r.d
 if(q==null)return
 r.a=q.Qx(r.gTT(r))
 if(!r.Oh(r.ga4())){s=t.z
-q.uB(0,A.T(["serialCount",0,"state",r.ga4()],s,s),"flutter",r.goN())}r.e=r.gN1()},
+q.uB(0,A.U(["serialCount",0,"state",r.ga4()],s,s),"flutter",r.goN())}r.e=r.gN1()},
 gN1(){if(this.Oh(this.ga4())){var s=this.ga4()
 s.toString
 return B.q.dw(A.dg(J.W(t.f.a(s),"serialCount")))}return 0},
@@ -54181,11 +54181,11 @@ DQ(a,b,c){var s,r,q=this.d
 if(q!=null){s=t.z
 r=this.e
 if(b){r===$&&A.c()
-s=A.T(["serialCount",r,"state",c],s,s)
+s=A.U(["serialCount",r,"state",c],s,s)
 a.toString
 q.uB(0,s,"flutter",a)}else{r===$&&A.c();++r
 this.e=r
-s=A.T(["serialCount",r,"state",c],s,s)
+s=A.U(["serialCount",r,"state",c],s,s)
 a.toString
 q.aco(0,s,"flutter",a)}}},
 Wh(a){return this.DQ(a,!1,null)},
@@ -54195,13 +54195,13 @@ s.toString
 r=o.e
 r===$&&A.c()
 q=t.z
-s.uB(0,A.T(["serialCount",r+1,"state",b],q,q),"flutter",o.goN())}o.e=o.gN1()
+s.uB(0,A.U(["serialCount",r+1,"state",b],q,q),"flutter",o.goN())}o.e=o.gN1()
 s=$.c9()
 r=o.goN()
 t.Xy.a(b)
 q=b==null?null:J.W(b,"state")
 p=t.z
-s.m5("flutter/navigation",B.ft.mI(new A.n3("pushRouteInformation",A.T(["location",r,"state",q],p,p))),new A.aQj())},
+s.m5("flutter/navigation",B.ft.mI(new A.n3("pushRouteInformation",A.U(["location",r,"state",q],p,p))),new A.aQj())},
 o0(){var s=0,r=A.C(t.H),q,p=this,o,n,m
 var $async$o0=A.y(function(a,b){if(a===1)return A.z(b,r)
 while(true)switch(s){case 0:p.n()
@@ -54229,7 +54229,7 @@ alD(a){var s,r=this,q=r.d
 if(q==null)return
 r.a=q.Qx(r.gTT(r))
 s=r.goN()
-if(!A.bJz(A.bOp(v.G.window.history))){q.uB(0,A.T(["origin",!0,"state",r.ga4()],t.N,t.z),"origin","")
+if(!A.bJz(A.bOp(v.G.window.history))){q.uB(0,A.U(["origin",!0,"state",r.ga4()],t.N,t.z),"origin","")
 r.aGn(q,s)}},
 DQ(a,b,c){var s=this.d
 if(s!=null)this.Pu(s,a,!0)},
@@ -54780,7 +54780,7 @@ s.afD()
 return s}throw A.p(A.aT("This browser does not support pointer events which are necessary to handle interactions with Flutter Web apps."))}}
 A.a1h.prototype={
 aSA(a,b){var s,r,q,p=this,o="pointerup",n=$.c9()
-if(!n.c.c){s=A.a(b.slice(0),A.S(b))
+if(!n.c.c){s=A.a(b.slice(0),A.T(b))
 A.tO(n.cx,n.cy,new A.vm(s))
 return}s=p.a
 if(s!=null){n=s.a
@@ -54791,10 +54791,10 @@ if(J.o(a.type,o))if(!J.o(a.target,s.b))p.Nw()}else if(J.o(a.type,"pointerdown"))
 if(q!=null&&A.m3(q,"Element")&&q.hasAttribute("flt-tappable")){n=A.ds(B.a6,p.gaBX())
 s=a.timeStamp
 s.toString
-p.a=new A.aoY(A.a([new A.WA(b,a,A.GG(s))],t.lN),q,n)}else{s=A.a(b.slice(0),A.S(b))
+p.a=new A.aoY(A.a([new A.WA(b,a,A.GG(s))],t.lN),q,n)}else{s=A.a(b.slice(0),A.T(b))
 A.tO(n.cx,n.cy,new A.vm(s))}}else{if(J.o(a.type,o)){s=a.timeStamp
 s.toString
-p.b=A.GG(s)}s=A.a(b.slice(0),A.S(b))
+p.b=A.GG(s)}s=A.a(b.slice(0),A.T(b))
 A.tO(n.cx,n.cy,new A.vm(s))}},
 aSe(a,b,c,d,e){var s=this,r=s.a
 if(r==null){if(e&&s.aGv(b))s.a4f(b,c,d)
@@ -55208,7 +55208,7 @@ else if(a.code==="NumLock")n.b=p|16
 else if(a.key==="ScrollLock")n.b=p|64
 else if(a.key==="Meta"&&$.cT().gfY()===B.Cn)n.b|=8
 else if(a.code==="MetaLeft"&&a.key==="Process")n.b|=8
-o=A.T(["type",a.type,"keymap","web","code",a.code,"key",a.key,"location",J.bg(a.location),"metaState",n.b,"keyCode",J.bg(a.keyCode)],t.N,t.z)
+o=A.U(["type",a.type,"keymap","web","code",a.code,"key",a.key,"location",J.bg(a.location),"metaState",n.b,"keyCode",J.bg(a.keyCode)],t.N,t.z)
 $.c9().m5("flutter/keyevent",B.cN.e0(o),new A.aTs(s))}}
 A.aTp.prototype={
 $0(){this.a.n()},
@@ -55217,7 +55217,7 @@ A.aTr.prototype={
 $0(){var s,r,q=this.a
 q.a.M(0,this.b)
 s=this.c.a
-r=A.T(["type","keyup","keymap","web","code",s.code,"key",s.key,"location",J.bg(s.location),"metaState",q.b,"keyCode",J.bg(s.keyCode)],t.N,t.z)
+r=A.U(["type","keyup","keymap","web","code",s.code,"key",s.key,"location",J.bg(s.location),"metaState",q.b,"keyCode",J.bg(s.keyCode)],t.N,t.z)
 $.c9().m5("flutter/keyevent",B.cN.e0(r),A.cez())},
 $S:0}
 A.aTs.prototype={
@@ -57157,7 +57157,7 @@ e0(a){return J.mC(B.be.gdq(B.i7.e6(B.aj.qu(a))))},
 jW(a){if(a==null)return a
 return B.aj.ce(0,B.ml.e6(J.qv(B.dE.gdq(a))))}}
 A.aL4.prototype={
-mI(a){return B.cN.e0(A.T(["method",a.a,"args",a.b],t.N,t.z))},
+mI(a){return B.cN.e0(A.U(["method",a.a,"args",a.b],t.N,t.z))},
 lR(a){var s,r,q,p=null,o=B.cN.jW(a)
 if(!t.f.b(o))throw A.p(A.d4("Expected method call Map, got "+A.t(o),p,p))
 s=J.at(o)
@@ -57492,7 +57492,7 @@ if(r.h(0,q)==null)throw A.p(A.aJ("AutofillInfo must have a valid uniqueIdentifie
 else{r=r.h(0,q)
 r.toString
 s=A.bOx(this.c)
-$.c9().m5("flutter/textinput",B.ft.mI(new A.n3(u.iY,[0,A.T([r.b,s.adg()],t.D,t.z)])),A.aup())}},
+$.c9().m5("flutter/textinput",B.ft.mI(new A.n3(u.iY,[0,A.U([r.b,s.adg()],t.D,t.z)])),A.aup())}},
 $S:6}
 A.a0s.prototype={
 a7f(a,b){var s,r=this.d,q=this.e,p=A.m3(a,"HTMLInputElement")
@@ -57515,7 +57515,7 @@ A.D5.prototype={
 gJx(){return Math.min(this.b,this.c)},
 gJu(){return Math.max(this.b,this.c)},
 adg(){var s=this
-return A.T(["text",s.a,"selectionBase",s.b,"selectionExtent",s.c,"composingBase",s.d,"composingExtent",s.e],t.N,t.z)},
+return A.U(["text",s.a,"selectionBase",s.b,"selectionExtent",s.c,"composingBase",s.d,"composingExtent",s.e],t.N,t.z)},
 gK(a){var s=this
 return A.ax(s.a,s.b,s.c,s.d,s.e,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b)},
 m(a,b){var s=this
@@ -58077,7 +58077,7 @@ if(p.d.r){p.gAT(0)
 p=p.b
 s=t.N
 r=t.z
-$.c9().m5(q,B.ft.mI(new A.n3(u.z6,[p,A.T(["deltas",A.a([A.T(["oldText",b.a,"deltaText",b.b,"deltaStart",b.c,"deltaEnd",b.d,"selectionBase",b.e,"selectionExtent",b.f,"composingBase",b.r,"composingExtent",b.w],s,r)],t.H7)],s,r)])),A.aup())}else{p.gAT(0)
+$.c9().m5(q,B.ft.mI(new A.n3(u.z6,[p,A.U(["deltas",A.a([A.U(["oldText",b.a,"deltaText",b.b,"deltaStart",b.c,"deltaEnd",b.d,"selectionBase",b.e,"selectionExtent",b.f,"composingBase",b.r,"composingExtent",b.w],s,r)],t.H7)],s,r)])),A.aup())}else{p.gAT(0)
 p=p.b
 $.c9().m5(q,B.ft.mI(new A.n3("TextInputClient.updateEditingState",[p,a.adg()])),A.aup())}},
 $S:662}
@@ -58305,7 +58305,7 @@ p.d=v.G.window.matchMedia("(resolution: "+A.t(p.b)+"dppx)")
 s=p.d
 s===$&&A.c()
 r=A.cC(p.gaAV())
-q=A.bj(A.T(["once",!0,"passive",!0],t.N,t.K))
+q=A.bj(A.U(["once",!0,"passive",!0],t.N,t.K))
 q.toString
 s.addEventListener("change",r,q)},
 aAW(a){var s=this,r=s.a,q=r.d
@@ -58459,7 +58459,7 @@ s=r==null?s.gee():r
 r=v.G
 q=A.dN(r.document,k)
 p=A.dN(r.document,"flt-glass-pane")
-o=A.bj(A.T(["mode","open","delegatesFocus",!1],t.N,t.z))
+o=A.bj(A.U(["mode","open","delegatesFocus",!1],t.N,t.z))
 o.toString
 o=p.attachShadow(o)
 n=A.dN(r.document,"flt-scene-host")
@@ -58842,7 +58842,7 @@ J.yI.prototype={
 gK(a){return 0},
 l(a){return String(a)}}
 J.a_.prototype={
-i_(a,b){return new A.eG(a,A.S(a).i("@<1>").d0(b).i("eG<1,2>"))},
+i_(a,b){return new A.eG(a,A.T(a).i("@<1>").d0(b).i("eG<1,2>"))},
 E(a,b){a.$flags&1&&A.br(a,29)
 a.push(b)},
 d7(a,b){a.$flags&1&&A.br(a,"removeAt",1)
@@ -58881,7 +58881,7 @@ if(a.length!==o)throw A.p(A.df(a))}q=p.length
 if(q===o)return
 this.sA(a,q)
 for(s=0;s<p.length;++s)a[s]=p[s]},
-jL(a,b){return new A.a5(a,b,A.S(a).i("a5<1>"))},
+jL(a,b){return new A.a5(a,b,A.T(a).i("a5<1>"))},
 u(a,b){var s
 a.$flags&1&&A.br(a,"addAll",2)
 if(Array.isArray(b)){this.am3(a,b)
@@ -58895,13 +58895,13 @@ a.length=0},
 aG(a,b){var s,r=a.length
 for(s=0;s<r;++s){b.$1(a[s])
 if(a.length!==r)throw A.p(A.df(a))}},
-eG(a,b,c){return new A.P(a,b,A.S(a).i("@<1>").d0(c).i("P<1,2>"))},
+eG(a,b,c){return new A.P(a,b,A.T(a).i("@<1>").d0(c).i("P<1,2>"))},
 a1(a,b){var s,r=A.cf(a.length,"",!1,t.N)
 for(s=0;s<a.length;++s)r[s]=A.t(a[s])
 return r.join(b)},
 mW(a){return this.a1(a,"")},
-ke(a,b){return A.d0(a,0,A.dy(b,"count",t.S),A.S(a).c)},
-kl(a,b){return A.d0(a,b,null,A.S(a).c)},
+ke(a,b){return A.d0(a,0,A.dy(b,"count",t.S),A.T(a).c)},
+kl(a,b){return A.d0(a,b,null,A.T(a).c)},
 xC(a,b){var s,r,q=a.length
 if(q===0)throw A.p(A.dD())
 s=a[0]
@@ -58928,17 +58928,17 @@ ag1(a,b){var s,r,q,p,o=a.length
 for(s=null,r=!1,q=0;q<o;++q){p=a[q]
 if(b.$1(p)){if(r)throw A.p(A.bIE())
 s=p
-r=!0}if(o!==a.length)throw A.p(A.df(a))}if(r)return s==null?A.S(a).c.a(s):s
+r=!0}if(o!==a.length)throw A.p(A.df(a))}if(r)return s==null?A.T(a).c.a(s):s
 throw A.p(A.dD())},
 cL(a,b){return a[b]},
 dn(a,b,c){if(b<0||b>a.length)throw A.p(A.dI(b,0,a.length,"start",null))
 if(c==null)c=a.length
 else if(c<b||c>a.length)throw A.p(A.dI(c,b,a.length,"end",null))
-if(b===c)return A.a([],A.S(a))
-return A.a(a.slice(b,c),A.S(a))},
+if(b===c)return A.a([],A.T(a))
+return A.a(a.slice(b,c),A.T(a))},
 fN(a,b){return this.dn(a,b,null)},
 Dw(a,b,c){A.eU(b,c,a.length,null,null)
-return A.d0(a,b,c,A.S(a).c)},
+return A.d0(a,b,c,A.T(a).c)},
 gW(a){if(a.length>0)return a[0]
 throw A.p(A.dD())},
 gZ(a){var s=a.length
@@ -58996,7 +58996,7 @@ if(s===2){r=a[0]
 q=a[1]
 if(b.$2(r,q)>0){a[0]=q
 a[1]=r}return}p=0
-if(A.S(a).c.b(null))for(o=0;o<a.length;++o)if(a[o]===void 0){a[o]=null;++p}a.sort(A.tM(b,2))
+if(A.T(a).c.b(null))for(o=0;o<a.length;++o)if(a[o]===void 0){a[o]=null;++p}a.sort(A.tM(b,2))
 if(p>0)this.aEx(a,p)},
 km(a){return this.ed(a,null)},
 aEx(a,b){var s,r=a.length
@@ -59012,16 +59012,16 @@ return!1},
 gaj(a){return a.length===0},
 gcb(a){return a.length!==0},
 l(a){return A.uN(a,"[","]")},
-hA(a,b){var s=A.S(a)
+hA(a,b){var s=A.T(a)
 return b?A.a(a.slice(0),s):J.uO(a.slice(0),s.c)},
 d8(a){return this.hA(a,!0)},
-iO(a){return A.hF(a,A.S(a).c)},
-gaF(a){return new J.fo(a,a.length,A.S(a).i("fo<1>"))},
+iO(a){return A.hF(a,A.T(a).c)},
+gaF(a){return new J.fo(a,a.length,A.T(a).i("fo<1>"))},
 gK(a){return A.h7(a)},
 gA(a){return a.length},
 sA(a,b){a.$flags&1&&A.br(a,"set length","change the length of")
 if(b<0)throw A.p(A.dI(b,0,null,"newLength",null))
-if(b>a.length)A.S(a).c.a(null)
+if(b>a.length)A.T(a).c.a(null)
 a.length=b},
 h(a,b){if(!(b>=0&&b<a.length))throw A.p(A.Jk(a,b))
 return a[b]},
@@ -59029,7 +59029,7 @@ p(a,b,c){a.$flags&2&&A.br(a)
 if(!(b>=0&&b<a.length))throw A.p(A.Jk(a,b))
 a[b]=c},
 Vg(a,b){return new A.d1(a,b.i("d1<0>"))},
-ar(a,b){var s=A.O(a,A.S(a).c)
+ar(a,b){var s=A.O(a,A.T(a).c)
 this.u(s,b)
 return s},
 J5(a,b,c){var s
@@ -59049,7 +59049,7 @@ sZ(a,b){var s=a.length
 if(s===0)throw A.p(A.dD())
 a.$flags&2&&A.br(a)
 a[s-1]=b},
-gh8(a){return A.dA(A.S(a))},
+gh8(a){return A.dA(A.T(a))},
 $icR:1,
 $ib0:1,
 $iF:1,
@@ -63109,7 +63109,7 @@ return s.b==null?s.gdf(0).cL(0,b):s.vm()[b]},
 gaF(a){var s=this.a
 if(s.b==null){s=s.gdf(0)
 s=s.gaF(s)}else{s=s.vm()
-s=new J.fo(s,s.length,A.S(s).i("fo<1>"))}return s},
+s=new J.fo(s,s.length,A.T(s).i("fo<1>"))}return s},
 k(a,b){return this.a.ao(0,b)}}
 A.Vf.prototype={
 aC(a){var s,r,q=this
@@ -65991,7 +65991,7 @@ l(a){var s,r
 try{s=String(this.a)
 return s}catch(r){s=this.oi(0)
 return s}},
-h3(a,b){var s=this.a,r=b==null?null:A.dP(new A.P(b,A.bVW(),A.S(b).i("P<1,@>")),!0,t.z)
+h3(a,b){var s=this.a,r=b==null?null:A.dP(new A.P(b,A.bVW(),A.T(b).i("P<1,@>")),!0,t.z)
 return A.bKI(s[a].apply(s,r))},
 aL_(a){return this.h3(a,null)},
 gK(a){return 0}}
@@ -67507,7 +67507,7 @@ s.toString
 return s},
 $irL:1}
 A.HR.prototype={
-ghM(){var s=this.b.a,r=A.S(s).i("P<1,B8>")
+ghM(){var s=this.b.a,r=A.T(s).i("P<1,B8>")
 s=A.O(new A.P(s,new A.bnn(this),r),r.i("al.E"))
 return s},
 $ipA:1}
@@ -67723,13 +67723,13 @@ break
 case 6:case 1:return A.A(q,r)
 case 2:return A.z(o.at(-1),r)}})
 return A.B($async$cZ,r)},
-p8(a){return this.MX(A.T(["limit",a,"limitToLast",null],t.N,t.z))},
+p8(a){return this.MX(A.U(["limit",a,"limitToLast",null],t.N,t.z))},
 Wq(a,b){var s={},r=A.c3("controller")
 s.a=null
 r.b=new A.hb(new A.aPJ(s,this,B.mc,!1,b,r),new A.aPK(s),t.mC)
 return J.Jy(r.aH())},
-abT(a){return this.MX(A.T(["orderBy",a],t.N,t.z))},
-jL(a,b){return this.MX(A.T(["where",b],t.N,t.z))},
+abT(a){return this.MX(A.U(["orderBy",a],t.N,t.z))},
+jL(a,b){return this.MX(A.U(["where",b],t.N,t.z))},
 m(a,b){var s,r,q,p=this
 if(b==null)return!1
 s=!1
@@ -67767,7 +67767,7 @@ p=s.h(a,1)
 p.toString
 p=J.dj(q.a(p),new A.aPH(),t.J7)
 q=A.O(p,p.$ti.i("al.E"))
-o=A.bR_([new A.eG(r,A.S(r).i("eG<1,od>")),new A.eG(q,A.S(q).i("eG<1,oc>")),s.h(a,2)])
+o=A.bR_([new A.eG(r,A.T(r).i("eG<1,od>")),new A.eG(q,A.T(q).i("eG<1,oc>")),s.h(a,2)])
 J.dh(this.b.aH(),A.bQr(this.a.a,o))},
 $S:29}
 A.aPG.prototype={
@@ -67831,7 +67831,7 @@ A.bK(n,$.cv(),!0)}m.bU(0,b,s.a.a)
 s=c.b
 m.bU(0,b,s==null?"(default)":s)
 m.bU(0,b,B.abw)}else if(c instanceof A.Eo){b.bZ(0,197)
-m.bU(0,b,A.T(["firestore",c.a,"path",c.gf2(c),"isCollectionGroup",!1,"parameters",c.b],t.N,t.z))}else if(c instanceof A.Qk){b.bZ(0,198)
+m.bU(0,b,A.U(["firestore",c.a,"path",c.gf2(c),"isCollectionGroup",!1,"parameters",c.b],t.N,t.z))}else if(c instanceof A.Qk){b.bZ(0,198)
 m.bU(0,b,c.gtf(0))}else if(t.JY.b(c)&&!t.j.b(c))m.yD(0,b,J.lC(c))
 else if(typeof c=="number"&&isNaN(c))b.bZ(0,193)
 else{s=J.ju(c)
@@ -68468,7 +68468,7 @@ A.vr.prototype={
 aNQ(){var s,r=this.a.docChanges()
 r=B.d.eG(r,new A.aT7(),t.e)
 s=A.O(r,r.$ti.i("al.E"))
-r=A.S(s).i("P<1,r_>")
+r=A.T(s).i("P<1,r_>")
 r=A.O(new A.P(s,new A.aT8(),r),r.i("al.E"))
 return r},
 ghM(){var s=this.a.docs
@@ -68546,12 +68546,12 @@ i=o.h(r,1)
 h=A.lP(o.h(r,2))
 c=new A.l4(q.firebase_firestore.query(c.a,q.firebase_firestore.where(j,i,A.tP(h))),p)}return c},
 cZ(a,b){return A.a_f(new A.aTa(this,b),t.DQ)},
-p8(a){return this.P4(A.T(["limit",a,"limitToLast",null],t.N,t.z))},
+p8(a){return this.P4(A.U(["limit",a,"limitToLast",null],t.N,t.z))},
 Wq(a,b){var s=this.YF(),r=this.gK(0)
 r=s.aqy(t.e.a({includeMetadataChanges:!1,source:A.chf(b)}),r)
 return A.a_f(new A.aTc(this,new A.dS(r,A.G(r).i("dS<1>"))),t.jx)},
-abT(a){return this.P4(A.T(["orderBy",a],t.N,t.z))},
-jL(a,b){return this.P4(A.T(["where",b],t.N,t.z))}}
+abT(a){return this.P4(A.U(["orderBy",a],t.N,t.z))},
+jL(a,b){return this.P4(A.U(["where",b],t.N,t.z))}}
 A.aTa.prototype={
 $0(){var s=0,r=A.C(t.tM),q,p=this,o,n,m
 var $async$$0=A.y(function(a,b){if(a===1)return A.z(b,r)
@@ -68764,7 +68764,7 @@ s=null
 return s},
 gA(a){return this.c},
 l(a){var s=this.b
-return A.bPE(A.d0(s,0,A.dy(this.c,"count",t.S),A.S(s).c),"(",")")},
+return A.bPE(A.d0(s,0,A.dy(this.c,"count",t.S),A.T(s).c),"(",")")},
 anr(a,b){var s,r,q,p,o,n,m,l,k,j,i=this,h=b*2+2
 for(s=i.b,r=i.a,q=i.$ti.c;p=i.c,h<p;b=k){o=h-1
 n=s[o]
@@ -69762,7 +69762,7 @@ A.b00.prototype={}
 A.aTJ.prototype={}
 A.q_.prototype={}
 A.b0z.prototype={
-$1(a){return A.T(["displayName",a.gwQ(0),"email",a.ga9u(),"isAnonymous",!1,"isEmailVerified",!0,"phoneNumber",a.gac5(),"providerId",a.a.providerId,"photoUrl",a.gac6(),"uid",a.gadl()],t.N,t.z)},
+$1(a){return A.U(["displayName",a.gwQ(0),"email",a.ga9u(),"isAnonymous",!1,"isEmailVerified",!0,"phoneNumber",a.gac5(),"providerId",a.a.providerId,"photoUrl",a.gac6(),"uid",a.gadl()],t.N,t.z)},
 $S:895}
 A.pZ.prototype={
 gwQ(a){var s=this.a.displayName
@@ -69889,7 +69889,7 @@ l(a){return"["+this.a+"/"+this.c+"] "+A.t(this.b)},
 $icA:1}
 A.Dl.prototype={
 gtf(a){var s=this
-return A.T(["apiKey",s.a,"appId",s.b,"messagingSenderId",s.c,"projectId",s.d,"authDomain",s.e,"databaseURL",s.f,"storageBucket",s.r,"measurementId",s.w,"trackingId",s.x,"deepLinkURLScheme",s.y,"androidClientId",s.z,"iosClientId",s.Q,"iosBundleId",s.as,"appGroupId",s.at],t.N,t.D)},
+return A.U(["apiKey",s.a,"appId",s.b,"messagingSenderId",s.c,"projectId",s.d,"authDomain",s.e,"databaseURL",s.f,"storageBucket",s.r,"measurementId",s.w,"trackingId",s.x,"deepLinkURLScheme",s.y,"androidClientId",s.z,"iosClientId",s.Q,"iosBundleId",s.as,"appGroupId",s.at],t.N,t.D)},
 m(a,b){if(b==null)return!1
 if(this===b)return!0
 if(!(b instanceof A.Dl))return!1
@@ -70090,7 +70090,7 @@ try{o=v.G.firebase_core.getApps()
 o=B.d.i_(o,t.e)
 n=o.$ti.i("P<aO.E,lD>")
 o=A.O(new A.P(o,A.cgz(),n),n.i("al.E"))
-n=A.S(o).i("P<1,kV>")
+n=A.T(o).i("P<1,kV>")
 o=A.O(new A.P(o,A.chN(),n),n.i("al.E"))
 o.$flags=1
 return o}catch(m){s=A.ah(m)
@@ -70309,7 +70309,7 @@ return A.c79(s,this.b,this.a.a,a,b)}}
 A.aPN.prototype={
 alr(a,b,c,d){var s=this,r=new A.aPQ(s,c).$0()
 s.e=A.cby(r,new A.aPO(),new A.aPP(),A.G(r).i("bN.T"))
-s.x=A.c7c(s.w,B.wJ,A.T(["path",c,"bytesTransferred",0,"totalBytes",1],t.N,t.z))},
+s.x=A.c7c(s.w,B.wJ,A.U(["path",c,"bytesTransferred",0,"totalBytes",1],t.N,t.z))},
 gE0(){this.a=!0
 var s=this.e
 s===$&&A.c()
@@ -70370,7 +70370,7 @@ a1=a1.b.h(0,"bytesTransferred")
 a2=a5.x.b.h(0,"totalBytes")
 a3=a5.x.b
 a3=a3.h(0,"metadata")==null?null:new A.aHF(A.dE(a3.h(0,"metadata"),a,a0))
-a3=A.T(["path",m.b,"bytesTransferred",a1,"totalBytes",a2,"metadata",a3],a,a0)
+a3=A.U(["path",m.b,"bytesTransferred",a1,"totalBytes",a2,"metadata",a3],a,a0)
 a2=$.Jv()
 a3=new A.z8(b,a3,k,a3)
 a1=$.d7()
@@ -71284,7 +71284,7 @@ s=this.dR$
 s.b=!0
 s.a.push(a)},
 eb(a){if(this.dR$.M(0,a))this.wP()},
-Cw(a){var s,r,q,p,o,n,m,l,k=this.dR$,j=k.a,i=J.uO(j.slice(0),A.S(j).c)
+Cw(a){var s,r,q,p,o,n,m,l,k=this.dR$,j=k.a,i=J.uO(j.slice(0),A.T(j).c)
 for(j=i.length,o=0;o<i.length;i.length===j||(0,A.a2)(i),++o){s=i[o]
 try{if(k.k(0,s))s.$1(a)}catch(n){r=A.ah(n)
 q=A.b6(n)
@@ -71499,7 +71499,7 @@ a0.a.toString
 i=A.dc(a1,a2,t.WV)
 if(i==null)i=$.bYL().a.$1(a2)
 h=a0.y
-if(h===$){g=A.T([B.x2,new A.e_(a0.gaxn(),new A.cc(A.a([],t.ot),t.wS),t.wY)],t.G,t.od)
+if(h===$){g=A.U([B.x2,new A.e_(a0.gaxn(),new A.cc(A.a([],t.ot),t.wS),t.wY)],t.G,t.od)
 a0.y!==$&&A.aU()
 a0.y=g
 h=g}a0.a.toString
@@ -72149,7 +72149,7 @@ A.baO.prototype={
 $1(a){return A.MA()},
 $S:765}
 A.a3y.prototype={
-aH5(a){var s=this.d,r=A.S(s).i("P<1,qT>")
+aH5(a){var s=this.d,r=A.T(s).i("P<1,qT>")
 s=A.O(new A.P(s,new A.aAJ(),r),r.i("al.E"))
 return s},
 q(a){var s,r,q
@@ -72362,7 +72362,7 @@ n(){var s=this.d
 s===$&&A.c()
 s.n()
 this.akt()},
-q(a){var s,r,q,p=this,o=null,n=B.td.eh(a),m=A.bd(A.bNY(A.m0(A.it(o,o,o,new A.alX(n,!0,o),B.a4A),!0,o),p.gawv()),1,1),l=A.bd(A.bNY(A.m0(A.it(o,o,o,new A.apM(n,!1,o),B.a4A),!0,o),p.gaw2()),1,1),k=p.a.e,j=A.S(k).i("P<1,en>"),i=A.O(new A.P(k,new A.baX(),j),j.i("al.E"))
+q(a){var s,r,q,p=this,o=null,n=B.td.eh(a),m=A.bd(A.bNY(A.m0(A.it(o,o,o,new A.alX(n,!0,o),B.a4A),!0,o),p.gawv()),1,1),l=A.bd(A.bNY(A.m0(A.it(o,o,o,new A.apM(n,!1,o),B.a4A),!0,o),p.gaw2()),1,1),k=p.a.e,j=A.T(k).i("P<1,en>"),i=A.O(new A.P(k,new A.baX(),j),j.i("al.E"))
 k=p.a
 j=k.c
 s=k.d
@@ -73009,10 +73009,10 @@ if(r.length<3)return B.d.k(r,b)
 if(s.b){s.gFY().u(0,r)
 s.b=!1}return s.gFY().k(0,b)},
 gaF(a){var s=this.a
-return new J.fo(s,s.length,A.S(s).i("fo<1>"))},
+return new J.fo(s,s.length,A.T(s).i("fo<1>"))},
 gaj(a){return this.a.length===0},
 gcb(a){return this.a.length!==0},
-hA(a,b){var s=this.a,r=A.S(s)
+hA(a,b){var s=this.a,r=A.T(s)
 return b?A.a(s.slice(0),r):J.uO(s.slice(0),r.c)},
 d8(a){return this.hA(0,!0)}}
 A.iw.prototype={
@@ -73274,7 +73274,7 @@ A.Dz.prototype={
 a9(a){this.a.w2(this.b,this.c,a)}}
 A.Hp.prototype={
 l(a){var s=this,r=s.a
-r=r.length===0?""+"<empty>":""+new A.P(r,new A.bhf(s),A.S(r).i("P<1,h>")).a1(0,", ")
+r=r.length===0?""+"<empty>":""+new A.P(r,new A.bhf(s),A.T(r).i("P<1,h>")).a1(0,", ")
 if(s.b)r+=" [open]"
 if(s.c)r+=" [held]"
 if(s.d)r+=" [hasPendingSweep]"
@@ -75831,7 +75831,7 @@ if(p==null)p=s.r
 return new A.Be(r,r.oR,r.hN,q,p,r.nC,r.qw,r.dA,!0,!1,null,r.$ti.i("Be<1>"))},
 $S(){return this.a.$ti.i("Be<1>(V)")}}
 A.SR.prototype={
-q(a){return new A.nb(this.c,A.T([B.x5,new A.er(new A.b70(this),new A.b71(this),t.ok)],t.G,t.xR),null,!0,null)}}
+q(a){return new A.nb(this.c,A.U([B.x5,new A.er(new A.b70(this),new A.b71(this),t.ok)],t.G,t.xR),null,!0,null)}}
 A.b70.prototype={
 $0(){return A.bK1(this.a,null)},
 $S:173}
@@ -77129,7 +77129,7 @@ n=A.bd(A.bHd(o,o,c,o,o,g,a),o,o)
 p=new A.c5(A.co(o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,B.ay,o),!0,!1,!1,!1,new A.L(new A.eI(r,0,q,0),n,o),o)
 return new A.FR(B.a5_,d!=null?A.caF(p,f,o,d,e):p,o)},
 anC(a,b,c,d,e,f){return this.Ys(a,b,c,d,e,null,f)},
-q(d1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8=this,b9=null,c0=A.K(d1),c1=A.c22(d1),c2=b8.Q,c3=b8.w,c4=b8.CW,c5=B.d.c2(c4,new A.aAY()),c6=c5?new A.a5(c4,new A.aAZ(),A.S(c4).i("a5<1>")):A.a([],t.yy),c7=J.d3(c6),c8=c7.jL(c6,new A.aB_()),c9=c5&&c8.gA(0)===c7.gA(c6),d0=c5&&!c8.gaj(0)&&!c9
+q(d1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8=this,b9=null,c0=A.K(d1),c1=A.c22(d1),c2=b8.Q,c3=b8.w,c4=b8.CW,c5=B.d.c2(c4,new A.aAY()),c6=c5?new A.a5(c4,new A.aAZ(),A.T(c4).i("a5<1>")):A.a([],t.yy),c7=J.d3(c6),c8=c7.jL(c6,new A.aB_()),c9=c5&&c8.gA(0)===c7.gA(c6),d0=c5&&!c8.gaj(0)&&!c9
 c7=c1.x
 s=c7==null?c0.y1.x:c7
 if(s==null)s=24
@@ -77196,7 +77196,7 @@ a8=(a8==null?B.pv:a8).w.bP(b5)
 b1=A.l(a7,new A.qY(a8.da(b9),b9,!0,B.c7,b9,B.bw,b9,new A.lN(b3.a,b9),b9),B.i,b9,new A.aI(0,1/0,b6,b7),b9,b9,b9,b9,b9,a3,b9,b9,b9)
 a6.c[j]=new A.FR(b9,b1,b9);++l}++j}c4=c1.a
 if(c4==null)c4=c0.y1.a
-return A.l(b9,A.dW(B.a6,b9,A.bS2(b9,m,new A.fC(n,A.S(n).i("fC<1>")),B.Fq,B.ou),B.i,b9,0,b9,b9,b9,b9,b9,B.nY),B.i,b9,b9,c4,b9,b9,b9,b9,b9,b9,b9,b9)}}
+return A.l(b9,A.dW(B.a6,b9,A.bS2(b9,m,new A.fC(n,A.T(n).i("fC<1>")),B.Fq,B.ou),B.i,b9,0,b9,b9,b9,b9,b9,B.nY),B.i,b9,b9,c4,b9,b9,b9,b9,b9,b9,b9,b9)}}
 A.aB1.prototype={
 $1(a){if(a.k(0,B.aP))return this.a.ax.b.bf(0.08)
 return null},
@@ -77730,7 +77730,7 @@ a8(){var s,r,q=this
 q.al()
 s=t.ot
 r=t.wS
-q.e=A.T([B.a6d,new A.e_(q.gavr(),new A.cc(A.a([],s),r),t._M),B.a6e,new A.e_(q.gavt(),new A.cc(A.a([],s),r),t.Dd),B.E6,new A.e_(q.gauD(),new A.cc(A.a([],s),r),t.Nv)],t.G,t.od)
+q.e=A.U([B.a6d,new A.e_(q.gavr(),new A.cc(A.a([],s),r),t._M),B.a6e,new A.e_(q.gavt(),new A.cc(A.a([],s),r),t.Dd),B.E6,new A.e_(q.gauD(),new A.cc(A.a([],s),r),t.Nv)],t.G,t.od)
 q.f=A.hD(!0,"Day Grid",!0,!0,null,null,!1)},
 n(){var s=this.f
 s===$&&A.c()
@@ -79047,7 +79047,7 @@ s.toString
 if(q.r==null)q.r=A.hD(!0,A.a7(s).l(0),!0,!0,null,null,!1)
 s=t.ot
 r=t.wS
-q.w=A.T([B.x2,new A.e_(new A.bcs(q),new A.cc(A.a([],s),r),t.wY),B.a6a,new A.e_(new A.bct(q),new A.cc(A.a([],s),r),t.nz)],t.G,t.od)
+q.w=A.U([B.x2,new A.e_(new A.bcs(q),new A.cc(A.a([],s),r),t.wY),B.a6a,new A.e_(new A.bct(q),new A.cc(A.a([],s),r),t.nz)],t.G,t.od)
 r=q.gdN(0)
 if(r!=null)r.a0(0,q.ga_d())},
 n(){var s,r=this
@@ -79191,7 +79191,7 @@ if(a0==null)a0=o
 q=b.a
 m=q.id
 if(q.ch)q=r
-else{q=A.S(r).i("P<1,bc>")
+else{q=A.T(r).i("P<1,bc>")
 q=A.O(new A.P(r,new A.bcp(b),q),q.i("al.E"))}n=A.aKk(m,q,a0)}if(b.goq()){a0=b.gwf()
 a0.toString}else{a0=b.gwf()
 a0.toString
@@ -79302,7 +79302,7 @@ s=a.c
 s.toString
 r=f.a=h.b.Hu(A.K(s).e)
 s=h.c
-q=new A.a5(s,new A.aCt(a,e),A.S(s).i("a5<1>")).gaj(0)
+q=new A.a5(s,new A.aCt(a,e),A.T(s).i("a5<1>")).gaj(0)
 p=s.length!==0
 o=r.z
 n=o!=null
@@ -80686,7 +80686,7 @@ k=a.w
 if(k===$){q=a.gaK_()
 p=t.ot
 o=t.wS
-j=A.T([B.x2,new A.e_(q,new A.cc(A.a([],p),o),t.wY),B.a6a,new A.e_(q,new A.cc(A.a([],p),o),t.nz)],t.G,t.od)
+j=A.U([B.x2,new A.e_(q,new A.cc(A.a([],p),o),t.wY),B.a6a,new A.e_(q,new A.cc(A.a([],p),o),t.nz)],t.G,t.od)
 a.w!==$&&A.aU()
 a.w=j
 k=j}q=a.a.k4
@@ -84526,7 +84526,7 @@ A.aVR.prototype={
 $0(){this.a.Q=this.b},
 $S:0}
 A.aVT.prototype={
-$2(a,b){var s,r,q,p,o,n,m,l=this,k=A.T([B.E7,new A.ajd(a,new A.cc(A.a([],t.ot),t.wS))],t.G,t.od),j=l.b
+$2(a,b){var s,r,q,p,o,n,m,l=this,k=A.U([B.E7,new A.ajd(a,new A.cc(A.a([],t.ot),t.wS))],t.G,t.od),j=l.b
 j.a.toString
 s=j.cy
 s.toString
@@ -85323,7 +85323,7 @@ gHI(){return this.z},
 gAx(){return this.Q}}
 A.aqQ.prototype={}
 A.ad6.prototype={
-aoh(a){var s=this.d,r=A.S(s).i("P<1,f>")
+aoh(a){var s=this.d,r=A.T(s).i("P<1,f>")
 s=A.O(new A.P(s,new A.aYQ(a),r),r.i("al.E"))
 return s},
 q(a){var s,r,q,p,o=null,n=this.d.length
@@ -86616,7 +86616,7 @@ A.Ye.prototype={
 a8(){var s,r,q=this
 q.al()
 s=q.a.c
-r=A.S(s).i("P<1,kW<ad<ac>>>")
+r=A.T(s).i("P<1,kW<ad<ac>>>")
 s=A.O(new A.P(s,new A.bA_(),r),r.i("al.E"))
 q.x=s
 q.y=A.cf(q.a.c.length,B.am,!0,t.A0)},
@@ -86977,7 +86977,7 @@ r.d=null
 s=r.e
 if(s!=null)s.n()
 r.ab()},
-GN(){var s=this.a.d,r=A.S(s).i("P<1,f>")
+GN(){var s=this.a.d,r=A.T(s).i("P<1,f>")
 s=A.O(new A.P(s,new A.bA0(),r),r.i("al.E"))
 this.f=A.c6g(s)},
 O9(){var s,r=this
@@ -87408,7 +87408,7 @@ r.gjt().fi(0,B.hv,r.grQ())
 r.gjt().a0(0,r.ga0Y())},
 go2(){var s,r,q,p,o=this,n=o.a.aP
 if(n==null)s=null
-else s=J.uO(n.slice(0),A.S(n).c)
+else s=J.uO(n.slice(0),A.T(n).c)
 if(s!=null){n=o.y.ga4()
 n.toString
 n=A.h7(n)
@@ -88469,7 +88469,7 @@ awq(){if(this.Q.a!==0)return
 this.A8(this.gaGG())},
 avR(a){var s,r,q,p,o=this
 o.Q.E(0,a.gmF(a))
-s=A.S($.Al).i("a5<1>")
+s=A.T($.Al).i("a5<1>")
 r=A.O(new A.a5($.Al,new A.b_Y(),s),s.i("F.E"))
 for(s=r.length,q=0;p=r.length,q<p;r.length===s||(0,A.a2)(r),++q)r[q].A8(B.aU)
 if(p!==0)s=B.aU
@@ -89064,7 +89064,7 @@ else s.push(b)
 if(!c)B.d.u(s,this.a)
 return new A.nq(s)},
 E(a,b){return this.lH(0,b,!1)},
-cc(a,b){var s=this.a,r=A.S(s).i("P<1,dQ>")
+cc(a,b){var s=this.a,r=A.T(s).i("P<1,dQ>")
 s=A.O(new A.P(s,new A.ba1(b),r),r.i("al.E"))
 return new A.nq(s)},
 eJ(a,b){return A.bSZ(a,this,b)},
@@ -89084,7 +89084,7 @@ if(this===b)return!0
 if(J.aD(b)!==A.a7(this))return!1
 return b instanceof A.nq&&A.eb(b.a,this.a)},
 gK(a){return A.d_(this.a)},
-l(a){var s=this.a,r=A.S(s).i("dk<1>")
+l(a){var s=this.a,r=A.T(s).i("dk<1>")
 return new A.P(new A.dk(s,r),new A.ba2(),r.i("P<al.E,h>")).a1(0," + ")}}
 A.ba_.prototype={
 $2(a,b){return a.E(0,b.glT())},
@@ -89723,7 +89723,7 @@ a3C(a,b){return null}}
 A.cB.prototype={
 RA(a,b,c){var s=this
 return A.bIq(s.d.a9(c).L_(b),s.e.a9(c).L_(b),s.a,s.vH(),s.f,s.a3C(b,c))},
-cc(a,b){var s=this,r=s.a,q=A.S(r).i("P<1,k>")
+cc(a,b){var s=this,r=s.a,q=A.T(r).i("P<1,k>")
 r=A.O(new A.P(r,new A.aLL(b),q),q.i("al.E"))
 return new A.cB(s.d,s.e,s.f,r,s.b,null)},
 eJ(a,b){if(t.Nl.b(a))return A.bPY(a,this,b)
@@ -89751,7 +89751,7 @@ A.zD.prototype={
 RA(a,b,c){var s=this,r=s.d.a9(c).L_(b),q=b.giv(),p=s.vH(),o=s.a3C(b,c),n=s.r
 n=n==null?null:n.a9(c).L_(b)
 return A.c5b(r,s.e*q,s.a,p,s.f,o,n,s.w*b.giv())},
-cc(a,b){var s=this,r=s.a,q=A.S(r).i("P<1,k>")
+cc(a,b){var s=this,r=s.a,q=A.T(r).i("P<1,k>")
 r=A.O(new A.P(r,new A.aTk(b),q),q.i("al.E"))
 return new A.zD(s.d,s.e,s.f,s.r,s.w,r,s.b,null)},
 eJ(a,b){if(t.hh.b(a))return A.bRh(a,this,b)
@@ -90183,7 +90183,7 @@ N(a,b){var s,r,q,p,o,n=this
 if(n.x)A.aB(A.aJ(u.V))
 for(s=n.a,r=0;r<s.length;++r)if(s[r].m(0,b)){B.d.d7(s,r)
 break}if(s.length===0){s=n.y
-q=A.a(s.slice(0),A.S(s))
+q=A.a(s.slice(0),A.T(s))
 for(p=q.length,o=0;o<q.length;q.length===p||(0,A.a2)(q),++o)q[o].$0()
 B.d.a5(s)
 n.zK()}},
@@ -90212,7 +90212,7 @@ l.acT(A.cr("by an image listener"),r,q)}}},
 mZ(a,b,c,d,e){var s,r,q,p,o,n,m,l,k,j,i=this,h="image resource service"
 i.d=new A.d9(b,e,h,a,null,c,d)
 o=i.a
-o=A.O(new A.d1(new A.P(o,new A.aKb(),A.S(o).i("P<1,~(a4,dr?)?>")),t.kE),t.CF)
+o=A.O(new A.d1(new A.P(o,new A.aKb(),A.T(o).i("P<1,~(a4,dr?)?>")),t.kE),t.CF)
 n=i.b
 B.d.u(o,n)
 B.d.a5(n)
@@ -90232,7 +90232,7 @@ acV(a){var s,r,q,p
 if(this.x)A.aB(A.aJ(u.V))
 s=this.a
 if(s.length!==0){r=t.r7
-q=A.O(new A.d1(new A.P(s,new A.aKc(),A.S(s).i("P<1,~(m1)?>")),r),r.i("F.E"))
+q=A.O(new A.d1(new A.P(s,new A.aKc(),A.T(s).i("P<1,~(m1)?>")),r),r.i("F.E"))
 for(s=q.length,p=0;p<q.length;q.length===s||(0,A.a2)(q),++p)q[p].$1(a)}}}
 A.aKb.prototype={
 $1(a){return a.c},
@@ -90584,9 +90584,9 @@ if(r!=null){q=p.r
 q.toString
 q.sLv(r.RA(0,a,b))}r=s.d
 if(r!=null){if(p.w==null){p.w=r.length
-q=A.O(new A.P(r,new A.bxD(),A.S(r).i("P<1,aa4>")),t.Q2)
-p.z=q}if(s.e.gjH()){r=A.O(new A.P(r,new A.bxE(a),A.S(r).i("P<1,ab>")),t.YT)
-p.x=r}else{r=A.O(new A.P(r,new A.bxF(p,a,b),A.S(r).i("P<1,aa9>")),t.ke)
+q=A.O(new A.P(r,new A.bxD(),A.T(r).i("P<1,aa4>")),t.Q2)
+p.z=q}if(s.e.gjH()){r=A.O(new A.P(r,new A.bxE(a),A.T(r).i("P<1,ab>")),t.YT)
+p.x=r}else{r=A.O(new A.P(r,new A.bxF(p,a,b),A.T(r).i("P<1,aa9>")),t.ke)
 p.y=r}}r=s.e
 if(!r.gjH())q=p.r!=null||p.w!=null
 else q=!1
@@ -91058,7 +91058,7 @@ r=p.e
 if(r==null){q=p.a.c.Q
 q===$&&A.c()
 r=p.e=q}if(s.m(0,B.G))return r
-q=A.S(r).i("P<1,jV>")
+q=A.T(r).i("P<1,jV>")
 q=A.O(new A.P(r,new A.b_H(s),q),q.i("al.E"))
 q.$flags=1
 return q},
@@ -91215,7 +91215,7 @@ uH(a,b,c){var s,r,q=this.b,p=q.glr()
 if(!isFinite(p.a)||!isFinite(p.b))return A.a([],t.Lx)
 s=q.a.c.Vp(a.a,a.b,b,c)
 if(p.m(0,B.G))r=s
-else{r=A.S(s).i("P<1,jV>")
+else{r=A.T(s).i("P<1,jV>")
 r=A.O(new A.P(s,new A.b_G(p),r),r.i("al.E"))
 r.$flags=1
 r=r}return r},
@@ -91238,7 +91238,7 @@ if(!isFinite(p.a)||!isFinite(p.b))return B.by8
 s=q.f
 if(s==null){s=q.a.c.AX()
 q.f=s}if(p.m(0,B.G))r=s
-else{r=A.S(s).i("P<1,uT>")
+else{r=A.T(s).i("P<1,uT>")
 r=A.O(new A.P(s,new A.b_F(p),r),r.i("al.E"))
 r.$flags=1
 r=r}return r},
@@ -91363,7 +91363,7 @@ gTN(){return null}}
 A.v.prototype={
 gmN(){var s,r=this.e
 if(!(this.f==null))if(r==null)r=null
-else{s=A.S(r).i("P<1,h>")
+else{s=A.T(r).i("P<1,h>")
 r=A.O(new A.P(r,new A.b_L(this),s),s.i("al.E"))}return r},
 grN(a){var s,r=this.f
 if(r!=null){s=this.d
@@ -92473,7 +92473,7 @@ return s},
 o7(a){var s,r
 this.mq()
 s=this.an.o7(a)
-r=A.S(s).i("P<1,jV>")
+r=A.T(s).i("P<1,jV>")
 s=A.O(new A.P(s,new A.aUa(this),r),r.i("al.E"))
 return s},
 ft(a){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=this
@@ -92548,7 +92548,7 @@ if(a0.length===0)continue
 c=B.d.gW(a0)
 a1=new A.ab(c.a,c.b,c.c,c.d)
 a2=B.d.gW(a0).e
-for(c=A.S(a0),b=c.i("hr<1>"),a3=new A.hr(a0,1,b7,b),a3.ol(a0,1,b7,c.c),a3=new A.bD(a3,a3.gA(0),b.i("bD<al.E>")),b=b.i("al.E");a3.C();){c=a3.d
+for(c=A.T(a0),b=c.i("hr<1>"),a3=new A.hr(a0,1,b7,b),a3.ol(a0,1,b7,c.c),a3=new A.bD(a3,a3.gA(0),b.i("bD<al.E>")),b=b.i("al.E");a3.C();){c=a3.d
 if(c==null)c=b.a(c)
 a1=a1.lW(new A.ab(c.a,c.b,c.c,c.d))
 a2=c.e}c=a1.a
@@ -93139,10 +93139,10 @@ fl(a){var s,r,q,p,o,n
 if(a===this)return!1
 if(!(a instanceof A.GO)||a.r.length!==this.r.length)return!0
 s=a.r
-r=A.S(s)
+r=A.T(s)
 q=new J.fo(s,s.length,r.i("fo<1>"))
 s=this.r
-p=A.S(s)
+p=A.T(s)
 o=new J.fo(s,s.length,p.i("fo<1>"))
 s=p.c
 r=r.c
@@ -94304,7 +94304,7 @@ if(n.length!==0){m=s
 l=r
 k=J.ar(s)
 A.eU(l,k,J.ar(m),null,null)
-j=A.S(m)
+j=A.T(m)
 i=new A.hr(m,l,k,j.i("hr<1>"))
 i.ol(m,l,k,j.c)
 B.d.u(n,i)
@@ -94379,7 +94379,7 @@ if(!J.o(g,j.gkh()))i.ea()
 j=j.gkh()
 g=new A.cg(new Float64Array(16))
 g.eL()
-i.ax=new A.aql(g,null,null,j,!1)}i.a5U()}for(n=s,m=A.S(n).i("dk<1>"),n=new A.dk(n,m),n=new A.bD(n,n.gA(0),m.i("bD<al.E>")),j=t.S,m=m.i("al.E");n.C();){g=n.d
+i.ax=new A.aql(g,null,null,j,!1)}i.a5U()}for(n=s,m=A.T(n).i("dk<1>"),n=new A.dk(n,m),n=new A.bD(n,n.gA(0),m.i("bD<al.E>")),j=t.S,m=m.i("al.E");n.C();){g=n.d
 p=g==null?m.a(g):g
 g=p
 i=g.dx
@@ -94882,7 +94882,7 @@ k=a0.z
 k.a5(0)
 if(a0.gHN()){a0.OC(o,!0)
 B.d.aG(q,a0.gazD())
-a2.aJX(new A.d1(new A.P(o,new A.bvG(),A.S(o).i("P<1,jj?>")),t.t5))
+a2.aJX(new A.d1(new A.P(o,new A.bvG(),A.T(o).i("P<1,jj?>")),t.t5))
 B.d.a5(o)
 o.push(a0)
 for(o=B.d.gaF(l),n=new A.q0(o,t.Zw),l=t.ju;n.C();){j=l.a(o.gV(0))
@@ -94936,7 +94936,7 @@ else o=k
 if(!o)B.d.u(g,p.Q)}s=i.f=!1
 if(d){j=e.$1(f)
 r=j.a
-B.d.u(h,new A.P(r,new A.bvy(i,b),A.S(r).i("P<1,j7>")))
+B.d.u(h,new A.P(r,new A.bvy(i,b),A.T(r).i("P<1,j7>")))
 for(r=j.b,o=r.length,q=0;q<r.length;r.length===o||(0,A.a2)(r),++q)g.push(B.d.eG(r[q],new A.bvz(i,b),c).d8(0))}if(!i.f?a:s){B.d.a5(h)
 B.d.a5(g)
 for(c=i.a09(),s=c.length,q=0;q<c.length;c.length===s||(0,A.a2)(c),++q){p=c[q]
@@ -95609,7 +95609,7 @@ if(a2.length===0)continue
 c=B.d.gW(a2)
 a3=new A.ab(c.a,c.b,c.c,c.d)
 a4=B.d.gW(a2).e
-for(c=A.S(a2),b=c.i("hr<1>"),a0=new A.hr(a2,1,b7,b),a0.ol(a2,1,b7,c.c),a0=new A.bD(a0,a0.gA(0),b.i("bD<al.E>")),b=b.i("al.E");a0.C();){c=a0.d
+for(c=A.T(a2),b=c.i("hr<1>"),a0=new A.hr(a2,1,b7,b),a0.ol(a2,1,b7,c.c),a0=new A.bD(a0,a0.gA(0),b.i("bD<al.E>")),b=b.i("al.E");a0.C();){c=a0.d
 if(c==null)c=b.a(c)
 a3=a3.lW(new A.ab(c.a,c.b,c.c,c.d))
 a4=c.e}c=a3.a
@@ -99327,7 +99327,7 @@ r=t.i
 q=A.cf(a6,0,!1,r)
 switch(a2.aE.a){case 0:q[a6-1]=0
 for(p=a6-2;p>=0;--p){o=p+1
-q[p]=q[o]+s[o]}a2.dD=new A.dk(q,A.S(q).i("dk<1>"))
+q[p]=q[o]+s[o]}a2.dD=new A.dk(q,A.T(q).i("dk<1>"))
 a2.eg=B.d.gW(q)+B.d.gW(s)
 break
 case 1:q[0]=0
@@ -99417,7 +99417,7 @@ m=B.d.gZ(p)
 l=p.length
 k=l-1
 A.eU(1,k,l,null,null)
-g=A.d0(p,1,k,A.S(p).c)
+g=A.d0(p,1,k,A.T(p).c)
 p=e.dD
 p.toString
 f=J.tT(p,1)
@@ -99627,7 +99627,7 @@ A.Fa.prototype={
 ft(a){this.jl(a)
 a.Qz(B.a3u)},
 it(a){var s=this.gR2()
-new A.a5(s,new A.aUZ(),A.S(s).i("a5<1>")).aG(0,a)},
+new A.a5(s,new A.aUZ(),A.T(s).i("a5<1>")).aG(0,a)},
 sjT(a){if(a===this.D)return
 this.D=a
 this.ak()},
@@ -100371,7 +100371,7 @@ p=a6
 o=r.b
 p=o
 n=b0?a5.gHE():a5.gAV()
-for(m=J.bv(b1?new A.dk(b3,A.S(b3).i("dk<1>")):b3),l=b5.a,k=q;m.C();){j=m.gV(m)
+for(m=J.bv(b1?new A.dk(b3,A.T(b3).i("dk<1>")):b3),l=b5.a,k=q;m.C();){j=m.gV(m)
 i=j.a
 h=i.b
 g=j.b
@@ -100713,7 +100713,7 @@ if(J.o(s,B.xO))s=m
 r=new A.vM(a.a,a.b,a.c,s)}else r=a
 s=this.Sg$
 q=s.a
-p=J.uO(q.slice(0),A.S(q).c)
+p=J.uO(q.slice(0),A.T(q).c)
 for(q=p.length,o=0;o<p.length;p.length===q||(0,A.a2)(p),++o){n=p[o]
 if(s.k(0,n))n.$1(r)}s=this.fy$.h(0,r.b)
 if(s!=null){s=s.y
@@ -101086,7 +101086,7 @@ if(l===0){m.toString
 n.push(m)
 m=null}}B.d.km(n)
 if(r===B.cL){s=t.w2
-n=A.O(new A.dk(n,s),s.i("al.E"))}s=A.S(n).i("hn<1,e3>")
+n=A.O(new A.dk(n,s),s.i("al.E"))}s=A.T(n).i("hn<1,e3>")
 s=A.O(new A.hn(n,new A.bxf(),s),s.i("F.E"))
 return s},
 ag7(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3=this.c,a4=a3.length
@@ -101111,12 +101111,12 @@ a=p&&-0.7853981633974483<b&&b<2.356194490192345
 if(o)a0=b<-2.356194490192345||b>2.356194490192345
 else a0=!1
 if(a||a0)q.p(0,l.b,f.b)}}a1=A.a([],t.t)
-a2=A.a(a3.slice(0),A.S(a3))
+a2=A.a(a3.slice(0),A.T(a3))
 B.d.ed(a2,new A.bxb())
-new A.P(a2,new A.bxc(),A.S(a2).i("P<1,D>")).aG(0,new A.bxe(A.aQ(s),q,a1))
+new A.P(a2,new A.bxc(),A.T(a2).i("P<1,D>")).aG(0,new A.bxe(A.aQ(s),q,a1))
 a3=t.qn
 a3=A.O(new A.P(a1,new A.bxd(r),a3),a3.i("al.E"))
-a4=A.S(a3).i("dk<1>")
+a4=A.T(a3).i("dk<1>")
 a3=A.O(new A.dk(a3,a4),a4.i("al.E"))
 return a3},
 $idH:1}
@@ -101402,7 +101402,7 @@ A.aqn.prototype={}
 A.a0f.prototype={
 P(){return"Assertiveness."+this.b}}
 A.aXj.prototype={
-KD(a){var s=A.T(["type",this.a,"data",this.uJ()],t.N,t.z)
+KD(a){var s=A.U(["type",this.a,"data",this.uJ()],t.N,t.z)
 if(a!=null)s.p(0,"nodeId",a)
 return s},
 Dc(){return this.KD(null)},
@@ -101418,7 +101418,7 @@ s=this.d
 if(s!==B.a7D)r.p(0,"assertiveness",s.a)
 return r}}
 A.b_X.prototype={
-uJ(){return A.T(["message",this.b],t.N,t.z)}}
+uJ(){return A.U(["message",this.b],t.N,t.z)}}
 A.aMa.prototype={
 uJ(){return B.nO}}
 A.b__.prototype={
@@ -101629,7 +101629,7 @@ break
 case 7:m=A
 s=9
 return A.n(p.IP(),$async$Fh)
-case 9:q=m.T(["response",c.b],t.N,t.z)
+case 9:q=m.U(["response",c.b],t.N,t.z)
 s=1
 break
 case 8:throw A.p(A.kJ('Method "'+n+'" not handled.'))
@@ -101781,7 +101781,7 @@ n=!k}if(n){p.c.aPA(o)
 for(m=p.e,l=m.length,k=p.b,j=!1,i=0;i<m.length;m.length===l||(0,A.a2)(m),++i)j=k.aag(m[i])||j
 j=p.ZZ(m,o)||j
 B.d.a5(m)}else j=!0
-q=A.T(["handled",j],t.N,t.z)
+q=A.U(["handled",j],t.N,t.z)
 s=1
 break
 case 1:return A.A(q,r)}})
@@ -101864,7 +101864,7 @@ s=B.xP.jW(a)
 s.toString
 return B.aj.ce(0,s)}}
 A.aL5.prototype={
-mI(a){var s=B.kY.e0(A.T(["method",a.a,"args",a.b],t.N,t.X))
+mI(a){var s=B.kY.e0(A.U(["method",a.a,"args",a.b],t.N,t.X))
 s.toString
 return s},
 lR(a){var s,r,q,p=null,o=B.kY.jW(a)
@@ -102098,7 +102098,7 @@ Ba(a){return new A.amU(this,a)},
 gwH(){return"uncontrolled"}}
 A.arm.prototype={
 gwF(a){return t.ZC.a(this.a)},
-bV(){return B.dD7.dP("activateSystemCursor",A.T(["device",this.b,"kind",t.ZC.a(this.a).a],t.N,t.z),t.H)},
+bV(){return B.dD7.dP("activateSystemCursor",A.U(["device",this.b,"kind",t.ZC.a(this.a).a],t.N,t.z),t.H)},
 n(){}}
 A.pO.prototype={
 gwH(){return"SystemMouseCursor("+this.a+")"},
@@ -102666,7 +102666,7 @@ r=o.f.P()
 q=o.r.P()
 p=o.c
 p=p==null?null:p.P()
-return A.T(["systemNavigationBarColor",n,"systemNavigationBarDividerColor",null,"systemStatusBarContrastEnforced",o.w,"statusBarColor",s,"statusBarBrightness",r,"statusBarIconBrightness",q,"systemNavigationBarIconBrightness",p,"systemNavigationBarContrastEnforced",o.d],t.N,t.z)},
+return A.U(["systemNavigationBarColor",n,"systemNavigationBarDividerColor",null,"systemStatusBarContrastEnforced",o.w,"statusBarColor",s,"statusBarBrightness",r,"statusBarIconBrightness",q,"systemNavigationBarIconBrightness",p,"systemNavigationBarContrastEnforced",o.d],t.N,t.z)},
 l(a){return"SystemUiOverlayStyle("+this.a5v().l(0)+")"},
 gK(a){var s=this
 return A.ax(s.a,s.b,s.d,s.e,s.f,s.r,s.w,s.c,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b)},
@@ -102849,7 +102849,7 @@ P(){return"SmartDashesType."+this.b}}
 A.acS.prototype={
 P(){return"SmartQuotesType."+this.b}}
 A.kx.prototype={
-ec(){return A.T(["name","TextInputType."+B.LO[this.a],"signed",this.b,"decimal",this.c],t.N,t.z)},
+ec(){return A.U(["name","TextInputType."+B.LO[this.a],"signed",this.b,"decimal",this.c],t.N,t.z)},
 l(a){return"TextInputType(name: "+("TextInputType."+B.LO[this.a])+", signed: "+A.t(this.b)+", decimal: "+A.t(this.c)+")"},
 m(a,b){if(b==null)return!1
 return b instanceof A.kx&&b.a===this.a&&b.b==this.b&&b.c==this.c},
@@ -102931,7 +102931,7 @@ r=o.b
 p=o.c
 return new A.bz(q,A.dJ(B.R,s.$1(r.c),s.$1(r.d),!1),new A.dR(s.$1(p.a),s.$1(p.b)))},
 UF(){var s=this.b,r=this.c
-return A.T(["text",this.a,"selectionBase",s.c,"selectionExtent",s.d,"selectionAffinity",s.e.P(),"selectionIsDirectional",s.f,"composingBase",r.a,"composingExtent",r.b],t.N,t.z)},
+return A.U(["text",this.a,"selectionBase",s.c,"selectionExtent",s.d,"selectionAffinity",s.e.P(),"selectionIsDirectional",s.f,"composingBase",r.a,"composingExtent",r.b],t.N,t.z)},
 l(a){return"TextEditingValue(text: \u2524"+this.a+"\u251c, selection: "+this.b.l(0)+", composing: "+this.c.l(0)+")"},
 m(a,b){var s=this
 if(b==null)return!1
@@ -103141,19 +103141,19 @@ for(s=this.b,s=A.dT(s,s.r,A.G(s).c),r=a.a,q=a.b,p=b.a,o=t.N,n=t.z,m=t.H,l=s.$ti.
 if(k==null)l.a(k)
 k=$.e5().c
 k===$&&A.c()
-k.dP("TextInput.setEditableSizeAndTransform",A.T(["width",r,"height",q,"transform",p],o,n),m)}},
+k.dP("TextInput.setEditableSizeAndTransform",A.U(["width",r,"height",q,"transform",p],o,n),m)}},
 aGc(a){var s,r,q,p,o,n,m,l,k,j
 for(s=this.b,s=A.dT(s,s.r,A.G(s).c),r=a.a,q=a.c-r,p=a.b,o=a.d-p,n=t.N,m=t.z,l=t.H,k=s.$ti.c;s.C();){j=s.d
 if(j==null)k.a(j)
 j=$.e5().c
 j===$&&A.c()
-j.dP("TextInput.setMarkedTextRect",A.T(["width",q,"height",o,"x",r,"y",p],n,m),l)}},
+j.dP("TextInput.setMarkedTextRect",A.U(["width",q,"height",o,"x",r,"y",p],n,m),l)}},
 aGa(a){var s,r,q,p,o,n,m,l,k,j
 for(s=this.b,s=A.dT(s,s.r,A.G(s).c),r=a.a,q=a.c-r,p=a.b,o=a.d-p,n=t.N,m=t.z,l=t.H,k=s.$ti.c;s.C();){j=s.d
 if(j==null)k.a(j)
 j=$.e5().c
 j===$&&A.c()
-j.dP("TextInput.setCaretRect",A.T(["width",q,"height",o,"x",r,"y",p],n,m),l)}},
+j.dP("TextInput.setCaretRect",A.U(["width",q,"height",o,"x",r,"y",p],n,m),l)}},
 aGj(a){var s,r,q
 for(s=this.b,s=A.dT(s,s.r,A.G(s).c),r=s.$ti.c;s.C();){q=s.d;(q==null?r.a(q):q).afu(a)}},
 Pt(a,b,c,d,e){var s,r,q,p,o,n,m,l,k
@@ -103161,7 +103161,7 @@ for(s=this.b,s=A.dT(s,s.r,A.G(s).c),r=d.a,q=e.a,p=t.N,o=t.z,n=t.H,m=c==null,l=s.
 if(k==null)l.a(k)
 k=$.e5().c
 k===$&&A.c()
-k.dP("TextInput.setStyle",A.T(["fontFamily",a,"fontSize",b,"fontWeightIndex",m?null:c.a,"textAlignIndex",r,"textDirectionIndex",q],p,o),n)}},
+k.dP("TextInput.setStyle",A.U(["fontFamily",a,"fontSize",b,"fontWeightIndex",m?null:c.a,"textAlignIndex",r,"textDirectionIndex",q],p,o),n)}},
 aEB(){var s,r,q,p
 for(s=this.b,s=A.dT(s,s.r,A.G(s).c),r=t.H,q=s.$ti.c;s.C();){p=s.d
 if(p==null)q.a(p)
@@ -103211,7 +103211,7 @@ s.p(0,"isMultiline",a.b.m(0,B.kN))
 r.p(0,"inputType",s)}return r},
 afu(a){var s,r=$.e5().c
 r===$&&A.c()
-s=A.S(a).i("P<1,a0<dY>>")
+s=A.T(a).i("P<1,a0<dY>>")
 s=A.O(new A.P(a,new A.bsK(),s),s.i("al.E"))
 r.dP("TextInput.setSelectionRects",s,t.H)}}
 A.bsK.prototype={
@@ -103231,7 +103231,7 @@ if(o!=null){s=o.d
 o=!s&&J.o(o.b,a)&&A.eb($.vV.c,b)}else o=!1
 if(o)return A.dq(null,t.H)
 $.fP.BH$=p
-o=A.S(b).i("P<1,ai<h,@>>")
+o=A.T(b).i("P<1,ai<h,@>>")
 r=A.O(new A.P(b,new A.aZN(),o),o.i("al.E"))
 p.b=a
 p.c=b
@@ -103240,7 +103240,7 @@ p.d=!1
 o=a.a
 s=a.b
 q=t.N
-return B.ei.dP("ContextMenu.showSystemContextMenu",A.T(["targetRect",A.T(["x",o,"y",s,"width",a.c-o,"height",a.d-s],q,t.i),"items",r],q,t.z),t.H)},
+return B.ei.dP("ContextMenu.showSystemContextMenu",A.U(["targetRect",A.U(["x",o,"y",s,"width",a.c-o,"height",a.d-s],q,t.i),"items",r],q,t.z),t.H)},
 mP(){var s=0,r=A.C(t.H),q,p=this
 var $async$mP=A.y(function(a,b){if(a===1)return A.z(b,r)
 while(true)switch(s){case 0:if(p!==$.vV){s=1
@@ -103322,7 +103322,7 @@ A.B4.prototype={
 Eq(){var s=0,r=A.C(t.H),q=this
 var $async$Eq=A.y(function(a,b){if(a===1)return A.z(b,r)
 while(true)switch(s){case 0:s=2
-return A.n(B.Zv.hm("create",A.T(["id",q.a,"viewType",q.b,"params",q.c],t.N,t.z),!1,t.H),$async$Eq)
+return A.n(B.Zv.hm("create",A.U(["id",q.a,"viewType",q.b,"params",q.c],t.N,t.z),!1,t.H),$async$Eq)
 case 2:q.d=!0
 return A.A(null,r)}})
 return A.B($async$Eq,r)},
@@ -103344,7 +103344,7 @@ return A.n(B.Zv.hm("dispose",q.a,!1,t.H),$async$n)
 case 4:case 3:return A.A(null,r)}})
 return A.B($async$n,r)}}
 A.a6r.prototype={
-q(a){return A.bPg(A.T(["src",this.c],t.N,t.D),"Flutter__ImgElementImage__")}}
+q(a){return A.bPg(A.U(["src",this.c],t.N,t.D),"Flutter__ImgElementImage__")}}
 A.aKe.prototype={
 $2$params(a,b){var s,r
 b.toString
@@ -103909,7 +103909,7 @@ r=o.d
 r=r==null?null:r.c
 q=o.f
 q.toString
-p=A.S(q).i("a5<1>")
+p=A.T(q).i("a5<1>")
 p=A.fN(new A.a5(q,new A.b4T(o),p),p.i("F.E"))
 q=A.O(p,A.G(p).c)
 return s.aRh(r,q)}}
@@ -106981,7 +106981,7 @@ r=s==null?null:s.e
 if(r!=null)A.qz(r,q,t.vz)}},
 go2(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f=this,e=f.a.an
 if(e==null)s=null
-else s=J.uO(e.slice(0),A.S(e).c)
+else s=J.uO(e.slice(0),A.T(e).c)
 r=s!=null?new A.Ci(!0,"EditableText-"+A.h7(f),s,f.a.c.a,null):B.ER
 e=f.c
 e.toString
@@ -107246,7 +107246,7 @@ b0=new A.ajO(new A.cc(a9,q)).fE(b0)
 s=A.a([],s)
 a9=b2.c
 a9.toString
-b1=A.T([B.eid,new A.Lj(!1,new A.cc(r,q)),B.eiM,b3,B.ej1,o,B.E6,new A.Lg(!0,new A.cc(p,q)),B.E7,new A.e_(b2.gaxZ(),new A.cc(n,q),t.Dn),B.eih,j,B.ej9,h,B.eii,e,B.eiz,f,B.ein,d,B.eja,c,B.ejh,a,B.ejg,a0,B.eiV,a1,B.eiW,a2,B.eiH,b,B.ejb,a4,B.ejf,k,B.ejd,a3,B.Eb,new A.e_(b2.garX(),new A.cc(l,q),t.fn),B.eib,a5,B.eic,m,B.eiO,i,B.eig,a6,B.eiF,a7,B.eiU,g,B.eim,b0,B.eia,new A.ajP(new A.cc(s,q)).fE(a9)],t.G,t.od)
+b1=A.U([B.eid,new A.Lj(!1,new A.cc(r,q)),B.eiM,b3,B.ej1,o,B.E6,new A.Lg(!0,new A.cc(p,q)),B.E7,new A.e_(b2.gaxZ(),new A.cc(n,q),t.Dn),B.eih,j,B.ej9,h,B.eii,e,B.eiz,f,B.ein,d,B.eja,c,B.ejh,a,B.ejg,a0,B.eiV,a1,B.eiW,a2,B.eiH,b,B.ejb,a4,B.ejf,k,B.ejd,a3,B.Eb,new A.e_(b2.garX(),new A.cc(l,q),t.fn),B.eib,a5,B.eic,m,B.eiO,i,B.eig,a6,B.eiF,a7,B.eiU,g,B.eim,b0,B.eia,new A.ajP(new A.cc(s,q)).fE(a9)],t.G,t.od)
 b2.aR!==$&&A.aU()
 b2.aR=b1
 b3=b1}return b3},
@@ -107921,7 +107921,7 @@ s.push(p)}this.y=s
 o=s}return o},
 guE(){if(!this.gjz())return B.Fp
 var s=this.gBo()
-return new A.a5(s,new A.aH4(),A.S(s).i("a5<1>"))},
+return new A.a5(s,new A.aH4(),A.T(s).i("a5<1>"))},
 geY(){var s,r,q=this.x
 if(q==null){s=A.a([],t.bp)
 r=this.Q
@@ -107991,7 +107991,7 @@ if(c){s=b.gjA()
 if(s!=null){r=s.fy
 B.d.M(r,b)
 q=b.gBo()
-new A.a5(q,new A.aH3(s),A.S(q).i("a5<1>")).aG(0,B.d.gxF(r))}}b.Q=null
+new A.a5(q,new A.aH3(s),A.T(q).i("a5<1>")).aG(0,B.d.gxF(r))}}b.Q=null
 b.Z5()
 B.d.M(this.as,b)
 for(r=this.geY(),q=r.length,p=0;p<q;++p)r[p].y=null
@@ -108124,10 +108124,10 @@ if(r==null&&j.r==null)j.r=p
 q=j.r
 if(q!=null&&q!==r){if(s==null)l=null
 else{r=s.geY()
-r=A.hF(r,A.S(r).c)
+r=A.hF(r,A.T(r).c)
 l=r}if(l==null)l=A.aQ(t.mx)
 r=j.r.geY()
-k=A.hF(r,A.S(r).c)
+k=A.hF(r,A.T(r).c)
 r=j.d
 r.u(0,k.eO(l))
 r.u(0,l.eO(k))
@@ -108392,7 +108392,7 @@ Nq(a,b,c){var s,r,q=a.gkT(),p=A.mW(q.fy)
 if(!c)s=p==null&&q.gBo().length!==0
 else s=!0
 if(s){s=A.bIg(q,a)
-r=new A.a5(s,new A.aH7(),A.S(s).i("a5<1>"))
+r=new A.a5(s,new A.aH7(),A.T(s).i("a5<1>"))
 if(!r.gaF(0).C())p=null
 else p=b?r.gZ(0):r.gW(0)}return p==null?a:p},
 a_D(a,b){return this.Nq(a,!1,b)},
@@ -108427,7 +108427,7 @@ A.mP(k).ne(o,!1)
 k=s.gjA()
 return(k==null?null:A.mW(k.fy))!==s}return l.w1(B.d.gZ(p),B.j0,b)
 case 0:return l.w1(B.d.gZ(p),B.j0,b)
-case 3:return!1}for(k=J.bv(b?p:new A.dk(p,A.S(p).i("dk<1>"))),n=null;k.C();n=m){m=k.gV(k)
+case 3:return!1}for(k=J.bv(b?p:new A.dk(p,A.T(p).i("dk<1>"))),n=null;k.C();n=m){m=k.gV(k)
 if(n===s)return l.w1(m,b?B.j_:B.j0,b)}return!1}}
 A.aH7.prototype={
 $1(a){return a.b&&B.d.h4(a.geY(),A.iM())&&!a.gjj()},
@@ -108467,17 +108467,17 @@ o.toString
 s=A.nd(o)
 switch(c.a){case 2:case 0:r=this.aH3(c,a.gcl(0),b,d)
 if(r.length===0)break
-if(s!=null&&!s.d.ga7s()){q=new A.a5(r,new A.aBC(s),A.S(r).i("a5<1>"))
+if(s!=null&&!s.d.ga7s()){q=new A.a5(r,new A.aBC(s),A.T(r).i("a5<1>"))
 if(!q.gaj(0))r=q}if(c===B.r6){o=J.lC(r)
-r=new A.dk(o,A.S(o).i("dk<1>"))}p=J.hi(r,new A.aBD(new A.ab(a.gcl(0).a,-1/0,a.gcl(0).c,1/0)))
+r=new A.dk(o,A.T(o).i("dk<1>"))}p=J.hi(r,new A.aBD(new A.ab(a.gcl(0).a,-1/0,a.gcl(0).c,1/0)))
 if(!p.gaj(0)){if(d)return B.d.gW(A.bOd(a.gcl(0).gc9(),p))
 return B.d.gZ(A.bOd(a.gcl(0).gc9(),p))}if(d)return B.d.gW(A.bOe(a.gcl(0).gc9(),r))
 return B.d.gZ(A.bOe(a.gcl(0).gc9(),r))
 case 1:case 3:r=this.aH2(c,a.gcl(0),b,d)
 if(r.length===0)break
-if(s!=null&&!s.d.ga7s()){q=new A.a5(r,new A.aBE(s),A.S(r).i("a5<1>"))
+if(s!=null&&!s.d.ga7s()){q=new A.a5(r,new A.aBE(s),A.T(r).i("a5<1>"))
 if(!q.gaj(0))r=q}if(c===B.mk){o=J.lC(r)
-r=new A.dk(o,A.S(o).i("dk<1>"))}p=J.hi(r,new A.aBF(new A.ab(-1/0,a.gcl(0).b,1/0,a.gcl(0).d)))
+r=new A.dk(o,A.T(o).i("dk<1>"))}p=J.hi(r,new A.aBF(new A.ab(-1/0,a.gcl(0).b,1/0,a.gcl(0).d)))
 if(!p.gaj(0)){if(d)return B.d.gW(A.bOc(a.gcl(0).gc9(),p))
 return B.d.gZ(A.bOc(a.gcl(0).gc9(),p))}if(d)return B.d.gW(A.bOf(a.gcl(0).gc9(),r))
 return B.d.gZ(A.bOf(a.gcl(0).gc9(),r))}return null},
@@ -108673,7 +108673,7 @@ s=this.d=new A.buR().$1(s)}s.toString
 return s}}
 A.buQ.prototype={
 $1(a){var s=a.ga9b()
-return A.hF(s,A.S(s).c)},
+return A.hF(s,A.T(s).c)},
 $S:531}
 A.buS.prototype={
 $2(a,b){var s
@@ -108691,7 +108691,7 @@ p=s==null?null:s.jf(q)}return r},
 $S:533}
 A.qh.prototype={
 gcl(a){var s,r,q,p,o=this
-if(o.b==null)for(s=o.a,r=A.S(s).i("P<1,ab>"),s=new A.P(s,new A.buO(),r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E");s.C();){q=s.d
+if(o.b==null)for(s=o.a,r=A.T(s).i("P<1,ab>"),s=new A.P(s,new A.buO(),r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E");s.C();){q=s.d
 if(q==null)q=r.a(q)
 p=o.b
 if(p==null){o.b=q
@@ -108752,7 +108752,7 @@ A.aTF.prototype={
 $2(a,b){return B.q.bA(a.b.b,b.b.b)},
 $S:275}
 A.aTG.prototype={
-$2(a,b){var s=a.b,r=A.S(b).i("a5<1>")
+$2(a,b){var s=a.b,r=A.T(b).i("a5<1>")
 s=A.O(new A.a5(b,new A.aTH(new A.ab(-1/0,s.b,1/0,s.d)),r),r.i("F.E"))
 return s},
 $S:536}
@@ -109051,7 +109051,7 @@ B.d.ed(q,A.bLj())
 s=q
 r.a5(0)
 try{r=s
-new A.dk(r,A.S(r).i("dk<1>")).aG(0,this.gaIP())}finally{}}}
+new A.dk(r,A.T(r).i("dk<1>")).aG(0,this.gaIP())}finally{}}}
 A.blz.prototype={
 $1(a){this.a.a5L(a)},
 $S:31}
@@ -109547,7 +109547,7 @@ A.l2.prototype={
 gai(){return t.pU.a(A.bY.prototype.gai.call(this))},
 gkD(a){var s=this.p1
 s===$&&A.c()
-return new A.a5(s,new A.aQi(this),A.S(s).i("a5<1>"))},
+return new A.a5(s,new A.aQi(this),A.T(s).i("a5<1>"))},
 ll(a,b){var s=this.gai(),r=b.a
 s.T4(0,a,r==null?null:r.gai())},
 lo(a,b,c){var s=this.gai(),r=c.a
@@ -111013,8 +111013,8 @@ a8(){this.al()
 this.m9(0,this.a.c)},
 amQ(a){var s,r,q,p,o,n=this.a.d,m=a.d
 if(n.length!==m.length)return!0
-s=A.a(n.slice(0),A.S(n))
-r=A.a(m.slice(0),A.S(m))
+s=A.a(n.slice(0),A.T(n))
+r=A.a(m.slice(0),A.T(m))
 for(q=0;q<s.length;++q){p=s[q]
 o=r[q]
 n=A.a7(p)===A.a7(o)
@@ -111244,7 +111244,7 @@ d=Math.max(0,l.b-d)
 k=Math.max(0,l.c-s)
 l=Math.max(0,l.d-r)
 j=h.cx
-i=A.S(j).i("a5<1>")
+i=A.T(j).i("a5<1>")
 j=A.O(new A.a5(j,new A.aP4(a),i),i.i("F.E"))
 return h.aMW(j,new A.N(e,c,q,g),new A.N(f,d,k,l),new A.N(o,n,m,p))},
 m(a,b){var s,r=this
@@ -111442,7 +111442,7 @@ Rk(){var s=t.S
 return new A.GB(B.eP,18,18,B.ln,A.R(s,t.SP),A.eA(s),null,null,A.Jo(),A.R(s,t.Au))},
 aaM(a){a.D=this.a}}
 A.amA.prototype={
-q(a){return new A.nb(this.c,A.T([B.ej6,new A.agR(this.d)],t.G,t.xR),B.bo,!1,null)}}
+q(a){return new A.nb(this.c,A.U([B.ej6,new A.agR(this.d)],t.G,t.xR),B.bo,!1,null)}}
 A.a9H.prototype={
 q(a){var s=this,r=a.a6(t.I).w,q=A.a([],t.p),p=s.c
 if(p!=null)q.push(A.aLI(p,B.xs))
@@ -111534,7 +111534,7 @@ if(s==null)return!1
 return s.a===this},
 gSU(){var s,r,q=this.b
 if(q==null)return!1
-for(q=q.e.a,s=A.S(q),q=new J.fo(q,q.length,s.i("fo<1>")),s=s.c;q.C();){r=q.d
+for(q=q.e.a,s=A.T(q),q=new J.fo(q,q.length,s.i("fo<1>")),s=s.c;q.C();){r=q.d
 if(r==null)r=s.a(r)
 if(r.a===this)return!1
 r=r.d.a
@@ -111621,7 +111621,7 @@ l.d=B.esa
 s=l.a
 r=s.r
 q=new A.bwe()
-p=A.S(r)
+p=A.T(r)
 o=new A.a5(r,q,p.i("a5<1>"))
 if(!o.gaF(0).C()){l.d=B.xi
 s.n()
@@ -111693,7 +111693,7 @@ u(a,b){B.d.u(this.a,b)
 if(J.e6(b))this.aa()},
 h(a,b){return this.a[b]},
 gaF(a){var s=this.a
-return new J.fo(s,s.length,A.S(s).i("fo<1>"))},
+return new J.fo(s,s.length,A.T(s).i("fo<1>"))},
 l(a){return A.uN(this.a,"[","]")},
 $iaR:1}
 A.o8.prototype={
@@ -111755,7 +111755,7 @@ cg(){var s,r,q,p,o,n=this
 n.ajo()
 s=n.c.a6(t.mS)
 n.Q2(s==null?null:s.f)
-for(r=n.e.a,q=A.S(r),r=new J.fo(r,r.length,q.i("fo<1>")),q=q.c;r.C();){p=r.d
+for(r=n.e.a,q=A.T(r),r=new J.fo(r,r.length,q.i("fo<1>")),q=q.c;r.C();){p=r.d
 p=(p==null?q.a(p):p).a
 if(p.b===n){p.Xm()
 o=p.x1
@@ -111793,7 +111793,7 @@ p.a.set(q,null)}for(s=m.a.y,r=0;!1;++r){q=s[r]
 p=$.oO()
 A.LN(q)
 p.a.set(q,m)}m.Q1()}m.a.toString
-for(s=m.e.a,p=A.S(s),s=new J.fo(s,s.length,p.i("fo<1>")),p=p.c;s.C();){o=s.d
+for(s=m.e.a,p=A.T(s),s=new J.fo(s,s.length,p.i("fo<1>")),p=p.c;s.C();){o=s.d
 o=(o==null?p.a(o):o).a
 if(o.b===m){o.Xm()
 n=o.x1
@@ -111837,7 +111837,7 @@ s.T$=r
 s.O$=0
 q.ajq()},
 gY0(){var s,r,q,p=A.a([],t.wi)
-for(s=this.e.a,r=A.S(s),s=new J.fo(s,s.length,r.i("fo<1>")),r=r.c;s.C();){q=s.d
+for(s=this.e.a,r=A.T(s),s=new J.fo(s,s.length,r.i("fo<1>")),r=r.c;s.C();){q=s.d
 B.d.u(p,(q==null?r.a(q):q).a.r)}return p},
 F5(b3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1=this,b2=null
 b1.CW=!0
@@ -112078,18 +112078,18 @@ this.t(new A.aQO(s==null?null:s.xa(t.CZ)))}s=this.db
 s=A.O(s,A.G(s).c)
 B.d.aG(s,$.aH.gaL0())},
 a_F(a){var s,r,q
-for(s=this.e.a,r=A.S(s),s=new J.fo(s,s.length,r.i("fo<1>")),r=r.c;s.C();){q=s.d
+for(s=this.e.a,r=A.T(s),s=new J.fo(s,s.length,r.i("fo<1>")),r=r.c;s.C();){q=s.d
 if(q==null)q=r.a(q)
 if(a.$1(q))return q}return null},
 vL(a){var s,r,q,p,o
-for(s=this.e.a,r=A.S(s),s=new J.fo(s,s.length,r.i("fo<1>")),r=r.c,q=null;s.C();){p=s.d
+for(s=this.e.a,r=A.T(s),s=new J.fo(s,s.length,r.i("fo<1>")),r=r.c,q=null;s.C();){p=s.d
 o=p==null?r.a(p):p
 if(a.$1(o))q=o}return q},
 q(a){var s,r,q=this,p=null,o=q.gawn(),n=A.mP(a),m=q.cQ$,l=q.d
 l===$&&A.c()
 s=q.a.ay
 if(l.ga4()==null){r=q.gY0()
-r=J.uO(r.slice(0),A.S(r).c)}else r=B.bxW
+r=J.uO(r.slice(0),A.T(r).c)}else r=B.bxW
 return new A.yw(p,new A.eC(new A.aQR(q,a),A.Nq(B.iv,A.bGQ(!1,A.bIf(A.lV(!0,p,A.RR(m,new A.Ey(r,s,l)),p,p,p,q.y,!1,p,p,p,p,p,!0),n)),o,q.gaAe(),p,p,o),p,t.w3),p)}}
 A.aQQ.prototype={
 $1(a){var s=this.a.c
@@ -112153,7 +112153,7 @@ o=A.R(t.D,t.UX)
 q=c.y
 q.toString
 n=J.c05(J.a_R(q))
-for(q=a1.a,m=A.S(q),q=new J.fo(q,q.length,m.i("fo<1>")),m=m.c,l=b,k=a,j=!0;q.C();){i=q.d
+for(q=a1.a,m=A.T(q),q=new J.fo(q,q.length,m.i("fo<1>")),m=m.c,l=b,k=a,j=!0;q.C();){i=q.d
 h=i==null?m.a(i):i
 if(h.d.a>7){i=h.a
 i.d.sv(0,b)
@@ -112638,7 +112638,7 @@ if(p.f==null)p.f=o}o.t(new A.aRN(o,a,r,null,null))},
 a1Q(){if(this.c!=null)this.t(new A.aRK())},
 ZP(){this.t(new A.aRJ())},
 q(a){var s,r,q,p,o,n=this,m=A.a([],t.zj)
-for(s=n.d,r=A.S(s).i("dk<1>"),s=new A.dk(s,r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=!0,p=0;s.C();){o=s.d
+for(s=n.d,r=A.T(s).i("dk<1>"),s=new A.dk(s,r),s=new A.bD(s,s.gA(0),r.i("bD<al.E>")),r=r.i("al.E"),q=!0,p=0;s.C();){o=s.d
 if(o==null)o=r.a(o)
 if(q){++p
 m.push(new A.tt(o,n,!0,o.r))
@@ -113159,7 +113159,7 @@ s=r.a(q).aQ$}}}
 A.atH.prototype={}
 A.My.prototype={
 U(){var s=t.y
-return new A.UF(A.T([!1,!0,!0,!0],s,s),null,null)},
+return new A.UF(A.U([!1,!0,!0,!0],s,s),null,null)},
 nR(a){return A.Jp().$1(a)}}
 A.UF.prototype={
 a8(){var s,r,q=this
@@ -113899,7 +113899,7 @@ s.e=s.a.aAO(new A.ON(r,s.gaBv()))},
 aBw(a){if(this.c!=null)this.t(new A.bsN(this))},
 avk(a){var s
 if(!a){s=this.e
-if(s!=null)s.R6()}B.Cp.dP("TextInput.setPlatformViewClient",A.T(["platformViewId",this.d],t.N,t.z),t.H)},
+if(s!=null)s.R6()}B.Cp.dP("TextInput.setPlatformViewClient",A.U(["platformViewId",this.d],t.N,t.z),t.H)},
 n(){var s=this,r=s.e
 if(r!=null)r.n()
 s.e=null
@@ -114602,7 +114602,7 @@ b.toString
 return new A.vB(b,s,null)},
 $S:592}
 A.bqf.prototype={
-$1(a){var s,r=A.T([B.E7,new A.aje(a,new A.cc(A.a([],t.ot),t.wS))],t.G,t.od),q=this.a,p=q.e
+$1(a){var s,r=A.U([B.E7,new A.aje(a,new A.cc(A.a([],t.ot),t.wS))],t.G,t.od),q=this.a,p=q.e
 p===$&&A.c()
 s=q.d
 if(s==null)s=q.d=new A.eL(new A.em(new A.bqc(q),null),q.a.c.ry)
@@ -116122,9 +116122,9 @@ if(a===q.ay)s=!a||A.cj(q.a.c)===q.ch
 else s=!1
 if(s)return
 if(!a){q.at=B.Xu
-q.a3X()}else{switch(A.cj(q.a.c).a){case 1:q.at=A.T([B.x5,new A.er(new A.aWh(q),new A.aWi(q),t.ok)],t.G,t.xR)
+q.a3X()}else{switch(A.cj(q.a.c).a){case 1:q.at=A.U([B.x5,new A.er(new A.aWh(q),new A.aWi(q),t.ok)],t.G,t.xR)
 break
-case 0:q.at=A.T([B.Ec,new A.er(new A.aWj(q),new A.aWk(q),t.Uv)],t.G,t.xR)
+case 0:q.at=A.U([B.Ec,new A.er(new A.aWj(q),new A.aWk(q),t.Uv)],t.G,t.xR)
 break}a=!0}q.ay=a
 q.ch=A.cj(q.a.c)
 s=q.Q
@@ -116326,7 +116326,7 @@ b.a0(0,s)},
 aFm(){if(this.fr)return
 this.fr=!0
 $.cM.RG$.push(new A.bwC(this))},
-I7(){var s=this,r=s.b,q=A.hF(r,A.S(r).c)
+I7(){var s=this,r=s.b,q=A.hF(r,A.T(r).c)
 r=s.k1
 r.iq(r,new A.bwD(q))
 r=s.k2
@@ -117696,7 +117696,7 @@ if(q!=null)r.nK(A.aWo(q,null))
 q=r.fr
 if(q!=null)r.nK(A.aWp(q,null))
 q=r.b
-s=A.hF(q,A.S(q).c)
+s=A.hF(q,A.T(q).c)
 r.dy.No(new A.aZ3(s),!0)
 r.dx.No(new A.aZ4(s),!0)
 r.WU()}}
@@ -117790,7 +117790,7 @@ h=A.a([],t.AO)
 g=c.gaQ1()?new A.ab(0,0,0+c.ga8f().a,0+c.ga8f().b):b
 for(f=c.d;f<=c.c;++f){a=c.b[f]
 e=a.gv(a).d
-a=new A.P(e,new A.aQD(c,f,g),A.S(e).i("P<1,ab>")).f5(0,new A.aQE())
+a=new A.P(e,new A.aQD(c,f,g),A.T(e).i("P<1,ab>")).f5(0,new A.aQE())
 d=A.O(a,a.$ti.i("F.E"))
 B.d.u(h,d)}return new A.vJ(m,i,!s.m(0,l)?B.CQ:s.c,h,!0)},
 XW(a,b){var s,r=b>a
@@ -117823,7 +117823,7 @@ a48(){var s,r,q,p=this,o=p.d,n=o===-1
 if(n&&p.c===-1)return
 if(n||p.c===-1){if(n)o=p.c
 n=p.b
-new A.a5(n,new A.aQy(p,o),A.S(n).i("a5<1>")).aG(0,new A.aQz(p))
+new A.a5(n,new A.aQy(p,o),A.T(n).i("a5<1>")).aG(0,new A.aQz(p))
 return}n=p.c
 s=Math.min(o,n)
 r=Math.max(o,n)
@@ -117852,7 +117852,7 @@ if(s===B.bz)continue
 if(r===0&&s===B.bJ)return B.bJ
 g=q[r]
 if(!g.gv(g).m(0,j)){g=i.b
-new A.a5(g,new A.aQA(i,r),A.S(g).i("a5<1>")).aG(0,new A.aQB(i))
+new A.a5(g,new A.aQA(i,r),A.T(g).i("a5<1>")).aG(0,new A.aQB(i))
 i.d=i.c=r}return B.bO}else if(s===B.bz){i.d=i.c=r-1
 return B.bO}}return B.bO},
 IS(a){return this.a0V(a)},
@@ -118982,7 +118982,7 @@ q(a){var s,r,q,p,o=this
 if(o.a.d.length!==0){s=A.ei(a,B.a6f,t.Uh)
 s.toString
 r=o.a.d
-q=A.S(r).i("P<1,kk>")
+q=A.T(r).i("P<1,kk>")
 p=A.O(new A.P(r,new A.bzw(s),q),q.i("al.E"))
 s=o.d
 s===$&&A.c()
@@ -119071,7 +119071,7 @@ p.a=-1
 s=q.e
 s.toString
 s=t.On.a(s).c
-r=A.S(s).i("P<1,lv>")
+r=A.T(s).i("P<1,lv>")
 p=A.O(new A.P(s,new A.bA8(p,q),r),r.i("al.E"))
 p.$flags=1
 q.p1=p
@@ -119091,7 +119091,7 @@ for(q=b.p1,p=q.length,o=0;o<q.length;q.length===p||(0,A.a2)(q),++o){n=q[o]
 m=n.a
 if(m!=null)r.p(0,m,n.b)}q=b.p1
 p=B.d.gaF(q)
-l=new A.fS(p,new A.bA9(),A.S(q).i("fS<1>"))
+l=new A.fS(p,new A.bA9(),A.T(q).i("fS<1>"))
 k=A.a([],t.lD)
 j=A.aQ(s)
 for(s=a0.c,q=b.p3,m=t.PP,i=0;i<s.length;++i){n=s[i]
@@ -119112,11 +119112,11 @@ b.a6i()
 q.a5(0)
 b.oj(0,a0)
 b.p2=!1},
-a6i(){var s=t.Jc.a(A.bY.prototype.gai.call(this)),r=this.p1,q=r.length!==0?r[0].b.length:0,p=A.S(r).i("hn<1,a9>")
+a6i(){var s=t.Jc.a(A.bY.prototype.gai.call(this)),r=this.p1,q=r.length!==0?r[0].b.length:0,p=A.T(r).i("hn<1,a9>")
 r=A.O(new A.hn(r,new A.bA6(),p),p.i("F.E"))
 s.afd(q,r)},
 cq(a){var s,r,q,p
-for(s=this.p1,r=A.S(s),s=new A.p9(B.d.gaF(s),new A.bAb(),B.oS,r.i("p9<1,bH>")),q=this.p3,r=r.i("bH");s.C();){p=s.d
+for(s=this.p1,r=A.T(s),s=new A.p9(B.d.gaF(s),new A.bAb(),B.oS,r.i("p9<1,bH>")),q=this.p3,r=r.i("bH");s.C();){p=s.d
 if(p==null)p=r.a(p)
 if(!q.k(0,p))a.$1(p)}},
 kK(a){this.p3.E(0,a)
@@ -119127,7 +119127,7 @@ $1(a){var s,r,q,p={}
 p.a=0
 s=this.a;++s.a
 r=a.c
-q=A.S(r).i("P<1,bH>")
+q=A.T(r).i("P<1,bH>")
 p=A.O(new A.P(r,new A.bA7(p,s,this.b),q),q.i("al.E"))
 p.$flags=1
 return new A.lv(a.a,p)},
@@ -119143,7 +119143,7 @@ $1(a){return!this.a.k(0,a)},
 $S:632}
 A.bA6.prototype={
 $1(a){var s=a.b
-return new A.P(s,new A.bA5(),A.S(s).i("P<1,a9>"))},
+return new A.P(s,new A.bA5(),A.T(s).i("P<1,a9>"))},
 $S:633}
 A.bA5.prototype={
 $1(a){var s=a.gai()
@@ -119547,7 +119547,7 @@ a_K(){var s,r,q,p=this,o=p.d,n=o===-1
 if(n&&p.c===-1)return
 if(n||p.c===-1){if(n)o=p.c
 n=p.b
-new A.a5(n,new A.bx0(p,o),A.S(n).i("a5<1>")).aG(0,new A.bx1(p))
+new A.a5(n,new A.bx0(p,o),A.T(n).i("a5<1>")).aG(0,new A.bx1(p))
 return}n=p.c
 s=Math.min(o,n)
 r=Math.max(o,n)
@@ -120043,7 +120043,7 @@ o=o.c
 l=new A.H(-n.a,-n.b).au(0,new A.H(e,f))
 k=h.d
 k===$&&A.c()
-j=A.T([B.x3,new A.er(new A.bx7(h),new A.bx8(h,m),t.YC)],t.G,t.xR)
+j=A.U([B.x3,new A.er(new A.bx7(h),new A.bx8(h,m),t.YC)],t.G,t.xR)
 i=h.a
 return A.bHk(new A.eJ(k,!1,new A.ay(q,p,new A.ec(B.b6,g,g,new A.nb(new A.L(new A.N(e,f,e,f),i.w.HA(a,i.z,i.y,i.d),g),j,B.fV,!1,g),g),g),g),o,l,!1)}}
 A.bx7.prototype={
@@ -120915,7 +120915,7 @@ s=r.gv(r)
 if(s!==!1)q.E(0,B.aP)
 return q},
 a7K(a,b,c,d,e,f){var s,r,q,p,o,n,m,l,k,j,i=this,h=null,g=i.IC$
-if(g===$){s=A.T([B.x2,new A.e_(i.ga5A(),new A.cc(A.a([],t.ot),t.wS),t.wY)],t.G,t.od)
+if(g===$){s=A.U([B.x2,new A.e_(i.ga5A(),new A.cc(A.a([],t.ot),t.wS),t.wY)],t.G,t.od)
 i.IC$!==$&&A.aU()
 i.IC$=s
 g=s}r=i.gj7()
@@ -121146,7 +121146,7 @@ if(s.b===this){q=q.length!==0&&r.b>0
 r=r.ga7U()
 s=s.a
 s===$&&A.c()
-s.dP("UndoManager.setUndoState",A.T(["canUndo",q,"canRedo",r],t.N,t.y),t.H)}},
+s.dP("UndoManager.setUndoState",A.U(["canUndo",q,"canRedo",r],t.N,t.y),t.H)}},
 aIL(a){this.Dg()},
 aE7(a){this.CY()},
 PY(a,b){var s=this
@@ -121211,7 +121211,7 @@ r=s.f
 if(r!=null)r.aA(0)
 s.ab()},
 q(a){var s=t.ot,r=t.wS
-return A.xb(A.T([B.ej0,new A.e_(this.gaIK(),new A.cc(A.a([],s),r),t._n).fE(a),B.eiI,new A.e_(this.gaE6(),new A.cc(A.a([],s),r),t.fN).fE(a)],t.G,t.od),this.a.x)},
+return A.xb(A.U([B.ej0,new A.e_(this.gaIK(),new A.cc(A.a([],s),r),t._n).fE(a),B.eiI,new A.e_(this.gaE6(),new A.cc(A.a([],s),r),t.fN).fE(a)],t.G,t.od),this.a.x)},
 aI0(a){return this.gaI_().$1(a)}}
 A.b0b.prototype={
 $1(a){var s=this.a
@@ -122943,7 +122943,7 @@ k=""+l+" "
 if(r)k+=l===1?"acci\xf3n reciente":"acciones recientes"
 else k+=l===1?"a\xe7\xe3o recente":"a\xe7\xf5es recentes"
 j=A.a([A.wk(q,B.Ax,B.rA,new A.bcg(s,a),m.length!==0,o,k,p,j,null)],t.p)
-k=new A.fC(m,A.S(m).i("fC<1>"))
+k=new A.fC(m,A.T(m).i("fC<1>"))
 B.d.u(j,k.gfU(k).eG(0,new A.bch(s,m,p,o,a),t.n))
 return new A.tl(j,n,null)},
 $S:682}
@@ -123321,7 +123321,7 @@ n=A.w(A.h0(5,new A.bfR(f,c),!0,t.n),B.k,B.e,B.f,e,e)
 m=f.a.c.c==="es"?"Categor\xeda":"Categoria"
 m=A.e(m,e,e,e,e,e,A.m(e,e,a,e,e,e,e,e,e,e,e,13,e,e,B.z,e,e,!0,e,e,e,e,e,e,e,e),e,e,e)
 l=f.a.c.c==="es"?B.bki:B.aTg
-k=A.S(l).i("P<1,eS>")
+k=A.T(l).i("P<1,eS>")
 l=A.O(new A.P(l,new A.bfS(f,a1,a),k),k.i("al.E"))
 l=A.dL(B.ae,l,B.bH,8,8)
 k=f.a.c.c==="es"?"Mensaje":"Mensagem"
@@ -123720,7 +123720,7 @@ return new A.fZ(s.a,r,q,p,o,n,m,l,k,j,s.z,s.Q,s.as)},
 kF(){var s=null
 return this.a8I(s,s,s,s,s,s,s,s,s)},
 ec(){var s=this
-return A.T(["id",s.a,"title",s.b,"patientAge",s.c,"patientSex",s.d,"patientWeight",s.e,"history",s.f,"diagnosis",s.r,"plan",s.w,"notes",s.x,"category",s.y,"drugIds",s.z,"isCustom",s.Q,"createdAt",s.as],t.N,t.z)},
+return A.U(["id",s.a,"title",s.b,"patientAge",s.c,"patientSex",s.d,"patientWeight",s.e,"history",s.f,"diagnosis",s.r,"plan",s.w,"notes",s.x,"category",s.y,"drugIds",s.z,"isCustom",s.Q,"createdAt",s.as],t.N,t.z)},
 gcf(a){return this.a},
 gbN(a){return this.b}}
 A.azH.prototype={
@@ -123743,7 +123743,7 @@ $1(a){return a.length!==0},
 $S:2}
 A.kg.prototype={
 ec(){var s=this
-return A.T(["id",s.a,"date",s.b,"author",s.c,"text",s.d,"type",s.e],t.N,t.z)},
+return A.U(["id",s.a,"date",s.b,"author",s.c,"text",s.d,"type",s.e],t.N,t.z)},
 a8D(a,b,c){var s=this,r=a==null?s.c:a,q=c==null?s.e:c
 return new A.kg(s.a,s.b,r,b,q)},
 B3(a){return this.a8D(null,a,null)},
@@ -123771,9 +123771,9 @@ a8y(a){var s=null
 return this.nz(s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,a,s,s)},
 aMh(a){var s=null
 return this.nz(s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,a,s,s,s,s,s,s,s,s)},
-ec(){var s=this,r=s.p2,q=A.S(r).i("P<1,ai<h,@>>")
+ec(){var s=this,r=s.p2,q=A.T(r).i("P<1,ai<h,@>>")
 r=A.O(new A.P(r,new A.azP(),q),q.i("al.E"))
-return A.T(["id",s.a,"createdAt",s.b,"updatedAt",s.c,"authorUid",s.d,"authorName",s.e,"authorEmail",s.f,"uploadedAt",s.r,"isPublic",s.w,"patientInitials",s.x,"patientAge",s.y,"patientSex",s.z,"patientWeight",s.Q,"patientHeight",s.as,"patientRecord",s.at,"chiefComplaint",s.ax,"hpi",s.ay,"pastHistory",s.ch,"familyHistory",s.CW,"socialHistory",s.cx,"medications",s.cy,"allergies",s.db,"reviewOfSystems",s.dx,"vitalSigns",s.dy,"physicalExam",s.fr,"workingDiagnosis",s.fx,"differentialDx",s.fy,"finalDiagnosis",s.go,"cid",s.id,"labResults",s.k1,"imagingResults",s.k2,"otherResults",s.k3,"treatmentPlan",s.k4,"procedures",s.ok,"drugIds",s.p1,"evolutions",r,"outcome",s.p3,"dischargeCondition",s.p4,"followUp",s.R8,"category",s.RG,"tags",s.rx,"isHidden",s.ry,"hiddenBy",s.to,"hiddenAt",s.x1],t.N,t.z)},
+return A.U(["id",s.a,"createdAt",s.b,"updatedAt",s.c,"authorUid",s.d,"authorName",s.e,"authorEmail",s.f,"uploadedAt",s.r,"isPublic",s.w,"patientInitials",s.x,"patientAge",s.y,"patientSex",s.z,"patientWeight",s.Q,"patientHeight",s.as,"patientRecord",s.at,"chiefComplaint",s.ax,"hpi",s.ay,"pastHistory",s.ch,"familyHistory",s.CW,"socialHistory",s.cx,"medications",s.cy,"allergies",s.db,"reviewOfSystems",s.dx,"vitalSigns",s.dy,"physicalExam",s.fr,"workingDiagnosis",s.fx,"differentialDx",s.fy,"finalDiagnosis",s.go,"cid",s.id,"labResults",s.k1,"imagingResults",s.k2,"otherResults",s.k3,"treatmentPlan",s.k4,"procedures",s.ok,"drugIds",s.p1,"evolutions",r,"outcome",s.p3,"dischargeCondition",s.p4,"followUp",s.R8,"category",s.RG,"tags",s.rx,"isHidden",s.ry,"hiddenBy",s.to,"hiddenAt",s.x1],t.N,t.z)},
 gqo(){var s=this.ax
 if(s.length!==0)return s
 s=this.fx
@@ -123824,7 +123824,7 @@ Vm(a){var s,r=this.ch,q=r.h(0,a)
 if(q==null)q=r.h(0,"es")
 s=q==null?r.h(0,"pt"):q
 if(s==null)s=[]
-return new A.eG(s,A.S(s).i("eG<1,h>"))},
+return new A.eG(s,A.T(s).i("eG<1,h>"))},
 ma(a){var s,r
 if(a!=="es")return this.b
 s=this.b
@@ -123844,7 +123844,7 @@ if(s<=0)return""
 if(s<1048576)return B.q.a2(s/1024,0)+" KB"
 return B.q.a2(s/1048576,1)+" MB"},
 ec(){var s=this
-return A.T(["id",s.a,"title",s.b,"description",s.c,"category",s.d,"authors",s.e,"year",s.f,"pdfUrl",s.r,"fileName",s.w,"fileSize",s.x,"uploadedAt",s.y,"uploadedBy",s.z,"isPublished",s.Q,"downloadCount",s.as,"coverUrl",s.at],t.N,t.z)},
+return A.U(["id",s.a,"title",s.b,"description",s.c,"category",s.d,"authors",s.e,"year",s.f,"pdfUrl",s.r,"fileName",s.w,"fileSize",s.x,"uploadedAt",s.y,"uploadedBy",s.z,"isPublished",s.Q,"downloadCount",s.as,"coverUrl",s.at],t.N,t.z)},
 gcf(a){return this.a},
 gbN(a){return this.b},
 gcG(){return this.f}}
@@ -123860,7 +123860,7 @@ A.E0.prototype={
 P(){return"LabStatus."+this.b}}
 A.iA.prototype={
 ec(){var s=this
-return A.T(["examKey",s.a,"examName",s.b,"value",s.c,"unit",s.d,"referenceRange",s.e,"status",s.f.b,"confidence",s.r,"originalText",s.w],t.N,t.z)},
+return A.U(["examKey",s.a,"examName",s.b,"value",s.c,"unit",s.d,"referenceRange",s.e,"status",s.f.b,"confidence",s.r,"originalText",s.w],t.N,t.z)},
 HX(a,b,c,d){var s=this,r=a==null?s.a:a,q=d==null?s.c:d,p=c==null?s.d:c,o=b==null?s.f:b
 return new A.iA(r,s.b,q,p,s.e,o,s.r,s.w)},
 a8z(a){return this.HX(null,null,null,a)},
@@ -123876,7 +123876,7 @@ if(s==null)s=a.h(0,"es")
 return s==null?"":s},
 uG(a){var s=this.e,r=s.h(0,a),q=r==null?s.h(0,"pt"):r
 if(q==null)q=[]
-return new A.eG(q,A.S(q).i("eG<1,h>"))},
+return new A.eG(q,A.T(q).i("eG<1,h>"))},
 h0(a,b){var s
 if(a==null)return A.a([],t.s)
 s=a.h(0,b)
@@ -123914,14 +123914,14 @@ s=q.at
 s=s==null?null:s.kV().ei()
 r=q.CW
 r=r==null?null:r.kV().ei()
-return A.T(["uid",q.a,"email",q.b,"displayName",q.c,"role",q.d.b,"status",q.e.b,"createdAt",p,"approvedAt",o,"approvedBy",q.w,"profession",q.x,"institution",q.y,"lang",q.z,"darkMode",q.Q,"totalUsageSeconds",q.as,"lastSeenAt",s,"referred_by",q.ax,"loginCount",q.ay,"acceptedTerms",q.ch,"acceptedTermsAt",r,"professionalCategory",q.cx],t.N,t.z)},
+return A.U(["uid",q.a,"email",q.b,"displayName",q.c,"role",q.d.b,"status",q.e.b,"createdAt",p,"approvedAt",o,"approvedBy",q.w,"profession",q.x,"institution",q.y,"lang",q.z,"darkMode",q.Q,"totalUsageSeconds",q.as,"lastSeenAt",s,"referred_by",q.ax,"loginCount",q.ay,"acceptedTerms",q.ch,"acceptedTermsAt",r,"professionalCategory",q.cx],t.N,t.z)},
 Dc(){var s,r,q=this,p=A.pW(q.f.ghU()),o=q.r
 o=o!=null?A.pW(o.ghU()):null
 s=q.at
 s=s!=null?A.pW(s.ghU()):null
 r=q.CW
 r=r!=null?A.pW(r.ghU()):null
-return A.T(["uid",q.a,"email",q.b,"displayName",q.c,"role",q.d.b,"status",q.e.b,"createdAt",p,"approvedAt",o,"approvedBy",q.w,"profession",q.x,"institution",q.y,"lang",q.z,"darkMode",q.Q,"totalUsageSeconds",q.as,"lastSeenAt",s,"referred_by",q.ax,"loginCount",q.ay,"acceptedTerms",q.ch,"acceptedTermsAt",r,"professionalCategory",q.cx],t.N,t.z)},
+return A.U(["uid",q.a,"email",q.b,"displayName",q.c,"role",q.d.b,"status",q.e.b,"createdAt",p,"approvedAt",o,"approvedBy",q.w,"profession",q.x,"institution",q.y,"lang",q.z,"darkMode",q.Q,"totalUsageSeconds",q.as,"lastSeenAt",s,"referred_by",q.ax,"loginCount",q.ay,"acceptedTerms",q.ch,"acceptedTermsAt",r,"professionalCategory",q.cx],t.N,t.z)},
 a8H(a,b,c,d,e,f){var s=this,r=c==null?s.c:c,q=f==null?s.e:f,p=a==null?s.r:a,o=b==null?s.w:b,n=e==null?s.x:e,m=d==null?s.y:d
 return A.RX(s.ch,s.CW,p,o,s.f,s.Q,r,s.b,m,s.z,s.at,0,n,s.cx,s.ax,s.d,q,s.as,s.a)},
 Ru(a,b,c){return this.a8H(a,b,null,null,null,c)},
@@ -124127,7 +124127,7 @@ A.xT.prototype={}
 A.aRX.prototype={}
 A.aIC.prototype={}
 A.kb.prototype={
-gPn(){var s=this.go,r=A.S(s).i("a5<1>"),q=A.O(new A.a5(s,new A.awP(),r),r.i("F.E"))
+gPn(){var s=this.go,r=A.T(s).i("a5<1>"),q=A.O(new A.a5(s,new A.awP(),r),r.i("F.E"))
 return q},
 gqM(){var s=this.a
 if(s==null)s=null
@@ -124384,12 +124384,12 @@ c=i.length
 b=0
 for(;b<i.length;i.length===c||(0,A.a2)(i),++b){h=i[b]
 a=J.qw(h,"|")
-a0=A.S(a)
+a0=A.T(a)
 a1=new A.hr(a,0,2,a0.i("hr<1>"))
 a1.ol(a,0,2,a0.c)
 g=a1.a1(0,"|")
 if(J.dh(j,g))J.dh(k,h)}i=k
-f=A.d0(i,0,A.dy(20,"count",t.S),A.S(i).c).d8(0)
+f=A.d0(i,0,A.dy(20,"count",t.S),A.T(i).c).d8(0)
 s=9
 return A.n(m.d4("StringList",e,f),$async$we)
 case 9:if(J.ar(f)>J.ar(n))A.Me(a4,f).es(new A.awX())
@@ -124462,19 +124462,19 @@ h=c?a2+"_myHistories":"myHistories"
 b=n.ia(m)
 if(b==null)b=n.ia("favDrugs")
 if(b==null)b=A.a([],t.s)
-o.z=A.hF(b,A.S(b).c)
+o.z=A.hF(b,A.T(b).c)
 b=n.ia(l)
 if(b==null)b=n.ia("favProtocols")
 if(b==null)b=A.a([],t.s)
-o.Q=A.hF(b,A.S(b).c)
+o.Q=A.hF(b,A.T(b).c)
 b=n.ia(k)
 if(b==null)b=n.ia("favPrescriptions")
 if(b==null)b=A.a([],t.s)
-o.as=A.hF(b,A.S(b).c)
+o.as=A.hF(b,A.T(b).c)
 b=n.ia(i)
 if(b==null)b=n.ia("favCases")
 if(b==null)b=A.a([],t.s)
-o.at=A.hF(b,A.S(b).c)
+o.at=A.hF(b,A.T(b).c)
 b=c?a2+"_pinnedDrugs":"pinnedDrugs"
 b=n.ia(b)
 o.ax=b==null?A.a([],t.s):b
@@ -124485,7 +124485,7 @@ c=c?a2+"_plantaoPatients":"plantaoPatients"
 c=n.ia(c)
 if(c==null)c=A.a([],t.s)
 b=t.Ea
-c=A.O(new A.d1(new A.P(c,A.cgA(),A.S(c).i("P<1,vl?>")),b),b.i("F.E"))
+c=A.O(new A.d1(new A.P(c,A.cgA(),A.T(c).i("P<1,vl?>")),b),b.i("F.E"))
 o.ch=c
 a=A.aw(J.W(n.a,j))
 g=a==null?A.aw(J.W(n.a,"customCases")):a
@@ -124553,7 +124553,7 @@ return A.n(l.d4("String","offlineProtocols_v1",j),$async$oJ)
 case 9:m.RG=0.75
 m.aa()
 g=$.bGz()
-f=A.S(g).i("P<1,ai<h,h>>")
+f=A.T(g).i("P<1,ai<h,h>>")
 g=A.O(new A.P(g,new A.ax_(),f),f.i("al.E"))
 i=B.aj.e7(g,null)
 s=10
@@ -124761,7 +124761,7 @@ k=a+"|"+b+"|"+c
 J.a_T(l,new A.axd(a,b))
 J.x9(l,0,k)
 h=l
-j=A.d0(h,0,A.dy(20,"count",t.S),A.S(h).c).d8(0)
+j=A.d0(h,0,A.dy(20,"count",t.S),A.T(h).c).d8(0)
 s=7
 return A.n(n.d4("StringList",m,j),$async$uy)
 case 7:h=o.a
@@ -124812,7 +124812,7 @@ h=f==null?A.a([],t.s):f
 if(m!=null&&m.length!==0&&J.ar(h)!==0)A.Me(m,h).es(new A.axa())
 g=h
 e=t.Ce
-g=A.O(new A.d1(new A.P(g,new A.axb(),A.S(g).i("P<1,ai<h,h>?>")),e),e.i("F.E"))
+g=A.O(new A.d1(new A.P(g,new A.axb(),A.T(g).i("P<1,ai<h,h>?>")),e),e.i("F.E"))
 q=g
 s=1
 break
@@ -124992,7 +124992,7 @@ acz(a){var s,r,q
 this.tl()
 s=this.go
 B.d.a5(s)
-r=A.S(a).i("a5<1>")
+r=A.T(a).i("a5<1>")
 q=A.O(new A.a5(a,new A.axc(),r),r.i("F.E"))
 r=q.length
 B.d.u(s,r>10?B.d.fN(q,r-10):q)
@@ -125139,22 +125139,22 @@ return s}catch(r){return null}},
 aJM(a){var s
 try{A.ck0(a)}catch(s){}},
 Fo(a){return B.d.c2(a,new A.aww())},
-azH(a){var s,r,q,p,o,n,m,l=this,k=B.c.ej(a,A.U("\\s+",!0,!1,!1,!1)),j=A.S(k).i("a5<1>"),i=A.O(new A.a5(k,new A.awL(),j),j.i("F.E"))
+azH(a){var s,r,q,p,o,n,m,l=this,k=B.c.ej(a,A.S("\\s+",!0,!1,!1,!1)),j=A.T(k).i("a5<1>"),i=A.O(new A.a5(k,new A.awL(),j),j.i("F.E"))
 if(!l.Fo(i))return A.a([],t.s)
-k=A.S(i).i("a5<1>")
+k=A.T(i).i("a5<1>")
 s=A.O(new A.a5(i,new A.awM(),k),k.i("F.E"))
 if(s.length===0)return A.a([],t.s)
 r=A.a([],t.s)
-for(k=A.S(s).i("a5<1>"),q=0;q<123;++q){p=B.hP[q]
+for(k=A.T(s).i("a5<1>"),q=0;q<123;++q){p=B.hP[q]
 j=p.b
 o=p.d
 n=new A.a5(s,new A.awN(l.eB(l.dG(j)),l.eB(l.dG(o))),k).gA(0)
 if(n>=(B.a3B.c2(0,new A.awO(p))?2:1)){m=J.C6(p.uG(l.c),3).a1(0," | ")
 r.push("\u2022 ["+l.dG(j)+"] Reconhecer: "+B.c.S(l.dG(o),0,B.p.c_(l.dG(o).length,0,120))+"... Conduta: "+m)
 if(r.length>=4)break}}return r},
-FO(a){var s,r,q,p,o,n,m=this,l=t.s,k=A.a([],l),j=B.c.ej(a,A.U("\\s+",!0,!1,!1,!1)),i=A.S(j).i("a5<1>"),h=A.O(new A.a5(j,new A.awE(),i),i.i("F.E"))
+FO(a){var s,r,q,p,o,n,m=this,l=t.s,k=A.a([],l),j=B.c.ej(a,A.S("\\s+",!0,!1,!1,!1)),i=A.T(j).i("a5<1>"),h=A.O(new A.a5(j,new A.awE(),i),i.i("F.E"))
 if(!m.Fo(h))return A.a([],l)
-j=A.S(h).i("a5<1>")
+j=A.T(h).i("a5<1>")
 s=A.O(new A.a5(h,new A.awF(),j),j.i("F.E"))
 if(s.length===0)return A.a([],l)
 for(r=0;r<628;++r){q=B.iN[r]
@@ -125177,15 +125177,15 @@ if(o.dk(l,A.a(["interac","interage","junto com","junto a","associar com","associ
 if(o.dk(l,A.a(["emergencia","urgencia","pcr ","parada cardiac","choque ","shock ","anafilax","status epilep","estado epilep","protocolo de emergencia","iam agudo","avc agudo","sepse grave"],k)))return"emergencia"
 if(o.dk(l,A.a(["paciente","pa ","fc ","spo2","glasgow","anos ","anos,","apresenta","presenta","admitido","ingresado","internado","temperatura","febre ","fiebre "],k))&&B.c.B(a).split(" ").length>=6)return"caso_clinico"
 s=o.dk(l,A.a(["tratamento da","tratamento do","tratamento de","tratamento para","tratamiento de","tratamiento del","tratamiento para","tratar ","tratar a","tratar o","tratar el","tratar la","conduta para","conduta da","conduta do","conducta para","conducta del","manejo de","manejo da","manejo do","manejo del","como tratar","como manejar","terapia para","terapia de","protocolo de tratamento","primeira linha","primera linea"],k))
-r=(l==="tratamento"||l==="tratamiento"||l==="conduta"||l==="conducta")&&B.c.ej(B.c.B(a),A.U("\\s+",!0,!1,!1,!1)).length===1
+r=(l==="tratamento"||l==="tratamiento"||l==="conduta"||l==="conducta")&&B.c.ej(B.c.B(a),A.S("\\s+",!0,!1,!1,!1)).length===1
 if(s&&!r)return n
-if(!r&&o.dk(l,A.a(["tratamento","tratamiento","conduta","conducta"],k))&&B.c.ej(B.c.B(a),A.U("\\s+",!0,!1,!1,!1)).length>=2)return n
+if(!r&&o.dk(l,A.a(["tratamento","tratamiento","conduta","conducta"],k))&&B.c.ej(B.c.B(a),A.S("\\s+",!0,!1,!1,!1)).length>=2)return n
 if(o.dk(l,A.a(["antipsicotico","antipsic\xf3tico","antipsic\xf3ticos","antipsychotic","haloperidol","haldol","droperidol","clorpromazina","amplictil","thorazine","tioridazina","levomepromazina","flufenazina","zuclopentixol","pimozida","sulpirida","risperidona","risperdal","olanzapina","zyprexa","quetiapina","seroquel","clozapina","clozaril","leponex","aripiprazol","abilify","ziprasidona","geodon","amisulprida","paliperidona","lurasidona","iloperidona","cariprazina","brexpiprazol","asenapina","ssri","isrs","antidepressivo","antidepresivo","sertralina","fluoxetina","paroxetina","escitalopram","citalopram","fluvoxamina","venlafaxina","duloxetina","desvenlafaxina","milnaciprana","mirtazapina","trazodona","agomelatina","vortioxetina","amitriptilina","nortriptilina","imipramina","clomipramina","desipramina","doxepina","tranilcipromina","fenelzina","moclobemida","inibidor monoaminoxidase","imao ","antidepressivo triciclico","antidepressivo tricicl","estabilizador humor","lition","litio ","lithium","valproato","acido valproico","depakote","lamotrigina","lamictal","carbamazepina","tegretol","oxcarbazepina","topiramato","ansiolit","benzodiazep","benzo ","diazepam","lorazepam","clonazepam","alprazolam","midazolam","bromazepam","clobazam","zolpidem","zopiclona","eszopiclona","buspirona","buspar","psicosis","psicose","psicotico","psic\xf3tico","psychosis","brote psic","brote maniac","brote acut","episodio psicotico","episodio maniac","episodio hipomania","esquizofrenia","schizophrenia","esquizofren","delirio psicot","alucinacion","alucinacoes","agitacion psic","agita\xe7\xe3o psic","agitacion agud","psicose aguda","psicosis aguda","delirium ","confusao agud","sindrome confusional agud","depressao maior","depressao unipolar","depressao bipol","mania agud","hipomania","episodio maniaco","ansiedade generalizada","tag ","transtorno ansied","panico psiquiat","crise panico","toc ","transtorno obsessivo","tept ","ptsd ","tdah ","adhd ","deficit atencao","transtorno personalidade","borderline","automutilacao","ideacao suicid","tentativa suicid","comportamento suicida","pensamento suicida","abstinencia alcool","delirium tremens","withdrawal","sindrome neuroleptica","sindrome serotonin","sind neuroleptica","emergencia psiquiatric"],k)))return"psicofarmaco"
 q=o.dk(l,A.a(["farmaco","farmacos","medicament","remedio ","remedios","droga ","antibiot","antibio","antiviral","antifungic","dose","dosagem","dosis","posolog","mecanismo de acao","mecanismo de accion","indicac","contraindicac","efeito adverso","efecto adverso","ajuste renal","gravidez"],k))
 p=o.FO(l).length!==0
 if(q||p)return"farmaco"
 if(o.dk(l,A.a(["diagnostico","diagnosticar","criterio","criterios","como diagnosticar","diagnostico diferencial","classificac","clasificacion","o que e ","que es ","definic","definicion","exame para diagnosticar","exame","laborator","interpretar"],k)))return"diagnostico"
-if(B.c.ej(B.c.B(a),A.U("\\s+",!0,!1,!1,!1)).length<=4)if(o.dk(l,A.a(["diarrea","diarreia","gastroenterit","vomito","v\xf4mito","nausea","constipac","estrenim","hemorragia digest","sangrado digest","hepatit","cirros","colecistit","pancreatit","apendicit","peritonit","obstrucao","obstruccion","oclusion","ictericia","ictericia","melena","hematoquecia","pneumonia","bronquit","bronchit","neumonia","asma","dpoc","epoc","pleurit","derrame pleural","embolia pulmon","tep ","insuficiencia respirat","insufici\xeancia respirat","dispneia","disnea","tosse","tos ","hipertensao","hipertension","insuficiencia cardiaca","insufici\xeancia card\xedaca","infarto","angina","arritmia","fibrilacao","fibrilacion","trombose","trombosis","endocardite","endocarditis","pericardite","pericarditis","miocardite","miocarditis","edema agudo","edema pulmon","febre","fiebre","sepse","sepsis","meningite","meningitis","encefalite","encefalitis","celulite infec","celulitis","erisipela","endocardite","pielonefrit","cistit","itu ","itu.","tuberculose","tuberculosis","dengue","malaria","paludismo","covid","influenza","hiv","aids","sida","leptospiros","chikungunya","zika","diabetes","cetoacidose","cetoacidosis","hipoglicemia","hipoglucemia","hiperglicemia","hiperglucemia","dislipidemia","hipotireoid","hipotiroidi","hipertireoid","hipertiroid",m,"insufici\xeancia renal","insuficiencia hepatica","insufici\xeancia hep\xe1tica","hipocalemia","hipopotasemia","hiponatremia","hipercalemia","hipernatremia","convulsao","convulsion","epilepsia","avc ","avc.","acv ","acv.","enxaqueca","migrana","migrania","migraine","delirium","acidente vascular","acidente cerebro",m,"lesao renal","lesion renal","nefrit","anemia","trombocitopenia","leucemia","linfoma","coagulacao intravascular","civd","cid ","artrit","lupus","escleroderm","vasculit","gota ","gota.","cefaleia","cefalea","dor cronic","dolor cron","dor abdomin","dolor abdomin","dor torac","dolor toraci","choque ","shock ","dermatite","dermatitis","urticaria","urtic\xe1ria","prurido","prurito","herpes","celulite","ansiedade","ansiedad","depressao","depresion","insonia","insomnio"],k)))return n
+if(B.c.ej(B.c.B(a),A.S("\\s+",!0,!1,!1,!1)).length<=4)if(o.dk(l,A.a(["diarrea","diarreia","gastroenterit","vomito","v\xf4mito","nausea","constipac","estrenim","hemorragia digest","sangrado digest","hepatit","cirros","colecistit","pancreatit","apendicit","peritonit","obstrucao","obstruccion","oclusion","ictericia","ictericia","melena","hematoquecia","pneumonia","bronquit","bronchit","neumonia","asma","dpoc","epoc","pleurit","derrame pleural","embolia pulmon","tep ","insuficiencia respirat","insufici\xeancia respirat","dispneia","disnea","tosse","tos ","hipertensao","hipertension","insuficiencia cardiaca","insufici\xeancia card\xedaca","infarto","angina","arritmia","fibrilacao","fibrilacion","trombose","trombosis","endocardite","endocarditis","pericardite","pericarditis","miocardite","miocarditis","edema agudo","edema pulmon","febre","fiebre","sepse","sepsis","meningite","meningitis","encefalite","encefalitis","celulite infec","celulitis","erisipela","endocardite","pielonefrit","cistit","itu ","itu.","tuberculose","tuberculosis","dengue","malaria","paludismo","covid","influenza","hiv","aids","sida","leptospiros","chikungunya","zika","diabetes","cetoacidose","cetoacidosis","hipoglicemia","hipoglucemia","hiperglicemia","hiperglucemia","dislipidemia","hipotireoid","hipotiroidi","hipertireoid","hipertiroid",m,"insufici\xeancia renal","insuficiencia hepatica","insufici\xeancia hep\xe1tica","hipocalemia","hipopotasemia","hiponatremia","hipercalemia","hipernatremia","convulsao","convulsion","epilepsia","avc ","avc.","acv ","acv.","enxaqueca","migrana","migrania","migraine","delirium","acidente vascular","acidente cerebro",m,"lesao renal","lesion renal","nefrit","anemia","trombocitopenia","leucemia","linfoma","coagulacao intravascular","civd","cid ","artrit","lupus","escleroderm","vasculit","gota ","gota.","cefaleia","cefalea","dor cronic","dolor cron","dor abdomin","dolor abdomin","dor torac","dolor toraci","choque ","shock ","dermatite","dermatitis","urticaria","urtic\xe1ria","prurido","prurito","herpes","celulite","ansiedade","ansiedad","depressao","depresion","insonia","insomnio"],k)))return n
 return"geral"},
 ayI(a){var s,r=this,q="hidroclorotiazida",p="hydrochlorothiazide",o=B.c.B(a.toLowerCase()),n=t.s
 if(B.d.c2(A.a(["buscar em gemini:","buscar gemini:","buscar:","pesquisar:","gemini:","ia:","perguntar:","consultar:","search:","busca:","o que \xe9 ","o que e ","qual \xe9 ","qual e ","como ","quando ","por que ","porque ","explique ","explica ","defina ","define ","se es ","si es ","si tiene ","se tem ","se tiene ","por que no ","porque no ","por qu\xe9 no ","por que usar ","por que n\xe3o ","pode usar ","puede usar ","posso dar ","\xe9 indicado","est\xe1 indicado","est\xe1 contraindicado"],n),new A.awy(o)))return!0
@@ -125197,7 +125197,7 @@ return B.c.B(a).split(" ").length<=6&&!s},
 asm(a){var s,r,q,p,o
 if(this.ayI(a))return B.c.B(a)
 s=this.go
-r=A.S(s)
+r=A.T(s)
 q=r.i("e7<1,h>")
 p=A.O(new A.e7(new A.a5(s,new A.awr(),r.i("a5<1>")),new A.aws(),q),q.i("F.E"))
 s=p.length
@@ -125332,12 +125332,12 @@ break
 case 5:case 1:return A.A(q,r)
 case 2:return A.z(o.at(-1),r)}})
 return A.B($async$ri,r)},
-azI(a){var s,r,q,p,o,n,m,l,k,j=this,i=t.s,h=A.a([],i),g=B.c.ej(a,A.U("\\s+",!0,!1,!1,!1)),f=A.S(g).i("a5<1>"),e=A.O(new A.a5(g,new A.awH(),f),f.i("F.E"))
+azI(a){var s,r,q,p,o,n,m,l,k,j=this,i=t.s,h=A.a([],i),g=B.c.ej(a,A.S("\\s+",!0,!1,!1,!1)),f=A.T(g).i("a5<1>"),e=A.O(new A.a5(g,new A.awH(),f),f.i("F.E"))
 if(!j.Fo(e))return A.a([],i)
-g=A.S(e).i("a5<1>")
+g=A.T(e).i("a5<1>")
 s=A.O(new A.a5(e,new A.awI(),g),g.i("F.E"))
 if(s.length===0)return A.a([],i)
-for(i=A.S(s).i("a5<1>"),r=0;r<123;++r){q=B.hP[r]
+for(i=A.T(s).i("a5<1>"),r=0;r<123;++r){q=B.hP[r]
 g=q.b
 f=q.d
 p=new A.a5(s,new A.awJ(j.eB(j.dG(g)),j.eB(j.dG(f))),i).gA(0)
@@ -125348,9 +125348,9 @@ l=m!==0?B.c.S(n,0,B.p.c_(m,0,160)):""
 k=l.length!==0?"\n  Contexto: "+l+"...":""
 h.push("\u2022 ["+j.dG(g)+"]\n  Reconhecer: "+B.c.S(j.dG(f),0,B.p.c_(j.dG(f).length,0,180))+"..."+k+"\n  Conduta: "+o)
 if(h.length>=6)break}}return h},
-azG(a1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e=this,d=t.s,c=A.a([],d),b=B.c.ej(a1,A.U("\\s+",!0,!1,!1,!1)),a=A.S(b).i("a5<1>"),a0=A.O(new A.a5(b,new A.awB(),a),a.i("F.E"))
+azG(a1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e=this,d=t.s,c=A.a([],d),b=B.c.ej(a1,A.S("\\s+",!0,!1,!1,!1)),a=A.T(b).i("a5<1>"),a0=A.O(new A.a5(b,new A.awB(),a),a.i("F.E"))
 if(!e.Fo(a0))return A.a([],d)
-b=A.S(a0).i("a5<1>")
+b=A.T(a0).i("a5<1>")
 s=A.O(new A.a5(a0,new A.awC(),b),b.i("F.E"))
 if(s.length===0)return A.a([],d)
 for(r=0;r<628;++r){q=B.iN[r]
@@ -125367,7 +125367,7 @@ j=k?null:p.h(0,e.c)
 if(j==null){p=k?null:p.h(0,"pt")
 i=p}else i=j
 if(i==null)i=A.a([],d)
-p=A.S(i)
+p=A.T(i)
 k=new A.hr(i,0,2,p.i("hr<1>"))
 k.ol(i,0,2,p.c)
 h=k.a1(0,", ")
@@ -125382,15 +125382,15 @@ f=n.length
 f=f!==0?B.c.S(n,0,B.p.c_(f,0,120)):"\u2014"
 c.push("\u2022 ["+b+"] "+a+"\n  Mecanismo: "+p+"\n  Dose: "+k+" | Via: "+j+"\n  Alerta: "+f+g)
 if(c.length>=6)break}}return c},
-asK(b1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5=this,a6=t.s,a7=A.a([],a6),a8=B.c.ej(b1,A.U("\\s+",!0,!1,!1,!1)),a9=A.S(a8).i("a5<1>"),b0=A.O(new A.a5(a8,new A.awt(),a9),a9.i("F.E"))
+asK(b1){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5=this,a6=t.s,a7=A.a([],a6),a8=B.c.ej(b1,A.S("\\s+",!0,!1,!1,!1)),a9=A.T(a8).i("a5<1>"),b0=A.O(new A.a5(a8,new A.awt(),a9),a9.i("F.E"))
 if(b0.length===0)return a7
-for(a8=A.S(b0).i("a5<1>"),a9=t.Qz,s=t.N,r=0;r<123;++r){q=B.hP[r]
+for(a8=A.T(b0).i("a5<1>"),a9=t.Qz,s=t.N,r=0;r<123;++r){q=B.hP[r]
 if(a7.length>=8)break
 p=q.b
 if(new A.a5(b0,new A.awu(a5.eB(a5.dG(p)),a5.eB(a5.dG(q.d))),a8).gA(0)>=1){o=a5.dG(q.w)
 n=a5.dG(q.f)
 m=J.bGM(q.uG(a5.c)," ")
-l=[A.U("(?:AHA|ACC|ESC|SBEM|SBC|SBD|CFM|ANVISA|WHO|MS|NICE|SIGN|UpToDate|Harrison|Braunwald|Goldman|Nelson|Goodman|Robbins|ACLS|ATLS|PALS|Sepsis-3|GOLD|GINA|JNC|KDIGO|RIFLE|AKIN|qSOFA|SOFA)[\\s\\w\\d\\-.,;:()]+?(?:\\d{4})",!1,!1,!1,!1),A.U("\\d+\\.\\s+\\w+[\\s\\w\\d\\-.,;:()\\[\\]]+?\\d{4}",!1,!1,!1,!1),A.U("(?:PMID|DOI|doi\\.org)[\\s:]+[\\w\\d./\\-]+",!1,!1,!1,!1),A.U("(?:diretriz|guideline|consenso|recomendacao|recomendaci\xf3n|protocolo|statement)[\\s\\w\\d\\-.,;:()\\[\\]]+?(?:\\d{4}|\\bv\\d|\\bpart\\b)",!1,!1,!1,!1)]
+l=[A.S("(?:AHA|ACC|ESC|SBEM|SBC|SBD|CFM|ANVISA|WHO|MS|NICE|SIGN|UpToDate|Harrison|Braunwald|Goldman|Nelson|Goodman|Robbins|ACLS|ATLS|PALS|Sepsis-3|GOLD|GINA|JNC|KDIGO|RIFLE|AKIN|qSOFA|SOFA)[\\s\\w\\d\\-.,;:()]+?(?:\\d{4})",!1,!1,!1,!1),A.S("\\d+\\.\\s+\\w+[\\s\\w\\d\\-.,;:()\\[\\]]+?\\d{4}",!1,!1,!1,!1),A.S("(?:PMID|DOI|doi\\.org)[\\s:]+[\\w\\d./\\-]+",!1,!1,!1,!1),A.S("(?:diretriz|guideline|consenso|recomendacao|recomendaci\xf3n|protocolo|statement)[\\s\\w\\d\\-.,;:()\\[\\]]+?(?:\\d{4}|\\bv\\d|\\bpart\\b)",!1,!1,!1,!1)]
 k=A.aQ(s)
 for(j=0;j<4;++j){i=l[j]
 for(h=[o,n,m],g=0;g<3;++g)for(f=i.ju(0,h[g]),f=new A.q3(f.a,f.b,f.c);f.C();){e=f.d
@@ -125409,7 +125409,7 @@ p=a9?null:a8.h(0,a5.c)
 if(p==null){a8=a9?null:a8.h(0,"pt")
 a1=a8}else a1=p
 if(a1==null)a1=A.a([],a6)
-a8=A.S(a1)
+a8=A.T(a1)
 a9=new A.hr(a1,0,3,a8.i("hr<1>"))
 a9.ol(a1,0,3,a8.c)
 a2=a9.a1(0,", ")
@@ -125429,7 +125429,7 @@ a4=a8!==0?" | Intera\xe7\xf5es: "+B.c.S(a2,0,B.p.c_(a8,0,80))+"...":""
 if(a3.length!==0)a7.push("\ud83d\udc8a ["+b.ma(a5.c)+"] "+a3+a4)
 else{a8=a0.length
 if(a8!==0)a7.push("\ud83d\udc8a ["+b.ma(a5.c)+"] Alerta: "+B.c.S(a0,0,B.p.c_(a8,0,100)))}}return A.d0(a7,0,A.dy(6,"count",t.S),s).d8(0)},
-anS(be3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,g0,g1,g2,g3,g4,g5,g6,g7,g8,g9,h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,j0,j1,j2,j3,j4,j5,j6,j7,j8,j9,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9,l0,l1,l2,l3,l4,l5,l6,l7,l8,l9,m0,m1,m2,m3,m4,m5,m6,m7,m8,m9,n0,n1,n2,n3,n4,n5,n6,n7,n8,n9,o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,q0,q1,q2,q3,q4,q5,q6,q7,q8,q9,r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,u0,u1,u2,u3,u4,u5,u6,u7,u8,u9,v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,w0,w1,w2,w3,w4,w5,w6,w7,w8,w9,x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,y0,y1,y2,y3,y4,y5,y6,y7,y8,y9,z0,z1,z2,z3,z4,z5,z6,z7,z8,z9,aa0,aa1,aa2,aa3,aa4,aa5,aa6=this,aa7="choque_cardiogenico",aa8="choque_hipovolemico",aa9="fibrilacao atrial",ab0="crise_hipertensiva",ab1="emergencia hiperten",ab2="urgencia hiperten",ab3="encefalopatia hiperten",ab4="tromboembol pulm",ab5="cardiopatia_dilat",ab6="cardiopatia_hipert",ab7="avc_hemorragico",ab8="hemorrag intracran",ab9="cefaleia_tensional",ac0="doenca pulm obstr",ac1="sepse",ac2="diarrea funcional",ac3="salmonella diarr",ac4="campylobacter diarr",ac5="clostridioides difficile",ac6="clostridium difficile",ac7="colite por antibiot",ac8="colite pseudomembran",ac9="sindrome malabsorcao",ad0="diarrea esteatorr",ad1="insuf pancreatica exocrina",ad2="sobrecrescimento bacteriano",ad3="enteropatia perd proteina",ad4="diarreia_infecciosa",ad5="diarreia_parasitaria",ad6="diarreia_malabsorcao",ad7="diarreia_funcional",ad8="hiperprolactinemia",ad9="pan_hipopituitar",ae0="diabetes_insipidus",ae1="diabetes insipidus",ae2="hiperparatireoid",ae3="neoplasia_endocr",ae4="neplasia endocrina multipla",ae5="mucopolissacarid",ae6="distrofia_muscul",ae7="doenca_huntington",ae8="artrite_idiopatica",ae9="sindrome_sjogren",af0="polimialgia_reum",af1="arterite_temporal",af2="sindrome_antifosf",af3="granulomatose poliangiite",af4="neuropatia_perif",af5="neuropatia periferica",af6="polineuropatia_desmiel",af7="neuropatia_optica",af8="encefalite_autoimun",af9="esclerose_tuberosa",ag0="status_epileptico",ag1="hipertensao_pulm",ag2="hipertensao pulmonar",ag3="colangiocarcinoma",ag4="anemia_falciforme",ag5="policitemia_vera",ag6="leucemia_mieloide",ag7="linfoma_nhodgkin",ag8="aspergilose_invas",ag9="aspergilose invasiva",ah0="coccidioidomicose",ah1="leishmaniose_cut",ah2="micobacteria_atip",ah3="sindrome_shock_tox",ah4="valvulopatia_aort",ah5="valvulopatia_mitr",ah6="estenose_aortica",ah7="cardiopatia_congen",ah8="sindrome_qrs_longo",ah9="arteriopatia_perif",ai0="aneurisma_aortico",ai1="angina_microvascular",ai2="hipertensao_resist",ai3="nefrop_diabetica",ai4="nefropatia diabetica",ai5="nefrotox_contraste",ai6="glomnefr_ancianca",ai7="nefrite_intersticial",ai8="eritema_multiforme",ai9="urticaria_cronica",aj0="angioedema_heredit",aj1="dermatite_contact",aj2="degeneracao_macul",aj3="retinop_diabetica",aj4="tontura_labirint",aj5="surdez_neurossens",aj6="paralisia_facial",aj7="paralisia facial",aj8="apneia_obstrutiva",aj9="candidose_vaginal",ak0="gravidez_ectopica",ak1="osteoporose_menop",ak2="cancer_colo_utero",ak3="hiperemes_gravid",ak4="colestase_gestac",ak5="sindrome_resp_neo",ak6="enterocolite_necrot",ak7="hiperbilirrubin_neon",ak8="bexiga_hiperativa",ak9="incontinencia_urin",al0="cistite_intersticial",al1="estreptomicina_dr",al2="valganciclovir_dr",al3="piridostigmina_dr",al4="sulfato protamina",al5="insulina_degludeca_dr",al6="acido_zoledronico_dr",al7="fludrocortisona_dr",al8="mineralocorticoide",al9="levonorgestrel_dr",am0="pilula dia seguinte",am1="desmopressina_dr",am2="dexlansoprazol_dr",am3="anorexia_nervosa",am4="personalidade_bord",am5="intox_paracetamol",am6="intox_organofosfat",am7="intox_etilenoglicol",am8="hipertermia maligna",am9="nutricao enteral",an0="defic_vitamina_d",an1="defic_vitamina_b12",an2="defic_acido_folico",an3="deficiencia ferro",an4="cancer_rim_avancado",an5="cancer_testicular",an6="carcinoma_espinocel_cabeca_pescoco",an7="leucemia_celula_capilar",an8="linfoma_folicular",an9="leucemia_promielocit",ao0="sindrome_mielodispl",ao1="cistite_hemorragica",ao2="rejeicao_transplante",ao3="transplante pulmao",ao4="transplante_medula",ao5="doexa_enxerto_hosped",ao6="tromboembolia_cronic",ao7="granulomatose_poliangiite",ao8="pneumonia_organiz",ao9="hipertensao_intracran",ap0="crise miastenica",ap1="crise_addisoniana",ap2="hipercalcemia_maligna",ap3="sind_lise_tumoral",ap4="neutropenia_grave",ap5="hipoglicemia_grave",ap6="alerg_penicilina",ap7="alergia penicilina",ap8="rinosinusite_alerg",ap9="mastocitose_sistem",aq0="eosinofilia_alerg",aq1="imunodefic_primaria",aq2="imunodefic_comum",aq3="hipertriglicerid",aq4="hipercolesterol_fam",aq5="resistencia_insul",aq6="taquicardia_sinusal",aq7="sindrome_pernas_inq",aq8="suporte oxigenio",aq9="glomerulonefrite",ar0="sindrome_nefrotica",ar1="hipertireoidismo",ar2="crise_tirotoxica",ar3="reposicao potassio",ar4="gluconato calcio",ar5="anemia_ferropriva",ar6="neutropenia_febril",ar7="estabilizador humor",ar8="transtorno obsessivo",ar9="abstinencia_alcool",as0="sind_neuroleptica",as1="artrite reumatoide",as2="dermatite_atopica",as3="sind_hepatorrenal",as4="sind_cardiorrenal",as5="anticoag_reverter",as6="reverter anticoag",as7="bloqueador calcio",as8="anti-hipertensivo",as9="antiinflamatorio",at0="inibidor colinesterase",at1="metilprednisolona",at2="imunoglobulina iv",at3="anticoagul profilat",at4="relaxante muscul",at5="amoxicilina-clavulanato",at6="piperacilin-tazobactam",at7="corticosteroid inalat",at8="hidroxicloroquina",at9="bismuto subsalicilato",au0="saccharomyces boulardii",au1="lipase pancreatica",au2="metronidazol oral",au3="inibidor bomba proton",au4="n-acetilcisteina",au5="insulina regular",au6="potassio reposicao",au7="bicarbonato sodio",au8="cloreto potassio",au9="solucao salina hiperton",av0="hidroxicobalamina",av1="sulfato magnesio",av2="corticosteroid topico",av3="zinco suplemento",av4="suporte respiratorio",av5="aspirina baixa dose",av6="corticosteroid local",av7="drenagem ventricular",av8="azitromicina profilat",av9="tobramicina inal",aw0="fisioterapia resp",aw1="anfotericina b lipossomal",aw2="sulfametoxazol-trimetoprim",aw3="transplante medula",aw4="transplante celula trunc",aw5="adrenalina emergencia",aw6="suporte sintomatic",aw7="tratar causa base",aw8="antibiotico topico",aw9="anti-vegf intraoc",ax0="ciprofloxacino colirio",ax1="suporte intensivo",ax2="lisdexanfetamina",ax3="antibiotico profilat",ax4="antiagregante iv",ax5="intervencao coronariana",ax6="anticoagulante iv",ax7="inibidor trombina",ax8="trombocitopenia heparina",ax9="insuficiencia cardiaca",ay0="antipsicoticoatipico",ay1="tuberculost\xe1tico",ay2="profilaxia transplante",ay3="hiperplasia prostatica",ay4="bloqueador neuromuscular",ay5="nao despolarizante",ay6="anticolinesterasico",ay7="anestesico inalatorio",ay8="anestesico local",ay9=" \u2014 Base interna:",az0="\u2695 Apoyo educacional.",az1="\u2695 Apoio educacional.",az2="mecanismo de acao",az3="mecanismo de accion",az4="contraindicacion",az5="count",az6="\ud83d\udd34 ALERTA RENAL GRAVE",az7="\ud83d\udfe0 Alerta renal",az8="\ud83d\udfe1 Aten\xe7\xe3o renal",az9="pcr_adulto",ba0="Surviving Sepsis Campaign 2021",ba1="iam_congestao",ba2="Glucemia",ba3="Glicemia",ba4="IAM/Angina (ECG, troponina)",ba5="ECG 12 derivaciones",ba6="ECG 12 deriva\xe7\xf5es",ba7="Electrolitos (K+, Mg2+)",ba8="Eletr\xf3litos (K+, Mg2+)",ba9="Electrolitos",bb0="Eletr\xf3litos",bb1="Funci\xf3n renal",bb2="Fun\xe7\xe3o renal",bb3="TEP (D-d\xedmero, angioTC)",bb4="PA en ambos brazos",bb5="FA/Flutter (RR irregular)",bb6="Coagulaci\xf3n",bb7="Coagula\xe7\xe3o",bb8="Hematoma epidural (intervalo l\xfacido + trauma)",bb9="1. CONTRAINDICADOS: tPA, anticoagulantes, AAS",bc0="status_epilepticus",bc1="TC cr\xe1neo",bc2="TC cr\xe2nio",bc3="AVC/hemorragia (TC urgente)",bc4="Hemocultivos",bc5="Hemoculturas",bc6="5. pH <7,35 + PaCO2 >45 + FR >25: VNI (BIPAP): IPAP 10-20, EPAP 4-8 cmH2O",bc7="cad_shh",bc8="Glucemia capilar URGENTE",bc9="Glicemia capilar URGENTE",bd0="IRA/IRC descompensada",bd1="Hipoaldosteronismo (Addison)",bd2="hda_varizeal",bd3="IAM inferior (ECG)",bd4="AVC agudo (TC urgente)",bd5='mensagem_anterior="',bd6="fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed\n",bd7="\n## Avalia\xe7\xe3o inicial:\n",bd8={},bd9=aa6.c==="es",be0=aa6.go,be1=A.S(be0),be2=be1.i("a5<1>")
+anS(be3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,g0,g1,g2,g3,g4,g5,g6,g7,g8,g9,h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,j0,j1,j2,j3,j4,j5,j6,j7,j8,j9,k0,k1,k2,k3,k4,k5,k6,k7,k8,k9,l0,l1,l2,l3,l4,l5,l6,l7,l8,l9,m0,m1,m2,m3,m4,m5,m6,m7,m8,m9,n0,n1,n2,n3,n4,n5,n6,n7,n8,n9,o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,q0,q1,q2,q3,q4,q5,q6,q7,q8,q9,r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,u0,u1,u2,u3,u4,u5,u6,u7,u8,u9,v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,w0,w1,w2,w3,w4,w5,w6,w7,w8,w9,x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,y0,y1,y2,y3,y4,y5,y6,y7,y8,y9,z0,z1,z2,z3,z4,z5,z6,z7,z8,z9,aa0,aa1,aa2,aa3,aa4,aa5,aa6=this,aa7="choque_cardiogenico",aa8="choque_hipovolemico",aa9="fibrilacao atrial",ab0="crise_hipertensiva",ab1="emergencia hiperten",ab2="urgencia hiperten",ab3="encefalopatia hiperten",ab4="tromboembol pulm",ab5="cardiopatia_dilat",ab6="cardiopatia_hipert",ab7="avc_hemorragico",ab8="hemorrag intracran",ab9="cefaleia_tensional",ac0="doenca pulm obstr",ac1="sepse",ac2="diarrea funcional",ac3="salmonella diarr",ac4="campylobacter diarr",ac5="clostridioides difficile",ac6="clostridium difficile",ac7="colite por antibiot",ac8="colite pseudomembran",ac9="sindrome malabsorcao",ad0="diarrea esteatorr",ad1="insuf pancreatica exocrina",ad2="sobrecrescimento bacteriano",ad3="enteropatia perd proteina",ad4="diarreia_infecciosa",ad5="diarreia_parasitaria",ad6="diarreia_malabsorcao",ad7="diarreia_funcional",ad8="hiperprolactinemia",ad9="pan_hipopituitar",ae0="diabetes_insipidus",ae1="diabetes insipidus",ae2="hiperparatireoid",ae3="neoplasia_endocr",ae4="neplasia endocrina multipla",ae5="mucopolissacarid",ae6="distrofia_muscul",ae7="doenca_huntington",ae8="artrite_idiopatica",ae9="sindrome_sjogren",af0="polimialgia_reum",af1="arterite_temporal",af2="sindrome_antifosf",af3="granulomatose poliangiite",af4="neuropatia_perif",af5="neuropatia periferica",af6="polineuropatia_desmiel",af7="neuropatia_optica",af8="encefalite_autoimun",af9="esclerose_tuberosa",ag0="status_epileptico",ag1="hipertensao_pulm",ag2="hipertensao pulmonar",ag3="colangiocarcinoma",ag4="anemia_falciforme",ag5="policitemia_vera",ag6="leucemia_mieloide",ag7="linfoma_nhodgkin",ag8="aspergilose_invas",ag9="aspergilose invasiva",ah0="coccidioidomicose",ah1="leishmaniose_cut",ah2="micobacteria_atip",ah3="sindrome_shock_tox",ah4="valvulopatia_aort",ah5="valvulopatia_mitr",ah6="estenose_aortica",ah7="cardiopatia_congen",ah8="sindrome_qrs_longo",ah9="arteriopatia_perif",ai0="aneurisma_aortico",ai1="angina_microvascular",ai2="hipertensao_resist",ai3="nefrop_diabetica",ai4="nefropatia diabetica",ai5="nefrotox_contraste",ai6="glomnefr_ancianca",ai7="nefrite_intersticial",ai8="eritema_multiforme",ai9="urticaria_cronica",aj0="angioedema_heredit",aj1="dermatite_contact",aj2="degeneracao_macul",aj3="retinop_diabetica",aj4="tontura_labirint",aj5="surdez_neurossens",aj6="paralisia_facial",aj7="paralisia facial",aj8="apneia_obstrutiva",aj9="candidose_vaginal",ak0="gravidez_ectopica",ak1="osteoporose_menop",ak2="cancer_colo_utero",ak3="hiperemes_gravid",ak4="colestase_gestac",ak5="sindrome_resp_neo",ak6="enterocolite_necrot",ak7="hiperbilirrubin_neon",ak8="bexiga_hiperativa",ak9="incontinencia_urin",al0="cistite_intersticial",al1="estreptomicina_dr",al2="valganciclovir_dr",al3="piridostigmina_dr",al4="sulfato protamina",al5="insulina_degludeca_dr",al6="acido_zoledronico_dr",al7="fludrocortisona_dr",al8="mineralocorticoide",al9="levonorgestrel_dr",am0="pilula dia seguinte",am1="desmopressina_dr",am2="dexlansoprazol_dr",am3="anorexia_nervosa",am4="personalidade_bord",am5="intox_paracetamol",am6="intox_organofosfat",am7="intox_etilenoglicol",am8="hipertermia maligna",am9="nutricao enteral",an0="defic_vitamina_d",an1="defic_vitamina_b12",an2="defic_acido_folico",an3="deficiencia ferro",an4="cancer_rim_avancado",an5="cancer_testicular",an6="carcinoma_espinocel_cabeca_pescoco",an7="leucemia_celula_capilar",an8="linfoma_folicular",an9="leucemia_promielocit",ao0="sindrome_mielodispl",ao1="cistite_hemorragica",ao2="rejeicao_transplante",ao3="transplante pulmao",ao4="transplante_medula",ao5="doexa_enxerto_hosped",ao6="tromboembolia_cronic",ao7="granulomatose_poliangiite",ao8="pneumonia_organiz",ao9="hipertensao_intracran",ap0="crise miastenica",ap1="crise_addisoniana",ap2="hipercalcemia_maligna",ap3="sind_lise_tumoral",ap4="neutropenia_grave",ap5="hipoglicemia_grave",ap6="alerg_penicilina",ap7="alergia penicilina",ap8="rinosinusite_alerg",ap9="mastocitose_sistem",aq0="eosinofilia_alerg",aq1="imunodefic_primaria",aq2="imunodefic_comum",aq3="hipertriglicerid",aq4="hipercolesterol_fam",aq5="resistencia_insul",aq6="taquicardia_sinusal",aq7="sindrome_pernas_inq",aq8="suporte oxigenio",aq9="glomerulonefrite",ar0="sindrome_nefrotica",ar1="hipertireoidismo",ar2="crise_tirotoxica",ar3="reposicao potassio",ar4="gluconato calcio",ar5="anemia_ferropriva",ar6="neutropenia_febril",ar7="estabilizador humor",ar8="transtorno obsessivo",ar9="abstinencia_alcool",as0="sind_neuroleptica",as1="artrite reumatoide",as2="dermatite_atopica",as3="sind_hepatorrenal",as4="sind_cardiorrenal",as5="anticoag_reverter",as6="reverter anticoag",as7="bloqueador calcio",as8="anti-hipertensivo",as9="antiinflamatorio",at0="inibidor colinesterase",at1="metilprednisolona",at2="imunoglobulina iv",at3="anticoagul profilat",at4="relaxante muscul",at5="amoxicilina-clavulanato",at6="piperacilin-tazobactam",at7="corticosteroid inalat",at8="hidroxicloroquina",at9="bismuto subsalicilato",au0="saccharomyces boulardii",au1="lipase pancreatica",au2="metronidazol oral",au3="inibidor bomba proton",au4="n-acetilcisteina",au5="insulina regular",au6="potassio reposicao",au7="bicarbonato sodio",au8="cloreto potassio",au9="solucao salina hiperton",av0="hidroxicobalamina",av1="sulfato magnesio",av2="corticosteroid topico",av3="zinco suplemento",av4="suporte respiratorio",av5="aspirina baixa dose",av6="corticosteroid local",av7="drenagem ventricular",av8="azitromicina profilat",av9="tobramicina inal",aw0="fisioterapia resp",aw1="anfotericina b lipossomal",aw2="sulfametoxazol-trimetoprim",aw3="transplante medula",aw4="transplante celula trunc",aw5="adrenalina emergencia",aw6="suporte sintomatic",aw7="tratar causa base",aw8="antibiotico topico",aw9="anti-vegf intraoc",ax0="ciprofloxacino colirio",ax1="suporte intensivo",ax2="lisdexanfetamina",ax3="antibiotico profilat",ax4="antiagregante iv",ax5="intervencao coronariana",ax6="anticoagulante iv",ax7="inibidor trombina",ax8="trombocitopenia heparina",ax9="insuficiencia cardiaca",ay0="antipsicoticoatipico",ay1="tuberculost\xe1tico",ay2="profilaxia transplante",ay3="hiperplasia prostatica",ay4="bloqueador neuromuscular",ay5="nao despolarizante",ay6="anticolinesterasico",ay7="anestesico inalatorio",ay8="anestesico local",ay9=" \u2014 Base interna:",az0="\u2695 Apoyo educacional.",az1="\u2695 Apoio educacional.",az2="mecanismo de acao",az3="mecanismo de accion",az4="contraindicacion",az5="count",az6="\ud83d\udd34 ALERTA RENAL GRAVE",az7="\ud83d\udfe0 Alerta renal",az8="\ud83d\udfe1 Aten\xe7\xe3o renal",az9="pcr_adulto",ba0="Surviving Sepsis Campaign 2021",ba1="iam_congestao",ba2="Glucemia",ba3="Glicemia",ba4="IAM/Angina (ECG, troponina)",ba5="ECG 12 derivaciones",ba6="ECG 12 deriva\xe7\xf5es",ba7="Electrolitos (K+, Mg2+)",ba8="Eletr\xf3litos (K+, Mg2+)",ba9="Electrolitos",bb0="Eletr\xf3litos",bb1="Funci\xf3n renal",bb2="Fun\xe7\xe3o renal",bb3="TEP (D-d\xedmero, angioTC)",bb4="PA en ambos brazos",bb5="FA/Flutter (RR irregular)",bb6="Coagulaci\xf3n",bb7="Coagula\xe7\xe3o",bb8="Hematoma epidural (intervalo l\xfacido + trauma)",bb9="1. CONTRAINDICADOS: tPA, anticoagulantes, AAS",bc0="status_epilepticus",bc1="TC cr\xe1neo",bc2="TC cr\xe2nio",bc3="AVC/hemorragia (TC urgente)",bc4="Hemocultivos",bc5="Hemoculturas",bc6="5. pH <7,35 + PaCO2 >45 + FR >25: VNI (BIPAP): IPAP 10-20, EPAP 4-8 cmH2O",bc7="cad_shh",bc8="Glucemia capilar URGENTE",bc9="Glicemia capilar URGENTE",bd0="IRA/IRC descompensada",bd1="Hipoaldosteronismo (Addison)",bd2="hda_varizeal",bd3="IAM inferior (ECG)",bd4="AVC agudo (TC urgente)",bd5='mensagem_anterior="',bd6="fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed\n",bd7="\n## Avalia\xe7\xe3o inicial:\n",bd8={},bd9=aa6.c==="es",be0=aa6.go,be1=A.T(be0),be2=be1.i("a5<1>")
 be1=be1.i("e7<1,h>")
 m=A.O(new A.e7(new A.a5(be0,new A.awd(),be2),new A.awe(),be1),be1.i("F.E"))
 l=m.length
@@ -125439,12 +125439,12 @@ i=aa6.eB(be3)
 l=t.s
 if(aa6.dk(j,A.a(["farma","medicament","remedio","drug ","farmaco","medicamentos para","farmacos para","remedios para","drugs for"],l))&&aa6.dk(j,A.a(["para ","para a ","para o ","tratar ","tratamento de","tratamiento de","indicado para","usar em","usar no","usar na"],l))){h=t.N
 g=t.yp
-f=A.T(["anafilaxia",A.a(["anafilax","anafilact","choque anafilat","reacao alerg","reaccion alerg","adrenalina alerg","epinefrina alerg"],l),"choque_septico",A.a(["choque septic","choque septico","septic shock","vasopressor sepse","noradrenalina sepse"],l),aa7,A.a(["choque cardiogen","cardiogenic shock","dobutamina choque","balao intra-aortic"],l),aa8,A.a(["choque hipovol","hipovolem","hemorrag choque","reposicao volum"],l),"choque",A.a(["choque ","vasopressor","pam ","hipotens grave","noradrenalina "],l),"pcr",A.a(["pcr ","parada cardiac","reanimac","acls ","ressuscitac","fv ","tvsp"],l),"iam",A.a(["iam ","infarto agudo","sindrome coron","stemi","nstemi","sca ","angina instav","angina inestav"],l),"angina",A.a(["angina estav","angina cronic","angina pector","angina estable"],l),"ic",A.a(["insuf cardiac","ic descomp","ic cronic","edema pulm","eap ","killip","fej ","frac ejec"],l),"fa",A.a(["fibrilac atrial",aa9,"flutter atrial","fa ","fibrila auricular","fibrilacion auricular"],l),"tpsv",A.a(["taquicardia supravent","tpsv ","tsv ","qrs estreit","reentrada nodal"],l),"tv",A.a(["taquicardia ventricular","tv ","tvsp","tv polim","torsades","torsada pontas"],l),"bradicardia",A.a(["bradicard","bloqueio av","bav ","marcapasso","atropina bradicard"],l),"hipertensao",A.a(["hiperten","has ","pressao alta","pa alta","antihiperten","anti-hiperten"],l),ab0,A.a(["crise hiperten",ab1,ab2,ab3,"nitroprussi"],l),"dissecc_aorta",A.a(["dissecao aort","disseccao aort","diseccion aort","aneurisma aort"],l),"tep",A.a([ab4,"embolia pulm","tep ","trombose pulm"],l),"tvp",A.a(["trombose venosa prof","tvp ","trombose venosa"],l),"endocardite",A.a(["endocardite","endocarditis","infeccao valv","bacteremia valv"],l),"miocardite",A.a(["miocardite","miocarditis","inflamacao miocardio"],l),"pericardite",A.a(["pericardite","pericarditis","derrame pericard","tamponament"],l),ab5,A.a(["cardiomiopatia dilat","cardiopatia dilat","miocardiopatia dilat"],l),ab6,A.a(["cardiomiopatia hipert","miocardiopatia hipert"],l),"avc_isquemico",A.a(["avc isquem","acidente vasc isquem","ave isquem","acv isquem","trombolise avc","alteplase avc","trombectom"],l),"avc_hemorragico",A.a(["avc hemorr","hemorrag cerebr",ab8,"hic "],l),"hsa",A.a(["hemorrag subaracn","hsa ","cefaleia trovoada","cefaleia fulmin","aneurism roto"],l),"ait",A.a(["ait ","ataque isquem transit","acidente isquem transit","tia "],l),"epilepsia",A.a(["epileps","convuls","status epilep","crise epilep","crise convuls"],l),"meningite",A.a(["meningite","meningitis","encefalite","encephalitis","rigidez nuca","kernig","brudzinski"],l),"parkinson",A.a(["parkinson","dopamina defic","rigidez extrapiram","levodopa","carbidopa"],l),"alzheimer",A.a(["alzheimer","demencia alzhei","demencia progres","colinesterase"],l),"demencia",A.a(["demencia vasc","demencia ","comprometiment cognit","deterioro cognit"],l),"esclerose_mult",A.a(["esclerose mult","esclerosis mult","em ","desmielini","interferon beta"],l),"miastenia",A.a(["miastenia","myasthenia","fraqueza muscul progres","anticolin esterol"],l),"guillain_barre",A.a(["guillain","barre","polirradiculoneuri","paralisia ascend"],l),"enxaqueca",A.a(["enxaqueca","migranea","migraine","migrena","aura visual","triptano"],l),ab9,A.a(["cefaleia tensional","cefalea tensional","cefaleia tension","dor cabeca tensao"],l),"cefaleia",A.a(["cefal","cabeca","dor de cabeca","dolor de cabeza"],l),"pneumonia_com",A.a(["pneumonia comunid","pac ","pneumonia adquir","pneumonia tipic","pneumonia atipic","pneumonia viral"],l),"pneumonia_hosp",A.a(["pneumonia hospit","pah ","pneumonia associad ventil","pavm"],l),"tuberculose",A.a(["tuberculose","tuberculosis","tb ","mycobacterium tuberc","rifampicin","isoniaz"],l),"asma",A.a(["asma ","broncoespas","sibilo","wheezing","exacerbac asma","crise asma"],l),"dpoc",A.a(["dpoc","epoc",ac0,"enfisema","bronquite cronic","exacerbac dpoc"],l),"insuf_resp",A.a(["insuf respirat","insuficiencia respirat","ira ","sdra","ards","ventilac mecan","intubac orotrac"],l),"pneumotorax",A.a(["pneumotorax","pneumotorox","neumotorax","pneumo torax"],l),"derrame_pleural",A.a(["derrame pleural","derrame pleural","pleurite","toracocentese"],l),"apneia_sono",A.a(["apneia sono","apnea sono","osas ","cpap apneia","ronco grave"],l),"covid",A.a(["covid","sars-cov","coronavirus","covid-19"],l),"sepse",A.a(["sepse","seps","septic","choque infeccioso","bacteremia","infec grave"],l),"itu",A.a(["infec urin","itu ","cistite","uretrite","bacteriuria"],l),"pielonefrite",A.a(["pielonefrit","pyelonefrit","infec renal","infec trato urin alto"],l),"celulite",A.a(["celulite infec","erisipela","celulitis infec","infec pele","infec tecid","ceftriaxona pele"],l),"fasceite",A.a(["fasceite necros","fascite necros","fasciitis necros","infec necros"],l),"osteomielite",A.a(["osteomielit","osteomyelit","infec ossea","infec osso"],l),"hiv_aids",A.a(["hiv","aids","antirretrovir","arvt","coquetel hiv"],l),"candidose",A.a(["candidiase sist","candidemia","candidiasis sistem","fungemias","antifungic sistemico"],l),"dengue",A.a(["dengue","arbovirose","aedes","dengue hemorrag"],l),"malaria",A.a(["malaria","malaria","plasmodium","cloroquina malaria","artemeter"],l),"leptospirose",A.a(["leptospirose","leptospirosis","ictericia febre"],l),"sifilis",A.a(["sifilis","syphilis","treponema","penicilina sifil"],l),"dst",A.a(["dst ","gonorreia","clamid","dst sexualment transmis"],l),"herpes_zoster",A.a(["herpes zoster","varicela zoster","nevralgia poster","aciclovir zoster"],l),"varicela",A.a(["varicela","chickenpox","varicela infec"],l),"diarreia",A.a(["diarr","diarrh","diarrea aguda","diarrea cronica","diarrea persist","diarrea refract","diarrea osmotica","diarrea secretora","diarrea inflamat",ac2,"diarrea nocturna","diarrea posprandial","diarrea acuosa","diarrea mucosa","diarrea sanguinolenta","diarrea hemorr\xe1gica","diarrea hemorrhag","diarrea fulminant","diarrea disenteric","diarrea febril","diarrea nosocomial","diarrea esteatorreica","diarrea psicogena","diarrea autoimun","diarrea endocrin","diarrea metabol","diarrea infeccio","diarrea bacteriana","diarrea viral","diarrea parasitar","diarrea viajero","traveler diarr","gastroenterite infec","diarrea salmonela","salmonela diarr",ac3,"diarrea shigela","shigella diarr","shigela diarr","disenteria bacteriana","diarrea campylobac",ac4,"diarrea coli","escherichia coli diarr","e.coli enterot","etec ","e.coli enterohemorr\xe1gica","ehec ","stec ","sindrome uremic hemolitic","diarrea colera","vibrio cholerae","colera ","cholera ","diarrea yersinia","yersinia enterocol","diarrea clostridi",ac5,ac6,"c. diff","cdiff ",ac7,ac8,"diarrea antibiot","diarrea associada antibiot","rotavirus diarr","diarrea rotavirus","norovirus diarr","diarrea norovirus","gastroenterite viral","diarrea citomegalovirus","cmv intestinal","giardiase","giardiasis","giardia diarr","amebiase","amebiasis","ameba diarr","entamoeba histol","cryptosporidium diarr","diarrea cryptospor","cyclospora diarr","isospora belli","diarrea hiv","diarrea imunossuprim","diarrea paciente imuno","diarrea pediatric","diarrea neonatal","diarrea infant","diarrea malabsorcao","diarrea malabsorc",ac9,ad0,"diarrea celiaca","doenca celiaca diarr","diarrea intoler lactose","intolerancia lactose diarr",ad1,"insuficiencia pancreatica diarr","diarrea sobrecrescimento bact","sibo diarr",ad2,"sindrome intestino curto","diarrea intestino curto",ad3,"diarrea proteina","diarrea maldigest","diarrea crohn","diarrea colite ulcerosa","diarrea dii","colite microscopica","colite colagenos","colite linfocitica","colite isquemica diarr","diarrea metformina","diarrea medicamento","diarrea ibp","diarrea inibidor bomba proton","diarrea quimioterapia","diarrea oncologica","diarrea imunoterapia","diarrea checkpoint","diarrea radioterapia","diarrea radiacao","diarrea sorbitol","diarrea magnesio","diarrea laxante","diarrea nutricao enteral","diarrea enteral","diarrea postoperat","diarrea posvagotomia","dumping syndrome diarr","diarrea mucosit","diarrea carcinoide","sindrome carcinoide diarr","diarrea hipertireoid","hipertireoidismo diarr","diarrea gastrinoma","zollinger ellison diarr","diarrea feocromocitom","diarrea mastocitose","diarrea insuf suprarenal","diarrea addison","diarrea doenca whipple","whipple diarr","diarrea alergia aliment","diarrea eosinofil","intoxicacao alimentar diarr","diarrea toxica","intoxicacao mariscos","diarrea estafilococ","bacillus cereus diarr","diarrea bacillus","enterocolite neutropenic diarr","tuberculose intestinal diarr","tb intestinal"],l),"diarreia_cdiff",A.a([ac5,ac6,"c. diff","cdiff ",ac8,ac7],l),ad4,A.a(["diarrea viajero","traveler diarr","diarrea bacteriana aguda","gastroenterite bacteriana",ac3,"shigella diarr",ac4],l),ad5,A.a(["giardiase","giardiasis","amebiase","amebiasis","cryptosporidium","cyclospora","isospora belli"],l),"diarreia_dii",A.a(["colite ulcerosa diarr","crohn diarr","diarrea dii","diarrea inflamat intest"],l),ad6,A.a([ac9,"celiac diarr","doenca celiaca",ad1,"sibo diarr",ad0],l),ad7,A.a([ac2,"diarrea sii","ibs diarr","sindrome intestino irritav diarr"],l),"acromegalia",A.a(["acromegal","gigantismo","igf-1 elevad","gh elevad","adenoma somatotrop","tumor hipofis gh"],l),"adenoma_hipofis",A.a(["adenoma hipofis","adenoma pituitar","macroadenoma","microadenoma","tumor hipofise","prolactinoma","tumor sellar"],l),"prolactinoma",A.a(["prolactinoma",ad8,"galactorreia","prolactina elevad"],l),ad9,A.a(["pan-hipopituitar","hipopituitar","deficiencia hormonio hipofis","panhipopituitar"],l),ae0,A.a([ae1,"diabetes insipid","poliuria polidipsia","desmopressin","adh defic","vasopressin defic"],l),"siadh",A.a(["siadh ","sindrome antiduret inapropriado","secrecao inapropriada adh","secrecao inapropiad antidiuret"],l),"hiperaldosteron",A.a(["hiperaldosteron","aldosteronoma","sindrome conn","adenoma adrenal","aldosterona elevad"],l),ae2,A.a([ae2,"hiperparatiroid","pth elevado","adenoma paratireoid","hipercalcemia pth"],l),"hipoparatireoid",A.a(["hipoparatireoid","hipoparatiroid","pth baixo","hipocalcemia pth"],l),ae3,A.a([ae4,"nem ","men ",ae4],l),"carcinoide",A.a(["tumor carcinoide","sindrome carcinoide","tumor neuroendocr","serotonina tumo","carcinoid"],l),"insulinoma",A.a(["insulinoma","tumor celula beta","hipoglicemia hiperinsulinica","nesidioblastose"],l),"gastrinoma",A.a(["gastrinoma","zollinger ellison","gastrina elevad","hipergastrinemia"],l),"glucagonoma",A.a(["glucagonoma","glucagon tumor","eritema necrolit migrat\xf3rio"],l),"vipoma",A.a(["vipoma","diarrea acuosa hipopotassemia","sindrome verner-morrison"],l),"amiloidose",A.a(["amiloidose","amiloidosis","amiloide","deposito amiloid","ttr amiloid","polineuropatia amiloid"],l),"sarcoidose",A.a(["sarcoidose","sarcoidosis","granuloma sarcoid","lofgren","hilum adenopat bilateral"],l),"hemocromatose",A.a(["hemocromatose","hemochromatosis","sobrecarga ferro","ferritina muito elevad","deposito ferro"],l),"doenca_wilson",A.a(["wilson","doenca wilson","cobre deposito","kayser-fleischer","hepatolenticular"],l),"doenca_gaucher",A.a(["gaucher","glicocerebrosidase","glucocerebrosidase defic"],l),"doenca_fabry",A.a(["fabry","alfa galactosidase defic","angioqueratoma fabry"],l),"fenilcetonuria",A.a(["fenilcetonuria","fenilceton","pku ","fenilalanina elevad"],l),ae5,A.a([ae5,"mucopolysaccharid","mps ","hurler","hunter sindrome"],l),"porfira",A.a(["porfiria","porphyria","dor abdominal porfiria","ataque agudo porf"],l),"sindrome_marfan",A.a(["marfan","sindrome marfan","aracnodactilia","ectopia lentis marfan"],l),"sindrome_ehlers",A.a(["ehlers danlos","ehlers-danlos","hipermobilidade articular"],l),"osteogenese_imp",A.a(["osteogenese imperfeit","osteogenesis imperfecta","osso fragil genetico"],l),"acondroplas",A.a(["acondroplasia","nanismo acondroplasia"],l),"sindrome_down",A.a(["sindrome down","trisomia 21","down sindromo"],l),"sindrome_klinef",A.a(["klinefelter","klinef","xxy ","47 xxy"],l),"sindrome_turn",A.a(["turner","sindrome turner","monosson","45 x"],l),ae6,A.a(["distrofia muscular","duchenne","becker distrofia","distrofia miotonica","miopatia genetica"],l),"ataxia",A.a(["ataxia ","ataxia espinocereb","ataxia friedreich","ataxia teleangiect"],l),ae7,A.a(["huntington","coreia huntington","doenca huntington"],l),"als",A.a(["esclerose lateral amiotrofica","als ","ela ","doenca neuronio motor"],l),"sma",A.a(["atrofia muscular espinal","sma ","amea ","spinal muscular atrophy"],l),"pku",A.a(["fenilcetonuria","pku ","fenilalanina"],l),"espondilite",A.a(["espondilite anquilos","espondilitis anquilos","espondiloartrite","espondiloartrit","sacroileite","hla b27"],l),"artrite_psori",A.a(["artrite psori","artritis psori","artropatia psori"],l),"artrite_reativa",A.a(["artrite reativa","artritis reativa","sindrome reiter","artrite pos infec"],l),ae8,A.a(["artrite idiopatica juvenil","aij ","artrite juvenil"],l),"polimiosite",A.a(["polimiosite","polimiositis","dermatomiosite","miopatia inflamat"],l),ae9,A.a(["sjogren","sj\xf6gren","xerostomia xeroft","sindrome sicca","olho seco boca seca autoimun"],l),af0,A.a(["polimialgia reumat","pmr ","dor cintura escapular pelvic idoso"],l),af1,A.a(["arterite temporal","arterite celulas gig","arterite temporal craniana","cefaleia temporal idoso ceg"],l),"artrite_gota_agud",A.a(["artrite gotosa agud","podagra","artrite primeiro halux","monoartrit hiperuricemia"],l),"pseudogota",A.a(["pseudogota","condrocalcinose","deposito pirofosfato calcio"],l),af2,A.a(["sindrome antifosfolipide","saf ","anticardiolipina","anticoagul lupico","trombose autoimun"],l),"miopatia_inflam",A.a(["miosite","anticorpo anti-jo1","antissintetase","miopatia imunomediada"],l),"vasculite_anca",A.a(["vasculite anca",af3,"poliangiite microscop","churg-strauss","eosinofilia vasculite"],l),"vasculite_takay",A.a(["takayasu","arterite takayasu","pulso ausente jovem"],l),"vasculite_kawas",A.a(["kawasaki","doenca kawasaki","febre mucocutanea linfonodal","aneurisma coronaria crian"],l),"behcet",A.a(["behcet","doenca behcet","ulcera oral genital uveit"],l),af4,A.a([af5,"neuropatia perifer","polineuropatia","polineurit"],l),"neuropatia_diab",A.a(["neuropatia diabetic","neuropatia diabet","pe diabetico neuropatia"],l),"sindrome_carpal",A.a(["tunel carpal","sindrome tunel carpal","compressao nervo median"],l),"hernia_disco",A.a(["hernia disco","hernia discal","disco intervert","hernia nucleo pulposo","lombociatalgia"],l),"estenose_espin",A.a(["estenose espinhal","estenose canal","claudicacao neurogen"],l),"mielopatia",A.a(["mielopatia","myelopathy","compressao medular","medulopat"],l),af6,A.a(["polineuropatia desmieli","pdci","cidp ","neuropatia inflamat cronic"],l),af7,A.a(["neuropatia optica","neurite optica","nmo ","devic","neuromielite optica"],l),af8,A.a(["encefalite autoimun","encefalite anti-nmda","anti-nmda receptor","encefalite limbic"],l),"miopatia_mitocon",A.a(["miopatia mitocondrial","melas ","merrf ","disfuncao mitocondrial"],l),af9,A.a(["esclerose tuberosa","tuberous sclerosis"],l),"neurofibromat",A.a(["neurofibromatose","von recklinghausen","nf1 ","nf2 "],l),"acidente_mergulh",A.a(["doenca descompressao","embolia gasosa","acidente mergulhad"],l),ag0,A.a(["status epilepticus","status epilept","crise prolongada","estado epilep"],l),"hidrocefalia",A.a(["hidrocefalia","hidrocephaly","hidrocefal normotens","derivacao ventric"],l),"sindrome_guillain_miller",A.a(["miller fisher","sindrome fisher","oftalmoplegia ataxia arreflexia"],l),"fpi",A.a(["fibrose pulm idiopatica","fpi ","pneumopatia intersticial usual","uip ","ipf "],l),"sarcoidose_pulm",A.a(["sarcoidose pulmonar","granuloma pulmonar autoimun","adenopat mediastinal bilateral"],l),"hap",A.a(["hipertensao arterial pulm","hap ","pah ","hipertensao pulmonar primaria"],l),"bronquiectasia",A.a(["bronquiectasia","bronchiectasis","dilatacao br\xf4nquica"],l),"aspergilose",A.a(["aspergilose","aspergillus","aspergiloma","aspergilose alergica broncopulm"],l),"pneumocistose",A.a(["pneumocistose","pneumocystis jirovecii","pcp ","pneumonia jirovecii"],l),"pneumonia_eosinof",A.a(["pneumonia eosinofil","sindrome loeffler","eosinofilia pulm"],l),ag1,A.a([ag2,"hipertension pulmonar","cor pulmonale"],l),"quilotorax",A.a(["quilotorax","quilo torace","derrame pleural quiloso"],l),"mesotelioma",A.a(["mesotelioma","tumor pleura","mesothelioma"],l),"silicose",A.a(["silicose","pneumoconiose silio","doenca ocupacional pulm silicio"],l),"asbestose",A.a(["asbestose","asbestos","exposicao asbesto pulmao"],l),"mucoviscidose",A.a(["mucoviscidose","fibrose cistica","cystic fibrosis","cftr "],l),"deficit_a1at",A.a(["deficiencia alfa 1 antitripsina","alfa-1 antitripsina defic","a1at defic"],l),"hemossiderose",A.a(["hemossiderose","hemorragia alveolar","hemoptise difusa"],l),"doenca_celiaca",A.a(["doenca celiaca","celiac disease","enteropatia gluten","anti-ttg elevad","endomisio anticorp"],l),"enteropatia_prot",A.a([ad3,"sindrome perd proteina intestinal","protein losing enteropathy"],l),"sobrecrescimento",A.a([ad2,"sibo ","sindrome intestino bacteri"],l),"colangite_primaria",A.a(["colangite esclerosante primaria","cep ","psc ","estenose biliar inflamat autoimun"],l),"cirrh_biliar_prim",A.a(["cirrose biliar primaria","cbp ","pbc ","colangite biliar primaria","anti-m2 anticorp"],l),"hepatite_autoimun",A.a(["hepatite autoimun","hai ","hepatite cronic autoimun","anti-lkm1","anca fegato"],l),"esteatose_hepat",A.a(["esteatose hepatica","nafld","nash ","doenca gordurosa hepatica nao alcool","esteatohepatite"],l),"esofago_barrett",A.a(["barrett","esofago barrett","metaplasia intestinal esofago","esofago de barrett"],l),"acalasia",A.a(["acalasia","achalasia","espasmo esofago","disfagia motora","manometria esofago"],l),"angioectasia",A.a(["angioectasia","angiodisplasia","angiectasia intestinal","malformac vasc intestinal"],l),"isquemia_mesenteri",A.a(["isquemia mesenter","infarto mesenter","angina mesenter","trombose mesenter"],l),"volvulo",A.a(["volvulo","v\xf3lvulo","rotacao intestino","obstrucao volvular"],l),"intussuscepcao",A.a(["intussuscepcao","invaginacao intestinal","invaginacion intestinal"],l),"paralisia_ileus",A.a(["ileus paralitico","suboclus intestinal","oclusao intestinal"],l),"hemorroidas",A.a(["hemorroida","hemorroids","hemorragia retal hemorroid"],l),"fissura_anal",A.a(["fissura anal","fissure anal","dor anal agud"],l),"cancer_esofago",A.a(["cancer esofago","carcinoma esofago","adenocarcinoma esofago","carcinoma escamos esofago"],l),"cancer_hepatico",A.a(["cancer hepatic","hepatocarcinoma","hcc ","carcinoma hepatocelular"],l),"cancer_biliar",A.a([ag3,"cancer biliar","cancer vias biliares"],l),"anemia_aplasica",A.a(["anemia aplasica","aplasia medular","falha medular","pancitopenia aplasica"],l),ag4,A.a(["anemia falciforme","doenca falciforme","hemoglobina s","crise vasoclusiv","falciforme"],l),"talassemia",A.a(["talassemia","thalassemia","hemoglobina talassemia","talassemia alfa beta"],l),"mieloma",A.a(["mieloma multiplo","myeloma multiple","plasmocitoma","proteina bence jones","pico monoclon"],l),"mielof_primaria",A.a(["mielofibrose primaria","mielofibrose","myelofibrosis","fibrose medular"],l),ag5,A.a(["policitemia vera","polycythemia vera","hematocrit elevad","jak2 mutacao"],l),"trombocitemia",A.a(["trombocitemia essencial","trombocitose reativa","plaquetas elevad"],l),"leucemia_linfoc",A.a(["leucemia linfoide cronic","llc ","cll ","linfocitose cronic"],l),ag6,A.a(["leucemia mieloide cronic","lmc ","cml ","bcr-abl","filadelfia cromos"],l),"leucemia_aguda",A.a(["leucemia aguda","leucemia mieloide aguda","lma ","aml ","leucemia linfoide aguda","lla ","all "],l),"hemofilia",A.a(["hemofilia","hemophilia","fator viii defic","fator ix defic","coagulopatia heredit","sangramento articulac"],l),"von_willebrand",A.a(["von willebrand","doenca von willebrand","vwf defic"],l),"purpura_tromb",A.a(["purpura trombocitopenica trombot","ptt ","ttp ","microangiopatia trombotic"],l),"civd_aguda",A.a(["civd agud","coagulopatia consumo agud","civd sepse","civd obstetric"],l),"linfoma_hodgkin",A.a(["linfoma hodgkin","doenca hodgkin","celula reed-sternberg"],l),ag7,A.a(["linfoma nao hodgkin","linfoma difuso grande celula","ldgcb ","dlbcl "],l),"mastocitose",A.a(["mastocitose","mastocytosis","urticaria pigmentosa adult"],l),"eosinofilia",A.a(["sindrome hipereosinofilica","eosinofilia primaria","eosinofilica grave"],l),"hemossiderose_pulm",A.a(["hemossiderose pulmonar","hemorragia alveolar difusa"],l),"mucormicose",A.a(["mucormicose","mucormycosis","zigomicose","zygomycosis","rhizopus infec"],l),ag8,A.a([ag9,"aspergillus invasivo","aspergilose imunossuprimido"],l),"cryptococcose",A.a(["cryptococcose","cryptococcus","meningite criptococica","meningite cryptoc"],l),"histoplasmose",A.a(["histoplasmose","histoplasma","infec histoplasma"],l),ah0,A.a([ah0,"coccidioides","valley fever"],l),"blastomicose",A.a(["blastomicose","blastomyces"],l),"paracoccidioid",A.a(["paracoccidioidomicose","paracoccidioides brasilien","blastomicose sulamericana"],l),"sporotricose",A.a(["esporotricose","sporothrix","esporotricose felino"],l),"leishmaniose",A.a(["leishmaniose","leishmania","calazar","leishmaniose visceral","leishmaniose tegument"],l),"doenca_chagas",A.a(["doenca chagas","trypanosoma cruzi","chagas","cardiopatia chagasica"],l),"toxoplasmose",A.a(["toxoplasmose","toxoplasma gondii","toxoplasmose cerebral","encefalite toxoplasma"],l),"cmv_doenca",A.a(["citomegalovirus","cmv doenca","cmv invasivo","retinite cmv","colite cmv"],l),"ebv_doenca",A.a(["epstein barr","ebv ","mononucleose infec","sindrome mono"],l),"influenza",A.a(["influenza","gripe ","influenza a","influenza b","h1n1 ","h5n1"],l),"hepatite_a",A.a(["hepatite a","hav ","hepatite a aguda"],l),"hepatite_e",A.a(["hepatite e","hev ","hepatite e gestante"],l),"citomegalovirus",A.a(["cmv ","citomegalovirus infec","citomegal"],l),"raiva",A.a(["raiva ","rabie","lyssavirus"],l),"febre_amarela",A.a(["febre amarela","yellow fever","aedes febre amarela"],l),"zika",A.a(["zika","zika virus","microcefalia zika"],l),"chikungunya",A.a(["chikungunya","artralgia chikungunya","chikung"],l),"febre_tifoide",A.a(["febre tifoide","salmonella typhi","febre enteric"],l),"brucelose",A.a(["brucelose","brucella","febre ondulante"],l),"rickettsia",A.a(["rickettsia","febre maculosa","febre petequial"],l),ah1,A.a(["leishmaniose cutanea","ulcera cutanea leishm","botao oriente"],l),"pneumocistis",A.a(["pneumocystis","pcp ","pneumonia pneumocystis","jirovecii"],l),ah2,A.a(["micobacteria atipica","mav ","mycobacterium avium","mac "],l),"nocardiose",A.a(["nocardiose","nocardia","nocardia pulm"],l),"actinomicose",A.a(["actinomicose","actinomyces","actinomicose cervicofacial"],l),ah3,A.a(["sindrome choque toxico","toxic shock","tsst toxina","staphylococ shock"],l),"botulismo",A.a(["botulismo","clostridium botulinum","paralisia descendente"],l),"tetano",A.a(["tetano","tetanus","clostridium tetani","trismo tetano"],l),"difteria",A.a(["difteria","diphtheria","corynebacterium diphtheriae"],l),"coqueluche",A.a(["coqueluche","pertussis","bordetella pertussis","tosse convulsa"],l),"meningococcemia",A.a(["meningococcemia","neisseria meningit","meningococo","purpura fulminans"],l),"estafilococcemia",A.a(["staphylococcemia","bacteremia estafiloco","endocardite staph"],l),"e_coli_0157",A.a(["e coli 0157","ehec infec","stec infec","diarr hemorr\xe1gica e coli"],l),"tifo_murino",A.a(["tifo murino","rickettsia typhi","tifo endemico"],l),ah4,A.a(["valvulopatia aortic","estenose aortic","insuf aortic","regurgit aortic","valv aortic"],l),ah5,A.a(["valvulopatia mitral","estenose mitral","insuf mitral","prolapso mitral","regurgit mitral"],l),"valvulopatia_tric",A.a(["valvulopatia tricu","insuf tricuspide","estenose tricuspide"],l),ah6,A.a(["estenose aortic","calcif valv aortic","tavi ","tavr "],l),"insuf_aortica",A.a(["insuf aortic","regurgit aortic","aorta insufici"],l),"insuf_mitral",A.a(["insuf mitral","regurgit mitral","prolapso mitral"],l),"estenose_mitral",A.a(["estenose mitral","area valv mitral reduz","mitral stenosis"],l),ah7,A.a(["cardiopatia congen","civ ","cia ","pca ","tetralogia fallot","coartacao aorta","transposicao grandes vasos"],l),"bloqueio_ramo",A.a(["bloqueio ramo esqu","bloqueio ramo dir","brd ","bre ","bloqueio fascicular"],l),ah8,A.a(["qt longo","qt prolongado","long qt syndrome","lqts ","torsades de pontes"],l),"wolf_parkinson",A.a(["wolf parkinson white","wpw ","pre-excitacao ventricular","delta wave"],l),"sind_brugada",A.a(["brugada","sindrome brugada","bloqueio ramo direito supra"],l),ah9,A.a(["arteriopatia periferica","dap ","isquemia membros infer","claudicac intermitente"],l),ai0,A.a(["aneurisma aortico","aneurisma aorta abd","aneurisma aorta torac"],l),"pericardite_constr",A.a(["pericardite constrit","pericardio constrit","pericardio calcific"],l),"mixoma_card",A.a(["mixoma cardiaco","tumor cardiaco","massa intracavit card"],l),"tumores_card",A.a(["tumor cardiaco","mixoma atrial","lipoma card","fibroelastoma"],l),ai1,A.a(["angina microvascul","angina coronaria normal","sindrome x card"],l),"sind_tako_tsubo",A.a(["tako tsubo","cardiomiopatia estress","sindrome corac quebrado","apical balloon"],l),ai2,A.a(["hipertensao resist","hipertensao refrat","ha resistente"],l),"hipertenso_renovasc",A.a(["hipertensao renovasc","estenose renal hiperten","hiper renal"],l),"sindrome_metabolica_card",A.a(["risco cardiovasc metabolic","sindrome metabolic cardiovasc"],l),"glom_proliferat",A.a(["glomerulonefrite proliferat","glomerulon crescentic","nefrit agud"],l),"nefropatia_igA",A.a(["nefropatia iga","berger doenca","deposito iga renal"],l),"glom_membranosa",A.a(["glomerulonefrite membranosa","nefropatia membranosa","anti-pla2r"],l),"glom_focal_segm",A.a(["glom focal segment","gsfs ","focal glom"],l),ai3,A.a([ai4,"microalbuminuria diabet","proteinuria diabetica"],l),"nefrite_lupica",A.a(["nefrite lupica","nefropatia lupica","renal lupus"],l),"polirrenal",A.a(["doenca policist renal","rim policist","dpr ","pkd ","cisto renal heredit"],l),"sindrome_alport",A.a(["alport","nefrite alport","surdez nefropatia heredit"],l),"tubulopatia",A.a(["tubulopatia","acidose tubular","sindrome fanconi renal"],l),"nefrocalcinose",A.a(["nefrocalcinose","deposito calcio renal","nefropatia hipercalcem"],l),ai5,A.a(["nefrotox contraste","nefropatia contraste","ira contraste iodad"],l),"nefrotox_aine",A.a(["nefrotox aine","ira aine","nefrite intersticial aine"],l),ai6,A.a(["glomnefrite anti-gBM","sindrome goodpasture","hemorragia pulm glomer"],l),ai7,A.a(["nefrite intersticial","nin ","nefrite tubulo intersticial"],l),"acne",A.a(["acne","acne vulgar","acne severo","acne cistic","acne nodulocistic"],l),"rosacea",A.a(["rosacea","ros\xe1cea","eritema facial cronic","rinofima"],l),"penfigo",A.a(["penfigo","pemphigus","penfigo vulgar","penfigo foliace","bolha autoimun pele"],l),"penfigoide",A.a(["penfigoide bolhoso","bullous pemphigoid","bolha idoso"],l),ai8,A.a(["eritema multiforme","stevens johnson","sindrome stevens johnson","necrolise epiderm tox","net "],l),"eritema_nodoso",A.a(["eritema nodoso","nodulo doloroso paniculite"],l),ai9,A.a(["urticaria cronica","urticaria cronica espontanea","uce "],l),aj0,A.a(["angioedema heredit","angioedema c1q","inibidor c1 esterase defic","angioedema bradicinina"],l),"alopecia_areata",A.a(["alopecia areata","alopecia areata","queda cabelo autoimun","calvicie alopecia"],l),"onicomicose",A.a(["onicomicose","tinea unguium","fungo unhas"],l),"tinea",A.a(["tinea ","tinea capitis","tinea corporis","micose superficial","dermatofit"],l),"escabiose",A.a(["escabiose","sarna ","scabies ","sarcoptes"],l),"pediculose",A.a(["pediculose","piolho","pediculosis"],l),"herpes_simples",A.a(["herpes simples","hsv ","herpes labial","herpes genital","herpes oral"],l),"molluscum",A.a(["molluscum contagiosum","mollusco","molusco contagio"],l),"melanoma_skin",A.a(["melanoma pele","melanoma maligno cutaneo","lesao melanocit suspeita"],l),"cec_pele",A.a(["carcinoma espinoc celul","carcinoma celula escam pele","cec pele"],l),"cbc_pele",A.a(["carcinoma basocelu","carcinoma celula basal pele","cbc pele"],l),aj1,A.a(["dermatite contato","dermatitis contacto","eczema contato"],l),"dermatite_sebor",A.a(["dermatite seborreica","caspa severa","eczema seborreico"],l),"liquen_plan",A.a(["liquen plano","lichen planus","liquen plan oral"],l),"vitiligo",A.a(["vitiligo","despigment autoimun","perda melanina"],l),"esclerose_tuberosa_skin",A.a(["angiofibromas tuberosa","manchas pele esclerose tuberosa"],l),"xeroderma_pigm",A.a(["xeroderma pigmentos","fotossensibilidade cancer pele heredit"],l),"glaucoma",A.a(["glaucoma","pressao ocular elevad","pio elevad","neuropatia optica glaucomat"],l),"catarata",A.a(["catarata","opacidade cristalino","cataract"],l),aj2,A.a(["degeneracao macul","dmar ","dme ","dmri ","degeneracao retinal central"],l),aj3,A.a(["retinopatia diabetica","retinop diabet","edema macul diabetico"],l),"descolamento_retin",A.a(["descolamento retina","desprendimento retina","rotun retina"],l),"uveite",A.a(["uveite","uveitis","inflamac ocul interna","iritis","iridociclite"],l),"conjuntivite",A.a(["conjuntivite","conjunctivitis","olho vermelho agud"],l),"ceratite",A.a(["ceratite","queratite","keratitis","ulcera cornea"],l),"endoftalmite",A.a(["endoftalmite","endophthalmitis","infec intraocul grave"],l),"oclusao_retin",A.a(["oclusao arteria retin","oclusao veia retin","isquemia retinal"],l),"neuropatia_optica_isq",A.a(["neuropatia optica isquemica","naion ","perda visao repentin idoso"],l),"otite_media",A.a(["otite media","otite media agud","oma ","infec ouvido medio"],l),"otite_externa",A.a(["otite extern","swimmer ear","otite externa difusa"],l),"sinusite",A.a(["sinusite","sinusitis","rinossinusite","sinusite bacteriana"],l),"faringite",A.a(["faringite","faringitis","amigdalite","tonsilite","dor garganta strep"],l),"laringite",A.a(["laringite","laringitis","disfonia infec","rouquidao infec agud"],l),"epistaxe",A.a(["epistaxe","sangramento nasal","epistaxis"],l),aj4,A.a(["labirintite","tontura periferica","labirinto","vertigem periferica","vppb "],l),"meniere",A.a(["meniere","doenca meniere","vertigem flutuacao audicao"],l),aj5,A.a(["surdez neurossensorial","hipoacusia sensorioneural","perda auditiva nervosa"],l),aj6,A.a([aj7,"paralisia bell","bell palsy","paresia facial periferica"],l),aj8,A.a(["apneia obstrutiva sono","saos ","osas ","hipopneia obstrutiva","cpap indica"],l),aj9,A.a(["candidiase vaginal","candidose vaginal","vaginite candida","corrimento branco caseoso"],l),"vaginose_bact",A.a(["vaginose bacteriana","gardnerella","vb ","corrimento cinza peixe"],l),"tricomonas",A.a(["tricomonase","trichomonas","vaginite tricomonas"],l),"doip",A.a(["doenca inflamat pelv","dip ","pid ","infec pelv","salpingite","ooforite"],l),ak0,A.a(["gravidez ectopica","gravidez tubaria","gestacao ectopica","ruptura tubaria"],l),"hipogalactia",A.a(["hipogalactia","insuf lactacao","pouco leite materno"],l),"mastite",A.a(["mastite","mastitis","infec mama puerperal"],l),"menopausa",A.a(["menopausa","menopausia","climateric","sintoma menopausa"],l),ak1,A.a(["osteoporose pos-menopausa","osteoporose mulher","fratura vertebral mulher"],l),ak2,A.a(["cancer colo utero","carcinoma cervical","ca cervix","hpv cervix"],l),"cancer_utero",A.a(["cancer endometrio","cancer corpo utero","carcinoma endometrial"],l),"cancer_ovario",A.a(["cancer ovario","neoplasia ovario","carcinoma ovariano"],l),"mola_hidatiforme",A.a(["mola hidatiforme","neoplasia trofoblastica","doenca trofoblastica gestac"],l),ak3,A.a(["hiperemese gravid","vomito incoercivel gravidez"],l),ak4,A.a(["colestase gestacional","prurido gestacional","ictericia gestacional"],l),"diabetes_gestac",A.a(["diabetes gestacional","dmg ","glicemia gestacao"],l),"febre_sem_foco",A.a(["febre sem foco crianca","febre pq crianca sem causa","fsf "],l),"desidratacao_ped",A.a(["desidratacao pediatrica","desidratacao crianca","crianca desidrataada"],l),"gastrenterite_ped",A.a(["gastrenterite pediatrica","gastroenterite crianca","diarr vomit crianca"],l),"pneumonia_ped",A.a(["pneumonia crianca","pneumonia pediatrica","pao pediatric"],l),"sepse_neonatal",A.a(["sepse neonatal","infec neonatal","sepsis neonatal","rn sepse"],l),ak5,A.a(["sindrome respiratoria neonatal","sindrome membrana hialina","smh "],l),ak6,A.a(["enterocolite necrosante","necrotizing enterocolitis","ecn "],l),"hernia_diafragm",A.a(["hernia diafragmatica","hernia diafrag neonatal"],l),"estenose_piloro",A.a(["estenose hipertrofica piloro","estenose piloro","vomito projetil neonatal"],l),"atresia_esofago",A.a(["atresia esofago","fistula traqueoesofagica"],l),ak7,A.a(["hiperbilirrubinemia neonatal","ictericia neonatal","ictericia rn"],l),"tosse_ferina",A.a(["tosse ferina","pertussis ped","bordetella crian"],l),"sarampo",A.a(["sarampo","measles","paramixovirus sarampo"],l),"caxumba",A.a(["caxumba","parotidite epidemica","mumps"],l),"rubeola",A.a(["rubeola","rubella","rubeola congenita"],l),"escarlatina",A.a(["escarlatina","scarlet fever","streptococ exantema"],l),"doenca_mao_pe_boca",A.a(["doenca mao pe boca","enterovirus exantema","mpbd "],l),"roseola",A.a(["roseola","exantema subito","hhv-6 exantema"],l),"crise_febril",A.a(["convuls febril","crise febril","convuls febre crian"],l),"autismo",A.a(["transtorno espectro autista","tea ","autism"],l),"tdah",A.a(["tdah ","adhd ","transtorno deficit atenc hiperativid"],l),"sindrome_west",A.a(["sindrome west","espasmos infantis","hipsarritmia"],l),"sindrome_dravet",A.a(["sindrome dravet","epilepsia mioclonica infan grave"],l),"prematuridade",A.a(["prematuridad","rn prematuro","prematuro ","prematuro extremo"],l),ak8,A.a(["bexiga hiperativa","urge incontinencia","urge urinaria","incontinencia urge"],l),ak9,A.a(["incontinencia urinaria","incontinence urine","perda urina","incontinencia urin"],l),al0,A.a(["cistite intersticial","bexiga dolorosa","pia ","painful bladder"],l),"uretrolitiase",A.a(["ureterolitiase","calculo ureter","c\xf3lica ureteral"],l),"cancer_rim",A.a(["cancer renal","carcinoma celulas renais","ccr ","hipernefroma"],l),"cancer_bexiga",A.a(["cancer bexiga","carcinoma urotelial","tumor bexiga"],l),"varicocele",A.a(["varicocele","varicocele infertilid"],l),"orquite",A.a(["orquite","orchitis","infec testiculo"],l),"epididimite",A.a(["epididimite","epididymitis","infec epidid"],l),"tor\xe7ao_testicular",A.a(["torcao testicular","torsao testis","escroto agudo"],l),"hidrocele",A.a(["hidrocele","acumulo liquido escroto"],l),"hipospadias",A.a(["hipospadias","uretra hipospad"],l),"fimose",A.a(["fimose","fimosis","preputio estreito"],l),"parafimose",A.a(["parafimose","paraphimosis","emergencia preputio"],l),"haloperidol_dr",A.a(["haloperidol","haldol","serenase","para que serve o haloperidol","dose haloperidol","dose haldol","haloperidol brote","haloperidol agitacao","haloperidol psicose","haloperidol ampola","haloperidol iv","haloperidol im","haldol decanoato","haldol depot"],l),"clorpromazina_dr",A.a(["clorpromazina","amplictil","thorazine","dose clorpromazina","clorpromazina agitacao","largactil"],l),"levomepromazina_dr",A.a(["levomepromazina","nozinan","dose levomepromazina","methotrimeprazine"],l),"flufenazina_dr",A.a(["flufenazina","modecate","dose flufenazina","flufenazina depot"],l),"zuclopentixol_dr",A.a(["zuclopentixol","clopixol","clopixol acufase","dose zuclopentixol"],l),"droperidol_dr",A.a(["droperidol","dose droperidol","droperidol agitacao","droperidol antiemetico"],l),"risperidona_dr",A.a(["risperidona","risperdal","dose risperidona","risperidona depot","risperdal consta","risperidona para psicose","risperidona crianca","risperidona idoso"],l),"olanzapina_dr",A.a(["olanzapina","zyprexa","dose olanzapina","olanzapina im","olanzapina velotab","olanzapina bipolar","olanzapina psicose"],l),"quetiapina_dr",A.a(["quetiapina","seroquel","dose quetiapina","quetiapina xl","quetiapina bipolar","quetiapina ansiedade","quetiapina insonia","quetiapina psicose","seroquelxr"],l),"clozapina_dr",A.a(["clozapina","clozaril","leponex","dose clozapina","clozapina refrataria","clozapina esquizofrenia","clozapina neutropenia","agranulocitose clozapina"],l),"aripiprazol_dr",A.a(["aripiprazol","abilify","dose aripiprazol","aripiprazol depot","aripiprazol bipolar","abilify maintena"],l),"paliperidona_dr",A.a(["paliperidona","invega","xeplion","dose paliperidona","paliperidona depot","invega sustenna"],l),"lurasidona_dr",A.a(["lurasidona","latuda","dose lurasidona"],l),"cariprazina_dr",A.a(["cariprazina","reagila","dose cariprazina"],l),"sertralina_dr",A.a(["sertralina","zoloft","dose sertralina","sertralina depressao","sertralina ansiedade","sertralina panico","sertralina toc","sertralina iniciar"],l),"fluoxetina_dr",A.a(["fluoxetina","prozac","dose fluoxetina","fluoxetina depressao","fluoxetina toc","fluoxetina crianca"],l),"paroxetina_dr",A.a(["paroxetina","paxil","seroxat","dose paroxetina","paroxetina ansiedade","paroxetina panico"],l),"escitalopram_dr",A.a(["escitalopram","lexapro","cipralex","dose escitalopram","escitalopram depressao"],l),"citalopram_dr",A.a(["citalopram","celexa","dose citalopram"],l),"fluvoxamina_dr",A.a(["fluvoxamina","luvox","dose fluvoxamina","fluvoxamina toc"],l),"venlafaxina_dr",A.a(["venlafaxina","effexor","dose venlafaxina","venlafaxina ansiedade","venlafaxina depressao","venlafaxina fibromialgia","efexor"],l),"duloxetina_dr",A.a(["duloxetina","cymbalta","dose duloxetina","duloxetina dor","duloxetina fibromialgia","duloxetina depressao"],l),"desvenlafaxina_dr",A.a(["desvenlafaxina","pristiq","dose desvenlafaxina"],l),"mirtazapina_dr",A.a(["mirtazapina","remeron","dose mirtazapina","mirtazapina insonia","mirtazapina apetite"],l),"trazodona_dr",A.a(["trazodona","desyrel","dose trazodona","trazodona insonia"],l),"bupropiona_dr",A.a(["bupropiona","wellbutrin","zyban","dose bupropiona","bupropiona tdah","bupropiona tabagismo"],l),"agomelatina_dr",A.a(["agomelatina","valdoxan","dose agomelatina"],l),"amitriptilina_dr",A.a(["amitriptilina","elavil","dose amitriptilina","amitriptilina dor","amitriptilina cefaleia","amitriptilina insonia"],l),"nortriptilina_dr",A.a(["nortriptilina","pamelor","dose nortriptilina"],l),"imipramina_dr",A.a(["imipramina","tofranil","dose imipramina","imipramina tdah"],l),"clomipramina_dr",A.a(["clomipramina","anafranil","dose clomipramina","clomipramina toc"],l),"moclobemida_dr",A.a(["moclobemida","manerix","dose moclobemida","imao reversivel"],l),"litio_dr",A.a(["litio","lition","lithium","dose litio","litio toxicidade","litionio","litio nivel serico","litio bipolar","carbolith","lithane"],l),"valproato_dr",A.a(["valproato","acido valproico","depakene","depakote","dose valproato","valproato bipolar","divalproex"],l),"lamotrigina_dr",A.a(["lamotrigina","lamictal","dose lamotrigina","lamotrigina bipolar","lamotrigina epilepsia","lamotrigina rash"],l),"carbamazepina_dr",A.a(["carbamazepina","tegretol","dose carbamazepina","carbamazepina bipolar","carbamazepina epilepsia"],l),"topiramato_dr",A.a(["topiramato","topamax","dose topiramato","topiramato enxaqueca","topiramato epilepsia"],l),"oxcarbazepina_dr",A.a(["oxcarbazepina","trileptal","dose oxcarbazepina"],l),"diazepam_dr",A.a(["diazepam","valium","dose diazepam","diazepam agitacao","diazepam convulsao","diazepam ansiedade"],l),"midazolam_dr",A.a(["midazolam","dormicum","dose midazolam","midazolam sedacao","midazolam convulsao","midazolam intubacao"],l),"lorazepam_dr",A.a(["lorazepam","ativan","dose lorazepam","lorazepam agitacao"],l),"clonazepam_dr",A.a(["clonazepam","rivotril","klonopin","dose clonazepam","clonazepam epilepsia","clonazepam panico"],l),"alprazolam_dr",A.a(["alprazolam","xanax","dose alprazolam","alprazolam ansiedade","alprazolam panico"],l),"zolpidem_dr",A.a(["zolpidem","ambien","stilnox","dose zolpidem","zolpidem insonia"],l),"zopiclona_dr",A.a(["zopiclona","imovane","dose zopiclona","zopiclona insonia"],l),"flumazenil_dr",A.a(["flumazenil","dose flumazenil","flumazenil reverter benzo","antidoto benzodiazep"],l),"metilfenidato_dr",A.a(["metilfenidato","ritalin","concerta","dose metilfenidato","metilfenidato tdah","ritalina"],l),"atomoxetina_dr",A.a(["atomoxetina","strattera","dose atomoxetina","atomoxetina tdah"],l),"modafinil_dr",A.a(["modafinil","provigil","dose modafinil","modafinil narcolepsia"],l),"donepezila_dr",A.a(["donepezila","donepezil","aricept","dose donepezila","donepezila alzheimer"],l),"rivastigmina_dr",A.a(["rivastigmina","exelon","dose rivastigmina","rivastigmina alzheimer","rivastigmina parkinson"],l),"galantamina_dr",A.a(["galantamina","reminyl","dose galantamina"],l),"memantina_dr",A.a(["memantina","namenda","dose memantina","memantina alzheimer"],l),"levodopa_dr",A.a(["levodopa","carbidopa","sinemet","ldopa","dose levodopa","levodopa parkinson","levodopa-carbidopa"],l),"pramipexol_dr",A.a(["pramipexol","mirapex","dose pramipexol","pramipexol pernas inquietas"],l),"biperideno_dr",A.a(["biperideno","akineton","dose biperideno","biperideno extrapiramidal"],l),"naloxona_dr",A.a(["naloxona","narcan","dose naloxona","naloxona overdose opioide","naloxona reverter"],l),"naltrexona_dr",A.a(["naltrexona","revia","dose naltrexona","naltrexona alcoolismo"],l),"dissulfiram_dr",A.a(["dissulfiram","antabuse","dose dissulfiram","dissulfiram alcool"],l),"acamprosato_dr",A.a(["acamprosato","campral","dose acamprosato","acamprosato alcoolismo"],l),"vareniclina_dr",A.a(["vareniclina","champix","dose vareniclina","vareniclina tabagismo"],l),"buprenorfina_dr",A.a(["buprenorfina","subutex","suboxone","dose buprenorfina","buprenorfina dependencia opioide"],l),"ketamina_dr",A.a(["ketamina","ketamine","esketamina","spravato","dose ketamina","ketamina depressao refrataria"],l),"ziprasidona_dr",A.a(["ziprasidona","geodon","dose ziprasidona","ziprasidona qt","ziprasidona esquizofrenia"],l),"oxacilina_dr",A.a(["oxacilina","dose oxacilina","oxacilina mssa","oxacilina estafilococo","oxacilina endocardite"],l),"cefazolina_dr",A.a(["cefazolina","ancef","dose cefazolina","cefazolina profilaxia","cefazolina cirurgia","cefazolina mssa"],l),"cefoxitina_dr",A.a(["cefoxitina","mefoxin","dose cefoxitina","cefoxitina anaerobio","cefoxitina bacteroides","cefoxitina profilaxia abdominal"],l),"cefotaxima_dr",A.a(["cefotaxima","claforan","dose cefotaxima","cefotaxima meningite","cefotaxima neonato","cefotaxima gram negativo"],l),"doripenem_dr",A.a(["doripenem","doribax","dose doripenem","doripenem pseudomonas","doripenem multirresistente"],l),"aztreonam_dr",A.a(["aztreonam","azactam","dose aztreonam","aztreonam alergico penicilina","aztreonam gram negativo"],l),"tobramicina_dr",A.a(["tobramicina","tobramycin","dose tobramicina","tobramicina pseudomonas","tobramicina fibrose cistica","tobramicina inalatoria"],l),al1,A.a(["estreptomicina","streptomycin","dose estreptomicina","estreptomicina tuberculose","estreptomicina resistente"],l),"teicoplanina_dr",A.a(["teicoplanina","targocid","dose teicoplanina","teicoplanina mrsa","teicoplanina vancomicina","teicoplanina im"],l),"eritromicina_dr",A.a(["eritromicina","erythromycin","dose eritromicina","eritromicina procin\xe9tico","eritromicina motilidade gastrica","eritromicina qt"],l),"minociclina_dr",A.a(["minociclina","minocycline","minocin","dose minociclina","minociclina acinetobacter","minociclina mrsa","minociclina acne"],l),"rifampicina_dr",A.a(["rifampicina","rifampin","rifadin","dose rifampicina","rifampicina interacao","rifampicina tuberculose","rifampicina indutor"],l),"isoniazida_dr",A.a(["isoniazida","isoniazid","inh tuberculose","dose isoniazida","isoniazida neuropatia","isoniazida piridoxina","isoniazida hepatite"],l),"pirazinamida_dr",A.a(["pirazinamida","pyrazinamide","dose pirazinamida","pirazinamida gota","pirazinamida uricemia","pirazinamida hepatotox"],l),"etambutol_dr",A.a(["etambutol","myambutol","dose etambutol","etambutol visao","etambutol neurite optica","etambutol tuberculose"],l),"ganciclovir_dr",A.a(["ganciclovir","cytovene","dose ganciclovir","ganciclovir cmv","ganciclovir mielossupressao","ganciclovir imunossuprimido"],l),al2,A.a(["valganciclovir","valcyte","dose valganciclovir","valganciclovir cmv","valganciclovir oral cmv"],l),"itraconazol_dr",A.a(["itraconazol","sporanox","dose itraconazol","itraconazol icc","itraconazol interacao","itraconazol histoplasmose"],l),"voriconazol_dr",A.a(["voriconazol","vfend","dose voriconazol","voriconazol aspergilose","voriconazol alucinacao visual","voriconazol fotossensibilidade"],l),"caspofungina_dr",A.a(["caspofungina","cancidas","dose caspofungina","caspofungina candida","caspofungina candidemia"],l),"micafungina_dr",A.a(["micafungina","mycamine","dose micafungina","micafungina candida","micafungina profilaxia tmo"],l),"terbinafina_dr",A.a(["terbinafina","lamisil","dose terbinafina","terbinafina onicomicose","terbinafina ageusia","terbinafina hepatotox"],l),"praziquantel_dr",A.a(["praziquantel","biltricide","dose praziquantel","praziquantel esquistossomose","praziquantel neurocisticercose"],l),"bosentana_dr",A.a(["bosentana","tracleer","dose bosentana","bosentana hap","bosentana endotelina","bosentana hipertensao pulmonar","bosentana teratogenica"],l),"minoxidil_dr",A.a(["minoxidil","loniten","dose minoxidil sistemico","minoxidil hipertensao refrataria","minoxidil hipertricose","minoxidil drc"],l),"doxazosina_dr",A.a(["doxazosina","cardura","dose doxazosina","doxazosina hpb","doxazosina sincope primeira dose","doxazosina alfa1"],l),"terazosina_dr",A.a(["terazosina","hytrin","dose terazosina","terazosina hpb","terazosina alfa bloqueador","terazosina hipotensao"],l),"dutasterida_dr",A.a(["dutasterida","avodart","dose dutasterida","dutasterida hpb","dutasterida 5alfa redutase","dutasterida dht"],l),"tadalafila_dr",A.a(["tadalafila","cialis","adcirca","dose tadalafila","tadalafila disfuncao eretil","tadalafila hap","tadalafila nitrato"],l),"argatrobana_dr",A.a(["argatrobana","argatroban","dose argatrobana","argatrobana hit","argatrobana trombocitopenia heparina","argatrobana renal"],l),"sugamadex_dr",A.a(["sugamadex","bridion","dose sugamadex","sugamadex rocuronio","sugamadex reverter","sugamadex emergencia"],l),"cisatracurio_dr",A.a(["cisatracurio","nimbex","dose cisatracurio","cisatracurio hofmann","cisatracurio renal","cisatracurio uti"],l),"atracurio_dr",A.a(["atracurio","tracrium","dose atracurio","atracurio histamina","atracurio laudanosina","atracurio hofmann"],l),"pancuronio_dr",A.a(["pancuronio","pavulon","dose pancuronio","pancuronio longa duracao","pancuronio vagolitico","pancuronio taquicardia"],l),"neostigmina_dr",A.a(["neostigmina","prostigmin","dose neostigmina","neostigmina reverter bnm","neostigmina atropina","neostigmina tof"],l),al3,A.a(["piridostigmina","mestinon","dose piridostigmina","piridostigmina miastenia","piridostigmina crise colinergica"],l),"tiopental_dr",A.a(["tiopental","thiopental","pentothal","dose tiopental","tiopental inducao","tiopental epilepsia refrataria","tiopental pic"],l),"halotano_dr",A.a(["halotano","halothane","dose halotano","halotano hepatite","halotano hipertermia maligna","halotano catecolamina"],l),"sevoflurano_dr",A.a(["sevoflurano","sevoflurane","dose sevoflurano","sevoflurano inducao","sevoflurano hipertermia maligna"],l),"isoflurano_dr",A.a(["isoflurano","isoflurane","forane","dose isoflurano","isoflurano manutencao","isoflurano hipertermia maligna"],l),"bupivacaina_dr",A.a(["bupivacaina","marcaine","dose bupivacaina","bupivacaina cardiotoxica","bupivacaina epidural","bupivacaina raqui","bupivacaina emulsao lipidica"],l),"ropivacaina_dr",A.a(["ropivacaina","naropin","dose ropivacaina","ropivacaina bloqueio periferico","ropivacaina seguranca cardiaca"],l),"prilocaina_dr",A.a(["prilocaina","citanest","dose prilocaina","prilocaina metahemoglobinemia","prilocaina azul metileno","prilocaina emla"],l),"protamina_dr",A.a(["protamina","protamine","dose protamina","protamina heparina reverter","protamina hnf","protamina hbpm",al4],l),"simvastatina_dr",A.a(["simvastatina","zocor","dose simvastatina","simvastatina dose","simvastatina rabdomioli"],l),"ciprofibrato_dr",A.a(["ciprofibrato","modalim","lipanor","dose ciprofibrato"],l),"prasugrel_dr",A.a(["prasugrel","effient","dose prasugrel","prasugrel icp","prasugrel sca"],l),"cilostazol_dr",A.a(["cilostazol","pletal","dose cilostazol","cilostazol isquemia"],l),"abciximabe_dr",A.a(["abciximabe","abciximab","reopro","dose abciximabe","abciximabe icp"],l),"tirofibana_dr",A.a(["tirofibana","tirofiban","aggrastat","dose tirofibana"],l),"bivalirudina_dr",A.a(["bivalirudina","bivalirudin","angiomax","dose bivalirudina","bivalirudina hit"],l),"edoxabana_dr",A.a(["edoxabana","edoxaban","lixiana","dose edoxabana"],l),"dalteparina_dr",A.a(["dalteparina","dalteparin","fragmin","dose dalteparina","dalteparina cancer"],l),"dipiridamol_dr",A.a(["dipiridamol","dipyridamole","persantine","dose dipiridamol","dipiridamol avc"],l),"eptifibatida_dr",A.a(["eptifibatida","eptifibatide","integrilin","dose eptifibatida"],l),"ibutilida_dr",A.a(["ibutilida","ibutilide","corvert","dose ibutilida","ibutilida cardioversao"],l),"valsartana_dr",A.a(["valsartana","diovan","dose valsartana","valsartana ic","valsartana has"],l),"irbesartana_dr",A.a(["irbesartana","irbesartan","avapro","dose irbesartana"],l),"telmisartana_dr",A.a(["telmisartana","telmisartan","micardis","dose telmisartana"],l),"ramipril_dr",A.a(["ramipril","altace","triatec","dose ramipril","ramipril ic","ramipril pos iam"],l),"lisinopril_dr",A.a(["lisinopril","zestril","prinivil","dose lisinopril","lisinopril ic"],l),"perindopril_dr",A.a(["perindopril","coversyl","dose perindopril","perindopril avc"],l),"trandolapril_dr",A.a(["trandolapril","mavik","dose trandolapril","trandolapril pos iam"],l),"fosinopril_dr",A.a(["fosinopril","monopril","dose fosinopril","fosinopril hepatopata"],l),"amilorida_dr",A.a(["amilorida","amiloride","dose amilorida","amilorida hipocalemia"],l),"torsemida_dr",A.a(["torsemida","torsemide","demadex","dose torsemida","torsemida ic"],l),"bumetanida_dr",A.a(["bumetanida","bumetanide","bumex","dose bumetanida"],l),"indapamida_dr",A.a(["indapamida","indapamide","dose indapamida","indapamida hipertensao"],l),"metildopa_dr",A.a(["metildopa","methyldopa","aldomet","dose metildopa","metildopa gravidez","metildopa has gestacional"],l),"acarbose_dr",A.a(["acarbose","glucobay","dose acarbose","acarbose diabetes","acarbose hiperglicemia pos prandial"],l),al5,A.a(["degludeca","tresiba","degludec","dose degludeca","insulina basal ultralonga"],l),al6,A.a(["acido zoledronico","zoledronate","aclasta","zometa","dose zoledronico","zoledronico osteoporose"],l),"alendronato_dr",A.a(["alendronato","fosamax","alendronate","dose alendronato","alendronato osteoporose"],l),"teriparatida_dr",A.a(["teriparatida","forteo","teriparatide","dose teriparatida","teriparatida osteoporose grave"],l),"cinacalcete_dr",A.a(["cinacalcete","sensipar","mimpara","dose cinacalcete","cinacalcete hiperparatireoidismo","cinacalcete dialise"],l),"cabergolina_dr",A.a(["cabergolina","dostinex","cabergoline","dose cabergolina","cabergolina hiperprolactinemia","cabergolina prolactinoma"],l),al7,A.a(["fludrocortisona","florinef","fludrocortisone","dose fludrocortisona","fludrocortisona addison",al8],l),al9,A.a(["levonorgestrel","mirena","dose levonorgestrel","levonorgestrel emergencia",am0],l),am1,A.a(["desmopressina","ddavp","desmopressin","dose desmopressina","desmopressina diabetes insipidus"],l),am2,A.a(["dexlansoprazol","dexilant","dexlansoprazole","dose dexlansoprazol"],l),"bismuto_dr",A.a(["bismuto","subsalicilato bismuto","bismuth","dose bismuto","bismuto helicobacter"],l),"azatioprina_dr",A.a(["azatioprina","azathioprine","imuran","dose azatioprina","azatioprina alopurinol","azatioprina dii"],l),"infliximabe_dr",A.a(["infliximabe","infliximab","remicade","dose infliximabe","infliximabe crohn","infliximabe rcu","infliximabe tuberculose"],l),"adhd_adulto",A.a(["tdah adulto","adhd adulto","deficit atencao adulto"],l),am3,A.a(["anorexia nervosa","anorexia","transtorno alimentar restrit"],l),"bulimia",A.a(["bulimia nervosa","transtorno alimentar purga","bulimia"],l),"binge_eating",A.a(["compulsao alimentar","binge eating","transtorno compulsao aliment"],l),am4,A.a(["transtorno personalidade borderline","tpb ","borderline personality"],l),"personalidade_antis",A.a(["transtorno personalidade antisocial","psicopatia","sociopatia"],l),"somatizacao",A.a(["somatizacao","transtorno somatoforme","somatoform","medicamente inexplicad"],l),"conversao",A.a(["transtorno conversao","sintoma neurologico funcional","histeria conversao"],l),"dismorfofobia",A.a(["dismorfofobia","bdd ","transtorno dismorfico corporal"],l),"jogo_patologico",A.a(["jogo patologico","ludopatia","gambling disorder"],l),"hipocondria",A.a(["hipocondria","ansied saude","transtorno ansied doenca"],l),"estress_agudo",A.a(["transtorno estress agudo","reacao aguda estress"],l),"luto_complica",A.a(["luto complicad","luto prolongad","luto patologico"],l),"insonia",A.a(["insonia","insomnia","disturbio sono insonia","dificuldade dormir"],l),"hipersonia",A.a(["hipersonia","sonolencia excessiva","narcolepsia","cataplexia"],l),"parassonia",A.a(["parassonia","terror noturno","sonambulismo","pesadelo parasso"],l),"mutismo_selet",A.a(["mutismo seletivo","mutismo select"],l),"fobia_especifica",A.a(["fobia especifica","fobia simples","medo especifico irrac"],l),"fobia_social",A.a(["fobia social","transtorno ansied social","social anxiety"],l),"alucinos_organica",A.a(["alucinose organica","delirium alucinac","alucinac organica"],l),"sdra",A.a(["sdra ","ards ","sindrome angust respirat agud","lesao pulm agud"],l),"hepatite_fulmin",A.a(["hepatite fulminante","falencia hepatica agud","hepatit agud grave"],l),am5,A.a(["intox paracetamol","toxicidade paracetamol","toxicidade acetaminof","hepatotox paracetamol"],l),am6,A.a(["intox organofosfat","intox pesticida","crise colinergica","organofosf envenenamento"],l),"intox_monoxido",A.a(["intox monoxido carbono","intox co ","envenenamento co ","monoxido carbon"],l),"intox_metanol",A.a(["intox metanol","envenenamento metanol","acidose metabol anion gap alco"],l),am7,A.a(["intox etileno glicol","envenenamento etileno glicol"],l),"intox_digoxina",A.a(["intox digoxina","toxicidade digoxina","digoxin toxicity"],l),"intox_litio",A.a(["intox litio","toxicidade litio","lithium toxicity"],l),"hipotermia",A.a(["hipotermia ","temperatura corp baix","hipothermia"],l),"hipertermia",A.a([am8,"golpe calor","heat stroke","temperatura elevad grave"],l),"afogamento",A.a(["afogamento","quase afogamento","submersao"],l),"mordedura",A.a(["mordedura animal","picada cobra","peconhento","envenenamento serpente"],l),"ferida_cirurgica",A.a(["infec ferida cirurgica","deiscencia ferida","infec sitio cirurgico"],l),"nutri\xe7\xe3o_parenteral",A.a(["nutricao parenteral total","npt ","nutri\xe7\xe3o parenter","nutri\xe7\xe3o iv"],l),"suporte_nutric",A.a(["suporte nutric",am9,"sonda enteral"],l),"angioplastia",A.a(["angioplastia coronaria","icp ","pci ","cateterismo intervenc","stent coronario"],l),"troca_valv",A.a(["substituicao valvular","cirurgia valva","troca valv"],l),"cirurgia_pontagem",A.a(["pontagem coronaria","cirurgia revascul miocardica","crm ","cabg "],l),"crt",A.a(["terapia ressincron cardiac","crt ","marcapasso biv","cdn implant"],l),"cardioversao",A.a(["cardioversao eletrica","cardioversao farmaco","cve ","desfibril"],l),"ablacao_cardiaca",A.a(["ablacao cardiaca","ablacao rf","ablacao fa"],l),"desnutricao",A.a(["desnutricao","malnutricao","deficit nutric","subnutricao"],l),"sarcopenia",A.a(["sarcopenia","perda massa muscul","dinapenia"],l),an0,A.a(["deficiencia vitamina d","hipovitaminose d","vitamina d insufic"],l),an1,A.a(["deficiencia vitamina b12","cobalamina defic","b12 baixo"],l),an2,A.a(["deficiencia folato","deficiencia acido folico","folato baix"],l),"defic_zinco",A.a(["deficiencia zinco","hipozincemia","acrodermatite enterop"],l),"defic_selenio",A.a(["deficiencia selenio","hiposeleniemia"],l),"defic_ferro",A.a([an3,"ferropenia","ferro baix"],l),"gota_alimentar",A.a(["gota alimentar","hiperuricemia dieta","artrite gotosa dieta"],l),"cancer_tireoide",A.a(["cancer tireoid","carcinoma papilif tireoid","carcinoma folicular tireoid","carcinoma medular tireoid"],l),"cancer_adrenal",A.a(["carcinoma adrenal","cancer gland adrenal","feocromocitom maligno"],l),an4,A.a(["cancer renal metastat","ccr avancado","carcinoma renal metast"],l),an5,A.a(["cancer testicular","tumor germinativo","seminoma","nao seminoma testicular"],l),"cancer_peniano",A.a(["cancer penis","carcinoma penis"],l),"meduloblastoma",A.a(["meduloblastoma","tumor fosso posterior crian"],l),"glioblastoma",A.a(["glioblastoma","gbm ","glioblastoma multiforme","tumor cerebral maligno"],l),"astrocitoma",A.a(["astrocitoma","glioma baixo grau","glioma alto grau"],l),"meningioma",A.a(["meningioma","tumor meninges","meningioma cerebral"],l),"neuroblastoma",A.a(["neuroblastoma","tumor neural crianca"],l),"sarcoma",A.a(["sarcoma osseo","osteossarcoma","sarcoma ewing","sarcoma partes moles"],l),an6,A.a(["carcinoma cabeca pescoco","carcinoma espinocel cabeca","cancer laringe","cancer hipofaringe","cancer orofaringe"],l),"cancer_nasofaringe",A.a(["cancer nasofaringe","carcinoma nasofaringeo","ebv nasofaringe"],l),an7,A.a(["leucemia celula capilar","hairy cell leukemia","lcc "],l),"linfoma_burkitt",A.a(["linfoma burkitt","burkitt lymphoma","linfoma muito agressiv"],l),"linfoma_manto",A.a(["linfoma manto","mantle cell lymphoma","linfoma celula manto"],l),an8,A.a(["linfoma folicular","follicular lymphoma","linfoma indolente"],l),"mieloma_amiloidose",A.a(["mieloma amiloid","amiloidose al","amiloidose mieloma"],l),an9,A.a(["leucemia promielocitic agud","lpa ","apl ","m3 leucemia","pml rara"],l),ao0,A.a(["sindrome mielodisplasic","smd ","mds ","citopenia medular displasica"],l),ao1,A.a(["cistite hemorragica","hematuria pos quimio","cistite quimio radioterapia"],l),ao2,A.a(["rejeicao transplante","rejeicao organ","rejeicao agud transp"],l),"transplante_rim",A.a(["transplante renal","transplante rim","transplante renal pos-op"],l),"transplante_figado",A.a(["transplante hepatico","transplante figado","transplante hepat pos-op"],l),"transplante_coracao",A.a(["transplante cardiaco","transplante coracao","transplante card pos-op"],l),"transplante_pulmao",A.a(["transplante pulmonar",ao3],l),ao4,A.a(["transplante medula ossea","transplante celula trunc hematop","tcth ","tmo "],l),ao5,A.a(["doenca enxerto hospedeiro","gvhd ","deh "],l),"pneumoconiose",A.a(["pneumoconiose","doenca pulm ocupacional","lesao pulm poeira"],l),"saturnismo",A.a(["saturnismo","intox chumbo","lead poisoning","chumbo sanguine elevad"],l),"intox_mercurio",A.a(["intox mercurio","mercurialism","envenenamento mercurio"],l),"intox_arsenic",A.a(["intox arsenico","arsenicismo","envenenamento arsenio"],l),"burn_out",A.a(["burnout","esgotamento profissional","burn-out"],l),"reacao_adversa",A.a(["reacao adversa medicamento","ram ","efeito adverso medicamento","toxicidade medicament"],l),"interacao_medicam",A.a(["interacao medicament","interacao drug","drug interaction","interacao farmacodin"],l),"polifarmacia",A.a(["polifarmacia","polimedicado","idoso multiplos medicam"],l),"sindrome_fragil",A.a(["sindrome fragilidade","fragil idoso","frailty","frailty sindrome"],l),"quedas_idoso",A.a(["quedas idoso","queda idoso","fratura por queda","prevencao quedas"],l),"demencia_lewy",A.a(["demencia lewy","corpos de lewy","demencia corpo lewy"],l),"demencia_front",A.a(["demencia frontotemporal","dft ","ftd ","demencia lobo frontal"],l),"delirium_idoso",A.a(["delirium idoso","confusao agud idoso","sd confusional agud idoso"],l),"incontinencia_fecal",A.a(["incontinencia fecal","incontinencia anal","perda fezes"],l),"constipacao_cronica",A.a(["constipacao cronica","obstipacao cronica","constipacao funcional adult"],l),"bexiga_neuropat",A.a(["bexiga neuropatica","disfuncao vesical neurogen","bexiga neurogen"],l),"sarcopenia_idoso",A.a(["sarcopenia idoso","perda massa muscul idoso"],l),"depressao_idoso",A.a(["depressao idoso","depressao geriat","depressao velhice"],l),"dpa_alveolar",A.a(["proteinose alveolar pulm","pap ","preenchimento alveolar lipido"],l),"histiocitose",A.a(["histiocitose celula langerhans pulm","langerhans pulm"],l),ao6,A.a(["hipertensao pulm tromboembol cronic","hptec ","cteph "],l),ao7,A.a([af3,"wegener","vasculite anca pulm"],l),ao8,A.a(["pneumonia organiz criptogen","cop ","boop "],l),"fibrosia_pulm_secund",A.a(["fibrose pulm secundaria","fibrose pulm colagenose","fibrose pulm ar"],l),"hepatite_alcoolica",A.a(["hepatite alcoolica","hepatopatia alcoolica agud","cirrose alcoolica agud"],l),"hepatite_toxica",A.a(["hepatite toxica","hepatotox medicamentosa","dili ","lesao hepatica medicat"],l),"encefal_hepatica",A.a(["encefalopatia hepatica","coma hepatic","asterixe hepatic"],l),"peritonite_bact",A.a(["peritonite bacteriana espontanea","pbe ","sbp "],l),"varizes_esofagicas",A.a(["varizes esofagicas","hemorragia variz","sangramento variz esof"],l),"hiperesplenismo",A.a(["hiperesplenismo","esplenomeg hipercitopen","hipersecrestr esplenico"],l),"hepatite_cronica_b",A.a(["hepatite b cronica","hbv cronica","hepatite b ativa"],l),"hepatite_cronica_c",A.a(["hepatite c cronica","hcv cronica","hepatite c ativa"],l),"colangiocarc",A.a([ag3,"cancer via biliar intrahep","ca colangios"],l),"colelitiase",A.a(["colelitiase","calculo vesicular","pedra vesicula","litiase biliar"],l),ao9,A.a(["hipertensao intracraniana","hic ","pressao intracraniana elevad"],l),"herniacao_cerebral",A.a(["herniacao cerebral","herniacao uncal","herniacao uncus","herniacao amigdala"],l),"morte_cerebral",A.a(["morte cerebral","morte encef","coma irreversivel","criterio morte encef"],l),"embolia_gordura",A.a(["embolia gordura","embolia lipidica","sindrome embolia gordura"],l),"sindrome_comp_abdom",A.a(["sindrome compartimento abdominal","pressao intra-abdom elevad","hia "],l),"crise_miastenia",A.a([ap0,"fraqueza muscul respir miastenia","miastenia crise"],l),ap1,A.a(["crise addisoniana","insuf adrenal agud","crise adrenal","colapso adrenal"],l),ap2,A.a(["hipercalcemia maligna","hipercalcemia cancer","hipercalcemia tumor"],l),ap3,A.a(["sindrome lise tumoral","slt ","tls ","lise tumoral quimio"],l),ap4,A.a(["neutropenia grave","agranulocitose","neutrofilo zero","infec neutropenia profund"],l),ap5,A.a(["hipoglicemia grave","coma hipoglicem","hipoglicemia profund","glicemia muito baixo"],l),"crise_hipertens_renov",A.a(["crise hipertens renovasc","emergencia hiperten renal"],l),"lesao_menisco",A.a(["lesao menisco","rotura menisco","menisco joelho"],l),"lesao_ligamento",A.a(["lesao ligamento","rotura lca","rotura lcd","ligamento joelho"],l),"tendinite",A.a(["tendinite","tendinopat","tendao inflamat","tendinite manguito"],l),"bursite",A.a(["bursite","bursitis","bolsa sinovial inflam"],l),"fasceite_plantar",A.a(["fasceite plantar","fascite plantar","dor calcaneo plantar"],l),"sindrome_dor_miof",A.a(["sindrome dor miofascial","ponto gatilho","trigger point"],l),"lombalgia",A.a(["lombalgia","dor lombar","lumbago","dorsalgia lombar"],l),"cervicalgia",A.a(["cervicalgia","dor cervical","cervicobrac"],l),"fibralgia",A.a(["fibromialgia","sensibilizac central","dor cronica difusa"],l),"rabdo_exercicio",A.a(["rabdomiolise exercicio","cak elevad exercicio","mioglobin pos exercicio"],l),"alerg_alimentar",A.a(["alergia alimentar","hipersensibilidade aliment","reacao alerg aliment"],l),"alerg_latex",A.a(["alergia latex","hipersensib latex"],l),ap6,A.a([ap7,"hipersensib betalact","alergia antibiotico"],l),"alerg_aspirina",A.a(["alergia aspirina","hipersensib aine","intolerancia aspirina"],l),ap8,A.a(["rinosinusite alerg","rinite alerg","rinoconjuntivite alerg"],l),"asma_alerg",A.a(["asma alerg","asma atopica","asma alergen"],l),"asma_ocup",A.a(["asma ocupacional","asma agente trabalho"],l),"imunoterapia_alerg",A.a(["imunoterapia alerg","dessensibilizac alergia","vacina alergia"],l),ap9,A.a(["mastocitose sistemica","mastocitose adulto","kit-d816v mastocit"],l),aq0,A.a(["eosinofilia periferica","eosinofilia alerg","sindrome eosinofilica"],l),aq1,A.a(["imunodeficiencia primaria","agamaglobulinemia","imunodefic combina"],l),aq2,A.a(["imunodeficiencia comun variavel","idcv ","cvid "],l),"sindrome_wiskott",A.a(["wiskott aldrich","imunodefic wiskott","trombocitopen imunodefic"],l),"scid",A.a(["scid ","imunodefic combina grave","severe combined immunodefic"],l),"complemento_defic",A.a(["deficiencia complemento","defic c3 c4 c2","sistema complement defic"],l),"hiperiga",A.a(["hiper iga","hipergamaglobulinemia iga","iga elevad relapso infec"],l),"doenca_antifosfolip",A.a(["doenca antifosfolipidio","saf ","trombose anticardiolipina","anticorpo antifosfolip"],l),"dislipidemia",A.a(["dislipidemia","hipercolesterol","ldl elevad","hdl baix","triglicerid elevad","hipertrigliceridemc"],l),aq3,A.a(["hipertrigliceridemia","triglicerid muito elevad","pancreatite hipertriglicerd"],l),aq4,A.a(["hipercolesterol familiar","hipercolesterol genetica","hf ","ldl muito elevad genetica"],l),"hiperuricemia",A.a(["hiperuricemia","acido urico elevad","uricemia elevad"],l),aq5,A.a(["resistencia insulina","insulino resistente","hiperinsulinismo"],l),aq6,A.a(["taquicardia sinusal","taqui sinusal inapropriada","fc elevad sinusal"],l),"extrassistolia",A.a(["extrassistole","batimento ectopico","extrassistolia ventricular","extrassistolia atrial"],l),"flutteratrial",A.a(["flutter atrial","flutter auricular","flutter card"],l),"hipoglicemia_reativa",A.a(["hipoglicemia reativa","hipoglicemia pos prandial","hipoglicemia alimentar"],l),"alcalose_metabol_cron",A.a(["alcalose metabol cronica","alcalose hipoklorem"],l),"acidose_tubular",A.a(["acidose tubular renal","atr ","acidose hipercloremk"],l),"hipomagnesemia",A.a(["hipomagnesemia","magnesio baix","mg+ baix"],l),"hipermagnesemia",A.a(["hipermagnesemia","magnesio elevad","mg+ elevad"],l),"hipofosfatemia",A.a(["hipofosfatemia","fosfato baix","hipofosfat"],l),"hiperfosfatemia",A.a(["hiperfosfatemia","fosfato elevad","hiperfosfat"],l),"mpox",A.a(["mpox","var\xedola dos macacos","monkeypox","varicela monkeypox"],l),"ebola",A.a(["ebola","virus ebola","febre hemorr ebola"],l),"mers",A.a(["mers ","sindrome respirat oriente medio","mers-cov"],l),"sars",A.a(["sars ","sindrome respirat aguda grave","sars-cov-1"],l),"narcolepsia",A.a(["narcolepsia","cataplexia","sono excessivo diurno","paralisia sono"],l),aq7,A.a(["sindrome pernas inquietas","spi ","rls ","movimento periodico membros"],l),"parassonias",A.a(["parassonias","sonambulismo adulto","terror noturno adulto","comportamento sono rem"],l),"oxigenoterapia",A.a(["oxigenoterapia",aq8,"o2 suplementar","hipoxemia suporte"],l),"hiperbarica",A.a(["camara hiperbar","oxigenio hiperbarico","oht ","terapia hiperbar"],l),"hda",A.a(["hemorrag digest alta","hda ","hematemese","melena","varizes esof","sangram digest alto"],l),"hdb",A.a(["hemorrag digest baix","hdb ","hematoquez","sangram digest baix","rectorragia"],l),"pancreatite",A.a(["pancreatite","pancreatitis","lipase elevad","amilase elevad","necros pancrea"],l),"colecistite",A.a(["colecistite","colecistitis","calculo biliar","colelitias","colelitiasis"],l),"colangite",A.a(["colangite","colangitis","cole angite","infec biliar"],l),"apendicite",A.a(["apendicite","appendicitis","appendicite","mcburney"],l),"diverticulite",A.a(["diverticulit","diverticulosis complic"],l),"drge",A.a(["drge","reflux gastroesof","gerd","esofagite reflu","heartburn"],l),"ulcera_peptica",A.a(["ulcera peptic","ulcera gastric","ulcera duoden","h pylori","helicobacter"],l),"dii",A.a(["doenca inflamat intest","dii ","crohn","retocolite","colite ulcerosa"],l),"sii",A.a(["sindrome intest irritav","sii ","colon irritav","ibs "],l),"cirrose",A.a(["cirrose","cirrosis","hipertensao portal","ascite","encefalopatia hepat","hepatopatia cronic"],l),"hepatite",A.a(["hepatite viral","hepatite b","hepatite c","hepatitis viral","antiviral hepat"],l),"insuf_hepatica",A.a(["insuf hepatic","insuficiencia hepatic","falencia hepatic","necrose hepat massiv"],l),"ira",A.a(["insuf renal agud","ira ","lesao renal agud","lra ","acute kidney","oliguria renal"],l),"drc",A.a(["doenca renal cronic","drc ","insuf renal cronic","nefropat cronic","dialise cronic"],l),aq9,A.a(["glomerulonefrit","glomerulonephrit","sindrome nefrit","hematuria glomeru"],l),ar0,A.a(["sindrome nefrot","nefrose","proteinuria nefrot","hipoalbuminem"],l),"lit\xedase_renal",A.a(["litias renal","calculo renal","nefrolitias","colica renal","colica nefret"],l),"dm1",A.a(["diabetes mellitus tipo 1","dm1","diabetes tipo 1","insulinodepend"],l),"dm2",A.a(["diabetes mellitus tipo 2","dm2","diabetes tipo 2","diabetes nao insulinodep"],l),"diabetes",A.a(["diabet","glicemia elevad","hiperglicemia","hipoglicemia"],l),"cad",A.a(["cetoacidos","cad ","dka ","acidose diabetic","cetose diabetic"],l),"ehnc",A.a(["estado hiperosmolar","ehnc ","ehh ","coma hiperosmolar","hiperglicemia grave"],l),"hipoglicemia",A.a(["hipoglicem","glicemia baix","coma hipoglicem","glucagom emerg"],l),"hipotireoidismo",A.a(["hipotireoid","hypothyroid","levotiroxin","tsh elevad"],l),ar1,A.a(["hipertireoid","hyperthyroid","tireotoxicos","tsh baixo","graves ","propiltiouracil"],l),ar2,A.a(["crise tireotoxi","tempestade tireoid","thyroid storm"],l),"insuf_adrenal",A.a(["insuf adren","crisis adren","addison","cortisol baix","hidrocortisona crise"],l),"cushing",A.a(["cushing","hipercortisolism","cortisol exces"],l),"feocromocitoma",A.a(["feocromocitom","pheochromocytom","hipertensao parox","catecolamina exces"],l),"obesidade",A.a(["obesidade","sobrepeso","imc elevad","orlistat","liraglutida obesid"],l),"hipercalemia",A.a(["hipercalemia","hiperpotassemia","k+ elevad","potassio elevad","kayexalat"],l),"hipocalemia",A.a(["hipocalemia","hipopotassemia","k+ baix","potassio baix",ar3],l),"hiponatremia",A.a(["hiponatremia","sodio baix","na+ baix","hipoosm","siadh"],l),"hipernatremia",A.a(["hipernatremia","sodio elevad","na+ elevad","hiperosmolar sodio"],l),"hipocalcemia",A.a(["hipocalcemia","calcio baix","ca2+ baix","tetania",ar4],l),"hipercalcemia",A.a(["hipercalcemia","calcio elevad","ca2+ elevad","hipercalc"],l),"acidose_met",A.a(["acidose metabol","acidose metabolica","bicarbonato baix","bicarbonato reposi"],l),"alcalose_met",A.a(["alcalose metabol","bicarbonato elevad"],l),"acidose_resp",A.a(["acidose respirat","hipercapnia","co2 elevad"],l),"alcalose_resp",A.a(["alcalose respirat","hipocapnia","co2 baix"],l),ar5,A.a(["anemia ferropriva","anemia ferropenic",an3,"sulfato ferros","ferro defic"],l),"anemia_megalob",A.a(["anemia megaloblast","deficiencia b12","deficiencia folat","anemia perniciosa"],l),"anemia_hemol",A.a(["anemia hemolitic","hemolise","crise falciform","drepanocitos","esferocit"],l),"leucemia",A.a(["leucemia","leukemia","leucemia agud","blast leucem"],l),"linfoma",A.a(["linfoma","lymphoma","hodgkin","nao hodgkin"],l),"civd",A.a(["civd","coagulacao intravas dissemin","coagulopatia consumo"],l),"trombocitopenia",A.a(["trombocitopenia","plaqueta baix","pti ","purpura trombocitopen"],l),ar6,A.a(["neutropenia febril","neutropenia ","febre neutropenia","mucosit febril"],l),"depressao",A.a(["depressao maior","depressao unipolar","tdm ","antidepressiv","isrs depressao"],l),"bipolar",A.a(["bipolar","mania ","episodio mania","lition",ar7],l),"esquizofrenia",A.a(["esquizofrenia","schizophrenia","antipsicotic","alucinac","delirio psicot"],l),"ansiedade",A.a(["ansied","ansiet","tag ","transtorno ansied","generalizad"],l),"panico",A.a(["panico","panic","crise panico","ataque panico"],l),"tept",A.a(["tept","ptsd","trauma psiquiat","estresse pos-traum"],l),"toc",A.a(["toc ",ar8,"ocd "],l),"intox_opioide",A.a(["intox opioide","intoxicacao opioide","overdose opioide","naloxona","naltrexona"],l),"intox_benzo",A.a(["intox benzodiazep","intoxicacao benzo","overdose benzo","flumazenil"],l),"intox_alcoolica",A.a(["intox alcoolic","embriaguez","alcoolismo agud"],l),ar9,A.a(["abstinencia alcool","withdrawal alcool","delirium tremens","tiamina alcool"],l),"sind_serotonin",A.a(["sindrome serotonin","serotonin syndrome","toxicidade serotonin"],l),as0,A.a(["sindrome neuroleptica","hipertermia neuroleptic","rigidez extrapiram febre"],l),"intoxicacao",A.a(["intox ","envenenamento","toxicolog","overdose","carvao ativad"],l),"delirium",A.a(["delirium","confusao agud","sindrome confusional","agitac psicomotor"],l),"artrite_reuma",A.a(["artrite reumat","arthritis reumat",as1,"ar ","metotrexato artrit"],l),"lupus",A.a(["lupus","les ","lupus eritematoso","hydroxicloroquina lupus"],l),"esclerodermia",A.a(["esclerodermia","scleroderma","esclerose sistem"],l),"vasculite",A.a(["vasculite","vasculitis","poliarterit","granulomatose wegener"],l),"gota",A.a(["gota ","artrite gotosa","hiperuricemia","colchicina","alopurinol"],l),"osteoartrite",A.a(["osteoartrit","osteoartrose","artrose","artrit degener"],l),"osteoporose",A.a(["osteoporose","osteoporosis","osteopenia","bifosfonato","alendronato"],l),"fibromialgia",A.a(["fibromialgia","fibromyalgia","dor cronico muscul","sensibilizacao central"],l),"preeclampsia",A.a(["preeclampsia","pre-eclampsia","hellp","hipertensao gravidez"],l),"eclampsia",A.a(["eclampsia","convuls gravidez","gestante convuls"],l),"hemorragia_pp",A.a(["hemorragia pos-parto","hemorragia parto","atonia uterina","ocitocina hemorr"],l),"placenta_previa",A.a(["placenta previa","placenta baixa","sangramento placent"],l),"dpp",A.a(["descolamento placent","dpp ","abruptio placent"],l),"aborto_septico",A.a(["aborto septic","aborto infec","endometrit pos-aborto"],l),"sop",A.a(["sop ","sindrome ovar poliquistico","policistico ovar","metformina sop"],l),"endometriose",A.a(["endometriose","endometriosis"],l),"prostatite",A.a(["prostatite","prostatitis","infec prostat"],l),"hpb",A.a(["hiperplasia prostat","hpb ","bph ","obstruc urinaria"],l),"cancer_mama",A.a(["cancer mama","ca mama","carcinoma mama","quimio mama","hormoniot mama"],l),"cancer_pulmao",A.a(["cancer pulmao","carcinoma pulmao","nsclc","sclc","neoplasia pulm"],l),"cancer_gastrico",A.a(["cancer gastric","cancer estomago","adenocarcinoma gastric"],l),"cancer_colorret",A.a(["cancer colorret","cancer colon","cancer reto","neoplasia colorret"],l),"cancer_prostata",A.a(["cancer prostat","ca prostat","adenocarcinoma prostat"],l),"cancer_pancreas",A.a(["cancer pancreas","adenocarcinoma pancre","neoplasia pancreat"],l),"melanoma",A.a(["melanoma","neoplasia pele melanoc","ipilimumab melanom"],l),"bronquiolite",A.a(["bronquiolite","bronchiolitis","vsr ","sincicial respirat","bebes sibilos"],l),"crupe",A.a(["crupe","laringotraqueit","croup","dexametasona crupe"],l),"psoriase",A.a(["psoriase","psoriasis","placa eritematosa escam"],l),as2,A.a(["dermatite atopic","eczema atopic","dermatitis atopic"],l),"urticaria",A.a(["urticaria","urticaria alerg","anti-histamin urtic"],l),"tce",A.a(["trauma cranioencefalic","tce ","traumatismo craniano","lesao cerebral traum"],l),"politrauma",A.a(["politrauma","trauma grave multipl","atls"],l),"queimaduras",A.a(["queimadura","queimadura ","burns ","escald"],l),"rabdomiolise",A.a(["rabdomiolise","rabdomyolysis","cpk elevad","mioglobin renal"],l),"sind_metabolica",A.a(["sindrome metabolic","resistencia insulin","dislipidemia obesi"],l),as3,A.a(["sindrome hepatorrenal","shr ","hepatorenal"],l),as4,A.a(["sindrome cardiorrenal","cardio renal"],l),as5,A.a([as6,"revertir anticoag","antidoto anticoag","sangramento anticoag"],l),"anticoagulacao",A.a(["anticoag","trombose","tvp ","tep ","embolia"],l),"nausea",A.a(["nause","vomit","antiemetic","enjoo grave"],l),"febre",A.a(["febre","fiebre","antipiret","hiperpirex"],l),"dor",A.a(["dor intens","dor cronic","analgesia","dor refrat","dor agud"],l),"infeccao",A.a(["infec ","antibiot","antibio","antimicrobiano","bacteriana"],l)],h,g)
+f=A.U(["anafilaxia",A.a(["anafilax","anafilact","choque anafilat","reacao alerg","reaccion alerg","adrenalina alerg","epinefrina alerg"],l),"choque_septico",A.a(["choque septic","choque septico","septic shock","vasopressor sepse","noradrenalina sepse"],l),aa7,A.a(["choque cardiogen","cardiogenic shock","dobutamina choque","balao intra-aortic"],l),aa8,A.a(["choque hipovol","hipovolem","hemorrag choque","reposicao volum"],l),"choque",A.a(["choque ","vasopressor","pam ","hipotens grave","noradrenalina "],l),"pcr",A.a(["pcr ","parada cardiac","reanimac","acls ","ressuscitac","fv ","tvsp"],l),"iam",A.a(["iam ","infarto agudo","sindrome coron","stemi","nstemi","sca ","angina instav","angina inestav"],l),"angina",A.a(["angina estav","angina cronic","angina pector","angina estable"],l),"ic",A.a(["insuf cardiac","ic descomp","ic cronic","edema pulm","eap ","killip","fej ","frac ejec"],l),"fa",A.a(["fibrilac atrial",aa9,"flutter atrial","fa ","fibrila auricular","fibrilacion auricular"],l),"tpsv",A.a(["taquicardia supravent","tpsv ","tsv ","qrs estreit","reentrada nodal"],l),"tv",A.a(["taquicardia ventricular","tv ","tvsp","tv polim","torsades","torsada pontas"],l),"bradicardia",A.a(["bradicard","bloqueio av","bav ","marcapasso","atropina bradicard"],l),"hipertensao",A.a(["hiperten","has ","pressao alta","pa alta","antihiperten","anti-hiperten"],l),ab0,A.a(["crise hiperten",ab1,ab2,ab3,"nitroprussi"],l),"dissecc_aorta",A.a(["dissecao aort","disseccao aort","diseccion aort","aneurisma aort"],l),"tep",A.a([ab4,"embolia pulm","tep ","trombose pulm"],l),"tvp",A.a(["trombose venosa prof","tvp ","trombose venosa"],l),"endocardite",A.a(["endocardite","endocarditis","infeccao valv","bacteremia valv"],l),"miocardite",A.a(["miocardite","miocarditis","inflamacao miocardio"],l),"pericardite",A.a(["pericardite","pericarditis","derrame pericard","tamponament"],l),ab5,A.a(["cardiomiopatia dilat","cardiopatia dilat","miocardiopatia dilat"],l),ab6,A.a(["cardiomiopatia hipert","miocardiopatia hipert"],l),"avc_isquemico",A.a(["avc isquem","acidente vasc isquem","ave isquem","acv isquem","trombolise avc","alteplase avc","trombectom"],l),"avc_hemorragico",A.a(["avc hemorr","hemorrag cerebr",ab8,"hic "],l),"hsa",A.a(["hemorrag subaracn","hsa ","cefaleia trovoada","cefaleia fulmin","aneurism roto"],l),"ait",A.a(["ait ","ataque isquem transit","acidente isquem transit","tia "],l),"epilepsia",A.a(["epileps","convuls","status epilep","crise epilep","crise convuls"],l),"meningite",A.a(["meningite","meningitis","encefalite","encephalitis","rigidez nuca","kernig","brudzinski"],l),"parkinson",A.a(["parkinson","dopamina defic","rigidez extrapiram","levodopa","carbidopa"],l),"alzheimer",A.a(["alzheimer","demencia alzhei","demencia progres","colinesterase"],l),"demencia",A.a(["demencia vasc","demencia ","comprometiment cognit","deterioro cognit"],l),"esclerose_mult",A.a(["esclerose mult","esclerosis mult","em ","desmielini","interferon beta"],l),"miastenia",A.a(["miastenia","myasthenia","fraqueza muscul progres","anticolin esterol"],l),"guillain_barre",A.a(["guillain","barre","polirradiculoneuri","paralisia ascend"],l),"enxaqueca",A.a(["enxaqueca","migranea","migraine","migrena","aura visual","triptano"],l),ab9,A.a(["cefaleia tensional","cefalea tensional","cefaleia tension","dor cabeca tensao"],l),"cefaleia",A.a(["cefal","cabeca","dor de cabeca","dolor de cabeza"],l),"pneumonia_com",A.a(["pneumonia comunid","pac ","pneumonia adquir","pneumonia tipic","pneumonia atipic","pneumonia viral"],l),"pneumonia_hosp",A.a(["pneumonia hospit","pah ","pneumonia associad ventil","pavm"],l),"tuberculose",A.a(["tuberculose","tuberculosis","tb ","mycobacterium tuberc","rifampicin","isoniaz"],l),"asma",A.a(["asma ","broncoespas","sibilo","wheezing","exacerbac asma","crise asma"],l),"dpoc",A.a(["dpoc","epoc",ac0,"enfisema","bronquite cronic","exacerbac dpoc"],l),"insuf_resp",A.a(["insuf respirat","insuficiencia respirat","ira ","sdra","ards","ventilac mecan","intubac orotrac"],l),"pneumotorax",A.a(["pneumotorax","pneumotorox","neumotorax","pneumo torax"],l),"derrame_pleural",A.a(["derrame pleural","derrame pleural","pleurite","toracocentese"],l),"apneia_sono",A.a(["apneia sono","apnea sono","osas ","cpap apneia","ronco grave"],l),"covid",A.a(["covid","sars-cov","coronavirus","covid-19"],l),"sepse",A.a(["sepse","seps","septic","choque infeccioso","bacteremia","infec grave"],l),"itu",A.a(["infec urin","itu ","cistite","uretrite","bacteriuria"],l),"pielonefrite",A.a(["pielonefrit","pyelonefrit","infec renal","infec trato urin alto"],l),"celulite",A.a(["celulite infec","erisipela","celulitis infec","infec pele","infec tecid","ceftriaxona pele"],l),"fasceite",A.a(["fasceite necros","fascite necros","fasciitis necros","infec necros"],l),"osteomielite",A.a(["osteomielit","osteomyelit","infec ossea","infec osso"],l),"hiv_aids",A.a(["hiv","aids","antirretrovir","arvt","coquetel hiv"],l),"candidose",A.a(["candidiase sist","candidemia","candidiasis sistem","fungemias","antifungic sistemico"],l),"dengue",A.a(["dengue","arbovirose","aedes","dengue hemorrag"],l),"malaria",A.a(["malaria","malaria","plasmodium","cloroquina malaria","artemeter"],l),"leptospirose",A.a(["leptospirose","leptospirosis","ictericia febre"],l),"sifilis",A.a(["sifilis","syphilis","treponema","penicilina sifil"],l),"dst",A.a(["dst ","gonorreia","clamid","dst sexualment transmis"],l),"herpes_zoster",A.a(["herpes zoster","varicela zoster","nevralgia poster","aciclovir zoster"],l),"varicela",A.a(["varicela","chickenpox","varicela infec"],l),"diarreia",A.a(["diarr","diarrh","diarrea aguda","diarrea cronica","diarrea persist","diarrea refract","diarrea osmotica","diarrea secretora","diarrea inflamat",ac2,"diarrea nocturna","diarrea posprandial","diarrea acuosa","diarrea mucosa","diarrea sanguinolenta","diarrea hemorr\xe1gica","diarrea hemorrhag","diarrea fulminant","diarrea disenteric","diarrea febril","diarrea nosocomial","diarrea esteatorreica","diarrea psicogena","diarrea autoimun","diarrea endocrin","diarrea metabol","diarrea infeccio","diarrea bacteriana","diarrea viral","diarrea parasitar","diarrea viajero","traveler diarr","gastroenterite infec","diarrea salmonela","salmonela diarr",ac3,"diarrea shigela","shigella diarr","shigela diarr","disenteria bacteriana","diarrea campylobac",ac4,"diarrea coli","escherichia coli diarr","e.coli enterot","etec ","e.coli enterohemorr\xe1gica","ehec ","stec ","sindrome uremic hemolitic","diarrea colera","vibrio cholerae","colera ","cholera ","diarrea yersinia","yersinia enterocol","diarrea clostridi",ac5,ac6,"c. diff","cdiff ",ac7,ac8,"diarrea antibiot","diarrea associada antibiot","rotavirus diarr","diarrea rotavirus","norovirus diarr","diarrea norovirus","gastroenterite viral","diarrea citomegalovirus","cmv intestinal","giardiase","giardiasis","giardia diarr","amebiase","amebiasis","ameba diarr","entamoeba histol","cryptosporidium diarr","diarrea cryptospor","cyclospora diarr","isospora belli","diarrea hiv","diarrea imunossuprim","diarrea paciente imuno","diarrea pediatric","diarrea neonatal","diarrea infant","diarrea malabsorcao","diarrea malabsorc",ac9,ad0,"diarrea celiaca","doenca celiaca diarr","diarrea intoler lactose","intolerancia lactose diarr",ad1,"insuficiencia pancreatica diarr","diarrea sobrecrescimento bact","sibo diarr",ad2,"sindrome intestino curto","diarrea intestino curto",ad3,"diarrea proteina","diarrea maldigest","diarrea crohn","diarrea colite ulcerosa","diarrea dii","colite microscopica","colite colagenos","colite linfocitica","colite isquemica diarr","diarrea metformina","diarrea medicamento","diarrea ibp","diarrea inibidor bomba proton","diarrea quimioterapia","diarrea oncologica","diarrea imunoterapia","diarrea checkpoint","diarrea radioterapia","diarrea radiacao","diarrea sorbitol","diarrea magnesio","diarrea laxante","diarrea nutricao enteral","diarrea enteral","diarrea postoperat","diarrea posvagotomia","dumping syndrome diarr","diarrea mucosit","diarrea carcinoide","sindrome carcinoide diarr","diarrea hipertireoid","hipertireoidismo diarr","diarrea gastrinoma","zollinger ellison diarr","diarrea feocromocitom","diarrea mastocitose","diarrea insuf suprarenal","diarrea addison","diarrea doenca whipple","whipple diarr","diarrea alergia aliment","diarrea eosinofil","intoxicacao alimentar diarr","diarrea toxica","intoxicacao mariscos","diarrea estafilococ","bacillus cereus diarr","diarrea bacillus","enterocolite neutropenic diarr","tuberculose intestinal diarr","tb intestinal"],l),"diarreia_cdiff",A.a([ac5,ac6,"c. diff","cdiff ",ac8,ac7],l),ad4,A.a(["diarrea viajero","traveler diarr","diarrea bacteriana aguda","gastroenterite bacteriana",ac3,"shigella diarr",ac4],l),ad5,A.a(["giardiase","giardiasis","amebiase","amebiasis","cryptosporidium","cyclospora","isospora belli"],l),"diarreia_dii",A.a(["colite ulcerosa diarr","crohn diarr","diarrea dii","diarrea inflamat intest"],l),ad6,A.a([ac9,"celiac diarr","doenca celiaca",ad1,"sibo diarr",ad0],l),ad7,A.a([ac2,"diarrea sii","ibs diarr","sindrome intestino irritav diarr"],l),"acromegalia",A.a(["acromegal","gigantismo","igf-1 elevad","gh elevad","adenoma somatotrop","tumor hipofis gh"],l),"adenoma_hipofis",A.a(["adenoma hipofis","adenoma pituitar","macroadenoma","microadenoma","tumor hipofise","prolactinoma","tumor sellar"],l),"prolactinoma",A.a(["prolactinoma",ad8,"galactorreia","prolactina elevad"],l),ad9,A.a(["pan-hipopituitar","hipopituitar","deficiencia hormonio hipofis","panhipopituitar"],l),ae0,A.a([ae1,"diabetes insipid","poliuria polidipsia","desmopressin","adh defic","vasopressin defic"],l),"siadh",A.a(["siadh ","sindrome antiduret inapropriado","secrecao inapropriada adh","secrecao inapropiad antidiuret"],l),"hiperaldosteron",A.a(["hiperaldosteron","aldosteronoma","sindrome conn","adenoma adrenal","aldosterona elevad"],l),ae2,A.a([ae2,"hiperparatiroid","pth elevado","adenoma paratireoid","hipercalcemia pth"],l),"hipoparatireoid",A.a(["hipoparatireoid","hipoparatiroid","pth baixo","hipocalcemia pth"],l),ae3,A.a([ae4,"nem ","men ",ae4],l),"carcinoide",A.a(["tumor carcinoide","sindrome carcinoide","tumor neuroendocr","serotonina tumo","carcinoid"],l),"insulinoma",A.a(["insulinoma","tumor celula beta","hipoglicemia hiperinsulinica","nesidioblastose"],l),"gastrinoma",A.a(["gastrinoma","zollinger ellison","gastrina elevad","hipergastrinemia"],l),"glucagonoma",A.a(["glucagonoma","glucagon tumor","eritema necrolit migrat\xf3rio"],l),"vipoma",A.a(["vipoma","diarrea acuosa hipopotassemia","sindrome verner-morrison"],l),"amiloidose",A.a(["amiloidose","amiloidosis","amiloide","deposito amiloid","ttr amiloid","polineuropatia amiloid"],l),"sarcoidose",A.a(["sarcoidose","sarcoidosis","granuloma sarcoid","lofgren","hilum adenopat bilateral"],l),"hemocromatose",A.a(["hemocromatose","hemochromatosis","sobrecarga ferro","ferritina muito elevad","deposito ferro"],l),"doenca_wilson",A.a(["wilson","doenca wilson","cobre deposito","kayser-fleischer","hepatolenticular"],l),"doenca_gaucher",A.a(["gaucher","glicocerebrosidase","glucocerebrosidase defic"],l),"doenca_fabry",A.a(["fabry","alfa galactosidase defic","angioqueratoma fabry"],l),"fenilcetonuria",A.a(["fenilcetonuria","fenilceton","pku ","fenilalanina elevad"],l),ae5,A.a([ae5,"mucopolysaccharid","mps ","hurler","hunter sindrome"],l),"porfira",A.a(["porfiria","porphyria","dor abdominal porfiria","ataque agudo porf"],l),"sindrome_marfan",A.a(["marfan","sindrome marfan","aracnodactilia","ectopia lentis marfan"],l),"sindrome_ehlers",A.a(["ehlers danlos","ehlers-danlos","hipermobilidade articular"],l),"osteogenese_imp",A.a(["osteogenese imperfeit","osteogenesis imperfecta","osso fragil genetico"],l),"acondroplas",A.a(["acondroplasia","nanismo acondroplasia"],l),"sindrome_down",A.a(["sindrome down","trisomia 21","down sindromo"],l),"sindrome_klinef",A.a(["klinefelter","klinef","xxy ","47 xxy"],l),"sindrome_turn",A.a(["turner","sindrome turner","monosson","45 x"],l),ae6,A.a(["distrofia muscular","duchenne","becker distrofia","distrofia miotonica","miopatia genetica"],l),"ataxia",A.a(["ataxia ","ataxia espinocereb","ataxia friedreich","ataxia teleangiect"],l),ae7,A.a(["huntington","coreia huntington","doenca huntington"],l),"als",A.a(["esclerose lateral amiotrofica","als ","ela ","doenca neuronio motor"],l),"sma",A.a(["atrofia muscular espinal","sma ","amea ","spinal muscular atrophy"],l),"pku",A.a(["fenilcetonuria","pku ","fenilalanina"],l),"espondilite",A.a(["espondilite anquilos","espondilitis anquilos","espondiloartrite","espondiloartrit","sacroileite","hla b27"],l),"artrite_psori",A.a(["artrite psori","artritis psori","artropatia psori"],l),"artrite_reativa",A.a(["artrite reativa","artritis reativa","sindrome reiter","artrite pos infec"],l),ae8,A.a(["artrite idiopatica juvenil","aij ","artrite juvenil"],l),"polimiosite",A.a(["polimiosite","polimiositis","dermatomiosite","miopatia inflamat"],l),ae9,A.a(["sjogren","sj\xf6gren","xerostomia xeroft","sindrome sicca","olho seco boca seca autoimun"],l),af0,A.a(["polimialgia reumat","pmr ","dor cintura escapular pelvic idoso"],l),af1,A.a(["arterite temporal","arterite celulas gig","arterite temporal craniana","cefaleia temporal idoso ceg"],l),"artrite_gota_agud",A.a(["artrite gotosa agud","podagra","artrite primeiro halux","monoartrit hiperuricemia"],l),"pseudogota",A.a(["pseudogota","condrocalcinose","deposito pirofosfato calcio"],l),af2,A.a(["sindrome antifosfolipide","saf ","anticardiolipina","anticoagul lupico","trombose autoimun"],l),"miopatia_inflam",A.a(["miosite","anticorpo anti-jo1","antissintetase","miopatia imunomediada"],l),"vasculite_anca",A.a(["vasculite anca",af3,"poliangiite microscop","churg-strauss","eosinofilia vasculite"],l),"vasculite_takay",A.a(["takayasu","arterite takayasu","pulso ausente jovem"],l),"vasculite_kawas",A.a(["kawasaki","doenca kawasaki","febre mucocutanea linfonodal","aneurisma coronaria crian"],l),"behcet",A.a(["behcet","doenca behcet","ulcera oral genital uveit"],l),af4,A.a([af5,"neuropatia perifer","polineuropatia","polineurit"],l),"neuropatia_diab",A.a(["neuropatia diabetic","neuropatia diabet","pe diabetico neuropatia"],l),"sindrome_carpal",A.a(["tunel carpal","sindrome tunel carpal","compressao nervo median"],l),"hernia_disco",A.a(["hernia disco","hernia discal","disco intervert","hernia nucleo pulposo","lombociatalgia"],l),"estenose_espin",A.a(["estenose espinhal","estenose canal","claudicacao neurogen"],l),"mielopatia",A.a(["mielopatia","myelopathy","compressao medular","medulopat"],l),af6,A.a(["polineuropatia desmieli","pdci","cidp ","neuropatia inflamat cronic"],l),af7,A.a(["neuropatia optica","neurite optica","nmo ","devic","neuromielite optica"],l),af8,A.a(["encefalite autoimun","encefalite anti-nmda","anti-nmda receptor","encefalite limbic"],l),"miopatia_mitocon",A.a(["miopatia mitocondrial","melas ","merrf ","disfuncao mitocondrial"],l),af9,A.a(["esclerose tuberosa","tuberous sclerosis"],l),"neurofibromat",A.a(["neurofibromatose","von recklinghausen","nf1 ","nf2 "],l),"acidente_mergulh",A.a(["doenca descompressao","embolia gasosa","acidente mergulhad"],l),ag0,A.a(["status epilepticus","status epilept","crise prolongada","estado epilep"],l),"hidrocefalia",A.a(["hidrocefalia","hidrocephaly","hidrocefal normotens","derivacao ventric"],l),"sindrome_guillain_miller",A.a(["miller fisher","sindrome fisher","oftalmoplegia ataxia arreflexia"],l),"fpi",A.a(["fibrose pulm idiopatica","fpi ","pneumopatia intersticial usual","uip ","ipf "],l),"sarcoidose_pulm",A.a(["sarcoidose pulmonar","granuloma pulmonar autoimun","adenopat mediastinal bilateral"],l),"hap",A.a(["hipertensao arterial pulm","hap ","pah ","hipertensao pulmonar primaria"],l),"bronquiectasia",A.a(["bronquiectasia","bronchiectasis","dilatacao br\xf4nquica"],l),"aspergilose",A.a(["aspergilose","aspergillus","aspergiloma","aspergilose alergica broncopulm"],l),"pneumocistose",A.a(["pneumocistose","pneumocystis jirovecii","pcp ","pneumonia jirovecii"],l),"pneumonia_eosinof",A.a(["pneumonia eosinofil","sindrome loeffler","eosinofilia pulm"],l),ag1,A.a([ag2,"hipertension pulmonar","cor pulmonale"],l),"quilotorax",A.a(["quilotorax","quilo torace","derrame pleural quiloso"],l),"mesotelioma",A.a(["mesotelioma","tumor pleura","mesothelioma"],l),"silicose",A.a(["silicose","pneumoconiose silio","doenca ocupacional pulm silicio"],l),"asbestose",A.a(["asbestose","asbestos","exposicao asbesto pulmao"],l),"mucoviscidose",A.a(["mucoviscidose","fibrose cistica","cystic fibrosis","cftr "],l),"deficit_a1at",A.a(["deficiencia alfa 1 antitripsina","alfa-1 antitripsina defic","a1at defic"],l),"hemossiderose",A.a(["hemossiderose","hemorragia alveolar","hemoptise difusa"],l),"doenca_celiaca",A.a(["doenca celiaca","celiac disease","enteropatia gluten","anti-ttg elevad","endomisio anticorp"],l),"enteropatia_prot",A.a([ad3,"sindrome perd proteina intestinal","protein losing enteropathy"],l),"sobrecrescimento",A.a([ad2,"sibo ","sindrome intestino bacteri"],l),"colangite_primaria",A.a(["colangite esclerosante primaria","cep ","psc ","estenose biliar inflamat autoimun"],l),"cirrh_biliar_prim",A.a(["cirrose biliar primaria","cbp ","pbc ","colangite biliar primaria","anti-m2 anticorp"],l),"hepatite_autoimun",A.a(["hepatite autoimun","hai ","hepatite cronic autoimun","anti-lkm1","anca fegato"],l),"esteatose_hepat",A.a(["esteatose hepatica","nafld","nash ","doenca gordurosa hepatica nao alcool","esteatohepatite"],l),"esofago_barrett",A.a(["barrett","esofago barrett","metaplasia intestinal esofago","esofago de barrett"],l),"acalasia",A.a(["acalasia","achalasia","espasmo esofago","disfagia motora","manometria esofago"],l),"angioectasia",A.a(["angioectasia","angiodisplasia","angiectasia intestinal","malformac vasc intestinal"],l),"isquemia_mesenteri",A.a(["isquemia mesenter","infarto mesenter","angina mesenter","trombose mesenter"],l),"volvulo",A.a(["volvulo","v\xf3lvulo","rotacao intestino","obstrucao volvular"],l),"intussuscepcao",A.a(["intussuscepcao","invaginacao intestinal","invaginacion intestinal"],l),"paralisia_ileus",A.a(["ileus paralitico","suboclus intestinal","oclusao intestinal"],l),"hemorroidas",A.a(["hemorroida","hemorroids","hemorragia retal hemorroid"],l),"fissura_anal",A.a(["fissura anal","fissure anal","dor anal agud"],l),"cancer_esofago",A.a(["cancer esofago","carcinoma esofago","adenocarcinoma esofago","carcinoma escamos esofago"],l),"cancer_hepatico",A.a(["cancer hepatic","hepatocarcinoma","hcc ","carcinoma hepatocelular"],l),"cancer_biliar",A.a([ag3,"cancer biliar","cancer vias biliares"],l),"anemia_aplasica",A.a(["anemia aplasica","aplasia medular","falha medular","pancitopenia aplasica"],l),ag4,A.a(["anemia falciforme","doenca falciforme","hemoglobina s","crise vasoclusiv","falciforme"],l),"talassemia",A.a(["talassemia","thalassemia","hemoglobina talassemia","talassemia alfa beta"],l),"mieloma",A.a(["mieloma multiplo","myeloma multiple","plasmocitoma","proteina bence jones","pico monoclon"],l),"mielof_primaria",A.a(["mielofibrose primaria","mielofibrose","myelofibrosis","fibrose medular"],l),ag5,A.a(["policitemia vera","polycythemia vera","hematocrit elevad","jak2 mutacao"],l),"trombocitemia",A.a(["trombocitemia essencial","trombocitose reativa","plaquetas elevad"],l),"leucemia_linfoc",A.a(["leucemia linfoide cronic","llc ","cll ","linfocitose cronic"],l),ag6,A.a(["leucemia mieloide cronic","lmc ","cml ","bcr-abl","filadelfia cromos"],l),"leucemia_aguda",A.a(["leucemia aguda","leucemia mieloide aguda","lma ","aml ","leucemia linfoide aguda","lla ","all "],l),"hemofilia",A.a(["hemofilia","hemophilia","fator viii defic","fator ix defic","coagulopatia heredit","sangramento articulac"],l),"von_willebrand",A.a(["von willebrand","doenca von willebrand","vwf defic"],l),"purpura_tromb",A.a(["purpura trombocitopenica trombot","ptt ","ttp ","microangiopatia trombotic"],l),"civd_aguda",A.a(["civd agud","coagulopatia consumo agud","civd sepse","civd obstetric"],l),"linfoma_hodgkin",A.a(["linfoma hodgkin","doenca hodgkin","celula reed-sternberg"],l),ag7,A.a(["linfoma nao hodgkin","linfoma difuso grande celula","ldgcb ","dlbcl "],l),"mastocitose",A.a(["mastocitose","mastocytosis","urticaria pigmentosa adult"],l),"eosinofilia",A.a(["sindrome hipereosinofilica","eosinofilia primaria","eosinofilica grave"],l),"hemossiderose_pulm",A.a(["hemossiderose pulmonar","hemorragia alveolar difusa"],l),"mucormicose",A.a(["mucormicose","mucormycosis","zigomicose","zygomycosis","rhizopus infec"],l),ag8,A.a([ag9,"aspergillus invasivo","aspergilose imunossuprimido"],l),"cryptococcose",A.a(["cryptococcose","cryptococcus","meningite criptococica","meningite cryptoc"],l),"histoplasmose",A.a(["histoplasmose","histoplasma","infec histoplasma"],l),ah0,A.a([ah0,"coccidioides","valley fever"],l),"blastomicose",A.a(["blastomicose","blastomyces"],l),"paracoccidioid",A.a(["paracoccidioidomicose","paracoccidioides brasilien","blastomicose sulamericana"],l),"sporotricose",A.a(["esporotricose","sporothrix","esporotricose felino"],l),"leishmaniose",A.a(["leishmaniose","leishmania","calazar","leishmaniose visceral","leishmaniose tegument"],l),"doenca_chagas",A.a(["doenca chagas","trypanosoma cruzi","chagas","cardiopatia chagasica"],l),"toxoplasmose",A.a(["toxoplasmose","toxoplasma gondii","toxoplasmose cerebral","encefalite toxoplasma"],l),"cmv_doenca",A.a(["citomegalovirus","cmv doenca","cmv invasivo","retinite cmv","colite cmv"],l),"ebv_doenca",A.a(["epstein barr","ebv ","mononucleose infec","sindrome mono"],l),"influenza",A.a(["influenza","gripe ","influenza a","influenza b","h1n1 ","h5n1"],l),"hepatite_a",A.a(["hepatite a","hav ","hepatite a aguda"],l),"hepatite_e",A.a(["hepatite e","hev ","hepatite e gestante"],l),"citomegalovirus",A.a(["cmv ","citomegalovirus infec","citomegal"],l),"raiva",A.a(["raiva ","rabie","lyssavirus"],l),"febre_amarela",A.a(["febre amarela","yellow fever","aedes febre amarela"],l),"zika",A.a(["zika","zika virus","microcefalia zika"],l),"chikungunya",A.a(["chikungunya","artralgia chikungunya","chikung"],l),"febre_tifoide",A.a(["febre tifoide","salmonella typhi","febre enteric"],l),"brucelose",A.a(["brucelose","brucella","febre ondulante"],l),"rickettsia",A.a(["rickettsia","febre maculosa","febre petequial"],l),ah1,A.a(["leishmaniose cutanea","ulcera cutanea leishm","botao oriente"],l),"pneumocistis",A.a(["pneumocystis","pcp ","pneumonia pneumocystis","jirovecii"],l),ah2,A.a(["micobacteria atipica","mav ","mycobacterium avium","mac "],l),"nocardiose",A.a(["nocardiose","nocardia","nocardia pulm"],l),"actinomicose",A.a(["actinomicose","actinomyces","actinomicose cervicofacial"],l),ah3,A.a(["sindrome choque toxico","toxic shock","tsst toxina","staphylococ shock"],l),"botulismo",A.a(["botulismo","clostridium botulinum","paralisia descendente"],l),"tetano",A.a(["tetano","tetanus","clostridium tetani","trismo tetano"],l),"difteria",A.a(["difteria","diphtheria","corynebacterium diphtheriae"],l),"coqueluche",A.a(["coqueluche","pertussis","bordetella pertussis","tosse convulsa"],l),"meningococcemia",A.a(["meningococcemia","neisseria meningit","meningococo","purpura fulminans"],l),"estafilococcemia",A.a(["staphylococcemia","bacteremia estafiloco","endocardite staph"],l),"e_coli_0157",A.a(["e coli 0157","ehec infec","stec infec","diarr hemorr\xe1gica e coli"],l),"tifo_murino",A.a(["tifo murino","rickettsia typhi","tifo endemico"],l),ah4,A.a(["valvulopatia aortic","estenose aortic","insuf aortic","regurgit aortic","valv aortic"],l),ah5,A.a(["valvulopatia mitral","estenose mitral","insuf mitral","prolapso mitral","regurgit mitral"],l),"valvulopatia_tric",A.a(["valvulopatia tricu","insuf tricuspide","estenose tricuspide"],l),ah6,A.a(["estenose aortic","calcif valv aortic","tavi ","tavr "],l),"insuf_aortica",A.a(["insuf aortic","regurgit aortic","aorta insufici"],l),"insuf_mitral",A.a(["insuf mitral","regurgit mitral","prolapso mitral"],l),"estenose_mitral",A.a(["estenose mitral","area valv mitral reduz","mitral stenosis"],l),ah7,A.a(["cardiopatia congen","civ ","cia ","pca ","tetralogia fallot","coartacao aorta","transposicao grandes vasos"],l),"bloqueio_ramo",A.a(["bloqueio ramo esqu","bloqueio ramo dir","brd ","bre ","bloqueio fascicular"],l),ah8,A.a(["qt longo","qt prolongado","long qt syndrome","lqts ","torsades de pontes"],l),"wolf_parkinson",A.a(["wolf parkinson white","wpw ","pre-excitacao ventricular","delta wave"],l),"sind_brugada",A.a(["brugada","sindrome brugada","bloqueio ramo direito supra"],l),ah9,A.a(["arteriopatia periferica","dap ","isquemia membros infer","claudicac intermitente"],l),ai0,A.a(["aneurisma aortico","aneurisma aorta abd","aneurisma aorta torac"],l),"pericardite_constr",A.a(["pericardite constrit","pericardio constrit","pericardio calcific"],l),"mixoma_card",A.a(["mixoma cardiaco","tumor cardiaco","massa intracavit card"],l),"tumores_card",A.a(["tumor cardiaco","mixoma atrial","lipoma card","fibroelastoma"],l),ai1,A.a(["angina microvascul","angina coronaria normal","sindrome x card"],l),"sind_tako_tsubo",A.a(["tako tsubo","cardiomiopatia estress","sindrome corac quebrado","apical balloon"],l),ai2,A.a(["hipertensao resist","hipertensao refrat","ha resistente"],l),"hipertenso_renovasc",A.a(["hipertensao renovasc","estenose renal hiperten","hiper renal"],l),"sindrome_metabolica_card",A.a(["risco cardiovasc metabolic","sindrome metabolic cardiovasc"],l),"glom_proliferat",A.a(["glomerulonefrite proliferat","glomerulon crescentic","nefrit agud"],l),"nefropatia_igA",A.a(["nefropatia iga","berger doenca","deposito iga renal"],l),"glom_membranosa",A.a(["glomerulonefrite membranosa","nefropatia membranosa","anti-pla2r"],l),"glom_focal_segm",A.a(["glom focal segment","gsfs ","focal glom"],l),ai3,A.a([ai4,"microalbuminuria diabet","proteinuria diabetica"],l),"nefrite_lupica",A.a(["nefrite lupica","nefropatia lupica","renal lupus"],l),"polirrenal",A.a(["doenca policist renal","rim policist","dpr ","pkd ","cisto renal heredit"],l),"sindrome_alport",A.a(["alport","nefrite alport","surdez nefropatia heredit"],l),"tubulopatia",A.a(["tubulopatia","acidose tubular","sindrome fanconi renal"],l),"nefrocalcinose",A.a(["nefrocalcinose","deposito calcio renal","nefropatia hipercalcem"],l),ai5,A.a(["nefrotox contraste","nefropatia contraste","ira contraste iodad"],l),"nefrotox_aine",A.a(["nefrotox aine","ira aine","nefrite intersticial aine"],l),ai6,A.a(["glomnefrite anti-gBM","sindrome goodpasture","hemorragia pulm glomer"],l),ai7,A.a(["nefrite intersticial","nin ","nefrite tubulo intersticial"],l),"acne",A.a(["acne","acne vulgar","acne severo","acne cistic","acne nodulocistic"],l),"rosacea",A.a(["rosacea","ros\xe1cea","eritema facial cronic","rinofima"],l),"penfigo",A.a(["penfigo","pemphigus","penfigo vulgar","penfigo foliace","bolha autoimun pele"],l),"penfigoide",A.a(["penfigoide bolhoso","bullous pemphigoid","bolha idoso"],l),ai8,A.a(["eritema multiforme","stevens johnson","sindrome stevens johnson","necrolise epiderm tox","net "],l),"eritema_nodoso",A.a(["eritema nodoso","nodulo doloroso paniculite"],l),ai9,A.a(["urticaria cronica","urticaria cronica espontanea","uce "],l),aj0,A.a(["angioedema heredit","angioedema c1q","inibidor c1 esterase defic","angioedema bradicinina"],l),"alopecia_areata",A.a(["alopecia areata","alopecia areata","queda cabelo autoimun","calvicie alopecia"],l),"onicomicose",A.a(["onicomicose","tinea unguium","fungo unhas"],l),"tinea",A.a(["tinea ","tinea capitis","tinea corporis","micose superficial","dermatofit"],l),"escabiose",A.a(["escabiose","sarna ","scabies ","sarcoptes"],l),"pediculose",A.a(["pediculose","piolho","pediculosis"],l),"herpes_simples",A.a(["herpes simples","hsv ","herpes labial","herpes genital","herpes oral"],l),"molluscum",A.a(["molluscum contagiosum","mollusco","molusco contagio"],l),"melanoma_skin",A.a(["melanoma pele","melanoma maligno cutaneo","lesao melanocit suspeita"],l),"cec_pele",A.a(["carcinoma espinoc celul","carcinoma celula escam pele","cec pele"],l),"cbc_pele",A.a(["carcinoma basocelu","carcinoma celula basal pele","cbc pele"],l),aj1,A.a(["dermatite contato","dermatitis contacto","eczema contato"],l),"dermatite_sebor",A.a(["dermatite seborreica","caspa severa","eczema seborreico"],l),"liquen_plan",A.a(["liquen plano","lichen planus","liquen plan oral"],l),"vitiligo",A.a(["vitiligo","despigment autoimun","perda melanina"],l),"esclerose_tuberosa_skin",A.a(["angiofibromas tuberosa","manchas pele esclerose tuberosa"],l),"xeroderma_pigm",A.a(["xeroderma pigmentos","fotossensibilidade cancer pele heredit"],l),"glaucoma",A.a(["glaucoma","pressao ocular elevad","pio elevad","neuropatia optica glaucomat"],l),"catarata",A.a(["catarata","opacidade cristalino","cataract"],l),aj2,A.a(["degeneracao macul","dmar ","dme ","dmri ","degeneracao retinal central"],l),aj3,A.a(["retinopatia diabetica","retinop diabet","edema macul diabetico"],l),"descolamento_retin",A.a(["descolamento retina","desprendimento retina","rotun retina"],l),"uveite",A.a(["uveite","uveitis","inflamac ocul interna","iritis","iridociclite"],l),"conjuntivite",A.a(["conjuntivite","conjunctivitis","olho vermelho agud"],l),"ceratite",A.a(["ceratite","queratite","keratitis","ulcera cornea"],l),"endoftalmite",A.a(["endoftalmite","endophthalmitis","infec intraocul grave"],l),"oclusao_retin",A.a(["oclusao arteria retin","oclusao veia retin","isquemia retinal"],l),"neuropatia_optica_isq",A.a(["neuropatia optica isquemica","naion ","perda visao repentin idoso"],l),"otite_media",A.a(["otite media","otite media agud","oma ","infec ouvido medio"],l),"otite_externa",A.a(["otite extern","swimmer ear","otite externa difusa"],l),"sinusite",A.a(["sinusite","sinusitis","rinossinusite","sinusite bacteriana"],l),"faringite",A.a(["faringite","faringitis","amigdalite","tonsilite","dor garganta strep"],l),"laringite",A.a(["laringite","laringitis","disfonia infec","rouquidao infec agud"],l),"epistaxe",A.a(["epistaxe","sangramento nasal","epistaxis"],l),aj4,A.a(["labirintite","tontura periferica","labirinto","vertigem periferica","vppb "],l),"meniere",A.a(["meniere","doenca meniere","vertigem flutuacao audicao"],l),aj5,A.a(["surdez neurossensorial","hipoacusia sensorioneural","perda auditiva nervosa"],l),aj6,A.a([aj7,"paralisia bell","bell palsy","paresia facial periferica"],l),aj8,A.a(["apneia obstrutiva sono","saos ","osas ","hipopneia obstrutiva","cpap indica"],l),aj9,A.a(["candidiase vaginal","candidose vaginal","vaginite candida","corrimento branco caseoso"],l),"vaginose_bact",A.a(["vaginose bacteriana","gardnerella","vb ","corrimento cinza peixe"],l),"tricomonas",A.a(["tricomonase","trichomonas","vaginite tricomonas"],l),"doip",A.a(["doenca inflamat pelv","dip ","pid ","infec pelv","salpingite","ooforite"],l),ak0,A.a(["gravidez ectopica","gravidez tubaria","gestacao ectopica","ruptura tubaria"],l),"hipogalactia",A.a(["hipogalactia","insuf lactacao","pouco leite materno"],l),"mastite",A.a(["mastite","mastitis","infec mama puerperal"],l),"menopausa",A.a(["menopausa","menopausia","climateric","sintoma menopausa"],l),ak1,A.a(["osteoporose pos-menopausa","osteoporose mulher","fratura vertebral mulher"],l),ak2,A.a(["cancer colo utero","carcinoma cervical","ca cervix","hpv cervix"],l),"cancer_utero",A.a(["cancer endometrio","cancer corpo utero","carcinoma endometrial"],l),"cancer_ovario",A.a(["cancer ovario","neoplasia ovario","carcinoma ovariano"],l),"mola_hidatiforme",A.a(["mola hidatiforme","neoplasia trofoblastica","doenca trofoblastica gestac"],l),ak3,A.a(["hiperemese gravid","vomito incoercivel gravidez"],l),ak4,A.a(["colestase gestacional","prurido gestacional","ictericia gestacional"],l),"diabetes_gestac",A.a(["diabetes gestacional","dmg ","glicemia gestacao"],l),"febre_sem_foco",A.a(["febre sem foco crianca","febre pq crianca sem causa","fsf "],l),"desidratacao_ped",A.a(["desidratacao pediatrica","desidratacao crianca","crianca desidrataada"],l),"gastrenterite_ped",A.a(["gastrenterite pediatrica","gastroenterite crianca","diarr vomit crianca"],l),"pneumonia_ped",A.a(["pneumonia crianca","pneumonia pediatrica","pao pediatric"],l),"sepse_neonatal",A.a(["sepse neonatal","infec neonatal","sepsis neonatal","rn sepse"],l),ak5,A.a(["sindrome respiratoria neonatal","sindrome membrana hialina","smh "],l),ak6,A.a(["enterocolite necrosante","necrotizing enterocolitis","ecn "],l),"hernia_diafragm",A.a(["hernia diafragmatica","hernia diafrag neonatal"],l),"estenose_piloro",A.a(["estenose hipertrofica piloro","estenose piloro","vomito projetil neonatal"],l),"atresia_esofago",A.a(["atresia esofago","fistula traqueoesofagica"],l),ak7,A.a(["hiperbilirrubinemia neonatal","ictericia neonatal","ictericia rn"],l),"tosse_ferina",A.a(["tosse ferina","pertussis ped","bordetella crian"],l),"sarampo",A.a(["sarampo","measles","paramixovirus sarampo"],l),"caxumba",A.a(["caxumba","parotidite epidemica","mumps"],l),"rubeola",A.a(["rubeola","rubella","rubeola congenita"],l),"escarlatina",A.a(["escarlatina","scarlet fever","streptococ exantema"],l),"doenca_mao_pe_boca",A.a(["doenca mao pe boca","enterovirus exantema","mpbd "],l),"roseola",A.a(["roseola","exantema subito","hhv-6 exantema"],l),"crise_febril",A.a(["convuls febril","crise febril","convuls febre crian"],l),"autismo",A.a(["transtorno espectro autista","tea ","autism"],l),"tdah",A.a(["tdah ","adhd ","transtorno deficit atenc hiperativid"],l),"sindrome_west",A.a(["sindrome west","espasmos infantis","hipsarritmia"],l),"sindrome_dravet",A.a(["sindrome dravet","epilepsia mioclonica infan grave"],l),"prematuridade",A.a(["prematuridad","rn prematuro","prematuro ","prematuro extremo"],l),ak8,A.a(["bexiga hiperativa","urge incontinencia","urge urinaria","incontinencia urge"],l),ak9,A.a(["incontinencia urinaria","incontinence urine","perda urina","incontinencia urin"],l),al0,A.a(["cistite intersticial","bexiga dolorosa","pia ","painful bladder"],l),"uretrolitiase",A.a(["ureterolitiase","calculo ureter","c\xf3lica ureteral"],l),"cancer_rim",A.a(["cancer renal","carcinoma celulas renais","ccr ","hipernefroma"],l),"cancer_bexiga",A.a(["cancer bexiga","carcinoma urotelial","tumor bexiga"],l),"varicocele",A.a(["varicocele","varicocele infertilid"],l),"orquite",A.a(["orquite","orchitis","infec testiculo"],l),"epididimite",A.a(["epididimite","epididymitis","infec epidid"],l),"tor\xe7ao_testicular",A.a(["torcao testicular","torsao testis","escroto agudo"],l),"hidrocele",A.a(["hidrocele","acumulo liquido escroto"],l),"hipospadias",A.a(["hipospadias","uretra hipospad"],l),"fimose",A.a(["fimose","fimosis","preputio estreito"],l),"parafimose",A.a(["parafimose","paraphimosis","emergencia preputio"],l),"haloperidol_dr",A.a(["haloperidol","haldol","serenase","para que serve o haloperidol","dose haloperidol","dose haldol","haloperidol brote","haloperidol agitacao","haloperidol psicose","haloperidol ampola","haloperidol iv","haloperidol im","haldol decanoato","haldol depot"],l),"clorpromazina_dr",A.a(["clorpromazina","amplictil","thorazine","dose clorpromazina","clorpromazina agitacao","largactil"],l),"levomepromazina_dr",A.a(["levomepromazina","nozinan","dose levomepromazina","methotrimeprazine"],l),"flufenazina_dr",A.a(["flufenazina","modecate","dose flufenazina","flufenazina depot"],l),"zuclopentixol_dr",A.a(["zuclopentixol","clopixol","clopixol acufase","dose zuclopentixol"],l),"droperidol_dr",A.a(["droperidol","dose droperidol","droperidol agitacao","droperidol antiemetico"],l),"risperidona_dr",A.a(["risperidona","risperdal","dose risperidona","risperidona depot","risperdal consta","risperidona para psicose","risperidona crianca","risperidona idoso"],l),"olanzapina_dr",A.a(["olanzapina","zyprexa","dose olanzapina","olanzapina im","olanzapina velotab","olanzapina bipolar","olanzapina psicose"],l),"quetiapina_dr",A.a(["quetiapina","seroquel","dose quetiapina","quetiapina xl","quetiapina bipolar","quetiapina ansiedade","quetiapina insonia","quetiapina psicose","seroquelxr"],l),"clozapina_dr",A.a(["clozapina","clozaril","leponex","dose clozapina","clozapina refrataria","clozapina esquizofrenia","clozapina neutropenia","agranulocitose clozapina"],l),"aripiprazol_dr",A.a(["aripiprazol","abilify","dose aripiprazol","aripiprazol depot","aripiprazol bipolar","abilify maintena"],l),"paliperidona_dr",A.a(["paliperidona","invega","xeplion","dose paliperidona","paliperidona depot","invega sustenna"],l),"lurasidona_dr",A.a(["lurasidona","latuda","dose lurasidona"],l),"cariprazina_dr",A.a(["cariprazina","reagila","dose cariprazina"],l),"sertralina_dr",A.a(["sertralina","zoloft","dose sertralina","sertralina depressao","sertralina ansiedade","sertralina panico","sertralina toc","sertralina iniciar"],l),"fluoxetina_dr",A.a(["fluoxetina","prozac","dose fluoxetina","fluoxetina depressao","fluoxetina toc","fluoxetina crianca"],l),"paroxetina_dr",A.a(["paroxetina","paxil","seroxat","dose paroxetina","paroxetina ansiedade","paroxetina panico"],l),"escitalopram_dr",A.a(["escitalopram","lexapro","cipralex","dose escitalopram","escitalopram depressao"],l),"citalopram_dr",A.a(["citalopram","celexa","dose citalopram"],l),"fluvoxamina_dr",A.a(["fluvoxamina","luvox","dose fluvoxamina","fluvoxamina toc"],l),"venlafaxina_dr",A.a(["venlafaxina","effexor","dose venlafaxina","venlafaxina ansiedade","venlafaxina depressao","venlafaxina fibromialgia","efexor"],l),"duloxetina_dr",A.a(["duloxetina","cymbalta","dose duloxetina","duloxetina dor","duloxetina fibromialgia","duloxetina depressao"],l),"desvenlafaxina_dr",A.a(["desvenlafaxina","pristiq","dose desvenlafaxina"],l),"mirtazapina_dr",A.a(["mirtazapina","remeron","dose mirtazapina","mirtazapina insonia","mirtazapina apetite"],l),"trazodona_dr",A.a(["trazodona","desyrel","dose trazodona","trazodona insonia"],l),"bupropiona_dr",A.a(["bupropiona","wellbutrin","zyban","dose bupropiona","bupropiona tdah","bupropiona tabagismo"],l),"agomelatina_dr",A.a(["agomelatina","valdoxan","dose agomelatina"],l),"amitriptilina_dr",A.a(["amitriptilina","elavil","dose amitriptilina","amitriptilina dor","amitriptilina cefaleia","amitriptilina insonia"],l),"nortriptilina_dr",A.a(["nortriptilina","pamelor","dose nortriptilina"],l),"imipramina_dr",A.a(["imipramina","tofranil","dose imipramina","imipramina tdah"],l),"clomipramina_dr",A.a(["clomipramina","anafranil","dose clomipramina","clomipramina toc"],l),"moclobemida_dr",A.a(["moclobemida","manerix","dose moclobemida","imao reversivel"],l),"litio_dr",A.a(["litio","lition","lithium","dose litio","litio toxicidade","litionio","litio nivel serico","litio bipolar","carbolith","lithane"],l),"valproato_dr",A.a(["valproato","acido valproico","depakene","depakote","dose valproato","valproato bipolar","divalproex"],l),"lamotrigina_dr",A.a(["lamotrigina","lamictal","dose lamotrigina","lamotrigina bipolar","lamotrigina epilepsia","lamotrigina rash"],l),"carbamazepina_dr",A.a(["carbamazepina","tegretol","dose carbamazepina","carbamazepina bipolar","carbamazepina epilepsia"],l),"topiramato_dr",A.a(["topiramato","topamax","dose topiramato","topiramato enxaqueca","topiramato epilepsia"],l),"oxcarbazepina_dr",A.a(["oxcarbazepina","trileptal","dose oxcarbazepina"],l),"diazepam_dr",A.a(["diazepam","valium","dose diazepam","diazepam agitacao","diazepam convulsao","diazepam ansiedade"],l),"midazolam_dr",A.a(["midazolam","dormicum","dose midazolam","midazolam sedacao","midazolam convulsao","midazolam intubacao"],l),"lorazepam_dr",A.a(["lorazepam","ativan","dose lorazepam","lorazepam agitacao"],l),"clonazepam_dr",A.a(["clonazepam","rivotril","klonopin","dose clonazepam","clonazepam epilepsia","clonazepam panico"],l),"alprazolam_dr",A.a(["alprazolam","xanax","dose alprazolam","alprazolam ansiedade","alprazolam panico"],l),"zolpidem_dr",A.a(["zolpidem","ambien","stilnox","dose zolpidem","zolpidem insonia"],l),"zopiclona_dr",A.a(["zopiclona","imovane","dose zopiclona","zopiclona insonia"],l),"flumazenil_dr",A.a(["flumazenil","dose flumazenil","flumazenil reverter benzo","antidoto benzodiazep"],l),"metilfenidato_dr",A.a(["metilfenidato","ritalin","concerta","dose metilfenidato","metilfenidato tdah","ritalina"],l),"atomoxetina_dr",A.a(["atomoxetina","strattera","dose atomoxetina","atomoxetina tdah"],l),"modafinil_dr",A.a(["modafinil","provigil","dose modafinil","modafinil narcolepsia"],l),"donepezila_dr",A.a(["donepezila","donepezil","aricept","dose donepezila","donepezila alzheimer"],l),"rivastigmina_dr",A.a(["rivastigmina","exelon","dose rivastigmina","rivastigmina alzheimer","rivastigmina parkinson"],l),"galantamina_dr",A.a(["galantamina","reminyl","dose galantamina"],l),"memantina_dr",A.a(["memantina","namenda","dose memantina","memantina alzheimer"],l),"levodopa_dr",A.a(["levodopa","carbidopa","sinemet","ldopa","dose levodopa","levodopa parkinson","levodopa-carbidopa"],l),"pramipexol_dr",A.a(["pramipexol","mirapex","dose pramipexol","pramipexol pernas inquietas"],l),"biperideno_dr",A.a(["biperideno","akineton","dose biperideno","biperideno extrapiramidal"],l),"naloxona_dr",A.a(["naloxona","narcan","dose naloxona","naloxona overdose opioide","naloxona reverter"],l),"naltrexona_dr",A.a(["naltrexona","revia","dose naltrexona","naltrexona alcoolismo"],l),"dissulfiram_dr",A.a(["dissulfiram","antabuse","dose dissulfiram","dissulfiram alcool"],l),"acamprosato_dr",A.a(["acamprosato","campral","dose acamprosato","acamprosato alcoolismo"],l),"vareniclina_dr",A.a(["vareniclina","champix","dose vareniclina","vareniclina tabagismo"],l),"buprenorfina_dr",A.a(["buprenorfina","subutex","suboxone","dose buprenorfina","buprenorfina dependencia opioide"],l),"ketamina_dr",A.a(["ketamina","ketamine","esketamina","spravato","dose ketamina","ketamina depressao refrataria"],l),"ziprasidona_dr",A.a(["ziprasidona","geodon","dose ziprasidona","ziprasidona qt","ziprasidona esquizofrenia"],l),"oxacilina_dr",A.a(["oxacilina","dose oxacilina","oxacilina mssa","oxacilina estafilococo","oxacilina endocardite"],l),"cefazolina_dr",A.a(["cefazolina","ancef","dose cefazolina","cefazolina profilaxia","cefazolina cirurgia","cefazolina mssa"],l),"cefoxitina_dr",A.a(["cefoxitina","mefoxin","dose cefoxitina","cefoxitina anaerobio","cefoxitina bacteroides","cefoxitina profilaxia abdominal"],l),"cefotaxima_dr",A.a(["cefotaxima","claforan","dose cefotaxima","cefotaxima meningite","cefotaxima neonato","cefotaxima gram negativo"],l),"doripenem_dr",A.a(["doripenem","doribax","dose doripenem","doripenem pseudomonas","doripenem multirresistente"],l),"aztreonam_dr",A.a(["aztreonam","azactam","dose aztreonam","aztreonam alergico penicilina","aztreonam gram negativo"],l),"tobramicina_dr",A.a(["tobramicina","tobramycin","dose tobramicina","tobramicina pseudomonas","tobramicina fibrose cistica","tobramicina inalatoria"],l),al1,A.a(["estreptomicina","streptomycin","dose estreptomicina","estreptomicina tuberculose","estreptomicina resistente"],l),"teicoplanina_dr",A.a(["teicoplanina","targocid","dose teicoplanina","teicoplanina mrsa","teicoplanina vancomicina","teicoplanina im"],l),"eritromicina_dr",A.a(["eritromicina","erythromycin","dose eritromicina","eritromicina procin\xe9tico","eritromicina motilidade gastrica","eritromicina qt"],l),"minociclina_dr",A.a(["minociclina","minocycline","minocin","dose minociclina","minociclina acinetobacter","minociclina mrsa","minociclina acne"],l),"rifampicina_dr",A.a(["rifampicina","rifampin","rifadin","dose rifampicina","rifampicina interacao","rifampicina tuberculose","rifampicina indutor"],l),"isoniazida_dr",A.a(["isoniazida","isoniazid","inh tuberculose","dose isoniazida","isoniazida neuropatia","isoniazida piridoxina","isoniazida hepatite"],l),"pirazinamida_dr",A.a(["pirazinamida","pyrazinamide","dose pirazinamida","pirazinamida gota","pirazinamida uricemia","pirazinamida hepatotox"],l),"etambutol_dr",A.a(["etambutol","myambutol","dose etambutol","etambutol visao","etambutol neurite optica","etambutol tuberculose"],l),"ganciclovir_dr",A.a(["ganciclovir","cytovene","dose ganciclovir","ganciclovir cmv","ganciclovir mielossupressao","ganciclovir imunossuprimido"],l),al2,A.a(["valganciclovir","valcyte","dose valganciclovir","valganciclovir cmv","valganciclovir oral cmv"],l),"itraconazol_dr",A.a(["itraconazol","sporanox","dose itraconazol","itraconazol icc","itraconazol interacao","itraconazol histoplasmose"],l),"voriconazol_dr",A.a(["voriconazol","vfend","dose voriconazol","voriconazol aspergilose","voriconazol alucinacao visual","voriconazol fotossensibilidade"],l),"caspofungina_dr",A.a(["caspofungina","cancidas","dose caspofungina","caspofungina candida","caspofungina candidemia"],l),"micafungina_dr",A.a(["micafungina","mycamine","dose micafungina","micafungina candida","micafungina profilaxia tmo"],l),"terbinafina_dr",A.a(["terbinafina","lamisil","dose terbinafina","terbinafina onicomicose","terbinafina ageusia","terbinafina hepatotox"],l),"praziquantel_dr",A.a(["praziquantel","biltricide","dose praziquantel","praziquantel esquistossomose","praziquantel neurocisticercose"],l),"bosentana_dr",A.a(["bosentana","tracleer","dose bosentana","bosentana hap","bosentana endotelina","bosentana hipertensao pulmonar","bosentana teratogenica"],l),"minoxidil_dr",A.a(["minoxidil","loniten","dose minoxidil sistemico","minoxidil hipertensao refrataria","minoxidil hipertricose","minoxidil drc"],l),"doxazosina_dr",A.a(["doxazosina","cardura","dose doxazosina","doxazosina hpb","doxazosina sincope primeira dose","doxazosina alfa1"],l),"terazosina_dr",A.a(["terazosina","hytrin","dose terazosina","terazosina hpb","terazosina alfa bloqueador","terazosina hipotensao"],l),"dutasterida_dr",A.a(["dutasterida","avodart","dose dutasterida","dutasterida hpb","dutasterida 5alfa redutase","dutasterida dht"],l),"tadalafila_dr",A.a(["tadalafila","cialis","adcirca","dose tadalafila","tadalafila disfuncao eretil","tadalafila hap","tadalafila nitrato"],l),"argatrobana_dr",A.a(["argatrobana","argatroban","dose argatrobana","argatrobana hit","argatrobana trombocitopenia heparina","argatrobana renal"],l),"sugamadex_dr",A.a(["sugamadex","bridion","dose sugamadex","sugamadex rocuronio","sugamadex reverter","sugamadex emergencia"],l),"cisatracurio_dr",A.a(["cisatracurio","nimbex","dose cisatracurio","cisatracurio hofmann","cisatracurio renal","cisatracurio uti"],l),"atracurio_dr",A.a(["atracurio","tracrium","dose atracurio","atracurio histamina","atracurio laudanosina","atracurio hofmann"],l),"pancuronio_dr",A.a(["pancuronio","pavulon","dose pancuronio","pancuronio longa duracao","pancuronio vagolitico","pancuronio taquicardia"],l),"neostigmina_dr",A.a(["neostigmina","prostigmin","dose neostigmina","neostigmina reverter bnm","neostigmina atropina","neostigmina tof"],l),al3,A.a(["piridostigmina","mestinon","dose piridostigmina","piridostigmina miastenia","piridostigmina crise colinergica"],l),"tiopental_dr",A.a(["tiopental","thiopental","pentothal","dose tiopental","tiopental inducao","tiopental epilepsia refrataria","tiopental pic"],l),"halotano_dr",A.a(["halotano","halothane","dose halotano","halotano hepatite","halotano hipertermia maligna","halotano catecolamina"],l),"sevoflurano_dr",A.a(["sevoflurano","sevoflurane","dose sevoflurano","sevoflurano inducao","sevoflurano hipertermia maligna"],l),"isoflurano_dr",A.a(["isoflurano","isoflurane","forane","dose isoflurano","isoflurano manutencao","isoflurano hipertermia maligna"],l),"bupivacaina_dr",A.a(["bupivacaina","marcaine","dose bupivacaina","bupivacaina cardiotoxica","bupivacaina epidural","bupivacaina raqui","bupivacaina emulsao lipidica"],l),"ropivacaina_dr",A.a(["ropivacaina","naropin","dose ropivacaina","ropivacaina bloqueio periferico","ropivacaina seguranca cardiaca"],l),"prilocaina_dr",A.a(["prilocaina","citanest","dose prilocaina","prilocaina metahemoglobinemia","prilocaina azul metileno","prilocaina emla"],l),"protamina_dr",A.a(["protamina","protamine","dose protamina","protamina heparina reverter","protamina hnf","protamina hbpm",al4],l),"simvastatina_dr",A.a(["simvastatina","zocor","dose simvastatina","simvastatina dose","simvastatina rabdomioli"],l),"ciprofibrato_dr",A.a(["ciprofibrato","modalim","lipanor","dose ciprofibrato"],l),"prasugrel_dr",A.a(["prasugrel","effient","dose prasugrel","prasugrel icp","prasugrel sca"],l),"cilostazol_dr",A.a(["cilostazol","pletal","dose cilostazol","cilostazol isquemia"],l),"abciximabe_dr",A.a(["abciximabe","abciximab","reopro","dose abciximabe","abciximabe icp"],l),"tirofibana_dr",A.a(["tirofibana","tirofiban","aggrastat","dose tirofibana"],l),"bivalirudina_dr",A.a(["bivalirudina","bivalirudin","angiomax","dose bivalirudina","bivalirudina hit"],l),"edoxabana_dr",A.a(["edoxabana","edoxaban","lixiana","dose edoxabana"],l),"dalteparina_dr",A.a(["dalteparina","dalteparin","fragmin","dose dalteparina","dalteparina cancer"],l),"dipiridamol_dr",A.a(["dipiridamol","dipyridamole","persantine","dose dipiridamol","dipiridamol avc"],l),"eptifibatida_dr",A.a(["eptifibatida","eptifibatide","integrilin","dose eptifibatida"],l),"ibutilida_dr",A.a(["ibutilida","ibutilide","corvert","dose ibutilida","ibutilida cardioversao"],l),"valsartana_dr",A.a(["valsartana","diovan","dose valsartana","valsartana ic","valsartana has"],l),"irbesartana_dr",A.a(["irbesartana","irbesartan","avapro","dose irbesartana"],l),"telmisartana_dr",A.a(["telmisartana","telmisartan","micardis","dose telmisartana"],l),"ramipril_dr",A.a(["ramipril","altace","triatec","dose ramipril","ramipril ic","ramipril pos iam"],l),"lisinopril_dr",A.a(["lisinopril","zestril","prinivil","dose lisinopril","lisinopril ic"],l),"perindopril_dr",A.a(["perindopril","coversyl","dose perindopril","perindopril avc"],l),"trandolapril_dr",A.a(["trandolapril","mavik","dose trandolapril","trandolapril pos iam"],l),"fosinopril_dr",A.a(["fosinopril","monopril","dose fosinopril","fosinopril hepatopata"],l),"amilorida_dr",A.a(["amilorida","amiloride","dose amilorida","amilorida hipocalemia"],l),"torsemida_dr",A.a(["torsemida","torsemide","demadex","dose torsemida","torsemida ic"],l),"bumetanida_dr",A.a(["bumetanida","bumetanide","bumex","dose bumetanida"],l),"indapamida_dr",A.a(["indapamida","indapamide","dose indapamida","indapamida hipertensao"],l),"metildopa_dr",A.a(["metildopa","methyldopa","aldomet","dose metildopa","metildopa gravidez","metildopa has gestacional"],l),"acarbose_dr",A.a(["acarbose","glucobay","dose acarbose","acarbose diabetes","acarbose hiperglicemia pos prandial"],l),al5,A.a(["degludeca","tresiba","degludec","dose degludeca","insulina basal ultralonga"],l),al6,A.a(["acido zoledronico","zoledronate","aclasta","zometa","dose zoledronico","zoledronico osteoporose"],l),"alendronato_dr",A.a(["alendronato","fosamax","alendronate","dose alendronato","alendronato osteoporose"],l),"teriparatida_dr",A.a(["teriparatida","forteo","teriparatide","dose teriparatida","teriparatida osteoporose grave"],l),"cinacalcete_dr",A.a(["cinacalcete","sensipar","mimpara","dose cinacalcete","cinacalcete hiperparatireoidismo","cinacalcete dialise"],l),"cabergolina_dr",A.a(["cabergolina","dostinex","cabergoline","dose cabergolina","cabergolina hiperprolactinemia","cabergolina prolactinoma"],l),al7,A.a(["fludrocortisona","florinef","fludrocortisone","dose fludrocortisona","fludrocortisona addison",al8],l),al9,A.a(["levonorgestrel","mirena","dose levonorgestrel","levonorgestrel emergencia",am0],l),am1,A.a(["desmopressina","ddavp","desmopressin","dose desmopressina","desmopressina diabetes insipidus"],l),am2,A.a(["dexlansoprazol","dexilant","dexlansoprazole","dose dexlansoprazol"],l),"bismuto_dr",A.a(["bismuto","subsalicilato bismuto","bismuth","dose bismuto","bismuto helicobacter"],l),"azatioprina_dr",A.a(["azatioprina","azathioprine","imuran","dose azatioprina","azatioprina alopurinol","azatioprina dii"],l),"infliximabe_dr",A.a(["infliximabe","infliximab","remicade","dose infliximabe","infliximabe crohn","infliximabe rcu","infliximabe tuberculose"],l),"adhd_adulto",A.a(["tdah adulto","adhd adulto","deficit atencao adulto"],l),am3,A.a(["anorexia nervosa","anorexia","transtorno alimentar restrit"],l),"bulimia",A.a(["bulimia nervosa","transtorno alimentar purga","bulimia"],l),"binge_eating",A.a(["compulsao alimentar","binge eating","transtorno compulsao aliment"],l),am4,A.a(["transtorno personalidade borderline","tpb ","borderline personality"],l),"personalidade_antis",A.a(["transtorno personalidade antisocial","psicopatia","sociopatia"],l),"somatizacao",A.a(["somatizacao","transtorno somatoforme","somatoform","medicamente inexplicad"],l),"conversao",A.a(["transtorno conversao","sintoma neurologico funcional","histeria conversao"],l),"dismorfofobia",A.a(["dismorfofobia","bdd ","transtorno dismorfico corporal"],l),"jogo_patologico",A.a(["jogo patologico","ludopatia","gambling disorder"],l),"hipocondria",A.a(["hipocondria","ansied saude","transtorno ansied doenca"],l),"estress_agudo",A.a(["transtorno estress agudo","reacao aguda estress"],l),"luto_complica",A.a(["luto complicad","luto prolongad","luto patologico"],l),"insonia",A.a(["insonia","insomnia","disturbio sono insonia","dificuldade dormir"],l),"hipersonia",A.a(["hipersonia","sonolencia excessiva","narcolepsia","cataplexia"],l),"parassonia",A.a(["parassonia","terror noturno","sonambulismo","pesadelo parasso"],l),"mutismo_selet",A.a(["mutismo seletivo","mutismo select"],l),"fobia_especifica",A.a(["fobia especifica","fobia simples","medo especifico irrac"],l),"fobia_social",A.a(["fobia social","transtorno ansied social","social anxiety"],l),"alucinos_organica",A.a(["alucinose organica","delirium alucinac","alucinac organica"],l),"sdra",A.a(["sdra ","ards ","sindrome angust respirat agud","lesao pulm agud"],l),"hepatite_fulmin",A.a(["hepatite fulminante","falencia hepatica agud","hepatit agud grave"],l),am5,A.a(["intox paracetamol","toxicidade paracetamol","toxicidade acetaminof","hepatotox paracetamol"],l),am6,A.a(["intox organofosfat","intox pesticida","crise colinergica","organofosf envenenamento"],l),"intox_monoxido",A.a(["intox monoxido carbono","intox co ","envenenamento co ","monoxido carbon"],l),"intox_metanol",A.a(["intox metanol","envenenamento metanol","acidose metabol anion gap alco"],l),am7,A.a(["intox etileno glicol","envenenamento etileno glicol"],l),"intox_digoxina",A.a(["intox digoxina","toxicidade digoxina","digoxin toxicity"],l),"intox_litio",A.a(["intox litio","toxicidade litio","lithium toxicity"],l),"hipotermia",A.a(["hipotermia ","temperatura corp baix","hipothermia"],l),"hipertermia",A.a([am8,"golpe calor","heat stroke","temperatura elevad grave"],l),"afogamento",A.a(["afogamento","quase afogamento","submersao"],l),"mordedura",A.a(["mordedura animal","picada cobra","peconhento","envenenamento serpente"],l),"ferida_cirurgica",A.a(["infec ferida cirurgica","deiscencia ferida","infec sitio cirurgico"],l),"nutri\xe7\xe3o_parenteral",A.a(["nutricao parenteral total","npt ","nutri\xe7\xe3o parenter","nutri\xe7\xe3o iv"],l),"suporte_nutric",A.a(["suporte nutric",am9,"sonda enteral"],l),"angioplastia",A.a(["angioplastia coronaria","icp ","pci ","cateterismo intervenc","stent coronario"],l),"troca_valv",A.a(["substituicao valvular","cirurgia valva","troca valv"],l),"cirurgia_pontagem",A.a(["pontagem coronaria","cirurgia revascul miocardica","crm ","cabg "],l),"crt",A.a(["terapia ressincron cardiac","crt ","marcapasso biv","cdn implant"],l),"cardioversao",A.a(["cardioversao eletrica","cardioversao farmaco","cve ","desfibril"],l),"ablacao_cardiaca",A.a(["ablacao cardiaca","ablacao rf","ablacao fa"],l),"desnutricao",A.a(["desnutricao","malnutricao","deficit nutric","subnutricao"],l),"sarcopenia",A.a(["sarcopenia","perda massa muscul","dinapenia"],l),an0,A.a(["deficiencia vitamina d","hipovitaminose d","vitamina d insufic"],l),an1,A.a(["deficiencia vitamina b12","cobalamina defic","b12 baixo"],l),an2,A.a(["deficiencia folato","deficiencia acido folico","folato baix"],l),"defic_zinco",A.a(["deficiencia zinco","hipozincemia","acrodermatite enterop"],l),"defic_selenio",A.a(["deficiencia selenio","hiposeleniemia"],l),"defic_ferro",A.a([an3,"ferropenia","ferro baix"],l),"gota_alimentar",A.a(["gota alimentar","hiperuricemia dieta","artrite gotosa dieta"],l),"cancer_tireoide",A.a(["cancer tireoid","carcinoma papilif tireoid","carcinoma folicular tireoid","carcinoma medular tireoid"],l),"cancer_adrenal",A.a(["carcinoma adrenal","cancer gland adrenal","feocromocitom maligno"],l),an4,A.a(["cancer renal metastat","ccr avancado","carcinoma renal metast"],l),an5,A.a(["cancer testicular","tumor germinativo","seminoma","nao seminoma testicular"],l),"cancer_peniano",A.a(["cancer penis","carcinoma penis"],l),"meduloblastoma",A.a(["meduloblastoma","tumor fosso posterior crian"],l),"glioblastoma",A.a(["glioblastoma","gbm ","glioblastoma multiforme","tumor cerebral maligno"],l),"astrocitoma",A.a(["astrocitoma","glioma baixo grau","glioma alto grau"],l),"meningioma",A.a(["meningioma","tumor meninges","meningioma cerebral"],l),"neuroblastoma",A.a(["neuroblastoma","tumor neural crianca"],l),"sarcoma",A.a(["sarcoma osseo","osteossarcoma","sarcoma ewing","sarcoma partes moles"],l),an6,A.a(["carcinoma cabeca pescoco","carcinoma espinocel cabeca","cancer laringe","cancer hipofaringe","cancer orofaringe"],l),"cancer_nasofaringe",A.a(["cancer nasofaringe","carcinoma nasofaringeo","ebv nasofaringe"],l),an7,A.a(["leucemia celula capilar","hairy cell leukemia","lcc "],l),"linfoma_burkitt",A.a(["linfoma burkitt","burkitt lymphoma","linfoma muito agressiv"],l),"linfoma_manto",A.a(["linfoma manto","mantle cell lymphoma","linfoma celula manto"],l),an8,A.a(["linfoma folicular","follicular lymphoma","linfoma indolente"],l),"mieloma_amiloidose",A.a(["mieloma amiloid","amiloidose al","amiloidose mieloma"],l),an9,A.a(["leucemia promielocitic agud","lpa ","apl ","m3 leucemia","pml rara"],l),ao0,A.a(["sindrome mielodisplasic","smd ","mds ","citopenia medular displasica"],l),ao1,A.a(["cistite hemorragica","hematuria pos quimio","cistite quimio radioterapia"],l),ao2,A.a(["rejeicao transplante","rejeicao organ","rejeicao agud transp"],l),"transplante_rim",A.a(["transplante renal","transplante rim","transplante renal pos-op"],l),"transplante_figado",A.a(["transplante hepatico","transplante figado","transplante hepat pos-op"],l),"transplante_coracao",A.a(["transplante cardiaco","transplante coracao","transplante card pos-op"],l),"transplante_pulmao",A.a(["transplante pulmonar",ao3],l),ao4,A.a(["transplante medula ossea","transplante celula trunc hematop","tcth ","tmo "],l),ao5,A.a(["doenca enxerto hospedeiro","gvhd ","deh "],l),"pneumoconiose",A.a(["pneumoconiose","doenca pulm ocupacional","lesao pulm poeira"],l),"saturnismo",A.a(["saturnismo","intox chumbo","lead poisoning","chumbo sanguine elevad"],l),"intox_mercurio",A.a(["intox mercurio","mercurialism","envenenamento mercurio"],l),"intox_arsenic",A.a(["intox arsenico","arsenicismo","envenenamento arsenio"],l),"burn_out",A.a(["burnout","esgotamento profissional","burn-out"],l),"reacao_adversa",A.a(["reacao adversa medicamento","ram ","efeito adverso medicamento","toxicidade medicament"],l),"interacao_medicam",A.a(["interacao medicament","interacao drug","drug interaction","interacao farmacodin"],l),"polifarmacia",A.a(["polifarmacia","polimedicado","idoso multiplos medicam"],l),"sindrome_fragil",A.a(["sindrome fragilidade","fragil idoso","frailty","frailty sindrome"],l),"quedas_idoso",A.a(["quedas idoso","queda idoso","fratura por queda","prevencao quedas"],l),"demencia_lewy",A.a(["demencia lewy","corpos de lewy","demencia corpo lewy"],l),"demencia_front",A.a(["demencia frontotemporal","dft ","ftd ","demencia lobo frontal"],l),"delirium_idoso",A.a(["delirium idoso","confusao agud idoso","sd confusional agud idoso"],l),"incontinencia_fecal",A.a(["incontinencia fecal","incontinencia anal","perda fezes"],l),"constipacao_cronica",A.a(["constipacao cronica","obstipacao cronica","constipacao funcional adult"],l),"bexiga_neuropat",A.a(["bexiga neuropatica","disfuncao vesical neurogen","bexiga neurogen"],l),"sarcopenia_idoso",A.a(["sarcopenia idoso","perda massa muscul idoso"],l),"depressao_idoso",A.a(["depressao idoso","depressao geriat","depressao velhice"],l),"dpa_alveolar",A.a(["proteinose alveolar pulm","pap ","preenchimento alveolar lipido"],l),"histiocitose",A.a(["histiocitose celula langerhans pulm","langerhans pulm"],l),ao6,A.a(["hipertensao pulm tromboembol cronic","hptec ","cteph "],l),ao7,A.a([af3,"wegener","vasculite anca pulm"],l),ao8,A.a(["pneumonia organiz criptogen","cop ","boop "],l),"fibrosia_pulm_secund",A.a(["fibrose pulm secundaria","fibrose pulm colagenose","fibrose pulm ar"],l),"hepatite_alcoolica",A.a(["hepatite alcoolica","hepatopatia alcoolica agud","cirrose alcoolica agud"],l),"hepatite_toxica",A.a(["hepatite toxica","hepatotox medicamentosa","dili ","lesao hepatica medicat"],l),"encefal_hepatica",A.a(["encefalopatia hepatica","coma hepatic","asterixe hepatic"],l),"peritonite_bact",A.a(["peritonite bacteriana espontanea","pbe ","sbp "],l),"varizes_esofagicas",A.a(["varizes esofagicas","hemorragia variz","sangramento variz esof"],l),"hiperesplenismo",A.a(["hiperesplenismo","esplenomeg hipercitopen","hipersecrestr esplenico"],l),"hepatite_cronica_b",A.a(["hepatite b cronica","hbv cronica","hepatite b ativa"],l),"hepatite_cronica_c",A.a(["hepatite c cronica","hcv cronica","hepatite c ativa"],l),"colangiocarc",A.a([ag3,"cancer via biliar intrahep","ca colangios"],l),"colelitiase",A.a(["colelitiase","calculo vesicular","pedra vesicula","litiase biliar"],l),ao9,A.a(["hipertensao intracraniana","hic ","pressao intracraniana elevad"],l),"herniacao_cerebral",A.a(["herniacao cerebral","herniacao uncal","herniacao uncus","herniacao amigdala"],l),"morte_cerebral",A.a(["morte cerebral","morte encef","coma irreversivel","criterio morte encef"],l),"embolia_gordura",A.a(["embolia gordura","embolia lipidica","sindrome embolia gordura"],l),"sindrome_comp_abdom",A.a(["sindrome compartimento abdominal","pressao intra-abdom elevad","hia "],l),"crise_miastenia",A.a([ap0,"fraqueza muscul respir miastenia","miastenia crise"],l),ap1,A.a(["crise addisoniana","insuf adrenal agud","crise adrenal","colapso adrenal"],l),ap2,A.a(["hipercalcemia maligna","hipercalcemia cancer","hipercalcemia tumor"],l),ap3,A.a(["sindrome lise tumoral","slt ","tls ","lise tumoral quimio"],l),ap4,A.a(["neutropenia grave","agranulocitose","neutrofilo zero","infec neutropenia profund"],l),ap5,A.a(["hipoglicemia grave","coma hipoglicem","hipoglicemia profund","glicemia muito baixo"],l),"crise_hipertens_renov",A.a(["crise hipertens renovasc","emergencia hiperten renal"],l),"lesao_menisco",A.a(["lesao menisco","rotura menisco","menisco joelho"],l),"lesao_ligamento",A.a(["lesao ligamento","rotura lca","rotura lcd","ligamento joelho"],l),"tendinite",A.a(["tendinite","tendinopat","tendao inflamat","tendinite manguito"],l),"bursite",A.a(["bursite","bursitis","bolsa sinovial inflam"],l),"fasceite_plantar",A.a(["fasceite plantar","fascite plantar","dor calcaneo plantar"],l),"sindrome_dor_miof",A.a(["sindrome dor miofascial","ponto gatilho","trigger point"],l),"lombalgia",A.a(["lombalgia","dor lombar","lumbago","dorsalgia lombar"],l),"cervicalgia",A.a(["cervicalgia","dor cervical","cervicobrac"],l),"fibralgia",A.a(["fibromialgia","sensibilizac central","dor cronica difusa"],l),"rabdo_exercicio",A.a(["rabdomiolise exercicio","cak elevad exercicio","mioglobin pos exercicio"],l),"alerg_alimentar",A.a(["alergia alimentar","hipersensibilidade aliment","reacao alerg aliment"],l),"alerg_latex",A.a(["alergia latex","hipersensib latex"],l),ap6,A.a([ap7,"hipersensib betalact","alergia antibiotico"],l),"alerg_aspirina",A.a(["alergia aspirina","hipersensib aine","intolerancia aspirina"],l),ap8,A.a(["rinosinusite alerg","rinite alerg","rinoconjuntivite alerg"],l),"asma_alerg",A.a(["asma alerg","asma atopica","asma alergen"],l),"asma_ocup",A.a(["asma ocupacional","asma agente trabalho"],l),"imunoterapia_alerg",A.a(["imunoterapia alerg","dessensibilizac alergia","vacina alergia"],l),ap9,A.a(["mastocitose sistemica","mastocitose adulto","kit-d816v mastocit"],l),aq0,A.a(["eosinofilia periferica","eosinofilia alerg","sindrome eosinofilica"],l),aq1,A.a(["imunodeficiencia primaria","agamaglobulinemia","imunodefic combina"],l),aq2,A.a(["imunodeficiencia comun variavel","idcv ","cvid "],l),"sindrome_wiskott",A.a(["wiskott aldrich","imunodefic wiskott","trombocitopen imunodefic"],l),"scid",A.a(["scid ","imunodefic combina grave","severe combined immunodefic"],l),"complemento_defic",A.a(["deficiencia complemento","defic c3 c4 c2","sistema complement defic"],l),"hiperiga",A.a(["hiper iga","hipergamaglobulinemia iga","iga elevad relapso infec"],l),"doenca_antifosfolip",A.a(["doenca antifosfolipidio","saf ","trombose anticardiolipina","anticorpo antifosfolip"],l),"dislipidemia",A.a(["dislipidemia","hipercolesterol","ldl elevad","hdl baix","triglicerid elevad","hipertrigliceridemc"],l),aq3,A.a(["hipertrigliceridemia","triglicerid muito elevad","pancreatite hipertriglicerd"],l),aq4,A.a(["hipercolesterol familiar","hipercolesterol genetica","hf ","ldl muito elevad genetica"],l),"hiperuricemia",A.a(["hiperuricemia","acido urico elevad","uricemia elevad"],l),aq5,A.a(["resistencia insulina","insulino resistente","hiperinsulinismo"],l),aq6,A.a(["taquicardia sinusal","taqui sinusal inapropriada","fc elevad sinusal"],l),"extrassistolia",A.a(["extrassistole","batimento ectopico","extrassistolia ventricular","extrassistolia atrial"],l),"flutteratrial",A.a(["flutter atrial","flutter auricular","flutter card"],l),"hipoglicemia_reativa",A.a(["hipoglicemia reativa","hipoglicemia pos prandial","hipoglicemia alimentar"],l),"alcalose_metabol_cron",A.a(["alcalose metabol cronica","alcalose hipoklorem"],l),"acidose_tubular",A.a(["acidose tubular renal","atr ","acidose hipercloremk"],l),"hipomagnesemia",A.a(["hipomagnesemia","magnesio baix","mg+ baix"],l),"hipermagnesemia",A.a(["hipermagnesemia","magnesio elevad","mg+ elevad"],l),"hipofosfatemia",A.a(["hipofosfatemia","fosfato baix","hipofosfat"],l),"hiperfosfatemia",A.a(["hiperfosfatemia","fosfato elevad","hiperfosfat"],l),"mpox",A.a(["mpox","var\xedola dos macacos","monkeypox","varicela monkeypox"],l),"ebola",A.a(["ebola","virus ebola","febre hemorr ebola"],l),"mers",A.a(["mers ","sindrome respirat oriente medio","mers-cov"],l),"sars",A.a(["sars ","sindrome respirat aguda grave","sars-cov-1"],l),"narcolepsia",A.a(["narcolepsia","cataplexia","sono excessivo diurno","paralisia sono"],l),aq7,A.a(["sindrome pernas inquietas","spi ","rls ","movimento periodico membros"],l),"parassonias",A.a(["parassonias","sonambulismo adulto","terror noturno adulto","comportamento sono rem"],l),"oxigenoterapia",A.a(["oxigenoterapia",aq8,"o2 suplementar","hipoxemia suporte"],l),"hiperbarica",A.a(["camara hiperbar","oxigenio hiperbarico","oht ","terapia hiperbar"],l),"hda",A.a(["hemorrag digest alta","hda ","hematemese","melena","varizes esof","sangram digest alto"],l),"hdb",A.a(["hemorrag digest baix","hdb ","hematoquez","sangram digest baix","rectorragia"],l),"pancreatite",A.a(["pancreatite","pancreatitis","lipase elevad","amilase elevad","necros pancrea"],l),"colecistite",A.a(["colecistite","colecistitis","calculo biliar","colelitias","colelitiasis"],l),"colangite",A.a(["colangite","colangitis","cole angite","infec biliar"],l),"apendicite",A.a(["apendicite","appendicitis","appendicite","mcburney"],l),"diverticulite",A.a(["diverticulit","diverticulosis complic"],l),"drge",A.a(["drge","reflux gastroesof","gerd","esofagite reflu","heartburn"],l),"ulcera_peptica",A.a(["ulcera peptic","ulcera gastric","ulcera duoden","h pylori","helicobacter"],l),"dii",A.a(["doenca inflamat intest","dii ","crohn","retocolite","colite ulcerosa"],l),"sii",A.a(["sindrome intest irritav","sii ","colon irritav","ibs "],l),"cirrose",A.a(["cirrose","cirrosis","hipertensao portal","ascite","encefalopatia hepat","hepatopatia cronic"],l),"hepatite",A.a(["hepatite viral","hepatite b","hepatite c","hepatitis viral","antiviral hepat"],l),"insuf_hepatica",A.a(["insuf hepatic","insuficiencia hepatic","falencia hepatic","necrose hepat massiv"],l),"ira",A.a(["insuf renal agud","ira ","lesao renal agud","lra ","acute kidney","oliguria renal"],l),"drc",A.a(["doenca renal cronic","drc ","insuf renal cronic","nefropat cronic","dialise cronic"],l),aq9,A.a(["glomerulonefrit","glomerulonephrit","sindrome nefrit","hematuria glomeru"],l),ar0,A.a(["sindrome nefrot","nefrose","proteinuria nefrot","hipoalbuminem"],l),"lit\xedase_renal",A.a(["litias renal","calculo renal","nefrolitias","colica renal","colica nefret"],l),"dm1",A.a(["diabetes mellitus tipo 1","dm1","diabetes tipo 1","insulinodepend"],l),"dm2",A.a(["diabetes mellitus tipo 2","dm2","diabetes tipo 2","diabetes nao insulinodep"],l),"diabetes",A.a(["diabet","glicemia elevad","hiperglicemia","hipoglicemia"],l),"cad",A.a(["cetoacidos","cad ","dka ","acidose diabetic","cetose diabetic"],l),"ehnc",A.a(["estado hiperosmolar","ehnc ","ehh ","coma hiperosmolar","hiperglicemia grave"],l),"hipoglicemia",A.a(["hipoglicem","glicemia baix","coma hipoglicem","glucagom emerg"],l),"hipotireoidismo",A.a(["hipotireoid","hypothyroid","levotiroxin","tsh elevad"],l),ar1,A.a(["hipertireoid","hyperthyroid","tireotoxicos","tsh baixo","graves ","propiltiouracil"],l),ar2,A.a(["crise tireotoxi","tempestade tireoid","thyroid storm"],l),"insuf_adrenal",A.a(["insuf adren","crisis adren","addison","cortisol baix","hidrocortisona crise"],l),"cushing",A.a(["cushing","hipercortisolism","cortisol exces"],l),"feocromocitoma",A.a(["feocromocitom","pheochromocytom","hipertensao parox","catecolamina exces"],l),"obesidade",A.a(["obesidade","sobrepeso","imc elevad","orlistat","liraglutida obesid"],l),"hipercalemia",A.a(["hipercalemia","hiperpotassemia","k+ elevad","potassio elevad","kayexalat"],l),"hipocalemia",A.a(["hipocalemia","hipopotassemia","k+ baix","potassio baix",ar3],l),"hiponatremia",A.a(["hiponatremia","sodio baix","na+ baix","hipoosm","siadh"],l),"hipernatremia",A.a(["hipernatremia","sodio elevad","na+ elevad","hiperosmolar sodio"],l),"hipocalcemia",A.a(["hipocalcemia","calcio baix","ca2+ baix","tetania",ar4],l),"hipercalcemia",A.a(["hipercalcemia","calcio elevad","ca2+ elevad","hipercalc"],l),"acidose_met",A.a(["acidose metabol","acidose metabolica","bicarbonato baix","bicarbonato reposi"],l),"alcalose_met",A.a(["alcalose metabol","bicarbonato elevad"],l),"acidose_resp",A.a(["acidose respirat","hipercapnia","co2 elevad"],l),"alcalose_resp",A.a(["alcalose respirat","hipocapnia","co2 baix"],l),ar5,A.a(["anemia ferropriva","anemia ferropenic",an3,"sulfato ferros","ferro defic"],l),"anemia_megalob",A.a(["anemia megaloblast","deficiencia b12","deficiencia folat","anemia perniciosa"],l),"anemia_hemol",A.a(["anemia hemolitic","hemolise","crise falciform","drepanocitos","esferocit"],l),"leucemia",A.a(["leucemia","leukemia","leucemia agud","blast leucem"],l),"linfoma",A.a(["linfoma","lymphoma","hodgkin","nao hodgkin"],l),"civd",A.a(["civd","coagulacao intravas dissemin","coagulopatia consumo"],l),"trombocitopenia",A.a(["trombocitopenia","plaqueta baix","pti ","purpura trombocitopen"],l),ar6,A.a(["neutropenia febril","neutropenia ","febre neutropenia","mucosit febril"],l),"depressao",A.a(["depressao maior","depressao unipolar","tdm ","antidepressiv","isrs depressao"],l),"bipolar",A.a(["bipolar","mania ","episodio mania","lition",ar7],l),"esquizofrenia",A.a(["esquizofrenia","schizophrenia","antipsicotic","alucinac","delirio psicot"],l),"ansiedade",A.a(["ansied","ansiet","tag ","transtorno ansied","generalizad"],l),"panico",A.a(["panico","panic","crise panico","ataque panico"],l),"tept",A.a(["tept","ptsd","trauma psiquiat","estresse pos-traum"],l),"toc",A.a(["toc ",ar8,"ocd "],l),"intox_opioide",A.a(["intox opioide","intoxicacao opioide","overdose opioide","naloxona","naltrexona"],l),"intox_benzo",A.a(["intox benzodiazep","intoxicacao benzo","overdose benzo","flumazenil"],l),"intox_alcoolica",A.a(["intox alcoolic","embriaguez","alcoolismo agud"],l),ar9,A.a(["abstinencia alcool","withdrawal alcool","delirium tremens","tiamina alcool"],l),"sind_serotonin",A.a(["sindrome serotonin","serotonin syndrome","toxicidade serotonin"],l),as0,A.a(["sindrome neuroleptica","hipertermia neuroleptic","rigidez extrapiram febre"],l),"intoxicacao",A.a(["intox ","envenenamento","toxicolog","overdose","carvao ativad"],l),"delirium",A.a(["delirium","confusao agud","sindrome confusional","agitac psicomotor"],l),"artrite_reuma",A.a(["artrite reumat","arthritis reumat",as1,"ar ","metotrexato artrit"],l),"lupus",A.a(["lupus","les ","lupus eritematoso","hydroxicloroquina lupus"],l),"esclerodermia",A.a(["esclerodermia","scleroderma","esclerose sistem"],l),"vasculite",A.a(["vasculite","vasculitis","poliarterit","granulomatose wegener"],l),"gota",A.a(["gota ","artrite gotosa","hiperuricemia","colchicina","alopurinol"],l),"osteoartrite",A.a(["osteoartrit","osteoartrose","artrose","artrit degener"],l),"osteoporose",A.a(["osteoporose","osteoporosis","osteopenia","bifosfonato","alendronato"],l),"fibromialgia",A.a(["fibromialgia","fibromyalgia","dor cronico muscul","sensibilizacao central"],l),"preeclampsia",A.a(["preeclampsia","pre-eclampsia","hellp","hipertensao gravidez"],l),"eclampsia",A.a(["eclampsia","convuls gravidez","gestante convuls"],l),"hemorragia_pp",A.a(["hemorragia pos-parto","hemorragia parto","atonia uterina","ocitocina hemorr"],l),"placenta_previa",A.a(["placenta previa","placenta baixa","sangramento placent"],l),"dpp",A.a(["descolamento placent","dpp ","abruptio placent"],l),"aborto_septico",A.a(["aborto septic","aborto infec","endometrit pos-aborto"],l),"sop",A.a(["sop ","sindrome ovar poliquistico","policistico ovar","metformina sop"],l),"endometriose",A.a(["endometriose","endometriosis"],l),"prostatite",A.a(["prostatite","prostatitis","infec prostat"],l),"hpb",A.a(["hiperplasia prostat","hpb ","bph ","obstruc urinaria"],l),"cancer_mama",A.a(["cancer mama","ca mama","carcinoma mama","quimio mama","hormoniot mama"],l),"cancer_pulmao",A.a(["cancer pulmao","carcinoma pulmao","nsclc","sclc","neoplasia pulm"],l),"cancer_gastrico",A.a(["cancer gastric","cancer estomago","adenocarcinoma gastric"],l),"cancer_colorret",A.a(["cancer colorret","cancer colon","cancer reto","neoplasia colorret"],l),"cancer_prostata",A.a(["cancer prostat","ca prostat","adenocarcinoma prostat"],l),"cancer_pancreas",A.a(["cancer pancreas","adenocarcinoma pancre","neoplasia pancreat"],l),"melanoma",A.a(["melanoma","neoplasia pele melanoc","ipilimumab melanom"],l),"bronquiolite",A.a(["bronquiolite","bronchiolitis","vsr ","sincicial respirat","bebes sibilos"],l),"crupe",A.a(["crupe","laringotraqueit","croup","dexametasona crupe"],l),"psoriase",A.a(["psoriase","psoriasis","placa eritematosa escam"],l),as2,A.a(["dermatite atopic","eczema atopic","dermatitis atopic"],l),"urticaria",A.a(["urticaria","urticaria alerg","anti-histamin urtic"],l),"tce",A.a(["trauma cranioencefalic","tce ","traumatismo craniano","lesao cerebral traum"],l),"politrauma",A.a(["politrauma","trauma grave multipl","atls"],l),"queimaduras",A.a(["queimadura","queimadura ","burns ","escald"],l),"rabdomiolise",A.a(["rabdomiolise","rabdomyolysis","cpk elevad","mioglobin renal"],l),"sind_metabolica",A.a(["sindrome metabolic","resistencia insulin","dislipidemia obesi"],l),as3,A.a(["sindrome hepatorrenal","shr ","hepatorenal"],l),as4,A.a(["sindrome cardiorrenal","cardio renal"],l),as5,A.a([as6,"revertir anticoag","antidoto anticoag","sangramento anticoag"],l),"anticoagulacao",A.a(["anticoag","trombose","tvp ","tep ","embolia"],l),"nausea",A.a(["nause","vomit","antiemetic","enjoo grave"],l),"febre",A.a(["febre","fiebre","antipiret","hiperpirex"],l),"dor",A.a(["dor intens","dor cronic","analgesia","dor refrat","dor agud"],l),"infeccao",A.a(["infec ","antibiot","antibio","antimicrobiano","bacteriana"],l)],h,g)
 d=new A.eh(f,A.G(f).i("eh<1,2>")).gaF(0)
 while(!0){if(!d.C()){e=null
 break}c=d.d
 if(J.avo(c.b,new A.awf(j))){e=c.a
-break}}b=A.T(["anafilaxia",A.a(["adrenalina","epinefrina","adrenergic","anti-histamin","corticosteroid","difenidramina","broncodilatad","salbutamol"],l),"choque_septico",A.a(["vasopressor","noradrenalina","adrenalina","vasopressin","hidrocortisona","antibiotico","antibiot","antimicrobiano"],l),aa7,A.a(["inotrop","dobutamina","noradrenalina","milrinona","levosimendana","diuretico","furosemida","nitrato"],l),aa8,A.a(["cristaloide","coloide","albumina","acido tranexam","vasopressor"],l),"choque",A.a(["vasopressor","noradrenalina","adrenalina","dopamina","dobutamina","vasopressin","inotrop"],l),"pcr",A.a(["adrenalina","epinefrina","amiodarona","atropina","bicarbonato","calcio cloreto","lidocaina"],l),"iam",A.a(["antiagregant","antiplaquetario","aas","clopidogrel","ticagrelor","heparina","enoxaparina","nitrato","betabloqueant","ieca","estatina"],l),"angina",A.a(["nitrato","betabloqueant",as7,"ranolazin","ivabradina","antiagregant","aas","estatina"],l),"ic",A.a(["diuretico","furosemida","espironolactona","ieca","betabloqueant","sacubitril","digoxina","dobutamina","sglt2","nitroglicerin"],l),"fa",A.a(["antiarritmico","amiodarona","betabloqueant","diltiazem","digoxina","anticoagul","rivaroxabana","apixabana","dabigatrana","warfarina"],l),"tpsv",A.a(["adenosina","betabloqueant","diltiazem","verapamil","antiarritmico","propafenona","flecainida"],l),"tv",A.a(["amiodarona","lidocaina","procainamida","betabloqueant","sotalol","antiarritmico"],l),"bradicardia",A.a(["atropina","adrenalina","dopamina","isoproterenol","aminofilina"],l),"hipertensao",A.a([as8,"ieca","bra",as7,"diuretico","betabloqueant","amlodipino","captopril","losartana","enalapril","hidroclorotiazid"],l),ab0,A.a(["nitroprussiato","nitroglicerin","labetalol","esmolol","hidralazina","nicardipino","furosemida"],l),"dissecc_aorta",A.a(["betabloqueant","esmolol","labetalol","nitroprussiato","nicardipino","morfina"],l),"tep",A.a(["anticoagul","heparina","enoxaparina","rivaroxabana","apixabana","alteplase","trombolitic","fondaparinux"],l),"tvp",A.a(["anticoagul","heparina","enoxaparina","rivaroxabana","apixabana","dabigatrana","warfarina"],l),"endocardite",A.a(["antibiotico","penicilina","ampicilina","oxacilina","gentamicina","vancomicina","rifampicina","antimicrobiano"],l),"miocardite",A.a(["betabloqueant","ieca","diuretico","corticosteroid","imunossupressor"],l),"pericardite",A.a([as9,"ibuprofeno","aine","colchicina","corticosteroid","aspirin"],l),ab5,A.a(["ieca","betabloqueant","diuretico","espironolactona","digoxina","sacubitril","anticoagul"],l),ab6,A.a(["betabloqueant",as7,"disopiramida","amiodarona","anticoagul"],l),"avc_isquemico",A.a(["trombolitic","alteplase","antiagregant","clopidogrel","aas","anticoagul","estatina",as8],l),"avc_hemorragico",A.a([as8,"labetalol","nicardipino","vitamina k","idarucizumabe","nimodipino"],l),"hsa",A.a(["nimodipino","nicardipino",as8,"analgesic","antiemetic","corticoid"],l),"ait",A.a(["antiagregant","clopidogrel","aas","anticoagul","estatina",as8],l),"epilepsia",A.a(["anticonvuls","antiepilep","benzodiazep","diazepam","midazolam","lorazepam","fenitoina","levetiracetam","valproato","carbamazepina","lamotrigina"],l),"meningite",A.a(["antibiotico","ceftriaxona","ampicilina","vancomicina","aciclovir","dexametasona","antimicrobiano"],l),"parkinson",A.a(["dopaminergic","levodopa","carbidopa","benserazida","pramipexol","rasagilina","entacapona"],l),"alzheimer",A.a([at0,"donepezila","rivastigmina","galantamina","memantina"],l),"demencia",A.a(["donepezila","memantina","antipsicotic",at0],l),"esclerose_mult",A.a(["corticosteroid",at1,"interferon beta","acetato glatiramer","nataliz","fingolimod","imunossupressor"],l),"miastenia",A.a(["piridostigmina","neostigmina","corticosteroid","imunossupressor","azatioprina","micofenolato"],l),"guillain_barre",A.a([at2,"ivig",at3,"heparina"],l),"enxaqueca",A.a(["triptano","sumatriptano","rizatriptano","zolmitriptano","ergot","aine","paracetamol","dipirona","metoclopramida","propranolol","topiramato","amitriptilina","valproato"],l),ab9,A.a(["aine","paracetamol","ibuprofeno","dipirona","amitriptilina","analgesic",at4],l),"cefaleia",A.a(["analgesic","aine","paracetamol","dipirona","ibuprofeno","triptano","antiemetic","metoclopramida"],l),"pneumonia_com",A.a(["antibiotico","amoxicilina","azitromicina","ceftriaxona","levofloxacino","ampicilina",at5],l),"pneumonia_hosp",A.a(["antibiotico",at6,"meropenem","imipenem","vancomicina","amikacina"],l),"tuberculose",A.a(["rifampicina","isoniazida","pirazinamida","etambutol","antimicobacterian","antituberculoso"],l),"asma",A.a(["broncodilatad","beta2 agonist","salbutamol","formoterol",at7,"budesonida","fluticasona","ipratropio","teofilina","montelucaste"],l),"dpoc",A.a(["broncodilatad","salbutamol","ipratropio","tiotropio","formoterol","budesonida","roflumilaste","teofilina","corticosteroid sistem"],l),"insuf_resp",A.a(["broncodilatad","salbutamol","corticosteroid","antibiotico","diuretico","morfina"],l),"pneumotorax",A.a(["analgesic","morfina","aine"],l),"derrame_pleural",A.a(["diuretico","antibiotico",as9,"aine"],l),"apneia_sono",A.a(["modafinil","teofilina","acetazolamida"],l),"covid",A.a(["corticosteroid","dexametasona","anticoagul","heparina","enoxaparina","remdesivir","nirmatrelvir","baricitinib","tocilizumab"],l),"sepse",A.a(["antibiotico",at6,"meropenem","imipenem","vancomicina","amikacina","noradrenalina","hidrocortisona"],l),"itu",A.a(["antibiotico","nitrofurantoina","fosfomicina","ciprofloxacino","trimetoprim","cefalexina"],l),"pielonefrite",A.a(["antibiotico","ciprofloxacino","ceftriaxona","ampicilina","levofloxacino","gentamicina"],l),"celulite",A.a(["antibiotico","cefalexina","clindamicina","ceftriaxona","oxacilina",at5,"vancomicina"],l),"fasceite",A.a(["antibiotico",at6,"meropenem","clindamicina","vancomicina"],l),"osteomielite",A.a(["antibiotico","ceftriaxona","oxacilina","vancomicina","ciprofloxacino","rifampicina"],l),"hiv_aids",A.a(["antirretrovir","tenofovir","emtricitabina","efavirenz","dolutegravir","atazanavir"],l),"candidose",A.a(["antifungico","fluconazol","anfotericin b","caspofungina","voriconazol","micafungina"],l),"dengue",A.a(["paracetamol","antipiret","analgesic","reposicao volum"],l),"malaria",A.a(["cloroquina",at8,"artemeter","lumefantrina","quinina","primaquina","doxiciclina"],l),"leptospirose",A.a(["penicilina g","doxiciclina","ampicilina","ceftriaxona"],l),"sifilis",A.a(["penicilina g benzatin","doxiciclina","azitromicina"],l),"dst",A.a(["azitromicina","doxiciclina","ceftriaxona","penicilina","metronidazol"],l),"herpes_zoster",A.a(["aciclovir","valaciclovir","fanciclovir","antiviral","analgesic","gabapentina"],l),"varicela",A.a(["aciclovir","valaciclovir","anti-histamin","paracetamol"],l),"diarreia",A.a(["soro de reidratacao oral","sro","ringer lactato","solucao salina","reposicao voluminosa","zinc suplemento","loperamida","racecadotrila",at9,"escopolamina","hioscina","mebeverina","ciprofloxacino","azitromicina","cotrimoxazol","metronidazol","probiotico","lactobacillus",au0,"ondansetrona","metoclopramida","domperidona","omeprazol","pantoprazol","mesalazina","sulfassalazina","corticosteroide","metronidazol","tinidazol","albendazol","nitazoxanida","pancreatina",au1,"creon","colestiramina"],l),"diarreia_cdiff",A.a([au2,"vancomicina oral","fidaxomicina","bezlotoxumab","rifaximina","transplante microbiota fecal","probiotico profilaxia",au0,"suspender antibiotico causador","loperamida contraindicada cdiff"],l),ad4,A.a(["ciprofloxacino","azitromicina","levofloxacino","cotrimoxazol","ceftriaxona","ampicilina","soro reidratacao oral","sro","ringer lactato","loperamida","racecadotrila",at9,"ondansetrona"],l),ad5,A.a(["metronidazol","tinidazol","secnidazol","nitazoxanida","albendazol","mebendazol","paromomicina","iodoquinol","cotrimoxazol","sulfadiazina"],l),"diarreia_dii",A.a(["mesalazina","sulfassalazina","corticosteroide","budesonida","azatioprina","mercaptopurina","infliximab","adalimumab","vedolizumab","ustekinumab","metronidazol","ciprofloxacino","anti-integrina","anti-tnf","anti-il12/23"],l),ad6,A.a(["dieta sem gluten","pancreatina","creon",au1,"rifaximina sibo","antibiotico sibo","metronidazol sibo","colestiramina","suplementacao vitaminas liposoluveis","vitamina b12","acido folico","ferro reposicao","enzima lactase","dieta sem lactose"],l),ad7,A.a(["loperamida","rifaximina","eluxadolina","antidepressivo triciclico","ssri","mebeverina","psyllium","colestiramina","ondansetrona","dieta low fodmap"],l),"hda",A.a([au3,"omeprazol","pantoprazol","octreotida","terlipressina","propranolol","antibiotico"],l),"hdb",A.a(["mesalazina","infliximab","hemostasia endoscop"],l),"pancreatite",A.a(["analgesic","morfina","aine","reposicao volum","antibiotico","insulina"],l),"colecistite",A.a(["antibiotico","ceftriaxona","ampicilina","metronidazol","analgesic","escopolamina"],l),"colangite",A.a(["antibiotico",at6,"ampicilina","ciprofloxacino","metronidazol"],l),"apendicite",A.a(["antibiotico","ceftriaxona","metronidazol",at6,"analgesic"],l),"diverticulite",A.a(["antibiotico","ciprofloxacino","metronidazol",at5,"analgesic"],l),"drge",A.a([au3,"omeprazol","esomeprazol","pantoprazol","anti\xe1cido","metoclopramida","domperidona"],l),"ulcera_peptica",A.a([au3,"omeprazol","pantoprazol","amoxicilina","claritromicina","metronidazol","bismuto"],l),"dii",A.a(["mesalazina","sulfassalazina","corticosteroid","azatioprina","infliximab","adalimumab","metronidazol"],l),"sii",A.a(["antiespasm\xf3dico","escopolamina","mebeverina","ssri","loperamida","lactulose"],l),"cirrose",A.a(["diuretico","furosemida","espironolactona","propranolol","lactulose","rifaximina","albumina","terlipressina"],l),"hepatite",A.a(["antiviral","interferon","ribavirina","sofosbuvir","daclatasvir","entecavir","tenofovir"],l),"insuf_hepatica",A.a(["lactulose","rifaximina","vitamina k","albumina","diuretico",au4],l),"ira",A.a(["diuretico","furosemida","bicarbonato",ar4,"kayexalat","reposicao volum"],l),"drc",A.a([as8,"ieca","bra","diuretico","bicarbonato","eritropoetina","calcio carbonato","sevelamer"],l),aq9,A.a(["corticosteroid","imunossupressor","ciclofosfamida","micofenolato",as8,"diuretico"],l),ar0,A.a(["corticosteroid","prednisona","ciclofosfamida","diuretico","albumina","ieca"],l),"lit\xedase_renal",A.a(["analgesic","aine","morfina","dipirona","tamsulosina","diclofenaco","escopolamina"],l),"dm1",A.a(["insulina","insulina rapida","insulina nph","insulina glargin","insulina lispro"],l),"dm2",A.a(["antidiabetic","metformina","glifozina","empagliflozin","liraglutida","sitagliptin","glibenclamida","insulina"],l),"diabetes",A.a(["insulina","metformina","antidiabetic","hipoglicemiant","glifozina"],l),"cad",A.a([au5,"solucao salina",au6,"bicarbonato"],l),"ehnc",A.a([au5,au6,"reposicao volum"],l),"hipoglicemia",A.a(["glicose hipertonic","glicose iv","glucagon","dextrose"],l),"hipotireoidismo",A.a(["levotiroxina","l-tiroxina","hormonio tiroid"],l),ar1,A.a(["propiltiouracil","metimazol","tiamazol","betabloqueant","propranolol","iodeto potassio"],l),ar2,A.a(["propiltiouracil","propranolol","hidrocortisona","iodeto"],l),"insuf_adrenal",A.a(["hidrocortisona","fludrocortisona","dexametasona","corticosteroid"],l),"cushing",A.a(["ketoconazol","metirapona","mifepristona","pasireotida"],l),"feocromocitoma",A.a(["fenoxibenzamina","doxazosina","betabloqueant","bloqueador alfa","betabloqueant apos alfa","bloqueio alfa","metirosina"],l),"obesidade",A.a(["orlistat","liraglutida","semaglutida","bupropiona","topiramato"],l),"hipercalemia",A.a([ar4,au7,"insulina dextrose","salbutamol","kayexalat","patiromer","furosemida"],l),"hipocalemia",A.a([au8,"potassio oral","potassio iv",ar3],l),"hiponatremia",A.a([au9,"nacl 3%","reposicao sodio","tolvaptan"],l),"hipernatremia",A.a(["solucao salina hipotonic","agua livre","dextrose 5%"],l),"hipocalcemia",A.a([ar4,"cloreto calcio","calcio iv","vitamina d"],l),"hipercalcemia",A.a(["solucao salina","furosemida","bisfosfonato","calcitonina","denosumab"],l),"acidose_met",A.a([au7,"bicarbonato iv"],l),"alcalose_met",A.a([au8,"acetazolamida"],l),"acidose_resp",A.a(["broncodilatad","corticosteroid"],l),"alcalose_resp",A.a(["analgesic","sedacao"],l),ar5,A.a(["sulfato ferroso","ferro polimaltosado","ferro iv","sacarato ferro","acido ascorbico"],l),"anemia_megalob",A.a(["cianocobalamina","vitamina b12","acido folico",av0],l),"anemia_hemol",A.a(["corticosteroid","prednisona","imunossupressor","acido folico","hidroxiureia"],l),"leucemia",A.a(["quimioterapia","imatinibe","dasatinibe","daunorubicina","citarabina"],l),"linfoma",A.a(["quimioterapia","rituximab","ciclofosfamida","doxorubicina","vincristina","prednisona"],l),"civd",A.a(["heparina","plasma fresco","crioprecipitado","acido tranexam"],l),"trombocitopenia",A.a([at2,"corticosteroid","prednisona","rituximab","eltrombopag"],l),ar6,A.a(["antibiotico","ceftriaxona",at6,"meropenem","vancomicina","filgrastim"],l),"depressao",A.a(["antidepressiv","isrs","ssri","fluoxetina","sertralina","escitalopram","venlafaxina","bupropiona","amitriptilina"],l),"bipolar",A.a([ar7,"lition","valproato","lamotrigina","quetiapina","olanzapina","carbamazepina"],l),"esquizofrenia",A.a(["antipsicotic","haloperidol","risperidona","olanzapina","clozapina","quetiapina","aripiprazol"],l),"ansiedade",A.a(["ansiolitic","benzodiazep","diazepam","clonazepam","ssri","isrs","buspirona","venlafaxina","pregabalina"],l),"panico",A.a(["ssri","isrs","sertralina","fluoxetina","clonazepam","alprazolam"],l),"tept",A.a(["ssri","sertralina","paroxetina","prazosin"],l),"toc",A.a(["ssri","fluoxetina","fluvoxamina","sertralina","clomipramina"],l),"intox_opioide",A.a(["naloxona","naltrexona"],l),"intox_benzo",A.a(["flumazenil"],l),"intox_alcoolica",A.a(["tiamina","vitamina b1","glicose","benzodiazep"],l),ar9,A.a(["benzodiazep","diazepam","lorazepam","tiamina","haloperidol"],l),"sind_serotonin",A.a(["benzodiazep","ciproheptadina"],l),as0,A.a(["benzodiazep","bromocriptina","dantrolene"],l),"intoxicacao",A.a(["carvao ativad","naloxona","flumazenil","vitamina k",au4,"atropina"],l),"delirium",A.a(["haloperidol","quetiapina","rivastigmina","melatonin"],l),"artrite_reuma",A.a(["metotrexato","leflunomida",at8,"sulfassalazina","biologico","corticosteroid"],l),"lupus",A.a([at8,"corticosteroid","azatioprina","micofenolato","ciclofosfamida","belimumab"],l),"esclerodermia",A.a(["sildenafil","bosentana","iloprost","ieca","omeprazol"],l),"vasculite",A.a(["corticosteroid","ciclofosfamida","rituximab","azatioprina"],l),"gota",A.a(["colchicina","aine","ibuprofeno","indometacina","prednisona","alopurinol","febuxostate"],l),"osteoartrite",A.a(["analgesic","aine","ibuprofeno","paracetamol","diclofenaco","condroitin","glucosamina"],l),"osteoporose",A.a(["bisfosfonato","alendronato","zoledronato","denosumab","teriparatida","calcio","vitamina d"],l),"fibromialgia",A.a(["amitriptilina","duloxetina","pregabalina","tramadol","ciclobenzaprina","gabapentina"],l),"preeclampsia",A.a([av1,"hidralazina","labetalol","nifedipino","metildopa","betametasona"],l),"eclampsia",A.a([av1,"benzodiazep","diazepam","labetalol","nifedipino"],l),"hemorragia_pp",A.a(["ocitocina","ergometrina","misoprostol","acido tranexam"],l),"placenta_previa",A.a(["betametasona","tocolitic","nifedipino"],l),"dpp",A.a(["betametasona","ocitocina","analgesic"],l),"aborto_septico",A.a(["antibiotico","ampicilina","gentamicina","metronidazol","ceftriaxona"],l),"sop",A.a(["metformina","anticoncept","espironolactona","citrato clomifeno","letrozol","anticoncept oral","semaglutida"],l),"endometriose",A.a(["progestagen","dienogest","leuprorelin","danazol","aine"],l),"prostatite",A.a(["antibiotico","ciprofloxacino","levofloxacino","doxiciclina","alfabloquead"],l),"hpb",A.a(["alfabloquead","tamsulosina","doxazosina","dutasterida","finasterida"],l),"cancer_mama",A.a(["tamoxifeno","letrozol","anastrozol","trastuzumab","ciclofosfamida","doxorubicina","paclitaxel"],l),"cancer_pulmao",A.a(["erlotinib","gefitinib","osimertinib","pembrolizumab","cisplatina","carboplatina"],l),"cancer_gastrico",A.a(["5-fluorouracil","cisplatina","oxaliplatina","trastuzumab","ramucirumab"],l),"cancer_colorret",A.a(["5-fluorouracil","oxaliplatina","irinotecan","bevacizumab","cetuximab"],l),"cancer_prostata",A.a(["leuprorelin","bicalutamida","enzalutamida","abiraterona","docetaxel"],l),"cancer_pancreas",A.a(["gemcitabina","nab-paclitaxel","erlotinib"],l),"melanoma",A.a(["ipilimumab","pembrolizumab","nivolumab","vemurafenib","dabrafenib"],l),"bronquiolite",A.a(["salbutamol","broncodilatad","adrenalina"],l),"crupe",A.a(["dexametasona","budesonida","adrenalina","corticosteroid"],l),"psoriase",A.a(["metotrexato","corticosteroid","adalimumab","secuquinumab","apremilast","ciclosporina",av2,"vitamina d topica","acitretina","biologico","secuquinumabe","guselkumabe","risankizumabe","tofacitinibe"],l),as2,A.a(["corticosteroid topic","tacrolimus","dupilumab","anti-histamin","emoliente"],l),"urticaria",A.a(["anti-histamin","cetirizina","loratadina","fexofenadina","corticosteroid","adrenalina"],l),"tce",A.a(["manitol",au9,"dexametasona",as8,"fenitoina"],l),"politrauma",A.a(["analgesic","morfina","fentanila","acido tranexam","antibiotico"],l),"queimaduras",A.a(["analgesic","morfina","fentanila","antibiotico","sulfadiazina"],l),"rabdomiolise",A.a(["reposicao volum","bicarbonato","manitol","furosemida"],l),"sind_metabolica",A.a(["metformina",as8,"estatina","fibratos","exercicio","dieta"],l),as3,A.a(["terlipressina","albumina","noradrenalina","antibiotico"],l),as4,A.a(["diuretico","furosemida","dobutamina"],l),as5,A.a(["vitamina k","protamina","idarucizumabe","andexanete","plasma fresco"],l),"anticoagulacao",A.a(["anticoagul","heparina","enoxaparina","warfarina","rivaroxabana","apixabana","dabigatrana"],l),"nausea",A.a(["antiemetic","ondansetrona","metoclopramida","droperidol","prometazina","domperidona"],l),"febre",A.a(["antipiret","paracetamol","dipirona","ibuprofeno","acido acetilsalicil"],l),"dor",A.a(["analgesic","opioid","morfina","tramadol","paracetamol","dipirona","ibuprofeno","aine","fentanila"],l),"infeccao",A.a(["antibiotico","antimicrobiano","antifungico","antiviral"],l),"acromegalia",A.a(["octreotida lar","lanreotida","pegvisomant","cabergolina","pasireotida","analago somatostatina","dopaminergico"],l),"adenoma_hipofis",A.a(["cabergolina","bromocriptina","octreotida","lanreotida","pasireotida","temozolomida","corticosteroid"],l),"prolactinoma",A.a(["cabergolina","bromocriptina","dopaminergico","agonista dopamina"],l),ad9,A.a(["hidrocortisona","levotiroxina","desmopressina","hormonio crescimento","hormonio sexual reposicao"],l),ae0,A.a(["desmopressina","ddavp","diuretico tiazidico di nefrogen","indometacina di nefrogen","amilorida"],l),"siadh",A.a(["restricao hidrica","nacl hipertonico","tolvaptan","satavaptan","urea oral siadh","demeclociclina"],l),"hiperaldosteron",A.a(["espironolactona","eplerenona","amilorida",as8,"adrenalectomia"],l),ae2,A.a(["cinacalcet","bisfosfonato","denosumab","hidratacao hipercalcemia","furosemida","calcitonina"],l),"hipoparatireoid",A.a(["calcio oral","calcio iv","vitamina d ativa","calcitriol","paratormonio recombinante","teriparatida"],l),"carcinoide",A.a(["octreotida","lanreotida","everolimus","interferon alfa","quimioterapia carcinoide"],l),"insulinoma",A.a(["diazoxida","octreotida","glucagon","glicose iv","verapamil","cirurgia insulinoma"],l),"gastrinoma",A.a(["inibidor bomba proton alta dose","omeprazol","octreotida","everolimus","streptozotocina"],l),"glucagonoma",A.a(["octreotida",av3,"quimioterapia","dieta baixo glucagon"],l),"vipoma",A.a(["octreotida","reposicao hidrica","corticosteroid","quimioterapia"],l),ae3,A.a(["cirurgia","octreotida","corticosteroid","quimioterapia alvo especif","sunitinibe"],l),"amiloidose",A.a(["tafamidis","patisiran","inotersen","diflunisal","transplante orgao","melfalano","dexametasona amiloid"],l),"sarcoidose",A.a(["corticosteroid","metotreximo","azatioprina",at8,"infliximab","pentoxifilina"],l),"hemocromatose",A.a(["flebotomia","quelante ferro","deferoxamina","deferoprox"],l),"doenca_wilson",A.a(["d-penicilamina","trientina","zinco acetato","quelante cobre"],l),"doenca_gaucher",A.a(["imiglicerase","velaglicerase","miglustate","eliglustate","terapia enzimatica substitut"],l),"doenca_fabry",A.a(["agalsidase alfa","agalsidase beta","migalastate","terapia enzimatica substitut fabry"],l),"porfira",A.a(["hematina","glicose alta conc porfiria","analgesic","betabloqueant"],l),"sindrome_marfan",A.a(["betabloqueant","losartana","cirurgia aortica profilat","atenolol"],l),ae6,A.a(["corticosteroid","deflazacort","atalureno","eteplirsen","golodirsen","casimersen"],l),"als",A.a(["riluzol","edaravona","tofersen",av4,"suporte nutric"],l),"sma",A.a(["nusinersen","onasemnogene abeparvovec","risdiplam",av4],l),ae7,A.a(["tetrabenazina","deutetrabenazina","valbenazina","antipsicotic","antidepressiv"],l),"espondilite",A.a(["aine","ibuprofeno","naproxeno","secuquinumabe","ixequizumabe","bimekizumabe","adalimumab","etanercept","certolizumab","ixekizumab","anti-tnf","anti-il17","upadacitinib","tofacitinib"],l),"artrite_psori",A.a(["metotrexato","secuquinumabe","ixequizumabe","adalimumab","etanercept","upadacitinib","guselkumabe","risankizumabe","anti-il17","anti-il23","anti-tnf"],l),"artrite_reativa",A.a(["aine","antibiotico","sulfassalazina","metotrexato","corticosteroid"],l),ae8,A.a(["aine","metotrexato","corticosteroid","tocilizumab","etanercept","adalimumab","abatacepte"],l),"polimiosite",A.a(["corticosteroid","prednisona","azatioprina","metotrexato","micofenolato",at2,"rituximab"],l),ae9,A.a([at8,"pilocarpina","saliva artificial","colir umed","corticosteroid","rituximab"],l),af0,A.a(["prednisona","corticosteroid","metotrexato","tocilizumab"],l),af1,A.a(["prednisona alta dose","corticosteroid","tocilizumab","metotrexato","aspirina antiagregant"],l),af2,A.a(["heparina","warfarina","rivaroxabana contraindicada","anticoagul",av5,at8],l),"miopatia_inflam",A.a(["corticosteroid","imunossupressor","metotrexato","azatioprina","rituximab",at2],l),"vasculite_anca",A.a(["corticosteroid","ciclofosfamida","rituximab","azatioprina","metotrexato","avacopan"],l),"vasculite_takay",A.a(["corticosteroid","metotrexato","azatioprina","tocilizumab","infliximab"],l),"vasculite_kawas",A.a(["imunoglobulina iv alta dose","aspirina","corticosteroid","infliximab"],l),"behcet",A.a(["colchicina","corticosteroid","azatioprina","talidomida","infliximab","adalimumab","apremilast"],l),"pseudogota",A.a(["aine","colchicina","corticosteroid","aspiracao articular"],l),af4,A.a(["vitamina b12","tiamina","pregabalina","gabapentina","duloxetina","amitriptilina","tramadol","capsaicina"],l),"neuropatia_diab",A.a(["pregabalina","duloxetina","gabapentina","amitriptilina","capsaicina","oxcarbazepina"],l),"sindrome_carpal",A.a([av6,"imobilizacao","aine","cirurgia descompressao"],l),"hernia_disco",A.a(["aine",at4,"corticosteroid oral","gabapentina","ciclobenzaprina","cirurgia"],l),af6,A.a([at2,"corticosteroid","plasmaferese","rituximab","azatioprina"],l),af7,A.a(["corticosteroid iv",at1,"rituximab nmo","satralizumabe","inebilizumabe","eculizumabe"],l),af8,A.a(["corticosteroid",at2,"plasmaferese","rituximab","micofenolato"],l),ag0,A.a(["benzodiazep iv","lorazepam iv","diazepam","levetiracetam iv","valproato iv","fenitoina iv","fenobarbital iv","propofol","midazolam infusao"],l),"hidrocefalia",A.a(["acetazolamida","furosemida",av7,"derivacao ventricular"],l),af9,A.a(["everolimus","vigabatrina","sirolimus","antiepilep"],l),"neurofibromat",A.a(["selumetinibe","cabozantinibe","cirurgia tumor"],l),"demencia_lewy",A.a(["donepezila","rivastigmina","memantina","evitar antipsicot tipico"],l),"demencia_front",A.a(["ssri","trazodona","memantina","rivastigmina","evitar benzod"],l),"fpi",A.a(["pirfenidona","nintedanibe",au4,"antifibrot",aq8],l),"hap",A.a(["sildenafil","tadalafil","bosentana","ambrisentana","macitentana","riociguate","iloprost","epoprostenol","selexipag","prostanoid"],l),"bronquiectasia",A.a(["antibiotico",av8,av9,aw0,"colistina","dornase alfa"],l),"aspergilose",A.a(["voriconazol","isavuconazol",aw1,"caspofungina","posaconazol"],l),ag8,A.a(["voriconazol","isavuconazol",aw1,"micafungina","caspofungina"],l),"pneumocistose",A.a([aw2,"cotrimoxazol","pentamidina","atovaquona","clindamicina-primaquina"],l),ag1,A.a(["sildenafil","bosentana","riociguate","diuretico","digoxina","anticoagul"],l),"mucoviscidose",A.a([av9,"azitromicina","ivacaftor","lumacaftor","elexacaftor-tezacaftor-ivacaftor","dornase alfa",aw0],l),"deficit_a1at",A.a(["alfa-1 antitripsina exogen","suporte dpoc","broncodilatad",ao3],l),ao6,A.a(["riociguate","anticoagul","endarterectomia pulm","angioplastia pulm balao"],l),ao7,A.a(["rituximab","ciclofosfamida","corticosteroid","avacopan"],l),ao8,A.a(["corticosteroid","prednisona","macrolid"],l),"anemia_aplasica",A.a(["ciclosporina","imunoglobulina antitimocit","eltrombopag",aw3,"danazol"],l),ag4,A.a(["hidroxiureia","voxelotor","crizanlizumabe","l-glutamina","transfusao","quelante ferro",aw3],l),"talassemia",A.a(["transfusao","quelante ferro","deferoxamina","deferiprona","luspatercept",aw3,"gene terapia"],l),"mieloma",A.a(["bortezomibe","lenalidomida","daratumumabe","carfilzomibe","pomalidomida","talidomida","dexametasona","melfalano",aw4,"belantamab"],l),"mielof_primaria",A.a(["ruxolitinibe","fedratinibe","pacritinibe","danazol","hidroxiureia",aw3],l),ag5,A.a(["flebotomia","hidroxiureia","ruxolitinibe",av5,"interferon alfa"],l),"trombocitemia",A.a(["hidroxiureia","anagrelida","aspirina","interferon alfa","ruxolitinibe"],l),"leucemia_linfoc",A.a(["ibrutinibe","venetoclax","obinutuzumabe","rituximab","bendamustina","clorambucil"],l),ag6,A.a(["imatinibe","dasatinibe","nilotinibe","bosutinibe","ponatinibe","asciminibe"],l),"leucemia_aguda",A.a(["daunorubicina","citarabina","idarubicina","midostaurina","gemtuzumab","blinatumomabe","venetoclax","midostaurina flt3","gilteritinibe","azacitidina"],l),"hemofilia",A.a(["emicizumabe","fator viii recombinante","fator ix recombinante","fitusiran","concizumab","desmopressina hemofilia a leve"],l),"von_willebrand",A.a(["desmopressina","acido tranexam","fator von willebrand","caplacizumabe"],l),"purpura_tromb",A.a(["plasmaferese","caplacizumabe","rituximab","corticosteroid"],l),"mastocitose",A.a(["anti-histamin","cromoglicato sodio","ibrutinibe avancado","midostaurina",aw5],l),ap9,A.a(["midostaurina","avapritinibe","ibrutinibe","anti-histamin","cromoglicato"],l),"linfoma_hodgkin",A.a(["doxorubicina","bleomicina","vinblastina","dacarbazina","brentuximab vedotin","nivolumab","pembrolizumab","abvd","brentuximab"],l),ag7,A.a(["rituximab","ciclofosfamida","doxorubicina","vincristina","prednisona","polatuzumab vedotin","axicabtagene"],l),"linfoma_burkitt",A.a(["quimioterapia intensiva","rituximab","metotrexato","citarabina"],l),"linfoma_manto",A.a(["ibrutinibe","acalabrutinibe","venetoclax","bortezomibe","rituximab","bendamustina"],l),an8,A.a(["rituximab","obinutuzumabe","lenalidomida","bendamustina","quimioterapia ind"],l),an9,A.a(["acido trans-retinoico","atra ","trioxido arsenico","daunorubicina"],l),ao0,A.a(["lenalidomida","luspatercept","azacitidina","decitabina","eritropoetina","transfusao","quelante ferro",aw3],l),an7,A.a(["cladribina","pentostatina","rituximab","moxetumomab"],l),"mucormicose",A.a(["isavuconazol",aw1,"posaconazol","desbridamento cirurgico"],l),"cryptococcose",A.a(["anfotericina b","flucitosina","fluconazol",aw1],l),"histoplasmose",A.a(["itraconazol","anfotericina b","voriconazol"],l),"paracoccidioid",A.a(["itraconazol","cotrimoxazol","sulfametoxazol","anfotericina b"],l),"leishmaniose",A.a(["meglumine antimoniat","antimoniato meglumina",aw1,"miltefosina","pentamidina"],l),"doenca_chagas",A.a(["benznidazol","nifurtimox","amiodarona card chagasica","marcapasso","terapia ic"],l),"toxoplasmose",A.a(["pirimetamina","sulfadiazina","acido folinico","atovaquona","cotrimoxazol"],l),"cmv_doenca",A.a(["ganciclovir","valganciclovir","foscarnet","cidofovir"],l),"influenza",A.a(["oseltamivir","zanamivir","baloxavir","peramivir","corticosteroid grave"],l),"pneumocistis",A.a([aw2,"cotrimoxazol","pentamidina","atovaquona"],l),ah2,A.a(["azitromicina","claritromicina","etambutol","rifabutina","amikacina"],l),"nocardiose",A.a([aw2,"imipenem","amicacina","linezolida"],l),"botulismo",A.a(["antitoxina botulinica",av4,"monitoramento intensivo"],l),"tetano",A.a(["imunoglobulina tetanica","penicilina","metronidazol","benzodiazep","baclofen"],l),"difteria",A.a(["antitoxina difteria","penicilina","eritromicina","macrolid"],l),"coqueluche",A.a(["azitromicina","eritromicina","cotrimoxazol","suporte resp"],l),"meningococcemia",A.a(["ceftriaxona","penicilina","corticosteroid","vasopressor"],l),"rickettsia",A.a(["doxiciclina","tetraciclina","cloranfenicol"],l),"febre_tifoide",A.a(["ceftriaxona","ciprofloxacino","azitromicina","ampicilina"],l),"brucelose",A.a(["doxiciclina","rifampicina","gentamicina","cotrimoxazol"],l),"ebv_doenca",A.a(["aciclovir","corticosteroid",aw6],l),"zika",A.a(["analgesic","paracetamol","suporte","evitar aine"],l),"chikungunya",A.a(["paracetamol","aine fase cronica","hidroxicloroquina cronica",av6],l),"febre_amarela",A.a([aw6,"transfusao","nao tem antiviral especif"],l),"mpox",A.a(["tecovirimat","cidofovir","brincidofovir","imunoglobulina vaccinia"],l),"sporotricose",A.a(["itraconazol","anfotericina b sistemico","supersaturado iod potassio"],l),ah3,A.a(["penicilina","clindamicina","vancomicina",at2,"fluido ressuscit"],l),ah1,A.a(["meglumine antimoniat local","fluconazol","miltefosina"],l),ah4,A.a(["diuretico",as8,"betabloqueant","cirurgia valvar","tavi","tavr"],l),ah5,A.a(["diuretico","betabloqueant","anticoagul","cirurgia valvar","clip mitral percutan"],l),ah6,A.a(["diuretico","cirurgia troca valva aortica","tavi","tavr","evitar vasodilatad"],l),"insuf_aortica",A.a(["diuretico","vasodilatad","hidralazina","nifedipino","cirurgia aortica"],l),"insuf_mitral",A.a(["diuretico","ieca","vasodilatad","cirurgia reparo mitral","clip mitral"],l),"estenose_mitral",A.a(["diuretico","betabloqueant","anticoagul","valvuloplastia mitral"],l),ah7,A.a(["cirurgia corretora","prostaglandina e1","alprostadil","indometacina pca","ibuprofeno pca"],l),"bloqueio_ramo",A.a(["marcapasso","monitoramento",aw7],l),ah8,A.a(["evitar drogas qt","betabloqueant","sulfato magnesio torsades","marcapasso estimulacao rapida"],l),"wolf_parkinson",A.a(["ablacao cateter wpw","adenosina","evitar digoxina wpw"],l),"sind_brugada",A.a(["cdn implant","quinidina","evitar gatilhos febre"],l),ah9,A.a(["cilostazol","aspirina","clopidogrel","estatina",as8,"ticagrelor","revascularizacao"],l),ai0,A.a(["betabloqueant",as8,"cirurgia endovascular evar","cirurgia aberta"],l),ai1,A.a(["betabloqueant","calcio bloqueador","nitrato","ivabradina","ranolazin"],l),"sind_tako_tsubo",A.a(["suporte hemodinamico","betabloqueant","ieca","aspirina","anticoagul transitorio"],l),ai2,A.a(["espironolactona","eplerenona","hidralazina","minoxidil","clonidina","denervacao renal"],l),aq6,A.a(["betabloqueant","ivabradina",aw7],l),"extrassistolia",A.a(["betabloqueant","antiarritmico","ablacao cateter","tratar causa"],l),"glom_membranosa",A.a(["rituximab","ciclofosfamida","corticosteroid","ieca",at3],l),"nefropatia_igA",A.a(["ieca","bra","corticosteroid","azatioprina","rituximab","budesonida liberac tardia","sparsentan"],l),"glom_focal_segm",A.a(["corticosteroid","ciclosporina","tacrolimus","rituximab","ieca"],l),ai3,A.a(["ieca","bra","sglt2 inib","empagliflozin","dapagliflozin","finerenona"],l),"nefrite_lupica",A.a(["corticosteroid","micofenolato","ciclofosfamida","belimumab","voclosporin","anifrolumab"],l),"polirrenal",A.a(["tolvaptan",as8,"ieca","tratar complicac"],l),ai7,A.a(["suspender medicam causador","corticosteroid","suporte renal"],l),ai6,A.a(["corticosteroid","ciclofosfamida","plasmaferese goodpasture","rituximab"],l),ai5,A.a(["hidratacao pre","nacl iso profilax","minimizar contraste",au4],l),"acne",A.a(["retinoid topico","adapaleno","peroxido benzoila",aw8,"clindamicina top","isotretinoina oral","doxiciclina oral","anticoncept oral acne"],l),"rosacea",A.a(["metronidazol topico","ivermectina topico","azelaic acid","doxiciclina","isotretinoina","laser"],l),"penfigo",A.a(["corticosteroid alta dose","rituximab","imunossupressor","micofenolato","azatioprina","dapsona"],l),"penfigoide",A.a([av2,"prednisona oral","doxiciclina","nicotinamida","rituximab","omalizumab"],l),ai8,A.a(["corticosteroid","aciclovir","ciclosporina",at2,"suporte dermatol"],l),aj0,A.a(["icatibanto","berinato","lanadelumab","garadacimab","esteroides sao ineficazes","inibidor c1"],l),"alopecia_areata",A.a([av2,"minoxidil","baricitinibe","ritlecitinibe","diphenciprone","imunossupressor"],l),"onicomicose",A.a(["terbinafina oral","itraconazol oral","ciclopirox verniz","fluconazol"],l),"tinea",A.a(["terbinafina topica","clotrimazol","fluconazol oral","cetoconazol"],l),"escabiose",A.a(["permetrina topica","ivermectina oral","benzil benzoato"],l),"herpes_simples",A.a(["aciclovir","valaciclovir","fanciclovir","docosanol topico"],l),aj1,A.a([av2,"tacrolimus","anti-histamin","afastar alergeno"],l),"dermatite_sebor",A.a(["cetoconazol topico","ciclopirox","corticosteroid leve","zinco piritiona"],l),"liquen_plan",A.a([av2,"tacrolimus","corticosteroid sistemico",at8],l),"vitiligo",A.a([av2,"tacrolimus topico","ruxolitinibe topico","fototerapia","transplante melanocit"],l),ai9,A.a(["anti-histamin","cetirizina","fexofenadina","omalizumab","ciclosporina"],l),"melanoma_skin",A.a(["pembrolizumab","nivolumab","ipilimumab","vemurafenib braf","dabrafenib trametinibe","cirurgia"],l),"cec_pele",A.a(["cirurgia","cetuximab avanc","pembrolizumab avanc","radioterapia"],l),"cbc_pele",A.a(["cirurgia mohs","vismodegibe","sonidegibe","cemiplimab avanc"],l),"glaucoma",A.a(["latanoprosta","travoprosta","bimatoprosta","brimonidina","dorzolamida","timolol","pilocarpina","trabeculoplastia"],l),aj2,A.a(["ranibizumab","aflibercept","bevacizumab intraoc","faricimab",aw9],l),aj3,A.a([aw9,"ranibizumab","aflibercept","corticosteroid intraoc","laser fotocoagulac"],l),"uveite",A.a([av2,"prednisolona colirio","midriatic","metotrexato","adalimumab uveite"],l),"conjuntivite",A.a(["antibiotico colirio",ax0,"anti-histamin colirio","lubricante colirio"],l),"ceratite",A.a([aw8,ax0,"aciclovir topico ocul","antifungico topico ocul"],l),"endoftalmite",A.a(["vancomicina intravitreo","ceftazidima intravitreo","corticosteroid intravitreo"],l),"oclusao_retin",A.a(["aspirina","injecao intravitreo","tratar causa sist"],l),"otite_media",A.a(["amoxicilina",at5,"ceftriaxona","observacao sem antibiot mild"],l),"otite_externa",A.a([aw8,ax0,av2,"acido acetico"],l),"sinusite",A.a([at5,"doxiciclina","levofloxacino","nasal irrigacao","decongestion"],l),"faringite",A.a(["amoxicilina","penicilina v","cefalexina","azitromicina","observacao viral"],l),"epistaxe",A.a(["pressao nasal","nitrato prata","tamponamento nasal","acido tranexam","vitamina k"],l),aj4,A.a(["betaistina","dimenidrinato","meclizina","reposicao vppb","corticosteroid"],l),"meniere",A.a(["betaistina","diuretico","dieta hiposodica","gentamicina intratimpanica","cirurgia labirinto"],l),aj6,A.a(["corticosteroid","prednisona","aciclovir ramsay hunt","fisioterapia facial"],l),aj5,A.a(["corticosteroid","vasodilatad","vitaminas","aparelho auditivo"],l),aj9,A.a(["fluconazol oral","clotrimazol topico","miconazol vaginal","nistatina"],l),"vaginose_bact",A.a([au2,"metronidazol gel vaginal","clindamicina vaginal","tinidazol"],l),"tricomonas",A.a(["metronidazol","tinidazol","tratar parceiro"],l),"doip",A.a(["ceftriaxona","doxiciclina","metronidazol","ofloxacino","clindamicina"],l),ak0,A.a(["metotrexato","cirurgia urgencia","salpingectomia"],l),"menopausa",A.a(["terapia hormonal menopausa","estrogen","progesterona","ssri sintoma","gabapentina flushes","phytoestrogen"],l),ak1,A.a(["bisfosfonato","alendronato","zoledronato","denosumab","teriparatida","romosozumab","calcio","vitamina d"],l),ak2,A.a(["cisplatina","carboplatina","bevacizumab","pembrolizumab","tisotumab vedotin"],l),"cancer_utero",A.a(["progestagen","megestrol","quimioterapia","pembrolizumab","lenalidomida"],l),"cancer_ovario",A.a(["carboplatina","paclitaxel","bevacizumab","olaparib","niraparib","rucaparib"],l),ak3,A.a(["ondansetrona","metoclopramida","prometazina","doxilamina","vitamina b6","corticosteroid"],l),ak4,A.a(["acido ursodesoxicolico","antipruritic","colestiramina"],l),"diabetes_gestac",A.a(["insulina","metformina gestac","controle glicemico"],l),"mastite",A.a(["antibiotico","dicloxacilina","cefalexina","clindamicina","ordenha continua"],l),"sepse_neonatal",A.a(["ampicilina","gentamicina","cefotaxima","vancomicina",ax1],l),ak5,A.a(["surfactante exogeno","cpap neonatal","corticosteroid pre natal","oxigenio"],l),ak6,A.a(["antibiotico","ampicilina","gentamicina","metronidazol","cirurgia necrose"],l),ak7,A.a(["fototerapia","exsanguinotransfusao",at2],l),"crise_febril",A.a(["diazepam retal","midazolam nasal","lorazepam","antipiret"],l),"autismo",A.a(["risperidona","aripiprazol","melatonina sono","ssri","terapia compor"],l),"tdah",A.a(["metilfenidato","anfetamina",ax2,"atomoxetina","clonidina","guanfacina"],l),"sindrome_west",A.a(["vigabatrina","acth","corticosteroid","valproato","pirido xina"],l),"sindrome_dravet",A.a(["clobazam","valproato","stiripentol","fenfluramin","cannabidiol"],l),"sarampo",A.a(["vitamina a",aw6,"isolamento"],l),"escarlatina",A.a(["amoxicilina","penicilina","cefalexina","azitromicina"],l),ak8,A.a(["oxibutinina","solifenacina","tolterodina","mirabegrona","betmiga","vibegron","toxina botulinica"],l),al0,A.a(["pentosan polissulfat","heparina intravesic","alcalinizante urin","amitriptilina"],l),"cancer_rim",A.a(["sunitinibe","pazopanibe","axitinibe","pembrolizumab","nivolumab","cabozantinibe","lenvatinibe","bevacizumab"],l),"cancer_bexiga",A.a(["gem-cis","gemcitabina cisplatina","pembrolizumab","atezolizumab","erdafitinibe","gemcitabina","cisplatina"],l),an5,A.a(["bleomicina","etoposida","cisplatina","bep ","radioterapia","bep"],l),"orquite",A.a(["antibiotico","aine","suporte"],l),"epididimite",A.a(["ciprofloxacino","doxiciclina","ceftriaxona"],l),ak9,A.a(["kegel","duloxetina","oxibutinina","mirabegrona","pessario","cirurgia sling"],l),"adhd_adulto",A.a(["metilfenidato",ax2,"anfetamina","atomoxetina","bupropiona","guanfacina","clonidina"],l),am3,A.a(["olanzapina","ssri","suporte nutric","realimentacao","terapia famil"],l),"bulimia",A.a(["fluoxetina alta dose","ssri","tcc bulimia","terapia cognit"],l),am4,A.a(["dbt","ssri","quetiapina","lamotrigina","olanzapina","clonazepam"],l),"insonia",A.a(["melatonina","zolpidem","eszopiclone","ramelteon","suvorexant","lemborexant","trazodona","mirtazapina","tcc-i"],l),"hipersonia",A.a(["modafinil","armodafinil","oxibato sodio","pitolisant"],l),"narcolepsia",A.a(["modafinil","armodafinil","oxibato sodio","venlafaxina cataplexia","pitolisant"],l),aq7,A.a(["pramipexol","ropinirol","gabapentina","pregabalina","ferro reposicao","clonazepam"],l),"delirium_idoso",A.a(["haloperidol baixa dose","quetiapina baixa dose",aw7,"reorientac"],l),"sdra",A.a(["ventilacao protetora","pronacao","cisatracurio","dexametasona","noradrenalina","almitrina"],l),am5,A.a([au4,"hemodialise graves","transplante hepat fulmin"],l),am6,A.a(["atropina","pralidoxima","benzodiazep","suporte resp"],l),"intox_monoxido",A.a(["oxigenio 100%","camara hiperbar",aw6],l),"intox_metanol",A.a(["etanol iv","fomepizol","hemodialise","acido folico"],l),am7,A.a(["fomepizol","etanol iv","hemodialise","tiamina","piridoxina"],l),"intox_digoxina",A.a(["fragmento fab","digibind","digifab","atropina","marcapasso"],l),"intox_litio",A.a(["hemodialise","hidratacao","suspender litio","monitoramento"],l),"hipotermia",A.a(["reaquecimento ativo","fluido quente iv","bypass cardiopulm reaquec"],l),"hipertermia",A.a(["resfriamento rapido","benzodiazep","dantrolene maligna","suporte"],l),"mordedura",A.a(["soro antiofidico","soro botrops","soro crotali","atropina organofosf morde","penicilina pasteurella"],l),ap2,A.a(["hidratacao","furosemida","bisfosfonato","denosumab","calcitonina","prednisona","cinacalcet"],l),ap3,A.a(["alopurinol","rasburicase","febuxostate","hidratacao","alcalinizacao urina","hemodialise"],l),"crise_miastenia",A.a([at2,"plasmaferese","piridostigmina ajuste","corticosteroid","suporte resp"],l),ao9,A.a(["manitol","nacl 3% hipert",av7,"decubito 30 graus","hiperventilac transitor"],l),"embolia_gordura",A.a([av4,"oxigenio","corticosteroid"],l),"desnutricao",A.a(["suporte nutric",am9,"nutricao parenteral","reposicao vitaminas","tiamina"],l),an0,A.a(["colecalciferol","vitamina d3","calcitriol","ergocalciferol"],l),an1,A.a(["cianocobalamina",av0,"vitamina b12 im","b12 oral alta dose"],l),an2,A.a(["acido folico","folato suplemento"],l),"defic_zinco",A.a(["zinco sulfato oral","zinco acetato",av3],l),"cancer_tireoide",A.a(["radioiodo","levotiroxina supressiva","sorafenibe","lenvatinibe","vandetanibe","cabozantinibe","selpercatinibe"],l),an4,A.a(["sunitinibe","pazopanibe","axitinibe","pembrolizumab","nivolumab","cabozantinibe","lenvatinibe","everolimus"],l),"glioblastoma",A.a(["temozolomida","bevacizumab","radioterapia","ttfields"],l),"meduloblastoma",A.a(["quimioterapia","cisplatina","vincristina","ciclofosfamida","radioterapia"],l),"sarcoma",A.a(["doxorubicina","ifosfamida","gencitabina","docetaxel","trabectedina","larotrectinibe"],l),an6,A.a(["cetuximab","pembrolizumab","nivolumab","cisplatina","docetaxel","radioterapia"],l),ao1,A.a(["mesna","hiperhidratacao","acido tranexam","prostaglandina intravesic"],l),ao2,A.a(["tacrolimus","ciclosporina","micofenolato","corticosteroid","basiliximab","metilprednisolona pulsoterapia"],l),ao4,A.a(["ciclofosfamida","bussulfano","fludarabina","melfalano","ciclosporina","tacrolimus","metotreximo profilax gvhd"],l),ao5,A.a(["corticosteroid","ciclosporina","tacrolimus","micofenolato","rituximab","ibrutinibe","ruxolitinibe gvhd cronic"],l),"sindrome_fragil",A.a(["exercicio fisico","suporte nutric","vitamina d","proteina suplemento","revisao medicam"],l),"quedas_idoso",A.a(["vitamina d","calcio","fisioterapia","revisao medicam","adaptacao ambiente"],l),"depressao_idoso",A.a(["ssri","escitalopram","sertralina","venlafaxina","mirtazapina","evitar triciclico"],l),"dislipidemia",A.a(["estatina","atorvastatina","rosuvastatina","ezetimiba","fibratos","acido nicotinico","alirocumab","evolocumab","inclisiran"],l),aq4,A.a(["alirocumab","evolocumab","inclisiran","ezetimiba","estatina alta intensid","lomitapida"],l),aq5,A.a(["metformina","pioglitazona","semaglutida","liraglutida","sglt2 inib","exercicio"],l),"hiperuricemia",A.a(["alopurinol","febuxostate","benzbromarona","lesinurad","dieta hiperuricemia"],l),"reacao_adversa",A.a(["suspender medicam","tratar sintoma","anti-histamin","corticosteroid","adrenalina anafilaxia"],l),"polifarmacia",A.a(["revisao medicam","desprescricao","criterio beers","avaliacao farmacolog"],l),"alerg_alimentar",A.a([aw5,"anti-histamin","corticosteroid","imunoterapia oral alim","evitar alergen"],l),ap6,A.a(["carbapenem se necessario","macrolid","vancomicina","teste dessensibilizac"],l),ap8,A.a(["anti-histamin","furoato fluticasona nasal","montelucaste","imunoterapia alergen"],l),"asma_alerg",A.a(["salbutamol",at7,"montelucaste","omalizumab","dupilumab","tezepelumab"],l),aq0,A.a(["corticosteroid","mepolizumab","benralizumab","reslizumab","anti-il5"],l),aj8,A.a(["cpap","bpap","mandibular avanco dispositiv","cirurgia uvulopalato","perdapesoobesi"],l),aq1,A.a(["imunoglobulina iv reposi",ax3,aw4,"terapia genica"],l),aq2,A.a([at2,ax3,av8],l),"scid",A.a([aw4,"terapia genica",at2],l),ap1,A.a(["hidrocortisona iv 100mg","solucao salina","glicose iv","fludrocortisona manutenc"],l),ap4,A.a(["filgrastim","pegfilgrastim","antibiotico","antifungico profilat","isolamento"],l),ap5,A.a(["glicose 50% iv","glucagon 1mg im","glicose 10% manut"],l),"sind_comp_abdom",A.a(["descompressao cirurgica","drenagem","manitol",ax1],l),"oxigenoterapia",A.a(["mascara reservatorio","cateter nasal o2","ventilacao nao invasiva","bipap","cpap","ventilacao mecanica"],l),"hiperbarica",A.a(["oxigenio hiperbar 100%","sessoes oht","camara pressurizada"],l),aq3,A.a(["fibratos","fenofibrato","gemfibrozila","acido eicosapentaenoico","icosapent etil","niacina","omega 3"],l),"simvastatina_dr",A.a(["estatina","hipolipemiante","hmg-coa reductase","colesterol"],l),"ciprofibrato_dr",A.a(["fibrato","triglicerideos","hipolipemiante","ppar alfa"],l),"prasugrel_dr",A.a(["antiagregante","antiplaquetario","p2y12","icp","sca","sindrome coronariana"],l),"cilostazol_dr",A.a(["vasodilatador","antiagregante","claudicacao","isquemia membros","pde3"],l),"abciximabe_dr",A.a([ax4,"gp iib iiia","icp",ax5],l),"tirofibana_dr",A.a([ax4,"gp iib iiia","sca",ax5],l),"bivalirudina_dr",A.a([ax6,ax7,"icp","hit",ax8],l),"edoxabana_dr",A.a(["anticoagulante oral","doac","fator xa","tev",aa9],l),"dalteparina_dr",A.a(["heparina baixo peso molecular","hbpm","anticoagulante sc","trombose cancer"],l),"dipiridamol_dr",A.a(["antiagregante","vasodilatador","avc prevencao","embolia"],l),"eptifibatida_dr",A.a([ax4,"gp iib iiia","sca","icp",ax5],l),"ibutilida_dr",A.a(["antiarritmico iii","cardioversao",aa9,"flutter atrial"],l),"valsartana_dr",A.a(["bra","antagonista at1","hipertensao",ax9],l),"irbesartana_dr",A.a(["bra","antagonista at1",ai4,"hipertensao"],l),"telmisartana_dr",A.a(["bra","antagonista at1","hipertensao","ppar gamma"],l),"ramipril_dr",A.a(["ieca","inibidor eca","hipertensao",ax9,"pos iam"],l),"lisinopril_dr",A.a(["ieca","inibidor eca","hipertensao",ax9,"nao pro farmaco"],l),"perindopril_dr",A.a(["ieca","inibidor eca","hipertensao","prevencao avc","europa"],l),"trandolapril_dr",A.a(["ieca","inibidor eca","hipertensao","pos iam",ax9],l),"fosinopril_dr",A.a(["ieca","inibidor eca","hipertensao","eliminacao dual renal hepatica","hepatopata"],l),"amilorida_dr",A.a(["diuretico poupador potassio","enac","hipocalemia","hiperaldosteronismo"],l),"torsemida_dr",A.a(["diuretico ansa",ax9,"edema refratario","drc"],l),"bumetanida_dr",A.a(["diuretico ansa","edema",ax9,"drc"],l),"indapamida_dr",A.a(["diuretico tiazidico","hipertensao","idoso","metabolicamente neutro"],l),"metildopa_dr",A.a(["agonista alfa2 central","hipertensao gestacional","has gravidez","gestante"],l),"acarbose_dr",A.a(["inibidor alfa glicosidase","diabetes","hiperglicemia pos prandial","dm2"],l),al5,A.a(["insulina basal","insulina ultralonga","degludec","diabetes","hipoglicemia noturna"],l),al6,A.a(["bisfosfonato iv","osteoporose","hipercalcemia","mieloma","metastase ossea"],l),"alendronato_dr",A.a(["bisfosfonato oral","osteoporose","reabsorcao ossea","fratura vertebral"],l),"teriparatida_dr",A.a(["analogo pth","osteoformador","osteoporose grave","pth recombinante"],l),"cinacalcete_dr",A.a(["calciomimetico","hiperparatireoidismo","dialise","casr","drc mineral"],l),"cabergolina_dr",A.a(["agonista dopaminergico",ad8,"prolactinoma","dopamina d2"],l),al7,A.a([al8,"insuficiencia adrenal","addison","reposicao mineral"],l),al9,A.a(["progestageno","contracepcao emergencia",am0,"diu hormonal"],l),am1,A.a(["analogo vasopressina",ae1,"enurese","ddavp","von willebrand"],l),am2,A.a(["ibp",au3,"drge","refluxo","dupla liberacao"],l),"bismuto_dr",A.a(["helicobacter pylori","ulcera",at9,"erradicacao h pylori"],l),"azatioprina_dr",A.a(["imunossupressor","dii","doenca inflamatoria intestinal","miastenia","artrite"],l),"infliximabe_dr",A.a(["anti-tnf alfa","biologico","crohn","rcu",as1,"espondiloartr"],l),"ziprasidona_dr",A.a([ay0,"esquizofrenia","qt longo","dopamina","metabolismo neutro"],l),"bupropiona_dr",A.a(["antidepressivo ndri","tabagismo","cessacao tabaco","depressao","ndri"],l),"citalopram_dr",A.a(["isrs","antidepressivo","depressao","qt longo","serotonina"],l),"paroxetina_dr",A.a(["isrs","antidepressivo","ansiedade","p\xe2nico","tept","anticolinergico"],l),"fluvoxamina_dr",A.a(["isrs","toc",ar8,"antidepressivo","sigma1"],l),"trazodona_dr",A.a(["sari","antidepressivo","insonia","sedacao","priapismo"],l),"clozapina_dr",A.a([ay0,"esquizofrenia refrataria","suicidio","agranulocitose"],l),"aripiprazol_dr",A.a([ay0,"esquizofrenia","bipolar","agonista parcial d2","acatisia"],l),"oxacilina_dr",A.a(["penicilina","mssa","estafilococo","antiestafilococico","penicilinase"],l),"cefazolina_dr",A.a(["cefalosporina","profilaxia cirurgica","mssa","perioperatorio","primeira geracao"],l),"cefoxitina_dr",A.a(["cefalosporina","anaerobio","bacteroides","cirurgia abdominal","cefamicina"],l),"cefotaxima_dr",A.a(["cefalosporina","terceira geracao","gram negativo","meningite","neonato"],l),"doripenem_dr",A.a(["carbapen\xeamico","pseudomonas","gram negativo","uti","infeccao nosocomial"],l),"aztreonam_dr",A.a(["monobactamico","gram negativo",ap7,"pseudomonas","beta lactamico"],l),"tobramicina_dr",A.a(["aminoglicosideo","pseudomonas","fibrose cistica","gram negativo","aminoglicosideo"],l),al1,A.a(["aminoglicosideo","tuberculose","brucelose","tularemia","mycobacterium"],l),"teicoplanina_dr",A.a(["glicopeptideo","mrsa","gram positivo","enterococcus","vancomicina alternativa"],l),"eritromicina_dr",A.a(["macrolidio","procin\xe9tico","motilidade gastrica","atipicos","cyt3a4"],l),"minociclina_dr",A.a(["tetraciclina","acinetobacter","mrsa comunitario","acne","lipossoluble"],l),"rifampicina_dr",A.a(["rifamicina","tuberculose",ay1,"ripes","indutor cyp450"],l),"isoniazida_dr",A.a([ay1,"tuberculose",af5,"piridoxina","b6"],l),"pirazinamida_dr",A.a([ay1,"tuberculose","ripes","hiperuricemia","gota"],l),"etambutol_dr",A.a([ay1,"tuberculose","neurite optica","daltonismo","ripes"],l),"ganciclovir_dr",A.a(["antiviral","citomegalovirus","cmv","imunossuprimido","mielossupressao"],l),al2,A.a(["antiviral","citomegalovirus","cmv",ay2,"oral"],l),"itraconazol_dr",A.a(["antif\xfangico","azolico","esporotricose","histoplasmose","onicomicose"],l),"voriconazol_dr",A.a(["antif\xfangico","aspergilose","azolico","triazolico",ag9],l),"caspofungina_dr",A.a(["equinocandina","candidemia","candida","antif\xfangico","beta glucano"],l),"micafungina_dr",A.a(["equinocandina","candidemia",ay2,"antif\xfangico"],l),"terbinafina_dr",A.a(["alilamina","onicomicose","dermatofito","antif\xfangico","esqualeno epoxidase"],l),"praziquantel_dr",A.a(["anti-helm\xedntico","esquistossomose","neurocisticercose","cisticercose","taenia"],l),"bosentana_dr",A.a(["antagonista endotelina",ag2,"hap","endotelina","vasodilatador"],l),"minoxidil_dr",A.a(["vasodilatador arterial","hipertensao refrataria","hipertricose","canal potassio"],l),"doxazosina_dr",A.a(["alfa bloqueador","hpb",ay3,"hipertensao","alfa1"],l),"terazosina_dr",A.a(["alfa bloqueador","hpb",ay3,"hipertensao","alfa1"],l),"dutasterida_dr",A.a(["inibidor 5 alfa redutase","hpb",ay3,"dht","androg\xeanio"],l),"tadalafila_dr",A.a(["inibidor pde5","disfuncao eretil","hpb",ag2,"nitrato"],l),"argatrobana_dr",A.a([ax7,"hit",ax8,ax6,"seguro renal"],l),"sugamadex_dr",A.a(["reversor bnm","rocuronio","vecuronio","bloqueio neuromuscular reverter","ciclodextrina"],l),"cisatracurio_dr",A.a([ay4,"hofmann","uti","intubacao",ay5],l),"atracurio_dr",A.a([ay4,"hofmann","histamina",ay5,"laudanosina"],l),"pancuronio_dr",A.a([ay4,"longa duracao","taquicardia",ay5],l),"neostigmina_dr",A.a([ay6,"reversor bnm","miastenia","acetilcolinesterase","atropina"],l),al3,A.a([ay6,"miastenia gravis","oral","acetilcolina",ap0],l),"dantroleno_dr",A.a([am8,"antidoto","ryanodina","rigidez muscular","emergencia"],l),"tiopental_dr",A.a(["barbiturico","indu\xe7\xe3o anestesica","mal epileptico","pic","gaba"],l),"halotano_dr",A.a([ay7,"halogenado",am8,"hepatite halotano","historico"],l),"sevoflurano_dr",A.a([ay7,"moderno",am8,"despertar rapido","crianca"],l),"isoflurano_dr",A.a([ay7,"manutencao",am8,"vasodilatador"],l),"bupivacaina_dr",A.a([ay8,"amida","raquidiana","epidural","cardiotoxicidade"],l),"ropivacaina_dr",A.a([ay8,"amida","epidural","bloqueio periferico","menor cardiotoxicidade"],l),"prilocaina_dr",A.a([ay8,"metahemoglobinemia","amida","bier","azul metileno"],l),"protamina_dr",A.a(["antidoto heparina",al4,"reverter hnf","hbpm parcial","anticoagulacao"],l)],h,g)
+break}}b=A.U(["anafilaxia",A.a(["adrenalina","epinefrina","adrenergic","anti-histamin","corticosteroid","difenidramina","broncodilatad","salbutamol"],l),"choque_septico",A.a(["vasopressor","noradrenalina","adrenalina","vasopressin","hidrocortisona","antibiotico","antibiot","antimicrobiano"],l),aa7,A.a(["inotrop","dobutamina","noradrenalina","milrinona","levosimendana","diuretico","furosemida","nitrato"],l),aa8,A.a(["cristaloide","coloide","albumina","acido tranexam","vasopressor"],l),"choque",A.a(["vasopressor","noradrenalina","adrenalina","dopamina","dobutamina","vasopressin","inotrop"],l),"pcr",A.a(["adrenalina","epinefrina","amiodarona","atropina","bicarbonato","calcio cloreto","lidocaina"],l),"iam",A.a(["antiagregant","antiplaquetario","aas","clopidogrel","ticagrelor","heparina","enoxaparina","nitrato","betabloqueant","ieca","estatina"],l),"angina",A.a(["nitrato","betabloqueant",as7,"ranolazin","ivabradina","antiagregant","aas","estatina"],l),"ic",A.a(["diuretico","furosemida","espironolactona","ieca","betabloqueant","sacubitril","digoxina","dobutamina","sglt2","nitroglicerin"],l),"fa",A.a(["antiarritmico","amiodarona","betabloqueant","diltiazem","digoxina","anticoagul","rivaroxabana","apixabana","dabigatrana","warfarina"],l),"tpsv",A.a(["adenosina","betabloqueant","diltiazem","verapamil","antiarritmico","propafenona","flecainida"],l),"tv",A.a(["amiodarona","lidocaina","procainamida","betabloqueant","sotalol","antiarritmico"],l),"bradicardia",A.a(["atropina","adrenalina","dopamina","isoproterenol","aminofilina"],l),"hipertensao",A.a([as8,"ieca","bra",as7,"diuretico","betabloqueant","amlodipino","captopril","losartana","enalapril","hidroclorotiazid"],l),ab0,A.a(["nitroprussiato","nitroglicerin","labetalol","esmolol","hidralazina","nicardipino","furosemida"],l),"dissecc_aorta",A.a(["betabloqueant","esmolol","labetalol","nitroprussiato","nicardipino","morfina"],l),"tep",A.a(["anticoagul","heparina","enoxaparina","rivaroxabana","apixabana","alteplase","trombolitic","fondaparinux"],l),"tvp",A.a(["anticoagul","heparina","enoxaparina","rivaroxabana","apixabana","dabigatrana","warfarina"],l),"endocardite",A.a(["antibiotico","penicilina","ampicilina","oxacilina","gentamicina","vancomicina","rifampicina","antimicrobiano"],l),"miocardite",A.a(["betabloqueant","ieca","diuretico","corticosteroid","imunossupressor"],l),"pericardite",A.a([as9,"ibuprofeno","aine","colchicina","corticosteroid","aspirin"],l),ab5,A.a(["ieca","betabloqueant","diuretico","espironolactona","digoxina","sacubitril","anticoagul"],l),ab6,A.a(["betabloqueant",as7,"disopiramida","amiodarona","anticoagul"],l),"avc_isquemico",A.a(["trombolitic","alteplase","antiagregant","clopidogrel","aas","anticoagul","estatina",as8],l),"avc_hemorragico",A.a([as8,"labetalol","nicardipino","vitamina k","idarucizumabe","nimodipino"],l),"hsa",A.a(["nimodipino","nicardipino",as8,"analgesic","antiemetic","corticoid"],l),"ait",A.a(["antiagregant","clopidogrel","aas","anticoagul","estatina",as8],l),"epilepsia",A.a(["anticonvuls","antiepilep","benzodiazep","diazepam","midazolam","lorazepam","fenitoina","levetiracetam","valproato","carbamazepina","lamotrigina"],l),"meningite",A.a(["antibiotico","ceftriaxona","ampicilina","vancomicina","aciclovir","dexametasona","antimicrobiano"],l),"parkinson",A.a(["dopaminergic","levodopa","carbidopa","benserazida","pramipexol","rasagilina","entacapona"],l),"alzheimer",A.a([at0,"donepezila","rivastigmina","galantamina","memantina"],l),"demencia",A.a(["donepezila","memantina","antipsicotic",at0],l),"esclerose_mult",A.a(["corticosteroid",at1,"interferon beta","acetato glatiramer","nataliz","fingolimod","imunossupressor"],l),"miastenia",A.a(["piridostigmina","neostigmina","corticosteroid","imunossupressor","azatioprina","micofenolato"],l),"guillain_barre",A.a([at2,"ivig",at3,"heparina"],l),"enxaqueca",A.a(["triptano","sumatriptano","rizatriptano","zolmitriptano","ergot","aine","paracetamol","dipirona","metoclopramida","propranolol","topiramato","amitriptilina","valproato"],l),ab9,A.a(["aine","paracetamol","ibuprofeno","dipirona","amitriptilina","analgesic",at4],l),"cefaleia",A.a(["analgesic","aine","paracetamol","dipirona","ibuprofeno","triptano","antiemetic","metoclopramida"],l),"pneumonia_com",A.a(["antibiotico","amoxicilina","azitromicina","ceftriaxona","levofloxacino","ampicilina",at5],l),"pneumonia_hosp",A.a(["antibiotico",at6,"meropenem","imipenem","vancomicina","amikacina"],l),"tuberculose",A.a(["rifampicina","isoniazida","pirazinamida","etambutol","antimicobacterian","antituberculoso"],l),"asma",A.a(["broncodilatad","beta2 agonist","salbutamol","formoterol",at7,"budesonida","fluticasona","ipratropio","teofilina","montelucaste"],l),"dpoc",A.a(["broncodilatad","salbutamol","ipratropio","tiotropio","formoterol","budesonida","roflumilaste","teofilina","corticosteroid sistem"],l),"insuf_resp",A.a(["broncodilatad","salbutamol","corticosteroid","antibiotico","diuretico","morfina"],l),"pneumotorax",A.a(["analgesic","morfina","aine"],l),"derrame_pleural",A.a(["diuretico","antibiotico",as9,"aine"],l),"apneia_sono",A.a(["modafinil","teofilina","acetazolamida"],l),"covid",A.a(["corticosteroid","dexametasona","anticoagul","heparina","enoxaparina","remdesivir","nirmatrelvir","baricitinib","tocilizumab"],l),"sepse",A.a(["antibiotico",at6,"meropenem","imipenem","vancomicina","amikacina","noradrenalina","hidrocortisona"],l),"itu",A.a(["antibiotico","nitrofurantoina","fosfomicina","ciprofloxacino","trimetoprim","cefalexina"],l),"pielonefrite",A.a(["antibiotico","ciprofloxacino","ceftriaxona","ampicilina","levofloxacino","gentamicina"],l),"celulite",A.a(["antibiotico","cefalexina","clindamicina","ceftriaxona","oxacilina",at5,"vancomicina"],l),"fasceite",A.a(["antibiotico",at6,"meropenem","clindamicina","vancomicina"],l),"osteomielite",A.a(["antibiotico","ceftriaxona","oxacilina","vancomicina","ciprofloxacino","rifampicina"],l),"hiv_aids",A.a(["antirretrovir","tenofovir","emtricitabina","efavirenz","dolutegravir","atazanavir"],l),"candidose",A.a(["antifungico","fluconazol","anfotericin b","caspofungina","voriconazol","micafungina"],l),"dengue",A.a(["paracetamol","antipiret","analgesic","reposicao volum"],l),"malaria",A.a(["cloroquina",at8,"artemeter","lumefantrina","quinina","primaquina","doxiciclina"],l),"leptospirose",A.a(["penicilina g","doxiciclina","ampicilina","ceftriaxona"],l),"sifilis",A.a(["penicilina g benzatin","doxiciclina","azitromicina"],l),"dst",A.a(["azitromicina","doxiciclina","ceftriaxona","penicilina","metronidazol"],l),"herpes_zoster",A.a(["aciclovir","valaciclovir","fanciclovir","antiviral","analgesic","gabapentina"],l),"varicela",A.a(["aciclovir","valaciclovir","anti-histamin","paracetamol"],l),"diarreia",A.a(["soro de reidratacao oral","sro","ringer lactato","solucao salina","reposicao voluminosa","zinc suplemento","loperamida","racecadotrila",at9,"escopolamina","hioscina","mebeverina","ciprofloxacino","azitromicina","cotrimoxazol","metronidazol","probiotico","lactobacillus",au0,"ondansetrona","metoclopramida","domperidona","omeprazol","pantoprazol","mesalazina","sulfassalazina","corticosteroide","metronidazol","tinidazol","albendazol","nitazoxanida","pancreatina",au1,"creon","colestiramina"],l),"diarreia_cdiff",A.a([au2,"vancomicina oral","fidaxomicina","bezlotoxumab","rifaximina","transplante microbiota fecal","probiotico profilaxia",au0,"suspender antibiotico causador","loperamida contraindicada cdiff"],l),ad4,A.a(["ciprofloxacino","azitromicina","levofloxacino","cotrimoxazol","ceftriaxona","ampicilina","soro reidratacao oral","sro","ringer lactato","loperamida","racecadotrila",at9,"ondansetrona"],l),ad5,A.a(["metronidazol","tinidazol","secnidazol","nitazoxanida","albendazol","mebendazol","paromomicina","iodoquinol","cotrimoxazol","sulfadiazina"],l),"diarreia_dii",A.a(["mesalazina","sulfassalazina","corticosteroide","budesonida","azatioprina","mercaptopurina","infliximab","adalimumab","vedolizumab","ustekinumab","metronidazol","ciprofloxacino","anti-integrina","anti-tnf","anti-il12/23"],l),ad6,A.a(["dieta sem gluten","pancreatina","creon",au1,"rifaximina sibo","antibiotico sibo","metronidazol sibo","colestiramina","suplementacao vitaminas liposoluveis","vitamina b12","acido folico","ferro reposicao","enzima lactase","dieta sem lactose"],l),ad7,A.a(["loperamida","rifaximina","eluxadolina","antidepressivo triciclico","ssri","mebeverina","psyllium","colestiramina","ondansetrona","dieta low fodmap"],l),"hda",A.a([au3,"omeprazol","pantoprazol","octreotida","terlipressina","propranolol","antibiotico"],l),"hdb",A.a(["mesalazina","infliximab","hemostasia endoscop"],l),"pancreatite",A.a(["analgesic","morfina","aine","reposicao volum","antibiotico","insulina"],l),"colecistite",A.a(["antibiotico","ceftriaxona","ampicilina","metronidazol","analgesic","escopolamina"],l),"colangite",A.a(["antibiotico",at6,"ampicilina","ciprofloxacino","metronidazol"],l),"apendicite",A.a(["antibiotico","ceftriaxona","metronidazol",at6,"analgesic"],l),"diverticulite",A.a(["antibiotico","ciprofloxacino","metronidazol",at5,"analgesic"],l),"drge",A.a([au3,"omeprazol","esomeprazol","pantoprazol","anti\xe1cido","metoclopramida","domperidona"],l),"ulcera_peptica",A.a([au3,"omeprazol","pantoprazol","amoxicilina","claritromicina","metronidazol","bismuto"],l),"dii",A.a(["mesalazina","sulfassalazina","corticosteroid","azatioprina","infliximab","adalimumab","metronidazol"],l),"sii",A.a(["antiespasm\xf3dico","escopolamina","mebeverina","ssri","loperamida","lactulose"],l),"cirrose",A.a(["diuretico","furosemida","espironolactona","propranolol","lactulose","rifaximina","albumina","terlipressina"],l),"hepatite",A.a(["antiviral","interferon","ribavirina","sofosbuvir","daclatasvir","entecavir","tenofovir"],l),"insuf_hepatica",A.a(["lactulose","rifaximina","vitamina k","albumina","diuretico",au4],l),"ira",A.a(["diuretico","furosemida","bicarbonato",ar4,"kayexalat","reposicao volum"],l),"drc",A.a([as8,"ieca","bra","diuretico","bicarbonato","eritropoetina","calcio carbonato","sevelamer"],l),aq9,A.a(["corticosteroid","imunossupressor","ciclofosfamida","micofenolato",as8,"diuretico"],l),ar0,A.a(["corticosteroid","prednisona","ciclofosfamida","diuretico","albumina","ieca"],l),"lit\xedase_renal",A.a(["analgesic","aine","morfina","dipirona","tamsulosina","diclofenaco","escopolamina"],l),"dm1",A.a(["insulina","insulina rapida","insulina nph","insulina glargin","insulina lispro"],l),"dm2",A.a(["antidiabetic","metformina","glifozina","empagliflozin","liraglutida","sitagliptin","glibenclamida","insulina"],l),"diabetes",A.a(["insulina","metformina","antidiabetic","hipoglicemiant","glifozina"],l),"cad",A.a([au5,"solucao salina",au6,"bicarbonato"],l),"ehnc",A.a([au5,au6,"reposicao volum"],l),"hipoglicemia",A.a(["glicose hipertonic","glicose iv","glucagon","dextrose"],l),"hipotireoidismo",A.a(["levotiroxina","l-tiroxina","hormonio tiroid"],l),ar1,A.a(["propiltiouracil","metimazol","tiamazol","betabloqueant","propranolol","iodeto potassio"],l),ar2,A.a(["propiltiouracil","propranolol","hidrocortisona","iodeto"],l),"insuf_adrenal",A.a(["hidrocortisona","fludrocortisona","dexametasona","corticosteroid"],l),"cushing",A.a(["ketoconazol","metirapona","mifepristona","pasireotida"],l),"feocromocitoma",A.a(["fenoxibenzamina","doxazosina","betabloqueant","bloqueador alfa","betabloqueant apos alfa","bloqueio alfa","metirosina"],l),"obesidade",A.a(["orlistat","liraglutida","semaglutida","bupropiona","topiramato"],l),"hipercalemia",A.a([ar4,au7,"insulina dextrose","salbutamol","kayexalat","patiromer","furosemida"],l),"hipocalemia",A.a([au8,"potassio oral","potassio iv",ar3],l),"hiponatremia",A.a([au9,"nacl 3%","reposicao sodio","tolvaptan"],l),"hipernatremia",A.a(["solucao salina hipotonic","agua livre","dextrose 5%"],l),"hipocalcemia",A.a([ar4,"cloreto calcio","calcio iv","vitamina d"],l),"hipercalcemia",A.a(["solucao salina","furosemida","bisfosfonato","calcitonina","denosumab"],l),"acidose_met",A.a([au7,"bicarbonato iv"],l),"alcalose_met",A.a([au8,"acetazolamida"],l),"acidose_resp",A.a(["broncodilatad","corticosteroid"],l),"alcalose_resp",A.a(["analgesic","sedacao"],l),ar5,A.a(["sulfato ferroso","ferro polimaltosado","ferro iv","sacarato ferro","acido ascorbico"],l),"anemia_megalob",A.a(["cianocobalamina","vitamina b12","acido folico",av0],l),"anemia_hemol",A.a(["corticosteroid","prednisona","imunossupressor","acido folico","hidroxiureia"],l),"leucemia",A.a(["quimioterapia","imatinibe","dasatinibe","daunorubicina","citarabina"],l),"linfoma",A.a(["quimioterapia","rituximab","ciclofosfamida","doxorubicina","vincristina","prednisona"],l),"civd",A.a(["heparina","plasma fresco","crioprecipitado","acido tranexam"],l),"trombocitopenia",A.a([at2,"corticosteroid","prednisona","rituximab","eltrombopag"],l),ar6,A.a(["antibiotico","ceftriaxona",at6,"meropenem","vancomicina","filgrastim"],l),"depressao",A.a(["antidepressiv","isrs","ssri","fluoxetina","sertralina","escitalopram","venlafaxina","bupropiona","amitriptilina"],l),"bipolar",A.a([ar7,"lition","valproato","lamotrigina","quetiapina","olanzapina","carbamazepina"],l),"esquizofrenia",A.a(["antipsicotic","haloperidol","risperidona","olanzapina","clozapina","quetiapina","aripiprazol"],l),"ansiedade",A.a(["ansiolitic","benzodiazep","diazepam","clonazepam","ssri","isrs","buspirona","venlafaxina","pregabalina"],l),"panico",A.a(["ssri","isrs","sertralina","fluoxetina","clonazepam","alprazolam"],l),"tept",A.a(["ssri","sertralina","paroxetina","prazosin"],l),"toc",A.a(["ssri","fluoxetina","fluvoxamina","sertralina","clomipramina"],l),"intox_opioide",A.a(["naloxona","naltrexona"],l),"intox_benzo",A.a(["flumazenil"],l),"intox_alcoolica",A.a(["tiamina","vitamina b1","glicose","benzodiazep"],l),ar9,A.a(["benzodiazep","diazepam","lorazepam","tiamina","haloperidol"],l),"sind_serotonin",A.a(["benzodiazep","ciproheptadina"],l),as0,A.a(["benzodiazep","bromocriptina","dantrolene"],l),"intoxicacao",A.a(["carvao ativad","naloxona","flumazenil","vitamina k",au4,"atropina"],l),"delirium",A.a(["haloperidol","quetiapina","rivastigmina","melatonin"],l),"artrite_reuma",A.a(["metotrexato","leflunomida",at8,"sulfassalazina","biologico","corticosteroid"],l),"lupus",A.a([at8,"corticosteroid","azatioprina","micofenolato","ciclofosfamida","belimumab"],l),"esclerodermia",A.a(["sildenafil","bosentana","iloprost","ieca","omeprazol"],l),"vasculite",A.a(["corticosteroid","ciclofosfamida","rituximab","azatioprina"],l),"gota",A.a(["colchicina","aine","ibuprofeno","indometacina","prednisona","alopurinol","febuxostate"],l),"osteoartrite",A.a(["analgesic","aine","ibuprofeno","paracetamol","diclofenaco","condroitin","glucosamina"],l),"osteoporose",A.a(["bisfosfonato","alendronato","zoledronato","denosumab","teriparatida","calcio","vitamina d"],l),"fibromialgia",A.a(["amitriptilina","duloxetina","pregabalina","tramadol","ciclobenzaprina","gabapentina"],l),"preeclampsia",A.a([av1,"hidralazina","labetalol","nifedipino","metildopa","betametasona"],l),"eclampsia",A.a([av1,"benzodiazep","diazepam","labetalol","nifedipino"],l),"hemorragia_pp",A.a(["ocitocina","ergometrina","misoprostol","acido tranexam"],l),"placenta_previa",A.a(["betametasona","tocolitic","nifedipino"],l),"dpp",A.a(["betametasona","ocitocina","analgesic"],l),"aborto_septico",A.a(["antibiotico","ampicilina","gentamicina","metronidazol","ceftriaxona"],l),"sop",A.a(["metformina","anticoncept","espironolactona","citrato clomifeno","letrozol","anticoncept oral","semaglutida"],l),"endometriose",A.a(["progestagen","dienogest","leuprorelin","danazol","aine"],l),"prostatite",A.a(["antibiotico","ciprofloxacino","levofloxacino","doxiciclina","alfabloquead"],l),"hpb",A.a(["alfabloquead","tamsulosina","doxazosina","dutasterida","finasterida"],l),"cancer_mama",A.a(["tamoxifeno","letrozol","anastrozol","trastuzumab","ciclofosfamida","doxorubicina","paclitaxel"],l),"cancer_pulmao",A.a(["erlotinib","gefitinib","osimertinib","pembrolizumab","cisplatina","carboplatina"],l),"cancer_gastrico",A.a(["5-fluorouracil","cisplatina","oxaliplatina","trastuzumab","ramucirumab"],l),"cancer_colorret",A.a(["5-fluorouracil","oxaliplatina","irinotecan","bevacizumab","cetuximab"],l),"cancer_prostata",A.a(["leuprorelin","bicalutamida","enzalutamida","abiraterona","docetaxel"],l),"cancer_pancreas",A.a(["gemcitabina","nab-paclitaxel","erlotinib"],l),"melanoma",A.a(["ipilimumab","pembrolizumab","nivolumab","vemurafenib","dabrafenib"],l),"bronquiolite",A.a(["salbutamol","broncodilatad","adrenalina"],l),"crupe",A.a(["dexametasona","budesonida","adrenalina","corticosteroid"],l),"psoriase",A.a(["metotrexato","corticosteroid","adalimumab","secuquinumab","apremilast","ciclosporina",av2,"vitamina d topica","acitretina","biologico","secuquinumabe","guselkumabe","risankizumabe","tofacitinibe"],l),as2,A.a(["corticosteroid topic","tacrolimus","dupilumab","anti-histamin","emoliente"],l),"urticaria",A.a(["anti-histamin","cetirizina","loratadina","fexofenadina","corticosteroid","adrenalina"],l),"tce",A.a(["manitol",au9,"dexametasona",as8,"fenitoina"],l),"politrauma",A.a(["analgesic","morfina","fentanila","acido tranexam","antibiotico"],l),"queimaduras",A.a(["analgesic","morfina","fentanila","antibiotico","sulfadiazina"],l),"rabdomiolise",A.a(["reposicao volum","bicarbonato","manitol","furosemida"],l),"sind_metabolica",A.a(["metformina",as8,"estatina","fibratos","exercicio","dieta"],l),as3,A.a(["terlipressina","albumina","noradrenalina","antibiotico"],l),as4,A.a(["diuretico","furosemida","dobutamina"],l),as5,A.a(["vitamina k","protamina","idarucizumabe","andexanete","plasma fresco"],l),"anticoagulacao",A.a(["anticoagul","heparina","enoxaparina","warfarina","rivaroxabana","apixabana","dabigatrana"],l),"nausea",A.a(["antiemetic","ondansetrona","metoclopramida","droperidol","prometazina","domperidona"],l),"febre",A.a(["antipiret","paracetamol","dipirona","ibuprofeno","acido acetilsalicil"],l),"dor",A.a(["analgesic","opioid","morfina","tramadol","paracetamol","dipirona","ibuprofeno","aine","fentanila"],l),"infeccao",A.a(["antibiotico","antimicrobiano","antifungico","antiviral"],l),"acromegalia",A.a(["octreotida lar","lanreotida","pegvisomant","cabergolina","pasireotida","analago somatostatina","dopaminergico"],l),"adenoma_hipofis",A.a(["cabergolina","bromocriptina","octreotida","lanreotida","pasireotida","temozolomida","corticosteroid"],l),"prolactinoma",A.a(["cabergolina","bromocriptina","dopaminergico","agonista dopamina"],l),ad9,A.a(["hidrocortisona","levotiroxina","desmopressina","hormonio crescimento","hormonio sexual reposicao"],l),ae0,A.a(["desmopressina","ddavp","diuretico tiazidico di nefrogen","indometacina di nefrogen","amilorida"],l),"siadh",A.a(["restricao hidrica","nacl hipertonico","tolvaptan","satavaptan","urea oral siadh","demeclociclina"],l),"hiperaldosteron",A.a(["espironolactona","eplerenona","amilorida",as8,"adrenalectomia"],l),ae2,A.a(["cinacalcet","bisfosfonato","denosumab","hidratacao hipercalcemia","furosemida","calcitonina"],l),"hipoparatireoid",A.a(["calcio oral","calcio iv","vitamina d ativa","calcitriol","paratormonio recombinante","teriparatida"],l),"carcinoide",A.a(["octreotida","lanreotida","everolimus","interferon alfa","quimioterapia carcinoide"],l),"insulinoma",A.a(["diazoxida","octreotida","glucagon","glicose iv","verapamil","cirurgia insulinoma"],l),"gastrinoma",A.a(["inibidor bomba proton alta dose","omeprazol","octreotida","everolimus","streptozotocina"],l),"glucagonoma",A.a(["octreotida",av3,"quimioterapia","dieta baixo glucagon"],l),"vipoma",A.a(["octreotida","reposicao hidrica","corticosteroid","quimioterapia"],l),ae3,A.a(["cirurgia","octreotida","corticosteroid","quimioterapia alvo especif","sunitinibe"],l),"amiloidose",A.a(["tafamidis","patisiran","inotersen","diflunisal","transplante orgao","melfalano","dexametasona amiloid"],l),"sarcoidose",A.a(["corticosteroid","metotreximo","azatioprina",at8,"infliximab","pentoxifilina"],l),"hemocromatose",A.a(["flebotomia","quelante ferro","deferoxamina","deferoprox"],l),"doenca_wilson",A.a(["d-penicilamina","trientina","zinco acetato","quelante cobre"],l),"doenca_gaucher",A.a(["imiglicerase","velaglicerase","miglustate","eliglustate","terapia enzimatica substitut"],l),"doenca_fabry",A.a(["agalsidase alfa","agalsidase beta","migalastate","terapia enzimatica substitut fabry"],l),"porfira",A.a(["hematina","glicose alta conc porfiria","analgesic","betabloqueant"],l),"sindrome_marfan",A.a(["betabloqueant","losartana","cirurgia aortica profilat","atenolol"],l),ae6,A.a(["corticosteroid","deflazacort","atalureno","eteplirsen","golodirsen","casimersen"],l),"als",A.a(["riluzol","edaravona","tofersen",av4,"suporte nutric"],l),"sma",A.a(["nusinersen","onasemnogene abeparvovec","risdiplam",av4],l),ae7,A.a(["tetrabenazina","deutetrabenazina","valbenazina","antipsicotic","antidepressiv"],l),"espondilite",A.a(["aine","ibuprofeno","naproxeno","secuquinumabe","ixequizumabe","bimekizumabe","adalimumab","etanercept","certolizumab","ixekizumab","anti-tnf","anti-il17","upadacitinib","tofacitinib"],l),"artrite_psori",A.a(["metotrexato","secuquinumabe","ixequizumabe","adalimumab","etanercept","upadacitinib","guselkumabe","risankizumabe","anti-il17","anti-il23","anti-tnf"],l),"artrite_reativa",A.a(["aine","antibiotico","sulfassalazina","metotrexato","corticosteroid"],l),ae8,A.a(["aine","metotrexato","corticosteroid","tocilizumab","etanercept","adalimumab","abatacepte"],l),"polimiosite",A.a(["corticosteroid","prednisona","azatioprina","metotrexato","micofenolato",at2,"rituximab"],l),ae9,A.a([at8,"pilocarpina","saliva artificial","colir umed","corticosteroid","rituximab"],l),af0,A.a(["prednisona","corticosteroid","metotrexato","tocilizumab"],l),af1,A.a(["prednisona alta dose","corticosteroid","tocilizumab","metotrexato","aspirina antiagregant"],l),af2,A.a(["heparina","warfarina","rivaroxabana contraindicada","anticoagul",av5,at8],l),"miopatia_inflam",A.a(["corticosteroid","imunossupressor","metotrexato","azatioprina","rituximab",at2],l),"vasculite_anca",A.a(["corticosteroid","ciclofosfamida","rituximab","azatioprina","metotrexato","avacopan"],l),"vasculite_takay",A.a(["corticosteroid","metotrexato","azatioprina","tocilizumab","infliximab"],l),"vasculite_kawas",A.a(["imunoglobulina iv alta dose","aspirina","corticosteroid","infliximab"],l),"behcet",A.a(["colchicina","corticosteroid","azatioprina","talidomida","infliximab","adalimumab","apremilast"],l),"pseudogota",A.a(["aine","colchicina","corticosteroid","aspiracao articular"],l),af4,A.a(["vitamina b12","tiamina","pregabalina","gabapentina","duloxetina","amitriptilina","tramadol","capsaicina"],l),"neuropatia_diab",A.a(["pregabalina","duloxetina","gabapentina","amitriptilina","capsaicina","oxcarbazepina"],l),"sindrome_carpal",A.a([av6,"imobilizacao","aine","cirurgia descompressao"],l),"hernia_disco",A.a(["aine",at4,"corticosteroid oral","gabapentina","ciclobenzaprina","cirurgia"],l),af6,A.a([at2,"corticosteroid","plasmaferese","rituximab","azatioprina"],l),af7,A.a(["corticosteroid iv",at1,"rituximab nmo","satralizumabe","inebilizumabe","eculizumabe"],l),af8,A.a(["corticosteroid",at2,"plasmaferese","rituximab","micofenolato"],l),ag0,A.a(["benzodiazep iv","lorazepam iv","diazepam","levetiracetam iv","valproato iv","fenitoina iv","fenobarbital iv","propofol","midazolam infusao"],l),"hidrocefalia",A.a(["acetazolamida","furosemida",av7,"derivacao ventricular"],l),af9,A.a(["everolimus","vigabatrina","sirolimus","antiepilep"],l),"neurofibromat",A.a(["selumetinibe","cabozantinibe","cirurgia tumor"],l),"demencia_lewy",A.a(["donepezila","rivastigmina","memantina","evitar antipsicot tipico"],l),"demencia_front",A.a(["ssri","trazodona","memantina","rivastigmina","evitar benzod"],l),"fpi",A.a(["pirfenidona","nintedanibe",au4,"antifibrot",aq8],l),"hap",A.a(["sildenafil","tadalafil","bosentana","ambrisentana","macitentana","riociguate","iloprost","epoprostenol","selexipag","prostanoid"],l),"bronquiectasia",A.a(["antibiotico",av8,av9,aw0,"colistina","dornase alfa"],l),"aspergilose",A.a(["voriconazol","isavuconazol",aw1,"caspofungina","posaconazol"],l),ag8,A.a(["voriconazol","isavuconazol",aw1,"micafungina","caspofungina"],l),"pneumocistose",A.a([aw2,"cotrimoxazol","pentamidina","atovaquona","clindamicina-primaquina"],l),ag1,A.a(["sildenafil","bosentana","riociguate","diuretico","digoxina","anticoagul"],l),"mucoviscidose",A.a([av9,"azitromicina","ivacaftor","lumacaftor","elexacaftor-tezacaftor-ivacaftor","dornase alfa",aw0],l),"deficit_a1at",A.a(["alfa-1 antitripsina exogen","suporte dpoc","broncodilatad",ao3],l),ao6,A.a(["riociguate","anticoagul","endarterectomia pulm","angioplastia pulm balao"],l),ao7,A.a(["rituximab","ciclofosfamida","corticosteroid","avacopan"],l),ao8,A.a(["corticosteroid","prednisona","macrolid"],l),"anemia_aplasica",A.a(["ciclosporina","imunoglobulina antitimocit","eltrombopag",aw3,"danazol"],l),ag4,A.a(["hidroxiureia","voxelotor","crizanlizumabe","l-glutamina","transfusao","quelante ferro",aw3],l),"talassemia",A.a(["transfusao","quelante ferro","deferoxamina","deferiprona","luspatercept",aw3,"gene terapia"],l),"mieloma",A.a(["bortezomibe","lenalidomida","daratumumabe","carfilzomibe","pomalidomida","talidomida","dexametasona","melfalano",aw4,"belantamab"],l),"mielof_primaria",A.a(["ruxolitinibe","fedratinibe","pacritinibe","danazol","hidroxiureia",aw3],l),ag5,A.a(["flebotomia","hidroxiureia","ruxolitinibe",av5,"interferon alfa"],l),"trombocitemia",A.a(["hidroxiureia","anagrelida","aspirina","interferon alfa","ruxolitinibe"],l),"leucemia_linfoc",A.a(["ibrutinibe","venetoclax","obinutuzumabe","rituximab","bendamustina","clorambucil"],l),ag6,A.a(["imatinibe","dasatinibe","nilotinibe","bosutinibe","ponatinibe","asciminibe"],l),"leucemia_aguda",A.a(["daunorubicina","citarabina","idarubicina","midostaurina","gemtuzumab","blinatumomabe","venetoclax","midostaurina flt3","gilteritinibe","azacitidina"],l),"hemofilia",A.a(["emicizumabe","fator viii recombinante","fator ix recombinante","fitusiran","concizumab","desmopressina hemofilia a leve"],l),"von_willebrand",A.a(["desmopressina","acido tranexam","fator von willebrand","caplacizumabe"],l),"purpura_tromb",A.a(["plasmaferese","caplacizumabe","rituximab","corticosteroid"],l),"mastocitose",A.a(["anti-histamin","cromoglicato sodio","ibrutinibe avancado","midostaurina",aw5],l),ap9,A.a(["midostaurina","avapritinibe","ibrutinibe","anti-histamin","cromoglicato"],l),"linfoma_hodgkin",A.a(["doxorubicina","bleomicina","vinblastina","dacarbazina","brentuximab vedotin","nivolumab","pembrolizumab","abvd","brentuximab"],l),ag7,A.a(["rituximab","ciclofosfamida","doxorubicina","vincristina","prednisona","polatuzumab vedotin","axicabtagene"],l),"linfoma_burkitt",A.a(["quimioterapia intensiva","rituximab","metotrexato","citarabina"],l),"linfoma_manto",A.a(["ibrutinibe","acalabrutinibe","venetoclax","bortezomibe","rituximab","bendamustina"],l),an8,A.a(["rituximab","obinutuzumabe","lenalidomida","bendamustina","quimioterapia ind"],l),an9,A.a(["acido trans-retinoico","atra ","trioxido arsenico","daunorubicina"],l),ao0,A.a(["lenalidomida","luspatercept","azacitidina","decitabina","eritropoetina","transfusao","quelante ferro",aw3],l),an7,A.a(["cladribina","pentostatina","rituximab","moxetumomab"],l),"mucormicose",A.a(["isavuconazol",aw1,"posaconazol","desbridamento cirurgico"],l),"cryptococcose",A.a(["anfotericina b","flucitosina","fluconazol",aw1],l),"histoplasmose",A.a(["itraconazol","anfotericina b","voriconazol"],l),"paracoccidioid",A.a(["itraconazol","cotrimoxazol","sulfametoxazol","anfotericina b"],l),"leishmaniose",A.a(["meglumine antimoniat","antimoniato meglumina",aw1,"miltefosina","pentamidina"],l),"doenca_chagas",A.a(["benznidazol","nifurtimox","amiodarona card chagasica","marcapasso","terapia ic"],l),"toxoplasmose",A.a(["pirimetamina","sulfadiazina","acido folinico","atovaquona","cotrimoxazol"],l),"cmv_doenca",A.a(["ganciclovir","valganciclovir","foscarnet","cidofovir"],l),"influenza",A.a(["oseltamivir","zanamivir","baloxavir","peramivir","corticosteroid grave"],l),"pneumocistis",A.a([aw2,"cotrimoxazol","pentamidina","atovaquona"],l),ah2,A.a(["azitromicina","claritromicina","etambutol","rifabutina","amikacina"],l),"nocardiose",A.a([aw2,"imipenem","amicacina","linezolida"],l),"botulismo",A.a(["antitoxina botulinica",av4,"monitoramento intensivo"],l),"tetano",A.a(["imunoglobulina tetanica","penicilina","metronidazol","benzodiazep","baclofen"],l),"difteria",A.a(["antitoxina difteria","penicilina","eritromicina","macrolid"],l),"coqueluche",A.a(["azitromicina","eritromicina","cotrimoxazol","suporte resp"],l),"meningococcemia",A.a(["ceftriaxona","penicilina","corticosteroid","vasopressor"],l),"rickettsia",A.a(["doxiciclina","tetraciclina","cloranfenicol"],l),"febre_tifoide",A.a(["ceftriaxona","ciprofloxacino","azitromicina","ampicilina"],l),"brucelose",A.a(["doxiciclina","rifampicina","gentamicina","cotrimoxazol"],l),"ebv_doenca",A.a(["aciclovir","corticosteroid",aw6],l),"zika",A.a(["analgesic","paracetamol","suporte","evitar aine"],l),"chikungunya",A.a(["paracetamol","aine fase cronica","hidroxicloroquina cronica",av6],l),"febre_amarela",A.a([aw6,"transfusao","nao tem antiviral especif"],l),"mpox",A.a(["tecovirimat","cidofovir","brincidofovir","imunoglobulina vaccinia"],l),"sporotricose",A.a(["itraconazol","anfotericina b sistemico","supersaturado iod potassio"],l),ah3,A.a(["penicilina","clindamicina","vancomicina",at2,"fluido ressuscit"],l),ah1,A.a(["meglumine antimoniat local","fluconazol","miltefosina"],l),ah4,A.a(["diuretico",as8,"betabloqueant","cirurgia valvar","tavi","tavr"],l),ah5,A.a(["diuretico","betabloqueant","anticoagul","cirurgia valvar","clip mitral percutan"],l),ah6,A.a(["diuretico","cirurgia troca valva aortica","tavi","tavr","evitar vasodilatad"],l),"insuf_aortica",A.a(["diuretico","vasodilatad","hidralazina","nifedipino","cirurgia aortica"],l),"insuf_mitral",A.a(["diuretico","ieca","vasodilatad","cirurgia reparo mitral","clip mitral"],l),"estenose_mitral",A.a(["diuretico","betabloqueant","anticoagul","valvuloplastia mitral"],l),ah7,A.a(["cirurgia corretora","prostaglandina e1","alprostadil","indometacina pca","ibuprofeno pca"],l),"bloqueio_ramo",A.a(["marcapasso","monitoramento",aw7],l),ah8,A.a(["evitar drogas qt","betabloqueant","sulfato magnesio torsades","marcapasso estimulacao rapida"],l),"wolf_parkinson",A.a(["ablacao cateter wpw","adenosina","evitar digoxina wpw"],l),"sind_brugada",A.a(["cdn implant","quinidina","evitar gatilhos febre"],l),ah9,A.a(["cilostazol","aspirina","clopidogrel","estatina",as8,"ticagrelor","revascularizacao"],l),ai0,A.a(["betabloqueant",as8,"cirurgia endovascular evar","cirurgia aberta"],l),ai1,A.a(["betabloqueant","calcio bloqueador","nitrato","ivabradina","ranolazin"],l),"sind_tako_tsubo",A.a(["suporte hemodinamico","betabloqueant","ieca","aspirina","anticoagul transitorio"],l),ai2,A.a(["espironolactona","eplerenona","hidralazina","minoxidil","clonidina","denervacao renal"],l),aq6,A.a(["betabloqueant","ivabradina",aw7],l),"extrassistolia",A.a(["betabloqueant","antiarritmico","ablacao cateter","tratar causa"],l),"glom_membranosa",A.a(["rituximab","ciclofosfamida","corticosteroid","ieca",at3],l),"nefropatia_igA",A.a(["ieca","bra","corticosteroid","azatioprina","rituximab","budesonida liberac tardia","sparsentan"],l),"glom_focal_segm",A.a(["corticosteroid","ciclosporina","tacrolimus","rituximab","ieca"],l),ai3,A.a(["ieca","bra","sglt2 inib","empagliflozin","dapagliflozin","finerenona"],l),"nefrite_lupica",A.a(["corticosteroid","micofenolato","ciclofosfamida","belimumab","voclosporin","anifrolumab"],l),"polirrenal",A.a(["tolvaptan",as8,"ieca","tratar complicac"],l),ai7,A.a(["suspender medicam causador","corticosteroid","suporte renal"],l),ai6,A.a(["corticosteroid","ciclofosfamida","plasmaferese goodpasture","rituximab"],l),ai5,A.a(["hidratacao pre","nacl iso profilax","minimizar contraste",au4],l),"acne",A.a(["retinoid topico","adapaleno","peroxido benzoila",aw8,"clindamicina top","isotretinoina oral","doxiciclina oral","anticoncept oral acne"],l),"rosacea",A.a(["metronidazol topico","ivermectina topico","azelaic acid","doxiciclina","isotretinoina","laser"],l),"penfigo",A.a(["corticosteroid alta dose","rituximab","imunossupressor","micofenolato","azatioprina","dapsona"],l),"penfigoide",A.a([av2,"prednisona oral","doxiciclina","nicotinamida","rituximab","omalizumab"],l),ai8,A.a(["corticosteroid","aciclovir","ciclosporina",at2,"suporte dermatol"],l),aj0,A.a(["icatibanto","berinato","lanadelumab","garadacimab","esteroides sao ineficazes","inibidor c1"],l),"alopecia_areata",A.a([av2,"minoxidil","baricitinibe","ritlecitinibe","diphenciprone","imunossupressor"],l),"onicomicose",A.a(["terbinafina oral","itraconazol oral","ciclopirox verniz","fluconazol"],l),"tinea",A.a(["terbinafina topica","clotrimazol","fluconazol oral","cetoconazol"],l),"escabiose",A.a(["permetrina topica","ivermectina oral","benzil benzoato"],l),"herpes_simples",A.a(["aciclovir","valaciclovir","fanciclovir","docosanol topico"],l),aj1,A.a([av2,"tacrolimus","anti-histamin","afastar alergeno"],l),"dermatite_sebor",A.a(["cetoconazol topico","ciclopirox","corticosteroid leve","zinco piritiona"],l),"liquen_plan",A.a([av2,"tacrolimus","corticosteroid sistemico",at8],l),"vitiligo",A.a([av2,"tacrolimus topico","ruxolitinibe topico","fototerapia","transplante melanocit"],l),ai9,A.a(["anti-histamin","cetirizina","fexofenadina","omalizumab","ciclosporina"],l),"melanoma_skin",A.a(["pembrolizumab","nivolumab","ipilimumab","vemurafenib braf","dabrafenib trametinibe","cirurgia"],l),"cec_pele",A.a(["cirurgia","cetuximab avanc","pembrolizumab avanc","radioterapia"],l),"cbc_pele",A.a(["cirurgia mohs","vismodegibe","sonidegibe","cemiplimab avanc"],l),"glaucoma",A.a(["latanoprosta","travoprosta","bimatoprosta","brimonidina","dorzolamida","timolol","pilocarpina","trabeculoplastia"],l),aj2,A.a(["ranibizumab","aflibercept","bevacizumab intraoc","faricimab",aw9],l),aj3,A.a([aw9,"ranibizumab","aflibercept","corticosteroid intraoc","laser fotocoagulac"],l),"uveite",A.a([av2,"prednisolona colirio","midriatic","metotrexato","adalimumab uveite"],l),"conjuntivite",A.a(["antibiotico colirio",ax0,"anti-histamin colirio","lubricante colirio"],l),"ceratite",A.a([aw8,ax0,"aciclovir topico ocul","antifungico topico ocul"],l),"endoftalmite",A.a(["vancomicina intravitreo","ceftazidima intravitreo","corticosteroid intravitreo"],l),"oclusao_retin",A.a(["aspirina","injecao intravitreo","tratar causa sist"],l),"otite_media",A.a(["amoxicilina",at5,"ceftriaxona","observacao sem antibiot mild"],l),"otite_externa",A.a([aw8,ax0,av2,"acido acetico"],l),"sinusite",A.a([at5,"doxiciclina","levofloxacino","nasal irrigacao","decongestion"],l),"faringite",A.a(["amoxicilina","penicilina v","cefalexina","azitromicina","observacao viral"],l),"epistaxe",A.a(["pressao nasal","nitrato prata","tamponamento nasal","acido tranexam","vitamina k"],l),aj4,A.a(["betaistina","dimenidrinato","meclizina","reposicao vppb","corticosteroid"],l),"meniere",A.a(["betaistina","diuretico","dieta hiposodica","gentamicina intratimpanica","cirurgia labirinto"],l),aj6,A.a(["corticosteroid","prednisona","aciclovir ramsay hunt","fisioterapia facial"],l),aj5,A.a(["corticosteroid","vasodilatad","vitaminas","aparelho auditivo"],l),aj9,A.a(["fluconazol oral","clotrimazol topico","miconazol vaginal","nistatina"],l),"vaginose_bact",A.a([au2,"metronidazol gel vaginal","clindamicina vaginal","tinidazol"],l),"tricomonas",A.a(["metronidazol","tinidazol","tratar parceiro"],l),"doip",A.a(["ceftriaxona","doxiciclina","metronidazol","ofloxacino","clindamicina"],l),ak0,A.a(["metotrexato","cirurgia urgencia","salpingectomia"],l),"menopausa",A.a(["terapia hormonal menopausa","estrogen","progesterona","ssri sintoma","gabapentina flushes","phytoestrogen"],l),ak1,A.a(["bisfosfonato","alendronato","zoledronato","denosumab","teriparatida","romosozumab","calcio","vitamina d"],l),ak2,A.a(["cisplatina","carboplatina","bevacizumab","pembrolizumab","tisotumab vedotin"],l),"cancer_utero",A.a(["progestagen","megestrol","quimioterapia","pembrolizumab","lenalidomida"],l),"cancer_ovario",A.a(["carboplatina","paclitaxel","bevacizumab","olaparib","niraparib","rucaparib"],l),ak3,A.a(["ondansetrona","metoclopramida","prometazina","doxilamina","vitamina b6","corticosteroid"],l),ak4,A.a(["acido ursodesoxicolico","antipruritic","colestiramina"],l),"diabetes_gestac",A.a(["insulina","metformina gestac","controle glicemico"],l),"mastite",A.a(["antibiotico","dicloxacilina","cefalexina","clindamicina","ordenha continua"],l),"sepse_neonatal",A.a(["ampicilina","gentamicina","cefotaxima","vancomicina",ax1],l),ak5,A.a(["surfactante exogeno","cpap neonatal","corticosteroid pre natal","oxigenio"],l),ak6,A.a(["antibiotico","ampicilina","gentamicina","metronidazol","cirurgia necrose"],l),ak7,A.a(["fototerapia","exsanguinotransfusao",at2],l),"crise_febril",A.a(["diazepam retal","midazolam nasal","lorazepam","antipiret"],l),"autismo",A.a(["risperidona","aripiprazol","melatonina sono","ssri","terapia compor"],l),"tdah",A.a(["metilfenidato","anfetamina",ax2,"atomoxetina","clonidina","guanfacina"],l),"sindrome_west",A.a(["vigabatrina","acth","corticosteroid","valproato","pirido xina"],l),"sindrome_dravet",A.a(["clobazam","valproato","stiripentol","fenfluramin","cannabidiol"],l),"sarampo",A.a(["vitamina a",aw6,"isolamento"],l),"escarlatina",A.a(["amoxicilina","penicilina","cefalexina","azitromicina"],l),ak8,A.a(["oxibutinina","solifenacina","tolterodina","mirabegrona","betmiga","vibegron","toxina botulinica"],l),al0,A.a(["pentosan polissulfat","heparina intravesic","alcalinizante urin","amitriptilina"],l),"cancer_rim",A.a(["sunitinibe","pazopanibe","axitinibe","pembrolizumab","nivolumab","cabozantinibe","lenvatinibe","bevacizumab"],l),"cancer_bexiga",A.a(["gem-cis","gemcitabina cisplatina","pembrolizumab","atezolizumab","erdafitinibe","gemcitabina","cisplatina"],l),an5,A.a(["bleomicina","etoposida","cisplatina","bep ","radioterapia","bep"],l),"orquite",A.a(["antibiotico","aine","suporte"],l),"epididimite",A.a(["ciprofloxacino","doxiciclina","ceftriaxona"],l),ak9,A.a(["kegel","duloxetina","oxibutinina","mirabegrona","pessario","cirurgia sling"],l),"adhd_adulto",A.a(["metilfenidato",ax2,"anfetamina","atomoxetina","bupropiona","guanfacina","clonidina"],l),am3,A.a(["olanzapina","ssri","suporte nutric","realimentacao","terapia famil"],l),"bulimia",A.a(["fluoxetina alta dose","ssri","tcc bulimia","terapia cognit"],l),am4,A.a(["dbt","ssri","quetiapina","lamotrigina","olanzapina","clonazepam"],l),"insonia",A.a(["melatonina","zolpidem","eszopiclone","ramelteon","suvorexant","lemborexant","trazodona","mirtazapina","tcc-i"],l),"hipersonia",A.a(["modafinil","armodafinil","oxibato sodio","pitolisant"],l),"narcolepsia",A.a(["modafinil","armodafinil","oxibato sodio","venlafaxina cataplexia","pitolisant"],l),aq7,A.a(["pramipexol","ropinirol","gabapentina","pregabalina","ferro reposicao","clonazepam"],l),"delirium_idoso",A.a(["haloperidol baixa dose","quetiapina baixa dose",aw7,"reorientac"],l),"sdra",A.a(["ventilacao protetora","pronacao","cisatracurio","dexametasona","noradrenalina","almitrina"],l),am5,A.a([au4,"hemodialise graves","transplante hepat fulmin"],l),am6,A.a(["atropina","pralidoxima","benzodiazep","suporte resp"],l),"intox_monoxido",A.a(["oxigenio 100%","camara hiperbar",aw6],l),"intox_metanol",A.a(["etanol iv","fomepizol","hemodialise","acido folico"],l),am7,A.a(["fomepizol","etanol iv","hemodialise","tiamina","piridoxina"],l),"intox_digoxina",A.a(["fragmento fab","digibind","digifab","atropina","marcapasso"],l),"intox_litio",A.a(["hemodialise","hidratacao","suspender litio","monitoramento"],l),"hipotermia",A.a(["reaquecimento ativo","fluido quente iv","bypass cardiopulm reaquec"],l),"hipertermia",A.a(["resfriamento rapido","benzodiazep","dantrolene maligna","suporte"],l),"mordedura",A.a(["soro antiofidico","soro botrops","soro crotali","atropina organofosf morde","penicilina pasteurella"],l),ap2,A.a(["hidratacao","furosemida","bisfosfonato","denosumab","calcitonina","prednisona","cinacalcet"],l),ap3,A.a(["alopurinol","rasburicase","febuxostate","hidratacao","alcalinizacao urina","hemodialise"],l),"crise_miastenia",A.a([at2,"plasmaferese","piridostigmina ajuste","corticosteroid","suporte resp"],l),ao9,A.a(["manitol","nacl 3% hipert",av7,"decubito 30 graus","hiperventilac transitor"],l),"embolia_gordura",A.a([av4,"oxigenio","corticosteroid"],l),"desnutricao",A.a(["suporte nutric",am9,"nutricao parenteral","reposicao vitaminas","tiamina"],l),an0,A.a(["colecalciferol","vitamina d3","calcitriol","ergocalciferol"],l),an1,A.a(["cianocobalamina",av0,"vitamina b12 im","b12 oral alta dose"],l),an2,A.a(["acido folico","folato suplemento"],l),"defic_zinco",A.a(["zinco sulfato oral","zinco acetato",av3],l),"cancer_tireoide",A.a(["radioiodo","levotiroxina supressiva","sorafenibe","lenvatinibe","vandetanibe","cabozantinibe","selpercatinibe"],l),an4,A.a(["sunitinibe","pazopanibe","axitinibe","pembrolizumab","nivolumab","cabozantinibe","lenvatinibe","everolimus"],l),"glioblastoma",A.a(["temozolomida","bevacizumab","radioterapia","ttfields"],l),"meduloblastoma",A.a(["quimioterapia","cisplatina","vincristina","ciclofosfamida","radioterapia"],l),"sarcoma",A.a(["doxorubicina","ifosfamida","gencitabina","docetaxel","trabectedina","larotrectinibe"],l),an6,A.a(["cetuximab","pembrolizumab","nivolumab","cisplatina","docetaxel","radioterapia"],l),ao1,A.a(["mesna","hiperhidratacao","acido tranexam","prostaglandina intravesic"],l),ao2,A.a(["tacrolimus","ciclosporina","micofenolato","corticosteroid","basiliximab","metilprednisolona pulsoterapia"],l),ao4,A.a(["ciclofosfamida","bussulfano","fludarabina","melfalano","ciclosporina","tacrolimus","metotreximo profilax gvhd"],l),ao5,A.a(["corticosteroid","ciclosporina","tacrolimus","micofenolato","rituximab","ibrutinibe","ruxolitinibe gvhd cronic"],l),"sindrome_fragil",A.a(["exercicio fisico","suporte nutric","vitamina d","proteina suplemento","revisao medicam"],l),"quedas_idoso",A.a(["vitamina d","calcio","fisioterapia","revisao medicam","adaptacao ambiente"],l),"depressao_idoso",A.a(["ssri","escitalopram","sertralina","venlafaxina","mirtazapina","evitar triciclico"],l),"dislipidemia",A.a(["estatina","atorvastatina","rosuvastatina","ezetimiba","fibratos","acido nicotinico","alirocumab","evolocumab","inclisiran"],l),aq4,A.a(["alirocumab","evolocumab","inclisiran","ezetimiba","estatina alta intensid","lomitapida"],l),aq5,A.a(["metformina","pioglitazona","semaglutida","liraglutida","sglt2 inib","exercicio"],l),"hiperuricemia",A.a(["alopurinol","febuxostate","benzbromarona","lesinurad","dieta hiperuricemia"],l),"reacao_adversa",A.a(["suspender medicam","tratar sintoma","anti-histamin","corticosteroid","adrenalina anafilaxia"],l),"polifarmacia",A.a(["revisao medicam","desprescricao","criterio beers","avaliacao farmacolog"],l),"alerg_alimentar",A.a([aw5,"anti-histamin","corticosteroid","imunoterapia oral alim","evitar alergen"],l),ap6,A.a(["carbapenem se necessario","macrolid","vancomicina","teste dessensibilizac"],l),ap8,A.a(["anti-histamin","furoato fluticasona nasal","montelucaste","imunoterapia alergen"],l),"asma_alerg",A.a(["salbutamol",at7,"montelucaste","omalizumab","dupilumab","tezepelumab"],l),aq0,A.a(["corticosteroid","mepolizumab","benralizumab","reslizumab","anti-il5"],l),aj8,A.a(["cpap","bpap","mandibular avanco dispositiv","cirurgia uvulopalato","perdapesoobesi"],l),aq1,A.a(["imunoglobulina iv reposi",ax3,aw4,"terapia genica"],l),aq2,A.a([at2,ax3,av8],l),"scid",A.a([aw4,"terapia genica",at2],l),ap1,A.a(["hidrocortisona iv 100mg","solucao salina","glicose iv","fludrocortisona manutenc"],l),ap4,A.a(["filgrastim","pegfilgrastim","antibiotico","antifungico profilat","isolamento"],l),ap5,A.a(["glicose 50% iv","glucagon 1mg im","glicose 10% manut"],l),"sind_comp_abdom",A.a(["descompressao cirurgica","drenagem","manitol",ax1],l),"oxigenoterapia",A.a(["mascara reservatorio","cateter nasal o2","ventilacao nao invasiva","bipap","cpap","ventilacao mecanica"],l),"hiperbarica",A.a(["oxigenio hiperbar 100%","sessoes oht","camara pressurizada"],l),aq3,A.a(["fibratos","fenofibrato","gemfibrozila","acido eicosapentaenoico","icosapent etil","niacina","omega 3"],l),"simvastatina_dr",A.a(["estatina","hipolipemiante","hmg-coa reductase","colesterol"],l),"ciprofibrato_dr",A.a(["fibrato","triglicerideos","hipolipemiante","ppar alfa"],l),"prasugrel_dr",A.a(["antiagregante","antiplaquetario","p2y12","icp","sca","sindrome coronariana"],l),"cilostazol_dr",A.a(["vasodilatador","antiagregante","claudicacao","isquemia membros","pde3"],l),"abciximabe_dr",A.a([ax4,"gp iib iiia","icp",ax5],l),"tirofibana_dr",A.a([ax4,"gp iib iiia","sca",ax5],l),"bivalirudina_dr",A.a([ax6,ax7,"icp","hit",ax8],l),"edoxabana_dr",A.a(["anticoagulante oral","doac","fator xa","tev",aa9],l),"dalteparina_dr",A.a(["heparina baixo peso molecular","hbpm","anticoagulante sc","trombose cancer"],l),"dipiridamol_dr",A.a(["antiagregante","vasodilatador","avc prevencao","embolia"],l),"eptifibatida_dr",A.a([ax4,"gp iib iiia","sca","icp",ax5],l),"ibutilida_dr",A.a(["antiarritmico iii","cardioversao",aa9,"flutter atrial"],l),"valsartana_dr",A.a(["bra","antagonista at1","hipertensao",ax9],l),"irbesartana_dr",A.a(["bra","antagonista at1",ai4,"hipertensao"],l),"telmisartana_dr",A.a(["bra","antagonista at1","hipertensao","ppar gamma"],l),"ramipril_dr",A.a(["ieca","inibidor eca","hipertensao",ax9,"pos iam"],l),"lisinopril_dr",A.a(["ieca","inibidor eca","hipertensao",ax9,"nao pro farmaco"],l),"perindopril_dr",A.a(["ieca","inibidor eca","hipertensao","prevencao avc","europa"],l),"trandolapril_dr",A.a(["ieca","inibidor eca","hipertensao","pos iam",ax9],l),"fosinopril_dr",A.a(["ieca","inibidor eca","hipertensao","eliminacao dual renal hepatica","hepatopata"],l),"amilorida_dr",A.a(["diuretico poupador potassio","enac","hipocalemia","hiperaldosteronismo"],l),"torsemida_dr",A.a(["diuretico ansa",ax9,"edema refratario","drc"],l),"bumetanida_dr",A.a(["diuretico ansa","edema",ax9,"drc"],l),"indapamida_dr",A.a(["diuretico tiazidico","hipertensao","idoso","metabolicamente neutro"],l),"metildopa_dr",A.a(["agonista alfa2 central","hipertensao gestacional","has gravidez","gestante"],l),"acarbose_dr",A.a(["inibidor alfa glicosidase","diabetes","hiperglicemia pos prandial","dm2"],l),al5,A.a(["insulina basal","insulina ultralonga","degludec","diabetes","hipoglicemia noturna"],l),al6,A.a(["bisfosfonato iv","osteoporose","hipercalcemia","mieloma","metastase ossea"],l),"alendronato_dr",A.a(["bisfosfonato oral","osteoporose","reabsorcao ossea","fratura vertebral"],l),"teriparatida_dr",A.a(["analogo pth","osteoformador","osteoporose grave","pth recombinante"],l),"cinacalcete_dr",A.a(["calciomimetico","hiperparatireoidismo","dialise","casr","drc mineral"],l),"cabergolina_dr",A.a(["agonista dopaminergico",ad8,"prolactinoma","dopamina d2"],l),al7,A.a([al8,"insuficiencia adrenal","addison","reposicao mineral"],l),al9,A.a(["progestageno","contracepcao emergencia",am0,"diu hormonal"],l),am1,A.a(["analogo vasopressina",ae1,"enurese","ddavp","von willebrand"],l),am2,A.a(["ibp",au3,"drge","refluxo","dupla liberacao"],l),"bismuto_dr",A.a(["helicobacter pylori","ulcera",at9,"erradicacao h pylori"],l),"azatioprina_dr",A.a(["imunossupressor","dii","doenca inflamatoria intestinal","miastenia","artrite"],l),"infliximabe_dr",A.a(["anti-tnf alfa","biologico","crohn","rcu",as1,"espondiloartr"],l),"ziprasidona_dr",A.a([ay0,"esquizofrenia","qt longo","dopamina","metabolismo neutro"],l),"bupropiona_dr",A.a(["antidepressivo ndri","tabagismo","cessacao tabaco","depressao","ndri"],l),"citalopram_dr",A.a(["isrs","antidepressivo","depressao","qt longo","serotonina"],l),"paroxetina_dr",A.a(["isrs","antidepressivo","ansiedade","p\xe2nico","tept","anticolinergico"],l),"fluvoxamina_dr",A.a(["isrs","toc",ar8,"antidepressivo","sigma1"],l),"trazodona_dr",A.a(["sari","antidepressivo","insonia","sedacao","priapismo"],l),"clozapina_dr",A.a([ay0,"esquizofrenia refrataria","suicidio","agranulocitose"],l),"aripiprazol_dr",A.a([ay0,"esquizofrenia","bipolar","agonista parcial d2","acatisia"],l),"oxacilina_dr",A.a(["penicilina","mssa","estafilococo","antiestafilococico","penicilinase"],l),"cefazolina_dr",A.a(["cefalosporina","profilaxia cirurgica","mssa","perioperatorio","primeira geracao"],l),"cefoxitina_dr",A.a(["cefalosporina","anaerobio","bacteroides","cirurgia abdominal","cefamicina"],l),"cefotaxima_dr",A.a(["cefalosporina","terceira geracao","gram negativo","meningite","neonato"],l),"doripenem_dr",A.a(["carbapen\xeamico","pseudomonas","gram negativo","uti","infeccao nosocomial"],l),"aztreonam_dr",A.a(["monobactamico","gram negativo",ap7,"pseudomonas","beta lactamico"],l),"tobramicina_dr",A.a(["aminoglicosideo","pseudomonas","fibrose cistica","gram negativo","aminoglicosideo"],l),al1,A.a(["aminoglicosideo","tuberculose","brucelose","tularemia","mycobacterium"],l),"teicoplanina_dr",A.a(["glicopeptideo","mrsa","gram positivo","enterococcus","vancomicina alternativa"],l),"eritromicina_dr",A.a(["macrolidio","procin\xe9tico","motilidade gastrica","atipicos","cyt3a4"],l),"minociclina_dr",A.a(["tetraciclina","acinetobacter","mrsa comunitario","acne","lipossoluble"],l),"rifampicina_dr",A.a(["rifamicina","tuberculose",ay1,"ripes","indutor cyp450"],l),"isoniazida_dr",A.a([ay1,"tuberculose",af5,"piridoxina","b6"],l),"pirazinamida_dr",A.a([ay1,"tuberculose","ripes","hiperuricemia","gota"],l),"etambutol_dr",A.a([ay1,"tuberculose","neurite optica","daltonismo","ripes"],l),"ganciclovir_dr",A.a(["antiviral","citomegalovirus","cmv","imunossuprimido","mielossupressao"],l),al2,A.a(["antiviral","citomegalovirus","cmv",ay2,"oral"],l),"itraconazol_dr",A.a(["antif\xfangico","azolico","esporotricose","histoplasmose","onicomicose"],l),"voriconazol_dr",A.a(["antif\xfangico","aspergilose","azolico","triazolico",ag9],l),"caspofungina_dr",A.a(["equinocandina","candidemia","candida","antif\xfangico","beta glucano"],l),"micafungina_dr",A.a(["equinocandina","candidemia",ay2,"antif\xfangico"],l),"terbinafina_dr",A.a(["alilamina","onicomicose","dermatofito","antif\xfangico","esqualeno epoxidase"],l),"praziquantel_dr",A.a(["anti-helm\xedntico","esquistossomose","neurocisticercose","cisticercose","taenia"],l),"bosentana_dr",A.a(["antagonista endotelina",ag2,"hap","endotelina","vasodilatador"],l),"minoxidil_dr",A.a(["vasodilatador arterial","hipertensao refrataria","hipertricose","canal potassio"],l),"doxazosina_dr",A.a(["alfa bloqueador","hpb",ay3,"hipertensao","alfa1"],l),"terazosina_dr",A.a(["alfa bloqueador","hpb",ay3,"hipertensao","alfa1"],l),"dutasterida_dr",A.a(["inibidor 5 alfa redutase","hpb",ay3,"dht","androg\xeanio"],l),"tadalafila_dr",A.a(["inibidor pde5","disfuncao eretil","hpb",ag2,"nitrato"],l),"argatrobana_dr",A.a([ax7,"hit",ax8,ax6,"seguro renal"],l),"sugamadex_dr",A.a(["reversor bnm","rocuronio","vecuronio","bloqueio neuromuscular reverter","ciclodextrina"],l),"cisatracurio_dr",A.a([ay4,"hofmann","uti","intubacao",ay5],l),"atracurio_dr",A.a([ay4,"hofmann","histamina",ay5,"laudanosina"],l),"pancuronio_dr",A.a([ay4,"longa duracao","taquicardia",ay5],l),"neostigmina_dr",A.a([ay6,"reversor bnm","miastenia","acetilcolinesterase","atropina"],l),al3,A.a([ay6,"miastenia gravis","oral","acetilcolina",ap0],l),"dantroleno_dr",A.a([am8,"antidoto","ryanodina","rigidez muscular","emergencia"],l),"tiopental_dr",A.a(["barbiturico","indu\xe7\xe3o anestesica","mal epileptico","pic","gaba"],l),"halotano_dr",A.a([ay7,"halogenado",am8,"hepatite halotano","historico"],l),"sevoflurano_dr",A.a([ay7,"moderno",am8,"despertar rapido","crianca"],l),"isoflurano_dr",A.a([ay7,"manutencao",am8,"vasodilatador"],l),"bupivacaina_dr",A.a([ay8,"amida","raquidiana","epidural","cardiotoxicidade"],l),"ropivacaina_dr",A.a([ay8,"amida","epidural","bloqueio periferico","menor cardiotoxicidade"],l),"prilocaina_dr",A.a([ay8,"metahemoglobinemia","amida","bier","azul metileno"],l),"protamina_dr",A.a(["antidoto heparina",al4,"reverter hnf","hbpm parcial","anticoagulacao"],l)],h,g)
 h=e==null
 if(!h){g=b.h(0,e)
 a=g==null?A.a([],l):g}else a=A.a([],l)
@@ -125452,8 +125452,8 @@ a0=A.a([],t.M8)
 for(a1=0;a1<628;++a1){a2=B.iN[a1]
 a3=aa6.eB(a2.b+" "+a2.c+" "+a2.dI(a2.d,aa6.c)+" "+a2.dI(a2.ax,aa6.c))
 if(B.d.c2(a,new A.awj(a3))){a0.push(a2)
-if(a0.length>=8)break}if(a0.length<8){g=B.c.ej(j,A.U("\\s+",!0,!1,!1,!1))
-if(new A.a5(g,new A.awk(),A.S(g).i("a5<1>")).c2(0,new A.awl(a3)))if(!B.d.k(a0,a2))a0.push(a2)}}g=a0.length
+if(a0.length>=8)break}if(a0.length<8){g=B.c.ej(j,A.S("\\s+",!0,!1,!1,!1))
+if(new A.a5(g,new A.awk(),A.T(g).i("a5<1>")).c2(0,new A.awl(a3)))if(!B.d.k(a0,a2))a0.push(a2)}}g=a0.length
 if(g!==0){s=new A.cD("")
 if(h)a4=bd9?"esta condici\xf3n":"esta condi\xe7\xe3o"
 else a4=e
@@ -125513,8 +125513,8 @@ g.a+=d
 q.a+="\n"
 for(g=!b9,d=!c0,c3=!b8,c4=!c1,c5=!b7,c6=!b6,a1=0;a1<628;++a1){p=B.iN[a1]
 c7=aa6.eB(p.b)
-c8=B.c.ej(j,A.U("\\s+",!0,!1,!1,!1))
-if(!new A.a5(c8,new A.awm(),A.S(c8).i("a5<1>")).c2(0,new A.awn(c7)))continue
+c8=B.c.ej(j,A.S("\\s+",!0,!1,!1,!1))
+if(!new A.a5(c8,new A.awm(),A.T(c8).i("a5<1>")).c2(0,new A.awn(c7)))continue
 c8=q
 c9="### "+p.ma(aa6.c)+"\n"
 c8.a+=c9
@@ -125549,7 +125549,7 @@ c8.a+=c9}}if(!g||c2){d5=A.bHJ("",A.a([p.ma(aa6.c)],l))
 if(d5.length!==0){c8=q
 c9="  **"+(bd9?"Interacciones detectadas":"Intera\xe7\xf5es detectadas (medicamentos do paciente)")+":**\n"
 c8.a+=c9
-c8=A.S(d5)
+c8=A.T(d5)
 c9=c8.i("hr<1>")
 d3=new A.hr(d5,0,5,c9)
 d3.ol(d5,0,5,c8.c)
@@ -125909,12 +125909,12 @@ for(be1=y3.d,be2=be1.length,y9=0,y5=0;y5<be1.length;be1.length===be2||(0,A.a2)(b
 if(A.f_(z1,y6,0))++y9}if(y9>z2){bd8.a=y3
 z2=y9}}if(z2===0)bd8.a=null}}be1=bd8.a
 if(be1==null){z3=A.cX(["para","como","qual","quando","sobre","tratamento","medicamento","farmaco","remedio","conduta","protocolo","dose","usar","deve","pode","devo","fazer","tenho","esta","esse","essa","isso","uma","tipo","caso"],t.N)
-be1=B.c.ej(i,A.U("\\s+",!0,!1,!1,!1))
-be2=A.S(be1).i("a5<1>")
+be1=B.c.ej(i,A.S("\\s+",!0,!1,!1,!1))
+be2=A.T(be1).i("a5<1>")
 z4=A.O(new A.a5(be1,new A.awq(z3),be2),be2.i("F.E"))
 if(z4.length!==0)z5=aa6.dk(i,A.a(["sindrome","doenca","infec","lesao","tumor","cancer","carcinoma","insuf","crise","agud","cronic","grave","leve","moderado","tratament","diagnos","clinico","pacient","sintom","complicac","manejo","conduta","terapia","cirurgi","diarreia","febre","tosse","dispneia","anemia","sepse","pneumonia","asma","dpoc","diabetes","hipertens","epilepsia","dengue","malaria","tuberculose","lupus","arritmia","fibrilac","enxaqueca","cefaleia","dermatite","pancreatite","colecistite","cirrose","hepatite","diarrea","fiebre","tos ","disnea","neumonia","asma","diabetes","hipertension","epilepsia","dengue","malaria","tuberculosis","lupus","arritmia","migrania","cefalea","pancreatitis","colecistitis","cirrosis","hepatitis","sepsis","enfermedad","infeccion","lesion","insuficiencia","tratamiento","diagnostico","paciente","sintoma"],l))||z4.length>=2
 else z5=!1
-if(z5&&z4.length!==0){be0=""+"CONTEXTO_INTERNO [nao exibir ao usuario]:\n"+('tema_clinico="'+A.d0(z4,0,A.dy(3,az5,t.S),A.S(z4).c).a1(0," ")+'"\n')+('query_original="'+B.c.B(be3)+'"\n')+'base_local="nao mapeado"\nfontes="Goodman&Gilman,Harrison,DiPiro,Braunwald,Mandell,Cecil,UpToDate,PubMed"\n'
+if(z5&&z4.length!==0){be0=""+"CONTEXTO_INTERNO [nao exibir ao usuario]:\n"+('tema_clinico="'+A.d0(z4,0,A.dy(3,az5,t.S),A.T(z4).c).a1(0," ")+'"\n')+('query_original="'+B.c.B(be3)+'"\n')+'base_local="nao mapeado"\nfontes="Goodman&Gilman,Harrison,DiPiro,Braunwald,Mandell,Cecil,UpToDate,PubMed"\n'
 return be0.charCodeAt(0)==0?be0:be0}z6=B.c.B(be3)
 if(be0.length!==0){be0=J.W(B.d.gZ(be0),"user")
 z7=be0==null?"":be0}else z7=""
@@ -125931,7 +125931,7 @@ o.a+="## "+be0.b+"\n"
 o.a+="\n"
 be0=be0.f
 if(be0.length!==0){o.a+="### \u26a0 Alertas cr\xedticos:\n"
-for(be0=A.d0(be0,0,A.dy(3,az5,t.S),A.S(be0).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
+for(be0=A.d0(be0,0,A.dy(3,az5,t.S),A.T(be0).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
 if(be2==null)be2=be1.a(be2)
 l=o
 be2="  \u2022 "+be2+"\n"
@@ -125939,7 +125939,7 @@ l.a+=be2}o.a+="\n"}be0=bd8.a.r
 if(be0.length!==0){be1=o
 be2=(bd9?"### Diagn\xf3sticos diferenciales a considerar:":"### Diagn\xf3sticos diferenciais a considerar:")+"\n"
 be1.a+=be2
-for(be0=A.d0(be0,0,A.dy(5,az5,t.S),A.S(be0).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
+for(be0=A.d0(be0,0,A.dy(5,az5,t.S),A.T(be0).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
 if(be2==null)be2=be1.a(be2)
 l=o
 be2="  \u2022 "+be2+"\n"
@@ -125963,17 +125963,17 @@ be1.a+=be2;++aa0}if(be0.gA(z9)>6){be0=o
 be1=(aa6.c==="es"?"  \u2192 Ver protocolo completo en la pesta\xf1a Protocolos":"  \u2192 Ver protocolo completo na aba Protocolos")+"\n"
 be0.a+=be1}o.a+="\n"
 be0=n.r
-be0=A.d0(be0,0,A.dy(4,az5,t.S),A.S(be0).c)
+be0=A.d0(be0,0,A.dy(4,az5,t.S),A.T(be0).c)
 be1=t.R1
 aa1=A.O(new A.d1(new A.P(be0,new A.awh(),be0.$ti.i("P<al.E,u?>")),be1),be1.i("F.E"))
 if(aa1.length!==0){be0=o
-be1="F\xe1rmacos protocolares: "+new A.P(aa1,new A.awi(aa6),A.S(aa1).i("P<1,h>")).a1(0,", ")+"\n"
+be1="F\xe1rmacos protocolares: "+new A.P(aa1,new A.awi(aa6),A.T(aa1).i("P<1,h>")).a1(0,", ")+"\n"
 be0.a+=be1
 o.a+="\n"}}be0=bd8.a.e
 if(be0.length!==0){be1=o
 be2=(bd9?"### Ex\xe1menes clave:":"### Exames-chave:")+"\n"
 be1.a+=be2
-for(be0=A.d0(be0,0,A.dy(6,az5,t.S),A.S(be0).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
+for(be0=A.d0(be0,0,A.dy(6,az5,t.S),A.T(be0).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
 if(be2==null)be2=be1.a(be2)
 l=o
 be2="  \u2022 "+be2+"\n"
@@ -125994,11 +125994,11 @@ o.a+="\n"}be0=B.c.B("")
 if(be0.length!==0){aa5=n
 if(aa5!=null&&aa5.r.length!==0){be0=aa5.r
 be1=t.S
-d5=A.bHJ("",A.d0(be0,0,A.dy(3,az5,be1),A.S(be0).c).d8(0))
+d5=A.bHJ("",A.d0(be0,0,A.dy(3,az5,be1),A.T(be0).c).d8(0))
 if(d5.length!==0){be0=o
 be2=(bd9?"### \u26a0 Interacciones con medicamentos actuales del paciente:":"### \u26a0 Intera\xe7\xf5es com medicamentos atuais do paciente:")+"\n"
 be0.a+=be2
-for(be0=A.d0(d5,0,A.dy(3,az5,be1),A.S(d5).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
+for(be0=A.d0(d5,0,A.dy(3,az5,be1),A.T(d5).c),be1=be0.$ti,be0=new A.bD(be0,be0.gA(0),be1.i("bD<al.E>")),be1=be1.i("al.E");be0.C();){be2=be0.d
 if(be2==null)be2=be1.a(be2)
 l=be2.c
 if(l===B.C)d8="\u26d4"
@@ -126022,19 +126022,19 @@ be1=(bd9?az0:az1)+"\n"
 be0.a+=be1
 be1=o.a
 return be1.charCodeAt(0)==0?be1:be1},
-eB(a){var s,r=A.U("[\xe0\xe1\xe2\xe3\xe4\xe5]",!0,!1,!1,!1)
+eB(a){var s,r=A.S("[\xe0\xe1\xe2\xe3\xe4\xe5]",!0,!1,!1,!1)
 r=A.q(a.toLowerCase(),r,"a")
-s=A.U("[\xe8\xe9\xea\xeb]",!0,!1,!1,!1)
+s=A.S("[\xe8\xe9\xea\xeb]",!0,!1,!1,!1)
 r=A.q(r,s,"e")
-s=A.U("[\xec\xed\xee\xef]",!0,!1,!1,!1)
+s=A.S("[\xec\xed\xee\xef]",!0,!1,!1,!1)
 r=A.q(r,s,"i")
-s=A.U("[\xf2\xf3\xf4\xf5\xf6]",!0,!1,!1,!1)
+s=A.S("[\xf2\xf3\xf4\xf5\xf6]",!0,!1,!1,!1)
 r=A.q(r,s,"o")
-s=A.U("[\xf9\xfa\xfb\xfc]",!0,!1,!1,!1)
+s=A.S("[\xf9\xfa\xfb\xfc]",!0,!1,!1,!1)
 r=A.q(r,s,"u")
-s=A.U("[\xe7]",!0,!1,!1,!1)
+s=A.S("[\xe7]",!0,!1,!1,!1)
 r=A.q(r,s,"c")
-s=A.U("[\xf1]",!0,!1,!1,!1)
+s=A.S("[\xf1]",!0,!1,!1,!1)
 return A.q(r,s,"n")},
 dk(a,b){return B.d.c2(b,new A.awx(a))}}
 A.awP.prototype={
@@ -126080,14 +126080,14 @@ $S:304}
 A.awY.prototype={
 $1(a){var s=a.CW
 if(s==null)s=A.R(t.N,t.yp)
-return A.T(["id",a.a,"name",a.b,"group",a.c,"className",a.d,"route",a.f,"doseType",a.r,"interactions",s],t.N,t.K)},
+return A.U(["id",a.a,"name",a.b,"group",a.c,"className",a.d,"route",a.f,"doseType",a.r,"interactions",s],t.N,t.K)},
 $S:712}
 A.awZ.prototype={
-$1(a){return A.T(["id",a.a,"title",a.b,"severity",a.c,"drugs",a.r],t.N,t.K)},
+$1(a){return A.U(["id",a.a,"title",a.b,"severity",a.c,"drugs",a.r],t.N,t.K)},
 $S:713}
 A.ax_.prototype={
 $1(a){var s=t.N
-return A.T(["id",a.a,"title",a.b,"category",a.y,"diagnosis",a.r,"history",a.f],s,s)},
+return A.U(["id",a.a,"title",a.b,"category",a.y,"diagnosis",a.r,"history",a.f],s,s)},
 $S:714}
 A.awR.prototype={
 $1(a){return a.ec()},
@@ -126105,7 +126105,7 @@ A.ax9.prototype={
 $1(a){var s,r=A.a(a.split("|"),t.s)
 if(J.ar(r)<3)return null
 s=t.N
-return A.T(["type",J.W(r,0),"id",J.W(r,1),"title",B.d.a1(J.bGO(r,2),"|")],s,s)},
+return A.U(["type",J.W(r,0),"id",J.W(r,1),"title",B.d.a1(J.bGO(r,2),"|")],s,s)},
 $S:306}
 A.axa.prototype={
 $1(a){},
@@ -126114,7 +126114,7 @@ A.axb.prototype={
 $1(a){var s,r=A.a(a.split("|"),t.s)
 if(J.ar(r)<3)return null
 s=t.N
-return A.T(["type",J.W(r,0),"id",J.W(r,1),"title",B.d.a1(J.bGO(r,2),"|")],s,s)},
+return A.U(["type",J.W(r,0),"id",J.W(r,1),"title",B.d.a1(J.bGO(r,2),"|")],s,s)},
 $S:306}
 A.axf.prototype={
 $1(a){return a.a===this.a.a},
@@ -126379,7 +126379,7 @@ g=q.a
 f=q.e
 e=!f
 d=A.bHh(g.gPn(),e,q.d)
-d=A.dP(new A.P(d,new A.axA(),A.S(d).i("P<1,@>")),!0,t.GU)
+d=A.dP(new A.P(d,new A.axA(),A.T(d).i("P<1,@>")),!0,t.GU)
 l=f?"estudo":"plantao"
 k=g.c
 j=q.f
@@ -126395,8 +126395,8 @@ o=A.avY(p.a,g.c,e)
 n=o.a
 if(!A.xj(n)){g=g.go
 f=t.N
-g.push(A.T(["role","user","content",h],f,f))
-g.push(A.T(["role","assistant","content",n],f,f))
+g.push(A.U(["role","user","content",h],f,f))
+g.push(A.U(["role","assistant","content",n],f,f))
 for(;g.length>20;)B.d.d7(g,0)}q.r.$1(n)}else{A.a1().$1("[AI_PROVIDER] both_failed requestId="+j+" reason="+A.t(p.c))
 m=g.c==="es"?"Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. \u2695":"Estamos com instabilidade tempor\xe1ria na IA.\nTente novamente em alguns segundos. \u2695"
 q.w.$1(m)}return A.A(null,r)}})
@@ -126409,7 +126409,7 @@ if(q==null)q=""
 r=r.h(a,"content")
 if(r==null)r=""
 s=t.N
-return A.T(["role",q,"content",r],s,s)},
+return A.U(["role",q,"content",r],s,s)},
 $S:307}
 A.axt.prototype={
 $0(){var s,r,q=this,p=q.a
@@ -126432,7 +126432,7 @@ g=p.b
 f=p.f
 e=!f
 d=A.bHh(g.gPn(),e,p.e)
-d=A.dP(new A.P(d,new A.axp(),A.S(d).i("P<1,@>")),!0,t.GU)
+d=A.dP(new A.P(d,new A.axp(),A.T(d).i("P<1,@>")),!0,t.GU)
 l=f?"estudo":"plantao"
 k=g.c
 j=p.r
@@ -126457,8 +126457,8 @@ n=A.avY(o.a,g.c,e)
 m=n.a
 if(!A.xj(m)){g=g.go
 f=t.N
-g.push(A.T(["role","user","content",h],f,f))
-g.push(A.T(["role","assistant","content",m],f,f))
+g.push(A.U(["role","user","content",h],f,f))
+g.push(A.U(["role","assistant","content",m],f,f))
 for(;g.length>20;)B.d.d7(g,0)}p.x.$1(m)}else{A.a1().$1("[AI_PROVIDER] critical_paid_failed requestId="+j+" reason="+A.t(o.c))
 p.x.$1(g.GR(g.c))}case 1:return A.A(q,r)}})
 return A.B($async$$0,r)},
@@ -126469,7 +126469,7 @@ if(q==null)q=""
 r=r.h(a,"content")
 if(r==null)r=""
 s=t.N
-return A.T(["role",q,"content",r],s,s)},
+return A.U(["role",q,"content",r],s,s)},
 $S:307}
 A.axv.prototype={
 $0(){var s,r,q=this,p=Date.now()-q.c,o=q.d
@@ -126505,8 +126505,8 @@ return}if(J.ar(s)>40){q=A.avY(s,k.c,!g.e)
 p=q.a
 if(!A.xj(p)){k=k.go
 j=t.N
-k.push(A.T(["role","user","content",g.f],j,j))
-k.push(A.T(["role","assistant","content",p],j,j))
+k.push(A.U(["role","user","content",g.f],j,j))
+k.push(A.U(["role","assistant","content",p],j,j))
 for(;k.length>20;)B.d.d7(k,0)}g.r.$1(p)
 return}j.a=""
 o=A.c57(r,k.c)
@@ -126532,8 +126532,8 @@ h=k==null?null:k.a
 l=h==null?n:h
 if(J.ar(l)!==0&&!A.xj(l)){k=g.b.go
 j=t.N
-k.push(A.T(["role","user","content",g.f],j,j))
-k.push(A.T(["role","assistant","content",l],j,j))
+k.push(A.U(["role","user","content",g.f],j,j))
+k.push(A.U(["role","assistant","content",l],j,j))
 for(;k.length>20;)B.d.d7(k,0)}k=g.b
 k.xr=!1
 k.y1=null
@@ -126570,8 +126570,8 @@ s=B.c.B(o.charCodeAt(0)==0?o:o)
 if(J.ar(s)!==0&&!A.xj(s)){o=p.b
 r=o.go
 q=t.N
-r.push(A.T(["role","user","content",p.e],q,q))
-r.push(A.T(["role","assistant","content",s],q,q))
+r.push(A.U(["role","user","content",p.e],q,q))
+r.push(A.U(["role","assistant","content",s],q,q))
 for(;r.length>20;)B.d.d7(r,0)
 o.xr=!1
 o.y1=null
@@ -126690,7 +126690,7 @@ A.bK(k,$.cv(),!0)
 l=A.e1(new A.ci(k))
 l=A.e4(l,l.gcV().cP("admin_notifications")).cr(a)
 j=$.lA().a7h(A.Te([n]))
-j=A.q5(A.T(["readBy",new A.h4(j,j)],t.K,t.X))
+j=A.q5(A.U(["readBy",new A.h4(j,j)],t.K,t.X))
 j.toString
 s=6
 return A.n(l.a.cB(0,j),$async$FN)
@@ -126983,7 +126983,7 @@ if(s==null)s=[]
 return!J.c0(s,this.a)},
 $S:71}
 A.b1N.prototype={
-$1(a){var s=a.ghM(),r=A.S(s).i("P<1,ai<h,@>>")
+$1(a){var s=a.ghM(),r=A.T(s).i("P<1,ai<h,@>>")
 s=A.O(new A.P(s,new A.b1M(),r),r.i("al.E"))
 return s},
 $S:311}
@@ -127841,7 +127841,7 @@ s=p}while(true)switch(s){case 0:i=B.c.B(n.d.a.a)
 h=B.c.B(n.e.a.a)
 g=B.c.B(n.f.a.a)
 f=n.r
-f=new A.P(f,new A.b5A(),A.S(f).i("P<1,h>")).f5(0,new A.b5B())
+f=new A.P(f,new A.b5A(),A.T(f).i("P<1,h>")).f5(0,new A.b5B())
 k=A.O(f,f.$ti.i("F.E"))
 m=k
 if(J.ar(i)===0||J.ar(h)===0||J.ar(m)===0){n.c.a6(t.q).f.d5(B.e6e)
@@ -128016,7 +128016,7 @@ r=t.p
 r=A.a([A.w(A.a([A.I(new A.tC(B.u0,B.Q,""+s.gA(o),"Total de usu\xe1rios",p),1),B.a2,A.I(new A.tC(B.hl,B.lS,""+q.gan4(),"Aprovados",p),1)],r),B.k,B.e,B.f,p,p),B.H,A.w(A.a([A.I(new A.tC(B.aFe,B.cs,q.asS(q.gaIy()),"Tempo total de uso",p),1),B.a2,A.I(new A.tC(B.KO,B.bQ,""+q.gaCX(),"Pendentes",p),1)],r),B.k,B.e,B.f,p,p),B.H,A.w(A.a([A.I(new A.tC(B.aEB,B.cs,""+q.gaIx(),"Acessos registados",p),1),B.a2,A.I(new A.tC(B.aEQ,B.Q,B.p.l(s.jL(o,new A.byW()).gA(0)),"Usu\xe1rios ativos",p),1)],r),B.k,B.e,B.f,p,p),B.em,new A.em(new A.byX(q),p),B.a3],r)
 if(q.d&&s.gaj(o))r.push(B.adj)
 else if(s.gaj(o))r.push(new A.em(new A.byY(),p))
-else B.d.u(r,new A.P(n,new A.byZ(q,n),A.S(n).i("P<1,f>")))
+else B.d.u(r,new A.P(n,new A.byZ(q,n),A.T(n).i("P<1,f>")))
 return A.n0(r,p,B.aBh,p,p,B.ao,!1)}}
 A.byR.prototype={
 $1(a){return a.e===B.h5},
@@ -128222,7 +128222,7 @@ g=b.a
 f=d&&g===0?"error":"sent"
 c=m
 s=12
-return A.n(A.aGs(a0,A.d0(c,0,A.dy(3,"count",t.S),A.S(c).c).a1(0," | "),g,h,i.b,f,a),$async$rC)
+return A.n(A.aGs(a0,A.d0(c,0,A.dy(3,"count",t.S),A.T(c).c).a1(0," | "),g,h,i.b,f,a),$async$rC)
 case 12:if(n.c!=null){n.t(new A.beJ(b,n,d,m))
 n.vM()}case 1:return A.A(q,r)
 case 2:return A.z(o.at(-1),r)}})
@@ -129205,13 +129205,13 @@ A.hu.prototype={}
 A.fl.prototype={
 gcf(a){return this.a}}
 A.jr.prototype={
-ec(){var s=this,r=s.b.ei(),q=s.d,p=A.S(q).i("P<1,ai<h,h>>")
+ec(){var s=this,r=s.b.ei(),q=s.d,p=A.T(q).i("P<1,ai<h,h>>")
 q=A.O(new A.P(q,new A.b9r(),p),p.i("al.E"))
-return A.T(["id",s.a,"savedAt",r,"summary",s.c,"messages",q],t.N,t.z)},
+return A.U(["id",s.a,"savedAt",r,"summary",s.c,"messages",q],t.N,t.z)},
 gcf(a){return this.a}}
 A.b9r.prototype={
 $1(a){var s=t.N
-return A.T(["id",a.a,"role",a.b,"text",a.c],s,s)},
+return A.U(["id",a.a,"role",a.b,"text",a.c],s,s)},
 $S:172}
 A.JA.prototype={
 U(){var s=null,r=t.N
@@ -129312,11 +129312,11 @@ case 6:if(p.c==null){s=1
 break}p.t(new A.b3u(p,a))
 s=7
 return A.n(o.DM(c==="es"?"es-ES":"pt-BR"),$async$t9)
-case 7:n=A.U("\\*+",!0,!1,!1,!1)
+case 7:n=A.S("\\*+",!0,!1,!1,!1)
 n=A.q(b,n,"")
-m=A.U("^-\\s+",!0,!1,!0,!1)
+m=A.S("^-\\s+",!0,!1,!0,!1)
 n=A.q(n,m,"")
-m=A.U("^#{1,3}\\s*",!0,!1,!0,!1)
+m=A.S("^#{1,3}\\s*",!0,!1,!0,!1)
 n=A.q(n,m,"")
 n=A.q(n,"---",". ")
 s=8
@@ -129412,7 +129412,7 @@ s=B.d.c2(k,new A.b47())
 if(s&&e.fr){r=A.dP(k,!0,t.ec)
 q=new A.aM(Date.now(),0,!1)
 k=r
-j=A.S(k).i("a5<1>")
+j=A.T(k).i("a5<1>")
 g=A.O(new A.a5(k,new A.b48(),j),j.i("F.E"))
 p=g
 if(J.ar(p)!==0){k={}
@@ -129491,7 +129491,7 @@ s=6
 return A.n(A.cJ(),$async$rU)
 case 6:n=c
 l=o.db
-k=A.S(l).i("P<1,ai<h,@>>")
+k=A.T(l).i("P<1,ai<h,@>>")
 l=A.O(new A.P(l,new A.b2R(),k),k.i("al.E"))
 m=B.aj.e7(l,null)
 s=7
@@ -129513,7 +129513,7 @@ aF7(a){var s=0,r=A.C(t.H),q,p=this,o,n,m,l,k,j,i,h,g,f,e
 var $async$t0=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:h={}
 g=p.r
-f=A.S(g).i("a5<1>")
+f=A.T(g).i("a5<1>")
 e=A.O(new A.a5(g,new A.b2V(),f),f.i("F.E"))
 if(e.length===0){s=1
 break}if(p.dx!=null&&!p.fr){s=1
@@ -129550,7 +129550,7 @@ p.id.a5(0)
 p.k1.a5(0)
 p.t(new A.b2S(p,a))
 s=a.d
-r=A.S(s)
+r=A.T(s)
 q=r.i("e7<1,ai<h,h>>")
 s=A.O(new A.e7(new A.a5(s,new A.b2T(),r.i("a5<1>")),new A.b2U(),q),q.i("F.E"))
 b.acz(s)
@@ -129625,7 +129625,7 @@ break
 case 6:case 1:return A.A(q,r)
 case 2:return A.z(o.at(-1),r)}})
 return A.B($async$yI,r)},
-ar1(a){var s,r,q,p,o=A.U("\\b(dosis|dose|administr|mg\\/kg|mcg\\/kg|infus[i\xed]on|bolo|IV|IM|SC|ampollas?|comprimido|antibi[o\xf3]tico|analg\xe9sico|sedaci[o\xf3]n|anticoagulante|vasopressor|broncodilatador)\\b",!1,!1,!1,!1)
+ar1(a){var s,r,q,p,o=A.S("\\b(dosis|dose|administr|mg\\/kg|mcg\\/kg|infus[i\xed]on|bolo|IV|IM|SC|ampollas?|comprimido|antibi[o\xf3]tico|analg\xe9sico|sedaci[o\xf3]n|anticoagulante|vasopressor|broncodilatador)\\b",!1,!1,!1,!1)
 if(!o.b.test(a))return null
 s=a.toLowerCase()
 for(r=0;r<49;++r){q=B.aLC[r]
@@ -129641,7 +129641,7 @@ arP(a,b,c){var s,r,q,p,o=this
 if(o.c==null)return
 c.tl()
 s=a>0?B.d.dn(o.r,0,a):A.a([],t.Ep)
-r=A.S(s)
+r=A.T(s)
 q=r.i("e7<1,ai<h,h>>")
 p=A.O(new A.e7(new A.a5(s,new A.b2l(),r.i("a5<1>")),new A.b2m(),q),q.i("F.E"))
 c.acz(p)
@@ -129682,7 +129682,7 @@ d=d.a.a>=1024
 s=d?960:h
 r=!($.fr.length!==0||g.fx.length!==0||g.k3||g.k3)
 if(r){q=i.r
-p=!new A.a5(q,new A.b3S(),A.S(q).i("a5<1>")).gaF(0).C()}else p=!1
+p=!new A.a5(q,new A.b3S(),A.T(q).i("a5<1>")).gaF(0).C()}else p=!1
 r=!(g.gqM()||g.gnM())&&r
 q=d?24:16
 o=d?24:16
@@ -129702,7 +129702,7 @@ if(d){m=i.db.length
 l=g.c
 o.push(new A.asP(new A.b4_(i,g),i.ga4Q(),m,l,h))}if(!d){d=g.c
 m=i.db.length
-new A.a5(n,new A.b40(),A.S(n).i("a5<1>")).gaj(0)
+new A.a5(n,new A.b40(),A.T(n).i("a5<1>")).gaj(0)
 o.push(new A.amy(f,d,m,new A.b41(i,g),i.ga4Q(),h))}if(i.y)o.push(new A.agx(g.c,i.gOS(),h))
 if(i.z)o.push(new A.a6x(g.c,new A.b42(i,g),!0,h))
 o.push(A.I(j,1))
@@ -129913,7 +129913,7 @@ J.x9(s,0,this.c)
 if(J.ar(s)>10)J.bN1(s,10,J.ar(s))
 r="$_kHistKey"
 p=s
-o=A.S(p).i("P<1,ai<h,@>>")
+o=A.T(p).i("P<1,ai<h,@>>")
 p=A.O(new A.P(p,new A.b43(),o),o.i("al.E"))
 q=B.aj.e7(p,null)
 a.d4("String",r,q)}catch(n){}},
@@ -130020,7 +130020,7 @@ return s==="user"||s==="ai"},
 $S:44}
 A.b2U.prototype={
 $1(a){var s=a.b==="ai"?"assistant":"user",r=t.N
-return A.T(["role",s,"content",a.c],r,r)},
+return A.U(["role",s,"content",a.c],r,r)},
 $S:172}
 A.b2Z.prototype={
 $1(a){var s,r,q,p,o=this.a
@@ -130155,6 +130155,7 @@ p=m.r
 if(r>=0){o=p[r].a
 p[r]=new A.fl(o,"ai",q.a)
 q.b=o
+m.at=r
 r=o}else{++m.ay
 m.at=p.length
 r=q.a
@@ -130251,7 +130252,7 @@ return s==="user"||s==="ai"},
 $S:44}
 A.b2m.prototype={
 $1(a){var s=a.b==="ai"?"assistant":"user",r=t.N
-return A.T(["role",s,"content",a.c],r,r)},
+return A.U(["role",s,"content",a.c],r,r)},
 $S:172}
 A.b2n.prototype={
 $0(){var s=this.b,r=this.a,q=r.r,p=q.length
@@ -130293,49 +130294,55 @@ A.b3S.prototype={
 $1(a){return a.b==="user"},
 $S:44}
 A.b3W.prototype={
-$2(a8,a9){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2=this,a3=null,a4=a2.a,a5=a4.r,a6=a5.length,a7=a4.w
-if(a9===a6+(a7?1:0))return new A.ay(a3,1,a3,a4.cy)
-if(a7&&a9===a6)return new A.eL(new A.L(B.aAD,new A.a4o(a2.b,a2.c.c,a3),a3),a3)
-s=a5[a9]
-if(s.b==="user")return new A.eL(new A.jQ(new A.YO(s.c,a2.b,new A.b3M(a4,s),new A.b3N(a4,a9,a2.c),a7,a3),new A.cO("msg_"+s.a,t.kK)),a3)
-a6=s.c
-r=B.c.Y(a6,"\ud83d\udfe5 TEMPO LIMITE ATINGIDO")||B.c.Y(a6,"\ud83d\udfe5 TEMPO L\xcdMITE ALCANZADO")||B.c.k(a6,"n\xe3o consegui completar a resposta")||B.c.k(a6,"n\xe3o consegui concluir a resposta")||B.c.k(a6,"no pude completar la respuesta")||B.c.k(a6,"estamos ajustando a resposta")||B.c.k(a6,"estamos ajustando la respuesta")
-q=r?a3:a4.ar1(a6)
+$2(a9,b0){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3=this,a4=null,a5=a3.a,a6=a5.r,a7=a6.length,a8=a5.w
+if(b0===a7+(a8?1:0))return new A.ay(a4,1,a4,a5.cy)
+if(a8&&b0===a7)return new A.eL(new A.L(B.aAD,new A.a4o(a3.b,a3.c.c,a4),a4),a4)
+s=a6[b0]
+if(s.b==="user")return new A.eL(new A.jQ(new A.YO(s.c,a3.b,new A.b3M(a5,s),new A.b3N(a5,b0,a3.c),a8,a4),new A.cO("msg_"+s.a,t.kK)),a4)
+a7=s.c
+r=B.c.Y(a7,"\ud83d\udfe5 TEMPO LIMITE ATINGIDO")||B.c.Y(a7,"\ud83d\udfe5 TEMPO L\xcdMITE ALCANZADO")||B.c.k(a7,"n\xe3o consegui completar a resposta")||B.c.k(a7,"n\xe3o consegui concluir a resposta")||B.c.k(a7,"no pude completar la respuesta")||B.c.k(a7,"estamos ajustando a resposta")||B.c.k(a7,"estamos ajustando la respuesta")
+q=r?a4:a5.ar1(a7)
+a8=!a5.Q
 p=!1
-if(!a4.Q)if(a9===a4.at){a7=!r
-p=a7}if(p){o=s.a+":"+B.c.gK(a6)
-a7=a4.fx
-n=a7.h(0,o)
-if(n!=null)m=n
-else{m=A.bJg(a6)
-if(m.a==null){l=A.cdv(a6,a2.c.c)
-if(l!==a6){k=A.bJg(l)
-if(k.a!=null)m=k}}a7.p(0,o,m)}}else m=a3
-if(p)j=(m==null?a3:m.a)!=null
-else j=!1
-a7=a4.rx
-i=a7!=null&&s.a===a7
-a7=s.a
-h=t.kK
-g=A.a([],t.p)
-if(j){a6=m.a
-a6.toString
-f=a2.b
-g.push(new A.anF(a6,f,new A.b3O(a4,s),new A.b3P(a4,a8),new A.cO("plantao_"+a7,h)))
-a6=f}else{f=a2.b
-e=a2.c
-d=e.c
-if(p)g.push(new A.anE(a6,f,d,new A.b3Q(a4,s),a3))
-else{c=a4.at
-b=a4.k4
-a=a4.k3
-e=a?new A.b3C(a4,a9,s,e):a3
-a0=a4.ay
-g.push(new A.Sq(a6,f,new A.b3D(a4,s),a9===c,d,b===a9,a,e,a0,a4.gaAB(),!1,new A.b3E(a4,a8),a3,new A.cO("ai_"+a7,h)))}a6=f}if(a9===a4.at&&a5.length>=2&&!r)g.push(new A.em(new A.b3F(a4,s,a2.c,a6,a8),a3))
-if(!j&&q!=null&&!r)g.push(new A.em(new A.b3G(q,a6),a3))
-a1=new A.eL(new A.jQ(A.x(g,B.r,B.e,B.f),new A.cO("msg_"+a7,h)),a3)
-if(i)return A.bSr(new A.b3H(),a1,B.dM,B.azo,new A.cO("fadein_"+a7,h),new A.b9(0,1,t.Y),t.i)
-return a1},
+if(a8)if(b0===a5.at){o=!r
+p=o}n=!1
+if(a8){if(!r)a8=B.c.k(a7,A.S("\\*\\*CLASSE:\\*\\*",!1,!1,!1,!1))||B.c.k(a7,A.S("\\*\\*MECANISMO DE A[\xc7C][A\xc3]O:\\*\\*",!1,!1,!1,!1))||B.c.k(a7,A.S("\\*\\*VIA DE ADMINISTRA",!1,!1,!1,!1))||B.c.k(a7,A.S("\\*\\*DOSE\\b",!1,!1,!1,!1))||B.c.k(a7,A.S("\\*\\*EFEITOS ADVERSOS:\\*\\*",!1,!1,!1,!1))||B.c.k(a7,A.S("\\*\\*CONTRA-?INDICA[\xc7C]",!1,!1,!1,!1))
+else a8=n
+n=a8}a8=!p
+if(!a8||n){m=s.a+":"+B.c.gK(a7)
+o=a5.fx
+l=o.h(0,m)
+if(l!=null)k=l
+else{k=A.bJg(a7)
+if(k.a==null){j=A.cdv(a7,a3.c.c)
+if(j!==a7){i=A.bJg(j)
+if(i.a!=null)k=i}}o.p(0,m,k)}}else k=a4
+if(!a8||n)h=(k==null?a4:k.a)!=null
+else h=!1
+o=a5.rx
+g=o!=null&&s.a===o
+o=s.a
+f=t.kK
+e=A.a([],t.p)
+if(h){a7=k.a
+a7.toString
+a8=a3.b
+e.push(new A.anF(a7,a8,new A.b3O(a5,s),new A.b3P(a5,a9),new A.cO("plantao_"+o,f)))
+a7=a8}else{a8=!a8||n
+d=a3.b
+c=a3.c
+b=c.c
+if(a8)e.push(new A.anE(a7,d,b,new A.b3Q(a5,s),a4))
+else{a8=a5.at
+a=a5.k4
+a0=a5.k3
+c=a0?new A.b3C(a5,b0,s,c):a4
+a1=a5.ay
+e.push(new A.Sq(a7,d,new A.b3D(a5,s),b0===a8,b,a===b0,a0,c,a1,a5.gaAB(),!1,new A.b3E(a5,a9),a4,new A.cO("ai_"+o,f)))}a7=d}if(b0===a5.at&&a6.length>=2&&!r)e.push(new A.em(new A.b3F(a5,s,a3.c,a7,a9),a4))
+if(!h&&q!=null&&!r)e.push(new A.em(new A.b3G(q,a7),a4))
+a2=new A.eL(new A.jQ(A.x(e,B.r,B.e,B.f),new A.cO("msg_"+o,f)),a4)
+if(g)return A.bSr(new A.b3H(),a2,B.dM,B.azo,new A.cO("fadein_"+o,f),new A.b9(0,1,t.Y),t.i)
+return a2},
 $S:92}
 A.b3M.prototype={
 $0(){return this.a.EQ(this.b.c)},
@@ -130395,7 +130402,7 @@ o=p.c
 q=A.c3u(p.k1.a,o,!i,j,k)
 r.p(0,s,q)}i=m.Q
 r=n.c.c
-p=A.S(l).i("P<1,h>")
+p=A.T(l).i("P<1,h>")
 l=A.O(new A.P(l,new A.b3x(),p),p.i("al.E"))
 return new A.Gv(k,j,!i,r,n.d,l,new A.b3y(m,n.e),q,null)},
 $S:1149}
@@ -130758,11 +130765,11 @@ $S:2}
 A.bCy.prototype={
 $1(a){var s,r=B.c.mj(a)
 if(B.c.Y(r,"* "))return a
-s=A.U("^\\*\\s*\\*\\*",!0,!1,!1,!1)
+s=A.S("^\\*\\s*\\*\\*",!0,!1,!1,!1)
 if(s.b.test(r))return a
-s=A.U("^\\*[^*\\s]",!0,!1,!1,!1)
+s=A.S("^\\*[^*\\s]",!0,!1,!1,!1)
 if(s.b.test(r))return a
-s=A.U("(?<!\\*)\\*(?!\\*)",!0,!1,!1,!1)
+s=A.S("(?<!\\*)\\*(?!\\*)",!0,!1,!1,!1)
 return A.q(a,s,"")},
 $S:12}
 A.agv.prototype={
@@ -130781,7 +130788,7 @@ for(s=a2.length,r=0;r<a2.length;a2.length===s||(0,A.a2)(a2),++r){q=a2[r]
 p=B.c.B(q)
 if(B.c.Y(p,"\ud83d\udfe5")){a8.$0()
 o=A.k9(p,"\ud83d\udfe5","",0)
-n=A.U(b,!0,!1,!1,!1)
+n=A.S(b,!0,!1,!1,!1)
 m=B.c.B(A.k9(o,n,"",0))
 o=new A.bB(2,2)
 o=A.l(c,c,B.i,c,c,new A.j(B.bf,c,c,new A.cm(o,o,o,o),c,c,B.l),c,c,c,c,c,c,c,4)
@@ -130793,10 +130800,10 @@ k=d.a1D(q)
 j=k?B.ep:B.f6
 if(k)i=a?B.ajq:B.ep
 else i=a?B.aj5:B.f6
-o=A.U("\\*\\*HARD.STOP[:\\s]*",!1,!1,!1,!1)
+o=A.S("\\*\\*HARD.STOP[:\\s]*",!1,!1,!1,!1)
 o=A.q(p,o,"")
 o=A.k9(o,"\u26d4","",0)
-n=A.U(b,!0,!1,!1,!1)
+n=A.S(b,!0,!1,!1,!1)
 m=B.c.B(A.k9(o,n,"",0))
 o=new A.bB(2,2)
 o=A.l(c,c,B.i,c,c,new A.j(j,c,c,new A.cm(o,o,o,o),c,c,B.l),c,c,c,c,c,c,c,4)
@@ -130891,7 +130898,7 @@ $0(){var s=this.a.r.$1(this.b+" "+this.c)
 return s},
 $S:0}
 A.anE.prototype={
-q(a){var s,r,q,p,o=this,n=null,m=o.d,l=m?B.ya:B.aw,k=t.s,j=A.a(B.c.B(o.c).split("\n"),k),i=j.length!==0?J.kH(B.d.gW(j)):"",h=B.c.B(B.c.i7(B.c.i7(B.c.i7(i,A.U("^\ud83d\udfe5\\s*",!0,!1,!1,!1),""),A.U("^#{1,3}\\s*",!0,!1,!1,!1),""),A.U("^[\ud83d\udd35\ud83d\udccb\ud83c\udfe5\ud83d\udca1\u2695\ufe0f]\\s*",!0,!1,!1,!1),"")).toUpperCase(),g=j.length>1?B.d.fN(j,1):A.a([],k),f=B.c.B(new A.a5(g,new A.bsH(),A.S(g).i("a5<1>")).a1(0,"\n"))
+q(a){var s,r,q,p,o=this,n=null,m=o.d,l=m?B.ya:B.aw,k=t.s,j=A.a(B.c.B(o.c).split("\n"),k),i=j.length!==0?J.kH(B.d.gW(j)):"",h=B.c.B(B.c.i7(B.c.i7(B.c.i7(i,A.S("^\ud83d\udfe5\\s*",!0,!1,!1,!1),""),A.S("^#{1,3}\\s*",!0,!1,!1,!1),""),A.S("^[\ud83d\udd35\ud83d\udccb\ud83c\udfe5\ud83d\udca1\u2695\ufe0f]\\s*",!0,!1,!1,!1),"")).toUpperCase(),g=j.length>1?B.d.fN(j,1):A.a([],k),f=B.c.B(new A.a5(g,new A.bsH(),A.T(g).i("a5<1>")).a1(0,"\n"))
 k=m?B.bf:B.cc
 if(h.length===0)s=o.e==="es"?"INFORMACI\xd3N FARMACOL\xd3GICA":"INFORMA\xc7\xd5ES FARMACOL\xd3GICAS"
 else s=h
@@ -131276,7 +131283,7 @@ $2(a,b){var s=null
 return A.l(s,s,B.i,this.a,s,s,s,1,s,B.zy,s,s,s,s)},
 $S:134}
 A.b9p.prototype={
-$2(a,b){var s,r,q,p,o,n,m=null,l=this.a,k=l.c[b],j=k.d,i=new A.a5(j,new A.b9l(),A.S(j).i("a5<1>")).gA(0)
+$2(a,b){var s,r,q,p,o,n,m=null,l=this.a,k=l.c[b],j=k.d,i=new A.a5(j,new A.b9l(),A.T(j).i("a5<1>")).gA(0)
 j=A.l(B.dT,B.aId,B.i,B.bG.j(0.1),m,m,m,m,m,m,B.azQ,m,m,m)
 s=A.i(10)
 r=B.V.j(0.1)
@@ -131312,7 +131319,7 @@ p=l.d?0.5:0
 o=t.p
 p=A.ae(k,A.l(k,A.w(A.a([B.ehr,B.ab,j,B.b1,A.mD(A.X(B.e1,s,k,16),B.eQ,p)],o),B.k,B.e,B.F,k,k),B.i,k,k,B.mv,k,k,k,k,B.pE,k,k,k),B.u,!1,k,k,k,k,k,k,k,k,k,k,k,k,k,new A.b9V(l),k,k,k,k,k,k)
 if(l.d){j=l.a.c
-n=A.S(j)
+n=A.T(j)
 m=n.i("e7<1,L>")
 j=A.O(new A.e7(new A.a5(j,new A.b9W(),n.i("a5<1>")),new A.b9X(r),m),m.i("F.E"))
 j=new A.L(B.aCo,A.x(j,B.r,B.e,B.f),k)}else j=B.aB
@@ -131329,7 +131336,7 @@ A.b9W.prototype={
 $1(a){return B.c.B(a).length!==0},
 $S:2}
 A.b9X.prototype={
-$1(a){var s=null,r=B.c.i7(B.c.B(a),A.U("^[-\\*\u2022]\\s*",!0,!1,!1,!1),""),q=this.a
+$1(a){var s=null,r=B.c.i7(B.c.B(a),A.S("^[-\\*\u2022]\\s*",!0,!1,!1,!1),""),q=this.a
 return new A.L(B.n4,A.w(A.a([new A.L(B.aAd,A.l(s,s,B.i,s,s,new A.j(q.j(0.6),s,s,s,s,s,B.an),s,3,s,s,s,s,s,3),s),A.I(A.e(r,s,s,s,s,s,A.m(s,s,q,s,s,s,s,s,s,s,s,10.5,B.ey,s,s,s,1.45,!0,s,s,s,s,s,s,s,s),s,s,s),1)],t.p),B.r,B.e,B.f,s,s),s)},
 $S:32}
 A.Tf.prototype={
@@ -131379,7 +131386,7 @@ this.ab()},
 Zg(a){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=new A.cD("")
 for(s=t.s,r=t.gD,q=this.r,p=t.N,o=0;o<9;++o){n=B.nJ[o]
 m=n.f
-if(!this.d){l=A.S(m).i("a5<1>")
+if(!this.d){l=A.T(m).i("a5<1>")
 m=A.O(new A.a5(m,new A.b6c(),l),l.i("F.E"))}k=A.a([],s)
 for(l=m.length,j=0;j<m.length;m.length===l||(0,A.a2)(m),++j){i=m[j]
 h=i.a
@@ -131481,7 +131488,7 @@ $0(){return this.a.apU(this.b,this.c)},
 $S:0}
 A.b6n.prototype={
 $2(a,b){var s,r=B.nJ[b],q=this.a,p=r.f
-if(!q.d){s=A.S(p).i("a5<1>")
+if(!q.d){s=A.T(p).i("a5<1>")
 p=A.O(new A.a5(p,new A.b6l(),s),s.i("F.E"))}s=q.f
 s===$&&A.c()
 return new A.IC(r,p,this.b,s,q.r,new A.b6m(q),null)},
@@ -131614,7 +131621,7 @@ q=A.a([new A.aS(0,B.Y,B.I.j(0.04),B.cf,6)],t.V)
 p=t.p
 o=A.a([A.e(h.toUpperCase(),k,k,k,k,k,A.m(k,k,s?l.f:B.N,k,k,k,k,k,k,k,k,9,k,k,B.D,k,k,!0,k,1.3,k,k,k,k,k,k),k,k,k)],p)
 n=f.length!==0
-if(n){m=A.S(f).i("P<1,eS>")
+if(n){m=A.T(f).i("P<1,eS>")
 m=A.O(new A.P(f,new A.buy(l),m),m.i("al.E"))
 B.d.u(o,A.a([B.M,A.dL(B.ae,m,B.bH,6,6)],p))}if(!n||i.f){n=i.f
 i=n?i.r:1
@@ -131761,7 +131768,7 @@ p=c.a.a.toLowerCase()
 r=J.hi(d.y,new A.b8L(p))
 o=A.O(r,r.$ti.i("F.E"))
 r=$.bGz()
-q=A.S(r).i("a5<1>")
+q=A.T(r).i("a5<1>")
 n=A.O(new A.a5(r,new A.b8M(p),q),q.i("F.E"))
 r=A.I(new A.Fl("Case Manager",d.bY("cases"),d.bY("cases_subtitle"),!0,f),1)
 q=A.i(12)
@@ -131988,7 +131995,7 @@ q=s.x
 if(q.length!==0)B.d.u(r,A.a([B.H,new A.H_(k.bY("notes"),q,m)],i))
 s=s.z
 if(s.length!==0){q=A.e(k.bY("drugs").toUpperCase(),m,m,m,m,m,B.jQ,m,m,m)
-p=A.S(s).i("P<1,dn>")
+p=A.T(s).i("P<1,dn>")
 s=A.O(new A.P(s,new A.b8h(n,a),p),p.i("al.E"))
 B.d.u(r,A.a([B.H,A.x(A.a([q,B.ac,A.dL(B.ae,s,B.bH,6,6)],i),B.r,B.e,B.f)],i))}r.push(B.a3)
 s=A.i(14)
@@ -132002,7 +132009,7 @@ if(n.f!=null){s=A.i(14)
 B.d.u(k,A.a([B.J,A.ae(m,A.l(m,B.FP,B.i,m,m,new A.j(B.jf,m,A.M(B.ie,B.o,1),s,m,m,B.l),m,44,m,m,m,m,m,44),B.u,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,new A.b8j(n,a),m,m,m,m,m,m)],i))}r.push(A.w(k,B.k,B.e,B.f,m,m))
 return A.d6(A.x(A.a([j,B.a3,new A.py(l,m,m,m),B.a3,A.bJE(A.x(r,B.k,B.e,B.f))],i),B.k,B.e,B.f),m,B.u,m,B.zw,m,B.ao)}}
 A.b8h.prototype={
-$1(a){var s,r,q,p=null,o=this.a.r.gqs(),n=A.a6I(new A.a5(o,new A.b8g(a),A.S(o).i("a5<1>")))
+$1(a){var s,r,q,p=null,o=this.a.r.gqs(),n=A.a6I(new A.a5(o,new A.b8g(a),A.T(o).i("a5<1>")))
 o=A.i(20)
 s=this.b
 r=A.K(s).ax.a===B.A?B.b8:B.W
@@ -132132,7 +132139,7 @@ m=A.i(14)
 l=A.M(B.a9,B.o,1)
 k=d.y
 j=a.c==="es"?B.bby:B.bbz
-i=A.S(j).i("P<1,jJ<h>>")
+i=A.T(j).i("P<1,jJ<h>>")
 j=A.O(new A.P(j,new A.b8m(),i),i.i("al.E"))
 i=t.N
 m=A.w(A.a([n,B.a2,A.I(A.x(A.a([o,B.cE,A.l(c,new A.lN(A.Lr(c,c,!1,!0,j,new A.b8n(d),c,c,k,i),c),B.i,c,c,new A.j(B.j,c,l,m,c,c,B.l),c,c,c,c,B.hg,c,c,c)],p),B.r,B.e,B.f),1)],p),B.k,B.e,B.f,c,c)
@@ -132142,7 +132149,7 @@ l=A.i(14)
 k=A.M(B.a9,B.o,1)
 j=d.z
 o=o?B.bRz:B.b_d
-h=A.S(o).i("P<1,jJ<h>>")
+h=A.T(o).i("P<1,jJ<h>>")
 o=A.O(new A.P(o,new A.b8o(),h),h.i("al.E"))
 o=A.w(A.a([A.I(A.x(A.a([n,B.cE,A.l(c,new A.lN(A.Lr(c,c,!1,!0,o,new A.b8p(d,a),c,c,j,i),c),B.i,c,c,new A.j(B.j,c,k,l,c,c,B.l),c,c,c,c,B.hg,c,c,c)],p),B.r,B.e,B.f),1)],p),B.k,B.e,B.f,c,c)
 n=a.bY("clinical_history")
@@ -132215,7 +132222,7 @@ aBF(){var s,r,q,p=this,o=B.c.B(p.d.a.a).toLowerCase()
 if(o.length===0){p.t(new A.bcN(p))
 return}s=p.z
 s===$&&A.c()
-r=A.S(s).i("a5<1>")
+r=A.T(s).i("a5<1>")
 r=A.oq(new A.a5(s,new A.bcO(o),r),8,r.i("F.E"))
 q=A.O(r,A.G(r).i("F.E"))
 p.t(new A.bcP(p,q))},
@@ -132244,12 +132251,12 @@ if(o.f.length===1&&!o.x)r.push(new A.anb(l,k,i,n))
 if(o.x){q=A.a([new A.apH(o.w.length,l,k,i,o.f.length,n),B.aG],s)
 p=o.w
 if(p.length===0)q.push(new A.amQ(l,k,i,n))
-else B.d.u(q,new A.P(p,new A.bcT(l,k,i),A.S(p).i("P<1,f>")))
+else B.d.u(q,new A.P(p,new A.bcT(l,k,i),A.T(p).i("P<1,f>")))
 q.push(B.wG)
 q.push(new A.amN(k,l,o.garJ(),n))
 q.push(B.aG)
 p=o.f
-B.d.u(q,new A.P(p,new A.bcU(),A.S(p).i("P<1,f>")))
+B.d.u(q,new A.P(p,new A.bcU(),A.T(p).i("P<1,f>")))
 B.d.u(r,q)}r.push(B.a3)
 r.push(B.vP)
 r.push(B.em)
@@ -132341,7 +132348,7 @@ return null},
 $S:0}
 A.arb.prototype={
 q(a){var s=null,r=this.d,q=r?B.Ie:B.j,p=A.i(14),o=A.M(B.jZ.j(0.2),B.o,1),n=A.a([new A.aS(0,B.Y,B.I.j(r?0.4:0.1),B.eC,12)],t.V),m=this.c
-m=new A.fC(m,A.S(m).i("fC<1>"))
+m=new A.fC(m,A.T(m).i("fC<1>"))
 return A.l(s,A.x(m.gfU(m).eG(0,new A.bzg(this),t.tL).d8(0),B.k,B.e,B.f),B.i,s,s,new A.j(q,s,o,p,n,s,B.l),s,s,s,B.IW,s,s,s,s)}}
 A.bzg.prototype={
 $1(a){var s,r,q=null,p=a.b,o=p.length!==0?p[0].toUpperCase()+B.c.c3(p,1):p,n=this.a
@@ -132357,7 +132364,7 @@ A.aqd.prototype={
 q(a){var s,r=this,q=null,p=r.c,o=p.length
 o=r.e?"Seleccionados ("+o+")":"Selecionados ("+o+")"
 o=A.e(o,q,q,q,q,q,A.m(q,q,r.f.a?B.N:B.S,q,q,q,q,q,q,q,q,11,q,q,B.O,q,q,!0,q,0.4,q,q,q,q,q,q),q,q,q)
-s=A.S(p).i("P<1,AM>")
+s=A.T(p).i("P<1,AM>")
 p=A.O(new A.P(p,new A.bx6(r),s),s.i("al.E"))
 return A.x(A.a([o,B.M,A.dL(B.ae,p,B.bH,8,8)],t.p),B.r,B.e,B.f)}}
 A.bx6.prototype={
@@ -132558,16 +132565,16 @@ s.O$=0
 this.ab()},
 atX(a,b){var s,r,q,p,o,n=this
 if(b.length!==0){s=a.gqs()
-r=A.S(s).i("a5<1>")
+r=A.T(s).i("a5<1>")
 q=A.O(new A.a5(s,new A.bdd(b,a),r),r.i("F.E"))
-r=A.S(q).i("a5<1>")
+r=A.T(q).i("a5<1>")
 p=A.O(new A.a5(q,new A.bde(A.aQ(t.N)),r),r.i("F.E"))
 B.d.ed(p,new A.bdf(a))
 return p}r=n.r
 if(r!=null&&n.w===a.z&&n.x===a.c)return r
 s=a.gqs()
 r=t.N
-o=A.S(s).i("a5<1>")
+o=A.T(s).i("a5<1>")
 p=A.O(new A.a5(s,new A.bdg(A.aQ(r)),o),o.i("F.E"))
 B.d.ed(p,new A.bdh(a))
 n.r=p
@@ -132585,10 +132592,10 @@ o=A.a([],p)
 if(!m.a.c)B.d.u(o,A.a([new A.py(new A.Fl("Knowledge Base",k.bY("drugs"),k.bY("drugs_subtitle"),!0,l),l,l,l),B.a3],p))
 o.push(new A.L(B.dN,A.x(A.a([new A.TY(j,k.bY("drugs_search_hint"),k.gqs(),new A.bdv(m),new A.bdw(m),l),B.M,A.e(""+r.length+" "+k.bY("drugs_found"),l,l,l,l,l,B.a5T,l,l,l)],p),B.r,B.e,B.f),l))
 o.push(B.aG)
-if(s.length!==0)B.d.u(o,new A.P(r,new A.bdx(m,k,q),A.S(r).i("P<1,f>")))
+if(s.length!==0)B.d.u(o,new A.P(r,new A.bdx(m,k,q),A.T(r).i("P<1,f>")))
 else{j=A.a([],p)
 n=k.z
-if(n.gcb(n)){n=A.S(r).i("a5<1>")
+if(n.gcb(n)){n=A.T(r).i("a5<1>")
 n=A.O(new A.a5(r,new A.bdy(k),n),n.i("F.E"))
 B.d.u(j,A.a([A.bTc(q,n,"Favoritos","",B.a7,B.fX,m.f.k(0,"__fav__"),new A.bdz(m),new A.bdA(m),k),B.aC],p))}B.d.u(j,new A.P(B.b9E,new A.bdB(m,r,q,k),t.bg))
 B.d.u(o,j)}return new A.eL(A.d6(A.x(o,B.k,B.e,B.f),l,B.u,l,B.tt,l,B.ao),l)}}
@@ -132671,7 +132678,7 @@ A.bdp.prototype={
 $0(){return this.a.e=this.b},
 $S:0}
 A.bdB.prototype={
-$1(a){var s,r=this,q=r.b,p=A.S(q).i("a5<1>"),o=A.O(new A.a5(q,new A.bdl(a),p),p.i("F.E"))
+$1(a){var s,r=this,q=r.b,p=A.T(q).i("a5<1>"),o=A.O(new A.a5(q,new A.bdl(a),p),p.i("F.E"))
 if(o.length===0)return B.aB
 q=r.a
 s=q.f.k(0,a)
@@ -132729,7 +132736,7 @@ a0=c?0.5:0
 s=A.dW(B.a6,b,A.ef(!1,a,!0,A.l(j,A.w(A.a([n,B.b3,a1,A.mD(A.X(B.e1,e,j,22),B.a6,a0)],l),B.k,B.e,B.f,j,j),B.i,j,j,new A.j(j,j,q,p,j,j,B.l),j,j,j,j,B.ex,j,j,j),j,!0,j,j,r,j,j,j,j,j,j,j,new A.bhw(k,a2),j,j,j,s,j,j),B.i,h,0,j,j,j,j,j,B.ca)
 c=c?B.jn:B.ip
 i=i?B.ai:B.j
-m=new A.fC(m,A.S(m).i("fC<1>"))
+m=new A.fC(m,A.T(m).i("fC<1>"))
 return new A.L(B.dN,A.jC(d,A.x(A.a([s,A.xe(c,B.eQ,A.l(j,A.x(m.gfU(m).eG(0,new A.bhx(k),t.wj).d8(0),B.k,B.e,B.f),B.i,j,j,new A.j(i,j,new A.c1(B.x,new A.aA(g,1,B.o,-1),new A.aA(g,1,B.o,-1),new A.aA(g,1,B.o,-1)),B.a81,j,j,B.l),j,j,j,j,j,j,j,j),B.wF)],l),B.k,B.e,B.f),B.d_),j)}}
 A.bhw.prototype={
 $0(){A.f0(this.b)
@@ -132999,7 +133006,7 @@ if(m==null){m=o.w
 m=m==null?n:m.Q}if((m==null?A.a([],t.s):m).length!==0){m=h?n:l.as
 if(m==null){m=o.w
 m=m==null?n:m.Q}if(m==null)m=A.a([],t.s)
-m=A.O(new A.P(m,new A.b9L(),A.S(m).i("P<1,f>")),t.n)
+m=A.O(new A.P(m,new A.b9L(),A.T(m).i("P<1,f>")),t.n)
 i.push(new A.L(B.e_,A.dL(B.ae,m,B.bH,6,6),n))}i.push(B.a3)
 if(!h||o.w!=null){m=B.X.j(0.15)
 k=A.i(10)
@@ -133093,7 +133100,7 @@ A.ahS.prototype={
 q(a8){var s,r,q,p,o,n,m,l,k,j=this,i=null,h="AJUSTE RENAL",g="INDICACIONES PRINCIPALES",f="INDICA\xc7\xd5ES PRINCIPAIS",e="EFECTOS ADVERSOS",d="EFEITOS ADVERSOS",c=j.c,b=j.d,a=c.Vm(b.c),a0=j.e,a1=a0.a,a2=a1?B.ai:B.j,a3=A.i(16),a4=A.M(a1?B.ad:B.a9,B.o,1),a5=j.x,a6=a1?B.ad:B.a9,a7=a1?B.j:B.W
 a1=a1?B.N:B.S
 s=j.y
-r=A.S(s).i("P<1,ni>")
+r=A.T(s).i("P<1,ni>")
 s=A.O(new A.P(s,new A.b9M(),r),r.i("al.E"))
 a1=A.d6(A.aZP(a5,a6,i,B.V,B.li,i,2.5,!0,a7,B.efn,B.nb,B.DC,s,a1,B.e9y),i,B.u,i,i,i,B.bk)
 a6=b.c==="es"?"MECANISMO DE ACCI\xd3N":"MECANISMO DE A\xc7\xc3O"
@@ -133159,7 +133166,7 @@ A.wg.prototype={
 q(a){var s=this,r=null,q=s.f,p=t.p
 p=A.a([A.w(A.a([A.X(s.c,q,r,12),B.ab,A.e(s.d.toUpperCase(),r,r,r,r,r,A.m(r,r,q,r,r,r,r,r,r,r,r,8.5,r,r,B.D,r,r,!0,r,1.2,r,r,r,r,r,r),r,r,r)],p),B.k,B.e,B.f,r,r),B.M],p)
 q=s.e
-B.d.u(p,new A.P(q,new A.b9K(s),A.S(q).i("P<1,f>")))
+B.d.u(p,new A.P(q,new A.b9K(s),A.T(q).i("P<1,f>")))
 return A.x(p,B.r,B.e,B.f)},
 gbN(a){return this.d}}
 A.b9K.prototype={
@@ -133178,8 +133185,8 @@ $1(a){var s=null,r=this.a.f,q=r.j(0.08),p=A.i(20),o=A.M(r.j(0.2),B.o,1)
 return A.l(s,A.e(a,s,s,s,s,s,A.m(s,s,r,s,s,s,s,s,s,s,s,11,s,s,B.z,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),B.i,s,s,new A.j(q,s,o,p,s,s,B.l),s,s,s,s,B.ed,s,s,s)},
 $S:77}
 A.anl.prototype={
-q(a){var s=this.c,r=t.N,q=t.D,p=t.NP,o=A.O(new A.a5(A.a([A.T(["label","In\xedcio de A\xe7\xe3o","value",s.at],r,q),A.T(["label","Dura\xe7\xe3o","value",s.ax],r,q),A.T(["label","Meia-vida (t\xbd)","value",s.ay],r,q),A.T(["label","Distribui\xe7\xe3o","value",null],r,q),A.T(["label","Elimina\xe7\xe3o","value",s.CW],r,q),A.T(["label","Liga\xe7\xe3o Proteica","value",s.cx],r,q)],t.U7),new A.brr(),p),p.i("F.E"))
-s=A.S(o).i("P<1,ay>")
+q(a){var s=this.c,r=t.N,q=t.D,p=t.NP,o=A.O(new A.a5(A.a([A.U(["label","In\xedcio de A\xe7\xe3o","value",s.at],r,q),A.U(["label","Dura\xe7\xe3o","value",s.ax],r,q),A.U(["label","Meia-vida (t\xbd)","value",s.ay],r,q),A.U(["label","Distribui\xe7\xe3o","value",null],r,q),A.U(["label","Elimina\xe7\xe3o","value",s.CW],r,q),A.U(["label","Liga\xe7\xe3o Proteica","value",s.cx],r,q)],t.U7),new A.brr(),p),p.i("F.E"))
+s=A.T(o).i("P<1,ay>")
 s=A.O(new A.P(o,new A.brs(this,a),s),s.i("al.E"))
 return A.dL(B.ae,s,B.bH,8,8)}}
 A.brr.prototype={
@@ -133194,9 +133201,9 @@ m.toString
 return new A.ay((r.a.a-64)/2,s,A.l(s,A.x(A.a([l,B.aC,A.e(m,s,s,s,s,s,A.m(s,s,q?B.j:B.W,s,s,s,s,s,s,s,s,11.5,s,s,B.z,s,1.35,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.r,B.e,B.f),B.i,s,s,new A.j(p,s,n,o,s,s,B.l),s,s,s,s,B.fa,s,s,s),s)},
 $S:325}
 A.anm.prototype={
-q(a){var s=this.c,r=t.N,q=t.D,p=t.NP,o=A.O(new A.a5(A.a([A.T(["label","Inicio de Acci\xf3n","value",s.CW],r,q),A.T(["label","Duraci\xf3n","value",s.cx],r,q),A.T(["label","Vida Media (t\xbd)","value",s.cy],r,q),A.T(["label","Eliminaci\xf3n","value",s.db],r,q),A.T(["label","Uni\xf3n Proteica","value",s.dx],r,q)],t.U7),new A.brp(),p),p.i("F.E"))
+q(a){var s=this.c,r=t.N,q=t.D,p=t.NP,o=A.O(new A.a5(A.a([A.U(["label","Inicio de Acci\xf3n","value",s.CW],r,q),A.U(["label","Duraci\xf3n","value",s.cx],r,q),A.U(["label","Vida Media (t\xbd)","value",s.cy],r,q),A.U(["label","Eliminaci\xf3n","value",s.db],r,q),A.U(["label","Uni\xf3n Proteica","value",s.dx],r,q)],t.U7),new A.brp(),p),p.i("F.E"))
 if(o.length===0)return new A.ak4("Datos farmacocin\xe9ticos no disponibles para este f\xe1rmaco.",this.d,null)
-s=A.S(o).i("P<1,ay>")
+s=A.T(o).i("P<1,ay>")
 s=A.O(new A.P(o,new A.brq(this,a),s),s.i("al.E"))
 return A.dL(B.ae,s,B.bH,8,8)}}
 A.brp.prototype={
@@ -133219,18 +133226,18 @@ return A.l(s,A.w(A.a([B.L9,B.dh,A.I(A.e("Datos de clase farmacol\xf3gica. Consul
 A.ank.prototype={
 aDx(a){var s,r,q="Inicio de Acci\xf3n",p="Renal / Hep\xe1tica",o="Hep\xe1tica (CYP450)"
 if(B.c.k(a,"Cardiovascular")){s=t.N
-return A.T(["V\xeda t\xedpica","Oral / IV seg\xfan f\xe1rmaco",q,"Variable (min\u2013horas)","Vida Media (t\xbd)","Variable por f\xe1rmaco","Eliminaci\xf3n","Hep\xe1tica / Renal","Uni\xf3n Proteica","Variable (ver ficha)"],s,s)}else if(B.c.k(a,"Antibi\xf3tico")){s=t.N
-return A.T(["V\xeda t\xedpica","Oral / IV / IM",q,"30\u201360 min (oral)","Vida Media (t\xbd)","1\u201324 h seg\xfan f\xe1rmaco","Eliminaci\xf3n","Renal (mayor\xeda)","Uni\xf3n Proteica","Variable por clase"],s,s)}else if(B.c.k(a,"Anticoagulante")){s=t.N
-return A.T(["V\xeda t\xedpica","SC / IV / Oral",q,"Inmediato (IV) / 1\u20133 h (oral)","Vida Media (t\xbd)","4\u201320 h seg\xfan f\xe1rmaco","Eliminaci\xf3n",p,"Monitorizaci\xf3n","TTPA (HNF) / anti-Xa (HBPM)"],s,s)}else if(B.c.k(a,"Respiratorio")){s=t.N
-return A.T(["V\xeda t\xedpica","Inhalada / IV / Oral",q,"5\u201315 min (inhalados)","Vida Media (t\xbd)","3\u201312 h seg\xfan f\xe1rmaco","Eliminaci\xf3n",o,"Biodisponibilidad","Baja por v\xeda inhalada sist\xe9mica"],s,s)}else if(B.c.k(a,"Neurolog")||B.c.k(a,"Psiquiat")){s=t.N
-return A.T(["V\xeda t\xedpica","Oral / IV / IM",q,"30\u2013120 min (oral)","Vida Media (t\xbd)","Variable (horas\u2013d\xedas)","Eliminaci\xf3n",o,"Notas","Alta variabilidad individual"],s,s)}else if(B.c.k(a,"Endocrin")||B.c.k(a,"Metabol")){s=t.N
-return A.T(["V\xeda t\xedpica","Oral / SC (insulinas)",q,"30\u201360 min (orales)","Vida Media (t\xbd)","4\u201312 h seg\xfan clase","Eliminaci\xf3n",p,"Monitorizaci\xf3n","Glucemia, HbA1c"],s,s)}else if(B.c.k(a,"UCI")||B.c.k(a,"Cr\xedtico")||B.c.k(a,"Sedoa")){s=t.N
-return A.T(["V\xeda t\xedpica","IV / IM (urgencias)",q,"R\xe1pido (segundos\u2013minutos)","Vida Media (t\xbd)","Variable (corta\u2013larga)","Eliminaci\xf3n","Hep\xe1tica / Redistribuci\xf3n","Ajuste","Titular por respuesta cl\xednica"],s,s)}s=this.c.f
+return A.U(["V\xeda t\xedpica","Oral / IV seg\xfan f\xe1rmaco",q,"Variable (min\u2013horas)","Vida Media (t\xbd)","Variable por f\xe1rmaco","Eliminaci\xf3n","Hep\xe1tica / Renal","Uni\xf3n Proteica","Variable (ver ficha)"],s,s)}else if(B.c.k(a,"Antibi\xf3tico")){s=t.N
+return A.U(["V\xeda t\xedpica","Oral / IV / IM",q,"30\u201360 min (oral)","Vida Media (t\xbd)","1\u201324 h seg\xfan f\xe1rmaco","Eliminaci\xf3n","Renal (mayor\xeda)","Uni\xf3n Proteica","Variable por clase"],s,s)}else if(B.c.k(a,"Anticoagulante")){s=t.N
+return A.U(["V\xeda t\xedpica","SC / IV / Oral",q,"Inmediato (IV) / 1\u20133 h (oral)","Vida Media (t\xbd)","4\u201320 h seg\xfan f\xe1rmaco","Eliminaci\xf3n",p,"Monitorizaci\xf3n","TTPA (HNF) / anti-Xa (HBPM)"],s,s)}else if(B.c.k(a,"Respiratorio")){s=t.N
+return A.U(["V\xeda t\xedpica","Inhalada / IV / Oral",q,"5\u201315 min (inhalados)","Vida Media (t\xbd)","3\u201312 h seg\xfan f\xe1rmaco","Eliminaci\xf3n",o,"Biodisponibilidad","Baja por v\xeda inhalada sist\xe9mica"],s,s)}else if(B.c.k(a,"Neurolog")||B.c.k(a,"Psiquiat")){s=t.N
+return A.U(["V\xeda t\xedpica","Oral / IV / IM",q,"30\u2013120 min (oral)","Vida Media (t\xbd)","Variable (horas\u2013d\xedas)","Eliminaci\xf3n",o,"Notas","Alta variabilidad individual"],s,s)}else if(B.c.k(a,"Endocrin")||B.c.k(a,"Metabol")){s=t.N
+return A.U(["V\xeda t\xedpica","Oral / SC (insulinas)",q,"30\u201360 min (orales)","Vida Media (t\xbd)","4\u201312 h seg\xfan clase","Eliminaci\xf3n",p,"Monitorizaci\xf3n","Glucemia, HbA1c"],s,s)}else if(B.c.k(a,"UCI")||B.c.k(a,"Cr\xedtico")||B.c.k(a,"Sedoa")){s=t.N
+return A.U(["V\xeda t\xedpica","IV / IM (urgencias)",q,"R\xe1pido (segundos\u2013minutos)","Vida Media (t\xbd)","Variable (corta\u2013larga)","Eliminaci\xf3n","Hep\xe1tica / Redistribuci\xf3n","Ajuste","Titular por respuesta cl\xednica"],s,s)}s=this.c.f
 s=s.length!==0?s:"Ver ficha t\xe9cnica"
 r=t.N
-return A.T(["V\xeda de Admin.",s,"Metabolismo","Hep\xe1tico (CYP450) \u2014 ver ficha","Eliminaci\xf3n","Renal / Biliar \u2014 ver ficha","Referencia","Consultar Lexicomp / Micromedex"],r,r)},
+return A.U(["V\xeda de Admin.",s,"Metabolismo","Hep\xe1tico (CYP450) \u2014 ver ficha","Eliminaci\xf3n","Renal / Biliar \u2014 ver ficha","Referencia","Consultar Lexicomp / Micromedex"],r,r)},
 q(a){var s=this,r=s.aDx(s.c.c),q=A.G(r).i("eh<1,2>"),p=A.O(new A.eh(r,q),q.i("F.E"))
-r=A.S(p).i("P<1,ay>")
+r=A.T(p).i("P<1,ay>")
 r=A.O(new A.P(p,new A.bro(s,a),r),r.i("al.E"))
 return A.x(A.a([A.dL(B.ae,r,B.bH,8,8),B.M,new A.AU(s.d,null)],t.p),B.r,B.e,B.f)}}
 A.bro.prototype={
@@ -133275,9 +133282,9 @@ return new A.L(B.nb,A.x(A.a([p,B.bA,A.w(o,B.fv,B.e,B.f,r,r)],s),B.r,B.e,B.f),r)}
 A.ajp.prototype={
 aCU(a){var s,r
 if(B.c.k(a," | "))s=A.a(a.split(" | "),t.s)
-else{r=A.U("\\.\\s+[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc8\xcc\xd2\xd9\xc2\xca\xce\xd4\xdb\xc3\xd5\xdc\xc70-9]",!0,!1,!1,!1)
-if(r.b.test(a))s=B.c.ej(a,A.U("\\.\\s+(?=[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc8\xcc\xd2\xd9\xc2\xca\xce\xd4\xdb\xc3\xd5\xdc\xc70-9])",!0,!1,!1,!1))
-else s=B.c.k(a,"; ")?B.c.ej(a,A.U(";\\s+",!0,!1,!1,!1)):A.a([a],t.s)}r=new A.P(s,new A.bc2(),A.S(s).i("P<1,h>")).f5(0,new A.bc3())
+else{r=A.S("\\.\\s+[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc8\xcc\xd2\xd9\xc2\xca\xce\xd4\xdb\xc3\xd5\xdc\xc70-9]",!0,!1,!1,!1)
+if(r.b.test(a))s=B.c.ej(a,A.S("\\.\\s+(?=[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc8\xcc\xd2\xd9\xc2\xca\xce\xd4\xdb\xc3\xd5\xdc\xc70-9])",!0,!1,!1,!1))
+else s=B.c.k(a,"; ")?B.c.ej(a,A.S(";\\s+",!0,!1,!1,!1)):A.a([a],t.s)}r=new A.P(s,new A.bc2(),A.T(s).i("P<1,h>")).f5(0,new A.bc3())
 r=A.O(r,r.$ti.i("F.E"))
 return r},
 ape(a,b){var s="manuten\xe7\xe3o:",r="sin respuesta",q=a.toLowerCase()
@@ -133343,16 +133350,16 @@ s.ab()},
 arL(){var s,r,q,p,o,n,m,l,k,j,i=this,h=i.a,g=B.c.B(h.c.a.a.toLowerCase())
 if(g.length<3){i.w0()
 return}h=h.e
-s=A.S(h).i("a5<1>")
+s=A.T(h).i("a5<1>")
 r=A.O(new A.a5(h,new A.bd1(g),s),s.i("F.E"))
 h=$.bYO()
-s=A.S(h).i("a5<1>")
+s=A.T(h).i("a5<1>")
 q=A.O(new A.a5(h,new A.bd2(g),s),s.i("F.E"))
-h=A.S(r)
+h=A.T(r)
 p=new A.P(r,new A.bd3(),h.i("P<1,h>")).iO(0)
 for(s=q.length,o=0;o<q.length;q.length===s||(0,A.a2)(q),++o){n=q[o]
 m=i.a.e
-for(l=B.d.gaF(m),m=new A.fS(l,new A.bd4(n,p),A.S(m).i("fS<1>"));m.C();){k=l.gV(0)
+for(l=B.d.gaF(m),m=new A.fS(l,new A.bd4(n,p),A.T(m).i("fS<1>"));m.C();){k=l.gV(0)
 r.push(k)
 p.E(0,k.a)}}h=h.i("a5<1>")
 h=A.oq(new A.a5(r,new A.bd5(A.aQ(t.N)),h),8,h.i("F.E"))
@@ -133494,7 +133501,7 @@ A.ahG.prototype={
 q(a){var s=null,r=B.Q.j(0.07),q=B.Q.j(0.18)
 return A.l(s,A.w(A.a([B.aFV,B.mg,A.I(A.e(this.c?"MedCases Pro es una herramienta de Clinical Decision Support (CDS) para profesionales de salud \u2014 categor\xeda MDCalc / Medscape / UpToDate. No realiza diagn\xf3sticos aut\xf3nomos.":"MedCases Pro \xe9 uma ferramenta de Clinical Decision Support (CDS) para profissionais de sa\xfade \u2014 categoria MDCalc / Medscape / UpToDate. N\xe3o realiza diagn\xf3sticos aut\xf4nomos.",s,s,s,s,s,B.ebd,s,s,s),1)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(r,s,new A.c1(B.x,B.x,new A.aA(q,1,B.o,-1),B.x),s,s,s,B.l),s,s,s,s,B.J9,s,s,1/0)}}
 A.ahD.prototype={
-q(a){var s=null,r=this.c,q=A.S(r).i("P<1,eS>")
+q(a){var s=null,r=this.c,q=A.T(r).i("P<1,eS>")
 r=A.O(new A.P(r,new A.b9h(this),q),q.i("al.E"))
 return A.l(s,A.n0(r,s,B.zv,s,s,B.bk,!1),B.i,B.j,s,s,s,44,s,s,s,s,s,s)}}
 A.b9h.prototype={
@@ -133588,7 +133595,7 @@ q=o==null?p:o.b
 this.t(new A.bjU(this,m,r,q==null?"":q))},
 aJD(a,b){var s
 if(b.ga7S())return a
-s=A.S(a).i("a5<1>")
+s=A.T(a).i("a5<1>")
 s=A.O(new A.a5(a,new A.bjV(),s),s.i("F.E"))
 return s},
 EF(a,b){var s=null,r=A.aAV(s,s,s,B.kT,s,b)
@@ -134184,7 +134191,7 @@ if(j==null){n=[1]
 s=5
 break}i=J.qv(B.dE.gdq(j))
 g=m.a.c.gqo()
-f=A.U("[^a-zA-Z0-9\\u00C0-\\u024F ]",!0,!1,!1,!1)
+f=A.S("[^a-zA-Z0-9\\u00C0-\\u024F ]",!0,!1,!1,!1)
 g=B.c.B(A.q(g,f,""))
 g=B.c.S(A.q(g," ","_"),0,B.p.c_(m.a.c.gqo().length,0,30))
 f=m.a.c.gxb()
@@ -134378,7 +134385,7 @@ for(c=q.a.c.p2,o=c.length,n=t.N,m=0;m<c.length;c.length===o||(0,A.a2)(c),++m){l=
 f=A.qW(l.b)
 k=f==null?null:f.Db()
 j=k!=null?B.c.b0(B.p.l(A.hY(k)),2,"0")+"/"+B.c.b0(B.p.l(A.fg(k)),2,"0")+"/"+A.f7(k)+"  "+B.c.b0(B.p.l(A.kp(k)),2,"0")+":"+B.c.b0(B.p.l(A.l3(k)),2,"0"):""
-i=A.T(["evolution",A.a8(e,"evo_med"),"nursing",A.a8(e,"evo_nurs"),"lab",A.a8(e,"evo_lab"),"imaging",A.a8(e,"evo_img"),"procedure",A.a8(e,"evo_proc")],n,n)
+i=A.U(["evolution",A.a8(e,"evo_med"),"nursing",A.a8(e,"evo_nurs"),"lab",A.a8(e,"evo_lab"),"imaging",A.a8(e,"evo_img"),"procedure",A.a8(e,"evo_proc")],n,n)
 d.a+='<div class="evolution">'
 f=i.h(0,l.e)
 if(f==null)f=A.a8(e,"evo_default")
@@ -134412,7 +134419,7 @@ o=f?"Alta hospitalaria":"Alta hospitalar"
 n=f?"Fallecimiento":"\xd3bito"
 f=f?"Traslado":"Transfer\xeancia"
 h=t.N
-g=A.T(["internado",c,"alta",o,"obito",n,"transferencia",f],h,h)
+g=A.U(["internado",c,"alta",o,"obito",n,"transferencia",f],h,h)
 f=q.a.c
 if(f.p3!=="internado"||f.p4.length!==0||f.R8.length!==0){f=u.q+A.a8(e,"pdf_section11")+"</div>"
 d.a+=f
@@ -134518,7 +134525,7 @@ h=m.a.c
 s.push(new A.anO(k,h.fx,h.fy,h.go,h.id,l))}k=m.a
 if(k.c.p2.length!==0){k=A.a8(k.d.c,"pdf_section9")
 h=m.a.c.p2
-r=A.S(h).i("P<1,Bn>")
+r=A.T(h).i("P<1,Bn>")
 h=A.O(new A.P(h,new A.bit(),r),r.i("al.E"))
 s.push(new A.mv(k,h,l))}k=m.a
 h=k.c
@@ -134658,7 +134665,7 @@ p=A.hD(!0,null,!0,!0,null,null,!1)
 p.a0(0,new A.bjE(n,p,q))
 s.p(0,q,p)}s=n.d
 o=$.aq()
-s=A.T(["patientInitials",new A.az(new A.bz(s.x,B.aE,B.ap),o),"patientAge",new A.az(new A.bz(s.y,B.aE,B.ap),o),"patientWeight",new A.az(new A.bz(s.Q,B.aE,B.ap),o),"patientHeight",new A.az(new A.bz(s.as,B.aE,B.ap),o),"patientRecord",new A.az(new A.bz(s.at,B.aE,B.ap),o),"chiefComplaint",new A.az(new A.bz(s.ax,B.aE,B.ap),o),"hpi",new A.az(new A.bz(s.ay,B.aE,B.ap),o),"pastHistory",new A.az(new A.bz(s.ch,B.aE,B.ap),o),"familyHistory",new A.az(new A.bz(s.CW,B.aE,B.ap),o),"socialHistory",new A.az(new A.bz(s.cx,B.aE,B.ap),o),"medications",new A.az(new A.bz(s.cy,B.aE,B.ap),o),"allergies",new A.az(new A.bz(s.db,B.aE,B.ap),o),"reviewOfSystems",new A.az(new A.bz(s.dx,B.aE,B.ap),o),"vitalSigns",new A.az(new A.bz(s.dy,B.aE,B.ap),o),"physicalExam",new A.az(new A.bz(s.fr,B.aE,B.ap),o),"workingDiagnosis",new A.az(new A.bz(s.fx,B.aE,B.ap),o),"differentialDx",new A.az(new A.bz(s.fy,B.aE,B.ap),o),"finalDiagnosis",new A.az(new A.bz(s.go,B.aE,B.ap),o),"cid",new A.az(new A.bz(s.id,B.aE,B.ap),o),"labResults",new A.az(new A.bz(s.k1,B.aE,B.ap),o),"imagingResults",new A.az(new A.bz(s.k2,B.aE,B.ap),o),"otherResults",new A.az(new A.bz(s.k3,B.aE,B.ap),o),"treatmentPlan",new A.az(new A.bz(s.k4,B.aE,B.ap),o),"procedures",new A.az(new A.bz(s.ok,B.aE,B.ap),o),"dischargeCondition",new A.az(new A.bz(s.p4,B.aE,B.ap),o),"followUp",new A.az(new A.bz(s.R8,B.aE,B.ap),o),"tags",new A.az(new A.bz(s.rx,B.aE,B.ap),o)],t.N,t.QX)
+s=A.U(["patientInitials",new A.az(new A.bz(s.x,B.aE,B.ap),o),"patientAge",new A.az(new A.bz(s.y,B.aE,B.ap),o),"patientWeight",new A.az(new A.bz(s.Q,B.aE,B.ap),o),"patientHeight",new A.az(new A.bz(s.as,B.aE,B.ap),o),"patientRecord",new A.az(new A.bz(s.at,B.aE,B.ap),o),"chiefComplaint",new A.az(new A.bz(s.ax,B.aE,B.ap),o),"hpi",new A.az(new A.bz(s.ay,B.aE,B.ap),o),"pastHistory",new A.az(new A.bz(s.ch,B.aE,B.ap),o),"familyHistory",new A.az(new A.bz(s.CW,B.aE,B.ap),o),"socialHistory",new A.az(new A.bz(s.cx,B.aE,B.ap),o),"medications",new A.az(new A.bz(s.cy,B.aE,B.ap),o),"allergies",new A.az(new A.bz(s.db,B.aE,B.ap),o),"reviewOfSystems",new A.az(new A.bz(s.dx,B.aE,B.ap),o),"vitalSigns",new A.az(new A.bz(s.dy,B.aE,B.ap),o),"physicalExam",new A.az(new A.bz(s.fr,B.aE,B.ap),o),"workingDiagnosis",new A.az(new A.bz(s.fx,B.aE,B.ap),o),"differentialDx",new A.az(new A.bz(s.fy,B.aE,B.ap),o),"finalDiagnosis",new A.az(new A.bz(s.go,B.aE,B.ap),o),"cid",new A.az(new A.bz(s.id,B.aE,B.ap),o),"labResults",new A.az(new A.bz(s.k1,B.aE,B.ap),o),"imagingResults",new A.az(new A.bz(s.k2,B.aE,B.ap),o),"otherResults",new A.az(new A.bz(s.k3,B.aE,B.ap),o),"treatmentPlan",new A.az(new A.bz(s.k4,B.aE,B.ap),o),"procedures",new A.az(new A.bz(s.ok,B.aE,B.ap),o),"dischargeCondition",new A.az(new A.bz(s.p4,B.aE,B.ap),o),"followUp",new A.az(new A.bz(s.R8,B.aE,B.ap),o),"tags",new A.az(new A.bz(s.rx,B.aE,B.ap),o)],t.N,t.QX)
 n.f!==$&&A.b8()
 n.f=s},
 n(){var s,r,q=this,p=q.cy
@@ -134738,7 +134745,7 @@ break}p.t(new A.biV(p))
 if(o.b){p.Gz(A.a8(p.a.d.c,"relato_error"))
 s=1
 break}try{i=o.a
-k=A.U("```json\\s*",!1,!1,!1,!1)
+k=A.S("```json\\s*",!1,!1,!1,!1)
 i=A.q(i,k,"")
 n=B.c.B(A.q(i,"```",""))
 m=t.P.a(B.aj.dt(0,n,null))
@@ -135002,7 +135009,7 @@ return A.x(A.a([s,B.H,r,B.H,o,B.H,p,B.H,f,B.H,e,B.aD,A.ae(g,A.l(g,A.w(A.a([j,B.b
 anJ(){var s,r=this,q=null,p=t.p,o=A.a([A.e(A.a8(r.a.d.c,"evol_title").toUpperCase(),q,q,q,q,q,B.edk,q,q,q),B.aC,A.e(A.a8(r.a.d.c,"evol_hint"),q,q,q,q,q,B.a5C,q,q,q),B.a3],p),n=r.d
 n===$&&A.c()
 n=n.p2
-n=new A.fC(n,A.S(n).i("fC<1>"))
+n=new A.fC(n,A.T(n).i("fC<1>"))
 B.d.u(o,n.gfU(n).eG(0,new A.biA(r),t.n))
 o.push(B.H)
 n=A.i(14)
@@ -135051,9 +135058,9 @@ $2(a,b){var s,r,q,p,o=this.a
 if(o.c==null)return
 s=o.ZL(a)
 if(s.length!==0&&s!==o.Q)o.t(new A.bjf(o,s))
-if(b){for(r=J.bv(B.vk.gdf(B.vk)),q=a;r.C();){p=A.U(r.gV(r),!1,!1,!1,!1)
+if(b){for(r=J.bv(B.vk.gdf(B.vk)),q=a;r.C();){p=A.S(r.gV(r),!1,!1,!1,!1)
 q=A.q(q,p,"")}r=B.c.B(q)
-p=A.U("^[,:\\s]+",!0,!1,!1,!1)
+p=A.S("^[,:\\s]+",!0,!1,!1,!1)
 q=A.q(r,p,"")
 if(q.length!==0&&o.Q.length!==0)o.ayC(o.Q,q)
 if(o.c!=null)o.t(new A.bjg(o))}else if(o.c!=null)o.t(new A.bjh(o,a))},
@@ -135318,7 +135325,7 @@ i===$&&A.c()
 s=n?B.yj:B.j
 r=A.m(o,o,n?B.yA:B.l3,o,o,o,o,o,o,o,o,13,o,o,B.z,o,o,!0,o,o,o,o,o,o,o,o)
 q=j.a.d.c==="es"?B.aMK:B.bgK
-p=A.S(q).i("P<1,jJ<h>>")
+p=A.T(q).i("P<1,jJ<h>>")
 q=A.O(new A.P(q,new A.biJ(),p),p.i("al.E"))
 return A.l(o,new A.lN(A.Lr(s,o,!1,!0,q,new A.biK(j),r,o,i.RG,t.N),o),B.i,o,o,new A.j(m,o,k,l,o,o,B.l),o,44,o,o,B.hg,o,o,o)},
 $S:328}
@@ -135435,8 +135442,8 @@ s=r.f
 if(s!=null)s.aA(0)
 r.f=A.ds(B.d0,new A.bdS(r))},
 atb(a){if(a.length===0)return""
-return J.kH(B.d.gZ(B.c.ej(a,A.U("[.;\\n,]",!0,!1,!1,!1))))},
-an0(a){var s=this,r=s.a.d.a.a,q=B.c.xj(r,A.U("[.;\\n,]",!0,!1,!1,!1)),p=q===-1?a:B.c.S(r,0,q+1)+" "+a
+return J.kH(B.d.gZ(B.c.ej(a,A.S("[.;\\n,]",!0,!1,!1,!1))))},
+an0(a){var s=this,r=s.a.d.a.a,q=B.c.xj(r,A.S("[.;\\n,]",!0,!1,!1,!1)),p=q===-1?a:B.c.S(r,0,q+1)+" "+a
 s.a.d.sbT(0,p)
 s.a.d.seU(A.h2(B.R,p.length))
 s.t(new A.bdP(s))},
@@ -135746,7 +135753,7 @@ A.wz.prototype={
 q(a){var s=null
 return A.x(A.a([A.e(this.c.toUpperCase(),s,s,s,s,s,B.a5S,s,s,s),A.e(this.d,s,s,s,s,s,B.efD,s,s,s)],t.p),B.r,B.e,B.F)}}
 A.tv.prototype={
-q(a){var s,r,q,p,o,n=this,m=null,l=n.f,k=A.S(l).i("a5<1>"),j=A.O(new A.a5(l,new A.bty(),k),k.i("F.E"))
+q(a){var s,r,q,p,o,n=this,m=null,l=n.f,k=A.T(l).i("a5<1>"),j=A.O(new A.a5(l,new A.bty(),k),k.i("F.E"))
 if(j.length===0)return B.jO
 l=A.i(16)
 k=A.M(B.ih,B.o,1)
@@ -135767,11 +135774,11 @@ A.tu.prototype={
 q(a){var s=null,r=A.i(10),q=this.e,p=q.j(0.06),o=A.M(q.j(0.18),B.o,1)
 return new A.L(B.cO,A.l(s,A.x(A.a([A.e(this.c.toUpperCase(),s,s,s,s,s,A.m(s,s,q.j(0.7),s,s,s,s,s,s,s,s,8.5,s,s,B.D,s,s,!0,s,0.8,s,s,s,s,s,s),s,s,s),B.bC,A.e(this.d,s,s,s,s,s,A.m(s,s,q,s,s,s,s,s,s,s,s,13,s,s,B.z,s,1.5,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.r,B.e,B.f),B.i,s,s,new A.j(p,s,o,r,s,s,B.l),s,s,s,s,B.fz,s,s,s),s)}}
 A.ajC.prototype={
-q(a){var s=this.c,r=A.S(s).i("P<1,dn>")
+q(a){var s=this.c,r=A.T(s).i("P<1,dn>")
 s=A.O(new A.P(s,new A.bcA(this),r),r.i("al.E"))
 return A.x(A.a([B.ehn,B.ac,A.dL(B.ae,s,B.bH,6,6)],t.p),B.r,B.e,B.f)}}
 A.bcA.prototype={
-$1(a){var s,r=null,q=this.a.d.gqs(),p=A.a6I(new A.a5(q,new A.bcz(a),A.S(q).i("a5<1>")))
+$1(a){var s,r=null,q=this.a.d.gqs(),p=A.a6I(new A.a5(q,new A.bcz(a),A.T(q).i("a5<1>")))
 q=A.i(20)
 s=p==null?r:p.b
 return A.l(r,A.e(s==null?a:s,r,r,r,r,r,B.wV,r,r,r),B.i,r,r,new A.j(B.W,r,r,q,r,r,B.l),r,r,r,r,B.fT,r,r,r)},
@@ -135865,7 +135872,7 @@ Sw(a,b){var s,r,q=b.a
 if(q.length===0)return b
 s=A.q(q,",",".")
 if(B.c.ju(".",s).gA(0)>1)return a
-r=A.U("^[0-9.]*$",!0,!1,!1,!1)
+r=A.S("^[0-9.]*$",!0,!1,!1,!1)
 if(!r.b.test(s))return a
 return b.aMI(A.h2(B.R,s.length),s)}}
 A.YV.prototype={
@@ -135875,13 +135882,13 @@ A.YW.prototype={
 a8(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a=this
 a.al()
 s=a.a.c.a.a
-r=A.U("PA[:\\s]+(\\d+)[/\\\\](\\d+)",!1,!1,!1,!1)
-q=A.U("FC[:\\s]+(\\d+)",!1,!1,!1,!1)
-p=A.U("FR[:\\s]+(\\d+)",!1,!1,!1,!1)
-o=A.U("[Tt]emp[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
-n=A.U("SpO2[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
-m=A.U("[Dd]extro[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
-l=A.U("[Pp]eso[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
+r=A.S("PA[:\\s]+(\\d+)[/\\\\](\\d+)",!1,!1,!1,!1)
+q=A.S("FC[:\\s]+(\\d+)",!1,!1,!1,!1)
+p=A.S("FR[:\\s]+(\\d+)",!1,!1,!1,!1)
+o=A.S("[Tt]emp[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
+n=A.S("SpO2[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
+m=A.S("[Dd]extro[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
+l=A.S("[Pp]eso[:\\s]+([\\d,\\.]+)",!1,!1,!1,!1)
 k=r.dU(s)
 if(k!=null){j=k.b
 i=j[1]
@@ -136152,7 +136159,7 @@ s.f="Falha OCR: "+A.t(this.b)},
 $S:0}
 A.bnK.prototype={
 $2(a,b){var s,r,q,p
-for(s=b.length,r=this.a,q=0;q<b.length;b.length===s||(0,A.a2)(b),++q){p=A.U(b[q]+"[:\\s]+(\\d+[,.]?\\d*)",!0,!1,!1,!1).dU(r)
+for(s=b.length,r=this.a,q=0;q<b.length;b.length===s||(0,A.a2)(b),++q){p=A.S(b[q]+"[:\\s]+(\\d+[,.]?\\d*)",!0,!1,!1,!1).dU(r)
 if(p!=null&&a.a.a.length===0){s=p.b[1]
 if(s==null)s=null
 else s=A.q(s,",",".")
@@ -136172,7 +136179,7 @@ A.anN.prototype={
 q(a){var s=null
 return A.l(s,s,B.i,B.a7.j(0.55),s,s,s,0.75,s,B.IY,s,s,s,s)}}
 A.mv.prototype={
-q(a){var s=null,r=this.d,q=A.S(r).i("a5<1>"),p=A.O(new A.a5(r,new A.bsQ(),q),q.i("F.E"))
+q(a){var s=null,r=this.d,q=A.T(r).i("a5<1>"),p=A.O(new A.a5(r,new A.bsQ(),q),q.i("F.E"))
 if(p.length===0)return B.aB
 q=A.a([B.a6Q,A.e(this.c,s,s,s,s,s,B.a5i,s,s,s),B.ac],t.p)
 B.d.u(q,r)
@@ -136232,7 +136239,7 @@ A.anP.prototype={
 q(a){var s,r,q=null,p=this.d==="es",o=p?"Hospitalizado":"Internado",n=p?"Alta hospitalaria":"Alta hospitalar",m=p?"Fallecimiento":"\xd3bito"
 p=p?"Traslado":"Transfer\xeancia"
 s=t.N
-r=A.T(["internado",o,"alta",n,"obito",m,"transferencia",p],s,s)
+r=A.U(["internado",o,"alta",n,"obito",m,"transferencia",p],s,s)
 s=A.i(20)
 p=A.M(B.hE.j(0.4),B.o,1)
 m=this.c
@@ -136290,7 +136297,7 @@ break}n.t(new A.bqV(n))
 if(l.b){n.c.a6(t.q).f.d5(A.dw(null,null,null,B.ep,B.c1,B.K,null,A.e(A.a8(n.a.c,"organizar_error"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pK,null,null,new A.bu(A.i(12),B.x),null,null))
 s=1
 break}h=l.a
-g=A.U("```json\\s*",!1,!1,!1,!1)
+g=A.S("```json\\s*",!1,!1,!1,!1)
 h=A.q(h,g,"")
 k=B.c.B(A.q(h,"```",""))
 j=t.P.a(B.aj.dt(0,k,null))
@@ -136579,7 +136586,7 @@ q(a){var s,r,q,p,o=this.a,n=o.c,m=o.d,l=A.bp(a,!0,t.C),k=n?B.aw:B.j,j=n?B.ai:B.a
 o=f.length===0
 if(o)s=A.a([],t.M8)
 else{r=l.gqs()
-q=A.S(r).i("a5<1>")
+q=A.T(r).i("a5<1>")
 q=A.oq(new A.a5(r,new A.bwS(f,m),q),8,q.i("F.E"))
 s=A.O(q,A.G(q).i("F.E"))}if(o)p=[]
 else{o=t.sh
@@ -136624,11 +136631,11 @@ i=A.bd(A.x(A.a([s,B.a3,A.e(i,k,k,k,k,k,A.m(k,k,l.x,k,k,k,k,k,k,k,k,14,k,k,k,k,k,
 i=A.bd(A.e(i,k,k,k,k,k,A.m(k,k,l.x,k,k,k,k,k,k,k,k,14,k,k,k,k,k,!0,k,k,k,k,k,k,k,k),k,k,k),k,k)}else{s=A.a([],m)
 p=l.z
 if(p.length!==0){n=A.a([new A.Xp("F\xc1RMACOS",i,k)],m)
-B.d.u(n,new A.P(p,new A.bwQ(o,i,l.Q,r),A.S(p).i("P<1,f>")))
+B.d.u(n,new A.P(p,new A.bwQ(o,i,l.Q,r),A.T(p).i("P<1,f>")))
 n.push(B.M)
 B.d.u(s,n)}p=l.as
 if(p.length!==0){n=A.a([new A.Xp("PROTOCOLOS",i,k)],m)
-B.d.u(n,new A.P(p,new A.bwR(o,i,l.Q,r),A.S(p).i("P<1,f>")))
+B.d.u(n,new A.P(p,new A.bwR(o,i,l.Q,r),A.T(p).i("P<1,f>")))
 B.d.u(s,n)}i=A.n0(s,b,B.dN,k,k,B.ao,!1)}return A.l(k,A.x(A.a([j,new A.L(B.Je,q,k),A.I(i,1)],m),B.k,B.e,B.f),B.i,k,k,new A.j(l.b,k,k,B.cV,k,k,B.l),k,k,k,k,k,k,k,k)},
 $S:43}
 A.bwN.prototype={
@@ -136733,19 +136740,19 @@ s=p}while(true)switch(s){case 0:a=n.c
 if(a==null){s=1
 break}g=A.bp(a,!1,t.C)
 a=n.r
-f=A.S(a).i("a5<1>")
+f=A.T(a).i("a5<1>")
 e=A.O(new A.a5(a,new A.bkN(),f),f.i("F.E"))
 if(e.length===0){s=1
 break}if(!J.o(J.W(B.d.gZ(e),"role"),"ai")){s=1
 break}if(n.y==null)n.y=new A.aM(Date.now(),0,!1).ei()
 d=A.aw(J.W(B.d.oX(e,new A.bkO(),new A.bkP(e)),"text"))
 if(d==null)d=""
-a=A.S(e).i("P<1,ai<h,h>>")
+a=A.T(e).i("P<1,ai<h,h>>")
 c=A.O(new A.P(e,new A.bkQ(),a),a.i("al.E"))
 a=n.y
 a.toString
 f=new A.aM(Date.now(),0,!1).ei()
-m=A.T(["id",a,"savedAt",f,"summary",d.length>100?B.c.S(d,0,100):d,"messages",c],t.N,t.K)
+m=A.U(["id",a,"savedAt",f,"summary",d.length>100?B.c.S(d,0,100):d,"messages",c],t.N,t.K)
 a=g.a
 l=a==null?null:a.a
 if(l!=null&&l.length!==0)A.Mc(l,m).es(new A.bkR())
@@ -136812,13 +136819,13 @@ case 2:return A.z(o.at(-1),r)}})
 return A.B($async$zs,r)},
 NO(a,b){var s,r,q,p,o
 if(b){s=this.r
-r=A.S(s).i("a5<1>")
+r=A.T(s).i("a5<1>")
 q=A.O(new A.a5(s,new A.bkL(),r),r.i("F.E"))
-s=A.S(q).i("P<1,ai<h,h>>")
+s=A.T(q).i("P<1,ai<h,h>>")
 p=A.O(new A.P(q,new A.bkM(),s),s.i("al.E"))
 o=B.c.B(this.w)
 if(o.length!==0){s=t.N
-p.push(A.T(["role","ai","text",o],s,s))}if(p.length!==0)$.a_s().sv(0,p)}this.a.abJ(2)},
+p.push(A.U(["role","ai","text",o],s,s))}if(p.length!==0)$.a_s().sv(0,p)}this.a.abJ(2)},
 q(a){var s,r,q,p,o,n,m,l,k=null
 try{p=this.anB(a)
 return p}catch(o){s=A.ah(o)
@@ -136872,7 +136879,7 @@ $0(){return B.d.gW(this.a)},
 $S:330}
 A.bkQ.prototype={
 $1(a){var s=J.at(a),r=t.N
-return A.T(["id",A.t(s.h(a,"role"))+"_"+1000*Date.now(),"role",A.b4(s.h(a,"role")),"text",A.b4(s.h(a,"text"))],r,r)},
+return A.U(["id",A.t(s.h(a,"role"))+"_"+1000*Date.now(),"role",A.b4(s.h(a,"role")),"text",A.b4(s.h(a,"text"))],r,r)},
 $S:331}
 A.bkR.prototype={
 $1(a){},
@@ -136888,7 +136895,7 @@ $0(){return A.R(t.N,t.z)},
 $S:330}
 A.bkZ.prototype={
 $0(){var s=this.a
-s.r.push(A.T(["role","user","text",this.b,"isError",!1],t.N,t.z))
+s.r.push(A.U(["role","user","text",this.b,"isError",!1],t.N,t.z))
 s.w=""
 s.x=!0},
 $S:0}
@@ -136910,7 +136917,7 @@ r.vF()}},
 $S:3}
 A.bkX.prototype={
 $0(){var s=this.a
-s.r.push(A.T(["role","ai","text",this.b,"isError",!1],t.N,t.z))
+s.r.push(A.U(["role","ai","text",this.b,"isError",!1],t.N,t.z))
 s.w=""
 s.x=!1},
 $S:0}
@@ -136922,7 +136929,7 @@ s.vF()}},
 $S:3}
 A.bkW.prototype={
 $0(){var s=this.a
-s.r.push(A.T(["role","ai","text",this.b,"isError",!0],t.N,t.z))
+s.r.push(A.U(["role","ai","text",this.b,"isError",!0],t.N,t.z))
 s.w=""
 s.x=!1},
 $S:0}
@@ -136931,14 +136938,14 @@ $0(){var s=this.a
 s.w=""
 s.x=!1
 s=s.r
-if(s.length===0||!J.o(B.d.gZ(s).h(0,"role"),"ai"))s.push(A.T(["role","ai","text","\u26a0\ufe0f Erro de conex\xe3o. Tente novamente.","isError",!0],t.N,t.z))},
+if(s.length===0||!J.o(B.d.gZ(s).h(0,"role"),"ai"))s.push(A.U(["role","ai","text","\u26a0\ufe0f Erro de conex\xe3o. Tente novamente.","isError",!0],t.N,t.z))},
 $S:0}
 A.bkL.prototype={
 $1(a){return!J.o(J.W(a,"isError"),!0)},
 $S:71}
 A.bkM.prototype={
 $1(a){var s=J.at(a),r=t.N
-return A.T(["role",A.b4(s.h(a,"role")),"text",A.b4(s.h(a,"text"))],r,r)},
+return A.U(["role",A.b4(s.h(a,"role")),"text",A.b4(s.h(a,"text"))],r,r)},
 $S:331}
 A.bkH.prototype={
 $2(a,b){var s,r,q,p,o,n,m=this,l=null,k=m.a,j=k.r
@@ -137546,15 +137553,15 @@ $S:33}
 A.AV.prototype={
 q(a){var s,r,q,p,o,n,m=this,l=m.c,k=l?B.aw:B.j,j=l?B.j:B.pg,i=l?B.b7:B.y3,h=l?B.j.j(0.07):B.yn
 l=m.e.gqs()
-s=A.S(l).i("a5<1>")
+s=A.T(l).i("a5<1>")
 r=A.O(new A.a5(l,new A.bfC(m),s),s.i("F.E"))
 l=t.sh
 q=A.O(new A.a5(B.hP,new A.bfD(m),l),l.i("F.E"))
 p=A.a_l(m.d)
-l=A.S(p).i("a5<1>")
+l=A.T(p).i("a5<1>")
 o=A.O(new A.a5(p,new A.bfE(m),l),l.i("F.E"))
 l=$.bGz()
-s=A.S(l).i("a5<1>")
+s=A.T(l).i("a5<1>")
 n=A.O(new A.a5(l,new A.bfF(m),s),s.i("F.E"))
 return A.nW(new A.bfG(m,k,j,h,r.length!==0||q.length!==0||o.length!==0||n.length!==0,i,r,a,q,n),!1,0.55,0.88,0.35)}}
 A.bfC.prototype={
@@ -137588,13 +137595,13 @@ p=A.bd(A.x(A.a([r,B.a3,g,B.ac,A.e(h,j,j,j,j,j,A.m(j,j,p,j,j,j,j,j,j,j,j,12,j,j,j
 h=p}else{n=A.a([],q)
 m=k.r
 if(m.length!==0){l=A.a([new A.L(B.IV,A.e("F\xc1RMACOS",j,j,j,j,j,A.m(j,j,g?B.ba:B.p5,j,j,j,j,j,j,j,j,10,j,j,B.E,j,j,!0,j,1.3,j,j,j,j,j,j),j,j,j),j)],q)
-B.d.u(l,new A.P(m,new A.bfz(h,r,k.f,k.w,p),A.S(m).i("P<1,f>")))
+B.d.u(l,new A.P(m,new A.bfz(h,r,k.f,k.w,p),A.T(m).i("P<1,f>")))
 B.d.u(n,l)}m=k.x
 if(m.length!==0){l=A.a([new A.L(B.tq,A.e("PROTOCOLOS",j,j,j,j,j,A.m(j,j,g?B.ba:B.p5,j,j,j,j,j,j,j,j,10,j,j,B.E,j,j,!0,j,1.3,j,j,j,j,j,j),j,j,j),j)],q)
-B.d.u(l,new A.P(m,new A.bfA(h,r,k.f,k.w,p),A.S(m).i("P<1,f>")))
+B.d.u(l,new A.P(m,new A.bfA(h,r,k.f,k.w,p),A.T(m).i("P<1,f>")))
 B.d.u(n,l)}m=k.y
 if(m.length!==0){l=A.a([new A.L(B.tq,A.e("CASOS CL\xcdNICOS",j,j,j,j,j,A.m(j,j,g?B.ba:B.p5,j,j,j,j,j,j,j,j,10,j,j,B.E,j,j,!0,j,1.3,j,j,j,j,j,j),j,j,j),j)],q)
-B.d.u(l,new A.P(m,new A.bfB(h,r,k.f,k.w,p),A.S(m).i("P<1,f>")))
+B.d.u(l,new A.P(m,new A.bfB(h,r,k.f,k.w,p),A.T(m).i("P<1,f>")))
 B.d.u(n,l)}h=A.n0(n,b,B.lh,j,j,B.ao,!1)}return A.l(j,A.x(A.a([i,new A.L(B.Jf,s,j),o,A.I(h,1)],q),B.k,B.e,B.f),B.i,j,j,new A.j(k.b,j,j,B.cV,j,j,B.l),j,j,j,j,j,j,j,j)},
 $S:43}
 A.bfz.prototype={
@@ -137729,7 +137736,7 @@ else j="ver +"
 j=A.e(j,g,g,g,g,g,A.m(g,g,e?B.k2:B.bG,g,g,g,g,g,g,g,g,10,g,g,B.z,g,g,!0,g,g,g,g,g,g,g,g),g,g,g)
 i=h.d?B.lt:B.e1
 p=A.w(A.a([p,B.a2,n,A.ae(g,A.l(g,A.w(A.a([j,B.e5N,A.X(i,e?B.k2:B.bG,g,13)],m),B.k,B.e,B.F,g,g),B.i,g,g,new A.j(l,g,k,o,g,g,B.l),g,g,g,g,B.fT,g,g,g),B.u,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,new A.buB(h),g,g,g,g,g,g)],m),B.k,B.e,B.f,g,g)
-o=A.S(s).i("P<1,f>")
+o=A.T(s).i("P<1,f>")
 o=A.O(new A.P(s,new A.buC(h),o),o.i("al.E"))
 n=A.acI(o,!0,!0,!0)
 o=o.length
@@ -137978,7 +137985,7 @@ if(g!=null){g=g.a6(t.q).f
 g.d5(A.dw(null,null,null,B.b2,B.c1,B.K,null,A.e(m.a.d==="es"?"Configura tu API Key de Gemini en Ajustes primero.":"Configure sua API Key do Gemini em Configura\xe7\xf5es primeiro.",null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,null,null,null,new A.bu(A.i(10),B.x),null,null))}s=1
 break}m.t(new A.bak(m))
 p=4
-g=A.S(a0)
+g=A.T(a0)
 f=g.i("P<1,hM>")
 e=A.O(new A.P(a0,new A.bal(),f),f.i("al.E"))
 k=e
@@ -138219,7 +138226,7 @@ if(a.c!==this.a.c)this.a3J()},
 a3J(){var s,r,q,p,o,n=this,m=$.bGg()
 if(!m.a)return
 s=n.a.c
-r=A.S(s).i("P<1,h>")
+r=A.T(s).i("P<1,h>")
 q=A.O(new A.P(s,new A.bfp(),r),r.i("al.E"))
 p=m.aL8(0,q)
 o=m.aOI(p)
@@ -138409,8 +138416,8 @@ return s.d=!s.d},
 $S:0}
 A.aiU.prototype={
 Oi(a){return A.cn(A.hw("FF"+B.c.i7(a,"#",""),16))},
-q(a){var s=this.c,r=A.d0(s,0,A.dy(3,"count",t.S),A.S(s).c).d8(0)
-s=A.S(r).i("P<1,L>")
+q(a){var s=this.c,r=A.d0(s,0,A.dy(3,"count",t.S),A.T(s).c).d8(0)
+s=A.T(r).i("P<1,L>")
 s=A.O(new A.P(r,new A.bbm(this),s),s.i("al.E"))
 return A.x(s,B.k,B.e,B.f)}}
 A.bbm.prototype={
@@ -138437,7 +138444,7 @@ B.d.u(m,A.a([B.cE,A.l(j,A.e(h+": "+r,j,j,j,j,j,A.m(j,j,e,j,j,j,j,j,j,j,j,11,B.ey
 $S:872}
 A.ahP.prototype={
 q(a){var s,r=this,q=r.c
-q=new A.fC(q,A.S(q).i("fC<1>"))
+q=new A.fC(q,A.T(q).i("fC<1>"))
 s=t.n
 q=A.O(q.gfU(q).eG(0,new A.b9C(r),s),s)
 q.push(new A.V5(r.w,r.x,r.e,r.r,"Ampicilina 1.5g IV\u2026",r.as,null))
@@ -138893,7 +138900,7 @@ return new A.L(B.dZ,A.l(s,A.w(l,B.r,B.e,B.f,s,s),B.i,s,s,new A.j(p,s,n,o,s,s,B.l
 fD(a,b,c,d,e){return this.a_x(null,a,b,c,d,e)},
 YY(a,b,c,d,e){var s,r=null,q=e.rn(d),p=e.E1(d),o=e.a,n=o?B.eN:B.j,m=A.i(12),l=A.M(o?B.ct:B.cq,B.o,0.8),k=A.X(b,q.j(0.8),r,16),j=t.p
 k=A.w(A.a([k,B.J,A.e(c,r,r,r,r,r,A.m(r,r,o?B.j.j(0.58):B.bl,r,r,r,r,r,r,r,r,10.5,r,r,B.O,r,r,!0,r,r,r,r,r,r,r,r),r,r,r)],j),B.k,B.e,B.f,r,r)
-s=A.S(a).i("P<1,dn>")
+s=A.T(a).i("P<1,dn>")
 o=A.O(new A.P(a,new A.aVq(p,q),s),s.i("al.E"))
 return new A.L(B.dZ,A.l(r,A.x(A.a([k,B.M,A.dL(B.ae,o,B.bH,6,6)],j),B.r,B.e,B.f),B.i,r,r,new A.j(n,r,l,m,r,r,B.l),r,r,r,r,B.bD,r,r,r),r)},
 aJE(a){var s,r,q,p=null,o=t.N,n=A.R(o,o)
@@ -139049,7 +139056,7 @@ r=l.a.f==="es"?"PROBLEMAS ACTIVOS":"PROBLEMAS ATIVOS"
 q=t.p
 r=A.a([j,B.H,s,B.aG,A.e(r.toUpperCase(),k,k,k,k,k,A.m(k,k,h?B.j.j(0.35):B.S,k,k,k,k,k,k,k,k,10,k,k,B.z,k,k,!0,k,0.8,k,k,k,k,k,k),k,k,k),B.M],q)
 j=i.b
-if(j.length!==0){j=new A.fC(j,A.S(j).i("fC<1>"))
+if(j.length!==0){j=new A.fC(j,A.T(j).i("fC<1>"))
 s=t.n
 j=A.O(j.gfU(j).eG(0,new A.byi(l,h,g),s),s)
 j.push(B.ac)
@@ -139565,7 +139572,7 @@ $1(a){var s=this.a.a
 return s.dh(s.c.a8j(a))},
 $S:3}
 A.anD.prototype={
-q(a){var s=this.c,r=A.S(s).i("P<1,eS>")
+q(a){var s=this.c,r=A.T(s).i("P<1,eS>")
 s=A.O(new A.P(s,new A.bsG(this),r),r.i("al.E"))
 return A.dL(B.ae,s,B.bH,0,6)}}
 A.bsG.prototype={
@@ -139681,7 +139688,7 @@ if(a9.length===0)a9=""}s=b4.p4
 if(!((s==null?a8:s.length!==0)===!0)){s=b3.b
 if(s.length===0)s=""}a5=b3.Rt(s,a9)
 a9=b4.R8
-if(a9!=null&&a9.length!==0){a9=new A.P(a9,new A.aYu(),A.S(a9).i("P<1,fM>")).f5(0,new A.aYv())
+if(a9!=null&&a9.length!==0){a9=new A.P(a9,new A.aYu(),A.T(a9).i("P<1,fM>")).f5(0,new A.aYv())
 a6=A.O(a9,a9.$ti.i("F.E"))}else a6=A.dP(a7.a.w,!0,t.dA)
 a7.a=a7.a.aMZ(a4,a6,a,a5,i)
 a7.aa()},
@@ -139891,25 +139898,25 @@ $S:2}
 A.bFp.prototype={
 $2$prefix(a,b){var s,r,q,p,o,n,m,l,k,j,i,h=this,g="^[-\u2022*]\\s*"
 if(B.c.B(a).length===0)return
-s=A.U("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
+s=A.S("\\d+[\\.\\)]\\s+",!0,!1,!1,!1)
 if(s.b.test(a)){r=A.bFM(a)
 for(s=r.length,q=h.a,p=0;p<r.length;r.length===s||(0,A.a2)(r),++p){o=r[p]
-n=A.U(g,!0,!1,!1,!1)
+n=A.S(g,!0,!1,!1,!1)
 m=B.c.B(A.k9(o,n,"",0))
 if(m.length!==0)q.a+="\u2022 "+m+"\n"}return}s=new A.P(A.a(a.split("\n"),t.s),new A.bFq(),t.a4).f5(0,new A.bFr())
 l=A.O(s,s.$ti.i("F.E"))
 s=l.length
 if(s>1){for(q=h.a,p=0;p<l.length;l.length===s||(0,A.a2)(l),++p){k=l[p]
-n=A.U(g,!0,!1,!1,!1)
+n=A.S(g,!0,!1,!1,!1)
 m=B.c.B(A.k9(k,n,"",0))
-if(m.length!==0)q.a+="\u2022 "+m+"\n"}return}s=B.c.ej(a,A.U("\\.\\s+(?=[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc2\xca\xd4\xc3\xd5\xdc])",!0,!1,!1,!1))
-s=new A.P(s,new A.bFs(),A.S(s).i("P<1,h>")).f5(0,new A.bFt())
+if(m.length!==0)q.a+="\u2022 "+m+"\n"}return}s=B.c.ej(a,A.S("\\.\\s+(?=[A-Z\xc1\xc9\xcd\xd3\xda\xc0\xc2\xca\xd4\xc3\xd5\xdc])",!0,!1,!1,!1))
+s=new A.P(s,new A.bFs(),A.T(s).i("P<1,h>")).f5(0,new A.bFt())
 j=A.O(s,s.$ti.i("F.E"))
 s=j.length
 if(s>1){for(q=h.a,p=0;p<j.length;j.length===s||(0,A.a2)(j),++p){i=j[p]
-n=A.U(g,!0,!1,!1,!1)
+n=A.S(g,!0,!1,!1,!1)
 m=B.c.B(A.k9(i,n,"",0))
-if(m.length!==0)q.a+="\u2022 "+m+"\n"}return}m=B.c.B(B.c.i7(a,A.U(g,!0,!1,!1,!1),""))
+if(m.length!==0)q.a+="\u2022 "+m+"\n"}return}m=B.c.B(B.c.i7(a,A.S(g,!0,!1,!1,!1),""))
 if(m.length!==0)h.a.a+="\u2022 "+m+"\n"},
 $1(a){return this.$2$prefix(a,null)},
 $S:888}
@@ -140191,7 +140198,7 @@ else j=r?B.b7:B.bn
 return A.ae(k,A.bX(A.w(A.a([n,B.bF,A.e(l.c,k,k,k,k,k,A.m(k,k,j,k,k,k,k,k,k,k,k,11.5,k,k,m,k,k,!0,k,k,k,k,k,k,k,k),k,k,k)],t.p),B.k,B.e,B.F,k,k),B.a1,new A.j(s,k,o,p,k,k,B.l),B.jq,k,k,B.ed,k,k),B.u,!1,k,k,k,k,k,k,k,k,k,k,k,k,k,l.r,k,k,k,k,k,k)}}
 A.Io.prototype={
 q(a){var s=this,r=null,q=A.a([A.e(s.c,r,r,r,r,r,A.m(r,r,s.f?B.ba:B.fR,r,r,r,r,r,r,r,r,10,r,r,B.O,r,r,!0,r,0.3,r,r,r,r,r,r),r,r,r),B.cE],t.p),p=s.d
-B.d.u(q,new A.P(p,new A.buE(s),A.S(p).i("P<1,f>")))
+B.d.u(q,new A.P(p,new A.buE(s),A.T(p).i("P<1,f>")))
 return A.x(q,B.r,B.e,B.f)}}
 A.buE.prototype={
 $1(a){var s,r,q,p,o,n,m=null,l=this.a,k=l.e===a
@@ -141071,7 +141078,7 @@ if(p.length!==0)b.push(e.hp(e.a.e==="es"?"Criterios de alta":"Crit\xe9rios de al
 p=m.w
 if(p.length!==0){e.a.toString
 j=A.a([B.ac,e.wa("MEDICAMENTOS",a)],i)
-B.d.u(j,new A.P(p,new A.bxr(e,a),A.S(p).i("P<1,f>")))
+B.d.u(j,new A.P(p,new A.bxr(e,a),A.T(p).i("P<1,f>")))
 B.d.u(b,j)}p=m.x
 if(p.gcb(p)){e.a.toString
 j=A.a([B.ac,e.wa("DADOS ADICIONAIS",a)],i)
@@ -141260,7 +141267,7 @@ a.push(s.z5(m,""+g.f,b))
 a.push(B.aG)
 m=e.f
 if(m.length!==0){i=A.a([s.a_4(q?"EVOLUCIONES M\xc9DICAS":"EVOLU\xc7\xd5ES M\xc9DICAS",b)],o)
-m=new A.fC(m,A.S(m).i("fC<1>"))
+m=new A.fC(m,A.T(m).i("fC<1>"))
 B.d.u(i,m.gfU(m).eG(0,new A.bbS(s,b),t.n))
 B.d.u(a,i)}return A.l(d,A.x(A.a([B.H,a0,B.a3,new A.L(B.n9,r,d),B.H,p,A.I(A.n0(A.a([A.l(d,A.x(a,B.r,B.e,B.f),B.i,d,d,new A.j(e.e,d,l,n,k,d,B.l),d,d,d,d,B.na,d,d,d)],o),a2,B.aBb,d,d,B.ao,!1),1)],o),B.k,B.e,B.f),B.i,d,d,new A.j(e.b,d,c,B.cV,d,d,B.l),d,d,d,d,d,d,d,d)},
 $S:43}
@@ -141478,7 +141485,7 @@ A.bBj.prototype={
 $0(){return this.a.zr(this.b)},
 $S:0}
 A.fM.prototype={
-ec(){return A.T(["medicamento",this.a,"dosagem",this.b],t.N,t.z)}}
+ec(){return A.U(["medicamento",this.a,"dosagem",this.b],t.N,t.z)}}
 A.r3.prototype={
 P(){return"EstadoClinical."+this.b}}
 A.vU.prototype={
@@ -141673,11 +141680,11 @@ p=A.b6(m)
 A.a1().$1("\ud83d\udc8a [DDI] ERRO parseClasses: "+A.t(q)+"\n"+A.t(p))}try{this.aCL(a)}catch(m){o=A.ah(m)
 n=A.b6(m)
 A.a1().$1("\ud83d\udc8a [DDI] ERRO parseDb: "+A.t(o)+"\n"+A.t(n))}},
-aCG(a){var s,r,q,p,o,n,m,l,k=A.U("const\\s+DRUG_ALIASES\\s*=\\s*\\{(.*?)\\};",!0,!0,!1,!1).dU(a)
+aCG(a){var s,r,q,p,o,n,m,l,k=A.S("const\\s+DRUG_ALIASES\\s*=\\s*\\{(.*?)\\};",!0,!0,!1,!1).dU(a)
 if(k==null){A.a1().$1("\ud83d\udc8a [DDI] DRUG_ALIASES n\xe3o encontrado")
 return}s=k.b[1]
 s.toString
-r=A.U('"([^"]+)"\\s*:\\s*"([^"]+)"',!0,!1,!1,!1).ju(0,s)
+r=A.S('"([^"]+)"\\s*:\\s*"([^"]+)"',!0,!1,!1,!1).ju(0,s)
 s=t.N
 q=A.R(s,s)
 for(s=new A.q3(r.a,r.b,r.c),p=t.Qz;s.C();){o=s.d
@@ -141689,20 +141696,20 @@ n=n[2]
 n.toString
 q.p(0,l,B.c.B(n))}this.c=q
 A.a1().$1("\ud83d\udc8a [DDI] aliases: "+q.a)},
-aCK(a){var s,r,q,p,o,n,m,l,k,j,i,h,g=A.U("const\\s+DRUG_CLASSES\\s*=\\s*\\{(.*?)\\};\\s*/\\*",!0,!0,!1,!1).dU(a)
+aCK(a){var s,r,q,p,o,n,m,l,k,j,i,h,g=A.S("const\\s+DRUG_CLASSES\\s*=\\s*\\{(.*?)\\};\\s*/\\*",!0,!0,!1,!1).dU(a)
 if(g==null){A.a1().$1("\ud83d\udc8a [DDI] DRUG_CLASSES n\xe3o encontrado")
 return}s=g.b[1]
 s.toString
 r=t.N
 q=A.R(r,t.yp)
-for(s=A.U('"\\s*(\\$classe_[^"]+)"\\s*:\\s*\\[(.*?)\\]',!0,!0,!1,!1).ju(0,s),s=new A.q3(s.a,s.b,s.c),p=t.Qz;s.C();){o=s.d
+for(s=A.S('"\\s*(\\$classe_[^"]+)"\\s*:\\s*\\[(.*?)\\]',!0,!0,!1,!1).ju(0,s),s=new A.q3(s.a,s.b,s.c),p=t.Qz;s.C();){o=s.d
 n=(o==null?p.a(o):o).b
 m=n[1]
 m.toString
 l=B.c.B(m)
 n=n[2]
 n.toString
-n=A.U('"([^"$]+)"',!0,!1,!1,!1).ju(0,n)
+n=A.S('"([^"$]+)"',!0,!1,!1,!1).ju(0,n)
 n=A.h6(n,new A.aCA(),A.G(n).i("F.E"),r)
 m=A.G(n).i("a5<F.E>")
 k=A.O(new A.a5(n,new A.aCB(),m),m.i("F.E"))
@@ -141722,12 +141729,12 @@ o=b9.d=3
 b9.e=b9.f=b9.r=b9.w=""
 b9.x=b9.y=!1
 n=new A.aCD(b9,p)
-m=A.U('^\\s{2}"([^"]+)"\\s*:\\s*\\{',!0,!1,!1,!1)
-l=A.U('^\\s{4}"([^"]+)"\\s*:\\s*(?:INTERACOES_MODELOS\\.(\\w+)|\\{)',!0,!1,!1,!1)
-k=A.U('gravidade\\s*:\\s*"([^"]+)"',!0,!1,!1,!1)
-j=A.U("scoreClinico\\s*:\\s*(\\d+)",!0,!1,!1,!1)
-i=A.U('pt\\s*:\\s*"(.+)"',!0,!1,!1,!1)
-h=A.U('es\\s*:\\s*"(.+)"',!0,!1,!1,!1)
+m=A.S('^\\s{2}"([^"]+)"\\s*:\\s*\\{',!0,!1,!1,!1)
+l=A.S('^\\s{4}"([^"]+)"\\s*:\\s*(?:INTERACOES_MODELOS\\.(\\w+)|\\{)',!0,!1,!1,!1)
+k=A.S('gravidade\\s*:\\s*"([^"]+)"',!0,!1,!1,!1)
+j=A.S("scoreClinico\\s*:\\s*(\\d+)",!0,!1,!1,!1)
+i=A.S('pt\\s*:\\s*"(.+)"',!0,!1,!1,!1)
+h=A.S('es\\s*:\\s*"(.+)"',!0,!1,!1,!1)
 for(g=0,f=0;f<r.length;++f){e=r[f]
 d=B.c.B(e)
 c=B.c.ju("{",e).gA(0)
@@ -141761,9 +141768,9 @@ a0=A.q(a0,b3,b4)
 a0=A.q(a0,b5,"'")
 b9.w=A.q(a0,b6,"\\")
 b9.y=!1}else if(A.f_(d,"pt:",0))b9.y=!0}else if(b9.y&&d.length!==0&&!B.c.Y(d,"es:")&&!B.c.Y(d,'"es"')){a0=b9.w
-a1=A.U(b7,!0,!1,!1,!1)
+a1=A.S(b7,!0,!1,!1,!1)
 a7=A.q(d,a1,"")
-a1=A.U(b8,!0,!1,!1,!1)
+a1=A.S(b8,!0,!1,!1,!1)
 b9.w=a0+(" "+B.c.B(A.q(a7,a1,"")))
 if(B.c.eF(d,b4)||B.c.eF(d,'",'))b9.y=!1}if(B.c.Y(d,"es:")||B.c.Y(d,'"es"')){a6=h.dU(d)
 if(a6!=null){a0=a6.b[1]
@@ -141772,9 +141779,9 @@ a0=A.q(a0,b3,b4)
 a0=A.q(a0,b5,"'")
 b9.r=A.q(a0,b6,"\\")
 b9.x=!1}else if(A.f_(d,"es:",0))b9.x=!0}else if(b9.x&&d.length!==0){a0=b9.r
-a1=A.U(b7,!0,!1,!1,!1)
+a1=A.S(b7,!0,!1,!1,!1)
 a7=A.q(d,a1,"")
-a1=A.U(b8,!0,!1,!1,!1)
+a1=A.S(b8,!0,!1,!1,!1)
 b9.r=a0+(" "+B.c.B(A.q(a7,a1,"")))
 if(B.c.eF(d,b4)||B.c.eF(d,'",'))b9.x=!1}if(!B.c.Y(d,"conduta"))B.c.Y(d,'"conduta"')
 if(b9.w.length!==0&&b9.r.length!==0){a8=i.dU(d)
@@ -141793,11 +141800,11 @@ if(a9!==b9.r&&b9.e.length===0)b9.e=a9}}}g+=c-b
 if(g<0)g=0}this.e=p
 for(a0=new A.cF(p,p.r,p.e,p.$ti.i("cF<2>")),b1=0;a0.C();)b1+=J.ar(a0.d)
 A.a1().$1("\ud83d\udc8a [DDI] DB: "+p.a+" drogas top-level, "+b1+" pares de intera\xe7\xe3o")},
-aCS(a){var s,r,q,p,o,n,m,l,k,j,i='\\"',h="\\'",g="\\\\",f=A.R(t.N,t.Aq),e=A.U("const\\s+INTERACOES_MODELOS\\s*=\\s*\\{(.*?)\\};",!0,!0,!1,!1).dU(a)
+aCS(a){var s,r,q,p,o,n,m,l,k,j,i='\\"',h="\\'",g="\\\\",f=A.R(t.N,t.Aq),e=A.S("const\\s+INTERACOES_MODELOS\\s*=\\s*\\{(.*?)\\};",!0,!0,!1,!1).dU(a)
 if(e==null)return f
 s=e.b[1]
 s.toString
-for(s=A.U('"?(\\w+)"?\\s*:\\s*\\{.*?gravidade\\s*:\\s*"([^"]+)".*?scoreClinico\\s*:\\s*(\\d+).*?pt\\s*:\\s*"([^"]+)".*?es\\s*:\\s*"([^"]+)".*?pt\\s*:\\s*"([^"]+)".*?es\\s*:\\s*"([^"]+)"',!0,!0,!1,!1).ju(0,s),s=new A.q3(s.a,s.b,s.c),r=t.Qz;s.C();){q=s.d
+for(s=A.S('"?(\\w+)"?\\s*:\\s*\\{.*?gravidade\\s*:\\s*"([^"]+)".*?scoreClinico\\s*:\\s*(\\d+).*?pt\\s*:\\s*"([^"]+)".*?es\\s*:\\s*"([^"]+)".*?pt\\s*:\\s*"([^"]+)".*?es\\s*:\\s*"([^"]+)"',!0,!0,!1,!1).ju(0,s),s=new A.q3(s.a,s.b,s.c),r=t.Qz;s.C();){q=s.d
 p=(q==null?r.a(q):q).b
 o=p[1]
 o.toString
@@ -141828,25 +141835,25 @@ p=A.q(p,i,'"')
 p=A.q(p,h,"'")
 f.p(0,o,new A.wl(n,m,l,k,j,A.q(p,g,"\\")))}A.a1().$1("\ud83d\udc8a [DDI] modelos: "+f.a)
 return f},
-arI(a){var s,r=" ",q=A.U("\\d+/\\d+h\\b",!1,!1,!1,!1),p=A.q(a,q,r)
-q=A.U("\\b\\d+\\s*x/\\w+\\b",!1,!1,!1,!1)
+arI(a){var s,r=" ",q=A.S("\\d+/\\d+h\\b",!1,!1,!1,!1),p=A.q(a,q,r)
+q=A.S("\\b\\d+\\s*x/\\w+\\b",!1,!1,!1,!1)
 p=A.q(p,q,r)
-q=A.U("\\d+[\\.,]?\\d*\\s*(mg|mcg|g|ml|ui|meg|meq|mmol|\xb5g|ug)\\b",!1,!1,!1,!1)
+q=A.S("\\d+[\\.,]?\\d*\\s*(mg|mcg|g|ml|ui|meg|meq|mmol|\xb5g|ug)\\b",!1,!1,!1,!1)
 p=A.q(p,q,r)
-q=A.U("\\b\\d+\\b",!0,!1,!1,!1)
+q=A.S("\\b\\d+\\b",!0,!1,!1,!1)
 p=A.q(p,q,r)
-q=A.U("\\b(iv|im|sc|vo|sl|ev|id|inalatorio|inalatoria|oral|intravenoso|intramuscular|subcutaneo|subcut\xe2neo|endovenoso|retal|topico|topical|nasal|oftalmico|auditivo)\\b",!1,!1,!1,!1)
+q=A.S("\\b(iv|im|sc|vo|sl|ev|id|inalatorio|inalatoria|oral|intravenoso|intramuscular|subcutaneo|subcut\xe2neo|endovenoso|retal|topico|topical|nasal|oftalmico|auditivo)\\b",!1,!1,!1,!1)
 p=A.q(p,q,r)
-q=A.U("\\b(cloridrato|dicloridrato|sulfato|fosfato|tartarato|maleato|fumarato|citrato|benzoato|mesilato|tosilato|lactato|acetato|gluconato|de|do|da|dos|das|para|com|sem|em|comprimido|capsula|ampola|frasco|solucao|suspensao|injetavel|revestido|liberacao|prolongada|retardada|modificada|simples|generico)\\b",!1,!1,!1,!1)
+q=A.S("\\b(cloridrato|dicloridrato|sulfato|fosfato|tartarato|maleato|fumarato|citrato|benzoato|mesilato|tosilato|lactato|acetato|gluconato|de|do|da|dos|das|para|com|sem|em|comprimido|capsula|ampola|frasco|solucao|suspensao|injetavel|revestido|liberacao|prolongada|retardada|modificada|simples|generico)\\b",!1,!1,!1,!1)
 p=A.q(p,q,r)
-q=A.U("[^a-zA-Z\xc0-\xff\\s\\-]",!0,!1,!1,!1)
+q=A.S("[^a-zA-Z\xc0-\xff\\s\\-]",!0,!1,!1,!1)
 p=A.q(p,q,r)
 q=B.c.B(A.h6(new A.PS(A.q(p,"-",r)),new A.aCz(),t.Dc.i("F.E"),t.N).mW(0).toLowerCase())
-s=A.U("\\s+",!0,!1,!1,!1)
+s=A.S("\\s+",!0,!1,!1,!1)
 q=A.q(q,s,"_")
-s=A.U("_+",!0,!1,!1,!1)
+s=A.S("_+",!0,!1,!1,!1)
 q=A.q(q,s,"_")
-s=A.U("^_|_$",!0,!1,!1,!1)
+s=A.S("^_|_$",!0,!1,!1,!1)
 return A.q(q,s,"")},
 Z0(a){var s=this.d,r=A.G(s).i("eh<1,2>"),q=r.i("e7<F.E,h>")
 s=A.O(new A.e7(new A.a5(new A.eh(s,r),new A.aCx(a),r.i("a5<F.E>")),new A.aCy(),q),q.i("F.E"))
@@ -141915,7 +141922,7 @@ if(r===1)return"ontem"
 if(r<30)return"h\xe1 "+r+" dias"
 return B.c.b0(B.p.l(A.hY(s)),2,"0")+"/"+B.c.b0(B.p.l(A.fg(s)),2,"0")+"/"+A.f7(s)}}
 A.aKU.prototype={
-$1(a){var s=a.ghM(),r=A.S(s),q=t.Gj,p=A.O(new A.d1(new A.e7(new A.a5(s,new A.aKS(),r.i("a5<1>")),A.cil(),r.i("e7<1,fs?>")),q),q.i("F.E"))
+$1(a){var s=a.ghM(),r=A.T(s),q=t.Gj,p=A.O(new A.d1(new A.e7(new A.a5(s,new A.aKS(),r.i("a5<1>")),A.cil(),r.i("e7<1,fs?>")),q),q.i("F.E"))
 B.d.ed(p,new A.aKT())
 return p},
 $S:915}
@@ -141972,7 +141979,7 @@ this.b.aA(0)},
 $S:10}
 A.aKG.prototype={
 $1(a){var s=t.N
-return A.T(["medicamento",a.a,"dosagem",a.b],s,s)},
+return A.U(["medicamento",a.a,"dosagem",a.b],s,s)},
 $S:919}
 A.aKH.prototype={
 $1(a){if(t.f.b(a))return A.c5K(A.dE(a,t.N,t.z))
@@ -142121,7 +142128,7 @@ m=o.$1(J.W(s,"dosis"))
 q=m==null?"":m
 if(J.ar(r)===0)return null
 o=t.N
-o=A.T(["medicamento",r,"dosis",q],o,o)
+o=A.U(["medicamento",r,"dosis",q],o,o)
 return o}catch(l){p=A.ah(l)
 A.a1().$1("\ud83d\udca5 [SoapParser] ERRO PARSE FARMACO ITEM: "+A.t(p)+" \u2014 raw: "+A.t(a))
 return null}},
@@ -142134,7 +142141,7 @@ q.al()
 s=J.dj(q.a.c,new A.bnI(),t.nv)
 s=A.O(s,s.$ti.i("al.E"))
 q.d=s
-r=A.S(s).i("P<1,az>")
+r=A.T(s).i("P<1,az>")
 s=A.O(new A.P(s,new A.bnJ(q),r),r.i("al.E"))
 q.e=s},
 n(){var s,r,q,p=this.e
@@ -142165,9 +142172,9 @@ A.eZ(B.P,new A.bnD(a,b,c,s.toLowerCase()==="es"),r,!0,!0,!0,null,!0,t.z)},
 asT(a){var s,r
 if(a===B.q.Ux(a)&&a<1e6)return B.q.a2(a,0)
 s=B.q.a2(a,3)
-r=A.U("0+$",!0,!1,!1,!1)
+r=A.S("0+$",!0,!1,!1,!1)
 s=A.q(s,r,"")
-r=A.U("\\.$",!0,!1,!1,!1)
+r=A.S("\\.$",!0,!1,!1,!1)
 return A.q(s,r,"")},
 aoA(a){var s
 if(a.f===B.dP)return B.FV
@@ -142192,9 +142199,9 @@ if(a>=0.7)return"Revisar valor"
 return b?"Ingreso manual":"Inserir manualmente"},
 q(a){var s,r,q,p,o,n,m=this,l=null,k=m.a.d.toLowerCase()==="es",j=m.d
 j===$&&A.c()
-s=new A.a5(j,new A.bnE(),A.S(j).i("a5<1>")).gA(0)
+s=new A.a5(j,new A.bnE(),A.T(j).i("a5<1>")).gA(0)
 j=m.d
-r=new A.a5(j,new A.bnF(),A.S(j).i("a5<1>")).gA(0)
+r=new A.a5(j,new A.bnF(),A.T(j).i("a5<1>")).gA(0)
 j=A.e(k?"Revisar Examen":"Revisar Exame",l,l,l,l,l,B.a5F,l,l,l)
 q=m.d.length
 p=k?"par\xe1metros extra\xeddos":"par\xe2metros extra\xeddos"
@@ -142275,7 +142282,7 @@ o=h.e
 if(o!=null&&o.length!==0)p.push(new A.L(B.zm,A.e("Ref: "+o,i,i,i,i,i,B.eaT,i,i,i),i))
 if(f)p.push(new A.L(B.ts,A.e(j.y?"\u26a0 Baja confianza \u2014 inserte el valor manualmente":"\u26a0 Baixa confian\xe7a \u2014 insira o valor manualmente",i,i,i,i,i,B.ea8,i,i,i),i))
 p=A.I(A.x(p,B.r,B.e,B.f),1)
-o=A.a([new A.Dg(A.U("[\\d.,\\-]",!0,!1,!1,!1),!0,"")],t.VS)
+o=A.a([new A.Dg(A.S("[\\d.,\\-]",!0,!1,!1,!1),!0,"")],t.VS)
 n=j.r
 m=A.m(i,i,n,i,i,i,i,i,i,i,i,16,i,i,B.D,i,i,!0,i,i,i,i,i,i,i,i)
 l=B.I.j(0.2)
@@ -142295,7 +142302,7 @@ n.push(A.l(s,A.w(A.a([B.aIE,B.J,A.I(A.e(p?r+" campo(s) con baja confianza \u2014
 A.Ix.prototype={
 q(a){var s,r=this,q=null,p=A.l(q,q,B.i,q,q,new A.j(B.bt,q,q,A.i(10),q,q,B.l),q,4,q,B.tp,q,q,q,38),o=r.f,n=t.p,m=A.w(A.a([B.aG2,B.J,A.e(o?"Interpretaci\xf3n Cl\xednica":"Interpreta\xe7\xe3o Cl\xednica",q,q,q,q,q,B.a5F,q,q,q),B.c2,A.eB(q,q,B.aGd,q,q,new A.bw4(a),q,q,q,q,q)],n),B.k,B.e,B.f,q,q),l=A.a([],n),k=r.d
 if(k.length!==0){s=A.cX([A.e(o?"PAR\xc1METROS CALCULADOS":"PAR\xc2METROS CALCULADOS",q,q,q,q,q,B.a5o,q,q,q),B.M],t.n)
-s.u(0,new A.P(k,new A.bw5(r),A.S(k).i("P<1,f>")))
+s.u(0,new A.P(k,new A.bw5(r),A.T(k).i("P<1,f>")))
 s.E(0,B.aG)
 B.d.u(l,s)}l.push(A.e("RESUMO CL\xcdNICO",q,q,q,q,q,B.a5o,q,q,q))
 l.push(B.M)
@@ -142778,7 +142785,7 @@ return 9},
 q(a){var s,r,q,p,o,n,m,l,k=this,j=null,i=k.a,h=i.e,g=i.c,f=i.d
 i=t.sh
 s=A.O(new A.a5(B.hP,new A.b96(A.aQ(t.N)),i),i.i("F.E"))
-i=A.S(s).i("a5<1>")
+i=A.T(s).i("a5<1>")
 r=new A.a5(s,new A.b97(),i).gA(0)
 i=new A.a5(s,new A.b98(),i).gA(0)
 q=g?B.ai:B.I9
@@ -142801,12 +142808,12 @@ if(r===0){r=c?"Sin casos disponibles":"Nenhum caso dispon\xedvel"
 return A.a([A.Qz(new A.Vo(b,B.aDC,r,c?"Los casos aparecer\xe1n aqu\xed cuando est\xe9n disponibles.":"Os casos aparecer\xe3o aqui quando estiverem dispon\xedveis.",s),!1)],t.p)}return A.a([new A.vQ(B.Ja,new A.pI(new A.ng(new A.b92(q,a,c,d),r,!0,!0,!0,A.x5(),s),s),s)],t.p)},
 anN(a,b,c){var s,r,q,p,o,n,m,l=this,k=null,j={}
 j.a=null
-if(l.r.length!==0){s=A.S(a).i("a5<1>")
+if(l.r.length!==0){s=A.T(a).i("a5<1>")
 r=A.O(new A.a5(a,new A.b8U(l,c),s),s.i("F.E"))
 j.a=r
 s=r}else if(l.e===0){s=A.O(a,t.he)
 B.d.ed(s,new A.b8V(c))
-j.a=s}else{s=A.S(a).i("a5<1>")
+j.a=s}else{s=A.T(a).i("a5<1>")
 r=A.O(new A.a5(a,new A.b8W(l),s),s.i("F.E"))
 B.d.ed(r,new A.b8X(c))
 j.a=r
@@ -142962,7 +142969,7 @@ q=A.X(p.d,q,o,14)
 return A.I(A.ae(o,A.bX(A.w(A.a([q,B.ab,A.e(p.c,o,o,o,o,o,A.m(o,o,m?B.j:B.Q.j(0.85),o,o,o,o,o,o,o,o,12,o,o,B.E,o,o,!0,o,o,o,o,o,o,o,o),o,o,o)],t.p),B.k,B.aH,B.f,o,o),B.a1,new A.j(s,o,r,n,o,o,B.l),B.d9,o,o,B.aAg,o,o),B.u,!1,o,o,o,o,o,o,o,o,o,o,o,o,o,p.r,o,o,o,o,o,o),1)}}
 A.nu.prototype={}
 A.akW.prototype={
-q(a){var s,r,q,p,o,n,m,l,k=this,j=null,i=k.y,h=A.S(i).i("a5<1>"),g=A.O(new A.a5(i,new A.bhD(k),h),h.i("F.E"))
+q(a){var s,r,q,p,o,n,m,l,k=this,j=null,i=k.y,h=A.T(i).i("a5<1>"),g=A.O(new A.a5(i,new A.bhD(k),h),h.i("F.E"))
 if(g.length===0)return B.aB
 i=k.z
 s=i?k.e:k.d
@@ -143505,7 +143512,7 @@ $S:83}
 A.boO.prototype={
 $1(a){var s,r=B.c.B(a)
 if(r.length===0)return this.a.fr==="es"?"Ingresa el correo":"Informe o e-mail"
-s=A.U("^[\\w.-]+@[\\w.-]+\\.\\w+$",!0,!1,!1,!1)
+s=A.S("^[\\w.-]+@[\\w.-]+\\.\\w+$",!0,!1,!1,!1)
 if(!s.b.test(r))return this.a.fr==="es"?"Correo inv\xe1lido":"E-mail inv\xe1lido"
 return null},
 $S:76}
@@ -143521,7 +143528,7 @@ $S:0}
 A.boR.prototype={
 $1(a){var s,r=B.c.B(a)
 if(r.length===0)return this.a.fr==="es"?"Ingresa el correo":"Informe o e-mail"
-s=A.U("^[\\w.-]+@[\\w.-]+\\.\\w+$",!0,!1,!1,!1)
+s=A.S("^[\\w.-]+@[\\w.-]+\\.\\w+$",!0,!1,!1,!1)
 if(!s.b.test(r))return this.a.fr==="es"?"Correo inv\xe1lido":"E-mail inv\xe1lido"
 return null},
 $S:76}
@@ -143543,7 +143550,7 @@ $S:0}
 A.boU.prototype={
 $1(a){var s,r=B.c.B(a)
 if(r.length===0)return this.a.fr==="es"?"Ingresa el correo":"Informe o e-mail"
-s=A.U("^[\\w.-]+@[\\w.-]+\\.\\w+$",!0,!1,!1,!1)
+s=A.S("^[\\w.-]+@[\\w.-]+\\.\\w+$",!0,!1,!1,!1)
 if(!s.b.test(r))return this.a.fr==="es"?"Correo inv\xe1lido":"E-mail inv\xe1lido"
 return null},
 $S:76}
@@ -143835,7 +143842,7 @@ d=a.a.f==="es"?"Etiquetas (opcional)":"Tags (opcional)"
 d=A.a([j,B.aG,h,B.aD,g,B.H,f,B.aD,e,B.a3,A.e(d,a0,a0,a0,a0,a0,A.m(a0,a0,p,a0,a0,a0,a0,a0,a0,a0,a0,11,a0,a0,B.z,a0,a0,!0,a0,0.5,a0,a0,a0,a0,a0,a0),a0,a0,a0),B.M],i)
 j=a.w
 j===$&&A.c()
-if(j.length!==0){h=A.S(j).i("P<1,eS>")
+if(j.length!==0){h=A.T(j).i("P<1,eS>")
 j=A.O(new A.P(j,new A.aRk(a),h),h.i("al.E"))
 d.push(A.dL(B.ae,j,B.bH,6,6))}if(a.w.length<5){j=A.a([],i)
 if(a.w.length!==0)j.push(B.M)
@@ -144120,7 +144127,7 @@ n(){var s=this.f
 s.T$=$.aq()
 s.O$=0
 this.ab()},
-q(a){var s,r,q,p,o,n,m=this,l=null,k=A.bp(a,!0,t.C),j=k.d,i=k.c==="es",h=A.a_l(i),g=A.S(h),f=g.i("a5<1>"),e=A.O(new A.a5(h,new A.btc(m),f),f.i("F.E"))
+q(a){var s,r,q,p,o,n,m=this,l=null,k=A.bp(a,!0,t.C),j=k.d,i=k.c==="es",h=A.a_l(i),g=A.T(h),f=g.i("a5<1>"),e=A.O(new A.a5(h,new A.btc(m),f),f.i("F.E"))
 g=new A.P(h,new A.btd(),g.i("P<1,h>")).iO(0)
 s=A.O(g,A.G(g).c)
 B.d.km(s)
@@ -144128,7 +144135,7 @@ g=i?"Buscar modelo educativo...":"Buscar modelo educacional..."
 g=A.v1(m.f,g,l,1,new A.bte(m))
 f=t.p
 r=A.a([new A.T8("Todas",m.e==null,j,new A.btf(m),l),B.ab],f)
-B.d.u(r,new A.P(s,new A.btg(m,i,j),A.S(s).i("P<1,f>")))
+B.d.u(r,new A.P(s,new A.btg(m,i,j),A.T(s).i("P<1,f>")))
 r=A.d6(A.w(r,B.k,B.e,B.f,l,l),l,B.u,l,l,l,B.bk)
 q=A.i(6)
 p=j?B.ig:B.cW.j(0.08)
@@ -144325,7 +144332,7 @@ if(j){i=h?a2:s.ax.length!==0
 i=i===!0}else i=!0
 if(i){i=a5?"CONTRAINDICACIONES PRINCIPALES":"CONTRAINDICA\xc7\xd5ES PRINCIPAIS"
 if(!!j){l=h?a2:s.ax
-if(l==null)l=A.a([],t.s)}l=A.O(new A.P(l,new A.bto(a4),A.S(l).i("P<1,f>")),t.n)
+if(l==null)l=A.a([],t.s)}l=A.O(new A.P(l,new A.bto(a4),A.T(l).i("P<1,f>")),t.n)
 B.d.u(n,A.a([new A.wF(B.jw,i,a4,B.bx,A.dL(B.ae,l,B.bH,6,6),a2,a2),A.ed(a9,a2,1,a2,a2)],o))}n.push(new A.ap3(a6,s,a4,a5,a1.f,new A.btp(a1),a2))
 n.push(A.ed(a9,a2,1,a2,a2))
 l=A.i(10)
@@ -144422,7 +144429,7 @@ q=s?j:i.e
 if(q==null)q=k.c.z
 p=k.c.y
 if(!(p.length!==0))if(!s&&i.z.length!==0){i=i.z
-i=A.d0(i,0,A.dy(4,"count",t.S),A.S(i).c)
+i=A.d0(i,0,A.dy(4,"count",t.S),A.T(i).c)
 s=i.$ti.i("P<al.E,bV>")
 p=A.O(new A.P(i,new A.bm7(),s),s.i("al.E"))}else p=B.aXt
 i=A.i(8)
@@ -144435,7 +144442,7 @@ m=A.w(A.a([o,B.bF,A.e(m,j,j,j,j,j,A.m(j,j,h,j,j,j,j,j,j,j,j,9.5,j,j,B.D,j,j,!0,j
 o=n?"Directriz Base":"Diretriz Base"
 n=n?"Fuente de Evidencia":"Fonte de Evid\xeancia"
 l=A.a([m,B.Dr,new A.Ul(B.Km,o,r,h,g,j),B.aC,new A.Ul(B.KX,n,q,h,g,j),new A.L(B.hf,A.ed(f,j,1,j,j),j)],l)
-B.d.u(l,new A.P(p,new A.bm8(h,g),A.S(p).i("P<1,f>")))
+B.d.u(l,new A.P(p,new A.bm8(h,g),A.T(p).i("P<1,f>")))
 return A.l(j,A.x(l,B.r,B.e,B.f),B.i,j,j,new A.j(e,j,s,i,j,j,B.l),j,j,j,j,B.aAl,j,j,1/0)}}
 A.bm7.prototype={
 $1(a){var s=J.dl(a)
@@ -144483,12 +144490,12 @@ k=t.p
 l=A.ae(B.bo,new A.L(B.cz,A.w(A.a([f,B.dh,o,B.J,n,B.c2,A.mD(A.X(B.iB,d?B.ba:B.dW,g,16),B.a6,l)],k),B.k,B.e,B.f,g,g),g),B.u,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,h.w,g,g,g,g,g,g)
 f=m?B.ip:B.jn
 o=A.a([],k)
-if(r){n=new A.fC(e,A.S(e).i("fC<1>"))
+if(r){n=new A.fC(e,A.T(e).i("fC<1>"))
 m=t.n
 n=A.O(n.gfU(n).eG(0,new A.bvc(h),m),m)
 B.d.u(o,n)}else if(q){n=A.a([],k)
-for(m=A.d0(c,0,A.dy(6,"count",t.S),A.S(c).c),j=m.$ti.i("P<al.E,@>"),m=new A.P(m,new A.bvd(h),j),m=new A.bD(m,m.gA(0),j.i("bD<al.E>")),j=j.i("al.E");m.C();){i=m.d
-n.push(i==null?j.a(i):i)}B.d.u(o,n)}else{n=new A.fC(s,A.S(s).i("fC<1>"))
+for(m=A.d0(c,0,A.dy(6,"count",t.S),A.T(c).c),j=m.$ti.i("P<al.E,@>"),m=new A.P(m,new A.bvd(h),j),m=new A.bD(m,m.gA(0),j.i("bD<al.E>")),j=j.i("al.E");m.C();){i=m.d
+n.push(i==null?j.a(i):i)}B.d.u(o,n)}else{n=new A.fC(s,A.T(s).i("fC<1>"))
 m=t.n
 n=A.O(n.gfU(n).eG(0,new A.bve(h),m),m)
 B.d.u(o,n)}o.push(B.M)
@@ -144700,7 +144707,7 @@ k=A.e(r.a?"Esta aplicaci\xf3n es una plataforma de simulaci\xf3n cl\xednica estr
 q=A.l(o,o,B.i,B.ph.j(0.2),o,o,o,1,o,o,o,o,o,o)
 r=t.s
 r=this.d.a?A.a(["No sustituye la consulta m\xe9dica real ni el juicio cl\xednico.","Los datos y protocolos son para fines de estudio y simulaci\xf3n.","Cualquier aplicaci\xf3n cl\xednica es responsabilidad exclusiva del profesional."],r):A.a(["N\xe3o substitui consulta m\xe9dica real nem julgamento cl\xednico.","Dados e protocolos s\xe3o para fins de estudo e simula\xe7\xe3o.","Qualquer aplica\xe7\xe3o cl\xednica \xe9 de responsabilidade exclusiva do profissional."],r)
-p=A.S(r).i("P<1,L>")
+p=A.T(r).i("P<1,L>")
 r=A.O(new A.P(r,new A.btI(),p),p.i("al.E"))
 return A.l(o,A.x(A.a([l,new A.L(B.cz,k,o),q,new A.L(B.J1,A.x(r,B.r,B.e,B.f),o)],s),B.r,B.e,B.f),B.i,o,o,new A.j(B.G7,o,m,n,o,o,B.l),o,o,o,B.aBV,o,o,o,o)},
 any(){var s,r,q,p,o,n,m,l,k=this,j=null,i=k.d
@@ -144810,16 +144817,16 @@ s.T$=$.aq()
 s.O$=0
 this.ab()},
 q(a){var s,r,q,p,o=null,n="Favoritos",m="Cardiovascular",l="Neurol\xf3gico & Psiqui\xe1trico",k="Metab\xf3lico & End\xf3crino",j=A.bp(a,!0,t.C),i=j.c==="es",h=this.d,g=B.c.B(h.a.a.toLowerCase()),f=g.length!==0,e=t.sh,d=A.O(new A.a5(B.hP,new A.bu7(A.aQ(t.N)),e),e.i("F.E"))
-if(f){e=A.S(d).i("a5<1>")
+if(f){e=A.T(d).i("a5<1>")
 s=A.O(new A.a5(d,new A.bu8(j,g),e),e.i("F.E"))}else s=d
 e=t.p
 h=A.a([new A.py(new A.Fl("Clinical Flow",j.bY("protocols"),j.bY("protocols_subtitle"),!0,o),o,o,o),B.a3,new A.L(B.dN,A.x(A.a([A.v1(h,j.bY("search_protocol_hint"),o,1,new A.bu9(this)),B.M,A.e(""+s.length+" "+j.bY("protocols_found"),o,o,o,o,o,B.a5T,o,o,o)],e),B.r,B.e,B.f),o),B.aG],e)
-if(f){e=A.O(new A.P(s,new A.buk(j,s,a),A.S(s).i("P<1,f>")),t.n)
+if(f){e=A.O(new A.P(s,new A.buk(j,s,a),A.T(s).i("P<1,f>")),t.n)
 B.d.u(h,e)}else{r=A.a([],e)
 q=j.Q
-if(q.gcb(q)){q=A.S(d).i("a5<1>")
+if(q.gcb(q)){q=A.T(d).i("a5<1>")
 q=A.O(new A.a5(d,new A.buq(j),q),q.i("F.E"))
-B.d.u(r,A.a([A.qg(B.HW,B.HS,"__fav__","",B.a7,B.fX,i,new A.bur(a),j,q,n,n),B.M],e))}e=A.S(d).i("a5<1>")
+B.d.u(r,A.a([A.qg(B.HW,B.HS,"__fav__","",B.a7,B.fX,i,new A.bur(a),j,q,n,n),B.M],e))}e=A.T(d).i("a5<1>")
 q=e.i("F.E")
 p=A.O(new A.a5(d,new A.bus(),e),q)
 r.push(A.qg(B.ie,B.yG,"reanimacao","",B.bG,B.ee,i,new A.but(a),j,p,"Reanimaci\xf3n & Shock","Reanima\xe7\xe3o & Choque"))
@@ -145097,7 +145104,7 @@ if(o.h0(f,p.c).length!==0)B.d.u(d,A.a([new A.ap2(o.h0(f,p.c),p,s),B.H],i))
 B.d.u(g,d)}else{o=A.a([new A.Wx(p.dG(o.d),p,s),B.H,new A.Si(n,p,s),B.H],i)
 if(l.length!==0)B.d.u(o,A.a([new A.SI(l,p,s),B.H],i))
 if(k.length!==0)B.d.u(o,A.a([new A.U_(k,p,s),B.H],i))
-B.d.u(g,o)}if(k.length!==0){o=A.S(k).i("P<1,bQ>")
+B.d.u(g,o)}if(k.length!==0){o=A.T(k).i("P<1,bQ>")
 o=A.O(new A.P(k,new A.bu_(),o),o.i("al.E"))
 B.d.u(g,o)}g.push(B.vP)
 g.push(B.aD)
@@ -145134,7 +145141,7 @@ A.SI.prototype={
 q(a){var s=null,r=A.i(16),q=A.M(B.ie,B.o,1),p=t.p
 return A.l(s,A.x(A.a([A.w(A.a([B.aH3,B.ab,A.e(this.d.bY("avoid").toUpperCase(),s,s,s,s,s,B.e9Q,s,s,s)],p),B.k,B.e,B.f,s,s),B.M,A.e(this.c,s,s,s,s,s,B.efN,s,s,s)],p),B.r,B.e,B.f),B.i,s,s,new A.j(B.yG,s,q,r,s,s,B.l),s,s,s,s,B.bu,s,s,1/0)}}
 A.U_.prototype={
-q(a){var s=null,r=A.i(16),q=A.M(B.mL,B.o,1),p=t.p,o=A.w(A.a([B.aFT,B.ab,A.e(this.d.c==="es"?"F\xc1RMACOS CLAVE":"F\xc1RMACOS CHAVE",s,s,s,s,s,B.ean,s,s,s)],p),B.k,B.e,B.f,s,s),n=this.c,m=A.S(n).i("P<1,dn>")
+q(a){var s=null,r=A.i(16),q=A.M(B.mL,B.o,1),p=t.p,o=A.w(A.a([B.aFT,B.ab,A.e(this.d.c==="es"?"F\xc1RMACOS CLAVE":"F\xc1RMACOS CHAVE",s,s,s,s,s,B.ean,s,s,s)],p),B.k,B.e,B.f,s,s),n=this.c,m=A.T(n).i("P<1,dn>")
 n=A.O(new A.P(n,new A.bdc(),m),m.i("al.E"))
 return A.l(s,A.x(A.a([o,B.H,A.dL(B.ae,n,B.bH,6,6)],p),B.r,B.e,B.f),B.i,s,s,new A.j(B.ahN,s,q,r,s,s,B.l),s,s,s,s,B.bu,s,s,1/0)}}
 A.bdc.prototype={
@@ -145148,7 +145155,7 @@ A.ahQ.prototype={
 q(a){var s,r,q,p,o,n=null,m=this.c
 if(m==null)return B.aB
 s=A.a([],t.dE)
-for(r=A.S(m).i("eG<1,h>").y[1],q=m.length,p=0;p<q;++p){o=r.a(m[p])
+for(r=A.T(m).i("eG<1,h>").y[1],q=m.length,p=0;p<q;++p){o=r.a(m[p])
 s.push(new A.B0(o,this.au2(o,p,q)))}if(s.length===0)return B.aB
 m=A.i(16)
 r=A.M(B.es,B.o,1)
@@ -145174,7 +145181,7 @@ A.aqr.prototype={
 q(a){var s,r,q,p=null,o=this.c
 if(o==null)return B.aB
 A.a([],t.s)
-s=new A.eG(o,A.S(o).i("eG<1,h>"))
+s=new A.eG(o,A.T(o).i("eG<1,h>"))
 if(J.di(s))return B.aB
 o=A.i(16)
 r=A.M(B.yz,B.o,1)
@@ -145190,7 +145197,7 @@ A.ap0.prototype={
 q(a){var s,r=null,q=A.i(16),p=A.M(B.ak5.j(0.6),B.o,1),o=t.p
 o=A.a([A.w(A.a([B.aII,B.ab,A.e(this.d.c==="es"?"\ud83d\udea8 RED FLAGS \u2014 ALARMAS CR\xcdTICAS":"\ud83d\udea8 RED FLAGS \u2014 SINAIS DE ALARME",r,r,r,r,r,B.eeb,r,r,r)],o),B.k,B.e,B.f,r,r),B.H],o)
 s=this.c
-B.d.u(o,new A.P(s,new A.bv6(),A.S(s).i("P<1,f>")))
+B.d.u(o,new A.P(s,new A.bv6(),A.T(s).i("P<1,f>")))
 return A.l(r,A.x(o,B.r,B.e,B.f),B.i,r,r,new A.j(r,r,p,q,r,B.aKu,B.l),r,r,r,r,B.bu,r,r,1/0)}}
 A.bv6.prototype={
 $1(a){var s=null
@@ -145198,7 +145205,7 @@ return new A.L(B.lf,A.w(A.a([B.dDl,B.J,A.I(A.e(a,s,s,s,s,s,B.ebj,s,s,s),1)],t.p)
 $S:32}
 A.an7.prototype={
 q(a){var s=null,r=A.i(16),q=A.M(B.mM,B.o,1),p=A.a([A.BU(B.aFg,B.k_,this.d.c==="es"?"OBJETIVOS TERAP\xc9UTICOS":"OBJETIVOS TERAP\xcaUTICOS"),B.H],t.p),o=this.c
-o=new A.fC(o,A.S(o).i("fC<1>"))
+o=new A.fC(o,A.T(o).i("fC<1>"))
 B.d.u(p,o.gfU(o).eG(0,new A.bqQ(),t.n))
 return A.l(s,A.x(p,B.r,B.e,B.f),B.i,s,s,new A.j(B.hF,s,q,r,s,s,B.l),s,s,s,s,B.bu,s,s,1/0)}}
 A.bqQ.prototype={
@@ -145222,10 +145229,10 @@ A.ajE.prototype={
 q(a){var s,r=this,q=null,p=A.i(10),o=A.M(r.r,B.o,1),n=t.p
 n=A.a([A.w(A.a([A.e(r.c,q,q,q,q,q,B.ecU,q,q,q),B.bF,A.e(r.d,q,q,q,q,q,A.m(q,q,r.e,q,q,q,q,q,q,q,q,8,q,q,B.D,q,q,!0,q,1.5,q,q,q,q,q,q),q,q,q)],n),B.k,B.e,B.f,q,q),B.M],n)
 s=r.y
-B.d.u(n,new A.P(s,new A.bcX(r),A.S(s).i("P<1,f>")))
+B.d.u(n,new A.P(s,new A.bcX(r),A.T(s).i("P<1,f>")))
 return A.l(q,A.x(n,B.r,B.e,B.f),B.i,q,q,new A.j(r.f,q,o,p,q,q,B.l),q,q,q,q,B.d1,q,q,1/0)}}
 A.bcX.prototype={
-$1(a){var s=null,r=B.c.ej(a,A.U(" \u2014 | \u2013 | - (?=[A-Z0-9])",!0,!1,!1,!1)),q=B.c.B(r[0]),p=r.length>1?B.c.B(B.d.a1(B.d.fN(r,1)," \u2014 ")):s,o=this.a,n=o.z,m=n?B.jw:B.Av,l=n?10:7,k=o.x
+$1(a){var s=null,r=B.c.ej(a,A.S(" \u2014 | \u2013 | - (?=[A-Z0-9])",!0,!1,!1,!1)),q=B.c.B(r[0]),p=r.length>1?B.c.B(B.d.a1(B.d.fN(r,1)," \u2014 ")):s,o=this.a,n=o.z,m=n?B.jw:B.Av,l=n?10:7,k=o.x
 l=A.X(m,k,s,l)
 o=o.w
 m=t.p
@@ -145235,7 +145242,7 @@ return new A.L(B.ev,A.w(A.a([new A.L(B.zo,l,s),B.J,A.I(A.x(k,B.r,B.e,B.f),1)],m)
 $S:32}
 A.amB.prototype={
 q(a){var s=null,r=A.i(16),q=A.M(B.pf,B.o,1),p=A.a([A.BU(B.ef,B.ym,this.d.c==="es"?"MONITORIZACI\xd3N":"MONITORIZA\xc7\xc3O"),B.H],t.p),o=this.c
-B.d.u(p,new A.P(o,new A.bqh(),A.S(o).i("P<1,f>")))
+B.d.u(p,new A.P(o,new A.bqh(),A.T(o).i("P<1,f>")))
 return A.l(s,A.x(p,B.r,B.e,B.f),B.i,s,s,new A.j(B.rF,s,q,r,s,s,B.l),s,s,s,s,B.bu,s,s,1/0)}}
 A.bqh.prototype={
 $1(a){var s=null
@@ -145245,7 +145252,7 @@ A.aji.prototype={
 q(a){var s,r=null,q=A.i(16),p=A.M(B.ahV,B.o,1),o=t.p
 o=A.a([A.w(A.a([B.aIj,B.ab,A.e(this.d.c==="es"?"\u26d4 NO HACER \u2014 ERRORES CR\xcdTICOS":"\u26d4 N\xc3O FAZER \u2014 ERROS CR\xcdTICOS",r,r,r,r,r,B.eeQ,r,r,r)],o),B.k,B.e,B.f,r,r),B.H],o)
 s=this.c
-B.d.u(o,new A.P(s,new A.bbQ(),A.S(s).i("P<1,f>")))
+B.d.u(o,new A.P(s,new A.bbQ(),A.T(s).i("P<1,f>")))
 return A.l(r,A.x(o,B.r,B.e,B.f),B.i,r,r,new A.j(B.mP,r,p,q,r,r,B.l),r,r,r,r,B.bu,r,r,1/0)}}
 A.bbQ.prototype={
 $1(a){var s=null
@@ -145255,7 +145262,7 @@ A.anr.prototype={
 q(a){var s,r=null,q=A.i(16),p=A.M(B.aiF.j(0.6),B.o,1),o=t.p
 o=A.a([A.w(A.a([B.aH9,B.ab,A.e(this.d.c==="es"?"\ud83d\udc8e PERLAS CL\xcdNICAS":"\ud83d\udc8e P\xc9ROLAS CL\xcdNICAS",r,r,r,r,r,B.efe,r,r,r)],o),B.k,B.e,B.f,r,r),B.H],o)
 s=this.c
-B.d.u(o,new A.P(s,new A.brJ(),A.S(s).i("P<1,f>")))
+B.d.u(o,new A.P(s,new A.brJ(),A.T(s).i("P<1,f>")))
 return A.l(r,A.x(o,B.r,B.e,B.f),B.i,r,r,new A.j(r,r,p,q,r,B.aKn,B.l),r,r,r,r,B.bu,r,r,1/0)}}
 A.brJ.prototype={
 $1(a){var s=null
@@ -145263,7 +145270,7 @@ return new A.L(B.lf,A.w(A.a([B.dDv,B.mg,A.I(A.e(a,s,s,s,s,s,B.ecp,s,s,s),1)],t.p
 $S:32}
 A.ap2.prototype={
 q(a){var s=null,r=A.i(16),q=A.M(B.Gr,B.o,1),p=A.a([A.BU(B.fB,B.l4,this.d.c==="es"?"REFERENCIAS / GU\xcdAS":"REFER\xcaNCIAS / DIRETRIZES"),B.H],t.p),o=this.c
-B.d.u(p,new A.P(o,new A.bvb(),A.S(o).i("P<1,f>")))
+B.d.u(p,new A.P(o,new A.bvb(),A.T(o).i("P<1,f>")))
 return A.l(s,A.x(p,B.r,B.e,B.f),B.i,s,s,new A.j(B.aiG,s,q,r,s,s,B.l),s,s,s,s,B.bu,s,s,1/0)}}
 A.bvb.prototype={
 $1(a){var s=null
@@ -145271,7 +145278,7 @@ return new A.L(B.ev,A.w(A.a([B.dDo,B.mg,A.I(A.e(a,s,s,s,s,s,B.eac,s,s,s),1)],t.p
 $S:32}
 A.aq5.prototype={
 q(a){var s=this,r=null,q=s.as.c==="es"?s.e:s.f,p=A.i(16),o=A.M(s.x,B.o,1),n=A.a([A.BU(s.c,s.r,q),B.H],t.p),m=s.Q
-B.d.u(n,new A.P(m,new A.bwY(s),A.S(m).i("P<1,f>")))
+B.d.u(n,new A.P(m,new A.bwY(s),A.T(m).i("P<1,f>")))
 return A.l(r,A.x(n,B.r,B.e,B.f),B.i,r,r,new A.j(s.w,r,o,p,r,r,B.l),r,r,r,r,B.bu,r,r,1/0)}}
 A.bwY.prototype={
 $1(a){var s=null,r=this.a
@@ -145599,7 +145606,7 @@ A.b7X.prototype={
 $0(){},
 $S:0}
 A.Wn.prototype={
-U(){return new A.aoo(new A.az(B.a_,$.aq()),A.T(["mmHg",1,"cmH2O",0.7355,"kPa",7.5006,"mbar",0.7501],t.N,t.i))}}
+U(){return new A.aoo(new A.az(B.a_,$.aq()),A.U(["mmHg",1,"cmH2O",0.7355,"kPa",7.5006,"mbar",0.7501],t.N,t.i))}}
 A.aoo.prototype={
 ga3E(){var s,r,q=this.d.a.a,p=A.c2(A.q(q,",","."))
 if(p==null){q=t.N
@@ -145992,7 +145999,7 @@ $2(a,b){var s,r,q,p,o,n,m,l,k,j,i=null
 if(b.b>600)s=3
 else s=2
 r=A.a([],t.p)
-for(q=this.a,p=this.b,o=t.n,n=0;m=q.a.f,n<m.length;n+=s){l=A.S(m)
+for(q=this.a,p=this.b,o=t.n,n=0;m=q.a.f,n<m.length;n+=s){l=A.T(m)
 k=new A.hr(m,n,i,l.i("hr<1>"))
 k.ol(m,n,i,l.c)
 j=k.ke(0,s).d8(0)
@@ -146392,9 +146399,9 @@ p=A.a([p,B.J,A.e("PAR\xc2METROS LABORATORIAIS",q,q,q,q,q,A.m(q,q,b.a?B.N:B.S,q,q
 if(a.length!==0){s=B.bS.j(0.1)
 r=A.i(20)
 p.push(A.l(q,A.e(A.t(B.d.mM(a,0,new A.bs_()))+" par\xe2metros",q,q,q,q,q,B.eew,q,q,q),B.i,q,q,new A.j(s,q,q,r,q,q,B.l),q,q,q,q,B.zF,q,q,q))}p=A.a([new A.L(B.n3,A.w(p,B.k,B.e,B.f,q,q),q)],o)
-B.d.u(p,new A.P(a,new A.bs0(this,c,b),A.S(a).i("P<1,f>")))
+B.d.u(p,new A.P(a,new A.bs0(this,c,b),A.T(a).i("P<1,f>")))
 return new A.L(B.Jh,A.w(A.a([A.I(A.x(p,B.r,B.e,B.f),5),B.a4I,new A.ay(260,q,new A.anw(b,c,q),q)],o),B.r,B.e,B.f,q,q),q)},
-anZ(a,b,c){var s=A.S(a).i("P<1,L>")
+anZ(a,b,c){var s=A.T(a).i("P<1,L>")
 s=A.O(new A.P(a,new A.brZ(this,c,b),s),s.i("al.E"))
 return new A.L(B.aCr,A.x(s,B.r,B.e,B.f),null)},
 amu(a){switch(a){case 0:return B.hz
@@ -146403,7 +146410,7 @@ case 2:return B.X
 case 3:return B.b2
 default:return B.bS}}}
 A.bs2.prototype={
-$1(a){var s=a.f,r=this.a,q=A.S(s).i("a5<1>"),p=A.O(new A.a5(s,new A.bs1(r),q),q.i("F.E"))
+$1(a){var s=a.f,r=this.a,q=A.T(s).i("a5<1>"),p=A.O(new A.a5(s,new A.bs1(r),q),q.i("F.E"))
 q=p.length===0
 if(q&&!B.c.k(a.a.toLowerCase(),r))return null
 s=q?s:p
@@ -146615,7 +146622,7 @@ s=i.d?B.ip:B.jn
 r=A.a([],n)
 if(i.a.d===-1)r.push(new A.anx(e,c,h))
 q=f.f
-B.d.u(r,new A.P(q,new A.brM(i,c,e,d),A.S(q).i("P<1,f>")))
+B.d.u(r,new A.P(q,new A.brM(i,c,e,d),A.T(q).i("P<1,f>")))
 q=c.j(0.06)
 p=A.i(9)
 o=A.M(c.j(0.15),B.o,1)
@@ -146749,7 +146756,7 @@ p=B.c9.j(0.08)
 o=A.M(B.c9.j(0.2),B.o,1)
 m=A.a([A.w(A.a([A.X(B.e0,B.c9.j(0.7),i,11),B.b1,A.e("Valores de refer\xeancia normais",i,i,i,i,i,A.m(i,i,B.c9.j(0.8),i,i,i,i,i,i,i,i,9.5,i,i,B.z,i,i,!0,i,0.3,i,i,i,i,i,i),i,i,i)],l),B.k,B.e,B.f,i,i),B.cE],l)
 k=h.f
-B.d.u(m,new A.P(k,new A.bsA(),A.S(k).i("P<1,f>")))
+B.d.u(m,new A.P(k,new A.bsA(),A.T(k).i("P<1,f>")))
 B.d.u(n,A.a([B.M,A.l(i,A.x(m,B.r,B.e,B.f),B.i,i,i,new A.j(p,i,o,q,i,i,B.l),i,i,i,i,B.fb,i,i,i)],l))}return A.ae(i,A.bX(A.x(n,B.r,B.e,B.f),B.a1,new A.j(s,i,r,b,i,i,B.l),B.d9,i,B.ev,new A.N(14,d,14,c),i,i),B.u,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.bsB(h,a),i,i,i,i,i,i)},
 $S:108}
 A.bsB.prototype={
@@ -146832,7 +146839,7 @@ A.ka.prototype={
 P(){return"ActivityType."+this.b}}
 A.iQ.prototype={
 ec(){var s=this
-return A.T(["type",s.a.b,"title",s.b,"subtitle",s.c,"timestamp",s.d.a],t.N,t.z)},
+return A.U(["type",s.a.b,"title",s.b,"subtitle",s.c,"timestamp",s.d.a],t.N,t.z)},
 l(a){return"ActivityItem("+this.a.l(0)+", "+this.b+")"},
 gbN(a){return this.b}}
 A.avF.prototype={
@@ -146961,7 +146968,7 @@ if(!b.aH().gnL())J.dh(b.aH(),A.a([],t.Ij))
 s=1
 break}b=t.N
 s=8
-return A.n(A.mB(A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/users?pageSize=500",0,null),A.T(["Authorization","Bearer "+A.t(m)],b,b)).dH(0,B.za),$async$$0)
+return A.n(A.mB(A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/users?pageSize=500",0,null),A.U(["Authorization","Bearer "+A.t(m)],b,b)).dH(0,B.za),$async$$0)
 case 8:l=a6
 if(l.b!==200){b=n.a
 if(!b.aH().gnL())J.dh(b.aH(),A.a([],t.Ij))
@@ -147017,27 +147024,27 @@ s.a=null},
 $S:10}
 A.axZ.prototype={
 $2(a,b){var s,r,q=this
-if(b==null)q.a.p(0,a,A.T(["nullValue",null],t.N,t.a))
-else if(A.i4(b))q.a.p(0,a,A.T(["booleanValue",b],t.N,t.y))
+if(b==null)q.a.p(0,a,A.U(["nullValue",null],t.N,t.a))
+else if(A.i4(b))q.a.p(0,a,A.U(["booleanValue",b],t.N,t.y))
 else if(A.hd(b)){s=t.N
-q.a.p(0,a,A.T(["integerValue",B.p.l(b)],s,s))}else{s=q.a
+q.a.p(0,a,A.U(["integerValue",B.p.l(b)],s,s))}else{s=q.a
 r=t.N
-if(typeof b=="number")s.p(0,a,A.T(["doubleValue",b],r,t.i))
-else s.p(0,a,A.T(["stringValue",J.aE(b)],r,r))}},
+if(typeof b=="number")s.p(0,a,A.U(["doubleValue",b],r,t.i))
+else s.p(0,a,A.U(["stringValue",J.aE(b)],r,r))}},
 $S:21}
 A.ay_.prototype={
 $1(a){return"updateMask.fieldPaths="+A.jt(2,a,B.br,!1)},
 $S:12}
 A.axW.prototype={
 $2(a,b){var s,r,q=this
-if(b==null)q.a.p(0,a,A.T(["nullValue",null],t.N,t.a))
-else if(A.i4(b))q.a.p(0,a,A.T(["booleanValue",b],t.N,t.y))
+if(b==null)q.a.p(0,a,A.U(["nullValue",null],t.N,t.a))
+else if(A.i4(b))q.a.p(0,a,A.U(["booleanValue",b],t.N,t.y))
 else if(A.hd(b)){s=t.N
-q.a.p(0,a,A.T(["integerValue",B.p.l(b)],s,s))}else if(typeof b=="number")q.a.p(0,a,A.T(["doubleValue",b],t.N,t.i))
+q.a.p(0,a,A.U(["integerValue",B.p.l(b)],s,s))}else if(typeof b=="number")q.a.p(0,a,A.U(["doubleValue",b],t.N,t.i))
 else{s=q.a
 r=t.N
-if(b instanceof A.jo)s.p(0,a,A.T(["timestampValue",A.ui(b.ghU()).kV().ei()],r,r))
-else s.p(0,a,A.T(["stringValue",J.aE(b)],r,r))}},
+if(b instanceof A.jo)s.p(0,a,A.U(["timestampValue",A.ui(b.ghU()).kV().ei()],r,r))
+else s.p(0,a,A.U(["stringValue",J.aE(b)],r,r))}},
 $S:21}
 A.axY.prototype={
 $2(a,b){var s,r,q,p,o,n,m=this,l="timestampValue",k="stringValue",j="booleanValue",i="integerValue",h="doubleValue"
@@ -147046,7 +147053,7 @@ p=J.dl(b)
 if(p.ao(b,l))m.a.p(0,a,A.pW(A.p2(A.b4(p.h(b,l))).ghU()))
 else if(p.ao(b,k)){s=A.b4(p.h(b,k))
 if(B.e4l.k(0,a)){r=null
-try{r=A.p2(s)}catch(o){}if(r==null)try{r=A.p2(J.bN2(s," ","T"))}catch(o){}if(r==null)try{p=A.U("\\.\\d+",!0,!1,!1,!1)
+try{r=A.p2(s)}catch(o){}if(r==null)try{r=A.p2(J.bN2(s," ","T"))}catch(o){}if(r==null)try{p=A.S("\\.\\d+",!0,!1,!1,!1)
 q=A.q(s,p,"")
 r=A.p2(q)}catch(o){}p=r!=null?A.pW(r.ghU()):null
 m.a.p(0,a,p)}else m.a.p(0,a,s)}else if(p.ao(b,j))m.a.p(0,a,p.h(b,j))
@@ -147061,7 +147068,7 @@ var $async$$0=A.y(function(a,b){if(a===1){p.push(b)
 s=q}while(true)switch(s){case 0:q=3
 m=o.a
 s=6
-return A.n(A.nJ(m,A.T(["status","approved","approvedAt",new A.aM(Date.now(),0,!1).kV().ei(),"approvedBy","system-auto"],t.N,t.z)),$async$$0)
+return A.n(A.nJ(m,A.U(["status","approved","approvedAt",new A.aM(Date.now(),0,!1).kV().ei(),"approvedBy","system-auto"],t.N,t.z)),$async$$0)
 case 6:A.a1().$1("[Auth] _autoApproveInBackground OK (web) \u2014 uid="+m)
 q=1
 s=5
@@ -147081,7 +147088,7 @@ $S:143}
 A.um.prototype={}
 A.fy.prototype={}
 A.azQ.prototype={
-aUC(a){var s,r=this,q=B.c.B(a).toLowerCase(),p=B.c.ej(q,A.U("\\s+",!0,!1,!1,!1)),o=new A.a5(p,new A.azS(),A.S(p).i("a5<1>")).gA(0),n=o<=4&&B.e3A.c2(0,new A.azT(q)),m=o<=3
+aUC(a){var s,r=this,q=B.c.B(a).toLowerCase(),p=B.c.ej(q,A.S("\\s+",!0,!1,!1,!1)),o=new A.a5(p,new A.azS(),A.T(p).i("a5<1>")).gA(0),n=o<=4&&B.e3A.c2(0,new A.azT(q)),m=o<=3
 if(n||m){if(r.z.length!==0)++r.Q
 return!1}s=r.apm(a)
 p=r.z
@@ -147135,9 +147142,9 @@ j=s}else{s="- Risco atual: "+(j==="critical"?"CRITICO":"ALTO")
 j=s}j=k+(j+"\n")
 k=j}k+=a?"[FIN_CONTEXTO_SESION]":"[FIM_CONTEXTO_SESSAO]"
 return k.charCodeAt(0)==0?k:k},
-apm(a){var s,r,q=A.U("[^\\w\\s]",!0,!1,!1,!1)
-q=B.c.ej(A.q(a.toLowerCase(),q," "),A.U("\\s+",!0,!1,!1,!1))
-s=A.S(q).i("a5<1>")
+apm(a){var s,r,q=A.S("[^\\w\\s]",!0,!1,!1,!1)
+q=B.c.ej(A.q(a.toLowerCase(),q," "),A.S("\\s+",!0,!1,!1,!1))
+s=A.T(q).i("a5<1>")
 s=A.oq(new A.a5(q,new A.azR(),s),3,s.i("F.E"))
 r=A.O(s,A.G(s).i("F.E"))
 return B.d.a1(r,"_")},
@@ -147161,7 +147168,7 @@ A.adU.prototype={
 P(){return"ThreadAction."+this.b}}
 A.uc.prototype={}
 A.azU.prototype={
-aOj(a,b,c,d){var s,r,q,p,o,n,m,l=this,k=Date.now(),j=B.c.B(c).toLowerCase(),i=B.c.ej(j,A.U("\\s+",!0,!1,!1,!1)),h=new A.a5(i,new A.azX(),A.S(i).i("a5<1>")).gA(0)
+aOj(a,b,c,d){var s,r,q,p,o,n,m,l=this,k=Date.now(),j=B.c.B(c).toLowerCase(),i=B.c.ej(j,A.S("\\s+",!0,!1,!1,!1)),h=new A.a5(i,new A.azX(),A.T(i).i("a5<1>")).gA(0)
 i=l.a.length===0
 if(!i){s=l.d
 s=s>0&&k-s>6e5}else s=!1
@@ -147191,18 +147198,18 @@ s.a=r
 B.c.gK(r)
 s.c=1
 s.d=b},
-a_u(a){var s,r,q=A.cX(["de","da","do","e","em","o","a","os","as","um","uma","para","com","no","na","por","que","se","como","qual","el","la","los","las","un","una","en","y","es","del","con","cual"],t.N),p=A.U("[^\\w\\s]",!0,!1,!1,!1)
-p=B.c.ej(A.q(a.toLowerCase(),p," "),A.U("\\s+",!0,!1,!1,!1))
-s=A.S(p).i("a5<1>")
+a_u(a){var s,r,q=A.cX(["de","da","do","e","em","o","a","os","as","um","uma","para","com","no","na","por","que","se","como","qual","el","la","los","las","un","una","en","y","es","del","con","cual"],t.N),p=A.S("[^\\w\\s]",!0,!1,!1,!1)
+p=B.c.ej(A.q(a.toLowerCase(),p," "),A.S("\\s+",!0,!1,!1,!1))
+s=A.T(p).i("a5<1>")
 s=A.oq(new A.a5(p,new A.azV(q),s),4,s.i("F.E"))
 r=A.O(s,A.G(s).i("F.E"))
 return B.d.a1(r,"_")},
 aIw(a,b){var s,r,q,p
 if(a.length===0)return!1
 s=A.hF(A.a(a.split("_"),t.s),t.N)
-r=A.U("[^\\w\\s]",!0,!1,!1,!1)
-r=B.c.ej(A.q(b.toLowerCase(),r," "),A.U("\\s+",!0,!1,!1,!1))
-q=A.S(r).i("a5<1>")
+r=A.S("[^\\w\\s]",!0,!1,!1,!1)
+r=B.c.ej(A.q(b.toLowerCase(),r," "),A.S("\\s+",!0,!1,!1,!1))
+q=A.T(r).i("a5<1>")
 r=s.m4(0,A.fN(new A.a5(r,new A.azW(),q),q.i("F.E")))
 if(r.gcb(r))return!0
 for(r=A.dT(s,s.r,A.G(s).c),q=r.$ti.c;r.C();){p=r.d
@@ -147592,13 +147599,13 @@ s=7
 return A.n(A.fJ(),$async$$0)
 case 7:m=b
 if(J.ar(m)===0){h=n.a
-if(!h.aH().gnL())J.dh(h.aH(),A.T(["enabled",!1],t.N,t.z))
+if(!h.aH().gnL())J.dh(h.aH(),A.U(["enabled",!1],t.N,t.z))
 s=1
 break}s=8
 return A.n(A.mB(A.cp("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_config/maintenance",0,null),A.bI5(m)),$async$$0)
 case 8:l=b
 if(l.b===404){h=n.a
-if(!h.aH().gnL())J.dh(h.aH(),A.T(["enabled",!1],t.N,t.z))
+if(!h.aH().gnL())J.dh(h.aH(),A.U(["enabled",!1],t.N,t.z))
 s=1
 break}if(l.b!==200){s=1
 break}h=l
@@ -147610,13 +147617,13 @@ i=A.R(h,g)
 J.hh(j,new A.aFH(i))
 f=n.a
 if(!f.aH().gnL()){f=f.aH()
-J.dh(f,i.a===0?A.T(["enabled",!1],h,g):i)}p=2
+J.dh(f,i.a===0?A.U(["enabled",!1],h,g):i)}p=2
 s=6
 break
 case 4:p=3
 d=o.pop()
 h=n.a
-if(!h.aH().gnL())J.dh(h.aH(),A.T(["enabled",!1],t.N,t.z))
+if(!h.aH().gnL())J.dh(h.aH(),A.U(["enabled",!1],t.N,t.z))
 s=6
 break
 case 3:s=2
@@ -147720,7 +147727,7 @@ return A.B($async$$0,r)},
 $S:350}
 A.aFN.prototype={
 $1(a){var s=t.N
-return A.T(["stringValue",a],s,s)},
+return A.U(["stringValue",a],s,s)},
 $S:996}
 A.aFY.prototype={
 $1(a){return B.d.gZ(a.b.b.a)},
@@ -147798,7 +147805,7 @@ if(!m.Q)J.dh(r,"id="+m.a)}catch(a2){l=A.ah(a2)
 k=A.b6(a2)
 A.t(l)
 A.t(k)}}j=s
-i=A.S(j).i("a5<1>")
+i=A.T(j).i("a5<1>")
 a3=A.O(new A.a5(j,new A.aFC(),i),i.i("F.E"))
 A.a1().$1("[clinical_guides DEBUG] parsed="+J.ar(s))
 A.a1().$1("[clinical_guides DEBUG] published="+a3.length)
@@ -147981,7 +147988,7 @@ A.aax.prototype={}
 A.Vx.prototype={}
 A.j5.prototype={
 gjX(){return B.hr},
-aRK(a,b){var s=this.gkP(),r=A.S(s).i("a5<1>"),q=A.O(new A.a5(s,new A.bmu(b),r),r.i("F.E"))
+aRK(a,b){var s=this.gkP(),r=A.T(s).i("a5<1>"),q=A.O(new A.a5(s,new A.bmu(b),r),r.i("F.E"))
 return new A.Vx(this.gkO(),this.gjX(),"","",q.length,q)}}
 A.bmu.prototype={
 $1(a){return B.c.k(this.a,a)},
@@ -148171,15 +148178,15 @@ else if(s.ao(b,m))r.a.p(0,a,s.h(b,m))},
 $S:21}
 A.aTL.prototype={
 $2(a,b){var s,r,q=this
-if(b==null)q.a.p(0,a,A.T(["nullValue",null],t.N,t.a))
-else if(A.i4(b))q.a.p(0,a,A.T(["booleanValue",b],t.N,t.y))
+if(b==null)q.a.p(0,a,A.U(["nullValue",null],t.N,t.a))
+else if(A.i4(b))q.a.p(0,a,A.U(["booleanValue",b],t.N,t.y))
 else if(A.hd(b)){s=t.N
-q.a.p(0,a,A.T(["integerValue",B.p.l(b)],s,s))}else if(typeof b=="number")q.a.p(0,a,A.T(["doubleValue",b],t.N,t.i))
+q.a.p(0,a,A.U(["integerValue",B.p.l(b)],s,s))}else if(typeof b=="number")q.a.p(0,a,A.U(["doubleValue",b],t.N,t.i))
 else if(t.W7.b(b)){s=t.N
-q.a.p(0,a,A.T(["timestampValue",b.kV().ei()],s,s))}else{s=q.a
+q.a.p(0,a,A.U(["timestampValue",b.kV().ei()],s,s))}else{s=q.a
 r=t.N
-if(b instanceof A.jo)s.p(0,a,A.T(["timestampValue",A.ui(b.ghU()).kV().ei()],r,r))
-else s.p(0,a,A.T(["stringValue",J.aE(b)],r,r))}},
+if(b instanceof A.jo)s.p(0,a,A.U(["timestampValue",A.ui(b.ghU()).kV().ei()],r,r))
+else s.p(0,a,A.U(["stringValue",J.aE(b)],r,r))}},
 $S:21}
 A.aTS.prototype={
 $1(a){var s,r,q
@@ -148353,7 +148360,7 @@ h=A.dW(B.a6,r,A.ef(!1,B.F0,!0,new A.L(B.pI,A.w(A.a([f,B.dh,h,A.mD(A.X(B.e1,q?B.N
 f=s.e?B.jn:B.ip
 q=q?B.ad:B.a9
 e=A.a([B.H],i)
-B.d.u(e,new A.P(j,new A.bf9(p),A.S(j).i("P<1,f>")))
+B.d.u(e,new A.P(j,new A.bf9(p),A.T(j).i("P<1,f>")))
 B.d.u(k,A.a([g,h,A.xe(f,B.eQ,A.l(r,A.x(e,B.k,B.e,B.f),B.i,r,r,new A.j(r,r,new A.c1(new A.aA(q,1,B.o,-1),B.x,B.x,B.x),B.F0,r,r,B.l),r,r,r,r,B.pH,r,r,r),B.wF)],i))}return A.l(r,A.x(k,B.r,B.e,B.f),B.i,r,r,new A.j(n,r,l,m,r,r,B.l),r,r,r,r,r,r,r,r)}}
 A.bf7.prototype={
 $0(){var s,r,q,p,o,n,m,l=this,k=null,j=l.b.z
@@ -148368,7 +148375,7 @@ m=t.p
 n=A.dW(B.a6,k,A.ef(!1,B.cZ,!0,new A.L(B.pI,A.w(A.a([r,B.dh,o,A.mD(A.X(B.e1,p?B.N:B.S,k,18),B.a6,n)],m),B.k,B.e,B.f,k,k),k),k,!0,k,k,k,k,k,k,k,k,k,k,new A.bf5(s),k,k,k,k,k,k),B.i,B.P,0,k,k,k,k,k,B.ca)
 r=A.l(k,k,B.i,p?B.ad:B.a9,k,k,k,1,k,k,k,k,k,k)
 p=s.d?B.jn:B.ip
-o=A.S(j).i("P<1,AO>")
+o=A.T(j).i("P<1,AO>")
 s=A.O(new A.P(j,new A.bf6(s,q),o),o.i("al.E"))
 return A.a([n,r,A.xe(p,B.eQ,new A.L(B.aAJ,A.x(s,B.k,B.e,B.f),k),B.wF)],m)},
 $S:1019}
@@ -148821,7 +148828,7 @@ s.n()
 this.akQ()},
 gEH(){var s=this.d
 s===$&&A.c()
-return new A.a5(s,new A.btU(),A.S(s).i("a5<1>")).gA(0)},
+return new A.a5(s,new A.btU(),A.T(s).i("a5<1>")).gA(0)},
 gXZ(){return this.gEH()===J.ar(this.a.c)&&J.ar(this.a.c)>0},
 aIc(a){var s,r,q=this
 A.a5R()
@@ -155307,7 +155314,7 @@ else n.M2(new A.L(q,o,null))
 B.d.a5(m)}},
 a04(a){var s=a.c
 if(s==null)return A.a([a],t.VO)
-return new A.P(s,new A.aMk(a),A.S(s).i("P<1,iy>"))},
+return new A.P(s,new A.aMk(a),A.T(s).i("P<1,iy>"))},
 a03(a){var s
 $label0$0:{if(a instanceof A.zW){s=a.d
 break $label0$0}if(a instanceof A.bt){s=a.d
@@ -155396,8 +155403,8 @@ A.aMm.prototype={
 $1(a){return a instanceof A.eF?a.a:this.a.a9B(a)},
 $S:352}
 A.aMp.prototype={
-$1(a){var s=A.U("^ *",!0,!1,!1,!1)
-A.U(" ?\\n *",!0,!1,!1,!1)
+$1(a){var s=A.S("^ *",!0,!1,!1,!1)
+A.S(" ?\\n *",!0,!1,!1,!1)
 if(B.d.k(B.bBx,this.a.dx))a=A.q(a,s,"")
 return a},
 $S:12}
@@ -155526,7 +155533,7 @@ m=new A.aBY(A.R(g,t.w4),A.R(g,t.S),q,!1,p,o,n)
 p.u(0,h.a)
 o.u(0,h.b)
 l=B.aba.e6(i.a.c)
-h=A.S(l).i("P<1,jg>")
+h=A.T(l).i("P<1,jg>")
 h=A.O(new A.P(l,A.bVX(),h),h.i("al.E"))
 k=A.ayA(h,m).ac2()
 m.a2Q(k)
@@ -155542,7 +155549,7 @@ aN4(a,b,c){var s=A.adx(null,18,null)
 s.a_=new A.bpy(this,a,b,c)
 this.e.push(s)
 return s},
-aOY(a,b){var s=A.U("\\n$",!0,!1,!1,!1)
+aOY(a,b){var s=A.S("\\n$",!0,!1,!1,!1)
 b=A.q(b,s,"")
 this.a.toString
 return A.cl(null,null,null,a.d,b)},
@@ -155739,7 +155746,7 @@ r=v.G
 if(this.b===B.E5)r.speechSynthesis.resume()
 else r.speechSynthesis.speak(s)}},
 aGk(a){var s,r,q=v.G.speechSynthesis.getVoices()
-q=t.Lc.b(q)?q:new A.eG(q,A.S(q).i("eG<1,as>"))
+q=t.Lc.b(q)?q:new A.eG(q,A.T(q).i("eG<1,as>"))
 s=J.hi(q,new A.aGX(a))
 if(!s.gaj(0)){r=this.d
 r===$&&A.c()
@@ -155751,11 +155758,11 @@ for(s=o.f,r=s.length,q=0;q<s.length;s.length===r||(0,A.a2)(s),++q){p=s[q]
 if(!A.f_(a,"-",0))p=B.d.gW(p.split("-"))
 if(p.toLowerCase()===a.toLowerCase())return!0}return!1},
 a4u(){var s=v.G.speechSynthesis.getVoices()
-this.e=t.Lc.b(s)?s:new A.eG(s,A.S(s).i("eG<1,as>"))},
+this.e=t.Lc.b(s)?s:new A.eG(s,A.T(s).i("eG<1,as>"))},
 Lf(a){var s=0,r=A.C(t.xW),q,p,o
 var $async$Lf=A.y(function(b,c){if(b===1)return A.z(c,r)
 while(true)switch(s){case 0:o=v.G.speechSynthesis.getVoices()
-o=t.Lc.b(o)?o:new A.eG(o,A.S(o).i("eG<1,as>"))
+o=t.Lc.b(o)?o:new A.eG(o,A.T(o).i("eG<1,as>"))
 p=J.dj(o,new A.aGY(),t.GU)
 p=A.O(p,p.$ti.i("al.E"))
 q=p
@@ -155817,11 +155824,11 @@ s===$&&A.c()
 r=A.b4(s.text)
 s=r.length
 q=m
-while(!0){if(q<s){p=A.U("[\\s,.!?]",!0,!1,!1,!1)
+while(!0){if(q<s){p=A.S("[\\s,.!?]",!0,!1,!1,!1)
 o=r[q]
 p=!p.b.test(o)}else p=!1
 if(!p)break;++q}s=t.z
-n=A.T(["text",r,"start",m,"end",q,"word",B.c.S(r,m,q)],t.N,s)
+n=A.U(["text",r,"start",m,"end",q,"word",B.c.S(r,m,q)],t.N,s)
 $.yg.c1().dP("speak.onProgress",n,s)},
 $S:39}
 A.aGX.prototype={
@@ -155834,7 +155841,7 @@ return s},
 $S:1041}
 A.aGY.prototype={
 $1(a){var s=t.N
-return A.T(["name",a.name,"locale",a.lang],s,s)},
+return A.U(["name",a.name,"locale",a.lang],s,s)},
 $S:1042}
 A.ab6.prototype={
 IN(a,b,c){return this.aPc(a,b,c)},
@@ -156111,9 +156118,9 @@ q.y=A.bWv(p)
 s=q.grH()
 if(s==null){p=q.gS8(0)
 r=t.N
-q.srH(A.aP7("text","plain",A.T(["charset",p.gqS(p)],r,r)))}else if(!J.ex(s.c.a,"charset")){p=q.gS8(0)
+q.srH(A.aP7("text","plain",A.U(["charset",p.gqS(p)],r,r)))}else if(!J.ex(s.c.a,"charset")){p=q.gS8(0)
 r=t.N
-q.srH(s.aL4(A.T(["charset",p.gqS(p)],r,r)))}},
+q.srH(s.aL4(A.U(["charset",p.gqS(p)],r,r)))}},
 grH(){var s=this.r.h(0,"content-type")
 if(s==null)return null
 return A.bQj(s)},
@@ -156246,7 +156253,7 @@ $0(){this.a.remove()},
 $S:10}
 A.aJU.prototype={
 $1(a){var s,r=a.target,q=r==null?null:this.a.atv(r),p=this.b
-if((p.a.a&30)===0&&q!=null){s=A.S(q).i("P<1,ll>")
+if((p.a.a&30)===0&&q!=null){s=A.T(q).i("P<1,ll>")
 s=A.O(new A.P(q,new A.aJT(),s),s.i("al.E"))
 p.eu(0,s)}},
 $S:39}
@@ -156354,7 +156361,7 @@ if(a!=null)s=a>100
 else s=!1
 if(s)throw A.p(A.hk(a,"imageQuality","must be between 0 and 100"))
 s=t.N
-return B.dAU.hm("pickImage",A.T(["source",f.a,"maxWidth",c,"maxHeight",b,"imageQuality",a,"cameraDevice",d.a,"requestFullMetadata",!0],s,t.z),!1,s)},
+return B.dAU.hm("pickImage",A.U(["source",f.a,"maxWidth",c,"maxHeight",b,"imageQuality",a,"cameraDevice",d.a,"requestFullMetadata",!0],s,t.z),!1,s)},
 ps(a,b){return this.aek(a,b)},
 aek(a,b){var s=0,r=A.C(t.Vv),q,p=this,o
 var $async$ps=A.y(function(c,d){if(c===1)return A.z(d,r)
@@ -156490,7 +156497,7 @@ if(q==null){if(r.d==null){r.kz("yMMMMd")
 r.kz("jms")}q=r.d
 q.toString
 q=r.a2S(q)
-s=A.S(q).i("dk<1>")
+s=A.T(q).i("dk<1>")
 q=A.O(new A.dk(q,s),s.i("al.E"))
 r.e=q}return q},
 Y8(a,b){var s=this.d
@@ -156540,7 +156547,7 @@ s=this.w
 r=$.a_K()
 if(s===r)return $.c_9()
 s=t.S
-return A.U("^["+A.jl(A.bPD(10,new A.aBa(),s).eG(0,new A.aBb(this),s).d8(0),0,null)+"]+",!0,!1,!1,!1)},
+return A.S("^["+A.jl(A.bPD(10,new A.aBa(),s).eG(0,new A.aBb(this),s).d8(0),0,null)+"]+",!0,!1,!1,!1)},
 a2S(a){var s,r
 if(a.length===0)return A.a([],t.ob)
 s=this.azF(a)
@@ -157098,7 +157105,7 @@ o=$.nC()
 n.push(new A.jg(r,p.b,o.b.test(r)));++a.d}return n},
 ls(a,b){var s,r,q=this.qY(b),p=$.nC()
 q.push(new A.jg("",null,p.b.test("")))
-s=new A.P(q,new A.aAm(),A.S(q).i("P<1,h>")).a1(0,"\n")
+s=new A.P(q,new A.aAm(),A.T(q).i("P<1,h>")).a1(0,"\n")
 p=t.f2
 r=t.N
 return new A.cK("pre",A.a([new A.cK("code",A.a([new A.eF(s)],p),A.R(r,r))],p),A.R(r,r))},
@@ -157123,7 +157130,7 @@ ls(a,b){var s,r,q,p,o,n,m,l=$.ave().dU(A.bE4(b.a[b.d].a))
 l.toString
 s=A.bT6(l)
 l=this.aTk(b,s.b,s.a)
-r=new A.P(l,new A.aEC(),A.S(l).i("P<1,h>")).a1(0,"\n")
+r=new A.P(l,new A.aEC(),A.T(l).i("P<1,h>")).a1(0,"\n")
 if(r.length!==0)r+="\n"
 l=t.f2
 q=A.a([new A.eF(r)],l)
@@ -157138,7 +157145,7 @@ q=p==null?null:A.bT6(p)
 m=q==null||!B.c.Y(q.b,b)||q.c.length!==0
 o=a.d
 if(m){m=s[o].a
-o=A.U(r,!0,!1,!1,!1)
+o=A.S(r,!0,!1,!1,!1)
 m=B.c.c3(m,m.length-A.k9(m,o,"",0).length)
 o=$.nC()
 n.push(new A.jg(m,null,o.b.test(m)))
@@ -157178,7 +157185,7 @@ s.$flags=1
 return s}}
 A.aHi.prototype={
 $0(){var s=this.a.c
-return new A.a5(s,new A.aHh(),A.S(s).i("a5<1>"))},
+return new A.a5(s,new A.aHh(),A.T(s).i("a5<1>"))},
 $S:1063}
 A.aHh.prototype={
 $1(a){return!$.bX8().k(0,a.gip(a))},
@@ -157199,7 +157206,7 @@ l=r==null
 if(l)o=B.c.c3(m[b.d].a,p)
 else{n=B.c.xj(k,r)
 o=B.c.S(m[b.d].a,p,n)}o=B.c.B(o)
-if(l){m=A.U("^#+$",!0,!1,!1,!1)
+if(l){m=A.S("^#+$",!0,!1,!1,!1)
 m=m.b.test(o)}else m=!1
 if(m)o=null;++b.d
 m=A.a([],t.f2)
@@ -157234,7 +157241,7 @@ n=o[n]
 o=m.b.test(n.a)}else o=!1
 if(o)B.d.u(p,this.qY(a))
 return p},
-ls(a,b){var s=this.qY(b),r=B.c.jc(new A.P(s,new A.aJ7(),A.S(s).i("P<1,h>")).a1(0,"\n"))
+ls(a,b){var s=this.qY(b),r=B.c.jc(new A.P(s,new A.aJ7(),A.T(s).i("P<1,h>")).a1(0,"\n"))
 if(b.z!=null||b.w!=null){r="\n"+r
 if(b.w instanceof A.yT)r+="\n"}return new A.eF(r)}}
 A.aJ7.prototype={
@@ -157246,7 +157253,7 @@ qd(a){return!1},
 ls(a,b){var s=b.a,r=A.a([s[b.d]],t.Rv);++b.d
 for(;!A.bH5(b);){r.push(s[b.d]);++b.d}if(!this.aCR(r,b))b.d-=r.length
 return null},
-aCR(a,b){var s,r,q=new A.aLN(new A.P(a,new A.aLO(),A.S(a).i("P<1,h>")).a1(0,"\n"))
+aCR(a,b){var s,r,q=new A.aLN(new A.P(a,new A.aLO(),A.T(a).i("P<1,h>")).a1(0,"\n"))
 q.aTl()
 if(!q.c)return!1
 b.d-=q.r
@@ -157387,7 +157394,7 @@ if(r.length!==0){this.b.push(new A.E8(r,s.b))
 s.a=A.a([],t.Rv)}},
 $S:0}
 A.aLT.prototype={
-$1(a){var s,r,q=A.U("^ {0,3}\\[([ xX])\\][ \\t]",!0,!1,!1,!1)
+$1(a){var s,r,q=A.S("^ {0,3}\\[([ xX])\\][ \\t]",!0,!1,!1,!1)
 if(this.b)s=q.b.test(a)
 else s=!1
 r=this.a
@@ -157429,11 +157436,11 @@ r=a.a[a.d]
 return s.b.test(r.a)},
 ls(a,b){var s,r,q,p=b.a,o=b.e,n=b.d+1
 A.eU(o,n,p.length,null,null)
-s=A.d0(p,o,n,A.S(p).c).d8(0)
+s=A.d0(p,o,n,A.T(p).c).d8(0)
 if(s.length<2)return null
 B.d.iL(s)
 r=B.c.B(p[b.d].a)[0]==="="?"1":"2"
-q=B.c.jc(new A.P(s,new A.aXD(),A.S(s).i("P<1,h>")).a1(0,"\n"));++b.d
+q=B.c.jc(new A.P(s,new A.aXD(),A.T(s).i("P<1,h>")).a1(0,"\n"));++b.d
 p=t.N
 return new A.cK("h"+r,A.a([new A.w6(q)],t.f2),A.R(p,p))}}
 A.aXD.prototype={
@@ -157513,9 +157520,9 @@ if(n instanceof A.w6){m=A.a([],r)
 l=A.a([],q)
 k=A.a([],p)
 B.d.u(m,i.y)
-if(i.z)m.push(new A.G3(A.U("[A-Za-z0-9]+(?=\\s)",!0,!1,!0,!1),h))
-else m.push(new A.G3(A.U("[ \\tA-Za-z0-9]*[A-Za-z0-9](?=\\s)",!0,!1,!0,!1),h))
-B.d.u(m,A.a([new A.a4C(A.U("\\\\([!\"#$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~])",!0,!1,!0,!1),92),new A.a3L(A.U($.a_M().a,!1,!1,!0,!1),38),A.c6x(h,"\\[",91),A.c5w(h)],r))
+if(i.z)m.push(new A.G3(A.S("[A-Za-z0-9]+(?=\\s)",!0,!1,!0,!1),h))
+else m.push(new A.G3(A.S("[ \\tA-Za-z0-9]*[A-Za-z0-9](?=\\s)",!0,!1,!0,!1),h))
+B.d.u(m,A.a([new A.a4C(A.S("\\\\([!\"#$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~])",!0,!1,!0,!1),92),new A.a3L(A.S($.a_M().a,!1,!1,!0,!1),38),A.c6x(h,"\\[",91),A.c5w(h)],r))
 B.d.u(m,$.bXh())
 j=new A.aKm(n.a,i,m,l,k).aTi(0)
 s.d7(a,o)
@@ -157729,11 +157736,11 @@ a.r.push(new A.cK("a",r,o))
 a.B1(s)
 return!0},
 atg(a){var s,r,q,p,o,n
-if(B.c.eF(a,")")){s=A.U("(\\(.*)?(\\)+)$",!0,!1,!1,!1).dU(a).b
+if(B.c.eF(a,")")){s=A.S("(\\(.*)?(\\)+)$",!0,!1,!1,!1).dU(a).b
 if(s[1]==null)r=s[2].length
 else{for(s=a.length,q=0,p=0;p<s;++p){o=a.charCodeAt(p)
 if(o===40)++q
-else if(o===41)--q}r=q<0?Math.abs(q):0}}else if(B.c.eF(a,";")){n=A.U("&[0-9a-z]+;$",!0,!1,!1,!1).dU(a)
+else if(o===41)--q}r=q<0?Math.abs(q):0}}else if(B.c.eF(a,";")){n=A.S("&[0-9a-z]+;$",!0,!1,!1,!1).dU(a)
 r=n!=null?n.h(0,0).length:0}else r=0
 return a.length-r}}
 A.a0u.prototype={
@@ -159084,7 +159091,7 @@ if(q.Cs(n))l.e[0]=q.grj()
 n=""+l.l(0)}else if(q.kd(m)>0){o=!q.qO(m)
 n=""+m}else{if(!(m.length!==0&&q.Rl(m[0])))if(p)n+=q.grj()
 n+=m}p=q.Cs(m)}return n.charCodeAt(0)==0?n:n},
-ej(a,b){var s=A.zk(b,this.a),r=s.d,q=A.S(r).i("a5<1>")
+ej(a,b){var s=A.zk(b,this.a),r=s.d,q=A.T(r).i("a5<1>")
 r=A.O(new A.a5(r,new A.aAA(),q),q.i("F.E"))
 s.d=r
 q=s.b
@@ -159751,7 +159758,7 @@ M(a,b){return this.aUj(0,b)},
 aUj(a,b){var s=0,r=A.C(t.y),q,p
 var $async$M=A.y(function(c,d){if(c===1)return A.z(d,r)
 while(true)switch(s){case 0:s=3
-return A.n(B.Ce.hm("remove",A.T(["key",b],t.N,t.z),!1,t.y),$async$M)
+return A.n(B.Ce.hm("remove",A.U(["key",b],t.N,t.z),!1,t.y),$async$M)
 case 3:p=d
 p.toString
 q=p
@@ -159763,7 +159770,7 @@ rk(a,b,c){return this.afy(a,b,c)},
 afy(a,b,c){var s=0,r=A.C(t.y),q,p
 var $async$rk=A.y(function(d,e){if(d===1)return A.z(e,r)
 while(true)switch(s){case 0:s=3
-return A.n(B.Ce.hm("set"+a,A.T(["key",b,"value",c],t.N,t.z),!1,t.y),$async$rk)
+return A.n(B.Ce.hm("set"+a,A.U(["key",b,"value",c],t.N,t.z),!1,t.y),$async$rk)
 case 3:p=e
 p.toString
 q=p
@@ -159913,7 +159920,7 @@ l=n.c
 if(!J.o(m.c,l)){a1.Ha("\u2575")
 q.a+="\n"
 a1.a6S(l)}else if(m.b+1!==n.b){a1.aJT("...")
-q.a+="\n"}}for(l=n.d,k=A.S(l).i("dk<1>"),j=new A.dk(l,k),j=new A.bD(j,j.gA(0),k.i("bD<al.E>")),k=k.i("al.E"),i=n.b,h=n.a;j.C();){g=j.d
+q.a+="\n"}}for(l=n.d,k=A.T(l).i("dk<1>"),j=new A.dk(l,k),j=new A.bD(j,j.gA(0),k.i("bD<al.E>")),k=k.i("al.E"),i=n.b,h=n.a;j.C();){g=j.d
 if(g==null)g=k.a(g)
 f=g.a
 e=f.gd3(f)
@@ -160035,7 +160042,7 @@ $0(){return this.a},
 $S:1087}
 A.aIK.prototype={
 $1(a){var s=a.d
-return new A.a5(s,new A.aIJ(),A.S(s).i("a5<1>")).gA(0)},
+return new A.a5(s,new A.aIJ(),A.T(s).i("a5<1>")).gA(0)},
 $S:1088}
 A.aIJ.prototype={
 $1(a){var s=a.a,r=s.gd3(s)
@@ -160302,9 +160309,9 @@ A.b10.prototype={}
 A.ayL.prototype={}
 A.aPS.prototype={
 a7R(a){var s=t.y
-return B.Zw.hm("canLaunch",A.T(["url",a],t.N,t.K),!1,s).bM(new A.aPT(),s)},
+return B.Zw.hm("canLaunch",A.U(["url",a],t.N,t.K),!1,s).bM(new A.aPT(),s)},
 Cb(a,b,c,d,e,f,g,h){var s=t.y
-return B.Zw.hm("launch",A.T(["url",a,"useSafariVC",f,"useWebView",g,"enableJavaScript",!0,"enableDomStorage",!0,"universalLinksOnly",e,"headers",d],t.N,t.K),!1,s).bM(new A.aPU(),s)}}
+return B.Zw.hm("launch",A.U(["url",a,"useSafariVC",f,"useWebView",g,"enableJavaScript",!0,"enableDomStorage",!0,"universalLinksOnly",e,"headers",d],t.N,t.K),!1,s).bM(new A.aPU(),s)}}
 A.aPT.prototype={
 $1(a){return a===!0},
 $S:363}
@@ -185669,7 +185676,7 @@ $.bI_=A.R(t.N,A.aL("Dm"))
 $.c77=A.R(t.N,A.aL("NV"))
 $.bQp=0
 $.bHZ=null
-$.ceC=A.T(["unauthorized","User is not authorized to perform the desired action.","object-not-found","No object exists at the desired reference.","invalid-argument",null,"canceled",null],t.N,t.D)
+$.ceC=A.U(["unauthorized","User is not authorized to perform the desired action.","object-not-found","No object exists at the desired reference.","invalid-argument",null,"canceled",null],t.N,t.D)
 $.o_=A.cgG()
 $.bId=0
 $.c4O=A.a([],A.aL("a_<cnN>"))
@@ -185804,7 +185811,7 @@ return A.a([A.ap(A.ap(A.bx(),q),"Miter"),A.ap(A.ap(A.bx(),q),"Round"),A.ap(A.ap(
 s($,"cqz","c_3",()=>{var q="TileMode"
 return A.a([A.ap(A.ap(A.bx(),q),"Clamp"),A.ap(A.ap(A.bx(),q),"Repeat"),A.ap(A.ap(A.bx(),q),"Mirror"),A.ap(A.ap(A.bx(),q),"Decal")],t._)})
 s($,"cpv","bMo",()=>{var q="FilterMode",p="MipmapMode",o="Linear"
-return A.T([B.kb,{filter:A.ap(A.ap(A.bx(),q),"Nearest"),mipmap:A.ap(A.ap(A.bx(),p),"None")},B.JU,{filter:A.ap(A.ap(A.bx(),q),o),mipmap:A.ap(A.ap(A.bx(),p),"None")},B.lm,{filter:A.ap(A.ap(A.bx(),q),o),mipmap:A.ap(A.ap(A.bx(),p),o)},B.tP,{B:0.3333333333333333,C:0.3333333333333333}],A.aL("y9"),t.m)})
+return A.U([B.kb,{filter:A.ap(A.ap(A.bx(),q),"Nearest"),mipmap:A.ap(A.ap(A.bx(),p),"None")},B.JU,{filter:A.ap(A.ap(A.bx(),q),o),mipmap:A.ap(A.ap(A.bx(),p),"None")},B.lm,{filter:A.ap(A.ap(A.bx(),q),o),mipmap:A.ap(A.ap(A.bx(),p),o)},B.tP,{B:0.3333333333333333,C:0.3333333333333333}],A.aL("y9"),t.m)})
 s($,"cpH","bZo",()=>{var q=A.bJ0(2)
 q.$flags&2&&A.br(q)
 q[0]=0
@@ -185831,7 +185838,7 @@ s($,"cpD","bGw",()=>A.aMg(A.c1k($.bZl())))
 s($,"cpl","bZe",()=>A.bRN(A.ap(A.bx(),"ParagraphBuilder")))
 s($,"crz","c_j",()=>{var q=t.N,p=A.aL("+breaks,graphemes,words(Gd,Gd,Gd)"),o=A.bIR(1e5,q,p),n=A.bIR(1e4,q,p)
 return new A.aoX(A.bIR(20,q,p),n,o)})
-s($,"cpC","bZk",()=>A.T([B.Lp,A.bVs("grapheme"),B.Lq,A.bVs("word")],A.aL("N0"),t.m))
+s($,"cpC","bZk",()=>A.U([B.Lp,A.bVs("grapheme"),B.Lq,A.bVs("word")],A.aL("N0"),t.m))
 s($,"cqG","c_8",()=>{var q="v8BreakIterator"
 if(A.ap(A.ap(A.nA(),"Intl"),q)==null)A.aB(A.h3("v8BreakIterator is not supported."))
 return A.cdN(A.Jb(A.Jb(A.nA(),"Intl"),q),A.c6G([]),A.bQG(B.c3u))})
@@ -185841,13 +185848,13 @@ if(p==null)p=0
 q=A.ap(A.ap(A.nA(),"window"),"screen")
 q=q==null?null:A.ap(q,"height")
 return new A.a4w(0,A.c9Y(p,q==null?0:q))})
-s($,"cli","io",()=>A.bQG(A.T(["preventScroll",!0],t.N,t.y)))
+s($,"cli","io",()=>A.bQG(A.U(["preventScroll",!0],t.N,t.y)))
 s($,"cqF","c_7",()=>{var q=A.ap(A.ap(A.nA(),"window"),"trustedTypes")
 q.toString
 return A.bU9(q,"createPolicy","flutter-engine",{createScriptURL:A.dz(new A.bDC())})})
 r($,"cqL","bMA",()=>A.ap(A.Jb(A.nA(),"window"),"FinalizationRegistry")!=null)
 r($,"cqN","bGy",()=>A.ap(A.Jb(A.nA(),"window"),"OffscreenCanvas")!=null)
-s($,"cpx","bZi",()=>B.cN.e0(A.T(["type","fontsChange"],t.N,t.z)))
+s($,"cpx","bZi",()=>B.cN.e0(A.U(["type","fontsChange"],t.N,t.z)))
 r($,"c4Y","bX9",()=>A.Dw())
 r($,"clO","bGi",()=>new A.a5V(A.a([],A.aL("a_<~(Z)>")),A.cdU(A.ap(A.nA(),"window"),"matchMedia","(forced-colors: active)")))
 s($,"cpj","bZc",()=>A.c1x("ftyp"))
@@ -185867,7 +185874,7 @@ s($,"cq_","bZC",()=>458977)
 s($,"cq0","bZD",()=>458981)
 s($,"cpY","bZA",()=>458979)
 s($,"cpZ","bZB",()=>458983)
-s($,"cpN","bZs",()=>A.T([$.bMq(),new A.bD6(),$.bZq(),new A.bD7(),$.bMr(),new A.bD8(),$.bZr(),new A.bD9(),$.bMt(),new A.bDa(),$.bZu(),new A.bDb(),$.bMs(),new A.bDc(),$.bZt(),new A.bDd()],t.S,A.aL("Z(pd)")))
+s($,"cpN","bZs",()=>A.U([$.bMq(),new A.bD6(),$.bZq(),new A.bD7(),$.bMr(),new A.bD8(),$.bZr(),new A.bD9(),$.bMt(),new A.bDa(),$.bZu(),new A.bDb(),$.bMs(),new A.bDc(),$.bZt(),new A.bDd()],t.S,A.aL("Z(pd)")))
 s($,"crw","bGG",()=>A.cC(new A.bEW()))
 s($,"clo","c9",()=>A.c3a())
 r($,"cn7","x8",()=>{var q=t.N,p=t.S
@@ -185884,7 +185891,7 @@ r($,"cqM","bMB",()=>{var q=A.ap(A.Jb(A.nA(),"window"),"ImageDecoder")
 q=(q==null?null:A.bPF(q))!=null&&$.cT().ghK()===B.kW
 return q})
 s($,"cky","bWI",()=>{var q=t.N
-return new A.ayJ(A.T(["birthday","bday","birthdayDay","bday-day","birthdayMonth","bday-month","birthdayYear","bday-year","countryCode","country","countryName","country-name","creditCardExpirationDate","cc-exp","creditCardExpirationMonth","cc-exp-month","creditCardExpirationYear","cc-exp-year","creditCardFamilyName","cc-family-name","creditCardGivenName","cc-given-name","creditCardMiddleName","cc-additional-name","creditCardName","cc-name","creditCardNumber","cc-number","creditCardSecurityCode","cc-csc","creditCardType","cc-type","email","email","familyName","family-name","fullStreetAddress","street-address","gender","sex","givenName","given-name","impp","impp","jobTitle","organization-title","language","language","middleName","additional-name","name","name","namePrefix","honorific-prefix","nameSuffix","honorific-suffix","newPassword","new-password","nickname","nickname","oneTimeCode","one-time-code","organizationName","organization","password","current-password","photo","photo","postalCode","postal-code","streetAddressLevel1","address-level1","streetAddressLevel2","address-level2","streetAddressLevel3","address-level3","streetAddressLevel4","address-level4","streetAddressLine1","address-line1","streetAddressLine2","address-line2","streetAddressLine3","address-line3","telephoneNumber","tel","telephoneNumberAreaCode","tel-area-code","telephoneNumberCountryCode","tel-country-code","telephoneNumberExtension","tel-extension","telephoneNumberLocal","tel-local","telephoneNumberLocalPrefix","tel-local-prefix","telephoneNumberLocalSuffix","tel-local-suffix","telephoneNumberNational","tel-national","transactionAmount","transaction-amount","transactionCurrency","transaction-currency","url","url","username","username"],q,q))})
+return new A.ayJ(A.U(["birthday","bday","birthdayDay","bday-day","birthdayMonth","bday-month","birthdayYear","bday-year","countryCode","country","countryName","country-name","creditCardExpirationDate","cc-exp","creditCardExpirationMonth","cc-exp-month","creditCardExpirationYear","cc-exp-year","creditCardFamilyName","cc-family-name","creditCardGivenName","cc-given-name","creditCardMiddleName","cc-additional-name","creditCardName","cc-name","creditCardNumber","cc-number","creditCardSecurityCode","cc-csc","creditCardType","cc-type","email","email","familyName","family-name","fullStreetAddress","street-address","gender","sex","givenName","given-name","impp","impp","jobTitle","organization-title","language","language","middleName","additional-name","name","name","namePrefix","honorific-prefix","nameSuffix","honorific-suffix","newPassword","new-password","nickname","nickname","oneTimeCode","one-time-code","organizationName","organization","password","current-password","photo","photo","postalCode","postal-code","streetAddressLevel1","address-level1","streetAddressLevel2","address-level2","streetAddressLevel3","address-level3","streetAddressLevel4","address-level4","streetAddressLine1","address-line1","streetAddressLine2","address-line2","streetAddressLine3","address-line3","telephoneNumber","tel","telephoneNumberAreaCode","tel-area-code","telephoneNumberCountryCode","tel-country-code","telephoneNumberExtension","tel-extension","telephoneNumberLocal","tel-local","telephoneNumberLocalPrefix","tel-local-prefix","telephoneNumberLocalSuffix","tel-local-suffix","telephoneNumberNational","tel-national","transactionAmount","transaction-amount","transactionCurrency","transaction-currency","url","url","username","username"],q,q))})
 s($,"crC","a_O",()=>new A.aJs())
 s($,"cqE","c_6",()=>A.bJ0(4))
 s($,"cqC","bMy",()=>A.bJ0(16))
@@ -185925,11 +185932,11 @@ s($,"cp5","bZ0",()=>new A.bBT().$0())
 s($,"cp6","bZ1",()=>new A.bBS().$0())
 s($,"coB","bMe",()=>A.c7r(A.qo(A.a([-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,62,-2,62,-2,63,52,53,54,55,56,57,58,59,60,61,-2,-2,-2,-1,-2,-2,-2,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-2,-2,-2,-2,63,-2,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,-2,-2,-2,-2,-2],t.t))))
 r($,"coA","bYJ",()=>A.bJ1(0))
-s($,"cll","bX_",()=>A.T(["iso_8859-1:1987",B.h9,"iso-ir-100",B.h9,"iso_8859-1",B.h9,"iso-8859-1",B.h9,"latin1",B.h9,"l1",B.h9,"ibm819",B.h9,"cp819",B.h9,"csisolatin1",B.h9,"iso-ir-6",B.h8,"ansi_x3.4-1968",B.h8,"ansi_x3.4-1986",B.h8,"iso_646.irv:1991",B.h8,"iso646-us",B.h8,"us-ascii",B.h8,"us",B.h8,"ibm367",B.h8,"cp367",B.h8,"csascii",B.h8,"ascii",B.h8,"csutf8",B.br,"utf-8",B.br],t.N,A.aL("y_")))
+s($,"cll","bX_",()=>A.U(["iso_8859-1:1987",B.h9,"iso-ir-100",B.h9,"iso_8859-1",B.h9,"iso-8859-1",B.h9,"latin1",B.h9,"l1",B.h9,"ibm819",B.h9,"cp819",B.h9,"csisolatin1",B.h9,"iso-ir-6",B.h8,"ansi_x3.4-1968",B.h8,"ansi_x3.4-1986",B.h8,"iso_646.irv:1991",B.h8,"iso646-us",B.h8,"us-ascii",B.h8,"us",B.h8,"ibm367",B.h8,"cp367",B.h8,"csascii",B.h8,"ascii",B.h8,"csutf8",B.br,"utf-8",B.br],t.N,A.aL("y_")))
 s($,"cp8","av7",()=>A.cdp())
-s($,"cp3","bYZ",()=>A.U("^[\\-\\.0-9A-Z_a-z~]*$",!0,!1,!1,!1))
+s($,"cp3","bYZ",()=>A.S("^[\\-\\.0-9A-Z_a-z~]*$",!0,!1,!1,!1))
 s($,"cp4","bZ_",()=>typeof URLSearchParams=="function")
-s($,"ckU","bWO",()=>A.U("^([+-]?\\d{4,6})-?(\\d\\d)-?(\\d\\d)(?:[ T](\\d\\d)(?::?(\\d\\d)(?::?(\\d\\d)(?:[.,](\\d+))?)?)?( ?[zZ]| ?([-+])(\\d\\d)(?::?(\\d\\d))?)?)?$",!0,!1,!1,!1))
+s($,"ckU","bWO",()=>A.S("^([+-]?\\d{4,6})-?(\\d\\d)-?(\\d\\d)(?:[ T](\\d\\d)(?::?(\\d\\d)(?::?(\\d\\d)(?:[.,](\\d+))?)?)?( ?[zZ]| ?([-+])(\\d\\d)(?::?(\\d\\d))?)?)?$",!0,!1,!1,!1))
 s($,"cpy","ip",()=>A.x3(B.eiD))
 s($,"cnP","Ju",()=>{A.c8E()
 return $.aT0})
@@ -185963,7 +185970,7 @@ return q})
 s($,"clr","bLX",()=>new A.a4())
 s($,"clB","auY",()=>new A.a4())
 r($,"cpB","av9",()=>{var q=t.j,p=t.z
-return A.KH(A.T(["where",A.m7([],q),"orderBy",A.m7([],q),"startAt",null,"startAfter",null,"endAt",null,"endBefore",null,"limit",null,"limitToLast",null],p,p),t.N,p)})
+return A.KH(A.U(["where",A.m7([],q),"orderBy",A.m7([],q),"startAt",null,"startAfter",null,"endAt",null,"endBefore",null,"limit",null,"limitToLast",null],p,p),t.N,p)})
 s($,"cng","C4",()=>new A.a4())
 s($,"cnh","bGn",()=>new A.a4())
 s($,"clF","bX7",()=>A.jK(A.aL("a4S")))
@@ -185993,7 +186000,7 @@ q.rA($.bLY())
 return q})
 s($,"cly","cv",()=>new A.a4())
 s($,"clD","bGh",()=>new A.a4())
-r($,"clA","auX",()=>A.T(["core",A.c3K("app",null,"core")],t.N,A.aL("rc")))
+r($,"clA","auX",()=>A.U(["core",A.c3K("app",null,"core")],t.N,A.aL("rc")))
 s($,"ckq","bWD",()=>A.jK(t.Gu))
 s($,"cmS","bM0",()=>new A.aFk())
 s($,"clE","auZ",()=>new A.a4())
@@ -186004,11 +186011,11 @@ s($,"cnR","bYi",()=>A.jK(A.aL("adf")))
 s($,"cnQ","bYh",()=>A.jK(A.aL("adh")))
 s($,"coh","bYx",()=>A.jK(A.aL("aea")))
 s($,"cog","bYw",()=>A.jK(t._W))
-s($,"cqA","c_4",()=>A.U("^(?:gs|https?):\\//",!0,!1,!1,!1))
-r($,"cpu","bMn",()=>A.T([B.a54,B.wL,B.a55,B.DH,B.a52,B.DG,B.a51,B.wJ,B.a53,B.wK],A.aL("vZ"),A.aL("t5")))
+s($,"cqA","c_4",()=>A.S("^(?:gs|https?):\\//",!0,!1,!1,!1))
+r($,"cpu","bMn",()=>A.U([B.a54,B.wL,B.a55,B.DH,B.a52,B.DG,B.a51,B.wJ,B.a53,B.wK],A.aL("vZ"),A.aL("t5")))
 s($,"cpI","bZp",()=>A.bJD(1,1,500))
 s($,"coJ","bYL",()=>A.cbt(new A.baE(),t.Pb))
-s($,"cr9","c_c",()=>A.T([B.all,A.i(40),B.alm,A.i(40),B.In,A.i(12)],A.aL("CM"),t.m3))
+s($,"cr9","c_c",()=>A.U([B.all,A.i(40),B.alm,A.i(40),B.In,A.i(12)],A.aL("CM"),t.m3))
 s($,"cqV","bMC",()=>new A.aiv())
 s($,"cq1","bZE",()=>A.jp(B.o7,B.G,t.EP))
 s($,"cpV","bMu",()=>A.jp(B.G,B.dCt,t.EP))
@@ -186020,9 +186027,9 @@ s($,"coI","a_G",()=>new A.wh(0,$.bYK()))
 s($,"coH","bYK",()=>A.cfH(0))
 s($,"cpr","a_J",()=>A.rr(null,t.N))
 s($,"cps","bMm",()=>A.caf())
-s($,"cpA","bZj",()=>A.U("^ *(?:[-+*] |[0-9]+[.):] )?",!0,!1,!1,!1))
+s($,"cpA","bZj",()=>A.S("^ *(?:[-+*] |[0-9]+[.):] )?",!0,!1,!1,!1))
 s($,"cox","bYI",()=>A.bJ1(8))
-s($,"cnO","bYg",()=>A.U("^\\s*at ([^\\s]+).*$",!0,!1,!1,!1))
+s($,"cnO","bYg",()=>A.S("^\\s*at ([^\\s]+).*$",!0,!1,!1,!1))
 s($,"crc","bGE",()=>A.cn(4294967295))
 s($,"crb","bGD",()=>A.cn(3707764736))
 s($,"ckS","bWM",()=>A.cbe())
@@ -186057,8 +186064,8 @@ s($,"crn","bML",()=>new A.a9b())
 s($,"co2","bYk",()=>A.caZ())
 s($,"co1","bYj",()=>new A.akm(A.R(A.aL("HF"),t.we),5,A.aL("akm<HF,nk>")))
 s($,"cmP","bGl",()=>A.c7o(4))
-s($,"cow","bYH",()=>A.U("[\\p{Space_Separator}\\p{Punctuation}]",!0,!1,!1,!0))
-s($,"cp2","bYY",()=>A.U("\\p{Space_Separator}",!0,!1,!1,!0))
+s($,"cow","bYH",()=>A.S("[\\p{Space_Separator}\\p{Punctuation}]",!0,!1,!1,!0))
+s($,"cp2","bYY",()=>A.S("\\p{Space_Separator}",!0,!1,!1,!0))
 r($,"cnu","bY5",()=>B.akZ)
 r($,"cnw","bY7",()=>{var q=null
 return A.bSk(q,B.yu,q,q,q,q,"sans-serif",q,q,18,q,q,q,q,q,q,q,q,q,q,q)})
@@ -186076,20 +186083,20 @@ s($,"cnF","bYc",()=>A.c71().a)
 s($,"cry","avl",()=>{var q=t.N,p=t.L0
 return new A.aSu(A.R(q,t.IE),A.R(q,p),A.R(q,p))})
 s($,"ckz","auW",()=>new A.ayM())
-s($,"clV","bXi",()=>A.T([4294967562,B.AV,4294967564,B.aKa,4294967556,B.aKb],t.S,t.SQ))
+s($,"clV","bXi",()=>A.U([4294967562,B.AV,4294967564,B.aKa,4294967556,B.aKb],t.S,t.SQ))
 s($,"clZ","bXk",()=>{var q=t.bd
-return A.T([B.Bu,A.cX([B.jA,B.kv],q),B.Bw,A.cX([B.qm,B.vi],q),B.Bv,A.cX([B.ql,B.vh],q),B.Bt,A.cX([B.nL,B.qk],q)],q,A.aL("ck<J>"))})
+return A.U([B.Bu,A.cX([B.jA,B.kv],q),B.Bw,A.cX([B.qm,B.vi],q),B.Bv,A.cX([B.ql,B.vh],q),B.Bt,A.cX([B.nL,B.qk],q)],q,A.aL("ck<J>"))})
 s($,"cru","c_i",()=>new A.aSD())
 s($,"cnn","bM7",()=>new A.aTq(A.a([],A.aL("a_<~(rM)>")),A.R(t.v3,t.bd)))
 s($,"cnm","bY0",()=>{var q=t.v3
-return A.T([B.epv,A.cX([B.od],q),B.epw,A.cX([B.of],q),B.epx,A.cX([B.od,B.of],q),B.epu,A.cX([B.od],q),B.epr,A.cX([B.oc],q),B.eps,A.cX([B.qK],q),B.ept,A.cX([B.oc,B.qK],q),B.epq,A.cX([B.oc],q),B.epn,A.cX([B.ob],q),B.epo,A.cX([B.qJ],q),B.epp,A.cX([B.ob,B.qJ],q),B.epm,A.cX([B.ob],q),B.epz,A.cX([B.oe],q),B.epA,A.cX([B.qL],q),B.epB,A.cX([B.oe,B.qL],q),B.epy,A.cX([B.oe],q),B.epC,A.cX([B.lY],q),B.epD,A.cX([B.vR],q),B.epE,A.cX([B.vQ],q),B.epF,A.cX([B.qI],q)],A.aL("fU"),A.aL("ck<aa>"))})
-s($,"cnl","bM6",()=>A.T([B.od,B.ql,B.of,B.vh,B.oc,B.jA,B.qK,B.kv,B.ob,B.nL,B.qJ,B.qk,B.oe,B.qm,B.qL,B.vi,B.lY,B.qh,B.vR,B.vf,B.vQ,B.vg],t.v3,t.bd))
+return A.U([B.epv,A.cX([B.od],q),B.epw,A.cX([B.of],q),B.epx,A.cX([B.od,B.of],q),B.epu,A.cX([B.od],q),B.epr,A.cX([B.oc],q),B.eps,A.cX([B.qK],q),B.ept,A.cX([B.oc,B.qK],q),B.epq,A.cX([B.oc],q),B.epn,A.cX([B.ob],q),B.epo,A.cX([B.qJ],q),B.epp,A.cX([B.ob,B.qJ],q),B.epm,A.cX([B.ob],q),B.epz,A.cX([B.oe],q),B.epA,A.cX([B.qL],q),B.epB,A.cX([B.oe,B.qL],q),B.epy,A.cX([B.oe],q),B.epC,A.cX([B.lY],q),B.epD,A.cX([B.vR],q),B.epE,A.cX([B.vQ],q),B.epF,A.cX([B.qI],q)],A.aL("fU"),A.aL("ck<aa>"))})
+s($,"cnl","bM6",()=>A.U([B.od,B.ql,B.of,B.vh,B.oc,B.jA,B.qK,B.kv,B.ob,B.nL,B.qJ,B.qk,B.oe,B.qm,B.qL,B.vi,B.lY,B.qh,B.vR,B.vf,B.vQ,B.vg],t.v3,t.bd))
 s($,"cnk","bY_",()=>{var q=A.R(t.v3,t.bd)
 q.p(0,B.qI,B.Bp)
 q.u(0,$.bM6())
 return q})
 s($,"clx","bX6",()=>new A.Dg("\n",!1,""))
-s($,"clw","bX5",()=>A.c3D(A.U("[0-9]",!0,!1,!1,!1)))
+s($,"clw","bX5",()=>A.c3D(A.S("[0-9]",!0,!1,!1,!1)))
 s($,"co_","e5",()=>{var q=$.bGu()
 q=new A.adK(q,A.cX([q],A.aL("Rp")),A.R(t.N,A.aL("bRA")))
 q.c=B.Cp
@@ -186101,10 +186108,10 @@ q.a=B.dD4
 q.gaIM().oc(q.gaxL())
 return q})
 r($,"cou","bYG",()=>{var q=A.aL("~(cx<ca>)")
-return A.T([B.eij,A.bOn(!0),B.ei9,A.bOn(!1),B.eiN,new A.abH(A.Ok(q)),B.a6d,new A.a9J(A.Ok(q)),B.a6e,new A.aaL(A.Ok(q)),B.E6,new A.Lg(!1,A.Ok(q)),B.Eb,A.c9v(),B.eiG,new A.aaN(A.Ok(q)),B.ej5,new A.aer(A.Ok(q))],t.G,t.od)})
+return A.U([B.eij,A.bOn(!0),B.ei9,A.bOn(!1),B.eiN,new A.abH(A.Ok(q)),B.a6d,new A.a9J(A.Ok(q)),B.a6e,new A.aaL(A.Ok(q)),B.E6,new A.Lg(!1,A.Ok(q)),B.Eb,A.c9v(),B.eiG,new A.aaN(A.Ok(q)),B.ej5,new A.aer(A.Ok(q))],t.G,t.od)})
 s($,"ckZ","bGd",()=>{var q,p,o,n=t.vz,m=A.R(t.Vz,n)
 for(q=A.aL("bm"),p=0;p<2;++p){o=B.Bl[p]
-m.u(0,A.T([A.iG(B.eT,!1,!1,!1,o),B.z2,A.iG(B.eT,!1,!0,!1,o),B.z5,A.iG(B.eT,!0,!1,!1,o),B.z3,A.iG(B.eA,!1,!1,!1,o),B.pw,A.iG(B.eA,!1,!0,!1,o),B.px,A.iG(B.eA,!0,!1,!1,o),B.z4],q,n))}m.p(0,B.qZ,B.nc)
+m.u(0,A.U([A.iG(B.eT,!1,!1,!1,o),B.z2,A.iG(B.eT,!1,!0,!1,o),B.z5,A.iG(B.eT,!0,!1,!1,o),B.z3,A.iG(B.eA,!1,!1,!1,o),B.pw,A.iG(B.eA,!1,!0,!1,o),B.px,A.iG(B.eA,!0,!1,!1,o),B.z4],q,n))}m.p(0,B.qZ,B.nc)
 m.p(0,B.r_,B.nd)
 m.p(0,B.oq,B.ne)
 m.p(0,B.or,B.nf)
@@ -186141,7 +186148,7 @@ m.p(0,B.wA,B.aA)
 return m})
 s($,"ckY","bLR",()=>$.bGd())
 s($,"cl_","bWQ",()=>$.bLR())
-s($,"cl1","bLS",()=>A.T([B.e4O,B.tH,B.e4P,B.tG,B.e4C,B.pQ,B.e4Q,B.pR,B.e5j,B.JG,B.e5k,B.JF,B.e5n,B.JB,B.e5l,B.JC,B.e4D,B.tM,B.e4R,B.tN,B.e4S,B.pQ,B.e4T,B.pR,B.e5b,B.pw,B.e4F,B.px,B.e4G,B.nd,B.e4H,B.nc,B.e57,B.ne,B.e4I,B.nf,B.e4V,B.tL,B.e4W,B.tK,B.e55,B.aCW,B.e4X,B.aCX,B.e58,B.A7,B.e4J,B.A8,B.e4K,B.ne,B.e4L,B.nf,B.e4U,B.pw,B.e5p,B.px],t.Vz,t.vz))
+s($,"cl1","bLS",()=>A.U([B.e4O,B.tH,B.e4P,B.tG,B.e4C,B.pQ,B.e4Q,B.pR,B.e5j,B.JG,B.e5k,B.JF,B.e5n,B.JB,B.e5l,B.JC,B.e4D,B.tM,B.e4R,B.tN,B.e4S,B.pQ,B.e4T,B.pR,B.e5b,B.pw,B.e4F,B.px,B.e4G,B.nd,B.e4H,B.nc,B.e57,B.ne,B.e4I,B.nf,B.e4V,B.tL,B.e4W,B.tK,B.e55,B.aCW,B.e4X,B.aCX,B.e58,B.A7,B.e4J,B.A8,B.e4K,B.ne,B.e4L,B.nf,B.e4U,B.pw,B.e5p,B.px],t.Vz,t.vz))
 s($,"cl2","bWS",()=>{var q=A.m6($.bGd(),t.Vz,t.vz)
 q.u(0,$.bLS())
 q.p(0,B.wD,B.lj)
@@ -186151,7 +186158,7 @@ q.p(0,B.wC,B.JA)
 return q})
 s($,"cl4","bLT",()=>{var q,p,o,n=t.vz,m=A.R(t.Vz,n)
 for(q=A.aL("bm"),p=0;p<2;++p){o=B.Bl[p]
-m.u(0,A.T([A.iG(B.eT,!1,!1,!1,o),B.z2,A.iG(B.eT,!0,!1,!1,o),B.z5,A.iG(B.eT,!1,!1,!0,o),B.z3,A.iG(B.eA,!1,!1,!1,o),B.pw,A.iG(B.eA,!0,!1,!1,o),B.px,A.iG(B.eA,!1,!1,!0,o),B.z4],q,n))}m.p(0,B.qZ,B.nc)
+m.u(0,A.U([A.iG(B.eT,!1,!1,!1,o),B.z2,A.iG(B.eT,!0,!1,!1,o),B.z5,A.iG(B.eT,!1,!1,!0,o),B.z3,A.iG(B.eA,!1,!1,!1,o),B.pw,A.iG(B.eA,!0,!1,!1,o),B.px,A.iG(B.eA,!1,!1,!0,o),B.z4],q,n))}m.p(0,B.qZ,B.nc)
 m.p(0,B.r_,B.nd)
 m.p(0,B.oq,B.ne)
 m.p(0,B.or,B.nf)
@@ -186214,7 +186221,7 @@ q.p(0,B.e5e,B.Jy)
 return q})
 s($,"cl5","bLU",()=>{var q,p,o,n=t.vz,m=A.R(t.Vz,n)
 for(q=A.aL("bm"),p=0;p<2;++p){o=B.Bl[p]
-m.u(0,A.T([A.iG(B.eT,!1,!1,!1,o),B.aA,A.iG(B.eA,!1,!1,!1,o),B.aA,A.iG(B.eT,!0,!1,!1,o),B.aA,A.iG(B.eA,!0,!1,!1,o),B.aA,A.iG(B.eT,!1,!0,!1,o),B.aA,A.iG(B.eA,!1,!0,!1,o),B.aA,A.iG(B.eT,!1,!1,!0,o),B.aA,A.iG(B.eA,!1,!1,!0,o),B.aA],q,n))}m.u(0,B.Xi)
+m.u(0,A.U([A.iG(B.eT,!1,!1,!1,o),B.aA,A.iG(B.eA,!1,!1,!1,o),B.aA,A.iG(B.eT,!0,!1,!1,o),B.aA,A.iG(B.eA,!0,!1,!1,o),B.aA,A.iG(B.eT,!1,!0,!1,o),B.aA,A.iG(B.eA,!1,!0,!1,o),B.aA,A.iG(B.eT,!1,!1,!0,o),B.aA,A.iG(B.eA,!1,!1,!0,o),B.aA],q,n))}m.u(0,B.Xi)
 m.p(0,B.a4f,B.aA)
 m.p(0,B.a4c,B.aA)
 m.p(0,B.a4e,B.aA)
@@ -186276,8 +186283,8 @@ s($,"clj","bGg",()=>{var q=t.N
 return new A.aCw(A.R(q,q),A.R(q,t.yp),A.R(q,t.TF))})
 s($,"crE","avm",()=>A.lk(null,t.bo))
 s($,"cka","a_q",()=>A.lk(A.a([],t.FJ),A.aL("a0<iQ>")))
-s($,"ckl","bLO",()=>A.U("(\\[MANDATO|\\[MODO PLANT|\\[MODO ESTU|\\[CONTRACT|\\[TRAVA DE IDIOMA|\\[AI_ROUTER|\\[REFOR[\xc7C]O|\\[SOBERANIA|\\[IN[\xcdI]CIO|\\[SYSTEM|\\[PROMPT|\\[CAMADA|\\[SISTEMA|\\[CONTEXTO RAG\\]|RESPONDA\\s+ESTRITAMENTE|RESPONDA\\s+[\xdaU]NICA\\s+E\\s+EXCLUSIVAMENTE|TEMPLATE\\s+DE\\s+\\d+\\s+LINHAS|NESTA\\s+ORDEM\\s+EXATA|PROIBIDO\\s+CRIAR\\s+INTRODU|INSTRU\xc7\xc3O\\s+DE\\s+SISTEMA|PROMPT\\s+INTERNO|SYSTEM\\s+INSTRUCTION|SMART\\s+ROUTER|LAZY\\s+M[\xd3O]DULO|^Vou\\s+responder|^Vamos\\s+analisar|^Segue\\s+abaixo|^Aqui\\s+est[\xe1a]|^Com\\s+base\\s+na\\s+solicita[\xe7c][\xe3a]o|^Resposta:|^An[\xe1a]lise:|^Explica[\xe7c][\xe3a]o:|^Racioc[\xedi]nio|^Pensamento|^Processando|^Modo\\s+Plant[\xe3a]o|^Formato\\s+Plant[\xe3a]o|^Primeiro,|^Primeiro\\s+vou|^Primeiramente|^Voy\\s+a\\s+responder|^Vamos\\s+a\\s+analizar|^Aqu[\xedi]\\s+est[\xe1a]|^Con\\s+base\\s+en\\s+la\\s+solicitud|^Respuesta:|^An[\xe1a]lisis:|^Explicaci[o\xf3]n:|^Razonamiento|^Pensamiento|^Procesando|^Modo\\s+Guard[\xedi]a|^Formato\\s+Guard[\xedi]a|^Primero,|^Let\\s+me\\s+|^I\\s+will\\s+|^I\\s+need\\s+to\\s+|^Here\\s+is\\s+|^Here\\s+are\\s+|^Based\\s+on\\s+the\\s+|^Analysis:|^Reasoning:|^Processing)",!1,!1,!0,!1))
-s($,"ckm","bLP",()=>A.U("(\\[MANDATO|\\[CONTRACT|\\[AI_ROUTER|\\[CAMADA|\\[SISTEMA|RESPONDA\\s+ESTRITAMENTE|RESPONDA\\s+[\xdaU]NICA\\s+E\\s+EXCLUSIVAMENTE|TEMPLATE\\s+DE\\s+\\d+\\s+LINHAS|NESTA\\s+ORDEM\\s+EXATA|PROIBIDO\\s+CRIAR\\s+INTRODU|INSTRU\xc7\xc3O\\s+DE\\s+SISTEMA|PROMPT\\s+INTERNO|SYSTEM\\s+INSTRUCTION|SMART\\s+ROUTER)",!1,!1,!0,!1))
+s($,"ckl","bLO",()=>A.S("(\\[MANDATO|\\[MODO PLANT|\\[MODO ESTU|\\[CONTRACT|\\[TRAVA DE IDIOMA|\\[AI_ROUTER|\\[REFOR[\xc7C]O|\\[SOBERANIA|\\[IN[\xcdI]CIO|\\[SYSTEM|\\[PROMPT|\\[CAMADA|\\[SISTEMA|\\[CONTEXTO RAG\\]|RESPONDA\\s+ESTRITAMENTE|RESPONDA\\s+[\xdaU]NICA\\s+E\\s+EXCLUSIVAMENTE|TEMPLATE\\s+DE\\s+\\d+\\s+LINHAS|NESTA\\s+ORDEM\\s+EXATA|PROIBIDO\\s+CRIAR\\s+INTRODU|INSTRU\xc7\xc3O\\s+DE\\s+SISTEMA|PROMPT\\s+INTERNO|SYSTEM\\s+INSTRUCTION|SMART\\s+ROUTER|LAZY\\s+M[\xd3O]DULO|^Vou\\s+responder|^Vamos\\s+analisar|^Segue\\s+abaixo|^Aqui\\s+est[\xe1a]|^Com\\s+base\\s+na\\s+solicita[\xe7c][\xe3a]o|^Resposta:|^An[\xe1a]lise:|^Explica[\xe7c][\xe3a]o:|^Racioc[\xedi]nio|^Pensamento|^Processando|^Modo\\s+Plant[\xe3a]o|^Formato\\s+Plant[\xe3a]o|^Primeiro,|^Primeiro\\s+vou|^Primeiramente|^Voy\\s+a\\s+responder|^Vamos\\s+a\\s+analizar|^Aqu[\xedi]\\s+est[\xe1a]|^Con\\s+base\\s+en\\s+la\\s+solicitud|^Respuesta:|^An[\xe1a]lisis:|^Explicaci[o\xf3]n:|^Razonamiento|^Pensamiento|^Procesando|^Modo\\s+Guard[\xedi]a|^Formato\\s+Guard[\xedi]a|^Primero,|^Let\\s+me\\s+|^I\\s+will\\s+|^I\\s+need\\s+to\\s+|^Here\\s+is\\s+|^Here\\s+are\\s+|^Based\\s+on\\s+the\\s+|^Analysis:|^Reasoning:|^Processing)",!1,!1,!0,!1))
+s($,"ckm","bLP",()=>A.S("(\\[MANDATO|\\[CONTRACT|\\[AI_ROUTER|\\[CAMADA|\\[SISTEMA|RESPONDA\\s+ESTRITAMENTE|RESPONDA\\s+[\xdaU]NICA\\s+E\\s+EXCLUSIVAMENTE|TEMPLATE\\s+DE\\s+\\d+\\s+LINHAS|NESTA\\s+ORDEM\\s+EXATA|PROIBIDO\\s+CRIAR\\s+INTRODU|INSTRU\xc7\xc3O\\s+DE\\s+SISTEMA|PROMPT\\s+INTERNO|SYSTEM\\s+INSTRUCTION|SMART\\s+ROUTER)",!1,!1,!0,!1))
 s($,"ckp","jv",()=>new A.axF(A.R(t.N,A.aL("Ig"))))
 s($,"ckt","nB",()=>A.lk(null,t.SK))
 r($,"K0","bWE",()=>A.f2(2000,1,1,0,0,0,0))
@@ -186300,7 +186307,7 @@ return o})
 r($,"cqO","avd",()=>new A.ayZ())
 s($,"cra","bMG",()=>A.bIu(B.bz3,t.N))
 s($,"cqX","c_a",()=>{var q=null
-return A.T(["af",A.by(B.bdG,B.bvy,B.bZ,B.Rg,B.bfM,6,5,B.Rx,"af",B.aZ,B.Og,B.bfD,B.Mr,B.lC,B.Rc,B.Rx,B.aZ,B.Og,B.Mr,B.Rc,B.P_,B.bB,B.P_,B.ak,q),"am",A.by(B.bg9,B.b8S,B.bZ,B.aN9,B.bB2,6,5,B.Rt,"am",B.Qt,B.M5,B.aVp,B.QN,B.bap,B.Qx,B.Rt,B.Qt,B.M5,B.QN,B.Qx,B.M0,B.dc,B.M0,B.ak,q),"ar",A.by(B.beS,B.bvj,B.bhL,B.bb4,B.boy,5,4,B.v6,"ar",B.Qa,B.MA,B.LN,B.v6,B.LN,B.uC,B.v6,B.Qa,B.MA,B.v6,B.uC,B.uC,B.dc,B.uC,B.Mc,"\u0660"),"as",A.by(B.bEG,B.bCc,B.bZ,B.btZ,B.bD7,6,5,B.MT,"as",B.LL,B.Pa,B.bZ1,B.PQ,B.bRY,B.OH,B.MT,B.LL,B.Pa,B.PQ,B.OH,B.Px,B.aQs,B.Px,B.hM,"\u09e6"),"az",A.by(B.bV,B.bHs,B.bZ,B.bRp,B.bWg,0,6,B.O2,"az",B.e3,B.Qq,B.bpp,B.QI,B.bdP,B.aYI,B.O2,B.e3,B.Qq,B.QI,B.bWT,B.Qu,B.bB,B.Qu,B.ak,q),"be",A.by(B.bV,B.byV,B.bbm,B.b78,B.b9y,0,6,B.bWa,"be",B.RG,B.Mp,B.bev,B.blP,B.bHM,B.N5,B.boJ,B.RG,B.Mp,B.aTW,B.N5,B.Ph,B.bbB,B.Ph,B.ak,q),"bg",A.by(B.aZS,B.bT7,B.hL,B.bQH,B.bt8,0,3,B.Nr,"bg",B.Qn,B.uU,B.bIg,B.PB,B.baf,B.v0,B.Nr,B.Qn,B.uU,B.PB,B.v0,B.Pw,B.aPa,B.Pw,B.ak,q),"bn",A.by(B.bV,B.uP,B.bZ,B.aLc,B.aPc,6,5,B.Bi,"bn",B.Qp,B.Np,B.RW,B.buC,B.RW,B.Ne,B.Bi,B.Qp,B.Np,B.Bi,B.Ne,B.Qo,B.dc,B.Qo,B.ak,"\u09e6"),"bs",A.by(B.bN9,B.bvu,B.NO,B.aW9,B.MR,0,6,B.S6,"bs",B.kk,B.LJ,B.bXC,B.QB,B.b9e,B.uh,B.S6,B.kk,B.uu,B.QB,B.uh,B.uv,B.bB,B.uv,B.ak,q),"ca",A.by(B.qd,B.b2y,B.bKx,B.bHu,B.brR,0,3,B.aTL,"ca",B.Ps,B.Nl,B.bEo,B.aKZ,B.bAG,B.NK,B.bFK,B.Ps,B.Nl,B.b_I,B.NK,B.Q9,B.Qe,B.Q9,B.ak,q),"cs",A.by(B.bB5,B.bfp,B.bZ,B.b6Y,B.bHj,0,3,B.bNT,"cs",B.e3,B.R5,B.b4t,B.Rz,B.d5,B.LQ,B.aWn,B.e3,B.R5,B.Rz,B.LQ,B.Q2,B.v5,B.Q2,B.ak,q),"cy",A.by(B.bXU,B.bj8,B.b46,B.bFH,B.b_2,0,3,B.Oa,"cy",B.Qm,B.QR,B.bBl,B.aRN,B.b_D,B.boY,B.Oa,B.Qm,B.QR,B.b4l,B.bws,B.Me,B.bB,B.Me,B.ak,q),"da",A.by(B.bV,B.b0r,B.byW,B.ny,B.ny,0,3,B.Mo,"da",B.aZ,B.kl,B.qa,B.OY,B.bqt,B.qc,B.Mo,B.aZ,B.kl,B.OY,B.blF,B.nz,B.Bh,B.nz,B.ak,q),"de",A.by(B.bV,B.B3,B.Pq,B.nD,B.nD,0,3,B.um,"de",B.aZ,B.nC,B.Bj,B.QE,B.d5,B.LW,B.um,B.aZ,B.nC,B.uo,B.Qf,B.v_,B.bB,B.v_,B.ak,q),"de_CH",A.by(B.bV,B.B3,B.Pq,B.nD,B.nD,0,3,B.um,"de_CH",B.aZ,B.nC,B.Bj,B.QE,B.d5,B.LW,B.um,B.aZ,B.nC,B.uo,B.Qf,B.v_,B.bB,B.v_,B.ak,q),"el",A.by(B.brL,B.Oj,B.bzv,B.bN3,B.blA,0,3,B.bqx,"el",B.Sf,B.PZ,B.bBC,B.aOc,B.bTM,B.ME,B.bL3,B.Sf,B.PZ,B.bmu,B.ME,B.M8,B.dc,B.M8,B.ak,q),"en",A.by(B.bV,B.lF,B.iJ,B.fZ,B.ez,6,5,B.d4,"en",B.aZ,B.cJ,B.hQ,B.iH,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.iH,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_AU",A.by(B.lD,B.vb,B.iJ,B.fZ,B.ez,0,6,B.d4,"en_AU",B.aZ,B.Pn,B.hQ,B.baO,B.d5,B.dp,B.d4,B.aZ,B.Pn,B.iH,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_CA",A.by(B.kn,B.bfI,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_CA",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_GB",A.by(B.lD,B.OD,B.iJ,B.fZ,B.ez,0,3,B.d4,"en_GB",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.bB,B.dn,B.ak,q),"en_IE",A.by(B.kn,B.Pu,B.iJ,B.fZ,B.ez,0,3,B.d4,"en_IE",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.bB,B.dn,B.ak,q),"en_IN",A.by(B.lD,B.b_S,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_IN",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.hM,q),"en_NZ",A.by(B.lD,B.bdv,B.iJ,B.fZ,B.ez,0,6,B.d4,"en_NZ",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_SG",A.by(B.lD,B.vb,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_SG",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_US",A.by(B.bV,B.lF,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_US",B.aZ,B.cJ,B.hQ,B.iH,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.iH,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_ZA",A.by(B.lD,B.b4F,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_ZA",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.bB,B.dn,B.ak,q),"es",A.by(B.qd,B.P7,B.hL,B.v2,B.uJ,0,3,B.ku,"es",B.km,B.QT,B.NE,B.kp,B.iL,B.kq,B.ku,B.km,B.QT,B.kp,B.kq,B.ks,B.Qe,B.ks,B.ak,q),"es_419",A.by(B.qd,B.P7,B.PP,B.v2,B.uJ,0,3,B.ku,"es_419",B.km,B.b2V,B.ur,B.kp,B.iL,B.kq,B.ku,B.km,B.hO,B.kp,B.kq,B.ks,B.bB,B.ks,B.ak,q),"es_MX",A.by(B.qd,B.b1S,B.PP,B.v2,B.uJ,6,5,B.ku,"es_MX",B.km,B.hO,B.NE,B.kp,B.iL,B.kq,B.ku,B.km,B.hO,B.kp,B.kq,B.ks,B.bB,B.ks,B.ak,q),"es_US",A.by(B.qd,B.bxm,B.hL,B.v2,B.uJ,6,5,B.ku,"es_US",B.km,B.hO,B.ur,B.kp,B.iL,B.kq,B.ku,B.km,B.hO,B.kp,B.kq,B.ks,B.dc,B.ks,B.ak,q),"et",A.by(B.bV,B.bxL,B.bZ,B.bus,B.bxk,0,3,B.N8,"et",B.OK,B.v9,B.qa,B.Sh,B.lC,B.v9,B.N8,B.OK,B.v9,B.Sh,B.v9,B.RP,B.bB,B.RP,B.ak,q),"eu",A.by(B.bV,B.aMs,B.bZ,B.biA,B.b7B,0,3,B.b6A,"eu",B.Ow,B.Sa,B.b0T,B.Nt,B.b9o,B.NN,B.aYq,B.Ow,B.Sa,B.Nt,B.NN,B.P2,B.OU,B.P2,B.ak,q),"fa",A.by(B.bDk,B.bMr,B.b6P,B.aVw,B.blB,5,4,B.beH,"fa",B.Pr,B.LI,B.bCH,B.B_,B.bU7,B.uM,B.B_,B.Pr,B.LI,B.B_,B.uM,B.uM,B.Ri,B.uM,B.aQK,"\u06f0"),"fi",A.by(B.b0z,B.bRV,B.bOy,B.bXd,B.buI,0,3,B.b7i,"fi",B.M_,B.Rb,B.bfF,B.bDB,B.blO,B.M7,B.aZJ,B.M_,B.Rb,B.aPK,B.M7,B.bxr,B.b53,B.bJR,B.ak,q),"fil",A.by(B.bV,B.lF,B.MN,B.fZ,B.ez,6,5,B.va,"fil",B.nA,B.ko,B.Ny,B.nA,B.d5,B.ko,B.va,B.RI,B.ko,B.nA,B.ko,B.uA,B.dc,B.uA,B.ak,q),"fr",A.by(B.bV,B.Pu,B.LH,B.Qc,B.Ob,0,3,B.un,"fr",B.aZ,B.hO,B.Rk,B.Nx,B.iL,B.uR,B.un,B.aZ,B.hO,B.Nx,B.uR,B.uq,B.bB,B.uq,B.ak,q),"fr_CA",A.by(B.kn,B.Qh,B.LH,B.Qc,B.Ob,6,5,B.un,"fr_CA",B.aZ,B.hO,B.Rk,B.N7,B.iL,B.uR,B.un,B.aZ,B.hO,B.N7,B.uR,B.uq,B.aQG,B.uq,B.ak,q),"gl",A.by(B.kn,B.aTf,B.bYi,B.be6,B.ux,0,3,B.aQu,"gl",B.boz,B.bST,B.ur,B.bcT,B.iL,B.bn6,B.bOS,B.b71,B.bf7,B.buH,B.bcG,B.bdo,B.bB,B.bNi,B.ak,q),"gsw",A.by(B.aM5,B.B3,B.bZ,B.nD,B.nD,0,3,B.Qd,"gsw",B.aZ,B.nC,B.Bj,B.uo,B.d5,B.Ms,B.Qd,B.aZ,B.nC,B.uo,B.Ms,B.QF,B.bB,B.QF,B.ak,q),"gu",A.by(B.bV,B.uP,B.aTX,B.bjm,B.bpW,6,5,B.Nz,"gu",B.NR,B.Re,B.b7L,B.QX,B.d5,B.Qs,B.Nz,B.NR,B.Re,B.QX,B.Qs,B.N2,B.Py,B.N2,B.hM,q),"he",A.by(B.b0X,B.bG1,B.bcQ,B.b3Q,B.bfv,6,5,B.PV,"he",B.e3,B.MX,B.aT9,B.O3,B.d5,B.QD,B.PV,B.e3,B.MX,B.O3,B.QD,B.PD,B.v5,B.PD,B.Mc,q),"hi",A.by(B.lD,B.vb,B.bQx,B.bMv,B.aSe,6,5,B.MC,"hi",B.OE,B.uL,B.bFS,B.RR,B.bEU,B.Nb,B.MC,B.OE,B.uL,B.RR,B.Nb,B.NP,B.dc,B.NP,B.hM,q),"hr",A.by(B.bV,B.aYZ,B.NO,B.aR7,B.boX,0,6,B.bJE,"hr",B.Mw,B.LJ,B.qa,B.Rs,B.bTd,B.uh,B.bEW,B.Mw,B.uu,B.Rs,B.uh,B.uv,B.btM,B.uv,B.ak,q),"hu",A.by(B.b80,B.bhM,B.bZ,B.bLR,B.b85,0,3,B.LT,"hu",B.Pv,B.LX,B.aPL,B.O1,B.aRA,B.ON,B.LT,B.Pv,B.LX,B.O1,B.ON,B.S_,B.v5,B.S_,B.ak,q),"hy",A.by(B.bV,B.bF5,B.hL,B.bes,B.bdf,0,6,B.b_x,"hy",B.Or,B.Nj,B.aU4,B.OX,B.bfc,B.P9,B.bCf,B.Or,B.Nj,B.OX,B.P9,B.No,B.bB,B.No,B.ak,q),"id",A.by(B.bV,B.bM2,B.bZ,B.bVQ,B.bix,6,5,B.QK,"id",B.aZ,B.NI,B.bnm,B.MD,B.lC,B.RU,B.QK,B.aZ,B.NI,B.MD,B.RU,B.Pe,B.Bh,B.Pe,B.ak,q),"is",A.by(B.b6p,B.bGb,B.B8,B.bfP,B.ny,0,3,B.QO,"is",B.OT,B.Q4,B.bXn,B.Sl,B.b2t,B.Qg,B.QO,B.OT,B.Q4,B.Sl,B.Qg,B.NU,B.bB,B.NU,B.ak,q),"it",A.by(B.bV,B.bdb,B.nH,B.b06,B.ux,0,3,B.S0,"it",B.NW,B.R3,B.RY,B.MS,B.iL,B.Mv,B.S0,B.NW,B.R3,B.MS,B.Mv,B.Pj,B.bB,B.Pj,B.ak,q),"ja",A.by(B.aM8,B.bC2,B.bZ,B.NQ,B.NQ,6,5,B.fE,"ja",B.e3,B.uN,B.bmy,B.fE,B.d5,B.uN,B.fE,B.e3,B.uN,B.fE,B.uN,B.NF,B.btN,B.NF,B.ak,q),"ka",A.by(B.bV,B.bh1,B.hL,B.bJv,B.bC0,0,6,B.MO,"ka",B.PI,B.M9,B.aW4,B.OB,B.b3U,B.QW,B.MO,B.PI,B.M9,B.OB,B.QW,B.S9,B.bB,B.S9,B.ak,q),"kk",A.by(B.bV,B.bQ6,B.hL,B.aYe,B.aPA,0,6,B.baL,"kk",B.Rf,B.LF,B.bI9,B.LV,B.byN,B.Nn,B.aMR,B.Rf,B.LF,B.LV,B.Nn,B.NL,B.bB,B.NL,B.ak,q),"km",A.by(B.bV,B.Oj,B.aX4,B.aX3,B.blW,6,5,B.up,"km",B.Sg,B.Ng,B.M3,B.up,B.M3,B.NX,B.up,B.Sg,B.Ng,B.up,B.NX,B.b6G,B.dc,B.bDY,B.ak,q),"kn",A.by(B.bJc,B.bJQ,B.bZ,B.bSa,B.b7v,6,5,B.Pl,"kn",B.Mz,B.MK,B.b45,B.bKf,B.b6U,B.Qr,B.Pl,B.Mz,B.MK,B.byQ,B.Qr,B.Of,B.Py,B.Of,B.hM,q),"ko",A.by(B.aWc,B.bKF,B.bZ,B.bF4,B.ez,6,5,B.nE,"ko",B.nE,B.v3,B.aSh,B.nE,B.bUh,B.v3,B.nE,B.nE,B.v3,B.nE,B.v3,B.Op,B.boh,B.Op,B.ak,q),"ky",A.by(B.brd,B.bBc,B.bZ,B.bED,B.bbW,0,6,B.NH,"ky",B.uF,B.MB,B.bFd,B.b1P,B.blb,B.S2,B.bLb,B.uF,B.MB,B.ba4,B.S2,B.OQ,B.bB,B.OQ,B.ak,q),"lo",A.by(B.bay,B.aZ7,B.hL,B.bC_,B.b1G,6,5,B.Mf,"lo",B.e3,B.MY,B.bUJ,B.LM,B.bhG,B.NM,B.Mf,B.e3,B.MY,B.LM,B.NM,B.Mi,B.bEd,B.Mi,B.ak,q),"lt",A.by(B.b7x,B.aO3,B.bZ,B.aZn,B.MI,0,3,B.bND,"lt",B.Rw,B.Mj,B.b2A,B.QM,B.bBI,B.Si,B.beX,B.Rw,B.Mj,B.QM,B.Si,B.Qi,B.bB,B.Qi,B.ak,q),"lv",A.by(B.aXI,B.bbE,B.bZ,B.bz2,B.bJN,0,6,B.Mb,"lv",B.aZ,B.OI,B.aZQ,B.R0,B.bV8,B.bbT,B.Mb,B.aZ,B.OI,B.R0,B.b3g,B.bEY,B.bB,B.aYs,B.ak,q),"mk",A.by(B.bHI,B.bJI,B.bp1,B.aY9,B.bja,0,6,B.P4,"mk",B.uG,B.uU,B.bxD,B.Ma,B.bVE,B.NJ,B.P4,B.uG,B.uU,B.Ma,B.NJ,B.OR,B.bB,B.OR,B.ak,q),"ml",A.by(B.bV,B.bIK,B.bZ,B.bue,B.bMJ,6,5,B.Rv,"ml",B.PO,B.ban,B.QP,B.Ou,B.QP,B.O6,B.Rv,B.PO,B.b1q,B.Ou,B.O6,B.bsx,B.dc,B.bY7,B.hM,q),"mn",A.by(B.bK_,B.bcN,B.bZ,B.bsg,B.aUc,6,5,B.b57,"mn",B.MH,B.uy,B.b5g,B.Nu,B.aZa,B.uy,B.bJ0,B.MH,B.uy,B.Nu,B.uy,B.bXG,B.OU,B.bN_,B.ak,q),"mr",A.by(B.bV,B.uP,B.aT8,B.bTE,B.bLT,6,5,B.RV,"mr",B.OO,B.uL,B.bBK,B.QC,B.aNX,B.Qb,B.RV,B.OO,B.uL,B.QC,B.Qb,B.OZ,B.dc,B.OZ,B.hM,"\u0966"),"ms",A.by(B.beU,B.bpx,B.nH,B.S3,B.S3,0,6,B.Pk,"ms",B.MV,B.RZ,B.b4s,B.Nf,B.bi1,B.Q1,B.Pk,B.MV,B.RZ,B.Nf,B.Q1,B.NT,B.dc,B.NT,B.ak,q),"my",A.by(B.bk8,B.aXK,B.bZ,B.aUw,B.bJg,6,5,B.NV,"my",B.P6,B.OC,B.OA,B.MF,B.OA,B.uW,B.NV,B.P6,B.OC,B.MF,B.uW,B.uW,B.aRi,B.uW,B.ak,"\u1040"),"nb",A.by(B.kn,B.LP,B.B8,B.Oq,B.ny,0,3,B.uD,"nb",B.aZ,B.kl,B.qa,B.RC,B.lC,B.qc,B.uD,B.aZ,B.kl,B.Mh,B.qc,B.nz,B.bB,B.nz,B.ak,q),"ne",A.by(B.bZr,B.aQD,B.nH,B.PH,B.PH,6,5,B.v8,"ne",B.bmS,B.S4,B.QS,B.v8,B.QS,B.LK,B.v8,B.aSp,B.S4,B.v8,B.LK,B.M6,B.bB,B.M6,B.ak,"\u0966"),"nl",A.by(B.kn,B.bfz,B.b47,B.Rg,B.aWQ,0,3,B.RL,"nl",B.aZ,B.Pt,B.b7W,B.S5,B.lC,B.Nm,B.RL,B.aZ,B.Pt,B.S5,B.Nm,B.Pg,B.bB,B.Pg,B.ak,q),"no",A.by(B.kn,B.LP,B.B8,B.Oq,B.ny,0,3,B.uD,"no",B.aZ,B.kl,B.qa,B.RC,B.lC,B.qc,B.uD,B.aZ,B.kl,B.Mh,B.qc,B.nz,B.bB,B.nz,B.ak,q),"or",A.by(B.bV,B.lF,B.bTq,B.bwN,B.ez,6,5,B.uQ,"or",B.NC,B.Mx,B.O4,B.uQ,B.O4,B.PR,B.uQ,B.NC,B.Mx,B.uQ,B.PR,B.Rj,B.dc,B.Rj,B.hM,q),"pa",A.by(B.bL5,B.vb,B.nH,B.aVk,B.bt0,6,5,B.Pc,"pa",B.Qz,B.Oi,B.bds,B.Pf,B.bTm,B.O8,B.Pc,B.Qz,B.Oi,B.Pf,B.O8,B.LS,B.dc,B.LS,B.hM,q),"pl",A.by(B.bV,B.bvv,B.nH,B.byI,B.bBO,0,3,B.aWq,"pl",B.bF_,B.bTY,B.bEv,B.OG,B.bmt,B.R_,B.bnJ,B.b_q,B.bfb,B.OG,B.R_,B.N6,B.bB,B.N6,B.ak,q),"ps",A.by(B.bMB,B.bI8,B.bZ,B.bpv,B.bmq,5,4,B.Mk,"ps",B.aWl,B.cJ,B.PC,B.Mk,B.PC,B.ug,B.bhP,B.e3,B.cJ,B.aVx,B.ug,B.ug,B.Ri,B.ug,B.aPb,"\u06f0"),"pt",A.by(B.bV,B.aRL,B.bZ,B.RA,B.ux,6,5,B.uE,"pt",B.aZ,B.uI,B.RY,B.uY,B.iL,B.R8,B.uE,B.aZ,B.uI,B.uY,B.R8,B.v4,B.bB,B.v4,B.ak,q),"pt_PT",A.by(B.aXE,B.bWo,B.buG,B.RA,B.ux,6,2,B.uE,"pt_PT",B.aZ,B.uI,B.ur,B.uY,B.iL,B.Pp,B.uE,B.aZ,B.uI,B.uY,B.Pp,B.v4,B.bB,B.v4,B.ak,q),"ro",A.by(B.kn,B.bl5,B.hL,B.b9D,B.aXH,0,6,B.QG,"ro",B.Ol,B.hO,B.bHO,B.ML,B.bPc,B.Oy,B.QG,B.Ol,B.hO,B.ML,B.Oy,B.Pz,B.bB,B.Pz,B.ak,q),"ru",A.by(B.bV,B.b4w,B.hL,B.bVG,B.aLh,0,3,B.bXo,"ru",B.uF,B.PM,B.Oc,B.bTl,B.RO,B.Pi,B.NH,B.uF,B.PM,B.bWt,B.Pi,B.Rd,B.bB,B.Rd,B.ak,q),"si",A.by(B.bRk,B.bOR,B.bZ,B.aLu,B.bMf,0,6,B.S8,"si",B.Oh,B.RJ,B.bIO,B.bY1,B.blg,B.Nq,B.S8,B.Oh,B.RJ,B.bH7,B.Nq,B.P1,B.Bh,B.P1,B.ak,q),"sk",A.by(B.bV,B.brp,B.b0Z,B.b1A,B.aZD,0,3,B.bMS,"sk",B.kk,B.MQ,B.bT_,B.Sc,B.d5,B.Rm,B.aYB,B.kk,B.MQ,B.Sc,B.Rm,B.Q0,B.v5,B.Q0,B.ak,q),"sl",A.by(B.blN,B.aSa,B.nH,B.bDw,B.MI,0,6,B.Sk,"sl",B.kk,B.R9,B.b2u,B.NA,B.bcx,B.QY,B.Sk,B.kk,B.R9,B.NA,B.QY,B.Po,B.bB,B.Po,B.ak,q),"sq",A.by(B.byx,B.bDh,B.aRZ,B.beT,B.bd2,0,6,B.RT,"sq",B.Qw,B.M2,B.bdi,B.RK,B.boB,B.bs6,B.RT,B.Qw,B.M2,B.RK,B.byC,B.Ns,B.aS_,B.Ns,B.ak,q),"sr",A.by(B.bV,B.MP,B.bZ,B.bYq,B.bza,0,6,B.Qj,"sr",B.uG,B.Rr,B.b0L,B.Rn,B.aVc,B.RQ,B.Qj,B.uG,B.Rr,B.Rn,B.RQ,B.Qk,B.bB,B.Qk,B.ak,q),"sr_Latn",A.by(B.bV,B.MP,B.bZ,B.bc9,B.MR,0,6,B.Nh,"sr_Latn",B.kk,B.uu,B.bEq,B.MJ,B.bl3,B.Mu,B.Nh,B.kk,B.uu,B.MJ,B.Mu,B.P3,B.bB,B.P3,B.ak,q),"sv",A.by(B.bzT,B.Qh,B.bZ,B.bMY,B.ny,0,3,B.PJ,"sv",B.aZ,B.kl,B.b2K,B.QZ,B.lC,B.O0,B.PJ,B.aZ,B.kl,B.QZ,B.O0,B.Sd,B.bB,B.Sd,B.ak,q),"sw",A.by(B.bV,B.OD,B.bZ,B.bRg,B.b90,0,6,B.O9,"sw",B.aZ,B.cJ,B.On,B.Ok,B.On,B.uj,B.O9,B.aZ,B.cJ,B.Ok,B.uj,B.uj,B.bB,B.uj,B.ak,q),"ta",A.by(B.bn9,B.uP,B.aQ5,B.aML,B.aWW,6,5,B.NY,"ta",B.P0,B.My,B.aSg,B.Nc,B.bq5,B.QJ,B.NY,B.P0,B.My,B.Nc,B.QJ,B.Om,B.beP,B.Om,B.hM,q),"te",A.by(B.bV,B.aMq,B.aOZ,B.aXO,B.aMD,6,5,B.Qv,"te",B.OV,B.Rq,B.baS,B.RF,B.bdM,B.Os,B.Qv,B.OV,B.Rq,B.RF,B.Os,B.OM,B.dc,B.OM,B.hM,q),"th",A.by(B.aWU,B.b7w,B.bZ,B.b5N,B.bRA,6,5,B.Nw,"th",B.uX,B.Ov,B.N0,B.uX,B.N0,B.Ot,B.Nw,B.uX,B.Ov,B.uX,B.Ot,B.N9,B.byp,B.N9,B.ak,q),"tl",A.by(B.bV,B.lF,B.MN,B.fZ,B.ez,6,5,B.va,"tl",B.nA,B.ko,B.Ny,B.nA,B.d5,B.ko,B.va,B.RI,B.ko,B.nA,B.ko,B.uA,B.dc,B.uA,B.ak,q),"tr",A.by(B.b7u,B.bfo,B.bZ,B.aO7,B.bm1,0,6,B.RE,"tr",B.PA,B.OF,B.aS5,B.Nv,B.b_B,B.Mg,B.RE,B.PA,B.OF,B.Nv,B.Mg,B.PK,B.bB,B.PK,B.ak,q),"uk",A.by(B.btz,B.biq,B.bbn,B.bJf,B.aZR,0,6,B.b3c,"uk",B.bpb,B.QU,B.Oc,B.ba_,B.RO,B.v0,B.aS2,B.bcH,B.QU,B.bqs,B.v0,B.Qy,B.bB,B.Qy,B.ak,q),"ur",A.by(B.bV,B.aWN,B.bZ,B.OJ,B.OJ,6,5,B.ul,"ur",B.aZ,B.cJ,B.Pm,B.ul,B.Pm,B.uw,B.ul,B.aZ,B.cJ,B.ul,B.uw,B.uw,B.dc,B.uw,B.ak,q),"uz",A.by(B.bjv,B.bn1,B.hL,B.bNK,B.ba1,0,6,B.bCx,"uz",B.Oo,B.PU,B.b5H,B.bWn,B.bWq,B.Oe,B.bPk,B.Oo,B.PU,B.bnD,B.Oe,B.RX,B.bx7,B.RX,B.ak,q),"vi",A.by(B.bii,B.aTp,B.byY,B.blG,B.bhT,0,6,B.be8,"vi",B.e3,B.Ox,B.bXy,B.bc0,B.d5,B.MW,B.bXS,B.e3,B.Ox,B.b7s,B.MW,B.MG,B.bB,B.MG,B.ak,q),"zh",A.by(B.Bm,B.aLR,B.bZ,B.uS,B.uS,6,5,B.Rp,"zh",B.e3,B.nI,B.bw4,B.fE,B.aOq,B.OW,B.Rp,B.e3,B.nI,B.fE,B.OW,B.nB,B.bcF,B.nB,B.ak,q),"zh_HK",A.by(B.Bm,B.bdW,B.bZ,B.uS,B.uS,6,5,B.fE,"zh_HK",B.e3,B.nI,B.B0,B.fE,B.d5,B.us,B.fE,B.e3,B.nI,B.fE,B.us,B.nB,B.bXs,B.nB,B.ak,q),"zh_TW",A.by(B.Bm,B.bMx,B.bZ,B.OP,B.OP,6,5,B.fE,"zh_TW",B.e3,B.nI,B.B0,B.fE,B.B0,B.us,B.fE,B.e3,B.nI,B.fE,B.us,B.nB,B.boa,B.nB,B.ak,q),"zu",A.by(B.bV,B.lF,B.bZ,B.ez,B.ez,6,5,B.Md,"zu",B.bep,B.RN,B.b76,B.M4,B.d5,B.QA,B.Md,B.aZ,B.RN,B.M4,B.QA,B.P5,B.bB,B.P5,B.ak,q)],t.N,t.fs)})
+return A.U(["af",A.by(B.bdG,B.bvy,B.bZ,B.Rg,B.bfM,6,5,B.Rx,"af",B.aZ,B.Og,B.bfD,B.Mr,B.lC,B.Rc,B.Rx,B.aZ,B.Og,B.Mr,B.Rc,B.P_,B.bB,B.P_,B.ak,q),"am",A.by(B.bg9,B.b8S,B.bZ,B.aN9,B.bB2,6,5,B.Rt,"am",B.Qt,B.M5,B.aVp,B.QN,B.bap,B.Qx,B.Rt,B.Qt,B.M5,B.QN,B.Qx,B.M0,B.dc,B.M0,B.ak,q),"ar",A.by(B.beS,B.bvj,B.bhL,B.bb4,B.boy,5,4,B.v6,"ar",B.Qa,B.MA,B.LN,B.v6,B.LN,B.uC,B.v6,B.Qa,B.MA,B.v6,B.uC,B.uC,B.dc,B.uC,B.Mc,"\u0660"),"as",A.by(B.bEG,B.bCc,B.bZ,B.btZ,B.bD7,6,5,B.MT,"as",B.LL,B.Pa,B.bZ1,B.PQ,B.bRY,B.OH,B.MT,B.LL,B.Pa,B.PQ,B.OH,B.Px,B.aQs,B.Px,B.hM,"\u09e6"),"az",A.by(B.bV,B.bHs,B.bZ,B.bRp,B.bWg,0,6,B.O2,"az",B.e3,B.Qq,B.bpp,B.QI,B.bdP,B.aYI,B.O2,B.e3,B.Qq,B.QI,B.bWT,B.Qu,B.bB,B.Qu,B.ak,q),"be",A.by(B.bV,B.byV,B.bbm,B.b78,B.b9y,0,6,B.bWa,"be",B.RG,B.Mp,B.bev,B.blP,B.bHM,B.N5,B.boJ,B.RG,B.Mp,B.aTW,B.N5,B.Ph,B.bbB,B.Ph,B.ak,q),"bg",A.by(B.aZS,B.bT7,B.hL,B.bQH,B.bt8,0,3,B.Nr,"bg",B.Qn,B.uU,B.bIg,B.PB,B.baf,B.v0,B.Nr,B.Qn,B.uU,B.PB,B.v0,B.Pw,B.aPa,B.Pw,B.ak,q),"bn",A.by(B.bV,B.uP,B.bZ,B.aLc,B.aPc,6,5,B.Bi,"bn",B.Qp,B.Np,B.RW,B.buC,B.RW,B.Ne,B.Bi,B.Qp,B.Np,B.Bi,B.Ne,B.Qo,B.dc,B.Qo,B.ak,"\u09e6"),"bs",A.by(B.bN9,B.bvu,B.NO,B.aW9,B.MR,0,6,B.S6,"bs",B.kk,B.LJ,B.bXC,B.QB,B.b9e,B.uh,B.S6,B.kk,B.uu,B.QB,B.uh,B.uv,B.bB,B.uv,B.ak,q),"ca",A.by(B.qd,B.b2y,B.bKx,B.bHu,B.brR,0,3,B.aTL,"ca",B.Ps,B.Nl,B.bEo,B.aKZ,B.bAG,B.NK,B.bFK,B.Ps,B.Nl,B.b_I,B.NK,B.Q9,B.Qe,B.Q9,B.ak,q),"cs",A.by(B.bB5,B.bfp,B.bZ,B.b6Y,B.bHj,0,3,B.bNT,"cs",B.e3,B.R5,B.b4t,B.Rz,B.d5,B.LQ,B.aWn,B.e3,B.R5,B.Rz,B.LQ,B.Q2,B.v5,B.Q2,B.ak,q),"cy",A.by(B.bXU,B.bj8,B.b46,B.bFH,B.b_2,0,3,B.Oa,"cy",B.Qm,B.QR,B.bBl,B.aRN,B.b_D,B.boY,B.Oa,B.Qm,B.QR,B.b4l,B.bws,B.Me,B.bB,B.Me,B.ak,q),"da",A.by(B.bV,B.b0r,B.byW,B.ny,B.ny,0,3,B.Mo,"da",B.aZ,B.kl,B.qa,B.OY,B.bqt,B.qc,B.Mo,B.aZ,B.kl,B.OY,B.blF,B.nz,B.Bh,B.nz,B.ak,q),"de",A.by(B.bV,B.B3,B.Pq,B.nD,B.nD,0,3,B.um,"de",B.aZ,B.nC,B.Bj,B.QE,B.d5,B.LW,B.um,B.aZ,B.nC,B.uo,B.Qf,B.v_,B.bB,B.v_,B.ak,q),"de_CH",A.by(B.bV,B.B3,B.Pq,B.nD,B.nD,0,3,B.um,"de_CH",B.aZ,B.nC,B.Bj,B.QE,B.d5,B.LW,B.um,B.aZ,B.nC,B.uo,B.Qf,B.v_,B.bB,B.v_,B.ak,q),"el",A.by(B.brL,B.Oj,B.bzv,B.bN3,B.blA,0,3,B.bqx,"el",B.Sf,B.PZ,B.bBC,B.aOc,B.bTM,B.ME,B.bL3,B.Sf,B.PZ,B.bmu,B.ME,B.M8,B.dc,B.M8,B.ak,q),"en",A.by(B.bV,B.lF,B.iJ,B.fZ,B.ez,6,5,B.d4,"en",B.aZ,B.cJ,B.hQ,B.iH,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.iH,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_AU",A.by(B.lD,B.vb,B.iJ,B.fZ,B.ez,0,6,B.d4,"en_AU",B.aZ,B.Pn,B.hQ,B.baO,B.d5,B.dp,B.d4,B.aZ,B.Pn,B.iH,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_CA",A.by(B.kn,B.bfI,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_CA",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_GB",A.by(B.lD,B.OD,B.iJ,B.fZ,B.ez,0,3,B.d4,"en_GB",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.bB,B.dn,B.ak,q),"en_IE",A.by(B.kn,B.Pu,B.iJ,B.fZ,B.ez,0,3,B.d4,"en_IE",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.bB,B.dn,B.ak,q),"en_IN",A.by(B.lD,B.b_S,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_IN",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.hM,q),"en_NZ",A.by(B.lD,B.bdv,B.iJ,B.fZ,B.ez,0,6,B.d4,"en_NZ",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_SG",A.by(B.lD,B.vb,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_SG",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_US",A.by(B.bV,B.lF,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_US",B.aZ,B.cJ,B.hQ,B.iH,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.iH,B.dp,B.dn,B.dc,B.dn,B.ak,q),"en_ZA",A.by(B.lD,B.b4F,B.iJ,B.fZ,B.ez,6,5,B.d4,"en_ZA",B.aZ,B.cJ,B.hQ,B.fD,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.fD,B.dp,B.dn,B.bB,B.dn,B.ak,q),"es",A.by(B.qd,B.P7,B.hL,B.v2,B.uJ,0,3,B.ku,"es",B.km,B.QT,B.NE,B.kp,B.iL,B.kq,B.ku,B.km,B.QT,B.kp,B.kq,B.ks,B.Qe,B.ks,B.ak,q),"es_419",A.by(B.qd,B.P7,B.PP,B.v2,B.uJ,0,3,B.ku,"es_419",B.km,B.b2V,B.ur,B.kp,B.iL,B.kq,B.ku,B.km,B.hO,B.kp,B.kq,B.ks,B.bB,B.ks,B.ak,q),"es_MX",A.by(B.qd,B.b1S,B.PP,B.v2,B.uJ,6,5,B.ku,"es_MX",B.km,B.hO,B.NE,B.kp,B.iL,B.kq,B.ku,B.km,B.hO,B.kp,B.kq,B.ks,B.bB,B.ks,B.ak,q),"es_US",A.by(B.qd,B.bxm,B.hL,B.v2,B.uJ,6,5,B.ku,"es_US",B.km,B.hO,B.ur,B.kp,B.iL,B.kq,B.ku,B.km,B.hO,B.kp,B.kq,B.ks,B.dc,B.ks,B.ak,q),"et",A.by(B.bV,B.bxL,B.bZ,B.bus,B.bxk,0,3,B.N8,"et",B.OK,B.v9,B.qa,B.Sh,B.lC,B.v9,B.N8,B.OK,B.v9,B.Sh,B.v9,B.RP,B.bB,B.RP,B.ak,q),"eu",A.by(B.bV,B.aMs,B.bZ,B.biA,B.b7B,0,3,B.b6A,"eu",B.Ow,B.Sa,B.b0T,B.Nt,B.b9o,B.NN,B.aYq,B.Ow,B.Sa,B.Nt,B.NN,B.P2,B.OU,B.P2,B.ak,q),"fa",A.by(B.bDk,B.bMr,B.b6P,B.aVw,B.blB,5,4,B.beH,"fa",B.Pr,B.LI,B.bCH,B.B_,B.bU7,B.uM,B.B_,B.Pr,B.LI,B.B_,B.uM,B.uM,B.Ri,B.uM,B.aQK,"\u06f0"),"fi",A.by(B.b0z,B.bRV,B.bOy,B.bXd,B.buI,0,3,B.b7i,"fi",B.M_,B.Rb,B.bfF,B.bDB,B.blO,B.M7,B.aZJ,B.M_,B.Rb,B.aPK,B.M7,B.bxr,B.b53,B.bJR,B.ak,q),"fil",A.by(B.bV,B.lF,B.MN,B.fZ,B.ez,6,5,B.va,"fil",B.nA,B.ko,B.Ny,B.nA,B.d5,B.ko,B.va,B.RI,B.ko,B.nA,B.ko,B.uA,B.dc,B.uA,B.ak,q),"fr",A.by(B.bV,B.Pu,B.LH,B.Qc,B.Ob,0,3,B.un,"fr",B.aZ,B.hO,B.Rk,B.Nx,B.iL,B.uR,B.un,B.aZ,B.hO,B.Nx,B.uR,B.uq,B.bB,B.uq,B.ak,q),"fr_CA",A.by(B.kn,B.Qh,B.LH,B.Qc,B.Ob,6,5,B.un,"fr_CA",B.aZ,B.hO,B.Rk,B.N7,B.iL,B.uR,B.un,B.aZ,B.hO,B.N7,B.uR,B.uq,B.aQG,B.uq,B.ak,q),"gl",A.by(B.kn,B.aTf,B.bYi,B.be6,B.ux,0,3,B.aQu,"gl",B.boz,B.bST,B.ur,B.bcT,B.iL,B.bn6,B.bOS,B.b71,B.bf7,B.buH,B.bcG,B.bdo,B.bB,B.bNi,B.ak,q),"gsw",A.by(B.aM5,B.B3,B.bZ,B.nD,B.nD,0,3,B.Qd,"gsw",B.aZ,B.nC,B.Bj,B.uo,B.d5,B.Ms,B.Qd,B.aZ,B.nC,B.uo,B.Ms,B.QF,B.bB,B.QF,B.ak,q),"gu",A.by(B.bV,B.uP,B.aTX,B.bjm,B.bpW,6,5,B.Nz,"gu",B.NR,B.Re,B.b7L,B.QX,B.d5,B.Qs,B.Nz,B.NR,B.Re,B.QX,B.Qs,B.N2,B.Py,B.N2,B.hM,q),"he",A.by(B.b0X,B.bG1,B.bcQ,B.b3Q,B.bfv,6,5,B.PV,"he",B.e3,B.MX,B.aT9,B.O3,B.d5,B.QD,B.PV,B.e3,B.MX,B.O3,B.QD,B.PD,B.v5,B.PD,B.Mc,q),"hi",A.by(B.lD,B.vb,B.bQx,B.bMv,B.aSe,6,5,B.MC,"hi",B.OE,B.uL,B.bFS,B.RR,B.bEU,B.Nb,B.MC,B.OE,B.uL,B.RR,B.Nb,B.NP,B.dc,B.NP,B.hM,q),"hr",A.by(B.bV,B.aYZ,B.NO,B.aR7,B.boX,0,6,B.bJE,"hr",B.Mw,B.LJ,B.qa,B.Rs,B.bTd,B.uh,B.bEW,B.Mw,B.uu,B.Rs,B.uh,B.uv,B.btM,B.uv,B.ak,q),"hu",A.by(B.b80,B.bhM,B.bZ,B.bLR,B.b85,0,3,B.LT,"hu",B.Pv,B.LX,B.aPL,B.O1,B.aRA,B.ON,B.LT,B.Pv,B.LX,B.O1,B.ON,B.S_,B.v5,B.S_,B.ak,q),"hy",A.by(B.bV,B.bF5,B.hL,B.bes,B.bdf,0,6,B.b_x,"hy",B.Or,B.Nj,B.aU4,B.OX,B.bfc,B.P9,B.bCf,B.Or,B.Nj,B.OX,B.P9,B.No,B.bB,B.No,B.ak,q),"id",A.by(B.bV,B.bM2,B.bZ,B.bVQ,B.bix,6,5,B.QK,"id",B.aZ,B.NI,B.bnm,B.MD,B.lC,B.RU,B.QK,B.aZ,B.NI,B.MD,B.RU,B.Pe,B.Bh,B.Pe,B.ak,q),"is",A.by(B.b6p,B.bGb,B.B8,B.bfP,B.ny,0,3,B.QO,"is",B.OT,B.Q4,B.bXn,B.Sl,B.b2t,B.Qg,B.QO,B.OT,B.Q4,B.Sl,B.Qg,B.NU,B.bB,B.NU,B.ak,q),"it",A.by(B.bV,B.bdb,B.nH,B.b06,B.ux,0,3,B.S0,"it",B.NW,B.R3,B.RY,B.MS,B.iL,B.Mv,B.S0,B.NW,B.R3,B.MS,B.Mv,B.Pj,B.bB,B.Pj,B.ak,q),"ja",A.by(B.aM8,B.bC2,B.bZ,B.NQ,B.NQ,6,5,B.fE,"ja",B.e3,B.uN,B.bmy,B.fE,B.d5,B.uN,B.fE,B.e3,B.uN,B.fE,B.uN,B.NF,B.btN,B.NF,B.ak,q),"ka",A.by(B.bV,B.bh1,B.hL,B.bJv,B.bC0,0,6,B.MO,"ka",B.PI,B.M9,B.aW4,B.OB,B.b3U,B.QW,B.MO,B.PI,B.M9,B.OB,B.QW,B.S9,B.bB,B.S9,B.ak,q),"kk",A.by(B.bV,B.bQ6,B.hL,B.aYe,B.aPA,0,6,B.baL,"kk",B.Rf,B.LF,B.bI9,B.LV,B.byN,B.Nn,B.aMR,B.Rf,B.LF,B.LV,B.Nn,B.NL,B.bB,B.NL,B.ak,q),"km",A.by(B.bV,B.Oj,B.aX4,B.aX3,B.blW,6,5,B.up,"km",B.Sg,B.Ng,B.M3,B.up,B.M3,B.NX,B.up,B.Sg,B.Ng,B.up,B.NX,B.b6G,B.dc,B.bDY,B.ak,q),"kn",A.by(B.bJc,B.bJQ,B.bZ,B.bSa,B.b7v,6,5,B.Pl,"kn",B.Mz,B.MK,B.b45,B.bKf,B.b6U,B.Qr,B.Pl,B.Mz,B.MK,B.byQ,B.Qr,B.Of,B.Py,B.Of,B.hM,q),"ko",A.by(B.aWc,B.bKF,B.bZ,B.bF4,B.ez,6,5,B.nE,"ko",B.nE,B.v3,B.aSh,B.nE,B.bUh,B.v3,B.nE,B.nE,B.v3,B.nE,B.v3,B.Op,B.boh,B.Op,B.ak,q),"ky",A.by(B.brd,B.bBc,B.bZ,B.bED,B.bbW,0,6,B.NH,"ky",B.uF,B.MB,B.bFd,B.b1P,B.blb,B.S2,B.bLb,B.uF,B.MB,B.ba4,B.S2,B.OQ,B.bB,B.OQ,B.ak,q),"lo",A.by(B.bay,B.aZ7,B.hL,B.bC_,B.b1G,6,5,B.Mf,"lo",B.e3,B.MY,B.bUJ,B.LM,B.bhG,B.NM,B.Mf,B.e3,B.MY,B.LM,B.NM,B.Mi,B.bEd,B.Mi,B.ak,q),"lt",A.by(B.b7x,B.aO3,B.bZ,B.aZn,B.MI,0,3,B.bND,"lt",B.Rw,B.Mj,B.b2A,B.QM,B.bBI,B.Si,B.beX,B.Rw,B.Mj,B.QM,B.Si,B.Qi,B.bB,B.Qi,B.ak,q),"lv",A.by(B.aXI,B.bbE,B.bZ,B.bz2,B.bJN,0,6,B.Mb,"lv",B.aZ,B.OI,B.aZQ,B.R0,B.bV8,B.bbT,B.Mb,B.aZ,B.OI,B.R0,B.b3g,B.bEY,B.bB,B.aYs,B.ak,q),"mk",A.by(B.bHI,B.bJI,B.bp1,B.aY9,B.bja,0,6,B.P4,"mk",B.uG,B.uU,B.bxD,B.Ma,B.bVE,B.NJ,B.P4,B.uG,B.uU,B.Ma,B.NJ,B.OR,B.bB,B.OR,B.ak,q),"ml",A.by(B.bV,B.bIK,B.bZ,B.bue,B.bMJ,6,5,B.Rv,"ml",B.PO,B.ban,B.QP,B.Ou,B.QP,B.O6,B.Rv,B.PO,B.b1q,B.Ou,B.O6,B.bsx,B.dc,B.bY7,B.hM,q),"mn",A.by(B.bK_,B.bcN,B.bZ,B.bsg,B.aUc,6,5,B.b57,"mn",B.MH,B.uy,B.b5g,B.Nu,B.aZa,B.uy,B.bJ0,B.MH,B.uy,B.Nu,B.uy,B.bXG,B.OU,B.bN_,B.ak,q),"mr",A.by(B.bV,B.uP,B.aT8,B.bTE,B.bLT,6,5,B.RV,"mr",B.OO,B.uL,B.bBK,B.QC,B.aNX,B.Qb,B.RV,B.OO,B.uL,B.QC,B.Qb,B.OZ,B.dc,B.OZ,B.hM,"\u0966"),"ms",A.by(B.beU,B.bpx,B.nH,B.S3,B.S3,0,6,B.Pk,"ms",B.MV,B.RZ,B.b4s,B.Nf,B.bi1,B.Q1,B.Pk,B.MV,B.RZ,B.Nf,B.Q1,B.NT,B.dc,B.NT,B.ak,q),"my",A.by(B.bk8,B.aXK,B.bZ,B.aUw,B.bJg,6,5,B.NV,"my",B.P6,B.OC,B.OA,B.MF,B.OA,B.uW,B.NV,B.P6,B.OC,B.MF,B.uW,B.uW,B.aRi,B.uW,B.ak,"\u1040"),"nb",A.by(B.kn,B.LP,B.B8,B.Oq,B.ny,0,3,B.uD,"nb",B.aZ,B.kl,B.qa,B.RC,B.lC,B.qc,B.uD,B.aZ,B.kl,B.Mh,B.qc,B.nz,B.bB,B.nz,B.ak,q),"ne",A.by(B.bZr,B.aQD,B.nH,B.PH,B.PH,6,5,B.v8,"ne",B.bmS,B.S4,B.QS,B.v8,B.QS,B.LK,B.v8,B.aSp,B.S4,B.v8,B.LK,B.M6,B.bB,B.M6,B.ak,"\u0966"),"nl",A.by(B.kn,B.bfz,B.b47,B.Rg,B.aWQ,0,3,B.RL,"nl",B.aZ,B.Pt,B.b7W,B.S5,B.lC,B.Nm,B.RL,B.aZ,B.Pt,B.S5,B.Nm,B.Pg,B.bB,B.Pg,B.ak,q),"no",A.by(B.kn,B.LP,B.B8,B.Oq,B.ny,0,3,B.uD,"no",B.aZ,B.kl,B.qa,B.RC,B.lC,B.qc,B.uD,B.aZ,B.kl,B.Mh,B.qc,B.nz,B.bB,B.nz,B.ak,q),"or",A.by(B.bV,B.lF,B.bTq,B.bwN,B.ez,6,5,B.uQ,"or",B.NC,B.Mx,B.O4,B.uQ,B.O4,B.PR,B.uQ,B.NC,B.Mx,B.uQ,B.PR,B.Rj,B.dc,B.Rj,B.hM,q),"pa",A.by(B.bL5,B.vb,B.nH,B.aVk,B.bt0,6,5,B.Pc,"pa",B.Qz,B.Oi,B.bds,B.Pf,B.bTm,B.O8,B.Pc,B.Qz,B.Oi,B.Pf,B.O8,B.LS,B.dc,B.LS,B.hM,q),"pl",A.by(B.bV,B.bvv,B.nH,B.byI,B.bBO,0,3,B.aWq,"pl",B.bF_,B.bTY,B.bEv,B.OG,B.bmt,B.R_,B.bnJ,B.b_q,B.bfb,B.OG,B.R_,B.N6,B.bB,B.N6,B.ak,q),"ps",A.by(B.bMB,B.bI8,B.bZ,B.bpv,B.bmq,5,4,B.Mk,"ps",B.aWl,B.cJ,B.PC,B.Mk,B.PC,B.ug,B.bhP,B.e3,B.cJ,B.aVx,B.ug,B.ug,B.Ri,B.ug,B.aPb,"\u06f0"),"pt",A.by(B.bV,B.aRL,B.bZ,B.RA,B.ux,6,5,B.uE,"pt",B.aZ,B.uI,B.RY,B.uY,B.iL,B.R8,B.uE,B.aZ,B.uI,B.uY,B.R8,B.v4,B.bB,B.v4,B.ak,q),"pt_PT",A.by(B.aXE,B.bWo,B.buG,B.RA,B.ux,6,2,B.uE,"pt_PT",B.aZ,B.uI,B.ur,B.uY,B.iL,B.Pp,B.uE,B.aZ,B.uI,B.uY,B.Pp,B.v4,B.bB,B.v4,B.ak,q),"ro",A.by(B.kn,B.bl5,B.hL,B.b9D,B.aXH,0,6,B.QG,"ro",B.Ol,B.hO,B.bHO,B.ML,B.bPc,B.Oy,B.QG,B.Ol,B.hO,B.ML,B.Oy,B.Pz,B.bB,B.Pz,B.ak,q),"ru",A.by(B.bV,B.b4w,B.hL,B.bVG,B.aLh,0,3,B.bXo,"ru",B.uF,B.PM,B.Oc,B.bTl,B.RO,B.Pi,B.NH,B.uF,B.PM,B.bWt,B.Pi,B.Rd,B.bB,B.Rd,B.ak,q),"si",A.by(B.bRk,B.bOR,B.bZ,B.aLu,B.bMf,0,6,B.S8,"si",B.Oh,B.RJ,B.bIO,B.bY1,B.blg,B.Nq,B.S8,B.Oh,B.RJ,B.bH7,B.Nq,B.P1,B.Bh,B.P1,B.ak,q),"sk",A.by(B.bV,B.brp,B.b0Z,B.b1A,B.aZD,0,3,B.bMS,"sk",B.kk,B.MQ,B.bT_,B.Sc,B.d5,B.Rm,B.aYB,B.kk,B.MQ,B.Sc,B.Rm,B.Q0,B.v5,B.Q0,B.ak,q),"sl",A.by(B.blN,B.aSa,B.nH,B.bDw,B.MI,0,6,B.Sk,"sl",B.kk,B.R9,B.b2u,B.NA,B.bcx,B.QY,B.Sk,B.kk,B.R9,B.NA,B.QY,B.Po,B.bB,B.Po,B.ak,q),"sq",A.by(B.byx,B.bDh,B.aRZ,B.beT,B.bd2,0,6,B.RT,"sq",B.Qw,B.M2,B.bdi,B.RK,B.boB,B.bs6,B.RT,B.Qw,B.M2,B.RK,B.byC,B.Ns,B.aS_,B.Ns,B.ak,q),"sr",A.by(B.bV,B.MP,B.bZ,B.bYq,B.bza,0,6,B.Qj,"sr",B.uG,B.Rr,B.b0L,B.Rn,B.aVc,B.RQ,B.Qj,B.uG,B.Rr,B.Rn,B.RQ,B.Qk,B.bB,B.Qk,B.ak,q),"sr_Latn",A.by(B.bV,B.MP,B.bZ,B.bc9,B.MR,0,6,B.Nh,"sr_Latn",B.kk,B.uu,B.bEq,B.MJ,B.bl3,B.Mu,B.Nh,B.kk,B.uu,B.MJ,B.Mu,B.P3,B.bB,B.P3,B.ak,q),"sv",A.by(B.bzT,B.Qh,B.bZ,B.bMY,B.ny,0,3,B.PJ,"sv",B.aZ,B.kl,B.b2K,B.QZ,B.lC,B.O0,B.PJ,B.aZ,B.kl,B.QZ,B.O0,B.Sd,B.bB,B.Sd,B.ak,q),"sw",A.by(B.bV,B.OD,B.bZ,B.bRg,B.b90,0,6,B.O9,"sw",B.aZ,B.cJ,B.On,B.Ok,B.On,B.uj,B.O9,B.aZ,B.cJ,B.Ok,B.uj,B.uj,B.bB,B.uj,B.ak,q),"ta",A.by(B.bn9,B.uP,B.aQ5,B.aML,B.aWW,6,5,B.NY,"ta",B.P0,B.My,B.aSg,B.Nc,B.bq5,B.QJ,B.NY,B.P0,B.My,B.Nc,B.QJ,B.Om,B.beP,B.Om,B.hM,q),"te",A.by(B.bV,B.aMq,B.aOZ,B.aXO,B.aMD,6,5,B.Qv,"te",B.OV,B.Rq,B.baS,B.RF,B.bdM,B.Os,B.Qv,B.OV,B.Rq,B.RF,B.Os,B.OM,B.dc,B.OM,B.hM,q),"th",A.by(B.aWU,B.b7w,B.bZ,B.b5N,B.bRA,6,5,B.Nw,"th",B.uX,B.Ov,B.N0,B.uX,B.N0,B.Ot,B.Nw,B.uX,B.Ov,B.uX,B.Ot,B.N9,B.byp,B.N9,B.ak,q),"tl",A.by(B.bV,B.lF,B.MN,B.fZ,B.ez,6,5,B.va,"tl",B.nA,B.ko,B.Ny,B.nA,B.d5,B.ko,B.va,B.RI,B.ko,B.nA,B.ko,B.uA,B.dc,B.uA,B.ak,q),"tr",A.by(B.b7u,B.bfo,B.bZ,B.aO7,B.bm1,0,6,B.RE,"tr",B.PA,B.OF,B.aS5,B.Nv,B.b_B,B.Mg,B.RE,B.PA,B.OF,B.Nv,B.Mg,B.PK,B.bB,B.PK,B.ak,q),"uk",A.by(B.btz,B.biq,B.bbn,B.bJf,B.aZR,0,6,B.b3c,"uk",B.bpb,B.QU,B.Oc,B.ba_,B.RO,B.v0,B.aS2,B.bcH,B.QU,B.bqs,B.v0,B.Qy,B.bB,B.Qy,B.ak,q),"ur",A.by(B.bV,B.aWN,B.bZ,B.OJ,B.OJ,6,5,B.ul,"ur",B.aZ,B.cJ,B.Pm,B.ul,B.Pm,B.uw,B.ul,B.aZ,B.cJ,B.ul,B.uw,B.uw,B.dc,B.uw,B.ak,q),"uz",A.by(B.bjv,B.bn1,B.hL,B.bNK,B.ba1,0,6,B.bCx,"uz",B.Oo,B.PU,B.b5H,B.bWn,B.bWq,B.Oe,B.bPk,B.Oo,B.PU,B.bnD,B.Oe,B.RX,B.bx7,B.RX,B.ak,q),"vi",A.by(B.bii,B.aTp,B.byY,B.blG,B.bhT,0,6,B.be8,"vi",B.e3,B.Ox,B.bXy,B.bc0,B.d5,B.MW,B.bXS,B.e3,B.Ox,B.b7s,B.MW,B.MG,B.bB,B.MG,B.ak,q),"zh",A.by(B.Bm,B.aLR,B.bZ,B.uS,B.uS,6,5,B.Rp,"zh",B.e3,B.nI,B.bw4,B.fE,B.aOq,B.OW,B.Rp,B.e3,B.nI,B.fE,B.OW,B.nB,B.bcF,B.nB,B.ak,q),"zh_HK",A.by(B.Bm,B.bdW,B.bZ,B.uS,B.uS,6,5,B.fE,"zh_HK",B.e3,B.nI,B.B0,B.fE,B.d5,B.us,B.fE,B.e3,B.nI,B.fE,B.us,B.nB,B.bXs,B.nB,B.ak,q),"zh_TW",A.by(B.Bm,B.bMx,B.bZ,B.OP,B.OP,6,5,B.fE,"zh_TW",B.e3,B.nI,B.B0,B.fE,B.B0,B.us,B.fE,B.e3,B.nI,B.fE,B.us,B.nB,B.boa,B.nB,B.ak,q),"zu",A.by(B.bV,B.lF,B.bZ,B.ez,B.ez,6,5,B.Md,"zu",B.bep,B.RN,B.b76,B.M4,B.d5,B.QA,B.Md,B.aZ,B.RN,B.M4,B.QA,B.P5,B.bB,B.P5,B.ak,q)],t.N,t.fs)})
 s($,"crg","bMH",()=>A.bIu(B.bou,t.N))
 s($,"crk","bMK",()=>A.bIu(B.b00,t.N))
 s($,"crd","c_d",()=>new A.bEy())
@@ -186308,56 +186315,56 @@ s($,"cre","a_N",()=>new A.bEz())
 s($,"crf","c_e",()=>new A.bEA())
 s($,"crF","c_m",()=>new A.aSE(A.R(t.N,A.aL("aG<f8?>?(f8?)"))))
 s($,"clM","bXc",()=>new A.a4())
-s($,"ckx","bWH",()=>A.U("^[\\w!#%&'*+\\-.^`|~]+$",!0,!1,!1,!1))
-s($,"cpt","bZh",()=>A.U('["\\x00-\\x1F\\x7F]',!0,!1,!1,!1))
-s($,"crD","c_l",()=>A.U('[^()<>@,;:"\\\\/[\\]?={} \\t\\x00-\\x1F\\x7F]+',!0,!1,!1,!1))
-s($,"cq8","bZJ",()=>A.U("(?:\\r\\n)?[ \\t]+",!0,!1,!1,!1))
-s($,"cqc","bZN",()=>A.U('"(?:[^"\\x00-\\x1F\\x7F\\\\]|\\\\.)*"',!0,!1,!1,!1))
-s($,"cqb","bZM",()=>A.U("\\\\(.)",!0,!1,!1,!1))
-s($,"crp","c_h",()=>A.U('[()<>@,;:"\\\\/\\[\\]?={} \\t\\x00-\\x1F\\x7F]',!0,!1,!1,!1))
-s($,"crG","c_n",()=>A.U("(?:"+$.bZJ().a+")*",!0,!1,!1,!1))
+s($,"ckx","bWH",()=>A.S("^[\\w!#%&'*+\\-.^`|~]+$",!0,!1,!1,!1))
+s($,"cpt","bZh",()=>A.S('["\\x00-\\x1F\\x7F]',!0,!1,!1,!1))
+s($,"crD","c_l",()=>A.S('[^()<>@,;:"\\\\/[\\]?={} \\t\\x00-\\x1F\\x7F]+',!0,!1,!1,!1))
+s($,"cq8","bZJ",()=>A.S("(?:\\r\\n)?[ \\t]+",!0,!1,!1,!1))
+s($,"cqc","bZN",()=>A.S('"(?:[^"\\x00-\\x1F\\x7F\\\\]|\\\\.)*"',!0,!1,!1,!1))
+s($,"cqb","bZM",()=>A.S("\\\\(.)",!0,!1,!1,!1))
+s($,"crp","c_h",()=>A.S('[()<>@,;:"\\\\/\\[\\]?={} \\t\\x00-\\x1F\\x7F]',!0,!1,!1,!1))
+s($,"crG","c_n",()=>A.S("(?:"+$.bZJ().a+")*",!0,!1,!1,!1))
 s($,"clR","bLZ",()=>new A.a4())
 r($,"c5v","bXe",()=>{var q=new A.aPA()
 q.rA($.bLZ())
 return q})
 s($,"cr1","c_b",()=>A.by(B.bV,B.lF,B.hL,B.fZ,B.ez,6,5,B.d4,"en_US",B.aZ,B.cJ,B.hQ,B.iH,B.d5,B.dp,B.d4,B.aZ,B.cJ,B.iH,B.dp,B.dn,B.bkq,B.dn,B.ak,null))
 r($,"crr","bMN",()=>{var q=",",p="\xa0",o="%",n="0",m="+",l="-",k="E",j="\u2030",i="\u221e",h="NaN",g="#,##0.###",f="#E0",e="#,##0%",d="\xa4#,##0.00",c=".",b="\u200e+",a="\u200e-",a0="\u0644\u064a\u0633\xa0\u0631\u0642\u0645\u064b\u0627",a1="\u200f#,##0.00\xa0\xa4;\u200f-#,##0.00\xa0\xa4",a2="#,##,##0.###",a3="#,##,##0%",a4="\xa4\xa0#,##,##0.00",a5="INR",a6="#,##0.00\xa0\xa4",a7="#,##0\xa0%",a8="EUR",a9="USD",b0="\xa4\xa0#,##0.00",b1="\xa4\xa0#,##0.00;\xa4-#,##0.00",b2="CHF",b3="\xa4#,##,##0.00",b4="\u2212",b5="\xd710^",b6="[#E0]",b7="\u200f#,##0.00\xa0\u200f\xa4;\u200f-#,##0.00\xa0\u200f\xa4",b8="#,##0.00\xa0\xa4;-#,##0.00\xa0\xa4"
-return A.T(["af",A.bb(d,g,q,"ZAR",k,p,i,l,"af",h,o,e,j,m,f,n),"am",A.bb(d,g,c,"ETB",k,q,i,l,"am","\u1260\u1241\u1325\u122d\xa0\u120a\u1308\u1208\u133d\xa0\u12e8\u121b\u12ed\u127d\u120d",o,e,j,m,f,n),"ar",A.bb(a1,g,c,"EGP",k,q,i,a,"ar",a0,"\u200e%\u200e",e,j,b,f,n),"ar_DZ",A.bb(a1,g,q,"DZD",k,c,i,a,"ar_DZ",a0,"\u200e%\u200e",e,j,b,f,n),"ar_EG",A.bb("\u200f#,##0.00\xa0\xa4",g,"\u066b","EGP","\u0623\u0633","\u066c",i,"\u061c-","ar_EG",a0,"\u066a\u061c",e,"\u0609","\u061c+",f,"\u0660"),"as",A.bb(a4,a2,c,a5,k,q,i,l,"as",h,o,a3,j,m,f,"\u09e6"),"az",A.bb(a6,g,q,"AZN",k,c,i,l,"az",h,o,e,j,m,f,n),"be",A.bb(a6,g,q,"BYN",k,p,i,l,"be",h,o,a7,j,m,f,n),"bg",A.bb(a6,g,q,"BGN",k,p,i,l,"bg",h,o,e,j,m,f,n),"bm",A.bb(d,g,c,"XOF",k,q,i,l,"bm",h,o,e,j,m,f,n),"bn",A.bb("#,##,##0.00\xa4",a2,c,"BDT",k,q,i,l,"bn",h,o,e,j,m,f,"\u09e6"),"br",A.bb(a6,g,q,a8,k,p,i,l,"br",h,o,a7,j,m,f,n),"bs",A.bb(a6,g,q,"BAM",k,c,i,l,"bs",h,o,e,j,m,f,n),"ca",A.bb(a6,g,q,a8,k,c,i,l,"ca",h,o,a7,j,m,f,n),"chr",A.bb(d,g,c,a9,k,q,i,l,"chr",h,o,e,j,m,f,n),"cs",A.bb(a6,g,q,"CZK",k,p,i,l,"cs",h,o,a7,j,m,f,n),"cy",A.bb(d,g,c,"GBP",k,q,i,l,"cy",h,o,e,j,m,f,n),"da",A.bb(a6,g,q,"DKK",k,c,i,l,"da",h,o,a7,j,m,f,n),"de",A.bb(a6,g,q,a8,k,c,i,l,"de",h,o,a7,j,m,f,n),"de_AT",A.bb(b0,g,q,a8,k,p,i,l,"de_AT",h,o,a7,j,m,f,n),"de_CH",A.bb(b1,g,c,b2,k,"\u2019",i,l,"de_CH",h,o,e,j,m,f,n),"el",A.bb(a6,g,q,a8,"e",c,i,l,"el",h,o,e,j,m,f,n),"en",A.bb(d,g,c,a9,k,q,i,l,"en",h,o,e,j,m,f,n),"en_AU",A.bb(d,g,c,"AUD","e",q,i,l,"en_AU",h,o,e,j,m,f,n),"en_CA",A.bb(d,g,c,"CAD",k,q,i,l,"en_CA",h,o,e,j,m,f,n),"en_GB",A.bb(d,g,c,"GBP",k,q,i,l,"en_GB",h,o,e,j,m,f,n),"en_IE",A.bb(d,g,c,a8,k,q,i,l,"en_IE",h,o,e,j,m,f,n),"en_IN",A.bb(b3,a2,c,a5,k,q,i,l,"en_IN",h,o,a3,j,m,f,n),"en_MY",A.bb(d,g,c,"MYR",k,q,i,l,"en_MY",h,o,e,j,m,f,n),"en_NZ",A.bb(d,g,c,"NZD",k,q,i,l,"en_NZ",h,o,e,j,m,f,n),"en_SG",A.bb(d,g,c,"SGD",k,q,i,l,"en_SG",h,o,e,j,m,f,n),"en_US",A.bb(d,g,c,a9,k,q,i,l,"en_US",h,o,e,j,m,f,n),"en_ZA",A.bb(d,g,q,"ZAR",k,p,i,l,"en_ZA",h,o,e,j,m,f,n),"es",A.bb(a6,g,q,a8,k,c,i,l,"es",h,o,a7,j,m,f,n),"es_419",A.bb(d,g,c,"MXN",k,q,i,l,"es_419",h,o,e,j,m,f,n),"es_ES",A.bb(a6,g,q,a8,k,c,i,l,"es_ES",h,o,a7,j,m,f,n),"es_MX",A.bb(d,g,c,"MXN",k,q,i,l,"es_MX",h,o,e,j,m,f,n),"es_US",A.bb(d,g,c,a9,k,q,i,l,"es_US",h,o,e,j,m,f,n),"et",A.bb(a6,g,q,a8,b5,p,i,b4,"et",h,o,e,j,m,f,n),"eu",A.bb(a6,g,q,a8,k,c,i,b4,"eu",h,o,"%\xa0#,##0",j,m,f,n),"fa",A.bb("\u200e\xa4#,##0.00",g,"\u066b","IRR","\xd7\u06f1\u06f0^","\u066c",i,"\u200e\u2212","fa","\u0646\u0627\u0639\u062f\u062f","\u066a",e,"\u0609",b,f,"\u06f0"),"fi",A.bb(a6,g,q,a8,k,p,i,b4,"fi","ep\xe4luku",o,a7,j,m,f,n),"fil",A.bb(d,g,c,"PHP",k,q,i,l,"fil",h,o,e,j,m,f,n),"fr",A.bb(a6,g,q,a8,k,"\u202f",i,l,"fr",h,o,a7,j,m,f,n),"fr_CA",A.bb(a6,g,q,"CAD",k,p,i,l,"fr_CA",h,o,a7,j,m,f,n),"fr_CH",A.bb(a6,g,q,b2,k,"\u202f",i,l,"fr_CH",h,o,e,j,m,f,n),"fur",A.bb(b0,g,q,a8,k,c,i,l,"fur",h,o,e,j,m,f,n),"ga",A.bb(d,g,c,a8,k,q,i,l,"ga","Nuimh",o,e,j,m,f,n),"gl",A.bb(a6,g,q,a8,k,c,i,l,"gl",h,o,a7,j,m,f,n),"gsw",A.bb(a6,g,c,b2,k,"\u2019",i,b4,"gsw",h,o,a7,j,m,f,n),"gu",A.bb(b3,a2,c,a5,k,q,i,l,"gu",h,o,a3,j,m,b6,n),"haw",A.bb(d,g,c,a9,k,q,i,l,"haw",h,o,e,j,m,f,n),"he",A.bb(b7,g,c,"ILS",k,q,i,a,"he",h,o,e,j,b,f,n),"hi",A.bb(b3,a2,c,a5,k,q,i,l,"hi",h,o,a3,j,m,b6,n),"hr",A.bb(a6,g,q,a8,k,c,i,b4,"hr",h,o,a7,j,m,f,n),"hu",A.bb(a6,g,q,"HUF",k,p,i,l,"hu",h,o,e,j,m,f,n),"hy",A.bb(a6,g,q,"AMD",k,p,i,l,"hy","\u0548\u0579\u0539",o,e,j,m,f,n),"id",A.bb(d,g,q,"IDR",k,c,i,l,"id",h,o,e,j,m,f,n),"in",A.bb(d,g,q,"IDR",k,c,i,l,"in",h,o,e,j,m,f,n),"is",A.bb(a6,g,q,"ISK",k,c,i,l,"is",h,o,e,j,m,f,n),"it",A.bb(a6,g,q,a8,k,c,i,l,"it",h,o,e,j,m,f,n),"it_CH",A.bb(b1,g,c,b2,k,"\u2019",i,l,"it_CH",h,o,e,j,m,f,n),"iw",A.bb(b7,g,c,"ILS",k,q,i,a,"iw",h,o,e,j,b,f,n),"ja",A.bb(d,g,c,"JPY",k,q,i,l,"ja",h,o,e,j,m,f,n),"ka",A.bb(a6,g,q,"GEL",k,p,i,l,"ka","\u10d0\u10e0\xa0\u10d0\u10e0\u10d8\u10e1\xa0\u10e0\u10d8\u10ea\u10ee\u10d5\u10d8",o,e,j,m,f,n),"kk",A.bb(a6,g,q,"KZT",k,p,i,l,"kk","\u0441\u0430\u043d\xa0\u0435\u043c\u0435\u0441",o,e,j,m,f,n),"km",A.bb("#,##0.00\xa4",g,c,"KHR",k,q,i,l,"km",h,o,e,j,m,f,n),"kn",A.bb(d,g,c,a5,k,q,i,l,"kn",h,o,e,j,m,f,n),"ko",A.bb(d,g,c,"KRW",k,q,i,l,"ko",h,o,e,j,m,f,n),"ky",A.bb(a6,g,q,"KGS",k,p,i,l,"ky","\u0441\u0430\u043d\xa0\u044d\u043c\u0435\u0441",o,e,j,m,f,n),"ln",A.bb(a6,g,q,"CDF",k,c,i,l,"ln",h,o,e,j,m,f,n),"lo",A.bb("\xa4#,##0.00;\xa4-#,##0.00",g,q,"LAK",k,c,i,l,"lo","\u0e9a\u0ecd\u0ec8\u200b\u0ec1\u0ea1\u0ec8\u0e99\u200b\u0ec2\u0e95\u200b\u0ec0\u0ea5\u0e81",o,e,j,m,"#",n),"lt",A.bb(a6,g,q,a8,b5,p,i,b4,"lt",h,o,a7,j,m,f,n),"lv",A.bb(a6,g,q,a8,k,p,i,l,"lv","NS",o,e,j,m,f,n),"mg",A.bb(d,g,c,"MGA",k,q,i,l,"mg",h,o,e,j,m,f,n),"mk",A.bb(a6,g,q,"MKD",k,c,i,l,"mk",h,o,a7,j,m,f,n),"ml",A.bb(d,a2,c,a5,k,q,i,l,"ml",h,o,e,j,m,f,n),"mn",A.bb(b0,g,c,"MNT",k,q,i,l,"mn",h,o,e,j,m,f,n),"mr",A.bb(d,a2,c,a5,k,q,i,l,"mr",h,o,e,j,m,b6,"\u0966"),"ms",A.bb(d,g,c,"MYR",k,q,i,l,"ms",h,o,e,j,m,f,n),"mt",A.bb(d,g,c,a8,k,q,i,l,"mt",h,o,e,j,m,f,n),"my",A.bb(a6,g,c,"MMK",k,q,i,l,"my","\u1002\u100f\u1014\u103a\u1038\u1019\u101f\u102f\u1010\u103a\u101e\u1031\u102c",o,e,j,m,f,"\u1040"),"nb",A.bb(b8,g,q,"NOK",k,p,i,b4,"nb",h,o,a7,j,m,f,n),"ne",A.bb(a4,a2,c,"NPR",k,q,i,l,"ne",h,o,a3,j,m,f,"\u0966"),"nl",A.bb("\xa4\xa0#,##0.00;\xa4\xa0-#,##0.00",g,q,a8,k,c,i,l,"nl",h,o,e,j,m,f,n),"no",A.bb(b8,g,q,"NOK",k,p,i,b4,"no",h,o,a7,j,m,f,n),"no_NO",A.bb(b8,g,q,"NOK",k,p,i,b4,"no_NO",h,o,a7,j,m,f,n),"nyn",A.bb(d,g,c,"UGX",k,q,i,l,"nyn",h,o,e,j,m,f,n),"or",A.bb(d,a2,c,a5,k,q,i,l,"or",h,o,e,j,m,f,n),"pa",A.bb(b3,a2,c,a5,k,q,i,l,"pa",h,o,a3,j,m,b6,n),"pl",A.bb(a6,g,q,"PLN",k,p,i,l,"pl",h,o,e,j,m,f,n),"ps",A.bb("\xa4#,##0.00;(\xa4#,##0.00)",g,"\u066b","AFN","\xd7\u06f1\u06f0^","\u066c",i,"\u200e-\u200e","ps",h,"\u066a",e,"\u0609","\u200e+\u200e",f,"\u06f0"),"pt",A.bb(b0,g,q,"BRL",k,c,i,l,"pt",h,o,e,j,m,f,n),"pt_BR",A.bb(b0,g,q,"BRL",k,c,i,l,"pt_BR",h,o,e,j,m,f,n),"pt_PT",A.bb(a6,g,q,a8,k,p,i,l,"pt_PT",h,o,e,j,m,f,n),"ro",A.bb(a6,g,q,"RON",k,c,i,l,"ro",h,o,a7,j,m,f,n),"ru",A.bb(a6,g,q,"RUB",k,p,i,l,"ru","\u043d\u0435\xa0\u0447\u0438\u0441\u043b\u043e",o,a7,j,m,f,n),"si",A.bb(d,g,c,"LKR",k,q,i,l,"si",h,o,e,j,m,"#",n),"sk",A.bb(a6,g,q,a8,"e",p,i,l,"sk",h,o,a7,j,m,f,n),"sl",A.bb(a6,g,q,a8,"e",c,i,b4,"sl",h,o,a7,j,m,f,n),"sq",A.bb(a6,g,q,"ALL",k,p,i,l,"sq",h,o,e,j,m,f,n),"sr",A.bb(a6,g,q,"RSD",k,c,i,l,"sr",h,o,e,j,m,f,n),"sr_Latn",A.bb(a6,g,q,"RSD",k,c,i,l,"sr_Latn",h,o,e,j,m,f,n),"sv",A.bb(a6,g,q,"SEK",b5,p,i,b4,"sv",h,o,a7,j,m,f,n),"sw",A.bb(b0,g,c,"TZS",k,q,i,l,"sw",h,o,e,j,m,f,n),"ta",A.bb(b3,a2,c,a5,k,q,i,l,"ta",h,o,a3,j,m,f,n),"te",A.bb(b3,a2,c,a5,k,q,i,l,"te",h,o,e,j,m,f,n),"th",A.bb(d,g,c,"THB",k,q,i,l,"th",h,o,e,j,m,f,n),"tl",A.bb(d,g,c,"PHP",k,q,i,l,"tl",h,o,e,j,m,f,n),"tr",A.bb(d,g,q,"TRY",k,c,i,l,"tr",h,o,"%#,##0",j,m,f,n),"uk",A.bb(a6,g,q,"UAH","\u0415",p,i,l,"uk",h,o,e,j,m,f,n),"ur",A.bb(d,g,c,"PKR",k,q,i,a,"ur",h,o,e,j,b,f,n),"uz",A.bb(a6,g,q,"UZS",k,p,i,l,"uz","son\xa0emas",o,e,j,m,f,n),"vi",A.bb(a6,g,q,"VND",k,c,i,l,"vi",h,o,e,j,m,f,n),"zh",A.bb(d,g,c,"CNY",k,q,i,l,"zh",h,o,e,j,m,f,n),"zh_CN",A.bb(d,g,c,"CNY",k,q,i,l,"zh_CN",h,o,e,j,m,f,n),"zh_HK",A.bb(d,g,c,"HKD",k,q,i,l,"zh_HK","\u975e\u6578\u503c",o,e,j,m,f,n),"zh_TW",A.bb(d,g,c,"TWD",k,q,i,l,"zh_TW","\u975e\u6578\u503c",o,e,j,m,f,n),"zu",A.bb(d,g,c,"ZAR",k,q,i,l,"zu",h,o,e,j,m,f,n)],t.N,A.aL("v7"))})
+return A.U(["af",A.bb(d,g,q,"ZAR",k,p,i,l,"af",h,o,e,j,m,f,n),"am",A.bb(d,g,c,"ETB",k,q,i,l,"am","\u1260\u1241\u1325\u122d\xa0\u120a\u1308\u1208\u133d\xa0\u12e8\u121b\u12ed\u127d\u120d",o,e,j,m,f,n),"ar",A.bb(a1,g,c,"EGP",k,q,i,a,"ar",a0,"\u200e%\u200e",e,j,b,f,n),"ar_DZ",A.bb(a1,g,q,"DZD",k,c,i,a,"ar_DZ",a0,"\u200e%\u200e",e,j,b,f,n),"ar_EG",A.bb("\u200f#,##0.00\xa0\xa4",g,"\u066b","EGP","\u0623\u0633","\u066c",i,"\u061c-","ar_EG",a0,"\u066a\u061c",e,"\u0609","\u061c+",f,"\u0660"),"as",A.bb(a4,a2,c,a5,k,q,i,l,"as",h,o,a3,j,m,f,"\u09e6"),"az",A.bb(a6,g,q,"AZN",k,c,i,l,"az",h,o,e,j,m,f,n),"be",A.bb(a6,g,q,"BYN",k,p,i,l,"be",h,o,a7,j,m,f,n),"bg",A.bb(a6,g,q,"BGN",k,p,i,l,"bg",h,o,e,j,m,f,n),"bm",A.bb(d,g,c,"XOF",k,q,i,l,"bm",h,o,e,j,m,f,n),"bn",A.bb("#,##,##0.00\xa4",a2,c,"BDT",k,q,i,l,"bn",h,o,e,j,m,f,"\u09e6"),"br",A.bb(a6,g,q,a8,k,p,i,l,"br",h,o,a7,j,m,f,n),"bs",A.bb(a6,g,q,"BAM",k,c,i,l,"bs",h,o,e,j,m,f,n),"ca",A.bb(a6,g,q,a8,k,c,i,l,"ca",h,o,a7,j,m,f,n),"chr",A.bb(d,g,c,a9,k,q,i,l,"chr",h,o,e,j,m,f,n),"cs",A.bb(a6,g,q,"CZK",k,p,i,l,"cs",h,o,a7,j,m,f,n),"cy",A.bb(d,g,c,"GBP",k,q,i,l,"cy",h,o,e,j,m,f,n),"da",A.bb(a6,g,q,"DKK",k,c,i,l,"da",h,o,a7,j,m,f,n),"de",A.bb(a6,g,q,a8,k,c,i,l,"de",h,o,a7,j,m,f,n),"de_AT",A.bb(b0,g,q,a8,k,p,i,l,"de_AT",h,o,a7,j,m,f,n),"de_CH",A.bb(b1,g,c,b2,k,"\u2019",i,l,"de_CH",h,o,e,j,m,f,n),"el",A.bb(a6,g,q,a8,"e",c,i,l,"el",h,o,e,j,m,f,n),"en",A.bb(d,g,c,a9,k,q,i,l,"en",h,o,e,j,m,f,n),"en_AU",A.bb(d,g,c,"AUD","e",q,i,l,"en_AU",h,o,e,j,m,f,n),"en_CA",A.bb(d,g,c,"CAD",k,q,i,l,"en_CA",h,o,e,j,m,f,n),"en_GB",A.bb(d,g,c,"GBP",k,q,i,l,"en_GB",h,o,e,j,m,f,n),"en_IE",A.bb(d,g,c,a8,k,q,i,l,"en_IE",h,o,e,j,m,f,n),"en_IN",A.bb(b3,a2,c,a5,k,q,i,l,"en_IN",h,o,a3,j,m,f,n),"en_MY",A.bb(d,g,c,"MYR",k,q,i,l,"en_MY",h,o,e,j,m,f,n),"en_NZ",A.bb(d,g,c,"NZD",k,q,i,l,"en_NZ",h,o,e,j,m,f,n),"en_SG",A.bb(d,g,c,"SGD",k,q,i,l,"en_SG",h,o,e,j,m,f,n),"en_US",A.bb(d,g,c,a9,k,q,i,l,"en_US",h,o,e,j,m,f,n),"en_ZA",A.bb(d,g,q,"ZAR",k,p,i,l,"en_ZA",h,o,e,j,m,f,n),"es",A.bb(a6,g,q,a8,k,c,i,l,"es",h,o,a7,j,m,f,n),"es_419",A.bb(d,g,c,"MXN",k,q,i,l,"es_419",h,o,e,j,m,f,n),"es_ES",A.bb(a6,g,q,a8,k,c,i,l,"es_ES",h,o,a7,j,m,f,n),"es_MX",A.bb(d,g,c,"MXN",k,q,i,l,"es_MX",h,o,e,j,m,f,n),"es_US",A.bb(d,g,c,a9,k,q,i,l,"es_US",h,o,e,j,m,f,n),"et",A.bb(a6,g,q,a8,b5,p,i,b4,"et",h,o,e,j,m,f,n),"eu",A.bb(a6,g,q,a8,k,c,i,b4,"eu",h,o,"%\xa0#,##0",j,m,f,n),"fa",A.bb("\u200e\xa4#,##0.00",g,"\u066b","IRR","\xd7\u06f1\u06f0^","\u066c",i,"\u200e\u2212","fa","\u0646\u0627\u0639\u062f\u062f","\u066a",e,"\u0609",b,f,"\u06f0"),"fi",A.bb(a6,g,q,a8,k,p,i,b4,"fi","ep\xe4luku",o,a7,j,m,f,n),"fil",A.bb(d,g,c,"PHP",k,q,i,l,"fil",h,o,e,j,m,f,n),"fr",A.bb(a6,g,q,a8,k,"\u202f",i,l,"fr",h,o,a7,j,m,f,n),"fr_CA",A.bb(a6,g,q,"CAD",k,p,i,l,"fr_CA",h,o,a7,j,m,f,n),"fr_CH",A.bb(a6,g,q,b2,k,"\u202f",i,l,"fr_CH",h,o,e,j,m,f,n),"fur",A.bb(b0,g,q,a8,k,c,i,l,"fur",h,o,e,j,m,f,n),"ga",A.bb(d,g,c,a8,k,q,i,l,"ga","Nuimh",o,e,j,m,f,n),"gl",A.bb(a6,g,q,a8,k,c,i,l,"gl",h,o,a7,j,m,f,n),"gsw",A.bb(a6,g,c,b2,k,"\u2019",i,b4,"gsw",h,o,a7,j,m,f,n),"gu",A.bb(b3,a2,c,a5,k,q,i,l,"gu",h,o,a3,j,m,b6,n),"haw",A.bb(d,g,c,a9,k,q,i,l,"haw",h,o,e,j,m,f,n),"he",A.bb(b7,g,c,"ILS",k,q,i,a,"he",h,o,e,j,b,f,n),"hi",A.bb(b3,a2,c,a5,k,q,i,l,"hi",h,o,a3,j,m,b6,n),"hr",A.bb(a6,g,q,a8,k,c,i,b4,"hr",h,o,a7,j,m,f,n),"hu",A.bb(a6,g,q,"HUF",k,p,i,l,"hu",h,o,e,j,m,f,n),"hy",A.bb(a6,g,q,"AMD",k,p,i,l,"hy","\u0548\u0579\u0539",o,e,j,m,f,n),"id",A.bb(d,g,q,"IDR",k,c,i,l,"id",h,o,e,j,m,f,n),"in",A.bb(d,g,q,"IDR",k,c,i,l,"in",h,o,e,j,m,f,n),"is",A.bb(a6,g,q,"ISK",k,c,i,l,"is",h,o,e,j,m,f,n),"it",A.bb(a6,g,q,a8,k,c,i,l,"it",h,o,e,j,m,f,n),"it_CH",A.bb(b1,g,c,b2,k,"\u2019",i,l,"it_CH",h,o,e,j,m,f,n),"iw",A.bb(b7,g,c,"ILS",k,q,i,a,"iw",h,o,e,j,b,f,n),"ja",A.bb(d,g,c,"JPY",k,q,i,l,"ja",h,o,e,j,m,f,n),"ka",A.bb(a6,g,q,"GEL",k,p,i,l,"ka","\u10d0\u10e0\xa0\u10d0\u10e0\u10d8\u10e1\xa0\u10e0\u10d8\u10ea\u10ee\u10d5\u10d8",o,e,j,m,f,n),"kk",A.bb(a6,g,q,"KZT",k,p,i,l,"kk","\u0441\u0430\u043d\xa0\u0435\u043c\u0435\u0441",o,e,j,m,f,n),"km",A.bb("#,##0.00\xa4",g,c,"KHR",k,q,i,l,"km",h,o,e,j,m,f,n),"kn",A.bb(d,g,c,a5,k,q,i,l,"kn",h,o,e,j,m,f,n),"ko",A.bb(d,g,c,"KRW",k,q,i,l,"ko",h,o,e,j,m,f,n),"ky",A.bb(a6,g,q,"KGS",k,p,i,l,"ky","\u0441\u0430\u043d\xa0\u044d\u043c\u0435\u0441",o,e,j,m,f,n),"ln",A.bb(a6,g,q,"CDF",k,c,i,l,"ln",h,o,e,j,m,f,n),"lo",A.bb("\xa4#,##0.00;\xa4-#,##0.00",g,q,"LAK",k,c,i,l,"lo","\u0e9a\u0ecd\u0ec8\u200b\u0ec1\u0ea1\u0ec8\u0e99\u200b\u0ec2\u0e95\u200b\u0ec0\u0ea5\u0e81",o,e,j,m,"#",n),"lt",A.bb(a6,g,q,a8,b5,p,i,b4,"lt",h,o,a7,j,m,f,n),"lv",A.bb(a6,g,q,a8,k,p,i,l,"lv","NS",o,e,j,m,f,n),"mg",A.bb(d,g,c,"MGA",k,q,i,l,"mg",h,o,e,j,m,f,n),"mk",A.bb(a6,g,q,"MKD",k,c,i,l,"mk",h,o,a7,j,m,f,n),"ml",A.bb(d,a2,c,a5,k,q,i,l,"ml",h,o,e,j,m,f,n),"mn",A.bb(b0,g,c,"MNT",k,q,i,l,"mn",h,o,e,j,m,f,n),"mr",A.bb(d,a2,c,a5,k,q,i,l,"mr",h,o,e,j,m,b6,"\u0966"),"ms",A.bb(d,g,c,"MYR",k,q,i,l,"ms",h,o,e,j,m,f,n),"mt",A.bb(d,g,c,a8,k,q,i,l,"mt",h,o,e,j,m,f,n),"my",A.bb(a6,g,c,"MMK",k,q,i,l,"my","\u1002\u100f\u1014\u103a\u1038\u1019\u101f\u102f\u1010\u103a\u101e\u1031\u102c",o,e,j,m,f,"\u1040"),"nb",A.bb(b8,g,q,"NOK",k,p,i,b4,"nb",h,o,a7,j,m,f,n),"ne",A.bb(a4,a2,c,"NPR",k,q,i,l,"ne",h,o,a3,j,m,f,"\u0966"),"nl",A.bb("\xa4\xa0#,##0.00;\xa4\xa0-#,##0.00",g,q,a8,k,c,i,l,"nl",h,o,e,j,m,f,n),"no",A.bb(b8,g,q,"NOK",k,p,i,b4,"no",h,o,a7,j,m,f,n),"no_NO",A.bb(b8,g,q,"NOK",k,p,i,b4,"no_NO",h,o,a7,j,m,f,n),"nyn",A.bb(d,g,c,"UGX",k,q,i,l,"nyn",h,o,e,j,m,f,n),"or",A.bb(d,a2,c,a5,k,q,i,l,"or",h,o,e,j,m,f,n),"pa",A.bb(b3,a2,c,a5,k,q,i,l,"pa",h,o,a3,j,m,b6,n),"pl",A.bb(a6,g,q,"PLN",k,p,i,l,"pl",h,o,e,j,m,f,n),"ps",A.bb("\xa4#,##0.00;(\xa4#,##0.00)",g,"\u066b","AFN","\xd7\u06f1\u06f0^","\u066c",i,"\u200e-\u200e","ps",h,"\u066a",e,"\u0609","\u200e+\u200e",f,"\u06f0"),"pt",A.bb(b0,g,q,"BRL",k,c,i,l,"pt",h,o,e,j,m,f,n),"pt_BR",A.bb(b0,g,q,"BRL",k,c,i,l,"pt_BR",h,o,e,j,m,f,n),"pt_PT",A.bb(a6,g,q,a8,k,p,i,l,"pt_PT",h,o,e,j,m,f,n),"ro",A.bb(a6,g,q,"RON",k,c,i,l,"ro",h,o,a7,j,m,f,n),"ru",A.bb(a6,g,q,"RUB",k,p,i,l,"ru","\u043d\u0435\xa0\u0447\u0438\u0441\u043b\u043e",o,a7,j,m,f,n),"si",A.bb(d,g,c,"LKR",k,q,i,l,"si",h,o,e,j,m,"#",n),"sk",A.bb(a6,g,q,a8,"e",p,i,l,"sk",h,o,a7,j,m,f,n),"sl",A.bb(a6,g,q,a8,"e",c,i,b4,"sl",h,o,a7,j,m,f,n),"sq",A.bb(a6,g,q,"ALL",k,p,i,l,"sq",h,o,e,j,m,f,n),"sr",A.bb(a6,g,q,"RSD",k,c,i,l,"sr",h,o,e,j,m,f,n),"sr_Latn",A.bb(a6,g,q,"RSD",k,c,i,l,"sr_Latn",h,o,e,j,m,f,n),"sv",A.bb(a6,g,q,"SEK",b5,p,i,b4,"sv",h,o,a7,j,m,f,n),"sw",A.bb(b0,g,c,"TZS",k,q,i,l,"sw",h,o,e,j,m,f,n),"ta",A.bb(b3,a2,c,a5,k,q,i,l,"ta",h,o,a3,j,m,f,n),"te",A.bb(b3,a2,c,a5,k,q,i,l,"te",h,o,e,j,m,f,n),"th",A.bb(d,g,c,"THB",k,q,i,l,"th",h,o,e,j,m,f,n),"tl",A.bb(d,g,c,"PHP",k,q,i,l,"tl",h,o,e,j,m,f,n),"tr",A.bb(d,g,q,"TRY",k,c,i,l,"tr",h,o,"%#,##0",j,m,f,n),"uk",A.bb(a6,g,q,"UAH","\u0415",p,i,l,"uk",h,o,e,j,m,f,n),"ur",A.bb(d,g,c,"PKR",k,q,i,a,"ur",h,o,e,j,b,f,n),"uz",A.bb(a6,g,q,"UZS",k,p,i,l,"uz","son\xa0emas",o,e,j,m,f,n),"vi",A.bb(a6,g,q,"VND",k,c,i,l,"vi",h,o,e,j,m,f,n),"zh",A.bb(d,g,c,"CNY",k,q,i,l,"zh",h,o,e,j,m,f,n),"zh_CN",A.bb(d,g,c,"CNY",k,q,i,l,"zh_CN",h,o,e,j,m,f,n),"zh_HK",A.bb(d,g,c,"HKD",k,q,i,l,"zh_HK","\u975e\u6578\u503c",o,e,j,m,f,n),"zh_TW",A.bb(d,g,c,"TWD",k,q,i,l,"zh_TW","\u975e\u6578\u503c",o,e,j,m,f,n),"zu",A.bb(d,g,c,"ZAR",k,q,i,l,"zu",h,o,e,j,m,f,n)],t.N,A.aL("v7"))})
 r($,"cee","a_I",()=>A.bSv("initializeDateFormatting(<locale>)",$.c_b(),t.fs))
 r($,"cht","avf",()=>A.bSv("initializeDateFormatting(<locale>)",B.c2A,t.GU))
 s($,"cqI","a_K",()=>48)
-s($,"ckT","bWN",()=>A.a([A.U("^'(?:[^']|'')*'",!0,!1,!1,!1),A.U("^(?:G+|y+|M+|k+|S+|E+|a+|h+|K+|H+|c+|L+|Q+|d+|D+|m+|s+|v+|z+|Z+)",!0,!1,!1,!1),A.U("^[^'GyMkSEahKHcLQdDmsvzZ]+",!0,!1,!1,!1)],A.aL("a_<vw>")))
-s($,"coM","bYN",()=>A.U("''",!0,!1,!1,!1))
+s($,"ckT","bWN",()=>A.a([A.S("^'(?:[^']|'')*'",!0,!1,!1,!1),A.S("^(?:G+|y+|M+|k+|S+|E+|a+|h+|K+|H+|c+|L+|Q+|d+|D+|m+|s+|v+|z+|Z+)",!0,!1,!1,!1),A.S("^[^'GyMkSEahKHcLQdDmsvzZ]+",!0,!1,!1,!1)],A.aL("a_<vw>")))
+s($,"coM","bYN",()=>A.S("''",!0,!1,!1,!1))
 s($,"cn_","bGm",()=>A.Jn(2,52))
 s($,"cmZ","bXQ",()=>B.q.i0(A.a_g($.bGm())/A.a_g(10)))
 s($,"cq6","bMv",()=>A.a_g(10))
 s($,"cq7","bZI",()=>A.a_g(10))
-s($,"cqH","c_9",()=>A.U("^\\d+",!0,!1,!1,!1))
-s($,"crv","bMO",()=>A.T(["en_ISO",A.i5(),"af",A.fH(),"am",A.C_(),"ar",A.bLz(),"ar_DZ",A.bLz(),"ar_EG",A.bLz(),"as",A.C_(),"az",A.fH(),"be",A.ciY(),"bg",A.fH(),"bm",A.kG(),"bn",A.C_(),"br",A.ciZ(),"bs",A.bET(),"ca",A.bEU(),"chr",A.fH(),"cs",A.bWa(),"cy",A.cj_(),"da",A.cj0(),"de",A.i5(),"de_AT",A.i5(),"de_CH",A.i5(),"el",A.fH(),"en",A.i5(),"en_AU",A.i5(),"en_CA",A.i5(),"en_GB",A.i5(),"en_IE",A.i5(),"en_IN",A.i5(),"en_MY",A.i5(),"en_NZ",A.i5(),"en_SG",A.i5(),"en_US",A.i5(),"en_ZA",A.i5(),"es",A.auM(),"es_419",A.auM(),"es_ES",A.auM(),"es_MX",A.auM(),"es_US",A.auM(),"et",A.i5(),"eu",A.fH(),"fa",A.C_(),"fi",A.i5(),"fil",A.bW9(),"fr",A.bLA(),"fr_CA",A.bLA(),"fr_CH",A.bLA(),"fur",A.fH(),"ga",A.cj2(),"gl",A.i5(),"gsw",A.fH(),"gu",A.C_(),"haw",A.fH(),"he",A.bWb(),"hi",A.C_(),"hr",A.bET(),"hu",A.fH(),"hy",A.cj1(),"id",A.kG(),"in",A.kG(),"is",A.cj3(),"it",A.bEU(),"it_CH",A.bEU(),"iw",A.bWb(),"ja",A.kG(),"ka",A.fH(),"kk",A.fH(),"km",A.kG(),"kn",A.C_(),"ko",A.kG(),"ky",A.fH(),"ln",A.bLy(),"lo",A.kG(),"lt",A.cj4(),"lv",A.cj5(),"mg",A.bLy(),"mk",A.cj6(),"ml",A.fH(),"mn",A.fH(),"mr",A.fH(),"ms",A.kG(),"mt",A.cj8(),"my",A.kG(),"nb",A.fH(),"ne",A.fH(),"nl",A.i5(),"no",A.fH(),"no_NO",A.fH(),"nyn",A.fH(),"or",A.fH(),"pa",A.bLy(),"pl",A.cj9(),"ps",A.fH(),"pt",A.bWc(),"pt_BR",A.bWc(),"pt_PT",A.bEU(),"ro",A.cj7(),"ru",A.bWd(),"si",A.cja(),"sk",A.bWa(),"sl",A.cjb(),"sq",A.fH(),"sr",A.bET(),"sr_Latn",A.bET(),"sv",A.i5(),"sw",A.i5(),"ta",A.fH(),"te",A.fH(),"th",A.kG(),"tl",A.bW9(),"tr",A.fH(),"uk",A.bWd(),"ur",A.i5(),"uz",A.fH(),"vi",A.kG(),"zh",A.kG(),"zh_CN",A.kG(),"zh_HK",A.kG(),"zh_TW",A.kG(),"zu",A.C_(),"default",A.kG()],t.N,A.aL("of()")))
+s($,"cqH","c_9",()=>A.S("^\\d+",!0,!1,!1,!1))
+s($,"crv","bMO",()=>A.U(["en_ISO",A.i5(),"af",A.fH(),"am",A.C_(),"ar",A.bLz(),"ar_DZ",A.bLz(),"ar_EG",A.bLz(),"as",A.C_(),"az",A.fH(),"be",A.ciY(),"bg",A.fH(),"bm",A.kG(),"bn",A.C_(),"br",A.ciZ(),"bs",A.bET(),"ca",A.bEU(),"chr",A.fH(),"cs",A.bWa(),"cy",A.cj_(),"da",A.cj0(),"de",A.i5(),"de_AT",A.i5(),"de_CH",A.i5(),"el",A.fH(),"en",A.i5(),"en_AU",A.i5(),"en_CA",A.i5(),"en_GB",A.i5(),"en_IE",A.i5(),"en_IN",A.i5(),"en_MY",A.i5(),"en_NZ",A.i5(),"en_SG",A.i5(),"en_US",A.i5(),"en_ZA",A.i5(),"es",A.auM(),"es_419",A.auM(),"es_ES",A.auM(),"es_MX",A.auM(),"es_US",A.auM(),"et",A.i5(),"eu",A.fH(),"fa",A.C_(),"fi",A.i5(),"fil",A.bW9(),"fr",A.bLA(),"fr_CA",A.bLA(),"fr_CH",A.bLA(),"fur",A.fH(),"ga",A.cj2(),"gl",A.i5(),"gsw",A.fH(),"gu",A.C_(),"haw",A.fH(),"he",A.bWb(),"hi",A.C_(),"hr",A.bET(),"hu",A.fH(),"hy",A.cj1(),"id",A.kG(),"in",A.kG(),"is",A.cj3(),"it",A.bEU(),"it_CH",A.bEU(),"iw",A.bWb(),"ja",A.kG(),"ka",A.fH(),"kk",A.fH(),"km",A.kG(),"kn",A.C_(),"ko",A.kG(),"ky",A.fH(),"ln",A.bLy(),"lo",A.kG(),"lt",A.cj4(),"lv",A.cj5(),"mg",A.bLy(),"mk",A.cj6(),"ml",A.fH(),"mn",A.fH(),"mr",A.fH(),"ms",A.kG(),"mt",A.cj8(),"my",A.kG(),"nb",A.fH(),"ne",A.fH(),"nl",A.i5(),"no",A.fH(),"no_NO",A.fH(),"nyn",A.fH(),"or",A.fH(),"pa",A.bLy(),"pl",A.cj9(),"ps",A.fH(),"pt",A.bWc(),"pt_BR",A.bWc(),"pt_PT",A.bEU(),"ro",A.cj7(),"ru",A.bWd(),"si",A.cja(),"sk",A.bWa(),"sl",A.cjb(),"sq",A.fH(),"sr",A.bET(),"sr_Latn",A.bET(),"sv",A.i5(),"sw",A.i5(),"ta",A.fH(),"te",A.fH(),"th",A.kG(),"tl",A.bW9(),"tr",A.fH(),"uk",A.bWd(),"ur",A.i5(),"uz",A.fH(),"vi",A.kG(),"zh",A.kG(),"zh_CN",A.kG(),"zh_HK",A.kG(),"zh_TW",A.kG(),"zu",A.C_(),"default",A.kG()],t.N,A.aL("of()")))
 s($,"clH","bX8",()=>A.cX([$.nC(),$.bGC()],A.aL("vw")))
-s($,"clP","bXd",()=>{var q=A.U("</(?:pre|script|style|textarea)>",!1,!1,!1,!1),p=A.U("-->",!0,!1,!1,!1),o=A.U("\\?>",!0,!1,!1,!1),n=A.U(">",!0,!1,!1,!1),m=A.U("]]>",!0,!1,!1,!1),l=$.nC()
+s($,"clP","bXd",()=>{var q=A.S("</(?:pre|script|style|textarea)>",!1,!1,!1,!1),p=A.S("-->",!0,!1,!1,!1),o=A.S("\\?>",!0,!1,!1,!1),n=A.S(">",!0,!1,!1,!1),m=A.S("]]>",!0,!1,!1,!1),l=$.nC()
 return A.a([q,p,o,n,m,l,l],A.aL("a_<vw>"))})
-s($,"clp","bX0",()=>A.c3m(A.m7(A.a([B.aaN,B.abz,B.abJ,B.abl,B.aaP],t.vA),t.Yd),A.m7(A.a([A.c5I(),new A.adk(!0,!0,A.a([A.aBw("del",1),A.aBw("del",2)],t.IF),A.U("~+",!0,!1,!0,!1),126),new A.a0t(A.U("((?:(?:https?|ftp):\\/\\/|www\\.)(?:[-_a-z0-9]+\\.)*(?:[-a-z0-9]+\\.[-a-z0-9]+)[^\\s<]*[^\\s<?!.,:*_~])|([-_.+a-z0-9]+@(?:[-_a-z0-9]+\\.)+[-_a-z0-9]*[a-z0-9])",!1,!1,!0,!1),null)],t.xB),t.dG)))
-s($,"clU","bXh",()=>{var q=A.U("<([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>",!0,!1,!0,!1),p=A.U("<(([a-zA-Z][a-zA-Z\\-\\+\\.]+):(?://)?[^\\s>]*)>",!0,!1,!0,!1),o=A.U("(?:\\\\|  +)\\n",!0,!1,!0,!1),n=$.bWZ()
-return A.m7(A.a([new A.a4r(q,60),new A.a0u(p,null),new A.a74(o,null),new A.LC(!0,!0,n,A.U("\\*+",!0,!1,!0,!1),42),new A.LC(!0,!1,n,A.U("_+",!0,!1,!0,!1),95),new A.a1s(A.U("(`+(?!`))((?:.|\\n)*?[^`])\\1(?!`)",!0,!1,!0,!1),null),new A.acW(A.U(" \n",!0,!1,!0,!1),32)],t.xB),t.dG)})
-s($,"cl7","bLV",()=>A.U("[!\"#$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~\\xA1\\xA7\\xAB\\xB6\\xB7\\xBB\\xBF\\u037E\\u0387\\u055A-\\u055F\\u0589\\u058A\\u05BE\\u05C0\\u05C3\\u05C6\\u05F3\\u05F4\\u0609\\u060A\\u060C\\u060D\\u061B\\u061E\\u061F\\u066A-\\u066D\\u06D4\\u0700-\\u070D\\u07F7-\\u07F9\\u0830-\\u083E\\u085E\\u0964\\u0965\\u0970\\u0AF0\\u0DF4\\u0E4F\\u0E5A\\u0E5B\\u0F04-\\u0F12\\u0F14\\u0F3A-\\u0F3D\\u0F85\\u0FD0-\\u0FD4\\u0FD9\\u0FDA\\u104A-\\u104F\\u10FB\\u1360-\\u1368\\u1400\\u166D\\u166E\\u169B\\u169C\\u16EB-\\u16ED\\u1735\\u1736\\u17D4-\\u17D6\\u17D8-\\u17DA\\u1800-\\u180A\\u1944\\u1945\\u1A1E\\u1A1F\\u1AA0-\\u1AA6\\u1AA8-\\u1AAD\\u1B5A-\\u1B60\\u1BFC-\\u1BFF\\u1C3B-\\u1C3F\\u1C7E\\u1C7F\\u1CC0-\\u1CC7\\u1CD3\\u2010-\\u2027\\u2030-\\u2043\\u2045-\\u2051\\u2053-\\u205E\\u207D\\u207E\\u208D\\u208E\\u2308-\\u230B\\u2329\\u232A\\u2768-\\u2775\\u27C5\\u27C6\\u27E6-\\u27EF\\u2983-\\u2998\\u29D8-\\u29DB\\u29FC\\u29FD\\u2CF9-\\u2CFC\\u2CFE\\u2CFF\\u2D70\\u2E00-\\u2E2E\\u2E30-\\u2E42\\u3001-\\u3003\\u3008-\\u3011\\u3014-\\u301F\\u3030\\u303D\\u30A0\\u30FB\\uA4FE\\uA4FF\\uA60D-\\uA60F\\uA673\\uA67E\\uA6F2-\\uA6F7\\uA874-\\uA877\\uA8CE\\uA8CF\\uA8F8-\\uA8FA\\uA8FC\\uA92E\\uA92F\\uA95F\\uA9C1-\\uA9CD\\uA9DE\\uA9DF\\uAA5C-\\uAA5F\\uAADE\\uAADF\\uAAF0\\uAAF1\\uABEB\\uFD3E\\uFD3F\\uFE10-\\uFE19\\uFE30-\\uFE52\\uFE54-\\uFE61\\uFE63\\uFE68\\uFE6A\\uFE6B\\uFF01-\\uFF03\\uFF05-\\uFF0A\\uFF0C-\\uFF0F\\uFF1A\\uFF1B\\uFF1F\\uFF20\\uFF3B-\\uFF3D\\uFF3F\\uFF5B\\uFF5D\\uFF5F-\\uFF65]",!0,!1,!1,!1))
+s($,"clp","bX0",()=>A.c3m(A.m7(A.a([B.aaN,B.abz,B.abJ,B.abl,B.aaP],t.vA),t.Yd),A.m7(A.a([A.c5I(),new A.adk(!0,!0,A.a([A.aBw("del",1),A.aBw("del",2)],t.IF),A.S("~+",!0,!1,!0,!1),126),new A.a0t(A.S("((?:(?:https?|ftp):\\/\\/|www\\.)(?:[-_a-z0-9]+\\.)*(?:[-a-z0-9]+\\.[-a-z0-9]+)[^\\s<]*[^\\s<?!.,:*_~])|([-_.+a-z0-9]+@(?:[-_a-z0-9]+\\.)+[-_a-z0-9]*[a-z0-9])",!1,!1,!0,!1),null)],t.xB),t.dG)))
+s($,"clU","bXh",()=>{var q=A.S("<([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>",!0,!1,!0,!1),p=A.S("<(([a-zA-Z][a-zA-Z\\-\\+\\.]+):(?://)?[^\\s>]*)>",!0,!1,!0,!1),o=A.S("(?:\\\\|  +)\\n",!0,!1,!0,!1),n=$.bWZ()
+return A.m7(A.a([new A.a4r(q,60),new A.a0u(p,null),new A.a74(o,null),new A.LC(!0,!0,n,A.S("\\*+",!0,!1,!0,!1),42),new A.LC(!0,!1,n,A.S("_+",!0,!1,!0,!1),95),new A.a1s(A.S("(`+(?!`))((?:.|\\n)*?[^`])\\1(?!`)",!0,!1,!0,!1),null),new A.acW(A.S(" \n",!0,!1,!0,!1),32)],t.xB),t.dG)})
+s($,"cl7","bLV",()=>A.S("[!\"#$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~\\xA1\\xA7\\xAB\\xB6\\xB7\\xBB\\xBF\\u037E\\u0387\\u055A-\\u055F\\u0589\\u058A\\u05BE\\u05C0\\u05C3\\u05C6\\u05F3\\u05F4\\u0609\\u060A\\u060C\\u060D\\u061B\\u061E\\u061F\\u066A-\\u066D\\u06D4\\u0700-\\u070D\\u07F7-\\u07F9\\u0830-\\u083E\\u085E\\u0964\\u0965\\u0970\\u0AF0\\u0DF4\\u0E4F\\u0E5A\\u0E5B\\u0F04-\\u0F12\\u0F14\\u0F3A-\\u0F3D\\u0F85\\u0FD0-\\u0FD4\\u0FD9\\u0FDA\\u104A-\\u104F\\u10FB\\u1360-\\u1368\\u1400\\u166D\\u166E\\u169B\\u169C\\u16EB-\\u16ED\\u1735\\u1736\\u17D4-\\u17D6\\u17D8-\\u17DA\\u1800-\\u180A\\u1944\\u1945\\u1A1E\\u1A1F\\u1AA0-\\u1AA6\\u1AA8-\\u1AAD\\u1B5A-\\u1B60\\u1BFC-\\u1BFF\\u1C3B-\\u1C3F\\u1C7E\\u1C7F\\u1CC0-\\u1CC7\\u1CD3\\u2010-\\u2027\\u2030-\\u2043\\u2045-\\u2051\\u2053-\\u205E\\u207D\\u207E\\u208D\\u208E\\u2308-\\u230B\\u2329\\u232A\\u2768-\\u2775\\u27C5\\u27C6\\u27E6-\\u27EF\\u2983-\\u2998\\u29D8-\\u29DB\\u29FC\\u29FD\\u2CF9-\\u2CFC\\u2CFE\\u2CFF\\u2D70\\u2E00-\\u2E2E\\u2E30-\\u2E42\\u3001-\\u3003\\u3008-\\u3011\\u3014-\\u301F\\u3030\\u303D\\u30A0\\u30FB\\uA4FE\\uA4FF\\uA60D-\\uA60F\\uA673\\uA67E\\uA6F2-\\uA6F7\\uA874-\\uA877\\uA8CE\\uA8CF\\uA8F8-\\uA8FA\\uA8FC\\uA92E\\uA92F\\uA95F\\uA9C1-\\uA9CD\\uA9DE\\uA9DF\\uAA5C-\\uAA5F\\uAADE\\uAADF\\uAAF0\\uAAF1\\uABEB\\uFD3E\\uFD3F\\uFE10-\\uFE19\\uFE30-\\uFE52\\uFE54-\\uFE61\\uFE63\\uFE68\\uFE6A\\uFE6B\\uFF01-\\uFF03\\uFF05-\\uFF0A\\uFF0C-\\uFF0F\\uFF1A\\uFF1B\\uFF1F\\uFF20\\uFF3B-\\uFF3D\\uFF3F\\uFF5B\\uFF5D\\uFF5F-\\uFF65]",!0,!1,!1,!1))
 s($,"clk","bWZ",()=>A.a([A.aBw("em",1),A.aBw("strong",2)],t.IF))
-s($,"clY","bXj",()=>A.U("^\\s*$",!0,!1,!1,!1))
-s($,"cr0","nC",()=>A.U("^(?:[ \\t]*)$",!0,!1,!1,!1))
-s($,"crA","bMP",()=>A.U("^[ ]{0,3}(=+|-+)\\s*$",!0,!1,!1,!1))
-s($,"cr4","bMF",()=>A.U("^ {0,3}(#{1,6})(?:[ \\x09\\x0b\\x0c].*?)?(?:\\s(#*)\\s*)?$",!0,!1,!1,!1))
-s($,"cqJ","bMz",()=>A.U("^[ ]{0,3}>[ \\t]?.*$",!0,!1,!1,!1))
-s($,"cr8","avi",()=>A.U("^(?:    | {0,3}\\t)(.*)$",!0,!1,!1,!1))
-s($,"cqS","ave",()=>A.U("^([ ]{0,3})(?:(?<backtick>`{3,})(?<backtickInfo>[^`]*)|(?<tilde>~{3,})(?<tildeInfo>.*))$",!0,!1,!1,!1))
-s($,"cr5","avg",()=>A.U("^ {0,3}([-*_])[ \\t]*\\1[ \\t]*\\1(?:\\1|[ \\t])*$",!0,!1,!1,!1))
-s($,"crm","avj",()=>A.U("^[ ]{0,3}(?:(\\d{1,9})[\\.)]|[*+-])(?:[ \\t]+(.*))?$",!0,!1,!1,!1))
-s($,"crB","c_k",()=>A.U("^[ ]{0,3}\\|?([ \\t]*:?\\-+:?[ \\t]*\\|[ \\t]*)+([ \\t]|[ \\t]*:?\\-+:?[ \\t]*)?$",!0,!1,!1,!1))
-s($,"cr2","bME",()=>A.U("(^[ ]{0,3})\\[\\^([^\\] \\r\\n\\x00\\t]+)\\]:[ \\t]*",!0,!1,!1,!1))
-s($,"cr_","bGC",()=>A.U("",!0,!1,!1,!1))
-s($,"cr6","avh",()=>A.U("^ {0,3}(?:<(?<condition_1>pre|script|style|textarea)(?:\\s|>|$)|(?<condition_2><!--)|(?<condition_3><\\?)|(?<condition_4><![a-z])|(?<condition_5><!\\[CDATA\\[)|</?(?<condition_6>address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|DIV|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul)(?:\\s|>|/>|$)|(?<condition_7>(?:<[a-z][a-z0-9-]*(?:\\s+[a-z_:][a-z0-9._:-]*(?:\\s*=\\s*(?:[^\\s\"'=<>`]+?|'[^']*?'|\"[^\"]*?\"))?)*\\s*/?>|</[a-z][a-z0-9-]*\\s*>)\\s*$))",!1,!1,!1,!1))
-s($,"cr7","a_M",()=>A.U("&(?:([a-z0-9]+)|#([0-9]{1,7})|#x([a-f0-9]{1,6}));",!1,!1,!1,!1))
-s($,"crl","c_g",()=>A.U("^[ ]{0,3}\\[",!0,!1,!1,!1))
-s($,"cqa","bZL",()=>A.U("[ \n\r\t]+",!0,!1,!1,!1))
+s($,"clY","bXj",()=>A.S("^\\s*$",!0,!1,!1,!1))
+s($,"cr0","nC",()=>A.S("^(?:[ \\t]*)$",!0,!1,!1,!1))
+s($,"crA","bMP",()=>A.S("^[ ]{0,3}(=+|-+)\\s*$",!0,!1,!1,!1))
+s($,"cr4","bMF",()=>A.S("^ {0,3}(#{1,6})(?:[ \\x09\\x0b\\x0c].*?)?(?:\\s(#*)\\s*)?$",!0,!1,!1,!1))
+s($,"cqJ","bMz",()=>A.S("^[ ]{0,3}>[ \\t]?.*$",!0,!1,!1,!1))
+s($,"cr8","avi",()=>A.S("^(?:    | {0,3}\\t)(.*)$",!0,!1,!1,!1))
+s($,"cqS","ave",()=>A.S("^([ ]{0,3})(?:(?<backtick>`{3,})(?<backtickInfo>[^`]*)|(?<tilde>~{3,})(?<tildeInfo>.*))$",!0,!1,!1,!1))
+s($,"cr5","avg",()=>A.S("^ {0,3}([-*_])[ \\t]*\\1[ \\t]*\\1(?:\\1|[ \\t])*$",!0,!1,!1,!1))
+s($,"crm","avj",()=>A.S("^[ ]{0,3}(?:(\\d{1,9})[\\.)]|[*+-])(?:[ \\t]+(.*))?$",!0,!1,!1,!1))
+s($,"crB","c_k",()=>A.S("^[ ]{0,3}\\|?([ \\t]*:?\\-+:?[ \\t]*\\|[ \\t]*)+([ \\t]|[ \\t]*:?\\-+:?[ \\t]*)?$",!0,!1,!1,!1))
+s($,"cr2","bME",()=>A.S("(^[ ]{0,3})\\[\\^([^\\] \\r\\n\\x00\\t]+)\\]:[ \\t]*",!0,!1,!1,!1))
+s($,"cr_","bGC",()=>A.S("",!0,!1,!1,!1))
+s($,"cr6","avh",()=>A.S("^ {0,3}(?:<(?<condition_1>pre|script|style|textarea)(?:\\s|>|$)|(?<condition_2><!--)|(?<condition_3><\\?)|(?<condition_4><![a-z])|(?<condition_5><!\\[CDATA\\[)|</?(?<condition_6>address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|DIV|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul)(?:\\s|>|/>|$)|(?<condition_7>(?:<[a-z][a-z0-9-]*(?:\\s+[a-z_:][a-z0-9._:-]*(?:\\s*=\\s*(?:[^\\s\"'=<>`]+?|'[^']*?'|\"[^\"]*?\"))?)*\\s*/?>|</[a-z][a-z0-9-]*\\s*>)\\s*$))",!1,!1,!1,!1))
+s($,"cr7","a_M",()=>A.S("&(?:([a-z0-9]+)|#([0-9]{1,7})|#x([a-f0-9]{1,6}));",!1,!1,!1,!1))
+s($,"crl","c_g",()=>A.S("^[ ]{0,3}\\[",!0,!1,!1,!1))
+s($,"cqa","bZL",()=>A.S("[ \n\r\t]+",!0,!1,!1,!1))
 r($,"cm2","bM_",()=>{var q=null
 return A.d8(q,q,!0,"background",new A.aMr(),q,new A.aMs(),q)})
 r($,"cm8","bXn",()=>A.d8(new A.aMJ(),A.eo(3,3,4.5,7),!1,"on_background",new A.aMK(),null,new A.aML(),null))
@@ -186439,9 +186446,9 @@ i=j[2]
 h=[400*d/(d+27.13),400*c/(c+27.13),400*i/(i+27.13)]
 return new A.b0N(l,(40*h[0]+20*h[1]+h[2])/20*k,k,k,a1,1,q,m,A.Jn(m,0.25),1.48+e)})
 s($,"cqT","bGA",()=>new A.a1E($.bMa(),null))
-s($,"cnU","av3",()=>new A.aSS(A.U("/",!0,!1,!1,!1),A.U("[^/]$",!0,!1,!1,!1),A.U("^/",!0,!1,!1,!1)))
-s($,"cnW","av4",()=>new A.b13(A.U("[/\\\\]",!0,!1,!1,!1),A.U("[^/\\\\]$",!0,!1,!1,!1),A.U("^(\\\\\\\\[^\\\\]+\\\\[^\\\\/]+|[a-zA-Z]:[/\\\\])",!0,!1,!1,!1),A.U("^[/\\\\](?![/\\\\])",!0,!1,!1,!1)))
-s($,"cnV","a_E",()=>new A.b0u(A.U("/",!0,!1,!1,!1),A.U("(^[a-zA-Z][-+.a-zA-Z\\d]*://|[^/])$",!0,!1,!1,!1),A.U("[a-zA-Z][-+.a-zA-Z\\d]*://[^/]*",!0,!1,!1,!1),A.U("^/",!0,!1,!1,!1)))
+s($,"cnU","av3",()=>new A.aSS(A.S("/",!0,!1,!1,!1),A.S("[^/]$",!0,!1,!1,!1),A.S("^/",!0,!1,!1,!1)))
+s($,"cnW","av4",()=>new A.b13(A.S("[/\\\\]",!0,!1,!1,!1),A.S("[^/\\\\]$",!0,!1,!1,!1),A.S("^(\\\\\\\\[^\\\\]+\\\\[^\\\\/]+|[a-zA-Z]:[/\\\\])",!0,!1,!1,!1),A.S("^[/\\\\](?![/\\\\])",!0,!1,!1,!1)))
+s($,"cnV","a_E",()=>new A.b0u(A.S("/",!0,!1,!1,!1),A.S("(^[a-zA-Z][-+.a-zA-Z\\d]*://|[^/])$",!0,!1,!1,!1),A.S("[a-zA-Z][-+.a-zA-Z\\d]*://[^/]*",!0,!1,!1,!1),A.S("^/",!0,!1,!1,!1)))
 s($,"cnT","bMa",()=>A.can())
 s($,"cor","bYD",()=>new A.b0W().$0())
 s($,"cos","bYE",()=>A.ap(A.ap(A.ap(A.nA(),"window"),"navigator"),"geolocation"))

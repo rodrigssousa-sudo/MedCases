@@ -1601,6 +1601,13 @@ class _AiScreenState extends State<AiScreen> {
                   text: safeFinalText,
                 );
                 newBubbleMsgId = _messages[streamingMsgIdx].id;
+                // ORDEM 29 FIX: _lastAiIndex DEVE apontar para streamingMsgIdx.
+                // No caminho de streaming normal (streamingMsgIdx >= 0), a bolha é
+                // atualizada in-place — mas _lastAiIndex nunca era sincronizado,
+                // permanecendo -1 ou apontando para o turno anterior.
+                // Isso tornava isPlantaoFinalBubble=false (i == _lastAiIndex falso),
+                // causando fallback para _AiBubble cru em vez de _PlantaoRenderer.
+                _lastAiIndex = streamingMsgIdx;
               } else {
                 // Fallback legado (sem streaming prévia de buffer)
                 _scrollGeneration++;
@@ -2073,6 +2080,27 @@ class _AiScreenState extends State<AiScreen> {
                   !_isStreaming &&            // stream finalizado
                   !_isSafeCard;             // BUILD 244B: safe-card → bypass renderer
 
+              // ── ORDEM 29: looksLikePharmaBula — sentinela de bula residual ─────
+              // Segunda camada de defesa: detecta formato de bula enciclopédica
+              // clássica (* **CLASSE:** / * **DOSE:) que escapou da rota T-FARMACO-CARD
+              // do prompt e ainda chega ao render loop como _AiBubble cru.
+              // Usado em conjunção com isPlantaoFinalBubble para garantir que
+              // qualquer resposta de bula em Modo Plantão vá para _PlantaoFallbackCard.
+              // NÃO aplicado no Modo Estudo (_longResponse=true) — lá a bula em
+              // Markdown é o formato esperado e correto.
+              final bool looksLikePharmaBula = !_longResponse &&
+                  !_isStreaming &&
+                  !_isSafeCard && (
+                  msg.text.contains(RegExp(r'\*\*CLASSE:\*\*', caseSensitive: false)) ||
+                  msg.text.contains(RegExp(r'\*\*MECANISMO DE A[ÇC][AÃ]O:\*\*', caseSensitive: false)) ||
+                  msg.text.contains(RegExp(r'\*\*VIA DE ADMINISTRA', caseSensitive: false)) ||
+                  msg.text.contains(RegExp(r'\*\*DOSE\b', caseSensitive: false)) ||
+                  msg.text.contains(RegExp(r'\*\*EFEITOS ADVERSOS:\*\*', caseSensitive: false)) ||
+                  msg.text.contains(RegExp(r'\*\*CONTRA-?INDICA[ÇC]', caseSensitive: false)));
+              if (kDebugMode && looksLikePharmaBula) {
+                debugPrint('[PHARMA_BULA_GUARD] messageId=${msg.id} looksLikePharmaBula=true — roteando para FallbackCard');
+              }
+
               // ── TRAVA 4: TELEMETRIA BRUNO ────────────────────────────────────
               if (kDebugMode) {
                 debugPrint('[RENDER] isStreaming=$_isStreaming');
@@ -2090,8 +2118,10 @@ class _AiScreenState extends State<AiScreen> {
               // Key = messageId + ':' + textHash.
               // ORDEM 26: Se pipeline retorna null, tenta com texto normalizado
               // pelo _antibulaNormalize() antes de confirmar fallback.
+              // ORDEM 29: looksLikePharmaBula também activa o pipeline —
+              // permite recuperar estrutura mesmo em bolhas históricas.
               PlantatoPipelineResult? plantaoPipelineResult;
-              if (isPlantaoFinalBubble) {
+              if (isPlantaoFinalBubble || looksLikePharmaBula) {
                 final cacheKey = '${msg.id}:${msg.text.hashCode}';
                 final cached = _plantaoPipelineCache[cacheKey];
                 if (cached != null) {
@@ -2119,15 +2149,19 @@ class _AiScreenState extends State<AiScreen> {
               // ─────────────────────────────────────────────────────────────────
 
               // TRAVA 4: log pipeline result
-              if (kDebugMode && isPlantaoFinalBubble) {
+              if (kDebugMode && (isPlantaoFinalBubble || looksLikePharmaBula)) {
                 debugPrint('[RENDER] useStructuredRenderer=${plantaoPipelineResult?.response != null}');
+                debugPrint('[RENDER] looksLikePharmaBula=$looksLikePharmaBula');
                 debugPrint('[PIPELINE] response null=${plantaoPipelineResult?.response == null}');
               }
 
               // Decide se usa renderer estruturado ou _PlantaoFallbackCard
               // TRAVA 1: No modo Plantão, _AiBubble é PROIBIDO para a última bolha.
+              // ORDEM 29: looksLikePharmaBula também activa o renderer estruturado
+              // se o pipeline conseguiu normalizar a bula → _PlantaoRenderer.
+              // Se pipeline null mas looksLikePharmaBula → _PlantaoFallbackCard.
               final bool useStructuredRenderer =
-                  isPlantaoFinalBubble &&
+                  (isPlantaoFinalBubble || looksLikePharmaBula) &&
                   plantaoPipelineResult?.response != null;
 
               // BUILD 276: Fade-in wrapper — applied only to the freshly committed
@@ -2160,11 +2194,12 @@ class _AiScreenState extends State<AiScreen> {
                           _sendDebounced(sendText, context.read<AppProvider>());
                         },
                       )
-                    // ── TRAVA 1 ORDEM 26: Plantão sem pipeline → _PlantaoFallbackCard ──
-                    // Quando isPlantaoFinalBubble=true e pipeline retornou null após
-                    // tentativa de normalização antibula, usamos o _PlantaoFallbackCard
-                    // (card estruturado degradado) — NUNCA o _AiBubble cru.
-                    else if (isPlantaoFinalBubble)
+                    // ── TRAVA 1 ORDEM 26 + ORDEM 29: Plantão sem pipeline → FallbackCard ──
+                    // Quando isPlantaoFinalBubble=true OU looksLikePharmaBula=true
+                    // e o pipeline retornou null após tentativa de normalização antibula,
+                    // usamos o _PlantaoFallbackCard (card estruturado degradado).
+                    // NUNCA o _AiBubble cru em Modo Plantão com conteúdo clínico.
+                    else if (isPlantaoFinalBubble || looksLikePharmaBula)
                       _PlantaoFallbackCard(
                         text: msg.text,
                         dark: dark,
