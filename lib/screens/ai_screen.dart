@@ -2147,8 +2147,16 @@ class _AiScreenState extends State<AiScreen> {
     final double? chatMaxWidth = bp.isDesktop ? 960 : null;
     final hPad = bp.isDesktop ? 0.0 : 12.0;
 
-    // Estado de conexão da IA — controla exibição do card "IA Desconectada"
-    final bool isConnected = p.hasAnyAi || p.geminiConnected;
+    // SUPER ORDEM MASTER 15 M2: Estado de conexão da IA com verificação ESTRITA.
+    // isConnected = estado geral para lógica interna (ex: forceDisconnectedLabel)
+    // isMplusConnected = exibição do M+ verde — SOMENTE quando o usuário tem
+    //   autenticação real de IA: geminiConnected (OAuth Google) OU chave OpenAI própria.
+    //   NÃO acende para GeminiService.hasApiKey (chave do servidor compartilhada).
+    final bool isConnected = p.geminiConnected || p.hasAnyAi;
+    // M+ Verde apenas com sessão de IA autêntica do usuário
+    // geminiConnected = OAuth Google real | openAiKey.isNotEmpty = chave pessoal
+    // Exclui GeminiService.hasApiKey (chave servidor compartilhada) que fazia M+ acender falsamente
+    final bool isMplusConnected = p.geminiConnected || p.openAiKey.isNotEmpty;
     // Mostra card de desconexão quando IA não está conectada E usuário
     // ainda não enviou nenhuma mensagem (só greeting automática existe)
     final bool showDisconnectCard = !isConnected &&
@@ -2620,7 +2628,7 @@ class _AiScreenState extends State<AiScreen> {
         geminiConnected: p.geminiConnected,
         keyLoading: p.aiKeyLoading || p.geminiLoading,
         forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
-        isConnected: isConnected, // SUPER ORDEM ESTRUTURAL 11: M+ vivo
+        isConnected: isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
       ),
 
       // ── Mini barra de ações mobile — SEMPRE visível mesmo com teclado aberto
@@ -2638,7 +2646,7 @@ class _AiScreenState extends State<AiScreen> {
           onSettings: _openAiSettings,
           onNewChat: _startNewChat,
           forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
-          isConnected: isConnected, // SUPER ORDEM ESTRUTURAL 11: M+ vivo
+          isConnected: isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
         ),
 
       // ── Banner de erro de chave ───────────────────────────────────────────
@@ -2670,125 +2678,116 @@ class _AiScreenState extends State<AiScreen> {
       // ── Área de chat ─────────────────────────────────────────────────────
       Expanded(child: chatArea),
 
-        // ── ORDEM 36: Seletor de modo flutuante — fixo acima do InputBar ────────
-      // ORDEM 44 M1: visível enquanto NÃO há mensagens do médico na sessão.
-      // Aparece mesmo com greeting de boas-vindas — desaparece no 1º envio.
-      // hasUserMessages = qualquer msg com role=='user' (exclui greeting AI).
-      if (!forceDisconnectedLabel &&
-          !_messages.any((m) => m.role == 'user'))
-        Padding(
-          padding: const EdgeInsets.only(top: 4, bottom: 0),
-          child: _ResponseModeToggle(
-            value: _longResponse,
-            dark: dark,
-            lang: p.lang,
-            onChanged: (newValue) {
-              if (newValue == _longResponse) return;
-              // ORDEM 49 M1 / ORDEM 56: Atomic mode-sync ao alternar toggle.
-              // Limpa _aiHistory (via clearAiHistory) e log-dedup sets.
-              // _plantaoPipelineCache e _loggedPlantaoIds removidos (ORDEM 56).
-              setState(() {
-                _longResponse = newValue;
-                _loggedSafeCardIds.clear();
-                _loggedEvidenceIds.clear();
-              });
-              p.clearAiHistory();
-              if (kDebugMode) {
-                debugPrint('[ORDEM49_TOGGLE] mode=${newValue ? "ESTUDO" : "PLANTÃO"} '
-                    'logSets=cleared history=clearing');
-              }
-            },
-          ),
-        ),
-      const SizedBox(height: 25), // 25px gap antes do TextField
-
-    // ── Carrossel de sugestões — some quando foca ─────────────────────
-      AnimatedSize(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeInOut,
-        child: _showSuggestions
-            ? _SuggestionCarousel(
-                lang: p.lang,
-                dark: dark,
-                onTap: _insertSuggestion,
-              )
-            : const SizedBox.shrink(),
-      ),
-
-      // ── BUILD 277: INPUT LOCKOUT for disconnected non-privileged users ────
-      // When forceDisconnectedLabel=true the InputBar is replaced by a locked
-      // placeholder + obstruction connect button aligned with the spec:
-      //   • field shown at 0.3 opacity with AbsorbPointer (no interaction)
-      //   • centred "Acesso Restrito à IA" label + ElevatedButton in crimson
-      if (forceDisconnectedLabel)
-        _DisconnectedInputLock(dark: dark, lang: p.lang, onConnect: _openAiSettings),
-
-      // ── Barra de input — centralizada no desktop ───────────────────────
-      // Build 158.3: Padding inferior DINÂMICO sincronizado com scrollingDown.
-      // - Nav visível (scrollingDown=false): 78px → InputBar acima do footer
-      //   (42px nav + 36px LegalBar = 78px total)
-      // - Nav sumindo (scrollingDown=true) : 0px → imersão total, zero espaço
-      //   no rodapé, o chat chega até a borda física da tela
-      // Desktop (chatMaxWidth != null): sem floating footer → sem padding.
-      if (!forceDisconnectedLabel)
-      chatMaxWidth != null
-          ? Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: chatMaxWidth),
-                child: _InputBar(
-                  ctrl: _queryCtrl,
-                  focusNode: _focusNode,
+      // ── SUPER ORDEM MASTER 15 M1: CANVAS PLANO — painel inferior MESMO chatBg ──
+      // ColoredBox garante que mode-toggle + sugestões + InputBar compartilhem
+      // o MESMO fundo que o chatArea acima. Elimina a divisão de dois tons de preto
+      // (grafite do chat vs preto do shell IndexedStack herdado pelo painel inferior).
+      ColoredBox(
+        color: chatBg,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── ORDEM 36: Seletor de modo flutuante — fixo acima do InputBar ────
+            // ORDEM 44 M1: visível enquanto NÃO há mensagens do médico na sessão.
+            if (!forceDisconnectedLabel &&
+                !_messages.any((m) => m.role == 'user'))
+              Padding(
+                padding: const EdgeInsets.only(top: 4, bottom: 0),
+                child: _ResponseModeToggle(
+                  value: _longResponse,
                   dark: dark,
-                  hasFocus: _hasFocus,
-                  thinking: _thinking,
-                  // SUPER ORDEM ESTRUTURAL 11 M2: Hard Blocker em _send() — onSend limpo
-                  onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
-                  hint: p.t('ai_placeholder'),
-                  onVoice: _toggleStt,
-                  sttListening: _sttListening,
-                  sttSoundLevel: _sttSoundLevel,
                   lang: p.lang,
+                  onChanged: (newValue) {
+                    if (newValue == _longResponse) return;
+                    // ORDEM 49 M1 / ORDEM 56: Atomic mode-sync ao alternar toggle.
+                    setState(() {
+                      _longResponse = newValue;
+                      _loggedSafeCardIds.clear();
+                      _loggedEvidenceIds.clear();
+                    });
+                    p.clearAiHistory();
+                    if (kDebugMode) {
+                      debugPrint('[ORDEM49_TOGGLE] mode=${newValue ? "ESTUDO" : "PLANTÃO"} '
+                          'logSets=cleared history=clearing');
+                    }
+                  },
                 ),
               ),
-            )
-          // Build 170: Fix GAP do teclado — escuta kbOpen + scrollingDown
-          // Quando teclado está aberto (kbOpen=true) → bottom=0 (footer já sumiu,
-          // sem necessidade de compensar 62px; o próprio sistema de insets cuida).
-          // Quando teclado fechado + footer visível → bottom=62px conforme B158.4.
-          : ValueListenableBuilder<bool>(
-              valueListenable: AiScreen.chatKeyboardOpen,
-              builder: (_, kbOpenVal, __) =>
-              ValueListenableBuilder<bool>(
-              // Build 158.3: anima padding 300ms easeInOut junto com o footer
-              valueListenable: AiScreen.scrollingDown,
-              builder: (_, scrollingDown, child) {
-                return AnimatedPadding(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  padding: EdgeInsets.only(
-                    // Build 170: teclado aberto → 0px (sem duplicação de insets)
-                    // Nav sumida → 0px | Nav visível → 62px
-                    bottom: (kbOpenVal || scrollingDown) ? 0.0 : 62.0,
-                  ),
-                  child: child,
-                );
-              },
-              child: _InputBar(
-                ctrl: _queryCtrl,
-                focusNode: _focusNode,
-                dark: dark,
-                hasFocus: _hasFocus,
-                thinking: _thinking,
-                // SUPER ORDEM ESTRUTURAL 11 M2: Hard Blocker em _send() — onSend limpo
-                onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
-                hint: p.t('ai_placeholder'),
-                onVoice: _toggleStt,
-                sttListening: _sttListening,
-                sttSoundLevel: _sttSoundLevel,
-                lang: p.lang,
-              ),
+            const SizedBox(height: 25), // 25px gap antes do TextField
+
+            // ── Carrossel de sugestões — some quando foca ─────────────────
+            AnimatedSize(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeInOut,
+              child: _showSuggestions
+                  ? _SuggestionCarousel(
+                      lang: p.lang,
+                      dark: dark,
+                      onTap: _insertSuggestion,
+                    )
+                  : const SizedBox.shrink(),
             ),
-            ), // close ValueListenableBuilder<chatKeyboardOpen>
+
+            // ── BUILD 277: INPUT LOCKOUT for disconnected non-privileged users
+            if (forceDisconnectedLabel)
+              _DisconnectedInputLock(dark: dark, lang: p.lang, onConnect: _openAiSettings),
+
+            // ── Barra de input — centralizada no desktop ───────────────────
+            // Build 158.3: Padding inferior DINÂMICO sincronizado com scrollingDown.
+            if (!forceDisconnectedLabel)
+              chatMaxWidth != null
+                  ? Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: chatMaxWidth),
+                        child: _InputBar(
+                          ctrl: _queryCtrl,
+                          focusNode: _focusNode,
+                          dark: dark,
+                          hasFocus: _hasFocus,
+                          thinking: _thinking,
+                          onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
+                          hint: p.t('ai_placeholder'),
+                          onVoice: _toggleStt,
+                          sttListening: _sttListening,
+                          sttSoundLevel: _sttSoundLevel,
+                          lang: p.lang,
+                        ),
+                      ),
+                    )
+                  // Build 170: Fix GAP do teclado — escuta kbOpen + scrollingDown
+                  : ValueListenableBuilder<bool>(
+                      valueListenable: AiScreen.chatKeyboardOpen,
+                      builder: (_, kbOpenVal, __) =>
+                          ValueListenableBuilder<bool>(
+                        valueListenable: AiScreen.scrollingDown,
+                        builder: (_, scrollingDown, child) {
+                          return AnimatedPadding(
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeInOut,
+                            padding: EdgeInsets.only(
+                              bottom: (kbOpenVal || scrollingDown) ? 0.0 : 62.0,
+                            ),
+                            child: child,
+                          );
+                        },
+                        child: _InputBar(
+                          ctrl: _queryCtrl,
+                          focusNode: _focusNode,
+                          dark: dark,
+                          hasFocus: _hasFocus,
+                          thinking: _thinking,
+                          onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
+                          hint: p.t('ai_placeholder'),
+                          onVoice: _toggleStt,
+                          sttListening: _sttListening,
+                          sttSoundLevel: _sttSoundLevel,
+                          lang: p.lang,
+                        ),
+                      ),
+                    ),
+          ],
+        ),
+      ),
     ]);
   }
 }
@@ -6978,12 +6977,13 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
 
         // Determina qual label de status mostrar no badge
         final String badgeLabel;
+        // SUPER ORDEM MASTER 15 M3: Expurgo de termos antigos — sem menções GPT
         if (geminiLoading || widget.keyLoading) {
           badgeLabel = 'Conectando...';
         } else if (geminiConn) {
           badgeLabel = 'Gemini online';
         } else if (hasAnyAi) {
-          badgeLabel = 'GPT online';
+          badgeLabel = 'Servidor Ativo'; // era 'GPT online' — PURGADO
         } else {
           badgeLabel = 'Base local';
         }
@@ -6991,16 +6991,16 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
         final String modeLabel;
         if (geminiConn) {
           modeLabel = isEs
-              ? 'Modo híbrido — base clínica + Gemini 1.5 Flash'
-              : 'Modo híbrido — base clínica + Gemini 1.5 Flash';
+              ? 'Servidor MedCases IA — Integrado ao Google Gemini'
+              : 'Servidor MedCases IA — Integrado ao Google Gemini';
         } else if (hasAnyAi) {
           modeLabel = isEs
-              ? 'Modo híbrido — base clínica + GPT-4o mini'
-              : 'Modo híbrido — base clínica + GPT-4o mini';
+              ? 'Servidor MedCases IA — Integrado ao Google Gemini' // era GPT-4o mini
+              : 'Servidor MedCases IA — Integrado ao Google Gemini';
         } else {
           modeLabel = isEs
-              ? 'Modo local — base clínica integrada'
-              : 'Modo local — base clínica integrada';
+              ? 'MedCases IA — base clínica integrada'
+              : 'MedCases IA — base clínica integrada';
         }
 
         return Container(
@@ -7204,9 +7204,10 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                       color: const Color(0xFF10B981).withValues(alpha: 0.8)),
                     const SizedBox(width: 8),
                     Expanded(child: Text(
+                      // SUPER ORDEM MASTER 15 M3: PURGADO 'GPT-4o mini' — substituiído
                       isEs
-                          ? 'GPT-4o mini conectado — enriquece con conocimiento global'
-                          : 'GPT-4o mini conectado — enriquece com conhecimento global',
+                          ? 'Servidor MedCases IA — Integrado ao Google Gemini'
+                          : 'Servidor MedCases IA — Integrado ao Google Gemini',
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.white.withValues(alpha: 0.6)))),
@@ -7346,6 +7347,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 color: cardBg,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: divCol)),
+              // SUPER ORDEM MASTER 15 M3: Info bullets limpos — sem GPT, sem 'Funciona offline'
               child: Column(children: [
                 _InfoRow(
                   icon: Icons.auto_awesome_rounded,
@@ -7355,36 +7357,24 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                       ? 'Base clínica sempre ativa'
                       : 'Base clínica sempre ativa',
                   sub: isEs
-                      ? 'Protocolos e fármacos do app respondem instantaneamente, sem internet'
-                      : 'Protocolos e fármacos do app respondem instantaneamente, sem internet',
+                      ? 'Protocolos e fármacos respondem instantaneamente'
+                      : 'Protocolos e fármacos respondem instantaneamente',
                 ),
                 const SizedBox(height: 10),
                 _InfoRow(
                   icon: Icons.hub_rounded,
                   iconColor: hasAnyAi ? green : sub,
                   dark: dark,
-                  label: geminiConn
-                      ? (isEs
-                          ? 'Gemini enriquece o que a base não cobre'
-                          : 'Gemini enriquece o que a base não cobre')
-                      : (isEs
-                          ? 'IA enriquece o que a base não cobre'
-                          : 'IA enriquece o que a base não cobre'),
+                  label: isEs
+                      ? 'Gemini enriquece o que a base não cobre'
+                      : 'Gemini enriquece o que a base não cobre',
                   sub: isEs
                       ? 'Perguntas fora da base são respondidas com conhecimento médico global'
                       : 'Perguntas fora da base são respondidas com conhecimento médico global',
                   dimmed: !hasAnyAi,
                 ),
-                const SizedBox(height: 10),
-                _InfoRow(
-                  icon: Icons.wifi_off_rounded,
-                  iconColor: sub,
-                  dark: dark,
-                  label: isEs ? 'Funciona offline' : 'Funciona offline',
-                  sub: isEs
-                      ? 'Sin internet, la base local responde normalmente'
-                      : 'Sem internet, a base local responde normalmente',
-                ),
+                // SUPER ORDEM MASTER 15 M3: 'Funciona offline' REMOVIDO
+                // A IA requer internet — bullet enganoso eliminado
               ]),
             ),
 

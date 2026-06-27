@@ -2528,10 +2528,12 @@ class _HomeIaCardState extends State<_HomeIaCard> {
 
             // ── Header: M+ VIVO + título + badge IA — SUPER ORDEM MASTER 12 M4 ────
             Row(children: [
-              // M+ VIVO: verde pulsante (conectado) ou 'Conectar IA' cyan (desconectado)
+              // SUPER ORDEM MASTER 15 M2: M+ verde ESTRITO — somente sessão de IA real do usuário.
+              // geminiConnected (OAuth Google) OU openAiKey pessoal.
+              // EXCLUI GeminiService.hasApiKey (chave servidor) que causava M+ falso.
               Builder(builder: (ctx) {
-                final connected = ctx.watch<AppProvider>().geminiConnected ||
-                    ctx.watch<AppProvider>().hasAnyAi;
+                final p = ctx.watch<AppProvider>();
+                final connected = p.geminiConnected || p.openAiKey.isNotEmpty;
                 return GestureDetector(
                   onTap: () {
                     // Navega para tela de IA
