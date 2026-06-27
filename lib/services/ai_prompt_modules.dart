@@ -356,6 +356,26 @@ class PromptModules {
       '5. TETO: complete todas as linhas do template escolhido de ponta a ponta. ZERO corte.\n'
       '6. GANCHO OBRIGATÓRIO: última linha SEMPRE "📌 [pergunta clínica fechada — Sim/Não ou A/B]". '
       'PROIBIDO texto após o gancho ou gancho genérico ("📌 Avaliar protocolo").\n'
+      '\n'
+      // ORDEM 26 — TRAVA 3: T-FARMACO-CARD — rota expressa para query de fármaco isolado.
+      // Ativado quando input = nome de fármaco/molécula isolado (sem contexto de emergência).
+      // Exemplos de trigger: "Sertralina", "Amiodarona", "Carbonato de Lítio", "Metformina".
+      // Regra de seleção: preferir T-FARMACO-CARD se NÃO há sinal de emergência ativa
+      // (sem PA, FC, sat, peso, diagnóstico clínico imediato na query).
+      // Corpo: caixa baixa — apenas primeira letra e siglas em maiúsculas.
+      'T-FARMACO-CARD (ROTA EXPRESSA — fármaco isolado, sem contexto de emergência):\n'
+      '🟥 [NOME DO FÁRMACO EM CAIXA ALTA] — [classe farmacológica em caixa baixa]\n'
+      '💊 classe: [inibidor seletivo... / beta-bloqueador... / etc. — caixa baixa]\n'
+      '🧠 mecanismo: [como age — caixa baixa, 1 frase objetiva]\n'
+      '💉 dose usual: [dose inicial → dose máxima — via — frequência]\n'
+      '⛔ contraindicações: [principais — caixa baixa]\n'
+      '⚠️ efeitos adversos: [mais frequentes + mais graves — caixa baixa]\n'
+      '🚨 interações críticas: [associações proibidas ou de risco — caixa baixa]\n'
+      '📌 [pergunta clínica fechada: ex. "O paciente usa algum inibidor da MAO?" ou "Há insuficiência renal?"].\n'
+      'REGRA T-FARMACO-CARD: corpo INTEIRO em caixa baixa (minúsculas), '
+      'EXCETO nome do fármaco na linha 🟥 e siglas médicas (ISRS, MAO, TFG, PA). '
+      'PROIBIDO: bula enciclopédica, prosa corrida, texto em maiúsculas no corpo.\n'
+      '\n'
       'TABELA RÁPIDA: KCl 19,1%→1 mL=2,5 mEq | KCl 10%→1 mL=1,34 mEq | '
       'MgSO4 50%→1 mL=0,4 g | NaCl 20%→1 mL=3,4 mEq\n';
 

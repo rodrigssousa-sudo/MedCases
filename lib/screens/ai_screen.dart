@@ -1954,14 +1954,24 @@ class _AiScreenState extends State<AiScreen> {
               // Evidência farmacológica: só detectar se NÃO for safe-card
               final detectedEv = _isSafeCard ? null : _detectDrugEvidence(msg.text);
 
-              // ── Build 193: PlantaoRenderer — pipeline estrutural determinístico ──
+              // ── ORDEM 26: RENDER ENGINE BLINDADO ─────────────────────────────
+              // Build 193: PlantaoRenderer — pipeline estrutural determinístico.
               // BUILD 244B: safe-cards nunca entram no PlantaoRenderer — bypass direto.
-              // Log limitado a 1x por messageId — sem spam em rebuilds.
+              // ORDEM 26: Quando isPlantaoFinalBubble=true, PROIBIDO cair no _AiBubble.
+              //   Se pipeline retorna null → _antibulaNormalize() converte bula clássica
+              //   em estrutura emoji antes de tentar o parse novamente.
               final bool isPlantaoFinalBubble =
                   !_longResponse &&          // Modo Plantão ativo
                   i == _lastAiIndex &&       // última bolha AI
                   !_isStreaming &&            // stream finalizado
                   !_isSafeCard;             // BUILD 244B: safe-card → bypass renderer
+
+              // ── TRAVA 4: TELEMETRIA BRUNO ────────────────────────────────────
+              if (kDebugMode) {
+                debugPrint('[RENDER] isStreaming=$_isStreaming');
+                debugPrint('[RENDER] isPlantaoFinalBubble=$isPlantaoFinalBubble');
+              }
+
               if (kDebugMode && isPlantaoFinalBubble &&
                   !_loggedPlantaoIds.contains(msg.id)) {
                 _loggedPlantaoIds.add(msg.id);
@@ -1969,13 +1979,10 @@ class _AiScreenState extends State<AiScreen> {
                     'textHash=${msg.text.hashCode}');
               }
 
-
-              // ── BUILD 232: PlantatoPipeline com cache de deduplicação ────────
+              // ── BUILD 232 + ORDEM 26: PlantatoPipeline com cache + antibula ──
               // Key = messageId + ':' + textHash.
-              // Garante que PlantatoPipeline.run() execute no máximo 1 vez por
-              // (messageId, textHash) independente do número de rebuilds.
-              // _saveCurrentSessionToHistory() pode provocar rebuild adicional mas
-              // o cache garante que o pipeline NÃO roda novamente.
+              // ORDEM 26: Se pipeline retorna null, tenta com texto normalizado
+              // pelo _antibulaNormalize() antes de confirmar fallback.
               PlantatoPipelineResult? plantaoPipelineResult;
               if (isPlantaoFinalBubble) {
                 final cacheKey = '${msg.id}:${msg.text.hashCode}';
@@ -1985,13 +1992,33 @@ class _AiScreenState extends State<AiScreen> {
                   plantaoPipelineResult = cached;
                 } else {
                   if (kDebugMode) debugPrint('[PIPELINE_CACHE] hit=false messageId=${msg.id} textHash=${msg.text.hashCode} isSafeCard=$_isSafeCard');
+                  // Tentativa primária: texto como recebido do Gemini
                   plantaoPipelineResult = PlantatoPipeline.run(msg.text);
+                  // TRAVA 2: Se pipeline null → texto é bula clássica → normalizar e re-tentar
+                  if (plantaoPipelineResult.response == null) {
+                    final normalizedText = _antibulaNormalize(msg.text, p.lang);
+                    if (normalizedText != msg.text) {
+                      if (kDebugMode) debugPrint('[ANTIBULA] normalized text hash=${normalizedText.hashCode} — re-running pipeline');
+                      final retryResult = PlantatoPipeline.run(normalizedText);
+                      if (retryResult.response != null) {
+                        plantaoPipelineResult = retryResult;
+                        if (kDebugMode) debugPrint('[ANTIBULA] pipeline recovered after normalization');
+                      }
+                    }
+                  }
                   _plantaoPipelineCache[cacheKey] = plantaoPipelineResult;
                 }
               }
               // ─────────────────────────────────────────────────────────────────
 
-              // Decide se usa renderer estruturado ou bubble padrão
+              // TRAVA 4: log pipeline result
+              if (kDebugMode && isPlantaoFinalBubble) {
+                debugPrint('[RENDER] useStructuredRenderer=${plantaoPipelineResult?.response != null}');
+                debugPrint('[PIPELINE] response null=${plantaoPipelineResult?.response == null}');
+              }
+
+              // Decide se usa renderer estruturado ou _PlantaoFallbackCard
+              // TRAVA 1: No modo Plantão, _AiBubble é PROIBIDO para a última bolha.
               final bool useStructuredRenderer =
                   isPlantaoFinalBubble &&
                   plantaoPipelineResult?.response != null;
@@ -2026,7 +2053,18 @@ class _AiScreenState extends State<AiScreen> {
                           _sendDebounced(sendText, context.read<AppProvider>());
                         },
                       )
-                    // ── Bubble padrão: streaming | Modo Estudo | fallback ──────
+                    // ── TRAVA 1 ORDEM 26: Plantão sem pipeline → _PlantaoFallbackCard ──
+                    // Quando isPlantaoFinalBubble=true e pipeline retornou null após
+                    // tentativa de normalização antibula, usamos o _PlantaoFallbackCard
+                    // (card estruturado degradado) — NUNCA o _AiBubble cru.
+                    else if (isPlantaoFinalBubble)
+                      _PlantaoFallbackCard(
+                        text: msg.text,
+                        dark: dark,
+                        lang: p.lang,
+                        onCopy: () => _copyMsg(msg.text),
+                      )
+                    // ── Bubble padrão: streaming | Modo Estudo | histórico ─────
                     else
                     _AiBubble(
                       key: ValueKey('ai_${msg.id}'),
@@ -4023,6 +4061,170 @@ String _enforceMedicalFormat(String text, String lang) {
 // Unique exception: blocos XML fechados <think>...</think> são de estrutura
 // delimitada e inequívoca — remoção segura com dotAll.
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// _antibulaNormalize — TRAVA 2 (ORDEM 26): Conversor de Bula → Cards Semânticos
+//
+// Quando o Gemini emite formato bula clássica (* **CLASSE:** ...) em vez do
+// template T01-T20 com emoji-anchors, este conversor mapeia os tópicos padrão
+// para os tokens semânticos do MedCases antes de reprocessar via PlantatoPipeline.
+//
+// Mapeamento:
+//   * **CLASSE:**           → 💊 CLASSE:
+//   * **MECANISMO DE AÇÃO:** → 🧠 MECANISMO DE AÇÃO:
+//   * **DOSE HABITUAL:**    → 💉 DOSE HABITUAL:
+//   * **DOSE:**             → 💉 DOSE:
+//   * **CONTRAINDICAÇÕES:** → ⛔ CONTRAINDICAÇÕES:
+//   * **EFEITOS ADVERSOS:** → ⚠️ EFEITOS ADVERSOS:
+//   * **INTERAÇÕES:**       → 🚨 INTERAÇÕES CRÍTICAS:
+//   * **ALERTAS CRÍTICOS:** → 🚨 ALERTAS CRÍTICOS:
+//   * **AJUSTE RENAL:**     → ⚠️ AJUSTE RENAL:
+//   * **VIA DE ADMINISTRAÇÃO:** → 💊 VIA:
+//   * **CONDUTA PRÁTICA:**  → 📌 CONDUTA PRÁTICA:
+//   Título em primeira linha (NOME — INFORMAÇÕES) → 🟥 NOME — ...
+//
+// Retorna texto original se nenhum padrão for encontrado (sem bula detectada).
+// ─────────────────────────────────────────────────────────────────────────────
+String _antibulaNormalize(String raw, String lang) {
+  if (raw.trim().isEmpty) return raw;
+
+  // Fast-exit: se já tem emoji-anchor na primeira linha, não é bula clássica
+  final firstLine = raw.trim().split('\n').first.trim();
+  if (firstLine.startsWith('🟥') || firstLine.startsWith('🚨') ||
+      firstLine.startsWith('💊') || firstLine.startsWith('⛔') ||
+      firstLine.startsWith('📌')) {
+    return raw;
+  }
+
+  // Fast-exit: não tem nenhuma linha com padrão bula (* **PALAVRA:**)
+  if (!RegExp(r'^\*\s+\*\*[A-ZÀÁÂÃÉÊÍÓÔÕÚÜÇ]', multiLine: true).hasMatch(raw)) {
+    return raw;
+  }
+
+  // ── Passo 1: Converte título da primeira linha ────────────────────────────
+  // "🔵 SERTRALINA — INFORMAÇÕES FARMACOLÓGICAS" ou "## SERTRALINA — ..."
+  // ou simplesmente "SERTRALINA — INFORMAÇÕES FARMACOLÓGICAS"
+  final lines = raw.split('\n');
+  final result = <String>[];
+  bool titleConverted = false;
+
+  for (int i = 0; i < lines.length; i++) {
+    String line = lines[i];
+    final trimmed = line.trim();
+
+    // ── Título principal: qualquer linha sem emoji de card que parece título ──
+    if (!titleConverted && i <= 2 && trimmed.isNotEmpty &&
+        !trimmed.startsWith('*') && !trimmed.startsWith('-') &&
+        !trimmed.startsWith('🟥')) {
+      // Remove prefixos decorativos (## , 🔵 , 📋 , etc.)
+      final cleaned = trimmed
+          .replaceFirst(RegExp(r'^#{1,3}\s+'), '')
+          .replaceFirst(RegExp(r'^[🔵📋🏥💡📌⚕️]\s+'), '')
+          .trim();
+      if (cleaned.isNotEmpty && cleaned.length > 3) {
+        // Converte para caixa baixa exceto primeira palavra e acrônimos
+        result.add('🟥 ${cleaned.toUpperCase()}');
+        titleConverted = true;
+        continue;
+      }
+    }
+
+    // ── Mapeamento de tópicos de bula ──────────────────────────────────────
+    // Padrão: "* **TÓPICO:** conteúdo" ou "* **TÓPICO:**\n  conteúdo"
+    final bulaRx = RegExp(r'^\*\s+\*\*([^*:]+):\*\*\s*(.*)', caseSensitive: false);
+    final match = bulaRx.firstMatch(trimmed);
+
+    if (match != null) {
+      final topic = match.group(1)!.trim().toUpperCase()
+          .replaceAll(RegExp(r'\s+'), ' ');
+      final content = match.group(2)!.trim();
+
+      // Normaliza content para caixa baixa (primeira letra maiúscula, resto minúscula)
+      final normContent = content.isNotEmpty
+          ? content[0].toUpperCase() + content.substring(1).toLowerCase()
+          : '';
+
+      final mappedLine = _mapBulaTopic(topic, normContent, lang);
+      result.add(mappedLine);
+      continue;
+    }
+
+    // ── Sub-tópicos e linhas de continuação ──────────────────────────────
+    // Linha de conteúdo que segue um tópico (indentada ou normal)
+    // Mantém como texto plano sob o card anterior
+    if (trimmed.startsWith('*') && !bulaRx.hasMatch(trimmed)) {
+      // Sub-bullet: preserva mas remove asterisco inicial para evitar <pre>
+      final sub = trimmed.replaceFirst(RegExp(r'^\*\s*'), '').trim();
+      if (sub.isNotEmpty) result.add('  $sub');
+      continue;
+    }
+
+    result.add(line);
+  }
+
+  final normalized = result.join('\n');
+
+  // Só retorna se a normalização produziu pelo menos um emoji-anchor 🟥
+  if (!normalized.contains('🟥')) return raw;
+
+  return normalized;
+}
+
+/// Mapeia um tópico de bula para o token semântico MedCases correspondente.
+String _mapBulaTopic(String topic, String content, String lang) {
+  // PT labels (também capturam ES por overlap)
+  if (topic.contains('CLASSE') || topic.contains('CLASE')) {
+    return '💊 CLASSE: $content';
+  }
+  if (topic.contains('MECANISMO')) {
+    return '🧠 MECANISMO DE AÇÃO: $content';
+  }
+  if (topic.contains('DOSE HABITUAL') || topic.contains('DOSIS HABITUAL')) {
+    return '💉 DOSE HABITUAL: $content';
+  }
+  if (topic.contains('DOSE') || topic.contains('DOSIS') || topic.contains('POSOLOGIA')) {
+    return '💉 DOSE: $content';
+  }
+  if (topic.contains('VIA DE ADMINISTRA') || topic.contains('VÍA DE ADMINISTRA')) {
+    return '💊 VIA: $content';
+  }
+  if (topic.contains('CONTRAINDICAÇ') || topic.contains('CONTRAINDICACI')) {
+    return '⛔ CONTRAINDICAÇÕES: $content';
+  }
+  if (topic.contains('EFEITOS ADVERSOS') || topic.contains('EFECTOS ADVERSOS') ||
+      topic.contains('REAÇÕES') || topic.contains('REACCIONES')) {
+    return '⚠️ EFEITOS ADVERSOS: $content';
+  }
+  if (topic.contains('INTERA') ) {
+    return '🚨 INTERAÇÕES CRÍTICAS: $content';
+  }
+  if (topic.contains('ALERTA') || topic.contains('SINAIS DE GRAVIDADE') ||
+      topic.contains('SÍNDROME') || topic.contains('SINDROME')) {
+    return '🚨 ALERTA CRÍTICO: $content';
+  }
+  if (topic.contains('AJUSTE RENAL') || topic.contains('AJUSTE HEPÁTICO') ||
+      topic.contains('AJUSTE HEPATICO')) {
+    return '⚠️ AJUSTE: $content';
+  }
+  if (topic.contains('IDEAÇ') || topic.contains('SUICID')) {
+    return '🚨 ALERTA CRÍTICO — IDEAÇÃO SUICIDA: $content';
+  }
+  if (topic.contains('DESCONTINUAÇ') || topic.contains('DESCONTINUACI')) {
+    return '⚠️ SÍNDROME DE DESCONTINUAÇÃO: $content';
+  }
+  if (topic.contains('CONDUTA') || topic.contains('MANEJO') || topic.contains('CONDUTA PRÁTICA')) {
+    return '📌 CONDUTA PRÁTICA: $content';
+  }
+  if (topic.contains('MONITORIZ')) {
+    return '⚠️ MONITORIZAÇÃO: $content';
+  }
+  if (topic.contains('SANGRAMENTO') || topic.contains('SANGRADO') ||
+      topic.contains('HIPONATREMIA')) {
+    return '⚠️ ${topic.trim()}: $content';
+  }
+  // Fallback genérico: preserva como item com ⚠️ para não perder informação
+  return '⚠️ ${topic.trim()}: $content';
+}
+
 String _stripMetadataHeaders(String accumulated) {
   if (accumulated.isEmpty) return accumulated;
 
@@ -5734,6 +5936,127 @@ class _PlantaoRenderer extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _PlantaoFallbackCard — TRAVA 1 (ORDEM 26): Card de dignidade visual
+//
+// Renderizado quando isPlantaoFinalBubble=true mas pipeline retornou null
+// mesmo após tentativa de _antibulaNormalize(). Garante que o Modo Plantão
+// NUNCA exibe o _AiBubble cru com MarkdownBody sem parse semântico.
+//
+// Design: card único com barra lateral cyan, header 🟥, corpo em scroll fluido.
+// ─────────────────────────────────────────────────────────────────────────────
+class _PlantaoFallbackCard extends StatelessWidget {
+  final String text;
+  final bool dark;
+  final String lang;
+  final VoidCallback? onCopy;
+
+  const _PlantaoFallbackCard({
+    required this.text,
+    required this.dark,
+    this.lang = 'pt',
+    this.onCopy,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (kDebugMode) {
+      debugPrint('[PLANTAO_FALLBACK_CARD] Rendering fallback card — pipeline was null after antibula attempt');
+    }
+
+    final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
+    const kCyan = Color(0xFF00E5FF);
+    const kFerrariRed = Color(0xFFFF2400);
+
+    // Extract first line as header, rest as body
+    final allLines = text.trim().split('\n');
+    final headerRaw = allLines.isNotEmpty ? allLines.first.trim() : '';
+    final headerText = headerRaw
+        .replaceFirst(RegExp(r'^🟥\s*'), '')
+        .replaceFirst(RegExp(r'^#{1,3}\s*'), '')
+        .replaceFirst(RegExp(r'^[🔵📋🏥💡⚕️]\s*'), '')
+        .trim()
+        .toUpperCase();
+    final bodyLines = allLines.length > 1 ? allLines.sublist(1) : <String>[];
+    final bodyText = bodyLines
+        .where((l) => l.trim().isNotEmpty)
+        .join('\n')
+        .trim();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            left: BorderSide(
+              color: dark ? kCyan : const Color(0xFF008CA4),
+              width: 3,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header 🟥
+              Row(
+                children: [
+                  const Text('🟥 ', style: TextStyle(fontSize: 15)),
+                  Expanded(
+                    child: Text(
+                      headerText.isEmpty
+                          ? (lang == 'es' ? 'INFORMACIÓN FARMACOLÓGICA' : 'INFORMAÇÕES FARMACOLÓGICAS')
+                          : headerText,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: dark ? kCyan : kFerrariRed,
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                  if (onCopy != null)
+                    GestureDetector(
+                      onTap: onCopy,
+                      child: Icon(
+                        Icons.copy_rounded,
+                        size: 16,
+                        color: textColor.withValues(alpha: 0.4),
+                      ),
+                    ),
+                ],
+              ),
+              if (bodyText.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                MarkdownBody(
+                  data: bodyText,
+                  selectable: false,
+                  styleSheet: MarkdownStyleSheet(
+                    p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
+                    strong: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      color: dark ? kCyan : kFerrariRed,
+                    ),
+                    em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
+                    listBullet: TextStyle(fontSize: 13.5, color: textColor),
+                    blockSpacing: 6,
+                    listIndent: 18,
+                    blockquoteDecoration: const BoxDecoration(color: Colors.transparent),
+                    codeblockDecoration: const BoxDecoration(color: Colors.transparent),
+                  ),
+                  softLineBreak: true,
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

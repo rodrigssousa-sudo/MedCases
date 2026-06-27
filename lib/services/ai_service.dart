@@ -1327,12 +1327,22 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
       // ORDEM 21: REGRAS FIJAS bullets removed — all 4 covered by ptStreamFormat +
       // _coreIdentityPlantao (🟥 opening, emoji usage, no greeting, query fallback).
       // Kept: scope/fallback prose (unique — prevents AI refusals on off-label queries).
+      // ORDEM 26 — TRAVA 3: T-FARMACO-CARD trigger adicionado ao ptSupremacyRule.
+      // Query de fármaco isolado (sem sinais de emergência) → T-FARMACO-CARD obrigatório.
       final ptSupremacyRule = isEs
-          ? 'FALLBACK CLINICO: As 21 matrizes sao guia — NAO camisa de forca. '
+          ? 'ROTA T-FARMACO-CARD (ORDEM 26): se a query for APENAS o nome de um farmaco/molecula '
+            'sem contexto de emergencia (sem PA, FC, sat, peso, diagnostico ativo): '
+            'usar OBRIGATORIAMENTE o template T-FARMACO-CARD da biblioteca. '
+            'Corpo em caixa baixa — PROIBIDO formato bula enciclopedica em maiusculas.\n'
+            'FALLBACK CLINICO: As 21 matrizes sao guia — NAO camisa de forca. '
             'Se o caso nao couber em nenhuma matriz (off-label, psiquiatria, farmacologia complexa): '
             'PROIBIDO recusar ou gerar erro tecnico. Use conhecimento clinico avancado '
             '(SBC, AHA, AMIB) e entregue conduta imediata estruturada em topicos diretos.\n\n'
-          : 'FALLBACK CLINICO: Las 21 matrices son guia — NO camisa de fuerza. '
+          : 'ROTA T-FARMACO-CARD (ORDEM 26): si la query es SOLO el nombre de un farmaco/molecula '
+            'sin contexto de emergencia (sin PA, FC, sat, peso, diagnostico activo): '
+            'usar OBLIGATORIAMENTE el template T-FARMACO-CARD de la biblioteca. '
+            'Cuerpo en minusculas — PROHIBIDO formato prospecto enciclopedico en mayusculas.\n'
+            'FALLBACK CLINICO: Las 21 matrices son guia — NO camisa de fuerza. '
             'Si el caso no cabe en ninguna matriz (off-label, psiquiatria, farmacologia compleja): '
             'PROHIBIDO rechazar o generar error tecnico. Usa conocimiento clinico avanzado '
             '(SBC, AHA, AMIB) y entrega conduta inmediata estructurada en topicos directos.\n\n';
