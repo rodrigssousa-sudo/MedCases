@@ -5813,7 +5813,17 @@ class _AiBlockBubble extends StatelessWidget {
                       const SizedBox(width: 6),
                       // ORDEM 17 — contraste dinâmico: ciano no dark, grafite no light
                       Expanded(child: Text(
-                        (label.isEmpty ? trimmed : label).toUpperCase(),
+                        // ORDEM 48 M1: caps condicional — síndrome pura → caps; conduta clínica → sentence case.
+                        () {
+                          final raw = label.isEmpty ? trimmed : label;
+                          // Se o texto começa com emoji de bloco clínico → sentence case da IA
+                          final startsWithClinic = raw.startsWith('🚨') ||
+                              raw.startsWith('💊') ||
+                              raw.startsWith('⛔') ||
+                              raw.startsWith('📌') ||
+                              raw.startsWith('⚠️');
+                          return startsWithClinic ? raw : raw.toUpperCase();
+                        }(),
                         style: TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w800,
@@ -6107,6 +6117,14 @@ class _PlantaoRenderer extends StatelessWidget {
       final kHeaderTextColor = dark
           ? const Color(0xFF00E5FF)   // ciano médico — contraste 12:1 sobre fundo escuro
           : const Color(0xFF1A1A1A);  // grafite denso — contraste 18:1 sobre fundo claro
+      // ORDEM 48 M1: toUpperCase() condicional no header do PlantaoRenderer.
+      // Síndrome pura (🟥) → caps para hierarquia visual (M2: permitido).
+      // Blocos de conduta (🚨/💊/⛔/📌) → sentence case da IA preservado.
+      final isCondutaEmoji = text.startsWith('🚨') ||
+          text.startsWith('💊') ||
+          text.startsWith('⛔') ||
+          text.startsWith('📌');
+      final headerDisplayText = isCondutaEmoji ? text : text.toUpperCase();
       return RichText(
         text: TextSpan(
           children: [
@@ -6120,7 +6138,7 @@ class _PlantaoRenderer extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: text.toUpperCase(),
+              text: headerDisplayText,
               style: TextStyle(
                 fontSize: 13.5,
                 fontWeight: FontWeight.w800,
@@ -6446,12 +6464,22 @@ class _PlantaoFallbackCard extends StatelessWidget {
     // Extract first line as header, rest as body
     final allLines = text.trim().split('\n');
     final headerRaw = allLines.isNotEmpty ? allLines.first.trim() : '';
-    final headerText = headerRaw
-        .replaceFirst(RegExp(r'^🟥\s*'), '')
-        .replaceFirst(RegExp(r'^#{1,3}\s*'), '')
-        .replaceFirst(RegExp(r'^[🔵📋🏥💡⚕️]\s*'), '')
-        .trim()
-        .toUpperCase();
+    // ORDEM 48 M1: headerText capitalização condicional.
+    // Síndrome pura (🟥 stripped ou texto direto) → toUpperCase() [M2: permitido].
+    // Blocos de conduta clínica (🚨/💊/⛔/📌/⚠️) → preservar sentence case da IA.
+    final headerIsCondutaBlock = headerRaw.startsWith('🚨') ||
+        headerRaw.startsWith('💊') ||
+        headerRaw.startsWith('⛔') ||
+        headerRaw.startsWith('📌') ||
+        headerRaw.startsWith('⚠️');
+    final headerText = headerIsCondutaBlock
+        ? headerRaw  // preserva sentence case da IA — NUNCA toUpperCase() em conduta clínica
+        : headerRaw
+            .replaceFirst(RegExp(r'^🟥\s*'), '')
+            .replaceFirst(RegExp(r'^#{1,3}\s*'), '')
+            .replaceFirst(RegExp(r'^[🔵📋🏥💡⚕️]\s*'), '')
+            .trim()
+            .toUpperCase(); // síndrome pura — caps OK per M2
     final bodyLines = allLines.length > 1 ? allLines.sublist(1) : <String>[];
     final bodyText = bodyLines
         .where((l) => l.trim().isNotEmpty)
