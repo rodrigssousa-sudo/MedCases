@@ -927,6 +927,12 @@ class GeminiServiceV2 {
         //   3200 tokens ≈ 12.800 chars → suporta MODO FARMACO completo
         //   (prompt de 19 seções + RAG injetado + resposta clínica longa).
         //   Build 93: aumentado de 2048→3200 após análise de truncamentos.
+        //
+        //   ORDEM 57 M1 AUDIT (Build 286): valor já estava em 3200 —
+        //   excede o teto-alvo de 600 do mandato. Nenhuma alteração
+        //   necessária aqui. O truncamento relatado era causado por prompts
+        //   longos nos botões automáticos (NextActionEngine), corrigidos em
+        //   O57 M2 (ai_next_action_engine.dart).
         'maxOutputTokens': 3200,
 
         // temperature: 0.4 — equilíbrio entre precisão clínica e fluência.

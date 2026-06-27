@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// ai_next_action_engine.dart — Smart Next Action Engine v3 (Build 1560)
+// ai_next_action_engine.dart — Smart Next Action Engine v3 (Build 286)
 //
 // MOTOR 100% LOCAL — DETERMINÍSTICO — SEM IA — SEM REDE — SEM RAG
 //
@@ -278,7 +278,7 @@ class NextActionEngine {
     if (options.isEmpty) {
       return const SmartNextAction(
         label: 'Próximo passo clínico',
-        promptToSend: 'Com base na discussão clínica anterior, forneça os próximos passos lógicos e detalhados para o manejo do caso.',
+        promptToSend: 'Próximos passos no manejo deste caso.',
       );
     }
     final histLower = history.map((h) => h.toLowerCase()).toList();
@@ -436,33 +436,33 @@ class NextActionEngine {
 
     final Map<ClinicalTopic, List<SmartNextAction>> plantaoMap = {
       ClinicalTopic.sca: [
-        SmartNextAction(label: 'ECG + Troponina urgente', promptToSend: es ? 'Especifique el protocolo de monitorización y ECG de 12 derivaciones en ≤10min junto con troponina ultrasensible.' : 'Especifique a monitorização contínua e o protocolo de ECG de 12 derivações em ≤10min junto com coleta de troponina ultrassensível.'),
-        SmartNextAction(label: 'Dupla antiagregação: doses', promptToSend: es ? 'Detalle el protocolo de doble antiagregación plaquetaria inmediata en SCA: dosis de AAS + Clopidogrel ou Ticagrelor.' : 'Detalhe o protocolo de dupla antiagregação plaquetária imediata no SCA: doses de AAS + Clopidogrel ou Ticagrelor.'),
-        SmartNextAction(label: 'Fibrinólise: dose por peso', promptToSend: es ? 'Especifique las dosis ajustadas por peso de Tenecteplase IV en bolo o Alteplase, con contraindicaciones.' : 'Especifique as doses ajustadas por peso de Tenecteplase IV em bolus ou Alteplase, com contraindicações.'),
+        SmartNextAction(label: 'ECG + Troponina urgente', promptToSend: es ? 'ECG de 12 derivaciones en ≤10min y troponina ultrasensible en SCA: protocolo.' : 'ECG de 12 derivações em ≤10min e troponina ultrassensível no SCA: protocolo.'),
+        SmartNextAction(label: 'Dupla antiagregação: doses', promptToSend: es ? 'Doses de AAS + Clopidogrel ou Ticagrelor na dupla antiagregação imediata do SCA.' : 'Doses de AAS + Clopidogrel ou Ticagrelor na dupla antiagregação imediata do SCA.'),
+        SmartNextAction(label: 'Fibrinólise: dose por peso', promptToSend: es ? 'Doses por peso de Tenecteplase ou Alteplase IV no SCA com supradesnivelamento.' : 'Doses por peso de Tenecteplase ou Alteplase IV no SCA com supradesnivelamento.'),
       ],
       ClinicalTopic.sepse: [
-        SmartNextAction(label: 'Titulação de vasopressores', promptToSend: es ? 'Choque séptico: detalle la dosis inicial y titulación fina de Noradrenalina IV, y cuándo asociar Vasopressina.' : 'Choque séptico: detalhe a dose inicial e titulação fina de Noradrenalina IV, e quando associar Vasopressina.'),
-        SmartNextAction(label: 'Bundle da hora 1: exames', promptToSend: es ? 'Especifique los cultivos a pedir, recolección de lactato sérico y volumen de cristaloides por peso.' : 'Especifique as culturas a pedir, coleta de lactato sérico e volume de cristaloides por peso.'),
+        SmartNextAction(label: 'Titulação de vasopressores', promptToSend: es ? 'Dose e titulação de Noradrenalina IV no choque séptico; quando associar Vasopressina.' : 'Dose e titulação de Noradrenalina IV no choque séptico; quando associar Vasopressina.'),
+        SmartNextAction(label: 'Bundle da hora 1: exames', promptToSend: es ? 'Bundle hora 1: culturas, lactato sérico e cristaloides por peso na sepse.' : 'Bundle hora 1: culturas, lactato sérico e cristaloides por peso na sepse.'),
       ],
       ClinicalTopic.pcr: [
-        SmartNextAction(label: 'Algoritmo ACLS Chocável', promptToSend: es ? 'Paro cardíaco en ritmo chocable (FV/TVSP): desfibrilación, dosis de Adrenalina y Amiodarona.' : 'Parada cardíaca em ritmo chocável (FV/TVSP): desfibrilação, doses de Adrenalina e Amiodarona.'),
-        SmartNextAction(label: 'Manejo de causas: 5Hs e 5Ts', promptToSend: es ? '¿Cómo diagnosticar y tratar de inmediato las causas reversibles de PCR por el mnemónico de Hs y Ts?' : 'Como diagnosticar e tratar imediatamente as causas reversíveis de PCR pelo mnemônico de Hs e Ts.'),
+        SmartNextAction(label: 'Algoritmo ACLS Chocável', promptToSend: es ? 'PCR em FV/TVSP: doses de Adrenalina, Amiodarona e protocolo de desfibrilação.' : 'PCR em FV/TVSP: doses de Adrenalina, Amiodarona e protocolo de desfibrilação.'),
+        SmartNextAction(label: 'Manejo de causas: 5Hs e 5Ts', promptToSend: es ? 'Causas reversíveis de PCR — diagnóstico e tratamento imediato das 5Hs e 5Ts.' : 'Causas reversíveis de PCR — diagnóstico e tratamento imediato das 5Hs e 5Ts.'),
       ],
       ClinicalTopic.intubacao: [
-        SmartNextAction(label: 'Doses da Sequência Rápida', promptToSend: es ? 'SIR completa: especifique dosis de inductores (Etomidato/Ketamina) y bloqueadores (Rocuronio/Succinilcolina).' : 'SRI completa: especifique doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocurônio/Succinilcolina).'),
+        SmartNextAction(label: 'Doses da Sequência Rápida', promptToSend: es ? 'SRI: doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocurônio/Succinilcolina).' : 'SRI: doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocurônio/Succinilcolina).'),
       ],
     };
 
     final Map<ClinicalTopic, List<SmartNextAction>> estudoMap = {
       ClinicalTopic.sca: [
-        SmartNextAction(label: 'IAMCSST × IAMSSST: diagnóstico', promptToSend: es ? 'Explique la diferencia fisiopatológica y de diagnóstico diferencial entre IAMCSST e IAMSSST.' : 'Explique a diferença fisiopatológica e de diagnóstico diferencial entre IAMCSST e IAMSSST.'),
-        SmartNextAction(label: 'Escores de risco e prognóstico', promptToSend: es ? '¿Cuáles son las variables y el valor pronóstico de los escores GRACE, TIMI e HEART no SCA?' : 'Quais são as variáveis e o valor prognóstico dos escores GRACE, TIMI e HEART no SCA?'),
+        SmartNextAction(label: 'IAMCSST × IAMSSST: diagnóstico', promptToSend: es ? 'Diferença fisiopatológica e diagnóstico diferencial entre IAMCSST e IAMSSST.' : 'Diferença fisiopatológica e diagnóstico diferencial entre IAMCSST e IAMSSST.'),
+        SmartNextAction(label: 'Escores de risco e prognóstico', promptToSend: es ? 'Variáveis e valor prognóstico dos escores GRACE, TIMI e HEART no SCA.' : 'Variáveis e valor prognóstico dos escores GRACE, TIMI e HEART no SCA.'),
       ],
       ClinicalTopic.sepse: [
-        SmartNextAction(label: 'Critérios Sepsis-3 e SOFA', promptToSend: es ? 'Realice una revisión académica sobre los criterios Sepsis-3 e la puntuación completa del score SOFA.' : 'Realize uma revisão acadêmica sobre os critérios Sepsis-3 e a pontuação completa do score SOFA.'),
+        SmartNextAction(label: 'Critérios Sepsis-3 e SOFA', promptToSend: es ? 'Critérios Sepsis-3 e pontuação completa do SOFA: revisão objetiva.' : 'Critérios Sepsis-3 e pontuação completa do SOFA: revisão objetiva.'),
       ],
       ClinicalTopic.antidepressivos: [
-        SmartNextAction(label: 'ISRS × IRSN: farmacodinâmica', promptToSend: es ? 'Análisis comparativo enciclopédico entre ISRS e IRSN: receptores e interacciones de CYP3A4.' : 'Análise comparativa enciclopédica entre ISRS e IRSN: receptores e interações de CYP3A4.'),
+        SmartNextAction(label: 'ISRS × IRSN: farmacodinâmica', promptToSend: es ? 'Comparativo entre ISRS e IRSN: receptores, diferenças clínicas e interações de CYP.' : 'Comparativo entre ISRS e IRSN: receptores, diferenças clínicas e interações de CYP.'),
       ],
     };
 
@@ -491,31 +491,31 @@ class NextActionEngine {
           label: es ? 'Condutas e dosagens' : 'Condutas e dosagens',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Detalle el tratamiento de primera línea para $topicName, especificando dosis por peso, alternativas de fármacos y monitorización de efectos adversos.'
-                  : 'Detalle el tratamiento de primera línea de esta patología, especificando dosis por peso, alternativas de fármacos y monitorización de efectos adversos.')
+                  ? 'Condutas práticas e doses para $topicName.'
+                  : 'Condutas práticas e doses para esta patologia.')
               : (hasTopicName
-                  ? 'Detalhe o tratamento de primeira linha para $topicName, especificando doses por peso, alternativas de fármacos e monitorização de efeitos adversos.'
-                  : 'Detalhe o tratamento de primeira linha desta patologia, especificando doses por peso, alternativas de fármacos e monitorização de efeitos adversos.'),
+                  ? 'Condutas práticas e doses para $topicName.'
+                  : 'Condutas práticas e doses para esta patologia.'),
         ),
         SmartNextAction(
           label: es ? 'Exames e evolução' : 'Exames e evolução',
           promptToSend: es
               ? (hasTopicName
-                  ? '¿Cuáles son los exámenes diagnósticos primarios para evaluar la evolución en $topicName y las interacciones de fármacos críticas?'
-                  : '¿Cuáles son los exámenes diagnósticos primarios para evaluar la evolución del paciente y las interacciones de fármacos críticas?')
+                  ? 'Exames e evolução em $topicName.'
+                  : 'Exames e evolução neste caso.')
               : (hasTopicName
-                  ? 'Quais são os exames diagnósticos primários para avaliar a evolução em $topicName e as interações de fármacos críticas?'
-                  : 'Quais são os exames diagnósticos primários para avaliar a evolução do paciente e as interações de fármacos críticas?'),
+                  ? 'Exames e evolução em $topicName.'
+                  : 'Exames e evolução neste caso.'),
         ),
         SmartNextAction(
           label: es ? 'Perguntas importantes' : 'Perguntas importantes',
           promptToSend: es
               ? (hasTopicName
-                  ? '¿Cuáles son las preguntas críticas de la historia clínica para guiar el manejo de $topicName y evitar complicaciones?'
-                  : '¿Cuáles son las preguntas críticas que se deben hacer en la historia clínica para guiar este caso y evitar complicaciones?')
+                  ? 'Perguntas-chave para guiar o manejo de $topicName.'
+                  : 'Perguntas-chave para guiar este caso clínico.')
               : (hasTopicName
-                  ? 'Quais são as perguntas críticas da história clínica para guiar o manejo de $topicName e evitar complicações?'
-                  : 'Quais são as perguntas críticas que devem ser feitas na história clínica para guiar este caso e evitar complicações?'),
+                  ? 'Perguntas-chave para guiar o manejo de $topicName.'
+                  : 'Perguntas-chave para guiar este caso clínico.'),
         ),
       ], chatHistory);
     } else {
@@ -525,31 +525,31 @@ class NextActionEngine {
           label: es ? '✨ Profundizar Fisiopatología >' : '✨ Aprofundar Fisiopatologia >',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Detalla de forma resumida (máx 15 líneas) el mecanismo de acción molecular y la fisiopatología de $topicName.'
-                  : 'Detalla de forma resumida (máx 15 líneas) el mecanismo de acción molecular y la fisiopatología de esta condición.')
+                  ? 'Fisiopatologia de $topicName (máx 15 linhas).'
+                  : 'Fisiopatologia desta condição (máx 15 linhas).')
               : (hasTopicName
-                  ? 'Aprofunde de forma resumida (máx 15 linhas) o mecanismo de ação molecular e a fisiopatologia de $topicName.'
-                  : 'Aprofunde de forma resumida (máx 15 linhas) o mecanismo de ação molecular e a fisiopatologia desta condição.'),
+                  ? 'Fisiopatologia de $topicName (máx 15 linhas).'
+                  : 'Fisiopatologia desta condição (máx 15 linhas).'),
         ),
         SmartNextAction(
           label: es ? '✨ Alternativas de 2ª Línea >' : '✨ Alternativas de 2ª Linha >',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Detalla directamente (máx 15 líneas) las alternativas terapéuticas cuando falla el tratamiento inicial de $topicName.'
-                  : 'Detalla directamente (máx 15 líneas) las alternativas terapéuticas cuando falla el tratamiento inicial.')
+                  ? 'Alternativas terapêuticas de 2ª linha em $topicName (máx 15 linhas).'
+                  : 'Alternativas terapêuticas de 2ª linha neste caso (máx 15 linhas).')
               : (hasTopicName
-                  ? 'Detalhe de forma direta (máx 15 linhas) as alternativas terapêuticas quando falha o tratamento inicial de $topicName.'
-                  : 'Detalhe de forma direta (máx 15 linhas) quais são as alternativas terapêuticas quando falha o tratamento inicial.'),
+                  ? 'Alternativas terapêuticas de 2ª linha em $topicName (máx 15 linhas).'
+                  : 'Alternativas terapêuticas de 2ª linha neste caso (máx 15 linhas).'),
         ),
         SmartNextAction(
           label: es ? '✨ Comorbilidades y Alertas >' : '✨ Comorbidades e Alertas >',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Indica las preguntas clínicas de descarte cruciales y el manejo de comorbilidades en $topicName (máx 15 líneas).'
-                  : 'Indica las preguntas clínicas de descarte cruciales y el manejo de comorbilidades asociadas (máx 15 líneas).')
+                  ? 'Comorbidades e alertas clínicos em $topicName (máx 15 linhas).'
+                  : 'Comorbidades e alertas clínicos neste caso (máx 15 linhas).')
               : (hasTopicName
-                  ? 'Indique as perguntas clínicas de descarte cruciais e o manejo de comorbidades em $topicName (máx 15 linhas).'
-                  : 'Indique as perguntas clínicas de descarte cruciais e o manejo de comorbidades associadas (máx 15 linhas).'),
+                  ? 'Comorbidades e alertas clínicos em $topicName (máx 15 linhas).'
+                  : 'Comorbidades e alertas clínicos neste caso (máx 15 linhas).'),
         ),
       ], chatHistory);
     }
