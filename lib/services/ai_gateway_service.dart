@@ -641,15 +641,36 @@ class AiGatewayService {
     // ── intentMandate: injetado no final do prompt do SmartRouter ────────────
     // Build 191: sem tag [MANDATO TURNO] — era a causa raiz do vazamento.
     // Mandato compacto, sem texto verboso que o modelo possa ecoar.
-    final String finalSystemPrompt = intentMandate.isNotEmpty
+    final String basePrompt = intentMandate.isNotEmpty
         ? '${routerResult.finalPrompt}\n\n$intentMandate'
         : routerResult.finalPrompt;
+
+    // ── ORDEM 49 M1: Injeção JIT da ModeAnchor no topo do systemPrompt ───────
+    // CAUSA RAIZ DO FANTASMA DE ESTADO (Build 229→):
+    //   Build 221 removeu o modeAnchor como Part 0 separado do system_instruction,
+    //   assumindo que AiSmartRouter.build() já o incluía. Porém, o SmartRouter
+    //   injeta apenas _contractPlantao/_contractEstudo (texto curto de formato),
+    //   enquanto _modeAnchorPlantao/_modeAnchorEstudo (âncoras longas com
+    //   SOBERANIA ABSOLUTA e ISOLAMENTO TOTAL) ficaram inertes.
+    //
+    // CORREÇÃO: reintroduz a âncora de modo como PRIMEIRA instrução do
+    //   finalSystemPrompt — antes do SmartRouter — para garantir que o modelo
+    //   leia o contrato de modo com Viés de Primazia absoluto em todo primeiro
+    //   turno e evite aplicar template do modo anterior ao chat novo.
+    //
+    // Âncora Estudo: bloco '[MODO ESTUDO]' com ISOLAMENTO TOTAL de emojis
+    //   de Plantão (🟥/🔄/⛔) e override de qualquer instrução anterior.
+    // Âncora Plantão: bloco '[MODO PLANTÃO]' com REGRA ZERO de abertura.
+    // NUNCA concatenado na userMessage — permanece 100% em system_instruction.
+    final String modeAnchorJit = ModeAnchorEngine.getModeAnchor(longResponse: longResponse);
+    final String finalSystemPrompt = '$modeAnchorJit\n\n$basePrompt';
 
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
       '[AI_ROUTER] Build190: motor=$motor | '
       'lang=$resolvedLang | contract=${routerResult.contractName} | '
       'task=${routerResult.taskLabel} | '
+      'anchor=${modeAnchorJit.length}c | '
       'final=${finalSystemPrompt.length} chars | '
       'contextSaved=${routerResult.contextSaved} chars | '
       'modules=${routerResult.modulesLoaded}loaded/${routerResult.modulesSkipped}skipped | '

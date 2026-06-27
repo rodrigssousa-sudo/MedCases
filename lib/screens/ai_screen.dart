@@ -2712,8 +2712,27 @@ class _AiScreenState extends State<AiScreen> {
             lang: p.lang,
             onChanged: (newValue) {
               if (newValue == _longResponse) return;
-              setState(() { _longResponse = newValue; });
+              // ORDEM 49 M1: Atomic mode-sync ao alternar toggle.
+              // Além de limpar _aiHistory (via clearAiHistory), limpa:
+              //   • _plantaoPipelineCache — previne render Plantão stale em
+              //     nova resposta Estudo (fantasma de estado visual).
+              //   • _lastAiIndex reset implícito via setState (nenhuma bolha
+              //     ativa → isPlantaoFinalBubble=false na próxima renderização).
+              // Tudo atômico dentro do mesmo setState para zero flash de UI.
+              setState(() {
+                _longResponse = newValue;
+                // Limpa cache de pipeline para que a próxima bolha AI
+                // não herde resultado de parse Plantão de sessão anterior.
+                _plantaoPipelineCache.clear();
+                _loggedPlantaoIds.clear();
+                _loggedSafeCardIds.clear();
+                _loggedEvidenceIds.clear();
+              });
               p.clearAiHistory();
+              if (kDebugMode) {
+                debugPrint('[ORDEM49_TOGGLE] mode=${newValue ? "ESTUDO" : "PLANTÃO"} '
+                    'pipelineCache=cleared logSets=cleared history=clearing');
+              }
             },
           ),
         ),

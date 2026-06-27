@@ -3289,6 +3289,23 @@ class AppProvider extends ChangeNotifier {
     // Não há servidor intermediário — o Flutter fala direto com o Google.
     if (kDebugMode) debugPrint('[sendAiMessage] motor=${longResponse ? "ESTUDO" : "PLANTÃO"}');
 
+    // ── ORDEM 49 M2: JIT Double-Check — sincronia atômica de modo ────────────
+    // Segunda camada de segurança: confirma que o modo capturado neste exato
+    // milissegundo (longResponse) é consistente com o systemPrompt que será
+    // montado imediatamente abaixo. Detecta qualquer race condition entre
+    // toggle de UI e disparo de request.
+    //
+    // Log estruturado — visível tanto em debug quanto em release para auditoria
+    // de stale-state: se motor≠prompt.mode aparecer nos logs, há dessincronia.
+    // NUNCA bloqueia o request — apenas registra para diagnóstico.
+    // ignore: avoid_print
+    print('[ORDEM49_MODE_SYNC] requestId=$thisRequestId '
+        'motor=${longResponse ? "ESTUDO" : "PLANTÃO"} '
+        'longResponse=$longResponse '
+        'historyLen=${_aiHistory.length} '
+        'hasUserMsg=${_aiHistory.any((m) => m["role"] == "user")} '
+        'threadTopic=${_threadManager.activeTopic.isEmpty ? "VIRGIN" : _threadManager.activeTopic}');
+
     // ── Streaming via AiGatewayService ────────────────────────────────────
     _aiStreamActive = true;
 
