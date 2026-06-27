@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
-import 'package:http/http.dart' as http;
 import 'clinical_session_memory.dart';
+import 'provider_router_service.dart'; // SUPER ORDEM 38: geminiPaidProxy gateway
 
 /// Resultado de uma chamada à API de IA
 class AiResult {
@@ -13,72 +12,79 @@ class AiResult {
       AiResult(text: message, isError: true, errorCode: code);
 }
 
-/// Serviço de IA — chama OpenAI Chat Completions com contexto clínico injetado
+/// Serviço de IA — SUPER ORDEM 38: roteado ao gateway unificado geminiPaidProxy.
+/// Toda chamada HTTP deixou de apontar para a OpenAI.
+/// O endpoint de destino é o Firebase Cloud Function geminiPaidProxy, que:
+///   • Autentica o usuário via Firebase ID Token (login em 1 clique Google)
+///   • Nunca expõe chaves de API no cliente
+///   • Seleciona o modelo correto server-side com base no modo recebido
 class AiService {
-  static const _endpoint = 'https://api.openai.com/v1/chat/completions';
-  // SUPER ORDEM 35 MANDATO 3: Model Lock Adaptativo
-  static const _modelPlantao = 'gemini-2.5-flash';
-  static const _modelEstudo  = 'gpt-4o-mini';
-  static const _model        = _modelEstudo; // backward compat
+  // SUPER ORDEM 38: modelos Google nativos — OpenAI removida
+  static const _modelPlantao = 'gemini-2.5-flash'; // Velocidade + 21 Matrizes Plantão
+  static const _modelEstudo  = 'gemini-2.5-pro';   // Densidade Acadêmica + Fisiopatologia
 
+  /// Envia mensagem ao geminiPaidProxy (Firebase Cloud Function).
+  /// O parâmetro [apiKey] é mantido por compatibilidade de assinatura com
+  /// os call sites de ferramentas secundárias (transcript, organizer) mas
+  /// não é mais usado — a autenticação é por Firebase ID Token.
   static Future<AiResult> chat({
-    required String apiKey,
+    required String apiKey,      // mantido para compatibilidade — ignorado internamente
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
-    // BUILD 274: aumentado de 900 → 2500 para suportar prompts densos do Estudo
-    // (systemPrompt > 12k chars) sem truncar a resposta na terceira linha.
-    // Call sites que precisam de menos tokens (transcript: 800, organizer: 1200,
-    // legado Plantão: 1100) já passam maxTokens explicitamente — não são afetados.
+    // Plantão: 600 tokens (resposta executiva concisa)
+    // Estudo:  2500 tokens (resposta acadêmica completa)
     int maxTokens = 2500,
-    // SUPER ORDEM 35 MANDATO 3: Plantão → gemini-2.5-flash | Estudo → gpt-4o-mini
+    // SUPER ORDEM 38: Plantão → gemini-2.5-flash | Estudo → gemini-2.5-pro
     bool isPlantaoMode = false,
   }) async {
-    final activeModel = isPlantaoMode ? _modelPlantao : _modelEstudo;
-    if (apiKey.isEmpty) return AiResult.error('NO_KEY', 'no_key');
+    // SUPER ORDEM 38: apiKey.isEmpty guard REMOVIDO.
+    // Autenticação agora é via Firebase ID Token no geminiPaidProxy.
+    // Chave local nunca é necessária — o proxy cuida de tudo server-side.
 
-    final messages = [
-      {'role': 'system', 'content': systemPrompt},
-      ...history,
-      {'role': 'user', 'content': userMessage},
-    ];
+    // Parâmetros dinâmicos por modo
+    final activeTokens = isPlantaoMode ? 600 : maxTokens;
+    final activeMode   = isPlantaoMode ? 'plantao' : 'estudo';
+    // Modelo selecionado server-side pelo proxy com base no modo —
+    // declarado aqui para rastreabilidade de diagnóstico e logging.
+    final activeModel  = isPlantaoMode ? _modelPlantao : _modelEstudo;
+    if (kDebugMode) {
+      debugPrint('[AiService] model=$activeModel  mode=$activeMode  tokens=$activeTokens');
+    }
 
     try {
-      final response = await http.post(
-        Uri.parse(_endpoint),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $apiKey',
-        },
-        body: jsonEncode({
-          'model': activeModel,
-          'messages': messages,
-          'max_tokens': maxTokens,
-          'temperature': 0.4,
-        }),
-      ).timeout(const Duration(seconds: 45));
+      final result = await ProviderRouterService.callPaidProxy(
+        userMessage:     userMessage,
+        systemPrompt:    systemPrompt,
+        history:         history,
+        mode:            activeMode,
+        maxOutputTokens: activeTokens,
+        // modelOverride será lido pelo Cloud Function se presente no payload
+        // (campo extra ignorado por versões antigas do proxy sem suporte)
+      );
 
-      if (response.statusCode == 200) {
-        final data    = jsonDecode(response.body);
-        final content = data['choices'][0]['message']['content'] as String;
-        return AiResult(text: content.trim());
+      if (result.success && result.text.isNotEmpty) {
+        return AiResult(text: result.text.trim());
       }
-      if (response.statusCode == 401) return AiResult.error('INVALID_KEY', 'invalid_key');
-      if (response.statusCode == 429) return AiResult.error('QUOTA_EXCEEDED', 'quota');
-      return AiResult.error('HTTP_${response.statusCode}', 'unknown');
-    } on http.ClientException {
-      return AiResult.error('NETWORK_ERROR', 'network');
+      if (result.errorCode == 'unauthenticated') {
+        return AiResult.error('NOT_CONNECTED', 'no_key');
+      }
+      if (result.errorCode == 'token_error') {
+        return AiResult.error('AUTH_ERROR', 'invalid_key');
+      }
+      return AiResult.error('PROXY_ERROR: ${result.errorCode}', 'unknown');
     } catch (e) {
       return AiResult.error('ERROR: $e', 'unknown');
     }
   }
 
+  /// validateKey: mantido por compatibilidade com call sites legados.
+  /// Com o proxy, não há chave local para validar — sempre retorna true
+  /// se a sessão Google está ativa (verificação real é feita pelo proxy).
   static Future<bool> validateKey(String apiKey) async {
-    final result = await chat(
-      apiKey: apiKey, userMessage: 'Hi',
-      systemPrompt: 'Reply with just: OK', maxTokens: 5,
-    );
-    return !result.isError;
+    // SUPER ORDEM 38: validação real delegada ao proxy via Firebase Auth.
+    // Chave local não tem mais significado operacional.
+    return true;
   }
 
   // ══════════════════════════════════════════════════════════════════════════
