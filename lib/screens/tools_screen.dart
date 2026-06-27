@@ -80,8 +80,10 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     const Color kGraphiteBorder = Color(0xFF2A2D35);
 
     return Column(children: [
-      // ── Header + pílulas embutidas (peça única Dark Graphite) ────────────
-      // SUPER ORDEM: visível em todos os breakpoints quando não suprimido.
+      // ── Header + tabs minimalistas (peça única Dark Graphite) ───────────
+      // SUPER ORDEM VISUAL 06: Topologia Cupertino/Linear.
+      // Stack: título centrado, back à esquerda. Subtítulo MEDCASES PRO destruído.
+      // Tabs: pill-shape destruído → underline indicator + divisor fio entre itens.
       if (showHeader)
         Container(
           decoration: const BoxDecoration(
@@ -93,72 +95,50 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Linha título
+              // ── M1: Linha título — Stack Left-Center ─────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
-                child: Row(children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                    onPressed: () => Navigator.maybePop(context),
-                    padding: const EdgeInsets.all(8),
-                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-                  ),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      const Text(
-                        'FERRAMENTAS CLÍNICAS',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: -0.2,
-                        ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // CENTER: título isolado e absolutamente centrado
+                    Text(
+                      isEs ? 'FERRAMENTAS' : 'FERRAMENTAS',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: -0.2,
                       ),
-                      RichText(
-                        text: const TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'MEDCASES',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' PRO',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFD4AF37),
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
+                    ),
+                    // LEFT: botão de voltar
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                        onPressed: () => Navigator.maybePop(context),
+                        padding: const EdgeInsets.all(8),
+                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                       ),
-                    ]),
-                  ),
-                ]),
+                    ),
+                  ],
+                ),
               ),
-              // Pílulas de aba com divisores verticais delicados
+              // ── M2: Tab bar minimalista — underline indicator ─────────────
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                child: IntrinsicHeight(
-                  child: Row(
-                    children: [
-                      Expanded(child: _ToolsPillTab(label: isEs ? 'BIOMETRÍA' : 'BIOMETRIA', index: 0, tabCtrl: _tabCtrl)),
-                      _ToolsTabDivider(),
-                      Expanded(child: _ToolsPillTab(label: 'CARDIO', index: 1, tabCtrl: _tabCtrl)),
-                      _ToolsTabDivider(),
-                      Expanded(child: _ToolsPillTab(label: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS', index: 2, tabCtrl: _tabCtrl)),
-                      _ToolsTabDivider(),
-                      Expanded(child: _ToolsPillTab(label: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS', index: 3, tabCtrl: _tabCtrl)),
-                      _ToolsTabDivider(),
-                      Expanded(child: _ToolsPillTab(label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA', index: 4, tabCtrl: _tabCtrl)),
-                    ],
-                  ),
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                child: Row(
+                  children: [
+                    Expanded(child: _ToolsFlatTab(label: isEs ? 'BIOMETRÍA' : 'BIOMETRIA', index: 0, tabCtrl: _tabCtrl)),
+                    const _ToolsTabDivider(),
+                    Expanded(child: _ToolsFlatTab(label: 'CARDIO', index: 1, tabCtrl: _tabCtrl)),
+                    const _ToolsTabDivider(),
+                    Expanded(child: _ToolsFlatTab(label: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS', index: 2, tabCtrl: _tabCtrl)),
+                    const _ToolsTabDivider(),
+                    Expanded(child: _ToolsFlatTab(label: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS', index: 3, tabCtrl: _tabCtrl)),
+                    const _ToolsTabDivider(),
+                    Expanded(child: _ToolsFlatTab(label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA', index: 4, tabCtrl: _tabCtrl)),
+                  ],
                 ),
               ),
             ],
@@ -191,33 +171,34 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
 }
 
 // ──────────────────────────────────────────────────────────────────
-// HELPERS: pílula de aba + divisória delicada para Ferramentas
+// HELPERS: tab minimalista flat + divisória delicada — SUPER ORDEM VISUAL 06
+// Pill-shape destruído: fundo 100% transparente, indicador = underline 2px ciano.
 // ──────────────────────────────────────────────────────────────────
 
-/// Divisória vertical finíssima entre as pílulas — discreta sobre Dark Graphite.
+/// Divisória vertical fio entre as abas — 1px, 14dp de altura, discreta.
 class _ToolsTabDivider extends StatelessWidget {
   const _ToolsTabDivider();
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 1,
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      color: Colors.white.withValues(alpha: 0.15),
+      height: 14,
+      color: Colors.white24,
     );
   }
 }
 
-/// Pílula de aba individual para Ferramentas — reage ao TabController.
-class _ToolsPillTab extends StatefulWidget {
+/// Tab flat minimalista — underline ciano quando ativa, sem pill-shape.
+class _ToolsFlatTab extends StatefulWidget {
   final String label;
   final int index;
   final TabController tabCtrl;
-  const _ToolsPillTab({required this.label, required this.index, required this.tabCtrl});
+  const _ToolsFlatTab({required this.label, required this.index, required this.tabCtrl});
   @override
-  State<_ToolsPillTab> createState() => _ToolsPillTabState();
+  State<_ToolsFlatTab> createState() => _ToolsFlatTabState();
 }
 
-class _ToolsPillTabState extends State<_ToolsPillTab> {
+class _ToolsFlatTabState extends State<_ToolsFlatTab> {
   @override
   void initState() {
     super.initState();
@@ -241,18 +222,14 @@ class _ToolsPillTabState extends State<_ToolsPillTab> {
       onTap: () => widget.tabCtrl.animateTo(widget.index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: isActive
-              ? Colors.white.withValues(alpha: 0.10)
-              : Colors.transparent,
-          border: Border.all(
-            color: isActive
-                ? Colors.white.withValues(alpha: 0.28)
-                : Colors.transparent,
-            width: 1,
+          // Fundo 100% transparente — pill-shape destruído
+          color: Colors.transparent,
+          border: Border(
+            bottom: isActive
+                ? const BorderSide(color: Color(0xFF00E5FF), width: 2.0)
+                : BorderSide.none,
           ),
         ),
         child: Text(
@@ -260,8 +237,8 @@ class _ToolsPillTabState extends State<_ToolsPillTab> {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 12,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-            color: isActive ? Colors.white : Colors.white38,
+            fontWeight: FontWeight.w600,
+            color: isActive ? Colors.white : Colors.white60,
             letterSpacing: 0.3,
           ),
         ),
