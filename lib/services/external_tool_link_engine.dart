@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// external_tool_link_engine.dart — Deep Link Router v1.1 (Build 186)
+// external_tool_link_engine.dart — Deep Link Router v1.2 (Build 280)
 //
 // MOTOR 100% LOCAL — DETERMINÍSTICO — SEM IA — SEM REDE — SEM RAG
 //
@@ -241,44 +241,32 @@ class ExternalToolLinkEngine {
       );
     }
 
-    // ── 11. Fármaco isolado via combined (fallback AI response) ───────────
-    // Só chega aqui se userMessage não tinha fármaco específico (step 8 não disparou).
-    // BUILD 249: validação de contaminação cruzada — fármaco detectado APENAS na
-    // resposta AI (não na query do usuário) e NÃO no activeThreadTopic → bloquear.
+    // ── 11. Fármaco isolado via texto da última bolha AI ─────────────────
+    // ORDEM 55 M2: LIBERAÇÃO ABSOLUTA DOS BOTÕES — texto da resposta AI é soberano.
     //
-    // BUILD 270: EXTINÇÃO do plantao_bypass_stale (BUILD 262).
-    // O bypass anterior permitia fármacos da resposta AI vazarem no Plantão,
-    // causando "Zombie Amiodarona Injection" — amiodarona aparecia em toda resposta
-    // ACLS/protocolo e sempre vencia _matchFirst() independentemente da query real.
+    // NOVA REGRA (Build 280 — substitui Build 270):
+    //   • Detectamos o fármaco EXCLUSIVAMENTE no texto da última mensagem AI
+    //     (lastAiResponse), NÃO no combined (que incluía userMessage e causava
+    //     confusão com step 8).
+    //   • Se o fármaco aparece na bolha AI → botão DEVE aparecer, ponto final.
+    //   • Sem validação de threadTopic ou activeThreadTopic — esses são zerados
+    //     no refresh e causavam o "blocked_ai_only_drug" falso positivo.
+    //   • Proteção anti-zombie (Build 270) mantida IMPLICITAMENTE: o _detectSingleDrug
+    //     usa _matchFirst() que retorna o PRIMEIRO match; como step 8 já consumiu
+    //     qualquer fármaco presente na user msg, step 11 só chega aqui para
+    //     fármacos que estão NA RESPOSTA AI — exatamente o que queremos mostrar.
     //
-    // NOVA REGRA (idêntica ao step 8 — user_msg soberano):
-    //   • drug deve estar na mensagem do usuário OU no activeThreadTopic
-    //   • drug encontrado APENAS na resposta AI → return null (sem exceção de modo)
-    //   • Plantão e Estudo: regra idêntica — não há bypass por modo
-    final drug = _detectSingleDrug(combined);
+    // Exemplo: médico pergunta sobre Cangrelor → IA responde com Ticagrelor + AAS.
+    //   Step 8: "cangrelor" encontrado na user msg → botão Cangrelor (correto).
+    //   Mas se user perguntou "melhor antiagregante?" sem nomear fármaco →
+    //   Step 8: null. Step 11: "ticagrelor" na bolha AI → botão Ticagrelor (correto).
+    final drug = _detectSingleDrug(lastAiResponse.toLowerCase());
     if (drug != null) {
-      // Verifica se o fármaco está na mensagem atual do usuário
-      final drugInUserMsg = lastUserMessage.toLowerCase().contains(drug.param);
-      // Verifica se o fármaco está no tópico ativo do thread
-      final drugInThread = activeThreadTopic.isNotEmpty &&
-          activeThreadTopic.toLowerCase().contains(drug.param);
-
-      if (!drugInUserMsg && !drugInThread) {
-        // BUILD 270: HARD BLOCK — fármaco veio apenas da resposta AI.
-        // Sem bypass por modo (Plantão ou Estudo) — regra universal.
-        // Elimina zombie injection (ex: amiodarona em query de Sertralina/Enalapril).
-        // ignore: avoid_print
-        print('[EXT_TOOL_CONTEXT][Build270] blocked_ai_only_drug '
-            'drug=${drug.param} threadTopic=$activeThreadTopic '
-            'reason=drug_not_in_user_msg_nor_thread_topic');
-        return null;
-      }
-
       final drugCtx = _drugContext(drug.param);
       // ORDEM 29 V2: label contextual baseada no CalculatorContext do fármaco.
       final label = _buildDrugLabel(drug.display, drugCtx, isEs);
       // ignore: avoid_print
-      print('[EXT_TOOL_CONTEXT][Build270] source=${drugInUserMsg ? "user_msg" : "thread_topic"} '
+      print('[EXT_TOOL_CONTEXT][Build280] source=ai_response_text '
           'q=${drug.param}');
       _log(lang: lang, tab: 'farmacos', extra: 'q=${drug.param} ctx=$drugCtx');
       return ExternalToolLink(
@@ -338,13 +326,14 @@ class ExternalToolLinkEngine {
 
   // ───────────────────────────────────────────────────────────────────────────
   // _log — safe diagnostic log (nunca loga dados do paciente)
-  // Formato: [EXT_TOOL][Build270] lang=pt tab=farmacos q=ceftriaxona ctx=drug
+  // Formato: [EXT_TOOL][Build280] lang=pt tab=farmacos q=ceftriaxona ctx=drug
+  // Build 280 (ORDEM 55 M2): LIBERAÇÃO ABSOLUTA — step 11 usa lastAiResponse only.
   // Build 270: ZOMBIE_AMIODARONA_EXTERMINATED — plantao_bypass_stale DELETED
   // ───────────────────────────────────────────────────────────────────────────
   // ignore: avoid_print
   static void _log({required String lang, required String tab, required String extra}) {
     // ignore: avoid_print
-    print('[EXT_TOOL][Build270] lang=$lang tab=$tab${extra.isNotEmpty ? " $extra" : ""}');
+    print('[EXT_TOOL][Build280] lang=$lang tab=$tab${extra.isNotEmpty ? " $extra" : ""}');
   }
 
   // ───────────────────────────────────────────────────────────────────────────

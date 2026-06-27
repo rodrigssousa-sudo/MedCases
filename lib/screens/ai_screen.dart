@@ -475,6 +475,13 @@ class _AiScreenState extends State<AiScreen> {
   @override
   void initState() {
     super.initState();
+    // ORDEM 55 M3 — BUILD 284: cache-buster no init log.
+    // Incrementar este número em cada release força service-workers e CDNs
+    // a invalidade o cache da versão anterior.
+    if (kDebugMode) {
+      debugPrint('[AI_SCREEN][BUILD_284] ORDEM_55 init — '
+          'followUpBypass=true drugButtonLiberation=true');
+    }
     _focusNode.addListener(_onFocusChange);
     _queryCtrl.addListener(_onQueryChange);
     // Listener de scroll: detecta se usuário scrollou para cima
@@ -2239,11 +2246,24 @@ class _AiScreenState extends State<AiScreen> {
               // ORDEM 26: Quando isPlantaoFinalBubble=true, PROIBIDO cair no _AiBubble.
               //   Se pipeline retorna null → _antibulaNormalize() converte bula clássica
               //   em estrutura emoji antes de tentar o parse novamente.
+              // ORDEM 55 M1: follow-up turn bypass — respostas do 2º+ turno são texto
+              // clínico livre (Liberty Mandate em ai_gateway_service.dart) e NÃO devem
+              // ser fatiadas pelo PlantatoPipeline. Renderizamos direto via _AiBubble.
+              // Detecção: conta quantas mensagens de usuário precedem a bolha atual.
+              // ≥2 user msgs antes → esta é uma bolha de follow-up → bypass ativo.
+              final int userMsgsBefore =
+                  _messages.sublist(0, i).where((m) => m.role == 'user').length;
+              final bool isFollowUpAiBubble =
+                  !_longResponse &&    // Apenas Modo Plantão (não Estudo)
+                  !_isSafeCard &&      // Safe-cards já têm bypass próprio
+                  userMsgsBefore >= 2; // 2º turno em diante
+
               final bool isPlantaoFinalBubble =
                   !_longResponse &&          // Modo Plantão ativo
                   i == _lastAiIndex &&       // última bolha AI
                   !_isStreaming &&            // stream finalizado
-                  !_isSafeCard;             // BUILD 244B: safe-card → bypass renderer
+                  !_isSafeCard &&            // BUILD 244B: safe-card → bypass renderer
+                  !isFollowUpAiBubble;       // ORDEM 55 M1: follow-up → _AiBubble direto
 
               // ── ORDEM 44 M4: looksLikePlantaoBubble — JIT retroativo ─────────
               // Dispara para TODAS as bolhas históricas do Plantão que contêm 🟥
@@ -2255,6 +2275,7 @@ class _AiScreenState extends State<AiScreen> {
                   i != _lastAiIndex &&       // bolha histórica (não a última)
                   !_isStreaming &&            // fora de stream ativo
                   !_isSafeCard &&            // não é safe-card de fallback
+                  !isFollowUpAiBubble &&     // ORDEM 55 M1: follow-up → _AiBubble direto
                   msg.text.contains('🟥'); // contém 🟥 — estrutura Plantão confirmada
 
               // ── ORDEM 29: looksLikePharmaBula — sentinela de bula residual ─────
@@ -2267,7 +2288,9 @@ class _AiScreenState extends State<AiScreen> {
               // Markdown é o formato esperado e correto.
               final bool looksLikePharmaBula = !_longResponse &&
                   !_isStreaming &&
-                  !_isSafeCard && (
+                  !_isSafeCard &&
+                  !isFollowUpAiBubble && // ORDEM 55 M1: follow-up → _AiBubble direto
+                  (
                   msg.text.contains(RegExp(r'\*\*CLASSE:\*\*', caseSensitive: false)) ||
                   msg.text.contains(RegExp(r'\*\*MECANISMO DE A[ÇC][AÃ]O:\*\*', caseSensitive: false)) ||
                   msg.text.contains(RegExp(r'\*\*VIA DE ADMINISTRA', caseSensitive: false)) ||
@@ -2282,6 +2305,10 @@ class _AiScreenState extends State<AiScreen> {
               if (kDebugMode) {
                 debugPrint('[RENDER] isStreaming=$_isStreaming');
                 debugPrint('[RENDER] isPlantaoFinalBubble=$isPlantaoFinalBubble');
+                if (isFollowUpAiBubble) {
+                  debugPrint('[ORDEM55_M1] followUp bypass: msgId=${msg.id} '
+                      'userMsgsBefore=$userMsgsBefore → _AiBubble direto');
+                }
               }
 
               if (kDebugMode && isPlantaoFinalBubble &&
