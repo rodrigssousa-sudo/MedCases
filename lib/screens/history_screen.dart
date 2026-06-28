@@ -460,6 +460,14 @@ String _formatUploadedAt(String iso) {
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
+
+  /// BUILD 318: Sinal estático — true enquanto o editor de história clínica
+  /// está activo (nova ou edição de prontuário existente).
+  /// Escutado pelo _FloatingFooter em main.dart para ocultar a dock flutuante
+  /// e evitar sobreposição sobre o formulário de alta-concentração.
+  /// Padrão idêntico ao AiScreen.chatKeyboardOpen.
+  static final editorActive = ValueNotifier<bool>(false);
+
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
@@ -496,6 +504,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
   @override
   void dispose() {
+    // BUILD 318: garante que o notifier seja resetado se a tela for destruída
+    // enquanto o editor está activo (ex: hot-reload, deeplink de saída).
+    if (HistoryScreen.editorActive.value) {
+      HistoryScreen.editorActive.value = false;
+    }
     _tabCtrl.dispose();
     _searchCtrl.dispose();
     super.dispose();
@@ -568,19 +581,24 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return '${fmt(s)} – ${fmt(e)}';
   }
 
+  // BUILD 318: central setter — mantém _editing e o notifier em sincronia.
+  // Todos os pontos de abertura/fecho do editor chamam este método.
+  void _setEditing(ClinicalHistoryModel? model) {
+    setState(() => _editing = model);
+    HistoryScreen.editorActive.value = model != null;
+  }
+
   void _startNewHistory(AppProvider p, String lang) {
     final uid = p.currentUser?.uid ?? 'local';
     final name = p.currentUser?.displayName ??
         p.currentUser?.email ??
         _hcT(lang, 'anon');
     final email = p.currentUser?.email ?? '';
-    setState(
-      () => _editing = ClinicalHistoryModel.blank(
-        authorUid: uid,
-        authorName: name,
-        authorEmail: email,
-      ),
-    );
+    _setEditing(ClinicalHistoryModel.blank(
+      authorUid: uid,
+      authorName: name,
+      authorEmail: email,
+    ));
   }
 
   List<ClinicalHistoryModel> _visibleCommunityHistories(
@@ -669,9 +687,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         onSave: (h) async {
           await p.saveHistory(h);
           if (!mounted) return;
-          setState(() => _editing = null);
+          _setEditing(null);
         },
-        onCancel: () => setState(() => _editing = null),
+        onCancel: () => _setEditing(null),
       );
     }
 
@@ -689,10 +707,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             ? null
             : () {
                 final h = _viewing!;
-                setState(() {
-                  _viewing = null;
-                  _editing = h;
-                });
+                setState(() => _viewing = null);
+                _setEditing(h);
               },
         onDelete: _viewingPublic
             ? null
@@ -738,7 +754,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     _viewing = mine[i];
                     _viewingPublic = false;
                   }),
-                  onEdit: () => setState(() => _editing = mine[i]),
+                  onEdit: () => _setEditing(mine[i]),
                   onDelete: () async {
                     final confirm = await _confirmDelete(context);
                     if (confirm) {

@@ -1735,31 +1735,38 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                 // desliza para fora da tela juntos (AnimatedSlide).
                 // Quando hidden=true → slide para baixo → rodapé = zero px.
                 // O chat expande para 100% da altura — imersão total.
+                // BUILD 318: também oculta durante editor de história clínica.
                 ValueListenableBuilder<bool>(
-                  valueListenable: AiScreen.chatKeyboardOpen,
-                  builder: (_, kbOpen, __) =>
+                  valueListenable: HistoryScreen.editorActive,
+                  builder: (_, editorOpen, __) =>
                   ValueListenableBuilder<bool>(
-                    valueListenable: AiScreen.scrollingDown,
-                    builder: (_, scrollingDown, __) {
-                      final hidden = kbOpen || (isAiTab && scrollingDown);
-                      return _FloatingFooter(
-                        hidden: hidden,
-                        dark: dark,
-                        currentTab: _tab,
-                        lang: p.lang,
-                        onTabChange: (t) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() => _tab = t);
-                        },
-                        onFabTap: () {
-                          AppHaptics.light(context);
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() => _tab = 2);
-                        },
-                        onFabDoubleTap: () => _resetAndStartNewChat(),
-                        isAiActive: isAiTab,
-                      );
-                    },
+                    valueListenable: AiScreen.chatKeyboardOpen,
+                    builder: (_, kbOpen, __) =>
+                    ValueListenableBuilder<bool>(
+                      valueListenable: AiScreen.scrollingDown,
+                      builder: (_, scrollingDown, __) {
+                        final hidden = editorOpen
+                            || kbOpen
+                            || (isAiTab && scrollingDown);
+                        return _FloatingFooter(
+                          hidden: hidden,
+                          dark: dark,
+                          currentTab: _tab,
+                          lang: p.lang,
+                          onTabChange: (t) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() => _tab = t);
+                          },
+                          onFabTap: () {
+                            AppHaptics.light(context);
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() => _tab = 2);
+                          },
+                          onFabDoubleTap: () => _resetAndStartNewChat(),
+                          isAiActive: isAiTab,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
