@@ -1606,39 +1606,56 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
             child: Row(
               children: [
-                Container(
-                  width: 26, height: 26,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
-                    color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
-                    border: Border.all(
-                      color: const Color(0xFF00E5FF).withValues(alpha: 0.22),
-                      width: 0.8,
-                    ),
-                  ),
-                  child: const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF00E5FF)),
-                ),
-                const SizedBox(width: 10),
+                // BUILD 320: ícone + título "MEDCASES IA" envolvidos num único
+                // GestureDetector opaco — navega direto para a aba IA (tab 2).
+                // Os botões direitos (histórico / novo chat) têm handlers próprios
+                // e ficam fora deste detector para preservar comportamento.
                 Expanded(
-                  child: RichText(
-                    text: const TextSpan(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      AppHaptics.light(context);
+                      widget.onNavigateToAi(2);
+                    },
+                    child: Row(
                       children: [
-                        TextSpan(
-                          text: 'MEDCASES',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: 0.4,
+                        Container(
+                          width: 26, height: 26,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(7),
+                            color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
+                            border: Border.all(
+                              color: const Color(0xFF00E5FF).withValues(alpha: 0.22),
+                              width: 0.8,
+                            ),
                           ),
+                          child: const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF00E5FF)),
                         ),
-                        TextSpan(
-                          text: ' IA',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFFD4AF37),
-                            letterSpacing: 0.4,
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'MEDCASES',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    letterSpacing: 0.4,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' IA',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFFD4AF37),
+                                    letterSpacing: 0.4,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -2607,57 +2624,63 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                 );
               }),
               const SizedBox(width: 10),
+              // BUILD 320: GestureDetector opaque cobre o título + subtítulo
+              // (área morta anterior) — tap navega direto para aba IA (tab 2).
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'MedCases IA',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.3,
-                            color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
-                          ),
-                        ),
-                        const SizedBox(width: 7),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 7, vertical: 2),
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF008CA4), Color(0xFF252930)],
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            'IA',
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _navigate,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'MedCases IA',
                             style: TextStyle(
-                              fontSize: 8,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              letterSpacing: 0.8,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.3,
+                              color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      isEs
-                          ? 'Conexión Cognitiva Avanzada'
-                          : 'Conexão Cognitiva Avançada',
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        color: dark
-                            ? const Color(0xFF00E5FF).withValues(alpha: 0.60)
-                            : const Color(0xFF008CA4),
-                        height: 1.3,
+                          const SizedBox(width: 7),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF008CA4), Color(0xFF252930)],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Text(
+                              'IA',
+                              style: TextStyle(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 2),
+                      Text(
+                        isEs
+                            ? 'Conexión Cognitiva Avanzada'
+                            : 'Conexão Cognitiva Avançada',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          color: dark
+                              ? const Color(0xFF00E5FF).withValues(alpha: 0.60)
+                              : const Color(0xFF008CA4),
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ]),
