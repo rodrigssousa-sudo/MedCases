@@ -1,27 +1,40 @@
-# ── Dockerfile: nginx servindo build pré-compilado ────────────────────────────
-# O Flutter web já foi compilado localmente e commitado em build/web/
-# O DigitalOcean NÃO precisa instalar Flutter — apenas serve os arquivos estáticos
+# ══════════════════════════════════════════════════════════════════════════════
+# Dockerfile — MedCases Pro — Multi-Stage Build
+# Estágio 1: Compila o Flutter Web dentro do container
+# Estágio 2: Serve os artefatos via Nginx com config customizada
+# ══════════════════════════════════════════════════════════════════════════════
 
-FROM nginx:1.25-alpine
+# ── Estágio 1: Build do Flutter Web ───────────────────────────────────────────
+FROM plugfox/flutter:3.22.2 AS build-env
 
-# Remover config padrão
+WORKDIR /app
+
+# Copia todo o projeto
+COPY . .
+
+# Instala dependências e compila para Web
+RUN flutter pub get
+RUN flutter build web --release --no-tree-shake-icons
+
+# ── Estágio 2: Servidor Nginx ──────────────────────────────────────────────────
+FROM nginx:1.25.5-alpine
+
+# Remove config padrão do Nginx
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copiar nossa config nginx customizada
+# Copia nossa config Nginx customizada (anti-cache, SPA routing, health check)
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copiar o build Flutter pré-compilado
-COPY build/web /usr/share/nginx/html
+# Copia os artefatos do Flutter Web compilados no estágio anterior
+COPY --from=build-env /app/build/web /usr/share/nginx/html
 
-# ── CRÍTICO: substituir o SW padrão do Flutter pelo destruidor customizado ────
-# O flutter build web gera um flutter_service_worker.js com cache agressivo.
-# Esse SW fica em cache no browser e interceta requests do Firebase → PlatformException.
-# O SW destruidor (web/flutter_service_worker.js) apaga todos os caches ao instalar,
-# quebrando o ciclo vicioso de cache stale. Deve ser aplicado SEMPRE após o COPY.
+# Sobrescreve o Service Worker padrão do Flutter pelo destruidor customizado.
+# O SW gerado pelo flutter build web usa cache agressivo que intercepta
+# requests do Firebase → PlatformException. O SW customizado apaga todos
+# os caches ao instalar, quebrando o ciclo de cache stale.
 COPY web/flutter_service_worker.js /usr/share/nginx/html/flutter_service_worker.js
 
-# ── PWA SW customizado: mantém a versão fonte acima do artifact build/web ─────
-# Evita que um build/web commitado com pwa-sw.js antigo volte a servir bundle stale.
+# Garante o PWA SW customizado sobre o artifact do build/web
 COPY web/pwa-sw.js /usr/share/nginx/html/pwa-sw.js
 
 # Health check
