@@ -893,7 +893,7 @@ a=!0
 break}}b=a0}}if(!a)if(b!=null)b.a.push(e)
 else l.push(e)}}if(a6.a.length!==0)a4.push(a6)
 return new A.Fe(a4)},
-bT(){return new A.qP(B.id,B.fj,B.ou,B.r2,B.kh)},
+bT(){return new A.qP(B.id,B.fk,B.ou,B.r2,B.kh)},
 dL(){var s=new v.G.window.flutterCanvasKit.Path()
 s.setFillType($.avW()[0])
 return A.bQ0(s,B.kI)},
@@ -10692,7 +10692,7 @@ ZD:function ZD(){},
 bQh(a,b,c,d,e,f,g,h,i){return new A.L_(c,h,d,e,g,f,i,b,a,null)},
 bQi(){var s,r=A.c6()
 $label0$0:{if(B.bM===r||B.cU===r||B.fU===r){s=70
-break $label0$0}if(B.eI===r||B.fr===r||B.fs===r){s=0
+break $label0$0}if(B.eI===r||B.fs===r||B.ft===r){s=0
 break $label0$0}s=null}return s},
 CS:function CS(a,b){this.a=a
 this.b=b},
@@ -11175,7 +11175,7 @@ _.y=l
 _.z=m},
 aj4:function aj4(){},
 co(a){var s=A.a([a],t.jl)
-return new A.De(null,null,!1,s,null,B.e1)},
+return new A.De(null,null,!1,s,null,B.e0)},
 p7(a){var s=A.a([a],t.jl)
 return new A.a4T(null,null,!1,s,null,B.amD)},
 LR(a){var s=A.a([a],t.jl)
@@ -11292,7 +11292,7 @@ _.T$=b
 _.ao$=_.bs$=0
 _.$ti=c},
 bQB(a,b){var s=null
-return A.kR("",s,b,B.f4,a,s,s,B.e1,!1,!1,!0,B.li,s,t.H)},
+return A.kR("",s,b,B.f4,a,s,s,B.e0,!1,!1,!0,B.li,s,t.H)},
 kR(a,b,c,d,e,f,g,h,i,j,k,l,m,n){var s
 if(g==null)s=i?"MISSING":null
 else s=g
@@ -11366,7 +11366,7 @@ s=$.a01().uC()
 $.av3=$.av3+s.length
 A.bYN(s)}if(!$.a01().gak(0)){$.bN5=!0
 $.av3=0
-A.dt(B.fy,A.clH())
+A.dt(B.fz,A.clH())
 if($.bF6==null)$.bF6=new A.bF(new A.aO($.aY,t.g),t.gR)}else{$.bOM().oj(0)
 r=$.bF6
 if(r!=null)r.fP(0)
@@ -11550,9 +11550,9 @@ caZ(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0,a1){return new A.rJ(a1,e,a0,i,f,b,j
 caX(a,b,c,d,e,f,g,h){return new A.zA(f,d,h,b,g,0,c,a,e,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,!1,null,null)},
 caY(a,b,c,d,e,f){return new A.zB(f,b,e,0,c,a,d,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,!1,null,null)},
 caW(a,b,c,d,e,f,g){return new A.aaZ(e,g,b,f,0,c,a,d,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,!1,null,null)},
-caT(a,b,c,d,e,f,g){return new A.rI(g,b,f,c,B.fl,a,d,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,e,null,null)},
-caU(a,b,c,d,e,f,g,h,i,j,k){return new A.zy(c,d,h,g,k,b,j,e,B.fl,a,f,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,i,null,null)},
-caS(a,b,c,d,e,f,g){return new A.zx(g,b,f,c,B.fl,a,d,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,e,null,null)},
+caT(a,b,c,d,e,f,g){return new A.rI(g,b,f,c,B.fm,a,d,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,e,null,null)},
+caU(a,b,c,d,e,f,g,h,i,j,k){return new A.zy(c,d,h,g,k,b,j,e,B.fm,a,f,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,i,null,null)},
+caS(a,b,c,d,e,f,g){return new A.zx(g,b,f,c,B.fm,a,d,B.I,0,!1,!1,1,1,1,0,0,0,0,0,0,0,0,0,0,e,null,null)},
 bTz(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0){return new A.zv(a0,e,s,i,f,b,j,B.I,a,!1,!1,0,l,k,c,d,q,m,p,o,n,h,r,0,!1,null,null)},
 x0(a,b){var s
 switch(a.a){case 1:return 1
@@ -15257,9 +15257,9 @@ if(a3==null)break $label0$0
 r=g
 q=t.n8.b(a3)
 if(q)r=a3
-if(q){s=new A.j5(A.U([B.aV,r.bh(0.1),B.aw,r.bh(0.08),B.aB,r.bh(0.1)],t.EK,t.d),t.GC)
+if(q){s=new A.j5(A.U([B.aV,r.bh(0.1),B.av,r.bh(0.08),B.aB,r.bh(0.1)],t.EK,t.d),t.GC)
 break $label0$0}}if(a0!=null){q=a0+2
-p=new A.j5(A.U([B.ak,0,B.aV,a0+6,B.aw,q,B.aB,q,B.l5,a0],t.Ag,t.i),t.JI)}else p=g
+p=new A.j5(A.U([B.ak,0,B.aV,a0+6,B.av,q,B.aB,q,B.l5,a0],t.Ag,t.i),t.JI)}else p=g
 q=A.lJ(c,d)
 o=A.lJ(a3,e)
 n=a7==null?g:new A.bV(a7,t.De)
@@ -15406,7 +15406,7 @@ r=k
 q=t.n8.b(b)
 if(q)r=b
 if(q){s=B.q.b9(25.5)
-s=new A.j5(A.U([B.aV,A.bm(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.aw,A.bm(20,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.aB,A.bm(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255)],t.EK,t.d),t.GC)
+s=new A.j5(A.U([B.aV,A.bm(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.av,A.bm(20,r.H()>>>16&255,r.H()>>>8&255,r.H()&255),B.aB,A.bm(s,r.H()>>>16&255,r.H()>>>8&255,r.H()&255)],t.EK,t.d),t.GC)
 break $label0$0}}q=A.lJ(a,k)
 p=A.lJ(b,k)
 o=A.lJ(k,k)
@@ -15643,7 +15643,7 @@ DJ(a,b,c,d,e,f,g,h,i,j,a0,a1,a2,a3,a4,a5,a6){var s,r,q,p,o,n,m,l,k=null
 if(h!=null){$label0$0:{s=h.bh(0.1)
 r=h.bh(0.08)
 q=h.bh(0.1)
-q=new A.j5(A.U([B.aV,s,B.aw,r,B.aB,q],t.EK,t.d),t.GC)
+q=new A.j5(A.U([B.aV,s,B.av,r,B.aB,q],t.EK,t.d),t.GC)
 s=q
 break $label0$0}p=s}else p=k
 s=A.lJ(b,k)
@@ -16867,7 +16867,7 @@ if(a4==null)break $label1$1
 q=f
 p=t.n8.b(a4)
 if(p)q=a4
-if(p){r=new A.j5(A.U([B.aV,q.bh(0.1),B.aw,q.bh(0.08),B.aB,q.bh(0.1)],t.EK,t.d),t.GC)
+if(p){r=new A.j5(A.U([B.aV,q.bh(0.1),B.av,q.bh(0.08),B.aB,q.bh(0.1)],t.EK,t.d),t.GC)
 break $label1$1}}p=b3==null?f:new A.bV(b3,t.uE)
 o=A.lJ(a4,e)
 n=a8==null?f:new A.bV(a8,t.De)
@@ -18502,7 +18502,7 @@ if(p){l=q?o:a9
 if(l==null)l=m.a(l)}else l=d
 if(!p){p=m.b(a6)
 if(p)l=a6}else p=!0
-if(p){p=new A.j5(A.U([B.aV,l.bh(0.1),B.aw,l.bh(0.08),B.aB,l.bh(0.1)],t.EK,t.d),t.GC)
+if(p){p=new A.j5(A.U([B.aV,l.bh(0.1),B.av,l.bh(0.08),B.aB,l.bh(0.1)],t.EK,t.d),t.GC)
 break $label2$2}p=n}n=b6==null?d:new A.bV(b6,t.uE)
 m=A.lJ(a6,a1)
 k=b1==null?d:new A.bV(b1,t.De)
@@ -18518,7 +18518,7 @@ if(r==null)r=14
 s=A.cM(a,B.cW)
 s=s==null?null:s.gde()
 if(s==null)s=B.b6
-return A.xu(B.ff,B.hk,B.na,r*s.a/14)},
+return A.xu(B.fg,B.hk,B.na,r*s.a/14)},
 FY:function FY(a,b,c,d,e,f,g,h,i,j,k,l,m){var _=this
 _.c=a
 _.d=b
@@ -19031,7 +19031,7 @@ _.at=n
 _.ax=o},
 asy:function asy(){},
 M(a){var s,r,q,p,o,n,m=null,l=a.a4(t.Nr),k=A.en(a,B.ca,t.A),j=k==null?m:k.gbH()
-if(j==null)j=B.aX
+if(j==null)j=B.aY
 s=a.a4(t.ri)
 r=l==null?m:l.w.c
 if(r==null)if(s!=null){q=s.w.c
@@ -19274,7 +19274,7 @@ return A.bMa(b5,r,b6,q,b7,new A.NM(c0,c1,c2,c3,c4,c5,c6,b8),b9,c7,c8,g6,s,g,f,c9
 bSF(a,b){return new A.a7E(a,b,B.EJ,b.a,b.b,b.c,b.d,b.e,b.f,b.r)},
 cdT(a){var s
 $label0$0:{if(B.cU===a||B.bM===a||B.fU===a){s=B.mr
-break $label0$0}if(B.fr===a||B.eI===a||B.fs===a){s=B.rb
+break $label0$0}if(B.fs===a||B.eI===a||B.ft===a){s=B.rb
 break $label0$0}s=null}return s},
 cdU(a,b,c){var s,r
 if(a===b)return a
@@ -19499,7 +19499,7 @@ if($.Aq.length!==0){s=A.a($.Aq.slice(0),A.S($.Aq))
 for(r=s.length,q=0;q<s.length;s.length===r||(0,A.a1)(s),++q)s[q].Af(B.aW)
 return!0}return!1},
 bUW(a){var s
-$label0$0:{if(B.eI===a||B.fr===a||B.fs===a){s=12
+$label0$0:{if(B.eI===a||B.fs===a||B.ft===a){s=12
 break $label0$0}if(B.cU===a||B.fU===a||B.bM===a){s=14
 break $label0$0}s=null}return s},
 akA:function akA(a,b,c,d,e,f){var _=this
@@ -19607,13 +19607,13 @@ break
 case B.cU:case B.fU:b=B.ehJ
 c=B.ehz
 break
-case B.fs:b=B.ehH
+case B.ft:b=B.ehH
 c=B.ehx
 break
 case B.eI:b=B.ehK
 c=B.ehw
 break
-case B.fr:b=B.ehF
+case B.fs:b=B.ehF
 c=B.ehE
 break
 case null:case void 0:break}b.toString
@@ -19854,10 +19854,10 @@ break
 default:s=null}return s},
 ch(a){var s
 $label0$0:{if(B.c_===a||B.bN===a){s=B.ai
-break $label0$0}if(B.fu===a||B.ic===a){s=B.bm
+break $label0$0}if(B.fv===a||B.ic===a){s=B.bm
 break $label0$0}s=null}return s},
 bIk(a){var s
-switch(a.a){case 0:s=B.fu
+switch(a.a){case 0:s=B.fv
 break
 case 1:s=B.ic
 break
@@ -19865,7 +19865,7 @@ default:s=null}return s},
 bYa(a){var s
 switch(a.a){case 0:s=B.bN
 break
-case 1:s=B.fu
+case 1:s=B.fv
 break
 case 2:s=B.c_
 break
@@ -19873,7 +19873,7 @@ case 3:s=B.ic
 break
 default:s=null}return s},
 wZ(a){var s
-$label0$0:{if(B.c_===a||B.fu===a){s=!0
+$label0$0:{if(B.c_===a||B.fv===a){s=!0
 break $label0$0}if(B.bN===a||B.ic===a){s=!1
 break $label0$0}s=null}return s},
 Fa:function Fa(a,b){this.a=a
@@ -19925,13 +19925,13 @@ _.e=e
 _.f=f
 _.r=g
 _.w=h},
-nO(a,b){var s=a.c,r=s===B.dX&&a.b===0,q=b.c===B.dX&&b.b===0
+nO(a,b){var s=a.c,r=s===B.dW&&a.b===0,q=b.c===B.dW&&b.b===0
 if(r&&q)return B.w
 if(r)return b
 if(q)return a
 return new A.aA(a.a,a.b+b.b,s,Math.max(a.d,b.d))},
 qG(a,b){var s,r=a.c
-if(!(r===B.dX&&a.b===0))s=b.c===B.dX&&b.b===0
+if(!(r===B.dW&&a.b===0))s=b.c===B.dW&&b.b===0
 else s=!0
 if(s)return!0
 return r===b.c&&a.a.m(0,b.a)},
@@ -20004,7 +20004,7 @@ n=b.c
 q.a.lineTo(n,o)
 m=f.b
 if(m===0)s.b=B.e5
-else{s.b=B.fj
+else{s.b=B.fk
 o+=m
 q.a.lineTo(n-e.b,o)
 q.a.lineTo(p+d.b,o)}a.a.j2(r,s)
@@ -20022,7 +20022,7 @@ n=b.d
 q.a.lineTo(p,n)
 m=e.b
 if(m===0)s.b=B.e5
-else{s.b=B.fj
+else{s.b=B.fk
 p-=m
 q.a.lineTo(p,n-c.b)
 q.a.lineTo(p,o+f.b)}a.a.j2(r,s)
@@ -20040,7 +20040,7 @@ n=b.a
 q.a.lineTo(n,o)
 m=c.b
 if(m===0)s.b=B.e5
-else{s.b=B.fj
+else{s.b=B.fk
 o-=m
 q.a.lineTo(n+d.b,o)
 q.a.lineTo(p-e.b,o)}a.a.j2(r,s)
@@ -20058,7 +20058,7 @@ n=b.b
 q.a.lineTo(p,n)
 m=d.b
 if(m===0)s.b=B.e5
-else{s.b=B.fj
+else{s.b=B.fk
 p+=m
 q.a.lineTo(p,n+f.b)
 q.a.lineTo(p,o-c.b)}a.a.j2(r,s)
@@ -22473,7 +22473,7 @@ s.bd()
 s.sbS(null)
 return s},
 aVi(a,b){return a},
-cbz(a,b,c,d,e,f){var s=b==null?B.aZ:b
+cbz(a,b,c,d,e,f){var s=b==null?B.aX:b
 s=new A.PH(!0,c,e,d,a,s,null,new A.bJ(),A.b8(t.T))
 s.bd()
 s.sbS(null)
@@ -25292,8 +25292,8 @@ q=null
 p=s.b
 q=p
 return A.eF(a,b,d,null,r,q,g,h)},
-w(a,b,c,d,e,f){return new A.hJ(B.bm,c,d,b,f,B.dW,e,0,a,null)},
-x(a,b,c,d){return new A.it(B.ai,c,d,b,null,B.dW,null,0,a,null)},
+w(a,b,c,d,e,f){return new A.hJ(B.bm,c,d,b,f,B.dV,e,0,a,null)},
+x(a,b,c,d){return new A.it(B.ai,c,d,b,null,B.dV,null,0,a,null)},
 I(a,b){return new A.h3(b,B.hM,a,null)},
 dB(a,b,c,d,e){return new A.Gy(a,e,d,c,b,null)},
 oh(a,b,c,d,e,f,g,h,i,j,k,l,m,n){return new A.PZ(i,j,k,g,d,A.bU2(m,1),c,b,h,n,l,f,e,A.bVh(i,A.bU2(m,1)),a)},
@@ -26058,7 +26058,7 @@ m.a=B.dEo
 s=A.a([],t.RW)
 r=A.c6()
 $label0$0:{if(B.cU===r||B.bM===r){q=!0
-break $label0$0}if(B.fU===r||B.fr===r||B.eI===r||B.fs===r){q=!1
+break $label0$0}if(B.fU===r||B.fs===r||B.eI===r||B.ft===r){q=!1
 break $label0$0}q=p}return new A.ur(new A.cQ(!0,o,t.uh),new A.cc(p,n),new A.atx(B.yb,B.yc,o),new A.cc(p,n),new A.E8(),new A.E8(),new A.E8(),m,s,q,p,p,p)},
 c5t(a){var s=a==null,r=s?null:a.a,q=s||a.m(0,B.fS)
 s=r==null
@@ -29030,23 +29030,23 @@ if(d==null){if(e!==!0)if(e==null)s=b==null
 else s=!1
 else s=!0
 s=s?B.l_:r}else s=d
-return new A.a3W(f,B.ai,!1,b,e,s,r,!1,a,0,r,r,B.t,r,r,B.G,B.aZ,c)},
+return new A.a3W(f,B.ai,!1,b,e,s,r,!1,a,0,r,r,B.t,r,r,B.G,B.aX,c)},
 n2(a,b,c,d,e,f,g){var s,r=null,q=A.ad1(a,!0,!0,!0),p=a.length
 if(d==null){if(e!==!0)s=e==null&&b==null&&f===B.ai
 else s=!0
 s=s?B.l_:r}else s=d
-return new A.uV(q,c,f,!1,b,e,s,r,g,r,0,r,p,B.t,r,r,B.G,B.aZ,r)},
+return new A.uV(q,c,f,!1,b,e,s,r,g,r,0,r,p,B.t,r,r,B.G,B.aX,r)},
 jj(a,b,c,d,e,f,g,h,i,j,k,l){var s,r=null
 if(j==null){s=d==null&&k===B.ai
 s=s?B.l_:r}else s=j
-return new A.uV(new A.ni(e,f,!0,!0,!0,A.x4(),r),i,k,!1,d,r,s,r,l,r,0,c,f,B.t,h,r,B.G,B.aZ,g)},
+return new A.uV(new A.ni(e,f,!0,!0,!0,A.x4(),r),i,k,!1,d,r,s,r,l,r,0,c,f,B.t,h,r,B.G,B.aX,g)},
 rs(a,b,c,d,e,f,g,h){var s=null,r=Math.max(0,d*2-1),q=b==null&&f===B.ai
 q=q?B.l_:s
-return new A.uV(new A.ni(new A.aMU(c,g),r,!0,!0,!0,new A.aMV(),s),e,f,!1,b,s,q,s,h,s,0,s,d,B.t,s,s,a,B.aZ,s)},
+return new A.uV(new A.ni(new A.aMU(c,g),r,!0,!0,!0,new A.aMV(),s),e,f,!1,b,s,q,s,h,s,0,s,d,B.t,s,s,a,B.aX,s)},
 bRE(a,b,c,d){var s,r=null
 if(c==null)s=B.l_
 else s=c
-return new A.DH(b,a,r,B.ai,!1,r,r,s,r,d,r,0,r,r,B.t,r,r,B.G,B.aZ,r)},
+return new A.DH(b,a,r,B.ai,!1,r,r,s,r,d,r,0,r,r,B.t,r,r,B.G,B.aX,r)},
 acx:function acx(a,b){this.a=a
 this.b=b},
 acw:function acw(){},
@@ -30884,7 +30884,7 @@ h.$flags=1
 s=h.length===0?21:22
 break
 case 21:s=23
-return A.n(A.aGh(A.a49()).e4(0,B.fz),$async$tJ)
+return A.n(A.aGh(A.a49()).e4(0,B.fA),$async$tJ)
 case 23:case 22:q=1
 s=20
 break
@@ -31952,7 +31952,7 @@ s=A.c2(A.q(s,",","."))
 return s==null?0:s},
 c8X(a){switch(a==null?null:J.aE(a).toLowerCase()){case"low":return B.aLk
 case"high":return B.lB
-case"critical":return B.dT
+case"critical":return B.dS
 default:return B.kr}},
 E6:function E6(a,b){this.a=a
 this.b=b},
@@ -36728,7 +36728,7 @@ bMs(a,b,c,d,e,f,g){return new A.agG(e,c,a,g,d,f,null)},
 ciT(a){var s,r,q=a.toLowerCase()
 for(s=0;s<39;++s){r=B.b2X[s]
 if(A.ez(q,r,0))return B.aT}for(s=0;s<47;++s){r=B.bY6[s]
-if(A.ez(q,r,0))return B.aY}return B.Z},
+if(A.ez(q,r,0))return B.aZ}return B.Z},
 bMx(a,b,c,d,e,f,g,h,i,j,k,l){return new A.ait(e,f,g,d,c,j,k,l,i,b,a,h,null)},
 Na:function Na(a,b){this.c=a
 this.a=b},
@@ -40511,7 +40511,7 @@ case 8:if(!(a6<a.length)){s=10
 break}l=a[a6]
 p=12
 s=15
-return A.n(A.mD(A.cq(a2+A.t(l)+"?pageSize=300",0,null),A.U(["Authorization","Bearer "+A.t(m)],a3,a3)).e4(0,B.fz),$async$qF)
+return A.n(A.mD(A.cq(a2+A.t(l)+"?pageSize=300",0,null),A.U(["Authorization","Bearer "+A.t(m)],a3,a3)).e4(0,B.fA),$async$qF)
 case 15:k=b9
 s=k.b===200?16:17
 break
@@ -40543,7 +40543,7 @@ case 14:case 9:a.length===a0||(0,A.a1)(a),++a6
 s=8
 break
 case 10:s=21
-return A.n(A.a_H(A.cq(a1,0,null),A.U(["Authorization","Bearer "+A.t(m)],a3,a3)).e4(0,B.fz),$async$qF)
+return A.n(A.a_H(A.cq(a1,0,null),A.U(["Authorization","Bearer "+A.t(m)],a3,a3)).e4(0,B.fA),$async$qF)
 case 21:e=b9
 if(e.b>=300&&e.b!==404){d=""
 try{a=e
@@ -40561,7 +40561,7 @@ case 22:p=25
 a=A.cq("https://identitytoolkit.googleapis.com/v1/accounts:delete?key=AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18",0,null)
 a0=A.U(["Content-Type","application/json"],a3,a3)
 s=28
-return A.n(A.qq(a,B.aq.ei(A.U(["idToken",b],a3,a3),null),a0).e4(0,B.fz),$async$qF)
+return A.n(A.qq(a,B.aq.ei(A.U(["idToken",b],a3,a3),null),a0).e4(0,B.fA),$async$qF)
 case 28:p=4
 s=27
 break
@@ -41612,7 +41612,7 @@ j=A.cq("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(def
 i=t.N
 h=A.U(["Authorization","Bearer "+A.t(n),"Content-Type","application/json"],i,i)
 s=8
-return A.n(A.C4(j,B.aq.ei(A.U(["fields",A.U(["geminiPaidEnabled",A.U(["booleanValue",a],i,t.y)],i,t.Yl)],i,t.XB),null),h).e4(0,B.fz),$async$a5w)
+return A.n(A.C4(j,B.aq.ei(A.U(["fields",A.U(["geminiPaidEnabled",A.U(["booleanValue",a],i,t.y)],i,t.Yl)],i,t.XB),null),h).e4(0,B.fA),$async$a5w)
 case 8:m=c
 if(m.b===200){A.a5().$1("[ADMIN_AI_TOGGLE] OK \u2192 app_config/global.geminiPaidEnabled="+k)
 A.a5().$1("[ADMIN_AI_KEY] saved=true provider=gemini_paid status="+(a?"online":"offline"))}else{k=m
@@ -42450,11 +42450,11 @@ h=a==null
 s=h?7:9
 break
 case 7:s=10
-return A.n(J.aw8(n).e4(0,B.fz),$async$Dt)
+return A.n(J.aw8(n).e4(0,B.fA),$async$Dt)
 case 10:s=8
 break
 case 9:s=11
-return A.n(J.bJ7(n,new A.DG(a)).e4(0,B.fz),$async$Dt)
+return A.n(J.bJ7(n,new A.DG(a)).e4(0,B.fA),$async$Dt)
 case 11:case 8:m=a2
 l=null
 try{l=A.c6i(m.gii())}catch(a0){l=B.hU}k=null
@@ -42942,7 +42942,7 @@ case 7:n=b
 i=t.N
 m=J.as(n)!==0?A.U(["Authorization","Bearer "+A.t(n)],i,i):A.R(i,i)
 s=8
-return A.n(A.mD(A.cq("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_config/emailjs",0,null),m).e4(0,B.fz),$async$a5d)
+return A.n(A.mD(A.cq("https://firestore.googleapis.com/v1/projects/medcases-pro/databases/(default)/documents/app_config/emailjs",0,null),m).e4(0,B.fA),$async$a5d)
 case 8:l=b
 if(l.b===404){q=A.R(i,i)
 s=1
@@ -43170,11 +43170,11 @@ d=a4==null
 s=d?7:9
 break
 case 7:s=10
-return A.n(J.aw8(n).e4(0,B.fz),$async$rd)
+return A.n(J.aw8(n).e4(0,B.fA),$async$rd)
 case 10:s=8
 break
 case 9:s=11
-return A.n(J.bJ7(n,new A.DG(a4)).e4(0,B.fz),$async$rd)
+return A.n(J.bJ7(n,new A.DG(a4)).e4(0,B.fA),$async$rd)
 case 11:case 8:m=a7
 l=null
 try{l=A.a5e(A.aGG(m.gii()))}catch(a5){l=B.kA}s=J.as(l)!==0?12:13
@@ -43230,11 +43230,11 @@ d=a4==null
 s=d?23:25
 break
 case 23:s=26
-return A.n(J.aw8(i).e4(0,B.fz),$async$rd)
+return A.n(J.aw8(i).e4(0,B.fA),$async$rd)
 case 26:s=24
 break
 case 25:s=27
-return A.n(J.bJ7(i,new A.DG(a4)).e4(0,B.fz),$async$rd)
+return A.n(J.bJ7(i,new A.DG(a4)).e4(0,B.fA),$async$rd)
 case 27:case 24:h=a7
 g=null
 try{g=A.a5e(A.aGG(h.gii()))}catch(a5){g=B.kA}s=J.as(g)!==0?28:29
@@ -44177,14 +44177,14 @@ o.push(new A.pk(s,e,a6,p?"Correcci\xf3n de Katz aplicada (glucosa = "+B.q.a1(j,0
 a2=a1<8.5||a1>10.5
 s=p?"Calcio Corregido (Albumina)":"C\xe1lcio Corrigido (Albumina)"
 e=A.lA(B.q.a1(a1,2))
-if(a2)d=a1>13||a1<6.5?B.dT:B.lB
+if(a2)d=a1>13||a1<6.5?B.dS:B.lB
 else d=B.kr
 o.push(new A.pk(s,e,"mg/dL",p?"Correcci\xf3n por albumina s\xe9rica (albumina = "+B.q.a1(k,1)+" g/dL). Recomendada para evaluaci\xf3n en hipoalbuminemia. (Faja de referencia corregida: 8.5\u201310.5 mg/dL)":"Corre\xe7\xe3o pela albumina s\xe9rica (albumina = "+B.q.a1(k,1)+" g/dL). Recomendada na avalia\xe7\xe3o em hipoalbuminemia. (Faixa de refer\xeancia corrigida: 8,5\u201310,5 mg/dL)",d))}if(a8&&j!=null&&h!=null){a3=2*n+j/18+h/2.8
 a4=a3>295
 a5=a3>320
 a8=p?"Osmolaridad Plasm\xe1tica Calculada":"Osmolaridade Plasm\xe1tica Calculada"
 s=A.lA(B.q.a1(a3,2))
-if(a5)e=B.dT
+if(a5)e=B.dS
 else e=a4?B.lB:B.kr
 if(p)if(a5)d="Hiperosmolaridad grave (>320 mOsm/kg). Compatible con estado hiperosmolar hipergluc\xe9mico u otras causas de hiperosmolaridad. Requiere evaluaci\xf3n urgente y reposici\xf3n h\xeddrica guiada."
 else d=a4?"Osmolaridad levemente elevada (>295 mOsm/kg). Evaluar estado de hidrataci\xf3n, ingesta de solutos y posibles causas subyacentes.":"Osmolaridad dentro del rango de referencia (275\u2013295 mOsm/kg)."
@@ -44266,7 +44266,7 @@ if(s!==0){b4+=o?"\n\u2022 Par\xe1metros calculados: ":"\n\u2022 Par\xe2metros ca
 for(r=0;r<b6.length;b6.length===s||(0,A.a1)(b6),++r){a3=b6[r]
 b4+=a3.a+" = "+B.q.a1(a3.b,2)+" "+a3.c
 q=a3.e
-if(q===B.lB||q===B.dT)b4+=" \u26a0\ufe0f (alterado)"
+if(q===B.lB||q===B.dS)b4+=" \u26a0\ufe0f (alterado)"
 b4+=". "}}s=o?"\n\u26a0\ufe0f Resultado extra\xeddo autom\xe1ticamente. Cotejar con el examen original antes de cualquier decisi\xf3n cl\xednica. Requiere correlaci\xf3n directa con el cuadro cl\xednico y el historial del paciente.":"\n\u26a0\ufe0f Resultado extra\xeddo automaticamente. Conferir com o exame original antes de qualquer decis\xe3o cl\xednica. Requer correla\xe7\xe3o direta com o quadro cl\xednico e o hist\xf3rico do paciente."
 s=b4+"\n"+(s+"\n")
 return s.charCodeAt(0)==0?s:s},
@@ -44424,30 +44424,30 @@ return A.c8P(p,b)},
 c8S(a){var s,r=A.bSk(a.a),q=a.c
 if(r==="potassium")s=q>=6.5||q<2.5
 else s=!1
-if(s)return B.dT
+if(s)return B.dS
 if(r==="sodium")s=q<120||q>160
 else s=!1
-if(s)return B.dT
+if(s)return B.dS
 if(r==="glucose")s=q<50||q>600
 else s=!1
-if(s)return B.dT
+if(s)return B.dS
 if(r==="ph")s=q<7.1||q>7.6
 else s=!1
-if(s)return B.dT
-if(r==="lactate"&&q>=4)return B.dT
-if(r==="hemoglobin"&&q<7)return B.dT
-if(r==="platelets"&&q<2e4)return B.dT
+if(s)return B.dS
+if(r==="lactate"&&q>=4)return B.dS
+if(r==="hemoglobin"&&q<7)return B.dS
+if(r==="platelets"&&q<2e4)return B.dS
 if(r==="paco2")s=q<20||q>70
 else s=!1
-if(s)return B.dT
-if(r==="pao2"&&q<50)return B.dT
+if(s)return B.dS
+if(r==="pao2"&&q<50)return B.dS
 if(r==="calcium")s=q<6.5||q>13
 else s=!1
-if(s)return B.dT
+if(s)return B.dS
 if(r==="magnesium")s=q<0.8||q>4
 else s=!1
-if(s)return B.dT
-if(r==="inr"&&q>5)return B.dT
+if(s)return B.dS
+if(r==="inr"&&q>5)return B.dS
 return a.f},
 bL6(a){return'Voc\xea \xe9 um extrator especializado de laudos laboratoriais m\xe9dicos para o MedCases Pro.\n\nTAREFA: Analise o conte\xfado fornecido (texto, imagem ou PDF) e retorne EXCLUSIVAMENTE um array JSON.\nCada objeto do array representa UM par\xe2metro laboratorial com os campos abaixo:\n\n{\n  "examKey":        string  // OBRIGAT\xd3RIO \u2014 chave inglesa snake_case (ex: "sodium", "potassium", "hemoglobin")\n  "examName":       string  // OBRIGAT\xd3RIO \u2014 nome leg\xedvel no idioma do usu\xe1rio (ver instru\xe7\xe3o abaixo)\n  "value":          number  // OBRIGAT\xd3RIO \u2014 valor num\xe9rico (use ponto como decimal, nunca v\xedrgula)\n  "unit":           string  // OBRIGAT\xd3RIO \u2014 unidade (ex: "mEq/L", "mg/dL", "g/dL", "%", "x10\xb3/\xb5L")\n  "referenceRange": string  // OPCIONAL \u2014 faixa de refer\xeancia do laudo (ex: "135-145")\n  "status":         string  // OBRIGAT\xd3RIO \u2014 "low" | "normal" | "high" | "critical"\n  "confidence":     number  // OBRIGAT\xd3RIO \u2014 0.0 a 1.0: certeza da extra\xe7\xe3o OCR\n  "originalText":   string  // OBRIGAT\xd3RIO \u2014 trecho literal capturado do laudo\n}\n\nINSTRU\xc7\xd5ES CR\xcdTICAS:\n1. examKey: sempre em ingl\xeas snake_case min\xfasculo. Nunca em PT ou ES.\n   Exemplos corretos: "sodium", "potassium", "creatinine", "base_excess", "paco2"\n   Exemplos ERRADOS: "sodio", "pot\xe1ssio", "creatinina"\n\n2. '+(a.toLowerCase()==="es"?'Preencha "examName" obrigatoriamente em ESPANHOL (ex: S\xf3dio \u2192 Sodio, Ureia \u2192 Urea, Hemoglobina \u2192 Hemoglobina, Plaquetas \u2192 Plaquetas, Leuc\xf3citos \u2192 Leucocitos).':'Preencha "examName" obrigatoriamente em PORTUGU\xcaS (ex: Sodium \u2192 S\xf3dio, Urea \u2192 Ureia, Hemoglobin \u2192 Hemoglobina, Platelets \u2192 Plaquetas, WBC \u2192 Leuc\xf3citos).')+'\n\n3. value: converta v\xedrgula decimal para ponto. Se o valor for amb\xedguo ou ileg\xedvel, use 0 e confidence < 0.5.\n\n4. status: avalie conforme a faixa de refer\xeancia do laudo. Se n\xe3o houver refer\xeancia, use limites cl\xednicos universais.\n\n5. confidence: reflita a legibilidade real:\n   - Texto digital n\xedtido: 0.95\u20131.0\n   - Texto manuscrito ou PDF escaneado: 0.75\u20130.90\n   - Foto com ru\xeddo/borramento: 0.50\u20130.75\n   - Valor ileg\xedvel: < 0.50\n\n6. Inclua TODOS os par\xe2metros encontrados, mesmo os normais.\n\n7. Retorne APENAS o array JSON limpo. Sem markdown, sem coment\xe1rios, sem texto introdut\xf3rio.\n   Exemplo de sa\xedda v\xe1lida: [{"examKey":"sodium","examName":"S\xf3dio",...}, ...]\n'},
 bL5(){var s=t.N
@@ -45723,7 +45723,7 @@ return s}catch(r){return null}},
 bXF(a){var s,r,q=a.toLowerCase()
 for(s=0;s<40;++s){r=B.box[s]
 if(A.ez(q,r,0))return B.aT}for(s=0;s<47;++s){r=B.bY5[s]
-if(A.ez(q,r,0))return B.aY}return B.T},
+if(A.ez(q,r,0))return B.aZ}return B.T},
 bMO(a,b,c,d,e,f,g,h,i,j,k,l){return new A.aru(e,f,g,d,c,j,k,l,i,b,a,h,null)},
 akH(a,b,c,d,e,f,g){return new A.akG(f,e,c,d,b,g,a,null)},
 cm_(a){A.ey(B.Q,new A.bHM(),a,!0,!0,!0,null,!1,t.z)},
@@ -50427,11 +50427,11 @@ switch(a.a){case 1:s=B.cU
 break
 case 0:s=B.bM
 break
-case 2:s=B.fr
+case 2:s=B.fs
 break
 case 4:s=B.eI
 break
-case 3:s=B.fs
+case 3:s=B.ft
 break
 case 5:s=B.cU
 break
@@ -54496,7 +54496,7 @@ r=o.goR()
 t.Xy.a(b)
 q=b==null?null:J.X(b,"state")
 p=t.z
-s.m9("flutter/navigation",B.fv.mK(new A.n5("pushRouteInformation",A.U(["location",r,"state",q],p,p))),new A.aRe())},
+s.m9("flutter/navigation",B.fw.mK(new A.n5("pushRouteInformation",A.U(["location",r,"state",q],p,p))),new A.aRe())},
 o4(){var s=0,r=A.C(t.H),q,p=this,o,n,m
 var $async$o4=A.y(function(a,b){if(a===1)return A.z(b,r)
 while(true)switch(s){case 0:p.n()
@@ -54533,10 +54533,10 @@ U1(a,b){var s,r=this,q="flutter/navigation"
 if(A.bUf(b)){s=r.d
 s.toString
 r.aGT(s)
-$.c9().m9(q,B.fv.mK(B.dC3),new A.aYW())}else if(A.bLU(b)){s=r.f
+$.c9().m9(q,B.fw.mK(B.dC3),new A.aYW())}else if(A.bLU(b)){s=r.f
 s.toString
 r.f=null
-$.c9().m9(q,B.fv.mK(new A.n5("pushRoute",s)),new A.aYX())}else{r.f=r.goR()
+$.c9().m9(q,B.fw.mK(new A.n5("pushRoute",s)),new A.aYX())}else{r.f=r.goR()
 r.d.DF(0,-1)}},
 PA(a,b,c){var s
 if(b==null)b=this.goR()
@@ -54666,7 +54666,7 @@ if(a==="dev.flutter/channel-buffers")try{s=$.a03()
 b.toString
 s.aPS(b)}finally{c.$1(null)}else $.a03().acB(a,b,c)},
 aGD(a0,a1,a2){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b=this,a=null
-switch(a0){case"flutter/skia":s=B.fv.lU(a1)
+switch(a0){case"flutter/skia":s=B.fw.lU(a1)
 switch(s.a){case"Skia.setResourceCacheMaxBytes":$.aX()
 r=A.cZ(s.b)
 q=$.a1j.c2()
@@ -54676,7 +54676,7 @@ break}return
 case"flutter/assets":a1.toString
 b.zt(B.bp.cE(0,J.qu(B.dJ.gdr(a1))),a2)
 return
-case"flutter/platform":s=B.fv.lU(a1)
+case"flutter/platform":s=B.fw.lU(a1)
 switch(s.a){case"SystemNavigator.pop":q=t.e8
 if(q.a(b.gf2().b.h(0,0))!=null)q.a(b.gf2().b.h(0,0)).gHH().BG().bL(new A.aEW(b,a2),t.P)
 else b.iM(a2,B.cP.e1([!0]))
@@ -54718,7 +54718,7 @@ k.dispatchEvent(j)
 return
 case"flutter/textinput":$.a06().gAZ(0).aQu(a1,a2)
 return
-case"flutter/contextmenu":switch(B.fv.lU(a1).a){case"enableContextMenu":t.e8.a(b.gf2().b.h(0,0)).ga8w().aOB(0)
+case"flutter/contextmenu":switch(B.fw.lU(a1).a){case"enableContextMenu":t.e8.a(b.gf2().b.h(0,0)).ga8w().aOB(0)
 b.iM(a2,B.cP.e1([!0]))
 return
 case"disableContextMenu":t.e8.a(b.gf2().b.h(0,0)).ga8w().lX(0)
@@ -54735,7 +54735,7 @@ if(i==null)i="default"
 q=v.G
 if(i==="default")q.document.body.style.removeProperty("cursor")
 else A.aM(q.document.body.style,"cursor",i)}break}return
-case"flutter/web_test_e2e":b.iM(a2,B.cP.e1([A.chy(B.fv,a1)]))
+case"flutter/web_test_e2e":b.iM(a2,B.cP.e1([A.chy(B.fw,a1)]))
 return
 case"flutter/platform_views":h=B.mA.lU(a1)
 o=a
@@ -55160,7 +55160,7 @@ r=r.timeStamp
 r.toString
 if(s-r<50&&m.d)return!0}return!1}}return!0},
 aqz(a){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c=this,b=null
-if(c.azg(a)){s=B.fl
+if(c.azg(a)){s=B.fm
 r=-2}else{s=B.hu
 r=-1}q=a.deltaX
 p=a.deltaY
@@ -55224,7 +55224,7 @@ g=d==null?g.gef():d
 d=a.buttons
 d.toString
 o.aMn(k,J.bf(d),B.m4,r,s,new A.bEs(c),h*e,j.b*g,1,1,q,p,B.dFH,i,m)}c.c=a
-c.d=s===B.fl
+c.d=s===B.fm
 return k},
 ayk(a){var s=this,r=$.dF
 if(!(r==null?$.dF=A.ib():r).Uw(a))return
@@ -55303,15 +55303,15 @@ s=B.d.i_(s,t.m)
 r=new A.eK(s.a,s.$ti.i("eK<1,at>"))
 if(!r.gak(r))return r}return A.a([a],t._)},
 a3g(a){switch(a){case"mouse":return B.hu
-case"pen":return B.fk
+case"pen":return B.fl
 case"touch":return B.es
 default:return B.i3}},
 vH(a){var s,r=a.pointerType
 r.toString
 s=this.a3g(r)
 $label0$0:{if(B.hu===s){r=-1
-break $label0$0}if(B.fk===s||B.j0===s){r=-4
-break $label0$0}r=B.fl===s?A.aB(A.d_("Unreachable")):null
+break $label0$0}if(B.fl===s||B.j0===s){r=-4
+break $label0$0}r=B.fm===s?A.aB(A.d_("Unreachable")):null
 if(B.es===s||B.i3===s){r=a.pointerId
 r.toString
 r=J.bf(r)
@@ -57787,7 +57787,7 @@ if(r.h(0,q)==null)throw A.p(A.aK("AutofillInfo must have a valid uniqueIdentifie
 else{r=r.h(0,q)
 r.toString
 s=A.bQY(this.c)
-$.c9().m9("flutter/textinput",B.fv.mK(new A.n5(u.iY,[0,A.U([r.b,s.adx()],t.D,t.z)])),A.av6())}},
+$.c9().m9("flutter/textinput",B.fw.mK(new A.n5(u.iY,[0,A.U([r.b,s.adx()],t.D,t.z)])),A.av6())}},
 $S:6}
 A.a0L.prototype={
 a7w(a,b){var s,r=this.d,q=this.e,p=A.m4(a,"HTMLInputElement")
@@ -58292,13 +58292,13 @@ if(a.c){a.c=!1
 a.gl2().lX(0)
 a.gAZ(0)
 s=a.b
-$.c9().m9("flutter/textinput",B.fv.mK(new A.n5("TextInputClient.onConnectionClosed",[s])),A.av6())}if(this.a)A.clP()
+$.c9().m9("flutter/textinput",B.fw.mK(new A.n5("TextInputClient.onConnectionClosed",[s])),A.av6())}if(this.a)A.clP()
 A.cjv()}}
 A.bHv.prototype={
 $2(a,b){new A.AM(b.getElementsByClassName("submitBtn"),t.s5).gW(0).click()},
 $S:775}
 A.b09.prototype={
-aQu(a,b){var s,r,q,p,o,n,m,l,k=B.fv.lU(a)
+aQu(a,b){var s,r,q,p,o,n,m,l,k=B.fw.lU(a)
 switch(k.a){case"TextInput.setClient":s=k.b
 s.toString
 t.W.a(s)
@@ -58372,15 +58372,15 @@ if(p.d.r){p.gAZ(0)
 p=p.b
 s=t.N
 r=t.z
-$.c9().m9(q,B.fv.mK(new A.n5(u.z6,[p,A.U(["deltas",A.a([A.U(["oldText",b.a,"deltaText",b.b,"deltaStart",b.c,"deltaEnd",b.d,"selectionBase",b.e,"selectionExtent",b.f,"composingBase",b.r,"composingExtent",b.w],s,r)],t.H7)],s,r)])),A.av6())}else{p.gAZ(0)
+$.c9().m9(q,B.fw.mK(new A.n5(u.z6,[p,A.U(["deltas",A.a([A.U(["oldText",b.a,"deltaText",b.b,"deltaStart",b.c,"deltaEnd",b.d,"selectionBase",b.e,"selectionExtent",b.f,"composingBase",b.r,"composingExtent",b.w],s,r)],t.H7)],s,r)])),A.av6())}else{p.gAZ(0)
 p=p.b
-$.c9().m9(q,B.fv.mK(new A.n5("TextInputClient.updateEditingState",[p,a.adx()])),A.av6())}},
+$.c9().m9(q,B.fw.mK(new A.n5("TextInputClient.updateEditingState",[p,a.adx()])),A.av6())}},
 $S:780}
 A.aKm.prototype={
 $1(a){var s=this.a
 s.gAZ(0)
 s=s.b
-$.c9().m9("flutter/textinput",B.fv.mK(new A.n5("TextInputClient.performAction",[s,a])),A.av6())},
+$.c9().m9("flutter/textinput",B.fw.mK(new A.n5("TextInputClient.performAction",[s,a])),A.av6())},
 $S:37}
 A.aEu.prototype={
 j1(a){var s=this,r=a.style
@@ -58872,7 +58872,7 @@ return A.B($async$SS,r)}}
 A.aEQ.prototype={
 $0(){var s=0,r=A.C(t.y),q,p=this,o,n,m,l,k,j,i,h
 var $async$$0=A.y(function(a,b){if(a===1)return A.z(b,r)
-while(true)switch(s){case 0:i=B.fv.lU(p.b)
+while(true)switch(s){case 0:i=B.fw.lU(p.b)
 h=t.nA.a(i.b)
 case 3:switch(i.a){case"selectMultiEntryHistory":s=5
 break
@@ -67316,7 +67316,7 @@ A.IX.prototype={
 k(a){return this.a}}
 A.Kt.prototype={
 q(a){var s=this,r=null,q=s.gaAX(),p=A.aW2(r,r,s.c)
-return new A.Ox(p,r,q,r,s.gaAV(),B.aW,B.fy,B.dQ,B.hj,B.iw,s.ay,s.ch,s.CW,B.ad,B.kq,!1,r,r,B.Kq,!1,r)},
+return new A.Ox(p,r,q,r,s.gaAV(),B.aW,B.fz,B.dQ,B.hj,B.iw,s.ay,s.ch,s.CW,B.ad,B.kq,!1,r,r,B.Kq,!1,r)},
 aAY(a){return this.w.$2(a,this.e)},
 aAW(a,b,c){return this.y.$3(a,this.e,b)}}
 A.qM.prototype={
@@ -67340,7 +67340,7 @@ return A.az(s.b,s.d,s.r,s.w,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,B.b,
 k(a){return'CachedNetworkImageProvider("'+this.b+'", scale: '+this.d+")"}}
 A.azY.prototype={
 $0(){var s=null
-return A.a([A.kR("Image provider",this.a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.li,s,t.bi),A.kR("Image key",this.b,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.li,s,t.wU)],t.E)},
+return A.a([A.kR("Image provider",this.a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.li,s,t.bi),A.kR("Image key",this.b,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.li,s,t.wU)],t.E)},
 $S:35}
 A.azW.prototype={
 $0(){var s=$.na.qB$
@@ -67349,7 +67349,7 @@ return s.Sk(this.a)},
 $S:0}
 A.azZ.prototype={
 $0(){var s=null
-return A.a([A.kR("Image provider",this.a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.li,s,t.bi),A.kR("Image key",this.b,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.li,s,t.wU)],t.E)},
+return A.a([A.kR("Image provider",this.a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.li,s,t.bi),A.kR("Image key",this.b,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.li,s,t.wU)],t.E)},
 $S:35}
 A.azX.prototype={
 $0(){var s=$.na.qB$
@@ -71113,12 +71113,12 @@ return this.a=new A.Qv(b.a,b.b,b.c,b.d,s,r)}}
 A.mI.prototype={
 P(){return"AnimationStatus."+this.b},
 gma(){var s,r=this
-$label0$0:{if(B.hc===r||B.ft===r){s=!0
+$label0$0:{if(B.hc===r||B.fu===r){s=!0
 break $label0$0}if(B.bT===r||B.bh===r){s=!1
 break $label0$0}s=null}return s},
 gu8(){var s,r=this
 $label0$0:{if(B.hc===r||B.bT===r){s=!0
-break $label0$0}if(B.ft===r||B.bh===r){s=!1
+break $label0$0}if(B.fu===r||B.bh===r){s=!1
 break $label0$0}s=null}return s}}
 A.cx.prototype={
 gma(){return this.gbz(this).gma()},
@@ -71155,7 +71155,7 @@ if(p===r)s.Q=B.bh
 else if(p===q)s.Q=B.bT
 else{switch(s.z.a){case 0:r=B.hc
 break
-case 1:r=B.ft
+case 1:r=B.fu
 break
 default:r=null}s.Q=r}},
 gma(){var s=this.r
@@ -71209,7 +71209,7 @@ s=o===p?0:(A.af(s,p,o)-p)/(o-p)*r
 return q.GL(new A.by7(p,o,b,null,q.garC(),r,s,B.jb))},
 o3(a){return this.UC(0,!1)},
 arD(a){this.z=a
-this.Q=a===B.du?B.hc:B.ft
+this.Q=a===B.du?B.hc:B.fu
 this.z0()},
 tW(a){var s,r,q,p,o,n,m=this,l=$.c0U(),k=a<0
 m.z=k?B.rc:B.du
@@ -71237,7 +71237,7 @@ r.w=a
 r.y=B.aW
 r.x=A.af(a.i6(0,0),r.a,r.b)
 s=r.r.oj(0)
-r.Q=r.z===B.du?B.hc:B.ft
+r.Q=r.z===B.du?B.hc:B.fu
 r.z0()
 return s},
 v8(a,b){this.y=this.w=null
@@ -71371,7 +71371,7 @@ return this.a3W(s.gbz(s))},
 gv(a){var s=this.a
 return 1-s.gv(s)},
 a3W(a){var s
-switch(a.a){case 1:s=B.ft
+switch(a.a){case 1:s=B.fu
 break
 case 2:s=B.hc
 break
@@ -71388,7 +71388,7 @@ if(s==null)s=a}else s=null
 this.d=s},
 ga6P(){if(this.c!=null){var s=this.d
 if(s==null){s=this.a
-s=s.gbz(s)}s=s!==B.ft}else s=!0
+s=s.gbz(s)}s=s!==B.fu}else s=!0
 return s},
 n(){this.a.ed(this.gH7())},
 gv(a){var s=this,r=s.ga6P()?s.b:s.c,q=s.a,p=q.gv(q)
@@ -71655,7 +71655,7 @@ S(){return new A.aiR(null,null)}}
 A.aiR.prototype={
 a7(){var s,r=this
 r.aj()
-s=A.ca(null,B.fy,0,null,1,null,r)
+s=A.ca(null,B.fz,0,null,1,null,r)
 r.d=s
 if(r.a.d)s.o3(0)},
 b8(a){var s,r
@@ -71821,7 +71821,7 @@ if(a3 instanceof A.es)a3=a3.ek(a5)}else a3=p
 b=a0.a
 a=b.d
 a3=A.ul(new A.K(a,new A.dl(b.at,1,1,A.kP(A.DK(b.c,k,a1),a1,a1,B.ds,!0,l,a1,a1,B.c9),a1),a1),new A.j(a3,a1,c,o,a1,a1,B.l),B.ju)
-return A.mb(A.bKG(h,!1,new A.nd(new A.c5(A.cl(a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,B.aC,a1),!1,!1,!1,!1,new A.e6(new A.aI(e,1/0,f,1/0),new A.eN(d,!1,a3,a1),a1),a1),a2,B.aZ,!1,a1),a4,a1,B.dO,a1,a0.gaCd(),a1,a1),i,a1,a1,a1,a1)}}
+return A.mb(A.bKG(h,!1,new A.nd(new A.c5(A.cl(a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,B.aC,a1),!1,!1,!1,!1,new A.e6(new A.aI(e,1/0,f,1/0),new A.eN(d,!1,a3,a1),a1),a1),a2,B.aX,!1,a1),a4,a1,B.dO,a1,a0.gaCd(),a1,a1),i,a1,a1,a1,a1)}}
 A.bbT.prototype={
 $1(a){var s=a.l(0,B.ak)
 return!s?B.fT:B.dO},
@@ -72353,7 +72353,7 @@ l=s.b
 m=l
 for(s=b.b,r=s+p,k=a.a.a,j=0,i=0;i<q;++i){if(B.p.iw(i,o)!==j)++j
 $.aX()
-h=new A.qP(B.id,B.fj,B.ou,B.r2,B.kh)
+h=new A.qP(B.id,B.fk,B.ou,B.r2,B.kh)
 h.r=A.ak(e[j],e[j+1],B.p.am(i,o)/o).gv(0)
 g=m+n*i-1
 f=h.hC()
@@ -73107,7 +73107,7 @@ A.wk.prototype={
 Dj(a,b){var s=A.kQ.prototype.gv.call(this,0)
 s.toString
 return J.bPo(s)},
-k(a){return this.Dj(0,B.e1)}}
+k(a){return this.Dj(0,B.e0)}}
 A.De.prototype={}
 A.a4T.prototype={}
 A.a4S.prototype={}
@@ -73231,7 +73231,7 @@ sow(a){return this.bs$=a},
 sq5(a){return this.ao$=a}}
 A.aAk.prototype={
 $0(){var s=null,r=this.a
-return A.a([A.kR("The "+A.a6(r).k(0)+" sending notification was",r,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.vg)],t.E)},
+return A.a([A.kR("The "+A.a6(r).k(0)+" sending notification was",r,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.vg)],t.E)},
 $S:35}
 A.Bh.prototype={
 Z(a,b){var s,r,q
@@ -73252,7 +73252,7 @@ P(){return"DiagnosticsTreeStyle."+this.b}}
 A.bsh.prototype={}
 A.hC.prototype={
 Dj(a,b){return this.om(0)},
-k(a){return this.Dj(0,B.e1)}}
+k(a){return this.Dj(0,B.e0)}}
 A.kQ.prototype={
 gv(a){this.aAf()
 return this.at},
@@ -73263,7 +73263,7 @@ A.bu.prototype={
 fh(){return"<optimized out>#"+A.cg(this)},
 Dj(a,b){var s=this.fh()
 return s},
-k(a){return this.Dj(0,B.e1)}}
+k(a){return this.Dj(0,B.e0)}}
 A.a4j.prototype={
 fh(){return"<optimized out>#"+A.cg(this)}}
 A.mP.prototype={
@@ -73683,11 +73683,11 @@ r!==$&&A.aW()
 r=s.aQ$=new A.by9(A.R(t.S,t.GG),B.aW,new A.FL(),s.gawJ(),s.gax3(),B.azZ)}return r}}
 A.aJ2.prototype={
 $0(){var s=null
-return A.a([A.kR("Event",this.a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.qL)],t.E)},
+return A.a([A.kR("Event",this.a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.qL)],t.E)},
 $S:35}
 A.aJ3.prototype={
 $0(){var s=null
-return A.a([A.kR("Event",this.a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.qL),A.kR("Target",this.b.a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.zE)],t.E)},
+return A.a([A.kR("Event",this.a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.qL),A.kR("Target",this.b.a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.zE)],t.E)},
 $S:35}
 A.Mu.prototype={}
 A.aTE.prototype={
@@ -75608,7 +75608,7 @@ a4=s.e
 if(a4!=null){a4=new A.ahd(a4,b3)
 a5=b4.w
 $label0$0:{q=b3
-if(B.cU===a5||B.fU===a5||B.fr===a5||B.fs===a5){q=!0
+if(B.cU===a5||B.fU===a5||B.fs===a5||B.ft===a5){q=!0
 break $label0$0}if(B.bM===a5||B.eI===a5)break $label0$0}a4=new A.c5(A.cl(b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,!0,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,q,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,b3,B.aC,b3),!1,!1,!1,!1,a4,b3)
 a0.toString
 a4=A.bSP(A.kP(a4,b3,b3,B.a0,!1,a0,b3,b3,B.c9),1.34)}s=s.f
@@ -75906,7 +75906,7 @@ anL(a){this.t(new A.b83(this))
 this.a.y.$1(a)},
 anM(a){var s,r=this.a.c,q=r.Q
 q===$&&A.c()
-if(q===B.ft)return
+if(q===B.fu)return
 q=r.x
 q===$&&A.c()
 s=a.c
@@ -75914,7 +75914,7 @@ s.toString
 r.sv(0,q-s/this.gZ5())},
 anK(a){var s,r,q,p=this,o=p.a.c.Q
 o===$&&A.c()
-if(o===B.ft)return
+if(o===B.fu)return
 p.t(new A.b81(p))
 o=a.a.a.b
 if(o>700){s=-o/p.gZ5()
@@ -75930,7 +75930,7 @@ if(q){if(r>0)o.tW(-1)}else o.cf(0)}p.a.z.$2$isClosing(a,q)
 if(q)p.a.abX()},
 aP0(a){if(a.a===a.b)this.a.abX()
 return!1},
-avi(a){if(a!==this.e.l(0,B.aw))this.t(new A.b82(this,a))},
+avi(a){if(a!==this.e.l(0,B.av))this.t(new A.b82(this,a))},
 q(a){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f=null,e=A.M(a).ry
 A.M(a)
 s=A.bMu(a)
@@ -75969,8 +75969,8 @@ $0(){this.a.e.L(0,B.xq)},
 $S:0}
 A.b82.prototype={
 $0(){var s=this.a.e
-if(this.b)s.E(0,B.aw)
-else s.L(0,B.aw)},
+if(this.b)s.E(0,B.av)
+else s.L(0,B.av)},
 $S:0}
 A.ajQ.prototype={
 q(a){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=A.M(a).ry,g=A.bMu(a),f=h.z
@@ -76183,7 +76183,7 @@ if(s.l(0,B.ak)&&s.l(0,B.aV))r.Ky(B.aV)},
 gasp(){var s=this,r=s.xe$
 if(r.l(0,B.ak))return s.a.ch
 if(r.l(0,B.aV))return s.a.ay
-if(r.l(0,B.aw))return s.a.at
+if(r.l(0,B.av))return s.a.at
 if(r.l(0,B.aB))return s.a.ax
 return s.a.as},
 q(a6){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0=this,a1=null,a2=a0.a.r,a3=a0.xe$,a4=A.dd(a2.b,a3,t.d),a5=A.dd(a0.a.db,a3,t.Sy)
@@ -76211,7 +76211,7 @@ g=a0.a
 f=g.Q
 e=g.x
 g=g.y
-d=a0.adL(B.aw)
+d=a0.adL(B.av)
 c=a0.a
 b=c.c
 n=A.dS(B.a7,a1,A.eb(!1,a1,!0,A.uD(new A.K(p,A.b4(c.dy,1,1),a1),new A.f8(a1,a1,a1,a1,a1,a4,a1,a1,a1)),a5,!0,e,k,a1,g,q,a1,i,h,d,a1,b,a1,a1,a1,f,a1,a1),j,m,o,a1,l.go,a5,a1,n,B.vU)
@@ -76671,9 +76671,9 @@ A.azN.prototype={
 P(){return"ButtonBarLayoutBehavior."+this.b}}
 A.a1d.prototype={
 gdv(a){var s=this.e
-if(s==null)switch(this.c.a){case 0:s=B.dS
+if(s==null)switch(this.c.a){case 0:s=B.e1
 break
-case 1:s=B.dS
+case 1:s=B.e1
 break
 case 2:s=B.JN
 break
@@ -76771,7 +76771,7 @@ a=b
 if(a==null){b=r.gdF().a.$1(c)
 b.toString
 a=b}a0=a7.gjk()
-a0.E(0,B.aw)
+a0.E(0,B.av)
 a7.a.toString
 b=g==null?a8:g.ab(a0)
 a1=b
@@ -76826,7 +76826,7 @@ g.sqG(a)
 g.sjO(a6)
 g.sa9C(a7.tV$)
 g.sJn(a7.gjk().l(0,B.aB))
-g.sabp(a7.gjk().l(0,B.aw))
+g.sabp(a7.gjk().l(0,B.av))
 g.sa7f(i)
 g.sab_(f)
 g.stn(a5)
@@ -76916,7 +76916,7 @@ q=t.EP.a(b.iu(0,2).av(0,B.e6z.iu(0,2)))
 r=i.a.a
 p=r.gbz(r)
 $label0$0:{if(B.hc===p||B.bT===p){r=i.a.gv(0)
-break $label0$0}if(B.ft===p||B.bh===p){r=1-i.a.gv(0)
+break $label0$0}if(B.fu===p||B.bh===p){r=1-i.a.gv(0)
 break $label0$0}r=null}if(i.fr===!1||i.dy===!1){o=i.dy===!1?1-r:r
 n=i.a2S(q,o)
 m=A.bT()
@@ -76960,7 +76960,7 @@ s=q.a.z.k3
 return new A.aA(A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255),2,B.o,-1)}if(a.l(0,B.aS))return B.a8G
 if(a.l(0,B.hw))return new A.aA(q.a.z.fy,2,B.o,-1)
 if(a.l(0,B.aV))return new A.aA(q.a.z.k3,2,B.o,-1)
-if(a.l(0,B.aw))return new A.aA(q.a.z.k3,2,B.o,-1)
+if(a.l(0,B.av))return new A.aA(q.a.z.k3,2,B.o,-1)
 if(a.l(0,B.aB))return new A.aA(q.a.z.k3,2,B.o,-1)
 s=q.a.z
 r=s.rx
@@ -76980,13 +76980,13 @@ $S:8}
 A.baK.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.hw)){if(a.l(0,B.aV)){s=r.a.z.fy
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=r.a.z.fy
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=r.a.z.fy
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=r.a.z.fy
 return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}}if(a.l(0,B.aS)){if(a.l(0,B.aV)){s=r.a.z.k3
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw))return r.a.z.b.bh(0.08)
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av))return r.a.z.b.bh(0.08)
 if(a.l(0,B.aB))return r.a.z.b.bh(0.1)
 return B.Q}if(a.l(0,B.aV))return r.a.z.b.bh(0.1)
-if(a.l(0,B.aw)){s=r.a.z.k3
+if(a.l(0,B.av)){s=r.a.z.k3
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=r.a.z.k3
 return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}return B.Q},
 $S:8}
@@ -77638,7 +77638,7 @@ if(l)k.push(new A.c5(A.cl(a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,
 o=A.dS(B.a7,a1,new A.K(B.aAt,A.x(A.a([B.aF,c,B.aE3,A.w(k,B.k,B.e,B.f,a1,a1)],o),B.r,B.e,B.f),a1),B.i,q,0,a1,a1,a1,a1,a1,B.c8)
 return new A.c5(A.cl(a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,B.aC,a1),!0,!1,!1,!1,new A.aw(a1,120*a,o,a1),a1)
 case 1:o=a0.w?16:56
-o=A.a([B.aF,new A.K(B.dS,c,a1),new A.aw(a1,o,a1,a1),A.I(new A.K(B.dS,b,a1),1)],t.p)
+o=A.a([B.aF,new A.K(B.e1,c,a1),new A.aw(a1,o,a1,a1),A.I(new A.K(B.e1,b,a1),1)],t.p)
 if(l)o.push(new A.K(B.aAv,new A.c5(A.cl(a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,B.aC,a1),!0,!1,!1,!1,m,a1),a1))
 o=A.dS(B.a7,a1,A.x(o,B.r,B.e,B.f),B.i,q,0,a1,a1,a1,a1,a1,B.c8)
 return new A.c5(A.cl(a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,B.aC,a1),!0,!1,!1,!1,new A.aw(152,a1,o,a1),a1)}}}
@@ -78241,7 +78241,7 @@ if(h==null){A.M(b7)
 h=A.AI(b7)
 h=h.guy()}h=new A.kg(h,B.lD,b4)}else h=B.lD
 a7.push(h)}B.d.u(a3,a7)}b2=A.bA(b7,B.mv,t.l).w.gls(0)===B.ob?384:480
-return A.x(A.a([new A.e6(new A.aI(0,b2,0,1/0).KG(58),new A.K(B.dS,new A.dl(B.ib,b4,b4,new A.kU(!0,A.e(b6.aak(b3.a.x),b4,b4,b4,b4,b4,b5.ok.z.nw(b5.ax.k3),b4,b4,b4),b4),b4),b4),b4),new A.e6(new A.aI(0,b2,0,n*42+(n-1)*8),A.bRE(A.ad1(a3,!0,!1,!0),B.G2,B.qE,!1),b4),B.a1],s),B.k,B.e,B.f)}}
+return A.x(A.a([new A.e6(new A.aI(0,b2,0,1/0).KG(58),new A.K(B.e1,new A.dl(B.ib,b4,b4,new A.kU(!0,A.e(b6.aak(b3.a.x),b4,b4,b4,b4,b4,b5.ok.z.nw(b5.ax.k3),b4,b4,b4),b4),b4),b4),b4),new A.e6(new A.aI(0,b2,0,n*42+(n-1)*8),A.bRE(A.ad1(a3,!0,!1,!0),B.G2,B.qE,!1),b4),B.a1],s),B.k,B.e,B.f)}}
 A.TM.prototype={
 S(){return new A.ajg(A.aeS(null))},
 di(a){return this.e.$1(a)}}
@@ -78340,7 +78340,7 @@ $.aX()
 s=A.bT()
 r=this.b
 s.r=r.gv(r)
-s.b=B.fj
+s.b=B.fk
 q=this.d
 $label0$0:{if(B.cN===q){r=!0
 break $label0$0}if(B.V===q){r=!1
@@ -78388,7 +78388,7 @@ j=o!=null&&l!=null?s.SF(o)+" \u2013 "+s.SF(l):""
 i=new A.ajd(f.z,k,j,n,r,r===B.ob,f.Q,e)
 s=A.ee(!1,A.e(f.y,e,e,e,e,e,e,e,e,e),e,e,e,e,e,e,f.w,e,e)
 o=t.p
-h=new A.e6(B.a9x,new A.K(B.hk,new A.dl(B.xM,e,e,A.bTi(e,A.a([s,A.ee(!1,A.e(f.x,e,e,e,e,e,e,e,e,e),e,e,e,e,e,e,f.r,e,e)],o),B.dEt,B.dW,0,8),e),e),e)
+h=new A.e6(B.a9x,new A.K(B.hk,new A.dl(B.xM,e,e,A.bTi(e,A.a([s,A.ee(!1,A.e(f.x,e,e,e,e,e,e,e,e,e),e,e,e,e,e,e,f.r,e,e)],o),B.dEt,B.dV,0,8),e),e),e)
 s=A.cM(a,B.cW)
 s=s==null?e:s.gde()
 s=(s==null?B.b6:s).HP(0,1.3)
@@ -78648,11 +78648,11 @@ $S:23}
 A.bci.prototype={
 $1(a){var s,r,q=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV))return q.a.geC().c.bh(0.1)
-if(a.l(0,B.aw))return q.a.geC().c.bh(0.08)
+if(a.l(0,B.av))return q.a.geC().c.bh(0.08)
 if(a.l(0,B.aB))return q.a.geC().c.bh(0.1)}else{if(a.l(0,B.aV)){s=q.a.geC()
 r=s.rx
 s=r==null?s.k3:r
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=q.a.geC()
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=q.a.geC()
 r=s.rx
 s=r==null?s.k3:r
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=q.a.geC()
@@ -78682,11 +78682,11 @@ $S:23}
 A.bcn.prototype={
 $1(a){var s,r,q=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV))return q.a.geC().c.bh(0.1)
-if(a.l(0,B.aw))return q.a.geC().c.bh(0.08)
+if(a.l(0,B.av))return q.a.geC().c.bh(0.08)
 if(a.l(0,B.aB))return q.a.geC().c.bh(0.1)}else{if(a.l(0,B.aV)){s=q.a.geC()
 r=s.rx
 s=r==null?s.k3:r
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=q.a.geC()
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=q.a.geC()
 r=s.rx
 s=r==null?s.k3:r
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=q.a.geC()
@@ -78698,7 +78698,7 @@ A.bcj.prototype={
 $1(a){var s,r
 if(a.l(0,B.aV)){s=this.a.geC()
 r=s.e
-return(r==null?s.c:r).bh(0.1)}if(a.l(0,B.aw)){s=this.a.geC()
+return(r==null?s.c:r).bh(0.1)}if(a.l(0,B.av)){s=this.a.geC()
 r=s.e
 return(r==null?s.c:r).bh(0.08)}if(a.l(0,B.aB)){s=this.a.geC()
 r=s.e
@@ -78780,7 +78780,7 @@ q.toString}l=new A.K(new A.L(m.a*s,m.b,m.c*s,m.d),A.kP(new A.c5(A.cl(h,h,h,h,h,h
 d=i.as
 if(d==null)d=f.x
 if(d==null)d=e.gmz()
-k=new A.K(d,A.bTi(B.qr,i.Q,B.dEu,B.dW,0,8),h)
+k=new A.K(d,A.bTi(B.qr,i.Q,B.dEu,B.dV,0,8),h)
 d=A.a([],t.p)
 o.toString
 d.push(o)
@@ -79047,7 +79047,7 @@ break
 default:s=null}return s},
 as1(a4){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1=this,a2=null,a3=A.M(a4).w
 $label0$0:{if(B.cU===a3||B.bM===a3||B.fU===a3){s=!1
-break $label0$0}if(B.eI===a3||B.fr===a3||B.fs===a3){s=!0
+break $label0$0}if(B.eI===a3||B.fs===a3||B.ft===a3){s=!0
 break $label0$0}s=a2}r=a1.a
 q=r.x
 p=r.d
@@ -79431,7 +79431,7 @@ a0=A.rM(B.ig)
 a1=A.a([],t.wi)
 a2=$.aq()
 a3=$.aY
-a4.e=new A.U4(r,B.dS,q,o,m,k,l,h,a5,g,f,!0,i,d,j,a5,a5,a5,e,A.aS(t.f9),new A.cc(a5,a6.i("cc<oF<nt<1>>>")),new A.cc(a5,t.F),new A.zn(),a5,0,new A.bF(new A.aO(c,b),a),a0,a1,a5,B.qN,new A.cQ(a5,a2,t.Lk),new A.bF(new A.aO(a3,b),a),new A.bF(new A.aO(a3,b),a),a6.i("U4<1>"))
+a4.e=new A.U4(r,B.e1,q,o,m,k,l,h,a5,g,f,!0,i,d,j,a5,a5,a5,e,A.aS(t.f9),new A.cc(a5,a6.i("cc<oF<nt<1>>>")),new A.cc(a5,t.F),new A.zn(),a5,0,new A.bF(new A.aO(c,b),a),a0,a1,a5,B.qN,new A.cQ(a5,a2,t.Lk),new A.bF(new A.aO(a3,b),a),new A.bF(new A.aO(a3,b),a),a6.i("U4<1>"))
 a6=a4.gdO(0)
 if(a6!=null)a6.fL()
 a6=a4.e
@@ -79534,7 +79534,7 @@ j=b.got()?b.ga_n():a
 i=b.a.k3
 h=b.y
 g=b.x
-a1=A.lY(!1,q,A.mb(A.a9(B.aZ,A.bRX(a,a1,a0,!1,i,h,g,a,a),B.t,!1,a,a,a,a,a,a,a,a,a,a,a,a,a,j,a,a,a,a,a,a),d,a,new A.bdF(b),new A.bdG(b),a),a,a,a,m,!0,a,a,a,a,a,a)}else{a0=b.got()?b.ga_n():a
+a1=A.lY(!1,q,A.mb(A.a9(B.aX,A.bRX(a,a1,a0,!1,i,h,g,a,a),B.t,!1,a,a,a,a,a,a,a,a,a,a,a,a,a,j,a,a,a,a,a,a),d,a,new A.bdF(b),new A.bdG(b),a),a,a,a,m,!0,a,a,a,a,a,a)}else{a0=b.got()?b.ga_n():a
 q=b.got()
 m=b.a.k1
 j=b.gdO(0)
@@ -79713,14 +79713,14 @@ return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}return this.a.gl9().b},
 $S:8}
 A.bfZ.prototype={
 $1(a){if(a.l(0,B.aV))return this.a.gl9().b.bh(0.1)
-if(a.l(0,B.aw))return this.a.gl9().b.bh(0.08)
+if(a.l(0,B.av))return this.a.gl9().b.bh(0.08)
 if(a.l(0,B.aB))return this.a.gl9().b.bh(0.1)
 return null},
 $S:23}
 A.bfV.prototype={
 $1(a){if(a.l(0,B.ak))return 0
 if(a.l(0,B.aV))return 1
-if(a.l(0,B.aw))return 3
+if(a.l(0,B.av))return 3
 if(a.l(0,B.aB))return 1
 return 1},
 $S:203}
@@ -79728,7 +79728,7 @@ A.bfX.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.ak)){s=r.a.gl9().k3
 return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aV))return r.a.gl9().b
-if(a.l(0,B.aw))return r.a.gl9().b
+if(a.l(0,B.av))return r.a.gl9().b
 if(a.l(0,B.aB))return r.a.gl9().b
 return r.a.gl9().b},
 $S:8}
@@ -79823,14 +79823,14 @@ return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}return this.a.gla().c},
 $S:8}
 A.bhF.prototype={
 $1(a){if(a.l(0,B.aV))return this.a.gla().c.bh(0.1)
-if(a.l(0,B.aw))return this.a.gla().c.bh(0.08)
+if(a.l(0,B.av))return this.a.gla().c.bh(0.08)
 if(a.l(0,B.aB))return this.a.gla().c.bh(0.1)
 return null},
 $S:23}
 A.bhB.prototype={
 $1(a){if(a.l(0,B.ak))return 0
 if(a.l(0,B.aV))return 0
-if(a.l(0,B.aw))return 1
+if(a.l(0,B.av))return 1
 if(a.l(0,B.aB))return 0
 return 0},
 $S:203}
@@ -79838,7 +79838,7 @@ A.bhD.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.ak)){s=r.a.gla().k3
 return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aV))return r.a.gla().c
-if(a.l(0,B.aw))return r.a.gla().c
+if(a.l(0,B.av))return r.a.gla().c
 if(a.l(0,B.aB))return r.a.gla().c
 return r.a.gla().c},
 $S:8}
@@ -80116,11 +80116,11 @@ $S:8}
 A.bn3.prototype={
 $1(a){var s,r,q=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV))return q.a.gcv().b.bh(0.1)
-if(a.l(0,B.aw))return q.a.gcv().b.bh(0.08)
+if(a.l(0,B.av))return q.a.gcv().b.bh(0.08)
 if(a.l(0,B.aB))return q.a.gcv().b.bh(0.1)}if(a.l(0,B.aV)){s=q.a.gcv()
 r=s.rx
 s=r==null?s.k3:r
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=q.a.gcv()
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=q.a.gcv()
 r=s.rx
 s=r==null?s.k3:r
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=q.a.gcv()
@@ -80173,12 +80173,12 @@ $S:8}
 A.bhK.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV))return r.a.gcv().c.bh(0.1)
-if(a.l(0,B.aw))return r.a.gcv().c.bh(0.08)
+if(a.l(0,B.av))return r.a.gcv().c.bh(0.08)
 if(a.l(0,B.aB))return r.a.gcv().c.bh(0.1)}s=r.a
 if(s.go){if(a.l(0,B.aV))return s.gcv().b.bh(0.1)
-if(a.l(0,B.aw))return s.gcv().b.bh(0.08)
+if(a.l(0,B.av))return s.gcv().b.bh(0.08)
 if(a.l(0,B.aB))return s.gcv().b.bh(0.1)}if(a.l(0,B.aV))return s.gcv().c.bh(0.1)
-if(a.l(0,B.aw))return s.gcv().c.bh(0.08)
+if(a.l(0,B.av))return s.gcv().c.bh(0.08)
 if(a.l(0,B.aB))return s.gcv().c.bh(0.1)
 return B.Q},
 $S:8}
@@ -80235,7 +80235,7 @@ A.bhO.prototype={
 $1(a){var s,r,q=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV)){s=q.a.gcv()
 r=s.as
-return(r==null?s.z:r).bh(0.1)}if(a.l(0,B.aw)){s=q.a.gcv()
+return(r==null?s.z:r).bh(0.1)}if(a.l(0,B.av)){s=q.a.gcv()
 r=s.as
 return(r==null?s.z:r).bh(0.08)}if(a.l(0,B.aB)){s=q.a.gcv()
 r=s.as
@@ -80243,7 +80243,7 @@ return(r==null?s.z:r).bh(0.1)}}s=q.a
 if(s.go){if(a.l(0,B.aV)){s=s.gcv()
 r=s.rx
 s=r==null?s.k3:r
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=s.gcv()
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=s.gcv()
 r=s.rx
 s=r==null?s.k3:r
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=s.gcv()
@@ -80251,7 +80251,7 @@ r=s.rx
 s=r==null?s.k3:r
 return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}}if(a.l(0,B.aV)){s=s.gcv()
 r=s.as
-return(r==null?s.z:r).bh(0.1)}if(a.l(0,B.aw)){s=s.gcv()
+return(r==null?s.z:r).bh(0.1)}if(a.l(0,B.av)){s=s.gcv()
 r=s.as
 return(r==null?s.z:r).bh(0.08)}if(a.l(0,B.aB)){s=s.gcv()
 r=s.as
@@ -80303,14 +80303,14 @@ $1(a){var s,r,q=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV)){s=q.a.gcv()
 r=s.y1
 s=r==null?s.k2:r
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=q.a.gcv()
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=q.a.gcv()
 r=s.y1
 s=r==null?s.k2:r
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=q.a.gcv()
 r=s.y1
 s=r==null?s.k2:r
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}}if(a.l(0,B.aV)){s=q.a.gcv().k3
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=q.a.gcv()
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=q.a.gcv()
 r=s.rx
 s=r==null?s.k3:r
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=q.a.gcv()
@@ -80474,7 +80474,7 @@ n=c.gh3(c)
 m=t.o
 l=t.Hd
 h.CW=new A.aT(m.a(p),new A.uK(0,n),l.i("aT<b5.T>"))
-n=A.ca(i,B.fy,0,i,1,i,q)
+n=A.ca(i,B.fz,0,i,1,i,q)
 n.cr()
 n.dN$.E(0,o)
 n.cf(0)
@@ -80566,7 +80566,7 @@ A.bnK.prototype={
 a91(a,b,c,d,e,f,g,h,i,j,k,a0){var s,r,q,p,o,n=null,m=b==null?B.d_:b,l=i==null?A.chw(k,d,j,h):i
 m=new A.N6(h,m,l,A.chq(k,d,j),!d,a0,c,f,e,k,g)
 s=e.G
-r=A.ca(n,B.fy,0,n,1,n,s)
+r=A.ca(n,B.fz,0,n,1,n,s)
 q=e.gfW()
 r.cr()
 r.dN$.E(0,q)
@@ -80754,7 +80754,7 @@ return B.pB}},
 V2(a,b,c){var s,r,q,p,o,n,m,l,k,j,i,h=this,g=null,f=h.r,e=f.h(0,a),d=a.a
 switch(d){case 0:h.geM().fj(0,B.aV,c)
 break
-case 1:if(b)h.geM().fj(0,B.aw,c)
+case 1:if(b)h.geM().fj(0,B.av,c)
 break
 case 2:break}if(a===B.mt){s=h.a.p1
 if(s!=null)s.Ty(h,c)}s=e==null
@@ -80980,7 +80980,7 @@ p.E(0,B.aV)
 o=A.fM(r,q)
 o.E(0,B.aB)
 q=A.fM(r,q)
-q.E(0,B.aw)
+q.E(0,B.av)
 n=new A.bnE(a1,p,s,o,q)
 for(q=a1.r,p=new A.e_(q,q.r,q.e,A.G(q).i("e_<1>"));p.B();){o=p.d
 m=q.h(0,o)
@@ -81028,7 +81028,7 @@ a=a1.le(a)?a1.gaQb():a2
 a0=a1.a
 a0.toString
 a0=a1.le(a0)?a1.gaQd():a2
-g=A.a9(B.aZ,a1.a.c,B.t,!0,a2,a2,a2,a2,a2,a2,a2,c,a2,a,a0,d,b,f,e,o,g,a2,a2,a2)
+g=A.a9(B.aX,a1.a.c,B.t,!0,a2,a2,a2,a2,a2,a2,a2,c,a2,a,a0,d,b,f,e,o,g,a2,a2,a2)
 return new A.Wl(a1,A.xc(k,A.lY(m,p,A.mb(A.c4N(new A.c5(A.cl(a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,h,a2,a2,a2,a2,a2,a2,a2,a2,a2,i,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,B.aC,a2),!1,!1,!1,!1,g,a2),l),l,a2,a1.gaPW(),a1.gaPY(),a2),a2,a2,a2,q,!0,a2,a1.gaPH(),a2,a2,a2,a2)),a2)},
 $ibMI:1}
 A.bnH.prototype={
@@ -81154,7 +81154,7 @@ r=A.nN(this.b,a.b,b)
 r.toString
 return new A.ou(r,s)}return this.Eo(a,b)},
 xC(a,b,c,d,e,f){var s,r,q,p,o,n=this.a,m=n.c
-if(m===B.dX)return
+if(m===B.dW)return
 s=this.b
 r=s.c
 q=!r.m(0,B.ah)||!s.d.m(0,B.ah)
@@ -81301,7 +81301,7 @@ if(s.gh3(s)>0){n=p.fM(o,q.f)
 $.aX()
 r=A.bT()
 r.r=s.gv(s)
-r.b=B.fj
+r.b=B.fk
 a.a.j2(n,r)}n=q.e
 r=n.a
 p.xC(a,o,n.b,q.d.gv(0),r,q.f)},
@@ -82083,7 +82083,7 @@ a0a(a,b){return A.dd(b.gC_(),this.gff(),t.em).bQ(A.dd(this.gbc().x,this.gff(),t.
 gff(){var s=this,r=A.aS(t.EK)
 if(!s.gbc().an)r.E(0,B.ak)
 if(s.a.r)r.E(0,B.aB)
-if(s.a.w&&s.gbc().an)r.E(0,B.aw)
+if(s.a.w&&s.gbc().an)r.E(0,B.av)
 if(s.gni())r.E(0,B.hw)
 return r},
 atP(a,b){var s,r,q=this,p=A.dd(q.gbc().a_,q.gff(),t.Ef)
@@ -82473,10 +82473,10 @@ A.bnX.prototype={
 $1(a){var s,r,q=this
 if(a.l(0,B.ak)){s=q.a.gdA().k3
 return new A.aA(A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255),1,B.o,-1)}if(a.l(0,B.hw)){if(a.l(0,B.aB))return new A.aA(q.a.gdA().fy,2,B.o,-1)
-if(a.l(0,B.aw)){s=q.a.gdA()
+if(a.l(0,B.av)){s=q.a.gdA()
 r=s.k1
 return new A.aA(r==null?s.go:r,1,B.o,-1)}return new A.aA(q.a.gdA().fy,1,B.o,-1)}if(a.l(0,B.aB))return new A.aA(q.a.gdA().b,2,B.o,-1)
-if(a.l(0,B.aw))return new A.aA(q.a.gdA().k3,1,B.o,-1)
+if(a.l(0,B.av))return new A.aA(q.a.gdA().k3,1,B.o,-1)
 s=q.a.gdA()
 r=s.rx
 return new A.aA(r==null?s.k3:r,1,B.o,-1)},
@@ -82485,10 +82485,10 @@ A.bo3.prototype={
 $1(a){var s,r,q=this
 if(a.l(0,B.ak)){s=q.a.gdA().k3
 return new A.aA(A.bm(31,s.H()>>>16&255,s.H()>>>8&255,s.H()&255),1,B.o,-1)}if(a.l(0,B.hw)){if(a.l(0,B.aB))return new A.aA(q.a.gdA().fy,2,B.o,-1)
-if(a.l(0,B.aw)){s=q.a.gdA()
+if(a.l(0,B.av)){s=q.a.gdA()
 r=s.k1
 return new A.aA(r==null?s.go:r,1,B.o,-1)}return new A.aA(q.a.gdA().fy,1,B.o,-1)}if(a.l(0,B.aB))return new A.aA(q.a.gdA().b,2,B.o,-1)
-if(a.l(0,B.aw))return new A.aA(q.a.gdA().k3,1,B.o,-1)
+if(a.l(0,B.av))return new A.aA(q.a.gdA().k3,1,B.o,-1)
 s=q.a.gdA()
 r=s.ry
 if(r==null){r=s.D
@@ -82505,7 +82505,7 @@ $S:8}
 A.bo5.prototype={
 $1(a){var s,r,q=this
 if(a.l(0,B.ak)){s=q.a.gdA().k3
-return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.hw)){if(a.l(0,B.aw)){s=q.a.gdA()
+return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.hw)){if(a.l(0,B.av)){s=q.a.gdA()
 r=s.k1
 return r==null?s.go:r}return q.a.gdA().fy}s=q.a.gdA()
 r=s.rx
@@ -82516,10 +82516,10 @@ $1(a){var s,r=this.a,q=r.gFF().y
 if(q==null)q=B.oA
 if(a.l(0,B.ak)){r=r.gdA().k3
 return q.dc(A.bm(97,r.H()>>>16&255,r.H()>>>8&255,r.H()&255))}if(a.l(0,B.hw)){if(a.l(0,B.aB))return q.dc(r.gdA().fy)
-if(a.l(0,B.aw)){r=r.gdA()
+if(a.l(0,B.av)){r=r.gdA()
 s=r.k1
 return q.dc(s==null?r.go:s)}return q.dc(r.gdA().fy)}if(a.l(0,B.aB))return q.dc(r.gdA().b)
-if(a.l(0,B.aw)){r=r.gdA()
+if(a.l(0,B.av)){r=r.gdA()
 s=r.rx
 return q.dc(s==null?r.k3:s)}r=r.gdA()
 s=r.rx
@@ -82530,10 +82530,10 @@ $1(a){var s,r=this.a,q=r.gFF().y
 if(q==null)q=B.oA
 if(a.l(0,B.ak)){r=r.gdA().k3
 return q.dc(A.bm(97,r.H()>>>16&255,r.H()>>>8&255,r.H()&255))}if(a.l(0,B.hw)){if(a.l(0,B.aB))return q.dc(r.gdA().fy)
-if(a.l(0,B.aw)){r=r.gdA()
+if(a.l(0,B.av)){r=r.gdA()
 s=r.k1
 return q.dc(s==null?r.go:s)}return q.dc(r.gdA().fy)}if(a.l(0,B.aB))return q.dc(r.gdA().b)
-if(a.l(0,B.aw)){r=r.gdA()
+if(a.l(0,B.av)){r=r.gdA()
 s=r.rx
 return q.dc(s==null?r.k3:s)}r=r.gdA()
 s=r.rx
@@ -83203,7 +83203,7 @@ gJ(){return"Look Up"},
 gR(){return"Search Web"},
 ga5(){return"Share"},
 gaT(){return"Dismiss"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gbD(){return"Refresh"},
 acX(a){var s
 $label0$0:{if(0===a){s="No characters remaining"
@@ -83345,7 +83345,7 @@ return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}return this.a.glb().b},
 $S:8}
 A.bt6.prototype={
 $1(a){if(a.l(0,B.aV))return this.a.glb().b.bh(0.1)
-if(a.l(0,B.aw))return this.a.glb().b.bh(0.08)
+if(a.l(0,B.av))return this.a.glb().b.bh(0.08)
 if(a.l(0,B.aB))return this.a.glb().b.bh(0.1)
 return null},
 $S:23}
@@ -83353,7 +83353,7 @@ A.bt4.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.ak)){s=r.a.glb().k3
 return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aV))return r.a.glb().b
-if(a.l(0,B.aw))return r.a.glb().b
+if(a.l(0,B.av))return r.a.glb().b
 if(a.l(0,B.aB))return r.a.glb().b
 return r.a.glb().b},
 $S:8}
@@ -83394,7 +83394,7 @@ s=s.gn3(s)
 return s},
 a0l(a){var s=A.M(a).w,r=A.M(a).r.a.h(0,s)
 if(r==null)$label0$0:{if(B.bM===s||B.eI===s){r=B.my
-break $label0$0}if(B.cU===s||B.fU===s||B.fs===s||B.fr===s){r=B.mB
+break $label0$0}if(B.cU===s||B.fU===s||B.ft===s||B.fs===s){r=B.mB
 break $label0$0}r=null}return r},
 gqe(){return null},
 gwv(){return null},
@@ -83576,7 +83576,7 @@ if(s==null)q.d=p
 else p=s}else q.d=null
 r=o.c.h(0,p)
 if(r==null){$label0$0:{if(B.bM===p){o=B.my
-break $label0$0}if(B.cU===p||B.fU===p||B.fs===p||B.eI===p||B.fr===p){o=B.mB
+break $label0$0}if(B.cU===p||B.fU===p||B.ft===p||B.eI===p||B.fs===p){o=B.mB
 break $label0$0}o=null}r=o}o=q.a
 return r.QY(o.d,a,o.e,o.f,o.r,q.$ti.c)}}
 A.Jh.prototype={
@@ -83988,7 +83988,7 @@ h=A.bT()
 i=g.c
 h.r=i.gv(i)
 h.c=n
-h.b=B.fj
+h.b=B.fk
 a.a.j2(j,h)}}}
 A.Pq.prototype={
 gco(a){return A.eL.prototype.gco.call(this,0)},
@@ -84192,7 +84192,7 @@ return!1}s=a.a
 q=s.e
 $label0$0:{r=null
 if(B.bN===q||B.c_===q){r=!0
-break $label0$0}if(B.fu===q||B.ic===q)break $label0$0}if(r!=o.Q){s=o.y
+break $label0$0}if(B.fv===q||B.ic===q)break $label0$0}if(r!=o.Q){s=o.y
 if(s===B.m7||s===B.m8)o.or(B.wh)}else if(a instanceof A.lb){r=o.y
 if(r===B.m7||r===B.m8){if(q===B.bN){r=o.as
 r.toString
@@ -84717,7 +84717,7 @@ aAe(){this.a.toString},
 axI(){var s,r=this.c
 r.toString
 s=A.P6(r)
-if(s!=null&&s.f.length!==0)s.ig(0,B.am6,B.fy)},
+if(s!=null&&s.f.length!==0)s.ig(0,B.am6,B.fz)},
 grY(){this.a.toString
 return!0},
 a7(){var s,r=this,q=null
@@ -84820,7 +84820,7 @@ f===$&&A.c()
 e=n.db
 e===$&&A.c()
 n.vj(i,new A.UC(n.a.r,h,g,f,e,m),B.xG,!0,!0,!0,!0)
-switch(k.w.a){case 2:case 4:n.vj(i,A.a9(B.aZ,m,B.t,!0,m,m,m,m,m,m,m,m,m,m,m,m,m,n.gaxH(),m,m,m,m,m,m),B.xB,!0,!1,!1,!0)
+switch(k.w.a){case 2:case 4:n.vj(i,A.a9(B.aX,m,B.t,!0,m,m,m,m,m,m,m,m,m,m,m,m,m,n.gaxH(),m,m,m,m,m,m),B.xB,!0,!1,!1,!0)
 break
 case 0:case 1:case 3:case 5:break}h=n.x
 g=h.y
@@ -84952,7 +84952,7 @@ s=!s}return s},
 gH3(){return new A.bG(new A.brq(this),t.Dm)},
 gAk(){var s=A.aS(t.EK)
 if(this.fx)s.E(0,B.xq)
-if(this.fy)s.E(0,B.aw)
+if(this.fy)s.E(0,B.av)
 return s},
 gaIC(){var s,r,q,p,o=this,n=o.go
 n===$&&A.c()
@@ -85120,7 +85120,7 @@ default:r=null}return r}return B.Q},
 $S:8}
 A.brm.prototype={
 $1(a){var s,r
-if(a.l(0,B.aw)&&this.a.gH3().a.$1(a)){s=this.a
+if(a.l(0,B.av)&&this.a.gH3().a.$1(a)){s=this.a
 r=s.a.w
 if(r==null){s=s.id
 s===$&&A.c()
@@ -85272,7 +85272,7 @@ s=r.a.ok
 if(s!=null)s.$2(a,b)
 s=r.c
 s.toString
-switch(A.M(s).w.a){case 2:case 4:if(b===B.fn){s=r.x.ga6()
+switch(A.M(s).w.a){case 2:case 4:if(b===B.fo){s=r.x.ga6()
 if(s!=null)s.jV(a.goI())}return
 case 0:case 1:case 3:case 5:break}},
 aGu(){var s=this.d
@@ -85288,7 +85288,7 @@ r=r.a
 s=r.b
 if(s.a===s.b)return!1
 if(a===B.d6)return!1
-if(a===B.fn)return!0
+if(a===B.fo)return!0
 if(r.a.length!==0)return!0
 return!1},
 q(a2){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b=this,a=null,a0=A.M(a2),a1=a2.a4(t.Uf)
@@ -85554,7 +85554,7 @@ s=a2.cy
 e=A.dS(B.a7,a1,new A.lm(a4,e,a1),s,c,d,a1,a1,b,a1,a1,B.c8)
 if(p)e=A.eQ(!1,q!=null?new A.K(new A.L(0,i.b,0,i.d),new A.aw(q,a1,e,a1),a1):new A.K(i,e,a1),!0,B.aj,!0,!1)
 s=a2.y
-s=a2.f!=null||a6.x!=null?B.iB:B.aZ
+s=a2.f!=null||a6.x!=null?B.iB:B.aX
 s=A.bQJ(a1,s,e,B.IV,B.ekN,new A.bAi(b0),a1)
 e=new A.c5(A.cl(a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,new A.bAj(b0),a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,B.aC,a1),!0,!1,!1,!1,s,a1)
 if(a3.z)a=e
@@ -85611,7 +85611,7 @@ if(a.l(0,B.ak)){s=q.a.goB()
 r=s.y2
 return r==null?s.c:r}if(a.l(0,B.aV)){s=q.a.goB()
 r=s.y2
-return r==null?s.c:r}if(a.l(0,B.aw)){s=q.a.goB()
+return r==null?s.c:r}if(a.l(0,B.av)){s=q.a.goB()
 r=s.y2
 return r==null?s.c:r}if(a.l(0,B.aB)){s=q.a.goB()
 r=s.y2
@@ -85905,7 +85905,7 @@ b2=a2}else b2=a2
 if(b2==null){a2=k.gdF().a.$1(b1)
 a2.toString
 b2=a2}b3=c2.gjk()
-b3.E(0,B.aw)
+b3.E(0,B.av)
 c2.a.toString
 a2=a==null?c3:a.ab(b3)
 b4=a2
@@ -85973,7 +85973,7 @@ a2.sqG(b2)
 a2.sjO(c1)
 a2.sa9C(c2.tV$)
 a2.sJn(c2.gjk().l(0,B.aB))
-a2.sabp(c2.gjk().l(0,B.aw))
+a2.sabp(c2.gjk().l(0,B.av))
 a2.sa7f(c)
 a2.sab_(a0)
 a2.saKD(b5)
@@ -86127,7 +86127,7 @@ break
 case 1:s=b3
 break
 default:s=null}r=b2.b.a
-r=r.gbz(r)===B.ft&&!b2.cQ
+r=r.gbz(r)===B.fu&&!b2.cQ
 if(r)b2.cQ=!0
 else b2.cQ=!1
 if(!r){r=b2.an
@@ -86221,7 +86221,7 @@ g.toString
 g=A.ak(p,g,k)
 g.toString
 f=g}else{g=b2.f
-if(p===B.ft){g.toString
+if(p===B.fu){g.toString
 p=b2.k1
 p.toString
 p=A.ak(g,p,k)
@@ -86304,7 +86304,7 @@ n=this.ah
 if(n!=null)for(m=n.length,l=a.a.a,s=0;s<m;++s){r=n[s]
 k=j.eA(r.b)
 $.aX()
-q=new A.qP(B.id,B.fj,B.ou,B.r2,B.kh)
+q=new A.qP(B.id,B.fk,B.ou,B.r2,B.kh)
 q.r=r.a.gv(0)
 p=r.c
 p=p>0?p*0.57735+0.5:0
@@ -86397,13 +86397,13 @@ if(a.l(0,B.ak)){if(a.l(0,B.aS)){s=q.a.gf7().k2
 return A.bm(255,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}s=q.a.gf7().k3
 return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aS)){if(a.l(0,B.aV)){s=q.a.gf7()
 r=s.d
-return r==null?s.b:r}if(a.l(0,B.aw)){s=q.a.gf7()
+return r==null?s.b:r}if(a.l(0,B.av)){s=q.a.gf7()
 r=s.d
 return r==null?s.b:r}if(a.l(0,B.aB)){s=q.a.gf7()
 r=s.d
 return r==null?s.b:r}return q.a.gf7().c}if(a.l(0,B.aV)){s=q.a.gf7()
 r=s.rx
-return r==null?s.k3:r}if(a.l(0,B.aw)){s=q.a.gf7()
+return r==null?s.k3:r}if(a.l(0,B.av)){s=q.a.gf7()
 r=s.rx
 return r==null?s.k3:r}if(a.l(0,B.aB)){s=q.a.gf7()
 r=s.rx
@@ -86420,11 +86420,11 @@ return A.bm(31,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}s=q.a.gf7()
 r=s.RG
 s=r==null?s.k2:r
 return A.bm(31,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aS)){if(a.l(0,B.aV))return q.a.gf7().b
-if(a.l(0,B.aw))return q.a.gf7().b
+if(a.l(0,B.av))return q.a.gf7().b
 if(a.l(0,B.aB))return q.a.gf7().b
 return q.a.gf7().b}if(a.l(0,B.aV)){s=q.a.gf7()
 r=s.RG
-return r==null?s.k2:r}if(a.l(0,B.aw)){s=q.a.gf7()
+return r==null?s.k2:r}if(a.l(0,B.av)){s=q.a.gf7()
 r=s.RG
 return r==null?s.k2:r}if(a.l(0,B.aB)){s=q.a.gf7()
 r=s.RG
@@ -86445,10 +86445,10 @@ $S:8}
 A.bBJ.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV))return r.a.gf7().b.bh(0.1)
-if(a.l(0,B.aw))return r.a.gf7().b.bh(0.08)
+if(a.l(0,B.av))return r.a.gf7().b.bh(0.08)
 if(a.l(0,B.aB))return r.a.gf7().b.bh(0.1)
 return null}if(a.l(0,B.aV)){s=r.a.gf7().k3
-return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aw)){s=r.a.gf7().k3
+return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.av)){s=r.a.gf7().k3
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=r.a.gf7().k3
 return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}return null},
 $S:23}
@@ -86477,7 +86477,7 @@ r=s.RG
 s=r==null?s.k2:r
 return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aS)){if(a.l(0,B.aV)){s=q.a.b
 r=s.e
-return r==null?s.c:r}if(a.l(0,B.aw)){s=q.a.b
+return r==null?s.c:r}if(a.l(0,B.av)){s=q.a.b
 r=s.e
 return r==null?s.c:r}if(a.l(0,B.aB)){s=q.a.b
 r=s.e
@@ -86485,7 +86485,7 @@ return r==null?s.c:r}s=q.a.b
 r=s.e
 return r==null?s.c:r}if(a.l(0,B.aV)){s=q.a.b
 r=s.RG
-return r==null?s.k2:r}if(a.l(0,B.aw)){s=q.a.b
+return r==null?s.k2:r}if(a.l(0,B.av)){s=q.a.b
 r=s.RG
 return r==null?s.k2:r}if(a.l(0,B.aB)){s=q.a.b
 r=s.RG
@@ -87190,7 +87190,7 @@ a=a9.a
 if(!a.e&&e)p[b]=new A.h3(1,B.hM,r,b0)}n=a9.f
 m=a9.gjn()
 i=e?B.f:B.E
-n=A.iu(A.bWe(B.ig,new A.as4(a9.gaFN(),B.bm,B.e,i,B.k,b0,B.dW,b0,0,p,b0),m,!0,!1,r.ax,r.ch,r.ay,r.CW),b0,b0,n,B.b3)
+n=A.iu(A.bWe(B.ig,new A.as4(a9.gaFN(),B.bm,B.e,i,B.k,b0,B.dV,b0,0,p,b0),m,!0,!1,r.ax,r.ch,r.ay,r.CW),b0,b0,n,B.b3)
 a6=new A.c5(A.cl(b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,b0,B.e3I,b0,b0,b0,b0,b0,b0,b0,b0,b0,B.aC,b0),!0,!0,!1,!1,n,b0)
 r=a9.a
 if(r.e){a7=r.f
@@ -87225,7 +87225,7 @@ A.bCf.prototype={
 $1(a){var s,r,q=this.a,p=q.a
 p.toString
 s=this.b.r
-if(s==null)s=B.dS
+if(s==null)s=B.e1
 r=p.c[a]
 if(t.ZQ.b(r)&&r.gnZ().b===46&&q.a.gaVv())s=s.E(0,B.Jd)
 p=q.y
@@ -87435,10 +87435,10 @@ gDc(){return this.db?B.E_:B.E0}}
 A.bCy.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.aS)){if(a.l(0,B.aV))return r.a.gno().b.bh(0.1)
-if(a.l(0,B.aw))return r.a.gno().b.bh(0.08)
+if(a.l(0,B.av))return r.a.gno().b.bh(0.08)
 if(a.l(0,B.aB))return r.a.gno().b.bh(0.1)
 return null}if(a.l(0,B.aV))return r.a.gno().b.bh(0.1)
-if(a.l(0,B.aw)){s=r.a.gno().k3
+if(a.l(0,B.av)){s=r.a.gno().k3
 return A.bm(20,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aB)){s=r.a.gno().k3
 return A.bm(B.q.b9(25.5),s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}return null},
 $S:23}
@@ -87506,7 +87506,7 @@ return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}return this.a.gnq().b},
 $S:8}
 A.bCC.prototype={
 $1(a){if(a.l(0,B.aV))return this.a.gnq().b.bh(0.1)
-if(a.l(0,B.aw))return this.a.gnq().b.bh(0.08)
+if(a.l(0,B.av))return this.a.gnq().b.bh(0.08)
 if(a.l(0,B.aB))return this.a.gnq().b.bh(0.1)
 return null},
 $S:23}
@@ -87514,7 +87514,7 @@ A.bCA.prototype={
 $1(a){var s,r=this
 if(a.l(0,B.ak)){s=r.a.gnq().k3
 return A.bm(97,s.H()>>>16&255,s.H()>>>8&255,s.H()&255)}if(a.l(0,B.aV))return r.a.gnq().b
-if(a.l(0,B.aw))return r.a.gnq().b
+if(a.l(0,B.av))return r.a.gnq().b
 if(a.l(0,B.aB))return r.a.gnq().b
 return r.a.gnq().b},
 $S:8}
@@ -87657,7 +87657,7 @@ if(s!=null)s.Z(0,r.gGY())}r.gfO().snz(r.ga5x())
 if(r.gfO().gcW()&&r.a.go!==a.go&&r.glI()){s=r.glg().a.b
 if(s.a===s.b)r.r=!r.a.go}r.a.toString
 r.gjt().fj(0,B.ak,!r.glI())
-r.gjt().fj(0,B.aw,r.f)
+r.gjt().fj(0,B.av,r.f)
 r.gjt().fj(0,B.aB,r.gfO().gcW())
 r.gjt().fj(0,B.hw,r.grP())},
 ja(a,b){var s=this.d
@@ -87691,7 +87691,7 @@ if(s.a.go){r=s.glg().a.b
 r=r.a===r.b}else r=!1
 if(r)return!1
 if(!s.glI())return!1
-if(a===B.fn||a===B.qQ)return!0
+if(a===B.fo||a===B.qQ)return!0
 if(s.glg().a.a.length!==0)return!0
 return!1},
 aIq(){this.t(new A.bCE())
@@ -87700,7 +87700,7 @@ aIs(a,b){var s,r=this,q=r.aH3(b)
 if(q!==r.r)r.t(new A.bCG(r,q))
 s=r.c
 s.toString
-switch(A.M(s).w.a){case 2:case 4:case 3:case 5:case 1:case 0:if(b===B.fn){s=r.y.ga6()
+switch(A.M(s).w.a){case 2:case 4:case 3:case 5:case 1:case 0:if(b===B.fo){s=r.y.ga6()
 if(s!=null)s.jV(a.gfa())}break}s=r.c
 s.toString
 switch(A.M(s).w.a){case 2:case 1:case 0:break
@@ -87710,7 +87710,7 @@ axi(){var s=this.glg().a.b
 if(s.a===s.b)this.y.ga6().UT()},
 a0T(a){var s=this
 if(a!==s.f){s.t(new A.bCF(s,a))
-s.gjt().fj(0,B.aw,s.f)}},
+s.gjt().fj(0,B.av,s.f)}},
 axG(){this.t(new A.bCH())},
 gjt(){this.a.toString
 var s=this.z
@@ -87720,7 +87720,7 @@ ayQ(){var s=this
 s.a.toString
 s.z=A.aeS(null)
 s.gjt().fj(0,B.ak,!s.glI())
-s.gjt().fj(0,B.aw,s.f)
+s.gjt().fj(0,B.av,s.f)
 s.gjt().fj(0,B.aB,s.gfO().gcW())
 s.gjt().fj(0,B.hw,s.grP())
 s.gjt().Z(0,s.ga17())},
@@ -88686,14 +88686,14 @@ if(J.aD(b)!==A.a6(s))return!1
 return b instanceof A.RN&&J.o(b.a,s.a)&&J.o(b.b,s.b)&&J.o(b.c,s.c)&&J.o(b.d,s.d)&&J.o(b.e,s.e)&&J.o(b.f,s.f)&&J.o(b.r,s.r)&&J.o(b.w,s.w)&&J.o(b.y,s.y)&&J.o(b.x,s.x)&&J.o(b.z,s.z)&&J.o(b.Q,s.Q)&&J.o(b.as,s.as)&&J.o(b.ax,s.ax)&&b.at==s.at}}
 A.asJ.prototype={}
 A.akA.prototype={
-bf(a){var s=new A.apQ(!0,this.e,null,this.r,this.w,B.aZ,null,new A.bJ(),A.b8(t.T))
+bf(a){var s=new A.apQ(!0,this.e,null,this.r,this.w,B.aX,null,new A.bJ(),A.b8(t.T))
 s.bd()
 s.sbS(null)
 return s}}
 A.apQ.prototype={
 dU(a,b){var s,r=this,q=$.bML
 $.bML=!1
-if(r.gF(0).l(0,b)){s=r.ea(a,b)||r.G===B.aZ
+if(r.gF(0).l(0,b)){s=r.ea(a,b)||r.G===B.aX
 if((s||r.G===B.fZ)&&!$.bMK){$.bMK=!0
 a.E(0,new A.ua(b,r))}}else s=!1
 if(q){$.bML=!0
@@ -88810,13 +88810,13 @@ r.f=s.ac},
 atR(){var s,r=this.c
 r.toString
 s=A.M(r).w
-$label0$0:{if(B.eI===s||B.fr===s||B.fs===s){r=24
+$label0$0:{if(B.eI===s||B.fs===s||B.ft===s){r=24
 break $label0$0}if(B.cU===s||B.fU===s||B.bM===s){r=32
 break $label0$0}r=null}return r},
 atQ(){var s,r=this.c
 r.toString
 s=A.M(r).w
-$label0$0:{if(B.eI===s||B.fr===s||B.fs===s){r=B.jA
+$label0$0:{if(B.eI===s||B.fs===s||B.ft===s){r=B.jA
 break $label0$0}if(B.cU===s||B.fU===s||B.bM===s){r=B.aC8
 break $label0$0}r=null}return r},
 aoJ(a8){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6=this,a7=null
@@ -88904,7 +88904,7 @@ s=p.gPY()
 r=p.a.Q
 q=new A.c5(A.cl(o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,o,s,B.aC,o),!1,!1,!1,!1,r,o)
 p.e===$&&A.c()
-q=A.bVC(A.NC(B.aZ,q,o,p.gaJ4(),o,o,o),B.dO,p.ga0X(),p.ga0Y())
+q=A.bVC(A.NC(B.aX,q,o,p.gaJ4(),o,o,o),B.dO,p.ga0X(),p.ga0Y())
 return new A.OE(p.d,p.gaoI(),q,o)}}
 A.b0U.prototype={
 $0(){var s,r=this.a,q=r.e
@@ -89317,7 +89317,7 @@ gl4(){return this.w}}
 A.a16.prototype={
 P(){return"BorderStyle."+this.b}}
 A.aA.prototype={
-cd(a,b){var s=Math.max(0,this.b*b),r=b<=0?B.dX:this.c
+cd(a,b){var s=Math.max(0,this.b*b),r=b<=0?B.dW:this.c
 return new A.aA(this.a,s,r,-1)},
 kg(){var s,r
 switch(this.c.a){case 1:$.aX()
@@ -89468,23 +89468,23 @@ case 1:switch(d.a){case 1:A.bPO(a,b,s)
 break
 case 0:if(c!=null&&!c.m(0,B.d_)){A.bPP(a,b,s,c)
 return}A.bPQ(a,b,s)
-break}return}}if(e.gAl()&&e.a.c===B.dX)return
+break}return}}if(e.gAl()&&e.a.c===B.dW)return
 s=A.aS(t.n8)
 r=e.a
 q=r.c
-p=q===B.dX
+p=q===B.dW
 if(!p)s.E(0,r.a)
 o=e.b
 n=o.c
-m=n===B.dX
+m=n===B.dW
 if(!m)s.E(0,o.a)
 l=e.c
 k=l.c
-j=k===B.dX
+j=k===B.dW
 if(!j)s.E(0,l.a)
 i=e.d
 h=i.c
-g=h===B.dX
+g=h===B.dW
 if(!g)s.E(0,i.a)
 f=!0
 if(!(q===B.o&&r.b===0))if(!(n===B.o&&o.b===0)){if(!(k===B.o&&l.b===0))q=h===B.o&&i.b===0
@@ -89549,7 +89549,7 @@ case 1:switch(a4.a){case 1:A.bPO(a1,a2,d)
 break
 case 0:if(a3!=null&&!a3.m(0,B.d_)){A.bPP(a1,a2,d,a3)
 return}A.bPQ(a1,a2,d)
-break}return}if(e.gAl()&&d.c===B.dX)return
+break}return}if(e.gAl()&&d.c===B.dW)return
 switch(a5.a){case 0:a0=new A.bs(e.c,b)
 break
 case 1:a0=new A.bs(b,e.c)
@@ -89560,17 +89560,17 @@ o=a0.b
 p=o
 a0=A.aS(t.n8)
 n=d.c
-m=n===B.dX
+m=n===B.dW
 if(!m)a0.E(0,c)
 l=e.c
 k=l.c
-if(k!==B.dX)a0.E(0,l.a)
+if(k!==B.dW)a0.E(0,l.a)
 j=e.d
 i=j.c
-h=i===B.dX
+h=i===B.dW
 if(!h)a0.E(0,j.a)
 g=b.c
-if(g!==B.dX)a0.E(0,a)
+if(g!==B.dW)a0.E(0,a)
 f=!0
 if(!(n===B.o&&d.b===0))if(!(k===B.o&&l.b===0)){if(!(i===B.o&&j.b===0))b=g===B.o&&b.b===0
 else b=f
@@ -89578,9 +89578,9 @@ f=b}b=!1
 if(a0.a===1)if(!f)if(a4!==B.ap)b=a3!=null&&!a3.m(0,B.d_)
 else b=!0
 if(b){if(m)d=B.w
-b=p.c===B.dX?B.w:p
+b=p.c===B.dW?B.w:p
 a=h?B.w:j
-n=q.c===B.dX?B.w:q
+n=q.c===B.dW?B.w:q
 A.bJv(a1,a2,a3,a,a0.gW(0),n,b,a4,a5,d)
 return}A.bNT(a1,a2,j,q,p,d)},
 i5(a,b,c){return this.K5(a,b,null,B.l,c)},
@@ -89676,7 +89676,7 @@ anP(a,b,c){var s,r,q,p,o,n,m=this.b.e
 if(m==null)return
 for(s=m.length,r=0;r<m.length;m.length===s||(0,A.a1)(m),++r){q=m[r]
 $.aX()
-p=new A.qP(B.id,B.fj,B.ou,B.r2,B.kh)
+p=new A.qP(B.id,B.fk,B.ou,B.r2,B.kh)
 p.r=q.a.gv(0)
 o=q.c
 o=o>0?o*0.57735+0.5:0
@@ -93126,7 +93126,7 @@ s.toString
 this.jh(B.e7,s)},
 ash(){var s=this.il
 s.toString
-this.oe(B.fn,s)},
+this.oe(B.fo,s)},
 DK(a,b,c){var s,r,q,p,o,n=this
 n.mt()
 s=n.ao
@@ -93554,7 +93554,7 @@ NL(a,b){var s,r=this
 $label0$0:{if(B.dm===r||B.mY===r){s=0
 break $label0$0}if(B.r===r){s=b?a:0
 break $label0$0}if(B.k===r){s=a/2
-break $label0$0}if(B.fx===r){s=B.r.NL(a,!b)
+break $label0$0}if(B.fy===r){s=B.r.NL(a,!b)
 break $label0$0}s=null}return s}}
 A.zN.prototype={
 syx(a,b){if(this.bl===b)return
@@ -93598,7 +93598,7 @@ $label0$1:{s=!1
 if(B.mY===r){switch(this.D.a){case 0:s=!0
 break
 case 1:break
-default:s=null}break $label0$1}if(B.r===r||B.k===r||B.fx===r||B.dm===r)break $label0$1
+default:s=null}break $label0$1}if(B.r===r||B.k===r||B.fy===r||B.dm===r)break $label0$1
 s=null}return s},
 atL(a){var s
 switch(this.D.a){case 0:s=a.b
@@ -93634,7 +93634,7 @@ default:q=null}break
 default:q=null}return q},
 ZE(a){var s,r,q=null,p=this.an
 $label0$0:{if(B.dm===p){s=!0
-break $label0$0}if(B.r===p||B.k===p||B.fx===p||B.mY===p){s=!1
+break $label0$0}if(B.r===p||B.k===p||B.fy===p||B.mY===p){s=!1
 break $label0$0}s=q}switch(this.D.a){case 0:r=a.d
 s=s?A.jC(r,q):new A.aI(0,1/0,0,r)
 break
@@ -93651,7 +93651,7 @@ case 1:q=0
 break
 default:q=null}s=this.an
 $label0$1:{if(B.dm===s){r=!0
-break $label0$1}if(B.r===s||B.k===s||B.fx===s||B.mY===s){r=!1
+break $label0$1}if(B.r===s||B.k===s||B.fy===s||B.mY===s){r=!1
 break $label0$1}r=null}switch(this.D.a){case 0:r=r?b.d:0
 r=new A.aI(q,c,r,b.d)
 q=r
@@ -94441,7 +94441,7 @@ s=a.b
 r=A.G(s).i("bR<1>")
 this.b.aPA(a.gmG(0),a.d,A.h6(new A.bR(s,r),new A.aR8(),r.i("F.E"),t.Pb))},
 aWf(a,b){var s,r,q,p,o,n=this
-if(a.gez(a)!==B.hu&&a.gez(a)!==B.fk)return
+if(a.gez(a)!==B.hu&&a.gez(a)!==B.fl)return
 if(t.ks.b(a))return
 $label0$0:{if(t.PB.b(a)){s=A.aJX()
 break $label0$0}s=b==null?n.a.$2(a.gbR(a),a.gy3()):b
@@ -96654,7 +96654,7 @@ r=s.bT
 if(r!=null){q=A.dP(B.S,j.a,k.e.a,!1)
 $.aX()
 p=A.bT()
-p.b=B.fj
+p.b=B.fk
 p.r=r.gv(0)
 for(j=s.oa(q),s=j.length,o=0;o<j.length;j.length===s||(0,A.a1)(j),++o){n=j[o]
 if(a.e==null)a.PN()
@@ -96836,10 +96836,10 @@ A.MO.prototype={
 P(){return"HitTestBehavior."+this.b}}
 A.PL.prototype={
 dU(a,b){var s,r=this
-if(r.gF(0).l(0,b)){s=r.ea(a,b)||r.G===B.aZ
+if(r.gF(0).l(0,b)){s=r.ea(a,b)||r.G===B.aX
 if(s||r.G===B.fZ)a.E(0,new A.ua(b,r))}else s=!1
 return s},
-lm(a){return this.G===B.aZ}}
+lm(a){return this.G===B.aX}}
 A.zL.prototype={
 sa7n(a){if(this.G.m(0,a))return
 this.G=a
@@ -100415,7 +100415,7 @@ s=t.B
 r=A.qo(s.a(A.a2.prototype.gad.call(a)).a,s.a(A.a2.prototype.gad.call(a)).b)
 $label0$0:{if(B.bN===r||B.ic===r){q=b-q
 break $label0$0}if(B.c_===r){q=this.gF(0).b-b-q
-break $label0$0}if(B.fu===r){q=this.gF(0).a-b-q
+break $label0$0}if(B.fv===r){q=this.gF(0).a-b-q
 break $label0$0}q=null}return q},
 gR9(){var s,r,q=A.a([],t.Ry),p=this.e2$
 for(s=A.G(this).i("b_.1");p!=null;){q.push(p)
@@ -103495,7 +103495,7 @@ p===$&&A.c()
 p.dQ("TextInput.setEditingState",a.UO(),q)}}$.e9().d.r.aW3(a)}}
 A.b0x.prototype={
 $0(){var s=null
-return A.a([A.kR("call",this.a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.Py)],t.E)},
+return A.a([A.kR("call",this.a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.Py)],t.E)},
 $S:35}
 A.b0u.prototype={
 $1(a){return a},
@@ -104928,7 +104928,7 @@ return A.cb1(s.f,s.x,null,null,s.c,a.a4(t.I).w,s.d,s.r)}}
 A.Mq.prototype={
 gaAK(){switch(this.e.a){case 0:return!0
 case 1:var s=this.w
-return s===B.r||s===B.fx}},
+return s===B.r||s===B.fy}},
 Lf(a){var s=this.x
 if(s==null)s=this.gaAK()?A.f3(a):null
 return s},
@@ -104967,7 +104967,7 @@ if(q!=null)q.al()}}}
 A.h3.prototype={}
 A.Gy.prototype={
 bf(a){var s=this,r=A.f3(a)
-r=new A.PS(B.bm,s.f,s.r,B.an,s.x,s.y,r,B.dW,B.i,A.b8(t.O5),0,null,null,new A.bJ(),A.b8(t.T))
+r=new A.PS(B.bm,s.f,s.r,B.an,s.x,s.y,r,B.dV,B.i,A.b8(t.O5),0,null,null,new A.bJ(),A.b8(t.T))
 r.bd()
 r.u(0,null)
 return r},
@@ -104980,7 +104980,7 @@ b.saVs(r.x)
 b.saNH(r.y)
 s=A.f3(a)
 if(b.aw!=s){b.aw=s
-b.al()}if(b.aS!==B.dW){b.aS=B.dW
+b.al()}if(b.aS!==B.dV){b.aS=B.dV
 b.al()}if(B.i!==b.bT){b.bT=B.i
 b.bb()
 b.cq()}}}
@@ -105068,7 +105068,7 @@ b.df=r.f
 b.du=r.r
 s=r.w
 if(!b.dC.m(0,s)){b.dC=s
-b.bb()}if(b.G!==B.aZ){b.G=B.aZ
+b.bb()}if(b.G!==B.aX){b.G=B.aX
 b.bb()}}}
 A.eG.prototype={
 bf(a){var s=new A.PM(null,new A.bJ(),A.b8(t.T))
@@ -105142,7 +105142,7 @@ qh(a,b){return this.c.$2(a,b)}}
 A.arE.prototype={
 q(a){return this.a.qh(a,this.gafR())}}
 A.kg.prototype={
-bf(a){var s=new A.WW(this.e,B.aZ,null,new A.bJ(),A.b8(t.T))
+bf(a){var s=new A.WW(this.e,B.aX,null,new A.bJ(),A.b8(t.T))
 s.bd()
 s.sbS(null)
 return s},
@@ -106956,7 +106956,7 @@ return h},
 Fr(a,b){var s,r,q,p=this,o=p.a.c,n=o.a.a.length
 if(n<a.b||n<a.a)return
 o.seT(a)
-switch(b){case null:case void 0:case B.a3v:case B.dg:case B.qP:case B.fn:case B.qQ:case B.e7:case B.cZ:p.KA()
+switch(b){case null:case void 0:case B.a3v:case B.dg:case B.qP:case B.fo:case B.qQ:case B.e7:case B.cZ:p.KA()
 break
 case B.d6:break}o=p.a
 o.toString
@@ -107044,7 +107044,7 @@ l=A.co("while applying input formatters")
 A.fe(new A.da(s,r,"widgets",l,e,e,!1))}l=f.a.c
 g=l.a.b;++f.R8
 l.eB(0,a)
-if(n)if(c)n=b===B.fn||b===B.d6
+if(n)if(c)n=b===B.fo||b===B.d6
 else n=!1
 else n=!0
 if(n){f.Fr(f.a.c.a.b,b)
@@ -107057,7 +107057,7 @@ n=A.co("while calling onChanged")
 A.fe(new A.da(p,o,"widgets",n,e,e,!1))}--f.R8
 f.Qg()},
 atp(a,b){return this.a_Z(a,b,!1)},
-anQ(a,b,c){switch(A.c6().a){case 2:case 4:if(c===B.fn||c===B.dg)this.jV(b.gfa())
+anQ(a,b,c){switch(A.c6().a){case 2:case 4:if(c===B.fo||c===B.dg)this.jV(b.gfa())
 break
 case 3:case 5:case 1:case 0:if(c===B.dg)if(a.c!==b.c)this.jV(b.goI())
 else if(a.d!==b.d)this.jV(b.gfa())
@@ -107808,7 +107808,7 @@ l=m.O
 k=m.cQ
 m=m.j4
 j=A.ok(a).a8T(!1,g.a.k2!==1)
-return A.ae2(A.mb(new A.Gj(q,new A.aE2(g),new A.aE3(),new A.aE4(g),p,o,A.lY(!1,h,new A.eD(new A.aE5(g),A.aXa(s,B.G,n,k,!0,B.aZ,g.ay,l,m,j,h,new A.aE6(i.a,g,i.c,i.d)),h,t.WA),h,h,h,p,!1,h,h,h,h,h,h),h,t.pm),r,h,h,h,h),h,e,f,new A.aE7(g,a))},
+return A.ae2(A.mb(new A.Gj(q,new A.aE2(g),new A.aE3(),new A.aE4(g),p,o,A.lY(!1,h,new A.eD(new A.aE5(g),A.aXa(s,B.G,n,k,!0,B.aX,g.ay,l,m,j,h,new A.aE6(i.a,g,i.c,i.d)),h,t.WA),h,h,h,p,!1,h,h,h,h,h,h),h,t.pm),r,h,h,h,h),h,e,f,new A.aE7(g,a))},
 $S:518}
 A.aE1.prototype={
 $1(a){var s=this.a
@@ -109164,7 +109164,7 @@ A.aIp.prototype={
 $0(){var s=0,r=A.C(t.H),q=this
 var $async$$0=A.y(function(a,b){if(a===1)return A.z(b,r)
 while(true)switch(s){case 0:s=2
-return A.n(A.ea(B.fy,null,t.H),$async$$0)
+return A.n(A.ea(B.fz,null,t.H),$async$$0)
 case 2:A.acO(q.a.a,q.b,B.Fc)
 return A.A(null,r)}})
 return A.B($async$$0,r)},
@@ -109394,7 +109394,7 @@ s=this.d=!1
 while(!0){if(!(a>0?r[a-1].as:s))break;--a}return a}}
 A.azM.prototype={
 $0(){var s=null,r=A.a([],t.E)
-J.d5(r,A.kR("The element being rebuilt at the time was",this.a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.lU))
+J.d5(r,A.kR("The element being rebuilt at the time was",this.a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.lU))
 return r},
 $S:35}
 A.azL.prototype={
@@ -109442,12 +109442,12 @@ this.cs(new A.aEB(s))
 return s.a},
 aO0(a){var s=null,r=A.a([],t.E),q=A.a([],t.lX)
 this.n5(new A.aEz(q))
-r.push(A.kR("The specific widget that could not find a "+a.k(0)+" ancestor was",this,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.lU))
+r.push(A.kR("The specific widget that could not find a "+a.k(0)+" ancestor was",this,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.lU))
 if(q.length!==0)r.push(A.c5x("The ancestors of this widget were",q))
 else r.push(A.co('This widget is the root of the tree, so it has no ancestors, let alone a "'+a.k(0)+'" ancestor.'))
 return r},
 aO_(a){var s=null
-return A.kR(a,this,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.lU)},
+return A.kR(a,this,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.lU)},
 cs(a){},
 fZ(a,b,c){var s,r,q=this
 if(b==null){if(a!=null)q.Bn(a)
@@ -109659,7 +109659,7 @@ return!0},
 $S:43}
 A.aEy.prototype={
 $1(a){var s=null
-return A.kR("",a,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.li,s,t.lU)},
+return A.kR("",a,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.li,s,t.lU)},
 $S:540}
 A.aED.prototype={
 $1(a){var s=this.a.l(0,a)
@@ -110397,7 +110397,7 @@ r.toString
 q.a=null
 $label0$0:{r=r.gbz(0)
 s=s.gbz(0)
-if(b||B.ft===r){s=q.a=B.ni
+if(b||B.fu===r){s=q.a=B.ni
 break $label0$0}if(B.hc===s){s=q.a=B.nh
 break $label0$0}return}switch(s.a){case 1:if(a.p3.gv(0)===0)return
 break
@@ -111795,7 +111795,7 @@ Rq(){var s=t.S
 return new A.GI(B.eO,18,18,B.lu,A.R(s,t.SP),A.eC(s),null,null,A.Jw(),A.R(s,t.Au))},
 ab2(a){a.D=this.a}}
 A.an6.prototype={
-q(a){return new A.nd(this.c,A.U([B.eku,new A.aha(this.d)],t.G,t.xR),B.aZ,!1,null)}}
+q(a){return new A.nd(this.c,A.U([B.eku,new A.aha(this.d)],t.G,t.xR),B.aX,!1,null)}}
 A.a9Z.prototype={
 q(a){var s=this,r=a.a4(t.I).w,q=A.a([],t.p),p=s.c
 if(p!=null)q.push(A.aMC(p,B.xH))
@@ -112769,7 +112769,7 @@ p.toString
 a6=r.a(p).aR$
 a5.a=a6}k=a3.aE===B.cN
 j=o+a3.D*(a3.dD$-1)
-if(j>s.a(A.a2.prototype.gad.call(a3)).b){a6=a3.ah===B.dW?a3.aq$:a3.e2$
+if(j>s.a(A.a2.prototype.gad.call(a3)).b){a6=a3.ah===B.dV?a3.aq$:a3.e2$
 a5.a=a6
 i=new A.bxS(a5,a3)
 for(r=t.pi,p=a6,h=0;p!=null;p=a6){l=p.b
@@ -112847,7 +112847,7 @@ ba(a,b){this.wO(a,b)}}
 A.bxS.prototype={
 $0(){var s=this.b,r=s.ah,q=this.a.a
 s=A.G(s).i("b_.1")
-if(r===B.dW){r=q.b
+if(r===B.dV){r=q.b
 r.toString
 r=s.a(r).aR$
 s=r}else{r=q.b
@@ -114172,7 +114172,7 @@ s=p.a.Q
 r=p.e
 r===$&&A.c()
 q=A.ok(a).a8L(!1)
-return new A.eD(new A.btn(p),A.aXa(n,B.G,r,s,!1,B.aZ,o,new A.UI(!1,m),o,q,o,new A.bto(p,n)),o,t.WA)}}
+return new A.eD(new A.btn(p),A.aXa(n,B.G,r,s,!1,B.aX,o,new A.UI(!1,m),o,q,o,new A.bto(p,n)),o,t.WA)}}
 A.btn.prototype={
 $1(a){if(a.ik$===0)this.a.a.toString
 return!1},
@@ -114931,7 +114931,7 @@ n(){this.f.n()
 this.r.n()
 this.aa()},
 ga4U(){var s=this.a.c.p3
-if((s==null?null:s.gbz(0))!==B.ft){s=this.a.c.b
+if((s==null?null:s.gbz(0))!==B.fu){s=this.a.c.b
 s=s==null?null:s.cy.a
 s=s===!0}else s=!0
 return s},
@@ -115234,7 +115234,7 @@ Ik(a,b,c){b.fS(new A.oa(t.zk.a(this.c.x),c,0,a,b,0))},
 a9v(a,b){var s=this.c.x
 b.fS(new A.la(s instanceof A.jL?s:null,a,b,0))},
 goi(){var s=this.c
-return(s==null?null:s.w)!==B.fl},
+return(s==null?null:s.w)!==B.fm},
 gmX(){return!0},
 gjd(){return 0},
 n(){this.c=null
@@ -115642,7 +115642,7 @@ n(){this.d=null
 this.aa()}}
 A.aX4.prototype={
 $0(){var s=null,r=this.a
-return A.a([A.kR("The "+A.a6(r).k(0)+" sending notification was",r,!0,B.f4,s,s,s,B.e1,!1,!0,!0,B.jv,s,t.FS)],t.E)},
+return A.a([A.kR("The "+A.a6(r).k(0)+" sending notification was",r,!0,B.f4,s,s,s,B.e0,!1,!0,!0,B.jv,s,t.FS)],t.E)},
 $S:35}
 A.aX5.prototype={
 $1(a){this.a.a2h(a.a7G())
@@ -116029,7 +116029,7 @@ case 2:s=B.j5
 break
 default:s=null}return s},
 anl(a){var s,r=this.w.a.c
-$label0$0:{if(B.c_===r||B.fu===r){s=this.aAg(a)
+$label0$0:{if(B.c_===r||B.fv===r){s=this.aAg(a)
 break $label0$0}if(B.bN===r||B.ic===r){s=a
 break $label0$0}s=null}return s},
 BE(a,b,c,d,e,f){return this.aOM(a,b,c,d,e,f)},
@@ -117414,10 +117414,10 @@ p=f.Q
 q=q?p.gcI(0)+p.gcO(0):p.gdP()
 j=Math.min(s,n-q-2*f.w)
 s=f.dx
-s=s===B.c_||s===B.fu
+s=s===B.c_||s===B.fv
 q=f.db
 if((s?Math.max(q.gkS()-q.gfK(),0):Math.max(q.gfK()-q.gkT(),0))>0){s=f.dx
-s=s===B.c_||s===B.fu
+s=s===B.c_||s===B.fv
 q=f.db
 q=(s?Math.max(q.gfK()-q.gkT(),0):Math.max(q.gkS()-q.gfK(),0))>0
 s=q}else s=!1
@@ -117441,7 +117441,7 @@ q.toString
 g=A.af((q-p)/h,0,1)}else g=0
 q=f.dx
 p=q===B.c_
-o=p||q===B.fu?1-g:g
+o=p||q===B.fv?1-g:g
 s=s.d
 s.toString
 q=q===B.bN||p
@@ -117740,7 +117740,7 @@ case 0:s=o.CW
 s===$&&A.c()
 s=s.cx
 s===$&&A.c()
-r=a.c.a>s?B.ic:B.fu
+r=a.c.a>s?B.ic:B.fv
 break
 default:r=null}n=$.aF.aK$.x.h(0,n.Q)
 n.toString
@@ -118688,7 +118688,7 @@ s=n.e
 if(s!=null)l.a=new A.K(s,i,m)
 r=n.f==null&&A.bTE(a,k)
 q=r?A.P6(a):n.f
-p=A.aXa(j,B.G,q,n.y,!1,B.aZ,m,n.w,m,m,m,new A.aYT(l,n,j))
+p=A.aXa(j,B.G,q,n.y,!1,B.aX,m,n.w,m,m,m,new A.aYT(l,n,j))
 o=n.at
 if((o==null?A.ok(a).Lj(a):o)===B.wl)p=new A.eD(new A.aYU(a),p,m,t.kj)
 return r&&q!=null?A.bTD(p):p}}
@@ -119537,7 +119537,7 @@ s.h(0,a.iB).L(0,a)
 if(s.h(0,a.iB).a===0)s.L(0,a.iB)},
 dU(a,b){var s,r,q=this
 if(!q.gF(0).l(0,b))return!1
-s=q.ea(a,b)||q.G===B.aZ
+s=q.ea(a,b)||q.G===B.aX
 if(s){r=new A.ua(b,q)
 q.dB.p(0,r,a)
 a.E(0,r)}return s},
@@ -120400,7 +120400,7 @@ j=A.U([B.xi,new A.et(new A.bzg(h),new A.bzh(h,m),t.YC)],t.G,t.xR)
 i=h.a
 return A.bJH(new A.eN(k,!1,new A.aw(q,p,new A.dl(B.b4,g,g,new A.nd(new A.K(new A.L(e,f,e,f),i.w.HJ(a,i.z,i.y,i.d),g),j,B.fZ,!1,g),g),g),g),o,l,!1)}}
 A.bzg.prototype={
-$0(){return A.bTo(this.a,A.cX([B.es,B.fk,B.i3],t.Au))},
+$0(){return A.bTo(this.a,A.cX([B.es,B.fl,B.i3],t.Au))},
 $S:207}
 A.bzh.prototype={
 $1(a){var s=this.a.a
@@ -120506,14 +120506,14 @@ s.toString
 s=s.gar()
 s=s.il=a.a
 r=a.c
-o.b=r===B.es||r===B.fk
+o.b=r===B.es||r===B.fl
 q=o.c
 if(q){p=n.gaB().ga6()
 p.toString
 p.gar().G}switch(A.c6().a){case 0:s=n.gaB().ga6()
 s.toString
 s.a.toString
-$label0$1:{s=B.fk===r||B.j0===r
+$label0$1:{s=B.fl===r||B.j0===r
 if(s){n=n.gaB().ga6()
 n.toString
 n.a.toString
@@ -120675,14 +120675,14 @@ s.toString
 s=s.gar()
 r=s.il
 r.toString
-s.oe(B.fn,r)}else{s=n.gaB().ga6()
+s.oe(B.fo,r)}else{s=n.gaB().ga6()
 s.toString
 if(s.gar().aK){s=n.gaB().ga6()
 s.toString
 s=s.gar()
 r=s.il
 r.toString
-s.oe(B.fn,r)
+s.oe(B.fo,r)
 s=n.gaB().ga6()
 s.toString
 if(s.c.e!=null){s=n.gaB().ga6()
@@ -120692,7 +120692,7 @@ s.toString
 A.aFu(s)}}else{s=n.gaB().ga6()
 s.toString
 r=a.a
-s.gar().jh(B.fn,r)
+s.gar().jh(B.fo,r)
 s=n.gaB().ga6()
 s.toString
 r=s.gar().hm(r)
@@ -120710,7 +120710,7 @@ s.toString
 s=s.gar()
 r=s.il
 r.toString
-s.oe(B.fn,r)
+s.oe(B.fo,r)
 s=n.gaB().ga6()
 s.toString
 if(s.c.e!=null){s=n.gaB().ga6()
@@ -120737,7 +120737,7 @@ s.toString
 s=s.gar().ac.at
 s.toString
 r=new A.H(0,s-n.e)}s=n.ga4a()
-switch(A.ch(s==null?B.fu:s).a){case 0:s=new A.H(n.gwb()-n.d,0)
+switch(A.ch(s==null?B.fv:s).a){case 0:s=new A.H(n.gwb()-n.d,0)
 break
 case 1:s=new A.H(0,n.gwb()-n.d)
 break
@@ -120748,16 +120748,16 @@ p=a.a
 o=a.c
 if(q){m=m.gaB().ga6()
 m.toString
-m.gar().DL(B.fn,p.av(0,o).av(0,r).av(0,s),p)}else{s=m.gaB().ga6()
+m.gar().DL(B.fo,p.av(0,o).av(0,r).av(0,s),p)}else{s=m.gaB().ga6()
 s.toString
-s.gar().jh(B.fn,p)
+s.gar().jh(B.fo,p)
 m=m.gaB().ga6()
 m.toString
 m.L_(new A.F1(o,null,B.tW))}break
 case 0:case 1:case 3:case 5:m=m.gaB().ga6()
 m.toString
 q=a.a
-m.gar().DL(B.fn,q.av(0,a.c).av(0,r).av(0,s),q)
+m.gar().DL(B.fo,q.av(0,a.c).av(0,r).av(0,s),q)
 break}n.Ai(a.a)},
 aTj(a){var s,r,q=this
 q.a1n()
@@ -120862,7 +120862,7 @@ q.l1()}},
 aST(a){var s,r,q=this,p=q.a
 if(!p.gji())return
 s=a.d
-q.b=s===B.es||s===B.fk
+q.b=s===B.es||s===B.fl
 r=p.gaB().ga6()
 r.toString
 q.f=r.gar().G
@@ -120882,16 +120882,16 @@ r=r.gar().G.gdm()}else r=!1
 if(r)switch(A.c6().a){case 2:case 4:q.asM(a.b,B.dg)
 break
 case 0:case 1:case 3:case 5:q.vA(a.b,B.dg)
-break}else switch(A.c6().a){case 2:switch(s){case B.hu:case B.fl:p=p.gaB().ga6()
+break}else switch(A.c6().a){case 2:switch(s){case B.hu:case B.fm:p=p.gaB().ga6()
 p.toString
 p.gar().jh(B.dg,a.b)
 break
-case B.fk:case B.j0:case B.es:case B.i3:case null:case void 0:break}break
-case 0:case 1:switch(s){case B.hu:case B.fl:p=p.gaB().ga6()
+case B.fl:case B.j0:case B.es:case B.i3:case null:case void 0:break}break
+case 0:case 1:switch(s){case B.hu:case B.fm:p=p.gaB().ga6()
 p.toString
 p.gar().jh(B.dg,a.b)
 break
-case B.fk:case B.j0:case B.es:case B.i3:r=p.gaB().ga6()
+case B.fl:case B.j0:case B.es:case B.i3:r=p.gaB().ga6()
 r.toString
 if(r.gar().dT){p=p.gaB().ga6()
 p.toString
@@ -120916,7 +120916,7 @@ s.toString
 s=s.gar().ac.at
 s.toString
 r=new A.H(0,s-j.e)}s=j.ga4a()
-switch(A.ch(s==null?B.fu:s).a){case 0:s=new A.H(j.gwb()-j.d,0)
+switch(A.ch(s==null?B.fv:s).a){case 0:s=new A.H(j.gwb()-j.d,0)
 break
 case 1:s=new A.H(0,j.gwb()-j.d)
 break
@@ -120926,15 +120926,15 @@ o=a.x
 if(A.J3(o)===2){n=i.gaB().ga6()
 n.toString
 n.gar().DL(B.dg,p.av(0,r).av(0,s),q)
-switch(a.f){case B.fk:case B.j0:case B.es:case B.i3:return j.Ai(q)
-case B.hu:case B.fl:case null:case void 0:return}}if(A.J3(o)===3)switch(A.c6().a){case 0:case 1:case 2:switch(a.f){case B.hu:case B.fl:return j.Px(B.dg,p.av(0,r).av(0,s),q)
-case B.fk:case B.j0:case B.es:case B.i3:case null:case void 0:break}return
+switch(a.f){case B.fl:case B.j0:case B.es:case B.i3:return j.Ai(q)
+case B.hu:case B.fm:case null:case void 0:return}}if(A.J3(o)===3)switch(A.c6().a){case 0:case 1:case 2:switch(a.f){case B.hu:case B.fm:return j.Px(B.dg,p.av(0,r).av(0,s),q)
+case B.fl:case B.j0:case B.es:case B.i3:case null:case void 0:break}return
 case 3:return j.a4l(B.dg,p.av(0,r).av(0,s),q)
-case 5:case 4:return j.Px(B.dg,p.av(0,r).av(0,s),q)}switch(A.c6().a){case 2:switch(a.f){case B.hu:case B.fl:i=i.gaB().ga6()
+case 5:case 4:return j.Px(B.dg,p.av(0,r).av(0,s),q)}switch(A.c6().a){case 2:switch(a.f){case B.hu:case B.fm:i=i.gaB().ga6()
 i.toString
 return i.gar().DK(B.dg,p.av(0,r).av(0,s),q)
-case B.fk:case B.j0:case B.es:case B.i3:case null:case void 0:break}return
-case 0:case 1:switch(a.f){case B.hu:case B.fl:case B.fk:case B.j0:i=i.gaB().ga6()
+case B.fl:case B.j0:case B.es:case B.i3:case null:case void 0:break}return
+case 0:case 1:switch(a.f){case B.hu:case B.fm:case B.fl:case B.j0:i=i.gaB().ga6()
 i.toString
 return i.gar().DK(B.dg,p.av(0,r).av(0,s),q)
 case B.es:case B.i3:s=i.gaB().ga6()
@@ -121262,7 +121262,7 @@ s.cf(0)}else{s===$&&A.c()
 s.dn(0)}}},
 gjk(){var s,r=this,q=A.aS(t.EK)
 if(r.gj8()==null)q.E(0,B.ak)
-if(r.qE$)q.E(0,B.aw)
+if(r.qE$)q.E(0,B.av)
 if(r.qD$)q.E(0,B.aB)
 s=r.gv(r)
 if(s!==!1)q.E(0,B.aS)
@@ -122106,7 +122106,7 @@ $S:11}
 A.a9w.prototype={
 q(a){var s=A.Fp(a,new A.aPX(),t.C,t.y),r=this.YM(!1),q=this.YM(!0),p=s?B.a6w:B.ejj
 return new A.Ou(new A.NL(new A.SO(this.c,null),new A.aPY(),"MedCases Pro",r,q,p,B.bSu,B.bqj,!1,null),null)},
-YM(a){var s=null,r=a?B.A:B.cO,q=B.H.j(0.52),p=a?new A.oY(B.A,B.bn,B.hA,s,s,s,s,s,s,B.T,B.j,s,s,s,s,s,s,s,s,s,s,s,s,s,s,B.agN,B.j,s,s,B.aa,B.j,s,B.aG,s,s,B.aG,B.aa,B.aa,B.aa,s,B.ae,B.b9,s,s,B.j,B.aG,s,s,B.Gp,B.j):new A.oY(B.cO,B.av,B.j,s,s,s,s,s,s,B.T,B.H,s,s,s,s,s,s,s,s,s,s,s,s,s,s,B.Hj,B.j,s,s,B.j,B.av,s,s,s,s,s,s,s,B.yF,s,s,s,s,s,s,s,s,s,B.j,B.H),o=a?B.aG:B.j,n=a?B.aa:B.j,m=a?B.b9:B.a9,l=a?B.ehB:s
+YM(a){var s=null,r=a?B.A:B.cO,q=B.H.j(0.52),p=a?new A.oY(B.A,B.bn,B.hA,s,s,s,s,s,s,B.T,B.j,s,s,s,s,s,s,s,s,s,s,s,s,s,s,B.agN,B.j,s,s,B.aa,B.j,s,B.aG,s,s,B.aG,B.aa,B.aa,B.aa,s,B.ae,B.b9,s,s,B.j,B.aG,s,s,B.Gp,B.j):new A.oY(B.cO,B.aw,B.j,s,s,s,s,s,s,B.T,B.H,s,s,s,s,s,s,s,s,s,s,s,s,s,s,B.Hj,B.j,s,s,B.j,B.aw,s,s,s,s,s,s,s,B.yF,s,s,s,s,s,s,s,s,s,B.j,B.H),o=a?B.aG:B.j,n=a?B.aa:B.j,m=a?B.b9:B.a9,l=a?B.ehB:s
 return A.ot(r,n,p,m,new A.xY(s,q,s,s,s,s,s,s,s),"Roboto",B.od,o,l,!0)}}
 A.aPX.prototype={
 $1(a){return a.d},
@@ -122125,7 +122125,7 @@ a2v(){this.e=null
 if(this.d!=null)$.aF.RG$.push(new A.b70(this))},
 YN(a){return new A.eu($.nD(),new A.b6Z(this),null,null,t.ts)},
 q(a){var s=null
-return new A.YH(this.a.c,new A.b73(this),new A.lm(A.ot(B.A,s,B.oY,s,s,"Roboto",B.od,B.av,s,!0),B.EZ,s),s)},
+return new A.YH(this.a.c,new A.b73(this),new A.lm(A.ot(B.A,s,B.oY,s,s,"Roboto",B.od,B.aw,s,!0),B.EZ,s),s)},
 anX(a){return new A.DD(this.a.c,new A.b6Y(this),null,t.qs)}}
 A.b72.prototype={
 $1(a){var s,r,q=this.a
@@ -122152,10 +122152,10 @@ $S:0}
 A.b6Z.prototype={
 $3(a,b,c){var s,r=null,q="Roboto"
 if(b==null){this.a.a2v()
-return new A.lm(A.ot(B.A,r,B.oY,r,r,q,B.od,B.av,r,!0),B.dFL,r)}s=b.e
+return new A.lm(A.ot(B.A,r,B.oY,r,r,q,B.od,B.aw,r,!0),B.dFL,r)}s=b.e
 if(s===B.EC){A.u3()
 this.a.a2v()
-return new A.lm(A.ot(B.A,r,B.oY,r,r,q,B.od,B.av,r,!0),new A.ahx(r),r)}if(s===B.kW)return new A.lm(A.ot(B.A,r,B.oY,r,r,q,B.od,B.av,r,!0),new A.Wn(b,r),r)
+return new A.lm(A.ot(B.A,r,B.oY,r,r,q,B.od,B.aw,r,!0),new A.ahx(r),r)}if(s===B.kW)return new A.lm(A.ot(B.A,r,B.oY,r,r,q,B.od,B.aw,r,!0),new A.Wn(b,r),r)
 this.a.aCx(b)
 return new A.Za(b,r)},
 $S:660}
@@ -122164,7 +122164,7 @@ $1(a){return this.a.anX(a)},
 $S:20}
 A.b6Y.prototype={
 $2(a,b){var s=null
-if(b.a!==B.pu)return new A.lm(A.ot(B.A,s,B.oY,s,s,"Roboto",B.od,B.av,s,!0),B.EZ,s)
+if(b.a!==B.pu)return new A.lm(A.ot(B.A,s,B.oY,s,s,"Roboto",B.od,B.aw,s,!0),B.EZ,s)
 if(b.c!=null)return this.a.YN(a)
 return this.a.YN(a)},
 $S:661}
@@ -122193,7 +122193,7 @@ s===$&&A.c()
 r=p.e
 r===$&&A.c()
 q=t.p
-return A.j0(o,B.av,A.dh(B.bS,A.a([m,l,A.eF(o,new A.eN(k,!1,A.pG(A.rU(B.ad,A.x(A.a([A.k(o,B.y0,B.i,o,o,new A.j(o,o,o,o,A.a([new A.aN(10,B.X,B.cr.j(0.28),B.I,52)],t.V),o,B.ap),o,o,o,o,o,o,o,o),B.cD,B.ej4,B.ac,A.e("IA Cl\xednica de bolso",o,o,o,o,o,A.m(o,o,B.f9.j(0.85),o,o,o,o,o,o,o,o,12,o,o,B.Y,o,o,!0,o,1.1,o,o,o,o,o,o),o,o,o)],q),B.k,B.e,B.E),o,r),s,o,!0),o),o,o,0,0,n*0.28,o),A.eF(n*0.18,new A.eN(p.f,!1,A.x(A.a([new A.aw(20,20,A.oX(o,B.cr.j(0.55),o,o,o,o,o,1.8,o,o),o),B.az,A.e("Iniciando...",o,o,o,o,o,A.m(o,o,B.j.j(0.25),o,o,o,o,o,o,o,o,11,o,o,B.ab,o,o,!0,o,0.5,o,o,o,o,o,o),o,o,o)],q),B.k,B.e,B.E),o),o,o,0,0,o,o)],q),B.G,B.bo,o),o,o,o,!1,o)}}
+return A.j0(o,B.aw,A.dh(B.bS,A.a([m,l,A.eF(o,new A.eN(k,!1,A.pG(A.rU(B.ad,A.x(A.a([A.k(o,B.y0,B.i,o,o,new A.j(o,o,o,o,A.a([new A.aN(10,B.X,B.cr.j(0.28),B.I,52)],t.V),o,B.ap),o,o,o,o,o,o,o,o),B.cD,B.ej4,B.ac,A.e("IA Cl\xednica de bolso",o,o,o,o,o,A.m(o,o,B.f9.j(0.85),o,o,o,o,o,o,o,o,12,o,o,B.Y,o,o,!0,o,1.1,o,o,o,o,o,o),o,o,o)],q),B.k,B.e,B.E),o,r),s,o,!0),o),o,o,0,0,n*0.28,o),A.eF(n*0.18,new A.eN(p.f,!1,A.x(A.a([new A.aw(20,20,A.oX(o,B.cr.j(0.55),o,o,o,o,o,1.8,o,o),o),B.az,A.e("Iniciando...",o,o,o,o,o,A.m(o,o,B.j.j(0.25),o,o,o,o,o,o,o,o,11,o,o,B.ab,o,o,!0,o,0.5,o,o,o,o,o,o),o,o,o)],q),B.k,B.e,B.E),o),o,o,0,0,o,o)],q),B.G,B.bo,o),o,o,o,!1,o)}}
 A.YH.prototype={
 S(){return new A.asH()},
 aUH(a){return this.d.$1(a)}}
@@ -122314,11 +122314,11 @@ B.d.u(o,A.a([B.aF,A.k(p,A.e(r,p,p,p,p,p,A.m(p,p,B.j.j(0.8),p,p,p,p,p,p,p,p,12,p,
 n=q.d
 m=n?p:q.gap9()
 l=n?B.e6Y:B.aHE
-o.push(A.y1(l,A.e(n?"Verificando...":"Verificar aprova\xe7\xe3o",p,p,p,p,p,p,p,p,p),m,A.hl(p,p,B.a6,p,p,p,p,p,p,B.av,p,p,B.eQ,p,new A.br(A.i(12),B.w),p,p,p,B.x6,p)))
+o.push(A.y1(l,A.e(n?"Verificando...":"Verificar aprova\xe7\xe3o",p,p,p,p,p,p,p,p,p),m,A.hl(p,p,B.a6,p,p,p,p,p,p,B.aw,p,p,B.eQ,p,new A.br(A.i(12),B.w),p,p,p,B.x6,p)))
 o.push(B.a1)
 m=B.j.j(0.2)
 o.push(A.aSC(B.LG,B.eie,new A.buu(),A.aai(p,p,p,p,p,p,p,p,p,B.ew,p,p,B.eQ,p,new A.br(A.i(12),B.w),new A.aA(m,1,B.o,-1),p,p,p,p)))
-return A.j0(p,B.av,A.eQ(!0,new A.K(B.pN,A.x(o,B.dm,B.ax,B.f),p),!0,B.aj,!0,!0),p,p,p,!1,p)}}
+return A.j0(p,B.aw,A.eQ(!0,new A.K(B.pN,A.x(o,B.dm,B.ax,B.f),p),!0,B.aj,!0,!0),p,p,p,!1,p)}}
 A.buv.prototype={
 $1(a){return this.a.rC()},
 $S:4}
@@ -122350,7 +122350,7 @@ A.ahx.prototype={
 q(a){var s=null,r=B.b_.j(0.08),q=A.i(20),p=A.N(B.b_.j(0.25),B.o,1),o=t.p
 q=A.k(s,A.x(A.a([B.aGU,B.aF,B.eje,B.a1,A.e("Tu cuenta ha sido suspendida por el administrador.\n\nComun\xedcate con soporte para m\xe1s informaci\xf3n.",s,s,s,s,s,A.m(s,s,B.j.j(0.7),s,s,s,s,s,s,s,s,13,s,s,s,s,1.6,!0,s,s,s,s,s,s,s,s),B.ar,s,s)],o),B.k,B.e,B.f),B.i,s,s,new A.j(r,s,p,q,s,s,B.l),s,s,s,s,B.lo,s,s,s)
 p=B.j.j(0.2)
-return A.j0(s,B.av,A.eQ(!0,new A.K(B.pN,A.x(A.a([B.y0,B.a5g,q,B.DO,A.aSC(B.LG,B.ehV,new A.b7W(),A.aai(s,s,s,s,s,s,s,s,s,B.ew,s,s,B.eQ,s,new A.br(A.i(12),B.w),new A.aA(p,1,B.o,-1),s,s,s,s))],o),B.dm,B.ax,B.f),s),!0,B.aj,!0,!0),s,s,s,!1,s)}}
+return A.j0(s,B.aw,A.eQ(!0,new A.K(B.pN,A.x(A.a([B.y0,B.a5g,q,B.DO,A.aSC(B.LG,B.ehV,new A.b7W(),A.aai(s,s,s,s,s,s,s,s,s,B.ew,s,s,B.eQ,s,new A.br(A.i(12),B.w),new A.aA(p,1,B.o,-1),s,s,s,s))],o),B.dm,B.ax,B.f),s),!0,B.aj,!0,!0),s,s,s,!1,s)}}
 A.b7W.prototype={
 $0(){var s=0,r=A.C(t.H)
 var $async$$0=A.y(function(a,b){if(a===1)return A.z(b,r)
@@ -122714,7 +122714,7 @@ A.br5.prototype={
 $0(){return this.a.d=2},
 $S:0}
 A.Hr.prototype={
-q(a){var s,r,q,p,o,n,m,l,k,j,i,h=this,g=null,f=h.d,e=f?B.av.j(0.68):B.j.j(0.65),d=h.c,c=d?1:0,b=d?B.am_:B.dn
+q(a){var s,r,q,p,o,n,m,l,k,j,i,h=this,g=null,f=h.d,e=f?B.aw.j(0.68):B.j.j(0.65),d=h.c,c=d?1:0,b=d?B.am_:B.dn
 d=d?0:1
 s=A.i(32)
 $.aX()
@@ -122748,19 +122748,17 @@ q(a){var s,r,q=this,p=null,o=q.f,n=o?B.bn:B.eg,m=o?B.J:B.ajH
 o=q.e
 s=o?n:m
 r=A.W(q.c,s,p,18)
-return A.a9(B.aZ,A.x(A.a([new A.K(B.n3,r,p),B.jV,A.e(q.d,p,1,B.a0,p,p,A.m(p,p,s,p,p,p,p,p,p,p,p,9,p,p,o?B.z:B.ab,p,1,!0,p,p,p,p,p,p,p,p),p,p,p)],t.p),B.k,B.ax,B.E),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,q.r,p,p,p,p,p,p)}}
+return A.a9(B.aX,A.x(A.a([new A.K(B.n3,r,p),B.jV,A.e(q.d,p,1,B.a0,p,p,A.m(p,p,s,p,p,p,p,p,p,p,p,9,p,p,o?B.z:B.ab,p,1,!0,p,p,p,p,p,p,p,p),p,p,p)],t.p),B.k,B.ax,B.E),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,q.r,p,p,p,p,p,p)}}
 A.I9.prototype={
-q(a){var s,r=this,q=null,p=r.c,o=p?B.av:B.j,n=p?B.b9:B.ex,m=p?B.j.j(0.85):B.av,l=p?B.j.j(0.08):B.av,k=p?B.j.j(0.18):B.Q,j=p?B.j.j(0.85):B.j,i=p?B.j.j(0.08):B.av.j(0.07),h=p?B.j.j(0.12):B.av.j(0.12),g=A.a([new A.aN(0,B.X,B.H.j(p?0.35:0.06),B.c2,6)],t.V),f=t.p,e=A.a([],f),d=A.cz(q,q,q,A.m(q,q,p?B.j:B.av,q,q,q,q,q,q,q,q,14,q,q,B.D,q,q,!0,q,1.2,q,q,q,q,q,q),"MEDCASES ")
+q(a){var s,r=this,q=null,p=r.c,o=p?B.aw:B.j,n=p?B.b9:B.ex,m=p?B.j.j(0.85):B.aw,l=p?B.j.j(0.08):B.aw.j(0.07),k=p?B.j.j(0.12):B.aw.j(0.12),j=A.a([new A.aN(0,B.X,B.H.j(p?0.35:0.06),B.c2,6)],t.V),i=t.p,h=A.a([],i),g=A.cz(q,q,q,A.m(q,q,p?B.j:B.aw,q,q,q,q,q,q,q,q,14,q,q,B.D,q,q,!0,q,1.2,q,q,q,q,q,q),"MEDCASES ")
 p=r.d===2
 s=p?"IA":"PRO"
-e.push(A.oh(q,q,q,B.ds,q,q,!0,q,A.cz(A.a([d,A.cz(q,q,q,A.m(q,q,p?B.k7:B.ahO,q,q,q,q,q,q,q,q,14,q,q,B.D,q,q,!0,q,1.2,q,q,q,q,q,q),s)],t.VO),q,q,q,q),B.am,q,q,B.b6,B.c9))
-p=A.a([B.e6U,B.bZ],f)
-if(r.d===2){d=t.D0
-B.d.u(p,A.a([new A.eu($.bIx(),new A.brW(r),q,q,d),new A.eu($.avC(),new A.brX(i,h,m),q,q,t.wM),new A.eu($.bIy(),new A.brY(r),q,q,d)],f))}f=A.i(12)
-d=A.N(k,B.o,1)
-p.push(A.a9(q,A.k(q,A.W(B.AQ,j,q,20),B.i,q,q,new A.j(l,q,d,f,q,q,B.l),q,38,q,q,q,q,q,38),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,r.w,q,q,q,q,q,q))
-e.push(A.w(p,B.k,B.e,B.f,q,q))
-return A.k(q,A.eQ(!1,new A.aw(q,48,new A.K(B.dS,A.dh(B.ad,e,B.G,B.bo,q),q),q),!0,B.aj,!0,!0),B.i,q,q,new A.j(o,q,new A.bS(B.w,B.w,new A.aA(n,0.5,B.o,-1),B.w),q,g,q,B.l),q,q,q,q,q,q,q,q)}}
+h.push(A.oh(q,q,q,B.ds,q,q,!0,q,A.cz(A.a([g,A.cz(q,q,q,A.m(q,q,p?B.k7:B.ahO,q,q,q,q,q,q,q,q,14,q,q,B.D,q,q,!0,q,1.2,q,q,q,q,q,q),s)],t.VO),q,q,q,q),B.am,q,q,B.b6,B.c9))
+p=A.a([B.e6U,B.bZ],i)
+if(r.d===2){g=t.D0
+B.d.u(p,A.a([new A.eu($.bIx(),new A.brW(r),q,q,g),new A.eu($.avC(),new A.brX(l,k,m),q,q,t.wM),new A.eu($.bIy(),new A.brY(r),q,q,g)],i))}p.push(A.a9(B.aX,new A.aw(32,32,A.W(B.AQ,m,q,20),q),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,r.w,q,q,q,q,q,q))
+h.push(A.w(p,B.k,B.e,B.f,q,q))
+return A.k(q,A.eQ(!1,new A.aw(q,36,new A.K(B.ff,A.dh(B.ad,h,B.G,B.bo,q),q),q),!0,B.aj,!0,!0),B.i,q,q,new A.j(o,q,new A.bS(B.w,B.w,new A.aA(n,0.5,B.o,-1),B.w),q,j,q,B.l),q,q,q,q,q,q,q,q)}}
 A.brW.prototype={
 $3(a,b,c){var s,r,q,p=null
 if(b)s=B.at
@@ -122783,13 +122781,13 @@ $3(a,b,c){var s,r,q,p=null
 if(b){s=$.a_K().a
 r=A.i(12)
 q=A.N(B.a8.j(0.4),B.o,1)
-s=A.a9(p,A.k(p,A.w(A.a([B.aJv,B.b0,A.e(this.a.e==="es"?"Nuevo Chat":"Novo Chat",p,p,p,p,p,B.edG,p,p,p)],t.p),B.k,B.e,B.E,p,p),B.i,p,p,new A.j(B.a6,p,q,r,p,p,B.l),p,38,p,B.fc,B.fA,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,s,p,p,p,p,p,p)}else s=B.at
+s=A.a9(p,A.k(p,A.w(A.a([B.aJv,B.b0,A.e(this.a.e==="es"?"Nuevo Chat":"Novo Chat",p,p,p,p,p,B.edG,p,p,p)],t.p),B.k,B.e,B.E,p,p),B.i,p,p,new A.j(B.a6,p,q,r,p,p,B.l),p,38,p,B.fc,B.ff,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,s,p,p,p,p,p,p)}else s=B.at
 return s},
 $S:178}
 A.H6.prototype={
-q(a){var s,r,q,p,o,n,m,l=this,k=null,j=l.d,i=j?B.av:B.j,h=j?B.T:B.jk,g=j?B.J:B.ahf,f=j?B.T.j(0.12):B.jk.j(0.08),e=l.e,d=e.c,c=A.i(12),b=A.a([new A.aN(0,B.X,B.cr.j(0.35),B.cB,10)],t.V)
-b=A.t9(A.a9(B.aZ,A.k(k,A.is(A.i(12),A.MX("assets/icon/app_icon.png",new A.bcR(),B.rv,46,46),B.cH),B.i,k,k,new A.j(k,k,k,c,b,B.aLv,B.l),k,46,k,k,k,k,k,46),B.t,!1,k,k,k,k,k,k,k,k,k,k,k,k,k,l.w,k,k,k,k,k,k),"In\xedcio",!0,k)
-c=A.k(k,k,B.i,j?B.j.j(0.06):B.H.j(0.05),k,k,k,1,k,B.fA,k,k,k,k)
+q(a){var s,r,q,p,o,n,m,l=this,k=null,j=l.d,i=j?B.aw:B.j,h=j?B.T:B.jk,g=j?B.J:B.ahf,f=j?B.T.j(0.12):B.jk.j(0.08),e=l.e,d=e.c,c=A.i(12),b=A.a([new A.aN(0,B.X,B.cr.j(0.35),B.cB,10)],t.V)
+b=A.t9(A.a9(B.aX,A.k(k,A.is(A.i(12),A.MX("assets/icon/app_icon.png",new A.bcR(),B.rv,46,46),B.cH),B.i,k,k,new A.j(k,k,k,c,b,B.aLv,B.l),k,46,k,k,k,k,k,46),B.t,!1,k,k,k,k,k,k,k,k,k,k,k,k,k,l.w,k,k,k,k,k,k),"In\xedcio",!0,k)
+c=A.k(k,k,B.i,j?B.j.j(0.06):B.H.j(0.05),k,k,k,1,k,B.ff,k,k,k,k)
 d=d==="es"?"Inicio":"In\xedcio"
 s=l.c
 d=A.are(s===0,f,h,j,B.u4,g,d,new A.bcS(l))
@@ -122798,7 +122796,7 @@ r=A.are(s===2,B.bn.j(0.1),r,j,B.dG,g,"IA",new A.bcT(l))
 q=A.are(s===3,f,h,j,B.L8,g,"H. Cl\xednica",new A.bcU(l))
 p=A.are(s===5,f,h,j,B.fF,g,"Biblio.",new A.bcV(l))
 s=A.are(s===4,f,h,j,B.km,g,"Calc.",new A.bcW(l))
-o=A.k(k,k,B.i,j?B.j.j(0.06):B.H.j(0.05),k,k,k,1,k,B.fA,k,k,k,k)
+o=A.k(k,k,B.i,j?B.j.j(0.06):B.H.j(0.05),k,k,k,1,k,B.ff,k,k,k,k)
 j=e.gly().length!==0?e.gly():"Menu"
 e=A.i(12)
 n=A.i(12)
@@ -122825,7 +122823,7 @@ $S:0}
 A.ard.prototype={
 q(a){var s=this,r=null,q=s.e,p=q?s.r:s.w,o=s.d,n=A.i(10),m=q?s.x:B.Q,l=t.p,k=A.a([A.W(s.c,p,r,20)],l)
 if(o.length!==0)B.d.u(k,A.a([B.bG,A.e(o,r,r,B.a0,r,r,A.m(r,r,p,r,r,r,r,r,r,r,r,7.5,r,r,q?B.z:B.Y,r,r,!0,r,0.1,r,r,r,r,r,r),B.ar,r,r)],l))
-return A.t9(A.a9(B.aZ,A.bM(A.x(k,B.k,B.e,B.E),B.dQ,new A.j(m,r,r,n,r,r,B.l),B.kf,r,B.jz,B.bO,r),B.t,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,s.y,r,r,r,r,r,r),o,!1,B.n2)}}
+return A.t9(A.a9(B.aX,A.bM(A.x(k,B.k,B.e,B.E),B.dQ,new A.j(m,r,r,n,r,r,B.l),B.kf,r,B.jz,B.bO,r),B.t,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,s.y,r,r,r,r,r,r),o,!1,B.n2)}}
 A.Xn.prototype={
 S(){return new A.aqt()},
 aTt(a){return this.d.$1(a)}}
@@ -122866,18 +122864,18 @@ A.byF.prototype={
 $0(){return this.a.GA(3)},
 $S:0}
 A.BS.prototype={
-q(a){var s,r,q=this,p=null,o=q.f,n=o?B.a8:B.av,m=o?B.j.j(0.3):B.ak_,l=o?B.b9:B.av.j(0.09),k=A.i(11),j=q.e,i=j?l:B.Q
-if(j){s=A.a([new A.aN(0,B.X,(o?B.a8:B.av).j(0.08),B.h5,6)],t.V)
+q(a){var s,r,q=this,p=null,o=q.f,n=o?B.a8:B.aw,m=o?B.j.j(0.3):B.ak_,l=o?B.b9:B.aw.j(0.09),k=A.i(11),j=q.e,i=j?l:B.Q
+if(j){s=A.a([new A.aN(0,B.X,(o?B.a8:B.aw).j(0.08),B.h5,6)],t.V)
 o=s}else o=p
 s=j?n:m
 s=A.W(q.c,s,p,14)
 r=j?B.F:B.Y
-return A.I(A.a9(B.aZ,A.bM(A.w(A.a([s,B.b0,new A.dG(1,B.bP,A.e(q.d,p,1,B.a0,p,p,A.m(p,p,j?n:m,p,p,p,p,p,p,p,p,10.5,p,p,r,p,p,!0,p,p,p,p,p,p,p,p),p,p,p),p)],t.p),B.k,B.ax,B.f,p,p),B.dn,new A.j(i,p,p,k,o,p,B.l),B.a7,p,B.lp,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,q.r,p,p,p,p,p,p),1)}}
+return A.I(A.a9(B.aX,A.bM(A.w(A.a([s,B.b0,new A.dG(1,B.bP,A.e(q.d,p,1,B.a0,p,p,A.m(p,p,j?n:m,p,p,p,p,p,p,p,p,10.5,p,p,r,p,p,!0,p,p,p,p,p,p,p,p),p,p,p),p)],t.p),B.k,B.ax,B.f,p,p),B.dn,new A.j(i,p,p,k,o,p,B.l),B.a7,p,B.lp,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,q.r,p,p,p,p,p,p),1)}}
 A.atn.prototype={
 q(a){var s=null,r=A.M(a).ax.a===B.A?B.ala:B.akW,q=B.a6.j(0.45),p=A.a([new A.aN(0,B.X,B.H.j(0.35),B.m_,16)],t.V)
 return new A.dl(B.ri,s,s,A.dS(B.a7,s,A.k(s,A.w(A.a([B.aH8,B.a4,B.aDK,B.L,A.ee(!1,B.ehO,s,s,s,s,s,s,A.cmm(),s,A.pR(s,s,B.a6,s,s,s,s,s,s,B.U,s,B.b3,s,B.n9,s,new A.br(A.i(8),B.w),s,s,B.vT,B.Eg,s)),B.b0,A.f7(s,B.a9r,B.aIn,s,s,A.cmn(),B.aj,s,s,"Dispensar",s)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(r,s,new A.bS(new A.aA(q,1,B.o,-1),B.w,B.w,B.w),s,p,s,B.l),s,s,s,s,B.tG,s,s,1/0),B.i,B.Q,0,s,s,s,s,s,B.c8),s)}}
 A.Vy.prototype={
-q(a){var s=null,r=A.Fp(a,new A.bpC(),t.C,t.y),q=this.c,p=q?B.av:B.alj,o=q?B.b9:B.ih,n=q?B.j.j(0.85):B.akN,m=r?"Herramienta educativa de apoyo cl\xednico. La decisi\xf3n y verificaci\xf3n de dosis son responsabilidad exclusiva del m\xe9dico asistente.":"Ferramenta educacional de apoio cl\xednico. A decis\xe3o e verifica\xe7\xe3o de doses s\xe3o de responsabilidade exclusiva do m\xe9dico assistente.",l=A.k(s,A.w(A.a([A.W(B.e2,n.j(0.55),s,8),B.d7,A.I(A.e(m,s,1,B.a0,s,s,A.m(s,s,n,s,s,s,s,s,s,s,s,9,s,s,B.ab,s,1,!0,s,0,s,s,s,s,s,s),s,s,s),1)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(p,s,new A.bS(new A.aA(o,0.5,B.o,-1),B.w,B.w,B.w),s,s,s,B.l),s,s,s,s,B.aBF,s,s,1/0)
+q(a){var s=null,r=A.Fp(a,new A.bpC(),t.C,t.y),q=this.c,p=q?B.aw:B.alj,o=q?B.b9:B.ih,n=q?B.j.j(0.85):B.akN,m=r?"Herramienta educativa de apoyo cl\xednico. La decisi\xf3n y verificaci\xf3n de dosis son responsabilidad exclusiva del m\xe9dico asistente.":"Ferramenta educacional de apoio cl\xednico. A decis\xe3o e verifica\xe7\xe3o de doses s\xe3o de responsabilidade exclusiva do m\xe9dico assistente.",l=A.k(s,A.w(A.a([A.W(B.e2,n.j(0.55),s,8),B.d7,A.I(A.e(m,s,1,B.a0,s,s,A.m(s,s,n,s,s,s,s,s,s,s,s,9,s,s,B.ab,s,1,!0,s,0,s,s,s,s,s,s),s,s,s),1)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(p,s,new A.bS(new A.aA(o,0.5,B.o,-1),B.w,B.w,B.w),s,s,s,B.l),s,s,s,s,B.aBF,s,s,1/0)
 if(this.d)return l
 return A.eQ(!0,l,!0,B.aj,!0,!1)}}
 A.bpC.prototype={
@@ -122929,7 +122927,7 @@ if(n==null)m=m==="es"?"Error al eliminar la cuenta.":"Erro ao excluir conta."
 else m=n
 o.cU(A.d8(null,null,null,B.ed,null,B.G,null,A.e(m,null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,null,null,null,null,null,null))}case 1:return A.A(q,r)}})
 return A.B($async$F8,r)},
-q(a5){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f=null,e="Ver en la app",d="Ver no app",c="Abrir en navegador",b="Abrir no navegador",a=A.bg(a5,!0,t.C),a0=a.d,a1=a0?B.aG:B.akm,a2=a0?B.b9:B.tc,a3=a0?B.io:B.av,a4=a0?B.j.j(0.36):B.yu
+q(a5){var s,r,q,p,o,n,m,l,k,j,i,h,g=this,f=null,e="Ver en la app",d="Ver no app",c="Abrir en navegador",b="Abrir no navegador",a=A.bg(a5,!0,t.C),a0=a.d,a1=a0?B.aG:B.akm,a2=a0?B.b9:B.tc,a3=a0?B.io:B.aw,a4=a0?B.j.j(0.36):B.yu
 if(a.gly().length!==0){s=A.cY(A.a(B.c.C(a.gly()).split(" "),t.s),0,A.dz(2,"count",t.S),t.N)
 r=new A.P(s,new A.b6i(),s.$ti.i("P<al.E,h>")).mY(0)}else r="MC"
 q=A.bA(a5,f,t.l).w.a.a
@@ -122975,12 +122973,12 @@ m.push(new A.to(A.a([k,j,A.bVA(a0,l,"https://www.promedcases.com/politica-de-pri
 m.push(new A.q6(a.c==="es"?"CUENTA Y GESTI\xd3N":"CONTA E GEST\xc3O",a0,B.ed,f))
 l=a.c==="es"
 k=l?"Eliminar Cuenta":"Excluir Conta"
-k=A.wi(a0,B.fg,B.ed,new A.b6v(g,a5,a),!0,a4,f,B.ed,k,f)
+k=A.wi(a0,B.fh,B.ed,new A.b6v(g,a5,a),!0,a4,f,B.ed,k,f)
 l=l?"Cerrar sesi\xf3n":"Sair da conta"
 m.push(new A.to(A.a([k,A.wi(a0,B.Lb,B.ed,new A.b6l(g,a5),!1,a4,f,B.ed,l,f)],s),a2,f))
 m.push(B.aF)
 m=A.I(A.n2(m,f,B.aj,B.mF,f,B.ai,!1),1)
-l=a0?B.av:B.tc
+l=a0?B.aw:B.tc
 k=a.c==="es"?"Solo uso educativo":"Uso educacional"
 return new A.a4C(a1,n,o,A.x(A.a([new A.ajU(a,r,new A.b6m(g,a5),new A.b6n(g,a5,a),f),m,A.k(f,A.eQ(!0,A.e("MedCases Pro \xb7 "+k,f,f,f,f,f,A.m(f,f,a4,f,f,f,f,f,f,f,f,9.5,f,f,B.Y,f,f,!0,f,0.2,f,f,f,f,f,f),B.ar,f,f),!1,B.aj,!1,!1),B.i,f,f,new A.j(l,f,new A.bS(new A.aA(a2,0.5,B.o,-1),B.w,B.w,B.w),f,f,f,B.l),f,f,f,f,B.aCf,f,f,f)],s),B.dm,B.e,B.f),f)}}
 A.b6c.prototype={
@@ -123296,7 +123294,7 @@ if(j.gak(b))return B.at
 s=this.a
 r=s.c.c==="es"
 q=s.d
-p=q?B.io:B.av
+p=q?B.io:B.aw
 o=q?B.j.j(0.36):B.yu
 n=q?B.HL:B.tc
 m=j.kf(b,3).d9(0)
@@ -123338,9 +123336,9 @@ if(r.length!==0)s.push(A.e(A.bJi(l,q)+" \xb7 "+r,n,1,B.a0,n,n,A.m(n,n,p,n,n,n,n,
 else s.push(A.e(A.bJi(l,q),n,n,n,n,n,A.m(n,n,p,n,n,n,n,n,n,n,n,10.5,n,n,n,n,n,!0,n,n,n,n,n,n,n,n),n,n,n))
 m=A.a([new A.K(B.pL,A.w(A.a([i,B.a4,A.I(A.x(s,B.r,B.e,B.f),1),B.af,A.e(o.aIH(m.d,q),n,n,n,n,n,A.m(n,n,p,n,n,n,n,n,n,n,n,9.5,n,n,n,n,n,!0,n,n,n,n,n,n,n,n),n,n,n)],j),B.k,B.e,B.f,n,n),n)],j)
 if(o.w)m.push(A.ej(o.e?B.j.j(0.06):B.io,n,1,52,n))
-return A.a9(B.aZ,A.x(m,B.k,B.e,B.f),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,o.x,n,n,n,n,n,n)}}
+return A.a9(B.aX,A.x(m,B.k,B.e,B.f),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,o.x,n,n,n,n,n,n)}}
 A.Iy.prototype={
-q(a){var s=this.c,r=s?B.av:B.j,q=s?B.j.j(0.18):B.bz,p=s?B.j:B.av,o=s?B.j.j(0.45):B.yu,n=s?B.j.j(0.07):B.Ik
+q(a){var s=this.c,r=s?B.aw:B.j,q=s?B.j.j(0.18):B.bz,p=s?B.j:B.aw,o=s?B.j.j(0.45):B.yu,n=s?B.j.j(0.07):B.Ik
 return new A.eu($.a_I(),new A.bx6(this,r,q,this.d==="es",p,o,n),null,null,t.Do)}}
 A.bx6.prototype={
 $3(a,b,c){var s,r,q,p=this,o=null,n=A.bA(a,o,t.l).w,m=A.k(o,o,B.i,o,o,new A.j(p.c,o,o,A.i(2),o,o,B.l),o,4,o,o,o,o,o,40),l=A.k(o,B.aH6,B.i,o,o,new A.j(B.rG.j(0.12),o,o,A.i(10),o,o,B.l),o,36,o,o,o,o,o,36),k=p.d,j=k?"Historial de Consultas":"Hist\xf3rico de Consultas",i=p.e
@@ -123523,7 +123521,7 @@ break
 case 6:case 1:return A.A(q,r)
 case 2:return A.z(o.at(-1),r)}})
 return A.B($async$Ab,r)},
-q(a){var s,r,q,p,o,n,m,l,k=this,j=null,i=k.a.c.d,h=i?B.aG:B.j,g=i?B.j:B.av,f=i?B.bb:B.J,e=i?B.b9:B.ex,d=A.bA(a,j,t.l).w,c=i?B.b7:B.aja
+q(a){var s,r,q,p,o,n,m,l,k=this,j=null,i=k.a.c.d,h=i?B.aG:B.j,g=i?B.j:B.aw,f=i?B.bb:B.J,e=i?B.b9:B.ex,d=A.bA(a,j,t.l).w,c=i?B.b7:B.aja
 c=A.b4(A.k(j,j,B.i,j,j,new A.j(c,j,j,A.i(2),j,j,B.l),j,4,j,j,j,j,j,36),j,j)
 s=A.i(10)
 s=A.k(j,B.aHV,B.i,j,j,new A.j(B.a6.j(0.15),j,A.N(B.a6.j(0.4),B.o,1),s,j,j,B.l),j,j,j,j,B.bO,j,j,j)
@@ -123556,10 +123554,10 @@ k.a.toString
 c=A.I(A.a9(j,A.k(B.ad,A.e("Cancelar",j,j,j,j,j,A.m(j,j,f,j,j,j,j,j,j,j,j,14,j,j,B.z,j,j,!0,j,j,j,j,j,j,j,j),j,j,j),B.i,j,j,new A.j(j,j,r,s,j,j,B.l),j,46,j,j,j,j,j,j),B.t,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,c,j,j,j,j,j,j),1)
 s=k.r?j:k.gaFB()
 r=A.i(12)
-q=A.a([new A.aN(0,B.X,B.av.j(0.35),B.eq,12)],t.V)
+q=A.a([new A.aN(0,B.X,B.aw.j(0.35),B.eq,12)],t.V)
 if(k.r)o=B.e73
 else o=A.e(k.a.c.c==="es"?"Guardar":"Salvar",j,j,j,j,j,B.eab,j,j,j)
-l.push(A.w(A.a([c,B.aU,A.I(A.a9(j,A.k(B.ad,o,B.i,j,j,new A.j(B.av,j,j,r,q,j,B.l),j,46,j,j,j,j,j,j),B.t,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,s,j,j,j,j,j,j),1)],p),B.k,B.e,B.f,j,j))
+l.push(A.w(A.a([c,B.aU,A.I(A.a9(j,A.k(B.ad,o,B.i,j,j,new A.j(B.aw,j,j,r,q,j,B.l),j,46,j,j,j,j,j,j),B.t,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,s,j,j,j,j,j,j),1)],p),B.k,B.e,B.f,j,j))
 return new A.K(new A.L(0,0,0,d.f.d),A.k(j,A.x(l,B.r,B.e,B.E),B.i,j,j,new A.j(h,j,new A.bS(new A.aA(e,1,B.o,-1),B.w,B.w,B.w),B.cv,j,j,B.l),j,j,j,j,B.aCV,j,j,j),j)}}
 A.bvW.prototype={
 $0(){var s=this.a
@@ -123587,7 +123585,7 @@ $0(){A.aQ(this.a,!1).c4(null)
 return null},
 $S:0}
 A.IO.prototype={
-q(a){var s,r,q=this,p=null,o=q.f,n=o?B.aa:B.yF,m=o?B.j:B.av,l=o?B.bc:B.dZ,k=o?B.b9:B.ex
+q(a){var s,r,q=this,p=null,o=q.f,n=o?B.aa:B.yF,m=o?B.j:B.aw,l=o?B.bc:B.dY,k=o?B.b9:B.ex
 o=A.m(p,p,m,p,p,p,p,p,p,p,p,14,p,p,B.O,p,p,!0,p,p,p,p,p,p,p,p)
 s=A.m(p,p,l,p,p,p,p,p,p,p,p,12,p,p,B.O,p,p,!0,p,p,p,p,p,p,p,p)
 r=A.W(q.e,B.a6,p,18)
@@ -123613,7 +123611,7 @@ B.d.u(o,A.a([A.k(k,A.e("v"+s,k,k,k,k,k,B.e8W,k,k,k),B.i,k,k,new A.j(n,k,l,m,k,k,
 p=A.k(k,A.x(A.a([p,B.M,A.w(o,B.k,B.e,B.f,k,k)],i),B.r,B.e,B.f),B.i,k,k,B.a9T,k,k,k,k,B.aCK,k,k,1/0)
 o=q.$ti.i("P<aP.E,K>")
 o=A.O(new A.P(q,new A.b6w(),o),o.i("al.E"))
-return A.xO(k,B.j,new A.e6(B.a9A,A.x(A.a([p,new A.dG(1,B.bP,A.d1(A.x(o,B.r,B.e,B.f),k,B.t,k,B.aCH,k,B.ai),k),new A.K(B.aCP,new A.aw(1/0,k,A.ki(!1,B.eif,k,k,k,k,k,k,new A.b6x(a),k,A.hl(k,k,B.av,k,k,k,0,k,k,B.a8,k,k,B.eQ,k,new A.br(A.i(12),B.w),k,k,k,k,k)),k),k)],i),B.k,B.e,B.E),k),k,k,k,B.me,k,new A.br(j,B.w),k)},
+return A.xO(k,B.j,new A.e6(B.a9A,A.x(A.a([p,new A.dG(1,B.bP,A.d1(A.x(o,B.r,B.e,B.f),k,B.t,k,B.aCH,k,B.ai),k),new A.K(B.aCP,new A.aw(1/0,k,A.ki(!1,B.eif,k,k,k,k,k,k,new A.b6x(a),k,A.hl(k,k,B.aw,k,k,k,0,k,k,B.a8,k,k,B.eQ,k,new A.br(A.i(12),B.w),k,k,k,k,k)),k),k)],i),B.k,B.e,B.E),k),k,k,k,B.me,k,new A.br(j,B.w),k)},
 cc(a){return this.c.$0()}}
 A.b6w.prototype={
 $1(a){var s=null
@@ -123779,7 +123777,7 @@ q=A.e(q,o,o,o,o,o,A.m(o,o,l,o,o,o,o,o,o,o,o,22,o,o,B.D,o,o,!0,o,o,o,o,o,o,o,o),o
 r=r?"Tu app de correo se abri\xf3 con el mensaje. Solo env\xedalo y listo \u2014 \xa1gracias por tu feedback!":"Seu app de e-mail abriu com a mensagem pronta. S\xf3 enviar \u2014 obrigado pelo feedback!"
 r=A.e(r,o,o,o,o,o,A.m(o,o,k,o,o,o,o,o,o,o,o,14,o,o,o,o,1.5,!0,o,o,o,o,o,o,o,o),B.ar,o,o)
 p=A.hl(o,o,B.cI,o,o,o,0,o,o,B.j,o,o,o,o,new A.br(A.i(14),B.w),o,o,o,o,o)
-return A.k(o,A.x(A.a([n,s,B.cD,q,B.M,new A.K(B.dS,r,o),B.DO,new A.aw(1/0,50,A.ki(!1,A.e("Fechar",o,o,o,o,o,B.a6h,o,o,o),o,o,o,o,o,o,this.e,o,p),o)],t.p),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,o,B.cv,o,o,B.l),o,o,o,o,B.JH,o,o,o)}}
+return A.k(o,A.x(A.a([n,s,B.cD,q,B.M,new A.K(B.e1,r,o),B.DO,new A.aw(1/0,50,A.ki(!1,A.e("Fechar",o,o,o,o,o,B.a6h,o,o,o),o,o,o,o,o,o,this.e,o,p),o)],t.p),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,o,B.cv,o,o,B.l),o,o,o,o,B.JH,o,o,o)}}
 A.bHL.prototype={
 $1(a){return A.nX(new A.bHK(),!1,0.82,0.92,0.5)},
 $S:694}
@@ -123846,8 +123844,8 @@ s=o.c
 s.toString
 A.ey(B.Q,new A.bsl(r,a,q,p),s,!0,!0,!0,null,!1,t.z)},
 a2O(){return this.a2P(null)},
-q(a){var s,r,q,p,o,n,m,l=this,k=null,j=A.bg(a,!0,t.C),i=j.d,h=j.c==="es",g=i?B.rP:B.j,f=i?B.is:B.j,e=i?B.b9:B.ip,d=i?B.j:B.av,c=i?B.bb:B.jm,b=t.O
-b=i?A.a([B.av,B.b9,B.ak2],b):A.a([B.av,B.p0,B.T],b)
+q(a){var s,r,q,p,o,n,m,l=this,k=null,j=A.bg(a,!0,t.C),i=j.d,h=j.c==="es",g=i?B.rP:B.j,f=i?B.is:B.j,e=i?B.b9:B.ip,d=i?B.j:B.aw,c=i?B.bb:B.jm,b=t.O
+b=i?A.a([B.aw,B.b9,B.ak2],b):A.a([B.aw,B.p0,B.T],b)
 s=l.a.c
 r=A.i(10)
 s=A.a9(k,A.k(k,B.aIJ,B.i,k,k,new A.j(B.j.j(0.1),k,k,r,k,k,B.l),k,34,k,k,k,k,k,34),B.t,!1,k,k,k,k,k,k,k,k,k,k,k,k,k,s,k,k,k,k,k,k)
@@ -123981,7 +123979,7 @@ if(d.length!==0)B.d.u(o,A.a([A.e(d,m,1,B.a0,m,m,A.m(m,m,f,m,m,m,m,m,m,m,m,13,m,m
 if(s.length!==0)o.push(A.e(s,m,2,B.a0,m,m,A.m(m,m,e,m,m,m,m,m,m,m,m,11,m,m,m,m,1.4,!0,m,m,m,m,m,m,m,m),m,m,m))
 if(q.length!==0)B.d.u(o,A.a([B.cE,A.e(q,m,m,m,m,m,A.m(m,m,h?B.jq:B.dP,m,m,m,m,m,m,m,m,10,m,m,m,m,m,!0,m,m,m,m,m,m,m,m),m,m,m)],p))
 o=A.I(A.x(o,B.r,B.e,B.f),1)
-return A.a9(m,A.k(m,A.w(A.a([o,A.a9(m,new A.K(B.aDj,A.W(B.fg,h?B.b7:B.dP,m,17),m),B.t,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,new A.bts(n,a),m,m,m,m,m,m)],p),B.r,B.e,B.f,m,m),B.i,m,m,new A.j(g,m,k,l,r,m,B.l),m,m,m,m,B.aBe,m,m,m),B.t,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,n.f,m,m,m,m,m,m)}}
+return A.a9(m,A.k(m,A.w(A.a([o,A.a9(m,new A.K(B.aDj,A.W(B.fh,h?B.b7:B.dP,m,17),m),B.t,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,new A.bts(n,a),m,m,m,m,m,m)],p),B.r,B.e,B.f,m,m),B.i,m,m,new A.j(g,m,k,l,r,m,B.l),m,m,m,m,B.aBe,m,m,m),B.t,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,n.f,m,m,m,m,m,m)}}
 A.bts.prototype={
 $0(){var s=null,r=this.b
 A.h2(s,s,!0,s,new A.btr(this.a,r),r,s,!0,!0,t.z)},
@@ -124535,7 +124533,7 @@ return A.n(q.lG(p).ir(0,B.dB,new A.ayr(q)),$async$uZ)
 case 3:q.wi(p)
 q.Tu()
 o=q.tb("medcases_gsi_pending")==="true"||q.Hg("medcases_gsi_pending")==="true"
-n=o?B.fy:B.aW
+n=o?B.fz:B.aW
 A.ea(n,q.gaLJ(),t.H)
 q.a57(p)
 A.aGX(p)
@@ -124545,7 +124543,7 @@ a57(a){var s=this,r=s.dx
 if(r!=null)r.aA(0)
 s.dy=0
 s.fr=!1
-s.dx=A.Ao(B.fy,new A.axD(s,a))},
+s.dx=A.Ao(B.fz,new A.axD(s,a))},
 aU1(a){var s,r,q,p=this
 if(p.dx==null||p.fr)return
 p.fr=!0
@@ -127950,7 +127948,7 @@ if(a6.w.length!==0){h=a6.e?a4:a6.gaEO()
 g=A.i(9)
 f=A.N(B.b_.j(0.35),B.o,1)
 e=B.b_.j(0.07)
-B.d.u(i,A.a([A.a9(a4,A.k(a4,A.w(A.a([A.W(B.fg,B.js,a4,14),B.bF,A.e("Remover",a4,a4,a4,a4,a4,A.m(a4,a4,B.js,a4,a4,a4,a4,a4,a4,a4,a4,12,a4,a4,B.z,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4)],j),B.k,B.e,B.E,a4,a4),B.i,a4,a4,new A.j(e,a4,f,g,a4,a4,B.l),a4,a4,a4,a4,B.lm,a4,a4,a4),B.t,!1,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,h,a4,a4,a4,a4,a4,a4),B.L],j))}i.push(B.bZ)
+B.d.u(i,A.a([A.a9(a4,A.k(a4,A.w(A.a([A.W(B.fh,B.js,a4,14),B.bF,A.e("Remover",a4,a4,a4,a4,a4,A.m(a4,a4,B.js,a4,a4,a4,a4,a4,a4,a4,a4,12,a4,a4,B.z,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4)],j),B.k,B.e,B.E,a4,a4),B.i,a4,a4,new A.j(e,a4,f,g,a4,a4,B.l),a4,a4,a4,a4,B.lm,a4,a4,a4),B.t,!1,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,h,a4,a4,a4,a4,a4,a4),B.L],j))}i.push(B.bZ)
 h=a6.e?a4:a6.gaFC()
 g=A.i(9)
 f=a6.f?B.f6:B.U
@@ -127984,24 +127982,24 @@ q=a6.c
 q.toString
 q=A.M(q).ax.a===B.A?B.aa:B.j
 o=A.i(16)
-if(a0)n=B.e0.j(0.4)
+if(a0)n=B.e_.j(0.4)
 else{n=a6.c
 n.toString
 n=A.M(n).ax.a===B.A?B.ae:B.a9}n=A.N(n,B.o,1)
 p=A.a([new A.aN(0,B.X,B.H.j(0.05),B.cB,10)],p)
-if(a0)m=B.e0.j(0.07)
+if(a0)m=B.e_.j(0.07)
 else{m=a6.c
 m.toString
 m=A.M(m).ax.a===B.A?B.aa:B.c6}l=A.i(10)
-if(a0)k=B.e0.j(0.12)
+if(a0)k=B.e_.j(0.12)
 else{k=a6.c
 k.toString
-k=A.M(k).ax.a===B.A?B.aa:B.c6}if(a0)i=B.e0.j(0.4)
+k=A.M(k).ax.a===B.A?B.aa:B.c6}if(a0)i=B.e_.j(0.4)
 else{i=a6.c
 i.toString
 i=A.M(i).ax.a===B.A?B.ae:B.a9}i=A.N(i,B.o,1)
 h=a0?B.kl:B.aEw
-if(a0)g=B.e0
+if(a0)g=B.e_
 else{g=a6.c
 g.toString
 g=A.M(g).ax.a===B.A?B.J:B.R}l=A.k(a4,A.W(h,g,a4,18),B.i,a4,a4,new A.j(k,a4,i,l,a4,a4,B.l),a4,a4,a4,a4,B.bO,a4,a4,a4)
@@ -128011,15 +128009,15 @@ k.toString
 i=A.e("IA Paga / Gemini Fallback",a4,a4,a4,a4,a4,A.m(a4,a4,A.M(k).ax.a===B.A?B.j:B.U,a4,a4,a4,a4,a4,a4,a4,a4,15,a4,a4,B.D,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4)
 if(a0)k=a6.a.w?"gemini-2.5-flash \u2022 fallback activo":"gemini-2.5-flash \u2022 fallback ativo"
 else k=a6.a.w?"Fallback desactivado \u2014 solo Gemini gratuito":"Fallback desativado \u2014 apenas Gemini gratuito"
-if(a0)h=B.e0
+if(a0)h=B.e_
 else{h=a6.c
 h.toString
 h=A.M(h).ax.a===B.A?B.J:B.R}h=A.I(A.x(A.a([i,B.bw,A.e(k,a4,a4,a4,a4,a4,A.m(a4,a4,h,a4,a4,a4,a4,a4,a4,a4,a4,11,a4,a4,B.Y,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4)],j),B.r,B.e,B.f),1)
 k=A.i(20)
-i=a0?B.e0.j(0.12):B.bR.j(0.12)
+i=a0?B.e_.j(0.12):B.bR.j(0.12)
 if(a0)g=a6.a.w?"Activo":"Ativo"
 else g=a6.a.w?"Inactivo":"Inativo"
-m=A.k(a4,A.w(A.a([l,B.aU,h,A.k(a4,A.e(g,a4,a4,a4,a4,a4,A.m(a4,a4,a0?B.e0:B.I7,a4,a4,a4,a4,a4,a4,a4,a4,10,a4,a4,B.F,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4),B.i,a4,a4,new A.j(i,a4,a4,k,a4,a4,B.l),a4,a4,a4,a4,B.jA,a4,a4,a4)],j),B.k,B.e,B.f,a4,a4),B.i,a4,a4,new A.j(m,a4,a4,B.oO,a4,a4,B.l),a4,a4,a4,a4,B.eS,a4,a4,a4)
+m=A.k(a4,A.w(A.a([l,B.aU,h,A.k(a4,A.e(g,a4,a4,a4,a4,a4,A.m(a4,a4,a0?B.e_:B.I7,a4,a4,a4,a4,a4,a4,a4,a4,10,a4,a4,B.F,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4),B.i,a4,a4,new A.j(i,a4,a4,k,a4,a4,B.l),a4,a4,a4,a4,B.jA,a4,a4,a4)],j),B.k,B.e,B.f,a4,a4),B.i,a4,a4,new A.j(m,a4,a4,B.oO,a4,a4,B.l),a4,a4,a4,a4,B.eS,a4,a4,a4)
 l=A.i(10)
 k=a6.c
 k.toString
@@ -128035,15 +128033,15 @@ g=a6.a.w?"Usa Gemini Paid cuando Free falla (503/timeout/truncado)":"Usa Gemini 
 f=a6.c
 f.toString
 i=A.I(A.x(A.a([i,B.bw,A.e(g,a4,a4,a4,a4,a4,A.m(a4,a4,A.M(f).ax.a===B.A?B.J:B.R,a4,a4,a4,a4,a4,a4,a4,a4,10,a4,a4,a4,a4,1.4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4)],j),B.r,B.e,B.f),1)
-l=A.k(a4,A.w(A.a([i,B.aU,a6.y?B.e79:A.bM2(B.e0,a6.gaFJ(),a4,a4,a6.x)],j),B.k,B.e,B.f,a4,a4),B.i,a4,a4,new A.j(k,a4,h,l,a4,a4,B.l),a4,a4,a4,a4,B.cs,a4,a4,a4)
+l=A.k(a4,A.w(A.a([i,B.aU,a6.y?B.e79:A.bM2(B.e_,a6.gaFJ(),a4,a4,a6.x)],j),B.k,B.e,B.f,a4,a4),B.i,a4,a4,new A.j(k,a4,h,l,a4,a4,B.l),a4,a4,a4,a4,B.cs,a4,a4,a4)
 k=a6.z||!a6.x?a4:a6.gaIn()
 i=A.i(9)
 if(a6.Q)h=a6.as?B.f6.j(0.12):B.b_.j(0.07)
-else if(a6.x)h=B.e0.j(0.08)
+else if(a6.x)h=B.e_.j(0.08)
 else{h=a6.c
 h.toString
 h=A.M(h).ax.a===B.A?B.aa:B.c6}if(a6.Q)g=a6.as?B.f6.j(0.4):B.b_.j(0.3)
-else if(a6.x)g=B.e0.j(0.3)
+else if(a6.x)g=B.e_.j(0.3)
 else{g=a6.c
 g.toString
 g=A.M(g).ax.a===B.A?B.ae:B.a9}g=A.N(g,B.o,1)
@@ -128053,7 +128051,7 @@ else{e=a6.Q
 if(e)d=a6.as?B.ho:B.iF
 else d=B.aGs
 if(e)e=a6.as?B.f6:B.js
-else if(a6.x)e=B.e0
+else if(a6.x)e=B.e_
 else{e=a6.c
 e.toString
 e=A.M(e).ax.a===B.A?B.J:B.R}f.push(A.W(d,e,a4,14))}f.push(B.af)
@@ -128062,7 +128060,7 @@ else if(a6.Q)if(a6.as){a6.a.toString
 e="Online \u2713"}else{a6.a.toString
 e="Offline \u2717"}else e=a6.a.w?"Testar conexi\xf3n":"Testar conex\xe3o"
 if(a6.Q)d=a6.as?B.f6:B.js
-else if(a6.x)d=B.e0
+else if(a6.x)d=B.e_
 else{d=a6.c
 d.toString
 d=A.M(d).ax.a===B.A?B.J:B.R}f.push(A.e(e,a4,a4,a4,a4,a4,A.m(a4,a4,d,a4,a4,a4,a4,a4,a4,a4,a4,12,a4,a4,B.z,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4))
@@ -128085,11 +128083,11 @@ f=a6.a2U(f,""+a2+" / 4000",B.aEW)
 e=a6.a.w?"Costo aprox.":"Custo aprox."
 B.d.u(k,A.a([A.k(a4,A.x(A.a([h,B.ac,A.w(A.a([f,B.L,a6.a2U(e,"US$ "+a3,B.aEV)],j),B.k,B.e,B.f,a4,a4)],j),B.r,B.e,B.f),B.i,a4,a4,new A.j(i,a4,g,l,a4,a4,B.l),a4,a4,a4,a4,B.d1,a4,a4,a4),B.K],j))}l=A.x(k,B.r,B.e,B.f)
 k=A.i(8)
-i=B.e0.j(0.05)
-h=A.N(B.e0.j(0.15),B.o,1)
-g=A.W(B.ns,B.e0,a4,12)
+i=B.e_.j(0.05)
+h=A.N(B.e_.j(0.15),B.o,1)
+g=A.W(B.ns,B.e_,a4,12)
 f=a6.a.w?"La clave GEMINI_PAID_API_KEY se configura solo una vez en el servidor (firebase functions:secrets:set GEMINI_PAID_API_KEY). Nunca se env\xeda al app ni aparece en el bundle web. Este panel solo activa/desactiva el fallback.":"A chave GEMINI_PAID_API_KEY \xe9 configurada uma \xfanica vez no servidor (firebase functions:secrets:set GEMINI_PAID_API_KEY). Nunca \xe9 enviada ao app nem aparece no bundle web. Este painel apenas ativa/desativa o fallback."
-p=A.k(a4,A.x(A.a([m,new A.K(B.tI,l,a4),new A.K(B.tD,A.k(a4,A.w(A.a([g,B.af,A.I(A.e(f,a4,a4,a4,a4,a4,A.m(a4,a4,B.e0.j(0.85),a4,a4,a4,a4,a4,a4,a4,a4,10,a4,a4,B.Y,a4,1.5,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4),1)],j),B.r,B.e,B.f,a4,a4),B.i,a4,a4,new A.j(i,a4,h,k,a4,a4,B.l),a4,a4,a4,a4,B.fe,a4,a4,a4),a4)],j),B.r,B.e,B.f),B.i,a4,a4,new A.j(q,a4,n,o,p,a4,B.l),a4,a4,a4,a4,a4,a4,a4,a4)
+p=A.k(a4,A.x(A.a([m,new A.K(B.tI,l,a4),new A.K(B.tD,A.k(a4,A.w(A.a([g,B.af,A.I(A.e(f,a4,a4,a4,a4,a4,A.m(a4,a4,B.e_.j(0.85),a4,a4,a4,a4,a4,a4,a4,a4,10,a4,a4,B.Y,a4,1.5,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4,a4),1)],j),B.r,B.e,B.f,a4,a4),B.i,a4,a4,new A.j(i,a4,h,k,a4,a4,B.l),a4,a4,a4,a4,B.fe,a4,a4,a4),a4)],j),B.r,B.e,B.f),B.i,a4,a4,new A.j(q,a4,n,o,p,a4,B.l),a4,a4,a4,a4,a4,a4,a4,a4)
 o=A.i(12)
 n=B.a6.j(0.07)
 q=A.N(B.a6.j(0.25),B.o,1)
@@ -128212,7 +128210,7 @@ p.push(new A.mr("Recusar",B.aEK,B.b_,d,i))}else if(!f&&j.r!=null){d=j.r
 d.toString
 p.push(new A.mr("\u2715",B.jC,B.ik,d,i))}if(!f&&j.z!=null){f=j.z
 f.toString
-p.push(new A.mr("Excluir",B.fg,B.b_,f,i))}B.d.u(q,A.a([B.K,A.dB(B.an,p,B.bH,8,8)],o))}return A.k(i,new A.K(B.br,A.x(q,B.r,B.e,B.f),i),B.i,i,i,new A.j(c,i,s,b,r,i,B.l),i,i,i,B.pD,i,i,i,i)}}
+p.push(new A.mr("Excluir",B.fh,B.b_,f,i))}B.d.u(q,A.a([B.K,A.dB(B.an,p,B.bH,8,8)],o))}return A.k(i,new A.K(B.br,A.x(q,B.r,B.e,B.f),i),B.i,i,i,new A.j(c,i,s,b,r,i,B.l),i,i,i,B.pD,i,i,i,i)}}
 A.arG.prototype={
 q(a){var s,r,q,p,o,n=null
 switch(this.c.a){case 1:s=B.lU.j(0.1)
@@ -128256,7 +128254,7 @@ o=A.W(this.c,o,s,11)
 return A.k(s,A.w(A.a([o,B.b0,A.e(this.d,s,s,s,s,s,A.m(s,s,r?B.bz:B.c4,s,s,s,s,s,s,s,s,10,s,s,B.O,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.e,B.E,s,s),B.i,s,s,new A.j(p,s,s,q,s,s,B.l),s,s,s,s,B.cQ,s,s,s)}}
 A.mr.prototype={
 q(a){var s=this,r=null,q=A.i(10),p=s.e,o=p.j(0.08),n=A.N(p.j(0.25),B.o,1)
-return A.a9(r,A.k(r,A.w(A.a([A.W(s.d,p,r,14),B.bF,A.e(s.c,r,r,r,r,r,A.m(r,r,p,r,r,r,r,r,r,r,r,11,r,r,B.F,r,r,!0,r,r,r,r,r,r,r,r),r,r,r)],t.p),B.k,B.e,B.E,r,r),B.i,r,r,new A.j(o,r,n,q,r,r,B.l),r,r,r,r,B.ff,r,r,r),B.t,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,s.f,r,r,r,r,r,r)}}
+return A.a9(r,A.k(r,A.w(A.a([A.W(s.d,p,r,14),B.bF,A.e(s.c,r,r,r,r,r,A.m(r,r,p,r,r,r,r,r,r,r,r,11,r,r,B.F,r,r,!0,r,r,r,r,r,r,r,r),r,r,r)],t.p),B.k,B.e,B.E,r,r),B.i,r,r,new A.j(o,r,n,q,r,r,B.l),r,r,r,r,B.fg,r,r,r),B.t,!1,r,r,r,r,r,r,r,r,r,r,r,r,r,s.f,r,r,r,r,r,r)}}
 A.SJ.prototype={
 S(){var s=$.aq()
 return new A.SK(new A.ay(B.a2,s),new A.ay(B.a2,s),new A.ay(B.a2,s),A.a([new A.ay(B.a2,s)],t.PF))}}
@@ -128552,7 +128550,7 @@ p=A.k(g,A.b4(A.e(n.length!==0?n[0].toUpperCase():"?",g,g,g,g,g,B.ec8,g,g,g),g,g)
 m=t.p
 n=A.I(A.x(A.a([A.e(n,g,g,B.a0,g,g,B.a6i,g,g,g),A.e(o.b,g,g,B.a0,g,g,B.a6f,g,g,g)],m),B.r,B.e,B.f),1)
 l=o.gaWg()
-p=A.w(A.a([p,B.a4,n,B.L,A.x(A.a([A.e(l,g,g,g,g,g,A.m(g,g,o.as>0?B.P:B.lf,g,g,g,g,g,g,g,g,13,g,g,B.D,g,g,!0,g,g,g,g,g,g,g,g),g,g,g),A.e(h.e,g,g,g,g,g,B.a6f,g,g,g)],m),B.fx,B.e,B.f)],m),B.k,B.e,B.f,g,g)
+p=A.w(A.a([p,B.a4,n,B.L,A.x(A.a([A.e(l,g,g,g,g,g,A.m(g,g,o.as>0?B.P:B.lf,g,g,g,g,g,g,g,g,13,g,g,B.D,g,g,!0,g,g,g,g,g,g,g,g),g,g,g),A.e(h.e,g,g,g,g,g,B.a6f,g,g,g)],m),B.fy,B.e,B.f)],m),B.k,B.e,B.f,g,g)
 n=A.is(A.i(4),A.Eb(B.hC,g,g,5,d,new A.hh(h.gany(),t.Jn)),B.cH)
 l=o.gagC()
 k=o.e
@@ -129149,7 +129147,7 @@ n.push(B.K)
 i=g?B.ud:B.hq
 h=g?"Despublicar":"Publicar"
 r=g?B.bR:B.P
-n.push(A.w(A.a([new A.mr("Editar",B.hO,B.dy,k.d,j),B.L,new A.mr(h,i,r,k.e,j),B.bZ,new A.mr("Excluir",B.fg,B.b_,k.f,j)],q),B.k,B.e,B.f,j,j))
+n.push(A.w(A.a([new A.mr("Editar",B.hO,B.dy,k.d,j),B.L,new A.mr(h,i,r,k.e,j),B.bZ,new A.mr("Excluir",B.fh,B.b_,k.f,j)],q),B.k,B.e,B.f,j,j))
 return A.k(j,A.x(n,B.r,B.e,B.f),B.i,j,j,new A.j(f,j,s,e,j,j,B.l),j,j,j,j,B.br,j,j,j)}}
 A.B6.prototype={
 S(){var s=$.aq()
@@ -130145,7 +130143,7 @@ A.kM(new A.jF(a))
 s=this.c.a4(t.q).f
 r=this.c
 r.toString
-s.cU(A.d8(q,q,q,q,B.bJ,B.G,q,A.e(A.bg(r,!1,t.C).bZ("copied"),q,q,q,q,q,q,q,q,q),q,B.fy,q,q,q,B.tE,q,q,new A.br(A.i(10),B.w),q,q))},
+s.cU(A.d8(q,q,q,q,B.bJ,B.G,q,A.e(A.bg(r,!1,t.C).bZ("copied"),q,q,q,q,q,q,q,q,q),q,B.fz,q,q,q,B.tE,q,q,new A.br(A.i(10),B.w),q,q))},
 asf(a,b,c){var s,r,q,p,o=this
 if(o.c==null)return
 c.tl()
@@ -131042,7 +131040,7 @@ if(k)B.bn.j(0.15)
 else B.eg.j(0.22)
 k=t.p
 s=A.b4(A.x(A.a([A.oh(l,l,l,B.ds,l,l,!0,l,A.cz(A.a([A.cz(l,l,l,A.m(l,l,B.j,l,l,l,l,l,l,l,l,15.5,l,l,B.z,l,l,!0,l,-0.2,l,l,l,l,l,l),"MEDCASES"),B.e8A],t.VO),l,l,l,l),B.am,l,l,B.b6,B.c9)],k),B.k,B.ax,B.f),l,l)
-r=A.eF(l,A.a9(B.aZ,new A.K(B.aDg,m.y?B.er4:B.a6v,l),B.t,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,m.as,l,l,l,l,l,l),l,l,8,l,l,l)
+r=A.eF(l,A.a9(B.aX,new A.K(B.aDg,m.y?B.er4:B.a6v,l),B.t,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,m.as,l,l,l,l,l,l),l,l,8,l,l,l)
 q=A.i(8)
 p=A.N(B.ake,B.o,0.8)
 o=A.a([new A.K(B.JR,A.W(B.fE,B.j.j(0.7),l,15),l)],k)
@@ -131089,7 +131087,7 @@ s=r.a
 return A.vb(B.eiG,r.b.az(0,s.gv(s)))},
 $S:295}
 A.atw.prototype={
-q(a){var s,r,q=this,p=null,o=A.f7(p,B.jg,B.uh,p,p,new A.bEh(a),B.bO,p,p,p,p),n=t.p,m=A.I(A.x(A.a([A.oh(p,p,p,B.ds,p,p,!0,p,B.e8y,B.am,p,p,B.b6,B.c9)],n),B.r,B.e,B.E),1),l=A.a9(B.aZ,new A.K(B.aDp,q.ax?new A.Ic(p):B.a6v,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,q.f,p,p,p,p,p,p),k=A.i(8),j=B.j.j(0.06),i=A.N(B.j.j(0.08),B.o,0.8)
+q(a){var s,r,q=this,p=null,o=A.f7(p,B.jg,B.uh,p,p,new A.bEh(a),B.bO,p,p,p,p),n=t.p,m=A.I(A.x(A.a([A.oh(p,p,p,B.ds,p,p,!0,p,B.e8y,B.am,p,p,B.b6,B.c9)],n),B.r,B.e,B.E),1),l=A.a9(B.aX,new A.K(B.aDp,q.ax?new A.Ic(p):B.a6v,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,q.f,p,p,p,p,p,p),k=A.i(8),j=B.j.j(0.06),i=A.N(B.j.j(0.08),B.o,0.8)
 k=A.a([A.k(p,A.W(B.fE,B.j.j(0.7),p,14),B.i,p,p,new A.j(j,p,i,k,p,p,B.l),p,28,p,p,p,p,p,28)],n)
 j=q.x
 if(j>0)k.push(A.eF(p,A.k(p,A.b4(A.e(""+j,p,p,p,p,p,B.edD,p,p,p),p,p),B.i,p,p,B.xZ,p,12,p,p,p,p,p,12),p,p,p,-3,-3,p))
@@ -131112,7 +131110,7 @@ n=A.e(n,p,p,p,p,p,A.m(p,p,B.j.j(0.62),p,p,p,p,p,p,p,p,15,p,p,B.Y,p,1.55,!0,p,0.1
 s=A.i(22)
 r=A.N(B.bn.j(0.35),B.o,1)
 q=B.bn.j(0.07)
-return A.a9(B.aZ,A.b4(new A.K(B.aD5,A.x(A.a([o,B.cD,n,B.e74,A.k(p,A.e("Conectar agora",p,p,p,p,p,B.ef1,p,p,p),B.i,p,p,new A.j(q,p,r,s,p,p,B.l),p,p,p,p,B.JM,p,p,p)],t.p),B.k,B.e,B.E),p),p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,this.f,p,p,p,p,p,p)}}
+return A.a9(B.aX,A.b4(new A.K(B.aD5,A.x(A.a([o,B.cD,n,B.e74,A.k(p,A.e("Conectar agora",p,p,p,p,p,B.ef1,p,p,p),B.i,p,p,new A.j(q,p,r,s,p,p,B.l),p,p,p,p,B.JM,p,p,p)],t.p),B.k,B.e,B.E),p),p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,this.f,p,p,p,p,p,p)}}
 A.aln.prototype={
 q(a){var s,r,q,p,o=null,n=this.d==="es",m=this.c,l=m?B.Hq:B.j,k=m?B.b9:B.HN,j=m?B.j:B.aG,i=m?B.j.j(0.55):B.H.j(0.45),h=A.i(20),g=A.N(k,B.o,1),f=A.a([new A.aN(0,B.X,B.H.j(m?0.4:0.08),B.kH,24)],t.V)
 m=m?B.aa:B.GK
@@ -131121,12 +131119,12 @@ s=n?"Conecta tu cuenta Google":"Conecte sua conta Google"
 s=A.e(s,o,o,o,o,o,A.m(o,o,j,o,o,o,o,o,o,o,o,17,o,o,B.F,o,1.25,!0,o,-0.3,o,o,o,o,o,o),B.ar,o,o)
 r=n?"para activar la Inteligencia Artificial Gratuita":"para ativar a Intelig\xeancia Artificial Gratuita"
 r=A.e(r,o,o,o,o,o,A.m(o,o,i,o,o,o,o,o,o,o,o,13,o,o,B.ab,o,1.45,!0,o,o,o,o,o,o,o,o),B.ar,o,o)
-q=A.hl(o,o,B.e0,o,o,o,0,o,o,B.j,o,o,B.eQ,o,new A.br(A.i(12),B.w),o,o,o,o,o)
+q=A.hl(o,o,B.e_,o,o,o,0,o,o,B.j,o,o,B.eQ,o,new A.br(A.i(12),B.w),o,o,o,o,o)
 p=t.p
 return A.b4(new A.K(B.aCZ,A.k(o,A.x(A.a([m,B.cD,s,B.M,r,B.e9,new A.aw(1/0,o,A.ki(!1,A.w(A.a([B.ehS,B.L,A.e(n?"Conectar con Google":"Conectar com o Google",o,o,o,o,o,B.eeh,o,o,o)],p),B.k,B.e,B.E,o,o),o,o,o,o,o,o,this.e,o,q),o)],p),B.k,B.e,B.E),B.i,o,o,new A.j(l,o,g,h,f,o,B.l),o,o,o,o,B.aCX,o,o,o),o),o,o)}}
 A.arQ.prototype={
 q(a){var s=null,r=this.d,q=r?B.aG:B.j,p=r?B.b9:B.HN,o=r?B.aa:B.GK,n=r?B.ae:B.aiF,m=r?B.bd:B.b9
-return A.k(s,new A.aw(s,34,A.jj(!0,!0,s,s,new A.bBz(this,this.c==="es",o,n,m),20,s,s,B.fA,s,B.bm,!1),s),B.i,s,s,new A.j(q,s,new A.bS(new A.aA(p,1,B.o,-1),B.w,B.w,B.w),s,s,s,B.l),s,s,s,s,B.n7,s,s,s)}}
+return A.k(s,new A.aw(s,34,A.jj(!0,!0,s,s,new A.bBz(this,this.c==="es",o,n,m),20,s,s,B.ff,s,B.bm,!1),s),B.i,s,s,new A.j(q,s,new A.bS(new A.aA(p,1,B.o,-1),B.w,B.w,B.w),s,s,s,B.l),s,s,s,s,B.n7,s,s,s)}}
 A.bBz.prototype={
 $2(a,b){var s,r=this,q=null,p=B.c_0[b],o=r.b,n=o?p.b:p.a,m=o?p.d:p.c
 o=A.i(20)
@@ -131296,11 +131294,11 @@ o=r.f
 o===$&&A.c()
 o=A.cJ(!0,B.x,!1,q,!0,B.G,q,A.cO(),p,q,q,q,q,q,2,B.aKN,B.t,!0,q,!0,q,!1,o,B.aR,q,q,q,q,q,q,q,q,q,q,!1,"\u2022",q,q,q,q,q,!1,q,q,!1,q,!0,q,B.aK,q,q,B.aO,B.aM,q,q,q,q,q,q,A.m(q,q,m,q,q,q,q,q,q,q,q,14,q,q,q,q,1.45,!0,q,q,q,q,q,q,q,q),!0,B.am,q,B.bt,q,q,q,q)
 p=t.p
-p=A.k(q,A.x(A.a([o,B.M,A.w(A.a([A.a9(q,A.e("Cancelar",q,q,q,q,q,A.m(q,q,r.a.d?B.bb:B.jm,q,q,q,q,q,q,q,q,12,q,q,B.O,q,q,!0,q,q,q,q,q,q,q,q),q,q,q),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,r.gaoX(),q,q,q,q,q,q),B.DK,A.a9(q,A.k(q,B.eiH,B.i,q,q,new A.j(l,q,q,A.i(12),q,q,B.l),q,q,q,q,B.Js,q,q,q),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,r.gaFF(),q,q,q,q,q,q)],p),B.k,B.e,B.E,q,q)],p),B.fx,B.e,B.E),B.i,q,B.a9w,new A.j(n,q,q,B.Fk,q,q,B.l),q,q,q,q,B.aBp,q,q,q)}else{p=A.a([A.a9(q,A.k(q,A.e(p.c,q,q,q,q,q,A.m(q,q,m,q,q,q,q,q,q,q,q,14,q,q,B.ab,q,1.45,!0,q,q,q,q,q,q,q,q),q,q,q),B.i,q,q,new A.j(n,q,q,B.Fk,q,q,B.l),q,q,q,q,B.ff,q,q,q),B.t,!1,q,q,q,q,q,q,q,new A.bE2(r,a),q,q,q,q,q,q,q,q,q,q,q,q)],t.p)
+p=A.k(q,A.x(A.a([o,B.M,A.w(A.a([A.a9(q,A.e("Cancelar",q,q,q,q,q,A.m(q,q,r.a.d?B.bb:B.jm,q,q,q,q,q,q,q,q,12,q,q,B.O,q,q,!0,q,q,q,q,q,q,q,q),q,q,q),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,r.gaoX(),q,q,q,q,q,q),B.DK,A.a9(q,A.k(q,B.eiH,B.i,q,q,new A.j(l,q,q,A.i(12),q,q,B.l),q,q,q,q,B.Js,q,q,q),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,r.gaFF(),q,q,q,q,q,q)],p),B.k,B.e,B.E,q,q)],p),B.fy,B.e,B.E),B.i,q,B.a9w,new A.j(n,q,q,B.Fk,q,q,B.l),q,q,q,q,B.aBp,q,q,q)}else{p=A.a([A.a9(q,A.k(q,A.e(p.c,q,q,q,q,q,A.m(q,q,m,q,q,q,q,q,q,q,q,14,q,q,B.ab,q,1.45,!0,q,q,q,q,q,q,q,q),q,q,q),B.i,q,q,new A.j(n,q,q,B.Fk,q,q,B.l),q,q,q,q,B.fg,q,q,q),B.t,!1,q,q,q,q,q,q,q,new A.bE2(r,a),q,q,q,q,q,q,q,q,q,q,q,q)],t.p)
 o=r.a
 s=o.r
 if(!s)p.push(new A.K(B.aAU,A.a9(q,A.W(B.KL,o.d?B.j.j(0.3):B.H.j(0.28),q,14),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,r.gaHH(),q,q,q,q,q,q),q))
-p=A.x(p,B.fx,B.e,B.E)}return new A.K(B.fA,new A.dl(B.d9,q,q,p,q),q)}}
+p=A.x(p,B.fy,B.e,B.E)}return new A.K(B.ff,new A.dl(B.d9,q,q,p,q),q)}}
 A.bE0.prototype={
 $0(){var s,r=this.a
 r.d=!0
@@ -131345,7 +131343,7 @@ q=A.bVl(B.jE,B.eg,r,p.e,q,k,l)
 r=A.ej(n?B.ef:B.dx,o,1,o,o)
 n=s?"Editar mensaje":"Editar mensagem"
 s=s?"Modifica y reenv\xeda borrando el historial posterior":"Modifique e reenvie apagando o hist\xf3rico posterior"
-return A.k(o,A.x(A.a([h,q,r,A.bVl(B.hO,B.aY,n,p.f,s,k,l),B.a1],t.p),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,o,j,i,o,B.l),o,o,o,B.aBb,o,o,o,o)}}
+return A.k(o,A.x(A.a([h,q,r,A.bVl(B.hO,B.aZ,n,p.f,s,k,l),B.a1],t.p),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,o,j,i,o,B.l),o,o,o,B.aBb,o,o,o,o)}}
 A.agK.prototype={
 q(a){var s=this,r=null,q=s.w,p=q.j(0.1),o=A.i(10),n=s.f,m=t.p
 return A.dS(B.a7,r,A.eb(!1,r,!0,new A.K(B.JI,A.w(A.a([A.k(r,A.W(s.c,q,r,18),B.i,r,r,new A.j(p,r,r,o,r,r,B.l),r,38,r,r,r,r,r,38),B.e8,A.I(A.x(A.a([A.e(s.d,r,r,r,r,r,A.m(r,r,n,r,r,r,r,r,r,r,r,14,r,r,B.z,r,r,!0,r,r,r,r,r,r,r,r),r,r,r),B.bw,A.e(s.e,r,r,r,r,r,A.m(r,r,s.r,r,r,r,r,r,r,r,r,11.5,r,r,r,r,1.3,!0,r,r,r,r,r,r,r,r),r,r,r)],m),B.r,B.e,B.f),1),A.W(B.dc,n.j(0.35),r,18)],m),B.k,B.e,B.f,r,r),r),r,!0,r,r,r,r,r,r,r,r,r,r,s.x,r,r,r,r,r,r),B.i,B.Q,0,r,r,r,r,r,B.c8)}}
@@ -131403,7 +131401,7 @@ n=A.m(g,g,e.j(0.8),g,g,g,g,g,g,g,g,13,g,g,g,g,g,!0,g,g,g,g,g,g,g,g)
 m=f?B.b7:B.dP
 l=f?B.ef:B.dx
 k=A.aNk(g,6,n,B.an,new A.j(B.Q,g,new A.bS(B.w,B.w,B.w,new A.aA(m,3,B.o,-1)),g,g,g,B.l),g,g,g,B.an,B.ru,g,g,q,g,B.an,g,B.egh,B.an,g,o,B.an,g,g,B.an,g,g,B.an,g,g,B.an,g,new A.j(g,g,new A.bS(new A.aA(l,1,B.o,-1),B.w,B.w,B.w),g,g,g,B.l),g,p,g,18,B.an,c,g,r,g,g,g,g,g,g,g,g,g,g,B.r3,B.an,g,g,B.an)
-c=B.fA.B8(8)
+c=B.ff.B8(8)
 r=t.p
 q=A.a([],r)
 if(s.length!==0)q.push(A.bSD(s,!1,!0,k))
@@ -131651,7 +131649,7 @@ A.agQ.prototype={
 q(a){var s,r,q=null,p=this.d==="es",o=A.bg(a,!1,t.C).k3
 if(o)s=p?"Sesi\xf3n Google expirada \u2014 toca para reconectar":"Sess\xe3o Google expirada \u2014 toque para reconectar"
 else s=p?"Clave API inv\xe1lida \u2014 toca para configurar":"Chave API inv\xe1lida \u2014 toque para configurar"
-r=B.fw.j(0.12)
+r=B.fx.j(0.12)
 return A.a9(q,A.k(q,A.w(A.a([A.W(o?B.aEr:B.iF,B.aT,q,16),B.L,A.I(A.e(s,q,q,q,q,q,B.a5M,q,q,q),1),B.aHY],t.p),B.k,B.e,B.f,q,q),B.i,r,q,q,q,q,q,q,B.ln,q,q,1/0),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,this.e,q,q,q,q,q,q)}}
 A.SC.prototype={
 S(){return new A.SD()}}
@@ -131667,7 +131665,7 @@ case 3:n=b
 o=p.c
 if(o==null){s=1
 break}if(n!=null)if(!n&&p.d){o=o.a4(t.q).f
-o.cU(A.d8(null,null,null,B.fw,B.bJ,B.G,null,A.e(p.a.e==="es"?"No se pudo conectar con Google. Intente de nuevo.":"N\xe3o foi poss\xedvel conectar com o Google. Tente novamente.",null,null,null,null,null,null,null,null,null),null,B.ix,null,null,null,B.tE,null,null,new A.br(A.i(10),B.w),null,null))}p.d=!1
+o.cU(A.d8(null,null,null,B.fx,B.bJ,B.G,null,A.e(p.a.e==="es"?"No se pudo conectar con Google. Intente de nuevo.":"N\xe3o foi poss\xedvel conectar com o Google. Tente novamente.",null,null,null,null,null,null,null,null,null),null,B.ix,null,null,null,B.tE,null,null,new A.br(A.i(10),B.w),null,null))}p.d=!1
 case 1:return A.A(q,r)}})
 return A.B($async$Fm,r)},
 Fn(){var s=0,r=A.C(t.H),q=this,p
@@ -131742,8 +131740,8 @@ if(a2.length!==0)m.push(A.e(a2,e,1,B.a0,e,e,A.m(e,e,a8,e,e,e,e,e,e,e,e,11,e,e,e,
 m=A.I(A.x(m,B.r,B.e,B.f),1)
 c=a3?e:c.gavO()
 k=A.i(8)
-j=B.fw.j(0.1)
-i=A.N(B.fw.j(0.25),B.o,1)
+j=B.fx.j(0.1)
+i=A.N(B.fx.j(0.25),B.o,1)
 if(a3)h=new A.aw(12,12,A.oX(e,B.aT.j(0.7),e,e,e,e,e,1.5,e,e),e)
 else h=A.e("Desconectar",e,e,e,e,e,B.eft,e,e,e)
 b.push(A.k(e,A.w(A.a([n,B.aU,m,A.a9(e,A.k(e,h,B.i,e,e,new A.j(j,e,i,k,e,e,B.l),e,e,e,e,B.ll,e,e,e),B.t,!1,e,e,e,e,e,e,e,e,e,e,e,e,e,c,e,e,e,e,e,e)],l),B.k,B.e,B.f,e,e),B.i,e,e,new A.j(a6,e,o,p,e,e,B.l),e,e,e,e,B.br,e,e,1/0))}else{c=a3?e:c.gavN()
@@ -131823,7 +131821,7 @@ q=this.c
 p=A.W(B.L0,q,m,10)
 o=l.e==="es"?"preguntas":"perguntas"
 n=t.p
-return A.bQJ(j,B.aZ,A.eb(!1,m,!0,new A.K(B.aCh,A.w(A.a([s,B.aU,A.I(A.x(A.a([r,B.bG,A.w(A.a([p,B.b0,A.e(""+i+" "+o,m,m,m,m,m,A.m(m,m,q,m,m,m,m,m,m,m,m,10,m,m,m,m,m,!0,m,m,m,m,m,m,m,m),m,m,m),B.a4,A.W(B.Av,q,m,10),B.b0,A.e(l.amX(k.b),m,m,m,m,m,A.m(m,m,q,m,m,m,m,m,m,m,m,10,m,m,m,m,m,!0,m,m,m,m,m,m,m,m),m,m,m)],n),B.k,B.e,B.f,m,m)],n),B.r,B.e,B.f),1),B.L,A.W(B.dc,q,m,18)],n),B.k,B.e,B.f,m,m),m),m,!0,m,m,m,m,m,m,m,m,m,m,new A.baB(l,k),m,m,m,m,m,m),B.zm,new A.cP(k.a,t.kK),new A.baC(l,k),B.cY)},
+return A.bQJ(j,B.aX,A.eb(!1,m,!0,new A.K(B.aCh,A.w(A.a([s,B.aU,A.I(A.x(A.a([r,B.bG,A.w(A.a([p,B.b0,A.e(""+i+" "+o,m,m,m,m,m,A.m(m,m,q,m,m,m,m,m,m,m,m,10,m,m,m,m,m,!0,m,m,m,m,m,m,m,m),m,m,m),B.a4,A.W(B.Av,q,m,10),B.b0,A.e(l.amX(k.b),m,m,m,m,m,A.m(m,m,q,m,m,m,m,m,m,m,m,10,m,m,m,m,m,!0,m,m,m,m,m,m,m,m),m,m,m)],n),B.k,B.e,B.f,m,m)],n),B.r,B.e,B.f),1),B.L,A.W(B.dc,q,m,18)],n),B.k,B.e,B.f,m,m),m),m,!0,m,m,m,m,m,m,m,m,m,m,new A.baB(l,k),m,m,m,m,m,m),B.zm,new A.cP(k.a,t.kK),new A.baC(l,k),B.cY)},
 $S:785}
 A.baA.prototype={
 $1(a){return a.b==="user"},
@@ -132087,7 +132085,7 @@ else p=j?l.e:B.bb
 o=t.p
 q=A.a([s,B.bF,A.e(r,n,n,n,n,n,A.m(n,n,p,n,n,n,n,n,n,n,n,11,n,n,q,n,n,!0,n,n,n,n,n,n,n,n),n,n,n)],o)
 if(j&&!k)B.d.u(q,A.a([B.b0,A.k(n,n,B.i,n,n,new A.j(l.e,n,n,n,n,n,B.ap),n,5,n,n,n,n,n,5)],o))
-return A.a9(B.aZ,A.bM(A.w(q,B.k,B.ax,B.E,n,n),B.a_,new A.j(B.Q,n,new A.bS(B.w,B.w,i,B.w),n,n,n,B.l),B.d0,n,B.n5,B.zE,n),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.bz7(m,b),n,n,n,n,n,n)},
+return A.a9(B.aX,A.bM(A.w(q,B.k,B.ax,B.E,n,n),B.a_,new A.j(B.Q,n,new A.bS(B.w,B.w,i,B.w),n,n,n,B.l),B.d0,n,B.n5,B.zE,n),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.bz7(m,b),n,n,n,n,n,n)},
 $S:111}
 A.bz7.prototype={
 $0(){return this.a.x.$1(this.b)},
@@ -132155,8 +132153,8 @@ r=A.i(12)
 q=i?n.as.e:B.io
 p=n.e
 o=p?"Siguiente":"Pr\xf3ximo"
-o=A.e(o,m,m,m,m,m,A.m(m,m,i?B.j:B.dZ,m,m,m,m,m,m,m,m,12,m,m,B.F,m,m,!0,m,m,m,m,m,m,m,m),m,m,m)
-l=A.a([A.w(A.a([l,B.a4,k,B.a4,A.a9(m,A.Cj(A.k(m,A.w(A.a([o,A.W(B.dc,i?B.j:B.dZ,m,18)],h),B.k,B.e,B.E,m,m),B.i,m,m,new A.j(q,m,m,r,m,m,B.l),m,m,m,m,B.ej,m,m,m),B.a_,B.fa,s),B.t,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,j,m,m,m,m,m,m)],h),B.k,B.e,B.f,m,m)],h)
+o=A.e(o,m,m,m,m,m,A.m(m,m,i?B.j:B.dY,m,m,m,m,m,m,m,m,12,m,m,B.F,m,m,!0,m,m,m,m,m,m,m,m),m,m,m)
+l=A.a([A.w(A.a([l,B.a4,k,B.a4,A.a9(m,A.Cj(A.k(m,A.w(A.a([o,A.W(B.dc,i?B.j:B.dY,m,18)],h),B.k,B.e,B.E,m,m),B.i,m,m,new A.j(q,m,m,r,m,m,B.l),m,m,m,m,B.ej,m,m,m),B.a_,B.fa,s),B.t,!1,m,m,m,m,m,m,m,m,m,m,m,m,m,j,m,m,m,m,m,m)],h),B.k,B.e,B.f,m,m)],h)
 if(n.r||n.f){k=A.i(12)
 j=A.N(B.bA.j(0.3),B.o,1)
 i=B.bA.j(0.05)
@@ -132213,7 +132211,7 @@ o=q?"Ver Fuentes Acad\xe9micas":"Ver Fontes Acad\xeamicas"
 n=q?"Abrir referencias \u2197":"Abrir refer\xeancias \u2197"
 h=h?B.DY:B.DX
 m=t.p
-l=A.k(i,A.eQ(!1,new A.K(B.JP,A.dh(B.ad,A.a([B.ei_,new A.dl(B.cG,i,i,A.a9(B.aZ,B.dEz,B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.b91(a),i,i,i,i,i,i),i),new A.dl(B.d9,i,i,new A.K(B.aAD,B.emY,i),i)],m),B.G,B.bo,i),i),!0,B.aj,!0,!0),B.i,i,i,B.a9Q,i,i,i,i,i,i,i,i)
+l=A.k(i,A.eQ(!1,new A.K(B.JP,A.dh(B.ad,A.a([B.ei_,new A.dl(B.cG,i,i,A.a9(B.aX,B.dEz,B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.b91(a),i,i,i,i,i,i),i),new A.dl(B.d9,i,i,new A.K(B.aAD,B.emY,i),i)],m),B.G,B.bo,i),i),!0,B.aj,!0,!0),B.i,i,i,B.a9Q,i,i,i,i,i,i,i,i)
 k=A.eF(81,A.l3(new A.b92(j)),i,i,0,0,0,i)
 return A.bPC(A.j0(new A.zE(l,B.e6L,i),s,A.dh(B.bS,A.a([k,A.eF(0,A.x(A.a([new A.ahQ(q,i),A.a9(i,A.bM(j.w?j.ao8(o,n):A.b4(A.e(p,i,1,B.a0,i,i,B.ech,i,i,i),i,i),B.dz,B.aa8,B.lj,r,i,i,i),B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.b93(j),i,i,i,i,i,i)],m),B.k,B.e,B.E),i,i,0,0,i,i)],m),B.G,B.bo,i),i,i,i,!0,i),h,t.lu)},
 ao8(a,b){var s=null,r=t.p,q=A.w(A.a([B.eiI,B.af,A.e(a,s,s,s,s,s,B.efE,s,s,s)],r),B.k,B.ax,B.f,s,s),p=A.N(B.agV,B.o,1),o=A.i(20)
@@ -132246,20 +132244,20 @@ A.b8Z.prototype={
 $0(){return this.a.w=!1},
 $S:0}
 A.ahQ.prototype={
-q(a){var s,r,q,p,o,n=null,m=B.av.j(0.68),l=A.i(32),k=A.N(B.bn.j(0.22),B.o,0.9),j=t.V,i=A.a([new A.aN(0,B.X,B.H.j(0.5),B.m_,20),new A.aN(0,B.X,B.bn.j(0.05),B.m_,24)],j),h=A.i(32)
+q(a){var s,r,q,p,o,n=null,m=B.aw.j(0.68),l=A.i(32),k=A.N(B.bn.j(0.22),B.o,0.9),j=t.V,i=A.a([new A.aN(0,B.X,B.H.j(0.5),B.m_,20),new A.aN(0,B.X,B.bn.j(0.05),B.m_,24)],j),h=A.i(32)
 $.aX()
 s=A.W(B.u4,B.J,n,18)
 r=this.d
 q=r?"Inicio":"In\xedcio"
 p=t.p
-q=A.I(A.a9(B.aZ,A.x(A.a([new A.K(B.pF,s,n),B.jV,A.e(q,n,1,n,n,n,A.m(n,n,B.J,n,n,n,n,n,n,n,n,9,n,n,B.ab,n,1,!0,n,n,n,n,n,n,n,n),n,n,n)],p),B.k,B.ax,B.E),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.b8H(a),n,n,n,n,n,n),1)
+q=A.I(A.a9(B.aX,A.x(A.a([new A.K(B.pF,s,n),B.jV,A.e(q,n,1,n,n,n,A.m(n,n,B.J,n,n,n,n,n,n,n,n,9,n,n,B.ab,n,1,!0,n,n,n,n,n,n,n,n),n,n,n)],p),B.k,B.ax,B.E),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.b8H(a),n,n,n,n,n,n),1)
 s=A.a([B.Ib,B.yl],t.O)
 o=A.N(B.p6.j(0.8),B.o,1.5)
 j=A.a([new A.aN(0,B.X,B.p6.j(0.45),B.I,12)],j)
 s=A.b4(A.k(n,A.W(B.km,B.bn,n,17),B.i,n,n,new A.j(n,n,o,n,j,new A.cp(B.b4,B.bl,B.aJ,s,n,n),B.ap),n,31,n,n,n,n,n,31),n,n)
 j=A.W(B.d2,B.J,n,18)
 r=r?"Herramientas":"Ferramentas"
-return A.k(n,A.is(h,A.aza(A.w(A.a([q,new A.aw(50,43,s,n),A.I(A.a9(B.aZ,A.x(A.a([new A.K(B.pF,j,n),B.jV,A.e(r,n,1,n,n,n,A.m(n,n,B.J,n,n,n,n,n,n,n,n,9,n,n,B.ab,n,1,!0,n,n,n,n,n,n,n,n),n,n,n)],p),B.k,B.ax,B.E),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.b8I(a),n,n,n,n,n,n),1)],p),B.k,B.e,B.f,n,n),new A.tk(12,12,n)),B.cH),B.i,n,n,new A.j(m,n,k,l,i,n,B.l),n,43,n,B.JG,n,n,n,n)}}
+return A.k(n,A.is(h,A.aza(A.w(A.a([q,new A.aw(50,43,s,n),A.I(A.a9(B.aX,A.x(A.a([new A.K(B.pF,j,n),B.jV,A.e(r,n,1,n,n,n,A.m(n,n,B.J,n,n,n,n,n,n,n,n,9,n,n,B.ab,n,1,!0,n,n,n,n,n,n,n,n),n,n,n)],p),B.k,B.ax,B.E),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.b8I(a),n,n,n,n,n,n),1)],p),B.k,B.e,B.f,n,n),new A.tk(12,12,n)),B.cH),B.i,n,n,new A.j(m,n,k,l,i,n,B.l),n,43,n,B.JG,n,n,n,n)}}
 A.b8H.prototype={
 $0(){var s=A.aQ(this.a,!1)
 if(s.mA())s.bU()},
@@ -132346,7 +132344,7 @@ q=A.i(12)
 m=B.j.j(0.15)
 l=A.N(B.j.j(0.2),B.o,1)
 k=t.p
-q=A.w(A.a([r,A.a9(f,A.k(f,A.w(A.a([B.aIf,B.b0,A.e(d.bZ(e),f,f,f,f,f,B.a6_,f,f,f)],k),B.k,B.e,B.f,f,f),B.i,f,f,new A.j(m,f,l,q,f,f,B.l),f,f,f,f,B.ff,f,f,f),B.t,!1,f,f,f,f,f,f,f,f,f,f,f,f,f,new A.ba1(g),f,f,f,f,f,f)],k),B.k,B.e,B.f,f,f)
+q=A.w(A.a([r,A.a9(f,A.k(f,A.w(A.a([B.aIf,B.b0,A.e(d.bZ(e),f,f,f,f,f,B.a6_,f,f,f)],k),B.k,B.e,B.f,f,f),B.i,f,f,new A.j(m,f,l,q,f,f,B.l),f,f,f,f,B.fg,f,f,f),B.t,!1,f,f,f,f,f,f,f,f,f,f,f,f,f,new A.ba1(g),f,f,f,f,f,f)],k),B.k,B.e,B.f,f,f)
 l=A.i(14)
 r=A.M(a).ax.a===B.A?B.aa:B.j
 m=A.N(A.M(a).ax.a===B.A?B.ae:B.a9,B.o,1)
@@ -132594,7 +132592,7 @@ $S:28}
 A.b9x.prototype={
 $0(){var s=null,r=this.a
 A.kM(new A.jF(r.YA()))
-this.b.a4(t.q).f.cU(A.d8(s,s,s,s,s,B.G,s,A.e(r.r.bZ("copied"),s,s,s,s,s,s,s,s,s),s,B.fy,s,s,s,s,s,s,s,s,s))
+this.b.a4(t.q).f.cU(A.d8(s,s,s,s,s,B.G,s,A.e(r.r.bZ("copied"),s,s,s,s,s,s,s,s,s),s,B.fz,s,s,s,s,s,s,s,s,s))
 return s},
 $S:0}
 A.b9y.prototype={
@@ -132713,7 +132711,7 @@ j=a.c==="es"?B.bcI:B.bcJ
 i=A.S(j).i("P<1,jM<h>>")
 j=A.O(new A.P(j,new A.b9B(),i),i.i("al.E"))
 i=t.N
-m=A.w(A.a([n,B.a4,A.I(A.x(A.a([o,B.cE,A.k(c,new A.lQ(A.D5(c,c,!1,!0,j,new A.b9C(d),c,c,k,i),c),B.i,c,c,new A.j(B.j,c,l,m,c,c,B.l),c,c,c,c,B.fA,c,c,c)],p),B.r,B.e,B.f),1)],p),B.k,B.e,B.f,c,c)
+m=A.w(A.a([n,B.a4,A.I(A.x(A.a([o,B.cE,A.k(c,new A.lQ(A.D5(c,c,!1,!0,j,new A.b9C(d),c,c,k,i),c),B.i,c,c,new A.j(B.j,c,l,m,c,c,B.l),c,c,c,c,B.ff,c,c,c)],p),B.r,B.e,B.f),1)],p),B.k,B.e,B.f,c,c)
 o=a.c==="es"
 n=A.e(o?"CATEGOR\xcdA":"CATEGORIA",c,c,c,c,c,B.jY,c,c,c)
 l=A.i(14)
@@ -132722,7 +132720,7 @@ j=d.z
 o=o?B.bSK:B.b0o
 h=A.S(o).i("P<1,jM<h>>")
 o=A.O(new A.P(o,new A.b9D(),h),h.i("al.E"))
-o=A.w(A.a([A.I(A.x(A.a([n,B.cE,A.k(c,new A.lQ(A.D5(c,c,!1,!0,o,new A.b9E(d,a),c,c,j,i),c),B.i,c,c,new A.j(B.j,c,k,l,c,c,B.l),c,c,c,c,B.fA,c,c,c)],p),B.r,B.e,B.f),1)],p),B.k,B.e,B.f,c,c)
+o=A.w(A.a([A.I(A.x(A.a([n,B.cE,A.k(c,new A.lQ(A.D5(c,c,!1,!0,o,new A.b9E(d,a),c,c,j,i),c),B.i,c,c,new A.j(B.j,c,k,l,c,c,B.l),c,c,c,c,B.ff,c,c,c)],p),B.r,B.e,B.f),1)],p),B.k,B.e,B.f,c,c)
 n=a.bZ("clinical_history")
 l=d.f
 l===$&&A.c()
@@ -132831,7 +132829,7 @@ B.d.u(q,new A.P(p,new A.be8(),A.S(p).i("P<1,f>")))
 B.d.u(r,q)}r.push(B.a1)
 r.push(B.vX)
 r.push(B.e9)
-return A.j0(n,j,A.eQ(!0,A.x(A.a([new A.als(l,k,i,n),A.I(A.a9(B.aZ,A.d1(A.x(r,B.r,B.e,B.f),n,B.t,n,B.aCj,B.xX,B.ai),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.be9(o),n,n,n,n,n,n),1)],s),B.k,B.e,B.f),!0,B.aj,!0,!0),n,n,n,!1,n)}}
+return A.j0(n,j,A.eQ(!0,A.x(A.a([new A.als(l,k,i,n),A.I(A.a9(B.aX,A.d1(A.x(r,B.r,B.e,B.f),n,B.t,n,B.aCj,B.xX,B.ai),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.be9(o),n,n,n,n,n,n),1)],s),B.k,B.e,B.f),!0,B.aj,!0,!0),n,n,n,!1,n)}}
 A.be1.prototype={
 $0(){var s=this.a
 s.r=A.a([],t.s)
@@ -132911,7 +132909,7 @@ q(a){var s,r=this,q=null,p=r.e,o=p?B.GF.j(0.6):B.ajW,n=A.i(16),m=A.N(B.k6.j(p?0.
 p=r.r.a
 s=A.m(q,q,p?B.j:B.U,q,q,q,q,q,q,q,q,15,q,q,B.Y,q,q,!0,q,q,q,q,q,q,q,q)
 l=A.a([B.e8,l,B.a4,A.I(A.cJ(!0,B.x,!1,q,!0,B.G,q,A.cO(),k,q,q,q,q,q,2,A.cB(q,B.dN,q,B.aj,q,q,q,q,!0,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,q,A.m(q,q,p?B.J:B.R,q,q,q,q,q,q,q,q,15,q,q,B.ab,q,q,!0,q,q,q,q,q,q,q,q),"Buscar medicamento...",q,q,q,q,q,!0,q,q,q,!0,!0,q,q,q,q,q,q,q,q,q,q,q,q,q),B.t,!0,q,!0,q,!1,r.d,B.aR,q,q,q,q,q,q,q,1,q,q,!1,"\u2022",q,q,q,q,q,!1,q,q,!1,q,!0,q,B.aK,q,q,B.aO,B.aM,q,q,q,q,q,q,s,!0,B.am,q,B.bt,q,B.E8,q,q),1)],t.p)
-if(k.a.a.length!==0)l.push(A.a9(q,new A.K(B.fA,A.W(B.c7,p?B.J:B.R,q,18),q),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,new A.byP(r),q,q,q,q,q,q))
+if(k.a.a.length!==0)l.push(A.a9(q,new A.K(B.ff,A.W(B.c7,p?B.J:B.R,q,18),q),B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,new A.byP(r),q,q,q,q,q,q))
 return A.k(q,A.w(l,B.k,B.e,B.f,q,q),B.i,q,q,new A.j(o,q,m,n,q,q,B.l),q,52,q,q,q,q,q,q)}}
 A.byP.prototype={
 $0(){this.a.c.eB(0,B.di)
@@ -133061,7 +133059,7 @@ if(!j.d){n=j.gng()
 n=n.j(f?0.12:0.07)
 m=A.i(10)
 l=A.N(j.gng().j(0.2),B.o,0.8)
-p.push(new A.K(B.tD,A.k(i,A.w(A.a([A.W(B.kl,j.gng(),i,14),B.af,A.I(A.e(g.a8k(j.a.e),i,i,i,i,i,A.m(i,i,j.gng(),i,i,i,i,i,i,i,i,12,i,i,B.O,i,1.3,!0,i,i,i,i,i,i,i,i),i,i,i),1)],k),B.k,B.e,B.f,i,i),B.i,i,i,new A.j(n,i,l,m,i,i,B.l),i,i,i,i,B.ff,i,i,i),i))}if(j.d)B.d.u(p,A.a([A.ej((o?B.ae:B.a9).j(0.4),i,1,i,0.7),new A.akB(g,f,e,j.gng(),j.a.e,i)],k))
+p.push(new A.K(B.tD,A.k(i,A.w(A.a([A.W(B.kl,j.gng(),i,14),B.af,A.I(A.e(g.a8k(j.a.e),i,i,i,i,i,A.m(i,i,j.gng(),i,i,i,i,i,i,i,i,12,i,i,B.O,i,1.3,!0,i,i,i,i,i,i,i,i),i,i,i),1)],k),B.k,B.e,B.f,i,i),B.i,i,i,new A.j(n,i,l,m,i,i,B.l),i,i,i,i,B.fg,i,i,i),i))}if(j.d)B.d.u(p,A.a([A.ej((o?B.ae:B.a9).j(0.4),i,1,i,0.7),new A.akB(g,f,e,j.gng(),j.a.e,i)],k))
 return A.k(i,A.x(p,B.k,B.e,B.f),B.i,i,i,new A.j(h,i,r,s,q,i,B.l),i,i,i,B.pE,i,i,i,i)}}
 A.boa.prototype={
 $0(){var s=this.a
@@ -133089,7 +133087,7 @@ m=A.e(m,h,h,h,h,h,A.m(h,h,n?B.J:B.R,h,h,h,h,h,h,h,h,10,h,h,B.z,h,h,!0,h,0.5,h,h,
 l=B.hI.j(f?0.2:0.12)
 k=A.i(8)
 j=A.N(B.hI.j(0.3),B.o,1)
-k=A.a([d,B.aF,new A.HS(g,B.en,B.yj,e,f,c,h),B.az,new A.HS(s,B.kk,B.mG,r,f,c,h),B.az,new A.HS(q,B.dF,B.cw,p,f,c,h),B.az,A.w(A.a([o,B.aU,A.x(A.a([m,B.ac,A.k(h,A.e(b.aOS(a),h,h,h,h,h,B.ed3,h,h,h),B.i,h,h,new A.j(l,h,j,k,h,h,B.l),h,h,h,h,B.pP,h,h,h)],a0),B.fx,B.e,B.f)],a0),B.k,B.e,B.f,h,h)],a0)
+k=A.a([d,B.aF,new A.HS(g,B.en,B.yj,e,f,c,h),B.az,new A.HS(s,B.kk,B.mG,r,f,c,h),B.az,new A.HS(q,B.dF,B.cw,p,f,c,h),B.az,A.w(A.a([o,B.aU,A.x(A.a([m,B.ac,A.k(h,A.e(b.aOS(a),h,h,h,h,h,B.ed3,h,h,h),B.i,h,h,new A.j(l,h,j,k,h,h,B.l),h,h,h,h,B.pP,h,h,h)],a0),B.fy,B.e,B.f)],a0),B.k,B.e,B.f,h,h)],a0)
 g=b.y
 f=J.ar(g)
 if(f.gc8(g)){e=a?"FUENTES":"FONTES"
@@ -133161,7 +133159,7 @@ q=k.d
 p=t.p
 o=A.a([],p)
 if(!m.a.c)B.d.u(o,A.a([new A.pw(new A.Fo("Knowledge Base",k.bZ("drugs"),k.bZ("drugs_subtitle"),!0,l),l,l,l),B.a1],p))
-o.push(new A.K(B.dS,A.x(A.a([new A.U7(j,k.bZ("drugs_search_hint"),k.gmI(),new A.beZ(m),new A.bf_(m),l),B.M,A.e(""+r.length+" "+k.bZ("drugs_found"),l,l,l,l,l,B.a6l,l,l,l)],p),B.r,B.e,B.f),l))
+o.push(new A.K(B.e1,A.x(A.a([new A.U7(j,k.bZ("drugs_search_hint"),k.gmI(),new A.beZ(m),new A.bf_(m),l),B.M,A.e(""+r.length+" "+k.bZ("drugs_found"),l,l,l,l,l,B.a6l,l,l,l)],p),B.r,B.e,B.f),l))
 o.push(B.aF)
 if(s.length!==0)B.d.u(o,new A.P(r,new A.bf0(m,k,q),A.S(r).i("P<1,f>")))
 else{j=A.a([],p)
@@ -133308,7 +133306,7 @@ s=A.dS(B.a7,b,A.eb(!1,a,!0,A.k(j,A.w(A.a([n,B.aU,a1,A.mG(A.W(B.e3,e,j,22),B.a7,a
 c=c?B.jt:B.iv
 i=i?B.aa:B.j
 m=new A.fC(m,A.S(m).i("fC<1>"))
-return new A.K(B.dS,A.is(d,A.x(A.a([s,A.xf(c,B.dC,A.k(j,A.x(m.gfT(m).eG(0,new A.bj3(k),t.wj).d9(0),B.k,B.e,B.f),B.i,j,j,new A.j(i,j,new A.bS(B.w,new A.aA(g,1,B.o,-1),new A.aA(g,1,B.o,-1),new A.aA(g,1,B.o,-1)),B.a8w,j,j,B.l),j,j,j,j,j,j,j,j),B.wU)],l),B.k,B.e,B.f),B.cH),j)}}
+return new A.K(B.e1,A.is(d,A.x(A.a([s,A.xf(c,B.dC,A.k(j,A.x(m.gfT(m).eG(0,new A.bj3(k),t.wj).d9(0),B.k,B.e,B.f),B.i,j,j,new A.j(i,j,new A.bS(B.w,new A.aA(g,1,B.o,-1),new A.aA(g,1,B.o,-1),new A.aA(g,1,B.o,-1)),B.a8w,j,j,B.l),j,j,j,j,j,j,j,j),B.wU)],l),B.k,B.e,B.f),B.cH),j)}}
 A.bj2.prototype={
 $0(){A.dw(this.b)
 this.a.z.$0()},
@@ -133678,7 +133676,7 @@ a6=b.c==="es"?"MECANISMO DE ACCI\xd3N":"MECANISMO DE A\xc7\xc3O"
 a7=b.dI(c.ax)
 s=b.c==="es"?"ADVERTENCIAS":"ADVERT\xcaNCIAS"
 r=t.p
-s=A.a([new A.wd(B.aEF,a6,a7,B.Z,a0,i),B.K,new A.wd(B.cR,s,b.dI(c.ay),B.aY,a0,i),B.K],r)
+s=A.a([new A.wd(B.aEF,a6,a7,B.Z,a0,i),B.K,new A.wd(B.cR,s,b.dI(c.ay),B.aZ,a0,i),B.K],r)
 a6=j.r
 a7=a6==null
 if((a7?i:a6.cy)!=null)s.push(new A.wd(B.nx,h,a6.cy,B.cx,a0,i))
@@ -133711,7 +133709,7 @@ k=o?i:p.ch
 if(k==null)k=a7?i:a6.x
 if((k==null?A.a([],t.s):k).length!==0){b=b.c==="es"?"INTERACCIONES IMPORTANTES":"INTERA\xc7\xd5ES IMPORTANTES"
 k=o?i:p.ch
-B.d.u(l,A.a([B.az,new A.we(B.AW,b,k==null?a6.x:k,B.aY,a0,i)],r))}B.d.u(m,l)}else{b=b.c==="es"?"CONTRAINDICACIONES DE CLASE":"CONTRAINDICA\xc7\xd5ES DE CLASSE"
+B.d.u(l,A.a([B.az,new A.we(B.AW,b,k==null?a6.x:k,B.aZ,a0,i)],r))}B.d.u(m,l)}else{b=b.c==="es"?"CONTRAINDICACIONES DE CLASE":"CONTRAINDICA\xc7\xd5ES DE CLASSE"
 B.d.u(m,A.a([new A.we(B.jC,b,A.cha(c),B.bA,a0,i),B.M,new A.AZ(a0,i)],r))}b=A.a([],r)
 if(!o)B.d.u(b,A.a([new A.anU(p,a0,i)],r))
 else if(!a7)B.d.u(b,A.a([new A.anT(a6,a0,i)],r))
@@ -133792,7 +133790,7 @@ A.aku.prototype={
 q(a){var s=null
 return new A.K(B.aAN,A.e(this.c,s,s,s,s,s,A.m(s,s,this.d.a?B.J:B.R,s,s,s,s,s,s,s,s,12,B.ek,s,s,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),s)}}
 A.AZ.prototype={
-q(a){var s=null,r=A.i(8),q=B.aY.j(0.07),p=A.N(B.aY.j(0.2),B.o,1)
+q(a){var s=null,r=A.i(8),q=B.aZ.j(0.07),p=A.N(B.aZ.j(0.2),B.o,1)
 return A.k(s,A.w(A.a([B.LB,B.dh,A.I(A.e("Datos de clase farmacol\xf3gica. Consultar ficha t\xe9cnica del fabricante para datos espec\xedficos de este f\xe1rmaco.",s,s,s,s,s,A.m(s,s,this.c.a?B.J:B.R,s,s,s,s,s,s,s,s,10,s,s,s,s,1.4,!0,s,s,s,s,s,s,s,s),s,s,s),1)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(q,s,p,r,s,s,B.l),s,s,s,s,B.kg,s,s,s)}}
 A.anS.prototype={
 aE3(a){var s,r,q="Inicio de Acci\xf3n",p="Renal / Hep\xe1tica",o="Hep\xe1tica (CYP450)"
@@ -133849,7 +133847,7 @@ if(n)o="\u2014"
 s=t.p
 o=A.a([A.e(o,r,r,r,r,r,A.m(r,r,q?B.j:B.U,r,r,r,r,r,r,r,r,18,r,r,B.D,r,r,!0,r,r,r,r,r,r,r,r),r,r,r)],s)
 if(!n)B.d.u(o,A.a([B.d7,new A.K(B.pF,A.e(this.e,r,r,r,r,r,A.m(r,r,q?B.J:B.R,r,r,r,r,r,r,r,r,9,r,r,B.z,r,r,!0,r,r,r,r,r,r,r,r),r,r,r),r)],s))
-return new A.K(B.hk,A.x(A.a([p,B.bw,A.w(o,B.fx,B.e,B.f,r,r)],s),B.r,B.e,B.f),r)}}
+return new A.K(B.hk,A.x(A.a([p,B.bw,A.w(o,B.fy,B.e,B.f,r,r)],s),B.r,B.e,B.f),r)}}
 A.ajN.prototype={
 aDq(a){var s,r
 if(B.c.l(a," | "))s=A.a(a.split(" | "),t.s)
@@ -133865,7 +133863,7 @@ if(B.c.a2(q,"repetir")||B.c.a2(q,"2\xaa dose")||B.c.a2(q,"se sem resposta")||B.c
 if(b===0)return B.etU
 return B.etV},
 q(a){var s=null,r=this.c,q=this.aDq(r.a),p=q.length,o=t.p,n=A.a([new A.K(B.tI,A.w(A.a([A.k(s,B.eip,B.i,s,s,new A.j(B.a8.j(0.18),s,s,A.i(4),s,s,B.l),s,s,s,s,B.cQ,s,s,s)],o),B.k,B.e,B.f,s,s),s),B.K],o)
-if(p===1)n.push(new A.K(B.dS,A.e(B.d.gW(q),s,s,s,s,s,B.egD,s,s,s),s))
+if(p===1)n.push(new A.K(B.e1,A.e(B.d.gW(q),s,s,s,s,s,B.egD,s,s,s),s))
 else n.push(new A.K(B.ei,A.x(A.fZ(q.length,new A.bdj(this,q),!0,t.n),B.r,B.e,B.f),s))
 r=r.b
 if(r.length!==0)B.d.u(n,A.a([B.a1,A.k(s,s,B.i,B.j.j(0.1),s,s,s,1,s,s,s,s,s,s),new A.K(B.zJ,A.w(A.a([A.W(B.e2,B.j.j(0.5),s,13),B.af,A.I(A.e(r,s,s,s,s,s,A.m(s,s,B.j.j(0.65),s,s,s,s,s,s,s,s,11.5,s,s,B.Y,s,1.55,!0,s,s,s,s,s,s,s,s),s,s,s),1)],o),B.r,B.e,B.f,s,s),s)],o))
@@ -134202,12 +134200,12 @@ a1=t.p
 s=A.a([],a1)
 if(j){r=n.gIQ()
 q=A.e(a0==="es"?c:b,d,d,d,d,d,B.oz,d,d,d)
-i=A.a9(B.aZ,B.oc,B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blU(a2),d,d,d,d,d,d)
+i=A.a9(B.aX,B.oc,B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blU(a2),d,d,d,d,d,d)
 h=B.j.j(0.12)
 g=A.i(10)
 f=A.N(B.j.j(0.35),B.o,0.8)
-s.push(A.k(d,new A.K(new A.L(4,10,r,14),A.dh(B.ad,A.a([q,new A.dl(B.cG,d,d,i,d),new A.dl(B.d9,d,d,A.a9(d,A.k(d,A.w(A.a([B.aK7,B.b0,A.e(A.ab(a0,"new_hc"),d,d,d,d,d,B.ecH,d,d,d)],a1),B.k,B.e,B.E,d,d),B.i,d,d,new A.j(h,d,f,g,d,d,B.l),d,d,d,d,B.ff,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blV(e,a,a0),d,d,d,d,d,d),d)],a1),B.G,B.bo,d),d),B.i,d,d,B.aaa,d,d,d,d,d,d,d,d))}if(!j){r=a0==="es"
-q=A.dh(B.ad,A.a([A.e(r?c:b,d,d,d,d,d,B.oz,d,d,d),new A.dl(B.cG,d,d,A.a9(B.aZ,B.oc,B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blW(a2),d,d,d,d,d,d),d)],a1),B.G,B.bo,d)
+s.push(A.k(d,new A.K(new A.L(4,10,r,14),A.dh(B.ad,A.a([q,new A.dl(B.cG,d,d,i,d),new A.dl(B.d9,d,d,A.a9(d,A.k(d,A.w(A.a([B.aK7,B.b0,A.e(A.ab(a0,"new_hc"),d,d,d,d,d,B.ecH,d,d,d)],a1),B.k,B.e,B.E,d,d),B.i,d,d,new A.j(h,d,f,g,d,d,B.l),d,d,d,d,B.fg,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blV(e,a,a0),d,d,d,d,d,d),d)],a1),B.G,B.bo,d),d),B.i,d,d,B.aaa,d,d,d,d,d,d,d,d))}if(!j){r=a0==="es"
+q=A.dh(B.ad,A.a([A.e(r?c:b,d,d,d,d,d,B.oz,d,d,d),new A.dl(B.cG,d,d,A.a9(B.aX,B.oc,B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blW(a2),d,d,d,d,d,d),d)],a1),B.G,B.bo,d)
 i=r?"MIS HCs":"MINHAS"
 h=e.d
 h===$&&A.c()
@@ -134215,14 +134213,14 @@ i=A.I(new A.HF(i,0,h,d),1)
 g=A.k(d,d,B.i,B.b7,d,d,d,14,d,d,d,d,d,1)
 h=A.I(new A.HF("P\xdaBLICAS",1,h,d),1)
 f=A.k(d,d,B.i,B.b7,d,d,d,14,d,d,d,d,d,1)
-s.push(A.k(d,A.x(A.a([new A.K(B.zR,q,d),new A.K(B.hk,A.w(A.a([i,g,h,f,A.I(A.a9(B.aZ,A.k(d,A.e(r?"+ NUEVA":"+ NOVA",d,d,d,d,d,B.eaJ,B.ar,d,d),B.i,d,d,B.aaj,d,d,d,d,B.fX,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blN(e,a,a0),d,d,d,d,d,d),1)],a1),B.k,B.e,B.f,d,d),d)],a1),B.k,B.e,B.E),B.i,d,d,B.aad,d,d,d,d,d,d,d,d))}r=A.I(A.v0(e.e,A.ab(a0,"search_hint"),d,1,new A.blO(e)),1)
+s.push(A.k(d,A.x(A.a([new A.K(B.zR,q,d),new A.K(B.hk,A.w(A.a([i,g,h,f,A.I(A.a9(B.aX,A.k(d,A.e(r?"+ NUEVA":"+ NOVA",d,d,d,d,d,B.eaJ,B.ar,d,d),B.i,d,d,B.aaj,d,d,d,d,B.fX,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.blN(e,a,a0),d,d,d,d,d,d),1)],a1),B.k,B.e,B.f,d,d),d)],a1),B.k,B.e,B.E),B.i,d,d,B.aad,d,d,d,d,d,d,d,d))}r=A.I(A.v0(e.e,A.ab(a0,"search_hint"),d,1,new A.blO(e)),1)
 q=A.i(12)
 if(e.x!=null)i=A.M(a2).ax.a===B.A?B.b9:B.U
 else i=A.M(a2).ax.a===B.A?B.aa:B.j
 if(e.x!=null)h=A.M(a2).ax.a===B.A?B.b9:B.U
 else h=A.M(a2).ax.a===B.A?B.ae:B.a9
 h=A.N(h,B.o,1)
-s.push(new A.K(B.tF,A.w(A.a([r,B.L,A.a9(d,A.k(d,A.w(A.a([A.W(B.L2,e.x!=null?B.a8:B.J,d,16)],a1),B.k,B.e,B.E,d,d),B.i,d,d,new A.j(i,d,h,q,d,d,B.l),d,46,d,d,B.fA,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,e.gaH9(),d,d,d,d,d,d)],a1),B.k,B.e,B.f,d,d),d))
+s.push(new A.K(B.tF,A.w(A.a([r,B.L,A.a9(d,A.k(d,A.w(A.a([A.W(B.L2,e.x!=null?B.a8:B.J,d,16)],a1),B.k,B.e,B.E,d,d),B.i,d,d,new A.j(i,d,h,q,d,d,B.l),d,46,d,d,B.ff,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,e.gaH9(),d,d,d,d,d,d)],a1),B.k,B.e,B.f,d,d),d))
 if(e.x!=null){r=A.i(20)
 q=A.M(a2).ax.a===B.A?B.aa:B.c6
 i=A.N(A.M(a2).ax.a===B.A?B.ae:B.a9,B.o,1)
@@ -134513,7 +134511,7 @@ default:return A.ab(a,"outcome_internado")}},
 gaoZ(){switch(this.c.p3){case"alta":return B.T
 case"obito":return B.aT
 case"transferencia":return B.da
-default:return B.aY}},
+default:return B.aZ}},
 q(a6){var s,r,q,p,o,n,m,l=this,k=null,j="public_badge",i=l.d,h=i.c,g=l.c,f=g.ga8p(),e=l.gaoZ(),d=A.M(a6).ax.a===B.A,c=l.e,b=A.i(16),a=d?B.aji:B.j,a0=A.N(d?B.p7:B.aie,B.o,1),a1=t.V,a2=A.a([new A.aN(0,B.X,B.H.j(d?0.25:0.06),B.cB,12)],a1),a3=A.k(k,k,B.i,k,k,new A.j(e,k,k,B.a8o,k,k,B.l),k,k,k,k,k,k,k,4),a4=A.i(6),a5=e.j(0.12)
 a4=A.k(k,A.e(g.RG,k,k,k,k,k,A.m(k,k,e,k,k,k,k,k,k,k,k,9,k,k,B.D,k,k,!0,k,k,k,k,k,k,k,k),k,k,k),B.i,k,k,new A.j(a5,k,k,a4,k,k,B.l),k,k,k,k,B.cQ,k,k,k)
 a5=A.i(6)
@@ -134526,13 +134524,13 @@ if(a4){s=A.i(6)
 r=B.da.j(0.1)
 B.d.u(a5,A.a([B.af,A.k(k,A.w(A.a([B.aGV,B.d7,A.e(A.ab(h,j),k,k,k,k,k,B.ef_,k,k,k)],q),B.k,B.e,B.E,k,k),B.i,k,k,new A.j(r,k,k,s,k,k,B.l),k,k,k,k,B.jy,k,k,k)],q))}a5.push(B.bZ)
 s=g.gxi()
-a5.push(A.e(s,k,k,k,k,k,A.m(k,k,d?B.bc:B.dZ,k,k,k,k,k,k,k,k,10,k,k,B.O,k,k,!0,k,k,k,k,k,k,k,k),k,k,k))
+a5.push(A.e(s,k,k,k,k,k,A.m(k,k,d?B.bc:B.dY,k,k,k,k,k,k,k,k,10,k,k,B.O,k,k,!0,k,k,k,k,k,k,k,k),k,k,k))
 a5=A.w(a5,B.k,B.e,B.f,k,k)
 s=g.gqr()
 a5=A.a([a5,B.a5h,A.e(s,k,2,B.a0,k,k,A.m(k,k,d?B.j:B.ahm,k,k,k,k,k,k,k,k,16,k,k,B.D,k,1.25,!0,k,-0.3,k,k,k,k,k,k),k,k,k)],q)
 s=g.x
 r=s.length===0
-if(!r||g.y.length!==0){p=A.W(B.iI,d?B.bc:B.dZ,k,11)
+if(!r||g.y.length!==0){p=A.W(B.iI,d?B.bc:B.dY,k,11)
 o=A.a([],t.s)
 if(!r)o.push(s)
 s=g.y
@@ -134548,18 +134546,18 @@ p=B.bV.j(0.08)
 o=A.N(B.bV.j(0.2),B.o,1)
 B.d.u(a5,A.a([B.M,A.k(k,A.w(A.a([B.aJq,B.af,A.I(A.e("Dx: "+s,k,k,B.a0,k,k,B.eet,k,k,k),1)],q),B.k,B.e,B.f,k,k),B.i,k,k,new A.j(p,k,o,r,k,k,B.l),k,k,k,k,B.kg,k,k,1/0)],q))}else{s=g.fx
 if(s.length!==0){r=A.i(10)
-p=B.aY.j(0.08)
-o=A.N(B.aY.j(0.25),B.o,1)
+p=B.aZ.j(0.08)
+o=A.N(B.aZ.j(0.25),B.o,1)
 B.d.u(a5,A.a([B.M,A.k(k,A.w(A.a([B.aJD,B.af,A.I(A.e("Hip.: "+s,k,k,B.a0,k,k,B.efj,k,k,k),1)],q),B.k,B.e,B.f,k,k),B.i,k,k,new A.j(p,k,o,r,k,k,B.l),k,k,k,k,B.kg,k,k,1/0)],q))}}a5.push(B.K)
 s=A.i(4)
 r=d?B.j.j(0.08):B.t0
 p=f>=1
 if(p)o=B.T
-else o=f>0.5?B.da:B.aY
+else o=f>0.5?B.da:B.aZ
 o=A.I(A.is(s,A.Eb(r,k,k,3,f,new A.hh(o,t.Jn)),B.cH),1)
 r=B.q.b9(f*100)
 if(p)s=B.T
-else s=d?B.bc:B.dZ
+else s=d?B.bc:B.dY
 a5.push(A.w(A.a([o,B.L,A.e(""+r+"%",k,k,k,k,k,A.m(k,k,s,k,k,k,k,k,k,k,k,9,k,k,B.D,k,k,!0,k,k,k,k,k,k,k,k),k,k,k)],q),B.k,B.e,B.f,k,k))
 a5.push(B.K)
 if(!l.x){s=A.ej(d?B.j.j(0.08):B.t0,k,1,k,0.5)
@@ -134586,13 +134584,13 @@ p=A.N(B.bR.j(0.3),B.o,1)
 B.d.u(a4,A.a([A.k(k,A.w(A.a([B.aJ3,B.bF,A.e(A.ab(i.c,"hidden_mod"),k,k,k,k,k,B.a60,k,k,k)],q),B.k,B.e,B.E,k,k),B.i,k,k,new A.j(r,k,p,s,k,k,B.l),k,k,k,k,B.eR,k,k,k),B.M],q))}a4.push(A.ej(d?B.j.j(0.08):B.t0,k,1,k,0.5))
 a4.push(B.M)
 s=d?B.j.j(0.07):B.t0
-s=A.k(k,A.W(B.iI,d?B.bc:B.dZ,k,14),B.i,k,k,new A.j(s,k,k,k,k,k,B.ap),k,28,k,k,k,k,k,28)
+s=A.k(k,A.W(B.iI,d?B.bc:B.dY,k,14),B.i,k,k,new A.j(s,k,k,k,k,k,B.ap),k,28,k,k,k,k,k,28)
 r=g.e
 r=r.length!==0?r:A.ab(i.c,"anon")
 r=A.a([A.e(r,k,k,k,k,k,A.m(k,k,d?B.bd:B.p7,k,k,k,k,k,k,k,k,11,k,k,B.F,k,k,!0,k,k,k,k,k,k,k,k),k,k,k)],q)
 p=g.r
 if(p.length!==0){p=A.bX3(p)
-r.push(A.e(p,k,k,k,k,k,A.m(k,k,d?B.jq:B.dZ,k,k,k,k,k,k,k,k,9,k,k,B.O,k,k,!0,k,k,k,k,k,k,k,k),k,k,k))}r=A.I(A.x(r,B.r,B.e,B.f),1)
+r.push(A.e(p,k,k,k,k,k,A.m(k,k,d?B.jq:B.dY,k,k,k,k,k,k,k,k,9,k,k,B.O,k,k,!0,k,k,k,k,k,k,k,k),k,k,k))}r=A.I(A.x(r,B.r,B.e,B.f),1)
 p=A.i(10)
 o=A.M(a6).ax.a===B.A?B.b9:B.U
 a1=A.a([new A.aN(0,B.X,B.H.j(0.15),B.c2,4)],a1)
@@ -134735,7 +134733,7 @@ f=r.p4
 f=f.length!==0?s+(f+"\n"):s
 if(r.R8.length!==0)f+=A.ab(g,"copy_followup")+i.a.c.R8+"\n"}f=f+"\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n"+("MedCases Pro \u2014 "+A.ab(g,"pdf_footer")+"\n")
 A.kM(new A.jF(f.charCodeAt(0)==0?f:f))
-i.c.a4(t.q).f.cU(A.d8(h,h,h,h,h,B.G,h,A.e(A.ab(g,"copied"),h,h,h,h,h,h,h,h,h),h,B.fy,h,h,h,h,h,h,h,h,h))},
+i.c.a4(t.q).f.cU(A.d8(h,h,h,h,h,B.G,h,A.e(A.ab(g,"copied"),h,h,h,h,h,h,h,h,h),h,B.fz,h,h,h,h,h,h,h,h,h))},
 zg(){var s=0,r=A.C(t.H),q,p=2,o=[],n=[],m=this,l,k,j,i,h,g,f,e,d,c,b
 var $async$zg=A.y(function(a,a0){if(a===1){o.push(a0)
 s=p}while(true)switch(s){case 0:m.t(new A.bk_(m))
@@ -135025,7 +135023,7 @@ r=m.a.c.RG
 r=r.length!==0?r:"Cl\xednica General"
 s.push(A.e(r,l,l,l,l,l,A.m(l,l,B.le,l,l,l,l,l,l,l,l,9,l,l,l,l,l,!0,l,l,l,l,l,l,l,l),l,l,l))
 s.push(A.e(m.a.c.gxi(),l,l,l,l,l,A.m(l,l,B.le,l,l,l,l,l,l,l,l,9,l,l,l,l,l,!0,l,l,l,l,l,l,l,l),l,l,l))
-s=A.a([A.w(A.a([k,B.mj,h,B.bZ,A.x(s,B.fx,B.e,B.f)],j),B.r,B.e,B.f,l,l),B.K,A.k(l,l,B.i,B.a6.j(0.55),l,l,l,1.5,l,l,l,l,l,l),B.K,A.e(m.a.c.gqr(),l,l,l,l,l,B.e9l,l,l,l),B.a1],j)
+s=A.a([A.w(A.a([k,B.mj,h,B.bZ,A.x(s,B.fy,B.e,B.f)],j),B.r,B.e,B.f,l,l),B.K,A.k(l,l,B.i,B.a6.j(0.55),l,l,l,1.5,l,l,l,l,l,l),B.K,A.e(m.a.c.gqr(),l,l,l,l,l,B.e9l,l,l,l),B.a1],j)
 k=m.a
 h=k.c
 if(h.x.length!==0||h.y.length!==0){k=A.ab(k.d.c,"pdf_section1")
@@ -135133,7 +135131,7 @@ h=A.a([r,B.L,h,B.L,A.a9(l,A.k(l,A.b4(m.e?B.DM:B.aK0,l,l),B.i,l,l,new A.j(B.bV,l,
 r=m.a
 if(!r.e&&r.w!=null){r=r.w
 q=A.i(14)
-B.d.u(h,A.a([B.L,A.a9(l,A.k(l,B.Gc,B.i,l,l,new A.j(B.hB,l,A.N(B.hh,B.o,1),q,l,l,B.l),l,48,l,l,l,l,l,48),B.t,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,r,l,l,l,l,l,l)],j))}i.push(new A.K(B.dS,A.x(A.a([new A.eG(k,m.d),B.aF,A.w(h,B.k,B.e,B.f,l,l),B.M,A.w(A.a([A.W(B.e2,B.jl,l,11),B.b0,A.e(A.ab(m.a.d.c,"pdf_hint"),l,l,l,l,l,A.m(l,l,B.jl,l,l,l,l,l,l,l,l,10,l,l,B.Y,l,l,!0,l,l,l,l,l,l,l,l),l,l,l)],j),B.k,B.ax,B.f,l,l)],j),B.r,B.e,B.f),l))
+B.d.u(h,A.a([B.L,A.a9(l,A.k(l,B.Gc,B.i,l,l,new A.j(B.hB,l,A.N(B.hh,B.o,1),q,l,l,B.l),l,48,l,l,l,l,l,48),B.t,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,r,l,l,l,l,l,l)],j))}i.push(new A.K(B.e1,A.x(A.a([new A.eG(k,m.d),B.aF,A.w(h,B.k,B.e,B.f,l,l),B.M,A.w(A.a([A.W(B.e2,B.jl,l,11),B.b0,A.e(A.ab(m.a.d.c,"pdf_hint"),l,l,l,l,l,A.m(l,l,B.jl,l,l,l,l,l,l,l,l,10,l,l,B.Y,l,l,!0,l,l,l,l,l,l,l,l),l,l,l)],j),B.k,B.ax,B.f,l,l)],j),B.r,B.e,B.f),l))
 k=A.a([A.d1(A.x(i,B.r,B.e,B.f),l,B.t,l,B.aAx,l,B.ai)],j)
 i=m.a
 if(!i.e&&i.r!=null){i=i.r
@@ -135173,7 +135171,7 @@ return new A.Bt(r,a.c,a.d,null)},
 $S:823}
 A.alz.prototype={
 q(a){var s,r,q,p=null,o=A.eF(p,A.W(B.q7,B.j.j(0.04),p,140),p,p,p,-18,-18,p),n=A.eF(-10,A.W(B.iH,B.j.j(0.04),p,80),p,p,p,60,p,p),m=A.i(12),l=B.j.j(0.12),k=A.N(B.j.j(0.18),B.o,1),j=this.r,i=t.p
-m=A.a9(p,A.k(p,A.w(A.a([B.aHH,B.b0,A.e(A.ab(j,"back"),p,p,p,p,p,A.m(p,p,B.j.j(0.9),p,p,p,p,p,p,p,p,12,p,p,B.z,p,p,!0,p,p,p,p,p,p,p,p),p,p,p)],i),B.k,B.e,B.E,p,p),B.i,p,p,new A.j(l,p,k,m,p,p,B.l),p,p,p,p,B.ff,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,this.e,p,p,p,p,p,p)
+m=A.a9(p,A.k(p,A.w(A.a([B.aHH,B.b0,A.e(A.ab(j,"back"),p,p,p,p,p,A.m(p,p,B.j.j(0.9),p,p,p,p,p,p,p,p,12,p,p,B.z,p,p,!0,p,p,p,p,p,p,p,p),p,p,p)],i),B.k,B.e,B.E,p,p),B.i,p,p,new A.j(l,p,k,m,p,p,B.l),p,p,p,p,B.fg,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,this.e,p,p,p,p,p,p)
 k=A.i(20)
 l=B.j.j(0.12)
 s=A.N(B.a8.j(0.35),B.o,1)
@@ -135347,7 +135345,7 @@ PE(a,b){var s,r,q=null,p=this.c
 if(p==null)return
 p=p.a4(t.q).f
 s=A.w(A.a([A.W(b?B.iE:B.iF,B.j,q,18),B.L,A.I(A.e(a,q,q,q,q,q,B.ml,q,q,q),1)],t.p),B.k,B.e,B.f,q,q)
-r=b?B.T:B.fw
+r=b?B.T:B.fx
 p.cU(A.d8(q,q,q,r,B.bJ,B.G,q,s,q,A.eU(0,0,0,b?3:5),q,q,q,B.aBM,q,q,new A.br(A.i(12),B.w),q,q))},
 GH(a){return this.PE(a,!1)},
 aHk(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2=this,a3=a2.d
@@ -135436,7 +135434,7 @@ o=A.a([],n)
 r=t.n
 if(i.a.a>=1024){k.gFy()
 o.push(new A.pw(A.x(A.a([m,B.K,l,B.K,A.d1(A.w(A.fZ(7,new A.bl8(k),!0,r),B.k,B.e,B.f,j,j),j,B.t,j,j,j,B.bm)],n),B.k,B.e,B.f),B.cs,j,j))}else{k.gFy()
-o.push(A.k(j,A.x(A.a([m,B.M,l,B.M,A.d1(A.w(A.fZ(7,new A.bl9(k),!0,r),B.k,B.e,B.f,j,j),j,B.t,j,j,j,B.bm)],n),B.k,B.e,B.E),B.i,j,j,B.a9Y,j,j,j,j,B.ff,j,j,j))}o.push(A.I(A.l3(new A.bla(k)),1))
+o.push(A.k(j,A.x(A.a([m,B.M,l,B.M,A.d1(A.w(A.fZ(7,new A.bl9(k),!0,r),B.k,B.e,B.f,j,j),j,B.t,j,j,j,B.bm)],n),B.k,B.e,B.E),B.i,j,j,B.a9Y,j,j,j,j,B.fg,j,j,j))}o.push(A.I(A.l3(new A.bla(k)),1))
 return A.x(o,B.k,B.e,B.f)},
 a1q(){var s,r,q,p,o,n,m,l,k,j,i,h=this,g=null,f="chiefComplaint",e="pastHistory",d="familyHistory",c="socialHistory",b="medications",a="allergies",a0="reviewOfSystems",a1="physicalExam",a2="workingDiagnosis",a3="differentialDx",a4="imagingResults",a5="treatmentPlan",a6="procedures"
 switch(h.e){case 0:return h.aos()
@@ -135794,7 +135792,7 @@ s[s.length-1]=r.B9(o+q+this.b)}p.d=p.d.HZ(s)},
 $S:0}
 A.bl8.prototype={
 $1(a){var s=null,r=this.a,q=r.e===a,p=A.i(12),o=q?B.a6:B.j.j(0.1),n=A.N(q?B.a6:B.j.j(0.15),B.o,1),m=r.gFy()[a]
-return new A.K(B.iy,A.a9(s,A.k(s,A.e(m.b,s,s,s,s,s,A.m(s,s,q?B.av:B.j.j(0.85),s,s,s,s,s,s,s,s,11,s,s,B.F,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),B.i,s,s,new A.j(o,s,n,p,s,s,B.l),s,s,s,s,B.ll,s,s,s),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.bl7(r,a),s,s,s,s,s,s),s)},
+return new A.K(B.iy,A.a9(s,A.k(s,A.e(m.b,s,s,s,s,s,A.m(s,s,q?B.aw:B.j.j(0.85),s,s,s,s,s,s,s,s,11,s,s,B.F,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),B.i,s,s,new A.j(o,s,n,p,s,s,B.l),s,s,s,s,B.ll,s,s,s),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.bl7(r,a),s,s,s,s,s,s),s)},
 $S:113}
 A.bl7.prototype={
 $0(){var s=this.a
@@ -135873,7 +135871,7 @@ s=o?B.yw:B.j
 r=A.m(p,p,o?B.yP:B.lb,p,p,p,p,p,p,p,p,14,p,p,B.z,p,p,!0,p,p,p,p,p,p,p,p)
 q=t.fo
 q=A.O(new A.P(A.a([A.ab(k.a.d.c,"sex_male"),A.ab(k.a.d.c,"sex_female")],t.s),new A.bkj(),q),q.i("al.E"))
-return A.k(p,new A.lQ(A.D5(s,p,!1,!0,q,new A.bkk(k),r,p,j.z,t.N),p),B.i,p,p,new A.j(n,p,l,m,p,p,B.l),p,44,p,p,B.fA,p,p,p)},
+return A.k(p,new A.lQ(A.D5(s,p,!1,!0,q,new A.bkk(k),r,p,j.z,t.N),p),B.i,p,p,new A.j(n,p,l,m,p,p,B.l),p,44,p,p,B.ff,p,p,p)},
 $S:312}
 A.bkj.prototype={
 $1(a){var s=null
@@ -135896,7 +135894,7 @@ r=A.m(o,o,n?B.yP:B.lb,o,o,o,o,o,o,o,o,13,o,o,B.z,o,o,!0,o,o,o,o,o,o,o,o)
 q=j.a.d.c==="es"?B.aNT:B.bhU
 p=A.S(q).i("P<1,jM<h>>")
 q=A.O(new A.P(q,new A.bkh(),p),p.i("al.E"))
-return A.k(o,new A.lQ(A.D5(s,o,!1,!0,q,new A.bki(j),r,o,i.RG,t.N),o),B.i,o,o,new A.j(m,o,k,l,o,o,B.l),o,44,o,o,B.fA,o,o,o)},
+return A.k(o,new A.lQ(A.D5(s,o,!1,!0,q,new A.bki(j),r,o,i.RG,t.N),o),B.i,o,o,new A.j(m,o,k,l,o,o,B.l),o,44,o,o,B.ff,o,o,o)},
 $S:312}
 A.bkh.prototype={
 $1(a){var s=null
@@ -136280,7 +136278,7 @@ if(A.V0(A.a([r,q],j))){p=A.ab(a,"prev_treat")
 o=A.a([],a0)
 if(r.length!==0)o.push(new A.j8(A.ab(a,"prev_plan"),r,f))
 if(q.length!==0)o.push(new A.j8(A.ab(a,"prev_proc"),q,f))
-B.d.u(s,A.a([new A.ty(p,B.aEU,B.av,o,f),B.a1],a0))}r=b.p4
+B.d.u(s,A.a([new A.ty(p,B.aEU,B.aw,o,f),B.a1],a0))}r=b.p4
 q=b.R8
 if(A.V0(A.a([r,q],j))||b.p3.length!==0){p=A.ab(a,"prev_outcome")
 o=A.a([],a0)
@@ -136301,7 +136299,7 @@ $1(a){return a.length!==0},
 $S:2}
 A.ap1.prototype={
 q(a){var s,r,q,p,o,n,m=null,l="es",k="pt",j=A.i(16),i=A.N(B.ip,B.o,1),h=A.i(6)
-h=A.k(m,A.e("HC",m,m,m,m,m,B.eaY,m,m,m),B.i,m,m,new A.j(B.av,m,m,h,m,m,B.l),m,m,m,m,B.jA,m,m,m)
+h=A.k(m,A.e("HC",m,m,m,m,m,B.eaY,m,m,m),B.i,m,m,new A.j(B.aw,m,m,h,m,m,B.l),m,m,m,m,B.jA,m,m,m)
 s=this.e
 r=t.p
 h=A.w(A.a([h,B.L,A.I(A.e(A.ab(s?l:k,"tab_title"),m,m,m,m,m,B.egS,m,m,m),1),A.e(this.d,m,m,m,m,m,B.e8M,m,m,m)],r),B.k,B.e,B.f,m,m)
@@ -136341,7 +136339,7 @@ q(a){var s=null
 return new A.K(B.cK,A.x(A.a([A.e(this.c.toUpperCase(),s,s,s,s,s,B.ebX,s,s,s),B.bG,A.e(this.d,s,s,s,s,s,B.eaN,s,s,s)],t.p),B.r,B.e,B.f),s)}}
 A.tx.prototype={
 q(a){var s=null,r=A.i(10),q=this.e,p=q.j(0.06),o=A.N(q.j(0.18),B.o,1)
-return new A.K(B.cK,A.k(s,A.x(A.a([A.e(this.c.toUpperCase(),s,s,s,s,s,A.m(s,s,q.j(0.7),s,s,s,s,s,s,s,s,8.5,s,s,B.D,s,s,!0,s,0.8,s,s,s,s,s,s),s,s,s),B.bG,A.e(this.d,s,s,s,s,s,A.m(s,s,q,s,s,s,s,s,s,s,s,13,s,s,B.z,s,1.5,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.r,B.e,B.f),B.i,s,s,new A.j(p,s,o,r,s,s,B.l),s,s,s,s,B.ff,s,s,s),s)}}
+return new A.K(B.cK,A.k(s,A.x(A.a([A.e(this.c.toUpperCase(),s,s,s,s,s,A.m(s,s,q.j(0.7),s,s,s,s,s,s,s,s,8.5,s,s,B.D,s,s,!0,s,0.8,s,s,s,s,s,s),s,s,s),B.bG,A.e(this.d,s,s,s,s,s,A.m(s,s,q,s,s,s,s,s,s,s,s,13,s,s,B.z,s,1.5,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.r,B.e,B.f),B.i,s,s,new A.j(p,s,o,r,s,s,B.l),s,s,s,s,B.fg,s,s,s),s)}}
 A.ak_.prototype={
 q(a){var s=this.c,r=A.S(s).i("P<1,dA>")
 s=A.O(new A.P(s,new A.bdP(this),r),r.i("al.E"))
@@ -136852,9 +136850,9 @@ if(h.length!==0){g=n.d
 f=B.c.C(g.a.a)
 g.sbV(0,f.length===0?h:f+" "+h)
 g.seT(A.kC(new A.bo(g.a.a.length,B.S)))}if(n.c!=null)n.t(new A.bsN(n))}m=B.c.C(n.d.a.a)
-if(J.as(m)===0){n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fw,B.bJ,B.G,null,A.e(A.ab(n.a.c,"organizar_empty"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
+if(J.as(m)===0){n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fx,B.bJ,B.G,null,A.e(A.ab(n.a.c,"organizar_empty"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
 s=1
-break}if(n.a.d.length===0){n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fw,B.bJ,B.G,null,A.e(A.ab(n.a.c,"relato_no_key"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
+break}if(n.a.d.length===0){n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fx,B.bJ,B.G,null,A.e(A.ab(n.a.c,"relato_no_key"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
 s=1
 break}if(n.c!=null)n.t(new A.bsO(n))
 p=4
@@ -136863,7 +136861,7 @@ return A.n(A.a0k(n.a.d,1200,'Voc\xea \xe9 um assistente especializado em registr
 case 7:l=b
 if(n.c==null){s=1
 break}n.t(new A.bsP(n))
-if(l.b){n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fw,B.bJ,B.G,null,A.e(A.ab(n.a.c,"organizar_error"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
+if(l.b){n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fx,B.bJ,B.G,null,A.e(A.ab(n.a.c,"organizar_error"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
 s=1
 break}h=l.a
 g=A.V("```json\\s*",!1,!1,!1,!1)
@@ -136882,7 +136880,7 @@ break
 case 4:p=3
 d=o.pop()
 if(n.c!=null)n.t(new A.bsR(n))
-n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fw,B.bJ,B.G,null,A.e(A.ab(n.a.c,"organizar_error"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
+n.c.a4(t.q).f.cU(A.d8(null,null,null,B.fx,B.bJ,B.G,null,A.e(A.ab(n.a.c,"organizar_error"),null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,B.pM,null,null,new A.br(A.i(12),B.w),null,null))
 s=6
 break
 case 3:s=2
@@ -136890,7 +136888,7 @@ break
 case 6:case 1:return A.A(q,r)
 case 2:return A.z(o.at(-1),r)}})
 return A.B($async$Fx,r)},
-q(a0){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=A.M(a0).ax.a===B.A,g=h?B.rC:B.j,f=h?B.Gr:B.ah9,e=h?B.j:B.av,d=h?B.bb:B.J,c=A.N(f,B.o,1),b=A.bA(a0,i,t.l).w,a=h?B.b7:B.ahE
+q(a0){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=A.M(a0).ax.a===B.A,g=h?B.rC:B.j,f=h?B.Gr:B.ah9,e=h?B.j:B.aw,d=h?B.bb:B.J,c=A.N(f,B.o,1),b=A.bA(a0,i,t.l).w,a=h?B.b7:B.ahE
 a=A.b4(A.k(i,i,B.i,i,i,new A.j(a,i,i,A.i(2),i,i,B.l),i,4,i,i,i,i,i,36),i,i)
 s=t.p
 r=A.w(A.a([A.k(i,B.aKg,B.i,i,i,new A.j(i,i,i,A.i(10),i,B.Bc,B.l),i,i,i,i,B.bO,i,i,i),B.a4,A.I(A.x(A.a([A.e(A.ab(j.a.c,"organizar_title"),i,i,i,i,i,A.m(i,i,e,i,i,i,i,i,i,i,i,15,i,i,B.D,i,i,!0,i,i,i,i,i,i,i,i),i,i,i),A.e(A.ab(j.a.c,"organizar_hint"),i,2,i,i,i,A.m(i,i,d,i,i,i,i,i,i,i,i,10,i,i,i,i,1.4,!0,i,i,i,i,i,i,i,i),i,i,i)],s),B.r,B.e,B.f),1)],s),B.k,B.e,B.f,i,i)
@@ -136915,7 +136913,7 @@ m=A.i(14)
 l=o?i:B.Bc
 if(o)k=h?B.ef:B.I2
 else k=i
-return A.k(i,A.eQ(!0,A.x(A.a([B.K,a,B.az,new A.K(B.zM,r,i),B.az,new A.dG(1,B.bP,new A.K(B.dS,q,i),i),B.a1,new A.K(B.Jt,A.w(A.a([p,B.a4,A.I(A.a9(i,A.bM(A.b4(o?B.e6O:A.w(A.a([B.LA,B.L,A.e(A.ab(j.a.c,"organizar_process"),i,i,i,i,i,B.e9D,i,i,i)],s),B.k,B.e,B.E,i,i),i,i),B.a_,new A.j(k,i,i,m,i,l,B.l),B.a7,48,i,i,i),B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,n,i,i,i,i,i,i),1)],s),B.k,B.e,B.f,i,i),i)],s),B.k,B.e,B.E),!0,B.aj,!0,!1),B.i,i,i,new A.j(g,i,c,B.jf,i,i,B.l),i,i,i,i,new A.L(0,0,0,b.f.d),i,i,i)}}
+return A.k(i,A.eQ(!0,A.x(A.a([B.K,a,B.az,new A.K(B.zM,r,i),B.az,new A.dG(1,B.bP,new A.K(B.e1,q,i),i),B.a1,new A.K(B.Jt,A.w(A.a([p,B.a4,A.I(A.a9(i,A.bM(A.b4(o?B.e6O:A.w(A.a([B.LA,B.L,A.e(A.ab(j.a.c,"organizar_process"),i,i,i,i,i,B.e9D,i,i,i)],s),B.k,B.e,B.E,i,i),i,i),B.a_,new A.j(k,i,i,m,i,l,B.l),B.a7,48,i,i,i),B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,n,i,i,i,i,i,i),1)],s),B.k,B.e,B.f,i,i),i)],s),B.k,B.e,B.E),!0,B.aj,!0,!1),B.i,i,i,new A.j(g,i,c,B.jf,i,i,B.l),i,i,i,i,new A.L(0,0,0,b.f.d),i,i,i)}}
 A.bsZ.prototype={
 $0(){var s=this.a
 s.f=!1
@@ -137221,7 +137219,7 @@ n.push(B.M)
 B.d.u(s,n)}p=l.as
 if(p.length!==0){n=A.a([new A.XD("PROTOCOLOS",i,k)],m)
 B.d.u(n,new A.P(p,new A.bz_(o,i,l.Q,r),A.S(p).i("P<1,f>")))
-B.d.u(s,n)}i=A.n2(s,b,B.dS,k,k,B.ai,!1)}return A.k(k,A.x(A.a([j,new A.K(B.JD,q,k),A.I(i,1)],m),B.k,B.e,B.f),B.i,k,k,new A.j(l.b,k,k,B.cv,k,k,B.l),k,k,k,k,k,k,k,k)},
+B.d.u(s,n)}i=A.n2(s,b,B.e1,k,k,B.ai,!1)}return A.k(k,A.x(A.a([j,new A.K(B.JD,q,k),A.I(i,1)],m),B.k,B.e,B.f),B.i,k,k,new A.j(l.b,k,k,B.cv,k,k,B.l),k,k,k,k,k,k,k,k)},
 $S:46}
 A.byW.prototype={
 $1(a){var s=this.a,r=s.f
@@ -137801,7 +137799,7 @@ if(q>=0)A.EA(q)
 s=B.c.C(c)
 if(!(s.length!==0))s=r.a.d?"Recordatorio de Guardia":"Lembrete de Plant\xe3o"
 r.t(new A.bzT(r,b,s))
-r.r=A.Ao(B.fy,new A.bzU(r))
+r.r=A.Ao(B.fz,new A.bzU(r))
 A.aa6(s,"medcases_shift","shift_timer",b,"MedCases Pro").bL(new A.bzV(r),t.P)},
 ayv(){var s=this,r=s.r
 if(r!=null)r.aA(0)
@@ -138003,7 +138001,7 @@ m=m?"Recientes":"Recentes"
 return A.k(d,A.w(A.a([l,k,j,i,h,g,f,r,c.$4$color$icon$label$onTap(B.yK,B.fE,m,new A.bjW(e,a0))],t.p),B.k,B.e,B.f,d,d),B.i,d,d,new A.j(b,d,n,o,q,d,B.l),d,58,d,d,d,d,d,d)}}
 A.bjQ.prototype={
 $4$color$icon$label$onTap(a,b,c,d){var s=null,r=A.W(b,a,s,20)
-return A.I(A.a9(B.aZ,A.x(A.a([r,B.bG,A.e(c,s,1,B.a0,s,s,A.m(s,s,this.a.c?B.j.j(0.55):B.J,s,s,s,s,s,s,s,s,10,s,s,B.z,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.ax,B.f),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.bjR(this.b,d),s,s,s,s,s,s),1)},
+return A.I(A.a9(B.aX,A.x(A.a([r,B.bG,A.e(c,s,1,B.a0,s,s,A.m(s,s,this.a.c?B.j.j(0.55):B.J,s,s,s,s,s,s,s,s,10,s,s,B.z,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.ax,B.f),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.bjR(this.b,d),s,s,s,s,s,s),1)},
 $S:855}
 A.bjR.prototype={
 $0(){A.dw(this.a)
@@ -138065,7 +138063,7 @@ r=A.i(10)
 q=s.b
 p=q.j(0.12)
 r=A.k(n,A.W(s.a,q,n,18),B.i,n,n,new A.j(p,n,n,r,n,n,B.l),n,36,n,n,n,n,n,36)
-return A.I(A.a9(B.aZ,new A.K(B.eQ,A.x(A.a([r,B.ac,A.e(s.c,n,n,n,n,n,A.m(n,n,o.a.c?B.j.j(0.7):B.agZ,n,n,n,n,n,n,n,n,11,n,n,B.z,n,n,!0,n,n,n,n,n,n,n,n),n,n,n)],t.p),B.k,B.e,B.E),n),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.bwQ(o.c,s),n,n,n,n,n,n),1)},
+return A.I(A.a9(B.aX,new A.K(B.eQ,A.x(A.a([r,B.ac,A.e(s.c,n,n,n,n,n,A.m(n,n,o.a.c?B.j.j(0.7):B.agZ,n,n,n,n,n,n,n,n,11,n,n,B.z,n,n,!0,n,n,n,n,n,n,n,n),n,n,n)],t.p),B.k,B.e,B.E),n),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.bwQ(o.c,s),n,n,n,n,n,n),1)},
 $S:858}
 A.bwQ.prototype={
 $0(){A.dw(this.a)
@@ -138360,7 +138358,7 @@ n=A.ad1(o,!0,!0,!0)
 o=o.length
 l=d?"Reconocer":"Reconhecer"
 k=d?"Conducta":"Conduta"
-return A.k(g,new A.K(B.br,A.x(A.a([p,B.a1,new A.DH(new A.aZ7(4,8,8,1.1),n,B.aj,B.ai,!1,g,g,B.qE,g,!0,g,0,g,o,B.t,g,g,B.G,B.aZ,g),B.K,A.w(A.a([new A.AS(l,e,g),new A.Hn(e,g),new A.AS(k,e,g),new A.Hn(e,g),new A.AS("F\xe1rmacos",e,g),new A.Hn(e,g),new A.AS("Monitor.",e,g)],m),B.k,B.ax,B.f,g,g)],m),B.r,B.e,B.f),g),B.i,g,g,new A.j(c,g,r,f,q,g,B.l),g,g,g,g,g,g,g,g)}}
+return A.k(g,new A.K(B.br,A.x(A.a([p,B.a1,new A.DH(new A.aZ7(4,8,8,1.1),n,B.aj,B.ai,!1,g,g,B.qE,g,!0,g,0,g,o,B.t,g,g,B.G,B.aX,g),B.K,A.w(A.a([new A.AS(l,e,g),new A.Hn(e,g),new A.AS(k,e,g),new A.Hn(e,g),new A.AS("F\xe1rmacos",e,g),new A.Hn(e,g),new A.AS("Monitor.",e,g)],m),B.k,B.ax,B.f,g,g)],m),B.r,B.e,B.f),g),B.i,g,g,new A.j(c,g,r,f,q,g,B.l),g,g,g,g,g,g,g,g)}}
 A.bwI.prototype={
 $0(){return this.a.a.aTH(this.b)},
 $S:0}
@@ -138480,7 +138478,7 @@ case 3:r=s.c
 r.toString
 A.aQ(r,!1).ip(A.a9p(new A.biT(),null,t.z))
 break}},
-q(a){var s,r,q,p=this,o=null,n=A.bg(a,!0,t.C),m=n.d,l=n.c==="es",k=m?B.aiI:B.j,j=m?B.aj5:B.agW,i=m?B.ka:B.aiC,h=m?B.oZ:B.aly,g=m?B.mJ:B.ahi,f=A.bA(a,o,t.l).w,e=A.k(o,o,B.i,o,o,new A.j(B.b7,o,o,A.i(10),o,o,B.l),o,4,o,o,o,o,o,38),d=A.W(B.ez,B.dY,o,22),c=l?"Buscar en MedCases":"Pesquisar no MedCases",b=t.p
+q(a){var s,r,q,p=this,o=null,n=A.bg(a,!0,t.C),m=n.d,l=n.c==="es",k=m?B.aiI:B.j,j=m?B.aj5:B.agW,i=m?B.ka:B.aiC,h=m?B.oZ:B.aly,g=m?B.mJ:B.ahi,f=A.bA(a,o,t.l).w,e=A.k(o,o,B.i,o,o,new A.j(B.b7,o,o,A.i(10),o,o,B.l),o,4,o,o,o,o,o,38),d=A.W(B.ez,B.dX,o,22),c=l?"Buscar en MedCases":"Pesquisar no MedCases",b=t.p
 c=A.w(A.a([d,B.a4,A.e(c,o,o,o,o,o,A.m(o,o,h,o,o,o,o,o,o,o,o,17,o,o,B.F,o,o,!0,o,o,o,o,o,o,o,o),o,o,o)],b),B.k,B.e,B.f,o,o)
 d=A.i(14)
 s=A.N(i,B.o,1)
@@ -138497,7 +138495,7 @@ q=l?"Sin resultados":"Nenhum resultado"
 q=A.b4(A.x(A.a([r,B.K,A.e(q,o,o,o,o,o,A.m(o,o,g,o,o,o,o,o,o,o,o,14,o,o,o,o,o,!0,o,o,o,o,o,o,o,o),o,o,o)],b),B.k,B.e,B.E),o,o)
 r=q}else if(!r){r=l?"Escribe al menos 2 letras para buscar en todo el contenido del app.":"Digite ao menos 2 letras para pesquisar em todo o conte\xfado do app."
 r=new A.K(B.aCQ,A.x(A.a([A.e(r,o,o,o,o,o,A.m(o,o,g,o,o,o,o,o,o,o,o,13,o,o,o,o,1.5,!0,o,o,o,o,o,o,o,o),o,o,o)],b),B.r,B.e,B.f),o)}else r=A.rs(B.G,o,new A.biY(p,m,h,g),p.f.length,B.pM,B.ai,new A.biZ(i),!1)
-return A.k(o,A.x(A.a([new A.K(B.tz,e,o),new A.K(B.JL,c,o),new A.K(B.dS,d,o),B.K,new A.K(B.dS,s,o),B.K,A.I(r,1)],b),B.k,B.e,B.f),B.i,o,o,new A.j(k,o,o,B.cv,o,o,B.l),o,f.a.b*0.88,o,o,o,o,o,o)}}
+return A.k(o,A.x(A.a([new A.K(B.tz,e,o),new A.K(B.JL,c,o),new A.K(B.e1,d,o),B.K,new A.K(B.e1,s,o),B.K,A.I(r,1)],b),B.k,B.e,B.f),B.i,o,o,new A.j(k,o,o,B.cv,o,o,B.l),o,f.a.b*0.88,o,o,o,o,o,o)}}
 A.bj_.prototype={
 $1(a){return this.a.e.fL()},
 $S:4}
@@ -138600,7 +138598,7 @@ s=p}while(true)switch(s){case 0:if(m.c==null){s=1
 break}l=$.ft
 if(J.as(l)===0){g=m.c
 if(g!=null){g=g.a4(t.q).f
-g.cU(A.d8(null,null,null,B.aY,B.bJ,B.G,null,A.e(m.a.d==="es"?"Configura tu API Key de Gemini en Ajustes primero.":"Configure sua API Key do Gemini em Configura\xe7\xf5es primeiro.",null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,null,null,null,new A.br(A.i(10),B.w),null,null))}s=1
+g.cU(A.d8(null,null,null,B.aZ,B.bJ,B.G,null,A.e(m.a.d==="es"?"Configura tu API Key de Gemini en Ajustes primero.":"Configure sua API Key do Gemini em Configura\xe7\xf5es primeiro.",null,null,null,null,null,null,null,null,null),null,B.cy,null,null,null,null,null,null,new A.br(A.i(10),B.w),null,null))}s=1
 break}m.t(new A.bbz(m))
 p=4
 g=A.S(a0)
@@ -138680,7 +138678,7 @@ $S:871}
 A.bbD.prototype={
 $0(){var s=null,r=this.a,q=r.c
 if(q!=null){q=q.a4(t.q).f
-q.cU(A.d8(s,s,s,s,B.bJ,B.G,s,A.e(r.a.d==="es"?"Datos descartados.":"Dados descartados.",s,s,s,s,s,s,s,s,s),s,B.fy,s,s,s,s,s,s,new A.br(A.i(10),B.w),s,s))}},
+q.cU(A.d8(s,s,s,s,B.bJ,B.G,s,A.e(r.a.d==="es"?"Datos descartados.":"Dados descartados.",s,s,s,s,s,s,s,s,s),s,B.fz,s,s,s,s,s,s,new A.br(A.i(10),B.w),s,s))}},
 $S:0}
 A.bbC.prototype={
 $0(){var s,r=null,q=this.a,p=this.b
@@ -138757,7 +138755,7 @@ s=r.a
 s.toString
 s.aTu(0,q,A.dN(r.e,!0,t.sM))},
 gyZ(){return B.c.C(this.d.a.a).length!==0||this.e.length!==0},
-q(a){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=j.a.c,g=new A.iA(h),f=h?B.av:B.j,e=A.bA(a,i,t.l).w,d=A.N(B.Z.j(0.3),B.o,1.2),c=h?B.cq:B.cp
+q(a){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=j.a.c,g=new A.iA(h),f=h?B.aw:B.j,e=A.bA(a,i,t.l).w,d=A.N(B.Z.j(0.3),B.o,1.2),c=h?B.cq:B.cp
 c=A.b4(A.k(i,i,B.i,i,i,new A.j(c,i,i,A.i(2),i,i,B.l),i,4,i,i,i,i,i,36),i,i)
 s=A.k(i,B.LA,B.i,i,i,new A.j(i,i,i,A.i(9),i,B.Bd,B.l),i,32,i,i,i,i,i,32)
 j.a.toString
@@ -138944,7 +138942,7 @@ k=""+j+" intera\xe7\xe3o"+i+" detectada"+k}}else if(c===0)k=h.a.e==="es"?"Uso ac
 else{k=c>1
 j=k?"s":""
 k=k?"s":""
-k=""+c+" f\xe1rmaco"+j+" activo"+k}if(s)j=B.fw
+k=""+c+" f\xe1rmaco"+j+" activo"+k}if(s)j=B.fx
 else j=e?B.j.j(0.58):B.bq
 i=t.p
 j=A.a([l,B.a4,A.I(A.x(A.a([m,A.e(k,g,g,g,g,g,A.m(g,g,j,g,g,g,g,g,g,g,g,11,g,g,s?B.O:B.ab,g,g,!0,g,g,g,g,g,g,g,g),g,g,g)],i),B.r,B.e,B.f),1)],i)
@@ -138955,7 +138953,7 @@ m=m.j(h.a.d?0.18:0.1)
 l=A.i(8)
 B.d.u(j,A.a([A.k(g,A.e(""+c,g,g,g,g,g,A.m(g,g,e?B.cw:B.Z,g,g,g,g,g,g,g,g,12,g,g,B.z,g,g,!0,g,g,g,g,g,g,g,g),g,g,g),B.i,g,g,new A.j(m,g,g,l,g,g,B.l),g,g,g,g,B.hK,g,g,g),B.af],i))}m=h.d?0.5:0
 j.push(A.mG(A.W(B.e3,e?B.j.j(0.58):B.bq,g,20),B.a7,m))
-m=A.a9(B.aZ,new A.K(B.cs,A.w(j,B.k,B.e,B.f,g,g),g),B.t,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,new A.bgW(h),g,g,g,g,g,g)
+m=A.a9(B.aX,new A.K(B.cs,A.w(j,B.k,B.e,B.f,g,g),g),B.t,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,new A.bgW(h),g,g,g,g,g,g)
 if(h.d){l=A.a([A.ej(e?B.yZ:B.yR,g,1,g,0.8),B.a1],i)
 k=h.w
 if(k.length!==0)B.d.u(l,A.a([new A.ajh(k,h.a.e,g),B.a1],i))
@@ -139107,7 +139105,7 @@ else{i=h.w.a?B.cw:B.Z
 i=i.j(s?0.2:0.12)
 s=i}if(f)f=B.jo
 else f=(h.w.a?B.cw:B.Z).j(0.85)
-j.push(A.a9(B.aZ,A.k(g,A.W(B.c7,f,g,11),B.i,g,g,new A.j(s,g,g,g,g,g,B.ap),g,18,g,g,g,g,g,18),B.t,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,h.z,g,g,g,g,g,g))
+j.push(A.a9(B.aX,A.k(g,A.W(B.c7,f,g,11),B.i,g,g,new A.j(s,g,g,g,g,g,B.ap),g,18,g,g,g,g,g,18),B.t,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,h.z,g,g,g,g,g,g))
 return new A.eN(p,!1,A.rU(B.ad,A.a9(g,A.k(g,A.w(j,B.k,B.e,B.E,g,g),B.i,g,g,new A.j(r,g,k,l,g,g,B.l),g,g,g,g,B.aB6,g,g,g),B.t,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,h.y,g,g,g,g,g,g),g,new A.aT(q,new A.b9(0.75,1,m),m.i("aT<b5.T>"))),g)}}
 A.Vj.prototype={
 S(){return new A.am1()},
@@ -139146,7 +139144,7 @@ A.iA.prototype={
 E7(a){var s=this
 switch(a.a){case 0:return s.a?B.da.j(0.18):B.da.j(0.1)
 case 1:return s.a?B.jr.j(0.16):B.jr.j(0.1)
-case 2:return s.a?B.aY.j(0.16):B.aY.j(0.1)
+case 2:return s.a?B.aZ.j(0.16):B.aZ.j(0.1)
 case 3:return s.a?B.hg.j(0.16):B.hg.j(0.1)}},
 rm(a){var s=this
 switch(a.a){case 0:return s.a?B.mG:B.rR
@@ -139234,7 +139232,7 @@ else m=q
 l=t.p
 m=A.I(A.x(A.a([n,A.e(m,d,1,B.a0,d,d,A.m(d,d,b?B.j.j(0.58):B.bq,d,d,d,d,d,d,d,d,11,d,d,d,d,d,!0,d,d,d,d,d,d,d,d),d,d,d)],l),B.r,B.e,B.f),1)
 n=e.d?0.5:0
-o=A.a9(B.aZ,new A.K(B.cs,A.w(A.a([o,B.a4,m,A.mG(A.W(B.e3,b?B.j.j(0.58):B.bq,d,20),B.a7,n)],l),B.k,B.e,B.f,d,d),d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.btv(e),d,d,d,d,d,d)
+o=A.a9(B.aX,new A.K(B.cs,A.w(A.a([o,B.a4,m,A.mG(A.W(B.e3,b?B.j.j(0.58):B.bq,d,20),B.a7,n)],l),B.k,B.e,B.f,d,d),d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,new A.btv(e),d,d,d,d,d,d)
 if(e.d){n=A.ej(b?B.yZ:B.yR,d,1,d,0.8)
 m=e.a
 m.toString
@@ -139359,7 +139357,7 @@ i=A.i(8)
 d=c?"D\xcdA":"DIA"
 return A.k(e,A.w(A.a([l,B.aU,m,A.k(e,A.x(A.a([A.e(d,e,e,e,e,e,A.m(e,e,B.Z.j(0.7),e,e,e,e,e,e,e,e,8,e,e,B.z,e,e,!0,e,0.5,e,e,e,e,e,e),e,e,e),A.e(""+s,e,e,e,e,e,B.e8Y,e,e,e)],k),B.k,B.e,B.f),B.i,e,e,new A.j(j,e,e,i,e,e,B.l),e,e,e,e,B.jA,e,e,e)],k),B.r,B.e,B.f,e,e),B.i,e,e,new A.j(q,e,o,p,n,e,B.l),e,e,e,e,B.dD,e,e,1/0)}}
 A.Fg.prototype={
-q(a){var s,r=null,q={},p=this.d,o=p?B.av:B.j,n=this.c,m=q.a=n.gSx(),l=n.a
+q(a){var s,r=null,q={},p=this.d,o=p?B.aw:B.j,n=this.c,m=q.a=n.gSx(),l=n.a
 if((l==null?r:l.length!==0)===!0){++m
 q.a=m
 l=m}else l=m
@@ -139407,7 +139405,7 @@ a0.push(c.fD(B.aEp,r,B.eY,a2,s))}s=a1.w
 if(s!=null){r=c.e==="es"?"Dolor":"Dor"
 q=A.t(s)+"/10"
 if(s<=3)n=B.jr
-else n=s<=6?B.aY:B.aT
+else n=s<=6?B.aZ:B.aT
 s=n.j(0.15)
 p=A.i(8)
 o=A.N(n.j(0.4),B.o,0.8)
@@ -139432,7 +139430,7 @@ if((s==null?b:s.length!==0)===!0){r=c.e==="es"?"Notas libres":"Notas livres"
 s.toString
 a0.push(c.fD(B.AR,r,B.eY,a2,s))}s=t._m
 if(B.d.c0(A.a([a1.CW,a1.cx,a1.cy,a1.db,a1.dx],s),new A.aWi())){a0.push(B.M)
-a0.push(c.t0("O \u2014 Objetivo \xb7 "+(c.e==="es"?"Signos Vitales":"Sinais Vitais"),B.dV,a2))
+a0.push(c.t0("O \u2014 Objetivo \xb7 "+(c.e==="es"?"Signos Vitales":"Sinais Vitais"),B.dU,a2))
 a0.push(c.aKe(a2))}r=a1.dy
 q=a1.fr
 p=a1.fx
@@ -139440,31 +139438,31 @@ o=a1.fy
 l=a1.go
 if(B.d.c0(A.a([r,q,p,o,l],s),new A.aWj())){a0.push(B.M)
 k=c.e==="es"
-a0.push(c.t0("O \xb7 "+(k?"Examen F\xedsico":"Exame F\xedsico"),B.dV,a2))
+a0.push(c.t0("O \xb7 "+(k?"Examen F\xedsico":"Exame F\xedsico"),B.dU,a2))
 if((r==null?b:r.length!==0)===!0){j=k?"Estado general":"Estado geral"
 r.toString
-a0.push(c.fD(B.iI,j,B.dV,a2,r))}if((q==null?b:q.length!==0)===!0){q.toString
-a0.push(c.fD(B.fD,"ACV",B.dV,a2,q))}if((p==null?b:p.length!==0)===!0){p.toString
-a0.push(c.fD(B.cL,"AR",B.dV,a2,p))}if((o==null?b:o.length!==0)===!0){r=k?"Abdomen":"Abdome"
+a0.push(c.fD(B.iI,j,B.dU,a2,r))}if((q==null?b:q.length!==0)===!0){q.toString
+a0.push(c.fD(B.fD,"ACV",B.dU,a2,q))}if((p==null?b:p.length!==0)===!0){p.toString
+a0.push(c.fD(B.cL,"AR",B.dU,a2,p))}if((o==null?b:o.length!==0)===!0){r=k?"Abdomen":"Abdome"
 o.toString
-a0.push(c.fD(B.aF5,r,B.dV,a2,o))}if((l==null?b:l.length!==0)===!0){l.toString
-a0.push(c.fD(B.nm,"Extremidades",B.dV,a2,l))}}r=a1.id
+a0.push(c.fD(B.aF5,r,B.dU,a2,o))}if((l==null?b:l.length!==0)===!0){l.toString
+a0.push(c.fD(B.nm,"Extremidades",B.dU,a2,l))}}r=a1.id
 q=a1.k1
 p=a1.k2
 o=a1.k3
 if(B.d.c0(A.a([r,q,p,o],s),new A.aWk())){a0.push(B.M)
 s=c.e==="es"
-a0.push(c.t0("O \xb7 "+(s?"Ex\xe1menes":"Exames"),B.dV,a2))
+a0.push(c.t0("O \xb7 "+(s?"Ex\xe1menes":"Exames"),B.dU,a2))
 if((r==null?b:r.length!==0)===!0){l=s?"Laboratorio":"Laborat\xf3rio"
 r.toString
-a0.push(c.fD(B.kk,l,B.dV,a2,r))}if((q==null?b:q.length!==0)===!0){s=s?"Im\xe1genes":"Imagens"
+a0.push(c.fD(B.kk,l,B.dU,a2,r))}if((q==null?b:q.length!==0)===!0){s=s?"Im\xe1genes":"Imagens"
 q.toString
-a0.push(c.fD(B.AN,s,B.dV,a2,q))}if((p==null?b:p.length!==0)===!0){p.toString
-a0.push(c.fD(B.d2,"Culturas",B.dV,a2,p))}if((o==null?b:o.length!==0)===!0){o.toString
-a0.push(c.fD(B.nw,"ECG",B.dV,a2,o))}}s=a1.k4
+a0.push(c.fD(B.AN,s,B.dU,a2,q))}if((p==null?b:p.length!==0)===!0){p.toString
+a0.push(c.fD(B.d2,"Culturas",B.dU,a2,p))}if((o==null?b:o.length!==0)===!0){o.toString
+a0.push(c.fD(B.nw,"ECG",B.dU,a2,o))}}s=a1.k4
 if((s==null?b:s.length!==0)===!0){r=c.e==="es"?"Tratamiento actual":"Tratamento atual"
 s.toString
-a0.push(c.fD(B.el,r,B.dV,a2,s))}s=a1.ok
+a0.push(c.fD(B.el,r,B.dU,a2,s))}s=a1.ok
 r=s==null
 i=!0
 if((r?b:s.length!==0)!==!0){q=a1.p1
@@ -139493,7 +139491,7 @@ if((s==null?b:s.length!==0)===!0){r=c.e==="es"?"Criterios de alta":"Crit\xe9rios
 s.toString
 a0.push(c.fD(B.L6,r,B.r1,a2,s))}}a1=a1.R8
 if((a1==null?b:a1.length!==0)===!0){a0.push(B.M)
-a0.push(c.t0("\ud83d\udc8a F\xe1rmacos detectados",B.dV,a2))
+a0.push(c.t0("\ud83d\udc8a F\xe1rmacos detectados",B.dU,a2))
 for(s=a1.length,r=c.e==="es",g=0;g<a1.length;a1.length===s||(0,A.a1)(a1),++g){f=a1[g]
 q=J.ar(f)
 e=q.h(f,"medicamento")
@@ -139503,7 +139501,7 @@ if(d==null)d=""
 if(e.length===0)continue
 if(d.length!==0)q=d
 else q=r?"(sin dosificaci\xf3n)":"(sem dosagem)"
-a0.push(c.fD(B.u0,e,B.dV,a2,q))}}a1=a0.length
+a0.push(c.fD(B.u0,e,B.dU,a2,q))}}a1=a0.length
 if(a1===0||a1===1){a1=a2.a
 s=A.W(B.ub,a1?B.j.j(0.58):B.bq,b,48)
 r=c.e==="es"?"La IA no encontr\xf3 datos suficientes.\nIntenta con m\xe1s informaci\xf3n.":"A IA n\xe3o encontrou dados suficientes.\nTente com mais informa\xe7\xf5es."
@@ -139535,7 +139533,7 @@ n.p(0,"SpO\u2082",s)}o=o.dx
 if((o==null?p:o.length!==0)===!0){o.toString
 n.p(0,"T\xb0",o)}o=a.a?B.eN:B.j
 s=A.i(12)
-r=A.N(a.rm(B.dV).j(0.3),B.o,0.9)
+r=A.N(a.rm(B.dU).j(0.3),B.o,0.9)
 q=n.$ti.i("em<1,2>")
 q=A.h6(new A.em(n,q),new A.aWm(a),q.i("F.E"),t.dT)
 q=A.O(q,A.G(q).i("F.E"))
@@ -139567,12 +139565,12 @@ n=n?"s":""
 n=""+o+" campo"+m+" extra\xeddo"+n+" pela IA"
 o=n}n=t.p
 o=A.w(A.a([s,B.aU,A.I(A.x(A.a([p,A.e(o,e,e,e,e,e,A.m(e,e,B.Z,e,e,e,e,e,e,e,e,11.5,e,e,e,e,e,!0,e,e,e,e,e,e,e,e),e,e,e)],n),B.r,B.e,B.f),1)],n),B.k,B.e,B.f,e,e)
-s=B.aY.j(r.d?0.12:0.08)
+s=B.aZ.j(r.d?0.12:0.08)
 p=A.i(10)
-m=A.N(B.aY.j(0.35),B.o,0.8)
-l=A.W(B.e2,B.aY,e,14)
+m=A.N(B.aZ.j(0.35),B.o,0.8)
+l=A.W(B.e2,B.aZ,e,14)
 k=q?"Revisa los datos antes de aprobar. Solo t\xfa decides qu\xe9 se rellena.":"Revise os dados antes de aprovar. S\xf3 voc\xea decide o que \xe9 preenchido."
-p=A.k(e,A.w(A.a([l,B.L,A.I(A.e(k,e,e,e,e,e,A.m(e,e,B.aY,e,e,e,e,e,e,e,e,11.5,e,e,e,e,1.4,!0,e,e,e,e,e,e,e,e),e,e,e),1)],n),B.k,B.e,B.f,e,e),B.i,e,e,new A.j(s,e,m,p,e,e,B.l),e,e,e,e,B.ff,e,e,e)
+p=A.k(e,A.w(A.a([l,B.L,A.I(A.e(k,e,e,e,e,e,A.m(e,e,B.aZ,e,e,e,e,e,e,e,e,11.5,e,e,e,e,1.4,!0,e,e,e,e,e,e,e,e),e,e,e),1)],n),B.k,B.e,B.f,e,e),B.i,e,e,new A.j(s,e,m,p,e,e,B.l),e,e,e,e,B.fg,e,e,e)
 s=A.ej(b?B.cq:B.cp,e,1,e,0.8)
 c=A.I(A.n2(r.anV(c),a1,B.aCx,e,e,B.ai,!1),1)
 m=A.ej(b?B.cq:B.cp,e,1,e,0.8)
@@ -139609,8 +139607,8 @@ $1(a){var s=null,r=A.i(20)
 return A.k(s,A.e(a,s,s,s,s,s,A.m(s,s,this.b,s,s,s,s,s,s,s,s,11.5,s,s,B.O,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),B.i,s,s,new A.j(this.a,s,s,r,s,s,B.l),s,s,s,s,B.hJ,s,s,s)},
 $S:92}
 A.aWm.prototype={
-$1(a){var s=null,r=this.a,q=r.E7(B.dV),p=A.i(10),o=A.e(a.a,s,s,s,s,s,A.m(s,s,r.rm(B.dV),s,s,s,s,s,s,s,s,10,s,s,B.z,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)
-return A.k(s,A.x(A.a([o,B.bw,A.e(a.b,s,s,s,s,s,A.m(s,s,r.a?B.j.j(0.93):B.cc,s,s,s,s,s,s,s,s,15,s,s,B.F,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.e,B.E),B.i,s,s,new A.j(q,s,s,p,s,s,B.l),s,s,s,s,B.ff,s,s,s)},
+$1(a){var s=null,r=this.a,q=r.E7(B.dU),p=A.i(10),o=A.e(a.a,s,s,s,s,s,A.m(s,s,r.rm(B.dU),s,s,s,s,s,s,s,s,10,s,s,B.z,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)
+return A.k(s,A.x(A.a([o,B.bw,A.e(a.b,s,s,s,s,s,A.m(s,s,r.a?B.j.j(0.93):B.cc,s,s,s,s,s,s,s,s,15,s,s,B.F,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.e,B.E),B.i,s,s,new A.j(q,s,s,p,s,s,B.l),s,s,s,s,B.fg,s,s,s)},
 $S:881}
 A.QR.prototype={
 S(){return new A.Y0()},
@@ -139726,7 +139724,7 @@ return q.di(r.b.aMA(s))},
 $S:0}
 A.bAr.prototype={
 $1(a){var s=null,r=this.b,q=r?B.hF:B.hC,p=A.i(8),o=A.N(r?B.b9:B.ih,B.o,0.8),n=A.k(s,s,B.i,s,s,B.a9Z,s,6,s,s,s,s,s,6),m=A.I(A.e(a.b,s,s,s,s,s,A.m(s,s,r?B.j:B.aG,s,s,s,s,s,s,s,s,13,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),1)
-return A.k(s,A.w(A.a([n,B.L,m,A.a9(s,A.W(B.c7,this.c.a?B.j.j(0.58):B.bq,s,14),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.bAo(this.a,a),s,s,s,s,s,s)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(q,s,o,p,s,s,B.l),s,s,s,B.eP,B.ff,s,s,s)},
+return A.k(s,A.w(A.a([n,B.L,m,A.a9(s,A.W(B.c7,this.c.a?B.j.j(0.58):B.bq,s,14),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.bAo(this.a,a),s,s,s,s,s,s)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(q,s,o,p,s,s,B.l),s,s,s,B.eP,B.fg,s,s,s)},
 $S:883}
 A.bAo.prototype={
 $0(){var s=this.a,r=A.O(s.a.c.b,t.N)
@@ -139991,7 +139989,7 @@ s===$&&A.c()
 s=A.atu(B.aT,s,a9,"120/80",B.fD,"PA",new A.bAu(a6))
 r=a6.ax
 r===$&&A.c()
-r=A.atu(B.aY,r,a9,"72",B.nw,"FC",new A.bAv(a6))
+r=A.atu(B.aZ,r,a9,"72",B.nw,"FC",new A.bAv(a6))
 q=a6.ay
 q===$&&A.c()
 q=A.atu(B.mG,q,a9,"16",B.cL,"FR",new A.bAw(a6))
@@ -140410,7 +140408,7 @@ o=""+k.f
 n=t.kK
 m=k.e
 r=r.e
-l=[new A.BK(B.eY,m===0,r,p,new A.aZx(k),new A.QW(s.d,j.gaWd(),q,r,new A.cP("subj_"+o,n)),new A.cP("s_"+o,n)),new A.BK(B.dV,m===1,r,p,new A.aZy(k),new A.QT(s.e,j.gaW6(),q,r,new A.cP("obj_"+o,n)),new A.cP("o_"+o,n)),new A.BK(B.ot,m===2,r,p,new A.aZz(k),new A.QR(s.f,j.gaW4(),q,r,new A.cP("eval_"+o,n)),new A.cP("a_"+o,n)),new A.BK(B.r1,m===3,r,p,new A.aZA(k),new A.QU(s.r,j.gaW8(),q,r,new A.cP("plan_"+o,n)),new A.cP("p_"+o,n))]
+l=[new A.BK(B.eY,m===0,r,p,new A.aZx(k),new A.QW(s.d,j.gaWd(),q,r,new A.cP("subj_"+o,n)),new A.cP("s_"+o,n)),new A.BK(B.dU,m===1,r,p,new A.aZy(k),new A.QT(s.e,j.gaW6(),q,r,new A.cP("obj_"+o,n)),new A.cP("o_"+o,n)),new A.BK(B.ot,m===2,r,p,new A.aZz(k),new A.QR(s.f,j.gaW4(),q,r,new A.cP("eval_"+o,n)),new A.cP("a_"+o,n)),new A.BK(B.r1,m===3,r,p,new A.aZA(k),new A.QU(s.r,j.gaW8(),q,r,new A.cP("plan_"+o,n)),new A.cP("p_"+o,n))]
 return A.x(A.a([new A.arw(m,q,null),B.a1,l[0],B.M,l[1],B.M,l[2],B.M,l[3]],t.p),B.dm,B.e,B.f)}}
 A.aZr.prototype={
 $0(){},
@@ -140472,7 +140470,7 @@ $0(){var s=this.a
 return s.e=s.e===3?null:3},
 $S:0}
 A.arw.prototype={
-q(a){var s=new A.fC(A.a([B.eY,B.dV,B.ot,B.r1],t.Zo),t.y0)
+q(a){var s=new A.fC(A.a([B.eY,B.dU,B.ot,B.r1],t.Zo),t.y0)
 return A.w(s.gfT(s).eG(0,new A.bAY(this),t.nx).d9(0),B.k,B.e,B.f,null,null)}}
 A.bAY.prototype={
 $1(a){var s=null,r=this.a,q=r.c,p=a.a,o=new A.iA(r.d).rm(a.b)
@@ -140495,7 +140493,7 @@ q=A.ccz(l,q)
 l=t.p
 q=A.I(A.x(A.a([p,A.e(q,n,n,n,n,n,A.m(n,n,i?B.j.j(0.58):B.bq,n,n,n,n,n,n,n,n,11,n,n,n,n,1.3,!0,n,n,n,n,n,n,n,n),n,n,n)],l),B.r,B.e,B.f),1)
 p=f?0.5:0
-r=A.a9(B.aZ,new A.K(B.cs,A.w(A.a([r,B.a4,q,A.mG(A.W(B.e3,i?B.j.j(0.58):B.bq,n,20),B.a7,p)],l),B.k,B.e,B.f,n,n),n),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,o.w,n,n,n,n,n,n)
+r=A.a9(B.aX,new A.K(B.cs,A.w(A.a([r,B.a4,q,A.mG(A.W(B.e3,i?B.j.j(0.58):B.bq,n,20),B.a7,p)],l),B.k,B.e,B.f,n,n),n),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,o.w,n,n,n,n,n,n)
 if(f){f=new A.K(B.pJ,A.x(A.a([A.ej(i?B.yZ:B.yR,n,1,n,0.8),B.a1,o.x],l),B.r,B.e,B.f),n)
 i=f}else i=B.at
 return A.bM(A.x(A.a([r,A.mH(B.ad,i,B.dz,B.lj,n)],l),B.r,B.e,B.f),B.a_,new A.j(h,n,s,g,m,n,B.l),B.a7,n,n,n,n)}}
@@ -140599,7 +140597,7 @@ A.bI_.prototype={
 $1(a){return a.length!==0},
 $S:2}
 A.GZ.prototype={
-q(a){var s,r,q,p,o,n,m=this,l=null,k=m.c,j=k?B.av:B.j,i=new A.iA(k),h=A.N(B.Z.j(0.25),B.o,1),g=A.bA(a,l,t.l).w,f=k?B.cq:B.cp
+q(a){var s,r,q,p,o,n,m=this,l=null,k=m.c,j=k?B.aw:B.j,i=new A.iA(k),h=A.N(B.Z.j(0.25),B.o,1),g=A.bA(a,l,t.l).w,f=k?B.cq:B.cp
 f=A.b4(A.k(l,l,B.i,l,l,new A.j(f,l,l,A.i(2),l,l,B.l),l,4,l,l,l,l,l,36),l,l)
 s=A.k(l,B.B4,B.i,l,l,new A.j(l,l,l,A.i(10),l,B.q9,B.l),l,34,l,l,l,l,l,34)
 r=m.d==="es"
@@ -140615,7 +140613,7 @@ q=r?"Evolucion Resumida":"Evolu\xe7\xe3o Resumida"
 q=A.bMy(B.Z,"INLINE",k,B.AI,B.Z,B.Z,m.f,u.lW,i,q)
 n=r?"Pasaje de Guardia":"Passagem de Plant\xe3o"
 r=r?"Ultra-objetivo para transicion de turno en menos de 30s":u.ta
-return A.k(l,A.x(A.a([f,B.i8,p,B.aF,s,B.M,q,B.M,A.bMy(B.aY,"30s",k,B.AY,B.aY,B.aY,m.r,r,i,n),B.M],o),B.k,B.e,B.E),B.i,l,l,new A.j(j,l,h,B.cv,l,l,B.l),l,l,l,l,new A.L(20,12,20,20+g.w.d),l,l,l)}}
+return A.k(l,A.x(A.a([f,B.i8,p,B.aF,s,B.M,q,B.M,A.bMy(B.aZ,"30s",k,B.AY,B.aZ,B.aZ,m.r,r,i,n),B.M],o),B.k,B.e,B.E),B.i,l,l,new A.j(j,l,h,B.cv,l,l,B.l),l,l,l,l,new A.L(20,12,20,20+g.w.d),l,l,l)}}
 A.aiu.prototype={
 q(a){var s,r,q,p,o,n=this,m=null,l=n.Q.a,k=l?B.eN:B.j,j=A.i(14),i=A.N(l?B.cq:B.cp,B.o,0.9),h=n.c?0.15:0.1
 h=n.f.j(h)
@@ -140775,7 +140773,7 @@ return this.a.a.di(s)},
 $S:3}
 A.ajH.prototype={
 apV(a){if(a<=3)return B.jr
-if(a<=6)return B.aY
+if(a<=6)return B.aZ
 return B.aT},
 q(a){var s=null,r=this.c,q=A.w(A.fZ(11,new A.bd9(this,r==null?0:r),!0,t.n),B.k,B.e,B.f,s,s),p=this.d,o=A.e("Sin dolor",s,s,s,s,s,A.m(s,s,p?B.bc:B.fV,s,s,s,s,s,s,s,s,9,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),n=t.p
 return A.x(A.a([q,B.au,A.w(A.a([o,A.e("M\xe1ximo",s,s,s,s,s,A.m(s,s,p?B.bc:B.fV,s,s,s,s,s,s,s,s,9,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],n),B.k,B.nQ,B.f,s,s)],n),B.r,B.e,B.f)}}
@@ -140965,7 +140963,7 @@ h=n.d
 if(B.c.C(h.a).length===0&&B.c.C(h.b).length===0){i=n.c
 if(i==null){s=1
 break}i=i.a4(t.q).f
-i.cU(A.d8(null,null,null,B.aY,B.bJ,B.G,null,A.w(A.a([B.Ly,B.L,A.I(A.e(n.gq_()?"Ingresa al menos el nombre o la cama del paciente.":"Informe ao menos o nome ou o leito do paciente.",null,null,null,null,null,null,null,null,null),1)],t.p),B.k,B.e,B.f,null,null),null,B.eh,null,null,null,null,null,null,new A.br(A.i(10),B.w),null,null))
+i.cU(A.d8(null,null,null,B.aZ,B.bJ,B.G,null,A.w(A.a([B.Ly,B.L,A.I(A.e(n.gq_()?"Ingresa al menos el nombre o la cama del paciente.":"Informe ao menos o nome ou o leito do paciente.",null,null,null,null,null,null,null,null,null),1)],t.p),B.k,B.e,B.f,null,null),null,B.eh,null,null,null,null,null,null,new A.br(A.i(10),B.w),null,null))
 s=1
 break}h=t.Nb
 m=A.iC(n.e,h)
@@ -141049,7 +141047,7 @@ case 4:case 3:s=5
 return A.n(A.DY(a.a),$async$vt)
 case 5:if(q.c!=null){q.t(new A.boi(q,a))
 p=q.c.a4(t.q).f
-p.cU(A.d8(null,null,null,B.aY,B.bJ,B.G,null,A.w(A.a([B.aID,B.L,A.I(A.e(q.gq_()?"Paciente movido a la papelera (30 d\xedas)":"Paciente movido para a lixeira (30 dias)",null,null,null,null,null,null,null,null,null),1)],t.p),B.k,B.e,B.f,null,null),null,B.eh,null,null,null,null,null,null,new A.br(A.i(12),B.w),null,null))}return A.A(null,r)}})
+p.cU(A.d8(null,null,null,B.aZ,B.bJ,B.G,null,A.w(A.a([B.aID,B.L,A.I(A.e(q.gq_()?"Paciente movido a la papelera (30 d\xedas)":"Paciente movido para a lixeira (30 dias)",null,null,null,null,null,null,null,null,null),1)],t.p),B.k,B.e,B.f,null,null),null,B.eh,null,null,null,null,null,null,new A.br(A.i(12),B.w),null,null))}return A.A(null,r)}})
 return A.B($async$vt,r)},
 a_p(a){var s,r,q,p,o,n=this,m=null,l=a.c
 if(l.length===0){n.F7(a)
@@ -141064,7 +141062,7 @@ p=l.a
 if(!(p.length!==0))p="Paciente"
 o=n.c.a4(t.q).f
 l=""+l.f
-o.cU(A.d8(m,m,m,B.aY,B.bJ,B.G,m,A.w(A.a([B.aKi,B.L,A.I(A.e(q?"Modo EDITAR \u2014 D\xeda "+l+" de "+p:"Modo EDITAR \u2014 Dia "+l+" de "+p,m,m,m,m,m,m,m,m,m),1)],t.p),B.k,B.e,B.f,m,m),m,B.eh,m,m,m,m,m,m,new A.br(A.i(12),B.w),m,m))},
+o.cU(A.d8(m,m,m,B.aZ,B.bJ,B.G,m,A.w(A.a([B.aKi,B.L,A.I(A.e(q?"Modo EDITAR \u2014 D\xeda "+l+" de "+p:"Modo EDITAR \u2014 Dia "+l+" de "+p,m,m,m,m,m,m,m,m,m),1)],t.p),B.k,B.e,B.f,m,m),m,B.eh,m,m,m,m,m,m,new A.br(A.i(12),B.w),m,m))},
 F7(a){var s,r,q=this,p=null,o=a.b,n=o.a8A(o.f+1),m=a.c,l=m.length!==0?B.d.gX(m).c:q.gAa(),k=new A.iw(B.p.k(Date.now()),new A.aL(Date.now(),0,!1),l,B.a5q,B.a_8,B.K0,B.a2R,B.Bw,B.nR)
 q.t(new A.bom(q,n,a,k))
 m=q.r.ga6()
@@ -141122,12 +141120,12 @@ q(a){var s,r,q,p,o,n,m,l,k,j=this,i=null,h=A.bg(a,!0,t.C),g=A.M(a).ax.a===B.A,f=
 b===$&&A.c()
 if(b.c==="Dr."&&c.length!==0&&c!=="Dr.")$.aF.RG$.push(new A.boJ(j,c))
 b=g?B.akR:B.pi
-s=A.a9(B.aZ,B.oc,B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.boK(a),i,i,i,i,i,i)
+s=A.a9(B.aX,B.oc,B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.boK(a),i,i,i,i,i,i)
 r=B.Z.j(g?0.28:0.2)
 q=A.i(12)
 p=A.N(B.Z.j(0.55),B.o,0.9)
 o=t.p
-q=A.k(i,A.eQ(!1,new A.K(B.zT,A.dh(B.ad,A.a([B.adY,new A.dl(B.cG,i,i,s,i),new A.dl(B.d9,i,i,new A.K(B.n5,A.a9(i,A.k(i,A.w(A.a([B.aGT,B.bF,A.e(d?"Nueva":"Nova",i,i,i,i,i,B.egK,i,i,i)],o),B.k,B.e,B.E,i,i),B.i,i,i,new A.j(r,i,p,q,i,i,B.l),i,36,i,i,B.fA,i,i,i),B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,j.gaqh(),i,i,i,i,i,i),i),i)],o),B.G,B.bo,i),i),!0,B.aj,!0,!0),B.i,i,i,B.a9H,i,i,i,i,i,i,i,i)
+q=A.k(i,A.eQ(!1,new A.K(B.zT,A.dh(B.ad,A.a([B.adY,new A.dl(B.cG,i,i,s,i),new A.dl(B.d9,i,i,new A.K(B.n5,A.a9(i,A.k(i,A.w(A.a([B.aGT,B.bF,A.e(d?"Nueva":"Nova",i,i,i,i,i,B.egK,i,i,i)],o),B.k,B.e,B.E,i,i),B.i,i,i,new A.j(r,i,p,q,i,i,B.l),i,36,i,i,B.ff,i,i,i),B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,j.gaqh(),i,i,i,i,i,i),i),i)],o),B.G,B.bo,i),i),!0,B.aj,!0,!0),B.i,i,i,B.a9H,i,i,i,i,i,i,i,i)
 p=j.d
 r=j.z
 s=r==null?"new":r
@@ -141422,7 +141420,7 @@ $0(){this.a.vQ()},
 $S:0}
 A.ar1.prototype={
 q(a){var s=null,r=J.as(this.c)
-return A.b4(new A.e6(B.a9z,new A.DH(B.ac8,new A.ni(new A.bzI(this),r,!0,!0,!0,A.x4(),s),s,B.ai,!1,s,s,B.qE,s,!0,s,0,s,r,B.t,s,s,B.G,B.aZ,s),s),s,s)}}
+return A.b4(new A.e6(B.a9z,new A.DH(B.ac8,new A.ni(new A.bzI(this),r,!0,!0,!0,A.x4(),s),s,B.ai,!1,s,s,B.qE,s,!0,s,0,s,r,B.t,s,s,B.G,B.aX,s),s),s,s)}}
 A.bzI.prototype={
 $2(a,b){var s=this.a,r=J.X(s.c,b)
 return new A.IM(r,s.d,s.e,s.f,new A.bzE(s,r),new A.bzF(s,r),new A.bzG(s,r),new A.bzH(s,r),null)},
@@ -141483,7 +141481,7 @@ i=""+q
 g=""+c.f
 i=j?"D\xeda "+g+" \xb7 "+i+" evol.":"Dia "+g+" \xb7 "+i+" evol."
 k.push(A.w(A.a([d,B.d7,A.e(i,e,e,e,e,e,A.m(e,e,p,e,e,e,e,e,e,e,e,9.5,e,e,B.O,e,e,!0,e,e,e,e,e,e,e,e),e,e,e)],h),B.k,B.e,B.f,e,e))
-k=A.I(A.a9(B.aZ,new A.K(B.fe,A.x(k,B.r,B.e,B.f),e),B.t,!1,e,e,e,e,e,e,e,e,e,e,e,e,e,f.y,e,e,e,e,e,e),1)
+k=A.I(A.a9(B.aX,new A.K(B.fe,A.x(k,B.r,B.e,B.f),e),B.t,!1,e,e,e,e,e,e,e,e,e,e,e,e,e,f.y,e,e,e,e,e,e),1)
 i=A.i(8)
 return A.k(e,A.x(A.a([l,k,new A.K(B.aDn,A.a9(e,A.k(e,A.e(j?"Evolucionar":"Evoluir",e,e,e,e,e,B.ecd,B.ar,e,e),B.i,e,e,new A.j(p,e,e,i,e,e,B.l),e,e,e,e,B.Jk,e,e,1/0),B.t,!1,e,e,e,e,e,e,e,e,e,e,e,e,e,f.w,e,e,e,e,e,e),e)],h),B.r,B.e,B.f),B.i,e,e,new A.j(s,e,n,o,m,e,B.l),e,e,e,e,e,e,e,e)}}
 A.BG.prototype={
@@ -141594,7 +141592,7 @@ A.ey(B.Q,new A.bzs(p,q==="es",new A.bzt(this,a),b,o,r.b),a,!0,!0,!0,null,!1,t.z)
 q(a0){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e=this,d=null,c=e.a,b=c.d,a=new A.iA(b)
 c=c.c
 s=c.b
-r=b?B.av:B.j
+r=b?B.aw:B.j
 c=c.c
 q=c.length
 p=q===0
@@ -141709,15 +141707,15 @@ b=e.a
 b=b.d
 b=e.XQ(B.Z,b,B.u3,"Copiar",k?new A.bzC(e,a0,m):new A.bzD(e),a)
 p=e.a
-b=A.w(A.a([b,B.af,e.XQ(B.aT,p.d,B.fg,"Excluir",p.w,a)],i),B.k,B.e,B.f,d,d)
+b=A.w(A.a([b,B.af,e.XQ(B.aT,p.d,B.fh,"Excluir",p.w,a)],i),B.k,B.e,B.f,d,d)
 p=e.a
 l=p.r
-k=B.aY.j(p.d?0.18:0.12)
+k=B.aZ.j(p.d?0.18:0.12)
 j=A.i(10)
-h=A.N(B.aY.j(0.45),B.o,0.9)
-g=A.W(B.uf,B.aY,d,14)
+h=A.N(B.aZ.j(0.45),B.o,0.9)
+g=A.W(B.uf,B.aZ,d,14)
 e.a.toString
-p=A.I(A.a9(d,A.k(d,A.w(A.a([g,B.bF,A.e("Editar",d,d,d,d,d,A.m(d,d,B.aY,d,d,d,d,d,d,d,d,12,d,d,B.z,d,d,!0,d,d,d,d,d,d,d,d),d,d,d)],i),B.k,B.ax,B.f,d,d),B.i,d,d,new A.j(k,d,h,j,d,d,B.l),d,d,d,d,B.fX,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,l,d,d,d,d,d,d),1)
+p=A.I(A.a9(d,A.k(d,A.w(A.a([g,B.bF,A.e("Editar",d,d,d,d,d,A.m(d,d,B.aZ,d,d,d,d,d,d,d,d,12,d,d,B.z,d,d,!0,d,d,d,d,d,d,d,d),d,d,d)],i),B.k,B.ax,B.f,d,d),B.i,d,d,new A.j(k,d,h,j,d,d,B.l),d,d,d,d,B.fX,d,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,l,d,d,d,d,d,d),1)
 l=e.a
 k=l.f
 j=A.i(10)
@@ -141812,7 +141810,7 @@ r.toString
 return r.abY(0,s.aou())},
 $S:0}
 A.GY.prototype={
-q(a){var s,r,q,p=this,o=null,n=p.c,m=n?B.av:B.j,l=n?B.j:B.rV,k=n?B.R:B.J,j=n?B.yS:B.f5,i=n?B.p7:B.ex,h=A.N(B.Z.j(0.25),B.o,1),g=A.bA(a,o,t.l).w,f=A.b4(A.k(o,o,B.i,o,o,new A.j(i,o,o,A.i(2),o,o,B.l),o,4,o,o,o,o,o,36),o,o),e=A.k(o,B.B4,B.i,o,o,new A.j(o,o,o,A.i(10),o,B.Bd,B.l),o,34,o,o,o,o,o,34),d=p.d==="es",c=d?"Exportar Evoluci\xf3n":"Exportar Evolu\xe7\xe3o"
+q(a){var s,r,q,p=this,o=null,n=p.c,m=n?B.aw:B.j,l=n?B.j:B.rV,k=n?B.R:B.J,j=n?B.yS:B.f5,i=n?B.p7:B.ex,h=A.N(B.Z.j(0.25),B.o,1),g=A.bA(a,o,t.l).w,f=A.b4(A.k(o,o,B.i,o,o,new A.j(i,o,o,A.i(2),o,o,B.l),o,4,o,o,o,o,o,36),o,o),e=A.k(o,B.B4,B.i,o,o,new A.j(o,o,o,A.i(10),o,B.Bd,B.l),o,34,o,o,o,o,o,34),d=p.d==="es",c=d?"Exportar Evoluci\xf3n":"Exportar Evolu\xe7\xe3o"
 c=A.e(c,o,o,o,o,o,A.m(o,o,l,o,o,o,o,o,o,o,o,15,o,o,B.F,o,o,!0,o,o,o,o,o,o,o,o),o,o,o)
 s=d?"Selecciona el formato de exportaci\xf3n":"Selecione o formato de exporta\xe7\xe3o"
 r=t.p
@@ -141824,7 +141822,7 @@ c=d?"Evolucion Resumida":"Evolu\xe7\xe3o Resumida"
 c=A.bMx(B.Z,"INLINE",i,j,n,B.AI,B.Z,p.f,u.lW,l,k,c)
 q=d?"Pasaje de Guardia":"Passagem de Plant\xe3o"
 d=d?u.ty:u.ta
-return A.k(o,A.x(A.a([f,B.i8,s,B.aF,e,B.M,c,B.M,A.bMx(B.aY,"30s",i,j,n,B.AY,B.aY,p.r,d,l,k,q),B.M],r),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,h,B.cv,o,o,B.l),o,o,o,o,new A.L(20,12,20,20+g.w.d),o,o,o)}}
+return A.k(o,A.x(A.a([f,B.i8,s,B.aF,e,B.M,c,B.M,A.bMx(B.aZ,"30s",i,j,n,B.AY,B.aZ,p.r,d,l,k,q),B.M],r),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,h,B.cv,o,o,B.l),o,o,o,o,new A.L(20,12,20,20+g.w.d),o,o,o)}}
 A.ait.prototype={
 q(a){var s,r,q,p,o=this,n=null,m=A.i(14),l=A.N(o.r,B.o,0.9),k=o.e,j=k.j(o.c?0.15:0.1),i=A.i(12)
 i=A.k(n,A.W(o.d,k,n,20),B.i,n,n,new A.j(j,n,n,i,n,n,B.l),n,42,n,n,n,n,n,42)
@@ -141837,7 +141835,7 @@ p=o.x
 return A.a9(n,A.k(n,A.w(A.a([i,B.aU,A.I(A.x(A.a([A.w(A.a([new A.dG(1,B.bP,j,n),B.af,A.k(n,A.e(o.Q,n,n,n,n,n,A.m(n,n,k,n,n,n,n,n,n,n,n,9,n,n,B.F,n,n,!0,n,0.5,n,n,n,n,n,n),n,n,n),B.i,n,n,new A.j(s,n,n,r,n,n,B.l),n,n,n,n,B.ey,n,n,n)],q),B.k,B.e,B.f,n,n),B.bG,A.e(o.z,n,n,n,n,n,A.m(n,n,p,n,n,n,n,n,n,n,n,11.5,n,n,n,n,1.3,!0,n,n,n,n,n,n,n,n),n,n,n)],q),B.r,B.e,B.f),1),B.L,A.W(B.dc,p,n,18)],q),B.k,B.e,B.f,n,n),B.i,n,n,new A.j(o.f,n,l,m,n,n,B.l),n,n,n,n,B.br,n,n,1/0),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,o.at,n,n,n,n,n,n)},
 gbO(a){return this.y}}
 A.Ha.prototype={
-q(a){var s=this,r=s.f,q=r?B.av:B.j,p=r?B.ajn:B.pg,o=A.O(s.d,t.Nb),n=s.e,m=n.d,l=n.e
+q(a){var s=this,r=s.f,q=r?B.aw:B.j,p=r?B.ajn:B.pg,o=A.O(s.d,t.Nb),n=s.e,m=n.d,l=n.e
 if(m.a.length!==0||m.b!=null||!l.a.gak(0)||l.b.a.length!==0||n.f.c.length!==0||n.r.a.length!==0)o.push(n)
 return A.nX(new A.bd7(s,q,new A.iA(r),a,p,o),!1,0.92,0.97,0.5)},
 a_d(a,b){var s=null
@@ -141988,7 +141986,7 @@ o=p.c.a4(t.q).f
 p.a.toString
 o.cU(A.d8(null,null,null,B.aT,B.bJ,B.G,null,A.w(A.a([B.aH3,B.L,A.e("Registro eliminado definitivamente",null,null,null,null,null,null,null,null,null)],t.p),B.k,B.e,B.f,null,null),null,B.eh,null,null,null,null,null,null,new A.br(A.i(12),B.w),null,null))}case 1:return A.A(q,r)}})
 return A.B($async$zx,r)},
-q(a){var s=this.a.d,r=s?B.av:B.j
+q(a){var s=this.a.d,r=s?B.aw:B.j
 return A.nX(new A.bDJ(this,r,new A.iA(s),a),!1,0.7,0.94,0.4)}}
 A.bDB.prototype={
 $0(){return this.a.e=this.b.a},
@@ -141997,7 +141995,7 @@ A.bDC.prototype={
 $0(){return this.a.e=null},
 $S:0}
 A.bDy.prototype={
-$1(a){var s,r,q=null,p=this.a,o=p.a.d?B.av:B.j,n=A.i(16),m=A.k(q,B.aI1,B.i,q,q,new A.j(B.aT.j(0.12),q,q,A.i(8),q,q,B.l),q,32,q,q,q,q,q,32),l=p.a,k=t.p
+$1(a){var s,r,q=null,p=this.a,o=p.a.d?B.aw:B.j,n=A.i(16),m=A.k(q,B.aI1,B.i,q,q,new A.j(B.aT.j(0.12),q,q,A.i(8),q,q,B.l),q,32,q,q,q,q,q,32),l=p.a,k=t.p
 m=A.w(A.a([m,B.a4,A.I(A.e("Eliminar Definitivamente",q,q,q,q,q,A.m(q,q,l.d?B.j:B.cc,q,q,q,q,q,q,q,q,14,q,q,B.z,q,q,!0,q,q,q,q,q,q,q,q),q,q,q),1)],k),B.k,B.e,B.f,q,q)
 l=p.a
 s=l.e==="es"?"Esta acci\xf3n es irreversible. El registro ser\xe1 eliminado permanentemente del sistema.":"Esta a\xe7\xe3o \xe9 irrevers\xedvel. O registro ser\xe1 eliminado permanentemente do sistema."
@@ -142050,7 +142048,7 @@ return A.b4(A.x(A.a([s,B.a1,A.e("Buscando...",m,m,m,m,m,A.m(m,m,n.b.a?B.j.j(0.58
 if(r==null)r=A.a([],t.iT)
 s=J.ar(r)
 if(s.gak(r)){s=n.b.a
-q=A.W(B.fg,s?B.cq:B.cp,m,48)
+q=A.W(B.fh,s?B.cq:B.cp,m,48)
 p=n.a
 o=p.a.e==="es"?"Papelera vac\xeda":"Lixeira vazia"
 o=A.e(o,m,m,m,m,m,A.m(m,m,s?B.j.j(0.58):B.bq,m,m,m,m,m,m,m,m,15,m,m,B.O,m,m,!0,m,m,m,m,m,m,m,m),m,m,m)
@@ -142798,18 +142796,18 @@ s=A.q(s,r,"")
 r=A.V("\\.$",!0,!1,!1,!1)
 return A.q(s,r,"")},
 ap_(a){var s
-if(a.f===B.dT)return B.Gi
+if(a.f===B.dS)return B.Gi
 s=a.r
 if(s<0.7)return B.ain
 if(s<0.85)return B.I9
 return B.al0},
-ap0(a){if(a.f===B.dT)return B.jo
-if(a.r<0.85)return B.aY.j(0.55)
+ap0(a){if(a.f===B.dS)return B.jo
+if(a.r<0.85)return B.aZ.j(0.55)
 return B.yf},
 azj(a){switch(a.a){case 3:return B.aT
-case 2:return B.aY
+case 2:return B.aZ
 case 0:return B.mG
-case 1:return B.dY}},
+case 1:return B.dX}},
 azk(a){var s=this.a.d
 switch(a.a){case 3:return"Cr\xedtico"
 case 2:return"Alto"
@@ -142831,7 +142829,7 @@ p=A.x(A.a([j,A.e(""+q+" "+p,l,l,l,l,l,B.ecO,l,l,l)],o),B.r,B.e,B.f)
 j=A.awM(A.a([A.bUF(B.aJ_,A.e("Reanalisar",l,l,l,l,l,B.eak,l,l,l),new A.bpk(a),l)],o),l,B.Ip,l,0,B.pp,l,l,l,p,0)
 q=A.x(A.a([new A.alZ(s,r,k,l),A.I(A.jj(!0,!0,l,l,new A.bpl(m,k),m.d.length,l,l,B.aBz,l,B.ai,!1),1)],o),B.k,B.e,B.f)
 p=m.f?l:m.gaqf()
-n=A.hl(l,l,B.dY,B.T,l,l,l,l,l,B.H,l,B.e6K,l,l,new A.br(A.i(14),B.w),l,l,l,l,l)
+n=A.hl(l,l,B.dX,B.T,l,l,l,l,l,B.H,l,B.e6K,l,l,new A.br(A.i(14),B.w),l,l,l,l,l)
 if(m.f)o=B.e6X
 else o=A.w(A.a([B.aIw,B.L,A.e(k?"Confirmar y Calcular":"Confirmar e Calcular",l,l,l,l,l,B.a6o,l,l,l)],o),B.k,B.ax,B.f,l,l)
 return A.j0(j,B.Ip,q,A.eQ(!0,A.k(l,A.ki(!1,o,l,l,l,l,l,l,p,l,n),B.i,l,l,new A.j(B.rC,l,B.a9a,l,l,l,B.l),l,l,l,l,B.aBO,l,l,l),!0,B.aj,!0,!0),l,l,!1,l)}}
@@ -142858,7 +142856,7 @@ A.bph.prototype={
 $1(a){return new A.IF(this.b,this.c,this.d,null)},
 $S:935}
 A.bpi.prototype={
-$1(a){return a.f===B.dT},
+$1(a){return a.f===B.dS},
 $S:94}
 A.bpj.prototype={
 $1(a){return a.r<0.7},
@@ -142883,8 +142881,8 @@ m=h.a.d
 n=n.r
 l=B.q.a1(n*100,0)
 k=n>=0.85
-if(k)j=B.dY
-else j=n>=0.7?B.aY:B.mL
+if(k)j=B.dX
+else j=n>=0.7?B.aZ:B.mL
 return new A.HZ(g,s,r,q,p,o,A.w(A.a([A.W(k?B.ko:B.cR,j,i,12),B.b0,A.e(h.aqc(n,m.toLowerCase()==="es")+" \xb7 "+l+"%",i,i,i,i,i,A.m(i,i,j,i,i,i,i,i,i,i,i,11,i,i,B.O,i,i,!0,i,i,i,i,i,i,i,i),i,i,i)],t.p),B.k,B.e,B.E,i,i),this.b,i)},
 $S:937}
 A.HZ.prototype={
@@ -142895,7 +142893,7 @@ s=A.N(j.f,B.o,s)
 r=A.a([new A.aN(0,B.X,B.H.j(0.18),B.c2,6)],t.V)
 q=t.p
 p=A.a([],q)
-o=h.f===B.dT
+o=h.f===B.dS
 if(o)p.push(A.k(i,i,B.i,i,i,B.a9D,i,8,i,B.aAQ,i,i,i,8))
 p.push(new A.dG(1,B.bP,A.e(h.b,i,i,i,i,i,A.m(i,i,o?B.aT:B.pp,i,i,i,i,i,i,i,i,15,i,i,B.F,i,1.2,!0,i,i,i,i,i,i,i,i),i,i,i),i))
 p=A.a([A.w(p,B.k,B.e,B.f,i,i),B.au,j.x],q)
@@ -142911,7 +142909,7 @@ m=A.cJ(!0,B.x,!1,i,!0,B.G,i,A.cO(),j.d,i,i,i,i,i,2,A.cB(i,new A.bj(4,A.i(10),B.w
 o=A.i(6)
 l=n.j(0.12)
 k=A.N(n.j(0.3),B.o,0.8)
-q=A.a([A.w(A.a([p,B.a4,A.x(A.a([new A.aw(100,i,m,i),B.au,A.k(i,A.e(j.w,i,i,i,i,i,A.m(i,i,n,i,i,i,i,i,i,i,i,10,i,i,B.F,i,i,!0,i,0.5,i,i,i,i,i,i),i,i,i),B.i,i,i,new A.j(l,i,k,o,i,i,B.l),i,i,i,i,B.jz,i,i,i)],q),B.fx,B.e,B.f)],q),B.r,B.e,B.f,i,i)],q)
+q=A.a([A.w(A.a([p,B.a4,A.x(A.a([new A.aw(100,i,m,i),B.au,A.k(i,A.e(j.w,i,i,i,i,i,A.m(i,i,n,i,i,i,i,i,i,i,i,10,i,i,B.F,i,i,!0,i,0.5,i,i,i,i,i,i),i,i,i),B.i,i,i,new A.j(l,i,k,o,i,i,B.l),i,i,i,i,B.jz,i,i,i)],q),B.fy,B.e,B.f)],q),B.r,B.e,B.f,i,i)],q)
 h=h.w
 if(h.length!==0&&h!=="0")q.push(new A.K(B.Jj,A.e('"'+h+'"',i,1,B.a0,i,i,B.eeK,i,i,i),i))
 return A.bM(new A.K(B.zG,A.x(q,B.r,B.e,B.f),i),B.a_,new A.j(j.e,i,s,g,r,i,B.l),B.a7,i,B.cK,i,i)}}
@@ -142932,7 +142930,7 @@ s=A.N(B.yf,B.o,0.8)
 l.push(A.k(q,A.e(r.e,q,q,q,q,q,B.e9N,q,q,q),B.i,q,q,new A.j(B.rC,q,s,k,q,q,B.l),q,q,q,q,B.dD,q,q,q))
 l.push(B.aF)
 k=A.i(12)
-s=A.N(B.aY.j(0.3),B.o,1)
+s=A.N(B.aZ.j(0.3),B.o,1)
 l.push(A.k(q,A.w(A.a([B.aIV,B.L,A.I(A.e(o?"Resultado extra\xeddo autom\xe1ticamente. Cotejar con el examen original antes de cualquier decisi\xf3n cl\xednica.":"Resultado extra\xeddo automaticamente. Conferir com o exame original antes de qualquer decis\xe3o cl\xednica.",q,q,q,q,q,B.efK,q,q,q),1)],n),B.r,B.e,B.f,q,q),B.i,q,q,new A.j(B.z3,q,s,k,q,q,B.l),q,q,q,q,B.bB,q,q,q))
 return A.k(q,A.x(A.a([p,new A.K(B.aCu,m,q),new A.dG(1,B.bP,A.d1(A.x(l,B.r,B.e,B.f),q,B.t,q,B.JB,q,B.ai),q)],n),B.k,B.e,B.E),B.i,q,q,B.aai,q,q,q,q,q,q,q,q)}}
 A.byd.prototype={
@@ -142944,9 +142942,9 @@ $1(a){return new A.GQ(a,null)},
 $S:938}
 A.GQ.prototype={
 ga1U(){switch(this.c.e.a){case 3:return B.aT
-case 2:return B.aY
+case 2:return B.aZ
 case 0:return B.mG
-case 1:return B.dY}},
+case 1:return B.dX}},
 q(a){var s=null,r=A.i(14),q=A.N(this.ga1U().j(0.28),B.o,0.8),p=this.c,o=t.p
 return A.k(s,A.x(A.a([A.w(A.a([A.I(A.e(p.a,s,s,s,s,s,B.eg0,s,s,s),1),A.e(B.q.a1(p.b,2)+" "+p.c,s,s,s,s,s,A.m(s,s,this.ga1U(),s,s,s,s,s,s,s,s,18,s,s,B.D,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],o),B.k,B.nQ,B.f,s,s),B.ac,A.e(p.d,s,s,s,s,s,B.eb3,s,s,s)],o),B.r,B.e,B.f),B.i,s,s,new A.j(B.ahg,s,q,r,s,s,B.l),s,s,s,B.cK,B.br,s,s,s)}}
 A.Nu.prototype={
@@ -143324,7 +143322,7 @@ A.bpZ.prototype={
 $0(){return this.a.r=this.b},
 $S:0}
 A.an5.prototype={
-q(a){var s=null,r=t.p,q=A.dh(B.ad,A.a([B.a6u,new A.dl(B.cG,s,s,A.a9(B.aZ,B.oc,B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.brZ(a),s,s,s,s,s,s),s)],r),B.G,B.bo,s),p=this.d,o=p?"GU\xcdAS PDF":"GUIAS PDF",n=this.e
+q(a){var s=null,r=t.p,q=A.dh(B.ad,A.a([B.a6u,new A.dl(B.cG,s,s,A.a9(B.aX,B.oc,B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.brZ(a),s,s,s,s,s,s),s)],r),B.G,B.bo,s),p=this.d,o=p?"GU\xcdAS PDF":"GUIAS PDF",n=this.e
 o=A.I(new A.ws(o,0,n,s),1)
 return A.k(s,A.x(A.a([new A.K(B.zR,q,s),new A.K(B.hk,A.w(A.a([o,B.a7e,A.I(new A.ws(p?"CASOS DE ESTUDIO":"CASOS DE ESTUDO",1,n,s),1)],r),B.k,B.e,B.f,s,s),s)],r),B.k,B.e,B.E),B.i,s,s,B.FB,s,s,s,s,s,s,s,s)}}
 A.brZ.prototype={
@@ -143354,7 +143352,7 @@ $0(){var s=this.a.a
 return s.e.wq(s.d)},
 $S:0}
 A.amw.prototype={
-q(a){var s,r=this,q=null,p=A.a9(B.aZ,B.oc,B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,new A.bpI(a),q,q,q,q,q,q),o=r.d,n=o?"Actualizar gu\xedas":"Atualizar guias",m=r.r,l=m?q:r.f,k=A.i(10),j=A.i(10),i=B.j.j(0.12),h=A.N(B.j.j(0.25),B.o,1)
+q(a){var s,r=this,q=null,p=A.a9(B.aX,B.oc,B.t,!1,q,q,q,q,q,q,q,q,q,q,q,q,q,new A.bpI(a),q,q,q,q,q,q),o=r.d,n=o?"Actualizar gu\xedas":"Atualizar guias",m=r.r,l=m?q:r.f,k=A.i(10),j=A.i(10),i=B.j.j(0.12),h=A.N(B.j.j(0.25),B.o,1)
 m=m?B.dEy:B.aJo
 s=t.p
 n=A.dh(B.ad,A.a([B.a6u,new A.dl(B.cG,q,q,p,q),new A.dl(B.d9,q,q,A.w(A.a([B.L,A.t9(A.eb(!1,k,!0,A.k(q,m,B.i,q,q,new A.j(i,q,h,j,q,q,B.l),q,38,q,q,q,q,q,38),q,!0,q,q,q,q,q,q,q,q,q,q,l,q,q,q,q,q,q),n,q,q)],s),B.k,B.e,B.E,q,q),q)],s),B.G,B.bo,q)
@@ -143416,7 +143414,7 @@ p=A.i(14)
 o=A.N(B.P.j(0.3),B.o,1)
 n=A.W(B.At,B.P,j,22)
 m=f?"Casos de Estudio":"Casos de Estudo"
-m=A.e(m,j,j,j,j,j,A.m(j,j,g?B.j:B.av,j,j,j,j,j,j,j,j,14,j,j,B.D,j,j,!0,j,j,j,j,j,j,j,j),j,j,j)
+m=A.e(m,j,j,j,j,j,A.m(j,j,g?B.j:B.aw,j,j,j,j,j,j,j,j,14,j,j,B.D,j,j,!0,j,j,j,j,j,j,j,j),j,j,j)
 l=t.p
 p=A.k(j,A.w(A.a([n,B.aU,A.I(A.x(A.a([m,A.e(""+(r+i)+" casos simulados para fins educacionais",j,j,j,j,j,A.m(j,j,g?B.bb:B.H.j(0.45),j,j,j,j,j,j,j,j,12,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j,j)],l),B.r,B.e,B.f),1)],l),B.k,B.e,B.f,j,j),B.i,j,j,new A.j(q,j,o,p,j,j,B.l),j,j,j,j,B.tH,j,j,j)
 i=f?"Simulaciones":"Simula\xe7\xf5es"
@@ -143452,7 +143450,7 @@ o=l.r.length!==0?A.a9(k,B.aGQ,B.t,!1,k,k,k,k,k,k,k,k,k,k,k,k,k,new A.bad(l),k,k,
 m=B.j.j(0.08)
 o=A.a([new A.ol(A.k(k,A.cJ(!0,B.x,!1,k,!0,B.G,k,A.cO(),l.f,k,k,k,k,k,2,A.cB(k,new A.bj(4,A.i(12),new A.aA(B.j.j(0.15),1,B.o,-1)),k,B.d1,k,k,k,k,!0,new A.bj(4,A.i(12),new A.aA(B.j.j(0.15),1,B.o,-1)),k,k,k,k,k,m,!0,k,k,k,k,B.dEr,k,k,k,k,k,k,k,k,s,"Buscar caso simulado\u2026",k,k,k,k,k,k,k,k,k,!0,!0,k,B.aIh,k,k,k,k,k,k,o,k,k,k,k),B.t,!0,k,!0,k,!1,k,B.aR,k,k,k,k,k,k,k,1,k,k,!1,"\u2022",k,k,k,k,k,!1,k,k,!1,k,!0,k,B.aK,k,k,B.aO,B.aM,k,k,k,k,k,k,B.Ei,!0,B.am,k,B.bt,k,k,k,k),B.i,B.aG,k,k,k,k,k,k,B.JD,k,k,k),k)],t.p)
 if(l.r.length===0){s=b?B.aa:B.Hz
-o.push(new A.ol(A.k(k,A.d1(A.w(A.fZ(10,new A.bae(l,c,b),!0,t.n),B.k,B.e,B.f,k,k),k,B.t,k,k,k,B.bm),B.i,s,k,k,k,k,k,k,B.ff,k,k,k),k))}s=l.r
+o.push(new A.ol(A.k(k,A.d1(A.w(A.fZ(10,new A.bae(l,c,b),!0,t.n),B.k,B.e,B.f,k,k),k,B.t,k,k,k,B.bm),B.i,s,k,k,k,k,k,k,B.fg,k,k,k),k))}s=l.r
 if(s.length!==0){m=b?B.aa:B.Hz
 j=j.a.length
 o.push(new A.ol(A.k(k,A.e(""+j+' resultado(s) para "'+s+'"',k,k,k,k,k,A.m(k,k,b?B.bb:B.H.j(0.45),k,k,k,k,k,k,k,k,11,k,k,B.O,k,k,!0,k,k,k,k,k,k,k,k),k,k,k),B.i,m,k,k,k,k,k,k,B.aCa,k,k,1/0),k))}o.push(n)
@@ -143611,7 +143609,7 @@ l=t.p
 i=A.I(A.x(A.a([p,B.bG,A.e(""+m+" "+i,j,j,j,j,j,A.m(j,j,n.j(0.55),j,j,j,j,j,j,j,j,11,j,j,B.O,j,j,!0,j,j,j,j,j,j,j,j),j,j,j)],l),B.r,B.e,B.f),1)
 h=h.j(0.6)
 m=A.i(9)
-return A.a9(B.aZ,A.k(j,A.w(A.a([o,B.e8,i,A.k(j,A.W(B.dc,n.j(0.8),j,20),B.i,j,j,new A.j(h,j,j,m,j,j,B.l),j,32,j,j,j,j,j,32)],l),B.k,B.e,B.f,j,j),B.i,j,j,new A.j(k.f,j,r,q,j,j,B.l),j,j,j,j,B.eS,j,j,j),B.t,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,new A.bja(k,a,s,g),j,j,j,j,j,j)}}
+return A.a9(B.aX,A.k(j,A.w(A.a([o,B.e8,i,A.k(j,A.W(B.dc,n.j(0.8),j,20),B.i,j,j,new A.j(h,j,j,m,j,j,B.l),j,32,j,j,j,j,j,32)],l),B.k,B.e,B.f,j,j),B.i,j,j,new A.j(k.f,j,r,q,j,j,B.l),j,j,j,j,B.eS,j,j,j),B.t,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,new A.bja(k,a,s,g),j,j,j,j,j,j)}}
 A.bj9.prototype={
 $1(a){return this.a.x.l(0,a.a)},
 $S:19}
@@ -143686,7 +143684,7 @@ d.push(A.k(o,A.x(A.a([A.W(B.nt,k,o,24),A.e("PDF",o,o,o,o,o,A.m(o,o,k,o,o,o,o,o,o
 b=A.i(20)
 s=k.j(0.12)
 b=A.k(o,A.e(c.d,o,o,o,o,o,A.m(o,o,k,o,o,o,o,o,o,o,o,10,o,o,B.F,o,o,!0,o,o,o,o,o,o,o,o),o,o,o),B.i,o,o,new A.j(s,o,o,b,o,o,B.l),o,o,o,o,B.jz,o,o,o)
-b=A.a([b,B.ac,A.e(c.b,o,o,o,o,o,A.m(o,o,n?B.j:B.av,o,o,o,o,o,o,o,o,14,o,o,B.F,o,1.3,!0,o,o,o,o,o,o,o,o),o,o,o)],e)
+b=A.a([b,B.ac,A.e(c.b,o,o,o,o,o,A.m(o,o,n?B.j:B.aw,o,o,o,o,o,o,o,o,14,o,o,B.F,o,1.3,!0,o,o,o,o,o,o,o,o),o,o,o)],e)
 s=c.e
 r=s.length===0
 if(!r||c.f.length!==0){q=A.a([],t.s)
@@ -144004,7 +144002,7 @@ r=j.fr==="es"?"Herramienta de apoyo cl\xednico educativo. No sustituye el juicio
 m.push(A.e(r,i,i,i,i,i,A.m(i,i,B.dw.j(0.55),i,i,i,i,i,i,i,i,9.5,i,i,B.ab,i,1.5,!0,i,i,i,i,i,i,i,i),B.ar,i,i))
 m=A.x(m,B.dm,B.e,B.f)
 s.push(A.eF(0,A.b4(new A.aw(f,i,A.pG(A.k(i,A.d1(new A.MC(m,B.rn,j.CW),i,B.t,i,new A.L(28,28,28,h.r.d+24),i,B.ai),B.i,i,i,B.aak,i,i,i,i,i,i,i,i),q,i,!0),i),i,i),i,i,0,0,g.b*0.42-20,i))
-return A.j0(i,B.av,A.dh(B.bS,s,B.G,B.bo,i),i,i,i,!1,i)},
+return A.j0(i,B.aw,A.dh(B.bS,s,B.G,B.bo,i),i,i,i,!1,i)},
 aoC(){var s=t.s
 return A.w(A.fZ(2,new A.bqk(this,this.fr==="es"?A.a(["Cuenta","Perfil"],s):A.a(["Conta","Perfil"],s)),!0,t.n),B.k,B.e,B.f,null,null)},
 azS(){var s=this,r=s.zi("E-mail institucional",s.as,B.Az,B.x2,new A.bqs(s)),q=s.a_H(),p=s.w,o=s.fr==="es"?"Mantener sesi\xf3n activa":"Manter-me conectado"
@@ -144420,7 +144418,7 @@ if(j.d==null)j=j.f==="es"?"Nueva anotaci\xf3n":"Nova anota\xe7\xe3o"
 else j=j.f==="es"?"Editar anotaci\xf3n":"Editar anota\xe7\xe3o"
 i=t.p
 j=A.a([A.I(A.e(j,a0,a0,a0,a0,a0,A.m(a0,a0,q,a0,a0,a0,a0,a0,a0,a0,a0,16,a0,a0,B.D,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),a0,a0,a0),1)],i)
-if(a.a.d!=null)j.push(A.a9(a0,A.k(a0,A.W(B.fg,B.ed,a0,18),B.i,a0,a0,a0,a0,a0,a0,a0,B.bO,a0,a0,a0),B.t,!1,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,new A.aSd(a3),a0,a0,a0,a0,a0,a0))
+if(a.a.d!=null)j.push(A.a9(a0,A.k(a0,A.W(B.fh,B.ed,a0,18),B.i,a0,a0,a0,a0,a0,a0,a0,B.bO,a0,a0,a0),B.t,!1,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,new A.aSd(a3),a0,a0,a0,a0,a0,a0))
 j=A.w(j,B.k,B.e,B.f,a0,a0)
 h=a.a.f==="es"?"Color:":"Cor:"
 h=A.a([A.e(h,a0,a0,a0,a0,a0,A.m(a0,a0,p,a0,a0,a0,a0,a0,a0,a0,a0,11,a0,a0,B.z,a0,a0,!0,a0,0.5,a0,a0,a0,a0,a0,a0),a0,a0,a0),B.a4],i)
@@ -144504,11 +144502,11 @@ r=l?26:22
 q=l?26:22
 p=this.b
 o=p?a.c:a.b
-if(l)l=p?B.ew:B.av
+if(l)l=p?B.ew:B.aw
 else l=a.d.j(0.5)
 s=m.r===s
 l=A.N(l,B.o,s?2.5:1)
-if(s)s=A.W(B.jD,p?B.bd:B.av,n,13)
+if(s)s=A.W(B.jD,p?B.bd:B.aw,n,13)
 else s=n
 return A.a9(n,A.bM(s,B.a_,new A.j(o,n,l,n,n,n,B.ap),B.d0,q,B.fc,n,r),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,new A.aSc(m,a),n,n,n,n,n,n)},
 $S:960}
@@ -144655,7 +144653,7 @@ A.bvg.prototype={
 $1(a){return A.I(new A.K(new A.L(0,0,a===B.d.gX(B.Rg)?0:8,0),new A.aiM(a,this.a.gNU(),null),null),1)},
 $S:963}
 A.aj9.prototype={
-q(a){var s,r,q,p,o=null,n=B.e_.j(0.12),m=A.i(6),l=A.N(B.cr.j(0.55),B.o,1)
+q(a){var s,r,q,p,o=null,n=B.dZ.j(0.12),m=A.i(6),l=A.N(B.cr.j(0.55),B.o,1)
 m=A.k(o,A.b4(A.MX("assets/icon/app_icon.png",o,B.y_,24,24),o,o),B.i,o,o,new A.j(B.mS,o,l,m,o,o,B.l),o,38,o,o,o,o,o,38)
 l=A.e("MedCases Pro",o,o,o,o,o,B.a5O,o,o,o)
 s=this.c
@@ -144688,14 +144686,14 @@ q(a){var s=null,r=A.i(10),q=A.N(B.l7.j(0.25),B.o,1),p=A.i(6),o=B.l7.j(0.12),n=th
 return A.a9(s,A.k(s,A.x(A.a([A.k(s,A.W(n.a,B.l7,s,18),B.i,s,s,new A.j(o,s,s,p,s,s,B.l),s,36,s,s,s,s,s,36),B.M,A.e(n.b,s,s,s,s,s,B.eh2,s,s,s),B.bG,A.e(n.c,s,2,B.a0,s,s,B.eek,s,s,s),B.bG,A.e(n.d,s,2,B.a0,s,s,B.eeq,s,s,s),B.K,A.w(A.a([A.k(s,s,B.i,s,s,B.a9P,s,6,s,s,s,s,s,6),B.bF,B.ejf],m),B.k,B.e,B.f,s,s)],m),B.r,B.e,B.f),B.i,s,s,new A.j(B.mS,s,q,r,s,s,B.l),s,s,s,s,B.bB,s,s,s),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,this.d,s,s,s,s,s,s)},
 cc(a){return this.c.$0()}}
 A.alO.prototype={
-q(a){var s,r,q,p=null,o=this.c,n=A.i(14),m=A.N(B.e_.j(0.2),B.o,1),l=t.V,k=A.a([new A.aN(0,B.X,B.e_.j(0.22),B.I,20),new A.aN(6,B.X,B.e_.j(0.1),B.eq,55)],l),j=A.k(p,B.aIH,B.i,p,p,new A.j(B.e_.j(0.1),p,A.N(B.e_.j(0.3),B.o,1),p,A.a([new A.aN(0,B.X,B.e_.j(0.18),B.I,10)],l),p,B.ap),p,38,p,p,p,p,p,38),i=this.d,h=A.e(i?"Asistente IA Cl\xednico":"Assistente IA Cl\xednico",p,p,p,p,p,B.a5O,p,p,p),g=t.p
+q(a){var s,r,q,p=null,o=this.c,n=A.i(14),m=A.N(B.dZ.j(0.2),B.o,1),l=t.V,k=A.a([new A.aN(0,B.X,B.dZ.j(0.22),B.I,20),new A.aN(6,B.X,B.dZ.j(0.1),B.eq,55)],l),j=A.k(p,B.aIH,B.i,p,p,new A.j(B.dZ.j(0.1),p,A.N(B.dZ.j(0.3),B.o,1),p,A.a([new A.aN(0,B.X,B.dZ.j(0.18),B.I,10)],l),p,B.ap),p,38,p,p,p,p,p,38),i=this.d,h=A.e(i?"Asistente IA Cl\xednico":"Assistente IA Cl\xednico",p,p,p,p,p,B.a5O,p,p,p),g=t.p
 h=A.I(A.x(A.a([h,A.e(i?"Respuestas basadas en evidencia":"Respostas baseadas em evid\xeancias",p,p,p,p,p,B.efP,p,p,p)],g),B.r,B.e,B.f),1)
 s=A.i(4)
-r=B.e_.j(0.1)
-q=A.N(B.e_.j(0.28),B.o,0.8)
+r=B.dZ.j(0.1)
+q=A.N(B.dZ.j(0.28),B.o,0.8)
 s=A.w(A.a([j,B.aU,h,A.k(p,A.w(A.a([A.k(p,p,B.i,p,p,B.FD,p,5,p,p,p,p,p,5),B.bF,B.eir],g),B.k,B.e,B.E,p,p),B.i,p,p,new A.j(r,p,q,s,p,p,B.l),p,p,p,p,B.jA,p,p,p)],g),B.k,B.e,B.f,p,p)
 q=A.i(8)
-r=A.N(B.e_.j(0.12),B.o,0.8)
+r=A.N(B.dZ.j(0.12),B.o,0.8)
 h=A.k(p,p,B.i,p,p,B.FD,p,5,p,p,p,p,p,5)
 j=A.w(A.a([h,B.af,A.e("IA MedCases responde:",p,p,p,p,p,B.eea,p,p,p)],g),B.k,B.e,B.f,p,p)
 j=A.k(p,A.x(A.a([j,B.wW,A.e(i?"Noradrenalina 0,1\u20130,2 \u03bcg/kg/min IV em bomba. Titular conforme PAM \u2265 65 mmHg. Acesso venoso central preferencial...":"Noradrenalina 0,1\u20130,2 \u03bcg/kg/min IV em bomba. Titular conforme PAM \u2265 65 mmHg. Acesso venoso central preferencialmente...",p,3,B.a0,p,p,B.eb6,p,p,p)],g),B.r,B.e,B.f),B.i,p,p,new A.j(B.yd,p,r,q,p,p,B.l),p,p,p,p,B.bB,p,p,p)
@@ -144703,21 +144701,21 @@ h=t.LA
 i=A.O(new A.P(B.bgr,new A.bn0(this),h),h.i("al.E"))
 i=A.d1(A.w(i,B.k,B.e,B.f,p,p),p,B.t,p,p,p,B.bm)
 h=A.i(8)
-r=A.N(B.e_.j(0.3),B.o,1)
-q=A.a([new A.aN(0,B.X,B.e_.j(0.08),B.I,8)],l)
-return A.a9(p,A.k(p,A.x(A.a([s,B.az,j,B.a1,i,B.a1,A.a9(p,A.k(p,A.w(A.a([B.aK6,B.L,A.I(A.e("Consultar caso cl\xednico...",p,p,p,p,p,B.ebe,p,p,p),1),A.k(p,B.aHI,B.i,p,p,new A.j(p,p,p,A.i(5),A.a([new A.aN(0,B.X,B.e_.j(0.25),B.I,8)],l),B.aLC,B.l),p,p,p,p,B.hL,p,p,p)],g),B.k,B.e,B.f,p,p),B.i,p,p,new A.j(B.yd,p,r,h,q,p,B.l),p,46,p,p,B.ei,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,o,p,p,p,p,p,p)],g),B.r,B.e,B.f),B.i,p,p,new A.j(p,p,m,n,k,B.dHN,B.l),p,p,p,p,B.dD,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,o,p,p,p,p,p,p)}}
+r=A.N(B.dZ.j(0.3),B.o,1)
+q=A.a([new A.aN(0,B.X,B.dZ.j(0.08),B.I,8)],l)
+return A.a9(p,A.k(p,A.x(A.a([s,B.az,j,B.a1,i,B.a1,A.a9(p,A.k(p,A.w(A.a([B.aK6,B.L,A.I(A.e("Consultar caso cl\xednico...",p,p,p,p,p,B.ebe,p,p,p),1),A.k(p,B.aHI,B.i,p,p,new A.j(p,p,p,A.i(5),A.a([new A.aN(0,B.X,B.dZ.j(0.25),B.I,8)],l),B.aLC,B.l),p,p,p,p,B.hL,p,p,p)],g),B.k,B.e,B.f,p,p),B.i,p,p,new A.j(B.yd,p,r,h,q,p,B.l),p,46,p,p,B.ei,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,o,p,p,p,p,p,p)],g),B.r,B.e,B.f),B.i,p,p,new A.j(p,p,m,n,k,B.dHN,B.l),p,p,p,p,B.dD,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,o,p,p,p,p,p,p)}}
 A.bn0.prototype={
-$1(a){var s=null,r=A.i(5),q=A.N(B.e_.j(0.15),B.o,0.8)
+$1(a){var s=null,r=A.i(5),q=A.N(B.dZ.j(0.15),B.o,0.8)
 return A.a9(s,A.k(s,A.e(a,s,s,s,s,s,B.eg4,s,s,s),B.i,s,s,new A.j(B.yd,s,q,r,s,s,B.l),s,s,s,B.fc,B.kg,s,s,s),B.t,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,this.a.c,s,s,s,s,s,s)},
 $S:70}
 A.amW.prototype={
 q(a){var s=null,r=A.I(new A.VT(B.fF,B.Gq,"+2.400","Condutas M\xe9dicas","Guiadas por IA",B.AZ,s),1),q=this.c,p=q?"Actualizaci\xf3n":"Atualiza\xe7\xe3o"
 return A.w(A.a([r,B.a4,A.I(new A.VT(B.ko,B.Gq,"100%",p,q?"Por comit\xe9 experto":"Cont\xednua por experts",B.Lp,s),1)],t.p),B.k,B.e,B.f,s,s)}}
 A.VT.prototype={
-q(a){var s,r=this,q=null,p=A.i(12),o=A.N(B.e_.j(0.15),B.o,0.9),n=t.V,m=A.a([new A.aN(0,B.X,B.e_.j(0.1),B.c2,16)],n),l=A.N(B.e_.j(0.22),B.o,1)
-n=A.a([new A.aN(0,B.X,B.e_.j(0.14),B.I,8)],n)
+q(a){var s,r=this,q=null,p=A.i(12),o=A.N(B.dZ.j(0.15),B.o,0.9),n=t.V,m=A.a([new A.aN(0,B.X,B.dZ.j(0.1),B.c2,16)],n),l=A.N(B.dZ.j(0.22),B.o,1)
+n=A.a([new A.aN(0,B.X,B.dZ.j(0.14),B.I,8)],n)
 s=t.p
-return A.k(q,A.x(A.a([A.k(q,A.W(r.c,B.mV,q,18),B.i,q,q,new A.j(r.d,q,l,q,n,q,B.ap),q,40,q,q,q,q,q,40),B.a1,A.e(r.e,q,q,q,q,q,B.edA,q,q,q),B.au,A.e(r.f,q,1,B.a0,q,q,B.efM,q,q,q),B.bw,A.w(A.a([A.I(A.e(r.r,q,2,B.a0,q,q,B.ece,q,q,q),1),B.b0,A.W(r.w,B.e_.j(0.55),q,13)],s),B.k,B.e,B.f,q,q)],s),B.r,B.e,B.f),B.i,q,q,new A.j(B.mS,q,o,p,m,q,B.l),q,q,q,q,B.aBD,q,q,q)},
+return A.k(q,A.x(A.a([A.k(q,A.W(r.c,B.mV,q,18),B.i,q,q,new A.j(r.d,q,l,q,n,q,B.ap),q,40,q,q,q,q,q,40),B.a1,A.e(r.e,q,q,q,q,q,B.edA,q,q,q),B.au,A.e(r.f,q,1,B.a0,q,q,B.efM,q,q,q),B.bw,A.w(A.a([A.I(A.e(r.r,q,2,B.a0,q,q,B.ece,q,q,q),1),B.b0,A.W(r.w,B.dZ.j(0.55),q,13)],s),B.k,B.e,B.f,q,q)],s),B.r,B.e,B.f),B.i,q,q,new A.j(B.mS,q,o,p,m,q,B.l),q,q,q,q,B.aBD,q,q,q)},
 gbO(a){return this.f}}
 A.aiP.prototype={
 q(a){var s=null,r=A.bA(a,s,t.l).w,q=A.hl(s,s,B.f9,s,s,s,0,s,s,B.j,s,s,s,s,new A.br(A.i(8),B.w),s,s,s,s,s),p=t.p
@@ -144747,7 +144745,7 @@ n=i?"modelos educativos":"modelos educacionais"
 q=A.k(l,A.e(""+o+" "+n,l,l,l,l,l,A.m(l,l,j?B.t3:B.cX,l,l,l,l,l,l,l,l,11,l,l,B.z,l,l,!0,l,l,l,l,l,l,l,l),l,l,l),B.i,l,l,new A.j(p,l,l,q,l,l,B.l),l,l,l,l,B.hK,l,l,l)
 g=A.x(A.a([g,B.M,r,B.ac,A.w(A.a([q,B.L,A.e(i?"\u2022 Basados en evidencia cient\xedfica":"\u2022 Baseados em evid\xeancia cient\xedfica",l,l,l,l,l,B.e9u,l,l,l)],f),B.k,B.e,B.f,l,l)],f),B.r,B.e,B.f)
 r=e.length
-return A.x(A.a([new A.Uh(j,i,l),new A.K(B.dS,g,l),B.ac,A.I(r===0?new A.aks(j,i,l):A.jj(!0,!0,l,l,new A.bvq(e,i,j),r,l,l,B.aAC,l,B.ai,!1),1)],f),B.k,B.e,B.f)}}
+return A.x(A.a([new A.Uh(j,i,l),new A.K(B.e1,g,l),B.ac,A.I(r===0?new A.aks(j,i,l):A.jj(!0,!0,l,l,new A.bvq(e,i,j),r,l,l,B.aAC,l,B.ai,!1),1)],f),B.k,B.e,B.f)}}
 A.bvl.prototype={
 $1(a){var s,r=this.a,q=r.d,p=q.length===0||B.c.l(a.b.toLowerCase(),q.toLowerCase())||B.c.l(a.d.toLowerCase(),q.toLowerCase())
 r=r.e
@@ -144847,7 +144845,7 @@ else o=o?B.bb:B.ym
 return A.a9(p,A.bM(A.e(q.c,p,p,p,p,p,A.m(p,p,o,p,p,p,p,p,p,p,p,11,p,p,r,p,p,!0,p,p,p,p,p,p,p,p),p,p,p),B.a_,new A.j(h,p,s,j,p,p,B.l),B.kf,p,p,B.n8,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,q.f,p,p,p,p,p,p)}}
 A.ai2.prototype={
 q(a){var s=null,r=this.d,q=r?B.In:B.eM.j(0.05),p=A.i(10),o=A.N(r?B.im:B.eM.j(0.1),B.o,1),n=A.k(s,s,B.i,s,s,new A.j(B.iu,s,s,A.i(2),s,s,B.l),s,14,s,s,s,s,s,3),m=A.W(B.fF,r?B.iu:B.ajo,s,12),l=A.e(this.c.toUpperCase(),s,s,s,s,s,A.m(s,s,r?B.iu:B.eM,s,s,s,s,s,s,s,s,9.5,s,s,B.D,s,s,!0,s,1.8,s,s,s,s,s,s),s,s,s),k=A.i(4),j=r?B.im:B.cX.j(0.08)
-return new A.K(B.aC6,A.k(s,A.w(A.a([n,B.L,m,B.bF,l,B.bZ,A.k(s,A.e("MODELOS EDUCATIVOS",s,s,s,s,s,A.m(s,s,r?B.ys:B.cX,s,s,s,s,s,s,s,s,7.5,s,s,B.F,s,s,!0,s,0.8,s,s,s,s,s,s),s,s,s),B.i,s,s,new A.j(j,s,s,k,s,s,B.l),s,s,s,s,B.JS,s,s,s)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(q,s,o,p,s,s,B.l),s,s,s,s,B.ff,s,s,s),s)}}
+return new A.K(B.aC6,A.k(s,A.w(A.a([n,B.L,m,B.bF,l,B.bZ,A.k(s,A.e("MODELOS EDUCATIVOS",s,s,s,s,s,A.m(s,s,r?B.ys:B.cX,s,s,s,s,s,s,s,s,7.5,s,s,B.F,s,s,!0,s,0.8,s,s,s,s,s,s),s,s,s),B.i,s,s,new A.j(j,s,s,k,s,s,B.l),s,s,s,s,B.JS,s,s,s)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(q,s,o,p,s,s,B.l),s,s,s,s,B.fg,s,s,s),s)}}
 A.Wz.prototype={
 S(){return new A.WA()}}
 A.WA.prototype={
@@ -144883,11 +144881,11 @@ l=A.a9(a2,new A.K(B.zT,A.W(m,l,a2,20),a2),B.t,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a
 m=a1.e
 k=a1.gaEg()
 j=a1.d?0.5:0
-a3=A.w(A.a([n,B.aU,a3,B.af,A.w(A.a([l,new A.ais(m,a4,a5,k,a2),B.b0,A.mG(A.W(B.hP,a4?B.bc:B.dZ,a2,20),B.dC,j)],o),B.k,B.e,B.E,a2,a2)],o),B.k,B.e,B.f,a2,a2)
+a3=A.w(A.a([n,B.aU,a3,B.af,A.w(A.a([l,new A.ais(m,a4,a5,k,a2),B.b0,A.mG(A.W(B.hP,a4?B.bc:B.dY,a2,20),B.dC,j)],o),B.k,B.e,B.E,a2,a2)],o),B.k,B.e,B.f,a2,a2)
 n=a5?"\u2713 Basado en evidencia":"\u2713 Baseado em evid\xeancia"
 m=a5?"\u2713 Actualizado":"\u2713 Atualizado"
 l=a6.as
-m=A.a9(B.aZ,new A.K(B.aBB,A.x(A.a([a3,B.M,A.dB(B.an,A.a([new A.BJ(B.ho,"\u2713 Revisado",a4,B.cX,a2),new A.BJ(B.d2,n,a4,B.cX,a2),new A.BJ(B.B_,m,a4,B.cX,a2),new A.BJ(B.fF,l,a4,B.iu,a2)],o),B.bH,4,5)],o),B.r,B.e,B.f),a2),B.t,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,new A.bvw(a1),a2,a2,a2,a2,a2,a2)
+m=A.a9(B.aX,new A.K(B.aBB,A.x(A.a([a3,B.M,A.dB(B.an,A.a([new A.BJ(B.ho,"\u2713 Revisado",a4,B.cX,a2),new A.BJ(B.d2,n,a4,B.cX,a2),new A.BJ(B.B_,m,a4,B.cX,a2),new A.BJ(B.fF,l,a4,B.iu,a2)],o),B.bH,4,5)],o),B.r,B.e,B.f),a2),B.t,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,new A.bvw(a1),a2,a2,a2,a2,a2,a2)
 a3=a1.d?B.iv:B.jt
 n=A.a([A.ej(a9,a2,1,a2,a2)],o)
 j=a6.r
@@ -144986,7 +144984,7 @@ return null},
 $S:0}
 A.bvx.prototype={
 $1(a){var s=null,r=A.i(6),q=this.a,p=q?B.ye.j(0.7):B.bA.j(0.06),o=A.N(q?B.ai4:B.bA.j(0.2),B.o,1),n=A.W(B.AU,q?B.yh:B.bA,s,11)
-return A.k(s,A.w(A.a([n,B.bF,A.e(a,s,s,s,s,s,A.m(s,s,q?B.yh:B.fw,s,s,s,s,s,s,s,s,10.5,s,s,B.O,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.e,B.E,s,s),B.i,s,s,new A.j(p,s,o,r,s,s,B.l),s,s,s,s,B.pP,s,s,s)},
+return A.k(s,A.w(A.a([n,B.bF,A.e(a,s,s,s,s,s,A.m(s,s,q?B.yh:B.fx,s,s,s,s,s,s,s,s,10.5,s,s,B.O,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.e,B.E,s,s),B.i,s,s,new A.j(p,s,o,r,s,s,B.l),s,s,s,s,B.pP,s,s,s)},
 $S:92}
 A.bvy.prototype={
 $0(){var s=this.a
@@ -145090,7 +145088,7 @@ n=A.k(g,A.e(l,g,g,g,g,g,A.m(g,g,d?B.mH:B.dy,g,g,g,g,g,g,g,g,9,g,g,B.z,g,g,!0,g,g
 m=h.r
 l=m?0.5:0
 k=t.p
-l=A.a9(B.aZ,new A.K(B.cs,A.w(A.a([f,B.dh,o,B.L,n,B.bZ,A.mG(A.W(B.hP,d?B.bc:B.dZ,g,16),B.a7,l)],k),B.k,B.e,B.f,g,g),g),B.t,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,h.w,g,g,g,g,g,g)
+l=A.a9(B.aX,new A.K(B.cs,A.w(A.a([f,B.dh,o,B.L,n,B.bZ,A.mG(A.W(B.hP,d?B.bc:B.dY,g,16),B.a7,l)],k),B.k,B.e,B.f,g,g),g),B.t,!1,g,g,g,g,g,g,g,g,g,g,g,g,g,h.w,g,g,g,g,g,g)
 f=m?B.iv:B.jt
 o=A.a([],k)
 if(r){n=new A.fC(e,A.S(e).i("fC<1>"))
@@ -145150,7 +145148,7 @@ else l=o.d?B.a8:B.eM
 return A.a9(n,A.bM(A.w(A.a([p,B.bF,A.e(q,n,n,n,n,n,A.m(n,n,l,n,n,n,n,n,n,n,n,11,n,n,B.z,n,n,!0,n,n,n,n,n,n,n,n),n,n,n)],t.p),B.k,B.e,B.E,n,n),B.a_,new A.j(s,n,r,m,n,n,B.l),B.a7,n,n,B.fY,n),B.t,!1,n,n,n,n,n,n,n,n,n,n,n,n,n,o.f,n,n,n,n,n,n)}}
 A.aks.prototype={
 q(a){var s=null,r=this.c,q=A.W(B.KK,r?B.b7:B.akF,s,52),p=this.d,o=p?"Sin prescripciones encontradas":"Nenhuma prescri\xe7\xe3o encontrada"
-o=A.e(o,s,s,s,s,s,A.m(s,s,r?B.bc:B.dZ,s,s,s,s,s,s,s,s,15,s,s,B.z,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)
+o=A.e(o,s,s,s,s,s,A.m(s,s,r?B.bc:B.dY,s,s,s,s,s,s,s,s,15,s,s,B.z,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)
 p=p?"Intenta con otra b\xfasqueda o categor\xeda":"Tente outra busca ou categoria"
 return A.b4(A.x(A.a([q,B.az,o,B.ac,A.e(p,s,s,s,s,s,A.m(s,s,r?B.b7:B.ir,s,s,s,s,s,s,s,s,12,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],t.p),B.k,B.ax,B.f),s,s)}}
 A.aqu.prototype={
@@ -145423,7 +145421,7 @@ q(a){var s,r,q,p,o=null,n="Favoritos",m="Cardiovascular",l="Neurol\xf3gico & Psi
 if(f){e=A.S(d).i("a3<1>")
 s=A.O(new A.a3(d,new A.bwh(j,g),e),e.i("F.E"))}else s=d
 e=t.p
-h=A.a([new A.pw(new A.Fo("Clinical Flow",j.bZ("protocols"),j.bZ("protocols_subtitle"),!0,o),o,o,o),B.a1,new A.K(B.dS,A.x(A.a([A.v0(h,j.bZ("search_protocol_hint"),o,1,new A.bwi(this)),B.M,A.e(""+s.length+" "+j.bZ("protocols_found"),o,o,o,o,o,B.a6l,o,o,o)],e),B.r,B.e,B.f),o),B.aF],e)
+h=A.a([new A.pw(new A.Fo("Clinical Flow",j.bZ("protocols"),j.bZ("protocols_subtitle"),!0,o),o,o,o),B.a1,new A.K(B.e1,A.x(A.a([A.v0(h,j.bZ("search_protocol_hint"),o,1,new A.bwi(this)),B.M,A.e(""+s.length+" "+j.bZ("protocols_found"),o,o,o,o,o,B.a6l,o,o,o)],e),B.r,B.e,B.f),o),B.aF],e)
 if(f){e=A.O(new A.P(s,new A.bwt(j,s,a),A.S(s).i("P<1,f>")),t.n)
 B.d.u(h,e)}else{r=A.a([],e)
 q=j.Q
@@ -145572,7 +145570,7 @@ k=t.p
 l=A.I(A.x(A.a([n,B.bG,A.e(""+h+" "+l,i,i,i,i,i,A.m(i,i,m.j(0.55),i,i,i,i,i,i,i,i,11,i,i,B.O,i,i,!0,i,i,i,i,i,i,i,i),i,i,i)],k),B.r,B.e,B.f),1)
 r=r.j(0.6)
 h=A.i(9)
-return new A.K(B.dS,A.a9(i,A.k(i,A.w(A.a([o,B.e8,l,A.k(i,A.W(B.dc,m.j(0.8),i,20),B.i,i,i,new A.j(r,i,i,h,i,i,B.l),i,32,i,i,i,i,i,32)],k),B.k,B.e,B.f,i,i),B.i,i,i,new A.j(j.w,i,q,p,i,i,B.l),i,i,i,i,B.eS,i,i,i),B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.bwb(j,a),i,i,i,i,i,i),i)}}
+return new A.K(B.e1,A.a9(i,A.k(i,A.w(A.a([o,B.e8,l,A.k(i,A.W(B.dc,m.j(0.8),i,20),B.i,i,i,new A.j(r,i,i,h,i,i,B.l),i,32,i,i,i,i,i,32)],k),B.k,B.e,B.f,i,i),B.i,i,i,new A.j(j.w,i,q,p,i,i,B.l),i,i,i,i,B.eS,i,i,i),B.t,!1,i,i,i,i,i,i,i,i,i,i,i,i,i,new A.bwb(j,a),i,i,i,i,i,i),i)}}
 A.bwa.prototype={
 $1(a){var s=this.a
 return new A.HB(this.b,s.d,s.e,s.w,s.x,s.y,s.z,s.as,s.Q,s.at,null)},
@@ -145824,7 +145822,7 @@ if(n.length!==0)r.push(A.bea(B.hH,B.mN,B.T,"\ud83e\udd47",!1,n,o.c==="es"?"1\xaa
 if(n.length!==0&&m.length!==0)r.push(B.M)
 if(m.length!==0)r.push(A.bea(B.rL,B.ph,B.rE,"\ud83e\udd48",!1,m,o.c==="es"?"2\xaa L\xcdNEA \u2014 ALTERNATIVO":"2\xaa LINHA \u2014 ALTERNATIVO",B.yz,B.rH))
 if(m.length!==0&&l.length!==0)r.push(B.M)
-if(l.length!==0)r.push(A.bea(B.mQ,B.GV,B.aY,"\u26a1",!1,l,o.c==="es"?"CONDICIONAL \u2014 ESCENARIOS ESPEC\xcdFICOS":"CONDICIONAL \u2014 CEN\xc1RIOS ESPEC\xcdFICOS",B.f7,B.yC))
+if(l.length!==0)r.push(A.bea(B.mQ,B.GV,B.aZ,"\u26a1",!1,l,o.c==="es"?"CONDICIONAL \u2014 ESCENARIOS ESPEC\xcdFICOS":"CONDICIONAL \u2014 CEN\xc1RIOS ESPEC\xcdFICOS",B.f7,B.yC))
 if(l.length!==0&&k.length!==0)r.push(B.M)
 if(k.length!==0)r.push(A.bea(B.hB,B.iq,B.aT,"\ud83d\udeab",!0,k,o.c==="es"?"CONTRAINDICADO \u2014 NO USAR":"CONTRAINDICADO \u2014 N\xc3O USAR",B.bA,B.p8))
 return A.k(q,A.x(r,B.r,B.e,B.f),B.i,q,q,new A.j(B.akc,q,s,p,q,q,B.l),q,q,q,q,B.br,q,q,1/0)}}
@@ -145906,7 +145904,7 @@ q(a){var s,r,q,p,o,n,m,l=null,k=A.bg(a,!0,t.C).c==="es"
 this.a.toString
 s=t.p
 r=A.a([],s)
-q=A.dh(B.ad,A.a([A.e("FERRAMENTAS",l,l,l,l,l,B.oz,l,l,l),new A.dl(B.cG,l,l,A.a9(B.aZ,B.oc,B.t,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,new A.bDt(a),l,l,l,l,l,l),l)],s),B.G,B.bo,l)
+q=A.dh(B.ad,A.a([A.e("FERRAMENTAS",l,l,l,l,l,B.oz,l,l,l),new A.dl(B.cG,l,l,A.a9(B.aX,B.oc,B.t,!1,l,l,l,l,l,l,l,l,l,l,l,l,l,new A.bDt(a),l,l,l,l,l,l),l)],s),B.G,B.bo,l)
 p=k?"BIOMETR\xcdA":"BIOMETRIA"
 o=this.d
 o===$&&A.c()
@@ -146259,7 +146257,7 @@ s=A.e(this.c==="es"?"Importar Examen por IA":"Importar Exame por IA",p,p,p,p,p,B
 r=t.p
 s=A.I(A.x(A.a([s,B.bG,A.e("Foto \xb7 PDF \xb7 Screenshot \xb7 Texto \u2014 preenche os campos automaticamente",p,p,p,p,p,A.m(p,p,B.j.j(0.52),p,p,p,p,p,p,p,p,11.5,p,p,p,p,1.35,!0,p,p,p,p,p,p,p,p),p,p,p)],r),B.r,B.e,B.f),1)
 q=A.i(6)
-return A.a9(p,A.k(p,A.dS(B.a7,l,A.eb(!1,k,!0,new A.K(B.eS,A.w(A.a([h,B.e8,s,B.a4,A.x(A.a([A.k(p,B.eig,B.i,p,p,new A.j(B.dY.j(0.14),p,A.N(B.dY.j(0.35),B.o,0.8),q,p,p,B.l),p,p,p,p,B.cQ,p,p,p),B.ac,A.W(B.pV,B.j.j(0.3),p,13)],r),B.fx,B.e,B.E)],r),B.k,B.e,B.f,p,p),p),p,!0,p,p,i,p,p,p,p,p,p,p,new A.bpc(this,a),p,p,p,j,p,p),B.i,B.Q,0,p,p,p,p,p,B.c8),B.i,p,p,new A.j(p,p,n,o,m,B.aLt,B.l),p,p,p,p,p,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,new A.bpd(this,a),p,p,p,p,p,p)}}
+return A.a9(p,A.k(p,A.dS(B.a7,l,A.eb(!1,k,!0,new A.K(B.eS,A.w(A.a([h,B.e8,s,B.a4,A.x(A.a([A.k(p,B.eig,B.i,p,p,new A.j(B.dX.j(0.14),p,A.N(B.dX.j(0.35),B.o,0.8),q,p,p,B.l),p,p,p,p,B.cQ,p,p,p),B.ac,A.W(B.pV,B.j.j(0.3),p,13)],r),B.fy,B.e,B.E)],r),B.k,B.e,B.f,p,p),p),p,!0,p,p,i,p,p,p,p,p,p,p,new A.bpc(this,a),p,p,p,j,p,p),B.i,B.Q,0,p,p,p,p,p,B.c8),B.i,p,p,new A.j(p,p,n,o,m,B.aLt,B.l),p,p,p,p,p,p,p,p),B.t,!1,p,p,p,p,p,p,p,p,p,p,p,p,p,new A.bpd(this,a),p,p,p,p,p,p)}}
 A.bpd.prototype={
 $0(){var s=this.b
 A.dw(s)
@@ -146365,7 +146363,7 @@ g=j?"Gasometr\xeda Arterial":"Gasometria Arterial"
 e=A.w(A.a([A.I(new A.ev("pH",n.z,new A.bfQ(n),"7,40",m),1),B.a4,A.I(new A.ev("pCO\u2082 (mmHg)",n.Q,new A.bfR(n),"40",m),1)],h),B.k,B.e,B.f,m,m)
 d=A.w(A.a([A.I(new A.ev(l,f,new A.bfS(n),"24",m),1),B.a4,A.I(new A.ev("BE (mEq/L)",n.as,new A.bfT(n),"0",m),1)],h),B.k,B.e,B.f,m,m)
 s=A.i(16)
-s=A.k(m,A.x(A.a([B.ej9,B.M,A.e(n.aty(),m,m,m,m,m,B.efw,m,m,m)],h),B.r,B.e,B.f),B.i,m,m,new A.j(B.av,m,m,s,m,m,B.l),m,m,m,m,B.br,m,m,1/0)
+s=A.k(m,A.x(A.a([B.ej9,B.M,A.e(n.aty(),m,m,m,m,m,B.efw,m,m,m)],h),B.r,B.e,B.f),B.i,m,m,new A.j(B.aw,m,m,s,m,m,B.l),m,m,m,m,B.br,m,m,1/0)
 g=A.fT(A.x(A.a([e,B.K,d,B.az,s,B.K,new A.mu(j?"pH: 7,35\u20137,45 | pCO\u2082: 35\u201345 mmHg | HCO\u2083: 22\u201326 mEq/L | BE: -2 a +2 mEq/L.":"pH: 7,35\u20137,45 | pCO\u2082: 35\u201345 mmHg | HCO\u2083: 22\u201326 mEq/L | BE: \u22122 a +2 mEq/L.",m)],h),B.k,B.e,B.f),B.cL,g)
 f=A.w(A.a([A.I(new A.ev("Peso (kg)",n.at,new A.bfK(n),"70",m),1),B.a4,A.I(new A.ev("HCO\u2083\u207b atual (mEq/L)",f,new A.bfL(n),"18",m),1)],h),B.k,B.e,B.f,m,m)
 e=n.ganA()
@@ -146452,7 +146450,7 @@ A.WS.prototype={
 S(){return new A.apE()}}
 A.apE.prototype={
 q(a){var s=null,r=A.bg(a,!0,t.C).c==="es",q=B.j.j(0.08),p=t.p
-return A.x(A.a([A.k(s,A.d1(A.w(A.fZ(5,new A.bxj(this,a),!0,t.n),B.k,B.e,B.f,s,s),s,B.t,s,B.hk,s,B.bm),B.i,s,s,new A.j(B.av,s,new A.bS(B.w,B.w,new A.aA(q,1,B.o,-1),B.w),s,s,s,B.l),s,s,s,s,s,s,s,s),A.I(A.d1(A.x(A.a([this.aow(r),B.wV,new A.arx(r,s),B.e9],p),B.dm,B.e,B.f),s,B.t,s,B.aC3,s,B.ai),1)],p),B.k,B.e,B.f)},
+return A.x(A.a([A.k(s,A.d1(A.w(A.fZ(5,new A.bxj(this,a),!0,t.n),B.k,B.e,B.f,s,s),s,B.t,s,B.hk,s,B.bm),B.i,s,s,new A.j(B.aw,s,new A.bS(B.w,B.w,new A.aA(q,1,B.o,-1),B.w),s,s,s,B.l),s,s,s,s,s,s,s,s),A.I(A.d1(A.x(A.a([this.aow(r),B.wV,new A.arx(r,s),B.e9],p),B.dm,B.e,B.f),s,B.t,s,B.aC3,s,B.ai),1)],p),B.k,B.e,B.f)},
 aow(a){var s,r,q,p,o,n,m,l,k,j,i=null,h="Leuc\xf3citos",g="/mm\xb3",f="mg/dL",e="Negativo",d="A-a \u2191, responde a O2"
 switch(this.d){case 0:s=a?"Los valores de referencia pueden variar seg\xfan el laboratorio y la poblaci\xf3n.":"Os valores de refer\xeancia podem variar conforme o laborat\xf3rio e a popula\xe7\xe3o."
 r=a?"<50k riesgo sangrado":"<50k risco sangrado"
@@ -146578,13 +146576,13 @@ s=A.k(o,A.e(""+p.a.f.length+" par\xe2m.",o,o,o,o,o,A.m(o,o,m.j(0.8),o,o,o,o,o,o,
 h=p.d?B.ly:B.e3
 r=t.p
 h=A.a([A.eb(!1,B.a8D,!0,new A.K(B.eS,A.w(A.a([g,B.a4,f,s,B.L,A.W(h,n?B.J:B.R,o,20)],r),B.k,B.e,B.f,o,o),o),o,!0,o,o,o,o,o,o,o,o,o,o,new A.bpa(p),o,o,o,o,o,o)],r)
-if(p.d){n=A.a([A.ej(m.j(0.15),16,1,16,o),B.a1,new A.K(B.fA,A.l3(new A.bpb(p,m)),o)],r)
+if(p.d){n=A.a([A.ej(m.j(0.15),16,1,16,o),B.a1,new A.K(B.ff,A.l3(new A.bpb(p,m)),o)],r)
 if(p.a.r!=null){g=B.rQ.j(0.06)
 f=A.i(10)
 s=A.N(B.rQ.j(0.15),B.o,1)
 q=p.a.r
 q.toString
-B.d.u(n,A.a([new A.K(B.Jm,A.k(o,A.w(A.a([B.aIc,B.dh,A.I(A.e(q,o,o,o,o,o,B.eaO,o,o,o),1)],r),B.r,B.e,B.f,o,o),B.i,o,o,new A.j(g,o,s,f,o,o,B.l),o,o,o,o,B.ff,o,o,o),o)],r))}else n.push(B.au)
+B.d.u(n,A.a([new A.K(B.Jm,A.k(o,A.w(A.a([B.aIc,B.dh,A.I(A.e(q,o,o,o,o,o,B.eaO,o,o,o),1)],r),B.r,B.e,B.f,o,o),B.i,o,o,new A.j(g,o,s,f,o,o,B.l),o,o,o,o,B.fg,o,o,o),o)],r))}else n.push(B.au)
 B.d.u(h,n)}return A.k(o,A.x(h,B.r,B.e,B.f),B.i,o,o,new A.j(l,o,j,k,i,o,B.l),o,o,o,o,o,o,o,o)}}
 A.bpa.prototype={
 $0(){var s=this.a
@@ -147010,7 +147008,7 @@ return new A.K(B.aDh,A.x(s,B.r,B.e,B.f),null)},
 amV(a){switch(a){case 0:return B.hg
 case 1:return B.cx
 case 2:return B.Z
-case 3:return B.aY
+case 3:return B.aZ
 default:return B.bU}}}
 A.btY.prototype={
 $1(a){var s=a.f,r=this.a,q=A.S(s).i("a3<1>"),p=A.O(new A.a3(s,new A.btX(r),q),q.i("F.E"))
@@ -147303,9 +147301,9 @@ if(b.w!=null)c.push(B.wW)
 B.d.u(i,c)}c=b.w
 if(c!=null)i.push(new A.Vq(B.AD,"\u2b06  Valor Alto",c,B.bA,d))
 c=b.x
-if(c!=null){s=B.aY.j(0.07)
+if(c!=null){s=B.aZ.j(0.07)
 h=A.i(9)
-g=A.N(B.aY.j(0.2),B.o,1)
+g=A.N(B.aZ.j(0.2),B.o,1)
 B.d.u(i,A.a([B.a5h,A.k(d,A.w(A.a([B.LB,B.dh,A.I(A.e(c,d,d,d,d,d,A.m(d,d,k?B.bz:B.c4,d,d,d,d,d,d,d,d,11,d,d,B.Y,d,1.45,!0,d,d,d,d,d,d,d,d),d,d,d),1)],j),B.r,B.e,B.f,d,d),B.i,d,d,new A.j(s,d,g,h,d,d,B.l),d,d,d,d,B.fd,d,d,d)],j))}B.d.u(l,A.a([A.k(d,A.x(i,B.r,B.e,B.f),B.i,d,d,d,d,d,d,d,B.pI,d,d,d)],j))}return A.a9(d,A.bM(A.x(l,B.r,B.e,B.f),B.a_,new A.j(p,d,n,o,m,d,B.l),B.a7,d,B.aD8,d,d),B.t,!1,d,d,d,d,d,d,d,d,d,d,d,d,d,q,d,d,d,d,d,d)},
 amW(a,b){switch(a){case 0:return b.c
 case 1:return b.d
@@ -147392,7 +147390,7 @@ if(i)j="\u2014"
 i=t.p
 j=A.a([new A.dG(1,B.bP,A.e(j,k,k,k,k,k,A.m(k,k,p,k,k,k,k,k,k,k,k,20,k,k,B.D,k,k,!0,k,-0.5,k,k,k,k,k,k),k,k,k),k)],i)
 if(l.e.length!==0&&h)B.d.u(j,A.a([B.d7,new A.K(B.pF,A.e(l.e,k,k,k,k,k,A.m(k,k,A.M(a).ax.a===B.A?B.J:B.R,k,k,k,k,k,k,k,k,10,k,k,k,k,k,!0,k,k,k,k,k,k,k,k),k,k,k),k)],i))
-j=A.a([m,B.au,A.w(j,B.fx,B.e,B.f,k,k)],i)
+j=A.a([m,B.au,A.w(j,B.fy,B.e,B.f,k,k)],i)
 if(!e&&f.length!==0)B.d.u(j,A.a([B.au,A.e(f,k,k,k,k,k,A.m(k,k,s,k,k,k,k,k,k,k,k,10,k,k,B.z,k,1.3,!0,k,k,k,k,k,k,k,k),k,k,k)],i))
 return A.k(k,A.x(j,B.r,B.e,B.f),B.i,k,k,new A.j(r,k,n,o,k,k,B.l),k,k,k,k,B.bB,k,k,d)}}
 A.mu.prototype={
@@ -147615,7 +147613,7 @@ $S:286}
 A.ayI.prototype={
 $0(){var s=this.b
 s.$0()
-this.a.a=A.Ao(B.fz,new A.ayG(s))},
+this.a.a=A.Ao(B.fA,new A.ayG(s))},
 $S:0}
 A.ayG.prototype={
 $1(a){return this.a.$0()},
@@ -148937,7 +148935,7 @@ f=f?B.bn:B.a6
 return A.cJ(r,B.x,!1,g,!0,B.G,g,A.cO(),h.c,g,g,g,g,g,2,A.cB(g,new A.bj(4,m,new A.aA(l,1,B.o,-1)),g,B.cs,g,g,g,g,!0,new A.bj(4,k,new A.aA(j,1,B.o,-1)),g,g,g,g,g,n,!0,g,g,g,g,new A.bj(4,i,new A.aA(f,1.5,B.o,-1)),g,g,g,g,g,g,g,g,o,h.d,g,g,g,g,g,!0,g,g,g,!0,!0,g,g,g,g,g,g,g,g,g,g,g,g,g),B.t,!0,g,r,g,!1,g,B.aR,g,g,g,e,g,g,g,d,g,g,!1,"\u2022",g,h.f,g,g,g,!1,g,g,!1,g,!0,g,B.aK,g,g,B.aO,B.aM,g,g,g,g,g,g,p,!0,B.am,g,q,g,s,g,g)}}
 A.Dh.prototype={
 q(a){var s=null,r=A.M(a),q=t.Vc
-r=A.O(new A.P(A.a([new A.qa("\u2713 Revisado",B.Z),new A.qa("\u2713 Actualizado",B.cx),new A.qa("\u2713 Basado en Evidencias",B.hg),new A.qa("\u2713 Fuente Verificada",B.aY)],t.L4),new A.aFl(this,r.ax.a===B.A),q),q.i("al.E"))
+r=A.O(new A.P(A.a([new A.qa("\u2713 Revisado",B.Z),new A.qa("\u2713 Actualizado",B.cx),new A.qa("\u2713 Basado en Evidencias",B.hg),new A.qa("\u2713 Fuente Verificada",B.aZ)],t.L4),new A.aFl(this,r.ax.a===B.A),q),q.i("al.E"))
 return A.d1(A.w(r,B.k,B.e,B.f,s,s),s,B.t,s,s,s,B.bm)}}
 A.aFl.prototype={
 $1(a){var s=null,r=a.b,q=r.j(this.b?0.15:0.09),p=A.i(6),o=A.N(r.j(0.3),B.o,1)
@@ -148950,13 +148948,13 @@ A.aky.prototype={
 aJg(a){switch(a){case"Directriz":return B.Z
 case"Base de Datos":return B.cx
 case"Estudio":return B.hg
-case"Libro-Texto":return B.aY
+case"Libro-Texto":return B.aZ
 case"Protocolo":return B.t1
 case"FDA Label":return B.bA
 default:return B.J}},
 q(a){var s=this,r=null,q=A.M(a).ax.a===B.A,p=new A.ke(q),o=s.a.c,n=q?B.aa:B.j,m=A.i(16),l=A.N(q?B.ae:B.a9,B.o,1),k=q?B.aa:B.c6,j=q?B.ae:B.a9,i=t.p,h=A.a([B.aIz,B.dh,A.I(A.e("EVIDENCIA CIENT\xcdFICA",r,r,r,r,r,A.m(r,r,q?B.j:B.U,r,r,r,r,r,r,r,r,9.5,r,r,B.D,r,r,!0,r,1.4,r,r,r,r,r,r),r,r,r),1)],i),g=B.Z.j(0.1),f=A.i(5),e=A.N(B.Z.j(0.25),B.o,1)
 h.push(A.k(r,A.e("ATC: "+o.c,r,r,r,r,r,B.efo,r,r,r),B.i,r,r,new A.j(g,r,e,f,r,r,B.l),r,r,r,r,B.jy,r,r,r))
-k=A.a([A.k(r,A.x(A.a([A.w(h,B.k,B.e,B.f,r,r),B.K,A.dB(B.an,A.a([new A.tr("Fuente Principal",o.e,B.Z,p,r),new A.tr("Directriz Utilizada",o.f,B.cx,p,r),new A.tr("Nivel de Evidencia",o.r,B.hg,p,r),new A.tr("Recomendaci\xf3n",o.w,B.t1,p,r),new A.tr("\xdaltima Revisi\xf3n","Junio 2026",B.aY,p,r),new A.tr("Estado","Revisado",B.Z,p,r)],i),B.bH,6,8),B.K,new A.Dh(!0,r)],i),B.r,B.e,B.f),B.i,r,r,new A.j(k,r,new A.bS(B.w,B.w,new A.aA(j,1,B.o,-1),B.w),B.Fg,r,r,B.l),r,r,r,r,B.br,r,r,r)],i)
+k=A.a([A.k(r,A.x(A.a([A.w(h,B.k,B.e,B.f,r,r),B.K,A.dB(B.an,A.a([new A.tr("Fuente Principal",o.e,B.Z,p,r),new A.tr("Directriz Utilizada",o.f,B.cx,p,r),new A.tr("Nivel de Evidencia",o.r,B.hg,p,r),new A.tr("Recomendaci\xf3n",o.w,B.t1,p,r),new A.tr("\xdaltima Revisi\xf3n","Junio 2026",B.aZ,p,r),new A.tr("Estado","Revisado",B.Z,p,r)],i),B.bH,6,8),B.K,new A.Dh(!0,r)],i),B.r,B.e,B.f),B.i,r,r,new A.j(k,r,new A.bS(B.w,B.w,new A.aA(j,1,B.o,-1),B.w),B.Fg,r,r,B.l),r,r,r,r,B.br,r,r,r)],i)
 B.d.u(k,new A.bgB(s,o,q,p).$0())
 j=o.Q
 h=j.length
@@ -149102,7 +149100,7 @@ if(g<n)continue
 f=k?(g-n)/j:1
 e=B.p.c3(B.q.b9(Math.sqrt(f)*255),0,255)
 $.aX()
-d=new A.qP(B.id,B.fj,B.ou,B.r2,B.kh)
+d=new A.qP(B.id,B.fk,B.ou,B.r2,B.kh)
 d.r=A.bm(e,m.H()>>>16&255,m.H()>>>8&255,m.H()&255).gv(0)
 d.c=2.2
 d.d=B.wY
@@ -149125,11 +149123,11 @@ s.z=B.dBV
 q.kH(new A.H(o,a),5,s)
 s=A.bT()
 s.r=m.gv(0)
-s.b=B.fj
+s.b=B.fk
 q.kH(new A.H(o,a),3,s)
 s=A.bT()
 s.r=A.bm(200,B.j.H()>>>16&255,B.j.H()>>>8&255,B.j.H()&255).gv(0)
-s.b=B.fj
+s.b=B.fk
 q.kH(new A.H(o,a),1.3,s)}},
 fm(a){return a.b!==this.b||!a.c.m(0,this.c)}}
 A.bf8.prototype={
@@ -149405,10 +149403,10 @@ p=p?"Para PDF digital, el resultado ser\xe1 m\xe1s preciso.":"Para PDF digital, 
 return A.k(s,A.x(A.a([new A.J6(B.aFw,o,s),B.ac,new A.J6(B.aF4,n,s),B.ac,new A.J6(B.aGf,p,s)],t.p),B.k,B.e,B.f),B.i,s,s,new A.j(B.yn,s,q,r,s,s,B.l),s,s,s,s,B.bB,s,s,s)}}
 A.J6.prototype={
 q(a){var s=null
-return A.w(A.a([A.W(this.c,B.dY,s,14),B.L,A.I(A.e(this.d,s,s,s,s,s,B.x8,s,s,s),1)],t.p),B.k,B.e,B.f,s,s)}}
+return A.w(A.a([A.W(this.c,B.dX,s,14),B.L,A.I(A.e(this.d,s,s,s,s,s,B.x8,s,s,s),1)],t.p),B.k,B.e,B.f,s,s)}}
 A.Bm.prototype={
-q(a){var s,r,q=this,p=null,o=q.f,n=A.i(14),m=A.N(B.ka,B.o,1),l=A.i(14),k=A.i(14),j=B.dY.j(0.08),i=B.dY.j(0.04),h=o==null?0.45:1,g=A.i(10),f=B.dY.j(0.1)
-g=A.k(p,A.W(q.c,B.dY,p,20),B.i,p,p,new A.j(f,p,p,g,p,p,B.l),p,40,p,p,p,p,p,40)
+q(a){var s,r,q=this,p=null,o=q.f,n=A.i(14),m=A.N(B.ka,B.o,1),l=A.i(14),k=A.i(14),j=B.dX.j(0.08),i=B.dX.j(0.04),h=o==null?0.45:1,g=A.i(10),f=B.dX.j(0.1)
+g=A.k(p,A.W(q.c,B.dX,p,20),B.i,p,p,new A.j(f,p,p,g,p,p,B.l),p,40,p,p,p,p,p,40)
 f=t.p
 s=A.I(A.x(A.a([A.e(q.d,p,p,p,p,p,B.egu,p,p,p),B.jV,A.e(q.e,p,p,p,p,p,B.x8,p,p,p)],f),B.r,B.e,B.f),1)
 r=q.r
@@ -149417,9 +149415,9 @@ gbO(a){return this.d}}
 A.asl.prototype={
 q(a){var s=null,r=this.d,q=r?"Pegue aqu\xed el texto del laboratorio...\n\nEjemplo:\nNa: 138 mEq/L\nK: 4.2 mEq/L\nCr: 1.1 mg/dL\nHb: 12.5 g/dL":"Cole aqui o texto do laudo...\n\nExemplo:\nNa: 138 mEq/L\nK: 4,2 mEq/L\nCr: 1,1 mg/dL\nHb: 12,5 g/dL"
 q=A.cJ(!0,B.x,!0,s,!0,B.G,s,A.cO(),this.c,s,s,s,s,s,2,A.cB(s,new A.bj(4,A.i(12),B.Fq),s,B.br,s,s,s,s,!0,new A.bj(4,A.i(12),B.Fq),s,s,s,s,s,B.yn,!0,s,s,s,s,new A.bj(4,A.i(12),B.a8F),s,s,s,s,s,s,s,s,B.ebS,q,s,s,s,s,s,s,s,s,s,!0,!0,s,s,s,s,s,s,s,s,s,s,s,s,s),B.t,!0,s,!0,s,!1,s,B.aR,s,s,s,s,s,s,s,7,4,s,!1,"\u2022",s,s,s,s,s,!1,s,s,!1,s,!0,s,B.aK,s,s,B.aO,B.aM,s,s,s,s,s,s,B.e9G,!0,B.am,s,B.bt,s,s,s,s)
-return A.x(A.a([B.M,q,B.K,A.y1(B.LE,A.e(r?"Analizar Texto":"Analisar Texto",s,s,s,s,s,B.r7,s,s,s),this.e,A.hl(s,s,B.dY,s,s,s,s,s,s,B.H,s,B.a5b,s,s,new A.br(A.i(12),B.w),s,s,s,s,s)),B.au],t.p),B.dm,B.e,B.f)}}
+return A.x(A.a([B.M,q,B.K,A.y1(B.LE,A.e(r?"Analizar Texto":"Analisar Texto",s,s,s,s,s,B.r7,s,s,s),this.e,A.hl(s,s,B.dX,s,s,s,s,s,s,B.H,s,B.a5b,s,s,new A.br(A.i(12),B.w),s,s,s,s,s)),B.au],t.p),B.dm,B.e,B.f)}}
 A.anl.prototype={
-q(a){var s=null,r=A.i(12),q=A.N(B.aY.j(0.3),B.o,1)
+q(a){var s=null,r=A.i(12),q=A.N(B.aZ.j(0.3),B.o,1)
 return A.k(s,A.w(A.a([B.aKh,B.L,A.I(A.e(this.c?'IA no conectada. Ve al men\xfa lateral \u2192 "Conectar IA" para activar la extracci\xf3n autom\xe1tica.':'IA n\xe3o conectada. Acesse o menu lateral \u2192 "Conectar IA" para ativar a extra\xe7\xe3o autom\xe1tica.',s,s,s,s,s,B.a64,s,s,s),1)],t.p),B.k,B.e,B.f,s,s),B.i,s,s,new A.j(B.z3,s,q,r,s,s,B.l),s,s,s,s,B.bB,s,s,s)}}
 A.lK.prototype={
 gcg(a){return this.a}}
@@ -149802,7 +149800,7 @@ m=r?a4.aoB(n):""
 o=a7.e
 l=A.bXF(o)
 k=a4.a.e
-j=k?B.av:B.j
+j=k?B.aw:B.j
 i=k?B.j:B.rV
 h=k?B.R:B.J
 g=k?B.yS:B.f5
@@ -149931,7 +149929,7 @@ else if(p){n=this.a.a.d?"Sin datos completados":"Sem dados preenchidos"
 o.push(new A.K(B.eP,A.e(n,j,j,j,j,j,A.m(j,j,B.le,j,j,j,j,j,j,j,j,12,B.ek,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j,j),j))}return A.x(o,B.r,B.e,B.f)},
 $S:306}
 A.IS.prototype={
-q(a){var s,r,q,p=this,o=null,n=p.c,m=n?B.av:B.j,l=n?B.j:B.rV,k=n?B.R:B.J,j=n?B.yS:B.f5,i=n?B.p7:B.ex,h=A.N(B.Z.j(0.25),B.o,1),g=A.bA(a,o,t.l).w,f=A.b4(A.k(o,o,B.i,o,o,new A.j(i,o,o,A.i(2),o,o,B.l),o,4,o,o,o,o,o,36),o,o),e=A.k(o,B.B4,B.i,o,o,new A.j(o,o,o,A.i(10),o,B.Bd,B.l),o,34,o,o,o,o,o,34),d=p.d==="es",c=d?"Exportar Evoluci\xf3n":"Exportar Evolu\xe7\xe3o"
+q(a){var s,r,q,p=this,o=null,n=p.c,m=n?B.aw:B.j,l=n?B.j:B.rV,k=n?B.R:B.J,j=n?B.yS:B.f5,i=n?B.p7:B.ex,h=A.N(B.Z.j(0.25),B.o,1),g=A.bA(a,o,t.l).w,f=A.b4(A.k(o,o,B.i,o,o,new A.j(i,o,o,A.i(2),o,o,B.l),o,4,o,o,o,o,o,36),o,o),e=A.k(o,B.B4,B.i,o,o,new A.j(o,o,o,A.i(10),o,B.Bd,B.l),o,34,o,o,o,o,o,34),d=p.d==="es",c=d?"Exportar Evoluci\xf3n":"Exportar Evolu\xe7\xe3o"
 c=A.e(c,o,o,o,o,o,A.m(o,o,l,o,o,o,o,o,o,o,o,15,o,o,B.F,o,o,!0,o,o,o,o,o,o,o,o),o,o,o)
 s=d?"Selecciona el formato de exportaci\xf3n":"Selecione o formato de exporta\xe7\xe3o"
 r=t.p
@@ -149943,7 +149941,7 @@ c=d?"Evolucion Resumida":"Evolu\xe7\xe3o Resumida"
 c=A.bMO(B.Z,"INLINE",i,j,n,B.AI,B.Z,p.f,u.lW,l,k,c)
 q=d?"Pasaje de Guardia":"Passagem de Plant\xe3o"
 d=d?u.ty:u.ta
-return A.k(o,A.x(A.a([f,B.i8,s,B.aF,e,B.M,c,B.M,A.bMO(B.aY,"30s",i,j,n,B.AY,B.aY,p.r,d,l,k,q),B.M],r),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,h,B.cv,o,o,B.l),o,o,o,o,new A.L(20,12,20,20+g.w.d),o,o,o)}}
+return A.k(o,A.x(A.a([f,B.i8,s,B.aF,e,B.M,c,B.M,A.bMO(B.aZ,"30s",i,j,n,B.AY,B.aZ,p.r,d,l,k,q),B.M],r),B.k,B.e,B.E),B.i,o,o,new A.j(m,o,h,B.cv,o,o,B.l),o,o,o,o,new A.L(20,12,20,20+g.w.d),o,o,o)}}
 A.aru.prototype={
 q(a){var s,r,q,p,o=this,n=null,m=A.i(14),l=A.N(o.r,B.o,0.9),k=o.e,j=k.j(o.c?0.15:0.1),i=A.i(12)
 i=A.k(n,A.W(o.d,k,n,20),B.i,n,n,new A.j(j,n,n,i,n,n,B.l),n,42,n,n,n,n,n,42)
@@ -150523,7 +150521,7 @@ if(i)m=(r?B.j:B.U).j(0.38)
 else m=r?B.j:B.U
 l=i?B.E5:B.N
 m=A.m(j,j,m,j,l,(r?B.bz:B.c4).j(0.5),j,1.5,j,j,j,13.5,j,j,B.O,j,1.45,!0,j,j,j,j,j,j,j,j)
-return new A.K(B.dR,A.a9(B.aZ,A.bM(A.w(A.a([new A.aw(22,j,n,j),A.I(A.xg(A.e(k.d,j,j,j,j,j,j,j,j,j),B.dn,B.lj,!0,m),1),B.a4,new A.aj7(i,h,j)],t.p),B.r,B.e,B.f,j,j),B.dn,new A.j(s,j,o,p,j,j,B.l),B.lj,j,j,B.cs,j),B.t,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,k.f,j,j,j,j,j,j),j)}}
+return new A.K(B.dR,A.a9(B.aX,A.bM(A.w(A.a([new A.aw(22,j,n,j),A.I(A.xg(A.e(k.d,j,j,j,j,j,j,j,j,j),B.dn,B.lj,!0,m),1),B.a4,new A.aj7(i,h,j)],t.p),B.r,B.e,B.f,j,j),B.dn,new A.j(s,j,o,p,j,j,B.l),B.lj,j,j,B.cs,j),B.t,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,k.f,j,j,j,j,j,j),j)}}
 A.aj7.prototype={
 q(a){var s,r,q,p,o,n,m=null,l=this.c
 if(l)s=this.d.a?B.T:B.P
@@ -152058,7 +152056,7 @@ gbp(){return"Stoor"},
 gaZ(){return"Skandeer teks"},
 gb_(){return"Skerm"},
 gby(){return"Maak $modalRouteContentName toe"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Deursoek web"},
 ga8(){return"Kies alles"},
 ga5(){return"Deel"},
@@ -152104,7 +152102,7 @@ gbp(){return"\u12a0\u1235\u1240\u121d\u1325"},
 gaZ(){return"\u133d\u1201\u134d\u1295 \u1243\u129d"},
 gb_(){return"\u1308\u12f3\u1262"},
 gby(){return"$modalRouteContentName\u1295 \u12dd\u130b"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u12f5\u122d\u1295 \u1348\u120d\u130d"},
 ga8(){return"\u1201\u1209\u1295\u121d \u121d\u1228\u1325"},
 ga5(){return"\u12a0\u130b\u122b"},
@@ -152196,7 +152194,7 @@ gbp(){return"\u099b\u09c7\u09ad \u0995\u09f0\u0995"},
 gaZ(){return"\u09aa\u09be\u09a0 \u09b8\u09cd\u0995\u09c7\u09a8 \u0995\u09f0\u0995"},
 gb_(){return"\u09b8\u09cd\u0995\u09cd\u09f0\u09bf\u09ae"},
 gby(){return"$modalRouteContentName \u09ac\u09a8\u09cd\u09a7 \u0995\u09f0\u0995"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u09f1\u09c7\u09ac\u09a4 \u09b8\u09a8\u09cd\u09a7\u09be\u09a8 \u0995\u09f0\u0995"},
 ga8(){return"\u09b8\u0995\u09b2\u09cb \u09ac\u09be\u099b\u09a8\u09bf \u0995\u09f0\u0995"},
 ga5(){return"\u09b6\u09cd\u09ac\u09c7\u09df\u09be\u09f0 \u0995\u09f0\u0995"},
@@ -152242,7 +152240,7 @@ gbp(){return"Yadda saxlay\u0131n"},
 gaZ(){return"M\u0259tni skan edin"},
 gb_(){return"K\u0259tan"},
 gby(){return"Ba\u011flay\u0131n: $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Vebd\u0259 axtar\u0131n"},
 ga8(){return"Ham\u0131s\u0131n\u0131 se\xe7in"},
 ga5(){return"Payla\u015f\u0131n"},
@@ -152288,7 +152286,7 @@ gbp(){return"\u0417\u0430\u0445\u0430\u0432\u0430\u0446\u044c"},
 gaZ(){return"\u0421\u043a\u0430\u043d\u0456\u0440\u0430\u0432\u0430\u0446\u044c \u0442\u044d\u043a\u0441\u0442"},
 gb_(){return"\u041f\u0430\u043b\u0430\u0442\u043d\u043e"},
 gby(){return"\u0417\u0430\u043a\u0440\u044b\u0446\u044c: $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u041f\u043e\u0448\u0443\u043a \u0443 \u0441\u0435\u0442\u0446\u044b"},
 ga8(){return"\u0412\u044b\u0431\u0440\u0430\u0446\u044c \u0443\u0441\u0435"},
 ga5(){return"\u0410\u0431\u0430\u0433\u0443\u043b\u0456\u0446\u044c"},
@@ -152334,7 +152332,7 @@ gbp(){return"\u0417\u0430\u043f\u0430\u0437\u0432\u0430\u043d\u0435"},
 gaZ(){return"\u0421\u043a\u0430\u043d\u0438\u0440\u0430\u0439\u0442\u0435 \u0442\u0435\u043a\u0441\u0442"},
 gb_(){return"\u0421\u043a\u0440\u0438\u043c"},
 gby(){return"\u0417\u0430\u0442\u0432\u0430\u0440\u044f\u043d\u0435 \u043d\u0430 $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0422\u044a\u0440\u0441\u0435\u043d\u0435 \u0432 \u043c\u0440\u0435\u0436\u0430\u0442\u0430"},
 ga8(){return"\u0418\u0437\u0431\u0438\u0440\u0430\u043d\u0435 \u043d\u0430 \u0432\u0441\u0438\u0447\u043a\u0438"},
 ga5(){return"\u0421\u043f\u043e\u0434\u0435\u043b\u044f\u043d\u0435"},
@@ -152472,7 +152470,7 @@ gbp(){return"Sa\u010duvaj"},
 gaZ(){return"Skeniraj tekst"},
 gb_(){return"Rubno"},
 gby(){return"Zatvori: $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Pretra\u017ei Web"},
 ga8(){return"Odaberi sve"},
 ga5(){return"Dijeli"},
@@ -152518,7 +152516,7 @@ gbp(){return"Desa"},
 gaZ(){return"Escaneja text"},
 gb_(){return"Fons atenuat"},
 gby(){return"Tanca $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Cerca al web"},
 ga8(){return"Selecciona-ho tot"},
 ga5(){return"Comparteix"},
@@ -152564,7 +152562,7 @@ gbp(){return"Ulo\u017eit"},
 gaZ(){return"Naskenovat text"},
 gb_(){return"Scrim"},
 gby(){return"Zav\u0159\xedt $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Vyhled\xe1vat na webu"},
 ga8(){return"Vybrat v\u0161e"},
 ga5(){return"Sd\xedlet"},
@@ -152610,7 +152608,7 @@ gbp(){return"Cadw"},
 gaZ(){return"Sganio testun"},
 gb_(){return"Scrim"},
 gby(){return"Cau $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Chwilio'r We"},
 ga8(){return"Dewis y Cyfan"},
 ga5(){return"Rhannu"},
@@ -152656,7 +152654,7 @@ gbp(){return"Gem"},
 gaZ(){return"Scan tekst"},
 gb_(){return"D\xe6mpesk\xe6rm"},
 gby(){return"Luk $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"S\xf8g p\xe5 nettet"},
 ga8(){return"Mark\xe9r alt"},
 ga5(){return"Del"},
@@ -152702,7 +152700,7 @@ gbp(){return"Speichern"},
 gaZ(){return"Text scannen"},
 gb_(){return"Gitter"},
 gby(){return"$modalRouteContentName schlie\xdfen"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Im Web suchen"},
 ga8(){return"Alle ausw\xe4hlen"},
 ga5(){return"Teilen"},
@@ -152755,7 +152753,7 @@ gbp(){return"\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7"},
 gaZ(){return"\u03a3\u03ac\u03c1\u03c9\u03c3\u03b7 \u03ba\u03b5\u03b9\u03bc\u03ad\u03bd\u03bf\u03c5"},
 gb_(){return"\u0395\u03c0\u03b9\u03ba\u03ac\u03bb\u03c5\u03c8\u03b7"},
 gby(){return"\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c3\u03c4\u03bf\u03bd \u03b9\u03c3\u03c4\u03cc"},
 ga8(){return"\u0395\u03c0\u03b9\u03bb\u03bf\u03b3\u03ae \u03cc\u03bb\u03c9\u03bd"},
 ga5(){return"\u039a\u03bf\u03b9\u03bd\u03ae \u03c7\u03c1\u03ae\u03c3\u03b7"},
@@ -152801,7 +152799,7 @@ gbp(){return"Save"},
 gaZ(){return"Scan text"},
 gb_(){return"Scrim"},
 gby(){return"Close $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Search Web"},
 ga8(){return"Select all"},
 ga5(){return"Share"},
@@ -152911,7 +152909,7 @@ gbp(){return"Guardar"},
 gaZ(){return"Escanear texto"},
 gb_(){return"Sombreado"},
 gby(){return"Cerrar $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Buscar en la Web"},
 ga8(){return"Seleccionar todo"},
 ga5(){return"Compartir"},
@@ -153297,7 +153295,7 @@ gbp(){return"Salvesta"},
 gaZ(){return"Skanni tekst"},
 gb_(){return"Sirm"},
 gby(){return"Sule $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Otsi veebist"},
 ga8(){return"Vali k\xf5ik"},
 ga5(){return"Jagamine"},
@@ -153343,7 +153341,7 @@ gbp(){return"Gorde"},
 gaZ(){return"Eskaneatu testua"},
 gb_(){return"Barrera"},
 gby(){return"Itxi $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Bilatu sarean"},
 ga8(){return"Hautatu guztiak"},
 ga5(){return"Partekatu"},
@@ -153435,7 +153433,7 @@ gbp(){return"Tallenna"},
 gaZ(){return"Skannaa teksti\xe4"},
 gb_(){return"Sermi"},
 gby(){return"Sulje $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Hae verkosta"},
 ga8(){return"Valitse kaikki"},
 ga5(){return"Jaa"},
@@ -153481,7 +153479,7 @@ gbp(){return"I-save"},
 gaZ(){return"I-scan ang text"},
 gb_(){return"Scrim"},
 gby(){return"Isara ang $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Maghanap sa Web"},
 ga8(){return"Piliin lahat"},
 ga5(){return"I-share"},
@@ -153527,7 +153525,7 @@ gbp(){return"Enregistrer"},
 gaZ(){return"Scanner du texte"},
 gb_(){return"Fond"},
 gby(){return"Fermer $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Rechercher sur le Web"},
 ga8(){return"Tout s\xe9lectionner"},
 ga5(){return"Partager"},
@@ -153584,7 +153582,7 @@ gbp(){return"Gardar"},
 gaZ(){return"Escanear texto"},
 gb_(){return"Sombreado"},
 gby(){return"Pechar $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Buscar na Web"},
 ga8(){return"Seleccionar todo"},
 ga5(){return"Compartir"},
@@ -153630,7 +153628,7 @@ gbp(){return"Speichern"},
 gaZ(){return"Text scannen"},
 gb_(){return"Gitter"},
 gby(){return"$modalRouteContentName schlie\xdfen"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Im Web suchen"},
 ga8(){return"Alle ausw\xe4hlen"},
 ga5(){return"Teilen"},
@@ -153722,7 +153720,7 @@ gbp(){return"\u05e9\u05de\u05d9\u05e8\u05d4"},
 gaZ(){return"\u05e1\u05e8\u05d9\u05e7\u05ea \u05d8\u05e7\u05e1\u05d8"},
 gb_(){return"\u05de\u05d9\u05e1\u05d5\u05da"},
 gby(){return"\u05e1\u05d2\u05d9\u05e8\u05ea $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u05d7\u05d9\u05e4\u05d5\u05e9 \u05d1\u05d0\u05d9\u05e0\u05d8\u05e8\u05e0\u05d8"},
 ga8(){return"\u05d1\u05d7\u05d9\u05e8\u05ea \u05d4\u05db\u05d5\u05dc"},
 ga5(){return"\u05e9\u05d9\u05ea\u05d5\u05e3"},
@@ -153814,7 +153812,7 @@ gbp(){return"Spremi"},
 gaZ(){return"Skeniranje teksta"},
 gb_(){return"Rubno"},
 gby(){return"Zatvori $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Pretra\u017ei web"},
 ga8(){return"Odaberi sve"},
 ga5(){return"Dijeli"},
@@ -153860,7 +153858,7 @@ gbp(){return"Ment\xe9s"},
 gaZ(){return"Sz\xf6veg beolvas\xe1sa"},
 gb_(){return"Bor\xedt\xe1s"},
 gby(){return"$modalRouteContentName bez\xe1r\xe1sa"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Keres\xe9s az interneten"},
 ga8(){return"\xd6sszes kijel\xf6l\xe9se"},
 ga5(){return"Megoszt\xe1s"},
@@ -153906,7 +153904,7 @@ gbp(){return"\u054a\u0561\u0570\u0565\u056c"},
 gaZ(){return"\u054d\u056f\u0561\u0576\u0561\u057e\u0578\u0580\u0565\u056c \u057f\u0565\u0584\u057d\u057f"},
 gb_(){return"\u0534\u056b\u0574\u0561\u056f"},
 gby(){return"\u0553\u0561\u056f\u0565\u056c\u055d $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0548\u0580\u0578\u0576\u0565\u056c \u0570\u0561\u0574\u0561\u0581\u0561\u0576\u0581\u0578\u0582\u0574"},
 ga8(){return"\u0546\u0577\u0565\u056c \u0562\u0578\u056c\u0578\u0580\u0568"},
 ga5(){return"\u053f\u056b\u057d\u057e\u0565\u056c"},
@@ -153952,7 +153950,7 @@ gbp(){return"Simpan"},
 gaZ(){return"Pindai teks"},
 gb_(){return"Scrim"},
 gby(){return"Tutup $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Telusuri di Web"},
 ga8(){return"Pilih semua"},
 ga5(){return"Bagikan"},
@@ -153998,7 +153996,7 @@ gbp(){return"Vista"},
 gaZ(){return"Skanna texta"},
 gb_(){return"M\xf6skvi"},
 gby(){return"Loka $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Leita \xe1 vefnum"},
 ga8(){return"Velja allt"},
 ga5(){return"Deila"},
@@ -154044,7 +154042,7 @@ gbp(){return"Salva"},
 gaZ(){return"Scansiona testo"},
 gb_(){return"Rete"},
 gby(){return"Chiudi $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Cerca sul web"},
 ga8(){return"Seleziona tutto"},
 ga5(){return"Condividi"},
@@ -154136,7 +154134,7 @@ gbp(){return"\u10e8\u10d4\u10dc\u10d0\u10ee\u10d5\u10d0"},
 gaZ(){return"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10e1\u10d9\u10d0\u10dc\u10d8\u10e0\u10d4\u10d1\u10d0"},
 gb_(){return"\u10e1\u10d9\u10e0\u10d8\u10db\u10d8"},
 gby(){return"$modalRouteContentName-\u10d8\u10e1 \u10d3\u10d0\u10ee\u10e3\u10e0\u10d5\u10d0"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u10d5\u10d4\u10d1\u10e8\u10d8 \u10eb\u10d8\u10d4\u10d1\u10d0"},
 ga8(){return"\u10e7\u10d5\u10d4\u10da\u10d0\u10e1 \u10d0\u10e0\u10e9\u10d4\u10d5\u10d0"},
 ga5(){return"\u10d2\u10d0\u10d6\u10d8\u10d0\u10e0\u10d4\u10d1\u10d0"},
@@ -154182,7 +154180,7 @@ gbp(){return"\u0421\u0430\u049b\u0442\u0430\u0443"},
 gaZ(){return"\u041c\u04d9\u0442\u0456\u043d\u0434\u0456 \u0441\u043a\u0430\u043d\u0435\u0440\u043b\u0435\u0443"},
 gb_(){return"\u041a\u0435\u043d\u0435\u043f"},
 gby(){return"$modalRouteContentName \u0436\u0430\u0431\u0443"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442\u0442\u0435\u043d \u0456\u0437\u0434\u0435\u0443"},
 ga8(){return"\u0411\u0430\u0440\u043b\u044b\u0493\u044b\u043d \u0442\u0430\u04a3\u0434\u0430\u0443"},
 ga5(){return"\u0411\u04e9\u043b\u0456\u0441\u0443"},
@@ -154366,7 +154364,7 @@ gbp(){return"\u0421\u0430\u043a\u0442\u043e\u043e"},
 gaZ(){return"\u0422\u0435\u043a\u0441\u0442\u0442\u0438 \u0441\u043a\u0430\u043d\u0434\u043e\u043e"},
 gb_(){return"\u041a\u0435\u043d\u0435\u043f"},
 gby(){return"$modalRouteContentName \u0436\u0430\u0431\u0443\u0443"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0418\u043d\u0442\u0435\u0440\u043d\u0435\u0442\u0442\u0435\u043d \u0438\u0437\u0434\u04e9\u04e9"},
 ga8(){return"\u0411\u0430\u0430\u0440\u044b\u043d \u0442\u0430\u043d\u0434\u043e\u043e"},
 ga5(){return"\u0411\u04e9\u043b\u04af\u0448\u04af\u04af"},
@@ -154458,7 +154456,7 @@ gbp(){return"I\u0161saugoti"},
 gaZ(){return"Nuskaityti tekst\u0105"},
 gb_(){return"U\u017esklanda"},
 gby(){return"U\u017edaryti \u201e$modalRouteContentName\u201c"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Ie\u0161koti \u017einiatinklyje"},
 ga8(){return"Pasirinkti visk\u0105"},
 ga5(){return"Bendrinti"},
@@ -154504,7 +154502,7 @@ gbp(){return"Saglab\u0101t"},
 gaZ(){return"Sken\u0113t tekstu"},
 gb_(){return"P\u0101rkl\u0101jums"},
 gby(){return"Aizv\u0113rt $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Mekl\u0113t t\u012bmekl\u012b"},
 ga8(){return"Atlas\u012bt visu"},
 ga5(){return"Kop\u012bgot"},
@@ -154550,7 +154548,7 @@ gbp(){return"\u0417\u0430\u0447\u0443\u0432\u0430\u0458"},
 gaZ(){return"\u0421\u043a\u0435\u043d\u0438\u0440\u0430\u0458\u0442\u0435 \u0433\u043e \u0442\u0435\u043a\u0441\u0442\u043e\u0442"},
 gb_(){return"\u0421\u043a\u0440\u0438\u043c"},
 gby(){return"\u0417\u0430\u0442\u0432\u043e\u0440\u0435\u0442\u0435 \u0458\u0430 $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u041f\u0440\u0435\u0431\u0430\u0440\u0430\u0458\u0442\u0435 \u043d\u0430 \u0438\u043d\u0442\u0435\u0440\u043d\u0435\u0442"},
 ga8(){return"\u0418\u0437\u0431\u0435\u0440\u0438 \u0433\u0438 \u0441\u0438\u0442\u0435"},
 ga5(){return"\u0421\u043f\u043e\u0434\u0435\u043b\u0438"},
@@ -154642,7 +154640,7 @@ gbp(){return"\u0425\u0430\u0434\u0433\u0430\u043b\u0430\u0445"},
 gaZ(){return"\u0422\u0435\u043a\u0441\u0442\u0438\u0439\u0433 \u0441\u043a\u0430\u043d \u0445\u0438\u0439\u0445"},
 gb_(){return"\u0421\u043a\u0440\u0438\u043c"},
 gby(){return"$modalRouteContentName-\u0433 \u0445\u0430\u0430\u0445"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0412\u0435\u0431\u044d\u044d\u0441 \u0445\u0430\u0439\u0445"},
 ga8(){return"\u0411\u04af\u0433\u0434\u0438\u0439\u0433 \u0441\u043e\u043d\u0433\u043e\u0445"},
 ga5(){return"\u0425\u0443\u0432\u0430\u0430\u043b\u0446\u0430\u0445"},
@@ -154734,7 +154732,7 @@ gbp(){return"Simpan"},
 gaZ(){return"Imbas teks"},
 gb_(){return"Scrim"},
 gby(){return"Tutup $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Buat carian pada Web"},
 ga8(){return"Pilih semua"},
 ga5(){return"Kongsi"},
@@ -154826,7 +154824,7 @@ gbp(){return"Lagre"},
 gaZ(){return"Skann tekst"},
 gb_(){return"Vev"},
 gby(){return"Lukk $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"S\xf8k p\xe5 nettet"},
 ga8(){return"Velg alle"},
 ga5(){return"Del"},
@@ -154918,7 +154916,7 @@ gbp(){return"Opslaan"},
 gaZ(){return"Tekst scannen"},
 gb_(){return"Scrim"},
 gby(){return"$modalRouteContentName sluiten"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Op internet zoeken"},
 ga8(){return"Alles selecteren"},
 ga5(){return"Delen"},
@@ -154964,7 +154962,7 @@ gbp(){return"Lagre"},
 gaZ(){return"Skann tekst"},
 gb_(){return"Vev"},
 gby(){return"Lukk $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"S\xf8k p\xe5 nettet"},
 ga8(){return"Velg alle"},
 ga5(){return"Del"},
@@ -155102,7 +155100,7 @@ gbp(){return"Zapisz"},
 gaZ(){return"Skanuj tekst"},
 gb_(){return"Siatka"},
 gby(){return"Zamknij: $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Szukaj w\xa0internecie"},
 ga8(){return"Zaznacz wszystko"},
 ga5(){return"Udost\u0119pnij"},
@@ -155194,7 +155192,7 @@ gbp(){return"Salvar"},
 gaZ(){return"Digitalizar texto"},
 gb_(){return"Scrim"},
 gby(){return"Fechar $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Pesquisar na Web"},
 ga8(){return"Selecionar tudo"},
 ga5(){return"Compartilhar"},
@@ -155257,7 +155255,7 @@ gbp(){return"Salva\u021bi"},
 gaZ(){return"Scana\u021bi textul"},
 gb_(){return"Material"},
 gby(){return"\xcenchide\u021bi $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"C\u0103uta\u021bi pe web"},
 ga8(){return"Selecta\u021bi tot"},
 ga5(){return"Trimite\u021bi"},
@@ -155303,7 +155301,7 @@ gbp(){return"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c"},
 gaZ(){return"\u0421\u043a\u0430\u043d\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0442\u0435\u043a\u0441\u0442"},
 gb_(){return"\u041c\u0430\u0441\u043a\u0430"},
 gby(){return"\u0417\u0430\u043a\u0440\u044b\u0442\u044c $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0418\u0441\u043a\u0430\u0442\u044c \u0432 \u0438\u043d\u0442\u0435\u0440\u043d\u0435\u0442\u0435"},
 ga8(){return"\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0432\u0441\u0435"},
 ga5(){return"\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u044c\u0441\u044f"},
@@ -155349,7 +155347,7 @@ gbp(){return"\u0dc3\u0dd4\u0dbb\u0d9a\u0dd2\u0db1\u0dca\u0db1"},
 gaZ(){return"\u0db4\u0dd9\u0dc5 \u0dc3\u0dca\u0d9a\u0dd1\u0db1\u0dca \u0d9a\u0dbb\u0db1\u0dca\u0db1"},
 gb_(){return"\u0dc3\u0dca\u0d9a\u0dca\u200d\u0dbb\u0dd2\u0db8\u0dca"},
 gby(){return"$modalRouteContentName \u0dc0\u0dc3\u0db1\u0dca\u0db1"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u0dc0\u0dd9\u0db6\u0dba \u0dc3\u0ddc\u0dba\u0db1\u0dca\u0db1"},
 ga8(){return"\u0dc3\u0dd2\u0dba\u0dbd\u0dca\u0dbd \u0dad\u0ddd\u0dbb\u0db1\u0dca\u0db1"},
 ga5(){return"\u0db6\u0dd9\u0daf\u0dcf \u0d9c\u0db1\u0dca\u0db1"},
@@ -155395,7 +155393,7 @@ gbp(){return"Ulo\u017ei\u0165"},
 gaZ(){return"Naskenova\u0165 text"},
 gb_(){return"Scrim"},
 gby(){return"Zavrie\u0165 $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"H\u013eada\u0165 na webe"},
 ga8(){return"Vybra\u0165 v\u0161etko"},
 ga5(){return"Zdie\u013ea\u0165"},
@@ -155441,7 +155439,7 @@ gbp(){return"Shrani"},
 gaZ(){return"Opti\u010dno preberite besedilo"},
 gb_(){return"Scrim"},
 gby(){return"Zapiranje \xbb$modalRouteContentName\xab"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Iskanje v spletu"},
 ga8(){return"Izberi vse"},
 ga5(){return"Deli"},
@@ -155487,7 +155485,7 @@ gbp(){return"Ruaj"},
 gaZ(){return"Skano tekstin"},
 gb_(){return"Kanavac\xeb"},
 gby(){return"Mbyll $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"K\xebrko n\xeb ueb"},
 ga8(){return"Zgjidh t\xeb gjitha"},
 ga5(){return"Ndaj"},
@@ -155533,7 +155531,7 @@ gbp(){return"\u0421\u0430\u0447\u0443\u0432\u0430\u0458"},
 gaZ(){return"\u0421\u043a\u0435\u043d\u0438\u0440\u0430\u0458 \u0442\u0435\u043a\u0441\u0442"},
 gb_(){return"\u0421\u043a\u0440\u0438\u043c"},
 gby(){return"\u0417\u0430\u0442\u0432\u043e\u0440\u0438: $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u041f\u0440\u0435\u0442\u0440\u0430\u0436\u0438 \u0432\u0435\u0431"},
 ga8(){return"\u0418\u0437\u0430\u0431\u0435\u0440\u0438 \u0441\u0432\u0435"},
 ga5(){return"\u0414\u0435\u043b\u0438"},
@@ -155622,7 +155620,7 @@ gbp(){return"Spara"},
 gaZ(){return"Skanna text"},
 gb_(){return"Scrim"},
 gby(){return"St\xe4ng $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"S\xf6k p\xe5 webben"},
 ga8(){return"Markera allt"},
 ga5(){return"Dela"},
@@ -155668,7 +155666,7 @@ gbp(){return"Hifadhi"},
 gaZ(){return"Changanua maandishi"},
 gb_(){return"Scrim"},
 gby(){return"Funga $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Tafuta kwenye Wavuti"},
 ga8(){return"Chagua vyote"},
 ga5(){return"Tuma"},
@@ -155852,7 +155850,7 @@ gbp(){return"I-save"},
 gaZ(){return"I-scan ang text"},
 gb_(){return"Scrim"},
 gby(){return"Isara ang $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Maghanap sa Web"},
 ga8(){return"Piliin lahat"},
 ga5(){return"I-share"},
@@ -155898,7 +155896,7 @@ gbp(){return"Kaydet"},
 gaZ(){return"Metin tara"},
 gb_(){return"opakl\u0131k katman\u0131"},
 gby(){return"$modalRouteContentName i\xe7eri\u011fini kapat"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Web'de Ara"},
 ga8(){return"T\xfcm\xfcn\xfc se\xe7"},
 ga5(){return"Payla\u015f"},
@@ -155990,7 +155988,7 @@ gbp(){return"\u0417\u0431\u0435\u0440\u0435\u0433\u0442\u0438"},
 gaZ(){return"\u0412\u0456\u0434\u0441\u043a\u0430\u043d\u0443\u0432\u0430\u0442\u0438 \u0442\u0435\u043a\u0441\u0442"},
 gb_(){return"\u041c\u0430\u0441\u043a\u0443\u0432\u0430\u043b\u044c\u043d\u0438\u0439 \u0444\u043e\u043d"},
 gby(){return"\u0417\u0430\u043a\u0440\u0438\u0442\u0438: $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"\u041f\u043e\u0448\u0443\u043a \u0432 \u0406\u043d\u0442\u0435\u0440\u043d\u0435\u0442\u0456"},
 ga8(){return"\u0412\u0438\u0431\u0440\u0430\u0442\u0438 \u0432\u0441\u0456"},
 ga5(){return"\u041f\u043e\u0434\u0456\u043b\u0438\u0442\u0438\u0441\u044f"},
@@ -156082,7 +156080,7 @@ gbp(){return"Saqlash"},
 gaZ(){return"Matnni skanerlash"},
 gb_(){return"Kanop"},
 gby(){return"Yopish: $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Internetdan qidirish"},
 ga8(){return"Hammasi"},
 ga5(){return"Ulashish"},
@@ -156128,7 +156126,7 @@ gbp(){return"L\u01b0u"},
 gaZ(){return"Qu\xe9t v\u0103n b\u1ea3n"},
 gb_(){return"Scrim"},
 gby(){return"\u0110\xf3ng $modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"T\xecm ki\u1ebfm tr\xean web"},
 ga8(){return"Ch\u1ecdn t\u1ea5t c\u1ea3"},
 ga5(){return"Chia s\u1ebb"},
@@ -156274,7 +156272,7 @@ gbp(){return"Londoloza"},
 gaZ(){return"Skena umbhalo"},
 gb_(){return"I-Scrim"},
 gby(){return"Vala i-$modalRouteContentName"},
-gbH(){return B.aX},
+gbH(){return B.aY},
 gR(){return"Sesha Iwebhu"},
 ga8(){return"Khetha konke"},
 ga5(){return"Yabelana"},
@@ -165966,7 +165964,7 @@ B.oN=new A.a0r(0,"forward")
 B.rk=new A.a0r(1,"reverse")
 B.bh=new A.mI(0,"dismissed")
 B.hc=new A.mI(1,"forward")
-B.ft=new A.mI(2,"reverse")
+B.fu=new A.mI(2,"reverse")
 B.bT=new A.mI(3,"completed")
 B.a85=new A.Cl(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.xP=new A.K4(0,"exit")
@@ -165996,7 +165994,7 @@ B.a89=new A.xn(null)
 B.c_=new A.Cq(0,"up")
 B.ic=new A.Cq(1,"right")
 B.bN=new A.Cq(2,"down")
-B.fu=new A.Cq(3,"left")
+B.fv=new A.Cq(3,"left")
 B.bm=new A.a0O(0,"horizontal")
 B.ai=new A.a0O(1,"vertical")
 B.a5n=new A.Ad(0,"backButton")
@@ -166067,17 +166065,17 @@ B.a3d=new A.bB(18,18)
 B.a8D=new A.ct(B.a3d,B.a3d,B.ah,B.ah)
 B.wf=new A.bB(7,7)
 B.a8E=new A.ct(B.wf,B.wf,B.wf,B.wf)
-B.dY=new A.l(1,0.27450980392156865,0.8862745098039215,0.5490196078431373,B.m)
+B.dX=new A.l(1,0.27450980392156865,0.8862745098039215,0.5490196078431373,B.m)
 B.o=new A.a16(1,"solid")
-B.a8F=new A.aA(B.dY,1.5,B.o,-1)
+B.a8F=new A.aA(B.dX,1.5,B.o,-1)
 B.Q=new A.l(0,0,0,0,B.m)
 B.a8G=new A.aA(B.Q,0,B.o,-1)
 B.a8H=new A.aA(B.dl,1.5,B.o,-1)
 B.ed=new A.l(1,0.8,0.2,0.2,B.m)
 B.Fo=new A.aA(B.ed,1.5,B.o,-1)
 B.H=new A.l(1,0,0,0,B.m)
-B.dX=new A.a16(0,"none")
-B.w=new A.aA(B.H,0,B.dX,-1)
+B.dW=new A.a16(0,"none")
+B.w=new A.aA(B.H,0,B.dW,-1)
 B.bV=new A.l(1,0.023529411764705882,0.37254901960784315,0.27450980392156865,B.m)
 B.a8L=new A.aA(B.bV,1.5,B.o,-1)
 B.ex=new A.l(1,0.8980392156862745,0.9058823529411765,0.9215686274509803,B.m)
@@ -166163,10 +166161,10 @@ B.a9A=new A.aI(0,420,0,1/0)
 B.a9B=new A.aI(0,1/0,120,260)
 B.xY=new A.aI(1/0,1/0,1/0,1/0)
 B.aJ=new A.RL(0,"clamp")
-B.av=new A.l(1,0.058823529411764705,0.06666666666666667,0.08627450980392157,B.m)
+B.aw=new A.l(1,0.058823529411764705,0.06666666666666667,0.08627450980392157,B.m)
 B.aG=new A.l(1,0.10196078431372549,0.11372549019607843,0.13725490196078433,B.m)
 B.aa=new A.l(1,0.1450980392156863,0.1607843137254902,0.18823529411764706,B.m)
-B.bLs=A.a(s([B.av,B.aG,B.aa]),t.O)
+B.bLs=A.a(s([B.aw,B.aG,B.aa]),t.O)
 B.Qr=A.a(s([0,0.45,1]),t.u)
 B.aLr=new A.cp(B.b4,B.bl,B.aJ,B.bLs,B.Qr,null)
 B.l=new A.a19(0,"rectangle")
@@ -166204,7 +166202,7 @@ B.a9H=new A.j(null,null,B.a96,null,null,B.aLK,B.l)
 B.a8Y=new A.aA(B.hF,0.5,B.o,-1)
 B.xW=new A.bS(B.w,B.w,B.a8Y,B.w)
 B.p0=new A.l(1,0.10588235294117647,0.23921568627450981,0.16470588235294117,B.m)
-B.bBx=A.a(s([B.av,B.p0,B.T]),t.O)
+B.bBx=A.a(s([B.aw,B.p0,B.T]),t.O)
 B.M_=new A.cp(B.b4,B.bl,B.aJ,B.bBx,null,null)
 B.a9I=new A.j(null,null,B.xW,null,null,B.M_,B.l)
 B.jl=new A.l(1,0.7411764705882353,0.7411764705882353,0.7411764705882353,B.m)
@@ -166245,7 +166243,7 @@ B.LZ=new A.cp(B.b4,B.bl,B.aJ,B.bKE,null,null)
 B.a9Q=new A.j(null,null,B.a97,null,null,B.LZ,B.l)
 B.a9R=new A.j(B.aG,null,B.Ft,null,null,null,B.l)
 B.a9S=new A.j(null,null,null,B.xV,null,B.M1,B.l)
-B.aVv=A.a(s([B.av,B.p0]),t.O)
+B.aVv=A.a(s([B.aw,B.p0]),t.O)
 B.aLP=new A.cp(B.b4,B.bl,B.aJ,B.aVv,null,null)
 B.a9T=new A.j(null,null,null,B.jf,null,B.aLP,B.l)
 B.pg=new A.l(1,0.9803921568627451,0.9803921568627451,0.9803921568627451,B.m)
@@ -166267,15 +166265,15 @@ B.a9U=new A.j(null,null,B.a9b,null,null,null,B.l)
 B.a9V=new A.j(null,null,null,null,null,null,B.l)
 B.alC=new A.l(1,0.050980392156862744,0.2,0.1411764705882353,B.m)
 B.aj6=new A.l(1,0.0392156862745098,0.13333333333333333,0.09411764705882353,B.m)
-B.b78=A.a(s([B.av,B.alC,B.aj6]),t.O)
+B.b78=A.a(s([B.aw,B.alC,B.aj6]),t.O)
 B.aO2=A.a(s([0,0.6,1]),t.u)
 B.aLN=new A.cp(B.b4,B.bl,B.aJ,B.b78,B.aO2,null)
 B.a9W=new A.j(null,null,null,null,null,B.aLN,B.l)
 B.a9X=new A.j(B.P,null,null,B.oO,null,null,B.l)
 B.Hd=new A.l(1,0.07058823529411765,0.08627450980392157,0.12156862745098039,B.m)
 B.a9Y=new A.j(B.Hd,null,B.xW,null,null,null,B.l)
-B.aY=new A.l(1,0.9607843137254902,0.6196078431372549,0.043137254901960784,B.m)
-B.a9Z=new A.j(B.aY,null,null,null,null,null,B.ap)
+B.aZ=new A.l(1,0.9607843137254902,0.6196078431372549,0.043137254901960784,B.m)
+B.a9Z=new A.j(B.aZ,null,null,null,null,null,B.ap)
 B.aa_=new A.j(null,null,null,null,null,B.M_,B.l)
 B.ru=new A.j(B.Q,null,null,null,null,null,B.l)
 B.akp=new A.l(0.23529411764705882,0,0,0,B.m)
@@ -166444,7 +166442,7 @@ B.abC=new A.a6w()
 B.abD=new A.a6x()
 B.abE=new A.a6y()
 B.cP=new A.aLX()
-B.fv=new A.aLZ()
+B.fw=new A.aLZ()
 B.FQ=function getTagFallback(o) {
   var s = Object.prototype.toString.call(o);
   return s.substring(8, s.length - 1);
@@ -166712,8 +166710,8 @@ B.z=new A.mU(6)
 B.oz=new A.u(!0,B.j,null,null,null,null,18,B.z,null,-0.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eiZ=new A.bl("PACIENTES",null,B.oz,null,null,null,null,null,null,null,null)
 B.adY=new A.e5(B.ad,null,null,B.eiZ,null)
-B.e0=new A.l(1,0.25882352941176473,0.5215686274509804,0.9568627450980393,B.m)
-B.ebu=new A.u(!0,B.e0,null,null,null,null,28,B.z,null,-0.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.e_=new A.l(1,0.25882352941176473,0.5215686274509804,0.9568627450980393,B.m)
+B.ebu=new A.u(!0,B.e_,null,null,null,null,28,B.z,null,-0.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ehM=new A.bl("G",null,B.ebu,null,null,null,null,null,null,null,null)
 B.adZ=new A.e5(B.ad,null,null,B.ehM,null)
 B.a63=new A.u(!0,B.a8,null,null,null,null,16,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -166899,7 +166897,7 @@ B.agk=new A.a1I(null)
 B.agl=new A.aBh(1,"matrix")
 B.akU=new A.l(1,0.8117647058823529,0.4,0.4745098039215686,B.m)
 B.Gp=new A.l(1,0.07058823529411765,0.07058823529411765,0.07058823529411765,B.m)
-B.oY=new A.oY(B.A,B.a6,B.H,null,null,null,null,null,null,B.T,B.H,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.akU,B.H,null,null,B.av,B.j,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.Gp,B.j)
+B.oY=new A.oY(B.A,B.a6,B.H,null,null,null,null,null,null,B.T,B.H,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.akU,B.H,null,null,B.aw,B.j,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.Gp,B.j)
 B.yL=new A.l(1,0.403921568627451,0.3137254901960784,0.6431372549019608,B.m)
 B.rW=new A.l(1,0.9176470588235294,0.8666666666666667,1,B.m)
 B.td=new A.l(1,0.30980392156862746,0.21568627450980393,0.5450980392156862,B.m)
@@ -166934,7 +166932,7 @@ B.aiK=new A.l(1,0.9607843137254902,0.9372549019607843,0.9686274509803922,B.m)
 B.agm=new A.oY(B.cO,B.yL,B.j,B.rW,B.td,B.rW,B.p9,B.Ic,B.td,B.agp,B.j,B.t8,B.t7,B.t8,B.yB,B.Hb,B.t7,B.aiW,B.j,B.rK,B.rJ,B.rK,B.yt,B.Hs,B.rJ,B.ajf,B.j,B.Hm,B.I_,B.z0,B.yk,B.aje,B.agz,B.z0,B.j,B.akh,B.ait,B.ahF,B.rX,B.yv,B.agU,B.H0,B.H,B.H,B.ID,B.aiK,B.p9,B.yL,B.z0,B.yk)
 B.ahH=new A.l(1,0.011764705882352941,0.8549019607843137,0.7764705882352941,B.m)
 B.Hj=new A.l(1,0.6901960784313725,0,0.12549019607843137,B.m)
-B.agn=new A.oY(B.cO,B.av,B.a8,null,null,null,null,null,null,B.ahH,B.H,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.Hj,B.j,null,null,B.j,B.av,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.j,B.H)
+B.agn=new A.oY(B.cO,B.aw,B.a8,null,null,null,null,null,null,B.ahH,B.H,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.Hj,B.j,null,null,B.j,B.aw,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,B.j,B.H)
 B.aik=new A.l(1,0.2196078431372549,0.11764705882352941,0.4470588235294118,B.m)
 B.aiL=new A.l(1,0.2,0.17647058823529413,0.2549019607843137,B.m)
 B.ah0=new A.l(1,0.28627450980392155,0.1450980392156863,0.19607843137254902,B.m)
@@ -167157,7 +167155,7 @@ B.Hu=new A.l(1,0.5647058823529412,0.792156862745098,0.9764705882352941,B.m)
 B.Hw=new A.l(1,0.8784313725490196,0.4392156862745098,0,B.m)
 B.da=new A.l(1,0.23137254901960785,0.5098039215686274,0.9647058823529412,B.m)
 B.aiT=new A.l(1,0.08627450980392157,0.16470588235294117,0.10980392156862745,B.m)
-B.fw=new A.l(1,0.7254901960784313,0.10980392156862745,0.10980392156862745,B.m)
+B.fx=new A.l(1,0.7254901960784313,0.10980392156862745,0.10980392156862745,B.m)
 B.Hz=new A.l(1,0.9490196078431372,0.9725490196078431,0.9490196078431372,B.m)
 B.aiV=new A.l(1,0.9450980392156862,0.9803921568627451,0.9647058823529412,B.m)
 B.yA=new A.l(1,0.9294117647058824,0.9411764705882353,0.9686274509803922,B.m)
@@ -167281,7 +167279,7 @@ B.akm=new A.l(1,0.9803921568627451,0.984313725490196,0.9882352941176471,B.m)
 B.akq=new A.l(1,0.027450980392156862,0.08235294117647059,0.06274509803921569,B.m)
 B.hI=new A.l(1,0.984313725490196,0.7490196078431373,0.1411764705882353,B.m)
 B.yV=new A.l(1,1,0.9607843137254902,0.9607843137254902,B.m)
-B.dZ=new A.l(1,0.6666666666666666,0.6666666666666666,0.6666666666666666,B.m)
+B.dY=new A.l(1,0.6666666666666666,0.6666666666666666,0.6666666666666666,B.m)
 B.t2=new A.l(1,0.5725490196078431,0.25098039215686274,0.054901960784313725,B.m)
 B.ld=new A.l(1,1,0.5411764705882353,0,B.m)
 B.akt=new A.l(1,0.9411764705882353,0.9568627450980393,0.984313725490196,B.m)
@@ -167301,7 +167299,7 @@ B.akF=new A.l(1,0.8,0.8,0.8,B.m)
 B.it=new A.l(1,0.050980392156862744,0.47843137254901963,0.3333333333333333,B.m)
 B.t4=new A.l(1,1,0.1411764705882353,0,B.m)
 B.ew=new A.l(0.6,1,1,1,B.m)
-B.e_=new A.l(1,0.16470588235294117,0.9411764705882353,0.47843137254901963,B.m)
+B.dZ=new A.l(1,0.16470588235294117,0.9411764705882353,0.47843137254901963,B.m)
 B.I6=new A.l(1,0.09803921568627451,0.4627450980392157,0.8235294117647058,B.m)
 B.I7=new A.l(1,0.984313725490196,0.5490196078431373,0,B.m)
 B.iu=new A.l(1,0.8313725490196079,0.6274509803921569,0.09019607843137255,B.m)
@@ -167397,7 +167395,7 @@ B.mW=new A.l(1,0.6039215686274509,0.6784313725490196,0.6470588235294118,B.m)
 B.e=new A.uX(0,"start")
 B.f=new A.a7z(1,"max")
 B.r=new A.xG(0,"start")
-B.dW=new A.b1B(1,"down")
+B.dV=new A.b1B(1,"down")
 B.k=new A.xG(2,"center")
 B.e2=new A.Y(63509,"MaterialIcons",null,!1)
 B.agL=new A.l(1,1,0.9725490196078431,0.8823529411764706,B.m)
@@ -167416,12 +167414,12 @@ B.af=new A.aw(6,null,null,null)
 B.edj=new A.u(!0,B.iY,null,null,null,null,12,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eiq=new A.bl("Como funciona",null,B.edj,null,null,null,null,null,null,null,null)
 B.bfb=A.a(s([B.aIx,B.af,B.eiq]),t.p)
-B.e2Y=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dW,null,0,B.bfb,null)
+B.e2Y=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dV,null,0,B.bfb,null)
 B.M=new A.aw(null,8,null,null)
 B.egU=new A.u(!0,B.bb,null,null,null,null,11,null,null,null,null,null,1.6,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eiy=new A.bl('1. Cadastre o influenciador \u2014 o slug \xe9 gerado automaticamente pelo nome.\n2. Compartilhe o link gerado (ex: medcasespro.com?ref=dr_marcos).\n3. Quando um m\xe9dico acessa via esse link e se cadastra, ele \xe9 vinculado automaticamente ao influenciador.\n4. "Convers\xf5es" = m\xe9dicos que completaram o cadastro pelo link.\n5. Cupom e desconto ficam prontos para aplica\xe7\xe3o autom\xe1tica no checkout assim que a monetiza\xe7\xe3o for ativada.',null,B.egU,null,null,null,null,null,null,null,null)
 B.baY=A.a(s([B.e2Y,B.M,B.eiy]),t.p)
-B.alW=new A.it(B.ai,B.e,B.f,B.r,null,B.dW,null,0,B.baY,null)
+B.alW=new A.it(B.ai,B.e,B.f,B.r,null,B.dV,null,0,B.baY,null)
 B.za=new A.CO(0,"none")
 B.te=new A.CO(1,"waiting")
 B.IG=new A.CO(2,"active")
@@ -167438,7 +167436,7 @@ B.zd=new A.mN(8,"liveTextInput")
 B.mX=new A.mN(9,"custom")
 B.IH=new A.p_(!1)
 B.II=new A.p_(!0)
-B.fx=new A.xG(1,"end")
+B.fy=new A.xG(1,"end")
 B.dm=new A.xG(3,"stretch")
 B.mY=new A.xG(4,"baseline")
 B.jt=new A.KY(0,"showFirst")
@@ -167555,7 +167553,7 @@ B.amy=new A.D_(0)
 B.amz=new A.D_(1)
 B.amA=new A.Ll(0,"portraitUp")
 B.amB=new A.Ll(2,"portraitDown")
-B.e1=new A.Lm(3,"info")
+B.e0=new A.Lm(3,"info")
 B.amC=new A.Lm(5,"hint")
 B.amD=new A.Lm(6,"summary")
 B.exv=new A.qZ(1,"sparse")
@@ -167592,7 +167590,7 @@ B.apn=new A.y_(null)
 B.aW=new A.bq(0)
 B.azT=new A.bq(1000)
 B.eO=new A.bq(1e5)
-B.fy=new A.bq(1e6)
+B.fz=new A.bq(1e6)
 B.zq=new A.bq(1e7)
 B.azU=new A.bq(11e4)
 B.jw=new A.bq(12e4)
@@ -167653,7 +167651,7 @@ B.Jb=new A.bq(7e5)
 B.zu=new A.bq(75e3)
 B.aAf=new A.bq(8e4)
 B.aAg=new A.bq(8e5)
-B.fz=new A.bq(8e6)
+B.fA=new A.bq(8e6)
 B.aAh=new A.bq(85e4)
 B.aAi=new A.bq(9e4)
 B.aAj=new A.bq(-38e3)
@@ -167765,7 +167763,7 @@ B.zF=new A.L(10,9,10,9)
 B.aB7=new A.L(11,10,11,10)
 B.aB8=new A.L(11,6,11,6)
 B.aB9=new A.L(11,8,11,8)
-B.fA=new A.L(12,0,12,0)
+B.ff=new A.L(12,0,12,0)
 B.aBa=new A.L(12,0,12,10)
 B.Jm=new A.L(12,0,12,12)
 B.aBb=new A.L(12,0,12,16)
@@ -167786,7 +167784,7 @@ B.n8=new A.L(12,6,12,6)
 B.ll=new A.L(12,7,12,7)
 B.aBm=new A.L(12,7,8,7)
 B.aBn=new A.L(12,8,12,24)
-B.ff=new A.L(12,8,12,8)
+B.fg=new A.L(12,8,12,8)
 B.aBo=new A.L(12,8,52,8)
 B.aBp=new A.L(12,8,8,8)
 B.lm=new A.L(12,9,12,9)
@@ -167826,7 +167824,7 @@ B.aBI=new A.L(14,8,14,6)
 B.n9=new A.L(14,8,14,8)
 B.pL=new A.L(14,9,14,9)
 B.aBJ=new A.L(15,5,15,10)
-B.dS=new A.L(16,0,16,0)
+B.e1=new A.L(16,0,16,0)
 B.Jt=new A.L(16,0,16,10)
 B.Ju=new A.L(16,0,16,12)
 B.tD=new A.L(16,0,16,14)
@@ -168174,7 +168172,7 @@ B.KA=new A.a66(1,"reverse")
 B.nh=new A.DI(0,"push")
 B.ni=new A.DI(1,"pop")
 B.iB=new A.MO(0,"deferToChild")
-B.aZ=new A.MO(1,"opaque")
+B.aX=new A.MO(1,"opaque")
 B.fZ=new A.MO(2,"translucent")
 B.aEe=new A.aK4("attribute",!0,!0,!1,!1)
 B.KB=new A.a6h(B.aEe)
@@ -168295,7 +168293,7 @@ B.aF4=new A.Y(63108,"MaterialIcons",null,!1)
 B.aF5=new A.Y(63114,"MaterialIcons",null,!1)
 B.aF6=new A.Y(63116,"MaterialIcons",null,!1)
 B.L2=new A.Y(63122,"MaterialIcons",null,!1)
-B.fg=new A.Y(63126,"MaterialIcons",null,!1)
+B.fh=new A.Y(63126,"MaterialIcons",null,!1)
 B.hN=new A.Y(63131,"MaterialIcons",null,!1)
 B.aF8=new A.Y(63155,"MaterialIcons",null,!1)
 B.AJ=new A.Y(63165,"MaterialIcons",null,!1)
@@ -168476,12 +168474,12 @@ B.q_=new A.Y(63125,"MaterialIcons",null,!1)
 B.aGD=new A.aj(B.q_,22,B.ed,null,null)
 B.aGE=new A.aj(B.em,18,B.bu,null,null)
 B.aGF=new A.aj(B.ua,14,B.a8,null,null)
-B.aGG=new A.aj(B.c7,18,B.dZ,null,null)
+B.aGG=new A.aj(B.c7,18,B.dY,null,null)
 B.Ll=new A.Y(983307,"MaterialIcons",null,!1)
 B.aGH=new A.aj(B.Ll,15,B.Z,null,null)
 B.Ly=new A.aj(B.cR,16,B.j,null,null)
 B.aGI=new A.aj(B.dc,20,B.j,null,null)
-B.aGJ=new A.aj(B.Au,16,B.aY,null,null)
+B.aGJ=new A.aj(B.Au,16,B.aZ,null,null)
 B.aGy=new A.Y(984739,"MaterialIcons",null,!1)
 B.aGK=new A.aj(B.aGy,12,B.a8,null,null)
 B.aGL=new A.aj(B.km,26,B.Gl,null,null)
@@ -168506,7 +168504,7 @@ B.aH1=new A.aj(B.AB,12,B.j,null,null)
 B.aH2=new A.aj(B.fF,22,B.j,null,null)
 B.aH3=new A.aj(B.q_,15,B.j,null,null)
 B.aH4=new A.aj(B.KP,13,B.f8,null,null)
-B.aH5=new A.aj(B.d2,20,B.dY,null,null)
+B.aH5=new A.aj(B.d2,20,B.dX,null,null)
 B.aH6=new A.aj(B.AM,18,B.rG,null,null)
 B.aEq=new A.Y(58648,"MaterialIcons",null,!1)
 B.aH7=new A.aj(B.aEq,18,B.bu,null,null)
@@ -168528,7 +168526,7 @@ B.aHl=new A.aj(B.aGv,16,null,null,null)
 B.aHm=new A.aj(B.e2,14,B.a6,null,null)
 B.aHn=new A.aj(B.jE,14,B.a8,null,null)
 B.L1=new A.Y(63034,"MaterialIcons",null,!0)
-B.aHo=new A.aj(B.L1,18,B.av,null,null)
+B.aHo=new A.aj(B.L1,18,B.aw,null,null)
 B.aHp=new A.aj(B.kl,12,B.Z,null,null)
 B.aEM=new A.Y(62260,"MaterialIcons",null,!1)
 B.aHs=new A.aj(B.aEM,16,B.j,null,null)
@@ -168543,13 +168541,13 @@ B.aHz=new A.aj(B.aFk,14,B.bA,null,null)
 B.aHA=new A.aj(B.hO,18,B.a8,null,null)
 B.aHB=new A.aj(B.pV,11,B.bz,null,null)
 B.aHD=new A.aj(B.pZ,20,B.j,null,null)
-B.LB=new A.aj(B.e2,12,B.aY,null,null)
+B.LB=new A.aj(B.e2,12,B.aZ,null,null)
 B.aHE=new A.aj(B.lA,16,null,null,null)
 B.aHF=new A.aj(B.cR,20,B.bA,null,null)
 B.aHG=new A.aj(B.fE,16,B.T,null,null)
 B.aHH=new A.aj(B.AB,13,B.j,null,null)
 B.aHI=new A.aj(B.q1,13,B.j,null,null)
-B.aHJ=new A.aj(B.cR,18,B.aY,null,null)
+B.aHJ=new A.aj(B.cR,18,B.aZ,null,null)
 B.aHL=new A.aj(B.jD,13,B.j,null,null)
 B.aG0=new A.Y(983333,"MaterialIcons",null,!1)
 B.aHM=new A.aj(B.aG0,15,B.a6,null,null)
@@ -168576,7 +168574,7 @@ B.aI2=new A.aj(B.Ll,15,B.j,null,null)
 B.aI3=new A.aj(B.u8,18,B.dl,null,null)
 B.aI4=new A.aj(B.B0,16,null,null,null)
 B.aI5=new A.aj(B.jC,16,null,null,null)
-B.aI6=new A.aj(B.jE,15,B.av,null,null)
+B.aI6=new A.aj(B.jE,15,B.aw,null,null)
 B.aEi=new A.Y(57634,"MaterialIcons",null,!1)
 B.aI7=new A.aj(B.aEi,null,null,null,null)
 B.aI8=new A.aj(B.jC,13,B.bu,null,null)
@@ -168614,12 +168612,12 @@ B.aIt=new A.aj(B.d2,14,B.bV,null,null)
 B.aIu=new A.aj(B.lA,null,B.j,null,null)
 B.aIv=new A.aj(B.nr,14,B.cx,null,null)
 B.aIw=new A.aj(B.d2,18,null,null,null)
-B.aIy=new A.aj(B.fg,18,B.iW,null,null)
+B.aIy=new A.aj(B.fh,18,B.iW,null,null)
 B.aIz=new A.aj(B.ko,13,B.Z,null,null)
 B.aIA=new A.aj(B.lA,20,B.ee,null,null)
 B.aIC=new A.aj(B.c7,16,B.aT,null,null)
-B.aID=new A.aj(B.fg,16,B.j,null,null)
-B.aIE=new A.aj(B.fg,15,B.bA,null,null)
+B.aID=new A.aj(B.fh,16,B.j,null,null)
+B.aIE=new A.aj(B.fh,15,B.bA,null,null)
 B.aIH=new A.aj(B.kj,18,B.mV,null,null)
 B.aII=new A.aj(B.hn,18,B.j,null,null)
 B.LC=new A.aj(B.c7,16,B.j,null,null)
@@ -168636,18 +168634,18 @@ B.aIS=new A.aj(B.aEP,32,B.ee,null,null)
 B.aIT=new A.aj(B.hN,20,B.a6,null,null)
 B.la=new A.l(1,0.10196078431372549,0.06666666666666667,0,B.m)
 B.aIU=new A.aj(B.AP,14,B.la,null,null)
-B.aIV=new A.aj(B.e2,16,B.aY,null,null)
+B.aIV=new A.aj(B.e2,16,B.aZ,null,null)
 B.aFL=new A.Y(983082,"MaterialIcons",null,!1)
 B.aIW=new A.aj(B.aFL,16,null,null,null)
 B.aIX=new A.aj(B.jD,11,B.j,null,null)
 B.aIY=new A.aj(B.hn,18,B.a8,null,null)
 B.aIZ=new A.aj(B.AG,18,B.hI,null,null)
-B.aJ_=new A.aj(B.lA,16,B.dY,null,null)
+B.aJ_=new A.aj(B.lA,16,B.dX,null,null)
 B.aFI=new A.Y(983077,"MaterialIcons",null,!1)
 B.aJ0=new A.aj(B.aFI,null,B.j,null,null)
 B.aJ3=new A.aj(B.ud,11,B.bR,null,null)
 B.aJ4=new A.aj(B.iF,48,B.pk,null,null)
-B.aJ5=new A.aj(B.fg,14,B.aT,null,null)
+B.aJ5=new A.aj(B.fh,14,B.aT,null,null)
 B.aJ6=new A.aj(B.ko,9,B.a8,null,null)
 B.aFQ=new A.Y(983147,"MaterialIcons",null,!1)
 B.aJ8=new A.aj(B.aFQ,18,B.aT,null,null)
@@ -168657,9 +168655,9 @@ B.aJb=new A.aj(B.hO,14,B.a8,null,null)
 B.aEg=new A.Y(57492,"MaterialIcons",null,!0)
 B.uh=new A.aj(B.aEg,20,B.j,null,null)
 B.aJc=new A.aj(B.nr,12,B.dy,null,null)
-B.LD=new A.aj(B.fg,16,B.bu,null,null)
+B.LD=new A.aj(B.fh,16,B.bu,null,null)
 B.aJd=new A.aj(B.c7,13,B.l9,null,null)
-B.aJe=new A.aj(B.fg,22,B.bu,null,null)
+B.aJe=new A.aj(B.fh,22,B.bu,null,null)
 B.aFD=new A.Y(63655,"MaterialIcons",null,!1)
 B.aJf=new A.aj(B.aFD,36,B.cI,null,null)
 B.aJg=new A.aj(B.q4,16,B.mP,null,null)
@@ -168692,7 +168690,7 @@ B.aJE=new A.aj(B.lA,18,B.bb,null,null)
 B.aJF=new A.aj(B.KF,11,B.j,null,null)
 B.aJG=new A.aj(B.dc,24,B.j,null,null)
 B.aJH=new A.aj(B.uf,15,B.mL,null,null)
-B.aJI=new A.aj(B.fg,16,B.iW,null,null)
+B.aJI=new A.aj(B.fh,16,B.iW,null,null)
 B.aFs=new A.Y(63515,"MaterialIcons",null,!1)
 B.aJK=new A.aj(B.aFs,null,B.Z,null,null)
 B.aJL=new A.aj(B.u5,14,B.t5,null,null)
@@ -168727,7 +168725,7 @@ B.aKe=new A.aj(B.fB,15,B.bn,null,null)
 B.aKf=new A.aj(B.pT,14,B.bU,null,null)
 B.aKg=new A.aj(B.KX,16,B.j,null,null)
 B.aFy=new A.Y(63577,"MaterialIcons",null,!1)
-B.aKh=new A.aj(B.aFy,16,B.aY,null,null)
+B.aKh=new A.aj(B.aFy,16,B.aZ,null,null)
 B.aKi=new A.aj(B.hO,16,B.j,null,null)
 B.aKj=new A.aj(B.iI,18,B.Z,null,null)
 B.aKl=new A.aj(B.KU,11,B.j,null,null)
@@ -168818,7 +168816,7 @@ B.jF=new A.yR(3,"all")
 B.aLk=new A.E6(0,"low")
 B.kr=new A.E6(1,"normal")
 B.lB=new A.E6(2,"high")
-B.dT=new A.E6(3,"critical")
+B.dS=new A.E6(3,"critical")
 B.d3=new A.Nq(0,"ariaLabel")
 B.un=new A.Nq(1,"domText")
 B.uo=new A.Nq(2,"sizedSpan")
@@ -168842,7 +168840,7 @@ B.LX=new A.Ny(3,"endOfText")
 B.bis=A.a(s([B.mU,B.yq,B.k6]),t.O)
 B.aLs=new A.cp(B.cG,B.d9,B.aJ,B.bis,null,null)
 B.alO=new A.l(1,0.09019607843137255,0.3137254901960784,0.1803921568627451,B.m)
-B.bul=A.a(s([B.av,B.p0,B.alO]),t.O)
+B.bul=A.a(s([B.aw,B.p0,B.alO]),t.O)
 B.brp=A.a(s([0,0.55,1]),t.u)
 B.aLt=new A.cp(B.b4,B.bl,B.aJ,B.bul,B.brp,null)
 B.ajR=new A.l(1,0.10196078431372549,0.1803921568627451,0.12156862745098039,B.m)
@@ -168890,7 +168888,7 @@ B.ahQ=new A.l(1,0.058823529411764705,0.11764705882352941,0.2901960784313726,B.m)
 B.ahp=new A.l(1,0.10196078431372549,0.22745098039215686,0.5607843137254902,B.m)
 B.b1d=A.a(s([B.ahQ,B.ahp,B.dl]),t.O)
 B.aLL=new A.cp(B.b4,B.bl,B.aJ,B.b1d,null,null)
-B.Qe=A.a(s([B.av,B.T]),t.O)
+B.Qe=A.a(s([B.aw,B.T]),t.O)
 B.aLM=new A.cp(B.cG,B.d9,B.aJ,B.Qe,null,null)
 B.b6_=A.a(s([B.cw,B.Gs]),t.O)
 B.aLQ=new A.cp(B.b4,B.bl,B.aJ,B.b6_,null,null)
@@ -169389,23 +169387,23 @@ B.eU=new A.fk(9,"reducedEfficacy")
 B.a5=new A.au([B.eU],t.U)
 B.e03=new A.d(["quinolona","anti\xe1cido",B.u,"Cationes divalentes (Al, Mg, Ca) quelan quinolonas en el TGI","Reducci\xf3n del 50\u201390% en la absorci\xf3n oral de la quinolona","Administrar quinolona 2h antes o 6h despu\xe9s del anti\xe1cido/suplemento de calcio/hierro",u.ab,B.h,B.a5,B.bi])
 B.eE=new A.fk(10,"increasedToxicity")
-B.fo=new A.au([B.aP,B.eE],t.U)
-B.dQt=new A.d(["ciprofloxacino","teofilina",B.n,"Inhibici\xf3n del CYP1A2 reduce metabolismo de teofilina","Toxicidad por teofilina \u2014 n\xe1useas, convulsiones, arritmias","Reducir dosis de teofilina 30\u201350%. Monitorar nivel s\xe9rico de teofilina","ALTO RIESGO DE TOXICIDAD \u2014 Monitorar nivel s\xe9rico de teofilina",B.h,B.fo,B.cS])
+B.fp=new A.au([B.aP,B.eE],t.U)
+B.dQt=new A.d(["ciprofloxacino","teofilina",B.n,"Inhibici\xf3n del CYP1A2 reduce metabolismo de teofilina","Toxicidad por teofilina \u2014 n\xe1useas, convulsiones, arritmias","Reducir dosis de teofilina 30\u201350%. Monitorar nivel s\xe9rico de teofilina","ALTO RIESGO DE TOXICIDAD \u2014 Monitorar nivel s\xe9rico de teofilina",B.h,B.fp,B.cS])
 B.e_f=new A.d(["claritromicina","estatina",B.n,"Inhibici\xf3n del CYP3A4 eleva concentraci\xf3n plasm\xe1tica de estatinas metabolizadas por esse CYP","Riesgo de miopat\xeda/rabdomi\xf3lisis","Suspender estatina durante el curso de claritromicina. Alternativa: azitromicina","RIESGO DE RABDOMI\xd3LISIS \u2014 Suspender estatina durante claritromicina",B.h,B.cT,B.cS])
 B.jQ=new A.fk(18,"thrombosis")
 B.a4w=new A.au([B.eU,B.aP,B.jQ],t.U)
 B.dYU=new A.d(["rifampicina","warfarina",B.n,"Inducci\xf3n potente del CYP2C9 \u2014 aumenta metabolismo de warfarina","Reducci\xf3n marcada del efecto anticoagulante (INR puede caer >50%)","Monitorar INR diariamente al inicio y al final. Aumentar dosis de warfarina significativamente","ALTO RIESGO DE FALLO ANTICOAGULANTE \u2014 Monitorar INR diariamente",B.h,B.a4w,B.a3])
-B.fm=new A.fk(4,"serotonin")
-B.cl=new A.au([B.fm],t.U)
+B.fn=new A.fk(4,"serotonin")
+B.cl=new A.au([B.fn],t.U)
 B.dVg=new A.d(["tramadol","isrs",B.n,"Inhibici\xf3n de la recaptaci\xf3n serotonin\xe9rgica sumada","S\xedndrome serotonin\xe9rgica \u2014 agitaci\xf3n, hipertermia, mioclon\xeda, taquicardia","Evitar combinaci\xf3n. Si indispensable, iniciar con dosis baja de tramadol y monitorar por 24\u201348h","ALTO RIESGO DE S\xcdNDROME SEROTONIN\xc9RGICA \u2014 Evitar combinaci\xf3n",B.h,B.cl,B.cS])
 B.dH=A.a(s(["Goodman & Gilman 13\xaa ed.","FDA Drug Label","Micromedex 2024"]),t.s)
 B.dYb=new A.d(["tramadol","imao",B.C,"Potenciaci\xf3n serotonin\xe9rgica extrema",u.eC,"Contraindicado \u2014 esperar 14 d\xedas despu\xe9s de suspender IMAO antes de usar tramadol","NO UTILIZAR ESTOS F\xc1RMACOS JUNTOS \u2014 Riesgo de muerte",B.h,B.cl,B.dH])
 B.dK=new A.fk(3,"respiratoryDepression")
 B.cu=new A.fk(14,"cns")
-B.dU=new A.au([B.dK,B.cu],t.U)
-B.dRd=new A.d(["tramadol","morfina",B.u,"Efectos aditivos en el SNC y depresi\xf3n respiratoria","Sedaci\xf3n excesiva, depresi\xf3n respiratoria","Usar com cautela. Monitorar nivel de consciencia y funci\xf3n respiratoria","Requiere monitorizaci\xf3n cl\xednica \u2014 depresi\xf3n respiratoria aditiva",B.h,B.dU,B.v])
+B.dT=new A.au([B.dK,B.cu],t.U)
+B.dRd=new A.d(["tramadol","morfina",B.u,"Efectos aditivos en el SNC y depresi\xf3n respiratoria","Sedaci\xf3n excesiva, depresi\xf3n respiratoria","Usar com cautela. Monitorar nivel de consciencia y funci\xf3n respiratoria","Requiere monitorizaci\xf3n cl\xednica \u2014 depresi\xf3n respiratoria aditiva",B.h,B.dT,B.v])
 B.uC=A.a(s(["FDA Drug Label","Goodman & Gilman 13\xaa ed.","Micromedex 2024"]),t.s)
-B.dVW=new A.d(["benzodiazep\xednico","opioide",B.C,"Depresi\xf3n aditiva del SNC \u2014 sinergia respiratoria y sedativa","Depresi\xf3n respiratoria grave, coma, muerte (alerta FDA/ANVISA)","Evitar combinaci\xf3n. Se essencial (ICU/paliativo), monitorar com oximetria cont\xednua; ter naloxona disponible",u.L,B.h,B.dU,B.uC])
+B.dVW=new A.d(["benzodiazep\xednico","opioide",B.C,"Depresi\xf3n aditiva del SNC \u2014 sinergia respiratoria y sedativa","Depresi\xf3n respiratoria grave, coma, muerte (alerta FDA/ANVISA)","Evitar combinaci\xf3n. Se essencial (ICU/paliativo), monitorar com oximetria cont\xednua; ter naloxona disponible",u.L,B.h,B.dT,B.uC])
 B.qW=new A.au([B.cu,B.cf],t.U)
 B.dWf=new A.d(["haloperidol","carbonato de litio",B.u,"Posible potenciaci\xf3n neurot\xf3xica; el litio puede alterar la farmacocin\xe9tica del haloperidol","Neurotoxicidad aumentada \u2014 confusi\xf3n, temblor, extrapiramidal exacerbado","Monitorar litio s\xe9rico, ECG y signos neurol\xf3gicos","Requiere monitorizaci\xf3n cl\xednica/laboratorial \u2014 neurotoxicidad",B.y,B.qW,B.W])
 B.dZk=new A.d(["isrs","imao",B.C,"Hiperestimulaci\xf3n serotonin\xe9rgica extrema","S\xedndrome serotonin\xe9rgica grave \u2014 hiperpirexia, convulsiones, colapso cardiovascular, muerte","Contraindicado. Esperar 14 d\xedas despu\xe9s de suspender IMAO (o 5 semanas para fluoxetina) antes de iniciar SSRI",u.nS,B.h,B.cl,B.dH])
@@ -169420,8 +169418,8 @@ B.e_8=new A.d(["insulina","betabloqueador",B.u,"Los betabloqueadores enmascaran 
 B.eX=new A.au([B.cC,B.aP],t.U)
 B.dXp=new A.d(["ciclosporina","fluconazol",B.n,"Inhibici\xf3n del CYP3A4 eleva nivel s\xe9rico de ciclosporina","Nefrotoxicidad e inmunosupresi\xf3n excesiva","Reducir dosis de ciclosporina 50% y monitorar nivel s\xe9rico diariamente",u.tH,B.h,B.eX,B.Nq])
 B.dLZ=new A.d(["ciclosporina","claritromicina",B.n,"Inhibici\xf3n del CYP3A4 e P-gp","Aumento del nivel s\xe9rico de ciclosporina \u2014 nefrotoxicidad","Reducir dosis de ciclosporina; monitorar nivel s\xe9rico frecuentemente",u.tH,B.h,B.eX,B.hS])
-B.fp=new A.au([B.jP],t.U)
-B.dQQ=new A.d(["atorvastatina","gemfibrozil",B.n,"Inhibici\xf3n de la glucuronidaci\xf3n de atorvastatina por gemfibrozil",u.lJ,"Evitar combinaci\xf3n. Si necesario usar fibratos, preferir fenofibrato + estatina","ALTO RIESGO DE RABDOMI\xd3LISIS \u2014 Evitar combinaci\xf3n",B.h,B.fp,B.cS])
+B.fq=new A.au([B.jP],t.U)
+B.dQQ=new A.d(["atorvastatina","gemfibrozil",B.n,"Inhibici\xf3n de la glucuronidaci\xf3n de atorvastatina por gemfibrozil",u.lJ,"Evitar combinaci\xf3n. Si necesario usar fibratos, preferir fenofibrato + estatina","ALTO RIESGO DE RABDOMI\xd3LISIS \u2014 Evitar combinaci\xf3n",B.h,B.fq,B.cS])
 B.dWN=new A.d(["sildenafila","nitrato",B.C,"Ambos potencializan vasodilataci\xf3n v\xeda GMPc","Hipotensi\xf3n grave, shock cardiovascular, colapso hemodin\xe1mico, muerte","Contraindicado absolutamente. Esperar \u226524h despu\xe9s de sildenafil (\u226548h para tadalafil) para administrar nitrato","NO UTILIZAR ESTOS F\xc1RMACOS JUNTOS \u2014 Hipotensi\xf3n fatal",B.h,B.c3,B.dH])
 B.dL2=new A.d(["sildenafila","alfa-bloqueador",B.n,"Efecto hipotensor aditivo","Hipotensi\xf3n sintom\xe1tica grave \u2014 mareo, s\xedncope","Iniciar alfa-bloqueador con dosis baja. Esperar estabilizaci\xf3n antes de asociar. Orientar al paciente","ALTO RIESGO DE HIPOTENSI\xd3N GRAVE \u2014 Iniciar com dosis bajas",B.h,B.c3,B.bi])
 B.dPp=new A.d(["furosemida","aminoglicosideo",B.n,"Ototoxicidad aditiva sin\xe9rgica","Sordera neurosensorial permanente \u2014 riesgo aumentado especialmente en ERC","Evitar combinaci\xf3n. Se necesario, minimizar dosis e duraci\xf3n; monitorar funci\xf3n auditiva","ALTO RIESGO DE SORDERA IRREVERSIBLE \u2014 Evitar combinaci\xf3n",B.h,B.mh,B.v])
@@ -169443,7 +169441,7 @@ B.jS=new A.au([B.eE,B.aP],t.U)
 B.dSf=new A.d(["carbonato de litio","hidroclorotiazida",B.n,"Tiaz\xeddicos aumentam reabsorci\xf3n proximal de s\xf3dio e l\xedtio em compensa\xe7\xe3o \xe0 perda distal","Toxicidad por litio \u2014 confusi\xf3n, temblor, nefrotoxicidad","Monitorar litemia cada 3\u20135 d\xedas al inicio. Reducir dosis de litio 30\u201350%","ALTO RIESGO DE TOXICIDAD POR LITIO \u2014 Monitorar litemia",B.h,B.jS,B.v])
 B.dM3=new A.d(["carbonato de litio","enalapril",B.n,"IECAs reduzem aclaramiento renal de l\xedtio por inhibici\xf3n da angiotensina II","Elevaci\xf3n de los niveles s\xe9ricos de litio \u2014 toxicidad","Monitorar litemia semanalmente las primeras 4 semanas. Reducir dosis de litio seg\xfan sea necesario","ALTO RIESGO DE TOXICIDAD POR LITIO \u2014 Monitorar litemia semanalmente",B.h,B.jS,B.a3])
 B.dJf=new A.d(["isrs","linezolida",B.C,"Linezolida inibe a MAO \u2014 hiperestimula\xe7\xe3o serotonin\xe9rgica com SSRI","S\xedndrome serotonin\xe9rgica grave \u2014 hipertermia, rigidez, crisis convulsiva, colapso","Contraindicado. Esperar per\xedodo de lavado adecuado (\u22655 semanas para fluoxetina, \u22652 semanas para otros SSRIs)",u.nS,B.h,B.cl,B.dH])
-B.wL=new A.au([B.fm,B.cu],t.U)
+B.wL=new A.au([B.fn,B.cu],t.U)
 B.dT7=new A.d(["tramadol","amitriptilina",B.n,"Reducci\xf3n del limiar convulsivo + inhibici\xf3n de la recapta\xe7\xe3o de serotonina/noradrenalina aditiva","Riesgo aumentado de convulsiones y s\xedndrome serotonin\xe9rgica","Evitar combinaci\xf3n. Si necesario, iniciar tramadol en dosis m\xednima con monitorizaci\xf3n neurol\xf3gica","ALTO RIESGO DE S\xcdNDROME SEROTONIN\xc9RGICA Y CONVULSIONES",B.y,B.wL,B.W])
 B.dRk=new A.d(["aminoglicosideo","vancomicina",B.n,"Nefrotoxicidad e ototoxicidad sin\xe9rgica \u2014 ambos lesam t\xfabulos renais proximais e c\xe9lulas ciliadas","Insuficiencia renal aguda, sordera irreversible","Evitar combinaci\xf3n si es posible. Si es necesaria, monitorar creatinina diariamente e fun\xe7\xe3o auditiva","ALTO RIESGO DE NEFROTOXICIDAD Y SORDERA IRREVERSIBLE",B.h,B.mh,B.a3])
 B.dVi=new A.d(["ciprofloxacino","carbonato de calcio",B.u,"C\xe1lcio forma complexo insoluble com ciprofloxacino no intestino (quela\xe7\xe3o)","Reducci\xf3n de hasta el 50% en la absorci\xf3n oral de la quinolona","Administrar ciprofloxacino 2h antes o 6h despu\xe9s del calcio/anti\xe1cidos/hierro",u.ab,B.h,B.a5,B.bi])
@@ -169451,10 +169449,10 @@ B.dSk=new A.d(["ciprofloxacino","sulfato ferroso",B.u,"Ferro quelata ciprofloxac
 B.dRe=new A.d(["levotiroxina","carbonato de calcio",B.u,"C\xe1lcio liga-se \xe0 levotiroxina no intestino reduzindo sua absorci\xf3n","Hipotiroidismo por absorci\xf3n inadecuada \u2014 TSH elevado","Intervalo m\xednimo de 4 horas entre levotiroxina y calcio. Tomar levotiroxina en ayunas","Requiere intervalo de 4h \u2014 separar administraciones",B.h,B.a5,B.bi])
 B.dS_=new A.d(["levotiroxina","pantoprazol",B.u,"Reducci\xf3n de la acidez g\xe1strica pelos IBPs prejudica dissolu\xe7\xe3o e absorci\xf3n da levotiroxina","Absorci\xf3n reducida \u2014 hipotiroidismo subcl\xednico","Monitorar TSH a cada 6\u20138 semanas. Pode ser necesario aumentar dosis de levotiroxina","Requiere monitorizaci\xf3n de TSH cada 6\u20138 semanas",B.y,B.a5,B.W])
 B.e11=new A.d(["levotiroxina","anti\xe1cido",B.u,"C\xe1tions (Al, Mg, Ca) dos anti\xe1cidos quelam levotiroxina no TGI","Reducci\xf3n de la absorci\xf3n \u2014 hipotiroidismo","Administrar levotiroxina 2h antes de anti\xe1cidos, IBPs, calcio o hierro","Requiere intervalo de 2h entre administraciones",B.h,B.a5,B.bi])
-B.dM5=new A.d(["benzodiazep\xednico","alcool",B.n,"Potencia\xe7\xe3o m\xfatua da depresi\xf3n del SNC por mecanismos GABA-A aditivos","Sedaci\xf3n severa, depresi\xf3n respiratoria, coma, muerte","Contraindicado. Orientar al paciente expl\xedcitamente sobre la prohibici\xf3n de alcohol","ALTO RIESGO DE DEPRESI\xd3N RESPIRATORIA \u2014 Prohibido alcohol",B.h,B.dU,B.bi])
+B.dM5=new A.d(["benzodiazep\xednico","alcool",B.n,"Potencia\xe7\xe3o m\xfatua da depresi\xf3n del SNC por mecanismos GABA-A aditivos","Sedaci\xf3n severa, depresi\xf3n respiratoria, coma, muerte","Contraindicado. Orientar al paciente expl\xedcitamente sobre la prohibici\xf3n de alcohol","ALTO RIESGO DE DEPRESI\xd3N RESPIRATORIA \u2014 Prohibido alcohol",B.h,B.dT,B.bi])
 B.aH=new A.au([B.eU,B.aP],t.U)
 B.dOf=new A.d(["carbamazepina","anticonceptivo",B.n,"Inducci\xf3n enzim\xe1tica do CYP3A4 acelera metabolismo de estr\xf3genos e progest\xe1genos","Fracaso del anticonceptivo hormonal \u2014 embarazo no planificado","Usar m\xe9todo anticonceptivo no hormonal (DIU de cobre, preservativo). Orientar expl\xedcitamente a la paciente","ALTO RIESGO DE FALLO CONTRACEPTIVO \u2014 Usar m\xe9todo no hormonal",B.h,B.aH,B.cS])
-B.dRr=new A.d(["valproato","lamotrigina",B.n,"\xc1cido valproico inibe a glucuronida\xe7\xe3o da lamotrigina, dobrando sua vida media","Toxicidad por lamotrigina \u2014 erupci\xf3n grave, S\xedndrome de Stevens-Johnson","Reducir dosis de lamotrigina 50% al introducir valproato. Monitorar erupci\xf3n cut\xe1nea","ALTO RIESGO DE S\xcdNDROME DE STEVENS-JOHNSON \u2014 Reducir lamotrigina 50%",B.h,B.fo,B.cS])
+B.dRr=new A.d(["valproato","lamotrigina",B.n,"\xc1cido valproico inibe a glucuronida\xe7\xe3o da lamotrigina, dobrando sua vida media","Toxicidad por lamotrigina \u2014 erupci\xf3n grave, S\xedndrome de Stevens-Johnson","Reducir dosis de lamotrigina 50% al introducir valproato. Monitorar erupci\xf3n cut\xe1nea","ALTO RIESGO DE S\xcdNDROME DE STEVENS-JOHNSON \u2014 Reducir lamotrigina 50%",B.h,B.fp,B.cS])
 B.wz=new A.au([B.dK,B.cu,B.aP],t.U)
 B.dJz=new A.d(["midazolam","claritromicina",B.n,"Inhibici\xf3n potente del CYP3A4 pela claritromicina prolonga vida media do midazolam","Sedaci\xf3n prolongada y excesiva, depresi\xf3n respiratoria","Reducir dosis de midazolam 50\u201375%. Monitorar nivel de consciencia y SpO\u2082","ALTO RIESGO DE SEDACI\xd3N PROLONGADA \u2014 Reducir dosis de midazolam",B.h,B.wz,B.cS])
 B.Dp=new A.au([B.cu,B.dK,B.aP],t.U)
@@ -169495,7 +169493,7 @@ B.dVk=new A.d(["eplerenona","cloreto de potassio",B.C,"Eplerenona retiene K\u207
 B.dSv=new A.d(["eplerenona","enalapril",B.u,"Ambos elevan K\u207a por mecanismos distintos \u2014 antagonismo aldosterona + inhibici\xf3n de la angiotensina II","Hiperpotasemia, especialmente en ERC o diabetes","Monitorar K\u207a e creatinina semanalmente no inicio. Reducir/suspender eplerenona si K\u207a >5,5 mEq/L","Requiere monitorizaci\xf3n de K+ s\xe9rico semanal",B.h,B.i6,B.b5])
 B.a4j=new A.au([B.j3,B.aP],t.U)
 B.dKN=new A.d(["eplerenona","claritromicina",B.C,"Inhibici\xf3n potente del CYP3A4 pela claritromicina aumenta exposici\xf3n \xe0 eplerenona em >5\xd7","Hiperpotasemia grave e excessiva reten\xe7\xe3o de pot\xe1ssio","Contraindicado. Sustituir por azitromicina. Esperar 14 d\xedas despu\xe9s de claritromicina antes de reiniciar eplerenona",u.Dz,B.h,B.a4j,B.b8])
-B.dZr=new A.d(["daptomicina","estatina",B.n,"Mecanismo sin\xe9rgico de miotoxicidad \u2014 ambos lesionan membranas musculares por mecanismos complementarios","Miopat\xeda grave e rabdomi\xf3lisis","Suspender estatinas durante uso de daptomicina. Monitorar CPK semanalmente. Reiniciar estatina tras fin del antibi\xf3tico","ALTO RIESGO DE RABDOMI\xd3LISIS \u2014 Suspender estatina durante daptomicina",B.h,B.fp,B.dI])
+B.dZr=new A.d(["daptomicina","estatina",B.n,"Mecanismo sin\xe9rgico de miotoxicidad \u2014 ambos lesionan membranas musculares por mecanismos complementarios","Miopat\xeda grave e rabdomi\xf3lisis","Suspender estatinas durante uso de daptomicina. Monitorar CPK semanalmente. Reiniciar estatina tras fin del antibi\xf3tico","ALTO RIESGO DE RABDOMI\xd3LISIS \u2014 Suspender estatina durante daptomicina",B.h,B.fq,B.dI])
 B.bL=new A.au([B.cC],t.U)
 B.e_c=new A.d(["daptomicina","aminoglicosideo",B.u,"Posible nefrotoxicidad aditiva \u2014 ambos pueden elevar creatinina con uso prolongado","Insuficiencia renal aguda, especialmente en pacientes vulner\xe1veis","Monitorar creatinina y electrolitos diariamente. Minimizar duraci\xf3n y dosis de aminogluc\xf3sido","Requiere monitorizaci\xf3n renal diaria",B.y,B.bL,B.W])
 B.Dn=new A.au([B.jP,B.cC,B.aP],t.U)
@@ -169550,26 +169548,26 @@ B.dQK=new A.d(["eltrombopague","sulfato ferroso",B.n,"El hierro quela eltrombopa
 B.e0p=new A.d(["eltrombopague","ciclosporina",B.u,"Inhibici\xf3n del OATP1B1 y CYP1A2 por eltrombopag puede aumentar exposici\xf3n a ciclosporina","Nefrotoxicidad por aumento del nivel de ciclosporina","Monitorar nivel s\xe9rico de ciclosporina. Ajustar dosis seg\xfan sea necesario",u.tx,B.y,B.eX,B.hS])
 B.b2=new A.au([B.eE],t.U)
 B.dLQ=new A.d(["denosumabe","corticosteroide sistemico",B.u,"Ambos aumentan riesgo de osteonecrosis mandibular y fracturas at\xedpicas; los corticosteroides causan osteoporosis adicional","Riesgo de osteonecrosis mandibular y fracturas \xf3seas graves","Evaluaci\xf3n odontol\xf3gica obligatoria antes de iniciar. Garantizar reposici\xf3n adecuada de Ca\xb2\u207a y vitamina D. Monitorar DMO","Requiere evaluaci\xf3n odontol\xf3gica antes de iniciar + reposici\xf3n Ca\xb2\u207a/VitD",B.h,B.b2,B.bK])
-B.wC=new A.au([B.fm,B.cg],t.U)
+B.wC=new A.au([B.fn,B.cg],t.U)
 B.dNV=new A.d(["bupropiona","imao",B.C,"Bupropiona inhibe recaptaci\xf3n de dopamina/noradrenalina + IMAOs inhiben degradaci\xf3n \u2014 hiperestimulaci\xf3n adren\xe9rgica y serotonin\xe9rgica","Crisis hipertensiva, s\xedndrome serotonin\xe9rgica, convulsiones \u2014 riesgo de muerte","Contraindicado. Esperar \u226514 d\xedas despu\xe9s de suspender IMAO antes de iniciar bupropiona","NO UTILIZAR \u2014 S\xedndrome serotonin\xe9rgica e crisis hipertensiva",B.h,B.wC,B.bC])
 B.dLb=new A.d(["bupropiona","carbamazepina",B.n,"Carbamazepina induce CYP3A4/2B6 \u2192 reducci\xf3n significativa de los niveles de bupropiona","Fracaso antidepresivo y en el programa de cesaci\xf3n tab\xe1quica","Aumentar dosis de bupropiona (monitorar efecto). Evaluar alternativa antidepresiva sin interacci\xf3n con inductores CYP","ALTO RIESGO DE FRACASO TERAP\xc9UTICO \u2014 Monitorar efic\xe1cia da bupropiona",B.h,B.aH,B.dI])
-B.fq=new A.au([B.cu],t.U)
-B.dIN=new A.d(["bupropiona","tramadol",B.n,"Ambos reducen el umbral convulsivo por mecanismos independientes \u2014 sinergia proconvulsivante","Riesgo muy aumentado de convulsiones generalizadas","Evitar combinaci\xf3n. Si necesario, usar dosis m\xednima de tramadol con monitorizaci\xf3n neurol\xf3gica. Considerar analg\xe9sico alternativo","ALTO RIESGO DE CONVULSIONES \u2014 Evitar combinaci\xf3n",B.h,B.fq,B.dI])
-B.mg=new A.au([B.fm,B.aP],t.U)
+B.fr=new A.au([B.cu],t.U)
+B.dIN=new A.d(["bupropiona","tramadol",B.n,"Ambos reducen el umbral convulsivo por mecanismos independientes \u2014 sinergia proconvulsivante","Riesgo muy aumentado de convulsiones generalizadas","Evitar combinaci\xf3n. Si necesario, usar dosis m\xednima de tramadol con monitorizaci\xf3n neurol\xf3gica. Considerar analg\xe9sico alternativo","ALTO RIESGO DE CONVULSIONES \u2014 Evitar combinaci\xf3n",B.h,B.fr,B.dI])
+B.mg=new A.au([B.fn,B.aP],t.U)
 B.dXB=new A.d(["bupropiona","isrs",B.u,"Bupropiona inhibe CYP2D6 \u2192 aumenta exposici\xf3n a fluoxetina, paroxetina y otros SSRIs metabolizados por ese CYP","S\xedndrome serotonin\xe9rgica leve a moderada, elevaci\xf3n de efectos adversos de los SSRIs","Monitorar signos de exceso serotonin\xe9rgico. Considerar reducci\xf3n de dosis del SSRI si aparecen s\xedntomas","Requiere monitorizaci\xf3n \u2014 riesgo de s\xedndrome serotonin\xe9rgica leve",B.y,B.mg,B.W])
-B.dVY=new A.d(["aripiprazol","claritromicina",B.n,"Inhibici\xf3n del CYP3A4 pela claritromicina aumenta exposici\xf3n ao aripiprazol em ~90%","Toxicidad por aripiprazol \u2014 acatisia intensa, hipotensi\xf3n, sedaci\xf3n, convulsiones (raro)","Reducir dosis de aripiprazol 50% durante uso de claritromicina. Monitorar efectos adversos","ALTO RIESGO \u2014 Reducir dosis de aripiprazol 50%",B.h,B.fo,B.b8])
+B.dVY=new A.d(["aripiprazol","claritromicina",B.n,"Inhibici\xf3n del CYP3A4 pela claritromicina aumenta exposici\xf3n ao aripiprazol em ~90%","Toxicidad por aripiprazol \u2014 acatisia intensa, hipotensi\xf3n, sedaci\xf3n, convulsiones (raro)","Reducir dosis de aripiprazol 50% durante uso de claritromicina. Monitorar efectos adversos","ALTO RIESGO \u2014 Reducir dosis de aripiprazol 50%",B.h,B.fp,B.b8])
 B.dX3=new A.d(["aripiprazol","fluoxetina",B.u,"Fluoxetina inhibe CYP2D6 y CYP3A4 \u2192 aumento del 100% en la exposici\xf3n a aripiprazol","Acatisia, sedaci\xf3n excesiva, hipotensi\xf3n ortost\xe1tica","Reducir dosis de aripiprazol 50% con fluoxetina. Monitorar efectos extrapiramidales y PA","Requiere monitorizaci\xf3n \u2014 reducir dosis de aripiprazol 50%",B.h,B.wD,B.b8])
 B.dMb=new A.d(["perampanel","carbamazepina",B.n,"Carbamazepina induce potentemente CYP3A4 \u2192 reducci\xf3n de ~67% en la exposici\xf3n a perampanel","Fallo antiepil\xe9ptico \u2014 concentraciones subterap\xe9uticas de perampanel","Triplicar la dosis objetivo de perampanel cuando se usa con carbamazepina. Titular cuidadosamente con monitorizaci\xf3n cl\xednica","ALTO RIESGO DE FALLO ANTIEPIL\xc9PTICO \u2014 Triplicar dosis de perampanel",B.h,B.aH,B.b8])
-B.dZa=new A.d(["perampanel","alcool",B.n,"Perampanel potencializa depresi\xf3n del SNC por alcohol; puede aumentar comportamientos agresivos/impulsivos","Sedaci\xf3n grave, comportamiento irracional, agresividad, mayor riesgo de accidentes","Contraindicado uso de \xe1lcool com perampanel. Orientar al paciente explicitamente","ALTO RIESGO \u2014 Prohibido alcohol con perampanel",B.h,B.fq,B.b8])
+B.dZa=new A.d(["perampanel","alcool",B.n,"Perampanel potencializa depresi\xf3n del SNC por alcohol; puede aumentar comportamientos agresivos/impulsivos","Sedaci\xf3n grave, comportamiento irracional, agresividad, mayor riesgo de accidentes","Contraindicado uso de \xe1lcool com perampanel. Orientar al paciente explicitamente","ALTO RIESGO \u2014 Prohibido alcohol con perampanel",B.h,B.fr,B.b8])
 B.dLE=new A.d(["rifaximina","anticonceptivo",B.uj,"Incluso con absorci\xf3n m\xednima, puede alterar la flora intestinal que participa en la circulaci\xf3n enterohep\xe1tica de los anticonceptivos","Reducci\xf3n te\xf3rica (bajo riesgo cl\xednico) de la eficacia anticonceptiva hormonal","Riesgo muy bajo (absorci\xf3n <1%). Sin embargo, orientar uso de m\xe9todo anticonceptivo de barrera adicional por precauci\xf3n durante y 7 d\xedas despu\xe9s del curso","Solo monitorizar \u2014 considerar m\xe9todo contraceptivo de barrera adicional",B.hl,B.a5,B.W])
 B.dVf=new A.d(["nintedanibe","warfarina",B.u,"Nintedanib inhibe P-gp y CYP3A4; interacci\xf3n potencial aumentando nivel de warfarina","Elevaci\xf3n del INR e riesgo hemorr\xe1gico \u2014 intensificado pelo riesgo de sangrado GI do nintedanibe","Monitorar INR semanalmente. Vigilancia reforzada para signos de sangrado GI","Requiere monitorizaci\xf3n de INR semanal \u2014 riesgo hemorr\xe1gico aditivo",B.y,B.bs,B.W])
 B.dHU=new A.d(["nintedanibe","rifampicina",B.n,"Rifampicina induce P-gp y CYP3A4 \u2192 reducci\xf3n de ~60% en los niveles de nintedanib","Fracaso terap\xe9utico en FPI \u2014 progresi\xf3n de la fibrosis","Evitar combinaci\xf3n. Se tratamiento de TB necesario, avaliar alternativa antifibr\xf3tica ou sustituci\xf3n do antimicrobiano","ALTO RIESGO DE FRACASO TERAP\xc9UTICO \u2014 Evitar rifampicina com nintedanibe",B.h,B.aH,B.b8])
 B.dSj=new A.d(["fondaparinux","isrs",B.u,"SSRIs inhiben funci\xf3n plaquetaria (reducci\xf3n de serotonina plaquetaria) + anticoagulaci\xf3n del fondaparinux","Riesgo aumentado de sangrado \u2014 especialmente GI","Monitorar signos de sangrado. Considerar IBP para protecci\xf3n g\xe1strica en uso combinado",u.oD,B.y,B.aD,B.W])
 B.dMD=new A.d(["fondaparinux","aine",B.u,"AINEs inhiben funci\xf3n plaquetaria y protegen mucosa g\xe1strica \u2014 riesgo hemorr\xe1gico aditivo","Sangrado GI y en otros sitios","Evitar AINEs con fondaparinux. Usar paracetamol para analgesia. Si AINE necesario, asociar IBP","Requiere monitorizaci\xf3n \u2014 evitar AINEs; usar paracetamol",B.h,B.aD,B.v])
-B.dIc=new A.d(["gabapentina","morfina",B.n,"Sinergismo farmacodin\xe1mico en la depresi\xf3n del SNC y del centro respiratorio","Depresi\xf3n respiratoria potencialmente fatal, sedaci\xf3n profunda, apnea","Evitar combinaci\xf3n ou reducir dosiss. Monitorar FR e satura\xe7\xe3o. Tener naloxona disponible",u.L,B.h,B.dU,B.b8])
+B.dIc=new A.d(["gabapentina","morfina",B.n,"Sinergismo farmacodin\xe1mico en la depresi\xf3n del SNC y del centro respiratorio","Depresi\xf3n respiratoria potencialmente fatal, sedaci\xf3n profunda, apnea","Evitar combinaci\xf3n ou reducir dosiss. Monitorar FR e satura\xe7\xe3o. Tener naloxona disponible",u.L,B.h,B.dT,B.b8])
 B.bIf=A.a(s(["FDA Drug Label","Micromedex 2024","Goodman & Gilman 13\xaa ed."]),t.s)
-B.dVH=new A.d(["gabapentina","opioide",B.n,"Sinergismo farmacodin\xe1mico \u2014 ambos deprimen SNC y centro respiratorio","Depresi\xf3n respiratoria grave, sedaci\xf3n excesiva, riesgo de muerte","FDA Black Box Warning. Usar la menor dosis eficaz de cada uno. Monitorar SpO2 continuamente",u.L,B.h,B.dU,B.bIf])
-B.dNA=new A.d(["gabapentina","benzodiazep\xednico",B.n,"Depress\xe3o aditiva do SNC pela combinaci\xf3n de anticonvulsivante + benzodiazep\xednico","Sedaci\xf3n excesiva, depresi\xf3n respiratoria, riesgo de queda","Reducir dosis. Monitorar nivel de consciencia. Evitar en ancianos sin soporte monitorizado","ALTO RIESGO DE SEDA\xc7\xc3O E QUEDA \u2014 Reducir dosiss e monitorar",B.h,B.dU,B.b8])
+B.dVH=new A.d(["gabapentina","opioide",B.n,"Sinergismo farmacodin\xe1mico \u2014 ambos deprimen SNC y centro respiratorio","Depresi\xf3n respiratoria grave, sedaci\xf3n excesiva, riesgo de muerte","FDA Black Box Warning. Usar la menor dosis eficaz de cada uno. Monitorar SpO2 continuamente",u.L,B.h,B.dT,B.bIf])
+B.dNA=new A.d(["gabapentina","benzodiazep\xednico",B.n,"Depress\xe3o aditiva do SNC pela combinaci\xf3n de anticonvulsivante + benzodiazep\xednico","Sedaci\xf3n excesiva, depresi\xf3n respiratoria, riesgo de queda","Reducir dosis. Monitorar nivel de consciencia. Evitar en ancianos sin soporte monitorizado","ALTO RIESGO DE SEDA\xc7\xc3O E QUEDA \u2014 Reducir dosiss e monitorar",B.h,B.dT,B.b8])
 B.e05=new A.d(["fenobarbital","warfarina",B.n,"Fenobarbital induce potentemente CYP2C9 y CYP3A4, acelerando el metabolismo de warfarina","Reducci\xf3n marcada del INR \u2014 fallo anticoagulante y riesgo tromb\xf3tico","Monitorar INR semanalmente ao iniciar/suspender fenobarbital. Aumentar dosis de warfarina conforme INR","ALTO RIESGO DE FALLO ANTICOAGULANTE \u2014 Monitorar INR semanalmente",B.h,B.a4w,B.v])
 B.e0l=new A.d(["fenobarbital","apixabana",B.n,"Inducci\xf3n de CYP3A4 y P-gp por fenobarbital reduce niveles plasm\xe1ticos de apixab\xe1n en ~50%","Anticoagulaci\xf3n subterap\xe9utica \u2014 riesgo de tromboembolismo (ACV, TEP, TVP)","Contraindicado pela bula da apixabana. Sustituir anticonvulsivante ou trocar anticoagulante","ALTO RIESGO DE TROMBOEMBOLISMO \u2014 Apixabana contraindicada com fenobarbital",B.h,B.op,B.b8])
 B.e_b=new A.d(["fenobarbital","rivaroxabana",B.n,"Inducci\xf3n de CYP3A4 y P-gp reduce exposici\xf3n a rivaroxab\xe1n significativamente","P\xe9rdida de efecto anticoagulante \u2014 riesgo tromboemb\xf3lico grave","Contraindicado. Evitar combinaci\xf3n. Usar heparina ou warfarina com monitoriza\xe7\xe3o rigurosa do INR","ALTO RIESGO DE TROMBOEMBOLISMO \u2014 Rivaroxabana contraindicada com fenobarbital",B.h,B.op,B.b8])
@@ -169579,7 +169577,7 @@ B.Do=new A.au([B.dK,B.cg,B.cu],t.U)
 B.dXc=new A.d(["dexmedetomidina","propofol",B.u,"Sedaci\xf3n aditiva del SNC \u2014 ambos son agentes de sedaci\xf3n IV","Sedaci\xf3n excesiva, apnea, hipotensi\xf3n, bradicardia","Reducir dosis de propofol al combinar. Monitorar nivel de sedaci\xf3n (escala RASS), FR y hemodin\xe1mica","Requiere monitorizaci\xf3n de RASS, FR y hemodin\xe1mica",B.h,B.Do,B.W])
 B.e5s=new A.au([B.dK,B.cg],t.U)
 B.dVF=new A.d(["propofol","opioide",B.u,"Sinergismo sedante y depresor respiratorio \u2014 especialmente con fentanilo y remifentanilo","Apnea, hipotensi\xf3n, bradicardia \u2014 riesgo aumentado en bolos","Titular cuidadosamente. Tener soporte de v\xeda a\xe9rea disponible. Monitorar ETCO2 si posible","Requiere monitoriza\xe7\xe3o \u2014 riesgo de apnea em bolus",B.h,B.e5s,B.v])
-B.dO_=new A.d(["fentanila","benzodiazep\xednico",B.n,"Depresi\xf3n aditiva del SNC \u2014 combinaci\xf3n cl\xe1sica de inducci\xf3n anest\xe9sica con riesgo aumentado","Depresi\xf3n respiratoria grave, apnea, hipotensi\xf3n","FDA Black Box Warning para essa combinaci\xf3n em contexto ambulatorial. Em UTI: monitoramento cont\xednuo de SpO2, FR e PA",u.L,B.h,B.dU,B.bC])
+B.dO_=new A.d(["fentanila","benzodiazep\xednico",B.n,"Depresi\xf3n aditiva del SNC \u2014 combinaci\xf3n cl\xe1sica de inducci\xf3n anest\xe9sica con riesgo aumentado","Depresi\xf3n respiratoria grave, apnea, hipotensi\xf3n","FDA Black Box Warning para essa combinaci\xf3n em contexto ambulatorial. Em UTI: monitoramento cont\xednuo de SpO2, FR e PA",u.L,B.h,B.dT,B.bC])
 B.dTR=new A.d(["esmolol","verapamil",B.n,"Bloqueo aditivo del nodo AV por betabloqueador IV + bloqueador de calcio \u2014 riesgo m\xe1ximo en v\xeda IV","Asistolia, bloqueo AV completo, colapso hemodin\xe1mico","Contraindicado usar IV simult\xe1neamente. Se necesario, espa\xe7ar administra\xe7\xf5es com monitoramento rigoroso de ECG","ALTO RIESGO DE ASISTOLIA \u2014 Nunca administrar IV simult\xe1neamente",B.h,B.dL,B.v])
 B.e3X=new A.au([B.cg,B.j4],t.U)
 B.dKF=new A.d(["milrinona","furosemida",B.u,"Furosemida causa hipovolemia e hipopotasemia, amplificando efectos vasodilatadores de milrinona","Hipotensi\xf3n grave, arritmias por hipopotasemia (potencializa milrinona)","Reponer K+ antes de iniciar. Monitorar PA, diuresis y electrolitos cada 4\u20136h","Requiere monitorizaci\xf3n de PA y K+ cada 4\u20136h",B.h,B.e3X,B.W])
@@ -169591,7 +169589,7 @@ B.dOO=new A.d(["fluconazol","sinvastatina",B.n,"Inhibici\xf3n del CYP3A4 pelo fl
 B.dKh=new A.d(["fluconazol","atorvastatina",B.n,"Inhibici\xf3n del CYP3A4 eleva concentraciones de atorvastatina significativamente","Miopat\xeda, rabdomi\xf3lisis, les\xe3o renal aguda","Suspender atorvastatina durante fluconazol. Alternativa: pravastatina o rosuvastatina en dosis reducida","RIESGO DE RABDOMI\xd3LISIS \u2014 Suspender atorvastatina durante fluconazol",B.h,B.cT,B.dI])
 B.h9=new A.au([B.cf,B.aP],t.U)
 B.e_E=new A.d(["fluconazol","quetiapina",B.n,"Inhibici\xf3n de CYP3A4 aumenta exposici\xf3n a quetiapina con prolongaci\xf3n del QTc","Prolongamento do intervalo QT, torsades de pointes, fibrilaci\xf3n ventricular","Evitar. Si inevitable, reducir dosis de quetiapina 50% y monitorar ECG seriado","ALTO RIESGO DE TORSADES DE POINTES \u2014 Reducir quetiapina 50%",B.h,B.h9,B.hS])
-B.dKI=new A.d(["fluconazol","fenito\xedna",B.n,"Fluconazol inhibe CYP2C9 y CYP2C19 \u2014 principales metabolizadores de fenito\xedna","Toxicidad por fenito\xedna: nistagmo, ataxia, diplop\xeda, convulsiones parad\xf3jicas","Monitorar nivel s\xe9rico de fenito\xedna (nivel objetivo: 10\u201320 mcg/mL). Reducir dosis de fenito\xedna anticipadamente","ALTO RIESGO DE TOXICIDAD POR FENITO\xcdNA \u2014 Monitorar nivel s\xe9rico",B.h,B.fo,B.v])
+B.dKI=new A.d(["fluconazol","fenito\xedna",B.n,"Fluconazol inhibe CYP2C9 y CYP2C19 \u2014 principales metabolizadores de fenito\xedna","Toxicidad por fenito\xedna: nistagmo, ataxia, diplop\xeda, convulsiones parad\xf3jicas","Monitorar nivel s\xe9rico de fenito\xedna (nivel objetivo: 10\u201320 mcg/mL). Reducir dosis de fenito\xedna anticipadamente","ALTO RIESGO DE TOXICIDAD POR FENITO\xcdNA \u2014 Monitorar nivel s\xe9rico",B.h,B.fp,B.v])
 B.a4q=new A.au([B.i4,B.jQ,B.aP],t.U)
 B.dT8=new A.d(["fenito\xedna","warfarina",B.n,"Fenito\xedna induce CYP2C9 \u2192 mayor metabolismo de warfarina; tambi\xe9n puede desplazar warfarina de prote\xednas (efecto bif\xe1sico)","Inicialmente: elevaci\xf3n del INR \u2192 riesgo hemorr\xe1gico. Cr\xf3nicamente: reducci\xf3n del INR \u2192 riesgo tromboemb\xf3lico","Monitorar INR intensivamente al iniciar/ajustar/suspender fenito\xedna. Ajustar dosis de warfarina seg\xfan curva","ALTO RIESGO \u2014 INR inst\xe1vel; monitorar intensivamente ao ajustar fenito\xedna",B.h,B.a4q,B.a3])
 B.e_u=new A.d(["fenito\xedna","lamotrigina",B.n,"Fenito\xedna induce UGT y CYP2C19, acelerando glucuronidaci\xf3n de lamotrigina","Reducci\xf3n del 40\u201350% en los niveles de lamotrigina \u2192 fallo antiepil\xe9ptico","Doblar la dosis objetivo de lamotrigina cuando se asocia con fenito\xedna. Monitorar nivel s\xe9rico si disponible","ALTO RIESGO DE FALLO ANTIEPIL\xc9PTICO \u2014 Doblar dosis de lamotrigina",B.h,B.aH,B.v])
@@ -169648,10 +169646,10 @@ B.i5=new A.fk(19,"electrolyte")
 B.e3T=new A.au([B.cg,B.j4,B.i5],t.U)
 B.Bm=A.a(s(["Goodman & Gilman 13\xaa ed.","Katzung 13\xaa ed.","UpToDate 2024"]),t.s)
 B.dQ7=new A.d(["enalapril","hidroclorotiazida",B.be,"Combinaci\xf3n sin\xe9rgica antihipertensiva \u2014 IECA potencializa efecto diur\xe9tico y viceversa","Hipotensi\xf3n de primera dosis, especialmente en pacientes con depleci\xf3n vol\xe9mica; hiponatremia e hipopotasemia","Combinaci\xf3n frecuentemente intencional e ben\xe9fica (formula\xe7\xf5es fixas disponibles). Iniciar com dosis bajas e titular. Monitorar PA na 1\xaa semana e electrolitos a cada 3 meses","Combinaci\xf3n sin\xe9rgica \u2014 vigilar hipotensi\xf3n de 1\xaa dosis y electrolitos",B.h,B.e3T,B.Bm])
-B.e_3=new A.d(["rosuvastatina","fenofibrato",B.u,"Fenofibrato inhibe CYP2C9 y puede elevar niveles de rosuvastatina; riesgo farmacodin\xe1mico aditivo de miopat\xeda","Miopat\xeda, mialgia, rabdomi\xf3lisis \u2014 riesgo menor que con gemfibrozil","Monitorar s\xedntomas musculares. Preferir fenofibrato em vez de gemfibrozil quando necesario combinar com estatina. Usar menor dosis de estatina","Monitorar s\xedntomas musculares \u2014 riesgo de miopat\xeda com combinaci\xf3n estatina + fibrato",B.y,B.fp,B.cS])
-B.e_2=new A.d(["sinvastatina","fenofibrato",B.u,"Fenofibrato inhibe glucuronidaci\xf3n de simvastatina y tiene efecto farmacodin\xe1mico aditivo de miopat\xeda","Miopat\xeda, mialgia; menor riesgo de rabdomi\xf3lisis vs. gemfibrozil","Monitorar s\xedntomas musculares regularmente. Preferir fenofibrato vs. gemfibrozil. Evitar altas dosis de sinvastatina","Monitorar s\xedntomas musculares \u2014 preferir fenofibrato a gemfibrozil se necesario",B.y,B.fp,B.cS])
+B.e_3=new A.d(["rosuvastatina","fenofibrato",B.u,"Fenofibrato inhibe CYP2C9 y puede elevar niveles de rosuvastatina; riesgo farmacodin\xe1mico aditivo de miopat\xeda","Miopat\xeda, mialgia, rabdomi\xf3lisis \u2014 riesgo menor que con gemfibrozil","Monitorar s\xedntomas musculares. Preferir fenofibrato em vez de gemfibrozil quando necesario combinar com estatina. Usar menor dosis de estatina","Monitorar s\xedntomas musculares \u2014 riesgo de miopat\xeda com combinaci\xf3n estatina + fibrato",B.y,B.fq,B.cS])
+B.e_2=new A.d(["sinvastatina","fenofibrato",B.u,"Fenofibrato inhibe glucuronidaci\xf3n de simvastatina y tiene efecto farmacodin\xe1mico aditivo de miopat\xeda","Miopat\xeda, mialgia; menor riesgo de rabdomi\xf3lisis vs. gemfibrozil","Monitorar s\xedntomas musculares regularmente. Preferir fenofibrato vs. gemfibrozil. Evitar altas dosis de sinvastatina","Monitorar s\xedntomas musculares \u2014 preferir fenofibrato a gemfibrozil se necesario",B.y,B.fq,B.cS])
 B.dIt=new A.d(["rosuvastatina","claritromicina",B.u,"Claritromicina inhibe CYP3A4, pero rosuvastatina no es metabolizada por CYP3A4; inhibe OATP1B1 \u2014 efecto moderado","Aumento moderado de los niveles de rosuvastatina \u2014 riesgo de miopat\xeda","Monitorar s\xedntomas musculares. Reducir dosis de rosuvastatina ou suspender temporariamente durante curso de claritromicina","Monitorar s\xedntomas musculares durante uso de claritromicina com rosuvastatina",B.y,B.cT,B.W])
-B.dKr=new A.d(["atorvastatina","fenofibrato",B.u,"Fenofibrato inibe CYP2C8 e tem efecto farmacodin\xe2mico aditivo; menos interacci\xf3n que com gemfibrozil","Riesgo de miopat\xeda; menor que com gemfibrozil","Combinaci\xf3n aceit\xe1vel com monitoramento. Usar menor dosis eficaz de atorvastatina. Monitorar CPK y s\xedntomas musculares","Monitorar s\xedntomas musculares \u2014 combinaci\xf3n generalmente tolerada com vigilancia",B.y,B.fp,B.dI])
+B.dKr=new A.d(["atorvastatina","fenofibrato",B.u,"Fenofibrato inibe CYP2C8 e tem efecto farmacodin\xe2mico aditivo; menos interacci\xf3n que com gemfibrozil","Riesgo de miopat\xeda; menor que com gemfibrozil","Combinaci\xf3n aceit\xe1vel com monitoramento. Usar menor dosis eficaz de atorvastatina. Monitorar CPK y s\xedntomas musculares","Monitorar s\xedntomas musculares \u2014 combinaci\xf3n generalmente tolerada com vigilancia",B.y,B.fq,B.dI])
 B.kT=new A.au([B.et,B.aP],t.U)
 B.dPK=new A.d(["digoxina","claritromicina",B.n,"Claritromicina inibe P-gp intestinal e renal, principal via de eliminaci\xf3n da digoxina","Aumento de 70-100% nos niveles s\xe9ricos de digoxina \u2014 toxicidad digit\xe1lica (n\xe1usea, bradiarritmias, BAV)","Reducir dosis de digoxina em 50% al iniciar claritromicina. Monitorar nivel s\xe9rico de digoxina e ECG. Preferir azitromicina si es posible","TOXICIDAD DIGIT\xc1LICA \u2014 Claritromicina dobra niveles de digoxina; ajustar dosis obligatoriamente",B.h,B.kT,B.a3])
 B.dOt=new A.d(["digoxina","azitromicina",B.u,"Azitromicina inibe P-gp intestinal, aumentando absorci\xf3n de digoxina; menor efecto que claritromicina","Aumento moderado dos niveles s\xe9ricos de digoxina \u2014 riesgo de toxicidad digit\xe1lica","Monitorar s\xedntomas de toxicidad digit\xe1lica (n\xe1usea, bradicardia) durante uso de azitromicina. Considerar nivel s\xe9rico","Monitorar toxicidad digit\xe1lica \u2014 azitromicina pode elevar niveles de digoxina moderadamente",B.y,B.kT,B.W])
@@ -169690,7 +169688,7 @@ B.dYw=new A.d(["isrs","imao reversivel",B.C,"Inhibici\xf3n dupla da recapta\xe7\
 B.eG=new A.au([B.aP,B.cu],t.U)
 B.dXZ=new A.d(["carbonato de litio","aine",B.n,"AINEs inibem s\xedntese de prostaglandinas renais \u2014 reduzem excreci\xf3n renal de l\xedtio, elevando seus niveles s\xe9ricos","Intoxicaci\xf3n por litio: tremor grosseiro, ataxia, confus\xe3o, convulsiones, coma \u2014 efecto em 3-5 dias","Evitar AINEs en pacientes com l\xedtio. Usar paracetamol como alternativa analg\xe9sica. Se AINE necesario, monitorar l\xedtio s\xe9rico em 3-5 dias","INTOXICACI\xd3N POR LITIO \u2014 AINEs elevam l\xedtio s\xe9rico em dias; monitorar ou usar paracetamol",B.h,B.eG,B.a3])
 B.dXP=new A.d(["carbonato de litio","furosemida",B.n,"Furosemida causa deple\xe7\xe3o de s\xf3dio \u2014 induz reabsorci\xf3n tubular compensat\xf3ria de l\xedtio no t\xfabulo proximal","Elevaci\xf3n dos niveles s\xe9ricos de l\xedtio \u2014 intoxica\xe7\xe3o: tremor, ataxia, confus\xe3o, insuficiencia renal","Monitorar l\xedtio s\xe9rico 5-7 dias despu\xe9s de inicio ou aumento de dosis de la furosemida. Ajustar dosis de l\xedtio seg\xfan sea necesario. Manter hidrata\xe7\xe3o e ingest\xe3o de s\xf3dio","INTOXICACI\xd3N POR LITIO \u2014 Furosemida eleva l\xedtio s\xe9rico; monitorar rigurosamente",B.h,B.eG,B.v])
-B.dOL=new A.d(["olanzapina","valproato",B.u,"Sinergismo farmacol\xf3gico: ambos t\xeam efecto sedante e podem alterar metabolismo hep\xe1tico mutualmente","Sedaci\xf3n excesiva, aumento de peso aditivo; casos raros de neutropenia com a combinaci\xf3n","Monitorar sedaci\xf3n, hemograma e peso corporal. Usar dosis m\xednimas eficazes de ambos","Monitorar sedaci\xf3n, peso e hemograma \u2014 sinergismo olanzapina + valproato",B.y,B.fq,B.W])
+B.dOL=new A.d(["olanzapina","valproato",B.u,"Sinergismo farmacol\xf3gico: ambos t\xeam efecto sedante e podem alterar metabolismo hep\xe1tico mutualmente","Sedaci\xf3n excesiva, aumento de peso aditivo; casos raros de neutropenia com a combinaci\xf3n","Monitorar sedaci\xf3n, hemograma e peso corporal. Usar dosis m\xednimas eficazes de ambos","Monitorar sedaci\xf3n, peso e hemograma \u2014 sinergismo olanzapina + valproato",B.y,B.fr,B.W])
 B.dZq=new A.d(["carbonato de litio","losartana",B.n,"ARA-II reduzem perfus\xe3o renal glomerular e excreci\xf3n de l\xedtio \u2014 mecanismo similar ao IECA","Elevaci\xf3n dos niveles s\xe9ricos de l\xedtio \u2014 riesgo de intoxica\xe7\xe3o: tremor, ataxia, confus\xe3o, insuficiencia renal","Monitorar l\xedtio s\xe9rico em 5-7 dias al iniciar ARA-II. Ajustar dosis seg\xfan sea necesario. Manter hidrata\xe7\xe3o","INTOXICACI\xd3N POR LITIO \u2014 ARA-II elevam l\xedtio s\xe9rico; monitorar como com IECA",B.h,B.eG,B.a3])
 B.dVJ=new A.d(["carbamazepina","rifampicina",B.n,"Rifampicina induz CYP3A4 \u2014 aumenta metabolismo de la carbamazepina","Reducci\xf3n dos niveles s\xe9ricos de carbamazepina \u2014 perda do controle de crisis epil\xe9pticas","Monitorar nivel s\xe9rico de carbamazepina al iniciar rifampicina. Ajustar dosis seg\xfan sea necesario","RIESGO DE CRISIS \u2014 Rifampicina reduz carbamazepina; monitorar niveles s\xe9ricos",B.h,B.aH,B.W])
 B.dV6=new A.d(["fenito\xedna","carbamazepina",B.u,"Interacci\xf3n bidireccional: fenito\xedna induz CYP3A4 (metabolismo de la carbamazepina); carbamazepina induz CYP2C9 (metabolismo de la fenito\xedna)","Varia\xe7\xe3o impredecible dos niveles de ambos \u2014 tanto aumento quanto diminui\xe7\xe3o poss\xedveis","Monitorar nivel s\xe9rico de ambos os antiepil\xe9pticos regularmente. Ajustar dosiss individualmente","Monitorar niveles s\xe9ricos \u2014 interacci\xf3n bidireccional e impredecible entre fenito\xedna e carbamazepina",B.h,B.bv,B.v])
@@ -169742,7 +169740,7 @@ B.ch=new A.au([B.et],t.U)
 B.dUP=new A.d(["amiodarona","diltiazem",B.n,"Efecto aditivo no n\xf3 AV \u2014 amiodarona e diltiazem ambos deprimem condu\xe7\xe3o AV","Bloqueo AV completo, bradicardia grave, hipotensi\xf3n","Evitar combinaci\xf3n. Se necesario, monitorar ECG continuamente e ter marca-passo disponible","BLOQUEO AV \u2014 amiodarona + diltiazem: monitorar ECG rigurosamente",B.h,B.ch,B.v])
 B.e0s=new A.d(["amiodarona","propranolol",B.n,"Amiodarona inibe CYP2D6 \u2192 eleva nivel de propranolol + efecto aditivo cronotr\xf3pico negativo",u.nJ,"Reducir dosis de propranolol. Monitorar FC e presi\xf3n arterial","BRADICARDIA \u2014 amiodarona eleva propranolol via CYP2D6",B.h,B.kT,B.v])
 B.dN0=new A.d(["amiodarona","ondansetrona",B.n,"Prolongaci\xf3n aditiva del QT \u2014 amiodarona (classe III) + ondansetrona (bloqueio canal hERG)","Torsades de Pointes","Evitar combinaci\xf3n. Se uso necesario, monitorar QTc. Sustituir por metoclopramida ou domperidona","PROLONGACI\xd3N QT \u2014 amiodarona + ondansetrona: monitorar QTc",B.h,B.aQ,B.v])
-B.dIl=new A.d(["amiodarona","fenito\xedna",B.n,"Amiodarona inibe CYP2C9 \u2192 eleva nivel de fenito\xedna; fenito\xedna induz CYP3A4 \u2192 reduz nivel de amiodarona","Toxicidad por fenito\xedna (nistagmo, ataxia, confus\xe3o) e posible reducci\xf3n de la efic\xe1cia da amiodarona","Monitorar nivel s\xe9rico de fenito\xedna. Reducir dosis de fenito\xedna em 30-50% al iniciar amiodarona","TOXICIDAD DE FENITO\xcdNA \u2014 amiodarona eleva via CYP2C9; monitorar nivel",B.h,B.fo,B.v])
+B.dIl=new A.d(["amiodarona","fenito\xedna",B.n,"Amiodarona inibe CYP2C9 \u2192 eleva nivel de fenito\xedna; fenito\xedna induz CYP3A4 \u2192 reduz nivel de amiodarona","Toxicidad por fenito\xedna (nistagmo, ataxia, confus\xe3o) e posible reducci\xf3n de la efic\xe1cia da amiodarona","Monitorar nivel s\xe9rico de fenito\xedna. Reducir dosis de fenito\xedna em 30-50% al iniciar amiodarona","TOXICIDAD DE FENITO\xcdNA \u2014 amiodarona eleva via CYP2C9; monitorar nivel",B.h,B.fp,B.v])
 B.aI=new A.au([B.fQ],t.U)
 B.dOd=new A.d(["amiodarona","levotiroxina",B.n,"Amiodarona inibe convers\xe3o perif\xe9rica de T4 em T3 e cont\xe9m 37% de iodo \u2014 interfere profundamente na funci\xf3n tiroidiana","Hipotiroidismo ou hipertiroidismo induzido pela amiodarona \u2014 ambos com riesgo card\xedaco","Monitorar TSH, T4 livre e T3 a cada 6 meses. Ajustar levotiroxina conforme funci\xf3n tiroidiana. Acompanhamento com endocrinologia","DISFUNCI\xd3N TIROIDIANA \u2014 monitorar TSH/T4 a cada 6 meses",B.h,B.aI,B.v])
 B.dVp=new A.d(["amiodarona","ciclosporina",B.n,"Amiodarona inibe CYP3A4 e P-gp \u2014 aumenta nivel de ciclosporina","Nefrotoxicidad, neurotoxicidad por elevaci\xf3n de ciclosporina","Reducir dosis de ciclosporina. Monitorar nivel s\xe9rico e funci\xf3n renal","TOXICIDAD CICLOSPORINA \u2014 amiodarona eleva via CYP3A4/P-gp",B.h,B.eX,B.v])
@@ -169757,12 +169755,12 @@ B.dJt=new A.d(["betabloqueador","sildenafila",B.u,"Sildenafila causa vasodilata\
 B.dTf=new A.d(["digoxina","diltiazem",B.u,"Diltiazem inibe P-gp \u2192 aumenta nivel de digoxina + efecto aditivo no n\xf3 AV","Toxicidad por digoxina e bradicardia","Monitorar nivel s\xe9rico de digoxina al iniciar diltiazem. Reducir dosis de digoxina se necesario","TOXICIDADE DIGOXINA \u2014 diltiazem eleva via P-gp; monitorar nivel",B.h,B.kT,B.v])
 B.dVV=new A.d(["digoxina","betabloqueador",B.n,"Efecto aditivo no n\xf3 AV \u2014 digoxina (vagot\xf4nico) + betabloqueador (cronotr\xf3pico negativo)","Bradicardia grave, bloqueo AV de alto grau","Monitorar FC e ECG. Titular dosis. Evitar combinaci\xf3n em disfun\xe7\xe3o sinusal","BRADICARDIA/BLOQUEO AV \u2014 digoxina + betabloqueador: monitorar ECG",B.h,B.ch,B.v])
 B.dI8=new A.d(["digoxina","metoprolol",B.n,"Efecto aditivo cronotr\xf3pico negativo no n\xf3 sinusal e AV","Bradicardia grave, bloqueo AV","Monitorar FC e ECG. Manter FC >50 bpm. Titular dosis gradualmente","BRADICARDIA \u2014 digoxina + metoprolol: manter FC >50 bpm",B.h,B.ch,B.v])
-B.dVB=new A.d(["digoxina","aine",B.u,"AINEs reduzem filtra\xe7\xe3o glomerular \u2192 diminuem aclaramiento renal da digoxina","Elevaci\xf3n do nivel s\xe9rico de digoxina \u2014 toxicidad","Evitar AINEs en pacientes com digoxina. Usar paracetamol. Se AINE necesario, monitorar nivel de digoxina","TOXICIDADE DIGOXINA \u2014 AINEs reduzem aclaramiento renal",B.h,B.fo,B.v])
+B.dVB=new A.d(["digoxina","aine",B.u,"AINEs reduzem filtra\xe7\xe3o glomerular \u2192 diminuem aclaramiento renal da digoxina","Elevaci\xf3n do nivel s\xe9rico de digoxina \u2014 toxicidad","Evitar AINEs en pacientes com digoxina. Usar paracetamol. Se AINE necesario, monitorar nivel de digoxina","TOXICIDADE DIGOXINA \u2014 AINEs reduzem aclaramiento renal",B.h,B.fp,B.v])
 B.dQn=new A.d(["digoxina","carbonato de litio",B.u,"Deple\xe7\xe3o de s\xf3dio pelo l\xedtio e altera\xe7\xf5es renais podem elevar nivel de digoxina","Toxicidad por digoxina","Monitorar nivel s\xe9rico de digoxina e ECG quando usar com l\xedtio","Monitorar digoxina \u2014 l\xedtio pode elevar nivel s\xe9rico",B.y,B.bv,B.bj])
-B.dL6=new A.d(["diltiazem","sinvastatina",B.n,"Diltiazem inibe CYP3A4 \u2014 aumenta AUC da sinvastatina em 3-4x","Riesgo elevado de miopat\xeda e rabdomi\xf3lisis","Limitar sinvastatina a 10 mg/dia com diltiazem. Preferir pravastatina ou rosuvastatina",u.aB,B.h,B.fp,B.v])
+B.dL6=new A.d(["diltiazem","sinvastatina",B.n,"Diltiazem inibe CYP3A4 \u2014 aumenta AUC da sinvastatina em 3-4x","Riesgo elevado de miopat\xeda e rabdomi\xf3lisis","Limitar sinvastatina a 10 mg/dia com diltiazem. Preferir pravastatina ou rosuvastatina",u.aB,B.h,B.fq,B.v])
 B.dZN=new A.d(["diltiazem","ciclosporina",B.n,"Diltiazem inibe CYP3A4 \u2192 aumenta nivel de ciclosporina em 30-50%","Nefrotoxicidad, neurotoxicidad por hiperciclosporinemia","Monitorar nivel s\xe9rico de ciclosporina. Reducir dosis de ciclosporina","TOXICIDAD CICLOSPORINA \u2014 diltiazem eleva via CYP3A4",B.h,B.eX,B.v])
 B.dK6=new A.d(["diltiazem","midazolam",B.u,"Diltiazem inibe CYP3A4 \u2014 aumenta nivel de midazolam","Sedaci\xf3n excesiva e prolongada","Reducir dosis de midazolam. Monitorar nivel de consci\xeancia","SEDACI\xd3N AUMENTADA \u2014 diltiazem eleva midazolam via CYP3A4",B.h,B.jU,B.v])
-B.dIa=new A.d(["diltiazem","carbamazepina",B.n,"Diltiazem inibe CYP3A4 \u2192 eleva carbamazepina; carbamazepina induz CYP3A4 \u2192 reduz diltiazem","Toxicidad por carbamazepina (diplopia, ataxia) + reducci\xf3n de la efic\xe1cia do diltiazem","Monitorar nivel de carbamazepina. Considerar alternativa ao diltiazem","TOXICIDADE CARBAMAZEPINA \u2014 diltiazem inibe metabolismo; monitorar",B.h,B.fo,B.v])
+B.dIa=new A.d(["diltiazem","carbamazepina",B.n,"Diltiazem inibe CYP3A4 \u2192 eleva carbamazepina; carbamazepina induz CYP3A4 \u2192 reduz diltiazem","Toxicidad por carbamazepina (diplopia, ataxia) + reducci\xf3n de la efic\xe1cia do diltiazem","Monitorar nivel de carbamazepina. Considerar alternativa ao diltiazem","TOXICIDADE CARBAMAZEPINA \u2014 diltiazem inibe metabolismo; monitorar",B.h,B.fp,B.v])
 B.dJ3=new A.d(["dronedarona","betabloqueador",B.n,"Dronedarona tem leve a\xe7\xe3o betabloqueadora + efecto aditivo com betabloqueador na depress\xe3o do n\xf3 AV","Bradicardia grave, bloqueo AV","Monitorar ECG. Iniciar betabloqueador com dosis baja. Manter FC >50 bpm","BRADICARDIA \u2014 dronedarona + betabloqueador: monitorar FC e ECG",B.h,B.ch,B.v])
 B.dTZ=new A.d(["dronedarona","diltiazem",B.n,"Dronedarona inibe CYP3A4 e tamb\xe9m tem efecto no n\xf3 AV; diltiazem inibe CYP3A4 eleva dronedarona + efecto aditivo AV","Bradicardia grave, bloqueo AV, prolongamento QT","Evitar combinaci\xf3n. Se necesario, monitorar ECG continuamente","BLOQUEO AV + BRADICARDIA \u2014 evitar dronedarona + diltiazem",B.h,B.a4o,B.v])
 B.dUH=new A.d(["nitrato","alfa-bloqueador",B.n,"Dupla vasodilata\xe7\xe3o \u2014 nitrato (venodilata\xe7\xe3o) + alfa-bloqueador (vasodilata\xe7\xe3o arterial)","Hipotensi\xf3n grave, s\xedncope ortost\xe1tica","Iniciar alfa-bloqueador com dosis m\xednima. Monitorar PA. Evitar combinaci\xf3n em hipotensi\xf3n basal","HIPOTENSI\xd3N GRAVE \u2014 nitrato + alfa-bloqueador: monitorar PA",B.h,B.aI,B.v])
@@ -169772,9 +169770,9 @@ B.dSW=new A.d(["sotalol","ondansetrona",B.n,"Prolongaci\xf3n aditiva del QT","To
 B.dSU=new A.d(["sotalol","quetiapina",B.n,"Dois prolongadores de QT \u2014 efecto aditivo","Torsades de Pointes, morte s\xfabita","Evitar. Monitorar QTc se combinaci\xf3n inevit\xe1vel. Suspender se QTc >500ms","TORSADES DE POINTES \u2014 evitar sotalol + quetiapina",B.h,B.aQ,B.v])
 B.e5k=new A.au([B.cf,B.j4],t.U)
 B.dTE=new A.d(["sotalol","diur\xe9tico",B.n,"Diur\xe9ticos causam hipopotasemia e hipomagnesemia \u2014 potencializam o prolongaci\xf3n de QT pelo sotalol","Torsades de Pointes precipitada por trastorno electrol\xedtico","Monitorar K+ e Mg2+ s\xe9ricos antes e durante uso de sotalol. Corregir hipopotasemia antes de iniciar","TORSADES \u2014 corrigir K+ e Mg2+ antes de iniciar sotalol",B.h,B.e5k,B.v])
-B.dPE=new A.d(["verapamil","sinvastatina",B.n,"Verapamil inibe CYP3A4 \u2014 aumenta AUC da sinvastatina em 4-5x","Riesgo muito elevado de rabdomi\xf3lisis","Limitar sinvastatina a 10 mg/dia. Preferir pravastatina ou rosuvastatina",u.aB,B.h,B.fp,B.v])
+B.dPE=new A.d(["verapamil","sinvastatina",B.n,"Verapamil inibe CYP3A4 \u2014 aumenta AUC da sinvastatina em 4-5x","Riesgo muito elevado de rabdomi\xf3lisis","Limitar sinvastatina a 10 mg/dia. Preferir pravastatina ou rosuvastatina",u.aB,B.h,B.fq,B.v])
 B.dZK=new A.d(["verapamil","ciclosporina",B.n,"Verapamil inibe CYP3A4 e P-gp \u2192 eleva nivel de ciclosporina","Nefrotoxicidad por hiperciclosporinemia","Monitorar nivel s\xe9rico de ciclosporina. Reducir dosis","TOXICIDAD CICLOSPORINA \u2014 verapamil eleva via CYP3A4/P-gp",B.h,B.eX,B.v])
-B.dKs=new A.d(["verapamil","carbamazepina",B.n,"Verapamil inibe CYP3A4 \u2192 eleva carbamazepina; carbamazepina induz CYP3A4 \u2192 reduz verapamil","Toxicidad por carbamazepina + reducci\xf3n de la efic\xe1cia do verapamil","Monitorar nivel de carbamazepina. Considerar alternativa","TOXICIDADE CARBAMAZEPINA \u2014 verapamil inibe metabolismo",B.h,B.fo,B.v])
+B.dKs=new A.d(["verapamil","carbamazepina",B.n,"Verapamil inibe CYP3A4 \u2192 eleva carbamazepina; carbamazepina induz CYP3A4 \u2192 reduz verapamil","Toxicidad por carbamazepina + reducci\xf3n de la efic\xe1cia do verapamil","Monitorar nivel de carbamazepina. Considerar alternativa","TOXICIDADE CARBAMAZEPINA \u2014 verapamil inibe metabolismo",B.h,B.fp,B.v])
 B.dTl=new A.d(["verapamil","rifampicina",B.n,"Rifampicina induz fortemente CYP3A4 e P-gp \u2192 reduz biodisponibilidad oral do verapamil em >90%","Perda completa do efecto do verapamil \u2014 angina descontrolada, arritmias","Evitar combinaci\xf3n. Usar antiarr\xedtmico alternativo durante rifampicina","INEFICACIA TOTAL \u2014 rifampicina elimina efecto do verapamil; evitar",B.h,B.a5,B.v])
 B.dJO=new A.d(["metoprolol","fluoxetina",B.n,"Fluoxetina inibe CYP2D6 \u2014 aumenta nivel de metoprolol em 4-6x",u.nJ,"Reducir dosis de metoprolol. Monitorar FC e PA. Preferir sertralina (menor inhibici\xf3n CYP2D6)","BRADICARDIA \u2014 fluoxetina eleva metoprolol 4-6x via CYP2D6",B.h,B.kT,B.v])
 B.dMx=new A.d(["ivabradina","betabloqueador",B.n,"Ivabradina inibe canal If do n\xf3 sinusal + betabloqueador tamb\xe9m reduz FC \u2014 efecto aditivo cronotr\xf3pico negativo","Bradicardia grave sintom\xe1tica","Monitorar FC. Manter FC >50 bpm. Titular dosis. Combinaci\xf3n pode ser usada com cautela em angina refrat\xe1ria","BRADICARDIA \u2014 ivabradina + betabloqueador: manter FC >50 bpm",B.h,B.ch,B.v])
@@ -169871,20 +169869,20 @@ B.eF=new A.au([B.cf],t.U)
 B.dQo=new A.d(["claritromicina","eritromicina",B.u,"Ambos inibem CYP3A4 e prolongam o intervalo QTc. A combinaci\xf3n n\xe3o tem indica\xe7\xe3o terap\xe9utica (espectro antibacteriano sobreposto) e potencializa os efectos adversos de ambos","Prolongaci\xf3n QTc aditivo \u2192 riesgo aumentado de torsades de pointes. Toxicidade GI aumentada. Combinaci\xf3n sem benef\xedcio cl\xednico justific\xe1vel","Evitar combinaci\xf3n. Usar apenas um dos agentes. Se necesario cobertura mais ampla, combinar com outro antibi\xf3tico de classe diferente","SIN BENEFICIO CL\xcdNICO + QT PROLONGADO \u2014 Evitar combinaci\xf3n; mesma classe com efectos adversos aditivos",B.h,B.eF,B.v])
 B.dOk=new A.d(["claritromicina","ritonavir",B.n,"Ritonavir inibe CYP3A4, aumentando os niveles de claritromicina em 77%. Claritromicina inibe CYP3A4, podendo aumentar ritonavir. Ambos prolongam QTc","Acumulaci\xf3n de claritromicina \u2192 toxicidad (dist\xfarbios auditivos, hepatotoxicidad, prolongaci\xf3n QTc). Em insuficiencia renal, riesgo ainda maior","Reducir dosis de claritromicina em 50% se TFG < 60mL/min. Monitorar ECG e funci\xf3n hep\xe1tica. Azitromicina \xe9 a alternativa preferida en pacientes com TARV baseada em ritonavir","QT PROLONGADO + TOXICIDADE \u2014 Reduzir claritromicina 50% em IR; monitorar ECG; preferir azitromicina em TARV",B.h,B.h9,B.a3])
 B.dOS=new A.d(["eritromicina","ritonavir",B.n,"Ritonavir inibe CYP3A4, aumentando os niveles de eritromicina. Ambos prolongam QTc de forma dosis-dependente","Acumulaci\xf3n de eritromicina \u2192 prolongaci\xf3n QTc grave, torsades de pointes. Toxicidade GI aumentada","Evitar combinaci\xf3n. Sustituir eritromicina por azitromicina (menor interacci\xf3n e menor riesgo de QT). Si se mantiene: monitorar ECG rigurosamente","TORSADES DE POINTES \u2014 Ritonavir aumenta eritromicina; sustituir por azitromicina",B.h,B.aQ,B.v])
-B.e5_=new A.au([B.cf,B.fm,B.aP],t.U)
+B.e5_=new A.au([B.cf,B.fn,B.aP],t.U)
 B.dPD=new A.d(["isrs","amitriptilina",B.n,"ISRSs (especialmente fluoxetina e paroxetina) inibem CYP2D6, principal v\xeda de metabolismo de la amitriptilina. Aumentam seus niveles em 2-4x. Ambos t\xeam atividade serotonin\xe9rgica somada","Toxicidad por amitriptilina: arritmias (QT prolongado, bloqueo AV), hipotensi\xf3n ortost\xe1tica, reten\xe7\xe3o urin\xe1ria, confus\xe3o. Riesgo de s\xedndrome serotonin\xe9rgica","Evitar fluoxetina e paroxetina com amitriptilina. Se necesario: sertralina (menor inhibici\xf3n de CYP2D6) em dosis baja. Monitorar ECG (QTc) e sinais de toxicidad tric\xedclica","TOXICIDAD DE AMITRIPTILINA + QT PROLONGADO \u2014 Evitar fluoxetina/paroxetina; monitorar ECG",B.h,B.e5_,B.v])
 B.dVc=new A.d(["isrs","mirtazapina",B.u,'Mirtazapina tem mecanismo noradren\xe9rgico/serotonin\xe9rgico (antagonismo \u03b12 + 5-HT2/3). A combinaci\xf3n com ISRS \xe9 usada terapeuticamente em depress\xe3o refrat\xe1ria ("California Rocket"), mas aumenta o riesgo de s\xedndrome serotonin\xe9rgica',"Riesgo moderado de s\xedndrome serotonin\xe9rgica. Sedaci\xf3n aditiva por efecto anti-histam\xednico da mirtazapina + ISRS","Combinaci\xf3n usada em depress\xe3o resistente sob supervis\xe3o especializada. Titular lentamente. Monitorar signos de serotonina. Evitar em ambulat\xf3rio sem suporte psiqui\xe1trico","S\xcdNDROME SEROTONIN\xc9RGICA MODERADA \u2014 Combinaci\xf3n usada em depress\xe3o refrat\xe1ria; monitorar signos serotonin\xe9rgicos",B.y,B.wL,B.v])
-B.e4j=new A.au([B.cf,B.fm],t.U)
+B.e4j=new A.au([B.cf,B.fn],t.U)
 B.dTK=new A.d(["isrs","quetiapina",B.u,"Quetiapina tem atividade serotonin\xe9rgica (antagonismo 5-HT2A). Fluoxetina inibe CYP3A4/2D6, podendo aumentar os niveles de quetiapina. Prolongaci\xf3n QTc aditivo com citalopram/escitalopram","Riesgo de s\xedndrome serotonin\xe9rgica leve-moderada. QTc prolongado com citalopram + quetiapina. Sedaci\xf3n aditiva","Monitorar ECG com citalopram/escitalopram + quetiapina. Monitorar signos serotonin\xe9rgicos. Reducir dosis de quetiapina se fluoxetina for usada","QT PROLONGADO + SEDA\xc7\xc3O \u2014 Monitorar ECG (especialmente citalopram + quetiapina) e signos serotonin\xe9rgicos",B.y,B.e4j,B.v])
 B.dWO=new A.d(["isrs","haloperidol",B.u,"Fluoxetina e paroxetina inibem CYP2D6, a principal v\xeda de metabolismo del haloperidol, aumentando os niveles em 50-100%. Ambos prolongam QTc","Toxicidad de haloperidol: prolongaci\xf3n QTc, sintomas extrapiramidais (acatisia, distonia aguda). Sedaci\xf3n aditiva","Monitorar ECG e signos extrapiramidales. Considerar reducir dosis de haloperidol em 30-50% com fluoxetina/paroxetina. Sertralina tem menor impacto em CYP2D6","QT PROLONGADO + SINTOMAS EXTRAPIRAMIDAIS \u2014 Monitorar ECG; reduzir haloperidol com fluoxetina/paroxetina",B.h,B.h9,B.v])
-B.dMd=new A.d(["isrs","olanzapina",B.be,"Fluoxetina inibe CYP2D6/1A2, podendo aumentar modestamente os niveles de olanzapina. Riesgo serotonin\xe9rgico te\xf3rico","Aumento modesto da sedaci\xf3n e dos efectos metab\xf3licos (aumento de peso). S\xedndrome serotonin\xe9rgica improbable mas posible",'Monitorar sedaci\xf3n e aumento de peso. Combinaci\xf3n usada em depress\xe3o bipolar (fluoxetina + olanzapina = "OFC"). Sem ajuste de dosis rotineiro necesario',"SEDACI\xd3N AUMENTADA \u2014 Combinaci\xf3n usada em depress\xe3o bipolar; monitorar sedaci\xf3n e peso",B.y,B.fq,B.v])
+B.dMd=new A.d(["isrs","olanzapina",B.be,"Fluoxetina inibe CYP2D6/1A2, podendo aumentar modestamente os niveles de olanzapina. Riesgo serotonin\xe9rgico te\xf3rico","Aumento modesto da sedaci\xf3n e dos efectos metab\xf3licos (aumento de peso). S\xedndrome serotonin\xe9rgica improbable mas posible",'Monitorar sedaci\xf3n e aumento de peso. Combinaci\xf3n usada em depress\xe3o bipolar (fluoxetina + olanzapina = "OFC"). Sem ajuste de dosis rotineiro necesario',"SEDACI\xd3N AUMENTADA \u2014 Combinaci\xf3n usada em depress\xe3o bipolar; monitorar sedaci\xf3n e peso",B.y,B.fr,B.v])
 B.dVU=new A.d(["imao","amitriptilina",B.C,"IMAOs inibem a degrada\xe7\xe3o de monoaminas; amitriptilina inibe recapta\xe7\xe3o de serotonina e noradrenalina. Combinaci\xf3n causa acumulaci\xf3n maci\xe7o de monoaminas. Per\xedodo de lavado: 14 dias para IMAO irreversible","S\xedndrome serotonin\xe9rgica grave (agita\xe7\xe3o, hipertermia, convulsiones, rabdomi\xf3lisis) e crisis adren\xe9rgica (hipertens\xe3o grave, arritmias). Potencialmente fatal","CONTRAINDICADO. Per\xedodo de lavado de 14 dias despu\xe9s de suspensi\xf3n do IMAO antes de iniciar tric\xedclico. Nunca combinar","CONTRAINDICADO \u2014 S\xedndrome serotonin\xe9rgica fatal; per\xedodo de lavado obligatorio de 14 dias",B.h,B.cl,B.a3])
-B.a4s=new A.au([B.fm,B.dK],t.U)
+B.a4s=new A.au([B.fn,B.dK],t.U)
 B.dMm=new A.d(["imao","opioide",B.C,"Meperidina e tramadol t\xeam atividade serotonin\xe9rgica e s\xe3o contraindicados. Morfina e fentanila t\xeam menor riesgo serotonin\xe9rgico, mas todos os opioides podem causar s\xedndrome excitadora ou depressora com IMAOs","S\xedndrome excitadora (agita\xe7\xe3o, convulsiones, hipertermia com meperidina/tramadol) ou s\xedndrome depressora (coma, depresi\xf3n respiratoria com morfina/fentanila). Ambas potencialmente fatais","CONTRAINDICADO: IMAOs + meperidina ou tramadol (absoluto). Morfina e fentanila: usar com cautela extrema e monitoramento rigoroso si es inevitable. Per\xedodo de lavado de 14 dias do IMAO antes de opioides","CONTRAINDICADO com meperidina/tramadol \u2014 S\xedndromes excitadora ou depressora; usar morfina apenas com cautela extrema",B.h,B.a4s,B.a3])
 B.dLN=new A.d(["imao","benzodiazep\xednico",B.u,"IMAOs podem potencializar os efectos sedantes do SNC dos benzodiazep\xednicos por mecanismos n\xe3o totalmente elucidados. Interacci\xf3n de menor magnitude que outras combina\xe7\xf5es com IMAO","Sedaci\xf3n excesiva, depresi\xf3n respiratoria aumentada, hipotensi\xf3n","Usar com cautela. Reducir dosis do benzodiazep\xednico. Monitorar nivel de sedaci\xf3n e FR. Evitar durante per\xedodo de lavado do IMAO","SEDACI\xd3N AUMENTADA \u2014 Usar dosis reducida de benzodiazep\xednico; monitorar sedaci\xf3n e frecuencia respiratoria",B.y,B.j8,B.v])
-B.e4d=new A.au([B.cu,B.fm],t.U)
+B.e4d=new A.au([B.cu,B.fn],t.U)
 B.e1b=new A.d(["imao","quetiapina",B.n,"IMAOs podem potencializar os efectos da quetiapina no SNC e cardiovasculares. Riesgo de s\xedndrome serotonin\xe9rgica por atividade 5-HT2A da quetiapina","Sedaci\xf3n excesiva, hipotensi\xf3n grave, riesgo de s\xedndrome serotonin\xe9rgica","Evitar combinaci\xf3n. Per\xedodo de lavado de 14 dias do IMAO. Se necesario antipsic\xf3tico durante transi\xe7\xe3o: usar haloperidol com cautela","EVITAR \u2014 Hipotensi\xf3n grave e sedaci\xf3n; per\xedodo de lavado de 14 dias do IMAO antes de iniciar quetiapina",B.y,B.e4d,B.v])
-B.dLD=new A.d(["imao","haloperidol",B.u,"IMAOs podem potencializar os efectos do haloperidol no SNC. Riesgo de hipotensi\xf3n e sedaci\xf3n aditivos","Hipotensi\xf3n grave, sedaci\xf3n excesiva, riesgo aumentado de efectos extrapiramidais","Usar com extrema cautela e apenas quando antipsic\xf3tico for indispensable durante per\xedodo de lavado. Monitorar PA e sedaci\xf3n rigurosamente","HIPOTENS\xc3O + SEDA\xc7\xc3O \u2014 Usar apenas si es indispensable durante per\xedodo de lavado; monitorar PA",B.y,B.fq,B.v])
+B.dLD=new A.d(["imao","haloperidol",B.u,"IMAOs podem potencializar os efectos do haloperidol no SNC. Riesgo de hipotensi\xf3n e sedaci\xf3n aditivos","Hipotensi\xf3n grave, sedaci\xf3n excesiva, riesgo aumentado de efectos extrapiramidais","Usar com extrema cautela e apenas quando antipsic\xf3tico for indispensable durante per\xedodo de lavado. Monitorar PA e sedaci\xf3n rigurosamente","HIPOTENS\xc3O + SEDA\xc7\xc3O \u2014 Usar apenas si es indispensable durante per\xedodo de lavado; monitorar PA",B.y,B.fr,B.v])
 B.dQ3=new A.d(["amitriptilina","mirtazapina",B.n,"Amitriptilina + mirtazapina: efectos anticolin\xe9rgicos, antihistam\xednicos e sedantes aditivos. Ambas t\xeam atividade serotonin\xe9rgica. Riesgo de toxicidad por acumulaci\xf3n","Sedaci\xf3n profunda, confus\xe3o, reten\xe7\xe3o urin\xe1ria, vis\xe3o turva, constipa\xe7\xe3o grave, delirio anticolin\xe9rgico en ancianos. QTc prolongado","Evitar en ancianos (s\xedndrome anticolin\xe9rgica grave). Em adultos jovens: monitorar cogni\xe7\xe3o, fun\xe7\xe3o vesical e ECG. Considerar alternativas mais seguras","TOXICIDADE ANTICOLIN\xc9RGICA + SEDA\xc7\xc3O GRAVE \u2014 Evitar en ancianos; monitorar cogni\xe7\xe3o e ECG",B.h,B.qW,B.v])
 B.wM=new A.au([B.cf,B.cu],t.U)
 B.dWG=new A.d(["amitriptilina","quetiapina",B.n,"Ambas prolongam o QTc e t\xeam efectos anticolin\xe9rgicos e sedantes significativos. Fluoxetina inibe CYP2D6/3A4, aumentando os niveles de ambas","QTc prolongado com riesgo de torsades de pointes. Sedaci\xf3n excesiva e delirio anticolin\xe9rgico, especialmente en ancianos","Monitorar ECG (QTc) antes e durante o tratamiento. Evitar en pacientes com QTc basal > 450ms. Evitar en ancianos. Manter electrolitos normais","QT PROLONGADO GRAVE + DELIRIUM \u2014 Monitorar ECG; evitar en ancianos e pacientes com QTc > 450ms",B.h,B.wM,B.v])
@@ -169902,7 +169900,7 @@ B.e3R=new A.au([B.fP],t.U)
 B.dYV=new A.d(["bupropiona","mirtazapina",B.u,"Bupropiona (noradren\xe9rgica/dopamin\xe9rgica) + mirtazapina (noradren\xe9rgica/serotonin\xe9rgica) \xe9 combinaci\xf3n usada em depress\xe3o refrat\xe1ria. Bupropiona inibe CYP2D6, podendo aumentar metab\xf3litos da mirtazapina","Riesgo moderado de convulsiones (bupropiona abaixa limiar). Ins\xf4nia paradoxal (bupropiona ativa; mirtazapina sedativa)",'Combinaci\xf3n usada em depress\xe3o resistente ("rocket fuel"). Titular lentamente. Monitorar limiar convulsivo e efectos opostos na sedaci\xf3n/sono',"RISCO DE CONVULSIONES \u2014 Combinaci\xf3n usada em depress\xe3o refrat\xe1ria; monitorar limiar convulsivo e sono",B.y,B.e3R,B.v])
 B.dNC=new A.d(["bupropiona","imao reversivel",B.C,"Bupropiona inibe recapta\xe7\xe3o de dopamina e noradrenalina; moclobemida inibe MAO-A. Combinaci\xf3n causa acumulaci\xf3n de monoaminas","Crisis hipertensiva, convulsiones, s\xedndrome adren\xe9rgica grave","CONTRAINDICADO. Per\xedodo de lavado de 1 dia despu\xe9s de moclobemida antes de iniciar bupropiona","CONTRAINDICADO \u2014 Crisis hipertensiva e convulsiones",B.h,B.cl,B.v])
 B.dQX=new A.d(["opioide","mirtazapina",B.u,"Mirtazapina tem efectos sedantes potentes (anti-H1). A combinaci\xf3n com opioides potencializa a depresi\xf3n del SNC. Riesgo serotonin\xe9rgico te\xf3rico (mirtazapina ativa 5-HT indireto)","Sedaci\xf3n excesiva, depresi\xf3n respiratoria aumentada, especialmente em inicio de tratamiento ou com dosiss elevadas","Monitorar sedaci\xf3n e frecuencia respiratoria. Usar dosis m\xednimas de ambos. Advertir paciente sobre riesgo de quedas e comprometimento cognitivo","SEDA\xc7\xc3O + DEPRESI\xd3N RESPIRATORIA \u2014 Monitorar SpO\u2082 e sedaci\xf3n; usar dosis m\xednimas de ambos",B.y,B.j8,B.v])
-B.dRY=new A.d(["opioide","quetiapina",B.n,"Quetiapina tem potentes efectos sedantes e depressores do SNC. A combinaci\xf3n com opioides potencializa a depresi\xf3n respiratoria. Quetiapina inibe CYP2D6/3A4 variadamente","Sedaci\xf3n profunda, depresi\xf3n respiratoria grave, hipotensi\xf3n, riesgo de aspira\xe7\xe3o e morte. Combinaci\xf3n frecuentemente envolvida em \xf3bitos por superdosagem acidental","Evitar uso concomitante em altas dosiss. Se necesario: usar dosis m\xednimas de ambos, monitorar SpO\u2082 e PA. Prescrever naloxona de resgate. Educar al paciente e fam\xedlia","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Evitar altas dosiss combinadas; prescrever naloxona; monitorar SpO\u2082",B.h,B.dU,B.v])
+B.dRY=new A.d(["opioide","quetiapina",B.n,"Quetiapina tem potentes efectos sedantes e depressores do SNC. A combinaci\xf3n com opioides potencializa a depresi\xf3n respiratoria. Quetiapina inibe CYP2D6/3A4 variadamente","Sedaci\xf3n profunda, depresi\xf3n respiratoria grave, hipotensi\xf3n, riesgo de aspira\xe7\xe3o e morte. Combinaci\xf3n frecuentemente envolvida em \xf3bitos por superdosagem acidental","Evitar uso concomitante em altas dosiss. Se necesario: usar dosis m\xednimas de ambos, monitorar SpO\u2082 e PA. Prescrever naloxona de resgate. Educar al paciente e fam\xedlia","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Evitar altas dosiss combinadas; prescrever naloxona; monitorar SpO\u2082",B.h,B.dT,B.v])
 B.dWH=new A.d(["opioide","haloperidol",B.u,"Haloperidol potencializa os efectos sedantes dos opioides. Usado terapeuticamente em cuidados paliativos (controle de n\xe1usea + dor), mas com riesgo de sedaci\xf3n excesiva","Sedaci\xf3n excesiva, hipotensi\xf3n ortost\xe1tica, depresi\xf3n respiratoria em dosiss elevadas de ambos","Em cuidados paliativos: titulaci\xf3n cuidadosa com dosis m\xednimas. Monitorar nivel de sedaci\xf3n (RASS), PA e FR. Tener naloxona disponible","SEDACI\xd3N AUMENTADA \u2014 Em CP: titular cuidadosamente; monitorar RASS, PA e FR; ter naloxona disponible",B.h,B.j8,B.v])
 B.eu=new A.au([B.dK],t.U)
 B.dJh=new A.d(["fentanila","midazolam",B.n,"Fentanila (depressor respirat\xf3rio \u03bc-opioide) + midazolam (benzodiazep\xednico GABA-A) \xe9 combinaci\xf3n de alto riesgo para sedaci\xf3n procedural. O efecto sin\xe9rgico (n\xe3o apenas aditivo) pode precipitar apnea mesmo com dosiss que seriam seguras individualmente","Apnea, desaturaci\xf3n grave (SpO\u2082 < 85%), bradicardia, parada respirat\xf3ria. Combinaci\xf3n respons\xe1vel por incidentes graves em sedaci\xf3n procedural e UTI","Usar apenas em ambiente monitorizado com acesso imediato a bolsa-v\xe1lvula-m\xe1scara, oxig\xeanio e flumazenil + naloxona. Titular em dosiss fracionadas. Monitorar SpO\u2082 e ETCO\u2082 continuamente","APNEA \u2014 Usar apenas em ambiente monitorizado; ter naloxona + flumazenil disponibles; monitorar SpO\u2082 e ETCO\u2082",B.h,B.eu,B.a3])
@@ -169910,12 +169908,12 @@ B.dNW=new A.d(["tramadol","quetiapina",B.u,"Quetiapina inibe parcialmente CYP2D6
 B.dUV=new A.d(["tramadol","haloperidol",B.u,"Haloperidol inibe CYP2D6, podendo aumentar os niveles de tramadol e seu metabolito ativo. Ambos abaixam o limiar convulsivo","Convulsiones, sedaci\xf3n excesiva, s\xedndrome serotonin\xe9rgica","Usar com cautela. Evitar en pacientes com epilepsia. Para analgesia: preferir morfina com haloperidol","CONVULSIONES \u2014 Evitar em epil\xe9pticos; preferir morfina para analgesia com haloperidol",B.y,B.wH,B.v])
 B.dJw=new A.d(["mirtazapina","quetiapina",B.u,"Efectos sedantes aditivos (ambas t\xeam potente atividade anti-H1). Riesgo serotonin\xe9rgico te\xf3rico. Quetiapina prolonga QTc","Sedaci\xf3n profunda e prolongada, especialmente ao inicio. Riesgo de quedas en ancianos. QTc prolongado","Monitorar sedaci\xf3n, especialmente nas primeiras semanas. Evitar en ancianos com riesgo de quedas. Monitorar ECG","SEDA\xc7\xc3O PROFUNDA \u2014 Monitorar sedaci\xf3n; evitar en ancianos com riesgo de quedas; monitorar ECG",B.y,B.qW,B.v])
 B.dNM=new A.d(["mirtazapina","haloperidol",B.u,"Efectos sedantes aditivos. Haloperidol prolonga QTc; mirtazapina prolonga QTc modestamente. Combinaci\xf3n usada em alucina\xe7\xf5es + ins\xf4nia em cuidados paliativos","Sedaci\xf3n excesiva, prolongaci\xf3n QTc, hipotensi\xf3n ortost\xe1tica, riesgo de quedas en ancianos","Monitorar ECG (QTc) e sedaci\xf3n. Usar dosis m\xednimas. Em CP: titulaci\xf3n cuidadosa com monitoramento","QT PROLONGADO + SEDA\xc7\xc3O \u2014 Monitorar ECG e sedaci\xf3n; usar dosis m\xednimas",B.y,B.wM,B.v])
-B.dXz=new A.d(["mirtazapina","olanzapina",B.u,"Efectos sedantes, antihistam\xednicos e metab\xf3licos aditivos. Ambas aumentam peso e riesgo de s\xedndrome metab\xf3lica","Sedaci\xf3n intensa, aumento de peso significativo, resist\xeancia \xe0 insulina, dislipidemia","Monitorar peso, glucemia, perfil lip\xeddico e presi\xf3n arterial. Usar dosis m\xednimas. Evitar en pacientes com obesidade ou DM2","S\xcdNDROME METAB\xd3LICA + SEDA\xc7\xc3O \u2014 Monitorar peso, glucemia e lip\xeddios; evitar en pacientes obesos/diab\xe9ticos",B.h,B.fq,B.v])
+B.dXz=new A.d(["mirtazapina","olanzapina",B.u,"Efectos sedantes, antihistam\xednicos e metab\xf3licos aditivos. Ambas aumentam peso e riesgo de s\xedndrome metab\xf3lica","Sedaci\xf3n intensa, aumento de peso significativo, resist\xeancia \xe0 insulina, dislipidemia","Monitorar peso, glucemia, perfil lip\xeddico e presi\xf3n arterial. Usar dosis m\xednimas. Evitar en pacientes com obesidade ou DM2","S\xcdNDROME METAB\xd3LICA + SEDA\xc7\xc3O \u2014 Monitorar peso, glucemia e lip\xeddios; evitar en pacientes obesos/diab\xe9ticos",B.h,B.fr,B.v])
 B.dXW=new A.d(["quetiapina","haloperidol",B.n,"Ambos prolongam o QTc (haloperidol \xe9 um dos mais potentes; quetiapina tamb\xe9m). Efectos sedantes e extrapiramidais aditivos","QTc prolongado com alto riesgo de torsades de pointes. Sedaci\xf3n excesiva. Somat\xf3rio de efectos extrapiramidais. Raramente indicado combinar dois antipsic\xf3ticos","Evitar combinaci\xf3n. Raramente indicada (exceto transi\xe7\xe3o controlada). Se usada: monitorar ECG rigurosamente, corrigir electrolitos, usar dosis m\xednimas","QT PROLONGADO GRAVE \u2014 Evitar combinaci\xf3n de antipsic\xf3ticos; monitorar ECG si es indispensable",B.h,B.aQ,B.v])
-B.e1t=new A.d(["quetiapina","olanzapina",B.u,"Ambas t\xeam efectos sedantes, metab\xf3licos e anticolin\xe9rgicos aditivos. Raramente indicada a combinaci\xf3n","Sedaci\xf3n excesiva, s\xedndrome metab\xf3lica, efectos anticolin\xe9rgicos aditivos. Sem benef\xedcio cl\xednico adicional sobre monoterapia em dosiss adecuadas","Evitar combinaci\xf3n. Otimizar dosis del antipsic\xf3tico \xfanico antes de combinar. Se usada: monitorar peso, glucemia, sedaci\xf3n","EFEITOS METAB\xd3LICOS + SEDA\xc7\xc3O ADITIVOS \u2014 Evitar; otimizar monoterapia antes de combinar antipsic\xf3ticos",B.y,B.fq,B.v])
+B.e1t=new A.d(["quetiapina","olanzapina",B.u,"Ambas t\xeam efectos sedantes, metab\xf3licos e anticolin\xe9rgicos aditivos. Raramente indicada a combinaci\xf3n","Sedaci\xf3n excesiva, s\xedndrome metab\xf3lica, efectos anticolin\xe9rgicos aditivos. Sem benef\xedcio cl\xednico adicional sobre monoterapia em dosiss adecuadas","Evitar combinaci\xf3n. Otimizar dosis del antipsic\xf3tico \xfanico antes de combinar. Se usada: monitorar peso, glucemia, sedaci\xf3n","EFEITOS METAB\xd3LICOS + SEDA\xc7\xc3O ADITIVOS \u2014 Evitar; otimizar monoterapia antes de combinar antipsic\xf3ticos",B.y,B.fr,B.v])
 B.e_Z=new A.d(["haloperidol","olanzapina",B.u,"Efectos extrapiramidais aditivos (haloperidol D2 t\xedpico; olanzapina at\xedpico). Ambos prolongam QTc. Raramente indicada a combinaci\xf3n","Sintomas extrapiramidais graves (acatisia, distonia), sedaci\xf3n excesiva, QTc prolongado","Evitar combinaci\xf3n de antipsic\xf3ticos. Se usada em transi\xe7\xe3o: monitorar s\xedntomas extrapiramidais e ECG","EXTRAPIRAMIDAL + QT PROLONGADO \u2014 Evitar; monitorar s\xedntomas EPS e ECG na transi\xe7\xe3o",B.y,B.eF,B.v])
 B.dQG=new A.d(["carbonato de litio","isrs",B.n,"L\xedtio tem propriedades serotonin\xe9rgicas (aumenta s\xedntese e libera\xe7\xe3o de 5-HT). ISRSs inibem recapta\xe7\xe3o de serotonina. Combinaci\xf3n usada em depress\xe3o refrat\xe1ria, mas com riesgo serotonin\xe9rgico","S\xedndrome serotonin\xe9rgica: tremor, mioclonias, diaforese, hipertermia, agita\xe7\xe3o, especialmente com fluoxetina (que tamb\xe9m inibe CYP2D6 e pode alterar excreci\xf3n renal de l\xedtio)","Combinaci\xf3n usada em psiquiatria com monitoramento. Titular lentamente. Monitorar nivel s\xe9rico de l\xedtio (alvo 0,6-1,0 mEq/L) e signos serotonin\xe9rgicos","S\xcdNDROME SEROTONIN\xc9RGICA \u2014 Combinaci\xf3n usada em DR; monitorar nivel s\xe9rico de l\xedtio e signos serotonin\xe9rgicos",B.h,B.mg,B.v])
-B.qV=new A.au([B.fm,B.fP],t.U)
+B.qV=new A.au([B.fn,B.fP],t.U)
 B.dZg=new A.d(["carbonato de litio","tramadol",B.n,"L\xedtio tem propriedades serotonin\xe9rgicas + tramadol inibe recapta\xe7\xe3o de serotonina. Ambos abaixam o limiar convulsivo","S\xedndrome serotonin\xe9rgica e convulsiones por mecanismos aditivos","Evitar combinaci\xf3n. Para analgesia com l\xedtio: preferir paracetamol (cuidado com AINEs \u2014 alteram excreci\xf3n renal de l\xedtio) ou morfina","S\xcdNDROME SEROTONIN\xc9RGICA + CONVULSIONES \u2014 Evitar tramadol com l\xedtio; usar paracetamol ou morfina",B.h,B.qV,B.v])
 B.dI1=new A.d(["carbonato de litio","imao",B.n,"L\xedtio aumenta s\xedntese de serotonina; IMAOs inibem sua degrada\xe7\xe3o. Interacci\xf3n com potencial serotonin\xe9rgico significativo","S\xedndrome serotonin\xe9rgica, crisis adren\xe9rgica, toxicidad do l\xedtio por interacciones hemodin\xe2micas","Evitar combinaci\xf3n. Per\xedodo de lavado de 14 dias do IMAO antes de iniciar l\xedtio. Monitorar nivel s\xe9rico de l\xedtio si se mantienes","S\xcdNDROME SEROTONIN\xc9RGICA \u2014 Evitar; per\xedodo de lavado de 14 dias do IMAO",B.y,B.cl,B.v])
 B.dMJ=new A.d(["carbonato de litio","quetiapina",B.u,"Combinaci\xf3n amplamente usada em transtorno bipolar. Quetiapina prolonga QTc; l\xedtio prolonga QTc em toxicidad. Em dosiss terap\xe9uticas: riesgo moderado de sedaci\xf3n aditiva e QTc","Sedaci\xf3n aditiva, prolongaci\xf3n QTc, s\xedndrome neurol\xe9ptica maligna raramente descrita com l\xedtio + antipsic\xf3tico. Hiponatremia por l\xedtio pode aumentar toxicidad","Monitorar nivel s\xe9rico de l\xedtio (0,6-1,0 mEq/L) e ECG regularmente. Manter hidrata\xe7\xe3o adecuada. Monitorar electrolitos e funci\xf3n renal","MONITORAR N\xcdVEL DE L\xcdTIO + ECG \u2014 Combinaci\xf3n usada em TB; manter hidrata\xe7\xe3o e monitorar electrolitos",B.h,B.h9,B.v])
@@ -169956,7 +169954,7 @@ B.dKB=new A.d(["glibenclamida","betabloqueador",B.n,"Betabloqueadores (especialm
 B.dR6=new A.d(["glibenclamida","corticosteroide sistemico",B.n,"Corticosteroides antagonizam o efecto de glibenclamida por resist\xeancia \xe0 insulina. Al suspender o corticoide, o efecto da glibenclamida (j\xe1 sem antagonismo) causa hipoglucemia grave de rebote","Hiperglucemia grave durante corticoterapia. Hipoglucemia grave de rebote al suspender corticoide, especialmente com glibenclamida de a\xe7\xe3o prolongada","Evitar glibenclamida durante corticoterapia; preferir insulina para controle. Al suspender corticoide: reduzir hipoglucemiantes gradualmente. Monitorar glucemia 4x/dia","HIPOGLICEMIA DE REBOTE \u2014 Al suspender corticoide, riesgo alto de hipoglucemia grave com glibenclamida; preferir insulina",B.h,B.cm,B.v])
 B.dU8=new A.d(["corticosteroide sistemico","aine",B.n,"Corticosteroides inibem s\xedntese de prostaglandinas (via lipocortina/PLA2) e prejudicam a integridade da mucosa g\xe1strica. AINEs inibem COX-1, reduzindo prostaglandinas citoprotetoras. Efecto sin\xe9rgico na les\xe3o da mucosa GI","\xdalcera p\xe9ptica, hemorragia digestiva alta (riesgo 4-15x maior que com cada f\xe1rmaco isolado), perfura\xe7\xe3o. Riesgo especialmente alto en ancianos, hist\xf3ria de \xfalcera e uso de anticoagulantes","Evitar combinaci\xf3n cuando sea posible. Si es necesaria: usar o AINE mais seletivo (COX-2 seletivo ou ibuprofeno em dosis baja) + IBP profil\xe1tico (omeprazol 20mg/pantoprazol 40mg) obligatorio. Evitar uso prolongado","HEMORRAGIA DIGESTIVA \u2014 Riesgo 4-15x maior; usar IBP profil\xe1tico obligatorio si se mantiene a combinaci\xf3n",B.h,B.aD,B.a3])
 B.dZB=new A.d(["corticosteroide sistemico","warfarina",B.n,"Corticosteroides em altas dosiss t\xeam efecto anticoagulante intr\xednseco e podem aumentar os efectos da varfarina por m\xfaltiplos mecanismos (inducci\xf3n de CYP com dosis altas paradoxalmente inibindo CYP2C9 em dosis bajas). Rela\xe7\xe3o impredecible","Varia\xe7\xe3o impredecible do INR (aumento ou reducci\xf3n) com riesgo de sangrado ou trombosis. Em uso concomitante com AINEs: riesgo de sangrado gastrointestinal grave","Monitorar INR frecuentemente ao iniciar, mudar dosis ou suspender corticoide. Evitar combinaci\xf3n tripla com AINE + varfarina + corticoide (riesgo extremamente alto de hemorragia GI)","INR IMPREVIS\xcdVEL \u2014 Monitorar INR frecuentemente ao modificar corticoide; evitar tripla combinaci\xf3n com AINE",B.h,B.aD,B.v])
-B.e14=new A.d(["corticosteroide sistemico","isrs",B.u,"Corticosteroides causam transtornos do humor (psicose, mania, depress\xe3o, ansiedade) que podem ser potencializados por ISRSs. Fluoxetina inibe CYP2C9 (metabolismo de alguns corticosteroides)","Psicose por corticoide, mania, ins\xf4nia grave. Posible elevaci\xf3n dos niveles de corticosteroides com fluoxetina","Monitorar estado mental durante corticoterapia. Usar ISRSs se necesario para sintomas depressivos p\xf3s-corticoide (mas aguardar reducci\xf3n de dosis del corticoide). Preferir sertralina ou escitalopram","TRANSTORNOS DO HUMOR \u2014 Monitorar estado mental; ISRS pode ser necesario para depress\xe3o p\xf3s-corticoide",B.y,B.fq,B.v])
+B.e14=new A.d(["corticosteroide sistemico","isrs",B.u,"Corticosteroides causam transtornos do humor (psicose, mania, depress\xe3o, ansiedade) que podem ser potencializados por ISRSs. Fluoxetina inibe CYP2C9 (metabolismo de alguns corticosteroides)","Psicose por corticoide, mania, ins\xf4nia grave. Posible elevaci\xf3n dos niveles de corticosteroides com fluoxetina","Monitorar estado mental durante corticoterapia. Usar ISRSs se necesario para sintomas depressivos p\xf3s-corticoide (mas aguardar reducci\xf3n de dosis del corticoide). Preferir sertralina ou escitalopram","TRANSTORNOS DO HUMOR \u2014 Monitorar estado mental; ISRS pode ser necesario para depress\xe3o p\xf3s-corticoide",B.y,B.fr,B.v])
 B.dSw=new A.d(["corticosteroide sistemico","ciclosporina",B.n,"Corticosteroides inibem CYP3A4 em baixas dosiss e induzem em altas dosiss \u2014 efecto impredecible sobre ciclosporina. Ciclosporina inibe o metabolismo de metilprednisolona, aumentando seus niveles","Toxicidad de corticoide (Cushing iatrog\xeanico, hiperglucemia, osteoporose) por aumento de los niveles. Posible falha inmunosupresora se corticoide altera ciclosporina. Efectos inmunosupresores aditivos","Monitorar niveles de ciclosporina e efectos do corticoide. Combinaci\xf3n usada em transplante (padr\xe3o), mas com monitoramento rigoroso de funci\xf3n renal, glucemia, PA e peso","TOXICIDADE ADITIVA \u2014 Combinaci\xf3n padr\xe3o em transplante; monitorar ciclosporina, glucemia, PA e peso",B.h,B.bv,B.v])
 B.a4x=new A.au([B.aP,B.ol],t.U)
 B.dXA=new A.d(["corticosteroide sistemico","tacrolimo",B.n,"Corticosteroides podem induzir CYP3A4 em altas dosiss, reduzindo tacrolimo; em retirada de corticoide, os niveles de tacrolimo podem elevar-se dramaticamente. Tacrolimo \xe9 diabetog\xeanico + corticoide \xe9 diabetog\xeanico","Flutua\xe7\xf5es dos niveles de tacrolimo (rejei\xe7\xe3o ou toxicidad) ao modificar dosis de corticoide. Hiperglucemia grave (NODAT \u2014 Novo-Onset Diabetes After Transplant)","Monitorar C0 de tacrolimo ao modificar dosis de corticoide. Rastrear NODAT com glucemia em jejum e HbA1c. Combinaci\xf3n padr\xe3o em transplante com monitoramento rigoroso","FLUTUA\xc7\xd5ES DE TACROLIMO + DIABETES \u2014 Monitorar C0 ao modificar corticoide; rastrear NODAT",B.h,B.a4x,B.v])
@@ -169998,8 +169996,8 @@ B.dLO=new A.d(["mepolizumabe","vacinas vivas",B.u,"Mepolizumabe (anti-IL-5) afet
 B.dUU=new A.d(["ciprofloxacino","ciclosporina",B.n,"Ciprofloxacino inibe CYP3A4, aumentando os niveles de ciclosporina. Ambos s\xe3o nefrot\xf3xicos. Riesgo de toxicidad cumulativa","Nefrotoxicidad grave por acumulaci\xf3n de ciclosporina + efecto nefrot\xf3xico direto do ciprofloxacino (raro mas descrito)","Monitorar C0 de ciclosporina a cada 2-3 dias durante ciprofloxacino. Reducir dosis de ciclosporina se C0 elevado. Considerar alternativa antibi\xf3tica","NEFROTOXICIDAD + AUMENTO DE CICLOSPORINA \u2014 Monitorar C0 de ciclosporina; considerar alternativa",B.h,B.eX,B.v])
 B.e0T=new A.d(["ciprofloxacino","isrs",B.u,"Ciprofloxacino inibe CYP1A2 (metabolismo de fluvoxamina) e prolonga QTc. Citalopram e escitalopram tamb\xe9m prolongam QTc","QTc prolongado aditivo com citalopram/escitalopram. Toxicidad de fluvoxamina por inhibici\xf3n de CYP1A2","Evitar ciprofloxacino + citalopram/escitalopram. Monitorar ECG. Preferir outro antibi\xf3tico en pacientes com ISRS que prolongam QT","QT PROLONGADO \u2014 Evitar ciprofloxacino + citalopram/escitalopram; monitorar ECG",B.y,B.eF,B.v])
 B.dSG=new A.d(["ciprofloxacino","anti\xe1cido",B.n,"C\xe1tions divalentes e trivalentes (Mg\xb2\u207a, Al\xb3\u207a, Ca\xb2\u207a, Fe\xb2\u207a/\xb3\u207a, Zn\xb2\u207a) formam complexos insol\xfaveis de quela\xe7\xe3o com ciprofloxacino no TGI, reduzindo a absorci\xf3n em 30-75%","Falha terap\xe9utica por niveles subterap\xe9uticos de ciprofloxacino, especialmente em infec\xe7\xf5es graves","Separar ciprofloxacino de anti\xe1cidos, suplementos de ferro, c\xe1lcio e zinco por pelo menos 2 horas (ciprofloxacino primeiro) ou 6 horas depois. Nunca coadministrar","FRACASO TERAP\xc9UTICO \u2014 Separar ciprofloxacino de anti\xe1cidos/Fe/Ca por 2h antes ou 6h depois; nunca juntos",B.h,B.a5,B.a3])
-B.dUD=new A.d(["ciprofloxacino","estatina",B.u,"Ciprofloxacino inibe CYP1A2, podendo aumentar os niveles de atorvastatina (metabolizada por CYP3A4/1A2) e rosuvastatina","Riesgo discretamente aumentado de miopat\xeda/rabdomi\xf3lisis, especialmente com dosis altas de estatina","Monitorar s\xedntomas musculares. Interacci\xf3n generalmente clinicamente modesta em cursos curtos de ciprofloxacino. Mais relevante em uso prolongado","MIOPATIA AUMENTADA \u2014 Monitorar s\xedntomas musculares em uso prolongado de ciprofloxacino com estatinas",B.y,B.fp,B.v])
-B.a46=new A.au([B.fm,B.cf],t.U)
+B.dUD=new A.d(["ciprofloxacino","estatina",B.u,"Ciprofloxacino inibe CYP1A2, podendo aumentar os niveles de atorvastatina (metabolizada por CYP3A4/1A2) e rosuvastatina","Riesgo discretamente aumentado de miopat\xeda/rabdomi\xf3lisis, especialmente com dosis altas de estatina","Monitorar s\xedntomas musculares. Interacci\xf3n generalmente clinicamente modesta em cursos curtos de ciprofloxacino. Mais relevante em uso prolongado","MIOPATIA AUMENTADA \u2014 Monitorar s\xedntomas musculares em uso prolongado de ciprofloxacino com estatinas",B.y,B.fq,B.v])
+B.a46=new A.au([B.fn,B.cf],t.U)
 B.dYe=new A.d(["metronidazol","isrs",B.u,"Metronidazol inibe CYP2C19 (metabolismo de citalopram, escitalopram, sertralina). Pode aumentar os niveles de ISRSs e potencializar atividade serotonin\xe9rgica","S\xedndrome serotonin\xe9rgica leve-moderada, especialmente com citalopram/escitalopram. Prolongaci\xf3n QTc com citalopram","Monitorar signos serotonin\xe9rgicos e ECG com citalopram/escitalopram. Preferir tinidazol en pacientes com ISRS cuando sea posible","S\xcdNDROME SEROTONIN\xc9RGICA + QT \u2014 Monitorar signos serotonin\xe9rgicos e ECG com citalopram/escitalopram",B.y,B.a46,B.v])
 B.e_t=new A.d(["metronidazol","ciclosporina",B.u,"Metronidazol inibe CYP3A4 e CYP2C9, podendo aumentar os niveles de ciclosporina","Nefrotoxicidad e hepatotoxicidad por acumulaci\xf3n de ciclosporina","Monitorar C0 de ciclosporina e funci\xf3n renal durante curso de metronidazol. Reducir dosis de ciclosporina se C0 elevado","NEFROTOXICIDAD \u2014 Monitorar C0 de ciclosporina durante metronidazol",B.y,B.eX,B.v])
 B.e_h=new A.d(["metronidazol","tacrolimo",B.u,"Metronidazol inibe CYP3A4, podendo aumentar os niveles de tacrolimo en pacientes trasplantados","Nefrotoxicidad e neurotoxicidad por acumulaci\xf3n de tacrolimo","Monitorar C0 de tacrolimo diariamente durante curso de metronidazol. Reducir dosis se C0 elevado","NEFROTOXICIDAD \u2014 Monitorar C0 de tacrolimo diariamente durante metronidazol",B.y,B.eX,B.v])
@@ -170021,16 +170019,16 @@ B.dVt=new A.d(["tigeciclina","anticonceptivo",B.u,"Tigeciclina, como outras tetr
 B.e1c=new A.d(["estatina","amiodarona",B.n,"Amiodarona inibe CYP3A4 e CYP2C8 \u2014 v\xedas de metabolismo de sinvastatina, atorvastatina e lovastatina. Pode aumentar os niveles de estatinas em 2-3x. Riesgo mais elevado com sinvastatina em dosiss > 20mg","Miopat\xeda grave e rabdomi\xf3lisis. FDA limitou sinvastatina a 20mg/dia com amiodarona","Limitar sinvastatina a 20mg/dia com amiodarona (FDA). Evitar lovastatina. Preferir rosuvastatina ou pravastatina. Monitorar CK e s\xedntomas musculares","RABDOMI\xd3LISIS \u2014 Limitar sinvastatina a 20mg com amiodarona (FDA); preferir pravastatina ou rosuvastatina",B.h,B.cT,B.a3])
 B.dTP=new A.d(["estatina","verapamil",B.n,"Verapamil inibe CYP3A4 e P-gp, aumentando os niveles de sinvastatina, lovastatina e atorvastatina. FDA limita sinvastatina a 10mg/dia com verapamil","Miopat\xeda e rabdomi\xf3lisis por acumulaci\xf3n de estatinas","Limitar sinvastatina a 10mg/dia com verapamil (FDA). Evitar lovastatina. Preferir pravastatina, rosuvastatina ou fluvastatina. Monitorar CK","RABDOMI\xd3LISIS \u2014 Limitar sinvastatina a 10mg com verapamil (FDA); preferir pravastatina",B.h,B.cT,B.a3])
 B.dHZ=new A.d(["estatina","diltiazem",B.u,"Diltiazem inibe moderadamente CYP3A4, aumentando os niveles de sinvastatina em 2-4x e atorvastatina em menor grau","Miopat\xeda/rabdomi\xf3lisis por acumulaci\xf3n de sinvastatina. FDA limita sinvastatina a 10mg/dia com diltiazem","Limitar sinvastatina a 10mg/dia com diltiazem. Preferir pravastatina ou rosuvastatina. Monitorar CK","RABDOMI\xd3LISIS \u2014 Limitar sinvastatina a 10mg com diltiazem; preferir pravastatina",B.h,B.cT,B.v])
-B.dQu=new A.d(["estatina","azitromicina",B.be,"Azitromicina tem m\xednima inhibici\xf3n de CYP3A4. Riesgo de miopat\xeda muito baixo em cursos curtos (5 dias). Relevante principalmente com sinvastatina em dosis altas","Riesgo muito baixo de miopat\xeda em tratamientos curtos. Monitoramento generalmente desnecesario","Generalmente seguro em cursos curtos. Monitorar s\xedntomas musculares se sinvastatina em dosis alta (> 40mg). Sem ajuste de dosis necesario","RISCO M\xcdNIMO \u2014 Generalmente seguro; monitorar s\xedntomas musculares se sinvastatina > 40mg",B.db,B.fp,B.v])
-B.dXr=new A.d(["estatina","colchicina",B.n,"Colchicina causa miopat\xeda por inhibici\xf3n de microt\xfabulos nas fibras musculares (efecto direto). Estatinas causam miopat\xeda por deple\xe7\xe3o de ubiquinona. Efecto aditivo/sin\xe9rgico","Miopat\xeda grave e rabdomi\xf3lisis, especialmente em IR (que tamb\xe9m eleva os niveles de colchicina), idosos e en pacientes com dosis altas de estatina","Monitorar CK e s\xedntomas musculares durante uso concomitante. Limitar dosis de colchicina ao m\xednimo efetivo. Preferir estatinas com menor riesgo (pravastatina, rosuvastatina). Suspender se CK > 5x LSN","RABDOMI\xd3LISIS \u2014 Efecto miop\xe1tico aditivo; preferir pravastatina; monitorar CK; limitar colchicina ao m\xednimo",B.h,B.fp,B.a3])
-B.dLp=new A.d(["estatina","fenofibrato",B.u,"Fenofibrato inibe CYP2C8 e OATP1B1, podendo aumentar os niveles de estatinas (especialmente cerivastina \u2014 retirada do mercado por este motivo). Efecto miop\xe1tico aditivo independente do mecanismo CYP","Miopat\xeda e rabdomi\xf3lisis pelo efecto miop\xe1tico aditivo de fibratos + estatinas. Menor riesgo que gemfibrozil","Monitorar CK e s\xedntomas musculares. Fenofibrato tem menor riesgo que gemfibrozil com estatinas. Prefira fenofibrato a gemfibrozil quando a combinaci\xf3n for necesaria","MIOPATIA ADITIVA \u2014 Fenofibrato mais seguro que gemfibrozil; monitorar CK e s\xedntomas musculares",B.h,B.fp,B.v])
+B.dQu=new A.d(["estatina","azitromicina",B.be,"Azitromicina tem m\xednima inhibici\xf3n de CYP3A4. Riesgo de miopat\xeda muito baixo em cursos curtos (5 dias). Relevante principalmente com sinvastatina em dosis altas","Riesgo muito baixo de miopat\xeda em tratamientos curtos. Monitoramento generalmente desnecesario","Generalmente seguro em cursos curtos. Monitorar s\xedntomas musculares se sinvastatina em dosis alta (> 40mg). Sem ajuste de dosis necesario","RISCO M\xcdNIMO \u2014 Generalmente seguro; monitorar s\xedntomas musculares se sinvastatina > 40mg",B.db,B.fq,B.v])
+B.dXr=new A.d(["estatina","colchicina",B.n,"Colchicina causa miopat\xeda por inhibici\xf3n de microt\xfabulos nas fibras musculares (efecto direto). Estatinas causam miopat\xeda por deple\xe7\xe3o de ubiquinona. Efecto aditivo/sin\xe9rgico","Miopat\xeda grave e rabdomi\xf3lisis, especialmente em IR (que tamb\xe9m eleva os niveles de colchicina), idosos e en pacientes com dosis altas de estatina","Monitorar CK e s\xedntomas musculares durante uso concomitante. Limitar dosis de colchicina ao m\xednimo efetivo. Preferir estatinas com menor riesgo (pravastatina, rosuvastatina). Suspender se CK > 5x LSN","RABDOMI\xd3LISIS \u2014 Efecto miop\xe1tico aditivo; preferir pravastatina; monitorar CK; limitar colchicina ao m\xednimo",B.h,B.fq,B.a3])
+B.dLp=new A.d(["estatina","fenofibrato",B.u,"Fenofibrato inibe CYP2C8 e OATP1B1, podendo aumentar os niveles de estatinas (especialmente cerivastina \u2014 retirada do mercado por este motivo). Efecto miop\xe1tico aditivo independente do mecanismo CYP","Miopat\xeda e rabdomi\xf3lisis pelo efecto miop\xe1tico aditivo de fibratos + estatinas. Menor riesgo que gemfibrozil","Monitorar CK e s\xedntomas musculares. Fenofibrato tem menor riesgo que gemfibrozil com estatinas. Prefira fenofibrato a gemfibrozil quando a combinaci\xf3n for necesaria","MIOPATIA ADITIVA \u2014 Fenofibrato mais seguro que gemfibrozil; monitorar CK e s\xedntomas musculares",B.h,B.fq,B.v])
 B.dK4=new A.d(["estatina","warfarina",B.u,"Estatinas inibem variadamente CYP2C9 (principal via da S-varfarina): fluvastatina e rosuvastatina t\xeam maior inhibici\xf3n de CYP2C9; pravastatina e atorvastatina t\xeam menor impacto","Aumento modesto do INR al iniciar ou aumentar dosis de estatina, especialmente fluvastatina e rosuvastatina","Monitorar INR al iniciar ou mudar dosis de estatina. Riesgo maior com fluvastatina e rosuvastatina. Ajustar varfarina seg\xfan sea necesario","INR AUMENTADO \u2014 Monitorar INR al iniciar estatina; maior riesgo com fluvastatina e rosuvastatina",B.h,B.aD,B.v])
 B.dXq=new A.d(["aine","isrs",B.n,"ISRSs inibem recapta\xe7\xe3o de serotonina nas plaquetas, reduzindo a agrega\xe7\xe3o plaquet\xe1ria. AINEs inibem COX-1 (antiagrega\xe7\xe3o + les\xe3o GI). Efecto antiagregante e lesivo GI aditivo/sin\xe9rgico","Hemorragia GI significativa (riesgo 3-15x maior). Metan\xe1lises mostram que a combinaci\xf3n AINE + ISRS aumenta riesgo de HDA em 15x em rela\xe7\xe3o a nenhum dos dois","Evitar uso concomitante prolongado. Se necesario: adicionar IBP profil\xe1tico (omeprazol 20mg ou pantoprazol 40mg). Monitorar signos de sangrado (fezes escuras, anemia)","HEMORRAGIA GI GRAVE \u2014 Riesgo 3-15x de HDA; adicionar IBP profil\xe1tico obligatoriamente si se mantiene a combinaci\xf3n",B.h,B.aD,B.a3])
 B.dKz=new A.d(["omeprazol","metformina",B.be,"Omeprazol inibe OCT1/OCT2 (transportadores de capta\xe7\xe3o hep\xe1tica e renal de metformina), podendo aumentar discretamente os niveles plasm\xe1ticos de metformina","Aumento discreto dos niveles de metformina. Riesgo m\xednimo de acidosis l\xe1ctica em dosiss usuais e funci\xf3n renal normal","Sem ajuste de dosis necesario em funci\xf3n renal normal. Monitorar se TFG reducida. Combinaci\xf3n generalmente segura","RISCO M\xcdNIMO \u2014 Sem ajuste necesario; monitorar se TFG reducida",B.db,B.bv,B.v])
 B.dTU=new A.d(["pantoprazol","metformina",B.be,"Pantoprazol tem m\xednima inhibici\xf3n de OCT1/OCT2 comparado ao omeprazol. Riesgo de interacci\xf3n com metformina ainda menor","Riesgo muito baixo de aumento dos niveles de metformina","Sem ajuste necesario. Pantoprazol \xe9 o IBP preferido en pacientes com clopidogrel e/ou metformina","RISCO M\xcdNIMO \u2014 Pantoprazol \xe9 o IBP mais seguro com clopidogrel e metformina",B.db,B.bv,B.v])
 B.dOe=new A.d(["valproato","quetiapina",B.u,"Combinaci\xf3n amplamente usada em transtorno bipolar. Valproato pode inibir CYP3A4 modestamente, aumentando os niveles de quetiapina. Sedaci\xf3n aditiva","Sedaci\xf3n excesiva, especialmente ao inicio do tratamiento. QTc prolongado com quetiapina","Monitorar sedaci\xf3n e ECG. Combinaci\xf3n considerada segura em adultos com bipolaridade. Titular lentamente","SEDACI\xd3N AUMENTADA \u2014 Combinaci\xf3n usada em TB; monitorar sedaci\xf3n e ECG; titular lentamente",B.h,B.qW,B.v])
 B.dSi=new A.d(["valproato","amitriptilina",B.u,"Valproato inibe CYP2C9 e CYP2C19, podendo aumentar os niveles de amitriptilina. Ambos t\xeam efectos sedantes e anticolin\xe9rgicos","Toxicidad de amitriptilina: QTc prolongado, efectos anticolin\xe9rgicos aditivos, sedaci\xf3n excesiva","Monitorar ECG e nivel s\xe9rico de amitriptilina. Evitar en ancianos (crit\xe9rios de Beers). Usar dosis bajas de ambos","QT PROLONGADO + TOXICIDADE ANTICOLIN\xc9RGICA \u2014 Monitorar ECG; evitar en ancianos",B.y,B.wM,B.v])
-B.dR0=new A.d(["gabapentina","tramadol",B.n,"Gabapentina potencializa a depresi\xf3n del SNC do tramadol. Tramadol abaixa o limiar convulsivo; gabapentina n\xe3o. Riesgo predominante: sedaci\xf3n e depresi\xf3n respiratoria","Sedaci\xf3n excesiva, depresi\xf3n respiratoria. S\xedndrome serotonin\xe9rgica improbable mas riesgo de sedaci\xf3n \xe9 real","Usar dosis m\xednimas de ambos. Monitorar SpO\u2082. Prescrever naloxona para tramadol","DEPRESI\xd3N RESPIRATORIA \u2014 Usar dosis m\xednimas; monitorar SpO\u2082; ter naloxona disponible",B.h,B.dU,B.v])
+B.dR0=new A.d(["gabapentina","tramadol",B.n,"Gabapentina potencializa a depresi\xf3n del SNC do tramadol. Tramadol abaixa o limiar convulsivo; gabapentina n\xe3o. Riesgo predominante: sedaci\xf3n e depresi\xf3n respiratoria","Sedaci\xf3n excesiva, depresi\xf3n respiratoria. S\xedndrome serotonin\xe9rgica improbable mas riesgo de sedaci\xf3n \xe9 real","Usar dosis m\xednimas de ambos. Monitorar SpO\u2082. Prescrever naloxona para tramadol","DEPRESI\xd3N RESPIRATORIA \u2014 Usar dosis m\xednimas; monitorar SpO\u2082; ter naloxona disponible",B.h,B.dT,B.v])
 B.dVA=new A.d(["topiramato","carbonato de litio",B.u,"Topiramato inibe anidrase carb\xf4nica, podendo alterar o pH urin\xe1rio e a excreci\xf3n renal de l\xedtio. Riesgo de acumulaci\xf3n de l\xedtio ou altera\xe7\xe3o de seus niveles","Toxicidad de l\xedtio por acumulaci\xf3n ou altera\xe7\xe3o impredecible dos niveles s\xe9ricos","Monitorar nivel s\xe9rico de l\xedtio al iniciar ou ajustar topiramato. Manter hidrata\xe7\xe3o e ingest\xe3o de s\xf3dio est\xe1veis","N\xcdVEL DE L\xcdTIO ALTERADO \u2014 Monitorar nivel s\xe9rico de l\xedtio al iniciar topiramato",B.y,B.bv,B.v])
 B.dZZ=new A.d(["lamotrigina","quetiapina",B.u,"Quetiapina pode reduzir os niveles de lamotrigina em 50% por mecanismo n\xe3o completamente elucidado. Combinaci\xf3n usada em bipolaridade mas requer monitoramento","Posible fracaso en el control de crisis epil\xe9pticas ou humor por reducci\xf3n dos niveles de lamotrigina","Monitorar nivel s\xe9rico de lamotrigina e resposta cl\xednica. Aumentar dosis de lamotrigina se necesario. Combinaci\xf3n usada em TB tipo I","EFICACIA REDUCIDA \u2014 Quetiapina pode reduzir lamotrigina 50%; monitorar nivel s\xe9rico e resposta cl\xednica",B.y,B.aH,B.v])
 B.dRq=new A.d(["paracetamol","warfarina",B.u,"Paracetamol em dosiss regulares (\u2265 2g/dia por \u2265 3 dias) pode aumentar o INR en pacientes usando varfarina. Mecanismo discutido: posible inhibici\xf3n de la vitamina K ep\xf3xido redutase por metab\xf3litos do paracetamol","Aumento modesto do INR (generalmente 1,5-2x) com dosiss habituais. Raramente sangrado grave. Ainda assim, clinicamente relevante en pacientes idosos ou com INR j\xe1 elevado","Monitorar INR se uso regular de paracetamol (> 2g/dia por > 3 dias) com varfarina. N\xe3o \xe9 necesario evitar paracetamol (\xe9 o analg\xe9sico de escolha com varfarina), mas monitorar. Evitar dosiss > 2g/dia se INR l\xe1bil","INR AUMENTADO \u2014 Monitorar INR se uso regular de paracetamol > 2g/dia; ainda \xe9 o analg\xe9sico de escolha",B.h,B.aD,B.v])
@@ -170068,9 +170066,9 @@ B.dZx=new A.d(["dabigatrana","claritromicina",B.n,"Claritromicina inibe P-gp; da
 B.dXO=new A.d(["dabigatrana","fluconazol",B.u,"Fluconazol inibe P-gp moderadamente; dabigatrana \xe9 substrato de P-gp \u2014 leve aumento de exposici\xf3n","Riesgo de sangrado aumentado de forma moderada","Monitorar signos de sangrado. Evitar en pacientes com alto riesgo hemorr\xe1gico","MONITORAR SANGRAMENTO",B.y,B.bs,B.W])
 B.dXu=new A.d(["fondaparinux","aspirina",B.u,"Efecto antitromb\xf3tico aditivo: inhibici\xf3n de fator Xa + inhibici\xf3n plaquet\xe1ria por aspirina","Riesgo hemorr\xe1gico moderadamente aumentado","Monitorar signos de sangrado, especialmente GI. Usar dosis m\xednima de AAS","MONITORAR SANGRAMENTO",B.h,B.aD,B.b5])
 B.dId=new A.d(["fluoxetina","tramadol",B.n,"Tramadol inibe recapta\xe7\xe3o de serotonina; fluoxetina \xe9 ISRS potente \u2014 s\xedndrome serotonin\xe9rgica por efecto aditivo; fluoxetina inibe CYP2D6 reduzindo convers\xe3o de tramadol ao metab\xf3lito ativo","S\xedndrome serotonin\xe9rgica (tremor, mioclonia, hipertermia, agita\xe7\xe3o, confus\xe3o)","Evitar combinaci\xf3n. Usar opioide sem efecto serotonin\xe9rgico (morfina, fentanila)","S\xcdNDROME SEROTONIN\xc9RGICA \u2014 Evitar",B.h,B.mg,B.W])
-B.e5v=new A.au([B.fm,B.cf,B.dK,B.aP],t.U)
+B.e5v=new A.au([B.fn,B.cf,B.dK,B.aP],t.U)
 B.dXG=new A.d(["fluoxetina","metadona",B.n,"Fluoxetina inibe CYP2D6 e CYP3A4 elevando nivel de metadona; ambos prolongam QT; riesgo serotonin\xe9rgico aditivo","Toxicidad de metadona: depresi\xf3n respiratoria, prolongaci\xf3n del QTc, s\xedndrome serotonin\xe9rgica","Evitar. Monitorar ECG e nivel de consci\xeancia. Considerar opioide alternativo","METADONA \u2191 + QT + SEROTONINA \u2014 Evitar",B.h,B.e5v,B.W])
-B.e4p=new A.au([B.aP,B.cf,B.fm],t.U)
+B.e4p=new A.au([B.aP,B.cf,B.fn],t.U)
 B.dTp=new A.d(["amitriptilina","fluoxetina",B.n,"Fluoxetina inibe CYP2D6 intensamente \u2014 metabolismo de amitriptilina reducido, nivel aumenta 2-4x; ambos prolongam QT; riesgo serotonin\xe9rgico","Toxicidad de antidepresivo tric\xedclico: arritmias, hipotensi\xf3n, sedaci\xf3n, convulsiones","Evitar. Se necesario, reducir dosis de amitriptilina em 50-75% e monitorar ECG e nivel plasm\xe1tico","AMITRIPTILINA \u2191\u2191 + QT + SEROTONINA \u2014 Evitar",B.h,B.e4p,B.W])
 B.h8=new A.au([B.aP,B.eU],t.U)
 B.e_J=new A.d(["fenobarbital","carbamazepina",B.u,"Ambos s\xe3o inductores de CYP3A4 e CYP2C \u2014 reducci\xf3n m\xfatua dos niveles plasm\xe1ticos","Nivel de ambos reducido; posible perda de efic\xe1cia antiepil\xe9ptica","Monitorar niveles s\xe9ricos e resposta cl\xednica. Ajustar dosiss individualmente","N\xcdVEIS REDUZIDOS M\xdaTUOS \u2014 Monitorar",B.h,B.h8,B.v])
@@ -170270,15 +170268,15 @@ B.aUG=A.a(s(["Micromedex 2024","ANSM 2012","EMA 2014"]),t.s)
 B.dJy=new A.d(["amiodarona","domperidona",B.C,"Ambos prolongam o intervalo QT por bloqueio de canais hERG/IKr; riesgo de soma\xe7\xe3o",u.u_,"Contraindicado. Sustituir domperidona por outra antiem\xe9tica (ex: metoclopramida com cautela, ondansetrona)","CONTRAINDICADO \u2014 QT aditivo: riesgo de Torsades de Pointes fatal",B.h,B.aQ,B.aUG])
 B.dJC=new A.d(["sotalol","domperidona",B.C,"Ambos prolongam o QT por bloqueio de IKr; sotalol prolonga QT dosis-dependente",u.Ap,"Contraindicado. Evitar combinaci\xf3n","CONTRAINDICADO \u2014 QT aditivo com sotalol",B.h,B.aQ,B.W])
 B.dV7=new A.d(["haloperidol","domperidona",B.n,"Ambos bloqueiam receptores D2 e prolongam QT; efecto aditivo no prolongamento","Riesgo de Torsades de Pointes e arritmias ventriculares graves","Evitar combinaci\xf3n. Se necesario, monitorar ECG e pot\xe1ssio s\xe9rico","RISCO DE TORSADES \u2014 QT aditivo: haloperidol + domperidona",B.h,B.aQ,B.W])
-B.fh=A.a(s(["Micromedex 2024","CredibleMeds 2024"]),t.s)
-B.dNg=new A.d(["quetiapina","domperidona",B.n,"Ambos prolongam QT por bloqueio de canais hERG","Riesgo aumentado de Torsades de Pointes","Evitar combinaci\xf3n. Monitorar ECG se uso necesario","RISCO DE TORSADES \u2014 QT aditivo: quetiapina + domperidona",B.y,B.eF,B.fh])
-B.dSs=new A.d(["amiodarona","metoclopramida",B.n,"Metoclopramida prolonga QT moderadamente; amiodarona prolonga significativamente; efecto aditivo","Riesgo aumentado de Torsades de Pointes e arritmias ventriculares","Evitar. Se necesario como antiem\xe9tico, preferir ondansetrona (com cautela) ou dexametasona","RISCO DE TORSADES \u2014 QT aditivo: amiodarona + metoclopramida",B.y,B.aQ,B.fh])
-B.dJB=new A.d(["amiodarona","levosulpirida",B.n,"Levosulpirida bloqueia receptores D2 e prolonga QT; amiodarona prolonga significativamente; efecto aditivo","Riesgo de Torsades de Pointes","Evitar combinaci\xf3n. Usar alternativa para DRGE/gastroparesia","RISCO DE TORSADES \u2014 QT aditivo: amiodarona + levosulpirida",B.y,B.eF,B.fh])
+B.fi=A.a(s(["Micromedex 2024","CredibleMeds 2024"]),t.s)
+B.dNg=new A.d(["quetiapina","domperidona",B.n,"Ambos prolongam QT por bloqueio de canais hERG","Riesgo aumentado de Torsades de Pointes","Evitar combinaci\xf3n. Monitorar ECG se uso necesario","RISCO DE TORSADES \u2014 QT aditivo: quetiapina + domperidona",B.y,B.eF,B.fi])
+B.dSs=new A.d(["amiodarona","metoclopramida",B.n,"Metoclopramida prolonga QT moderadamente; amiodarona prolonga significativamente; efecto aditivo","Riesgo aumentado de Torsades de Pointes e arritmias ventriculares","Evitar. Se necesario como antiem\xe9tico, preferir ondansetrona (com cautela) ou dexametasona","RISCO DE TORSADES \u2014 QT aditivo: amiodarona + metoclopramida",B.y,B.aQ,B.fi])
+B.dJB=new A.d(["amiodarona","levosulpirida",B.n,"Levosulpirida bloqueia receptores D2 e prolonga QT; amiodarona prolonga significativamente; efecto aditivo","Riesgo de Torsades de Pointes","Evitar combinaci\xf3n. Usar alternativa para DRGE/gastroparesia","RISCO DE TORSADES \u2014 QT aditivo: amiodarona + levosulpirida",B.y,B.eF,B.fi])
 B.dXk=new A.d(["haloperidol","metoclopramida",B.n,"Ambos bloqueiam D2 e prolongam QT; riesgo aditivo extrapiramidal e de Torsade","Riesgo de Torsades de Pointes e sintomas extrapiramidais graves","Evitar. Se antiem\xe9tico necesario, usar ondansetrona. Monitorar ECG e electrolitos","RISCO DE TORSADE + EXTRAPIRAMIDAL \u2014 Haloperidol + metoclopramida",B.h,B.aQ,B.W])
-B.dK1=new A.d(["amiodarona","clorpromazina",B.C,"Ambos prolongam QT significativamente por bloqueio hERG; clorpromazina \xe9 antipsic\xf3tico t\xedpico de alta pot\xeancia QT",u.u_,"Contraindicado. Sustituir clorpromazina por antipsic\xf3tico com menor riesgo QT","CONTRAINDICADO \u2014 QT aditivo: riesgo de Torsade fatal",B.h,B.aQ,B.fh])
-B.dQV=new A.d(["sotalol","clorpromazina",B.C,"Ambos prolongam QT por bloqueio de IKr; efecto aditivo grave",u.Ap,"Contraindicado. Sustituir antipsic\xf3tico por op\xe7\xe3o com menor riesgo QT","CONTRAINDICADO \u2014 QT aditivo: sotalol + clorpromazina",B.h,B.aQ,B.fh])
-B.dZ5=new A.d(["amiodarona","risperidona",B.n,"Risperidona prolonga QT de forma dosis-dependente; amiodarona prolonga significativamente; efecto aditivo","Riesgo de Torsades de Pointes e arritmias ventriculares","Evitar combinaci\xf3n. Monitorar ECG e electrolitos. Corregir hipopotasemia/hipomagnesemia","RISCO DE TORSADES \u2014 QT aditivo: amiodarona + risperidona",B.y,B.aQ,B.fh])
-B.dJM=new A.d(["sotalol","risperidona",B.n,"Ambos prolongam QT; sotalol de forma dosis-dependente; risperidona em dosis altas","Riesgo de Torsades de Pointes","Evitar. Monitorar ECG e electrolitos se uso inevit\xe1vel","RISCO DE TORSADES \u2014 QT aditivo: sotalol + risperidona",B.y,B.eF,B.fh])
+B.dK1=new A.d(["amiodarona","clorpromazina",B.C,"Ambos prolongam QT significativamente por bloqueio hERG; clorpromazina \xe9 antipsic\xf3tico t\xedpico de alta pot\xeancia QT",u.u_,"Contraindicado. Sustituir clorpromazina por antipsic\xf3tico com menor riesgo QT","CONTRAINDICADO \u2014 QT aditivo: riesgo de Torsade fatal",B.h,B.aQ,B.fi])
+B.dQV=new A.d(["sotalol","clorpromazina",B.C,"Ambos prolongam QT por bloqueio de IKr; efecto aditivo grave",u.Ap,"Contraindicado. Sustituir antipsic\xf3tico por op\xe7\xe3o com menor riesgo QT","CONTRAINDICADO \u2014 QT aditivo: sotalol + clorpromazina",B.h,B.aQ,B.fi])
+B.dZ5=new A.d(["amiodarona","risperidona",B.n,"Risperidona prolonga QT de forma dosis-dependente; amiodarona prolonga significativamente; efecto aditivo","Riesgo de Torsades de Pointes e arritmias ventriculares","Evitar combinaci\xf3n. Monitorar ECG e electrolitos. Corregir hipopotasemia/hipomagnesemia","RISCO DE TORSADES \u2014 QT aditivo: amiodarona + risperidona",B.y,B.aQ,B.fi])
+B.dJM=new A.d(["sotalol","risperidona",B.n,"Ambos prolongam QT; sotalol de forma dosis-dependente; risperidona em dosis altas","Riesgo de Torsades de Pointes","Evitar. Monitorar ECG e electrolitos se uso inevit\xe1vel","RISCO DE TORSADES \u2014 QT aditivo: sotalol + risperidona",B.y,B.eF,B.fi])
 B.dIL=new A.d(["isrs","duloxetina",B.n,"Duloxetina \xe9 IRSN; combinaci\xf3n com ISRS produz inhibici\xf3n serotonin\xe9rgica aditiva","S\xedndrome serotonin\xe9rgica: agita\xe7\xe3o, hipertermia, tremor, rigidez, instabilidade auton\xf4mica","Evitar combinaci\xf3n. Se necesario trocar, respeitar per\xedodo de lavado de 14 dias entre medicamentos","S\xcdNDROME SEROTONIN\xc9RGICA \u2014 No combinar ISRS com duloxetina",B.h,B.cl,B.W])
 B.bCx=A.a(s(["FDA Label","Micromedex 2024"]),t.s)
 B.dZE=new A.d(["imao","duloxetina",B.C,"IMAO + duloxetina (IRSN): acumulaci\xf3n massivo de serotonina por inhibici\xf3n da MAO + inhibici\xf3n de la recapta\xe7\xe3o","S\xedndrome serotonin\xe9rgica grave, hipercrisis hipertensiva e riesgo de muerte","Contraindicado. Per\xedodo de lavado de 14 dias despu\xe9s de IMAO antes de iniciar duloxetina; 5 dias despu\xe9s de duloxetina antes de IMAO","CONTRAINDICADO \u2014 Crise serotonin\xe9rgica e hipercrisis hipertensiva fatal",B.h,B.wC,B.bCx])
@@ -170292,20 +170290,20 @@ B.dZj=new A.d(["isrs","petidina",B.C,"Petidina inibe recapta\xe7\xe3o de seroton
 B.aUA=A.a(s(["Goodman & Gilman 14\xaa ed.","Micromedex 2024","FDA Label"]),t.s)
 B.e_U=new A.d(["imao","petidina",B.C,"Petidina + IMAO: s\xedndrome serotonin\xe9rgica cl\xe1ssica e hipercrisis hipertensiva",u.eC,"Contraindicado absolutamente. Usar morfina como alternativa com cautela","CONTRAINDICADO \u2014 S\xedndrome serotonin\xe9rgica fatal cl\xe1ssica",B.h,B.wC,B.aUA])
 B.bpU=A.a(s(["FDA Black Box Warning 2016","Micromedex 2024","UpToDate 2024"]),t.s)
-B.dPt=new A.d(["benzodiazep\xednico","opioide",B.n,"Depress\xe3o aditiva do SNC e do centro respirat\xf3rio; benzodiazep\xednico potencializa receptores GABA enquanto opioide age em receptores \u03bc","Depresi\xf3n respiratoria grave, apnea e riesgo de \xf3bito","Evitar combinaci\xf3n cuando sea posible. Se necesario, usar dosis m\xednimas, monitorar oximetria e ter naloxona disponible","DEPRESI\xd3N RESPIRATORIA FATAL \u2014 FDA black box warning",B.h,B.dU,B.bpU])
+B.dPt=new A.d(["benzodiazep\xednico","opioide",B.n,"Depress\xe3o aditiva do SNC e do centro respirat\xf3rio; benzodiazep\xednico potencializa receptores GABA enquanto opioide age em receptores \u03bc","Depresi\xf3n respiratoria grave, apnea e riesgo de \xf3bito","Evitar combinaci\xf3n cuando sea posible. Se necesario, usar dosis m\xednimas, monitorar oximetria e ter naloxona disponible","DEPRESI\xd3N RESPIRATORIA FATAL \u2014 FDA black box warning",B.h,B.dT,B.bpU])
 B.Be=A.a(s(["FDA Black Box Warning","Micromedex 2024"]),t.s)
-B.dJF=new A.d(["benzodiazep\xednico","morfina",B.n,"Benzodiazep\xednico potencializa efecto depressor respirat\xf3rio da morfina via GABA + receptores \u03bc","Depresi\xf3n respiratoria grave e apnea","Usar dosis m\xednimas. Monitorar oximetria. Naloxona disponible. Evitar en pacientes sem monitoramento","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Benzodiazep\xednico + morfina",B.h,B.dU,B.Be])
-B.dQq=new A.d(["benzodiazep\xednico","fentanila",B.n,"Combinaci\xf3n sin\xe9rgica na depresi\xf3n del SNC; fentanila tem janela terap\xe9utica estreita","Depresi\xf3n respiratoria grave, apnea e parada cardiorrespirat\xf3ria","Monitora\xe7\xe3o rigurosa em UTI/cirurgia. Naloxona disponible. Titular dosis cuidadosamente","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Benzodiazep\xednico + fentanila",B.h,B.dU,B.Be])
+B.dJF=new A.d(["benzodiazep\xednico","morfina",B.n,"Benzodiazep\xednico potencializa efecto depressor respirat\xf3rio da morfina via GABA + receptores \u03bc","Depresi\xf3n respiratoria grave e apnea","Usar dosis m\xednimas. Monitorar oximetria. Naloxona disponible. Evitar en pacientes sem monitoramento","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Benzodiazep\xednico + morfina",B.h,B.dT,B.Be])
+B.dQq=new A.d(["benzodiazep\xednico","fentanila",B.n,"Combinaci\xf3n sin\xe9rgica na depresi\xf3n del SNC; fentanila tem janela terap\xe9utica estreita","Depresi\xf3n respiratoria grave, apnea e parada cardiorrespirat\xf3ria","Monitora\xe7\xe3o rigurosa em UTI/cirurgia. Naloxona disponible. Titular dosis cuidadosamente","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Benzodiazep\xednico + fentanila",B.h,B.dT,B.Be])
 B.e4C=new A.au([B.dK,B.fP],t.U)
 B.dTr=new A.d(["benzodiazep\xednico","tramadol",B.n,"Depress\xe3o aditiva do SNC; tramadol tamb\xe9m reduz limiar convulsivo","Depresi\xf3n respiratoria e paradoxalmente convulsiones em alguns pacientes","Evitar. Se necesario, usar dosis m\xednimas com monitoramento","DEPRESI\xd3N RESPIRATORIA + RISCO DE CONVULS\xc3O \u2014 Benzodiazep\xednico + tramadol",B.y,B.e4C,B.W])
 B.bPn=A.a(s(["FDA Drug Safety Communication 2019","Micromedex 2024","UpToDate 2024"]),t.s)
-B.dK_=new A.d(["gabapentina","opioide",B.n,"Pregabalina/gabapentina potencializam depresi\xf3n del SNC e respirat\xf3ria dos opioides por mecanismo sin\xe9rgico no canal de c\xe1lcio \u03b12\u03b4","Depresi\xf3n respiratoria grave, especialmente com dosis altas ou en ancianos","FDA emitiu aviso. Usar dosis m\xednimas, monitorar oximetria. Evitar em DPOC e apnea do sono","DEPRESI\xd3N RESPIRATORIA \u2014 FDA warning: gabapentinoides + opioides",B.h,B.dU,B.bPn])
+B.dK_=new A.d(["gabapentina","opioide",B.n,"Pregabalina/gabapentina potencializam depresi\xf3n del SNC e respirat\xf3ria dos opioides por mecanismo sin\xe9rgico no canal de c\xe1lcio \u03b12\u03b4","Depresi\xf3n respiratoria grave, especialmente com dosis altas ou en ancianos","FDA emitiu aviso. Usar dosis m\xednimas, monitorar oximetria. Evitar em DPOC e apnea do sono","DEPRESI\xd3N RESPIRATORIA \u2014 FDA warning: gabapentinoides + opioides",B.h,B.dT,B.bPn])
 B.bek=A.a(s(["FDA Drug Safety Communication 2019","Micromedex 2024"]),t.s)
-B.dVR=new A.d(["gabapentina","morfina",B.n,"Gabapentina aumenta biodisponibilidad da morfina e potencializa depresi\xf3n respiratoria","Depresi\xf3n respiratoria grave com riesgo de \xf3bito","Usar com cautela. Dosis m\xednimas. Monitorar oximetria continuamente","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Gabapentina + morfina",B.h,B.dU,B.bek])
+B.dVR=new A.d(["gabapentina","morfina",B.n,"Gabapentina aumenta biodisponibilidad da morfina e potencializa depresi\xf3n respiratoria","Depresi\xf3n respiratoria grave com riesgo de \xf3bito","Usar com cautela. Dosis m\xednimas. Monitorar oximetria continuamente","DEPRESI\xd3N RESPIRATORIA GRAVE \u2014 Gabapentina + morfina",B.h,B.dT,B.bek])
 B.bFw=A.a(s(["FDA 2019","Micromedex 2024"]),t.s)
-B.e1z=new A.d(["gabapentina","benzodiazep\xednico",B.n,"Tripla depresi\xf3n del SNC: gabapentin\xf3ide + benzodiazep\xednico, frecuentemente com opioide associado","Depresi\xf3n respiratoria e sedaci\xf3n excesiva","Evitar tripla combinaci\xf3n. Se necesario, monitorar oximetria e reducir dosiss","DEPRESI\xd3N RESPIRATORIA \u2014 Gabapentina + benzodiazep\xednico (alto riesgo)",B.y,B.dU,B.bFw])
+B.e1z=new A.d(["gabapentina","benzodiazep\xednico",B.n,"Tripla depresi\xf3n del SNC: gabapentin\xf3ide + benzodiazep\xednico, frecuentemente com opioide associado","Depresi\xf3n respiratoria e sedaci\xf3n excesiva","Evitar tripla combinaci\xf3n. Se necesario, monitorar oximetria e reducir dosiss","DEPRESI\xd3N RESPIRATORIA \u2014 Gabapentina + benzodiazep\xednico (alto riesgo)",B.y,B.dT,B.bFw])
 B.dXt=new A.d(["benzodiazep\xednico","zolpidem",B.n,"Depress\xe3o aditiva do SNC; ambos atuam em receptores GABA-A","Sedaci\xf3n excesiva, depresi\xf3n respiratoria, quedas e amn\xe9sia","Evitar combinaci\xf3n. Se necesario em contexto hospitalar, monitorar continuamente","DEPRESI\xd3N DEL SNC GRAVE \u2014 Benzodiazep\xednico + zolpidem",B.h,B.j8,B.W])
-B.dLe=new A.d(["opioide","zolpidem",B.n,"Zolpidem + opioide: depress\xe3o sin\xe9rgica do SNC e respirat\xf3ria","Depresi\xf3n respiratoria, sedaci\xf3n excesiva e \xf3bito","Evitar combinaci\xf3n. Si inevitable, usar dosis m\xednimas com monitoramento","DEPRESI\xd3N RESPIRATORIA \u2014 Zolpidem + opioide",B.h,B.dU,B.Be])
+B.dLe=new A.d(["opioide","zolpidem",B.n,"Zolpidem + opioide: depress\xe3o sin\xe9rgica do SNC e respirat\xf3ria","Depresi\xf3n respiratoria, sedaci\xf3n excesiva e \xf3bito","Evitar combinaci\xf3n. Si inevitable, usar dosis m\xednimas com monitoramento","DEPRESI\xd3N RESPIRATORIA \u2014 Zolpidem + opioide",B.h,B.dT,B.Be])
 B.bSS=A.a(s(["RALES Trial","Goodman & Gilman 14\xaa ed.","Micromedex 2024"]),t.s)
 B.dPZ=new A.d(["enalapril","espironolactona",B.n,"IECA reduz angiotensina II \u2192 reduz aldosterona \u2192 ret\xe9m K; espironolactona antagoniza aldosterona diretamente; efecto aditivo hipercal\xeamico","Hiperpotasemia grave (K+ >6,5 mEq/L), arritmias e paro card\xedaco","Monitorar pot\xe1ssio s\xe9rico e creatinina. Iniciar espironolactona em dosis baja (25 mg/dia). Evitar suplementa\xe7\xe3o de K+","HIPERPOTASEMIA GRAVE \u2014 IECA + espironolactona; monitorar K+ e creatinina",B.h,B.j7,B.bSS])
 B.dKK=new A.d(["losartana","espironolactona",B.n,"ARA II reduz aldosterona \u2192 ret\xe9m K; espironolactona antagoniza aldosterona; efecto hipercal\xeamico aditivo","Hiperpotasemia grave com riesgo de arritmia e paro card\xedaco","Monitorar K+ e funci\xf3n renal regularmente. Dosis inicial baixa de espironolactona. Evitar K+ suplementar","HIPERPOTASEMIA GRAVE \u2014 ARA II + espironolactona; monitorar K+",B.h,B.j7,B.bf])
@@ -170384,7 +170382,7 @@ B.b5R=A.a(s(["FDA Drug Safety 2010","CredibleMeds 2024","Micromedex 2024","Serot
 B.dKn=new A.d(["dextrometorfano","isrs",B.C,"Dextrometorfano \xe9 agonista fraco de receptores serotonin\xe9rgicos e inibe recapta\xe7\xe3o de serotonina; ISRSs potencializam massivamente a atividade serotonin\xe9rgica central \u2014 riesgo m\xe1ximo de s\xedndrome serotonin\xe9rgica","S\xedndrome serotonin\xe9rgica: agita\xe7\xe3o, hipertermia, tremores, mioclonias, diarreia, taquicardia, diaforese, rigidez muscular \u2014 pode evoluir para rabdomi\xf3lisis, CID e \xf3bito","CONTRAINDICADO. Evitar qualquer antitussivo com dextrometorfano en pacientes em uso de ISRSs (fluoxetina, sertralina, paroxetina, escitalopram, fluvoxamina). Sustituir por antitussivo n\xe3o serotonin\xe9rgico (ex: levodropropizina, butamirato)","CONTRAINDICADO \u2014 S\xedndrome serotonin\xe9rgica: dextrometorfano + ISRS",B.h,B.cl,B.b5R])
 B.b4P=A.a(s(["FDA Drug Safety 2010","CredibleMeds 2024","Sternbach 1991 \u2014 Serotonin Syndrome","Boyer & Shannon NEJM 2005"]),t.s)
 B.dQy=new A.d(["dextrometorfano","imao",B.C,"IMAOs inibem degrada\xe7\xe3o de serotonina e monoaminas; dextrometorfano inibe recapta\xe7\xe3o de serotonina e \xe9 agonista sigma-1 \u2014 combinaci\xf3n resulta em acumulaci\xf3n massivo de serotonina no SNC","S\xedndrome serotonin\xe9rgica grave/fulminante: hipertermia >41\xb0C, hipertens\xe3o, convulsiones, coma \u2014 riesgo de muerte","CONTRAINDICADO de forma absoluta. Aguardar per\xedodo de lavado completo do IMAO (\u226514 dias para irrevers\xedveis fenelzina/tranilcipromina; \u226524h para moclobemida) antes de qualquer antitussivo com dextrometorfano","CONTRAINDICADO ABSOLUTO \u2014 S\xedndrome serotonin\xe9rgica fatal: dextrometorfano + IMAO",B.h,B.cl,B.b4P])
-B.dWJ=new A.d(["dextrometorfano","tramadol",B.C,"Tramadol inibe recapta\xe7\xe3o de serotonina e noradrenalina, \xe9 agonista \xb5 fraco e metabolizado pelo CYP2D6 (mesmo que dextrometorfano) \u2014 duplo mecanismo serotonin\xe9rgico + competi\xe7\xe3o CYP2D6 eleva niveles de ambos","S\xedndrome serotonin\xe9rgica; aumento de niveles plasm\xe1ticos de tramadol e dextrometorfano por inhibici\xf3n competitiva do CYP2D6","Contraindicado. Sustituir antitussivo por levodropropizina ou butamirato en pacientes usando tramadol","CONTRAINDICADO \u2014 S\xedndrome serotonin\xe9rgica + competi\xe7\xe3o CYP2D6: dextrometorfano + tramadol",B.y,B.mg,B.fh])
+B.dWJ=new A.d(["dextrometorfano","tramadol",B.C,"Tramadol inibe recapta\xe7\xe3o de serotonina e noradrenalina, \xe9 agonista \xb5 fraco e metabolizado pelo CYP2D6 (mesmo que dextrometorfano) \u2014 duplo mecanismo serotonin\xe9rgico + competi\xe7\xe3o CYP2D6 eleva niveles de ambos","S\xedndrome serotonin\xe9rgica; aumento de niveles plasm\xe1ticos de tramadol e dextrometorfano por inhibici\xf3n competitiva do CYP2D6","Contraindicado. Sustituir antitussivo por levodropropizina ou butamirato en pacientes usando tramadol","CONTRAINDICADO \u2014 S\xedndrome serotonin\xe9rgica + competi\xe7\xe3o CYP2D6: dextrometorfano + tramadol",B.y,B.mg,B.fi])
 B.b_7=A.a(s(["FDA Drug Safety 2010","Micromedex 2024","CredibleMeds 2024"]),t.s)
 B.dWn=new A.d(["dextrometorfano","duloxetina",B.C,"Duloxetina \xe9 ISRN e inhibidor potente do CYP2D6 \u2014 eleva marcadamente os niveles de dextrometorfano (substrato CYP2D6) e potencializa atividade serotonin\xe9rgica","S\xedndrome serotonin\xe9rgica; aumento de 3\u20138\xd7 nos niveles plasm\xe1ticos de dextrometorfano por inhibici\xf3n do CYP2D6","Contraindicado. Usar antitussivo n\xe3o serotonin\xe9rgico e n\xe3o metabolizado pelo CYP2D6 (levodropropizina, butamirato)","CONTRAINDICADO \u2014 S\xedndrome serotonin\xe9rgica + inhibici\xf3n CYP2D6: dextrometorfano + duloxetina",B.h,B.mg,B.b_7])
 B.b5U=A.a(s(["Micromedex 2024","CYP2D6 Inhibitor Interactions \u2014 FDA"]),t.s)
@@ -170393,28 +170391,28 @@ B.aXc=A.a(s(["FDA Drug Safety 2010","CredibleMeds 2024","Micromedex 2024"]),t.s)
 B.dLl=new A.d(["dextrometorfano","fluoxetina",B.C,"Fluoxetina \xe9 inhibidor potente do CYP2D6 e ISRS \u2014 bloqueia o metabolismo del dextrometorfano (substrato CYP2D6) e soma atividade serotonin\xe9rgica \u2014 duplo mecanismo de toxicidad","S\xedndrome serotonin\xe9rgica; elevaci\xf3n dr\xe1stica dos niveles de dextrometorfano (\u21915\u201310\xd7) com riesgo de toxicidad SNC","Contraindicado. Per\xedodo de lavado de fluoxetina exige \u22655 semanas (vida media longa). Sustituir antitussivo por levodropropizina ou butamirato","CONTRAINDICADO \u2014 S\xedndrome serotonin\xe9rgica + inhibici\xf3n CYP2D6 severa: dextrometorfano + fluoxetina",B.h,B.mg,B.aXc])
 B.b71=A.a(s(["FDA Drug Safety 2010","CredibleMeds 2024"]),t.s)
 B.dRX=new A.d(["dextrometorfano","paroxetina",B.C,"Paroxetina \xe9 o inhibidor mais potente do CYP2D6 entre os ISRSs \u2014 eleva os niveles de dextrometorfano em at\xe9 9\xd7 e soma atividade serotonin\xe9rgica","S\xedndrome serotonin\xe9rgica grave; toxicidad pelo dextrometorfano com efectos dissociativos e alucinat\xf3rios","Contraindicado. Sustituir antitussivo por levodropropizina ou butamirato","CONTRAINDICADO \u2014 CYP2D6 + serotonina: dextrometorfano + paroxetina",B.h,B.mg,B.b71])
-B.dUR=new A.d(["dextrometorfano","codeina",B.u,"Dextrometorfano e code\xedna competem pelo CYP2D6 para metaboliza\xe7\xe3o; em metabolizadores lentos pode haver acumulaci\xf3n de ambos; riesgo adicional de depresi\xf3n respiratoria em combina\xe7\xf5es com opioides","Sedaci\xf3n excesiva, depresi\xf3n respiratoria em polimorfismos CYP2D6; efecto antitussivo duplicado sem benef\xedcio adicional","Evitar uso concomitante. N\xe3o h\xe1 benef\xedcio cl\xednico em combinar dois antitussivos. Escolher apenas um","EVITAR \u2014 Depresi\xf3n respiratoria aditiva + competi\xe7\xe3o CYP2D6: dextrometorfano + code\xedna",B.y,B.Dk,B.fh])
+B.dUR=new A.d(["dextrometorfano","codeina",B.u,"Dextrometorfano e code\xedna competem pelo CYP2D6 para metaboliza\xe7\xe3o; em metabolizadores lentos pode haver acumulaci\xf3n de ambos; riesgo adicional de depresi\xf3n respiratoria em combina\xe7\xf5es com opioides","Sedaci\xf3n excesiva, depresi\xf3n respiratoria em polimorfismos CYP2D6; efecto antitussivo duplicado sem benef\xedcio adicional","Evitar uso concomitante. N\xe3o h\xe1 benef\xedcio cl\xednico em combinar dois antitussivos. Escolher apenas um","EVITAR \u2014 Depresi\xf3n respiratoria aditiva + competi\xe7\xe3o CYP2D6: dextrometorfano + code\xedna",B.y,B.Dk,B.fi])
 B.b__=A.a(s(["FDA Drug Safety","CredibleMeds 2024","Micromedex 2024","Gillman PK 2005 \u2014 MAOIs and sympathomimetics"]),t.s)
 B.dNK=new A.d(["pseudoefedrina","imao",B.C,"IMAOs inibem a MAO-A e MAO-B respons\xe1veis pela degrada\xe7\xe3o de catecolaminas; pseudoefedrina libera noradrenalina e adrenalina nas termina\xe7\xf5es simp\xe1ticas \u2014 acumulaci\xf3n massivo de catecolaminas causa crisis adren\xe9rgica","Crisis hipertensiva grave (PA sist\xf3lica >220 mmHg), encefalopat\xeda hipertensiva, AVC hemorr\xe1gico, infarto agudo do mioc\xe1rdio, morte","CONTRAINDICADO de forma absoluta. Aguardar \u226514 dias despu\xe9s de suspensi\xf3n de IMAO irreversible (fenelzina, tranilcipromina) e \u226524h despu\xe9s de moclobemida antes de usar pseudoefedrina ou qualquer descongestionante simpatomim\xe9tico","CONTRAINDICADO ABSOLUTO \u2014 Crisis hipertensiva fatal: pseudoefedrina + IMAO",B.h,B.c3,B.b__])
 B.aPB=A.a(s(["Micromedex 2024","CredibleMeds 2024","Drugs.com Interactions 2024"]),t.s)
 B.dNX=new A.d(["pseudoefedrina","betabloqueador",B.u,"Pseudoefedrina ativa receptores \u03b1-adren\xe9rgicos (vasoconstri\xe7\xe3o) e \u03b2-adren\xe9rgicos (taquicardia, broncodilata\xe7\xe3o); betabloqueadores bloqueiam receptores \u03b2 \u2014 efecto \u03b1 fica desimpedido, resultando em vasoconstri\xe7\xe3o sem taquicardia reflexa (resposta \u03b2 bloqueada) \u2014 pode elevar PA","Hipertens\xe3o paradoxal; bradicardia reflexa mediada por barorreceptores (sem compensa\xe7\xe3o \u03b2); broncoespasmo em betabloqueadores n\xe3o seletivos (propranolol, atenolol, carvedilol) \u2014 riesgo aumentado em asm\xe1ticos/DPOC","Evitar uso concomitante. Se necesario: preferir betabloqueadores \u03b21-seletivos (metoprolol, bisoprolol), monitorar PA e FC. Evitar en pacientes com asma/DPOC se betabloqueador n\xe3o for seletivo","CUIDADO \u2014 Hipertens\xe3o paradoxal + broncoespasmo potencial: pseudoefedrina + betabloqueador",B.h,B.c3,B.aPB])
-B.dZP=new A.d(["pseudoefedrina","metoprolol",B.u,"Metoprolol bloqueia selectivamente receptores \u03b21-adren\xe9rgicos card\xedacos; pseudoefedrina ativa tanto \u03b2 quanto \u03b1; a seletividade \u03b21 do metoprolol reduz parcialmente o antagonismo \u2014 efecto vasoconstritor \u03b1 permanece","Elevaci\xf3n da PA (efecto \u03b1 desimpedido); reducci\xf3n de la taquicardia reflexa esperada; menor riesgo de broncoespasmo que com betabloqueadores n\xe3o seletivos","Monitorar PA e FC durante uso concomitante. Preferir descongestionante alternativo cuando sea posible. Evitar em crises hipertensivas n\xe3o controladas","ATEN\xc7\xc3O \u2014 Elevaci\xf3n de PA: pseudoefedrina + metoprolol",B.y,B.c3,B.fh])
+B.dZP=new A.d(["pseudoefedrina","metoprolol",B.u,"Metoprolol bloqueia selectivamente receptores \u03b21-adren\xe9rgicos card\xedacos; pseudoefedrina ativa tanto \u03b2 quanto \u03b1; a seletividade \u03b21 do metoprolol reduz parcialmente o antagonismo \u2014 efecto vasoconstritor \u03b1 permanece","Elevaci\xf3n da PA (efecto \u03b1 desimpedido); reducci\xf3n de la taquicardia reflexa esperada; menor riesgo de broncoespasmo que com betabloqueadores n\xe3o seletivos","Monitorar PA e FC durante uso concomitante. Preferir descongestionante alternativo cuando sea posible. Evitar em crises hipertensivas n\xe3o controladas","ATEN\xc7\xc3O \u2014 Elevaci\xf3n de PA: pseudoefedrina + metoprolol",B.y,B.c3,B.fi])
 B.bSF=A.a(s(["Micromedex 2024","CredibleMeds 2024","JNC 8 Guidelines"]),t.s)
 B.dXM=new A.d(["pseudoefedrina","enalapril",B.u,"Pseudoefedrina eleva a PA por vasoconstri\xe7\xe3o \u03b1-adren\xe9rgica; IECAs como enalapril s\xe3o anti-hipertensivos \u2014 antagonismo farmacol\xf3gico direto na regula\xe7\xe3o press\xf3rica","Reducci\xf3n de la eficacia anti-hipertensiva do enalapril; elevaci\xf3n transit\xf3ria da PA; riesgo aumentado em hipertensos","Evitar uso prolongado de descongestionantes simpatomim\xedticos em hipertensos. Usar apenas por \u22643 dias, monitorar PA diariamente. Preferir lavagem nasal salina ou corticoide nasal t\xf3pico como alternativas","ATEN\xc7\xc3O \u2014 Antagonismo anti-hipertensivo: pseudoefedrina + enalapril",B.h,B.c3,B.bSF])
 B.by4=A.a(s(["Micromedex 2024","Drugs.com 2024"]),t.s)
 B.dL_=new A.d(["pseudoefedrina","losartana",B.u,"Pseudoefedrina eleva PA por ativa\xe7\xe3o adren\xe9rgica; losartana bloqueia receptor AT1 da angiotensina II \u2014 antagonismo no controle press\xf3rico","Atenua\xe7\xe3o do efecto antihipertensivo da losartana; elevaci\xf3n da PA especialmente em picos de absorci\xf3n da pseudoefedrina","Evitar uso em hipertensos n\xe3o controlados. Limitar a \u22643 dias de uso e monitorar PA. Preferir alternativas n\xe3o sist\xeamicas para congest\xe3o nasal","ATEN\xc7\xc3O \u2014 Atenua\xe7\xe3o de anti-hipertensivo: pseudoefedrina + losartana",B.y,B.c3,B.by4])
-B.e1e=new A.d(["pseudoefedrina","digoxina",B.n,"Pseudoefedrina aumenta a automaticidade do n\xf3 sinusal e sensibiliza o mioc\xe1rdio \xe0 estimula\xe7\xe3o adren\xe9rgica; digoxina inibe Na+/K+-ATPase e aumenta t\xf4nus vagal \u2014 combinaci\xf3n favorece arritmias","Arritmias card\xedacas (taquicardia supraventricular, fibrilaci\xf3n auricular, extrass\xedstoles ventriculares) en pacientes digitalizados","Evitar uso concomitante. Se necesario, monitorar ECG e niveles de digoxina. Usar descongestionante alternativo (spray nasal salino, corticoide intranasal)","CUIDADO \u2014 Arritmias card\xedacas: pseudoefedrina + digoxina",B.y,B.jT,B.fh])
-B.dOj=new A.d(["pseudoefedrina","amitriptilina",B.n,"Antidepresivos tric\xedclicos bloqueiam o transportador de noradrenalina (NET) e bloqueiam receptores \u03b11-adren\xe9rgicos \u2014 inibem o mecanismo de a\xe7\xe3o da pseudoefedrina mas tamb\xe9m aumentam a suscetibilidade cardiovascular a arritmias","Hipertens\xe3o paradoxal; taquicardia; arritmias; potenciaci\xf3n de efectos adversos cardiovasculares de ambos os f\xe1rmacos","Evitar combinaci\xf3n. Tric\xedclicos + simpaticomim\xe9ticos s\xe3o combinaci\xf3n cl\xe1ssica de riesgo cardiovascular. Usar descongestionante t\xf3pico nasal como alternativa","CUIDADO \u2014 Arritmias e hipertens\xe3o: pseudoefedrina + amitriptilina",B.y,B.dL,B.fh])
+B.e1e=new A.d(["pseudoefedrina","digoxina",B.n,"Pseudoefedrina aumenta a automaticidade do n\xf3 sinusal e sensibiliza o mioc\xe1rdio \xe0 estimula\xe7\xe3o adren\xe9rgica; digoxina inibe Na+/K+-ATPase e aumenta t\xf4nus vagal \u2014 combinaci\xf3n favorece arritmias","Arritmias card\xedacas (taquicardia supraventricular, fibrilaci\xf3n auricular, extrass\xedstoles ventriculares) en pacientes digitalizados","Evitar uso concomitante. Se necesario, monitorar ECG e niveles de digoxina. Usar descongestionante alternativo (spray nasal salino, corticoide intranasal)","CUIDADO \u2014 Arritmias card\xedacas: pseudoefedrina + digoxina",B.y,B.jT,B.fi])
+B.dOj=new A.d(["pseudoefedrina","amitriptilina",B.n,"Antidepresivos tric\xedclicos bloqueiam o transportador de noradrenalina (NET) e bloqueiam receptores \u03b11-adren\xe9rgicos \u2014 inibem o mecanismo de a\xe7\xe3o da pseudoefedrina mas tamb\xe9m aumentam a suscetibilidade cardiovascular a arritmias","Hipertens\xe3o paradoxal; taquicardia; arritmias; potenciaci\xf3n de efectos adversos cardiovasculares de ambos os f\xe1rmacos","Evitar combinaci\xf3n. Tric\xedclicos + simpaticomim\xe9ticos s\xe3o combinaci\xf3n cl\xe1ssica de riesgo cardiovascular. Usar descongestionante t\xf3pico nasal como alternativa","CUIDADO \u2014 Arritmias e hipertens\xe3o: pseudoefedrina + amitriptilina",B.y,B.dL,B.fi])
 B.Mo=A.a(s(["FDA Drug Label Montelukast 2024","Micromedex 2024","CredibleMeds 2024"]),t.s)
 B.dWg=new A.d(["montelukast","rifampicina",B.n,"Rifampicina \xe9 inductor potente do CYP3A4 e CYP2C8/2C9 \u2014 acelera o metabolismo del montelukast (substrato CYP3A4/2C8), reduzindo sua biodisponibilidad oral","Reducci\xf3n de 40\u201360% nos niveles plasm\xe1ticos de montelukast; fracaso terap\xe9utico no controle da asma ou rinite al\xe9rgica; riesgo de exacerba\xe7\xe3o broncosp\xe1stica por perda de efecto antiinflamat\xf3rio","Monitorar efic\xe1cia cl\xednica do montelukast durante uso de rifampicina. Considerar aumento de dosis ou sustituci\xf3n por corticoide inalat\xf3rio como principal terapia anti-inflamat\xf3ria enquanto rifampicina estiver em uso","ALTO RIESGO DE FRACASO TERAP\xc9UTICO \u2014 Inducci\xf3n CYP: montelukast + rifampicina",B.h,B.aH,B.Mo])
 B.bDg=A.a(s(["Micromedex 2024","CredibleMeds 2024","Drug Interactions in Epilepsy \u2014 Lancet Neurology 2022"]),t.s)
 B.dKt=new A.d(["montelukast","fenitoina",B.u,"Fenito\xedna \xe9 inductor moderado/forte do CYP3A4 e CYP2C8 \u2014 aumenta o clearance do montelukast e reduz seus niveles plasm\xe1ticos em 40\u201350%","Reducci\xf3n de la eficacia do montelukast; posible piora do controle da asma ou rinite; perda de protecci\xf3n contra broncospasmo induzido por exerc\xedcio","Monitorar controle da asma clinicamente (frecuencia de broncodilatadores de resgate, sintomas noturnos). Considerar corticoide inalat\xf3rio como terapia principal. Se montelukast for mantido, avaliar aumento de dosis","ATEN\xc7\xc3O \u2014 Reducci\xf3n de efic\xe1cia: montelukast + fenito\xedna",B.y,B.aH,B.bDg])
-B.dSb=new A.d(["montelukast","carbamazepina",B.u,"Carbamazepina \xe9 inductor potente do CYP3A4 e moderado do CYP2C8 \u2014 reduz significativamente os niveles plasm\xe1ticos de montelukast por aumento do clearance hep\xe1tico","Reducci\xf3n de la eficacia antiinflamat\xf3ria e broncodilatadora indireta do montelukast; posible fracaso en el control de asma al\xe9rgica e rinite","Monitorar controle da asma en pacientes epil\xe9pticos usando carbamazepina + montelukast. Considerar corticoide inalat\xf3rio como alternativa mais robusta","ATEN\xc7\xc3O \u2014 Inducci\xf3n CYP3A4: montelukast + carbamazepina",B.y,B.aH,B.fh])
+B.dSb=new A.d(["montelukast","carbamazepina",B.u,"Carbamazepina \xe9 inductor potente do CYP3A4 e moderado do CYP2C8 \u2014 reduz significativamente os niveles plasm\xe1ticos de montelukast por aumento do clearance hep\xe1tico","Reducci\xf3n de la eficacia antiinflamat\xf3ria e broncodilatadora indireta do montelukast; posible fracaso en el control de asma al\xe9rgica e rinite","Monitorar controle da asma en pacientes epil\xe9pticos usando carbamazepina + montelukast. Considerar corticoide inalat\xf3rio como alternativa mais robusta","ATEN\xc7\xc3O \u2014 Inducci\xf3n CYP3A4: montelukast + carbamazepina",B.y,B.aH,B.fi])
 B.e_k=new A.d(["montelukast","fluconazol",B.u,"Fluconazol inibe CYP2C9 e CYP3A4 \u2014 pode aumentar os niveles plasm\xe1ticos de montelukast por reducci\xf3n del clearance","Aumento dos niveles de montelukast com potencial aumento de reacciones adversas neuropsiqui\xe1tricas (ansiedade, dist\xfarbios do sono, comportamento)","Monitorar s\xedntomas neuropsiqui\xe1tricos durante uso concomitante. Suspender montelukast se surgirem altera\xe7\xf5es de comportamento ou humor","ATEN\xc7\xc3O \u2014 Aumento de montelukast: montelukast + fluconazol",B.db,B.bv,B.de])
 B.dP_=new A.d(["montelukast","gemfibrozila",B.u,"Gemfibrozila inibe potentemente o CYP2C8 \u2014 principal enzima respons\xe1vel pelo metabolismo del montelukast; pode elevar seus niveles plasm\xe1ticos em 4\u20135\xd7","Aumento significativo nos niveles de montelukast; riesgo amplificado de efectos adversos neuropsiqui\xe1tricos (ins\xf4nia, agita\xe7\xe3o, depress\xe3o, pensamentos suicidas)","Evitar combinaci\xf3n sempre que posible. Si es necesaria, monitorar de perto sintomas neuropsiqui\xe1tricos. Considerar alternativa a gemfibrozila (fenofibrato tem menor inhibici\xf3n del CYP2C8)","CUIDADO \u2014 Toxicidade neuropsiqui\xe1trica: montelukast + gemfibrozila",B.h,B.bv,B.Mo])
 B.bJc=A.a(s(["Beers Criteria AGS 2023","Micromedex 2024","CredibleMeds 2024"]),t.s)
 B.dXX=new A.d(["cetirizina","benzodiazep\xednico",B.u,"Cetirizina, apesar de ser anti-histam\xednico de 2\xaa gera\xe7\xe3o com menor penetra\xe7\xe3o no SNC que os de 1\xaa gera\xe7\xe3o, pode causar sedaci\xf3n especialmente em dosis altas ou en ancianos; benzodiazep\xednicos s\xe3o depressores do SNC \u2014 soma\xe7\xe3o de efectos sedantes","Sedaci\xf3n excesiva; comprometimento psicomotor; riesgo de quedas (especialmente en ancianos); sonol\xeancia diurna; d\xe9ficit cognitivo agudo","Usar com cautela. Preferir cetirizina \xe0 noite. Reducir dosis de benzodiazep\xednico se sedaci\xf3n for excessiva. Evitar en ancianos (crit\xe9rios de Beers). Alertar al paciente sobre n\xe3o dirigir ou operar m\xe1quinas","CUIDADO \u2014 Sedaci\xf3n aditiva: cetirizina + benzodiazep\xednico",B.h,B.eu,B.bJc])
-B.dNz=new A.d(["cetirizina","opioide",B.u,"Cetirizina tem propriedades anticolin\xe9rgicas leves e sedativas \u2014 some com efectos sedantes e depressores respirat\xf3rios dos opioides","Sedaci\xf3n excesiva; depresi\xf3n respiratoria potencializada; constipa\xe7\xe3o aumentada (efectos anticolin\xe9rgicos aditivos); riesgo de reten\xe7\xe3o urin\xe1ria","Monitorar estado de consci\xeancia e padr\xe3o respirat\xf3rio. Preferir anti-histam\xednico com menor a\xe7\xe3o sedativa ou anticolin\xe9rgica. Atenci\xf3n redobrada en ancianos e pacientes com DPOC/apnea do sono","ATEN\xc7\xc3O \u2014 Depresi\xf3n del SNC aditiva: cetirizina + opioide",B.y,B.eu,B.fh])
+B.dNz=new A.d(["cetirizina","opioide",B.u,"Cetirizina tem propriedades anticolin\xe9rgicas leves e sedativas \u2014 some com efectos sedantes e depressores respirat\xf3rios dos opioides","Sedaci\xf3n excesiva; depresi\xf3n respiratoria potencializada; constipa\xe7\xe3o aumentada (efectos anticolin\xe9rgicos aditivos); riesgo de reten\xe7\xe3o urin\xe1ria","Monitorar estado de consci\xeancia e padr\xe3o respirat\xf3rio. Preferir anti-histam\xednico com menor a\xe7\xe3o sedativa ou anticolin\xe9rgica. Atenci\xf3n redobrada en ancianos e pacientes com DPOC/apnea do sono","ATEN\xc7\xc3O \u2014 Depresi\xf3n del SNC aditiva: cetirizina + opioide",B.y,B.eu,B.fi])
 B.bcr=A.a(s(["Micromedex 2024","FDA Drug Interaction Studies"]),t.s)
 B.dRg=new A.d(["cetirizina","ritonavir",B.u,"Ritonavir \xe9 inhibidor do CYP3A4 e inhibidor da glicoprote\xedna-P \u2014 pode elevar os niveles plasm\xe1ticos de cetirizina, que \xe9 parcialmente eliminada pelo rim mas tamb\xe9m tem transporte dependente de P-gp","Elevaci\xf3n dos niveles de cetirizina com posible aumento de sedaci\xf3n e efectos anticolin\xe9rgicos; prolongamento do efecto","Monitorar sedaci\xf3n excesiva. Reducir dosis de cetirizina se necesario (considerar 5 mg ao inv\xe9s de 10 mg). Preferir fexofenadina como alternativa (menor interacci\xf3n com P-gp)","ATEN\xc7\xc3O \u2014 Elevaci\xf3n de cetirizina: cetirizina + ritonavir",B.y,B.bv,B.bcr])
 B.aSF=A.a(s(["FDA Drug Label Cetirizina","Micromedex 2024"]),t.s)
@@ -170423,7 +170421,7 @@ B.brU=A.a(s(["FDA Drug Label Cetirizina 2024","Micromedex 2024"]),t.s)
 B.dUY=new A.d(["cetirizina","alcool",B.u,"\xc1lcool et\xedlico \xe9 depressor do SNC; cetirizina tem efecto sedante vari\xe1vel (maior em dosis altas, idosos e metabolizadores lentos) \u2014 soma\xe7\xe3o dos efectos depressores centrais","Sedaci\xf3n acentuada; comprometimento da coordena\xe7\xe3o motora; lentifica\xe7\xe3o dos reflexos; riesgo de acidentes de tr\xe2nsito; tontura","Evitar consumo de \xe1lcool durante uso de cetirizina. Alertar especialmente pacientes que dirigem ou operam m\xe1quinas. Preferir cetirizina ao deitar para minimizar impacto diurno","CUIDADO \u2014 Sedaci\xf3n aditiva: cetirizina + \xe1lcool",B.h,B.eu,B.brU])
 B.bjh=A.a(s(["FDA Drug Safety","Micromedex 2024","CredibleMeds 2024"]),t.s)
 B.dMu=new A.d(["fenilefrina","imao",B.C,"Fenilefrina \xe9 agonista \u03b11-adren\xe9rgico direto; IMAOs bloqueiam degrada\xe7\xe3o de catecolaminas \u2014 potenciaci\xf3n extrema do efecto vasopresor da fenilefrina","Crisis hipertensiva grave; encefalopat\xeda hipertensiva; AVC; infarto agudo do mioc\xe1rdio","CONTRAINDICADO. Aguardar per\xedodo de lavado completo de IMAO (\u226514 dias para irrevers\xedveis; \u226524h para moclobemida)","CONTRAINDICADO ABSOLUTO \u2014 Crisis hipertensiva: fenilefrina + IMAO",B.h,B.c3,B.bjh])
-B.dZG=new A.d(["fenilefrina","betabloqueador",B.u,"Betabloqueadores bloqueiam a vasodilata\xe7\xe3o \u03b22-mediada \u2014 efecto vasoconstritor \u03b11 da fenilefrina fica desimpedido, podendo causar elevaci\xf3n press\xf3rica e bradicardia reflexa","Hipertens\xe3o paradoxal; bradicardia reflexa; aumento da p\xf3s-carga card\xedaca","Evitar combinaci\xf3n em hipertensos e cardiopatas. Se necesario, monitorar PA e FC durante uso","CUIDADO \u2014 Hipertens\xe3o paradoxal: fenilefrina + betabloqueador",B.y,B.c3,B.fh])
+B.dZG=new A.d(["fenilefrina","betabloqueador",B.u,"Betabloqueadores bloqueiam a vasodilata\xe7\xe3o \u03b22-mediada \u2014 efecto vasoconstritor \u03b11 da fenilefrina fica desimpedido, podendo causar elevaci\xf3n press\xf3rica e bradicardia reflexa","Hipertens\xe3o paradoxal; bradicardia reflexa; aumento da p\xf3s-carga card\xedaca","Evitar combinaci\xf3n em hipertensos e cardiopatas. Se necesario, monitorar PA e FC durante uso","CUIDADO \u2014 Hipertens\xe3o paradoxal: fenilefrina + betabloqueador",B.y,B.c3,B.fi])
 B.e_M=new A.d(["gemfibrozil","pravastatina",B.n,"Inhibici\xf3n de la glicuronida\xe7\xe3o da estatina pelo gemfibrozil, aumentando dr\xe1sticamente os niveles plasm\xe1ticos","Riesgo alt\xedssimo de miopat\xeda grave e rabdomi\xf3lisis fatal","Evitar la combinaci\xf3n. Se fibrato for essencial, o fenofibrato \xe9 prefer\xedvel e mais seguro com estatinas","ALTO RIESGO DE RABDOMI\xd3LISIS \u2014 Contraindicado",B.h,B.cT,B.a3])
 B.dNw=new A.d(["gemfibrozil","repaglinida",B.C,"Inhibici\xf3n potente do CYP2C8 e OATP1B1 pelo gemfibrozil","Aumento de at\xe9 8 vezes na concentraci\xf3n de repaglinida, causando hipoglucemia severa e prolongada","Combinaci\xf3n contraindicada.","HIPOGLUCEMIA GRAVE \u2014 Contraindicado",B.h,B.a4x,B.dI])
 B.dWo=new A.d(["colestiramina","warfarina",B.u,"Liga\xe7\xe3o da resina \xe0 varfarina no l\xfamen intestinal","Reducci\xf3n de la absorci\xf3n da varfarina, diminuindo o INR e elevando o riesgo tromb\xf3tico","Administrar varfarina pelo menos 1 hora antes ou 4 a 6 horas despu\xe9s de a colestiramina","MONITORAR INR \u2014 Riesgo de fracaso terap\xe9utica",B.h,B.a4r,B.v])
@@ -170434,11 +170432,11 @@ B.dIB=new A.d(["ledipasvir","omeprazol",B.n,"O ledipasvir necessita de ambiente 
 B.dNv=new A.d(["velpatasvir","carbamazepina",B.n,"Inducci\xf3n potente da P-glicoprote\xedna (P-gp) e CYP450 pela carbamazepina","Reducci\xf3n dr\xe1stica nos niveles de velpatasvir, levando \xe0 perda de efic\xe1cia antiviral","Evitar o uso concomitante de inductores fortes durante o tratamiento da Hepatite C","PERDA DE EFIC\xc1CIA ANTIVIRAL \u2014 Evitar combinaci\xf3n",B.h,B.h8,B.de])
 B.dXS=new A.d(["clozapina","carbamazepina",B.C,"Efecto aditivo/sin\xe9rgico na toxicidad da medula \xf3ssea","Aumento dram\xe1tico no riesgo de agranulocitose e aplasia medular fatal","Combinaci\xf3n absolutamente contraindicada. Escolher outro estabilizador do humor (ex: Valproato)","AGRANULOCITOSE FATAL \u2014 Contraindicado",B.h,B.kS,B.a3])
 B.e0U=new A.d(["ziprasidona","amiodarona",B.C,"Sinergismo na inhibici\xf3n dos canais de pot\xe1ssio retificadores mioc\xe1rdicos (hERG)","Prolonga\xe7\xe3o extrema do intervalo QT e riesgo de Torsades de Pointes","Contraindicado o uso conjunto com outros f\xe1rmacos que prolongam o QT de forma conhecida","RIESGO DE TORSADES DE POINTES \u2014 Contraindicado",B.h,B.aQ,B.W])
-B.dMy=new A.d(["cariprazina","cetoconazol",B.u,"Inhibici\xf3n potente del CYP3A4 pelo cetoconazol","Aumento significativo das concentraciones de cariprazina e seus metab\xf3litos ativos (DDCAR)","Reducir la dosis de cariprazina \xe0 metade e monitorar acatisia e parkinsonismo","RISCO EXTRAPIRAMIDAL \u2014 Reducir dosis",B.y,B.fo,B.dI])
-B.dQ6=new A.d(["lurasidona","diltiazem",B.n,"Inhibici\xf3n moderada a forte do CYP3A4 pelo diltiazem","Elevaci\xf3n aguda da lurasidona, aumentando sedaci\xf3n, acatisia e hipotensi\xf3n","A dosis de lurasidona n\xe3o deve exceder 40 mg/dia quando coadministrada com diltiazem","AJUSTE DE DOSIS NECESS\xc1RIO \u2014 Riesgo de toxicidad",B.h,B.fo,B.W])
+B.dMy=new A.d(["cariprazina","cetoconazol",B.u,"Inhibici\xf3n potente del CYP3A4 pelo cetoconazol","Aumento significativo das concentraciones de cariprazina e seus metab\xf3litos ativos (DDCAR)","Reducir la dosis de cariprazina \xe0 metade e monitorar acatisia e parkinsonismo","RISCO EXTRAPIRAMIDAL \u2014 Reducir dosis",B.y,B.fp,B.dI])
+B.dQ6=new A.d(["lurasidona","diltiazem",B.n,"Inhibici\xf3n moderada a forte do CYP3A4 pelo diltiazem","Elevaci\xf3n aguda da lurasidona, aumentando sedaci\xf3n, acatisia e hipotensi\xf3n","A dosis de lurasidona n\xe3o deve exceder 40 mg/dia quando coadministrada com diltiazem","AJUSTE DE DOSIS NECESS\xc1RIO \u2014 Riesgo de toxicidad",B.h,B.fp,B.W])
 B.e0b=new A.d(["donepezila","butilescopolamina",B.n,"Antagonismo farmacodin\xe2mico direto (Colin\xe9rgico vs Anticolin\xe9rgico)","Anula\xe7\xe3o da efic\xe1cia do tratamiento para Alzheimer (piora cognitiva) e exacerba\xe7\xe3o anticolin\xe9rgica perif\xe9rica","Evitar o uso de anticolin\xe9rgicos sist\xeamicos en pacientes com dem\xeancia tratada farmacologicamente","ANTAGONISMO TERAP\xcaUTICO \u2014 Piora do Alzheimer",B.h,B.wF,B.v])
 B.dNu=new A.d(["donepezila","difenidramina",B.n,"A difenidramina possui alt\xedssima carga anticolin\xe9rgica (anti-M1 central)","Anula\xe7\xe3o completa do efecto do inhibidor da acetilcolinesterase e inducci\xf3n de delirio agudo no idoso","Contraindicado. Usar anti-histam\xednicos de 2\xaa gera\xe7\xe3o (ex: Bilastina, Fexofenadina)","DELIRIUM E CONFUS\xc3O \u2014 Evitar anti-H1 de 1\xaa gera\xe7\xe3o",B.h,B.wF,B.W])
-B.dYF=new A.d(["memantina","acetazolamida",B.u,"A alcaliniza\xe7\xe3o urin\xe1ria induzida pela acetazolamida diminui o aclaramiento renal da memantina","Acumulaci\xf3n de memantina s\xe9rica, levando a confusi\xf3n mental, tontura e psicose paradoxal","Monitorar funci\xf3n cognitiva de perto ou evitar la combinaci\xf3n","TOXICIDADE NEUROL\xd3GICA \u2014 Riesgo de acumulaci\xf3n sist\xeamico",B.y,B.fo,B.dI])
+B.dYF=new A.d(["memantina","acetazolamida",B.u,"A alcaliniza\xe7\xe3o urin\xe1ria induzida pela acetazolamida diminui o aclaramiento renal da memantina","Acumulaci\xf3n de memantina s\xe9rica, levando a confusi\xf3n mental, tontura e psicose paradoxal","Monitorar funci\xf3n cognitiva de perto ou evitar la combinaci\xf3n","TOXICIDADE NEUROL\xd3GICA \u2014 Riesgo de acumulaci\xf3n sist\xeamico",B.y,B.fp,B.dI])
 B.dWv=new A.d(["donepezila","timolol",B.n,"Sinergia cronotr\xf3pica negativa: aumento do t\xf4nus colin\xe9rgico central/perif\xe9rico + bloqueio beta-adren\xe9rgico sist\xe9mico","Bradicardia sinusal sintom\xe1tica grave, bloqueios auriculoventriculares e s\xedncope recorrente no idoso","Monitorar o pulso regularmente. Ensinar o paciente a ocluir o ponto lacrimal ao instilar o col\xedrio para evitar absorci\xf3n","BRADICARDIA E S\xcdNCOPE \u2014 Sinergia Cardiodepressora",B.h,B.jT,B.W])
 B.e4a=new A.au([B.i5,B.fP],t.U)
 B.dTQ=new A.d(["desmopressina","furosemida",B.n,"Efectos aditivos sobre a altera\xe7\xe3o do volume e concentraci\xf3n do s\xf3dio plasm\xe1tico (reten\xe7\xe3o de \xe1gua livre + deple\xe7\xe3o de s\xf3dio)","Hiponatremia dilucional aguda e grave, provocando edema cerebral, obnubila\xe7\xe3o e convulsiones","Evitar o uso de diur\xe9ticos potentes en pacientes que recebem desmopressina. Controlar o s\xf3dio s\xe9rico a cada 24h","HIPONATREMIA DILUCIONAL GRAVE \u2014 Riesgo de Convulsiones",B.h,B.e4a,B.v9])
@@ -170480,9 +170478,9 @@ B.e0f=new A.d(["pancrelipase","bicarbonato",B.u,"A alcaliniza\xe7\xe3o do ambien
 B.e_y=new A.d(["omalizumabe","vacinas vivas",B.n,"O omalizumabe suprime a resposta imune mediada por IgE e pode atenuar a resposta a vacinas vivas","Riesgo de infec\xe7\xe3o ativa pela cepa vacinal e resposta imune atenuada","Evitar vacinas vivas atenuadas durante o tratamiento com omalizumabe. Preferir vacinas inativadas",u.z0,B.y,B.fR,B.bK])
 B.a4z=new A.au([B.m9,B.eE],t.U)
 B.dN4=new A.d(["omalizumabe","dupilumabe",B.n,"Combinaci\xf3n de dois biol\xf3gicos com supresi\xf3n imune em vias diferentes (anti-IgE + anti-IL-4/IL-13)","Imunossupresi\xf3n excessiva com riesgo de infec\xe7\xf5es oportunistas sem benef\xedcio adicional comprovado","Combinaci\xf3n de dois biol\xf3gicos sist\xeamicos absolutamente contraindicada","IMUNOSSUPRESS\xc3O EXCESSIVA \u2014 Contraindicado",B.h,B.a4z,B.bK])
-B.dKa=new A.d(["cetirizina","alcool",B.u,"Potencia\xe7\xe3o da sedaci\xf3n central pelo \xe1lcool em combinaci\xf3n com anti-histam\xednicos de 2\xaa gera\xe7\xe3o","Sedaci\xf3n aumentada, comprometimento da atenci\xf3n e habilidades psicomotoras","Evitar o consumo de \xe1lcool durante o uso de cetirizina, especialmente se for dirigir ou operar m\xe1quinas","SEDACI\xd3N AUMENTADA \u2014 Evitar \xe1lcool",B.h,B.fq,B.de])
+B.dKa=new A.d(["cetirizina","alcool",B.u,"Potencia\xe7\xe3o da sedaci\xf3n central pelo \xe1lcool em combinaci\xf3n com anti-histam\xednicos de 2\xaa gera\xe7\xe3o","Sedaci\xf3n aumentada, comprometimento da atenci\xf3n e habilidades psicomotoras","Evitar o consumo de \xe1lcool durante o uso de cetirizina, especialmente se for dirigir ou operar m\xe1quinas","SEDACI\xd3N AUMENTADA \u2014 Evitar \xe1lcool",B.h,B.fr,B.de])
 B.dXh=new A.d(["difenidramina","benzodiazep\xednico",B.n,"Sinergia na depress\xe3o do Sistema Nervioso Central e sedaci\xf3n excesiva","Sedaci\xf3n profunda, comprometimento cognitivo grave, depresi\xf3n respiratoria e riesgo de queda en ancianos","Evitar la combinaci\xf3n. A difenidramina est\xe1 na lista de medicamentos de alto riesgo para idosos (Crit\xe9rios de Beers)","DEPRESS\xc3O SNC SEVERA \u2014 Evitar en ancianos (Crit\xe9rios de Beers)",B.h,B.j8,B.v])
-B.dOz=new A.d(["difenidramina","opioide",B.n,"Depress\xe3o farmacodin\xe2mica aditiva do SNC e do centro respirat\xf3rio bulbar","Sedaci\xf3n profunda, letargia prolongada e riesgo iminente de parada respirat\xf3ria","Evitar a asociaci\xf3n. Usar anti-histam\xednicos de 2\xaa gera\xe7\xe3o (fexofenadina, loratadina) como alternativas seguras","DEPRESI\xd3N RESPIRATORIA SEVERA \u2014 Evitar combinaci\xf3n",B.h,B.dU,B.v9])
+B.dOz=new A.d(["difenidramina","opioide",B.n,"Depress\xe3o farmacodin\xe2mica aditiva do SNC e do centro respirat\xf3rio bulbar","Sedaci\xf3n profunda, letargia prolongada e riesgo iminente de parada respirat\xf3ria","Evitar a asociaci\xf3n. Usar anti-histam\xednicos de 2\xaa gera\xe7\xe3o (fexofenadina, loratadina) como alternativas seguras","DEPRESI\xd3N RESPIRATORIA SEVERA \u2014 Evitar combinaci\xf3n",B.h,B.dT,B.v9])
 B.dZd=new A.d(["difenidramina","imao",B.C,"Os IMAOs inibem o metabolismo hep\xe1tico da difenidramina, potencializando seus efectos anticolin\xe9rgicos e sedantes","Toxicidade anticolin\xe9rgica grave: taquicardia, delirio, hipertermia, reten\xe7\xe3o urin\xe1ria e posible psicose","Contraindicado. Aguardar per\xedodo de lavado completo do IMAO antes de usar difenidramina","TOXICIDADE ANTICOLIN\xc9RGICA GRAVE \u2014 Contraindicado com IMAO",B.h,B.qX,B.dI])
 B.dRD=new A.d(["fexofenadina","cetoconazol",B.u,"O cetoconazol inibe o transportador P-glicoprote\xedna e aumenta a biodisponibilidad da fexofenadina","Aumento dos niveles plasm\xe1ticos de fexofenadina, com potencial prolongamento do intervalo QT","Monitorar ECG en pacientes com fatores de riesgo card\xedaco. Generalmente bem tolerado na pr\xe1tica","AUMENTO DE N\xcdVEIS \u2014 Monitorar QT en pacientes de riesgo",B.y,B.wK,B.dI])
 B.dTX=new A.d(["fexofenadina","eritromicina",B.u,"A eritromicina inibe a P-glicoprote\xedna e o transportador OATP, aumentando a biodisponibilidad da fexofenadina","Aumento de at\xe9 2 vezes nos niveles plasm\xe1ticos de fexofenadina","Generalmente bem tolerado, mas monitorar en pacientes com fatores de riesgo para prolongaci\xf3n del QT","AUMENTO DE BIODISPONIBILIDADE \u2014 Monitorar en pacientes de riesgo card\xedaco",B.h,B.bv,B.b8])
@@ -170499,7 +170497,7 @@ B.dRW=new A.d(["haloperidol","mefloquina",B.n,"Ambos prolongam o intervalo QT de
 B.dX2=new A.d(["cetamina","benzodiazep\xednico",B.u,"Os benzodiazep\xednicos potencializam a sedaci\xf3n e podem prolongar a recupera\xe7\xe3o anest\xe9sica da cetamina","Sedaci\xf3n prolongada e riesgo de depresi\xf3n respiratoria no per\xedodo p\xf3s-operat\xf3rio imediato","Reducir la dosis de cetamina quando usada em combinaci\xf3n com benzodiazep\xednicos. Monitorar recupera\xe7\xe3o","SEDA\xc7\xc3O PROLONGADA \u2014 Reducir dosis de cetamina",B.h,B.j8,B.v])
 B.e5t=new A.au([B.fP,B.eE],t.U)
 B.dVu=new A.d(["cetamina","teofilina",B.n,"Interacci\xf3n farmacodin\xe2mica: ambos podem reduzir o limiar convulsivo por mecanismos diferentes","Riesgo aumentado de convulsiones intraoperat\xf3rias ou no per\xedodo de recupera\xe7\xe3o anest\xe9sica","Evitar la combinaci\xf3n en pacientes asm\xe1ticos usando teofilina que necessitem de cetamina como anest\xe9sico","RISCO DE CONVULSIONES \u2014 Evitar combinaci\xf3n",B.y,B.e5t,B.v])
-B.dUL=new A.d(["cetamina","l\xedtio",B.u,"O l\xedtio pode prolongar a duraci\xf3n do bloqueio neuromuscular e potenciar os efectos anest\xe9sicos da cetamina","Recupera\xe7\xe3o anest\xe9sica prolongada e posible potencia\xe7\xe3o dos efectos dissociativos","Monitorar cuidadosamente a recupera\xe7\xe3o en pacientes com l\xedtio submetidos \xe0 anestesia com cetamina","RECUPERA\xc7\xc3O ANEST\xc9SICA PROLONGADA \u2014 Monitorar",B.y,B.fq,B.W])
+B.dUL=new A.d(["cetamina","l\xedtio",B.u,"O l\xedtio pode prolongar a duraci\xf3n do bloqueio neuromuscular e potenciar os efectos anest\xe9sicos da cetamina","Recupera\xe7\xe3o anest\xe9sica prolongada e posible potencia\xe7\xe3o dos efectos dissociativos","Monitorar cuidadosamente a recupera\xe7\xe3o en pacientes com l\xedtio submetidos \xe0 anestesia com cetamina","RECUPERA\xc7\xc3O ANEST\xc9SICA PROLONGADA \u2014 Monitorar",B.y,B.fr,B.W])
 B.dVv=new A.d(["propiltiouracil","varfarina",B.n,"O hipotiroidismo induzido pelo propiltiouracil altera o metabolismo dos fatores de coagula\xe7\xe3o e pode potencializar o efecto da varfarina","Riesgo aumentado de sangrado com elevaci\xf3n del INR conforme o paciente torna-se eutire\xf3ideo","Monitorar INR frecuentemente durante o inicio e ajuste da dosis de propiltiouracil","ELEVA\xc7\xc3O DO INR \u2014 Monitorar rigurosamente",B.h,B.bs,B.v])
 B.e13=new A.d(["propiltiouracil","metformina",B.be,"O hipotiroidismo pode reduzir o aclaramiento renal da metformina e alterar o metabolismo de la glicose","Posible altera\xe7\xe3o no controle glic\xeamico e riesgo leve de acumulaci\xf3n de metformina","Monitorar a glucemia e funci\xf3n renal durante o ajuste da dosis de propiltiouracil","MONITORAR GLICEMIA \u2014 Interacci\xf3n indireta via funci\xf3n tiroidiana",B.db,B.aI,B.de])
 B.dWY=new A.d(["propiltiouracil","digoxina",B.u,"O hipotiroidismo altera o volume de distribui\xe7\xe3o e o clearance da digoxina","Aumento dos niveles s\xe9ricos de digoxina com riesgo de toxicidad digit\xe1lica (bradiarritmias, n\xe1useas)","Monitorar niveles de digoxina ao ajustar la dosis de propiltiouracil durante o tratamiento do hipertiroidismo","TOXICIDAD DIGIT\xc1LICA \u2014 Monitorar digoxinemia",B.h,B.kR,B.v])
@@ -170511,20 +170509,20 @@ B.dS6=new A.d(["mesalazina","mercaptopurina",B.n,"A mesalazina inibe a tiopurina
 B.dQF=new A.d(["sulfassalazina","digoxina",B.u,"A sulfassalazina pode reduzir a absorci\xf3n da digoxina por mecanismos gastrointestinais","Reducci\xf3n dos niveles s\xe9ricos de digoxina, com posible perda do efecto terap\xe9utico","Monitorar niveles de digoxina al iniciar ou suspender sulfassalazina","N\xcdVEL DE DIGOXINA REDUZIDO \u2014 Monitorar",B.y,B.aH,B.de])
 B.a4i=new A.au([B.e6,B.jR],t.U)
 B.dPb=new A.d(["sulfassalazina","metotrexato",B.u,"Ambos podem causar supresi\xf3n da medula \xf3ssea e hepatotoxicidad, al\xe9m de competi\xe7\xe3o pela excreci\xf3n renal","Riesgo aumentado de leucopenia, trombocitopenia e hepatotoxicidad aditiva","Monitorar hemograma e enzimas hep\xe1ticas regularmente. A combinaci\xf3n \xe9 usada em reumatologia sob supervis\xe3o","TOXICIDADE HEMATOL\xd3GICA E HEP\xc1TICA ADITIVA \u2014 Monitorar",B.h,B.a4i,B.v])
-B.dZv=new A.d(["budesonida","cetoconazol",B.n,"O cetoconazol inibe o CYP3A4, a principal v\xeda de metabolismo de la budesonida","Aumento significativo dos niveles sist\xeamicos de budesonida, com riesgo de supresi\xf3n do eixo hipot\xe1lamo-hip\xf3fise-adrenal","Evitar la combinaci\xf3n. Se necesario, reducir la dosis de budesonida e monitorar signos de hipercortisolismo","EFEITO SIST\xcaMICO DO CORTICOIDE \u2014 Evitar inhibidores potentes de CYP3A4",B.h,B.fo,B.dI])
-B.dWm=new A.d(["budesonida","ritonavir",B.n,"O ritonavir \xe9 inhibidor extremamente potente do CYP3A4, bloqueando quase completamente o metabolismo de primeira passagem da budesonida","S\xedndrome de Cushing iatrog\xeanica com supresi\xf3n adrenal grave e insuficiencia adrenal ao suspender","Combinaci\xf3n contraindicada. Usar alternativas que n\xe3o dependam do CYP3A4 ou ajustar para dosis m\xednimas com monitoramento","CUSHING IATROG\xcaNICO \u2014 Contraindicado com ritonavir",B.h,B.fo,B.b8])
+B.dZv=new A.d(["budesonida","cetoconazol",B.n,"O cetoconazol inibe o CYP3A4, a principal v\xeda de metabolismo de la budesonida","Aumento significativo dos niveles sist\xeamicos de budesonida, com riesgo de supresi\xf3n do eixo hipot\xe1lamo-hip\xf3fise-adrenal","Evitar la combinaci\xf3n. Se necesario, reducir la dosis de budesonida e monitorar signos de hipercortisolismo","EFEITO SIST\xcaMICO DO CORTICOIDE \u2014 Evitar inhibidores potentes de CYP3A4",B.h,B.fp,B.dI])
+B.dWm=new A.d(["budesonida","ritonavir",B.n,"O ritonavir \xe9 inhibidor extremamente potente do CYP3A4, bloqueando quase completamente o metabolismo de primeira passagem da budesonida","S\xedndrome de Cushing iatrog\xeanica com supresi\xf3n adrenal grave e insuficiencia adrenal ao suspender","Combinaci\xf3n contraindicada. Usar alternativas que n\xe3o dependam do CYP3A4 ou ajustar para dosis m\xednimas com monitoramento","CUSHING IATROG\xcaNICO \u2014 Contraindicado com ritonavir",B.h,B.fp,B.b8])
 B.dVe=new A.d(["ustekinumabe","vacinas vivas",B.n,"O ustekinumabe suprime a resposta imune via bloqueio de IL-12/23, podendo impedir resposta protetora \xe0 vacina","Riesgo de infec\xe7\xe3o ativa pela cepa vacinal e resposta imune inadecuada","Evitar vacinas vivas durante o tratamiento. Completar vacina\xe7\xe3o antes de iniciar o ustekinumabe",u.z0,B.h,B.fR,B.bK])
 B.dUA=new A.d(["ustekinumabe","tofacitinibe",B.C,"Imunossupresi\xf3n sin\xe9rgica por bloqueio de IL-12/23 e inhibici\xf3n de JAK","Riesgo inaceit\xe1vel de infec\xe7\xf5es oportunistas letais sem benef\xedcio cl\xednico adicional comprovado","Nunca combinar dois imunobiol\xf3gicos ou biol\xf3gico + inhibidor de JAK","IMUNOSSUPRESS\xc3O LETAL \u2014 Absolutamente contraindicado",B.h,B.a4z,B.bK])
 B.dMQ=new A.d(["secuquinumabe","vacinas vivas",B.n,"Bloqueio de IL-17A pelo secuquinumabe compromete a imunidade inata antif\xfangica e antiviral","Riesgo de enfermedad ativa por cepa vacinal e candidosis mucocut\xe2nea recorrente","Evitar vacinas vivas. Rastrear candidosis oral durante o tratamiento","RISCO INFECCIOSO \u2014 Evitar vacinas vivas e monitorar candidosis",B.h,B.fR,B.b8])
 B.dV9=new A.d(["secuquinumabe","infliximabe",B.C,"Dupla imunossupresi\xf3n biol\xf3gica sist\xeamica: bloqueio de IL-17 + bloqueio de TNF-alfa","Riesgo extremo de infec\xe7\xf5es oportunistas, sepse, tuberculose ativa e vasculite","Absolutamente contraindicado combinar dois biol\xf3gicos sist\xeamicos","IMUNOSSUPRESS\xc3O FATAL \u2014 Contraindicado",B.h,B.fR,B.bC])
-B.fi=A.a(s(["FDA Drug Label"]),t.s)
-B.dPH=new A.d(["ixequizumabe","vacinas vivas",B.n,"O bloqueio de IL-17A pelo ixequizumabe compromete a resposta imune adaptativa contra pat\xf3genos atenuados","Riesgo de infec\xe7\xe3o ativa pela cepa vacinal e resposta vacinal inadecuada","Evitar vacinas vivas durante o tratamiento com ixequizumabe",u.z0,B.h,B.fR,B.fi])
-B.dR4=new A.d(["risanquizumabe","vacinas vivas",B.n,"O risanquizumabe bloqueia a subunidade p19 da IL-23, afetando a imunidade celular adaptativa","Riesgo de infec\xe7\xe3o ativa por cepas vacinais vivas","Evitar vacinas vivas atenuadas durante todo o per\xedodo de tratamiento","RISCO INFECCIOSO VACINAL \u2014 Contraindicado com vacinas vivas",B.h,B.fR,B.fi])
-B.dIF=new A.d(["evolocumabe","estatina",B.be,"Os inhibidores de PCSK9 s\xe3o usados como adjuvantes \xe0s estatinas para reducci\xf3n del LDL","Quando combinados, podem ocorrer miopat\xedas em casos raros, embora o riesgo seja menor que com fibratos","Monitorar CK e s\xedntomas musculares. A combinaci\xf3n \xe9 a base do tratamiento de hipercolesterolemia grave","MONITORAR MIALGIAS \u2014 Combinaci\xf3n generalmente segura e intencional",B.h,B.fp,B.b5])
-B.dNm=new A.d(["alirocumabe","estatina",B.be,"Os inhibidores de PCSK9 potencializam a reducci\xf3n de LDL das estatinas de forma aditiva","A combinaci\xf3n \xe9 generalmente segura, sin embargo pode ocorrer miopat\xeda em casos raros","Monitorar s\xedntomas musculares e CK. A combinaci\xf3n \xe9 padr\xe3o de tratamiento para dislipidemia refrat\xe1ria","MONITORAR MIALGIAS \u2014 Combinaci\xf3n usualmente segura",B.h,B.fp,B.b5])
-B.dIJ=new A.d(["ezetimiba","ciclosporina",B.n,"A ciclosporina inibe o transportador OATP1B1, aumentando dr\xe1sticamente os niveles plasm\xe1ticos de ezetimiba e seu metab\xf3lito ativo","Aumento de at\xe9 3 a 4 vezes na exposici\xf3n \xe0 ezetimiba, com riesgo de efectos adversos aumentados","Monitorar lip\xeddios e enzimas hep\xe1ticas. Evitar dosis altas de ezetimiba en pacientes trasplantados","AUMENTO DE EXPOSI\xc7\xc3O \xc0 EZETIMIBA \u2014 Monitorar",B.h,B.fo,B.dI])
+B.fj=A.a(s(["FDA Drug Label"]),t.s)
+B.dPH=new A.d(["ixequizumabe","vacinas vivas",B.n,"O bloqueio de IL-17A pelo ixequizumabe compromete a resposta imune adaptativa contra pat\xf3genos atenuados","Riesgo de infec\xe7\xe3o ativa pela cepa vacinal e resposta vacinal inadecuada","Evitar vacinas vivas durante o tratamiento com ixequizumabe",u.z0,B.h,B.fR,B.fj])
+B.dR4=new A.d(["risanquizumabe","vacinas vivas",B.n,"O risanquizumabe bloqueia a subunidade p19 da IL-23, afetando a imunidade celular adaptativa","Riesgo de infec\xe7\xe3o ativa por cepas vacinais vivas","Evitar vacinas vivas atenuadas durante todo o per\xedodo de tratamiento","RISCO INFECCIOSO VACINAL \u2014 Contraindicado com vacinas vivas",B.h,B.fR,B.fj])
+B.dIF=new A.d(["evolocumabe","estatina",B.be,"Os inhibidores de PCSK9 s\xe3o usados como adjuvantes \xe0s estatinas para reducci\xf3n del LDL","Quando combinados, podem ocorrer miopat\xedas em casos raros, embora o riesgo seja menor que com fibratos","Monitorar CK e s\xedntomas musculares. A combinaci\xf3n \xe9 a base do tratamiento de hipercolesterolemia grave","MONITORAR MIALGIAS \u2014 Combinaci\xf3n generalmente segura e intencional",B.h,B.fq,B.b5])
+B.dNm=new A.d(["alirocumabe","estatina",B.be,"Os inhibidores de PCSK9 potencializam a reducci\xf3n de LDL das estatinas de forma aditiva","A combinaci\xf3n \xe9 generalmente segura, sin embargo pode ocorrer miopat\xeda em casos raros","Monitorar s\xedntomas musculares e CK. A combinaci\xf3n \xe9 padr\xe3o de tratamiento para dislipidemia refrat\xe1ria","MONITORAR MIALGIAS \u2014 Combinaci\xf3n usualmente segura",B.h,B.fq,B.b5])
+B.dIJ=new A.d(["ezetimiba","ciclosporina",B.n,"A ciclosporina inibe o transportador OATP1B1, aumentando dr\xe1sticamente os niveles plasm\xe1ticos de ezetimiba e seu metab\xf3lito ativo","Aumento de at\xe9 3 a 4 vezes na exposici\xf3n \xe0 ezetimiba, com riesgo de efectos adversos aumentados","Monitorar lip\xeddios e enzimas hep\xe1ticas. Evitar dosis altas de ezetimiba en pacientes trasplantados","AUMENTO DE EXPOSI\xc7\xc3O \xc0 EZETIMIBA \u2014 Monitorar",B.h,B.fp,B.dI])
 B.dT_=new A.d(["ezetimiba","colestiramina",B.u,"A colestiramina pode reduzir a absorci\xf3n da ezetimiba ao sequestrar o f\xe1rmaco no intestino","Reducci\xf3n de la eficacia hipolipemiante da ezetimiba","Administrar a ezetimiba pelo menos 2 horas antes ou 4 horas despu\xe9s de a colestiramina","ABSOR\xc7\xc3O REDUZIDA \u2014 Espa\xe7ar dosiss",B.h,B.a5,B.de])
-B.dVy=new A.d(["acido nicotinico","estatina",B.u,"A combinaci\xf3n de \xe1cido nicot\xednico com estatinas aumenta o riesgo de miopat\xeda","Riesgo de miopat\xeda e rabdomi\xf3lisis, especialmente com sinvastatina em dosis altas","Monitorar CK e s\xedntomas musculares. Evitar niacina em dosis altas com estatinas em dosiss m\xe1ximas","RISCO DE MIOPATIA \u2014 Monitorar CK",B.h,B.fp,B.v])
+B.dVy=new A.d(["acido nicotinico","estatina",B.u,"A combinaci\xf3n de \xe1cido nicot\xednico com estatinas aumenta o riesgo de miopat\xeda","Riesgo de miopat\xeda e rabdomi\xf3lisis, especialmente com sinvastatina em dosis altas","Monitorar CK e s\xedntomas musculares. Evitar niacina em dosis altas com estatinas em dosiss m\xe1ximas","RISCO DE MIOPATIA \u2014 Monitorar CK",B.h,B.fq,B.v])
 B.dKS=new A.d(["acido nicotinico","antidiabetico",B.u,"A niacina em altas dosiss causa resist\xeancia insul\xednica e hiperglucemia","Perda do controle glic\xeamico en pacientes diab\xe9ticos, podendo requerer ajuste da medica\xe7\xe3o","Monitorar glucemia al iniciar niacina em dosis altas en pacientes diab\xe9ticos","HIPERGLICEMIA \u2014 Monitorar controle glic\xeamico",B.h,B.aI,B.v])
 B.dL5=new A.d(["metformina","contraste iodado",B.n,"El contraste iodado puede causar insuficiencia renal aguda transitoria; la metformina se acumula cuando el aclaramiento renal cae, con riesgo de acidosis l\xe1ctica por bloqueo de la cadena respiratoria mitocondrial","Acidosis l\xe1ctica potencialmente fatal (mortalidad ~50%): n\xe1useas, v\xf3mitos, dolor abdominal, hiperventilaci\xf3n, confusi\xf3n, colapso hemodin\xe1mico","Suspender metformina 48 h antes del procedimiento con contraste IV; reiniciar solo tras confirmar funci\xf3n renal normal (creatinina \u2264 basal). En urgencias: hidrataci\xf3n vigorosa y monitoreo de lactato","ACIDOSIS L\xc1CTICA \u2014 Suspender metformina 48 h antes del contraste IV",B.h,B.bL,B.cS])
 B.PD=A.a(s(["Goodman & Gilman 13\xaa ed.","Micromedex 2024","UpToDate 2024","Lexicomp 2024"]),t.s)
@@ -170538,15 +170536,15 @@ B.qb=A.a(s(["FDA Drug Label","UpToDate 2024","Micromedex 2024"]),t.s)
 B.dVz=new A.d(["paxlovid","lurasidona",B.C,"Ritonavir inhibe CYP3A4 \u2014 \xfanica v\xeda de metabolismo de la lurasidona \u2014 elevando sus niveles plasm\xe1ticos de forma masiva e incontrolable","Toxicidad neurol\xf3gica grave, arritmias ventriculares por prolongaci\xf3n del QT, sedaci\xf3n profunda e hipotensi\xf3n cr\xedtica","Contraindicaci\xf3n absoluta. Suspender lurasidona antes de iniciar Paxlovid. Cambiar temporalmente a quetiapina a dosis reducida bajo monitoreo cardiol\xf3gico","CONTRAINDICADO \u2014 Riesgo de arritmia y toxicidad neurol\xf3gica grave con lurasidona",B.h,B.e3V,B.qb])
 B.e0n=new A.d(["paxlovid","pimavanserina",B.C,"Ritonavir inhibe CYP3A4, la principal v\xeda de eliminaci\xf3n de pimavanserina; la acumulaci\xf3n del antipsic\xf3tico prolonga el intervalo QTc de forma cr\xedtica","Arritmias ventriculares letales: Torsades de Pointes, fibrilaci\xf3n ventricular y muerte s\xfabita card\xedaca","Contraindicado de forma absoluta. No coadministrar bajo ninguna circunstancia","CONTRAINDICADO \u2014 Riesgo de muerte por Torsades de Pointes",B.h,B.aQ,B.b8])
 B.dWV=new A.d(["paxlovid","sinvastatina",B.C,"Ritonavir inhibe extremadamente CYP3A4 y OATP1B1; la simvastatina es un sustrato con margen terap\xe9utico estrecho \u2192 niveles s\xe9ricos aumentan >30 veces","Rabdomi\xf3lisis fulminante: mioglobinuria, insuficiencia renal aguda, hiperpotasemia fatal","Contraindicado. Suspender simvastatina/lovastatina en cuanto se inicia Paxlovid. Reanudar 2 d\xedas despu\xe9s de finalizar el tratamiento antiviral","CONTRAINDICADO \u2014 Rabdomi\xf3lisis inminente con simvastatina + Paxlovid",B.h,B.Dn,B.qb])
-B.dZA=new A.d(["paxlovid","midazolam",B.C,"Ritonavir bloquea el metabolismo de primer paso del midazolam oral por CYP3A4; el AUC del midazolam oral aumenta >400 veces","Sedaci\xf3n profunda prolongada, apnea, coma e insuficiencia respiratoria fatal","Contraindicado con midazolam oral/sublingual. El midazolam IV puede usarse con cautela extrema en UCI bajo ventilaci\xf3n mec\xe1nica y monitoreo continuo","CONTRAINDICADO \u2014 Apnea por midazolam oral con Paxlovid",B.h,B.dU,B.b8])
+B.dZA=new A.d(["paxlovid","midazolam",B.C,"Ritonavir bloquea el metabolismo de primer paso del midazolam oral por CYP3A4; el AUC del midazolam oral aumenta >400 veces","Sedaci\xf3n profunda prolongada, apnea, coma e insuficiencia respiratoria fatal","Contraindicado con midazolam oral/sublingual. El midazolam IV puede usarse con cautela extrema en UCI bajo ventilaci\xf3n mec\xe1nica y monitoreo continuo","CONTRAINDICADO \u2014 Apnea por midazolam oral con Paxlovid",B.h,B.dT,B.b8])
 B.e4x=new A.au([B.et,B.cf,B.aP],t.U)
 B.dUJ=new A.d(["paxlovid","amiodarona",B.C,"Ritonavir inhibe CYP3A4 y P-gp, reduciendo el aclaramiento de amiodarona y su metabolito activo DEA; acumulaci\xf3n a niveles t\xf3xicos con vida media >40 d\xedas","Arritmias letales por toxicidad por amiodarona: TV polim\xf3rfica, FV, bradiarritmias graves, toxicidad pulmonar y hep\xe1tica acelerada","Contraindicaci\xf3n absoluta documentada en la ficha t\xe9cnica de Paxlovid. No coadministrar bajo ninguna circunstancia","CONTRAINDICADO \u2014 Riesgo de muerte por acumulaci\xf3n de amiodarona",B.h,B.e4x,B.vk])
 B.dO6=new A.d(["paxlovid","rifampicina",B.C,"Rifampicina es el inductor m\xe1s potente de CYP3A4 y P-gp; reduce los niveles de nirmatrelvir/ritonavir >90%, anulando por completo la actividad antiviral","Fracaso terap\xe9utico total del tratamiento COVID-19, riesgo de selecci\xf3n de variantes resistentes","Contraindicaci\xf3n absoluta. Suspender rifampicina antes de iniciar Paxlovid. Considerar reg\xedmenes alternativos antituberculosos sin rifampicina durante el tratamiento antiviral","CONTRAINDICADO \u2014 Rifampicina anula eficacia de Paxlovid completamente",B.h,B.a5,B.bK])
 B.dVd=new A.d(["paxlovid","carbamazepina",B.C,"Carbamazepina induce fuertemente CYP3A4 (y se autoiduce) reduciendo los niveles de nirmatrelvir/ritonavir por debajo del umbral terap\xe9utico","Fracaso antiviral: los niveles de nirmatrelvir caen hasta un 87% con carbamazepina","Contraindicado. Cambiar temporalmente el anticonvulsivo a levetiracetam o lamotrigina durante el tratamiento con Paxlovid","CONTRAINDICADO \u2014 Carbamazepina elimina eficacia de Paxlovid",B.h,B.a5,B.b8])
-B.e0x=new A.d(["paxlovid","ranolazina",B.C,"Ritonavir inhibe CYP3A4 y P-gp, duplicando o triplicando los niveles de ranolazina con riesgo de Torsades de Pointes","Prolongaci\xf3n cr\xedtica del QT, taquicardia ventricular polim\xf3rfica y muerte s\xfabita","Contraindicado seg\xfan ficha t\xe9cnica de Paxlovid. Suspender ranolazina durante el tratamiento antiviral","CONTRAINDICADO \u2014 Arritmia ventricular fatal por ranolazina acumulada",B.h,B.aQ,B.fi])
+B.e0x=new A.d(["paxlovid","ranolazina",B.C,"Ritonavir inhibe CYP3A4 y P-gp, duplicando o triplicando los niveles de ranolazina con riesgo de Torsades de Pointes","Prolongaci\xf3n cr\xedtica del QT, taquicardia ventricular polim\xf3rfica y muerte s\xfabita","Contraindicado seg\xfan ficha t\xe9cnica de Paxlovid. Suspender ranolazina durante el tratamiento antiviral","CONTRAINDICADO \u2014 Arritmia ventricular fatal por ranolazina acumulada",B.h,B.aQ,B.fj])
 B.wE=new A.au([B.cg,B.fQ],t.U)
 B.dMS=new A.d(["paxlovid","ergotamina",B.C,"Ritonavir inhibe el metabolismo de la ergotamina por CYP3A4; la acumulaci\xf3n del alcaloide produce vasoconstricci\xf3n arterial perif\xe9rica extrema","Ergotismo agudo: isquemia de extremidades, gangrena digital, angina mesent\xe9rica, accidente cerebrovascular por vasoespasmo","Contraindicado. Suspender ergotamina antes de Paxlovid. Para cefalea usar gepantes o triptanes (con monitoreo)","CONTRAINDICADO \u2014 Ergotismo agudo con riesgo de gangrena isqu\xe9mica",B.h,B.wE,B.b8])
-B.e48=new A.au([B.fm,B.fP,B.cu],t.U)
+B.e48=new A.au([B.fn,B.fP,B.cu],t.U)
 B.dIS=new A.d(["paxlovid","tramadol",B.n,"Ritonavir puede aumentar la exposici\xf3n al tramadol v\xeda CYP3A4; adem\xe1s, la inhibici\xf3n de CYP2D6 puede reducir la conversi\xf3n a M1 pero aumentar el tramadol parental con riesgo convulsivo y serotonin\xe9rgico","Convulsiones, s\xedndrome serotonin\xe9rgico, toxicidad opioide aumentada","Evitar si es posible. Si es inevitable, usar dosis m\xednima de tramadol con monitoreo neurol\xf3gico estricto durante los 5 d\xedas de Paxlovid","ALTO RIESGO \u2014 Convulsiones y toxicidad serotonin\xe9rgica con tramadol",B.y,B.e48,B.iN])
 B.dZQ=new A.d(["paxlovid","atorvastatina",B.n,"Ritonavir inhibe CYP3A4 y OATP1B1; los niveles de atorvastatina aumentan hasta 9 veces","Miopat\xeda grave, elevaci\xf3n marcada de CPK, riesgo de rabdomi\xf3lisis subcl\xednica","Suspender atorvastatina durante los 5 d\xedas de Paxlovid y por 2 d\xedas adicionales. Reanudar con CPK de control. Si el paciente no puede suspenderla, usar dosis m\xednima (10 mg) con monitoreo cl\xednico diario","SUSPENDER ESTATINA \u2014 Atorvastatina durante tratamiento con Paxlovid",B.h,B.cT,B.bK])
 B.dP1=new A.d(["paxlovid","warfarina",B.n,"Ritonavir inhibe CYP2C9 (metabolismo de la S-warfarina) y CYP3A4 (R-warfarina); efecto neto impredecible sobre el INR \u2014 puede aumentar o disminuir","Elevaci\xf3n del INR con riesgo de hemorragia mayor o, parad\xf3jicamente, descenso con riesgo tromb\xf3tico","Medir INR antes de iniciar, al d\xeda 2\u20133 y al finalizar Paxlovid. Ajustar dosis de warfarina seg\xfan resultados. Informar al paciente sobre signos de sangrado y trombosis","MONITOREO DIARIO DE INR \u2014 Interacci\xf3n imprevisible con warfarina",B.h,B.bs,B.qb])
@@ -170562,7 +170560,7 @@ B.dOI=new A.d(["paxlovid","digoxina",B.n,"Ritonavir inhibe la P-glucoprote\xedna
 B.e5e=new A.au([B.cf,B.aP,B.cu],t.U)
 B.dQZ=new A.d(["lurasidona","claritromicina",B.C,"Claritromicina inhibe potentemente CYP3A4, \xfanica v\xeda metab\xf3lica de la lurasidona; los niveles aumentan hasta 9 veces","Toxicidad neurol\xf3gica grave, sedaci\xf3n profunda, hipotensi\xf3n severa, prolongaci\xf3n del QT","Contraindicado seg\xfan ficha t\xe9cnica de lurasidona. Usar azitromicina (no inhibe CYP3A4 significativamente) como alternativa antibi\xf3tica","CONTRAINDICADO \u2014 Lurasidona + Claritromicina: toxicidad neurol\xf3gica grave",B.h,B.e5e,B.b8])
 B.e1l=new A.d(["lurasidona","rifampicina",B.n,"Rifampicina, carbamazepina, fenito\xedna y fenobarbital inducen fuertemente CYP3A4; los niveles de lurasidona se reducen hasta un 80%","Fracaso terap\xe9utico total: reca\xedda psic\xf3tica o man\xedaca por niveles subterap\xe9uticos del antipsic\xf3tico","Contraindicado seg\xfan ficha t\xe9cnica. Cambiar a antipsic\xf3tico no dependiente de CYP3A4 (haloperidol, risperidona) durante el uso del inductor","FRACASO TERAP\xc9UTICO \u2014 Inductores enzim\xe1ticos anulan efecto de lurasidona",B.h,B.a5,B.bK])
-B.dPa=new A.d(["lurasidona","fluconazol",B.C,"Fluconazol (inhibidor moderado de CYP3A4 y potente de CYP2C19) duplica los niveles plasm\xe1ticos de lurasidona de forma sostenida","Sedaci\xf3n excesiva, hipotensi\xf3n ortost\xe1tica, prolongaci\xf3n del QTc con riesgo de arritmia","Contraindicado. Cambiar a itraconazol t\xf3pico u otro antif\xfangico sin efecto sobre CYP3A4","CONTRAINDICADO \u2014 Fluconazol duplica niveles de lurasidona",B.h,B.wK,B.fi])
+B.dPa=new A.d(["lurasidona","fluconazol",B.C,"Fluconazol (inhibidor moderado de CYP3A4 y potente de CYP2C19) duplica los niveles plasm\xe1ticos de lurasidona de forma sostenida","Sedaci\xf3n excesiva, hipotensi\xf3n ortost\xe1tica, prolongaci\xf3n del QTc con riesgo de arritmia","Contraindicado. Cambiar a itraconazol t\xf3pico u otro antif\xfangico sin efecto sobre CYP3A4","CONTRAINDICADO \u2014 Fluconazol duplica niveles de lurasidona",B.h,B.wK,B.fj])
 B.dY7=new A.d(["lurasidona","metoclopramida",B.n,"Ambos f\xe1rmacos antagonizan receptores dopamin\xe9rgicos D2 de forma aditiva; la suma del bloqueo dopamin\xe9rgico central supera el umbral de toxicidad extrapiramidal","Diston\xedas agudas dolorosas (crisis oculogira, tort\xedcolis), acatisia intensa, parkinsonismo farmacol\xf3gico","Evitar la combinaci\xf3n. Si se necesita antiem\xe9tico, preferir ondansetrona o domperidona (act\xfaa perif\xe9ricamente). Si ya ocurri\xf3 diston\xeda: difenhidramina 25-50 mg IV","DISTON\xcdA AGUDA \u2014 Bloqueo dopamin\xe9rgico aditivo con metoclopramida",B.h,B.Dv,B.b5])
 B.e3U=new A.au([B.fP,B.aP,B.e6],t.U)
 B.e1o=new A.d(["clozapina","ciprofloxacino",B.C,"Ciprofloxacino inhibe fuertemente CYP1A2, principal v\xeda de metabolismo de la clozapina; los niveles plasm\xe1ticos pueden aumentar 3-5 veces en 24-48 horas","Toxicidad por clozapina: convulsiones t\xf3nico-cl\xf3nicas generalizadas, colapso circulatorio, agranulocitosis acelerada, hipertermia","Contraindicado. Usar antibi\xf3tico alternativo: amoxicilina-clavul\xe1nico, piperacilina-tazobactam, trimetoprim (sin sulfametoxazol en clozapina). Si se debe usar ciprofloxacino: reducir clozapina al 33% y medir niveles diariamente","CONTRAINDICADO \u2014 Ciprofloxacino eleva clozapina: riesgo de convulsiones",B.h,B.e3U,B.a3])
@@ -170589,26 +170587,26 @@ B.e0Z=new A.d(["liraglutida","glibenclamida",B.n,"Los arGLP-1 aumentan la sensib
 B.bWe=A.a(s(["FDA Drug Label","UpToDate 2024","Goodman & Gilman 13\xaa ed."]),t.s)
 B.dT9=new A.d(["sumatriptano","isrs",B.n,"Ambos potencian la neurotransmisi\xf3n serotonin\xe9rgica central: los ISRS/IRSN inhiben la recaptaci\xf3n de 5-HT; los triptanes activan receptores 5-HT1B/1D presin\xe1pticos y pueden aumentar la liberaci\xf3n de serotonina en el rafe dorsal","S\xedndrome serotonin\xe9rgico moderado-severo: agitaci\xf3n, mioclonus, hiperreflexia, hipertermia, diaforesis, taquicardia; en casos graves: rabdomi\xf3lisis y CID","La FDA emiti\xf3 advertencia en 2010 pero evidencia actual sugiere que el riesgo es bajo con uso espor\xe1dico de triptanes a dosis habituales. Informar sobre s\xedntomas de s\xedndrome serotonin\xe9rgico. Evitar uso repetido frecuente de triptanes en pacientes con ISRS","S\xcdNDROME SEROTONIN\xc9RGICO \u2014 Triptanes + ISRS/IRSN: informar al paciente",B.db,B.cl,B.bWe])
 B.dTF=new A.d(["sumatriptano","linezolida",B.C,"Linezolida es un inhibidor reversible de la MAO (IMAO); bloquea la degradaci\xf3n de serotonina en la hendidura sin\xe1ptica; los triptanes activan receptores 5-HT1 y pueden aumentar la liberaci\xf3n de 5-HT","S\xedndrome serotonin\xe9rgico grave: hipertermia maligna, rigidez muscular, crisis hipertensiva, convulsiones, coma y muerte","Contraindicado. No usar triptanes dentro de las 24 horas de linezolida. Para el tratamiento de la migra\xf1a aguda, considerar AINEs + antiem\xe9ticos o paracetamol","CONTRAINDICADO \u2014 Triptanes + Linezolida: s\xedndrome serotonin\xe9rgico grave",B.h,B.cl,B.b8])
-B.dPm=new A.d(["eletriptano","claritromicina",B.C,"Claritromicina inhibe intensamente CYP3A4, principal v\xeda de metabolismo del eletript\xe1n; los niveles plasm\xe1ticos aumentan hasta 5 veces","Vasoespasmo coronario, opresi\xf3n tor\xe1cica severa, angina, isquemia mioc\xe1rdica transitoria por activaci\xf3n de receptores 5-HT1B vasculares","Contraindicado seg\xfan ficha t\xe9cnica del eletript\xe1n. No usar eletript\xe1n en las 72 horas siguientes a claritromicina. Usar sumatript\xe1n (no metabolizado por CYP3A4) como alternativa","CONTRAINDICADO \u2014 Eletript\xe1n + Claritromicina: vasoespasmo coronario",B.h,B.mi,B.fi])
-B.e_A=new A.d(["rimegepant","claritromicina",B.C,"Claritromicina inhibe fuertemente CYP3A4, principal v\xeda de metabolismo del rimegepant; el AUC del gepante aumenta m\xe1s de 3 veces","Toxicidad sist\xe9mica del gepante: nauseas severas, estre\xf1imiento, elevaci\xf3n de transaminasas, efectos vasculares inesperados","Contraindicado seg\xfan ficha t\xe9cnica de Nurtec (rimegepant). No usar otra dosis de rimegepant en las 48 h siguientes. Usar AINE o sumatript\xe1n como alternativa","CONTRAINDICADO \u2014 Rimegepant + Claritromicina: toxicidad del gepante triplicada",B.h,B.jS,B.fi])
+B.dPm=new A.d(["eletriptano","claritromicina",B.C,"Claritromicina inhibe intensamente CYP3A4, principal v\xeda de metabolismo del eletript\xe1n; los niveles plasm\xe1ticos aumentan hasta 5 veces","Vasoespasmo coronario, opresi\xf3n tor\xe1cica severa, angina, isquemia mioc\xe1rdica transitoria por activaci\xf3n de receptores 5-HT1B vasculares","Contraindicado seg\xfan ficha t\xe9cnica del eletript\xe1n. No usar eletript\xe1n en las 72 horas siguientes a claritromicina. Usar sumatript\xe1n (no metabolizado por CYP3A4) como alternativa","CONTRAINDICADO \u2014 Eletript\xe1n + Claritromicina: vasoespasmo coronario",B.h,B.mi,B.fj])
+B.e_A=new A.d(["rimegepant","claritromicina",B.C,"Claritromicina inhibe fuertemente CYP3A4, principal v\xeda de metabolismo del rimegepant; el AUC del gepante aumenta m\xe1s de 3 veces","Toxicidad sist\xe9mica del gepante: nauseas severas, estre\xf1imiento, elevaci\xf3n de transaminasas, efectos vasculares inesperados","Contraindicado seg\xfan ficha t\xe9cnica de Nurtec (rimegepant). No usar otra dosis de rimegepant en las 48 h siguientes. Usar AINE o sumatript\xe1n como alternativa","CONTRAINDICADO \u2014 Rimegepant + Claritromicina: toxicidad del gepante triplicada",B.h,B.jS,B.fj])
 B.dVS=new A.d(["sumatriptano","tramadol",B.C,"El tramadol inhibe la recaptaci\xf3n de serotonina y noradrenalina (mecanismo ISRN) y act\xfaa como opioide d\xe9bil; los triptanes activan receptores 5-HT1B/D; la combinaci\xf3n produce hiperserotonemia sin\xe9rgica","S\xedndrome serotonin\xe9rgico grave: convulsiones, rigidez muscular, hipertermia >41\xb0C, inestabilidad auton\xf3mica","Contraindicado. Usar alternativas para la cefalea (AINEs, paracetamol, naproxeno). Si ya se administraron ambos y aparecen s\xedntomas: ciproheptadina 4-8 mg y soporte intensivo","CONTRAINDICADO \u2014 Triptanes + tramadol: s\xedndrome serotonin\xe9rgico grave",B.h,B.qV,B.a3])
-B.dO0=new A.d(["lasmiditano","benzodiazep\xednico",B.n,"El lasmiditan act\xfaa sobre receptores 5-HT1F y produce sedaci\xf3n y mareos significativos como efectos secundarios directos; las benzodiazepinas deprimen el SNC de forma sin\xe9rgica","Somnolencia severa incapacitante, deterioro psicomotriz peligroso para la conducci\xf3n de veh\xedculos","Evitar conducir durante al menos 8 horas despu\xe9s de la dosis de lasmiditan. Informar al paciente de la suma de sedaci\xf3n con BZD. Considerar sumatript\xe1n o rimegepant como alternativas si el paciente toma BZD de forma cr\xf3nica","SEDACI\xd3N SEVERA \u2014 No conducir 8h tras lasmiditan; potenciado por BZD",B.h,B.fq,B.bK])
-B.e0u=new A.d(["lasmiditano","propranolol",B.n,"Propranolol reduce la eliminaci\xf3n de lasmiditan, aumentando sus niveles plasm\xe1ticos un 19%; la bradicardia basal por el betabloqueador se suma al efecto vagot\xf3nico del lasmiditan","Bradicardia sinusal severa, mareo significativo, riesgo de s\xedncope reflejo","Reducir dosis de lasmiditan a 50 mg (dosis m\xe1s baja disponible) en pacientes que toman propranolol. Monitorizar la frecuencia card\xedaca tras la dosis","BRADICARDIA \u2014 Reducir lasmiditan a 50 mg con propranolol",B.h,B.c3,B.fi])
+B.dO0=new A.d(["lasmiditano","benzodiazep\xednico",B.n,"El lasmiditan act\xfaa sobre receptores 5-HT1F y produce sedaci\xf3n y mareos significativos como efectos secundarios directos; las benzodiazepinas deprimen el SNC de forma sin\xe9rgica","Somnolencia severa incapacitante, deterioro psicomotriz peligroso para la conducci\xf3n de veh\xedculos","Evitar conducir durante al menos 8 horas despu\xe9s de la dosis de lasmiditan. Informar al paciente de la suma de sedaci\xf3n con BZD. Considerar sumatript\xe1n o rimegepant como alternativas si el paciente toma BZD de forma cr\xf3nica","SEDACI\xd3N SEVERA \u2014 No conducir 8h tras lasmiditan; potenciado por BZD",B.h,B.fr,B.bK])
+B.e0u=new A.d(["lasmiditano","propranolol",B.n,"Propranolol reduce la eliminaci\xf3n de lasmiditan, aumentando sus niveles plasm\xe1ticos un 19%; la bradicardia basal por el betabloqueador se suma al efecto vagot\xf3nico del lasmiditan","Bradicardia sinusal severa, mareo significativo, riesgo de s\xedncope reflejo","Reducir dosis de lasmiditan a 50 mg (dosis m\xe1s baja disponible) en pacientes que toman propranolol. Monitorizar la frecuencia card\xedaca tras la dosis","BRADICARDIA \u2014 Reducir lasmiditan a 50 mg con propranolol",B.h,B.c3,B.fj])
 B.dUa=new A.d(["rimegepant","fluconazol",B.n,"Fluconazol inhibe CYP3A4 de forma moderada y CYP2C19 potentemente; aumenta el AUC del rimegepant hasta un 40-60%","Aumento de efectos adversos del gepante: n\xe1useas, estre\xf1imiento, fatiga","Reducir a la mitad la frecuencia de dosis de rimegepant. No usar m\xe1s de una vez cada 96 horas con fluconazol. Considerar AINE o tript\xe1n alternativo","TOXICIDAD AUMENTADA \u2014 Fluconazol eleva rimegepant 40-60%",B.y,B.jS,B.bK])
-B.dNa=new A.d(["atogepant","claritromicina",B.n,"Claritromicina inhibe CYP3A4; el atogepant es sustrato de CYP3A4 con moderada extracci\xf3n hep\xe1tica; los niveles aumentan aproximadamente 2-3 veces","Toxicidad del gepante: n\xe1useas, elevaci\xf3n de enzimas hep\xe1ticas, estre\xf1imiento severo","Reducir dosis de atogepant a 10 mg (dosis m\xednima) al usar claritromicina. Evitar la combinaci\xf3n si es posible. Usar eritromicina t\xf3pica o amoxicilina si se necesita antibi\xf3tico","REDUCIR DOSIS \u2014 Atogepant a 10 mg con claritromicina",B.h,B.fo,B.fi])
+B.dNa=new A.d(["atogepant","claritromicina",B.n,"Claritromicina inhibe CYP3A4; el atogepant es sustrato de CYP3A4 con moderada extracci\xf3n hep\xe1tica; los niveles aumentan aproximadamente 2-3 veces","Toxicidad del gepante: n\xe1useas, elevaci\xf3n de enzimas hep\xe1ticas, estre\xf1imiento severo","Reducir dosis de atogepant a 10 mg (dosis m\xednima) al usar claritromicina. Evitar la combinaci\xf3n si es posible. Usar eritromicina t\xf3pica o amoxicilina si se necesita antibi\xf3tico","REDUCIR DOSIS \u2014 Atogepant a 10 mg con claritromicina",B.h,B.fp,B.fj])
 B.dW7=new A.d(["upadacitinibe","claritromicina",B.C,"Claritromicina inhibe fuertemente CYP3A4, la principal v\xeda metab\xf3lica del upadacitinib; los niveles plasm\xe1ticos pueden triplicarse","Toxicidad hematol\xf3gica del inhibidor de JAK: neutropenia grave, linfopenia, anemia, trombocitopenia; riesgo de infecciones oportunistas mortales","Contraindicado durante el tratamiento con upadacitinib (Rinvoq). Usar amoxicilina o azitromicina como alternativa antibi\xf3tica","CONTRAINDICADO \u2014 Claritromicina triplica upadacitinib: toxicidad hematol\xf3gica",B.h,B.a4y,B.bK])
-B.dMv=new A.d(["upadacitinibe","rifampicina",B.n,"Rifampicina es inductor potente de CYP3A4; reduce los niveles de upadacitinib en aproximadamente un 60%, eliminando su eficacia en EII","Fracaso terap\xe9utico: reactivaci\xf3n de la EII (colitis ulcerosa o enfermedad de Crohn)","Contraindicado seg\xfan ficha t\xe9cnica. Cambiar el antibi\xf3tico o el esquema de tratamiento para EII. Si se debe usar rifampicina, suspender el inhibidor de JAK y monitorear la actividad de la enfermedad","FRACASO TERAP\xc9UTICO \u2014 Rifampicina elimina eficacia de upadacitinib",B.h,B.a5,B.fi])
-B.Dt=new A.au([B.cg,B.fm],t.U)
-B.dQs=new A.d(["ozanimodo","linezolida",B.C,"El ozanimod produce un metabolito activo mayor (CC112273) que inhibe la MAO-B y levemente la MAO-A; la linezolida tambi\xe9n inhibe la MAO; la combinaci\xf3n puede producir crisis hipertensivas graves","Crisis hipertensiva severa, accidente cerebrovascular isqu\xe9mico, s\xedndrome serotonin\xe9rgico","Contraindicado seg\xfan ficha t\xe9cnica de Zeposia (ozanimod). Suspender ozanimod al menos 3 d\xedas antes de iniciar linezolida","CONTRAINDICADO \u2014 Ozanimod + Linezolida: crisis hipertensiva y s\xedndrome serotonin\xe9rgico",B.h,B.Dt,B.fi])
+B.dMv=new A.d(["upadacitinibe","rifampicina",B.n,"Rifampicina es inductor potente de CYP3A4; reduce los niveles de upadacitinib en aproximadamente un 60%, eliminando su eficacia en EII","Fracaso terap\xe9utico: reactivaci\xf3n de la EII (colitis ulcerosa o enfermedad de Crohn)","Contraindicado seg\xfan ficha t\xe9cnica. Cambiar el antibi\xf3tico o el esquema de tratamiento para EII. Si se debe usar rifampicina, suspender el inhibidor de JAK y monitorear la actividad de la enfermedad","FRACASO TERAP\xc9UTICO \u2014 Rifampicina elimina eficacia de upadacitinib",B.h,B.a5,B.fj])
+B.Dt=new A.au([B.cg,B.fn],t.U)
+B.dQs=new A.d(["ozanimodo","linezolida",B.C,"El ozanimod produce un metabolito activo mayor (CC112273) que inhibe la MAO-B y levemente la MAO-A; la linezolida tambi\xe9n inhibe la MAO; la combinaci\xf3n puede producir crisis hipertensivas graves","Crisis hipertensiva severa, accidente cerebrovascular isqu\xe9mico, s\xedndrome serotonin\xe9rgico","Contraindicado seg\xfan ficha t\xe9cnica de Zeposia (ozanimod). Suspender ozanimod al menos 3 d\xedas antes de iniciar linezolida","CONTRAINDICADO \u2014 Ozanimod + Linezolida: crisis hipertensiva y s\xedndrome serotonin\xe9rgico",B.h,B.Dt,B.fj])
 B.dYQ=new A.d(["ozanimodo","metoprolol",B.n,"Los moduladores de S1P (ozanimod, etrasimod) producen bradicardia significativa al inicio por secuestro de linfocitos en ganglios linf\xe1ticos y efecto directo sobre el n\xf3dulo SA; los betabloqueadores suman efecto cronotr\xf3pico negativo","Bradicardia severa (<40 lpm), bloqueo AV de 2.\xb0-3.\xb0 grado, s\xedncope, shock cardiog\xe9nico","Realizar ECG antes de iniciar el modulador S1P. Monitorear FC y ECG durante las primeras 6 horas de la primera dosis. Considerar el ingreso hospitalario para la primera dosis en pacientes con betabloqueadores. Si la FC <40 lpm: suspender el modulador S1P","BRADICARDIA GRAVE \u2014 Monitoreo ECG 6h en primera dosis de ozanimod + betabloqueador",B.h,B.dL,B.bK])
-B.dUS=new A.d(["ozanimodo","amitriptilina",B.C,"El metabolito activo del ozanimod inhibe MAO-B; la amitriptilina es un TCA con propiedades adren\xe9rgicas e inhibidor d\xe9bil de la MAO; la combinaci\xf3n puede producir s\xedndrome serotonin\xe9rgico y crisis hipertensivas","Crisis hipertensiva, s\xedndrome serotonin\xe9rgico, arritmias por activaci\xf3n adren\xe9rgica","Contraindicado. Cambiar a un antidepresivo sin actividad sobre la MAO (ISRS con precauci\xf3n, o mirtazapina)","CONTRAINDICADO \u2014 Ozanimod + Amitriptilina: crisis hipertensiva",B.h,B.Dt,B.fi])
+B.dUS=new A.d(["ozanimodo","amitriptilina",B.C,"El metabolito activo del ozanimod inhibe MAO-B; la amitriptilina es un TCA con propiedades adren\xe9rgicas e inhibidor d\xe9bil de la MAO; la combinaci\xf3n puede producir s\xedndrome serotonin\xe9rgico y crisis hipertensivas","Crisis hipertensiva, s\xedndrome serotonin\xe9rgico, arritmias por activaci\xf3n adren\xe9rgica","Contraindicado. Cambiar a un antidepresivo sin actividad sobre la MAO (ISRS con precauci\xf3n, o mirtazapina)","CONTRAINDICADO \u2014 Ozanimod + Amitriptilina: crisis hipertensiva",B.h,B.Dt,B.fj])
 B.e0y=new A.d(["sulfassalazina","warfarina",B.n,"La sulfasalazina puede desplazar a la warfarina de su uni\xf3n a la alb\xfamina plasm\xe1tica (90-99% unida a prote\xednas) y alterar la s\xedntesis de vitamina K por la flora intestinal","Elevaci\xf3n del INR con riesgo de hemorragia mayor; efecto m\xe1s pronunciado en las primeras 2 semanas","Medir INR antes de iniciar sulfasalazina y a los 7 y 14 d\xedas del inicio. Ajustar dosis de warfarina seg\xfan resultados. Informar al paciente sobre signos de sangrado","MONITOREO INR \u2014 Sulfasalazina desplaza warfarina: riesgo hemorr\xe1gico",B.y,B.bs,B.v])
 B.e4E=new A.au([B.e6,B.fQ],t.U)
 B.dO5=new A.d(["sulfassalazina","sulfametoxazol",B.C,"Duplicaci\xf3n de estructura sulfonam\xeddica: ambas son derivados de sulfonamidas. Suma de toxicidad hematol\xf3gica (inhibici\xf3n de folato) y dermatol\xf3gica","Aplasia medular grave, agranulocitosis, s\xedndrome de Stevens-Johnson, necr\xf3lisis epid\xe9rmica t\xf3xica","Contraindicado. Usar trimetoprima sola o nitrofuranto\xedna como alternativa antibi\xf3tica en el contexto de la EII","CONTRAINDICADO \u2014 Doble sulfonamida: aplasia medular y Stevens-Johnson",B.h,B.e4E,B.v])
 B.aMQ=A.a(s(["FDA Drug Label","Goodman & Gilman 13\xaa ed.","Micromedex 2024","UpToDate 2024"]),t.s)
 B.dMY=new A.d(["gemfibrozil","sinvastatina",B.C,"Gemfibrozilo inhibe la glucuronidaci\xf3n (UGT1A1/UGT1A3) de las estatinas y CYP2C8; los niveles de simvastatina y lovastatina aumentan hasta 4-5 veces sin posibilidad de compensaci\xf3n metab\xf3lica","Rabdomi\xf3lisis masiva y fulminante: mioglobinuria marr\xf3n oscura, insuficiencia renal an\xfarica, hiperpotasemia fatal por liberaci\xf3n masiva de potasio intramuscular","Contraindicado absolutamente (FDA). Si el paciente necesita un fibrato con estatina, usar fenofibrato + estatina (interacci\xf3n significativamente menor). El bezafibrato tambi\xe9n es m\xe1s seguro que gemfibrozilo con estatinas","CONTRAINDICADO FDA \u2014 Rabdomi\xf3lisis fatal: Gemfibrozilo + Simvastatina/Lovastatina",B.h,B.oo,B.aMQ])
 B.dJj=new A.d(["gemfibrozil","atorvastatina",B.n,"Gemfibrozilo inhibe la glucuronidaci\xf3n y OATP1B1; los niveles de atorvastatina aumentan 1.8 veces; menor que simvastatina pero cl\xednicamente relevante","Miopat\xeda, elevaci\xf3n de CPK, riesgo de rabdomi\xf3lisis especialmente en pacientes con IRC o hipotiroidismo","Evitar si es posible. Si la combinaci\xf3n es necesaria: usar dosis m\xednima de atorvastatina (10 mg), monitorear CPK mensualmente. Instruir al paciente para reportar dolor muscular o debilidad","MIOPAT\xcdA \u2014 Monitorear CPK mensual con gemfibrozilo + atorvastatina",B.h,B.cT,B.uC])
-B.dNL=new A.d(["acido bempedoico","sinvastatina",B.C,"El \xe1cido bempedoico inhibe el transportador OAT2 y comparte v\xedas de excreci\xf3n con simvastatina y lovastatina; los niveles de estas estatinas aumentan hasta un 60-70%","Miopat\xeda severa, rabdomi\xf3lisis, insuficiencia renal aguda","Contraindicado superar 20 mg de simvastatina y 20 mg de lovastatina durante el uso de \xe1cido bempedoico. Cambiar preferiblemente a rosuvastatina (no afectada significativamente por bempedoico)","CONTRAINDICADO >20mg \u2014 \xc1cido bempedoico eleva simvastatina: rabdomi\xf3lisis",B.h,B.cT,B.fi])
+B.dNL=new A.d(["acido bempedoico","sinvastatina",B.C,"El \xe1cido bempedoico inhibe el transportador OAT2 y comparte v\xedas de excreci\xf3n con simvastatina y lovastatina; los niveles de estas estatinas aumentan hasta un 60-70%","Miopat\xeda severa, rabdomi\xf3lisis, insuficiencia renal aguda","Contraindicado superar 20 mg de simvastatina y 20 mg de lovastatina durante el uso de \xe1cido bempedoico. Cambiar preferiblemente a rosuvastatina (no afectada significativamente por bempedoico)","CONTRAINDICADO >20mg \u2014 \xc1cido bempedoico eleva simvastatina: rabdomi\xf3lisis",B.h,B.cT,B.fj])
 B.dOJ=new A.d(["acido bempedoico","alopurinol",B.n,"El \xe1cido bempedoico inhibe el transportador OAT1/OAT3 renal, reduciendo la excreci\xf3n de \xe1cido \xfarico; los niveles de urato s\xe9rico aumentan 1.5-2 mg/dL sobre la l\xednea basal","Hiperuricemia sintom\xe1tica, crisis aguda de gota articular (tof\xe1cea), nefrolitiasis \xfarica","Monitorear \xe1cido \xfarico s\xe9rico al inicio y a los 3 meses. Ajustar dosis de alopurinol seg\xfan niveles de urato objetivo (<6 mg/dL). Instruir al paciente sobre s\xedntomas de gota","HIPERURICEMIA \u2014 Bempedoico + diur\xe9ticos tiaz\xeddicos: crisis de gota",B.h,B.aI,B.bK])
 B.dPY=new A.d(["icosapento de etilo","warfarina",B.n,"El EPA puro (icosapento) inhibe la funci\xf3n plaquetaria (inhibici\xf3n de TXA2) y puede afectar la s\xedntesis de factores de coagulaci\xf3n dependientes de vitamina K de forma secundaria; efecto anticoagulante aditivo sin alterar necesariamente el INR est\xe1ndar","Hemorragia mayor espont\xe1nea: sangrado gastrointestinal, hemorragia intracraneal, hematomas musculares extensos con INR dentro del rango terap\xe9utico","Monitorear signos de sangrado activamente. El INR puede no reflejar el riesgo hemorr\xe1gico real. En pacientes anticoagulados que inician Vascepa: considerar revisi\xf3n del balance riesgo-beneficio. Control en 4 semanas","SANGRADO MAYOR \u2014 Icosapento de etilo potencia anticoagulaci\xf3n sin alterar INR",B.h,B.aD,B.fG])
 B.dI_=new A.d(["icosapento de etilo","ticagrelor",B.n,"Ambos tienen efectos antiagregantes plaquetarios; el icosapento inhibe la s\xedntesis de TXA2 (similar al AAS) y el ticagrelor bloquea el receptor P2Y12; la acci\xf3n antiagregante es aditiva","Sangrado gastrointestinal oculto, hemorragia subaguda en sitios de punci\xf3n, epistaxis frecuente","Monitorear signos de sangrado gastrointestinal (heces oscuras, epigastralgia). En procedimientos invasivos planificados: suspender icosapento 5-7 d\xedas antes","SANGRADO AUMENTADO \u2014 Doble antiagregaci\xf3n con icosapento + ticagrelor",B.y,B.aD,B.Bs])
@@ -170648,7 +170646,7 @@ B.e0H=new A.d(["goserelina","isrs",B.n,"Los an\xe1logos de GnRH (goserelina, leu
 B.dP7=new A.d(["ganciclovir","imipenem",B.n,"Ambos f\xe1rmacos tienen actividad convuls\xedgena independiente: el imipenem reduce el umbral convulsivo por bloqueo de receptores GABA-A, y el ganciclovir puede producir neurotoxicidad directa; la combinaci\xf3n tiene efecto aditivo o sin\xe9rgico sobre el SNC","Convulsiones generalizadas t\xf3nico-cl\xf3nicas, especialmente en pacientes con disfunci\xf3n renal (mayor acumulaci\xf3n de ambos) o da\xf1o neurol\xf3gico previo","Evitar la combinaci\xf3n siempre que sea posible. Si ambos son indispensables: reducir dosis seg\xfan TFG, monitoreo neurol\xf3gico continuo, considerar profilaxis anticonvulsiva con valproato o levetiracetam","CONVULSIONES \u2014 Imipenem + Ganciclovir: toxicidad aditiva del SNC",B.h,B.wH,B.v])
 B.dQL=new A.d(["ganciclovir","metronidazol",B.n,"El ganciclovir causa mielodepresi\xf3n significativa (neutropenia, trombocitopenia); el trimetoprim-sulfametoxazol tambi\xe9n inhibe la s\xedntesis de folato con toxicidad hematol\xf3gica; la suma produce aplasia de la m\xe9dula \xf3sea m\xe1s profunda","Neutropenia severa (<500/mm\xb3), trombocitopenia grave, anemia apl\xe1sica, riesgo de infecciones bacterianas oportunistas fatales","Monitorear hemograma completo 2 veces por semana durante la combinaci\xf3n. Si neutr\xf3filos <500/mm\xb3: suspender uno de los f\xe1rmacos (preferentemente el cotrimoxazol si hay alternativa). Considerar filgrastim (G-CSF) para recuperar neutr\xf3filos","APLASIA MEDULAR \u2014 Monitorear hemograma 2\xd7/semana con ganciclovir + cotrimoxazol",B.h,B.kS,B.a3])
 B.dJr=new A.d(["caspofungina","rifampicina",B.n,"Rifampicina induce el aclaramiento hep\xe1tico de la caspofungina por mecanismos complejos de transporte (no CYP450); el AUC de caspofungina cae hasta un 30% durante el tratamiento concomitante con rifampicina","Niveles subterap\xe9uticos de caspofungina con riesgo de fracaso en el tratamiento de candidemia o aspergilosis invasiva","Seg\xfan ficha t\xe9cnica: usar dosis aumentada de caspofungina (70 mg/d\xeda en lugar de 50 mg/d\xeda en adultos) durante el tratamiento con rifampicina. Monitorear la respuesta cl\xednica y microbiol\xf3gica de forma estricta","AUMENTAR DOSIS \u2014 Caspofungina a 70 mg/d\xeda durante el tratamiento con rifampicina",B.h,B.a5,B.bK])
-B.dKu=new A.d(["ozanimodo","diltiazem",B.n,"Los moduladores de S1P (ozanimod, etrasimod) producen bradicardia significativa al inicio del tratamiento por efecto directo sobre el n\xf3dulo SA; el diltiazem tiene efecto cronotr\xf3pico e inotr\xf3pico negativo aditivo","Bradicardia extrema (<40 lpm), bloqueo AV de 2.\xb0-3.\xb0 grado, hipotensi\xf3n severa, s\xedncope","Mismo protocolo que con betabloqueadores: ECG basal, monitoreo de FC durante las primeras 6 horas de la primera dosis del modulador S1P. Reducir dosis de diltiazem a la m\xednima efectiva antes de iniciar ozanimod","BRADICARDIA GRAVE \u2014 ECG obligatorio en primera dosis de ozanimod con diltiazem",B.h,B.dL,B.fi])
+B.dKu=new A.d(["ozanimodo","diltiazem",B.n,"Los moduladores de S1P (ozanimod, etrasimod) producen bradicardia significativa al inicio del tratamiento por efecto directo sobre el n\xf3dulo SA; el diltiazem tiene efecto cronotr\xf3pico e inotr\xf3pico negativo aditivo","Bradicardia extrema (<40 lpm), bloqueo AV de 2.\xb0-3.\xb0 grado, hipotensi\xf3n severa, s\xedncope","Mismo protocolo que con betabloqueadores: ECG basal, monitoreo de FC durante las primeras 6 horas de la primera dosis del modulador S1P. Reducir dosis de diltiazem a la m\xednima efectiva antes de iniciar ozanimod","BRADICARDIA GRAVE \u2014 ECG obligatorio en primera dosis de ozanimod con diltiazem",B.h,B.dL,B.fj])
 B.dKb=new A.d(["espironolactona","losartana",B.n,"Ambos f\xe1rmacos retienen potasio: la espironolactona bloquea el receptor mineralocorticoide (aldosterona) y los ARA-II reducen la s\xedntesis de aldosterona; la hiperpotasemia es el resultado de la suma de ambos efectos","Hiperpotasemia severa (K+ >5.5-6.5 mEq/L): debilidad muscular, par\xe1lisis, arritmias ventriculares letales, paro card\xedaco; riesgo especialmente alto en pacientes con IRC o diabetes","Monitorizar K+ y creatinina s\xe9rica a los 7 y 14 d\xedas del inicio de la combinaci\xf3n, luego mensualmente. Objetivo K+ <5.0 mEq/L. Advertir sobre alimentos ricos en potasio (pl\xe1tano, naranja). Ajustar dosis de espironolactona seg\xfan K+","HIPERPOTASEMIA GRAVE \u2014 Monitorear K+ semanal con espironolactona + ARA-II",B.h,B.j7,B.a3])
 B.e_m=new A.d(["adalimumabe","vacuna",B.C,"Los anticuerpos monoclonales anti-TNF (infliximab, adalimumab, golimumab) y otros biol\xf3gicos (ustekinumab, risankizumab, ozanimod) producen inmunosupresi\xf3n profunda que impide la respuesta protectora contra los pat\xf3genos vacunales vivos atenuados","Infecci\xf3n diseminada potencialmente fatal por el organismo vacunal: tuberculosis miliar por BCG, varicela diseminada, sarampi\xf3n progresivo, fiebre amarilla generalizada","Contraindicado de forma absoluta durante la terapia biol\xf3gica. Las vacunas vivas deben administrarse al menos 4 semanas antes de iniciar el biol\xf3gico. Despu\xe9s de suspender el biol\xf3gico: esperar 3-6 meses (dependiendo de la vida media) antes de administrar vacunas vivas. Vacunas inactivadas son seguras durante la terapia","CONTRAINDICADO \u2014 Vacunas vivas en biol\xf3gicos: infecci\xf3n diseminada mortal",B.h,B.fR,B.uS])
 B.a4k=new A.au([B.i4,B.e6],t.U)
@@ -170658,7 +170656,7 @@ B.dOm=new A.d(["roxadustat","atorvastatina",B.n,"El roxadustat (y otros inhibido
 B.dJP=new A.d(["hierro sacarato","ferritina",B.n,"El hierro endovenoso satura los dep\xf3sitos y eleva los niveles de hepcidina hep\xe1tica de forma aguda; la hepcidina bloquea el transportador ferroportina intestinal, inhibiendo completamente la absorci\xf3n intestinal del hierro oral hasta por 24-48 horas","Reducci\xf3n marcada de la absorci\xf3n del hierro oral suplementario, resultando en tratamiento ineficaz de la anemia ferrop\xe9nica si se dan simult\xe1neamente","No administrar hierro oral dentro de las 24-48 horas del hierro IV. Instruir al paciente que si recibe hierro IV en infusi\xf3n, suspenda el hierro oral ese d\xeda y el siguiente. La suplementaci\xf3n oral puede reanudarse a las 48 horas de la infusi\xf3n IV","INEFICACIA \u2014 No dar hierro oral en las 48h del hierro IV: hepcidina bloquea absorci\xf3n",B.h,B.a5,B.b5])
 B.dVM=new A.d(["mizolastina","claritromicina",B.C,"Claritromicina inhibe CYP3A4, la \xfanica v\xeda de metabolismo de la mizolastina; los niveles plasm\xe1ticos de la mizolastina aumentan de forma sustancial con riesgo de toxicidad card\xedaca","Prolongaci\xf3n del intervalo QTc, Torsades de Pointes, arritmias ventriculares graves y muerte s\xfabita card\xedaca","Contraindicado seg\xfan ficha t\xe9cnica de Mizollen (mizolastina). Sustituir por un antihistam\xednico sin efecto QT: cetirizina, loratadina o fexofenadina (metabolismo hep\xe1tico diferente)","CONTRAINDICADO \u2014 Mizolastina + Claritromicina: Torsades de Pointes",B.h,B.aQ,B.b8])
 B.dSF=new A.d(["mometasona","fluconazol",B.n,"Los antif\xfangicos az\xf3licos potentes (itraconazol, ketoconazol) inhiben intensamente CYP3A4; aunque los corticoides inhalados tienen baja biodisponibilidad sist\xe9mica normalmente, su metabolismo CYP3A4 se bloquea con az\xf3licos potentes, aumentando la absorci\xf3n sist\xe9mica significativamente","S\xedndrome de Cushing iatrog\xe9nico: cara de luna llena, distribuci\xf3n central de grasa, estr\xedas viol\xe1ceas, hipertensi\xf3n, hiperglucemia; supresi\xf3n del eje HHA con riesgo de insuficiencia adrenal al suspender el corticoide","Evitar la combinaci\xf3n con itraconazol/ketoconazol sist\xe9micos. Con fluconazol a dosis est\xe1ndar: monitorear signos de Cushing. Considerar beclometasona dipropionato (metabolismo pulmonar diferente, menor interacci\xf3n) como alternativa de corticoide inhalado","S\xcdNDROME DE CUSHING \u2014 Azoles sist\xe9micos elevan corticoides inhalados: supresi\xf3n adrenal",B.h,B.Dv,B.iP])
-B.dTz=new A.d(["rosuvastatina","roxadustat",B.n,"Roxadustat inhibe los transportadores OATP1B1 y BCRP; la rosuvastatina es el sustrato m\xe1s sensible de ambos transportadores; el AUC de la rosuvastatina puede aumentar hasta un 130% con roxadustat","Miopat\xeda grave, elevaci\xf3n marcada de CPK, riesgo de rabdomi\xf3lisis especialmente en pacientes con IRC (que ya tienen mayor riesgo de miopat\xeda)","Reducir la dosis de rosuvastatina al 50% (m\xe1x 10 mg/d\xeda) en pacientes que inician roxadustat. Medir CPK basalmente y a los 30 d\xedas. Si CPK >5\xd7 LSN: suspender la rosuvastatina. Monitoreo cl\xednico de dolor muscular y debilidad","MIOPAT\xcdA \u2014 Reducir rosuvastatina 50% con roxadustat (inhibici\xf3n OATP1B1/BCRP)",B.h,B.cT,B.fi])
+B.dTz=new A.d(["rosuvastatina","roxadustat",B.n,"Roxadustat inhibe los transportadores OATP1B1 y BCRP; la rosuvastatina es el sustrato m\xe1s sensible de ambos transportadores; el AUC de la rosuvastatina puede aumentar hasta un 130% con roxadustat","Miopat\xeda grave, elevaci\xf3n marcada de CPK, riesgo de rabdomi\xf3lisis especialmente en pacientes con IRC (que ya tienen mayor riesgo de miopat\xeda)","Reducir la dosis de rosuvastatina al 50% (m\xe1x 10 mg/d\xeda) en pacientes que inician roxadustat. Medir CPK basalmente y a los 30 d\xedas. Si CPK >5\xd7 LSN: suspender la rosuvastatina. Monitoreo cl\xednico de dolor muscular y debilidad","MIOPAT\xcdA \u2014 Reducir rosuvastatina 50% con roxadustat (inhibici\xf3n OATP1B1/BCRP)",B.h,B.cT,B.fj])
 B.dPl=new A.d(["dapagliflozina","espironolactona",B.n,"Os iSGLT2 causam diurese osm\xf3tica e natriurese; a espironolactona causa reten\xe7\xe3o de pot\xe1ssio e perda de s\xf3dio; a deple\xe7\xe3o de s\xf3dio cumulativa pode precipitar hipovolemia severa, especialmente en ancianos","Hipotensi\xf3n ortost\xe1tica, insuficiencia renal aguda por hipoperfus\xe3o, hiperpotasemia se houver IRC subjacente","Monitorar PA postural, creatinina e K+ nas semanas 1, 2 e 4. Instruir o paciente a hidratar-se adecuadamente","HIPOVOLEMIA \u2014 Monitorar PA e K+ ao combinar iSGLT2 + espironolactona",B.y,B.qS,B.Bs])
 B.dTH=new A.d(["metformina","ciprofloxacino",B.n,"As quinolonas podem causar tanto hipoglucemia (estimula\xe7\xe3o de secre\xe7\xe3o insul\xednica) quanto hiperglucemia (inhibici\xf3n de la secre\xe7\xe3o); en diab\xe9ticos com metformina o efecto l\xedquido \xe9 impredecible","Hipoglucemia ou hiperglucemia inesperada e potencialmente grave, especialmente en ancianos","Monitorar glucemia diariamente durante o tratamiento com quinolonas. Orientar al paciente sobre sintomas de hipoglucemia","GLICEMIA INST\xc1VEL \u2014 Monitorar glucemia com quinolonas + antidiab\xe9ticos",B.h,B.a4e,B.v])
 B.dX6=new A.d(["rifampicina","warfarina",B.n,"Rifampicina \xe9 o inductor mais potente do CYP2C9 (metabolismo de la S-varfarina); o AUC da varfarina pode cair at\xe9 90% em 1 semana de rifampicina","Trombose ou embolia por nivel subterap\xe9utico de anticoagula\xe7\xe3o; al suspender rifampicina, riesgo de hemorragia por acumulaci\xf3n r\xe1pida de varfarina","Aumentar dosis de varfarina em at\xe9 5-10 vezes al iniciar rifampicina, com controle di\xe1rio de INR. Al suspender rifampicina: reduzir warfarina inmediatamente e monitorar INR a cada 2-3 dias por 2 semanas","FALHA ANTICOAGULA\xc7\xc3O \u2014 Rifampicina reduz varfarina 90%: INR di\xe1rio obligatorio",B.h,B.a4q,B.a3])
@@ -170698,10 +170696,10 @@ B.dNS=new A.d(["volanesorsen","varfarina",B.u,"Volanesorsen (oligonucleot\xeddeo
 B.dYn=new A.d(["roxadustate","varfarina",B.n,"Roxadustate inibe o CYP2C9 e a enzima HIF prolil-hidroxilase; como a varfarina \xe9 metabolizada principalmente pelo CYP2C9 (S-varfarina, mais potente), a inhibici\xf3n aumenta significativamente os niveles de S-varfarina e o efecto anticoagulante; INR pode aumentar 30\u201340%","Sangrado grave por supracoagula\xe7\xe3o: hemorragia intracraniana, digestiva maci\xe7a, retroperitoneal; INR suprateap\xeautico (> 4)","Monitorar INR com maior frecuencia al iniciar ou suspender roxadustate (a cada 3 dias na primeira semana, depois semanalmente por 4 semanas). Ajustar dosis de varfarina com base no INR. Considerar anticoagulante n\xe3o warfar\xednico (DOAC) en pacientes renais cr\xf4nicos com TFG adecuado","INR aumentado 30\u201340% \u2014 Roxadustate inibe CYP2C9: ajustar varfarina urgente",B.y,B.bs,B.c1])
 B.dXn=new A.d(["ferro_sacarato","ceftriaxona",B.be,"O ferro intravenoso n\xe3o apresenta interacci\xf3n farmacocin\xe9tica clinicamente significativa com cefalosporinas; no entanto, ferro dextrano pode formar complexos com algumas drogas se infundido simult\xe1neamente no mesmo acesso venoso","Forma\xe7\xe3o de precipitado ou complexo insoluble se misturado no mesmo equipo IV; potencial reducci\xf3n de la atividade antibi\xf3tica","N\xe3o infundir ferro IV simult\xe1neamente no mesmo acesso que antibi\xf3ticos. Usar via IV separada ou flush com SF 0,9% entre infus\xf5es. Ferro sacarato e gluconato de ferro t\xeam menor riesgo que dextrano","N\xe3o misturar na mesma via \u2014 Ferro IV + Antibi\xf3ticos: usar vias separadas",B.hl,B.aI,B.bj])
 B.dQN=new A.d(["metoclopramida","fluoxetina",B.n,"Metoclopramida antagoniza receptores D2 e tem efecto agonista serotonin\xe9rgico (5-HT4); ISRS inibem a recapta\xe7\xe3o de serotonina; a combinaci\xf3n pode precipitar s\xedndrome serotonin\xe9rgica, especialmente em dosiss elevadas ou uso prolongado; metoclopramida tamb\xe9m inibe o CYP2D6 que metaboliza fluoxetina","S\xedndrome serotonin\xe9rgica: tremor, agita\xe7\xe3o, confus\xe3o, hiperreflexia, mioclonias, sudorese, taquicardia, hipertermia; casos graves com rabdomi\xf3lisis e insufici\xeancia de m\xfaltiplos \xf3rg\xe3os","Evitar uso concomitante prolongado. Se necesario para n\xe1useas agudas, limitar a dosiss \xfanicas e curtos per\xedodos. Preferir ondansetrona (antagonista 5-HT3) para n\xe1useas en pacientes em ISRS. Monitorar signos de toxicidad serotonin\xe9rgica","S\xedndrome serotonin\xe9rgica \u2014 Metoclopramida + ISRS: preferir ondansetrona",B.y,B.wL,B.a3])
-B.dSa=new A.d(["metoclopramida","haloperidol",B.n,"Ambos bloqueiam receptores D2 dopamin\xe9rgicos no sistema nigroestriatal e mesol\xedmbico; a combinaci\xf3n causa bloqueio dopamin\xe9rgico aditivo no estriado, aumentando dr\xe1sticamente o riesgo de reacciones extrapiramidais agudas","Distonia aguda (torcicolo, crise oculog\xedrica, trismo), acatisia, parkinsonismo farmacol\xf3gico agudo; raramente s\xedndrome neurol\xe9ptica maligna com hipertermia e rigidez","Contraindicar combinaci\xf3n de rotina. Se antiem\xe9tico for necesario em paciente em antipsic\xf3tico, preferir ondansetrona. Se ocorrer distonia aguda, administrar biperideno 5 mg IM ou difenidramina IV","Extrapiramidal grave \u2014 Metoclopramida + Antipsic\xf3tico: antagonismo D2 aditivo",B.h,B.fq,B.h1])
+B.dSa=new A.d(["metoclopramida","haloperidol",B.n,"Ambos bloqueiam receptores D2 dopamin\xe9rgicos no sistema nigroestriatal e mesol\xedmbico; a combinaci\xf3n causa bloqueio dopamin\xe9rgico aditivo no estriado, aumentando dr\xe1sticamente o riesgo de reacciones extrapiramidais agudas","Distonia aguda (torcicolo, crise oculog\xedrica, trismo), acatisia, parkinsonismo farmacol\xf3gico agudo; raramente s\xedndrome neurol\xe9ptica maligna com hipertermia e rigidez","Contraindicar combinaci\xf3n de rotina. Se antiem\xe9tico for necesario em paciente em antipsic\xf3tico, preferir ondansetrona. Se ocorrer distonia aguda, administrar biperideno 5 mg IM ou difenidramina IV","Extrapiramidal grave \u2014 Metoclopramida + Antipsic\xf3tico: antagonismo D2 aditivo",B.h,B.fr,B.h1])
 B.dMM=new A.d(["domperidona","amiodarona",B.C,"Domperidona bloqueia canais hERG (IKr) de forma dosis-dependente, prolongando o intervalo QT; amiodarona tamb\xe9m prolonga o QTc por m\xfaltiplos mecanismos (bloqueio IKr, IKs, INa); a combinaci\xf3n causa prolongamento aditivo do QT com alto riesgo de torsades de pointes","Torsades de pointes (TV polim\xf3rfica), fibrilaci\xf3n ventricular, morte s\xfabita card\xedaca; QTc > 500 ms","Contraindicado. Amiodarona consta como f\xe1rmaco contraindicado com domperidona nas bulas europeias. Usar metoclopramida (com cautela) ou ondansetrona como alternativas. Monitorar ECG se combinaci\xf3n inadvertida ocorrer","CONTRAINDICADO \u2014 Domperidona + Amiodarona: QT longo fatal",B.h,B.aQ,B.iL])
 B.dNG=new A.d(["domperidona","claritromicina",B.C,"Claritromicina \xe9 potente inhibidor do CYP3A4, principal v\xeda de metabolismo de la domperidona; a inhibici\xf3n aumenta a exposici\xf3n sist\xeamica \xe0 domperidona em 3\u20134x; claritromicina tamb\xe9m prolonga o QT por bloqueio hERG; efecto duplo (farmacocin\xe9tico + farmacodin\xe2mico) no prolongaci\xf3n del QT","QTc > 500 ms, torsades de pointes, fibrilaci\xf3n ventricular, morte s\xfabita; riesgo especialmente elevado en ancianos, hipocal\xeamicos e com cardiopatia de base","Combinaci\xf3n formalmente contraindicada pelas ag\xeancias regulat\xf3rias. Usar alternativa para n\xe1useas (ondansetrona, metoclopramida em dosis \xfanica). Usar azitromicina ou doxiciclina em vez de claritromicina si es posible","CONTRAINDICADO \u2014 Domperidona + Claritromicina: QT fatal + inhibici\xf3n CYP3A4",B.h,B.aQ,B.c1])
-B.e5B=new A.au([B.eU,B.cf,B.fm],t.U)
+B.e5B=new A.au([B.eU,B.cf,B.fn],t.U)
 B.dV4=new A.d(["ondansetron","tramadol",B.u,"Ondansetrona antagoniza receptores 5-HT3 que s\xe3o parcialmente respons\xe1veis pela analgesia do tramadol; al\xe9m de reduzir a analgesia, o tramadol inibe a recapta\xe7\xe3o de serotonina e o bloqueio 5-HT3 pela ondansetrona pode paradoxalmente aumentar a atividade serotonin\xe9rgica em outros receptores (5-HT1A, 5-HT2); efecto complexo no equil\xedbrio serotonin\xe9rgico","Reducci\xf3n de la eficacia analg\xe9sica do tramadol (necessidade dosiss maiores); s\xedndrome serotonin\xe9rgica paradoxal em dosis altas; prolongaci\xf3n del QT (ambos prolongam o QTc)","Usar com cautela e monitorar efic\xe1cia analg\xe9sica. Considerar alternativas analg\xe9sicas en pacientes em ondansetrona. Preferir granisetron ou palonosetrona (menor interacci\xf3n) como antiem\xe9ticos alternativos. Monitorar ECG se QTc basal elevado","Reducci\xf3n de la analgesia + riesgo QT \u2014 Ondansetrona + Tramadol: interacci\xf3n dual",B.y,B.e5B,B.v])
 B.dWM=new A.d(["prucalopride","ketoconazol",B.u,"Prucaloprida \xe9 agonista seletivo 5-HT4 metabolizada parcialmente pelo CYP3A4 e excretada principalmente pelos rins; cetoconazol, como potente inhibidor do CYP3A4, pode aumentar a exposici\xf3n sist\xeamica \xe0 prucaloprida em ~40%; efecto clinicamente moderado dado o papel menor do CYP3A4 na eliminaci\xf3n total","Diarreia, c\xf3licas abdominais, cefaleia, palpita\xe7\xf5es por concentraciones aumentadas de prucaloprida","Monitorar efectos gastrointestinais durante uso concomitante. Iniciar com dosis menor de prucaloprida (1 mg/dia) em vez de 2 mg/dia se necesario. Az\xf3is t\xf3picos ou fluconazol em dosis \xfanica t\xeam menor impacto","Exposici\xf3n aumentada de prucaloprida \u2014 Az\xf3is inibem CYP3A4: reducir dosis",B.y,B.b2,B.bj])
 B.e4g=new A.au([B.aP,B.cC,B.e6],t.U)
@@ -170720,7 +170718,7 @@ B.dRt=new A.d(["linezolida","triptofano",B.n,"Linezolida \xe9 inhibidor fraco ma
 B.e0N=new A.d(["ceftolozane","piperacilina",B.be,"Ceftolozano/tazobactam e piperacilina/tazobactam n\xe3o t\xeam interacci\xf3n farmacocin\xe9tica ou farmacodin\xe2mica sin\xe9rgica clinicamente relevante; ambos cont\xeam tazobactam (inhibidor de betalactamases), sendo a combinaci\xf3n desnecesaria e potencialmente geradora de resist\xeancia ao tazobactam por satura\xe7\xe3o","Sem toxicidad adicional esperada; uso redundante de tazobactam sem benef\xedcio cl\xednico comprovado; riesgo te\xf3rico de sele\xe7\xe3o de resist\xeancia","No combinar de rotina. Cada um tem espectro espec\xedfico: ceftolozano \xe9 dirigido a Pseudomonas MDR; piperacilina cobre Gram-negativos sens\xedveis. Selecionar o mais adecuado ao perfil de sensibilidade e evitar uso simult\xe2neo","Redund\xe2ncia de tazobactam \u2014 No combinar ceftolozano + pip-tazo: espectro sobrepostos",B.hl,B.aI,B.bj])
 B.a4u=new A.au([B.cC,B.e6],t.U)
 B.dIf=new A.d(["fosfomicina","metotrexato",B.u,"Fosfomicina pode reduzir a excreci\xf3n renal tubular do metotrexato por competi\xe7\xe3o pelo mesmo transportador (OAT1/OAT3); como o metotrexato tem janela terap\xe9utica estreita e \xe9 excretado principalmente pelos rins, qualquer reducci\xf3n no clearance aumenta o riesgo de toxicidad grave","Mucosita oral grave, pancitopenia, insuficiencia renal aguda, hepatotoxicidad por acumulaci\xf3n de metotrexato; riesgo especialmente alto em dosis altas de metotrexato para oncologia","Monitorar nivel de metotrexato nas dosiss oncol\xf3gicas. Para dosiss reumatol\xf3gicas baixas (7,5\u201325 mg/semana), o riesgo \xe9 menor mas manter vigilancia. Assegurar hidrata\xe7\xe3o adecuada e alcaliniza\xe7\xe3o urin\xe1ria. Evitar fosfomicina IV en pacientes com metotrexato em dosis alta","Acumulaci\xf3n de metotrexato \u2014 Fosfomicina pode reduzir aclaramiento renal: monitorar nivel",B.hl,B.a4u,B.bj])
-B.e1x=new A.d(["daptomicina","rosuvastatina",B.n,"Daptomicina causa miotoxicidad por inser\xe7\xe3o nas membranas celulares dos mi\xf3citos, com riesgo de miopat\xeda e rabdomi\xf3lisis; estatinas inibem a s\xedntese do CoQ10 e do colesterol de membrana, aumentando a vulnerabilidade muscular \xe0 les\xe3o; a combinaci\xf3n tem efecto miot\xf3xico sin\xe9rgico, com maior riesgo para rosuvastatina (maior pot\xeancia)","Miopat\xeda grave, rabdomi\xf3lisis com CK > 10x o limite superior, mioglobin\xfaria, insuficiencia renal aguda por nefropatia pigmentar","Suspender estatina enquanto durar o tratamiento com daptomicina (generalmente 4\u20136 semanas). Monitorar CK no inicio, semanalmente durante a daptomicina e 1 semana despu\xe9s de a suspensi\xf3n. Se CK > 5x LSN: suspender daptomicina. Manter hidrata\xe7\xe3o adecuada","Rabdomi\xf3lisis aditiva \u2014 Suspender estatina durante tratamiento com daptomicina",B.h,B.fp,B.c1])
+B.e1x=new A.d(["daptomicina","rosuvastatina",B.n,"Daptomicina causa miotoxicidad por inser\xe7\xe3o nas membranas celulares dos mi\xf3citos, com riesgo de miopat\xeda e rabdomi\xf3lisis; estatinas inibem a s\xedntese do CoQ10 e do colesterol de membrana, aumentando a vulnerabilidade muscular \xe0 les\xe3o; a combinaci\xf3n tem efecto miot\xf3xico sin\xe9rgico, com maior riesgo para rosuvastatina (maior pot\xeancia)","Miopat\xeda grave, rabdomi\xf3lisis com CK > 10x o limite superior, mioglobin\xfaria, insuficiencia renal aguda por nefropatia pigmentar","Suspender estatina enquanto durar o tratamiento com daptomicina (generalmente 4\u20136 semanas). Monitorar CK no inicio, semanalmente durante a daptomicina e 1 semana despu\xe9s de a suspensi\xf3n. Se CK > 5x LSN: suspender daptomicina. Manter hidrata\xe7\xe3o adecuada","Rabdomi\xf3lisis aditiva \u2014 Suspender estatina durante tratamiento com daptomicina",B.h,B.fq,B.c1])
 B.dUe=new A.d(["meropenem","valproato",B.n,"Carbapen\xeamicos (imipen\xe9m, meropen\xe9m, ertapen\xe9m) reduzem os niveles de valproato em 40\u201390% por mecanismo multifatorial: inhibici\xf3n de la absorci\xf3n intestinal, aumento da eliminaci\xf3n renal do valproato-glucuron\xeddeo (que \xe9 convertido de volta ao valproato) e possivelmente inhibici\xf3n hep\xe1tica da convers\xe3o do metab\xf3lito ao valproato ativo","Perda do controle de crisis epil\xe9pticas com niveles subterap\xe9uticos de valproato; crises t\xf4nico-cl\xf4nicas generalizadas; estado de mal epil\xe9ptico em casos graves","Contraindicar combinaci\xf3n si es posible. Se carbapen\xeamico for indispensable em epil\xe9ptico controlado com valproato, planejar terapia antiepil\xe9ptica alternativa inmediatamente (levetiracetam, lacosamida). Monitorar nivel de valproato a cada 24\u201348 horas. A interacci\xf3n inicia em 24 horas e pode persistir por dias despu\xe9s de a suspensi\xf3n do carbapen\xeamico","CONTRAINDICADO em epil\xe9pticos \u2014 Meropen\xe9m reduz valproato at\xe9 90%: crisis epil\xe9pticas",B.h,B.a4g,B.v6])
 B.dQ9=new A.d(["colistina","polimixina_b",B.C,"Colistina (polimixina E) e polimixina B s\xe3o antibi\xf3ticos do mesmo grupo (polimixinas) com mecanismo de a\xe7\xe3o e toxicidad id\xeanticos: ruptura da membrana celular bacteriana por interacci\xf3n com lipopolissacar\xeddeos; ambas causam nefrotoxicidad dosis-dependente e neurotoxicidad; a combinaci\xf3n n\xe3o tem benef\xedcio adicional e duplica o riesgo t\xf3xico","Nefrotoxicidad grave com insuficiencia renal aguda (incid\xeancia de 50\u201360% com monoterapia, maior com combinaci\xf3n); neurotoxicidad com parestesias, ataxia, bloqueio neuromuscular","Nunca combinar duas polimixinas. Selecionar uma para uso baseado em disponibilidade e vias de administra\xe7\xe3o (colistina IV e inalat\xf3ria; polimixina B IV). Ajustar dosis renal rigurosamente. Monitorar creatinina e urina diariamente","CONTRAINDICADO \u2014 Duas polimixinas: nefrotoxicidad e neurotoxicidad duplicadas",B.h,B.bL,B.bi])
 B.e5i=new A.au([B.fQ,B.jR],t.U)
@@ -170751,7 +170749,7 @@ B.dUy=new A.d(["canagliflozina","fenitoina",B.u,"Fenito\xedna induz m\xfaltiplas
 B.dJ2=new A.d(["levodopa","metoclopramida",B.C,"Metoclopramida bloqueia receptores D2 dopamin\xe9rgicos no SNC e na periferia; a levodopa age via convers\xe3o a dopamina nos neur\xf4nios dopamin\xe9rgicos nigroestriatais; o bloqueio D2 pela metoclopramida antagoniza diretamente o efecto terap\xe9utico da levodopa, piorando o parkinsonismo; tamb\xe9m pode precipitar reacciones extrapiramidais agudas","Piora grave do parkinsonismo (rigidez, tremor, acinesia), crises de distonia aguda, potencial s\xedndrome neurol\xe9ptica maligna en pacientes com enfermedad de Parkinson","Contraindicado em parkinsonismo. Usar domperidona como alternativa antiem\xe9tica (age perifericamente, sem penetrar SNC significativamente). Para gastroparesia em parkinsonismo, domperidona 10 mg 3x/dia antes das refei\xe7\xf5es","CONTRAINDICADO \u2014 Metoclopramida + Levodopa: piora grave do parkinsonismo",B.h,B.qU,B.lE])
 B.dOu=new A.d(["pramipexol","metoclopramida",B.C,"Pramipexol \xe9 agonista D2/D3 dopamin\xe9rgico usado no parkinsonismo e s\xedndrome das pernas inquietas; metoclopramida antagoniza D2, bloqueando diretamente o mecanismo de a\xe7\xe3o do pramipexol e revertendo o controle dos sintomas parkinsonianos e da s\xedndrome das pernas inquietas","Recurrencia de parkinsonismo, s\xedndrome das pernas inquietas refrat\xe1ria, potencial exacerba\xe7\xe3o com reacciones extrapiramidais agudas por antagonismo D2 somado","Contraindicado. Mesma orienta\xe7\xe3o que levodopa + metoclopramida. Domperidona \xe9 a alternativa antiem\xe9tica segura no parkinsonismo","CONTRAINDICADO \u2014 Metoclopramida antagoniza pramipexol: piora do parkinsonismo",B.h,B.qU,B.b5])
 B.dNl=new A.d(["donepezilo","succinilcolina",B.n,"Donepezilo inibe a acetilcolinesterase, aumentando os niveles de acetilcolina na fenda neuromuscular; a succinilcolina (bloqueador neuromuscular despolarizante) \xe9 hidrolisada pela pseudocolinesterase plasm\xe1tica; com os inhibidores de colinesterase, a atividade da pseudocolinesterase pode ser reducida, retardando a hidr\xf3lise da succinilcolina e prolongando o bloqueio neuromuscular","Bloqueio neuromuscular prolongado com apnea p\xf3s-anest\xe9sica; necessidade ventila\xe7\xe3o mec\xe2nica prolongada; paralisia muscular persistente","Alertar o anestesiologista sobre o uso de donepezilo (e outros inhibidores de colinesterase: rivastigmina, galantamina). Planejar monitoramento de bloqueio neuromuscular com neuroestimulador. Considerar uso de bloqueador n\xe3o despolarizante (rocur\xf4nio) como alternativa \xe0 succinilcolina","Apnea p\xf3s-anest\xe9sica \u2014 Donepezilo prolonga a\xe7\xe3o da succinilcolina: alertar anestesia",B.h,B.eu,B.Bm])
-B.dXb=new A.d(["memantina","amantadina",B.n,"Memantina \xe9 antagonista n\xe3o competitivo de receptores NMDA; amantadina tamb\xe9m \xe9 antagonista de receptores NMDA, al\xe9m de ter propriedades dopamin\xe9rgicas; a combinaci\xf3n potencializa o bloqueio NMDA de forma sin\xe9rgica, com riesgo de toxicidad central (efectos psicotomim\xe9ticos e convulsiones)","Confusi\xf3n mental, alucina\xe7\xf5es, agita\xe7\xe3o, tontura, convulsiones; s\xedndrome de abstinencia glutamat\xe9rgica com abstin\xeancia abrupta de ambos","Evitar combinaci\xf3n. Se amantadina for necesaria (influenza ou parkinsonismo avan\xe7ado), considerar suspender temporariamente a memantina ou usar donepezilo como alternativa para dem\xeancia","Toxicidade central \u2014 Memantina + Amantadina: bloqueio NMDA duplo aditivo",B.y,B.fq,B.b5])
+B.dXb=new A.d(["memantina","amantadina",B.n,"Memantina \xe9 antagonista n\xe3o competitivo de receptores NMDA; amantadina tamb\xe9m \xe9 antagonista de receptores NMDA, al\xe9m de ter propriedades dopamin\xe9rgicas; a combinaci\xf3n potencializa o bloqueio NMDA de forma sin\xe9rgica, com riesgo de toxicidad central (efectos psicotomim\xe9ticos e convulsiones)","Confusi\xf3n mental, alucina\xe7\xf5es, agita\xe7\xe3o, tontura, convulsiones; s\xedndrome de abstinencia glutamat\xe9rgica com abstin\xeancia abrupta de ambos","Evitar combinaci\xf3n. Se amantadina for necesaria (influenza ou parkinsonismo avan\xe7ado), considerar suspender temporariamente a memantina ou usar donepezilo como alternativa para dem\xeancia","Toxicidade central \u2014 Memantina + Amantadina: bloqueio NMDA duplo aditivo",B.y,B.fr,B.b5])
 B.e4B=new A.au([B.cg,B.dK],t.U)
 B.dIV=new A.d(["rivastigmina","betanecol",B.n,"Rivastigmina inibe as colinesterases, aumentando acetilcolina; betanecol \xe9 agonista muscar\xednico direto; a combinaci\xf3n gera estimula\xe7\xe3o colin\xe9rgica perif\xe9rica e central excessiva com riesgo de s\xedndrome colin\xe9rgica grave","S\xedndrome colin\xe9rgica: bradicardia grave, hipotensi\xf3n, sialorr\xe9ia, broncoespasmo, c\xf3licas intestinais, diarreia, sudorese profusa, miose, fraqueza muscular, convulsiones","Evitar combinaci\xf3n. Se betanecol for indispensable (reten\xe7\xe3o urin\xe1ria neurog\xeanica), suspender rivastigmina temporariamente com orienta\xe7\xe3o neurol\xf3gica. Atropina como ant\xeddoto se toxicidad grave","S\xedndrome colin\xe9rgica grave \u2014 Rivastigmina + Betanecol: estimula\xe7\xe3o muscar\xednica excessiva",B.y,B.e4B,B.bj])
 B.e4w=new A.au([B.i4,B.cu],t.U)
@@ -170798,7 +170796,7 @@ B.dSe=new A.d(["empagliflozina","acetazolamida",B.n,"iSGLT2 promovem glicos\xfar
 B.dLw=new A.d(["semaglutida","lamotrigina",B.u,"Semaglutida oral (Rybelsus) requer pH g\xe1strico \xe1cido e absorci\xf3n muito espec\xedfica (tomada em jejum, 30 min antes de qualquer alimento/bebida); qualquer f\xe1rmaco que aumente o pH g\xe1strico ou a motilidade pode reduzir sua absorci\xf3n; lamotrigina oral tem absorci\xf3n duodenal e o retardo do esvaziamento g\xe1strico pela semaglutida SC pode reduzir a absorci\xf3n de lamotrigina","Para semaglutida oral: falha do efecto hipoglucemiante por absorci\xf3n inadecuada; para semaglutida SC: retardo na absorci\xf3n da lamotrigina com pico mais lento e posible reducci\xf3n del nivel no estado de equil\xedbrio (< 15% para a maioria dos antiepil\xe9pticos)","Para semaglutida oral: tomar sempre em jejum, 30 min antes de qualquer outro medicamento. Para semaglutida SC: monitorar nivel de lamotrigina se houver perda de control de crisis. A interacci\xf3n \xe9 generalmente de magnitude pequena","Absorci\xf3n leve reducida \u2014 Semaglutida + Antiepil\xe9pticos orais: tomar lamotrigina despu\xe9s de 30 min",B.y,B.a5,B.bi])
 B.dTA=new A.d(["tirzepatida","etinilestradiol",B.u,"Tirzepatida (agonista dual GIP/GLP-1) retarda significativamente o esvaziamento g\xe1strico; contraceptivos orais combinados t\xeam absorci\xf3n intestinal que pode ser prejudicada pelo retardo g\xe1strico; o estudo SURPASS-4 demonstrou reducci\xf3n del Cmax do etinilestradiol em 33% e da noretindrona em 13% quando administrados 30 min despu\xe9s de tirzepatida","Posible reducci\xf3n de la concentraci\xf3n m\xe1xima de esteroides sexuais com riesgo de fracaso contraceptiva, especialmente nas primeiras semanas de uso de tirzepatida quando o efecto no esvaziamento g\xe1strico \xe9 mais pronunciado","Para as primeiras 4 semanas de tirzepatida e despu\xe9s de cada aumento de dosis: usar m\xe9todo contraceptivo adicional (preservativo). Administrar contraceptivo oral com 30 min de anteced\xeancia \xe0 refei\xe7\xe3o e separado da tirzepatida. A interacci\xf3n \xe9 mais pronunciada durante as primeiras 4 semanas","Fracaso contraceptivo potencial \u2014 Tirzepatida retarda absorci\xf3n de COC: usar preservativo nas 4 primeiras semanas",B.h,B.a5,B.bC])
 B.dX4=new A.d(["naltrexona","morfina",B.C,"Naltrexona \xe9 antagonista puro de receptores opioides (mu, kappa, delta) com alta afinidade e longa duraci\xf3n de a\xe7\xe3o; en pacientes dependentes de opioides, a naltrexona precipita s\xedndrome de abstinencia aguda grave; mesmo en pacientes n\xe3o-dependentes, bloqueia completamente o efecto analg\xe9sico dos opioides","S\xedndrome de abstinencia precipitada em dependentes: diaforese, tremor, ansiedade extrema, v\xf4mitos, mialgias, hipertens\xe3o, taquicardia, posible colapso; bloqueio analg\xe9sico completo em situa\xe7\xf5es de dor aguda","Contraindicado en pacientes com depend\xeancia de opioides (aguardar 7\u201310 dias de abstin\xeancia completa antes de iniciar naltrexona). Em emerg\xeancias analg\xe9sicas com paciente em naltrexona: opioides em dosiss extremamente altas podem superar o bloqueio com riesgo de depresi\xf3n respiratoria; preferir analgesia regional ou AINEs","CONTRAINDICADO em dependentes \u2014 Naltrexona + Opioides: abstin\xeancia precipitada ou sem analgesia",B.h,B.wJ,B.c1])
-B.dM6=new A.d(["buprenorfina","diazepam",B.n,"Buprenorfina \xe9 agonista parcial de receptores mu-opioides e antagonista kappa; benzodiazep\xednicos potencializam a depresi\xf3n del SNC via receptores GABA-A; a combinaci\xf3n causa depresi\xf3n respiratoria sin\xe9rgica, especialmente em dosiss elevadas de BZD e en pacientes n\xe3o tolerantes a opioides; cases fatais documentados, especialmente por via IV de buprenorfina com BZD injet\xe1vel","Depresi\xf3n respiratoria grave, hip\xf3xia, coma, morte; o riesgo \xe9 maior com benzodiazep\xednicos de alta pot\xeancia (flunitrazepam, triazolam) ou IV","Usar com extrema cautela. A combinaci\xf3n \xe9 \xe0s vezes necesaria em manejo da dor (buprenorfina + BZD ansiol\xedtico). Preferir BZD de menor pot\xeancia e menor dosis. Orientar al paciente sobre proibi\xe7\xe3o de automedica\xe7\xe3o adicional de BZD. Naloxona reverte parcialmente a buprenorfina (agonismo parcial \xe9 dif\xedcil de reverter)","Morte respirat\xf3ria \u2014 Buprenorfina + Benzodiazep\xednico: depresi\xf3n respiratoria sin\xe9rgica",B.h,B.dU,B.c1])
+B.dM6=new A.d(["buprenorfina","diazepam",B.n,"Buprenorfina \xe9 agonista parcial de receptores mu-opioides e antagonista kappa; benzodiazep\xednicos potencializam a depresi\xf3n del SNC via receptores GABA-A; a combinaci\xf3n causa depresi\xf3n respiratoria sin\xe9rgica, especialmente em dosiss elevadas de BZD e en pacientes n\xe3o tolerantes a opioides; cases fatais documentados, especialmente por via IV de buprenorfina com BZD injet\xe1vel","Depresi\xf3n respiratoria grave, hip\xf3xia, coma, morte; o riesgo \xe9 maior com benzodiazep\xednicos de alta pot\xeancia (flunitrazepam, triazolam) ou IV","Usar com extrema cautela. A combinaci\xf3n \xe9 \xe0s vezes necesaria em manejo da dor (buprenorfina + BZD ansiol\xedtico). Preferir BZD de menor pot\xeancia e menor dosis. Orientar al paciente sobre proibi\xe7\xe3o de automedica\xe7\xe3o adicional de BZD. Naloxona reverte parcialmente a buprenorfina (agonismo parcial \xe9 dif\xedcil de reverter)","Morte respirat\xf3ria \u2014 Buprenorfina + Benzodiazep\xednico: depresi\xf3n respiratoria sin\xe9rgica",B.h,B.dT,B.c1])
 B.e_6=new A.d(["metadona","fluconazol",B.n,"Metadona prolonga o QT por bloqueio de canais hERG (IKr); fluconazol inibe o CYP3A4 e CYP2C19, principais enzimas de metabolismo de la metadona, aumentando seus niveles em 35\u201350%; combinaci\xf3n de aumento das concentraciones (PK) + efecto direto no QT (PD) da metadona resulta em riesgo substancial de torsades de pointes","QTc > 500 ms, torsades de pointes, fibrilaci\xf3n ventricular, morte s\xfabita; o riesgo \xe9 maior nos primeiros dias de fluconazol (antes da nova steady-state da metadona)","Monitorar ECG antes e 3\u20135 dias despu\xe9s de inicio do fluconazol. Reducir dosis de metadona em 15\u201320% preventivamente. Preferir nistatina t\xf3pica ou fluconazol em dosis \xfanica (menor impacto no QT) para candid\xedase oral. Em candid\xedase sist\xeamica: micafungina ou anidulafungina como alternativas sist\xeamicas sem interacci\xf3n CYP","QT grave + niveles de metadona aumentados \u2014 Fluconazol + Metadona: monitorar ECG urgente",B.h,B.h9,B.fG])
 B.Dm=new A.au([B.cu,B.fP],t.U)
 B.dVC=new A.d(["clozapina","valproato",B.u,"A combinaci\xf3n de clozapina com valproato \xe9 paradoxalmente arriscada: ambos t\xeam a\xe7\xe3o GABA\xe9rgica e sedativa aditiva; valproato pode inibir o CYP2D6 e a glucuronida\xe7\xe3o, aumentando os niveles de clozapina em 15\u201340%; adem\xe1s, altas dosis de clozapina diminuem o limiar convulsivo e valproato pode ter efecto protetor parcial mas insuficiente; casos de convulsiones com a combinaci\xf3n s\xe3o reportados","Sedaci\xf3n excesiva, depresi\xf3n respiratoria, convulsiones paradoxais em dosis altas de clozapina (> 600 mg/dia); prolongaci\xf3n del QT pela soma dos efectos; hipotensi\xf3n ortost\xe1tica grave","Monitorar nivel de clozapina (alvo 350\u2013600 ng/mL) al iniciar valproato. Monitorar ECG. En pacientes em riesgo de convulsiones por clozapina (dosis altas, perda r\xe1pida de peso, hiponatremia), usar lamotrigina ou levetiracetam em vez de valproato como anticonvulsivante adjunto","Sedaci\xf3n e convulsiones paradoxais \u2014 Clozapina + Valproato: monitorar nivel de clozapina",B.y,B.Dm,B.b5])
@@ -170808,7 +170806,7 @@ B.e_e=new A.d(["paliperidona","carbamazepina",B.n,"Carbamazepina induz o CYP3A4 
 B.dKm=new A.d(["quetiapina","fenitoina",B.n,"Fenito\xedna induz o CYP3A4, principal v\xeda de metabolismo de la quetiapina; a inducci\xf3n reduz os niveles de quetiapina em 80% (5x de reducci\xf3n na AUC), tornando a dosis habitual totalmente ineficaz; fenito\xedna \xe9 um dos mais potentes inductores do CYP3A4 conhecidos","Falha terap\xe9utica quase certa da quetiapina com reca\xedda psic\xf3tica ou man\xedaca grave; necessidade dosiss extremamente altas (5x acima do habitual) para manter efic\xe1cia","Contraindica\xe7\xe3o relativa \u2014 evitar. Sustituir fenito\xedna por levetiracetam ou lamotrigina. Se a combinaci\xf3n for indispensable, dosis de quetiapina de 1.500\u20132.000 mg/dia podem ser necesarias (monitoramento cl\xednico rigoroso). Al suspender fenito\xedna: reduzir quetiapina inmediatamente para evitar toxicidad","FRACASO TERAP\xc9UTICO \u2014 Fenito\xedna reduz quetiapina 80%: trocar antiepil\xe9ptico urgente",B.h,B.aH,B.b5])
 B.e_T=new A.d(["litio","carbamazepina",B.n,"A combinaci\xf3n de l\xedtio com carbamazepina pode causar toxicidad neurol\xf3gica sin\xe9rgica mesmo com concentraciones s\xe9ricas de ambos dentro dos limites terap\xe9uticos; carbamazepina pode aumentar a excreci\xf3n de s\xf3dio, aumentando indiretamente os niveles de l\xedtio; ambos t\xeam mecanismos complexos de a\xe7\xe3o no SNC que se sobrep\xf5em em popula\xe7\xf5es de canais i\xf4nicos","S\xedndrome neurot\xf3xica: tremor, ataxia, nistagmo, confusi\xf3n mental, sintomas cerebelares, convulsiones; o efecto pode ocorrer com litemias aparentemente normais (1,0\u20131,2 mEq/L)","Monitorar clinicamente e com litemia e nivel de carbamazepina. Manter litemia no limite inferior do terap\xe9utico (0,6\u20130,8 mEq/L) quando em combinaci\xf3n. Hidrata\xe7\xe3o adecuada. Monitorar s\xf3dio s\xe9rico","Toxicidade neurol\xf3gica sin\xe9rgica \u2014 L\xedtio + Carbamazepina: mesmo com niveles normais",B.h,B.Dm,B.h1])
 B.e_F=new A.d(["lamotrigina","etinilestradiol",B.n,"Anticoncepcionais orais contendo etinilestradiol induzem a glucuronida\xe7\xe3o (UGT1A4) da lamotrigina, aumentando seu metabolismo e reduzindo seus niveles em 40\u201360%; inversamente, al suspender o anticonceptivo (semana de pausa dos p\xedlulas combinadas ou ao descontinuar), os niveles de lamotrigina sobem abruptamente em 40\u201360%, causando toxicidad","Durante o uso do COC: concentraciones subterap\xe9uticas de lamotrigina com riesgo de crisis convulsivas; durante a semana de pausa da p\xedlula: pico t\xf3xico de lamotrigina (diplopia, ataxia, tontura, v\xf4mitos); al suspender COC definitivamente: toxicidad de lamotrigina","Monitorar nivel de lamotrigina ao iniciar/suspender COC. Pode ser necesario aumentar dosis de lamotrigina em 50% al iniciar COC. Reducir la dosis al suspender COC. Durante semana de pausa: informar paciente sobre poss\xedveis efectos; considerar p\xedlulas sem pausa (uso cont\xednuo)","Crisis epil\xe9pticas e toxicidad bidirecional \u2014 COC + Lamotrigina: monitorar nivel ao iniciar/suspender",B.h,B.Dm,B.c1])
-B.dS2=new A.d(["levetiracetam","metronidazol",B.u,"Metronidazol pode potencializar os efectos neurol\xf3gicos do levetiracetam; ambos t\xeam propriedades neuromodulat\xf3rias; metronidazol pode causar encefalopat\xeda, especialmente em uso prolongado ou en pacientes com insuficiencia hep\xe1tica; a combinaci\xf3n soma efectos neurol\xf3gicos adversos","Confusi\xf3n mental, sonol\xeancia excessiva, ataxia, psicose; encefalopat\xeda por metronidazol pode ser confundida com ajuste inadecuado do levetiracetam","Monitorar cuidadosamente signos neurol\xf3gicos durante combinaci\xf3n. Limitar uso de metronidazol a cursos curtos (< 14 dias). Em encefalites ou infec\xe7\xf5es de SNC, monitorar EEG e nivel de levetiracetam se piora neurol\xf3gica","Toxicidade neurol\xf3gica aditiva \u2014 Levetiracetam + Metronidazol: monitorar estado mental",B.db,B.fq,B.bj])
+B.dS2=new A.d(["levetiracetam","metronidazol",B.u,"Metronidazol pode potencializar os efectos neurol\xf3gicos do levetiracetam; ambos t\xeam propriedades neuromodulat\xf3rias; metronidazol pode causar encefalopat\xeda, especialmente em uso prolongado ou en pacientes com insuficiencia hep\xe1tica; a combinaci\xf3n soma efectos neurol\xf3gicos adversos","Confusi\xf3n mental, sonol\xeancia excessiva, ataxia, psicose; encefalopat\xeda por metronidazol pode ser confundida com ajuste inadecuado do levetiracetam","Monitorar cuidadosamente signos neurol\xf3gicos durante combinaci\xf3n. Limitar uso de metronidazol a cursos curtos (< 14 dias). Em encefalites ou infec\xe7\xf5es de SNC, monitorar EEG e nivel de levetiracetam se piora neurol\xf3gica","Toxicidade neurol\xf3gica aditiva \u2014 Levetiracetam + Metronidazol: monitorar estado mental",B.db,B.fr,B.bj])
 B.dKl=new A.d(["duloxetina","tamoxifeno",B.n,"Duloxetina \xe9 inhibidor moderado a potente do CYP2D6; tamoxifeno requer ativa\xe7\xe3o pelo CYP2D6 ao seu metab\xf3lito ativo endoxifeno (4\u201310x mais potente que o tamoxifeno original); a inhibici\xf3n del CYP2D6 pela duloxetina reduz os niveles de endoxifeno em 50\u201370%, comprometendo a efic\xe1cia antiestrog\xeanica do tamoxifeno no c\xe2ncer de mama","Reducci\xf3n de la eficacia do tamoxifeno no c\xe2ncer de mama dependente de estrog\xeanio; aumento del riesgo de recurrencia do c\xe2ncer de mama en pacientes em uso concomitante de ISRS/IRSNa fortes inhibidores do CYP2D6","Evitar duloxetina (e outros fortes inhibidores de CYP2D6: paroxetina, fluoxetina, bupropiona) en pacientes em tamoxifeno. Usar antidepresivos/ansiol\xedticos com menor inhibici\xf3n de CYP2D6 para sintomas menopausais e depress\xe3o: venlafaxina, escitalopram, citalopram, mirtazapina","Recurrencia de c\xe2ncer de mama \u2014 Duloxetina inibe CYP2D6: endoxifeno reducido 50\u201370%",B.h,B.a5,B.c1])
 B.e_B=new A.d(["venlafaxina","tramadol",B.n,"Venlafaxina \xe9 inhibidor da recapta\xe7\xe3o de serotonina e noradrenalina (IRSNA); tramadol inibe a recapta\xe7\xe3o de serotonina e noradrenalina al\xe9m de atuar em receptores mu-opioides; a combinaci\xf3n potencia a atividade serotonin\xe9rgica sinapticamente com riesgo de s\xedndrome serotonin\xe9rgica, especialmente em dosis altas ou em metabolizadores lentos do CYP2D6 (que acumulam tramadol)","S\xedndrome serotonin\xe9rgica: tremor fino, agita\xe7\xe3o, diarreia, hiperreflexia, mioclonias, diaforese, hipertermia, taquicardia; pode progredir para convulsiones, rabdomi\xf3lisis e insufici\xeancia de m\xfaltiplos \xf3rg\xe3os","Usar com cautela. Preferir opioides sem atividade serotonin\xe9rgica (morfina, oxicodona, hidromorfona) en pacientes em venlafaxina. Se tramadol for necesario, usar dosis m\xednima por per\xedodo curto com monitoramento de sintomas serotonin\xe9rgicos. Criptoimidazol como ant\xeddoto parcial se toxicidad grave","S\xedndrome serotonin\xe9rgica \u2014 Venlafaxina + Tramadol: preferir morfina como opioide",B.h,B.wL,B.a3])
 B.dQ1=new A.d(["sertralina","piroxicam",B.n,"ISRS reduzem a fun\xe7\xe3o plaquet\xe1ria ao depletar as reservas de serotonina das plaquetas (que dependem do transportador SERT para capta\xe7\xe3o de serotonina e armazenamento nos gr\xe2nulos densos); AINEs inibem a COX-1 plaquet\xe1ria, reduzindo a s\xedntese de tromboxano A2; ambos prejudicam a hemostasia prim\xe1ria por mecanismos diferentes; efecto sin\xe9rgico no riesgo hemorr\xe1gico gastrointestinal","Sangramento gastrointestinal superior (\xfalcera, eros\xe3o g\xe1strica, gastrite hemorr\xe1gica); riesgo aumentado de 7\u201315x em compara\xe7\xe3o com uso isolado de AINE; hemorragia digestiva alta potencialmente grave","Preferir paracetamol para dor en pacientes em ISRS. Se AINE for necesario, usar protecci\xf3n g\xe1strica com IBP (omeprazol 20 mg/dia). Considerar ISRS com menor atividade antiplaquet\xe1ria (citalopram). Monitorar fezes e HB em uso cr\xf4nico","Sangrado GI 7\u201315x maior \u2014 ISRS + AINE: usar IBP obligatorio se combinaci\xf3n necesaria",B.h,B.aD,B.lE])
@@ -170827,7 +170825,7 @@ B.dYv=new A.d(["iloprost","amlodipina",B.u,"Iloprost (prostaciclina sint\xe9tica
 B.a4p=new A.au([B.eE,B.cg],t.U)
 B.dNJ=new A.d(["selexipague","fluconazol",B.n,"Selexipague (agonista do receptor IP da prostaciclina) \xe9 hidrolisada ao metab\xf3lito ativo MRE-269 pelo CES1 e metabolizado pelo CYP2C8; fluconazol inibe o CYP2C8 (al\xe9m de CYP3A4 e CYP2C19); a inhibici\xf3n del CYP2C8 aumenta os niveles do metab\xf3lito ativo da selexipague em 1,7\u20132x","Toxicidad del selexipague: cefaleia grave, dor mandibular, eritema, diarreia, hipotensi\xf3n; riesgo aumentado de eventos vasculares perif\xe9ricos por vasodilata\xe7\xe3o excessiva","Monitorar s\xedntomas de toxicidad al iniciar fluconazol. Reducir dosis de selexipague se necesario. Em infec\xe7\xe3o f\xfangica, usar equinocandinas (micafungina, anidulafungina) como alternativa sem interacci\xf3n CYP2C8. Fluconazol em dosis \xfanica para candid\xedase oral tem menor impacto","Toxicidad de selexipague \u2014 Fluconazol inibe CYP2C8: cefaleia e hipotensi\xf3n",B.y,B.a4p,B.bC])
 B.dMq=new A.d(["ciclesonida","itraconazol",B.n,"Ciclesonida \xe9 pr\xf3-farmaco ativado pela esterase pulmonar ao des-ciclesonida ativo; a fra\xe7\xe3o pulmonar ativa tem baixa absorci\xf3n sist\xeamica; sin embargo, itraconazol (potente inhibidor CYP3A4) pode aumentar significativamente a fra\xe7\xe3o sist\xeamica disponible da ciclesonida e de seu metab\xf3lito ativo, causando efectos corticosteroidais sist\xeamicos similares ao visto com budesonida","S\xedndrome de Cushing iatrog\xeanica com supresi\xf3n adrenal; hiperglucemia, osteoporose acelerada, aumento de peso","Evitar itraconazol en pacientes em ciclesonida em dosis altas. Usar anfotericina t\xf3pica ou nistatina oral para candid\xedase. Monitorar cortisol matinal e sinais de Cushing se combinaci\xf3n inevit\xe1vel","Cushing iatrog\xeanico \u2014 Itraconazol + Ciclesonida: inhibici\xf3n CYP3A4 sist\xeamica",B.y,B.b2,B.bj])
-B.dXm=new A.d(["montelucaste","fluconazol",B.u,"Montelucaste \xe9 metabolizado pelo CYP2C9 (e CYP3A4 e CYP2C8); fluconazol \xe9 inhibidor dos CYP2C9 e CYP3A4; a inhibici\xf3n pode aumentar os niveles de montelucaste em 30\u201350%; como montelucaste tem ampla margem de seguran\xe7a, o impacto cl\xednico \xe9 generalmente leve a moderado","Cefaleia mais frecuente, n\xe1useas, dist\xfarbios do sono, ansiedade, pesadelos (efectos neuropsiqui\xe1tricos do montelucaste s\xe3o dosis-dependentes)","Monitorar efectos neuropsiqui\xe1tricos durante fluconazol (ansiedade, pesadelos, comportamento anormal). A interacci\xf3n raramente requer ajuste de dosis. Usar menor dosis de montelucaste se efectos adversos se tornam problem\xe1ticos","Efectos neuropsiqui\xe1tricos aumentados \u2014 Fluconazol + Montelucaste: monitorar humor e sono",B.y,B.fq,B.bj])
+B.dXm=new A.d(["montelucaste","fluconazol",B.u,"Montelucaste \xe9 metabolizado pelo CYP2C9 (e CYP3A4 e CYP2C8); fluconazol \xe9 inhibidor dos CYP2C9 e CYP3A4; a inhibici\xf3n pode aumentar os niveles de montelucaste em 30\u201350%; como montelucaste tem ampla margem de seguran\xe7a, o impacto cl\xednico \xe9 generalmente leve a moderado","Cefaleia mais frecuente, n\xe1useas, dist\xfarbios do sono, ansiedade, pesadelos (efectos neuropsiqui\xe1tricos do montelucaste s\xe3o dosis-dependentes)","Monitorar efectos neuropsiqui\xe1tricos durante fluconazol (ansiedade, pesadelos, comportamento anormal). A interacci\xf3n raramente requer ajuste de dosis. Usar menor dosis de montelucaste se efectos adversos se tornam problem\xe1ticos","Efectos neuropsiqui\xe1tricos aumentados \u2014 Fluconazol + Montelucaste: monitorar humor e sono",B.y,B.fr,B.bj])
 B.e4s=new A.au([B.fP,B.aP],t.U)
 B.dM0=new A.d(["teofilina","enoxacino",B.C,"Enoxacino \xe9 um dos mais potentes inhibidores conhecidos do CYP1A2; ciprofloxacino \xe9 inhibidor moderado do CYP1A2; teofilina \xe9 substrato prim\xe1rio do CYP1A2 com janela terap\xe9utica muito estreita (10\u201320 mcg/mL); enoxacino aumenta os niveles de teofilina em 4\u20138x; ciprofloxacino aumenta em 1,5\u20132x","Toxicidade grave por teofilina: convulsiones, arritmias ventriculares, taquicardia grave, n\xe1useas, v\xf4mitos, hipotensi\xf3n; convulsiones de teofilina s\xe3o refrat\xe1rias a tratamiento padr\xe3o","Enoxacino: contraindicado com teofilina. Ciprofloxacino: monitorar nivel de teofilina e reducir dosis em 30\u201350% al iniciar ciprofloxacino. Preferir levofloxacino ou azitromicina como alternativas antibi\xf3ticas (menor inhibici\xf3n CYP1A2)","CONTRAINDICADO (enoxacino) / Monitorar (ciprofloxacino) \u2014 Quinolonas + Teofilina: convulsiones",B.h,B.e4s,B.c1])
 B.dYy=new A.d(["aminofilina","hypericum",B.n,"Erva de S\xe3o Jo\xe3o (Hypericum perforatum) cont\xe9m hiperforina, potente inductor do CYP3A4, CYP2C9 e da P-gp; aminofilina (pr\xf3-farmaco da teofilina) \xe9 metabolizada principalmente pelo CYP1A2, mas a erva tamb\xe9m pode induzir CYP1A2; adem\xe1s, hipericina (outro componente) pode ter efecto direto na teofilina; a inducci\xf3n enzim\xe1tica reduz os niveles de teofilina comprometendo o tratamiento de asma e DPOC","Concentraciones subterap\xe9uticas de teofilina com perda do controle de asma ou DPOC; crises de broncoespasmo por efic\xe1cia reducida do broncodilatador","Orientar sobre uso de fitoter\xe1picos. Suspender erva de S\xe3o Jo\xe3o al iniciar aminofilina. Monitorar nivel de teofilina al iniciar e al suspender o fitoter\xe1pico. A inducci\xf3n persiste por 2 semanas despu\xe9s de suspensi\xf3n da erva","Falha terap\xe9utica de teofilina \u2014 Erva de S\xe3o Jo\xe3o induz CYP: monitorar nivel",B.y,B.a5,B.b5])
@@ -170866,7 +170864,7 @@ B.dKy=new A.d(["ritonavir","morfina",B.u,"Ritonavir induz a UGT2B7, principal en
 B.dVq=new A.d(["linezolida","pseudoefedrina",B.n,"Linezolida inibe a MAO-A; pseudoefedrina (simpatomim\xe9tico de a\xe7\xe3o indireta) libera noradrenalina armazenada nas ves\xedculas neurais; com a MAO-A inibida, a noradrenalina liberada n\xe3o \xe9 degradada, causando acumulaci\xf3n e tempestade adren\xe9rgica; mecanismo id\xeantico \xe0 crise de queijo com IMAOs tradicionais","Crisis hipertensiva grave (PA > 180/120 mmHg), cefaleia em trov\xe3o, AVC hemorr\xe1gico, infarto do mioc\xe1rdio; taquicardia grave","Contraindicado. Descongestionantes nasais (oximetazolina, xilometazolina t\xf3picos) podem ser alternativas mais seguras pois t\xeam baixa absorci\xf3n sist\xeamica. Evitar todos os simpaticomim\xe9ticos orais (efedrina, fenilefrina oral) durante linezolida. Restri\xe7\xe3o diet\xe9tica de tiramina tamb\xe9m se aplica","Crisis hipertensiva \u2014 Linezolida (IMAO) + Pseudoefedrina: evitar todos os simpaticomim\xe9ticos",B.h,B.c3,B.c1])
 B.dUK=new A.d(["tranilcipromina","sumatriptano",B.C,"Tranilcipromina \xe9 IMAO irreversible (inhibidor de MAO-A e MAO-B); sumatriptano e outros triptanos s\xe3o agonistas de receptores 5-HT1B/D; o metabolismo dos triptanos requer MAO-A; com a MAO-A inibida, os niveles de triptanos aumentam dr\xe1sticamente (2\u20133x) e o riesgo de s\xedndrome serotonin\xe9rgica \xe9 muito alto; adem\xe1s, vasoconstri\xe7\xe3o coronariana pelo triptano associada \xe0 hipertens\xe3o do IMAO pode causar IAM","S\xedndrome serotonin\xe9rgica grave, crisis hipertensiva, vasoespasmo coronariano com IAM; mortalidade documentada","Contraindicado. Aguardar pelo menos 14 dias despu\xe9s de suspensi\xf3n de tranilcipromina antes de usar qualquer triptano (per\xedodo necesario para s\xedntese de nova MAO-A). Em enxaqueca durante tratamiento com IMAO: usar AINEs, paracetamol, metoclopramida (sem ISRS) para as crises","CONTRAINDICADO \u2014 IMAO + Triptano: aguardar 14 dias despu\xe9s de IMAO antes de usar triptano",B.h,B.wC,B.c1])
 B.dRN=new A.d(["fenelzina","meperidina",B.C,"Fenelzina \xe9 IMAO irreversible n\xe3o seletivo (MAO-A e MAO-B); meperidina (petidina) inibe a recapta\xe7\xe3o de serotonina de forma mais potente que outros opioides; com a MAO-A inibida, a serotonina n\xe3o \xe9 degradada e o bloqueio adicional de recapta\xe7\xe3o pela meperidina causa acumulaci\xf3n sin\xe1ptico maci\xe7o de serotonina; s\xedndrome serotonin\xe9rgica severa com alta mortalidade","S\xedndrome serotonin\xe9rgica potencialmente fatal: tremor, hiperreflexia, hipertermia grave (> 42\xb0C), colapso cardiovascular, morte; casos fatais bem documentados na literatura","Contraindicado absolutamente. Aguardar 14 dias despu\xe9s de suspensi\xf3n de IMAO antes de usar meperidina. Usar morfina, hidromorfona ou fentanil como analg\xe9sicos alternativos (menor atividade serotonin\xe9rgica). Em cirurgia de emerg\xeancia, informar anestesiologista sobre o uso de IMAO","CONTRAINDICADO \u2014 IMAO + Meperidina: s\xedndrome serotonin\xe9rgica fatal documentada",B.h,B.cl,B.Qv])
-B.dJZ=new A.d(["fentanil","midazolam",B.n,"A combinaci\xf3n de fentanil (opioide), midazolam (BZD) e propofol (anest\xe9sico geral) cria depresi\xf3n respiratoria sin\xe9rgica extrema via tr\xeas mecanismos diferentes: fentanil deprime o centro respirat\xf3rio via receptores mu; midazolam potencializa GABA-A reduzindo o drive respirat\xf3rio; propofol suprime o SNC globalmente; a combinaci\xf3n \xe9 essencial em anestesia mas com riesgo de apnea s\xfabita em seda\xe7\xf5es n\xe3o controladas","Apnea, hip\xf3xia grave, colapso cardiovascular, morte; o fentanil potencia a sedaci\xf3n do midazolam em 4\u20138x","Fora do contexto anest\xe9sico controlado: monitora\xe7\xe3o rigurosa de SpO2, FR e nivel de consci\xeancia. Ter naloxona e flumazenil disponibles. Titulaci\xf3n lenta e sequencial. Apenas profissionais treinados em via a\xe9rea devem administrar esta combinaci\xf3n","Apnea \u2014 Fentanil + Midazolam + Propofol: somente com monitoriza\xe7\xe3o anest\xe9sica",B.h,B.dU,B.h1])
+B.dJZ=new A.d(["fentanil","midazolam",B.n,"A combinaci\xf3n de fentanil (opioide), midazolam (BZD) e propofol (anest\xe9sico geral) cria depresi\xf3n respiratoria sin\xe9rgica extrema via tr\xeas mecanismos diferentes: fentanil deprime o centro respirat\xf3rio via receptores mu; midazolam potencializa GABA-A reduzindo o drive respirat\xf3rio; propofol suprime o SNC globalmente; a combinaci\xf3n \xe9 essencial em anestesia mas com riesgo de apnea s\xfabita em seda\xe7\xf5es n\xe3o controladas","Apnea, hip\xf3xia grave, colapso cardiovascular, morte; o fentanil potencia a sedaci\xf3n do midazolam em 4\u20138x","Fora do contexto anest\xe9sico controlado: monitora\xe7\xe3o rigurosa de SpO2, FR e nivel de consci\xeancia. Ter naloxona e flumazenil disponibles. Titulaci\xf3n lenta e sequencial. Apenas profissionais treinados em via a\xe9rea devem administrar esta combinaci\xf3n","Apnea \u2014 Fentanil + Midazolam + Propofol: somente com monitoriza\xe7\xe3o anest\xe9sica",B.h,B.dT,B.h1])
 B.dT1=new A.d(["rocur\xf4nio","sugammadex",B.be,"Sugammadex \xe9 uma ciclodextrina que encapsula selectivamente o rocur\xf4nio (e vecur\xf4nio), revertendo farmacologicamente o bloqueio neuromuscular; n\xe3o \xe9 uma interacci\xf3n adversa \u2014 \xe9 o uso terap\xe9utico intencional do sugammadex como ant\xeddoto espec\xedfico do rocur\xf4nio; a interacci\xf3n f\xedsica entre as duas mol\xe9culas \xe9 altamente seletiva e desej\xe1vel","Sem efecto adverso pela interacci\xf3n molecular; em raros casos, sugammadex pode causar bradicardia transit\xf3ria ou reacci\xf3n al\xe9rgica; o rocur\xf4nio n\xe3o tem efectos adicionais despu\xe9s de encapsulamento","Combinaci\xf3n intencional e terap\xe9utica. Verificar dosis adecuada de sugammadex (16 mg/kg para revers\xe3o imediata em intuba\xe7\xe3o dif\xedcil; 4 mg/kg para bloqueio moderado; 2 mg/kg para bloqueio superficial). Monitorar recupera\xe7\xe3o neuromuscular com TOF ratio > 0,9","Revers\xe3o farmacol\xf3gica intencional \u2014 Sugammadex encapsula rocur\xf4nio: ant\xeddoto espec\xedfico",B.h,B.aI,B.bC])
 B.dOK=new A.d(["cetamina","tranilcipromina",B.C,"Cetamina (anest\xe9sico dissociativo) inibe a recapta\xe7\xe3o de noradrenalina, dopamina e serotonina al\xe9m de bloquear receptores NMDA; com a MAO-A inibida por tranilcipromina ou fenelzina, a noradrenalina e serotonina acumulam causando crisis hipertensiva grave e s\xedndrome serotonin\xe9rgica; riesgo extremo em anestesia de emerg\xeancia en pacientes n\xe3o identificados como usu\xe1rios de IMAO","Crisis hipertensiva grave (PA > 200/120 mmHg), AVC hemorr\xe1gico, infarto do mioc\xe1rdio, s\xedndrome serotonin\xe9rgica grave com hipertermia; mortalidade alta","Contraindicado. Informar anestesiologista sobre uso atual ou recente de IMAO. Aguardar 14 dias despu\xe9s de IMAO antes de cetamina eletiva. Em emerg\xeancia: usar propofol ou etomidato como inducci\xf3n alternativa. Se cetamina inadvertida: labetalol IV + ciproheptadina para crisis hipertensiva e serotonina","CONTRAINDICADO \u2014 IMAO + Cetamina: crisis hipertensiva + serotonina em emerg\xeancia anest\xe9sica",B.h,B.Dt,B.bi])
 B.dQ4=new A.d(["dexmedetomidina","esmolol",B.n,"Dexmedetomidina \xe9 agonista alfa-2 adren\xe9rgico central que reduz o t\xf4nus simp\xe1tico, causando bradicardia e hipotensi\xf3n; esmolol e outros beta-bloqueadores causam bradicardia por bloqueio de receptores beta-1; a combinaci\xf3n causa bradicardia sin\xe9rgica profunda por dupla inhibici\xf3n de la estimula\xe7\xe3o card\xedaca simp\xe1tica","Bradicardia grave (FC < 40 bpm), asistolia tempor\xe1ria, hipotensi\xf3n refractaria; bloqueo AV; colapso hemodin\xe2mico en pacientes com baixa reserva card\xedaca","Monitorar FC e PA continuamente em UTI/sedaci\xf3n. Ter atropina 0,5 mg IV disponible para bradicardia sintom\xe1tica. Reducir dosis de um dos agentes se FC < 50 bpm. Evitar en pacientes com disfun\xe7\xe3o sinusal pr\xe9via","Bradicardia profunda \u2014 Dexmedetomidina + Beta-bloqueador: ter atropina disponible",B.h,B.dL,B.bi])
@@ -170910,7 +170908,7 @@ B.dQh=new A.d(["valganciclovir","zidovudina",B.n,"Valganciclovir (pr\xf3-f\xe1rm
 B.dPi=new A.d(["valganciclovir","mofetila_micofenolato",B.u,"Valganciclovir e micofenolato de mofetila (MMF) competem pelos mesmos transportadores renais (MRP2, BCRP) para excre\xe7\xe3o; a combina\xe7\xe3o comum em transplantados aumenta a exposi\xe7\xe3o sist\xeamica de ambos os f\xe1rmacos","Toxicidade hematol\xf3gica aumentada \u2014 anemia, neutropenia; toxicidade GI pelo MMF amplificada","Monitorar hemograma 2x/semana em transplantados recebendo ambos. Considerar redu\xe7\xe3o de doses. Avaliar alternativas antivirais","Valganciclovir + Micofenolato \u2014 Mielossupress\xe3o e toxicidade GI aumentadas",B.y,B.b2,B.bj])
 B.dT3=new A.d(["valganciclovir","imipenem",B.n,"A associa\xe7\xe3o de ganciclovir/valganciclovir com imipenem-cilastatina foi associada a crises convulsivas generalizadas em pacientes imunossuprimidos; o mecanismo exato \xe9 desconhecido mas envolve poss\xedvel efeito sin\xe9rgico no limiar convulsivo","Convuls\xf5es generalizadas; risco aumentado especialmente em pacientes com DRC (ac\xfamulo de ambos) ou les\xf5es cerebrais pr\xe9vias","EVITAR combina\xe7\xe3o. Substituir imipenem por meropenem (menor risco convulsivo) ou doripenem quando poss\xedvel","Valganciclovir + Imipenem \u2014 Risco de convuls\xf5es: substituir imipenem",B.y,B.b2,B.bi])
 B.dXs=new A.d(["micafungina","ciclosporina",B.u,"Micafungina inibe o CYP3A4 e a P-glicoprote\xedna de forma moderada; ciclosporina \xe9 substrato de ambos; a combina\xe7\xe3o pode elevar os n\xedveis de ciclosporina em 20\u201340%, vari\xe1vel entre pacientes","Toxicidade pela ciclosporina: nefrotoxicidade, hipertens\xe3o, neurotoxicidade, hiperglicemia","Monitorar n\xedveis de ciclosporina e fun\xe7\xe3o renal com maior frequ\xeancia durante uso de micafungina. Ajustar dose de ciclosporina conforme necess\xe1rio","Micafungina + Ciclosporina \u2014 Monitorar n\xedveis de ciclosporina",B.h,B.b2,B.bi])
-B.dQ_=new A.d(["micafungina","sirolimus",B.u,"Micafungina inibe o metabolismo do sirolimus mediado por CYP3A4 e P-gp, elevando a AUC do sirolimus em cerca de 20%; sirolimus tem janela terap\xeautica estreita","Toxicidade pelo sirolimus: pneumonite intersticial, hiperlipidemia, trombocitopenia, nefrotoxicidade, cicatriza\xe7\xe3o prejudicada","Monitorar n\xedveis s\xe9ricos de sirolimus frequentemente. Reduzir dose de sirolimus em 20% ao iniciar micafungina","Micafungina + Sirolimus \u2014 Elevar monitoramento de n\xedveis de sirolimus",B.h,B.bv,B.fi])
+B.dQ_=new A.d(["micafungina","sirolimus",B.u,"Micafungina inibe o metabolismo do sirolimus mediado por CYP3A4 e P-gp, elevando a AUC do sirolimus em cerca de 20%; sirolimus tem janela terap\xeautica estreita","Toxicidade pelo sirolimus: pneumonite intersticial, hiperlipidemia, trombocitopenia, nefrotoxicidade, cicatriza\xe7\xe3o prejudicada","Monitorar n\xedveis s\xe9ricos de sirolimus frequentemente. Reduzir dose de sirolimus em 20% ao iniciar micafungina","Micafungina + Sirolimus \u2014 Elevar monitoramento de n\xedveis de sirolimus",B.h,B.bv,B.fj])
 B.dOq=new A.d(["terbinafina","warfarina",B.u,"Terbinafina inibe moderadamente o CYP2C9, principal enzima do catabolismo da S-varfarina (enanti\xf4mero mais potente); a inibi\xe7\xe3o eleva os n\xedveis de varfarina e o INR","Sangramento cl\xednico por INR supratherap\xeautico; equimoses, hemat\xfaria, hemorragia GI","Monitorar INR semanalmente no in\xedcio do tratamento com terbinafina. Ajustar dose de varfarina conforme INR","Terbinafina + Varfarina \u2014 Monitorar INR (inibi\xe7\xe3o CYP2C9)",B.h,B.aD,B.v])
 B.e1n=new A.d(["terbinafina","antidepressivo_triciclico",B.n,"Terbinafina \xe9 inibidor potente e irrevers\xedvel do CYP2D6; antidepressivos tric\xedclicos (amitriptilina, nortriptilina, imipramina) s\xe3o metabolizados principalmente pelo CYP2D6; a inibi\xe7\xe3o irrevers\xedvel eleva drasticamente os n\xedveis plasm\xe1ticos dos tric\xedclicos","Toxicidade pelos tric\xedclicos: arritmias graves (prolongamento QT, TdP), convuls\xf5es, hipotens\xe3o ortost\xe1tica grave, s\xedndrome anticolin\xe9rgica severa","Evitar combina\xe7\xe3o. Se necess\xe1rio, reduzir dose do tric\xedclico em 50% e monitorar ECG e n\xedveis s\xe9ricos. Efeito persiste por semanas ap\xf3s suspens\xe3o da terbinafina (inibi\xe7\xe3o irrevers\xedvel)","Terbinafina + Tric\xedclico \u2014 Toxicidade tric\xedclica grave por inibi\xe7\xe3o irrevers\xedvel CYP2D6",B.h,B.b2,B.bi])
 B.dOX=new A.d(["terbinafina","cafeina",B.u,"Terbinafina inibe o CYP1A2, respons\xe1vel pelo metabolismo da cafe\xedna; a concentra\xe7\xe3o de cafe\xedna pode triplicar elevando seus efeitos","Taquicardia, ins\xf4nia, tremores, ansiedade, hipertens\xe3o; sintomas de intoxica\xe7\xe3o cafe\xednica","Orientar redu\xe7\xe3o do consumo de cafe\xedna (caf\xe9, ch\xe1, energ\xe9ticos) durante tratamento. Vigil\xe2ncia em pacientes card\xedacos","Terbinafina + Cafe\xedna \u2014 Reduzir consumo de cafe\xedna",B.y,B.b2,B.bj])
@@ -171109,7 +171107,7 @@ B.aEI=new A.Y(61922,"MaterialIcons",null,!1)
 B.adt=new A.lK("calc_biometria","Biometria","Biometr\xeda",B.aEI,B.da)
 B.adq=new A.lK("calc_scores","Scores","Scores",B.pW,B.hg)
 B.adx=new A.lK("calc_cardio","Cardio","Cardio",B.iG,B.aT)
-B.ads=new A.lK("calc_eletr\xf3litos","Eletr\xf3litos","Electrolitos",B.pU,B.aY)
+B.ads=new A.lK("calc_eletr\xf3litos","Eletr\xf3litos","Electrolitos",B.pU,B.aZ)
 B.adw=new A.lK("calc_infusao","Infus\xe3o EV","Infusi\xf3n EV",B.nx,B.t1)
 B.aEG=new A.Y(61890,"MaterialIcons",null,!1)
 B.adv=new A.lK("calc_referencia","Refer\xeancia","Referencia",B.aEG,B.T)
@@ -171314,7 +171312,7 @@ B.P1=A.a(s(["\u1015\u1011\u1019 \u101e\u102f\u1036\u1038\u101c\u1015\u1010\u103a
 B.P2=A.a(s(["\u10d8\u10d0\u10dc","\u10d7\u10d4\u10d1","\u10db\u10d0\u10e0","\u10d0\u10de\u10e0","\u10db\u10d0\u10d8","\u10d8\u10d5\u10dc","\u10d8\u10d5\u10da","\u10d0\u10d2\u10d5","\u10e1\u10d4\u10e5","\u10dd\u10e5\u10e2","\u10dc\u10dd\u10d4","\u10d3\u10d4\u10d9"]),t.s)
 B.uL=A.a(s(["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember"]),t.s)
 B.P3=A.a(s(["\u1010","\u1010","\u1021","\u1017","\u1000","\u101e","\u1005"]),t.s)
-B.bhS=A.a(s([B.dB,B.cy,B.fz]),t.uB)
+B.bhS=A.a(s([B.dB,B.cy,B.fA]),t.uB)
 B.P4=A.a(s(["EEEE, d MMMM y","d MMMM y","d MMM y","dd/MM/y"]),t.s)
 B.bhU=A.a(s(["Cl\xednica Geral","Cardiologia","Emerg\xeancia","Pneumologia","Neurologia","Gastroenterologia","Endocrinologia","Nefrologia","Infectologia","Cirurgia","Pediatria","Ginecologia","Ortopedia","Outro"]),t.s)
 B.P5=A.a(s(["\u091c","\u092b\u093c","\u092e\u093e","\u0905","\u092e","\u091c\u0942","\u091c\u0941","\u0905","\u0938\u093f","\u0905","\u0928","\u0926\u093f"]),t.s)
@@ -171751,10 +171749,10 @@ B.uR=A.a(s(["a. C.","d. C."]),t.s)
 B.cU=new A.ky(0,"android")
 B.fU=new A.ky(1,"fuchsia")
 B.bM=new A.ky(2,"iOS")
-B.fr=new A.ky(3,"linux")
+B.fs=new A.ky(3,"linux")
 B.eI=new A.ky(4,"macOS")
-B.fs=new A.ky(5,"windows")
-B.bqu=A.a(s([B.cU,B.fU,B.bM,B.fr,B.eI,B.fs]),A.aJ("a_<ky>"))
+B.ft=new A.ky(5,"windows")
+B.bqu=A.a(s([B.cU,B.fU,B.bM,B.fs,B.eI,B.ft]),A.aJ("a_<ky>"))
 B.bqz=A.a(s(["1-ci kvartal","2-ci kvartal","3-c\xfc kvartal","4-c\xfc kvartal"]),t.s)
 B.bqF=A.a(s(["\u0644\u0647 \u0645\u06cc\u0644\u0627\u062f \u0685\u062e\u0647 \u0648\u0693\u0627\u0646\u062f\u06d0","\u0644\u0647 \u0645\u06cc\u0644\u0627\u062f \u0685\u062e\u0647 \u0648\u0631\u0648\u0633\u062a\u0647"]),t.s)
 B.bqH=A.a(s(["EEEE, d MMMM y","d MMMM y","d MMM y","d/MM/yy"]),t.s)
@@ -183664,7 +183662,7 @@ B.FU=new A.px()
 B.wj=new A.acu(0,"line")
 B.e36=new A.iH(B.c_,B.wj)
 B.e35=new A.iH(B.bN,B.wj)
-B.e38=new A.iH(B.fu,B.wj)
+B.e38=new A.iH(B.fv,B.wj)
 B.e37=new A.iH(B.ic,B.wj)
 B.D8=new A.iH(B.c_,B.qO)
 B.c1L=new A.dm([B.wO,B.ac0,B.wP,B.FL,B.e66,B.FL,B.a51,B.FM,B.a52,B.FS,B.a4O,B.FU,B.or,B.e36,B.os,B.e35,B.r_,B.e38,B.r0,B.e37,B.qY,B.D8,B.qZ,B.wk],t.Fp)
@@ -185284,7 +185282,7 @@ B.dEs=new A.OD(null)
 B.dEt=new A.aak(0,"start")
 B.dEu=new A.aak(1,"end")
 B.CK=new A.rz("","","","","",1)
-B.aJt=new A.aj(B.AU,13,B.fw,null,null)
+B.aJt=new A.aj(B.AU,13,B.fx,null,null)
 B.dEv=new A.K(B.pH,B.aJt,null)
 B.aHe=new A.aj(B.hn,12,B.a6,null,null)
 B.dEw=new A.K(B.iy,B.aHe,null)
@@ -185328,12 +185326,12 @@ B.aFW=new A.Y(983255,"MaterialIcons",null,!1)
 B.aHC=new A.aj(B.aFW,9,B.rE,null,null)
 B.dEO=new A.K(B.zA,B.aHC,null)
 B.CL=new A.zm(null)
-B.c1q=new A.dm([B.cU,B.mB,B.bM,B.my,B.eI,B.my,B.fs,B.mB,B.fr,B.mB],t.Jf)
+B.c1q=new A.dm([B.cU,B.mB,B.bM,B.my,B.eI,B.my,B.ft,B.mB,B.fs,B.mB],t.Jf)
 B.dEQ=new A.OG(B.c1q)
 B.y1=new A.a4Y()
-B.c1z=new A.dm([B.cU,B.y1,B.bM,B.my,B.fr,B.y1,B.eI,B.my,B.fs,B.y1],t.Jf)
+B.c1z=new A.dm([B.cU,B.y1,B.bM,B.my,B.fs,B.y1,B.eI,B.my,B.ft,B.y1],t.Jf)
 B.od=new A.OG(B.c1z)
-B.fj=new A.aap(0,"fill")
+B.fk=new A.aap(0,"fill")
 B.e5=new A.aap(1,"stroke")
 B.dER=new A.vg(1/0)
 B.kI=new A.aat(0,"nonZero")
@@ -185375,9 +185373,9 @@ B.w5=new A.rF(5,"move")
 B.a36=new A.rF(6,"up")
 B.es=new A.pv(0,"touch")
 B.hu=new A.pv(1,"mouse")
-B.fk=new A.pv(2,"stylus")
+B.fl=new A.pv(2,"stylus")
 B.j0=new A.pv(3,"invertedStylus")
-B.fl=new A.pv(4,"trackpad")
+B.fm=new A.pv(4,"trackpad")
 B.i3=new A.pv(5,"unknown")
 B.w6=new A.EU(0,"none")
 B.dFH=new A.EU(1,"scroll")
@@ -185482,43 +185480,43 @@ B.b0=new A.aw(4,null,null,null)
 B.edd=new A.u(!0,B.P,null,null,null,null,11,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eiV=new A.bl("Adicionar",null,B.edd,null,null,null,null,null,null,null,null)
 B.aVh=A.a(s([B.aK4,B.b0,B.eiV]),t.p)
-B.e2T=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dW,null,0,B.aVh,null)
+B.e2T=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dV,null,0,B.aVh,null)
 B.aJ7=new A.aj(B.jE,11,B.a8,null,null)
 B.egd=new A.u(!0,B.a8,null,null,null,null,10,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eiX=new A.bl("Copiar",null,B.egd,null,null,null,null,null,null,null,null)
 B.bHf=A.a(s([B.aJ7,B.b0,B.eiX]),t.p)
-B.e2U=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dW,null,0,B.bHf,null)
+B.e2U=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dV,null,0,B.bHf,null)
 B.aJA=new A.aj(B.hq,14,B.j,null,null)
 B.bF=new A.aw(5,null,null,null)
 B.a6j=new A.u(!0,B.j,null,null,null,null,12,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eiw=new A.bl("Ver",null,B.a6j,null,null,null,null,null,null,null,null)
 B.bJm=A.a(s([B.aJA,B.bF,B.eiw]),t.p)
-B.e2V=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dW,null,0,B.bJm,null)
+B.e2V=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dV,null,0,B.bJm,null)
 B.aHu=new A.aj(B.e2,14,B.dl,null,null)
 B.eaC=new A.u(!0,B.dl,null,null,null,null,12,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eid=new A.bl("Como configurar o EmailJS",null,B.eaC,null,null,null,null,null,null,null,null)
 B.bCr=A.a(s([B.aHu,B.af,B.eid]),t.p)
-B.e2W=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dW,null,0,B.bCr,null)
+B.e2W=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dV,null,0,B.bCr,null)
 B.aIq=new A.aj(B.q_,12,B.b_,null,null)
 B.e9v=new A.u(!0,B.b_,null,null,null,null,10,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ejc=new A.bl("Excluir",null,B.e9v,null,null,null,null,null,null,null,null)
 B.bW_=A.a(s([B.aIq,B.b0,B.ejc]),t.p)
-B.e2X=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dW,null,0,B.bW_,null)
+B.e2X=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dV,null,0,B.bW_,null)
 B.aIM=new A.aj(B.u6,13,B.j,null,null)
 B.ej5=new A.bl("Abrir",null,B.a6j,null,null,null,null,null,null,null,null)
 B.bba=A.a(s([B.aIM,B.bF,B.ej5]),t.p)
-B.e2Z=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dW,null,0,B.bba,null)
+B.e2Z=new A.hJ(B.bm,B.e,B.E,B.k,null,B.dV,null,0,B.bba,null)
 B.aIG=new A.aj(B.pT,12,B.bU,null,null)
 B.ebv=new A.u(!0,B.bU,null,null,null,null,9,B.D,null,1.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eiW=new A.bl("REFER\xcaNCIAS CIENT\xcdFICAS",null,B.ebv,null,null,null,null,null,null,null,null)
 B.aQx=A.a(s([B.aIG,B.af,B.eiW]),t.p)
-B.e3_=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dW,null,0,B.aQx,null)
+B.e3_=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dV,null,0,B.aQx,null)
 B.aGZ=new A.aj(B.pT,13,B.cx,null,null)
 B.dh=new A.aw(7,null,null,null)
 B.edw=new A.u(!0,B.cx,null,null,null,null,9.5,B.D,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ei4=new A.bl("EVIDENCIA Y REFERENCIAS",null,B.edw,null,null,null,null,null,null,null,null)
 B.br2=A.a(s([B.aGZ,B.dh,B.ei4]),t.p)
-B.e30=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dW,null,0,B.br2,null)
+B.e30=new A.hJ(B.bm,B.e,B.f,B.k,null,B.dV,null,0,B.br2,null)
 B.e31=new A.Q4(1333)
 B.D4=new A.Q4(2222)
 B.e32=new A.acg(null,null)
@@ -185531,7 +185529,7 @@ B.a3l=new A.zV(1,"transientCallbacks")
 B.a3m=new A.zV(2,"midFrameMicrotasks")
 B.on=new A.zV(3,"persistentCallbacks")
 B.D5=new A.zV(4,"postFrameCallbacks")
-B.aX=new A.Q8(0,"englishLike")
+B.aY=new A.Q8(0,"englishLike")
 B.kO=new A.Q8(1,"dense")
 B.eV=new A.Q8(2,"tall")
 B.mc=new A.Qc(0,"idle")
@@ -185552,7 +185550,7 @@ B.e3d=new A.Qi(null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.e3e=new A.Qj(null,null)
 B.e7=new A.ng(0,"tap")
 B.a3v=new A.ng(1,"doubleTap")
-B.fn=new A.ng(2,"longPress")
+B.fo=new A.ng(2,"longPress")
 B.qP=new A.ng(3,"forcePress")
 B.cZ=new A.ng(5,"toolbar")
 B.dg=new A.ng(6,"drag")
@@ -185685,7 +185683,7 @@ B.e4P=new A.dE(B.dCL,2,t.c)
 B.e4T=new A.au([B.CO,B.kK],A.aJ("au<iF>"))
 B.dCv={api_key_invalid:0,safety:1,content_filter:2}
 B.e4V=new A.dE(B.dCv,3,t.c)
-B.e4W=new A.au([B.j0,B.fk,B.es,B.i3,B.fl],t.Lu)
+B.e4W=new A.au([B.j0,B.fl,B.es,B.i3,B.fm],t.Lu)
 B.dCY={javascript:0}
 B.e4X=new A.dE(B.dCY,1,t.c)
 B.dCO={".":0,"!":1,"?":2,"*":3,_:4,"]":5,")":6,"`":7}
@@ -185699,9 +185697,9 @@ B.e59=new A.dE(B.eC,0,A.aJ("dE<ky>"))
 B.i7=new A.dE(B.eC,0,A.aJ("dE<dQ>"))
 B.e5f=new A.au([32,8203],t.Ih)
 B.aB=new A.dQ(1,"focused")
-B.aw=new A.dQ(0,"hovered")
+B.av=new A.dQ(0,"hovered")
 B.aV=new A.dQ(2,"pressed")
-B.e5g=new A.au([B.aB,B.aw,B.aV],t.El)
+B.e5g=new A.au([B.aB,B.av,B.aV],t.El)
 B.e5n=new A.au([B.a2W,B.a3_,B.CS,B.a2X,B.a2Y],t.rR)
 B.dCt={click:0,touchstart:1,touchend:2,pointerdown:3,pointermove:4,pointerup:5}
 B.e5p=new A.dE(B.dCt,6,t.c)
@@ -185709,7 +185707,7 @@ B.dDc={createdAt:0,approvedAt:1,updatedAt:2,deletedAt:3,acceptedTermsAt:4}
 B.e5q=new A.dE(B.dDc,5,t.c)
 B.dCR={calc_infusao:0,calc_prescricoes:1}
 B.oq=new A.dE(B.dCR,2,t.c)
-B.a4A=new A.au([B.es,B.fk,B.j0,B.fl,B.i3],t.Lu)
+B.a4A=new A.au([B.es,B.fl,B.j0,B.fm,B.i3],t.Lu)
 B.dCw={icc:0,"icc.":1,iam:2,"iam.":3,sca:4,"sca.":5,fa:6,"fa.":7,flutter:8,tep:9,"tep.":10,tvp:11,"tvp.":12,"dissec\xe7\xe3o":13,diseccion:14,tam:15,bloqueio:16,bradicardia:17,taquicardia:18,"fibrila\xe7\xe3o":19,fibrilacion:20,"cardiovers\xe3o":21,avc:22,"avc.":23,acv:24,"acv.":25,ave:26,tia:27,"tia.":28,meningite:29,meningitis:30,encefalite:31,encefalitis:32,crise:33,"convuls\xe3o":34,convulsion:35,epilepsia:36,dpoc:37,"dpoc.":38,epoc:39,asma:40,asthma:41,beca:42,ards:43,srag:44,pcp:45,"pneumot\xf3rax":46,pneumotorax:47,derrame:48,"efus\xe3o":49,ira:50,"ira.":51,lra:52,"lra.":53,irc:54,drc:55,cad:56,"cad.":57,hhns:58,hhs:59,hipoglicemia:60,hiperglicemia:61,hiponatremia:62,hipernatremia:63,hipocalemia:64,hipercalemia:65,hipercalcemia:66,sepse:67,sepsis:68,sirs:69,choque:70,shock:71,anafilaxia:72,anafilaxis:73,endocardite:74,endocarditis:75,politrauma:76,tcce:77,tce:78,queimadura:79,quemadura:80,afogamento:81,ahogamiento:82,hemorragia:83,"hemot\xf3rax":84,hemotorax:85,cirrosis:86,cirrose:87,psa:88,"psa.":89,"hemorragia digestiva":90,hdab:91,hdai:92,eclampsia:93,preeclampsia:94,hellp:95}
 B.e5z=new A.dE(B.dCw,96,t.c)
 B.e5A=new A.au([B.w2,B.w3,B.CU,B.w1,B.w4,B.CV,B.CW,B.a2Z,B.CT],t.rR)
@@ -185809,7 +185807,7 @@ B.e6F=new A.ag(496,164)
 B.a5b=new A.ag(1/0,46)
 B.e6H=new A.ag(80,47.5)
 B.e6I=new A.ag(1/0,66)
-B.e6J=new A.ag(1/0,42)
+B.e6J=new A.ag(1/0,36)
 B.e6K=new A.ag(1/0,50)
 B.e6L=new A.ag(1/0,56)
 B.e6M=new A.ag(77.37,37.9)
@@ -185830,7 +185828,7 @@ B.e8=new A.aw(14,null,null,null)
 B.DK=new A.aw(16,null,null,null)
 B.a5d=new A.aw(20,null,null,null)
 B.e6T=new A.aw(2,null,null,null)
-B.e6U=new A.aw(38,null,null,null)
+B.e6U=new A.aw(32,null,null,null)
 B.d7=new A.aw(3,null,null,null)
 B.aei=new A.eL(2.5,null,null,null,null,B.bR,null,null,null,null)
 B.e6V=new A.aw(24,24,B.aei,null)
@@ -185844,9 +185842,9 @@ B.DM=new A.aw(18,18,B.oW,null)
 B.aej=new A.eL(2,null,null,null,null,B.by,null,null,null,null)
 B.e6X=new A.aw(20,20,B.aej,null)
 B.wU=new A.aw(1/0,null,null,null)
-B.aek=new A.eL(2,null,null,null,null,B.av,null,null,null,null)
+B.aek=new A.eL(2,null,null,null,null,B.aw,null,null,null,null)
 B.e6Y=new A.aw(16,16,B.aek,null)
-B.aep=new A.eL(3,null,null,null,null,B.dY,null,null,null,null)
+B.aep=new A.eL(3,null,null,null,null,B.dX,null,null,null,null)
 B.e6Z=new A.aw(40,40,B.aep,null)
 B.DN=new A.aw(20,20,B.oW,null)
 B.aes=new A.eL(3,null,null,null,null,B.ed,null,null,null,null)
@@ -185913,7 +185911,7 @@ B.a5k=new A.QQ(0,"permissive")
 B.e7p=new A.QQ(1,"normal")
 B.e7q=new A.QQ(2,"forced")
 B.eY=new A.pL(0,"s")
-B.dV=new A.pL(1,"o")
+B.dU=new A.pL(1,"o")
 B.ot=new A.pL(2,"a")
 B.r1=new A.pL(3,"p")
 B.bZ=new A.adn(1,null)
@@ -186068,7 +186066,7 @@ B.e8D=new A.u(!0,B.j,null,null,null,null,14,B.D,null,0.5,null,null,null,null,nul
 B.e8E=new A.u(!0,null,null,null,null,null,null,B.F,null,2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.e8F=new A.u(!0,B.p1,null,null,null,null,11,B.z,null,0.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.e8L=new A.u(!0,B.R,null,null,null,null,7.5,B.ab,null,0.1,null,null,1.5,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.e8M=new A.u(!0,B.dZ,null,null,null,null,9,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.e8M=new A.u(!0,B.dY,null,null,null,null,9,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.e8N=new A.u(!0,B.cb,null,null,null,null,11,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.e8O=new A.u(!0,B.dl,null,null,null,null,11,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.e8R=new A.u(!0,B.a8,null,null,null,null,8.5,B.D,null,1.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186122,7 +186120,7 @@ B.a5R=new A.u(!0,null,null,null,null,null,null,null,null,null,null,null,null,nul
 B.Ee=new A.u(!0,B.kd,null,null,null,null,10,B.ab,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eah=new A.u(!0,B.bc,null,null,null,null,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eai=new A.u(!0,B.la,null,null,null,null,6,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.eak=new A.u(!0,B.dY,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.eak=new A.u(!0,B.dX,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eam=new A.u(!0,B.cr,null,null,null,null,12,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eao=new A.u(!0,B.j,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eap=new A.u(!0,B.kd,null,null,null,null,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186204,8 +186202,8 @@ B.Hx=new A.l(1,0.4666666666666667,0.4666666666666667,0.4666666666666667,B.m)
 B.ecr=new A.u(!0,B.Hx,null,null,null,null,12,B.O,null,null,null,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.x7=new A.u(!0,B.j,null,null,null,null,15,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ecw=new A.u(!0,B.hh,null,null,null,null,13,B.z,null,null,null,null,1.45,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a62=new A.u(!0,B.av,null,null,null,null,13,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a64=new A.u(!0,B.aY,null,null,null,null,12,B.O,null,null,null,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.a62=new A.u(!0,B.aw,null,null,null,null,13,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.a64=new A.u(!0,B.aZ,null,null,null,null,12,B.O,null,null,null,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ecz=new A.u(!0,B.is,null,null,null,null,13,B.Y,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ecB=new A.u(!0,B.j,null,null,null,null,20,B.D,null,null,null,null,1.2,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.r6=new A.u(!0,B.J,null,null,null,null,8,B.D,null,0.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186219,10 +186217,10 @@ B.ecP=new A.u(!0,B.j,null,null,null,null,12.5,B.O,null,null,null,null,null,null,
 B.ecQ=new A.u(!0,B.a6,null,null,null,null,11,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ecR=new A.u(!0,B.j,null,null,null,null,24,B.D,null,-0.5,null,null,1.1,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ecV=new A.u(!0,B.bd,null,null,null,null,11,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.ecW=new A.u(!0,B.fw,null,null,null,null,10,B.D,null,1.2,null,null,null,null,null,null,null,B.N,null,null,null,null,null,null,null,null)
+B.ecW=new A.u(!0,B.fx,null,null,null,null,10,B.D,null,1.2,null,null,null,null,null,null,null,B.N,null,null,null,null,null,null,null,null)
 B.a66=new A.u(!0,B.bV,null,null,null,null,11,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.Eg=new A.u(!0,null,null,null,null,null,13,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.ecY=new A.u(!0,B.av,null,null,null,null,16,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.ecY=new A.u(!0,B.aw,null,null,null,null,16,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.a67=new A.u(!0,null,null,null,null,null,null,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ed_=new A.u(!0,B.dl,null,null,null,null,13,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ed1=new A.u(!0,B.j,null,null,null,null,16,B.z,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186238,7 +186236,7 @@ B.Ei=new A.u(!0,B.j,null,null,null,null,13,null,null,null,null,null,null,null,nu
 B.edq=new A.u(!0,B.k8,null,null,null,null,10,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.aiP=new A.l(1,0.08627450980392157,0.396078431372549,0.20392156862745098,B.m)
 B.edr=new A.u(!0,B.aiP,null,null,null,null,10.5,null,null,null,null,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.eds=new A.u(!0,B.dZ,null,null,null,null,10,B.O,B.ek,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.eds=new A.u(!0,B.dY,null,null,null,null,10,B.O,B.ek,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.edu=new A.u(!0,B.iW,null,null,null,null,12,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.Ej=new A.u(!0,B.ir,null,null,null,null,12,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.edv=new A.u(!0,B.rN,null,null,null,null,9,B.D,null,1.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186253,7 +186251,7 @@ B.Hv=new A.l(1,0.8196078431372549,0.9803921568627451,0.8980392156862745,B.m)
 B.edH=new A.u(!0,B.Hv,null,null,null,null,13,B.O,null,null,null,null,1.5,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.edK=new A.u(!0,B.a8,null,null,null,null,9,B.D,null,1.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.edM=new A.u(!0,null,null,null,null,null,10,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.edN=new A.u(!0,B.aY,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.edN=new A.u(!0,B.aZ,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.edO=new A.u(!0,B.cb,null,null,null,null,10,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.edQ=new A.u(!0,B.T,null,null,null,null,11,B.z,null,0.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ak0=new A.l(1,0.5529411764705883,0.2980392156862745,0.16470588235294117,B.m)
@@ -186288,11 +186286,11 @@ B.eey=new A.u(!0,B.j,null,null,null,null,14,B.z,null,null,null,null,null,null,nu
 B.eez=new A.u(!0,B.j,null,null,null,null,18,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eeB=new A.u(!0,B.rM,null,null,null,null,12.5,B.O,null,null,null,null,1.45,null,null,null,null,B.r4,B.rM,null,null,null,null,null,null,null)
 B.a6f=new A.u(!0,B.R,null,null,null,null,10,B.Y,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a6g=new A.u(!0,B.av,null,null,null,null,12,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.a6g=new A.u(!0,B.aw,null,null,null,null,12,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eeE=new A.u(!0,B.J,null,null,null,null,10,B.D,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.akL=new A.l(1,0.47843137254901963,0.37254901960784315,0,B.m)
 B.eeF=new A.u(!0,B.akL,null,null,null,null,11,B.O,null,null,null,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.eeG=new A.u(!0,B.dZ,null,null,null,null,14,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.eeG=new A.u(!0,B.dY,null,null,null,null,14,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.a6h=new A.u(!0,null,null,null,null,null,15,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eeH=new A.u(!0,B.j,null,null,null,null,15,B.O,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eeI=new A.u(!0,B.a8,null,null,null,null,14.5,B.F,null,-0.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186301,10 +186299,10 @@ B.El=new A.u(!0,B.j,null,null,null,null,11,B.z,null,null,null,null,null,null,nul
 B.eeK=new A.u(!0,B.jn,null,null,null,null,10.5,null,B.ek,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.a6i=new A.u(!0,B.U,null,null,null,null,13,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eeN=new A.u(!0,B.j,null,null,null,null,20,B.F,null,-0.3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.eeP=new A.u(!0,B.fw,null,null,null,null,9,B.D,null,1.4,null,null,null,null,null,null,null,B.N,null,null,null,null,null,null,null,null)
+B.eeP=new A.u(!0,B.fx,null,null,null,null,9,B.D,null,1.4,null,null,null,null,null,null,null,B.N,null,null,null,null,null,null,null,null)
 B.eeR=new A.u(!0,B.P,null,null,null,null,16,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eeV=new A.u(!0,B.j,null,null,null,null,null,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.Em=new A.u(!0,B.dZ,null,null,null,null,15,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.Em=new A.u(!0,B.dY,null,null,null,null,15,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.oB=new A.u(!0,B.j,null,null,null,null,13,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eeY=new A.u(!0,B.P,null,null,null,null,11,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ef_=new A.u(!0,B.da,null,null,null,null,9,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186316,7 +186314,7 @@ B.efb=new A.u(!0,B.ij,null,null,null,null,10,B.F,null,0.4,null,null,null,null,nu
 B.efe=new A.u(!0,B.rY,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efj=new A.u(!0,B.t2,null,null,null,null,12,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efl=new A.u(!0,B.a8,null,null,null,null,11,B.D,null,2.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.efm=new A.u(!0,B.av,null,null,null,null,13.5,B.F,null,null,null,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.efm=new A.u(!0,B.aw,null,null,null,null,13.5,B.F,null,null,null,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efn=new A.u(!0,B.tb,null,null,null,null,13,null,null,null,null,null,1.5,null,null,null,null,B.N,null,null,null,null,null,null,null,null)
 B.efo=new A.u(!0,B.Z,null,null,null,null,8.5,B.F,null,0.3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efs=new A.u(!0,B.P,B.Hv,null,null,null,13,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186324,7 +186322,7 @@ B.eft=new A.u(!0,B.aT,null,null,null,null,11,B.z,null,null,null,null,null,null,n
 B.efv=new A.u(!0,B.l9,null,null,null,null,11.5,null,null,null,null,null,1.4,null,null,null,null,B.N,null,null,null,null,null,null,null,null)
 B.efw=new A.u(!0,B.j,null,null,null,null,14,B.z,null,null,null,null,1.5,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efx=new A.u(!0,B.t5,null,null,null,null,9,B.D,null,1.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.a6k=new A.u(!0,B.dZ,null,null,null,null,8,B.D,null,0.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.a6k=new A.u(!0,B.dY,null,null,null,null,8,B.D,null,0.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efz=new A.u(!0,B.cI,null,null,null,null,9.5,B.F,null,0.9,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efA=new A.u(!0,B.ee,null,null,null,null,15,B.z,null,0.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.akb=new A.l(1,0.050980392156862744,0.2901960784313726,0.1411764705882353,B.m)
@@ -186332,7 +186330,7 @@ B.efB=new A.u(!0,B.akb,null,null,null,null,13,B.D,null,null,null,null,1.4,null,n
 B.efE=new A.u(!0,B.ee,null,null,null,null,12,B.z,null,0.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efI=new A.u(!0,B.j,null,null,null,null,15,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efJ=new A.u(!0,B.k8,null,null,null,null,9,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.efK=new A.u(!0,B.aY,null,null,null,null,11.5,B.O,null,null,null,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.efK=new A.u(!0,B.aZ,null,null,null,null,11.5,B.O,null,null,null,null,1.4,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efM=new A.u(!0,B.pr,null,null,null,null,12,B.z,null,null,null,null,1.2,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efP=new A.u(!0,B.kd,null,null,null,null,10.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.efR=new A.u(!0,B.bU,null,null,null,null,9,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186369,7 +186367,7 @@ B.egD=new A.u(!0,B.j,null,null,null,null,22,B.D,null,-0.5,null,null,1.2,null,nul
 B.egF=new A.u(!0,B.mK,null,null,null,null,14,B.D,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.egG=new A.u(!0,B.bb,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.egH=new A.u(!0,null,null,null,null,null,11,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.egI=new A.u(!0,B.dZ,null,null,null,null,9,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.egI=new A.u(!0,B.dY,null,null,null,null,9,B.z,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.egJ=new A.u(!0,B.T,null,null,null,null,11,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.egK=new A.u(!0,B.cw,null,null,null,null,12,B.z,null,0.2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.egL=new A.u(!0,B.jo,null,null,null,null,11,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186702,7 +186700,7 @@ B.eic=new A.bl("Remover",null,B.e9k,null,null,null,null,null,null,null,null)
 B.eie=new A.bl("Sair e entrar com outra conta",null,null,null,null,null,null,null,null,null,null)
 B.e9I=new A.u(!0,null,null,null,null,null,14,B.F,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eif=new A.bl("Entendido!",null,B.e9I,null,null,null,null,null,null,null,null)
-B.e9y=new A.u(!0,B.dY,null,null,null,null,9.5,B.D,null,0.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.e9y=new A.u(!0,B.dX,null,null,null,null,9.5,B.D,null,0.8,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eig=new A.bl("IA",null,B.e9y,null,null,null,null,null,null,null,null)
 B.eih=new A.bl("Enviar agora",null,null,null,null,null,null,null,null,null,null)
 B.e9p=new A.u(!0,B.a6,null,null,null,null,8,B.D,null,0.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
@@ -186725,7 +186723,7 @@ B.eip=new A.bl("REFER\xcaNCIA DA LITERATURA",null,B.ebZ,null,null,null,null,null
 B.a6u=new A.bl("BIBLIOTECA",null,B.oz,null,null,null,null,null,null,null,null)
 B.eg2=new A.u(!0,B.mV,null,null,null,null,9,B.F,null,0.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eir=new A.bl("AI",null,B.eg2,null,null,null,null,null,null,null,null)
-B.Eh=new A.u(!0,B.dZ,null,null,null,null,8,B.D,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.Eh=new A.u(!0,B.dY,null,null,null,null,8,B.D,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.eis=new A.bl("MARCADORES / OUTROS",null,B.Eh,null,null,null,null,null,null,null,null)
 B.eit=new A.bl("Influenciadores Cadastrados",null,B.oB,null,null,null,null,null,null,null,null)
 B.edB=new A.u(!0,B.bU,null,null,null,null,9,B.D,null,1.3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)

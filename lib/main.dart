@@ -1684,7 +1684,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       // ── AppBar HOME: sempre visível ───────────────────────────────────────
       appBar: isHome
           ? PreferredSize(
-              preferredSize: const Size.fromHeight(42), // SUPER ORDEM MASTER 14 M1: 42px
+              // BUILD 316 M1: 36px base — SafeArea.top expande para notch/Dynamic Island.
+              // Web/sem-notch → 36px útil. iPhone com ilha/entalhada → 36+padding.top.
+              preferredSize: const Size.fromHeight(36),
               child: Builder(
                 builder: (scaffoldCtx) => _MobileAppBar(
                   dark: dark,
@@ -2139,18 +2141,8 @@ class _MobileAppBar extends StatelessWidget {
     final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
     final iconColor = dark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF0F1116);
 
-    // Build 138 — Hamburger dinâmico:
-    //   Light mode → filled (preenchido, máximo contraste no fundo branco)
-    //   Dark mode  → outline/vazado (borda visível no fundo escuro)
-    final hamburgerBg = dark
-        ? Colors.white.withValues(alpha: 0.08)     // dark = vazado (outline)
-        : const Color(0xFF0F1116);                  // light = filled (preenchido)
-    final hamburgerBorder = dark
-        ? Colors.white.withValues(alpha: 0.18)
-        : Colors.transparent;
-    final hamburgerIconColor = dark
-        ? Colors.white.withValues(alpha: 0.85)
-        : Colors.white;
+    // BUILD 316 M2: hamburgerBg, hamburgerBorder, hamburgerIconColor removidos.
+    // Hambúrguer agora é um ícone nu (sem container) — usa iconColor diretamente.
 
     // Ícones AI (histórico/etc) — adapta ao novo fundo neutro
     final iconBg = dark
@@ -2180,9 +2172,11 @@ class _MobileAppBar extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: SizedBox(
-          height: 48,
+          // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
+          // padding do sistema (notch / Dynamic Island / status bar).
+          height: 36,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -2224,8 +2218,8 @@ class _MobileAppBar extends StatelessWidget {
                 // direito, garantindo simetria perfeita e título realmente centrado.
                 Row(
               children: [
-                // BUILD 282: Placeholder 38px (largura = hambúrguer) para simetria
-                const SizedBox(width: 38),
+                // BUILD 316: Placeholder 32px (largura = hambúrguer nu) para simetria
+                const SizedBox(width: 32),
                 const Spacer(),
 
                 // ── Botões contextuais da IA (só na aba 2) ─────────────────
@@ -2361,19 +2355,19 @@ class _MobileAppBar extends StatelessWidget {
                   ),
                 ],
 
-                // ── Botão hambúrguer → abre endDrawer ─────────────────────
-                // Build 138: filled (dark bg) no light mode, outline no dark mode
+                // BUILD 316 M2: hambúrguer ultra-minimalista — sem container,
+                // sem bordas, sem background. Apenas o ícone flutuando sobre o canvas.
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: onMenuTap,
-                  child: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: hamburgerBg,
-                      border: Border.all(color: hamburgerBorder, width: 1),
+                  child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Icon(
+                      Icons.menu_rounded,
+                      size: 20,
+                      color: iconColor,
                     ),
-                    child: Icon(Icons.menu_rounded, size: 20, color: hamburgerIconColor),
                   ),
                 ),
               ],
