@@ -9,7 +9,7 @@ FROM debian:stable-slim AS build-env
 
 # Dependências essenciais do sistema
 RUN apt-get update && apt-get install -y \
-    curl git unzip xz-utils zip libglu1-mesa \
+    curl git unzip xz-utils zip libglu1-mesa ca-certificates \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Clona o Flutter diretamente do repositório oficial na versão exata 3.22.2
