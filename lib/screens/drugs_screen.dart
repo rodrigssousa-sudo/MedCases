@@ -323,8 +323,8 @@ class _GroupAccordion extends StatelessWidget {
               borderRadius: isExpanded
                   ? const BorderRadius.vertical(top: Radius.circular(14))
                   : BorderRadius.circular(14),
-              splashColor: (iconColor ?? c.green).withValues(alpha: 0.12),
-              highlightColor: (iconColor ?? c.green).withValues(alpha: 0.06),
+              splashColor: (iconColor ?? c.green).withOpacity(0.12),
+              highlightColor: (iconColor ?? c.green).withOpacity(0.06),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
@@ -343,13 +343,13 @@ class _GroupAccordion extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          (iconColor ?? c.green).withValues(alpha: 0.18),
-                          (iconColor ?? c.green).withValues(alpha: 0.08),
+                          (iconColor ?? c.green).withOpacity(0.18),
+                          (iconColor ?? c.green).withOpacity(0.08),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: (iconColor ?? c.green).withValues(alpha: 0.20),
+                        color: (iconColor ?? c.green).withOpacity(0.20),
                         width: 1,
                       ),
                     ),
@@ -475,8 +475,8 @@ class _DrugListTile extends StatelessWidget {
           AppHaptics.light(context);
           onTap();
         },
-        splashColor: c.green.withValues(alpha: 0.10),
-        highlightColor: c.green.withValues(alpha: 0.05),
+        splashColor: c.green.withOpacity(0.10),
+        highlightColor: c.green.withOpacity(0.05),
         child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
@@ -540,8 +540,8 @@ class _DrugListTile extends StatelessWidget {
                   p.toggleFavDrug(drug.id);
                 },
                 borderRadius: BorderRadius.circular(20),
-                splashColor: kGold.withValues(alpha: 0.18),
-                highlightColor: kGold.withValues(alpha: 0.08),
+                splashColor: kGold.withOpacity(0.18),
+                highlightColor: kGold.withOpacity(0.08),
                 child: SizedBox(
                   width: 40,
                   height: 40,
@@ -1398,28 +1398,28 @@ class _ClinicalHeader extends StatelessWidget {
               // ── Botão voltar — cresce mas não expulsa os outros ───────────
               Flexible(
                 child: Material(
-                  color: Colors.white.withValues(alpha: 0.08),
+                  color: Colors.white.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(10),
                   child: InkWell(
                     onTap: onBack,
                     borderRadius: BorderRadius.circular(10),
-                    splashColor: Colors.white.withValues(alpha: 0.15),
+                    splashColor: Colors.white.withOpacity(0.15),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                        border: Border.all(color: Colors.white.withOpacity(0.12)),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Icon(Icons.arrow_back_ios_rounded, size: 12,
-                            color: Colors.white.withValues(alpha: 0.85)),
+                            color: Colors.white.withOpacity(0.85)),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(p.t('back_drugs'),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                              color: Colors.white.withValues(alpha: 0.85))),
+                              color: Colors.white.withOpacity(0.85))),
                         ),
                       ]),
                     ),
@@ -1429,7 +1429,7 @@ class _ClinicalHeader extends StatelessWidget {
               const SizedBox(width: 8),
               // ── Favoritar (ícone compacto — tamanho fixo) ─────────────────
               Material(
-                color: Colors.white.withValues(alpha: 0.08),
+                color: Colors.white.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(10),
                 child: InkWell(
                   onTap: onFav,
@@ -1438,7 +1438,7 @@ class _ClinicalHeader extends StatelessWidget {
                     padding: const EdgeInsets.all(9),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                      border: Border.all(color: Colors.white.withOpacity(0.12)),
                     ),
                     child: Icon(
                       isFav ? Icons.star_rounded : Icons.star_border_rounded,
@@ -1451,7 +1451,7 @@ class _ClinicalHeader extends StatelessWidget {
               const SizedBox(width: 8),
               // ── Usar no cockpit — label curto para caber em iPhones SE/mini ─
               Material(
-                color: const Color(0xFFFFE8A6).withValues(alpha: 0.15),
+                color: const Color(0xFFFFE8A6).withOpacity(0.15),
                 borderRadius: BorderRadius.circular(10),
                 child: InkWell(
                   onTap: onCockpit,
@@ -1460,7 +1460,7 @@ class _ClinicalHeader extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: const Color(0xFFFFE8A6).withValues(alpha: 0.25)),
+                      border: Border.all(color: const Color(0xFFFFE8A6).withOpacity(0.25)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       const Icon(Icons.science_rounded, size: 13,
@@ -1488,9 +1488,9 @@ class _ClinicalHeader extends StatelessWidget {
             Container(
               width: 52, height: 52,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
+                color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                border: Border.all(color: Colors.white.withOpacity(0.15)),
               ),
               child: Center(
                 child: Icon(DrugGroup.iconData(drug.group), size: 26,
@@ -1504,9 +1504,9 @@ class _ClinicalHeader extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.15),
+                    color: const Color(0xFFFFE8A6).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: const Color(0xFFFFE8A6).withValues(alpha: 0.3)),
+                    border: Border.all(color: const Color(0xFFFFE8A6).withOpacity(0.3)),
                   ),
                   child: Text(
                     p.tDB(drug.category).toUpperCase(),
@@ -1518,13 +1518,13 @@ class _ClinicalHeader extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.08),
+                    color: Colors.white.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     drug.route,
                     style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700,
-                      color: Colors.white.withValues(alpha: 0.7)),
+                      color: Colors.white.withOpacity(0.7)),
                   ),
                 ),
               ]),
@@ -1537,7 +1537,7 @@ class _ClinicalHeader extends StatelessWidget {
               // Classe farmacológica
               Text(p.tDB(drug.className),
                 style: TextStyle(fontSize: 13,
-                  color: Colors.white.withValues(alpha: 0.65),
+                  color: Colors.white.withOpacity(0.65),
                   fontWeight: FontWeight.w500)),
             ])),
           ]),
@@ -1553,13 +1553,13 @@ class _ClinicalHeader extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.06),
+                  color: Colors.white.withOpacity(0.06),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                  border: Border.all(color: Colors.white.withOpacity(0.1)),
                 ),
                 child: Text('ATC: ${globalEv?.atcCode ?? ev?.atcCode}',
                   style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                    color: Colors.white.withValues(alpha: 0.5))),
+                    color: Colors.white.withOpacity(0.5))),
               ),
               const SizedBox(width: 8),
             ],
@@ -1567,13 +1567,13 @@ class _ClinicalHeader extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.06),
+                color: Colors.white.withOpacity(0.06),
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                border: Border.all(color: Colors.white.withOpacity(0.1)),
               ),
               child: Text('${p.lang == 'es' ? 'Vía' : 'Via'}: ${drug.route}',
                 style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                  color: Colors.white.withValues(alpha: 0.5))),
+                  color: Colors.white.withOpacity(0.5))),
             ),
           ]),
         ),
@@ -1597,9 +1597,9 @@ class _ClinicalHeader extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 14),
             padding: const EdgeInsets.fromLTRB(12, 9, 12, 9),
             decoration: BoxDecoration(
-              color: const Color(0xFF059669).withValues(alpha: 0.15),
+              color: const Color(0xFF059669).withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFF34D399).withValues(alpha: 0.28)),
+              border: Border.all(color: const Color(0xFF34D399).withOpacity(0.28)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1633,7 +1633,7 @@ class _ClinicalHeader extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9.5,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF86EFAC).withValues(alpha: 0.75),
+                          color: const Color(0xFF86EFAC).withOpacity(0.75),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -1644,7 +1644,7 @@ class _ClinicalHeader extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w500,
-                          color: const Color(0xFF86EFAC).withValues(alpha: 0.50),
+                          color: const Color(0xFF86EFAC).withOpacity(0.50),
                         ),
                       ),
                     ],
@@ -1672,22 +1672,22 @@ class _ContextBadge extends StatelessWidget {
   bool get _isICU        => label == 'UTI'         || label == 'UCI';
 
   Color get _bg {
-    if (_isEmergency) return const Color(0xFFDC2626).withValues(alpha: 0.25);
-    if (_isICU)       return const Color(0xFF9333EA).withValues(alpha: 0.25);
-    if (_isPediatric) return const Color(0xFF0EA5E9).withValues(alpha: 0.25);
-    return Colors.white.withValues(alpha: 0.12);
+    if (_isEmergency) return const Color(0xFFDC2626).withOpacity(0.25);
+    if (_isICU)       return const Color(0xFF9333EA).withOpacity(0.25);
+    if (_isPediatric) return const Color(0xFF0EA5E9).withOpacity(0.25);
+    return Colors.white.withOpacity(0.12);
   }
   Color get _fg {
     if (_isEmergency) return const Color(0xFFFCA5A5);
     if (_isICU)       return const Color(0xFFD8B4FE);
     if (_isPediatric) return const Color(0xFF7DD3FC);
-    return Colors.white.withValues(alpha: 0.85);
+    return Colors.white.withOpacity(0.85);
   }
   Color get _border {
-    if (_isEmergency) return const Color(0xFFEF4444).withValues(alpha: 0.4);
-    if (_isICU)       return const Color(0xFFA855F7).withValues(alpha: 0.4);
-    if (_isPediatric) return const Color(0xFF38BDF8).withValues(alpha: 0.4);
-    return Colors.white.withValues(alpha: 0.15);
+    if (_isEmergency) return const Color(0xFFEF4444).withOpacity(0.4);
+    if (_isICU)       return const Color(0xFFA855F7).withOpacity(0.4);
+    if (_isPediatric) return const Color(0xFF38BDF8).withOpacity(0.4);
+    return Colors.white.withOpacity(0.15);
   }
 
   @override
@@ -1753,7 +1753,7 @@ class _DosageTableCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
           decoration: BoxDecoration(
-            color: popColor.withValues(alpha: 0.08),
+            color: popColor.withOpacity(0.08),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(13)),
             border: Border(bottom: BorderSide(color: c.border)),
           ),
@@ -1773,7 +1773,7 @@ class _DosageTableCard extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
             decoration: BoxDecoration(
-              border: isLast ? null : Border(bottom: BorderSide(color: c.border.withValues(alpha: 0.5))),
+              border: isLast ? null : Border(bottom: BorderSide(color: c.border.withOpacity(0.5))),
             ),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               // Label
@@ -1948,7 +1948,7 @@ class _DoseCalculatorCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
+                    color: const Color(0xFFFFE8A6).withOpacity(0.18),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -1962,7 +1962,7 @@ class _DoseCalculatorCard extends StatelessWidget {
                 if (w != null)
                   Text('${p.lang == 'es' ? 'Paciente' : 'Paciente'}: ${weightCtrl.text} kg',
                     style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.55))),
+                      color: Colors.white.withOpacity(0.55))),
               ]),
             ),
 
@@ -2205,9 +2205,9 @@ class _ClinInfoBlock extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.06),
+        color: color.withOpacity(0.06),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
+        border: Border.all(color: color.withOpacity(0.15)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -2292,9 +2292,9 @@ class _ClinChipBlock extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.08),
+            color: color.withOpacity(0.08),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: color.withValues(alpha: 0.2)),
+            border: Border.all(color: color.withOpacity(0.2)),
           ),
           child: Text(a,
             style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
@@ -2419,8 +2419,8 @@ class _FallbackNote extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: const Color(0xFFF59E0B).withValues(alpha: 0.07),
-        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.2)),
+        color: const Color(0xFFF59E0B).withOpacity(0.07),
+        border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.2)),
       ),
       child: Row(children: [
         const Icon(Icons.info_outline_rounded, size: 12, color: Color(0xFFF59E0B)),
@@ -2637,9 +2637,9 @@ class _GenericReferencesCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF0EA5E9).withValues(alpha: 0.06),
+        color: const Color(0xFF0EA5E9).withOpacity(0.06),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF0EA5E9).withValues(alpha: 0.2)),
+        border: Border.all(color: const Color(0xFF0EA5E9).withOpacity(0.2)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Row(children: [
@@ -2701,7 +2701,7 @@ class _LocalField extends StatelessWidget {
           hintStyle: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w400,
-            color: const Color(0xFF999999).withValues(alpha: 0.5),
+            color: const Color(0xFF999999).withOpacity(0.5),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -2744,8 +2744,8 @@ class _SexToggleBtn extends StatelessWidget {
             onTap();
           },
           borderRadius: BorderRadius.circular(10),
-          splashColor: kGoldLight.withValues(alpha: 0.15),
-          highlightColor: kGoldLight.withValues(alpha: 0.08),
+          splashColor: kGoldLight.withOpacity(0.15),
+          highlightColor: kGoldLight.withOpacity(0.08),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 160),
             height: 44,
@@ -2905,7 +2905,7 @@ class _DoseCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFE8A6).withValues(alpha: 0.18),
+                color: const Color(0xFFFFE8A6).withOpacity(0.18),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: const Text('REFERÊNCIA DA LITERATURA',
@@ -2949,17 +2949,17 @@ class _DoseCard extends StatelessWidget {
         // ── Linha separadora + detalhe ────────────────────────────────────
         if (dose.detail.isNotEmpty) ...[
           const SizedBox(height: 12),
-          Container(height: 1, color: Colors.white.withValues(alpha: 0.10)),
+          Container(height: 1, color: Colors.white.withOpacity(0.10)),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Icon(Icons.info_outline_rounded, size: 13,
-                color: Colors.white.withValues(alpha: 0.5)),
+                color: Colors.white.withOpacity(0.5)),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(dose.detail,
                   style: TextStyle(fontSize: 11.5,
-                    color: Colors.white.withValues(alpha: 0.65),
+                    color: Colors.white.withOpacity(0.65),
                     fontWeight: FontWeight.w500, height: 1.55)),
               ),
             ]),
@@ -3020,7 +3020,7 @@ class _DoseSegmentRow extends StatelessWidget {
               child: Container(
                 width: 1.5,
                 margin: const EdgeInsets.symmetric(vertical: 3),
-                color: Colors.white.withValues(alpha: 0.15),
+                color: Colors.white.withOpacity(0.15),
               ),
             ),
           if (isLast) const SizedBox(height: 12),
@@ -3066,8 +3066,8 @@ class _DoseSegmentRow extends StatelessWidget {
           fontSize: 19,
           fontWeight: FontWeight.w900,
           textColor: Colors.white,
-          badgeBg: const Color(0xFFFFE8A6).withValues(alpha: 0.25),
-          badgeBorder: const Color(0xFFFFE8A6).withValues(alpha: 0.7),
+          badgeBg: const Color(0xFFFFE8A6).withOpacity(0.25),
+          badgeBorder: const Color(0xFFFFE8A6).withOpacity(0.7),
           badgeFg: const Color(0xFFFFE8A6),
         );
       case _SegmentType.repeat:
@@ -3076,9 +3076,9 @@ class _DoseSegmentRow extends StatelessWidget {
           labelColor: const Color(0xFF90CDD9),
           fontSize: 14.5,
           fontWeight: FontWeight.w700,
-          textColor: Colors.white.withValues(alpha: 0.92),
-          badgeBg: const Color(0xFF90CDD9).withValues(alpha: 0.15),
-          badgeBorder: const Color(0xFF90CDD9).withValues(alpha: 0.5),
+          textColor: Colors.white.withOpacity(0.92),
+          badgeBg: const Color(0xFF90CDD9).withOpacity(0.15),
+          badgeBorder: const Color(0xFF90CDD9).withOpacity(0.5),
           badgeFg: const Color(0xFF90CDD9),
         );
       case _SegmentType.maintenance:
@@ -3087,9 +3087,9 @@ class _DoseSegmentRow extends StatelessWidget {
           labelColor: const Color(0xFF90CDD9),
           fontSize: 14.5,
           fontWeight: FontWeight.w700,
-          textColor: Colors.white.withValues(alpha: 0.92),
-          badgeBg: const Color(0xFF90CDD9).withValues(alpha: 0.15),
-          badgeBorder: const Color(0xFF90CDD9).withValues(alpha: 0.5),
+          textColor: Colors.white.withOpacity(0.92),
+          badgeBg: const Color(0xFF90CDD9).withOpacity(0.15),
+          badgeBorder: const Color(0xFF90CDD9).withOpacity(0.5),
           badgeFg: const Color(0xFF90CDD9),
         );
       case _SegmentType.max:
@@ -3099,8 +3099,8 @@ class _DoseSegmentRow extends StatelessWidget {
           fontSize: 13,
           fontWeight: FontWeight.w700,
           textColor: const Color(0xFFFFB3B3),
-          badgeBg: const Color(0xFFFF6B6B).withValues(alpha: 0.15),
-          badgeBorder: const Color(0xFFFF6B6B).withValues(alpha: 0.4),
+          badgeBg: const Color(0xFFFF6B6B).withOpacity(0.15),
+          badgeBorder: const Color(0xFFFF6B6B).withOpacity(0.4),
           badgeFg: const Color(0xFFFFB3B3),
           badgeIcon: Icons.block_rounded,
         );
@@ -3108,10 +3108,10 @@ class _DoseSegmentRow extends StatelessWidget {
         return _SegCfg(
           fontSize: 13.5,
           fontWeight: FontWeight.w600,
-          textColor: Colors.white.withValues(alpha: 0.80),
-          badgeBg: Colors.white.withValues(alpha: 0.08),
-          badgeBorder: Colors.white.withValues(alpha: 0.20),
-          badgeFg: Colors.white.withValues(alpha: 0.6),
+          textColor: Colors.white.withOpacity(0.80),
+          badgeBg: Colors.white.withOpacity(0.08),
+          badgeBorder: Colors.white.withOpacity(0.20),
+          badgeFg: Colors.white.withOpacity(0.6),
         );
     }
   }
@@ -3382,7 +3382,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
       elevation: 8,
       borderRadius: BorderRadius.circular(14),
       color: Colors.white,
-      shadowColor: Colors.black.withValues(alpha: 0.15),
+      shadowColor: Colors.black.withOpacity(0.15),
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: 360,

@@ -219,7 +219,7 @@ class MedCasesApp extends StatelessWidget {
     brightness: dark ? Brightness.dark : Brightness.light,
     // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
     drawerTheme: DrawerThemeData(
-      scrimColor: Colors.black.withValues(alpha: 0.52),
+      scrimColor: Colors.black.withOpacity(0.52),
       // width: null → cada Drawer define a própria via MediaQuery
     ),
     colorScheme: dark
@@ -611,7 +611,7 @@ class _ConsentGateState extends State<_ConsentGate> {
     if (_hasConsented!) return const LoginScreen();
     return Stack(children: [
       const LoginScreen(),
-      Positioned.fill(child: ColoredBox(color: Colors.black.withValues(alpha: 0.55))),
+      Positioned.fill(child: ColoredBox(color: Colors.black.withOpacity(0.55))),
       Positioned(
         left: 0, right: 0, bottom: 0,
         child: ConsentModal(
@@ -671,7 +671,7 @@ class _SplashScreenState extends State<_SplashScreen>
             width: 260, height: 260,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF0E7C52).withValues(alpha: 0.06),
+              color: const Color(0xFF0E7C52).withOpacity(0.06),
             ),
           ),
         ),
@@ -682,7 +682,7 @@ class _SplashScreenState extends State<_SplashScreen>
             width: 180, height: 180,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF13A06A).withValues(alpha: 0.04),
+              color: const Color(0xFF13A06A).withOpacity(0.04),
             ),
           ),
         ),
@@ -706,7 +706,7 @@ class _SplashScreenState extends State<_SplashScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF0E7C52).withValues(alpha: 0.28),
+                            color: const Color(0xFF0E7C52).withOpacity(0.28),
                             blurRadius: 52, spreadRadius: 10,
                           ),
                         ],
@@ -734,7 +734,7 @@ class _SplashScreenState extends State<_SplashScreen>
                       'IA Clínica de bolso',
                       style: TextStyle(
                         fontSize: 12,
-                        color: const Color(0xFF13A06A).withValues(alpha: 0.85),
+                        color: const Color(0xFF13A06A).withOpacity(0.85),
                         fontWeight: FontWeight.w500,
                         letterSpacing: 1.1,
                       ),
@@ -759,7 +759,7 @@ class _SplashScreenState extends State<_SplashScreen>
                   width: 20, height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 1.8,
-                    color: const Color(0xFF0E7C52).withValues(alpha: 0.55),
+                    color: const Color(0xFF0E7C52).withOpacity(0.55),
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -767,7 +767,7 @@ class _SplashScreenState extends State<_SplashScreen>
                   'Iniciando...',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.25),
+                    color: Colors.white.withOpacity(0.25),
                     fontWeight: FontWeight.w400,
                     letterSpacing: 0.5,
                   ),
@@ -984,9 +984,9 @@ class _PendingScreenState extends State<_PendingScreen> {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withValues(alpha: 0.1),
+                  color: Colors.orange.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                  border: Border.all(color: Colors.orange.withOpacity(0.3)),
                 ),
                 child: Column(children: [
                   const Icon(Icons.hourglass_top_rounded, color: Colors.orange, size: 48),
@@ -999,7 +999,7 @@ class _PendingScreenState extends State<_PendingScreen> {
                   const SizedBox(height: 12),
                   Text(
                     'Olá, ${widget.user.displayName.split(' ').first}!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso assim que for aprovada.',
-                    style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), height: 1.6),
+                    style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.7), height: 1.6),
                     textAlign: TextAlign.center,
                   ),
                 ]),
@@ -1008,11 +1008,11 @@ class _PendingScreenState extends State<_PendingScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
+                  color: Colors.white.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('E-mail cadastrado:', style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.4), fontWeight: FontWeight.w600)),
+                  Text('E-mail cadastrado:', style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.4), fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
                   Text(widget.user.email, style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w700)),
                 ]),
@@ -1024,13 +1024,13 @@ class _PendingScreenState extends State<_PendingScreen> {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.07),
+                    color: Colors.white.withOpacity(0.07),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                    border: Border.all(color: Colors.white.withOpacity(0.15)),
                   ),
                   child: Text(
                     _checkMsg!,
-                    style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: 0.8), height: 1.5),
+                    style: TextStyle(fontSize: 12, color: Colors.white.withOpacity(0.8), height: 1.5),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -1063,7 +1063,7 @@ class _PendingScreenState extends State<_PendingScreen> {
                 label: const Text('Sair e entrar com outra conta'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.white60,
-                  side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                  side: BorderSide(color: Colors.white.withOpacity(0.2)),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
@@ -1097,9 +1097,9 @@ class _BlockedScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.08),
+                  color: Colors.red.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+                  border: Border.all(color: Colors.red.withOpacity(0.25)),
                 ),
                 child: Column(children: [
                   const Icon(Icons.block_rounded, color: Colors.redAccent, size: 48),
@@ -1112,7 +1112,7 @@ class _BlockedScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     'Tu cuenta ha sido suspendida por el administrador.\n\nComunícate con soporte para más información.',
-                    style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7), height: 1.6),
+                    style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.7), height: 1.6),
                     textAlign: TextAlign.center,
                   ),
                 ]),
@@ -1124,7 +1124,7 @@ class _BlockedScreen extends StatelessWidget {
                 label: const Text('Volver al inicio de sesión'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.white60,
-                  side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                  side: BorderSide(color: Colors.white.withOpacity(0.2)),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
@@ -1585,7 +1585,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
       // Scrim escuro explícito para iPad/desktop (reforça o DrawerTheme global)
-      drawerScrimColor: Colors.black.withValues(alpha: 0.52),
+      drawerScrimColor: Colors.black.withOpacity(0.52),
       body: Row(
         children: [
           // ── Sidebar de navegação vertical (contém logo + nav + hamburger) ──
@@ -1681,7 +1681,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: bg,
       endDrawer: _AppDrawer(p: p),
-      drawerScrimColor: Colors.black.withValues(alpha: 0.52),
+      drawerScrimColor: Colors.black.withOpacity(0.52),
       // ── AppBar HOME: sempre visível ───────────────────────────────────────
       appBar: isHome
           ? PreferredSize(
@@ -1904,8 +1904,8 @@ class _FloatingFooter extends StatelessWidget {
     // SUPER ORDEM MASTER 308 M1: -10% adicional sobre Build 306
     // barHeight 48→43px | opacity glassmorphism mantido
     final navBg = dark
-        ? const Color(0xFF0F1116).withValues(alpha: 0.68)
-        : Colors.white.withValues(alpha: 0.65);
+        ? const Color(0xFF0F1116).withOpacity(0.68)
+        : Colors.white.withOpacity(0.65);
 
     const barHeight = 43.0;
 
@@ -1942,21 +1942,21 @@ class _FloatingFooter extends StatelessWidget {
                         borderRadius: BorderRadius.circular(32),
                         border: Border.all(
                           color: dark
-                              ? _neonCyan.withValues(alpha: 0.18)
-                              : Colors.white.withValues(alpha: 0.55),
+                              ? _neonCyan.withOpacity(0.18)
+                              : Colors.white.withOpacity(0.55),
                           width: 0.9,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: dark
-                                ? Colors.black.withValues(alpha: 0.45)
-                                : Colors.black.withValues(alpha: 0.08),
+                                ? Colors.black.withOpacity(0.45)
+                                : Colors.black.withOpacity(0.08),
                             blurRadius: 20,
                             offset: const Offset(0, -4),
                           ),
                           if (dark)
                             BoxShadow(
-                              color: _neonCyan.withValues(alpha: 0.05),
+                              color: _neonCyan.withOpacity(0.05),
                               blurRadius: 24,
                               offset: const Offset(0, -4),
                             ),
@@ -2002,21 +2002,21 @@ class _FloatingFooter extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: isAiActive
-                                        ? _neonCyan.withValues(alpha: 0.80)
+                                        ? _neonCyan.withOpacity(0.80)
                                         : const Color(0xFF4B5563),
                                     width: 1.5,
                                   ),
                                   boxShadow: isAiActive
                                       ? [
                                           BoxShadow(
-                                            color: _neonCyan.withValues(alpha: 0.50),
+                                            color: _neonCyan.withOpacity(0.50),
                                             blurRadius: 14,
                                             spreadRadius: 0,
                                           ),
                                         ]
                                       : [
                                           BoxShadow(
-                                            color: Colors.black.withValues(alpha: 0.35),
+                                            color: Colors.black.withOpacity(0.35),
                                             blurRadius: 8,
                                             offset: const Offset(0, 3),
                                           ),
@@ -2147,18 +2147,18 @@ class _MobileAppBar extends StatelessWidget {
     // Build 138: HOME usa fundo neutro com título MEDCASES PRO centralizado
     final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
     final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
-    final iconColor = dark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF0F1116);
+    final iconColor = dark ? Colors.white.withOpacity(0.85) : const Color(0xFF0F1116);
 
     // BUILD 316 M2: hamburgerBg, hamburgerBorder, hamburgerIconColor removidos.
     // Hambúrguer agora é um ícone nu (sem container) — usa iconColor diretamente.
 
     // Ícones AI (histórico/etc) — adapta ao novo fundo neutro
     final iconBg = dark
-        ? Colors.white.withValues(alpha: 0.08)
-        : const Color(0xFF0F1116).withValues(alpha: 0.07);
+        ? Colors.white.withOpacity(0.08)
+        : const Color(0xFF0F1116).withOpacity(0.07);
     final iconBorder = dark
-        ? Colors.white.withValues(alpha: 0.12)
-        : const Color(0xFF0F1116).withValues(alpha: 0.12);
+        ? Colors.white.withOpacity(0.12)
+        : const Color(0xFF0F1116).withOpacity(0.12);
 
     // ── AppBar decoration ─────────────────────────────────────────────────────
     // Build 138: fundo neutro (branco/escuro) em todos os modos.
@@ -2168,7 +2168,7 @@ class _MobileAppBar extends StatelessWidget {
       border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: dark ? 0.35 : 0.06),
+          color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
           blurRadius: 6.0,
           offset: const Offset(0, 2),
         ),
@@ -2247,7 +2247,7 @@ class _MobileAppBar extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                                 color: const Color(0xFFC5A365),
                                 border: Border.all(
-                                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.4),
+                                    color: const Color(0xFFFFE8A6).withOpacity(0.4),
                                     width: 1),
                               ),
                               child: Row(
@@ -2334,7 +2334,7 @@ class _MobileAppBar extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                                 color: _kGold,
                                 border: Border.all(
-                                    color: _kGoldL.withValues(alpha: 0.4), width: 1),
+                                    color: _kGoldL.withOpacity(0.4), width: 1),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -2415,8 +2415,8 @@ class _DesktopSidebar extends StatelessWidget {
     final activeCol   = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
     final inactiveCol = dark ? const Color(0xFF6B7280) : const Color(0xFFADB5BD);
     final activeBg    = dark
-        ? const Color(0xFF10B981).withValues(alpha: 0.12)
-        : const Color(0xFF0A7C4E).withValues(alpha: 0.08);
+        ? const Color(0xFF10B981).withOpacity(0.12)
+        : const Color(0xFF0A7C4E).withOpacity(0.08);
     final isEs        = p.lang == 'es';
 
 
@@ -2448,7 +2448,7 @@ class _DesktopSidebar extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF0E7C52).withValues(alpha: 0.35),
+                          color: const Color(0xFF0E7C52).withOpacity(0.35),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -2480,8 +2480,8 @@ class _DesktopSidebar extends StatelessWidget {
               height: 1,
               margin: const EdgeInsets.symmetric(horizontal: 12),
               color: dark
-                  ? Colors.white.withValues(alpha: 0.06)
-                  : Colors.black.withValues(alpha: 0.05),
+                  ? Colors.white.withOpacity(0.06)
+                  : Colors.black.withOpacity(0.05),
             ),
 
             const SizedBox(height: 10),
@@ -2504,7 +2504,7 @@ class _DesktopSidebar extends StatelessWidget {
               dark: dark,
               activeCol: dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
               inactiveCol: inactiveCol,
-              activeBg: const Color(0xFF00E5FF).withValues(alpha: 0.10),
+              activeBg: const Color(0xFF00E5FF).withOpacity(0.10),
               onTap: () => onTabChange(2),
             ),
             _SidebarItem(
@@ -2545,8 +2545,8 @@ class _DesktopSidebar extends StatelessWidget {
               height: 1,
               margin: const EdgeInsets.symmetric(horizontal: 12),
               color: dark
-                  ? Colors.white.withValues(alpha: 0.06)
-                  : Colors.black.withValues(alpha: 0.05),
+                  ? Colors.white.withOpacity(0.06)
+                  : Colors.black.withOpacity(0.05),
             ),
             const SizedBox(height: 8),
 
@@ -2721,7 +2721,7 @@ class _RxProtoComboState extends State<_RxProtoCombo> {
             border: Border.all(color: borderCol, width: 0.8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: dark ? 0.18 : 0.04),
+                color: Colors.black.withOpacity(dark ? 0.18 : 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -2797,11 +2797,11 @@ class _SubTabBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     final activeColor   = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1116);
     final inactiveColor = dark
-        ? Colors.white.withValues(alpha: 0.30)
+        ? Colors.white.withOpacity(0.30)
         : const Color(0xFFB8BEC4);
     final activeBg = dark
         ? const Color(0xFF2D3340)   // kBorderSoft — active highlight
-        : const Color(0xFF0F1116).withValues(alpha: 0.09);
+        : const Color(0xFF0F1116).withOpacity(0.09);
 
     return Expanded(
       child: GestureDetector(
@@ -2820,7 +2820,7 @@ class _SubTabBtn extends StatelessWidget {
                       color: (dark
                               ? const Color(0xFFFFE8A6)
                               : const Color(0xFF0F1116))
-                          .withValues(alpha: 0.08),
+                          .withOpacity(0.08),
                       blurRadius: 6,
                       offset: const Offset(0, 1),
                     ),
@@ -2882,7 +2882,7 @@ class _MiniContextBar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.30),
+            color: Colors.black.withOpacity(0.30),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -2902,7 +2902,7 @@ class _MiniContextBar extends StatelessWidget {
                 Icon(
                   Icons.chevron_right_rounded,
                   size: 13,
-                  color: Colors.white.withValues(alpha: 0.35),
+                  color: Colors.white.withOpacity(0.35),
                 ),
                 const SizedBox(width: 3),
                 Text(
@@ -2924,9 +2924,9 @@ class _MiniContextBar extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(9),
-                  color: Colors.white.withValues(alpha: 0.07),
+                  color: Colors.white.withOpacity(0.07),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.13),
+                    color: Colors.white.withOpacity(0.13),
                     width: 0.8,
                   ),
                 ),
@@ -2934,7 +2934,7 @@ class _MiniContextBar extends StatelessWidget {
                   Icon(
                     Icons.home_rounded,
                     size: 13,
-                    color: const Color(0xFFFFE8A6).withValues(alpha: 0.85),
+                    color: const Color(0xFFFFE8A6).withOpacity(0.85),
                   ),
                   const SizedBox(width: 4),
                   const Text(
@@ -2956,16 +2956,16 @@ class _MiniContextBar extends StatelessWidget {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(9),
-                  color: Colors.white.withValues(alpha: 0.07),
+                  color: Colors.white.withOpacity(0.07),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.13),
+                    color: Colors.white.withOpacity(0.13),
                     width: 0.8,
                   ),
                 ),
                 child: Icon(
                   Icons.menu_rounded,
                   size: 16,
-                  color: const Color(0xFFFFE8A6).withValues(alpha: 0.85),
+                  color: const Color(0xFFFFE8A6).withOpacity(0.85),
                 ),
               ),
             ),
@@ -2999,11 +2999,11 @@ class _UpdateBanner extends StatelessWidget {
           decoration: BoxDecoration(
             color: bg,
             border: Border(
-              top: BorderSide(color: border.withValues(alpha: 0.45), width: 1),
+              top: BorderSide(color: border.withOpacity(0.45), width: 1),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.35),
+                color: Colors.black.withOpacity(0.35),
                 blurRadius: 16,
                 offset: const Offset(0, -4),
               ),
@@ -3084,7 +3084,7 @@ class _LegalBar extends StatelessWidget {
     // Apple 1.4.1 — disclaimer deve ser legível: opacidade 0.85 no dark, cor
     // sólida no light. Não usar valores abaixo de 0.70.
     final textColor = dark
-        ? Colors.white.withValues(alpha: 0.85)
+        ? Colors.white.withOpacity(0.85)
         : const Color(0xFF5A6370);
 
     // Texto exigido pela Apple guideline 1.4.1 — permanece visível em todas as telas
@@ -3102,7 +3102,7 @@ class _LegalBar extends StatelessWidget {
       // padding vertical 1px + fontSize 9px = altura total ~20px
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 1),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 8, color: textColor.withValues(alpha: 0.55)),
+        Icon(Icons.info_outline_rounded, size: 8, color: textColor.withOpacity(0.55)),
         const SizedBox(width: 3),
         Expanded(
           child: Text(
@@ -3262,7 +3262,7 @@ class _AppDrawerState extends State<_AppDrawer> {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCC3333).withValues(alpha: 0.12),
+                  color: const Color(0xFFCC3333).withOpacity(0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.delete_forever_rounded,
@@ -3284,10 +3284,10 @@ class _AppDrawerState extends State<_AppDrawer> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFCC3333).withValues(alpha: 0.07),
+                        color: const Color(0xFFCC3333).withOpacity(0.07),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: const Color(0xFFCC3333).withValues(alpha: 0.25)),
+                          color: const Color(0xFFCC3333).withOpacity(0.25)),
                       ),
                       child: Text(body1, style: TextStyle(
                         fontSize: 12.5, height: 1.6,
@@ -3473,7 +3473,7 @@ class _AppDrawerState extends State<_AppDrawer> {
     final bg      = dark ? const Color(0xFF1A1D23) : const Color(0xFFFAFBFC);
     final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFF0EDE8);
     final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-    final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
+    final subCol  = dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
 
     final initials = p.userName.isNotEmpty
         ? p.userName.trim().split(' ').take(2).map((w) => w[0].toUpperCase()).join()
@@ -3901,8 +3901,8 @@ class _DrawerHeader extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: _kGold.withValues(alpha: 0.14),
-                        border: Border.all(color: _kGold.withValues(alpha: 0.40)),
+                        color: _kGold.withOpacity(0.14),
+                        border: Border.all(color: _kGold.withOpacity(0.40)),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         const Icon(Icons.verified_rounded, size: 9, color: _kGoldL),
@@ -3925,13 +3925,13 @@ class _DrawerHeader extends StatelessWidget {
                       width: 30, height: 30,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(9),
-                        color: Colors.white.withValues(alpha: 0.07),
+                        color: Colors.white.withOpacity(0.07),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.10), width: 0.8),
+                          color: Colors.white.withOpacity(0.10), width: 0.8),
                       ),
                       child: Icon(
                         Icons.close_rounded, size: 14,
-                        color: Colors.white.withValues(alpha: 0.55),
+                        color: Colors.white.withOpacity(0.55),
                       ),
                     ),
                   ),
@@ -3946,7 +3946,7 @@ class _DrawerHeader extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Divider(
-                      color: const Color(0xFF334155).withValues(alpha: 0.45),
+                      color: const Color(0xFF334155).withOpacity(0.45),
                       endIndent: 10,
                       thickness: 0.8,
                     ),
@@ -3962,7 +3962,7 @@ class _DrawerHeader extends StatelessWidget {
                   ),
                   Expanded(
                     child: Divider(
-                      color: const Color(0xFF334155).withValues(alpha: 0.45),
+                      color: const Color(0xFF334155).withOpacity(0.45),
                       indent: 10,
                       thickness: 0.8,
                     ),
@@ -3994,12 +3994,12 @@ class _DrawerHeader extends StatelessWidget {
                               colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
                             ),
                             border: Border.all(
-                              color: const Color(0xFF34D399).withValues(alpha: 0.50),
+                              color: const Color(0xFF34D399).withOpacity(0.50),
                               width: 1.8,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF34D399).withValues(alpha: 0.15),
+                                color: const Color(0xFF34D399).withOpacity(0.15),
                                 blurRadius: 12,
                                 offset: const Offset(0, 3),
                               ),
@@ -4066,7 +4066,7 @@ class _DrawerHeader extends StatelessWidget {
                             p.currentUser!.profession!,
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.white.withValues(alpha: 0.65),
+                              color: Colors.white.withOpacity(0.65),
                               fontWeight: FontWeight.w500,
                               height: 1.2,
                             ),
@@ -4081,7 +4081,7 @@ class _DrawerHeader extends StatelessWidget {
                             p.currentUser!.institution!,
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.white.withValues(alpha: 0.42),
+                              color: Colors.white.withOpacity(0.42),
                               fontWeight: FontWeight.w400,
                               height: 1.25,
                             ),
@@ -4120,7 +4120,7 @@ class _DrawerSectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final col = color ??
-        (dark ? Colors.white.withValues(alpha: 0.28) : const Color(0xFFAAB0B8));
+        (dark ? Colors.white.withOpacity(0.28) : const Color(0xFFAAB0B8));
     return Padding(
       padding: const EdgeInsets.fromLTRB(18, 16, 18, 5),
       child: Text(
@@ -4161,7 +4161,7 @@ class _DrawerBlock extends StatelessWidget {
         border: Border.all(color: borderCol, width: 0.8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.18 : 0.04),
+            color: Colors.black.withOpacity(dark ? 0.18 : 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -4207,7 +4207,7 @@ class _DrawerItemPremium extends StatelessWidget {
             width: 36, height: 36,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFFC5A365).withValues(alpha: 0.18),
+              color: const Color(0xFFC5A365).withOpacity(0.18),
             ),
             child: const Icon(Icons.workspace_premium_rounded, size: 18, color: Color(0xFFFFE8A6)),
           ),
@@ -4218,14 +4218,14 @@ class _DrawerItemPremium extends StatelessWidget {
               color: Color(0xFFFFE8A6), letterSpacing: -0.1)),
             const SizedBox(height: 1),
             Text('Acesso completo · 500+ casos clínicos',
-              style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.40))),
+              style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.40))),
           ])),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7),
-              color: const Color(0xFFC5A365).withValues(alpha: 0.22),
-              border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.50)),
+              color: const Color(0xFFC5A365).withOpacity(0.22),
+              border: Border.all(color: const Color(0xFFC5A365).withOpacity(0.50)),
             ),
             child: const Text('VER', style: TextStyle(
               fontSize: 9, fontWeight: FontWeight.w900,
@@ -4268,8 +4268,8 @@ class _DrawerRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
-      splashColor: iconColor.withValues(alpha: 0.07),
-      highlightColor: iconColor.withValues(alpha: 0.04),
+      splashColor: iconColor.withOpacity(0.07),
+      highlightColor: iconColor.withOpacity(0.04),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         child: Row(children: [
@@ -4302,7 +4302,7 @@ class _DrawerRow extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w500,
-                        color: subCol.withValues(alpha: 0.65),
+                        color: subCol.withOpacity(0.65),
                       ),
                     ),
                   ],
@@ -4311,7 +4311,7 @@ class _DrawerRow extends StatelessWidget {
           ),
           // Trailing ou chevron
           if (trailing != null) trailing!
-          else Icon(Icons.chevron_right_rounded, size: 16, color: subCol.withValues(alpha: 0.45)),
+          else Icon(Icons.chevron_right_rounded, size: 16, color: subCol.withOpacity(0.45)),
         ]),
       ),
     );
@@ -4367,8 +4367,8 @@ class _DrawerLegalRow extends StatelessWidget {
         InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(14),
-          splashColor: iconColor.withValues(alpha: 0.07),
-          highlightColor: iconColor.withValues(alpha: 0.04),
+          splashColor: iconColor.withOpacity(0.07),
+          highlightColor: iconColor.withOpacity(0.04),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 11, 4, 11),
             child: Row(children: [
@@ -4398,7 +4398,7 @@ class _DrawerLegalRow extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w500,
-                          color: subCol.withValues(alpha: 0.65),
+                          color: subCol.withOpacity(0.65),
                         ),
                       ),
                     ],
@@ -4412,7 +4412,7 @@ class _DrawerLegalRow extends StatelessWidget {
                   icon: Icon(
                     Icons.open_in_new_rounded,
                     size: 18,
-                    color: const Color(0xFF1E88E5).withValues(alpha: 0.75),
+                    color: const Color(0xFF1E88E5).withOpacity(0.75),
                   ),
                   onPressed: () => _launch(context),
                   splashRadius: 18,
@@ -4445,8 +4445,8 @@ class _LangBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(7),
-        color: const Color(0xFFC5A365).withValues(alpha: 0.12),
-        border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.38)),
+        color: const Color(0xFFC5A365).withOpacity(0.12),
+        border: Border.all(color: const Color(0xFFC5A365).withOpacity(0.38)),
       ),
       child: Text(
         label,
@@ -4543,7 +4543,7 @@ class _DrawerQuickAccess extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEs    = p.lang == 'es';
     final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-    final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
+    final subCol  = dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
     final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
 
     return _DrawerBlock(
@@ -4629,7 +4629,7 @@ class _DrawerActivity extends StatelessWidget {
 
         final isEs    = p.lang == 'es';
         final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-        final subCol  = dark ? Colors.white.withValues(alpha: 0.36) : const Color(0xFF9AA0A8);
+        final subCol  = dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
         final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
         final recent  = items.take(3).toList();
         final total   = items.length;
@@ -4714,7 +4714,7 @@ class _DrawerActivityRow extends StatelessWidget {
               Container(
                 width: 28, height: 28,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
+                  color: color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(Icons.circle, size: 8, color: color),
@@ -4751,7 +4751,7 @@ class _DrawerActivityRow extends StatelessWidget {
           ),
           if (showDivider)
             Divider(height: 1, indent: 52,
-                color: dark ? Colors.white.withValues(alpha: 0.06) : const Color(0xFFEEEEEE)),
+                color: dark ? Colors.white.withOpacity(0.06) : const Color(0xFFEEEEEE)),
         ],
       ),
     );
@@ -4768,10 +4768,10 @@ class _RecentActivitySheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEs  = lang == 'es';
     final bg    = dark ? const Color(0xFF0F1116) : Colors.white;
-    final handle= dark ? Colors.white.withValues(alpha: 0.18) : const Color(0xFFA8B2C1);
+    final handle= dark ? Colors.white.withOpacity(0.18) : const Color(0xFFA8B2C1);
     final title = dark ? Colors.white : const Color(0xFF0F1116);
-    final sub   = dark ? Colors.white.withValues(alpha: 0.45) : const Color(0xFF9AA0A8);
-    final div   = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFF0F0F0);
+    final sub   = dark ? Colors.white.withOpacity(0.45) : const Color(0xFF9AA0A8);
+    final div   = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFF0F0F0);
 
     return ValueListenableBuilder<List<ActivityItem>>(
       valueListenable: ActivityService.items,
@@ -4800,7 +4800,7 @@ class _RecentActivitySheet extends StatelessWidget {
                   Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.12),
+                      color: const Color(0xFF6366F1).withOpacity(0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(Icons.history_edu_rounded, size: 18, color: Color(0xFF6366F1)),
@@ -4932,9 +4932,9 @@ class _ActivityTile extends StatelessWidget {
         Container(
           width: 40, height: 40,
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.12),
+            color: color.withOpacity(0.12),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withValues(alpha: 0.20)),
+            border: Border.all(color: color.withOpacity(0.20)),
           ),
           child: Icon(_icon, size: 18, color: color),
         ),
@@ -4953,7 +4953,7 @@ class _ActivityTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.10),
+                  color: color.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
@@ -5007,12 +5007,12 @@ class _AppHeader extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.38),
+            color: Colors.black.withOpacity(0.38),
             blurRadius: 20,
             offset: const Offset(0, 5),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
+            color: Colors.black.withOpacity(0.12),
             blurRadius: 32,
             offset: const Offset(0, 8),
           ),
@@ -5051,7 +5051,7 @@ class _AppHeader extends StatelessWidget {
                     lang == 'es' ? 'Apoyo clínico educativo' : 'Apoio clínico educacional',
                     style: TextStyle(
                       fontSize: 10,
-                      color: Colors.white.withValues(alpha: 0.48),
+                      color: Colors.white.withOpacity(0.48),
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.1,
                     ),
@@ -5068,9 +5068,9 @@ class _AppHeader extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withValues(alpha: 0.07),
+                  color: Colors.white.withOpacity(0.07),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.13),
+                    color: Colors.white.withOpacity(0.13),
                     width: 1,
                   ),
                 ),
@@ -5119,7 +5119,7 @@ class _AboutAppSheet extends StatelessWidget {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           width: 32, height: 32,
-          decoration: BoxDecoration(color: accent.withValues(alpha: 0.10),
+          decoration: BoxDecoration(color: accent.withOpacity(0.10),
               borderRadius: BorderRadius.circular(8)),
           child: Icon(icon, size: 16, color: accent),
         ),
@@ -5142,7 +5142,7 @@ class _AboutAppSheet extends StatelessWidget {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           width: 32, height: 32,
-          decoration: BoxDecoration(color: accent.withValues(alpha: 0.10),
+          decoration: BoxDecoration(color: accent.withOpacity(0.10),
               borderRadius: BorderRadius.circular(8)),
           child: Icon(icon, size: 16, color: accent),
         ),
@@ -5262,9 +5262,9 @@ class _AboutAppSheet extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
-                              color: accent.withValues(alpha: 0.10),
+                              color: accent.withOpacity(0.10),
                               borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: accent.withValues(alpha: 0.25)),
+                              border: Border.all(color: accent.withOpacity(0.25)),
                             ),
                             child: Text(
                               isEs ? 'Herramienta educativa' : 'Ferramenta educacional',
@@ -5290,13 +5290,13 @@ class _AboutAppSheet extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(color: card,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: _kGreenLight.withValues(alpha: 0.35))),
+                          border: Border.all(color: _kGreenLight.withOpacity(0.35))),
                       child: Column(children: [
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           decoration: BoxDecoration(
-                            color: _kGreenLight.withValues(alpha: dark ? 0.20 : 0.10),
+                            color: _kGreenLight.withOpacity(dark ? 0.20 : 0.10),
                             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                           ),
                           child: Row(children: [
@@ -5365,7 +5365,7 @@ class _AboutAppSheet extends StatelessWidget {
                     Text(
                       'MedCases Pro © ${DateTime.now().year} — '
                       '${isEs ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}',
-                      style: TextStyle(fontSize: 11, color: sub.withValues(alpha: 0.6),
+                      style: TextStyle(fontSize: 11, color: sub.withOpacity(0.6),
                           fontWeight: FontWeight.w500),
                       textAlign: TextAlign.center,
                     ),
@@ -5471,8 +5471,8 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFFC5A365).withValues(alpha: 0.15),
-                  border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
+                  color: const Color(0xFFC5A365).withOpacity(0.15),
+                  border: Border.all(color: const Color(0xFFC5A365).withOpacity(0.4)),
                 ),
                 child: const Icon(Icons.person_outline_rounded, size: 18, color: Color(0xFFC5A365)),
               ),
@@ -5527,8 +5527,8 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.red.withValues(alpha: 0.08),
-                  border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                  color: Colors.red.withOpacity(0.08),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
                 ),
                 child: Text(_error!, style: const TextStyle(fontSize: 12, color: Colors.red, fontWeight: FontWeight.w600)),
               ),
@@ -5561,7 +5561,7 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: const Color(0xFF0F1116),
-                      boxShadow: [BoxShadow(color: const Color(0xFF0F1116).withValues(alpha: 0.35), blurRadius: 12, offset: const Offset(0, 4))],
+                      boxShadow: [BoxShadow(color: const Color(0xFF0F1116).withOpacity(0.35), blurRadius: 12, offset: const Offset(0, 4))],
                     ),
                     alignment: Alignment.center,
                     child: _saving
@@ -5665,7 +5665,7 @@ class _AppUpdateDialog extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: _kGold.withValues(alpha: 0.15),
+                    color: _kGold.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(Icons.auto_awesome_rounded, color: _kGoldL, size: 20),
@@ -5683,9 +5683,9 @@ class _AppUpdateDialog extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: _kGold.withValues(alpha: 0.2),
+                      color: _kGold.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: _kGold.withValues(alpha: 0.4)),
+                      border: Border.all(color: _kGold.withOpacity(0.4)),
                     ),
                     child: Text('v$version',
                       style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: _kGoldL)),
@@ -5693,7 +5693,7 @@ class _AppUpdateDialog extends StatelessWidget {
                   const SizedBox(width: 8),
                 ],
                 if (date.isNotEmpty)
-                  Text(date, style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.5))),
+                  Text(date, style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.5))),
               ]),
             ]),
           ),
@@ -5903,7 +5903,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7C3AED).withValues(alpha: 0.12),
+                  color: const Color(0xFF7C3AED).withOpacity(0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(Icons.support_agent_rounded,
@@ -5978,7 +5978,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                         horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
                       color: selected
-                          ? const Color(0xFF7C3AED).withValues(alpha: 0.12)
+                          ? const Color(0xFF7C3AED).withOpacity(0.12)
                           : surfCol,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
@@ -6077,7 +6077,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                   Container(
                     width: 32, height: 32,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF7C3AED).withValues(alpha: 0.10),
+                      color: const Color(0xFF7C3AED).withOpacity(0.10),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(Icons.language_outlined,
@@ -6119,7 +6119,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                   backgroundColor: const Color(0xFF7C3AED),
                   foregroundColor: Colors.white,
                   disabledBackgroundColor:
-                      const Color(0xFF7C3AED).withValues(alpha: 0.5),
+                      const Color(0xFF7C3AED).withOpacity(0.5),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14)),
                   elevation: 0,
@@ -6201,7 +6201,7 @@ class _SuccessView extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: const Color(0xFF7C3AED).withValues(alpha: 0.12),
+              color: const Color(0xFF7C3AED).withOpacity(0.12),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.mark_email_read_rounded,
@@ -6355,7 +6355,7 @@ class _SideNotesPanelState extends State<_SideNotesPanel>
           child: GestureDetector(
             onTap: widget.onToggle,
             child: Container(
-              color: Colors.black.withValues(alpha: 0.45),
+              color: Colors.black.withOpacity(0.45),
             ),
           ),
         ),
@@ -6497,7 +6497,7 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                         width: 34, height: 34,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.white.withValues(alpha: 0.10),
+                          color: Colors.white.withOpacity(0.10),
                         ),
                         child: const Icon(Icons.chevron_left_rounded,
                           color: Colors.white, size: 20),
@@ -6521,7 +6521,7 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                                   : 'anotaç${_allNotes.length != 1 ? "ões" : "ão"}'}',
                           style: TextStyle(
                             fontSize: 10,
-                            color: Colors.white.withValues(alpha: 0.55),
+                            color: Colors.white.withOpacity(0.55),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -6537,7 +6537,7 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                           color: const Color(0xFF10B981),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF10B981).withValues(alpha: 0.45),
+                              color: const Color(0xFF10B981).withOpacity(0.45),
                               blurRadius: 10, offset: const Offset(0, 3),
                             ),
                           ],
@@ -6643,7 +6643,7 @@ class _PanelEmptyState extends StatelessWidget {
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Icon(Icons.edit_note_rounded, size: 48,
-          color: dark ? const Color(0xFF10B981).withValues(alpha: 0.50) : const Color(0xFF10B981).withValues(alpha: 0.35)),
+          color: dark ? const Color(0xFF10B981).withOpacity(0.50) : const Color(0xFF10B981).withOpacity(0.35)),
         const SizedBox(height: 12),
         Text(
           isEs ? 'Sin anotaciones aún' : 'Nenhuma anotação ainda',
@@ -6667,7 +6667,7 @@ class _PanelEmptyState extends StatelessWidget {
               color: const Color(0xFF10B981),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF10B981).withValues(alpha: 0.40),
+                  color: const Color(0xFF10B981).withOpacity(0.40),
                   blurRadius: 12, offset: const Offset(0, 4),
                 ),
               ],
@@ -6754,10 +6754,10 @@ class _PanelNoteCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: nc.border.withValues(alpha: 0.70), width: 1),
+          border: Border.all(color: nc.border.withOpacity(0.70), width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: dark ? 0.25 : 0.07),
+              color: Colors.black.withOpacity(dark ? 0.25 : 0.07),
               blurRadius: 8, offset: const Offset(0, 2),
             ),
           ],
@@ -6875,11 +6875,11 @@ class _OfflineDrawerCard extends StatelessWidget {
     final cachedAt = p.offlineCachedAt;
 
     final cardBg = dark
-        ? (offline ? _kBlue.withValues(alpha: 0.18) : const Color(0xFF1A2030))
+        ? (offline ? _kBlue.withOpacity(0.18) : const Color(0xFF1A2030))
         : (offline ? _kBlueLt : Colors.white);
     final cardBorder = offline
-        ? _kBlue.withValues(alpha: dark ? 0.5 : 0.35)
-        : (dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE8ECEF));
+        ? _kBlue.withOpacity(dark ? 0.5 : 0.35)
+        : (dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE8ECEF));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -6909,7 +6909,7 @@ class _OfflineDrawerCard extends StatelessWidget {
                                 value: progress,
                                 strokeWidth: 2.5,
                                 color: _kBlue,
-                                backgroundColor: _kBlue.withValues(alpha: 0.15),
+                                backgroundColor: _kBlue.withOpacity(0.15),
                               ),
                               Text('${(progress * 100).toInt()}',
                                 style: const TextStyle(
@@ -6923,12 +6923,12 @@ class _OfflineDrawerCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: offline
-                                  ? _kBlue.withValues(alpha: 0.15)
-                                  : (dark ? Colors.white.withValues(alpha: 0.07)
+                                  ? _kBlue.withOpacity(0.15)
+                                  : (dark ? Colors.white.withOpacity(0.07)
                                           : const Color(0xFFF0F4F8)),
                               border: Border.all(
                                 color: offline
-                                    ? _kBlue.withValues(alpha: 0.45)
+                                    ? _kBlue.withOpacity(0.45)
                                     : Colors.transparent),
                             ),
                             child: Icon(
@@ -6973,7 +6973,7 @@ class _OfflineDrawerCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 10,
                             color: offline
-                                ? _kBlue.withValues(alpha: 0.7)
+                                ? _kBlue.withOpacity(0.7)
                                 : (dark ? Colors.white38
                                         : const Color(0xFF9CA3AF)),
                           ),
@@ -6992,7 +6992,7 @@ class _OfflineDrawerCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(13),
                         color: offline
                             ? _kBlue
-                            : (dark ? Colors.white.withValues(alpha: 0.15)
+                            : (dark ? Colors.white.withOpacity(0.15)
                                     : const Color(0xFFD1D5DB)),
                       ),
                       child: AnimatedAlign(
@@ -7027,7 +7027,7 @@ class _OfflineDrawerCard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progress,
                         minHeight: 4,
-                        backgroundColor: _kBlue.withValues(alpha: 0.15),
+                        backgroundColor: _kBlue.withOpacity(0.15),
                         valueColor: const AlwaysStoppedAnimation(_kBlue),
                       ),
                     ),
@@ -7038,7 +7038,7 @@ class _OfflineDrawerCard extends StatelessWidget {
                           : _progressLabel(progress, 'pt'),
                       style: TextStyle(
                         fontSize: 9.5,
-                        color: _kBlue.withValues(alpha: 0.75),
+                        color: _kBlue.withOpacity(0.75),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -7069,8 +7069,8 @@ class _OfflineDrawerCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: _kBlue.withValues(alpha: 0.10),
-                      border: Border.all(color: _kBlue.withValues(alpha: 0.30)),
+                      color: _kBlue.withOpacity(0.10),
+                      border: Border.all(color: _kBlue.withOpacity(0.30)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       const Icon(Icons.sync_rounded, size: 13, color: _kBlue),
@@ -7196,11 +7196,11 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
     final statusColor = _statusColor(st.status);
 
     final cardBg = dark
-        ? (isOk ? _kPurple.withValues(alpha: 0.12) : const Color(0xFF1A2030))
+        ? (isOk ? _kPurple.withOpacity(0.12) : const Color(0xFF1A2030))
         : (isOk ? const Color(0xFFF5F3FF) : Colors.white);
     final cardBorder = isOk
-        ? _kPurple.withValues(alpha: dark ? 0.45 : 0.30)
-        : (dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE8ECEF));
+        ? _kPurple.withOpacity(dark ? 0.45 : 0.30)
+        : (dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE8ECEF));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -7238,7 +7238,7 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                                             CalcuCacheStatus.downloadPaused
                                         ? const Color(0xFFD97706)
                                         : _kPurple)
-                                    .withValues(alpha: 0.15),
+                                    .withOpacity(0.15),
                               ),
                               if (st.progress > 0)
                                 Text('${(st.progress * 100).toInt()}',
@@ -7258,12 +7258,12 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: isOk
-                                  ? _kPurple.withValues(alpha: 0.15)
-                                  : (dark ? Colors.white.withValues(alpha: 0.07)
+                                  ? _kPurple.withOpacity(0.15)
+                                  : (dark ? Colors.white.withOpacity(0.07)
                                           : const Color(0xFFF0F4F8)),
                               border: Border.all(
                                 color: isOk
-                                    ? _kPurple.withValues(alpha: 0.40)
+                                    ? _kPurple.withOpacity(0.40)
                                     : Colors.transparent,
                               ),
                             ),
@@ -7360,7 +7360,7 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                     backgroundColor: (st.status == CalcuCacheStatus.downloadPaused
                             ? const Color(0xFFD97706)
                             : _kPurple)
-                        .withValues(alpha: 0.12),
+                        .withOpacity(0.12),
                     valueColor: AlwaysStoppedAnimation(
                       st.status == CalcuCacheStatus.downloadPaused
                           ? const Color(0xFFD97706)
@@ -7384,9 +7384,9 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                             horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: _kPurple.withValues(alpha: 0.10),
+                          color: _kPurple.withOpacity(0.10),
                           border: Border.all(
-                              color: _kPurple.withValues(alpha: 0.28)),
+                              color: _kPurple.withOpacity(0.28)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           const Icon(Icons.sync_rounded,
@@ -7413,11 +7413,11 @@ class _CalcuOfflineStatusCardState extends State<_CalcuOfflineStatusCard> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color: dark
-                              ? Colors.white.withValues(alpha: 0.05)
+                              ? Colors.white.withOpacity(0.05)
                               : const Color(0xFFF3F4F6),
                           border: Border.all(
                             color: dark
-                                ? Colors.white.withValues(alpha: 0.10)
+                                ? Colors.white.withOpacity(0.10)
                                 : const Color(0xFFD1D5DB),
                           ),
                         ),
@@ -7470,7 +7470,7 @@ class _DeletingAccountOverlay extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.18),
+                color: Colors.black.withOpacity(0.18),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -7524,8 +7524,8 @@ class _OfflineChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: const Color(0xFF1D4ED8).withValues(alpha: 0.10),
-        border: Border.all(color: const Color(0xFF1D4ED8).withValues(alpha: 0.25)),
+        color: const Color(0xFF1D4ED8).withOpacity(0.10),
+        border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.25)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 10, color: const Color(0xFF1D4ED8)),

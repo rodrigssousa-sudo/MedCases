@@ -421,7 +421,7 @@ class _NotifDialog extends StatelessWidget {
     final liveGrn   = const Color(0xFF4ADE80);
     final titleC    = dark ? Colors.white : const Color(0xFF0D2218);
     final bodyC     = dark
-        ? Colors.white.withValues(alpha: 0.72)
+        ? Colors.white.withOpacity(0.72)
         : const Color(0xFF334155);
 
     return Dialog(
@@ -432,10 +432,10 @@ class _NotifDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           color: cardBg,
           border: Border.all(
-            color: accentGrn.withValues(alpha: dark ? 0.50 : 0.20), width: 1.4),
+            color: accentGrn.withOpacity(dark ? 0.50 : 0.20), width: 1.4),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: dark ? 0.55 : 0.14),
+              color: Colors.black.withOpacity(dark ? 0.55 : 0.14),
               blurRadius: 32, offset: const Offset(0, 8)),
           ],
         ),
@@ -449,7 +449,7 @@ class _NotifDialog extends StatelessWidget {
               width: 60, height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: accentGrn.withValues(alpha: dark ? 0.22 : 0.10),
+                color: accentGrn.withOpacity(dark ? 0.22 : 0.10),
               ),
               child: Icon(_icon, color: liveGrn, size: 30),
             ),
@@ -541,7 +541,7 @@ class _DialogBtn extends StatelessWidget {
     final bg = filled
         ? accentGrn
         : (dark
-            ? Colors.white.withValues(alpha: 0.07)
+            ? Colors.white.withOpacity(0.07)
             : const Color(0xFFF1F5F9));
     final fgColor = filled
         ? Colors.white
@@ -549,7 +549,7 @@ class _DialogBtn extends StatelessWidget {
     final borderColor = filled
         ? Colors.transparent
         : (dark
-            ? Colors.white.withValues(alpha: 0.12)
+            ? Colors.white.withOpacity(0.12)
             : const Color(0xFFCBD5E1));
 
     return GestureDetector(

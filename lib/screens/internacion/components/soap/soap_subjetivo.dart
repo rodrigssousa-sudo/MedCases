@@ -261,8 +261,8 @@ class _DolorSlider extends StatelessWidget {
                     color: active
                         ? col
                         : (dark
-                            ? col.withValues(alpha: 0.18)
-                            : col.withValues(alpha: 0.12)),
+                            ? col.withOpacity(0.18)
+                            : col.withOpacity(0.12)),
                     borderRadius: BorderRadius.circular(4),
                     border: Border.all(
                       color: active ? col : Colors.transparent,
@@ -324,7 +324,7 @@ class _SymptomChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: active
-              ? cyan.withValues(alpha: dark ? 0.18 : 0.12)
+              ? cyan.withOpacity(dark ? 0.18 : 0.12)
               : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
@@ -385,7 +385,7 @@ class _QuickSelector extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xFF059669).withValues(alpha: dark ? 0.15 : 0.10)
+                    ? const Color(0xFF059669).withOpacity(dark ? 0.15 : 0.10)
                     : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(

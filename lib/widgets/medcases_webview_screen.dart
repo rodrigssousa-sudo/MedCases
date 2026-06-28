@@ -227,7 +227,7 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
+                            color: Colors.white.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Row(
@@ -310,7 +310,7 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
         WebViewWidget(controller: _controller!),
         if (_isLoading)
           Container(
-            color: const Color(0xFF0F091E).withValues(alpha: 0.85),
+            color: const Color(0xFF0F091E).withOpacity(0.85),
             child: const Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -365,10 +365,10 @@ class _WebIframeView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: const Color(0xFF7E22CE).withValues(alpha: 0.08),
+                color: const Color(0xFF7E22CE).withOpacity(0.08),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: const Color(0xFF7E22CE).withValues(alpha: 0.20),
+                  color: const Color(0xFF7E22CE).withOpacity(0.20),
                 ),
               ),
               child: Column(

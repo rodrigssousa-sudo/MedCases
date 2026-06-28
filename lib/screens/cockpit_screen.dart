@@ -259,8 +259,8 @@ class _HeroHeader extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.white.withValues(alpha: 0.1),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                      color: Colors.white.withOpacity(0.1),
+                      border: Border.all(color: Colors.white.withOpacity(0.18)),
                     ),
                     child: Text(item.$1, style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white,
@@ -282,8 +282,8 @@ class _SosBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.red.withValues(alpha: 0.18),
-        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+        color: Colors.red.withOpacity(0.18),
+        border: Border.all(color: Colors.red.withOpacity(0.3)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Container(width: 6, height: 6, decoration: const BoxDecoration(color: Color(0xFFFF8888), shape: BoxShape.circle)),
@@ -337,7 +337,7 @@ class _MetricTile extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -388,7 +388,7 @@ class _CollapsibleSection extends StatelessWidget {
           border: Border.all(color: kBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black.withOpacity(0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -720,7 +720,7 @@ class _DoseBody extends StatelessWidget {
                 color: AppColors.of(context).cardBg,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
+                    color: Colors.black.withOpacity(0.08),
                     blurRadius: 12,
                   )
                 ],
@@ -836,8 +836,7 @@ class _DoseBody extends StatelessWidget {
                                                   fontWeight:
                                                       FontWeight.w900,
                                                   color: Colors.white
-                                                      .withValues(
-                                                          alpha: 0.9),
+                                                      .withOpacity(0.9),
                                                 ),
                                               ),
                                             ]),
@@ -1178,7 +1177,7 @@ class _DoseBody extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               color: copied ? const Color(0xFFECFDF5) : AppColors.of(context).darkBtn,
               border: copied ? Border.all(color: const Color(0xFF86EFAC)) : null,
-              boxShadow: copied ? null : [BoxShadow(color: AppColors.of(context).darkBtn.withValues(alpha: 0.25), blurRadius: 12, offset: const Offset(0, 4))],
+              boxShadow: copied ? null : [BoxShadow(color: AppColors.of(context).darkBtn.withOpacity(0.25), blurRadius: 12, offset: const Offset(0, 4))],
             ),
             child: Center(child: Text(
               copied ? p.t('copied_record') : p.t('copy_record'),
@@ -1283,7 +1282,7 @@ class _DrugDoseCard extends StatelessWidget {
                           color: _sevColor(ix.severity), letterSpacing: 0.4),
                     ),
                     const SizedBox(width: 5),
-                    Icon(Icons.open_in_new_rounded, size: 9, color: _sevColor(ix.severity).withValues(alpha: 0.7)),
+                    Icon(Icons.open_in_new_rounded, size: 9, color: _sevColor(ix.severity).withOpacity(0.7)),
                   ]),
                 ),
               ),
@@ -1328,7 +1327,7 @@ class _DrugDoseCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(dose.main, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.5)),
             const SizedBox(height: 5),
-            Text(dose.detail, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.7), height: 1.45)),
+            Text(dose.detail, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.7), height: 1.45)),
           ]),
         ),
         if (dose.alerts.isNotEmpty)
@@ -1443,7 +1442,7 @@ class _InteractionAlertBanner extends StatelessWidget {
           color: bg,
           border: Border.all(color: border, width: 1.5),
           boxShadow: (nContra > 0 || nMajor > 0) ? [
-            BoxShadow(color: col.withValues(alpha: 0.12), blurRadius: 8, offset: const Offset(0, 2)),
+            BoxShadow(color: col.withOpacity(0.12), blurRadius: 8, offset: const Offset(0, 2)),
           ] : null,
         ),
         child: Row(children: [
@@ -1452,7 +1451,7 @@ class _InteractionAlertBanner extends StatelessWidget {
             width: 32, height: 32,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: col.withValues(alpha: 0.12),
+              color: col.withOpacity(0.12),
             ),
             child: Center(child: Icon(icon, size: 16, color: col)),
           ),
@@ -1464,19 +1463,19 @@ class _InteractionAlertBanner extends StatelessWidget {
             if (contraList.isNotEmpty)
               Text(
                 contraList.map((i) => '${i.drug1} + ${i.drug2}').join('  •  '),
-                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col.withValues(alpha: 0.8)),
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col.withOpacity(0.8)),
                 maxLines: 2, overflow: TextOverflow.ellipsis,
               )
             else if (majorList.isNotEmpty)
               Text(
                 majorList.map((i) => '${i.drug1} + ${i.drug2}').join('  •  '),
-                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col.withValues(alpha: 0.8)),
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col.withOpacity(0.8)),
                 maxLines: 2, overflow: TextOverflow.ellipsis,
               )
             else
               Text(
                 _isEs ? 'Toque para ver detalles y conducta' : 'Toque para ver detalhes e conduta',
-                style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.7), fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 9, color: col.withOpacity(0.7), fontWeight: FontWeight.w500),
               ),
           ])),
           const SizedBox(width: 8),
@@ -1485,7 +1484,7 @@ class _InteractionAlertBanner extends StatelessWidget {
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: col.withValues(alpha: 0.10),
+              color: col.withOpacity(0.10),
             ),
             child: Icon(Icons.chevron_right_rounded, size: 14, color: col),
           ),
@@ -1705,7 +1704,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                     border: Border.all(color: bdr, width: 1.5),
                     boxShadow: (ix.severity == InteractionSeverity.contraindicated ||
                                 ix.severity == InteractionSeverity.major) ? [
-                      BoxShadow(color: col.withValues(alpha: 0.10), blurRadius: 6, offset: const Offset(0, 2)),
+                      BoxShadow(color: col.withOpacity(0.10), blurRadius: 6, offset: const Offset(0, 2)),
                     ] : null,
                   ),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1717,7 +1716,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                           width: 28, height: 28,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: col.withValues(alpha: 0.13),
+                            color: col.withOpacity(0.13),
                           ),
                           child: Center(child: Icon(_icon(ix.severity), size: 14, color: col)),
                         ),
@@ -1732,7 +1731,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
-                                color: col.withValues(alpha: 0.13),
+                                color: col.withOpacity(0.13),
                               ),
                               child: Text(_sevLabel(ix.severity),
                                 style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: col, letterSpacing: 0.8)),
@@ -1742,8 +1741,8 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
-                                color: const Color(0xFF374151).withValues(alpha: 0.08),
-                                border: Border.all(color: const Color(0xFF374151).withValues(alpha: 0.2)),
+                                color: const Color(0xFF374151).withOpacity(0.08),
+                                border: Border.all(color: const Color(0xFF374151).withOpacity(0.2)),
                               ),
                               child: Row(mainAxisSize: MainAxisSize.min, children: [
                                 const Icon(Icons.science_rounded, size: 7, color: Color(0xFF374151)),
@@ -1763,14 +1762,14 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: col.withValues(alpha: 0.08),
+                                color: col.withOpacity(0.08),
                               ),
                               child: Text(DrugInteraction.riskTypeLabel(r, isEs: _isEs),
                                 style: TextStyle(fontSize: 7, fontWeight: FontWeight.w700, color: col)),
                             )).toList(),
                           ),
                         Icon(isOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                          size: 18, color: col.withValues(alpha: 0.6)),
+                          size: 18, color: col.withOpacity(0.6)),
                       ]),
                     ),
 
@@ -1795,7 +1794,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: col.withValues(alpha: 0.07),
+                                color: col.withOpacity(0.07),
                                 border: Border(
                                   left: BorderSide(color: col, width: 3),
                                 ),
@@ -1820,8 +1819,8 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
-                                  color: col.withValues(alpha: 0.10),
-                                  border: Border.all(color: col.withValues(alpha: 0.25)),
+                                  color: col.withOpacity(0.10),
+                                  border: Border.all(color: col.withOpacity(0.25)),
                                 ),
                                 child: Text(DrugInteraction.riskTypeLabel(r, isEs: _isEs),
                                   style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: col)),
@@ -1879,10 +1878,10 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              color: const Color(0xFF374151).withValues(alpha: 0.05),
+                              color: const Color(0xFF374151).withOpacity(0.05),
                             ),
                             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Icon(Icons.menu_book_rounded, size: 10, color: col.withValues(alpha: 0.55)),
+                              Icon(Icons.menu_book_rounded, size: 10, color: col.withOpacity(0.55)),
                               const SizedBox(width: 6),
                               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 // Badge evidenceLevel
@@ -1891,7 +1890,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: const Color(0xFF374151).withValues(alpha: 0.10),
+                                      color: const Color(0xFF374151).withOpacity(0.10),
                                     ),
                                     child: Text(
                                       '${_isEs ? "Evidencia" : "Evidência"}: ${ix.evidenceLabel(isEs: _isEs)}',
@@ -1903,7 +1902,7 @@ class _InteractionSheetContentState extends State<_InteractionSheetContent> {
                                   const SizedBox(height: 5),
                                   Text(
                                     ix.references.join(' • '),
-                                    style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.55), fontStyle: FontStyle.italic, height: 1.4),
+                                    style: TextStyle(fontSize: 9, color: col.withOpacity(0.55), fontStyle: FontStyle.italic, height: 1.4),
                                   ),
                                 ],
                               ])),
@@ -1934,8 +1933,8 @@ class _SheetBadge extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),
-      color: color.withValues(alpha: 0.12),
-      border: Border.all(color: color.withValues(alpha: 0.3)),
+      color: color.withOpacity(0.12),
+      border: Border.all(color: color.withOpacity(0.3)),
     ),
     child: Text(text, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: color)),
   );
@@ -1957,7 +1956,7 @@ class _SheetInfoRow extends StatelessWidget {
       Text(title, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: color, letterSpacing: 0.8)),
     ]),
     const SizedBox(height: 4),
-    Text(text, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: color.withValues(alpha: 0.85), height: 1.5)),
+    Text(text, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: color.withOpacity(0.85), height: 1.5)),
   ]);
 }
 
@@ -2017,8 +2016,8 @@ class _SafetyStatus extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: warning ? Colors.amber.withValues(alpha: 0.15) : Colors.green.withValues(alpha: 0.12),
-        border: Border.all(color: warning ? Colors.amber.withValues(alpha: 0.3) : Colors.green.withValues(alpha: 0.3)),
+        color: warning ? Colors.amber.withOpacity(0.15) : Colors.green.withOpacity(0.12),
+        border: Border.all(color: warning ? Colors.amber.withOpacity(0.3) : Colors.green.withOpacity(0.3)),
       ),
       child: Row(children: [
         Icon(warning ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded,
@@ -2028,7 +2027,7 @@ class _SafetyStatus extends StatelessWidget {
           renalRisk
             ? (lang == 'es' ? 'ClCr reducido — revisar dosis y nefrotóxicos' : 'ClCr reduzido — revisar doses e nefrotóxicos')
             : (lang == 'es' ? 'Parámetros estables — sin alerta renal crítica' : 'Parâmetros estáveis — sem alerta renal crítico'),
-          style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.85), fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.85), fontWeight: FontWeight.w700),
         )),
       ]),
     );
@@ -2062,7 +2061,7 @@ class _DrugSafetyPanel extends StatelessWidget {
           Wrap(spacing: 6, runSpacing: 6, children: adverse.map((a) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)]),
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)]),
             child: Text(a, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFFCC0000))),
           )).toList()),
         ]),
@@ -2253,9 +2252,9 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                       Text('${ix.drug1}  +  ${ix.drug2}',
                         style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: col, height: 1.3)),
                       Text(ix.severityLabelL10n(isEs: widget.lang == 'es'),
-                        style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col.withValues(alpha: 0.75), letterSpacing: 0.8)),
+                        style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col.withOpacity(0.75), letterSpacing: 0.8)),
                     ])),
-                    Icon(isOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 16, color: col.withValues(alpha: 0.6)),
+                    Icon(isOpen ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 16, color: col.withOpacity(0.6)),
                   ]),
                 ),
 
@@ -2272,7 +2271,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                            color: col.withValues(alpha: 0.08),
+                            color: col.withOpacity(0.08),
                             border: Border(left: BorderSide(color: col, width: 3)),
                           ),
                           child: Text(
@@ -2294,7 +2293,7 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.white.withValues(alpha: 0.7),
+                          color: Colors.white.withOpacity(0.7),
                           border: Border.all(color: border),
                         ),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2310,24 +2309,24 @@ class _InteractionPanelState extends State<_InteractionPanel> {
                       // Evidência + Referências (campos novos)
                       const SizedBox(height: 8),
                       Row(children: [
-                        Icon(Icons.science_outlined, size: 10, color: col.withValues(alpha: 0.7)),
+                        Icon(Icons.science_outlined, size: 10, color: col.withOpacity(0.7)),
                         const SizedBox(width: 4),
                         Text(
                           widget.lang == 'es' ? 'EVIDENCIA: ' : 'EVIDÊNCIA: ',
-                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col.withValues(alpha: 0.7), letterSpacing: 0.6),
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: col.withOpacity(0.7), letterSpacing: 0.6),
                         ),
                         Text(
                           ix.evidenceLabel(isEs: widget.lang == 'es'),
-                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: col.withValues(alpha: 0.7)),
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: col.withOpacity(0.7)),
                         ),
                         if (ix.references.isNotEmpty) ...[
                           const SizedBox(width: 8),
-                          Icon(Icons.menu_book_rounded, size: 10, color: col.withValues(alpha: 0.5)),
+                          Icon(Icons.menu_book_rounded, size: 10, color: col.withOpacity(0.5)),
                           const SizedBox(width: 3),
                           Expanded(
                             child: Text(
                               ix.references.join(', '),
-                              style: TextStyle(fontSize: 9, color: col.withValues(alpha: 0.55), fontWeight: FontWeight.w500),
+                              style: TextStyle(fontSize: 9, color: col.withOpacity(0.55), fontWeight: FontWeight.w500),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -2603,7 +2602,7 @@ class _MedsSuggestionsDropdown extends StatelessWidget {
       elevation: 10,
       borderRadius: BorderRadius.circular(14),
       color: dark ? const Color(0xFF252930) : Colors.white,
-      shadowColor: Colors.black.withValues(alpha: 0.20),
+      shadowColor: Colors.black.withOpacity(0.20),
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 340, maxHeight: boxHeight),
         child: ClipRRect(
@@ -2884,7 +2883,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
                     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
-                      color: chipColor.withValues(alpha: 0.15),
+                      color: chipColor.withOpacity(0.15),
                     ),
                     child: Text(
                       _sLabel(worstSev!),
@@ -2986,7 +2985,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: c.withValues(alpha: 0.13),
+                          color: c.withOpacity(0.13),
                         ),
                         child: Text(
                           _sLabel(ix.severity),
@@ -3016,7 +3015,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
                                 text: '  ↔  ',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
-                                  color: c.withValues(alpha: 0.6),
+                                  color: c.withOpacity(0.6),
                                   fontSize: 10,
                                 ),
                               ),
@@ -3037,7 +3036,7 @@ class _MedsChinpsPanelState extends State<_MedsChipsPanel> {
                             ? Icons.keyboard_arrow_up_rounded
                             : Icons.keyboard_arrow_down_rounded,
                         size: 16,
-                        color: c.withValues(alpha: 0.7),
+                        color: c.withOpacity(0.7),
                       ),
                     ]),
                   ),
@@ -3127,7 +3126,7 @@ class _IxDetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Icon(icon, size: 12, color: color.withValues(alpha: 0.7)),
+      Icon(icon, size: 12, color: color.withOpacity(0.7)),
       const SizedBox(width: 6),
       Expanded(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -3136,7 +3135,7 @@ class _IxDetailRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 8,
               fontWeight: FontWeight.w900,
-              color: color.withValues(alpha: 0.7),
+              color: color.withOpacity(0.7),
               letterSpacing: 0.8,
             ),
           ),
@@ -3166,8 +3165,8 @@ class _SeverityBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: color.withValues(alpha: 0.12),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        color: color.withOpacity(0.12),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(label, style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: color)),
     );
@@ -3185,11 +3184,11 @@ class _IxRow extends StatelessWidget {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.only(top: 1),
-        child: Icon(icon, size: 11, color: color.withValues(alpha: 0.7)),
+        child: Icon(icon, size: 11, color: color.withOpacity(0.7)),
       ),
       const SizedBox(width: 6),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: color.withValues(alpha: 0.7), letterSpacing: 0.8)),
+        Text(label, style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: color.withOpacity(0.7), letterSpacing: 0.8)),
         const SizedBox(height: 2),
         Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF374151), height: 1.45)),
       ])),
@@ -3439,7 +3438,7 @@ class _ReminderCardState extends State<_ReminderCard>
                 ? [
                     BoxShadow(
                       color: const Color(0xFFFF4444)
-                          .withValues(alpha: flashVal * 0.25),
+                          .withOpacity(flashVal * 0.25),
                       blurRadius: 14,
                       spreadRadius: 2,
                     ),

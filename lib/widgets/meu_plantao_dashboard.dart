@@ -520,10 +520,10 @@ class _PlantaoHeader extends StatelessWidget {
     // borda cinza sutil. Sem gradiente verde sólido. Integrado ao ecossistema.
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withValues(alpha: 0.72),
+        color: const Color(0xFF1E293B).withOpacity(0.72),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF334155).withValues(alpha: 0.40),
+          color: const Color(0xFF334155).withOpacity(0.40),
           width: 1,
         ),
       ),
@@ -561,16 +561,16 @@ class _PlantaoHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: kGoldLight.withValues(alpha: 0.55),
+                  color: kGoldLight.withOpacity(0.55),
                   width: 1.2,
                 ),
-                color: Colors.white.withValues(alpha: 0.04),
+                color: Colors.white.withOpacity(0.04),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.add_rounded, size: 15,
-                      color: kGoldLight.withValues(alpha: 0.9)),
+                      color: kGoldLight.withOpacity(0.9)),
                   const SizedBox(width: 6),
                   Text(
                     isEs
@@ -579,7 +579,7 @@ class _PlantaoHeader extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                      color: kGoldLight.withValues(alpha: 0.9),
+                      color: kGoldLight.withOpacity(0.9),
                       letterSpacing: 0.2,
                     ),
                   ),
@@ -816,10 +816,10 @@ class _DefaultCalcCardState extends State<_DefaultCalcCard> {
           decoration: BoxDecoration(
             color: c.cardBg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: s.color.withValues(alpha: 0.20), width: 1.2),
+            border: Border.all(color: s.color.withOpacity(0.20), width: 1.2),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: c.dark ? 0.22 : 0.05),
+                color: Colors.black.withOpacity(c.dark ? 0.22 : 0.05),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -833,7 +833,7 @@ class _DefaultCalcCardState extends State<_DefaultCalcCard> {
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: s.color.withValues(alpha: 0.12),
+                  color: s.color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(s.icon, size: 18, color: s.color),
@@ -877,16 +877,16 @@ class _AddFirstPatientRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(
-          color: const Color(0xFF3B82F6).withValues(alpha: 0.05),
+          color: const Color(0xFF3B82F6).withOpacity(0.05),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFF3B82F6).withValues(alpha: 0.20), width: 1.2),
+          border: Border.all(color: const Color(0xFF3B82F6).withOpacity(0.20), width: 1.2),
         ),
         child: Row(
           children: [
             Container(
               width: 32, height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
+                color: const Color(0xFF3B82F6).withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.person_add_alt_1_rounded, size: 16, color: Color(0xFF3B82F6)),
@@ -1081,8 +1081,8 @@ class _FirestoreSessionCard extends StatelessWidget {
           _showSoapPreview(context);
         },
         borderRadius: BorderRadius.circular(14),
-        splashColor: triageColor.withValues(alpha: 0.10),
-        highlightColor: triageColor.withValues(alpha: 0.06),
+        splashColor: triageColor.withOpacity(0.10),
+        highlightColor: triageColor.withOpacity(0.06),
         child: AnimatedContainer(
       duration: const Duration(milliseconds: 220),
       padding: const EdgeInsets.all(12),
@@ -1090,12 +1090,12 @@ class _FirestoreSessionCard extends StatelessWidget {
         color: c.cardBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: triageColor.withValues(alpha: 0.70),
+          color: triageColor.withOpacity(0.70),
           width: 1.8,
         ),
         boxShadow: [
           BoxShadow(
-            color: triageColor.withValues(alpha: 0.12),
+            color: triageColor.withOpacity(0.12),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -1110,7 +1110,7 @@ class _FirestoreSessionCard extends StatelessWidget {
               Container(
                 width: 42, height: 42,
                 decoration: BoxDecoration(
-                  color: triageColor.withValues(alpha: 0.12),
+                  color: triageColor.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(Icons.bed_rounded, size: 20, color: triageColor),
@@ -1120,7 +1120,7 @@ class _FirestoreSessionCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                   decoration: BoxDecoration(
-                    color: triageColor.withValues(alpha: 0.12),
+                    color: triageColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -1189,7 +1189,7 @@ class _FirestoreSessionCard extends StatelessWidget {
               Icon(Icons.circle, size: 8, color: triageColor),
               if (evol > 0) ...[
                 const SizedBox(height: 6),
-                Icon(Icons.preview_rounded, size: 13, color: triageColor.withValues(alpha: 0.60)),
+                Icon(Icons.preview_rounded, size: 13, color: triageColor.withOpacity(0.60)),
               ],
             ],
           ),
@@ -1387,12 +1387,12 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
           color: bg,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: triageColor.withValues(alpha: 0.35),
+            color: triageColor.withOpacity(0.35),
             width: 1.4,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: dark ? 0.40 : 0.12),
+              color: Colors.black.withOpacity(dark ? 0.40 : 0.12),
               blurRadius: 24,
               offset: const Offset(0, 8),
             ),
@@ -1405,7 +1405,7 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
             Container(
               padding: const EdgeInsets.fromLTRB(16, 14, 12, 12),
               decoration: BoxDecoration(
-                color: triageColor.withValues(alpha: dark ? 0.12 : 0.07),
+                color: triageColor.withOpacity(dark ? 0.12 : 0.07),
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(19)),
               ),
               child: Row(
@@ -1413,7 +1413,7 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                   Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(
-                      color: triageColor.withValues(alpha: 0.15),
+                      color: triageColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(Icons.bed_rounded, size: 18, color: triageColor),
@@ -1592,7 +1592,7 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 3),
                                       decoration: BoxDecoration(
-                                        color: triageColor.withValues(alpha: 0.10),
+                                        color: triageColor.withOpacity(0.10),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
@@ -1698,7 +1698,7 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  triageColor.withValues(alpha: 0.85),
+                                  triageColor.withOpacity(0.85),
                                   triageColor,
                                 ],
                                 begin: Alignment.topLeft,
@@ -1707,7 +1707,7 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: triageColor.withValues(alpha: 0.30),
+                                  color: triageColor.withOpacity(0.30),
                                   blurRadius: 8,
                                   offset: const Offset(0, 3),
                                 ),
@@ -1750,9 +1750,9 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
   Widget _infoPill(String label, Color color, bool dark) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     decoration: BoxDecoration(
-      color: color.withValues(alpha: dark ? 0.15 : 0.08),
+      color: color.withOpacity(dark ? 0.15 : 0.08),
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: color.withValues(alpha: 0.30), width: 0.8),
+      border: Border.all(color: color.withOpacity(0.30), width: 0.8),
     ),
     child: Text(
       label,
@@ -1799,7 +1799,7 @@ class _SoapCopySheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border.all(color: const Color(0xFF059669).withValues(alpha: 0.25)),
+        border: Border.all(color: const Color(0xFF059669).withOpacity(0.25)),
       ),
       padding: EdgeInsets.fromLTRB(
         20, 12, 20,
@@ -1967,7 +1967,7 @@ class _SoapCopyTile extends StatelessWidget {
             Container(
               width: 42, height: 42,
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: dark ? 0.15 : 0.10),
+                color: iconColor.withOpacity(dark ? 0.15 : 0.10),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, size: 20, color: iconColor),
@@ -1993,7 +1993,7 @@ class _SoapCopyTile extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: badgeColor.withValues(alpha: 0.12),
+                          color: badgeColor.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -2088,12 +2088,12 @@ class _PatientCardState extends State<_PatientCard> {
             border: Border.all(
               color: _showRemove
                   ? AppColors.alertRedBorder
-                  : const Color(0xFF3B82F6).withValues(alpha: 0.22),
+                  : const Color(0xFF3B82F6).withOpacity(0.22),
               width: 1.3,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: c.dark ? 0.20 : 0.05),
+                color: Colors.black.withOpacity(c.dark ? 0.20 : 0.05),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -2135,7 +2135,7 @@ class _PatientCardContent extends StatelessWidget {
             Container(
               width: 42, height: 42,
               decoration: BoxDecoration(
-                color: const Color(0xFF3B82F6).withValues(alpha: 0.10),
+                color: const Color(0xFF3B82F6).withOpacity(0.10),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(Icons.bed_rounded, size: 20, color: Color(0xFF3B82F6)),
@@ -2145,7 +2145,7 @@ class _PatientCardContent extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
+                  color: const Color(0xFF3B82F6).withOpacity(0.12),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -2344,7 +2344,7 @@ class _PlantaoLoadingShell extends StatelessWidget {
           height: 16,
           child: CircularProgressIndicator(
             strokeWidth: 1.5,
-            valueColor: AlwaysStoppedAnimation<Color>(c.green.withValues(alpha: 0.60)),
+            valueColor: AlwaysStoppedAnimation<Color>(c.green.withOpacity(0.60)),
           ),
         ),
       ],
@@ -2392,14 +2392,14 @@ class _EmptyStateState extends State<_EmptyState> with SingleTickerProviderState
         animation: _pulseAnim,
         builder: (_, __) => CustomPaint(
           painter: _DashedBorderPainter(
-            color: c.green.withValues(alpha: _pulseAnim.value * 0.4),
+            color: c.green.withOpacity(_pulseAnim.value * 0.4),
             radius: 16, dashWidth: 6, dashSpace: 5,
           ),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
             decoration: BoxDecoration(
-              color: c.green.withValues(alpha: 0.04),
+              color: c.green.withOpacity(0.04),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -2420,9 +2420,9 @@ class _EmptyStateState extends State<_EmptyState> with SingleTickerProviderState
                 Container(
                   width: 44, height: 44,
                   decoration: BoxDecoration(
-                    color: c.green.withValues(alpha: 0.10),
+                    color: c.green.withOpacity(0.10),
                     shape: BoxShape.circle,
-                    border: Border.all(color: c.green.withValues(alpha: 0.25), width: 1.5),
+                    border: Border.all(color: c.green.withOpacity(0.25), width: 1.5),
                   ),
                   child: Icon(Icons.add_rounded, size: 22, color: c.green),
                 ),
@@ -2468,9 +2468,9 @@ class _HintChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
+        color: color.withOpacity(0.10),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.20)),
+        border: Border.all(color: color.withOpacity(0.20)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -2639,7 +2639,7 @@ class _DrugPinnedCardState extends State<_DrugPinnedCard> {
             color: _showUnpin ? AppColors.alertRedBg : c.cardBg,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: _showUnpin ? AppColors.alertRedBorder : c.border, width: 1.2),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: c.dark ? 0.25 : 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(c.dark ? 0.25 : 0.06), blurRadius: 8, offset: const Offset(0, 2))],
           ),
           child: _showUnpin
               ? _UnpinOverlay(isEs: widget.isEs, colors: c, onConfirm: widget.onUnpin, onCancel: () => setState(() => _showUnpin = false))
@@ -2648,7 +2648,7 @@ class _DrugPinnedCardState extends State<_DrugPinnedCard> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(color: c.green.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(4)),
+                      decoration: BoxDecoration(color: c.green.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
                       child: Text(route.length > 8 ? route.substring(0, 8) : route,
                           style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.green, letterSpacing: 0.5)),
                     ),
@@ -2852,10 +2852,10 @@ class _CalcPinnedCardState extends State<_CalcPinnedCard> {
             border: Border.all(
               color: _showUnpin
                   ? AppColors.alertRedBorder
-                  : s.color.withValues(alpha: 0.20),
+                  : s.color.withOpacity(0.20),
               width: 1.2,
             ),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: c.dark ? 0.22 : 0.05), blurRadius: 6, offset: const Offset(0, 2))],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(c.dark ? 0.22 : 0.05), blurRadius: 6, offset: const Offset(0, 2))],
           ),
           child: _showUnpin
               ? Column(
@@ -2878,7 +2878,7 @@ class _CalcPinnedCardState extends State<_CalcPinnedCard> {
                     Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
-                        color: s.color.withValues(alpha: 0.12),
+                        color: s.color.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(s.icon, size: 18, color: s.color),
@@ -3006,7 +3006,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
+                      color: const Color(0xFF3B82F6).withOpacity(0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(Icons.bed_rounded, size: 18, color: Color(0xFF3B82F6)),
@@ -3150,7 +3150,7 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                                 ),
                                 borderRadius: BorderRadius.circular(14),
                                 boxShadow: [
-                                  BoxShadow(color: const Color(0xFF0A7C4E).withValues(alpha: 0.35), blurRadius: 10, offset: const Offset(0, 4)),
+                                  BoxShadow(color: const Color(0xFF0A7C4E).withOpacity(0.35), blurRadius: 10, offset: const Offset(0, 4)),
                                 ],
                               ),
                               child: Row(
@@ -3231,7 +3231,7 @@ class _FieldBlock extends StatelessWidget {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: ac.withValues(alpha: 0.50), width: 1.5),
+              borderSide: BorderSide(color: ac.withOpacity(0.50), width: 1.5),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           ),
@@ -3442,9 +3442,9 @@ class _DrugSelectorList extends StatelessWidget {
               duration: const Duration(milliseconds: 220),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
               decoration: BoxDecoration(
-                color: isPinned ? c.green.withValues(alpha: 0.08) : c.cardBg2,
+                color: isPinned ? c.green.withOpacity(0.08) : c.cardBg2,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: isPinned ? c.green.withValues(alpha: 0.35) : c.border, width: isPinned ? 1.5 : 1.0),
+                border: Border.all(color: isPinned ? c.green.withOpacity(0.35) : c.border, width: isPinned ? 1.5 : 1.0),
               ),
               child: Row(
                 children: [
@@ -3526,15 +3526,15 @@ class _CalcSelectorList extends StatelessWidget {
               duration: const Duration(milliseconds: 220),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: isPinned ? shortcut.color.withValues(alpha: 0.07) : c.cardBg2,
+                color: isPinned ? shortcut.color.withOpacity(0.07) : c.cardBg2,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: isPinned ? shortcut.color.withValues(alpha: 0.35) : c.border, width: isPinned ? 1.5 : 1.0),
+                border: Border.all(color: isPinned ? shortcut.color.withOpacity(0.35) : c.border, width: isPinned ? 1.5 : 1.0),
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(color: shortcut.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(color: shortcut.color.withOpacity(0.12), borderRadius: BorderRadius.circular(10)),
                     child: Icon(shortcut.icon, size: 20, color: shortcut.color),
                   ),
                   const SizedBox(width: 12),

@@ -109,7 +109,7 @@ class _PatientAccordionState extends State<PatientAccordion> {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: _open
-              ? InternacionTheme.cyan.withValues(alpha: 0.35)
+              ? InternacionTheme.cyan.withOpacity(0.35)
               : theme.border,
           width: 0.8,
         ),
@@ -128,7 +128,7 @@ class _PatientAccordionState extends State<PatientAccordion> {
                   Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(
-                      color: InternacionTheme.cyan.withValues(alpha: dark ? 0.12 : 0.08),
+                      color: InternacionTheme.cyan.withOpacity(dark ? 0.12 : 0.08),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(Icons.person_outline_rounded,
@@ -272,7 +272,7 @@ class _PatientAccordionState extends State<PatientAccordion> {
                                 height: 32,
                                 decoration: BoxDecoration(
                                   color: isSel
-                                      ? InternacionTheme.cyan.withValues(alpha: dark ? 0.20 : 0.12)
+                                      ? InternacionTheme.cyan.withOpacity(dark ? 0.20 : 0.12)
                                       : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
@@ -386,7 +386,7 @@ class _SexChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
         decoration: BoxDecoration(
           color: isSelected
-              ? InternacionTheme.cyan.withValues(alpha: InternacionTheme(dark).dark ? 0.18 : 0.10)
+              ? InternacionTheme.cyan.withOpacity(InternacionTheme(dark).dark ? 0.18 : 0.10)
               : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(

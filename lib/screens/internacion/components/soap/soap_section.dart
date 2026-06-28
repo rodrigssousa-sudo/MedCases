@@ -574,7 +574,7 @@ class _SoapProgressBar extends StatelessWidget {
             decoration: BoxDecoration(
               color: isActive
                   ? color
-                  : color.withValues(alpha: 0.25),
+                  : color.withOpacity(0.25),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -612,7 +612,7 @@ class _SoapAccordion extends StatelessWidget {
         color: theme.card,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isOpen ? tagFg.withValues(alpha: 0.40) : theme.border,
+          color: isOpen ? tagFg.withOpacity(0.40) : theme.border,
           width: isOpen ? 1.2 : 0.8,
         ),
         boxShadow: [theme.softShadow],
@@ -1463,7 +1463,7 @@ class _CopyOptionsSheet extends StatelessWidget {
         color: bg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border.all(
-          color: InternacionTheme.cyan.withValues(alpha: 0.25),
+          color: InternacionTheme.cyan.withOpacity(0.25),
           width: 1.0,
         ),
       ),
@@ -1630,7 +1630,7 @@ class _CopyOptionTile extends StatelessWidget {
             Container(
               width: 42, height: 42,
               decoration: BoxDecoration(
-                color: iconBg.withValues(alpha: dark ? 0.15 : 0.10),
+                color: iconBg.withOpacity(dark ? 0.15 : 0.10),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, size: 20, color: iconColor),
@@ -1657,7 +1657,7 @@ class _CopyOptionTile extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: badgeColor.withValues(alpha: 0.12),
+                          color: badgeColor.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(

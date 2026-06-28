@@ -166,7 +166,7 @@ class _ChecklistHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: colors.green.withValues(alpha: 0.12),
+            color: colors.green.withOpacity(0.12),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -307,12 +307,12 @@ class _ChecklistItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: isChecked
-                ? colors.green.withValues(alpha: colors.dark ? 0.10 : 0.06)
+                ? colors.green.withOpacity(colors.dark ? 0.10 : 0.06)
                 : colors.cardBg,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isChecked
-                  ? colors.green.withValues(alpha: 0.35)
+                  ? colors.green.withOpacity(0.35)
                   : colors.border,
               width: isChecked ? 1.5 : 1.0,
             ),
@@ -329,7 +329,7 @@ class _ChecklistItem extends StatelessWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
                     color: isChecked
-                        ? colors.green.withValues(alpha: 0.6)
+                        ? colors.green.withOpacity(0.6)
                         : colors.textHint,
                     height: 1.5,
                   ),
@@ -346,13 +346,13 @@ class _ChecklistItem extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     height: 1.45,
                     color: isChecked
-                        ? colors.textPrimary.withValues(alpha: 0.38)
+                        ? colors.textPrimary.withOpacity(0.38)
                         : colors.textPrimary,
                     decoration: isChecked
                         ? TextDecoration.lineThrough
                         : TextDecoration.none,
                     decorationColor:
-                        colors.textSecondary.withValues(alpha: 0.5),
+                        colors.textSecondary.withOpacity(0.5),
                     decorationThickness: 1.5,
                   ),
                   child: Text(text),
@@ -400,7 +400,7 @@ class _CustomCheckbox extends StatelessWidget {
         boxShadow: isChecked
             ? [
                 BoxShadow(
-                  color: colors.green.withValues(alpha: 0.30),
+                  color: colors.green.withOpacity(0.30),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 )
@@ -431,10 +431,10 @@ class _CompletionBanner extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: const Color(0xFF22C55E).withValues(alpha: 0.10),
+          color: const Color(0xFF22C55E).withOpacity(0.10),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFF22C55E).withValues(alpha: 0.30),
+            color: const Color(0xFF22C55E).withOpacity(0.30),
           ),
         ),
         child: Row(

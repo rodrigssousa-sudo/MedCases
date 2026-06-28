@@ -2598,18 +2598,17 @@ class _AiScreenState extends State<AiScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: dark
-                              ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
-                              : const Color(0xFF008CA4).withValues(alpha: 0.12),
+                              ? const Color(0xFF00E5FF).withOpacity(0.15)
+                              : const Color(0xFF008CA4).withOpacity(0.12),
                           border: Border.all(
                             color: dark
-                                ? const Color(0xFF00E5FF).withValues(alpha: 0.45)
-                                : const Color(0xFF008CA4).withValues(alpha: 0.35),
+                                ? const Color(0xFF00E5FF).withOpacity(0.45)
+                                : const Color(0xFF008CA4).withOpacity(0.35),
                             width: 1.0,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(
-                                  alpha: dark ? 0.35 : 0.10),
+                              color: Colors.black.withOpacity(dark ? 0.35 : 0.10),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -2873,11 +2872,11 @@ class _MobileAiActionBar extends StatelessWidget {
     // MedCases IA palette — icon teal
     final iconColor = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
     final iconBg = dark
-        ? const Color(0xFF00E5FF).withValues(alpha: 0.07)
-        : const Color(0xFF008CA4).withValues(alpha: 0.08);
+        ? const Color(0xFF00E5FF).withOpacity(0.07)
+        : const Color(0xFF008CA4).withOpacity(0.08);
     final iconBorder = dark
-        ? const Color(0xFF00E5FF).withValues(alpha: 0.15)
-        : const Color(0xFF008CA4).withValues(alpha: 0.22);
+        ? const Color(0xFF00E5FF).withOpacity(0.15)
+        : const Color(0xFF008CA4).withOpacity(0.22);
 
     return Container(
       height: 52, // SUPER ORDEM MASTER 308 M2: +5px adicional → 52px
@@ -2979,7 +2978,7 @@ class _MobileAiActionBar extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 6),
                           child: Icon(Icons.history_rounded, size: 15,
-                              color: Colors.white.withValues(alpha: 0.70)),
+                              color: Colors.white.withOpacity(0.70)),
                         ),
                         if (historyCount > 0)
                           Positioned(
@@ -3007,7 +3006,7 @@ class _MobileAiActionBar extends StatelessWidget {
                   // Divisor vertical
                   Container(
                     width: 1, height: 13,
-                    color: Colors.white.withValues(alpha: 0.12),
+                    color: Colors.white.withOpacity(0.12),
                     margin: const EdgeInsets.symmetric(horizontal: 1),
                   ),
                   // Botão novo chat — mais fino
@@ -3016,7 +3015,7 @@ class _MobileAiActionBar extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: Icon(Icons.add_rounded, size: 15,
-                          color: Colors.white.withValues(alpha: 0.70)),
+                          color: Colors.white.withOpacity(0.70)),
                     ),
                   ),
                 ],
@@ -3220,14 +3219,14 @@ class _WaHeader extends StatelessWidget {
                           width: 28, height: 28,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                            color: Colors.white.withValues(alpha: 0.06),
+                            color: Colors.white.withOpacity(0.06),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.08),
+                              color: Colors.white.withOpacity(0.08),
                               width: 0.8,
                             ),
                           ),
                           child: Icon(Icons.history_rounded, size: 14,
-                            color: Colors.white.withValues(alpha: 0.70)),
+                            color: Colors.white.withOpacity(0.70)),
                         ),
                         if (historyCount > 0)
                           Positioned(
@@ -3262,9 +3261,9 @@ class _WaHeader extends StatelessWidget {
                       width: 28, height: 28,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
+                        color: const Color(0xFF00E5FF).withOpacity(0.10),
                         border: Border.all(
-                          color: const Color(0xFF00E5FF).withValues(alpha: 0.28),
+                          color: const Color(0xFF00E5FF).withOpacity(0.28),
                           width: 0.8,
                         ),
                       ),
@@ -3284,14 +3283,14 @@ class _WaHeader extends StatelessWidget {
                       width: 28, height: 28,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.white.withValues(alpha: 0.06),
+                        color: Colors.white.withOpacity(0.06),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.08),
+                          color: Colors.white.withOpacity(0.08),
                           width: 0.8,
                         ),
                       ),
                       child: Icon(Icons.menu_rounded, size: 14,
-                        color: Colors.white.withValues(alpha: 0.70)),
+                        color: Colors.white.withOpacity(0.70)),
                     ),
                   ),
                 ],
@@ -3345,7 +3344,7 @@ class _EmptyChat extends StatelessWidget {
               Icon(
                 Icons.lock_outline_rounded,
                 size: 36,
-                color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                color: const Color(0xFF00E5FF).withOpacity(0.35),
               ),
               const SizedBox(height: 20),
 
@@ -3358,7 +3357,7 @@ class _EmptyChat extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.62),
+                  color: Colors.white.withOpacity(0.62),
                   height: 1.55,
                   letterSpacing: 0.1,
                 ),
@@ -3371,10 +3370,10 @@ class _EmptyChat extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(22),
                   border: Border.all(
-                    color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                    color: const Color(0xFF00E5FF).withOpacity(0.35),
                     width: 1,
                   ),
-                  color: const Color(0xFF00E5FF).withValues(alpha: 0.07),
+                  color: const Color(0xFF00E5FF).withOpacity(0.07),
                 ),
                 child: Text(
                   isEs ? 'Conectar agora' : 'Conectar agora',
@@ -3421,8 +3420,8 @@ class _GoogleAuthBarrierCard extends StatelessWidget {
         : const Color(0xFFE5E0D8);
     final titleColor = dark ? Colors.white : const Color(0xFF1A1D23);
     final subtitleColor = dark
-        ? Colors.white.withValues(alpha: 0.55)
-        : Colors.black.withValues(alpha: 0.45);
+        ? Colors.white.withOpacity(0.55)
+        : Colors.black.withOpacity(0.45);
 
     return Center(
       child: Padding(
@@ -3435,7 +3434,7 @@ class _GoogleAuthBarrierCard extends StatelessWidget {
             border: Border.all(color: borderColor, width: 1.0),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: dark ? 0.40 : 0.08),
+                color: Colors.black.withOpacity(dark ? 0.40 : 0.08),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -3700,31 +3699,31 @@ class _ActionCardButtonState extends State<ActionCardButton>
     // Hover: slightly elevated 0.11 light / 0.20 dark
     // Tap (_tapping): escurece fundo para feedback imediato
     final bg = widget.dark
-        ? accent.withValues(alpha: 0.12)
-        : accent.withValues(alpha: 0.06);
+        ? accent.withOpacity(0.12)
+        : accent.withOpacity(0.06);
     final bgHover = widget.dark
-        ? accent.withValues(alpha: 0.20)
-        : accent.withValues(alpha: 0.11);
+        ? accent.withOpacity(0.20)
+        : accent.withOpacity(0.11);
     final bgTap = widget.dark
-        ? accent.withValues(alpha: 0.28)
-        : accent.withValues(alpha: 0.16);
+        ? accent.withOpacity(0.28)
+        : accent.withOpacity(0.16);
 
     // Bordas translúcidas — 1.0px sólida, quase invisível em repouso
     final border = widget.dark
-        ? accent.withValues(alpha: 0.30)
-        : accent.withValues(alpha: 0.20);
+        ? accent.withOpacity(0.30)
+        : accent.withOpacity(0.20);
     final borderHover = widget.dark
-        ? accent.withValues(alpha: 0.55)
-        : accent.withValues(alpha: 0.38);
+        ? accent.withOpacity(0.55)
+        : accent.withOpacity(0.38);
 
     // Texto e ícone: accentColor puro (sólido) — sem opacidade fraca
     final textColor = widget.dark
-        ? accent.withValues(alpha: 1.0)
+        ? accent.withOpacity(1.0)
         : accent;
 
     // Sombra mínima para descolar do fundo — sem sombra pesada em hover
     final shadow = BoxShadow(
-      color: accent.withValues(alpha: widget.dark ? 0.15 : 0.04),
+      color: accent.withOpacity(widget.dark ? 0.15 : 0.04),
       blurRadius: 4,
       offset: const Offset(0, 2),
     );
@@ -4155,8 +4154,8 @@ class _UserBubbleState extends State<_UserBubble> {
                           Icons.edit_outlined,
                           size: 14,
                           color: widget.dark
-                              ? Colors.white.withValues(alpha: 0.30)
-                              : Colors.black.withValues(alpha: 0.28),
+                              ? Colors.white.withOpacity(0.30)
+                              : Colors.black.withOpacity(0.28),
                         ),
                       ),
                     ),
@@ -4195,7 +4194,7 @@ class _UserBubbleActionsSheet extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [BoxShadow(
-          color: Colors.black.withValues(alpha: 0.18),
+          color: Colors.black.withOpacity(0.18),
           blurRadius: 20, offset: const Offset(0, -4),
         )],
       ),
@@ -4271,7 +4270,7 @@ class _ActionTile extends StatelessWidget {
             Container(
               width: 38, height: 38,
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.10),
+                color: iconColor.withOpacity(0.10),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: iconColor, size: 18),
@@ -4288,7 +4287,7 @@ class _ActionTile extends StatelessWidget {
               ],
             )),
             Icon(Icons.chevron_right_rounded, size: 18,
-              color: textCol.withValues(alpha: 0.35)),
+              color: textCol.withOpacity(0.35)),
           ]),
         ),
       ),
@@ -5607,7 +5606,7 @@ class _AiBlockBubble extends StatelessWidget {
         color: dark ? const Color(0xFF00E5FF) : kGreen,
         height: 1.3,
       ),
-      blockquote: TextStyle(fontSize: 13, color: textColor.withValues(alpha: 0.8)),
+      blockquote: TextStyle(fontSize: 13, color: textColor.withOpacity(0.8)),
       // Força fundos transparentes — evita herança de ThemeData.cardColor
       blockquoteDecoration: BoxDecoration(
         color: Colors.transparent,
@@ -5681,7 +5680,7 @@ class _AiBlockBubble extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: ttsPlaying
-                            ? kGreen.withValues(alpha: 0.15)
+                            ? kGreen.withOpacity(0.15)
                             : Colors.transparent,
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -6260,7 +6259,7 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
                       child: Container(
                         width: 7, height: 7,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF10B981).withValues(alpha: 0.6),
+                          color: const Color(0xFF10B981).withOpacity(0.6),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -6312,11 +6311,11 @@ class _DisconnectedInputLock extends StatelessWidget {
     final isEs = lang == 'es';
     final bg   = dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F5F5);
     final borderColor = dark
-        ? Colors.white.withValues(alpha: 0.08)
-        : Colors.black.withValues(alpha: 0.08);
+        ? Colors.white.withOpacity(0.08)
+        : Colors.black.withOpacity(0.08);
     final labelColor = dark
-        ? Colors.white.withValues(alpha: 0.38)
-        : Colors.black.withValues(alpha: 0.42);
+        ? Colors.white.withOpacity(0.38)
+        : Colors.black.withOpacity(0.42);
 
     return Container(
       color: bg,
@@ -6428,8 +6427,8 @@ class _AudioWave extends StatelessWidget {
             height: targetH,
             decoration: BoxDecoration(
               color: level < 0.03
-                  ? activeColor.withValues(alpha: 0.35)
-                  : activeColor.withValues(alpha: 0.85),
+                  ? activeColor.withOpacity(0.35)
+                  : activeColor.withOpacity(0.85),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -6480,8 +6479,8 @@ class _ResponseModeToggle extends StatelessWidget {
     // Inativo: fundo cinza sólido discreto, sem borda especial
     const neonCyan   = Color(0xFF00E5FF);
     final inactiveText = dark
-        ? Colors.white.withValues(alpha: 0.55)
-        : Colors.black.withValues(alpha: 0.45);
+        ? Colors.white.withOpacity(0.55)
+        : Colors.black.withOpacity(0.45);
     final inactiveBg   = dark
         ? const Color(0xFF374151)
         : const Color(0xFFE0E0E0);
@@ -6648,15 +6647,15 @@ class _InputBarState extends State<_InputBar> {
             decoration: BoxDecoration(
               // ORDEM VISUAL 02: grafite escuro / off-white lêtoso
               color: dark
-                  ? const Color(0xFF16181D).withValues(alpha: 0.75)
-                  : const Color(0xFFF9FAFB).withValues(alpha: 0.85),
+                  ? const Color(0xFF16181D).withOpacity(0.75)
+                  : const Color(0xFFF9FAFB).withOpacity(0.85),
               borderRadius: BorderRadius.circular(30),
               border: Border.all(
                 color: widget.hasFocus
-                    ? const Color(0xFF00E5FF).withValues(alpha: 0.55)
+                    ? const Color(0xFF00E5FF).withOpacity(0.55)
                     : (dark
-                        ? const Color(0xFF374151).withValues(alpha: 0.45)
-                        : const Color(0xFFD1D6DC).withValues(alpha: 0.60)),
+                        ? const Color(0xFF374151).withOpacity(0.45)
+                        : const Color(0xFFD1D6DC).withOpacity(0.60)),
                 width: widget.hasFocus ? 1.2 : 0.5,  // ORDEM VISUAL 02: borda 0.5px em repouso
               ),
             ),
@@ -6690,7 +6689,7 @@ class _InputBarState extends State<_InputBar> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: isListening
-                                    ? const Color(0xFFEF4444).withValues(alpha: 0.15)
+                                    ? const Color(0xFFEF4444).withOpacity(0.15)
                                     : Colors.transparent,
                               ),
                               child: Center(
@@ -6800,7 +6799,7 @@ class _InputBarState extends State<_InputBar> {
                             color: locked
                                 ? (dark ? Colors.white12 : Colors.black12)
                                 : (widget.thinking
-                                    ? const Color(0xFF008CA4).withValues(alpha: 0.45)
+                                    ? const Color(0xFF008CA4).withOpacity(0.45)
                                     : const Color(0xFF008CA4)),
                           ),
                           child: Center(
@@ -6841,9 +6840,9 @@ class _InputBarState extends State<_InputBar> {
                               margin: const EdgeInsets.only(right: 10),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: const Color(0xFFEF4444).withValues(alpha: 0.12),
+                                color: const Color(0xFFEF4444).withOpacity(0.12),
                                 border: Border.all(
-                                  color: const Color(0xFFEF4444).withValues(alpha: 0.50),
+                                  color: const Color(0xFFEF4444).withOpacity(0.50),
                                   width: 1.2,
                                 ),
                               ),
@@ -6878,8 +6877,8 @@ class _InputBarState extends State<_InputBar> {
                                     fontWeight: FontWeight.w400,
                                     letterSpacing: 0.5,
                                     color: dark
-                                        ? Colors.white.withValues(alpha: 0.50)
-                                        : Colors.black.withValues(alpha: 0.45),
+                                        ? Colors.white.withOpacity(0.50)
+                                        : Colors.black.withOpacity(0.45),
                                     height: 1.3,
                                   ),
                                   maxLines: 1,
@@ -6934,7 +6933,7 @@ class _AiErrorBanner extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        color: const Color(0xFFB91C1C).withValues(alpha: 0.12),
+        color: const Color(0xFFB91C1C).withOpacity(0.12),
         child: Row(children: [
           Icon(
             isGeminiError
@@ -7046,7 +7045,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
 
         final bg     = dark ? const Color(0xFF0F1A14) : Colors.white;
         final cardBg = dark ? const Color(0xFF2D3340) : const Color(0xFFF5F7F5);
-        final divCol = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.08);
+        final divCol = dark ? Colors.white12 : Colors.black.withOpacity(0.08);
         final sub    = dark ? Colors.white54 : Colors.black54;
         final text   = dark ? Colors.white : const Color(0xFF1A1D23);
         const green  = Color(0xFF10B981);
@@ -7126,12 +7125,12 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                         colors: [Color(0xFF1A1100), Color(0xFF2C1E00)],
                       ),
                       border: Border.all(
-                        color: const Color(0xFFD4AF37).withValues(alpha: 0.40),
+                        color: const Color(0xFFD4AF37).withOpacity(0.40),
                         width: 1.0,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFD4AF37).withValues(alpha: 0.18),
+                          color: const Color(0xFFD4AF37).withOpacity(0.18),
                           blurRadius: 10, offset: const Offset(0, 3)),
                       ],
                     ),
@@ -7163,7 +7162,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                         style: TextStyle(
                           fontSize: 12,
                           color: hasAnyAi
-                              ? Colors.white.withValues(alpha: 0.65)
+                              ? Colors.white.withOpacity(0.65)
                               : sub),
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                     ],
@@ -7174,16 +7173,16 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: (geminiLoading || widget.keyLoading)
-                          ? Colors.white.withValues(alpha: 0.08)
+                          ? Colors.white.withOpacity(0.08)
                           : (hasAnyAi
-                              ? Colors.white.withValues(alpha: 0.15)
-                              : green.withValues(alpha: 0.1)),
+                              ? Colors.white.withOpacity(0.15)
+                              : green.withOpacity(0.1)),
                       border: Border.all(
                         color: (geminiLoading || widget.keyLoading)
-                            ? Colors.white.withValues(alpha: 0.15)
+                            ? Colors.white.withOpacity(0.15)
                             : (hasAnyAi
-                                ? Colors.white.withValues(alpha: 0.3)
-                                : green.withValues(alpha: 0.25))),
+                                ? Colors.white.withOpacity(0.3)
+                                : green.withOpacity(0.25))),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       if (geminiLoading || widget.keyLoading)
@@ -7191,7 +7190,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                           width: 8, height: 8,
                           child: CircularProgressIndicator(
                             strokeWidth: 1.2,
-                            color: Colors.white.withValues(alpha: 0.5),
+                            color: Colors.white.withOpacity(0.5),
                           ),
                         )
                       else
@@ -7210,7 +7209,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                         style: TextStyle(
                           fontSize: 10, fontWeight: FontWeight.w700,
                           color: (geminiLoading || widget.keyLoading)
-                              ? Colors.white.withValues(alpha: 0.5)
+                              ? Colors.white.withOpacity(0.5)
                               : (hasAnyAi ? Colors.white : sub))),
                     ]),
                   ),
@@ -7219,7 +7218,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 const SizedBox(height: 16),
                 Divider(
                   color: hasAnyAi
-                      ? Colors.white.withValues(alpha: 0.15)
+                      ? Colors.white.withOpacity(0.15)
                       : divCol,
                   height: 1),
                 const SizedBox(height: 14),
@@ -7228,7 +7227,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 Row(children: [
                   Icon(Icons.psychology_rounded, size: 14,
                     color: hasAnyAi
-                        ? Colors.white.withValues(alpha: 0.7)
+                        ? Colors.white.withOpacity(0.7)
                         : sub),
                   const SizedBox(width: 8),
                   Expanded(child: Text(
@@ -7243,7 +7242,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 Row(children: [
                   Icon(Icons.local_hospital_rounded, size: 14,
                     color: hasAnyAi
-                        ? Colors.white.withValues(alpha: 0.6)
+                        ? Colors.white.withOpacity(0.6)
                         : sub),
                   const SizedBox(width: 8),
                   Expanded(child: Text(
@@ -7253,7 +7252,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                     style: TextStyle(
                       fontSize: 11,
                       color: hasAnyAi
-                          ? Colors.white.withValues(alpha: 0.6)
+                          ? Colors.white.withOpacity(0.6)
                           : sub))),
                 ]),
 
@@ -7261,7 +7260,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   const SizedBox(height: 8),
                   Row(children: [
                     Icon(Icons.account_circle_rounded, size: 14,
-                      color: const Color(0xFF10B981).withValues(alpha: 0.8)),
+                      color: const Color(0xFF10B981).withOpacity(0.8)),
                     const SizedBox(width: 8),
                     Expanded(child: Text(
                       geminiEmail.isNotEmpty
@@ -7271,14 +7270,14 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                               : 'Google conectado — Gemini 1.5 Flash ativo'),
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.white.withValues(alpha: 0.65)),
+                        color: Colors.white.withOpacity(0.65)),
                       maxLines: 1, overflow: TextOverflow.ellipsis)),
                   ]),
                 ] else if (hasAnyAi) ...[
                   const SizedBox(height: 8),
                   Row(children: [
                     Icon(Icons.cloud_done_rounded, size: 14,
-                      color: const Color(0xFF10B981).withValues(alpha: 0.8)),
+                      color: const Color(0xFF10B981).withOpacity(0.8)),
                     const SizedBox(width: 8),
                     Expanded(child: Text(
                       // SUPER ORDEM MASTER 15 M3: PURGADO 'GPT-4o mini' — substituiído
@@ -7287,7 +7286,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                           : 'Servidor MedCases IA — Integrado ao Google Gemini',
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.white.withValues(alpha: 0.6)))),
+                        color: Colors.white.withOpacity(0.6)))),
                   ]),
                 ],
               ]),
@@ -7305,14 +7304,14 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   color: cardBg,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: const Color(0xFF1A73E8).withValues(alpha: 0.25)),
+                    color: const Color(0xFF1A73E8).withOpacity(0.25)),
                 ),
                 child: Row(children: [
                   Container(
                     width: 36, height: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: blue.withValues(alpha: 0.12),
+                      color: blue.withOpacity(0.12),
                     ),
                     child: const Center(
                       child: Icon(Icons.account_circle_rounded,
@@ -7342,16 +7341,16 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                           horizontal: 12, vertical: 7),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: const Color(0xFFB91C1C).withValues(alpha: 0.1),
+                        color: const Color(0xFFB91C1C).withOpacity(0.1),
                         border: Border.all(
-                          color: const Color(0xFFB91C1C).withValues(alpha: 0.25)),
+                          color: const Color(0xFFB91C1C).withOpacity(0.25)),
                       ),
                       child: geminiLoading
                           ? SizedBox(
                               width: 12, height: 12,
                               child: CircularProgressIndicator(
                                 strokeWidth: 1.5,
-                                color: const Color(0xFFEF4444).withValues(alpha: 0.7),
+                                color: const Color(0xFFEF4444).withOpacity(0.7),
                               ),
                             )
                           : Text(
@@ -7372,7 +7371,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: blue,
                     foregroundColor: Colors.white,
-                    disabledBackgroundColor: blue.withValues(alpha: 0.4),
+                    disabledBackgroundColor: blue.withOpacity(0.4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14)),
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -7501,17 +7500,17 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textC = (dark ? Colors.white : const Color(0xFF1A1D23))
-        .withValues(alpha: dimmed ? 0.4 : 1.0);
+        .withOpacity(dimmed ? 0.4 : 1.0);
     final subC = (dark ? Colors.white54 : Colors.black45)
-        .withValues(alpha: dimmed ? 0.4 : 1.0);
+        .withOpacity(dimmed ? 0.4 : 1.0);
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
         width: 30, height: 30,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: iconColor.withValues(alpha: dimmed ? 0.06 : 0.1)),
+          color: iconColor.withOpacity(dimmed ? 0.06 : 0.1)),
         child: Center(child: Icon(icon, size: 15,
-          color: iconColor.withValues(alpha: dimmed ? 0.4 : 1.0))),
+          color: iconColor.withOpacity(dimmed ? 0.4 : 1.0))),
       ),
       const SizedBox(width: 10),
       Expanded(child: Column(
@@ -7600,7 +7599,7 @@ class _ChatHistorySheet extends StatelessWidget {
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                color: const Color(0xFF10B981).withOpacity(0.15),
               ),
               child: const Icon(Icons.history_rounded,
                 size: 16, color: Color(0xFF10B981)),
@@ -7623,7 +7622,7 @@ class _ChatHistorySheet extends StatelessWidget {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: dark ? Colors.white10 : Colors.black.withValues(alpha: 0.06),
+                  color: dark ? Colors.white10 : Colors.black.withOpacity(0.06),
                 ),
                 child: Icon(Icons.close_rounded, size: 16, color: textS),
               ),
@@ -7667,7 +7666,7 @@ class _ChatHistorySheet extends StatelessWidget {
                       background: Container(
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 20),
-                        color: const Color(0xFFCC2222).withValues(alpha: 0.1),
+                        color: const Color(0xFFCC2222).withOpacity(0.1),
                         child: const Icon(Icons.delete_outline_rounded,
                           color: Color(0xFFCC2222), size: 22),
                       ),
@@ -7682,7 +7681,7 @@ class _ChatHistorySheet extends StatelessWidget {
                               width: 38, height: 38,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                                color: const Color(0xFF10B981).withOpacity(0.1),
                               ),
                               child: Center(
                                 child: Text(
@@ -7759,8 +7758,8 @@ class _ActionPillChip extends StatelessWidget {
     String display = label;
     if (display.length > 90) display = '${display.substring(0, 87)}…';
 
-    final borderColor = accentColor.withValues(alpha: 0.40);
-    final bgColor = accentColor.withValues(alpha: dark ? 0.09 : 0.06);
+    final borderColor = accentColor.withOpacity(0.40);
+    final bgColor = accentColor.withOpacity(dark ? 0.09 : 0.06);
 
     return Material(
       color: Colors.transparent,
@@ -7768,8 +7767,8 @@ class _ActionPillChip extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(22),
-        splashColor: accentColor.withValues(alpha: 0.18),
-        highlightColor: accentColor.withValues(alpha: 0.10),
+        splashColor: accentColor.withOpacity(0.18),
+        highlightColor: accentColor.withOpacity(0.10),
         child: Container(
           padding: const EdgeInsets.fromLTRB(12, 8, 14, 8),
           decoration: BoxDecoration(
@@ -7794,7 +7793,7 @@ class _ActionPillChip extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 4),
-              Icon(Icons.send_rounded, size: 11, color: accentColor.withValues(alpha: 0.70)),
+              Icon(Icons.send_rounded, size: 11, color: accentColor.withOpacity(0.70)),
             ],
           ),
         ),
@@ -7905,7 +7904,7 @@ class _CollapsibleReferencesBlockState
                                   width: 3, height: 3,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: textColor.withValues(alpha: 0.6),
+                                    color: textColor.withOpacity(0.6),
                                   ),
                                 ),
                               ),
@@ -7974,7 +7973,7 @@ class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
                 Text('📊',
                     style: TextStyle(
                         fontSize: 12,
-                        color: labelColor.withValues(alpha: 0.8))),
+                        color: labelColor.withOpacity(0.8))),
                 const SizedBox(width: 5),
                 Text(
                   'EVIDÊNCIA CIENTÍFICA',
@@ -7990,7 +7989,7 @@ class _CollapsibleEvidenceBlockState extends State<_CollapsibleEvidenceBlock> {
                   turns: _expanded ? 0.5 : 0.0,
                   duration: const Duration(milliseconds: 220),
                   child: Icon(Icons.expand_more_rounded,
-                      size: 14, color: labelColor.withValues(alpha: 0.65)),
+                      size: 14, color: labelColor.withOpacity(0.65)),
                 ),
               ],
             ),

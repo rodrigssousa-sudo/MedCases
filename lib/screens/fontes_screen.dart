@@ -202,7 +202,7 @@ class _FontesScreenState extends State<FontesScreen> {
                   ? 'Base bibliográfica del contenido clínico'
                   : 'Base bibliográfica do conteúdo clínico',
               style: TextStyle(
-                  fontSize: 10, color: Colors.white.withValues(alpha: 0.55)),
+                  fontSize: 10, color: Colors.white.withOpacity(0.55)),
             ),
           ],
         ),
@@ -255,9 +255,9 @@ class _CdsDisclaimer extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
       decoration: BoxDecoration(
-        color: _kGreen.withValues(alpha: 0.07),
+        color: _kGreen.withOpacity(0.07),
         border: Border(
-          bottom: BorderSide(color: _kGreen.withValues(alpha: 0.18))),
+          bottom: BorderSide(color: _kGreen.withOpacity(0.18))),
       ),
       child: Row(children: [
         const Icon(Icons.school_rounded, size: 16, color: _kGreenMid),
@@ -313,11 +313,11 @@ class _CategoryFilter extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 color: selected
                     ? _kGreen
-                    : _kGreen.withValues(alpha: 0.07),
+                    : _kGreen.withOpacity(0.07),
                 border: Border.all(
                   color: selected
                       ? _kGreen
-                      : _kGreen.withValues(alpha: 0.20)),
+                      : _kGreen.withOpacity(0.20)),
               ),
               child: Text(c,
                 style: TextStyle(
@@ -346,11 +346,11 @@ class _SourceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: source.isPrimary
-              ? _kGold.withValues(alpha: 0.55)
+              ? _kGold.withOpacity(0.55)
               : _kBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 8, offset: const Offset(0, 3)),
         ],
       ),
@@ -374,9 +374,9 @@ class _SourceCard extends StatelessWidget {
                 width: 44, height: 44,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: source.color.withValues(alpha: 0.10),
+                  color: source.color.withOpacity(0.10),
                   border: Border.all(
-                    color: source.color.withValues(alpha: 0.25)),
+                    color: source.color.withOpacity(0.25)),
                 ),
                 child: Icon(source.icon, size: 22, color: source.color),
               ),
@@ -397,9 +397,9 @@ class _SourceCard extends StatelessWidget {
                             horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: _kGold.withValues(alpha: 0.12),
+                            color: _kGold.withOpacity(0.12),
                             border: Border.all(
-                              color: _kGold.withValues(alpha: 0.45)),
+                              color: _kGold.withOpacity(0.45)),
                           ),
                           child: const Text('PRIMÁRIA',
                             style: TextStyle(
@@ -417,7 +417,7 @@ class _SourceCard extends StatelessWidget {
                     Text(source.edition,
                       style: TextStyle(
                         fontSize: 9.5,
-                        color: _kTextMid.withValues(alpha: 0.65),
+                        color: _kTextMid.withOpacity(0.65),
                         fontWeight: FontWeight.w500)),
                   ],
                 ),
@@ -425,7 +425,7 @@ class _SourceCard extends StatelessWidget {
               const SizedBox(width: 8),
               Icon(Icons.open_in_new_rounded,
                   size: 15,
-                  color: _kTextMid.withValues(alpha: 0.40)),
+                  color: _kTextMid.withOpacity(0.40)),
             ]),
           ),
         ),

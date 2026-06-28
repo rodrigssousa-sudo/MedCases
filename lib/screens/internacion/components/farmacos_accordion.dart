@@ -263,7 +263,7 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
     // Cor do borde do acordeão quando há alerta
     final borderColor = hasAlert
         ? const Color(0xFFFCA5A5)
-        : (_open ? theme.accent.withValues(alpha: 0.45) : theme.border);
+        : (_open ? theme.accent.withOpacity(0.45) : theme.border);
     final borderWidth = (hasAlert || _open) ? 1.3 : 0.8;
 
     return AnimatedContainer(
@@ -275,7 +275,7 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
         boxShadow: [
           if (hasAlert)
             BoxShadow(
-              color: const Color(0xFFFCA5A5).withValues(alpha: 0.30),
+              color: const Color(0xFFFCA5A5).withOpacity(0.30),
               blurRadius: 12, offset: const Offset(0, 3),
             )
           else
@@ -299,7 +299,7 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
                     decoration: BoxDecoration(
                       color: hasAlert
                           ? const Color(0xFFFEE2E2)
-                          : theme.accent.withValues(alpha: widget.dark ? 0.15 : 0.09),
+                          : theme.accent.withOpacity(widget.dark ? 0.15 : 0.09),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -374,7 +374,7 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
-                        color: theme.accent.withValues(alpha: widget.dark ? 0.18 : 0.10),
+                        color: theme.accent.withOpacity(widget.dark ? 0.18 : 0.10),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text('$count',
@@ -540,7 +540,7 @@ class _DdiBanner extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: border.withValues(alpha: 0.40),
+                        color: border.withOpacity(0.40),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -580,7 +580,7 @@ class _DdiBanner extends StatelessWidget {
                     descr,
                     style: TextStyle(
                       fontSize: 11.5,
-                      color: text.withValues(alpha: 0.87),
+                      color: text.withOpacity(0.87),
                       height: 1.4,
                     ),
                   ),
@@ -593,7 +593,7 @@ class _DdiBanner extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: border.withValues(alpha: 0.20),
+                      color: border.withOpacity(0.20),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -720,21 +720,21 @@ class _AnimatedChip extends StatelessWidget {
     // Cores do chip: normal = verde; flagged = vermelho soft
     final chipBg = isFlagged
         ? (dark
-            ? const Color(0xFF7F1D1D).withValues(alpha: 0.35)
+            ? const Color(0xFF7F1D1D).withOpacity(0.35)
             : const Color(0xFFFEE2E2))
         : (dark
-            ? theme.accent.withValues(alpha: 0.13)
-            : theme.accent.withValues(alpha: 0.09));
+            ? theme.accent.withOpacity(0.13)
+            : theme.accent.withOpacity(0.09));
 
     final chipBorder = isFlagged
-        ? (dark ? const Color(0xFFFCA5A5).withValues(alpha: 0.50)
+        ? (dark ? const Color(0xFFFCA5A5).withOpacity(0.50)
                 : const Color(0xFFFCA5A5))
-        : theme.accent.withValues(alpha: dark ? 0.35 : 0.28);
+        : theme.accent.withOpacity(dark ? 0.35 : 0.28);
 
     final chipTextColor = isFlagged
         ? (dark ? const Color(0xFFFCA5A5) : const Color(0xFF991B1B))
         : (dark
-            ? theme.accent.withValues(alpha: 0.95)
+            ? theme.accent.withOpacity(0.95)
             : theme.accent);
 
     return FadeTransition(
@@ -761,7 +761,7 @@ class _AnimatedChip extends StatelessWidget {
                       size: 12, color: Color(0xFF991B1B))
                 else
                   Icon(Icons.medication_outlined,
-                      size: 12, color: theme.accent.withValues(alpha: 0.80)),
+                      size: 12, color: theme.accent.withOpacity(0.80)),
 
                 const SizedBox(width: 5),
 
@@ -789,8 +789,8 @@ class _AnimatedChip extends StatelessWidget {
                     width: 18, height: 18,
                     decoration: BoxDecoration(
                       color: isFlagged
-                          ? const Color(0xFFFCA5A5).withValues(alpha: 0.40)
-                          : theme.accent.withValues(alpha: dark ? 0.20 : 0.12),
+                          ? const Color(0xFFFCA5A5).withOpacity(0.40)
+                          : theme.accent.withOpacity(dark ? 0.20 : 0.12),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -798,7 +798,7 @@ class _AnimatedChip extends StatelessWidget {
                       size: 11,
                       color: isFlagged
                           ? const Color(0xFF991B1B)
-                          : theme.accent.withValues(alpha: 0.85),
+                          : theme.accent.withOpacity(0.85),
                     ),
                   ),
                 ),

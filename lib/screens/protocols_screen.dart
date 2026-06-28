@@ -463,7 +463,7 @@ class _ProtocolGroupAccordion extends StatelessWidget {
             Container(
               width: 42, height: 42,
               decoration: BoxDecoration(
-                color: borderColor.withValues(alpha: 0.55),
+                color: borderColor.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -485,17 +485,17 @@ class _ProtocolGroupAccordion extends StatelessWidget {
                     ? (isEs ? 'protocolo' : 'protocolo')
                     : (isEs ? 'protocolos' : 'protocolos')}',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                  color: iconColor.withValues(alpha: 0.55))),
+                  color: iconColor.withOpacity(0.55))),
             ])),
             // Seta de abertura
             Container(
               width: 32, height: 32,
               decoration: BoxDecoration(
-                color: borderColor.withValues(alpha: 0.6),
+                color: borderColor.withOpacity(0.6),
                 borderRadius: BorderRadius.circular(9),
               ),
               child: Icon(Icons.chevron_right_rounded,
-                size: 20, color: iconColor.withValues(alpha: 0.8)),
+                size: 20, color: iconColor.withOpacity(0.8)),
             ),
           ]),
         ),
@@ -571,7 +571,7 @@ class _GroupSheet extends StatelessWidget {
           child: Container(
             width: 40, height: 4,
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.25),
+              color: iconColor.withOpacity(0.25),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -590,7 +590,7 @@ class _GroupSheet extends StatelessWidget {
             Container(
               width: 42, height: 42,
               decoration: BoxDecoration(
-                color: borderColor.withValues(alpha: 0.55),
+                color: borderColor.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -609,7 +609,7 @@ class _GroupSheet extends StatelessWidget {
               Text(
                 '${protocols.length} ${isEs ? 'protocolos disponibles' : 'protocolos disponíveis'}',
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                  color: iconColor.withValues(alpha: 0.55))),
+                  color: iconColor.withOpacity(0.55))),
             ])),
           ]),
         ),
@@ -649,7 +649,7 @@ class _GroupSheet extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: _tileBg,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: borderColor.withValues(alpha: 0.7)),
+                    border: Border.all(color: borderColor.withOpacity(0.7)),
                   ),
                   child: Row(children: [
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -664,7 +664,7 @@ class _GroupSheet extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: sevColor.withValues(alpha: 0.12),
+                            color: sevColor.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(sevText,
@@ -685,7 +685,7 @@ class _GroupSheet extends StatelessWidget {
                       // Preview
                       Text(p.tDB(proto.recognize),
                         style: TextStyle(fontSize: 11.5,
-                          color: iconColor.withValues(alpha: 0.65),
+                          color: iconColor.withOpacity(0.65),
                           fontWeight: FontWeight.w500, height: 1.4),
                         maxLines: 2, overflow: TextOverflow.ellipsis),
                     ])),
@@ -701,7 +701,7 @@ class _GroupSheet extends StatelessWidget {
                           child: Icon(
                             isFav ? Icons.star_rounded : Icons.star_border_rounded,
                             size: 20,
-                            color: isFav ? kGold : iconColor.withValues(alpha: 0.3),
+                            color: isFav ? kGold : iconColor.withOpacity(0.3),
                           ),
                         ),
                       ),
@@ -709,11 +709,11 @@ class _GroupSheet extends StatelessWidget {
                       Container(
                         width: 32, height: 32,
                         decoration: BoxDecoration(
-                          color: borderColor.withValues(alpha: 0.6),
+                          color: borderColor.withOpacity(0.6),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(Icons.arrow_forward_ios_rounded,
-                          size: 13, color: iconColor.withValues(alpha: 0.8)),
+                          size: 13, color: iconColor.withOpacity(0.8)),
                       ),
                     ]),
                   ]),
@@ -734,7 +734,7 @@ class _GroupSheet extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
-                color: borderColor.withValues(alpha: 0.35),
+                color: borderColor.withOpacity(0.35),
                 border: Border.all(color: borderColor),
               ),
               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -807,7 +807,7 @@ class _ProtocolListTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: sevColor.withValues(alpha: 0.10),
+                  color: sevColor.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(sevText,
@@ -897,7 +897,7 @@ class _ProtocolDetailSheet extends StatelessWidget {
             Container(
               width: 40, height: 4,
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.15),
+                color: Colors.black.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -945,8 +945,8 @@ class _ProtocolDetailSheet extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: Colors.white.withValues(alpha: 0.1),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                        color: Colors.white.withOpacity(0.1),
+                        border: Border.all(color: Colors.white.withOpacity(0.1)),
                       ),
                       child: Icon(
                         isFav ? Icons.star_rounded : Icons.star_border_rounded,
@@ -1228,7 +1228,7 @@ class _RecognizeCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: const Color(0xFFC5A365).withValues(alpha: 0.15),
+              color: const Color(0xFFC5A365).withOpacity(0.15),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(p.t('recognize').toUpperCase(),
@@ -1388,8 +1388,8 @@ class _ActionStepRow extends StatelessWidget {
                 height: 8,
                 margin: const EdgeInsets.symmetric(vertical: 2),
                 color: dark
-                    ? Colors.white.withValues(alpha: 0.10)
-                    : Colors.black.withValues(alpha: 0.08),
+                    ? Colors.white.withOpacity(0.10)
+                    : Colors.black.withOpacity(0.08),
               ),
           ]),
         ),
@@ -1660,7 +1660,7 @@ class _DrugsChipsCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: const Color(0xFFDDD8CC)),
               boxShadow: [BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: Colors.black.withOpacity(0.04),
                 blurRadius: 4, offset: const Offset(0, 1))],
             ),
             child: Text(d,
@@ -1980,7 +1980,7 @@ class _RedFlagsCard extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [Color(0xFF3B0A0A), Color(0xFF5C1A1A)],
         ),
-        border: Border.all(color: const Color(0xFF9B1C1C).withValues(alpha: 0.6)),
+        border: Border.all(color: const Color(0xFF9B1C1C).withOpacity(0.6)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -2045,9 +2045,9 @@ class _ObjectivesCard extends StatelessWidget {
             Container(
               width: 20, height: 20,
               decoration: BoxDecoration(
-                color: const Color(0xFF15803D).withValues(alpha: 0.15),
+                color: const Color(0xFF15803D).withOpacity(0.15),
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
+                border: Border.all(color: const Color(0xFF10B981).withOpacity(0.4)),
               ),
               child: Center(
                 child: Text('${e.key + 1}',
@@ -2238,7 +2238,7 @@ class _DrugLineBlock extends StatelessWidget {
                     Text(detail,
                       style: TextStyle(
                         fontSize: 11.5, fontWeight: FontWeight.w500,
-                        color: textColor.withValues(alpha: 0.75),
+                        color: textColor.withOpacity(0.75),
                         height: 1.4, fontStyle: FontStyle.italic)),
                   ],
                 ],
@@ -2367,7 +2367,7 @@ class _PearlsCard extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [Color(0xFF1A2E1F), Color(0xFF0A1A0F)],
         ),
-        border: Border.all(color: const Color(0xFF22543D).withValues(alpha: 0.6)),
+        border: Border.all(color: const Color(0xFF22543D).withOpacity(0.6)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [

@@ -77,10 +77,10 @@ class ErrorStateWidget extends StatelessWidget {
               Container(
                 width: 80, height: 80,
                 decoration: BoxDecoration(
-                  color: config.color.withValues(alpha: dark ? 0.15 : 0.09),
+                  color: config.color.withOpacity(dark ? 0.15 : 0.09),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: config.color.withValues(alpha: 0.22),
+                    color: config.color.withOpacity(0.22),
                     width: 1.5,
                   ),
                 ),
@@ -308,7 +308,7 @@ class NetworkErrorWidget extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: dark
-                  ? Colors.white.withValues(alpha: 0.05)
+                  ? Colors.white.withOpacity(0.05)
                   : const Color(0xFFF0F4F0),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -379,7 +379,7 @@ class EmptyStateWidget extends StatelessWidget {
             Container(
               width: 72, height: 72,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: dark ? 0.12 : 0.08),
+                color: color.withOpacity(dark ? 0.12 : 0.08),
                 borderRadius: BorderRadius.circular(22),
               ),
               child: Icon(icon, size: 34, color: color),
@@ -498,7 +498,7 @@ class _MedFutureBuilderState<T> extends State<MedFutureBuilder<T>> {
                   width: 36, height: 36,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
-                    color: _kGreen.withValues(alpha: dark ? 0.85 : 1.0),
+                    color: _kGreen.withOpacity(dark ? 0.85 : 1.0),
                   ),
                 ),
                 if (widget.loadingMessage != null) ...[
@@ -609,7 +609,7 @@ class MedStreamBuilder<T> extends StatelessWidget {
               width: 32, height: 32,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: _kGreen.withValues(alpha: dark ? 0.85 : 1.0),
+                color: _kGreen.withOpacity(dark ? 0.85 : 1.0),
               ),
             ),
           );
@@ -688,7 +688,7 @@ class NetworkAwareBuilder extends StatelessWidget {
               width: 32, height: 32,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: _kGreen.withValues(alpha: dark ? 0.85 : 1.0),
+                color: _kGreen.withOpacity(dark ? 0.85 : 1.0),
               ),
             ),
           );
@@ -750,10 +750,10 @@ class InlineConnectionBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: dark ? 0.15 : 0.08),
+        color: color.withOpacity(dark ? 0.15 : 0.08),
         border: Border(
           bottom: BorderSide(
-            color: color.withValues(alpha: 0.25),
+            color: color.withOpacity(0.25),
             width: 1,
           ),
         ),
@@ -768,7 +768,7 @@ class InlineConnectionBanner extends StatelessWidget {
               fontSize: 12.5,
               fontWeight: FontWeight.w500,
               color: dark
-                  ? color.withValues(alpha: 0.9)
+                  ? color.withOpacity(0.9)
                   : color,
             ),
           ),
@@ -779,10 +779,10 @@ class InlineConnectionBanner extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
+                color: color.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                    color: color.withValues(alpha: 0.3), width: 1),
+                    color: color.withOpacity(0.3), width: 1),
               ),
               child: Text(
                 isEs ? 'Reintentar' : 'Tentar novamente',

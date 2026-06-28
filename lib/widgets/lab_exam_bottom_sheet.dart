@@ -572,7 +572,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.80),
+                  color: Colors.black.withOpacity(0.80),
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(24),
                   ),
@@ -705,8 +705,8 @@ class _OptionTile extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(14),
-          splashColor: _C.green.withValues(alpha: 0.08),
-          highlightColor: _C.green.withValues(alpha: 0.04),
+          splashColor: _C.green.withOpacity(0.08),
+          highlightColor: _C.green.withOpacity(0.04),
           child: Opacity(
             opacity: disabled ? 0.45 : 1.0,
             child: Padding(
@@ -716,7 +716,7 @@ class _OptionTile extends StatelessWidget {
                   width: 40, height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: _C.green.withValues(alpha: 0.10),
+                    color: _C.green.withOpacity(0.10),
                   ),
                   child: Icon(icon, color: _C.green, size: 20),
                 ),
@@ -851,7 +851,7 @@ class _NoApiKeyBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: _C.amberBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _C.amber.withValues(alpha: 0.30)),
+        border: Border.all(color: _C.amber.withOpacity(0.30)),
       ),
       child: Row(children: [
         const Icon(Icons.link_off_rounded, color: _C.amber, size: 16),

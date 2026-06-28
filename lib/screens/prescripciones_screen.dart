@@ -90,7 +90,7 @@ class _PrescripcionesScreenState extends State<PrescripcionesScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+                color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withOpacity(0.08),
               ),
               child: Text(
                 '${filtered.length} ${es ? 'modelos educativos' : 'modelos educacionais'}',
@@ -7438,7 +7438,7 @@ class _EducationalLibraryBannerState extends State<_EducationalLibraryBanner> {
 
     final greenMain  = dark ? const Color(0xFF6EAF90) : const Color(0xFF1F6B48);
     final greenBg    = dark ? const Color(0xFF0D1A11) : const Color(0xFFF2F8F4);
-    final greenBdr   = dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.18);
+    final greenBdr   = dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withOpacity(0.18);
     final mutedText  = dark ? const Color(0xFF7A9B8A) : const Color(0xFF6B7280);
 
     return GestureDetector(
@@ -7493,7 +7493,7 @@ class _EducationalLibraryBannerState extends State<_EducationalLibraryBanner> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: dark
-                        ? const Color(0xFF111111).withValues(alpha: 0.6)
+                        ? const Color(0xFF111111).withOpacity(0.6)
                         : const Color(0xFFF8FBF9),
                     border: Border.all(color: greenBdr),
                   ),
@@ -7546,9 +7546,9 @@ class _QualityBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.09),
+        color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withOpacity(0.09),
         border: Border.all(
-          color: dark ? const Color(0xFF2A4A38) : const Color(0xFF1F6B48).withValues(alpha: 0.2),
+          color: dark ? const Color(0xFF2A4A38) : const Color(0xFF1F6B48).withOpacity(0.2),
         ),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -7585,7 +7585,7 @@ class _CategoryChip extends StatelessWidget {
     final activeColor = dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1C14);
     final activeBg = dark
         ? const Color(0xFF1A3528)
-        : const Color(0xFF0F1C14).withValues(alpha: 0.09);
+        : const Color(0xFF0F1C14).withOpacity(0.09);
     final inactiveBg = dark ? const Color(0xFF121F17) : Colors.white;
     final inactiveBorder = dark ? const Color(0xFF1E3526) : const Color(0xFFDDD8CC);
 
@@ -7599,7 +7599,7 @@ class _CategoryChip extends StatelessWidget {
           color: active ? activeBg : inactiveBg,
           border: Border.all(
             color: active
-                ? (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withValues(alpha: 0.25))
+                ? (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withOpacity(0.25))
                 : inactiveBorder,
           ),
         ),
@@ -7632,12 +7632,12 @@ class _CategoryHeader extends StatelessWidget {
         decoration: BoxDecoration(
           color: dark
               ? const Color(0xFF0D1A12)
-              : const Color(0xFF0F1C14).withValues(alpha: 0.05),
+              : const Color(0xFF0F1C14).withOpacity(0.05),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: dark
                 ? const Color(0xFF1A3528)
-                : const Color(0xFF0F1C14).withValues(alpha: 0.10),
+                : const Color(0xFF0F1C14).withOpacity(0.10),
           ),
         ),
         child: Row(children: [
@@ -7670,7 +7670,7 @@ class _CategoryHeader extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
-              color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.08),
+              color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withOpacity(0.08),
             ),
             child: Text(
               'MODELOS EDUCATIVOS',
@@ -7741,7 +7741,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
         border: Border.all(color: borderCol),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.20 : 0.05),
+            color: Colors.black.withOpacity(dark ? 0.20 : 0.05),
             blurRadius: 10, offset: const Offset(0, 3),
           ),
         ],
@@ -7767,11 +7767,11 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                       begin: Alignment.topLeft, end: Alignment.bottomRight,
                       colors: dark
                           ? [const Color(0xFF1A3528), const Color(0xFF142B21)]
-                          : [const Color(0xFF1F6B48).withValues(alpha: 0.12),
-                             const Color(0xFF1F6B48).withValues(alpha: 0.06)],
+                          : [const Color(0xFF1F6B48).withOpacity(0.12),
+                             const Color(0xFF1F6B48).withOpacity(0.06)],
                     ),
                     border: Border.all(
-                      color: dark ? const Color(0xFF2A4A38) : const Color(0xFF1F6B48).withValues(alpha: 0.15),
+                      color: dark ? const Color(0xFF2A4A38) : const Color(0xFF1F6B48).withOpacity(0.15),
                     ),
                   ),
                   child: Icon(m.icon, size: 18,
@@ -7871,8 +7871,8 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withValues(alpha: 0.08),
-                  border: Border.all(color: dark ? const Color(0xFF1A3A6A) : const Color(0xFF1565C0).withValues(alpha: 0.2)),
+                  color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withOpacity(0.08),
+                  border: Border.all(color: dark ? const Color(0xFF1A3A6A) : const Color(0xFF1565C0).withOpacity(0.2)),
                 ),
                 child: Text(
                   es ? 'Uso educativo' : 'Uso educacional',
@@ -7888,7 +7888,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: dark
-                        ? const Color(0xFF071510).withValues(alpha: 0.8)
+                        ? const Color(0xFF071510).withOpacity(0.8)
                         : const Color(0xFFF7F5F0),
                     border: Border.all(color: borderCol),
                   ),
@@ -7896,7 +7896,7 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                     m.content,
                     style: TextStyle(
                       fontSize: 12,
-                      color: dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1E1E1E),
+                      color: dark ? Colors.white.withOpacity(0.88) : const Color(0xFF1E1E1E),
                       height: 1.65, fontFamily: 'monospace', fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -7973,10 +7973,10 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: dark
-                        ? const Color(0xFF1A0F28).withValues(alpha: 0.6)
-                        : const Color(0xFF9C27B0).withValues(alpha: 0.04),
+                        ? const Color(0xFF1A0F28).withOpacity(0.6)
+                        : const Color(0xFF9C27B0).withOpacity(0.04),
                     border: Border.all(
-                      color: dark ? const Color(0xFF3A1A5A) : const Color(0xFF9C27B0).withValues(alpha: 0.12),
+                      color: dark ? const Color(0xFF3A1A5A) : const Color(0xFF9C27B0).withOpacity(0.12),
                     ),
                   ),
                   child: Text(
@@ -8006,10 +8006,10 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
                           color: dark
-                              ? const Color(0xFF2A0A0A).withValues(alpha: 0.7)
-                              : const Color(0xFFDC2626).withValues(alpha: 0.06),
+                              ? const Color(0xFF2A0A0A).withOpacity(0.7)
+                              : const Color(0xFFDC2626).withOpacity(0.06),
                           border: Border.all(
-                            color: dark ? const Color(0xFF4A1A1A) : const Color(0xFFDC2626).withValues(alpha: 0.2),
+                            color: dark ? const Color(0xFF4A1A1A) : const Color(0xFFDC2626).withOpacity(0.2),
                           ),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -8054,10 +8054,10 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: dark
-                        ? const Color(0xFF1A1200).withValues(alpha: 0.6)
+                        ? const Color(0xFF1A1200).withOpacity(0.6)
                         : const Color(0xFFFFFBEB),
                     border: Border.all(
-                      color: dark ? const Color(0xFF3D2E00) : const Color(0xFFD4A017).withValues(alpha: 0.3),
+                      color: dark ? const Color(0xFF3D2E00) : const Color(0xFFD4A017).withOpacity(0.3),
                     ),
                   ),
                   child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -8092,11 +8092,11 @@ class _PrescriptionCardState extends State<_PrescriptionCard> {
                         borderRadius: BorderRadius.circular(10),
                         color: _copied
                             ? const Color(0xFF065F46)
-                            : (dark ? const Color(0xFF1A3528) : const Color(0xFF0F1C14).withValues(alpha: 0.08)),
+                            : (dark ? const Color(0xFF1A3528) : const Color(0xFF0F1C14).withOpacity(0.08)),
                         border: Border.all(
                           color: _copied
                               ? const Color(0xFF065F46)
-                              : (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withValues(alpha: 0.2)),
+                              : (dark ? const Color(0xFF2A4A38) : const Color(0xFF0F1C14).withOpacity(0.2)),
                         ),
                       ),
                       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -8158,7 +8158,7 @@ class _SectionBlock extends StatelessWidget {
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              color: accentColor.withValues(alpha: dark ? 0.18 : 0.10),
+              color: accentColor.withOpacity(dark ? 0.18 : 0.10),
             ),
             child: Icon(icon, size: 12, color: accentColor),
           ),
@@ -8167,7 +8167,7 @@ class _SectionBlock extends StatelessWidget {
             style: TextStyle(
               fontSize: 10, fontWeight: FontWeight.w900,
               letterSpacing: 1.0,
-              color: dark ? accentColor.withValues(alpha: 0.9) : accentColor,
+              color: dark ? accentColor.withOpacity(0.9) : accentColor,
             )),
           if (trailing != null) ...[const Spacer(), trailing!],
         ]),
@@ -8198,12 +8198,12 @@ class _EvidChip extends StatelessWidget {
         ? (dark ? const Color(0xFF2A1E00) : const Color(0xFFFFFBEB))
         : (dark ? const Color(0xFF1A2A20) : const Color(0xFFF4F7F5));
     final border = highlight
-        ? (dark ? const Color(0xFF4A3800) : const Color(0xFFD4A017).withValues(alpha: 0.3))
+        ? (dark ? const Color(0xFF4A3800) : const Color(0xFFD4A017).withOpacity(0.3))
         : (dark ? const Color(0xFF2A3A30) : const Color(0xFFDDD8CC));
     final labelCol = dark ? Colors.white38 : const Color(0xFF999999);
     final valueCol = highlight
         ? const Color(0xFFD4A017)
-        : (dark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF1A1A1A));
+        : (dark ? Colors.white.withOpacity(0.85) : const Color(0xFF1A1A1A));
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
@@ -8240,16 +8240,16 @@ class _SmallBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: color.withValues(alpha: dark ? 0.14 : 0.08),
-        border: Border.all(color: color.withValues(alpha: dark ? 0.25 : 0.18)),
+        color: color.withOpacity(dark ? 0.14 : 0.08),
+        border: Border.all(color: color.withOpacity(dark ? 0.25 : 0.18)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 9, color: color.withValues(alpha: dark ? 0.85 : 0.9)),
+        Icon(icon, size: 9, color: color.withOpacity(dark ? 0.85 : 0.9)),
         const SizedBox(width: 3),
         Text(label,
           style: TextStyle(
             fontSize: 9, fontWeight: FontWeight.w700,
-            color: color.withValues(alpha: dark ? 0.85 : 0.9),
+            color: color.withOpacity(dark ? 0.85 : 0.9),
           )),
       ]),
     );
@@ -8289,11 +8289,11 @@ class _InlineEvidenceStrip extends StatelessWidget {
     final valueCol   = dark ? Colors.white60          : const Color(0xFF444444);
     final dividerCol = dark ? const Color(0xFF1E3040) : const Color(0xFFDDE4EE);
     final bgCol      = dark
-        ? const Color(0xFF0B1A2A).withValues(alpha: 0.70)
+        ? const Color(0xFF0B1A2A).withOpacity(0.70)
         : const Color(0xFFF0F4FB);
     final borderCol  = dark
-        ? const Color(0xFF1A3050).withValues(alpha: 0.80)
-        : const Color(0xFF1565C0).withValues(alpha: 0.12);
+        ? const Color(0xFF1A3050).withOpacity(0.80)
+        : const Color(0xFF1565C0).withOpacity(0.12);
 
     // ── Dados de evidência: prioridade model → global → fallback ─────────────
     final guideline     = globalEv?.guidelineSource ?? model.guidelineSource;
@@ -8554,7 +8554,7 @@ class _ReferencesSection extends StatelessWidget {
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                color: const Color(0xFF1565C0).withValues(alpha: dark ? 0.18 : 0.10),
+                color: const Color(0xFF1565C0).withOpacity(dark ? 0.18 : 0.10),
               ),
               child: const Icon(Icons.library_books_rounded, size: 12, color: Color(0xFF1565C0)),
             ),
@@ -8571,7 +8571,7 @@ class _ReferencesSection extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withValues(alpha: 0.08),
+                color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withOpacity(0.08),
               ),
               child: Text(
                 hasModelRefs
@@ -8629,7 +8629,7 @@ class _ReferencesSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 color: dark ? const Color(0xFF0D1A12) : const Color(0xFFF5F9F6),
                 border: Border.all(
-                  color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withValues(alpha: 0.15),
+                  color: dark ? const Color(0xFF1A3528) : const Color(0xFF1F6B48).withOpacity(0.15),
                 ),
               ),
               child: Row(children: [
@@ -8674,7 +8674,7 @@ class _RefRow extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withValues(alpha: 0.10),
+            color: dark ? const Color(0xFF0D2040) : const Color(0xFF1565C0).withOpacity(0.10),
           ),
           child: Text('$num',
             style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
@@ -8698,7 +8698,7 @@ class _RefRow extends StatelessWidget {
               text: ' — $title',
               style: TextStyle(
                 fontSize: 10.5,
-                color: dark ? Colors.white.withValues(alpha: 0.75) : const Color(0xFF333333),
+                color: dark ? Colors.white.withOpacity(0.75) : const Color(0xFF333333),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -8734,7 +8734,7 @@ class _CopyBtn extends StatelessWidget {
               ? const Color(0xFF065F46)
               : (dark
                   ? const Color(0xFF1A3528)
-                  : const Color(0xFF0F1C14).withValues(alpha: 0.07)),
+                  : const Color(0xFF0F1C14).withOpacity(0.07)),
           border: Border.all(
             color: copied
                 ? const Color(0xFF065F46)

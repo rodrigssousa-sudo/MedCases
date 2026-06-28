@@ -198,7 +198,7 @@ class PreAttSheet extends StatelessWidget {
           Container(
             width: 60, height: 60,
             decoration: BoxDecoration(
-              color: _kGreen.withValues(alpha: 0.1),
+              color: _kGreen.withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(Icons.bar_chart_rounded,
@@ -257,10 +257,10 @@ class PreAttSheet extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
-              color: const Color(0xFF1D4ED8).withValues(alpha: 0.07),
+              color: const Color(0xFF1D4ED8).withOpacity(0.07),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                  color: const Color(0xFF1D4ED8).withValues(alpha: 0.2)),
+                  color: const Color(0xFF1D4ED8).withOpacity(0.2)),
             ),
             child: Row(
               children: [

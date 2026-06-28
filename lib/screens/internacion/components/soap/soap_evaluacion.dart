@@ -118,7 +118,7 @@ class _SoapEvaluacionState extends State<SoapEvaluacion> {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? col.withValues(alpha: dark ? 0.18 : 0.12)
+                      ? col.withOpacity(dark ? 0.18 : 0.12)
                       : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(

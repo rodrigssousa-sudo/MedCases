@@ -109,7 +109,7 @@ class _DoseCalculatorWidgetState extends State<DoseCalculatorWidget> {
         border: Border.all(color: _kBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 12, offset: const Offset(0, 4)),
         ],
       ),
@@ -215,7 +215,7 @@ class _ProfessionalsHeader extends StatelessWidget {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withValues(alpha: 0.12),
+            color: Colors.white.withOpacity(0.12),
           ),
           child: const Icon(Icons.medical_services_rounded,
               size: 14, color: Colors.white),
@@ -240,7 +240,7 @@ class _ProfessionalsHeader extends StatelessWidget {
                     : 'Calculadora de referência bibliográfica — não para automedicação',
                 style: TextStyle(
                   fontSize: 9,
-                  color: Colors.white.withValues(alpha: 0.65),
+                  color: Colors.white.withOpacity(0.65),
                   fontWeight: FontWeight.w400),
               ),
             ],
@@ -288,7 +288,7 @@ class _WeightField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: _kTextMid.withValues(alpha: 0.18))),
+            color: _kTextMid.withOpacity(0.18))),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: _kGreen, width: 2)),
@@ -331,9 +331,9 @@ class _FormulaDisplay extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _kGreen.withValues(alpha: 0.04),
+        color: _kGreen.withOpacity(0.04),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: _kGreen.withValues(alpha: 0.20)),
+        border: Border.all(color: _kGreen.withOpacity(0.20)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,11 +404,11 @@ class _FormulaChip extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         color: highlight
-            ? _kGreenLight.withValues(alpha: 0.12)
+            ? _kGreenLight.withOpacity(0.12)
             : const Color(0xFFF0F4F0),
         border: Border.all(
           color: highlight
-              ? _kGreenLight.withValues(alpha: 0.45)
+              ? _kGreenLight.withOpacity(0.45)
               : _kBorder,
         ),
       ),
@@ -481,7 +481,7 @@ class _DoseResultCard extends StatelessWidget {
             refLabel,
             style: TextStyle(
               fontSize: 10, fontWeight: FontWeight.w700,
-              color: Colors.white.withValues(alpha: 0.60),
+              color: Colors.white.withOpacity(0.60),
               letterSpacing: 0.3),
           ),
           const SizedBox(height: 6),
@@ -501,7 +501,7 @@ class _DoseResultCard extends StatelessWidget {
                   unit,
                   style: TextStyle(
                     fontSize: 15, fontWeight: FontWeight.w700,
-                    color: Colors.white.withValues(alpha: 0.70)),
+                    color: Colors.white.withOpacity(0.70)),
                 ),
               ),
             ],
@@ -511,7 +511,7 @@ class _DoseResultCard extends StatelessWidget {
             '$route · $interval',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.white.withValues(alpha: 0.60),
+              color: Colors.white.withOpacity(0.60),
               fontWeight: FontWeight.w500),
           ),
           if (capped) ...[
@@ -520,8 +520,8 @@ class _DoseResultCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                color: _kAmber.withValues(alpha: 0.18),
-                border: Border.all(color: _kAmber.withValues(alpha: 0.45)),
+                color: _kAmber.withOpacity(0.18),
+                border: Border.all(color: _kAmber.withOpacity(0.45)),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 const Icon(Icons.info_outline_rounded,

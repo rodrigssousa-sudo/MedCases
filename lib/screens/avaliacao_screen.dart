@@ -1227,12 +1227,12 @@ class _QuestionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
         border: Border.all(
-          color: hasSelection ? sectionColor.withValues(alpha: 0.35) : _kBorder,
+          color: hasSelection ? sectionColor.withOpacity(0.35) : _kBorder,
           width: hasSelection ? 1.5 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -1444,7 +1444,7 @@ class _BottomBar extends StatelessWidget {
                       color: active
                           ? section.color
                           : (done
-                              ? section.color.withValues(alpha: 0.4)
+                              ? section.color.withOpacity(0.4)
                               : _kBorder),
                     ),
                   );
@@ -1505,9 +1505,9 @@ class _BottomBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFFDC2626).withValues(alpha: 0.3),
+                      color: const Color(0xFFDC2626).withOpacity(0.3),
                     ),
-                    color: const Color(0xFFDC2626).withValues(alpha: 0.05),
+                    color: const Color(0xFFDC2626).withOpacity(0.05),
                   ),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     const Icon(Icons.delete_outline_rounded, size: 15, color: Color(0xFFDC2626)),

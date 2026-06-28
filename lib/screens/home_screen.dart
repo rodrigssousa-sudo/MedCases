@@ -593,7 +593,7 @@ class _Greeting extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           border: Border.all(
-            color: const Color(0xFF10B981).withValues(alpha: 0.3),
+            color: const Color(0xFF10B981).withOpacity(0.3),
             width: 1.5,
           ),
         ),
@@ -671,7 +671,7 @@ class _HomeSearchBar extends StatelessWidget {
           color: dark ? const Color(0xFF252930) : const Color(0xFFEFF1F7),
           border: Border.all(
             color: dark
-                ? Colors.white.withValues(alpha: 0.08)
+                ? Colors.white.withOpacity(0.08)
                 : const Color(0xFFDDE1EC),
           ),
         ),
@@ -700,7 +700,7 @@ class _HomeSearchBar extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: dark
-                  ? Colors.white.withValues(alpha: 0.08)
+                  ? Colors.white.withOpacity(0.08)
                   : const Color(0xFFD8DDEF),
             ),
             child: Icon(
@@ -749,7 +749,7 @@ class _SearchSheetState extends State<_SearchSheet> {
     final inputBg  = dark ? const Color(0xFF252930) : const Color(0xFFF2F4F8);
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
     final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
-    final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
+    final divColor = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
 
     // ── Resultados ────────────────────────────────────────────────────────
     // BUILD 93 — Apple 1.4.1/1.4.2: Fármacos e Protocolos clínicos
@@ -1022,7 +1022,7 @@ class _SearchResultTile extends StatelessWidget {
                 height: 36,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: leadingColor.withValues(alpha: 0.12),
+                  color: leadingColor.withOpacity(0.12),
                 ),
                 child: Icon(leading, size: 18, color: leadingColor),
               ),
@@ -1422,7 +1422,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isDark
-                ? Colors.white.withValues(alpha: 0.07)
+                ? Colors.white.withOpacity(0.07)
                 : const Color(0xFFE4EEE9),
           ),
         ),
@@ -1446,9 +1446,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     const cardBg      = Color(0xFF1A1D23);
     const borderColor = Color(0xFF2A2D35);
     const fieldBg     = Color(0xFF252930);
-    final fieldBorder = Colors.white.withValues(alpha: 0.10);
+    final fieldBorder = Colors.white.withOpacity(0.10);
     const textColor   = Colors.white;
-    final hintColor   = Colors.white.withValues(alpha: 0.35);
+    final hintColor   = Colors.white.withOpacity(0.35);
     const subText     = Color(0xFF6B8ABE);
 
     final hasHistory  = _messages.isNotEmpty;
@@ -1521,7 +1521,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     topLeft: Radius.circular(14), topRight: Radius.circular(14),
                     bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
                   ),
-                  border: Border.all(color: _kAiBlueBord.withValues(alpha: 0.25)),
+                  border: Border.all(color: _kAiBlueBord.withOpacity(0.25)),
                 ),
                 child: Text(text,
                   style: TextStyle(fontSize: 13, color: textColor, height: 1.45)),
@@ -1556,7 +1556,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.psychology_rounded, size: 32,
-                color: _kAiBlue.withValues(alpha: 0.25)),
+                color: _kAiBlue.withOpacity(0.25)),
               const SizedBox(height: 8),
               Text(
                 isEs
@@ -1623,9 +1623,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                           width: 26, height: 26,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(7),
-                            color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
+                            color: const Color(0xFF00E5FF).withOpacity(0.10),
                             border: Border.all(
-                              color: const Color(0xFF00E5FF).withValues(alpha: 0.22),
+                              color: const Color(0xFF00E5FF).withOpacity(0.22),
                               width: 0.8,
                             ),
                           ),
@@ -1678,14 +1678,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     width: 26, height: 26,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(7),
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: Colors.white.withOpacity(0.06),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.10),
+                        color: Colors.white.withOpacity(0.10),
                         width: 0.8,
                       ),
                     ),
                     child: Icon(Icons.history_rounded, size: 13,
-                      color: Colors.white.withValues(alpha: 0.45)),
+                      color: Colors.white.withOpacity(0.45)),
                   ),
                 ),
                 const SizedBox(width: 6),
@@ -1710,14 +1710,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     width: 26, height: 26,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(7),
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: Colors.white.withOpacity(0.06),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.10),
+                        color: Colors.white.withOpacity(0.10),
                         width: 0.8,
                       ),
                     ),
                     child: Icon(Icons.add_rounded, size: 14,
-                      color: Colors.white.withValues(alpha: 0.45)),
+                      color: Colors.white.withOpacity(0.45)),
                   ),
                 ),
               ],
@@ -1792,7 +1792,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                           color: _thinking
                               ? const Color(0xFF1A2335)  // dark send disabled
                               : isEmpty
-                                  ? Colors.white.withValues(alpha: 0.10)
+                                  ? Colors.white.withOpacity(0.10)
                                   : const Color(0xFF008CA4),  // teal MedCases IA
                         ),
                         child: _thinking
@@ -1809,7 +1809,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                                     ? Icons.open_in_full_rounded
                                     : Icons.arrow_upward_rounded,
                                 color: isEmpty
-                                    ? Colors.white.withValues(alpha: 0.35)
+                                    ? Colors.white.withOpacity(0.35)
                                     : Colors.white,
                                 size: 17,
                               ),
@@ -2201,11 +2201,11 @@ class _AiBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final bubbleBg = dark ? const Color(0xFF161616) : const Color(0xFFF9F9F9);
     final bubbleBorder = isError
-        ? Colors.red.withValues(alpha: 0.3)
-        : (dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFE2E8F0));
+        ? Colors.red.withOpacity(0.3)
+        : (dark ? Colors.white.withOpacity(0.07) : const Color(0xFFE2E8F0));
     final textCol = isError
         ? Colors.red.shade400
-        : (dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF1A202C));
+        : (dark ? Colors.white.withOpacity(0.88) : const Color(0xFF1A202C));
 
     // CAMADA 2 (render-time) — limpa metadados, CoT e tags internas.
     // Para streaming: também aplica sanitização de markdown parcial.
@@ -2264,7 +2264,7 @@ class _AiBubble extends StatelessWidget {
           // Marcadores de lista — cor discreta, indentação precisa
           listBullet: TextStyle(
             fontSize: 13.5,
-            color: dark ? _kCyan.withValues(alpha: 0.70) : _kTeal,
+            color: dark ? _kCyan.withOpacity(0.70) : _kTeal,
           ),
           // Títulos — h2 Vermelho Ferrari negrito, h3 cyan/teal
           h2: TextStyle(
@@ -2286,7 +2286,7 @@ class _AiBubble extends StatelessWidget {
           ),
           blockquote: TextStyle(
             fontSize: 13,
-            color: textCol.withValues(alpha: 0.78),
+            color: textCol.withOpacity(0.78),
           ),
           blockquoteDecoration: BoxDecoration(
             color: Colors.transparent,
@@ -2389,7 +2389,7 @@ class _ThinkingDotsState extends State<_ThinkingDots>
           return Container(
             margin: const EdgeInsets.only(right: 4),
             width: 7, height: 7,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor.withValues(alpha: opacity)),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor.withOpacity(opacity)),
           );
         }),
       ),
@@ -2514,24 +2514,24 @@ class _HomeIaCardState extends State<_HomeIaCard> {
 
     final cardBg = dark ? const Color(0xFF252930) : Colors.white;
     final borderColor = dark
-        ? _kGreenBord.withValues(alpha: 0.35)
-        : _kGreenBord.withValues(alpha: 0.22);
+        ? _kGreenBord.withOpacity(0.35)
+        : _kGreenBord.withOpacity(0.22);
     final fieldBg = dark
         ? const Color(0xFF162A1C)
         : const Color(0xFFF4FAF7);
     final fieldBorder = dark
-        ? _kGreenBord.withValues(alpha: 0.22)
-        : _kGreenBord.withValues(alpha: 0.18);
+        ? _kGreenBord.withOpacity(0.22)
+        : _kGreenBord.withOpacity(0.18);
     final textColor = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor = dark
-        ? Colors.white.withValues(alpha: 0.38)
+        ? Colors.white.withOpacity(0.38)
         : const Color(0xFF7A9E8E);
     final chipBg = dark
         ? const Color(0xFF162A1C)
-        : _kGreen.withValues(alpha: 0.07);
+        : _kGreen.withOpacity(0.07);
     final chipBorder = dark
-        ? _kGreenBord.withValues(alpha: 0.25)
-        : _kGreenBord.withValues(alpha: 0.22);
+        ? _kGreenBord.withOpacity(0.25)
+        : _kGreenBord.withOpacity(0.22);
     final chipText = dark
         ? const Color(0xFF10B981)
         : _kGreen;
@@ -2544,24 +2544,24 @@ class _HomeIaCardState extends State<_HomeIaCard> {
         boxShadow: dark
             ? [
                 BoxShadow(
-                  color: const Color(0xFF252930).withValues(alpha: 0.55),
+                  color: const Color(0xFF252930).withOpacity(0.55),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
                 BoxShadow(
-                  color: const Color(0xFF00E5FF).withValues(alpha: 0.06),
+                  color: const Color(0xFF00E5FF).withOpacity(0.06),
                   blurRadius: 28,
                   offset: const Offset(0, 0),
                 ),
               ]
             : [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.07),
+                  color: Colors.black.withOpacity(0.07),
                   blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
                 BoxShadow(
-                  color: const Color(0xFF008CA4).withValues(alpha: 0.06),
+                  color: const Color(0xFF008CA4).withOpacity(0.06),
                   blurRadius: 24,
                   offset: const Offset(0, 6),
                 ),
@@ -2603,7 +2603,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                             borderRadius: BorderRadius.circular(11),
                             color: const Color(0xFF0C0E12),
                             border: Border.all(
-                              color: const Color(0xFF10B981).withValues(alpha: 0.35),
+                              color: const Color(0xFF10B981).withOpacity(0.35),
                               width: 1,
                             ),
                           ),
@@ -2674,7 +2674,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                         style: TextStyle(
                           fontSize: 10.5,
                           color: dark
-                              ? const Color(0xFF00E5FF).withValues(alpha: 0.60)
+                              ? const Color(0xFF00E5FF).withOpacity(0.60)
                               : const Color(0xFF008CA4),
                           height: 1.3,
                         ),
@@ -2743,7 +2743,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                           ? const Color(0xFF252930)
                           : const Color(0xFFE0F7FA),
                       border: Border.all(
-                        color: const Color(0xFF00E5FF).withValues(alpha: dark ? 0.45 : 0.50),
+                        color: const Color(0xFF00E5FF).withOpacity(dark ? 0.45 : 0.50),
                         width: 1.2,
                       ),
                     ),
@@ -2906,7 +2906,7 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
             borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
             boxShadow: [
               BoxShadow(
-                color: gradientColors.last.withValues(alpha: 0.40),
+                color: gradientColors.last.withOpacity(0.40),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -2917,7 +2917,7 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
             Container(
               width: 52, height: 52,
               decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.15),
+                color: accentColor.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: const Icon(Icons.calculate_rounded,
@@ -2947,7 +2947,7 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w500,
-                      color: accentColor.withValues(alpha: 0.85),
+                      color: accentColor.withOpacity(0.85),
                       height: 1.3,
                     ),
                   ),
@@ -2956,7 +2956,7 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
             ),
             // ── Chevron ────────────────────────────────────────────────────
             Icon(Icons.chevron_right_rounded,
-                size: 26, color: accentColor.withValues(alpha: 0.70)),
+                size: 26, color: accentColor.withOpacity(0.70)),
           ]),
         ),
       ),
@@ -3028,7 +3028,7 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
               Container(
                 width: 42, height: 42,
                 decoration: BoxDecoration(
-                  color: widget.accentColor.withValues(alpha: 0.15),
+                  color: widget.accentColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(widget.icon, size: 22, color: widget.accentColor),
@@ -3149,7 +3149,7 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
             Container(
               width: 48, height: 48,  // ORDEM 12: ícone slim (era 52)
               decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.15),
+                color: accentColor.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: const Icon(Icons.calculate_rounded, size: 26, color: accentColor),
@@ -3177,7 +3177,7 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.80),
+                      color: Colors.white.withOpacity(0.80),
                       height: 1.3,
                     ),
                   ),
@@ -3264,7 +3264,7 @@ class _HomeMiGuardiaSection extends StatelessWidget {
     // Acento dourado na borda esquerda para sinalizar "item especial"
     final leftAccent = dark ? const Color(0xFFC5A365) : const Color(0xFFB8954E);
     final border = dark
-        ? Colors.white.withValues(alpha: 0.07)
+        ? Colors.white.withOpacity(0.07)
         : const Color(0xFFE4EEE9);
 
     return Container(
@@ -3276,7 +3276,7 @@ class _HomeMiGuardiaSection extends StatelessWidget {
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Colors.black.withOpacity(0.05),
                   blurRadius: 14,
                   offset: const Offset(0, 4),
                 ),
@@ -3324,7 +3324,7 @@ class _HomeDivider extends StatelessWidget {
               colors: [
                 Colors.transparent,
                 dark
-                    ? Colors.white.withValues(alpha: 0.10)
+                    ? Colors.white.withOpacity(0.10)
                     : const Color(0xFFCDD1DC),
                 Colors.transparent,
               ],
@@ -3354,8 +3354,8 @@ class _HomeSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconColor  = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
-    final textColor  = dark ? Colors.white.withValues(alpha: 0.72) : const Color(0xFF374151);
-    final lineColor  = dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE5E7EB);
+    final textColor  = dark ? Colors.white.withOpacity(0.72) : const Color(0xFF374151);
+    final lineColor  = dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE5E7EB);
 
     return Row(children: [
       Container(
@@ -3363,7 +3363,7 @@ class _HomeSectionHeader extends StatelessWidget {
         height: 28,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: iconColor.withValues(alpha: 0.12),
+          color: iconColor.withOpacity(0.12),
         ),
         child: Icon(icon, size: 15, color: iconColor),
       ),
@@ -3451,22 +3451,22 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
               end: Alignment.bottomRight,
               colors: widget.dark
                   ? [
-                      widget.gradientColors[0].withValues(alpha: 0.85),
-                      widget.gradientColors[1].withValues(alpha: 0.90),
-                      widget.gradientColors[2].withValues(alpha: 0.95),
+                      widget.gradientColors[0].withOpacity(0.85),
+                      widget.gradientColors[1].withOpacity(0.90),
+                      widget.gradientColors[2].withOpacity(0.95),
                     ]
                   : widget.gradientColors,
             ),
             boxShadow: [
               BoxShadow(
-                color: widget.gradientColors[2].withValues(alpha: 0.38),
+                color: widget.gradientColors[2].withOpacity(0.38),
                 blurRadius: 16,
                 offset: const Offset(0, 7),
                 spreadRadius: -2,
               ),
             ],
             border: Border.all(
-              color: widget.accentColor.withValues(alpha: 0.18),
+              color: widget.accentColor.withOpacity(0.18),
               width: 1.0,
             ),
           ),
@@ -3480,7 +3480,7 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
                 height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: widget.accentColor.withValues(alpha: 0.08),
+                  color: widget.accentColor.withOpacity(0.08),
                 ),
               ),
             ),
@@ -3496,9 +3496,9 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
                       height: 40,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: widget.accentColor.withValues(alpha: 0.14),
+                        color: widget.accentColor.withOpacity(0.14),
                         border: Border.all(
-                          color: widget.accentColor.withValues(alpha: 0.22),
+                          color: widget.accentColor.withOpacity(0.22),
                           width: 1.0,
                         ),
                       ),
@@ -3517,7 +3517,7 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white.withValues(alpha: 0.95),
+                          color: Colors.white.withOpacity(0.95),
                           letterSpacing: -0.2,
                           height: 1.1,
                         ),
@@ -3641,8 +3641,8 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
 
     final bg     = dark ? const Color(0xFF2D3340) : const Color(0xFFECFDF5);
     final border = dark
-        ? const Color(0xFF10B981).withValues(alpha: 0.35)
-        : const Color(0xFF10B981).withValues(alpha: 0.25);
+        ? const Color(0xFF10B981).withOpacity(0.35)
+        : const Color(0xFF10B981).withOpacity(0.25);
     final accent = const Color(0xFF10B981);
     final textC  = dark ? Colors.white : const Color(0xFF1A1D23);
     final subC   = dark ? Colors.white54 : const Color(0xFF4B7A62);
@@ -3662,7 +3662,7 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
             width: 36, height: 36,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: accent.withValues(alpha: _active ? 0.18 : 0.10),
+              color: accent.withOpacity(_active ? 0.18 : 0.10),
             ),
             child: Icon(
               _active ? Icons.alarm_on_rounded : Icons.alarm_add_rounded,
@@ -3702,7 +3702,7 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFEF4444).withValues(alpha: 0.10),
+                  color: const Color(0xFFEF4444).withOpacity(0.10),
                 ),
                 child: const Icon(Icons.close_rounded,
                   size: 16, color: Color(0xFFEF4444)),
@@ -3802,7 +3802,7 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
               width: 38, height: 38,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: accent.withValues(alpha: 0.12),
+                color: accent.withOpacity(0.12),
               ),
               child: Icon(Icons.alarm_add_rounded, color: accent, size: 20),
             ),
@@ -3943,7 +3943,7 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
             style: ElevatedButton.styleFrom(
               backgroundColor: accent,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: accent.withValues(alpha: 0.35),
+              disabledBackgroundColor: accent.withOpacity(0.35),
               padding: const EdgeInsets.symmetric(vertical: 15),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               elevation: 0,
@@ -3970,7 +3970,7 @@ class _StepBtn extends StatelessWidget {
         width: 32, height: 32,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: dark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFEFF2F7),
+          color: dark ? Colors.white.withOpacity(0.08) : const Color(0xFFEFF2F7),
         ),
         child: Icon(icon, size: 16,
           color: dark ? Colors.white70 : const Color(0xFF334155)),
@@ -4002,19 +4002,19 @@ class _HistorialCompactCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cardBg      = dark ? const Color(0xFF1A1D23) : Colors.white;
     final borderColor = dark
-        ? Colors.white.withValues(alpha: 0.07)
+        ? Colors.white.withOpacity(0.07)
         : const Color(0xFFE8ECF5);
     final labelColor  = dark
-        ? Colors.white.withValues(alpha: 0.38)
+        ? Colors.white.withOpacity(0.38)
         : const Color(0xFF9CA3AF);
     final dividerColor = dark
-        ? Colors.white.withValues(alpha: 0.07)
+        ? Colors.white.withOpacity(0.07)
         : const Color(0xFFECEFF7);
     final shadow = dark
         ? <BoxShadow>[]
         : <BoxShadow>[
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -4049,7 +4049,7 @@ class _HistorialCompactCard extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   color: dark
-                      ? Colors.white.withValues(alpha: 0.55)
+                      ? Colors.white.withOpacity(0.55)
                       : const Color(0xFF6B7280),
                 ),
               ),
@@ -4116,7 +4116,7 @@ class _QuickShortcuts extends StatelessWidget {
         ? <BoxShadow>[]
         : <BoxShadow>[
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: Colors.black.withOpacity(0.06),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -4156,7 +4156,7 @@ class _QuickShortcuts extends StatelessWidget {
         boxShadow: shadow,
         border: Border.all(
           color: dark
-              ? Colors.white.withValues(alpha: 0.06)
+              ? Colors.white.withOpacity(0.06)
               : const Color(0xFFE8ECF5),
         ),
       ),
@@ -4167,7 +4167,7 @@ class _QuickShortcuts extends StatelessWidget {
               width: 1,
               height: 56,
               color: dark
-                  ? Colors.white.withValues(alpha: 0.07)
+                  ? Colors.white.withOpacity(0.07)
                   : const Color(0xFFECEFF7),
             );
           }
@@ -4186,7 +4186,7 @@ class _QuickShortcuts extends StatelessWidget {
                       height: 36,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: item.color.withValues(alpha: 0.12),
+                        color: item.color.withOpacity(0.12),
                       ),
                       child: Icon(item.icon, size: 18, color: item.color),
                     ),
@@ -4197,7 +4197,7 @@ class _QuickShortcuts extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: dark
-                            ? Colors.white.withValues(alpha: 0.70)
+                            ? Colors.white.withOpacity(0.70)
                             : const Color(0xFF4A5568),
                       ),
                     ),
@@ -4298,7 +4298,7 @@ class _RecentesSheetState extends State<_RecentesSheet> {
     final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
     final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
-    final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
+    final divColor = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.55,
@@ -4372,7 +4372,7 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                                 color: (isProtocol
                                     ? const Color(0xFFCC2222)
                                     : const Color(0xFFFF8A00))
-                                    .withValues(alpha: 0.12),
+                                    .withOpacity(0.12),
                               ),
                               child: Icon(
                                 isProtocol
@@ -4441,7 +4441,7 @@ class _FavoritosSheet extends StatelessWidget {
     final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
     final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
-    final divColor = dark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEDF0F7);
+    final divColor = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
 
     // Fármacos favoritos
     final favDrugs = p.drugsDB
@@ -4550,7 +4550,7 @@ class _FavoritosSheet extends StatelessWidget {
                                 width: 38, height: 38,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: const Color(0xFFFF8A00).withValues(alpha: 0.12),
+                                  color: const Color(0xFFFF8A00).withOpacity(0.12),
                                 ),
                                 child: const Icon(Icons.medication_rounded,
                                     size: 18, color: Color(0xFFFF8A00)),
@@ -4610,7 +4610,7 @@ class _FavoritosSheet extends StatelessWidget {
                                   width: 38, height: 38,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: const Color(0xFFCC2222).withValues(alpha: 0.12),
+                                    color: const Color(0xFFCC2222).withOpacity(0.12),
                                   ),
                                   child: const Icon(Icons.emergency_rounded,
                                       size: 18, color: Color(0xFFCC2222)),
@@ -4658,7 +4658,7 @@ class _FavoritosSheet extends StatelessWidget {
                               width: 38, height: 38,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xFFFBBF24).withValues(alpha: 0.15),
+                                color: const Color(0xFFFBBF24).withOpacity(0.15),
                               ),
                               child: const Icon(Icons.cases_rounded, size: 18, color: Color(0xFFFBBF24)),
                             ),
@@ -4775,21 +4775,21 @@ class _HomeCardState extends State<_HomeCard>
               end: Alignment.bottomRight,
               colors: widget.dark
                   ? [
-                      widget.gradientColors[0].withValues(alpha: 0.85),
-                      widget.gradientColors[1].withValues(alpha: 0.90),
-                      widget.gradientColors[2].withValues(alpha: 0.95),
+                      widget.gradientColors[0].withOpacity(0.85),
+                      widget.gradientColors[1].withOpacity(0.90),
+                      widget.gradientColors[2].withOpacity(0.95),
                     ]
                   : widget.gradientColors,
             ),
             boxShadow: [
               BoxShadow(
-                color: widget.gradientColors.last.withValues(alpha: 0.40),
+                color: widget.gradientColors.last.withOpacity(0.40),
                 blurRadius: 14,
                 offset: const Offset(0, 5),
               ),
             ],
             border: Border.all(
-              color: widget.accentColor.withValues(alpha: 0.20),
+              color: widget.accentColor.withOpacity(0.20),
               width: 1.0,
             ),
           ),
@@ -4802,7 +4802,7 @@ class _HomeCardState extends State<_HomeCard>
                 height: 42,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: widget.accentColor.withValues(alpha: 0.15),
+                  color: widget.accentColor.withOpacity(0.15),
                 ),
                 child: Icon(
                   widget.icon,
@@ -4841,7 +4841,7 @@ class _HomeCardState extends State<_HomeCard>
                         // Build 138: dark mode → branco puro para máximo contraste
                         color: widget.dark
                             ? Colors.white
-                            : Colors.white.withValues(alpha: 0.70),
+                            : Colors.white.withOpacity(0.70),
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -4853,7 +4853,7 @@ class _HomeCardState extends State<_HomeCard>
               Icon(
                 Icons.chevron_right_rounded,
                 size: 18,
-                color: widget.accentColor.withValues(alpha: 0.65),
+                color: widget.accentColor.withOpacity(0.65),
               ),
             ]),
           ),
@@ -4930,7 +4930,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
           color: dark ? _kRedBgDark : _kRedBg,
           border: Border.all(
             color: dark
-                ? _kRedBordDark.withValues(alpha: 0.55)
+                ? _kRedBordDark.withOpacity(0.55)
                 : _kRedBord,
             width: 1,
           ),
@@ -4938,7 +4938,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
               ? []
               : [
                   BoxShadow(
-                    color: _kRed.withValues(alpha: 0.07),
+                    color: _kRed.withOpacity(0.07),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -4951,8 +4951,8 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
               width: 28, height: 28,
               decoration: BoxDecoration(
                 color: dark
-                    ? _kRed.withValues(alpha: 0.15)
-                    : _kRed.withValues(alpha: 0.09),
+                    ? _kRed.withOpacity(0.15)
+                    : _kRed.withOpacity(0.09),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, size: 15,
@@ -4987,8 +4987,8 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
     final isEs = widget.isEs;
     final cardBg = dark ? const Color(0xFF0E1210) : Colors.white;
     final borderColor = dark
-        ? _kRedBordDark.withValues(alpha: 0.20)
-        : _kRedBord.withValues(alpha: 0.60);
+        ? _kRedBordDark.withOpacity(0.20)
+        : _kRedBord.withOpacity(0.60);
 
     final allProtos = _expanded
         ? [..._mainProtocols, ..._extraProtocols]
@@ -5003,7 +5003,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Colors.black.withOpacity(0.05),
                   blurRadius: 12,
                   offset: const Offset(0, 3),
                 ),
@@ -5018,7 +5018,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
             Container(
               width: 32, height: 32,
               decoration: BoxDecoration(
-                color: _kRed.withValues(alpha: dark ? 0.18 : 0.09),
+                color: _kRed.withOpacity(dark ? 0.18 : 0.09),
                 borderRadius: BorderRadius.circular(9),
               ),
               child: Icon(Icons.emergency_rounded, size: 17,
@@ -5045,7 +5045,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
                     style: TextStyle(
                       fontSize: 9.5,
                       color: dark
-                          ? Colors.white.withValues(alpha: 0.40)
+                          ? Colors.white.withOpacity(0.40)
                           : const Color(0xFF886666),
                       height: 1.3,
                     ),
@@ -5065,7 +5065,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
                   color: dark ? _kRedBgDark : _kRedBg,
                   border: Border.all(
                     color: dark
-                        ? _kRedBordDark.withValues(alpha: 0.40)
+                        ? _kRedBordDark.withOpacity(0.40)
                         : _kRedBord,
                   ),
                 ),
@@ -5138,7 +5138,7 @@ class _EmergStep extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: const Color(0xFFCC2222).withValues(alpha: dark ? 0.12 : 0.07),
+        color: const Color(0xFFCC2222).withOpacity(dark ? 0.12 : 0.07),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -5167,8 +5167,8 @@ class _EmergArrow extends StatelessWidget {
         Icons.arrow_forward_rounded,
         size: 11,
         color: dark
-            ? const Color(0xFFFF8888).withValues(alpha: 0.5)
-            : const Color(0xFFCC2222).withValues(alpha: 0.4),
+            ? const Color(0xFFFF8888).withOpacity(0.5)
+            : const Color(0xFFCC2222).withOpacity(0.4),
       ),
     );
   }
@@ -5219,7 +5219,7 @@ class _ShellHeader extends StatelessWidget {
                 height: 130,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: accentColor.withValues(alpha: 0.07),
+                  color: accentColor.withOpacity(0.07),
                 ),
               ),
             ),
@@ -5232,7 +5232,7 @@ class _ShellHeader extends StatelessWidget {
                 height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: accentColor.withValues(alpha: 0.04),
+                  color: accentColor.withOpacity(0.04),
                 ),
               ),
             ),
@@ -5255,9 +5255,9 @@ class _ShellHeader extends StatelessWidget {
                     height: 48,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      color: accentColor.withValues(alpha: 0.14),
+                      color: accentColor.withOpacity(0.14),
                       border: Border.all(
-                        color: accentColor.withValues(alpha: 0.25),
+                        color: accentColor.withOpacity(0.25),
                         width: 1.0,
                       ),
                     ),
@@ -5892,7 +5892,7 @@ class _CatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -5952,7 +5952,7 @@ class _GlobalSearchResultTile extends StatelessWidget {
           Container(
             width: 38, height: 38,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
+              color: color.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(_icon(result.cat), color: color, size: 18),

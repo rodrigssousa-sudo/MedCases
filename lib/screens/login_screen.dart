@@ -257,8 +257,8 @@ class _LoginScreenState extends State<LoginScreen>
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.white.withValues(alpha: 0.12),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.20)),
+                      color: Colors.white.withOpacity(0.12),
+                      border: Border.all(color: Colors.white.withOpacity(0.20)),
                     ),
                     child: const Icon(Icons.arrow_back_ios_new_rounded,
                       color: Colors.white70, size: 18),
@@ -297,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen>
                           width: 40, height: 4,
                           margin: const EdgeInsets.only(bottom: 24),
                           decoration: BoxDecoration(
-                            color: kTextMid.withValues(alpha: 0.20),
+                            color: kTextMid.withOpacity(0.20),
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -361,7 +361,7 @@ class _LoginScreenState extends State<LoginScreen>
             color: kGreen,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
-              BoxShadow(color: kGreen.withValues(alpha: 0.30),
+              BoxShadow(color: kGreen.withOpacity(0.30),
                 blurRadius: 12, offset: const Offset(0, 5)),
             ],
           ),
@@ -394,7 +394,7 @@ class _LoginScreenState extends State<LoginScreen>
             height: 3,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(1.5),
-              color: done || active ? kGreen : kTextMid.withValues(alpha: 0.20),
+              color: done || active ? kGreen : kTextMid.withOpacity(0.20),
             ),
           ),
           const SizedBox(height: 5),
@@ -501,7 +501,7 @@ class _LoginScreenState extends State<LoginScreen>
           borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: kTextMid.withValues(alpha: 0.18))),
+          borderSide: BorderSide(color: kTextMid.withOpacity(0.18))),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: kGreen, width: 2)),
@@ -545,7 +545,7 @@ class _LoginScreenState extends State<LoginScreen>
           borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: kTextMid.withValues(alpha: 0.18))),
+          borderSide: BorderSide(color: kTextMid.withOpacity(0.18))),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: kGreen, width: 2)),
@@ -573,7 +573,7 @@ class _LoginScreenState extends State<LoginScreen>
             value: value, onChanged: onChanged,
             activeColor: kGreen,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            side: BorderSide(color: kTextMid.withValues(alpha: 0.35), width: 1.5),
+            side: BorderSide(color: kTextMid.withOpacity(0.35), width: 1.5),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           )),
         const SizedBox(width: 8),
@@ -588,9 +588,9 @@ class _LoginScreenState extends State<LoginScreen>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.06),
+        color: color.withOpacity(0.06),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(
@@ -621,7 +621,7 @@ class _LoginScreenState extends State<LoginScreen>
           ),
           boxShadow: _loading ? null : [
             BoxShadow(
-              color: kGreen.withValues(alpha: 0.38),
+              color: kGreen.withOpacity(0.38),
               blurRadius: 12, offset: const Offset(0, 5)),
           ],
         ),
@@ -665,7 +665,7 @@ class _LoginScreenState extends State<LoginScreen>
             style: const TextStyle(
               fontSize: 12, color: kGreenMid, fontWeight: FontWeight.w600)),
         ),
-        Divider(height: 1, color: kTextMid.withValues(alpha: 0.15)),
+        Divider(height: 1, color: kTextMid.withOpacity(0.15)),
         const SizedBox(height: 10),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(_noAccountLabel,
@@ -692,7 +692,7 @@ class _LoginScreenState extends State<LoginScreen>
       _legalDisclaimer,
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontSize: 9.5, color: kTextMid.withValues(alpha: 0.55),
+        fontSize: 9.5, color: kTextMid.withOpacity(0.55),
         fontWeight: FontWeight.w400, height: 1.5),
     );
   }
@@ -810,10 +810,10 @@ class _HeroGeometric extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.08),
+                          color: Colors.white.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: const Color(0xFF0E7C52).withValues(alpha: 0.45)),
+                            color: const Color(0xFF0E7C52).withOpacity(0.45)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           Container(
@@ -855,7 +855,7 @@ class _HeroGeometric extends StatelessWidget {
                               _isEs ? 'Apoyo clínico educacional' : 'Apoio clínico educacional',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: const Color(0xFF13A06A).withValues(alpha: 0.90),
+                                color: const Color(0xFF13A06A).withOpacity(0.90),
                                 fontWeight: FontWeight.w600, letterSpacing: 0.3)),
                           ]),
                         ],
@@ -888,30 +888,30 @@ class _GeoPainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     // Hexágono grande direito superior — stroke verde claro
-    paintStroke.color = const Color(0xFF0E7C52).withValues(alpha: 0.22);
+    paintStroke.color = const Color(0xFF0E7C52).withOpacity(0.22);
     _drawHexagon(canvas, Offset(size.width * 0.85, size.height * 0.15),
       size.width * 0.38, rotation * 0.3, paintStroke);
 
     // Hexágono médio esquerdo — stroke verde médio
-    paintStroke.color = const Color(0xFF13A06A).withValues(alpha: 0.15);
+    paintStroke.color = const Color(0xFF13A06A).withOpacity(0.15);
     _drawHexagon(canvas, Offset(size.width * 0.10, size.height * 0.68),
       size.width * 0.22, rotation * 0.5, paintStroke);
 
     // Círculo grande — stroke fino muito suave
-    paintStroke.color = Colors.white.withValues(alpha: 0.04);
+    paintStroke.color = Colors.white.withOpacity(0.04);
     paintStroke.strokeWidth = 0.8;
     canvas.drawCircle(
       Offset(size.width * 0.72, size.height * 0.78),
       size.width * 0.30, paintStroke);
 
     // Losango pequeno — stroke verde
-    paintStroke.color = const Color(0xFF0E7C52).withValues(alpha: 0.18);
+    paintStroke.color = const Color(0xFF0E7C52).withOpacity(0.18);
     paintStroke.strokeWidth = 1.0;
     _drawDiamond(canvas, Offset(size.width * 0.22, size.height * 0.25),
       size.width * 0.09, rotation * 0.8, paintStroke);
 
     // Cruz/plus geométrico
-    paintStroke.color = const Color(0xFF13A06A).withValues(alpha: 0.12);
+    paintStroke.color = const Color(0xFF13A06A).withOpacity(0.12);
     _drawPlus(canvas, Offset(size.width * 0.60, size.height * 0.50),
       size.width * 0.05, rotation, paintStroke);
   }
@@ -1004,13 +1004,13 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: hasError
-                ? Colors.red.withValues(alpha: 0.05)
-                : const Color(0xFF0E7C52).withValues(alpha: 0.06),
+                ? Colors.red.withOpacity(0.05)
+                : const Color(0xFF0E7C52).withOpacity(0.06),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: hasError
-                  ? Colors.red.withValues(alpha: 0.45)
-                  : const Color(0xFF0E7C52).withValues(alpha: 0.30),
+                  ? Colors.red.withOpacity(0.45)
+                  : const Color(0xFF0E7C52).withOpacity(0.30),
               width: 1.3,
             ),
           ),
@@ -1066,7 +1066,7 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
                   side: BorderSide(
                     color: hasError
                         ? Colors.red
-                        : const Color(0xFF4A6B58).withValues(alpha: 0.40),
+                        : const Color(0xFF4A6B58).withOpacity(0.40),
                     width: 1.5,
                   ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

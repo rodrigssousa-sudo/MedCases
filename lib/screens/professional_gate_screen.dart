@@ -260,7 +260,7 @@ class _ProfessionalDeclarationGateWidgetState
         widget.child,
         Positioned.fill(
           child: AbsorbPointer(
-            child: ColoredBox(color: Colors.black.withValues(alpha: 0.80)),
+            child: ColoredBox(color: Colors.black.withOpacity(0.80)),
           ),
         ),
         Positioned.fill(
@@ -464,10 +464,10 @@ class _ProfessionalDeclarationModalState
               Container(
                 padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                  color: _redIcon.withValues(alpha: 0.10),
+                  color: _redIcon.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: _redIcon.withValues(alpha: 0.25),
+                    color: _redIcon.withOpacity(0.25),
                     width: 1,
                   ),
                 ),
@@ -490,7 +490,7 @@ class _ProfessionalDeclarationModalState
                         color: _redBg,
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                            color: _redBorder.withValues(alpha: 0.35),
+                            color: _redBorder.withOpacity(0.35),
                             width: 1),
                       ),
                       child: Text(
@@ -542,7 +542,7 @@ class _ProfessionalDeclarationModalState
       decoration: BoxDecoration(
         color: _redBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _redBorder.withValues(alpha: 0.55), width: 1.5),
+        border: Border.all(color: _redBorder.withOpacity(0.55), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -551,7 +551,7 @@ class _ProfessionalDeclarationModalState
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
             decoration: BoxDecoration(
-              color: _redBorder.withValues(alpha: 0.12),
+              color: _redBorder.withOpacity(0.12),
               borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(11)),
             ),
@@ -594,7 +594,7 @@ class _ProfessionalDeclarationModalState
           // Divisor
           Container(
             height: 1,
-            color: _redBorder.withValues(alpha: 0.20),
+            color: _redBorder.withOpacity(0.20),
           ),
 
           // Bullets de reforço
@@ -670,12 +670,12 @@ class _ProfessionalDeclarationModalState
                     horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: selected
-                      ? _green.withValues(alpha: 0.06)
+                      ? _green.withOpacity(0.06)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected
-                        ? _greenLt.withValues(alpha: 0.80)
+                        ? _greenLt.withOpacity(0.80)
                         : _border,
                     width: selected ? 1.5 : 1,
                   ),
@@ -730,12 +730,12 @@ class _ProfessionalDeclarationModalState
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: _checked
-                    ? _green.withValues(alpha: 0.06)
+                    ? _green.withOpacity(0.06)
                     : Colors.white,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _checked
-                      ? _greenLt.withValues(alpha: 0.75)
+                      ? _greenLt.withOpacity(0.75)
                       : _border,
                   width: _checked ? 1.5 : 1,
                 ),
@@ -858,7 +858,7 @@ class _ProfessionalDeclarationModalState
               boxShadow: enabled
                   ? [
                       BoxShadow(
-                        color: _green.withValues(alpha: 0.30),
+                        color: _green.withOpacity(0.30),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),

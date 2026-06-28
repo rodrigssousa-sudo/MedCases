@@ -204,7 +204,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           width: 36, height: 36,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.white.withValues(alpha: 0.10),
+                            color: Colors.white.withOpacity(0.10),
                           ),
                           child: const Icon(Icons.arrow_back_rounded,
                             color: Colors.white, size: 18),
@@ -228,7 +228,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                   : '${_allNotes.length} ${isEs ? 'anotación${_allNotes.length != 1 ? 'es' : ''}' : 'anotaç${_allNotes.length != 1 ? 'ões' : 'ão'}'}',
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.55),
+                                color: Colors.white.withOpacity(0.55),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -415,8 +415,8 @@ class _NoteCard extends StatelessWidget {
     final nc = _colorFromHex(colorHex);
     final cardBg = dark ? nc.dark : nc.light;
     final cardBorder = dark
-        ? nc.border.withValues(alpha: 0.25)
-        : nc.border.withValues(alpha: 0.7);
+        ? nc.border.withOpacity(0.25)
+        : nc.border.withOpacity(0.7);
 
     final title   = note['title']   as String? ?? '';
     final content = note['content'] as String? ?? '';
@@ -432,8 +432,8 @@ class _NoteCard extends StatelessWidget {
       } catch (_) {}
     }
 
-    final textMain = dark ? Colors.white.withValues(alpha: 0.90) : const Color(0xFF1A1D23);
-    final textSub  = dark ? Colors.white.withValues(alpha: 0.45) : Colors.black38;
+    final textMain = dark ? Colors.white.withOpacity(0.90) : const Color(0xFF1A1D23);
+    final textSub  = dark ? Colors.white.withOpacity(0.45) : Colors.black38;
 
     return Dismissible(
       key: Key(note['id'] as String),
@@ -447,10 +447,10 @@ class _NoteCard extends StatelessWidget {
         padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFFCC3333).withValues(alpha: 0.15),
+          color: const Color(0xFFCC3333).withOpacity(0.15),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: const Color(0xFFCC3333).withValues(alpha: 0.3)),
+            color: const Color(0xFFCC3333).withOpacity(0.3)),
         ),
         child: const Icon(Icons.delete_outline_rounded,
           color: Color(0xFFCC3333), size: 22),
@@ -466,7 +466,7 @@ class _NoteCard extends StatelessWidget {
             border: Border.all(color: cardBorder, width: 1.0),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: dark ? 0.20 : 0.05),
+                color: Colors.black.withOpacity(dark ? 0.20 : 0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -495,7 +495,7 @@ class _NoteCard extends StatelessWidget {
                   content,
                   style: TextStyle(
                     fontSize: 12.5, fontWeight: FontWeight.w400,
-                    color: textMain.withValues(alpha: 0.75), height: 1.5,
+                    color: textMain.withOpacity(0.75), height: 1.5,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -514,8 +514,7 @@ class _NoteCard extends StatelessWidget {
                             horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Colors.black.withValues(alpha:
-                              dark ? 0.20 : 0.06),
+                            color: Colors.black.withOpacity(dark ? 0.20 : 0.06),
                           ),
                           child: Text(
                             '#$tag',
@@ -586,8 +585,8 @@ class _EmptyState extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: dark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : const Color(0xFF10B981).withValues(alpha: 0.08),
+                    ? Colors.white.withOpacity(0.06)
+                    : const Color(0xFF10B981).withOpacity(0.08),
               ),
               child: Center(
                 child: Icon(
@@ -597,7 +596,7 @@ class _EmptyState extends StatelessWidget {
                   size: 34,
                   color: dark
                       ? Colors.white24
-                      : const Color(0xFF10B981).withValues(alpha: 0.4),
+                      : const Color(0xFF10B981).withOpacity(0.4),
                 ),
               ),
             ),
@@ -635,7 +634,7 @@ class _EmptyState extends StatelessWidget {
                     color: const Color(0xFF10B981),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.35),
+                        color: const Color(0xFF10B981).withOpacity(0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -788,11 +787,11 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
     final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
     final subCol  = dark ? Colors.white38 : Colors.black38;
-    final divCol  = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.07);
-    final inputBg = dark ? nc.dark.withValues(alpha: 0.6) : nc.light;
+    final divCol  = dark ? Colors.white12 : Colors.black.withOpacity(0.07);
+    final inputBg = dark ? nc.dark.withOpacity(0.6) : nc.light;
     final borderCol = dark
-        ? nc.border.withValues(alpha: 0.20)
-        : nc.border.withValues(alpha: 0.60);
+        ? nc.border.withOpacity(0.20)
+        : nc.border.withOpacity(0.60);
 
     final keyboardH = MediaQuery.viewInsetsOf(context).bottom;
     final screenH   = MediaQuery.sizeOf(context).height;
@@ -884,7 +883,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                       border: Border.all(
                         color: _selectedColor == nc2.hex
                             ? (dark ? Colors.white60 : const Color(0xFF0F1116))
-                            : nc2.border.withValues(alpha: 0.5),
+                            : nc2.border.withOpacity(0.5),
                         width: _selectedColor == nc2.hex ? 2.5 : 1.0,
                       ),
                     ),
@@ -989,9 +988,9 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                         horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                        color: const Color(0xFF10B981).withOpacity(0.12),
                         border: Border.all(
-                          color: const Color(0xFF10B981).withValues(alpha: 0.30)),
+                          color: const Color(0xFF10B981).withOpacity(0.30)),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Text(
@@ -1003,7 +1002,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                         const SizedBox(width: 4),
                         Icon(Icons.close_rounded,
                           size: 12,
-                          color: const Color(0xFF10B981).withValues(alpha: 0.7)),
+                          color: const Color(0xFF10B981).withOpacity(0.7)),
                       ]),
                     ),
                   )).toList(),
@@ -1047,9 +1046,9 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                       height: 38, width: 38,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                        color: const Color(0xFF10B981).withOpacity(0.12),
                         border: Border.all(
-                          color: const Color(0xFF10B981).withValues(alpha: 0.25)),
+                          color: const Color(0xFF10B981).withOpacity(0.25)),
                       ),
                       child: const Icon(Icons.add_rounded,
                         size: 18, color: Color(0xFF10B981)),
@@ -1079,7 +1078,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
                     backgroundColor: const Color(0xFF10B981),
                     foregroundColor: Colors.white,
                     disabledBackgroundColor:
-                        const Color(0xFF10B981).withValues(alpha: 0.4),
+                        const Color(0xFF10B981).withOpacity(0.4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14)),
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -1135,7 +1134,7 @@ class _NoteAlertPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subCol  = dark ? Colors.white38 : Colors.black38;
-    final divCol  = dark ? Colors.white12 : Colors.black.withValues(alpha: 0.07);
+    final divCol  = dark ? Colors.white12 : Colors.black.withOpacity(0.07);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1194,13 +1193,13 @@ class _NoteAlertPicker extends StatelessWidget {
                     color: selected
                         ? const Color(0xFF10B981)
                         : (dark
-                            ? Colors.white.withValues(alpha: 0.07)
+                            ? Colors.white.withOpacity(0.07)
                             : const Color(0xFFF0F0F0)),
                     border: Border.all(
                       color: selected
                           ? const Color(0xFF10B981)
                           : (dark
-                              ? Colors.white.withValues(alpha: 0.10)
+                              ? Colors.white.withOpacity(0.10)
                               : const Color(0xFFA8B2C1)),
                     ),
                   ),

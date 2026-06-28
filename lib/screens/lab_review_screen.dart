@@ -176,7 +176,7 @@ class _LabReviewScreenState extends State<LabReviewScreen> {
 
   Color _cardBorder(LabResult lab) {
     if (lab.status == LabStatus.critical) return _C.borderRed;
-    if (lab.confidence < 0.85)           return _C.borderAmber.withValues(alpha: 0.55);
+    if (lab.confidence < 0.85)           return _C.borderAmber.withOpacity(0.55);
     return _C.border;
   }
 
@@ -392,7 +392,7 @@ class _LabCard extends StatelessWidget {
         border: Border.all(color: cardBorder, width: needsManual || needsReview ? 1.0 : 0.6),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
+            color: Colors.black.withOpacity(0.18),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -514,7 +514,7 @@ class _LabCard extends StatelessWidget {
                             color: _C.textSec,
                           ),
                           filled: true,
-                          fillColor: Colors.black.withValues(alpha: 0.20),
+                          fillColor: Colors.black.withOpacity(0.20),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 9,
                           ),
@@ -525,7 +525,7 @@ class _LabCard extends StatelessWidget {
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(
-                              color: statusColor.withValues(alpha: 0.35),
+                              color: statusColor.withOpacity(0.35),
                               width: 1.0,
                             ),
                           ),
@@ -549,9 +549,9 @@ class _LabCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-                        color: statusColor.withValues(alpha: 0.12),
+                        color: statusColor.withOpacity(0.12),
                         border: Border.all(
-                          color: statusColor.withValues(alpha: 0.30),
+                          color: statusColor.withOpacity(0.30),
                           width: 0.8,
                         ),
                       ),
@@ -818,7 +818,7 @@ class _ResultsSheet extends StatelessWidget {
                       color: _C.amberBg,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: _C.borderAmber.withValues(alpha: 0.30),
+                        color: _C.borderAmber.withOpacity(0.30),
                       ),
                     ),
                     child: Row(
@@ -883,7 +883,7 @@ class _CalcCard extends StatelessWidget {
         color: _C.surfaceHigh,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: _statusColor.withValues(alpha: 0.28),
+          color: _statusColor.withOpacity(0.28),
           width: 0.8,
         ),
       ),

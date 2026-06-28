@@ -109,7 +109,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
         return Stack(children: [
           LoginScreen(onBack: _backToPreview),
           Positioned.fill(child: ColoredBox(
-            color: Colors.black.withValues(alpha: 0.55))),
+            color: Colors.black.withOpacity(0.55))),
           Positioned(
             left: 0, right: 0, bottom: 0,
             child: ConsentModal(lang: _lang, onAccepted: _onConsentAccepted),
@@ -218,7 +218,7 @@ class _DarkHeader extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: _kNeonGlow.withValues(alpha: 0.12), width: 0.8)),
+                color: _kNeonGlow.withOpacity(0.12), width: 0.8)),
           ),
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
           child: Row(children: [
@@ -227,7 +227,7 @@ class _DarkHeader extends StatelessWidget {
               width: 38, height: 38,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: _kGreen.withValues(alpha: 0.55)),
+                border: Border.all(color: _kGreen.withOpacity(0.55)),
                 color: _kBgCard,
               ),
               child: Center(
@@ -388,7 +388,7 @@ class _ProtoCard extends StatelessWidget {
               width: 44, height: 44,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: _kGreen.withValues(alpha: 0.15),
+                color: _kGreen.withOpacity(0.15),
               ),
               child: Icon(data.icon, size: 22, color: _kGreenLight),
             ),
@@ -407,9 +407,9 @@ class _ProtoCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: tagColor.withValues(alpha: 0.15),
+                      color: tagColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(3),
-                      border: Border.all(color: tagColor.withValues(alpha: 0.35)),
+                      border: Border.all(color: tagColor.withOpacity(0.35)),
                     ),
                     child: Text(data.tag,
                       style: TextStyle(
@@ -459,7 +459,7 @@ class _CritCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: _kBgCard,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: _kRed.withValues(alpha: 0.25)),
+          border: Border.all(color: _kRed.withOpacity(0.25)),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -467,7 +467,7 @@ class _CritCard extends StatelessWidget {
             width: 36, height: 36,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              color: _kRed.withValues(alpha: 0.12),
+              color: _kRed.withOpacity(0.12),
             ),
             child: Icon(data.icon, size: 18, color: _kRed),
           ),
@@ -538,19 +538,19 @@ class _IaBlockDark extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           // ── Borda verde neon sutil ────────────────────────────────────────
           border: Border.all(
-            color: _kNeonGlow.withValues(alpha: 0.20),
+            color: _kNeonGlow.withOpacity(0.20),
             width: 1.0,
           ),
           // ── Neon glow 2 camadas (inner glow + outer diffuse) ─────────────
           boxShadow: [
             BoxShadow(
-              color: _kNeonGlow.withValues(alpha: 0.22),
+              color: _kNeonGlow.withOpacity(0.22),
               blurRadius: 20,
               spreadRadius: 0,
               offset: const Offset(0, 0),
             ),
             BoxShadow(
-              color: _kNeonGlow.withValues(alpha: 0.10),
+              color: _kNeonGlow.withOpacity(0.10),
               blurRadius: 55,
               spreadRadius: 6,
               offset: const Offset(0, 4),
@@ -566,12 +566,12 @@ class _IaBlockDark extends StatelessWidget {
               width: 38, height: 38,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _kNeonGlow.withValues(alpha: 0.10),
+                color: _kNeonGlow.withOpacity(0.10),
                 border: Border.all(
-                  color: _kNeonGlow.withValues(alpha: 0.30), width: 1.0),
+                  color: _kNeonGlow.withOpacity(0.30), width: 1.0),
                 boxShadow: [
                   BoxShadow(
-                    color: _kNeonGlow.withValues(alpha: 0.18),
+                    color: _kNeonGlow.withOpacity(0.18),
                     blurRadius: 10,
                     spreadRadius: 0,
                   ),
@@ -604,9 +604,9 @@ class _IaBlockDark extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
-                color: _kNeonGlow.withValues(alpha: 0.10),
+                color: _kNeonGlow.withOpacity(0.10),
                 border: Border.all(
-                  color: _kNeonGlow.withValues(alpha: 0.28), width: 0.8),
+                  color: _kNeonGlow.withOpacity(0.28), width: 0.8),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Container(
@@ -632,7 +632,7 @@ class _IaBlockDark extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               color: const Color(0xFF0B1710),
               border: Border.all(
-                color: _kNeonGlow.withValues(alpha: 0.12), width: 0.8),
+                color: _kNeonGlow.withOpacity(0.12), width: 0.8),
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
@@ -676,7 +676,7 @@ class _IaBlockDark extends StatelessWidget {
                     color: const Color(0xFF0B1710),
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
-                      color: _kNeonGlow.withValues(alpha: 0.15), width: 0.8),
+                      color: _kNeonGlow.withOpacity(0.15), width: 0.8),
                   ),
                   child: Text(p,
                     style: const TextStyle(
@@ -698,10 +698,10 @@ class _IaBlockDark extends StatelessWidget {
                 color: const Color(0xFF0B1710),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: _kNeonGlow.withValues(alpha: 0.30), width: 1.0),
+                  color: _kNeonGlow.withOpacity(0.30), width: 1.0),
                 boxShadow: [
                   BoxShadow(
-                    color: _kNeonGlow.withValues(alpha: 0.08),
+                    color: _kNeonGlow.withOpacity(0.08),
                     blurRadius: 8,
                     spreadRadius: 0,
                   ),
@@ -730,7 +730,7 @@ class _IaBlockDark extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: _kNeonGlow.withValues(alpha: 0.25),
+                        color: _kNeonGlow.withOpacity(0.25),
                         blurRadius: 8,
                         spreadRadius: 0,
                       ),
@@ -811,10 +811,10 @@ class _MetricCard extends StatelessWidget {
         color: _kBgCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _kNeonGlow.withValues(alpha: 0.15), width: 0.9),
+          color: _kNeonGlow.withOpacity(0.15), width: 0.9),
         boxShadow: [
           BoxShadow(
-            color: _kNeonGlow.withValues(alpha: 0.10),
+            color: _kNeonGlow.withOpacity(0.10),
             blurRadius: 16,
             spreadRadius: 0,
             offset: const Offset(0, 2),
@@ -831,10 +831,10 @@ class _MetricCard extends StatelessWidget {
               shape: BoxShape.circle,
               color: iconBg,
               border: Border.all(
-                color: _kNeonGlow.withValues(alpha: 0.22), width: 1.0),
+                color: _kNeonGlow.withOpacity(0.22), width: 1.0),
               boxShadow: [
                 BoxShadow(
-                  color: _kNeonGlow.withValues(alpha: 0.14),
+                  color: _kNeonGlow.withOpacity(0.14),
                   blurRadius: 8,
                   spreadRadius: 0,
                 ),
@@ -869,7 +869,7 @@ class _MetricCard extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Icon(trailingIcon, size: 13,
-              color: _kNeonGlow.withValues(alpha: 0.55)),
+              color: _kNeonGlow.withOpacity(0.55)),
           ]),
         ],
       ),

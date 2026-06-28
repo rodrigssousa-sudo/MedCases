@@ -88,7 +88,7 @@ class _CasesScreenState extends State<CasesScreen> with SingleTickerProviderStat
               onTap: () => setState(() => _editing = ClinicalCaseModel.blank()),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withValues(alpha: 0.15), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withOpacity(0.15), border: Border.all(color: Colors.white.withOpacity(0.2))),
                 child: Row(children: [
                   const Icon(Icons.add_rounded, size: 16, color: Color(0xFFFFE8A6)),
                   const SizedBox(width: 4),
@@ -205,7 +205,7 @@ class _CaseCard extends StatelessWidget {
             border: Border.all(color: AppColors.of(context).border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: Colors.black.withOpacity(0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -344,7 +344,7 @@ class _CaseDetail extends StatelessWidget {
                   onTap: onEdit,
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1), border: Border.all(color: Colors.white.withValues(alpha: 0.15))),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.1), border: Border.all(color: Colors.white.withOpacity(0.15))),
                     child: const Icon(Icons.edit_rounded, size: 18, color: Color(0xFFFFE8A6)),
                   ),
                 ),
@@ -467,7 +467,7 @@ class _MetaChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.12), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.12), border: Border.all(color: Colors.white.withOpacity(0.2))),
       child: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
     );
   }
@@ -567,7 +567,7 @@ class _CaseEditorState extends State<_CaseEditor> {
               onTap: widget.onCancel,
               child: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.1)),
                 child: const Icon(Icons.arrow_back_ios, size: 14, color: Colors.white),
               ),
             ),

@@ -49,10 +49,10 @@ class ResumenHeader extends StatelessWidget {
           Container(
             width: 44, height: 44,
             decoration: BoxDecoration(
-              color: InternacionTheme.cyan.withValues(alpha: dark ? 0.15 : 0.10),
+              color: InternacionTheme.cyan.withOpacity(dark ? 0.15 : 0.10),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: InternacionTheme.cyan.withValues(alpha: 0.35),
+                color: InternacionTheme.cyan.withOpacity(0.35),
                 width: 1.2,
               ),
             ),
@@ -109,7 +109,7 @@ class ResumenHeader extends StatelessWidget {
                       const SizedBox(width: 10),
                     ],
                     Icon(Icons.calendar_today_rounded,
-                        size: 11, color: InternacionTheme.cyan.withValues(alpha: 0.70)),
+                        size: 11, color: InternacionTheme.cyan.withOpacity(0.70)),
                     const SizedBox(width: 3),
                     Text(
                       diaLabel,
@@ -129,7 +129,7 @@ class ResumenHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: InternacionTheme.cyan.withValues(alpha: dark ? 0.18 : 0.10),
+              color: InternacionTheme.cyan.withOpacity(dark ? 0.18 : 0.10),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
@@ -138,7 +138,7 @@ class ResumenHeader extends StatelessWidget {
                   '${isEs ? 'DÍA' : 'DIA'}',
                   style: TextStyle(
                     fontSize: 8, fontWeight: FontWeight.w700,
-                    color: InternacionTheme.cyan.withValues(alpha: 0.70),
+                    color: InternacionTheme.cyan.withOpacity(0.70),
                     letterSpacing: 0.5,
                   ),
                 ),

@@ -687,7 +687,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: InternacionTheme.accentLight.withValues(alpha: 0.15),
+              color: InternacionTheme.accentLight.withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(Icons.cleaning_services_rounded,
@@ -938,11 +938,11 @@ class _InternacionScreenState extends State<InternacionScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
                             color: const Color(0xFF059669)
-                                .withValues(alpha: dark ? 0.28 : 0.20),
+                                .withOpacity(dark ? 0.28 : 0.20),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: const Color(0xFF059669)
-                                  .withValues(alpha: 0.55),
+                                  .withOpacity(0.55),
                               width: 0.9,
                             ),
                           ),
@@ -1114,7 +1114,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     label: isEs ? 'Papelera' : 'Lixeira',
                     icon: Icons.restore_from_trash_rounded,
                     color: InternacionTheme.red
-                        .withValues(alpha: dark ? 0.18 : 0.10),
+                        .withOpacity(dark ? 0.18 : 0.10),
                     textColor: InternacionTheme.red,
                     dark: dark,
                     onTap: () => _showTrashModal(context, dark, lang),
@@ -1336,13 +1336,13 @@ class _ActionButton extends StatelessWidget {
           border: isPrimary
               ? null
               : Border.all(
-                  color: textColor.withValues(alpha: 0.25),
+                  color: textColor.withOpacity(0.25),
                   width: 0.8,
                 ),
           boxShadow: isPrimary
               ? [
                   BoxShadow(
-                    color: color.withValues(alpha: 0.35),
+                    color: color.withOpacity(0.35),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -1469,7 +1469,7 @@ class _SessionCard168 extends StatelessWidget {
         border: Border.all(color: severityColor, width: 2.0),
         boxShadow: [
           BoxShadow(
-            color: severityColor.withValues(alpha: 0.15),
+            color: severityColor.withOpacity(0.15),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1481,7 +1481,7 @@ class _SessionCard168 extends StatelessWidget {
           // ── Topbar: [Editar] [Excluir] ──────────────────────────────────
           Container(
             decoration: BoxDecoration(
-              color: severityColor.withValues(alpha: dark ? 0.12 : 0.08),
+              color: severityColor.withOpacity(dark ? 0.12 : 0.08),
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
             ),
@@ -1498,7 +1498,7 @@ class _SessionCard168 extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 7, vertical: 3),
                     decoration: BoxDecoration(
-                      color: severityColor.withValues(alpha: 0.15),
+                      color: severityColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -1519,7 +1519,7 @@ class _SessionCard168 extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 7, vertical: 3),
                     decoration: BoxDecoration(
-                      color: InternacionTheme.red.withValues(alpha: 0.12),
+                      color: InternacionTheme.red.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -1829,7 +1829,7 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
           color: bg,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: InternacionTheme.accentLight.withValues(alpha: 0.35),
+            color: InternacionTheme.accentLight.withOpacity(0.35),
             width: 1.2,
           ),
         ),
@@ -1841,7 +1841,7 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
               padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
               decoration: BoxDecoration(
                 color: InternacionTheme.accentLight
-                    .withValues(alpha: dark ? 0.12 : 0.07),
+                    .withOpacity(dark ? 0.12 : 0.07),
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(19)),
               ),
@@ -1852,7 +1852,7 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
                     height: 36,
                     decoration: BoxDecoration(
                       color: InternacionTheme.accentLight
-                          .withValues(alpha: 0.15),
+                          .withOpacity(0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(Icons.person_rounded,
@@ -2175,11 +2175,11 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             decoration: BoxDecoration(
                               color: InternacionTheme.amber
-                                  .withValues(alpha: dark ? 0.18 : 0.12),
+                                  .withOpacity(dark ? 0.18 : 0.12),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: InternacionTheme.amber
-                                    .withValues(alpha: 0.45),
+                                    .withOpacity(0.45),
                                 width: 0.9,
                               ),
                             ),
@@ -2257,7 +2257,7 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
     margin: const EdgeInsets.only(bottom: 4),
     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
     decoration: BoxDecoration(
-      color: InternacionTheme.accentLight.withValues(alpha: 0.10),
+      color: InternacionTheme.accentLight.withOpacity(0.10),
       borderRadius: BorderRadius.circular(4),
     ),
     child: Text(
@@ -2340,9 +2340,9 @@ class _SessionPreviewDialogState extends State<_SessionPreviewDialog> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: dark ? 0.12 : 0.08),
+          color: color.withOpacity(dark ? 0.12 : 0.08),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withValues(alpha: 0.30), width: 0.9),
+          border: Border.all(color: color.withOpacity(0.30), width: 0.9),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -2393,7 +2393,7 @@ class _CopyFormatSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border.all(color: const Color(0xFF059669).withValues(alpha: 0.25)),
+        border: Border.all(color: const Color(0xFF059669).withOpacity(0.25)),
       ),
       padding: EdgeInsets.fromLTRB(
         20, 12, 20,
@@ -2564,7 +2564,7 @@ class _CopyFormatTile extends StatelessWidget {
             Container(
               width: 42, height: 42,
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: dark ? 0.15 : 0.10),
+                color: iconColor.withOpacity(dark ? 0.15 : 0.10),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, size: 20, color: iconColor),
@@ -2590,7 +2590,7 @@ class _CopyFormatTile extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: badgeColor.withValues(alpha: 0.12),
+                          color: badgeColor.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -2669,7 +2669,7 @@ class _DocumentPreviewModal extends StatelessWidget {
           borderRadius:
               const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: InternacionTheme.cyan.withValues(alpha: 0.20),
+            color: InternacionTheme.cyan.withOpacity(0.20),
             width: 1.0,
           ),
         ),
@@ -2698,7 +2698,7 @@ class _DocumentPreviewModal extends StatelessWidget {
                     width: 34,
                     height: 34,
                     decoration: BoxDecoration(
-                      color: InternacionTheme.cyan.withValues(alpha: 0.12),
+                      color: InternacionTheme.cyan.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(Icons.description_rounded,
@@ -2758,8 +2758,7 @@ class _DocumentPreviewModal extends StatelessWidget {
                           width: 0.8),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(
-                              alpha: dark ? 0.30 : 0.08),
+                          color: Colors.black.withOpacity(dark ? 0.30 : 0.08),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -3086,7 +3085,7 @@ class _AuditoriaViewer extends StatelessWidget {
           borderRadius:
               const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-              color: InternacionTheme.amber.withValues(alpha: 0.35),
+              color: InternacionTheme.amber.withOpacity(0.35),
               width: 1.2),
         ),
         child: Column(
@@ -3112,7 +3111,7 @@ class _AuditoriaViewer extends StatelessWidget {
                     height: 36,
                     decoration: BoxDecoration(
                       color:
-                          InternacionTheme.amber.withValues(alpha: 0.15),
+                          InternacionTheme.amber.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(Icons.lock_clock_rounded,
@@ -3143,11 +3142,11 @@ class _AuditoriaViewer extends StatelessWidget {
                         horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color:
-                          InternacionTheme.amber.withValues(alpha: 0.12),
+                          InternacionTheme.amber.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                           color: InternacionTheme.amber
-                              .withValues(alpha: 0.40),
+                              .withOpacity(0.40),
                           width: 0.8),
                     ),
                     child: Text('READ-ONLY',
@@ -3168,10 +3167,10 @@ class _AuditoriaViewer extends StatelessWidget {
                     horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: InternacionTheme.amber
-                      .withValues(alpha: dark ? 0.10 : 0.07),
+                      .withOpacity(dark ? 0.10 : 0.07),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                      color: InternacionTheme.amber.withValues(alpha: 0.30),
+                      color: InternacionTheme.amber.withOpacity(0.30),
                       width: 0.8),
                 ),
                 child: Row(
@@ -3282,10 +3281,10 @@ class _AuditoriaViewer extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: InternacionTheme.amber.withValues(alpha: 0.08),
+          color: InternacionTheme.amber.withOpacity(0.08),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: InternacionTheme.amber.withValues(alpha: 0.30),
+            color: InternacionTheme.amber.withOpacity(0.30),
             width: 0.9,
           ),
         ),
@@ -3322,7 +3321,7 @@ class _AuditoriaViewer extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
+                color: color.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -3342,7 +3341,7 @@ class _AuditoriaViewer extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Container(
-                  height: 1, color: color.withValues(alpha: 0.20)),
+                  height: 1, color: color.withOpacity(0.20)),
             ),
           ],
         ),
@@ -3662,7 +3661,7 @@ class _TrashModalState extends State<_TrashModal> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: InternacionTheme.red.withValues(alpha: 0.12),
+              color: InternacionTheme.red.withOpacity(0.12),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.delete_forever_rounded,
@@ -3756,7 +3755,7 @@ class _TrashModalState extends State<_TrashModal> {
           color: bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: InternacionTheme.red.withValues(alpha: 0.25),
+            color: InternacionTheme.red.withOpacity(0.25),
             width: 1.0,
           ),
         ),
@@ -3786,7 +3785,7 @@ class _TrashModalState extends State<_TrashModal> {
                     height: 36,
                     decoration: BoxDecoration(
                       color:
-                          InternacionTheme.red.withValues(alpha: 0.12),
+                          InternacionTheme.red.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(Icons.restore_from_trash_rounded,
@@ -3824,7 +3823,7 @@ class _TrashModalState extends State<_TrashModal> {
                         : 'Atualização automática em tempo real',
                     child: Icon(Icons.wifi_rounded,
                         size: 16,
-                        color: InternacionTheme.accentLight.withValues(alpha: 0.7)),
+                        color: InternacionTheme.accentLight.withOpacity(0.7)),
                   ),
                   const SizedBox(width: 4),
                   IconButton(
@@ -3932,7 +3931,7 @@ class _TrashModalState extends State<_TrashModal> {
                           color: theme.card,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: InternacionTheme.red.withValues(alpha: 0.18),
+                            color: InternacionTheme.red.withOpacity(0.18),
                             width: 0.9,
                           ),
                         ),
@@ -3949,7 +3948,7 @@ class _TrashModalState extends State<_TrashModal> {
                                   height: 38,
                                   decoration: BoxDecoration(
                                     color: InternacionTheme.red
-                                        .withValues(alpha: 0.10),
+                                        .withOpacity(0.10),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: const Icon(Icons.person_off_rounded,
@@ -4000,14 +3999,14 @@ class _TrashModalState extends State<_TrashModal> {
                                         Icon(Icons.schedule_rounded,
                                             size: 10,
                                             color: InternacionTheme.red
-                                                .withValues(alpha: 0.7)),
+                                                .withOpacity(0.7)),
                                         const SizedBox(width: 3),
                                         Text(
                                           item.deletedAtLabel,
                                           style: TextStyle(
                                             fontSize: 10,
                                             color: InternacionTheme.red
-                                                .withValues(alpha: 0.7),
+                                                .withOpacity(0.7),
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
@@ -4049,13 +4048,12 @@ class _TrashModalState extends State<_TrashModal> {
                                       height: 36,
                                       decoration: BoxDecoration(
                                         color: InternacionTheme.accentLight
-                                            .withValues(
-                                                alpha: widget.dark ? 0.15 : 0.10),
+                                            .withOpacity(widget.dark ? 0.15 : 0.10),
                                         borderRadius:
                                             BorderRadius.circular(10),
                                         border: Border.all(
                                           color: InternacionTheme.accentLight
-                                              .withValues(alpha: 0.45),
+                                              .withOpacity(0.45),
                                           width: 1.0,
                                         ),
                                       ),
@@ -4094,12 +4092,11 @@ class _TrashModalState extends State<_TrashModal> {
                                     width: 36,
                                     height: 36,
                                     decoration: BoxDecoration(
-                                      color: InternacionTheme.red.withValues(
-                                          alpha: widget.dark ? 0.15 : 0.09),
+                                      color: InternacionTheme.red.withOpacity(widget.dark ? 0.15 : 0.09),
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
                                         color: InternacionTheme.red
-                                            .withValues(alpha: 0.35),
+                                            .withOpacity(0.35),
                                         width: 1.0,
                                       ),
                                     ),

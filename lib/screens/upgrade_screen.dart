@@ -262,9 +262,9 @@ class _UpgradeScreenState extends State<UpgradeScreen>
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.white.withValues(alpha: 0.08),
+                          color: Colors.white.withOpacity(0.08),
                           border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.12)),
+                              color: Colors.white.withOpacity(0.12)),
                         ),
                         child: const Icon(Icons.close_rounded,
                             size: 18, color: Colors.white70),
@@ -296,7 +296,7 @@ class _UpgradeScreenState extends State<UpgradeScreen>
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 10,
-                            color: Colors.white.withValues(alpha: 0.3),
+                            color: Colors.white.withOpacity(0.3),
                             height: 1.5),
                       ),
                     ],
@@ -317,8 +317,8 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: _kGold.withValues(alpha: 0.12),
-          border: Border.all(color: _kGold.withValues(alpha: 0.45)),
+          color: _kGold.withOpacity(0.12),
+          border: Border.all(color: _kGold.withOpacity(0.45)),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.auto_awesome_rounded, size: 13, color: _kGoldL),
@@ -340,13 +340,13 @@ class _UpgradeScreenState extends State<UpgradeScreen>
             begin: Alignment.topLeft, end: Alignment.bottomRight,
             colors: [Color(0xFF1F4030), Color(0xFF1A1D23)],
           ),
-          border: Border.all(color: _kGold.withValues(alpha: 0.5), width: 1.5),
+          border: Border.all(color: _kGold.withOpacity(0.5), width: 1.5),
           boxShadow: [
             BoxShadow(
-                color: _kGold.withValues(alpha: 0.25),
+                color: _kGold.withOpacity(0.25),
                 blurRadius: 32, spreadRadius: 4),
             BoxShadow(
-                color: _kGreen.withValues(alpha: 0.3),
+                color: _kGreen.withOpacity(0.3),
                 blurRadius: 48, spreadRadius: 2),
           ],
         ),
@@ -367,7 +367,7 @@ class _UpgradeScreenState extends State<UpgradeScreen>
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 12,
-              color: Colors.white.withValues(alpha: 0.5),
+              color: Colors.white.withOpacity(0.5),
               height: 1.6,
               fontWeight: FontWeight.w500)),
     ]);
@@ -418,8 +418,8 @@ class _UpgradeScreenState extends State<UpgradeScreen>
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: Colors.white.withValues(alpha: 0.03),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        color: Colors.white.withOpacity(0.03),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         // Cabeçalho com legenda de colunas
@@ -435,7 +435,7 @@ class _UpgradeScreenState extends State<UpgradeScreen>
             ),
             _FeaturePill(
                 label: s.planBasicLbl,
-                color: Colors.white.withValues(alpha: 0.3)),
+                color: Colors.white.withOpacity(0.3)),
             const SizedBox(width: 6),
             _FeaturePill(label: s.planProLbl, color: _kGold),
           ]),
@@ -462,12 +462,12 @@ class _UpgradeScreenState extends State<UpgradeScreen>
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
           child: Row(children: [
-            _LegendDot(color: Colors.white.withValues(alpha: 0.3)),
+            _LegendDot(color: Colors.white.withOpacity(0.3)),
             const SizedBox(width: 6),
             Text(s.includedInBoth,
                 style: TextStyle(
                     fontSize: 10,
-                    color: Colors.white.withValues(alpha: 0.45),
+                    color: Colors.white.withOpacity(0.45),
                     fontWeight: FontWeight.w600)),
             const SizedBox(width: 14),
             const _LegendDot(color: _kGold),
@@ -502,10 +502,10 @@ class _UpgradeScreenState extends State<UpgradeScreen>
           ),
           boxShadow: [
             BoxShadow(
-                color: _kGold.withValues(alpha: 0.55),
+                color: _kGold.withOpacity(0.55),
                 blurRadius: 20, offset: const Offset(0, 6)),
             BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
+                color: Colors.black.withOpacity(0.25),
                 blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
@@ -549,8 +549,8 @@ class _LangToggle extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: _kGold.withValues(alpha: 0.10),
-          border: Border.all(color: _kGold.withValues(alpha: 0.4)),
+          color: _kGold.withOpacity(0.10),
+          border: Border.all(color: _kGold.withOpacity(0.4)),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.language_rounded, size: 13, color: _kGoldL),
@@ -595,15 +595,15 @@ class _PlanCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           color: selected
-              ? _kGold.withValues(alpha: 0.12)
-              : Colors.white.withValues(alpha: 0.04),
+              ? _kGold.withOpacity(0.12)
+              : Colors.white.withOpacity(0.04),
           border: Border.all(
-            color: selected ? _kGold : Colors.white.withValues(alpha: 0.12),
+            color: selected ? _kGold : Colors.white.withOpacity(0.12),
             width: selected ? 1.5 : 1,
           ),
           boxShadow: selected
               ? [BoxShadow(
-                  color: _kGold.withValues(alpha: 0.2),
+                  color: _kGold.withOpacity(0.2),
                   blurRadius: 16, offset: const Offset(0, 4))]
               : null,
         ),
@@ -613,8 +613,8 @@ class _PlanCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: _kGold.withValues(alpha: 0.18),
-                border: Border.all(color: _kGold.withValues(alpha: 0.5)),
+                color: _kGold.withOpacity(0.18),
+                border: Border.all(color: _kGold.withOpacity(0.5)),
               ),
               child: Text(saving!,
                   style: const TextStyle(
@@ -630,7 +630,7 @@ class _PlanCard extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   color: selected
                       ? _kGoldL
-                      : Colors.white.withValues(alpha: 0.55))),
+                      : Colors.white.withOpacity(0.55))),
           const SizedBox(height: 3),
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Flexible(
@@ -640,7 +640,7 @@ class _PlanCard extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                       color: selected
                           ? Colors.white
-                          : Colors.white.withValues(alpha: 0.6))),
+                          : Colors.white.withOpacity(0.6))),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 2),
@@ -648,14 +648,14 @@ class _PlanCard extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.4))),
+                      color: Colors.white.withOpacity(0.4))),
             ),
           ]),
           const SizedBox(height: 4),
           Text(sublabel,
               style: TextStyle(
                   fontSize: 9,
-                  color: Colors.white.withValues(alpha: 0.35),
+                  color: Colors.white.withOpacity(0.35),
                   height: 1.3)),
           const SizedBox(height: 6),
           Row(children: [
@@ -664,7 +664,7 @@ class _PlanCard extends StatelessWidget {
                   ? Icons.radio_button_checked_rounded
                   : Icons.radio_button_off_rounded,
               size: 13,
-              color: selected ? _kGold : Colors.white.withValues(alpha: 0.25),
+              color: selected ? _kGold : Colors.white.withOpacity(0.25),
             ),
             const SizedBox(width: 4),
             Text(
@@ -674,7 +674,7 @@ class _PlanCard extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   color: selected
                       ? _kGold
-                      : Colors.white.withValues(alpha: 0.3)),
+                      : Colors.white.withOpacity(0.3)),
             ),
           ]),
         ]),
@@ -705,7 +705,7 @@ class _FeatureRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: highlight ? _kGold.withValues(alpha: 0.04) : Colors.transparent,
+        color: highlight ? _kGold.withOpacity(0.04) : Colors.transparent,
         border: isLast
             ? null
             : const Border(bottom: BorderSide(color: Color(0x0AFFFFFF))),
@@ -716,8 +716,8 @@ class _FeatureRow extends StatelessWidget {
           width: 36, height: 36,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: color.withValues(alpha: 0.12),
-            border: Border.all(color: color.withValues(alpha: 0.25)),
+            color: color.withOpacity(0.12),
+            border: Border.all(color: color.withOpacity(0.25)),
           ),
           child: Icon(icon, size: 17, color: color),
         ),
@@ -733,7 +733,7 @@ class _FeatureRow extends StatelessWidget {
             Text(subtitle,
                 style: TextStyle(
                     fontSize: 10,
-                    color: Colors.white.withValues(alpha: 0.4),
+                    color: Colors.white.withOpacity(0.4),
                     height: 1.3)),
           ]),
         ),
@@ -760,7 +760,7 @@ class _CheckCell extends StatelessWidget {
           size: 18, color: gold ? _kGold : const Color(0xFF10B981));
     }
     return Icon(Icons.remove_circle_outline_rounded,
-        size: 18, color: Colors.white.withValues(alpha: 0.15));
+        size: 18, color: Colors.white.withOpacity(0.15));
   }
 }
 
@@ -775,8 +775,8 @@ class _FeaturePill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: color.withValues(alpha: 0.12),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        color: color.withOpacity(0.12),
+        border: Border.all(color: color.withOpacity(0.35)),
       ),
       child: Text(label,
           style: TextStyle(
@@ -809,8 +809,8 @@ class _StatChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.white.withValues(alpha: 0.04),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        color: Colors.white.withOpacity(0.04),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
       ),
       child: Column(children: [
         Icon(icon, size: 14, color: _kGoldL),
@@ -820,7 +820,7 @@ class _StatChip extends StatelessWidget {
                 fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white)),
         Text(sub,
             style: TextStyle(
-                fontSize: 9, color: Colors.white.withValues(alpha: 0.38))),
+                fontSize: 9, color: Colors.white.withOpacity(0.38))),
       ]),
     );
   }
@@ -830,9 +830,9 @@ class _BgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
-    paint.color = const Color(0xFF075f45).withValues(alpha: 0.08);
+    paint.color = const Color(0xFF075f45).withOpacity(0.08);
     canvas.drawCircle(Offset(size.width * 0.8, 0), size.width * 0.6, paint);
-    paint.color = const Color(0xFFC5A365).withValues(alpha: 0.05);
+    paint.color = const Color(0xFFC5A365).withOpacity(0.05);
     canvas.drawCircle(
         Offset(size.width * 0.1, size.height * 0.45), size.width * 0.5, paint);
   }

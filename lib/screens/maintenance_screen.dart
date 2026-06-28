@@ -33,9 +33,9 @@ class MaintenanceScreen extends StatelessWidget {
                 height: 88,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _kGreen.withValues(alpha: 0.12),
+                  color: _kGreen.withOpacity(0.12),
                   border: Border.all(
-                    color: _kGold.withValues(alpha: 0.35),
+                    color: _kGold.withOpacity(0.35),
                     width: 1.5,
                   ),
                 ),
@@ -67,7 +67,7 @@ class MaintenanceScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white.withValues(alpha: 0.35),
+                  color: Colors.white.withOpacity(0.35),
                   letterSpacing: 0.1,
                 ),
               ),
@@ -80,9 +80,9 @@ class MaintenanceScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: _kGreen.withValues(alpha: 0.10),
+                    color: _kGreen.withOpacity(0.10),
                     border: Border.all(
-                      color: _kGold.withValues(alpha: 0.22),
+                      color: _kGold.withOpacity(0.22),
                     ),
                   ),
                   child: Text(
@@ -91,7 +91,7 @@ class MaintenanceScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.80),
+                      color: Colors.white.withOpacity(0.80),
                       height: 1.55,
                     ),
                   ),
@@ -106,9 +106,9 @@ class MaintenanceScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: Colors.white.withValues(alpha: 0.04),
+                    color: Colors.white.withOpacity(0.04),
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.08),
+                      color: Colors.white.withOpacity(0.08),
                     ),
                   ),
                   child: Text(
@@ -117,7 +117,7 @@ class MaintenanceScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.50),
+                      color: Colors.white.withOpacity(0.50),
                       height: 1.6,
                     ),
                   ),
@@ -134,7 +134,7 @@ class MaintenanceScreen extends StatelessWidget {
                     height: 6,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _kGold.withValues(alpha: 0.6),
+                      color: _kGold.withOpacity(0.6),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -143,7 +143,7 @@ class MaintenanceScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: _kGoldL.withValues(alpha: 0.55),
+                      color: _kGoldL.withOpacity(0.55),
                       letterSpacing: 0.2,
                     ),
                   ),
@@ -153,7 +153,7 @@ class MaintenanceScreen extends StatelessWidget {
                     height: 6,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _kGold.withValues(alpha: 0.6),
+                      color: _kGold.withOpacity(0.6),
                     ),
                   ),
                 ],
@@ -168,9 +168,9 @@ class MaintenanceScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: Colors.white.withOpacity(0.05),
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.10),
+                      color: Colors.white.withOpacity(0.10),
                     ),
                   ),
                   child: Row(
@@ -179,7 +179,7 @@ class MaintenanceScreen extends StatelessWidget {
                       Icon(
                         Icons.logout_rounded,
                         size: 14,
-                        color: Colors.white.withValues(alpha: 0.35),
+                        color: Colors.white.withOpacity(0.35),
                       ),
                       const SizedBox(width: 7),
                       Text(
@@ -187,7 +187,7 @@ class MaintenanceScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white.withValues(alpha: 0.35),
+                          color: Colors.white.withOpacity(0.35),
                         ),
                       ),
                     ],

@@ -922,10 +922,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.12),
+                              color: Colors.white.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.35),
+                                color: Colors.white.withOpacity(0.35),
                                 width: 0.8,
                               ),
                             ),
@@ -1361,7 +1361,7 @@ class _HistoryCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.06),
+              color: Colors.black.withOpacity(isDark ? 0.25 : 0.06),
               blurRadius: 12,
               offset: const Offset(0, 3),
             ),
@@ -1394,7 +1394,7 @@ class _HistoryCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: accent.withValues(alpha: 0.12),
+                          color: accent.withOpacity(0.12),
                         ),
                         child: Text(
                           h.category,
@@ -1406,7 +1406,7 @@ class _HistoryCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+                          color: (isDark ? Colors.white : Colors.black).withOpacity(0.05),
                         ),
                         child: Text(
                           _outcomeLabel(lang),
@@ -1422,7 +1422,7 @@ class _HistoryCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6),
-                            color: const Color(0xFF3B82F6).withValues(alpha: 0.10),
+                            color: const Color(0xFF3B82F6).withOpacity(0.10),
                           ),
                           child: Row(mainAxisSize: MainAxisSize.min, children: [
                             const Icon(Icons.public_rounded, size: 8, color: Color(0xFF3B82F6)),
@@ -1492,8 +1492,8 @@ class _HistoryCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xFF065F46).withValues(alpha: 0.08),
-                          border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.20)),
+                          color: const Color(0xFF065F46).withOpacity(0.08),
+                          border: Border.all(color: const Color(0xFF065F46).withOpacity(0.20)),
                         ),
                         child: Row(children: [
                           const Icon(Icons.check_circle_rounded, size: 13, color: Color(0xFF065F46)),
@@ -1515,8 +1515,8 @@ class _HistoryCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xFFF59E0B).withValues(alpha: 0.08),
-                          border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.25)),
+                          color: const Color(0xFFF59E0B).withOpacity(0.08),
+                          border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.25)),
                         ),
                         child: Row(children: [
                           const Icon(Icons.pending_rounded, size: 13, color: Color(0xFF92400E)),
@@ -1543,7 +1543,7 @@ class _HistoryCard extends StatelessWidget {
                           value: completion,
                           minHeight: 3,
                           backgroundColor: isDark
-                              ? Colors.white.withValues(alpha: 0.08)
+                              ? Colors.white.withOpacity(0.08)
                               : const Color(0xFFEEF2F7),
                           valueColor: AlwaysStoppedAnimation(
                             completion >= 1.0
@@ -1573,7 +1573,7 @@ class _HistoryCard extends StatelessWidget {
                       // Divisor sutil
                       Divider(
                         height: 1, thickness: 0.5,
-                        color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFEEF2F7),
+                        color: isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFEEF2F7),
                       ),
                       const SizedBox(height: 10),
                       Row(children: [
@@ -1584,12 +1584,12 @@ class _HistoryCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: h.isPublic
-                                  ? const Color(0xFF3B82F6).withValues(alpha: 0.10)
-                                  : (isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFF5F7FA)),
+                                  ? const Color(0xFF3B82F6).withOpacity(0.10)
+                                  : (isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF5F7FA)),
                               border: Border.all(
                                 color: h.isPublic
-                                    ? const Color(0xFF3B82F6).withValues(alpha: 0.30)
-                                    : (isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFDDE3ED)),
+                                    ? const Color(0xFF3B82F6).withOpacity(0.30)
+                                    : (isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFDDE3ED)),
                               ),
                             ),
                             child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -1616,7 +1616,7 @@ class _HistoryCard extends StatelessWidget {
                             padding: const EdgeInsets.all(7),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: kGold.withValues(alpha: 0.10),
+                              color: kGold.withOpacity(0.10),
                             ),
                             child: const Icon(Icons.edit_rounded, size: 14, color: kGold),
                           ),
@@ -1628,7 +1628,7 @@ class _HistoryCard extends StatelessWidget {
                             padding: const EdgeInsets.all(7),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: const Color(0xFFEF4444).withValues(alpha: 0.08),
+                              color: const Color(0xFFEF4444).withOpacity(0.08),
                             ),
                             child: const Icon(Icons.delete_outline_rounded, size: 14, color: Color(0xFFEF4444)),
                           ),
@@ -1642,7 +1642,7 @@ class _HistoryCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               color: AppColors.of(context).darkBtn,
                               boxShadow: [
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 4, offset: const Offset(0, 2)),
+                                BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 4, offset: const Offset(0, 2)),
                               ],
                             ),
                             child: Text(_hcT(p.lang, 'open'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
@@ -1656,8 +1656,8 @@ class _HistoryCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                            color: Colors.orange.withValues(alpha: 0.08),
-                            border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                            color: Colors.orange.withOpacity(0.08),
+                            border: Border.all(color: Colors.orange.withOpacity(0.3)),
                           ),
                           child: Row(mainAxisSize: MainAxisSize.min, children: [
                             const Icon(Icons.visibility_off_rounded, size: 11, color: Colors.orange),
@@ -1670,7 +1670,7 @@ class _HistoryCard extends StatelessWidget {
                       // Divisor sutil
                       Divider(
                         height: 1, thickness: 0.5,
-                        color: isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFEEF2F7),
+                        color: isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFEEF2F7),
                       ),
                       const SizedBox(height: 8),
                       Row(children: [
@@ -1678,7 +1678,7 @@ class _HistoryCard extends StatelessWidget {
                           width: 28, height: 28,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: isDark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFEEF2F7),
+                            color: isDark ? Colors.white.withOpacity(0.07) : const Color(0xFFEEF2F7),
                           ),
                           child: Icon(Icons.person_rounded, size: 14,
                             color: isDark ? Colors.white38 : const Color(0xFFAAAAAA)),
@@ -1710,7 +1710,7 @@ class _HistoryCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               color: AppColors.of(context).darkBtn,
                               boxShadow: [
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 4, offset: const Offset(0, 2)),
+                                BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 4, offset: const Offset(0, 2)),
                               ],
                             ),
                             child: Text(_hcT(p.lang, 'view'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
@@ -1730,8 +1730,8 @@ class _HistoryCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.orange.withValues(alpha: 0.08),
-                                border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                                color: Colors.orange.withOpacity(0.08),
+                                border: Border.all(color: Colors.orange.withOpacity(0.3)),
                               ),
                               child: Row(mainAxisSize: MainAxisSize.min, children: [
                                 Icon(h.isHidden ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 12, color: Colors.orange),
@@ -1749,8 +1749,8 @@ class _HistoryCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.red.withValues(alpha: 0.07),
-                                border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+                                color: Colors.red.withOpacity(0.07),
+                                border: Border.all(color: Colors.red.withOpacity(0.25)),
                               ),
                               child: const Row(mainAxisSize: MainAxisSize.min, children: [
                                 Icon(Icons.delete_forever_rounded, size: 12, color: Colors.red),
@@ -2392,7 +2392,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                     // Divisor dorado fino
                     const SizedBox(height: 10),
                     Container(height: 1.5,
-                        color: const Color(0xFFC5A365).withValues(alpha: 0.55)),
+                        color: const Color(0xFFC5A365).withOpacity(0.55)),
                     const SizedBox(height: 10),
 
                     // Título do caso
@@ -2546,7 +2546,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                     // ── Pie / footer ──────────────────────────────────────────
                     const SizedBox(height: 12),
                     Container(height: 0.5,
-                        color: const Color(0xFFC5A365).withValues(alpha: 0.4)),
+                        color: const Color(0xFFC5A365).withOpacity(0.4)),
                     const SizedBox(height: 6),
                     Text(_hcT(p.lang, 'pdf_footer'),
                         textAlign: TextAlign.center,
@@ -2561,7 +2561,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
               Row(children: [
                 Expanded(child: GestureDetector(
                   onTap: _copy,
-                  child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withValues(alpha: 0.25), blurRadius: 10, offset: const Offset(0,4))]),
+                  child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withOpacity(0.25), blurRadius: 10, offset: const Offset(0,4))]),
                     child: Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
                       const Icon(Icons.copy_rounded, size: 14, color: kGoldLight),
                       const SizedBox(width: 6),
@@ -2573,7 +2573,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                   onTap: _exportPdf,
                   child: Container(
                     height: 48, width: 48,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF1E40AF), boxShadow: [BoxShadow(color: const Color(0xFF1E40AF).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF1E40AF), boxShadow: [BoxShadow(color: const Color(0xFF1E40AF).withOpacity(0.3), blurRadius: 8, offset: const Offset(0,3))]),
                     child: const Center(child: Icon(Icons.picture_as_pdf_rounded, size: 20, color: Colors.white)),
                   ),
                 ),
@@ -2582,7 +2582,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                   onTap: _exporting ? null : _exportPng,
                   child: Container(
                     height: 48, width: 48,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF065F46), boxShadow: [BoxShadow(color: const Color(0xFF065F46).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0,3))]),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF065F46), boxShadow: [BoxShadow(color: const Color(0xFF065F46).withOpacity(0.3), blurRadius: 8, offset: const Offset(0,3))]),
                     child: Center(child: _exporting
                       ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                       : const Icon(Icons.image_rounded, size: 20, color: Colors.white)),
@@ -2627,7 +2627,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                     end: Alignment.bottomRight,
                     colors: [Color(0xFF10B981), Color(0xFF0A3D2A)],
                   ),
-                  boxShadow: [BoxShadow(color: const Color(0xFF10B981).withValues(alpha: 0.45), blurRadius: 14, offset: const Offset(0, 5))],
+                  boxShadow: [BoxShadow(color: const Color(0xFF10B981).withOpacity(0.45), blurRadius: 14, offset: const Offset(0, 5))],
                 ),
                 child: const Center(child: Icon(Icons.edit_rounded, size: 22, color: Color(0xFFFFE8A6))),
               ),
@@ -2677,12 +2677,12 @@ class _HistoryHeroHeader extends StatelessWidget {
         Positioned(
           right: -18, top: -18,
           child: Icon(Icons.medical_information_rounded, size: 140,
-            color: Colors.white.withValues(alpha: 0.04)),
+            color: Colors.white.withOpacity(0.04)),
         ),
         Positioned(
           right: 60, bottom: -10,
           child: Icon(Icons.local_hospital_rounded, size: 80,
-            color: Colors.white.withValues(alpha: 0.04)),
+            color: Colors.white.withOpacity(0.04)),
         ),
 
         // Conteúdo
@@ -2696,13 +2696,13 @@ class _HistoryHeroHeader extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withValues(alpha: 0.12),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                  color: Colors.white.withOpacity(0.12),
+                  border: Border.all(color: Colors.white.withOpacity(0.18)),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   const Icon(Icons.arrow_back_ios_rounded, size: 13, color: Colors.white),
                   const SizedBox(width: 4),
-                  Text(_hcT(lang, 'back'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white.withValues(alpha: 0.9))),
+                  Text(_hcT(lang, 'back'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white.withOpacity(0.9))),
                 ]),
               ),
             ),
@@ -2713,8 +2713,8 @@ class _HistoryHeroHeader extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.white.withValues(alpha: 0.12),
-                border: Border.all(color: const Color(0xFFFFE8A6).withValues(alpha: 0.35)),
+                color: Colors.white.withOpacity(0.12),
+                border: Border.all(color: const Color(0xFFFFE8A6).withOpacity(0.35)),
               ),
               child: Text(
                 history.category.toUpperCase(),
@@ -2741,8 +2741,8 @@ class _HistoryHeroHeader extends StatelessWidget {
                   width: 22, height: 22,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFF10B981).withValues(alpha: 0.2),
-                    border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
+                    color: const Color(0xFF10B981).withOpacity(0.2),
+                    border: Border.all(color: const Color(0xFF10B981).withOpacity(0.4)),
                   ),
                   child: const Center(child: Icon(Icons.person_rounded, size: 12, color: Color(0xFF10B981))),
                 ),
@@ -2754,18 +2754,18 @@ class _HistoryHeroHeader extends StatelessWidget {
                   ),
                   if (history.authorEmail.isNotEmpty)
                     Text(history.authorEmail,
-                      style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.55), fontWeight: FontWeight.w500)),
+                      style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.55), fontWeight: FontWeight.w500)),
                 ])),
                 if (history.uploadedAt.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.white.withValues(alpha: 0.1),
+                      color: Colors.white.withOpacity(0.1),
                     ),
                     child: Text(
                       _formatUploadedAt(history.uploadedAt),
-                      style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.65), fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 9, color: Colors.white.withOpacity(0.65), fontWeight: FontWeight.w600),
                     ),
                   ),
               ]),
@@ -2789,7 +2789,7 @@ class _HistoryHeroHeader extends StatelessWidget {
 
             if (history.tags.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text(history.tags, style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.5), fontWeight: FontWeight.w500, letterSpacing: 0.3)),
+              Text(history.tags, style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w500, letterSpacing: 0.3)),
             ],
           ]),
         ),
@@ -2836,8 +2836,8 @@ class _HistoryHeroHeaderCompact extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.white.withValues(alpha: 0.12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                color: Colors.white.withOpacity(0.12),
+                border: Border.all(color: Colors.white.withOpacity(0.18)),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 const Icon(Icons.arrow_back_ios_rounded, size: 12, color: Colors.white),
@@ -2863,8 +2863,8 @@ class _HistoryHeroHeaderCompact extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: kGold.withValues(alpha: 0.15),
-                  border: Border.all(color: kGold.withValues(alpha: 0.4)),
+                  color: kGold.withOpacity(0.15),
+                  border: Border.all(color: kGold.withOpacity(0.4)),
                 ),
                 child: const Icon(Icons.edit_rounded, size: 14, color: kGoldLight),
               ),
@@ -2898,8 +2898,8 @@ class _PatientBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: accent.withValues(alpha: 0.15),
-        border: Border.all(color: accent.withValues(alpha: 0.35)),
+        color: accent.withOpacity(0.15),
+        border: Border.all(color: accent.withOpacity(0.35)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 10, color: accent),
@@ -3700,7 +3700,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     // Conteúdo da barra de ações (Row com fechar, título, ver, salvar)
     final actionRow = Row(children: [
       GestureDetector(onTap: widget.onCancel,
-        child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.1)),
+        child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.1)),
           child: const Icon(Icons.close_rounded, size: 16, color: Colors.white))),
       const SizedBox(width: 10),
       Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : _hcT(widget.p.lang, 'new_hc_title'),
@@ -3708,7 +3708,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       // Botão Pré-visualizar
       GestureDetector(onTap: _showPreview,
         child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), margin: const EdgeInsets.only(right: 8),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withValues(alpha: 0.12), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withOpacity(0.12), border: Border.all(color: Colors.white.withOpacity(0.2))),
           child: const Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.visibility_rounded, size: 14, color: Colors.white),
             SizedBox(width: 5),
@@ -3722,10 +3722,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     // Barra de progresso
     final progressRow = Row(children: [
       Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(4),
-        child: LinearProgressIndicator(value: completion, minHeight: 4, backgroundColor: Colors.white.withValues(alpha: 0.15),
+        child: LinearProgressIndicator(value: completion, minHeight: 4, backgroundColor: Colors.white.withOpacity(0.15),
           valueColor: const AlwaysStoppedAnimation(kGold)))),
       const SizedBox(width: 8),
-      Text('${(completion * 100).round()}${_hcT(widget.p.lang, "progress_label")}', style: TextStyle(fontSize: 9, color: Colors.white.withValues(alpha: 0.7), fontWeight: FontWeight.w700)),
+      Text('${(completion * 100).round()}${_hcT(widget.p.lang, "progress_label")}', style: TextStyle(fontSize: 9, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w700)),
     ]);
 
     return Column(children: [
@@ -3767,12 +3767,12 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: active ? kGold : Colors.white.withValues(alpha: 0.1),
-                      border: Border.all(color: active ? kGold : Colors.white.withValues(alpha: 0.15)),
+                      color: active ? kGold : Colors.white.withOpacity(0.1),
+                      border: Border.all(color: active ? kGold : Colors.white.withOpacity(0.15)),
                     ),
                     child: Text(_sections[i].$2,
                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                        color: active ? const Color(0xFF0F1116) : Colors.white.withValues(alpha: 0.85))),
+                        color: active ? const Color(0xFF0F1116) : Colors.white.withOpacity(0.85))),
                   ),
                 ),
               );
@@ -3829,7 +3829,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                               fontWeight: active ? FontWeight.w800 : FontWeight.w500,
                               color: active
                                   ? Colors.white
-                                  : Colors.white.withValues(alpha: 0.45),
+                                  : Colors.white.withOpacity(0.45),
                               letterSpacing: 0.3,
                             ),
                           ),
@@ -3994,8 +3994,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       onTap: () => setState(() => _draft = _draft.copyWith(isPublic: !_draft.isPublic)),
       child: Container(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(color: _draft.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.4) : kBorder),
-          color: _draft.isPublic ? const Color(0xFF1E40AF).withValues(alpha: 0.06) : Colors.white),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(color: _draft.isPublic ? const Color(0xFF1E40AF).withOpacity(0.4) : kBorder),
+          color: _draft.isPublic ? const Color(0xFF1E40AF).withOpacity(0.06) : Colors.white),
         child: Row(children: [
           Icon(_draft.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 20, color: _draft.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF6B7280)),
           const SizedBox(width: 12),
@@ -4277,8 +4277,8 @@ class _EditorFieldState extends State<_EditorField> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: const Color(0xFFDC2626).withValues(alpha: 0.08),
-                border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.25)),
+                color: const Color(0xFFDC2626).withOpacity(0.08),
+                border: Border.all(color: const Color(0xFFDC2626).withOpacity(0.25)),
               ),
               child: Builder(builder: (ctx) {
                 final localLang = ctx.read<AppProvider>().lang;
@@ -4336,8 +4336,8 @@ class _EditorFieldState extends State<_EditorField> {
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: const Color(0xFFC5A365).withValues(alpha: 0.10),
-                      border: Border.all(color: const Color(0xFFC5A365).withValues(alpha: 0.40)),
+                      color: const Color(0xFFC5A365).withOpacity(0.10),
+                      border: Border.all(color: const Color(0xFFC5A365).withOpacity(0.40)),
                     ),
                     child: Text(
                       sug.length > 40 ? '${sug.substring(0, 40)}…' : sug,
@@ -4455,7 +4455,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
             color: active ? const Color(0xFF10B981) : const Color(0xFFBBD6C8),
             width: active ? 1.5 : 1,
           ),
-          boxShadow: active ? [BoxShadow(color: const Color(0xFF10B981).withValues(alpha: 0.25), blurRadius: 16, offset: const Offset(0, 4))] : [],
+          boxShadow: active ? [BoxShadow(color: const Color(0xFF10B981).withOpacity(0.25), blurRadius: 16, offset: const Offset(0, 4))] : [],
         ),
         child: Row(children: [
           // Ícone mic animado
@@ -4464,8 +4464,8 @@ class _SmartDictaphoneButton extends StatelessWidget {
             width: 46, height: 46,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: active ? Colors.white.withValues(alpha: 0.15) : const Color(0xFF10B981).withValues(alpha: 0.12),
-              border: Border.all(color: active ? Colors.white.withValues(alpha: 0.3) : const Color(0xFF10B981).withValues(alpha: 0.3)),
+              color: active ? Colors.white.withOpacity(0.15) : const Color(0xFF10B981).withOpacity(0.12),
+              border: Border.all(color: active ? Colors.white.withOpacity(0.3) : const Color(0xFF10B981).withOpacity(0.3)),
             ),
             child: Center(child: Icon(
               active ? Icons.mic_rounded : Icons.mic_none_rounded,
@@ -4494,7 +4494,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
                     : 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo'),
               style: TextStyle(
                 fontSize: 10.5, fontWeight: FontWeight.w600,
-                color: active ? Colors.white.withValues(alpha: 0.80) : const Color(0xFF666666),
+                color: active ? Colors.white.withOpacity(0.80) : const Color(0xFF666666),
                 height: 1.4,
               ),
               maxLines: 2,
@@ -4504,7 +4504,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
           if (active)
             _PulseDot(color: const Color(0xFF86EFAC))
           else
-            Icon(Icons.chevron_right_rounded, size: 20, color: const Color(0xFF10B981).withValues(alpha: 0.5)),
+            Icon(Icons.chevron_right_rounded, size: 20, color: const Color(0xFF10B981).withOpacity(0.5)),
         ]),
       ),
     );
@@ -4585,7 +4585,7 @@ class _MicControlBar extends StatelessWidget {
         border: Border(top: BorderSide(color: cardBorder, width: 1)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.40 : 0.08),
+            color: Colors.black.withOpacity(isDark ? 0.40 : 0.08),
             blurRadius: 20, offset: const Offset(0, -4)),
         ],
       ),
@@ -4620,11 +4620,11 @@ class _MicControlBar extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: isDark
-                                  ? Colors.white.withValues(alpha: 0.07)
+                                  ? Colors.white.withOpacity(0.07)
                                   : const Color(0xFFE8EFF0),
                               border: Border.all(
                                 color: isDark
-                                    ? Colors.white.withValues(alpha: 0.10)
+                                    ? Colors.white.withOpacity(0.10)
                                     : const Color(0xFFCDD8DC)),
                             ),
                             child: Icon(
@@ -4713,9 +4713,9 @@ class _MicControlBar extends StatelessWidget {
                               : (isDark ? Colors.white12 : const Color(0xFFE8E8F0)),
                           border: Border.all(
                             color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
-                                ? const Color(0xFF7C3AED).withValues(alpha: 0.5)
+                                ? const Color(0xFF7C3AED).withOpacity(0.5)
                                 : (isDark
-                                    ? Colors.white.withValues(alpha: 0.08)
+                                    ? Colors.white.withOpacity(0.08)
                                     : const Color(0xFFD0D0E8)),
                             width: 1,
                           ),
@@ -4756,10 +4756,10 @@ class _MicControlBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(13),
                       color: isDark
-                          ? const Color(0xFF10B981).withValues(alpha: 0.14)
-                          : const Color(0xFF10B981).withValues(alpha: 0.07),
+                          ? const Color(0xFF10B981).withOpacity(0.14)
+                          : const Color(0xFF10B981).withOpacity(0.07),
                       border: Border.all(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.25),
+                        color: const Color(0xFF10B981).withOpacity(0.25),
                         width: 1,
                       ),
                     ),
@@ -4780,7 +4780,7 @@ class _MicControlBar extends StatelessWidget {
                         ),
                         const SizedBox(width: 5),
                         Icon(Icons.keyboard_arrow_up_rounded, size: 13,
-                            color: const Color(0xFF10B981).withValues(alpha: 0.6)),
+                            color: const Color(0xFF10B981).withOpacity(0.6)),
                       ],
                     ),
                   ),
@@ -4851,17 +4851,17 @@ class _MicStatusBadge extends StatelessWidget {
     final bool isEs = lang == 'es';
 
     if (aiProcessing) {
-      bgColor  = const Color(0xFF7C3AED).withValues(alpha: 0.10);
+      bgColor  = const Color(0xFF7C3AED).withOpacity(0.10);
       dotColor = const Color(0xFF7C3AED);
       icon     = Icons.auto_awesome_rounded;
       label    = _hcT(lang, 'relato_processing');
     } else if (relatoActive) {
-      bgColor  = const Color(0xFFDC2626).withValues(alpha: 0.08);
+      bgColor  = const Color(0xFFDC2626).withOpacity(0.08);
       dotColor = const Color(0xFFDC2626);
       icon     = Icons.fiber_manual_record_rounded;
       label    = _hcT(lang, 'relato_active');
     } else if (smartActive) {
-      bgColor  = const Color(0xFF10B981).withValues(alpha: 0.10);
+      bgColor  = const Color(0xFF10B981).withOpacity(0.10);
       dotColor = const Color(0xFF16A34A);
       icon     = Icons.fiber_manual_record_rounded;
       // ✅ MELHORIA 1: mostra exatamente qual campo está escutando
@@ -4869,7 +4869,7 @@ class _MicStatusBadge extends StatelessWidget {
           ? (isEs ? 'Grabando: $fieldReadable' : 'Gravando: $fieldReadable')
           : _hcT(lang, 'dictaphone_active');
     } else {
-      bgColor  = const Color(0xFF10B981).withValues(alpha: 0.06);
+      bgColor  = const Color(0xFF10B981).withOpacity(0.06);
       dotColor = const Color(0xFF10B981);
       icon     = Icons.mic_none_rounded;
       label    = _hcT(lang, 'relato_ready');
@@ -4882,7 +4882,7 @@ class _MicStatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: bgColor,
-        border: Border.all(color: dotColor.withValues(alpha: 0.20), width: 1),
+        border: Border.all(color: dotColor.withOpacity(0.20), width: 1),
       ),
       child: Row(children: [
         // Ícone / dot pulsante
@@ -4918,7 +4918,7 @@ class _MicStatusBadge extends StatelessWidget {
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: dotColor.withValues(alpha: 0.15),
+              color: dotColor.withOpacity(0.15),
             ),
             child: Icon(Icons.hearing_rounded, size: 12, color: dotColor),
           ),
@@ -4952,7 +4952,7 @@ class _MicActionBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = enabled ? color : color.withValues(alpha: 0.35);
+    final effectiveColor = enabled ? color : color.withOpacity(0.35);
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: AnimatedContainer(
@@ -4961,12 +4961,12 @@ class _MicActionBtn extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: active
-              ? effectiveColor.withValues(alpha: 0.12)
+              ? effectiveColor.withOpacity(0.12)
               : Colors.transparent,
           border: Border.all(
             color: active
-                ? effectiveColor.withValues(alpha: 0.55)
-                : effectiveColor.withValues(alpha: 0.25),
+                ? effectiveColor.withOpacity(0.55)
+                : effectiveColor.withOpacity(0.25),
             width: active ? 1.5 : 1,
           ),
         ),
@@ -5047,10 +5047,10 @@ class _FieldNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final btnBg     = isDark
-        ? Colors.white.withValues(alpha: 0.07)
+        ? Colors.white.withOpacity(0.07)
         : const Color(0xFFEFF2F5);
     final btnBorder = isDark
-        ? Colors.white.withValues(alpha: 0.10)
+        ? Colors.white.withOpacity(0.10)
         : const Color(0xFFD1D9E0);
     final iconColor = isDark ? Colors.white70 : const Color(0xFF475569);
 
@@ -5228,8 +5228,8 @@ class _CentralMicButtonState extends State<_CentralMicButton>
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             color: Colors.white,
-            boxShadow: [BoxShadow(color: kGreen.withValues(alpha: 0.15), blurRadius: 16, offset: const Offset(0, 4))],
-            border: Border.all(color: kGreen.withValues(alpha: 0.25)),
+            boxShadow: [BoxShadow(color: kGreen.withOpacity(0.15), blurRadius: 16, offset: const Offset(0, 4))],
+            border: Border.all(color: kGreen.withOpacity(0.25)),
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             if (widget.currentField.isNotEmpty)
@@ -5273,8 +5273,8 @@ class _CentralMicButtonState extends State<_CentralMicButton>
                       height: btnSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: kGreen.withValues(alpha: (1 - _ring1.value / 2.0).clamp(0.0, 0.12)),
-                        border: Border.all(color: kGreen.withValues(alpha: (1 - _ring1.value / 2.0).clamp(0.0, 0.25)), width: 1),
+                        color: kGreen.withOpacity((1 - _ring1.value / 2.0).clamp(0.0, 0.12)),
+                        border: Border.all(color: kGreen.withOpacity((1 - _ring1.value / 2.0).clamp(0.0, 0.25)), width: 1),
                       ),
                     ),
                   ),
@@ -5287,8 +5287,8 @@ class _CentralMicButtonState extends State<_CentralMicButton>
                       height: btnSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: kGreen.withValues(alpha: (1 - _ring2.value / 1.8).clamp(0.0, 0.12)),
-                        border: Border.all(color: kGreen.withValues(alpha: (1 - _ring2.value / 1.8).clamp(0.0, 0.3)), width: 1.2),
+                        color: kGreen.withOpacity((1 - _ring2.value / 1.8).clamp(0.0, 0.12)),
+                        border: Border.all(color: kGreen.withOpacity((1 - _ring2.value / 1.8).clamp(0.0, 0.3)), width: 1.2),
                       ),
                     ),
                   ),
@@ -5301,8 +5301,8 @@ class _CentralMicButtonState extends State<_CentralMicButton>
                       height: btnSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: kGreen.withValues(alpha: (1 - _ring3.value / 1.5).clamp(0.0, 0.12)),
-                        border: Border.all(color: kGreen.withValues(alpha: (1 - _ring3.value / 1.5).clamp(0.0, 0.35)), width: 1.5),
+                        color: kGreen.withOpacity((1 - _ring3.value / 1.5).clamp(0.0, 0.12)),
+                        border: Border.all(color: kGreen.withOpacity((1 - _ring3.value / 1.5).clamp(0.0, 0.35)), width: 1.5),
                       ),
                     ),
                   ),
@@ -5323,15 +5323,15 @@ class _CentralMicButtonState extends State<_CentralMicButton>
                           )
                         : null,
                     border: Border.all(
-                      color: active ? kGreen : kGreen.withValues(alpha: 0.35),
+                      color: active ? kGreen : kGreen.withOpacity(0.35),
                       width: active ? 0 : 1.5,
                     ),
                     boxShadow: active
                         ? [
-                            BoxShadow(color: kGreen.withValues(alpha: 0.40), blurRadius: 24, spreadRadius: 2, offset: const Offset(0, 6)),
-                            BoxShadow(color: kGreen.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, 2)),
+                            BoxShadow(color: kGreen.withOpacity(0.40), blurRadius: 24, spreadRadius: 2, offset: const Offset(0, 6)),
+                            BoxShadow(color: kGreen.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 2)),
                           ]
-                        : [BoxShadow(color: Colors.black.withValues(alpha: 0.10), blurRadius: 12, offset: const Offset(0, 4))],
+                        : [BoxShadow(color: Colors.black.withOpacity(0.10), blurRadius: 12, offset: const Offset(0, 4))],
                   ),
                   child: Icon(
                     active ? Icons.mic_rounded : Icons.mic_none_rounded,
@@ -5417,7 +5417,7 @@ class _HistoryPreviewSheet extends StatelessWidget {
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.12)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.12)),
                   child: const Icon(Icons.close_rounded, size: 16, color: Colors.white)),
               ),
             ]),
@@ -5624,7 +5624,7 @@ class _PreviewSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
         border: Border.all(color: const Color(0xFFEEEEEE)),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Header
@@ -5632,8 +5632,8 @@ class _PreviewSection extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            color: color.withValues(alpha: 0.06),
-            border: Border(bottom: BorderSide(color: color.withValues(alpha: 0.12))),
+            color: color.withOpacity(0.06),
+            border: Border(bottom: BorderSide(color: color.withOpacity(0.12))),
           ),
           child: Row(children: [
             Container(width: 28, height: 28, decoration: BoxDecoration(shape: BoxShape.circle, color: color),
@@ -5674,9 +5674,9 @@ class _PreviewItemHighlight extends StatelessWidget {
     padding: const EdgeInsets.only(bottom: 10),
     child: Container(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color.withValues(alpha: 0.06), border: Border.all(color: color.withValues(alpha: 0.18))),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color.withOpacity(0.06), border: Border.all(color: color.withOpacity(0.18))),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label.toUpperCase(), style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: color.withValues(alpha: 0.7), letterSpacing: 0.8)),
+        Text(label.toUpperCase(), style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: color.withOpacity(0.7), letterSpacing: 0.8)),
         const SizedBox(height: 3),
         Text(text, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color, height: 1.5)),
       ]),
@@ -5691,7 +5691,7 @@ class _MetaChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withValues(alpha: 0.12), border: Border.all(color: Colors.white.withValues(alpha: 0.2))),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.12), border: Border.all(color: Colors.white.withOpacity(0.2))),
       child: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
     );
   }
@@ -5712,14 +5712,14 @@ class _DetailCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: kBorder),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Header da seção
         Container(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           decoration: BoxDecoration(
-            color: kDark.withValues(alpha: 0.04),
+            color: kDark.withOpacity(0.04),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             border: const Border(bottom: BorderSide(color: kBorder)),
           ),
@@ -5758,8 +5758,8 @@ class _SectionBlock extends StatelessWidget {
             width: 28, height: 28,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF10B981).withValues(alpha: 0.1),
-              border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.2)),
+              color: const Color(0xFF10B981).withOpacity(0.1),
+              border: Border.all(color: const Color(0xFF10B981).withOpacity(0.2)),
             ),
             child: Center(child: Icon(icon, size: 13, color: const Color(0xFF10B981))),
           ),
@@ -5788,15 +5788,15 @@ class _AllergyBanner extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           color: const Color(0xFFFFF1F1),
           border: Border.all(color: const Color(0xFFFF8080), width: 1.5),
-          boxShadow: [BoxShadow(color: const Color(0xFFCC2222).withValues(alpha: 0.08), blurRadius: 10, offset: const Offset(0, 3))],
+          boxShadow: [BoxShadow(color: const Color(0xFFCC2222).withOpacity(0.08), blurRadius: 10, offset: const Offset(0, 3))],
         ),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
             width: 32, height: 32,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFCC2222).withValues(alpha: 0.12),
-              border: Border.all(color: const Color(0xFFCC2222).withValues(alpha: 0.3)),
+              color: const Color(0xFFCC2222).withOpacity(0.12),
+              border: Border.all(color: const Color(0xFFCC2222).withOpacity(0.3)),
             ),
             child: const Center(child: Icon(Icons.warning_amber_rounded, size: 18, color: Color(0xFFCC2222))),
           ),
@@ -5827,14 +5827,14 @@ class _DxBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         color: bgColor,
         border: Border.all(color: borderColor, width: 1.5),
-        boxShadow: [BoxShadow(color: primaryColor.withValues(alpha: 0.1), blurRadius: 12, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: primaryColor.withOpacity(0.1), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Header da caixa de diagnóstico
         Container(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
           decoration: BoxDecoration(
-            color: primaryColor.withValues(alpha: 0.08),
+            color: primaryColor.withOpacity(0.08),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(17)),
             border: Border(bottom: BorderSide(color: borderColor)),
           ),
@@ -5869,12 +5869,12 @@ class _DxBanner extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: primaryColor.withValues(alpha: 0.1),
+                  color: primaryColor.withOpacity(0.1),
                 ),
                 child: Text('CID-10: $cid', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: primaryColor)),
               )],
             if (differential.isNotEmpty) ...[const SizedBox(height: 8),
-              Text(_hcT(lang, 'dx_diff_label'), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: primaryColor.withValues(alpha: 0.6), letterSpacing: 1.1)),
+              Text(_hcT(lang, 'dx_diff_label'), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: primaryColor.withOpacity(0.6), letterSpacing: 1.1)),
               const SizedBox(height: 3),
               Text(differential, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF555555), height: 1.4))],
           ],
@@ -5904,7 +5904,7 @@ class _OutcomeBadge extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: outcomeColor.withValues(alpha: 0.1), border: Border.all(color: outcomeColor.withValues(alpha: 0.3))),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: outcomeColor.withOpacity(0.1), border: Border.all(color: outcomeColor.withOpacity(0.3))),
         child: Text('$outcomePrefix: $outcomeLabel', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: outcomeColor)),
       ),
     );
@@ -6409,7 +6409,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
           const SizedBox(height: 8),
           Container(
             width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withValues(alpha: 0.06)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withOpacity(0.06)),
             child: Text(widget.controller.text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF065F46))),
           ),
         ],
@@ -6698,7 +6698,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                   width: 40, height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFF46E28C).withValues(alpha: 0.10),
+                    color: const Color(0xFF46E28C).withOpacity(0.10),
                   ),
                   child: const Icon(Icons.camera_alt_rounded,
                       color: Color(0xFF46E28C), size: 20),
@@ -6727,7 +6727,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                   width: 40, height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFF46E28C).withValues(alpha: 0.10),
+                    color: const Color(0xFF46E28C).withOpacity(0.10),
                   ),
                   child: const Icon(Icons.photo_library_rounded,
                       color: Color(0xFF46E28C), size: 20),
@@ -6925,8 +6925,8 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: flagColor ?? const Color(0xFF1A1D23)),
         decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7), hintText: hint,
           hintStyle: const TextStyle(fontSize: 10, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withValues(alpha: 0.4) ?? kBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withValues(alpha: 0.4) ?? kBorder)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withOpacity(0.4) ?? kBorder)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withOpacity(0.4) ?? kBorder)),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor ?? const Color(0xFF065F46), width: 1.5))),
       )),
     ]);
@@ -6953,7 +6953,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
               onTap: _ocrLoading ? null : _openOcrPicker,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withValues(alpha: 0.08), border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.25))),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withOpacity(0.08), border: Border.all(color: const Color(0xFF065F46).withOpacity(0.25))),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   if (_ocrLoading)
                     const SizedBox(width: 10, height: 10, child: CircularProgressIndicator(strokeWidth: 1.5, color: Color(0xFF065F46)))
@@ -7033,7 +7033,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
             child: Container(
               width: double.infinity, padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withValues(alpha: 0.06)),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withOpacity(0.06)),
               child: Text(widget.controller.text, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF065F46), height: 1.5), maxLines: 4, overflow: TextOverflow.ellipsis),
             ),
           ),
@@ -7054,7 +7054,7 @@ class _PngDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     height: 0.75, margin: const EdgeInsets.symmetric(vertical: 7),
-    color: const Color(0xFFC5A365).withValues(alpha: 0.55),
+    color: const Color(0xFFC5A365).withOpacity(0.55),
   );
 }
 
@@ -7193,7 +7193,7 @@ class _PngDxSection extends StatelessWidget {
           if (final_.isNotEmpty) ...[
             if (working.isNotEmpty || differential.isNotEmpty) ...[
               const SizedBox(height: 6),
-              Container(height: 0.5, color: const Color(0xFF16A34A).withValues(alpha: 0.35)),
+              Container(height: 0.5, color: const Color(0xFF16A34A).withOpacity(0.35)),
               const SizedBox(height: 6),
             ],
             Text(final_,
@@ -7261,7 +7261,7 @@ class _PngOutcomeBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF0FDF4),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF16A34A).withValues(alpha: 0.4), width: 1),
+        border: Border.all(color: const Color(0xFF16A34A).withOpacity(0.4), width: 1),
       ),
       child: Text(labels[outcome] ?? outcome,
           style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
@@ -7654,11 +7654,11 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
                         decoration: InputDecoration(
                           hintText: _hcT(_lang, 'organizar_placeholder'),
                           hintStyle: TextStyle(
-                            fontSize: 12, color: subCol.withValues(alpha: 0.6),
+                            fontSize: 12, color: subCol.withOpacity(0.6),
                             fontStyle: FontStyle.italic),
                           filled: true,
                           fillColor: isDark
-                              ? Colors.white.withValues(alpha: 0.04)
+                              ? Colors.white.withOpacity(0.04)
                               : const Color(0xFFF6FAF8),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -7684,7 +7684,7 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
                           _voiceInterim,
                           style: TextStyle(
                             fontSize: 12, fontStyle: FontStyle.italic,
-                            color: _kGreen.withValues(alpha: 0.8)),
+                            color: _kGreen.withOpacity(0.8)),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -7708,13 +7708,13 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
                       color: _voiceActive
-                          ? const Color(0xFFDC2626).withValues(alpha: 0.12)
+                          ? const Color(0xFFDC2626).withOpacity(0.12)
                           : (isDark
-                              ? Colors.white.withValues(alpha: 0.06)
+                              ? Colors.white.withOpacity(0.06)
                               : const Color(0xFFF0F7F4)),
                       border: Border.all(
                         color: _voiceActive
-                            ? const Color(0xFFDC2626).withValues(alpha: 0.45)
+                            ? const Color(0xFFDC2626).withOpacity(0.45)
                             : border,
                         width: _voiceActive ? 1.5 : 1,
                       ),

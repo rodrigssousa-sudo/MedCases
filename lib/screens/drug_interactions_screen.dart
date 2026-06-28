@@ -285,7 +285,7 @@ class _Header extends StatelessWidget {
       decoration: BoxDecoration(
         color: c.surface,
         border: Border(
-          bottom: BorderSide(color: c.border.withValues(alpha: 0.5), width: 1),
+          bottom: BorderSide(color: c.border.withOpacity(0.5), width: 1),
         ),
       ),
       child: Row(
@@ -347,10 +347,10 @@ class _Header extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFF3D1F6B).withValues(alpha: dark ? 0.4 : 0.12),
+              color: const Color(0xFF3D1F6B).withOpacity(dark ? 0.4 : 0.12),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF9F7AEA).withValues(alpha: 0.3),
+                color: const Color(0xFF9F7AEA).withOpacity(0.3),
                 width: 1,
               ),
             ),
@@ -394,11 +394,11 @@ class _SearchField extends StatelessWidget {
       height: 52,
       decoration: BoxDecoration(
         color: dark
-            ? const Color(0xFF1A1A2E).withValues(alpha: 0.6)
+            ? const Color(0xFF1A1A2E).withOpacity(0.6)
             : const Color(0xFFF3F0FF),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF9F7AEA).withValues(alpha: dark ? 0.25 : 0.2),
+          color: const Color(0xFF9F7AEA).withOpacity(dark ? 0.25 : 0.2),
           width: 1.2,
         ),
       ),
@@ -478,12 +478,12 @@ class _SuggestionsDropdown extends StatelessWidget {
         color: dark ? const Color(0xFF1C1C2E) : Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: const Color(0xFF9F7AEA).withValues(alpha: 0.2),
+          color: const Color(0xFF9F7AEA).withOpacity(0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.4 : 0.1),
+            color: Colors.black.withOpacity(dark ? 0.4 : 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -504,7 +504,7 @@ class _SuggestionsDropdown extends StatelessWidget {
                 border: i < suggestions.length - 1
                     ? Border(
                         bottom: BorderSide(
-                          color: c.border.withValues(alpha: 0.3),
+                          color: c.border.withOpacity(0.3),
                           width: 0.7,
                         ),
                       )
@@ -531,7 +531,7 @@ class _SuggestionsDropdown extends StatelessWidget {
                   Icon(
                     Icons.add_circle_outline_rounded,
                     size: 16,
-                    color: const Color(0xFFA78BFA).withValues(alpha: 0.7),
+                    color: const Color(0xFFA78BFA).withOpacity(0.7),
                   ),
                 ],
               ),
@@ -614,7 +614,7 @@ class _DrugChip extends StatelessWidget {
             : const Color(0xFFEDE9FE),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFF9F7AEA).withValues(alpha: dark ? 0.35 : 0.3),
+          color: const Color(0xFF9F7AEA).withOpacity(dark ? 0.35 : 0.3),
           width: 1.1,
         ),
       ),
@@ -638,7 +638,7 @@ class _DrugChip extends StatelessWidget {
               height: 18,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF9F7AEA).withValues(alpha: 0.25),
+                color: const Color(0xFF9F7AEA).withOpacity(0.25),
               ),
               child: Icon(
                 Icons.close_rounded,
@@ -683,7 +683,7 @@ class _AvaliarButton extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF6B3FA8).withValues(alpha: 0.45),
+              color: const Color(0xFF6B3FA8).withOpacity(0.45),
               blurRadius: 16,
               offset: const Offset(0, 6),
               spreadRadius: -2,
@@ -740,14 +740,14 @@ class _EmptyState extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF3D1F6B).withValues(alpha: dark ? 0.4 : 0.12),
-                    const Color(0xFF6B3FA8).withValues(alpha: dark ? 0.2 : 0.06),
+                    const Color(0xFF3D1F6B).withOpacity(dark ? 0.4 : 0.12),
+                    const Color(0xFF6B3FA8).withOpacity(dark ? 0.2 : 0.06),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 border: Border.all(
-                  color: const Color(0xFF9F7AEA).withValues(alpha: 0.2),
+                  color: const Color(0xFF9F7AEA).withOpacity(0.2),
                   width: 1.5,
                 ),
               ),
@@ -864,7 +864,7 @@ class _OneMoreDrugHint extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF3D1F6B).withValues(alpha: dark ? 0.3 : 0.1),
+                color: const Color(0xFF3D1F6B).withOpacity(dark ? 0.3 : 0.1),
               ),
               child: const Icon(
                 Icons.add_circle_rounded,
@@ -938,10 +938,10 @@ class _ResultsHeader extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: badgeColor.withValues(alpha: dark ? 0.25 : 0.12),
+                color: badgeColor.withOpacity(dark ? 0.25 : 0.12),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: badgeColor.withValues(alpha: 0.4),
+                  color: badgeColor.withOpacity(0.4),
                   width: 1.2,
                 ),
               ),
@@ -1066,10 +1066,10 @@ class _NoInteractionsFound extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF14532D).withValues(alpha: dark ? 0.3 : 0.08),
+        color: const Color(0xFF14532D).withOpacity(dark ? 0.3 : 0.08),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: const Color(0xFF16A34A).withValues(alpha: 0.3),
+          color: const Color(0xFF16A34A).withOpacity(0.3),
           width: 1.2,
         ),
       ),
@@ -1106,7 +1106,7 @@ class _NoInteractionsFound extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFF14532D).withValues(alpha: dark ? 0.3 : 0.12),
+              color: const Color(0xFF14532D).withOpacity(dark ? 0.3 : 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -1193,12 +1193,12 @@ class _InteractionCardState extends State<_InteractionCard> {
         color: dark ? const Color(0xFF141420) : Colors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: _severityColor.withValues(alpha: dark ? 0.3 : 0.2),
+          color: _severityColor.withOpacity(dark ? 0.3 : 0.2),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: _severityColor.withValues(alpha: dark ? 0.12 : 0.08),
+            color: _severityColor.withOpacity(dark ? 0.12 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
             spreadRadius: -2,
@@ -1220,9 +1220,9 @@ class _InteractionCardState extends State<_InteractionCard> {
                     height: 40,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: _severityBg.withValues(alpha: dark ? 0.5 : 0.15),
+                      color: _severityBg.withOpacity(dark ? 0.5 : 0.15),
                       border: Border.all(
-                        color: _severityColor.withValues(alpha: 0.3),
+                        color: _severityColor.withOpacity(0.3),
                         width: 1,
                       ),
                     ),
@@ -1252,7 +1252,7 @@ class _InteractionCardState extends State<_InteractionCard> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: _severityBg.withValues(alpha: dark ? 0.35 : 0.12),
+                            color: _severityBg.withOpacity(dark ? 0.35 : 0.12),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -1292,10 +1292,10 @@ class _InteractionCardState extends State<_InteractionCard> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: _severityColor.withValues(alpha: dark ? 0.12 : 0.07),
+                  color: _severityColor.withOpacity(dark ? 0.12 : 0.07),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: _severityColor.withValues(alpha: 0.2),
+                    color: _severityColor.withOpacity(0.2),
                     width: 0.8,
                   ),
                 ),
@@ -1322,7 +1322,7 @@ class _InteractionCardState extends State<_InteractionCard> {
           // ── Conteúdo expandido ───────────────────────────────────────────
           if (_expanded) ...[
             Divider(
-              color: c.border.withValues(alpha: 0.4),
+              color: c.border.withOpacity(0.4),
               height: 1,
               thickness: 0.7,
             ),
@@ -1370,10 +1370,10 @@ class _ExpandedContent extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: severityColor.withValues(alpha: dark ? 0.15 : 0.08),
+              color: severityColor.withOpacity(dark ? 0.15 : 0.08),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: severityColor.withValues(alpha: 0.25),
+                color: severityColor.withOpacity(0.25),
                 width: 1,
               ),
             ),
@@ -1462,7 +1462,7 @@ class _ExpandedContent extends StatelessWidget {
                               horizontal: 7, vertical: 3),
                           decoration: BoxDecoration(
                             color: const Color(0xFFF87171)
-                                .withValues(alpha: dark ? 0.15 : 0.1),
+                                .withOpacity(dark ? 0.15 : 0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -1501,10 +1501,10 @@ class _ExpandedContent extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFBBF24)
-                          .withValues(alpha: dark ? 0.2 : 0.12),
+                          .withOpacity(dark ? 0.2 : 0.12),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: const Color(0xFFFBBF24).withValues(alpha: 0.3),
+                        color: const Color(0xFFFBBF24).withOpacity(0.3),
                         width: 1,
                       ),
                     ),
@@ -1601,7 +1601,7 @@ class _InfoSection extends StatelessWidget {
                 : const Color(0xFFF8F8FC),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: c.border.withValues(alpha: 0.4),
+              color: c.border.withOpacity(0.4),
               width: 0.8,
             ),
           ),
@@ -1643,10 +1643,10 @@ class _NewAnalysisButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: const Color(0xFF9F7AEA).withValues(alpha: dark ? 0.5 : 0.4),
+            color: const Color(0xFF9F7AEA).withOpacity(dark ? 0.5 : 0.4),
             width: 1.5,
           ),
-          color: const Color(0xFF3D1F6B).withValues(alpha: dark ? 0.2 : 0.06),
+          color: const Color(0xFF3D1F6B).withOpacity(dark ? 0.2 : 0.06),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

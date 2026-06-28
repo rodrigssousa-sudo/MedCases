@@ -144,8 +144,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.amber.withValues(alpha: 0.2),
-                border: Border.all(color: Colors.amber.withValues(alpha: 0.5)),
+                color: Colors.amber.withOpacity(0.2),
+                border: Border.all(color: Colors.amber.withOpacity(0.5)),
               ),
               child: const Text('MASTER', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.amber)),
             ),
@@ -231,7 +231,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       hintStyle: const TextStyle(color: Colors.white54, fontSize: 13),
                       prefixIcon: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
                       filled: true,
-                      fillColor: Colors.white.withValues(alpha: 0.08),
+                      fillColor: Colors.white.withOpacity(0.08),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     ),
@@ -442,7 +442,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
             backgroundColor: const Color(0xFFFFFDF8),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: kDark)),
-            content: Text(body, style: TextStyle(fontSize: 13, color: kDark.withValues(alpha: 0.7))),
+            content: Text(body, style: TextStyle(fontSize: 13, color: kDark.withOpacity(0.7))),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -704,12 +704,12 @@ class _SystemTabState extends State<_SystemTab> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isActive
-              ? kGeminiBlue.withValues(alpha: 0.4)
+              ? kGeminiBlue.withOpacity(0.4)
               : _c.border,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -724,7 +724,7 @@ class _SystemTabState extends State<_SystemTab> {
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               color: isActive
-                  ? kGeminiBlue.withValues(alpha: 0.07)
+                  ? kGeminiBlue.withOpacity(0.07)
                   : _c.surface,
             ),
             child: Row(children: [
@@ -733,11 +733,11 @@ class _SystemTabState extends State<_SystemTab> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: isActive
-                      ? kGeminiBlue.withValues(alpha: 0.12)
+                      ? kGeminiBlue.withOpacity(0.12)
                       : _c.surface,
                   border: Border.all(
                     color: isActive
-                        ? kGeminiBlue.withValues(alpha: 0.4)
+                        ? kGeminiBlue.withOpacity(0.4)
                         : _c.border,
                   ),
                 ),
@@ -784,8 +784,8 @@ class _SystemTabState extends State<_SystemTab> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: isActive
-                      ? kGeminiBlue.withValues(alpha: 0.12)
-                      : Colors.orange.withValues(alpha: 0.12),
+                      ? kGeminiBlue.withOpacity(0.12)
+                      : Colors.orange.withOpacity(0.12),
                 ),
                 child: Text(
                   isActive
@@ -869,18 +869,18 @@ class _SystemTabState extends State<_SystemTab> {
                       borderRadius: BorderRadius.circular(9),
                       color: _paidTestDone
                           ? (_paidTestOnline
-                              ? const Color(0xFF10A37F).withValues(alpha: 0.12)
-                              : Colors.red.withValues(alpha: 0.07))
+                              ? const Color(0xFF10A37F).withOpacity(0.12)
+                              : Colors.red.withOpacity(0.07))
                           : (_paidEnabled
-                              ? kGeminiBlueBg.withValues(alpha: 0.08)
+                              ? kGeminiBlueBg.withOpacity(0.08)
                               : _c.surface),
                       border: Border.all(
                         color: _paidTestDone
                             ? (_paidTestOnline
-                                ? const Color(0xFF10A37F).withValues(alpha: 0.4)
-                                : Colors.red.withValues(alpha: 0.3))
+                                ? const Color(0xFF10A37F).withOpacity(0.4)
+                                : Colors.red.withOpacity(0.3))
                             : (_paidEnabled
-                                ? kGeminiBlue.withValues(alpha: 0.3)
+                                ? kGeminiBlue.withOpacity(0.3)
                                 : _c.border),
                       ),
                     ),
@@ -989,8 +989,8 @@ class _SystemTabState extends State<_SystemTab> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: kGeminiBlue.withValues(alpha: 0.05),
-                border: Border.all(color: kGeminiBlue.withValues(alpha: 0.15)),
+                color: kGeminiBlue.withOpacity(0.05),
+                border: Border.all(color: kGeminiBlue.withOpacity(0.15)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1005,7 +1005,7 @@ class _SystemTabState extends State<_SystemTab> {
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
-                        color: kGeminiBlue.withValues(alpha: 0.85),
+                        color: kGeminiBlue.withOpacity(0.85),
                         height: 1.5,
                       ),
                     ),
@@ -1072,12 +1072,12 @@ class _SystemTabState extends State<_SystemTab> {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isEnabled
-                      ? Colors.orange.withValues(alpha: 0.4)
-                      : kGreen.withValues(alpha: 0.2),
+                      ? Colors.orange.withOpacity(0.4)
+                      : kGreen.withOpacity(0.2),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Colors.black.withOpacity(0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -1094,8 +1094,8 @@ class _SystemTabState extends State<_SystemTab> {
                         top: Radius.circular(16),
                       ),
                       color: isEnabled
-                          ? Colors.orange.withValues(alpha: 0.07)
-                          : kGreen.withValues(alpha: 0.06),
+                          ? Colors.orange.withOpacity(0.07)
+                          : kGreen.withOpacity(0.06),
                     ),
                     child: Row(children: [
                       Container(
@@ -1103,12 +1103,12 @@ class _SystemTabState extends State<_SystemTab> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: isEnabled
-                              ? Colors.orange.withValues(alpha: 0.12)
-                              : kGreen.withValues(alpha: 0.12),
+                              ? Colors.orange.withOpacity(0.12)
+                              : kGreen.withOpacity(0.12),
                           border: Border.all(
                             color: isEnabled
-                                ? Colors.orange.withValues(alpha: 0.35)
-                                : kGreen.withValues(alpha: 0.35),
+                                ? Colors.orange.withOpacity(0.35)
+                                : kGreen.withOpacity(0.35),
                           ),
                         ),
                         child: Icon(
@@ -1164,8 +1164,8 @@ class _SystemTabState extends State<_SystemTab> {
                                 states.contains(WidgetState.selected) ? Colors.orange : kGreen),
                               trackColor: WidgetStateProperty.resolveWith((states) =>
                                 states.contains(WidgetState.selected)
-                                  ? Colors.orange.withValues(alpha: 0.25)
-                                  : kGreen.withValues(alpha: 0.2)),
+                                  ? Colors.orange.withOpacity(0.25)
+                                  : kGreen.withOpacity(0.2)),
                             ),
                     ]),
                   ),
@@ -1251,7 +1251,7 @@ class _SystemTabState extends State<_SystemTab> {
                                 color: kDark,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: kDark.withValues(alpha: 0.3),
+                                    color: kDark.withOpacity(0.3),
                                     blurRadius: 8,
                                     offset: const Offset(0, 3),
                                   ),
@@ -1328,12 +1328,12 @@ class _SystemTabState extends State<_SystemTab> {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: _aiKeyOriginal.isNotEmpty
-                      ? const Color(0xFF10A37F).withValues(alpha: 0.35)
+                      ? const Color(0xFF10A37F).withOpacity(0.35)
                       : _c.border,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Colors.black.withOpacity(0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -1350,7 +1350,7 @@ class _SystemTabState extends State<_SystemTab> {
                         top: Radius.circular(16),
                       ),
                       color: _aiKeyOriginal.isNotEmpty
-                          ? const Color(0xFF10A37F).withValues(alpha: 0.07)
+                          ? const Color(0xFF10A37F).withOpacity(0.07)
                           : _c.surface,
                     ),
                     child: Row(children: [
@@ -1359,11 +1359,11 @@ class _SystemTabState extends State<_SystemTab> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: _aiKeyOriginal.isNotEmpty
-                              ? const Color(0xFF10A37F).withValues(alpha: 0.12)
+                              ? const Color(0xFF10A37F).withOpacity(0.12)
                               : _c.surface,
                           border: Border.all(
                             color: _aiKeyOriginal.isNotEmpty
-                                ? const Color(0xFF10A37F).withValues(alpha: 0.35)
+                                ? const Color(0xFF10A37F).withOpacity(0.35)
                                 : _c.border,
                           ),
                         ),
@@ -1414,8 +1414,8 @@ class _SystemTabState extends State<_SystemTab> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: _aiKeyOriginal.isNotEmpty
-                              ? const Color(0xFF10A37F).withValues(alpha: 0.12)
-                              : Colors.red.withValues(alpha: 0.10),
+                              ? const Color(0xFF10A37F).withOpacity(0.12)
+                              : Colors.red.withOpacity(0.10),
                         ),
                         child: Text(
                           _aiKeyOriginal.isNotEmpty ? 'Online' : 'Offline',
@@ -1511,9 +1511,9 @@ class _SystemTabState extends State<_SystemTab> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(9),
                                     border: Border.all(
-                                      color: Colors.red.withValues(alpha: 0.35),
+                                      color: Colors.red.withOpacity(0.35),
                                     ),
-                                    color: Colors.red.withValues(alpha: 0.07),
+                                    color: Colors.red.withOpacity(0.07),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -1551,7 +1551,7 @@ class _SystemTabState extends State<_SystemTab> {
                                     : kDark,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: kDark.withValues(alpha: 0.3),
+                                    color: kDark.withOpacity(0.3),
                                     blurRadius: 8,
                                     offset: const Offset(0, 3),
                                   ),
@@ -1644,8 +1644,8 @@ class _SystemTabState extends State<_SystemTab> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: kGold.withValues(alpha: 0.07),
-                border: Border.all(color: kGold.withValues(alpha: 0.25)),
+                color: kGold.withOpacity(0.07),
+                border: Border.all(color: kGold.withOpacity(0.25)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1722,7 +1722,7 @@ class _UserList extends StatelessWidget {
     if (users.isEmpty) {
       return Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(emptyIcon, size: 48, color: kGreen.withValues(alpha: 0.3)),
+          Icon(emptyIcon, size: 48, color: kGreen.withOpacity(0.3)),
           const SizedBox(height: 12),
           Text(emptyMsg, style: TextStyle(color: c.textHint, fontWeight: FontWeight.w600)),
         ]),
@@ -1809,8 +1809,8 @@ class _UserCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: c.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: isMe ? kGold.withValues(alpha: 0.5) : c.border),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        border: Border.all(color: isMe ? kGold.withOpacity(0.5) : c.border),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -1845,7 +1845,7 @@ class _UserCard extends StatelessWidget {
                   if (isMe)
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: kGold.withValues(alpha: 0.15), border: Border.all(color: kGold.withValues(alpha: 0.4))),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: kGold.withOpacity(0.15), border: Border.all(color: kGold.withOpacity(0.4))),
                       child: const Text('Você / You', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold)),
                     ),
                   const SizedBox(width: 4),
@@ -1924,15 +1924,15 @@ class _StatusBadge extends StatelessWidget {
     Color bg; Color fg; String label;
     switch (status) {
       case UserStatus.approved:
-        bg = Colors.green.withValues(alpha: 0.1); fg = Colors.green; label = 'Aprobado/Aprovado'; break;
+        bg = Colors.green.withOpacity(0.1); fg = Colors.green; label = 'Aprobado/Aprovado'; break;
       case UserStatus.pending:
-        bg = Colors.orange.withValues(alpha: 0.12); fg = Colors.orange; label = 'Pendente'; break;
+        bg = Colors.orange.withOpacity(0.12); fg = Colors.orange; label = 'Pendente'; break;
       case UserStatus.blocked:
-        bg = Colors.red.withValues(alpha: 0.1); fg = Colors.red; label = 'Bloqueado'; break;
+        bg = Colors.red.withOpacity(0.1); fg = Colors.red; label = 'Bloqueado'; break;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: bg, border: Border.all(color: fg.withValues(alpha: 0.3))),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: bg, border: Border.all(color: fg.withOpacity(0.3))),
       child: Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: fg)),
     );
   }
@@ -1949,22 +1949,22 @@ class _RoleBadge extends StatelessWidget {
 
     Color bg; Color fg; Color border; String label; IconData icon;
     if (user.isMaster) {
-      bg = Colors.amber.withValues(alpha: 0.15);
+      bg = Colors.amber.withOpacity(0.15);
       fg = Colors.amber.shade700;
-      border = Colors.amber.withValues(alpha: 0.5);
+      border = Colors.amber.withOpacity(0.5);
       label = 'Master';
       icon = Icons.workspace_premium_rounded;
     } else if (user.role == UserRole.admin) {
-      bg = kGold.withValues(alpha: 0.12);
+      bg = kGold.withOpacity(0.12);
       fg = kGold;
-      border = kGold.withValues(alpha: 0.4);
+      border = kGold.withOpacity(0.4);
       label = 'Admin';
       icon = Icons.star_rounded;
     } else {
       // supervisor
-      bg = Colors.blue.withValues(alpha: 0.1);
+      bg = Colors.blue.withOpacity(0.1);
       fg = Colors.blue;
-      border = Colors.blue.withValues(alpha: 0.3);
+      border = Colors.blue.withOpacity(0.3);
       label = 'Supervisor';
       icon = Icons.shield_rounded;
     }
@@ -2024,8 +2024,8 @@ class _ActionBtn extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: color.withValues(alpha: 0.08),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          color: color.withOpacity(0.08),
+          border: Border.all(color: color.withOpacity(0.25)),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, size: 14, color: color),
@@ -2175,7 +2175,7 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
             ]),
             const SizedBox(height: 4),
             Text('Os usuários verão o modal ao abrir o app',
-              style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.55))),
+              style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.55))),
           ]),
         ),
         const SizedBox(height: 16),
@@ -2223,8 +2223,8 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: kGreen.withValues(alpha: 0.08),
-                border: Border.all(color: kGreen.withValues(alpha: 0.25)),
+                color: kGreen.withOpacity(0.08),
+                border: Border.all(color: kGreen.withOpacity(0.25)),
               ),
               child: const Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.add_rounded, size: 14, color: kGreen),
@@ -2286,8 +2286,8 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
                   ? const Color(0xFFFFEDED)
                   : const Color(0xFFE8F5EE),
               border: Border.all(color: _savedMsg!.startsWith('Erro')
-                  ? Colors.red.withValues(alpha: 0.3)
-                  : kGreen.withValues(alpha: 0.3)),
+                  ? Colors.red.withOpacity(0.3)
+                  : kGreen.withOpacity(0.3)),
             ),
             child: Row(children: [
               Icon(
@@ -2458,7 +2458,7 @@ class _StatsTab extends StatelessWidget {
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: kGold.withValues(alpha: 0.12),
+                color: kGold.withOpacity(0.12),
               ),
               child: const Icon(Icons.bar_chart_rounded, size: 16, color: kGold),
             ),
@@ -2521,10 +2521,10 @@ class _SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 8, offset: const Offset(0, 2)),
         ],
       ),
@@ -2533,7 +2533,7 @@ class _SummaryCard extends StatelessWidget {
           padding: const EdgeInsets.all(7),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: color.withValues(alpha: 0.1),
+            color: color.withOpacity(0.1),
           ),
           child: Icon(icon, size: 16, color: color),
         ),
@@ -2590,7 +2590,7 @@ class _UserUsageRow extends StatelessWidget {
         border: Border.all(color: c.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withOpacity(0.03),
             blurRadius: 6, offset: const Offset(0, 2)),
         ],
       ),
@@ -2603,7 +2603,7 @@ class _UserUsageRow extends StatelessWidget {
             width: 34, height: 34,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: kGreen.withValues(alpha: 0.1),
+              color: kGreen.withOpacity(0.1),
             ),
             child: Center(
               child: Text(
@@ -2711,8 +2711,8 @@ class _MiniChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: color.withValues(alpha: 0.1),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        color: color.withOpacity(0.1),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(label,
         style: TextStyle(
@@ -2929,7 +2929,7 @@ class _EmailTabState extends State<_EmailTab> {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: kBlue.withValues(alpha: 0.1),
+                  color: kBlue.withOpacity(0.1),
                 ),
                 child: const Icon(Icons.send_rounded, size: 18, color: kBlue),
               ),
@@ -2941,15 +2941,15 @@ class _EmailTabState extends State<_EmailTab> {
               crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 'Você está prestes a enviar um e-mail para',
-                style: TextStyle(fontSize: 13, color: kDark.withValues(alpha: 0.7)),
+                style: TextStyle(fontSize: 13, color: kDark.withOpacity(0.7)),
               ),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: kBlue.withValues(alpha: 0.06),
-                  border: Border.all(color: kBlue.withValues(alpha: 0.2)),
+                  color: kBlue.withOpacity(0.06),
+                  border: Border.all(color: kBlue.withOpacity(0.2)),
                 ),
                 child: Row(children: [
                   const Icon(Icons.people_rounded, size: 18, color: kBlue),
@@ -2961,7 +2961,7 @@ class _EmailTabState extends State<_EmailTab> {
               const SizedBox(height: 8),
               Text(
                 'Assunto: "${_subjectCtrl.text.trim()}"',
-                style: TextStyle(fontSize: 12, color: kDark.withValues(alpha: 0.6)),
+                style: TextStyle(fontSize: 12, color: kDark.withOpacity(0.6)),
                 maxLines: 2, overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
@@ -3014,7 +3014,7 @@ class _EmailTabState extends State<_EmailTab> {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Colors.white.withValues(alpha: 0.12),
+                color: Colors.white.withOpacity(0.12),
               ),
               child: const Icon(Icons.mark_email_unread_rounded, color: Colors.white, size: 22),
             ),
@@ -3024,7 +3024,7 @@ class _EmailTabState extends State<_EmailTab> {
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
               Text(
                 '${widget.allUsers.length} registrados  ·  ${widget.allUsers.where((u) => u.isApproved).length} aprovados',
-                style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.65)),
+                style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.65)),
               ),
             ])),
           ]),
@@ -3097,8 +3097,8 @@ class _EmailTabState extends State<_EmailTab> {
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              color: kBlue.withValues(alpha: 0.06),
-              border: Border.all(color: kBlue.withValues(alpha: 0.2)),
+              color: kBlue.withOpacity(0.06),
+              border: Border.all(color: kBlue.withOpacity(0.2)),
             ),
             child: Column(children: [
               Row(children: [
@@ -3118,7 +3118,7 @@ class _EmailTabState extends State<_EmailTab> {
                 child: LinearProgressIndicator(
                   value: _totalCount > 0 ? _sentCount / _totalCount : 0,
                   minHeight: 6,
-                  backgroundColor: kBlue.withValues(alpha: 0.1),
+                  backgroundColor: kBlue.withOpacity(0.1),
                   valueColor: const AlwaysStoppedAnimation(kBlue),
                 ),
               ),
@@ -3135,12 +3135,12 @@ class _EmailTabState extends State<_EmailTab> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: _sendSuccess
-                  ? kGreen.withValues(alpha: 0.07)
-                  : Colors.red.withValues(alpha: 0.07),
+                  ? kGreen.withOpacity(0.07)
+                  : Colors.red.withOpacity(0.07),
               border: Border.all(
                 color: _sendSuccess
-                    ? kGreen.withValues(alpha: 0.3)
-                    : Colors.red.withValues(alpha: 0.3),
+                    ? kGreen.withOpacity(0.3)
+                    : Colors.red.withOpacity(0.3),
               ),
             ),
             child: Row(children: [
@@ -3196,7 +3196,7 @@ class _EmailTabState extends State<_EmailTab> {
               color: _c.cardBg,
               border: Border.all(
                 color: (_serviceCtrl.text.isNotEmpty && _templateCtrl.text.isNotEmpty)
-                    ? kGreen.withValues(alpha: 0.3)
+                    ? kGreen.withOpacity(0.3)
                     : _c.border,
               ),
             ),
@@ -3206,8 +3206,8 @@ class _EmailTabState extends State<_EmailTab> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: (_serviceCtrl.text.isNotEmpty)
-                      ? kGreen.withValues(alpha: 0.1)
-                      : Colors.orange.withValues(alpha: 0.1),
+                      ? kGreen.withOpacity(0.1)
+                      : Colors.orange.withOpacity(0.1),
                 ),
                 child: Icon(
                   Icons.settings_rounded, size: 16,
@@ -3251,8 +3251,8 @@ class _EmailTabState extends State<_EmailTab> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: kBlue.withValues(alpha: 0.05),
-                  border: Border.all(color: kBlue.withValues(alpha: 0.15)),
+                  color: kBlue.withOpacity(0.05),
+                  border: Border.all(color: kBlue.withOpacity(0.15)),
                 ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Row(children: [
@@ -3320,7 +3320,7 @@ class _EmailTabState extends State<_EmailTab> {
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: kGold.withValues(alpha: 0.1),
+                  color: kGold.withOpacity(0.1),
                 ),
                 child: const Icon(Icons.history_rounded, size: 16, color: kGold),
               ),
@@ -3332,7 +3332,7 @@ class _EmailTabState extends State<_EmailTab> {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: kGold.withValues(alpha: 0.12),
+                    color: kGold.withOpacity(0.12),
                   ),
                   child: Text('${_history.length}',
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kGold)),
@@ -3472,7 +3472,7 @@ class _RecipientChip extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: selected ? color.withValues(alpha: 0.08) : c.cardBg,
+          color: selected ? color.withOpacity(0.08) : c.cardBg,
           border: Border.all(
             color: selected ? color : c.border,
             width: selected ? 1.5 : 1.0,
@@ -3483,7 +3483,7 @@ class _RecipientChip extends StatelessWidget {
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: color.withValues(alpha: selected ? 0.15 : 0.08),
+              color: color.withOpacity(selected ? 0.15 : 0.08),
             ),
             child: Icon(icon, size: 16, color: color),
           ),
@@ -3550,8 +3550,8 @@ class _HistoryCard extends StatelessWidget {
         color: c.cardBg,
         border: Border.all(
           color: ok
-              ? kGreen.withValues(alpha: 0.2)
-              : Colors.red.withValues(alpha: 0.2),
+              ? kGreen.withOpacity(0.2)
+              : Colors.red.withOpacity(0.2),
         ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -3570,8 +3570,8 @@ class _HistoryCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: ok
-                  ? kGreen.withValues(alpha: 0.1)
-                  : Colors.red.withValues(alpha: 0.1),
+                  ? kGreen.withOpacity(0.1)
+                  : Colors.red.withOpacity(0.1),
             ),
             child: Text(
               ok ? '$count enviados' : 'Falha',
@@ -3644,7 +3644,7 @@ class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
             icon: const Icon(Icons.upload_file_rounded, size: 16),
             label: const Text('Novo PDF', style: TextStyle(fontSize: 13)),
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.white.withValues(alpha: 0.18),
+              backgroundColor: Colors.white.withOpacity(0.18),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -3668,7 +3668,7 @@ class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.library_books_rounded, size: 52,
-                      color: c.textHint.withValues(alpha: 0.4)),
+                      color: c.textHint.withOpacity(0.4)),
                   const SizedBox(height: 14),
                   Text('Nenhum guia publicado ainda',
                       style: TextStyle(color: c.textHint, fontSize: 14,
@@ -3758,8 +3758,8 @@ class _AdminGuideCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: published
-              ? _kGreen.withValues(alpha: 0.25)
-              : c.textHint.withValues(alpha: 0.12),
+              ? _kGreen.withOpacity(0.25)
+              : c.textHint.withOpacity(0.12),
           width: 1,
         ),
       ),
@@ -3769,7 +3769,7 @@ class _AdminGuideCard extends StatelessWidget {
           Container(
             width: 38, height: 38,
             decoration: BoxDecoration(
-              color: _kGreen.withValues(alpha: 0.10),
+              color: _kGreen.withOpacity(0.10),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.picture_as_pdf_rounded,
@@ -3795,8 +3795,8 @@ class _AdminGuideCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
               color: published
-                  ? _kGreen.withValues(alpha: 0.12)
-                  : c.textHint.withValues(alpha: 0.10),
+                  ? _kGreen.withOpacity(0.12)
+                  : c.textHint.withOpacity(0.10),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -4098,12 +4098,12 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
                             horizontal: 16, vertical: 14),
                         alignment: Alignment.centerLeft,
                         backgroundColor: _pdfBytes != null
-                            ? _kGreen.withValues(alpha: 0.06)
-                            : Colors.grey.withValues(alpha: 0.04),
+                            ? _kGreen.withOpacity(0.06)
+                            : Colors.grey.withOpacity(0.04),
                         side: BorderSide(
                           color: _pdfBytes != null
-                              ? _kGreen.withValues(alpha: 0.40)
-                              : Colors.grey.withValues(alpha: 0.35),
+                              ? _kGreen.withOpacity(0.40)
+                              : Colors.grey.withOpacity(0.35),
                           width: 1.5,
                         ),
                         shape: RoundedRectangleBorder(
@@ -4125,7 +4125,7 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
                     LinearProgressIndicator(
                       value: _uploadProgress > 0 ? _uploadProgress : null,
                       color: _kGreen,
-                      backgroundColor: _kGreen.withValues(alpha: 0.12),
+                      backgroundColor: _kGreen.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     const SizedBox(height: 6),
@@ -4143,7 +4143,7 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.08),
+                        color: Colors.red.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(children: [
@@ -4166,7 +4166,7 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
             decoration: BoxDecoration(
               border: Border(
-                  top: BorderSide(color: Colors.grey.withValues(alpha: 0.15))),
+                  top: BorderSide(color: Colors.grey.withOpacity(0.15))),
             ),
             child: Row(children: [
               Expanded(
@@ -4402,9 +4402,9 @@ class _InfluencersTabState extends State<_InfluencersTab> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
+              color: Colors.white.withOpacity(0.05),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: kGreen.withValues(alpha: 0.4)),
+              border: Border.all(color: kGreen.withOpacity(0.4)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -4514,7 +4514,7 @@ class _InfluencersTabState extends State<_InfluencersTab> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: kGreen.withValues(alpha: 0.3),
+                  color: kGreen.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text('${_influencers.length}',
@@ -4559,10 +4559,10 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                         margin: const EdgeInsets.only(bottom: 10),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
+                          color: Colors.white.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                              color: kGreen.withValues(alpha: 0.3)),
+                              color: kGreen.withOpacity(0.3)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -4581,8 +4581,8 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                                     horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: count > 0
-                                      ? kGreen.withValues(alpha: 0.35)
-                                      : Colors.white.withValues(alpha: 0.07),
+                                      ? kGreen.withOpacity(0.35)
+                                      : Colors.white.withOpacity(0.07),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text('$count conv.',
@@ -4628,7 +4628,7 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                                           fontWeight: FontWeight.w700)),
                                   style: OutlinedButton.styleFrom(
                                     side: BorderSide(
-                                        color: kGold.withValues(alpha: 0.4)),
+                                        color: kGold.withOpacity(0.4)),
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 6),
                                     shape: RoundedRectangleBorder(
@@ -4660,11 +4660,11 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                         minWidth: constraints.maxWidth),
                     child: DataTable(
                       headingRowColor: WidgetStateProperty.all(
-                          kGreen.withValues(alpha: 0.25)),
+                          kGreen.withOpacity(0.25)),
                       dataRowColor: WidgetStateProperty.resolveWith(
                         (states) => states.contains(WidgetState.selected)
-                            ? kGreen.withValues(alpha: 0.15)
-                            : Colors.white.withValues(alpha: 0.03),
+                            ? kGreen.withOpacity(0.15)
+                            : Colors.white.withOpacity(0.03),
                       ),
                       columnSpacing: 20,
                       headingTextStyle: const TextStyle(
@@ -4708,7 +4708,7 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: kGreen.withValues(alpha: 0.3),
+                                    color: kGreen.withOpacity(0.3),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: const Row(mainAxisSize: MainAxisSize.min, children: [
@@ -4724,8 +4724,8 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: count > 0
-                                  ? kGreen.withValues(alpha: 0.35)
-                                  : Colors.white.withValues(alpha: 0.07),
+                                  ? kGreen.withOpacity(0.35)
+                                  : Colors.white.withOpacity(0.07),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text('$count',
@@ -4751,10 +4751,10 @@ class _InfluencersTabState extends State<_InfluencersTab> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha: 0.07),
+              color: Colors.amber.withOpacity(0.07),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                  color: Colors.amber.withValues(alpha: 0.25)),
+                  color: Colors.amber.withOpacity(0.25)),
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -4820,18 +4820,18 @@ class _InfluField extends StatelessWidget {
             hintText: hint,
             hintStyle: const TextStyle(color: Colors.white30, fontSize: 12),
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.06),
+            fillColor: Colors.white.withOpacity(0.06),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                  color: const Color(0xFF075f45).withValues(alpha: 0.4)),
+                  color: const Color(0xFF075f45).withOpacity(0.4)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                  color: Colors.white.withValues(alpha: 0.12)),
+                  color: Colors.white.withOpacity(0.12)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -4984,7 +4984,7 @@ class _NotificationsTab extends StatelessWidget {
                 border: Border.all(
                   color: read
                       ? Colors.white12
-                      : kGold.withValues(alpha: 0.6),
+                      : kGold.withOpacity(0.6),
                   width: read ? 0.5 : 1.5,
                 ),
               ),
@@ -5014,9 +5014,9 @@ class _NotificationsTab extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: Colors.redAccent.withValues(alpha: 0.2),
+                          color: Colors.redAccent.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.redAccent.withValues(alpha: 0.5)),
+                          border: Border.all(color: Colors.redAccent.withOpacity(0.5)),
                         ),
                         child: const Text('NOVA',
                             style: TextStyle(color: Colors.redAccent, fontSize: 9, fontWeight: FontWeight.w900)),
@@ -5035,7 +5035,7 @@ class _NotificationsTab extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 11,
                           color: status == 'approved'
-                              ? Colors.greenAccent.withValues(alpha: 0.8)
+                              ? Colors.greenAccent.withOpacity(0.8)
                               : Colors.orange,
                           fontWeight: FontWeight.w600,
                         )),
@@ -5054,7 +5054,7 @@ class _NotificationsTab extends StatelessWidget {
                         label: const Text('Marcar como lida',
                             style: TextStyle(color: Color(0xFFFFE8A6), fontSize: 12, fontWeight: FontWeight.w700)),
                         style: TextButton.styleFrom(
-                          backgroundColor: kGold.withValues(alpha: 0.1),
+                          backgroundColor: kGold.withOpacity(0.1),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),

@@ -573,8 +573,8 @@ class _LibraryHeader extends StatelessWidget {
                     height: 38,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withValues(alpha: 0.12),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                      color: Colors.white.withOpacity(0.12),
+                      border: Border.all(color: Colors.white.withOpacity(0.25)),
                     ),
                     child: refreshing
                         ? const Padding(
@@ -939,7 +939,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
               decoration: BoxDecoration(
                 color: dark ? const Color(0xFF252930) : const Color(0xFFEAF5EE),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: _kGreen.withValues(alpha: 0.3)),
+                border: Border.all(color: _kGreen.withOpacity(0.3)),
               ),
               child: Row(children: [
                 Icon(Icons.school_outlined, color: _kGreen, size: 22),
@@ -959,7 +959,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                           : '$totalItens casos simulados para fins educacionais',
                       style: TextStyle(
                         fontSize: 12,
-                        color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
+                        color: dark ? Colors.white54 : Colors.black.withOpacity(0.45),
                       ),
                     ),
                   ]),
@@ -1132,7 +1132,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                         border: Border.all(color: borderC),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: dark ? 0.2 : 0.05),
+                            color: Colors.black.withOpacity(dark ? 0.2 : 0.05),
                             blurRadius: 6, offset: const Offset(0, 2),
                           ),
                         ],
@@ -1142,7 +1142,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                           width: 36, height: 36,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: sevColor.withValues(alpha: 0.12),
+                            color: sevColor.withOpacity(0.12),
                           ),
                           child: Icon(Icons.school_outlined, size: 18, color: sevColor),
                         ),
@@ -1162,7 +1162,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
-                                  color: sevColor.withValues(alpha: 0.12),
+                                  color: sevColor.withOpacity(0.12),
                                 ),
                                 child: Text(severity,
                                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: sevColor)),
@@ -1172,7 +1172,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                         ),
                         const SizedBox(width: 8),
                         Icon(Icons.chevron_right_rounded, size: 20,
-                          color: dark ? Colors.white24 : Colors.black.withValues(alpha: 0.20)),
+                          color: dark ? Colors.white24 : Colors.black.withOpacity(0.20)),
                       ]),
                     ),
                   );
@@ -1193,7 +1193,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
             style: const TextStyle(color: Colors.white, fontSize: 13),
             decoration: InputDecoration(
               hintText: isEs ? 'Buscar caso simulado…' : 'Buscar caso simulado…',
-              hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13),
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 13),
               prefixIcon: const Icon(Icons.search_rounded, color: _kGold, size: 18),
               suffixIcon: _queryFluxo.isNotEmpty
                   ? GestureDetector(
@@ -1202,15 +1202,15 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                     )
                   : null,
               filled: true,
-              fillColor: Colors.white.withValues(alpha: 0.08),
+              fillColor: Colors.white.withOpacity(0.08),
               contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                borderSide: BorderSide(color: Colors.white.withOpacity(0.15)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                borderSide: BorderSide(color: Colors.white.withOpacity(0.15)),
               ),
               focusedBorder: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -1246,16 +1246,16 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                         border: Border.all(
                           color: active
                               ? _kGreen
-                              : (dark ? Colors.white24 : Colors.black.withValues(alpha: 0.12)),
+                              : (dark ? Colors.white24 : Colors.black.withOpacity(0.12)),
                         ),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Icon(ico, size: 12,
-                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45))),
+                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withOpacity(0.45))),
                         const SizedBox(width: 5),
                         Text(lbl, style: TextStyle(
                           fontSize: 11, fontWeight: FontWeight.w700,
-                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withValues(alpha: 0.54)),
+                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withOpacity(0.54)),
                         )),
                       ]),
                     ),
@@ -1276,7 +1276,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
               '${fluxos.length} resultado(s) para "$_queryFluxo"',
               style: TextStyle(
                 fontSize: 11, fontWeight: FontWeight.w600,
-                color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.45),
+                color: dark ? Colors.white54 : Colors.black.withOpacity(0.45),
               ),
             ),
           ),
@@ -1314,16 +1314,16 @@ class _SegmentBtn extends StatelessWidget {
                 ? _kGreen
                 : (dark ? const Color(0xFF252930) : const Color(0xFFEAF5EE)),
             border: Border.all(
-              color: active ? _kGreen : _kGreen.withValues(alpha: 0.25),
+              color: active ? _kGreen : _kGreen.withOpacity(0.25),
             ),
           ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Icon(icon, size: 14,
-              color: active ? Colors.white : _kGreen.withValues(alpha: 0.7)),
+              color: active ? Colors.white : _kGreen.withOpacity(0.7)),
             const SizedBox(width: 6),
             Text(label, style: TextStyle(
               fontSize: 12, fontWeight: FontWeight.w800,
-              color: active ? Colors.white : _kGreen.withValues(alpha: 0.85),
+              color: active ? Colors.white : _kGreen.withOpacity(0.85),
             )),
           ]),
         ),
@@ -1405,7 +1405,7 @@ class _GrupoCard extends StatelessWidget {
           Container(
             width: 42, height: 42,
             decoration: BoxDecoration(
-              color: borderColor.withValues(alpha: 0.55),
+              color: borderColor.withOpacity(0.55),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(child: Icon(icon, size: 20, color: iconColor)),
@@ -1423,17 +1423,17 @@ class _GrupoCard extends StatelessWidget {
                   ? (isEs ? "caso de estudio" : "caso de estudo")
                   : (isEs ? "casos de estudio" : "casos de estudo")}',
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                color: iconColor.withValues(alpha: 0.55)),
+                color: iconColor.withOpacity(0.55)),
             ),
           ])),
           Container(
             width: 32, height: 32,
             decoration: BoxDecoration(
-              color: borderColor.withValues(alpha: 0.6),
+              color: borderColor.withOpacity(0.6),
               borderRadius: BorderRadius.circular(9),
             ),
             child: Icon(Icons.chevron_right_rounded, size: 20,
-              color: iconColor.withValues(alpha: 0.8)),
+              color: iconColor.withOpacity(0.8)),
           ),
         ]),
       ),
@@ -1475,7 +1475,7 @@ class _SimulacoesSheet extends StatelessWidget {
           const SizedBox(height: 10),
           Container(width: 40, height: 4,
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.25),
+              color: iconColor.withOpacity(0.25),
               borderRadius: BorderRadius.circular(2),
             )),
           const SizedBox(height: 14),
@@ -1489,7 +1489,7 @@ class _SimulacoesSheet extends StatelessWidget {
               ))),
               Text('${casos.length}', style: TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w700,
-                color: iconColor.withValues(alpha: 0.6),
+                color: iconColor.withOpacity(0.6),
               )),
             ]),
           ),
@@ -1514,7 +1514,7 @@ class _SimulacoesSheet extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: Colors.white.withOpacity(0.7),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: borderColor),
                     ),
@@ -1522,7 +1522,7 @@ class _SimulacoesSheet extends StatelessWidget {
                       Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
-                          color: iconColor.withValues(alpha: 0.12),
+                          color: iconColor.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(Icons.school_outlined, size: 18, color: iconColor),
@@ -1537,13 +1537,13 @@ class _SimulacoesSheet extends StatelessWidget {
                         if (severity.isNotEmpty) ...[
                           const SizedBox(height: 3),
                           Text(severity, style: TextStyle(
-                            fontSize: 11, color: iconColor.withValues(alpha: 0.7),
+                            fontSize: 11, color: iconColor.withOpacity(0.7),
                             fontWeight: FontWeight.w600,
                           ), maxLines: 1, overflow: TextOverflow.ellipsis),
                         ],
                       ])),
                       Icon(Icons.arrow_forward_ios_rounded, size: 13,
-                        color: iconColor.withValues(alpha: 0.5)),
+                        color: iconColor.withOpacity(0.5)),
                     ]),
                   ),
                 );
@@ -1592,12 +1592,12 @@ class _CategoryFilter extends StatelessWidget {
                     ? _kGreen
                     : (dark ? const Color(0xFF2D3340) : Colors.white),
                 border: Border.all(
-                  color: active ? _kGreen : (dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12)),
+                  color: active ? _kGreen : (dark ? Colors.white12 : Colors.black.withOpacity(0.12)),
                 ),
               ),
               child: Text(cat, style: TextStyle(
                 fontSize: 12, fontWeight: FontWeight.w700,
-                color: active ? Colors.white : (dark ? Colors.white60 : Colors.black.withValues(alpha: 0.54)),
+                color: active ? Colors.white : (dark ? Colors.white60 : Colors.black.withOpacity(0.54)),
               )),
             ),
           );
@@ -1633,7 +1633,7 @@ class _GuideCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardBg   = dark ? const Color(0xFF252930) : Colors.white;
-    final border   = dark ? Colors.white.withValues(alpha: 0.07) : Colors.black.withValues(alpha: 0.06);
+    final border   = dark ? Colors.white.withOpacity(0.07) : Colors.black.withOpacity(0.06);
     final catColor = _categoryColor;
 
     return Container(
@@ -1642,7 +1642,7 @@ class _GuideCard extends StatelessWidget {
         color: cardBg, borderRadius: BorderRadius.circular(16),
         border: Border.all(color: border),
         boxShadow: [BoxShadow(
-          color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
+          color: Colors.black.withOpacity(dark ? 0.25 : 0.06),
           blurRadius: 8, offset: const Offset(0, 2),
         )],
       ),
@@ -1669,7 +1669,7 @@ class _GuideCard extends StatelessWidget {
                       width: 56, height: 64,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: catColor.withValues(alpha: 0.12),
+                        color: catColor.withOpacity(0.12),
                       ),
                       child: Center(
                         child: SizedBox(
@@ -1685,8 +1685,8 @@ class _GuideCard extends StatelessWidget {
                       width: 56, height: 64,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: catColor.withValues(alpha: 0.12),
-                        border: Border.all(color: catColor.withValues(alpha: 0.3)),
+                        color: catColor.withOpacity(0.12),
+                        border: Border.all(color: catColor.withOpacity(0.3)),
                       ),
                       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                         Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
@@ -1701,8 +1701,8 @@ class _GuideCard extends StatelessWidget {
                   width: 56, height: 64,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: catColor.withValues(alpha: 0.12),
-                    border: Border.all(color: catColor.withValues(alpha: 0.3)),
+                    color: catColor.withOpacity(0.12),
+                    border: Border.all(color: catColor.withOpacity(0.3)),
                   ),
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
@@ -1717,7 +1717,7 @@ class _GuideCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: catColor.withValues(alpha: 0.12),
+                    color: catColor.withOpacity(0.12),
                   ),
                   child: Text(guide.category, style: TextStyle(
                     fontSize: 10, fontWeight: FontWeight.w800, color: catColor)),
@@ -1733,14 +1733,14 @@ class _GuideCard extends StatelessWidget {
                     [if (guide.authors.isNotEmpty) guide.authors,
                      if (guide.year.isNotEmpty) guide.year].join(' • '),
                     style: TextStyle(fontSize: 11,
-                      color: dark ? Colors.white38 : Colors.black.withValues(alpha: 0.38)),
+                      color: dark ? Colors.white38 : Colors.black.withOpacity(0.38)),
                     maxLines: 1, overflow: TextOverflow.ellipsis,
                   ),
                 ],
                 if (guide.description.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(guide.description, style: TextStyle(fontSize: 12,
-                    color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.54), height: 1.4),
+                    color: dark ? Colors.white54 : Colors.black.withOpacity(0.54), height: 1.4),
                     maxLines: 2, overflow: TextOverflow.ellipsis),
                 ],
                 const SizedBox(height: 10),
@@ -1788,14 +1788,14 @@ class _Chip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: dark ? Colors.white.withValues(alpha: 0.06)
-                    : Colors.black.withValues(alpha: 0.05),
+        color: dark ? Colors.white.withOpacity(0.06)
+                    : Colors.black.withOpacity(0.05),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 11, color: dark ? Colors.white38 : Colors.black.withValues(alpha: 0.38)),
+        Icon(icon, size: 11, color: dark ? Colors.white38 : Colors.black.withOpacity(0.38)),
         const SizedBox(width: 4),
         Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
-          color: dark ? Colors.white38 : Colors.black.withValues(alpha: 0.38))),
+          color: dark ? Colors.white38 : Colors.black.withOpacity(0.38))),
       ]),
     );
   }
@@ -1826,12 +1826,12 @@ class _LibraryTabEmptyState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 52,
-              color: dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12)),
+              color: dark ? Colors.white12 : Colors.black.withOpacity(0.12)),
             const SizedBox(height: 14),
             Text(title,
               style: TextStyle(
                 fontSize: 15, fontWeight: FontWeight.w700,
-                color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.52),
+                color: dark ? Colors.white54 : Colors.black.withOpacity(0.52),
               ),
               textAlign: TextAlign.center,
             ),
@@ -1839,7 +1839,7 @@ class _LibraryTabEmptyState extends StatelessWidget {
             Text(subtitle,
               style: TextStyle(
                 fontSize: 12, height: 1.4,
-                color: dark ? Colors.white30 : Colors.black.withValues(alpha: 0.34),
+                color: dark ? Colors.white30 : Colors.black.withOpacity(0.34),
               ),
               textAlign: TextAlign.center,
             ),
@@ -1872,7 +1872,7 @@ class _GuideErrorState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.cloud_off_rounded, size: 56,
-                color: dark ? Colors.orangeAccent.withValues(alpha: 0.7) : Colors.redAccent),
+                color: dark ? Colors.orangeAccent.withOpacity(0.7) : Colors.redAccent),
             const SizedBox(height: 14),
             Text(
               isEs ? 'Error al cargar guías' : 'Erro ao carregar guias',
@@ -1883,7 +1883,7 @@ class _GuideErrorState extends StatelessWidget {
             Text(message,
               style: TextStyle(
                 fontSize: 12, height: 1.4,
-                color: dark ? Colors.white54 : Colors.black.withValues(alpha: 0.62),
+                color: dark ? Colors.white54 : Colors.black.withOpacity(0.62),
               ),
               textAlign: TextAlign.center,
             ),
@@ -1919,7 +1919,7 @@ class _EmptyState extends StatelessWidget {
           Icon(
             hasSearch ? Icons.search_off_rounded : Icons.menu_book_rounded,
             size: 56,
-            color: dark ? Colors.white12 : Colors.black.withValues(alpha: 0.12),
+            color: dark ? Colors.white12 : Colors.black.withOpacity(0.12),
           ),
           const SizedBox(height: 16),
           Text(
@@ -1928,7 +1928,7 @@ class _EmptyState extends StatelessWidget {
                 : (isEs ? 'Sin guías disponibles aún' : 'Nenhuma guia disponível ainda'),
             style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w700,
-              color: dark ? Colors.white30 : Colors.black.withValues(alpha: 0.26),
+              color: dark ? Colors.white30 : Colors.black.withOpacity(0.26),
             ),
             textAlign: TextAlign.center,
           ),
@@ -1938,7 +1938,7 @@ class _EmptyState extends StatelessWidget {
               isEs ? 'El administrador aún no subió guías'
                    : 'O administrador ainda não enviou guias',
               style: TextStyle(fontSize: 13,
-                color: dark ? Colors.white24 : Colors.black.withValues(alpha: 0.12)),
+                color: dark ? Colors.white24 : Colors.black.withOpacity(0.12)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -2012,8 +2012,8 @@ class _GeneralTab extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: dark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : Colors.black.withValues(alpha: 0.06),
+                    ? Colors.white.withOpacity(0.06)
+                    : Colors.black.withOpacity(0.06),
               ),
             ),
             child: Row(children: [
@@ -2021,7 +2021,7 @@ class _GeneralTab extends StatelessWidget {
                 width: 44, height: 44,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: item.color.withValues(alpha: dark ? 0.22 : 0.12),
+                  color: item.color.withOpacity(dark ? 0.22 : 0.12),
                 ),
                 child: Icon(item.icon, color: item.color, size: 22),
               ),

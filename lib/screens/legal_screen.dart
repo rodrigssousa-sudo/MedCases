@@ -525,7 +525,7 @@ class _ConsentModalState extends State<ConsentModal> {
             child: Container(
               width: 40, height: 4,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -539,9 +539,9 @@ class _ConsentModalState extends State<ConsentModal> {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: _kGreen.withValues(alpha: 0.15),
+                    color: _kGreen.withOpacity(0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(color: _kGreen.withValues(alpha: 0.4)),
+                    border: Border.all(color: _kGreen.withOpacity(0.4)),
                   ),
                   child: const Icon(Icons.verified_user_rounded, size: 28, color: _kGold),
                 ),
@@ -561,7 +561,7 @@ class _ConsentModalState extends State<ConsentModal> {
                   _subtitleText,
                   style: TextStyle(
                     fontSize: 12.5,
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: Colors.white.withOpacity(0.55),
                     height: 1.4,
                   ),
                   textAlign: TextAlign.center,
@@ -635,9 +635,9 @@ class _ConsentModalState extends State<ConsentModal> {
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
-                color: _allChecked ? _kGreen : Colors.white.withValues(alpha: 0.08),
+                color: _allChecked ? _kGreen : Colors.white.withOpacity(0.08),
                 border: Border.all(
-                  color: _allChecked ? _kGreen : Colors.white.withValues(alpha: 0.15),
+                  color: _allChecked ? _kGreen : Colors.white.withOpacity(0.15),
                 ),
               ),
               child: Material(
@@ -658,7 +658,7 @@ class _ConsentModalState extends State<ConsentModal> {
                         fontWeight: FontWeight.w700,
                         color: _allChecked
                             ? Colors.white
-                            : Colors.white.withValues(alpha: 0.3),
+                            : Colors.white.withOpacity(0.3),
                         letterSpacing: 0.2,
                       ),
                     ),
@@ -712,12 +712,12 @@ class _ConsentCheck extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: value
-              ? _kGreen.withValues(alpha: 0.12)
-              : Colors.white.withValues(alpha: 0.04),
+              ? _kGreen.withOpacity(0.12)
+              : Colors.white.withOpacity(0.04),
           border: Border.all(
             color: value
-                ? _kGreen.withValues(alpha: 0.5)
-                : Colors.white.withValues(alpha: 0.10),
+                ? _kGreen.withOpacity(0.5)
+                : Colors.white.withOpacity(0.10),
             width: 1,
           ),
         ),
@@ -735,7 +735,7 @@ class _ConsentCheck extends StatelessWidget {
                 border: Border.all(
                   color: value
                       ? _kGreen
-                      : Colors.white.withValues(alpha: 0.3),
+                      : Colors.white.withOpacity(0.3),
                   width: 1.5,
                 ),
               ),
@@ -750,7 +750,7 @@ class _ConsentCheck extends StatelessWidget {
                 text: TextSpan(
                   style: TextStyle(
                     fontSize: 12.5,
-                    color: Colors.white.withValues(alpha: 0.75),
+                    color: Colors.white.withOpacity(0.75),
                     height: 1.45,
                   ),
                   children: [

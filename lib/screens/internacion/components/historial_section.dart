@@ -48,7 +48,7 @@ class HistorialSection extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
               decoration: BoxDecoration(
-                color: InternacionTheme.cyan.withValues(alpha: dark ? 0.15 : 0.10),
+                color: InternacionTheme.cyan.withOpacity(dark ? 0.15 : 0.10),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(

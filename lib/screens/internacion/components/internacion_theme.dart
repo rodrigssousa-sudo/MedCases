@@ -48,15 +48,15 @@ class InternacionTheme {
   // Light: dark charcoal (#111827) — legibilidade máxima, zero interferência neon
   // Dark:  branco com alphas calibrados para plantão noturno
   Color get textPrimary   => dark
-      ? Colors.white.withValues(alpha: 0.93)
+      ? Colors.white.withOpacity(0.93)
       : const Color(0xFF111827);   // Charcoal — alto contraste
 
   Color get textSecondary => dark
-      ? Colors.white.withValues(alpha: 0.58)
+      ? Colors.white.withOpacity(0.58)
       : const Color(0xFF4B5563);   // Gray-600 — sóbrio, legível
 
   Color get labelColor    => dark
-      ? Colors.white.withValues(alpha: 0.35)
+      ? Colors.white.withOpacity(0.35)
       : const Color(0xFF9CA3AF);   // Gray-400
 
   // ── Seções SOAP — paleta interna mantida (azul S, verde O, âmbar A, violeta P)
@@ -65,20 +65,20 @@ class InternacionTheme {
     switch (s) {
       case SoapSection.s:
         return dark
-            ? const Color(0xFF3B82F6).withValues(alpha: 0.18)
-            : const Color(0xFF3B82F6).withValues(alpha: 0.10);
+            ? const Color(0xFF3B82F6).withOpacity(0.18)
+            : const Color(0xFF3B82F6).withOpacity(0.10);
       case SoapSection.o:
         return dark
-            ? const Color(0xFF22C55E).withValues(alpha: 0.16)
-            : const Color(0xFF22C55E).withValues(alpha: 0.10);
+            ? const Color(0xFF22C55E).withOpacity(0.16)
+            : const Color(0xFF22C55E).withOpacity(0.10);
       case SoapSection.a:
         return dark
-            ? const Color(0xFFF59E0B).withValues(alpha: 0.16)
-            : const Color(0xFFF59E0B).withValues(alpha: 0.10);
+            ? const Color(0xFFF59E0B).withOpacity(0.16)
+            : const Color(0xFFF59E0B).withOpacity(0.10);
       case SoapSection.p:
         return dark
-            ? const Color(0xFF8B5CF6).withValues(alpha: 0.16)
-            : const Color(0xFF8B5CF6).withValues(alpha: 0.10);
+            ? const Color(0xFF8B5CF6).withOpacity(0.16)
+            : const Color(0xFF8B5CF6).withOpacity(0.10);
     }
   }
 
@@ -106,7 +106,7 @@ class InternacionTheme {
 
   // ── Sombra sutil ──────────────────────────────────────────────────────────
   BoxShadow get softShadow => BoxShadow(
-    color: Colors.black.withValues(alpha: dark ? 0.28 : 0.05),
+    color: Colors.black.withOpacity(dark ? 0.28 : 0.05),
     blurRadius: dark ? 10 : 6,
     offset: const Offset(0, 2),
   );

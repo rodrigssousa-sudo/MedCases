@@ -73,7 +73,7 @@ class RevisionSheet extends StatelessWidget {
           color: bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: InternacionTheme.cyan.withValues(alpha: 0.30),
+            color: InternacionTheme.cyan.withOpacity(0.30),
             width: 1.2,
           ),
         ),
@@ -143,10 +143,10 @@ class RevisionSheet extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: InternacionTheme.amber.withValues(alpha: dark ? 0.12 : 0.08),
+                  color: InternacionTheme.amber.withOpacity(dark ? 0.12 : 0.08),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: InternacionTheme.amber.withValues(alpha: 0.35),
+                    color: InternacionTheme.amber.withOpacity(0.35),
                     width: 0.8,
                   ),
                 ),
@@ -246,7 +246,7 @@ class RevisionSheet extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: InternacionTheme.cyan.withValues(alpha: 0.25),
+                              color: InternacionTheme.cyan.withOpacity(0.25),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -546,7 +546,7 @@ class RevisionSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
             decoration: BoxDecoration(
-              color: InternacionTheme.cyan.withValues(alpha: 0.15),
+              color: InternacionTheme.cyan.withOpacity(0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -570,7 +570,7 @@ class RevisionSheet extends StatelessWidget {
           Expanded(
             child: Container(
               height: 1,
-              color: InternacionTheme.cyan.withValues(alpha: 0.25),
+              color: InternacionTheme.cyan.withOpacity(0.25),
             ),
           ),
         ],
@@ -626,7 +626,7 @@ class RevisionSheet extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 16, color: fg.withValues(alpha: 0.8)),
+            Icon(icon, size: 16, color: fg.withOpacity(0.8)),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -674,7 +674,7 @@ class RevisionSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Icon(icon, size: 16, color: fg.withValues(alpha: 0.8)),
+              Icon(icon, size: 16, color: fg.withOpacity(0.8)),
               const SizedBox(width: 8),
               Text(label, style: TextStyle(
                 fontSize: 10.5, fontWeight: FontWeight.w600,
@@ -718,7 +718,7 @@ class RevisionSheet extends StatelessWidget {
           color: theme.card,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: theme.soapTagFg(SoapSection.o).withValues(alpha: 0.30),
+            color: theme.soapTagFg(SoapSection.o).withOpacity(0.30),
             width: 0.9,
           ),
         ),
@@ -760,9 +760,9 @@ class RevisionSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.4), width: 0.8),
+        border: Border.all(color: color.withOpacity(0.4), width: 0.8),
       ),
       child: Text('$eva/10', style: TextStyle(
         fontSize: 12, fontWeight: FontWeight.w800, color: color,

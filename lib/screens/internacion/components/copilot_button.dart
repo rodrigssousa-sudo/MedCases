@@ -186,15 +186,15 @@ class _CopilotButtonState extends State<CopilotButton>
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: _isLoading
-                ? const Color(0xFF059669).withValues(alpha: 0.40)
-                : const Color(0xFF059669).withValues(alpha: 0.60),
+                ? const Color(0xFF059669).withOpacity(0.40)
+                : const Color(0xFF059669).withOpacity(0.60),
             width: 1.5,
           ),
           boxShadow: _isLoading
               ? []
               : [
                   BoxShadow(
-                    color: const Color(0xFF059669).withValues(alpha: 0.20),
+                    color: const Color(0xFF059669).withOpacity(0.20),
                     blurRadius: 20,
                     offset: const Offset(0, 6),
                   ),
@@ -244,7 +244,7 @@ class _CopilotButtonState extends State<CopilotButton>
                     : 'colar texto, subir imagem — IA extrai',
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.70),
+                  color: Colors.white.withOpacity(0.70),
                   height: 1.4,
                 ),
               ),
@@ -256,10 +256,10 @@ class _CopilotButtonState extends State<CopilotButton>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFF059669).withValues(alpha: 0.20),
+            color: const Color(0xFF059669).withOpacity(0.20),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: const Color(0xFF059669).withValues(alpha: 0.50),
+              color: const Color(0xFF059669).withOpacity(0.50),
               width: 0.8,
             ),
           ),
@@ -292,7 +292,7 @@ class _CopilotButtonState extends State<CopilotButton>
             Container(
               width: 40, height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFF059669).withValues(alpha: 0.15),
+                color: const Color(0xFF059669).withOpacity(0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Center(
@@ -456,7 +456,7 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
           color: bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: const Color(0xFF059669).withValues(alpha: 0.30),
+            color: const Color(0xFF059669).withOpacity(0.30),
             width: 1.2,
           ),
         ),
@@ -531,7 +531,7 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                           ? 'Ej: "paciente bien, pa 120/80, sin dor, Hb 10.2, vou manter atb..."'
                           : 'Ex: "paciente bem, pa 120/80, sem dor, Hb 10.2, vou manter atb..."',
                       hintStyle: TextStyle(
-                        fontSize: 13, color: theme.textSecondary.withValues(alpha: 0.6),
+                        fontSize: 13, color: theme.textSecondary.withOpacity(0.6),
                       ),
                       contentPadding: const EdgeInsets.all(14),
                       border: InputBorder.none,
@@ -596,13 +596,13 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                             : null,
                         color: _canSubmit
                             ? null
-                            : theme.border.withValues(alpha: 0.5),
+                            : theme.border.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: _canSubmit
                             ? [
                                 BoxShadow(
                                   color: const Color(0xFF059669)
-                                      .withValues(alpha: 0.35),
+                                      .withOpacity(0.35),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 )

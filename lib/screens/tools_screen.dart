@@ -384,12 +384,12 @@ class _BiometricsTabState extends State<_BiometricsTab> {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: _sexFem
-                        ? Colors.pink.withValues(alpha: 0.4)
-                        : const Color(0xFF1565C0).withValues(alpha: 0.3),
+                        ? Colors.pink.withOpacity(0.4)
+                        : const Color(0xFF1565C0).withOpacity(0.3),
                   ),
                   color: _sexFem
-                      ? Colors.pink.withValues(alpha: 0.05)
-                      : const Color(0xFF1565C0).withValues(alpha: 0.04),
+                      ? Colors.pink.withOpacity(0.05)
+                      : const Color(0xFF1565C0).withOpacity(0.04),
                 ),
                 child: Row(children: [
                   Icon(_sexFem ? Icons.female : Icons.male, size: 18,
@@ -724,7 +724,7 @@ class _ScoresTabState extends State<_ScoresTab> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6),
-            color: value ? kToolGreen.withValues(alpha: 0.15) : AppColors.of(context).surface),
+            color: value ? kToolGreen.withOpacity(0.15) : AppColors.of(context).surface),
           child: Text(points == points.roundToDouble() ? '+${points.toInt()}' : '${points > 0 ? "+" : ""}$points',
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
               color: value ? kToolGreen : AppColors.of(context).textHint)),
@@ -1375,17 +1375,17 @@ class _LabImportCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: kGold.withValues(alpha: 0.35),
+            color: kGold.withOpacity(0.35),
             width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.30),
+              color: Colors.black.withOpacity(0.30),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
             BoxShadow(
-              color: const Color(0xFF10B981).withValues(alpha: 0.12),
+              color: const Color(0xFF10B981).withOpacity(0.12),
               blurRadius: 20,
               offset: const Offset(0, 2),
             ),
@@ -1397,8 +1397,8 @@ class _LabImportCard extends StatelessWidget {
           child: InkWell(
             onTap: () { AppHaptics.light(context); showAnalyzeExamBottomSheet(context, locale); },
             borderRadius: BorderRadius.circular(18),
-            splashColor: kGoldLight.withValues(alpha: 0.06),
-            highlightColor: kGoldLight.withValues(alpha: 0.03),
+            splashColor: kGoldLight.withOpacity(0.06),
+            highlightColor: kGoldLight.withOpacity(0.03),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
               child: Row(
@@ -1409,9 +1409,9 @@ class _LabImportCard extends StatelessWidget {
                     height: 48,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(13),
-                      color: kGold.withValues(alpha: 0.12),
+                      color: kGold.withOpacity(0.12),
                       border: Border.all(
-                        color: kGold.withValues(alpha: 0.30),
+                        color: kGold.withOpacity(0.30),
                         width: 1.0,
                       ),
                     ),
@@ -1446,7 +1446,7 @@ class _LabImportCard extends StatelessWidget {
                               ? 'Foto · PDF · Screenshot · Texto — preenche os campos automaticamente'
                               : 'Foto · PDF · Screenshot · Texto — preenche os campos automaticamente',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.52),
+                            color: Colors.white.withOpacity(0.52),
                             fontSize: 11.5,
                             height: 1.35,
                           ),
@@ -1469,9 +1469,9 @@ class _LabImportCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: const Color(0xFF46E28C).withValues(alpha: 0.14),
+                          color: const Color(0xFF46E28C).withOpacity(0.14),
                           border: Border.all(
-                            color: const Color(0xFF46E28C).withValues(alpha: 0.35),
+                            color: const Color(0xFF46E28C).withOpacity(0.35),
                             width: 0.8,
                           ),
                         ),
@@ -1489,7 +1489,7 @@ class _LabImportCard extends StatelessWidget {
                       Icon(
                         Icons.arrow_forward_ios_rounded,
                         size: 13,
-                        color: Colors.white.withValues(alpha: 0.30),
+                        color: Colors.white.withOpacity(0.30),
                       ),
                     ],
                   ),
@@ -2265,18 +2265,18 @@ class _InfusionResultCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF075f45).withValues(alpha: 0.35),
+            color: const Color(0xFF075f45).withOpacity(0.35),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
+            color: Colors.black.withOpacity(0.4),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
         ],
         border: Border.all(
-          color: const Color(0xFF10B981).withValues(alpha: 0.6),
+          color: const Color(0xFF10B981).withOpacity(0.6),
           width: 1,
         ),
       ),
@@ -2308,10 +2308,10 @@ class _InfusionResultCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFE8A6).withValues(alpha: 0.15),
+                        color: const Color(0xFFFFE8A6).withOpacity(0.15),
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: const Color(0xFFFFE8A6).withValues(alpha: 0.30),
+                          color: const Color(0xFFFFE8A6).withOpacity(0.30),
                         ),
                       ),
                       child: Text(
@@ -2333,7 +2333,7 @@ class _InfusionResultCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white.withValues(alpha: hasResult ? 1.0 : 0.5),
+                    color: Colors.white.withOpacity(hasResult ? 1.0 : 0.5),
                     letterSpacing: -0.3,
                   ),
                 ),
@@ -2346,13 +2346,13 @@ class _InfusionResultCard extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(Icons.info_outline_rounded,
-                            size: 16, color: Colors.white.withValues(alpha: 0.35)),
+                            size: 16, color: Colors.white.withOpacity(0.35)),
                         const SizedBox(width: 8),
                         Text(
                           isEs ? 'Ingrese concentración y velocidad' : 'Informe concentração e velocidade',
                           style: TextStyle(
                             fontSize: 13,
-                            color: Colors.white.withValues(alpha: 0.40),
+                            color: Colors.white.withOpacity(0.40),
                             fontStyle: FontStyle.italic,
                           ),
                         ),
@@ -2365,7 +2365,7 @@ class _InfusionResultCard extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(child: _ResultMetric(value: parts[0], label: _labelFor(parts[0], isEs))),
-                        Container(width: 1, height: 60, color: Colors.white.withValues(alpha: 0.12)),
+                        Container(width: 1, height: 60, color: Colors.white.withOpacity(0.12)),
                         Expanded(child: _ResultMetric(value: parts[1], label: _labelFor(parts[1], isEs))),
                       ],
                     )
@@ -2379,10 +2379,10 @@ class _InfusionResultCard extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                       decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.25),
+                        color: Colors.black.withOpacity(0.25),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.10),
+                          color: Colors.white.withOpacity(0.10),
                         ),
                       ),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2418,9 +2418,9 @@ class _InfusionResultCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.20),
+                      color: Colors.black.withOpacity(0.20),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+                      border: Border.all(color: Colors.white.withOpacity(0.07)),
                     ),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
@@ -2497,7 +2497,7 @@ class _ResultMetric extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 10,
-            color: Colors.white.withValues(alpha: 0.50),
+            color: Colors.white.withOpacity(0.50),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -2544,7 +2544,7 @@ class _VasoRefRow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: kToolGreen.withValues(alpha: 0.12),
+                color: kToolGreen.withOpacity(0.12),
               ),
               child: Text(dose, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: kToolGreen)),
             ),
@@ -2601,7 +2601,7 @@ class _RiskSheet extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFFEF4444).withValues(alpha: 0.12)),
+              color: const Color(0xFFEF4444).withOpacity(0.12)),
             child: const Icon(Icons.medication_rounded, size: 18, color: Color(0xFFEF4444)),
           ),
           const SizedBox(width: 10),
@@ -2663,7 +2663,7 @@ class _RiskSheet extends StatelessWidget {
           width: double.infinity,
           child: TextButton(
             style: TextButton.styleFrom(
-              backgroundColor: kToolGreen.withValues(alpha: 0.12),
+              backgroundColor: kToolGreen.withOpacity(0.12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
@@ -2728,7 +2728,7 @@ class _RiskBlock extends StatelessWidget {
               child: Container(
                 width: 4, height: 4,
                 decoration: BoxDecoration(
-                  color: text.withValues(alpha: 0.6),
+                  color: text.withOpacity(0.6),
                   shape: BoxShape.circle),
               ),
             ),
@@ -2772,7 +2772,7 @@ class _ReferenceTabState extends State<_ReferenceTab> {
       Container(
         decoration: BoxDecoration(
           color: const Color(0xFF0F1116),
-          border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1)),
+          border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.08), width: 1)),
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -2798,11 +2798,11 @@ class _ReferenceTabState extends State<_ReferenceTab> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(icon, size: 14,
-                        color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.45)),
+                        color: active ? const Color(0xFF10B981) : Colors.white.withOpacity(0.45)),
                       const SizedBox(width: 6),
                       Text(label, style: TextStyle(
                         fontSize: 11, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                        color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.5),
+                        color: active ? const Color(0xFF10B981) : Colors.white.withOpacity(0.5),
                         letterSpacing: 0.6,
                       )),
                     ],
@@ -3180,7 +3180,7 @@ class _LabGridSectionState extends State<_LabGridSection> {
         color: c.cardBg,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: c.border),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // ── Header da seção ──────────────────────────────────────
@@ -3193,7 +3193,7 @@ class _LabGridSectionState extends State<_LabGridSection> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
+                  color: accent.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(widget.icon, size: 16, color: accent),
@@ -3205,12 +3205,12 @@ class _LabGridSectionState extends State<_LabGridSection> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.08),
+                  color: accent.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text('${widget.items.length} parâm.',
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                    color: accent.withValues(alpha: 0.8))),
+                    color: accent.withOpacity(0.8))),
               ),
               const SizedBox(width: 8),
               Icon(_expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
@@ -3221,7 +3221,7 @@ class _LabGridSectionState extends State<_LabGridSection> {
 
         // ── Divisor ──────────────────────────────────────────────
         if (_expanded) ...[
-          Divider(height: 1, color: accent.withValues(alpha: 0.15), indent: 16, endIndent: 16),
+          Divider(height: 1, color: accent.withOpacity(0.15), indent: 16, endIndent: 16),
           const SizedBox(height: 12),
 
           // ── Grid de cards ────────────────────────────────────
@@ -3253,9 +3253,9 @@ class _LabGridSectionState extends State<_LabGridSection> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E3A8A).withValues(alpha: 0.06),
+                  color: const Color(0xFF1E3A8A).withOpacity(0.06),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFF1E3A8A).withValues(alpha: 0.15)),
+                  border: Border.all(color: const Color(0xFF1E3A8A).withOpacity(0.15)),
                 ),
                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFF1E3A8A)),
@@ -3312,7 +3312,7 @@ class _LabValueCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: c.dark ? Colors.white.withValues(alpha: 0.03) : Colors.white,
+        color: c.dark ? Colors.white.withOpacity(0.03) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: c.border),
       ),
@@ -3355,7 +3355,7 @@ class _LabValueCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: sc.withValues(alpha: 0.10),
+              color: sc.withOpacity(0.10),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(_statusLabel,
@@ -3388,10 +3388,10 @@ class _LabRow extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
       decoration: BoxDecoration(
-        color: c.dark ? Colors.white.withValues(alpha: 0.03) : const Color(0xFFF9FAFB),
+        color: c.dark ? Colors.white.withOpacity(0.03) : const Color(0xFFF9FAFB),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: hasAlert ? const Color(0xFFD97706).withValues(alpha: 0.25) : c.border,
+          color: hasAlert ? const Color(0xFFD97706).withOpacity(0.25) : c.border,
         ),
       ),
       child: Row(children: [
@@ -3417,7 +3417,7 @@ class _LabRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: const Color(0xFFD97706).withValues(alpha: 0.10),
+              color: const Color(0xFFD97706).withOpacity(0.10),
               borderRadius: BorderRadius.circular(6),
             ),
             child: const Icon(Icons.warning_amber_rounded, size: 12, color: Color(0xFFD97706)),
@@ -3440,8 +3440,8 @@ class _EcgPattern extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: color.withValues(alpha: 0.06),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          color: color.withOpacity(0.06),
+          border: Border.all(color: color.withOpacity(0.25)),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(pattern, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: color)),
@@ -3475,8 +3475,8 @@ class _AntidoteRow extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
                 color: level == 'ALTO'
-                    ? const Color(0xFFCC2222).withValues(alpha: 0.10)
-                    : const Color(0xFFC5A365).withValues(alpha: 0.12),
+                    ? const Color(0xFFCC2222).withOpacity(0.10)
+                    : const Color(0xFFC5A365).withOpacity(0.12),
               ),
               child: Text(
                 level,
@@ -3492,7 +3492,7 @@ class _AntidoteRow extends StatelessWidget {
             Expanded(child: Text(toxin, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.of(context).textPrimary))),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF10B981).withValues(alpha: 0.12)),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF10B981).withOpacity(0.12)),
               child: Text(antidote, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF10B981))),
             ),
           ]),
@@ -3612,7 +3612,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
       Container(
         decoration: BoxDecoration(
           color: const Color(0xFF0F1116),
-          border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1)),
+          border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.08), width: 1)),
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -3634,11 +3634,11 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Icon(_catIcons[i], size: 13,
-                      color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.40)),
+                      color: active ? const Color(0xFF10B981) : Colors.white.withOpacity(0.40)),
                     const SizedBox(width: 5),
                     Text(categories[i], style: TextStyle(
                       fontSize: 10.5, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                      color: active ? const Color(0xFF10B981) : Colors.white.withValues(alpha: 0.45),
+                      color: active ? const Color(0xFF10B981) : Colors.white.withOpacity(0.45),
                       letterSpacing: 0.5,
                     )),
                   ]),
@@ -4027,10 +4027,10 @@ class _PrescCard extends StatelessWidget {
       : const Color(0xFF059669);
 
   Color get _levelBg => level == 'ALTO'
-    ? const Color(0xFFDC2626).withValues(alpha: 0.10)
+    ? const Color(0xFFDC2626).withOpacity(0.10)
     : level == 'MOD'
-      ? const Color(0xFFD97706).withValues(alpha: 0.10)
-      : const Color(0xFF059669).withValues(alpha: 0.10);
+      ? const Color(0xFFD97706).withOpacity(0.10)
+      : const Color(0xFF059669).withOpacity(0.10);
 
   @override
   Widget build(BuildContext context) {
@@ -4049,9 +4049,9 @@ class _PrescCard extends StatelessWidget {
         color: c.cardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: isAlto
-          ? const Color(0xFFDC2626).withValues(alpha: 0.20)
+          ? const Color(0xFFDC2626).withOpacity(0.20)
           : c.border),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05),
           blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -4061,12 +4061,12 @@ class _PrescCard extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
           decoration: BoxDecoration(
             color: isAlto
-              ? const Color(0xFFDC2626).withValues(alpha: 0.04)
-              : const Color(0xFFD97706).withValues(alpha: 0.04),
+              ? const Color(0xFFDC2626).withOpacity(0.04)
+              : const Color(0xFFD97706).withOpacity(0.04),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             border: Border(bottom: BorderSide(color: isAlto
-              ? const Color(0xFFDC2626).withValues(alpha: 0.12)
-              : const Color(0xFFD97706).withValues(alpha: 0.12))),
+              ? const Color(0xFFDC2626).withOpacity(0.12)
+              : const Color(0xFFD97706).withOpacity(0.12))),
           ),
           child: Row(children: [
             // Level badge
@@ -4092,7 +4092,7 @@ class _PrescCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: isAlto
-                    ? const Color(0xFFDC2626).withValues(alpha: 0.4)
+                    ? const Color(0xFFDC2626).withOpacity(0.4)
                     : c.border),
                 ),
                 child: Text(badge!, style: TextStyle(
@@ -4243,7 +4243,7 @@ class _PrescStepRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: const Color(0xFF10B981).withValues(alpha: 0.10),
+              color: const Color(0xFF10B981).withOpacity(0.10),
               borderRadius: BorderRadius.circular(5),
             ),
             child: Text(item.step, style: const TextStyle(
@@ -4273,8 +4273,8 @@ class _PrescAttenRow extends StatelessWidget {
     final c = AppColors.of(context);
     final isContra = _isContra;
     final bgColor  = isContra ? const Color(0xFFDC2626) : const Color(0xFFD97706);
-    final bgFill   = bgColor.withValues(alpha: 0.07);
-    final border   = bgColor.withValues(alpha: 0.20);
+    final bgFill   = bgColor.withOpacity(0.07);
+    final border   = bgColor.withOpacity(0.20);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -4334,9 +4334,9 @@ class _PrescSideNote extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
         decoration: BoxDecoration(
-          color: accent.withValues(alpha: 0.05),
+          color: accent.withOpacity(0.05),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: accent.withValues(alpha: 0.18)),
+          border: Border.all(color: accent.withOpacity(0.18)),
         ),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Icon(_icon, size: 13, color: accent),
@@ -4362,9 +4362,9 @@ class _PrescSideNote extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.06),
+        color: accent.withOpacity(0.06),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accent.withValues(alpha: 0.20)),
+        border: Border.all(color: accent.withOpacity(0.20)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -4391,9 +4391,9 @@ class _PrescTagChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: tag.color.withValues(alpha: 0.10),
+        color: tag.color.withOpacity(0.10),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: tag.color.withValues(alpha: 0.25)),
+        border: Border.all(color: tag.color.withOpacity(0.25)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Container(width: 6, height: 6,
@@ -4960,7 +4960,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: riskBg,
-          border: Border.all(color: riskColor.withValues(alpha: 0.4)),
+          border: Border.all(color: riskColor.withOpacity(0.4)),
         ),
         child: Row(children: [
           Container(
@@ -4968,8 +4968,8 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
             height: 52,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: riskColor.withValues(alpha: 0.15),
-              border: Border.all(color: riskColor.withValues(alpha: 0.4), width: 2),
+              color: riskColor.withOpacity(0.15),
+              border: Border.all(color: riskColor.withOpacity(0.4), width: 2),
             ),
             child: Center(child: Text('$total',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: riskColor))),
@@ -4977,7 +4977,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
           const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('PEWS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-              letterSpacing: 1.4, color: riskColor.withValues(alpha: 0.7))),
+              letterSpacing: 1.4, color: riskColor.withOpacity(0.7))),
             const SizedBox(height: 3),
             Text(_pewsRisk(total), style: TextStyle(
               fontSize: 13, fontWeight: FontWeight.w800, color: riskColor)),
@@ -5065,8 +5065,8 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         margin: const EdgeInsets.only(bottom: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: const Color(0xFF065F46).withValues(alpha: 0.08),
-          border: Border.all(color: const Color(0xFF065F46).withValues(alpha: 0.35)),
+          color: const Color(0xFF065F46).withOpacity(0.08),
+          border: Border.all(color: const Color(0xFF065F46).withOpacity(0.35)),
         ),
         child: Row(children: [
           const Icon(Icons.scale_rounded, size: 18, color: Color(0xFF065F46)),
@@ -5091,7 +5091,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                     contentPadding: EdgeInsets.zero,
                     hintText: isEs ? 'Ej: 25,0' : 'Ex: 25,0',
                     hintStyle: TextStyle(fontSize: 14, color:
-                        const Color(0xFF065F46).withValues(alpha: 0.4)),
+                        const Color(0xFF065F46).withOpacity(0.4)),
                     border: InputBorder.none,
                     suffix: const Text('kg', style: TextStyle(
                         fontSize: 13, fontWeight: FontWeight.w700,
@@ -5107,7 +5107,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF065F46).withValues(alpha: 0.12),
+                color: const Color(0xFF065F46).withOpacity(0.12),
               ),
               child: Text('${_fmt(w)} kg',
                 style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900,
@@ -5122,8 +5122,8 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: const Color(0xFF1E3A8A).withValues(alpha: 0.06),
-          border: Border.all(color: const Color(0xFF1E3A8A).withValues(alpha: 0.18)),
+          color: const Color(0xFF1E3A8A).withOpacity(0.06),
+          border: Border.all(color: const Color(0xFF1E3A8A).withOpacity(0.18)),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
@@ -5145,7 +5145,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
               isEs
                 ? 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.'
                 : 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.',
-              style: TextStyle(fontSize: 10, color: const Color(0xFF1E3A8A).withValues(alpha: 0.75),
+              style: TextStyle(fontSize: 10, color: const Color(0xFF1E3A8A).withOpacity(0.75),
                 height: 1.3),
             )),
           ]),
@@ -5593,8 +5593,8 @@ class _PedVitalRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: color.withValues(alpha: 0.07),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        color: color.withOpacity(0.07),
+        border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Row(children: [
         Icon(icon, size: 15, color: color),
@@ -5780,9 +5780,9 @@ class _PedDoseRowState extends State<_PedDoseRow> {
   Widget _buildLineBadge() {
     if (widget.line == _TherapeuticLine.none) return const SizedBox.shrink();
     final (label, bg, fg) = switch (widget.line) {
-      _TherapeuticLine.first  => ('1ª linha', const Color(0xFFDC2626).withValues(alpha: 0.12), const Color(0xFFDC2626)),
-      _TherapeuticLine.second => ('2ª linha', const Color(0xFFD97706).withValues(alpha: 0.12), const Color(0xFFD97706)),
-      _TherapeuticLine.third  => ('3ª linha', const Color(0xFF6366F1).withValues(alpha: 0.12), const Color(0xFF6366F1)),
+      _TherapeuticLine.first  => ('1ª linha', const Color(0xFFDC2626).withOpacity(0.12), const Color(0xFFDC2626)),
+      _TherapeuticLine.second => ('2ª linha', const Color(0xFFD97706).withOpacity(0.12), const Color(0xFFD97706)),
+      _TherapeuticLine.third  => ('3ª linha', const Color(0xFF6366F1).withOpacity(0.12), const Color(0xFF6366F1)),
       _TherapeuticLine.none   => ('', Colors.transparent, Colors.transparent),
     };
     return Container(
@@ -5808,17 +5808,17 @@ class _PedDoseRowState extends State<_PedDoseRow> {
           duration: const Duration(milliseconds: 220),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: c.dark ? Colors.white.withValues(alpha: 0.03) : Colors.white,
+            color: c.dark ? Colors.white.withOpacity(0.03) : Colors.white,
             border: Border.all(
               color: _expanded
-                  ? widget.color.withValues(alpha: 0.50)
+                  ? widget.color.withOpacity(0.50)
                   : c.border,
               width: _expanded ? 1.5 : 1.0,
             ),
             boxShadow: _expanded
-              ? [BoxShadow(color: widget.color.withValues(alpha: 0.10),
+              ? [BoxShadow(color: widget.color.withOpacity(0.10),
                   blurRadius: 12, offset: const Offset(0, 4))]
-              : [BoxShadow(color: Colors.black.withValues(alpha: 0.04),
+              : [BoxShadow(color: Colors.black.withOpacity(0.04),
                   blurRadius: 4, offset: const Offset(0, 1))],
           ),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -5864,7 +5864,7 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                   if (widget.indication != null) ...[
                     const SizedBox(height: 2),
                     Text(widget.indication!,
-                      style: TextStyle(fontSize: 10, color: widget.color.withValues(alpha: 0.8),
+                      style: TextStyle(fontSize: 10, color: widget.color.withOpacity(0.8),
                         fontStyle: FontStyle.italic)),
                   ],
                 ])),
@@ -5876,8 +5876,8 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: widget.color.withValues(alpha: 0.12),
-                        border: Border.all(color: widget.color.withValues(alpha: 0.30)),
+                        color: widget.color.withOpacity(0.12),
+                        border: Border.all(color: widget.color.withOpacity(0.30)),
                       ),
                       child: Text(calcDose, style: TextStyle(
                         fontSize: 15, fontWeight: FontWeight.w900, color: widget.color)),
@@ -5893,7 +5893,7 @@ class _PedDoseRowState extends State<_PedDoseRow> {
 
             // ── Painel expandido ──────────────────────────────────
             if (_expanded) ...[
-              Divider(height: 1, color: widget.color.withValues(alpha: 0.15)),
+              Divider(height: 1, color: widget.color.withOpacity(0.15)),
 
               // Nota de atenção rápida
               if (widget.warningNote != null)
@@ -5902,9 +5902,9 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFD97706).withValues(alpha: 0.07),
+                      color: const Color(0xFFD97706).withOpacity(0.07),
                       borderRadius: BorderRadius.circular(9),
-                      border: Border.all(color: const Color(0xFFD97706).withValues(alpha: 0.25)),
+                      border: Border.all(color: const Color(0xFFD97706).withOpacity(0.25)),
                     ),
                     child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       const Icon(Icons.warning_amber_rounded, size: 13, color: Color(0xFFD97706)),
@@ -5924,8 +5924,8 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                     padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xFFDC2626).withValues(alpha: 0.06),
-                      border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.22)),
+                      color: const Color(0xFFDC2626).withOpacity(0.06),
+                      border: Border.all(color: const Color(0xFFDC2626).withOpacity(0.22)),
                     ),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
@@ -5957,7 +5957,7 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Row(children: [
                       Icon(Icons.menu_book_rounded, size: 12,
-                        color: widget.color.withValues(alpha: 0.8)),
+                        color: widget.color.withOpacity(0.8)),
                       const SizedBox(width: 6),
                       Text('Referencias y Evidencias',
                         style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
@@ -6011,7 +6011,7 @@ class _PedRefCitation extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 7),
       padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
       decoration: BoxDecoration(
-        color: c.dark ? Colors.white.withValues(alpha: 0.03) : const Color(0xFFF9FAFB),
+        color: c.dark ? Colors.white.withOpacity(0.03) : const Color(0xFFF9FAFB),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: c.border),
       ),
@@ -6021,7 +6021,7 @@ class _PedRefCitation extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           margin: const EdgeInsets.only(right: 9),
           decoration: BoxDecoration(
-            color: _typeColor.withValues(alpha: 0.10),
+            color: _typeColor.withOpacity(0.10),
             borderRadius: BorderRadius.circular(7),
           ),
           child: Icon(Icons.library_books_rounded, size: 12, color: _typeColor),
@@ -6031,7 +6031,7 @@ class _PedRefCitation extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: _typeColor.withValues(alpha: 0.10),
+                color: _typeColor.withOpacity(0.10),
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Text(ref.type, style: TextStyle(
@@ -6401,9 +6401,9 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
                 colors: [Color(0xFF1A4A3A), Color(0xFF0F3028)],
               ),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+              border: Border.all(color: Colors.white.withOpacity(0.12)),
               boxShadow: [
-                BoxShadow(color: Colors.black.withValues(alpha: 0.25),
+                BoxShadow(color: Colors.black.withOpacity(0.25),
                     blurRadius: 12, offset: const Offset(0, 4)),
               ],
             ),
@@ -6419,10 +6419,10 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: const Color(0xFFC8A86B).withValues(alpha: 0.16),
+                color: const Color(0xFFC8A86B).withOpacity(0.16),
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                    color: const Color(0xFFC8A86B).withValues(alpha: 0.3)),
+                    color: const Color(0xFFC8A86B).withOpacity(0.3)),
               ),
               child: const Text('MEDCASES PRO · PEDIATRIA',
                 style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900,
@@ -6436,7 +6436,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
             Text(
               'Valores laboratoriais pediátricos baseados em evidências',
               style: TextStyle(fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.62),
+                color: Colors.white.withOpacity(0.62),
                 fontWeight: FontWeight.w400, height: 1.4),
             ),
           ])),
@@ -6446,7 +6446,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
 
         // Divisor sutil
         Container(height: 1,
-            color: Colors.white.withValues(alpha: 0.08)),
+            color: Colors.white.withOpacity(0.08)),
         const SizedBox(height: 14),
 
         // Badges de validação em linha
@@ -6456,16 +6456,16 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
             color: const Color(0xFF34D399)),
           _PedBadge(icon: Icons.update_rounded,
             label: 'Atualizado Maio 2026',
-            color: Colors.white.withValues(alpha: 0.72)),
+            color: Colors.white.withOpacity(0.72)),
           _PedBadge(icon: Icons.menu_book_rounded,
             label: 'Nelson Pediatrics 2025',
             color: const Color(0xFFC8A86B)),
           _PedBadge(icon: Icons.health_and_safety_outlined,
             label: 'AAP',
-            color: Colors.white.withValues(alpha: 0.72)),
+            color: Colors.white.withOpacity(0.72)),
           _PedBadge(icon: Icons.public_rounded,
             label: 'WHO',
-            color: Colors.white.withValues(alpha: 0.72)),
+            color: Colors.white.withOpacity(0.72)),
         ]),
       ]),
     );
@@ -6482,7 +6482,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
             ? const Color(0xFF1A1D23)
             : const Color(0xFFF1FAF6),
         border: Border(
-          top: BorderSide(color: const Color(0xFF0F7A5A).withValues(alpha: 0.18)),
+          top: BorderSide(color: const Color(0xFF0F7A5A).withOpacity(0.18)),
           bottom: BorderSide(color: c.border),
         ),
       ),
@@ -6530,10 +6530,10 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F7A5A).withValues(alpha: 0.09),
+              color: const Color(0xFF0F7A5A).withOpacity(0.09),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                  color: const Color(0xFF0F7A5A).withValues(alpha: 0.22)),
+                  color: const Color(0xFF0F7A5A).withOpacity(0.22)),
             ),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               const Icon(Icons.library_books_outlined, size: 14,
@@ -6623,7 +6623,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
             borderRadius: BorderRadius.circular(13),
             border: Border.all(color: c.border),
             boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.03),
+              BoxShadow(color: Colors.black.withOpacity(0.03),
                   blurRadius: 6, offset: const Offset(0, 2)),
             ],
           ),
@@ -6697,7 +6697,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 9, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F7A5A).withValues(alpha: 0.1),
+                        color: const Color(0xFF0F7A5A).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -6761,10 +6761,10 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: const Color(0xFFC8A86B).withValues(alpha: dark ? 0.08 : 0.06),
+            color: const Color(0xFFC8A86B).withOpacity(dark ? 0.08 : 0.06),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-                color: const Color(0xFFC8A86B).withValues(alpha: 0.20)),
+                color: const Color(0xFFC8A86B).withOpacity(0.20)),
           ),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Icon(Icons.verified_user_outlined, size: 13,
@@ -6782,7 +6782,7 @@ class _PedRefPremiumViewState extends State<_PedRefPremiumView> {
                     'WHO Pediatric Standards · PALS 2020 · Harriet Lane 22ª ed. · '
                     'Pediatric Emergency Standards (AHA/ILCOR 2020)',
                     style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                      color: const Color(0xFFC8A86B).withValues(alpha: 0.80),
+                      color: const Color(0xFFC8A86B).withOpacity(0.80),
                       height: 1.4),
                   ),
                 ],
@@ -6829,9 +6829,9 @@ class _PedBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.28)),
+        border: Border.all(color: color.withOpacity(0.28)),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 9, color: color),
@@ -6862,9 +6862,9 @@ class _EvidMeta extends StatelessWidget {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(7),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          border: Border.all(color: color.withOpacity(0.25)),
         ),
         child: Text(value,
           style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
@@ -6905,14 +6905,14 @@ class _AgeFilterBtn extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
         decoration: BoxDecoration(
-          color: active ? color.withValues(alpha: 0.11) : c.surface,
+          color: active ? color.withOpacity(0.11) : c.surface,
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: active ? color.withValues(alpha: 0.5) : c.border,
+            color: active ? color.withOpacity(0.5) : c.border,
             width: active ? 1.5 : 1,
           ),
           boxShadow: active
-              ? [BoxShadow(color: color.withValues(alpha: 0.12),
+              ? [BoxShadow(color: color.withOpacity(0.12),
                   blurRadius: 6, offset: const Offset(0, 2))]
               : [],
         ),
@@ -6990,10 +6990,10 @@ class _PedRefSidebarFixed extends StatelessWidget {
       decoration: BoxDecoration(
         color: dark ? const Color(0xFF1A1D23) : const Color(0xFFF0FBF6),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: kGreen.withValues(alpha: 0.2)),
+        border: Border.all(color: kGreen.withOpacity(0.2)),
         boxShadow: dark
             ? []
-            : [BoxShadow(color: kGreen.withValues(alpha: 0.06),
+            : [BoxShadow(color: kGreen.withOpacity(0.06),
                 blurRadius: 12, offset: const Offset(0, 3))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -7005,23 +7005,23 @@ class _PedRefSidebarFixed extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft, end: Alignment.bottomRight,
               colors: [
-                kGreen.withValues(alpha: 0.14),
-                kGreen.withValues(alpha: 0.06),
+                kGreen.withOpacity(0.14),
+                kGreen.withOpacity(0.06),
               ],
             ),
             borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(17)),
             border: Border(
                 bottom: BorderSide(
-                    color: kGreen.withValues(alpha: 0.18))),
+                    color: kGreen.withOpacity(0.18))),
           ),
           child: Row(children: [
             Container(
               width: 32, height: 32,
               decoration: BoxDecoration(
-                color: kGreen.withValues(alpha: 0.15),
+                color: kGreen.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(9),
-                border: Border.all(color: kGreen.withValues(alpha: 0.3)),
+                border: Border.all(color: kGreen.withOpacity(0.3)),
               ),
               child: const Center(
                 child: Icon(Icons.library_books_rounded, size: 15,
@@ -7037,14 +7037,14 @@ class _PedRefSidebarFixed extends StatelessWidget {
                   letterSpacing: 1.3, color: kGreen)),
               Text('Científicas validadas',
                 style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w500,
-                  color: kGreen.withValues(alpha: 0.65))),
+                  color: kGreen.withOpacity(0.65))),
             ])),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
               decoration: BoxDecoration(
-                color: kGold.withValues(alpha: 0.14),
+                color: kGold.withOpacity(0.14),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: kGold.withValues(alpha: 0.3)),
+                border: Border.all(color: kGold.withOpacity(0.3)),
               ),
               child: const Text('6 fontes',
                 style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
@@ -7079,7 +7079,7 @@ class _PedRefSidebarFixed extends StatelessWidget {
                         Container(
                           width: 20, height: 20,
                           decoration: BoxDecoration(
-                            color: kGreen.withValues(alpha: 0.12),
+                            color: kGreen.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Center(child: Text(ref['num']!,
@@ -7093,10 +7093,10 @@ class _PedRefSidebarFixed extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(
-                            color: typeColor.withValues(alpha: 0.1),
+                            color: typeColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(4),
                             border: Border.all(
-                                color: typeColor.withValues(alpha: 0.25)),
+                                color: typeColor.withOpacity(0.25)),
                           ),
                           child: Text(ref['type']!,
                             style: TextStyle(fontSize: 7.5,
@@ -7119,7 +7119,7 @@ class _PedRefSidebarFixed extends StatelessWidget {
                   // Rodapé de fonte (sem botão de link)
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.04),
+                      color: const Color(0xFF0EA5E9).withOpacity(0.04),
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(11)),
                       border: Border(
@@ -7148,9 +7148,9 @@ class _PedRefSidebarFixed extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: kGreen.withValues(alpha: 0.06),
+            color: kGreen.withOpacity(0.06),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: kGreen.withValues(alpha: 0.2)),
+            border: Border.all(color: kGreen.withOpacity(0.2)),
           ),
           child: Row(children: [
             const Icon(Icons.verified_user_rounded, size: 14, color: kGreen),
@@ -7158,7 +7158,7 @@ class _PedRefSidebarFixed extends StatelessWidget {
             Expanded(child: Text(
               'Fuentes: Nelson Pediatrics · AAP · WHO · UpToDate · PALS · Harriet Lane',
               style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                color: kGreen.withValues(alpha: 0.85), height: 1.3),
+                color: kGreen.withOpacity(0.85), height: 1.3),
             )),
           ]),
         ),
@@ -7213,7 +7213,7 @@ class _PedRefSidePanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: dark ? const Color(0xFF111C17) : const Color(0xFFF0FBF6),
         borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: kGreen.withValues(alpha: 0.2)),
+        border: Border.all(color: kGreen.withOpacity(0.2)),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Row(children: [
@@ -7237,7 +7237,7 @@ class _PedRefSidePanel extends StatelessWidget {
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7),
-                color: const Color(0xFF0EA5E9).withValues(alpha: 0.08),
+                color: const Color(0xFF0EA5E9).withOpacity(0.08),
               ),
               child: const Icon(Icons.library_books_rounded, size: 14,
                 color: Color(0xFF0EA5E9)),
@@ -7299,13 +7299,13 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
             decoration: BoxDecoration(
-              color: accent.withValues(alpha: dark ? 0.08 : 0.06),
+              color: accent.withOpacity(dark ? 0.08 : 0.06),
               // Header sempre com cantos arredondados — sem container pai externo
               borderRadius: _collapsed
                   ? BorderRadius.circular(14)
                   : const BorderRadius.vertical(top: Radius.circular(14)),
               border: Border.all(
-                color: accent.withValues(alpha: 0.18),
+                color: accent.withOpacity(0.18),
                 width: 0.8,
               ),
             ),
@@ -7318,12 +7318,12 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      accent.withValues(alpha: 0.2),
-                      accent.withValues(alpha: 0.1),
+                      accent.withOpacity(0.2),
+                      accent.withOpacity(0.1),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: accent.withValues(alpha: 0.3)),
+                  border: Border.all(color: accent.withOpacity(0.3)),
                 ),
                 child: Center(
                     child: Icon(cat.icon, size: 20, color: accent)),
@@ -7345,9 +7345,9 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.1),
+                  color: accent.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(7),
-                  border: Border.all(color: accent.withValues(alpha: 0.2)),
+                  border: Border.all(color: accent.withOpacity(0.2)),
                 ),
                 child: Text(cat.source.split(' · ').first,
                   style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
@@ -7392,10 +7392,10 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
               padding: const EdgeInsets.symmetric(
                   horizontal: 12, vertical: 7),
               decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.06),
+                color: accent.withOpacity(0.06),
                 borderRadius: BorderRadius.circular(9),
                 border: Border.all(
-                    color: accent.withValues(alpha: 0.15)),
+                    color: accent.withOpacity(0.15)),
               ),
               child: Row(children: [
                 Icon(Icons.library_books_outlined, size: 11,
@@ -7426,7 +7426,7 @@ class _PedTableHeader extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
-                color: accent.withValues(alpha: 0.12))),
+                color: accent.withOpacity(0.12))),
       ),
       child: Row(children: [
         const SizedBox(width: 124),
@@ -7498,20 +7498,20 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
         margin: const EdgeInsets.fromLTRB(4, 0, 4, 6),
         decoration: BoxDecoration(
           color: _expanded
-              ? accent.withValues(alpha: 0.04)
+              ? accent.withOpacity(0.04)
               : (dark
-                  ? Colors.white.withValues(alpha: 0.02)
+                  ? Colors.white.withOpacity(0.02)
                   : const Color(0xFFFAFAFA)),
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
             color: _expanded
-                ? accent.withValues(alpha: 0.35)
-                : c.border.withValues(alpha: 0.55),
+                ? accent.withOpacity(0.35)
+                : c.border.withOpacity(0.55),
             width: _expanded ? 1.5 : 1.0,
           ),
           boxShadow: _expanded && !dark
               ? [BoxShadow(
-                  color: accent.withValues(alpha: 0.07),
+                  color: accent.withOpacity(0.07),
                   blurRadius: 10, offset: const Offset(0, 3))]
               : [],
         ),
@@ -7606,10 +7606,10 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 9),
                       decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.1),
+                        color: accent.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(11),
                         border: Border.all(
-                            color: accent.withValues(alpha: 0.25)),
+                            color: accent.withOpacity(0.25)),
                       ),
                       child: Text(
                         _ageValue(af, param),
@@ -7635,7 +7635,7 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                 Container(height: 1,
-                  color: accent.withValues(alpha: 0.15),
+                  color: accent.withOpacity(0.15),
                   margin: const EdgeInsets.only(bottom: 12)),
 
                 // Título interpretação
@@ -7678,11 +7678,11 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF59E0B)
-                          .withValues(alpha: 0.07),
+                          .withOpacity(0.07),
                       borderRadius: BorderRadius.circular(9),
                       border: Border.all(
                           color: const Color(0xFFF59E0B)
-                              .withValues(alpha: 0.2)),
+                              .withOpacity(0.2)),
                     ),
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -7729,9 +7729,9 @@ class _InterpRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.07),
+        color: color.withOpacity(0.07),
         borderRadius: BorderRadius.circular(9),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Row(children: [
         Icon(icon, size: 13, color: color),
@@ -7816,12 +7816,12 @@ class _PewsSelector extends StatelessWidget {
             // Selecionado normal → azul sólido; outros → cor da severidade
             color: sel
                 ? (isNormal
-                    ? _kBlueBg.withValues(alpha: 0.12)
-                    : dotColor.withValues(alpha: 0.10))
+                    ? _kBlueBg.withOpacity(0.12)
+                    : dotColor.withOpacity(0.10))
                 : c.surface,
             border: Border.all(
               color: sel
-                  ? dotColor.withValues(alpha: isNormal ? 0.70 : 0.50)
+                  ? dotColor.withOpacity(isNormal ? 0.70 : 0.50)
                   : c.border,
               width: sel ? 1.5 : 1.0,
             ),
@@ -7855,8 +7855,8 @@ class _PewsSelector extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: sel
-                        ? dotColor.withValues(alpha: 0.15)
-                        : c.border.withValues(alpha: 0.4),
+                        ? dotColor.withOpacity(0.15)
+                        : c.border.withOpacity(0.4),
                   ),
                   child: Text(
                     '+$i pt',
@@ -7876,23 +7876,23 @@ class _PewsSelector extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: _kBlueBg.withValues(alpha: 0.08),
+                    color: _kBlueBg.withOpacity(0.08),
                     border: Border.all(
-                      color: _kBlueBg.withValues(alpha: 0.20)),
+                      color: _kBlueBg.withOpacity(0.20)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
                         Icon(Icons.info_outline_rounded,
-                            size: 11, color: _kBlueBg.withValues(alpha: 0.7)),
+                            size: 11, color: _kBlueBg.withOpacity(0.7)),
                         const SizedBox(width: 4),
                         Text('Valores de referência normais',
                             style: TextStyle(
                               fontSize: 9.5,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.3,
-                              color: _kBlueBg.withValues(alpha: 0.8),
+                              color: _kBlueBg.withOpacity(0.8),
                             )),
                       ]),
                       const SizedBox(height: 5),
@@ -7902,11 +7902,11 @@ class _PewsSelector extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('• ', style: TextStyle(
-                              fontSize: 10, color: _kBlueBg.withValues(alpha: 0.6))),
+                              fontSize: 10, color: _kBlueBg.withOpacity(0.6))),
                             Expanded(child: Text(line, style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w500,
-                              color: _kBlueBg.withValues(alpha: 0.85),
+                              color: _kBlueBg.withOpacity(0.85),
                               height: 1.4,
                             ))),
                           ],
@@ -7997,7 +7997,7 @@ class _RefLine extends StatelessWidget {
       style: TextStyle(
         fontSize: 9,
         fontWeight: FontWeight.w400,
-        color: Colors.white.withValues(alpha: 0.48),
+        color: Colors.white.withOpacity(0.48),
         fontStyle: FontStyle.italic,
         height: 1.5,
       ),
@@ -8100,9 +8100,9 @@ class _SourcesButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
         decoration: BoxDecoration(
-          color: const Color(0xFF10B981).withValues(alpha: 0.07),
+          color: const Color(0xFF10B981).withOpacity(0.07),
           border: Border.all(
-            color: const Color(0xFF10B981).withValues(alpha: 0.22),
+            color: const Color(0xFF10B981).withOpacity(0.22),
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -8135,7 +8135,7 @@ class _SourcesButton extends StatelessWidget {
               'AHA · ACC · WHO · PubMed · UpToDate · KDIGO',
               style: TextStyle(
                 fontSize: 10,
-                color: const Color(0xFF10B981).withValues(alpha: 0.6),
+                color: const Color(0xFF10B981).withOpacity(0.6),
                 letterSpacing: 0.4,
               ),
             ),

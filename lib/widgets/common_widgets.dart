@@ -200,10 +200,10 @@ class AppColors {
 
   // ── Helpers rápidos para withValues sem repetir ───────────────────────────
   Color cardBorder([double opacity = 1.0]) =>
-      border.withValues(alpha: opacity);
+      border.withOpacity(opacity);
 
   Color textWith(double opacity) =>
-      textPrimary.withValues(alpha: opacity);
+      textPrimary.withOpacity(opacity);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -274,7 +274,7 @@ class SectionTitle extends StatelessWidget {
         const SizedBox(height: 4),
         Text(subtitle!, style: TextStyle(
           fontSize: 13, fontWeight: FontWeight.w600, height: 1.4,
-          color: light ? Colors.white.withValues(alpha: 0.7) : c.textSecondary,
+          color: light ? Colors.white.withOpacity(0.7) : c.textSecondary,
         )),
       ],
     ]);
@@ -295,8 +295,8 @@ class DataPoint extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: dark ? Colors.white.withValues(alpha: 0.1) : c.surface,
-        border: Border.all(color: dark ? Colors.white.withValues(alpha: 0.1) : c.border),
+        color: dark ? Colors.white.withOpacity(0.1) : c.surface,
+        border: Border.all(color: dark ? Colors.white.withOpacity(0.1) : c.border),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label, style: TextStyle(
@@ -311,7 +311,7 @@ class DataPoint extends StatelessWidget {
           ))),
           if (unit != null) ...[
             const SizedBox(width: 2),
-            Text(unit!, style: TextStyle(fontSize: 10, color: dark ? Colors.white.withValues(alpha: 0.6) : c.textHint)),
+            Text(unit!, style: TextStyle(fontSize: 10, color: dark ? Colors.white.withOpacity(0.6) : c.textHint)),
           ],
         ]),
       ]),
@@ -394,7 +394,7 @@ class MedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           color: primary ? c.darkBtn : c.cardBg,
           border: primary ? null : Border.all(color: c.border),
-          boxShadow: primary ? [BoxShadow(color: c.darkBtn.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
+          boxShadow: primary ? [BoxShadow(color: c.darkBtn.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
         ),
         child: Center(child: Text(label, style: TextStyle(
           fontSize: 13, fontWeight: FontWeight.w900,
@@ -513,7 +513,7 @@ class ScoreToggle extends StatelessWidget {
           Expanded(child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: checked ? kGoldLight : c.textPrimary))),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: checked ? Colors.white.withValues(alpha: 0.15) : c.surface),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: checked ? Colors.white.withOpacity(0.15) : c.surface),
             child: Text(points, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: checked ? kGoldLight : c.gold)),
           ),
         ]),
@@ -832,7 +832,7 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
       elevation: 10,
       borderRadius: BorderRadius.circular(14),
       color: dark ? const Color(0xFF252930) : Colors.white,
-      shadowColor: Colors.black.withValues(alpha: 0.20),
+      shadowColor: Colors.black.withOpacity(0.20),
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 340, maxHeight: boxH),
         child: ClipRRect(
@@ -983,9 +983,9 @@ class EvidenceBadgesRow extends StatelessWidget {
               vertical:   compact ? 3 : 4,
             ),
             decoration: BoxDecoration(
-              color:        b.color.withValues(alpha: dark ? 0.15 : 0.09),
+              color:        b.color.withOpacity(dark ? 0.15 : 0.09),
               borderRadius: BorderRadius.circular(6),
-              border:       Border.all(color: b.color.withValues(alpha: 0.30)),
+              border:       Border.all(color: b.color.withOpacity(0.30)),
             ),
             child: Text(b.label,
               style: TextStyle(
@@ -1105,9 +1105,9 @@ class _EvidenceCardWidgetState extends State<EvidenceCardWidget> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF059669).withValues(alpha: 0.10),
+                    color: const Color(0xFF059669).withOpacity(0.10),
                     borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: const Color(0xFF059669).withValues(alpha: 0.25)),
+                    border: Border.all(color: const Color(0xFF059669).withOpacity(0.25)),
                   ),
                   child: Text('ATC: ${ev.atcCode}',
                     style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
@@ -1259,10 +1259,10 @@ class _EvidenceCardWidgetState extends State<EvidenceCardWidget> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0EA5E9).withValues(alpha: 0.06),
+                      color: const Color(0xFF0EA5E9).withOpacity(0.06),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: const Color(0xFF0EA5E9).withValues(alpha: 0.18)),
+                        color: const Color(0xFF0EA5E9).withOpacity(0.18)),
                     ),
                     child: Row(children: [
                       Icon(link.icon, size: 14,
@@ -1289,7 +1289,7 @@ class _EvidenceCardWidgetState extends State<EvidenceCardWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
-                          color: const Color(0xFF0EA5E9).withValues(alpha: 0.10),
+                          color: const Color(0xFF0EA5E9).withOpacity(0.10),
                         ),
                         child: const Text('fuente',
                           style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700,
@@ -1328,9 +1328,9 @@ class _EvMetaChip extends StatelessWidget {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
-          color:        color.withValues(alpha: 0.10),
+          color:        color.withOpacity(0.10),
           borderRadius: BorderRadius.circular(6),
-          border:       Border.all(color: color.withValues(alpha: 0.22)),
+          border:       Border.all(color: color.withOpacity(0.22)),
         ),
         child: Text(value,
           style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: color)),
@@ -1361,9 +1361,9 @@ class _EvRefRow extends StatelessWidget {
         Container(
           width: 22, height: 22,
           decoration: BoxDecoration(
-            color:  typeColor.withValues(alpha: 0.12),
+            color:  typeColor.withOpacity(0.12),
             shape:  BoxShape.circle,
-            border: Border.all(color: typeColor.withValues(alpha: 0.35)),
+            border: Border.all(color: typeColor.withOpacity(0.35)),
           ),
           child: Center(
             child: Text('${ref.num}',
@@ -1377,7 +1377,7 @@ class _EvRefRow extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color:        typeColor.withValues(alpha: 0.12),
+                color:        typeColor.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(ref.type.toUpperCase(),
