@@ -136,8 +136,16 @@ class HemoData {
 }
 
 class AppProvider extends ChangeNotifier {
-  // SUPER ORDEM MASTER 14 M3: flag estática para redirecionar para aba IA pós-OAuth.
-  // connectGemini() seta true antes do redirect. MainShell lê e reseta em initState.
+  // SUPER ORDEM MASTER 315: ValueNotifier para restaurar aba pós-OAuth redirect.
+  // connectGemini() salva o índice em localStorage antes do reload.
+  // checkGeminiSession() dispara o notifier em runtime (não em initState).
+  // MainShell ouve o notifier via addListener — responde a qualquer momento.
+  // -1 = inativo; >= 0 = índice da aba a restaurar (consome e reseta para -1).
+  static final postOAuthTabNotifier = ValueNotifier<int>(-1);
+
+  // SUPER ORDEM MASTER 14 M3: flag legada — mantida como no-op para não quebrar
+  // builds anteriores que possam referenciar o símbolo. Ignorada pelo MainShell.
+  @Deprecated('Use postOAuthTabNotifier. Removido no Build 315.')
   static bool postOAuthAiTab = false;
 
   // ── Idioma padrão baseado no locale do sistema operacional ────────────────
@@ -1774,11 +1782,13 @@ class AppProvider extends ChangeNotifier {
           final modalOpened = _webGetLS('medcases_gsi_modal_opened');
           if (modalOpened == 'true') {
             _webRemoveLS('medcases_gsi_modal_opened');
-            // SUPER ORDEM MASTER 14 M3: salva flag de aba de origem antes do reload.
-            // checkGeminiSession() lê 'medcases_redirect_from_ai_tab' pós-redirect
-            // e dispara MainShell.pendingTab = 2 (IA) automaticamente.
-            _webSetLS('medcases_redirect_from_ai_tab', 'true');
-            debugPrint('[connectGemini] redirect OAuth iniciado — aguardando reload, flag ai_tab salva');
+            // SUPER ORDEM MASTER 315: salva índice da aba de origem (sempre 2 = IA
+            // aqui, mas armazenado como inteiro para generalização futura).
+            // checkGeminiSession() lê 'medcases_pre_auth_tab_index' pós-redirect
+            // e dispara postOAuthTabNotifier para restaurar a aba sem depender
+            // do initState (corrige race condition do Build 14 M3).
+            _webSetLS('medcases_pre_auth_tab_index', '2');
+            debugPrint('[connectGemini] redirect OAuth iniciado — aguardando reload, tab_index=2 salvo');
             return null; // null = redirect em andamento, não é falha
           }
         } catch (_) {}
@@ -1928,6 +1938,9 @@ class AppProvider extends ChangeNotifier {
         if (kIsWeb) {
           // Limpa flag de modal órfã (pode sobrar de tentativas anteriores)
           _webRemoveLS('medcases_gsi_modal_opened');
+          // BUILD 315: limpa chave legada do Build 14 M3 (pode estar em localStorage
+          // de usuários que fizeram redirect com builds anteriores).
+          _webRemoveLS('medcases_redirect_from_ai_tab');
 
           // ── Detecta retorno do redirect OAuth ─────────────────────────────
           // Safari ITP pode bloquear localStorage no redirect — lê também de
@@ -1967,17 +1980,22 @@ class AppProvider extends ChangeNotifier {
               final hasKey = await _ensureGeminiApiKey(source: 'pós-redirect');
               if (!hasKey) return;
               _setGeminiConnectionState(connected: true, email: email);
-              // SUPER ORDEM MASTER 14 M3: restaura aba de origem pós-OAuth redirect.
-              // Antes do redirect, connectGemini() salva 'medcases_redirect_from_ai_tab'
-              // no localStorage. Se presente, notifica via callback para navegar para aba IA.
+              // SUPER ORDEM MASTER 315: restaura aba de origem pós-OAuth redirect.
+              // Lê o índice salvo antes do redirect em 'medcases_pre_auth_tab_index'.
+              // Dispara postOAuthTabNotifier em runtime — corrige race condition do
+              // Build 14 M3 onde postOAuthAiTab era lido antes do checkGeminiSession().
               if (kIsWeb) {
-                final fromAiTab = _webGetLS('medcases_redirect_from_ai_tab');
-                if (fromAiTab == 'true') {
-                  _webRemoveLS('medcases_redirect_from_ai_tab');
-                  // Sinaliza via flag em memória que o app deve ir para aba IA (2) após reload.
-                  // MainShell verifica AppProvider.postOAuthAiTab em initState e navega.
-                  AppProvider.postOAuthAiTab = true;
-                  debugPrint('[MASTER14_M3] redirect pós-OAuth → aba IA (2) sinalizada');
+                final savedIdx = _webGetLS('medcases_pre_auth_tab_index');
+                if (savedIdx != null && savedIdx.isNotEmpty) {
+                  _webRemoveLS('medcases_pre_auth_tab_index');
+                  final tabIdx = int.tryParse(savedIdx) ?? 2;
+                  // Dispara o notifier via microtask (sem WidgetsBinding — app_provider
+                  // não importa flutter/widgets.dart). Future.microtask() garante que
+                  // o listener do MainShell já está registrado antes do evento disparar.
+                  Future.microtask(() {
+                    AppProvider.postOAuthTabNotifier.value = tabIdx;
+                    debugPrint('[MASTER315] redirect pós-OAuth → aba $tabIdx sinalizada via notifier');
+                  });
                 }
               }
               debugPrint('[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');

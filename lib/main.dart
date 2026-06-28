@@ -1280,13 +1280,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Ouve pendingTab para navegação iniciada pelo Drawer (sem onTabChange no _AppDrawer)
     MainShell.pendingTab.addListener(_onPendingTab);
 
-    // SUPER ORDEM MASTER 14 M3: pós-OAuth redirect → volta para aba IA
-    if (AppProvider.postOAuthAiTab) {
-      AppProvider.postOAuthAiTab = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _tab = 2);
-      });
-    }
+    // SUPER ORDEM MASTER 315: ouve postOAuthTabNotifier para restaurar aba pós-OAuth.
+    // Substitui o mecanismo postOAuthAiTab (static bool) que sofria de race condition:
+    // o bool era lido em initState ANTES de checkGeminiSession() setar true.
+    // O ValueNotifier dispara em runtime → _onPostOAuthTab() responde imediatamente.
+    AppProvider.postOAuthTabNotifier.addListener(_onPostOAuthTab);
 
     // Instancia TODAS as telas UMA VEZ — IndexedStack reutiliza entre rebuilds.
     // Cada tela é envolta em RepaintBoundary — isola o repaint de cada screen,
@@ -1441,6 +1439,19 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     } catch (_) {}
   }
 
+  // SUPER ORDEM MASTER 315: callback do ValueNotifier postOAuthTabNotifier.
+  // Disparado por AppProvider.checkGeminiSession() após auth OAuth bem-sucedido.
+  // Restaura o índice da aba de origem (salvo antes do redirect) sem race condition.
+  void _onPostOAuthTab() {
+    final tabIdx = AppProvider.postOAuthTabNotifier.value;
+    if (tabIdx >= 0 && mounted) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      setState(() => _tab = tabIdx.clamp(0, 5));
+      AppProvider.postOAuthTabNotifier.value = -1; // consome e reseta
+      debugPrint('[MASTER315] postOAuthTabNotifier → aba $tabIdx restaurada');
+    }
+  }
+
   void _onPendingTab() {
     final t = MainShell.pendingTab.value;
     if (t >= 0 && mounted) {
@@ -1453,6 +1464,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   @override
   void dispose() {
     MainShell.pendingTab.removeListener(_onPendingTab);
+    AppProvider.postOAuthTabNotifier.removeListener(_onPostOAuthTab); // BUILD 315
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
