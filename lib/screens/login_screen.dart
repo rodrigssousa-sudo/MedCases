@@ -18,8 +18,8 @@ class _LoginScreenState extends State<LoginScreen>
   _Mode _mode = _Mode.login;
   bool _loading = false;
   bool _obscure = true;
-  bool _rememberEmail = false;
-  bool _keepLoggedIn  = false;
+  bool _rememberEmail = true;  // SUPER ORDEM MASTER 14 M4: ativo por padrão
+  bool _keepLoggedIn  = true;  // SUPER ORDEM MASTER 14 M4: "Conectar Automaticamente" pré-marcado
   String? _error;
   String? _success;
 
@@ -82,8 +82,9 @@ class _LoginScreenState extends State<LoginScreen>
   Future<void> _loadSavedEmail() async {
     try {
       final p = await SharedPreferences.getInstance();
-      final remember     = p.getBool(_kPrefRemember) ?? false;
-      final keepLoggedIn = p.getBool(_kKeepLoggedIn) ?? false;
+      // SUPER ORDEM MASTER 14 M4: default true — primeiro uso já vem marcado
+      final remember     = p.getBool(_kPrefRemember) ?? true;
+      final keepLoggedIn = p.getBool(_kKeepLoggedIn) ?? true;
       final email        = p.getString(_kPrefEmail)  ?? '';
       if (mounted) setState(() {
         _keepLoggedIn  = keepLoggedIn;

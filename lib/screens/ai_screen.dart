@@ -321,7 +321,8 @@ class _AiScreenState extends State<AiScreen> {
   // por problema de conexão (timeout, socket, etc.) vs. erro de chave API.
   bool _networkError  = false;
   // Motor de Partida (Build 149): false=Plantão (≤12 linhas) | true=Estudos (22-24)
-  bool _longResponse  = false;
+  // SUPER ORDEM MASTER 14 M5: Estudos é o modo PADRÃO — evita custo Plantão automático
+  bool _longResponse  = true;
   bool _greetingDone  = false; // garante saudação só uma vez por sessão
   int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
   // Auto-scroll: só desce automaticamente se usuário estiver perto do fundo

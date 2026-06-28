@@ -235,33 +235,14 @@ class _NotesScreenState extends State<NotesScreen> {
                           ],
                         ),
                       ),
-                      // Botão nova nota
+                      // SUPER ORDEM MASTER 14 M10: ícone único minimalista Cyan
+                      // Destruído: cápsula verde com texto "Nova/Nueva"
                       GestureDetector(
                         onTap: () => _openEditor(),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xFF10B981),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF10B981).withValues(alpha: 0.40),
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            const Icon(Icons.add_rounded, color: Colors.white, size: 16),
-                            const SizedBox(width: 5),
-                            Text(
-                              isEs ? 'Nueva' : 'Nova',
-                              style: const TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ]),
+                        child: const Icon(
+                          Icons.add,
+                          size: 22,
+                          color: Color(0xFF00E5FF), // Cyan Elétrico Neon
                         ),
                       ),
                     ]),

@@ -707,7 +707,8 @@ class AvaliacaoScreen extends StatefulWidget {
 }
 
 class _AvaliacaoScreenState extends State<AvaliacaoScreen> {
-  bool _detailed = false;   // false = Básico, true = Detalhado
+  // SUPER ORDEM MASTER 14 M11: modo Detalhado fixo — pill destruída
+  final bool _detailed = true;
   int  _sectionIdx = 0;
 
   // Mapa chave → TextEditingController
@@ -860,10 +861,9 @@ class _AvaliacaoScreenState extends State<AvaliacaoScreen> {
       backgroundColor: const Color(0xFFF7F8FA),
       body: Column(children: [
         // ── Header ──────────────────────────────────────────────────────────
+        // SUPER ORDEM MASTER 14 M11: Cupertino TopBar
         _AvalHeader(
           isEs: isEs,
-          detailed: _detailed,
-          onToggleMode: () => setState(() => _detailed = !_detailed),
           onBack: () => _confirmBack(context, p),
         ),
 
@@ -963,13 +963,13 @@ class _AvaliacaoScreenState extends State<AvaliacaoScreen> {
 // ─────────────────────────────────────────────────────────────────────────────
 // HEADER
 // ─────────────────────────────────────────────────────────────────────────────
+// SUPER ORDEM MASTER 14 M11 — Cupertino TopBar pattern
+// Destruído: subtítulo 'MEDCASES PRO' + pill toggle Básico/Detalhado
 class _AvalHeader extends StatelessWidget {
-  final bool isEs, detailed;
-  final VoidCallback onToggleMode, onBack;
+  final bool isEs;
+  final VoidCallback onBack;
   const _AvalHeader({
     required this.isEs,
-    required this.detailed,
-    required this.onToggleMode,
     required this.onBack,
   });
 
@@ -985,75 +985,35 @@ class _AvalHeader extends StatelessWidget {
       ),
       child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
-          child: Row(children: [
-            // Voltar
-            GestureDetector(
-              onTap: onBack,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withValues(alpha: 0.12),
+        child: SizedBox(
+          height: 52,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Back button — left
+              Positioned(
+                left: 4,
+                child: IconButton(
+                  onPressed: onBack,
+                  icon: const Icon(Icons.arrow_back_rounded, size: 22, color: Colors.white),
+                  splashRadius: 22,
+                  padding: EdgeInsets.zero,
                 ),
-                child: const Icon(Icons.arrow_back_rounded, size: 18, color: Colors.white),
               ),
-            ),
-            const SizedBox(width: 12),
-            // Título — BUILD 283 ORDEM 7: padrão canônico (título w700/20 branco + subtítulo ouro)
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
+              // Title — centered
+              Center(
+                child: Text(
                   isEs ? 'EVALUACIÓN FÍSICA' : 'AVALIAÇÃO FÍSICA',
                   style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w700,
-                    color: Colors.white, letterSpacing: -0.2,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
                   ),
                 ),
-                const Text(
-                  'MEDCASES PRO',
-                  style: TextStyle(
-                    fontSize: 11, fontWeight: FontWeight.w600,
-                    color: Color(0xFFD4AF37), letterSpacing: 1.2,
-                  ),
-                ),
-              ]),
-            ),
-            // Toggle Básico / Detalhado
-            GestureDetector(
-              onTap: onToggleMode,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: detailed ? _kGold : Colors.white.withValues(alpha: 0.15),
-                  border: Border.all(
-                    color: detailed ? _kGold : Colors.white.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(
-                    detailed ? Icons.zoom_in_rounded : Icons.zoom_out_rounded,
-                    size: 13,
-                    color: detailed ? _kDark : Colors.white,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    detailed
-                        ? (isEs ? 'Detallado' : 'Detalhado')
-                        : (isEs ? 'Básico' : 'Básico'),
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900,
-                      color: detailed ? _kDark : Colors.white,
-                    ),
-                  ),
-                ]),
               ),
-            ),
-          ]),
+            ],
+          ),
         ),
       ),
     );
@@ -1089,26 +1049,26 @@ class _SectionNav extends StatelessWidget {
     return false;
   }
 
+  // SUPER ORDEM MASTER 14 M11 — flat underline tabs with Cyan active indicator
   @override
   Widget build(BuildContext context) {
     return Container(
-      // BUILD 283 ORDEM 7: green gradient continuity + circular(12) canonical pills
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF0F1116), // dark base — herda do TopBar
-            Color(0xFF1B3D2A), // verde médio
-            Color(0xFF10B981), // verde esmeralda
+            Color(0xFF0F1116),
+            Color(0xFF1B3D2A),
+            Color(0xFF10B981),
           ],
         ),
         border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5)),
       ),
-      height: 52,
+      height: 44,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         itemCount: sections.length,
         itemBuilder: (_, i) {
           final sec    = sections[i];
@@ -1116,47 +1076,50 @@ class _SectionNav extends StatelessWidget {
           final filled = _sectionHasData(sec);
           return GestureDetector(
             onTap: () => onSelect(i),
+            behavior: HitTestBehavior.opaque,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              margin: const EdgeInsets.only(right: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: active
-                    ? Colors.white.withValues(alpha: 0.22)
-                    : Colors.white.withValues(alpha: 0.08),
-                border: Border.all(
-                  color: active
-                      ? Colors.white.withValues(alpha: 0.70)
-                      : (filled
-                          ? const Color(0xFF10B981).withValues(alpha: 0.55)
-                          : Colors.white.withValues(alpha: 0.18)),
-                  width: active ? 1.5 : 1,
+                color: Colors.transparent,
+                border: Border(
+                  bottom: active
+                      ? const BorderSide(color: Color(0xFF00E5FF), width: 2)
+                      : BorderSide.none,
                 ),
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(
-                  sec.icon,
-                  size: 12,
-                  color: active ? Colors.white : (filled ? sec.color : Colors.white54),
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  isEs ? sec.titleEs : sec.title,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w800,
-                    color: active ? Colors.white : (filled ? sec.color : Colors.white54),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    sec.icon,
+                    size: 12,
+                    color: active
+                        ? const Color(0xFF00E5FF)
+                        : (filled ? sec.color : Colors.white54),
                   ),
-                ),
-                if (filled && !active) ...[
-                  const SizedBox(width: 4),
-                  Container(
-                    width: 6, height: 6,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: sec.color),
+                  const SizedBox(width: 5),
+                  Text(
+                    isEs ? sec.titleEs : sec.title,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                      color: active
+                          ? const Color(0xFF00E5FF)
+                          : (filled ? sec.color : Colors.white54),
+                    ),
                   ),
+                  if (filled && !active) ...[
+                    const SizedBox(width: 4),
+                    Container(
+                      width: 5, height: 5,
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: sec.color),
+                    ),
+                  ],
                 ],
-              ]),
+              ),
             ),
           );
         },

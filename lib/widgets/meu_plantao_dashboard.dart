@@ -294,45 +294,46 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     //   isEmpty && _expanded → setState(_expanded=false) → rebuild → ...
     // O resultado era o card abrindo e fechando instantaneamente.
 
+    // SUPER ORDEM MASTER 14 M6: layout minimalista premium.
+    // Cabeçalho sempre visível (card gradiente com botão único).
+    // _PlantaoContent só aparece quando há pacientes reais — sem bloco cinza vazio.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Cabeçalho clicável ──────────────────────────────────────────────
+        // ── Cabeçalho premium — card gradiente auto-contido ────────────────
         _PlantaoHeader(
           isEs: isEs,
           colors: c,
           expanded: _expanded,
           isEmpty: isEmpty,
           chevronAngle: _chevronAngle,
-          // BUILD 279: _toggle agora sempre expand/colapsa, independente de isEmpty.
           onHeaderTap: () => _toggle(true),
           onManageTap: widget.onManageTap,
           onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
         ),
 
-        // ── Corpo animado ───────────────────────────────────────────────────
-        // BUILD 279: sempre mostra _PlantaoContent (com _AddFirstPatientRow
-        // quando vazio) em vez de _EmptyState com borda tracejada.
-        AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOutCubic,
-          child: _expanded
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 14),
-                  child: _PlantaoContent(
-                          isEs: isEs,
-                          colors: c,
-                          p: p,
-                          firestoreSessions: firestoreSessions,
-                          onOpenDrug: widget.onOpenDrug,
-                          onOpenCalc: widget.onOpenCalc,
-                          onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
-                          onEditPatient: (pt) => _showPatientEditSheet(context, isEs, c, p, existing: pt),
-                          onOpenInternacion: widget.onOpenInternacion,
-                        ),
-                )
-              : const SizedBox.shrink(),
-        ),
+        // ── Lista de pacientes — apenas quando existem dados reais ──────────
+        if (hasPatients || hasDrugs || hasCalcs)
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCubic,
+            child: _expanded
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: _PlantaoContent(
+                      isEs: isEs,
+                      colors: c,
+                      p: p,
+                      firestoreSessions: firestoreSessions,
+                      onOpenDrug: widget.onOpenDrug,
+                      onOpenCalc: widget.onOpenCalc,
+                      onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
+                      onEditPatient: (pt) => _showPatientEditSheet(context, isEs, c, p, existing: pt),
+                      onOpenInternacion: widget.onOpenInternacion,
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
       ],
     );
   }
@@ -384,100 +385,85 @@ class _PlantaoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = colors;
-    return GestureDetector(
-      onTap: onHeaderTap,
-      behavior: HitTestBehavior.opaque,
-      child: Row(
+    // SUPER ORDEM MASTER 14 M6: redesign completo — padrão minimalista premium.
+    // DESTRUÍDO: botão azul +Paciente, engrenagem, chevron de colapso.
+    // RECONSTRUÍDO: Container gradiente sóbrio + ícone pulso + título ouro +
+    //               botão outline único "+ Adicionar Paciente ao Plantão".
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF071A10), Color(0xFF0F2D1A), Color(0xFF0A7C4E)],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0A7C4E).withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Ícone com gradiente ──────────────────────────────────────────
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF0A7C4E), Color(0xFF10B981)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF0A7C4E).withValues(alpha: 0.30),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+          // ── Linha título: ícone pulso + label ──────────────────────────
+          Row(
+            children: [
+              const Icon(Icons.monitor_heart_outlined, size: 18, color: kGoldLight),
+              const SizedBox(width: 8),
+              Text(
+                isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2.2,
+                  color: kGoldLight,
                 ),
-              ],
-            ),
-            child: const Icon(Icons.local_hospital_outlined, size: 16, color: kGoldLight),
-          ),
-          const SizedBox(width: 10),
-
-          // ── Título (sem subtítulo — design minimalista) ─────────────────
-          Expanded(
-            child: Text(
-              isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 2.0,
-                color: c.gold,
               ),
-            ),
+            ],
           ),
+          const SizedBox(height: 14),
 
-          // ── Botão Paciente + — sempre visível (acesso rápido contextual) ───
+          // ── Botão outline único centralizado ────────────────────────────
           GestureDetector(
             onTap: () {
               AppHaptics.selection(context);
               onAddPatient();
             },
             child: Container(
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 11),
               decoration: BoxDecoration(
-                color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF3B82F6).withValues(alpha: 0.30)),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: kGoldLight.withValues(alpha: 0.55),
+                  width: 1.2,
+                ),
+                color: Colors.white.withValues(alpha: 0.04),
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.person_add_alt_1_rounded, size: 13, color: Color(0xFF3B82F6)),
-                  const SizedBox(width: 4),
+                  Icon(Icons.add_rounded, size: 15,
+                      color: kGoldLight.withValues(alpha: 0.9)),
+                  const SizedBox(width: 6),
                   Text(
-                    isEs ? 'Paciente' : 'Paciente',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF3B82F6)),
+                    isEs
+                        ? '+ Agregar Paciente a la Guardia'
+                        : '+ Adicionar Paciente ao Plantão',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: kGoldLight.withValues(alpha: 0.9),
+                      letterSpacing: 0.2,
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-
-          // ── Engrenagem de configurações (minimalista) ─────────────────
-          GestureDetector(
-            onTap: () {
-              AppHaptics.selection(context);
-              onManageTap();
-            },
-            child: Container(
-              width: 30,
-              height: 30,
-              margin: const EdgeInsets.only(right: 4),
-              decoration: BoxDecoration(
-                color: c.textHint.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.settings_outlined,
-                size: 15,
-                color: c.textHint.withValues(alpha: 0.70),
-              ),
-            ),
-          ),
-
-          // ── Chevron ───────────────────────────────────────────────────────
-          RotationTransition(
-            turns: chevronAngle,
-            child: Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: c.textHint),
           ),
         ],
       ),

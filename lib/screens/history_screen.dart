@@ -966,34 +966,14 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                               ),
                             ),
-                            // RIGHT: + Nova HC — botão de ação sem pill-shape
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: GestureDetector(
-                                onTap: () => _startNewHistory(p, lang),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.add_rounded, size: 14,
-                                        color: Color(0xFFFB923C)),
-                                    const SizedBox(width: 3),
-                                    Text(
-                                      lang == 'es' ? 'NUEVA HC' : 'NOVA HC',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xFFFB923C),
-                                        letterSpacing: 0.2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            // RIGHT: DESTRUÍDO — botão + NOVA HC removido do header.
+                            // SUPER ORDEM MASTER 14 M9: + NOVA migrou para 3ª aba abaixo.
                           ],
                         ),
                       ),
-                      // ── M2: Flat tabs — MINHAS + PÚBLICAS (underline branco) ──
+                      // ── M2+M9: Tri-Tabs flat — MINHAS | PÚBLICAS | + NOVA ──────
+                      // SUPER ORDEM MASTER 14 M9: botão + Nova integrado como 3ª aba.
+                      // Cyan underline na ativa, divisores brancos finos entre abas.
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: Row(
@@ -1001,7 +981,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             // Tab 0: MINHAS HCs
                             Expanded(
                               child: _HcFlatTab(
-                                label: '${mine.length} ${lang == 'es' ? "MIS HCs" : "MINHAS"}',
+                                label: lang == 'es' ? 'MIS HCs' : 'MINHAS',
                                 index: 0,
                                 tabCtrl: _tabCtrl,
                               ),
@@ -1011,9 +991,35 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                             // Tab 1: PÚBLICAS
                             Expanded(
                               child: _HcFlatTab(
-                                label: '${visiblePub.length} PÚBLICAS',
+                                label: lang == 'es' ? 'PÚBLICAS' : 'PÚBLICAS',
                                 index: 1,
                                 tabCtrl: _tabCtrl,
+                              ),
+                            ),
+                            // Divisor fio
+                            Container(width: 1, height: 14, color: Colors.white24),
+                            // Tab 2: + NOVA — aciona _startNewHistory diretamente
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => _startNewHistory(p, lang),
+                                behavior: HitTestBehavior.opaque,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.transparent,
+                                    border: Border(bottom: BorderSide.none),
+                                  ),
+                                  child: Text(
+                                    lang == 'es' ? '+ NUEVA' : '+ NOVA',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF00E5FF),
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
