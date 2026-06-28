@@ -4,8 +4,21 @@
 # Estágio 2: Serve os artefatos via Nginx com config customizada
 # ══════════════════════════════════════════════════════════════════════════════
 
-# ── Estágio 1: Build do Flutter Web ───────────────────────────────────────────
-FROM cirrusci/flutter:3.22.2 AS build-env
+# ── Estágio 1: Build do Flutter Web (Debian oficial + Flutter clonado) ────────
+FROM debian:stable-slim AS build-env
+
+# Dependências essenciais do sistema
+RUN apt-get update && apt-get install -y \
+    curl git unzip xz-utils zip libglu1-mesa \
+    --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+# Clona o Flutter diretamente do repositório oficial na versão exata 3.22.2
+RUN git clone https://github.com/flutter/flutter.git -b 3.22.2 /flutter
+
+ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
+
+# Pré-aquece o SDK e valida o setup
+RUN flutter doctor
 
 WORKDIR /app
 
