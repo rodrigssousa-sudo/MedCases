@@ -5,7 +5,7 @@
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ── Estágio 1: Build do Flutter Web ───────────────────────────────────────────
-FROM plugfox/flutter:3.22.2 AS build-env
+FROM cirrusci/flutter:3.22.2 AS build-env
 
 WORKDIR /app
 
