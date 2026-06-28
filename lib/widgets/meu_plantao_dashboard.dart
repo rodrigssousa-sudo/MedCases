@@ -907,6 +907,7 @@ class _FirestoreSessionCard extends StatelessWidget {
   });
 
   // Abre o pop-up de prévia SOAP completa com seletor de histórico
+  // BUILD 319: propaga onOpenInternacion para o dialog → botão "Evoluir" direto
   void _showSoapPreview(BuildContext context) {
     showDialog(
       context: context,
@@ -914,6 +915,7 @@ class _FirestoreSessionCard extends StatelessWidget {
         session: session,
         isEs: isEs,
         dark: colors.dark,
+        onOpenInternacion: onOpenInternacion,
       ),
     );
   }
@@ -1077,11 +1079,14 @@ class _SoapPreviewDialog extends StatefulWidget {
   final PacienteSession session;
   final bool isEs;
   final bool dark;
+  // BUILD 319: CTA de ação rápida — navega para InternacionScreen com contexto
+  final void Function(PacienteSession session)? onOpenInternacion;
 
   const _SoapPreviewDialog({
     required this.session,
     required this.isEs,
     required this.dark,
+    this.onOpenInternacion,
   });
 
   @override
@@ -1503,7 +1508,7 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                     ),
             ),
 
-            // ── Footer com informações do paciente ───────────────────────
+            // ── Footer: pills demográficas + CTA Evoluir ────────────────
             Container(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
               decoration: BoxDecoration(
@@ -1512,35 +1517,96 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                     const BorderRadius.vertical(bottom: Radius.circular(19)),
                 border: Border(top: BorderSide(color: borderColor, width: 0.8)),
               ),
-              child: Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Dados demográficos
-                  Expanded(
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      children: [
-                        if (p.idade.isNotEmpty)
-                          _infoPill(isEs ? 'Edad: ${p.idade}' : 'Idade: ${p.idade}',
-                              triageColor, dark),
-                        if (p.sexo.isNotEmpty)
-                          _infoPill(p.sexo == 'M'
-                              ? (isEs ? 'Masculino' : 'Masculino')
-                              : (isEs ? 'Femenino' : 'Feminino'),
-                              triageColor, dark),
-                        _infoPill(
-                            isEs
-                                ? 'Día ${p.diaInternacao}'
-                                : 'Dia ${p.diaInternacao}',
+                  // Pills demográficas
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      if (p.idade.isNotEmpty)
+                        _infoPill(isEs ? 'Edad: ${p.idade}' : 'Idade: ${p.idade}',
                             triageColor, dark),
-                        _infoPill(
-                            isEs
-                                ? '${session.historial.length} evol.'
-                                : '${session.historial.length} evol.',
+                      if (p.sexo.isNotEmpty)
+                        _infoPill(p.sexo == 'M'
+                            ? (isEs ? 'Masculino' : 'Masculino')
+                            : (isEs ? 'Femenino' : 'Feminino'),
                             triageColor, dark),
-                      ],
-                    ),
+                      _infoPill(
+                          isEs
+                              ? 'Día ${p.diaInternacao}'
+                              : 'Dia ${p.diaInternacao}',
+                          triageColor, dark),
+                      _infoPill(
+                          isEs
+                              ? '${session.historial.length} evol.'
+                              : '${session.historial.length} evol.',
+                          triageColor, dark),
+                    ],
                   ),
+
+                  // BUILD 319: CTA "Evoluir" — navega direto para InternacionScreen
+                  // Fecha o dialog e entrega a sessão ao onOpenInternacion do shell.
+                  if (widget.onOpenInternacion != null) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            Navigator.of(context).pop(); // fecha o dialog
+                            widget.onOpenInternacion!(session);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 11),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  triageColor.withValues(alpha: 0.85),
+                                  triageColor,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: triageColor.withValues(alpha: 0.30),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.edit_note_rounded,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  isEs ? 'Evoluir paciente' : 'Evoluir paciente',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    letterSpacing: -0.1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

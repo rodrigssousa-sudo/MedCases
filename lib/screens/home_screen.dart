@@ -478,7 +478,10 @@ class _HomeScreenState extends State<HomeScreen> {
               widget.onTabChange(4);
             },
             onManageTap: () => showPlantaoManageSheet(context),
-            onOpenInternacion: (session) => Navigator.of(context).push(
+            // BUILD 319: rootNavigator:true → InternacionScreen sobe ACIMA do
+            // MainShell e da _FloatingFooter — zero sobreposição de dock.
+            onOpenInternacion: (session) =>
+                Navigator.of(context, rootNavigator: true).push(
               HomeScreen.slideRoute(
                 _AdultoShell(
                   openProtocol: widget.openProtocol,
