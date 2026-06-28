@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -17,95 +19,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>6.1.5</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-
-	<!-- ══════════════════════════════════════════════════════════════════════
-	     PRIVACY USAGE DESCRIPTIONS — FALLBACK (English)
-	     These are the fallback strings shown on devices with unsupported
-	     locales. Localized strings for pt-BR, es and en are in their
-	     respective *.lproj/InfoPlist.strings files.
-	     Apple Review guideline 5.1.1: all strings must match the device
-	     language — the .lproj files handle PT and ES; this English fallback
-	     satisfies the requirement for any other locale.
-	     ══════════════════════════════════════════════════════════════════════ -->
-
-	<!-- Camera: used to photograph lab reports and exam results for AI extraction -->
-	<key>NSCameraUsageDescription</key>
-	<string>MedCases Pro uses the camera exclusively to allow healthcare professionals to photograph laboratory reports and clinical exam results for automatic AI-assisted data extraction. Images are processed only within the app and are never stored or shared with third parties.</string>
-
-	<!-- Microphone: used exclusively for clinical dictation (speech-to-text) -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>MedCases Pro uses the microphone exclusively to allow healthcare professionals to dictate clinical notes and medical records by voice. Audio is processed locally by the iOS speech recognition system and is never stored, transmitted, or shared with external servers.</string>
-
-	<!-- Speech Recognition: used to transcribe clinical dictations into text -->
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>MedCases Pro uses iOS speech recognition strictly to transcribe clinical dictations from healthcare professionals — such as patient progress notes and shift annotations — converting speech to text within the medical record. No audio is sent to external servers or stored after transcription. The feature is activated only when the professional manually enables the dictaphone.</string>
-
-	<!-- Photo Library (read): used to attach clinical images to patient notes -->
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>MedCases Pro requests access to your photo library so healthcare professionals can attach relevant clinical images — such as photos of lesions, exam results, or medical documents — directly to patient notes. Images are used exclusively within the app and are not shared with third parties.</string>
-
-	<!-- Photo Library (write): used to save generated charts or protocol screenshots -->
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>MedCases Pro may save app-generated images — such as clinical tracking charts or protocol screenshots — directly to your photo library, only when you explicitly request it.</string>
-
-	<!-- ── ATT removed — app does not use third-party tracking or advertising SDKs -->
-	<!-- NSUserTrackingUsageDescription REMOVED: no Firebase Analytics,      -->
-	<!-- no IDFA, no advertising SDKs. Compliance: Apple Guideline 5.1.2.    -->
-	<!-- Declare "No data used to track you" in App Store Connect Privacy.    -->
-
-	<!-- ── Orientação iPhone: somente portrait ───────────────────────────── -->
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-
-	<!-- ── Orientação iPad: portrait + landscape (Apple HIG 4.0 multitasking) ── -->
-	<!-- UIRequiresFullScreen REMOVIDA para habilitar Split View / Slide Over.  -->
-	<!-- Apple exige suporte a landscape no iPad para aprovação na App Store.   -->
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-
-	<!-- ── Modos de background ───────────────────────────────────────────── -->
-	<!-- audio REMOVIDO Build 101 — app não possui player de áudio persistente. -->
-	<!-- speech_to_text usa AVAudioSession apenas em foreground (sessão STT    -->
-	<!-- é iniciada e encerrada pelo usuário via dictaphone); não requer modo   -->
-	<!-- de background de áudio. Apple Guideline 2.5.4: declarar background    -->
-	<!-- modes não utilizados é causa de rejeição na App Store Review.         -->
-	<!-- fetch REMOVIDO Build 100 — flutter_local_notifications usa           -->
-	<!-- UNTimeIntervalNotificationTrigger em foreground; sem handler nativo  -->
-	<!-- performFetchWithCompletionHandler → Guideline 2.5.4 rejeitaria.      -->
-
-	<!-- ── Launch / Main storyboard ─────────────────────────────────────── -->
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-
-	<!-- ── Performance e acessibilidade ─────────────────────────────────── -->
-	<!-- ProMotion: desabilita limite de 60fps em iPhones com tela de 120Hz  -->
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<!-- Suporte a trackpad/mouse via iPad (Magic Keyboard, Pencil, etc.)    -->
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-
-	<!-- ── Google Sign-In ────────────────────────────────────────────────── -->
-	<!-- GIDClientID: OAuth 2.0 client ID do projeto Firebase (iOS)          -->
-	<key>GIDClientID</key>
-	<string>1076800980330-h06p1o1t4ll48qsqk5ovkfse8e0t98g0.apps.googleusercontent.com</string>
-	<!-- CFBundleURLTypes: URL Scheme reverso para callback OAuth do Google   -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -117,10 +33,40 @@
 			</array>
 		</dict>
 	</array>
-
-	<!-- ── Criptografia ──────────────────────────────────────────────────── -->
-	<!-- false = app usa apenas HTTPS padrão do iOS (sem criptografia própria)-->
+	<key>CFBundleVersion</key>
+	<string>190</string>
+	<key>GIDClientID</key>
+	<string>1076800980330-h06p1o1t4ll48qsqk5ovkfse8e0t98g0.apps.googleusercontent.com</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>MedCases Pro uses the camera exclusively to allow healthcare professionals to photograph laboratory reports and clinical exam results for automatic AI-assisted data extraction. Images are processed only within the app and are never stored or shared with third parties.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>MedCases Pro uses the microphone exclusively to allow healthcare professionals to dictate clinical notes and medical records by voice. Audio is processed locally by the iOS speech recognition system and is never stored, transmitted, or shared with external servers.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>MedCases Pro may save app-generated images — such as clinical tracking charts or protocol screenshots — directly to your photo library, only when you explicitly request it.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>MedCases Pro requests access to your photo library so healthcare professionals can attach relevant clinical images — such as photos of lesions, exam results, or medical documents — directly to patient notes. Images are used exclusively within the app and are not shared with third parties.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>MedCases Pro uses iOS speech recognition strictly to transcribe clinical dictations from healthcare professionals — such as patient progress notes and shift annotations — converting speech to text within the medical record. No audio is sent to external servers or stored after transcription. The feature is activated only when the professional manually enables the dictaphone.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 </dict>
 </plist>
