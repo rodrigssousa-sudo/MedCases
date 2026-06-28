@@ -3884,19 +3884,18 @@ class _DrawerHeader extends StatelessWidget {
         left:   false,
         right:  false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 14, 14),
+          padding: const EdgeInsets.fromLTRB(16, 12, 14, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
 
-              // ── Linha 1: logo  |  badge admin (opcional)  |  botão ✕ ───────
+              // ── Linha 1: badge (opcional) | Spacer | botão ✕ ─────────────────
+              // BUILD 326 — M1: BrandMark removido; X e badge mantidos no topo
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const BrandMark(small: true),
-                  const SizedBox(width: 8),
-                  // Badge Admin/Master — inline na mesma linha do logo
+                  // Badge Admin/Master — inline na linha do topo
                   if (hasBadge) ...[
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -3939,104 +3938,165 @@ class _DrawerHeader extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-              // ── Linha 2: avatar 42px + nome/profissão + botão editar ─────────
-              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                // Avatar compacto 42px
-                Container(
-                  width: 42, height: 42,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFF1F4030), Color(0xFF1A1D23)],
-                    ),
-                    border: Border.all(
-                      color: _kGold.withValues(alpha: 0.55), width: 1.6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _kGold.withValues(alpha: 0.18),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w900, color: _kGoldL),
+              // ── BUILD 326 — M1: Selo centralizado  ——  [M+]  —— ──────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: const Color(0xFF334155).withValues(alpha: 0.45),
+                      endIndent: 10,
+                      thickness: 0.8,
                     ),
                   ),
-                ),
-                const SizedBox(width: 11),
+                  const Text(
+                    'M+',
+                    style: TextStyle(
+                      color: Color(0xFFD4AF37),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                      letterSpacing: 2.0,
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: const Color(0xFF334155).withValues(alpha: 0.45),
+                      indent: 10,
+                      thickness: 0.8,
+                    ),
+                  ),
+                ],
+              ),
 
-                // Nome + profissão/instituição
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
-                        style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w900,
-                          color: Colors.white, letterSpacing: -0.3, height: 1.15,
+              const SizedBox(height: 18),
+
+              // ── BUILD 326 — M2/M3: Avatar 58px + Stack lápis + coluna de texto ─
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // BUILD 326 — M2: Avatar 58px com overlay de lápis (Stack)
+                  GestureDetector(
+                    onTap: onEditProfile,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // Círculo principal 58px
+                        Container(
+                          width: 58,
+                          height: 58,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                            ),
+                            border: Border.all(
+                              color: const Color(0xFF34D399).withValues(alpha: 0.50),
+                              width: 1.8,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF34D399).withValues(alpha: 0.15),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              initials,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFFD4AF37),
+                              ),
+                            ),
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      if ((p.currentUser?.profession?.isNotEmpty ?? false) ||
-                          (p.currentUser?.institution?.isNotEmpty ?? false)) ...[
-                        const SizedBox(height: 2),
+                        // Overlay lápis: 22px círculo verde no canto inferior direito
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 22,
+                            height: 22,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF34D399),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.edit_rounded,
+                              size: 11,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 14),
+
+                  // BUILD 326 — M3: Coluna vertical: nome + profissão + instituição
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Título: nome do usuário
                         Text(
-                          [
-                            if (p.currentUser?.profession?.isNotEmpty ?? false)
-                              p.currentUser!.profession!,
-                            if (p.currentUser?.institution?.isNotEmpty ?? false)
-                              p.currentUser!.institution!,
-                          ].join(' · '),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white.withValues(alpha: 0.42),
-                            fontWeight: FontWeight.w500,
-                            height: 1.3,
+                          p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: -0.3,
+                            height: 1.15,
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
+                        // Subtítulo 1: profissão (fontSize 13, opacity 0.65)
+                        if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
+                          const SizedBox(height: 3),
+                          Text(
+                            p.currentUser!.profession!,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.white.withValues(alpha: 0.65),
+                              fontWeight: FontWeight.w500,
+                              height: 1.2,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ],
+                        // Subtítulo 2: instituição (fontSize 11, opacity 0.42)
+                        if (p.currentUser?.institution?.isNotEmpty ?? false) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            p.currentUser!.institution!,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.white.withValues(alpha: 0.42),
+                              fontWeight: FontWeight.w400,
+                              height: 1.25,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ],
                       ],
-                    ],
-                  ),
-                ),
-
-                const SizedBox(width: 8),
-
-                // Botão editar perfil
-                GestureDetector(
-                  onTap: onEditProfile,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9),
-                      color: _kGold.withValues(alpha: 0.14),
-                      border: Border.all(
-                        color: _kGold.withValues(alpha: 0.40), width: 0.9),
                     ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.edit_rounded, size: 12, color: _kGoldL),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Editar',
-                        style: TextStyle(
-                          fontSize: 10.5, fontWeight: FontWeight.w700, color: _kGoldL),
-                      ),
-                    ]),
                   ),
-                ),
-              ]),
+                  // BUILD 326 — M5: Botão "Editar" externo REMOVIDO
+                ],
+              ),
+
+              const SizedBox(height: 4),
             ],
           ),
         ),
