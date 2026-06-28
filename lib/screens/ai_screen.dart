@@ -7377,8 +7377,8 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                             const SizedBox(width: 8),
                             Text(
                               isEs
-                                  ? 'Conectar con Google  →  IA gratuita'
-                                  : 'Conectar com Google  →  IA gratuita',
+                                  ? 'Conectar con Google  →  IA Clínica'
+                                  : 'Conectar com Google  →  IA Clínica',
                               style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w700)),
                           ],
