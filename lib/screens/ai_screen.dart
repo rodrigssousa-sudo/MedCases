@@ -1836,6 +1836,23 @@ class _AiScreenState extends State<AiScreen> {
           // Build 188: descarta notifier de streaming no onError
           _streamingTextNotifier?.dispose();
           _streamingTextNotifier = null;
+          // ── BUILD 309 M4: AUTH_REQUIRED — NUNCA renderizar como bubble ────
+          // Provider emite AUTH_REQUIRED quando o Factor3 guard bloqueia.
+          // Suprimimos a bolha vermelha e abrimos o modal de conexão.
+          if (errorMsg == 'AUTH_REQUIRED') {
+            setState(() {
+              _thinking    = false;
+              _isStreaming  = false;
+              // Remove a pergunta do usuário sem resposta
+              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+                  _messages.last.text == trimmed) {
+                _messages.removeLast();
+              }
+            });
+            // Abre modal de autenticação — convida o médico a conectar
+            Future.microtask(() { if (mounted) _openAiSettings(); });
+            return;
+          }
           // Guard do provider retornou '' — ignora (não adiciona bubble vazia)
           if (errorMsg.isEmpty) {
             setState(() {
