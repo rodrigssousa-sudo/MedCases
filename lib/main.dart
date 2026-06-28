@@ -1879,13 +1879,13 @@ class _FloatingFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // SUPER ORDEM MASTER 306 M4: glassmorphism translúcido 65% opacity + blur(12)
-    // -15% dimensões: barHeight 56→48px
+    // SUPER ORDEM MASTER 308 M1: -10% adicional sobre Build 306
+    // barHeight 48→43px | opacity glassmorphism mantido
     final navBg = dark
         ? const Color(0xFF0F1116).withValues(alpha: 0.68)
         : Colors.white.withValues(alpha: 0.65);
 
-    const barHeight = 48.0;
+    const barHeight = 43.0;
 
     return Positioned(
       left: 0,
@@ -1906,9 +1906,9 @@ class _FloatingFooter extends StatelessWidget {
               // ── Floating Dock premium — glassmorphism 24px corner radius ────
               // SUPER ORDEM MASTER 14 M1: Padding horizontal 16px + vertical 8px
               // para criar o efeito de barra flutuante separada do fundo.
-              // SUPER ORDEM MASTER 306 M4: BorderRadius.circular(32) cápsula premium
+              // SUPER ORDEM MASTER 308 M1: padding -10% (h:20→18, v:8→7)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(32),
                   child: BackdropFilter(
@@ -1957,7 +1957,7 @@ class _FloatingFooter extends StatelessWidget {
 
                         // ── FAB CENTRAL IA ────────────────────────────────
                         SizedBox(
-                          width: 56,
+                          width: 50,
                           height: barHeight,
                           child: Center(
                             child: GestureDetector(
@@ -1966,9 +1966,9 @@ class _FloatingFooter extends StatelessWidget {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 220),
                                 curve: Curves.easeOutCubic,
-                                // SUPER ORDEM MASTER 306 M4: FAB -15% → 34px
-                                width: 34,
-                                height: 34,
+                                // SUPER ORDEM MASTER 308 M1: FAB -10% → 31px
+                                width: 31,
+                                height: 31,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,

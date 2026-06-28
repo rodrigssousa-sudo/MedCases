@@ -2863,7 +2863,7 @@ class _MobileAiActionBar extends StatelessWidget {
         : const Color(0xFF008CA4).withValues(alpha: 0.22);
 
     return Container(
-      height: 47, // SUPER ORDEM MASTER 306 M5: +5px respiro → 47px
+      height: 52, // SUPER ORDEM MASTER 308 M2: +5px adicional → 52px
       decoration: const BoxDecoration(
         // SUPER ORDEM MASTER 12 M1: BLACK TOPBAR FIXO — premium em qualquer modo
         // Light Mode e Dark Mode recebem o mesmo preto absoluto para contraste do M+
@@ -2938,36 +2938,37 @@ class _MobileAiActionBar extends StatelessWidget {
             ),
           ),
 
-          // ── Trailing: dark container com history + add ──────────────────
+          // ── Trailing: dark container com history + add — M308 M2: mais fino
           Positioned(
-            right: 14,
+            right: 10,
             child: Container(
-              height: 34,
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+              height: 28,
+              padding: const EdgeInsets.symmetric(horizontal: 3),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
                 color: const Color(0xFF252930),
-                border: Border.all(color: const Color(0xFF353840), width: 1),
+                border: Border.all(color: const Color(0xFF353840), width: 0.8),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Botão histórico com badge numérico
+                  // Botão histórico — mais fino
                   GestureDetector(
                     onTap: onHistory,
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 7),
-                          child: Icon(Icons.history_rounded, size: 18,
-                              color: Colors.white.withValues(alpha: 0.75)),
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Icon(Icons.history_rounded, size: 15,
+                              color: Colors.white.withValues(alpha: 0.70)),
                         ),
                         if (historyCount > 0)
                           Positioned(
                             top: -2, right: 2,
                             child: Container(
-                              width: 13, height: 13,
+                              width: 11, height: 11,
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Color(0xFFC5A365),
@@ -2976,7 +2977,7 @@ class _MobileAiActionBar extends StatelessWidget {
                                 child: Text(
                                   '$historyCount',
                                   style: const TextStyle(
-                                    fontSize: 7, fontWeight: FontWeight.w900,
+                                    fontSize: 6, fontWeight: FontWeight.w900,
                                     color: Color(0xFF1A1100),
                                   ),
                                 ),
@@ -2988,17 +2989,17 @@ class _MobileAiActionBar extends StatelessWidget {
                   ),
                   // Divisor vertical
                   Container(
-                    width: 1, height: 16,
+                    width: 1, height: 13,
                     color: Colors.white.withValues(alpha: 0.12),
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    margin: const EdgeInsets.symmetric(horizontal: 1),
                   ),
-                  // Botão novo chat (hard reset)
+                  // Botão novo chat — mais fino
                   GestureDetector(
                     onTap: onNewChat,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 7),
-                      child: Icon(Icons.add_rounded, size: 18,
-                          color: Colors.white.withValues(alpha: 0.75)),
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Icon(Icons.add_rounded, size: 15,
+                          color: Colors.white.withValues(alpha: 0.70)),
                     ),
                   ),
                 ],
@@ -3116,7 +3117,7 @@ class _WaHeader extends StatelessWidget {
         )),
       ),
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(4, 6, 10, 6), // SUPER ORDEM MASTER 306 M5: 47px (+5px)
+          padding: const EdgeInsets.fromLTRB(4, 8, 10, 8), // SUPER ORDEM MASTER 308 M2: 52px (+5px)
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -3191,7 +3192,7 @@ class _WaHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
 
-                  // ── Ações direita ────────────────────────────────────
+                  // ── Ações direita — M308 M2: botões mais finos/delicados ──
                   // Botão histórico
                   GestureDetector(
                     onTap: onHistory,
@@ -3199,30 +3200,32 @@ class _WaHeader extends StatelessWidget {
                       clipBehavior: Clip.none,
                       children: [
                         Container(
-                          width: 36, height: 36,
+                          width: 28, height: 28,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white.withValues(alpha: 0.07),
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white.withValues(alpha: 0.06),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.10)),
+                              color: Colors.white.withValues(alpha: 0.08),
+                              width: 0.8,
+                            ),
                           ),
-                          child: Icon(Icons.history_rounded, size: 18,
-                            color: Colors.white.withValues(alpha: 0.75)),
+                          child: Icon(Icons.history_rounded, size: 14,
+                            color: Colors.white.withValues(alpha: 0.70)),
                         ),
                         if (historyCount > 0)
                           Positioned(
-                            top: -4, right: -4,
+                            top: -3, right: -3,
                             child: Container(
-                              width: 15, height: 15,
+                              width: 12, height: 12,
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: const Color(0xFFC5A365),
+                                color: Color(0xFFC5A365),
                               ),
                               child: Center(
                                 child: Text(
                                   '$historyCount',
                                   style: const TextStyle(
-                                    fontSize: 8,
+                                    fontSize: 6.5,
                                     fontWeight: FontWeight.w900,
                                     color: Color(0xFF1A1D23),
                                   ),
@@ -3233,55 +3236,45 @@ class _WaHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 5),
 
-                  // ── Botão Nuevo Chat ──────────────────────────────────────
+                  // ── Botão Novo Chat — ícone minimalista ───────────────────
                   GestureDetector(
                     onTap: onNewChat,
                     child: Container(
-                      height: 32,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      width: 28, height: 28,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: const Color(0xFF00E5FF).withValues(alpha: 0.12),
+                        color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
                         border: Border.all(
-                          color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
-                          width: 1,
+                          color: const Color(0xFF00E5FF).withValues(alpha: 0.28),
+                          width: 0.8,
                         ),
                       ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(
-                          Icons.add_rounded,
-                          size: 14,
-                          color: Color(0xFF00E5FF),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          lang == 'es' ? 'Nuevo Chat' : 'Novo Chat',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF00E5FF),
-                          ),
-                        ),
-                      ]),
+                      child: const Icon(
+                        Icons.add_rounded,
+                        size: 15,
+                        color: Color(0xFF00E5FF),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 5),
 
                   // Botão menu
                   GestureDetector(
                     onTap: () => Scaffold.of(context).openEndDrawer(),
                     child: Container(
-                      width: 36, height: 36,
+                      width: 28, height: 28,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white.withValues(alpha: 0.07),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white.withValues(alpha: 0.06),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.10)),
+                          color: Colors.white.withValues(alpha: 0.08),
+                          width: 0.8,
+                        ),
                       ),
-                      child: Icon(Icons.menu_rounded, size: 18,
-                        color: Colors.white.withValues(alpha: 0.75)),
+                      child: Icon(Icons.menu_rounded, size: 14,
+                        color: Colors.white.withValues(alpha: 0.70)),
                     ),
                   ),
                 ],
@@ -3320,62 +3313,64 @@ class _EmptyChat extends StatelessWidget {
     final isEs = lang == 'es';
 
     // BUILD 283 ORDEM 10.3: WiFi-off icon + "CONECTAR IA" gold — área clicável inteira
-    // Design minimalista: sem card box, apenas ícone grande + texto central clicável
+    // SUPER ORDEM MASTER 308 M3: CTA visual central elegante
+    // Mensagem limpa em tipografia premium — desaparece ao conectar
     return GestureDetector(
       onTap: onConnectApi,
       behavior: HitTestBehavior.opaque,
       child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── Ícone WiFi cortado em cinza claro ─────────────────────────
-            Icon(
-              Icons.wifi_off_rounded,
-              size: 72,
-              color: Colors.white.withValues(alpha: 0.22),
-            ),
-            const SizedBox(height: 20),
-
-            // ── "CONECTAR" branco + "IA" ouro fosco ───────────────────────
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: isEs ? 'CONECTAR ' : 'CONECTAR ',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                  const TextSpan(
-                    text: 'IA',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFFD4AF37), // ouro fosco canônico
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Ícone sutil ──────────────────────────────────────────────
+              Icon(
+                Icons.lock_outline_rounded,
+                size: 36,
+                color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
               ),
-            ),
-            const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-            // ── Instrução suave ───────────────────────────────────────────
-            Text(
-              isEs ? 'Toque para activar el asistente' : 'Toque para ativar o assistente',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Colors.white.withValues(alpha: 0.38),
-                letterSpacing: 0.2,
+              // ── Mensagem principal ───────────────────────────────────────
+              Text(
+                isEs
+                    ? 'Conecte su cuenta para liberar\nel asistente clínico inteligente.'
+                    : 'Conecte a sua conta para liberar\no assistente clínico inteligente.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white.withValues(alpha: 0.62),
+                  height: 1.55,
+                  letterSpacing: 0.1,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 22),
+
+              // ── CTA toque ────────────────────────────────────────────────
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(
+                    color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                    width: 1,
+                  ),
+                  color: const Color(0xFF00E5FF).withValues(alpha: 0.07),
+                ),
+                child: Text(
+                  isEs ? 'Conectar agora' : 'Conectar agora',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF00E5FF),
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
