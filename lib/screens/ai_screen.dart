@@ -2863,7 +2863,7 @@ class _MobileAiActionBar extends StatelessWidget {
         : const Color(0xFF008CA4).withValues(alpha: 0.22);
 
     return Container(
-      height: 42, // SUPER ORDEM MASTER 14: TopBar travado em 42px
+      height: 47, // SUPER ORDEM MASTER 306 M5: +5px respiro → 47px
       decoration: const BoxDecoration(
         // SUPER ORDEM MASTER 12 M1: BLACK TOPBAR FIXO — premium em qualquer modo
         // Light Mode e Dark Mode recebem o mesmo preto absoluto para contraste do M+
@@ -3116,7 +3116,7 @@ class _WaHeader extends StatelessWidget {
         )),
       ),
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(4, 4, 10, 4), // SUPER ORDEM MASTER 14: compacto 42px
+          padding: const EdgeInsets.fromLTRB(4, 6, 10, 6), // SUPER ORDEM MASTER 306 M5: 47px (+5px)
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

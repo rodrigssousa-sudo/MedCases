@@ -2507,20 +2507,8 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                 ),
               ],
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -10, bottom: -10,
-            child: Opacity(
-              opacity: 0.045,
-              child: const Icon(
-                Icons.psychology_alt_rounded,
-                size: 110,
-                color: Color(0xFF00E5FF),
-              ),
-            ),
-          ),
-          Padding(
+      // SUPER ORDEM MASTER 306 M3: cérebro background destruído
+      child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2736,8 +2724,6 @@ class _HomeIaCardState extends State<_HomeIaCard> {
           ],
           ),
           ),
-        ],
-      ),
     );
   }
 }

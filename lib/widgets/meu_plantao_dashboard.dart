@@ -548,10 +548,14 @@ class _PlantaoContent extends StatelessWidget {
         .toList();
     final hasCalcs = filteredCalcIds.isNotEmpty;
 
+    // SUPER ORDEM MASTER 306 M1: purga total — sem _AddFirstPatientRow,
+    // sem _DefaultCalcShortcutsGrid. Apenas dados reais.
+    if (!hasPatients && !hasDrugs && !hasCalcs) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── PACIENTES — sem label, conteúdo direto (Firestore stream) ────────
+        // ── PACIENTES — lista minimalista Firestore ───────────────────────────
         if (hasPatients) ...[
           _FirestoreSessionsColumn(
             sessions: firestoreSessions,
@@ -560,13 +564,9 @@ class _PlantaoContent extends StatelessWidget {
             onOpenInternacion: onOpenInternacion,
           ),
           if (hasDrugs || hasCalcs) const SizedBox(height: 12),
-        ] else ...[
-          // Linha de adicionar primeiro paciente
-          _AddFirstPatientRow(isEs: isEs, colors: c, onTap: onAddPatient),
-          if (hasDrugs || hasCalcs) const SizedBox(height: 12),
         ],
 
-        // ── FÁRMACOS — sem label, scroll horizontal direto ───────────────────
+        // ── FÁRMACOS — scroll horizontal ─────────────────────────────────────
         if (hasDrugs) ...[
           _PinnedDrugsRow(
             drugs: p.pinnedDrugs,
@@ -581,8 +581,7 @@ class _PlantaoContent extends StatelessWidget {
           if (hasCalcs) const SizedBox(height: 12),
         ],
 
-        // ── CALCULADORAS — sem label, grid wrap direto, design modular limpo ─
-        // calc_infusao e calc_prescricoes filtrados via _kForbiddenCalcIds.
+        // ── CALCULADORAS PINADAS — grid compacto ─────────────────────────────
         if (hasCalcs) ...[
           _PinnedCalcsGrid(
             calcIds: filteredCalcIds,
@@ -594,14 +593,6 @@ class _PlantaoContent extends StatelessWidget {
               p.unpinCalc(id);
             },
           ),
-        ],
-
-        // BUILD 279: sub-cards de atalho padrão (Biometria + Scores) —
-        // sempre visíveis quando não há calcs pinadas.
-        // Permitem acesso rápido às calculadoras mesmo com o plantão vazio.
-        if (!hasCalcs) ...[
-          const SizedBox(height: 12),
-          _DefaultCalcShortcutsGrid(isEs: isEs, colors: c, onOpenCalc: onOpenCalc),
         ],
       ],
     );

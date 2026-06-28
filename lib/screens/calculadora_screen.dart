@@ -363,23 +363,19 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                         constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                       ),
                     ),
-                    // RIGHT: logotipo M+ dourado
-                    Align(
+                    // RIGHT: M+ dourado premium — texto puro sem container
+                    // SUPER ORDEM MASTER 306 M2: sem Image.asset, sem fundo verde
+                    const Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Image.asset(
-                          'assets/icon/app_icon.png',
-                          height: 28,
-                          fit: BoxFit.contain,
-                          errorBuilder: (_, __, ___) => const Text(
-                            'M+',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFFFFE8A6),
-                              letterSpacing: -0.5,
-                            ),
+                        padding: EdgeInsets.only(right: 14),
+                        child: Text(
+                          'M+',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFFD4AF37),
+                            letterSpacing: -0.5,
                           ),
                         ),
                       ),

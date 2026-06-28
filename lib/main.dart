@@ -1879,13 +1879,13 @@ class _FloatingFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SUPER ORDEM MASTER 306 M4: glassmorphism translúcido 65% opacity + blur(12)
+    // -15% dimensões: barHeight 56→48px
     final navBg = dark
-        ? const Color(0xFF0F1116).withValues(alpha: 0.93)
-        : Colors.white.withValues(alpha: 0.96);
+        ? const Color(0xFF0F1116).withValues(alpha: 0.68)
+        : Colors.white.withValues(alpha: 0.65);
 
-    // SUPER ORDEM MASTER 14 M1: Floating Dock premium — 56px total com padding vertical
-    // Dock flutua com BorderRadius.circular(24) + glassmorphism blur + horizontal margin 16px
-    const barHeight = 56.0;
+    const barHeight = 48.0;
 
     return Positioned(
       left: 0,
@@ -1906,22 +1906,23 @@ class _FloatingFooter extends StatelessWidget {
               // ── Floating Dock premium — glassmorphism 24px corner radius ────
               // SUPER ORDEM MASTER 14 M1: Padding horizontal 16px + vertical 8px
               // para criar o efeito de barra flutuante separada do fundo.
+              // SUPER ORDEM MASTER 306 M4: BorderRadius.circular(32) cápsula premium
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(32),
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: Container(
                       height: barHeight,
                       decoration: BoxDecoration(
                         color: navBg,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(32),
                         border: Border.all(
                           color: dark
-                              ? _neonCyan.withValues(alpha: 0.14)
-                              : const Color(0xFFE5E7EB),
-                          width: 0.8,
+                              ? _neonCyan.withValues(alpha: 0.18)
+                              : Colors.white.withValues(alpha: 0.55),
+                          width: 0.9,
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -1956,7 +1957,7 @@ class _FloatingFooter extends StatelessWidget {
 
                         // ── FAB CENTRAL IA ────────────────────────────────
                         SizedBox(
-                          width: 64,
+                          width: 56,
                           height: barHeight,
                           child: Center(
                             child: GestureDetector(
@@ -1965,9 +1966,9 @@ class _FloatingFooter extends StatelessWidget {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 220),
                                 curve: Curves.easeOutCubic,
-                                // FAB ligeiramente menor para caber em 42px
-                                width: 40,
-                                height: 40,
+                                // SUPER ORDEM MASTER 306 M4: FAB -15% → 34px
+                                width: 34,
+                                height: 34,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,
