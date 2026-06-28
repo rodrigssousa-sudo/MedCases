@@ -1,5 +1,14 @@
-// meu_plantao_dashboard.dart — v5 (Build 183)
+// meu_plantao_dashboard.dart — v6 (Build 325)
 // Feature "Meu Plantão / Mi Guardia" — UI CLEAN MODULAR
+//
+// v6 CHANGES (Build 325 — SUPER ORDEM MASTER 325):
+//   • MANDATO 1: _firestorePermissionDenied latch — interrompe reconexão em loop
+//               ao receber permission-denied/403. Stream destruído permanentemente;
+//               fallback fica 100% local (SharedPreferences). notifyListeners() 1×.
+//   • MANDATO 2: _isInitializingStream flag — guard de inicialização única.
+//               build() NÃO dispara nova subscrição diretamente; a chamada em
+//               build() é protegida por ambas as flags antes de qualquer I/O.
+//   • MANDATO 3: logs de depuração reduzidos — apenas transição para offline loga.
 //
 // v5 CHANGES (Build 183):
 //   • FIX 1: StreamBuilder listening to InternacionFirestoreService.sessionsStream(uid)
@@ -104,6 +113,17 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   List<PacienteSession> _firestoreSessions = [];
   String? _lastStreamUid;
 
+  // ── BUILD 325 — MANDATO 1: Offline Bypass Latch ──────────────────────────
+  // Quando true, bloqueia PERMANENTEMENTE novas tentativas de conexão ao
+  // Firestore na sessão atual. Ativado ao receber permission-denied / 403.
+  // Reseta apenas na próxima sessão do app (re-login ou restart).
+  bool _firestorePermissionDenied = false;
+
+  // ── BUILD 325 — MANDATO 2: Guard de inicialização única ──────────────────
+  // Impede que build() ou didChangeDependencies() disparem múltiplas
+  // subscrições simultâneas enquanto a primeira ainda está sendo configurada.
+  bool _isInitializingStream = false;
+
   @override
   void initState() {
     super.initState();
@@ -123,50 +143,82 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     super.dispose();
   }
 
-  // ── Subscribes (or re-subscribes) to the Firestore sessions stream ──────────
-  // Build 198: onError fallback carrega sessões via loadAllSessions() em vez de
-  // engolir o erro silenciosamente. Isso resolve o caso em que o índice composto
-  // (isDeleted + savedAt) do Firestore ainda não existe — o stream lança exceção
-  // e _firestoreSessions fica em [] para sempre.
+  // ── BUILD 325 — MANDATO 1+2: Subscribes to Firestore sessions stream ─────
   //
-  // BUILD 321 — OFFLINE-FIRST CACHE-FIRST:
-  //   • onError agora reseta _lastStreamUid = null para que a próxima chamada de
-  //     build() / didChangeDependencies() possa re-tentar a subscrição.
-  //   • _loadSessionsFallback() tenta primeiro o Firestore one-shot; se falhar
-  //     (permission-denied / sem rede), carrega do SharedPreferences local via
-  //     InternacionPersistence.loadAllSessions() — UI nunca fica vazia por erro.
-  //   • Cache-first: ao iniciar a subscrição, carrega imediatamente do SP local
-  //     para exibir dados enquanto o Firestore ainda não respondeu.
+  // PATOLOGIA CORRIGIDA (BUILD 321 introduzia loop infinito com permission-denied):
+  //   stream error → onError → _lastStreamUid = null → _loadSessionsFallback()
+  //   → setState() → build() → _subscribeToSessions() [uid ok, _lastStreamUid null]
+  //   → novo stream → permission-denied imediato → LOOP INFINITO.
+  //
+  // SOLUÇÃO BUILD 325:
+  //   1. _firestorePermissionDenied latch: ao detectar permission-denied/403,
+  //      cancela o stream permanentemente e NUNCA tenta reconectar. Fallback
+  //      fica 100% em SharedPreferences local — zero tráfego Firestore.
+  //   2. _isInitializingStream guard: bloqueia chamadas concorrentes de
+  //      build() e didChangeDependencies() durante a setup do stream.
+  //   3. _lastStreamUid NÃO é mais resetado em erros de permissão —
+  //      apenas em erros recuperáveis (índice ausente, rede instável).
   void _subscribeToSessions(String uid) {
-    if (_lastStreamUid == uid) return; // already subscribed to this uid
+    // MANDATO 1: trava permanente por permissão negada — aborta imediatamente
+    if (_firestorePermissionDenied) {
+      _loadLocalCacheOnly();
+      return;
+    }
+
+    // MANDATO 2: guard de inicialização única — evita subscrições concorrentes
+    if (_isInitializingStream) return;
+
+    // Guard de uid já subscrito — evita re-subscrição durante rebuilds normais
+    if (_lastStreamUid == uid) return;
+
+    _isInitializingStream = true;
     _lastStreamUid = uid;
     _sessionsSub?.cancel();
 
     // BUILD 321 CACHE-FIRST: exibe dados locais imediatamente enquanto Firestore carrega
-    _loadLocalCacheFirst(uid);
+    _loadLocalCacheFirst();
 
     _sessionsSub = InternacionFirestoreService.sessionsStream(uid).listen(
       (sessions) {
+        _isInitializingStream = false;
         if (!mounted) return;
         setState(() => _firestoreSessions = sessions);
-        // Update isEmpty for auto-expand / auto-collapse
         _notifyEmptyChange();
       },
       onError: (e) {
-        debugPrint('[MeuPlantao] sessionsStream error: $e — falling back to loadAllSessions');
-        // BUILD 321: reseta _lastStreamUid para permitir re-subscrição automática
-        // na próxima chamada de build() / didChangeDependencies() após reconexão.
-        _lastStreamUid = null;
-        // Fallback: carrega via one-shot se o stream falhar (ex: índice ausente,
-        // permission-denied, ou ausência de rede).
-        _loadSessionsFallback(uid);
+        _isInitializingStream = false;
+        final errStr = e.toString().toLowerCase();
+        final isPermissionError = errStr.contains('permission-denied')
+            || errStr.contains('insufficient permissions')
+            || errStr.contains('permission_denied')
+            || errStr.contains('403');
+
+        if (isPermissionError) {
+          // MANDATO 1: ativa trava permanente — destroi stream, bloqueia toda
+          // reconexão futura ao Firestore para este widget na sessão atual.
+          debugPrint('[MeuPlantao] ERRO PERMISSÃO (403/permission-denied). '
+              'Sincronização remota suspensa. Modo offline ativado.');
+          _firestorePermissionDenied = true;
+          _sessionsSub?.cancel();
+          _sessionsSub = null;
+          // Não reseta _lastStreamUid — impede re-subscrição por build()
+          _loadLocalCacheOnly();
+        } else {
+          // Erro recuperável (índice ausente, rede instável): permite retry
+          // na próxima reconexão, mas NÃO na próxima chamada de build().
+          // _lastStreamUid mantido — rebuild normal não re-subscreve.
+          // Usuário precisa sair e voltar para forçar retry.
+          debugPrint('[MeuPlantao] Erro de stream (recuperável): $e');
+          _loadSessionsFallback(uid);
+        }
       },
     );
   }
 
-  // BUILD 321 CACHE-FIRST: carrega silenciosamente do SharedPreferences local
+  // BUILD 321/325 CACHE-FIRST: carrega silenciosamente do SharedPreferences local
   // antes mesmo de o Firestore responder — zero latência percebida pelo usuário.
-  Future<void> _loadLocalCacheFirst(String uid) async {
+  // BUILD 325: uid removido do parâmetro (não utilizado internamente).
+  Future<void> _loadLocalCacheFirst() async {
     try {
       final local = await InternacionPersistence.loadAllSessions();
       if (!mounted) return;
@@ -174,39 +226,59 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       if (_firestoreSessions.isEmpty && local.isNotEmpty) {
         setState(() => _firestoreSessions = local);
         _notifyEmptyChange();
-        debugPrint('[MeuPlantao] cache-first: ${local.length} sessões do SP local');
       }
     } catch (_) {
       // falha silenciosa — o Firestore ainda vai tentar
     }
   }
 
-  // BUILD 321 OFFLINE-FIRST: cascata Firestore one-shot → SharedPreferences local.
-  // Se o Firestore retornar permission-denied ou erro de rede, usa o cache local
-  // do SharedPreferences como fonte de verdade secundária — UI nunca fica vazia.
-  Future<void> _loadSessionsFallback(String uid) async {
-    // Tentativa 1: Firestore one-shot (pode ainda funcionar mesmo com stream falhando)
-    try {
-      final sessions = await InternacionFirestoreService.loadAllSessions(uid);
-      if (!mounted) return;
-      setState(() => _firestoreSessions = sessions);
-      _notifyEmptyChange();
-      debugPrint('[MeuPlantao] fallback Firestore one-shot OK: ${sessions.length} sessões');
-      return; // sucesso — não precisa do cache local
-    } catch (e) {
-      debugPrint('[MeuPlantao] loadAllSessions fallback error: $e — tentando cache local SP');
-    }
-
-    // Tentativa 2: SharedPreferences local (funciona 100% offline e sem permissão)
-    // BUILD 321: garante que a UI exiba dados mesmo com Firestore completamente bloqueado.
+  // BUILD 325 — MANDATO 1: Fallback 100% local para erros de permissão.
+  // Chamado apenas quando _firestorePermissionDenied == true.
+  // Zero tráfego de rede — lê exclusivamente do SharedPreferences.
+  // setState() chamado no MÁXIMO 1× por sessão (guarda de estado vazio).
+  Future<void> _loadLocalCacheOnly() async {
+    // Se já temos dados em memória, não precisa recarregar do SP
+    if (_firestoreSessions.isNotEmpty) return;
     try {
       final local = await InternacionPersistence.loadAllSessions();
       if (!mounted) return;
       setState(() => _firestoreSessions = local);
       _notifyEmptyChange();
-      debugPrint('[MeuPlantao] cache local SP OK: ${local.length} sessões (modo offline)');
+    } catch (_) {
+      // falha silenciosa — SP corrompido ou vazio é estado válido
+    }
+  }
+
+  // BUILD 321/325 OFFLINE-FIRST: cascata Firestore one-shot → SharedPreferences.
+  // Chamado apenas para erros RECUPERÁVEIS (índice ausente, rede instável).
+  // NUNCA chamado após _firestorePermissionDenied == true.
+  Future<void> _loadSessionsFallback(String uid) async {
+    // Tentativa 1: Firestore one-shot (pode funcionar mesmo com stream falhando)
+    try {
+      final sessions = await InternacionFirestoreService.loadAllSessions(uid);
+      if (!mounted) return;
+      setState(() => _firestoreSessions = sessions);
+      _notifyEmptyChange();
+      return; // sucesso — não precisa do cache local
     } catch (e) {
-      debugPrint('[MeuPlantao] cache local SP error: $e');
+      final errStr = e.toString().toLowerCase();
+      // Se one-shot também retorna permissão negada, ativa latch e vai para SP
+      if (errStr.contains('permission-denied') || errStr.contains('insufficient permissions')
+          || errStr.contains('permission_denied') || errStr.contains('403')) {
+        debugPrint('[MeuPlantao] One-shot também bloqueado (permissão). '
+            'Modo offline permanente ativado.');
+        _firestorePermissionDenied = true;
+      }
+    }
+
+    // Tentativa 2: SharedPreferences local (100% offline, sem permissão)
+    try {
+      final local = await InternacionPersistence.loadAllSessions();
+      if (!mounted) return;
+      setState(() => _firestoreSessions = local);
+      _notifyEmptyChange();
+    } catch (_) {
+      // SP vazio ou corrompido — estado válido, UI fica com lista vazia
     }
   }
 
@@ -257,6 +329,9 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     }
 
     // ── Build 183 FIX 1: subscribe to Firestore stream when uid is available ──
+    // BUILD 325 MANDATO 2: _subscribeToSessions() é protegido pelas flags
+    // _firestorePermissionDenied e _isInitializingStream internamente —
+    // a chamada aqui é segura mesmo em rebuilds frequentes.
     final uid = p.currentUser?.uid;
     if (uid != null) _subscribeToSessions(uid);
 
@@ -321,8 +396,12 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     final isEs = p.lang == 'es';
 
     // ── Build 183 FIX 1: patients come from Firestore stream ─────────────────
+    // BUILD 325 MANDATO 2: _subscribeToSessions() é um no-op seguro quando:
+    //   • _firestorePermissionDenied == true  (latch permanente ativo)
+    //   • _isInitializingStream == true       (setup em andamento)
+    //   • _lastStreamUid == uid               (já subscrito)
+    // Garante que build() nunca dispara nova conexão de rede em rebuilds.
     final uid = p.currentUser?.uid;
-    // Subscribe in case build() is called before didChangeDependencies fires
     if (uid != null) _subscribeToSessions(uid);
     final firestoreSessions = _firestoreSessions;
 
