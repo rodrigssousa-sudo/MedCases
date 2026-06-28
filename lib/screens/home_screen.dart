@@ -1248,9 +1248,29 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     _send(text);
   }
 
+  /// Abre a aba IA e dispara o modal de conexão Google após 350ms.
+  void _openConnectModal() {
+    widget.onNavigateToAi(2);
+    Future.delayed(const Duration(milliseconds: 350), () {
+      if (mounted) AiScreen.openSettingsCallback.value?.call();
+    });
+  }
+
   Future<void> _send([String? preset]) async {
     final text = (preset ?? _ctrl.text).trim();
     if (text.isEmpty || _thinking) return;
+
+    // ── BUILD 312 M1: PRE-GUARD — bloqueia envio sem autenticação real ────────
+    // Idêntico ao Layer 0 do ai_screen.dart: sem geminiConnected nem openAiKey
+    // o mini-chat não envia nada — abre o modal de conexão diretamente.
+    final pCheck = context.read<AppProvider>();
+    final hasAuth = pCheck.geminiConnected || pCheck.openAiKey.isNotEmpty;
+    if (!hasAuth) {
+      _focus.unfocus();
+      _openConnectModal();
+      return;
+    }
+
     _ctrl.clear();
     _focus.unfocus();
     setState(() {
@@ -1289,17 +1309,32 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           }
         },
         onError: (err) {
-          if (mounted) {
+          if (!mounted) return;
+          // ── BUILD 312 M1: AUTH_REQUIRED — JAMAIS renderizar como bolha ──────
+          // Factor3 do provider emite AUTH_REQUIRED quando a barreira de backend
+          // bloqueia. Suprimimos, limpamos a pergunta do usuário e abrimos modal.
+          if (err == 'AUTH_REQUIRED') {
             setState(() {
-              _messages.add({'role': 'ai', 'text': err, 'isError': true});
               _streaming = '';
               _thinking  = false;
+              // Remove a pergunta do usuário que ficou sem resposta
+              if (_messages.isNotEmpty && _messages.last['role'] == 'user' &&
+                  _messages.last['text'] == text) {
+                _messages.removeLast();
+              }
             });
-            _scrollToBottom();
-            // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
-            // que o histórico mostre a tentativa no _ChatHistorySheet.
-            _homePersistTurn();
+            _openConnectModal();
+            return;
           }
+          setState(() {
+            _messages.add({'role': 'ai', 'text': err, 'isError': true});
+            _streaming = '';
+            _thinking  = false;
+          });
+          _scrollToBottom();
+          // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
+          // que o histórico mostre a tentativa no _ChatHistorySheet.
+          _homePersistTurn();
         },
       );
     } catch (e) {
@@ -1464,6 +1499,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           final text    = msg['text'] as String;
           final isError = msg['isError'] == true;
           final isLast  = i == _messages.length - 1;
+
+          // ── BUILD 312 M3: Render guard — suprime AUTH_REQUIRED residual ──
+          // Caso haja qualquer mensagem AUTH_REQUIRED que escapou dos guards
+          // anteriores, renderiza um SizedBox vazio em vez da bolha crua.
+          if (text == 'AUTH_REQUIRED') return const SizedBox.shrink();
 
           if (isUser) {
             return Align(
