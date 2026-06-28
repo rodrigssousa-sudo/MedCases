@@ -350,18 +350,23 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                         letterSpacing: -0.2,
                       ),
                     ),
-                    // LEFT: botão de voltar
+                    // LEFT: botão de voltar — canPop guard (SUPER ORDEM 313)
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 20,
-                          color: Colors.white,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          final nav = Navigator.of(context);
+                          if (nav.canPop()) nav.pop();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                        onPressed: () => Navigator.of(context).maybePop(),
-                        padding: const EdgeInsets.all(8),
-                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                       ),
                     ),
                     // RIGHT: M+ dourado pulsante — ADENDO Build 309
@@ -599,7 +604,10 @@ class _CalcFloatingDock extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () => Navigator.of(context).maybePop(),
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) nav.pop();
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
@@ -666,7 +674,10 @@ class _CalcFloatingDock extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () => Navigator.of(context).maybePop(),
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) nav.pop();
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,

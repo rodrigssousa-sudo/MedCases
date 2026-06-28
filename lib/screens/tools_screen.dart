@@ -9,6 +9,7 @@ import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/lab_exam_bottom_sheet.dart';
 import '../services/activity_service.dart';
+import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -112,14 +113,27 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                         letterSpacing: -0.2,
                       ),
                     ),
-                    // LEFT: botão de voltar
+                    // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                        onPressed: () => Navigator.maybePop(context),
-                        padding: const EdgeInsets.all(8),
-                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          final nav = Navigator.of(context);
+                          if (nav.canPop()) {
+                            nav.pop();
+                          } else {
+                            MainShell.pendingTab.value = 0;
+                          }
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
                       ),
                     ),
                   ],

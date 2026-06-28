@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/app_provider.dart';
+import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
 import '../services/firestore_service.dart';
 import '../models/guide_model.dart';
 import '../models/protocol_model.dart';
@@ -358,14 +359,27 @@ class _MobileLibraryTabBar extends StatelessWidget {
                     letterSpacing: -0.2,
                   ),
                 ),
-                // LEFT: botão de voltar
+                // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                    onPressed: () => Navigator.maybePop(context),
-                    padding: const EdgeInsets.all(8),
-                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) {
+                        nav.pop();
+                      } else {
+                        MainShell.pendingTab.value = 0;
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -518,14 +532,27 @@ class _LibraryHeader extends StatelessWidget {
                     letterSpacing: -0.2,
                   ),
                 ),
-                // LEFT: botão de voltar
+                // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                    onPressed: () => Navigator.maybePop(context),
-                    padding: const EdgeInsets.all(8),
-                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) {
+                        nav.pop();
+                      } else {
+                        MainShell.pendingTab.value = 0;
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
                 // RIGHT: botão de refresh

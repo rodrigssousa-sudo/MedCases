@@ -907,16 +907,23 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     ),
                   ),
                   // ── LEFT: botão de voltar ─────────────────────────────────
+                  // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new,
-                          size: 20, color: Colors.white),
-                      tooltip: isEs ? 'Volver' : 'Voltar',
-                      onPressed: () => Navigator.maybePop(context),
-                      padding: const EdgeInsets.all(8),
-                      constraints:
-                          const BoxConstraints(minWidth: 36, minHeight: 36),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        final nav = Navigator.of(context);
+                        if (nav.canPop()) nav.pop();
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
                     ),
                   ),
                   // ── RIGHT: botão [➕ Nova] ──────────────────────────────
