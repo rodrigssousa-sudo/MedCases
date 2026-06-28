@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Clona o Flutter diretamente do repositório oficial na versão exata 3.22.2
-RUN git clone https://github.com/flutter/flutter.git -b 3.22.2 /flutter
+RUN git clone https://github.com/flutter/flutter.git -b 3.24.5 /flutter
 
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
