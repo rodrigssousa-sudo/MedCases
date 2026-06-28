@@ -1,6 +1,7 @@
 // Build 187: Gray Screen Fix — Web usa HtmlElementView/iframe; iOS/Android mantém WebView nativo.
 // dart:io Platform removido — usa kIsWeb para guards de plataforma.
 // BUILD 240: OfflineCalculatorCacheService resolve URL local antes de carregar WebView.
+import 'dart:ui';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -363,21 +364,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                         constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                       ),
                     ),
-                    // RIGHT: M+ dourado premium — texto puro sem container
-                    // SUPER ORDEM MASTER 306 M2: sem Image.asset, sem fundo verde
-                    const Align(
+                    // RIGHT: M+ dourado pulsante — ADENDO Build 309
+                    // _CalcMplusPulse: loop 0.4↔1.0 opacity, 1500ms
+                    Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: EdgeInsets.only(right: 14),
-                        child: Text(
-                          'M+',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFFD4AF37),
-                            letterSpacing: -0.5,
-                          ),
-                        ),
+                        padding: const EdgeInsets.only(right: 14),
+                        child: const _CalcMplusPulse(),
                       ),
                     ),
                   ],
@@ -390,24 +383,24 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         // ── SUPER ORDEM VISUAL 09 M3: Barra de navegação inferior ───────────
         // Permite ao usuário navegar de volta para o shell sem se sentir preso.
         // Usa Navigator.maybePop() — retorna ao MainShell preservando o tab ativo.
-        bottomNavigationBar: _CalcBottomNav(dark: _dark, isEs: _isEs),
+        // SUPER ORDEM MASTER CALC: bottomNavigationBar removido.
+        // Floating Dock agora está no Body Stack (glassmorphism idêntico ao MainShell).
 
-        // ── Body: WebView + barra de fontes nativa ────────────────────────
+        // ── Body: WebView + Floating Dock + Sources Bar ───────────────────
         body: Stack(
           children: [
 
-            // Área de conteúdo principal — WebView (native) ou iframe (Web)
+            // ── WebView — bottom: sources(24) + dockTotal(57) = 81px ──────
             Positioned(
               top:    0,
               left:   0,
               right:  0,
-              bottom: kBarCollapsed,
+              bottom: kBarCollapsed + 57,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return SizedBox(
                     width:  constraints.maxWidth,
                     height: constraints.maxHeight,
-                    // Build 187: Web usa HtmlElementView/iframe; iOS/Android usa WebViewWidget.
                     child: kIsWeb
                         ? buildCalculadoraWebView(_webUrl, _dark)
                         : WebViewWidget(controller: _controller),
@@ -416,7 +409,17 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               ),
             ),
 
-            // ── Barra de fontes Flutter nativa ────────────────────────────
+            // ── Floating Dock Premium — flutua acima da sources bar ────────
+            // Idêntico ao MainShell: glassmorphism 65-68%, BorderRadius.circular(32)
+            Positioned(
+              left:   0,
+              right:  0,
+              bottom: kBarCollapsed,
+              child: _CalcFloatingDock(dark: _dark, isEs: _isEs),
+            ),
+
+            // ── Sources Bar (Legal Disclaimer) — base absoluta do rodapé ──
+            // ORDEM CORRIGIDA: disclaimer ABAIXO da barra de ação flutuante
             Positioned(
               left:   0,
               right:  0,
@@ -528,132 +531,220 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SUPER ORDEM VISUAL 09 M3: Barra de navegação inferior da Calculadora
-// Estilo visual idêntico ao FloatingFooter do MainShell (blur + dark α0.93).
-// Navegação: maybePop() retorna ao shell preservando o tab ativo.
+// SUPER ORDEM MASTER CALC: _CalcFloatingDock
+// Floating Dock glassmorphism idêntico ao MainShell (-10% dimensões).
+// Substitui o _CalcBottomNav sólido e opaco por cápsula premium translúcida.
 // ─────────────────────────────────────────────────────────────────────────────
-class _CalcBottomNav extends StatelessWidget {
+class _CalcFloatingDock extends StatelessWidget {
   final bool dark;
   final bool isEs;
-  const _CalcBottomNav({required this.dark, required this.isEs});
+  const _CalcFloatingDock({required this.dark, required this.isEs});
 
-  static const _neonCyan = Color(0xFF00E5FF);
+  static const _neonCyan  = Color(0xFF00E5FF);
+  static const _barHeight = 43.0;
 
   @override
   Widget build(BuildContext context) {
     final navBg = dark
-        ? const Color(0xFF0F1116).withValues(alpha: 0.96)
-        : Colors.white.withValues(alpha: 0.98);
-    final borderColor = dark
-        ? _neonCyan.withValues(alpha: 0.12)
-        : const Color(0xFFE5E7EB);
+        ? const Color(0xFF0F1116).withValues(alpha: 0.68)
+        : Colors.white.withValues(alpha: 0.65);
+
     final activeColor   = dark ? _neonCyan : const Color(0xFF008CA4);
     final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
 
-    // Wrap with SafeArea so the bar respects home indicator on iPhone
-    return SafeArea(
-      top: false,
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: navBg,
-          border: Border(
-            top: BorderSide(color: borderColor, width: 0.5),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(32),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            height: _barHeight,
+            decoration: BoxDecoration(
+              color: navBg,
+              borderRadius: BorderRadius.circular(32),
+              border: Border.all(
+                color: dark
+                    ? _neonCyan.withValues(alpha: 0.18)
+                    : Colors.white.withValues(alpha: 0.55),
+                width: 0.9,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: dark
+                      ? Colors.black.withValues(alpha: 0.45)
+                      : Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, -4),
+                ),
+                if (dark)
+                  BoxShadow(
+                    color: _neonCyan.withValues(alpha: 0.05),
+                    blurRadius: 24,
+                    offset: const Offset(0, -4),
+                  ),
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // ── Início ──────────────────────────────────────────────────
+                Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => Navigator.of(context).maybePop(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Icon(Icons.home_rounded, size: 18, color: inactiveColor),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          isEs ? 'Inicio' : 'Início',
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 9.0,
+                            fontWeight: FontWeight.w400,
+                            color: inactiveColor,
+                            height: 1.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // ── FAB central — Calculadora ────────────────────────────────
+                SizedBox(
+                  width: 50,
+                  height: _barHeight,
+                  child: Center(
+                    child: Container(
+                      width: 31, height: 31,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            const Color(0xFF6D28D9),
+                            const Color(0xFF4C1D95),
+                          ],
+                        ),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFFA855F7).withValues(alpha: 0.80),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFA855F7).withValues(alpha: 0.45),
+                            blurRadius: 12,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.calculate_rounded,
+                        size: 17,
+                        color: activeColor,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ── Ferramentas ──────────────────────────────────────────────
+                Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => Navigator.of(context).maybePop(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Icon(Icons.science_rounded, size: 18, color: inactiveColor),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          isEs ? 'Herramientas' : 'Ferramentas',
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 9.0,
+                            fontWeight: FontWeight.w400,
+                            color: inactiveColor,
+                            height: 1.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: dark
-                  ? Colors.black.withValues(alpha: 0.45)
-                  : Colors.black.withValues(alpha: 0.08),
-              blurRadius: 20,
-              offset: const Offset(0, -4),
-            ),
-          ],
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ── Início ───────────────────────────────────────────────────
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context).maybePop(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3),
-                      child: Icon(Icons.home_rounded, size: 18, color: inactiveColor),
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      isEs ? 'Inicio' : 'Início',
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 9.0,
-                        fontWeight: FontWeight.w400,
-                        color: inactiveColor,
-                        height: 1.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // ── Calculadora — ativa ───────────────────────────────────────
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3),
-                    child: Icon(Icons.calculate_rounded, size: 18, color: activeColor),
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    isEs ? 'Calculadora' : 'Calculadora',
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 9.0,
-                      fontWeight: FontWeight.w700,
-                      color: activeColor,
-                      height: 1.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // ── Ferramentas ───────────────────────────────────────────────
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context).maybePop(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3),
-                      child: Icon(Icons.science_rounded, size: 18, color: inactiveColor),
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      isEs ? 'Herramientas' : 'Ferramentas',
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 9.0,
-                        fontWeight: FontWeight.w400,
-                        color: inactiveColor,
-                        height: 1.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SUPER ORDEM MASTER CALC ADENDO: _CalcMplusPulse
+// M+ dourado pulsante no TopBar da Calculadora.
+// Loop suave 0.4 ↔ 1.0 opacidade em 1.5s — idêntico ao _MplusPulse da IA.
+// ─────────────────────────────────────────────────────────────────────────────
+class _CalcMplusPulse extends StatefulWidget {
+  const _CalcMplusPulse();
+  @override
+  State<_CalcMplusPulse> createState() => _CalcMplusPulseState();
+}
+
+class _CalcMplusPulseState extends State<_CalcMplusPulse>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..addStatusListener((status) {
+        if (!mounted) return;
+        if (status == AnimationStatus.completed) _ctrl.reverse();
+        if (status == AnimationStatus.dismissed) _ctrl.forward();
+      });
+    _anim = Tween<double>(begin: 0.4, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+    _ctrl.forward();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Opacity(
+        opacity: _anim.value,
+        child: const Text(
+          'M+',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFFD4AF37),
+            letterSpacing: -0.5,
+          ),
         ),
       ),
     );
