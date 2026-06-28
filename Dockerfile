@@ -27,8 +27,10 @@ COPY . .
 
 # Instala dependências e compila para Web
 RUN flutter pub get
+# Limita heap do Dart VM a 1024MB para evitar OOM no container DigitalOcean
 ENV DART_VM_OPTIONS="--old_gen_heap_size=1024"
-RUN flutter build web --release --no-tree-shake-icons --workers=1
+# -O1: nível de otimização reduzido — menos RAM que O2/O3, suficiente para produção
+RUN flutter build web --release --no-tree-shake-icons -O1
 
 # ── Estágio 2: Servidor Nginx ──────────────────────────────────────────────────
 FROM nginx:1.25.5-alpine
