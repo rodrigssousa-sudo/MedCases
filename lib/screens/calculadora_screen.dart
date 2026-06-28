@@ -387,10 +387,16 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         // Floating Dock agora está no Body Stack (glassmorphism idêntico ao MainShell).
 
         // ── Body: WebView + Floating Dock + Sources Bar ───────────────────
+        // SUPER ORDEM MASTER 311: estrutura idêntica ao MainShell.
+        // Um único Positioned(bottom:0) contém Column[dock, sources].
+        // WebView expande para Positioned(fill) e termina antes do rodapé.
         body: Stack(
           children: [
 
-            // ── WebView — bottom: sources(24) + dockTotal(57) = 81px ──────
+            // ── WebView — preenche toda a área acima do rodapé ────────────
+            // dockTotal = padding(v:7×2) + barHeight(43) = 57px
+            // sourcesBar = kBarCollapsed(24px)
+            // rodapé total = 81px
             Positioned(
               top:    0,
               left:   0,
@@ -409,40 +415,43 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               ),
             ),
 
-            // ── Floating Dock Premium — flutua acima da sources bar ────────
-            // Idêntico ao MainShell: glassmorphism 65-68%, BorderRadius.circular(32)
-            Positioned(
-              left:   0,
-              right:  0,
-              bottom: kBarCollapsed,
-              child: _CalcFloatingDock(dark: _dark, isEs: _isEs),
-            ),
-
-            // ── Sources Bar (Legal Disclaimer) — base absoluta do rodapé ──
-            // ORDEM CORRIGIDA: disclaimer ABAIXO da barra de ação flutuante
+            // ── Rodapé: Floating Dock + Sources Bar — padrão MainShell ────
+            // Column garante ordem correta: dock flutua, disclaimer é base.
+            // Espelha exatamente o _FloatingFooter do MainShell.
             Positioned(
               left:   0,
               right:  0,
               bottom: 0,
-              child: GestureDetector(
-                onTap: () => setState(() => _sourcesExpanded = !_sourcesExpanded),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 280),
-                  curve: Curves.easeInOut,
-                  height: barHeight,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1A1035),
-                    border: const Border(
-                      top: BorderSide(
-                        color: Color(0x33A78BFA),
-                        width: 1,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                  // ── Floating Dock glassmorphism — pairar acima do disclaimer
+                  _CalcFloatingDock(dark: _dark, isEs: _isEs),
+
+                  // ── Sources Bar (Legal Disclaimer) — rodapé absoluto ────
+                  GestureDetector(
+                    onTap: () => setState(() => _sourcesExpanded = !_sourcesExpanded),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 280),
+                      curve: Curves.easeInOut,
+                      height: barHeight,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF1A1035),
+                        border: Border(
+                          top: BorderSide(
+                            color: Color(0x33A78BFA),
+                            width: 1,
+                          ),
+                        ),
                       ),
+                      child: _sourcesExpanded
+                          ? _buildExpandedSources(labelTitle, labelBtn)
+                          : _buildCollapsedSources(labelBar),
                     ),
                   ),
-                  child: _sourcesExpanded
-                      ? _buildExpandedSources(labelTitle, labelBtn)
-                      : _buildCollapsedSources(labelBar),
-                ),
+
+                ],
               ),
             ),
 
@@ -540,17 +549,19 @@ class _CalcFloatingDock extends StatelessWidget {
   final bool isEs;
   const _CalcFloatingDock({required this.dark, required this.isEs});
 
+  // SUPER ORDEM MASTER 311: Calculadora SEMPRE usa paleta escura.
+  // O scaffold da Calculadora é sempre dark-purple (#0F091E) independente
+  // do darkMode do app — o dock deve espelhar esse fundo premium.
   static const _neonCyan  = Color(0xFF00E5FF);
   static const _barHeight = 43.0;
 
   @override
   Widget build(BuildContext context) {
-    final navBg = dark
-        ? const Color(0xFF0F1116).withValues(alpha: 0.68)
-        : Colors.white.withValues(alpha: 0.65);
-
-    final activeColor   = dark ? _neonCyan : const Color(0xFF008CA4);
-    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
+    // Dock sempre escuro: combina com scaffold roxo-escuro da Calculadora
+    // mesmo quando o app está em light mode (scaffold é sempre #0F091E)
+    const navBg        = Color(0xFF0F1116);  // sólido — fallback sem blur
+    const activeColor  = _neonCyan;
+    const inactiveColor = Color(0xFF6B7280);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
@@ -561,28 +572,24 @@ class _CalcFloatingDock extends StatelessWidget {
           child: Container(
             height: _barHeight,
             decoration: BoxDecoration(
-              color: navBg,
+              // Glassmorphism: escuro 68% — neon cyan borda sutil
+              color: navBg.withValues(alpha: 0.68),
               borderRadius: BorderRadius.circular(32),
               border: Border.all(
-                color: dark
-                    ? _neonCyan.withValues(alpha: 0.18)
-                    : Colors.white.withValues(alpha: 0.55),
+                color: _neonCyan.withValues(alpha: 0.22),
                 width: 0.9,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: dark
-                      ? Colors.black.withValues(alpha: 0.45)
-                      : Colors.black.withValues(alpha: 0.08),
+                  color: Colors.black.withValues(alpha: 0.50),
                   blurRadius: 20,
                   offset: const Offset(0, -4),
                 ),
-                if (dark)
-                  BoxShadow(
-                    color: _neonCyan.withValues(alpha: 0.05),
-                    blurRadius: 24,
-                    offset: const Offset(0, -4),
-                  ),
+                BoxShadow(
+                  color: _neonCyan.withValues(alpha: 0.05),
+                  blurRadius: 24,
+                  offset: const Offset(0, -4),
+                ),
               ],
             ),
             child: Row(
