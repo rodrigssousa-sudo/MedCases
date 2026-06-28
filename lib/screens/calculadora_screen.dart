@@ -311,6 +311,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       value: _dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: scaffoldBg,
+        // BUILD 314: extendBody força o body a preencher até a borda inferior
+        // do display — elimina o canvas sólido atrás da Floating Dock.
+        extendBody: true,
 
         // ── SUPER ORDEM VISUAL 09: AppBar Cupertino/Linear ────────────────
         // M1: Stack Left-Center-Right. Subtítulo "MedCases Pro" destruído.
@@ -568,36 +571,42 @@ class _CalcFloatingDock extends StatelessWidget {
     const activeColor  = _neonCyan;
     const inactiveColor = Color(0xFF6B7280);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+    // BUILD 314: ClipRRect é o widget MAIS EXTERNO com clipBehavior.antiAlias.
+    // Isso garante que o BackdropFilter NÃO vaza para fora da cápsula.
+    // A margin (horizontal:18, vertical:7) substitui o Padding externo que
+    // causava o canvas roxo/escuro do Scaffold visível atrás da dock.
+    // BackdropFilter agora é filho do Container (após o BoxDecoration),
+    // aplicando o blur apenas dentro da cápsula já recortada.
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+      height: _barHeight,
+      decoration: BoxDecoration(
+        // Glassmorphism: escuro 68% — neon cyan borda sutil
+        color: navBg.withValues(alpha: 0.68),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(
+          color: _neonCyan.withValues(alpha: 0.22),
+          width: 0.9,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.50),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+          ),
+          BoxShadow(
+            color: _neonCyan.withValues(alpha: 0.05),
+            blurRadius: 24,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
       child: ClipRRect(
+        clipBehavior: Clip.antiAlias,
         borderRadius: BorderRadius.circular(32),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            height: _barHeight,
-            decoration: BoxDecoration(
-              // Glassmorphism: escuro 68% — neon cyan borda sutil
-              color: navBg.withValues(alpha: 0.68),
-              borderRadius: BorderRadius.circular(32),
-              border: Border.all(
-                color: _neonCyan.withValues(alpha: 0.22),
-                width: 0.9,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.50),
-                  blurRadius: 20,
-                  offset: const Offset(0, -4),
-                ),
-                BoxShadow(
-                  color: _neonCyan.withValues(alpha: 0.05),
-                  blurRadius: 24,
-                  offset: const Offset(0, -4),
-                ),
-              ],
-            ),
-            child: Row(
+          child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // ── Início ──────────────────────────────────────────────────
@@ -705,7 +714,6 @@ class _CalcFloatingDock extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }
