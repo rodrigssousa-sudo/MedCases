@@ -48,6 +48,7 @@ import 'services/offline_calculator_cache_service.dart'; // BUILD 240: smart off
 import 'services/app_resume_coordinator.dart';           // BUILD 241: background/resume safety
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
+import 'widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
 import 'platform/web_impl.dart'
     if (dart.library.io) 'platform/web_stub.dart' as webPlatform;
 
@@ -1280,13 +1281,11 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Ouve pendingTab para navegação iniciada pelo Drawer (sem onTabChange no _AppDrawer)
     MainShell.pendingTab.addListener(_onPendingTab);
 
-    // SUPER ORDEM MASTER 14 M3: pós-OAuth redirect → volta para aba IA
-    if (AppProvider.postOAuthAiTab) {
-      AppProvider.postOAuthAiTab = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _tab = 2);
-      });
-    }
+    // SUPER ORDEM MASTER 315: ouve postOAuthTabNotifier para restaurar aba pós-OAuth.
+    // Substitui o mecanismo postOAuthAiTab (static bool) que sofria de race condition:
+    // o bool era lido em initState ANTES de checkGeminiSession() setar true.
+    // O ValueNotifier dispara em runtime → _onPostOAuthTab() responde imediatamente.
+    AppProvider.postOAuthTabNotifier.addListener(_onPostOAuthTab);
 
     // Instancia TODAS as telas UMA VEZ — IndexedStack reutiliza entre rebuilds.
     // Cada tela é envolta em RepaintBoundary — isola o repaint de cada screen,
@@ -1441,6 +1440,19 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     } catch (_) {}
   }
 
+  // SUPER ORDEM MASTER 315: callback do ValueNotifier postOAuthTabNotifier.
+  // Disparado por AppProvider.checkGeminiSession() após auth OAuth bem-sucedido.
+  // Restaura o índice da aba de origem (salvo antes do redirect) sem race condition.
+  void _onPostOAuthTab() {
+    final tabIdx = AppProvider.postOAuthTabNotifier.value;
+    if (tabIdx >= 0 && mounted) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      setState(() => _tab = tabIdx.clamp(0, 5));
+      AppProvider.postOAuthTabNotifier.value = -1; // consome e reseta
+      debugPrint('[MASTER315] postOAuthTabNotifier → aba $tabIdx restaurada');
+    }
+  }
+
   void _onPendingTab() {
     final t = MainShell.pendingTab.value;
     if (t >= 0 && mounted) {
@@ -1453,6 +1465,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   @override
   void dispose() {
     MainShell.pendingTab.removeListener(_onPendingTab);
+    AppProvider.postOAuthTabNotifier.removeListener(_onPostOAuthTab); // BUILD 315
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -1672,7 +1685,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       // ── AppBar HOME: sempre visível ───────────────────────────────────────
       appBar: isHome
           ? PreferredSize(
-              preferredSize: const Size.fromHeight(42), // SUPER ORDEM MASTER 14 M1: 42px
+              // BUILD 316 M1: 36px base — SafeArea.top expande para notch/Dynamic Island.
+              // Web/sem-notch → 36px útil. iPhone com ilha/entalhada → 36+padding.top.
+              preferredSize: const Size.fromHeight(36),
               child: Builder(
                 builder: (scaffoldCtx) => _MobileAppBar(
                   dark: dark,
@@ -1721,31 +1736,38 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                 // desliza para fora da tela juntos (AnimatedSlide).
                 // Quando hidden=true → slide para baixo → rodapé = zero px.
                 // O chat expande para 100% da altura — imersão total.
+                // BUILD 318: também oculta durante editor de história clínica.
                 ValueListenableBuilder<bool>(
-                  valueListenable: AiScreen.chatKeyboardOpen,
-                  builder: (_, kbOpen, __) =>
+                  valueListenable: HistoryScreen.editorActive,
+                  builder: (_, editorOpen, __) =>
                   ValueListenableBuilder<bool>(
-                    valueListenable: AiScreen.scrollingDown,
-                    builder: (_, scrollingDown, __) {
-                      final hidden = kbOpen || (isAiTab && scrollingDown);
-                      return _FloatingFooter(
-                        hidden: hidden,
-                        dark: dark,
-                        currentTab: _tab,
-                        lang: p.lang,
-                        onTabChange: (t) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() => _tab = t);
-                        },
-                        onFabTap: () {
-                          AppHaptics.light(context);
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          setState(() => _tab = 2);
-                        },
-                        onFabDoubleTap: () => _resetAndStartNewChat(),
-                        isAiActive: isAiTab,
-                      );
-                    },
+                    valueListenable: AiScreen.chatKeyboardOpen,
+                    builder: (_, kbOpen, __) =>
+                    ValueListenableBuilder<bool>(
+                      valueListenable: AiScreen.scrollingDown,
+                      builder: (_, scrollingDown, __) {
+                        final hidden = editorOpen
+                            || kbOpen
+                            || (isAiTab && scrollingDown);
+                        return _FloatingFooter(
+                          hidden: hidden,
+                          dark: dark,
+                          currentTab: _tab,
+                          lang: p.lang,
+                          onTabChange: (t) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() => _tab = t);
+                          },
+                          onFabTap: () {
+                            AppHaptics.light(context);
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(() => _tab = 2);
+                          },
+                          onFabDoubleTap: () => _resetAndStartNewChat(),
+                          isAiActive: isAiTab,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -1879,13 +1901,13 @@ class _FloatingFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SUPER ORDEM MASTER 308 M1: -10% adicional sobre Build 306
+    // barHeight 48→43px | opacity glassmorphism mantido
     final navBg = dark
-        ? const Color(0xFF0F1116).withValues(alpha: 0.93)
-        : Colors.white.withValues(alpha: 0.96);
+        ? const Color(0xFF0F1116).withValues(alpha: 0.68)
+        : Colors.white.withValues(alpha: 0.65);
 
-    // SUPER ORDEM MASTER 14 M1: Floating Dock premium — 56px total com padding vertical
-    // Dock flutua com BorderRadius.circular(24) + glassmorphism blur + horizontal margin 16px
-    const barHeight = 56.0;
+    const barHeight = 43.0;
 
     return Positioned(
       left: 0,
@@ -1906,22 +1928,23 @@ class _FloatingFooter extends StatelessWidget {
               // ── Floating Dock premium — glassmorphism 24px corner radius ────
               // SUPER ORDEM MASTER 14 M1: Padding horizontal 16px + vertical 8px
               // para criar o efeito de barra flutuante separada do fundo.
+              // SUPER ORDEM MASTER 308 M1: padding -10% (h:20→18, v:8→7)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(32),
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: Container(
                       height: barHeight,
                       decoration: BoxDecoration(
                         color: navBg,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(32),
                         border: Border.all(
                           color: dark
-                              ? _neonCyan.withValues(alpha: 0.14)
-                              : const Color(0xFFE5E7EB),
-                          width: 0.8,
+                              ? _neonCyan.withValues(alpha: 0.18)
+                              : Colors.white.withValues(alpha: 0.55),
+                          width: 0.9,
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -1956,7 +1979,7 @@ class _FloatingFooter extends StatelessWidget {
 
                         // ── FAB CENTRAL IA ────────────────────────────────
                         SizedBox(
-                          width: 64,
+                          width: 50,
                           height: barHeight,
                           child: Center(
                             child: GestureDetector(
@@ -1965,9 +1988,9 @@ class _FloatingFooter extends StatelessWidget {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 220),
                                 curve: Curves.easeOutCubic,
-                                // FAB ligeiramente menor para caber em 42px
-                                width: 40,
-                                height: 40,
+                                // SUPER ORDEM MASTER 308 M1: FAB -10% → 31px
+                                width: 31,
+                                height: 31,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,
@@ -2126,18 +2149,8 @@ class _MobileAppBar extends StatelessWidget {
     final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
     final iconColor = dark ? Colors.white.withValues(alpha: 0.85) : const Color(0xFF0F1116);
 
-    // Build 138 — Hamburger dinâmico:
-    //   Light mode → filled (preenchido, máximo contraste no fundo branco)
-    //   Dark mode  → outline/vazado (borda visível no fundo escuro)
-    final hamburgerBg = dark
-        ? Colors.white.withValues(alpha: 0.08)     // dark = vazado (outline)
-        : const Color(0xFF0F1116);                  // light = filled (preenchido)
-    final hamburgerBorder = dark
-        ? Colors.white.withValues(alpha: 0.18)
-        : Colors.transparent;
-    final hamburgerIconColor = dark
-        ? Colors.white.withValues(alpha: 0.85)
-        : Colors.white;
+    // BUILD 316 M2: hamburgerBg, hamburgerBorder, hamburgerIconColor removidos.
+    // Hambúrguer agora é um ícone nu (sem container) — usa iconColor diretamente.
 
     // Ícones AI (histórico/etc) — adapta ao novo fundo neutro
     final iconBg = dark
@@ -2167,9 +2180,11 @@ class _MobileAppBar extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: SizedBox(
-          height: 48,
+          // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
+          // padding do sistema (notch / Dynamic Island / status bar).
+          height: 36,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -2211,8 +2226,8 @@ class _MobileAppBar extends StatelessWidget {
                 // direito, garantindo simetria perfeita e título realmente centrado.
                 Row(
               children: [
-                // BUILD 282: Placeholder 38px (largura = hambúrguer) para simetria
-                const SizedBox(width: 38),
+                // BUILD 316: Placeholder 32px (largura = hambúrguer nu) para simetria
+                const SizedBox(width: 32),
                 const Spacer(),
 
                 // ── Botões contextuais da IA (só na aba 2) ─────────────────
@@ -2348,19 +2363,19 @@ class _MobileAppBar extends StatelessWidget {
                   ),
                 ],
 
-                // ── Botão hambúrguer → abre endDrawer ─────────────────────
-                // Build 138: filled (dark bg) no light mode, outline no dark mode
+                // BUILD 316 M2: hambúrguer ultra-minimalista — sem container,
+                // sem bordas, sem background. Apenas o ícone flutuando sobre o canvas.
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: onMenuTap,
-                  child: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: hamburgerBg,
-                      border: Border.all(color: hamburgerBorder, width: 1),
+                  child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Icon(
+                      Icons.menu_rounded,
+                      size: 20,
+                      color: iconColor,
                     ),
-                    child: Icon(Icons.menu_rounded, size: 20, color: hamburgerIconColor),
                   ),
                 ),
               ],
@@ -3869,19 +3884,18 @@ class _DrawerHeader extends StatelessWidget {
         left:   false,
         right:  false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 14, 14),
+          padding: const EdgeInsets.fromLTRB(16, 12, 14, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
 
-              // ── Linha 1: logo  |  badge admin (opcional)  |  botão ✕ ───────
+              // ── Linha 1: badge (opcional) | Spacer | botão ✕ ─────────────────
+              // BUILD 326 — M1: BrandMark removido; X e badge mantidos no topo
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const BrandMark(small: true),
-                  const SizedBox(width: 8),
-                  // Badge Admin/Master — inline na mesma linha do logo
+                  // Badge Admin/Master — inline na linha do topo
                   if (hasBadge) ...[
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -3924,104 +3938,165 @@ class _DrawerHeader extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-              // ── Linha 2: avatar 42px + nome/profissão + botão editar ─────────
-              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                // Avatar compacto 42px
-                Container(
-                  width: 42, height: 42,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFF1F4030), Color(0xFF1A1D23)],
-                    ),
-                    border: Border.all(
-                      color: _kGold.withValues(alpha: 0.55), width: 1.6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _kGold.withValues(alpha: 0.18),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w900, color: _kGoldL),
+              // ── BUILD 326 — M1: Selo centralizado  ——  [M+]  —— ──────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: const Color(0xFF334155).withValues(alpha: 0.45),
+                      endIndent: 10,
+                      thickness: 0.8,
                     ),
                   ),
-                ),
-                const SizedBox(width: 11),
+                  const Text(
+                    'M+',
+                    style: TextStyle(
+                      color: Color(0xFFD4AF37),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                      letterSpacing: 2.0,
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: const Color(0xFF334155).withValues(alpha: 0.45),
+                      indent: 10,
+                      thickness: 0.8,
+                    ),
+                  ),
+                ],
+              ),
 
-                // Nome + profissão/instituição
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
-                        style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w900,
-                          color: Colors.white, letterSpacing: -0.3, height: 1.15,
+              const SizedBox(height: 18),
+
+              // ── BUILD 326 — M2/M3: Avatar 58px + Stack lápis + coluna de texto ─
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // BUILD 326 — M2: Avatar 58px com overlay de lápis (Stack)
+                  GestureDetector(
+                    onTap: onEditProfile,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // Círculo principal 58px
+                        Container(
+                          width: 58,
+                          height: 58,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                            ),
+                            border: Border.all(
+                              color: const Color(0xFF34D399).withValues(alpha: 0.50),
+                              width: 1.8,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF34D399).withValues(alpha: 0.15),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              initials,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFFD4AF37),
+                              ),
+                            ),
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      if ((p.currentUser?.profession?.isNotEmpty ?? false) ||
-                          (p.currentUser?.institution?.isNotEmpty ?? false)) ...[
-                        const SizedBox(height: 2),
+                        // Overlay lápis: 22px círculo verde no canto inferior direito
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 22,
+                            height: 22,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF34D399),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.edit_rounded,
+                              size: 11,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 14),
+
+                  // BUILD 326 — M3: Coluna vertical: nome + profissão + instituição
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Título: nome do usuário
                         Text(
-                          [
-                            if (p.currentUser?.profession?.isNotEmpty ?? false)
-                              p.currentUser!.profession!,
-                            if (p.currentUser?.institution?.isNotEmpty ?? false)
-                              p.currentUser!.institution!,
-                          ].join(' · '),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white.withValues(alpha: 0.42),
-                            fontWeight: FontWeight.w500,
-                            height: 1.3,
+                          p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: -0.3,
+                            height: 1.15,
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
+                        // Subtítulo 1: profissão (fontSize 13, opacity 0.65)
+                        if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
+                          const SizedBox(height: 3),
+                          Text(
+                            p.currentUser!.profession!,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.white.withValues(alpha: 0.65),
+                              fontWeight: FontWeight.w500,
+                              height: 1.2,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ],
+                        // Subtítulo 2: instituição (fontSize 11, opacity 0.42)
+                        if (p.currentUser?.institution?.isNotEmpty ?? false) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            p.currentUser!.institution!,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.white.withValues(alpha: 0.42),
+                              fontWeight: FontWeight.w400,
+                              height: 1.25,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                        ],
                       ],
-                    ],
-                  ),
-                ),
-
-                const SizedBox(width: 8),
-
-                // Botão editar perfil
-                GestureDetector(
-                  onTap: onEditProfile,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9),
-                      color: _kGold.withValues(alpha: 0.14),
-                      border: Border.all(
-                        color: _kGold.withValues(alpha: 0.40), width: 0.9),
                     ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.edit_rounded, size: 12, color: _kGoldL),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Editar',
-                        style: TextStyle(
-                          fontSize: 10.5, fontWeight: FontWeight.w700, color: _kGoldL),
-                      ),
-                    ]),
                   ),
-                ),
-              ]),
+                  // BUILD 326 — M5: Botão "Editar" externo REMOVIDO
+                ],
+              ),
+
+              const SizedBox(height: 4),
             ],
           ),
         ),
@@ -4274,13 +4349,10 @@ class _DrawerLegalRow extends StatelessWidget {
     this.showDivider = true,
   });
 
-  Future<void> _launch() async {
-    final uri = Uri.parse(externalUrl);
-    try {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-    } catch (_) {}
+  // BUILD 323 — MANDATO 2: abre documento legal in-app em vez de browser externo.
+  // MANDATO 1: título semântico visível, URL encapsulada e invisível.
+  void _launch(BuildContext context) {
+    openAcademicSourceSecurely(context, title, externalUrl);
   }
 
   @override
@@ -4333,7 +4405,7 @@ class _DrawerLegalRow extends StatelessWidget {
                   ],
                 ),
               ),
-              // Botão ícone: abre no navegador externo
+              // BUILD 323 MANDATO 2: ícone abre in-app WebView (não browser externo)
               Tooltip(
                 message: externalTooltip,
                 child: IconButton(
@@ -4342,7 +4414,7 @@ class _DrawerLegalRow extends StatelessWidget {
                     size: 18,
                     color: const Color(0xFF1E88E5).withValues(alpha: 0.75),
                   ),
-                  onPressed: _launch,
+                  onPressed: () => _launch(context),
                   splashRadius: 18,
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
@@ -5276,11 +5348,12 @@ class _AboutAppSheet extends StatelessWidget {
                               'de decisão clínica. Não substitui o julgamento clínico do profissional de '
                               'saúde, nem constitui prescrição médica.'),
 
-                    // Site
+                    // Site — BUILD 323 MANDATO 2: in-app WebView
                     GestureDetector(
-                      onTap: () => launchUrl(
-                          Uri.parse(_kSiteUrl),
-                          mode: LaunchMode.externalApplication),
+                      onTap: () => openAcademicSourceSecurely(
+                          context,
+                          isEs ? 'MedCases Pro — Sitio Web' : 'MedCases Pro — Site Oficial',
+                          _kSiteUrl),
                       child: infoRow(Icons.language_outlined,
                           isEs ? 'SITIO WEB' : 'SITE',
                           'promedcases.com'),
@@ -5983,11 +6056,12 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
 
             const SizedBox(height: 20),
 
-            // Site link
+            // Site link — BUILD 323 MANDATO 2: in-app WebView
             GestureDetector(
-              onTap: () => launchUrl(
-                  Uri.parse(_kSiteUrl),
-                  mode: LaunchMode.externalApplication),
+              onTap: () => openAcademicSourceSecurely(
+                  context,
+                  _isEs ? 'MedCases Pro — Sitio Web' : 'MedCases Pro — Site Oficial',
+                  _kSiteUrl),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

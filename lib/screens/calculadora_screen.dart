@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
@@ -18,8 +17,7 @@ import '../platform/calcu_stub.dart'
 // ─────────────────────────────────────────────────────────────────────────────
 // URL base — ?lang=pt ou ?lang=es injetado em initState() conforme AppProvider
 // ─────────────────────────────────────────────────────────────────────────────
-const _kBaseUrl    = 'https://www.medcasescalcu.com';
-const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
+const _kBaseUrl = 'https://www.medcasescalcu.com';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRECOCE — injetado em onPageStarted (antes do DOMContentLoaded)
@@ -192,15 +190,11 @@ class CalculadoraScreen extends StatefulWidget {
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Native WebView controller — inicializado apenas em iOS/Android (!kIsWeb)
   late final WebViewController _controller;
-  late final bool _isEs;
   // Build 1563: dark mode lido uma vez no initState (imutável por sessão)
   late final bool _dark;
   // Build 187: URL da calculadora — compartilhada entre Web (iframe) e native (WebView)
   // Build 189: pode ser sobrescrita por initialUrl (ExternalToolButton deep link)
   late final String _webUrl;
-
-  // Estado da barra de fontes nativa Flutter
-  bool _sourcesExpanded = false;
 
   @override
   void initState() {
@@ -209,7 +203,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     final p         = context.read<AppProvider>();
     final lang      = p.lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
-    _isEs           = lang == 'es';
     _dark           = p.darkMode;
     // Build 189: initialUrl tem prioridade sobre URL padrão do provider.
     // ExternalToolLinkEngine já injeta lang+tab+q — não sobrescrever.
@@ -277,34 +270,12 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     return Theme.of(context).platform == TargetPlatform.iOS;
   }
 
-  Future<void> _openSourcesUrl() async {
-    final uri = Uri.parse(_kSourcesUrl);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     // ── Paleta dark/light ────────────────────────────────────────────────
     // SUPER ORDEM VISUAL 09: barBg/borderCol/textPrimary/textSecondary removidos
     // — o AppBar agora usa gradiente roxo const; só scaffoldBg permanece.
     final Color scaffoldBg  = _dark ? const Color(0xFF0F091E) : const Color(0xFFF8F9FA);
-
-    // ── BARRA DE FONTES — dimensões ──────────────────────────────────────
-    const double kBarCollapsed = 24.0;
-    const double kBarExpanded  = 108.0;
-    final double barHeight = _sourcesExpanded ? kBarExpanded : kBarCollapsed;
-
-    final String labelBar = _isEs
-        ? '\uD83D\uDD3C Ver Fuentes Acad\u00e9micas \u00b7 AHA \u00b7 ACC \u00b7 WHO...'
-        : '\uD83D\uDD3C Ver Fontes Acad\u00eamicas \u00b7 AHA \u00b7 ACC \u00b7 WHO...';
-    final String labelTitle = _isEs
-        ? 'Ver Fuentes Acad\u00e9micas'
-        : 'Ver Fontes Acad\u00eamicas';
-    final String labelBtn = _isEs
-        ? 'Abrir referencias \u2197'
-        : 'Abrir refer\u00eancias \u2197';
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -349,39 +320,32 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                         letterSpacing: -0.2,
                       ),
                     ),
-                    // LEFT: botão de voltar
+                    // LEFT: botão de voltar — canPop guard (SUPER ORDEM 313)
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 20,
-                          color: Colors.white,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          final nav = Navigator.of(context);
+                          if (nav.canPop()) nav.pop();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                        onPressed: () => Navigator.of(context).maybePop(),
-                        padding: const EdgeInsets.all(8),
-                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                       ),
                     ),
-                    // RIGHT: logotipo M+ dourado
+                    // RIGHT: M+ dourado pulsante — ADENDO Build 309
+                    // _CalcMplusPulse: loop 0.4↔1.0 opacity, 1500ms
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Image.asset(
-                          'assets/icon/app_icon.png',
-                          height: 28,
-                          fit: BoxFit.contain,
-                          errorBuilder: (_, __, ___) => const Text(
-                            'M+',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFFFFE8A6),
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                        ),
+                        padding: const EdgeInsets.only(right: 14),
+                        child: const _CalcMplusPulse(),
                       ),
                     ),
                   ],
@@ -394,270 +358,73 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         // ── SUPER ORDEM VISUAL 09 M3: Barra de navegação inferior ───────────
         // Permite ao usuário navegar de volta para o shell sem se sentir preso.
         // Usa Navigator.maybePop() — retorna ao MainShell preservando o tab ativo.
-        bottomNavigationBar: _CalcBottomNav(dark: _dark, isEs: _isEs),
+        // SUPER ORDEM MASTER CALC: bottomNavigationBar removido.
+        // Floating Dock agora está no Body Stack (glassmorphism idêntico ao MainShell).
 
-        // ── Body: WebView + barra de fontes nativa ────────────────────────
-        body: Stack(
-          children: [
-
-            // Área de conteúdo principal — WebView (native) ou iframe (Web)
-            Positioned(
-              top:    0,
-              left:   0,
-              right:  0,
-              bottom: kBarCollapsed,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SizedBox(
-                    width:  constraints.maxWidth,
-                    height: constraints.maxHeight,
-                    // Build 187: Web usa HtmlElementView/iframe; iOS/Android usa WebViewWidget.
-                    child: kIsWeb
-                        ? buildCalculadoraWebView(_webUrl, _dark)
-                        : WebViewWidget(controller: _controller),
-                  );
-                },
-              ),
-            ),
-
-            // ── Barra de fontes Flutter nativa ────────────────────────────
-            Positioned(
-              left:   0,
-              right:  0,
-              bottom: 0,
-              child: GestureDetector(
-                onTap: () => setState(() => _sourcesExpanded = !_sourcesExpanded),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 280),
-                  curve: Curves.easeInOut,
-                  height: barHeight,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1A1035),
-                    border: const Border(
-                      top: BorderSide(
-                        color: Color(0x33A78BFA),
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                  child: _sourcesExpanded
-                      ? _buildExpandedSources(labelTitle, labelBtn)
-                      : _buildCollapsedSources(labelBar),
-                ),
-              ),
-            ),
-
-          ],
-        ),
+        // BUILD 317 M3: FloatingDock + SourcesBar removidos.
+        // WebView ocupa o viewport completo — zero anteparos inferiores.
+        body: kIsWeb
+            ? buildCalculadoraWebView(_webUrl, _dark)
+            : WebViewWidget(controller: _controller),
       ),
     );
   }
 
-  // ── Vista colapsada (24px) ──────────────────────────────────────────────────
-  Widget _buildCollapsedSources(String label) {
-    return Center(
-      child: Text(
-        label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontSize:      10,
-          color:         Color(0xB3B8A8E8), // violeta claro 70% opacidade
-          letterSpacing: 0.3,
-          height:        1.0,
-        ),
-      ),
-    );
-  }
-
-  // ── Vista expandida (108px) ─────────────────────────────────────────────────
-  Widget _buildExpandedSources(String title, String btnLabel) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Título
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('\uD83D\uDCDA', style: TextStyle(fontSize: 14)),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize:      12,
-                fontWeight:    FontWeight.w700,
-                color:         Color(0xFFA78BFA),
-                letterSpacing: 0.2,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        // Sublabel
-        const Text(
-          'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate',
-          style: TextStyle(
-            fontSize:      9,
-            color:         Color(0x99B8A8E8), // violeta claro 60% opacidade
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: 8),
-        // Botão de abertura
-        GestureDetector(
-          onTap: () {
-            setState(() => _sourcesExpanded = false);
-            _openSourcesUrl();
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
-            decoration: BoxDecoration(
-              color:        const Color(0x26A78BFA), // violeta 15% opacidade
-              border:       Border.all(color: const Color(0x59A78BFA)), // 35% opacidade
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              btnLabel,
-              style: const TextStyle(
-                fontSize:   11,
-                fontWeight: FontWeight.w600,
-                color:      Color(0xFFC4B5FD),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SUPER ORDEM VISUAL 09 M3: Barra de navegação inferior da Calculadora
-// Estilo visual idêntico ao FloatingFooter do MainShell (blur + dark α0.93).
-// Navegação: maybePop() retorna ao shell preservando o tab ativo.
+// SUPER ORDEM MASTER CALC ADENDO: _CalcMplusPulse
+// M+ dourado pulsante no TopBar da Calculadora.
+// Loop suave 0.4 ↔ 1.0 opacidade em 1.5s — idêntico ao _MplusPulse da IA.
 // ─────────────────────────────────────────────────────────────────────────────
-class _CalcBottomNav extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  const _CalcBottomNav({required this.dark, required this.isEs});
+class _CalcMplusPulse extends StatefulWidget {
+  const _CalcMplusPulse();
+  @override
+  State<_CalcMplusPulse> createState() => _CalcMplusPulseState();
+}
 
-  static const _neonCyan = Color(0xFF00E5FF);
+class _CalcMplusPulseState extends State<_CalcMplusPulse>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..addStatusListener((status) {
+        if (!mounted) return;
+        if (status == AnimationStatus.completed) _ctrl.reverse();
+        if (status == AnimationStatus.dismissed) _ctrl.forward();
+      });
+    _anim = Tween<double>(begin: 0.4, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+    _ctrl.forward();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final navBg = dark
-        ? const Color(0xFF0F1116).withValues(alpha: 0.96)
-        : Colors.white.withValues(alpha: 0.98);
-    final borderColor = dark
-        ? _neonCyan.withValues(alpha: 0.12)
-        : const Color(0xFFE5E7EB);
-    final activeColor   = dark ? _neonCyan : const Color(0xFF008CA4);
-    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
-
-    // Wrap with SafeArea so the bar respects home indicator on iPhone
-    return SafeArea(
-      top: false,
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: navBg,
-          border: Border(
-            top: BorderSide(color: borderColor, width: 0.5),
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Opacity(
+        opacity: _anim.value,
+        child: const Text(
+          'M+',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFFD4AF37),
+            letterSpacing: -0.5,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: dark
-                  ? Colors.black.withValues(alpha: 0.45)
-                  : Colors.black.withValues(alpha: 0.08),
-              blurRadius: 20,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ── Início ───────────────────────────────────────────────────
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context).maybePop(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3),
-                      child: Icon(Icons.home_rounded, size: 18, color: inactiveColor),
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      isEs ? 'Inicio' : 'Início',
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 9.0,
-                        fontWeight: FontWeight.w400,
-                        color: inactiveColor,
-                        height: 1.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // ── Calculadora — ativa ───────────────────────────────────────
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3),
-                    child: Icon(Icons.calculate_rounded, size: 18, color: activeColor),
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    isEs ? 'Calculadora' : 'Calculadora',
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 9.0,
-                      fontWeight: FontWeight.w700,
-                      color: activeColor,
-                      height: 1.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // ── Ferramentas ───────────────────────────────────────────────
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context).maybePop(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3),
-                      child: Icon(Icons.science_rounded, size: 18, color: inactiveColor),
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      isEs ? 'Herramientas' : 'Ferramentas',
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 9.0,
-                        fontWeight: FontWeight.w400,
-                        color: inactiveColor,
-                        height: 1.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

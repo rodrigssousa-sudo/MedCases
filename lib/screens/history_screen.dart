@@ -11,6 +11,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
 import '../providers/app_provider.dart';
+import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
 import '../models/clinical_history_model.dart';
 import '../services/firestore_service.dart';
 import '../services/suggestion_service.dart';
@@ -459,6 +460,14 @@ String _formatUploadedAt(String iso) {
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
+
+  /// BUILD 318: Sinal estático — true enquanto o editor de história clínica
+  /// está activo (nova ou edição de prontuário existente).
+  /// Escutado pelo _FloatingFooter em main.dart para ocultar a dock flutuante
+  /// e evitar sobreposição sobre o formulário de alta-concentração.
+  /// Padrão idêntico ao AiScreen.chatKeyboardOpen.
+  static final editorActive = ValueNotifier<bool>(false);
+
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
@@ -495,6 +504,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
   @override
   void dispose() {
+    // BUILD 318: garante que o notifier seja resetado se a tela for destruída
+    // enquanto o editor está activo (ex: hot-reload, deeplink de saída).
+    if (HistoryScreen.editorActive.value) {
+      HistoryScreen.editorActive.value = false;
+    }
     _tabCtrl.dispose();
     _searchCtrl.dispose();
     super.dispose();
@@ -567,19 +581,24 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     return '${fmt(s)} – ${fmt(e)}';
   }
 
+  // BUILD 318: central setter — mantém _editing e o notifier em sincronia.
+  // Todos os pontos de abertura/fecho do editor chamam este método.
+  void _setEditing(ClinicalHistoryModel? model) {
+    setState(() => _editing = model);
+    HistoryScreen.editorActive.value = model != null;
+  }
+
   void _startNewHistory(AppProvider p, String lang) {
     final uid = p.currentUser?.uid ?? 'local';
     final name = p.currentUser?.displayName ??
         p.currentUser?.email ??
         _hcT(lang, 'anon');
     final email = p.currentUser?.email ?? '';
-    setState(
-      () => _editing = ClinicalHistoryModel.blank(
-        authorUid: uid,
-        authorName: name,
-        authorEmail: email,
-      ),
-    );
+    _setEditing(ClinicalHistoryModel.blank(
+      authorUid: uid,
+      authorName: name,
+      authorEmail: email,
+    ));
   }
 
   List<ClinicalHistoryModel> _visibleCommunityHistories(
@@ -668,9 +687,9 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         onSave: (h) async {
           await p.saveHistory(h);
           if (!mounted) return;
-          setState(() => _editing = null);
+          _setEditing(null);
         },
-        onCancel: () => setState(() => _editing = null),
+        onCancel: () => _setEditing(null),
       );
     }
 
@@ -688,10 +707,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             ? null
             : () {
                 final h = _viewing!;
-                setState(() {
-                  _viewing = null;
-                  _editing = h;
-                });
+                setState(() => _viewing = null);
+                _setEditing(h);
               },
         onDelete: _viewingPublic
             ? null
@@ -737,7 +754,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                     _viewing = mine[i];
                     _viewingPublic = false;
                   }),
-                  onEdit: () => setState(() => _editing = mine[i]),
+                  onEdit: () => _setEditing(mine[i]),
                   onDelete: () async {
                     final confirm = await _confirmDelete(context);
                     if (confirm) {
@@ -872,14 +889,29 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                           letterSpacing: -0.2,
                         ),
                       ),
-                      // LEFT: botão de voltar
+                      // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
+                      // Se montado como tab (IndexedStack), fallback → Home tab 0
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                          onPressed: () => Navigator.maybePop(context),
-                          padding: const EdgeInsets.all(8),
-                          constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            final nav = Navigator.of(context);
+                            if (nav.canPop()) {
+                              nav.pop();
+                            } else {
+                              // Tab context: volta para Home via pendingTab
+                              MainShell.pendingTab.value = 0;
+                            }
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.arrow_back_ios_new,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
                         ),
                       ),
                       // RIGHT: botão de ação — sem fundo gradiente, laranja no texto/ícone
@@ -956,14 +988,27 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                                 letterSpacing: -0.2,
                               ),
                             ),
-                            // LEFT: botão de voltar
+                            // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
                             Align(
                               alignment: Alignment.centerLeft,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                                onPressed: () => Navigator.maybePop(context),
-                                padding: const EdgeInsets.all(8),
-                                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  final nav = Navigator.of(context);
+                                  if (nav.canPop()) {
+                                    nav.pop();
+                                  } else {
+                                    MainShell.pendingTab.value = 0;
+                                  }
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.arrow_back_ios_new,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
                               ),
                             ),
                             // RIGHT: DESTRUÍDO — botão + NOVA HC removido do header.

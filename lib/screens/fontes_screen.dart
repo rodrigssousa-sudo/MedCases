@@ -6,8 +6,7 @@
 // Nível 3: Prompt da IA (ai_service.dart) — rodapé forçado nas respostas
 // ─────────────────────────────────────────────────────────────────────────────
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const _kDark      = Color(0xFF0F1C14);
@@ -360,12 +359,13 @@ class _SourceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
-          onTap: () async {
-            final uri = Uri.tryParse(source.url);
-            if (uri != null && await canLaunchUrl(uri)) {
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-            }
-          },
+          // BUILD 323 — MANDATO 2: in-app WebView em vez de launchUrl externo.
+          // MANDATO 1: título semântico visível (source.org), URL encapsulada e invisível.
+          onTap: () => openAcademicSourceSecurely(
+            context,
+            source.fullName,
+            source.url,
+          ),
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Row(children: [

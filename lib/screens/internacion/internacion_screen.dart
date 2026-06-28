@@ -869,10 +869,10 @@ class _InternacionScreenState extends State<InternacionScreen> {
       // SUPER ORDEM VISUAL 05: Topologia Cupertino/Linear Left-Center-Right.
       // Stack: título absolutamente centrado, back à esquerda, "+ Nova" à direita.
       // Subtítulo "MEDCASES PRO" destruído — título PACIENTES sozinho e limpo.
-      // Altura: 63 → 66 (+3px respiro vertical).
+      // BUILD 324 PILAR 2A: 66 → 52px — SafeArea(bottom:false) já absorve notch/Dynamic Island.
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(66),
+        preferredSize: const Size.fromHeight(52),
         child: Container(
           // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao/Pacientes
           decoration: const BoxDecoration(
@@ -907,16 +907,23 @@ class _InternacionScreenState extends State<InternacionScreen> {
                     ),
                   ),
                   // ── LEFT: botão de voltar ─────────────────────────────────
+                  // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new,
-                          size: 20, color: Colors.white),
-                      tooltip: isEs ? 'Volver' : 'Voltar',
-                      onPressed: () => Navigator.maybePop(context),
-                      padding: const EdgeInsets.all(8),
-                      constraints:
-                          const BoxConstraints(minWidth: 36, minHeight: 36),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        final nav = Navigator.of(context);
+                        if (nav.canPop()) nav.pop();
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
                     ),
                   ),
                   // ── RIGHT: botão [➕ Nova] ──────────────────────────────

@@ -3,12 +3,13 @@ import '../theme/app_theme.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
 import '../providers/app_provider.dart';
 import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/lab_exam_bottom_sheet.dart';
 import '../services/activity_service.dart';
+import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -112,14 +113,27 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                         letterSpacing: -0.2,
                       ),
                     ),
-                    // LEFT: botão de voltar
+                    // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                        onPressed: () => Navigator.maybePop(context),
-                        padding: const EdgeInsets.all(8),
-                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          final nav = Navigator.of(context);
+                          if (nav.canPop()) {
+                            nav.pop();
+                          } else {
+                            MainShell.pendingTab.value = 0;
+                          }
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -8067,16 +8081,21 @@ class _SourcesButton extends StatelessWidget {
   const _SourcesButton({required this.isEs});
 
   static const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
+  static const _kSourcesTitle = 'Fontes e Referências — MedCases Pro';
+  static const _kSourcesTitleEs = 'Fuentes y Referencias — MedCases Pro';
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
+      // BUILD 323 — MANDATO 2: in-app WebView encapsulado, sem ejetar para browser.
+      // MANDATO 1: label semântico exibido, URL nunca visível na UI.
+      onTap: () {
         AppHaptics.light(context);
-        final uri = Uri.parse(_kSourcesUrl);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
+        openAcademicSourceSecurely(
+          context,
+          isEs ? _kSourcesTitleEs : _kSourcesTitle,
+          _kSourcesUrl,
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),

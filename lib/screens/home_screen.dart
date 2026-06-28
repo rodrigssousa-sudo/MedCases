@@ -478,7 +478,10 @@ class _HomeScreenState extends State<HomeScreen> {
               widget.onTabChange(4);
             },
             onManageTap: () => showPlantaoManageSheet(context),
-            onOpenInternacion: (session) => Navigator.of(context).push(
+            // BUILD 319: rootNavigator:true → InternacionScreen sobe ACIMA do
+            // MainShell e da _FloatingFooter — zero sobreposição de dock.
+            onOpenInternacion: (session) =>
+                Navigator.of(context, rootNavigator: true).push(
               HomeScreen.slideRoute(
                 _AdultoShell(
                   openProtocol: widget.openProtocol,
@@ -1248,9 +1251,29 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     _send(text);
   }
 
+  /// Abre a aba IA e dispara o modal de conexão Google após 350ms.
+  void _openConnectModal() {
+    widget.onNavigateToAi(2);
+    Future.delayed(const Duration(milliseconds: 350), () {
+      if (mounted) AiScreen.openSettingsCallback.value?.call();
+    });
+  }
+
   Future<void> _send([String? preset]) async {
     final text = (preset ?? _ctrl.text).trim();
     if (text.isEmpty || _thinking) return;
+
+    // ── BUILD 312 M1: PRE-GUARD — bloqueia envio sem autenticação real ────────
+    // Idêntico ao Layer 0 do ai_screen.dart: sem geminiConnected nem openAiKey
+    // o mini-chat não envia nada — abre o modal de conexão diretamente.
+    final pCheck = context.read<AppProvider>();
+    final hasAuth = pCheck.geminiConnected || pCheck.openAiKey.isNotEmpty;
+    if (!hasAuth) {
+      _focus.unfocus();
+      _openConnectModal();
+      return;
+    }
+
     _ctrl.clear();
     _focus.unfocus();
     setState(() {
@@ -1289,17 +1312,32 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           }
         },
         onError: (err) {
-          if (mounted) {
+          if (!mounted) return;
+          // ── BUILD 312 M1: AUTH_REQUIRED — JAMAIS renderizar como bolha ──────
+          // Factor3 do provider emite AUTH_REQUIRED quando a barreira de backend
+          // bloqueia. Suprimimos, limpamos a pergunta do usuário e abrimos modal.
+          if (err == 'AUTH_REQUIRED') {
             setState(() {
-              _messages.add({'role': 'ai', 'text': err, 'isError': true});
               _streaming = '';
               _thinking  = false;
+              // Remove a pergunta do usuário que ficou sem resposta
+              if (_messages.isNotEmpty && _messages.last['role'] == 'user' &&
+                  _messages.last['text'] == text) {
+                _messages.removeLast();
+              }
             });
-            _scrollToBottom();
-            // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
-            // que o histórico mostre a tentativa no _ChatHistorySheet.
-            _homePersistTurn();
+            _openConnectModal();
+            return;
           }
+          setState(() {
+            _messages.add({'role': 'ai', 'text': err, 'isError': true});
+            _streaming = '';
+            _thinking  = false;
+          });
+          _scrollToBottom();
+          // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
+          // que o histórico mostre a tentativa no _ChatHistorySheet.
+          _homePersistTurn();
         },
       );
     } catch (e) {
@@ -1465,6 +1503,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           final isError = msg['isError'] == true;
           final isLast  = i == _messages.length - 1;
 
+          // ── BUILD 312 M3: Render guard — suprime AUTH_REQUIRED residual ──
+          // Caso haja qualquer mensagem AUTH_REQUIRED que escapou dos guards
+          // anteriores, renderiza um SizedBox vazio em vez da bolha crua.
+          if (text == 'AUTH_REQUIRED') return const SizedBox.shrink();
+
           if (isUser) {
             return Align(
               alignment: Alignment.centerRight,
@@ -1563,39 +1606,56 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
             child: Row(
               children: [
-                Container(
-                  width: 26, height: 26,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
-                    color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
-                    border: Border.all(
-                      color: const Color(0xFF00E5FF).withValues(alpha: 0.22),
-                      width: 0.8,
-                    ),
-                  ),
-                  child: const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF00E5FF)),
-                ),
-                const SizedBox(width: 10),
+                // BUILD 320: ícone + título "MEDCASES IA" envolvidos num único
+                // GestureDetector opaco — navega direto para a aba IA (tab 2).
+                // Os botões direitos (histórico / novo chat) têm handlers próprios
+                // e ficam fora deste detector para preservar comportamento.
                 Expanded(
-                  child: RichText(
-                    text: const TextSpan(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      AppHaptics.light(context);
+                      widget.onNavigateToAi(2);
+                    },
+                    child: Row(
                       children: [
-                        TextSpan(
-                          text: 'MEDCASES',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: 0.4,
+                        Container(
+                          width: 26, height: 26,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(7),
+                            color: const Color(0xFF00E5FF).withValues(alpha: 0.10),
+                            border: Border.all(
+                              color: const Color(0xFF00E5FF).withValues(alpha: 0.22),
+                              width: 0.8,
+                            ),
                           ),
+                          child: const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF00E5FF)),
                         ),
-                        TextSpan(
-                          text: ' IA',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFFD4AF37),
-                            letterSpacing: 0.4,
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'MEDCASES',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    letterSpacing: 0.4,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' IA',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFFD4AF37),
+                                    letterSpacing: 0.4,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -2507,20 +2567,8 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                 ),
               ],
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -10, bottom: -10,
-            child: Opacity(
-              opacity: 0.045,
-              child: const Icon(
-                Icons.psychology_alt_rounded,
-                size: 110,
-                color: Color(0xFF00E5FF),
-              ),
-            ),
-          ),
-          Padding(
+      // SUPER ORDEM MASTER 306 M3: cérebro background destruído
+      child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2576,57 +2624,63 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                 );
               }),
               const SizedBox(width: 10),
+              // BUILD 320: GestureDetector opaque cobre o título + subtítulo
+              // (área morta anterior) — tap navega direto para aba IA (tab 2).
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'MedCases IA',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.3,
-                            color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
-                          ),
-                        ),
-                        const SizedBox(width: 7),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 7, vertical: 2),
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF008CA4), Color(0xFF252930)],
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            'IA',
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _navigate,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'MedCases IA',
                             style: TextStyle(
-                              fontSize: 8,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              letterSpacing: 0.8,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.3,
+                              color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      isEs
-                          ? 'Conexión Cognitiva Avanzada'
-                          : 'Conexão Cognitiva Avançada',
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        color: dark
-                            ? const Color(0xFF00E5FF).withValues(alpha: 0.60)
-                            : const Color(0xFF008CA4),
-                        height: 1.3,
+                          const SizedBox(width: 7),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF008CA4), Color(0xFF252930)],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Text(
+                              'IA',
+                              style: TextStyle(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 2),
+                      Text(
+                        isEs
+                            ? 'Conexión Cognitiva Avanzada'
+                            : 'Conexão Cognitiva Avançada',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          color: dark
+                              ? const Color(0xFF00E5FF).withValues(alpha: 0.60)
+                              : const Color(0xFF008CA4),
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ]),
@@ -2736,8 +2790,6 @@ class _HomeIaCardState extends State<_HomeIaCard> {
           ],
           ),
           ),
-        ],
-      ),
     );
   }
 }
@@ -3968,11 +4020,12 @@ class _HistorialCompactCard extends StatelessWidget {
             ),
           ];
 
-    // BUILD 283 ORDEM 9: 5 colunas simétricas — Avaliação|Notas|Buscar|Favoritos|Recentes
-    // Buscar integrado como coluna uniforme (sem container destacado), dividers 1px entre todas.
-    final kGreen = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
+    // SUPER ORDEM MASTER 317 M2: grade reduzida a 2 botões simétricos.
+    // Preserva: paletas, dividers 1px, altura e espaçamentos elegantes.
+    // Mantidos: [Avaliação / Evaluación] | [Notas]
+    // Removidos: Buscar, Favoritos, Recentes.
 
-    // Helpers para construir cada coluna de forma idêntica
+    // Helper para construir cada coluna de forma idêntica
     Widget _col({
       required IconData icon,
       required Color color,
@@ -4018,7 +4071,7 @@ class _HistorialCompactCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // [1] EVALUACIÓN — vermelho #DC2626
+          // [1] EVALUACIÓN / AVALIAÇÃO — vermelho #DC2626
           _col(
             icon: Icons.assignment_ind_rounded,
             color: const Color(0xFFDC2626),
@@ -4032,46 +4085,6 @@ class _HistorialCompactCard extends StatelessWidget {
             color: const Color(0xFFFF8A00),
             label: isEs ? 'Notas' : 'Notas',
             onTap: onOpenNotes,
-          ),
-          _div(),
-          // [3] BUSCAR — verde (posição central, coluna uniforme)
-          _col(
-            icon: Icons.search_rounded,
-            color: kGreen,
-            label: isEs ? 'Buscar' : 'Buscar',
-            onTap: () { AppHaptics.light(context); showGlobalSearch(context); },
-          ),
-          _div(),
-          // [4] FAVORITOS — roxo #6C2BD9
-          _col(
-            icon: Icons.bookmark_rounded,
-            color: const Color(0xFF6C2BD9),
-            label: isEs ? 'Favoritos' : 'Favoritos',
-            onTap: () {
-              final p = context.read<AppProvider>();
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => _FavoritosSheet(dark: dark, isEs: isEs, p: p),
-              );
-            },
-          ),
-          _div(),
-          // [5] RECIENTES — azul #1F78FF
-          _col(
-            icon: Icons.history_rounded,
-            color: const Color(0xFF1F78FF),
-            label: isEs ? 'Recientes' : 'Recentes',
-            onTap: () {
-              final p = context.read<AppProvider>();
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => _RecentesSheet(dark: dark, isEs: isEs, p: p),
-              );
-            },
           ),
         ],
       ),
