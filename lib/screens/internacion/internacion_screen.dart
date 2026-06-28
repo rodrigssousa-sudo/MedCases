@@ -869,10 +869,10 @@ class _InternacionScreenState extends State<InternacionScreen> {
       // SUPER ORDEM VISUAL 05: Topologia Cupertino/Linear Left-Center-Right.
       // Stack: título absolutamente centrado, back à esquerda, "+ Nova" à direita.
       // Subtítulo "MEDCASES PRO" destruído — título PACIENTES sozinho e limpo.
-      // Altura: 63 → 66 (+3px respiro vertical).
+      // BUILD 324 PILAR 2A: 66 → 52px — SafeArea(bottom:false) já absorve notch/Dynamic Island.
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(66),
+        preferredSize: const Size.fromHeight(52),
         child: Container(
           // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao/Pacientes
           decoration: const BoxDecoration(

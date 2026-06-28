@@ -82584,7 +82584,7 @@ r.e=s.a.a
 r.f=s.d},
 $S:0}
 A.a7m.prototype={
-q(a){return A.bSN(new A.ke(B.akB,null,null),B.G,new A.Ef(1,B.bF9,new A.br(B.a87,B.x)),this.c.au(0,new A.G(0,40.95)),1.25,B.e5R)}}
+q(a){return A.bSN(new A.ke(B.akB,null,null),B.G,new A.Ef(1,B.bF9,new A.br(B.a87,B.x)),this.c.au(0,new A.G(0,40.95)),1.25,B.e5Q)}}
 A.z2.prototype={
 P(){return"MaterialType."+this.b}}
 A.NC.prototype={
@@ -122138,7 +122138,7 @@ s=B.p.c3(j,0,5)
 j=m.d
 r=j===0
 q=B.H.j(0.52)
-p=r?new A.vn(new A.ei(new A.bpS(m,b,c),l),B.e5P,l):l
+p=r?new A.vn(new A.ei(new A.bpS(m,b,c),l),B.e5O,l):l
 o=r?0:A.bA(a,l,t.l).w.r.b
 n=t.D0
 return A.j0(p,k,new A.eB(new A.bpT(m),A.aPy(A.aYx(A.dj(B.bZ,A.a([new A.L(new A.M(0,o,0,0),new A.ep($.avr(),new A.bpU(m,s),l,l,n),l),new A.ep($.bHF(),new A.bpV(m,j===2,b,c,a),l,l,n)],t.p),B.G,B.bm,l)),a,!1,!1,!1,!0),l,t.WA),l,q,new A.GD(l),l)},
@@ -140129,7 +140129,7 @@ m=A.I(A.bLr(B.Y,g,B.tZ,!0,m,new A.bnJ(j),B.j),50)
 k=d?"Papelera":"Lixeira"
 s=A.a([new A.abT(p.a,p.b,p.e,p.f,g,f,i),B.a1,new A.KN(g,f,j.gaAM(),i),B.a1,s,B.M,new A.LP(r.w,g,f,new A.bnK(j),i),B.aH,new A.Xt(n,"SOAP",g,e,i),B.a1,new A.QN(r,g,f,c,p,j.r),B.aG,A.v(A.a([l,B.J,m,B.J,A.I(A.bLr(B.aK.j(g?0.18:0.1),g,B.L8,!1,k,new A.bnL(j,a,g,f),B.aK),25)],o),B.l,B.e,B.f,i,i),B.el],o)
 if(j.x&&J.dB(j.w))B.d.u(s,A.a([new A.ei(new A.bnM(j,d,g,e,f),i)],o))
-return A.j0(new A.vn(q,B.e5O,i),b,A.d7(A.w(s,B.dj,B.e,B.f),i,B.t,i,B.aBj,i,B.ai),i,i,i,i)},
+return A.j0(new A.vn(q,B.e5R,i),b,A.d7(A.w(s,B.dj,B.e,B.f),i,B.t,i,B.aBj,i,B.ai),i,i,i,i)},
 aH_(a,b,c,d){var s=null
 A.h2(s,s,!0,s,new A.bnx(this,b,c,d,a),a,s,!0,!0,t.z)},
 aH2(a,b,c){var s,r=null,q=this.gH7()
@@ -141818,7 +141818,7 @@ p=A.w(A.a([j,A.e(""+q+" "+p,l,l,l,l,l,B.ebV,l,l,l)],o),B.r,B.e,B.f)
 j=A.awn(A.a([A.bTC(B.aIc,A.e("Reanalisar",l,l,l,l,l,B.e9o,l,l,l),new A.bof(a),l)],o),l,B.Ie,l,0,B.pg,l,l,l,p,0)
 q=A.w(A.a([new A.alJ(s,r,k,l),A.I(A.jl(!0,!0,l,l,new A.bog(m,k),m.d.length,l,l,B.aAU,l,B.ai,!1),1)],o),B.l,B.e,B.f)
 p=m.f?l:m.gaq2()
-n=A.h3(l,l,B.e6,B.V,l,l,l,l,l,B.H,l,B.e5Q,l,l,new A.br(A.i(14),B.x),l,l,l,l,l)
+n=A.h3(l,l,B.e6,B.V,l,l,l,l,l,B.H,l,B.e5P,l,l,new A.br(A.i(14),B.x),l,l,l,l,l)
 if(m.f)o=B.e61
 else o=A.v(A.a([B.aHL,B.J,A.e(k?"Confirmar y Calcular":"Confirmar e Calcular",l,l,l,l,l,B.a69,l,l,l)],o),B.l,B.aD,B.f,l,l)
 return A.j0(j,B.Ie,q,A.eN(!0,A.k(l,A.kg(!1,o,l,l,l,l,l,l,p,l,n),B.i,l,l,new A.j(B.ro,l,B.a8V,l,l,l,B.k),l,l,l,l,B.aB8,l,l,l),!0,B.aj,!0,!0),l,l,l)}}
@@ -184738,12 +184738,12 @@ B.a4V=new A.ag(48,48)
 B.e5L=new A.ag(496,164)
 B.a4W=new A.ag(1/0,46)
 B.e5N=new A.ag(80,47.5)
-B.e5O=new A.ag(1/0,66)
-B.e5P=new A.ag(1/0,36)
-B.e5Q=new A.ag(1/0,50)
+B.e5O=new A.ag(1/0,36)
+B.e5P=new A.ag(1/0,50)
 B.a4X=new A.ag(1/0,56)
-B.e5R=new A.ag(77.37,37.9)
+B.e5Q=new A.ag(77.37,37.9)
 B.a4Y=new A.ag(1/0,1/0)
+B.e5R=new A.ag(1/0,52)
 B.e5S=new A.ag(1/0,72)
 B.at=new A.aw(0,0,null,null)
 B.a7N=new A.hi(B.b6,t.Jn)
