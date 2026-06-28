@@ -385,25 +385,16 @@ class _PlantaoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = colors;
-    // SUPER ORDEM MASTER 14 M6: redesign completo — padrão minimalista premium.
-    // DESTRUÍDO: botão azul +Paciente, engrenagem, chevron de colapso.
-    // RECONSTRUÍDO: Container gradiente sóbrio + ícone pulso + título ouro +
-    //               botão outline único "+ Adicionar Paciente ao Plantão".
+    // SUPER ORDEM MASTER 317 M1: substrato clean — fundo naval translúcido,
+    // borda cinza sutil. Sem gradiente verde sólido. Integrado ao ecossistema.
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF071A10), Color(0xFF0F2D1A), Color(0xFF0A7C4E)],
-        ),
+        color: const Color(0xFF1E293B).withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0A7C4E).withValues(alpha: 0.25),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(
+          color: const Color(0xFF334155).withValues(alpha: 0.40),
+          width: 1,
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(

@@ -3994,11 +3994,12 @@ class _HistorialCompactCard extends StatelessWidget {
             ),
           ];
 
-    // BUILD 283 ORDEM 9: 5 colunas simétricas — Avaliação|Notas|Buscar|Favoritos|Recentes
-    // Buscar integrado como coluna uniforme (sem container destacado), dividers 1px entre todas.
-    final kGreen = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
+    // SUPER ORDEM MASTER 317 M2: grade reduzida a 2 botões simétricos.
+    // Preserva: paletas, dividers 1px, altura e espaçamentos elegantes.
+    // Mantidos: [Avaliação / Evaluación] | [Notas]
+    // Removidos: Buscar, Favoritos, Recentes.
 
-    // Helpers para construir cada coluna de forma idêntica
+    // Helper para construir cada coluna de forma idêntica
     Widget _col({
       required IconData icon,
       required Color color,
@@ -4044,7 +4045,7 @@ class _HistorialCompactCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // [1] EVALUACIÓN — vermelho #DC2626
+          // [1] EVALUACIÓN / AVALIAÇÃO — vermelho #DC2626
           _col(
             icon: Icons.assignment_ind_rounded,
             color: const Color(0xFFDC2626),
@@ -4058,46 +4059,6 @@ class _HistorialCompactCard extends StatelessWidget {
             color: const Color(0xFFFF8A00),
             label: isEs ? 'Notas' : 'Notas',
             onTap: onOpenNotes,
-          ),
-          _div(),
-          // [3] BUSCAR — verde (posição central, coluna uniforme)
-          _col(
-            icon: Icons.search_rounded,
-            color: kGreen,
-            label: isEs ? 'Buscar' : 'Buscar',
-            onTap: () { AppHaptics.light(context); showGlobalSearch(context); },
-          ),
-          _div(),
-          // [4] FAVORITOS — roxo #6C2BD9
-          _col(
-            icon: Icons.bookmark_rounded,
-            color: const Color(0xFF6C2BD9),
-            label: isEs ? 'Favoritos' : 'Favoritos',
-            onTap: () {
-              final p = context.read<AppProvider>();
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => _FavoritosSheet(dark: dark, isEs: isEs, p: p),
-              );
-            },
-          ),
-          _div(),
-          // [5] RECIENTES — azul #1F78FF
-          _col(
-            icon: Icons.history_rounded,
-            color: const Color(0xFF1F78FF),
-            label: isEs ? 'Recientes' : 'Recentes',
-            onTap: () {
-              final p = context.read<AppProvider>();
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => _RecentesSheet(dark: dark, isEs: isEs, p: p),
-              );
-            },
           ),
         ],
       ),

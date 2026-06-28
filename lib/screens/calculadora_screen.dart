@@ -1,12 +1,10 @@
 // Build 187: Gray Screen Fix — Web usa HtmlElementView/iframe; iOS/Android mantém WebView nativo.
 // dart:io Platform removido — usa kIsWeb para guards de plataforma.
 // BUILD 240: OfflineCalculatorCacheService resolve URL local antes de carregar WebView.
-import 'dart:ui';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
@@ -19,8 +17,7 @@ import '../platform/calcu_stub.dart'
 // ─────────────────────────────────────────────────────────────────────────────
 // URL base — ?lang=pt ou ?lang=es injetado em initState() conforme AppProvider
 // ─────────────────────────────────────────────────────────────────────────────
-const _kBaseUrl    = 'https://www.medcasescalcu.com';
-const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
+const _kBaseUrl = 'https://www.medcasescalcu.com';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // JS PRECOCE — injetado em onPageStarted (antes do DOMContentLoaded)
@@ -193,15 +190,11 @@ class CalculadoraScreen extends StatefulWidget {
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Native WebView controller — inicializado apenas em iOS/Android (!kIsWeb)
   late final WebViewController _controller;
-  late final bool _isEs;
   // Build 1563: dark mode lido uma vez no initState (imutável por sessão)
   late final bool _dark;
   // Build 187: URL da calculadora — compartilhada entre Web (iframe) e native (WebView)
   // Build 189: pode ser sobrescrita por initialUrl (ExternalToolButton deep link)
   late final String _webUrl;
-
-  // Estado da barra de fontes nativa Flutter
-  bool _sourcesExpanded = false;
 
   @override
   void initState() {
@@ -210,7 +203,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     final p         = context.read<AppProvider>();
     final lang      = p.lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
-    _isEs           = lang == 'es';
     _dark           = p.darkMode;
     // Build 189: initialUrl tem prioridade sobre URL padrão do provider.
     // ExternalToolLinkEngine já injeta lang+tab+q — não sobrescrever.
@@ -278,13 +270,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     return Theme.of(context).platform == TargetPlatform.iOS;
   }
 
-  Future<void> _openSourcesUrl() async {
-    final uri = Uri.parse(_kSourcesUrl);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     // ── Paleta dark/light ────────────────────────────────────────────────
@@ -292,28 +277,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     // — o AppBar agora usa gradiente roxo const; só scaffoldBg permanece.
     final Color scaffoldBg  = _dark ? const Color(0xFF0F091E) : const Color(0xFFF8F9FA);
 
-    // ── BARRA DE FONTES — dimensões ──────────────────────────────────────
-    const double kBarCollapsed = 24.0;
-    const double kBarExpanded  = 108.0;
-    final double barHeight = _sourcesExpanded ? kBarExpanded : kBarCollapsed;
-
-    final String labelBar = _isEs
-        ? '\uD83D\uDD3C Ver Fuentes Acad\u00e9micas \u00b7 AHA \u00b7 ACC \u00b7 WHO...'
-        : '\uD83D\uDD3C Ver Fontes Acad\u00eamicas \u00b7 AHA \u00b7 ACC \u00b7 WHO...';
-    final String labelTitle = _isEs
-        ? 'Ver Fuentes Acad\u00e9micas'
-        : 'Ver Fontes Acad\u00eamicas';
-    final String labelBtn = _isEs
-        ? 'Abrir referencias \u2197'
-        : 'Abrir refer\u00eancias \u2197';
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: scaffoldBg,
-        // BUILD 314: extendBody força o body a preencher até a borda inferior
-        // do display — elimina o canvas sólido atrás da Floating Dock.
-        extendBody: true,
 
         // ── SUPER ORDEM VISUAL 09: AppBar Cupertino/Linear ────────────────
         // M1: Stack Left-Center-Right. Subtítulo "MedCases Pro" destruído.
@@ -394,328 +361,15 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         // SUPER ORDEM MASTER CALC: bottomNavigationBar removido.
         // Floating Dock agora está no Body Stack (glassmorphism idêntico ao MainShell).
 
-        // ── Body: WebView + Floating Dock + Sources Bar ───────────────────
-        // SUPER ORDEM MASTER 311: estrutura idêntica ao MainShell.
-        // Um único Positioned(bottom:0) contém Column[dock, sources].
-        // WebView expande para Positioned(fill) e termina antes do rodapé.
-        body: Stack(
-          children: [
-
-            // ── WebView — preenche toda a área acima do rodapé ────────────
-            // dockTotal = padding(v:7×2) + barHeight(43) = 57px
-            // sourcesBar = kBarCollapsed(24px)
-            // rodapé total = 81px
-            Positioned(
-              top:    0,
-              left:   0,
-              right:  0,
-              bottom: kBarCollapsed + 57,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SizedBox(
-                    width:  constraints.maxWidth,
-                    height: constraints.maxHeight,
-                    child: kIsWeb
-                        ? buildCalculadoraWebView(_webUrl, _dark)
-                        : WebViewWidget(controller: _controller),
-                  );
-                },
-              ),
-            ),
-
-            // ── Rodapé: Floating Dock + Sources Bar — padrão MainShell ────
-            // Column garante ordem correta: dock flutua, disclaimer é base.
-            // Espelha exatamente o _FloatingFooter do MainShell.
-            Positioned(
-              left:   0,
-              right:  0,
-              bottom: 0,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-
-                  // ── Floating Dock glassmorphism — pairar acima do disclaimer
-                  _CalcFloatingDock(dark: _dark, isEs: _isEs),
-
-                  // ── Sources Bar (Legal Disclaimer) — rodapé absoluto ────
-                  GestureDetector(
-                    onTap: () => setState(() => _sourcesExpanded = !_sourcesExpanded),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 280),
-                      curve: Curves.easeInOut,
-                      height: barHeight,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF1A1035),
-                        border: Border(
-                          top: BorderSide(
-                            color: Color(0x33A78BFA),
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      child: _sourcesExpanded
-                          ? _buildExpandedSources(labelTitle, labelBtn)
-                          : _buildCollapsedSources(labelBar),
-                    ),
-                  ),
-
-                ],
-              ),
-            ),
-
-          ],
-        ),
+        // BUILD 317 M3: FloatingDock + SourcesBar removidos.
+        // WebView ocupa o viewport completo — zero anteparos inferiores.
+        body: kIsWeb
+            ? buildCalculadoraWebView(_webUrl, _dark)
+            : WebViewWidget(controller: _controller),
       ),
     );
   }
 
-  // ── Vista colapsada (24px) ──────────────────────────────────────────────────
-  Widget _buildCollapsedSources(String label) {
-    return Center(
-      child: Text(
-        label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontSize:      10,
-          color:         Color(0xB3B8A8E8), // violeta claro 70% opacidade
-          letterSpacing: 0.3,
-          height:        1.0,
-        ),
-      ),
-    );
-  }
-
-  // ── Vista expandida (108px) ─────────────────────────────────────────────────
-  Widget _buildExpandedSources(String title, String btnLabel) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Título
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('\uD83D\uDCDA', style: TextStyle(fontSize: 14)),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize:      12,
-                fontWeight:    FontWeight.w700,
-                color:         Color(0xFFA78BFA),
-                letterSpacing: 0.2,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        // Sublabel
-        const Text(
-          'AHA \u00b7 ACC \u00b7 WHO \u00b7 PubMed \u00b7 UpToDate',
-          style: TextStyle(
-            fontSize:      9,
-            color:         Color(0x99B8A8E8), // violeta claro 60% opacidade
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: 8),
-        // Botão de abertura
-        GestureDetector(
-          onTap: () {
-            setState(() => _sourcesExpanded = false);
-            _openSourcesUrl();
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
-            decoration: BoxDecoration(
-              color:        const Color(0x26A78BFA), // violeta 15% opacidade
-              border:       Border.all(color: const Color(0x59A78BFA)), // 35% opacidade
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              btnLabel,
-              style: const TextStyle(
-                fontSize:   11,
-                fontWeight: FontWeight.w600,
-                color:      Color(0xFFC4B5FD),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SUPER ORDEM MASTER CALC: _CalcFloatingDock
-// Floating Dock glassmorphism idêntico ao MainShell (-10% dimensões).
-// Substitui o _CalcBottomNav sólido e opaco por cápsula premium translúcida.
-// ─────────────────────────────────────────────────────────────────────────────
-class _CalcFloatingDock extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  const _CalcFloatingDock({required this.dark, required this.isEs});
-
-  // SUPER ORDEM MASTER 311: Calculadora SEMPRE usa paleta escura.
-  // O scaffold da Calculadora é sempre dark-purple (#0F091E) independente
-  // do darkMode do app — o dock deve espelhar esse fundo premium.
-  static const _neonCyan  = Color(0xFF00E5FF);
-  static const _barHeight = 43.0;
-
-  @override
-  Widget build(BuildContext context) {
-    // Dock sempre escuro: combina com scaffold roxo-escuro da Calculadora
-    // mesmo quando o app está em light mode (scaffold é sempre #0F091E)
-    const navBg        = Color(0xFF0F1116);  // sólido — fallback sem blur
-    const activeColor  = _neonCyan;
-    const inactiveColor = Color(0xFF6B7280);
-
-    // BUILD 314: ClipRRect é o widget MAIS EXTERNO com clipBehavior.antiAlias.
-    // Isso garante que o BackdropFilter NÃO vaza para fora da cápsula.
-    // A margin (horizontal:18, vertical:7) substitui o Padding externo que
-    // causava o canvas roxo/escuro do Scaffold visível atrás da dock.
-    // BackdropFilter agora é filho do Container (após o BoxDecoration),
-    // aplicando o blur apenas dentro da cápsula já recortada.
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-      height: _barHeight,
-      decoration: BoxDecoration(
-        // Glassmorphism: escuro 68% — neon cyan borda sutil
-        color: navBg.withValues(alpha: 0.68),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(
-          color: _neonCyan.withValues(alpha: 0.22),
-          width: 0.9,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.50),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-          BoxShadow(
-            color: _neonCyan.withValues(alpha: 0.05),
-            blurRadius: 24,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        clipBehavior: Clip.antiAlias,
-        borderRadius: BorderRadius.circular(32),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // ── Início ──────────────────────────────────────────────────
-                Expanded(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) nav.pop();
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 2),
-                          child: Icon(Icons.home_rounded, size: 18, color: inactiveColor),
-                        ),
-                        const SizedBox(height: 1),
-                        Text(
-                          isEs ? 'Inicio' : 'Início',
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontSize: 9.0,
-                            fontWeight: FontWeight.w400,
-                            color: inactiveColor,
-                            height: 1.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // ── FAB central — Calculadora ────────────────────────────────
-                SizedBox(
-                  width: 50,
-                  height: _barHeight,
-                  child: Center(
-                    child: Container(
-                      width: 31, height: 31,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF6D28D9),
-                            const Color(0xFF4C1D95),
-                          ],
-                        ),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFA855F7).withValues(alpha: 0.80),
-                          width: 1.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFA855F7).withValues(alpha: 0.45),
-                            blurRadius: 12,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.calculate_rounded,
-                        size: 17,
-                        color: activeColor,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // ── Ferramentas ──────────────────────────────────────────────
-                Expanded(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) nav.pop();
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 2),
-                          child: Icon(Icons.science_rounded, size: 18, color: inactiveColor),
-                        ),
-                        const SizedBox(height: 1),
-                        Text(
-                          isEs ? 'Herramientas' : 'Ferramentas',
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontSize: 9.0,
-                            fontWeight: FontWeight.w400,
-                            color: inactiveColor,
-                            height: 1.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-    );
-  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
