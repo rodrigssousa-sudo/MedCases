@@ -128,10 +128,23 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   // engolir o erro silenciosamente. Isso resolve o caso em que o índice composto
   // (isDeleted + savedAt) do Firestore ainda não existe — o stream lança exceção
   // e _firestoreSessions fica em [] para sempre.
+  //
+  // BUILD 321 — OFFLINE-FIRST CACHE-FIRST:
+  //   • onError agora reseta _lastStreamUid = null para que a próxima chamada de
+  //     build() / didChangeDependencies() possa re-tentar a subscrição.
+  //   • _loadSessionsFallback() tenta primeiro o Firestore one-shot; se falhar
+  //     (permission-denied / sem rede), carrega do SharedPreferences local via
+  //     InternacionPersistence.loadAllSessions() — UI nunca fica vazia por erro.
+  //   • Cache-first: ao iniciar a subscrição, carrega imediatamente do SP local
+  //     para exibir dados enquanto o Firestore ainda não respondeu.
   void _subscribeToSessions(String uid) {
     if (_lastStreamUid == uid) return; // already subscribed to this uid
     _lastStreamUid = uid;
     _sessionsSub?.cancel();
+
+    // BUILD 321 CACHE-FIRST: exibe dados locais imediatamente enquanto Firestore carrega
+    _loadLocalCacheFirst(uid);
+
     _sessionsSub = InternacionFirestoreService.sessionsStream(uid).listen(
       (sessions) {
         if (!mounted) return;
@@ -141,20 +154,59 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       },
       onError: (e) {
         debugPrint('[MeuPlantao] sessionsStream error: $e — falling back to loadAllSessions');
-        // Fallback: carrega via one-shot se o stream falhar (ex: índice ausente)
+        // BUILD 321: reseta _lastStreamUid para permitir re-subscrição automática
+        // na próxima chamada de build() / didChangeDependencies() após reconexão.
+        _lastStreamUid = null;
+        // Fallback: carrega via one-shot se o stream falhar (ex: índice ausente,
+        // permission-denied, ou ausência de rede).
         _loadSessionsFallback(uid);
       },
     );
   }
 
+  // BUILD 321 CACHE-FIRST: carrega silenciosamente do SharedPreferences local
+  // antes mesmo de o Firestore responder — zero latência percebida pelo usuário.
+  Future<void> _loadLocalCacheFirst(String uid) async {
+    try {
+      final local = await InternacionPersistence.loadAllSessions();
+      if (!mounted) return;
+      // Só aplica se Firestore ainda não preencheu (evita sobrescrever dados novos)
+      if (_firestoreSessions.isEmpty && local.isNotEmpty) {
+        setState(() => _firestoreSessions = local);
+        _notifyEmptyChange();
+        debugPrint('[MeuPlantao] cache-first: ${local.length} sessões do SP local');
+      }
+    } catch (_) {
+      // falha silenciosa — o Firestore ainda vai tentar
+    }
+  }
+
+  // BUILD 321 OFFLINE-FIRST: cascata Firestore one-shot → SharedPreferences local.
+  // Se o Firestore retornar permission-denied ou erro de rede, usa o cache local
+  // do SharedPreferences como fonte de verdade secundária — UI nunca fica vazia.
   Future<void> _loadSessionsFallback(String uid) async {
+    // Tentativa 1: Firestore one-shot (pode ainda funcionar mesmo com stream falhando)
     try {
       final sessions = await InternacionFirestoreService.loadAllSessions(uid);
       if (!mounted) return;
       setState(() => _firestoreSessions = sessions);
       _notifyEmptyChange();
+      debugPrint('[MeuPlantao] fallback Firestore one-shot OK: ${sessions.length} sessões');
+      return; // sucesso — não precisa do cache local
     } catch (e) {
-      debugPrint('[MeuPlantao] loadAllSessions fallback error: $e');
+      debugPrint('[MeuPlantao] loadAllSessions fallback error: $e — tentando cache local SP');
+    }
+
+    // Tentativa 2: SharedPreferences local (funciona 100% offline e sem permissão)
+    // BUILD 321: garante que a UI exiba dados mesmo com Firestore completamente bloqueado.
+    try {
+      final local = await InternacionPersistence.loadAllSessions();
+      if (!mounted) return;
+      setState(() => _firestoreSessions = local);
+      _notifyEmptyChange();
+      debugPrint('[MeuPlantao] cache local SP OK: ${local.length} sessões (modo offline)');
+    } catch (e) {
+      debugPrint('[MeuPlantao] cache local SP error: $e');
     }
   }
 
