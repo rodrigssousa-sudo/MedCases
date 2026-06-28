@@ -3,7 +3,7 @@ import '../theme/app_theme.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
 import '../providers/app_provider.dart';
 import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
@@ -8081,16 +8081,21 @@ class _SourcesButton extends StatelessWidget {
   const _SourcesButton({required this.isEs});
 
   static const _kSourcesUrl = 'https://www.promedcases.com/fontes-e-referencias';
+  static const _kSourcesTitle = 'Fontes e Referências — MedCases Pro';
+  static const _kSourcesTitleEs = 'Fuentes y Referencias — MedCases Pro';
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
+      // BUILD 323 — MANDATO 2: in-app WebView encapsulado, sem ejetar para browser.
+      // MANDATO 1: label semântico exibido, URL nunca visível na UI.
+      onTap: () {
         AppHaptics.light(context);
-        final uri = Uri.parse(_kSourcesUrl);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
+        openAcademicSourceSecurely(
+          context,
+          isEs ? _kSourcesTitleEs : _kSourcesTitle,
+          _kSourcesUrl,
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),

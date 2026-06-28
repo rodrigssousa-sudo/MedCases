@@ -48,6 +48,7 @@ import 'services/offline_calculator_cache_service.dart'; // BUILD 240: smart off
 import 'services/app_resume_coordinator.dart';           // BUILD 241: background/resume safety
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
+import 'widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
 import 'platform/web_impl.dart'
     if (dart.library.io) 'platform/web_stub.dart' as webPlatform;
 
@@ -4288,13 +4289,10 @@ class _DrawerLegalRow extends StatelessWidget {
     this.showDivider = true,
   });
 
-  Future<void> _launch() async {
-    final uri = Uri.parse(externalUrl);
-    try {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-    } catch (_) {}
+  // BUILD 323 — MANDATO 2: abre documento legal in-app em vez de browser externo.
+  // MANDATO 1: título semântico visível, URL encapsulada e invisível.
+  void _launch(BuildContext context) {
+    openAcademicSourceSecurely(context, title, externalUrl);
   }
 
   @override
@@ -4347,7 +4345,7 @@ class _DrawerLegalRow extends StatelessWidget {
                   ],
                 ),
               ),
-              // Botão ícone: abre no navegador externo
+              // BUILD 323 MANDATO 2: ícone abre in-app WebView (não browser externo)
               Tooltip(
                 message: externalTooltip,
                 child: IconButton(
@@ -4356,7 +4354,7 @@ class _DrawerLegalRow extends StatelessWidget {
                     size: 18,
                     color: const Color(0xFF1E88E5).withValues(alpha: 0.75),
                   ),
-                  onPressed: _launch,
+                  onPressed: () => _launch(context),
                   splashRadius: 18,
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
@@ -5290,11 +5288,12 @@ class _AboutAppSheet extends StatelessWidget {
                               'de decisão clínica. Não substitui o julgamento clínico do profissional de '
                               'saúde, nem constitui prescrição médica.'),
 
-                    // Site
+                    // Site — BUILD 323 MANDATO 2: in-app WebView
                     GestureDetector(
-                      onTap: () => launchUrl(
-                          Uri.parse(_kSiteUrl),
-                          mode: LaunchMode.externalApplication),
+                      onTap: () => openAcademicSourceSecurely(
+                          context,
+                          isEs ? 'MedCases Pro — Sitio Web' : 'MedCases Pro — Site Oficial',
+                          _kSiteUrl),
                       child: infoRow(Icons.language_outlined,
                           isEs ? 'SITIO WEB' : 'SITE',
                           'promedcases.com'),
@@ -5997,11 +5996,12 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
 
             const SizedBox(height: 20),
 
-            // Site link
+            // Site link — BUILD 323 MANDATO 2: in-app WebView
             GestureDetector(
-              onTap: () => launchUrl(
-                  Uri.parse(_kSiteUrl),
-                  mode: LaunchMode.externalApplication),
+              onTap: () => openAcademicSourceSecurely(
+                  context,
+                  _isEs ? 'MedCases Pro — Sitio Web' : 'MedCases Pro — Site Oficial',
+                  _kSiteUrl),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

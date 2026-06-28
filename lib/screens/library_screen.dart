@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2
 import '../providers/app_provider.dart';
 import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
 import '../services/firestore_service.dart';
@@ -234,13 +234,16 @@ class _LibraryScreenState extends State<LibraryScreen>
     return cats.toList();
   }
 
-  Future<void> _openPdf(GuideModel g) async {
-    final uri = Uri.tryParse(g.pdfUrl);
-    if (uri == null || g.pdfUrl.isEmpty) return;
-    try {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-      FirestoreService.incrementGuideDownload(g.id);
-    } catch (_) {}
+  // BUILD 323 — MANDATO 2: abre PDF/URL da diretriz in-app (WebView encapsulado).
+  // MANDATO 1: título semântico (g.title) exibido — URL nunca visível na UI.
+  void _openPdf(GuideModel g) {
+    if (g.pdfUrl.isEmpty) return;
+    FirestoreService.incrementGuideDownload(g.id);
+    openAcademicSourceSecurely(
+      context,
+      g.title,
+      g.pdfUrl,
+    );
   }
 
   @override
