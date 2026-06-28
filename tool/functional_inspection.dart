@@ -3,8 +3,8 @@
 // Valida estruturalmente os prompts gerados para os cenários 2–10
 // Keywords calibradas com as strings REAIS dos módulos do ai_service.dart
 
-import 'package:flutter_app/services/ai_service.dart';
-import 'package:flutter_app/services/clinical_session_memory.dart';
+import 'package:medcases/services/ai_service.dart';
+import 'package:medcases/services/clinical_session_memory.dart';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 void pass(String label) => print('  ✅ $label');

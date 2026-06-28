@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 // Descobrir a string de marcação real do differentialEngine
-import 'package:flutter_app/services/ai_service.dart';
+import 'package:medcases/services/ai_service.dart';
 
 void main() {
   // Com differential ativo (caso_clinico)

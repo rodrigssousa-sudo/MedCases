@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_app/services/ai_service.dart';
-import 'package:flutter_app/services/clinical_session_memory.dart';
+import 'package:medcases/services/ai_service.dart';
+import 'package:medcases/services/clinical_session_memory.dart';
 
 void main() {
 

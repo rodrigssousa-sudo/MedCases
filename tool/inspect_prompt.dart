@@ -1,5 +1,5 @@
 // ignore_for_file: avoid_print
-import 'package:flutter_app/services/ai_service.dart';
+import 'package:medcases/services/ai_service.dart';
 
 void main() {
   final pt = AiService.buildClinicalSystemPrompt(
