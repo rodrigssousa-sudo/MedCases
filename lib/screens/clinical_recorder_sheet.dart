@@ -339,16 +339,38 @@ class _RecorderPageState extends State<_RecorderPage> {
   }
 
   Future<void> _startRecording() async {
-    await _recorder.start(lang: widget.lang);
-    _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-      setState(() => _elapsedSec = _recorder.elapsedSec);
-    });
-    setState(() {
-      _isRecording = true;
-      _isPaused = false;
-      _transcript = '';
-    });
+    // RECORDER-GUARD: erros de permissão de microfone ou inicialização de
+    // AVAudioSession não devem causar crash — exibem estado de erro ao usuário.
+    try {
+      await _recorder.start(lang: widget.lang);
+      _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (!mounted) return;
+        setState(() => _elapsedSec = _recorder.elapsedSec);
+      });
+      setState(() {
+        _isRecording = true;
+        _isPaused = false;
+        _transcript = '';
+      });
+    } catch (e, st) {
+      debugPrint('[ClinicalRecorderSheet][_startRecording] exception: $e\n$st');
+      if (mounted) {
+        setState(() {
+          _isRecording = false;
+          _transcript = '';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.lang == 'es'
+                  ? 'No se pudo acceder al micrófono. Verifique los permisos.'
+                  : 'Não foi possível acessar o microfone. Verifique as permissões.',
+            ),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    }
   }
 
   void _togglePause() {

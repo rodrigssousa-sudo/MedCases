@@ -483,6 +483,14 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   // Filtro por intervalo de datas (null = sem filtro)
   DateTimeRange? _dateFilter;
 
+  // MEMLEAK-FIX: listener nomeado em vez de lambda anônima — permite
+  // removeListener() determinístico no dispose().
+  void _onTabChange() {
+    if (_tabCtrl.index == 1 && mounted) {
+      context.read<AppProvider>().loadPublicHistories();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -497,15 +505,13 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       p.loadPublicHistories();
     });
     // Quando o usuário muda para a aba Comunidade (índice 1), recarrega
-    _tabCtrl.addListener(() {
-      if (_tabCtrl.index == 1 && mounted) {
-        context.read<AppProvider>().loadPublicHistories();
-      }
-    });
+    _tabCtrl.addListener(_onTabChange);
   }
 
   @override
   void dispose() {
+    // MEMLEAK-FIX: remove listener nomeado antes de dispose() do controller.
+    _tabCtrl.removeListener(_onTabChange);
     // BUILD 318: garante que o notifier seja resetado se a tela for destruída
     // enquanto o editor está activo (ex: hot-reload, deeplink de saída).
     if (HistoryScreen.editorActive.value) {
@@ -3248,47 +3254,54 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     } else {
       // ── Mobile: speech_to_text — uma frase por vez, auto-reinicia ────────
       void startMobileLoop() {
-        SttHelper.start(
-          locale: locale,
-          onResult: (transcript) {
-            if (!mounted) return;
-            // Detecta campo por palavra-gatilho
-            final detected = _detectFieldFromText(transcript);
-            if (detected.isNotEmpty) {
-              _smartCurrentField = detected;
-            }
-            String clean = transcript;
-            for (final trigger in _kTriggers.keys) {
-              clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
-            }
-            clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
-            if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
-              _insertIntoField(_smartCurrentField, clean);
-            }
-            if (mounted) setState(() => _smartInterim = '');
-          },
-          onError: (code) {
-            if (!mounted) return;
-            if (code == 'no_speech' || code == 'no-speech') {
-              // Auto-reinicia silenciosamente
-              if (_smartDictActive) {
+        // STT-GUARD: try-catch genérico — erros nativos de áudio (AVAudioSession,
+        // SFSpeechRecognizer, MicrophonePermission) não devem fechar o app.
+        try {
+          SttHelper.start(
+            locale: locale,
+            onResult: (transcript) {
+              if (!mounted) return;
+              // Detecta campo por palavra-gatilho
+              final detected = _detectFieldFromText(transcript);
+              if (detected.isNotEmpty) {
+                _smartCurrentField = detected;
+              }
+              String clean = transcript;
+              for (final trigger in _kTriggers.keys) {
+                clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
+              }
+              clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
+              if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
+                _insertIntoField(_smartCurrentField, clean);
+              }
+              if (mounted) setState(() => _smartInterim = '');
+            },
+            onError: (code) {
+              if (!mounted) return;
+              if (code == 'no_speech' || code == 'no-speech') {
+                // Auto-reinicia silenciosamente
+                if (_smartDictActive) {
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    if (_smartDictActive && mounted) startMobileLoop();
+                  });
+                }
+                return;
+              }
+              setState(() { _smartDictActive = false; _smartInterim = ''; });
+              _showSttMobileError(code);
+            },
+            onEnd: () {
+              if (_smartDictActive && mounted) {
                 Future.delayed(const Duration(milliseconds: 300), () {
                   if (_smartDictActive && mounted) startMobileLoop();
                 });
               }
-              return;
-            }
-            setState(() { _smartDictActive = false; _smartInterim = ''; });
-            _showSttMobileError(code);
-          },
-          onEnd: () {
-            if (_smartDictActive && mounted) {
-              Future.delayed(const Duration(milliseconds: 300), () {
-                if (_smartDictActive && mounted) startMobileLoop();
-              });
-            }
-          },
-        );
+            },
+          );
+        } catch (e, st) {
+          debugPrint('[HistoryScreen][startMobileLoop] SttHelper.start exception: $e\n$st');
+          if (mounted) setState(() { _smartDictActive = false; _smartInterim = ''; });
+        }
       }
       startMobileLoop();
     }
@@ -3363,27 +3376,34 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     } else {
       // Mobile: captura em loop, acumulando buffer
       void startLoop() {
-        SttHelper.start(
-          locale: locale,
-          onResult: (transcript) {
-            if (!mounted || !_relatoActive) return;
-            _relatoBuffer += (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
-            if (mounted) setState(() => _relatoInterim = '');
-          },
-          onError: (code) {
-            if (!mounted) return;
-            if (code == 'no_speech' || code == 'no-speech') {
-              if (_relatoActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
-              return;
-            }
-            setState(() { _relatoActive = false; _relatoInterim = ''; });
-          },
-          onEnd: () {
-            if (_relatoActive && mounted) {
-              Future.delayed(const Duration(milliseconds: 300), startLoop);
-            }
-          },
-        );
+        // STT-GUARD: try-catch genérico — erros nativos de áudio não devem
+        // fechar o app silenciosamente durante o relato livre clínico.
+        try {
+          SttHelper.start(
+            locale: locale,
+            onResult: (transcript) {
+              if (!mounted || !_relatoActive) return;
+              _relatoBuffer += (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
+              if (mounted) setState(() => _relatoInterim = '');
+            },
+            onError: (code) {
+              if (!mounted) return;
+              if (code == 'no_speech' || code == 'no-speech') {
+                if (_relatoActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
+                return;
+              }
+              setState(() { _relatoActive = false; _relatoInterim = ''; });
+            },
+            onEnd: () {
+              if (_relatoActive && mounted) {
+                Future.delayed(const Duration(milliseconds: 300), startLoop);
+              }
+            },
+          );
+        } catch (e, st) {
+          debugPrint('[HistoryScreen][startLoop] SttHelper.start exception: $e\n$st');
+          if (mounted) setState(() { _relatoActive = false; _relatoInterim = ''; });
+        }
       }
       startLoop();
     }
@@ -3594,22 +3614,29 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       _sttRecog = recog;
     } else {
       // ── Mobile (iOS / Android): usa speech_to_text nativo ───────────────
-      SttHelper.start(
-        locale: locale,
-        onResult: (transcript) {
-          if (!mounted) return;
-          _insertIntoField(key, transcript);
-          setState(() { _sttInterim = ''; });
-        },
-        onError: (code) {
-          if (!mounted) return;
-          setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
-          _showSttMobileError(code);
-        },
-        onEnd: () {
-          if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
-        },
-      );
+      // STT-GUARD: erros nativos de AVAudioSession / SFSpeechRecognizer
+      // não devem propagar e fechar o app silenciosamente.
+      try {
+        SttHelper.start(
+          locale: locale,
+          onResult: (transcript) {
+            if (!mounted) return;
+            _insertIntoField(key, transcript);
+            setState(() { _sttInterim = ''; });
+          },
+          onError: (code) {
+            if (!mounted) return;
+            setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+            _showSttMobileError(code);
+          },
+          onEnd: () {
+            if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+          },
+        );
+      } catch (e, st) {
+        debugPrint('[HistoryScreen][_startSttForField] SttHelper.start exception: $e\n$st');
+        if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+      }
     }
 
     _sttActiveKey = key;
@@ -6337,7 +6364,12 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
 
   @override
   void dispose() {
-    for (final c in [_pas,_pad,_fc,_fr,_temp,_spo2,_dext,_peso]) c.dispose();
+    // MEMLEAK-FIX: remove listeners antes de chamar dispose() nos controllers,
+    // evitando callbacks disparados depois que o widget já foi desmontado.
+    for (final c in [_pas,_pad,_fc,_fr,_temp,_spo2,_dext,_peso]) {
+      c.removeListener(_syncToController);
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -6648,7 +6680,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
 
   @override
   void dispose() {
+    // MEMLEAK-FIX: remove listeners antes de chamar dispose() nos controllers.
     for (final c in [_hb,_ht,_leuco,_plaq,_na,_k,_cr,_ur,_gli,_pcr,_tni,_bnp,_lac,_tp,_tgo,_tgp,_outros]) {
+      c.removeListener(_sync);
       c.dispose();
     }
     super.dispose();
@@ -7487,27 +7521,33 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
       _voiceRecog = recog;
     } else {
       void startLoop() {
-        SttHelper.start(
-          locale: locale,
-          onResult: (t) {
-            if (!mounted || !_voiceActive) return;
-            _voiceBuffer += (_voiceBuffer.isEmpty ? '' : ' ') + t.trim();
-            if (mounted) setState(() => _voiceInterim = '');
-          },
-          onError: (code) {
-            if (!mounted) return;
-            if (code == 'no_speech' || code == 'no-speech') {
-              if (_voiceActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
-              return;
-            }
-            setState(() { _voiceActive = false; _voiceInterim = ''; });
-          },
-          onEnd: () {
-            if (_voiceActive && mounted) {
-              Future.delayed(const Duration(milliseconds: 300), startLoop);
-            }
-          },
-        );
+        // STT-GUARD: erros nativos de áudio / microfone não devem fechar o app.
+        try {
+          SttHelper.start(
+            locale: locale,
+            onResult: (t) {
+              if (!mounted || !_voiceActive) return;
+              _voiceBuffer += (_voiceBuffer.isEmpty ? '' : ' ') + t.trim();
+              if (mounted) setState(() => _voiceInterim = '');
+            },
+            onError: (code) {
+              if (!mounted) return;
+              if (code == 'no_speech' || code == 'no-speech') {
+                if (_voiceActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
+                return;
+              }
+              setState(() { _voiceActive = false; _voiceInterim = ''; });
+            },
+            onEnd: () {
+              if (_voiceActive && mounted) {
+                Future.delayed(const Duration(milliseconds: 300), startLoop);
+              }
+            },
+          );
+        } catch (e, st) {
+          debugPrint('[HistoryScreen][organizar.startLoop] SttHelper.start exception: $e\n$st');
+          if (mounted) setState(() { _voiceActive = false; _voiceInterim = ''; });
+        }
       }
       startLoop();
     }

@@ -571,23 +571,30 @@ class _AiScreenState extends State<AiScreen> {
   /// Reproduz ou para o áudio de uma mensagem da IA.
   Future<void> _toggleTts(int msgIndex, String text, String lang) async {
     if (!_ttsReady) return;
-    if (_ttsPlayingIndex == msgIndex) {
-      // Já tocando esta mensagem → para
+    // TTS-GUARD: flutter_tts pode lançar PlatformException em dispositivos
+    // onde o TTS engine está ausente ou corrompido. Captura para evitar crash.
+    try {
+      if (_ttsPlayingIndex == msgIndex) {
+        // Já tocando esta mensagem → para
+        await _tts.stop();
+        if (!mounted) return;
+        setState(() => _ttsPlayingIndex = -1);
+        return;
+      }
+      // Para qualquer reprodução anterior
       await _tts.stop();
       if (!mounted) return;
-      setState(() => _ttsPlayingIndex = -1);
-      return;
+      setState(() => _ttsPlayingIndex = msgIndex);
+      // Configura idioma
+      final locale = lang == 'es' ? 'es-ES' : 'pt-BR';
+      await _tts.setLanguage(locale);
+      // Remove caracteres especiais de markdown antes de falar
+      final cleaned = _cleanForSpeech(text);
+      await _tts.speak(cleaned);
+    } catch (e, st) {
+      debugPrint('[AiScreen][_toggleTts] TTS exception: $e\n$st');
+      if (mounted) setState(() => _ttsPlayingIndex = -1);
     }
-    // Para qualquer reprodução anterior
-    await _tts.stop();
-    if (!mounted) return;
-    setState(() => _ttsPlayingIndex = msgIndex);
-    // Configura idioma
-    final locale = lang == 'es' ? 'es-ES' : 'pt-BR';
-    await _tts.setLanguage(locale);
-    // Remove caracteres especiais de markdown antes de falar
-    final cleaned = _cleanForSpeech(text);
-    await _tts.speak(cleaned);
   }
 
   /// Limpa texto para reprodução de voz (remove asteriscos, hifens de lista, etc.)
@@ -621,6 +628,11 @@ class _AiScreenState extends State<AiScreen> {
       _sttPartialBuffer = '';
     });
     final lang = context.read<AppProvider>().lang;
+    // STT-GUARD: proteção extra no call-site — stt_helper_mobile já captura
+    // erros internos do plugin, mas esta camada adicional protege contra
+    // exceções síncronas antes de chegar ao plugin (ex: permissão negada via
+    // PlatformException antes do init, ou ambiente não suportado).
+    try {
     SttHelper.start(
       locale: lang == 'es' ? 'es-ES' : 'pt-BR',
 
@@ -678,6 +690,14 @@ class _AiScreenState extends State<AiScreen> {
         }
       },
     );
+    } catch (e, st) {
+      // STT-GUARD: erro síncrono inesperado — reseta estado sem crashar o app.
+      debugPrint('[AiScreen][_sttStart] SttHelper.start exception: $e\n$st');
+      if (mounted) setState(() {
+        _sttListening  = false;
+        _sttSoundLevel = 0.0;
+      });
+    }
   }
 
   Future<void> _sttStop() async {

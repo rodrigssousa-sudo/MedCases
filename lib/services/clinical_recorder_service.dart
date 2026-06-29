@@ -231,45 +231,56 @@ class ClinicalRecorderService {
     // Configura o locale
     final locale = _currentLang == 'es' ? 'es-ES' : 'pt-BR';
 
-    await SttHelper.start(
-      locale: locale,
-      onResult: (text) {
-        if (!_isRecording || _isPaused) return;
-        // Acumula texto no buffer da sessão
-        final seg = text.trim();
-        if (seg.isNotEmpty) {
-          _sessionBuffer.clear();
-          _sessionBuffer.write(seg);
-          // Emite transcript completo em tempo real
-          final live = (_fullTranscript + ' ' + seg).trim();
-          _transcriptCtrl.add(live);
-        }
-      },
-      onError: (err) {
-        debugPrint('[ClinicalRecorder] STT error: $err — reiniciando sessão');
-        if (_isRecording && !_isPaused) {
-          // Flush buffer atual e reinicia
-          final seg = _sessionBuffer.toString().trim();
+    // STT-GUARD: erros síncronos de inicialização do plugin (PlatformException,
+    // PermissionDeniedException, AVAudioSession) são capturados aqui para evitar
+    // crash silencioso do app durante gravação clínica contínua.
+    try {
+      await SttHelper.start(
+        locale: locale,
+        onResult: (text) {
+          if (!_isRecording || _isPaused) return;
+          // Acumula texto no buffer da sessão
+          final seg = text.trim();
           if (seg.isNotEmpty) {
-            _fullTranscript = (_fullTranscript + ' ' + seg).trim();
             _sessionBuffer.clear();
+            _sessionBuffer.write(seg);
+            // Emite transcript completo em tempo real
+            final live = (_fullTranscript + ' ' + seg).trim();
+            _transcriptCtrl.add(live);
           }
-          Future.delayed(const Duration(milliseconds: 500), _startSttSession);
-        }
-      },
-      onEnd: () {
-        if (_isRecording && !_isPaused) {
-          // Sessão STT encerrou (timeout nativo) — flush e reinicia
-          final seg = _sessionBuffer.toString().trim();
-          if (seg.isNotEmpty) {
-            _fullTranscript = (_fullTranscript + ' ' + seg).trim();
-            _sessionBuffer.clear();
-            _transcriptCtrl.add(_fullTranscript);
+        },
+        onError: (err) {
+          debugPrint('[ClinicalRecorder] STT error: $err — reiniciando sessão');
+          if (_isRecording && !_isPaused) {
+            // Flush buffer atual e reinicia
+            final seg = _sessionBuffer.toString().trim();
+            if (seg.isNotEmpty) {
+              _fullTranscript = (_fullTranscript + ' ' + seg).trim();
+              _sessionBuffer.clear();
+            }
+            Future.delayed(const Duration(milliseconds: 500), _startSttSession);
           }
-          Future.delayed(const Duration(milliseconds: 300), _startSttSession);
-        }
-      },
-    );
+        },
+        onEnd: () {
+          if (_isRecording && !_isPaused) {
+            // Sessão STT encerrou (timeout nativo) — flush e reinicia
+            final seg = _sessionBuffer.toString().trim();
+            if (seg.isNotEmpty) {
+              _fullTranscript = (_fullTranscript + ' ' + seg).trim();
+              _sessionBuffer.clear();
+              _transcriptCtrl.add(_fullTranscript);
+            }
+            Future.delayed(const Duration(milliseconds: 300), _startSttSession);
+          }
+        },
+      );
+    } catch (e, st) {
+      debugPrint('[ClinicalRecorder][_startSttSession] SttHelper.start exception: $e\n$st');
+      // Tenta reiniciar após delay — erro pode ser transitório (cold start iOS)
+      if (_isRecording && !_isPaused) {
+        Future.delayed(const Duration(milliseconds: 800), _startSttSession);
+      }
+    }
 
     // Timer de reinício preventivo (55s) antes do timeout do iOS
     _sessionTimer = Timer(Duration(seconds: _sessionLimitSec), () {

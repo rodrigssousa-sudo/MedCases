@@ -2544,6 +2544,9 @@ class _InfusionTabState extends State<_InfusionTab> {
 
   @override
   void dispose() {
+    // MEMLEAK-FIX: _scrollCtrl estava faltando — adicionado para fechar
+    // o ScrollController da lista de infusões e liberar listeners nativos.
+    _scrollCtrl.dispose();
     for (final c in [_infDrugCtrl, _infConcCtrl, _infRateCtrl, _infWeightCtrl, _doseCtrl, _concCalcCtrl, _weightCalcCtrl]) {
       c.dispose();
     }
