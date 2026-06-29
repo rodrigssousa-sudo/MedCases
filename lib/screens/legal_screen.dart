@@ -2,6 +2,11 @@
 // Todos os textos bilíngues (es / pt-BR)
 // Uso: showLegalSheet(context, LegalType.terms, lang)
 //      ConsentGate.showIfNeeded(context) — retorna true se já tinha consentimento
+//
+// Conformidade: Apple App Store Review Guidelines Section 5.1 (Privacy)
+//               Google Play Developer Policy — Personal and Sensitive Information
+//               LGPD (Lei 13.709/2018) Art. 7º, I e IX
+//               IEC 62304 (Medical device software lifecycle) — auditabilidade
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,8 +30,16 @@ Future<void> showLegalSheet(
 }
 
 // ── Consent Gate — lógica estática ────────────────────────────────────────────
+/// Versão atual dos termos — incrementar a cada alteração material nos documentos legais.
+/// Apple Section 5.1: usuário deve re-consentir após mudanças significativas.
+const _kTermsVersion = 'v2.0-2026';
+
 class ConsentGate {
-  static const _kConsentKey = 'consent_v1';
+  // v2: chave incrementada para forçar re-consentimento após atualização dos termos.
+  static const _kConsentKey       = 'consent_v2';
+  static const _kConsentTimestamp = 'consent_timestamp';  // ISO-8601 UTC
+  static const _kConsentVersion   = 'consent_terms_ver';  // versão dos termos aceitos
+  static const _kConsentLang      = 'consent_lang';       // idioma no momento do aceite
 
   /// Retorna true se o consentimento já foi dado (não precisa mostrar modal).
   static Future<bool> hasConsented() async {
@@ -38,12 +51,34 @@ class ConsentGate {
     }
   }
 
-  /// Grava o consentimento.
-  static Future<void> saveConsent() async {
+  /// Grava o consentimento com metadados de auditoria completos.
+  /// Persistência: flag booleana + timestamp ISO-8601 UTC + versão dos termos + idioma.
+  /// Conformidade LGPD Art. 7º I: registro comprobatório do consentimento informado.
+  static Future<void> saveConsent({required String lang}) async {
+    try {
+      final p   = await SharedPreferences.getInstance();
+      final now = DateTime.now().toUtc().toIso8601String();
+      await Future.wait([
+        p.setBool  (_kConsentKey,       true),
+        p.setString(_kConsentTimestamp, now),
+        p.setString(_kConsentVersion,   _kTermsVersion),
+        p.setString(_kConsentLang,      lang),
+      ]);
+    } catch (_) {}
+  }
+
+  /// Metadados de auditoria do consentimento (suporte / compliance).
+  static Future<Map<String, String?>> auditInfo() async {
     try {
       final p = await SharedPreferences.getInstance();
-      await p.setBool(_kConsentKey, true);
-    } catch (_) {}
+      return {
+        'timestamp': p.getString(_kConsentTimestamp),
+        'version'  : p.getString(_kConsentVersion),
+        'lang'     : p.getString(_kConsentLang),
+      };
+    } catch (_) {
+      return {};
+    }
   }
 }
 
@@ -122,11 +157,15 @@ class _LegalSheet extends StatelessWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.close_rounded, color: textCol, size: 20),
-                    onPressed: () => Navigator.pop(context),
-                    visualDensity: VisualDensity.compact,
-                    padding: EdgeInsets.zero,
+                  // Tap target mínimo 44×44px — Apple HIG compliance
+                  SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: IconButton(
+                      icon: Icon(Icons.close_rounded, color: textCol, size: 22),
+                      onPressed: () => Navigator.pop(context),
+                      padding: EdgeInsets.zero,
+                    ),
                   ),
                 ],
               ),
@@ -226,7 +265,7 @@ const _termsPt = [
     'Estes Termos são regidos pela legislação brasileira. Eventuais disputas '
     'serão resolvidas no foro da comarca competente.',
   ),
-  _LegalSection('Última atualização: Janeiro de 2025', isTitle: false),
+  _LegalSection('Última atualização: Junho de 2026 | Versão v2.0-2026', isTitle: false),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -273,7 +312,7 @@ const _termsEs = [
     'Estos Términos se rigen por la legislación brasileña. Las disputas se '
     'resolverán en el foro jurisdiccional competente.',
   ),
-  _LegalSection('Última actualización: Enero de 2025', isTitle: false),
+  _LegalSection('Última actualización: Junio de 2026 | Versión v2.0-2026', isTitle: false),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -327,7 +366,7 @@ const _privacyPt = [
     'Encarregado de Proteção de Dados (DPO): contato disponível pelo suporte do aplicativo. '
     'Autoridade Nacional de Proteção de Dados (ANPD): www.gov.br/anpd',
   ),
-  _LegalSection('Última atualização: Janeiro de 2025', isTitle: false),
+  _LegalSection('Última atualização: Junho de 2026 | Versão v2.0-2026', isTitle: false),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -381,7 +420,7 @@ const _privacyEs = [
     'Responsable de Protección de Datos: disponible a través del soporte de la aplicación. '
     'Autoridad Nacional de Protección de Datos de Brasil (ANPD): www.gov.br/anpd',
   ),
-  _LegalSection('Última actualización: Enero de 2025', isTitle: false),
+  _LegalSection('Última actualización: Junio de 2026 | Versión v2.0-2026', isTitle: false),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -504,7 +543,7 @@ class _ConsentModalState extends State<ConsentModal> {
   String get _btnText => _isEs ? 'Continuar' : 'Continuar';
 
   String get _btnDisabledText => _isEs
-      ? 'Marque todos os itens'
+      ? 'Marque todos los elementos'
       : 'Marque todos os itens';
 
   @override
@@ -646,7 +685,10 @@ class _ConsentModalState extends State<ConsentModal> {
                   borderRadius: BorderRadius.circular(14),
                   onTap: _allChecked
                       ? () async {
-                          await ConsentGate.saveConsent();
+                          // Salva com metadados de auditoria — LGPD + Apple 5.1
+                          await ConsentGate.saveConsent(
+                            lang: widget.lang,
+                          );
                           widget.onAccepted();
                         }
                       : null,

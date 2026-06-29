@@ -1039,23 +1039,49 @@ class AuthService {
 
   /// Persiste o aceite dos termos no Firestore — chamado pelo ProfessionalDeclarationGate.
   /// Web usa REST (_patchUserRest); nativo usa Firestore SDK direto.
+  ///
+  /// P-5 FIX: campos de auditoria adicionados (declarationVersion, declarationLang).
+  /// IEC 62304: rastreabilidade de versão e idioma obrigatória para software médico.
   static Future<void> updateTermsAccepted({
     required String uid,
     required String professionalCategory,
+    String declarationVersion = '',
+    String declarationLang    = 'pt',
   }) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {
         'acceptedTerms':        true,
         'acceptedTermsAt':      DateTime.now().toUtc().toIso8601String(),
         'professionalCategory': professionalCategory,
+        if (declarationVersion.isNotEmpty)
+          'declarationVersion': declarationVersion,
+        'declarationLang':      declarationLang,
       });
     } else {
       await _db.collection('users').doc(uid).update({
         'acceptedTerms':        true,
         'acceptedTermsAt':      FieldValue.serverTimestamp(),
         'professionalCategory': professionalCategory,
+        if (declarationVersion.isNotEmpty)
+          'declarationVersion': declarationVersion,
+        'declarationLang':      declarationLang,
       });
     }
+  }
+
+  /// Verifica no Firestore se o usuário já aceitou os termos.
+  /// P-3 FIX: permite re-validação cross-device após reinstalação do app.
+  /// Se o Firestore estiver indisponível, lança exceção — o chamador deve tratar.
+  static Future<bool> hasAcceptedTerms({required String uid}) async {
+    if (kIsWeb) {
+      // REST não tem suporte fácil de leitura — retorna false para forçar modal
+      return false;
+    }
+    final doc = await _db.collection('users').doc(uid).get();
+    if (!doc.exists) return false;
+    final data = doc.data();
+    if (data == null) return false;
+    return data['acceptedTerms'] == true;
   }
 
   /// Cria documento de usuário no Firestore via REST (Web)

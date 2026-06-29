@@ -2,6 +2,12 @@
 // Tela de blindagem jurídica: exibida uma única vez por usuário após o login.
 // Persiste o aceite em SharedPreferences com a chave 'has_declared_professional'.
 // Suporta PT (padrão) e ES via Localizations.localeOf(context).languageCode.
+//
+// Conformidade:
+//   • Apple App Store Guidelines Section 5.1.1 — Data Collection and Storage
+//   • Google Play Developer Policy — Personal and Sensitive Information
+//   • LGPD Art. 7º I — Consentimento informado com registro comprobatório
+//   • IEC 62304 — Auditabilidade de declarações em software médico
 // ─────────────────────────────────────────────────────────────────────────────
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,9 +75,10 @@ class _S {
   String get button => es ? 'Acepto — Acceder a la App' : 'Aceito — Acessar o App';
 
   // ── Rodapé legal ──────────────────────────────────────────────────────────
+  // P-4 FIX: texto juridicamente preciso — declaração gravada no dispositivo E servidor.
   String get legalNote => es
-      ? 'Esta declaración tiene validez legal y quedará registrada en su dispositivo.'
-      : 'Esta declaração tem validade legal e ficará registrada em seu dispositivo.';
+      ? 'Esta declaración tiene validez legal y será registrada en su dispositivo y servidor seguro.'
+      : 'Esta declaração tem validade legal e será registrada em seu dispositivo e servidor seguro.';
 }
 
 // ── Serviço estático de persistência ──────────────────────────────────────────
@@ -97,11 +104,23 @@ class ProfessionalDeclarationGate {
     return null;
   }
 
+  /// Versão atual da declaração — incrementar a cada atualização material dos textos legais.
+  /// IEC 62304: rastreabilidade de versão obrigatória em software médico auditado.
+  static const _kDeclVersion = 'decl-v2.0-2026';
+
   /// Salva a declaração profissional com uid resolvido e validado.
   /// Lança [StateError] se o uid não puder ser resolvido — nunca salva com uid vazio.
+  ///
+  /// Dados gravados (Firestore + SharedPreferences):
+  ///   - acceptedTerms: true
+  ///   - acceptedTermsAt: timestamp server
+  ///   - professionalCategory: string
+  ///   - declarationVersion: string  ← P-5 FIX (rastreabilidade de versão)
+  ///   - declarationLang: string     ← P-5 FIX (idioma no momento do aceite)
   static Future<void> saveDeclaration({
     required String uid,
     required String professionalCategory,
+    String lang = 'pt',
   }) async {
     // Guarda de segurança: bloqueia uid vazio antes de qualquer IO
     assert(uid.isNotEmpty, 'saveDeclaration: uid não pode ser vazio');
@@ -110,19 +129,24 @@ class ProfessionalDeclarationGate {
       throw StateError('uid inválido: não foi possível identificar o usuário para salvar a declaração');
     }
 
-    // 1. Firestore — persiste entre dispositivos e reinstalações (Apple-safe)
+    // 1. Firestore — persiste entre dispositivos e reinstalações (cross-device)
+    //    P-5 FIX: inclui declarationVersion e declarationLang para auditoria completa.
     try {
       await AuthService.updateTermsAccepted(
         uid: uid,
         professionalCategory: professionalCategory,
+        declarationVersion: _kDeclVersion,
+        declarationLang: lang,
       );
-      debugPrint('[ProfGate] Declaração salva no Firestore — uid=$uid');
+      debugPrint('[ProfGate] Declaração salva no Firestore — uid=$uid ver=$_kDeclVersion');
     } catch (e) {
       // Firestore indisponível — cache local garante que o usuário não bloqueie
       debugPrint('[ProfGate] Firestore indisponível (${e.runtimeType}) — salvo apenas localmente');
     }
 
-    // 2. Cache local — verificação rápida no mesmo dispositivo
+    // 2. Cache local — verificação rápida no mesmo dispositivo.
+    //    P-3 NOTE: SharedPreferences não persiste após reinstalação no iOS sem
+    //    iCloud Keychain. Firestore acima garante persistência cross-device.
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kProfKey, true);
     debugPrint('[ProfGate] Declaração salva em SharedPreferences — uid=$uid');
@@ -165,26 +189,42 @@ class _ProfessionalDeclarationGateWidgetState
   }
 
   Future<void> _check() async {
-    final ok = await ProfessionalDeclarationGate.hasDeclared();
+    // 1ª camada: cache local rápido (SharedPreferences)
+    final localOk = await ProfessionalDeclarationGate.hasDeclared();
     if (!mounted) return;
 
-    if (ok) {
-      // Já declarou — não precisa resolver uid
+    if (localOk) {
       setState(() => _declared = true);
       return;
     }
 
-    // Precisa declarar — resolve uid antes de exibir o modal.
-    // setUser() é chamado via addPostFrameCallback (um frame após o render),
-    // portanto AppProvider.currentUser pode ser null no primeiro frame.
-    // Tenta até 3x com 500ms de intervalo antes de usar FirebaseAuth direto.
+    // Resolve uid antes do check Firestore e antes de exibir o modal.
+    // setUser() é chamado via addPostFrameCallback — AppProvider pode ser
+    // null no primeiro frame. Tenta até 3x com 500ms de intervalo.
     String? uid = ProfessionalDeclarationGate._resolveUid(context);
     if (uid == null) {
-      // Aguarda até 3 frames (1.5s) para que o AppProvider complete setUser()
       for (int i = 0; i < 3 && uid == null; i++) {
         await Future<void>.delayed(const Duration(milliseconds: 500));
         if (!mounted) return;
         uid = ProfessionalDeclarationGate._resolveUid(context);
+      }
+    }
+
+    // P-3 FIX: 2ª camada — Firestore cross-device.
+    // Cobre reinstalação de app onde SharedPreferences foi apagado (iOS sem Keychain).
+    if (uid != null && mounted) {
+      try {
+        final firestoreOk = await AuthService.hasAcceptedTerms(uid: uid);
+        if (!mounted) return;
+        if (firestoreOk) {
+          // Sincroniza cache local e libera gate sem exibir modal
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool(_kProfKey, true);
+          if (mounted) setState(() => _declared = true);
+          return;
+        }
+      } catch (_) {
+        debugPrint('[ProfGate] Firestore check indisponível — exibindo modal de declaração');
       }
     }
 
@@ -199,12 +239,15 @@ class _ProfessionalDeclarationGateWidgetState
 
   @override
   Widget build(BuildContext context) {
-    // Enquanto verifica o SharedPreferences / resolve uid, exibe splash mínimo
+    // P-7 FIX: Splash DARK-FIRST — consistente com identidade visual do app.
     if (_declared == null) {
       return const Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF0F1116),
         body: Center(
-          child: CircularProgressIndicator(color: Color(0xFF075f45)),
+          child: CircularProgressIndicator(
+            color: Color(0xFF075f45),
+            strokeWidth: 2,
+          ),
         ),
       );
     }
@@ -351,9 +394,11 @@ class _ProfessionalDeclarationModalState
   Future<void> _onConfirm() async {
     if (!_canConfirm) return;
     setState(() => _saving = true);
+    // P-5 FIX: inclui lang para auditoria completa (idioma no momento do aceite)
     await ProfessionalDeclarationGate.saveDeclaration(
       uid: widget.uid,
       professionalCategory: _selectedCategory!,
+      lang: widget.lang,
     );
     if (mounted) widget.onAccepted();
   }
@@ -657,6 +702,7 @@ class _ProfessionalDeclarationModalState
           const SizedBox(height: 10),
 
           // Radio chips — fundo branco, borda verde quando selecionado
+          // P-6 FIX: minHeight 48px — Apple HIG 44px tap target compliance
           ...List.generate(_s.categories.length, (i) {
             final cat = _s.categories[i];
             final selected = _selectedCategory == cat;
@@ -665,6 +711,7 @@ class _ProfessionalDeclarationModalState
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 180),
                 width: double.infinity,
+                constraints: const BoxConstraints(minHeight: 48),
                 margin: const EdgeInsets.only(bottom: 8),
                 padding: const EdgeInsets.symmetric(
                     horizontal: 14, vertical: 12),
@@ -723,10 +770,12 @@ class _ProfessionalDeclarationModalState
           const SizedBox(height: 16),
 
           // Checkbox de consentimento
+          // P-6 FIX: minHeight 48px — Apple HIG tap target compliance
           GestureDetector(
             onTap: () => setState(() => _checked = !_checked),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
+              constraints: const BoxConstraints(minHeight: 48),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: _checked
