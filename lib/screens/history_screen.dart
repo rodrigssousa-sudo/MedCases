@@ -842,9 +842,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 ),
               );
 
-    // Desktop: sem shell AppBar → mostra header próprio.
-    // Mobile/tablet: shell AppBar já visível → oculta header para evitar double-header.
-    final showListHeader = bp.isDesktop;
+    // BUILD 331: Topbar unificada — _HcTopbar + _HcTabRow para todos os breakpoints.
 
     return SafeArea(
       top: false,
@@ -854,226 +852,19 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           color: bg,
           child: Column(
             children: [
-              // Header — visível apenas no desktop (sem shell AppBar)
-              // SUPER ORDEM VISUAL 08 M1: Topologia Cupertino/Linear.
-              // Stack: título centrado, back à esquerda, + Nova HC à direita.
-              // MEDCASES PRO destruído.
-              if (showListHeader)
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF431407), // laranja queimado escuro
-                      Color(0xFFEA580C), // laranja vibrante
-                      Color(0xFFFB923C), // laranja claro
-                    ],
-                  ),
-                  border: Border(
-                    bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5),
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(4, 10, bp.hPadding, 14),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // CENTER: título isolado e absolutamente centrado
-                      Text(
-                        lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: -0.2,
-                        ),
-                      ),
-                      // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
-                      // Se montado como tab (IndexedStack), fallback → Home tab 0
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            final nav = Navigator.of(context);
-                            if (nav.canPop()) {
-                              nav.pop();
-                            } else {
-                              // Tab context: volta para Home via pendingTab
-                              MainShell.pendingTab.value = 0;
-                            }
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.arrow_back_ios_new,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // RIGHT: botão de ação — sem fundo gradiente, laranja no texto/ícone
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () => _startNewHistory(p, lang),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.12),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.35),
-                                width: 0.8,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.add_rounded, size: 14, color: Colors.white),
-                                const SizedBox(width: 4),
-                                Text(
-                                  _hcT(lang, 'new_hc'),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                    letterSpacing: 0.2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              // BUILD 331: Topbar unificada 48px — sem gradiente, sólida dark/light
+              _HcTopbar(
+                dark: p.darkMode,
+                lang: lang,
               ),
-              // SUPER ORDEM VISUAL 08 M2+M3: Mobile header Cupertino/Linear.
-              // Stack: título centrado, back à esquerda, + Nova HC à direita.
-              // MEDCASES PRO destruído. Pill-shape destruído → flat underline tabs.
-              // TabBar redundante inferior EXTERMINADA.
-              if (!showListHeader)
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF431407), // laranja escuro
-                        Color(0xFFEA580C), // laranja vibrante
-                        Color(0xFFFB923C), // laranja claro
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // ── M1: Linha título — Stack Left-Center-Right ───────────
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // CENTER: título isolado
-                            Text(
-                              lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: -0.2,
-                              ),
-                            ),
-                            // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  final nav = Navigator.of(context);
-                                  if (nav.canPop()) {
-                                    nav.pop();
-                                  } else {
-                                    MainShell.pendingTab.value = 0;
-                                  }
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    Icons.arrow_back_ios_new,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // RIGHT: DESTRUÍDO — botão + NOVA HC removido do header.
-                            // SUPER ORDEM MASTER 14 M9: + NOVA migrou para 3ª aba abaixo.
-                          ],
-                        ),
-                      ),
-                      // ── M2+M9: Tri-Tabs flat — MINHAS | PÚBLICAS | + NOVA ──────
-                      // SUPER ORDEM MASTER 14 M9: botão + Nova integrado como 3ª aba.
-                      // Cyan underline na ativa, divisores brancos finos entre abas.
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                        child: Row(
-                          children: [
-                            // Tab 0: MINHAS HCs
-                            Expanded(
-                              child: _HcFlatTab(
-                                label: lang == 'es' ? 'MIS HCs' : 'MINHAS',
-                                index: 0,
-                                tabCtrl: _tabCtrl,
-                              ),
-                            ),
-                            // Divisor fio
-                            Container(width: 1, height: 14, color: Colors.white24),
-                            // Tab 1: PÚBLICAS
-                            Expanded(
-                              child: _HcFlatTab(
-                                label: lang == 'es' ? 'PÚBLICAS' : 'PÚBLICAS',
-                                index: 1,
-                                tabCtrl: _tabCtrl,
-                              ),
-                            ),
-                            // Divisor fio
-                            Container(width: 1, height: 14, color: Colors.white24),
-                            // Tab 2: + NOVA — aciona _startNewHistory diretamente
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () => _startNewHistory(p, lang),
-                                behavior: HitTestBehavior.opaque,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 10),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.transparent,
-                                    border: Border(bottom: BorderSide.none),
-                                  ),
-                                  child: Text(
-                                    lang == 'es' ? '+ NUEVA' : '+ NOVA',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFF00E5FF),
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              // ── M3: TabBar redundante inferior EXTERMINADA — não existe mais ──
+              // BUILD 331: Seletor triplo desacoplado — posicionado no corpo
+              _HcTabRow(
+                dark: p.darkMode,
+                lang: lang,
+                tabCtrl: _tabCtrl,
+                onNew: () => _startNewHistory(p, lang),
+              ),
+              // ── Barra de busca ──────────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                 child: Row(
@@ -1234,14 +1025,192 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HELPER: Tab flat minimalista para Historia Clínica — SUPER ORDEM VISUAL 08
-// Pill-shape destruído: fundo transparente, indicador = underline branco 2px.
+// BUILD 331 — TOPBAR HISTÓRIA CLÍNICA
+// Geometria estrita: SafeArea(bottom:false) + SizedBox(48) + padding h:12.
+// Fundo sólido #0F1116 dark / branco light — sem gradiente laranja.
+// Título centralizado via Stack — sem desvio do botão de voltar.
+// ─────────────────────────────────────────────────────────────────────────────
+class _HcTopbar extends StatelessWidget {
+  final bool dark;
+  final String lang;
+
+  const _HcTopbar({required this.dark, required this.lang});
+
+  @override
+  Widget build(BuildContext context) {
+    final title = lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA';
+    return Container(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF0F1116) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 48,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // ── CENTER: título absolutamente centrado ──────────────
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: dark ? Colors.white : const Color(0xFF0F1116),
+                  ),
+                ),
+                // ── LEFT: botão de voltar com alto contraste ───────────
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) {
+                        nav.pop();
+                      } else {
+                        MainShell.pendingTab.value = 0;
+                      }
+                    },
+                    child: SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 20,
+                        color: dark ? Colors.white : const Color(0xFF0F1116),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 331 — SELETOR TRIPLO DESACOPLADO (MINHAS | PÚBLICAS | + NOVA)
+// Posição: logo abaixo da Topbar, no corpo — fundo sólido nativo da aba.
+// Cores adaptativas: dark → branco; light → preto.
+// ─────────────────────────────────────────────────────────────────────────────
+class _HcTabRow extends StatelessWidget {
+  final bool dark;
+  final String lang;
+  final TabController tabCtrl;
+  final VoidCallback onNew;
+
+  const _HcTabRow({
+    required this.dark,
+    required this.lang,
+    required this.tabCtrl,
+    required this.onNew,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dividerColor = dark ? Colors.white24 : Colors.black12;
+    // Cor do "+ NOVA" — ciano em qualquer modo (ação especial)
+    final novaColor = dark
+        ? const Color(0xFF00E5FF)
+        : const Color(0xFF008CA4);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF1A1D23) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+        child: Row(
+          children: [
+            // Tab 0: MINHAS
+            Expanded(
+              child: _HcFlatTab(
+                label: lang == 'es' ? 'MIS HCs' : 'MINHAS',
+                index: 0,
+                tabCtrl: tabCtrl,
+                dark: dark,
+              ),
+            ),
+            Container(width: 1, height: 14, color: dividerColor),
+            // Tab 1: PÚBLICAS
+            Expanded(
+              child: _HcFlatTab(
+                label: 'PÚBLICAS',
+                index: 1,
+                tabCtrl: tabCtrl,
+                dark: dark,
+              ),
+            ),
+            Container(width: 1, height: 14, color: dividerColor),
+            // Tab 2: + NOVA — ação direta (não é aba real do TabBarView)
+            Expanded(
+              child: GestureDetector(
+                onTap: onNew,
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  color: Colors.transparent,
+                  child: Text(
+                    lang == 'es' ? '+ NUEVA' : '+ NOVA',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: novaColor,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPER: Tab flat minimalista para Historia Clínica — BUILD 331
+// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
 // ─────────────────────────────────────────────────────────────────────────────
 class _HcFlatTab extends StatefulWidget {
   final String label;
   final int index;
   final TabController tabCtrl;
-  const _HcFlatTab({required this.label, required this.index, required this.tabCtrl});
+  final bool dark;
+  const _HcFlatTab({
+    required this.label,
+    required this.index,
+    required this.tabCtrl,
+    this.dark = true,
+  });
   @override
   State<_HcFlatTab> createState() => _HcFlatTabState();
 }
@@ -1266,6 +1235,11 @@ class _HcFlatTabState extends State<_HcFlatTab> {
   @override
   Widget build(BuildContext context) {
     final isActive = widget.tabCtrl.index == widget.index;
+    // BUILD 331: dark → branco; light → preto — máxima hierarquia de leitura
+    final activeColor = widget.dark ? Colors.white : const Color(0xFF0F1116);
+    final inactiveColor = widget.dark
+        ? Colors.white60
+        : const Color(0xFF0F1116).withOpacity(0.45);
     return GestureDetector(
       onTap: () => widget.tabCtrl.animateTo(widget.index),
       child: AnimatedContainer(
@@ -1275,7 +1249,7 @@ class _HcFlatTabState extends State<_HcFlatTab> {
           color: Colors.transparent,
           border: Border(
             bottom: isActive
-                ? const BorderSide(color: Colors.white, width: 2.0)
+                ? const BorderSide(color: Color(0xFF00E5FF), width: 2.0)
                 : BorderSide.none,
           ),
         ),
@@ -1285,7 +1259,7 @@ class _HcFlatTabState extends State<_HcFlatTab> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isActive ? Colors.white : Colors.white60,
+            color: isActive ? activeColor : inactiveColor,
             letterSpacing: 0.3,
           ),
         ),
