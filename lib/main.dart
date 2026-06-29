@@ -1996,7 +1996,9 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                         border: Border.all(
                           color: widget.dark
                               ? _neonCyan.withOpacity(0.18)
-                              : Colors.white.withOpacity(0.55),
+                              // Modo claro: borda teal petróleo slim — identifica o dock
+                              // sobre fundos brancos sem pesar no glassmorphism
+                              : const Color(0xFF0F766E).withOpacity(0.18),
                           width: 0.9,
                         ),
                         boxShadow: [
@@ -2041,9 +2043,10 @@ class _FloatingFooterState extends State<_FloatingFooter> {
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
 
-      // 1. INÍCIO
+      // 1. INÍCIO — home_outlined inativo / home_rounded (filled) ativo
       Expanded(child: _NavItem(
-        icon: Icons.home_rounded,
+        icon: Icons.home_outlined,
+        iconActive: Icons.home_rounded,
         label: widget.lang == 'es' ? 'Inicio' : 'Início',
         isActive: widget.currentTab == 0,
         dark: widget.dark, shrunk: _shrunk,
@@ -2094,8 +2097,10 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                   fontSize: 10.0,
                   fontWeight: widget.isAiActive ? FontWeight.w700 : FontWeight.w400,
                   color: widget.isAiActive
-                      ? (widget.dark ? _neonCyan : const Color(0xFF008CA4))
-                      : (widget.dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0)),
+                      // Ativo: neon (dark) / preto sólido estilo Instagram (light)
+                      ? (widget.dark ? _neonCyan : Colors.black87)
+                      // Inativo: cinza médio (dark) / cinza escuro sólido (light)
+                      : (widget.dark ? const Color(0xFF6B7280) : const Color(0xFF4B5563)),
                   height: 1.0,
                 )),
             ),
@@ -2103,9 +2108,10 @@ class _FloatingFooterState extends State<_FloatingFooter> {
         ),
       )),
 
-      // 3. FERRAMENTAS
+      // 3. FERRAMENTAS — calculate_outlined inativo / calculate_rounded (filled) ativo
       Expanded(child: _NavItem(
-        icon: Icons.calculate_rounded,
+        icon: Icons.calculate_outlined,
+        iconActive: Icons.calculate_rounded,
         label: widget.lang == 'es' ? 'Herramientas' : 'Ferramentas',
         isActive: widget.currentTab == 4,
         dark: widget.dark, shrunk: _shrunk,
@@ -2123,9 +2129,10 @@ class _FloatingFooterState extends State<_FloatingFooter> {
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
 
-      // 1. INÍCIO — volta para Home
+      // 1. INÍCIO — volta para Home (sempre inativo no contexto IA)
       Expanded(child: _NavItem(
-        icon: Icons.home_rounded,
+        icon: Icons.home_outlined,
+        iconActive: Icons.home_rounded,
         label: widget.lang == 'es' ? 'Inicio' : 'Início',
         isActive: false, // nunca ativo quando estamos na aba IA
         dark: widget.dark, shrunk: _shrunk,
@@ -2151,8 +2158,9 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                     clipBehavior: Clip.none,
                     children: [
                       Icon(Icons.history_rounded, size: 22,
+                          // Cinza escuro sólido no light — contraste premium
                           color: widget.dark
-                              ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0)),
+                              ? const Color(0xFF6B7280) : const Color(0xFF4B5563)),
                       if (count > 0)
                         Positioned(
                           top: -4, right: -6,
@@ -2182,8 +2190,9 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                     maxLines: 1, overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 10.0, fontWeight: FontWeight.w400,
+                      // Cinza escuro sólido no light — contraste premium estilo Instagram
                       color: widget.dark
-                          ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0),
+                          ? const Color(0xFF6B7280) : const Color(0xFF4B5563),
                       height: 1.0,
                     ),
                   ),
@@ -2290,8 +2299,9 @@ class _FloatingFooterState extends State<_FloatingFooter> {
             maxLines: 1, overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 10.0, fontWeight: FontWeight.w500,
+              // Cinza escuro sólido (light) — consistente com padrão Instagram
               color: widget.dark
-                  ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0),
+                  ? const Color(0xFF6B7280) : const Color(0xFF4B5563),
               height: 1.0,
             ),
           ),
@@ -2302,13 +2312,19 @@ class _FloatingFooterState extends State<_FloatingFooter> {
 }
 
 // ── Item individual da bottom nav ─────────────────────────────────────────────
-// BUILD 330: aceita [shrunk] para sumir labels via AnimatedOpacity ao encolher.
+// BUILD 331 LIGHT PREMIUM: paleta estilo Instagram no modo claro.
+//   • Inativo light: cinza escuro sólido #4B5563 (legível, sem apagado)
+//   • Ativo   light: Colors.black87 — preto absoluto (ênfase premium)
+//   • Ativo   dark : Colors(0xFF00E5FF) — neon cyan (contraste no escuro)
+// iconActive: versão filled/bold do ícone para estado ativo — alternância
+// visual sofisticada sem precisar de underline ou círculo.
 class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String   label;
-  final bool     isActive;
-  final bool     dark;
-  final bool     shrunk;   // true → barra encolhida → label some
+  final IconData  icon;
+  final IconData? iconActive; // filled/bold variant for active state
+  final String    label;
+  final bool      isActive;
+  final bool      dark;
+  final bool      shrunk;     // true → barra encolhida → label some
   final VoidCallback onTap;
 
   const _NavItem({
@@ -2317,16 +2333,21 @@ class _NavItem extends StatelessWidget {
     required this.isActive,
     required this.dark,
     required this.onTap,
+    this.iconActive,
     this.shrunk = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final activeColor   = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
-    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
+    // Dark mode: neon cyan ativo / cinza médio inativo (contraste sobre escuro)
+    // Light mode: preto absoluto ativo / cinza escuro sólido inativo (Instagram-style)
+    final activeColor   = dark ? const Color(0xFF00E5FF) : Colors.black87;
+    final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFF4B5563);
     final color = isActive ? activeColor : inactiveColor;
 
-    // BUILD 330: Column stretch — ocupa toda a altura do Expanded pai
+    // Alterna ícone filled↔outline conforme estado (quando iconActive fornecido)
+    final resolvedIcon = (isActive && iconActive != null) ? iconActive! : icon;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -2334,10 +2355,10 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Ícone — tamanho 22px compatível com o círculo 26px dos outros botões
+          // Ícone — 22px; filled quando ativo + iconActive definido
           Padding(
             padding: const EdgeInsets.only(bottom: 3),
-            child: Icon(icon, size: 22, color: color),
+            child: Icon(resolvedIcon, size: 22, color: color),
           ),
           // Label — some suavemente quando a barra encolhe (scroll down)
           AnimatedOpacity(
