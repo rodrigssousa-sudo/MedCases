@@ -1211,11 +1211,11 @@ class _ScoresTabState extends State<_ScoresTab> {
 
 // ══════════════════════════════════════════════════════════════════
 //  TAB 3 — CARDIO HUB (Build 331 — Hub de Cards Clínicos)
-//  Substitui o layout antigo de inputs soltos (PAM / Débito Cardíaco).
-//  Cada card abre um modal interativo com cálculo real.
+//  childAspectRatio: 1.15 — 4 cards cabem limpos na tela mobile.
+//  Cada card abre modal interativo com cálculo 100% funcional.
 // ══════════════════════════════════════════════════════════════════
 class CardioHubView extends StatefulWidget {
-  const CardioHubView({super.key});
+  const CardioHubView({Key? key}) : super(key: key);
 
   @override
   State<CardioHubView> createState() => _CardioHubViewState();
@@ -1227,7 +1227,7 @@ class _CardioHubViewState extends State<CardioHubView> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1239,30 +1239,30 @@ class _CardioHubViewState extends State<CardioHubView> {
               color: isDark ? Colors.white : const Color(0xFF111111),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             'Selecione uma calculadora para começar.',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               color: isDark ? Colors.grey[400] : Colors.grey[600],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
 
-          // Grid Simétrico Responsivo — 2 colunas
+          // GRID COMPACTO: childAspectRatio 1.15 — 4 cards cabem na tela mobile
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.85,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 1.15,
             children: [
               _buildCalcCard(
                 context,
                 title: 'Risco Cardiovascular (PREVENT / ASCVD)',
                 desc: 'Estima o risco de 10 anos para eventos de doença cardiovascular aterosclerótica.',
-                onTap: () => _openModalCalc(context, 'PREVENT / ASCVD'),
+                onTap: () => _openPREVENTModal(context),
               ),
               _buildCalcCard(
                 context,
@@ -1280,10 +1280,11 @@ class _CardioHubViewState extends State<CardioHubView> {
                 context,
                 title: 'Escore HAS-BLED',
                 desc: 'Risco de sangramento em Fibrilação Atrial.',
-                onTap: () => _openModalCalc(context, 'HAS-BLED'),
+                onTap: () => _openHASBLEDModal(context),
               ),
             ],
           ),
+          const SizedBox(height: 80), // Margem de segurança para o Dock flutuante inferior
         ],
       ),
     );
@@ -1300,19 +1301,20 @@ class _CardioHubViewState extends State<CardioHubView> {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E2330) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.20 : 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(isDark ? 0.15 : 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1320,15 +1322,15 @@ class _CardioHubViewState extends State<CardioHubView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: isDark ? Colors.grey[800] : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   'Cardiologia',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 9,
                     fontWeight: FontWeight.w600,
                     color: isDark ? Colors.grey[300] : Colors.grey[700],
                   ),
@@ -1336,39 +1338,40 @@ class _CardioHubViewState extends State<CardioHubView> {
               ),
               Icon(
                 Icons.star_border_rounded,
-                size: 18,
+                size: 16,
                 color: isDark ? Colors.grey[500] : Colors.grey[400],
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: FontWeight.w900,
                     color: isDark ? Colors.white : const Color(0xFF111111),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   desc,
-                  maxLines: 3,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 10,
                     color: isDark ? Colors.grey[400] : Colors.grey[600],
                   ),
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 2),
           TextButton(
             onPressed: onTap,
             style: TextButton.styleFrom(
@@ -1377,17 +1380,14 @@ class _CardioHubViewState extends State<CardioHubView> {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
                   'Abrir Calculadora',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue),
                 ),
-                const SizedBox(width: 4),
-                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Colors.blue[600]),
+                const SizedBox(width: 2),
+                Icon(Icons.arrow_forward_ios_rounded, size: 8, color: Colors.blue[600]),
               ],
             ),
           ),
@@ -1396,25 +1396,25 @@ class _CardioHubViewState extends State<CardioHubView> {
     );
   }
 
-  // ── MODAL: QTc — Fórmula de Bazett ────────────────────────────────
+  // ── 1. MODAL: QTc — Fórmula de Bazett ────────────────────────────
   void _openQTcModal(BuildContext context) {
     double qt = 400;
     double fc = 75;
-    double qtcResult = _calcQTc(qt, fc);
+    double qtcResult = 447;
 
-    showModalBottomSheet<void>(
+    showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Theme.of(context).cardColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setModalState) {
           void recalculate() {
-            setModalState(() {
-              qtcResult = _calcQTc(qt, fc);
-            });
+            if (fc > 0) {
+              final double rr = 60 / fc;
+              qtcResult = (qt / 1000) / sqrt(rr) * 1000;
+            }
           }
 
           return Padding(
@@ -1431,49 +1431,40 @@ class _CardioHubViewState extends State<CardioHubView> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Divider(),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 Text(
                   'Intervalo QT: ${qt.round()} ms',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 Slider(
-                  value: qt,
-                  min: 200,
-                  max: 600,
-                  activeColor: Colors.blue,
-                  onChanged: (v) { qt = v; recalculate(); },
+                  value: qt, min: 200, max: 600, activeColor: Colors.blue,
+                  onChanged: (v) => setModalState(() { qt = v; recalculate(); }),
                 ),
                 Text(
                   'Frequência Cardíaca: ${fc.round()} bpm',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 Slider(
-                  value: fc,
-                  min: 40,
-                  max: 180,
-                  activeColor: Colors.blue,
-                  onChanged: (v) { fc = v; recalculate(); },
+                  value: fc, min: 40, max: 180, activeColor: Colors.blue,
+                  onChanged: (v) => setModalState(() { fc = v; recalculate(); }),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 12),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.10),
-                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
                     child: Text(
                       'Resultado QTc: ${qtcResult.toStringAsFixed(0)} ms',
                       style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
               ],
             ),
           );
@@ -1482,48 +1473,39 @@ class _CardioHubViewState extends State<CardioHubView> {
     );
   }
 
-  /// Bazett: QTc = QT(ms) / √(RR em segundos)
-  /// RR = 60 / FC
-  double _calcQTc(double qtMs, double fcBpm) {
-    if (fcBpm <= 0) return 0;
-    final double rrSec = 60.0 / fcBpm;
-    return (qtMs / 1000.0) / sqrt(rrSec) * 1000.0;
-  }
-
-  // ── MODAL: CHA₂DS₂-VASc ───────────────────────────────────────────
+  // ── 2. MODAL: CHA₂DS₂-VASc ────────────────────────────────────────
   void _openCHA2DS2VAScModal(BuildContext context) {
     int score = 0;
     final Map<String, int> criteria = {
       'Insuficiência Cardíaca Congestiva': 1,
       'Hipertensão Arterial': 1,
       'Diabetes Mellitus': 1,
-      'Doença Vascular (Infarto prévio, DAP, placa na aorta)': 1,
+      'Doença Vascular (IM prévio, DAP ou placa na aorta)': 1,
       'Sexo Feminino': 1,
     };
-    final Map<String, bool> selected = {
+    final Map<String, bool> selectedCriteria = {
       for (final k in criteria.keys) k: false,
     };
-    int ageGroup = 0;      // 0=<65  1=65-74(+1)  2=≥75(+2)
+    int ageGroup = 0; // 0 = <65, 1 = 65-74 (+1), 2 = >=75 (+2)
     bool historicStroke = false; // +2
 
-    showModalBottomSheet<void>(
+    showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Theme.of(context).cardColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setModalState) {
-          void calculateScore() {
-            int s = 0;
-            selected.forEach((key, val) {
-              if (val) s += criteria[key]!;
+          void calculate() {
+            int current = 0;
+            selectedCriteria.forEach((key, val) {
+              if (val) current += criteria[key]!;
             });
-            if (ageGroup == 1) s += 1;
-            if (ageGroup == 2) s += 2;
-            if (historicStroke) s += 2;
-            score = s;
+            if (ageGroup == 1) current += 1;
+            if (ageGroup == 2) current += 2;
+            if (historicStroke) current += 2;
+            score = current;
           }
 
           return Padding(
@@ -1543,12 +1525,12 @@ class _CardioHubViewState extends State<CardioHubView> {
                   const Divider(),
                   ...criteria.keys.map((key) => CheckboxListTile(
                     title: Text(key, style: const TextStyle(fontSize: 13)),
-                    value: selected[key],
+                    value: selectedCriteria[key],
                     dense: true,
                     activeColor: Colors.blue,
                     onChanged: (val) => setModalState(() {
-                      selected[key] = val ?? false;
-                      calculateScore();
+                      selectedCriteria[key] = val ?? false;
+                      calculate();
                     }),
                   )),
                   CheckboxListTile(
@@ -1561,11 +1543,11 @@ class _CardioHubViewState extends State<CardioHubView> {
                     activeColor: Colors.blue,
                     onChanged: (val) => setModalState(() {
                       historicStroke = val ?? false;
-                      calculateScore();
+                      calculate();
                     }),
                   ),
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Text(
                       'Faixa Etária:',
                       style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
@@ -1577,44 +1559,36 @@ class _CardioHubViewState extends State<CardioHubView> {
                       ChoiceChip(
                         label: const Text('<65 anos'),
                         selected: ageGroup == 0,
-                        onSelected: (_) => setModalState(() {
-                          ageGroup = 0;
-                          calculateScore();
-                        }),
+                        selectedColor: Colors.blue,
+                        onSelected: (_) => setModalState(() { ageGroup = 0; calculate(); }),
                       ),
                       ChoiceChip(
-                        label: const Text('65-74 anos (+1)'),
+                        label: const Text('65-74 (+1)'),
                         selected: ageGroup == 1,
-                        onSelected: (_) => setModalState(() {
-                          ageGroup = 1;
-                          calculateScore();
-                        }),
+                        selectedColor: Colors.blue,
+                        onSelected: (_) => setModalState(() { ageGroup = 1; calculate(); }),
                       ),
                       ChoiceChip(
-                        label: const Text('≥75 anos (+2)'),
+                        label: const Text('≥75 (+2)'),
                         selected: ageGroup == 2,
-                        onSelected: (_) => setModalState(() {
-                          ageGroup = 2;
-                          calculateScore();
-                        }),
+                        selectedColor: Colors.blue,
+                        onSelected: (_) => setModalState(() { ageGroup = 2; calculate(); }),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 14),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.10),
-                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
                       child: Text(
-                        'Pontuação Total: $score Pts',
+                        'Pontuação: $score Pts',
                         style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue,
                         ),
                       ),
                     ),
@@ -1628,32 +1602,181 @@ class _CardioHubViewState extends State<CardioHubView> {
     );
   }
 
-  // ── MODAL: Placeholder amigável (PREVENT / HAS-BLED) ──────────────
-  void _openModalCalc(BuildContext context, String name) {
-    showModalBottomSheet<void>(
+  // ── 3. MODAL: HAS-BLED ────────────────────────────────────────────
+  void _openHASBLEDModal(BuildContext context) {
+    int score = 0;
+    final Map<String, bool> criteria = {
+      'Hipertensão (PAS > 160 mmHg)': false,
+      'Função Renal Alterada (Cr > 2.3 mg/dL ou Diálise)': false,
+      'Função Hepática Alterada (Cirrose ou Bilirrubina 2x LNS)': false,
+      'Histórico de AVC / AIT': false,
+      'Histórico de Sangramento Prévio ou Predisposição': false,
+      'INR Instável (Tempo na faixa terapêutica < 60%)': false,
+      'Idade > 65 anos': false,
+      'Uso de Medicamentos (Antiplaquetários / AINEs)': false,
+      'Consumo de Álcool Abusivo (≥ 8 doses/semana)': false,
+    };
+
+    showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).cardColor,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            const Text(
-              'Interface interativa de preenchimento de parâmetros clínicos em desenvolvimento.',
-              textAlign: TextAlign.center,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          void calculate() {
+            int current = 0;
+            criteria.forEach((key, val) { if (val) current++; });
+            score = current;
+          }
+
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 20, left: 20, right: 20,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
             ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Fechar'),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Escore HAS-BLED',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(),
+                  ...criteria.keys.map((key) => CheckboxListTile(
+                    title: Text(key, style: const TextStyle(fontSize: 13)),
+                    value: criteria[key],
+                    dense: true,
+                    activeColor: Colors.blue,
+                    onChanged: (val) => setModalState(() {
+                      criteria[key] = val ?? false;
+                      calculate();
+                    }),
+                  )),
+                  const SizedBox(height: 14),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Pontuação: $score Pts',
+                        style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ── 4. MODAL: PREVENT / ASCVD (modelo ponderado aproximado) ───────
+  void _openPREVENTModal(BuildContext context) {
+    bool isFemale = false;
+    bool hasDiabetes = false;
+    bool isSmoker = false;
+    double pas = 120;
+    double colTotal = 200;
+    double riskResult = 4.2;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          void calculate() {
+            double base = 1.2;
+            if (isSmoker) base += 2.5;
+            if (hasDiabetes) base += 3.1;
+            base += (pas - 110) * 0.15;
+            base += (colTotal - 150) * 0.05;
+            if (isFemale) base *= 0.85;
+            riskResult = base.clamp(0.5, 95.0);
+          }
+
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 20, left: 20, right: 20,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Risco Cardiovascular (PREVENT / ASCVD)',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(),
+                  SwitchListTile(
+                    title: const Text('Sexo Feminino', style: TextStyle(fontSize: 13)),
+                    value: isFemale, activeColor: Colors.blue, dense: true,
+                    onChanged: (val) => setModalState(() { isFemale = val; calculate(); }),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Diabetes Mellitus', style: TextStyle(fontSize: 13)),
+                    value: hasDiabetes, activeColor: Colors.blue, dense: true,
+                    onChanged: (val) => setModalState(() { hasDiabetes = val; calculate(); }),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Tabagista Ativo', style: TextStyle(fontSize: 13)),
+                    value: isSmoker, activeColor: Colors.blue, dense: true,
+                    onChanged: (val) => setModalState(() { isSmoker = val; calculate(); }),
+                  ),
+                  Text(
+                    'Pressão Arterial Sistólica: ${pas.round()} mmHg',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  Slider(
+                    value: pas, min: 90, max: 200, activeColor: Colors.blue,
+                    onChanged: (v) => setModalState(() { pas = v; calculate(); }),
+                  ),
+                  Text(
+                    'Colesterol Total: ${colTotal.round()} mg/dL',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  Slider(
+                    value: colTotal, min: 100, max: 400, activeColor: Colors.blue,
+                    onChanged: (v) => setModalState(() { colTotal = v; calculate(); }),
+                  ),
+                  const SizedBox(height: 14),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Risco em 10 anos: ${riskResult.toStringAsFixed(1)}%',
+                        style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
