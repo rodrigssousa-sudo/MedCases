@@ -2015,87 +2015,116 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                             ),
                         ],
                       ),
+                      // BUILD 330: Row 4×Expanded = 25% cada — simetria matemática perfeita.
+                      // Labels somem via AnimatedOpacity quando barra encolhe (38px).
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
 
-                          // ── 1. INÍCIO ──────────────────────────────────────
+                          // ── 1. INÍCIO — 25% ────────────────────────────────
                           Expanded(
                             child: _NavItem(
                               icon: Icons.home_rounded,
                               label: widget.lang == 'es' ? 'Inicio' : 'Início',
                               isActive: widget.currentTab == 0,
                               dark: widget.dark,
+                              shrunk: _shrunk,
                               onTap: () => widget.onTabChange(0),
                             ),
                           ),
 
-                          // ── 2. FAB CENTRAL IA ──────────────────────────────
-                          SizedBox(
-                            width: 50,
-                            height: barHeight,
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: widget.onFabTap,
-                                onDoubleTap: widget.onFabDoubleTap,
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 220),
-                                  curve: Curves.easeOutCubic,
-                                  width: 31,
-                                  height: 31,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: widget.isAiActive
-                                          ? [const Color(0xFF008CA4), const Color(0xFF005566)]
-                                          : [const Color(0xFF374151), const Color(0xFF1E2330)],
+                          // ── 2. IA — 25% ────────────────────────────────────
+                          // BUILD 330: Expanded igual aos outros + label "IA"
+                          // para alinhar a baseline vertical com Início/Ferramentas/Menu.
+                          Expanded(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: widget.onFabTap,
+                              onDoubleTap: widget.onFabDoubleTap,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Círculo IA (FAB)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 220),
+                                      curve: Curves.easeOutCubic,
+                                      width: 26,
+                                      height: 26,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: widget.isAiActive
+                                              ? [const Color(0xFF008CA4), const Color(0xFF005566)]
+                                              : [const Color(0xFF374151), const Color(0xFF1E2330)],
+                                        ),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: widget.isAiActive
+                                              ? _neonCyan.withOpacity(0.80)
+                                              : const Color(0xFF4B5563),
+                                          width: 1.5,
+                                        ),
+                                        boxShadow: widget.isAiActive
+                                            ? [BoxShadow(color: _neonCyan.withOpacity(0.50), blurRadius: 12)]
+                                            : [BoxShadow(color: Colors.black.withOpacity(0.30), blurRadius: 6, offset: const Offset(0, 2))],
+                                      ),
+                                      child: Icon(
+                                        Icons.psychology_rounded,
+                                        size: 16,
+                                        color: widget.isAiActive ? _neonCyan : Colors.white70,
+                                      ),
                                     ),
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: widget.isAiActive
-                                          ? _neonCyan.withOpacity(0.80)
-                                          : const Color(0xFF4B5563),
-                                      width: 1.5,
+                                  ),
+                                  // Label "IA" — some ao encolher (mesma lógica dos outros)
+                                  AnimatedOpacity(
+                                    opacity: _shrunk ? 0.0 : 1.0,
+                                    duration: const Duration(milliseconds: 200),
+                                    child: Text(
+                                      'IA',
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 10.0,
+                                        fontWeight: widget.isAiActive
+                                            ? FontWeight.w700
+                                            : FontWeight.w400,
+                                        color: widget.isAiActive
+                                            ? (widget.dark ? _neonCyan : const Color(0xFF008CA4))
+                                            : (widget.dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0)),
+                                        height: 1.0,
+                                      ),
                                     ),
-                                    boxShadow: widget.isAiActive
-                                        ? [BoxShadow(color: _neonCyan.withOpacity(0.50), blurRadius: 14)]
-                                        : [BoxShadow(color: Colors.black.withOpacity(0.35), blurRadius: 8, offset: const Offset(0, 3))],
                                   ),
-                                  child: Icon(
-                                    Icons.psychology_rounded,
-                                    size: 20,
-                                    color: widget.isAiActive ? _neonCyan : Colors.white70,
-                                  ),
-                                ),
+                                ],
                               ),
                             ),
                           ),
 
-                          // ── 3. FERRAMENTAS ─────────────────────────────────
+                          // ── 3. FERRAMENTAS — 25% ───────────────────────────
                           Expanded(
                             child: _NavItem(
                               icon: Icons.calculate_rounded,
                               label: widget.lang == 'es' ? 'Herramientas' : 'Ferramentas',
                               isActive: widget.currentTab == 4,
                               dark: widget.dark,
+                              shrunk: _shrunk,
                               onTap: () => widget.onTabChange(4),
                             ),
                           ),
 
-                          // ── 4. MENU — Avatar M+ circular estilo Instagram ──
-                          // Círculo verde esmeralda com "M+" dourado centralizado.
-                          // Borda luminosa que pulsa levemente ao ser ativo.
-                          // Toca → abre endDrawer (Drawer lateral do app).
+                          // ── 4. MENU M+ — 25% ───────────────────────────────
+                          // Avatar circular estilo Instagram story ring.
                           Expanded(
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onTap: widget.onMenuTap,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // ── Avatar circular M+ ───────────────────
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 3),
                                     child: Container(
@@ -2103,16 +2132,14 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                                       height: 26,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        // Gradiente verde esmeralda → petróleo
                                         gradient: const LinearGradient(
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                           colors: [
-                                            Color(0xFF16A87C), // verde esmeralda topo
-                                            Color(0xFF0A5C45), // verde petróleo fundo
+                                            Color(0xFF16A87C),
+                                            Color(0xFF0A5C45),
                                           ],
                                         ),
-                                        // Borda dourada estilo Instagram story
                                         border: Border.all(
                                           color: _avatarGreenLight.withOpacity(0.70),
                                           width: 1.8,
@@ -2121,7 +2148,6 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                                           BoxShadow(
                                             color: _avatarGreen.withOpacity(0.45),
                                             blurRadius: 8,
-                                            spreadRadius: 0,
                                           ),
                                         ],
                                       ),
@@ -2145,18 +2171,22 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                                       ),
                                     ),
                                   ),
-                                  // ── Label "Menu" ─────────────────────────
-                                  Text(
-                                    widget.lang == 'es' ? 'Menú' : 'Menu',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 10.0,
-                                      fontWeight: FontWeight.w500,
-                                      color: widget.dark
-                                          ? const Color(0xFF6B7280)
-                                          : const Color(0xFFB0B8C0),
-                                      height: 1.0,
+                                  // Label "Menu" — some ao encolher
+                                  AnimatedOpacity(
+                                    opacity: _shrunk ? 0.0 : 1.0,
+                                    duration: const Duration(milliseconds: 200),
+                                    child: Text(
+                                      widget.lang == 'es' ? 'Menú' : 'Menu',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 10.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: widget.dark
+                                            ? const Color(0xFF6B7280)
+                                            : const Color(0xFFB0B8C0),
+                                        height: 1.0,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -2181,11 +2211,13 @@ class _FloatingFooterState extends State<_FloatingFooter> {
 }
 
 // ── Item individual da bottom nav ─────────────────────────────────────────────
+// BUILD 330: aceita [shrunk] para sumir labels via AnimatedOpacity ao encolher.
 class _NavItem extends StatelessWidget {
   final IconData icon;
   final String   label;
   final bool     isActive;
   final bool     dark;
+  final bool     shrunk;   // true → barra encolhida → label some
   final VoidCallback onTap;
 
   const _NavItem({
@@ -2194,6 +2226,7 @@ class _NavItem extends StatelessWidget {
     required this.isActive,
     required this.dark,
     required this.onTap,
+    this.shrunk = false,
   });
 
   @override
@@ -2202,30 +2235,33 @@ class _NavItem extends StatelessWidget {
     final inactiveColor = dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0);
     final color = isActive ? activeColor : inactiveColor;
 
-    // Build 158.3: layout compacto para caber em barHeight=42px
+    // BUILD 330: Column stretch — ocupa toda a altura do Expanded pai
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // BUILD 328 M1: ícone 18→22px — alvo de toque maior
+          // Ícone — tamanho 22px compatível com o círculo 26px dos outros botões
           Padding(
             padding: const EdgeInsets.only(bottom: 3),
             child: Icon(icon, size: 22, color: color),
           ),
-          const SizedBox(height: 1),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              // BUILD 328 M1: label fontSize 9→10 — leitura mais confortável
-              fontSize: 10.0,
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
-              color: color,
-              height: 1.0,
+          // Label — some suavemente quando a barra encolhe (scroll down)
+          AnimatedOpacity(
+            opacity: shrunk ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 200),
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10.0,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                color: color,
+                height: 1.0,
+              ),
             ),
           ),
         ],
