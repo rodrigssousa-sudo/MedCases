@@ -162,7 +162,7 @@ class AppProvider extends ChangeNotifier {
 
   // ── Estado local ──────────────────────────────────────────────────────────
   String _lang = _systemLang();
-  bool _darkMode = false;
+  bool _darkMode = true; // DARK-FIRST: inicializa sempre em modo escuro
   bool _hapticEnabled = true; // feedback tátil — ligado por padrão
 
   PatientData _patient = PatientData();
@@ -749,7 +749,7 @@ class AppProvider extends ChangeNotifier {
       // Preferências globais (independentes de usuário)
       // Fallback: idioma do sistema operacional (pt para português, es para outros)
       _lang          = p.getString('lang')         ?? _systemLang();
-      _darkMode      = p.getBool('darkMode')        ?? false;
+      _darkMode      = p.getBool('darkMode')        ?? true;  // DARK-FIRST: padrão escuro para novos usuários
       _hapticEnabled = p.getBool('hapticEnabled')   ?? true;
       // Chave de IA — lida com prefixo de usuário se disponível (fallback offline)
       if (uid != null) {
