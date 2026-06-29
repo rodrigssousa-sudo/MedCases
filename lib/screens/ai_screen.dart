@@ -2926,9 +2926,32 @@ class _MobileAiActionBar extends StatelessWidget {
     //   o toolbar tratou isso como ocupação do terço esquerdo e o title ficou
     //   deslocado / invisível. Stack com IgnorePointer resolve sem ambiguidade.
     // ═══════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════
+    // TOPBAR GEOMETRY — View.of(context) bypass
+    //
+    // PROBLEMA RAIZ: MainShell usa MediaQuery.removePadding(removeTop:true)
+    // antes do IndexedStack. Qualquer SafeArea(top:true) ou
+    // MediaQuery.of(ctx).padding.top dentro das telas recebe 0 — o inset
+    // já foi consumido. O bypass correto é ler o padding FÍSICO diretamente
+    // da FlutterView, que é imune ao removePadding do MediaQuery.
+    //
+    // View.of(context).padding.top → padding em logical pixels físicos
+    // (já normalizado pelo devicePixelRatio internamente pelo Flutter).
+    //
+    // ESTRUTURA RESULTANTE:
+    //   Container (fundo #111622, altura = topPad + 56)
+    //     └── Padding(top: topPad)          ← empurra conteúdo abaixo do notch
+    //           └── SizedBox(height: 56)    ← área interativa fixa
+    //                 └── Stack (botão esq + título + espaço dir)
+    // ═══════════════════════════════════════════════════════════════════
+    final double topPad = View.of(context).padding.top /
+        View.of(context).devicePixelRatio;
+
     return Container(
+      width: double.infinity,
+      height: topPad + 56,
       decoration: BoxDecoration(
-        color: const Color(0xFF111622), // dark sólido — NUNCA branco
+        color: const Color(0xFF111622), // dark sólido — sangra até o topo físico
         border: const Border(
           bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
         ),
@@ -2940,14 +2963,12 @@ class _MobileAiActionBar extends StatelessWidget {
           ),
         ],
       ),
-      // Fix #1: SafeArea(top:true) empurra o conteúdo para baixo da Dynamic Island/Notch.
-      // SizedBox(48) garante altura fixa do conteúdo ativo — o SafeArea adiciona o
-      // inset superior necessário automaticamente, sem corte seco no status bar.
-      child: SafeArea(
-        top: true,
-        bottom: false,
+      child: Padding(
+        // Empurra o conteúdo interativo para baixo da Dynamic Island / Notch.
+        // Não usa SafeArea aqui — o padding físico real já foi capturado acima.
+        padding: EdgeInsets.only(top: topPad),
         child: SizedBox(
-          height: 48,
+          height: 56,
           child: Stack(
             children: [
 
@@ -2995,7 +3016,7 @@ class _MobileAiActionBar extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: RichText(
-                  text: TextSpan(
+                  text: const TextSpan(
                     children: [
                       TextSpan(
                         text: 'MEDCASES ',

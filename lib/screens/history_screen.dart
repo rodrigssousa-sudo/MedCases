@@ -1115,13 +1115,29 @@ class _HcTopbar extends StatelessWidget {
           ),
         ],
       ),
-      // Fix #4: topbar bleed — Builder lê topPad e dimensiona Container para
-      // topPad+48, empurrando conteúdo interativo abaixo da Dynamic Island.
+      // TOPBAR GEOMETRY — View.of(context) bypass
+      //
+      // PROBLEMA RAIZ: MainShell usa MediaQuery.removePadding(removeTop:true)
+      // antes do IndexedStack. Qualquer Builder(ctx){MediaQuery.of(ctx).padding.top}
+      // dentro das telas recebe 0 — o inset já foi consumido pelo MediaQuery tree.
+      // O bypass correto é ler o padding FÍSICO diretamente da FlutterView,
+      // que é IMUNE ao removePadding do MediaQuery.
+      //
+      // View.of(context).padding.top  → pixels físicos
+      // / View.of(context).devicePixelRatio → logical pixels corretos
+      //
+      // ESTRUTURA RESULTANTE:
+      //   Container (gradiente laranja, altura = topPad + 56)
+      //     └── Padding(top: topPad)          ← empurra conteúdo abaixo do notch
+      //           └── SizedBox(height: 56)    ← área interativa fixa
+      //                 └── Stack (botão esq + título centrado)
+      // ═══════════════════════════════════════════════════════════════════
       child: Builder(
         builder: (ctx) {
-          final topPad = MediaQuery.of(ctx).padding.top;
+          final double topPad = View.of(ctx).padding.top /
+              View.of(ctx).devicePixelRatio;
           return SizedBox(
-            height: topPad + 48,
+            height: topPad + 56,
             child: Padding(
               padding: EdgeInsets.only(top: topPad),
               child: Padding(

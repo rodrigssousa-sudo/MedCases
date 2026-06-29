@@ -140,17 +140,29 @@ class _ToolsTopbar extends StatelessWidget {
           ),
         ],
       ),
-      // Fix #4: topbar bleed — Builder lê o topPad real do dispositivo e
-      // dimensiona o Container para topPad+48. Como o parent SafeArea em
-      // MainShell já consumiu o inset, MediaQuery.padding.top aqui é 0 em
-      // telas normais, mas em dispositivos onde o Scaffold aninhado expõe o
-      // inset o Builder captura corretamente. Padding explícito empurra o
-      // conteúdo interativo abaixo da Dynamic Island.
+      // TOPBAR GEOMETRY — View.of(context) bypass
+      //
+      // PROBLEMA RAIZ: MainShell usa MediaQuery.removePadding(removeTop:true)
+      // antes do IndexedStack. Qualquer Builder(ctx){MediaQuery.of(ctx).padding.top}
+      // dentro das telas recebe 0 — o inset já foi consumido pelo MediaQuery tree.
+      // O bypass correto é ler o padding FÍSICO diretamente da FlutterView,
+      // que é IMUNE ao removePadding do MediaQuery.
+      //
+      // View.of(context).padding.top  → pixels físicos
+      // / View.of(context).devicePixelRatio → logical pixels corretos
+      //
+      // ESTRUTURA RESULTANTE:
+      //   Container (fundo #111622, altura = topPad + 56)
+      //     └── Padding(top: topPad)          ← empurra conteúdo abaixo do notch
+      //           └── SizedBox(height: 56)    ← área interativa fixa
+      //                 └── Stack (botão esq + título centrado)
+      // ═══════════════════════════════════════════════════════════════════
       child: Builder(
         builder: (ctx) {
-          final topPad = MediaQuery.of(ctx).padding.top;
+          final double topPad = View.of(ctx).padding.top /
+              View.of(ctx).devicePixelRatio;
           return SizedBox(
-            height: topPad + 48,
+            height: topPad + 56,
             child: Padding(
               padding: EdgeInsets.only(top: topPad),
               child: Stack(
