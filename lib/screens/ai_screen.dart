@@ -2869,160 +2869,91 @@ class _MobileAiActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MedCases IA palette — icon teal
-    final iconColor = dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
-    final iconBg = dark
-        ? const Color(0xFF00E5FF).withOpacity(0.07)
-        : const Color(0xFF008CA4).withOpacity(0.08);
-    final iconBorder = dark
-        ? const Color(0xFF00E5FF).withOpacity(0.15)
-        : const Color(0xFF008CA4).withOpacity(0.22);
-
+    // BUILD 331: Topbar standard — adaptive dark/light, solid bg, border 0.5px, shadow blur:6
     return Container(
-      height: 52, // SUPER ORDEM MASTER 308 M2: +5px adicional → 52px
-      decoration: const BoxDecoration(
-        // SUPER ORDEM MASTER 12 M1: BLACK TOPBAR FIXO — premium em qualquer modo
-        // Light Mode e Dark Mode recebem o mesmo preto absoluto para contraste do M+
-        color: Color(0xFF0C0E12),
-        border: Border(bottom: BorderSide(
-          color: Color(0xFF1E2128),
-          width: 0.5,
-        )),
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF0F1116) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      // ORDEM 36: título CENTRALIZADO + trailing dark container com ícones
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // ── Título centralizado ─────────────────────────────────────────
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 48,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'MEDCASES',
-                        style: TextStyle(
-                          // SUPER ORDEM MASTER 12 M1: SEMPRE branco — TopBar é preto absoluto
-                          // em ambos os modos. dark/light adaptive foi removido.
-                          fontSize: 15.5, fontWeight: FontWeight.w700,
-                          color: Colors.white, // branco clínico fixo sobre preto 0xFF0C0E12
-                          letterSpacing: -0.2,
-                        ),
-                      ),
-                      const TextSpan(
-                        text: ' IA',
-                        style: TextStyle(
-                          fontSize: 15.5, fontWeight: FontWeight.w700,
-                          color: Color(0xFFD4AF37), letterSpacing: -0.2,
-                        ),
-                      ),
-                    ],
+                // ── Título geometricamente centralizado (Build 331) ────────
+                Text(
+                  'MEDCASES IA',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: dark ? Colors.white : const Color(0xFF0F1116),
                   ),
                 ),
 
-              ],
-            ),
-          ),
-
-          // ── Leading: M+ VIVO — status da IA — SUPER ORDEM ESTRUTURAL 11 ──
-          // Conectado: verde pulsante (TweenAnimationBuilder respiração).
-          // Desconectado: 'Conectar IA' ciano estático.
-          // Ambos: GestureDetector → _openAiSettings (modal verde).
-          Positioned(
-            left: 8,
-            child: GestureDetector(
-              onTap: onSettings,
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                child: isConnected
-                    // ── M+ verde pulsante (IA conectada) — loop gerenciado por _MplusPulse
-                    ? const _MplusPulse()
-                    // ── 'Conectar IA' ciano (IA desconectada) ────────────
-                    : const Text(
-                        'Conectar IA',
-                        style: TextStyle(
-                          fontSize: 13, // SUPER ORDEM MASTER 12 M2: 12→13
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF00E5FF),
-                          letterSpacing: -0.2,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-
-          // ── Trailing: dark container com history + add — M308 M2: mais fino
-          Positioned(
-            right: 10,
-            child: Container(
-              height: 28,
-              padding: const EdgeInsets.symmetric(horizontal: 3),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: const Color(0xFF252930),
-                border: Border.all(color: const Color(0xFF353840), width: 0.8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Botão histórico com badge numérico
-                  // Botão histórico — mais fino
-                  GestureDetector(
-                    onTap: onHistory,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Icon(Icons.history_rounded, size: 15,
-                              color: Colors.white.withOpacity(0.70)),
-                        ),
-                        if (historyCount > 0)
-                          Positioned(
-                            top: -2, right: 2,
-                            child: Container(
-                              width: 11, height: 11,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFFC5A365),
+                // ── Leading: Conectar IA / M+ pulsante (esquerda) ─────────
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: onSettings,
+                    behavior: HitTestBehavior.opaque,
+                    child: isConnected
+                        // M+ verde pulsante (IA conectada)
+                        ? const _MplusPulse()
+                        // 'Conectar IA' — borda forte, texto nítido
+                        : Container(
+                            height: 30,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(7),
+                              color: dark
+                                  ? const Color(0xFF00E5FF).withOpacity(0.10)
+                                  : const Color(0xFF008CA4).withOpacity(0.08),
+                              border: Border.all(
+                                color: dark
+                                    ? const Color(0xFF00E5FF).withOpacity(0.60)
+                                    : const Color(0xFF008CA4).withOpacity(0.55),
+                                width: 1.2,
                               ),
-                              child: Center(
-                                child: Text(
-                                  '$historyCount',
-                                  style: const TextStyle(
-                                    fontSize: 6, fontWeight: FontWeight.w900,
-                                    color: Color(0xFF1A1100),
-                                  ),
-                                ),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Conectar IA',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: dark
+                                    ? Colors.white
+                                    : const Color(0xFF006B80),
+                                letterSpacing: 0.1,
                               ),
                             ),
                           ),
-                      ],
-                    ),
                   ),
-                  // Divisor vertical
-                  Container(
-                    width: 1, height: 13,
-                    color: Colors.white.withOpacity(0.12),
-                    margin: const EdgeInsets.symmetric(horizontal: 1),
-                  ),
-                  // Botão novo chat — mais fino
-                  GestureDetector(
-                    onTap: onNewChat,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Icon(Icons.add_rounded, size: 15,
-                          color: Colors.white.withOpacity(0.70)),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+
+                // ── Trailing: vazio — botões migrados para barra inferior ──
+                // (Build 331: [Histórico | Novo] removidos — redundância eliminada)
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
