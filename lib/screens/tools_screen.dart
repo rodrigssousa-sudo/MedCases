@@ -140,57 +140,68 @@ class _ToolsTopbar extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          height: 48,
-          child: Stack(
-            children: [
-              // ── BOTÃO ESQUERDO — posição absoluta, nunca sobrepõe o título ──
-              Positioned(
-                left: 12,
-                top: 0,
-                bottom: 0,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) {
-                        nav.pop();
-                      } else {
-                        MainShell.pendingTab.value = 0;
-                      }
-                    },
-                    child: const SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 20,
+      // Fix #4: topbar bleed — Builder lê o topPad real do dispositivo e
+      // dimensiona o Container para topPad+48. Como o parent SafeArea em
+      // MainShell já consumiu o inset, MediaQuery.padding.top aqui é 0 em
+      // telas normais, mas em dispositivos onde o Scaffold aninhado expõe o
+      // inset o Builder captura corretamente. Padding explícito empurra o
+      // conteúdo interativo abaixo da Dynamic Island.
+      child: Builder(
+        builder: (ctx) {
+          final topPad = MediaQuery.of(ctx).padding.top;
+          return SizedBox(
+            height: topPad + 48,
+            child: Padding(
+              padding: EdgeInsets.only(top: topPad),
+              child: Stack(
+                children: [
+                  // ── BOTÃO ESQUERDO — posição absoluta, nunca sobrepõe o título ──
+                  Positioned(
+                    left: 12,
+                    top: 0,
+                    bottom: 0,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          final nav = Navigator.of(context);
+                          if (nav.canPop()) {
+                            nav.pop();
+                          } else {
+                            MainShell.pendingTab.value = 0;
+                          }
+                        },
+                        child: const SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // ── TÍTULO — centro geométrico absoluto ──────────────────────
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'FERRAMENTAS',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.2,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-              // ── TÍTULO — centro geométrico absoluto ──────────────────────
-              const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'FERRAMENTAS',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -1225,6 +1236,8 @@ class _CardioHubViewState extends State<CardioHubView> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Fix #2: i18n CardioHub — lê o lang do AppProvider para PT/ES
+    final isEs = context.watch<AppProvider>().lang == 'es';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -1232,7 +1245,7 @@ class _CardioHubViewState extends State<CardioHubView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Cardiologia',
+            isEs ? 'Cardiología' : 'Cardiologia',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -1241,7 +1254,9 @@ class _CardioHubViewState extends State<CardioHubView> {
           ),
           const SizedBox(height: 2),
           Text(
-            'Selecione uma calculadora para começar.',
+            isEs
+                ? 'Seleccione una calculadora para comenzar.'
+                : 'Selecione uma calculadora para começar.',
             style: TextStyle(
               fontSize: 13,
               color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -1260,26 +1275,42 @@ class _CardioHubViewState extends State<CardioHubView> {
             children: [
               _buildCalcCard(
                 context,
-                title: 'Risco Cardiovascular (PREVENT / ASCVD)',
-                desc: 'Estima o risco de 10 anos para eventos de doença cardiovascular aterosclerótica.',
+                isEs: isEs,
+                title: isEs
+                    ? 'Riesgo Cardiovascular (PREVENT / ASCVD)'
+                    : 'Risco Cardiovascular (PREVENT / ASCVD)',
+                desc: isEs
+                    ? 'Estima el riesgo de 10 años para eventos de enfermedad cardiovascular aterosclerótica.'
+                    : 'Estima o risco de 10 anos para eventos de doença cardiovascular aterosclerótica.',
                 onTap: () => _openPREVENTModal(context),
               ),
               _buildCalcCard(
                 context,
-                title: 'Escore CHA₂DS₂-VASc',
-                desc: 'Estima o risco de AVC em pacientes com Fibrilação Atrial.',
+                isEs: isEs,
+                title: isEs ? 'Escala CHA₂DS₂-VASc' : 'Escore CHA₂DS₂-VASc',
+                desc: isEs
+                    ? 'Estima el riesgo de ACV en pacientes con Fibrilación Auricular.'
+                    : 'Estima o risco de AVC em pacientes com Fibrilação Atrial.',
                 onTap: () => _openCHA2DS2VAScModal(context),
               ),
               _buildCalcCard(
                 context,
-                title: 'Intervalo QT Corrigido (QTc)',
-                desc: 'Calcula o intervalo QT corrigido pela frequência cardíaca.',
+                isEs: isEs,
+                title: isEs
+                    ? 'Intervalo QT Corregido (QTc)'
+                    : 'Intervalo QT Corrigido (QTc)',
+                desc: isEs
+                    ? 'Calcula el intervalo QT corregido por la frecuencia cardíaca.'
+                    : 'Calcula o intervalo QT corrigido pela frequência cardíaca.',
                 onTap: () => _openQTcModal(context),
               ),
               _buildCalcCard(
                 context,
-                title: 'Escore HAS-BLED',
-                desc: 'Risco de sangramento em Fibrilação Atrial.',
+                isEs: isEs,
+                title: isEs ? 'Escala HAS-BLED' : 'Escore HAS-BLED',
+                desc: isEs
+                    ? 'Riesgo de sangrado en Fibrilación Auricular.'
+                    : 'Risco de sangramento em Fibrilação Atrial.',
                 onTap: () => _openHASBLEDModal(context),
               ),
             ],
@@ -1295,6 +1326,7 @@ class _CardioHubViewState extends State<CardioHubView> {
     required String title,
     required String desc,
     required VoidCallback onTap,
+    bool isEs = false, // Fix #2: param i18n — action label PT/ES
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -1328,7 +1360,7 @@ class _CardioHubViewState extends State<CardioHubView> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'Cardiologia',
+                  isEs ? 'Cardiología' : 'Cardiologia',
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w600,
@@ -1350,7 +1382,8 @@ class _CardioHubViewState extends State<CardioHubView> {
               children: [
                 Text(
                   title,
-                  maxLines: 1,
+                  // Fix #2: maxLines:2 evita truncamento em ES (títulos mais longos)
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12,
@@ -1382,9 +1415,10 @@ class _CardioHubViewState extends State<CardioHubView> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Abrir Calculadora',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue),
+                // Fix #2: label i18n PT/ES — arrow embutido na string
+                Text(
+                  isEs ? 'Abrir Calculadora >' : 'Abrir Calculadora >',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue),
                 ),
                 const SizedBox(width: 2),
                 Icon(Icons.arrow_forward_ios_rounded, size: 8, color: Colors.blue[600]),

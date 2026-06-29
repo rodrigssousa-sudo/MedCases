@@ -393,13 +393,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final bool isTabletLandscape = !kIsWeb && availableWidth >= 600;
     final double contentMaxWidth = isTabletLandscape ? 800.0 : double.infinity;
 
-    // BUILD 281 — bottomPad reajustado: módulo Meu Plantão isolado do layout.
-    // Footer overlay (48px nav + 22px legal) + safe area do dispositivo + 24px margem.
-    // Sem o painel MiGuardia, não há necessidade do clamp 160px anterior.
+    // Fix #5: bottom padding dinâmico — garante que os últimos cards não
+    // fiquem escondidos atrás do Dock flutuante. Usa padding.bottom nativo
+    // do dispositivo + 112px (altura do Dock + margem de conforto).
+    // kIsWeb: footer no fluxo normal — sem Dock — 24px suficiente.
     final double safeBottom = MediaQuery.of(context).padding.bottom;
-    // kIsWeb: footer no fluxo normal — 24px fixo.
-    // Mobile: nav(48) + legal(22) + safeArea + 24 margem = confortável sem excesso.
-    final double bottomPad  = kIsWeb ? 24.0 : (safeBottom + 24.0).clamp(24.0, 86.0);
+    final double bottomPad  = kIsWeb ? 24.0 : safeBottom + 112.0;
 
     Widget mobileContent = SingleChildScrollView(
         physics: const BouncingScrollPhysics(),

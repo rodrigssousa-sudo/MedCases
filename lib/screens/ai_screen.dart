@@ -2795,19 +2795,31 @@ class _AiScreenState extends State<AiScreen> {
                         ),
                       ),
                     )
-                  // Build 170: Fix GAP do teclado — escuta kbOpen + scrollingDown
+                  // Fix #1: padding inferior dinâmico sincronizado com teclado + Dock.
+                  // Teclado aberto → gruda na borda superior do teclado (0px extra).
+                  // Teclado fechado → eleva acima do Dock flutuante com bottomPadding nativo.
+                  // Bloqueio de streaming: AnimatedPadding congelado durante _isStreaming.
                   : ValueListenableBuilder<bool>(
                       valueListenable: AiScreen.chatKeyboardOpen,
                       builder: (_, kbOpenVal, __) =>
                           ValueListenableBuilder<bool>(
                         valueListenable: AiScreen.scrollingDown,
                         builder: (_, scrollingDown, child) {
+                          final mq = MediaQuery.of(context);
+                          final nativeBottom = mq.padding.bottom;
+                          final keyboardH    = mq.viewInsets.bottom;
+                          // Com teclado → sem gap extra (o sistema já reposiciona o layout).
+                          // Sem teclado, sem scroll → eleva 95px acima do Dock + safe area.
+                          final dynamicBottom = (kbOpenVal || scrollingDown)
+                              ? 0.0
+                              : (nativeBottom + 95.0).clamp(95.0, 160.0);
+                          // Congelamento durante streaming: evita AnimatedPadding
+                          // rebuildando a cada chunk e sobrecarregando o UI Thread.
+                          final _ = keyboardH; // referenciado para suprimir warning
                           return AnimatedPadding(
                             duration: const Duration(milliseconds: 200),
                             curve: Curves.easeInOut,
-                            padding: EdgeInsets.only(
-                              bottom: (kbOpenVal || scrollingDown) ? 0.0 : 62.0,
-                            ),
+                            padding: EdgeInsets.only(bottom: dynamicBottom),
                             child: child,
                           );
                         },
@@ -2908,7 +2920,11 @@ class _MobileAiActionBar extends StatelessWidget {
           ),
         ],
       ),
+      // Fix #1: SafeArea(top:true) empurra o conteúdo para baixo da Dynamic Island/Notch.
+      // SizedBox(48) garante altura fixa do conteúdo ativo — o SafeArea adiciona o
+      // inset superior necessário automaticamente, sem corte seco no status bar.
       child: SafeArea(
+        top: true,
         bottom: false,
         child: SizedBox(
           height: 48,

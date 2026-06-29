@@ -1109,53 +1109,60 @@ class _HcTopbar extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          height: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // ── CENTER: título BRANCO — contraste máximo sobre laranja
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
-                // ── LEFT: botão de voltar BRANCO — SizedBox 36×36 ─────────
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) {
-                        nav.pop();
-                      } else {
-                        MainShell.pendingTab.value = 0;
-                      }
-                    },
-                    child: const SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 20,
+      // Fix #4: topbar bleed — Builder lê topPad e dimensiona Container para
+      // topPad+48, empurrando conteúdo interativo abaixo da Dynamic Island.
+      child: Builder(
+        builder: (ctx) {
+          final topPad = MediaQuery.of(ctx).padding.top;
+          return SizedBox(
+            height: topPad + 48,
+            child: Padding(
+              padding: EdgeInsets.only(top: topPad),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // ── CENTER: título BRANCO — contraste máximo sobre laranja
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.2,
                         color: Colors.white,
                       ),
                     ),
-                  ),
+                    // ── LEFT: botão de voltar BRANCO — SizedBox 36×36 ─────────
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          final nav = Navigator.of(context);
+                          if (nav.canPop()) {
+                            nav.pop();
+                          } else {
+                            MainShell.pendingTab.value = 0;
+                          }
+                        },
+                        child: const SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

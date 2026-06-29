@@ -351,11 +351,16 @@ class _LibraryTopbar extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          height: 48,
-          child: Padding(
+      // Fix #4: topbar bleed — Builder lê topPad e dimensiona Container para
+      // topPad+48, empurrando conteúdo interativo abaixo da Dynamic Island.
+      child: Builder(
+        builder: (ctx) {
+          final topPad = MediaQuery.of(ctx).padding.top;
+          return SizedBox(
+            height: topPad + 48,
+            child: Padding(
+              padding: EdgeInsets.only(top: topPad),
+              child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Stack(
               alignment: Alignment.center,
@@ -433,7 +438,9 @@ class _LibraryTopbar extends StatelessWidget {
               ],
             ),
           ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
