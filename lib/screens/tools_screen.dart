@@ -80,35 +80,93 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
 
     final dark = p.darkMode;
 
-    return Column(children: [
-      // BUILD 331: Topbar unificada — desacoplada das tabs
-      if (showHeader)
-        _ToolsTopbar(dark: dark, isEs: isEs),
-      // BUILD 331: Seletor de categorias desacoplado da Topbar
-      if (showHeader)
-        _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
-
-      // ── Content ─────────────────────────────────────────────────
-      // GestureDetector com behavior translucent: um tap em qualquer área
-      // vazia (fora de TextField) fecha o teclado sem bloquear scroll nem
-      // gestos internos (botões, seletores, swipe de tab).
-      Expanded(
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: TabBarView(
-            controller: _tabCtrl,
-            children: [
-              _BiometricsTab(),
-              // BUILD 277-CROMATICO: _ScoresTab() removed
-              CardioHubView(),
-              _ElectrolytesTab(),
-              _ReferenceTab(),
-            ],
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // TOPBAR BLEED — Stack com Positioned negativo.
+    //
+    // CONTEXTO: MainShell._buildMobileShell() aplica para as abas 3/4/5:
+    //   Padding(top: statusBarHeight) antes do IndexedStack.
+    // Isso desloca TODA a tela para baixo por statusBarHeight — a topbar
+    // começa ABAIXO da status bar, deixando uma falha no topo.
+    //
+    // SOLUÇÃO SEM TOCAR EM main.dart:
+    // Usar Stack com Positioned(top: -topPad) para subir o Container
+    // da topbar para atrás da status bar física. O topPad é lido via
+    // View.of(context) — imune ao MediaQuery.removePadding do MainShell.
+    //
+    // ESTRUTURA:
+    //   Stack(clipBehavior: Clip.none)
+    //     ├── Column (SizedBox compensatório + TabRow + conteúdo)
+    //     └── Positioned(top: -topPad, height: topPad+56)
+    //           └── Container(cor/gradiente)
+    //                 └── SafeArea(bottom:false) → posiciona conteúdo abaixo notch
+    //                       └── SizedBox(56) + Stack(botão + título)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    if (!showHeader) {
+      return Column(children: [
+        Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: TabBarView(
+              controller: _tabCtrl,
+              children: [
+                _BiometricsTab(),
+                CardioHubView(),
+                _ElectrolytesTab(),
+                _ReferenceTab(),
+              ],
+            ),
           ),
         ),
+      ]);
+    }
+
+    final double topPad = View.of(context).padding.top /
+        View.of(context).devicePixelRatio;
+
+    return ColoredBox(
+      color: dark ? const Color(0xFF1A1D23) : Colors.white,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // ── Corpo: espaço reservado + TabRow + conteúdo ──────────────
+          Column(
+            children: [
+              // Reserva espaço para a topbar (fica por baixo do Positioned)
+              SizedBox(height: 56),
+              // BUILD 331: Seletor de categorias desacoplado da Topbar
+              _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
+              // ── Content ──────────────────────────────────────────────
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: TabBarView(
+                    controller: _tabCtrl,
+                    children: [
+                      _BiometricsTab(),
+                      // BUILD 277-CROMATICO: _ScoresTab() removed
+                      CardioHubView(),
+                      _ElectrolytesTab(),
+                      _ReferenceTab(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // ── Topbar: sobe para trás da status bar via Positioned negativo ──
+          Positioned(
+            top: -topPad, // sobe pelo valor exato da status bar / Dynamic Island
+            left: 0,
+            right: 0,
+            height: topPad + 56,
+            child: _ToolsTopbar(dark: dark, isEs: isEs),
+          ),
+        ],
       ),
-    ]);
+    );
   }
 }
 
@@ -126,6 +184,13 @@ class _ToolsTopbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // TOPBAR — Padrão PACIENTES (InternacaoScreen).
+    // Quando usado como appBar: PreferredSize(...), o Scaffold estende
+    // automaticamente este Container atrás da status bar / Dynamic Island.
+    // SafeArea(bottom:false) empurra o conteúdo interativo abaixo do notch
+    // sem cortar o fundo colorido. Não precisa de View.of() nem MediaQuery.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF111622),
@@ -140,80 +205,53 @@ class _ToolsTopbar extends StatelessWidget {
           ),
         ],
       ),
-      // TOPBAR GEOMETRY — View.of(context) bypass
-      //
-      // PROBLEMA RAIZ: MainShell usa MediaQuery.removePadding(removeTop:true)
-      // antes do IndexedStack. Qualquer Builder(ctx){MediaQuery.of(ctx).padding.top}
-      // dentro das telas recebe 0 — o inset já foi consumido pelo MediaQuery tree.
-      // O bypass correto é ler o padding FÍSICO diretamente da FlutterView,
-      // que é IMUNE ao removePadding do MediaQuery.
-      //
-      // View.of(context).padding.top  → pixels físicos
-      // / View.of(context).devicePixelRatio → logical pixels corretos
-      //
-      // ESTRUTURA RESULTANTE:
-      //   Container (fundo #111622, altura = topPad + 56)
-      //     └── Padding(top: topPad)          ← empurra conteúdo abaixo do notch
-      //           └── SizedBox(height: 56)    ← área interativa fixa
-      //                 └── Stack (botão esq + título centrado)
-      // ═══════════════════════════════════════════════════════════════════
-      child: Builder(
-        builder: (ctx) {
-          final double topPad = View.of(ctx).padding.top /
-              View.of(ctx).devicePixelRatio;
-          return SizedBox(
-            height: topPad + 56,
-            child: Padding(
-              padding: EdgeInsets.only(top: topPad),
-              child: Stack(
-                children: [
-                  // ── BOTÃO ESQUERDO — posição absoluta, nunca sobrepõe o título ──
-                  Positioned(
-                    left: 12,
-                    top: 0,
-                    bottom: 0,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          final nav = Navigator.of(context);
-                          if (nav.canPop()) {
-                            nav.pop();
-                          } else {
-                            MainShell.pendingTab.value = 0;
-                          }
-                        },
-                        child: const SizedBox(
-                          width: 36,
-                          height: 36,
-                          child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // ── TÍTULO — centro geométrico absoluto ──────────────────────
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'FERRAMENTAS',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 56,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // ── BOTÃO ESQUERDO — posição absoluta, nunca sobrepõe o título ──
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) {
+                        nav.pop();
+                      } else {
+                        MainShell.pendingTab.value = 0;
+                      }
+                    },
+                    child: const SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 20,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                // ── TÍTULO — centro geométrico absoluto ──────────────────────
+                const Text(
+                  'FERRAMENTAS',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

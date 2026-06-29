@@ -898,21 +898,30 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 ),
               );
 
-    // BUILD 331: Topbar unificada — _HcTopbar + _HcTabRow para todos os breakpoints.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // TOPBAR BLEED — Stack com Positioned negativo.
+    //
+    // CONTEXTO: MainShell._buildMobileShell() aplica Padding(top:statusBarH)
+    // para as abas 3/4/5 antes do IndexedStack → topbar fica ABAIXO da
+    // status bar, deixando uma falha de cor.
+    //
+    // SOLUÇÃO: Stack com Positioned(top: -topPad) sobe o Container do gradiente
+    // para trás da status bar física. topPad via View.of() — imune ao
+    // MediaQuery.removePadding do MainShell.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    final double topPad = View.of(context).padding.top /
+        View.of(context).devicePixelRatio;
 
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: SizedBox.expand(
-        child: ColoredBox(
-          color: bg,
-          child: Column(
+    return ColoredBox(
+      color: bg,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // ── Corpo: espaço reservado + TabRow + busca + conteúdo ──────
+          Column(
             children: [
-              // BUILD 331: Topbar unificada 48px — sem gradiente, sólida dark/light
-              _HcTopbar(
-                dark: p.darkMode,
-                lang: lang,
-              ),
+              // Reserva espaço para a topbar (fica por baixo do Positioned)
+              const SizedBox(height: 56),
               // BUILD 331: Seletor triplo desacoplado — posicionado no corpo
               _HcTabRow(
                 dark: p.darkMode,
@@ -920,7 +929,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 tabCtrl: _tabCtrl,
                 onNew: () => _startNewHistory(p, lang),
               ),
-              // ── Barra de busca ──────────────────────────────────────────────
+              // ── Barra de busca ────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                 child: Row(
@@ -1022,7 +1031,16 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               ),
             ],
           ),
-        ),
+
+          // ── Topbar: sobe para trás da status bar via Positioned negativo ──
+          Positioned(
+            top: -topPad, // sobe pelo valor exato da status bar / Dynamic Island
+            left: 0,
+            right: 0,
+            height: topPad + 56,
+            child: _HcTopbar(dark: p.darkMode, lang: lang),
+          ),
+        ],
       ),
     );
   }
@@ -1115,76 +1133,60 @@ class _HcTopbar extends StatelessWidget {
           ),
         ],
       ),
-      // TOPBAR GEOMETRY — View.of(context) bypass
-      //
-      // PROBLEMA RAIZ: MainShell usa MediaQuery.removePadding(removeTop:true)
-      // antes do IndexedStack. Qualquer Builder(ctx){MediaQuery.of(ctx).padding.top}
-      // dentro das telas recebe 0 — o inset já foi consumido pelo MediaQuery tree.
-      // O bypass correto é ler o padding FÍSICO diretamente da FlutterView,
-      // que é IMUNE ao removePadding do MediaQuery.
-      //
-      // View.of(context).padding.top  → pixels físicos
-      // / View.of(context).devicePixelRatio → logical pixels corretos
-      //
-      // ESTRUTURA RESULTANTE:
-      //   Container (gradiente laranja, altura = topPad + 56)
-      //     └── Padding(top: topPad)          ← empurra conteúdo abaixo do notch
-      //           └── SizedBox(height: 56)    ← área interativa fixa
-      //                 └── Stack (botão esq + título centrado)
-      // ═══════════════════════════════════════════════════════════════════
-      child: Builder(
-        builder: (ctx) {
-          final double topPad = View.of(ctx).padding.top /
-              View.of(ctx).devicePixelRatio;
-          return SizedBox(
-            height: topPad + 56,
-            child: Padding(
-              padding: EdgeInsets.only(top: topPad),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // ── CENTER: título BRANCO — contraste máximo sobre laranja
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // TOPBAR — Padrão PACIENTES (InternacaoScreen).
+      // Quando usado como appBar: PreferredSize(...), o Scaffold estende
+      // automaticamente este Container atrás da status bar / Dynamic Island.
+      // SafeArea(bottom:false) empurra o conteúdo interativo abaixo do notch
+      // sem cortar o gradiente. Não precisa de View.of() nem MediaQuery.
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 56,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // ── CENTER: título BRANCO — contraste máximo sobre laranja
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: Colors.white,
+                  ),
+                ),
+                // ── LEFT: botão de voltar BRANCO — SizedBox 36×36 ─────────
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) {
+                        nav.pop();
+                      } else {
+                        MainShell.pendingTab.value = 0;
+                      }
+                    },
+                    child: const SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 20,
                         color: Colors.white,
                       ),
                     ),
-                    // ── LEFT: botão de voltar BRANCO — SizedBox 36×36 ─────────
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          final nav = Navigator.of(context);
-                          if (nav.canPop()) {
-                            nav.pop();
-                          } else {
-                            MainShell.pendingTab.value = 0;
-                          }
-                        },
-                        child: const SizedBox(
-                          width: 36,
-                          height: 36,
-                          child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

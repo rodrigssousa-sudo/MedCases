@@ -255,22 +255,30 @@ class _LibraryScreenState extends State<LibraryScreen>
     final filtered = _filtered;
     final isDesktop = MedBreakpoints.of(context).isDesktop;
 
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: SizedBox.expand(
-        child: ColoredBox(
-          color: bg,
-          child: Column(
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // TOPBAR BLEED — Stack com Positioned negativo.
+    //
+    // CONTEXTO: MainShell._buildMobileShell() aplica Padding(top:statusBarH)
+    // para as abas 3/4/5 (History/Tools/Library) antes do IndexedStack.
+    // Isso desloca a tela para baixo — a topbar fica ABAIXO da status bar.
+    //
+    // SOLUÇÃO: Stack com Positioned(top: -topPad) sobe o Container da topbar
+    // para trás da status bar física. topPad lido via View.of() — imune ao
+    // MediaQuery.removePadding do MainShell.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    final double topPad = View.of(context).padding.top /
+        View.of(context).devicePixelRatio;
+
+    return ColoredBox(
+      color: bg,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // ── Corpo: espaço reservado + TabRow + conteúdo ──────────────
+          Column(
             children: [
-              // BUILD 331: Topbar unificada — desktop e mobile, geométrica 48px
-              _LibraryTopbar(
-                dark: dark,
-                isEs: isEs,
-                isDesktop: isDesktop,
-                onRefreshGuides: isDesktop ? _handleManualRefresh : null,
-                refreshing: isDesktop ? _loading : false,
-              ),
+              // Reserva espaço para a topbar (fica por baixo do Positioned)
+              const SizedBox(height: 56),
               // BUILD 331: Seletor de abas desacoplado da Topbar — fica no corpo
               _LibTabRow(
                 dark: dark,
@@ -302,7 +310,22 @@ class _LibraryScreenState extends State<LibraryScreen>
               ),
             ],
           ),
-        ),
+
+          // ── Topbar: sobe para trás da status bar via Positioned negativo ──
+          Positioned(
+            top: -topPad, // sobe pelo valor exato da status bar / Dynamic Island
+            left: 0,
+            right: 0,
+            height: topPad + 56,
+            child: _LibraryTopbar(
+              dark: dark,
+              isEs: isEs,
+              isDesktop: isDesktop,
+              onRefreshGuides: isDesktop ? _handleManualRefresh : null,
+              refreshing: isDesktop ? _loading : false,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -351,32 +374,18 @@ class _LibraryTopbar extends StatelessWidget {
           ),
         ],
       ),
-      // TOPBAR GEOMETRY — View.of(context) bypass
-      //
-      // PROBLEMA RAIZ: MainShell usa MediaQuery.removePadding(removeTop:true)
-      // antes do IndexedStack. Qualquer Builder(ctx){MediaQuery.of(ctx).padding.top}
-      // dentro das telas recebe 0 — o inset já foi consumido pelo MediaQuery tree.
-      // O bypass correto é ler o padding FÍSICO diretamente da FlutterView,
-      // que é IMUNE ao removePadding do MediaQuery.
-      //
-      // View.of(context).padding.top  → pixels físicos
-      // / View.of(context).devicePixelRatio → logical pixels corretos
-      //
-      // ESTRUTURA RESULTANTE:
-      //   Container (gradiente slate, altura = topPad + 56)
-      //     └── Padding(top: topPad)          ← empurra conteúdo abaixo do notch
-      //           └── SizedBox(height: 56)    ← área interativa fixa
-      //                 └── Stack (botão esq + título centrado + refresh dir)
-      // ═══════════════════════════════════════════════════════════════════
-      child: Builder(
-        builder: (ctx) {
-          final double topPad = View.of(ctx).padding.top /
-              View.of(ctx).devicePixelRatio;
-          return SizedBox(
-            height: topPad + 56,
-            child: Padding(
-              padding: EdgeInsets.only(top: topPad),
-              child: Padding(
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      // TOPBAR — Padrão PACIENTES (InternacaoScreen).
+      // Quando usado como appBar: PreferredSize(...), o Scaffold estende
+      // automaticamente este Container atrás da status bar / Dynamic Island.
+      // SafeArea(bottom:false) empurra o conteúdo interativo abaixo do notch
+      // sem cortar o gradiente. Não precisa de View.of() nem MediaQuery.
+      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 56,
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Stack(
               alignment: Alignment.center,
@@ -454,9 +463,7 @@ class _LibraryTopbar extends StatelessWidget {
               ],
             ),
           ),
-            ),
-          );
-        },
+        ),
       ),
     );
   }

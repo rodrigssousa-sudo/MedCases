@@ -5310,24 +5310,32 @@ class _PediatricsShell extends StatelessWidget {
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    // BUILD 331: Topbar padronizada — sólida, 48px, sem gradiente verde
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // TOPBAR BLEED — Padrão idêntico à InternacaoScreen (PACIENTES).
+    // appBar: PreferredSize → Flutter estende automaticamente o gradiente
+    // atrás da status bar / Dynamic Island.
+    // SafeArea(bottom:false) DENTRO do Container empurra o conteúdo
+    // interativo abaixo do notch sem cortar o gradiente.
+    // extendBodyBehindAppBar: true garante que o body ocupa toda a tela.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
-      body: Column(children: [
-        // ── Topbar Build 331 ─────────────────────────────────────────
-        Container(
-          decoration: BoxDecoration(
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: Container(
+          decoration: const BoxDecoration(
             // BUILD 331 PEDIATRIA: gradiente idêntico ao card PEDIATRIA da Home
             // topLeft #0A3F36 (petróleo escuro) → bottomRight #0F6B5C (verde água)
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [Color(0xFF0A3F36), Color(0xFF0F6B5C)],
             ),
-            border: const Border(
+            border: Border(
               bottom: BorderSide(color: Color(0xFF0A4F43), width: 0.5),
             ),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
                 color: Color(0x59000000),
                 blurRadius: 6,
@@ -5338,7 +5346,7 @@ class _PediatricsShell extends StatelessWidget {
           child: SafeArea(
             bottom: false,
             child: SizedBox(
-              height: 48,
+              height: 56,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Stack(
@@ -5379,8 +5387,12 @@ class _PediatricsShell extends StatelessWidget {
             ),
           ),
         ),
+      ),
+      body: const Column(children: [
+        // Espaçamento compensatório: empurra o conteúdo abaixo do AppBar
+        SizedBox(height: 56), // altura fixa da PreferredSize
         // ── Conteúdo — PediatricsTabContent (quad tabs desacopladas) ─
-        const Expanded(child: PediatricsTabContent()),
+        Expanded(child: PediatricsTabContent()),
       ]),
     );
   }
