@@ -5318,18 +5318,21 @@ class _PediatricsShell extends StatelessWidget {
         // ── Topbar Build 331 ─────────────────────────────────────────
         Container(
           decoration: BoxDecoration(
-            color: dark ? const Color(0xFF0F1116) : Colors.white,
-            border: Border(
-              bottom: BorderSide(
-                color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
-                width: 0.5,
-              ),
+            // BUILD 331 PEDIATRIA: gradiente idêntico ao card PEDIATRIA da Home
+            // topLeft #0A3F36 (petróleo escuro) → bottomRight #0F6B5C (verde água)
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF0A3F36), Color(0xFF0F6B5C)],
             ),
-            boxShadow: [
+            border: const Border(
+              bottom: BorderSide(color: Color(0xFF0A4F43), width: 0.5),
+            ),
+            boxShadow: const [
               BoxShadow(
-                color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+                color: Color(0x59000000),
                 blurRadius: 6,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),
@@ -5342,29 +5345,31 @@ class _PediatricsShell extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // CENTER: título absolutamente centrado
-                    Text(
-                      isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.2,
-                        color: dark ? Colors.white : const Color(0xFF0F1116),
+                    // CENTER: título BRANCO — contraste máximo sobre gradiente petróleo
+                    IgnorePointer(
+                      child: Text(
+                        isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    // LEFT: botão de voltar com alto contraste
+                    // LEFT: botão de voltar BRANCO — SizedBox 36×36
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () => Navigator.of(context).pop(),
-                        child: SizedBox(
+                        child: const SizedBox(
                           width: 36,
                           height: 36,
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
                             size: 20,
-                            color: dark ? Colors.white : const Color(0xFF0F1116),
+                            color: Colors.white,
                           ),
                         ),
                       ),

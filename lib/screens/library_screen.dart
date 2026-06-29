@@ -333,9 +333,13 @@ class _LibraryTopbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        // BUILD 331 BIBLIOTECA: Slate Gray sólido — cor exata do card home
-        // #475569 = gradiente médio do card BIBLIOTECA (1e293b→475569→64748b)
-        color: const Color(0xFF475569),
+        // BUILD 331 BIBLIOTECA: gradiente idêntico ao card BIBLIOTECA da Home
+        // topLeft #222D42 (slate escuro) → bottomRight #4B5E7F (azul acinzentado)
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF222D42), Color(0xFF4B5E7F)],
+        ),
         border: const Border(
           bottom: BorderSide(color: Color(0xFF334155), width: 0.5),
         ),

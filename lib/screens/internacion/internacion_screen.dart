@@ -874,9 +874,13 @@ class _InternacionScreenState extends State<InternacionScreen> {
         preferredSize: const Size.fromHeight(48),
         child: Container(
           decoration: BoxDecoration(
-            // BUILD 331 PACIENTES: Emerald Green sólido — cor exata do card home
-            // #059669 = gradiente médio do card PACIENTE/ADULTO (022c22→059669→10b981)
-            color: const Color(0xFF059669),
+            // BUILD 331 PACIENTES: gradiente idêntico ao card PACIENTE da Home
+            // topLeft #004D36 (verde escuro) → bottomRight #00BE7A (verde claro)
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF004D36), Color(0xFF00BE7A)],
+            ),
             border: const Border(
               bottom: BorderSide(color: Color(0xFF047857), width: 0.5),
             ),

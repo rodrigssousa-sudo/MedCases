@@ -1041,9 +1041,13 @@ class _HcTopbar extends StatelessWidget {
     final title = lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA';
     return Container(
       decoration: BoxDecoration(
-        // BUILD 331 HISTÓRIA CLÍNICA: Orange Vibrant sólido — cor exata do card home
-        // #ea580c = gradiente médio do card H. CLÍNICA (431407→ea580c→fb923c)
-        color: const Color(0xFFea580c),
+        // BUILD 331 HISTÓRIA CLÍNICA: gradiente idêntico ao card H. CLÍNICA da Home
+        // topLeft #5E2900 (laranja escuro/marrom) → bottomRight #F27405 (laranja vibrante)
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF5E2900), Color(0xFFF27405)],
+        ),
         border: const Border(
           bottom: BorderSide(color: Color(0xFFc2410c), width: 0.5),
         ),
