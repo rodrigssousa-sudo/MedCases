@@ -1663,38 +1663,35 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                   ),
                 ),
                 // ORDEM 34 — BOTÃO HISTÓRICO (era: fechar/limpar)
-                // Sempre visível — abre histórico de sessões na aba IA.
+                // BUILD 328 M3: 26→34px, icon 13→16px — alvo ergônomico
                 GestureDetector(
                   onTap: () {
                     AppHaptics.light(context);
-                    // Navega para a aba IA e dispara o callback de histórico
-                    // após o frame em que o AiScreen já está montado.
                     widget.onNavigateToAi(2);
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       AiScreen.openHistoryCallback.value?.call();
                     });
                   },
                   child: Container(
-                    width: 26, height: 26,
+                    width: 34, height: 34,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(9),
                       color: Colors.white.withOpacity(0.06),
                       border: Border.all(
                         color: Colors.white.withOpacity(0.10),
                         width: 0.8,
                       ),
                     ),
-                    child: Icon(Icons.history_rounded, size: 13,
-                      color: Colors.white.withOpacity(0.45)),
+                    child: Icon(Icons.history_rounded, size: 16,
+                      color: Colors.white.withOpacity(0.55)),
                   ),
                 ),
                 const SizedBox(width: 6),
                 // ORDEM 34 — BOTÃO NOVO CHAT / HARD RESET (era: expandir)
-                // Limpa o mini-chat local e reseta o AiScreen para novo caso.
+                // BUILD 328 M3: 26→34px, icon 14→17px — alvo ergônomico
                 GestureDetector(
                   onTap: _thinking ? null : () {
                     AppHaptics.light(context);
-                    // Reset local do mini-chat inline
                     setState(() {
                       _messages.clear();
                       _streaming = '';
@@ -1703,21 +1700,20 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                       _ctrl.clear();
                     });
                     _focus.unfocus();
-                    // Propaga HARD RESET para o AiScreen (amnésia retrógrada)
                     AiScreen.clearChatCallback.value?.call();
                   },
                   child: Container(
-                    width: 26, height: 26,
+                    width: 34, height: 34,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(9),
                       color: Colors.white.withOpacity(0.06),
                       border: Border.all(
                         color: Colors.white.withOpacity(0.10),
                         width: 0.8,
                       ),
                     ),
-                    child: Icon(Icons.add_rounded, size: 14,
-                      color: Colors.white.withOpacity(0.45)),
+                    child: Icon(Icons.add_rounded, size: 17,
+                      color: Colors.white.withOpacity(0.55)),
                   ),
                 ),
               ],

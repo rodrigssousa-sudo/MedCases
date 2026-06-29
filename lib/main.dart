@@ -1901,13 +1901,12 @@ class _FloatingFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // SUPER ORDEM MASTER 308 M1: -10% adicional sobre Build 306
-    // barHeight 48→43px | opacity glassmorphism mantido
+    // BUILD 328 M1: barHeight 43→50px — mais imponência e área de toque
     final navBg = dark
         ? const Color(0xFF0F1116).withOpacity(0.68)
         : Colors.white.withOpacity(0.65);
 
-    const barHeight = 43.0;
+    const barHeight = 50.0;
 
     return Positioned(
       left: 0,
@@ -1926,11 +1925,9 @@ class _FloatingFooter extends StatelessWidget {
             children: [
 
               // ── Floating Dock premium — glassmorphism 24px corner radius ────
-              // SUPER ORDEM MASTER 14 M1: Padding horizontal 16px + vertical 8px
-              // para criar o efeito de barra flutuante separada do fundo.
-              // SUPER ORDEM MASTER 308 M1: padding -10% (h:20→18, v:8→7)
+              // BUILD 328 M1: padding h:18→14 v:7→8 — menos recuo lateral, mais respiro
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(32),
                   child: BackdropFilter(
@@ -2089,10 +2086,10 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // BUILD 238: ícones +3px para cima via padding bottom
+          // BUILD 328 M1: ícone 18→22px — alvo de toque maior
           Padding(
             padding: const EdgeInsets.only(bottom: 3),
-            child: Icon(icon, size: 18, color: color),
+            child: Icon(icon, size: 22, color: color),
           ),
           const SizedBox(height: 1),
           Text(
@@ -2100,7 +2097,8 @@ class _NavItem extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 9.0,
+              // BUILD 328 M1: label fontSize 9→10 — leitura mais confortável
+              fontSize: 10.0,
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
               color: color,
               height: 1.0,
@@ -2182,7 +2180,8 @@ class _MobileAppBar extends StatelessWidget {
         child: SizedBox(
           // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
           // padding do sistema (notch / Dynamic Island / status bar).
-          height: 36,
+          // BUILD 328 M2: altura 36→46px — AppBar mais robusta e imponente
+          height: 46,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Stack(
@@ -2197,7 +2196,8 @@ class _MobileAppBar extends StatelessWidget {
                         TextSpan(
                           text: 'MEDCASES ',
                           style: TextStyle(
-                            fontSize: 14,
+                            // BUILD 328 M2: fontSize 14→16 — título mais imponente
+                            fontSize: 16,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.2,
                             color: dark ? Colors.white : const Color(0xFF0F1116),
@@ -2207,7 +2207,8 @@ class _MobileAppBar extends StatelessWidget {
                           // HOME → "PRO" | IA tab → "IA" em ouro fosco (#D4AF37)
                           text: currentTab == _kAiTab ? 'IA' : 'PRO',
                           style: TextStyle(
-                            fontSize: 14,
+                            // BUILD 328 M2: fontSize 14→16
+                            fontSize: 16,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.2,
                             color: currentTab == _kAiTab
@@ -2240,7 +2241,8 @@ class _MobileAppBar extends StatelessWidget {
                         : GestureDetector(
                             onTap: AiScreen.openSettingsCallback.value,
                             child: Container(
-                              height: 38,
+                              // BUILD 328 M3: Conectar IA button 38→42px
+                              height: 42,
                               margin: const EdgeInsets.only(right: 8),
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
@@ -2283,15 +2285,16 @@ class _MobileAppBar extends StatelessWidget {
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Container(
-                            width: 38, height: 38,
+                          // BUILD 328 M2: history button 38→42px — alvo ergonômico
+                  Container(
+                            width: 42, height: 42,
                             margin: const EdgeInsets.only(right: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               color: iconBg,
                               border: Border.all(color: iconBorder, width: 1),
                             ),
-                            child: Icon(Icons.history_rounded, size: 20, color: iconColor),
+                            child: Icon(Icons.history_rounded, size: 22, color: iconColor),
                           ),
                           if (count > 0)
                             Positioned(
@@ -2327,7 +2330,8 @@ class _MobileAppBar extends StatelessWidget {
                         ? GestureDetector(
                             onTap: AiScreen.clearChatCallback.value,
                             child: Container(
-                              height: 38,
+                              // BUILD 328 M3: Novo Chat button 38→42px
+                              height: 42,
                               margin: const EdgeInsets.only(right: 8),
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
@@ -2368,12 +2372,13 @@ class _MobileAppBar extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: onMenuTap,
+                  // BUILD 328 M2: hamburger SizedBox 32→36px, icon 20→24px
                   child: SizedBox(
-                    width: 32,
-                    height: 32,
+                    width: 36,
+                    height: 36,
                     child: Icon(
                       Icons.menu_rounded,
-                      size: 20,
+                      size: 24,
                       color: iconColor,
                     ),
                   ),
@@ -3098,22 +3103,21 @@ class _LegalBar extends StatelessWidget {
         color: bg,
         border: Border(top: BorderSide(color: border, width: 0.5)),
       ),
-      // SUPER ORDEM MASTER 14 M1: LegalBar travada em 20px total
-      // padding vertical 1px + fontSize 9px = altura total ~20px
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 1),
+      // BUILD 328 M4: padding v:1→5 — disclaimer totalmente visível acima da nav
+      // fontSize 9→10, maxLines 1→2, icon 8→10 — legibilidade Apple 1.4.1
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 8, color: textColor.withOpacity(0.55)),
+        Icon(Icons.info_outline_rounded, size: 10, color: textColor.withOpacity(0.55)),
         const SizedBox(width: 3),
         Expanded(
           child: Text(
             disclaimer,
             style: TextStyle(
-              // Micro-tipografia ultra-discreta: 9px, single line
-              fontSize: 9, color: textColor,
-              height: 1.0, letterSpacing: 0.0,
+              fontSize: 10, color: textColor,
+              height: 1.3, letterSpacing: 0.0,
               fontWeight: FontWeight.w400,
             ),
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ),
