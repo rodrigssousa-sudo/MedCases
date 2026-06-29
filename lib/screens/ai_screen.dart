@@ -2873,17 +2873,30 @@ class _MobileAiActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 331 IA — Topbar SEMPRE dark #0F1116 independente do tema do sistema.
-    // Layout: NavigationToolbar garante que o botão esquerdo e o título central
-    // NUNCA se sobrepõem — é o widget Flutter nativo para esse padrão de AppBar.
-    //   leading   → botão dinâmico (M+ pulsante / "Conectar IA")  [esquerda]
-    //   middle    → RichText bicolor "MEDCASES " branco + "IA" dourado [centro geométrico]
-    //   trailing  → SizedBox.shrink() [direita VAZIA — sem qualquer widget]
-    // SafeArea(bottom:false) absorve o notch/Dynamic Island (y=0 a partir do topo).
-    // O SizedBox(height:48) é a área útil pura abaixo do safe-area inset.
+    // ═══════════════════════════════════════════════════════════════════
+    // BUILD 331 IA — TOPBAR CORRIGIDA: Stack com ordem Z explícita
+    //
+    // Fundo: SEMPRE #111622 dark sólido — sem adaptação ao tema do sistema.
+    //
+    // ORDEM DOS FILHOS DA STACK (Z-order, último = acima):
+    //   1. IgnorePointer → RichText bicolor no centro geométrico
+    //      Envolvido em IgnorePointer para que toques NÃO sejam absorvidos
+    //      pelo texto — passam para widgets abaixo (área vazia do centro).
+    //   2. Align(centerLeft) → GestureDetector → botão de conexão IA
+    //      Renderizado por último → Z-order acima do título → recebe
+    //      todos os eventos de toque na zona esquerda sem interferência.
+    //   3. Align(centerRight) → SizedBox(40×40) completamente vazia
+    //      Simetria visual: balanceia o peso horizontal da barra.
+    //
+    // MOTIVO DO DESCARTE DO NavigationToolbar:
+    //   NavigationToolbar mede seu 'leading' antes de posicionar o 'middle'.
+    //   O Container da pílula "Conectar IA" tem largura intrínseca ~95px;
+    //   o toolbar tratou isso como ocupação do terço esquerdo e o title ficou
+    //   deslocado / invisível. Stack com IgnorePointer resolve sem ambiguidade.
+    // ═══════════════════════════════════════════════════════════════════
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0F1116),
+        color: const Color(0xFF111622), // dark sólido — NUNCA branco
         border: const Border(
           bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
         ),
@@ -2899,83 +2912,88 @@ class _MobileAiActionBar extends StatelessWidget {
         bottom: false,
         child: SizedBox(
           height: 48,
-          child: NavigationToolbar(
-            centerMiddle: true,
-            middleSpacing: 8,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
 
-            // ── ESQUERDA: botão dinâmico de conexão IA ─────────────────
-            // GestureDetector.opaque: captura toque em toda a área do widget,
-            // incluindo pixels transparentes — sem "dead zones" no botão.
-            // onSettings → _openAiSettings() → abre _AiStatusSheet modal.
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: GestureDetector(
-                onTap: onSettings,
-                behavior: HitTestBehavior.opaque,
-                child: isConnected
-                    // Conectado: avatar M+ verde pulsante (AnimationController loop)
-                    ? const _MplusPulse()
-                    // Desconectado: pílula ciana "Conectar IA"
-                    : Container(
-                        height: 30,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(7),
-                          color: const Color(0xFF00E5FF).withOpacity(0.10),
-                          border: Border.all(
-                            color: const Color(0xFF00E5FF).withOpacity(0.60),
-                            width: 1.2,
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Conectar IA',
+                // ── 1. TÍTULO BICOLOR — centro geométrico, não interativo ──
+                // IgnorePointer: o texto não absorve toques — eles atravessam
+                // para a área vazia da Stack ou para o botão esquerdo.
+                IgnorePointer(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES ',
                           style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
                             color: Colors.white,
-                            letterSpacing: 0.1,
                           ),
                         ),
-                      ),
-              ),
-            ),
-
-            // ── CENTRO: RichText bicolor — posicionado geometricamente ─
-            // NavigationToolbar.centerMiddle=true → título no centro real da barra,
-            // nunca deslocado pelo leading nem pelo trailing.
-            middle: RichText(
-              textAlign: TextAlign.center,
-              text: const TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'MEDCASES ',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.2,
-                      color: Colors.white,
+                        TextSpan(
+                          text: 'IA',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                            color: Color(0xFFD4AF37), // DOURADO PREMIUM
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  TextSpan(
-                    text: 'IA',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.2,
-                      color: Color(0xFFFFD700), // DOURADO
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
 
-            // ── DIREITA: rigorosamente vazia ────────────────────────────
-            // Build 331: Histórico e Novo Chat migrados para _FloatingFooter
-            // (isAiActive row) — topbar IA minimalista sem botões à direita.
-            trailing: const Padding(
-              padding: EdgeInsets.only(right: 12),
-              child: SizedBox(width: 0),
+                // ── 2. BOTÃO ESQUERDO — M+ pulsante ou "Conectar IA" ──────
+                // Z-order acima do título: garante que a zona esquerda da barra
+                // pertence 100% ao botão, sem interferência do RichText.
+                // onSettings → _openAiSettings() → _AiStatusSheet modal.
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: onSettings,
+                    behavior: HitTestBehavior.opaque,
+                    child: isConnected
+                        // Conectado: avatar M+ verde pulsante
+                        ? const _MplusPulse()
+                        // Desconectado: pílula ciana com borda e texto branco
+                        : Container(
+                            height: 30,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(7),
+                              color: const Color(0xFF00E5FF).withOpacity(0.10),
+                              border: Border.all(
+                                color: const Color(0xFF00E5FF).withOpacity(0.60),
+                                width: 1.2,
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'Conectar IA',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                          ),
+                  ),
+                ),
+
+                // ── 3. DIREITA — completamente vazia, simetria visual ─────
+                const Align(
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(width: 40, height: 40),
+                ),
+
+              ],
             ),
           ),
         ),
