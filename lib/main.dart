@@ -3206,15 +3206,16 @@ class _LegalBar extends StatelessWidget {
       // BUILD 328 M4: padding v:1→5 — disclaimer totalmente visível acima da nav
       // fontSize 9→10, maxLines 1→2, icon 8→10 — legibilidade Apple 1.4.1
       // BUILD 329 M3: fontSize 10→11 — legibilidade definitiva e sólida
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      // BUILD 331 LB: −2px everywhere — vertical 5→3, icon 11→9, fontSize 11→9 (minimalista)
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 11, color: textColor.withOpacity(0.55)),
+        Icon(Icons.info_outline_rounded, size: 9, color: textColor.withOpacity(0.55)),
         const SizedBox(width: 3),
         Expanded(
           child: Text(
             disclaimer,
             style: TextStyle(
-              fontSize: 11, color: textColor,
+              fontSize: 9, color: textColor,
               height: 1.3, letterSpacing: 0.0,
               fontWeight: FontWeight.w400,
             ),

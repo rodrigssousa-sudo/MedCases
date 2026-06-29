@@ -2790,6 +2790,8 @@ class _AiScreenState extends State<AiScreen> {
                           lang: p.lang,
                           // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
                           isConnected: isMplusConnected,
+                          // UX INTERCEPT: toque no campo bloqueado abre modal de conexão
+                          onConnectTap: _openAiSettings,
                         ),
                       ),
                     )
@@ -2823,6 +2825,8 @@ class _AiScreenState extends State<AiScreen> {
                           lang: p.lang,
                           // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
                           isConnected: isMplusConnected,
+                          // UX INTERCEPT: toque no campo bloqueado abre modal de conexão
+                          onConnectTap: _openAiSettings,
                         ),
                       ),
                     ),
@@ -6518,6 +6522,9 @@ class _InputBar extends StatefulWidget {
   // ADENDO SEGURANÇA: Factor 1 — isConnected desativa campo + botão + Enter
   // false = usuário sem sessão de IA real → teclado bloqueado, seta cinza, nenhum envio
   final bool isConnected;
+  // UX INTERCEPT: quando locked=true, qualquer toque no campo abre modal de conexão
+  // null = comportamento anterior (nenhuma ação no toque do campo bloqueado)
+  final VoidCallback? onConnectTap;
   const _InputBar({
     required this.ctrl,
     required this.focusNode,
@@ -6531,6 +6538,7 @@ class _InputBar extends StatefulWidget {
     required this.hint,
     required this.lang,
     this.isConnected = true, // default true para não quebrar call sites legados
+    this.onConnectTap,       // NEW — dispara modal de conexão quando campo está bloqueado
   });
 
   @override
@@ -6540,6 +6548,18 @@ class _InputBar extends StatefulWidget {
 class _InputBarState extends State<_InputBar> {
   // FocusNode dedicado para o KeyboardListener — separado do focusNode do TextField
   final FocusNode _keyboardListenerNode = FocusNode();
+
+  @override
+  void didUpdateWidget(_InputBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // AUTO-FOCUS: quando IA conecta (false→true), libera teclado imediatamente
+    // O médico não precisa tocar de novo no campo — fluxo contínuo pós-conexão
+    if (!oldWidget.isConnected && widget.isConnected) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) widget.focusNode.requestFocus();
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -6585,9 +6605,17 @@ class _InputBarState extends State<_InputBar> {
     // Design baseado no mockup image_84dcca: BorderRadius.circular(30),
     // fundo escuro translúcido, sem bordas internas, sem caixas separadas.
     // O mic, TextField e seta vivem juntos na mesma Row interna da pílula.
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 2.5, 16, 12), // SUPER ORDEM 11: bottom:12 clearance
-      child: ClipRRect(
+    //
+    // UX INTERCEPT: GestureDetector externo captura toque em TODA a pílula quando
+    // locked=true — dispara onConnectTap (modal de conexão) antes que qualquer
+    // widget filho (TextField disabled) absorva o evento.
+    // HitTestBehavior.translucent: toque passa por áreas transparentes da pílula.
+    return GestureDetector(
+      onTap: locked ? widget.onConnectTap : null,
+      behavior: HitTestBehavior.translucent,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 2.5, 16, 12), // SUPER ORDEM 11: bottom:12 clearance
+        child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),  // ORDEM VISUAL 02: fosco limpo
@@ -6845,6 +6873,7 @@ class _InputBarState extends State<_InputBar> {
             ),
           ),
         ),
+      ),
     );
   }
 }
