@@ -253,7 +253,7 @@ class _LibraryScreenState extends State<LibraryScreen>
     final isEs = p.lang == 'es';
     final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
     final filtered = _filtered;
-    final showHeader = MedBreakpoints.of(context).isDesktop;
+    final isDesktop = MedBreakpoints.of(context).isDesktop;
 
     return SafeArea(
       top: false,
@@ -263,22 +263,20 @@ class _LibraryScreenState extends State<LibraryScreen>
           color: bg,
           child: Column(
             children: [
-              // Desktop: header completo com título + TabBar
-              if (showHeader)
-                _LibraryHeader(
-                  dark: dark,
-                  isEs: isEs,
-                  tabCtrl: _tabCtrl,
-                  onRefreshGuides: _handleManualRefresh,
-                  refreshing: _loading,
-                ),
-              // Mobile/tablet: só a TabBar (título na AppBar do shell)
-              if (!showHeader)
-                _MobileLibraryTabBar(
-                  dark: dark,
-                  isEs: isEs,
-                  tabCtrl: _tabCtrl,
-                ),
+              // BUILD 331: Topbar unificada — desktop e mobile, geométrica 48px
+              _LibraryTopbar(
+                dark: dark,
+                isEs: isEs,
+                isDesktop: isDesktop,
+                onRefreshGuides: isDesktop ? _handleManualRefresh : null,
+                refreshing: isDesktop ? _loading : false,
+              ),
+              // BUILD 331: Seletor de abas desacoplado da Topbar — fica no corpo
+              _LibTabRow(
+                dark: dark,
+                isEs: isEs,
+                tabCtrl: _tabCtrl,
+              ),
               Expanded(
                 child: TabBarView(
                   controller: _tabCtrl,
@@ -311,58 +309,65 @@ class _LibraryScreenState extends State<LibraryScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MOBILE TAB BAR
-// 2 abas: Guias PDF · Casos de Estudo
+// BUILD 331 — TOPBAR BIBLIOTECA
+// Geometria estrita: PreferredSize 48px, SafeArea(bottom:false), SizedBox(48),
+// padding h:12, fundo sólido adaptativo, border 0.5px, BoxShadow blur:6.
+// Título "BIBLIOTECA" centralizado via Stack — sem desvio do botão de voltar.
 // ─────────────────────────────────────────────────────────────────────────────
-class _MobileLibraryTabBar extends StatelessWidget {
+class _LibraryTopbar extends StatelessWidget {
   final bool dark;
   final bool isEs;
-  final TabController tabCtrl;
+  final bool isDesktop;
+  final VoidCallback? onRefreshGuides;
+  final bool refreshing;
 
-  const _MobileLibraryTabBar({
+  const _LibraryTopbar({
     required this.dark,
     required this.isEs,
-    required this.tabCtrl,
+    required this.isDesktop,
+    this.onRefreshGuides,
+    this.refreshing = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    // SUPER ORDEM VISUAL 07: Topologia Cupertino/Linear.
-    // Stack: título centrado, back à esquerda. MEDCASES PRO destruído.
-    // Tabs: GENERAL extinta, pill-shape destruído → 2 abas com underline ciano.
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1E293B), // gray escuro
-            Color(0xFF475569), // gray médio
-            Color(0xFF64748B), // slate
-          ],
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF0F1116) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
         ),
-        boxShadow: [BoxShadow(color: Color(0x4D000000), blurRadius: 8)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── M1: Linha título — Stack Left-Center ──────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 48,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // CENTER: título isolado e absolutamente centrado
-                const Text(
+                // ── CENTER: título absolutamente centrado ──────────────
+                Text(
                   'BIBLIOTECA',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: -0.2,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: dark ? Colors.white : const Color(0xFF0F1116),
                   ),
                 ),
-                // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
+                // ── LEFT: botão de voltar com borda forte ──────────────
                 Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
@@ -375,60 +380,155 @@ class _MobileLibraryTabBar extends StatelessWidget {
                         MainShell.pendingTab.value = 0;
                       }
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: 36,
+                      height: 36,
                       child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
+                        Icons.arrow_back_ios_new_rounded,
                         size: 20,
+                        color: dark ? Colors.white : const Color(0xFF0F1116),
                       ),
                     ),
                   ),
                 ),
+                // ── RIGHT: botão refresh (desktop only) ───────────────
+                if (isDesktop && onRefreshGuides != null)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Tooltip(
+                      message: isEs ? 'Actualizar guías' : 'Atualizar guias',
+                      child: GestureDetector(
+                        onTap: refreshing ? null : onRefreshGuides,
+                        child: Container(
+                          width: 34,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: dark
+                                ? Colors.white.withOpacity(0.07)
+                                : Colors.black.withOpacity(0.04),
+                            border: Border.all(
+                              color: dark
+                                  ? const Color(0xFF2D3340)
+                                  : const Color(0xFFE5E7EB),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: refreshing
+                              ? Padding(
+                                  padding: const EdgeInsets.all(9),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      dark ? _kGoldL : _kGold,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.refresh_rounded,
+                                  size: 18,
+                                  color: dark ? _kGoldL : _kGold,
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
-          // ── M2: 2 abas flat — GUIAS PDF + CASOS DE ESTUDO ─────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            child: Row(
-              children: [
-                Expanded(child: _LibFlatTab(label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF', index: 0, tabCtrl: tabCtrl)),
-                const _LibTabDivider(),
-                Expanded(child: _LibFlatTab(label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO', index: 1, tabCtrl: tabCtrl)),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HELPERS: tab flat minimalista + divisória fio — SUPER ORDEM VISUAL 07
-// Pill-shape destruído: fundo transparente, indicador = underline 2px ciano.
+// BUILD 331 — SELETOR DE ABAS (desacoplado da Topbar)
+// Posição: logo abaixo da Topbar, no topo do corpo rolável.
+// Cores adaptativas: dark → texto branco; light → texto preto.
+// ─────────────────────────────────────────────────────────────────────────────
+class _LibTabRow extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final TabController tabCtrl;
+
+  const _LibTabRow({
+    required this.dark,
+    required this.isEs,
+    required this.tabCtrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF1A1D23) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: _LibFlatTab(
+                label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF',
+                index: 0,
+                tabCtrl: tabCtrl,
+                dark: dark,
+              ),
+            ),
+            _LibTabDivider(dark: dark),
+            Expanded(
+              child: _LibFlatTab(
+                label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO',
+                index: 1,
+                tabCtrl: tabCtrl,
+                dark: dark,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS: tab flat minimalista + divisória fio — BUILD 331
+// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Divisória vertical fio entre as abas — 1×14px, white24, discreta.
+/// Divisória vertical fio entre as abas — 1×14px, adaptativa dark/light.
 class _LibTabDivider extends StatelessWidget {
-  const _LibTabDivider();
+  final bool dark;
+  const _LibTabDivider({this.dark = true});
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 1,
       height: 14,
-      color: Colors.white24,
+      color: dark ? Colors.white24 : Colors.black12,
     );
   }
 }
 
-/// Tab flat minimalista para a Biblioteca — underline ciano quando ativa.
+/// Tab flat minimalista — underline ciano quando ativa, texto dark/light.
 class _LibFlatTab extends StatefulWidget {
   final String label;
   final int index;
   final TabController tabCtrl;
-  const _LibFlatTab({required this.label, required this.index, required this.tabCtrl});
+  final bool dark;
+  const _LibFlatTab({
+    required this.label,
+    required this.index,
+    required this.tabCtrl,
+    this.dark = true,
+  });
   @override
   State<_LibFlatTab> createState() => _LibFlatTabState();
 }
@@ -453,13 +553,17 @@ class _LibFlatTabState extends State<_LibFlatTab> {
   @override
   Widget build(BuildContext context) {
     final isActive = widget.tabCtrl.index == widget.index;
+    // BUILD 331: dark → branco; light → preto — máxima hierarquia de leitura
+    final activeColor = widget.dark ? Colors.white : const Color(0xFF0F1116);
+    final inactiveColor = widget.dark
+        ? Colors.white60
+        : const Color(0xFF0F1116).withOpacity(0.45);
     return GestureDetector(
       onTap: () => widget.tabCtrl.animateTo(widget.index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          // Fundo 100% transparente — pill-shape destruído
           color: Colors.transparent,
           border: Border(
             bottom: isActive
@@ -473,7 +577,7 @@ class _LibFlatTabState extends State<_LibFlatTab> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: isActive ? Colors.white : Colors.white60,
+            color: isActive ? activeColor : inactiveColor,
             letterSpacing: 0.3,
           ),
         ),
@@ -482,150 +586,6 @@ class _LibFlatTabState extends State<_LibFlatTab> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HEADER DESKTOP com TabBar embutida
-// ─────────────────────────────────────────────────────────────────────────────
-class _LibraryHeader extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  final TabController tabCtrl;
-  final VoidCallback onRefreshGuides;
-  final bool refreshing;
-  const _LibraryHeader({
-    required this.dark,
-    required this.isEs,
-    required this.tabCtrl,
-    required this.onRefreshGuides,
-    required this.refreshing,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // BUILD 282 ORDEM 5: Slate/cinza-ardósia gradiente topLeft→bottomRight
-    // Cores: 1E293B (gray escuro) → 475569 (gray médio) → 64748B (slate)
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1E293B), // gray escuro — canto superior esquerdo
-            Color(0xFF475569), // gray médio
-            Color(0xFF64748B), // slate — canto inferior direito
-          ],
-        ),
-        boxShadow: [BoxShadow(color: Color(0x4D000000), blurRadius: 8)],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── M1: Desktop título — Stack Left-Center + refresh button ─────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 10, 16, 10),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // CENTER: título isolado e absolutamente centrado
-                const Text(
-                  'BIBLIOTECA',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: -0.2,
-                  ),
-                ),
-                // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) {
-                        nav.pop();
-                      } else {
-                        MainShell.pendingTab.value = 0;
-                      }
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-                // RIGHT: botão de refresh
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const SizedBox(width: 8),
-              Tooltip(
-                message: isEs ? 'Actualizar guías' : 'Atualizar guias',
-                child: InkWell(
-                  onTap: refreshing ? null : onRefreshGuides,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withOpacity(0.12),
-                      border: Border.all(color: Colors.white.withOpacity(0.25)),
-                    ),
-                    child: refreshing
-                        ? const Padding(
-                            padding: EdgeInsets.all(10),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(_kGoldL),
-                            ),
-                          )
-                        : const Icon(
-                            Icons.refresh_rounded,
-                            color: _kGoldL,
-                            size: 20,
-                          ),
-                  ),
-                ),
-              ),
-                  ]),
-                ),
-              ],
-            ),
-          ),
-          // ── M2: Desktop 2 abas flat — GUIAS PDF + CASOS DE ESTUDO ──────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _LibFlatTab(
-                    label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF',
-                    index: 0,
-                    tabCtrl: tabCtrl,
-                  ),
-                ),
-                const _LibTabDivider(),
-                Expanded(
-                  child: _LibFlatTab(
-                    label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO',
-                    index: 1,
-                    tabCtrl: tabCtrl,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ]),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // ABA 0 — Guias PDF (inalterada)
 // ─────────────────────────────────────────────────────────────────────────────
 class _GuidesTab extends StatelessWidget {
