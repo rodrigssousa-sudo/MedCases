@@ -874,16 +874,15 @@ class _InternacionScreenState extends State<InternacionScreen> {
         preferredSize: const Size.fromHeight(48),
         child: Container(
           decoration: BoxDecoration(
-            color: dark ? const Color(0xFF0F1116) : Colors.white,
-            border: Border(
-              bottom: BorderSide(
-                color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
-                width: 0.5,
-              ),
+            // BUILD 331 PACIENTES: Emerald Green sólido — cor exata do card home
+            // #059669 = gradiente médio do card PACIENTE/ADULTO (022c22→059669→10b981)
+            color: const Color(0xFF059669),
+            border: const Border(
+              bottom: BorderSide(color: Color(0xFF047857), width: 0.5),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+                color: Colors.black.withOpacity(0.35),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -899,18 +898,18 @@ class _InternacionScreenState extends State<InternacionScreen> {
                   alignment: Alignment.center,
                   children: [
 
-                    // CENTER: título absolutamente centrado — Stack puro
-                    Text(
+                    // CENTER: título BRANCO — contraste máximo sobre verde
+                    const Text(
                       'PACIENTES',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.2,
-                        color: dark ? Colors.white : const Color(0xFF0F1116),
+                        color: Colors.white,
                       ),
                     ),
 
-                    // LEFT: botão Voltar — SizedBox 36×36 para alvo de toque confortável
+                    // LEFT: botão Voltar BRANCO — SizedBox 36×36
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
@@ -919,12 +918,12 @@ class _InternacionScreenState extends State<InternacionScreen> {
                           final nav = Navigator.of(context);
                           if (nav.canPop()) nav.pop();
                         },
-                        child: SizedBox(
+                        child: const SizedBox(
                           width: 36,
                           height: 36,
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            color: dark ? Colors.white : const Color(0xFF0F1116),
+                            color: Colors.white,
                             size: 20,
                           ),
                         ),

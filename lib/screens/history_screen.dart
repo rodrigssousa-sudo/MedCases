@@ -1041,16 +1041,15 @@ class _HcTopbar extends StatelessWidget {
     final title = lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA';
     return Container(
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF0F1116) : Colors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
-            width: 0.5,
-          ),
+        // BUILD 331 HISTÓRIA CLÍNICA: Orange Vibrant sólido — cor exata do card home
+        // #ea580c = gradiente médio do card H. CLÍNICA (431407→ea580c→fb923c)
+        color: const Color(0xFFea580c),
+        border: const Border(
+          bottom: BorderSide(color: Color(0xFFc2410c), width: 0.5),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+            color: Colors.black.withOpacity(0.35),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -1065,17 +1064,17 @@ class _HcTopbar extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // ── CENTER: título absolutamente centrado ──────────────
+                // ── CENTER: título BRANCO — contraste máximo sobre laranja
                 Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
-                    color: dark ? Colors.white : const Color(0xFF0F1116),
+                    color: Colors.white,
                   ),
                 ),
-                // ── LEFT: botão de voltar com alto contraste ───────────
+                // ── LEFT: botão de voltar BRANCO — SizedBox 36×36 ─────────
                 Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
@@ -1088,13 +1087,13 @@ class _HcTopbar extends StatelessWidget {
                         MainShell.pendingTab.value = 0;
                       }
                     },
-                    child: SizedBox(
+                    child: const SizedBox(
                       width: 36,
                       height: 36,
                       child: Icon(
                         Icons.arrow_back_ios_new_rounded,
                         size: 20,
-                        color: dark ? Colors.white : const Color(0xFF0F1116),
+                        color: Colors.white,
                       ),
                     ),
                   ),

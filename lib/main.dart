@@ -2387,24 +2387,19 @@ class _MobileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // AppBar: header escuro uniforme em todos os contextos (dark mode)
-    // Build 138: HOME usa fundo neutro com título MEDCASES PRO centralizado
-    // BUILD 331: topbar limpa — apenas bg, borderCol para o barDecoration.
-    // iconColor/iconBg/iconBorder removidos (botões IA migraram para bottom nav).
-    final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
-    final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
-
-    // ── AppBar decoration ─────────────────────────────────────────────────────
-    // Build 138: fundo neutro (branco/escuro) em todos os modos.
-    // Removido: glow cyan e verde médico na HOME.
-    final BoxDecoration barDecoration = BoxDecoration(
-      color: bg,
-      border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
+    // BUILD 331 HOME: topbar SEMPRE Black Piano (#000000) — identidade premium.
+    // Nunca branco, nunca transparente — fundo sólido absoluto.
+    // MEDCASES (branco w900) + PRO (dourado #FFD700 w900) — RichText bicolor.
+    const barDecoration = BoxDecoration(
+      color: Color(0xFF000000),                         // Black Piano absoluto
+      border: Border(
+        bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+          color: Color(0x59000000),                     // black 35% opacity
           blurRadius: 6.0,
-          offset: const Offset(0, 2),
+          offset: Offset(0, 2),
         ),
       ],
     );
@@ -2426,31 +2421,29 @@ class _MobileAppBar extends StatelessWidget {
               children: [
                 // ── Título centralizado (HOME e IA tab) ───────────────────
                 // BUILD 278: "MEDCASES IA" com "IA" em ouro fosco na aba AI
+                // BUILD 331 HOME: Black Piano → título sempre branco + dourado
+                // "MEDCASES " branco w900 | "PRO"/"IA" dourado #FFD700 w900
                 if (isHome || currentTab == _kAiTab)
                   RichText(
+                    textAlign: TextAlign.center,
                     text: TextSpan(
                       children: [
-                        TextSpan(
+                        const TextSpan(
                           text: 'MEDCASES ',
                           style: TextStyle(
-                            // BUILD 328 M2: fontSize 14→16 — título mais imponente
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.2,
-                            color: dark ? Colors.white : const Color(0xFF0F1116),
+                            color: Colors.white,             // SEMPRE branco
                           ),
                         ),
                         TextSpan(
-                          // HOME → "PRO" | IA tab → "IA" em ouro fosco (#D4AF37)
                           text: currentTab == _kAiTab ? 'IA' : 'PRO',
-                          style: TextStyle(
-                            // BUILD 328 M2: fontSize 14→16
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.2,
-                            color: currentTab == _kAiTab
-                                ? const Color(0xFFD4AF37) // ouro fosco canônico
-                                : const Color(0xFFFFD700), // Golden HOME
+                            color: Color(0xFFFFD700),        // SEMPRE dourado
                           ),
                         ),
                       ],
