@@ -1233,6 +1233,11 @@ class MainShell extends StatefulWidget {
   /// Após processar, _MainShellState reseta para -1 automaticamente.
   static final pendingTab = ValueNotifier<int>(-1);
 
+  /// BUILD 329 — Notifier global de scroll para todas as abas.
+  /// true  → usuário está scrollando para baixo → nav bar encolhe
+  /// false → usuário está scrollando para cima / parado → nav bar expande
+  static final navScrollingDown = ValueNotifier<bool>(false);
+
   @override
   State<MainShell> createState() => _MainShellState();
 }
@@ -1270,7 +1275,19 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   void _onOpenNotes()         => showNotesSheet(context);
 
   void _onScrollNotification(ScrollNotification n) {
-    // Scroll-reveal AppBar removido — não faz nada.
+    // BUILD 329 — Motor de scroll dinâmico para a bottom nav (todas as abas).
+    // Threshold de 4px para ignorar micro-vibrações do overscroll iOS.
+    if (n is ScrollUpdateNotification) {
+      final delta = n.scrollDelta ?? 0;
+      if (delta > 4 && !MainShell.navScrollingDown.value) {
+        MainShell.navScrollingDown.value = true;   // scrolling down → encolhe nav
+      } else if (delta < -4 && MainShell.navScrollingDown.value) {
+        MainShell.navScrollingDown.value = false;  // scrolling up  → expande nav
+      }
+    } else if (n is ScrollEndNotification) {
+      // Ao parar o scroll, sempre expande a nav para garantir acessibilidade.
+      MainShell.navScrollingDown.value = false;
+    }
   }
 
   @override
@@ -1687,15 +1704,16 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           ? PreferredSize(
               // BUILD 316 M1: 36px base — SafeArea.top expande para notch/Dynamic Island.
               // Web/sem-notch → 36px útil. iPhone com ilha/entalhada → 36+padding.top.
-              preferredSize: const Size.fromHeight(36),
+              // BUILD 329 M3: preferredSize 36→48px (sincronizado com height: 48 interno)
+              preferredSize: const Size.fromHeight(48),
               child: Builder(
-                builder: (scaffoldCtx) => _MobileAppBar(
+                // BUILD 329: onMenuTap removido — menu migrou para bottom nav (M+ circular)
+                builder: (_) => _MobileAppBar(
                   dark: dark,
                   currentTab: _tab,
                   lang: p.lang,
                   isHome: true,
                   onLogoTap: () { FocusManager.instance.primaryFocus?.unfocus(); setState(() => _tab = 0); },
-                  onMenuTap: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
                 ),
               ),
             )
@@ -1712,7 +1730,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         child: MediaQuery.removePadding(
           context: context,
           removeTop: true,
-          child: SizedBox.expand(
+          child: Builder(
+            builder: (scaffoldBodyCtx) => SizedBox.expand(
             child: Stack(
               children: [
                 // ── Conteúdo principal ─────────────────────────────────────
@@ -1731,50 +1750,46 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   ),
                 ),
 
-                // ── Build 158.3: Floating footer unificado ────────────────
-                // FloatingBottomNav + LegalBar formam um ÚNICO bloco que
-                // desliza para fora da tela juntos (AnimatedSlide).
-                // Quando hidden=true → slide para baixo → rodapé = zero px.
-                // O chat expande para 100% da altura — imersão total.
-                // BUILD 318: também oculta durante editor de história clínica.
+                // ── Build 158.3 / BUILD 329: Floating footer unificado ───────
+                // FloatingBottomNav + LegalBar formam um ÚNICO bloco animado.
+                // BUILD 329: hidden agora depende de editorOpen | kbOpen apenas.
+                // O scroll-shrink dinâmico é gerido internamente por _FloatingFooter
+                // via MainShell.navScrollingDown — suporte a TODAS as abas.
                 ValueListenableBuilder<bool>(
                   valueListenable: HistoryScreen.editorActive,
                   builder: (_, editorOpen, __) =>
                   ValueListenableBuilder<bool>(
                     valueListenable: AiScreen.chatKeyboardOpen,
-                    builder: (_, kbOpen, __) =>
-                    ValueListenableBuilder<bool>(
-                      valueListenable: AiScreen.scrollingDown,
-                      builder: (_, scrollingDown, __) {
-                        final hidden = editorOpen
-                            || kbOpen
-                            || (isAiTab && scrollingDown);
-                        return _FloatingFooter(
-                          hidden: hidden,
-                          dark: dark,
-                          currentTab: _tab,
-                          lang: p.lang,
-                          onTabChange: (t) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            setState(() => _tab = t);
-                          },
-                          onFabTap: () {
-                            AppHaptics.light(context);
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            setState(() => _tab = 2);
-                          },
-                          onFabDoubleTap: () => _resetAndStartNewChat(),
-                          isAiActive: isAiTab,
-                        );
-                      },
-                    ),
+                    builder: (_, kbOpen, __) {
+                      final hidden = editorOpen || kbOpen;
+                      return _FloatingFooter(
+                        hidden: hidden,
+                        dark: dark,
+                        currentTab: _tab,
+                        lang: p.lang,
+                        onTabChange: (t) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          setState(() => _tab = t);
+                        },
+                        onFabTap: () {
+                          AppHaptics.light(context);
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          setState(() => _tab = 2);
+                        },
+                        onFabDoubleTap: () => _resetAndStartNewChat(),
+                        isAiActive: isAiTab,
+                        // BUILD 329: abre o endDrawer via Builder dentro do Scaffold
+                        onMenuTap: () => Scaffold.of(scaffoldBodyCtx).openEndDrawer(),
+                      );
+                    },
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
+            ),   // end Stack
+          ),     // end SizedBox.expand
+        ),       // end Builder
+      ),         // end MediaQuery.removePadding
+    ),           // end NotificationListener
     );
   }
 
@@ -1869,14 +1884,19 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 //   • Teclado aberto → barra desaparece (comportamento existente)
 //
 // ─────────────────────────────────────────────────────────────────────────────
-// Build 158.3 — _FloatingFooter
-//
-// Bloco unificado: FloatingBottomNav (42px) + LegalBar, posicionado em
-// Positioned(bottom:0) e animado como UM único AnimatedSlide.
-// Quando hidden=true → ambos deslizam juntos para fora da tela → zero espaço
-// no rodapé → chat ocupa 100% da altura → imersão total.
 // ─────────────────────────────────────────────────────────────────────────────
-class _FloatingFooter extends StatelessWidget {
+// BUILD 329 — _FloatingFooter (StatefulWidget)
+//
+// Bloco unificado: FloatingBottomNav + LegalBar, posicionado em Positioned(bottom:0).
+// NOVIDADES BUILD 329:
+//   • 4 botões: [Início | IA (FAB) | Ferramentas | Menu M+]
+//   • Scroll-shrink dinâmico via MainShell.navScrollingDown:
+//       scroll down → barHeight 50→38px (AnimatedContainer suave)
+//       scroll up   → barHeight 38→50px
+//   • Botão Menu M+: avatar circular estilo Instagram com fundo verde esmeralda
+//     e logotipo "M+" em ouro metálico, abre o endDrawer lateral
+// ─────────────────────────────────────────────────────────────────────────────
+class _FloatingFooter extends StatefulWidget {
   final bool hidden;
   final bool dark;
   final int  currentTab;
@@ -1884,6 +1904,7 @@ class _FloatingFooter extends StatelessWidget {
   final ValueChanged<int> onTabChange;
   final VoidCallback onFabTap;
   final VoidCallback onFabDoubleTap;
+  final VoidCallback onMenuTap;
   final bool isAiActive;
 
   const _FloatingFooter({
@@ -1894,64 +1915,99 @@ class _FloatingFooter extends StatelessWidget {
     required this.onTabChange,
     required this.onFabTap,
     required this.onFabDoubleTap,
+    required this.onMenuTap,
     required this.isAiActive,
   });
 
-  static const _neonCyan = Color(0xFF00E5FF);
+  @override
+  State<_FloatingFooter> createState() => _FloatingFooterState();
+}
+
+class _FloatingFooterState extends State<_FloatingFooter> {
+  static const _neonCyan   = Color(0xFF00E5FF);
+  // Paleta do avatar M+ — verde esmeralda médico + ouro metálico
+  static const _avatarGreen      = Color(0xFF0D7A5F); // verde petróleo esmeralda
+  static const _avatarGreenLight = Color(0xFF34D399); // borda luminosa
+  static const _avatarGold       = Color(0xFFD4AF37); // ouro fosco canônico
+
+  // Alturas da barra: normal e encolhida
+  static const _barHeightFull    = 50.0;
+  static const _barHeightShrunk  = 38.0;
+
+  bool _shrunk = false; // reflexo local do navScrollingDown
+
+  @override
+  void initState() {
+    super.initState();
+    MainShell.navScrollingDown.addListener(_onScrollChange);
+  }
+
+  @override
+  void dispose() {
+    MainShell.navScrollingDown.removeListener(_onScrollChange);
+    super.dispose();
+  }
+
+  void _onScrollChange() {
+    final s = MainShell.navScrollingDown.value;
+    if (s != _shrunk) setState(() => _shrunk = s);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 328 M1: barHeight 43→50px — mais imponência e área de toque
-    final navBg = dark
+    final navBg = widget.dark
         ? const Color(0xFF0F1116).withOpacity(0.68)
         : Colors.white.withOpacity(0.65);
 
-    const barHeight = 50.0;
+    // BUILD 329: altura dinâmica — encolhe suavemente durante scroll down
+    final barHeight = _shrunk ? _barHeightShrunk : _barHeightFull;
 
     return Positioned(
       left: 0,
       right: 0,
       bottom: 0,
       child: AnimatedSlide(
-        // Desliza TODO o bloco (nav + legal) para baixo quando hidden
-        offset: Offset(0, hidden ? 1.0 : 0.0),
+        // Slide total quando hidden (teclado aberto / editor de história)
+        offset: Offset(0, widget.hidden ? 1.0 : 0.0),
         duration: const Duration(milliseconds: 300),
-        curve: hidden ? Curves.easeInCubic : Curves.easeOutCubic,
+        curve: widget.hidden ? Curves.easeInCubic : Curves.easeOutCubic,
         child: AnimatedOpacity(
-          opacity: hidden ? 0.0 : 1.0,
+          opacity: widget.hidden ? 0.0 : 1.0,
           duration: const Duration(milliseconds: 250),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
 
-              // ── Floating Dock premium — glassmorphism 24px corner radius ────
-              // BUILD 328 M1: padding h:18→14 v:7→8 — menos recuo lateral, mais respiro
+              // ── Floating Dock glassmorphism ────────────────────────────────
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(32),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                    child: Container(
+                    child: AnimatedContainer(
+                      // BUILD 329: animação suave de encolhimento via scroll
+                      duration: const Duration(milliseconds: 280),
+                      curve: Curves.easeInOutCubic,
                       height: barHeight,
                       decoration: BoxDecoration(
                         color: navBg,
                         borderRadius: BorderRadius.circular(32),
                         border: Border.all(
-                          color: dark
+                          color: widget.dark
                               ? _neonCyan.withOpacity(0.18)
                               : Colors.white.withOpacity(0.55),
                           width: 0.9,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: dark
+                            color: widget.dark
                                 ? Colors.black.withOpacity(0.45)
                                 : Colors.black.withOpacity(0.08),
                             blurRadius: 20,
                             offset: const Offset(0, -4),
                           ),
-                          if (dark)
+                          if (widget.dark)
                             BoxShadow(
                               color: _neonCyan.withOpacity(0.05),
                               blurRadius: 24,
@@ -1960,94 +2016,162 @@ class _FloatingFooter extends StatelessWidget {
                         ],
                       ),
                       child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
 
-                        // ── INICIO ────────────────────────────────────────
-                        Expanded(
-                          child: _NavItem(
-                            icon: Icons.home_rounded,
-                            label: lang == 'es' ? 'Inicio' : 'Início',
-                            isActive: currentTab == 0,
-                            dark: dark,
-                            onTap: () => onTabChange(0),
+                          // ── 1. INÍCIO ──────────────────────────────────────
+                          Expanded(
+                            child: _NavItem(
+                              icon: Icons.home_rounded,
+                              label: widget.lang == 'es' ? 'Inicio' : 'Início',
+                              isActive: widget.currentTab == 0,
+                              dark: widget.dark,
+                              onTap: () => widget.onTabChange(0),
+                            ),
                           ),
-                        ),
 
-                        // ── FAB CENTRAL IA ────────────────────────────────
-                        SizedBox(
-                          width: 50,
-                          height: barHeight,
-                          child: Center(
-                            child: GestureDetector(
-                              onTap: onFabTap,
-                              onDoubleTap: onFabDoubleTap,
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 220),
-                                curve: Curves.easeOutCubic,
-                                // SUPER ORDEM MASTER 308 M1: FAB -10% → 31px
-                                width: 31,
-                                height: 31,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: isAiActive
-                                        ? [const Color(0xFF008CA4), const Color(0xFF005566)]
-                                        : [const Color(0xFF374151), const Color(0xFF1E2330)],
+                          // ── 2. FAB CENTRAL IA ──────────────────────────────
+                          SizedBox(
+                            width: 50,
+                            height: barHeight,
+                            child: Center(
+                              child: GestureDetector(
+                                onTap: widget.onFabTap,
+                                onDoubleTap: widget.onFabDoubleTap,
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 220),
+                                  curve: Curves.easeOutCubic,
+                                  width: 31,
+                                  height: 31,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: widget.isAiActive
+                                          ? [const Color(0xFF008CA4), const Color(0xFF005566)]
+                                          : [const Color(0xFF374151), const Color(0xFF1E2330)],
+                                    ),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: widget.isAiActive
+                                          ? _neonCyan.withOpacity(0.80)
+                                          : const Color(0xFF4B5563),
+                                      width: 1.5,
+                                    ),
+                                    boxShadow: widget.isAiActive
+                                        ? [BoxShadow(color: _neonCyan.withOpacity(0.50), blurRadius: 14)]
+                                        : [BoxShadow(color: Colors.black.withOpacity(0.35), blurRadius: 8, offset: const Offset(0, 3))],
                                   ),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: isAiActive
-                                        ? _neonCyan.withOpacity(0.80)
-                                        : const Color(0xFF4B5563),
-                                    width: 1.5,
+                                  child: Icon(
+                                    Icons.psychology_rounded,
+                                    size: 20,
+                                    color: widget.isAiActive ? _neonCyan : Colors.white70,
                                   ),
-                                  boxShadow: isAiActive
-                                      ? [
-                                          BoxShadow(
-                                            color: _neonCyan.withOpacity(0.50),
-                                            blurRadius: 14,
-                                            spreadRadius: 0,
-                                          ),
-                                        ]
-                                      : [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.35),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 3),
-                                          ),
-                                        ],
-                                ),
-                                child: Icon(
-                                  Icons.psychology_rounded,
-                                  size: 20,
-                                  color: isAiActive ? _neonCyan : Colors.white70,
                                 ),
                               ),
                             ),
                           ),
-                        ),
 
-                        // ── HERRAMIENTAS ──────────────────────────────────
-                        Expanded(
-                          child: _NavItem(
-                            icon: Icons.calculate_rounded,
-                            label: lang == 'es' ? 'Herramientas' : 'Ferramentas',
-                            isActive: currentTab == 4,
-                            dark: dark,
-                            onTap: () => onTabChange(4),
+                          // ── 3. FERRAMENTAS ─────────────────────────────────
+                          Expanded(
+                            child: _NavItem(
+                              icon: Icons.calculate_rounded,
+                              label: widget.lang == 'es' ? 'Herramientas' : 'Ferramentas',
+                              isActive: widget.currentTab == 4,
+                              dark: widget.dark,
+                              onTap: () => widget.onTabChange(4),
+                            ),
                           ),
-                        ),
-                      ],
+
+                          // ── 4. MENU — Avatar M+ circular estilo Instagram ──
+                          // Círculo verde esmeralda com "M+" dourado centralizado.
+                          // Borda luminosa que pulsa levemente ao ser ativo.
+                          // Toca → abre endDrawer (Drawer lateral do app).
+                          Expanded(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: widget.onMenuTap,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // ── Avatar circular M+ ───────────────────
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: Container(
+                                      width: 26,
+                                      height: 26,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        // Gradiente verde esmeralda → petróleo
+                                        gradient: const LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0xFF16A87C), // verde esmeralda topo
+                                            Color(0xFF0A5C45), // verde petróleo fundo
+                                          ],
+                                        ),
+                                        // Borda dourada estilo Instagram story
+                                        border: Border.all(
+                                          color: _avatarGreenLight.withOpacity(0.70),
+                                          width: 1.8,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: _avatarGreen.withOpacity(0.45),
+                                            blurRadius: 8,
+                                            spreadRadius: 0,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'M+',
+                                          style: TextStyle(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w900,
+                                            color: _avatarGold,
+                                            letterSpacing: 0.3,
+                                            height: 1.0,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black.withOpacity(0.40),
+                                                blurRadius: 3,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // ── Label "Menu" ─────────────────────────
+                                  Text(
+                                    widget.lang == 'es' ? 'Menú' : 'Menu',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w500,
+                                      color: widget.dark
+                                          ? const Color(0xFF6B7280)
+                                          : const Color(0xFFB0B8C0),
+                                      height: 1.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-              // ── LegalBar — faz parte do bloco animado ────────────────
-              _LegalBar(dark: dark, insideSafeArea: true),
+              // ── LegalBar — faz parte do bloco animado ─────────────────────
+              _LegalBar(dark: widget.dark, insideSafeArea: true),
             ],
           ),
         ),
@@ -2111,10 +2235,10 @@ class _NavItem extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MOBILE APP BAR — topo do Scaffold mobile com logo + ações contextuais + hambúrguer
-// Isolado do _AppHeader (desktop) para não quebrar o layout desktop.
-// Quando currentTab == 2 (IA MedCases), injeta botões "Histórico" e "Limpar"
-// antes do hambúrguer, usando os ValueNotifiers estáticos do AiScreen.
+// MOBILE APP BAR — topo do Scaffold mobile com logo centralizada + botões contextuais
+// BUILD 329: hambúrguer REMOVIDO — menu migrou para o 4º botão (M+ circular) da bottom nav.
+// Quando currentTab == 2 (IA MedCases), injeta botões "Histórico" e "Novo Chat"
+// à direita, usando os ValueNotifiers estáticos do AiScreen.
 // ─────────────────────────────────────────────────────────────────────────────
 class _MobileAppBar extends StatelessWidget {
   final bool dark;
@@ -2122,7 +2246,6 @@ class _MobileAppBar extends StatelessWidget {
   final String lang;
   final bool isHome;
   final VoidCallback onLogoTap;
-  final VoidCallback onMenuTap;
 
   const _MobileAppBar({
     required this.dark,
@@ -2130,7 +2253,6 @@ class _MobileAppBar extends StatelessWidget {
     required this.lang,
     required this.isHome,
     required this.onLogoTap,
-    required this.onMenuTap,
   });
 
   // Tab index da tela de IA (deve corresponder a _staticScreens[2])
@@ -2181,7 +2303,8 @@ class _MobileAppBar extends StatelessWidget {
           // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
           // padding do sistema (notch / Dynamic Island / status bar).
           // BUILD 328 M2: altura 36→46px — AppBar mais robusta e imponente
-          height: 46,
+          // BUILD 329 M3: +2px → 48px — respiro perfeito ao cabeçalho
+          height: 48,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Stack(
@@ -2220,15 +2343,11 @@ class _MobileAppBar extends StatelessWidget {
                     ),
                   ),
 
-                // ── Row com logo + botões ──────────────────────────────────
-                // BUILD 282 — Logo M+ (BrandMark) removido da AppBar mobile.
-                // Título "MEDCASES PRO" fica centralizado pelo Stack acima.
-                // SizedBox(38) à esquerda espelha a largura do hambúrguer (38px)
-                // direito, garantindo simetria perfeita e título realmente centrado.
+                // ── Row com botões contextuais (direita) ──────────────────
+                // BUILD 329: hambúrguer removido — apenas botões IA contextuais
+                // à direita. Título centralizado pelo Stack acima sem placeholder.
                 Row(
               children: [
-                // BUILD 316: Placeholder 32px (largura = hambúrguer nu) para simetria
-                const SizedBox(width: 32),
                 const Spacer(),
 
                 // ── Botões contextuais da IA (só na aba 2) ─────────────────
@@ -2367,22 +2486,7 @@ class _MobileAppBar extends StatelessWidget {
                   ),
                 ],
 
-                // BUILD 316 M2: hambúrguer ultra-minimalista — sem container,
-                // sem bordas, sem background. Apenas o ícone flutuando sobre o canvas.
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onMenuTap,
-                  // BUILD 328 M2: hamburger SizedBox 32→36px, icon 20→24px
-                  child: SizedBox(
-                    width: 36,
-                    height: 36,
-                    child: Icon(
-                      Icons.menu_rounded,
-                      size: 24,
-                      color: iconColor,
-                    ),
-                  ),
-                ),
+                // BUILD 329: hambúrguer REMOVIDO — menu agora no 4º botão da bottom nav
               ],
             ), // end inner Row
               ], // end Stack children
@@ -3105,15 +3209,16 @@ class _LegalBar extends StatelessWidget {
       ),
       // BUILD 328 M4: padding v:1→5 — disclaimer totalmente visível acima da nav
       // fontSize 9→10, maxLines 1→2, icon 8→10 — legibilidade Apple 1.4.1
+      // BUILD 329 M3: fontSize 10→11 — legibilidade definitiva e sólida
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       child: Row(children: [
-        Icon(Icons.info_outline_rounded, size: 10, color: textColor.withOpacity(0.55)),
+        Icon(Icons.info_outline_rounded, size: 11, color: textColor.withOpacity(0.55)),
         const SizedBox(width: 3),
         Expanded(
           child: Text(
             disclaimer,
             style: TextStyle(
-              fontSize: 10, color: textColor,
+              fontSize: 11, color: textColor,
               height: 1.3, letterSpacing: 0.0,
               fontWeight: FontWeight.w400,
             ),
