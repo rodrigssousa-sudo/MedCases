@@ -2870,25 +2870,28 @@ class _MobileAiActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // BUILD 331 IA: Topbar SEMPRE dark — #0F1116 independente do tema do sistema.
-    // RichText bicolor: "MEDCASES " branco + "IA" dourado.
-    // Botão esquerdo dinâmico: desconectado → "Conectar IA"; conectado → M+ pulsante verde.
+    // RichText bicolor: "MEDCASES " branco + "IA" dourado (#FFD700).
+    // SafeArea(bottom:false) absorve o notch do iPhone — a barra parte de y=0.
+    // Botão esquerdo dinâmico:
+    //   desconectado → "Conectar IA" com borda ciana 1.2px
+    //   conectado    → _MplusPulse() verde pulsante
+    // Direita: VAZIA — histórico/novo absorvidos pela bottom nav contextual.
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0F1116),                   // SEMPRE dark — nunca branco
+        color: const Color(0xFF0F1116),
         border: const Border(
-          bottom: BorderSide(
-            color: Color(0xFF2D3340),                     // borda fixa dark
-            width: 0.5,
-          ),
+          bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.35),        // sombra fixa dark
+            color: Colors.black.withOpacity(0.35),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
       ),
+      // SafeArea(bottom:false): expande o Container para cobrir a status bar
+      // (notch / Dynamic Island). O SizedBox(48) abaixo é a área útil pura.
       child: SafeArea(
         bottom: false,
         child: SizedBox(
@@ -2898,38 +2901,44 @@ class _MobileAiActionBar extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // ── CENTRO: título bicolor absolutamente centralizado ───────
+
+                // ── CENTRO: RichText bicolor absolutamente centralizado ─────
+                // Stack(center) garante centralização geométrica pura — sem
+                // deslocamento pelo botão esquerdo ou pela região direita vazia.
                 RichText(
                   textAlign: TextAlign.center,
                   text: const TextSpan(
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.2,
-                    ),
                     children: [
                       TextSpan(
                         text: 'MEDCASES ',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          color: Colors.white,
+                        ),
                       ),
                       TextSpan(
                         text: 'IA',
-                        style: TextStyle(color: Color(0xFFFFD700)), // DOURADO
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          color: Color(0xFFFFD700), // DOURADO
+                        ),
                       ),
                     ],
                   ),
                 ),
 
-                // ── ESQUERDA: Conectar IA (desconectado) / M+ verde pulsante (conectado) ──
+                // ── ESQUERDA: M+ pulsante (conectado) / "Conectar IA" (desconectado) ──
                 Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     onTap: onSettings,
                     behavior: HitTestBehavior.opaque,
                     child: isConnected
-                        // CONECTADO: M+ verde pulsante
                         ? const _MplusPulse()
-                        // DESCONECTADO: botão "Conectar IA" com borda ciana
                         : Container(
                             height: 30,
                             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -2955,8 +2964,10 @@ class _MobileAiActionBar extends StatelessWidget {
                   ),
                 ),
 
-                // ── DIREITA: vazio — botões migrados para barra inferior ───
-                // (Build 331: Histórico | Novo removidos — barra inferior os absorve)
+                // ── DIREITA: VAZIA ─────────────────────────────────────────
+                // Build 331: [Histórico | Novo] removidos da topbar.
+                // Absorvidos pela _FloatingFooter contextual (isAiActive row).
+
               ],
             ),
           ),

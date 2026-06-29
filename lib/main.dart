@@ -1735,9 +1735,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             child: Stack(
               children: [
                 // ── Conteúdo principal ─────────────────────────────────────
+                // isHome (tab 0) e IA (tab 2) partem do y=0 — cada tela cuida
+                // do seu próprio SafeArea interno (_MobileAiActionBar SafeArea).
+                // Demais abas (sem topbar própria) recebem padding.top manual.
                 Padding(
                   padding: EdgeInsets.only(
-                    top: isHome ? 0 : MediaQuery.of(context).padding.top,
+                    top: (isHome || _tab == 2) ? 0 : MediaQuery.of(context).padding.top,
                   ),
                   child: ValueListenableBuilder<bool>(
                     valueListenable: UpdateService.swUpdateAvailable,
