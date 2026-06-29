@@ -2912,48 +2912,15 @@ class _MobileAiActionBar extends StatelessWidget {
         bottom: false,
         child: SizedBox(
           height: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
+          child: Stack(
+            children: [
 
-                // ── 1. TÍTULO BICOLOR — centro geométrico, não interativo ──
-                // IgnorePointer: o texto não absorve toques — eles atravessam
-                // para a área vazia da Stack ou para o botão esquerdo.
-                IgnorePointer(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'MEDCASES ',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                            color: Colors.white,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'IA',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                            color: Color(0xFFD4AF37), // DOURADO PREMIUM
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // ── 2. BOTÃO ESQUERDO — M+ pulsante ou "Conectar IA" ──────
-                // Z-order acima do título: garante que a zona esquerda da barra
-                // pertence 100% ao botão, sem interferência do RichText.
-                // onSettings → _openAiSettings() → _AiStatusSheet modal.
-                Align(
+              // ── 1. BOTÃO DA ESQUERDA — POSIÇÃO ABSOLUTA, NUNCA SOBREPÕE O TÍTULO ──
+              Positioned(
+                left: 12,
+                top: 0,
+                bottom: 0,
+                child: Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     onTap: onSettings,
@@ -2986,15 +2953,38 @@ class _MobileAiActionBar extends StatelessWidget {
                           ),
                   ),
                 ),
+              ),
 
-                // ── 3. DIREITA — completamente vazia, simetria visual ─────
-                const Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(width: 40, height: 40),
+              // ── 2. TÍTULO — CENTRO GEOMÉTRICO ABSOLUTO ──────────────────
+              Align(
+                alignment: Alignment.center,
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'MEDCASES ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          color: Colors.white,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'IA',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          color: Color(0xFFD4AF37), // DOURADO PREMIUM
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+              ),
 
-              ],
-            ),
+            ],
           ),
         ),
       ),
