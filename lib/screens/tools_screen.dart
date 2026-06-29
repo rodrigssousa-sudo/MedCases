@@ -114,9 +114,10 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BUILD 331 — TOPBAR FERRAMENTAS
-// Geometria estrita: SafeArea(bottom:false) + SizedBox(48) + padding h:12.
-// Fundo sólido #0F1116 dark / branco light — sem gradiente/Dark Graphite.
-// Título centralizado via Stack, botão voltar à esquerda.
+// Identidade visual: Black Piano #111622 sólido — mesmo tom da AI ActionBar.
+// Geometria estrita: SafeArea(bottom:false) + SizedBox(48).
+// Stack sem Padding wrapper — botão em Positioned(left:12), título em Align(center).
+// Borda inferior #2D3340 0.5px + BoxShadow blur:6 — acabamento premium.
 // ─────────────────────────────────────────────────────────────────────────────
 class _ToolsTopbar extends StatelessWidget {
   final bool dark;
@@ -127,16 +128,13 @@ class _ToolsTopbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF0F1116) : Colors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
-            width: 0.5,
-          ),
+        color: const Color(0xFF111622),
+        border: const Border(
+          bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+            color: Colors.black.withOpacity(0.35),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -146,23 +144,14 @@ class _ToolsTopbar extends StatelessWidget {
         bottom: false,
         child: SizedBox(
           height: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // CENTER: título absolutamente centrado
-                Text(
-                  'FERRAMENTAS',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                    color: dark ? Colors.white : const Color(0xFF0F1116),
-                  ),
-                ),
-                // LEFT: botão de voltar com alto contraste
-                Align(
+          child: Stack(
+            children: [
+              // ── BOTÃO ESQUERDO — posição absoluta, nunca sobrepõe o título ──
+              Positioned(
+                left: 12,
+                top: 0,
+                bottom: 0,
+                child: Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -174,19 +163,32 @@ class _ToolsTopbar extends StatelessWidget {
                         MainShell.pendingTab.value = 0;
                       }
                     },
-                    child: SizedBox(
+                    child: const SizedBox(
                       width: 36,
                       height: 36,
                       child: Icon(
                         Icons.arrow_back_ios_new_rounded,
                         size: 20,
-                        color: dark ? Colors.white : const Color(0xFF0F1116),
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              // ── TÍTULO — centro geométrico absoluto ──────────────────────
+              const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'FERRAMENTAS',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
