@@ -4467,6 +4467,85 @@ class _LabeledInput extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 331 — SELETOR QUÁDRUPLO PEDIATRIA (BIOMETRIA|SCHWARTZ|PEWS|REFERÊNCIA)
+// Desacoplado do gradiente verde — sobre fundo nativo sólido do corpo.
+// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
+// ─────────────────────────────────────────────────────────────────────────────
+class _PediatTabRow extends StatelessWidget {
+  final bool dark;
+  final List<String> sections;
+  final int activeIndex;
+  final ValueChanged<int> onSelect;
+
+  const _PediatTabRow({
+    required this.dark,
+    required this.sections,
+    required this.activeIndex,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dividerColor = dark ? Colors.white24 : Colors.black12;
+    final activeColor  = dark ? Colors.white : const Color(0xFF0F1116);
+    final inactiveColor = dark
+        ? Colors.white60
+        : const Color(0xFF0F1116).withOpacity(0.45);
+
+    final items = <Widget>[];
+    for (int i = 0; i < sections.length; i++) {
+      final active = activeIndex == i;
+      items.add(
+        Expanded(
+          child: GestureDetector(
+            onTap: () => onSelect(i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border(
+                  bottom: active
+                      ? const BorderSide(color: Color(0xFF00E5FF), width: 2.0)
+                      : BorderSide.none,
+                ),
+              ),
+              child: Text(
+                sections[i],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: active ? activeColor : inactiveColor,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      if (i < sections.length - 1) {
+        items.add(Container(width: 1, height: 14, color: dividerColor));
+      }
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF1A1D23) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(children: items),
+    );
+  }
+}
+
 // ══════════════════════════════════════════════════════════════════
 //  TAB 8 — PEDIATRIA
 // ══════════════════════════════════════════════════════════════════
@@ -4664,78 +4743,12 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
     final c    = AppColors.of(context);
 
     return Column(children: [
-      // ── MANDATO VISUAL BUILD 299: Flat Underline Tab Pattern ──────────────
-      // Fundo 100% transparente — sem pill-shape / BoxDecoration arredondado
-      // Tab ativa: borda inferior ciano (0xFF00E5FF, 2px)
-      // Tab inativa: sem borda, texto Colors.white60
-      // Divisores verticais Container(w:1, h:14, color: Colors.white24) ENTRE items
-      Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF042F2E),
-              Color(0xFF0F766E),
-              Color(0xFF134E4A),
-            ],
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          children: () {
-            final items = <Widget>[];
-            for (int i = 0; i < _sections.length; i++) {
-              final active = _section == i;
-              // Tab item
-              items.add(
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () { AppHaptics.selection(context); setState(() => _section = i); },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 160),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        border: active
-                            ? const Border(
-                                bottom: BorderSide(
-                                  color: Color(0xFF00E5FF),
-                                  width: 2.0,
-                                ),
-                              )
-                            : const Border(
-                                bottom: BorderSide.none,
-                              ),
-                      ),
-                      child: Text(
-                        _sections[i],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: active ? Colors.white : Colors.white60,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-              // Vertical divider BETWEEN items (not after last)
-              if (i < _sections.length - 1) {
-                items.add(
-                  Container(
-                    width: 1,
-                    height: 14,
-                    color: Colors.white24,
-                  ),
-                );
-              }
-            }
-            return items;
-          }(),
-        ),
+      // BUILD 331: Seletor quádruplo desacoplado — sobre fundo nativo sólido
+      _PediatTabRow(
+        dark: p.darkMode,
+        sections: _sections,
+        activeIndex: _section,
+        onSelect: (i) { AppHaptics.selection(context); setState(() => _section = i); },
       ),
 
       // ── Content ─────────────────────────────────────────────────

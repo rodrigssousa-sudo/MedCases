@@ -5311,53 +5311,71 @@ class _PediatricsShell extends StatelessWidget {
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    // ── MANDATO VISUAL BUILD 299: TopBar Cupertino — back left, title centered, NO subtitle ──
+    // BUILD 331: Topbar padronizada — sólida, 48px, sem gradiente verde
     return Scaffold(
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
+        // ── Topbar Build 331 ─────────────────────────────────────────
         Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF042F2E), Color(0xFF0F766E), Color(0xFF134E4A)],
+          decoration: BoxDecoration(
+            color: dark ? const Color(0xFF0F1116) : Colors.white,
+            border: Border(
+              bottom: BorderSide(
+                color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+                width: 0.5,
+              ),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: SafeArea(
             bottom: false,
             child: SizedBox(
-              height: 52,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // LEFT — back button
-                  Positioned(
-                    left: 4,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new,
-                          size: 20, color: Colors.white),
-                      onPressed: () => Navigator.of(context).pop(),
-                      padding: const EdgeInsets.all(8),
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-                    ),
-                  ),
-                  // CENTER ABSOLUTE — title only, no subtitle
-                  Center(
-                    child: Text(
+              height: 48,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // CENTER: título absolutamente centrado
+                    Text(
                       isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        letterSpacing: 1.4,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.2,
+                        color: dark ? Colors.white : const Color(0xFF0F1116),
                       ),
                     ),
-                  ),
-                ],
+                    // LEFT: botão de voltar com alto contraste
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => Navigator.of(context).pop(),
+                        child: SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 20,
+                            color: dark ? Colors.white : const Color(0xFF0F1116),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
+        // ── Conteúdo — PediatricsTabContent (quad tabs desacopladas) ─
         const Expanded(child: PediatricsTabContent()),
       ]),
     );
