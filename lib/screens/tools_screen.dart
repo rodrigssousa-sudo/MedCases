@@ -77,86 +77,15 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     // Peça única solidária Dark Graphite com título + pílulas embutidas.
     final showHeader = !widget.hideHeader;
 
-    // BUILD 283 ORDEM 8: Dark Graphite constants
-    const Color kGraphiteDark = Color(0xFF1A1D23);
-    const Color kGraphiteBorder = Color(0xFF2A2D35);
+    final dark = p.darkMode;
 
     return Column(children: [
-      // ── Header + tabs minimalistas (peça única Dark Graphite) ───────────
-      // SUPER ORDEM VISUAL 06: Topologia Cupertino/Linear.
-      // Stack: título centrado, back à esquerda. Subtítulo MEDCASES PRO destruído.
-      // Tabs: pill-shape destruído → underline indicator + divisor fio entre itens.
+      // BUILD 331: Topbar unificada — desacoplada das tabs
       if (showHeader)
-        Container(
-          decoration: const BoxDecoration(
-            color: kGraphiteDark,
-            border: Border(
-              bottom: BorderSide(color: kGraphiteBorder, width: 0.5),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── M1: Linha título — Stack Left-Center ─────────────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(4, 10, 16, 6),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // CENTER: título isolado e absolutamente centrado
-                    Text(
-                      isEs ? 'FERRAMENTAS' : 'FERRAMENTAS',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        letterSpacing: -0.2,
-                      ),
-                    ),
-                    // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          final nav = Navigator.of(context);
-                          if (nav.canPop()) {
-                            nav.pop();
-                          } else {
-                            MainShell.pendingTab.value = 0;
-                          }
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // ── M2: Tab bar minimalista — underline indicator ─────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                child: Row(
-                  children: [
-                    Expanded(child: _ToolsFlatTab(label: isEs ? 'BIOMETRÍA' : 'BIOMETRIA', index: 0, tabCtrl: _tabCtrl)),
-                    const _ToolsTabDivider(),
-                    Expanded(child: _ToolsFlatTab(label: 'CARDIO', index: 1, tabCtrl: _tabCtrl)),
-                    const _ToolsTabDivider(),
-                    Expanded(child: _ToolsFlatTab(label: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS', index: 2, tabCtrl: _tabCtrl)),
-                    const _ToolsTabDivider(),
-                    Expanded(child: _ToolsFlatTab(label: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS', index: 3, tabCtrl: _tabCtrl)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        _ToolsTopbar(dark: dark, isEs: isEs),
+      // BUILD 331: Seletor de categorias desacoplado da Topbar
+      if (showHeader)
+        _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
 
       // ── Content ─────────────────────────────────────────────────
       // GestureDetector com behavior translucent: um tap em qualquer área
@@ -182,30 +111,164 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
   }
 }
 
-// ──────────────────────────────────────────────────────────────────
-// HELPERS: tab minimalista flat + divisória delicada — SUPER ORDEM VISUAL 06
-// Pill-shape destruído: fundo 100% transparente, indicador = underline 2px ciano.
-// ──────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 331 — TOPBAR FERRAMENTAS
+// Geometria estrita: SafeArea(bottom:false) + SizedBox(48) + padding h:12.
+// Fundo sólido #0F1116 dark / branco light — sem gradiente/Dark Graphite.
+// Título centralizado via Stack, botão voltar à esquerda.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ToolsTopbar extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  const _ToolsTopbar({required this.dark, required this.isEs});
 
-/// Divisória vertical fio entre as abas — 1px, 14dp de altura, discreta.
-class _ToolsTabDivider extends StatelessWidget {
-  const _ToolsTabDivider();
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 1,
-      height: 14,
-      color: Colors.white24,
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF0F1116) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 48,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // CENTER: título absolutamente centrado
+                Text(
+                  'FERRAMENTAS',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.2,
+                    color: dark ? Colors.white : const Color(0xFF0F1116),
+                  ),
+                ),
+                // LEFT: botão de voltar com alto contraste
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      final nav = Navigator.of(context);
+                      if (nav.canPop()) {
+                        nav.pop();
+                      } else {
+                        MainShell.pendingTab.value = 0;
+                      }
+                    },
+                    child: SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 20,
+                        color: dark ? Colors.white : const Color(0xFF0F1116),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
-/// Tab flat minimalista — underline ciano quando ativa, sem pill-shape.
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 331 — SELETOR QUÁDRUPLO FERRAMENTAS (BIOMETRIA|CARDIO|ELETRÓLITOS|REFERÊNCIAS)
+// Desacoplado da topbar — sobre fundo nativo sólido do corpo.
+// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
+// ─────────────────────────────────────────────────────────────────────────────
+class _ToolsTabRow extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final TabController tabCtrl;
+
+  const _ToolsTabRow({
+    required this.dark,
+    required this.isEs,
+    required this.tabCtrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dividerColor = dark ? Colors.white24 : Colors.black12;
+    return Container(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xFF1A1D23) : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            width: 0.5,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          children: [
+            Expanded(child: _ToolsFlatTab(
+              label: isEs ? 'BIOMETRÍA' : 'BIOMETRIA',
+              index: 0, tabCtrl: tabCtrl, dark: dark,
+            )),
+            Container(width: 1, height: 14, color: dividerColor),
+            Expanded(child: _ToolsFlatTab(
+              label: 'CARDIO',
+              index: 1, tabCtrl: tabCtrl, dark: dark,
+            )),
+            Container(width: 1, height: 14, color: dividerColor),
+            Expanded(child: _ToolsFlatTab(
+              label: isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS',
+              index: 2, tabCtrl: tabCtrl, dark: dark,
+            )),
+            Container(width: 1, height: 14, color: dividerColor),
+            Expanded(child: _ToolsFlatTab(
+              label: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS',
+              index: 3, tabCtrl: tabCtrl, dark: dark,
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────
+// HELPERS: tab minimalista flat — BUILD 331
+// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
+// ──────────────────────────────────────────────────────────────────
+
+/// Tab flat minimalista — underline ciano quando ativa, texto dark/light.
 class _ToolsFlatTab extends StatefulWidget {
   final String label;
   final int index;
   final TabController tabCtrl;
-  const _ToolsFlatTab({required this.label, required this.index, required this.tabCtrl});
+  final bool dark;
+  const _ToolsFlatTab({
+    required this.label,
+    required this.index,
+    required this.tabCtrl,
+    this.dark = true,
+  });
   @override
   State<_ToolsFlatTab> createState() => _ToolsFlatTabState();
 }
@@ -230,13 +293,17 @@ class _ToolsFlatTabState extends State<_ToolsFlatTab> {
   @override
   Widget build(BuildContext context) {
     final isActive = widget.tabCtrl.index == widget.index;
+    // BUILD 331: dark → branco; light → preto — máxima hierarquia de leitura
+    final activeColor = widget.dark ? Colors.white : const Color(0xFF0F1116);
+    final inactiveColor = widget.dark
+        ? Colors.white60
+        : const Color(0xFF0F1116).withOpacity(0.45);
     return GestureDetector(
       onTap: () => widget.tabCtrl.animateTo(widget.index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          // Fundo 100% transparente — pill-shape destruído
           color: Colors.transparent,
           border: Border(
             bottom: isActive
@@ -250,7 +317,7 @@ class _ToolsFlatTabState extends State<_ToolsFlatTab> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: isActive ? Colors.white : Colors.white60,
+            color: isActive ? activeColor : inactiveColor,
             letterSpacing: 0.3,
           ),
         ),
@@ -258,6 +325,8 @@ class _ToolsFlatTabState extends State<_ToolsFlatTab> {
     );
   }
 }
+
+// (Note: _ToolsTabDivider removed — inline Container used in _ToolsTabRow)
 
 // ══════════════════════════════════════════════════════════════════
 //  TAB 1 — BIOMETRIA
