@@ -865,101 +865,112 @@ class _InternacionScreenState extends State<InternacionScreen> {
       backgroundColor: theme.surface,
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      // TOPBAR — AppBar customizada
-      // SUPER ORDEM VISUAL 05: Topologia Cupertino/Linear Left-Center-Right.
-      // Stack: título absolutamente centrado, back à esquerda, "+ Nova" à direita.
-      // Subtítulo "MEDCASES PRO" destruído — título PACIENTES sozinho e limpo.
-      // BUILD 324 PILAR 2A: 66 → 52px — SafeArea(bottom:false) já absorve notch/Dynamic Island.
+      // TOPBAR — BUILD 331 PADRÃO GLOBAL
+      // Alinhada às medidas da Home: preferredSize 48px, SafeArea, padding h:12,
+      // fundo sólido sem gradiente, borda 0.5px, sombra blurRadius:6,
+      // Stack com título centrado puro, back esquerda, Nova direita.
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(52),
+        preferredSize: const Size.fromHeight(48),
         child: Container(
-          // BUILD 277-CROMATICO: Turquoise/emerald gradient for Internacao/Pacientes
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF0F4C3A), // teal-900 — topo esquerdo
-                Color(0xFF065F45), // emerald-petróleo — meio
-                Color(0xFF0D9488), // teal-600 — baixo direito (vibrância)
-              ],
+          decoration: BoxDecoration(
+            color: dark ? const Color(0xFF0F1116) : Colors.white,
+            border: Border(
+              bottom: BorderSide(
+                color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+                width: 0.5,
+              ),
             ),
-            border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.8)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: SafeArea(
             bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // ── CENTER: título isolado e absolutamente centrado ───────
-                  const Center(
-                    child: Text(
+            child: SizedBox(
+              height: 48,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+
+                    // CENTER: título absolutamente centrado — Stack puro
+                    Text(
                       'PACIENTES',
                       style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.2,
-                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.2,
+                        color: dark ? Colors.white : const Color(0xFF0F1116),
                       ),
                     ),
-                  ),
-                  // ── LEFT: botão de voltar ─────────────────────────────────
-                  // LEFT: botão de voltar — SUPER ORDEM 313 canPop guard
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        final nav = Navigator.of(context);
-                        if (nav.canPop()) nav.pop();
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.arrow_back_ios_new,
-                          color: Colors.white,
-                          size: 20,
+
+                    // LEFT: botão Voltar — SizedBox 36×36 para alvo de toque confortável
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          final nav = Navigator.of(context);
+                          if (nav.canPop()) nav.pop();
+                        },
+                        child: SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: dark ? Colors.white : const Color(0xFF0F1116),
+                            size: 20,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  // ── RIGHT: botão [➕ Nova] ──────────────────────────────
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 4),
+
+                    // RIGHT: botão [+ Nova] — contraste reforçado: borda 1.2px sólida,
+                    // fundo verde esmeralda sólido, texto e ícone 100% brancos.
+                    Align(
+                      alignment: Alignment.centerRight,
                       child: GestureDetector(
                         onTap: _confirmAndReset,
                         child: Container(
-                          height: 36,
+                          height: 34,
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF059669)
-                                .withOpacity(dark ? 0.28 : 0.20),
-                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFF065F45),
+                            borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: const Color(0xFF059669)
-                                  .withOpacity(0.55),
-                              width: 0.9,
+                              color: const Color(0xFF34D399),
+                              width: 1.2,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF059669).withOpacity(0.35),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.add_rounded,
-                                  size: 15,
-                                  color: Color(0xFF34D399)),
-                              const SizedBox(width: 5),
+                              const Icon(
+                                Icons.add_rounded,
+                                size: 15,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 4),
                               Text(
                                 isEs ? 'Nueva' : 'Nova',
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF34D399),
-                                  letterSpacing: 0.2,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  letterSpacing: 0.3,
                                 ),
                               ),
                             ],
@@ -967,8 +978,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
                         ),
                       ),
                     ),
-                  ),
-                ],
+
+                  ],
+                ),
               ),
             ),
           ),
