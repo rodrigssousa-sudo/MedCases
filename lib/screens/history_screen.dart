@@ -23,6 +23,8 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import '../platform/web_impl.dart'
     if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
+import 'clinical_recorder_sheet.dart';
+import '../services/clinical_recorder_service.dart' show SoapData;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // i18n PT/ES para História Clínica
@@ -589,6 +591,20 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   }
 
   void _startNewHistory(AppProvider p, String lang) {
+    // BUILD 331+ — Intercepção com Gravador Clínico Multimodal
+    // Exibe modal de seleção (gravar / digitar / blocos SOAP) antes do formulário
+    ClinicalRecorderSheet.showFlowSelection(
+      context,
+      onManual: () => _startBlankHistory(p, lang),
+      onSoapData: (soapData) {
+        // Cria modelo pré-populado com dados SOAP da IA e abre o editor
+        _startHistoryFromSoap(p, lang, soapData);
+      },
+    );
+  }
+
+  /// Cria e ativa um rascunho em branco (fluxo manual original)
+  void _startBlankHistory(AppProvider p, String lang) {
     final uid = p.currentUser?.uid ?? 'local';
     final name = p.currentUser?.displayName ??
         p.currentUser?.email ??
@@ -599,6 +615,40 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       authorName: name,
       authorEmail: email,
     ));
+  }
+
+  /// Cria modelo pré-populado com campos SOAP da IA e abre o editor
+  void _startHistoryFromSoap(AppProvider p, String lang, SoapData soap) {
+    final uid = p.currentUser?.uid ?? 'local';
+    final name = p.currentUser?.displayName ??
+        p.currentUser?.email ??
+        _hcT(lang, 'anon');
+    final email = p.currentUser?.email ?? '';
+
+    // Monta ClinicalHistoryModel com campos SOAP pré-preenchidos
+    // chiefComplaint + hpi ← soap.subjective
+    // vitalSigns + physicalExam ← soap.objective
+    // workingDiagnosis + differentialDx ← soap.assessment
+    // treatmentPlan ← soap.plan
+    // medications ← soap.medications
+    // labResults ← soap.exams
+    final model = ClinicalHistoryModel.blank(
+      authorUid: uid,
+      authorName: name,
+      authorEmail: email,
+    ).copyWith(
+      chiefComplaint:    soap.subjective.isNotEmpty ? soap.subjective : null,
+      hpi:              soap.subjective.isNotEmpty ? soap.subjective : null,
+      vitalSigns:       soap.objective.isNotEmpty  ? soap.objective  : null,
+      physicalExam:     soap.objective.isNotEmpty  ? soap.objective  : null,
+      workingDiagnosis: soap.assessment.isNotEmpty ? soap.assessment : null,
+      differentialDx:   soap.assessment.isNotEmpty ? soap.assessment : null,
+      treatmentPlan:    soap.plan.isNotEmpty       ? soap.plan       : null,
+      medications:      soap.medications.isNotEmpty? soap.medications: null,
+      labResults:       soap.exams.isNotEmpty      ? soap.exams      : null,
+    );
+
+    _setEditing(model);
   }
 
   List<ClinicalHistoryModel> _visibleCommunityHistories(
@@ -4032,6 +4082,17 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   // ── Seção 3: Exames ───────────────────────────────────────────────────────
   Widget _buildExamsSection() => Column(children: [
+    // ── Botão OCR de Exame por IA ──────────────────────────────────────────
+    _OcrExamButton(
+      lang: widget.p.lang,
+      onResult: (text) {
+        final current = _ctrls['labResults']!.text.trim();
+        _ctrls['labResults']!.text = current.isEmpty
+            ? text
+            : '$current\n\n$text';
+      },
+    ),
+    const SizedBox(height: 10),
     // ── Lab Estruturado + OCR ──────────────────────────────────────────────
     _LabStructuredWidget(controller: _ctrls['labResults']!),
     const SizedBox(height: 10),
@@ -7749,6 +7810,82 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
                   ),
                 ),
               ]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// OCR EXAM BUTTON — Botão de escaneamento de exame por IA
+// Aparece na seção de Exames do editor de História Clínica
+// ═══════════════════════════════════════════════════════════════════════════════
+class _OcrExamButton extends StatelessWidget {
+  final String lang;
+  final void Function(String) onResult;
+
+  const _OcrExamButton({required this.lang, required this.onResult});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => ClinicalRecorderSheet.showOcrScanner(
+        context,
+        onResult: onResult,
+      ),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFF0F766E).withOpacity(0.15),
+              const Color(0xFF14B8A6).withOpacity(0.08),
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: const Color(0xFF0F766E).withOpacity(0.4),
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            const Text('🔬', style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lang == 'es' ? 'Escanear Examen con IA' : 'Escanear Exame com IA',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: dark ? Colors.white : const Color(0xFF111111),
+                    ),
+                  ),
+                  Text(
+                    lang == 'es'
+                        ? 'Foto ou PDF → extração automática por OCR multimodal'
+                        : 'Foto ou PDF → extração automática por OCR multimodal',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: dark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.camera_alt_rounded,
+              color: Color(0xFF0F766E),
+              size: 22,
             ),
           ],
         ),
