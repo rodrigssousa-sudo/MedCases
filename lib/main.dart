@@ -2015,186 +2015,12 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                             ),
                         ],
                       ),
-                      // BUILD 330: Row 4×Expanded = 25% cada — simetria matemática perfeita.
-                      // Labels somem via AnimatedOpacity quando barra encolhe (38px).
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-
-                          // ── 1. INÍCIO — 25% ────────────────────────────────
-                          Expanded(
-                            child: _NavItem(
-                              icon: Icons.home_rounded,
-                              label: widget.lang == 'es' ? 'Inicio' : 'Início',
-                              isActive: widget.currentTab == 0,
-                              dark: widget.dark,
-                              shrunk: _shrunk,
-                              onTap: () => widget.onTabChange(0),
-                            ),
-                          ),
-
-                          // ── 2. IA — 25% ────────────────────────────────────
-                          // BUILD 330: Expanded igual aos outros + label "IA"
-                          // para alinhar a baseline vertical com Início/Ferramentas/Menu.
-                          Expanded(
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: widget.onFabTap,
-                              onDoubleTap: widget.onFabDoubleTap,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // Círculo IA (FAB)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 3),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 220),
-                                      curve: Curves.easeOutCubic,
-                                      width: 26,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: widget.isAiActive
-                                              ? [const Color(0xFF008CA4), const Color(0xFF005566)]
-                                              : [const Color(0xFF374151), const Color(0xFF1E2330)],
-                                        ),
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: widget.isAiActive
-                                              ? _neonCyan.withOpacity(0.80)
-                                              : const Color(0xFF4B5563),
-                                          width: 1.5,
-                                        ),
-                                        boxShadow: widget.isAiActive
-                                            ? [BoxShadow(color: _neonCyan.withOpacity(0.50), blurRadius: 12)]
-                                            : [BoxShadow(color: Colors.black.withOpacity(0.30), blurRadius: 6, offset: const Offset(0, 2))],
-                                      ),
-                                      child: Icon(
-                                        Icons.psychology_rounded,
-                                        size: 16,
-                                        color: widget.isAiActive ? _neonCyan : Colors.white70,
-                                      ),
-                                    ),
-                                  ),
-                                  // Label "IA" — some ao encolher (mesma lógica dos outros)
-                                  AnimatedOpacity(
-                                    opacity: _shrunk ? 0.0 : 1.0,
-                                    duration: const Duration(milliseconds: 200),
-                                    child: Text(
-                                      'IA',
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        fontSize: 10.0,
-                                        fontWeight: widget.isAiActive
-                                            ? FontWeight.w700
-                                            : FontWeight.w400,
-                                        color: widget.isAiActive
-                                            ? (widget.dark ? _neonCyan : const Color(0xFF008CA4))
-                                            : (widget.dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0)),
-                                        height: 1.0,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          // ── 3. FERRAMENTAS — 25% ───────────────────────────
-                          Expanded(
-                            child: _NavItem(
-                              icon: Icons.calculate_rounded,
-                              label: widget.lang == 'es' ? 'Herramientas' : 'Ferramentas',
-                              isActive: widget.currentTab == 4,
-                              dark: widget.dark,
-                              shrunk: _shrunk,
-                              onTap: () => widget.onTabChange(4),
-                            ),
-                          ),
-
-                          // ── 4. MENU M+ — 25% ───────────────────────────────
-                          // Avatar circular estilo Instagram story ring.
-                          Expanded(
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: widget.onMenuTap,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 3),
-                                    child: Container(
-                                      width: 26,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Color(0xFF16A87C),
-                                            Color(0xFF0A5C45),
-                                          ],
-                                        ),
-                                        border: Border.all(
-                                          color: _avatarGreenLight.withOpacity(0.70),
-                                          width: 1.8,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: _avatarGreen.withOpacity(0.45),
-                                            blurRadius: 8,
-                                          ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'M+',
-                                          style: TextStyle(
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.w900,
-                                            color: _avatarGold,
-                                            letterSpacing: 0.3,
-                                            height: 1.0,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black.withOpacity(0.40),
-                                                blurRadius: 3,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  // Label "Menu" — some ao encolher
-                                  AnimatedOpacity(
-                                    opacity: _shrunk ? 0.0 : 1.0,
-                                    duration: const Duration(milliseconds: 200),
-                                    child: Text(
-                                      widget.lang == 'es' ? 'Menú' : 'Menu',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 10.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: widget.dark
-                                            ? const Color(0xFF6B7280)
-                                            : const Color(0xFFB0B8C0),
-                                        height: 1.0,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      // BUILD 331: Row contextual — muda conforme a aba ativa.
+                      // Aba IA (isAiActive) → [Início|Histórico|Novo Chat|Menu]
+                      // Demais abas              → [Início|IA|Ferramentas|Menu]
+                      child: widget.isAiActive
+                          ? _buildAiRow()
+                          : _buildNavRow(),
                     ),
                   ),
                 ),
@@ -2208,6 +2034,271 @@ class _FloatingFooterState extends State<_FloatingFooter> {
       ),
     );
   }
+
+  // ── Row padrão (abas Home / Ferramentas / etc) ─────────────────────────────
+  // [Início | IA | Ferramentas | Menu] — 4×Expanded 25%
+  Widget _buildNavRow() => Row(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+
+      // 1. INÍCIO
+      Expanded(child: _NavItem(
+        icon: Icons.home_rounded,
+        label: widget.lang == 'es' ? 'Inicio' : 'Início',
+        isActive: widget.currentTab == 0,
+        dark: widget.dark, shrunk: _shrunk,
+        onTap: () => widget.onTabChange(0),
+      )),
+
+      // 2. IA — círculo gradiente + label "IA"
+      Expanded(child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onFabTap,
+        onDoubleTap: widget.onFabDoubleTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOutCubic,
+                width: 26, height: 26,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft, end: Alignment.bottomRight,
+                    colors: widget.isAiActive
+                        ? [const Color(0xFF008CA4), const Color(0xFF005566)]
+                        : [const Color(0xFF374151), const Color(0xFF1E2330)],
+                  ),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: widget.isAiActive
+                        ? _neonCyan.withOpacity(0.80) : const Color(0xFF4B5563),
+                    width: 1.5,
+                  ),
+                  boxShadow: widget.isAiActive
+                      ? [BoxShadow(color: _neonCyan.withOpacity(0.50), blurRadius: 12)]
+                      : [BoxShadow(color: Colors.black.withOpacity(0.30), blurRadius: 6, offset: const Offset(0, 2))],
+                ),
+                child: Icon(Icons.psychology_rounded, size: 16,
+                    color: widget.isAiActive ? _neonCyan : Colors.white70),
+              ),
+            ),
+            AnimatedOpacity(
+              opacity: _shrunk ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              child: Text('IA', maxLines: 1,
+                style: TextStyle(
+                  fontSize: 10.0,
+                  fontWeight: widget.isAiActive ? FontWeight.w700 : FontWeight.w400,
+                  color: widget.isAiActive
+                      ? (widget.dark ? _neonCyan : const Color(0xFF008CA4))
+                      : (widget.dark ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0)),
+                  height: 1.0,
+                )),
+            ),
+          ],
+        ),
+      )),
+
+      // 3. FERRAMENTAS
+      Expanded(child: _NavItem(
+        icon: Icons.calculate_rounded,
+        label: widget.lang == 'es' ? 'Herramientas' : 'Ferramentas',
+        isActive: widget.currentTab == 4,
+        dark: widget.dark, shrunk: _shrunk,
+        onTap: () => widget.onTabChange(4),
+      )),
+
+      // 4. MENU M+
+      Expanded(child: _buildMenuButton()),
+    ],
+  );
+
+  // ── Row contextual IA — substitui toda a barra quando a aba IA está ativa ──
+  // [Início | Histórico | Novo Chat | Menu] — 4×Expanded 25%
+  Widget _buildAiRow() => Row(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+
+      // 1. INÍCIO — volta para Home
+      Expanded(child: _NavItem(
+        icon: Icons.home_rounded,
+        label: widget.lang == 'es' ? 'Inicio' : 'Início',
+        isActive: false, // nunca ativo quando estamos na aba IA
+        dark: widget.dark, shrunk: _shrunk,
+        onTap: () => widget.onTabChange(0),
+      )),
+
+      // 2. HISTÓRICO — abre histórico de sessões do chat
+      Expanded(child: ValueListenableBuilder<VoidCallback?>(
+        valueListenable: AiScreen.openHistoryCallback,
+        builder: (_, callback, __) => ValueListenableBuilder<int>(
+          valueListenable: AiScreen.historyCountNotifier,
+          builder: (_, count, __) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: callback,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  // Badge de contagem sobre o ícone
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Icon(Icons.history_rounded, size: 22,
+                          color: widget.dark
+                              ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0)),
+                      if (count > 0)
+                        Positioned(
+                          top: -4, right: -6,
+                          child: Container(
+                            width: 14, height: 14,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xFFC5A365),
+                            ),
+                            child: Center(
+                              child: Text('$count',
+                                style: const TextStyle(
+                                  fontSize: 7, fontWeight: FontWeight.w900,
+                                  color: Color(0xFF1A1100),
+                                )),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: _shrunk ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    widget.lang == 'es' ? 'Historial' : 'Histórico',
+                    maxLines: 1, overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 10.0, fontWeight: FontWeight.w400,
+                      color: widget.dark
+                          ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0),
+                      height: 1.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      )),
+
+      // 3. NOVO CHAT — círculo com gradiente neonCyan, ícone add_rounded
+      Expanded(child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onFabDoubleTap, // mesma ação do double-tap do FAB
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Container(
+                width: 26, height: 26,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft, end: Alignment.bottomRight,
+                    colors: [const Color(0xFF008CA4), const Color(0xFF005566)],
+                  ),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: _neonCyan.withOpacity(0.75), width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _neonCyan.withOpacity(0.35),
+                      blurRadius: 10, spreadRadius: 0,
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.add_rounded, size: 16, color: Colors.white),
+              ),
+            ),
+            AnimatedOpacity(
+              opacity: _shrunk ? 0.0 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              child: Text(
+                widget.lang == 'es' ? 'Nuevo' : 'Novo',
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 10.0, fontWeight: FontWeight.w500,
+                  color: widget.dark ? _neonCyan : const Color(0xFF008CA4),
+                  height: 1.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+      )),
+
+      // 4. MENU M+
+      Expanded(child: _buildMenuButton()),
+    ],
+  );
+
+  // ── Avatar M+ circular — compartilhado entre as duas Rows ──────────────────
+  Widget _buildMenuButton() => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: widget.onMenuTap,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 3),
+          child: Container(
+            width: 26, height: 26,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft, end: Alignment.bottomRight,
+                colors: [Color(0xFF16A87C), Color(0xFF0A5C45)],
+              ),
+              border: Border.all(
+                color: _avatarGreenLight.withOpacity(0.70), width: 1.8,
+              ),
+              boxShadow: [
+                BoxShadow(color: _avatarGreen.withOpacity(0.45), blurRadius: 8),
+              ],
+            ),
+            child: Center(
+              child: Text('M+',
+                style: TextStyle(
+                  fontSize: 9, fontWeight: FontWeight.w900,
+                  color: _avatarGold, letterSpacing: 0.3, height: 1.0,
+                  shadows: [Shadow(color: Colors.black.withOpacity(0.40), blurRadius: 3)],
+                )),
+            ),
+          ),
+        ),
+        AnimatedOpacity(
+          opacity: _shrunk ? 0.0 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          child: Text(
+            widget.lang == 'es' ? 'Menú' : 'Menu',
+            maxLines: 1, overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 10.0, fontWeight: FontWeight.w500,
+              color: widget.dark
+                  ? const Color(0xFF6B7280) : const Color(0xFFB0B8C0),
+              height: 1.0,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 // ── Item individual da bottom nav ─────────────────────────────────────────────
@@ -2293,28 +2384,15 @@ class _MobileAppBar extends StatelessWidget {
 
   // Tab index da tela de IA (deve corresponder a _staticScreens[2])
   static const _kAiTab = 2;
-  // Paleta dourada para botões AI (combina com o _WaHeader)
-  static const _kGold  = Color(0xFFC5A365);
-  static const _kGoldL = Color(0xFFFFE8A6);
 
   @override
   Widget build(BuildContext context) {
     // AppBar: header escuro uniforme em todos os contextos (dark mode)
     // Build 138: HOME usa fundo neutro com título MEDCASES PRO centralizado
+    // BUILD 331: topbar limpa — apenas bg, borderCol para o barDecoration.
+    // iconColor/iconBg/iconBorder removidos (botões IA migraram para bottom nav).
     final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
     final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
-    final iconColor = dark ? Colors.white.withOpacity(0.85) : const Color(0xFF0F1116);
-
-    // BUILD 316 M2: hamburgerBg, hamburgerBorder, hamburgerIconColor removidos.
-    // Hambúrguer agora é um ícone nu (sem container) — usa iconColor diretamente.
-
-    // Ícones AI (histórico/etc) — adapta ao novo fundo neutro
-    final iconBg = dark
-        ? Colors.white.withOpacity(0.08)
-        : const Color(0xFF0F1116).withOpacity(0.07);
-    final iconBorder = dark
-        ? Colors.white.withOpacity(0.12)
-        : const Color(0xFF0F1116).withOpacity(0.12);
 
     // ── AppBar decoration ─────────────────────────────────────────────────────
     // Build 138: fundo neutro (branco/escuro) em todos os modos.
@@ -2382,147 +2460,12 @@ class _MobileAppBar extends StatelessWidget {
                 // ── Row com botões contextuais (direita) ──────────────────
                 // BUILD 329: hambúrguer removido — apenas botões IA contextuais
                 // à direita. Título centralizado pelo Stack acima sem placeholder.
+                // BUILD 331: Topbar IA limpa — botões Histórico/Novo Chat migrados
+                // para a bottom nav contextual (isAiActive). Apenas título centralizado.
                 Row(
               children: [
                 const Spacer(),
-
-                // ── Botões contextuais da IA (só na aba 2) ─────────────────
-                if (currentTab == _kAiTab) ...[
-                  // Botão Conectar IA — aparece quando IA não está conectada
-                  ValueListenableBuilder<bool>(
-                    valueListenable: AiScreen.aiConnectedNotifier,
-                    builder: (_, isConnected, __) => isConnected
-                        ? const SizedBox.shrink()
-                        : GestureDetector(
-                            onTap: AiScreen.openSettingsCallback.value,
-                            child: Container(
-                              // BUILD 328 M3: Conectar IA button 38→42px
-                              height: 42,
-                              margin: const EdgeInsets.only(right: 8),
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: const Color(0xFFC5A365),
-                                border: Border.all(
-                                    color: const Color(0xFFFFE8A6).withOpacity(0.4),
-                                    width: 1),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.link_rounded, size: 14,
-                                      color: Color(0xFF1A1100)),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    lang == 'es' ? 'Conectar IA' : 'Conectar IA',
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF1A1100),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                  ),
-
-                  // Botão Histórico — badge com contagem de sessões salvas
-                  // IMPORTANTE: usa ValueListenableBuilder para AMBOS os notifiers
-                  // (historyCount e openHistoryCallback) para garantir que o onTap
-                  // sempre leia o callback atual — não o valor nulo do momento do build.
-                  ValueListenableBuilder<VoidCallback?>(
-                    valueListenable: AiScreen.openHistoryCallback,
-                    builder: (_, callback, __) => ValueListenableBuilder<int>(
-                    valueListenable: AiScreen.historyCountNotifier,
-                    builder: (_, count, __) => GestureDetector(
-                      onTap: callback,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          // BUILD 328 M2: history button 38→42px — alvo ergonômico
-                  Container(
-                            width: 42, height: 42,
-                            margin: const EdgeInsets.only(right: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: iconBg,
-                              border: Border.all(color: iconBorder, width: 1),
-                            ),
-                            child: Icon(Icons.history_rounded, size: 22, color: iconColor),
-                          ),
-                          if (count > 0)
-                            Positioned(
-                              top: -3, right: 5,
-                              child: Container(
-                                width: 15, height: 15,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _kGold,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '$count',
-                                    style: const TextStyle(
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.w900,
-                                      color: Color(0xFF1A1100),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  ), // fecha ValueListenableBuilder<VoidCallback?>
-
-                  // BUILD 278: Botão "➕ Novo Chat" — só aparece quando há mensagens reais
-                  ValueListenableBuilder<bool>(
-                    valueListenable: AiScreen.hasMessagesNotifier,
-                    builder: (_, hasMessages, __) => hasMessages
-                        ? GestureDetector(
-                            onTap: AiScreen.clearChatCallback.value,
-                            child: Container(
-                              // BUILD 328 M3: Novo Chat button 38→42px
-                              height: 42,
-                              margin: const EdgeInsets.only(right: 8),
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: _kGold,
-                                border: Border.all(
-                                    color: _kGoldL.withOpacity(0.4), width: 1),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.add_rounded,
-                                    size: 14,
-                                    color: Color(0xFF1A1100),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    lang == 'es'
-                                        ? 'Nuevo Chat'
-                                        : 'Novo Chat',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF1A1100),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ],
-
-                // BUILD 329: hambúrguer REMOVIDO — menu agora no 4º botão da bottom nav
+                // (sem botões — topbar só título)
               ],
             ), // end inner Row
               ], // end Stack children
