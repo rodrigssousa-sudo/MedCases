@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter/scheduler.dart';
@@ -100,7 +101,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             children: [
               _BiometricsTab(),
               // BUILD 277-CROMATICO: _ScoresTab() removed
-              _CardioTab(),
+              CardioHubView(),
               _ElectrolytesTab(),
               _ReferenceTab(),
             ],
@@ -1207,216 +1208,452 @@ class _ScoresTabState extends State<_ScoresTab> {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  TAB 3 — CARDIO
+//  TAB 3 — CARDIO HUB (Build 331 — Hub de Cards Clínicos)
+//  Substitui o layout antigo de inputs soltos (PAM / Débito Cardíaco).
+//  Cada card abre um modal interativo com cálculo real.
 // ══════════════════════════════════════════════════════════════════
-class _CardioTab extends StatefulWidget {
+class CardioHubView extends StatefulWidget {
+  const CardioHubView({super.key});
+
   @override
-  State<_CardioTab> createState() => _CardioTabState();
+  State<CardioHubView> createState() => _CardioHubViewState();
 }
 
-class _CardioTabState extends State<_CardioTab> {
-  final _sbpCtrl = TextEditingController();
-  final _dbpCtrl = TextEditingController();
-  final _hrCtrl  = TextEditingController();
-  final _svCtrl  = TextEditingController();
-
-  // QTc
-  final _qtCtrl  = TextEditingController();
-  final _rrCtrl  = TextEditingController();
-
-  @override
-  void dispose() {
-    _sbpCtrl.dispose(); _dbpCtrl.dispose(); _hrCtrl.dispose();
-    _svCtrl.dispose(); _qtCtrl.dispose(); _rrCtrl.dispose();
-    super.dispose();
-  }
-
-  double? _n(TextEditingController c) => double.tryParse(c.text.replaceAll(',', '.'));
-  String _fmt(double? v, {int dec = 1}) {
-    if (v == null || !v.isFinite) return '—';
-    return v.toStringAsFixed(dec).replaceAll('.', ',');
-  }
-
-  String? get _map {
-    final s = _n(_sbpCtrl), d = _n(_dbpCtrl);
-    if (s == null || d == null) return null;
-    return _fmt((s + 2 * d) / 3);
-  }
-
-  String? get _pp {
-    final s = _n(_sbpCtrl), d = _n(_dbpCtrl);
-    if (s == null || d == null) return null;
-    return _fmt(s - d);
-  }
-
-  String? get _co {
-    final hr = _n(_hrCtrl), sv = _n(_svCtrl);
-    if (hr == null || sv == null) return null;
-    return _fmt(hr * sv / 1000, dec: 2);
-  }
-
-  String? get _qtcBazett {
-    final qt = _n(_qtCtrl), rr = _n(_rrCtrl);
-    if (qt == null || rr == null || rr <= 0) return null;
-    return _fmt(qt / (rr / 1000).sqrt);
-  }
-
-  String _mapLabel(String? v) {
-    final d = double.tryParse((v ?? '').replaceAll(',', '.'));
-    if (d == null) return '';
-    if (d < 60)  return 'CRÍTICO (<60) — risco de isquemia';
-    if (d < 65)  return 'HIPOPERFUSÃO (<65)';
-    if (d <= 105) return '✓ Adequada (65–105)';
-    return '↑ Elevada (>105)';
-  }
-
-  String _qtcLabel(String? v) {
-    final d = double.tryParse((v ?? '').replaceAll(',', '.'));
-    if (d == null) return '';
-    if (d < 440) return '✓ Normal (<440 ms)';
-    if (d < 500) return '⚠ Limítrofe (440–499 ms) — monitorar';
-    return 'PROLONGADO (≥500 ms) — risco torsades';
-  }
-
+class _CardioHubViewState extends State<CardioHubView> {
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
-    final isEs = p.lang == 'es';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      child: Column(children: [
-
-        _SectionCard(
-          title: isEs ? 'Hemodinámica' : 'Hemodinâmica',
-          icon: Icons.monitor_heart_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(child: _LabeledInput(label: 'PAS (mmHg)', ctrl: _sbpCtrl, onChanged: (_) => setState(() {}), hint: '120')),
-              const SizedBox(width: 10),
-              Expanded(child: _LabeledInput(label: 'PAD (mmHg)', ctrl: _dbpCtrl, onChanged: (_) => setState(() {}), hint: '80')),
-            ]),
-            const SizedBox(height: 14),
-            Row(children: [
-              Expanded(child: _ResultTile(label: 'PAM', value: _map, unit: 'mmHg', note: _mapLabel(_map))),
-              const SizedBox(width: 8),
-              Expanded(child: _ResultTile(label: isEs ? 'PP (Pulso)' : 'PP (Pulso)', value: _pp, unit: 'mmHg')),
-            ]),
-            const SizedBox(height: 8),
-            _InfoNote(text: isEs
-              ? 'PAM = (PAS + 2×PAD)/3. Meta sepsis: ≥65 mmHg. PP estrecho (<25): choque. PP amplio (>60): insuficiencia aórtica.'
-              : 'PAM = (PAS + 2×PAD)/3. Meta sepse: ≥65 mmHg. PP estreito (<25): choque. PP amplo (>60): insuficiência aórtica.'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        _SectionCard(
-          title: isEs ? 'Gasto Cardíaco' : 'Débito Cardíaco',
-          icon: Icons.speed_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(child: _LabeledInput(label: isEs ? 'FC (bpm)' : 'FC (bpm)', ctrl: _hrCtrl, onChanged: (_) => setState(() {}), hint: '80')),
-              const SizedBox(width: 10),
-              Expanded(child: _LabeledInput(label: isEs ? 'Vol Sistólico (mL)' : 'Vol Sistólico (mL)', ctrl: _svCtrl, onChanged: (_) => setState(() {}), hint: '70')),
-            ]),
-            const SizedBox(height: 14),
-            _ResultTile(label: isEs ? 'Gasto Cardíaco (GC = FC × VS)' : 'Débito Cardíaco (DC = FC × VS)',
-              value: _co, unit: 'L/min', full: true,
-              note: isEs ? 'Normal: 4–8 L/min. Bajo: <4 L/min (choque de bajo gasto)' : 'Normal: 4–8 L/min. Baixo: <4 L/min (choque de baixo débito)'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        _SectionCard(
-          title: isEs ? 'Intervalo QTc (Bazett)' : 'Intervalo QTc (Bazett)',
-          icon: Icons.show_chart_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(child: _LabeledInput(label: isEs ? 'QT medido (ms)' : 'QT medido (ms)', ctrl: _qtCtrl, onChanged: (_) => setState(() {}), hint: '400')),
-              const SizedBox(width: 10),
-              Expanded(child: _LabeledInput(label: isEs ? 'Intervalo RR (ms)' : 'Intervalo RR (ms)', ctrl: _rrCtrl, onChanged: (_) => setState(() {}), hint: '800')),
-            ]),
-            const SizedBox(height: 14),
-            _ResultTile(label: 'QTc — Bazett', value: _qtcBazett, unit: 'ms', note: _qtcLabel(_qtcBazett), full: true),
-            const SizedBox(height: 8),
-            _InfoNote(text: isEs
-              ? 'QTc = QT / √(RR em segundos). Normal H: <440 ms | M: <460 ms. ≥500 ms: risco de torsades de pointes — revisar fármacos prolongadores.'
-              : 'QTc = QT / √(RR em segundos). Normal H: <440 ms | M: <460 ms. ≥500 ms: risco de torsades de pointes — revisar fármacos prolongadores.'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        _SectionCard(
-          title: isEs ? 'Conversión de Presión' : 'Conversão de Pressão',
-          icon: Icons.swap_horiz_rounded,
-          child: Column(children: [
-            _PressureConvWidget(),
-          ]),
-        ),
-
-      ]),
-    );
-  }
-}
-
-class _PressureConvWidget extends StatefulWidget {
-  @override
-  State<_PressureConvWidget> createState() => _PressureConvWidgetState();
-}
-
-class _PressureConvWidgetState extends State<_PressureConvWidget> {
-  final _ctrl = TextEditingController();
-  String _from = 'mmHg';
-
-  final _units = {'mmHg': 1.0, 'cmH2O': 0.7355, 'kPa': 7.5006, 'mbar': 0.7501};
-
-  Map<String, String> get _results {
-    final val = double.tryParse(_ctrl.text.replaceAll(',', '.'));
-    if (val == null) return {};
-    final baseInMmhg = val / (_units[_from] ?? 1.0);
-    return _units.map((k, f) => MapEntry(k, (baseInMmhg * f).toStringAsFixed(2)));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      Row(children: [
-        Expanded(child: _LabeledInput(label: 'Valor', ctrl: _ctrl, onChanged: (_) => setState(() {}), hint: '120')),
-        const SizedBox(width: 10),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('UNIDADE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
-          const SizedBox(height: 5),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _from,
-                isDense: true,
-                onChanged: (v) => setState(() => _from = v!),
-                items: _units.keys.map((k) => DropdownMenuItem(value: k, child: Text(k))).toList(),
-              ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Cardiologia',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF111111),
             ),
           ),
-        ]),
-      ]),
-      if (_results.isNotEmpty) ...[
-        const SizedBox(height: 12),
-        ..._results.entries.where((e) => e.key != _from).map((e) =>
-          Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: Row(children: [
-              Container(width: 70, child: Text(e.key, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.of(context).textPrimary))),
-              const SizedBox(width: 8),
-              Text(e.value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: kToolGreen)),
-            ]),
+          const SizedBox(height: 4),
+          Text(
+            'Selecione uma calculadora para começar.',
+            style: TextStyle(
+              fontSize: 14,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
           ),
+          const SizedBox(height: 20),
+
+          // Grid Simétrico Responsivo — 2 colunas
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.85,
+            children: [
+              _buildCalcCard(
+                context,
+                title: 'Risco Cardiovascular (PREVENT / ASCVD)',
+                desc: 'Estima o risco de 10 anos para eventos de doença cardiovascular aterosclerótica.',
+                onTap: () => _openModalCalc(context, 'PREVENT / ASCVD'),
+              ),
+              _buildCalcCard(
+                context,
+                title: 'Escore CHA₂DS₂-VASc',
+                desc: 'Estima o risco de AVC em pacientes com Fibrilação Atrial.',
+                onTap: () => _openCHA2DS2VAScModal(context),
+              ),
+              _buildCalcCard(
+                context,
+                title: 'Intervalo QT Corrigido (QTc)',
+                desc: 'Calcula o intervalo QT corrigido pela frequência cardíaca.',
+                onTap: () => _openQTcModal(context),
+              ),
+              _buildCalcCard(
+                context,
+                title: 'Escore HAS-BLED',
+                desc: 'Risco de sangramento em Fibrilação Atrial.',
+                onTap: () => _openModalCalc(context, 'HAS-BLED'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCalcCard(
+    BuildContext context, {
+    required String title,
+    required String desc,
+    required VoidCallback onTap,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E2330) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
         ),
-      ],
-    ]);
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.20 : 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey[800] : Colors.grey[100],
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'Cardiologia',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.grey[300] : Colors.grey[700],
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.star_border_rounded,
+                size: 18,
+                color: isDark ? Colors.grey[500] : Colors.grey[400],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: isDark ? Colors.white : const Color(0xFF111111),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  desc,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: onTap,
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Row(
+              children: [
+                const Text(
+                  'Abrir Calculadora',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Colors.blue[600]),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── MODAL: QTc — Fórmula de Bazett ────────────────────────────────
+  void _openQTcModal(BuildContext context) {
+    double qt = 400;
+    double fc = 75;
+    double qtcResult = _calcQTc(qt, fc);
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          void recalculate() {
+            setModalState(() {
+              qtcResult = _calcQTc(qt, fc);
+            });
+          }
+
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 20, left: 20, right: 20,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Intervalo QT Corrigido (Bazett)',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const Divider(),
+                const SizedBox(height: 10),
+                Text(
+                  'Intervalo QT: ${qt.round()} ms',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                Slider(
+                  value: qt,
+                  min: 200,
+                  max: 600,
+                  activeColor: Colors.blue,
+                  onChanged: (v) { qt = v; recalculate(); },
+                ),
+                Text(
+                  'Frequência Cardíaca: ${fc.round()} bpm',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                Slider(
+                  value: fc,
+                  min: 40,
+                  max: 180,
+                  activeColor: Colors.blue,
+                  onChanged: (v) { fc = v; recalculate(); },
+                ),
+                const SizedBox(height: 15),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.10),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Resultado QTc: ${qtcResult.toStringAsFixed(0)} ms',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// Bazett: QTc = QT(ms) / √(RR em segundos)
+  /// RR = 60 / FC
+  double _calcQTc(double qtMs, double fcBpm) {
+    if (fcBpm <= 0) return 0;
+    final double rrSec = 60.0 / fcBpm;
+    return (qtMs / 1000.0) / sqrt(rrSec) * 1000.0;
+  }
+
+  // ── MODAL: CHA₂DS₂-VASc ───────────────────────────────────────────
+  void _openCHA2DS2VAScModal(BuildContext context) {
+    int score = 0;
+    final Map<String, int> criteria = {
+      'Insuficiência Cardíaca Congestiva': 1,
+      'Hipertensão Arterial': 1,
+      'Diabetes Mellitus': 1,
+      'Doença Vascular (Infarto prévio, DAP, placa na aorta)': 1,
+      'Sexo Feminino': 1,
+    };
+    final Map<String, bool> selected = {
+      for (final k in criteria.keys) k: false,
+    };
+    int ageGroup = 0;      // 0=<65  1=65-74(+1)  2=≥75(+2)
+    bool historicStroke = false; // +2
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          void calculateScore() {
+            int s = 0;
+            selected.forEach((key, val) {
+              if (val) s += criteria[key]!;
+            });
+            if (ageGroup == 1) s += 1;
+            if (ageGroup == 2) s += 2;
+            if (historicStroke) s += 2;
+            score = s;
+          }
+
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 20, left: 20, right: 20,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Escore CHA₂DS₂-VASc',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(),
+                  ...criteria.keys.map((key) => CheckboxListTile(
+                    title: Text(key, style: const TextStyle(fontSize: 13)),
+                    value: selected[key],
+                    dense: true,
+                    activeColor: Colors.blue,
+                    onChanged: (val) => setModalState(() {
+                      selected[key] = val ?? false;
+                      calculateScore();
+                    }),
+                  )),
+                  CheckboxListTile(
+                    title: const Text(
+                      'AVC / AIT / Tromboembolismo Prévio (+2)',
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                    ),
+                    value: historicStroke,
+                    dense: true,
+                    activeColor: Colors.blue,
+                    onChanged: (val) => setModalState(() {
+                      historicStroke = val ?? false;
+                      calculateScore();
+                    }),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text(
+                      'Faixa Etária:',
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('<65 anos'),
+                        selected: ageGroup == 0,
+                        onSelected: (_) => setModalState(() {
+                          ageGroup = 0;
+                          calculateScore();
+                        }),
+                      ),
+                      ChoiceChip(
+                        label: const Text('65-74 anos (+1)'),
+                        selected: ageGroup == 1,
+                        onSelected: (_) => setModalState(() {
+                          ageGroup = 1;
+                          calculateScore();
+                        }),
+                      ),
+                      ChoiceChip(
+                        label: const Text('≥75 anos (+2)'),
+                        selected: ageGroup == 2,
+                        onSelected: (_) => setModalState(() {
+                          ageGroup = 2;
+                          calculateScore();
+                        }),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.10),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Pontuação Total: $score Pts',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ── MODAL: Placeholder amigável (PREVENT / HAS-BLED) ──────────────
+  void _openModalCalc(BuildContext context, String name) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            const Text(
+              'Interface interativa de preenchimento de parâmetros clínicos em desenvolvimento.',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Fechar'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
