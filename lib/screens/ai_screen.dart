@@ -2873,13 +2873,14 @@ class _MobileAiActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 331 IA: Topbar SEMPRE dark — #0F1116 independente do tema do sistema.
-    // RichText bicolor: "MEDCASES " branco + "IA" dourado (#FFD700).
-    // SafeArea(bottom:false) absorve o notch do iPhone — a barra parte de y=0.
-    // Botão esquerdo dinâmico:
-    //   desconectado → "Conectar IA" com borda ciana 1.2px
-    //   conectado    → _MplusPulse() verde pulsante
-    // Direita: VAZIA — histórico/novo absorvidos pela bottom nav contextual.
+    // BUILD 331 IA — Topbar SEMPRE dark #0F1116 independente do tema do sistema.
+    // Layout: NavigationToolbar garante que o botão esquerdo e o título central
+    // NUNCA se sobrepõem — é o widget Flutter nativo para esse padrão de AppBar.
+    //   leading   → botão dinâmico (M+ pulsante / "Conectar IA")  [esquerda]
+    //   middle    → RichText bicolor "MEDCASES " branco + "IA" dourado [centro geométrico]
+    //   trailing  → SizedBox.shrink() [direita VAZIA — sem qualquer widget]
+    // SafeArea(bottom:false) absorve o notch/Dynamic Island (y=0 a partir do topo).
+    // O SizedBox(height:48) é a área útil pura abaixo do safe-area inset.
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF0F1116),
@@ -2894,85 +2895,87 @@ class _MobileAiActionBar extends StatelessWidget {
           ),
         ],
       ),
-      // SafeArea(bottom:false): expande o Container para cobrir a status bar
-      // (notch / Dynamic Island). O SizedBox(48) abaixo é a área útil pura.
       child: SafeArea(
         bottom: false,
         child: SizedBox(
           height: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
+          child: NavigationToolbar(
+            centerMiddle: true,
+            middleSpacing: 8,
 
-                // ── CENTRO: RichText bicolor absolutamente centralizado ─────
-                // Stack(center) garante centralização geométrica pura — sem
-                // deslocamento pelo botão esquerdo ou pela região direita vazia.
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'MEDCASES ',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'IA',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2,
-                          color: Color(0xFFFFD700), // DOURADO
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // ── ESQUERDA: M+ pulsante (conectado) / "Conectar IA" (desconectado) ──
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    onTap: onSettings,
-                    behavior: HitTestBehavior.opaque,
-                    child: isConnected
-                        ? const _MplusPulse()
-                        : Container(
-                            height: 30,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7),
-                              color: const Color(0xFF00E5FF).withOpacity(0.10),
-                              border: Border.all(
-                                color: const Color(0xFF00E5FF).withOpacity(0.60),
-                                width: 1.2,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'Conectar IA',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: 0.1,
-                              ),
-                            ),
+            // ── ESQUERDA: botão dinâmico de conexão IA ─────────────────
+            // GestureDetector.opaque: captura toque em toda a área do widget,
+            // incluindo pixels transparentes — sem "dead zones" no botão.
+            // onSettings → _openAiSettings() → abre _AiStatusSheet modal.
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: GestureDetector(
+                onTap: onSettings,
+                behavior: HitTestBehavior.opaque,
+                child: isConnected
+                    // Conectado: avatar M+ verde pulsante (AnimationController loop)
+                    ? const _MplusPulse()
+                    // Desconectado: pílula ciana "Conectar IA"
+                    : Container(
+                        height: 30,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(7),
+                          color: const Color(0xFF00E5FF).withOpacity(0.10),
+                          border: Border.all(
+                            color: const Color(0xFF00E5FF).withOpacity(0.60),
+                            width: 1.2,
                           ),
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Conectar IA',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.1,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+
+            // ── CENTRO: RichText bicolor — posicionado geometricamente ─
+            // NavigationToolbar.centerMiddle=true → título no centro real da barra,
+            // nunca deslocado pelo leading nem pelo trailing.
+            middle: RichText(
+              textAlign: TextAlign.center,
+              text: const TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'MEDCASES ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
+                  TextSpan(
+                    text: 'IA',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2,
+                      color: Color(0xFFFFD700), // DOURADO
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-                // ── DIREITA: VAZIA ─────────────────────────────────────────
-                // Build 331: [Histórico | Novo] removidos da topbar.
-                // Absorvidos pela _FloatingFooter contextual (isAiActive row).
-
-              ],
+            // ── DIREITA: rigorosamente vazia ────────────────────────────
+            // Build 331: Histórico e Novo Chat migrados para _FloatingFooter
+            // (isAiActive row) — topbar IA minimalista sem botões à direita.
+            trailing: const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: SizedBox(width: 0),
             ),
           ),
         ),
