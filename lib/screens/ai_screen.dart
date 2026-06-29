@@ -2869,19 +2869,21 @@ class _MobileAiActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 331: Topbar standard — adaptive dark/light, solid bg, border 0.5px, shadow blur:6
+    // BUILD 331 IA: Topbar SEMPRE dark — #0F1116 independente do tema do sistema.
+    // RichText bicolor: "MEDCASES " branco + "IA" dourado.
+    // Botão esquerdo dinâmico: desconectado → "Conectar IA"; conectado → M+ pulsante verde.
     return Container(
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF0F1116) : Colors.white,
-        border: Border(
+        color: const Color(0xFF0F1116),                   // SEMPRE dark — nunca branco
+        border: const Border(
           bottom: BorderSide(
-            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
+            color: Color(0xFF2D3340),                     // borda fixa dark
             width: 0.5,
           ),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(dark ? 0.35 : 0.06),
+            color: Colors.black.withOpacity(0.35),        // sombra fixa dark
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -2896,51 +2898,56 @@ class _MobileAiActionBar extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // ── Título geometricamente centralizado (Build 331) ────────
-                Text(
-                  'MEDCASES IA',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                    color: dark ? Colors.white : const Color(0xFF0F1116),
+                // ── CENTRO: título bicolor absolutamente centralizado ───────
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: const TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'MEDCASES ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      TextSpan(
+                        text: 'IA',
+                        style: TextStyle(color: Color(0xFFFFD700)), // DOURADO
+                      ),
+                    ],
                   ),
                 ),
 
-                // ── Leading: Conectar IA / M+ pulsante (esquerda) ─────────
+                // ── ESQUERDA: Conectar IA (desconectado) / M+ verde pulsante (conectado) ──
                 Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     onTap: onSettings,
                     behavior: HitTestBehavior.opaque,
                     child: isConnected
-                        // M+ verde pulsante (IA conectada)
+                        // CONECTADO: M+ verde pulsante
                         ? const _MplusPulse()
-                        // 'Conectar IA' — borda forte, texto nítido
+                        // DESCONECTADO: botão "Conectar IA" com borda ciana
                         : Container(
                             height: 30,
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(7),
-                              color: dark
-                                  ? const Color(0xFF00E5FF).withOpacity(0.10)
-                                  : const Color(0xFF008CA4).withOpacity(0.08),
+                              color: const Color(0xFF00E5FF).withOpacity(0.10),
                               border: Border.all(
-                                color: dark
-                                    ? const Color(0xFF00E5FF).withOpacity(0.60)
-                                    : const Color(0xFF008CA4).withOpacity(0.55),
+                                color: const Color(0xFF00E5FF).withOpacity(0.60),
                                 width: 1.2,
                               ),
                             ),
                             alignment: Alignment.center,
-                            child: Text(
+                            child: const Text(
                               'Conectar IA',
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
-                                color: dark
-                                    ? Colors.white
-                                    : const Color(0xFF006B80),
+                                color: Colors.white,
                                 letterSpacing: 0.1,
                               ),
                             ),
@@ -2948,8 +2955,8 @@ class _MobileAiActionBar extends StatelessWidget {
                   ),
                 ),
 
-                // ── Trailing: vazio — botões migrados para barra inferior ──
-                // (Build 331: [Histórico | Novo] removidos — redundância eliminada)
+                // ── DIREITA: vazio — botões migrados para barra inferior ───
+                // (Build 331: Histórico | Novo removidos — barra inferior os absorve)
               ],
             ),
           ),
