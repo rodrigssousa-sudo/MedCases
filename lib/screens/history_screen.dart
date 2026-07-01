@@ -547,6 +547,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   // Abre o seletor de intervalo de datas
   Future<void> _showDateFilter() async {
     final lang = context.read<AppProvider>().lang;
+    // FIX ACESSIBILIDADE: detecta o modo atual do app para fornecer um
+    // DateRangePicker com alto contraste em ambos os modos.
+    // Problema anterior: ColorScheme.light() hardcodado tornava o calendário
+    // completamente ilegível no dark mode (texto escuro sobre fundo escuro).
+    final isDark = context.read<AppProvider>().darkMode;
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
@@ -554,17 +559,56 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       initialDateRange: _dateFilter,
       locale: lang == 'es' ? const Locale('es', 'ES') : const Locale('pt', 'BR'),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF0F1116),
-              onPrimary: Color(0xFFFFE8A6),
-              surface: Colors.white,
-              onSurface: Color(0xFF0F1116),
+        if (isDark) {
+          // ── DARK MODE: esquema escuro com alto contraste ─────────────────
+          // • surface: fundo naval do modal (#1E222D)
+          // • onSurface: texto dos dias em BRANCO — legível
+          // • primary: laranja MedCases para destaque de seleção
+          // • onPrimary: texto branco sobre células selecionadas
+          // • textButtonTheme: botões "Salvar" / "Cancelar" em branco
+          return Theme(
+            data: ThemeData.dark().copyWith(
+              colorScheme: const ColorScheme.dark(
+                primary: Color(0xFFF07E26),
+                onPrimary: Colors.white,
+                surface: Color(0xFF1E222D),
+                onSurface: Colors.white,
+                secondaryContainer: Color(0xFF3A3F50),
+                onSecondaryContainer: Colors.white,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Color(0xFFF07E26),
+                ),
+              ),
+              dialogTheme: const DialogThemeData(
+                backgroundColor: Color(0xFF1E222D),
+              ),
             ),
-          ),
-          child: child!,
-        );
+            child: child!,
+          );
+        } else {
+          // ── LIGHT MODE: esquema claro legível ────────────────────────────
+          // • surface: branco
+          // • onSurface: quase preto (#0F1116)
+          // • primary: laranja MedCases para destaque
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xFFF07E26),
+                onPrimary: Colors.white,
+                surface: Colors.white,
+                onSurface: Color(0xFF0F1116),
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Color(0xFFD46500),
+                ),
+              ),
+            ),
+            child: child!,
+          );
+        }
       },
     );
     if (picked != null) {
