@@ -547,6 +547,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   // Abre o seletor de intervalo de datas
   Future<void> _showDateFilter() async {
     final lang = context.read<AppProvider>().lang;
+    // FIX ACESSIBILIDADE: detecta o modo atual do app para fornecer um
+    // DateRangePicker com alto contraste em ambos os modos.
+    // Problema anterior: ColorScheme.light() hardcodado tornava o calendário
+    // completamente ilegível no dark mode (texto escuro sobre fundo escuro).
+    final isDark = context.read<AppProvider>().darkMode;
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
@@ -554,17 +559,56 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       initialDateRange: _dateFilter,
       locale: lang == 'es' ? const Locale('es', 'ES') : const Locale('pt', 'BR'),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF0F1116),
-              onPrimary: Color(0xFFFFE8A6),
-              surface: Colors.white,
-              onSurface: Color(0xFF0F1116),
+        if (isDark) {
+          // ── DARK MODE: esquema escuro com alto contraste ─────────────────
+          // • surface: fundo naval do modal (#1E222D)
+          // • onSurface: texto dos dias em BRANCO — legível
+          // • primary: laranja MedCases para destaque de seleção
+          // • onPrimary: texto branco sobre células selecionadas
+          // • textButtonTheme: botões "Salvar" / "Cancelar" em branco
+          return Theme(
+            data: ThemeData.dark().copyWith(
+              colorScheme: const ColorScheme.dark(
+                primary: Color(0xFFF07E26),
+                onPrimary: Colors.white,
+                surface: Color(0xFF1E222D),
+                onSurface: Colors.white,
+                secondaryContainer: Color(0xFF3A3F50),
+                onSecondaryContainer: Colors.white,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Color(0xFFF07E26),
+                ),
+              ),
+              dialogTheme: const DialogThemeData(
+                backgroundColor: Color(0xFF1E222D),
+              ),
             ),
-          ),
-          child: child!,
-        );
+            child: child!,
+          );
+        } else {
+          // ── LIGHT MODE: esquema claro legível ────────────────────────────
+          // • surface: branco
+          // • onSurface: quase preto (#0F1116)
+          // • primary: laranja MedCases para destaque
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xFFF07E26),
+                onPrimary: Colors.white,
+                surface: Colors.white,
+                onSurface: Color(0xFF0F1116),
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Color(0xFFD46500),
+                ),
+              ),
+            ),
+            child: child!,
+          );
+        }
       },
     );
     if (picked != null) {
@@ -6216,17 +6260,98 @@ class _EmptyHistoryState extends StatelessWidget {
   final VoidCallback onNew;
   final String lang;
   const _EmptyHistoryState({required this.onNew, this.lang = 'pt'});
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Icon(Icons.description_outlined, size: 56, color: Colors.grey[300]),
-      const SizedBox(height: 14),
-      Text(_hcT(lang, 'empty_title'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA))),
-      const SizedBox(height: 6),
-      Text(_hcT(lang, 'empty_sub'), textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600)),
-      const SizedBox(height: 20),
-      MedButton(label: _hcT(lang, "new_history_btn"), onTap: onNew),
-    ]));
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // ── Ícone discreto com opacidade suave ──────────────────────
+            Icon(
+              Icons.description_outlined,
+              size: 38,
+              color: isDark
+                  ? Colors.white.withOpacity(0.18)
+                  : Colors.black.withOpacity(0.13),
+            ),
+            const SizedBox(height: 18),
+
+            // ── Título ───────────────────────────────────────────────────
+            Text(
+              _hcT(lang, 'empty_title'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                letterSpacing: -0.1,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // ── Subtítulo ────────────────────────────────────────────────
+            Text(
+              _hcT(lang, 'empty_sub'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: isDark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
+                height: 1.55,
+              ),
+            ),
+            const SizedBox(height: 28),
+
+            // ── Botão elegante centralizado — outlined sutil ─────────────
+            GestureDetector(
+              onTap: onNew,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: const Color(0xFFF27405).withOpacity(0.65),
+                    width: 1.4,
+                  ),
+                  color: const Color(0xFFF27405).withOpacity(
+                    isDark ? 0.10 : 0.07,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.add_rounded,
+                      size: 15,
+                      color: isDark
+                          ? const Color(0xFFFF9A3C)
+                          : const Color(0xFFD46500),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _hcT(lang, 'new_history_btn'),
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? const Color(0xFFFF9A3C)
+                            : const Color(0xFFD46500),
+                        letterSpacing: 0.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
