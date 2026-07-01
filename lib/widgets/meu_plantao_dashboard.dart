@@ -520,84 +520,73 @@ class _PlantaoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = colors;
-    // SUPER ORDEM MASTER 317 M1: substrato clean — fundo naval translúcido,
-    // borda cinza sutil. Sem gradiente verde sólido. Integrado ao ecossistema.
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.72),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF334155).withOpacity(0.40),
-          width: 1,
-        ),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Linha título: ícone pulso + label ──────────────────────────
-          Row(
-            children: [
-              const Icon(Icons.monitor_heart_outlined, size: 18, color: kGoldLight),
-              const SizedBox(width: 8),
-              Text(
-                isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2.2,
-                  color: kGoldLight,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-
-          // ── Botão outline único centralizado ────────────────────────────
-          GestureDetector(
-            onTap: () {
-              AppHaptics.selection(context);
-              onAddPatient();
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 11),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: kGoldLight.withOpacity(0.55),
-                  width: 1.2,
-                ),
-                color: Colors.white.withOpacity(0.04),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add_rounded, size: 15,
-                      color: kGoldLight.withOpacity(0.9)),
-                  const SizedBox(width: 6),
-                  Text(
-                    isEs
-                        ? '+ Agregar Paciente a la Guardia'
-                        : '+ Adicionar Paciente ao Plantão',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: kGoldLight.withOpacity(0.9),
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                ],
+    // CORREÇÃO 1: container intermediário removido — botão e atalhos ficam
+    // diretamente sobre o fundo do card principal "MEU PLANTÃO", sem camada
+    // cinza escura adicional com borda dourada redundante.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Linha título: ícone pulso + label ──────────────────────────
+        Row(
+          children: [
+            const Icon(Icons.monitor_heart_outlined, size: 18, color: kGoldLight),
+            const SizedBox(width: 8),
+            Text(
+              isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 2.2,
+                color: kGoldLight,
               ),
             ),
-          ),
+          ],
+        ),
+        const SizedBox(height: 14),
 
-          // ── Fix#8 — Atalhos rápidos: REFERENCIAS · CARDIO · ELECTROLITOS ──
-          const SizedBox(height: 12),
-          _GuardiaShortcutsRow(isEs: isEs, onOpenCalc: onOpenCalc),
-        ],
-      ),
+        // ── Botão outline único centralizado ────────────────────────────
+        GestureDetector(
+          onTap: () {
+            AppHaptics.selection(context);
+            onAddPatient();
+          },
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 11),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: kGoldLight.withOpacity(0.55),
+                width: 1.2,
+              ),
+              color: Colors.white.withOpacity(0.04),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_rounded, size: 15,
+                    color: kGoldLight.withOpacity(0.9)),
+                const SizedBox(width: 6),
+                Text(
+                  isEs
+                      ? '+ Agregar Paciente a la Guardia'
+                      : '+ Adicionar Paciente ao Plantão',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: kGoldLight.withOpacity(0.9),
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // ── Fix#8 — Atalhos rápidos: REFERENCIAS · CARDIO · ELECTROLITOS ──
+        const SizedBox(height: 12),
+        _GuardiaShortcutsRow(isEs: isEs, onOpenCalc: onOpenCalc),
+      ],
     );
   }
 }
