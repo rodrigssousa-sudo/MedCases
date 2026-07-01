@@ -1032,13 +1032,25 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             ],
           ),
 
-          // ── Topbar: sobe para trás da status bar via Positioned negativo ──
+          // ── LAYER 1: Background — sobe para trás da status bar / Dynamic Island
+          // Apenas o plano de fundo é transladado negativamente. NENHUM elemento
+          // interativo está aqui — garante que botões e título não sejam clicados
+          // atrás do notch.
           Positioned(
-            top: -topPad, // sobe pelo valor exato da status bar / Dynamic Island
+            top: -topPad,
             left: 0,
             right: 0,
             height: topPad + 56,
-            child: _HcTopbar(dark: p.darkMode, lang: lang),
+            child: _HcTopbarBg(),
+          ),
+          // ── LAYER 2: Conteúdo interativo — fica em y=0, abaixo da Dynamic Island
+          // Padding ergonômico: botões e título em posição segura e clicável.
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 56,
+            child: _HcTopbarContent(dark: p.darkMode, lang: lang),
           ),
         ],
       ),
@@ -1099,24 +1111,17 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BUILD 331 — TOPBAR HISTÓRIA CLÍNICA
-// Geometria estrita: SafeArea(bottom:false) + SizedBox(48) + padding h:12.
-// Fundo sólido #0F1116 dark / branco light — sem gradiente laranja.
-// Título centralizado via Stack — sem desvio do botão de voltar.
+// LAYER 1 — Plano de fundo da topbar História Clínica
+// Ocupa topPad+56 px, transladado top:-topPad para sangrar atrás da status bar.
+// SEM conteúdo interativo — apenas decoração visual.
 // ─────────────────────────────────────────────────────────────────────────────
-class _HcTopbar extends StatelessWidget {
-  final bool dark;
-  final String lang;
-
-  const _HcTopbar({required this.dark, required this.lang});
+class _HcTopbarBg extends StatelessWidget {
+  const _HcTopbarBg();
 
   @override
   Widget build(BuildContext context) {
-    final title = lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA';
     return Container(
       decoration: BoxDecoration(
-        // BUILD 331 HISTÓRIA CLÍNICA: gradiente idêntico ao card H. CLÍNICA da Home
-        // topLeft #5E2900 (laranja escuro/marrom) → bottomRight #F27405 (laranja vibrante)
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -1133,60 +1138,64 @@ class _HcTopbar extends StatelessWidget {
           ),
         ],
       ),
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      // TOPBAR — Padrão PACIENTES (InternacaoScreen).
-      // Quando usado como appBar: PreferredSize(...), o Scaffold estende
-      // automaticamente este Container atrás da status bar / Dynamic Island.
-      // SafeArea(bottom:false) empurra o conteúdo interativo abaixo do notch
-      // sem cortar o gradiente. Não precisa de View.of() nem MediaQuery.
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          height: 56,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // ── CENTER: título BRANCO — contraste máximo sobre laranja
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
-                // ── LEFT: botão de voltar BRANCO — SizedBox 36×36 ─────────
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) {
-                        nav.pop();
-                      } else {
-                        MainShell.pendingTab.value = 0;
-                      }
-                    },
-                    child: const SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — Conteúdo interativo da topbar História Clínica
+// Posicionado em top:0, height:56 — botões e título ficam ABAIXO da Dynamic
+// Island em posição ergonômica e totalmente clicável. Sem translação negativa.
+// ─────────────────────────────────────────────────────────────────────────────
+class _HcTopbarContent extends StatelessWidget {
+  final bool dark;
+  final String lang;
+
+  const _HcTopbarContent({required this.dark, required this.lang});
+
+  @override
+  Widget build(BuildContext context) {
+    final title = lang == 'es' ? 'HISTORIA CLÍNICA' : 'HISTÓRIA CLÍNICA';
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // ── CENTER: título BRANCO — contraste máximo sobre laranja ────────
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+              color: Colors.white,
             ),
           ),
-        ),
+          // ── LEFT: botão de voltar — SizedBox 36×36 clicável ──────────────
+          Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                final nav = Navigator.of(context);
+                if (nav.canPop()) {
+                  nav.pop();
+                } else {
+                  MainShell.pendingTab.value = 0;
+                }
+              },
+              child: const SizedBox(
+                width: 36,
+                height: 36,
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

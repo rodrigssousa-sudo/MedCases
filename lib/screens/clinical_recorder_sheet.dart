@@ -121,47 +121,44 @@ class _FlowSelectionModal extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // Opção 1 — Gravar consulta completa
+          // Opção 1 — Gravar consulta completa (badge IA)
           _FlowOption(
-            emoji: '🎙️',
+            iconData: Icons.mic_rounded,
             title: lang == 'es' ? 'Grabar consulta y transcribir todo' : 'Gravar consulta e transcrever tudo',
             subtitle: lang == 'es'
                 ? 'Flujo continuo médico-paciente — IA estructura el SOAP automáticamente'
                 : 'Fluxo contínuo médico-paciente — IA estrutura o SOAP automaticamente',
-            gradientColors: const [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-            dark: dark,
+            showIaBadge: true,
             onTap: () {
               Navigator.pop(context);
               _openRecorder(context, RecorderMode.continuous);
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // Opção 2 — Digitar manualmente
           _FlowOption(
-            emoji: '📝',
+            iconData: Icons.edit_outlined,
             title: lang == 'es' ? 'Digitar manualmente' : 'Digitar manualmente',
             subtitle: lang == 'es'
                 ? 'Formulario tradicional con campos SOAP'
                 : 'Formulário tradicional com campos SOAP',
-            gradientColors: const [Color(0xFF0F766E), Color(0xFF14B8A6)],
-            dark: dark,
+            showIaBadge: false,
             onTap: () {
               Navigator.pop(context);
               onManual();
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // Opção 3 — Blocos SOAP focados
           _FlowOption(
-            emoji: '🧱',
+            iconData: Icons.view_agenda_outlined,
             title: lang == 'es' ? 'Grabar por bloques SOAP' : 'Gravar por blocos SOAP',
             subtitle: lang == 'es'
                 ? 'Dictado segmentado por categoría clínica'
                 : 'Ditado segmentado por categoria clínica',
-            gradientColors: const [Color(0xFFEA580C), Color(0xFFF59E0B)],
-            dark: dark,
+            showIaBadge: false,
             onTap: () {
               Navigator.pop(context);
               _openRecorder(context, RecorderMode.soapBlocks);
@@ -188,18 +185,24 @@ class _FlowSelectionModal extends StatelessWidget {
   }
 }
 
-// Botão de opção de fluxo
+// ─────────────────────────────────────────────────────────────────────────────
+// Card de opção de fluxo — Design Apple/Stripe Premium (Build 332+)
+// Fundo cinza-escuro uniforme 0xFF1C2232, borda fina 0xFF2C354A 0.5px,
+// ícone vetorial 22px, tipografia hierárquica, badge IA discreto.
+// ─────────────────────────────────────────────────────────────────────────────
 class _FlowOption extends StatelessWidget {
-  final String emoji;
+  final IconData iconData;
   final String title;
   final String subtitle;
-  final List<Color> gradientColors;
-  final bool dark;
+  final bool showIaBadge;
   final VoidCallback onTap;
 
   const _FlowOption({
-    required this.emoji, required this.title, required this.subtitle,
-    required this.gradientColors, required this.dark, required this.onTap,
+    required this.iconData,
+    required this.title,
+    required this.subtitle,
+    required this.showIaBadge,
+    required this.onTap,
   });
 
   @override
@@ -208,50 +211,79 @@ class _FlowOption extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradientColors.map((c) => c.withOpacity(0.15)).toList(),
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
+          // Fundo cinza-escuro premium uniforme — idêntico entre as 3 opções
+          color: const Color(0xFF1C2232),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: gradientColors[0].withOpacity(0.4),
-            width: 1.2,
+            color: const Color(0xFF2C354A),
+            width: 0.5,
           ),
         ),
         child: Row(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 28)),
+            // Ícone vetorial limpo — 22px, cor neutra
+            Icon(iconData, size: 22, color: Colors.white70),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: dark ? Colors.white : const Color(0xFF111111),
-                    ),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      if (showIaBadge) ...[
+                        const SizedBox(width: 8),
+                        // Badge IA — minimalista cinza-azulado
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1E293B),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: const Color(0xFF475569),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: const Text(
+                            'IA',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF94A3B8),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: dark ? Colors.grey[400] : Colors.grey[600],
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF8E9AA8),
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(
+            const SizedBox(width: 8),
+            const Icon(
               Icons.arrow_forward_ios_rounded,
-              size: 16,
-              color: gradientColors[0],
+              size: 14,
+              color: Color(0xFF4A5568),
             ),
           ],
         ),

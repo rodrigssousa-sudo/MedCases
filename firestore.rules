@@ -120,10 +120,19 @@ service cloud.firestore {
 
     // ─────────────────────────────────────────────────────────────────────────
     // HISTÓRIAS PÚBLICAS — /public_histories/{storyId}
-    // Fix #3: leitura pública irrestrita (sem autenticação).
-    // Escrita: somente o autor autenticado ou admin.
-    // Apple Section 5.1 / Google Play: dados clínicos anonimizados são conteúdo
-    // educacional público — sem PII associado à leitura.
+    //
+    // LEITURA PÚBLICA IRRESTRITA — allow read: if true
+    // Qualquer usuário (autenticado ou não) pode LISTAR e LER histórias públicas.
+    //
+    // MOTIVO: Histórias clínicas públicas são conteúdo educacional anonimizado.
+    // Apple Section 5.1 / Google Play: sem PII associado à leitura.
+    //
+    // ⚠️  ATENÇÃO — IMPLANTAÇÃO OBRIGATÓRIA:
+    // Este arquivo deve ser implantado no Firebase Console após qualquer alteração:
+    //   firebase deploy --only firestore:rules
+    //
+    // Se o app móvel iOS exibir "Acesso negado" em public_histories, significa
+    // que este arquivo não foi implantado. Execute o comando acima imediatamente.
     // ─────────────────────────────────────────────────────────────────────────
     match /public_histories/{storyId} {
       allow read: if true;

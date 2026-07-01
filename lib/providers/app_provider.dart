@@ -196,6 +196,11 @@ class AppProvider extends ChangeNotifier {
   bool _isLoadingPublic = false;
   String _publicLoadError = '';
 
+  // SYNC-FIX: Stream reativo para histórias do usuário no mobile.
+  // Garante que dados criados na Web aparecem imediatamente no iOS
+  // sem necessidade de reiniciar o app ou fazer pull-to-refresh.
+  StreamSubscription<List<ClinicalHistoryModel>>? _historiesStreamSub;
+
   String get publicLoadError => _publicLoadError;
 
   // ── Rastreamento de uso ────────────────────────────────────────────────────
@@ -548,6 +553,7 @@ class AppProvider extends ChangeNotifier {
 
   void clearUser() {
     _stopUsageTimer();
+    _cancelHistoriesStream(); // SYNC-FIX: cancela stream reativo ao fazer logout
     AppResumeCoordinator.instance.clear(); // BUILD 241: clear pending ops on logout
     _currentUser = null;
     _firebaseReady = false;
@@ -1430,14 +1436,38 @@ class AppProvider extends ChangeNotifier {
   // ── Histórias Clínicas ────────────────────────────────────────────────────
   Future<void> loadHistories() async {
     if (_currentUser == null) return;
+    final uid = _currentUser!.uid;
     try {
-      _myHistories = await FirestoreService.loadHistories(_currentUser!.uid);
+      // SYNC-FIX: Source.server força leitura direta do Firestore, ignorando
+      // o cache local. Resolve o problema de histórias criadas na Web que
+      // não apareciam no iOS na primeira abertura do app.
+      _myHistories = await FirestoreService.loadHistories(uid);
       notifyListeners();
       // Persiste no cache para uso offline
-      await _saveHistoriesLocal(_currentUser!.uid);
+      await _saveHistoriesLocal(uid);
     } catch (_) {
       // Sem rede: histórias já carregadas do cache em _loadFromLocal()
     }
+
+    // SYNC-FIX: Ativa stream reativo no mobile (não-web) para atualizações
+    // em tempo real. Cancela stream anterior se usuário mudou.
+    if (!kIsWeb) {
+      await _historiesStreamSub?.cancel();
+      _historiesStreamSub = FirestoreService.streamHistories(uid).listen(
+        (list) {
+          _myHistories = list;
+          notifyListeners();
+          _saveHistoriesLocal(uid).catchError((_) {});
+        },
+        onError: (_) {/* Stream error: mantém dados em memória */},
+      );
+    }
+  }
+
+  /// Cancela o stream de histórias (chamado no logout).
+  Future<void> _cancelHistoriesStream() async {
+    await _historiesStreamSub?.cancel();
+    _historiesStreamSub = null;
   }
 
   Future<void> saveHistory(ClinicalHistoryModel h) async {

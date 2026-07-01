@@ -1060,9 +1060,26 @@ class FirestoreService {
   }
 
   static Future<List<ClinicalHistoryModel>> loadHistories(String uid) async {
+    // ORDEM SYNC-FIX: iOS usa cache Firestore por padrão — histórias criadas
+    // na Web não aparecem no mobile na primeira abertura.
+    // Estratégia em duas etapas:
+    //   1) Tenta Source.server (dados frescos do servidor, sem cache)
+    //   2) Se falhar (offline / timeout), usa cache local como fallback
     try {
       // Sem orderBy — evita índice composto. Ordenação em memória.
-      final snap = await _userHistories(uid).get();
+      final query = _userHistories(uid);
+
+      QuerySnapshot<Map<String, dynamic>> snap;
+      try {
+        // Etapa 1: força leitura direta do servidor (ignora cache local)
+        snap = await query
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 10));
+      } catch (_) {
+        // Etapa 2: fallback para cache local (modo offline)
+        snap = await query.get();
+      }
+
       final list = snap.docs
           .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
           .toList();
@@ -1071,6 +1088,18 @@ class FirestoreService {
     } catch (_) {
       return [];
     }
+  }
+
+  /// Stream reativo das histórias do usuário — recebe updates em tempo real.
+  /// Usado pelo HistoryScreen mobile para sincronização automática Web↔iOS.
+  static Stream<List<ClinicalHistoryModel>> streamHistories(String uid) {
+    return _userHistories(uid).snapshots().map((snap) {
+      final list = snap.docs
+          .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
+          .toList();
+      list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      return list;
+    });
   }
 
   /// Salva a história do usuário e, se pública, espelha em public_histories.
@@ -1220,12 +1249,20 @@ class FirestoreService {
       _debugPublicHistories('sdk load count=${list.length} source=${source ?? 'default'}');
       return list;
     } on FirebaseException catch (e) {
-      // permission-denied: rules bloquearam — não logar como erro crítico
+      // permission-denied: regras do Firestore bloquearam a leitura.
+      // CAUSA MÁIS COMUM: arquivo firestore.rules correto localmente mas
+      // não implantado no Firebase Console (executa: firebase deploy --only firestore:rules).
       if (e.code == 'permission-denied') {
-        _setPublicHistoriesError('Acesso negado (verifique Firestore Rules para public_histories)');
-        _debugPublicHistories('sdk permission-denied source=${source ?? 'default'}');
+        // Mensagem amigável ao usuário — sem jargão técnico
+        _setPublicHistoriesError(
+          'Não foi possível carregar as histórias públicas agora.\nToque em atualizar para tentar novamente.',
+        );
+        _debugPublicHistories(
+          'sdk permission-denied — verifique se firestore.rules foi implantado: '
+          'firebase deploy --only firestore:rules | source=${source ?? 'default'}',
+        );
       } else {
-        _setPublicHistoriesError('SDK public_histories erro: ${e.code}');
+        _setPublicHistoriesError('Erro ao carregar histórias públicas. Tente novamente.');
         _debugPublicHistories('sdk firebase error ${e.code} source=${source ?? 'default'}');
       }
       return [];

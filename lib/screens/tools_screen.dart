@@ -124,6 +124,20 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     final double topPad = View.of(context).padding.top /
         View.of(context).devicePixelRatio;
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // TOPBAR BLEED — DUAS CAMADAS SEPARADAS (fundo vs conteúdo interativo).
+    //
+    // CAMADA 1 — FUNDO (Positioned top:-topPad):
+    //   Sobe o background do gradiente/cor para trás da status bar física.
+    //   Altura = topPad + 56px. Sem conteúdo interativo.
+    //
+    // CAMADA 2 — CONTEÚDO (Positioned top:0):
+    //   Botões, título e ícones permanecem em y=0 relativo ao widget
+    //   (= logo abaixo da status bar). Altura = 56px.
+    //   Padding horizontal protege botões das bordas.
+    //
+    // topPad via View.of() — imune ao MediaQuery.removePadding do MainShell.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     return ColoredBox(
       color: dark ? const Color(0xFF1A1D23) : Colors.white,
       child: Stack(
@@ -133,7 +147,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
           Column(
             children: [
               // Reserva espaço para a topbar (fica por baixo do Positioned)
-              SizedBox(height: 56),
+              const SizedBox(height: 56),
               // BUILD 331: Seletor de categorias desacoplado da Topbar
               _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
               // ── Content ──────────────────────────────────────────────
@@ -156,13 +170,22 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             ],
           ),
 
-          // ── Topbar: sobe para trás da status bar via Positioned negativo ──
+          // ── CAMADA 1: Fundo — sobe para trás da status bar ────────────
           Positioned(
-            top: -topPad, // sobe pelo valor exato da status bar / Dynamic Island
+            top: -topPad,
             left: 0,
             right: 0,
             height: topPad + 56,
-            child: _ToolsTopbar(dark: dark, isEs: isEs),
+            child: _ToolsTopbarBg(dark: dark),
+          ),
+
+          // ── CAMADA 2: Conteúdo interativo — permanece em y=0 ─────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 56,
+            child: _ToolsTopbarContent(dark: dark, isEs: isEs),
           ),
         ],
       ),
@@ -177,20 +200,12 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
 // Stack sem Padding wrapper — botão em Positioned(left:12), título em Align(center).
 // Borda inferior #2D3340 0.5px + BoxShadow blur:6 — acabamento premium.
 // ─────────────────────────────────────────────────────────────────────────────
-class _ToolsTopbar extends StatelessWidget {
+// ── Fundo da topbar (sem conteúdo, apenas visual) ────────────────────────────
+class _ToolsTopbarBg extends StatelessWidget {
   final bool dark;
-  final bool isEs;
-  const _ToolsTopbar({required this.dark, required this.isEs});
-
+  const _ToolsTopbarBg({required this.dark});
   @override
   Widget build(BuildContext context) {
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // TOPBAR — Padrão PACIENTES (InternacaoScreen).
-    // Quando usado como appBar: PreferredSize(...), o Scaffold estende
-    // automaticamente este Container atrás da status bar / Dynamic Island.
-    // SafeArea(bottom:false) empurra o conteúdo interativo abaixo do notch
-    // sem cortar o fundo colorido. Não precisa de View.of() nem MediaQuery.
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF111622),
@@ -205,53 +220,57 @@ class _ToolsTopbar extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          height: 56,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // ── BOTÃO ESQUERDO — posição absoluta, nunca sobrepõe o título ──
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) {
-                        nav.pop();
-                      } else {
-                        MainShell.pendingTab.value = 0;
-                      }
-                    },
-                    child: const SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+    );
+  }
+}
+
+// ── Conteúdo interativo da topbar (botão voltar + título) ─────────────────────
+class _ToolsTopbarContent extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  const _ToolsTopbarContent({required this.dark, required this.isEs});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // ── BOTÃO ESQUERDO ────────────────────────────────────────────────
+          Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                final nav = Navigator.of(context);
+                if (nav.canPop()) {
+                  nav.pop();
+                } else {
+                  MainShell.pendingTab.value = 0;
+                }
+              },
+              child: const SizedBox(
+                width: 36,
+                height: 36,
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 20,
+                  color: Colors.white,
                 ),
-                // ── TÍTULO — centro geométrico absoluto ──────────────────────
-                const Text(
-                  'FERRAMENTAS',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          // ── TÍTULO — centro geométrico absoluto ──────────────────────────
+          const Text(
+            'FERRAMENTAS',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

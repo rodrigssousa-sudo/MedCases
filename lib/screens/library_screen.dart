@@ -311,13 +311,22 @@ class _LibraryScreenState extends State<LibraryScreen>
             ],
           ),
 
-          // ── Topbar: sobe para trás da status bar via Positioned negativo ──
+          // ── CAMADA 1: Fundo — sobe para trás da status bar ──────────
           Positioned(
-            top: -topPad, // sobe pelo valor exato da status bar / Dynamic Island
+            top: -topPad,
             left: 0,
             right: 0,
             height: topPad + 56,
-            child: _LibraryTopbar(
+            child: _LibraryTopbarBg(),
+          ),
+
+          // ── CAMADA 2: Conteúdo interativo — permanece em y=0 ─────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 56,
+            child: _LibraryTopbarContent(
               dark: dark,
               isEs: isEs,
               isDesktop: isDesktop,
@@ -337,27 +346,14 @@ class _LibraryScreenState extends State<LibraryScreen>
 // padding h:12, fundo sólido adaptativo, border 0.5px, BoxShadow blur:6.
 // Título "BIBLIOTECA" centralizado via Stack — sem desvio do botão de voltar.
 // ─────────────────────────────────────────────────────────────────────────────
-class _LibraryTopbar extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  final bool isDesktop;
-  final VoidCallback? onRefreshGuides;
-  final bool refreshing;
-
-  const _LibraryTopbar({
-    required this.dark,
-    required this.isEs,
-    required this.isDesktop,
-    this.onRefreshGuides,
-    this.refreshing = false,
-  });
-
+// ── Fundo da topbar Biblioteca (gradiente, sem conteúdo interativo) ──────────
+class _LibraryTopbarBg extends StatelessWidget {
+  const _LibraryTopbarBg();
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         // BUILD 331 BIBLIOTECA: gradiente idêntico ao card BIBLIOTECA da Home
-        // topLeft #222D42 (slate escuro) → bottomRight #4B5E7F (azul acinzentado)
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -374,96 +370,104 @@ class _LibraryTopbar extends StatelessWidget {
           ),
         ],
       ),
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      // TOPBAR — Padrão PACIENTES (InternacaoScreen).
-      // Quando usado como appBar: PreferredSize(...), o Scaffold estende
-      // automaticamente este Container atrás da status bar / Dynamic Island.
-      // SafeArea(bottom:false) empurra o conteúdo interativo abaixo do notch
-      // sem cortar o gradiente. Não precisa de View.of() nem MediaQuery.
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          height: 56,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // ── CENTER: título BRANCO — contraste máximo sobre slate gray
-                const Text(
-                  'BIBLIOTECA',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
-                // ── LEFT: botão de voltar BRANCO — SizedBox 36×36 ─────────
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      final nav = Navigator.of(context);
-                      if (nav.canPop()) {
-                        nav.pop();
-                      } else {
-                        MainShell.pendingTab.value = 0;
-                      }
-                    },
-                    child: const SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                // ── RIGHT: botão refresh (desktop only) ───────────────────
-                if (isDesktop && onRefreshGuides != null)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Tooltip(
-                      message: isEs ? 'Actualizar guías' : 'Atualizar guias',
-                      child: GestureDetector(
-                        onTap: refreshing ? null : onRefreshGuides,
-                        child: Container(
-                          width: 34,
-                          height: 34,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white.withOpacity(0.15),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.35),
-                              width: 0.8,
-                            ),
-                          ),
-                          child: refreshing
-                              ? const Padding(
-                                  padding: EdgeInsets.all(9),
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.refresh_rounded,
-                                  size: 18,
-                                  color: Colors.white,
-                                ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
+    );
+  }
+}
+
+// ── Conteúdo interativo da topbar Biblioteca (botões, título) ────────────────
+class _LibraryTopbarContent extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final bool isDesktop;
+  final VoidCallback? onRefreshGuides;
+  final bool refreshing;
+
+  const _LibraryTopbarContent({
+    required this.dark,
+    required this.isEs,
+    required this.isDesktop,
+    this.onRefreshGuides,
+    this.refreshing = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // ── CENTER: título BRANCO ─────────────────────────────────────
+          const Text(
+            'BIBLIOTECA',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+              color: Colors.white,
             ),
           ),
-        ),
+          // ── LEFT: botão de voltar ─────────────────────────────────────
+          Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                final nav = Navigator.of(context);
+                if (nav.canPop()) {
+                  nav.pop();
+                } else {
+                  MainShell.pendingTab.value = 0;
+                }
+              },
+              child: const SizedBox(
+                width: 36,
+                height: 36,
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          // ── RIGHT: botão refresh (desktop only) ───────────────────────
+          if (isDesktop && onRefreshGuides != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Tooltip(
+                message: isEs ? 'Actualizar guías' : 'Atualizar guias',
+                child: GestureDetector(
+                  onTap: refreshing ? null : onRefreshGuides,
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white.withOpacity(0.15),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.35),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: refreshing
+                        ? const Padding(
+                            padding: EdgeInsets.all(9),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.refresh_rounded,
+                            size: 18,
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
