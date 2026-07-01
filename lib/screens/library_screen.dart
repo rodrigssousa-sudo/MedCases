@@ -285,7 +285,11 @@ class _LibraryScreenState extends State<LibraryScreen>
                 isEs: isEs,
                 tabCtrl: _tabCtrl,
               ),
+              // PERF-FIX: RepaintBoundary isola a lista de guias da topbar.
+              // Scroll, filtro de categoria e carregamento não invalidam
+              // o layer do background da topbar no Impeller.
               Expanded(
+                child: RepaintBoundary(
                 child: TabBarView(
                   controller: _tabCtrl,
                   children: [
@@ -307,6 +311,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                     _CasosDeEstudoTab(dark: dark, isEs: isEs, p: p),
                   ],
                 ),
+                ), // RepaintBoundary
               ),
             ],
           ),
@@ -317,7 +322,7 @@ class _LibraryScreenState extends State<LibraryScreen>
             left: 0,
             right: 0,
             height: topPad + 56,
-            child: _LibraryTopbarBg(),
+            child: const _LibraryTopbarBg(),
           ),
 
           // ── CAMADA 2: Conteúdo interativo — permanece em y=0 ─────────
@@ -349,28 +354,31 @@ class _LibraryScreenState extends State<LibraryScreen>
 // ── Fundo da topbar Biblioteca (gradiente, sem conteúdo interativo) ──────────
 class _LibraryTopbarBg extends StatelessWidget {
   const _LibraryTopbarBg();
+
+  // PERF-FIX: BoxDecoration totalmente const — o Impeller cacheia esta camada
+  // permanentemente; nenhum rebuild da LibraryScreen a invalida.
+  // BUILD 331 BIBLIOTECA: gradiente idêntico ao card BIBLIOTECA da Home.
+  static const _kDecoration = BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF222D42), Color(0xFF4B5E7F)],
+    ),
+    border: Border(
+      bottom: BorderSide(color: Color(0xFF334155), width: 0.5),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Color(0x59000000), // Colors.black.withOpacity(0.35) equivalente
+        blurRadius: 6,
+        offset: Offset(0, 2),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        // BUILD 331 BIBLIOTECA: gradiente idêntico ao card BIBLIOTECA da Home
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF222D42), Color(0xFF4B5E7F)],
-        ),
-        border: const Border(
-          bottom: BorderSide(color: Color(0xFF334155), width: 0.5),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-    );
+    return const DecoratedBox(decoration: _kDecoration);
   }
 }
 

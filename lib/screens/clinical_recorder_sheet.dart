@@ -104,7 +104,7 @@ class _FlowSelectionModal extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
               color: dark ? Colors.grey[700] : Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: const BorderRadius.all(Radius.circular(2)),
             ),
           ),
           Text(
@@ -205,87 +205,92 @@ class _FlowOption extends StatelessWidget {
     required this.onTap,
   });
 
+  // PERF-FIX: todas as decorações são const estáticas — o Impeller cacheia
+  // estas camadas e não as recalcula entre rebuilds do modal.
+  static const _kCardDecoration = BoxDecoration(
+    color: Color(0xFF1C2232),
+    borderRadius: BorderRadius.all(Radius.circular(16)),
+    border: Border.fromBorderSide(
+      BorderSide(color: Color(0xFF2C354A), width: 0.5),
+    ),
+  );
+
+  static const _kBadgeDecoration = BoxDecoration(
+    color: Color(0xFF1E293B),
+    borderRadius: BorderRadius.all(Radius.circular(6)),
+    border: Border.fromBorderSide(
+      BorderSide(color: Color(0xFF475569), width: 0.5),
+    ),
+  );
+
+  static const _kTitleStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+
+  static const _kSubtitleStyle = TextStyle(
+    fontSize: 13,
+    color: Color(0xFF8E9AA8),
+  );
+
+  static const _kBadgeStyle = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    color: Color(0xFF94A3B8),
+    letterSpacing: 0.5,
+  );
+
+  static const _kChevron = Icon(
+    Icons.arrow_forward_ios_rounded,
+    size: 14,
+    color: Color(0xFF4A5568),
+  );
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          // Fundo cinza-escuro premium uniforme — idêntico entre as 3 opções
-          color: const Color(0xFF1C2232),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: const Color(0xFF2C354A),
-            width: 0.5,
-          ),
-        ),
-        child: Row(
-          children: [
-            // Ícone vetorial limpo — 22px, cor neutra
-            Icon(iconData, size: 22, color: Colors.white70),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+      child: DecoratedBox(
+        decoration: _kCardDecoration,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              // Ícone vetorial limpo — 22px, cor neutra
+              Icon(iconData, size: 22, color: Colors.white70),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(title, style: _kTitleStyle),
                         ),
-                      ),
-                      if (showIaBadge) ...[
-                        const SizedBox(width: 8),
-                        // Badge IA — minimalista cinza-azulado
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1E293B),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: const Color(0xFF475569),
-                              width: 0.5,
+                        if (showIaBadge) ...[
+                          const SizedBox(width: 8),
+                          // Badge IA — minimalista cinza-azulado
+                          const DecoratedBox(
+                            decoration: _kBadgeDecoration,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                              child: Text('IA', style: _kBadgeStyle),
                             ),
                           ),
-                          child: const Text(
-                            'IA',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF94A3B8),
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
+                        ],
                       ],
-                    ],
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF8E9AA8),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 3),
+                    Text(subtitle, style: _kSubtitleStyle),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 14,
-              color: Color(0xFF4A5568),
-            ),
-          ],
+              const SizedBox(width: 8),
+              _kChevron,
+            ],
+          ),
         ),
       ),
     );

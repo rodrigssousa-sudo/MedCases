@@ -6683,8 +6683,12 @@ class _InputBarState extends State<_InputBar> {
       behavior: HitTestBehavior.translucent,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 2.5, 16, 12), // SUPER ORDEM 11: bottom:12 clearance
+        // PERF-FIX: ClipRRect com borderRadius const + RepaintBoundary
+        // isolam o BackdropFilter do Impeller — o motor não precisa
+        // recalcular o shape do clipper a cada rebuild do painel STT.
+        child: RepaintBoundary(
         child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: const BorderRadius.all(Radius.circular(30)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),  // ORDEM VISUAL 02: fosco limpo
           child: AnimatedContainer(
@@ -6941,6 +6945,7 @@ class _InputBarState extends State<_InputBar> {
             ),
           ),
         ),
+        ), // RepaintBoundary
       ),
     );
   }

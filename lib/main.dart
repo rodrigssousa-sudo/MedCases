@@ -1982,10 +1982,16 @@ class _FloatingFooterState extends State<_FloatingFooter> {
             children: [
 
               // ── Floating Dock glassmorphism ────────────────────────────────
-              Padding(
+              // PERF-FIX: RepaintBoundary isola o dock do resto do frame —
+              // o Impeller só redesenha esta camada quando barHeight muda,
+              // não quando o conteúdo da tela principal atualiza.
+              RepaintBoundary(
+                child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(32),
+                  // PERF-FIX: borderRadius const → o Impeller não recalcula o
+                  // clipper a cada frame; cache de layer garantido.
+                  borderRadius: const BorderRadius.all(Radius.circular(32)),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: AnimatedContainer(
@@ -2030,6 +2036,7 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                   ),
                 ),
               ),
+              ), // RepaintBoundary
 
               // ── LegalBar — faz parte do bloco animado ─────────────────────
               _LegalBar(dark: widget.dark, insideSafeArea: true),

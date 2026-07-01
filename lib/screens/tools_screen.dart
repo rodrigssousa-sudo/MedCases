@@ -151,19 +151,24 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
               // BUILD 331: Seletor de categorias desacoplado da Topbar
               _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
               // ── Content ──────────────────────────────────────────────
+              // PERF-FIX: RepaintBoundary isola o TabBarView das calculadoras
+              // da topbar e do TabRow. Cálculos biométricos (sliders, inputs)
+              // não invalidam o layer da topbar no Impeller.
               Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () => FocusScope.of(context).unfocus(),
-                  child: TabBarView(
-                    controller: _tabCtrl,
-                    children: [
-                      _BiometricsTab(),
-                      // BUILD 277-CROMATICO: _ScoresTab() removed
-                      CardioHubView(),
-                      _ElectrolytesTab(),
-                      _ReferenceTab(),
-                    ],
+                child: RepaintBoundary(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    child: TabBarView(
+                      controller: _tabCtrl,
+                      children: [
+                        _BiometricsTab(),
+                        // BUILD 277-CROMATICO: _ScoresTab() removed
+                        CardioHubView(),
+                        _ElectrolytesTab(),
+                        _ReferenceTab(),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -176,7 +181,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             left: 0,
             right: 0,
             height: topPad + 56,
-            child: _ToolsTopbarBg(dark: dark),
+            child: const _ToolsTopbarBg(),
           ),
 
           // ── CAMADA 2: Conteúdo interativo — permanece em y=0 ─────────
@@ -202,25 +207,27 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
 // ─────────────────────────────────────────────────────────────────────────────
 // ── Fundo da topbar (sem conteúdo, apenas visual) ────────────────────────────
 class _ToolsTopbarBg extends StatelessWidget {
-  final bool dark;
-  const _ToolsTopbarBg({required this.dark});
+  const _ToolsTopbarBg();
+
+  // PERF-FIX: BoxDecoration totalmente const — o Impeller cacheia esta camada
+  // permanentemente; nenhum rebuild da ToolsScreen a invalida.
+  static const _kDecoration = BoxDecoration(
+    color: Color(0xFF111622),
+    border: Border(
+      bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Color(0x59000000), // Colors.black.withOpacity(0.35) equivalente
+        blurRadius: 6,
+        offset: Offset(0, 2),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF111622),
-        border: const Border(
-          bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-    );
+    return const DecoratedBox(decoration: _kDecoration);
   }
 }
 
