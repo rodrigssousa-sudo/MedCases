@@ -632,6 +632,18 @@ class _GuardiaShortcutsRow extends StatelessWidget {
     'calc_eletrólitos',
   ];
 
+  // Fix#9 — IDs que NÃO devem aparecer em _PinnedCalcsGrid pois já são
+  // cobertos pelo _GuardiaShortcutsRow acima. Inclui 'calc_scores' porque
+  // o usuário pode tê-lo pinado e ele mapeia para a mesma aba (Biometria/0)
+  // que seria redundante com os atalhos fixos visíveis.
+  // Exposto como Set estático para ser consultado por _PlantaoContent.
+  static const kFixedShortcutIds = <String>{
+    'calc_referencia',
+    'calc_cardio',
+    'calc_eletrólitos',
+    'calc_scores', // mapeia para tab 0 — coberto pelo contexto geral
+  };
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -802,11 +814,18 @@ class _PlantaoContent extends StatelessWidget {
     final filteredCalcIds = p.pinnedCalcIds
         .where((id) => !_kForbiddenCalcIds.contains(id))
         .toList();
-    final hasCalcs = filteredCalcIds.isNotEmpty;
+
+    // Fix#9 — Remove da grade de pins os IDs já cobertos pelo _GuardiaShortcutsRow
+    // (atalhos fixos sempre visíveis no header). Evita duplicata visual sem apagar
+    // os dados de pinning do usuário — apenas suprime a renderização redundante.
+    final deduplicatedCalcIds = filteredCalcIds
+        .where((id) => !_GuardiaShortcutsRow.kFixedShortcutIds.contains(id))
+        .toList();
+    final hasDeduplicatedCalcs = deduplicatedCalcIds.isNotEmpty;
 
     // SUPER ORDEM MASTER 306 M1: purga total — sem _AddFirstPatientRow,
     // sem _DefaultCalcShortcutsGrid. Apenas dados reais.
-    if (!hasPatients && !hasDrugs && !hasCalcs) return const SizedBox.shrink();
+    if (!hasPatients && !hasDrugs && !hasDeduplicatedCalcs) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -819,7 +838,7 @@ class _PlantaoContent extends StatelessWidget {
             colors: c,
             onOpenInternacion: onOpenInternacion,
           ),
-          if (hasDrugs || hasCalcs) const SizedBox(height: 12),
+          if (hasDrugs || hasDeduplicatedCalcs) const SizedBox(height: 12),
         ],
 
         // ── FÁRMACOS — scroll horizontal ─────────────────────────────────────
@@ -834,13 +853,13 @@ class _PlantaoContent extends StatelessWidget {
               p.unpinDrug(drug.id);
             },
           ),
-          if (hasCalcs) const SizedBox(height: 12),
+          if (hasDeduplicatedCalcs) const SizedBox(height: 12),
         ],
 
-        // ── CALCULADORAS PINADAS — grid compacto ─────────────────────────────
-        if (hasCalcs) ...[
+        // ── CALCULADORAS PINADAS — grid compacto (IDs fixos já deduplificados) ─
+        if (hasDeduplicatedCalcs) ...[
           _PinnedCalcsGrid(
-            calcIds: filteredCalcIds,
+            calcIds: deduplicatedCalcIds, // Fix#9: sem IDs cobertos por _GuardiaShortcutsRow
             isEs: isEs,
             colors: c,
             onTap: onOpenCalc,
