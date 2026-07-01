@@ -190,8 +190,10 @@ class CalculadoraScreen extends StatefulWidget {
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Native WebView controller — inicializado apenas em iOS/Android (!kIsWeb)
   late final WebViewController _controller;
-  // Build 1563: dark mode lido uma vez no initState (imutável por sessão)
-  late final bool _dark;
+  // Fix#6: dark mode agora mutável — reativo a toggleDarkMode() em runtime
+  bool _dark = false;
+  // Fix#6: flag que indica se a WebView já terminou de carregar (page finished)
+  bool _webviewReady = false;
   // Build 187: URL da calculadora — compartilhada entre Web (iframe) e native (WebView)
   // Build 189: pode ser sobrescrita por initialUrl (ExternalToolButton deep link)
   late final String _webUrl;
@@ -207,6 +209,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     // Build 189: initialUrl tem prioridade sobre URL padrão do provider.
     // ExternalToolLinkEngine já injeta lang+tab+q — não sobrescrever.
     _webUrl = widget.initialUrl ?? '$_kBaseUrl?lang=$langParam';
+
+    // Fix#6: escuta mudanças de tema do AppProvider — injeta tema na WebView
+    // imediatamente após toggle, sem necessidade de recarregar a página.
+    p.addListener(_onProviderChanged);
 
     // Build 187: Web não tem suporte a WebViewWidget — usa iframe (calcu_web.dart).
     // iOS/Android continuam com WebViewController nativo.
@@ -237,6 +243,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           },
           onPageFinished: (_) async {
             await _controller.runJavaScript(_kInjectJs);
+            // Fix#6: injeta tema assim que a página termina de carregar
+            _webviewReady = true;
+            await _injectTheme();
           },
         ))
         // BUILD 240: carrega online primeiro; addPostFrameCallback resolve cache local
@@ -264,6 +273,29 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     }
   }
 
+  // Fix#6: chamado pelo listener do AppProvider quando darkMode muda
+  void _onProviderChanged() {
+    final newDark = context.read<AppProvider>().darkMode;
+    if (newDark == _dark) return; // sem mudança
+    _dark = newDark;
+    if (mounted) setState(() {});
+    // Injeta tema na WebView se já estiver pronta
+    if (!kIsWeb && _webviewReady) _injectTheme();
+  }
+
+  // Fix#6: injeta window.updateMedCasesTheme('dark'|'light') na WebView nativa
+  Future<void> _injectTheme() async {
+    if (kIsWeb) return;
+    final theme = _dark ? 'dark' : 'light';
+    try {
+      await _controller.runJavaScript(
+        "if(typeof window.updateMedCasesTheme==='function'){window.updateMedCasesTheme('$theme');}",
+      );
+    } catch (e) {
+      debugPrint('[CalculadoraScreen][theme] inject error: $e');
+    }
+  }
+
   /// Detecta iOS sem usar dart:io Platform (compatível com Flutter Web).
   bool _detectIOS() {
     // defaultTargetPlatform é seguro em todas as plataformas.
@@ -271,10 +303,20 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   }
 
   @override
+  void dispose() {
+    // Fix#6: remove listener para evitar memory leak
+    if (mounted) {
+      context.read<AppProvider>().removeListener(_onProviderChanged);
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // ── Paleta dark/light ────────────────────────────────────────────────
     // SUPER ORDEM VISUAL 09: barBg/borderCol/textPrimary/textSecondary removidos
     // — o AppBar agora usa gradiente roxo const; só scaffoldBg permanece.
+    // Fix#6: _dark agora é mutável — atualizado pelo listener do AppProvider.
     final Color scaffoldBg  = _dark ? const Color(0xFF0F091E) : const Color(0xFFF8F9FA);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(

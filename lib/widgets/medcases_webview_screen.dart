@@ -17,8 +17,10 @@
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import '../providers/app_provider.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper global — roteamento encapsulado e seguro (MANDATO 2)
@@ -67,6 +69,10 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
   late final WebViewController? _controller;
   bool _isLoading = true;
   String? _httpsError;
+  // Fix#6: dark mode reativo — sincronizado com AppProvider via listener
+  bool _dark = false;
+  // Fix#6: flag que indica se a WebView já terminou de carregar
+  bool _webviewReady = false;
 
   @override
   void initState() {
@@ -82,6 +88,11 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
     }
 
     debugPrint('[MedCasesWebView][BUILD323] Opening in-app: title="${widget.title}" url=${widget.url}');
+
+    // Fix#6: lê dark mode inicial e registra listener para mudanças em runtime
+    final p = context.read<AppProvider>();
+    _dark = p.darkMode;
+    p.addListener(_onProviderChanged);
 
     // Flutter Web não usa WebViewController — iframe via HtmlElementView
     if (kIsWeb) {
@@ -114,12 +125,12 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
           if (!mounted) return;
           setState(() => _isLoading = true);
         },
-        onPageFinished: (_) {
+        onPageFinished: (_) async {
           if (!mounted) return;
           setState(() => _isLoading = false);
           // MANDATO 3: Injeta CSS para ocultar qualquer barra de endereço nativa
           // e desabilitar seleção de texto que expõe URLs
-          _controller?.runJavaScript(r"""
+          await _controller?.runJavaScript(r"""
 (function() {
   var s = document.createElement('style');
   s.textContent = 'a[href]:after { content: none !important; }';
@@ -131,6 +142,9 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
   document.documentElement.style.userSelect = 'none';
 })();
 """);
+          // Fix#6: injeta tema assim que a página termina de carregar
+          _webviewReady = true;
+          await _injectTheme();
         },
         onWebResourceError: (error) {
           debugPrint('[MedCasesWebView] WebResourceError: ${error.description}');
@@ -152,9 +166,32 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
   bool _detectIOS() =>
       Theme.of(context).platform == TargetPlatform.iOS;
 
+  // Fix#6: chamado pelo listener do AppProvider quando darkMode muda
+  void _onProviderChanged() {
+    final newDark = context.read<AppProvider>().darkMode;
+    if (newDark == _dark) return;
+    _dark = newDark;
+    if (mounted) setState(() {});
+    if (!kIsWeb && _webviewReady) _injectTheme();
+  }
+
+  // Fix#6: injeta window.updateMedCasesTheme('dark'|'light') na WebView nativa
+  Future<void> _injectTheme() async {
+    if (kIsWeb || _controller == null) return;
+    final theme = _dark ? 'dark' : 'light';
+    try {
+      await _controller!.runJavaScript(
+        "if(typeof window.updateMedCasesTheme==='function'){window.updateMedCasesTheme('$theme');}",
+      );
+    } catch (e) {
+      debugPrint('[MedCasesWebView][theme] inject error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
+    // Fix#6: _dark é a fonte de verdade (listener do AppProvider) — não usa Theme.of()
+    final dark = _dark;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -338,6 +375,8 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
 
   @override
   void dispose() {
+    // Fix#6: remove listener para evitar memory leak
+    context.read<AppProvider>().removeListener(_onProviderChanged);
     super.dispose();
   }
 }
