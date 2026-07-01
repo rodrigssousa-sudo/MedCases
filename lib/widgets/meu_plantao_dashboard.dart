@@ -441,6 +441,8 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
           onHeaderTap: () => _toggle(true),
           onManageTap: widget.onManageTap,
           onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
+          // Fix#8: propaga onOpenCalc para os 3 atalhos rápidos do header
+          onOpenCalc: widget.onOpenCalc,
         ),
 
         // ── Lista de pacientes — apenas quando existem dados reais ──────────
@@ -501,6 +503,8 @@ class _PlantaoHeader extends StatelessWidget {
   final VoidCallback onHeaderTap;
   final VoidCallback onManageTap;
   final VoidCallback onAddPatient;
+  // Fix#8 — atalhos MI GUARDIA: REFERENCIAS · CARDIO · ELECTROLITOS
+  final void Function(String calcId) onOpenCalc;
 
   const _PlantaoHeader({
     required this.isEs,
@@ -511,6 +515,7 @@ class _PlantaoHeader extends StatelessWidget {
     required this.onHeaderTap,
     required this.onManageTap,
     required this.onAddPatient,
+    required this.onOpenCalc,
   });
 
   @override
@@ -587,7 +592,136 @@ class _PlantaoHeader extends StatelessWidget {
               ),
             ),
           ),
+
+          // ── Fix#8 — Atalhos rápidos: REFERENCIAS · CARDIO · ELECTROLITOS ──
+          const SizedBox(height: 12),
+          _GuardiaShortcutsRow(isEs: isEs, onOpenCalc: onOpenCalc),
         ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Fix#8 — ATALHOS RÁPIDOS MI GUARDIA (REFERENCIAS · CARDIO · ELECTROLITOS)
+// Row de 3 mini-cards sempre visível dentro do header do plantão.
+// Cada card navega diretamente para a sub-aba correspondente em Ferramentas:
+//   • REFERENCIAS  → toolsScreenTabNotifier(3) + onTabChange(4)
+//   • CARDIO       → toolsScreenTabNotifier(1) + onTabChange(4)
+//   • ELECTROLITOS → toolsScreenTabNotifier(2) + onTabChange(4)
+// 100% AppColors adaptive — sem cor hardcoded.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _GuardiaShortcutsRow extends StatelessWidget {
+  final bool isEs;
+  final void Function(String calcId) onOpenCalc;
+
+  const _GuardiaShortcutsRow({
+    required this.isEs,
+    required this.onOpenCalc,
+  });
+
+  // Fix#8: Os 3 atalhos fixos — REFERENCIAS, CARDIO, ELECTROLITOS
+  // IDs mapeados em home_screen.dart → calcTabMap:
+  //   calc_referencia  → toolsScreenTabNotifier.value = 3 (Referências)
+  //   calc_cardio      → toolsScreenTabNotifier.value = 1 (Cardio)
+  //   calc_eletrólitos → toolsScreenTabNotifier.value = 2 (Eletrólitos)
+  static const _kShortcutIds = [
+    'calc_referencia',
+    'calc_cardio',
+    'calc_eletrólitos',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (int i = 0; i < _kShortcutIds.length; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(
+            child: _GuardiaShortcutCard(
+              calcId: _kShortcutIds[i],
+              isEs: isEs,
+              onTap: () => onOpenCalc(_kShortcutIds[i]),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Card individual de atalho — sem RepaintBoundary (já dentro de um card naval).
+/// Usa AnimatedScale para feedback tátil sem Impeller flicker.
+class _GuardiaShortcutCard extends StatefulWidget {
+  final String calcId;
+  final bool isEs;
+  final VoidCallback onTap;
+
+  const _GuardiaShortcutCard({
+    required this.calcId,
+    required this.isEs,
+    required this.onTap,
+  });
+
+  @override
+  State<_GuardiaShortcutCard> createState() => _GuardiaShortcutCardState();
+}
+
+class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final shortcut = calcById(widget.calcId);
+    if (shortcut == null) return const SizedBox.shrink();
+
+    final label = widget.isEs ? shortcut.labelEs : shortcut.labelPt;
+    final color = shortcut.color;
+
+    return GestureDetector(
+      onTap: () {
+        AppHaptics.selection(context);
+        widget.onTap();
+      },
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp:   (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.93 : 1.0,
+        duration: const Duration(milliseconds: 110),
+        curve: Curves.easeOutCubic,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+          decoration: BoxDecoration(
+            // Fundo com leve tint da cor do atalho — funciona em dark e light
+            color: color.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: color.withOpacity(0.30),
+              width: 1.1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(shortcut.icon, size: 20, color: color),
+              const SizedBox(height: 5),
+              Text(
+                label.toUpperCase(),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.6,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
