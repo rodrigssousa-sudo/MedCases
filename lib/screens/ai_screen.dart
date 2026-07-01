@@ -5649,6 +5649,34 @@ class _AiBlockBubble extends StatelessWidget {
       ),
       blockSpacing: 6,
       listIndent: 18,
+
+      // ── Tabelas Comparativas GFM — Modo Estudo (Build TableMD) ───────────
+      // Ativadas por _modeAnchorEstudo (ai_gateway_service.dart) para síntese
+      // de classes farmacológicas, diferenciais e dados correlacionados.
+      // Dark: fundo naval translúcido + borda ciano sutil
+      // Light: fundo gelo + borda cinza elegante
+      tableHead: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: dark ? const Color(0xFF00E5FF) : const Color(0xFF1A1D23),
+        letterSpacing: 0.2,
+      ),
+      tableBody: TextStyle(
+        fontSize: 12,
+        color: textColor,
+        height: 1.4,
+      ),
+      tablePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      tableCellsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      tableColumnWidth: const FlexColumnWidth(),
+      tableBorder: TableBorder.all(
+        color: dark
+            ? const Color(0xFF00E5FF).withOpacity(0.18)
+            : const Color(0xFF1A1D23).withOpacity(0.12),
+        width: 0.5,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      tableHeadAlign: TextAlign.left,
     );
 
     return Padding(

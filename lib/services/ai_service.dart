@@ -642,6 +642,9 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
       '7. ESTRUCTURA COMPLETA (MODO ESTUDIO): ## Titulo + cuerpo academico + 📌 final. NUNCA 🟥 como titulo. NUNCA truncar.\n'
       '9. DOSIS Y SEGURIDAD: coherentes con peso/renal/hepatico/edad. HARD STOP si contraindicacion absoluta.\n'
       '14. GANCHO 📌 OBLIGATORIO EN PRIMERA PERSONA: ultima linea = 📌 [accion en 1a persona. PUNTO FINAL. NUNCA "?"].\n'
+      '15. TABLA COMPARATIVA: ¿He utilizado tablas comparativas estructuradas en Markdown si el usuario '
+      'solicitó síntesis de clases de fármacos, diagnósticos diferenciales o datos correlacionados? '
+      'Si el contenido tiene ≥2 entidades paralelas comparables → tabla GFM obligatoria antes de la prosa.\n'
       'Si detectas meta-comentario: corregir antes de enviar.';
 
   // SUPER ORDEM 35: -30% payload — items 8/10/11/12/13/15/16 removidos (redundantes com outros modulos).
@@ -667,6 +670,9 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
       '7. ESTRUTURA COMPLETA (MODO ESTUDO): ## Titulo + corpo academico + 📌 final. NUNCA 🟥 como titulo. NUNCA truncar.\n'
       '9. DOSES E SEGURANCA: coerentes com peso/renal/hepatico/idade. HARD STOP se contraindicacao absoluta.\n'
       '14. GANCHO 📌 OBRIGATORIO EM PRIMEIRA PESSOA: ultima linha = 📌 [acao em 1a pessoa. PONTO FINAL. NUNCA "?"].\n'
+      '15. TABELA COMPARATIVA: Eu utilizei tabelas comparativas estruturadas em Markdown se o usuario '
+      'pediu sintese de classes de farmacos, diagnosticos diferenciais ou dados correlacionados? '
+      'Se o conteudo tem ≥2 entidades paralelas comparaveis → tabela GFM obrigatoria antes da prosa.\n'
       'Se detectar meta-comentario: corrigir antes de enviar.';
 
   // ══════════════════════════════════════════════════════════════════════════
