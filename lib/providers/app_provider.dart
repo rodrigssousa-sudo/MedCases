@@ -1944,8 +1944,28 @@ class AppProvider extends ChangeNotifier {
         // key loaded during a previous admin session cannot bleed into a regular
         // user's session. Admin/master accounts skip this wipe — their key
         // loading proceeds normally through _ensureGeminiApiKey().
+        //
+        // ⚠️  BUILD 277 FIX: Detect pending OAuth redirect BEFORE the wipe runs.
+        // The race condition: setUser() is called by the auth stream right after
+        // the OAuth redirect completes. At that instant _syncFromFirestore() has
+        // NOT finished yet, so isAdmin/isMaster are still false for privileged
+        // users. If we wipe here we destroy `gemini_google_email` and
+        // `medcases_gak` that the JS on index.html saved during the redirect —
+        // the OAuth detection block below (line ~1978) then finds an empty email
+        // and silently aborts, leaving the user with no Gemini key.
+        //
+        // Guard: if medcases_gsi_pending is set in either localStorage or
+        // sessionStorage, an OAuth redirect just completed. Skip the wipe
+        // entirely — the key/email written by the redirect JS are still needed.
+        // The wipe will run naturally on the NEXT cold boot when the flag is
+        // gone and Firestore has had time to resolve isAdmin/isMaster correctly.
+        final bool hasPendingOAuthRedirect = kIsWeb && (
+          (_webGetLS('medcases_gsi_pending') == 'true') ||
+          (_webSsGet('medcases_gsi_pending') == 'true')
+        );
+
         final bool isPrivileged = isAdmin || isMaster;
-        if (!isPrivileged) {
+        if (!isPrivileged && !hasPendingOAuthRedirect) {
           try {
             final prefs = await SharedPreferences.getInstance();
             await prefs.remove('medcases_gak');
@@ -1959,6 +1979,12 @@ class AppProvider extends ChangeNotifier {
           } catch (e) {
             debugPrint('[BUILD277][SecurityWipe] wipe error (non-fatal): $e');
           }
+        } else if (hasPendingOAuthRedirect) {
+          // OAuth redirect em progresso — wipe SUPRIMIDO para preservar o email
+          // e a API key que o JS gravou durante o redirect. O Firestore ainda
+          // está sincronizando isAdmin/isMaster — tentaremos novamente no
+          // próximo boot quando o estado já estiver estável.
+          debugPrint('[BUILD277][SecurityWipe] OAuth redirect pendente — wipe SUPRIMIDO (isPrivileged=$isPrivileged)');
         }
 
         if (_geminiConnected && _geminiEmail.isNotEmpty && GeminiService.hasApiKey) {
