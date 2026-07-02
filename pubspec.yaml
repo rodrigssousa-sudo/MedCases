@@ -34,7 +34,6 @@ dependencies:
   # ao carregar arquivo offline (file://) da CalculadoraScreen no Android.
 
   webview_flutter_android: 4.10.0
-  webview_flutter_android: ^4.10.1
 
   # Icons
   cupertino_icons: ^1.0.8
