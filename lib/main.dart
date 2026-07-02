@@ -186,6 +186,9 @@ Future<void> _bootInBackground(AppProvider provider) async {
   }
 
   // 5. Restaura sessão web em paralelo com timeout de segurança
+  // BUILD 281: AuthService.restoreSession() agora é idempotente via _restoreInFlight.
+  // Chamadas concorrentes (ex: visibilitychange + boot) compartilham o mesmo Future,
+  // prevenindo dupla troca do refreshToken que destruía a sessão no mobile web.
   if (kIsWeb) {
     try {
       await AuthService.restoreSession().timeout(const Duration(seconds: 5));
@@ -1823,20 +1826,16 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                 // ── Conteúdo principal ─────────────────────────────────────
                 // isHome (tab 0) e IA (tab 2) partem do y=0 — cada tela cuida
                 // do seu próprio SafeArea interno (_MobileAiActionBar SafeArea).
+                // BUILD 281: _UpdateBanner REMOVIDO do mobile shell Stack.
+                // No mobile web, o toast HTML nativo (#pwa-update-toast) já
+                // cobre a notificação de SW — o banner Flutter gerava o DUPLO
+                // botão "ATUALIZAR" visível nas screenshots do bug.
                 // Demais abas (sem topbar própria) recebem padding.top manual.
                 Padding(
                   padding: EdgeInsets.only(
                     top: (isHome || _tab == 2) ? 0 : MediaQuery.of(context).padding.top,
                   ),
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: UpdateService.swUpdateAvailable,
-                    builder: (ctx, hasUpdate, _) => Stack(
-                      children: [
-                        IndexedStack(index: stackIdx, children: _staticScreens),
-                        if (hasUpdate) const _UpdateBanner(),
-                      ],
-                    ),
-                  ),
+                  child: IndexedStack(index: stackIdx, children: _staticScreens),
                 ),
 
                 // ── Build 158.3 / BUILD 329: Floating footer unificado ───────
