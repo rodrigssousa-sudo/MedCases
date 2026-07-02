@@ -251,43 +251,104 @@ class InternacionFirestoreService {
   // de índice composto {status, savedAt}. Query single-field usa auto-index.
   // Ordenação client-side no .map() abaixo — idêntico ao padrão da Lixeira.
   // ─────────────────────────────────────────────────────────────────────────
+  // ── sessionsStream — BUILD 292: Auth-gated stream ───────────────────────────
+  // PROBLEMA: No Flutter Web pós-OAuth redirect, o stream de
+  // users/{uid}/internaciones era aberto antes de FirebaseAuth.currentUser
+  // existir. O Firebase SDK Web detectava a ausência de auth token e retornava
+  // permission-denied (403), mesmo com as Rules corretas.
+  //
+  // SOLUÇÃO (sem dependências externas, sem Future.delayed fixo):
+  //   1. Emite lista vazia imediatamente (UI mostra estado vazio, não erro).
+  //   2. Escuta authStateChanges() para detectar quando o token está disponível.
+  //   3. Só abre o snapshot Firestore quando auth.uid == uid (token real confirmado).
+  //   4. Cancela sub-streams ao fechar o controller (zero leaks).
+  //   5. Se auth já está disponível no momento da chamada, abre imediatamente.
+  // ─────────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
-    // BUILD 290/291: PATH+AUTH logs — expõe o caminho físico e estado de auth
-    // no momento exato da subscrição. Formato solicitado BUILD 291:
-    //   [MeuPlantao][PATH] users/{uid}/internaciones
-    //   [MeuPlantao][AUTH] uid=... authed=true
-    // Monitorar: adb logcat | grep MeuPlantao  /  Chrome DevTools → filtrar MeuPlantao
+    // ── BUILD 292: AUTH DEBUG ────────────────────────────────────────────────
+    final auth = FirebaseAuth.instance.currentUser;
+    debugPrint('========== AUTH DEBUG ==========');
+    debugPrint('FirebaseAuth.currentUser = ${auth?.uid}');
+    debugPrint('UID recebido = $uid');
+    debugPrint('request iguais = ${auth?.uid == uid}');
+    debugPrint('================================');
+
+    // BUILD 290/291 log format (mantido)
     final collection = _col(uid);
-    final authed = FirebaseAuth.instance.currentUser != null || AuthService.hasCachedToken;
+    final authed = auth != null || AuthService.hasCachedToken;
     debugPrint('[MeuPlantao][PATH] ${collection.path}');
     debugPrint('[MeuPlantao][AUTH] uid=$uid authed=$authed '
-        'fbUser=${FirebaseAuth.instance.currentUser?.uid ?? "null"} '
+        'fbUser=${auth?.uid ?? "null"} '
         'hasCachedToken=${AuthService.hasCachedToken}');
 
-    return collection
-        .where('status', isEqualTo: kStatusActive)
-        .snapshots()
-        .map((snap) {
-          final sessions = snap.docs
-              .where((doc) {
-                final data = doc.data();
-                // Salvaguarda tripla: exclui archived + trashed + isDeleted==true
-                // Build 207: usa _toStr() — imune a type erasure em dart2js.
-                final status = _toStr(data['status']);
-                if (status == kStatusArchived) return false;
-                if (status == kStatusTrashed) return false;
-                final isDeleted = data['isDeleted'];
-                if (isDeleted == true) return false;
-                return true;
-              })
-              .map(_sessionFromDoc)
-              .whereType<PacienteSession>()
-              .toList();
-          // Re-sort client-side por updatedAt para que docs recém-editados
-          // subam ao topo imediatamente sem depender da ordem do Firestore.
-          sessions.sort((a, b) => b.savedAt.compareTo(a.savedAt));
-          return sessions;
-        });
+    // ── Mapa de sessões reutilizável (extraído para evitar duplicação) ────────
+    List<PacienteSession> _mapSnap(QuerySnapshot<Map<String, dynamic>> snap) {
+      final sessions = snap.docs
+          .where((doc) {
+            final data = doc.data();
+            final status = _toStr(data['status']);
+            if (status == kStatusArchived) return false;
+            if (status == kStatusTrashed) return false;
+            final isDeleted = data['isDeleted'];
+            if (isDeleted == true) return false;
+            return true;
+          })
+          .map(_sessionFromDoc)
+          .whereType<PacienteSession>()
+          .toList();
+      sessions.sort((a, b) => b.savedAt.compareTo(a.savedAt));
+      return sessions;
+    }
+
+    // ── AUTH GATE: se auth já está disponível, abre stream direto ────────────
+    if (auth?.uid == uid) {
+      debugPrint('[BUILD292][PLANTAO_STREAM] opening path=${collection.path}');
+      return collection
+          .where('status', isEqualTo: kStatusActive)
+          .snapshots()
+          .map(_mapSnap);
+    }
+
+    // ── AUTH GATE: auth não disponível → aguarda authStateChanges() ──────────
+    debugPrint('[BUILD292][AUTH_STREAM_GATE] waiting_for_auth uid=$uid');
+
+    final controller = StreamController<List<PacienteSession>>();
+    StreamSubscription<User?>? authSub;
+    StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? firestoreSub;
+
+    authSub = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user?.uid != uid) {
+        // Auth ainda não disponível para este uid — emite lista vazia silenciosamente
+        if (!controller.isClosed) controller.add(<PacienteSession>[]);
+        return;
+      }
+
+      // Auth confirmado — cancela listener de auth e abre snapshot Firestore
+      debugPrint('[BUILD292][AUTH_STREAM_GATE] auth_ready uid=$uid');
+      debugPrint('[BUILD292][PLANTAO_STREAM] opening path=${collection.path}');
+      authSub?.cancel();
+      authSub = null;
+
+      firestoreSub = collection
+          .where('status', isEqualTo: kStatusActive)
+          .snapshots()
+          .listen(
+            (snap) {
+              if (!controller.isClosed) controller.add(_mapSnap(snap));
+            },
+            onError: (e) {
+              if (!controller.isClosed) controller.addError(e);
+            },
+            cancelOnError: false,
+          );
+    });
+
+    controller.onCancel = () {
+      authSub?.cancel();
+      firestoreSub?.cancel();
+    };
+
+    return controller.stream;
   }
 
   // ─────────────────────────────────────────────────────────────────────────

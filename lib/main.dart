@@ -1334,7 +1334,15 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // tabs: 0=Home 1=Rx/Proto 2=IA(FAB) 3=H.Clínica 4=Calculadoras
   // (Adulto/Cockpit é acessado via card na HomeScreen)
-  int _tab = 0;
+  //
+  // BUILD 292: inicializa _tab diretamente do postOAuthTabNotifier.value.
+  // Se o notifier já foi setado ANTES da criação deste State (race condition
+  // onde _MainShellState é recriado após redirect OAuth), o valor correto (2)
+  // é usado desde o primeiro frame — sem flash na Home.
+  // Se não há OAuth pendente, o valor é -1 → fallback para 0 (Home).
+  int _tab = AppProvider.postOAuthTabNotifier.value >= 0
+      ? AppProvider.postOAuthTabNotifier.value.clamp(0, 5)
+      : 0;
   // sub-tab dentro do combo Rx+Proto: 0=Rx, 1=Protocolos
   int _rxProtoSub = 0;
 
@@ -1357,6 +1365,13 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Isso previne o bug de "teclado automático" onde o FocusNode da aba anterior
     // (especialmente o AiScreen tab 2) permanece ativo no IndexedStack e
     // re-abre o teclado quando o utilizador navega de volta para a Home.
+    //
+    // BUILD 292: se um OAuth tab restore está pendente (notifier >= 0) e a
+    // mudança é para Home (t == 0), registrar log diagnóstico. A mudança ainda
+    // ocorre — é iniciada pelo usuário, não por código de boot.
+    if (t == 0 && AppProvider.postOAuthTabNotifier.value >= 0) {
+      debugPrint('[BUILD292][TAB_RESTORE] ignored_reset_to_home reason=user_tap_home_while_pending_oauth_tab');
+    }
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() => _tab = t);
   }
@@ -1392,14 +1407,23 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // o bool era lido em initState ANTES de checkGeminiSession() setar true.
     // O ValueNotifier dispara em runtime → _onPostOAuthTab() responde imediatamente.
     AppProvider.postOAuthTabNotifier.addListener(_onPostOAuthTab);
-    // BUILD 291: race-condition fix — se postOAuthTabNotifier.value já foi setado
+    // BUILD 291/292: race-condition fix — se postOAuthTabNotifier.value já foi setado
     // antes do listener ser registrado (microtask disparou antes de initState),
-    // consumir o valor imediatamente via addPostFrameCallback para garantir o
-    // primeiro frame já exibe a aba correta.
+    // consumir o valor imediatamente via addPostFrameCallback.
+    // BUILD 292: o field initializer já inicializou _tab corretamente, mas o
+    // notifier ainda precisa ser resetado para -1 para evitar reprocessamento.
     final pendingOAuthTab = AppProvider.postOAuthTabNotifier.value;
     if (pendingOAuthTab >= 0) {
+      debugPrint('[BUILD292][TAB_RESTORE] pending=$pendingOAuthTab applying=true (initState fast-path)');
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _onPostOAuthTab();
+        if (mounted) {
+          // _tab já foi inicializado corretamente pelo field initializer.
+          // Confirma e reseta notifier para -1.
+          debugPrint('[BUILD292][TAB_RESTORE] applied tab=${_tab} (field-init path)');
+          if (AppProvider.postOAuthTabNotifier.value >= 0) {
+            AppProvider.postOAuthTabNotifier.value = -1;
+          }
+        }
       });
     }
 
@@ -1559,14 +1583,20 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // SUPER ORDEM MASTER 315: callback do ValueNotifier postOAuthTabNotifier.
   // Disparado por AppProvider.checkGeminiSession() após auth OAuth bem-sucedido.
   // Restaura o índice da aba de origem (salvo antes do redirect) sem race condition.
+  //
+  // BUILD 292: _tab pode já ter sido inicializado com o valor correto via campo
+  // (field initializer lê postOAuthTabNotifier.value na construção do State).
+  // Neste caso, o callback apenas confirma e reseta o notifier para -1.
   void _onPostOAuthTab() {
     final tabIdx = AppProvider.postOAuthTabNotifier.value;
-    if (tabIdx >= 0 && mounted) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      setState(() => _tab = tabIdx.clamp(0, 5));
-      AppProvider.postOAuthTabNotifier.value = -1; // consome e reseta
-      debugPrint('[MASTER315] postOAuthTabNotifier → aba $tabIdx restaurada');
-    }
+    if (tabIdx < 0 || !mounted) return;
+
+    debugPrint('[BUILD292][TAB_RESTORE] pending=$tabIdx applying=true');
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _tab = tabIdx.clamp(0, 5));
+    AppProvider.postOAuthTabNotifier.value = -1; // consome e reseta
+    debugPrint('[BUILD292][TAB_RESTORE] applied tab=${tabIdx.clamp(0, 5)}');
+    debugPrint('[MASTER315] postOAuthTabNotifier → aba $tabIdx restaurada');
   }
 
   void _onPendingTab() {
