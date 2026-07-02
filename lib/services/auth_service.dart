@@ -113,13 +113,36 @@ class AuthService {
     } catch (_) {}
   }
 
+  // BUILD 281: trava de idempotência para restoreSession() no Web mobile.
+  // O teclado virtual iOS/Android causa resize do viewport → visibilitychange →
+  // AppResumeCoordinator pode disparar novo restoreSession() enquanto o primeiro
+  // ainda está em voo (aguardando securetoken.googleapis.com ~200-800ms).
+  // Sem esta trava, duas chamadas concorrentes fazem duas trocas do refreshToken:
+  //   Call 1: troca refreshToken_A → recebe refreshToken_B (novo)  ← persiste B
+  //   Call 2: troca refreshToken_A (stale) → recebe 400 INVALID    ← limpa sessão!
+  // O resultado: sessão destruída ao abrir teclado, usuário é deslogado.
+  static Future<UserModel?>? _restoreInFlight;
+
   /// Lê a sessão persistida e, se válida, renova o idToken silenciosamente.
   /// Retorna o [UserModel] restaurado, ou null se não há sessão salva.
   /// Deve ser chamado em main() antes de runApp(), no contexto de um Future.
   ///
   /// Após restaurar o cache local, re-lê o documento users/{uid} no Firestore
   /// para obter o status atual (ex: aprovado pelo admin desde o último login).
-  static Future<UserModel?> restoreSession() async {
+  static Future<UserModel?> restoreSession() {
+    // BUILD 281: idempotência — se já há uma chamada em voo, retorna o mesmo Future.
+    // Isso previne a dupla troca de refreshToken quando visibilitychange ou resize
+    // dispara um segundo restoreSession() antes do primeiro completar.
+    if (_restoreInFlight != null) {
+      debugPrint('[AuthService] restoreSession() já em voo — retornando Future existente (idempotente)');
+      return _restoreInFlight!;
+    }
+    _restoreInFlight = _restoreSessionImpl();
+    _restoreInFlight!.whenComplete(() => _restoreInFlight = null);
+    return _restoreInFlight!;
+  }
+
+  static Future<UserModel?> _restoreSessionImpl() async {
     try {
       final p = await SharedPreferences.getInstance();
       final keepLoggedIn = p.getBool(_kKeepLoggedIn) ?? false;

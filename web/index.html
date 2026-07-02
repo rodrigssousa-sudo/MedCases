@@ -383,7 +383,40 @@
       ];
 
       function loadNext(i) {
-        if (i >= urls.length) return;
+        if (i >= urls.length) {
+          // BUILD 281: após todos os scripts carregados, força persistência LOCAL.
+          // O Firebase Auth Web SDK usa IndexedDB por padrão (persistência LOCAL),
+          // mas em browsers mobile com ITP agressivo (Safari iOS, Chrome Android),
+          // a sessão pode ser purgada se a persistência não for declarada explicitamente.
+          //
+          // setPersistence(LOCAL) garante que o token de autenticação sobrevive:
+          //   1. Recarregamentos de página (navegador mobile)
+          //   2. Resize do viewport (teclado virtual iOS/Android abrindo)
+          //   3. Mudanças de visibilidade (app em background / retorno)
+          //   4. Limpeza de cache de SW (o IndexedDB NÃO é afetado pelo CacheStorage)
+          //
+          // TIMING: chamado APÓS loadNext() completar (todos os 3 scripts carregados),
+          // garantindo que firebase.auth() já está disponível antes do setPersistence.
+          setTimeout(function() {
+            try {
+              var fb = window.firebase;
+              if (fb && fb.apps && fb.apps.length > 0 && typeof fb.auth === 'function') {
+                var auth = fb.auth();
+                if (auth && typeof auth.setPersistence === 'function' &&
+                    fb.auth.Auth && fb.auth.Auth.Persistence) {
+                  auth.setPersistence(fb.auth.Auth.Persistence.LOCAL).then(function() {
+                    console.log('[MedCases] Firebase Auth persistence=LOCAL confirmada');
+                  }).catch(function(e) {
+                    console.warn('[MedCases] Firebase Auth setPersistence falhou:', e);
+                  });
+                }
+              }
+            } catch(e) {
+              console.warn('[MedCases] Firebase Auth persistence setup error:', e);
+            }
+          }, 500); // 500ms de margem após os scripts carregarem
+          return;
+        }
         var s = document.createElement('script');
         s.src = urls[i];
         s.async = false;  // garante execução em ordem quando injetado
@@ -700,8 +733,11 @@
       } catch(e) {}
     })();
 
-    var APP_VERSION = '6.3.1-build155.2';
-    var SW_URL      = 'pwa-sw.js?v=6.1.7-build137';
+    // BUILD 281: versão bumped para forçar limpeza de SWs antigos nos usuários
+    // que ainda têm o SW desatualizado (pre-BUILD281). A limpeza agora é cirúrgica
+    // (preserva caches de Firebase Auth/Firestore) — sem destruir sessões.
+    var APP_VERSION = '6.5.31-build281';
+    var SW_URL      = 'pwa-sw.js?v=6.5.31-build281';
 
     // ── Remoção do splash ────────────────────────────────────────────
     var _splashRemoved = false;
@@ -922,21 +958,35 @@
       _waitingSW = sw;
       var toast = document.getElementById('pwa-update-toast');
       if (toast) toast.classList.add('show');
-      // Auto-dismiss em 15s se usuário não interagir
-      setTimeout(function() {
+
+      // BUILD 281: auto-dismiss reduzido 15s→8s + limpeza de _mcUpdatePending.
+      // No mobile web, 15s era tempo suficiente para o usuário tocar no input da IA
+      // e o toast ainda estar visível, causando confusão com o banner Flutter.
+      // Ao dispensar o toast, zeramos _mcUpdatePending para que o Dart NÃO seja
+      // notificado novamente no próximo setupUpdateListener() — que é chamado
+      // após checkGeminiSession() no boot da sessão de IA.
+      var _toastDismissTimer = setTimeout(function() {
         if (toast) toast.classList.remove('show');
-      }, 15000);
-      // Notifica o Dart (Flutter) que há um update disponível.
-      // O Dart registra window.onFlutterWebUpdateAvailable via dart:js_interop
-      // (UpdateService.setupUpdateListener). Se ainda não foi registrado, a
-      // flag _mcUpdatePending garante que o Dart seja notificado na próxima
-      // chamada a setupUpdateListener.
-      window._mcUpdatePending = true;
-      try {
-        if (typeof window.onFlutterWebUpdateAvailable === 'function') {
-          window.onFlutterWebUpdateAvailable();
-        }
-      } catch(e) {}
+        window._mcUpdatePending = false; // BUILD 281: zera flag Dart ao auto-dismiss
+      }, 8000);
+
+      // BUILD 281: NO MOBILE, não notifica o Dart (Flutter) sobre updates de SW.
+      // O banner Flutter (_UpdateBanner) em mobile sobrepõe a floating bottom nav
+      // e conflita visualmente com o toast HTML nativo (#pwa-update-toast).
+      // No desktop, mantemos a notificação Dart para o _UpdateBanner no Column.
+      // Detecção de mobile: viewport width < 768px (mesmos breakpoints do Flutter).
+      var isMobileWeb = window.innerWidth < 768;
+
+      if (!isMobileWeb) {
+        // Desktop: notifica o Dart para exibir o _UpdateBanner na Column
+        window._mcUpdatePending = true;
+        try {
+          if (typeof window.onFlutterWebUpdateAvailable === 'function') {
+            window.onFlutterWebUpdateAvailable();
+          }
+        } catch(e) {}
+      }
+      // Mobile: o toast HTML é suficiente — sem banner Flutter duplicado
     }
 
     // Aplica o update: envia SKIP_WAITING ao SW waiting e recarrega a página.
@@ -996,9 +1046,19 @@
           .then(function(regs) {
             return Promise.all(regs.map(function(r) { return r.unregister(); }));
           }).catch(function() { return Promise.resolve(); });
+        // BUILD 281: mesmo filtro cirúrgico do cacheClean de versão nova —
+        // preserva caches de Firebase Auth/Firestore, apaga apenas assets Flutter.
         var cacheClean = ('caches' in window)
           ? caches.keys().then(function(keys) {
-              return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+              var safeKeys = keys.filter(function(k) {
+                var lower = k.toLowerCase();
+                if (lower.indexOf('firebase') !== -1) return false;
+                if (lower.indexOf('auth') !== -1) return false;
+                if (lower.indexOf('google') !== -1) return false;
+                if (lower.indexOf('firestore') !== -1) return false;
+                return true;
+              });
+              return Promise.all(safeKeys.map(function(k) { return caches.delete(k); }));
             }).catch(function() { return Promise.resolve(); })
           : Promise.resolve();
         Promise.all([swClean, cacheClean]).then(function() {
@@ -1026,9 +1086,27 @@
             return Promise.all(regs.map(function(r) { return r.unregister(); }));
           }).catch(function() {});
 
+        // BUILD 281: cacheClean cirúrgico — preserva IndexedDB/LocalStorage do Firebase Auth.
+        // O cache nativo do browser (CacheStorage) pode conter entradas do Firebase Auth
+        // sob prefixos 'firebaseLocalStorage', 'firebase-', 'firebaseauth-' etc.
+        // Apagar esses caches durante atualização de versão destruía a sessão do usuário
+        // em browsers mobile, forçando re-login após qualquer deploy.
+        // Fix: filtra APENAS os caches de assets do Flutter (prefixo 'flutter_' ou 'CACHE_')
+        // e deixa INTOCADOS qualquer cache que contenha 'firebase' ou 'auth' no nome.
         var cacheClean = ('caches' in window)
           ? caches.keys().then(function(keys) {
-              return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+              var safeKeys = keys.filter(function(k) {
+                var lower = k.toLowerCase();
+                // Preserva caches de autenticação Firebase/Google
+                if (lower.indexOf('firebase') !== -1) return false;
+                if (lower.indexOf('auth') !== -1) return false;
+                if (lower.indexOf('google') !== -1) return false;
+                // Preserva caches de dados do usuário (Firestore offline)
+                if (lower.indexOf('firestore') !== -1) return false;
+                // Apaga apenas caches de assets Flutter
+                return true;
+              });
+              return Promise.all(safeKeys.map(function(k) { return caches.delete(k); }));
             }).catch(function() {})
           : Promise.resolve();
 
