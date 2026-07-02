@@ -82,6 +82,12 @@ dependencies:
   # BUILD 240: OfflineCalculatorCacheService salva arquivos da calculadora localmente
   path_provider: ^2.1.5
 
+  # BUILD 280: sincroniza o splash nativo do iOS (LaunchScreen.storyboard) com o
+  # primeiro frame real do Flutter, eliminando o "blink/flash" de aprovação da App Store.
+  # FlutterNativeSplash.preserve() → mantém storyboard ativo durante o boot assíncrono
+  # FlutterNativeSplash.remove()   → descarta storyboard APÓS o frame Flutter estar pronto
+  flutter_native_splash: ^2.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
