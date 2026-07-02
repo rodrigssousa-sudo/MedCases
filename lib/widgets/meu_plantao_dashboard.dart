@@ -196,6 +196,11 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
         if (isPermissionError) {
           // MANDATO 1: ativa trava permanente — destroi stream, bloqueia toda
           // reconexão futura ao Firestore para este widget na sessão atual.
+          // BUILD 288 DIAG: captura uid e path no momento exato do 403
+          final _diagUid = context.read<AppProvider>().currentUser?.uid ?? 'null';
+          debugPrint('[MeuPlantao][PATH] collection=users/$_diagUid/internaciones');
+          debugPrint('[MeuPlantao][UID]  uid=$_diagUid');
+          debugPrint('[MeuPlantao][AUTH] raw_error=$e');
           debugPrint('[MeuPlantao] ERRO PERMISSÃO (403/permission-denied). '
               'Sincronização remota suspensa. Modo offline ativado.');
           _firestorePermissionDenied = true;

@@ -310,6 +310,12 @@ class AppProvider extends ChangeNotifier {
   Future<void>? _geminiSessionCheckInFlight;
   bool _geminiApiKeyUnavailable = false;
 
+  // BUILD 288: flag de sincronização Firestore — SET pelo _syncFromFirestore()
+  // ao completar com sucesso. O SecurityWipe lê isAdmin/isMaster APÓS sync —
+  // enquanto esta flag for false, o wipe é adiado 2s para dar tempo ao
+  // _syncFromFirestore() resolver isAdmin/isMaster do servidor.
+  bool _firestoreSyncComplete = false;
+
   // ── Estado — Modo Offline ──────────────────────────────────────────────────
   bool _offlineMode      = false;  // true = sem rede, usa só cache local
   bool _offlineCaching   = false;  // true durante o processo de cache
@@ -577,6 +583,9 @@ class AppProvider extends ChangeNotifier {
     _geminiRetryAfter = null;
     _geminiSessionCheckInFlight = null;
     _geminiApiKeyUnavailable = false;
+    // BUILD 288: reseta flag de sync para que a próxima sessão aguarde o
+    // _syncFromFirestore() resolver isAdmin/isMaster antes do SecurityWipe.
+    _firestoreSyncComplete = false;
     // Limpa plantão (recarregado ao próximo login)
     _pinnedDrugIds = [];
     _pinnedCalcIds = [];
@@ -702,8 +711,16 @@ class AppProvider extends ChangeNotifier {
       _syncHistoriesFromFirestore(uid);
       // Recentes: sincroniza do Firestore → cache local em background
       _syncRecentsFromFirestore(uid);
+      // BUILD 288: sinaliza que isAdmin/isMaster já foram resolvidos pelo Firestore.
+      // O SecurityWipe em checkGeminiSession() aguarda esta flag antes de decidir
+      // se o usuário é privilegiado — evita wipe precoce em admins.
+      _firestoreSyncComplete = true;
     } catch (_) {
       // Sem rede: mantém dados do cache — nenhuma ação necessária
+      // BUILD 288: mesmo em falha de rede, marca sync como completo para não
+      // bloquear o SecurityWipe indefinidamente. Offline = usa o valor de
+      // isAdmin/isMaster do UserModel carregado do cache local.
+      _firestoreSyncComplete = true;
     }
   }
 
@@ -1963,6 +1980,16 @@ class AppProvider extends ChangeNotifier {
           (_webGetLS('medcases_gsi_pending') == 'true') ||
           (_webSsGet('medcases_gsi_pending') == 'true')
         );
+
+        // BUILD 288: aguarda _syncFromFirestore() completar antes de ler
+        // isAdmin/isMaster. _syncFromFirestore() é chamado SEM await em setUser(),
+        // então pode não ter resolvido o perfil do servidor ainda.
+        // Timeout de 3s: se o Firestore demorar mais, usa o valor do cache local.
+        if (!_firestoreSyncComplete) {
+          debugPrint('[BUILD288][SecurityWipe] _syncFromFirestore ainda em voo — aguardando 3s antes do wipe...');
+          await Future.delayed(const Duration(seconds: 3));
+          debugPrint('[BUILD288][SecurityWipe] após espera: syncComplete=$_firestoreSyncComplete isAdmin=$isAdmin isMaster=$isMaster');
+        }
 
         final bool isPrivileged = isAdmin || isMaster;
         if (!isPrivileged && !hasPendingOAuthRedirect) {
