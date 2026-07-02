@@ -3808,10 +3808,24 @@ class AppProvider extends ChangeNotifier {
           final rawPartial = accumulator.toString().trim();
           final errCode = chunk.errorCode ?? 'network';
 
-          // ── Build 226: fallback pago para erros recuperáveis ──────────────
-          // Se o erro pode ser corrigido pelo Gemini Paid E não há conteúdo
-          // parcial significativo → tenta paid proxy antes de mostrar erro.
-          if (ProviderRouterService.shouldTriggerPaidFallback(errCode) &&
+          // ── BUILD 278: fallback pago para erros recuperáveis ─────────────
+          // REGRA NOVA (BUILD 278): http_503 SEMPRE escalona para paid,
+          //   independente do tamanho do conteúdo parcial.
+          //   Razão: 503 = stream truncado pela infraestrutura Google.
+          //   Mostrar texto parcial de um 503 = conteúdo incompleto = UX ruim.
+          //   O paid proxy retorna sempre a resposta COMPLETA.
+          //
+          // REGRA ANTERIOR (Build 226): outros erros recuperáveis escalona
+          //   somente quando sem conteúdo parcial significativo (≤40 chars).
+          //   Mantida para 'quota', 'timeout', 'network', 'stream_error' etc.
+          final bool is503 = errCode == 'http_503';
+          if (is503 && ProviderRouterService.shouldTriggerPaidFallback(errCode)) {
+            if (kDebugMode) debugPrint('[AI_ROUTER] BUILD278 http_503 → limpa buffer parcial e aciona paid (${rawPartial.length}c descartados)');
+            accumulator.clear(); // descarta parcial truncado — nunca exibir 503 parcial
+            unawaited(tryPaidFallback(errCode));
+            return;
+          }
+          if (!is503 && ProviderRouterService.shouldTriggerPaidFallback(errCode) &&
               rawPartial.length <= 40) {
             if (kDebugMode) debugPrint('[AI_ROUTER] free_error errCode=$errCode → aciona paid');
             accumulator.clear();

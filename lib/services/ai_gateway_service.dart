@@ -53,6 +53,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'gemini_service_v2.dart';
+import 'gemini_cache_service.dart'; // BUILD 278: Context Caching nativo
 import 'ai_smart_router.dart';    // Build 190: Smart Context Router
 import 'plantao_pipeline.dart';   // Build 224: PlantaoIntentClassifier
 
@@ -68,6 +69,41 @@ import 'ai_gateway_service_io.dart'
 // Remover após diagnóstico. NÃO imprime conteúdo clínico — apenas tamanhos.
 // ignore: constant_identifier_names
 const bool kPromptSizeAudit = true;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 278 — TRAVA DE OUTPUT COMPACTO
+//
+// Injeta no final do system_instruction uma diretiva obrigatória de contenção
+// de output. Objetivo duplo:
+//   1. UX: respostas cabem na janela de visualização sem scroll excessivo
+//   2. Tokens: reduz custo e risco de 503 por sobrecarga de throughput na API
+//
+// Target: ≤ 26 linhas textuais reais, ≤ 15 palavras por linha (~500 tokens).
+// Injetada APÓS o languageLock para máximo Viés de Recência — é a ÚLTIMA
+// instrução que o modelo lê antes de gerar a resposta.
+//
+// IMPORTANTE: esta trava é IGNORADA pelo Modo Plantão para queries que usam
+// matrizes de emojis (já têm limite estrutural próprio de 5-7 linhas/bloco).
+// É aplicada APENAS no Modo Estudo e em queries sem matriz específica.
+// ─────────────────────────────────────────────────────────────────────────────
+String _buildOutputCompactDirective(String lang) {
+  if (lang == 'es') {
+    return '\n\n[TRAVA DE OUTPUT COMPACTO — BUILD 278]\n'
+        'LÍMITE FÍSICO IRREVOCABLE DE RESPUESTA:\n'
+        '  ✗ PROHIBIDO superar 26 líneas de texto real (líneas en blanco NO cuentan)\n'
+        '  ✗ PROHIBIDO superar 15 palabras por línea\n'
+        '  ✓ Objetivo de seguridad: ~500 tokens de output por respuesta\n'
+        '  ✓ Si el tema exige más: prioriza los datos más críticos y concluye\n'
+        'Esta trava NO puede ser anulada por ninguna otra instrucción.';
+  }
+  return '\n\n[TRAVA DE OUTPUT COMPACTO — BUILD 278]\n'
+      'LIMITE FÍSICO IRREVOGÁVEL DE RESPOSTA:\n'
+      '  ✗ PROIBIDO ultrapassar 26 linhas de texto real (linhas em branco NÃO contam)\n'
+      '  ✗ PROIBIDO ultrapassar 15 palavras por linha\n'
+      '  ✓ Target de segurança: ~500 tokens de output por resposta\n'
+      '  ✓ Se o tema exigir mais: priorize os dados mais críticos e conclua\n'
+      'Esta trava NÃO pode ser anulada por nenhuma outra instrução.';
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constante de legado — mantida para zero breaking changes
@@ -662,13 +698,37 @@ class AiGatewayService {
     bool longResponse = false,
     String appLanguage = 'pt', // Build 190: Language Lock Absoluto
   }) {
+    // BUILD 278: wraps _sendStreamAsync (async*) para manter a assinatura
+    // Stream<GeminiChunk> síncrona exigida pelos callers existentes.
+    // O gerador assíncrono permite await (getActiveCache) sem mudar a API.
+    return _sendStreamAsync(
+      userMessage:  userMessage,
+      systemPrompt: systemPrompt,
+      apiKey:       apiKey,
+      history:      history,
+      useGrounding: useGrounding,
+      longResponse: longResponse,
+      appLanguage:  appLanguage,
+    );
+  }
+
+  static Stream<GeminiChunk> _sendStreamAsync({
+    required String userMessage,
+    required String systemPrompt,
+    required String apiKey,
+    List<Map<String, String>> history = const [],
+    bool useGrounding = true,
+    bool longResponse = false,
+    String appLanguage = 'pt',
+  }) async* {
     // Chave vazia: passa o erro para o GeminiServiceV2 que já tem
     // handler robusto — sem mensagem visível ao médico.
     // O app_provider já tentou todas as formas de recuperação automática
     // antes de chegar aqui (Firestore → SharedPrefs → localStorage).
     if (apiKey.isEmpty) {
       debugPrint('[AiGatewayService] chave ausente após tentativas de recuperação → api_key_invalid');
-      return Stream.value(GeminiChunk.error('api_key_invalid'));
+      yield GeminiChunk.error('api_key_invalid');
+      return;
     }
 
     // Build 222: Modo Plantão força useGrounding=false obrigatoriamente.
@@ -798,7 +858,18 @@ class AiGatewayService {
     // Âncora Plantão: bloco '[MODO PLANTÃO]' com REGRA ZERO de abertura.
     // NUNCA concatenado na userMessage — permanece 100% em system_instruction.
     final String modeAnchorJit = ModeAnchorEngine.getModeAnchor(longResponse: longResponse);
-    final String finalSystemPrompt = '$modeAnchorJit\n\n$basePrompt';
+
+    // ── BUILD 278 (1): Trava de Output Compacto ──────────────────────────────
+    // RETIFICAÇÃO BUILD 278: aplica-se EXCLUSIVAMENTE ao Motor Estudo.
+    // O Modo Plantão já possui volumetria validada e perfeita — NÃO alterar.
+    // longResponse==true  → Motor Estudo → injeta trava de 26 linhas × 15 palavras
+    // longResponse==false → Motor Plantão → string vazia, zero impacto
+    final String outputCompact = longResponse
+        ? _buildOutputCompactDirective(resolvedLang)
+        : ''; // Plantão: sem alteração nas instruções de output
+
+    final String finalSystemPrompt =
+        '$modeAnchorJit\n\n$basePrompt$outputCompact';
 
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
@@ -812,16 +883,80 @@ class AiGatewayService {
       'grounding=$effectiveGrounding',
     );
 
+    // ── BUILD 278 (2): Context Caching — resolução assíncrona ───────────────
+    // Verifica se há um cache ativo para o systemPrompt atual.
+    // O cache reduz o payload de ~6.500 → ~100 tokens por turno,
+    // eliminando a causa raiz dos erros 503 por sobrecarga de throughput.
+    //
+    // RESTRIÇÃO: Context Caching é INCOMPATÍVEL com Google Search Grounding.
+    // Se effectiveGrounding=true: não usa cache no payload desta chamada,
+    // mas dispara a criação do cache em background para reutilização futura
+    // em chamadas sem grounding (Modo Plantão).
+    //
     // Build 229 (preservado): Delega para GeminiServiceV2.
     // CRÍTICO: userMessage (limpa, sem mandato) → contents[role='user']
     //          finalSystemPrompt (SmartRouter + intentMandate) → system_instruction
-    return GeminiServiceV2.sendStream(
-      apiKey:         apiKey,
-      userMessage:    userMessage,       // mensagem LIMPA — mandato está no system
-      systemPrompt:   finalSystemPrompt, // SmartRouter: enxuto, contrato único, lang lock
-      history:        history,
-      useGrounding:   effectiveGrounding, // Build 222: false fixo no Modo Plantão
-      isPlantaoMode:  isPlantaoMode,      // Build 223: remove bullets/## do prefixo
+    //          cacheEntry?.name → cachedContent (substitui system_instruction quando ativo)
+    String? activeCacheName;
+
+    if (!effectiveGrounding) {
+      // Modo Plantão (grounding=false): pode usar cache diretamente.
+      // Verifica memória primeiro (síncrono, zero I/O).
+      if (GeminiCacheService.hasValidCacheInMemory) {
+        final cached = await GeminiCacheService.getActiveCache(
+          apiKey:       apiKey,
+          systemPrompt: finalSystemPrompt,
+        );
+        activeCacheName = cached?.name;
+      }
+
+      // Se ainda sem cache: cria em background (não bloqueia o stream).
+      // A próxima chamada já vai encontrar o cache pronto.
+      if (activeCacheName == null) {
+        // Dispara criação assíncrona — NÃO usa await (zero latência para o usuário).
+        // O cache ficará pronto para a PRÓXIMA mensagem nesta sessão.
+        unawaited(
+          GeminiCacheService.createOrRefresh(
+            apiKey:       apiKey,
+            systemPrompt: finalSystemPrompt,
+          ).then((entry) {
+            if (entry != null) {
+              debugPrint('[AI_ROUTER] BUILD278: cache criado em background name=${entry.name} '
+                  'expiresAt=${entry.expiresAt.toIso8601String()}');
+            }
+          }).catchError((Object e) {
+            debugPrint('[AI_ROUTER] BUILD278: cache_create_error=$e');
+          }),
+        );
+      }
+    } else {
+      // Modo Estudo com grounding ativo: não usa cache no payload.
+      // Dispara criação de cache para uso futuro em turnos sem grounding.
+      // (O cache do prompt base pode ser reutilizado no Modo Plantão.)
+      unawaited(
+        GeminiCacheService.createOrRefresh(
+          apiKey:       apiKey,
+          systemPrompt: finalSystemPrompt,
+        ).catchError((Object _) => null as GeminiCacheEntry?),
+      );
+    }
+
+    if (kDebugMode) {
+      debugPrint('[AI_ROUTER] BUILD278: '
+          'cacheActive=${activeCacheName != null} '
+          'cacheName=${activeCacheName ?? "none"} '
+          'grounding=$effectiveGrounding '
+          'outputCompact=${outputCompact.length}c');
+    }
+
+    yield* GeminiServiceV2.sendStream(
+      apiKey:          apiKey,
+      userMessage:     userMessage,        // mensagem LIMPA — mandato está no system
+      systemPrompt:    finalSystemPrompt,  // SmartRouter: enxuto, contrato único, lang lock
+      history:         history,
+      useGrounding:    effectiveGrounding, // Build 222: false fixo no Modo Plantão
+      isPlantaoMode:   isPlantaoMode,      // Build 223: remove bullets/## do prefixo
+      cachedContentName: activeCacheName, // BUILD 278: ID do cache (null = sem cache)
     );
   }
 
