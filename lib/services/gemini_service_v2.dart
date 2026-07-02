@@ -293,6 +293,10 @@ class GeminiServiceV2 {
     // Build 221: modeAnchor removido — âncora já concatenada em systemPrompt
     // Build 223: isPlantaoMode — remove instruções de bullets/## do prefixo
     bool isPlantaoMode = false,
+    // BUILD 278: Context Caching — ID do cache ativo (null = sem cache).
+    // Quando fornecido, o payload usa `cachedContent` em vez de `system_instruction`,
+    // reduzindo throughput de ~6.500 → ~100 tokens por turno.
+    String? cachedContentName,
   }) {
     final controller = StreamController<GeminiChunk>();
 
@@ -310,13 +314,14 @@ class GeminiServiceV2 {
 
     // ── Pipeline assíncrono (não bloqueia o thread UI) ────────────────────────
     _runPipeline(
-      controller: controller,
-      apiKey: apiKey,
-      userMessage: userMessage,
-      systemPrompt: systemPrompt,
-      history: history,
-      useGrounding: useGrounding,
-      isPlantaoMode: isPlantaoMode,  // Build 223
+      controller:        controller,
+      apiKey:            apiKey,
+      userMessage:       userMessage,
+      systemPrompt:      systemPrompt,
+      history:           history,
+      useGrounding:      useGrounding,
+      isPlantaoMode:     isPlantaoMode,     // Build 223
+      cachedContentName: cachedContentName, // BUILD 278
     );
 
     return controller.stream;
@@ -341,8 +346,9 @@ class GeminiServiceV2 {
     required String systemPrompt,
     required List<Map<String, String>> history,
     required bool useGrounding,
-    String modeAnchor = '',      // Build 157.1
-    bool isPlantaoMode = false,  // Build 223
+    String modeAnchor = '',        // Build 157.1
+    bool isPlantaoMode = false,    // Build 223
+    String? cachedContentName,     // BUILD 278: ID do cache ativo
   }) async {
     if (controller.isClosed) return;
 
@@ -359,15 +365,16 @@ class GeminiServiceV2 {
     // ── Passo 2: Stream com histórico calibrado ───────────────────────────────
     try {
       await _executeWithRetry(
-        controller: controller,
-        apiKey: apiKey,
-        userMessage: userMessage,
-        systemPrompt: systemPrompt,
-        history: windowedHistory,
-        useGrounding: useGrounding,
-        attempt: 0,
-        modeAnchor: modeAnchor,      // Build 157.1
-        isPlantaoMode: isPlantaoMode, // Build 223
+        controller:        controller,
+        apiKey:            apiKey,
+        userMessage:       userMessage,
+        systemPrompt:      systemPrompt,
+        history:           windowedHistory,
+        useGrounding:      useGrounding,
+        attempt:           0,
+        modeAnchor:        modeAnchor,        // Build 157.1
+        isPlantaoMode:     isPlantaoMode,     // Build 223
+        cachedContentName: cachedContentName, // BUILD 278
       );
     } catch (e) {
       _log('[GeminiV2] _runPipeline erro inesperado: $e');
@@ -632,6 +639,7 @@ class GeminiServiceV2 {
     int transientAttempt = 0,
     String modeAnchor = '',      // Build 157.1
     bool isPlantaoMode = false,  // Build 223
+    String? cachedContentName,  // BUILD 278: ID do Context Cache ativo
   }) async {
     if (controller.isClosed) return;
 
@@ -709,6 +717,7 @@ class GeminiServiceV2 {
         attempt: attempt,
         modeAnchor: modeAnchor,
         isPlantaoMode: isPlantaoMode,
+        cachedContentName: cachedContentName, // BUILD 278
       );
     } catch (e) {
       _log('[GeminiV2] _executeWithRetry: exceção inesperada: $e');
@@ -780,6 +789,7 @@ class GeminiServiceV2 {
         transientAttempt: transientAttempt + 1,
         modeAnchor: modeAnchor,
         isPlantaoMode: isPlantaoMode,
+        cachedContentName: cachedContentName, // BUILD 278: preserva cache no retry
       );
     }
 
@@ -841,6 +851,7 @@ class GeminiServiceV2 {
     required int attempt,
     String modeAnchor = '',      // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
     bool isPlantaoMode = false,  // Build 223: remove bullets/## do prefixo no Modo Plantão
+    String? cachedContentName,  // BUILD 278: ID do Context Cache ativo
   }) async {
     final url = Uri.parse('$_endpointStream&key=$apiKey');
 
@@ -898,28 +909,31 @@ class GeminiServiceV2 {
 
     // ── Corpo da requisição blindado ──────────────────────────────────────────
     final body = <String, dynamic>{
-      // system_instruction — isolado do histórico, lido pelo modelo como
-      // instrução de sistema (não como turno de conversa). Esta é a forma
-      // correta de injetar system prompts na API REST do Gemini.
+      // BUILD 278: Context Caching — quando há cache ativo, substituir
+      // system_instruction pelo campo cachedContent (aponta para o cache
+      // no servidor Google). O modelo referencia o sistema cacheado sem
+      // receber o texto completo no payload desta requisição.
       //
-      // Build 157.1: MULTI-PART system_instruction
-      // O Gemini lê parts[] em ordem — o primeiro part tem PRIORIDADE MÁXIMA.
-      // Ordem de autoridade:
-      //   Part 0: modeAnchor    → âncora de modo (PRIORIDADE ABSOLUTA)
-      //   Part 1: _systemPromptPrefix + systemPrompt → prefixo + prompt base
-      // Se modeAnchor estiver vazio (ex: classifyContext), usa single-part.
-      'system_instruction': modeAnchor.isNotEmpty
-          ? {
-              'parts': [
-                {'text': modeAnchor},          // Part 0: âncora de modo (PRIORIDADE 1)
-                {'text': blindedSystemPrompt},  // Part 1: prefixo + prompt do AiService
-              ],
-            }
-          : {
-              'parts': [
-                {'text': blindedSystemPrompt},  // single-part (modo sem âncora)
-              ],
-            },
+      // INCOMPATIBILIDADE: cachedContent + google_search (grounding) não
+      // podem coexistir na mesma requisição. AiGatewayService já garante
+      // que cachedContentName==null quando effectiveGrounding==true.
+      //
+      // Sem cache: usa system_instruction clássico (Build 157.1 multi-part).
+      if (cachedContentName != null)
+        'cachedContent': cachedContentName // ex: "cachedContents/xyz123"
+      else
+        'system_instruction': modeAnchor.isNotEmpty
+            ? {
+                'parts': [
+                  {'text': modeAnchor},          // Part 0: âncora de modo (PRIORIDADE 1)
+                  {'text': blindedSystemPrompt},  // Part 1: prefixo + prompt do AiService
+                ],
+              }
+            : {
+                'parts': [
+                  {'text': blindedSystemPrompt},  // single-part (modo sem âncora)
+                ],
+              },
       'contents': contents,
       'generationConfig': {
         // maxOutputTokens: 3200
@@ -1129,8 +1143,9 @@ class GeminiServiceV2 {
           history: history,
           useGrounding: useGrounding,
           attempt: attempt + 1,
-          modeAnchor: modeAnchor,      // Build 157.1
-          isPlantaoMode: isPlantaoMode, // Build 223
+          modeAnchor: modeAnchor,           // Build 157.1
+          isPlantaoMode: isPlantaoMode,     // Build 223
+          cachedContentName: cachedContentName, // BUILD 278
         );
       }
       // Esgotou todas as tentativas → cooldown global
@@ -1326,8 +1341,9 @@ class GeminiServiceV2 {
                         history: history,
                         useGrounding: false, // desativa grounding no retry
                         attempt: attempt,
-                        modeAnchor: modeAnchor,      // Build 157.1
-                        isPlantaoMode: isPlantaoMode, // Build 223
+                        modeAnchor: modeAnchor,           // Build 157.1
+                        isPlantaoMode: isPlantaoMode,     // Build 223
+                        cachedContentName: cachedContentName, // BUILD 278
                       );
                     }
                     // Já estava sem grounding — encerra sem retry adicional

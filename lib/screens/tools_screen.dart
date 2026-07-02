@@ -7008,7 +7008,20 @@ class _PedRefSidePanel extends StatelessWidget {
   }
 }
 
-// ── Card de categoria laboratorial ───────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+// REFACTOR PREMIUM — BUILD 279: Erradicação do "Efeito Carnaval"
+// Design: Apple Health / UpToDate / Amboss — Minimalismo clínico de alto nível
+//
+// MUDANÇAS ESTRUTURAIS:
+//   1. Accordion inicia FECHADO (_open = false) — médico abre só o necessário
+//   2. Animação SizeTransition + AnimationController easeInOutCubic 350ms
+//   3. Cards individuais EXTINTOS — lista contínua com Divider 0.05 opacity
+//   4. Barra colorida vertical REMOVIDA — hierarquia tipográfica pura
+//   5. Tabela comparativa com Row de Expanded(flex) milimetricamente alinhada
+//   6. Vista faixa-etária selecionada: valor em destaque limpo sem box excessiva
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ── Accordion de categoria laboratorial ──────────────────────────────────────
 class _PedLabCategoryCard extends StatefulWidget {
   final _PedLabCategory category;
   final int ageFilter;
@@ -7023,8 +7036,47 @@ class _PedLabCategoryCard extends StatefulWidget {
   State<_PedLabCategoryCard> createState() => _PedLabCategoryCardState();
 }
 
-class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
-  bool _collapsed = false;
+class _PedLabCategoryCardState extends State<_PedLabCategoryCard>
+    with SingleTickerProviderStateMixin {
+
+  // BUILD 279: estado inicial FECHADO — zero sobrecarga cognitiva
+  bool _open = false;
+  late final AnimationController _ctrl;
+  late final Animation<double> _expandAnim;
+  late final Animation<double> _rotateAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _expandAnim = CurvedAnimation(
+      parent: _ctrl,
+      curve: Curves.easeInOutCubic,
+      reverseCurve: Curves.easeInOutCubic,
+    );
+    _rotateAnim = Tween<double>(begin: 0.0, end: 0.5).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOutCubic),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    AppHaptics.light(context);
+    setState(() => _open = !_open);
+    if (_open) {
+      _ctrl.forward();
+    } else {
+      _ctrl.reverse();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -7033,425 +7085,219 @@ class _PedLabCategoryCardState extends State<_PedLabCategoryCard> {
     final dark   = widget.dark;
     final accent = cat.accent;
 
-    // Container pai removido — cabeçalho e parâmetros assentam diretamente
-    // sobre o Scaffold background. Borda e sombra mantidas apenas no header.
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Container(
+      // Container único de superfície — elimina o aninhamento de caixas
+      decoration: BoxDecoration(
+        color: dark
+            ? Colors.white.withOpacity(0.03)
+            : Colors.black.withOpacity(0.025),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: _open
+              ? accent.withOpacity(0.22)
+              : Colors.white.withOpacity(dark ? 0.07 : 0.0),
+          width: 0.8,
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        // ── Header da categoria
+        // ── Header tátil do accordion ────────────────────────────────────────
         GestureDetector(
-          onTap: () {
-            AppHaptics.light(context);
-            setState(() => _collapsed = !_collapsed);
-          },
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-            decoration: BoxDecoration(
-              color: accent.withOpacity(dark ? 0.08 : 0.06),
-              // Header sempre com cantos arredondados — sem container pai externo
-              borderRadius: _collapsed
-                  ? BorderRadius.circular(14)
-                  : const BorderRadius.vertical(top: Radius.circular(14)),
-              border: Border.all(
-                color: accent.withOpacity(0.18),
-                width: 0.8,
-              ),
-            ),
+          onTap: _toggle,
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 13, 12, 13),
             child: Row(children: [
-              // Ícone categoria
+
+              // Ícone minimalista — sem gradiente excessivo
               Container(
-                width: 42, height: 42,
+                width: 40, height: 40,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      accent.withOpacity(0.2),
-                      accent.withOpacity(0.1),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: accent.withOpacity(0.3)),
+                  color: accent.withOpacity(dark ? 0.15 : 0.10),
+                  borderRadius: BorderRadius.circular(11),
                 ),
-                child: Center(
-                    child: Icon(cat.icon, size: 20, color: accent)),
+                child: Center(child: Icon(cat.icon, size: 19, color: accent)),
               ),
               const SizedBox(width: 12),
+
+              // Título + subtítulo
               Expanded(child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(cat.title,
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900,
-                    color: c.textPrimary, letterSpacing: -0.2)),
-                const SizedBox(height: 2),
+                  style: TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.w700,
+                    color: c.textPrimary, letterSpacing: -0.3)),
+                const SizedBox(height: 1),
                 Text(cat.subtitle,
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500,
+                  style: TextStyle(
+                    fontSize: 11, fontWeight: FontWeight.w400,
                     color: c.textHint)),
               ])),
-              // Fonte badge
+
+              // Tag bibliográfica discreta
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
-                  color: accent.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(7),
-                  border: Border.all(color: accent.withOpacity(0.2)),
+                  color: accent.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(6),
                 ),
-                child: Text(cat.source.split(' · ').first,
-                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
-                    color: accent)),
+                child: Text(
+                  cat.source.split(' · ').first,
+                  style: TextStyle(
+                    fontSize: 8, fontWeight: FontWeight.w700,
+                    color: accent.withOpacity(0.85)),
+                ),
               ),
               const SizedBox(width: 8),
-              AnimatedRotation(
-                turns: _collapsed ? 0.5 : 0.0,
-                duration: const Duration(milliseconds: 220),
+
+              // Seta animada
+              RotationTransition(
+                turns: _rotateAnim,
                 child: Icon(Icons.keyboard_arrow_down_rounded,
-                    size: 20, color: c.textHint),
+                    size: 20, color: c.textHint.withOpacity(0.7)),
               ),
             ]),
           ),
         ),
 
-        // ── Conteúdo
-        AnimatedCrossFade(
-          duration: const Duration(milliseconds: 240),
-          crossFadeState: _collapsed
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-          firstChild: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-            // Header tabela comparativa
+        // ── Corpo expansível com SizeTransition fluida ────────────────────────
+        SizeTransition(
+          sizeFactor: _expandAnim,
+          axisAlignment: -1.0,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+            // Divisor sutil entre header e conteúdo
+            Divider(
+              height: 1, thickness: 0.5,
+              color: accent.withOpacity(0.18),
+              indent: 0, endIndent: 0,
+            ),
+
+            // Cabeçalho da tabela comparativa (Modo 'Todas')
             if (widget.ageFilter == -1)
               _PedTableHeader(c: c, accent: accent),
 
-            // Parâmetros
-            ...cat.params.map((param) => _PedLabParamCard(
-              param: param,
-              ageFilter: widget.ageFilter,
-              accent: accent,
-              c: c,
-              dark: dark,
-            )),
+            // Lista contínua de parâmetros — sem cards isolados
+            ...List.generate(cat.params.length, (i) {
+              final param = cat.params[i];
+              final isLast = i == cat.params.length - 1;
+              return Column(children: [
+                _PedLabParamRow(
+                  param: param,
+                  ageFilter: widget.ageFilter,
+                  accent: accent,
+                  c: c,
+                  dark: dark,
+                ),
+                // Divider ultra-fino — hierarquia de lista premium
+                if (!isLast)
+                  Divider(
+                    height: 1, thickness: 0.5,
+                    color: Colors.white.withOpacity(dark ? 0.05 : 0.08),
+                    indent: 16, endIndent: 16,
+                  ),
+              ]);
+            }),
 
-            // Fonte da categoria
-            Container(
-              margin: const EdgeInsets.fromLTRB(4, 4, 4, 10),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 7),
-              decoration: BoxDecoration(
-                color: accent.withOpacity(0.06),
-                borderRadius: BorderRadius.circular(9),
-                border: Border.all(
-                    color: accent.withOpacity(0.15)),
-              ),
+            // Rodapé de fonte da categoria
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
               child: Row(children: [
-                Icon(Icons.library_books_outlined, size: 11,
-                    color: accent),
-                const SizedBox(width: 7),
+                Icon(Icons.library_books_outlined, size: 10,
+                    color: accent.withOpacity(0.6)),
+                const SizedBox(width: 6),
                 Expanded(child: Text(cat.source,
-                  style: TextStyle(fontSize: 9.5,
-                    fontWeight: FontWeight.w700, color: accent))),
+                  style: TextStyle(
+                    fontSize: 9, fontWeight: FontWeight.w600,
+                    color: accent.withOpacity(0.55)))),
               ]),
             ),
           ]),
-          secondChild: const SizedBox(width: double.infinity),
         ),
-      ]);
+      ]),
+    );
   }
 }
 
-// ── Header da tabela comparativa ─────────────────────────────────────────────
+// ── Cabeçalho fixo da tabela comparativa ─────────────────────────────────────
+// Grid com proporções fixas: col-nome 40% | 4×col-valor 15% cada
+// SizedBox.shrink() em vez de padding lateral — colunas alinhadas com o body
 class _PedTableHeader extends StatelessWidget {
   final AppColors c;
   final Color accent;
   const _PedTableHeader({required this.c, required this.accent});
 
+  static const _kNameFlex  = 5; // 5 partes → coluna nome+unidade
+  static const _kValueFlex = 3; // 3 partes × 4 colunas
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 14, 8),
-      decoration: BoxDecoration(
-        border: Border(
-            bottom: BorderSide(
-                color: accent.withOpacity(0.12))),
-      ),
+      padding: const EdgeInsets.fromLTRB(16, 9, 16, 7),
+      color: accent.withOpacity(0.04),
       child: Row(children: [
-        const SizedBox(width: 124),
-        _HeaderCell(label: '👶', sub: 'Neonato', c: c),
-        _HeaderCell(label: '🍼', sub: 'Lactente', c: c),
-        _HeaderCell(label: '🧒', sub: 'Criança', c: c),
-        _HeaderCell(label: '🧑', sub: 'Adolesc.', c: c),
+        // Coluna nome — ocupa _kNameFlex partes
+        Expanded(flex: _kNameFlex, child: Text(
+          'EXAME',
+          style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
+            letterSpacing: 0.8, color: c.textHint.withOpacity(0.7)),
+        )),
+        // 4 colunas de faixa etária — cada uma _kValueFlex partes
+        _PedAgeHeaderCell(emoji: '👶', label: 'Neonato',    flex: _kValueFlex, c: c),
+        _PedAgeHeaderCell(emoji: '🍼', label: 'Lactente',   flex: _kValueFlex, c: c),
+        _PedAgeHeaderCell(emoji: '🧒', label: 'Criança',    flex: _kValueFlex, c: c),
+        _PedAgeHeaderCell(emoji: '🧑', label: 'Adolesc.',   flex: _kValueFlex, c: c),
+        // Espaço para ícone de expand (alinha com o chevron da linha)
         const SizedBox(width: 16),
       ]),
     );
   }
 }
 
-class _HeaderCell extends StatelessWidget {
-  final String label, sub;
+class _PedAgeHeaderCell extends StatelessWidget {
+  final String emoji, label;
+  final int flex;
   final AppColors c;
-  const _HeaderCell({required this.label, required this.sub,
-      required this.c});
+  const _PedAgeHeaderCell({required this.emoji, required this.label,
+      required this.flex, required this.c});
   @override
   Widget build(BuildContext context) => Expanded(
+    flex: flex,
     child: Column(children: [
-      Text(label, style: const TextStyle(fontSize: 14)),
-      Text(sub,
-        style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
-          color: c.textHint, letterSpacing: 0.3),
+      Text(emoji, style: const TextStyle(fontSize: 13)),
+      const SizedBox(height: 1),
+      Text(label,
+        style: TextStyle(fontSize: 7, fontWeight: FontWeight.w700,
+          color: c.textHint.withOpacity(0.75), letterSpacing: 0.2),
         textAlign: TextAlign.center),
     ]),
   );
 }
 
-// ── Card de parâmetro individual ──────────────────────────────────────────────
-class _PedLabParamCard extends StatefulWidget {
+// ── Linha de parâmetro — lista contínua, sem card isolado ────────────────────
+// BUILD 279: erradicação da barra colorida lateral e caixas aninhadas.
+// Cada linha assenta diretamente sobre a superfície escura do container pai.
+class _PedLabParamRow extends StatefulWidget {
   final _PedLabParam param;
   final int ageFilter;
   final Color accent;
   final AppColors c;
   final bool dark;
-  const _PedLabParamCard({
+  const _PedLabParamRow({
     required this.param, required this.ageFilter,
     required this.accent, required this.c, required this.dark,
   });
 
   @override
-  State<_PedLabParamCard> createState() => _PedLabParamCardState();
+  State<_PedLabParamRow> createState() => _PedLabParamRowState();
 }
 
-class _PedLabParamCardState extends State<_PedLabParamCard> {
+class _PedLabParamRowState extends State<_PedLabParamRow> {
   bool _expanded = false;
 
-  @override
-  Widget build(BuildContext context) {
-    final param     = widget.param;
-    final c         = widget.c;
-    final accent    = widget.accent;
-    final dark      = widget.dark;
-    final af        = widget.ageFilter;
-    final hasInterp = param.lowInterp != null || param.highInterp != null;
-
-    return GestureDetector(
-      onTap: hasInterp
-          ? () {
-              AppHaptics.light(context);
-              setState(() => _expanded = !_expanded);
-            }
-          : null,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        // Margem lateral reduzida: sem container pai, os cards chegam mais às bordas
-        margin: const EdgeInsets.fromLTRB(4, 0, 4, 6),
-        decoration: BoxDecoration(
-          color: _expanded
-              ? accent.withOpacity(0.04)
-              : (dark
-                  ? Colors.white.withOpacity(0.02)
-                  : const Color(0xFFFAFAFA)),
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(
-            color: _expanded
-                ? accent.withOpacity(0.35)
-                : c.border.withOpacity(0.55),
-            width: _expanded ? 1.5 : 1.0,
-          ),
-          boxShadow: _expanded && !dark
-              ? [BoxShadow(
-                  color: accent.withOpacity(0.07),
-                  blurRadius: 10, offset: const Offset(0, 3))]
-              : [],
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-          // ── Linha principal
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 11, 12, 11),
-            child: af == -1
-                // Vista comparativa
-                ? Row(children: [
-                    // Barra colorida
-                    Container(
-                      width: 3, height: 34,
-                      margin: const EdgeInsets.only(right: 10),
-                      decoration: BoxDecoration(
-                        color: accent,
-                        borderRadius: BorderRadius.circular(4))),
-                    // Nome + unidade
-                    SizedBox(
-                      width: 110,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                        Text(param.name,
-                          style: TextStyle(fontSize: 11.5,
-                            fontWeight: FontWeight.w800,
-                            color: c.textPrimary)),
-                        if (param.unit.isNotEmpty)
-                          Text(param.unit,
-                            style: TextStyle(fontSize: 8.5,
-                              fontWeight: FontWeight.w500,
-                              color: c.textHint)),
-                      ]),
-                    ),
-                    // 4 colunas de valores
-                    Expanded(child: Text(param.neo,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        color: c.textPrimary))),
-                    Expanded(child: Text(param.lac,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        color: c.textPrimary))),
-                    Expanded(child: Text(param.cri,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        color: c.textPrimary))),
-                    Expanded(child: Text(param.ado,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        color: c.textPrimary))),
-                    // Ícone expand
-                    if (hasInterp)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: Icon(
-                          _expanded
-                              ? Icons.keyboard_arrow_up_rounded
-                              : Icons.keyboard_arrow_down_rounded,
-                          size: 15, color: c.textHint),
-                      ),
-                  ])
-                // Vista faixa etária selecionada
-                : Row(children: [
-                    Container(
-                      width: 3, height: 44,
-                      margin: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        color: accent,
-                        borderRadius: BorderRadius.circular(4))),
-                    Expanded(child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Text(param.name,
-                        style: TextStyle(fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: c.textPrimary)),
-                      if (param.unit.isNotEmpty)
-                        Text(param.unit,
-                          style: TextStyle(fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: c.textHint)),
-                    ])),
-                    // Valor em destaque
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 9),
-                      decoration: BoxDecoration(
-                        color: accent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(11),
-                        border: Border.all(
-                            color: accent.withOpacity(0.25)),
-                      ),
-                      child: Text(
-                        _ageValue(af, param),
-                        style: TextStyle(fontSize: 16,
-                          fontWeight: FontWeight.w900, color: accent),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    if (hasInterp)
-                      Icon(
-                        _expanded
-                            ? Icons.keyboard_arrow_up_rounded
-                            : Icons.keyboard_arrow_down_rounded,
-                        size: 15, color: c.textHint),
-                  ]),
-          ),
-
-          // ── Interpretação expandida
-          if (_expanded) ...[
-            Container(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Container(height: 1,
-                  color: accent.withOpacity(0.15),
-                  margin: const EdgeInsets.only(bottom: 12)),
-
-                // Título interpretação
-                Row(children: [
-                  Icon(Icons.fact_check_outlined, size: 12,
-                      color: accent),
-                  const SizedBox(width: 6),
-                  Text('INTERPRETAÇÃO CLÍNICA',
-                    style: TextStyle(fontSize: 8.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.1, color: accent)),
-                ]),
-                const SizedBox(height: 10),
-
-                // Valor baixo
-                if (param.lowInterp != null) ...[
-                  _InterpRow(
-                    icon: Icons.arrow_downward_rounded,
-                    label: '⬇  Valor Baixo',
-                    interp: param.lowInterp!,
-                    color: const Color(0xFF0EA5E9),
-                  ),
-                  if (param.highInterp != null)
-                    const SizedBox(height: 7),
-                ],
-
-                // Valor alto
-                if (param.highInterp != null)
-                  _InterpRow(
-                    icon: Icons.arrow_upward_rounded,
-                    label: '⬆  Valor Alto',
-                    interp: param.highInterp!,
-                    color: const Color(0xFFDC2626),
-                  ),
-
-                // Nota clínica
-                if (param.note != null) ...[
-                  const SizedBox(height: 9),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF59E0B)
-                          .withOpacity(0.07),
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(
-                          color: const Color(0xFFF59E0B)
-                              .withOpacity(0.2)),
-                    ),
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      const Icon(Icons.info_outline_rounded,
-                          size: 12,
-                          color: Color(0xFFF59E0B)),
-                      const SizedBox(width: 7),
-                      Expanded(child: Text(param.note!,
-                        style: TextStyle(fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: c.textSecondary, height: 1.45))),
-                    ]),
-                  ),
-                ],
-              ]),
-            ),
-          ],
-        ]),
-      ),
-    );
-  }
+  static const _kNameFlex  = 5;
+  static const _kValueFlex = 3;
 
   String _ageValue(int af, _PedLabParam p) {
     switch (af) {
@@ -7461,44 +7307,236 @@ class _PedLabParamCardState extends State<_PedLabParamCard> {
       default: return p.ado;
     }
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final param     = widget.param;
+    final c         = widget.c;
+    final accent    = widget.accent;
+    final dark      = widget.dark;
+    final af        = widget.ageFilter;
+    final hasInterp = param.lowInterp != null || param.highInterp != null || param.note != null;
+
+    return GestureDetector(
+      onTap: hasInterp
+          ? () {
+              AppHaptics.light(context);
+              setState(() => _expanded = !_expanded);
+            }
+          : null,
+      behavior: HitTestBehavior.opaque,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Linha de dado principal ──────────────────────────────────────────
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          color: _expanded
+              ? accent.withOpacity(dark ? 0.06 : 0.04)
+              : Colors.transparent,
+          padding: const EdgeInsets.fromLTRB(16, 11, 16, 11),
+          child: af == -1
+              // ── Vista "Todas" — tabela alinhada ────────────────────────────
+              ? Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  // Coluna nome + unidade
+                  Expanded(
+                    flex: _kNameFlex,
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text(param.name,
+                        style: TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w600,
+                          color: c.textPrimary, height: 1.2)),
+                      if (param.unit.isNotEmpty) ...[
+                        const SizedBox(height: 1),
+                        Text(param.unit,
+                          style: TextStyle(
+                            fontSize: 10.5, fontWeight: FontWeight.w400,
+                            color: c.textHint.withOpacity(0.75))),
+                      ],
+                    ]),
+                  ),
+                  // 4 colunas de valores — alinhadas com o header
+                  ...[param.neo, param.lac, param.cri, param.ado].map(
+                    (v) => Expanded(
+                      flex: _kValueFlex,
+                      child: Text(v,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 11.5, fontWeight: FontWeight.w600,
+                          color: c.textPrimary.withOpacity(0.88),
+                          fontFeatures: const [FontFeature.tabularFigures()])),
+                    ),
+                  ),
+                  // Chevron de interpretação (ou espaço reservado)
+                  SizedBox(
+                    width: 16,
+                    child: hasInterp
+                        ? AnimatedRotation(
+                            turns: _expanded ? 0.5 : 0.0,
+                            duration: const Duration(milliseconds: 220),
+                            child: Icon(Icons.keyboard_arrow_down_rounded,
+                              size: 14, color: c.textHint.withOpacity(0.5)),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ])
+              // ── Vista faixa etária selecionada ──────────────────────────────
+              : Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  // Nome + unidade
+                  Expanded(child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(param.name,
+                      style: TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w600,
+                        color: c.textPrimary)),
+                    if (param.unit.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(param.unit,
+                        style: TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.w400,
+                          color: c.textHint)),
+                    ],
+                  ])),
+                  // Valor em destaque — tipográfico, sem caixa saturada
+                  Text(
+                    _ageValue(af, param),
+                    style: TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w700,
+                      color: accent,
+                      fontFeatures: const [FontFeature.tabularFigures()]),
+                  ),
+                  if (hasInterp) ...[
+                    const SizedBox(width: 8),
+                    AnimatedRotation(
+                      turns: _expanded ? 0.5 : 0.0,
+                      duration: const Duration(milliseconds: 220),
+                      child: Icon(Icons.keyboard_arrow_down_rounded,
+                        size: 14, color: c.textHint.withOpacity(0.5)),
+                    ),
+                  ],
+                ]),
+        ),
+
+        // ── Painel de interpretação clínica ─────────────────────────────────
+        AnimatedSize(
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeInOutCubic,
+          child: _expanded
+              ? _PedInterpPanel(param: param, accent: accent, c: c, dark: dark)
+              : const SizedBox.shrink(),
+        ),
+      ]),
+    );
+  }
 }
 
-// ── Linha de interpretação ────────────────────────────────────────────────────
+// ── Painel de interpretação clínica ──────────────────────────────────────────
+class _PedInterpPanel extends StatelessWidget {
+  final _PedLabParam param;
+  final Color accent;
+  final AppColors c;
+  final bool dark;
+  const _PedInterpPanel({required this.param, required this.accent,
+      required this.c, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+      color: accent.withOpacity(dark ? 0.04 : 0.025),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // Label seção
+        Row(children: [
+          Icon(Icons.fact_check_outlined, size: 11, color: accent.withOpacity(0.7)),
+          const SizedBox(width: 5),
+          Text('INTERPRETAÇÃO CLÍNICA',
+            style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
+              letterSpacing: 1.0, color: accent.withOpacity(0.7))),
+        ]),
+        const SizedBox(height: 8),
+
+        // Valor baixo
+        if (param.lowInterp != null) ...[
+          _PedInterpLine(
+            icon: Icons.south_rounded,
+            label: 'Baixo',
+            text: param.lowInterp!,
+            color: const Color(0xFF60A5FA),
+            c: c,
+          ),
+          if (param.highInterp != null || param.note != null)
+            const SizedBox(height: 6),
+        ],
+
+        // Valor alto
+        if (param.highInterp != null) ...[
+          _PedInterpLine(
+            icon: Icons.north_rounded,
+            label: 'Alto',
+            text: param.highInterp!,
+            color: const Color(0xFFF87171),
+            c: c,
+          ),
+          if (param.note != null) const SizedBox(height: 6),
+        ],
+
+        // Nota clínica
+        if (param.note != null)
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(Icons.info_outline_rounded, size: 11,
+                color: const Color(0xFFFBBF24).withOpacity(0.8)),
+            const SizedBox(width: 6),
+            Expanded(child: Text(param.note!,
+              style: TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w400,
+                color: c.textSecondary.withOpacity(0.85), height: 1.4))),
+          ]),
+      ]),
+    );
+  }
+}
+
+// ── Linha de interpretação individual ────────────────────────────────────────
+class _PedInterpLine extends StatelessWidget {
+  final IconData icon;
+  final String label, text;
+  final Color color;
+  final AppColors c;
+  const _PedInterpLine({required this.icon, required this.label,
+    required this.text, required this.color, required this.c});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Icon(icon, size: 11, color: color),
+      const SizedBox(width: 6),
+      Expanded(child: RichText(text: TextSpan(
+        style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500,
+          color: c.textSecondary, height: 1.35),
+        children: [
+          TextSpan(text: '$label  ',
+            style: TextStyle(fontWeight: FontWeight.w700, color: color,
+              fontSize: 10)),
+          TextSpan(text: text),
+        ],
+      ))),
+    ]);
+  }
+}
+
+// ── Legado: mantido para evitar erros de compilação ──────────────────────────
 class _InterpRow extends StatelessWidget {
   final IconData icon;
   final String label, interp;
   final Color color;
   const _InterpRow({required this.icon, required this.label,
     required this.interp, required this.color});
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.07),
-        borderRadius: BorderRadius.circular(9),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Row(children: [
-        Icon(icon, size: 13, color: color),
-        const SizedBox(width: 8),
-        Expanded(child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label.toUpperCase(),
-            style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
-              letterSpacing: 0.8, color: color)),
-          const SizedBox(height: 3),
-          Text(interp,
-            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600,
-              color: AppColors.of(context).textPrimary, height: 1.35)),
-        ])),
-      ]),
-    );
-  }
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
-// ── Legado: mantido para evitar erros de compilação em outras partes ──────────
 class _PedRefHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const SizedBox.shrink();

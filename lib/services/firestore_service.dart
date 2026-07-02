@@ -1621,6 +1621,19 @@ class FirestoreService {
       debugPrint('[FirestoreService] app_updates/current em cooldown — retornando cache');
       return safeMap(_cachedAppUpdate); // BUILD 258
     }
+    // BUILD 277 FIX: Skip Firestore read entirely when the user is not yet
+    // authenticated. This prevents a spurious permission-denied that would
+    // set a 15s cooldown, blocking the NEXT call that arrives after OAuth
+    // consolidation. Instead, set a short cooldown ourselves (5s) and bail —
+    // _checkAppUpdate() is re-invoked when the user navigates, so we will
+    // retry naturally once the auth token is established.
+    if (!_isUserAuthenticated) {
+      if (_appUpdateRetryAfter == null) {
+        _appUpdateRetryAfter = DateTime.now().add(const Duration(seconds: 5));
+        debugPrint('[FirestoreService] app_updates/current — usuário não autenticado, aguardando (5s)');
+      }
+      return safeMap(_cachedAppUpdate);
+    }
     final inFlight = _appUpdateInFlight;
     if (inFlight != null) return inFlight;
 
@@ -1644,11 +1657,11 @@ class FirestoreService {
           return safeMap(data); // BUILD 258
         } on FirebaseException catch (e) {
           if (e.code == 'permission-denied') {
-            // permission-denied: usuário não está autenticado ainda ou token expirou.
-            // Aplica cooldown CURTO (15s) para aguardar conclusão do login antes de retentar.
+            // permission-denied: token autenticado mas sem permissão (rules).
+            // Aplica cooldown CURTO (15s) para aguardar consolidação do token.
             // Não usar 2min: prejudica usuários que fazem login logo em seguida.
             _appUpdateRetryAfter = DateTime.now().add(const Duration(seconds: 15));
-            debugPrint('[FirestoreService] app_updates/current permission-denied — aguardando autenticação (15s)');
+            debugPrint('[FirestoreService] app_updates/current permission-denied — aguardando consolidação do token (15s)');
             return safeMap(_cachedAppUpdate); // BUILD 258
           }
           debugPrint('[FirestoreService] app_updates/current SDK erro: ${e.code} — tentando REST');
