@@ -106,6 +106,63 @@ service cloud.firestore {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // HISTÓRIAS CLÍNICAS PRIVADAS — /users/{userId}/clinical_histories/{histId}
+    // BUILD 291: qualquer usuário autenticado dono da conta pode ler/escrever
+    // o próprio histórico. Admin pode ler histórias de qualquer usuário (moderação).
+    // Regra: request.auth.uid == userId (não requer isAdmin/isMaster).
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/clinical_histories/{histId} {
+      allow read, write: if isAuthed() && request.auth.uid == userId;
+      allow read:        if isAdmin();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MEU PLANTÃO — /users/{userId}/internaciones/{sessionId}
+    // BUILD 291: path confirmado como users/{uid}/internaciones (kInternacionesCollection).
+    // Regra: request.auth.uid == userId — sem "if true", sem isAdmin gate.
+    // Dono da conta lê e escreve; admin lê para suporte/moderação.
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/internaciones/{sessionId} {
+      allow read, write: if isAuthed() && request.auth.uid == userId;
+      allow read:        if isAdmin();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CASOS CUSTOMIZADOS — /users/{userId}/cases/{caseId}
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/cases/{caseId} {
+      allow read, write: if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // FAVORITOS — /users/{userId}/favorites/{favId}
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/favorites/{favId} {
+      allow read, write: if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // PREFERÊNCIAS — /users/{userId}/prefs/{docId}
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/prefs/{docId} {
+      allow read, write: if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // HISTÓRICO DE CHAT IA — /users/{userId}/ai_chat_history/{docId}
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/ai_chat_history/{docId} {
+      allow read, write: if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // NOTAS — /users/{userId}/notes/{noteId}
+    // ─────────────────────────────────────────────────────────────────────────
+    match /users/{userId}/notes/{noteId} {
+      allow read, write: if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // NOTIFICAÇÕES ADMIN — /admin_notifications/{notificationId}
     // (PARTE 4 — BUILD 238)
     // Escrita exclusiva via Cloud Function (Admin SDK — sem regra de create).

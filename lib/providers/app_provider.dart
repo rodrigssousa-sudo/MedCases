@@ -315,6 +315,10 @@ class AppProvider extends ChangeNotifier {
   // delay artificial. Se o sync terminar em 80ms, o boot segue em 80ms.
   // Resetado para null no logout para que a próxima sessão crie um novo Future.
   Future<void>? _firestoreSyncFuture;
+  // BUILD 291: uid do sync em-voo — guard de idempotência para evitar duplo sync.
+  // Se setUser() for chamado duas vezes para o mesmo uid (stream re-emit, rebuild),
+  // o segundo _syncFromFirestore() retorna o Future já em voo em vez de iniciar novo.
+  String? _firestoreSyncUid;
 
   // ── Estado — Modo Offline ──────────────────────────────────────────────────
   bool _offlineMode      = false;  // true = sem rede, usa só cache local
@@ -458,7 +462,16 @@ class AppProvider extends ChangeNotifier {
     // 3️⃣ Sincroniza Firestore em background — não bloqueia a UI.
     // BUILD 290: guarda o Future para que checkGeminiSession() possa fazer
     // await determinístico sem polling ou delay artificial.
-    _firestoreSyncFuture = _syncFromFirestore(user.uid);
+    // BUILD 291: idempotência — se já existe sync em voo para este uid, reutiliza
+    // o Future existente em vez de disparar segundo sync concorrente.
+    // Cenário: _WebMainShellGate chama setUser() e o stream de auth re-emite
+    // o mesmo uid durante o boot — sem este guard, _syncFromFirestore roda 2x.
+    if (_firestoreSyncFuture == null || _firestoreSyncUid != user.uid) {
+      _firestoreSyncUid    = user.uid;
+      _firestoreSyncFuture = _syncFromFirestore(user.uid);
+    } else {
+      debugPrint('[BUILD291][SYNC_DEDUP] sync já em voo para uid=${user.uid} — reutilizando Future existente');
+    }
 
     // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
     loadPublicHistories();
@@ -585,8 +598,9 @@ class AppProvider extends ChangeNotifier {
     _geminiRetryAfter = null;
     _geminiSessionCheckInFlight = null;
     _geminiApiKeyUnavailable = false;
-    // BUILD 290: reseta Future de sync — próxima sessão cria um novo.
+    // BUILD 290/291: reseta Future e uid de sync — próxima sessão cria um novo.
     _firestoreSyncFuture = null;
+    _firestoreSyncUid    = null;
     // Limpa plantão (recarregado ao próximo login)
     _pinnedDrugIds = [];
     _pinnedCalcIds = [];

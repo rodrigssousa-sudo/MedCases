@@ -1392,6 +1392,16 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // o bool era lido em initState ANTES de checkGeminiSession() setar true.
     // O ValueNotifier dispara em runtime → _onPostOAuthTab() responde imediatamente.
     AppProvider.postOAuthTabNotifier.addListener(_onPostOAuthTab);
+    // BUILD 291: race-condition fix — se postOAuthTabNotifier.value já foi setado
+    // antes do listener ser registrado (microtask disparou antes de initState),
+    // consumir o valor imediatamente via addPostFrameCallback para garantir o
+    // primeiro frame já exibe a aba correta.
+    final pendingOAuthTab = AppProvider.postOAuthTabNotifier.value;
+    if (pendingOAuthTab >= 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _onPostOAuthTab();
+      });
+    }
 
     // Instancia TODAS as telas UMA VEZ — IndexedStack reutiliza entre rebuilds.
     // Cada tela é envolta em RepaintBoundary — isola o repaint de cada screen,

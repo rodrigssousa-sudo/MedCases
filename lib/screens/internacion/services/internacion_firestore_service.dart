@@ -252,14 +252,15 @@ class InternacionFirestoreService {
   // Ordenação client-side no .map() abaixo — idêntico ao padrão da Lixeira.
   // ─────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
-    // BUILD 290: PATH_CHECK — expõe o caminho físico gerado em tempo de execução.
-    // Isola definitivamente se o 403 é por path incorreto, uid nulo ou token ausente.
+    // BUILD 290/291: PATH+AUTH logs — expõe o caminho físico e estado de auth
+    // no momento exato da subscrição. Formato solicitado BUILD 291:
+    //   [MeuPlantao][PATH] users/{uid}/internaciones
+    //   [MeuPlantao][AUTH] uid=... authed=true
     // Monitorar: adb logcat | grep MeuPlantao  /  Chrome DevTools → filtrar MeuPlantao
     final collection = _col(uid);
     final authed = FirebaseAuth.instance.currentUser != null || AuthService.hasCachedToken;
-    debugPrint('[MeuPlantao][PATH_CHECK] Escutando rota do Firestore: '
-        '${collection.path} | uid=$uid');
-    debugPrint('[MeuPlantao][AUTH_CHECK] authed=$authed '
+    debugPrint('[MeuPlantao][PATH] ${collection.path}');
+    debugPrint('[MeuPlantao][AUTH] uid=$uid authed=$authed '
         'fbUser=${FirebaseAuth.instance.currentUser?.uid ?? "null"} '
         'hasCachedToken=${AuthService.hasCachedToken}');
 
