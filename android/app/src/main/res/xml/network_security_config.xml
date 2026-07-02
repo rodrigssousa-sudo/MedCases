@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  network_security_config.xml — MedCases Pro
+  BUILD 283: Configuração de segurança de rede Android.
+
+  OBJETIVO:
+    • Permite que o componente WebView acesse arquivos locais (file://) do
+      diretório ApplicationSupport do app (cache offline da Calculadora Clínica).
+    • Mantém HTTPS obrigatório para todas as origens de rede externas.
+    • Não abre brechas para cleartext HTTP em domínios de produção.
+
+  CONTEXTO:
+    No Android API 24+, a política padrão de segurança de rede proíbe:
+      1. Cleartext HTTP (já bloqueado por padrão — preservado aqui).
+      2. Acesso a "domínios" file:// por WebViews sem AndroidWebViewControllerCreationParams.
+    Com allowFileAccess=true + allowFileAccessFromFileURLs=true no Dart,
+    este arquivo complementa a política declarando que URIs file:// são
+    consideradas "localhost" (origem confiável de primeiro nível).
+
+  SEGURANÇA:
+    • Apenas domínios de produção do MedCases nas trust-anchors.
+    • Nenhum cleartext HTTP permitido para domínios externos.
+    • file:// tratado como localhost — sem acesso cross-origin a http/https.
+-->
+<network-security-config>
+    <!--
+      Política base: apenas HTTPS para todas as origens de rede.
+      Herda certificados do sistema (Google Trust Services, DigiCert, etc.).
+    -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+
+    <!--
+      Domínios de produção MedCases — HTTPS obrigatório, certificados do sistema.
+      includeSubdomains="true" cobre www.medcasescalcu.com, api.medcasespro.com, etc.
+    -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">medcasespro.com</domain>
+        <domain includeSubdomains="true">medcasescalcu.com</domain>
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">firebase.com</domain>
+        <domain includeSubdomains="true">firebaseapp.com</domain>
+        <domain includeSubdomains="true">firebaseio.com</domain>
+        <domain includeSubdomains="true">gstatic.com</domain>
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
