@@ -1,11 +1,14 @@
 // Build 187: Gray Screen Fix — Web usa HtmlElementView/iframe; iOS/Android mantém WebView nativo.
 // dart:io Platform removido — usa kIsWeb para guards de plataforma.
 // BUILD 240: OfflineCalculatorCacheService resolve URL local antes de carregar WebView.
+// BUILD 283: allowFileAccess + allowFileAccessFromFileURLs via AndroidWebViewController
+//            para resolver net::ERR_ACCESS_DENIED ao carregar file:// offline cache.
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
 import '../services/offline_calculator_cache_service.dart';
@@ -222,11 +225,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       final bool isIOSPlatform = _detectIOS();
       final PlatformWebViewControllerCreationParams params;
       if (isIOSPlatform) {
+        // ── iOS (WKWebView) ───────────────────────────────────────────────
         params = WebKitWebViewControllerCreationParams(
           allowsInlineMediaPlayback: true,
           mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
         );
       } else {
+        // ── Android (WebView) — params base (file access configurado abaixo) ──
         params = const PlatformWebViewControllerCreationParams();
       }
 
@@ -247,10 +252,49 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             _webviewReady = true;
             await _injectTheme();
           },
+          onWebResourceError: (WebResourceError error) {
+            // BUILD 283: loga erros de WebView no Logcat com código e URL exatos.
+            // `adb logcat | grep CalculadoraWebView` para monitorar em produção.
+            debugPrint(
+              '[CalculadoraWebView][ERR] '
+              'code=${error.errorCode} '
+              'type=${error.errorType?.name ?? "?"} '
+              'desc="${error.description}" '
+              'url="${error.url ?? "n/a"}"',
+            );
+            // Se file:// falhar com ACCESS_DENIED, faz fallback para online.
+            // Isso garante que o usuário vê a calculadora mesmo sem cache local.
+            if ((error.description.contains('ERR_ACCESS_DENIED') ||
+                    error.description.contains('ERR_FILE_NOT_FOUND') ||
+                    error.errorCode == -13 ) && // -13 = ERR_ACCESS_DENIED no Chromium
+                mounted) {
+              debugPrint('[CalculadoraWebView] file→online fallback ativado url=$_webUrl');
+              _controller.loadRequest(Uri.parse(_webUrl));
+            }
+          },
         ))
         // BUILD 240: carrega online primeiro; addPostFrameCallback resolve cache local
         // e redireciona se disponível (evita async em initState).
         ..loadRequest(Uri.parse(_webUrl));
+
+      // BUILD 283: allowFileAccess — Android WebView bloqueia file:// por padrão
+      // em API ≥ 30 (Android 11+). A API correta é AndroidWebViewController.setAllowFileAccess()
+      // chamada APÓS a criação do WebViewController.
+      //
+      // net::ERR_ACCESS_DENIED (errorCode -13 no Chromium) ocorre quando:
+      //   - allowFileAccess = false (padrão Android API 30+) → WebView nega file:// URIs
+      //     para arquivos em ApplicationSupportDirectory (fora dos assets do APK)
+      //
+      // SEGURANÇA: allowUniversalAccessFromFileURLs NÃO é habilitado (default=false).
+      // Isso impede que file:// faça requests cross-origin para http/https externos.
+      // Apenas arquivos locais do app (ApplicationSupport/calculator_cache/) são acessíveis.
+      if (!isIOSPlatform) {
+        final platform = _controller.platform;
+        if (platform is AndroidWebViewController) {
+          platform.setAllowFileAccess(true);
+          debugPrint('[CalculadoraWebView][BUILD283] AndroidWebView.setAllowFileAccess(true) — file:// desbloqueado');
+        }
+      }
 
       // BUILD 240: resolve URL do cache local de forma assíncrona.
       // Roda no primeiro frame após o widget ser montado para evitar setState

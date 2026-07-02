@@ -210,10 +210,40 @@ class GeminiService {
   static const _endpoint =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
 
-  // Client IDs do Google OAuth (usados pelo google_sign_in no Android e pelo
-  // redirect flow no index.html — o _webClientId é usado no HTML, não aqui)
-  static const _androidClientId =
-      '1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com';
+  // ── Client IDs Google OAuth ────────────────────────────────────────────────
+  //
+  // BUILD 283: CORREÇÃO CRÍTICA DE AUTH ANDROID
+  //
+  // PROBLEMA: serverClientId no GoogleSignIn estava configurado com o Android
+  // Client ID (tipo "Android" no GCP Console). Isso causa falha de autenticação
+  // porque:
+  //   • O Android Client ID é um identificador de APP — não é um token audience.
+  //   • google_sign_in usa serverClientId para solicitar um "server auth code"
+  //     que pode ser trocado por tokens por um backend.
+  //   • Quando serverClientId = Android Client ID, o Google Sign-In não consegue
+  //     gerar o auth code correto → PlatformException("sign_in_failed") ou
+  //     token com audience errada → Firebase rejeita com INVALID_CREDENTIAL.
+  //
+  // SOLUÇÃO: serverClientId deve ser o Web Client ID (tipo "Web application"),
+  // que é o OAuth 2.0 client do projeto Firebase para apps web/mobile.
+  // Este é o mesmo client ID usado no index.html para o Google Sign-In GSI.
+  //
+  // COMO OBTER o Web Client ID:
+  //   1. Firebase Console → Projeto → Authentication → Sign-in method → Google
+  //   2. "Web SDK configuration" → Web client ID (termina em .apps.googleusercontent.com)
+  //   OU:
+  //   1. GCP Console → APIs & Services → Credentials
+  //   2. Procure "Web client (auto created by Google Service)" — tipo "Web application"
+  //
+  // NOTA: Se o app NÃO precisa validar tokens no servidor (caso do MedCases —
+  // apenas salva email para referência), serverClientId pode ser OMITIDO.
+  // Omitir é mais seguro e evita erros de configuração cross-platform.
+  // Se Google Sign-In com Firebase Auth for necessário no futuro, adicione
+  // o Web Client ID (não o Android).
+  //
+  // O Android Client ID abaixo é mantido APENAS como referência de documentação:
+  // 1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com
+  // (tipo Android — SHA-1: configurar no Firebase Console para cada keystore)
 
   // ── API Key estática (carregada do Firestore pelo AppProvider) ────────────
   static String _geminiApiKey = '';
@@ -294,9 +324,19 @@ class GeminiService {
   static const _keyToken = 'gemini_access_token';
 
   // ── Android: google_sign_in ───────────────────────────────────────────────
+  // BUILD 283: serverClientId REMOVIDO.
+  // O MedCases usa Google Sign-In apenas para capturar o email do usuário —
+  // não há troca de auth code com backend (a API Key vem do Firestore, não de OAuth).
+  // Manter serverClientId com o Android Client ID causava:
+  //   PlatformException(sign_in_failed, com.google.android.gms.common.api.ApiException: 10)
+  //   → ApiException code 10 = DEVELOPER_ERROR = serverClientId inválido para esta plataforma
+  // Sem serverClientId, o Google Sign-In opera no modo "email only" — sem auth code,
+  // sem token server-side — que é exatamente o que precisamos.
   static final _googleSignIn = GoogleSignIn(
     scopes: ['email'],  // Apenas email — sem scope restrito
-    serverClientId: _androidClientId,
+    // serverClientId omitido intencionalmente — ver documentação acima.
+    // Adicionar serverClientId com o Web Client ID apenas se for necessário
+    // validar ID tokens em um backend próprio no futuro.
   );
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -402,19 +442,54 @@ class GeminiService {
 
       } else {
         // ── Android: google_sign_in — salva apenas email ─────────────────
+        // BUILD 283: signOut() antes de signIn() evita cache stale de sessões
+        // anteriores que podem causar ApiException code 10 (DEVELOPER_ERROR).
+        debugPrint('[GeminiService][Android] signOut() antes de signIn() (flush stale session)');
         await _googleSignIn.signOut();
+        debugPrint('[GeminiService][Android] chamando _googleSignIn.signIn()…');
         final account = await _googleSignIn.signIn();
         if (account == null) {
-          debugPrint('[GeminiService] Android signIn cancelado');
+          debugPrint('[GeminiService][Android] signIn cancelado pelo usuário (account=null)');
           return false;
         }
         // Salva apenas o email — a API Key não depende do accessToken
         await _saveEmail(account.email);
-        debugPrint('[GeminiService] Android signIn OK — ${account.email}');
+        debugPrint(
+          '[GeminiService][Android] signIn OK — '
+          'email=${account.email} '
+          'displayName=${account.displayName} '
+          'id=${account.id.substring(0, account.id.length.clamp(0, 6))}…',
+        );
         return true;
       }
     } catch (e, st) {
-      debugPrint('[GeminiService] signIn ERRO: $e\n$st');
+      // BUILD 283: diagnóstico rico para ApiException do Google Sign-In
+      // ApiException codes:
+      //   7  = NETWORK_ERROR       → sem conectividade
+      //   10 = DEVELOPER_ERROR     → SHA-1 não registrado no Firebase Console OU
+      //                              google-services.json desatualizado OU
+      //                              serverClientId inválido (corrigido no BUILD 283)
+      //   12501 = SIGN_IN_CANCELLED → usuário cancelou
+      //   12502 = SIGN_IN_CURRENTLY_IN_PROGRESS → chamada dupla concorrente
+      final eStr = e.toString();
+      String hint = '';
+      if (eStr.contains('ApiException: 10') || eStr.contains('DEVELOPER_ERROR')) {
+        hint = '\n  ▶ DEVELOPER_ERROR (code 10): causas comuns:\n'
+            '    1. SHA-1 do keystore NÃO está no Firebase Console\n'
+            '       → Firebase Console → Configurações → Android → Adicionar SHA-1\n'
+            '    2. google-services.json desatualizado\n'
+            '       → Baixar novo google-services.json do Firebase Console\n'
+            '    3. serverClientId configurado incorretamente\n'
+            '       → BUILD 283 já removeu serverClientId — confirme flutter pub get';
+      } else if (eStr.contains('ApiException: 7') || eStr.contains('NETWORK_ERROR')) {
+        hint = '\n  ▶ NETWORK_ERROR (code 7): dispositivo sem conectividade com Google';
+      }
+      debugPrint(
+        '[GeminiService][signIn][ERRO] '
+        'exception=${e.runtimeType} '
+        'message=$e$hint\n'
+        'stack=${st.toString().substring(0, st.toString().length.clamp(0, 500))}',
+      );
       return false;
     }
   }
@@ -647,8 +722,49 @@ class GeminiService {
         return GeminiResult(text: cleanedText);
       }
 
+      // ── BUILD 283: DIAGNÓSTICO RICO — todos os erros HTTP logados para Logcat ──
+      // Para cada código HTTP, o log inclui:
+      //   [HTTPXXX] → código numérico exato
+      //   status=xxx → para grep fácil em `adb logcat | grep GeminiService`
+      //   body_preview → primeiros 400 chars da resposta bruta da API
+      //   endpoint → URL do modelo que falhou
+      //   retry → número de tentativas já feitas
+      //   key_present → confirma se a API key estava presente (sem expor o valor)
+      // ──────────────────────────────────────────────────────────────────────────
       if (response.statusCode == 401 || response.statusCode == 403) {
-        debugPrint('[GeminiService] 401/403: ${response.body.substring(0, response.body.length.clamp(0, 300))}');
+        final bodyPreview = response.body.substring(
+            0, response.body.length.clamp(0, 400));
+        // Extrai errorCode e message da resposta JSON do Google (se disponível)
+        String errorCode = 'UNKNOWN';
+        String errorMessage = '';
+        try {
+          final errorBody = jsonDecode(response.body) as Map<String, dynamic>?;
+          final error = errorBody?['error'] as Map<String, dynamic>?;
+          errorCode    = error?['status']  as String? ?? 'UNKNOWN';
+          errorMessage = error?['message'] as String? ?? '';
+        } catch (_) {}
+        // ── Logcat fingerprint ────────────────────────────────────────────
+        debugPrint(
+          '[GeminiService][HTTP${response.statusCode}] '
+          'status=${response.statusCode} '
+          'error_code=$errorCode '
+          'error_message="${errorMessage.substring(0, errorMessage.length.clamp(0, 200))}" '
+          'key_present=${_geminiApiKey.isNotEmpty} '
+          'key_len=${_geminiApiKey.length} '
+          'endpoint=$_endpoint '
+          'retry=$retryCount '
+          'body_preview="$bodyPreview"',
+        );
+        // Diagnóstico específico por código de erro da API Google:
+        if (errorCode == 'API_KEY_INVALID' || errorCode == 'PERMISSION_DENIED') {
+          debugPrint(
+            '[GeminiService][DIAGNÓSTICO] API_KEY_INVALID/PERMISSION_DENIED:\n'
+            '  1. Verifique se a chave está habilitada em console.cloud.google.com\n'
+            '  2. Verifique se "Generative Language API" está ativada no projeto\n'
+            '  3. Verifique se há restrições de IP ou referrer na chave\n'
+            '  4. Se SHA-1 do keystore mudou, regenere a chave OAuth no Firebase Console',
+          );
+        }
         return GeminiResult.error('API_KEY_INVALID', 'api_key_invalid');
       }
       if (response.statusCode == 429) {
@@ -672,13 +788,40 @@ class GeminiService {
         debugPrint('[GeminiService] 429 quota DEFINITIVO após $maxRetries retries');
         return GeminiResult.error('QUOTA_EXCEEDED', 'quota');
       }
-      debugPrint('[GeminiService] HTTP ${response.statusCode}: ${response.body.substring(0, response.body.length.clamp(0, 400))}');
+      // ── Qualquer outro código HTTP (400, 500, 503, etc.) ─────────────────
+      final unknownBody = response.body.substring(
+          0, response.body.length.clamp(0, 400));
+      debugPrint(
+        '[GeminiService][HTTP${response.statusCode}] '
+        'status=${response.statusCode} '
+        'key_present=${_geminiApiKey.isNotEmpty} '
+        'retry=$retryCount '
+        'body="$unknownBody"',
+      );
       return GeminiResult.error('HTTP_${response.statusCode}', 'unknown');
 
-    } on http.ClientException {
-      return GeminiResult.error('NETWORK_ERROR', 'network');
-    } catch (e) {
-      return GeminiResult.error('ERROR: $e', 'unknown');
+    } on http.ClientException catch (e, st) {
+      // BUILD 283: ClientException inclui o tipo de falha de rede (DNS, timeout, TLS)
+      debugPrint(
+        '[GeminiService][NETWORK_ERROR] '
+        'exception=${e.runtimeType} '
+        'message=${e.message} '
+        'uri=${e.uri} '
+        'stack=${st.toString().substring(0, st.toString().length.clamp(0, 300))}',
+      );
+      return GeminiResult.error('NETWORK_ERROR: ${e.message}', 'network');
+    } catch (e, st) {
+      // BUILD 283: catch genérico — captura TimeoutException, SocketException
+      // (via catch genérico, sem importar dart:io), erros de jsonDecode, etc.
+      debugPrint(
+        '[GeminiService][CATCH_ALL] '
+        'exception=${e.runtimeType} '
+        'message=$e '
+        'key_present=${_geminiApiKey.isNotEmpty} '
+        'retry=$retryCount '
+        'stack=${st.toString().substring(0, st.toString().length.clamp(0, 400))}',
+      );
+      return GeminiResult.error('ERROR: ${e.runtimeType} — $e', 'unknown');
     }
   }
 }

@@ -4,7 +4,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.google.gms:google-services:4.4.2")
+        // BUILD 283: atualizado 4.4.2 → 4.5.0 (última versão estável do Google Services plugin).
+        // 4.5.0 adiciona suporte a Android Gradle Plugin 8.x e corrige warnings de
+        // configuração de SHA fingerprint no firebase.google.com console.
+        classpath("com.google.gms:google-services:4.5.0")
     }
 }
 
