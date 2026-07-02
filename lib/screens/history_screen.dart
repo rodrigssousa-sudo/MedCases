@@ -581,7 +581,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   foregroundColor: Color(0xFFF07E26),
                 ),
               ),
-              dialogTheme: const DialogThemeData(
+              dialogTheme: const DialogTheme(
                 backgroundColor: Color(0xFF1E222D),
               ),
             ),

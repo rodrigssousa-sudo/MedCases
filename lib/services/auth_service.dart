@@ -1,7 +1,10 @@
 // auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (nativo)
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+// BUILD 282: dart:io removido — dart2js (compilador Web) não pode linkar
+// dart:io mesmo que o código seja dead-code (protegido por kIsWeb).
+// O catch de SocketException foi substituído pelo catch genérico existente,
+// que já captura erros de rede nativa. Comportamento do usuário: inalterado.
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/widgets.dart' show ValueNotifier;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -288,11 +291,15 @@ class AuthService {
       return AuthResult.success(user);
     } on TimeoutException {
       return AuthResult.error('Conexão lenta. Verifique sua internet e tente novamente.');
-    } on SocketException {
-      return AuthResult.error('Sem conexão. Verifique sua internet e tente novamente.');
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
+      // BUILD 282: SocketException (dart:io) removida — dart2js não pode linkar dart:io.
+      // Erros de rede nativa (sem conexão) chegam aqui como Exception genérica.
+      final msg = e.toString().toLowerCase();
+      if (msg.contains('socket') || msg.contains('network') || msg.contains('connection')) {
+        return AuthResult.error('Sem conexão. Verifique sua internet e tente novamente.');
+      }
       return AuthResult.error('Não foi possível fazer login. Tente novamente.');
     }
   }
