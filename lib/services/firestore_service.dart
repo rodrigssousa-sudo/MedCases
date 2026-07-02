@@ -430,6 +430,26 @@ class FirestoreService {
           // FirebaseAuth.instance.currentUser é sempre null no Web (login via
           // REST Identity Toolkit não injeta token no Firebase Auth SDK).
           // Usamos AuthService.getAdminToken() como fonte única de token no Web.
+          //
+          // BUILD 288: TOKEN GATE — se restoreSession() ainda não completou no
+          // boot, hasCachedToken é false e getAdminToken() retornaria vazio →
+          // 403 falso que congela o app por 15s. Aguardamos até 4s pelo token
+          // antes de disparar o request, com polling a cada 500ms.
+          if (!AuthService.hasCachedToken) {
+            debugPrint('[BUILD288][TokenGate] app_config/global — token não disponível, aguardando restoreSession()...');
+            for (var _tg = 0; _tg < 8; _tg++) {
+              await Future.delayed(const Duration(milliseconds: 500));
+              if (AuthService.hasCachedToken) {
+                debugPrint('[BUILD288][TokenGate] token disponível após ${(_tg + 1) * 500}ms ✓');
+                break;
+              }
+            }
+            if (!AuthService.hasCachedToken) {
+              debugPrint('[BUILD288][TokenGate] token ainda vazio após 4s — abortando REST, usando cache local');
+              return <String, dynamic>{};
+            }
+          }
+
           final token = await AuthService.getAdminToken();
           debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global');
           if (token.isEmpty) {

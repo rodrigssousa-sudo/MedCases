@@ -74,10 +74,13 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import '../models/evolucion_model.dart';
 import '../components/patient_accordion.dart';
 import 'internacion_persistence.dart';
+// BUILD 288 DIAG: AuthService.hasCachedToken para diagnóstico de auth no Web
+import '../../../services/auth_service.dart';
 
 // ── Constante de coleção — ÚNICA fonte de verdade para o path ──────────────
 // Build 186 FIX 1: garante que Web, iOS e Android escrevem/leem no mesmo lugar.
@@ -249,6 +252,17 @@ class InternacionFirestoreService {
   // Ordenação client-side no .map() abaixo — idêntico ao padrão da Lixeira.
   // ─────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
+    // BUILD 288 DIAG: loga path, uid e estado de auth ANTES de abrir o stream.
+    // Permite isolar se o 403 é por path errado, uid nulo ou token ausente.
+    // Verificar no Logcat/console: adb logcat | grep MeuPlantao
+    final colPath = 'users/$uid/${kInternacionesCollection}';
+    final authed  = FirebaseAuth.instance.currentUser != null || AuthService.hasCachedToken;
+    debugPrint('[MeuPlantao][PATH] collection=$colPath');
+    debugPrint('[MeuPlantao][UID]  uid=$uid');
+    debugPrint('[MeuPlantao][AUTH] authed=$authed '
+        'fbUser=${FirebaseAuth.instance.currentUser?.uid ?? "null"} '
+        'hasCachedToken=${AuthService.hasCachedToken}');
+
     return _col(uid)
         .where('status', isEqualTo: kStatusActive)
         .snapshots()
