@@ -252,18 +252,18 @@ class InternacionFirestoreService {
   // Ordenação client-side no .map() abaixo — idêntico ao padrão da Lixeira.
   // ─────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
-    // BUILD 288 DIAG: loga path, uid e estado de auth ANTES de abrir o stream.
-    // Permite isolar se o 403 é por path errado, uid nulo ou token ausente.
-    // Verificar no Logcat/console: adb logcat | grep MeuPlantao
-    final colPath = 'users/$uid/${kInternacionesCollection}';
-    final authed  = FirebaseAuth.instance.currentUser != null || AuthService.hasCachedToken;
-    debugPrint('[MeuPlantao][PATH] collection=$colPath');
-    debugPrint('[MeuPlantao][UID]  uid=$uid');
-    debugPrint('[MeuPlantao][AUTH] authed=$authed '
+    // BUILD 290: PATH_CHECK — expõe o caminho físico gerado em tempo de execução.
+    // Isola definitivamente se o 403 é por path incorreto, uid nulo ou token ausente.
+    // Monitorar: adb logcat | grep MeuPlantao  /  Chrome DevTools → filtrar MeuPlantao
+    final collection = _col(uid);
+    final authed = FirebaseAuth.instance.currentUser != null || AuthService.hasCachedToken;
+    debugPrint('[MeuPlantao][PATH_CHECK] Escutando rota do Firestore: '
+        '${collection.path} | uid=$uid');
+    debugPrint('[MeuPlantao][AUTH_CHECK] authed=$authed '
         'fbUser=${FirebaseAuth.instance.currentUser?.uid ?? "null"} '
         'hasCachedToken=${AuthService.hasCachedToken}');
 
-    return _col(uid)
+    return collection
         .where('status', isEqualTo: kStatusActive)
         .snapshots()
         .map((snap) {

@@ -310,11 +310,11 @@ class AppProvider extends ChangeNotifier {
   Future<void>? _geminiSessionCheckInFlight;
   bool _geminiApiKeyUnavailable = false;
 
-  // BUILD 288: flag de sincronização Firestore — SET pelo _syncFromFirestore()
-  // ao completar com sucesso. O SecurityWipe lê isAdmin/isMaster APÓS sync —
-  // enquanto esta flag for false, o wipe é adiado 2s para dar tempo ao
-  // _syncFromFirestore() resolver isAdmin/isMaster do servidor.
-  bool _firestoreSyncComplete = false;
+  // BUILD 290: Future que representa a execução em-voo de _syncFromFirestore().
+  // checkGeminiSession() faz `await _firestoreSyncFuture` — zero polling, zero
+  // delay artificial. Se o sync terminar em 80ms, o boot segue em 80ms.
+  // Resetado para null no logout para que a próxima sessão crie um novo Future.
+  Future<void>? _firestoreSyncFuture;
 
   // ── Estado — Modo Offline ──────────────────────────────────────────────────
   bool _offlineMode      = false;  // true = sem rede, usa só cache local
@@ -455,8 +455,10 @@ class AppProvider extends ChangeNotifier {
       onTimeout: () { _aiKeyLoading = false; },
     );
 
-    // 3️⃣ Sincroniza Firestore em background — não bloqueia a UI
-    _syncFromFirestore(user.uid);
+    // 3️⃣ Sincroniza Firestore em background — não bloqueia a UI.
+    // BUILD 290: guarda o Future para que checkGeminiSession() possa fazer
+    // await determinístico sem polling ou delay artificial.
+    _firestoreSyncFuture = _syncFromFirestore(user.uid);
 
     // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
     loadPublicHistories();
@@ -583,9 +585,8 @@ class AppProvider extends ChangeNotifier {
     _geminiRetryAfter = null;
     _geminiSessionCheckInFlight = null;
     _geminiApiKeyUnavailable = false;
-    // BUILD 288: reseta flag de sync para que a próxima sessão aguarde o
-    // _syncFromFirestore() resolver isAdmin/isMaster antes do SecurityWipe.
-    _firestoreSyncComplete = false;
+    // BUILD 290: reseta Future de sync — próxima sessão cria um novo.
+    _firestoreSyncFuture = null;
     // Limpa plantão (recarregado ao próximo login)
     _pinnedDrugIds = [];
     _pinnedCalcIds = [];
@@ -675,6 +676,9 @@ class AppProvider extends ChangeNotifier {
   // MERGE STRATEGY: une Firestore + local para nunca perder favoritos.
   // Se Firestore retorna vazio mas local tem dados, o resultado final = local.
   Future<void> _syncFromFirestore(String uid) async {
+    // BUILD 290: SYNC_TRACE — instrumentação científica para isolar
+    // short-circuits e silent exceptions. Cada await tem marcador próprio.
+    debugPrint('[SYNC_TRACE][START] Iniciando sincronismo para o uid: $uid');
     try {
       // Snapshot dos favoritos locais ANTES do fetch (para merge correto)
       final localDrugs    = Set<String>.from(_favDrugs);
@@ -682,22 +686,33 @@ class AppProvider extends ChangeNotifier {
       final localPrescs   = Set<String>.from(_favPrescriptions);
       final localCases    = Set<String>.from(_favCases);
 
+      debugPrint('[SYNC_TRACE][STEP1] Carregando favoritos do Firestore...');
       final results = await Future.wait([
         FirestoreService.loadFavDrugs(uid),
         FirestoreService.loadFavProtocols(uid),
         FirestoreService.loadFavPrescriptions(uid),
         FirestoreService.loadFavCases(uid),
       ]);
+      debugPrint('[SYNC_TRACE][STEP1_OK] Favoritos carregados: '
+          'drugs=${results[0].length} protos=${results[1].length} '
+          'prescs=${results[2].length} cases=${results[3].length}');
 
       // Merge: une Firestore + local — nunca descarta favoritos locais
       _favDrugs         = results[0]..addAll(localDrugs);
       _favProtocols     = results[1]..addAll(localProtos);
       _favPrescriptions = results[2]..addAll(localPrescs);
       _favCases         = results[3]..addAll(localCases);
+
+      debugPrint('[SYNC_TRACE][STEP2] Carregando casos customizados...');
       _customCases      = await FirestoreService.loadCases(uid);
+      debugPrint('[SYNC_TRACE][STEP2_OK] Casos carregados: ${_customCases.length}');
+
       notifyListeners();
-      // Persiste o conjunto merged no cache local E no Firestore
+
+      debugPrint('[SYNC_TRACE][STEP3] Persistindo cache local...');
       await _saveLocal();
+      debugPrint('[SYNC_TRACE][STEP3_OK] Cache local salvo.');
+
       // Re-salva no Firestore se o merge adicionou itens que estavam só no local
       if (_favDrugs.length > results[0].length)
         FirestoreService.saveFavDrugs(uid, _favDrugs).catchError((_) {});
@@ -707,21 +722,21 @@ class AppProvider extends ChangeNotifier {
         FirestoreService.saveFavPrescriptions(uid, _favPrescriptions).catchError((_) {});
       if (_favCases.length > results[3].length)
         FirestoreService.saveFavCases(uid, _favCases).catchError((_) {});
-      // Histórias clínicas em paralelo (não bloqueia)
+
+      debugPrint('[SYNC_TRACE][STEP4] Disparando sync de histórias e recentes (background)...');
       _syncHistoriesFromFirestore(uid);
-      // Recentes: sincroniza do Firestore → cache local em background
       _syncRecentsFromFirestore(uid);
-      // BUILD 288: sinaliza que isAdmin/isMaster já foram resolvidos pelo Firestore.
-      // O SecurityWipe em checkGeminiSession() aguarda esta flag antes de decidir
-      // se o usuário é privilegiado — evita wipe precoce em admins.
-      _firestoreSyncComplete = true;
-    } catch (_) {
-      // Sem rede: mantém dados do cache — nenhuma ação necessária
-      // BUILD 288: mesmo em falha de rede, marca sync como completo para não
-      // bloquear o SecurityWipe indefinidamente. Offline = usa o valor de
-      // isAdmin/isMaster do UserModel carregado do cache local.
-      _firestoreSyncComplete = true;
+      debugPrint('[SYNC_TRACE][SUCCESS] Sincronismo concluído com sucesso.');
+    } catch (e, stack) {
+      // BUILD 290: catch explícito com stack trace — elimina silent exceptions
+      // que causavam diagnósticos inconclusivos.
+      debugPrint('[SYNC_TRACE][FATAL_ERROR] Falha no sincronismo: $e\n$stack');
     }
+    // BUILD 290: este ponto é atingido SEMPRE (sucesso ou falha).
+    // _firestoreSyncFuture se resolve aqui — checkGeminiSession() retorna
+    // do await imediatamente, sem polling, sem delay artificial.
+    debugPrint('[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+        '— isAdmin=$isAdmin isMaster=$isMaster');
   }
 
   Future<void> _syncRecentsFromFirestore(String uid) async {
@@ -1981,14 +1996,20 @@ class AppProvider extends ChangeNotifier {
           (_webSsGet('medcases_gsi_pending') == 'true')
         );
 
-        // BUILD 288: aguarda _syncFromFirestore() completar antes de ler
-        // isAdmin/isMaster. _syncFromFirestore() é chamado SEM await em setUser(),
-        // então pode não ter resolvido o perfil do servidor ainda.
-        // Timeout de 3s: se o Firestore demorar mais, usa o valor do cache local.
-        if (!_firestoreSyncComplete) {
-          debugPrint('[BUILD288][SecurityWipe] _syncFromFirestore ainda em voo — aguardando 3s antes do wipe...');
-          await Future.delayed(const Duration(seconds: 3));
-          debugPrint('[BUILD288][SecurityWipe] após espera: syncComplete=$_firestoreSyncComplete isAdmin=$isAdmin isMaster=$isMaster');
+        // BUILD 290: aguarda o Future de _syncFromFirestore() diretamente.
+        // Event-driven: zero delay artificial — o boot segue no instante em que
+        // o sync completar (ou se já completou, retorna imediatamente).
+        // Timeout 6s como safety-net para redes muito lentas ou offline.
+        final syncFuture = _firestoreSyncFuture;
+        if (syncFuture != null) {
+          debugPrint('[BUILD290][SecurityWipe] aguardando _syncFromFirestore (event-driven)...');
+          await syncFuture.timeout(
+            const Duration(seconds: 6),
+            onTimeout: () {
+              debugPrint('[BUILD290][SecurityWipe] sync timeout 6s — usando isAdmin/isMaster do cache local');
+            },
+          );
+          debugPrint('[BUILD290][SecurityWipe] sync concluído — isAdmin=$isAdmin isMaster=$isMaster');
         }
 
         final bool isPrivileged = isAdmin || isMaster;
