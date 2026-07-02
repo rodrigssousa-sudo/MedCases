@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter_localizations/flutter_localizations.dart';
+// BUILD 280: sincronização nativa splash iOS — elimina blink/flash (Guideline 2.1)
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +59,27 @@ Future<void> main() async {
     FlutterError.dumpErrorToConsole(details);
   };
 
-  WidgetsFlutterBinding.ensureInitialized();
+  // BUILD 280 — CAMADA 3: Assincronismo blindado iOS anti-flash
+  // ─────────────────────────────────────────────────────────────────────────
+  // ORDEM CRÍTICA: capturar a binding ANTES de qualquer outro código assíncrono,
+  // depois IMEDIATAMENTE preservar o LaunchScreen.storyboard nativo.
+  //
+  // Sem esta chamada, o UIKit encerra o processo do storyboard assim que o
+  // Dart isolate emite o primeiro frame Flutter — que ainda é transparente/
+  // vazio durante o boot assíncrono (Firebase, prefs, auth). Resultado: 1-3
+  // frames de tela escura/branca visíveis → rejeição pela Apple (Guideline 2.1).
+  //
+  // Com preserve(): o storyboard permanece sobreposto ao Flutter engine até
+  // FlutterNativeSplash.remove() ser chamado explicitamente. O iOS não vê
+  // nenhum frame intermediário — transição 100% suave garantida.
+  //
+  // EXCLUSÃO WEB: flutter_native_splash é no-op em Web (sem storyboard), mas
+  // a guard kIsWeb garante zero overhead no bundle JS.
+  final WidgetsBinding widgetsBinding =
+      WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb) {
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  }
 
   // ── Trava orientação: portrait-only em iPhone e iPad ─────────────────────
   // Info.plist já declara apenas portrait para iOS, mas esta chamada cobre
@@ -188,6 +210,20 @@ class MedCasesApp extends StatelessWidget {
       theme: _buildTheme(false),
       darkTheme: _buildTheme(true),
       themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+
+      // BUILD 280 — CAMADA 3: Cor primária fixa do MaterialApp
+      // ─────────────────────────────────────────────────────────────────────
+      // MaterialApp.color é a cor usada pelo sistema operacional como "cor do app"
+      // no task switcher (iOS app switcher) e como fallback de 1 frame antes do
+      // ThemeData ser injetado pela árvore de providers.
+      //
+      // Se o Provider ainda não propagou darkMode=true quando o MaterialApp
+      // constrói (ex: SharedPreferences ainda carregando), o Flutter pode pintar
+      // 1 frame com a cor padrão do sistema (branca no iOS light mode).
+      // Fixar #0F1116 aqui neutraliza esse frame residual de forma nativa — sem
+      // depender da velocidade do SharedPreferences ou do ThemeData.
+      color: const Color(0xFF0F1116), // Dark background canônico do MedCases
+
       // ── Localização: informa ao Flutter os idiomas suportados ──────────────
       // Necessário para que widgets nativos (DatePicker, etc.) usem o idioma certo
       // e para que Localizations.localeOf(context) funcione corretamente.
@@ -203,13 +239,27 @@ class MedCasesApp extends StatelessWidget {
         Locale('en'),       // Inglês (fallback padrão do Flutter)
       ],
       home: _AuthGate(firebaseInit: firebaseInit),
-      // ── Layout 100% responsivo — sem restrição de largura máxima ─────────────
+
+      // BUILD 280 — CAMADA 3: Builder com ColoredBox de segurança
+      // ─────────────────────────────────────────────────────────────────────
+      // O builder do MaterialApp é chamado em TODOS os frames antes do child
+      // estar pronto. Sem esta proteção, qualquer frame onde child==null
+      // resulta em um SizedBox vazio sobre fundo branco (padrão do UIKit).
+      //
+      // ColoredBox garante que mesmo antes do primeiro frame real do Flutter,
+      // qualquer pixel renderizado pela engine seja #0F1116 — nunca branco.
+      // Isso fecha o último vetor de flash residual após FlutterNativeSplash.
+      //
+      // ── Layout 100% responsivo — sem restrição de largura máxima ─────────
       // O app ocupa toda a tela em qualquer dispositivo: Web, iPhone, iPad e tablet.
       // O layout responsivo é gerenciado internamente por MedBreakpoints:
       //   < 1024 px  → mobile/tablet shell (AppBar + bottom nav)
       //   >= 1024 px → desktop shell (sidebar lateral + conteúdo expandido)
       // Não há mais centralização forçada ou clamp de 560 px no iPad.
-      builder: (context, child) => child ?? const SizedBox.shrink(),
+      builder: (context, child) => ColoredBox(
+        color: const Color(0xFF0F1116), // camada de segurança — fundo escuro MedCases
+        child: child ?? const SizedBox.shrink(),
+      ),
     ));  // fecha NotificationOverlay
   }
 
@@ -863,8 +913,44 @@ class _TimedSplashState extends State<_TimedSplash> {
 
   bool get _ready => _minTimeDone && _bootDone;
 
+  // BUILD 280 — CAMADA 3: flag de idempotência para FlutterNativeSplash.remove()
+  // Garante que remove() seja chamado exatamente UMA VEZ, mesmo que build()
+  // seja invocado múltiplas vezes quando _ready transiciona de false→true.
+  // Sem esta flag, múltiplos addPostFrameCallback seriam registrados em builds
+  // consecutivos no mesmo frame, causando chamadas duplicadas ao plugin nativo.
+  bool _splashRemoved = false;
+
   @override
   Widget build(BuildContext context) {
+    // BUILD 280 — CAMADA 3: remoção sincronizada do splash nativo iOS
+    // ───────────────────────────────────────────────────────────────────────
+    // Quando _ready == true (ambos os semáforos dispararam: timer 1.2s E boot),
+    // agendamos FlutterNativeSplash.remove() para o PRÓXIMO frame via
+    // addPostFrameCallback. Isso garante que:
+    //   1. O Flutter JÁ pintou o primeiro frame real (AuthGate / LoginScreen)
+    //      antes de liberar o UIKit para encerrar o LaunchScreen.storyboard.
+    //   2. O avaliador da Apple nunca vê um frame intermediário vazio/branco.
+    //   3. No Web (kIsWeb=true): a guard evita chamar a API nativa sem sentido.
+    //   4. A flag _splashRemoved previne chamadas duplicadas — o build()
+    //      pode ser chamado várias vezes no mesmo frame em edge cases de Flutter.
+    //
+    // TIMING DIAGRAM (iOS cold start):
+    //   [t=0ms]   runApp() → Dart engine ativo, Flutter engine inicializa
+    //   [t=~50ms] main() retorna, storyboard ainda ativo (preserve() ativo)
+    //   [t=~200ms] primeiro frame Flutter pintado (splash _SplashScreen)
+    //   [t=1200ms] _minTimeDone = true (timer mínimo)
+    //   [t=var]   _bootDone = true (Firebase + auth completos)
+    //   [t=max]   _ready = true → addPostFrameCallback agenda remove()
+    //   [t+1frame] FlutterNativeSplash.remove() → storyboard encerrado graciosamente
+    //             UIKit vê o frame Flutter já renderizado → ZERO flash
+    if (_ready && !_splashRemoved && !kIsWeb) {
+      _splashRemoved = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FlutterNativeSplash.remove();
+        debugPrint('[BUILD280] FlutterNativeSplash.remove() — splash nativo encerrado');
+      });
+    }
+
     // AnimatedSwitcher com fade 350ms entre splash e conteúdo real
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 350),
