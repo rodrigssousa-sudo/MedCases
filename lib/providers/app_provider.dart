@@ -3713,11 +3713,12 @@ class AppProvider extends ChangeNotifier {
       final paidResult = await ProviderRouterService.callPaidProxy(
         userMessage:  input,
         systemPrompt: systemPrompt,
-        history:      List<Map<String, String>>.from(  // BUILD 249: thread-filtered history
+        history:      List<Map<String, String>>.from(  // BUILD 304: micro-window + intent-reset
           ClinicalThreadManager.buildThreadHistory(
             fullHistory: _sanitizedHistory,
             status: threadStatus,
             isPlantaoMode: !longResponse,
+            currentTaskLabel: AiSmartRouter.detectTaskLabel(input), // BUILD 304 [G1b]
           ).map((m) => {
             'role':    m['role']    ?? '',
             'content': m['content'] ?? '',
@@ -3811,11 +3812,12 @@ class AppProvider extends ChangeNotifier {
         final paidResult = await ProviderRouterService.callPaidProxy(
           userMessage:  input,
           systemPrompt: systemPrompt,
-          history: List<Map<String, String>>.from(  // BUILD 249: thread-filtered history
+          history: List<Map<String, String>>.from(  // BUILD 304: micro-window + intent-reset
             ClinicalThreadManager.buildThreadHistory(
               fullHistory: _sanitizedHistory,
               status: threadStatus,
               isPlantaoMode: !longResponse,
+              currentTaskLabel: AiSmartRouter.detectTaskLabel(input), // BUILD 304 [G1b]
             ).map((m) => {
               'role':    m['role']    ?? '',
               'content': m['content'] ?? '',
@@ -3884,6 +3886,7 @@ class AppProvider extends ChangeNotifier {
         fullHistory: _sanitizedHistory,
         status: threadStatus,
         isPlantaoMode: !longResponse,
+        currentTaskLabel: AiSmartRouter.detectTaskLabel(input), // BUILD 304 [G1b]
       )),
       useGrounding: true,
       longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos

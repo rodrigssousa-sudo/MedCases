@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════════════════════
 // ai_smart_router.dart — Smart Context Router v3.0
-// BUILD 303 — 8K Hardened Ultra-Lean
+// BUILD 304 — 8K Ultra-Lean + 4-Turn Micro Window Active
 //
 // RESPONSABILIDADES EXCLUSIVAS:
 //   • ETAPA 1: Intent Router — classifica em 7 dimensões (isDrops > isDilution >
@@ -192,11 +192,16 @@ class AiSmartRouter {
         m.contains('regimen')    || m.contains('régimen')       ||
         m.contains('iniciar')    || m.contains('prescri'));
 
-    // Interação/Contraindicação
-    final isInteraction = m.contains('interaç')         || m.contains('interacci')       ||
-        m.contains('contraindicaç')  || m.contains('contraindicaci')  ||
-        m.contains('efeito adverso') || m.contains('efecto adverso')  ||
-        m.contains('segurança')      || m.contains('seguridad');
+    // Interação/Contraindicação — BUILD 304 [G4]: expandido com jargão clínico.
+    // 'reação adversa', 'reacao adversa', 'efeito colateral' agora acionam _modInteracao.
+    // Resolve: "reação adversa da heparina" caindo em 'geral' sem módulo de interação.
+    final isInteraction = m.contains('interaç')           || m.contains('interacci')        ||
+        m.contains('contraindicaç')    || m.contains('contraindicaci')   ||
+        m.contains('efeito adverso')   || m.contains('efecto adverso')   ||
+        m.contains('segurança')        || m.contains('seguridad')        ||
+        m.contains('reação adversa')   || m.contains('reacao adversa')   ||
+        m.contains('reacción adversa') || m.contains('efeito colateral') ||
+        m.contains('efecto colateral') || m.contains('evento adverso');
 
     // Sigla isolada (1–6 chars alfa, sem espaço)
     final isAcronym = trimmed.length <= 6 &&
@@ -341,6 +346,10 @@ class AiSmartRouter {
   // Injetado quando isPlantaoMode=true E a Camada C já forneceu template
   // específico de matriz. Mínimo — apenas reforça regras visuais sem redefinir
   // estrutura (evita conflito com cláusula de supremacia do IntentMandate).
+  // BUILD 304 [G2]: adicionado <response_template> com OUTPUT_STARTS_HERE.
+  // Anteriormente apenas <instructions> — risco de eco idêntico ao pré-BUILD 302.
+  // O template mínimo abaixo indica ao modelo onde começar a resposta no caminho
+  // "Camada C com contexto específico", sem sobrepor o mandato da matriz injetada.
   static const String _contractPlantaoRef =
       '<instructions id="plantao_ref_rules">\n'
       'Reforço visual Ultra-Plantão (o template da Camada C é soberano sobre estas regras):\n'
@@ -348,7 +357,11 @@ class AiSmartRouter {
       '• Condutas: bullets (-). Máx 5 linhas. Máx 7 palavras/bullet.\n'
       '• Fármacos: **negrito** nome + dose. Ex: **Enoxaparina 1 mg/kg SC 12/12h**.\n'
       '• Sem prosa. Sem parágrafos. Sem ##. Sem introduções.\n'
-      '</instructions>\n';
+      '</instructions>\n'
+      '<response_template>\n'
+      'OUTPUT_STARTS_HERE\n'
+      '🟥 [use exatamente o template da Camada C injetado acima]\n'
+      '</response_template>\n';
 
   // ══ CONTRATO ESTUDO ════════════════════════════════════════════════════════
   // BUILD 301: tokens reduzidos, regra multi-causal em A, tag dupla obrigatória.
@@ -358,7 +371,7 @@ class AiSmartRouter {
   //   do Plantão. Elimina risco de colapso de segmentação no Modo Estudo.
   static const String _contractEstudo =
       '<instructions id="estudo_rules">\n'
-      'MODO ESTUDO — encyclopedia_v1 — BUILD 303 8K\n'
+      'MODO ESTUDO — encyclopedia_v1 — BUILD 304\n'
       'Identifique o tipo do tema (A/B/C/D) e aplique a matriz correspondente.\n'
       'Prosa acadêmica densa. Sem bullets de Plantão. Sem 🟥/🔄/⛔/💊.\n'
       '\n'
@@ -783,7 +796,7 @@ class AiSmartRouter {
 
     // ── Etapa 7: Logs estruturados ────────────────────────────────────────────
     if (kDebugMode) {
-      debugPrint('[AI_ROUTER] BUILD303-8K '
+      debugPrint('[AI_ROUTER] BUILD304 '
           'task=${intent.taskLabel} contract=$contractName '
           'lang=$lang modules=${loaded}L/${skipped}S '
           'prompt=${finalPrompt.length}c/${_kCapTotal}c saved=${contextSaved}c '
@@ -792,12 +805,12 @@ class AiSmartRouter {
 
     // Log de produção — visível em release mode (Safari/Chrome DevTools)
     // ignore: avoid_print
-    print('[BUILD303-8K][ROUTER] BUILD 303 - 8K Hardened Ultra-Lean '
+    print('[BUILD304][ROUTER] BUILD 304 — 8K Ultra-Lean + 4-Turn Micro Window Active '
         'contract=$contractName task=${intent.taskLabel} '
         'cap=$_kCapTotal promptChars=${finalPrompt.length} '
         'shrunk=$shrunk lang=$lang '
-        'A1=shield_immutable A2=estudo_template A3=intent_expanded '
-        'M3=polimedicacao_restored 8K=cap_elevated');
+        'G1=4turn_microwindow G1b=intent_reset G2=plantaoref_template '
+        'G3=study_ttl_6h G4=isInteraction_expanded');
 
     return RouterResult(
       finalPrompt: finalPrompt,
@@ -882,6 +895,14 @@ class AiSmartRouter {
 
   // ══ validateResponse (pública) ═════════════════════════════════════════════
   // Para limpeza visual usar sanitizeResponse(). Esta valida estrutura/idioma.
+  // ══ detectTaskLabel (pública leve) ═══════════════════════════════════════════
+  // BUILD 304 [G1b]: retorna o taskLabel de uma mensagem sem construir o prompt.
+  // Usado pelo ClinicalThreadManager para detectar mudança de intent e disparar
+  // reset silencioso do histórico de transporte (zero custo: só roda _detectIntent).
+  static String detectTaskLabel(String userMessage) {
+    return _detectIntent(userMessage).taskLabel;
+  }
+
   static (bool isValid, String reason) validateResponse(
     String response,
     String appLanguage,

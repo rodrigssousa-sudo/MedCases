@@ -77,8 +77,22 @@ class ClinicalThreadManager {
   // Evita avalanche de tokens redundantes sem perder continuidade do turno imediato.
   static const int kMaxContinuationTurns = 2; // 2 pares user/assistant = 4 entradas
 
-  // Timeout de inatividade: 10 minutos sem mensagem → novo thread automaticamente
+  // Timeout de inatividade: 10 minutos sem mensagem → novo thread automaticamente (Plantão)
   static const int kThreadTimeoutMs = 10 * 60 * 1000;
+
+  // BUILD 304 [G3]: TTL de inatividade para Modo Estudo.
+  // Se o médico ficar mais de 6h sem interagir, o histórico de transporte da
+  // sessão de Estudo é descartado — evita continuidade pedagógica incoerente
+  // (médico esqueceu o contexto; nova sessão começa limpa).
+  // O histórico LOCAL no dispositivo é PRESERVADO para exibição visual.
+  static const int kStudySessionTtlMs = 6 * 60 * 60 * 1000; // 6 horas
+
+  // BUILD 304 [G1]: Janela micro-deslizante para Modo Estudo.
+  // Médicos em Estudo realizam no máximo 4-5 interações por tema.
+  // Enviar histórico completo (10+ turnos) é desperdício crítico de tokens.
+  // Máx 4 turnos (2 pares user+assistant = 4 entradas) no payload da API.
+  // O histórico completo permanece intacto no dispositivo para exibição.
+  static const int kMaxStudyTurns = 2; // 2 pares = 4 entradas
 
   // ── Frases que sempre indicam follow-up (nunca iniciam novo thread) ────────
   static const _kFollowUpPhrases = <String>{
@@ -406,18 +420,75 @@ class ClinicalThreadManager {
   // isContinuation=true  → últimas kMaxContinuationTurns pares (máx 6 entradas)
   // isContinuation=false → lista vazia (contexto limpo)
   // ─────────────────────────────────────────────────────────────────────────
+  // BUILD 304 [G3]: timestamp da última mensagem de Estudo (RAM-only).
+  // Rastreia inatividade para aplicar TTL de 6h no histórico de transporte.
+  static int _lastStudyActivityMs = 0;
+
+  // BUILD 304 [G1b]: taskLabel da última mensagem (Plantão ou Estudo).
+  // Usado para detectar mudança de intent e disparar reset silencioso.
+  static String _lastTaskLabel = '';
+
   static List<Map<String, String>> buildThreadHistory({
     required List<Map<String, String>> fullHistory,
     required ClinicalThreadStatus status,
     required bool isPlantaoMode,
+    String currentTaskLabel = '', // BUILD 304 [G1b]: label do intent atual
   }) {
     if (!isPlantaoMode) {
-      // Modo Estudo: não interfere — usa history completo sanitizado
-      final sent = fullHistory.length;
-      if (kDebugMode) {
-        debugPrint('[HISTORY_SANITIZER] mode=estudo strategy=full sent=$sent');
+      // ── BUILD 304 [G3]: TTL de 6h para Modo Estudo ────────────────────────
+      // Se o médico ficou inativo por mais de 6h, descarta o histórico de
+      // transporte — nova sessão começa limpa sem contaminação de contexto antigo.
+      // O histórico LOCAL permanece intacto para exibição visual.
+      final nowMs = DateTime.now().millisecondsSinceEpoch;
+      final studyInactiveMs = _lastStudyActivityMs > 0
+          ? nowMs - _lastStudyActivityMs
+          : 0;
+      final studySessionExpired = studyInactiveMs > kStudySessionTtlMs;
+
+      if (studySessionExpired && fullHistory.isNotEmpty) {
+        _lastStudyActivityMs = nowMs;
+        _lastTaskLabel = currentTaskLabel;
+        debugPrint('[BUILD304][STUDY_TTL] session_expired inactiveMs=$studyInactiveMs '
+            'ttlMs=$kStudySessionTtlMs → transport_history_cleared '
+            'localHistory=${fullHistory.length} preserved');
+        return <Map<String, String>>[];
       }
-      return fullHistory;
+
+      // ── BUILD 304 [G1b]: Reset silencioso por mudança de intent ───────────
+      // Se o taskLabel mudou (ex: 'geral' → 'dose'), o médico trocou de assunto.
+      // Descarta histórico de transporte — novo tema começa com contexto limpo.
+      final intentChanged = _lastTaskLabel.isNotEmpty &&
+          currentTaskLabel.isNotEmpty &&
+          currentTaskLabel != _lastTaskLabel;
+
+      if (intentChanged && fullHistory.isNotEmpty) {
+        _lastStudyActivityMs = nowMs;
+        _lastTaskLabel = currentTaskLabel;
+        debugPrint('[BUILD304][INTENT_RESET] taskLabel changed: '
+            '$_lastTaskLabel → $currentTaskLabel '
+            '→ transport_history_cleared (local preserved)');
+        return <Map<String, String>>[];
+      }
+
+      // ── BUILD 304 [G1]: Janela micro-deslizante — Modo Estudo ─────────────
+      // Retém apenas as últimas kMaxStudyTurns trocas (4 entradas).
+      // Elimina desperdício de tokens em threads longos de Estudo.
+      // Histórico local no dispositivo NÃO é modificado.
+      _lastStudyActivityMs = nowMs;
+      _lastTaskLabel = currentTaskLabel;
+
+      final maxEntries = kMaxStudyTurns * 2;
+      final limited = fullHistory.length > maxEntries
+          ? fullHistory.sublist(fullHistory.length - maxEntries)
+          : fullHistory;
+
+      if (kDebugMode) {
+        debugPrint('[BUILD304][HISTORY_SANITIZER] mode=estudo '
+            'strategy=micro_window_4turns '
+            'sent=${limited.length}/${fullHistory.length} '
+            'ttlOk=true intentLabel=$currentTaskLabel');
+      }
+      return limited;
     }
 
     if (!status.isContinuation) {
