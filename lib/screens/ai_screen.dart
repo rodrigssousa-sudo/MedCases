@@ -932,6 +932,17 @@ class _AiScreenState extends State<AiScreen> {
 
   @override
   void dispose() {
+    // BUILD 300: Garante a persistência do snapshot da sessão ativa ao fechar ou desempilhar a tela de IA.
+    // Dispara _saveCurrentSessionToHistory via Provider antes de qualquer limpeza de controllers/streams,
+    // pois após o cancelamento dos listeners o contexto pode estar inacessível.
+    try {
+      final provider = Provider.of<AppProvider>(context, listen: false);
+      _saveCurrentSessionToHistory(provider);
+      debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save dispatched successfully.');
+    } catch (e) {
+      debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save skipped or context empty: $e');
+    }
+
     // ── Build 118: dispose() hardening — Zero Memory Leak ─────────────────
     //
     // ORDEM CRÍTICA:

@@ -833,12 +833,27 @@ class FirestoreService {
   /// Carrega as últimas 20 sessões, ordenadas por updatedAt desc.
   /// Usa sdkDocToSafeMap para converter Timestamp → ISO8601 string antes
   /// de passar para _ChatSession.fromJson (que usa DateTime.parse).
+  ///
+  /// BUILD 300: Força leitura do servidor (Source.server) para evitar cache
+  /// stale/preso no WebKit/Safari (ITP). Timeout de 8s com fallback automático
+  /// para o cache local caso o usuário esteja sem conectividade.
   static Future<List<Map<String, dynamic>>> loadAiSessions(String uid) async {
     try {
-      final snap = await _userAiHistory(uid)
-          .orderBy('updatedAt', descending: true)
-          .limit(20)
-          .get();
+      // BUILD 300: Força leitura do servidor para evitar cache stale/preso no WebKit/Safari
+      QuerySnapshot<Map<String, dynamic>> snap;
+      try {
+        snap = await _userAiHistory(uid)
+            .orderBy('updatedAt', descending: true)
+            .limit(20)
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 8));
+      } catch (e) {
+        debugPrint('[BUILD300][FIRESTORE] loadAiSessions server fetch failed, using fallback cache: $e');
+        snap = await _userAiHistory(uid)
+            .orderBy('updatedAt', descending: true)
+            .limit(20)
+            .get();
+      }
       return snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
     } catch (_) {
       return [];
