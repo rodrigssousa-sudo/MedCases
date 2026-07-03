@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart'; // BUILD 296: AuthService.currentUser guard
+import '../services/auth_service.dart'; // BUILD 296+: AuthService.currentUser guard
+import '../services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -91,8 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // Firebase.initializeApp() silenciosamente. Nesse estado, qualquer
     // acesso a Firebase SDK (Auth, Firestore) lança NullError em dart2js.
     // A Home renderiza limpa/parcial enquanto aguarda o init completo.
-    if (kIsWeb && Firebase.apps.isEmpty) {
-      debugPrint('[BUILD297][HomeScreen] build_abort reason=firebase_not_ready');
+    if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][HomeScreen] build_abort reason=firebase_runtime_unavailable');
       return const _HomeSafeLoadingShell();
     }
 
@@ -239,10 +240,10 @@ class _HomeScreenState extends State<HomeScreen> {
         //   3. AuthService.currentUser != null — FirebaseAuth SDK. Pode ser null
         //      no Safari por atraso do IndexedDB, mas ainda válido como confirmação.
         //
-        // O guard de Firebase.apps.isEmpty permanece ABSOLUTO (BUILD 294-297).
+        // BUILD 299: FirebaseRuntimeGuard.isUnavailable — guard absoluto via try/catch.
         Builder(builder: (ctx) {
-          if (kIsWeb && Firebase.apps.isEmpty) {
-            debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=firebase_not_ready');
+          if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+            debugPrint('[BUILD299][HomeInlineChatParent] skipped reason=firebase_runtime_unavailable');
             return const SizedBox.shrink();
           }
           // BUILD 298: lógica multi-fonte — qualquer fonte suficiente para render
@@ -483,8 +484,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // Consulta AppProvider, token REST em cache e FirebaseAuth SDK.
           // Oculta apenas quando NENHUMA fonte confirma sessão válida.
           Builder(builder: (ctx) {
-            if (kIsWeb && Firebase.apps.isEmpty) {
-              debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=firebase_not_ready');
+            if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+              debugPrint('[BUILD299][HomeInlineChatParent] skipped reason=firebase_runtime_unavailable');
               return const SizedBox.shrink();
             }
             // BUILD 298: lógica multi-fonte — qualquer fonte suficiente para render
@@ -561,8 +562,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // em build()/didChangeDependencies(). Não montar antes do Firebase estar
           // pronto evita NullError na subscrição do stream em Safari.
           Builder(builder: (ctx) {
-            if (kIsWeb && Firebase.apps.isEmpty) {
-              debugPrint('[BUILD297][HomeScreen] component_skipped reason=firebase_not_ready component=HomeMiGuardiaSection');
+            if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+              debugPrint('[BUILD299][HomeScreen] component_skipped reason=firebase_runtime_unavailable component=HomeMiGuardiaSection');
               return const SizedBox.shrink();
             }
             return _HomeMiGuardiaSection(
@@ -1416,8 +1417,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // No Safari (modo privado, ITP, IndexedDB bloqueado), Firebase.initializeApp()
     // pode falhar. Tentar sendAiMessage() nesse estado causa NullError no SDK.
     // Solução: redirecionar para aba IA completa que tem seu próprio fallback.
-    if (Firebase.apps.isEmpty) {
-      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=firebase_not_ready');
+    if (FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][HomeInlineChat] send_blocked reason=firebase_runtime_unavailable');
       widget.onNavigateToAi(2);
       return;
     }
@@ -1601,8 +1602,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // Firebase nesse estado SEMPRE lança NullError em dart2js release mode.
     // NUNCA usar FirebaseAuth.instance.currentUser aqui — é justamente a fonte do crash.
     // O widget se oculta e será reconstruído quando o Provider notificar init completo.
-    if (kIsWeb && Firebase.apps.isEmpty) {
-      debugPrint('[BUILD298][HomeInlineChat] build_abort reason=firebase_not_ready');
+    if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][HomeInlineChat] build_abort reason=firebase_runtime_unavailable');
       return const SizedBox.shrink();
     }
 

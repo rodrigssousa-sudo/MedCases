@@ -82,6 +82,8 @@ import '../components/patient_accordion.dart';
 import 'internacion_persistence.dart';
 // BUILD 288 DIAG: AuthService.hasCachedToken para diagnóstico de auth no Web
 import '../../../services/auth_service.dart';
+// BUILD 299: FirebaseRuntimeGuard — único ponto seguro de acesso a Firebase.apps
+import '../../../services/firebase_runtime_guard.dart';
 
 // ── Constante de coleção — ÚNICA fonte de verdade para o path ──────────────
 // Build 186 FIX 1: garante que Web, iOS e Android escrevem/leem no mesmo lugar.
@@ -119,11 +121,11 @@ class DeletedSession {
 }
 
 class InternacionFirestoreService {
-  // BUILD 293: guard against Safari Firebase init failure — never call
-  // FirebaseFirestore.instance if Firebase.apps is empty (throws NullError).
+  // BUILD 299: FirebaseRuntimeGuard.isUnavailable substitui Firebase.apps.isEmpty.
+  // Firebase.apps getter pode lançar NullError no Safari (interop JS nulo).
   static FirebaseFirestore get _db {
-    if (Firebase.apps.isEmpty) {
-      throw StateError('[BUILD293] Firebase not initialized — cannot access Firestore');
+    if (FirebaseRuntimeGuard.isUnavailable) {
+      throw StateError('[BUILD299][InternacionFirestoreService] Firebase runtime unavailable — cannot access Firestore');
     }
     return FirebaseFirestore.instance;
   }
@@ -273,18 +275,13 @@ class InternacionFirestoreService {
   //   5. Se auth já está disponível no momento da chamada, abre imediatamente.
   // ─────────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
-    // ── BUILD 293: FIREBASE INIT GUARD ───────────────────────────────────────
-    // Safari/WebKit: se Firebase.initializeApp() falhou (IndexedDB bloqueado,
-    // CORS, modo privado), Firebase.apps estará vazio. Chamar
-    // FirebaseAuth.instance ou FirebaseFirestore.instance nesses browsers
-    // retorna objetos JS nulos que causam:
-    //   TypeError: Instance of 'NullError': type 'NullError' is not a subtype
-    //   of type 'JavaScriptObject'
-    // Solução: retornar stream vazio imediatamente se Firebase não está pronto.
-    // O caller (meu_plantao_dashboard) já trata lista vazia como estado neutro.
-    if (Firebase.apps.isEmpty) {
-      debugPrint('[BUILD293][FIREBASE_GUARD] Firebase não inicializado — '
-          'sessionsStream retorna stream vazio (Safari/init failure)');
+    // ── BUILD 299: FIREBASE RUNTIME GUARD ───────────────────────────────────
+    // FirebaseRuntimeGuard.isUnavailable substitui Firebase.apps.isEmpty.
+    // O getter Firebase.apps lança NullError no Safari quando o interop JS
+    // está em estado nulo (ITP, modo privado, IndexedDB bloqueado).
+    // O guard encapsula o try/catch — nunca lança, sempre retorna bool seguro.
+    if (FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
       return const Stream.empty();
     }
 

@@ -17,8 +17,9 @@
 //   • FIX 3: PatientAccordion hydration fixed via ValueKey(sessionKey)
 
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart'; // BUILD 297: Firebase.apps guard
+import 'package:firebase_core/firebase_core.dart'; // kept for FirebaseApp type ref
 import 'package:flutter/foundation.dart' show kIsWeb;
+import '../services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -339,10 +340,13 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     // BUILD 325 MANDATO 2: _subscribeToSessions() é protegido pelas flags
     // _firestorePermissionDenied e _isInitializingStream internamente —
     // a chamada aqui é segura mesmo em rebuilds frequentes.
-    // BUILD 297: Firebase guard — não abre stream se Firebase não está pronto.
+    // BUILD 299: FirebaseRuntimeGuard.isUnavailable substitui Firebase.apps.isEmpty.
+    // Firebase.apps pode lançar NullError no Safari — guard via try/catch centralizado.
     final uid = p.currentUser?.uid;
-    if (uid != null && !(kIsWeb && Firebase.apps.isEmpty)) {
+    if (uid != null && !(kIsWeb && FirebaseRuntimeGuard.isUnavailable)) {
       _subscribeToSessions(uid);
+    } else if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
     }
 
     final hasPatients = _firestoreSessions.isNotEmpty;
@@ -411,13 +415,13 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     //   • _isInitializingStream == true       (setup em andamento)
     //   • _lastStreamUid == uid               (já subscrito)
     // Garante que build() nunca dispara nova conexão de rede em rebuilds.
-    // BUILD 297: Firebase guard — nunca tenta abrir stream Firestore se
-    // Firebase.apps.isEmpty (Safari ITP/private mode, IndexedDB bloqueado).
-    // InternacionFirestoreService.sessionsStream() acessa Firebase SDK
-    // internamente — acessar antes do init lança NullError em dart2js.
+    // BUILD 299: FirebaseRuntimeGuard.isUnavailable substitui Firebase.apps.isEmpty.
+    // Safari: Firebase.apps getter pode lançar NullError — encapsulado no guard.
     final uid = p.currentUser?.uid;
-    if (uid != null && !(kIsWeb && Firebase.apps.isEmpty)) {
+    if (uid != null && !(kIsWeb && FirebaseRuntimeGuard.isUnavailable)) {
       _subscribeToSessions(uid);
+    } else if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
     }
     final firestoreSessions = _firestoreSessions;
 

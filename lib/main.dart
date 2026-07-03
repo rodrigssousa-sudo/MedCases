@@ -20,6 +20,7 @@ import 'firebase_options.dart';
 import 'theme/app_theme.dart';
 import 'providers/app_provider.dart';
 import 'services/auth_service.dart';
+import 'services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 import 'models/user_model.dart';
 import 'screens/login_screen.dart';
 import 'screens/pre_login_screen.dart';
@@ -146,12 +147,13 @@ Future<void> _bootInBackground(AppProvider provider) async {
   });
 
   // 3. Firebase init — com timeout e sem rethrow
-  // Guard `Firebase.apps.isEmpty` previne dupla inicialização quando o
-  // processo iOS/Android é reutilizado após force-close ou suspensão.
+  // BUILD 299: FirebaseRuntimeGuard.safeApps.isEmpty previne dupla inicialização.
+  // Usando safeApps (try/catch interno) em vez de Firebase.apps.isEmpty direto,
+  // que pode lançar NullError no Safari quando o interop JS está em estado nulo.
   // Sem rethrow: se Firebase falhar, _AuthGate ainda tenta o fluxo web-auth
   // em vez de travar em loading infinito.
   try {
-    if (Firebase.apps.isEmpty) {
+    if (FirebaseRuntimeGuard.safeApps.isEmpty) {
       // Timeout de 8s: se Firebase demorar mais, o app não trava.
       // TimeoutException é capturada pelo catch abaixo — sem rethrow.
       await Firebase.initializeApp(

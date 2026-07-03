@@ -315,25 +315,51 @@ class AiSmartRouter {
       '• Sem prosa. Sem parágrafos. Sem ##. Sem introduções.\n'
       '• A AUTORIDADE DE MATRIZ ao final deste prompt define o template exato.\n';
 
-  // ══ CONTRATO ESTUDO — BUILD 257: isolamento explícito das regras do Plantão ══
+  // ══ CONTRATO ESTUDO — BUILD 299: formato dinâmico por seções numeradas ══════
+  // BUILD 257: isolamento das regras do Plantão.
+  // BUILD 299: reestruturação para formato didático, organizado e previsível.
+  //   Formato anterior: seções fixas (Definição/Fisiopatologia/MoA) — muito rígido.
+  //   Formato novo: 7 seções numeradas, presença condicional por relevância clínica.
+  //   Mantém: prosa acadêmica, negrito em fármacos/doses, sem emojis de Plantão.
+  //   Novo: seções de pegadinhas, resumo final de 3 linhas, aplicação clínica explícita.
   static const String _contractEstudo =
-      'FORMATO OBRIGATÓRIO DA RESPOSTA (Modo Estudo — Preceptor Universitário):\n'
+      'FORMATO OBRIGATÓRIO (Modo Estudo — dynamic_study_v1 — BUILD 299):\n'
       '\n'
       '## [Título clínico específico]\n'
-      'Definição: [1 linha exata]\n'
-      'Fisiopatologia: [2 linhas — pathway + consequência]\n'
-      'Mecanismo de Ação (se farmacológico): [2 linhas — alvo + efeito]\n'
-      '[Seções adicionais: epidemiologia, diagnóstico, tratamento com doses]\n'
-      '📌 [Próximo passo em 1ª pessoa. PONTO FINAL. Nunca "?"]\n'
       '\n'
-      'REGRAS:\n'
-      '• Máximo 30 linhas de conteúdo real. NUNCA truncar em 12 linhas.\n'
-      '• Negrito apenas em fármacos, doses e critérios de guideline.\n'
-      '• Sem emojis de Plantão (🟥/🔄/⛔) como estrutura principal.\n'
-      '• Doses: incluir SOMENTE se explicitamente perguntado.\n'
-      '• Prosa acadêmica densa é ESPERADA e CORRETA neste modo.\n'
-      '• IGNORAR completamente: "22 matrizes dinâmicas", "6-12 linhas por template",\n'
-      '  "REGRA ZERO", "ban de abertura conversacional" — essas regras são EXCLUSIVAS do Plantão.\n';
+      '**1. Conceito central**\n'
+      '[Definição precisa em 1–2 linhas. Primeira frase = essência do tema.]\n'
+      '\n'
+      '**2. Mecanismo / Fisiopatologia**\n'
+      '[2–3 linhas: pathway molecular/fisiológico + consequência clínica direta.]\n'
+      '\n'
+      '**3. Conduta ou aplicação clínica**\n'
+      '[2–3 linhas: o que o médico faz na prática com este conhecimento.]\n'
+      '\n'
+      '**4. Fármacos principais** *(omitir se não farmacológico)*\n'
+      '[Listar apenas os relevantes ao tema. **Nome dose via** — sem digressão.]\n'
+      '\n'
+      '**5. Efeitos adversos ou riscos relevantes** *(omitir se não aplicável)*\n'
+      '[Apenas os que impactam a decisão clínica. 1–3 linhas.]\n'
+      '\n'
+      '**6. Pegadinhas / Pérolas clínicas**\n'
+      '[1–2 armadilhas de prova ou erros comuns. Frases curtas e diretas.]\n'
+      '\n'
+      '**7. Resumo final**\n'
+      '[Exatamente 3 linhas. Síntese densa do que o médico PRECISA lembrar.]\n'
+      '\n'
+      '📌 [Próximo passo ou pergunta de aprofundamento. Em 1ª pessoa. PONTO FINAL.]\n'
+      '\n'
+      'REGRAS DO MODO ESTUDO:\n'
+      '• Seções omissíveis (4, 5): suprimir completamente se não aplicável ao tema.\n'
+      '• Seções obrigatórias: 1, 2, 3, 6, 7 e o 📌 final — SEMPRE presentes.\n'
+      '• Máximo 30 linhas de conteúdo. NUNCA truncar abaixo de 15 linhas.\n'
+      '• Negrito APENAS em fármacos, doses e critérios de guideline.\n'
+      '• Prosa acadêmica densa é ESPERADA e CORRETA. Sem bullet points ação-rápida.\n'
+      '• Sem emojis de Plantão (🟥/🔄/⛔/💊) como estrutura — apenas 📌 ao final.\n'
+      '• Doses: incluir SOMENTE se explicitamente perguntado ou em seção 4.\n'
+      '• IGNORAR: "22 matrizes", "6-12 linhas por template", "REGRA ZERO",\n'
+      '  "ban de abertura conversacional" — EXCLUSIVAS do Plantão.\n';
 
   // ══ CAMADA 4 — Prompt Builder ════════════════════════════════════════════════
   static String _buildPrompt({
@@ -703,6 +729,19 @@ class AiSmartRouter {
           'lang=$lang modules=${loaded}L/${skipped}S '
           'prompt=${finalPrompt.length}c saved=${contextSaved}c '
           'buildMs=${sw.elapsedMilliseconds}');
+    }
+
+    // ── BUILD 299: log diagnóstico do Modo Estudo — sempre em produção ────────
+    // Impresso em print() (não debugPrint) para visibilidade em release mode.
+    // Permite confirmar no Safari/Chrome que o contrato correto foi selecionado
+    // e que as seções dinâmicas estão sendo geradas sem truncamento.
+    if (!isPlantaoMode) {
+      // ignore: avoid_print
+      print('[BUILD299][ESTUDO] contract=dynamic_study_v1 '
+          'sections=1,2,3,[4],[5],6,7,📌 '
+          'promptChars=${finalPrompt.length} '
+          'lang=$lang shrunk=$shrunk '
+          'task=${intent.taskLabel}');
     }
 
     return RouterResult(

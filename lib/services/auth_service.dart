@@ -13,28 +13,25 @@ import 'package:firebase_core/firebase_core.dart'; // BUILD 294: guard Firebase.
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
+import 'firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 import 'firestore_service.dart';
 
 class AuthService {
-  // BUILD 294: Firebase.apps guard — Safari/WebKit pode falhar em
-  // Firebase.initializeApp() (IndexedDB bloqueado, ITP, modo privado).
-  // Acessar FirebaseAuth.instance ou FirebaseFirestore.instance antes da
-  // inicialização lança TypeError: NullError em dart2js release mode.
-  // Solução: verificar Firebase.apps.isNotEmpty antes de qualquer acesso
-  // ao SDK. Callers que usam _auth via nativo (iOS/Android) já passaram
-  // pela tela de splash e pelo Firebase.initializeApp() — o guard é
-  // redundante mas nunca danoso em plataformas onde Firebase sempre inicia.
+  // BUILD 299: FirebaseRuntimeGuard substitui Firebase.apps direto.
+  // O getter Firebase.apps lança NullError no Safari quando o interop JS
+  // está em estado nulo — detectado pelo stack trace do BUILD 297/299.
+  // FirebaseRuntimeGuard.isUnavailable/isReady encapsula o try/catch.
   static FirebaseAuth get _auth {
-    if (Firebase.apps.isEmpty) {
-      throw StateError('[BUILD294][AuthService] Firebase não inicializado — '
+    if (FirebaseRuntimeGuard.isUnavailable) {
+      throw StateError('[BUILD299][AuthService] Firebase não inicializado — '
           '_auth inacessível. Verifique Firebase.initializeApp() no boot.');
     }
     return FirebaseAuth.instance;
   }
 
   static FirebaseFirestore get _db {
-    if (Firebase.apps.isEmpty) {
-      throw StateError('[BUILD294][AuthService] Firebase não inicializado — '
+    if (FirebaseRuntimeGuard.isUnavailable) {
+      throw StateError('[BUILD299][AuthService] Firebase não inicializado — '
           '_db inacessível. Verifique Firebase.initializeApp() no boot.');
     }
     return FirebaseFirestore.instance;
@@ -60,16 +57,16 @@ class AuthService {
   // Stream.empty() em vez de lançar StateError — previne NullError na _AuthGate.
   // currentUser retorna null — caller verifica null antes de usar.
   static Stream<User?> get authStateChanges {
-    if (Firebase.apps.isEmpty) {
-      debugPrint('[BUILD294][AuthService] authStateChanges: Firebase não pronto — Stream.empty()');
+    if (FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][AuthService] authStateChanges: Firebase runtime unavailable — Stream.empty()');
       return const Stream.empty();
     }
     return _auth.authStateChanges();
   }
 
   static User? get currentUser {
-    if (Firebase.apps.isEmpty) {
-      debugPrint('[BUILD294][AuthService] currentUser: Firebase não pronto — null');
+    if (FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][AuthService] currentUser: Firebase runtime unavailable — null');
       return null;
     }
     return _auth.currentUser;

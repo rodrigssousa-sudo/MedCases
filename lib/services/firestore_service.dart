@@ -13,6 +13,7 @@ import '../models/clinical_case_model.dart';
 import '../models/clinical_history_model.dart';
 import '../models/guide_model.dart';
 import 'auth_service.dart';
+import 'firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 
 class FirestoreService {
   // ── Safe type helpers — imunes a TypeError em dart2js release mode ───────
@@ -241,12 +242,10 @@ class FirestoreService {
     return result;
   }
 
-  // BUILD 294: Firebase init guard — Safari/WebKit pode falhar em
-  // Firebase.initializeApp() (IndexedDB bloqueado, modo privado, CORS).
-  // Chamar FirebaseFirestore.instance quando Firebase.apps.isEmpty lança
-  // TypeError: type 'NullError' is not a subtype of type 'JavaScriptObject'.
-  // Solução: verificar Firebase.apps.isNotEmpty antes de qualquer acesso.
-  static bool get _isFirebaseReady => Firebase.apps.isNotEmpty;
+  // BUILD 299: FirebaseRuntimeGuard.isReady substitui Firebase.apps.isNotEmpty.
+  // O getter Firebase.apps pode lançar NullError no Safari (interop JS nulo).
+  // FirebaseRuntimeGuard encapsula o try/catch — nunca lança, sempre retorna bool.
+  static bool get _isFirebaseReady => FirebaseRuntimeGuard.isReady;
 
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
   static FirebaseFirestore get _db {
