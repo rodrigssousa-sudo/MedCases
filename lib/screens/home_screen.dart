@@ -73,6 +73,29 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    debugPrint('[BUILD297][HomeScreen] build_start');
+    try {
+      final result = _buildHomeSafe(context);
+      debugPrint('[BUILD297][HomeScreen] build_ok');
+      return result;
+    } catch (e, st) {
+      debugPrint('[BUILD297][HomeScreen][FATAL_BUILD_ERROR] error=$e');
+      debugPrint('$st');
+      return const _HomeSafeLoadingShell();
+    }
+  }
+
+  Widget _buildHomeSafe(BuildContext context) {
+    // ── GUARD 1 (ABSOLUTO): Firebase não inicializado ────────────────────────
+    // Safari (modo privado, ITP, IndexedDB bloqueado) pode falhar em
+    // Firebase.initializeApp() silenciosamente. Nesse estado, qualquer
+    // acesso a Firebase SDK (Auth, Firestore) lança NullError em dart2js.
+    // A Home renderiza limpa/parcial enquanto aguarda o init completo.
+    if (kIsWeb && Firebase.apps.isEmpty) {
+      debugPrint('[BUILD297][HomeScreen] build_abort reason=firebase_not_ready');
+      return const _HomeSafeLoadingShell();
+    }
+
     // ── NULL-SAFETY GUARD — trava de segurança contra tela branca ─────────────
     // Em flutter clean / primeiro boot, o AppProvider pode estar em estado de
     // inicialização incompleta. context.select/read jamais deve crashar silenciosamente.
@@ -87,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
       p    = context.read<AppProvider>();
     } catch (e, st) {
-      debugPrint('ERRO CRÍTICO HOME [build/provider-read]: $e\n$st');
+      debugPrint('[BUILD297][HomeScreen] component_skipped reason=provider_not_ready error=$e');
       // Fallback seguro: mostra spinner centralizado enquanto provider carrega.
       // O framework vai reconstruir este widget quando o provider estiver pronto.
       return const _HomeSafeLoadingShell();
@@ -108,28 +131,23 @@ class _HomeScreenState extends State<HomeScreen> {
     // bloqueava a entrada no branch mobile e forçava desktop mesmo em 375px.
     // Com a remoção, a decisão é puramente dimensional — funciona corretamente
     // em todos os contextos: browser desktop, DevTools emulator e app nativo.
-    try {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          final width = constraints.maxWidth;
-          // Desktop: layout em 2 colunas — EXCLUSIVO para Web ≥ 1024 px.
-          // Nativo (iOS/Android/iPad): sempre usa _buildMobileLayout, mesmo em
-          // landscape com largura ≥ 1024 px — os cards estão por trás de
-          // guard `if (kIsWeb)` no desktop layout e ficariam invisíveis.
-          // Fix B143: kIsWeb garante que iPad nativo nunca entra aqui.
-          if (width >= 1024 && kIsWeb) {
-            // MedBreakpoints.fromWidth para não ler MediaQuery (evita stale)
-            final bp = MedBreakpoints.fromWidth(width);
-            return _buildDesktopLayout(context, dark, isEs, p, bp);
-          }
-          // Mobile / tablet / iPad nativo — layout nativo com max-width no tablet
-          return _buildMobileLayout(context, dark, isEs, p, availableWidth: width);
-        },
-      );
-    } catch (e, st) {
-      debugPrint('ERRO CRÍTICO HOME [build/layout]: $e\n$st');
-      return const _HomeSafeLoadingShell();
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        // Desktop: layout em 2 colunas — EXCLUSIVO para Web ≥ 1024 px.
+        // Nativo (iOS/Android/iPad): sempre usa _buildMobileLayout, mesmo em
+        // landscape com largura ≥ 1024 px — os cards estão por trás de
+        // guard `if (kIsWeb)` no desktop layout e ficariam invisíveis.
+        // Fix B143: kIsWeb garante que iPad nativo nunca entra aqui.
+        if (width >= 1024 && kIsWeb) {
+          // MedBreakpoints.fromWidth para não ler MediaQuery (evita stale)
+          final bp = MedBreakpoints.fromWidth(width);
+          return _buildDesktopLayout(context, dark, isEs, p, bp);
+        }
+        // Mobile / tablet / iPad nativo — layout nativo com max-width no tablet
+        return _buildMobileLayout(context, dark, isEs, p, availableWidth: width);
+      },
+    );
   }
 
   Widget _buildDesktopLayout(BuildContext context, bool dark, bool isEs, AppProvider p, MedBreakpoints bp) {
@@ -201,12 +219,27 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 14),
 
         // ── IA MedCases Chat — expansão vertical dinâmica (desktop) ─────────
-        // Build 100+: sem SizedBox de altura fixa — mesma lógica do mobile.
-        _HomeInlineChat(
-          dark: dark,
-          isEs: isEs,
-          onNavigateToAi: widget.onTabChange,
-        ),
+        // BUILD 297: guard no pai — não monta _HomeInlineChat se Firebase/Auth
+        // não estiver pronto. Evita o NullError que acontecia mesmo com o guard
+        // interno (BUILD 296), pois o próprio construtor do widget pode falhar
+        // antes do build() ser chamado em Safari.
+        Builder(builder: (ctx) {
+          if (kIsWeb && Firebase.apps.isEmpty) {
+            debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=firebase_not_ready');
+            return const SizedBox.shrink();
+          }
+          final safeUser = AuthService.currentUser;
+          if (kIsWeb && safeUser == null) {
+            debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=auth_user_null');
+            return const SizedBox.shrink();
+          }
+          debugPrint('[BUILD297][HomeInlineChatParent] render_inline_chat=true');
+          return _HomeInlineChat(
+            dark: dark,
+            isEs: isEs,
+            onNavigateToAi: widget.onTabChange,
+          );
+        }),
         const SizedBox(height: 14),
 
         // ── Timer Rápido de Plantão ───────────────────────────────────────
@@ -415,11 +448,26 @@ class _HomeScreenState extends State<HomeScreen> {
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
           // Azul MedCases IA após Build 138. O chat cresce naturalmente com
           // cada turno, empurrando os cards abaixo no scroll.
-          _HomeInlineChat(
-            dark: dark,
-            isEs: isEs,
-            onNavigateToAi: widget.onTabChange,
-          ),
+          // BUILD 297: guard no pai — não monta _HomeInlineChat se Firebase/Auth
+          // não estiver pronto. O widget fica oculto (SizedBox.shrink) e será
+          // reconstruído quando o Provider notificar que o Firebase está pronto.
+          Builder(builder: (ctx) {
+            if (kIsWeb && Firebase.apps.isEmpty) {
+              debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=firebase_not_ready');
+              return const SizedBox.shrink();
+            }
+            final safeUser = AuthService.currentUser;
+            if (kIsWeb && safeUser == null) {
+              debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=auth_user_null');
+              return const SizedBox.shrink();
+            }
+            debugPrint('[BUILD297][HomeInlineChatParent] render_inline_chat=true');
+            return _HomeInlineChat(
+              dark: dark,
+              isEs: isEs,
+              onNavigateToAi: widget.onTabChange,
+            );
+          }),
           const SizedBox(height: 4),  // ORDEM 45: esmagamento soberano 8→4
 
           // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
@@ -464,33 +512,42 @@ class _HomeScreenState extends State<HomeScreen> {
           // Estrutura interna intacta em: lib/widgets/meu_plantao_dashboard.dart
           // ══════════════════════════════════════════════════════════════════
           // ORDEM 37 M1: Mi Guardia / Meu Plantão restaurado
-          _HomeMiGuardiaSection(
-            dark: dark,
-            isEs: isEs,
-            onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
-            onOpenCalc: (calcId) {
-              const calcTabMap = {
-                'calc_biometria': 0, 'calc_scores': 0, 'calc_cardio': 1,
-                'calc_eletrólitos': 2, 'calc_infusao': 0,
-                'calc_referencia': 3, 'calc_prescricoes': 0, // SUPER ORDEM VISUAL 10: 4 tabs
-                'calc_pediatria': 0, // SUPER ORDEM VISUAL 10: fallback → BIOMETRIA
-              };
-              toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
-              widget.onTabChange(4);
-            },
-            onManageTap: () => showPlantaoManageSheet(context),
-            // BUILD 319: rootNavigator:true → InternacionScreen sobe ACIMA do
-            // MainShell e da _FloatingFooter — zero sobreposição de dock.
-            onOpenInternacion: (session) =>
-                Navigator.of(context, rootNavigator: true).push(
-              HomeScreen.slideRoute(
-                _AdultoShell(
-                  openProtocol: widget.openProtocol,
-                  initialSession: session,
+          // BUILD 297: guard no pai — MeuPlantaoDashboard abre stream Firestore
+          // em build()/didChangeDependencies(). Não montar antes do Firebase estar
+          // pronto evita NullError na subscrição do stream em Safari.
+          Builder(builder: (ctx) {
+            if (kIsWeb && Firebase.apps.isEmpty) {
+              debugPrint('[BUILD297][HomeScreen] component_skipped reason=firebase_not_ready component=HomeMiGuardiaSection');
+              return const SizedBox.shrink();
+            }
+            return _HomeMiGuardiaSection(
+              dark: dark,
+              isEs: isEs,
+              onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
+              onOpenCalc: (calcId) {
+                const calcTabMap = {
+                  'calc_biometria': 0, 'calc_scores': 0, 'calc_cardio': 1,
+                  'calc_eletrólitos': 2, 'calc_infusao': 0,
+                  'calc_referencia': 3, 'calc_prescricoes': 0, // SUPER ORDEM VISUAL 10: 4 tabs
+                  'calc_pediatria': 0, // SUPER ORDEM VISUAL 10: fallback → BIOMETRIA
+                };
+                toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+                widget.onTabChange(4);
+              },
+              onManageTap: () => showPlantaoManageSheet(context),
+              // BUILD 319: rootNavigator:true → InternacionScreen sobe ACIMA do
+              // MainShell e da _FloatingFooter — zero sobreposição de dock.
+              onOpenInternacion: (session) =>
+                  Navigator.of(context, rootNavigator: true).push(
+                HomeScreen.slideRoute(
+                  _AdultoShell(
+                    openProtocol: widget.openProtocol,
+                    initialSession: session,
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          }),
           const SizedBox(height: 10),
 
           // ── BLOCO WEB-ONLY — EMERGÊNCIAS RÁPIDAS ────────────────────────────

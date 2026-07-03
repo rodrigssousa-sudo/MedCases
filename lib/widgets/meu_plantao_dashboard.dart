@@ -17,6 +17,8 @@
 //   • FIX 3: PatientAccordion hydration fixed via ValueKey(sessionKey)
 
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart'; // BUILD 297: Firebase.apps guard
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
@@ -337,8 +339,11 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     // BUILD 325 MANDATO 2: _subscribeToSessions() é protegido pelas flags
     // _firestorePermissionDenied e _isInitializingStream internamente —
     // a chamada aqui é segura mesmo em rebuilds frequentes.
+    // BUILD 297: Firebase guard — não abre stream se Firebase não está pronto.
     final uid = p.currentUser?.uid;
-    if (uid != null) _subscribeToSessions(uid);
+    if (uid != null && !(kIsWeb && Firebase.apps.isEmpty)) {
+      _subscribeToSessions(uid);
+    }
 
     final hasPatients = _firestoreSessions.isNotEmpty;
     final hasDrugs    = (p.pinnedDrugs).isNotEmpty;
@@ -406,8 +411,14 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     //   • _isInitializingStream == true       (setup em andamento)
     //   • _lastStreamUid == uid               (já subscrito)
     // Garante que build() nunca dispara nova conexão de rede em rebuilds.
+    // BUILD 297: Firebase guard — nunca tenta abrir stream Firestore se
+    // Firebase.apps.isEmpty (Safari ITP/private mode, IndexedDB bloqueado).
+    // InternacionFirestoreService.sessionsStream() acessa Firebase SDK
+    // internamente — acessar antes do init lança NullError em dart2js.
     final uid = p.currentUser?.uid;
-    if (uid != null) _subscribeToSessions(uid);
+    if (uid != null && !(kIsWeb && Firebase.apps.isEmpty)) {
+      _subscribeToSessions(uid);
+    }
     final firestoreSessions = _firestoreSessions;
 
     // ── Leitura defensiva de listas — nunca acessa null diretamente ──────────
