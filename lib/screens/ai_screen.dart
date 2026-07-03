@@ -2022,58 +2022,37 @@ class _AiScreenState extends State<AiScreen> {
     return null;
   }
 
-  // ── BUILD 300: NEXT_ACTION_PROMPT tag helpers ────────────────────────────
-  // A IA gera [NEXT_ACTION_PROMPT: Pergunta avançada aqui] no fim das respostas
-  // de Modo Estudo. Este helper extrai o prompt da tag e remove a tag do texto
-  // visível ao usuário, mantendo a bolha limpa.
-  //
-  // Retorna '' se a tag não estiver presente (Modo Plantão ou resposta de estudo
-  // sem tag — não deve ocorrer, mas defensivo).
+  // ── BUILD 301: tag helpers — sistema de tag dupla ────────────────────────
+  // A IA gera no final absoluto de cada resposta de Modo Estudo duas tags:
+  //   [NEXT_ACTION_LABEL: Rótulo Curto]   → texto exato do botão azul
+  //   [NEXT_ACTION_PROMPT: Query Avançada] → query oculta disparada no clique
+  // Ambas são extraídas e expurgadas do texto visível na bolha.
+
+  // Extrai o conteúdo de [NEXT_ACTION_PROMPT:...].
+  // Retorna '' se ausente (Modo Plantão ou resposta sem tag).
   static String _extractNextActionTag(String text) {
     final rx = RegExp(r'\[NEXT_ACTION_PROMPT:\s*(.*?)(?:\]|$)', dotAll: true);
     final m = rx.firstMatch(text);
     return m != null ? (m.group(1) ?? '').trim() : '';
   }
 
-  // Remove a tag [NEXT_ACTION_PROMPT:...] do texto exibido ao usuário.
+  // Extrai o conteúdo de [NEXT_ACTION_LABEL:...].
+  // BUILD 301: rótulo 100% dinâmico — texto exato proposto pela IA para o botão.
+  // Retorna '' se ausente (fallback neutro será aplicado pelo _ActionButtonsRow).
+  static String _extractNextActionLabel(String text) {
+    final rx = RegExp(r'\[NEXT_ACTION_LABEL:\s*(.*?)(?:\]|$)', dotAll: true);
+    final m = rx.firstMatch(text);
+    return m != null ? (m.group(1) ?? '').trim() : '';
+  }
+
+  // Remove AMBAS as tags do texto exibido ao usuário — bolha sempre limpa.
   static String _cleanNextActionTag(String text) {
     return text
         .replaceAll(
+            RegExp(r'\[NEXT_ACTION_LABEL:\s*.*?(?:\]|$)', dotAll: true), '')
+        .replaceAll(
             RegExp(r'\[NEXT_ACTION_PROMPT:\s*.*?(?:\]|$)', dotAll: true), '')
         .trimRight();
-  }
-
-  // Extrai um rótulo curto e inteligente do prompt gerado pela IA.
-  // Regras: prefere palavras-chave de conduta, terapêutica, manejo.
-  // Fallback: primeiras 4 palavras do prompt.
-  static String _studyButtonLabel(String nextPrompt, String lang) {
-    if (nextPrompt.isEmpty) return '';
-    final p = nextPrompt.toLowerCase();
-    // Detectar intenção do próximo passo para gerar label contextual
-    final isTratamento = p.contains('tratamento') || p.contains('terapêutica') ||
-        p.contains('terapeutica') || p.contains('tratamiento') ||
-        p.contains('conduta') || p.contains('conduta') || p.contains('manejo') ||
-        p.contains('doses') || p.contains('dosis') || p.contains('fármacos') ||
-        p.contains('farmacos') || p.contains('farmacológico') ||
-        p.contains('farmacologico');
-    final isMonitorizacao = p.contains('monitorização') || p.contains('monitorizacao') ||
-        p.contains('monitorización') || p.contains('ajuste de dose') ||
-        p.contains('ajuste de dosis') || p.contains('situações especiais') ||
-        p.contains('situaciones especiales');
-    final isAchados = p.contains('achados') || p.contains('patológicos') ||
-        p.contains('patologicos') || p.contains('alterado') ||
-        p.contains('hallazgos') || p.contains('interpretação') ||
-        p.contains('interpretacion');
-    if (lang == 'es') {
-      if (isTratamento)     return 'Ver Tratamiento y Dosis';
-      if (isMonitorizacao)  return 'Monitorización y Ajuste';
-      if (isAchados)        return 'Hallazgos Patológicos';
-      return 'Avanzar Estudio';
-    }
-    if (isTratamento)     return 'Ver Conduta e Manejo';
-    if (isMonitorizacao)  return 'Monitorização e Ajuste';
-    if (isAchados)        return 'Achados e Interpretação';
-    return 'Avançar Estudo';
   }
 
   void _copyMsg(String text) {
@@ -2377,15 +2356,21 @@ class _AiScreenState extends State<AiScreen> {
               // Evidência farmacológica: só detectar se NÃO for safe-card
               final detectedEv = _isSafeCard ? null : _detectDrugEvidence(msg.text);
 
-              // ── BUILD 300: NEXT_ACTION_PROMPT tag — extrai e limpa ────────────
-              // No Modo Estudo a IA gera a tag oculta [NEXT_ACTION_PROMPT: Pergunta].
-              // A tag é extraída para gerar o botão azul dinâmico e REMOVIDA do texto
-              // visível na bolha. O msg.text original é preservado (hash estável).
+              // ── BUILD 301: tag dupla — extrai LABEL + PROMPT, limpa bolha ────
+              // A IA gera ao final de cada resposta de Modo Estudo:
+              //   [NEXT_ACTION_LABEL: Rótulo Curto]    → texto exato do botão azul
+              //   [NEXT_ACTION_PROMPT: Query Avançada] → query disparada no clique
+              // Ambas são extraídas e removidas do texto visível na bolha.
+              // msg.text original é preservado intacto (hash estável para cache).
               final String _nextActionPrompt = !_longResponse
-                  ? '' // Modo Plantão — sem tag
+                  ? '' // Modo Plantão — sem tags
                   : _extractNextActionTag(msg.text);
-              // cleanDisplayText: texto sem a tag para exibição na bolha
-              final String _cleanDisplayText = _nextActionPrompt.isNotEmpty
+              final String _nextActionLabel = !_longResponse
+                  ? ''
+                  : _extractNextActionLabel(msg.text);
+              // cleanDisplayText: texto sem nenhuma das duas tags
+              final bool _hasStudyTags = _nextActionPrompt.isNotEmpty || _nextActionLabel.isNotEmpty;
+              final String _cleanDisplayText = _hasStudyTags
                   ? _cleanNextActionTag(msg.text)
                   : msg.text;
 
@@ -2398,7 +2383,7 @@ class _AiScreenState extends State<AiScreen> {
               // Elimina duplicação de cards pós-refresh e alivia o rebuild do histórico.
               if (kDebugMode) {
                 debugPrint('[RENDER_56] msgId=${msg.id} → _AiBubble unificado'
-                    '${_nextActionPrompt.isNotEmpty ? " [BUILD300] nextActionTag=found" : ""}');
+                    '${_hasStudyTags ? " [BUILD301] label=\"$_nextActionLabel\"" : ""}');
               }
 
               // BUILD 276: Fade-in wrapper — applied only to the freshly committed
@@ -2505,11 +2490,11 @@ class _AiScreenState extends State<AiScreen> {
                           );
                           _extToolCache[extKey] = resolvedLink;
                         }
-                        // BUILD 300: label dinâmico para o botão azul do Modo Estudo
-                        final studyLabel = _studyButtonLabel(_nextActionPrompt, p.lang);
-                        if (kDebugMode && _nextActionPrompt.isNotEmpty) {
-                          debugPrint('[BUILD300][NEXT_ACTION] msgId=${msg.id} '
-                              'label="$studyLabel" '
+                        // BUILD 301: label 100% dinâmico — vem direto da tag [NEXT_ACTION_LABEL]
+                        // gerada pela IA. Sem inferência local, sem fallbacks engessados.
+                        if (kDebugMode && _hasStudyTags) {
+                          debugPrint('[BUILD301][NEXT_ACTION] msgId=${msg.id} '
+                              'label="$_nextActionLabel" '
                               'promptChars=${_nextActionPrompt.length}');
                         }
                         return _ActionButtonsRow(
@@ -2521,7 +2506,7 @@ class _AiScreenState extends State<AiScreen> {
                           chatHistory: _messages.map((m) => m.text).toList(),
                           cachedLink: resolvedLink,
                           studyNextPrompt: _nextActionPrompt,
-                          studyNextLabel: studyLabel,
+                          studyNextLabel: _nextActionLabel,
                           onActionTap: (prompt) {
                             if (_isStreaming) return;
                             _userScrolledUp = false;
@@ -3971,12 +3956,15 @@ class _ActionButtonsRow extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // Label do botão IA:
-    // Modo Estudo com tag: usa studyNextLabel (dinâmico e contextual)
-    // Modo Estudo sem tag / Plantão: usa label genérico
+    // BUILD 301: label do botão azul — 100% dinâmico via tag [NEXT_ACTION_LABEL].
+    // hasStudyNext=true → studyNextLabel vem direto da tag gerada pela IA.
+    // Fallback neutro só para Modo Plantão ou resposta de Estudo sem tags
+    // (não deve ocorrer em produção, mas defensivo).
     final aiLabel = hasStudyNext
         ? studyNextLabel
-        : (lang == 'es' ? 'Conductas y dosis' : 'Condutas e doses');
+        : (action.label.isNotEmpty
+            ? action.label
+            : (lang == 'es' ? 'Avanzar Estudio' : 'Avançar Estudo'));
 
     // ── ORDEM VISUAL 02 M2: Emoji Stripper ───────────────────────────────────
     // Remove emojis e símbolos especiais do início dos labels antes de exibir.
