@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart'; // BUILD 296: AuthService.currentUser guard
 import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -1238,7 +1239,13 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       final existing = prefs.getString(histKey);
       List<dynamic> histList = [];
       if (existing != null && existing.isNotEmpty) {
-        try { histList = jsonDecode(existing) as List; } catch (_) {}
+        // BUILD 296: cast seguro — jsonDecode retorna dynamic; em Safari o tipo
+        // JS pode não satisfazer 'as List' mas satisfaz 'as List<dynamic>'.
+        // Envolto em try/catch para nunca lançar mesmo com JSON malformado.
+        try {
+          final decoded = jsonDecode(existing);
+          if (decoded is List) histList = decoded;
+        } catch (_) {}
       }
       // Remove entrada antiga com o mesmo ID (atualização incremental)
       histList.removeWhere((e) => e is Map && e['id'] == stableSessionId);
@@ -1484,42 +1491,49 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 295: readiness guard — se o Provider não está pronto (Safari boot
-    // lento ou Firebase init falhou), retorna SizedBox.shrink() silenciosamente.
-    // NUNCA lança exceção durante build — isso crasharia o boot inteiro.
-    // O widget será reconstruído automaticamente quando o Provider notificar.
-    // context.read<AppProvider>() é non-nullable por contrato do Provider package;
-    // o try/catch cobre o caso de LookupError quando o Provider não está na árvore.
-    try {
-      context.read<AppProvider>(); // guard: valida que o Provider está disponível
-    } catch (_) {
-      debugPrint('[BUILD295][HomeInlineChat] skipped reason=provider_not_ready');
+    debugPrint('[BUILD296][HomeInlineChat] build_start');
+
+    // ── GUARD 1 (ABSOLUTO): Firebase não inicializado ────────────────────────
+    // No Safari (modo privado, ITP, IndexedDB bloqueado) Firebase.initializeApp()
+    // pode falhar silenciosamente. Acessar FirebaseAuth.instance ou qualquer SDK
+    // Firebase nesse estado SEMPRE lança NullError em dart2js release mode.
+    // NUNCA usar FirebaseAuth.instance.currentUser aqui — é justamente a fonte do crash.
+    // O widget se oculta e será reconstruído quando o Provider notificar init completo.
+    if (kIsWeb && Firebase.apps.isEmpty) {
+      debugPrint('[BUILD296][HomeInlineChat] build_abort reason=firebase_not_ready');
       return const SizedBox.shrink();
     }
 
-    // ── NULL-SAFETY: wrap total do build do InlineChat ───────────────────────
-    // BUILD 295: catch captura NullError residuais de widgets filhos.
-    // Exibe fallback visual minimalista — nunca tela branca nem crash de boot.
+    // ── GUARD 2: usuário nulo no Safari/Web ──────────────────────────────────
+    // AuthService.currentUser já está protegido com Firebase.apps.isEmpty check
+    // (BUILD 294) — retorna null graciosamente sem acessar FirebaseAuth.instance.
+    // Nunca usar FirebaseAuth.instance.currentUser! aqui.
+    final safeUser = AuthService.currentUser;
+    if (safeUser == null && kIsWeb) {
+      debugPrint('[BUILD296][HomeInlineChat] build_abort reason=auth_user_null');
+      return const SizedBox.shrink();
+    }
+
+    // ── GUARD 3: Provider não disponível na árvore ───────────────────────────
+    // context.read() pode lançar ProviderNotFoundException se o widget foi
+    // recriado num microtask antes do Provider ser montado.
     try {
-      return _buildChatContent(context);
+      context.read<AppProvider>();
+    } catch (_) {
+      debugPrint('[BUILD296][HomeInlineChat] build_abort reason=provider_not_ready');
+      return const SizedBox.shrink();
+    }
+
+    // ── BUILD PRINCIPAL: wrap total com catch para erros residuais ───────────
+    // SizedBox.shrink() é mais seguro que Container() como fallback — não tem
+    // subwidgets que possam lançar durante o seu próprio build.
+    try {
+      final result = _buildChatContent(context);
+      debugPrint('[BUILD296][HomeInlineChat] build_ok');
+      return result;
     } catch (e, st) {
-      debugPrint('[BUILD295][HomeInlineChat] build_error: $e\n$st');
-      // BUILD 295: log adicional para identificar o operador ! responsável
-      debugPrint('[BUILD295][HomeInlineChat] no_unsafe_null_check — se chegou aqui, erro é em widget filho');
-      return Container(
-        height: 120,
-        decoration: BoxDecoration(
-          color: const Color(0xFF252930),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.07)),
-        ),
-        child: Center(
-          child: CircularProgressIndicator(
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
-            strokeWidth: 2,
-          ),
-        ),
-      );
+      debugPrint('[BUILD296][HomeInlineChat][ERROR] error=$e stack=$st');
+      return const SizedBox.shrink();
     }
   }
 
