@@ -1,5 +1,6 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// clinical_thread_manager.dart — Clinical Thread & Context Manager (Build 249)
+// clinical_thread_manager.dart — Clinical Thread & Context Manager
+// BUILD 249 (origin) → BUILD 304 PURIF-1 (production seal)
 //
 // PROBLEMA RESOLVIDO:
 //   Context contamination / cross-case poisoning — _aiHistory acumulava turnos
@@ -440,9 +441,20 @@ class ClinicalThreadManager {
       // transporte — nova sessão começa limpa sem contaminação de contexto antigo.
       // O histórico LOCAL permanece intacto para exibição visual.
       final nowMs = DateTime.now().millisecondsSinceEpoch;
-      final studyInactiveMs = _lastStudyActivityMs > 0
-          ? nowMs - _lastStudyActivityMs
-          : 0;
+      // ── PURIF-3b BUILD 304: Defesa contra clock-drift (web/Safari) ───────
+      // Abas em suspensão profunda podem sofrer skew de relógio: ao acordar,
+      // DateTime.now() pode retornar um valor ligeiramente MENOR que o registrado
+      // em _lastStudyActivityMs (delta negativo). Isso nunca expiraria o TTL.
+      // Tratamento: se delta < 0 (clock retroativo detectado), resetamos o
+      // baseline silenciosamente — a sessão reinicia sem quebra de runtime.
+      final rawDelta = _lastStudyActivityMs > 0 ? nowMs - _lastStudyActivityMs : 0;
+      if (rawDelta < 0) {
+        // Clock retroativo: realinha baseline sem descartar histórico.
+        _lastStudyActivityMs = nowMs;
+        debugPrint('[BUILD304][CLOCK_DRIFT] delta_negativo=$rawDelta ms '
+            '— baseline realinhado silenciosamente (web tab wakeup)');
+      }
+      final studyInactiveMs = rawDelta < 0 ? 0 : rawDelta;
       final studySessionExpired = studyInactiveMs > kStudySessionTtlMs;
 
       if (studySessionExpired && fullHistory.isNotEmpty) {
@@ -518,7 +530,9 @@ class ClinicalThreadManager {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // reset() — limpa estado do thread (chamado ao limpar chat ou logout)
+  // reset() — limpa estado de instância do thread (chamado ao limpar chat
+  // ou logout). Pare resetar os campos estáticos de sessão (BUILD 304),
+  // chame também resetStaticState().
   // ─────────────────────────────────────────────────────────────────────────
   void reset() {
     _activeTopic = '';
@@ -526,6 +540,26 @@ class ClinicalThreadManager {
     _turnCount = 0;
     _lastActivityMs = 0;
     _threadStartQuery = '';
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // resetStaticState() — BUILD 304 PURIF-1: limpa campos estáticos de sessão.
+  //
+  // PROBLEMA RESOLVIDO — GAP DE HOT-RESTART / TROCA DE CONTA:
+  //   _lastStudyActivityMs e _lastTaskLabel são static — sobrevivem ao dispose()
+  //   do AppProvider e ao logout. Num hot-restart ou troca de conta sem reinício
+  //   completo do processo, esses valores ficam "fantasmas" da sessão anterior:
+  //   • _lastTaskLabel stale → intent-reset falso positivo na primeira mensagem
+  //   • _lastStudyActivityMs stale → TTL de 6h calculado incorretamente
+  //
+  // SOLUÇÃO: chamar resetStaticState() JUNTO com reset() em todo ponto de logout
+  // ou limpeza de conversa, garantindo que a próxima sessão sempre comece do zero.
+  // ─────────────────────────────────────────────────────────────────────────
+  static void resetStaticState() {
+    _lastStudyActivityMs = 0;
+    _lastTaskLabel = '';
+    debugPrint('[BUILD304][STATIC_RESET] _lastStudyActivityMs=0 _lastTaskLabel="" '
+        '— static session state cleared (logout/new-conversation/hot-restart)');
   }
 
   // ─────────────────────────────────────────────────────────────────────────

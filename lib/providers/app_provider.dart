@@ -598,7 +598,8 @@ class AppProvider extends ChangeNotifier {
     // Limpa chave, histórico de IA e estado Gemini ao fazer logout
     _openAiKey = '';
     _aiHistory.clear();
-    _threadManager.reset(); // BUILD 249: reset thread clínico ao fazer logout
+    _threadManager.reset();                  // BUILD 249: reset thread clínico ao fazer logout
+    ClinicalThreadManager.resetStaticState(); // BUILD 304 PURIF-1: limpa _lastTaskLabel/_lastStudyActivityMs
     _geminiConnected = false;
     _geminiEmail = '';
     _geminiRetryAfter = null;
@@ -1772,7 +1773,8 @@ class AppProvider extends ChangeNotifier {
     cancelAiStream(); // cancela streaming em curso se houver
     _aiHistory.clear();
     _sessionLockedLang = null; // reset language lock ao iniciar nova sessão
-    _threadManager.reset(); // BUILD 249: reset thread ao iniciar nova conversa
+    _threadManager.reset();                  // BUILD 249: reset thread ao iniciar nova conversa
+    ClinicalThreadManager.resetStaticState(); // BUILD 304 PURIF-1: limpa _lastTaskLabel/_lastStudyActivityMs
     ClinicalThreadAudit.logFoundComponents(); // BUILD 249: audit log uma vez por sessão
   }
 
@@ -1853,7 +1855,8 @@ class AppProvider extends ChangeNotifier {
     _aiHistory.clear();         // limpa histórico de mensagens enviadas à API
     _sessionLockedLang = null;  // libera language lock
     _sessionMemory.reset();     // zera memória clínica estruturada (diag, meds, labs)
-    _threadManager.reset();     // BUILD 249: reset thread clínico ativo
+    _threadManager.reset();                  // BUILD 249: reset thread clínico ativo
+    ClinicalThreadManager.resetStaticState(); // BUILD 304 PURIF-1: limpa _lastTaskLabel/_lastStudyActivityMs
     debugPrint('[AppProvider] resetAiSessionFull — sessão clínica zerada');
   }
 
