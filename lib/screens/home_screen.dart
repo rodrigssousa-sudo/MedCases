@@ -1104,18 +1104,19 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   @override
   void initState() {
     super.initState();
-    // ── LOG DE DIAGNÓSTICO — captura falhas de inicialização do InlineChat ────
-    // Se o provider não estiver disponível ao montar, o erro aparecerá aqui.
-    // Visível no Xcode Console / flutter logs (apenas debug mode).
+    // BUILD 295: log diagnóstico com tag estruturada — visível no Safari Web Console.
+    // Garante que qualquer crash imediatamente após este log aponta para o
+    // código ABAIXO de initState (provider, focus, etc.) — nunca para o initState
+    // em si, que é intencionalmente mínimo e livre de dependências assíncronas.
     try {
-      debugPrint('[HomeInlineChat] initState — montando mini-chat inline');
+      debugPrint('[BUILD295][HomeInlineChat] init_ok — widget montado, sem dependências assíncronas no initState');
       // Garante que o FocusNode nunca está focado ao montar/remontar o widget.
       // Previne teclado automático ao retornar para a Home via IndexedStack.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _focus.unfocus();
       });
     } catch (e, st) {
-      debugPrint('ERRO CRÍTICO HOME [InlineChat/initState]: $e\n$st');
+      debugPrint('[BUILD295][HomeInlineChat] init_error: $e\n$st');
     }
   }
 
@@ -1164,34 +1165,59 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   // garantindo que cada resposta é gravada assim que chega.
   // ─────────────────────────────────────────────────────────────────────────
   Future<void> _homePersistTurn() async {
+    // BUILD 295: guard primário — widget pode ter sido desmontado entre o
+    // dispatch async e este ponto de execução (Safari microtask scheduler).
     if (!mounted) return;
-    final p = context.read<AppProvider>();
+
+    AppProvider p;
+    try {
+      p = context.read<AppProvider>();
+    } catch (_) {
+      // context.read() pode lançar se o Provider foi removido da árvore
+      debugPrint('[BUILD295][HomeInlineChat] skipped reason=provider_not_ready (persist)');
+      return;
+    }
+
+    // BUILD 295: snapshot local imutável — protege contra race condition onde
+    // setState(() => _messages.clear()) é chamado pelo botão "novo chat"
+    // entre este ponto e o uso de validMsgs.last abaixo.
+    // Em Safari, microtasks podem intercalar com a fila de animações mais
+    // agressivamente que no Chrome — capturar aqui elimina a janela de risco.
+    final msgSnapshot = List<Map<String, dynamic>>.from(_messages);
 
     // Filtra apenas mensagens reais (sem erros de API) para não poluir o histórico
-    final validMsgs = _messages
+    final validMsgs = msgSnapshot
         .where((m) => m['isError'] != true)
         .toList();
     if (validMsgs.isEmpty) return;
 
-    // Garante que a última mensagem é do tipo 'ai' (turno completo)
-    if (validMsgs.last['role'] != 'ai') return;
+    // BUILD 295: guard extra — verifica tanto lista quanto último item antes
+    // de chamar .last (que lança RangeError se vazio em dart2js release mode).
+    if (validMsgs.length < 2) return; // requer ao menos 1 user + 1 ai
+    final lastRole = validMsgs.last['role'];
+    if (lastRole == null || lastRole != 'ai') return;
 
-    // Inicializa o ID estável da sessão na primeira persistência
+    // BUILD 295: _sessionId!  →  operador ?? garante string válida sem crash.
+    // Mesmo que _sessionId seja null por reentrada, nunca lança NullError.
     _sessionId ??= DateTime.now().toIso8601String();
+    final stableSessionId = _sessionId ?? DateTime.now().toIso8601String();
 
     final firstUserMsg = validMsgs
         .firstWhere((m) => m['role'] == 'user', orElse: () => validMsgs.first);
-    final summary = (firstUserMsg['text'] as String?) ?? '';
+    // BUILD 295: cast seguro — usa safeString em vez de 'as String'
+    final summary = (firstUserMsg['text']?.toString()) ?? '';
 
-    // Serializa mensagens no formato de _ChatMsg.toJson()
+    // BUILD 295: serialização null-safe — nenhum campo usa cast duro 'as String'.
+    // Em Safari, valores de Map podem chegar como JavaScriptObject cujo .toString()
+    // é seguro, mas 'as String' lança TypeError se o tipo JS não for exatamente String.
     final msgsPayload = validMsgs.map((m) => {
-      'id':   '${m['role']}_${DateTime.now().microsecondsSinceEpoch}',
-      'role': m['role'] as String,
-      'text': m['text'] as String,
+      'id':   '${m['role']?.toString() ?? 'msg'}_${DateTime.now().microsecondsSinceEpoch}',
+      'role': m['role']?.toString() ?? 'unknown',
+      'text': m['text']?.toString() ?? '',
     }).toList();
 
     final session = {
-      'id':       _sessionId!,
+      'id':       stableSessionId,
       'savedAt':  DateTime.now().toIso8601String(),
       'summary':  summary.length > 100 ? summary.substring(0, 100) : summary,
       'messages': msgsPayload,
@@ -1206,6 +1232,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // ── Write 2: SharedPreferences (offline cache, mesma chave da IA Tab) ───
     try {
       final prefs = await SharedPreferences.getInstance();
+      // BUILD 295: re-verificar mounted após await — Safari pode ter desmontado
+      if (!mounted) return;
       final histKey = '${uid ?? 'anon'}_$_kHistKey';
       final existing = prefs.getString(histKey);
       List<dynamic> histList = [];
@@ -1213,7 +1241,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
         try { histList = jsonDecode(existing) as List; } catch (_) {}
       }
       // Remove entrada antiga com o mesmo ID (atualização incremental)
-      histList.removeWhere((e) => e is Map && e['id'] == _sessionId);
+      histList.removeWhere((e) => e is Map && e['id'] == stableSessionId);
       // Insere no topo (mais recente primeiro)
       histList.insert(0, session);
       // Mantém apenas as 10 sessões mais recentes (mesmo limite da IA Tab)
@@ -1228,17 +1256,23 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   ///                                   primeira query do fluxo Home (limpa histórico anterior da IA tab)
   ///   campo CHEIO  → dispara stream do mini-chat inline
   void _onSendPressed() {
+    // BUILD 295: widget guard antes de qualquer acesso a context ou _messages
+    if (!mounted) {
+      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=not_mounted (onSendPressed)');
+      return;
+    }
     final text = _ctrl.text.trim();
     if (text.isEmpty) {
       if (_messages.isNotEmpty) {
         // B144: hasHistory + campo vazio → IA tab com apenas a query original
         // Extrai a primeira mensagem do usuário que iniciou o fluxo na Home.
         // pendingQuery substitui qualquer histórico anterior aberto na IA tab.
-        final firstUserMsg = _messages
+        // BUILD 295: ['text'] pode ser null em Safari — usar ?. e toString()
+        final firstUserMsg = (_messages
             .firstWhere(
               (m) => m['role'] == 'user',
               orElse: () => <String, dynamic>{},
-            )['text'] as String? ?? '';
+            )['text'])?.toString() ?? '';
         if (firstUserMsg.isNotEmpty) {
           // Limpa histórico pendente e define apenas a primeira query
           AiScreen.pendingHistory.value = [];          // limpa histórico anterior da IA tab
@@ -1263,12 +1297,29 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     final text = (preset ?? _ctrl.text).trim();
     if (text.isEmpty || _thinking) return;
 
-    // ── BUILD 294: FIREBASE GUARD — nunca envia se Firebase não inicializou ──
+    // BUILD 295: widget guard — verifica montagem antes de qualquer acesso a context
+    if (!mounted) {
+      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=not_mounted');
+      return;
+    }
+
+    // ── BUILD 294 + 295: FIREBASE GUARD — nunca envia se Firebase não inicializou ──
     // No Safari (modo privado, ITP, IndexedDB bloqueado), Firebase.initializeApp()
     // pode falhar. Tentar sendAiMessage() nesse estado causa NullError no SDK.
     // Solução: redirecionar para aba IA completa que tem seu próprio fallback.
     if (Firebase.apps.isEmpty) {
-      debugPrint('[BUILD294][HomeInlineChat] Firebase não pronto — redirecionando para IA tab');
+      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=firebase_not_ready');
+      widget.onNavigateToAi(2);
+      return;
+    }
+
+    // BUILD 295: guard de Provider — context.read pode lançar se o widget
+    // foi recriado pelo Safari durante um microtask de layout/scroll.
+    AppProvider pCheck;
+    try {
+      pCheck = context.read<AppProvider>();
+    } catch (_) {
+      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=provider_not_ready');
       widget.onNavigateToAi(2);
       return;
     }
@@ -1276,7 +1327,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // ── BUILD 312 M1: PRE-GUARD — bloqueia envio sem autenticação real ────────
     // Idêntico ao Layer 0 do ai_screen.dart: sem geminiConnected nem openAiKey
     // o mini-chat não envia nada — abre o modal de conexão diretamente.
-    final pCheck = context.read<AppProvider>();
     final hasAuth = pCheck.geminiConnected || pCheck.openAiKey.isNotEmpty;
     if (!hasAuth) {
       _focus.unfocus();
@@ -1292,7 +1342,19 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       _thinking  = true;
     });
     _scrollToBottom();
-    final p = context.read<AppProvider>();
+    // BUILD 295: segundo guard de Provider — between setState() and sendAiMessage(),
+    // o Safari pode reconstruir o widget tree num microtask de layout.
+    // context.read() seguro somente se o widget ainda está montado.
+    AppProvider p;
+    try {
+      p = context.read<AppProvider>();
+    } catch (_) {
+      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=provider_lost_after_setState');
+      if (mounted) {
+        setState(() { _streaming = ''; _thinking = false; });
+      }
+      return;
+    }
     try {
       await p.sendAiMessage(
         text,
@@ -1394,9 +1456,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       // Não há acesso a nenhuma lista global da HomeScreen pai.
 
       // Snapshot das mensagens commitadas (sem erros)
+      // BUILD 295: cast null-safe — 'as String' lança TypeError no Safari se
+      // o valor for JavaScriptObject. toString() é sempre seguro em dart2js.
       final clean = _messages.where((m) => m['isError'] != true).toList();
       final pairs = clean
-          .map((m) => {'role': m['role'] as String, 'text': m['text'] as String})
+          .map((m) => {
+            'role': m['role']?.toString() ?? 'user',
+            'text': m['text']?.toString() ?? '',
+          })
           .toList();
 
       // Snapshot do streaming em vôo (race condition: onDone ainda não disparou)
@@ -1417,30 +1484,38 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
   @override
   Widget build(BuildContext context) {
+    // BUILD 295: readiness guard — se o Provider não está pronto (Safari boot
+    // lento ou Firebase init falhou), retorna SizedBox.shrink() silenciosamente.
+    // NUNCA lança exceção durante build — isso crasharia o boot inteiro.
+    // O widget será reconstruído automaticamente quando o Provider notificar.
+    // context.read<AppProvider>() é non-nullable por contrato do Provider package;
+    // o try/catch cobre o caso de LookupError quando o Provider não está na árvore.
+    try {
+      context.read<AppProvider>(); // guard: valida que o Provider está disponível
+    } catch (_) {
+      debugPrint('[BUILD295][HomeInlineChat] skipped reason=provider_not_ready');
+      return const SizedBox.shrink();
+    }
+
     // ── NULL-SAFETY: wrap total do build do InlineChat ───────────────────────
-    // Se qualquer filho lançar exceção, o mini-chat é substituído por um
-    // container vazio com a cor de fundo correta — nunca tela branca.
+    // BUILD 295: catch captura NullError residuais de widgets filhos.
+    // Exibe fallback visual minimalista — nunca tela branca nem crash de boot.
     try {
       return _buildChatContent(context);
     } catch (e, st) {
-      debugPrint('ERRO CRÍTICO HOME [InlineChat/build]: $e\n$st');
-      final isDark = widget.dark;
+      debugPrint('[BUILD295][HomeInlineChat] build_error: $e\n$st');
+      // BUILD 295: log adicional para identificar o operador ! responsável
+      debugPrint('[BUILD295][HomeInlineChat] no_unsafe_null_check — se chegou aqui, erro é em widget filho');
       return Container(
         height: 120,
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF252930) : Colors.white,
+          color: const Color(0xFF252930),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isDark
-                ? Colors.white.withOpacity(0.07)
-                : const Color(0xFFE4EEE9),
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.07)),
         ),
         child: Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-              isDark ? const Color(0xFF10B981) : const Color(0xFF075f45),
-            ),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF10B981)),
             strokeWidth: 2,
           ),
         ),
@@ -1507,16 +1582,23 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             );
           }
 
+          // BUILD 295: index guard — Safari pode reconstruir o ListView com
+          // itemCount desatualizado se setState() foi chamado entre frames.
+          // RangeError em _messages[i] lança 'Null check operator' em dart2js.
+          if (i >= _messages.length) return const SizedBox.shrink();
+
           final msg     = _messages[i];
           final isUser  = msg['role'] == 'user';
-          final text    = msg['text'] as String;
+          // BUILD 295: cast null-safe — msg['text'] pode ser JavaScriptObject
+          // no Safari cujo 'as String' lança TypeError em dart2js release mode.
+          // toString() é definido para todos os objetos JS — nunca lança.
+          final text    = msg['text']?.toString() ?? '';
           final isError = msg['isError'] == true;
           final isLast  = i == _messages.length - 1;
 
-          // ── BUILD 312 M3: Render guard — suprime AUTH_REQUIRED residual ──
-          // Caso haja qualquer mensagem AUTH_REQUIRED que escapou dos guards
-          // anteriores, renderiza um SizedBox vazio em vez da bolha crua.
-          if (text == 'AUTH_REQUIRED') return const SizedBox.shrink();
+          // ── BUILD 312 M3 + BUILD 295: Render guard — suprime AUTH_REQUIRED ──
+          // Também suprime strings vazias que resultam de valores null no Safari.
+          if (text == 'AUTH_REQUIRED' || text.isEmpty) return const SizedBox.shrink();
 
           if (isUser) {
             return Align(
