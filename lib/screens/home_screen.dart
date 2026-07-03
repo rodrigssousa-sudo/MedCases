@@ -219,21 +219,52 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 14),
 
         // ── IA MedCases Chat — expansão vertical dinâmica (desktop) ─────────
-        // BUILD 297: guard no pai — não monta _HomeInlineChat se Firebase/Auth
-        // não estiver pronto. Evita o NullError que acontecia mesmo com o guard
-        // interno (BUILD 296), pois o próprio construtor do widget pode falhar
-        // antes do build() ser chamado em Safari.
+        // BUILD 298: guard multi-fonte de sessão — responde à pergunta
+        // "A aplicação possui uma sessão válida?" usando 3 fontes independentes.
+        //
+        // PROBLEMA SAFARI (BUILD 297 → BUILD 298):
+        //   O FirebaseAuth Web SDK lê o estado persistido do IndexedDB.
+        //   No Safari ITP/modo privado, o IndexedDB acorda mais devagar que o
+        //   restante da aplicação. Resultado: _auth.currentUser == null mesmo
+        //   quando p.currentUser e AuthService.hasCachedToken já estão válidos.
+        //   O guard do BUILD 297 bloqueava apenas por AuthService.currentUser,
+        //   descartando as outras fontes → Mini Chat nunca renderizava.
+        //
+        // FONTES DE SESSÃO (prioridade decrescente):
+        //   1. p.currentUser != null  — AppProvider: setUser() já foi chamado pelo
+        //      _WebMainShellGate ANTES de montar a HomeScreen. É a fonte mais
+        //      confiável: contém UserModel completo do Firestore.
+        //   2. AuthService.hasCachedToken — token REST em memória (_cachedIdToken).
+        //      Existe após restoreSession() ou login REST, antes do SDK propagar.
+        //   3. AuthService.currentUser != null — FirebaseAuth SDK. Pode ser null
+        //      no Safari por atraso do IndexedDB, mas ainda válido como confirmação.
+        //
+        // O guard de Firebase.apps.isEmpty permanece ABSOLUTO (BUILD 294-297).
         Builder(builder: (ctx) {
           if (kIsWeb && Firebase.apps.isEmpty) {
-            debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=firebase_not_ready');
+            debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=firebase_not_ready');
             return const SizedBox.shrink();
           }
-          final safeUser = AuthService.currentUser;
-          if (kIsWeb && safeUser == null) {
-            debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=auth_user_null');
+          // BUILD 298: lógica multi-fonte — qualquer fonte suficiente para render
+          final providerUser = p.currentUser; // fonte 1: AppProvider (primária)
+          final hasCachedTk  = AuthService.hasCachedToken; // fonte 2: token REST
+          final firebaseUser = AuthService.currentUser;    // fonte 3: SDK (pode ser null no Safari)
+          final bool hasSession = providerUser != null || hasCachedTk || firebaseUser != null;
+          if (kIsWeb && !hasSession) {
+            debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=no_session '
+                'provider=${providerUser?.uid ?? "null"} '
+                'cachedToken=$hasCachedTk '
+                'firebaseUser=${firebaseUser?.uid ?? "null"}');
             return const SizedBox.shrink();
           }
-          debugPrint('[BUILD297][HomeInlineChatParent] render_inline_chat=true');
+          // Determina fonte para log diagnóstico
+          final String sessionSource = providerUser != null
+              ? 'provider'
+              : hasCachedTk
+                  ? 'cached_token'
+                  : 'firebase';
+          debugPrint('[BUILD298][HomeInlineChatParent] render_inline_chat=true source=$sessionSource '
+              'uid=${providerUser?.uid ?? firebaseUser?.uid ?? "n/a"}');
           return _HomeInlineChat(
             dark: dark,
             isEs: isEs,
@@ -448,20 +479,34 @@ class _HomeScreenState extends State<HomeScreen> {
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
           // Azul MedCases IA após Build 138. O chat cresce naturalmente com
           // cada turno, empurrando os cards abaixo no scroll.
-          // BUILD 297: guard no pai — não monta _HomeInlineChat se Firebase/Auth
-          // não estiver pronto. O widget fica oculto (SizedBox.shrink) e será
-          // reconstruído quando o Provider notificar que o Firebase está pronto.
+          // BUILD 298: guard multi-fonte de sessão — mesmo lógica do desktop.
+          // Consulta AppProvider, token REST em cache e FirebaseAuth SDK.
+          // Oculta apenas quando NENHUMA fonte confirma sessão válida.
           Builder(builder: (ctx) {
             if (kIsWeb && Firebase.apps.isEmpty) {
-              debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=firebase_not_ready');
+              debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=firebase_not_ready');
               return const SizedBox.shrink();
             }
-            final safeUser = AuthService.currentUser;
-            if (kIsWeb && safeUser == null) {
-              debugPrint('[BUILD297][HomeInlineChatParent] skipped reason=auth_user_null');
+            // BUILD 298: lógica multi-fonte — qualquer fonte suficiente para render
+            final providerUser = p.currentUser; // fonte 1: AppProvider (primária)
+            final hasCachedTk  = AuthService.hasCachedToken; // fonte 2: token REST
+            final firebaseUser = AuthService.currentUser;    // fonte 3: SDK (pode ser null no Safari)
+            final bool hasSession = providerUser != null || hasCachedTk || firebaseUser != null;
+            if (kIsWeb && !hasSession) {
+              debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=no_session '
+                  'provider=${providerUser?.uid ?? "null"} '
+                  'cachedToken=$hasCachedTk '
+                  'firebaseUser=${firebaseUser?.uid ?? "null"}');
               return const SizedBox.shrink();
             }
-            debugPrint('[BUILD297][HomeInlineChatParent] render_inline_chat=true');
+            // Determina fonte para log diagnóstico
+            final String sessionSource = providerUser != null
+                ? 'provider'
+                : hasCachedTk
+                    ? 'cached_token'
+                    : 'firebase';
+            debugPrint('[BUILD298][HomeInlineChatParent] render_inline_chat=true source=$sessionSource '
+                'uid=${providerUser?.uid ?? firebaseUser?.uid ?? "n/a"}');
             return _HomeInlineChat(
               dark: dark,
               isEs: isEs,
@@ -1548,7 +1593,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('[BUILD296][HomeInlineChat] build_start');
+    debugPrint('[BUILD298][HomeInlineChat] build_start');
 
     // ── GUARD 1 (ABSOLUTO): Firebase não inicializado ────────────────────────
     // No Safari (modo privado, ITP, IndexedDB bloqueado) Firebase.initializeApp()
@@ -1557,18 +1602,30 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // NUNCA usar FirebaseAuth.instance.currentUser aqui — é justamente a fonte do crash.
     // O widget se oculta e será reconstruído quando o Provider notificar init completo.
     if (kIsWeb && Firebase.apps.isEmpty) {
-      debugPrint('[BUILD296][HomeInlineChat] build_abort reason=firebase_not_ready');
+      debugPrint('[BUILD298][HomeInlineChat] build_abort reason=firebase_not_ready');
       return const SizedBox.shrink();
     }
 
-    // ── GUARD 2: usuário nulo no Safari/Web ──────────────────────────────────
-    // AuthService.currentUser já está protegido com Firebase.apps.isEmpty check
-    // (BUILD 294) — retorna null graciosamente sem acessar FirebaseAuth.instance.
-    // Nunca usar FirebaseAuth.instance.currentUser! aqui.
-    final safeUser = AuthService.currentUser;
-    if (safeUser == null && kIsWeb) {
-      debugPrint('[BUILD296][HomeInlineChat] build_abort reason=auth_user_null');
-      return const SizedBox.shrink();
+    // ── GUARD 2: sessão válida — lógica multi-fonte (BUILD 298) ─────────────
+    // BUILD 298: não depender APENAS de AuthService.currentUser (FirebaseAuth SDK).
+    // No Safari, o IndexedDB acorda mais devagar: _auth.currentUser pode ser null
+    // mesmo quando AppProvider já tem o usuário completo (via setUser() do boot)
+    // e AuthService.hasCachedToken confirma token REST válido em memória.
+    // Hierarquia: AppProvider (primária) > token REST em cache > FirebaseAuth SDK.
+    if (kIsWeb) {
+      AppProvider? safeProvider;
+      try { safeProvider = context.read<AppProvider>(); } catch (_) {}
+      final providerUser = safeProvider?.currentUser;
+      final hasCachedTk  = AuthService.hasCachedToken;
+      final firebaseUser = AuthService.currentUser;
+      final bool hasSession = providerUser != null || hasCachedTk || firebaseUser != null;
+      if (!hasSession) {
+        debugPrint('[BUILD298][HomeInlineChat] build_abort reason=no_session '
+            'provider=${providerUser?.uid ?? "null"} '
+            'cachedToken=$hasCachedTk '
+            'firebaseUser=${firebaseUser?.uid ?? "null"}');
+        return const SizedBox.shrink();
+      }
     }
 
     // ── GUARD 3: Provider não disponível na árvore ───────────────────────────
@@ -1577,7 +1634,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     try {
       context.read<AppProvider>();
     } catch (_) {
-      debugPrint('[BUILD296][HomeInlineChat] build_abort reason=provider_not_ready');
+      debugPrint('[BUILD298][HomeInlineChat] build_abort reason=provider_not_ready');
       return const SizedBox.shrink();
     }
 
@@ -1586,10 +1643,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // subwidgets que possam lançar durante o seu próprio build.
     try {
       final result = _buildChatContent(context);
-      debugPrint('[BUILD296][HomeInlineChat] build_ok');
+      debugPrint('[BUILD298][HomeInlineChat] build_ok');
       return result;
     } catch (e, st) {
-      debugPrint('[BUILD296][HomeInlineChat][ERROR] error=$e stack=$st');
+      debugPrint('[BUILD298][HomeInlineChat][ERROR] error=$e stack=$st');
       return const SizedBox.shrink();
     }
   }
