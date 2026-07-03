@@ -327,6 +327,10 @@ class _AiScreenState extends State<AiScreen> {
   int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
   // Auto-scroll: só desce automaticamente se usuário estiver perto do fundo
   bool _userScrolledUp = false; // true quando usuário scrollou para cima
+  // BUILD 308 [FISIOP_DEDUP]: Último studyNextPrompt enviado via botão azul.
+  // Usado para detectar loop de Fisiopatologia: se o prompt enviado contém
+  // o mesmo quadrante da IA anterior, o botão é substituído por avanço linear.
+  String _lastSentStudyPrompt = '';
   // Anti-jump: token gerado a cada nova resposta da IA — bloqueia callbacks
   // de reveals de bolhas antigas que ficaram pendentes.
   int _scrollGeneration = 0;
@@ -374,6 +378,10 @@ class _AiScreenState extends State<AiScreen> {
   // BUILD 246: _loggedEvidenceIds — dedup EVIDENCE_GUARD por messageId+textHash.
   final Set<String> _loggedSafeCardIds  = {};
   final Set<String> _loggedEvidenceIds  = {};
+  // BUILD 308 [EXT_TOOL_DEDUP]: log-dedup set para EXT_TOOL_DEDUP.
+  // Evita spam de 18+ debugPrints/s no console durante rebuilds de streaming.
+  // Registra apenas a 1ª ocorrência de cada extKey por sessão.
+  final Set<String> _loggedExtToolKeys  = {};
   // ──────────────────────────────────────────────────────────────────────────
 
   // ── TTS (Text-to-Speech) ─────────────────────────────────────────────────
@@ -767,6 +775,7 @@ class _AiScreenState extends State<AiScreen> {
       // BUILD 244B/246: limpa sets de log-dedup ao injetar histórico
       _loggedSafeCardIds.clear();
       _loggedEvidenceIds.clear();
+      _loggedExtToolKeys.clear(); // BUILD 308
       setState(() {
         // Build 236: marca saudação como feita para evitar dupla injeção
         // se _injectGreeting() for chamado após a restauração do histórico.
@@ -860,6 +869,7 @@ class _AiScreenState extends State<AiScreen> {
       _userScrolledUp = false;
       _loggedSafeCardIds.clear();
       _loggedEvidenceIds.clear();
+      _loggedExtToolKeys.clear(); // BUILD 308
     });
 
     // 3. Hard reset do contexto Gemini no AppProvider
@@ -899,14 +909,13 @@ class _AiScreenState extends State<AiScreen> {
   void _onScroll() {
     if (!_scrollCtrl.hasClients) return;
     final pos = _scrollCtrl.position;
-    // Build 145 — threshold reduzido 120 → 80px:
-    // Detecta intenção de leitura de histórico mais cedo.
-    // Com 120px, o usuário precisava subir quase 2 swipes antes de o
-    // auto-scroll ser suspenso — durante esse tempo a UI saltava para baixo.
-    // 80px corresponde a ~1 gesto leve de swipe-up e é suficientemente
-    // distante do fundo para não suprimir o auto-scroll acidentalmente
-    // por variações de layout do cursor ▌ durante streaming.
-    final nearBottom = pos.pixels >= pos.maxScrollExtent - 80;
+    // Build 145 — threshold reduzido 120 → 80px; BUILD 308 — elevado 80 → 100px:
+    // 100px detecta intenção de leitura com margem maior que o cursor ▌ (≈20px).
+    // Elimina o jitter residual em Estudo: SSE longo empurra maxScrollExtent
+    // frame a frame; com 80px a zona dead era muito estreita → auto-scroll
+    // ainda disparava enquanto o usuário tentava subir. Com 100px a zona de
+    // congelamento é confortável para tablets/iPad sem falsos positivos no fundo.
+    final nearBottom = pos.pixels >= pos.maxScrollExtent - 100;
     // ⚡ Sem setState aqui — usa variável simples para evitar rebuild no scroll
     final wasUp = _userScrolledUp;
     _userScrolledUp = !nearBottom;
@@ -1280,6 +1289,7 @@ class _AiScreenState extends State<AiScreen> {
     // BUILD 244B/246: limpa sets de log-dedup ao restaurar sessão
     _loggedSafeCardIds.clear();
     _loggedEvidenceIds.clear();
+      _loggedExtToolKeys.clear(); // BUILD 308
     setState(() {
       _messages.clear();
       _messages.addAll(session.messages);
@@ -1525,6 +1535,7 @@ class _AiScreenState extends State<AiScreen> {
     // antigo é inócuo, mas limpar aqui previne crescimento ilimitado e garante
     // que novos extKeys não colisão com chaves de sessões anteriores reutilizadas.
     _extToolCache.clear();
+    _loggedExtToolKeys.clear(); // BUILD 308: reset log-dedup junto com cache
 
     _sendGuard = true;
     _focusNode.unfocus();
@@ -2476,10 +2487,14 @@ class _AiScreenState extends State<AiScreen> {
                         final extKey = '${msg.id}:${msg.text.hashCode}';
                         final ExternalToolLink? resolvedLink;
                         if (_extToolCache.containsKey(extKey)) {
-                          debugPrint('[EXT_TOOL_DEDUP] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
+                          // BUILD 308 [EXT_TOOL_DEDUP]: log apenas 1× por extKey —
+                          // evita spam de 18+ debugPrints/s durante rebuilds de streaming.
+                          if (kDebugMode && !_loggedExtToolKeys.contains(extKey)) {
+                            _loggedExtToolKeys.add(extKey);
+                            debugPrint('[EXT_TOOL_DEDUP] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
+                          }
                           resolvedLink = _extToolCache[extKey];
                         } else {
-                          debugPrint('[EXT_TOOL_DEDUP] hit=false messageId=${msg.id} textHash=${msg.text.hashCode}');
                           // BUILD 249: pass activeThreadTopic to guard stale drug detection
                           resolvedLink = ExternalToolLinkEngine.build(
                             lastUserMessage: lastUser,
@@ -2489,6 +2504,9 @@ class _AiScreenState extends State<AiScreen> {
                             activeThreadTopic: p.activeThreadTopic,
                           );
                           _extToolCache[extKey] = resolvedLink;
+                          if (kDebugMode) {
+                            debugPrint('[EXT_TOOL_DEDUP] hit=false (resolved) messageId=${msg.id} textHash=${msg.text.hashCode}');
+                          }
                         }
                         // BUILD 301: label 100% dinâmico — vem direto da tag [NEXT_ACTION_LABEL]
                         // gerada pela IA. Sem inferência local, sem fallbacks engessados.
@@ -2507,10 +2525,14 @@ class _AiScreenState extends State<AiScreen> {
                           cachedLink: resolvedLink,
                           studyNextPrompt: _nextActionPrompt,
                           studyNextLabel: _nextActionLabel,
-                          onActionTap: (prompt) {
+                          lastSentStudyPrompt: _lastSentStudyPrompt,
+                          onActionTap: (prompt, {bool isStudyNext = false}) {
                             if (_isStreaming) return;
                             _userScrolledUp = false;
                             _scrollDown(force: true);
+                            // BUILD 308 [FISIOP_DEDUP]: Registra o prompt do botão azul
+                            // de Estudo para detecção de loop de Fisiopatologia no turno seguinte.
+                            if (isStudyNext) _lastSentStudyPrompt = prompt;
                             // BUILD 262: fromButton=true — preserves thread history,
                             // prevents HARD RESET on clinical follow-up actions.
                             _sendDebounced(prompt, context.read<AppProvider>(), fromButton: true);
@@ -2600,7 +2622,7 @@ class _AiScreenState extends State<AiScreen> {
           // Usuário soltou o dedo → verifica posição para re-ativar auto-scroll
           if (_scrollCtrl.hasClients) {
             final pos = _scrollCtrl.position;
-            final nearBottom = pos.pixels >= pos.maxScrollExtent - 80;
+            final nearBottom = pos.pixels >= pos.maxScrollExtent - 100; // BUILD 308: 80→100px
             if (nearBottom && _userScrolledUp) {
               _userScrolledUp = false;
               if (mounted) setState(() {}); // atualiza botão scroll-to-bottom
@@ -2835,6 +2857,7 @@ class _AiScreenState extends State<AiScreen> {
                       _longResponse = newValue;
                       _loggedSafeCardIds.clear();
                       _loggedEvidenceIds.clear();
+      _loggedExtToolKeys.clear(); // BUILD 308
                     });
                     p.clearAiHistory();
                     if (kDebugMode) {
@@ -3897,7 +3920,7 @@ class _ActionButtonsRow extends StatelessWidget {
   final String lang;
   final bool dark;
   final List<String> chatHistory;
-  final void Function(String prompt) onActionTap;
+  final void Function(String prompt, {bool isStudyNext}) onActionTap;
   // BUILD 232: link pre-resolvido pelo pai com cache de deduplicacao.
   final ExternalToolLink? cachedLink;
   // BUILD 300: Modo Estudo — prompt e label dinâmico via tag [NEXT_ACTION_PROMPT:...]
@@ -3905,6 +3928,10 @@ class _ActionButtonsRow extends StatelessWidget {
   // do NextActionEngine genérico.
   final String studyNextPrompt;
   final String studyNextLabel;
+  // BUILD 308 [FISIOP_DEDUP]: Último prompt de Estudo enviado pelo usuário.
+  // Se o studyNextPrompt atual repete o mesmo quadrante de Fisiopatologia,
+  // o botão é redirecionado para prompt de avanço linear.
+  final String lastSentStudyPrompt;
 
   // Cores institucionais -- imutaveis por design
   // Azul institucional IA (mesmo do AppBar/primary)
@@ -3925,6 +3952,7 @@ class _ActionButtonsRow extends StatelessWidget {
     this.chatHistory = const [],
     this.studyNextPrompt = '',
     this.studyNextLabel = '',
+    this.lastSentStudyPrompt = '',
   });
 
   @override
@@ -3956,12 +3984,35 @@ class _ActionButtonsRow extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    // ── BUILD 308 [FISIOP_DEDUP]: Loop Guard de Fisiopatologia ───────────────
+    // Problema: botão "Aprofundar Fisiopatologia >" → mesmo prompt → mesma IA
+    // → mesmo botão → loop infinito para o médico.
+    // Solução: Se o studyNextPrompt atual contém "fisiopatolog" (PT/ES) e o
+    // prompt enviado anteriormente (_lastSentStudyPrompt) também, substituir
+    // o prompt por avanço linear obrigatório e mutá o label.
+    // Garante progressão cognitiva real em vez de repetição.
+    final _kFisiopRx = RegExp(r'fisiopatol', caseSensitive: false);
+    final bool isRepeatedFisiop = hasStudyNext &&
+        lastSentStudyPrompt.isNotEmpty &&
+        _kFisiopRx.hasMatch(studyNextPrompt) &&
+        _kFisiopRx.hasMatch(lastSentStudyPrompt);
+
+    // Se loop detectado: override prompt e label para avanço linear.
+    final String effectiveStudyPrompt = isRepeatedFisiop
+        ? 'Expanda a discussão anterior trazendo os mecanismos celulares '
+          'avançados e alterações moleculares que não foram mencionadas na '
+          'resposta de cima. Proibido repetir conceitos já apresentados.'
+        : studyNextPrompt;
+    final String effectiveStudyLabel = isRepeatedFisiop
+        ? (lang == 'es' ? 'Mecanismos Moleculares Avanzados >' : 'Mecanismos Moleculares Avançados >')
+        : studyNextLabel;
+
     // BUILD 301: label do botão azul — 100% dinâmico via tag [NEXT_ACTION_LABEL].
     // hasStudyNext=true → studyNextLabel vem direto da tag gerada pela IA.
     // Fallback neutro só para Modo Plantão ou resposta de Estudo sem tags
     // (não deve ocorrer em produção, mas defensivo).
     final aiLabel = hasStudyNext
-        ? studyNextLabel
+        ? effectiveStudyLabel
         : (action.label.isNotEmpty
             ? action.label
             : (lang == 'es' ? 'Avanzar Estudio' : 'Avançar Estudo'));
@@ -3989,7 +4040,7 @@ class _ActionButtonsRow extends StatelessWidget {
           final stacked = constraints.maxWidth < 340;
 
           // BUILD 300: botão azul dinâmico no Modo Estudo.
-          // hasStudyNext=true → usa studyNextPrompt (gerado pela IA via tag).
+          // hasStudyNext=true → usa effectiveStudyPrompt (com dedup guard BUILD 308).
           // hasStudyNext=false → comportamento clássico via NextActionEngine.
           final bool showAiBtn = hasStudyNext || action.label.isNotEmpty;
           final aiBtn = showAiBtn
@@ -3999,7 +4050,8 @@ class _ActionButtonsRow extends StatelessWidget {
                   accentColor: _kBlueAI,
                   dark: dark,
                   onTap: () => onActionTap(
-                    hasStudyNext ? studyNextPrompt : action.promptToSend,
+                    hasStudyNext ? effectiveStudyPrompt : action.promptToSend,
+                    isStudyNext: hasStudyNext, // BUILD 308: sinaliza botão de Estudo
                   ),
                 )
               : null;
