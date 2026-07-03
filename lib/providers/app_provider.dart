@@ -4531,9 +4531,13 @@ class AppProvider extends ChangeNotifier {
         final warn    = d.getField(d.warning, _lang);
         final mechStr = d.getField(d.mechanism, _lang);
         final route   = d.route;
-        // Interações: extrair do mapa multilíngue se disponível
-        final interList = d.interactions?[_lang] ?? d.interactions?['pt'] ?? <String>[];
-        final interStr  = interList.take(2).join(', ');
+        // BUILD 307 [BUG-1]: Interações — extrair por severidade real do mapa.
+        // Chaves corretas: 'graves' / 'moderadas' (NOT lang-keyed '_lang'/'pt').
+        // Formato: até 2 graves + 1 moderada → payload RAG compacto.
+        final graves = d.interactions?['graves'] ?? <String>[];
+        final moder  = d.interactions?['moderadas'] ?? <String>[];
+        final interCombined = [...graves.take(2), ...moder.take(1)];
+        final interStr = interCombined.join(', ');
         final interLine = interStr.isNotEmpty
             ? '\n  Interações: ${interStr.substring(0, interStr.length.clamp(0, 100))}'
             : '';

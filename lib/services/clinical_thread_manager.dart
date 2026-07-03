@@ -450,6 +450,11 @@ class ClinicalThreadManager {
   // Usado para detectar mudança de intent e disparar reset silencioso.
   static String _lastTaskLabel = '';
 
+  // BUILD 307 [AMNESIA_COOLDOWN]: fármaco-alvo primário da última mensagem.
+  // Preserva histórico de transporte quando o médico muda de intent mas
+  // mantém o mesmo fármaco-alvo (ex: "dose" → "mecanismo" da amiodarona).
+  static String _lastDrugTarget = '';
+
   static List<Map<String, String>> buildThreadHistory({
     required List<Map<String, String>> fullHistory,
     required ClinicalThreadStatus status,
@@ -495,12 +500,35 @@ class ClinicalThreadManager {
           currentTaskLabel != _lastTaskLabel;
 
       if (intentChanged && fullHistory.isNotEmpty) {
-        _lastStudyActivityMs = nowMs;
-        _lastTaskLabel = currentTaskLabel;
-        debugPrint('[BUILD304][INTENT_RESET] taskLabel changed: '
-            '$_lastTaskLabel → $currentTaskLabel '
-            '→ transport_history_cleared (local preserved)');
-        return <Map<String, String>>[];
+        // BUILD 307 [AMNESIA_COOLDOWN]: Defesa contra apagamento cognitivo em
+        // perguntas compostas sequenciais no mesmo fármaco-alvo.
+        // Ex: "Qual a dose da amiodarona?" (dose) → "E o mecanismo?" (farmaco)
+        // Apesar da mudança de intent, o fármaco-alvo é o mesmo — preservar thread.
+        final currentDrugTarget = _extractDrugFromHistory(fullHistory);
+        final sameDrugTarget = _lastDrugTarget.isNotEmpty &&
+            currentDrugTarget != null &&
+            currentDrugTarget == _lastDrugTarget;
+
+        if (sameDrugTarget) {
+          // Cooldown: mesma droga detectada após mudança de intent — não apagar.
+          final prevLabel = _lastTaskLabel;
+          _lastStudyActivityMs = nowMs;
+          _lastTaskLabel = currentTaskLabel;
+          // _lastDrugTarget permanece inalterado (mesma droga)
+          debugPrint('[BUILD307][AMNESIA_COOLDOWN] intentChanged but sameDrug='
+              '$currentDrugTarget ($prevLabel → $currentTaskLabel) '
+              '→ transport_history_PRESERVED (cooldown ativo)');
+        } else {
+          // Fármaco-alvo diferente ou ausente: wipe normal permitido.
+          final prevLabel = _lastTaskLabel;
+          _lastStudyActivityMs = nowMs;
+          _lastTaskLabel = currentTaskLabel;
+          _lastDrugTarget = currentDrugTarget ?? '';
+          debugPrint('[BUILD304][INTENT_RESET] taskLabel changed: '
+              '$prevLabel → $currentTaskLabel '
+              '→ transport_history_cleared (local preserved)');
+          return <Map<String, String>>[];
+        }
       }
 
       // ── BUILD 304 [G1]: Janela micro-deslizante — Modo Estudo ─────────────
@@ -509,6 +537,8 @@ class ClinicalThreadManager {
       // Histórico local no dispositivo NÃO é modificado.
       _lastStudyActivityMs = nowMs;
       _lastTaskLabel = currentTaskLabel;
+      // BUILD 307: Atualiza fármaco-alvo no fluxo normal (sem wipe).
+      _lastDrugTarget = _extractDrugFromHistory(fullHistory) ?? _lastDrugTarget;
 
       final maxEntries = kMaxStudyTurns * 2;
       final limited = fullHistory.length > maxEntries
@@ -579,8 +609,34 @@ class ClinicalThreadManager {
   static void resetStaticState() {
     _lastStudyActivityMs = 0;
     _lastTaskLabel = '';
+    _lastDrugTarget = ''; // BUILD 307 [AMNESIA_COOLDOWN]: reset junto com label
     debugPrint('[BUILD304][STATIC_RESET] _lastStudyActivityMs=0 _lastTaskLabel="" '
+        '_lastDrugTarget="" '
         '— static session state cleared (logout/new-conversation/hot-restart)');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // _extractDrugFromHistory() — BUILD 307 [AMNESIA_COOLDOWN]
+  //
+  // Escaneia a mensagem de usuário mais recente no histórico em busca do
+  // fármaco-alvo primário (mesmo conjunto _kHighSpecificityDrugs usado em
+  // _detectPrimaryDrug). Retorna o primeiro match encontrado ou null.
+  //
+  // Usado exclusivamente em buildThreadHistory() para implementar o cooldown:
+  // se o fármaco-alvo persiste após mudança de intent, o wipe é suprimido.
+  // ─────────────────────────────────────────────────────────────────────────
+  static String? _extractDrugFromHistory(List<Map<String, String>> history) {
+    // Varre do fim para o início, busca a última mensagem do usuário
+    final lastUser = history.lastWhere(
+      (m) => (m['role'] ?? '') == 'user',
+      orElse: () => const {},
+    );
+    final content = (lastUser['content'] ?? '').toLowerCase();
+    if (content.isEmpty) return null;
+    for (final drug in _kHighSpecificityDrugs) {
+      if (content.contains(drug)) return drug;
+    }
+    return null;
   }
 
   // ─────────────────────────────────────────────────────────────────────────

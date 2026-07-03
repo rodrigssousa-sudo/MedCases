@@ -1088,6 +1088,24 @@ const _interactionDB = <_IxEntry>[
 
     // ── IECA — entradas complementares ────────────────────────────────────────
 
+  // BUILD 307 [GAP-1]: Par (enalapril, amiodarona) — ausente no DB original.
+  // Mecanismo: Amiodarona bloqueia canais α+β → vasodilatação + bradicardia;
+  //            Enalapril (IECA) bloqueia angiotensina II → vasodilatação adicional.
+  // Risco clínico: hipotensão severa aditiva + bradicardia sinusal grave.
+  // Evidência: Goodman & Gilman 13ª, Micromedex 2024, UpToDate 2024.
+  ('enalapril', 'amiodarona', InteractionSeverity.major,
+    'Bloqueio α+β aditivo da amiodarona associado à vasodilatação do IECA; '
+    'amiodarona reduz FC e débito cardíaco enquanto enalapril amplifica a queda de RVP',
+    'Hipotensão severa aditiva e bradicardia sinusal grave — risco de colapso hemodinâmico '
+    'em pacientes com IC sistólica, hipovolemia ou disfunção autonômica',
+    'Monitorar PA e FC nas primeiras 48 h após associação ou ajuste de dose. '
+    'Iniciar enalapril em dose baixa (2,5 mg/dia) se amiodarona já em uso. '
+    'Evitar associação em pacientes com FEVE < 30% sem supervisão cardiológica',
+    'RIESGO DE HIPOTENSIÓN SEVERA Y BRADICARDIA — Monitorar PA/FC; dose mínima de IECA',
+    EvidenceLevel.established,
+    {RiskType.cardiovascular, RiskType.arrhythmia},
+    [_kRefGG, _kRefMdx, _kRefUT]),
+
   ('enalapril', 'sacubitrila', InteractionSeverity.contraindicated,
     'Inhibición simultânea do sistema neprilisina-angiotensina causa acumulación de bradicinina',
     'Angioedema grave y potencialmente fatal — riesgo 3× mayor que IECA solo',

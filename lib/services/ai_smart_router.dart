@@ -100,7 +100,7 @@ class AiSmartRouter {
     r'|✗\s+PROIBIDO:|✓\s+OBRIGAT[ÓO]RIO:'
     r'|100%\s+ESPA[ÑN]OL\s+PURO|100%\s+PORTUGU[ÊE]S'
     // ── XML tag leaks ─────────────────────────────────────────────────────
-    r'|<instructions[^>]*>|</instructions>|<system_rules[^>]*>|</system_rules>'
+    r'|<instructions[^>]*>|</instructions\s*>|<system_rules[^>]*>|</system_rules\s*>'
     r'|<response_template>|</response_template>|<context_rag>|</context_rag>'
     r'|OUTPUT_STARTS_HERE|END_OF_INSTRUCTIONS'
     // ── Metadata field leaks (RAG + Camada C) ─────────────────────────────
@@ -198,13 +198,19 @@ class AiSmartRouter {
     // Interação/Contraindicação — BUILD 304 [G4]: expandido com jargão clínico.
     // 'reação adversa', 'reacao adversa', 'efeito colateral' agora acionam _modInteracao.
     // Resolve: "reação adversa da heparina" caindo em 'geral' sem módulo de interação.
+    // BUILD 307 [GAP-2]: Adicionados termos coloquiais de prática médica:
+    // 'associar', 'combinar', 'junto', 'junto com', 'coadministrar'.
+    // Resolve: "Posso associar Amiodarona?" caindo em 'geral' sem _modInteracao.
     final isInteraction = m.contains('interaç')           || m.contains('interacci')        ||
         m.contains('contraindicaç')    || m.contains('contraindicaci')   ||
         m.contains('efeito adverso')   || m.contains('efecto adverso')   ||
         m.contains('segurança')        || m.contains('seguridad')        ||
         m.contains('reação adversa')   || m.contains('reacao adversa')   ||
         m.contains('reacción adversa') || m.contains('efeito colateral') ||
-        m.contains('efecto colateral') || m.contains('evento adverso');
+        m.contains('efecto colateral') || m.contains('evento adverso')   ||
+        m.contains('associar')         || m.contains('combinar')         ||
+        m.contains('junto com')        || m.contains('junto ')           ||
+        m.contains('coadministrar');
 
     // Sigla isolada (1–6 chars alfa, sem espaço)
     final isAcronym = trimmed.length <= 6 &&
@@ -555,7 +561,7 @@ class AiSmartRouter {
     r'|INSTRUÇÃO\s+DE\s+SISTEMA|PROMPT\s+INTERNO'
     r'|SYSTEM\s+INSTRUCTION|SMART\s+ROUTER'
     r'|IDIOMA\s+SOBERANO|TRAVA\s+DE\s+IDIOMA'
-    r'|<instructions[^>]*>|<system_rules[^>]*>|<response_template>|</response_template>'
+    r'|<instructions[^>]*>|</instructions\s*>|<system_rules[^>]*>|</system_rules\s*>|<response_template>|</response_template>'
     r'|OUTPUT_STARTS_HERE|END_OF_INSTRUCTIONS'
     r'|TEMA\s+DESTE\s+TURNO|COMPLEJIDAD|AUTORIDADE\s+DE\s+MATRIZ)',
     caseSensitive: false,
