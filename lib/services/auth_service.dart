@@ -9,14 +9,36 @@ import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/widgets.dart' show ValueNotifier;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart'; // BUILD 294: guard Firebase.apps
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import 'firestore_service.dart';
 
 class AuthService {
-  static FirebaseAuth get _auth => FirebaseAuth.instance;
-  static FirebaseFirestore get _db => FirebaseFirestore.instance;
+  // BUILD 294: Firebase.apps guard — Safari/WebKit pode falhar em
+  // Firebase.initializeApp() (IndexedDB bloqueado, ITP, modo privado).
+  // Acessar FirebaseAuth.instance ou FirebaseFirestore.instance antes da
+  // inicialização lança TypeError: NullError em dart2js release mode.
+  // Solução: verificar Firebase.apps.isNotEmpty antes de qualquer acesso
+  // ao SDK. Callers que usam _auth via nativo (iOS/Android) já passaram
+  // pela tela de splash e pelo Firebase.initializeApp() — o guard é
+  // redundante mas nunca danoso em plataformas onde Firebase sempre inicia.
+  static FirebaseAuth get _auth {
+    if (Firebase.apps.isEmpty) {
+      throw StateError('[BUILD294][AuthService] Firebase não inicializado — '
+          '_auth inacessível. Verifique Firebase.initializeApp() no boot.');
+    }
+    return FirebaseAuth.instance;
+  }
+
+  static FirebaseFirestore get _db {
+    if (Firebase.apps.isEmpty) {
+      throw StateError('[BUILD294][AuthService] Firebase não inicializado — '
+          '_db inacessível. Verifique Firebase.initializeApp() no boot.');
+    }
+    return FirebaseFirestore.instance;
+  }
 
   static const _webApiKey    = 'AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18';
   static const _projectId    = 'medcases-pro';
@@ -34,8 +56,24 @@ class AuthService {
   static DateTime _tokenExpiresAt = DateTime(2000); // forçar refresh na primeira chamada
 
   // ── Stream de estado de autenticação (Android/iOS via SDK nativo) ──────────
-  static Stream<User?> get authStateChanges => _auth.authStateChanges();
-  static User? get currentUser => _auth.currentUser;
+  // BUILD 294: Se Firebase não inicializou (Safari ITP/private mode), retorna
+  // Stream.empty() em vez de lançar StateError — previne NullError na _AuthGate.
+  // currentUser retorna null — caller verifica null antes de usar.
+  static Stream<User?> get authStateChanges {
+    if (Firebase.apps.isEmpty) {
+      debugPrint('[BUILD294][AuthService] authStateChanges: Firebase não pronto — Stream.empty()');
+      return const Stream.empty();
+    }
+    return _auth.authStateChanges();
+  }
+
+  static User? get currentUser {
+    if (Firebase.apps.isEmpty) {
+      debugPrint('[BUILD294][AuthService] currentUser: Firebase não pronto — null');
+      return null;
+    }
+    return _auth.currentUser;
+  }
 
   /// ORDEM 50 M3: True se há token em cache não expirado (sem I/O de rede).
   /// Usado pelo FirestoreService._isUserAuthenticated para detectar auth

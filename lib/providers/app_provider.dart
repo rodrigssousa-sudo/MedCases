@@ -658,7 +658,7 @@ class AppProvider extends ChangeNotifier {
       // Fonte: app_config/global.apiKey (lido por todos os usuários aprovados)
       // NÃO é a GEMINI_PAID_API_KEY — essa fica só no Firebase Secret server-side.
       if (geminiKey.isNotEmpty) {
-        GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
+        GeminiService.setGeminiApiKey(geminiKey, source: GeminiKeySource.appConfig); // BUILD 294: marca como appConfig — SecurityWipe nunca apaga
         debugPrint('[AI_FREE_PROVIDER] source=app_config/global ready=true (login load)');
       } else {
         // Firestore retornou vazio — tenta SharedPreferences/localStorage
@@ -1978,7 +1978,7 @@ class AppProvider extends ChangeNotifier {
       final geminiKey = await FirestoreService.loadGeminiApiKey()
           .timeout(const Duration(seconds: 5));
       if (geminiKey.isNotEmpty) {
-        GeminiService.setGeminiApiKey(geminiKey);
+        GeminiService.setGeminiApiKey(geminiKey, source: GeminiKeySource.appConfig); // BUILD 294
         _clearGeminiConfigUnavailable();
         debugPrint('[checkGeminiSession] API Key recarregada do Firestore ✓');
         return true;
@@ -2065,17 +2065,24 @@ class AppProvider extends ChangeNotifier {
           if (!_apiKeyWipedThisSession) {
             _apiKeyWipedThisSession = true;
             try {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.remove('medcases_gak');
-              if (kIsWeb) {
-                _webRemoveLS('medcases_gak');
-                _webRemoveLS('gemini_google_email');
+              // BUILD 294: clearOAuthCachedApiKey() é a versão segura — só apaga
+              // chaves de origem oauth/admin/cache. NUNCA apaga appConfig.
+              // Se a chave veio de app_config/global, log mostra 'skipped' e
+              // o bool retornado é false — SharedPrefs/localStorage preservados.
+              final wiped = GeminiService.clearOAuthCachedApiKey();
+              if (wiped) {
+                // Só limpa SharedPrefs/localStorage se realmente era OAuth key
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('medcases_gak');
+                if (kIsWeb) {
+                  _webRemoveLS('medcases_gak');
+                  _webRemoveLS('gemini_google_email');
+                }
               }
-              // Zero out the in-memory key — GeminiService.hasApiKey becomes false
-              GeminiService.clearCachedApiKey();
-              debugPrint('[BUILD293][SecurityWipe] Non-privileged boot — API key purged (once per session)');
+              debugPrint('[BUILD294][SecurityWipe] wiped=$wiped '
+                  'source=${GeminiService.keySource.name}');
             } catch (e) {
-              debugPrint('[BUILD293][SecurityWipe] wipe error (non-fatal): $e');
+              debugPrint('[BUILD294][SecurityWipe] wipe error (non-fatal): $e');
             }
           } else {
             debugPrint('[BUILD293][SecurityWipe] wipe já executado nesta sessão — ignorado (loop guard)');
@@ -3651,7 +3658,7 @@ class AppProvider extends ChangeNotifier {
         final geminiKey = await FirestoreService.loadGeminiApiKey()
             .timeout(const Duration(seconds: 5));
         if (geminiKey.isNotEmpty) {
-          GeminiService.setGeminiApiKey(geminiKey);
+          GeminiService.setGeminiApiKey(geminiKey, source: GeminiKeySource.appConfig); // BUILD 294
         } else {
           await GeminiService.initFromStorage();
         }
@@ -4243,7 +4250,7 @@ class AppProvider extends ChangeNotifier {
           final geminiKey = await FirestoreService.loadGeminiApiKey()
               .timeout(const Duration(seconds: 5));
           if (geminiKey.isNotEmpty) {
-            GeminiService.setGeminiApiKey(geminiKey); // persiste em SharedPrefs + mcLsSet
+            GeminiService.setGeminiApiKey(geminiKey, source: GeminiKeySource.appConfig); // BUILD 294
             debugPrint('[buildAIAnswer] API Key recarregada do Firestore ✓');
           } else {
             // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js/eval)

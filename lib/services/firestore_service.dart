@@ -241,8 +241,21 @@ class FirestoreService {
     return result;
   }
 
+  // BUILD 294: Firebase init guard — Safari/WebKit pode falhar em
+  // Firebase.initializeApp() (IndexedDB bloqueado, modo privado, CORS).
+  // Chamar FirebaseFirestore.instance quando Firebase.apps.isEmpty lança
+  // TypeError: type 'NullError' is not a subtype of type 'JavaScriptObject'.
+  // Solução: verificar Firebase.apps.isNotEmpty antes de qualquer acesso.
+  static bool get _isFirebaseReady => Firebase.apps.isNotEmpty;
+
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
-  static FirebaseFirestore get _db => FirebaseFirestore.instance;
+  static FirebaseFirestore get _db {
+    if (!_isFirebaseReady) {
+      throw StateError('[FirestoreService] Firebase não inicializado. '
+          'Verifique Firebase.initializeApp() no boot.');
+    }
+    return FirebaseFirestore.instance;
+  }
 
   static const _projectId = 'medcases-pro';
   static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
@@ -266,6 +279,11 @@ class FirestoreService {
   // Usado para suprimir requests Firestore antes da barreira de auth
   // transposta, eliminando o spam de 403 "permission-denied" no console.
   static bool get _isUserAuthenticated {
+    // BUILD 294: Se Firebase não inicializou (Safari modo privado, etc.),
+    // FirebaseAuth.instance lança NullError. Delegamos ao AuthService token cache.
+    if (!_isFirebaseReady) {
+      return kIsWeb ? AuthService.hasCachedToken : false;
+    }
     // Nativo e Web (se SDK tiver usuário — casos de refresh com token válido)
     if (FirebaseAuth.instance.currentUser != null) return true;
     // Web REST: SDK currentUser sempre null — delegamos ao AuthService

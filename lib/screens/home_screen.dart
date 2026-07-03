@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
@@ -1261,6 +1262,16 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   Future<void> _send([String? preset]) async {
     final text = (preset ?? _ctrl.text).trim();
     if (text.isEmpty || _thinking) return;
+
+    // ── BUILD 294: FIREBASE GUARD — nunca envia se Firebase não inicializou ──
+    // No Safari (modo privado, ITP, IndexedDB bloqueado), Firebase.initializeApp()
+    // pode falhar. Tentar sendAiMessage() nesse estado causa NullError no SDK.
+    // Solução: redirecionar para aba IA completa que tem seu próprio fallback.
+    if (Firebase.apps.isEmpty) {
+      debugPrint('[BUILD294][HomeInlineChat] Firebase não pronto — redirecionando para IA tab');
+      widget.onNavigateToAi(2);
+      return;
+    }
 
     // ── BUILD 312 M1: PRE-GUARD — bloqueia envio sem autenticação real ────────
     // Idêntico ao Layer 0 do ai_screen.dart: sem geminiConnected nem openAiKey

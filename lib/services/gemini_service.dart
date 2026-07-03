@@ -203,6 +203,18 @@ bool _isTruncated(String text) {
 }
 
 
+// BUILD 294: Discriminador de origem da chave Gemini API.
+// SecurityWipe APENAS pode limpar: oauth, admin, cache, user.
+// NUNCA deve limpar: appConfig — essa chave pertence ao sistema.
+enum GeminiKeySource {
+  none,       // nenhuma chave carregada
+  appConfig,  // app_config/global.apiKey — chave do sistema, compartilhada
+  oauth,      // OAuth Google redirect — chave pessoal do usuário autenticado
+  admin,      // definida manualmente por admin/master via painel
+  user,       // chave BYOA individual do usuário
+  cache,      // restaurada de SharedPreferences/localStorage (origem desconhecida)
+}
+
 class GeminiService {
   // gemini-2.5-flash → quota free tier: 10 RPM (esgota rápido em uso normal)
   // gemini-2.5-flash-lite → mesma família, quota muito maior no free tier
@@ -249,19 +261,40 @@ class GeminiService {
   static String _geminiApiKey = '';
   static const _keyGak = 'medcases_gak'; // localStorage key para persistência entre reloads
 
+  // BUILD 294: Discriminador de origem da chave Gemini.
+  // CRÍTICO: SecurityWipe só pode apagar chaves de origem oauth/admin/cache.
+  // Chaves de origem appConfig (app_config/global) pertencem ao sistema e
+  // NUNCA devem ser apagadas pelo SecurityWipe — são necessárias para todos
+  // os usuários aprovados enviarem mensagens à IA.
+  //
+  // Sequência de boot regular (usuário não-privilegiado):
+  //   1. _loadAiKeyFromFirestore() → loadGeminiApiKey() → source = appConfig
+  //   2. checkGeminiSession() → SecurityWipe → clearOAuthKey() → NÃO apaga
+  //   3. AI funciona normalmente
+  //
+  // Sequência após OAuth admin:
+  //   1. JS salva chave OAuth em medcases_gak → source = oauth
+  //   2. Logout → clearOAuthKey() → apaga corretamente
+  //   3. Próximo login regular: _loadAiKeyFromFirestore() → source = appConfig
+  static GeminiKeySource _keySource = GeminiKeySource.none;
+
+  /// Retorna a origem da chave Gemini atualmente carregada.
+  static GeminiKeySource get keySource => _keySource;
+
   /// Setter chamado pelo AppProvider após carregar a chave do Firestore.
   /// Automaticamente persiste no localStorage para sobreviver reloads do service worker.
-  static void setGeminiApiKey(String key) {
+  static void setGeminiApiKey(String key, {GeminiKeySource source = GeminiKeySource.appConfig}) {
     final trimmed = key.trim();
     if (trimmed.isEmpty) return;
     _geminiApiKey = trimmed;
+    _keySource    = source;
     // Persiste via dart:js (mcLsSet) E via SharedPreferences (dupla garantia)
     if (kIsWeb) _webSet(_keyGak, trimmed);
     // SharedPreferences em background — não bloqueia, garante persistência
     SharedPreferences.getInstance().then((p) {
       p.setString(_keyGak, trimmed);
     }).catchError((_) {});
-    debugPrint('[GeminiService] API Key definida e cacheada (localStorage + SharedPrefs) ✓');
+    debugPrint('[GeminiService] API Key definida (source=${source.name}) e cacheada ✓');
   }
 
   /// Restaura a API Key do SharedPreferences/localStorage sem precisar do Firestore.
@@ -277,6 +310,7 @@ class GeminiService {
       final fromPrefs = prefs.getString(_keyGak) ?? '';
       if (fromPrefs.isNotEmpty) {
         _geminiApiKey = fromPrefs;
+        _keySource    = GeminiKeySource.cache;
         debugPrint('[GeminiService] API Key restaurada do SharedPreferences no boot ✓');
         return;
       }
@@ -286,6 +320,7 @@ class GeminiService {
       final cached = _webGet(_keyGak);
       if (cached != null && cached.isNotEmpty) {
         _geminiApiKey = cached;
+        _keySource    = GeminiKeySource.cache;
         debugPrint('[GeminiService] API Key restaurada via mcLsGet no boot ✓');
       }
     }
@@ -302,12 +337,33 @@ class GeminiService {
     }
   }
 
-  /// BUILD 277: Wipes the in-memory cached API key without touching Firestore.
-  /// Called during checkGeminiSession() for non-privileged accounts to prevent
-  /// API key bleed from previous admin sessions.
+  /// BUILD 277 / BUILD 294: Wipes the in-memory cached API key without
+  /// touching Firestore. Full wipe — use only on logout or admin reset.
   static void clearCachedApiKey() {
     _geminiApiKey = '';
-    debugPrint('[GeminiService] clearCachedApiKey() — in-memory key wiped');
+    _keySource    = GeminiKeySource.none;
+    debugPrint('[GeminiService] clearCachedApiKey() — in-memory key wiped (full)');
+  }
+
+  /// BUILD 294: SecurityWipe-safe clear — only clears OAuth/admin/cache keys.
+  /// NEVER clears appConfig keys (from app_config/global) — those are system
+  /// keys needed by ALL approved users for IA to function.
+  ///
+  /// Returns true if a key was actually cleared, false if it was skipped.
+  static bool clearOAuthCachedApiKey() {
+    if (_keySource == GeminiKeySource.appConfig) {
+      debugPrint('[BUILD294][SecurityWipe] skipped reason=app_config_key '
+          'source=${_keySource.name}');
+      return false;
+    }
+    final hadKey = _geminiApiKey.isNotEmpty;
+    _geminiApiKey = '';
+    _keySource    = GeminiKeySource.none;
+    if (hadKey) {
+      debugPrint('[BUILD294][SecurityWipe] wiped_oauth_only '
+          'source was=${_keySource == GeminiKeySource.none ? "cleared" : _keySource.name}');
+    }
+    return hadKey;
   }
 
   /// Verifica se a API Key foi carregada (sem expor a chave em si).
