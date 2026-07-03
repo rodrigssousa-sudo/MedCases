@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════════════════════
 // ai_smart_router.dart — Smart Context Router v3.0
-// BUILD 304 — 8K Ultra-Lean + 4-Turn Micro Window Active
+// BUILD 306 — Regex Hardening + Unified Sanitize Engine
 //
 // RESPONSABILIDADES EXCLUSIVAS:
 //   • ETAPA 1: Intent Router — classifica em 7 dimensões (isDrops > isDilution >
@@ -8,8 +8,8 @@
 //   • ETAPA 2: Language Lock — PT-BR / ES soberano, injetado top + bottom
 //   • ETAPA 3: Module Loader (Lazy) — 4 módulos opcionais conforme intent
 //   • ETAPA 4: Prompt Builder — bodyBuf (shrinkable) + suffix (imutável)
-//   • ETAPA 5: Shrink 8K — corta SOMENTE o corpo antes do output_shield marker
-//   • ETAPA 6: Response Validator + Sanitizer — remove metadados, valida idioma
+//   • ETAPA 5: Shrink 32K — corta SOMENTE o corpo antes do output_shield marker
+//   • ETAPA 6: Response Validator — motor _scanLines() unificado [BUILD 306 R2]
 //   • ETAPA 7: Logs estruturados [AI_ROUTER] + [RESPONSE_VALIDATOR]
 //
 // NÃO FAZ:
@@ -100,7 +100,7 @@ class AiSmartRouter {
     r'|✗\s+PROIBIDO:|✓\s+OBRIGAT[ÓO]RIO:'
     r'|100%\s+ESPA[ÑN]OL\s+PURO|100%\s+PORTUGU[ÊE]S'
     // ── XML tag leaks ─────────────────────────────────────────────────────
-    r'|<instructions[\s>]|</instructions>|<system_rules[\s>]|</system_rules>'
+    r'|<instructions[^>]*>|</instructions>|<system_rules[^>]*>|</system_rules>'
     r'|<response_template>|</response_template>|<context_rag>|</context_rag>'
     r'|OUTPUT_STARTS_HERE|END_OF_INSTRUCTIONS'
     // ── Metadata field leaks (RAG + Camada C) ─────────────────────────────
@@ -555,12 +555,40 @@ class AiSmartRouter {
     r'|INSTRUÇÃO\s+DE\s+SISTEMA|PROMPT\s+INTERNO'
     r'|SYSTEM\s+INSTRUCTION|SMART\s+ROUTER'
     r'|IDIOMA\s+SOBERANO|TRAVA\s+DE\s+IDIOMA'
-    r'|<instructions[\s>]|<system_rules[\s>]|<response_template>|</response_template>'
+    r'|<instructions[^>]*>|<system_rules[^>]*>|<response_template>|</response_template>'
     r'|OUTPUT_STARTS_HERE|END_OF_INSTRUCTIONS'
     r'|TEMA\s+DESTE\s+TURNO|COMPLEJIDAD|AUTORIDADE\s+DE\s+MATRIZ)',
     caseSensitive: false,
     multiLine: true,
   );
+
+  // ── BUILD 306 [R2]: Motor de varredura atômico compartilhado ──────────────
+  // Elimina a duplicação do loop linha-a-linha entre sanitizeAndCheck() e
+  // sanitizeResponse(). Qualquer atualização em _metaLeakPatterns propaga
+  // automaticamente para ambos os caminhos — zero risco de divergência futura.
+  //
+  // Retorna: record ({cleaned: List<String>, removed: int})
+  //   cleaned — linhas aprovadas (sem meta-leak detectado)
+  //   removed — linhas descartadas (para telemetria)
+  static ({List<String> cleaned, int removed}) _scanLines(String text) {
+    final lines   = text.split('\n');
+    final cleaned = <String>[];
+    int   removed = 0;
+    for (final line in lines) {
+      if (_metaLeakPatterns.hasMatch(line)) {
+        removed++;
+        if (kDebugMode) {
+          final preview = line.trim().length > 60
+              ? line.trim().substring(0, 60)
+              : line.trim();
+          debugPrint('[RESPONSE_VALIDATOR] meta_leak removida: "$preview…"');
+        }
+      } else {
+        cleaned.add(line);
+      }
+    }
+    return (cleaned: cleaned, removed: removed);
+  }
 
   /// Sanitiza e avalia severidade do meta leak.
   /// Retorna [SanitizeResult] com texto limpo e indicadores de severidade.
@@ -586,33 +614,21 @@ class AiSmartRouter {
       debugPrint('[RESPONSE_VALIDATOR] meta_leak=true severe=$hadSevereLeak — iniciando repair');
     }
 
-    final lines = response.split('\n');
-    final cleaned = <String>[];
-    int metaLinesRemoved = 0;
-
-    for (final line in lines) {
-      if (_metaLeakPatterns.hasMatch(line)) {
-        metaLinesRemoved++;
-        debugPrint('[RESPONSE_VALIDATOR] meta_leak removida: '
-            '"${line.trim().length > 60 ? line.trim().substring(0, 60) : line.trim()}..."');
-      } else {
-        cleaned.add(line);
-      }
-    }
-
+    // Motor atômico compartilhado — BUILD 306 [R2]
+    final (:cleaned, :removed) = _scanLines(response);
     String result = cleaned.join('\n').trim();
 
-    // Fallback final: replaceAll se tokens severos sobreviveram à limpeza linha-a-linha
+    // Fallback final: replaceAll se tokens severos sobreviveram à varredura por linha
     if (_severeLeakPatterns.hasMatch(result)) {
       result = result.replaceAll(_severeLeakPatterns, '').trim();
     }
 
     final isRecoverable = result.isNotEmpty;
-    final contentLines = result.split('\n').where((l) => l.trim().isNotEmpty).length;
+    final contentLines  = result.split('\n').where((l) => l.trim().isNotEmpty).length;
 
     debugPrint('[RESPONSE_VALIDATOR] '
         'metaLeak=$hadMetaLeak severe=$hadSevereLeak '
-        'linesRemoved=$metaLinesRemoved '
+        'linesRemoved=$removed '
         'contentLinesAfter=$contentLines');
 
     return SanitizeResult(
@@ -624,7 +640,8 @@ class AiSmartRouter {
   }
 
   /// Sanitiza a resposta removendo linhas com metadados internos.
-  /// Chamado ANTES de exibir ao usuário — versão pública simplificada.
+  /// Versão pública simplificada — chamada ANTES de exibir ao usuário.
+  /// Usa o mesmo motor _scanLines() de sanitizeAndCheck() — BUILD 306 [R2].
   static String sanitizeResponse(
     String response, {
     bool isPlantaoMode = false,
@@ -632,20 +649,8 @@ class AiSmartRouter {
   }) {
     if (response.isEmpty) return response;
 
-    final lines = response.split('\n');
-    final cleaned = <String>[];
-    int metaLinesRemoved = 0;
-
-    for (final line in lines) {
-      if (_metaLeakPatterns.hasMatch(line)) {
-        metaLinesRemoved++;
-        debugPrint('[RESPONSE_VALIDATOR] meta_leak removida: '
-            '"${line.trim().length > 60 ? line.trim().substring(0, 60) : line.trim()}…"');
-      } else {
-        cleaned.add(line);
-      }
-    }
-
+    // Motor atômico compartilhado — BUILD 306 [R2]
+    final (:cleaned, :removed) = _scanLines(response);
     String result = cleaned.join('\n').trim();
 
     // Contagem de linhas Plantão (aviso de overflow — não bloqueia)
@@ -669,7 +674,7 @@ class AiSmartRouter {
       if (esTokens.any((t) => result.toLowerCase().contains(t))) langOk = false;
     }
 
-    debugPrint('[RESPONSE_VALIDATOR] metaLeak=${metaLinesRemoved > 0} (${metaLinesRemoved}L removidas) '
+    debugPrint('[RESPONSE_VALIDATOR] metaLeak=${removed > 0} (${removed}L removidas) '
         'langOk=$langOk appLanguage=$appLanguage');
 
     return result;
@@ -800,7 +805,7 @@ class AiSmartRouter {
 
     // ── Etapa 7: Logs estruturados ────────────────────────────────────────────
     if (kDebugMode) {
-      debugPrint('[AI_ROUTER] BUILD305 '
+      debugPrint('[AI_ROUTER] BUILD306 '
           'task=${intent.taskLabel} contract=$contractName '
           'lang=$lang modules=${loaded}L/${skipped}S '
           'prompt=${finalPrompt.length}c/${_kCapTotal}c saved=${contextSaved}c '
@@ -809,12 +814,12 @@ class AiSmartRouter {
 
     // Log de produção — visível em release mode (Safari/Chrome DevTools)
     // ignore: avoid_print
-    print('[BUILD305][ROUTER] BUILD 305 — 32K Token Economy + Topic Overlap Hardening '
+    print('[BUILD306][ROUTER] BUILD 306 — Regex Hardening + Unified Sanitize Engine '
         'contract=$contractName task=${intent.taskLabel} '
         'cap=$_kCapTotal promptChars=${finalPrompt.length} '
         'shrunk=$shrunk lang=$lang '
-        'C1=topic_3layer_overlap C2=newcase_wordboundary C3=32k_economy '
-        'C4=static_reset_verified');
+        'R1=regex_tag_hardened R2=unified_scanlines_engine '
+        'C1=topic_3layer_overlap C2=newcase_wordbound C3=32k_economy C4=static_reset_ok');
 
     return RouterResult(
       finalPrompt: finalPrompt,
