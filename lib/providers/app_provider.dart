@@ -3558,15 +3558,23 @@ class AppProvider extends ChangeNotifier {
       isPlantaoMode:   !longResponse,
       cameFromButton:  fromButton,  // BUILD 262: bypasses HARD RESET on follow-up button taps
     );
-    if (threadStatus.action == ThreadAction.newThread) {
+    // BUILD 300: MODO ESTUDO — bypass absoluto de HARD RESET.
+    // ClinicalThreadManager.evaluate() já retorna continueThread no Modo Estudo,
+    // mas esta segunda camada garante que NUNCA ocorra _aiHistory.clear() enquanto
+    // longResponse=true, mesmo que um caminho de código futuro altere o ThreadManager.
+    if (threadStatus.action == ThreadAction.newThread && longResponse) {
+      debugPrint('[BUILD300][HISTORY_SANITIZER] bypass reason=study_mode_hard_reset_forbidden '
+          'threadReason=${threadStatus.reason} historyLen=${_aiHistory.length}');
+    } else if (threadStatus.action == ThreadAction.newThread) {
       // BUILD 250: HARD RESET síncrono — ocorre ANTES de qualquer montagem de payload.
       // Limpa _aiHistory (contexto Gemini) + reseta memória clínica estruturada.
       // Isso elimina os 8.9k tokens de contexto acumulado que causaram truncamento.
+      // APLICA-SE APENAS AO MODO PLANTÃO (!longResponse).
       final removed = _aiHistory.length;
       _aiHistory.clear();           // contexto Gemini → zero
       _sessionMemory.reset();       // memória clínica (diag, meds, labs) → zero
       debugPrint('[HISTORY_SANITIZER] HARD RESET ATIVADO: Limpando _aiHistory de forma absoluta. '
-          'mode=${longResponse ? "estudo" : "plantao"} '
+          'mode=plantao '
           'strategy=empty sent=0 removed=$removed '
           'reason=${threadStatus.reason}');
     }

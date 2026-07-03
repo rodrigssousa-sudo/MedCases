@@ -315,51 +315,71 @@ class AiSmartRouter {
       '• Sem prosa. Sem parágrafos. Sem ##. Sem introduções.\n'
       '• A AUTORIDADE DE MATRIZ ao final deste prompt define o template exato.\n';
 
-  // ══ CONTRATO ESTUDO — BUILD 299: formato dinâmico por seções numeradas ══════
+  // ══ CONTRATO ESTUDO — BUILD 300: Enciclopédia Acadêmica Flexível 7 eixos ═════
   // BUILD 257: isolamento das regras do Plantão.
-  // BUILD 299: reestruturação para formato didático, organizado e previsível.
-  //   Formato anterior: seções fixas (Definição/Fisiopatologia/MoA) — muito rígido.
-  //   Formato novo: 7 seções numeradas, presença condicional por relevância clínica.
-  //   Mantém: prosa acadêmica, negrito em fármacos/doses, sem emojis de Plantão.
-  //   Novo: seções de pegadinhas, resumo final de 3 linhas, aplicação clínica explícita.
+  // BUILD 299: reestruturação para 7 seções dinâmicas.
+  // BUILD 300: matriz A/B/C/D por tipo de tema + botão azul dinâmico via tag
+  //            [NEXT_ACTION_PROMPT:]. Tratamento/conduta NUNCA é fixo na 1ª resposta
+  //            de sintomas/doenças — proposto como próximo passo via tag.
   static const String _contractEstudo =
-      'FORMATO OBRIGATÓRIO (Modo Estudo — dynamic_study_v1 — BUILD 299):\n'
+      'FORMATO OBRIGATÓRIO (Modo Estudo — encyclopedia_v1 — BUILD 300):\n'
       '\n'
-      '## [Título clínico específico]\n'
+      'PASSO 1 — IDENTIFIQUE O TIPO DE TEMA E APLIQUE A MATRIZ CORRESPONDENTE:\n'
       '\n'
-      '**1. Conceito central**\n'
-      '[Definição precisa em 1–2 linhas. Primeira frase = essência do tema.]\n'
+      'A) SINTOMA (Dor Torácica, Dispneia, Cefaleia, Febre, etc.):\n'
+      '## [Nome do Sintoma]\n'
+      '**1. Conceito** — Definição objetiva e importância clínica em 1–2 linhas.\n'
+      '**2. Causas** — Etiologias principais e classificação (urgentes vs. não urgentes).\n'
+      '**3. Caracterização** — Semiologia: início, tipo, irradiação, fatores de piora/melhora.\n'
+      '**4. Clínica** — Manifestações e sintomas associados relevantes ao diagnóstico diferencial.\n'
+      '**5. Alarmes** — Sinais e sintomas que indicam gravidade iminente e exigem ação imediata.\n'
+      '**6. Investigação** — Anamnese focada, exame físico dirigido e exames iniciais obrigatórios.\n'
+      '**7. Diferenciais** — Diagnósticos semelhantes, pérolas clínicas e erros diagnósticos frequentes.\n'
+      '[NEXT_ACTION_PROMPT: Quais as condutas imediatas, manejo inicial e doses farmacológicas para as causas graves de [NOME_DO_SINTOMA]?]\n'
       '\n'
-      '**2. Mecanismo / Fisiopatologia**\n'
-      '[2–3 linhas: pathway molecular/fisiológico + consequência clínica direta.]\n'
+      'B) DOENÇA / SÍNDROME (Asma, Insuficiência Cardíaca, Pneumonia, etc.):\n'
+      '## [Nome da Doença]\n'
+      '**1. Conceito** — Definição precisa e epidemiologia relevante.\n'
+      '**2. Classificação** — Estadiamento, gravidade ou subtipos clínicos com critérios.\n'
+      '**3. Fisiopatologia** — Pathway molecular/fisiológico e consequência clínica direta.\n'
+      '**4. Clínica** — Apresentação típica e atípica; sinais e sintomas cardinais.\n'
+      '**5. Alarmes** — Critérios de gravidade, indicações de internação/UTI.\n'
+      '**6. Investigação** — Exames diagnósticos, critérios laboratoriais e de imagem.\n'
+      '**7. Diferenciais** — Diagnósticos semelhantes, pérolas clínicas e armadilhas.\n'
+      '[NEXT_ACTION_PROMPT: Qual o tratamento, condutas e doses farmacológicas para [NOME_DA_DOENÇA]?]\n'
       '\n'
-      '**3. Conduta ou aplicação clínica**\n'
-      '[2–3 linhas: o que o médico faz na prática com este conhecimento.]\n'
+      'C) EXAME (Ecocardiograma, Gasometria, ECG, etc.):\n'
+      '## [Nome do Exame]\n'
+      '**1. Conceito** — O que é e o que avalia.\n'
+      '**2. Indicações** — Quando solicitar; situações clínicas que justificam o exame.\n'
+      '**3. Interpretação** — Como ler os valores/laudos; parâmetros normais e patológicos.\n'
+      '**4. Limitações** — Situações em que o exame falha ou pode enganar.\n'
+      '**5. Diferenciais e Pérolas** — Achados que mimetizam outros, erros de interpretação comuns.\n'
+      '[NEXT_ACTION_PROMPT: Quais são os achados patológicos mais importantes e o que fazer quando o [NOME_DO_EXAME] está alterado?]\n'
       '\n'
-      '**4. Fármacos principais** *(omitir se não farmacológico)*\n'
-      '[Listar apenas os relevantes ao tema. **Nome dose via** — sem digressão.]\n'
+      'D) FÁRMACO (Amiodarona, Enoxaparina, Metoprolol, etc.):\n'
+      '## [Nome do Fármaco]\n'
+      '**1. Conceito** — Classe farmacológica e indicação principal.\n'
+      '**2. Mecanismo** — Mecanismo de ação molecular e efeito clínico resultante.\n'
+      '**3. Indicações** — Indicações aprovadas e off-label relevantes.\n'
+      '**4. Doses** — Doses padrão por indicação, via de administração e ajuste renal/hepático.\n'
+      '**5. Efeitos Adversos** — Principais, frequentes e os que alteram a conduta clínica.\n'
+      '**6. Contraindicações** — Absolutas e relativas; interações medicamentosas críticas.\n'
+      '**7. Pérolas** — Armadilhas de prova, situações especiais, monitorização obrigatória.\n'
+      '[NEXT_ACTION_PROMPT: Quais as situações clínicas especiais, ajuste de dose e monitorização obrigatória para [NOME_DO_FÁRMACO]?]\n'
       '\n'
-      '**5. Efeitos adversos ou riscos relevantes** *(omitir se não aplicável)*\n'
-      '[Apenas os que impactam a decisão clínica. 1–3 linhas.]\n'
-      '\n'
-      '**6. Pegadinhas / Pérolas clínicas**\n'
-      '[1–2 armadilhas de prova ou erros comuns. Frases curtas e diretas.]\n'
-      '\n'
-      '**7. Resumo final**\n'
-      '[Exatamente 3 linhas. Síntese densa do que o médico PRECISA lembrar.]\n'
-      '\n'
-      '📌 [Próximo passo ou pergunta de aprofundamento. Em 1ª pessoa. PONTO FINAL.]\n'
-      '\n'
-      'REGRAS DO MODO ESTUDO:\n'
-      '• Seções omissíveis (4, 5): suprimir completamente se não aplicável ao tema.\n'
-      '• Seções obrigatórias: 1, 2, 3, 6, 7 e o 📌 final — SEMPRE presentes.\n'
-      '• Máximo 30 linhas de conteúdo. NUNCA truncar abaixo de 15 linhas.\n'
-      '• Negrito APENAS em fármacos, doses e critérios de guideline.\n'
-      '• Prosa acadêmica densa é ESPERADA e CORRETA. Sem bullet points ação-rápida.\n'
-      '• Sem emojis de Plantão (🟥/🔄/⛔/💊) como estrutura — apenas 📌 ao final.\n'
-      '• Doses: incluir SOMENTE se explicitamente perguntado ou em seção 4.\n'
-      '• IGNORAR: "22 matrizes", "6-12 linhas por template", "REGRA ZERO",\n'
-      '  "ban de abertura conversacional" — EXCLUSIVAS do Plantão.\n';
+      'REGRAS ABSOLUTAS DO MODO ESTUDO (encyclopedia_v1):\n'
+      '• USE A MATRIZ DO TIPO DO TEMA — identifique A/B/C/D antes de responder.\n'
+      '• Substitua [NOME_DO_SINTOMA], [NOME_DA_DOENÇA], etc. pelo nome real do tema.\n'
+      '• TAG OBRIGATÓRIA: sempre gerar [NEXT_ACTION_PROMPT: Pergunta avançada aqui] no final absoluto. Adapte o texto da tag ao tema real da conversa.\n'
+      '• Tratamento/Conduta/Doses NÃO aparecem no corpo da resposta em A e B — ficam reservados para a tag NEXT_ACTION_PROMPT.\n'
+      '• Seções de Fármaco (D): doses SÃO incluídas no corpo (seção 4) — única exceção.\n'
+      '• Prosa acadêmica densa é ESPERADA. Sem bullet points ação-rápida estilo Plantão.\n'
+      '• Negrito APENAS em fármacos, doses, critérios diagnósticos de guideline e nomes de síndromes.\n'
+      '• Sem emojis de Plantão (🟥/🔄/⛔/💊) — apenas o 📌 é permitido e opcional.\n'
+      '• Máximo 35 linhas de conteúdo. NUNCA truncar abaixo de 18 linhas.\n'
+      '• IGNORAR: "22 matrizes", "6-12 linhas por template", "REGRA ZERO", "ban de abertura conversacional" — EXCLUSIVAS do Plantão.\n'
+      '• Modo Estudo é ENCICLOPÉDIA ACADÊMICA PEDAGÓGICA — não beira do leito.\n';
 
   // ══ CAMADA 4 — Prompt Builder ════════════════════════════════════════════════
   static String _buildPrompt({
@@ -737,8 +757,9 @@ class AiSmartRouter {
     // e que as seções dinâmicas estão sendo geradas sem truncamento.
     if (!isPlantaoMode) {
       // ignore: avoid_print
-      print('[BUILD299][ESTUDO] contract=dynamic_study_v1 '
-          'sections=1,2,3,[4],[5],6,7,📌 '
+      print('[BUILD300][ESTUDO] contract=encyclopedia_v1 '
+          'matrices=A(sintoma),B(doenca),C(exame),D(farmaco) '
+          'nextActionTag=NEXT_ACTION_PROMPT '
           'promptChars=${finalPrompt.length} '
           'lang=$lang shrunk=$shrunk '
           'task=${intent.taskLabel}');

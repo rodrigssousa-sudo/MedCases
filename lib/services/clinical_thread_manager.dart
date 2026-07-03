@@ -331,7 +331,28 @@ class ClinicalThreadManager {
       );
     }
 
-    // ── Detecta mudança forte de tópico ───────────────────────────────────
+    // ── BUILD 300: MODO ESTUDO — memória 100% linear, sem HARD RESET por tópico ──
+    // No Modo Estudo (!isPlantaoMode) o estudo clínico expande e ramifica
+    // naturalmente. "Asma → broncodilatador → efeitos adversos" é continuação
+    // legítima mesmo sem overlap de palavras-chave. Nunca aplicar newThread por
+    // no_topic_overlap / new_case_signal / drug_switch no Modo Estudo.
+    // first_message e inactivity_timeout permanecem ativos em ambos os modos.
+    if (!isPlantaoMode) {
+      _turnCount++;
+      _lastActivityMs = now;
+      if (kDebugMode) {
+        debugPrint('[BUILD300][THREAD_MANAGER] mode=estudo '
+            'action=continue_thread reason=study_mode_memory_preserved '
+            'topic=$_activeTopic turnCount=$_turnCount');
+      }
+      return ClinicalThreadStatus(
+        action: ThreadAction.continueThread,
+        reason: 'study_mode_memory_preserved',
+        topic: _activeTopic,
+      );
+    }
+
+    // ── Detecta mudança forte de tópico (APENAS Modo Plantão) ─────────────
     final hasNewCaseSignal = _kNewCaseSignals.any((s) => q.contains(s));
 
     // Detecta fármaco novo diferente do thread ativo
@@ -350,7 +371,7 @@ class ClinicalThreadManager {
       _startNewThread(q, now);
 
       if (kDebugMode) {
-        debugPrint('[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
+        debugPrint('[THREAD_MANAGER] mode=plantao '
             'action=new_thread '
             'reason=${hasNewCaseSignal ? "new_case_signal" : (hasDrugSwitch ? "drug_switch" : "no_topic_overlap")} '
             'oldTopic=$oldTopic newTopic=$_activeTopic');

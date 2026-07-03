@@ -2011,6 +2011,60 @@ class _AiScreenState extends State<AiScreen> {
     return null;
   }
 
+  // ── BUILD 300: NEXT_ACTION_PROMPT tag helpers ────────────────────────────
+  // A IA gera [NEXT_ACTION_PROMPT: Pergunta avançada aqui] no fim das respostas
+  // de Modo Estudo. Este helper extrai o prompt da tag e remove a tag do texto
+  // visível ao usuário, mantendo a bolha limpa.
+  //
+  // Retorna '' se a tag não estiver presente (Modo Plantão ou resposta de estudo
+  // sem tag — não deve ocorrer, mas defensivo).
+  static String _extractNextActionTag(String text) {
+    final rx = RegExp(r'\[NEXT_ACTION_PROMPT:\s*(.*?)(?:\]|$)', dotAll: true);
+    final m = rx.firstMatch(text);
+    return m != null ? (m.group(1) ?? '').trim() : '';
+  }
+
+  // Remove a tag [NEXT_ACTION_PROMPT:...] do texto exibido ao usuário.
+  static String _cleanNextActionTag(String text) {
+    return text
+        .replaceAll(
+            RegExp(r'\[NEXT_ACTION_PROMPT:\s*.*?(?:\]|$)', dotAll: true), '')
+        .trimRight();
+  }
+
+  // Extrai um rótulo curto e inteligente do prompt gerado pela IA.
+  // Regras: prefere palavras-chave de conduta, terapêutica, manejo.
+  // Fallback: primeiras 4 palavras do prompt.
+  static String _studyButtonLabel(String nextPrompt, String lang) {
+    if (nextPrompt.isEmpty) return '';
+    final p = nextPrompt.toLowerCase();
+    // Detectar intenção do próximo passo para gerar label contextual
+    final isTratamento = p.contains('tratamento') || p.contains('terapêutica') ||
+        p.contains('terapeutica') || p.contains('tratamiento') ||
+        p.contains('conduta') || p.contains('conduta') || p.contains('manejo') ||
+        p.contains('doses') || p.contains('dosis') || p.contains('fármacos') ||
+        p.contains('farmacos') || p.contains('farmacológico') ||
+        p.contains('farmacologico');
+    final isMonitorizacao = p.contains('monitorização') || p.contains('monitorizacao') ||
+        p.contains('monitorización') || p.contains('ajuste de dose') ||
+        p.contains('ajuste de dosis') || p.contains('situações especiais') ||
+        p.contains('situaciones especiales');
+    final isAchados = p.contains('achados') || p.contains('patológicos') ||
+        p.contains('patologicos') || p.contains('alterado') ||
+        p.contains('hallazgos') || p.contains('interpretação') ||
+        p.contains('interpretacion');
+    if (lang == 'es') {
+      if (isTratamento)     return 'Ver Tratamiento y Dosis';
+      if (isMonitorizacao)  return 'Monitorización y Ajuste';
+      if (isAchados)        return 'Hallazgos Patológicos';
+      return 'Avanzar Estudio';
+    }
+    if (isTratamento)     return 'Ver Conduta e Manejo';
+    if (isMonitorizacao)  return 'Monitorização e Ajuste';
+    if (isAchados)        return 'Achados e Interpretação';
+    return 'Avançar Estudo';
+  }
+
   void _copyMsg(String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -2312,6 +2366,18 @@ class _AiScreenState extends State<AiScreen> {
               // Evidência farmacológica: só detectar se NÃO for safe-card
               final detectedEv = _isSafeCard ? null : _detectDrugEvidence(msg.text);
 
+              // ── BUILD 300: NEXT_ACTION_PROMPT tag — extrai e limpa ────────────
+              // No Modo Estudo a IA gera a tag oculta [NEXT_ACTION_PROMPT: Pergunta].
+              // A tag é extraída para gerar o botão azul dinâmico e REMOVIDA do texto
+              // visível na bolha. O msg.text original é preservado (hash estável).
+              final String _nextActionPrompt = !_longResponse
+                  ? '' // Modo Plantão — sem tag
+                  : _extractNextActionTag(msg.text);
+              // cleanDisplayText: texto sem a tag para exibição na bolha
+              final String _cleanDisplayText = _nextActionPrompt.isNotEmpty
+                  ? _cleanNextActionTag(msg.text)
+                  : msg.text;
+
               // ── ORDEM 56 M1: RENDER UNIFICADO ────────────────────────────────
               // SUPER ORDEM 56: PlantatoPipeline, _PlantaoRenderer e _PlantaoFallbackCard
               // foram descontinuados. 100% das bolhas AI — 1º turno, follow-ups e
@@ -2320,7 +2386,8 @@ class _AiScreenState extends State<AiScreen> {
               // nativamente pelos prompts. Não há parsing nem slicing necessário.
               // Elimina duplicação de cards pós-refresh e alivia o rebuild do histórico.
               if (kDebugMode) {
-                debugPrint('[RENDER_56] msgId=${msg.id} → _AiBubble unificado');
+                debugPrint('[RENDER_56] msgId=${msg.id} → _AiBubble unificado'
+                    '${_nextActionPrompt.isNotEmpty ? " [BUILD300] nextActionTag=found" : ""}');
               }
 
               // BUILD 276: Fade-in wrapper — applied only to the freshly committed
@@ -2335,17 +2402,19 @@ class _AiScreenState extends State<AiScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Bubble unificada: _AiBubble (MarkdownBody agnostico) ────
+                    // BUILD 300: usa _cleanDisplayText — tag [NEXT_ACTION_PROMPT]
+                    // removida do texto visível. msg.text permanece intacto no modelo.
                     _AiBubble(
                       key: ValueKey('ai_${msg.id}'),
-                      text: msg.text,
+                      text: _cleanDisplayText,
                       dark: dark,
                       animate: i == _lastAiIndex,
                       lang: p.lang,
-                      onCopy: () => _copyMsg(msg.text),
+                      onCopy: () => _copyMsg(_cleanDisplayText),
                       ttsPlaying: _ttsPlayingIndex == i,
                       ttsReady: _ttsReady,
                       onTts: _ttsReady
-                          ? () => _toggleTts(i, msg.text, p.lang)
+                          ? () => _toggleTts(i, _cleanDisplayText, p.lang)
                           : null,
                       scrollGeneration: _scrollGeneration,
                       onBlockRevealed: _onBlockRevealed,
@@ -2418,21 +2487,30 @@ class _AiScreenState extends State<AiScreen> {
                           // BUILD 249: pass activeThreadTopic to guard stale drug detection
                           resolvedLink = ExternalToolLinkEngine.build(
                             lastUserMessage: lastUser,
-                            lastAiResponse: msg.text,
+                            lastAiResponse: _cleanDisplayText,
                             isPlantaoMode: !_longResponse,
                             currentLanguage: p.lang,
                             activeThreadTopic: p.activeThreadTopic,
                           );
                           _extToolCache[extKey] = resolvedLink;
                         }
+                        // BUILD 300: label dinâmico para o botão azul do Modo Estudo
+                        final studyLabel = _studyButtonLabel(_nextActionPrompt, p.lang);
+                        if (kDebugMode && _nextActionPrompt.isNotEmpty) {
+                          debugPrint('[BUILD300][NEXT_ACTION] msgId=${msg.id} '
+                              'label="$studyLabel" '
+                              'promptChars=${_nextActionPrompt.length}');
+                        }
                         return _ActionButtonsRow(
                           lastUserMessage: lastUser,
-                          lastAiResponse: msg.text,
+                          lastAiResponse: _cleanDisplayText,
                           isPlantaoMode: !_longResponse,
                           lang: p.lang,
                           dark: dark,
                           chatHistory: _messages.map((m) => m.text).toList(),
                           cachedLink: resolvedLink,
+                          studyNextPrompt: _nextActionPrompt,
+                          studyNextLabel: studyLabel,
                           onActionTap: (prompt) {
                             if (_isStreaming) return;
                             _userScrolledUp = false;
@@ -3826,6 +3904,11 @@ class _ActionButtonsRow extends StatelessWidget {
   final void Function(String prompt) onActionTap;
   // BUILD 232: link pre-resolvido pelo pai com cache de deduplicacao.
   final ExternalToolLink? cachedLink;
+  // BUILD 300: Modo Estudo — prompt e label dinâmico via tag [NEXT_ACTION_PROMPT:...]
+  // Quando presentes e !isPlantaoMode, o botão azul usa esses valores em vez
+  // do NextActionEngine genérico.
+  final String studyNextPrompt;
+  final String studyNextLabel;
 
   // Cores institucionais -- imutaveis por design
   // Azul institucional IA (mesmo do AppBar/primary)
@@ -3844,6 +3927,8 @@ class _ActionButtonsRow extends StatelessWidget {
     required this.onActionTap,
     required this.cachedLink,
     this.chatHistory = const [],
+    this.studyNextPrompt = '',
+    this.studyNextLabel = '',
   });
 
   @override
@@ -3862,11 +3947,25 @@ class _ActionButtonsRow extends StatelessWidget {
     // Nao chama ExternalToolLinkEngine.build() aqui -- elimina duplicacao em rebuilds.
     final link = cachedLink;
 
-    // Nenhum botão disponível → sem widget
-    if (action.label.isEmpty && link == null) return const SizedBox.shrink();
+    // BUILD 300: Modo Estudo com tag NEXT_ACTION_PROMPT — botão azul dinâmico
+    // Quando o Modo Estudo gera a tag, o botão azul usa o label contextual e
+    // envia o prompt específico gerado pela IA ao invés do genérico.
+    final bool hasStudyNext = !isPlantaoMode &&
+        studyNextPrompt.isNotEmpty &&
+        studyNextLabel.isNotEmpty;
 
-    // Label do botão IA
-    final aiLabel = lang == 'es' ? 'Conductas y dosis' : 'Condutas e doses';
+    // Nenhum botão disponível → sem widget
+    // Modo Estudo: sempre mostra o botão se hasStudyNext=true, mesmo sem action
+    if (action.label.isEmpty && link == null && !hasStudyNext) {
+      return const SizedBox.shrink();
+    }
+
+    // Label do botão IA:
+    // Modo Estudo com tag: usa studyNextLabel (dinâmico e contextual)
+    // Modo Estudo sem tag / Plantão: usa label genérico
+    final aiLabel = hasStudyNext
+        ? studyNextLabel
+        : (lang == 'es' ? 'Conductas y dosis' : 'Condutas e doses');
 
     // ── ORDEM VISUAL 02 M2: Emoji Stripper ───────────────────────────────────
     // Remove emojis e símbolos especiais do início dos labels antes de exibir.
@@ -3890,13 +3989,19 @@ class _ActionButtonsRow extends StatelessWidget {
           // Empilha somente em telas muito estreitas (< 340 px disponíveis)
           final stacked = constraints.maxWidth < 340;
 
-          final aiBtn = action.label.isNotEmpty
+          // BUILD 300: botão azul dinâmico no Modo Estudo.
+          // hasStudyNext=true → usa studyNextPrompt (gerado pela IA via tag).
+          // hasStudyNext=false → comportamento clássico via NextActionEngine.
+          final bool showAiBtn = hasStudyNext || action.label.isNotEmpty;
+          final aiBtn = showAiBtn
               ? ActionCardButton(
                   title: aiLabel,
                   icon: Icons.auto_awesome_rounded,
                   accentColor: _kBlueAI,
                   dark: dark,
-                  onTap: () => onActionTap(action.promptToSend),
+                  onTap: () => onActionTap(
+                    hasStudyNext ? studyNextPrompt : action.promptToSend,
+                  ),
                 )
               : null;
 
