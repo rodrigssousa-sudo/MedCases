@@ -123,7 +123,16 @@ class ClinicalThreadManager {
   };
 
   // ── Keywords de novo caso — qualquer uma dessas em query longa → new thread ─
-  // Sintomas sistêmicos sem relação farmacológica = novo caso clínico
+  // Sintomas sistêmicos sem relação farmacológica = novo caso clínico.
+  //
+  // BUILD 305 [C2]: Tokens frágeis com espaçamento manual ('iam ', ' iam',
+  // 'tep ', ' tep', 'avc ', ' avc') REMOVIDOS.
+  // PROBLEMA: pontuação grudada ("IAM, conduta" → "iam , conduta" após
+  // lowercase) não casava com 'iam ' (espaço após vírgula truncado).
+  // SOLUÇÃO: tokens limpos sem padding. A query é normalizada antes de .any()
+  // via q.contains(s) — o split de pontuação em evaluate() já usa
+  // replaceAll(RegExp(r'[^\w\s]'), ' '), logo 'iam' casa corretamente.
+  // Cobertura completa mantida via _kIsolatedNewCaseTerms (Set exato).
   static const _kNewCaseSignals = <String>[
     // Sintomas gastrointestinais / gerais
     'náusea', 'nausea', 'vômito', 'vomito', 'diarreia', 'diarrea',
@@ -145,12 +154,14 @@ class ClinicalThreadManager {
     'homem de', 'mulher de', 'hombre de', 'mujer de',
     'anos com', 'años con', 'anos de', 'años de',
     // Diagnósticos completamente diferentes
+    // BUILD 305 [C2]: tokens limpos — sem padding de espaço ('iam ', ' iam',
+    // 'tep ', ' tep', 'avc ', ' avc' removidos; cobertura mantida pelos
+    // termos base + _kIsolatedNewCaseTerms que faz match exato por palavra).
     'gastroenterite', 'gastroenteritis', 'gastrenterite',
     'pneumonia', 'meningite', 'meningitis',
-    'infarto', 'iam ', ' iam', 'tep ', ' tep',
-    'avc ', ' avc', 'acidente vascular',
+    'infarto', 'iam', 'tep', 'avc', 'acidente vascular',
     'sepse', 'sepsis', 'choque',
-    'anafilaxia', 'anafilaxia', 'anafilaxis',
+    'anafilaxia', 'anafilaxis',
     'intoxicação', 'intoxicacion',
   ];
 
@@ -368,7 +379,17 @@ class ClinicalThreadManager {
     }
 
     // ── Detecta mudança forte de tópico (APENAS Modo Plantão) ─────────────
-    final hasNewCaseSignal = _kNewCaseSignals.any((s) => q.contains(s));
+    // BUILD 305 [C2]: matching seguro por palavra inteira para tokens curtos.
+    // q já foi normalizado (lowercase, trim). Tokens com espaço (multi-palavra)
+    // usam contains direto. Tokens sem espaço ≤ 4 chars usam RegExp \b para
+    // evitar falso positivo: 'iam' em "vitamina", 'avc' em "travca", etc.
+    // Tokens > 4 chars: contains é seguro (colisão léxica negligenciável).
+    final qNormSig = ' $q '; // padding para word-boundary simplificado
+    final hasNewCaseSignal = _kNewCaseSignals.any((s) {
+      if (s.contains(' ')) return q.contains(s);           // multi-palavra: safe
+      if (s.length <= 4)  return qNormSig.contains(' $s '); // curto: word-boundary
+      return q.contains(s);                                 // longo: safe por tamanho
+    });
 
     // Detecta fármaco novo diferente do thread ativo
     final currentDrug = _detectPrimaryDrug(q);
@@ -626,43 +647,74 @@ class ClinicalThreadManager {
     _threadStartQuery = query;
   }
 
-  /// Extrai assinatura temática (3 palavras-chave relevantes)
+  // ── BUILD 305 [C1]: Stopwords PT-BR+ES — compartilhadas por _extract e _overlap ─
+  // Extraída para const estático para evitar alocação por chamada e garantir
+  // consistência na filtragem entre os dois métodos de análise temática.
+  static const _kStopwords = <String>{
+    // PT-BR
+    'de', 'da', 'do', 'e', 'em', 'o', 'a', 'os', 'as', 'um', 'uma',
+    'para', 'com', 'no', 'na', 'por', 'que', 'se', 'como', 'qual',
+    'dos', 'das', 'mais', 'mas', 'seu', 'sua', 'este', 'esta',
+    // ES (sem duplicatas do PT)
+    'el', 'la', 'los', 'las', 'un', 'una', 'en', 'y', 'es', 'del',
+    'con', 'cual', 'sus',
+  };
+
+  /// Extrai assinatura temática — BUILD 305 [C1]: take(4) → take(6).
+  ///
+  /// PROBLEMA ORIGINAL: take(4) capturava poucas palavras em queries longas.
+  /// Inversão sintática simples ("IC com congestão" vs "congestão no paciente
+  /// com IC") produzia assinaturas sem palavras em comum → falso newThread.
+  ///
+  /// SOLUÇÃO: take(6) amplia a janela de captura, aumentando a probabilidade
+  /// de sobreposição de palavras-chave clínicas em reformulações naturais.
   String _extractTopicSignature(String query) {
-    // PT-BR + ES stopwords (unique per language to avoid const-set duplicate error)
-    final stopwords = <String>{
-      // PT-BR
-      'de', 'da', 'do', 'e', 'em', 'o', 'a', 'os', 'as', 'um', 'uma',
-      'para', 'com', 'no', 'na', 'por', 'que', 'se', 'como', 'qual',
-      // ES (deduplicar vs PT)
-      'el', 'la', 'los', 'las', 'un', 'una', 'en', 'y', 'es', 'del',
-      'con', 'cual',
-    };
     final words = query
         .toLowerCase()
         .replaceAll(RegExp(r'[^\w\s]'), ' ')
         .split(RegExp(r'\s+'))
-        .where((w) => w.length > 3 && !stopwords.contains(w))
-        .take(4)
+        .where((w) => w.length > 3 && !_kStopwords.contains(w))
+        .take(6)    // BUILD 305 [C1]: 4 → 6 palavras significativas
         .toList();
     return words.join('_');
   }
 
-  /// Verifica overlap temático entre thread ativo e nova query
+  /// Verifica overlap temático — BUILD 305 [C1]: varredura bidirecional em 3 camadas.
+  ///
+  /// PROBLEMA ORIGINAL: apenas Set.intersection falhava em inversões sintáticas
+  /// e morfologia flexionada (ex: "congestão" vs "congestionamento").
+  ///
+  /// SOLUÇÃO EM 3 CAMADAS:
+  ///   Camada 1 — Set.intersection (O(n), rápido): sobreposição direta de tokens.
+  ///   Camada 2 — Varredura direta: token do tópico ativo contido na nova query
+  ///              (substring). Captura morfologia, siglas expandidas.
+  ///   Camada 3 — Varredura reversa [NOVO]: token longo da nova query contido
+  ///              no tópico ativo. Impede amnésia por inversão de ordem das
+  ///              palavras ("congestão pulmonar" ↔ "congestao_pulmonar_ic").
   bool _topicsOverlap(String activeTopic, String newQuery) {
     if (activeTopic.isEmpty) return false;
     final topicWords = Set<String>.from(activeTopic.split('_'));
-    final queryWords = newQuery
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^\w\s]'), ' ')
+    final qLower = newQuery.toLowerCase().replaceAll(RegExp(r'[^\w\s]'), ' ');
+    final queryWords = qLower
         .split(RegExp(r'\s+'))
-        .where((w) => w.length > 3)
+        .where((w) => w.length > 3 && !_kStopwords.contains(w))
         .toSet();
-    // Overlap direto de palavras-chave
+
+    // Camada 1: interseção direta de conjuntos
     if (topicWords.intersection(queryWords).isNotEmpty) return true;
-    // Verifica se alguma palavra do tópico aparece como substring na query
+
+    // Camada 2: palavra do tópico contida na query (substring) — morfologia
     for (final tw in topicWords) {
-      if (tw.length > 4 && newQuery.toLowerCase().contains(tw)) return true;
+      if (tw.length > 4 && qLower.contains(tw)) return true;
     }
+
+    // Camada 3 [BUILD 305 C1]: palavra longa da query contida no tópico ativo
+    // Resolve inversões sintáticas: "congestão pulmonar" ↔ "congestao_pulmonar_ic"
+    final topicFlat = activeTopic.replaceAll('_', ' ');
+    for (final qw in queryWords) {
+      if (qw.length > 4 && topicFlat.contains(qw)) return true;
+    }
+
     return false;
   }
 

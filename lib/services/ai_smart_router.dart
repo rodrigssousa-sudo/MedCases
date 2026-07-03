@@ -28,10 +28,10 @@
 //   📌 Monitorar: - [parâmetro]
 //   ⚠️ Alerta: - [risco crítico]
 //
-// CAP DE TOKENS:
-//   _kCapTotal  = 8.000 chars — teto do prompt final (Plantão + Estudo)
-//   _kCapContext = 4.000 chars — RAG clínico externo (prontuários, sumários)
-//   Sufixo imutável (~500 chars) reservado ANTES do corte do corpo.
+// CAP DE CHARS (BUILD 305 [C3] — 32K Token Economy):
+//   _kCapTotal   = 32.000 chars — ≈8K tokens (4 chars/token) — janela Gemini completa
+//   _kCapContext = 16.000 chars — RAG clínico externo (50% do teto total)
+//   _kSuffixReserve = 2.000 chars — sufixo imutável reservado antes do corte
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
@@ -70,12 +70,15 @@ class AiSmartRouter {
   AiSmartRouter._(); // 100% estático — sem instanciação
 
   // ══ HARD CAPS ═════════════════════════════════════════════════════════════
-  // BUILD 303 8K: teto elevado para 8.000 chars — suporta prontuários complexos.
-  // O sufixo imutável (_kSuffixReserve) é DESCONTADO do teto antes do corte
-  // do corpo, garantindo que output_shield + LangLock + END nunca sejam truncados.
-  static const int _kCapTotal       = 8000; // teto do prompt final
-  static const int _kCapContext      = 4000; // RAG clínico externo (prontuários)
-  static const int _kSuffixReserve  =  500; // reserva para sufixo imutável
+  // BUILD 305 [C3]: Token Economy unificada em escala 32K chars (≈8K tokens).
+  // Razão: 1 token ≈ 4 chars UTF-8 (texto clínico PT-BR/ES). Elevação de 4×
+  // permite prontuários extensos, registros multiproblemas e RAG rico sem
+  // truncamento prematuro. Sufixo imutável aumentado proporcionalmente (2000)
+  // para acomodar expansões futuras do output_shield + LangLock.
+  // O shrink corta SOMENTE o bodyBuf — suffix permanece sempre intacto.
+  static const int _kCapTotal       = 32000; // 32K chars ≈ 8K tokens
+  static const int _kCapContext      = 16000; // RAG clínico (50% do teto)
+  static const int _kSuffixReserve  =  2000; // sufixo imutável (6.25% do teto)
 
   // ══ PADRÕES DE META LEAK — linhas com estes tokens são removidas da resposta ═
   // Usados por sanitizeResponse() e sanitizeAndCheck() para filtrar vazamentos.
@@ -509,7 +512,8 @@ class AiSmartRouter {
     return '${bodyBuf.toString()}$suffix';
   }
 
-  // ══ ETAPA 5 — Shrink 8K ════════════════════════════════════════════════════
+  // ══ ETAPA 5 — Shrink 32K [BUILD 305 C3] ═══════════════════════════════════
+  // Teto elevado: 32.000 chars ≈ 8K tokens (4 chars/token PT-BR/ES).
   // Aplicado em build() APÓS _buildPrompt().
   // Corta SOMENTE o bodyBuf antes do marcador '\n<instructions id="output_shield">'.
   // O sufixo imutável é preservado integralmente.
@@ -773,7 +777,7 @@ class AiSmartRouter {
       hasSpecificContext: hasSpecificContext,
     );
 
-    // ── Etapa 5: Shrink 8K ────────────────────────────────────────────────────
+    // ── Etapa 5: Shrink 32K [BUILD 305 C3] ──────────────────────────────────
     // Corta APENAS o corpo antes do output_shield marker.
     // Sufixo imutável (output_shield + langLock + END) preservado integralmente.
     final shrunkCandidate = _shrinkPrompt(candidate, langLock);
@@ -796,7 +800,7 @@ class AiSmartRouter {
 
     // ── Etapa 7: Logs estruturados ────────────────────────────────────────────
     if (kDebugMode) {
-      debugPrint('[AI_ROUTER] BUILD304 '
+      debugPrint('[AI_ROUTER] BUILD305 '
           'task=${intent.taskLabel} contract=$contractName '
           'lang=$lang modules=${loaded}L/${skipped}S '
           'prompt=${finalPrompt.length}c/${_kCapTotal}c saved=${contextSaved}c '
@@ -805,12 +809,12 @@ class AiSmartRouter {
 
     // Log de produção — visível em release mode (Safari/Chrome DevTools)
     // ignore: avoid_print
-    print('[BUILD304][ROUTER] BUILD 304 — 8K Ultra-Lean + 4-Turn Micro Window Active '
+    print('[BUILD305][ROUTER] BUILD 305 — 32K Token Economy + Topic Overlap Hardening '
         'contract=$contractName task=${intent.taskLabel} '
         'cap=$_kCapTotal promptChars=${finalPrompt.length} '
         'shrunk=$shrunk lang=$lang '
-        'G1=4turn_microwindow G1b=intent_reset G2=plantaoref_template '
-        'G3=study_ttl_6h G4=isInteraction_expanded');
+        'C1=topic_3layer_overlap C2=newcase_wordboundary C3=32k_economy '
+        'C4=static_reset_verified');
 
     return RouterResult(
       finalPrompt: finalPrompt,
