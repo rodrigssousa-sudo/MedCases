@@ -320,6 +320,12 @@ class AppProvider extends ChangeNotifier {
   // o segundo _syncFromFirestore() retorna o Future já em voo em vez de iniciar novo.
   String? _firestoreSyncUid;
 
+  // BUILD 293: flag de sessão — o SecurityWipe só deve rodar UMA vez por login.
+  // Sem esta flag, o wipe apaga a chave → rebuild do stream → setUser() re-chamado
+  // → checkGeminiSession() → wipe novamente → loop infinito no Safari/Web.
+  // Resetado para false em clearUser() para que o próximo login possa wipear.
+  bool _apiKeyWipedThisSession = false;
+
   // ── Estado — Modo Offline ──────────────────────────────────────────────────
   bool _offlineMode      = false;  // true = sem rede, usa só cache local
   bool _offlineCaching   = false;  // true durante o processo de cache
@@ -601,6 +607,8 @@ class AppProvider extends ChangeNotifier {
     // BUILD 290/291: reseta Future e uid de sync — próxima sessão cria um novo.
     _firestoreSyncFuture = null;
     _firestoreSyncUid    = null;
+    // BUILD 293: reseta flag de wipe — próximo login pode wipear novamente.
+    _apiKeyWipedThisSession = false;
     // Limpa plantão (recarregado ao próximo login)
     _pinnedDrugIds = [];
     _pinnedCalcIds = [];
@@ -1773,6 +1781,29 @@ class AppProvider extends ChangeNotifier {
   /// Recebe lista de {role: 'user'/'assistant', content: '...'}.
   /// Limita a 10 entradas (5 pares) para não inflar o contexto.
   ///
+  /// BUILD 293: versão async de rebuildAiHistoryFromMessages.
+  /// Aguarda o _firestoreSyncFuture antes de reconstruir — garante que o
+  /// Safari não tente ler dados de Firestore antes da conexão estar pronta.
+  /// Timeout de 6s como safety-net (mesmo que o sync principal).
+  Future<void> rebuildAiHistoryFromMessagesAsync(
+      List<Map<String, String>> messages) async {
+    final syncFuture = _firestoreSyncFuture;
+    if (syncFuture != null) {
+      try {
+        await syncFuture.timeout(
+          const Duration(seconds: 6),
+          onTimeout: () {
+            debugPrint('[BUILD293][rebuildAiHistory] sync timeout 6s — '
+                'prosseguindo com dados locais');
+          },
+        );
+      } catch (e) {
+        debugPrint('[BUILD293][rebuildAiHistory] sync error (non-fatal): $e');
+      }
+    }
+    rebuildAiHistoryFromMessages(messages);
+  }
+
   /// ORDEM 53 M1: Agora também chama _threadManager.primeFromHistory() para
   /// reidratar o tópico ativo no ClinicalThreadManager. Sem isso, a próxima
   /// mensagem do usuário cai em `_activeTopic.isEmpty → first_message →
@@ -2028,18 +2059,26 @@ class AppProvider extends ChangeNotifier {
 
         final bool isPrivileged = isAdmin || isMaster;
         if (!isPrivileged && !hasPendingOAuthRedirect) {
-          try {
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.remove('medcases_gak');
-            if (kIsWeb) {
-              _webRemoveLS('medcases_gak');
-              _webRemoveLS('gemini_google_email');
+          // BUILD 293: wipe apenas UMA vez por sessão de login.
+          // Sem esta flag, o wipe apaga a chave → stream re-emite → setUser()
+          // re-chamado → checkGeminiSession() → wipe novamente → loop infinito.
+          if (!_apiKeyWipedThisSession) {
+            _apiKeyWipedThisSession = true;
+            try {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('medcases_gak');
+              if (kIsWeb) {
+                _webRemoveLS('medcases_gak');
+                _webRemoveLS('gemini_google_email');
+              }
+              // Zero out the in-memory key — GeminiService.hasApiKey becomes false
+              GeminiService.clearCachedApiKey();
+              debugPrint('[BUILD293][SecurityWipe] Non-privileged boot — API key purged (once per session)');
+            } catch (e) {
+              debugPrint('[BUILD293][SecurityWipe] wipe error (non-fatal): $e');
             }
-            // Zero out the in-memory key — GeminiService.hasApiKey becomes false
-            GeminiService.clearCachedApiKey();
-            debugPrint('[BUILD277][SecurityWipe] Non-privileged boot — cached API key purged');
-          } catch (e) {
-            debugPrint('[BUILD277][SecurityWipe] wipe error (non-fatal): $e');
+          } else {
+            debugPrint('[BUILD293][SecurityWipe] wipe já executado nesta sessão — ignorado (loop guard)');
           }
         } else if (hasPendingOAuthRedirect) {
           // OAuth redirect em progresso — wipe SUPRIMIDO para preservar o email

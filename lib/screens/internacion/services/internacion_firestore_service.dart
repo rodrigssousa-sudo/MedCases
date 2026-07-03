@@ -75,6 +75,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import '../models/evolucion_model.dart';
 import '../components/patient_accordion.dart';
@@ -118,7 +119,14 @@ class DeletedSession {
 }
 
 class InternacionFirestoreService {
-  static FirebaseFirestore get _db => FirebaseFirestore.instance;
+  // BUILD 293: guard against Safari Firebase init failure — never call
+  // FirebaseFirestore.instance if Firebase.apps is empty (throws NullError).
+  static FirebaseFirestore get _db {
+    if (Firebase.apps.isEmpty) {
+      throw StateError('[BUILD293] Firebase not initialized — cannot access Firestore');
+    }
+    return FirebaseFirestore.instance;
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // BUILD 186 FIX 1 — Referência à sub-coleção UNIFICADA
@@ -265,6 +273,21 @@ class InternacionFirestoreService {
   //   5. Se auth já está disponível no momento da chamada, abre imediatamente.
   // ─────────────────────────────────────────────────────────────────────────────
   static Stream<List<PacienteSession>> sessionsStream(String uid) {
+    // ── BUILD 293: FIREBASE INIT GUARD ───────────────────────────────────────
+    // Safari/WebKit: se Firebase.initializeApp() falhou (IndexedDB bloqueado,
+    // CORS, modo privado), Firebase.apps estará vazio. Chamar
+    // FirebaseAuth.instance ou FirebaseFirestore.instance nesses browsers
+    // retorna objetos JS nulos que causam:
+    //   TypeError: Instance of 'NullError': type 'NullError' is not a subtype
+    //   of type 'JavaScriptObject'
+    // Solução: retornar stream vazio imediatamente se Firebase não está pronto.
+    // O caller (meu_plantao_dashboard) já trata lista vazia como estado neutro.
+    if (Firebase.apps.isEmpty) {
+      debugPrint('[BUILD293][FIREBASE_GUARD] Firebase não inicializado — '
+          'sessionsStream retorna stream vazio (Safari/init failure)');
+      return const Stream.empty();
+    }
+
     // ── BUILD 292: AUTH DEBUG ────────────────────────────────────────────────
     final auth = FirebaseAuth.instance.currentUser;
     debugPrint('========== AUTH DEBUG ==========');
