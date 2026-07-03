@@ -1,10 +1,18 @@
 // ══════════════════════════════════════════════════════════════════════════════
 // AiGatewayService — Implementação IO (iOS / Android / macOS / desktop)
-// Build 146
+// BUILD 309 — S2: dart:io HttpClient com connectionTimeout=8s
 //
-// Usa package:http com http.Client.send() para leitura de stream SSE.
-// O http.Client nativo usa dart:io internamente, que lê o socket TCP de
-// forma verdadeiramente incremental — sem buffering extra.
+// PROBLEMA RESOLVIDO — IPv6 SYN Stall em Operadoras Brasileiras (S2):
+//   package:http.Client() sem connectionTimeout deixa o dart:io aguardar o
+//   handshake TCP do IPv6 por até 15s em operadoras BR (Claro, TIM, Vivo)
+//   antes de falhar — sem Happy Eyeballs automático, sem fallback IPv4.
+//   Resultado: timeout sempre na primeira call Android → falso "erro de rede".
+//
+// SOLUÇÃO:
+//   HttpClient() do dart:io com connectionTimeout=8s encerra o SYN stall de
+//   IPv6 em 8s — rápido o suficiente para o usuário perceber a falha e o
+//   sistema de retry acionar a rota IPv4 via _httpStatusToCode('timeout').
+//   HttpClient usa badCertificateCallback=null (padrão seguro, valida TLS).
 //
 // Este arquivo é importado APENAS em plataformas nativas (não-Web).
 // Na Web, ai_gateway_service_web.dart assume o lugar.
@@ -12,8 +20,8 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' as io;                                       // BUILD 309 S2: dart:io direto
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:http/http.dart' as http;
 import 'gemini_service_v2.dart' show GeminiChunk;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -27,15 +35,15 @@ Future<void> runSseStreamPlatform({
   required String payload,
   required String requestId,
 }) async {
-  final client = http.Client();
-  final request = http.Request('POST', Uri.parse(streamUrl))
-    ..headers.addAll({
-      'Content-Type':  'application/json',
-      'Accept':        'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'X-Request-ID':  requestId,
-    })
-    ..body = payload;
+  // BUILD 309 [S2]: HttpClient nativo dart:io com connectionTimeout de 8s.
+  // Ao contrário de package:http.Client(), o HttpClient expõe connectionTimeout
+  // no nível do socket TCP — aborta o SYN/SYN-ACK de IPv6 em 8s e libera o
+  // fluxo para que a camada de retry (firstChunkTimer) tente outro endereço.
+  // Sem connectionTimeout: o dart:io aguardaria até 60s (TCP kernel default)
+  // em stall de IPv6 de operadora, superando o timeout de 15s do client.send()
+  // que só cobre o tempo de resposta HTTP, não o handshake TCP.
+  final ioClient = io.HttpClient()
+    ..connectionTimeout = const Duration(seconds: 8); // trava SYN stall IPv6
 
   bool completionFired = false;
 
@@ -49,25 +57,50 @@ Future<void> runSseStreamPlatform({
           ..add(GeminiChunk.error('timeout'))
           ..close();
       }
-      client.close();
+      ioClient.close(force: true);
     }
   });
 
   try {
-    final streamedResponse = await client.send(request).timeout(
+    final uri = Uri.parse(streamUrl);
+
+    // BUILD 309 [S2]: openUrl + timeout cobre o handshake HTTPS completo.
+    // connectionTimeout (acima) cobre o TCP SYN; este timeout cobre o TLS.
+    final ioRequest = await ioClient
+        .openUrl('POST', uri)
+        .timeout(
+          const Duration(seconds: 15),
+          onTimeout: () {
+            firstChunkTimer?.cancel();
+            ioClient.close(force: true);
+            throw TimeoutException('Handshake expirou', const Duration(seconds: 15));
+          },
+        );
+
+    // Headers SSE idênticos ao fluxo anterior
+    ioRequest.headers
+      ..set(io.HttpHeaders.contentTypeHeader, 'application/json')
+      ..set(io.HttpHeaders.acceptHeader,      'text/event-stream')
+      ..set('Cache-Control', 'no-cache')
+      ..set('X-Request-ID', requestId);
+
+    // Escreve body e fecha o side de escrita
+    ioRequest.write(payload);
+
+    final ioResponse = await ioRequest.close().timeout(
       const Duration(seconds: 15),
       onTimeout: () {
         firstChunkTimer?.cancel();
-        client.close();
+        ioClient.close(force: true);
         throw TimeoutException('Conexão expirou', const Duration(seconds: 15));
       },
     );
 
     // ── Erros HTTP ────────────────────────────────────────────────────────
-    if (streamedResponse.statusCode != 200) {
+    if (ioResponse.statusCode != 200) {
       firstChunkTimer?.cancel();
-      client.close();
-      final code = _httpStatusToCode(streamedResponse.statusCode);
+      ioClient.close(force: true);
+      final code = _httpStatusToCode(ioResponse.statusCode);
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error(code))
@@ -79,7 +112,7 @@ Future<void> runSseStreamPlatform({
     // ── Lê stream SSE byte a byte ─────────────────────────────────────────
     String buffer = '';
 
-    await for (final bytes in streamedResponse.stream) {
+    await for (final bytes in ioResponse) {
       if (controller.isClosed) break;
 
       if (!firstChunkReceived) {
@@ -139,9 +172,20 @@ Future<void> runSseStreamPlatform({
 
   } on TimeoutException {
     firstChunkTimer?.cancel();
+    debugPrint('[GW-IO][$requestId] TimeoutException — connectionTimeout ou handshake');
     if (!controller.isClosed) {
       controller
         ..add(GeminiChunk.error('timeout'))
+        ..close();
+    }
+  } on io.SocketException catch (e) {
+    // BUILD 309 [S2]: SocketException captura falhas de resolução DNS e
+    // rejeições de conexão — inclui ECONNREFUSED e ENETUNREACH (IPv6 sem rota).
+    firstChunkTimer?.cancel();
+    debugPrint('[GW-IO][$requestId] SocketException: ${e.message} (osError=${e.osError?.errorCode})');
+    if (!controller.isClosed) {
+      controller
+        ..add(GeminiChunk.error('network'))
         ..close();
     }
   } catch (e) {
@@ -154,7 +198,7 @@ Future<void> runSseStreamPlatform({
     }
   } finally {
     firstChunkTimer?.cancel();
-    client.close();
+    ioClient.close(force: true);
   }
 }
 

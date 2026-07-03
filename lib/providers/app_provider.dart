@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth; // BUILD 309 S3
 import 'package:flutter/foundation.dart';
 // Import condicional: ls_web.dart (Web, usa dart:js) ou ls_stub.dart (iOS/Android, no-op).
 // Isola dart:js do compilador nativo — resolve "Undefined name 'context'" no Xcode.
@@ -3665,6 +3666,26 @@ class AppProvider extends ChangeNotifier {
     if (!GeminiService.hasApiKey) {
       // BUILD 244: verbose key-loading logs moved under kDebugMode guard
       if (kDebugMode) debugPrint('[AI_FREE_PROVIDER] source=loading');
+      // BUILD 309 [S3]: Força renovação do JWT Android antes do Firestore.
+      // No Android, o token Firebase pode estar expirado entre sessões — a call
+      // ao Firestore retornaria 401 silencioso → catch → geminiKey vazia →
+      // app exibe falso "erro de conexão". getIdToken(true) garante token fresco.
+      // Condição: apenas nativo (!kIsWeb) e usuário já autenticado.
+      if (!kIsWeb) {
+        try {
+          final fbUser = FirebaseAuth.instance.currentUser;
+          if (fbUser != null) {
+            await fbUser
+                .getIdToken(true) // force refresh — ignora cache local
+                .timeout(const Duration(seconds: 5));
+            if (kDebugMode) debugPrint('[BUILD309][S3] JWT renovado para uid=${fbUser.uid}');
+          }
+        } catch (e) {
+          // Falha de renovação não bloqueia o fluxo — fallback para token expirado
+          // que pode ainda funcionar se expirou há pouco tempo (<5min de grace).
+          if (kDebugMode) debugPrint('[BUILD309][S3] getIdToken(true) falhou (ignorado): $e');
+        }
+      }
       try {
         final geminiKey = await FirestoreService.loadGeminiApiKey()
             .timeout(const Duration(seconds: 5));

@@ -1224,17 +1224,28 @@ class _AiScreenState extends State<AiScreen> {
       messages: msgsToSave,
     );
 
-    setState(() {
-      // Remove entrada antiga (se existia) antes de reinserir no topo
-      if (existingIdx >= 0) {
-        _chatHistory.removeAt(existingIdx);
-      }
+    // BUILD 309 [DISPOSE]: Guard contra setState() após dispose().
+    // _saveCurrentSessionToHistory() é chamada no dispose() do widget.
+    // Nesse momento mounted=false e setState() lançaria
+    // "setState() called after dispose()" — capturado silenciosamente pelo
+    // try/catch do dispose() e logado como aviso. Com o guard, a mutação
+    // local do _chatHistory ocorre diretamente (sem rebuild) quando desmontado.
+    if (mounted) {
+      setState(() {
+        if (existingIdx >= 0) _chatHistory.removeAt(existingIdx);
+        _chatHistory.insert(0, session);
+        if (_chatHistory.length > 10) {
+          _chatHistory.removeRange(10, _chatHistory.length);
+        }
+      });
+    } else {
+      // Dispose path: atualiza lista diretamente sem setState (widget já morto)
+      if (existingIdx >= 0) _chatHistory.removeAt(existingIdx);
       _chatHistory.insert(0, session);
-      // Mantém apenas as 10 sessões mais recentes
       if (_chatHistory.length > 10) {
         _chatHistory.removeRange(10, _chatHistory.length);
       }
-    });
+    }
 
     debugPrint('[BUILD274][SessionDedup] save sessionId=$sessionId msgs=${session.messages.length} existingIdx=$existingIdx');
 
