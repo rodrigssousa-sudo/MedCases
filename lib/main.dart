@@ -2101,7 +2101,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 // ─────────────────────────────────────────────────────────────────────────────
 // BUILD 329 — _FloatingFooter (StatefulWidget)
 //
-// Bloco unificado: FloatingBottomNav + LegalBar, posicionado em Positioned(bottom:0).
+// Bloco unificado: FloatingBottomNav + LegalBar, posicionado com safeBottom dinâmico.
+// BUILD 316: bottom = MediaQuery.padding.bottom > 0 ? padding.bottom : 16.0
+//            garante que em Android com botões virtuais (padding.bottom == 0)
+//            o dock flutua 16px acima da barra do sistema (ergonomia Realme/AOSP).
 // NOVIDADES BUILD 329:
 //   • 4 botões: [Início | IA (FAB) | Ferramentas | Menu M+]
 //   • Scroll-shrink dinâmico via MainShell.navScrollingDown:
@@ -2176,18 +2179,23 @@ class _FloatingFooterState extends State<_FloatingFooter> {
     // BUILD 329: altura dinâmica — encolhe suavemente durante scroll down
     final barHeight = _shrunk ? _barHeightShrunk : _barHeightFull;
 
-    // BUILD 315 — Safe-area bottom padding para o dock flutuante.
-    // Problem: aparelhos Android com botões virtuais (barra de navegação)
-    // têm MediaQuery.padding.bottom == 0 (os botões ficam sobrepostos à UI),
-    // esmagando o dock contra a barra de sistema e tornando os botões invisíveis.
-    // Aparelhos com gesture navigation (iOS-style) têm padding.bottom > 0
-    // refletindo a home indicator — o Positioned(bottom:0) já ficava correto.
+    // BUILD 315 → BUILD 316 — Safe-area bottom padding para o dock flutuante.
     //
-    // Solução: usa MediaQuery.padding.bottom como offset do bottom do Positioned.
-    // Se padding.bottom == 0 (botões virtuais tradicionais, ex: Realme) → aplica
-    // um mínimo de 20px para dar margem respiratória acima da barra de sistema.
+    // Contexto:
+    //   • Aparelhos Android com botões virtuais (Voltar/Home/Recentes) — ex: Realme
+    //     ColorOS, AOSP — têm MediaQuery.padding.bottom == 0: os botões do sistema
+    //     ficam sobrepostos à UI sem gerar safe-area padding, esmagando o dock
+    //     contra a barra e tornando os ícones (Inicio/IA/Ferramentas/Menu) instáveis.
+    //   • Aparelhos com gesture navigation (iOS home indicator, Android gesture bar)
+    //     têm padding.bottom > 0 refletindo a zona de gesto — usar esse valor
+    //     garante que o dock flutua naturalmente acima da área protegida.
+    //
+    // Solução ergonômica definitiva:
+    //   padding.bottom > 0  → usa o valor de safe-area real do SO
+    //   padding.bottom == 0 → força 16px de respiro anatômico mínimo para
+    //                         desgrudar o dock dos botões virtuais do Android
     final bottomInset = MediaQuery.of(context).padding.bottom;
-    final safeBottom = bottomInset > 0 ? bottomInset : 20.0;
+    final safeBottom = bottomInset > 0 ? bottomInset : 16.0;
 
     return Positioned(
       left: 0,
