@@ -191,6 +191,17 @@ service cloud.firestore {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // CAMPANHAS PUSH GLOBAIS — /global_push_campaigns/{campaignId}
+    //
+    // BUILD 311b: Motor de envio em lote de notificações push para todos os
+    // usuários. Somente administradores (admin/master) podem criar ou ler
+    // campanhas. Usuários comuns não têm acesso algum a esta coleção.
+    // ─────────────────────────────────────────────────────────────────────────
+    match /global_push_campaigns/{campaignId} {
+      allow read, write: if isAdmin(); // Bloqueado para usuários comuns
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // HISTÓRIAS PÚBLICAS — /public_histories/{storyId}
     //
     // LEITURA PÚBLICA IRRESTRITA — allow read: if true

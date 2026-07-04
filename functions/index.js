@@ -10,7 +10,11 @@
  *                                               admin_notifications/{id} é criado (pelo app
  *                                               no boot do novo usuário OU pela Cloud Function).
  *                                               Título/corpo bilíngue baseado no lang do admin.
- * 5. geminiPaidProxy              → onRequest → proxy seguro Gemini Paid (Build 226)
+ * 5. onGlobalPushCampaignCreated  → onCreate  → BUILD 311b: push em lote para TODOS os usuários
+ *                                               quando admin dispara campanha global pelo painel.
+ *                                               Varredura paginada da coleção /users, blocos de
+ *                                               500 tokens, cleanup automático de tokens inválidos.
+ * 6. geminiPaidProxy              → onRequest → proxy seguro Gemini Paid (Build 226)
  *
  * Secrets (configurar UMA vez no terminal do Mac):
  *   firebase functions:secrets:set GMAIL_PASS
@@ -573,6 +577,154 @@ exports.onAdminNotificationCreated = onDocumentCreated(
       console.log(`[BUILD311_PUSH] Removendo ${invalidTokenRefs.length} token(s) inválido(s).`);
       await Promise.allSettled(invalidTokenRefs.map(ref => ref.delete()));
     }
+
+    return null;
+  }
+);
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 311b — GLOBAL PUSH CAMPAIGN: onGlobalPushCampaignCreated
+// Dispara quando admin cria doc em /global_push_campaigns/{id}.
+// Varredura paginada de TODOS os usuários → coleta fcmTokens subcollection →
+// agrupa em blocos de ≤500 → sendEachForMulticast → cleanup tokens inválidos.
+// ══════════════════════════════════════════════════════════════════════════════
+exports.onGlobalPushCampaignCreated = onDocumentCreated(
+  { document: 'global_push_campaigns/{id}', region: 'us-central1' },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) {
+      console.error('[GlobalPush] Evento sem dados — abortando.');
+      return null;
+    }
+
+    const data        = snap.data();
+    const pushTitle   = data.title  || '';
+    const pushBody    = data.body   || '';
+    const sentBy      = data.sentBy || 'admin';
+
+    if (!pushTitle || !pushBody) {
+      console.error('[GlobalPush] title ou body vazios — abortando.');
+      return null;
+    }
+
+    console.log(`[GlobalPush] Campanha iniciada por=${sentBy} | title="${pushTitle}"`);
+
+    const db          = admin.firestore();
+    const PAGE_SIZE   = 200;   // docs por página na varredura
+    const CHUNK_SIZE  = 500;   // limite do FCM sendEachForMulticast
+
+    // ── 1. Varredura paginada de /users ──────────────────────────────────────
+    let allTokenEntries = []; // { token, ref }
+    let lastDoc         = null;
+    let pageCount       = 0;
+
+    while (true) {
+      let q = db.collection('users').orderBy('__name__').limit(PAGE_SIZE);
+      if (lastDoc) q = q.startAfter(lastDoc);
+
+      const page = await q.get();
+      if (page.empty) break;
+
+      pageCount++;
+      lastDoc = page.docs[page.docs.length - 1];
+
+      // Para cada usuário da página, coleta subcollection fcmTokens
+      const tokenPromises = page.docs.map(async (userDoc) => {
+        const tokensSnap = await userDoc.ref.collection('fcmTokens').get();
+        const entries = [];
+        tokensSnap.forEach((tokenDoc) => {
+          const token = tokenDoc.data().token || tokenDoc.id;
+          if (token && token.length > 10) {
+            entries.push({ token, ref: tokenDoc.ref });
+          }
+        });
+        return entries;
+      });
+
+      const results = await Promise.all(tokenPromises);
+      results.forEach((entries) => allTokenEntries.push(...entries));
+
+      console.log(`[GlobalPush] Página ${pageCount}: ${page.docs.length} usuários | tokens acumulados: ${allTokenEntries.length}`);
+
+      if (page.docs.length < PAGE_SIZE) break; // última página
+    }
+
+    const totalTokens = allTokenEntries.length;
+    console.log(`[GlobalPush] Varredura concluída: ${pageCount} páginas, ${totalTokens} tokens coletados.`);
+
+    if (totalTokens === 0) {
+      console.warn('[GlobalPush] Nenhum token FCM encontrado — nada a enviar.');
+      return null;
+    }
+
+    // ── 2. Chunking em blocos de ≤500 e envio ───────────────────────────────
+    const chunks = [];
+    for (let i = 0; i < allTokenEntries.length; i += CHUNK_SIZE) {
+      chunks.push(allTokenEntries.slice(i, i + CHUNK_SIZE));
+    }
+
+    const totalChunks  = chunks.length;
+    let   successCount = 0;
+    let   failureCount = 0;
+    const invalidRefs  = [];
+
+    const INVALID_CODES = new Set([
+      'messaging/invalid-argument',
+      'messaging/registration-token-not-registered',
+      'messaging/invalid-registration-token',
+    ]);
+
+    for (let ci = 0; ci < chunks.length; ci++) {
+      const chunk   = chunks[ci];
+      const tokens  = chunk.map((e) => e.token);
+
+      const message = {
+        tokens,
+        notification: { title: pushTitle, body: pushBody },
+        android: { priority: 'high' },
+        apns:    { payload: { aps: { sound: 'default' } } },
+      };
+
+      let batchResponse;
+      try {
+        batchResponse = await admin.messaging().sendEachForMulticast(message);
+      } catch (err) {
+        console.error(`[GlobalPush] Chunk ${ci + 1}/${totalChunks} — erro fatal:`, err);
+        failureCount += tokens.length;
+        continue;
+      }
+
+      batchResponse.responses.forEach((resp, idx) => {
+        if (resp.success) {
+          successCount++;
+        } else {
+          failureCount++;
+          const errCode = resp.error?.code || '';
+          if (INVALID_CODES.has(errCode)) {
+            invalidRefs.push(chunk[idx].ref);
+          }
+        }
+      });
+
+      console.log(
+        `[GlobalPush] Chunk ${ci + 1}/${totalChunks}: ` +
+        `ok=${batchResponse.successCount} fail=${batchResponse.failureCount}`
+      );
+    }
+
+    // ── 3. Cleanup automático de tokens inválidos ────────────────────────────
+    if (invalidRefs.length > 0) {
+      console.log(`[GlobalPush] Removendo ${invalidRefs.length} tokens inválidos...`);
+      await Promise.allSettled(invalidRefs.map((ref) => ref.delete()));
+    }
+
+    // ── 4. Resultado final ───────────────────────────────────────────────────
+    console.log(
+      `[GlobalPush] CONCLUÍDO — ` +
+      `totalTokens=${totalTokens} | chunks=${totalChunks} | ` +
+      `success=${successCount} | failure=${failureCount} | ` +
+      `tokensRemovidos=${invalidRefs.length}`
+    );
 
     return null;
   }

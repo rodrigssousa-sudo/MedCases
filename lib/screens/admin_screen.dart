@@ -91,7 +91,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 10, vsync: this);
+    _tabs = TabController(length: 11, vsync: this);
     _loadLang();
     _subscribeUsers();
     _subscribeNotifications();
@@ -205,6 +205,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
               ),
               text: 'Notificações',
             ),
+            // ── Tab 10: Push Global (BUILD 311b) ─────────────────────────
+            const Tab(icon: Icon(Icons.campaign_rounded, size: 16), text: 'Push'),
           ],
         ),
       ),
@@ -310,6 +312,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       currentAdminUid: widget.currentAdmin.uid,
                       onMarkRead: _markNotifRead,
                     ),
+                    // ── Tab 10: Push Global (BUILD 311b) ─────────────────
+                    _GlobalPushTab(isEs: _isEs, currentAdmin: widget.currentAdmin),
                   ],
                 ),
               ),
@@ -5429,6 +5433,327 @@ class _NotificationsTab extends StatelessWidget {
               overflow: TextOverflow.ellipsis),
         ),
       ]),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 311b — _GlobalPushTab
+// Tab 10 do painel Admin: dispara notificações push para TODOS os usuários.
+// O admin preenche título e corpo → cria doc em /global_push_campaigns →
+// Cloud Function onGlobalPushCampaignCreated faz a varredura paginada e o
+// envio em lote (blocos ≤500) via sendEachForMulticast.
+// ─────────────────────────────────────────────────────────────────────────────
+class _GlobalPushTab extends StatefulWidget {
+  final bool isEs;
+  final UserModel currentAdmin;
+
+  const _GlobalPushTab({required this.isEs, required this.currentAdmin});
+
+  @override
+  State<_GlobalPushTab> createState() => _GlobalPushTabState();
+}
+
+class _GlobalPushTabState extends State<_GlobalPushTab> {
+  static const _kDark  = Color(0xFF07110d);
+  static const _kGreen = Color(0xFF075f45);
+  static const _kGold  = Color(0xFFC5A365);
+  static const _kGoldL = Color(0xFFFFE8A6);
+
+  final _titleCtrl = TextEditingController();
+  final _bodyCtrl  = TextEditingController();
+  bool  _sending   = false;
+
+  @override
+  void dispose() {
+    _titleCtrl.dispose();
+    _bodyCtrl.dispose();
+    super.dispose();
+  }
+
+  // ── Strings bilíngues ─────────────────────────────────────────────────────
+  bool get _isEs => widget.isEs;
+
+  String get _headerTitle  => _isEs ? 'Notificación Push Global'  : 'Notificação Push Global';
+  String get _headerSub    => _isEs
+      ? 'Envía un mensaje directo a todos los usuarios registrados.'
+      : 'Envie uma mensagem direta para todos os usuários cadastrados.';
+  String get _titleLabel   => _isEs ? 'Título'       : 'Título';
+  String get _bodyLabel    => _isEs ? 'Mensaje'      : 'Mensagem';
+  String get _titleHint    => _isEs ? 'Buen día Doc, ¿cómo te ayudamos hoy?'
+                                    : 'Bom dia Doc, como podemos te ajudar hoje?';
+  String get _bodyHint     => _isEs
+      ? 'Tenemos nuevos casos clínicos disponibles para ti. ¡Revísalos ahora!'
+      : 'Temos novos casos clínicos disponíveis para você. Confira agora!';
+  String get _btnLabel     => _isEs ? 'Disparar para todos los usuarios'
+                                    : 'Disparar para todos os usuários';
+  String get _validErr     => _isEs ? 'Completa título y mensaje antes de enviar.'
+                                    : 'Preencha título e mensagem antes de enviar.';
+  String get _successMsg   => _isEs ? '¡Campaña enviada! La función procesará el envío masivo.'
+                                    : 'Campanha disparada! A função processará o envio em massa.';
+  String get _errorMsg     => _isEs ? 'Error al disparar la campaña. Intenta de nuevo.'
+                                    : 'Erro ao disparar a campanha. Tente novamente.';
+
+  // ── Disparo da campanha ───────────────────────────────────────────────────
+  Future<void> _fireGlobalPush() async {
+    final title = _titleCtrl.text.trim();
+    final body  = _bodyCtrl.text.trim();
+
+    if (title.isEmpty || body.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_validErr, style: const TextStyle(color: Colors.white)),
+          backgroundColor: Colors.orange.shade800,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _sending = true);
+
+    try {
+      await FirebaseFirestore.instance.collection('global_push_campaigns').add({
+        'title':   title,
+        'body':    body,
+        'sentAt':  FieldValue.serverTimestamp(),
+        'sentBy':  widget.currentAdmin.uid,
+      });
+
+      if (!mounted) return;
+      _titleCtrl.clear();
+      _bodyCtrl.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(children: [
+            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 16),
+            const SizedBox(width: 8),
+            Expanded(child: Text(_successMsg, style: const TextStyle(color: Colors.white))),
+          ]),
+          backgroundColor: _kGreen,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_errorMsg, style: const TextStyle(color: Colors.white)),
+          backgroundColor: Colors.red.shade800,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
+  }
+
+  // ── UI ────────────────────────────────────────────────────────────────────
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: _kDark,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Header ───────────────────────────────────────────────────
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _kGold.withOpacity(0.4)),
+              ),
+              child: Row(children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: _kGold.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.campaign_rounded, color: _kGoldL, size: 24),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(_headerTitle,
+                          style: const TextStyle(
+                            color: _kGoldL,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.3,
+                          )),
+                      const SizedBox(height: 3),
+                      Text(_headerSub,
+                          style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                    ],
+                  ),
+                ),
+              ]),
+            ),
+
+            const SizedBox(height: 24),
+
+            // ── Campo Título ─────────────────────────────────────────────
+            Text(_titleLabel,
+                style: const TextStyle(
+                    color: _kGoldL, fontSize: 13, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _titleCtrl,
+              enabled: !_sending,
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+              maxLength: 100,
+              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+              autocorrect: false,
+              decoration: InputDecoration(
+                hintText: _titleHint,
+                hintStyle: const TextStyle(color: Colors.white30, fontSize: 13),
+                counterStyle: const TextStyle(color: Colors.white30, fontSize: 10),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.07),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.white12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.white12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: _kGold, width: 1.5),
+                ),
+                prefixIcon: const Icon(Icons.title_rounded, color: Colors.white38, size: 18),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── Campo Mensagem/Corpo ─────────────────────────────────────
+            Text(_bodyLabel,
+                style: const TextStyle(
+                    color: _kGoldL, fontSize: 13, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _bodyCtrl,
+              enabled: !_sending,
+              style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5),
+              maxLength: 500,
+              maxLines: 5,
+              minLines: 3,
+              spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+              autocorrect: false,
+              decoration: InputDecoration(
+                hintText: _bodyHint,
+                hintStyle: const TextStyle(color: Colors.white30, fontSize: 13, height: 1.5),
+                counterStyle: const TextStyle(color: Colors.white30, fontSize: 10),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.07),
+                alignLabelWithHint: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.white12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.white12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: _kGold, width: 1.5),
+                ),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.only(bottom: 60),
+                  child: Icon(Icons.message_rounded, color: Colors.white38, size: 18),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // ── Botão de disparo ─────────────────────────────────────────
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: _sending ? null : _fireGlobalPush,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _kGreen,
+                  disabledBackgroundColor: _kGreen.withOpacity(0.5),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                ),
+                child: _sending
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text('Enviando...', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.send_rounded, size: 18),
+                          const SizedBox(width: 10),
+                          Text(_btnLabel,
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w700)),
+                        ],
+                      ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // ── Nota de rodapé ───────────────────────────────────────────
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.04),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white10),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.info_outline_rounded, color: Colors.white38, size: 14),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _isEs
+                          ? 'La notificación se entregará a todos los dispositivos con tokens FCM válidos. '
+                            'Los tokens inválidos serán eliminados automáticamente.'
+                          : 'A notificação será entregue a todos os dispositivos com tokens FCM válidos. '
+                            'Tokens inválidos serão removidos automaticamente.',
+                      style: const TextStyle(color: Colors.white38, fontSize: 11, height: 1.5),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
