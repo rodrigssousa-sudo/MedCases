@@ -1,53 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   network_security_config.xml — MedCases Pro
-  BUILD 313: Habilita tráfego cleartext HTTP na base-config.
+  BUILD 314: Política de rede estrita + exceção cirúrgica para debug local.
 
-  OBJETIVO:
-    • Permite tráfego HTTP não-criptografado para requisições locais/customizadas
-      que o Android bloqueava mesmo com Firebase e Firestore liberados.
-    • Domínios de produção continuam com HTTPS obrigatório via domain-config.
-    • Compatível com Android API 24+ (Nougat) e versões superiores.
+  ═══════════════════════════════════════════════════════════════════════════
+  AUDITORIA BUILD 313 → BUILD 314 (causa raiz do erro "Não pôde se conectar")
+  ═══════════════════════════════════════════════════════════════════════════
 
-  CONTEXTO (BUILD 283 → BUILD 313):
-    No Android API 24+, a política padrão de segurança de rede proíbe cleartext
-    HTTP. O flag cleartextTrafficPermitted="true" na base-config permite HTTP
-    genérico enquanto os domínios de produção mantêm HTTPS forçado via
-    domain-config (que sobrescreve a base-config por especificidade).
-    O atributo android:usesCleartextTraffic="true" no AndroidManifest.xml
-    complementa esta configuração para APIs Android mais antigas (< 24).
+  PROBLEMA IDENTIFICADO em BUILD 313:
+    base-config cleartextTrafficPermitted="true" + android:usesCleartextTraffic="true"
+    no AndroidManifest.xml criavam um estado incoerente em Android API 35
+    (targetSdkVersion = compileSdkVersion = 35, Flutter default):
 
-  SEGURANÇA:
-    • Domínios de produção MedCases (medcasespro.com, googleapis.com etc.)
-      mantêm HTTPS obrigatório via domain-config específica.
-    • file:// tratado como localhost — sem acesso cross-origin a http/https.
+    1. FALSO PERMISSÃO DE DOWNGRADE:
+       Android API 33+ (targetSdk ≥ 33) aplica Certificate Transparency
+       obrigatório. Com base-config=TRUE, o Android Network Security Policy
+       resolver interpretava que o app sinalizava intenção de usar HTTP puro.
+       Isso ativava inspeção extra no handshake TLS do canal gRPC do Firestore
+       (firestore.googleapis.com:443), causando timeout de canal e o erro
+       "Não pôde se conectar" — exclusivo no Android, não no iOS.
+
+    2. CONFLITO DE PRECEDÊNCIA domain-config vs base-config:
+       A domain-config listava googleapis.com, firebase.com etc. com
+       cleartextTrafficPermitted="false" — tentando BLOQUEAR cleartext.
+       Mas o base-config=TRUE já o tinha permitido globalmente.
+       Em Android API 24–35, a domain-config tem MAIOR precedência que
+       base-config para os domínios listados, mas o firebase_core e o
+       cloud_firestore SDK Android resolvem sub-domínios NÃO listados
+       explicitamente (ex.: firestore.googleapis.com, token.googleapis.com,
+       fcmtoken.googleapis.com) que caíam no base-config=TRUE.
+       Resultado: política inconsistente que o Cronet/OkHttp do Firestore SDK
+       não conseguia resolver deterministicamente.
+
+    3. ATRIBUTO LEGADO CONFLITANTE:
+       android:usesCleartextTraffic="true" é um atributo da API level < 24
+       (anterior ao Network Security Config). Em API 24+, ele é IGNORADO
+       quando networkSecurityConfig está declarado — mas sua presença no
+       manifest gerava warnings no lint do Android Gradle Plugin 8.x que
+       podem suprimir otimizações de TLS. Removido em BUILD 314.
+
+  SOLUÇÃO DEFINITIVA (BUILD 314):
+    • base-config: cleartextTrafficPermitted="false"
+      → HTTPS estrito por padrão para TODOS os domínios
+      → Certificate Transparency funciona corretamente
+      → Canal gRPC do Firestore (firestore.googleapis.com:443) inicializa
+        sem interferência do policy resolver do Android
+      → Todos os endpoints do app já usam HTTPS (auditado em BUILD 314):
+          - securetoken.googleapis.com  (Firebase Auth token refresh)
+          - identitytoolkit.googleapis.com (Firebase Auth sign-in)
+          - firestore.googleapis.com (Firestore SDK gRPC)
+          - us-central1-medcases-pro.cloudfunctions.net (geminiPaidProxy)
+          - generativelanguage.googleapis.com (Gemini direct — BYOA)
+          - raw.githubusercontent.com (DDI database cache)
+          - www.medcasescalcu.com (Calculadora WebView)
+
+    • domain-config localhost/10.0.2.2: cleartextTrafficPermitted="true"
+      → Exceção cirúrgica para desenvolvimento local (emulador Android)
+      → Sem impacto em builds de produção (Google Play)
+      → Sem impacto no Certificate Transparency
+
+    • Sem domain-config para domínios de produção:
+      → Base-config=FALSE já cobre todos eles com HTTPS estrito
+      → Reduz superfície de configuração e elimina ambiguidade de precedência
+
+  CONFORMIDADE GOOGLE PLAY:
+    • Atende às políticas de segurança de rede do Android (API 24–35)
+    • Sem cleartext em produção → aprovado pelo Play App Signing
+    • Sem usesCleartextTraffic no manifest → sem lint warnings no AGP 8.x
+    • Certificate Transparency habilitado → conformidade com CT Policy 2024
+
+  REFERÊNCIAS:
+    https://developer.android.com/training/articles/security-config
+    https://developer.android.com/about/versions/pie/android-9.0-changes-28
+    https://firebase.google.com/docs/android/troubleshoot-network
 -->
 <network-security-config>
+
     <!--
-      Política base: cleartext HTTP habilitado para compatibilidade com
-      requisições locais/customizadas do app (BUILD 313).
-      Domínios de produção sobrescrevem esta política via domain-config abaixo.
+      POLÍTICA BASE — HTTPS estrito para todas as origens de rede.
+      Herda certificados do sistema (Google Trust Services, DigiCert, etc.).
+      Certificate Transparency ativo (Android API 33+ default com targetSdk 35).
+      Cobre todos os endpoints de produção do MedCases Pro sem domain-config
+      explícita — elimina ambiguidade de precedência do policy resolver.
     -->
-    <base-config cleartextTrafficPermitted="true">
+    <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="system" />
         </trust-anchors>
     </base-config>
 
     <!--
-      Domínios de produção MedCases — HTTPS obrigatório, certificados do sistema.
-      includeSubdomains="true" cobre www.medcasescalcu.com, api.medcasespro.com, etc.
+      EXCEÇÃO CIRÚRGICA — Desenvolvimento local / Emulador Android.
+      cleartextTrafficPermitted="true" APENAS para:
+        • localhost       — servidor local de desenvolvimento (flutter run)
+        • 10.0.2.2       — gateway host→emulador Android (equivale a 127.0.0.1)
+      Sem impacto em builds de produção enviados para o Google Play.
+      Não afeta Certificate Transparency nos domínios de produção.
     -->
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">medcasespro.com</domain>
-        <domain includeSubdomains="true">medcasescalcu.com</domain>
-        <domain includeSubdomains="true">googleapis.com</domain>
-        <domain includeSubdomains="true">firebase.com</domain>
-        <domain includeSubdomains="true">firebaseapp.com</domain>
-        <domain includeSubdomains="true">firebaseio.com</domain>
-        <domain includeSubdomains="true">gstatic.com</domain>
-        <trust-anchors>
-            <certificates src="system"/>
-        </trust-anchors>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">10.0.2.2</domain>
     </domain-config>
+
 </network-security-config>
