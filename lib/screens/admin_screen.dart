@@ -387,23 +387,183 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     }
   }
 
+  // BUILD 310 — Seletor de Nível de Elite (Master only)
   Future<void> _promote(UserModel u) async {
-    // Admin pode promover a supervisor; Master pode promover a admin
     if (_isMaster) {
-      final confirm = await _confirmDialog(
-        'Promover ${u.displayName} a Admin?',
-        'Ele terá acesso ao painel de administração.',
+      // Seletor popup: Master/Admin OU Ambassador/Partner
+      final choice = await showDialog<int>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: const Color(0xFF0F1A12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          title: Text(
+            _isEs ? 'Nivel de Elite — ${u.displayName}' : 'Nível de Elite — ${u.displayName}',
+            style: const TextStyle(color: Color(0xFFFFE8A6), fontWeight: FontWeight.w900, fontSize: 16),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _isEs ? 'Selecciona el tipo de promoción:' : 'Selecione o tipo de promoção:',
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
+              ),
+              const SizedBox(height: 16),
+              // Opção A — Master/Admin
+              ListTile(
+                leading: const Icon(Icons.admin_panel_settings_rounded, color: Color(0xFFC5A365)),
+                title: Text(
+                  _isEs ? 'Promover a Master/Admin' : 'Promover a Master/Admin',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+                ),
+                subtitle: Text(
+                  _isEs ? 'Acceso completo al panel de administración' : 'Acesso completo ao painel de administração',
+                  style: const TextStyle(color: Colors.white54, fontSize: 11),
+                ),
+                onTap: () => Navigator.pop(ctx, 1),
+              ),
+              const Divider(color: Color(0xFF2A3A2A)),
+              // Opção B — Ambassador/Partner
+              ListTile(
+                leading: const Icon(Icons.workspace_premium_rounded, color: Color(0xFFD4AF37)),
+                title: Text(
+                  _isEs ? 'Activar Embajador/Socio' : 'Ativar Embaixador/Parceiro',
+                  style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.w700, fontSize: 14),
+                ),
+                subtitle: Text(
+                  _isEs ? 'Acceso VIP, link exclusivo y rastreo de red' : 'Acesso VIP, link exclusivo e rastreio de rede',
+                  style: const TextStyle(color: Colors.white54, fontSize: 11),
+                ),
+                onTap: () => Navigator.pop(ctx, 2),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, 0),
+              child: Text(_isEs ? 'Cancelar' : 'Cancelar', style: const TextStyle(color: Colors.white54)),
+            ),
+          ],
+        ),
       );
-      if (!confirm) return;
-      try {
-        await AuthService.promoteToAdmin(u.uid);
-        if (mounted) _snack('${u.displayName} $_promotedAdminSnack', kGold);
-      } catch (e) {
-        if (mounted) _snack('$_errorPrefix: $e', Colors.red);
+
+      if (choice == null || choice == 0) return;
+
+      if (choice == 1) {
+        // Promoção clássica a Admin
+        final confirm = await _confirmDialog(
+          _isEs ? '¿Promover a ${u.displayName} a Admin?' : 'Promover ${u.displayName} a Admin?',
+          _isEs ? 'Tendrá acceso al panel de administración.' : 'Ele terá acesso ao painel de administração.',
+        );
+        if (!confirm) return;
+        try {
+          await AuthService.promoteToAdmin(u.uid);
+          if (mounted) _snack('${u.displayName} $_promotedAdminSnack', kGold);
+        } catch (e) {
+          if (mounted) _snack('$_errorPrefix: $e', Colors.red);
+        }
+      } else if (choice == 2) {
+        // Ativar Ambassador — solicita partnerTitle
+        await _activateAmbassador(u);
       }
     } else {
       // Admin normal só pode promover a supervisor
       await _promoteSupervisor(u);
+    }
+  }
+
+  // BUILD 310 — Formulário de ativação de Embaixador
+  Future<void> _activateAmbassador(UserModel u) async {
+    final titleCtrl = TextEditingController(text: _isEs ? 'Socio Oficial' : 'Parceiro Oficial');
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF0F1A12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: Row(children: [
+          const Icon(Icons.workspace_premium_rounded, color: Color(0xFFD4AF37), size: 22),
+          const SizedBox(width: 8),
+          Expanded(child: Text(
+            _isEs ? 'Activar Embajador' : 'Ativar Embaixador',
+            style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.w900, fontSize: 16),
+          )),
+        ]),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _isEs ? 'Título de élite del socio:' : 'Título de elite do parceiro:',
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: titleCtrl,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: _isEs ? 'ej: Miembro Fundador' : 'ex: Membro Fundador',
+                hintStyle: const TextStyle(color: Colors.white38),
+                filled: true,
+                fillColor: const Color(0xFF1A2A1A),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 0.8),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 0.8),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              _isEs
+                  ? 'Link generado: medcasespro.com/ref/${ReferralService.generateSlug(u.displayName)}'
+                  : 'Link gerado: medcasespro.com/ref/${ReferralService.generateSlug(u.displayName)}',
+              style: const TextStyle(color: Color(0xFF7EC8A4), fontSize: 11),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(_isEs ? 'Cancelar' : 'Cancelar', style: const TextStyle(color: Colors.white54)),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.workspace_premium_rounded, size: 16),
+            label: Text(_isEs ? 'Activar' : 'Ativar'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFD4AF37),
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+    titleCtrl.dispose();
+    if (confirm != true) return;
+
+    final slug   = ReferralService.generateSlug(u.displayName);
+    final refLink = 'medcasespro.com/ref/$slug';
+    final title  = titleCtrl.text.trim().isEmpty
+        ? (_isEs ? 'Embajador' : 'Embaixador')
+        : titleCtrl.text.trim();
+
+    try {
+      // Escrita direta via SDK — campos partner não existem em updateUserProfile
+      await FirebaseFirestore.instance.collection('users').doc(u.uid).update({
+        'isPartner':    true,
+        'partnerTitle': title,
+        'referralLink': refLink,
+      });
+      if (mounted) {
+        _snack(
+          _isEs ? '${u.displayName} activado como Embajador 👑' : '${u.displayName} ativado como Embaixador 👑',
+          const Color(0xFFD4AF37),
+        );
+      }
+    } catch (e) {
+      if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
   }
 
@@ -4226,6 +4386,7 @@ class _InfluencersTabState extends State<_InfluencersTab> {
   static const kGreen = Color(0xFF075f45);
   static const kGold  = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
+  static const kAmbassadorGold = Color(0xFFD4AF37); // BUILD 310
 
   // ── Formulário ──────────────────────────────────────────────────────────
   final _nameCtrl     = TextEditingController();
@@ -4240,6 +4401,11 @@ class _InfluencersTabState extends State<_InfluencersTab> {
   Map<String, int>      _counts      = {};
   bool _listLoading = true;
 
+  // BUILD 310 — Partner/Ambassador Dashboard
+  List<Map<String, dynamic>> _partners = [];
+  Map<String, int>           _partnerCounts = {};
+  bool _partnersLoading = true;
+
   // URL base do app para gerar o link de indicação
   static const _baseUrl = 'https://medcasespro.com';
 
@@ -4248,6 +4414,7 @@ class _InfluencersTabState extends State<_InfluencersTab> {
     super.initState();
     _nameCtrl.addListener(_onNameChanged);
     _loadInfluencers();
+    _loadPartners(); // BUILD 310
   }
 
   @override
@@ -4258,6 +4425,47 @@ class _InfluencersTabState extends State<_InfluencersTab> {
     _discCtrl.dispose();
     _slugPreview.dispose();
     super.dispose();
+  }
+
+  // BUILD 310 — Carrega usuários com isPartner==true do Firestore
+  Future<void> _loadPartners() async {
+    setState(() => _partnersLoading = true);
+    try {
+      final snap = await FirebaseFirestore.instance
+          .collection('users')
+          .where('isPartner', isEqualTo: true)
+          .get();
+      final list = snap.docs.map((d) {
+        final data = d.data();
+        return <String, dynamic>{
+          'uid':          d.id,
+          'displayName':  (data['displayName'] ?? '').toString(),
+          'partnerTitle': (data['partnerTitle'] ?? '').toString(),
+          'referralLink': (data['referralLink'] ?? '').toString(),
+        };
+      }).toList();
+      // Conta referrals para cada parceiro (referred_by == slug do referralLink)
+      final countFutures = list.map((p) async {
+        final refLink = p['referralLink'] as String;
+        final slug = refLink.isNotEmpty ? refLink.split('/').last : p['uid'] as String;
+        try {
+          final c = await ReferralService.getConversionCount(slug);
+          return MapEntry(p['uid'] as String, c);
+        } catch (_) {
+          return MapEntry(p['uid'] as String, 0);
+        }
+      });
+      final entries = await Future.wait(countFutures);
+      if (!mounted) return;
+      setState(() {
+        _partners       = list;
+        _partnerCounts  = Map.fromEntries(entries);
+        _partnersLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _partnersLoading = false);
+    }
   }
 
   void _onNameChanged() {
@@ -4376,6 +4584,141 @@ class _InfluencersTabState extends State<_InfluencersTab> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // ── BUILD 310: Dashboard de Embaixadores/Parceiros VIP ─────────
+          Row(children: [
+            const Icon(Icons.workspace_premium_rounded, color: kAmbassadorGold, size: 22),
+            const SizedBox(width: 8),
+            const Text('Embaixadores & Parceiros VIP',
+                style: TextStyle(color: kAmbassadorGold, fontSize: 16,
+                    fontWeight: FontWeight.w900)),
+            const Spacer(),
+            IconButton(
+              tooltip: 'Atualizar parceiros',
+              onPressed: _loadPartners,
+              icon: const Icon(Icons.refresh_rounded, color: Colors.white54, size: 18),
+            ),
+          ]),
+          const SizedBox(height: 4),
+          const Text(
+            'Usuários com status Embaixador ativado. Link exclusivo + rastreio de rede em tempo real.',
+            style: TextStyle(color: Colors.white54, fontSize: 11),
+          ),
+          const SizedBox(height: 12),
+
+          // Partner list
+          if (_partnersLoading)
+            const Center(child: Padding(
+              padding: EdgeInsets.all(20),
+              child: CircularProgressIndicator(color: kAmbassadorGold),
+            ))
+          else if (_partners.isEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+              decoration: BoxDecoration(
+                color: kAmbassadorGold.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: kAmbassadorGold.withOpacity(0.15)),
+              ),
+              child: const Row(children: [
+                Icon(Icons.person_search_rounded, color: Colors.white24, size: 28),
+                SizedBox(width: 12),
+                Text('Nenhum embaixador ativo ainda.',
+                    style: TextStyle(color: Colors.white38, fontSize: 13)),
+              ]),
+            )
+          else
+            Column(
+              children: _partners.map((p) {
+                final uid         = p['uid'] as String;
+                final name        = p['displayName'] as String;
+                final title       = p['partnerTitle'] as String;
+                final link        = p['referralLink'] as String;
+                final count       = _partnerCounts[uid] ?? 0;
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.04),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: kAmbassadorGold.withOpacity(0.35)),
+                  ),
+                  child: Row(children: [
+                    Container(
+                      width: 40, height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kAmbassadorGold.withOpacity(0.15),
+                        border: Border.all(color: kAmbassadorGold.withOpacity(0.4)),
+                      ),
+                      child: const Center(child: Text('👑',
+                          style: TextStyle(fontSize: 18))),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name,
+                            style: const TextStyle(color: Colors.white,
+                                fontSize: 13, fontWeight: FontWeight.w700)),
+                        Text(title.isNotEmpty ? title : '—',
+                            style: const TextStyle(color: kAmbassadorGold,
+                                fontSize: 11, fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 2),
+                        Text(link.isNotEmpty ? link : '—',
+                            style: const TextStyle(color: Colors.white38, fontSize: 10),
+                            overflow: TextOverflow.ellipsis),
+                      ],
+                    )),
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: count > 0
+                                ? kAmbassadorGold.withOpacity(0.20)
+                                : Colors.white.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text('$count médicos',
+                              style: TextStyle(
+                                  fontSize: 11, fontWeight: FontWeight.w800,
+                                  color: count > 0 ? kAmbassadorGold : Colors.white38)),
+                        ),
+                        const SizedBox(height: 6),
+                        InkWell(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: link));
+                            _showSnack('Link copiado: $link');
+                          },
+                          borderRadius: BorderRadius.circular(6),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: kAmbassadorGold.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: kAmbassadorGold.withOpacity(0.3)),
+                            ),
+                            child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                              Icon(Icons.copy_rounded, size: 11, color: kAmbassadorGold),
+                              SizedBox(width: 4),
+                              Text('Copiar', style: TextStyle(fontSize: 10,
+                                  color: kAmbassadorGold, fontWeight: FontWeight.w700)),
+                            ]),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]),
+                );
+              }).toList(),
+            ),
+
+          const SizedBox(height: 28),
+          const Divider(color: Color(0xFF1A2A1A), thickness: 1),
+          const SizedBox(height: 16),
+
           // ── Cabeçalho ──────────────────────────────────────────────────
           Row(children: [
             const Icon(Icons.people_alt_rounded, color: kGold, size: 20),

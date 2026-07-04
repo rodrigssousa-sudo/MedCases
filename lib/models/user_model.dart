@@ -24,6 +24,10 @@ class UserModel {
   final bool acceptedTerms;      // aceitou o aviso legal obrigatório
   final DateTime? acceptedTermsAt;   // timestamp do aceite (gravado no Firestore)
   final String? professionalCategory; // categoria selecionada no gate
+  // BUILD 310 — Ambassador Track
+  final bool isPartner;          // true → usuário é parceiro/embaixador
+  final String? partnerTitle;    // título de elite (ex: "Parceiro Oficial")
+  final String? referralLink;    // link exclusivo gerado em medcasespro.com/ref/...
 
   const UserModel({
     required this.uid,
@@ -45,6 +49,9 @@ class UserModel {
     this.acceptedTerms = false,
     this.acceptedTermsAt,
     this.professionalCategory,
+    this.isPartner = false,
+    this.partnerTitle,
+    this.referralLink,
   });
 
   bool get isMaster    => role == UserRole.master;
@@ -102,6 +109,9 @@ class UserModel {
     'acceptedTerms': acceptedTerms,
     'acceptedTermsAt': acceptedTermsAt?.toUtc().toIso8601String(),
     'professionalCategory': professionalCategory,
+    'isPartner': isPartner,
+    'partnerTitle': partnerTitle,
+    'referralLink': referralLink,
   };
 
   factory UserModel.fromJson(Map<String, dynamic> m) => UserModel(
@@ -124,6 +134,9 @@ class UserModel {
     acceptedTerms:        _b(m['acceptedTerms']),
     acceptedTermsAt:      _parseDate(m['acceptedTermsAt']),
     professionalCategory: _sn(m['professionalCategory']),
+    isPartner:            _b(m['isPartner']),
+    partnerTitle:         _sn(m['partnerTitle']),
+    referralLink:         _sn(m['referralLink']),
   );
 
   // ── Serialização Firestore SDK ────────────────────────────────────────────
@@ -147,6 +160,9 @@ class UserModel {
     'acceptedTerms': acceptedTerms,
     'acceptedTermsAt': acceptedTermsAt != null ? Timestamp.fromDate(acceptedTermsAt!) : null,
     'professionalCategory': professionalCategory,
+    'isPartner': isPartner,
+    'partnerTitle': partnerTitle,
+    'referralLink': referralLink,
   };
 
   factory UserModel.fromMap(Map<String, dynamic> m) => UserModel(
@@ -169,6 +185,9 @@ class UserModel {
     acceptedTerms:        _b(m['acceptedTerms']),
     acceptedTermsAt:      _parseDate(m['acceptedTermsAt']),
     professionalCategory: _sn(m['professionalCategory']),
+    isPartner:            _b(m['isPartner']),
+    partnerTitle:         _sn(m['partnerTitle']),
+    referralLink:         _sn(m['referralLink']),
   );
 
   /// fromDoc — aceita qualquer Map retornado pelo SDK (Map<String,Object?> em dart2js)
@@ -195,6 +214,9 @@ class UserModel {
     bool? acceptedTerms,
     DateTime? acceptedTermsAt,
     String? professionalCategory,
+    bool? isPartner,
+    String? partnerTitle,
+    String? referralLink,
   }) =>
       UserModel(
         uid: uid,
@@ -215,6 +237,9 @@ class UserModel {
         acceptedTerms:        acceptedTerms        ?? this.acceptedTerms,
         acceptedTermsAt:      acceptedTermsAt      ?? this.acceptedTermsAt,
         professionalCategory: professionalCategory ?? this.professionalCategory,
+        isPartner:            isPartner            ?? this.isPartner,
+        partnerTitle:         partnerTitle         ?? this.partnerTitle,
+        referralLink:         referralLink         ?? this.referralLink,
       );
 
   // ── Helpers ───────────────────────────────────────────────────────────────

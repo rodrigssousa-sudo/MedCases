@@ -809,8 +809,16 @@ class AppProvider extends ChangeNotifier {
       final p = await SharedPreferences.getInstance();
 
       // Preferências globais (independentes de usuário)
-      // Fallback: idioma do sistema operacional (pt para português, es para outros)
-      _lang          = p.getString('lang')         ?? _systemLang();
+      // BUILD 310 DIRETRIZ 0: cold-start sem idioma salvo → 'es' obrigatório.
+      // Se o usuário nunca abriu o app antes, SharedPreferences não tem 'lang';
+      // nesse caso impomos Espanhol como idioma soberano de partida.
+      final savedLang = p.getString('lang');
+      if (savedLang == null) {
+        _lang = 'es';
+        await p.setString('lang', 'es');
+      } else {
+        _lang = savedLang;
+      }
       _darkMode      = p.getBool('darkMode')        ?? true;  // DARK-FIRST: padrão escuro para novos usuários
       _hapticEnabled = p.getBool('hapticEnabled')   ?? true;
       // Chave de IA — lida com prefixo de usuário se disponível (fallback offline)

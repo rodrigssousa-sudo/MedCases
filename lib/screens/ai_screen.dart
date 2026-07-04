@@ -20,7 +20,9 @@ import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
 import '../services/activity_service.dart';
 import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action Engine
-// url_launcher removido: botões da IA usam Navigator → CalculadoraScreen (WebView interna).
+import 'package:url_launcher/url_launcher.dart'; // BUILD 310: WhatsApp share Ambassador
+import '../models/user_model.dart'; // BUILD 310: UserModel.isPartner access
+import '../services/referral_service.dart'; // BUILD 310: referral count for Ambassador panel
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela interna
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
@@ -276,6 +278,9 @@ class AiScreen extends StatefulWidget {
   /// callback para abrir as configurações de IA (null quando não montado)
   static final openSettingsCallback = ValueNotifier<VoidCallback?>(null);
 
+  /// BUILD 310 — Ambassador Panel callback (null para não-parceiros)
+  static final ambassadorPanelCallback = ValueNotifier<VoidCallback?>(null);
+
   /// true quando o teclado virtual está aberto no chat — usado pelo FAB central
   /// em main.dart para sumir suavemente durante a digitação (Fix #5 PR #65).
   static final chatKeyboardOpen = ValueNotifier<bool>(false);
@@ -525,6 +530,11 @@ class _AiScreenState extends State<AiScreen> {
     AiScreen.openSettingsCallback.value = () {
       if (!mounted) return;
       _openAiSettings();
+    };
+    // BUILD 310: Ambassador Panel callback (only for partners)
+    AiScreen.ambassadorPanelCallback.value = () {
+      if (!mounted) return;
+      _openAmbassadorPanel();
     };
 
     // Verifica sessão Gemini ao montar — captura token de redirect OAuth
@@ -1057,9 +1067,10 @@ class _AiScreenState extends State<AiScreen> {
 
     // ── 5. Limpa ValueNotifiers estáticos do shell AppBar ──────────────────
     // Callbacks do widget desmontado — evita referências mortas no shell.
-    AiScreen.clearChatCallback.value    = null;
-    AiScreen.openHistoryCallback.value  = null;
-    AiScreen.openSettingsCallback.value = null;
+    AiScreen.clearChatCallback.value       = null;
+    AiScreen.openHistoryCallback.value     = null;
+    AiScreen.openSettingsCallback.value    = null;
+    AiScreen.ambassadorPanelCallback.value = null; // BUILD 310
     AiScreen.hasMessagesNotifier.value  = false;
     AiScreen.historyCountNotifier.value = 0;
     AiScreen.aiConnectedNotifier.value  = false;
@@ -2219,6 +2230,33 @@ class _AiScreenState extends State<AiScreen> {
     );
   }
 
+  // BUILD 310 — Abre o painel VIP do Embaixador
+  void _openAmbassadorPanel() {
+    final p = context.read<AppProvider>();
+    final user = p.currentUser;
+    if (user == null || !user.isPartner) return;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _AmbassadorPanel(
+        user:     user,
+        lang:     p.lang,
+        messages: List.of(_messages),
+        onSecondOpinion: (prompt) async {
+          // Delegated via callback — streaming happens inside modal
+          return p.sendAiMessage(
+            prompt,
+            onChunk: (_) {},
+            onDone:  (_) {},
+            onError: (_) {},
+          );
+        },
+        provider: p,
+      ),
+    );
+  }
+
   // Insere sugestão no campo sem enviar — usuário pode editar
   void _insertSuggestion(String prompt) {
     _queryCtrl.text = prompt;
@@ -2793,6 +2831,10 @@ class _AiScreenState extends State<AiScreen> {
         keyLoading: p.aiKeyLoading || p.geminiLoading,
         forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
         isConnected: isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
+        // BUILD 310: Ambassador golden button — Apple Safe
+        isPartner:    p.currentUser?.isPartner ?? false,
+        partnerTitle: p.currentUser?.partnerTitle ?? '',
+        onAmbassador: (p.currentUser?.isPartner ?? false) ? _openAmbassadorPanel : null,
       ),
 
       // ── Mini barra de ações mobile — SEMPRE visível mesmo com teclado aberto
@@ -2811,6 +2853,10 @@ class _AiScreenState extends State<AiScreen> {
           onNewChat: _startNewChat,
           forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
           isConnected: isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
+          // BUILD 310: Ambassador golden button — invisible to non-partners
+          isPartner:    p.currentUser?.isPartner ?? false,
+          partnerTitle: p.currentUser?.partnerTitle ?? '',
+          onAmbassador: (p.currentUser?.isPartner ?? false) ? _openAmbassadorPanel : null,
         ),
 
       // ── Banner de erro de chave ───────────────────────────────────────────
@@ -2990,10 +3036,13 @@ class _MobileAiActionBar extends StatelessWidget {
   final bool keyLoading;
   final bool forceDisconnectedLabel; // BUILD 275: show 'Desconectado' for non-admin
   final bool isConnected; // SUPER ORDEM ESTRUTURAL 11: M+ vivo
+  final bool isPartner; // BUILD 310: Ambassador golden button
+  final String partnerTitle; // BUILD 310: partner badge label
   final VoidCallback onHistory;
   final VoidCallback onClear;
   final VoidCallback onSettings;
   final VoidCallback? onNewChat;
+  final VoidCallback? onAmbassador; // BUILD 310
 
   const _MobileAiActionBar({
     super.key,
@@ -3008,7 +3057,10 @@ class _MobileAiActionBar extends StatelessWidget {
     required this.onSettings,
     this.forceDisconnectedLabel = false,
     this.isConnected = false,
+    this.isPartner = false,
+    this.partnerTitle = '',
     this.onNewChat,
+    this.onAmbassador,
   });
 
   @override
@@ -3149,6 +3201,51 @@ class _MobileAiActionBar extends StatelessWidget {
                 ),
               ),
 
+              // ── BUILD 310: AMBASSADOR GOLDEN BUTTON (RIGHT) ─────────────
+              // Invisible to non-partners — Apple Safe.
+              if (isPartner && onAmbassador != null)
+                Positioned(
+                  right: 12,
+                  top: 0,
+                  bottom: 0,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: onAmbassador,
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        height: 30,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(7),
+                          color: const Color(0xFFD4AF37).withOpacity(0.15),
+                          border: Border.all(
+                            color: const Color(0xFFD4AF37).withOpacity(0.70),
+                            width: 1.2,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('👑', style: TextStyle(fontSize: 13)),
+                            const SizedBox(width: 4),
+                            Text(
+                              partnerTitle.isNotEmpty ? partnerTitle : 'Embaixador',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFFD4AF37),
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
             ],
           ),
         ),
@@ -3234,6 +3331,9 @@ class _WaHeader extends StatelessWidget {
   final bool keyLoading;
   final bool forceDisconnectedLabel; // BUILD 275: 'Desconectado' for non-admin
   final bool isConnected; // SUPER ORDEM ESTRUTURAL 11: M+ vivo
+  final bool isPartner; // BUILD 310: Ambassador golden button
+  final String partnerTitle; // BUILD 310
+  final VoidCallback? onAmbassador; // BUILD 310
   const _WaHeader({
     required this.dark,
     required this.hasMessages,
@@ -3248,6 +3348,9 @@ class _WaHeader extends StatelessWidget {
     this.keyLoading = false,
     this.forceDisconnectedLabel = false,
     this.isConnected = false,
+    this.isPartner = false,
+    this.partnerTitle = '',
+    this.onAmbassador,
   });
 
   @override
@@ -3315,6 +3418,42 @@ class _WaHeader extends StatelessWidget {
                       ],
                     ),
                   ),
+
+                  // ── BUILD 310: AMBASSADOR GOLDEN BUTTON — Apple Safe ─────
+                  if (isPartner && onAmbassador != null) ...[
+                    GestureDetector(
+                      onTap: onAmbassador,
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        height: 28,
+                        padding: const EdgeInsets.symmetric(horizontal: 9),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(7),
+                          color: const Color(0xFFD4AF37).withOpacity(0.13),
+                          border: Border.all(
+                            color: const Color(0xFFD4AF37).withOpacity(0.60),
+                            width: 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text('👑', style: TextStyle(fontSize: 11)),
+                            const SizedBox(width: 4),
+                            Text(
+                              partnerTitle.isNotEmpty ? partnerTitle : 'Embaixador',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFFD4AF37),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                  ],
 
                   // ── M+ VIVO — status da IA — SUPER ORDEM ESTRUTURAL 11 ────
                   GestureDetector(
@@ -7981,6 +8120,495 @@ class _ChatHistorySheet extends StatelessWidget {
       ]),
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUILD 310 — _AmbassadorPanel: VIP ModalBottomSheet for partners
+// Apple Safe: rendered only when isPartner==true. Zero exposure to App Review.
+// ─────────────────────────────────────────────────────────────────────────────
+class _AmbassadorPanel extends StatefulWidget {
+  final UserModel user;
+  final String lang;
+  final List<_ChatMsg> messages;
+  final Future<bool> Function(String prompt) onSecondOpinion;
+  final AppProvider provider;
+
+  const _AmbassadorPanel({
+    required this.user,
+    required this.lang,
+    required this.messages,
+    required this.onSecondOpinion,
+    required this.provider,
+  });
+
+  @override
+  State<_AmbassadorPanel> createState() => _AmbassadorPanelState();
+}
+
+class _AmbassadorPanelState extends State<_AmbassadorPanel> {
+  static const _kGold      = Color(0xFFD4AF37);
+  static const _kGoldLight = Color(0xFFFFE8A6);
+  static const _kBg        = Color(0xFF0E1218);
+
+  // Second Opinion state
+  bool   _soLoading = false;
+  bool   _soStreamed = false;
+  String _soResult  = '';
+
+  // Referral count
+  int  _referralCount = 0;
+  bool _countLoading  = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReferralCount();
+  }
+
+  Future<void> _loadReferralCount() async {
+    try {
+      final link   = widget.user.referralLink ?? '';
+      final slug   = link.isNotEmpty ? link.split('/').last : widget.user.uid;
+      final count  = await ReferralService.getConversionCount(slug);
+      if (mounted) setState(() { _referralCount = count; _countLoading = false; });
+    } catch (_) {
+      if (mounted) setState(() => _countLoading = false);
+    }
+  }
+
+  void _copyLink() {
+    final link = widget.user.referralLink ?? '';
+    Clipboard.setData(ClipboardData(text: link));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(widget.lang == 'es' ? 'Link copiado 📋' : 'Link copiado 📋'),
+      backgroundColor: _kGold.withOpacity(0.9),
+      duration: const Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating,
+    ));
+  }
+
+  Future<void> _shareWhatsApp() async {
+    final link = widget.user.referralLink ?? '';
+    final msg  = widget.lang == 'es'
+        ? '¡Hola! Te invito a usar MedCases Pro, la mejor IA clínica para médicos. '
+          'Accede con mi link exclusivo: $link'
+        : 'Olá! Te convido a usar o MedCases Pro, a melhor IA clínica para médicos. '
+          'Acesse com meu link exclusivo: $link';
+    final encoded = Uri.encodeComponent(msg);
+    final uri = Uri.parse('https://wa.me/?text=$encoded');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _runSecondOpinion() async {
+    if (_soLoading || widget.messages.isEmpty) return;
+    setState(() { _soLoading = true; _soStreamed = false; _soResult = ''; });
+
+    // Build audit system prompt (bilingual)
+    final systemPrompt = widget.lang == 'es'
+        ? 'Usted es un consultor médico senior de auditoría clínica. '
+          'Tome la conducta médica presentada en la última respuesta del historial '
+          'y reestructure el caso en un Informe Formal de Segunda Opinión de alta '
+          'densidad académica. Divida estrictamente en: '
+          '1. Resumen Ejecutivo de Riesgo, '
+          '2. Justificación Fisiopatológica Basada en Evidencia, '
+          '3. Análisis de Concordancia de Guidelines Internacionales. '
+          'Prohibido inventar datos clínicos fuera del historial proporcionado.'
+        : 'Você é um consultor médico sênior de auditoria clínica. '
+          'Pegue a conduta médica apresentada na última resposta do histórico '
+          'e reestruture o caso em um Relatório Formal de Segunda Opinião de alta '
+          'densidade acadêmica. Divida estritamente em: '
+          '1. Sumário Executivo de Risco, '
+          '2. Justificativa Fisiopatológica Baseada em Evidências, '
+          '3. Análise de Concordância de Guidelines Internacionais. '
+          'Proibido inventar dados clínicos fora do histórico fornecido.';
+
+    // Build conversation context from _messages
+    final history = widget.messages
+        .where((m) => m.role == 'user' || m.role == 'ai')
+        .map((m) => '${m.role == 'user' ? '[Médico]' : '[IA]'}: ${m.text}')
+        .join('\n\n');
+
+    final fullPrompt = '$systemPrompt\n\n--- HISTÓRICO DA CONSULTA ---\n$history';
+
+    // Stream via provider
+    await widget.provider.sendAiMessage(
+      fullPrompt,
+      onChunk: (accumulated) {
+        if (mounted) setState(() => _soResult = accumulated);
+      },
+      onDone: (finalText) {
+        if (mounted) setState(() {
+          _soResult  = finalText.isNotEmpty ? finalText : _soResult;
+          _soLoading = false;
+          _soStreamed = true;
+        });
+      },
+      onError: (err) {
+        if (mounted) setState(() {
+          _soLoading = false;
+          _soResult  = widget.lang == 'es'
+              ? '⚠️ Error al generar el informe. Intente nuevamente.'
+              : '⚠️ Erro ao gerar o relatório. Tente novamente.';
+          _soStreamed = true;
+        });
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lang  = widget.lang;
+    final user  = widget.user;
+    final link  = user.referralLink ?? '';
+    final title = user.partnerTitle ?? (lang == 'es' ? 'Embajador' : 'Embaixador');
+
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: _kBg.withOpacity(0.97),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: const Border(
+            top:   BorderSide(color: _kGold, width: 1.5),
+            left:  BorderSide(color: Color(0x44D4AF37), width: 0.8),
+            right: BorderSide(color: Color(0x44D4AF37), width: 0.8),
+          ),
+        ),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Handle bar ──────────────────────────────────────────────
+                Center(child: Container(
+                  width: 36, height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: _kGold.withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                )),
+
+                // ── Header ──────────────────────────────────────────────────
+                Row(children: [
+                  const Text('👑', style: TextStyle(fontSize: 26)),
+                  const SizedBox(width: 12),
+                  Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: _kGold,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      Text(
+                        user.displayName,
+                        style: const TextStyle(color: Colors.white60, fontSize: 12),
+                      ),
+                    ],
+                  )),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, color: Colors.white38, size: 22),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ]),
+                const SizedBox(height: 24),
+
+                // ═══════════════════════════════════════════════════════════
+                // SEÇÃO A — Crescimento: Referral Link + Share + Count
+                // ═══════════════════════════════════════════════════════════
+                _SectionHeader(
+                  icon: Icons.link_rounded,
+                  label: lang == 'es' ? 'Su red de crecimiento' : 'Sua rede de crescimento',
+                ),
+                const SizedBox(height: 12),
+
+                // Link display
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: _kGold.withOpacity(0.07),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _kGold.withOpacity(0.25)),
+                  ),
+                  child: Row(children: [
+                    const Icon(Icons.link_rounded, color: _kGold, size: 16),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(
+                      link.isNotEmpty ? link : '—',
+                      style: const TextStyle(color: Colors.white, fontSize: 13,
+                          fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                  ]),
+                ),
+                const SizedBox(height: 10),
+
+                // Action buttons row
+                Row(children: [
+                  // Copy button
+                  Expanded(child: _GoldButton(
+                    icon: Icons.copy_rounded,
+                    label: lang == 'es' ? 'Copiar link' : 'Copiar link',
+                    onTap: _copyLink,
+                  )),
+                  const SizedBox(width: 10),
+                  // WhatsApp share button
+                  Expanded(child: _GoldButton(
+                    icon: Icons.share_rounded,
+                    label: 'WhatsApp',
+                    onTap: _shareWhatsApp,
+                    color: const Color(0xFF25D366),
+                  )),
+                ]),
+                const SizedBox(height: 14),
+
+                // Referral count badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.04),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  ),
+                  child: Row(children: [
+                    const Icon(Icons.group_rounded, color: _kGold, size: 22),
+                    const SizedBox(width: 12),
+                    _countLoading
+                        ? const SizedBox(width: 16, height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: _kGold))
+                        : Expanded(child: Text(
+                            lang == 'es'
+                                ? 'Su red: $_referralCount médico${_referralCount != 1 ? 's' : ''} integrado${_referralCount != 1 ? 's' : ''}'
+                                : 'Sua rede: $_referralCount médico${_referralCount != 1 ? 's' : ''} integrado${_referralCount != 1 ? 's' : ''}',
+                            style: const TextStyle(
+                                color: _kGoldLight, fontSize: 14, fontWeight: FontWeight.w700),
+                          )),
+                  ]),
+                ),
+                const SizedBox(height: 28),
+
+                // ═══════════════════════════════════════════════════════════
+                // SEÇÃO B — Segunda Opinião
+                // ═══════════════════════════════════════════════════════════
+                _SectionHeader(
+                  icon: Icons.auto_awesome_rounded,
+                  label: lang == 'es' ? 'Superpoder Clínico' : 'Superpoder Clínico',
+                ),
+                const SizedBox(height: 12),
+
+                // If Second Opinion not yet triggered → show button
+                if (!_soStreamed && !_soLoading) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: widget.messages.isEmpty ? null : _runSecondOpinion,
+                      icon: const Text('🪄', style: TextStyle(fontSize: 18)),
+                      label: Text(
+                        lang == 'es'
+                            ? 'Generar Informe de Segunda Opinión'
+                            : 'Gerar Relatório de Segunda Opinião',
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1A1D28),
+                        foregroundColor: _kGoldLight,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        side: const BorderSide(color: _kGold, width: 1.2),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        elevation: 0,
+                      ),
+                    ),
+                  ),
+                  if (widget.messages.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        lang == 'es'
+                            ? 'Inicie una consulta para generar la segunda opinión.'
+                            : 'Inicie uma consulta para gerar a segunda opinião.',
+                        style: const TextStyle(color: Colors.white38, fontSize: 11),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ],
+
+                // Loading spinner while streaming
+                if (_soLoading && !_soStreamed) ...[
+                  const Center(child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(children: [
+                      CircularProgressIndicator(color: _kGold),
+                      SizedBox(height: 12),
+                      Text('Gerando relatório clínico...',
+                          style: TextStyle(color: Colors.white54, fontSize: 12)),
+                    ]),
+                  )),
+                  // Live streaming preview
+                  if (_soResult.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.04),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: MarkdownBody(
+                        data: _soResult,
+                        styleSheet: MarkdownStyleSheet(
+                          p: const TextStyle(color: Colors.white70, fontSize: 12, height: 1.5),
+                          h1: const TextStyle(color: _kGoldLight, fontSize: 15, fontWeight: FontWeight.w900),
+                          h2: const TextStyle(color: _kGoldLight, fontSize: 14, fontWeight: FontWeight.w800),
+                          h3: const TextStyle(color: _kGold, fontSize: 13, fontWeight: FontWeight.w700),
+                          strong: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                ],
+
+                // Final Markdown result
+                if (_soStreamed && _soResult.isNotEmpty) ...[
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.04),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: _kGold.withOpacity(0.20)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          const Icon(Icons.check_circle_rounded, color: _kGold, size: 16),
+                          const SizedBox(width: 8),
+                          Text(
+                            lang == 'es' ? 'Informe de Segunda Opinión' : 'Relatório de Segunda Opinião',
+                            style: const TextStyle(
+                                color: _kGoldLight, fontSize: 13, fontWeight: FontWeight.w800),
+                          ),
+                        ]),
+                        const SizedBox(height: 12),
+                        MarkdownBody(
+                          data: _soResult,
+                          styleSheet: MarkdownStyleSheet(
+                            p: const TextStyle(color: Colors.white, fontSize: 13, height: 1.6),
+                            h1: const TextStyle(color: _kGoldLight, fontSize: 16, fontWeight: FontWeight.w900),
+                            h2: const TextStyle(color: _kGoldLight, fontSize: 14, fontWeight: FontWeight.w800),
+                            h3: const TextStyle(color: _kGold, fontSize: 13, fontWeight: FontWeight.w700),
+                            strong: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                            blockquote: const TextStyle(color: Colors.white60, fontSize: 12),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        // Copy result button
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: _soResult));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(lang == 'es'
+                                    ? 'Informe copiado al portapapeles'
+                                    : 'Relatório copiado para a área de transferência'),
+                                backgroundColor: _kGold.withOpacity(0.9),
+                                duration: const Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
+                              ));
+                            },
+                            icon: const Icon(Icons.copy_rounded, size: 15, color: _kGold),
+                            label: Text(
+                              lang == 'es' ? 'Copiar informe' : 'Copiar relatório',
+                              style: const TextStyle(color: _kGold, fontWeight: FontWeight.w700, fontSize: 12),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: _kGold.withOpacity(0.4)),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Regenerate
+                        Center(child: TextButton(
+                          onPressed: () => setState(() {
+                            _soStreamed = false; _soResult = ''; _soLoading = false;
+                          }),
+                          child: Text(
+                            lang == 'es' ? '↺ Regenerar informe' : '↺ Regenerar relatório',
+                            style: const TextStyle(color: Colors.white38, fontSize: 11),
+                          ),
+                        )),
+                      ],
+                    ),
+                  ),
+                ],
+
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Ambassador Panel helpers ──────────────────────────────────────────────────
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _SectionHeader({required this.icon, required this.label});
+  @override
+  Widget build(BuildContext context) => Row(children: [
+    Icon(icon, color: const Color(0xFFD4AF37), size: 16),
+    const SizedBox(width: 8),
+    Text(label, style: const TextStyle(
+        color: Color(0xFFFFE8A6), fontSize: 13, fontWeight: FontWeight.w800)),
+    const SizedBox(width: 8),
+    Expanded(child: Container(height: 0.5, color: const Color(0x44D4AF37))),
+  ]);
+}
+
+class _GoldButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final Color color;
+  const _GoldButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.color = const Color(0xFFD4AF37),
+  });
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 11),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.10),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withOpacity(0.45)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 15),
+          const SizedBox(width: 6),
+          Text(label, style: TextStyle(
+              color: color, fontSize: 12, fontWeight: FontWeight.w700)),
+        ],
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
