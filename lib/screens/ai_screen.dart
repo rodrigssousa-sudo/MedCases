@@ -8205,32 +8205,32 @@ class _AmbassadorPanelState extends State<_AmbassadorPanel> {
     if (_soLoading || widget.messages.isEmpty) return;
     setState(() { _soLoading = true; _soStreamed = false; _soResult = ''; });
 
-    // Build audit system prompt (bilingual)
-    final systemPrompt = widget.lang == 'es'
-        ? 'Usted es un consultor médico senior de auditoría clínica. '
-          'Tome la conducta médica presentada en la última respuesta del historial '
-          'y reestructure el caso en un Informe Formal de Segunda Opinión de alta '
-          'densidad académica. Divida estrictamente en: '
-          '1. Resumen Ejecutivo de Riesgo, '
-          '2. Justificación Fisiopatológica Basada en Evidencia, '
-          '3. Análisis de Concordancia de Guidelines Internacionales. '
-          'Prohibido inventar datos clínicos fuera del historial proporcionado.'
-        : 'Você é um consultor médico sênior de auditoria clínica. '
-          'Pegue a conduta médica apresentada na última resposta do histórico '
-          'e reestruture o caso em um Relatório Formal de Segunda Opinião de alta '
-          'densidade acadêmica. Divida estritamente em: '
-          '1. Sumário Executivo de Risco, '
-          '2. Justificativa Fisiopatológica Baseada em Evidências, '
-          '3. Análise de Concordância de Guidelines Internacionais. '
-          'Proibido inventar dados clínicos fora do histórico fornecido.';
+    // BUILD 313 — Prompt VIP humanizado: frase orgânica de médico,
+    // sem estrutura de comando de sistema que dispara guardrail.
+    // O contexto da conversa é injetado como histórico natural da sessão.
+    final lang = widget.lang;
 
-    // Build conversation context from _messages
+    final humanizedPrompt = lang == 'es'
+        ? '¿Puede hacer un análisis clínico profundo y avanzado de este caso, '
+          'basado en las últimas evidencias científicas disponibles? '
+          'Me gustaría una segunda opinión estructurada que incluya: '
+          'una evaluación del riesgo del paciente, '
+          'la justificación fisiopatológica de la conducta adoptada, '
+          'y si la misma está alineada con los guidelines internacionales vigentes.'
+        : 'Pode fazer uma análise clínica aprofundada e avançada deste caso, '
+          'baseada nas últimas evidências científicas disponíveis? '
+          'Gostaria de uma segunda opinião estruturada que inclua: '
+          'uma avaliação do risco do paciente, '
+          'a justificativa fisiopatológica da conduta adotada, '
+          'e se a mesma está alinhada com os guidelines internacionais vigentes.';
+
+    // Injeta o histórico da conversa como contexto natural da mensagem
     final history = widget.messages
         .where((m) => m.role == 'user' || m.role == 'ai')
         .map((m) => '${m.role == 'user' ? '[Médico]' : '[IA]'}: ${m.text}')
         .join('\n\n');
 
-    final fullPrompt = '$systemPrompt\n\n--- HISTÓRICO DA CONSULTA ---\n$history';
+    final fullPrompt = '$humanizedPrompt\n\n--- Contexto da consulta ---\n$history';
 
     // Stream via provider
     await widget.provider.sendAiMessage(

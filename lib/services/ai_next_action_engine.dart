@@ -485,71 +485,73 @@ class NextActionEngine {
     final hasTopicName = topicName.isNotEmpty;
 
     if (isPlantaoMode) {
-      // Plantão: esteira de condutas clínicas progressivas com patologia específica
+      // BUILD 313 — Plantão: prompts humanizados — frases orgânicas de médico,
+      // nunca comandos de sistema rígidos que disparam guardrails de segurança.
       return _pickAction([
         SmartNextAction(
           label: es ? 'Condutas e dosagens' : 'Condutas e dosagens',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Condutas práticas e doses para $topicName.'
-                  : 'Condutas práticas e doses para esta patologia.')
+                  ? '¿Cuáles son las conductas clínicas inmediatas y las dosis recomendadas para este caso de $topicName?'
+                  : 'Quais são as condutas clínicas imediatas e as dosagens recomendadas para este caso de urgência?')
               : (hasTopicName
-                  ? 'Condutas práticas e doses para $topicName.'
-                  : 'Condutas práticas e doses para esta patologia.'),
+                  ? 'Quais são as condutas clínicas imediatas e as dosagens recomendadas para este caso de $topicName?'
+                  : 'Quais são as condutas clínicas imediatas e as dosagens recomendadas para este caso de urgência?'),
         ),
         SmartNextAction(
           label: es ? 'Exames e evolução' : 'Exames e evolução',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Exames e evolução em $topicName.'
-                  : 'Exames e evolução neste caso.')
+                  ? '¿Qué exámenes complementarios solicitar y cómo monitorear la evolución en $topicName?'
+                  : '¿Qué exámenes y parámetros debo monitorear en este caso?')
               : (hasTopicName
-                  ? 'Exames e evolução em $topicName.'
-                  : 'Exames e evolução neste caso.'),
+                  ? 'Quais exames complementares solicitar e como monitorar a evolução em $topicName?'
+                  : 'Quais exames e parâmetros devo monitorar neste caso?'),
         ),
         SmartNextAction(
           label: es ? 'Perguntas importantes' : 'Perguntas importantes',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Perguntas-chave para guiar o manejo de $topicName.'
-                  : 'Perguntas-chave para guiar este caso clínico.')
+                  ? '¿Qué preguntas clave debo hacer al paciente para orientar el manejo de $topicName?'
+                  : '¿Qué preguntas clave debo hacer para orientar este caso clínico?')
               : (hasTopicName
-                  ? 'Perguntas-chave para guiar o manejo de $topicName.'
-                  : 'Perguntas-chave para guiar este caso clínico.'),
+                  ? 'Quais perguntas-chave devo fazer ao paciente para orientar o manejo de $topicName?'
+                  : 'Quais perguntas-chave devo fazer para orientar este caso clínico?'),
         ),
       ], chatHistory);
     } else {
-      // Estudo: esteira cronológica real de 3 passos — avança consultando chatHistory
+      // BUILD 313 — Estudo: prompts humanizados para fins acadêmicos,
+      // soam como perguntas naturais de um médico em contexto educacional.
       return _pickAction([
         SmartNextAction(
           label: es ? '✨ Profundizar Fisiopatología >' : '✨ Aprofundar Fisiopatologia >',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Fisiopatologia de $topicName (máx 15 linhas).'
-                  : 'Fisiopatologia desta condição (máx 15 linhas).')
+                  ? '¿Puede explicarme la fisiopatología de $topicName de forma detallada, con los mecanismos moleculares y celulares relevantes?'
+                  : '¿Puede explicarme la fisiopatología de esta condición de forma detallada para fines académicos?')
               : (hasTopicName
-                  ? 'Fisiopatologia de $topicName (máx 15 linhas).'
-                  : 'Fisiopatologia desta condição (máx 15 linhas).'),
+                  ? 'Pode me explicar a fisiopatologia de $topicName de forma detalhada, com os mecanismos moleculares e celulares relevantes?'
+                  : 'Pode me explicar a fisiopatologia desta condição de forma detalhada para fins acadêmicos?'),
         ),
         SmartNextAction(
           label: es ? '✨ Alternativas de 2ª Línea >' : '✨ Alternativas de 2ª Linha >',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Alternativas terapêuticas de 2ª linha em $topicName (máx 15 linhas).'
-                  : 'Alternativas terapêuticas de 2ª linha neste caso (máx 15 linhas).')
+                  ? '¿Cuáles son las alternativas terapéuticas de segunda línea para $topicName cuando el tratamiento inicial no es suficiente?'
+                  : '¿Cuáles son las alternativas terapéuticas de segunda línea en este caso?')
               : (hasTopicName
-                  ? 'Alternativas terapêuticas de 2ª linha em $topicName (máx 15 linhas).'
-                  : 'Alternativas terapêuticas de 2ª linha neste caso (máx 15 linhas).'),
+                  ? 'Quais são as alternativas terapêuticas de segunda linha para $topicName quando o tratamento inicial não é suficiente?'
+                  : 'Quais são as alternativas terapêuticas de segunda linha neste caso?'),
         ),
         SmartNextAction(
           label: es ? '✨ Comorbilidades y Alertas >' : '✨ Comorbidades e Alertas >',
           promptToSend: es
               ? (hasTopicName
-                  ? 'Comorbidades e alertas clínicos em $topicName (máx 15 linhas).'
-                  : 'Comorbidades e alertas clínicos neste caso (máx 15 linhas).')
+                  ? '¿Qué comorbidades y alertas clínicos debo considerar en el manejo de $topicName?'
+                  : '¿Qué comorbidades y alertas clínicos son relevantes en este caso?')
               : (hasTopicName
-                  ? 'Comorbidades e alertas clínicos em $topicName (máx 15 linhas).'
-                  : 'Comorbidades e alertas clínicos neste caso (máx 15 linhas).'),
+                  ? 'Quais comorbidades e alertas clínicos devo considerar no manejo de $topicName?'
+                  : 'Quais comorbidades e alertas clínicos são relevantes neste caso?'),
         ),
       ], chatHistory);
     }

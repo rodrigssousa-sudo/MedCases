@@ -26,11 +26,17 @@
     <!-- RECEIVE_BOOT_COMPLETED: reagenda notificações após reboot do aparelho -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <!--
+        BUILD 313: android:usesCleartextTraffic="true" adicionado para garantir
+        que o Android permita tr\u00e1fego HTTP n\u00e3o-criptografado em APIs < 24,
+        complementando o network_security_config.xml (base-config cleartextTrafficPermitted="true").
+    -->
     <application
         android:label="MedCases Pro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:networkSecurityConfig="@xml/network_security_config">
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

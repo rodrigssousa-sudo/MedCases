@@ -425,12 +425,37 @@ class _AuthGateState extends State<_AuthGate> {
       // setUser() dispara notifyListeners() — feito após setState para que
       // _stableUser já esteja definido quando os listeners reconstruírem
       context.read<AppProvider>().setUser(user);
+
+      // BUILD 313 — SEMÁFORO 3: sinaliza ao _TimedSplash que o auth
+      // determinou um estado estável (usuário aprovado). O splash nativo
+      // iOS só é removido APÓS este callback, eliminando o double-flash
+      // causado pelo frame intermediário de auth-loading.
+      // O callback é optional (null-safe) para compatibilidade com web.
+      if (context.mounted) {
+        final splashState =
+            context.findAncestorStateOfType<_TimedSplashState>();
+        splashState?._signalAuthResolved();
+      }
+    });
+  }
+
+  // BUILD 313 — sinaliza _authResolved ao _TimedSplash sem exigir usuário aprovado.
+  // Usado para fluxos onde o auth determinou um estado final (sem usuário,
+  // bloqueado, pendente, erro Firebase) — o splash DEVE ser removido nesses casos
+  // também, pois o fluxo está estável (LoginScreen / BlockedScreen / PendingScreen).
+  // Agendado via addPostFrameCallback para evitar setState() durante build().
+  void _signalSplashReady(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final splashState =
+          context.findAncestorStateOfType<_TimedSplashState>();
+      splashState?._signalAuthResolved();
     });
   }
 
   // ── Logout: zera state local para permitir novo ciclo de auth ─────────
   // Também chamado de dentro de builders (StreamBuilder / ValueListenableBuilder),
-  // portanto setState() deve ser adiado para evitar "setState() during build".
+  // portanto setState() deve ser adiado para evitar "setState() durante build".
   void _onLogout() {
     // Zera a flag imediatamente (sem setState) para bloquear re-entradas
     _setUserCalledForUid = null;
@@ -479,10 +504,21 @@ class _AuthGateState extends State<_AuthGate> {
     // _TimedSplash garante visibilidade mínima de 1.2s + fade-out suave.
     // Quando splash e boot terminam → readyBuilder() exibe o fluxo real de auth.
     // A lógica de auth (FutureBuilder → StreamBuilder) é preservada intacta.
+    // BUILD 313: _TimedSplash recebe onAuthResolved para atrasar
+    // FlutterNativeSplash.remove() até a auth resolver estado estável.
     return _TimedSplash(
       bootFuture: widget.firebaseInit,
       splash: _wrapAuth(const _SplashScreen()),
       readyBuilder: (context) => _buildAuthFlow(context),
+      onAuthResolved: () {
+        // Recupera o state do _TimedSplash via context — seguro pois
+        // _AuthGateState está diretamente dentro da árvore do _TimedSplash.
+        // O cast para _TimedSplashState é válido: este callback só existe
+        // quando o Widget pai for _TimedSplash.
+        final splashState = context
+            .findAncestorStateOfType<_TimedSplashState>();
+        splashState?._signalAuthResolved();
+      },
     );
   }
 
@@ -507,6 +543,8 @@ class _AuthGateState extends State<_AuthGate> {
         // No Android/iOS: Firebase SDK é obrigatório — LoginScreen é o fallback correto.
         if (firebaseSnap.hasError) {
           if (kIsWeb) return _buildWebAuthGate(context);
+          // BUILD 313: Firebase falhou → LoginScreen é o estado final; sinaliza splash
+          _signalSplashReady(context);
           return _wrapAuth(const LoginScreen());
         }
 
@@ -527,6 +565,8 @@ class _AuthGateState extends State<_AuthGate> {
             // Não autenticado → consent gate → login
             if (authSnap.data == null) {
               _onLogout();
+              // BUILD 313: estado final (não autenticado) → sinaliza splash
+              _signalSplashReady(context);
               return _wrapAuth(const _ConsentGate());
             }
 
@@ -551,16 +591,22 @@ class _AuthGateState extends State<_AuthGate> {
                 if (user == null) {
                   AuthService.logout();
                   _onLogout();
+                  // BUILD 313: estado final (sem perfil) → sinaliza splash
+                  _signalSplashReady(context);
                   return _wrapAuth(const LoginScreen());
                 }
 
                 if (user.isBlocked) {
                   AuthService.logout();
                   _onLogout();
+                  // BUILD 313: estado final (bloqueado) → sinaliza splash
+                  _signalSplashReady(context);
                   return _wrapAuth(_BlockedScreen(user: user));
                 }
 
                 if (user.isPending) {
+                  // BUILD 313: estado final (pendente) → sinaliza splash
+                  _signalSplashReady(context);
                   return _wrapAuth(_PendingScreen(user: user));
                 }
 
@@ -852,11 +898,17 @@ class _TimedSplash extends StatefulWidget {
   final Future<void> bootFuture;
   final Widget Function(BuildContext) readyBuilder;
   final Widget splash;
+  // BUILD 313 — terceiro semáforo: notifica quando auth resolve estado estável.
+  // Passado como callback para que _AuthGateState possa sinalizar ao splash
+  // que o fluxo de auth determinou um usuário aprovado/bloqueado/pendente,
+  // impedindo que FlutterNativeSplash.remove() dispare antes desse momento.
+  final VoidCallback? onAuthResolved;
 
   const _TimedSplash({
     required this.bootFuture,
     required this.readyBuilder,
     required this.splash,
+    this.onAuthResolved,
   });
 
   @override
@@ -869,8 +921,14 @@ class _TimedSplashState extends State<_TimedSplash> {
   // Protege contra: browser throttle, Firebase timeout, aba inativa durante boot.
   static const _kWatchdogMs = 20000;
 
-  bool _minTimeDone = false;
-  bool _bootDone    = false;
+  bool _minTimeDone    = false;
+  bool _bootDone       = false;
+  // BUILD 313 — SEMÁFORO 3: authResolved
+  // Só muda para true quando _AuthGateState._onUserResolved() sinaliza que
+  // o StreamBuilder<UserModel?> já determinou um estado estável de auth
+  // (aprovado / bloqueado / pendente). Isso garante que remove() nunca dispara
+  // durante o frame intermediário de auth-loading que causava o double-flash iOS.
+  bool _authResolved   = false;
 
   @override
   void initState() {
@@ -914,9 +972,34 @@ class _TimedSplashState extends State<_TimedSplash> {
         AppResumeCoordinator.instance.completeBootstrap();
       }
     });
+
+    // BUILD 313 — Watchdog para _authResolved: garante que o splash nunca
+    // fica travado se o callback de auth não for disparado (ex.: fluxo web,
+    // timeout de Firestore, cold start com usuário não autenticado).
+    // Timeout de 8s: tempo suficiente para qualquer fluxo de auth resolver.
+    Future<void>.delayed(const Duration(milliseconds: 8000), () {
+      if (!mounted || _authResolved) return;
+      debugPrint('[BUILD313] _authResolved watchdog: forçando auth resolved após 8s');
+      setState(() => _authResolved = true);
+    });
   }
 
-  bool get _ready => _minTimeDone && _bootDone;
+  // BUILD 313 — _ready agora exige os 3 semáforos:
+  //   • _minTimeDone  → 1.2s mínimo de splash exibido
+  //   • _bootDone     → Firebase + prefs inicializados
+  //   • _authResolved → StreamBuilder<UserModel?> determinou estado estável
+  // No web (kIsWeb), _authResolved não é relevante para o splash nativo
+  // (não existe FlutterNativeSplash.remove() no web), então _ready ainda
+  // transiciona o AnimatedSwitcher com apenas os dois semáforos originais.
+  bool get _ready => _minTimeDone && _bootDone && (kIsWeb || _authResolved);
+
+  // Chamado pelo _AuthGateState via widget.onAuthResolved — sinaliza que
+  // a árvore de auth já renderizou pelo menos um estado estável.
+  void _signalAuthResolved() {
+    if (!_authResolved && mounted) {
+      setState(() => _authResolved = true);
+    }
+  }
 
   // BUILD 280 — CAMADA 3: flag de idempotência para FlutterNativeSplash.remove()
   // Garante que remove() seja chamado exatamente UMA VEZ, mesmo que build()
@@ -939,15 +1022,16 @@ class _TimedSplashState extends State<_TimedSplash> {
     //   4. A flag _splashRemoved previne chamadas duplicadas — o build()
     //      pode ser chamado várias vezes no mesmo frame em edge cases de Flutter.
     //
-    // TIMING DIAGRAM (iOS cold start):
-    //   [t=0ms]   runApp() → Dart engine ativo, Flutter engine inicializa
-    //   [t=~50ms] main() retorna, storyboard ainda ativo (preserve() ativo)
+    // TIMING DIAGRAM (iOS cold start — BUILD 313):
+    //   [t=0ms]    runApp() → Dart engine ativo, Flutter engine inicializa
+    //   [t=~50ms]  main() retorna, storyboard ainda ativo (preserve() ativo)
     //   [t=~200ms] primeiro frame Flutter pintado (splash _SplashScreen)
     //   [t=1200ms] _minTimeDone = true (timer mínimo)
-    //   [t=var]   _bootDone = true (Firebase + auth completos)
-    //   [t=max]   _ready = true → addPostFrameCallback agenda remove()
+    //   [t=var]    _bootDone = true (Firebase + prefs inicializados)
+    //   [t=var+]   _authResolved = true (StreamBuilder<UserModel?> resolvido)
+    //   [t=max]    _ready = true → addPostFrameCallback agenda remove()
     //   [t+1frame] FlutterNativeSplash.remove() → storyboard encerrado graciosamente
-    //             UIKit vê o frame Flutter já renderizado → ZERO flash
+    //              UIKit vê frame Flutter já renderizado com auth estável → ZERO flash
     if (_ready && !_splashRemoved && !kIsWeb) {
       _splashRemoved = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {

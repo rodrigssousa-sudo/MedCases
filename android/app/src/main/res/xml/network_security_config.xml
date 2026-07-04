@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   network_security_config.xml — MedCases Pro
-  BUILD 283: Configuração de segurança de rede Android.
+  BUILD 313: Habilita tráfego cleartext HTTP na base-config.
 
   OBJETIVO:
-    • Permite que o componente WebView acesse arquivos locais (file://) do
-      diretório ApplicationSupport do app (cache offline da Calculadora Clínica).
-    • Mantém HTTPS obrigatório para todas as origens de rede externas.
-    • Não abre brechas para cleartext HTTP em domínios de produção.
+    • Permite tráfego HTTP não-criptografado para requisições locais/customizadas
+      que o Android bloqueava mesmo com Firebase e Firestore liberados.
+    • Domínios de produção continuam com HTTPS obrigatório via domain-config.
+    • Compatível com Android API 24+ (Nougat) e versões superiores.
 
-  CONTEXTO:
-    No Android API 24+, a política padrão de segurança de rede proíbe:
-      1. Cleartext HTTP (já bloqueado por padrão — preservado aqui).
-      2. Acesso a "domínios" file:// por WebViews sem AndroidWebViewControllerCreationParams.
-    Com allowFileAccess=true + allowFileAccessFromFileURLs=true no Dart,
-    este arquivo complementa a política declarando que URIs file:// são
-    consideradas "localhost" (origem confiável de primeiro nível).
+  CONTEXTO (BUILD 283 → BUILD 313):
+    No Android API 24+, a política padrão de segurança de rede proíbe cleartext
+    HTTP. O flag cleartextTrafficPermitted="true" na base-config permite HTTP
+    genérico enquanto os domínios de produção mantêm HTTPS forçado via
+    domain-config (que sobrescreve a base-config por especificidade).
+    O atributo android:usesCleartextTraffic="true" no AndroidManifest.xml
+    complementa esta configuração para APIs Android mais antigas (< 24).
 
   SEGURANÇA:
-    • Apenas domínios de produção do MedCases nas trust-anchors.
-    • Nenhum cleartext HTTP permitido para domínios externos.
+    • Domínios de produção MedCases (medcasespro.com, googleapis.com etc.)
+      mantêm HTTPS obrigatório via domain-config específica.
     • file:// tratado como localhost — sem acesso cross-origin a http/https.
 -->
 <network-security-config>
     <!--
-      Política base: apenas HTTPS para todas as origens de rede.
-      Herda certificados do sistema (Google Trust Services, DigiCert, etc.).
+      Política base: cleartext HTTP habilitado para compatibilidade com
+      requisições locais/customizadas do app (BUILD 313).
+      Domínios de produção sobrescrevem esta política via domain-config abaixo.
     -->
-    <base-config cleartextTrafficPermitted="false">
+    <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
-            <certificates src="system"/>
+            <certificates src="system" />
         </trust-anchors>
     </base-config>
 
