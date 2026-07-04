@@ -4695,6 +4695,210 @@ String _applyPlantaoAestheticGuard(String text) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// BUILD 315 — _stripCodeFencesAndExtractJson
+// ─────────────────────────────────────────────────────────────────────────────
+// PROBLEMA: a LLM ocasionalmente retorna a resposta envolta em code fences
+// de markdown (```json … ``` ou ``` … ```) ou com um bloco JSON bruto em vez
+// do template emoji-âncora esperado. Quando isso acontece, o PlantaoParser
+// falha em detectar qualquer âncora (🟥, 💊, etc.) e o app renderiza o JSON
+// ou o bloco de código em monoespaçado bruto em vez dos cards clínicos nativos.
+//
+// SOLUÇÃO: pré-processamento resiliente em 3 estratégias em cascata:
+//
+//   Estratégia A — Code-fence strip (``` json ou ``` puro):
+//     Remove as marcações de markdown. Se o conteúdo interno já tem emojis
+//     âncora ou é texto clínico normal, o pipeline continua normalmente.
+//
+//   Estratégia B — JSON bruto com emojis-âncora como chaves:
+//     A IA às vezes retorna { "🟥": "Conduta...", "💊": "Dose..." }.
+//     Extrai cada chave-emoji e converte para o formato de linha canônico:
+//     "🟥 Conduta...\n💊 Dose...\n"
+//
+//   Estratégia C — JSON bruto sem emojis (campos semânticos):
+//     A IA pode retornar { "conduta": "...", "dose": "...", "monitorar": "..." }.
+//     Mapeia os campos conhecidos para as âncoras canônicas e constrói o
+//     template emoji manualmente.
+//
+// PRINCÍPIO: NUNCA altera texto que já está no formato emoji-âncora correto.
+//            NUNCA descarta conteúdo clínico — transforma, não substitui.
+//            Idempotente: passar texto já correto retorna o texto sem mudança.
+// ─────────────────────────────────────────────────────────────────────────────
+String _stripCodeFencesAndExtractJson(String text) {
+  final trimmed = text.trim();
+  if (trimmed.isEmpty) return text;
+
+  // ── Estratégia A: remove code fences de markdown ─────────────────────────
+  // Padrões cobertos (todos case-insensitive, com ou sem espaço após ```):
+  //   ```json   ```JSON   ``` json   ```   (fence de abertura)
+  //   ```        (fence de fechamento)
+  // A regex abrange variações reais observadas em Gemini 2.5-flash:
+  //   "🟥 CONDUCTA CLÍNICA INMEDIATA\n```json\n{...}\n```"
+  //   "```json\n🟥 CONDUTA...\n💊 ...\n```"
+  //   "```\n🟥 ...\n```"
+  final hasFence = RegExp(r'`{3}', multiLine: true).hasMatch(trimmed);
+  if (hasFence) {
+    // Remove TODAS as ocorrências de ``` seguidas de identificador opcional
+    String stripped = trimmed
+        .replaceAll(RegExp(r'```[a-zA-Z]*\s*', multiLine: true), '')
+        .replaceAll(RegExp(r'`{3}', multiLine: true), '')
+        .trim();
+
+    // Se após o strip o texto tem âncoras ou é clínico → retorna direto
+    // (Estratégias B/C só são necessárias se ainda for JSON puro)
+    final looksLikeJson = stripped.trimLeft().startsWith('{');
+    if (!looksLikeJson) {
+      debugPrint('[BUILD315_JSON_STRIP] action=fence_stripped '
+          'originalLen=${trimmed.length} strippedLen=${stripped.length}');
+      return stripped;
+    }
+    // Continua com o JSON limpo para Estratégias B/C
+    text = stripped;
+  }
+
+  // ── Detecta se é JSON puro: primeira chave não-espaço é '{' ─────────────
+  final bodyStart = text.trimLeft();
+  if (!bodyStart.startsWith('{')) return text; // não é JSON — pass-through
+
+  // ── Encontra primeiro '{' e último '}' para extrair JSON válido ───────────
+  // Resiliente a cabeçalhos antes do JSON (ex: "🟥 CONDUCTA CLÍNICA\n{...")
+  final firstBrace = text.indexOf('{');
+  final lastBrace  = text.lastIndexOf('}');
+  if (firstBrace < 0 || lastBrace <= firstBrace) return text;
+
+  // Preserva texto antes do '{' como possível cabeçalho/prefixo
+  final prefix    = text.substring(0, firstBrace).trim();
+  final jsonSlice = text.substring(firstBrace, lastBrace + 1);
+
+  Map<String, dynamic>? jsonMap;
+  try {
+    jsonMap = jsonDecode(jsonSlice) as Map<String, dynamic>?;
+  } catch (_) {
+    // JSON inválido → pass-through com fence já removido
+    debugPrint('[BUILD315_JSON_STRIP] action=json_parse_failed '
+        'slice_len=${jsonSlice.length}');
+    return text;
+  }
+  if (jsonMap == null || jsonMap.isEmpty) return text;
+
+  debugPrint('[BUILD315_JSON_STRIP] action=json_decoded '
+      'keys=${jsonMap.keys.toList()} prefix="${prefix.length > 30 ? prefix.substring(0, 30) : prefix}"');
+
+  // ── Estratégia B: JSON com chaves-emoji (🟥, 💊, etc.) ─────────────────
+  // Verifica se alguma chave é um emoji-âncora canônico
+  const _kAnchors = [
+    '🟥', '💊', '🔄', '⛔', '📌', '⚠️',
+    '📈', '✅', '❌', '🔎', '🧪', '🧮', '📖',
+  ];
+  const _kAnchorOrder = [
+    '🟥', '💊', '🔄', '⛔', '🔎', '🧪', '🧮', '📖', '📈', '❌', '📌', '✅', '⚠️',
+  ];
+
+  final hasEmojiKeys = jsonMap.keys.any(
+    (k) => _kAnchors.any((a) => k.contains(a)),
+  );
+
+  if (hasEmojiKeys) {
+    final sb = StringBuffer();
+    // Usa prefixo como linha extra se não começar com emoji
+    if (prefix.isNotEmpty && !_kAnchors.any((a) => prefix.startsWith(a))) {
+      sb.writeln(prefix);
+    }
+    // Itera em ordem canônica para garantir sequência correta
+    for (final anchor in _kAnchorOrder) {
+      // Busca chave que contenha o emoji (tolerante a sufixos de texto)
+      final matchKey = jsonMap.keys
+          .where((k) => k.contains(anchor))
+          .firstOrNull;
+      if (matchKey == null) continue;
+      final val = jsonMap[matchKey]?.toString().trim() ?? '';
+      if (val.isEmpty) continue;
+      sb.writeln('$anchor $val');
+    }
+    final result = sb.toString().trim();
+    if (result.isNotEmpty) {
+      debugPrint('[BUILD315_JSON_STRIP] action=emoji_keys_converted '
+          'outputLen=${result.length}');
+      return result;
+    }
+  }
+
+  // ── Estratégia C: JSON com campos semânticos em texto ─────────────────────
+  // Mapeia campos conhecidos para âncoras canônicas
+  final _fieldToAnchor = <String, String>{
+    // 🟥 conduta / título
+    'conduta':        '🟥',
+    'conducta':       '🟥',
+    'titulo':         '🟥',
+    'título':         '🟥',
+    'title':          '🟥',
+    'conduta_titulo': '🟥',
+    'conduta_título': '🟥',
+    // 💊 dose / primeira linha
+    'dose':           '💊',
+    'dosis':          '💊',
+    'primeira_linha': '💊',
+    'primera_linea':  '💊',
+    'medicacao':      '💊',
+    'medicación':     '💊',
+    'tratamento':     '💊',
+    'tratamiento':    '💊',
+    // 🔄 alternativa
+    'alternativa':    '🔄',
+    'segunda_linha':  '🔄',
+    'segunda_linea':  '🔄',
+    // ⛔ evitar
+    'evitar':         '⛔',
+    'contraindicado': '⛔',
+    'contraindicação':'⛔',
+    'contraindicacion':'⛔',
+    // 📌 monitorar
+    'monitorar':      '📌',
+    'monitorizar':    '📌',
+    'monitoramento':  '📌',
+    'observar':       '📌',
+    // ⚠️ alerta
+    'alerta':         '⚠️',
+    'atencao':        '⚠️',
+    'atencion':       '⚠️',
+    'aviso':          '⚠️',
+  };
+
+  // Constrói saída na ordem canônica mapeando campos
+  final anchorLines = <String, String>{};
+  for (final entry in jsonMap.entries) {
+    final keyNorm = entry.key
+        .toLowerCase()
+        .replaceAll(' ', '_')
+        .replaceAll(RegExp(r'[^a-záéíóúàãõâêîôûçñü_0-9]', unicode: true), '');
+    final anchor = _fieldToAnchor[keyNorm];
+    if (anchor == null) continue;
+    final val = entry.value?.toString().trim() ?? '';
+    if (val.isEmpty) continue;
+    anchorLines.putIfAbsent(anchor, () => val);
+  }
+
+  if (anchorLines.isNotEmpty) {
+    final sb = StringBuffer();
+    if (prefix.isNotEmpty) sb.writeln(prefix);
+    for (final anchor in _kAnchorOrder) {
+      final val = anchorLines[anchor];
+      if (val == null) continue;
+      sb.writeln('$anchor $val');
+    }
+    final result = sb.toString().trim();
+    if (result.isNotEmpty) {
+      debugPrint('[BUILD315_JSON_STRIP] action=semantic_fields_converted '
+          'anchorsFound=${anchorLines.keys.toList()} outputLen=${result.length}');
+      return result;
+    }
+  }
+
+  // Nenhuma estratégia funcionou — retorna o texto com fences removidas
+  debugPrint('[BUILD315_JSON_STRIP] action=pass_through_no_mapping '
+      'jsonKeys=${jsonMap.keys.toList()}');
+  return text;
+}
+
 // BUILD 248B — _plantaoTruncationGuard (ARQUITETURA CONSOLIDADA + REFORMATTER)
 //
 // ARQUITETURA:
@@ -4748,6 +4952,12 @@ String _plantaoTruncationGuard(String text, String lang,
       lower.contains('ia indisponível') ||
       lower.contains('ia indisponible');
   if (isErrorMsg) return text;
+
+  // ── BUILD 315: JSON fence strip + extração robusta ────────────────────────
+  // Pré-processamento ANTES do RAW_AI_OUTPUT e do PlantatoPipeline.
+  // Remove code fences (```json, ```) e converte JSON bruto para o formato
+  // emoji-âncora que o PlantaoParser entende. Pass-through se já estruturado.
+  text = _stripCodeFencesAndExtractJson(text);
 
   // ── BUILD 252: RAW_AI_OUTPUT — print do texto bruto ANTES de qualquer parser ─
   // Expõe o que a IA realmente retornou, desmascarando o auto-reparo do Organizer.

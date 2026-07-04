@@ -2176,10 +2176,23 @@ class _FloatingFooterState extends State<_FloatingFooter> {
     // BUILD 329: altura dinâmica — encolhe suavemente durante scroll down
     final barHeight = _shrunk ? _barHeightShrunk : _barHeightFull;
 
+    // BUILD 315 — Safe-area bottom padding para o dock flutuante.
+    // Problem: aparelhos Android com botões virtuais (barra de navegação)
+    // têm MediaQuery.padding.bottom == 0 (os botões ficam sobrepostos à UI),
+    // esmagando o dock contra a barra de sistema e tornando os botões invisíveis.
+    // Aparelhos com gesture navigation (iOS-style) têm padding.bottom > 0
+    // refletindo a home indicator — o Positioned(bottom:0) já ficava correto.
+    //
+    // Solução: usa MediaQuery.padding.bottom como offset do bottom do Positioned.
+    // Se padding.bottom == 0 (botões virtuais tradicionais, ex: Realme) → aplica
+    // um mínimo de 20px para dar margem respiratória acima da barra de sistema.
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+    final safeBottom = bottomInset > 0 ? bottomInset : 20.0;
+
     return Positioned(
       left: 0,
       right: 0,
-      bottom: 0,
+      bottom: safeBottom,
       child: AnimatedSlide(
         // Slide total quando hidden (teclado aberto / editor de história)
         offset: Offset(0, widget.hidden ? 1.0 : 0.0),
