@@ -164,13 +164,28 @@ service cloud.firestore {
 
     // ─────────────────────────────────────────────────────────────────────────
     // NOTIFICAÇÕES ADMIN — /admin_notifications/{notificationId}
-    // (PARTE 4 — BUILD 238)
-    // Escrita exclusiva via Cloud Function (Admin SDK — sem regra de create).
-    // Leitura/update/delete apenas por admin/master.
+    // (PARTE 4 — BUILD 238 | atualizado BUILD 311)
+    //
+    // BUILD 311 — MUDANÇA SOBERANA:
+    //   allow create: if isAuthed()
+    //
+    // MOTIVO ARQUITETURAL:
+    //   O fluxo de cadastro agora é 100% automático (status=approved imediato).
+    //   O celular do novo usuário grava o documento de alerta ANTES de qualquer
+    //   Cloud Function ser invocada — isso garante entrega do push mesmo em
+    //   ambientes com cold-start lento do servidor de funções.
+    //
+    //   Segurança mantida:
+    //   • Leitura: SOMENTE admin/master (isAdmin guard inalterado).
+    //   • O novo usuário pode CRIAR o documento de alerta (notificação de cadastro)
+    //     mas NÃO pode ler, atualizar ou excluir outros documentos da coleção.
+    //   • O conteúdo do documento é controlado pelo app e auditado pela Function.
+    //   • Cloud Function (Admin SDK) ainda cria seu próprio documento em paralelo
+    //     via onNewUserRegistered — dupla garantia de entrega.
     // ─────────────────────────────────────────────────────────────────────────
     match /admin_notifications/{notificationId} {
       allow read:   if isAdmin();
-      allow create: if false;   // somente Cloud Function (Admin SDK bypassa rules)
+      allow create: if isAuthed(); // BUILD 311: novo usuário cria o alerta no boot
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }

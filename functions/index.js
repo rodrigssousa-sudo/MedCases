@@ -1,12 +1,16 @@
 /**
  * Cloud Functions — MedCases Pro  (firebase-functions v6 / Node 22)
  *
- * 1. onNewUserRegistered  → onCreate  → notifica admin quando novo usuário se cadastra
- *                                       + grava admin_notifications (PARTE 4 BUILD 238)
- *                                       + envia FCM push a todos admin/master (PARTE 5 BUILD 238)
- * 2. onUserApproved       → onUpdate  → e-mail de boas-vindas ao usuário aprovado
- * 3. onUserUnblocked      → onUpdate  → e-mail de reativação ao usuário desbloqueado
- * 4. geminiPaidProxy      → onRequest → proxy seguro Gemini Paid (Build 226)
+ * 1. onNewUserRegistered          → onCreate  → notifica admin quando novo usuário se cadastra
+ *                                               + grava admin_notifications (PARTE 4 BUILD 238)
+ *                                               + envia FCM push a todos admin/master (PARTE 5 BUILD 238)
+ * 2. onUserApproved               → onUpdate  → e-mail de boas-vindas ao usuário aprovado
+ * 3. onUserUnblocked              → onUpdate  → e-mail de reativação ao usuário desbloqueado
+ * 4. onAdminNotificationCreated   → onCreate  → BUILD 311: push FCM imediato quando
+ *                                               admin_notifications/{id} é criado (pelo app
+ *                                               no boot do novo usuário OU pela Cloud Function).
+ *                                               Título/corpo bilíngue baseado no lang do admin.
+ * 5. geminiPaidProxy              → onRequest → proxy seguro Gemini Paid (Build 226)
  *
  * Secrets (configurar UMA vez no terminal do Mac):
  *   firebase functions:secrets:set GMAIL_PASS
@@ -376,6 +380,205 @@ function setCorsHeaders(req, res) {
   res.set('Access-Control-Max-Age',        '86400'); // 24h — reduz preflights
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 311 — PUSH MATRIX: onAdminNotificationCreated
+//
+// GATILHO: onCreate em admin_notifications/{id}
+//
+// ARQUITETURA DUAL-PATH:
+//   • Path A (Mobile/App): o dispositivo do novo usuário cria o documento
+//     diretamente via Firestore SDK (regra: allow create: if isAuthed()).
+//     Garante push imediato mesmo com cold-start da Cloud Function.
+//
+//   • Path B (Server): onNewUserRegistered (trigger users/{uid}) também cria
+//     o documento via Admin SDK — quando o dispositivo não consegue gravar
+//     (sem rede momentânea, Web, etc.).
+//
+//   Ambos os paths convergem aqui — este trigger dispara em QUALQUER criação
+//   do documento, independente da origem. Push é enviado uma única vez.
+//
+// MULTILÍNGUE:
+//   Lê o campo `lang` do documento do admin para escolher PT ou ES no push.
+//   Fallback: PT se lang não encontrado.
+//
+// LIMPEZA DE TOKENS:
+//   Tokens inválidos (NotRegistered / invalid-registration-token) são
+//   removidos automaticamente da subcoleção fcmTokens do admin.
+// ══════════════════════════════════════════════════════════════════════════════
+exports.onAdminNotificationCreated = onDocumentCreated(
+  { document: 'admin_notifications/{id}', region: 'us-central1' },
+  async (event) => {
+    const notifData = event.data?.data();
+    if (!notifData) {
+      console.log('[BUILD311_PUSH] Documento vazio — ignorando.');
+      return null;
+    }
+
+    // Extrai campos do documento de notificação
+    const userName    = notifData.userName    || notifData.displayName || 'Novo usuário';
+    const userEmail   = notifData.userEmail   || notifData.email       || '';
+    const uid         = notifData.uid         || event.params.id;
+
+    console.log(`[BUILD311_PUSH] Novo admin_notification — uid=${uid} userName="${userName}"`);
+
+    const db = admin.firestore();
+
+    // 1. Busca todos admins/masters ativos
+    let adminsSnap;
+    try {
+      adminsSnap = await db.collection('users')
+        .where('role', 'in', ['admin', 'master'])
+        .get();
+    } catch (err) {
+      console.error('[BUILD311_PUSH] Erro ao buscar admins:', err.message);
+      return null;
+    }
+
+    if (adminsSnap.empty) {
+      console.log('[BUILD311_PUSH] Nenhum admin/master encontrado — push cancelado.');
+      return null;
+    }
+
+    // 2. Para cada admin: lê lang + coleta tokens FCM
+    const tokenEntries = [];  // [{ adminUid, tokenDocId, token, lang }]
+    for (const adminDoc of adminsSnap.docs) {
+      const adminUid  = adminDoc.id;
+      const adminLang = adminDoc.data().lang || 'pt';
+
+      try {
+        const tokensSnap = await db
+          .collection('users').doc(adminUid)
+          .collection('fcmTokens').get();
+
+        tokensSnap.forEach(tDoc => {
+          const token = tDoc.data().token;
+          if (token && typeof token === 'string' && token.trim().length > 0) {
+            tokenEntries.push({
+              adminUid,
+              tokenDocRef: tDoc.ref,
+              token:       token.trim(),
+              lang:        adminLang,
+            });
+          }
+        });
+      } catch (err) {
+        console.warn(`[BUILD311_PUSH] Erro ao ler fcmTokens de admin ${adminUid}:`, err.message);
+      }
+    }
+
+    if (tokenEntries.length === 0) {
+      console.log('[BUILD311_PUSH] Nenhum FCM token de admin/master — push cancelado.');
+      return null;
+    }
+
+    console.log(`[BUILD311_PUSH] ${tokenEntries.length} token(s) encontrado(s) em ${adminsSnap.size} admin(s).`);
+
+    // 3. Agrupa por idioma para montar payloads bilíngues independentes
+    //    (evita texto misto numa mesma notificação multicast)
+    const byLang = {};
+    for (const entry of tokenEntries) {
+      const l = (entry.lang === 'es') ? 'es' : 'pt';
+      if (!byLang[l]) byLang[l] = [];
+      byLang[l].push(entry);
+    }
+
+    // 4. Monta e envia multicast por grupo de idioma
+    const invalidTokenRefs = [];  // refs a deletar após envio
+
+    for (const [lang, entries] of Object.entries(byLang)) {
+      const isEs = (lang === 'es');
+
+      // Título bilíngue
+      const title = isEs
+        ? '¡Nuevo Médico Registrado! 🚀'
+        : 'Novo Médico Registrado! 🚀';
+
+      // Corpo bilíngue — inclui nome e e-mail quando disponíveis
+      const bodyName = userName && userName !== 'Novo usuário' ? `Dr(a). ${userName}` : 'Um novo médico';
+      const body = isEs
+        ? `${bodyName} acaba de unirse al ecosistema MedCases Pro.`
+        : `${bodyName} acabou de entrar para o ecossistema MedCases Pro.`;
+
+      const tokens = entries.map(e => e.token);
+
+      const message = {
+        notification: { title, body },
+        data: {
+          click_action: 'FLUTTER_NOTIFICATION_CLICK',
+          route:        '/admin/notifications',
+          uid:          uid,
+          notif_type:   'new_user',
+        },
+        // ── iOS (APNs) ─────────────────────────────────────────────────────
+        apns: {
+          payload: {
+            aps: {
+              alert:            { title, body },
+              sound:            'default',
+              badge:            1,
+              'content-available': 1,  // background fetch habilitado
+            },
+          },
+          headers: {
+            'apns-priority': '10',  // alta prioridade — entrega imediata
+          },
+        },
+        // ── Android ────────────────────────────────────────────────────────
+        android: {
+          priority: 'high',
+          notification: {
+            sound:     'default',
+            channelId: 'admin_alerts',
+            icon:      'ic_notification',  // configurar no app Android
+          },
+        },
+        tokens,
+      };
+
+      let response;
+      try {
+        response = await admin.messaging().sendEachForMulticast(message);
+      } catch (err) {
+        console.error(`[BUILD311_PUSH] Erro no multicast (lang=${lang}):`, err.message);
+        continue;
+      }
+
+      console.log(
+        `[BUILD311_PUSH] lang=${lang} ` +
+        `successCount=${response.successCount} ` +
+        `failureCount=${response.failureCount} ` +
+        `totalTokens=${tokens.length}`
+      );
+
+      // 5. Mapeia tokens inválidos para remoção
+      response.responses.forEach((resp, idx) => {
+        if (!resp.success) {
+          const code = resp.error?.code || '';
+          const isInvalid =
+            code.includes('registration-token-not-registered') ||
+            code.includes('invalid-registration-token') ||
+            code === 'messaging/invalid-argument';
+          if (isInvalid) {
+            console.log(`[BUILD311_PUSH] Token inválido detectado (idx=${idx} code=${code}) — agendado para remoção.`);
+            invalidTokenRefs.push(entries[idx].tokenDocRef);
+          } else {
+            console.warn(`[BUILD311_PUSH] Falha não-crítica (idx=${idx} code=${code}).`);
+          }
+        }
+      });
+    }
+
+    // 6. Remove tokens inválidos (cleanup assíncrono — não bloqueia o retorno)
+    if (invalidTokenRefs.length > 0) {
+      console.log(`[BUILD311_PUSH] Removendo ${invalidTokenRefs.length} token(s) inválido(s).`);
+      await Promise.allSettled(invalidTokenRefs.map(ref => ref.delete()));
+    }
+
+    return null;
+  }
+);
+
+// ══════════════════════════════════════════════════════════════════════════════
 exports.geminiPaidProxy = onRequest(
   {
     region:         'us-central1',
