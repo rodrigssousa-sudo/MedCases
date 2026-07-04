@@ -2,9 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // FUNÇÕES DE SEGURANÇA E ESCOPO (BUILD 226)
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── Helpers de autenticação ──────────────────────────────────────────────
     function isAuthed() {
       return request.auth != null;
     }
@@ -13,22 +11,30 @@ service cloud.firestore {
       return /databases/$(database)/documents/users/$(request.auth.uid);
     }
 
-    function isApproved() {
-      return isAuthed()
-        && exists(userPath())
-        && get(userPath()).data.status == 'approved';
-    }
-
+    // isAdmin: aceita tanto custom claims (JWT) quanto campo role no documento.
+    // Dual-check garante compatibilidade com Web (REST/idToken) e nativo (SDK).
     function isAdmin() {
-      return isApproved()
-        && get(userPath()).data.role in ['admin', 'master'];
+      return isAuthed() && (
+        request.auth.token.role in ['admin', 'master'] ||
+        (
+          exists(userPath()) &&
+          get(userPath()).data.role in ['admin', 'master']
+        )
+      );
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // COLEÇÕES DE CONFIGURAÇÃO (APP_CONFIG)
-    // ─────────────────────────────────────────────────────────────────────────
+    // BUILD 310 — Guard específico para campos do Ambassador Track.
+    // Apenas master/admin podem escrever isPartner, partnerTitle, referralLink.
+    // O próprio usuário pode atualizar outros campos do seu documento (lang,
+    // darkMode, etc.) mas NÃO pode elevar os campos de parceria a si mesmo.
+    function isWritingPartnerFields() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+             .hasAny(['isPartner', 'partnerTitle', 'referralLink']);
+    }
+
+    // ── Configuração global do app ────────────────────────────────────────────
     match /app_config/global {
-      allow read: if isApproved();
+      allow read: if isAuthed();
       allow write: if isAdmin();
     }
 
@@ -45,183 +51,153 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // GUIAS CLÍNICOS E SILENCIAMENTO DE LOGS FALLBACK
-    // ─────────────────────────────────────────────────────────────────────────
-    match /clinical_guides/{docId} {
-      allow read: if isApproved();
+    // ── Atualizações do app (changelog público) ──────────────────────────────
+    match /app_updates/{document=**} {
+      allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Silencia os logs de erro de coleções de testes antigos/fallbacks do app
-    match /medical_guides/{docId} { allow read: if isApproved(); }
-    match /biblioteca_clinica/{docId} { allow read: if isApproved(); }
-    match /clinical_library/{docId} { allow read: if isApproved(); }
+    // ── Guias clínicas e biblioteca ──────────────────────────────────────────
+    match /clinical_guides/{docId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // SESSÕES DE CHAT (/sessions/{sessionId})
-    // ─────────────────────────────────────────────────────────────────────────
+    match /medical_guides/{document=**} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    match /biblioteca_clinica/{document=**} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    match /clinical_library/{document=**} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ── Sessões de IA ────────────────────────────────────────────────────────
     match /sessions/{sessionId} {
-      allow create: if isApproved()
+      allow create: if isAuthed()
         && request.resource.data.userId == request.auth.uid;
 
-      allow read, update, delete: if isApproved()
+      allow read, update, delete: if isAuthed()
         && resource.data.userId == request.auth.uid;
+
+      match /{allSubcollections=**} {
+        allow read, write: if isAuthed();
+      }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // CONTROLE DE USUÁRIOS (/users/{userId})
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── Usuários ─────────────────────────────────────────────────────────────
     match /users/{userId} {
-      // get: dono (qualquer status) + admin — permite tela de aguardando aprovação
-      allow get: if isAuthed() && (request.auth.uid == userId || isAdmin());
+      allow get: if isAuthed()
+        && (request.auth.uid == userId || isAdmin());
 
-      // list: somente admin — painel admin lista pending + approved + blocked
       allow list: if isAdmin();
 
-      // create: qualquer usuário autenticado pode criar o próprio documento.
-      // Não exige isApproved() — usuário recém-cadastrado ainda não tem doc.
-      // Não impõe status=pending aqui: o app cria com status=approved (auto-aprovação).
-      allow create: if isAuthed() && request.auth.uid == userId;
+      allow create: if isAuthed()
+        && request.auth.uid == userId;
 
-      // update:
-      //   • Admin pode atualizar qualquer campo de qualquer usuário (aprovação, bloqueio).
-      //   • O próprio usuário pode atualizar o seu documento independente de status
-      //     (pending → approved via _autoApproveInBackground; atualização de perfil).
-      //     Isso é necessário para que o auto-approve REST funcione sem loop de pending.
-      allow update: if isAuthed() && (request.auth.uid == userId || isAdmin());
+      // UPDATE: usuário pode atualizar seu próprio documento EXCETO campos
+      // do Ambassador Track (isPartner, partnerTitle, referralLink), que são
+      // soberania exclusiva de admin/master (BUILD 310).
+      allow update: if isAuthed() && (
+        // Admin/master: permissão irrestrita (inclui campos partner)
+        isAdmin()
+        ||
+        // Próprio usuário: permitido apenas se NÃO estiver alterando campos partner
+        (request.auth.uid == userId && !isWritingPartnerFields())
+      );
 
       allow delete: if isAdmin();
+
+      // Subcoleções do usuário
+      match /internaciones/{document=**} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+
+      match /clinical_histories/{document=**} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+
+      match /cases/{document=**} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+
+      match /favorites/{document=**} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+
+      match /prefs/{document=**} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+
+      match /ai_chat_history/{document=**} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+
+      match /notes/{document=**} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+
+      match /fcmTokens/{tokenId} {
+        allow read: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+
+        allow create, update, delete: if isAuthed()
+          && request.auth.uid == userId;
+      }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // FCM TOKENS — subcoleção /users/{userId}/fcmTokens/{tokenId}
-    // (PARTE 5 — BUILD 238)
-    // Cada usuário gerencia seus próprios tokens; admin pode ler (para enviar push).
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/fcmTokens/{tokenId} {
-      allow read:             if (isAuthed() && request.auth.uid == userId) || isAdmin();
-      allow create, update:   if isAuthed() && request.auth.uid == userId;
-      allow delete:           if isAuthed() && request.auth.uid == userId;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // HISTÓRIAS CLÍNICAS PRIVADAS — /users/{userId}/clinical_histories/{histId}
-    // BUILD 291: qualquer usuário autenticado dono da conta pode ler/escrever
-    // o próprio histórico. Admin pode ler histórias de qualquer usuário (moderação).
-    // Regra: request.auth.uid == userId (não requer isAdmin/isMaster).
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/clinical_histories/{histId} {
-      allow read, write: if isAuthed() && request.auth.uid == userId;
-      allow read:        if isAdmin();
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // MEU PLANTÃO — /users/{userId}/internaciones/{sessionId}
-    // BUILD 291: path confirmado como users/{uid}/internaciones (kInternacionesCollection).
-    // Regra: request.auth.uid == userId — sem "if true", sem isAdmin gate.
-    // Dono da conta lê e escreve; admin lê para suporte/moderação.
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/internaciones/{sessionId} {
-      allow read, write: if isAuthed() && request.auth.uid == userId;
-      allow read:        if isAdmin();
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // CASOS CUSTOMIZADOS — /users/{userId}/cases/{caseId}
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/cases/{caseId} {
-      allow read, write: if isAuthed() && request.auth.uid == userId;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // FAVORITOS — /users/{userId}/favorites/{favId}
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/favorites/{favId} {
-      allow read, write: if isAuthed() && request.auth.uid == userId;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // PREFERÊNCIAS — /users/{userId}/prefs/{docId}
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/prefs/{docId} {
-      allow read, write: if isAuthed() && request.auth.uid == userId;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // HISTÓRICO DE CHAT IA — /users/{userId}/ai_chat_history/{docId}
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/ai_chat_history/{docId} {
-      allow read, write: if isAuthed() && request.auth.uid == userId;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // NOTAS — /users/{userId}/notes/{noteId}
-    // ─────────────────────────────────────────────────────────────────────────
-    match /users/{userId}/notes/{noteId} {
-      allow read, write: if isAuthed() && request.auth.uid == userId;
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // NOTIFICAÇÕES ADMIN — /admin_notifications/{notificationId}
-    // (PARTE 4 — BUILD 238 | atualizado BUILD 311)
-    //
-    // BUILD 311 — MUDANÇA SOBERANA:
-    //   allow create: if isAuthed()
-    //
-    // MOTIVO ARQUITETURAL:
-    //   O fluxo de cadastro agora é 100% automático (status=approved imediato).
-    //   O celular do novo usuário grava o documento de alerta ANTES de qualquer
-    //   Cloud Function ser invocada — isso garante entrega do push mesmo em
-    //   ambientes com cold-start lento do servidor de funções.
-    //
-    //   Segurança mantida:
-    //   • Leitura: SOMENTE admin/master (isAdmin guard inalterado).
-    //   • O novo usuário pode CRIAR o documento de alerta (notificação de cadastro)
-    //     mas NÃO pode ler, atualizar ou excluir outros documentos da coleção.
-    //   • O conteúdo do documento é controlado pelo app e auditado pela Function.
-    //   • Cloud Function (Admin SDK) ainda cria seu próprio documento em paralelo
-    //     via onNewUserRegistered — dupla garantia de entrega.
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── Notificações administrativas (BUILD 311 CORREÇÃO) ────────────────────
     match /admin_notifications/{notificationId} {
       allow read:   if isAdmin();
-      allow create: if isAuthed(); // BUILD 311: novo usuário cria o alerta no boot
+      allow create: if isAuthed(); // Liberado para o celular do novo usuário injetar o log no boot do cadastro automático
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // CAMPANHAS PUSH GLOBAIS — /global_push_campaigns/{campaignId}
-    //
-    // BUILD 311b: Motor de envio em lote de notificações push para todos os
-    // usuários. Somente administradores (admin/master) podem criar ou ler
-    // campanhas. Usuários comuns não têm acesso algum a esta coleção.
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── Campanhas Push Globais (BUILD 311b) ───────────────────────────────────
+    // Motor de envio em lote de notificações push para todos os usuários.
+    // Somente administradores (admin/master) podem criar ou ler campanhas.
+    // Usuários comuns não têm acesso algum a esta coleção.
     match /global_push_campaigns/{campaignId} {
-      allow read, write: if isAdmin(); // Bloqueado para usuários comuns
+      allow read, write: if isAdmin();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // HISTÓRIAS PÚBLICAS — /public_histories/{storyId}
-    //
-    // LEITURA PÚBLICA IRRESTRITA — allow read: if true
-    // Qualquer usuário (autenticado ou não) pode LISTAR e LER histórias públicas.
-    //
-    // MOTIVO: Histórias clínicas públicas são conteúdo educacional anonimizado.
-    // Apple Section 5.1 / Google Play: sem PII associado à leitura.
-    //
-    // ⚠️  ATENÇÃO — IMPLANTAÇÃO OBRIGATÓRIA:
-    // Este arquivo deve ser implantado no Firebase Console após qualquer alteração:
-    //   firebase deploy --only firestore:rules
-    //
-    // Se o app móvel iOS exibir "Acesso negado" em public_histories, significa
-    // que este arquivo não foi implantado. Execute o comando acima imediatamente.
-    // ─────────────────────────────────────────────────────────────────────────
-    match /public_histories/{storyId} {
+    // ── Plantão ──────────────────────────────────────────────────────────────
+    match /meu_plantao/{document=**} {
+      allow read, write: if isAuthed();
+    }
+
+    match /my_shifts/{document=**} {
+      allow read, write: if isAuthed();
+    }
+
+    // ── Histórias clínicas públicas ──────────────────────────────────────────
+    match /public_histories/{documentId} {
       allow read: if true;
-      allow write: if request.auth != null &&
-                      (request.auth.uid == request.resource.data.authorId ||
-                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+      allow write: if isAdmin();
+    }
+
+    // ── BUILD 310: Sistema de Indicações (influenciadores) ───────────────────
+    // Coleção `influencers` gerenciada pelo ReferralService.
+    // Leitura: qualquer admin/master (painel Indicações).
+    // Escrita: apenas admin/master (criar slug, deletar influenciador).
+    // Usuários comuns não têm acesso a esta coleção.
+    match /influencers/{slug} {
+      allow read:  if isAdmin();
+      allow write: if isAdmin();
     }
   }
 }
