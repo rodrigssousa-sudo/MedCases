@@ -583,82 +583,154 @@ exports.onAdminNotificationCreated = onDocumentCreated(
 );
 
 // ══════════════════════════════════════════════════════════════════════════════
-// BUILD 311b — GLOBAL PUSH CAMPAIGN: onGlobalPushCampaignCreated
-// Dispara quando admin cria doc em /global_push_campaigns/{id}.
-// Varredura paginada de TODOS os usuários → coleta fcmTokens subcollection →
-// agrupa em blocos de ≤500 → sendEachForMulticast → cleanup tokens inválidos.
+// BUILD 319 — GLOBAL PUSH CAMPAIGN: onGlobalPushCampaignCreated
+// Refatoração completa do motor de disparo FCM HTTP v1 (firebase-admin ^12).
+//
+// Melhorias em relação ao BUILD 311b:
+//   • Idempotência via máquina de estados: pending → processing → done/error
+//     (evita double-send em retentativas da Cloud Function)
+//   • Filtro targetRole: apenas usuários com role correspondente recebem push
+//     ('all' = todos; 'medico'/'residente'/etc. = segmentado)
+//   • Payload cross-platform completo:
+//       - notification: title+body  → iOS banner na tela bloqueada + Android
+//       - data: click_action FLUTTER_NOTIFICATION_CLICK + type + campaignId
+//       - apns: badge:1 + content-available:1 + sound:default
+//       - android: channelId medcases_admin_alerts + priority high
+//   • Write-back de resultado no doc da campanha (processedAt, result{})
+//   • Varredura paginada 200 usuários/página com filtragem por targetRole
+//   • Blocos estritos de ≤500 tokens por sendEachForMulticast (limite FCM)
+//   • Cleanup automático de tokens expirados/inválidos
 // ══════════════════════════════════════════════════════════════════════════════
 exports.onGlobalPushCampaignCreated = onDocumentCreated(
-  { document: 'global_push_campaigns/{id}', region: 'us-central1' },
+  { document: 'global_push_campaigns/{id}', region: 'us-central1', timeoutSeconds: 540 },
   async (event) => {
     const snap = event.data;
     if (!snap) {
-      console.error('[GlobalPush] Evento sem dados — abortando.');
+      console.error('[BUILD319][GlobalPush] Evento sem dados — abortando.');
       return null;
     }
 
+    const campaignRef = snap.ref;
+    const campaignId  = snap.id;
     const data        = snap.data();
-    const pushTitle   = data.title  || '';
-    const pushBody    = data.body   || '';
-    const sentBy      = data.sentBy || 'admin';
+
+    // ── 0. Idempotência — só processa docs com status:'pending' ─────────────
+    // Garante que retentativas automáticas da CF não dupliquem disparos.
+    if (data.status !== 'pending') {
+      console.warn(`[BUILD319][GlobalPush] Campaign ${campaignId} já processada (status=${data.status}) — ignorando.`);
+      return null;
+    }
+
+    const pushTitle  = (data.title  || '').trim();
+    const pushBody   = (data.body   || '').trim();
+    const targetRole = (data.targetRole || 'all').trim();   // 'all' | 'medico' | 'residente' | …
+    const sentBy     = data.sentBy    || 'admin';
+    const sentByEmail= data.sentByEmail || '';
 
     if (!pushTitle || !pushBody) {
-      console.error('[GlobalPush] title ou body vazios — abortando.');
+      console.error('[BUILD319][GlobalPush] title ou body vazios — abortando.');
+      await campaignRef.update({ status: 'error', errorReason: 'title_or_body_empty',
+                                  processedAt: admin.firestore.FieldValue.serverTimestamp() });
       return null;
     }
 
-    console.log(`[GlobalPush] Campanha iniciada por=${sentBy} | title="${pushTitle}"`);
+    // ── Transição: pending → processing (trava idempotência) ────────────────
+    try {
+      await campaignRef.update({
+        status:    'processing',
+        startedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (lockErr) {
+      console.error('[BUILD319][GlobalPush] Falha ao travar status processing:', lockErr);
+      return null;
+    }
 
-    const db          = admin.firestore();
-    const PAGE_SIZE   = 200;   // docs por página na varredura
-    const CHUNK_SIZE  = 500;   // limite do FCM sendEachForMulticast
+    console.log(
+      `[BUILD319][GlobalPush] Iniciando campanha=${campaignId} ` +
+      `por=${sentBy} (${sentByEmail}) | targetRole=${targetRole} | title="${pushTitle}"`
+    );
 
-    // ── 1. Varredura paginada de /users ──────────────────────────────────────
-    let allTokenEntries = []; // { token, ref }
+    const db         = admin.firestore();
+    const PAGE_SIZE  = 200;   // usuários por página na varredura paginada
+    const CHUNK_SIZE = 500;   // máximo FCM sendEachForMulticast
+
+    // ── 1. Varredura paginada de /users com filtro targetRole ────────────────
+    let allTokenEntries = []; // [{ token: string, ref: DocumentReference }]
     let lastDoc         = null;
     let pageCount       = 0;
+    let usersScanned    = 0;
 
-    while (true) {
-      let q = db.collection('users').orderBy('__name__').limit(PAGE_SIZE);
-      if (lastDoc) q = q.startAfter(lastDoc);
+    try {
+      while (true) {
+        let q = db.collection('users').orderBy('__name__').limit(PAGE_SIZE);
+        if (lastDoc) q = q.startAfter(lastDoc);
 
-      const page = await q.get();
-      if (page.empty) break;
+        const page = await q.get();
+        if (page.empty) break;
 
-      pageCount++;
-      lastDoc = page.docs[page.docs.length - 1];
+        pageCount++;
+        lastDoc       = page.docs[page.docs.length - 1];
+        usersScanned += page.docs.length;
 
-      // Para cada usuário da página, coleta subcollection fcmTokens
-      const tokenPromises = page.docs.map(async (userDoc) => {
-        const tokensSnap = await userDoc.ref.collection('fcmTokens').get();
-        const entries = [];
-        tokensSnap.forEach((tokenDoc) => {
-          const token = tokenDoc.data().token || tokenDoc.id;
-          if (token && token.length > 10) {
-            entries.push({ token, ref: tokenDoc.ref });
-          }
+        // Filtra por targetRole quando não for 'all'
+        const eligibleDocs = (targetRole === 'all')
+          ? page.docs
+          : page.docs.filter((d) => {
+              const role = (d.data().role || '').trim().toLowerCase();
+              return role === targetRole.toLowerCase();
+            });
+
+        // Coleta tokens FCM de cada usuário elegível em paralelo
+        const tokenPromises = eligibleDocs.map(async (userDoc) => {
+          const tokensSnap = await userDoc.ref.collection('fcmTokens').get();
+          const entries    = [];
+          tokensSnap.forEach((tokenDoc) => {
+            const tkn = (tokenDoc.data().token || tokenDoc.id || '').trim();
+            if (tkn.length > 10) {
+              entries.push({ token: tkn, ref: tokenDoc.ref });
+            }
+          });
+          return entries;
         });
-        return entries;
+
+        const results = await Promise.all(tokenPromises);
+        results.forEach((entries) => allTokenEntries.push(...entries));
+
+        console.log(
+          `[BUILD319][GlobalPush] Pág ${pageCount}: ` +
+          `${page.docs.length} usuários (${eligibleDocs.length} elegíveis) | ` +
+          `tokens acumulados: ${allTokenEntries.length}`
+        );
+
+        if (page.docs.length < PAGE_SIZE) break; // última página
+      }
+    } catch (scanErr) {
+      console.error('[BUILD319][GlobalPush] Erro na varredura de usuários:', scanErr);
+      await campaignRef.update({
+        status: 'error', errorReason: 'user_scan_failed',
+        processedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
-
-      const results = await Promise.all(tokenPromises);
-      results.forEach((entries) => allTokenEntries.push(...entries));
-
-      console.log(`[GlobalPush] Página ${pageCount}: ${page.docs.length} usuários | tokens acumulados: ${allTokenEntries.length}`);
-
-      if (page.docs.length < PAGE_SIZE) break; // última página
+      return null;
     }
 
     const totalTokens = allTokenEntries.length;
-    console.log(`[GlobalPush] Varredura concluída: ${pageCount} páginas, ${totalTokens} tokens coletados.`);
+    console.log(
+      `[BUILD319][GlobalPush] Varredura concluída: ` +
+      `${pageCount} páginas | ${usersScanned} usuários lidos | ${totalTokens} tokens coletados`
+    );
 
     if (totalTokens === 0) {
-      console.warn('[GlobalPush] Nenhum token FCM encontrado — nada a enviar.');
+      console.warn('[BUILD319][GlobalPush] Nenhum token FCM encontrado — encerrando sem envio.');
+      await campaignRef.update({
+        status:      'done',
+        processedAt: admin.firestore.FieldValue.serverTimestamp(),
+        result: { totalTokens: 0, successCount: 0, failureCount: 0, tokensRemoved: 0 },
+      });
       return null;
     }
 
-    // ── 2. Chunking em blocos de ≤500 e envio ───────────────────────────────
-    const chunks = [];
+    // ── 2. Fatiamento em blocos de ≤500 e envio via FCM HTTP v1 ─────────────
+    const chunks      = [];
     for (let i = 0; i < allTokenEntries.length; i += CHUNK_SIZE) {
       chunks.push(allTokenEntries.slice(i, i + CHUNK_SIZE));
     }
@@ -668,28 +740,65 @@ exports.onGlobalPushCampaignCreated = onDocumentCreated(
     let   failureCount = 0;
     const invalidRefs  = [];
 
+    // Códigos que indicam token permanentemente inválido → remover do Firestore
     const INVALID_CODES = new Set([
       'messaging/invalid-argument',
       'messaging/registration-token-not-registered',
       'messaging/invalid-registration-token',
+      'messaging/mismatched-credential',
+      'messaging/sender-id-mismatch',
     ]);
 
     for (let ci = 0; ci < chunks.length; ci++) {
-      const chunk   = chunks[ci];
-      const tokens  = chunk.map((e) => e.token);
+      const chunk  = chunks[ci];
+      const tokens = chunk.map((e) => e.token);
 
+      // ── Payload cross-platform completo (BUILD 319) ──────────────────────
+      // notification: acorda o dispositivo e exibe banner (iOS bloqueado + Android)
+      // data: permite Flutter interceptar o tap (click_action obrigatório)
+      // apns: badge + content-available para iOS background processing
+      // android: channelId para Android 8+ + priority high
       const message = {
         tokens,
-        notification: { title: pushTitle, body: pushBody },
-        android: { priority: 'high' },
-        apns:    { payload: { aps: { sound: 'default' } } },
+        notification: {
+          title: pushTitle,
+          body:  pushBody,
+        },
+        data: {
+          click_action: 'FLUTTER_NOTIFICATION_CLICK',
+          type:         'admin_alert',
+          campaignId:   campaignId,
+          title:        pushTitle,
+          body:         pushBody,
+        },
+        apns: {
+          payload: {
+            aps: {
+              sound:             'default',
+              badge:             1,
+              'content-available': 1,
+            },
+          },
+          headers: {
+            'apns-priority': '10',    // entrega imediata (vs 5 = conservação de bateria)
+          },
+        },
+        android: {
+          priority: 'high',
+          notification: {
+            channelId:  'medcases_admin_alerts',
+            sound:      'default',
+            defaultSound: true,
+            defaultVibrateTimings: true,
+          },
+        },
       };
 
       let batchResponse;
       try {
         batchResponse = await admin.messaging().sendEachForMulticast(message);
       } catch (err) {
-        console.error(`[GlobalPush] Chunk ${ci + 1}/${totalChunks} — erro fatal:`, err);
+        console.error(`[BUILD319][GlobalPush] Chunk ${ci + 1}/${totalChunks} — erro fatal:`, err);
         failureCount += tokens.length;
         continue;
       }
@@ -703,27 +812,53 @@ exports.onGlobalPushCampaignCreated = onDocumentCreated(
           if (INVALID_CODES.has(errCode)) {
             invalidRefs.push(chunk[idx].ref);
           }
+          console.warn(
+            `[BUILD319][GlobalPush] Token inválido (chunk ${ci + 1}, idx ${idx}): ` +
+            `code=${errCode}`
+          );
         }
       });
 
       console.log(
-        `[GlobalPush] Chunk ${ci + 1}/${totalChunks}: ` +
+        `[BUILD319][GlobalPush] Chunk ${ci + 1}/${totalChunks}: ` +
         `ok=${batchResponse.successCount} fail=${batchResponse.failureCount}`
       );
     }
 
-    // ── 3. Cleanup automático de tokens inválidos ────────────────────────────
-    if (invalidRefs.length > 0) {
-      console.log(`[GlobalPush] Removendo ${invalidRefs.length} tokens inválidos...`);
+    // ── 3. Cleanup automático de tokens expirados/inválidos ─────────────────
+    const tokensRemoved = invalidRefs.length;
+    if (tokensRemoved > 0) {
+      console.log(`[BUILD319][GlobalPush] Removendo ${tokensRemoved} tokens inválidos do Firestore...`);
       await Promise.allSettled(invalidRefs.map((ref) => ref.delete()));
     }
 
-    // ── 4. Resultado final ───────────────────────────────────────────────────
+    // ── 4. Write-back de resultado + transição → done ────────────────────────
+    const resultPayload = {
+      status:      'done',
+      processedAt: admin.firestore.FieldValue.serverTimestamp(),
+      result: {
+        totalTokens,
+        successCount,
+        failureCount,
+        tokensRemoved,
+        totalChunks,
+        usersScanned,
+        targetRole,
+      },
+    };
+
+    try {
+      await campaignRef.update(resultPayload);
+    } catch (writeErr) {
+      // Não crítico — log mas não re-lança (o envio já aconteceu)
+      console.warn('[BUILD319][GlobalPush] Falha ao gravar resultado no doc da campanha:', writeErr);
+    }
+
     console.log(
-      `[GlobalPush] CONCLUÍDO — ` +
+      `[BUILD319][GlobalPush] CONCLUÍDO campanha=${campaignId} — ` +
       `totalTokens=${totalTokens} | chunks=${totalChunks} | ` +
       `success=${successCount} | failure=${failureCount} | ` +
-      `tokensRemovidos=${invalidRefs.length}`
+      `tokensRemovidos=${tokensRemoved} | targetRole=${targetRole}`
     );
 
     return null;

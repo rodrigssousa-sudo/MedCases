@@ -5495,6 +5495,12 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
                                     : 'Erro ao disparar a campanha. Tente novamente.';
 
   // ── Disparo da campanha ───────────────────────────────────────────────────
+  // BUILD 319: modal de confirmação antes do disparo + doc completo no Firestore.
+  // O doc criado em /global_push_campaigns é o ÚNICO gatilho da Cloud Function:
+  //   • status: 'pending'    → CF só processa docs com este status (idempotência)
+  //   • targetRole: 'all'    → suporte futuro a segmentação por perfil
+  //   • createdAt            → timestamp server-side para rastreamento
+  //   • processedAt/result   → preenchidos pela CF ao concluir o envio
   Future<void> _fireGlobalPush() async {
     final title = _titleCtrl.text.trim();
     final body  = _bodyCtrl.text.trim();
@@ -5510,14 +5516,94 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
       return;
     }
 
+    // ── Modal de confirmação (previne disparo acidental) ──────────────────────
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF0F1C14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(children: [
+          const Icon(Icons.warning_amber_rounded, color: Color(0xFFFFE8A6), size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _isEs ? 'Confirmar envío masivo' : 'Confirmar disparo em massa',
+              style: const TextStyle(color: Color(0xFFFFE8A6), fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ]),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _isEs
+                ? 'Esto enviará una notificación push a TODOS los usuarios registrados.\n\nTítulo: "$title"'
+                : 'Isso enviará uma notificação push para TODOS os usuários cadastrados.\n\nTítulo: "$title"',
+              style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red.withOpacity(0.3)),
+              ),
+              child: Text(
+                _isEs
+                  ? '⚠️ Esta acción no puede deshacerse.'
+                  : '⚠️ Esta ação não pode ser desfeita.',
+                style: const TextStyle(color: Colors.redAccent, fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(
+              _isEs ? 'Cancelar' : 'Cancelar',
+              style: const TextStyle(color: Colors.white54),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF075f45),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: Text(
+              _isEs ? 'Confirmar envío' : 'Confirmar disparo',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
     setState(() => _sending = true);
 
     try {
+      // ── BUILD 319: doc completo para a Cloud Function ─────────────────────
+      // Campos obrigatórios que a CF usa para processar e garantir idempotência:
+      //   status: 'pending'  → CF atualiza para 'processing' antes de começar
+      //                        e para 'done' ou 'error' ao terminar.
+      //                        Docs com status != 'pending' são ignorados (dedup).
+      //   targetRole: 'all'  → filtro de segmentação: 'all' | 'admin' | 'approved'
+      //   createdAt          → timestamp do servidor (rastreamento e ordenação)
+      //   sentBy             → uid do admin que disparou (auditoria)
       await FirebaseFirestore.instance.collection('global_push_campaigns').add({
-        'title':   title,
-        'body':    body,
-        'sentAt':  FieldValue.serverTimestamp(),
-        'sentBy':  widget.currentAdmin.uid,
+        'title':      title,
+        'body':       body,
+        'targetRole': 'all',              // BUILD 319: segmentação futura
+        'status':     'pending',          // BUILD 319: idempotência da CF
+        'createdAt':  FieldValue.serverTimestamp(),
+        'sentBy':     widget.currentAdmin.uid,
+        'sentByEmail': widget.currentAdmin.email ?? '',
       });
 
       if (!mounted) return;

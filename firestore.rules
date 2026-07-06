@@ -189,11 +189,31 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // ── Campanhas Push Globais (BUILD 311b) ───────────────────────────────────
-    // Motor de envio em lote de notificações push para todos os usuários.
-    // Somente administradores (admin/master) podem criar ou ler campanhas.
+    // ── Campanhas Push Globais (BUILD 319 — reforçado) ───────────────────────
+    // Motor FCM HTTP v1 com idempotência via campo status.
+    // Somente admin/master podem criar ou ler campanhas.
+    // Regra de proteção de status: usuários (mesmo admin) NÃO podem reverter
+    //   um doc de 'processing'/'done'/'error' de volta para 'pending' — apenas
+    //   a Cloud Function (backend) faz essas transições.
     // Usuários comuns não têm acesso algum a esta coleção.
     match /global_push_campaigns/{campaignId} {
+      allow read:   if isAdmin();
+      allow create: if isAdmin()
+                    && request.resource.data.status == 'pending'
+                    && request.resource.data.keys().hasAll(['title','body','targetRole','createdAt','status','sentBy']);
+      // Admin pode atualizar apenas se o doc ainda está em 'pending'
+      // (a CF escreve 'processing'/'done'/'error' diretamente via Admin SDK,
+      //  o qual bypassa as rules — esta regra protege contra escrita direta indevida)
+      allow update: if isAdmin()
+                    && resource.data.status == 'pending';
+      allow delete: if isAdmin();
+    }
+
+    // ── FCM Queue (BUILD 319) ─────────────────────────────────────────────────
+    // Coleção auxiliar para tokens de teste / re-envio pontual.
+    // Somente admin/master podem ler e escrever.
+    // A Cloud Function processa e deleta os docs após envio.
+    match /fcm_queue/{queueId} {
       allow read, write: if isAdmin();
     }
 
