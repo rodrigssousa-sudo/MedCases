@@ -1,7 +1,7 @@
 name: medcases
 description: "MedCases Pro"
 publish_to: 'none'
-version: 6.5.31+1601
+version: 6.1.5+1633
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -96,6 +96,19 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+
+flutter_native_splash:
+  color: "#0F1116"
+  image: assets/icon/app_icon.png
+  color_dark: "#0F1116"
+  image_dark: assets/icon/app_icon.png
+  android_12:
+    image: assets/icon/app_icon.png
+    icon_background_color: "#0F1116"
+    image_dark: assets/icon/app_icon.png
+    icon_background_color_dark: "#0F1116"
+  fullscreen: true
+  web: false
 
 flutter:
   uses-material-design: true

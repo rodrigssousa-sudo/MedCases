@@ -725,6 +725,24 @@ class _ConsentGateState extends State<_ConsentGate> {
 }
 
 // ── Splash Screen — v3: tagline atualizada + mesma animação scale+slide ───────
+// ── BUILD 317: MedCasesSplashScreen ──────────────────────────────────────────
+// Tela de carregamento dinâmica que substitui o vácuo visual (tela preta) durante
+// o boot assíncrono do app (Firebase, auth, prefs, cache offline).
+//
+// ARQUITETURA DE CONTINUIDADE VISUAL (padrão banco):
+//   1. flutter_native_splash gera storyboard/XML estático com fundo #0F1116 + logo
+//      → aparece IMEDIATAMENTE ao abrir o app (< 50ms, pré-Dart)
+//   2. MedCasesSplashScreen (este widget) assume quando o Flutter engine inicia
+//      → mesmo background + mesmo logo → transição imperceptível
+//   3. CircularProgressIndicator anima enquanto dependências resolvem em background
+//   4. _TimedSplash (3 semáforos) remove o splash nativo e exibe MainShell/Login
+//
+// DESIGN:
+//   • Background: Color(0xFF0F1116) — idêntico ao storyboard/XML gerado
+//   • Logo: app_icon.png 120×120 com glow verde esmeralda
+//   • Título: "MedCases Pro" branco, bold, 26px, letterSpacing 1.2
+//   • Tagline: "IA Clínica de bolso" verde clínico, w500
+//   • Loader: CircularProgressIndicator verde + "Carregando dados clínicos..."
 class _SplashScreen extends StatefulWidget {
   const _SplashScreen();
   @override
@@ -741,13 +759,15 @@ class _SplashScreenState extends State<_SplashScreen>
   @override
   void initState() {
     super.initState();
+    // Animação de entrada suave: 700ms, logo escala de 0.82→1.0 com spring,
+    // fade 0→1 na primeira metade, slide sutil de baixo para cima.
     _ctrl = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 700));
-    _scale = Tween<double>(begin: 0.72, end: 1.0)
+    _scale = Tween<double>(begin: 0.82, end: 1.0)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
     _fade  = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.6)));
-    _slide = Tween<Offset>(begin: const Offset(0, 0.14), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.65)));
+    _slide = Tween<Offset>(begin: const Offset(0, 0.10), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
     _ctrl.forward();
   }
@@ -758,39 +778,42 @@ class _SplashScreenState extends State<_SplashScreen>
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
-    // Logo posicionado no terço superior (h * 0.32 do topo)
-    final logoTop = h * 0.28;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1116), // novo fundo — mais escuro que #0A1610
+      // ── Background idêntico ao flutter_native_splash (storyboard/XML) ──────
+      // Garante continuidade visual perfeita: o storyboard nativo e este widget
+      // têm exatamente o mesmo pixel de fundo — zero flash na transição.
+      backgroundColor: const Color(0xFF0F1116),
       body: Stack(children: [
-        // Detalhe geométrico de fundo sutil — diferente do splash anterior
+
+        // ── Detalhe geométrico sutil — profundidade sem poluição visual ────────
         Positioned(
-          top: -h * 0.05,
-          right: -80,
+          top: -h * 0.04,
+          right: -70,
           child: Container(
-            width: 260, height: 260,
+            width: 240, height: 240,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF0E7C52).withOpacity(0.06),
+              color: const Color(0xFF0E7C52).withOpacity(0.055),
             ),
           ),
         ),
         Positioned(
-          bottom: h * 0.15,
-          left: -60,
+          bottom: h * 0.12,
+          left: -50,
           child: Container(
-            width: 180, height: 180,
+            width: 160, height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF13A06A).withOpacity(0.04),
+              color: const Color(0xFF13A06A).withOpacity(0.035),
             ),
           ),
         ),
 
-        // ── Conteúdo animado ─────────────────────────────────────────────
+        // ── Bloco central: logo + título + tagline ────────────────────────────
+        // Posicionado no terço superior da tela para hierarquia visual clara.
         Positioned(
-          top: logoTop,
+          top: h * 0.27,
           left: 0, right: 0,
           child: FadeTransition(
             opacity: _fade,
@@ -801,36 +824,65 @@ class _SplashScreenState extends State<_SplashScreen>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Logo — glow verde (antes era dourado)
+
+                    // ── Logo 120×120 com glow verde clínico ───────────────────
+                    // Tamanho splash-grade: proporcional e imponente na tela.
+                    // Usa o mesmo app_icon.png do launcher para consistência.
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF0E7C52).withOpacity(0.28),
-                            blurRadius: 52, spreadRadius: 10,
+                            color: const Color(0xFF0E7C52).withOpacity(0.30),
+                            blurRadius: 60,
+                            spreadRadius: 12,
                           ),
                         ],
                       ),
-                      child: const BrandMark(small: false),
+                      child: Image.asset(
+                        'assets/icon/app_icon.png',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.contain,
+                        // Fallback elegante caso o asset falhe (ex: hot-reload parcial)
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 120, height: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28),
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)],
+                            ),
+                          ),
+                          child: const Center(
+                            child: Text('M+', style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFFFFE8A6),
+                            )),
+                          ),
+                        ),
+                      ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
-                    // Nome do app — peso 700 (antes era 900)
+                    // ── Título principal ───────────────────────────────────────
+                    // letterSpacing 1.2 para legibilidade premium em splash.
                     const Text(
                       'MedCases Pro',
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        letterSpacing: -0.5,
+                        letterSpacing: 1.2,
                       ),
                     ),
 
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
 
-                    // Tagline — posicionamento de produto
+                    // ── Tagline de produto ─────────────────────────────────────
                     Text(
                       'IA Clínica de bolso',
                       style: TextStyle(
@@ -847,36 +899,42 @@ class _SplashScreenState extends State<_SplashScreen>
           ),
         ),
 
-        // ── Indicador de carga — posicionado no terço inferior ───────────
+        // ── Bloco inferior: progress indicator + label de carregamento ─────────
+        // Posicionado a 72px do fundo com safeBottom para respeitar o sistema.
         Positioned(
-          bottom: h * 0.18,
+          bottom: 72,
           left: 0, right: 0,
           child: FadeTransition(
             opacity: _fade,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // CircularProgressIndicator — verde clínico, stroke fino e elegante
                 SizedBox(
-                  width: 20, height: 20,
+                  width: 22, height: 22,
                   child: CircularProgressIndicator(
-                    strokeWidth: 1.8,
-                    color: const Color(0xFF0E7C52).withOpacity(0.55),
+                    strokeWidth: 2.0,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      const Color(0xFF13A06A).withOpacity(0.70),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
+                // Label discreto mas legível — comunica progresso ao usuário
                 Text(
-                  'Iniciando...',
+                  'Carregando dados clínicos...',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.white.withOpacity(0.25),
+                    color: Colors.white.withOpacity(0.42),
                     fontWeight: FontWeight.w400,
-                    letterSpacing: 0.5,
+                    letterSpacing: 0.6,
                   ),
                 ),
               ],
             ),
           ),
         ),
+
       ]),
     );
   }
