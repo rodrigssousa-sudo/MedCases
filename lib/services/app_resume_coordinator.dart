@@ -57,9 +57,17 @@ import 'package:flutter/widgets.dart' show ValueNotifier;
 // Constantes
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Orçamento máximo para o request de IA (igual ao globalTimeout do provider).
-/// BUILD 245 ADENDO: 30s — permite fallback pago concluir sem ser cortado.
-const _kAiDeadlineMs = 30000;
+/// Orçamento máximo para o request de IA no modo Plantão (curto, urgência real).
+/// BUILD 320: 30s mantido para Plantão — casos curtos não devem esperar 90s.
+const _kAiDeadlinePlantaoMs = 30000;
+
+/// Orçamento máximo para o request de IA no modo Estudo (payload 7000+ tokens).
+/// BUILD 320: 90s — Casos clínicos complexos via Paid Proxy Gemini podem levar
+/// 60-75s (inferência longa + cold-start da Cloud Function). O valor anterior de
+/// 30s causava falso positivo de timeout no RESUME_COORDINATOR quando o payload
+/// excedia 7000 tokens, disparando onTimeout enquanto a resposta ainda estava
+/// em voo — resultando em race condition com DiagnosticsProperty<void>.
+const _kAiDeadlineEstudoMs = 90000;
 
 /// Orçamento máximo para bootstrap inicial (Firebase + auth + setUser).
 const _kBootstrapDeadlineMs = 20000;
@@ -132,19 +140,24 @@ class AppResumeCoordinator {
   /// Registra início de um request de IA.
   /// [requestId] deve ser o mesmo usado em sendAiMessage/_activeRequestId.
   /// [onTimeout] é chamado se, ao retornar do background, o prazo já venceu.
+  /// [isEstudoMode] BUILD 320: quando true, usa deadline de 90s em vez de 30s.
+  ///   Modo Estudo processa payloads de 7000+ tokens via Paid Proxy — a janela
+  ///   de 30s causava falso positivo de timeout em casos clínicos complexos.
   void registerAiRequest({
     required String requestId,
     required void Function() onTimeout,
+    bool isEstudoMode = false, // BUILD 320: elasticidade de deadline por modo
   }) {
+    final deadline = isEstudoMode ? _kAiDeadlineEstudoMs : _kAiDeadlinePlantaoMs;
     _pending[requestId] = _PendingOp(
       id:         requestId,
       type:       _OpType.aiRequest,
       startedAt:  DateTime.now(),
-      deadlineMs: _kAiDeadlineMs,
+      deadlineMs: deadline,
       onTimeout:  onTimeout,
     );
     debugPrint('[RESUME_COORDINATOR] registered ai_request id=$requestId '
-        'deadline=${_kAiDeadlineMs}ms');
+        'deadline=${deadline}ms isEstudoMode=$isEstudoMode');
   }
 
   /// Remove operação de IA ao completar (sucesso ou timeout interno).

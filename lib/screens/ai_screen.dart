@@ -1743,6 +1743,10 @@ class _AiScreenState extends State<AiScreen> {
               _messages.add(_ChatMsg(role: 'ai', text: finalText));
             });
             _scrollDown(force: true);
+            // BUILD 320: guard !mounted antes de ler context.read e chamar save.
+            // O onDone pode chegar após o widget ser desmontado (navegação rápida
+            // ou timeout de resume que descarta o contexto antes do stream concluir).
+            if (!mounted) return;
             // Persiste o turno (pergunta + safe-card) imediatamente
             _saveCurrentSessionToHistory(context.read<AppProvider>());
             return; // pula _enforceMedicalFormat, _plantaoTruncationGuard e renderers
@@ -1915,6 +1919,10 @@ class _AiScreenState extends State<AiScreen> {
             // Salva o par (pergunta + resposta) no histórico imediatamente após
             // o stream finalizar. Garante que ao trocar de aba, o histórico
             // completo do turno já está persistido no disco/Firestore.
+            // BUILD 320: guard !mounted — context.read<AppProvider>() em widget
+            // desmontado lança FlutterError (DiagnosticsProperty<void>). O onDone
+            // pode chegar tarde (Paid Proxy 60-75s) após navegação ou timeout.
+            if (!mounted) return;
             _saveCurrentSessionToHistory(context.read<AppProvider>());
 
             // ── BUILD 318: Scroll final (4 frames encadeados) ────────────────

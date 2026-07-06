@@ -3488,22 +3488,29 @@ class AppProvider extends ChangeNotifier {
     if (kDebugMode) debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
 
     // BUILD 241: registra request no coordinator para verificação no resume.
-    // Se o app for para background e voltar após 30s, onForeground() dispara
-    // o onTimeout abaixo imediatamente via tempo real (sem depender de Timer).
+    // BUILD 320: passa isEstudoMode para que o coordinator use deadline 90s
+    // no Modo Estudo (payload 7000+ tokens) em vez de 30s — evita o falso
+    // positivo de timeout que causava a race condition DiagnosticsProperty<void>.
     AppResumeCoordinator.instance.registerAiRequest(
-      requestId: thisRequestId,
+      requestId:    thisRequestId,
+      isEstudoMode: longResponse, // BUILD 320: Estudo=90s / Plantão=30s
       onTimeout: () {
-        debugPrint('[AI_RESUME] requestId=$thisRequestId '
+        debugPrint('[AI_RESUME][BUILD320] requestId=$thisRequestId '
             'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs} '
-            'action=timeout_on_resume');
-        // Só age se este request ainda é o ativo (não foi completado antes)
-        if (_activeRequestId != thisRequestId) return;
+            'action=timeout_on_resume isEstudoMode=$longResponse');
+        // Id Guard: só age se este request ainda é o ativo (não foi completado
+        // nem invalidado por um request mais recente do mesmo usuário).
+        if (_activeRequestId != thisRequestId) {
+          debugPrint('[AI_RESUME][BUILD320] STALE drop: requestId=$thisRequestId '
+              'activeId=$_activeRequestId — resume timeout ignored');
+          return;
+        }
         _activeRequestId = '';
-        _aiStreamActive = false;
+        _aiStreamActive  = false;
         _aiStreamSub?.cancel();
-        _aiStreamSub = null;
-        _aiCallInFlight = false;
-        debugPrint('[AI_RESUME] timeout_on_resume requestId=$thisRequestId');
+        _aiStreamSub     = null;
+        _aiCallInFlight  = false;
+        debugPrint('[AI_RESUME][BUILD320] timeout_on_resume fired requestId=$thisRequestId');
         onDone(_timeoutSafeCard(_lang));
         notifyListeners(); // BUILD 254: sincroniza UI após timeout de resume
       },
@@ -3762,8 +3769,21 @@ class AppProvider extends ChangeNotifier {
     // ── Build 226: helper para acionar Gemini Paid após falha do Free ────────
     // Chamado tanto no chunk.isError quanto no onDone vazio.
     // BUILD 245: também chamado diretamente (sem Free) para requisições críticas.
+    // BUILD 320: Id Guard — verifica se o requestId ainda é ativo ANTES e DEPOIS
+    //   do await callPaidProxy(). O Paid Proxy pode demorar 60-75s no Modo Estudo.
+    //   Se o RESUME_COORDINATOR disparou onTimeout nesse intervalo, _activeRequestId
+    //   já foi zerado — a resposta tardia do Proxy deve ser descartada silenciosamente
+    //   para evitar setState/notifyListeners em contexto já descartado (race condition
+    //   que produzia DiagnosticsProperty<void> no Flutter).
     // Nunca expõe a chave paga — usa proxy seguro (Cloud Function).
     Future<void> tryPaidFallback(String reason) async {
+      // BUILD 320: Id Guard — PRÉ-CHAMADA: descarta se requestId já foi invalidado
+      if (_activeRequestId != thisRequestId) {
+        debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback PRE-CALL drop: '
+            'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
+            'activeId=$_activeRequestId — paid proxy call suppressed');
+        return;
+      }
       if (kDebugMode) debugPrint('[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId');
 
       final paidResult = await ProviderRouterService.callPaidProxy(
@@ -3785,6 +3805,19 @@ class AppProvider extends ChangeNotifier {
         requestId:       requestId,
         maxOutputTokens: longResponse ? 2500 : 3200,  // ORDEM 47 M2: Estudo 2048→2500 (lock cognitivo — garante output completo no Pro)
       );
+
+      // BUILD 320: Id Guard — PÓS-AWAIT: descarta se o requestId foi invalidado
+      // enquanto callPaidProxy estava em voo (até 75s no Modo Estudo).
+      // Cenário: RESUME_COORDINATOR disparou onTimeout durante o await → zerou
+      // _activeRequestId → resposta tardia do Proxy chegou → sem este guard,
+      // wrappedOnDone chamaria setState num contexto já descartado → crash.
+      if (_activeRequestId != thisRequestId) {
+        debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback POST-AWAIT drop: '
+            'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
+            'activeId=$_activeRequestId textLen=${paidResult.text.length} '
+            '— resultado tardio descartado (Id Guard)');
+        return;
+      }
 
       if (paidResult.success && paidResult.text.isNotEmpty) {
         // BUILD 252: print do rawText pago ANTES de sanitizeAndCheck
@@ -3949,19 +3982,33 @@ class AppProvider extends ChangeNotifier {
       appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
     );
 
-    // ── BUILD 238 ADENDO: Timer global — caminho acadêmico (Free→Fallback) ──
-    // Orçamento: Free1=5s + Free2=5s + Paid=20s = 30s total percebido.
-    // BUILD 245 ADENDO: 30s (era 15s) — fallback pago pode demorar 15-25s.
+    // ── BUILD 320: Timer global — caminho acadêmico (Free→Fallback) ───────────
+    // BUILD 238/245 ADENDO: Orçamento: Free1=5s + Free2=5s + Paid=20s = 30s.
+    // BUILD 320 CORREÇÃO: o Modo Estudo processa payloads de 7000+ tokens via
+    //   Paid Proxy — a inferência pode levar 60-75s (Cloud Function cold-start +
+    //   Gemini Pro long-context). O timer de 30s cortava respostas válidas antes
+    //   do Proxy concluir, disparando wrappedOnDone com safe-card enquanto o
+    //   callPaidProxy ainda estava em voo — gerando duplo disparo e a race
+    //   condition DiagnosticsProperty<void> no widget tree.
+    //
+    // NOVO ORÇAMENTO:
+    //   Plantão (!longResponse): 30s — urgência real, não pode esperar mais.
+    //   Estudo   (longResponse):  90s — payload longo, cold-start incluído.
+    //
     // NOTA: o timer só dispara se completionFired=false (stream Free travado).
-    // Quando Free falha e paid começa, completionFired=true → timer neutered.
+    // Quando Free falha e Paid começa, completionFired=true → timer neutered.
     // Útil apenas para hung stream (sem chunks, sem erro, sem done).
+    final globalTimeoutMs = longResponse ? 90000 : 30000; // BUILD 320
     Timer? _globalTimeoutTimer;
-    _globalTimeoutTimer = Timer(const Duration(seconds: 30), () {
+    _globalTimeoutTimer = Timer(Duration(milliseconds: globalTimeoutMs), () {
       final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
-      debugPrint('[AI_TIMEOUT] mode=academic timeoutMs=30000 provider=free elapsedMs=$elapsedMs requestId=$thisRequestId');
+      debugPrint('[AI_TIMEOUT][BUILD320] mode=${longResponse ? "estudo" : "academic"} '
+          'timeoutMs=$globalTimeoutMs provider=free elapsedMs=$elapsedMs requestId=$thisRequestId');
       if (completionFired) return;
       completionFired = true;
-      // Invalida o requestId — respostas chegando após isso são ignoradas
+      // BUILD 320: invalida o requestId atomicamente — o Id Guard em tryPaidFallback
+      // detectará a invalidação e descartará silenciosamente qualquer resposta tardia
+      // do Paid Proxy que chegar após este timer, sem setState em contexto morto.
       if (_activeRequestId == thisRequestId) _activeRequestId = '';
       _aiStreamActive = false;
       _aiStreamSub?.cancel();
