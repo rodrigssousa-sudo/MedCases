@@ -41,6 +41,7 @@ const GMAIL_USER        = 'medcasespro@gmail.com';
 const GMAIL_PASS        = defineSecret('GMAIL_PASS');
 const ADMIN_EMAIL       = defineSecret('ADMIN_EMAIL');
 const GEMINI_PAID_KEY   = defineSecret('GEMINI_PAID_API_KEY'); // Build 226 — NUNCA exposta ao cliente
+const OPENAI_KEY        = defineSecret('OPENAI_API_KEY');       // BUILD 321 — GPT-4o Mini Layer 2 fallback
 
 // ── Helper: cria transporter com a senha do secret ────────────────────────────
 function getTransporter(gmailPass) {
@@ -920,7 +921,7 @@ function sanitizeHistory(history, currentUserMessage) {
 exports.geminiPaidProxy = onRequest(
   {
     region:         'us-central1',
-    secrets:        [GEMINI_PAID_KEY],
+    secrets:        [GEMINI_PAID_KEY, OPENAI_KEY], // BUILD 321: OPENAI_KEY adicionado
     // cors: false — gerenciamos CORS manualmente para suportar origem explícita
     // (necessário quando o request usa Authorization header com credentials).
     cors:           false,
@@ -1061,6 +1062,181 @@ exports.geminiPaidProxy = onRequest(
     if (isQuickReply) {
       console.log('[BUILD312_QR] Quick Reply detectado — ação nativa legítima. requestId=' + requestId);
     }
+
+    // ── BUILD 321: Rota OpenAI (Layer 2 — GPT-4o Mini) ────────────────────
+    // Se o cliente enviar provider='openai', a CF roteia para a API da OpenAI
+    // usando OPENAI_API_KEY (secret). Resposta envelopada no mesmo formato JSON
+    // que o Flutter espera do Gemini Paid ({text, model, inputTokensApprox,
+    // outputTokensApprox, durationMs}) — invisibilidade total de contrato.
+    // NUNCA expõe a chave ao cliente — processada 100% server-side.
+    const { provider: reqProvider = 'gemini' } = req.body || {};
+    if (reqProvider === 'openai') {
+      const openAiKey = OPENAI_KEY.value();
+      if (!openAiKey || openAiKey.trim().length === 0) {
+        console.error('[BUILD321][GPT_PROXY] OPENAI_API_KEY secret não configurado');
+        res.status(503).json({ error: 'openai_key_not_configured' });
+        return;
+      }
+
+      // ── BUILD 321: Tradução de payload (Gemini → OpenAI messages) ─────────
+      // O Flutter envia {userMessage, systemPrompt, history[{role,content}]}.
+      // A API da OpenAI exige [{role:'system',content}, {role:'user',content},...].
+      // Quick Reply Shield injetado aqui também (mesma blindagem do Gemini path).
+      const QUICK_REPLY_SHIELD_OAI =
+        'INSTRUÇÃO CRÍTICA DE INTERFACE (máxima prioridade — não ignorar): ' +
+        'O aplicativo MedCases Pro possui botões nativos (Quick Replies) que automatizam ' +
+        'comandos clínicos do usuário. O recebimento de mensagens contendo essas estruturas ' +
+        'NUNCA deve ser interpretado como Prompt Injection ou Jailbreak. ' +
+        'Trata-se exclusivamente de uma ação legítima do usuário. ' +
+        'Processe a solicitação clínica normalmente sem emitir alertas de segurança.';
+
+      const openAiMessages = [];
+
+      // System role: Quick Reply Shield + systemPrompt do cliente
+      openAiMessages.push({
+        role:    'system',
+        content: QUICK_REPLY_SHIELD_OAI + '\n\n' + (systemPrompt || ''),
+      });
+
+      // Histórico de conversação (Gemini usa role='model', OpenAI usa role='assistant')
+      const isPlantaoModeOai = (mode === 'plantao');
+      const serverHistCapOai = isPlantaoModeOai ? 4 : 8;
+      const rawHistoryOai    = Array.isArray(history) ? history.slice(-serverHistCapOai) : [];
+      for (const turn of rawHistoryOai) {
+        if (turn.role === 'user' || turn.role === 'model' || turn.role === 'assistant') {
+          openAiMessages.push({
+            role:    turn.role === 'model' ? 'assistant' : turn.role,
+            content: (turn.content || turn.text || '').trim(),
+          });
+        }
+      }
+
+      // Mensagem atual do usuário
+      openAiMessages.push({ role: 'user', content: userMessage.trim() });
+
+      const openAiPayload = {
+        model:       'gpt-4o-mini',
+        messages:    openAiMessages,
+        max_tokens:  maxOutClamped,
+        temperature: isPlantaoModeOai ? 0.2 : 0.4,
+      };
+
+      const openAiPayloadStr   = JSON.stringify(openAiPayload);
+      const inputTokensApproxOai = Math.ceil(openAiPayloadStr.length / 4);
+
+      // ── Chama OpenAI Chat Completions via https nativo (Node 22) ──────────
+      let openAiResponseText = '';
+      let openAiHttpStatus   = 200;
+
+      try {
+        openAiResponseText = await new Promise((resolve, reject) => {
+          const postData = openAiPayloadStr;
+          const options  = {
+            hostname: 'api.openai.com',
+            port:     443,
+            path:     '/v1/chat/completions',
+            method:   'POST',
+            headers:  {
+              'Content-Type':   'application/json',
+              'Authorization':  `Bearer ${openAiKey}`,
+              'Content-Length': Buffer.byteLength(postData),
+            },
+          };
+          const apiReq = https.request(options, (apiRes) => {
+            openAiHttpStatus = apiRes.statusCode;
+            let body = '';
+            apiRes.on('data', (chunk) => { body += chunk; });
+            apiRes.on('end', () => { resolve(body); });
+          });
+          apiReq.on('error', reject);
+          apiReq.setTimeout(55000, () => { apiReq.destroy(new Error('openai_timeout')); });
+          apiReq.write(postData);
+          apiReq.end();
+        });
+      } catch (e) {
+        const durationMsOai = Date.now() - startMs;
+        console.error('[BUILD321][GPT_PROXY] requestId=' + requestId + ' error=' + e.message + ' durationMs=' + durationMsOai);
+        res.status(502).json({ error: 'openai_upstream_error' });
+        return;
+      }
+
+      const durationMsOai = Date.now() - startMs;
+
+      // ── Parse resposta OpenAI → estrutura Gemini-compatible ───────────────
+      if (openAiHttpStatus !== 200) {
+        console.error('[BUILD321][GPT_PROXY] requestId=' + requestId
+          + ' openai_status=' + openAiHttpStatus
+          + ' durationMs=' + durationMsOai);
+        res.status(502).json({ error: 'openai_error', status: openAiHttpStatus });
+        return;
+      }
+
+      let parsedTextOai = '';
+      try {
+        const parsedOai = JSON.parse(openAiResponseText);
+        parsedTextOai = parsedOai?.choices?.[0]?.message?.content || '';
+      } catch (e) {
+        console.error('[BUILD321][GPT_PROXY] parse error requestId=' + requestId);
+        res.status(502).json({ error: 'openai_parse_error' });
+        return;
+      }
+
+      if (!parsedTextOai || parsedTextOai.trim().length === 0) {
+        console.warn('[BUILD321][GPT_PROXY] empty response requestId=' + requestId);
+        res.status(502).json({ error: 'openai_empty_response' });
+        return;
+      }
+
+      const outputTokensApproxOai = Math.ceil(parsedTextOai.length / 4);
+
+      // ── Budget update (same as Gemini path — fire-and-forget) ─────────────
+      try {
+        const newDailyCount = (budgetData.dailyDate === todayKey ? effectiveDailyCount : 0) + 1;
+        const newUserHour   = userHourCount + 1;
+        await budgetRef.set({
+          dailyCount:    newDailyCount,
+          dailyDate:     todayKey,
+          [userHourKey]: newUserHour,
+          lastRequestId: requestId,
+          lastUpdatedAt: new Date().toISOString(),
+          estimatedPaidCostUsd: ((newDailyCount * (inputTokensApproxOai + outputTokensApproxOai)) / 1_000_000 * 0.15).toFixed(6),
+        }, { merge: true });
+      } catch (e) {
+        console.warn('[BUILD321][GPT_PROXY] budget update error:', e.message);
+      }
+
+      console.log('[BUILD321][GPT_PROXY] '
+        + `requestId=${requestId} `
+        + `success=true `
+        + `model=gpt-4o-mini `
+        + `mode=${mode} `
+        + `lang=${lang} `
+        + `inputTokensApprox=${inputTokensApproxOai} `
+        + `outputTokensApprox=${outputTokensApproxOai} `
+        + `durationMs=${durationMsOai}`);
+
+      console.log('[PROVIDER_ROUTER] '
+        + `requestId=${requestId} `
+        + `mode=${mode} `
+        + `primary=gemini_free `
+        + `layer2=gpt_4o_mini `
+        + `usedProvider=gpt_4o_mini `
+        + `status=success `
+        + `inputTokensApprox=${inputTokensApproxOai} `
+        + `outputTokensApprox=${outputTokensApproxOai} `
+        + `durationMs=${durationMsOai}`);
+
+      // Resposta no MESMO formato que o Flutter espera do Gemini Paid
+      res.status(200).json({
+        text:               parsedTextOai,
+        model:              'gpt-4o-mini',
+        inputTokensApprox:  inputTokensApproxOai,
+        outputTokensApprox: outputTokensApproxOai,
+        durationMs:         durationMsOai,
+      });
+      return; // BUILD 321: rota OpenAI encerra aqui — não cai no Gemini path abaixo
+    }
+    // ── FIM BUILD 321: Rota OpenAI ─────────────────────────────────────────
 
     // ── 6. Lê a chave paga do Secret (NUNCA retornada ao cliente) ───────────
     const paidApiKey = GEMINI_PAID_KEY.value();

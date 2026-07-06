@@ -359,6 +359,184 @@ class ProviderRouterService {
     );
   }
 
+  // ── callGptProxy — BUILD 321: Layer 2 — GPT-4o Mini via proxy ────────────
+  /// Envia o payload clínico para o mesmo proxy seguro (geminiPaidProxy CF),
+  /// adicionando [provider: 'openai'] para que a CF roteia para GPT-4o Mini.
+  /// Auth e estrutura de resposta idênticos ao callPaidProxy().
+  /// Retorna [PaidProxyResult] com o texto da resposta.
+  static Future<PaidProxyResult> callGptProxy({
+    required String userMessage,
+    required String systemPrompt,
+    List<Map<String, String>> history = const [],
+    String mode = 'plantao',
+    String lang = 'pt',
+    String requestId = '',
+    int maxOutputTokens = 800,
+  }) async {
+    final startMs = DateTime.now().millisecondsSinceEpoch;
+
+    // ── Auth: mesma lógica do callPaidProxy ───────────────────────────────
+    String idToken;
+    if (kIsWeb) {
+      try {
+        idToken = await AuthService.getAdminToken();
+        debugPrint('[WEB_AUTH] source=REST token=${idToken.isNotEmpty} endpoint=gptProxy');
+      } catch (e) {
+        debugPrint('[GPT_PROXY] requestId=$requestId token_error=$e');
+        return PaidProxyResult.failure('token_error');
+      }
+      if (idToken.isEmpty) {
+        debugPrint('[GPT_PROXY] requestId=$requestId error=unauthenticated (token REST vazio)');
+        return PaidProxyResult.failure('unauthenticated');
+      }
+    } else {
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${firebaseUser?.uid ?? 'null'} endpoint=gptProxy');
+      if (firebaseUser == null) {
+        debugPrint('[GPT_PROXY] requestId=$requestId error=unauthenticated (nativo)');
+        return PaidProxyResult.failure('unauthenticated');
+      }
+      try {
+        idToken = await firebaseUser.getIdToken() ?? '';
+      } catch (e) {
+        debugPrint('[GPT_PROXY] requestId=$requestId token_error=$e');
+        return PaidProxyResult.failure('token_error');
+      }
+      if (idToken.isEmpty) {
+        debugPrint('[GPT_PROXY] requestId=$requestId error=empty_token');
+        return PaidProxyResult.failure('empty_token');
+      }
+    }
+
+    // ── Payload: igual ao callPaidProxy + provider='openai' ───────────────
+    final isPlantao   = mode == 'plantao';
+    final histCap     = isPlantao ? 4 : 8;
+    final recentHistory = history.length > histCap
+        ? history.sublist(history.length - histCap)
+        : history;
+
+    final payload = {
+      'userMessage':     userMessage,
+      'systemPrompt':    systemPrompt,
+      'history':         recentHistory,
+      'mode':            mode,
+      'lang':            lang,
+      'requestId':       requestId,
+      'maxOutputTokens': maxOutputTokens,
+      // BUILD 321: diretiva de roteamento — CF lê este campo e usa OpenAI
+      'provider':        'openai',
+    };
+
+    final inputTokensApprox = (jsonEncode(payload).length / 4).ceil();
+
+    // ignore: avoid_print
+    print('[BUILD321][GPT_PROXY] requestId=$requestId mode=$mode '
+        'historyEntries=${recentHistory.length} '
+        'inputTokensApprox=$inputTokensApprox');
+
+    if (kDebugMode) {
+      debugPrint('[PROVIDER_ROUTER] '
+          'requestId=$requestId '
+          'mode=$mode '
+          'primary=gemini_free '
+          'layer2=gpt_4o_mini '
+          'attempt=gpt '
+          'inputTokensApprox=$inputTokensApprox');
+    }
+
+    // ── HTTP POST para a mesma Cloud Function ─────────────────────────────
+    http.Response response;
+    try {
+      response = await http.post(
+        Uri.parse(_proxyUrl),
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer $idToken',
+        },
+        body: jsonEncode(payload),
+      ).timeout(const Duration(seconds: 60));
+    } on TimeoutException {
+      final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=timeout durationMs=$durationMs');
+      return PaidProxyResult.failure('gpt_proxy_timeout');
+    } catch (e) {
+      final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=network_error durationMs=$durationMs error=$e');
+      return PaidProxyResult.failure('gpt_proxy_network_error');
+    }
+
+    final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+
+    // ── Parse da resposta (mesma estrutura do callPaidProxy) ──────────────
+    if (response.statusCode == 429) {
+      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=budget_guard');
+      return PaidProxyResult.failure('paid_budget_guard_triggered');
+    }
+    if (response.statusCode == 503) {
+      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=openai_key_not_configured');
+      return PaidProxyResult.failure('openai_key_not_configured');
+    }
+    if (response.statusCode != 200) {
+      String errorCode = 'gpt_proxy_error_${response.statusCode}';
+      try {
+        final decodedErr = utf8.decode(response.bodyBytes, allowMalformed: true);
+        final body = jsonDecode(decodedErr) as Map<String, dynamic>;
+        errorCode = body['error']?.toString() ?? errorCode;
+      } catch (_) {}
+      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=${response.statusCode} '
+          'error=$errorCode durationMs=$durationMs');
+      return PaidProxyResult.failure(errorCode);
+    }
+
+    Map<String, dynamic> body;
+    try {
+      final decodedBody = utf8.decode(response.bodyBytes, allowMalformed: true);
+      body = jsonDecode(decodedBody) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=parse_error');
+      return PaidProxyResult.failure('parse_error');
+    }
+
+    final text               = body['text']?.toString() ?? '';
+    final model              = body['model']?.toString() ?? 'gpt-4o-mini';
+    final outputTokensApprox = (body['outputTokensApprox'] as num?)?.toInt()
+        ?? (text.length / 4).ceil();
+
+    if (text.isEmpty) {
+      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=empty_response');
+      return PaidProxyResult.failure('empty_response');
+    }
+
+    debugPrint('[BUILD321][GPT_PROXY] '
+        'requestId=$requestId '
+        'success=true '
+        'status=200 '
+        'model=$model '
+        'inputTokensApprox=$inputTokensApprox '
+        'outputTokensApprox=$outputTokensApprox '
+        'durationMs=$durationMs');
+
+    debugPrint('[PROVIDER_ROUTER] '
+        'requestId=$requestId '
+        'mode=$mode '
+        'primary=gemini_free '
+        'layer2=gpt_4o_mini '
+        'usedProvider=gpt_4o_mini '
+        'status=success '
+        'inputTokensApprox=$inputTokensApprox '
+        'outputTokensApprox=$outputTokensApprox '
+        'durationMs=$durationMs');
+
+    return PaidProxyResult(
+      text:               text,
+      success:            true,
+      model:              model,
+      inputTokensApprox:  inputTokensApprox,
+      outputTokensApprox: outputTokensApprox,
+      durationMs:         durationMs,
+    );
+  }
+
   // ── testPaidProxy — testa a conectividade com a Cloud Function ───────────
   /// Usado pelo Painel Admin para testar se a chave paga está configurada.
   /// Envia um payload mínimo e verifica se a resposta é válida.

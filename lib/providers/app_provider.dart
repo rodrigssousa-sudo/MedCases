@@ -3786,6 +3786,88 @@ class AppProvider extends ChangeNotifier {
       }
       if (kDebugMode) debugPrint('[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId');
 
+      // ── BUILD 321: Layer 2 — GPT-4o Mini (antes do Gemini Paid) ──────────
+      // Tenta GPT-4o Mini primeiro quando _openAiKey estiver configurada no
+      // Firestore (app_config/global.openAiKey preenchido pelo admin).
+      // A chave NÃO vai no payload — apenas sinaliza que o admin configurou o
+      // provedor OpenAI. O segredo real (OPENAI_API_KEY) é lido server-side na CF.
+      if (_openAiKey.isNotEmpty) {
+        if (kDebugMode) {
+          debugPrint('[BUILD321][LAYER2] Tentando GPT-4o Mini reason=$reason requestId=$requestId');
+        }
+
+        // PRE-CALL Id Guard Layer 2 (BUILD 320 pattern preservado)
+        if (_activeRequestId != thisRequestId) {
+          debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 PRE-CALL drop: '
+              'reason=$reason activeId=$_activeRequestId');
+          return;
+        }
+
+        final gptResult = await ProviderRouterService.callGptProxy(
+          userMessage:  input,
+          systemPrompt: systemPrompt,
+          history:      List<Map<String, String>>.from(
+            ClinicalThreadManager.buildThreadHistory(
+              fullHistory: _sanitizedHistory,
+              status: threadStatus,
+              isPlantaoMode: !longResponse,
+              currentTaskLabel: AiSmartRouter.detectTaskLabel(input),
+            ).map((m) => {
+              'role':    m['role']    ?? '',
+              'content': m['content'] ?? '',
+            }),
+          ),
+          mode:            longResponse ? 'estudo' : 'plantao',
+          lang:            _lang,
+          requestId:       requestId,
+          maxOutputTokens: longResponse ? 2500 : 3200,
+        );
+
+        // POST-AWAIT Id Guard Layer 2 (BUILD 320 pattern preservado)
+        if (_activeRequestId != thisRequestId) {
+          debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 POST-AWAIT drop: '
+              'reason=$reason activeId=$_activeRequestId textLen=${gptResult.text.length} '
+              '— resultado tardio GPT descartado (Id Guard)');
+          return;
+        }
+
+        if (gptResult.success && gptResult.text.isNotEmpty) {
+          // ignore: avoid_print
+          print('[RAW_AI_OUTPUT][GPT_PROXY] len=${gptResult.text.length} '
+              'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+          final gptSanitized = AiSmartRouter.sanitizeAndCheck(
+            gptResult.text,
+            isPlantaoMode: !longResponse,
+            appLanguage:   _lang,
+          );
+          final gptText = gptSanitized.text;
+          if (!_isFallbackText(gptText)) {
+            _aiHistory
+              ..add({'role': 'user',      'content': input})
+              ..add({'role': 'assistant', 'content': gptText});
+            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          } else if (kDebugMode) {
+            debugPrint('[HISTORY_SANITIZER] gpt_layer2_blocked reason=isFallbackText');
+          }
+          debugPrint('[BUILD321][LAYER2] GPT-4o Mini sucesso requestId=$requestId '
+              'model=${gptResult.model} durationMs=${gptResult.durationMs}ms');
+          wrappedOnDone(gptText);
+          return; // Layer 2 resolveu — não chama Gemini Paid
+        }
+
+        // GPT falhou — cai para Layer 3 (Gemini Paid)
+        debugPrint('[BUILD321][LAYER2] GPT-4o Mini falhou error=${gptResult.errorCode} '
+            '— escalando para Gemini Paid (Layer 3) requestId=$requestId');
+      }
+      // ── FIM BUILD 321: Layer 2 ────────────────────────────────────────────
+
+      // BUILD 320: Id Guard — PRÉ-CHAMADA Layer 3 (Gemini Paid)
+      if (_activeRequestId != thisRequestId) {
+        debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback LAYER3 PRE-CALL drop: '
+            'reason=$reason activeId=$_activeRequestId — gemini paid suppressed');
+        return;
+      }
+
       final paidResult = await ProviderRouterService.callPaidProxy(
         userMessage:  input,
         systemPrompt: systemPrompt,
