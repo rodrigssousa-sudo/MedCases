@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 // Import condicional: pdf_picker_web.dart (Web, usa dart:html) ou stub (iOS/Android, no-op).
 // Isola dart:html do compilador nativo — resolve build iOS/Android.
@@ -4431,24 +4434,96 @@ class _InfluencersTabState extends State<_InfluencersTab> {
     super.dispose();
   }
 
-  // BUILD 310 — Carrega usuários com isPartner==true do Firestore
+  // BUILD 319b — Carrega usuários com isPartner==true.
+  // Na Web o login é feito via REST (identitytoolkit), portanto
+  // FirebaseFirestore.instance não carrega o token JWT do admin →
+  // permission-denied. Usamos a Firestore REST API + idToken, o mesmo
+  // padrão do ReferralService, para contornar o lag de token no SDK Web.
   Future<void> _loadPartners() async {
     setState(() => _partnersLoading = true);
     try {
-      final snap = await FirebaseFirestore.instance
-          .collection('users')
-          .where('isPartner', isEqualTo: true)
-          .get();
-      final list = snap.docs.map((d) {
-        final data = d.data();
-        return <String, dynamic>{
-          'uid':          d.id,
-          'displayName':  (data['displayName'] ?? '').toString(),
-          'partnerTitle': (data['partnerTitle'] ?? '').toString(),
-          'referralLink': (data['referralLink'] ?? '').toString(),
-        };
-      }).toList();
-      // Conta referrals para cada parceiro (referred_by == slug do referralLink)
+      List<Map<String, dynamic>> list;
+
+      if (kIsWeb) {
+        // ── Web: Firestore REST runQuery com idToken ──────────────────────
+        const projectId = 'medcases-pro';
+        const fsBase    = 'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents';
+        final token = await AuthService.getAdminToken();
+        if (token.isEmpty) throw Exception('Token admin vazio — faça login novamente.');
+
+        final url  = Uri.parse('$fsBase:runQuery');
+        final resp = await http.post(
+          url,
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type':  'application/json',
+          },
+          body: jsonEncode({
+            'structuredQuery': {
+              'from': [{'collectionId': 'users'}],
+              'where': {
+                'fieldFilter': {
+                  'field': {'fieldPath': 'isPartner'},
+                  'op':    'EQUAL',
+                  'value': {'booleanValue': true},
+                },
+              },
+              'select': {
+                'fields': [
+                  {'fieldPath': 'displayName'},
+                  {'fieldPath': 'partnerTitle'},
+                  {'fieldPath': 'referralLink'},
+                ],
+              },
+            },
+          }),
+        );
+
+        if (resp.statusCode == 401 || resp.statusCode == 403) {
+          throw Exception('[permission-denied] REST partners: HTTP ${resp.statusCode}');
+        }
+        if (resp.statusCode != 200) {
+          throw Exception('Erro ao carregar parceiros: HTTP ${resp.statusCode}');
+        }
+
+        final results = jsonDecode(resp.body) as List<dynamic>;
+        list = results
+            .where((r) => (r as Map<String, dynamic>).containsKey('document'))
+            .map((r) {
+              final doc      = (r as Map<String, dynamic>)['document'] as Map<String, dynamic>;
+              final namePath = doc['name'] as String? ?? '';
+              final uid      = namePath.split('/').last;
+              final fields   = doc['fields'] as Map<String, dynamic>? ?? {};
+
+              String _str(String key) =>
+                  (fields[key] as Map<String, dynamic>?)?['stringValue'] as String? ?? '';
+
+              return <String, dynamic>{
+                'uid':          uid,
+                'displayName':  _str('displayName'),
+                'partnerTitle': _str('partnerTitle'),
+                'referralLink': _str('referralLink'),
+              };
+            })
+            .toList();
+      } else {
+        // ── Nativo: SDK Firestore com auth propagada normalmente ──────────
+        final snap = await FirebaseFirestore.instance
+            .collection('users')
+            .where('isPartner', isEqualTo: true)
+            .get();
+        list = snap.docs.map((d) {
+          final data = d.data();
+          return <String, dynamic>{
+            'uid':          d.id,
+            'displayName':  (data['displayName']  ?? '').toString(),
+            'partnerTitle': (data['partnerTitle']  ?? '').toString(),
+            'referralLink': (data['referralLink']  ?? '').toString(),
+          };
+        }).toList();
+      }
+
+      // Conta referrals para cada parceiro (shared Web+nativo via ReferralService)
       final countFutures = list.map((p) async {
         final refLink = p['referralLink'] as String;
         final slug = refLink.isNotEmpty ? refLink.split('/').last : p['uid'] as String;
@@ -4462,11 +4537,12 @@ class _InfluencersTabState extends State<_InfluencersTab> {
       final entries = await Future.wait(countFutures);
       if (!mounted) return;
       setState(() {
-        _partners       = list;
-        _partnerCounts  = Map.fromEntries(entries);
+        _partners        = list;
+        _partnerCounts   = Map.fromEntries(entries);
         _partnersLoading = false;
       });
     } catch (e) {
+      debugPrint('[BUILD319b][_loadPartners] erro: $e');
       if (!mounted) return;
       setState(() => _partnersLoading = false);
     }
