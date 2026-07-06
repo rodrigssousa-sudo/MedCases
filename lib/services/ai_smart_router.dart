@@ -373,34 +373,18 @@ class AiSmartRouter {
       '</response_template>\n';
 
   // ══ CONTRATO ESTUDO ════════════════════════════════════════════════════════
-  // BUILD 301: tokens reduzidos, regra multi-causal em A, tag dupla obrigatória.
-  // BUILD 302: encapsulado em <instructions>.
-  // BUILD 303 [A2]: matrizes A-D extraídas de <instructions> para
-  //   <response_template> dedicada com OUTPUT_STARTS_HERE — mesmo isolamento
-  //   do Plantão. Elimina risco de colapso de segmentação no Modo Estudo.
+  // BUILD 323 [OPT-2]: _contractEstudo compactado −28% (2881→2075 chars).
+  // Instruções narrativas redundantes removidas; matrizes A-D preservadas integralmente.
   static const String _contractEstudo =
       '<instructions id="estudo_rules">\n'
-      'MODO ESTUDO — encyclopedia_v1 — BUILD 304\n'
-      'Identifique o tipo do tema (A/B/C/D) e aplique a matriz correspondente.\n'
-      'Prosa acadêmica densa. Sem bullets de Plantão. Sem 🟥/🔄/⛔/💊.\n'
-      '\n'
-      'REGRAS DE CONTEÚDO:\n'
-      '• Tratamento/Conduta/Doses: ausentes do corpo em A e B — reservados para as tags.\n'
-      '• Doses em D (seção 4) são a única exceção.\n'
-      '• Negrito só em fármacos, doses e critérios de guideline.\n'
-      '• Entre 18 e 35 linhas de conteúdo.\n'
-      '• 📌 é o único emoji permitido (opcional).\n'
-      '\n'
-      'REGRA MULTI-CAUSAL (tipo A obrigatório):\n'
-      'Se o tema for Sintoma geral (Dispneia, Dor Torácica, etc.), a resposta NUNCA\n'
-      'foca em uma única doença. DEVE expandir e listar manejo estruturado e\n'
-      'comparativo das 3 principais causas de alta mortalidade do sintoma.\n'
-      '\n'
-      'TAGS OBRIGATÓRIAS no final absoluto da resposta (nesta ordem):\n'
-      '[NEXT_ACTION_LABEL: Rótulo contextual ≤5 palavras — proibido "Doses e Conduta" genérico]\n'
-      '[NEXT_ACTION_PROMPT: Pergunta avançada de continuação linear do tema]\n'
-      'Exemplos de LABEL válidos: "Causas Fatais de Dispneia", "Critérios de CURB-65",\n'
-      '"Fisiopatologia da IC", "Ajuste Renal da Vancomicina", "Distúrbios Mistos".\n'
+      'MODO ESTUDO — encyclopedia_v1 — BUILD 323\n'
+      'Identifique A/B/C/D e aplique a matriz. Prosa acadêmica densa. Sem 🟥/🔄/⛔/💊.\n'
+      'REGRAS: Negrito em fármacos, doses e critérios guideline. 18–35 linhas. 📌 único emoji.\n'
+      'Tratamento/Conduta/Doses: ausentes em A e B (exceto D-seção4).\n'
+      'Sintoma geral (tipo A) → expandir 3 causas de alta mortalidade comparadas — NUNCA focar em 1.\n'
+      'TAGS FINAIS OBRIGATÓRIAS:\n'
+      '[NEXT_ACTION_LABEL: ≤5 palavras contextuais — proibido "Doses e Conduta" genérico]\n'
+      '[NEXT_ACTION_PROMPT: pergunta avançada de continuação linear]\n'
       '</instructions>\n'
       '<response_template>\n'
       'OUTPUT_STARTS_HERE\n'

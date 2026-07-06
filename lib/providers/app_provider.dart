@@ -4042,6 +4042,42 @@ class AppProvider extends ChangeNotifier {
       return true;
     }
 
+    // ── BUILD 323 [OPT-3]: Gateway de Bypass por Volume — Teto 14k chars ─────
+    // Após compactação semântica (OPT-1 + OPT-2), payloads Modo Estudo com RAG
+    // ativo ainda podem superar 14.000 chars (módulos clínicos + ragAnchor +
+    // ragCrossCheck = carga legítima). O gemini_free usa SSE direto para
+    // generativelanguage.googleapis.com — buffers de rede web sem backpressure
+    // adequado sofrem throttling em payloads massivos → truncamento de stream.
+    // Servidores dedicados (GPT-4o Mini / Gemini Paid via CF proxy) possuem
+    // buffers HTTP robustos e processam contextos longos sem asfixiar o browser.
+    //
+    // REGRA: systemPrompt.length > 14.000 → bypassa gemini_free completamente
+    //        → aciona tryPaidFallback diretamente (Layer 2 → Layer 3).
+    //
+    // PRESERVAÇÃO DE GUARDS:
+    //   • PRE-CALL Id Guard verificado ANTES do await tryPaidFallback.
+    //   • tryPaidFallback() possui seus próprios PRE/POST-AWAIT Id Guards
+    //     internos (BUILD 320) — preservados integralmente.
+    //   • _geminiConnected=true → effectivePriority='academic' → chegamos aqui
+    //     normalmente; bypass também se aplica (Free com sessão ativa também
+    //     sofre throttling em payloads massivos).
+    const int _kFreeLayerCharCeiling = 14000;
+    if (systemPrompt.length > _kFreeLayerCharCeiling) {
+      // ignore: avoid_print
+      print('[AI_ROUTER] Payload massivo detectado (Chars: ${systemPrompt.length}) '
+          '-> Conflitos Removidos -> Ignorando Gemini Free '
+          '-> Direcionando para Canal Dedicado');
+      // PRE-CALL Id Guard (BUILD 320 pattern)
+      if (_activeRequestId != thisRequestId) {
+        debugPrint('[BUILD323][BYPASS_GUARD] massive_payload PRE-CALL drop: '
+            'activeId=$_activeRequestId thisRequestId=$thisRequestId');
+        return false;
+      }
+      unawaited(tryPaidFallback('massive_payload_bypass_14k'));
+      return true;
+    }
+    // ── FIM BUILD 323 [OPT-3] ────────────────────────────────────────────────
+
     // ── Caminho acadêmico: Free primeiro, pago como fallback ─────────────────
     // Subscreve o stream via AiGatewayService (shim Build 156):
     //   1. Injeta âncora de modo (ModeAnchorEngine) no systemPrompt
