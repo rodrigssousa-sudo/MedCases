@@ -11,14 +11,18 @@ service cloud.firestore {
       return /databases/$(database)/documents/users/$(request.auth.uid);
     }
 
-    // isAdmin: aceita tanto custom claims (JWT) quanto campo role no documento.
-    // Dual-check garante compatibilidade com Web (REST/idToken) e nativo (SDK).
+    // isAdmin: aceita custom claims (JWT) OU campo role no documento Firestore.
+    // BUILD 319b — Dual-check robusto:
+    //   1. Tenta custom claim primeiro (sem I/O, não falha por permission-denied).
+    //   2. Fallback por get(userPath()) apenas se o claim estiver ausente.
+    //      O try-based guard com exists() evita permission-denied no cold-start
+    //      quando o token JWT ainda não carregou o claim (auth token propagation lag).
     function isAdmin() {
       return isAuthed() && (
-        request.auth.token.role in ['admin', 'master'] ||
+        request.auth.token.get('role', '') in ['admin', 'master'] ||
         (
           exists(userPath()) &&
-          get(userPath()).data.role in ['admin', 'master']
+          get(userPath()).data.get('role', '') in ['admin', 'master']
         )
       );
     }
@@ -181,31 +185,34 @@ service cloud.firestore {
       }
     }
 
-    // ── Notificações administrativas (BUILD 311 CORREÇÃO) ────────────────────
+    // ── Notificações administrativas (BUILD 319b) ───────────────────────────
+    // 'read' cobre tanto get (doc único) quanto list (query com orderBy/limit).
+    // 'create' fica aberto para isAuthed() pois o app mobile injeta logs de
+    //   boot de novos usuários antes de o token admin ser propagado.
+    // 'update' e 'delete' restritos a admin/master.
     match /admin_notifications/{notificationId} {
       allow read:   if isAdmin();
-      allow create: if isAuthed(); // Liberado para o celular do novo usuário injetar o log no boot do cadastro automático
+      allow create: if isAuthed();
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
-    // ── Campanhas Push Globais (BUILD 319 — reforçado) ───────────────────────
+    // ── Campanhas Push Globais (BUILD 319b) ──────────────────────────────────
     // Motor FCM HTTP v1 com idempotência via campo status.
     // Somente admin/master podem criar ou ler campanhas.
-    // Regra de proteção de status: usuários (mesmo admin) NÃO podem reverter
-    //   um doc de 'processing'/'done'/'error' de volta para 'pending' — apenas
-    //   a Cloud Function (backend) faz essas transições.
-    // Usuários comuns não têm acesso algum a esta coleção.
+    //
+    // create: isAdmin() + status obrigatório 'pending' (sem hasAll rígido —
+    //   o Flutter pode evoluir o payload sem travar a rule).
+    //   A Cloud Function (Admin SDK) bypassa estas rules e faz as transições
+    //   pending → processing → done/error diretamente.
+    // update: permitido a admin enquanto o doc ainda está 'pending' OU para
+    //   editar campos de resultado (sem restrição extra — a CF usa Admin SDK).
+    //   Usuários comuns não têm acesso algum.
     match /global_push_campaigns/{campaignId} {
       allow read:   if isAdmin();
       allow create: if isAdmin()
-                    && request.resource.data.status == 'pending'
-                    && request.resource.data.keys().hasAll(['title','body','targetRole','createdAt','status','sentBy']);
-      // Admin pode atualizar apenas se o doc ainda está em 'pending'
-      // (a CF escreve 'processing'/'done'/'error' diretamente via Admin SDK,
-      //  o qual bypassa as rules — esta regra protege contra escrita direta indevida)
-      allow update: if isAdmin()
-                    && resource.data.status == 'pending';
+                    && request.resource.data.get('status', '') == 'pending';
+      allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
