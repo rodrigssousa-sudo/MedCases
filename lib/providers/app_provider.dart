@@ -3516,16 +3516,40 @@ class AppProvider extends ChangeNotifier {
       return false;
     }
 
-    // ── BUILD 254: wrappers com notifyListeners() ao término do stream ────
-    // Cada vez que onDone/onError dispara, o Provider notifica a UI via
-    // notifyListeners() APÓS o callback do caller (ai_screen) ser processado.
-    // Isso garante que context.watch<AppProvider>() rebuildará a tela mesmo
-    // que o setState interno do screen tenha sido agendado de forma assíncrona.
-    // Combinado com o setState síncrono (BUILD 254, ai_screen.dart), elimina
-    // o "Turn Lag" onde _isStreaming=false chegava tarde demais para o
-    // _PlantaoRenderer montar no primeiro frame de conclusão.
-    final wrappedOnDone  = (String text) { onDone(text);  notifyListeners(); };
-    final wrappedOnError = (String err)  { onError(err);  notifyListeners(); };
+    // ── BUILD 254 → BUILD 318: wrappers com notifyListeners() ao término ─────
+    // wrappedOnDone/wrappedOnError são as ÚNICAS portas de saída do stream.
+    // Cada uma: (1) invoca o callback da UI, (2) dispara notifyListeners().
+    //
+    // BUILD 318 HARDENING — completionFired elevado para os wrappers:
+    //   O guard `completionFired` já existia no bloco onData (chunk.isDone),
+    //   mas os wrappers em si não tinham proteção. Isso permitia que um segundo
+    //   disparo (ex: tryPaidFallback em race condition, ou resume-coordinator
+    //   disparando wrappedOnDone após o FREE_STREAM já ter chamado wrappedOnDone)
+    //   chegasse ao `onDone` da UI duas vezes — resultando em:
+    //     • Bolha AI duplicada (segunda chamada ao setState com o mesmo texto)
+    //     • Texto truncado se o segundo call vinha com texto vazio/parcial
+    //   Solução: flag `_wrapperFired` local, atômico, fecha a porta após o 1º disparo.
+    bool _wrapperFired = false;
+    final wrappedOnDone = (String text) {
+      if (_wrapperFired) {
+        debugPrint('[BUILD318][DEDUP] wrappedOnDone dropped — already fired '
+            'requestId=$thisRequestId textLen=${text.length}');
+        return;
+      }
+      _wrapperFired = true;
+      onDone(text);
+      notifyListeners();
+    };
+    final wrappedOnError = (String err) {
+      if (_wrapperFired) {
+        debugPrint('[BUILD318][DEDUP] wrappedOnError dropped — already fired '
+            'requestId=$thisRequestId err=$err');
+        return;
+      }
+      _wrapperFired = true;
+      onError(err);
+      notifyListeners();
+    };
 
     // ── Build 156: Client-Side Intelligence — sem gateway intermediário ───
     // AiGatewayService é agora um shim que injeta âncora de modo e delega

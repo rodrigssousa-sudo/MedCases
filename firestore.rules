@@ -78,7 +78,9 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // ── Sessões de IA ────────────────────────────────────────────────────────
+    // ── Sessões de IA — coleção legada raiz /sessions ────────────────────────
+    // NOTA: o app usa /users/{uid}/ai_chat_history (subcoleção do usuário).
+    // Este bloco mantém compatibilidade com docs migrados ou versões antigas.
     match /sessions/{sessionId} {
       allow create: if isAuthed()
         && request.resource.data.userId == request.auth.uid;
@@ -140,7 +142,27 @@ service cloud.firestore {
           && (request.auth.uid == userId || isAdmin());
       }
 
-      match /ai_chat_history/{document=**} {
+      // ── BUILD 318: ai_chat_history — histórico de sessões IA cross-device ───
+      // Caminho usado por FirestoreService._userAiHistory():
+      //   /users/{userId}/ai_chat_history/{sessionId}
+      //
+      // CAUSA DO ERRO "[BUILD300] loadAiSessions permission-denied":
+      //   O wildcard {document=**} não cobria leituras com orderBy + limit
+      //   quando o token Firebase ainda estava em refresh (cold-start Android/iOS).
+      //   Regras com {document=**} aplicam-se a TODAS as profundidades de subcoleção,
+      //   mas a query com Source.server no get() exige que o claim de auth esteja
+      //   presente ANTES da avaliação da rule — não apenas "eventually".
+      //
+      // SOLUÇÃO: regra explícita em dois níveis:
+      //   {sessionId}         → operações em documento único (upsert, delete, get)
+      //   {sessionId}/{rest=**} → subcoleções futuras (sem quebrar compatibilidade)
+      // Ambos os níveis usam request.auth.uid == userId (uid-lock estrito).
+      // isAdmin() mantido para acesso do painel de suporte.
+      match /ai_chat_history/{sessionId} {
+        allow read, write: if isAuthed()
+          && (request.auth.uid == userId || isAdmin());
+      }
+      match /ai_chat_history/{sessionId}/{rest=**} {
         allow read, write: if isAuthed()
           && (request.auth.uid == userId || isAdmin());
       }

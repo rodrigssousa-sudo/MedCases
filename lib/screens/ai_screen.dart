@@ -1605,46 +1605,92 @@ class _AiScreenState extends State<AiScreen> {
         fromButton:    fromButton,      // BUILD 262: preserves thread on action buttons
         onChunk: (accumulated) {
           // ── BUILD 276: SUPPRESSED CHUNK RENDERING ─────────────────────────
-          // Architecture decision: keep _thinking=true and EcgLoadingBlock
-          // visible throughout the entire wait. Chunks are buffered internally
-          // into the _messages slot (created once on first chunk) without any
-          // UI state change. The response is committed in a single setState in
-          // onDone — creating the solid-block + fade-in experience.
+          // Arquitectura: mantém _thinking=true e EcgLoadingBlock visível
+          // durante todo o streaming. Chunks são bufferizados internamente
+          // no slot de _messages (criado no primeiro chunk) SEM nenhuma
+          // mudança de estado de UI. A resposta é commitada em único setState
+          // no onDone — experiência de bloco sólido + fade-in.
           //
-          // This eliminates the "typewriter artefact" (raw asterisks rendered
-          // as <pre> blocks in Flutter Markdown during partial stream output)
-          // described in BUILD 275-FIX. The ECG indicator stays on screen
-          // until the full, post-processed response is ready.
+          // Isso elimina o "typewriter artefact" (asteriscos brutos renderizados
+          // como <pre> pelo Flutter Markdown em saída de stream parcial).
+          // O indicador ECG permanece até a resposta completa estar pronta.
           if (!mounted) return;
+
+          // ── BUILD 318: CHUNK THROTTLE ─────────────────────────────────────
+          // Limita a frequência de atualização do buffer interno.
+          // BUILD 276 já suprime setState/notifier em onChunk — apenas o
+          // buffer de _messages é atualizado. Mesmo assim, cada chamada
+          // executa _stripMetadataHeaders + _ChatMsg.withId (alocação).
+          // Throttle de 25ms: agrupa tokens rápidos (< 40ms inter-chunk)
+          // em uma única atualização — reduz GC pressure em dispositivos
+          // com Dart VM compactante (Android / iOS).
+          // EXCEPÇÃO: primeiro chunk (streamingMsgIdx == -1) passa sempre
+          // para criar o slot sem atraso perceptível.
+          final nowMs = DateTime.now().millisecondsSinceEpoch;
+          if (streamingMsgIdx != -1 &&
+              nowMs - _lastChunkRenderMs < 25) return;
+          _lastChunkRenderMs = nowMs;
+
           try {
             chunksSinceStart++;
-            // Metadata strip: still run on first 12 chunks so the buffered
-            // text is clean when onDone reads _messages[streamingMsgIdx].
+
+            // ── BUILD 318: METADATA STRIP SAFE WINDOW ─────────────────────
+            // PROBLEMA RAIZ da duplicação/truncamento:
+            //   _stripMetadataHeaders(accumulated) recebia o texto ACUMULADO
+            //   crescente (ex: chunk 8 = 400 chars). Se o regex do strip
+            //   casar no meio do acumulado (falso positivo), retorna texto
+            //   menor — sobrescreve o buffer com versão truncada. Chunk
+            //   seguinte restaura o texto, que parece "duplicado" visualmente.
+            //
+            // SOLUÇÃO BUILD 318: aplicar strip APENAS nos primeiros 600 chars
+            //   do acumulado (janela de header leak). Texto após 600 chars
+            //   nunca contém prompt leak — fast path sem regex.
+            //   Isso garante que o buffer cresce monotonicamente (sem regressão
+            //   de comprimento entre chunks consecutivos).
             final String cleanedChunk;
             if (metaHeadersConfirmedClean) {
+              // Fast path: sem regex após confirmar limpeza
               cleanedChunk = accumulated;
             } else {
-              cleanedChunk = _stripMetadataHeaders(accumulated);
+              // Aplica strip apenas na janela inicial segura (≤ 600 chars)
+              // para evitar corte acidental em texto clínico longo
+              final safeWindow = accumulated.length <= 600
+                  ? accumulated
+                  : accumulated.substring(0, 600);
+              final strippedWindow = _stripMetadataHeaders(safeWindow);
+              // Reconstrói: janela stripada + resto original intacto
+              cleanedChunk = accumulated.length <= 600
+                  ? strippedWindow
+                  : strippedWindow + accumulated.substring(600);
               if (chunksSinceStart >= 12) metaHeadersConfirmedClean = true;
             }
+
+            // ── Atualização do buffer interno ─────────────────────────────
+            // Invariante: buffer só cresce ou permanece igual entre chunks.
+            // (cleanedChunk = texto acumulado completo do provider, nunca truncado)
             if (streamingMsgIdx == -1) {
-              // First chunk: create the internal buffer slot.
-              // NO setState — _thinking stays true, ECG stays visible.
+              // Primeiro chunk: cria o slot no buffer interno.
+              // SEM setState — _thinking permanece true, ECG permanece visível.
               _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
               streamingMsgIdx = _messages.length - 1;
             } else {
-              // Subsequent chunks: update internal buffer only.
-              // NO notifier update, NO setState, NO UI repaint.
+              // Chunks subsequentes: apenas atualiza buffer interno.
+              // SEM notifier update, SEM setState, SEM repaint de UI.
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
-                _messages[streamingMsgIdx] = _ChatMsg.withId(
-                  id: _messages[streamingMsgIdx].id,
-                  role: 'ai',
-                  text: cleanedChunk,
-                );
+                // Guard monotônico: só atualiza se o texto cresceu ou mudou.
+                // Previne regressão de comprimento por strip de falso positivo.
+                final prevLen = _messages[streamingMsgIdx].text.length;
+                if (cleanedChunk.length >= prevLen) {
+                  _messages[streamingMsgIdx] = _ChatMsg.withId(
+                    id: _messages[streamingMsgIdx].id,
+                    role: 'ai',
+                    text: cleanedChunk,
+                  );
+                }
               }
             }
           } catch (_) {
-            // Malformed chunk: silently discarded.
+            // Chunk malformado: descartado silenciosamente.
           }
         },
         onDone: (finalText) {
@@ -1871,25 +1917,34 @@ class _AiScreenState extends State<AiScreen> {
             // completo do turno já está persistido no disco/Firestore.
             _saveCurrentSessionToHistory(context.read<AppProvider>());
 
-            // ── Scroll final (3 frames encadeados) ──────────────────────────
-            // Aguarda o layout do _PlantaoRenderer estabilizar antes do scroll.
-            // Não usa setState — apenas animateTo no controller de scroll.
+            // ── BUILD 318: Scroll final (4 frames encadeados) ────────────────
+            // 4 frames em vez de 3: garante que o _PlantaoRenderer (que monta
+            // seus cards via AnimatedSize em múltiplos setStates internos)
+            // tenha tempo suficiente para estabilizar o maxScrollExtent antes
+            // do animateTo final — evita o freeze mid-screen em dispositivos
+            // lentos (Android entry-level, GPU compactante).
+            //
+            // Guard _isStreaming: previne scroll espúrio se o usuário interrompeu
+            // o stream manualmente (clearChat) após o onDone mas antes dos frames.
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted || _userScrolledUp) return;
+              if (!mounted || _userScrolledUp || _isStreaming) return;
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted || _userScrolledUp) return;
+                if (!mounted || _userScrolledUp || _isStreaming) return;
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (!mounted || _userScrolledUp) return;
-                  if (!_scrollCtrl.hasClients) return;
-                  final pos = _scrollCtrl.position;
-                  if (pos.pixels >= pos.maxScrollExtent - 4) return;
-                  // animateTo (suave 200ms) em vez de jumpTo — evita "teleporte"
-                  // caso o layout ainda esteja se estabilizando no último frame.
-                  _scrollCtrl.animateTo(
-                    pos.maxScrollExtent,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeOutCubic,
-                  );
+                  if (!mounted || _userScrolledUp || _isStreaming) return;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    // Frame 4: maxScrollExtent totalmente estabilizado
+                    if (!mounted || _userScrolledUp) return;
+                    if (!_scrollCtrl.hasClients) return;
+                    final pos = _scrollCtrl.position;
+                    if (pos.pixels >= pos.maxScrollExtent - 4) return;
+                    // animateTo suave 200ms — evita teleporte no layout tardio
+                    _scrollCtrl.animateTo(
+                      pos.maxScrollExtent,
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeOutCubic,
+                    );
+                  });
                 });
               });
             });
