@@ -573,7 +573,50 @@ class FirestoreService {
   }
 
   /// Salva a Gemini API Key global do app em app_config/global.
+  ///
+  /// BUILD 322: branch Web usa REST PATCH + Bearer token (mesmo padrão de
+  /// saveAppAiKey / saveGeminiPaidEnabled). Nativo mantém SDK intacto.
   static Future<void> saveGeminiApiKey(String key) async {
+    // ── Limpar cache para forçar releitura limpa após write ─────────────────
+    _cachedAppConfigGlobal.clear();
+    _appConfigGlobalRetryAfter = null;
+
+    if (kIsWeb) {
+      final token = await AuthService.getAdminToken();
+      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveGeminiApiKey)');
+      if (token.isEmpty) {
+        debugPrint('[FirestoreService] saveGeminiApiKey ERRO Web — token REST vazio');
+        throw Exception('saveGeminiApiKey: token REST vazio');
+      }
+      try {
+        const mask = 'updateMask.fieldPaths=apiKey';
+        final resp = await http.patch(
+          Uri.parse('$_fsBase/app_config/global?$mask'),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type':  'application/json',
+          },
+          body: jsonEncode({
+            'fields': {
+              'apiKey': {'stringValue': key.trim()},
+            },
+          }),
+        ).timeout(const Duration(seconds: 8));
+        if (resp.statusCode == 200) {
+          debugPrint('[FirestoreService] saveGeminiApiKey OK → app_config/global (REST Web)');
+        } else {
+          debugPrint('[FirestoreService] saveGeminiApiKey ERRO REST ${resp.statusCode}: '
+              '${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+          throw Exception('saveGeminiApiKey REST ${resp.statusCode}');
+        }
+      } catch (e) {
+        debugPrint('[FirestoreService] saveGeminiApiKey ERRO REST: $e');
+        rethrow;
+      }
+      return;
+    }
+
+    // ── NATIVO: SDK ─────────────────────────────────────────────────────────
     try {
       await _db.collection('app_config').doc('global').set(
         {'apiKey': key.trim()},
@@ -582,6 +625,7 @@ class FirestoreService {
       debugPrint('[FirestoreService] saveGeminiApiKey OK');
     } catch (e) {
       debugPrint('[FirestoreService] saveGeminiApiKey ERRO: $e');
+      rethrow;
     }
   }
 
@@ -600,15 +644,70 @@ class FirestoreService {
 
   /// Salva a chave OpenAI global do app em app_config/global.
   /// Todos os usuários aprovados passam a usar essa chave automaticamente.
+  ///
+  /// BUILD 322: branch Web usa REST PATCH + Bearer token (mesmo padrão de
+  /// saveGeminiPaidEnabled). Nativo mantém SDK intacto.
+  /// Cache invalidado em ambas as plataformas para forçar releitura limpa.
   static Future<void> saveAppAiKey(String key) async {
+    // ── Limpar cache local para garantir leitura limpa após write ───────────
+    _cachedAppConfigGlobal.clear();
+    _appConfigGlobalRetryAfter = null;
+
+    if (kIsWeb) {
+      // ── WEB: REST PATCH com AuthService.getAdminToken() ─────────────────
+      // FirebaseAuth.instance.currentUser é sempre null no Web (login via
+      // REST Identity Toolkit não injeta token no Firebase Auth SDK).
+      // getAdminToken() retorna o token REST correto (auto-refresh incluído).
+      final token = await AuthService.getAdminToken();
+      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveAppAiKey)');
+      if (token.isEmpty) {
+        debugPrint('[FirestoreService] saveAppAiKey ERRO Web — token REST vazio');
+        throw Exception('saveAppAiKey: token REST vazio');
+      }
+      try {
+        // updateMask garante que apenas o campo 'openAiKey' é alterado (merge
+        // seguro no REST — não sobrescreve outros campos do documento).
+        const mask = 'updateMask.fieldPaths=openAiKey';
+        final resp = await http.patch(
+          Uri.parse('$_fsBase/app_config/global?$mask'),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type':  'application/json',
+          },
+          body: jsonEncode({
+            'fields': {
+              'openAiKey': {'stringValue': key.trim()},
+            },
+          }),
+        ).timeout(const Duration(seconds: 8));
+        if (resp.statusCode == 200) {
+          debugPrint('[FirestoreService] saveAppAiKey OK → app_config/global (REST Web)');
+          debugPrint('[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}');
+        } else {
+          debugPrint('[FirestoreService] saveAppAiKey ERRO REST ${resp.statusCode}: '
+              '${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+          throw Exception('saveAppAiKey REST ${resp.statusCode}');
+        }
+      } catch (e) {
+        debugPrint('[FirestoreService] saveAppAiKey ERRO REST: $e');
+        rethrow;
+      }
+      return;
+    }
+
+    // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ──────────
+    final fbUser = FirebaseAuth.instance.currentUser;
+    debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${fbUser?.uid ?? 'null'} endpoint=app_config/global (saveAppAiKey)');
     try {
       await _db.collection('app_config').doc('global').set(
         {'openAiKey': key.trim()},
         SetOptions(merge: true),
       );
       debugPrint('[FirestoreService] saveAppAiKey OK → app_config/global');
+      debugPrint('[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}');
     } catch (e) {
       debugPrint('[FirestoreService] saveAppAiKey ERRO: $e');
+      rethrow;
     }
   }
 
@@ -721,7 +820,49 @@ class FirestoreService {
 
   /// Carrega contadores de budget do paid proxy.
   /// Armazenado em app_config/paid_budget — leitura restrita a admin.
+  ///
+  /// BUILD 322: branch Web usa REST GET + Bearer token.
+  /// Nativo mantém SDK intacto.
   static Future<Map<String, dynamic>> loadPaidBudgetCounters() async {
+    if (kIsWeb) {
+      // ── WEB: REST GET com AuthService.getAdminToken() ───────────────────
+      final token = await AuthService.getAdminToken();
+      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/paid_budget (loadPaidBudgetCounters)');
+      if (token.isEmpty) {
+        debugPrint('[FirestoreService] loadPaidBudgetCounters Web — token vazio');
+        return {};
+      }
+      try {
+        final resp = await http.get(
+          Uri.parse('$_fsBase/app_config/paid_budget?key=$_firebaseApiKey'),
+          headers: _restGetHeaders(token),
+        ).timeout(const Duration(seconds: 4));
+        debugPrint('[FirestoreService] loadPaidBudgetCounters REST status=${resp.statusCode}');
+        if (resp.statusCode == 200) {
+          final data = _decodeFirestoreFields(resp.body);
+          debugPrint('[FirestoreService] loadPaidBudgetCounters OK — ${data.length} campos');
+          return data;
+        }
+        if (resp.statusCode == 404) {
+          // Documento ainda não existe (nenhuma requisição paga feita ainda)
+          debugPrint('[FirestoreService] loadPaidBudgetCounters — documento não existe (404)');
+          return {};
+        }
+        if (resp.statusCode == 403 || resp.statusCode == 401) {
+          debugPrint('[FirestoreService] loadPaidBudgetCounters — sem permissão (não-admin) ${resp.statusCode}');
+          return {};
+        }
+        debugPrint('[FirestoreService] loadPaidBudgetCounters ERRO REST ${resp.statusCode}: '
+            '${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+        return {};
+      } catch (e) {
+        debugPrint('[FirestoreService] loadPaidBudgetCounters ERRO REST: $e');
+        return {};
+      }
+    }
+
+    // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ──────────
+    debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=app_config/paid_budget');
     try {
       final doc = await _db
           .collection('app_config')
