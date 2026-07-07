@@ -4,7 +4,8 @@ import '../providers/app_provider.dart';
 import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../services/drug_interaction_service.dart';
-import '../data/drugs_database.dart';
+import '../services/cloud_clinical_data_service.dart';
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ENTRY POINT
@@ -355,7 +356,7 @@ class _Header extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEs ? '$uniqueDrugsCount fármacos' : '$uniqueDrugsCount fármacos',
+              isEs ? '${CloudClinicalDataService.instance.drugs.length} fármacos' : '${CloudClinicalDataService.instance.drugs.length} fármacos',
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,

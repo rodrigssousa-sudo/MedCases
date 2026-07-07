@@ -49,6 +49,7 @@ import 'services/notification_service.dart';
 import 'services/update_service.dart';
 import 'services/offline_calculator_cache_service.dart'; // BUILD 240: smart offline cache
 import 'services/app_resume_coordinator.dart';           // BUILD 241: background/resume safety
+import 'services/cloud_clinical_data_service.dart';      // BUILD 324: cloud drug formulary
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
 import 'widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
@@ -129,6 +130,10 @@ Future<void> _bootInBackground(AppProvider provider) async {
   try {
     await ActivityService.load().timeout(const Duration(seconds: 2));
   } catch (_) {}
+
+  // 1c. BUILD 324: Formulário de fármacos — remoto com cache e fallback bundled.
+  // unawaited: não bloqueia boot; dados prontos antes da 1ª interação com IA.
+  unawaited(CloudClinicalDataService.instance.init());
 
   // 2. Gemini key do storage local (síncrono, sem rede)
   // Build 156: a key BYOA é usada tanto para o Lab quanto para o chat principal.

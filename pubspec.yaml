@@ -1,7 +1,7 @@
 name: medcases
 description: "MedCases Pro"
 publish_to: 'none'
-version: 6.1.5+1637
+version: 6.1.5+1638
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -115,3 +115,4 @@ flutter:
   assets:
     - assets/icon/
     - assets/images/
+    - assets/drugs_database.json

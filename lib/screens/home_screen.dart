@@ -13,8 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
 import '../services/firestore_service.dart';
 import '../widgets/common_widgets.dart';
-import '../data/drugs_database.dart';
 import '../models/drug_model.dart';
+import '../services/cloud_clinical_data_service.dart';
 import '../services/drug_interaction_service.dart';
 import '../services/notification_service.dart';
 import 'cockpit_screen.dart';
@@ -5870,7 +5870,7 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
 
     // ── 1. Fármacos ────────────────────────────────────────────────────────
     int drugCount = 0;
-    for (final drug in drugsDatabase) {
+    for (final drug in CloudClinicalDataService.instance.drugs) {
       if (drugCount >= _maxPerCat) break;
       final name  = drug.name.toLowerCase();
       final grp   = drug.group.toLowerCase();

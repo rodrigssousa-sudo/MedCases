@@ -9,13 +9,14 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints, PharmacologicalDisclaimer, EvidenceCardWidget, EvidenceBadgesRow;
 import '../models/drug_model.dart' show DrugEvidenceModel;
+import '../services/cloud_clinical_data_service.dart';
 import '../data/evidence_database.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:convert';
 import '../providers/app_provider.dart';
-import '../data/drugs_database.dart';
+
 import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
 import '../services/activity_service.dart';
@@ -7905,8 +7906,8 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                   const SizedBox(width: 8),
                   Expanded(child: Text(
                     isEs
-                        ? '${uniqueDrugsCount} fármacos · protocolos de urgencias · siempre activo'
-                        : '${uniqueDrugsCount} fármacos · protocolos de urgência · sempre ativo',
+                        ? '${CloudClinicalDataService.instance.drugs.length} fármacos · protocolos de urgencias · siempre activo'
+                        : '${CloudClinicalDataService.instance.drugs.length} fármacos · protocolos de urgência · sempre ativo',
                     style: TextStyle(
                       fontSize: 11,
                       color: hasAnyAi

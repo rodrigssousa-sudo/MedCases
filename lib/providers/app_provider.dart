@@ -13,7 +13,7 @@ import '../models/protocol_model.dart';
 import '../models/clinical_case_model.dart';
 import '../models/clinical_history_model.dart';
 import '../models/user_model.dart';
-import '../data/drugs_database.dart';
+import '../services/cloud_clinical_data_service.dart';
 import '../data/protocols_database.dart';
 import '../data/cases_database.dart';
 import '../services/firestore_service.dart';
@@ -414,12 +414,11 @@ class AppProvider extends ChangeNotifier {
   // ── Cache imutável (calculado uma vez no primeiro acesso) ────────────────
   List<DrugModel>? _drugsDBCache;
 
-  // Deduplica por ID (garante que entradas duplicadas na database não apareçam duas vezes)
-  // Resultado é cacheado — não recalcula a cada rebuild.
+  // Deduplica por ID — delegado ao CloudClinicalDataService (BUILD 324).
+  // Cache invalidado quando o serviço recarregar dados frescos.
   List<DrugModel> get drugsDB {
     if (_drugsDBCache != null) return _drugsDBCache!;
-    final seen = <String>{};
-    _drugsDBCache = drugsDatabase.where((d) => seen.add(d.id)).toList();
+    _drugsDBCache = CloudClinicalDataService.instance.uniqueDrugs;
     return _drugsDBCache!;
   }
   List<ProtocolModel> get protocolsDB => protocolsDatabase;
@@ -427,22 +426,14 @@ class AppProvider extends ChangeNotifier {
 
   DrugModel? get activeDrug {
     if (_activeDrugId.isEmpty) return null;
-    try {
-      return drugsDatabase.firstWhere((d) => d.id == _activeDrugId);
-    } catch (_) {
-      return null; // id obsoleto — não retorna drug errado
-    }
+    return CloudClinicalDataService.instance.findById(_activeDrugId);
   }
 
   List<DrugModel> get selectedDrugs {
     final result = <DrugModel>[];
     for (final id in _selectedDrugIds) {
-      try {
-        result.add(drugsDatabase.firstWhere((d) => d.id == id));
-      } catch (_) {
-        // id não encontrado no banco — ignora silenciosamente
-        // (evita retornar drug errado ou crash com RangeError)
-      }
+      final drug = CloudClinicalDataService.instance.findById(id);
+      if (drug != null) result.add(drug);
     }
     return result;
   }
@@ -913,7 +904,7 @@ class AppProvider extends ChangeNotifier {
       // 1/3 — Medicamentos (maior conjunto)
       _offlineProgress = 0.05; notifyListeners();
       final drugsJson = jsonEncode(
-        drugsDatabase.map((d) => {
+        CloudClinicalDataService.instance.drugs.map((d) => {
           'id': d.id,
           'name': d.name,
           'group': d.group,
@@ -2416,11 +2407,10 @@ class AppProvider extends ChangeNotifier {
 
     if (words.isEmpty) return [];
 
-    for (final d in drugsDatabase) {
+    for (final d in CloudClinicalDataService.instance.drugs) {
       final name  = _normalize(d.name);
       final cls   = _normalize(d.getField(d.className, _lang));
       final mech  = _normalize(d.getField(d.mechanism, _lang));
-      // Expandido: group + category para capturar classes farmacológicas
       final grp   = _normalize(d.group);
       final cat   = _normalize(d.getField(d.category, _lang));
       if (words.any((w) => name.contains(w) || cls.contains(w) ||
@@ -2428,7 +2418,7 @@ class AppProvider extends ChangeNotifier {
         final dose = d.getField(d.fixedDose, _lang);
         final warn = d.getField(d.warning, _lang);
         results.add('• [${d.name}] Classe: ${d.getField(d.className, _lang)} | Dose: ${dose.isNotEmpty ? dose : "ver ficha"} | Alerta: ${warn.isNotEmpty ? warn.substring(0, warn.length.clamp(0, 80)) : "—"}');
-        if (results.length >= 5) break; // máx 5 fármacos
+        if (results.length >= 5) break;
       }
     }
     return results;
@@ -2451,10 +2441,10 @@ class AppProvider extends ChangeNotifier {
         .where((w) => !_clinicalStopwords.contains(w))
         .toList();
     if (words.isEmpty) return '';
-    for (final d in drugsDatabase) {
+    for (final d in CloudClinicalDataService.instance.drugs) {
       final name = _normalize(d.name);
       if (words.any((w) => name.contains(w))) {
-        return d.id; // id normalizado (ex: 'sertralina', 'amiodarona')
+        return d.id;
       }
     }
     return '';
@@ -4735,12 +4725,10 @@ class AppProvider extends ChangeNotifier {
 
     if (words.isEmpty) return [];
 
-    for (final d in drugsDatabase) {
+    for (final d in CloudClinicalDataService.instance.drugs) {
       final name  = _normalize(d.name);
       final cls   = _normalize(d.getField(d.className, _lang));
       final mech  = _normalize(d.getField(d.mechanism, _lang));
-      // Expandido: também busca em group e category para capturar
-      // queries de classe farmacológica ex: "antipsicótico atípico", "psiquiatria"
       final grp   = _normalize(d.group);
       final cat   = _normalize(d.getField(d.category, _lang));
       if (words.any((w) => name.contains(w) || cls.contains(w) ||
@@ -4833,7 +4821,7 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Extrair referências dos FÁRMACOS correspondentes ─────────────────────
-    for (final d in drugsDatabase) {
+    for (final d in CloudClinicalDataService.instance.drugs) {
       if (refs.length >= 10) break;
 
       final name  = _normalize(d.name);
@@ -6579,7 +6567,7 @@ class AppProvider extends ChangeNotifier {
 
       // Buscar fármacos que correspondam à condição
       final indicationDrugs = <DrugModel>[];
-      for (final drug in drugsDatabase) {
+      for (final drug in CloudClinicalDataService.instance.drugs) {
         final dNorm  = _normalize(drug.name + ' ' + drug.group + ' ' + drug.getField(drug.className, _lang) + ' ' + (drug.getField(drug.mechanism, _lang)));
         // Match por grupo/classe da condição
         if (relevantGroups.any((g) => dNorm.contains(g))) {
@@ -6697,8 +6685,8 @@ class AppProvider extends ChangeNotifier {
         buf.writeln(es ? '## Información farmacológica — Base interna:' : '## Informações farmacológicas — Base interna:');
         buf.writeln('');
 
-        for (final drug in drugsDatabase) {
-          final dName = _normalize(drug.name);  // busca por nome PT (ID interno)
+        for (final drug in CloudClinicalDataService.instance.drugs) {
+          final dName = _normalize(drug.name);
           final words = qExpanded.split(RegExp(r'\s+')).where((w) => w.length > 3);
           if (!words.any((w) => dName.contains(w))) continue;
 
@@ -7686,7 +7674,7 @@ class AppProvider extends ChangeNotifier {
 
       // ── Fármacos do protocolo com doses calculadas ──────────────────────
       final suggestedDrugs = proto.drugs.take(4)
-          .map((id) { try { return drugsDatabase.firstWhere((d) => d.id == id); } catch (_) { return null; } })
+          .map((id) => CloudClinicalDataService.instance.findById(id))
           .whereType<DrugModel>().toList();
 
       if (suggestedDrugs.isNotEmpty) {
