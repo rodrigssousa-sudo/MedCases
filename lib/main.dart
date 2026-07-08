@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' show ImageFilter;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
@@ -332,9 +333,9 @@ class MedCasesApp extends StatelessWidget {
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.iOS:     CupertinoPageTransitionsBuilder(),
+        TargetPlatform.iOS:     const CupertinoPageTransitionsBuilder(),
         TargetPlatform.linux:   FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.macOS:   CupertinoPageTransitionsBuilder(),
+        TargetPlatform.macOS:   const CupertinoPageTransitionsBuilder(),
         TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
       },
     ),
@@ -354,9 +355,9 @@ class MedCasesApp extends StatelessWidget {
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.iOS:     CupertinoPageTransitionsBuilder(),
+        TargetPlatform.iOS:     const CupertinoPageTransitionsBuilder(),
         TargetPlatform.linux:   FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.macOS:   CupertinoPageTransitionsBuilder(),
+        TargetPlatform.macOS:   const CupertinoPageTransitionsBuilder(),
         TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
       },
     ),
