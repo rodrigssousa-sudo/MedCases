@@ -300,7 +300,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+			shellScript = "# BUILD 327 — Resolve FLUTTER_ROOT dinamicamente se não definido pelo Generated.xcconfig\nif [ -z \"$FLUTTER_ROOT\" ]; then\n  FLUTTER_ROOT=\"$(dirname \"$(dirname \"$(which flutter)\")\")\"\nfi\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
 		7C4EB63658F7A630E7082E24 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -354,7 +354,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "# BUILD 327 — Resolve FLUTTER_ROOT dinamicamente se não definido pelo Generated.xcconfig\nif [ -z \"$FLUTTER_ROOT\" ]; then\n  FLUTTER_ROOT=\"$(dirname \"$(dirname \"$(which flutter)\")\")\"\nfi\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
 		CCB0562B80106CCE36D73083 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
