@@ -2239,6 +2239,24 @@ class _AiScreenState extends State<AiScreen> {
     p.clearAiHistory();
   }
 
+  // ── BUILD 327+: Abort AI Stream ──────────────────────────────────────────
+  // Chamado pelo botão de cancelar na InputBar enquanto thinking=true.
+  // Interrompe imediatamente a StreamSubscription ativa no AppProvider,
+  // reseta todos os flags de loading e devolve o foco ao campo de texto.
+  void _cancelActiveStream() {
+    final p = context.read<AppProvider>();
+    p.cancelAiStream();  // cancela _aiStreamSub no AppProvider
+    setState(() {
+      _thinking    = false;
+      _isStreaming  = false;
+      _sendGuard    = false;
+    });
+    // Devolve foco ao campo de texto — médico pode editar imediatamente
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focusNode.requestFocus();
+    });
+  }
+
   // ── Nuevo Chat — salva sessão atual e abre nova sessão limpa ─────────────
   // Diferente de _clearChat: NÃO deleta histórico. Salva em background e
   // cria nova sessão com ID diferente (timestamp) para consulta fresca.
@@ -3019,8 +3037,11 @@ class _AiScreenState extends State<AiScreen> {
                           focusNode: _focusNode,
                           dark: dark,
                           hasFocus: _hasFocus,
-                          thinking: _thinking,
+                          // BUILD 327+: thinking=true enquanto IA processa (thinking OU streaming)
+                          // garante que o botão de abort esteja visível em ambas as fases.
+                          thinking: _thinking || _isStreaming,
                           onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
+                          onCancel: _cancelActiveStream,  // BUILD 327+: abort stream
                           hint: p.t('ai_placeholder'),
                           onVoice: _toggleStt,
                           sttListening: _sttListening,
@@ -3066,8 +3087,10 @@ class _AiScreenState extends State<AiScreen> {
                           focusNode: _focusNode,
                           dark: dark,
                           hasFocus: _hasFocus,
-                          thinking: _thinking,
+                          // BUILD 327+: thinking=true enquanto IA processa (thinking OU streaming)
+                          thinking: _thinking || _isStreaming,
                           onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
+                          onCancel: _cancelActiveStream,  // BUILD 327+: abort stream
                           hint: p.t('ai_placeholder'),
                           onVoice: _toggleStt,
                           sttListening: _sttListening,
@@ -7190,6 +7213,9 @@ class _InputBar extends StatefulWidget {
   final bool hasFocus;
   final bool thinking;
   final VoidCallback onSend;
+  /// BUILD 327+: cancelar stream ativo — exibido no lugar do send quando thinking=true.
+  /// Ao tocar: aborta a stream, reseta _isStreaming/_thinking, devolve foco ao campo.
+  final VoidCallback? onCancel;
   final VoidCallback onVoice;
   final bool sttListening;
   final double sttSoundLevel;
@@ -7214,7 +7240,8 @@ class _InputBar extends StatefulWidget {
     required this.hint,
     required this.lang,
     this.isConnected = true, // default true para não quebrar call sites legados
-    this.onConnectTap,       // NEW — dispara modal de conexão quando campo está bloqueado
+    this.onConnectTap,       // dispara modal de conexão quando campo está bloqueado
+    this.onCancel,           // BUILD 327+: abort stream ativo
   });
 
   @override
@@ -7441,36 +7468,44 @@ class _InputBarState extends State<_InputBar> {
 
                       const SizedBox(width: 6),
 
-                      // ADENDO SEGURANÇA Factor 1: seta cinza desativada quando desconectado
-                      // onTap=null → nenhum evento de toque processa envio
+                      // BUILD 327+: ABORT STREAM button replaces send while thinking.
+                      // — thinking=true  → vermelho-subtil com ícone ✕ (aborta stream)
+                      // — thinking=false → ciano sólido com seta ↑  (envia mensagem)
+                      // — locked=true    → cinza desativado (desconectado)
                       GestureDetector(
-                        onTap: (locked || widget.thinking) ? null : widget.onSend,
+                        onTap: locked
+                            ? null
+                            : (widget.thinking
+                                ? widget.onCancel
+                                : widget.onSend),
                         child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
+                          duration: const Duration(milliseconds: 180),
                           width: 34, height: 34,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            // locked: cinza escuro opaco (visual de desativado)
-                            // thinking: ciano desbotado (processando)
-                            // normal: ciano sólido (pronto para envio)
                             color: locked
                                 ? (dark ? Colors.white12 : Colors.black12)
                                 : (widget.thinking
-                                    ? const Color(0xFF008CA4).withOpacity(0.45)
+                                    // Abort: vermelho escuro sutil (não alarme)
+                                    ? const Color(0xFF7B2020).withOpacity(0.85)
                                     : const Color(0xFF008CA4)),
+                            // Borda vermelha subtil apenas no estado de abort
+                            border: (!locked && widget.thinking)
+                                ? Border.all(
+                                    color: const Color(0xFFEF4444).withOpacity(0.45),
+                                    width: 1.2,
+                                  )
+                                : null,
                           ),
                           child: Center(
                             child: widget.thinking
-                                ? const SizedBox(
-                                    width: 17, height: 17,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1.8,
-                                      color: Colors.white,
-                                    ),
+                                ? const Icon(
+                                    Icons.stop_rounded,
+                                    color: Colors.white,
+                                    size: 17,
                                   )
                                 : Icon(
                                     Icons.arrow_upward_rounded,
-                                    // ícone cinza quando bloqueado
                                     color: locked ? Colors.white38 : Colors.white,
                                     size: 19,
                                   ),

@@ -15,8 +15,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-// ── Brand colour ──────────────────────────────────────────────────────────
-const Color kEcgRed = Color(0xFFAC2A2A);
+// ── Brand colours ─────────────────────────────────────────────────────────
+const Color kEcgRed   = Color(0xFFAC2A2A);
+/// Clinical green — ICU monitor style (#00C78C). Used when the ECG trace
+/// should feel "live / safe" rather than alarm-red (e.g. streaming state).
+const Color kEcgGreen = Color(0xFF00C78C);
 
 // ── Public widget ─────────────────────────────────────────────────────────
 class EcgLoadingIndicator extends StatefulWidget {
@@ -276,23 +279,31 @@ class _EcgPainter extends CustomPainter {
 
 // ── Convenience wrapper with label ────────────────────────────────────────
 /// Full loading block: ECG trace + pulsing dot + "Analisando…" label.
-/// BUILD 277: default traceColor updated to MedCases crimson kEcgRed.
+/// BUILD 327+: default traceColor updated to clinical green kEcgGreen.
+/// Pass [active]=false to freeze the animation (e.g. when stream ends).
 class EcgLoadingBlock extends StatelessWidget {
   final bool   dark;
   final String lang;
   final Color  traceColor;
+  /// When false the ECG trace is hidden (zero-height SizedBox) — use this
+  /// to show/hide the widget without unmounting it (avoids rebuild flash).
+  final bool   active;
 
   const EcgLoadingBlock({
     super.key,
-    this.dark  = true,
-    this.lang  = 'pt',
-    this.traceColor = kEcgRed,
+    this.dark       = true,
+    this.lang       = 'pt',
+    this.traceColor = kEcgGreen,
+    this.active     = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    // BUILD 327+: hide entirely when inactive (stream not running)
+    if (!active) return const SizedBox.shrink();
+
     // BUILD 277: background palette aligned with app scaffold
-    final bgColor   = dark ? const Color(0xFF12161F) : Colors.white;
+    final bgColor    = dark ? const Color(0xFF12161F) : Colors.white;
     final labelColor = dark
         ? Colors.white.withAlpha(110)
         : Colors.black.withAlpha(90);
