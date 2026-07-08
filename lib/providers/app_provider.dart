@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth; // BUILD 309 S3
 import 'package:flutter/foundation.dart';
+// BUILD 326: sub-providers especializados
+import 'ui_provider.dart';
+import 'ai_chat_provider.dart';
 // Import condicional: ls_web.dart (Web, usa dart:js) ou ls_stub.dart (iOS/Android, no-op).
 // Isola dart:js do compilador nativo — resolve "Undefined name 'context'" no Xcode.
 import '../services/ls_stub.dart'
@@ -136,6 +139,16 @@ class HemoData {
 }
 
 class AppProvider extends ChangeNotifier {
+  // ── BUILD 326: Sub-providers especializados ───────────────────────────────
+  // Expõos como campos públicos para que main.dart possa registrá-los
+  // no MultiProvider e as telas possam consumir diretamente via
+  // context.watch<UiProvider>() ou context.select<AiChatProvider, T>().
+  //
+  // AppProvider mantém fachada completa — todos os getters legados
+  // continuam funcionando como proxies. Zero mudanças nos call sites.
+  final UiProvider    uiProvider     = UiProvider();
+  final AiChatProvider aiChatProvider = AiChatProvider();
+
   // SUPER ORDEM MASTER 315: ValueNotifier para restaurar aba pós-OAuth redirect.
   // connectGemini() salva o índice em localStorage antes do reload.
   // checkGeminiSession() dispara o notifier em runtime (não em initState).
@@ -343,11 +356,12 @@ class AppProvider extends ChangeNotifier {
   bool get canModerateContent => (_currentUser?.isAdmin ?? false) || (_currentUser?.isSupervisor ?? false);
   String get userName => _currentUser?.displayName ?? '';
   String get userEmail => _currentUser?.email ?? '';
-  String get lang => _lang;
+  // BUILD 326: proxies para UiProvider — zero breaking changes nos call sites.
+  String get lang          => uiProvider.lang;
+  bool   get darkMode      => uiProvider.darkMode;
+  bool   get hapticEnabled => uiProvider.hapticEnabled;
   /// BUILD 249: expõe tópico ativo do thread clínico para EXT_TOOL guard
   String get activeThreadTopic => _threadManager.activeTopic;
-  bool get darkMode => _darkMode;
-  bool get hapticEnabled => _hapticEnabled;
   PatientData get patient => _patient;
   HemoData get hemo => _hemo;
   String get activeDrugId => _activeDrugId;
@@ -403,6 +417,12 @@ class AppProvider extends ChangeNotifier {
   /// do Firestore após o login do médico via Google Sign-In / Firebase Auth.
   /// O médico nunca configura nada manualmente — fluxo 100% automático e invisível.
   bool get hasAnyAi => GeminiService.hasApiKey || _openAiKey.isNotEmpty || _geminiConnected;
+
+  // ── BUILD 326: aiStreaming proxy → AiChatProvider ─────────────────────────
+  /// Indica se há streaming ativo. Proxy para AiChatProvider.aiStreaming.
+  /// A ai_screen usa context.select<AiChatProvider, bool>(p => p.aiStreaming)
+  /// para rebuild cirúrgico. Este getter mantém compatibilidade legada.
+  bool get aiStreaming => _aiStreamActive;
 
   // ── Getters — Modo Offline ────────────────────────────────────────────────
   bool   get offlineMode      => _offlineMode;
@@ -588,6 +608,8 @@ class AppProvider extends ChangeNotifier {
     _pinnedDrugIds = [];
     _pinnedCalcIds = [];
     _plantaoPatients = [];
+    // BUILD 326: limpa sub-providers no logout.
+    aiChatProvider.clearOnLogout();
     notifyListeners();
   }
 
@@ -852,6 +874,19 @@ class AppProvider extends ChangeNotifier {
         } catch (_) {}
       }
     } catch (_) {}
+    // BUILD 326: sincroniza UiProvider com valores carregados do SharedPreferences.
+    uiProvider.syncValues(lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
+    // BUILD 326: sincroniza AiChatProvider com estado de IA.
+    aiChatProvider.syncFromAppProvider(
+      aiStreaming:      _aiStreamActive,
+      hasAnyAi:        hasAnyAi,
+      hasAiKey:        hasAiKey,
+      geminiConnected: _geminiConnected,
+      geminiLoading:   _geminiLoading,
+      geminiEmail:     _geminiEmail,
+      openAiKey:       _openAiKey,
+      aiKeyLoading:    _aiKeyLoading,
+    );
     notifyListeners();
   }
 
@@ -1113,13 +1148,13 @@ class AppProvider extends ChangeNotifier {
   void setLang(String l) {
     _lang = l;
     // Build 100: resetar o language lock da sessão ao trocar o idioma do app.
-    // Sem este reset, a IA ignorava a troca de idioma e continuava respondendo
-    // no idioma da primeira mensagem enviada antes da mudança.
     _sessionLockedLang = null;
     _saveLocal();
     if (_currentUser != null) {
       FirestoreService.updateUserProfile(_currentUser!.uid, lang: l);
     }
+    // BUILD 326: notifica UiProvider (afeta apenas widgets de tema/idioma).
+    uiProvider.syncValues(lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
     notifyListeners();
   }
 
@@ -1129,12 +1164,16 @@ class AppProvider extends ChangeNotifier {
     if (_currentUser != null) {
       FirestoreService.updateUserProfile(_currentUser!.uid, darkMode: _darkMode);
     }
+    // BUILD 326: notifica UiProvider.
+    uiProvider.syncValues(lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
     notifyListeners();
   }
 
   void toggleHaptic() {
     _hapticEnabled = !_hapticEnabled;
     _saveLocal();
+    // BUILD 326: notifica UiProvider.
+    uiProvider.syncValues(lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
     notifyListeners();
   }
 
@@ -1842,6 +1881,7 @@ class AppProvider extends ChangeNotifier {
   ///            o token chegará via checkGeminiSession() no próximo boot)
   Future<bool?> connectGemini() async {
     _geminiLoading = true;
+    aiChatProvider.setGeminiLoading(true); // BUILD 326
     notifyListeners();
     try {
       // No web com redirect flow, signIn() retorna false imediatamente após
@@ -1854,6 +1894,13 @@ class AppProvider extends ChangeNotifier {
       if (ok) {
         _geminiConnected = true;
         _geminiEmail = await GeminiService.connectedEmail() ?? '';
+        // BUILD 326: sync AiChatProvider.
+        aiChatProvider.setGeminiConnected(
+          connected: true,
+          email: _geminiEmail,
+          hasAnyAi: hasAnyAi,
+          hasAiKey: hasAiKey,
+        );
         return true;
       }
 
@@ -1882,6 +1929,7 @@ class AppProvider extends ChangeNotifier {
       return false;
     } finally {
       _geminiLoading = false;
+      aiChatProvider.setGeminiLoading(false); // BUILD 326
       notifyListeners();
     }
   }
@@ -1889,13 +1937,22 @@ class AppProvider extends ChangeNotifier {
   /// Desconecta a conta Google do Gemini.
   Future<void> disconnectGemini() async {
     _geminiLoading = true;
+    aiChatProvider.setGeminiLoading(true); // BUILD 326
     notifyListeners();
     try {
       await GeminiService.signOut();
       _geminiConnected = false;
       _geminiEmail = '';
+      // BUILD 326: sync AiChatProvider.
+      aiChatProvider.setGeminiConnected(
+        connected: false,
+        email: '',
+        hasAnyAi: hasAnyAi,
+        hasAiKey: hasAiKey,
+      );
     } finally {
       _geminiLoading = false;
+      aiChatProvider.setGeminiLoading(false); // BUILD 326
       notifyListeners();
     }
   }
@@ -3290,7 +3347,9 @@ class AppProvider extends ChangeNotifier {
   // ══════════════════════════════════════════════════════════════════════════
 
   /// Indica se há streaming ativo no momento.
-  bool get aiStreaming => _aiStreamActive;
+  /// BUILD 326: getter legado mantido — usa _aiStreamActive diretamente.
+  /// Novo código deve preferir context.select<AiChatProvider, bool>(p => p.aiStreaming).
+  // (getter aiStreaming já declarado nos Getters públicos acima — não duplicar)
   bool _aiStreamActive = false;
 
   /// Cancela o streaming em curso (usuário trocou de tela, limpou chat, etc.)
@@ -3309,6 +3368,8 @@ class AppProvider extends ChangeNotifier {
     // Garante que cancelamento manual (clearChat, troca de tela, timeout da UI)
     // não deixe o guard travado, impedindo novas queries na mesma sessão.
     _aiCallInFlight = false;
+    // BUILD 326: sincroniza AiChatProvider.
+    if (wasActive) aiChatProvider.setStreaming(false);
     if (wasActive) notifyListeners();
   }
 
@@ -3481,6 +3542,8 @@ class AppProvider extends ChangeNotifier {
 
     // ── Streaming via AiGatewayService ────────────────────────────────────
     _aiStreamActive = true;
+    // BUILD 326: notifica AiChatProvider — apenas widgets de chat reconstroem.
+    aiChatProvider.setStreaming(true);
 
     // ── Reutiliza todo o pipeline de contexto do buildAIAnswer ─────────────
     // strictContextIsolation, globalLanguageLock, RAG retrieval, system prompt
@@ -3861,6 +3924,7 @@ class AppProvider extends ChangeNotifier {
         debugPrint('[AI_TIMEOUT] mode=plantao timeoutMs=30000 provider=paid elapsedMs=$elapsedMs requestId=$thisRequestId');
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
         _aiStreamActive = false;
+        aiChatProvider.setStreaming(false); // BUILD 326
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
       });
@@ -3892,6 +3956,7 @@ class AppProvider extends ChangeNotifier {
         criticalDone = true;
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
         _aiStreamActive = false;
+        aiChatProvider.setStreaming(false); // BUILD 326
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
 
         if (paidResult.success && paidResult.text.isNotEmpty) {
@@ -4031,6 +4096,8 @@ class AppProvider extends ChangeNotifier {
           if (completionFired) return;
           completionFired = true;
           _aiStreamActive = false;
+          aiChatProvider.setStreaming(false); // BUILD 326
+        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub = null;
           final rawPartial = accumulator.toString().trim();
           final errCode = chunk.errorCode ?? 'network';
@@ -4128,6 +4195,8 @@ class AppProvider extends ChangeNotifier {
             debugPrint('[HISTORY_SANITIZER] free_done_fallback_blocked reason=isFallbackText');
           }
           _aiStreamActive = false;
+          aiChatProvider.setStreaming(false); // BUILD 326
+        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
               ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
@@ -4143,6 +4212,7 @@ class AppProvider extends ChangeNotifier {
         _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
         _aiStreamActive = false;
+        aiChatProvider.setStreaming(false); // BUILD 326
         _aiStreamSub    = null;
         accumulator.clear();   // descarta texto parcial — nunca exibir
         // Build 226: erro de stream → tenta paid fallback antes de mostrar erro
@@ -4154,6 +4224,8 @@ class AppProvider extends ChangeNotifier {
         if (completionFired) {
           // Já tratado pelo listener — apenas limpeza silenciosa
           _aiStreamActive = false;
+          aiChatProvider.setStreaming(false); // BUILD 326
+        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           return;
         }
@@ -4168,17 +4240,23 @@ class AppProvider extends ChangeNotifier {
             ..add({'role': 'assistant', 'content': finalText});
           while (_aiHistory.length > 20) _aiHistory.removeAt(0);
           _aiStreamActive = false;
+          aiChatProvider.setStreaming(false); // BUILD 326
+        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           wrappedOnDone(finalText);   // BUILD 254
         } else if (finalText.isNotEmpty && _isFallbackText(finalText)) {
           // É texto de fallback — exibe na UI mas não entra no histórico da API
           if (kDebugMode) debugPrint('[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText');
           _aiStreamActive = false;
+          aiChatProvider.setStreaming(false); // BUILD 326
+        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           wrappedOnDone(finalText);   // BUILD 254
         } else {
           // Stream fechou vazio — Build 226: tenta paid fallback
           _aiStreamActive = false;
+          aiChatProvider.setStreaming(false); // BUILD 326
+        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           if (kDebugMode) debugPrint('[AI_ROUTER] stream closed empty → paid fallback');
           unawaited(tryPaidFallback('empty_stream'));

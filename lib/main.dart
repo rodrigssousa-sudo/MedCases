@@ -19,6 +19,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'theme/app_theme.dart';
 import 'providers/app_provider.dart';
+import 'providers/ui_provider.dart';       // BUILD 326: sub-provider de UI
+import 'providers/ai_chat_provider.dart';  // BUILD 326: sub-provider de IA/chat
 import 'services/auth_service.dart';
 import 'services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 import 'models/user_model.dart';
@@ -103,8 +105,15 @@ Future<void> main() async {
 
   // ── runApp() IMEDIATO — splash aparece em < 500ms ────────────────────────
   runApp(
-    ChangeNotifierProvider.value(
-      value: provider,
+    // BUILD 326: MultiProvider expõe AppProvider + sub-providers especializados.
+    // UiProvider e AiChatProvider são as instâncias criadas pelo AppProvider,
+    // garantindo que compartilham o mesmo estado — zero duplicação de lógica.
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: provider),
+        ChangeNotifierProvider.value(value: provider.uiProvider),
+        ChangeNotifierProvider.value(value: provider.aiChatProvider),
+      ],
       child: MedCasesApp(firebaseInit: firebaseInit),
     ),
   );
@@ -204,11 +213,10 @@ class MedCasesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // context.select — rebuild APENAS quando darkMode muda (troca de tema).
-    // Antes usava context.watch que rebuildava MaterialApp inteiro a cada
-    // notifyListeners() do AppProvider — propagando rebuild para toda a árvore:
-    // MaterialApp → _AuthGate → StreamBuilder → MainShell → HomeScreen (piscar).
-    final darkMode = context.select<AppProvider, bool>((p) => p.darkMode);
+    // BUILD 326: context.select<UiProvider> — rebuild APENAS quando darkMode muda.
+    // UiProvider é notificado SOMENTE por toggleDarkMode() / setLang() —
+    // completamente isolado do streaming de IA e outros notifyListeners().
+    final darkMode = context.select<UiProvider, bool>((p) => p.darkMode);
     return NotificationOverlay(child: MaterialApp(
       title: 'MedCases Pro',
       debugShowCheckedModeBanner: false,

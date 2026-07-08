@@ -15,6 +15,7 @@ import '../widgets/error_state_widget.dart'
 import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:convert';
 import '../providers/app_provider.dart';
+import '../providers/ai_chat_provider.dart'; // BUILD 326: granular rebuild durante streaming
 
 import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
@@ -7691,15 +7692,17 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // Lê estado atualizado em tempo real via Consumer
-    return Consumer<AppProvider>(
-      builder: (context, p, _) {
+    // BUILD 326: Consumer<AiChatProvider> em vez de Consumer<AppProvider>.
+    // Apenas este widget reconstrói quando Gemini conecta/desconecta —
+    // o restante da ai_screen NÃO é afetado.
+    return Consumer<AiChatProvider>(
+      builder: (context, aiChat, _) {
         final dark           = widget.dark;
         final isEs           = _isEs;
-        final geminiConn     = p.geminiConnected;
-        final geminiEmail    = p.geminiEmail;
-        final geminiLoading  = p.geminiLoading;
-        final hasAnyAi       = p.hasAnyAi;
+        final geminiConn     = aiChat.geminiConnected;
+        final geminiEmail    = aiChat.geminiEmail;
+        final geminiLoading  = aiChat.geminiLoading;
+        final hasAnyAi       = aiChat.hasAnyAi;
 
         final bg     = dark ? const Color(0xFF0F1A14) : Colors.white;
         final cardBg = dark ? const Color(0xFF2D3340) : const Color(0xFFF5F7F5);
