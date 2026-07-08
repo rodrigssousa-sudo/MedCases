@@ -4198,8 +4198,9 @@ class _StepBtn extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // HISTORIAL COMPACTO — card horizontal único, meia-altura, largura total
 // Build 95: substitui _HomeSectionHeader + _QuickShortcuts por card integrado
+// Build 327: adicionado botão Timer (Pomodoro Clínico) como terceiro botão.
 // ─────────────────────────────────────────────────────────────────────────────
-class _HistorialCompactCard extends StatelessWidget {
+class _HistorialCompactCard extends StatefulWidget {
   final bool dark;
   final bool isEs;
   final Function(String) openProtocol;
@@ -4215,14 +4216,139 @@ class _HistorialCompactCard extends StatelessWidget {
   });
 
   @override
+  State<_HistorialCompactCard> createState() => _HistorialCompactCardState();
+}
+
+class _HistorialCompactCardState extends State<_HistorialCompactCard> {
+  // ── Pomodoro state ──────────────────────────────────────────
+  Timer? _countdownTimer;
+  int    _remainingSecs = 0;
+  int    _notifId       = 0;
+  String _timerLabel    = '';   // ex: "Box 3 — João"
+
+  bool get _timerActive => _remainingSecs > 0;
+
+  String get _remainingDisplay {
+    final m = _remainingSecs ~/ 60;
+    final s = _remainingSecs % 60;
+    return '${m.toString().padLeft(2,'0')}:${s.toString().padLeft(2,'0')}';
+  }
+
+  void _startTimer(int seconds, String label) {
+    _cancelTimer();
+    setState(() {
+      _remainingSecs = seconds;
+      _timerLabel    = label;
+    });
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) { t.cancel(); return; }
+      setState(() => _remainingSecs--);
+      if (_remainingSecs <= 0) {
+        t.cancel();
+        _onTimerExpired();
+      }
+    });
+  }
+
+  void _cancelTimer() {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+    if (_notifId > 0) {
+      NotificationService.cancel(_notifId);
+      _notifId = 0;
+    }
+    if (mounted) setState(() => _remainingSecs = 0);
+  }
+
+  void _onTimerExpired() {
+    if (!mounted) return;
+    // In-app AlertDialog
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        backgroundColor: widget.dark ? const Color(0xFF1E2128) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(children: [
+          const Icon(Icons.alarm_rounded, color: Color(0xFFDC2626), size: 26),
+          const SizedBox(width: 10),
+          Expanded(child: Text(
+            widget.isEs ? '¡Revisión requerida!' : 'Revisão necessária!',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+          )),
+        ]),
+        content: Text(
+          _timerLabel.isNotEmpty
+              ? (_timerLabel)
+              : (widget.isEs ? 'Tiempo de revisión agotado.' : 'Tempo de revisão esgotado.'),
+          style: TextStyle(
+            fontSize: 14,
+            color: widget.dark ? Colors.white70 : const Color(0xFF374151),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () { Navigator.pop(context); widget.onOpenNotes(); },
+            child: Text(widget.isEs ? 'Ver Notas' : 'Ver Notas',
+              style: const TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.w700)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFDC2626),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () => Navigator.pop(context),
+            child: Text(widget.isEs ? 'Revisar ahora' : 'Revisar agora',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openTimerSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _PomodoroSheet(
+        dark: widget.dark,
+        isEs: widget.isEs,
+        onStart: (int secs, String label) async {
+          // Agenda notificação push (funciona com app fechado/bloqueado)
+          final lang = widget.isEs ? 'es' : 'pt';
+          final title = widget.isEs
+              ? '⏰ Revisión de paciente'
+              : '⏰ Revisão de paciente';
+          final body = label.isNotEmpty ? label
+              : (widget.isEs ? 'Tiempo de revisión agotado' : 'Tempo de revisão esgotado');
+          _notifId = await NotificationService.scheduleTimer(
+            seconds: secs,
+            title:   title,
+            body:    body,
+            payload: 'shift_timer',
+            channel: 'medcases_shift',
+          );
+          _startTimer(secs, body);
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _cancelTimer();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final dark        = widget.dark;
+    final isEs        = widget.isEs;
     final cardBg      = dark ? const Color(0xFF1A1D23) : Colors.white;
     final borderColor = dark
         ? Colors.white.withOpacity(0.07)
         : const Color(0xFFE8ECF5);
-    final labelColor  = dark
-        ? Colors.white.withOpacity(0.38)
-        : const Color(0xFF9CA3AF);
     final dividerColor = dark
         ? Colors.white.withOpacity(0.07)
         : const Color(0xFFECEFF7);
@@ -4236,17 +4362,12 @@ class _HistorialCompactCard extends StatelessWidget {
             ),
           ];
 
-    // SUPER ORDEM MASTER 317 M2: grade reduzida a 2 botões simétricos.
-    // Preserva: paletas, dividers 1px, altura e espaçamentos elegantes.
-    // Mantidos: [Avaliação / Evaluación] | [Notas]
-    // Removidos: Buscar, Favoritos, Recentes.
-
-    // Helper para construir cada coluna de forma idêntica
     Widget _col({
       required IconData icon,
       required Color color,
       required String label,
       required VoidCallback onTap,
+      String? badge,
     }) {
       return Expanded(
         child: GestureDetector(
@@ -4255,7 +4376,22 @@ class _HistorialCompactCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 20, color: color),
+              Stack(clipBehavior: Clip.none, children: [
+                Icon(icon, size: 20, color: color),
+                if (badge != null)
+                  Positioned(
+                    top: -4, right: -10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(badge,
+                        style: const TextStyle(fontSize: 7, color: Colors.white, fontWeight: FontWeight.w800)),
+                    ),
+                  ),
+              ]),
               const SizedBox(height: 3),
               Text(
                 label,
@@ -4277,17 +4413,31 @@ class _HistorialCompactCard extends StatelessWidget {
 
     Widget _div() => Container(width: 1, height: 34, color: dividerColor);
 
+    // Timer badge: mostra countdown se ativo, senão mostra "Timer"
+    final timerColor = _timerActive
+        ? const Color(0xFF7C3AED)   // roxo quando ativo
+        : const Color(0xFF6B7280);  // cinza quando inativo
+    final timerIcon  = _timerActive
+        ? Icons.alarm_on_rounded
+        : Icons.alarm_rounded;
+    final timerBadge = _timerActive ? _remainingDisplay : null;
+
     return Container(
       height: 58,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: cardBg,
         boxShadow: shadow,
-        border: Border.all(color: borderColor),
+        border: Border.all(
+          color: _timerActive
+              ? const Color(0xFF7C3AED).withOpacity(0.35)
+              : borderColor,
+          width: _timerActive ? 1.5 : 1.0,
+        ),
       ),
       child: Row(
         children: [
-          // [1] EVALUACIÓN / AVALIAÇÃO — vermelho #DC2626
+          // [1] EVALUACIÓN / AVALIAÇÃO
           _col(
             icon: Icons.assignment_ind_rounded,
             color: const Color(0xFFDC2626),
@@ -4295,15 +4445,290 @@ class _HistorialCompactCard extends StatelessWidget {
             onTap: () => HomeScreen._openAvaliacao(context),
           ),
           _div(),
-          // [2] NOTAS — laranja #FF8A00
+          // [2] NOTAS
           _col(
             icon: Icons.sticky_note_2_rounded,
             color: const Color(0xFFFF8A00),
             label: isEs ? 'Notas' : 'Notas',
-            onTap: onOpenNotes,
+            onTap: widget.onOpenNotes,
           ),
+          _div(),
+          // [3] TIMER (Pomodoro Clínico) — BUILD 327
+          _timerActive
+              ? Expanded(
+                  child: GestureDetector(
+                    onTap: () { AppHaptics.selection(context); _cancelTimer(); },
+                    onLongPress: () { AppHaptics.medium(context); _openTimerSheet(); },
+                    behavior: HitTestBehavior.opaque,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(timerIcon, size: 20, color: timerColor),
+                        const SizedBox(height: 3),
+                        Text(
+                          _remainingDisplay,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: timerColor,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : _col(
+                  icon: timerIcon,
+                  color: timerColor,
+                  label: isEs ? 'Timer' : 'Timer',
+                  onTap: _openTimerSheet,
+                ),
         ],
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POMODORO SHEET — Bottom sheet para configurar o timer clínico
+// ─────────────────────────────────────────────────────────────────────────────
+class _PomodoroSheet extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  final Future<void> Function(int seconds, String label) onStart;
+
+  const _PomodoroSheet({
+    required this.dark,
+    required this.isEs,
+    required this.onStart,
+  });
+
+  @override
+  State<_PomodoroSheet> createState() => _PomodoroSheetState();
+}
+
+class _PomodoroSheetState extends State<_PomodoroSheet> {
+  int _selectedMinutes = 15;
+  bool _customMode = false;
+  final _labelCtrl  = TextEditingController();
+  final _customCtrl = TextEditingController();
+  bool _loading = false;
+
+  static const _presets = [15, 30, 60];
+
+  @override
+  void dispose() {
+    _labelCtrl.dispose();
+    _customCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _confirm() async {
+    final secs = _customMode
+        ? (int.tryParse(_customCtrl.text.trim()) ?? 15) * 60
+        : _selectedMinutes * 60;
+    if (secs <= 0) return;
+    setState(() => _loading = true);
+    await widget.onStart(secs, _labelCtrl.text.trim());
+    if (mounted) {
+      setState(() => _loading = false);
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+    final bg    = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final text1 = dark ? Colors.white : const Color(0xFF111827);
+    final text2 = dark ? Colors.white70 : const Color(0xFF6B7280);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: EdgeInsets.only(
+        left: 24, right: 24, top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 32,
+      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // Handle
+        Center(child: Container(
+          width: 40, height: 4,
+          decoration: BoxDecoration(
+            color: dark ? Colors.white24 : const Color(0xFFD1D5DB),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        )),
+        const SizedBox(height: 20),
+
+        // Title
+        Row(children: [
+          const Icon(Icons.alarm_rounded, color: Color(0xFF7C3AED), size: 22),
+          const SizedBox(width: 10),
+          Text(
+            isEs ? 'Timer de Revisão Clínica' : 'Timer de Revisão Clínica',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: text1),
+          ),
+        ]),
+        const SizedBox(height: 6),
+        Text(
+          isEs
+              ? 'Configure un recordatorio para revisar al paciente.'
+              : 'Configure um lembrete para revisar o paciente.',
+          style: TextStyle(fontSize: 12, color: text2),
+        ),
+        const SizedBox(height: 20),
+
+        // Preset buttons
+        Text(isEs ? 'Tiempo rápido' : 'Tempo rápido',
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+            color: dark ? Colors.white54 : const Color(0xFF9CA3AF))),
+        const SizedBox(height: 10),
+        Row(children: _presets.map((m) {
+          final selected = !_customMode && _selectedMinutes == m;
+          return Expanded(child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: GestureDetector(
+              onTap: () => setState(() { _customMode = false; _selectedMinutes = m; }),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? const Color(0xFF7C3AED).withOpacity(0.15)
+                      : (dark ? const Color(0xFF252930) : const Color(0xFFF3F4F6)),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: selected
+                        ? const Color(0xFF7C3AED)
+                        : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Text('$m',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
+                      color: selected ? const Color(0xFF7C3AED) : text1)),
+                  Text(isEs ? 'min' : 'min',
+                    style: TextStyle(fontSize: 10, color: text2)),
+                ]),
+              ),
+            ),
+          ));
+        }).toList()),
+        const SizedBox(height: 14),
+
+        // Custom time
+        GestureDetector(
+          onTap: () => setState(() => _customMode = true),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: _customMode
+                  ? const Color(0xFF7C3AED).withOpacity(0.08)
+                  : (dark ? const Color(0xFF252930) : const Color(0xFFF9FAFB)),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: _customMode
+                    ? const Color(0xFF7C3AED)
+                    : (dark ? Colors.white12 : const Color(0xFFE5E7EB)),
+              ),
+            ),
+            child: Row(children: [
+              Icon(Icons.tune_rounded, size: 16,
+                color: _customMode ? const Color(0xFF7C3AED) : text2),
+              const SizedBox(width: 8),
+              Text(isEs ? 'Tiempo personalizado:' : 'Tempo personalizado:',
+                style: TextStyle(fontSize: 12, color: text2)),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 50,
+                child: TextField(
+                  controller: _customCtrl,
+                  keyboardType: TextInputType.number,
+                  onTap: () => setState(() => _customMode = true),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: text1),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                    hintText: '45',
+                    hintStyle: TextStyle(color: text2),
+                    filled: true,
+                    fillColor: dark ? Colors.white10 : const Color(0xFFEFF6FF),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text('min', style: TextStyle(fontSize: 12, color: text2)),
+            ]),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Label (Box + paciente)
+        Text(isEs ? 'Paciente / Box (opcional)' : 'Paciente / Box (opcional)',
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+            color: dark ? Colors.white54 : const Color(0xFF9CA3AF))),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _labelCtrl,
+          style: TextStyle(fontSize: 14, color: text1),
+          decoration: InputDecoration(
+            hintText: isEs ? 'Ej: Box 3 — María García' : 'Ex: Box 3 — João Silva',
+            hintStyle: TextStyle(color: text2, fontSize: 13),
+            filled: true,
+            fillColor: dark ? const Color(0xFF252930) : const Color(0xFFF9FAFB),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: dark ? Colors.white12 : const Color(0xFFE5E7EB)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: dark ? Colors.white12 : const Color(0xFFE5E7EB)),
+            ),
+            prefixIcon: Icon(Icons.person_rounded, size: 16, color: text2),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Confirm button
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF7C3AED),
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              elevation: 0,
+            ),
+            onPressed: _loading ? null : _confirm,
+            child: _loading
+                ? const SizedBox(width: 20, height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    const Icon(Icons.alarm_on_rounded, size: 18, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Text(
+                      isEs ? 'Iniciar Timer' : 'Iniciar Timer',
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
+                    ),
+                  ]),
+          ),
+        ),
+      ]),
     );
   }
 }

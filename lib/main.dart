@@ -759,17 +759,24 @@ class _SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<_SplashScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  // ── Entrada (700 ms) ─────────────────────────────────────────
   late AnimationController _ctrl;
   late Animation<double>   _scale;
   late Animation<double>   _fade;
   late Animation<Offset>   _slide;
 
+  // ── Pulso contínuo do logo (2400 ms, repeat) ─────────────────
+  // Opacity: 1.0 → 0.55 → 1.0 (Curves.easeInOut)
+  // Scale:   1.0 → 1.06 → 1.0 (Curves.easeInOut)
+  late AnimationController _pulseCtrl;
+  late Animation<double>   _pulseOpacity;
+  late Animation<double>   _pulseScale;
+
   @override
   void initState() {
     super.initState();
-    // Animação de entrada suave: 700ms, logo escala de 0.82→1.0 com spring,
-    // fade 0→1 na primeira metade, slide sutil de baixo para cima.
+    // ── Animação de entrada ──────────────────────────────────────
     _ctrl = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 700));
     _scale = Tween<double>(begin: 0.82, end: 1.0)
@@ -779,10 +786,28 @@ class _SplashScreenState extends State<_SplashScreen>
     _slide = Tween<Offset>(begin: const Offset(0, 0.10), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
     _ctrl.forward();
+
+    // ── Pulso contínuo — inicia após a entrada terminar ──────────
+    _pulseCtrl = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 2400));
+    _pulseOpacity = Tween<double>(begin: 1.0, end: 0.55)
+        .animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    _pulseScale = Tween<double>(begin: 1.0, end: 1.06)
+        .animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    // Começa o pulso depois que a animação de entrada termina
+    _ctrl.addStatusListener((status) {
+      if (status == AnimationStatus.completed && mounted) {
+        _pulseCtrl.repeat(reverse: true);
+      }
+    });
   }
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _pulseCtrl.dispose();
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -834,42 +859,52 @@ class _SplashScreenState extends State<_SplashScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
 
-                    // ── Logo 120×120 com glow verde clínico ───────────────────
-                    // Tamanho splash-grade: proporcional e imponente na tela.
-                    // Usa o mesmo app_icon.png do launcher para consistência.
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF0E7C52).withOpacity(0.30),
-                            blurRadius: 60,
-                            spreadRadius: 12,
-                          ),
-                        ],
+                    // ── Logo 120×120 com glow verde + pulso suave ─────────────
+                    // AnimatedBuilder reage ao _pulseCtrl (repeat reverse):
+                    // opacidade 1.0↔0.55 e escala 1.0↔1.06 com easeInOut 2.4s.
+                    AnimatedBuilder(
+                      animation: _pulseCtrl,
+                      builder: (_, child) => Opacity(
+                        opacity: _pulseOpacity.value,
+                        child: Transform.scale(
+                          scale: _pulseScale.value,
+                          child: child,
+                        ),
                       ),
-                      child: Image.asset(
-                        'assets/icon/app_icon.png',
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.contain,
-                        // Fallback elegante caso o asset falhe (ex: hot-reload parcial)
-                        errorBuilder: (_, __, ___) => Container(
-                          width: 120, height: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(28),
-                            gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)],
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF0E7C52).withOpacity(0.30),
+                              blurRadius: 60,
+                              spreadRadius: 12,
                             ),
-                          ),
-                          child: const Center(
-                            child: Text('M+', style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFFFFE8A6),
-                            )),
+                          ],
+                        ),
+                        child: Image.asset(
+                          'assets/icon/app_icon.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.contain,
+                          // Fallback elegante caso o asset falhe (ex: hot-reload parcial)
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 120, height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(28),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)],
+                              ),
+                            ),
+                            child: const Center(
+                              child: Text('M+', style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFFFFE8A6),
+                              )),
+                            ),
                           ),
                         ),
                       ),
@@ -908,43 +943,85 @@ class _SplashScreenState extends State<_SplashScreen>
           ),
         ),
 
-        // ── Bloco inferior: progress indicator + label de carregamento ─────────
+        // ── Bloco inferior: progress indicator animado + label ciclante ──────
         // Posicionado a 72px do fundo com safeBottom para respeitar o sistema.
         Positioned(
           bottom: 72,
           left: 0, right: 0,
           child: FadeTransition(
             opacity: _fade,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // CircularProgressIndicator — verde clínico, stroke fino e elegante
-                SizedBox(
-                  width: 22, height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.0,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      const Color(0xFF13A06A).withOpacity(0.70),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Label discreto mas legível — comunica progresso ao usuário
-                Text(
-                  'Carregando dados clínicos...',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.white.withOpacity(0.42),
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0.6,
-                  ),
-                ),
-              ],
-            ),
+            child: _SplashLoadingIndicator(pulseCtrl: _pulseCtrl),
           ),
         ),
 
       ]),
+    );
+  }
+}
+
+// ── Loading indicator ciclante (usado pelo _SplashScreen) ────────────────────
+// Exibe um CircularProgressIndicator verde + texto que cicla entre 4 mensagens
+// a cada 3.5 s. Usa o mesmo _pulseCtrl do logo para sincronizar o fade do texto
+// com o pulso visual (opacity share).
+class _SplashLoadingIndicator extends StatefulWidget {
+  final AnimationController pulseCtrl;
+  const _SplashLoadingIndicator({required this.pulseCtrl});
+  @override
+  State<_SplashLoadingIndicator> createState() => _SplashLoadingIndicatorState();
+}
+
+class _SplashLoadingIndicatorState extends State<_SplashLoadingIndicator> {
+  static const _msgs = [
+    'Carregando dados clínicos...',
+    'Inicializando IA clínica...',
+    'Preparando protocolos...',
+    'Quase lá...',
+  ];
+  int _msgIdx = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Cicla as mensagens a cada 3.5 s
+    Future<void>.delayed(const Duration(milliseconds: 3500), _nextMsg);
+  }
+
+  void _nextMsg() {
+    if (!mounted) return;
+    setState(() => _msgIdx = (_msgIdx + 1) % _msgs.length);
+    Future<void>.delayed(const Duration(milliseconds: 3500), _nextMsg);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 22, height: 22,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.0,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              const Color(0xFF13A06A).withOpacity(0.70),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
+          child: Text(
+            _msgs[_msgIdx],
+            key: ValueKey(_msgIdx),
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.white.withOpacity(0.42),
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.6,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
