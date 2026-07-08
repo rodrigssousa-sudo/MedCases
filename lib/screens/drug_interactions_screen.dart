@@ -4,7 +4,6 @@ import '../providers/app_provider.dart';
 import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../services/drug_interaction_service.dart';
-import '../services/cloud_clinical_data_service.dart';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -356,7 +355,7 @@ class _Header extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEs ? '${CloudClinicalDataService.instance.drugs.length} fármacos' : '${CloudClinicalDataService.instance.drugs.length} fármacos',
+              '628 fármacos',
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
