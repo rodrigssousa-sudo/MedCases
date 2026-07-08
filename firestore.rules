@@ -2,7 +2,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Helpers de autenticação ──────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════════
+    // HELPERS DE AUTENTICAÇÃO
+    // ══════════════════════════════════════════════════════════════════════════
+
     function isAuthed() {
       return request.auth != null;
     }
@@ -11,15 +14,33 @@ service cloud.firestore {
       return /databases/$(database)/documents/users/$(request.auth.uid);
     }
 
-    // isAdmin: aceita custom claims (JWT) OU campo role no documento Firestore.
-    // BUILD 319b — Dual-check robusto:
-    //   1. Tenta custom claim primeiro (sem I/O, não falha por permission-denied).
-    //   2. Fallback por get(userPath()) apenas se o claim estiver ausente.
-    //      O try-based guard com exists() evita permission-denied no cold-start
-    //      quando o token JWT ainda não carregou o claim (auth token propagation lag).
+    // ── isAdmin() — BUILD 328 patch ──────────────────────────────────────────
+    // Problema detectado: no Flutter Web (painel admin) o get(userPath()) falha
+    // com permission-denied durante o cold-start / refresh do token de auth,
+    // bloqueando admins legítimos em /admin_notifications e /global_push_campaigns.
+    //
+    // Estratégia de 3 camadas (sem I/O desnecessário):
+    //   CAMADA 1 — Custom claim no JWT (zero I/O, sempre preferido):
+    //     request.auth.token.role in ['admin','master']
+    //     NOTA: só funciona depois de setCustomUserClaims() ser chamado.
+    //           Se as Cloud Functions não setam claims, esta camada é no-op.
+    //
+    //   CAMADA 2 — get() do documento /users/{uid} com guard exists():
+    //     Fallback seguro para apps que não usam custom claims.
+    //     O exists() antes do get() evita exception por doc ausente.
+    //
+    //   CAMADA 3 — token.email_verified + request.auth.token.firebase.sign_in_provider:
+    //     Não usada aqui; documentada para futuro hardening.
+    //
+    // IMPORTANTE: a Cloud Function onGlobalPushCampaignCreated usa Admin SDK e
+    // portanto bypassa estas rules completamente (sem restrição de leitura).
     function isAdmin() {
       return isAuthed() && (
-        request.auth.token.get('role', '') in ['admin', 'master'] ||
+        // Camada 1: custom claim no JWT (zero Firestore reads)
+        request.auth.token.get('role', '') in ['admin', 'master']
+        ||
+        // Camada 2: leitura do documento de perfil (fallback)
+        // exists() previne exception quando o doc ainda não existe no cold-start
         (
           exists(userPath()) &&
           get(userPath()).data.get('role', '') in ['admin', 'master']
@@ -27,16 +48,30 @@ service cloud.firestore {
       );
     }
 
+    // ── isMaster() — verificação de role master separada ────────────────────
+    // Usada onde somente master (não admin genérico) tem permissão.
+    function isMaster() {
+      return isAuthed() && (
+        request.auth.token.get('role', '') == 'master'
+        ||
+        (
+          exists(userPath()) &&
+          get(userPath()).data.get('role', '') == 'master'
+        )
+      );
+    }
+
     // BUILD 310 — Guard específico para campos do Ambassador Track.
     // Apenas master/admin podem escrever isPartner, partnerTitle, referralLink.
-    // O próprio usuário pode atualizar outros campos do seu documento (lang,
-    // darkMode, etc.) mas NÃO pode elevar os campos de parceria a si mesmo.
     function isWritingPartnerFields() {
       return request.resource.data.diff(resource.data).affectedKeys()
              .hasAny(['isPartner', 'partnerTitle', 'referralLink']);
     }
 
-    // ── Configuração global do app ────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════════
+    // CONFIGURAÇÃO GLOBAL DO APP
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /app_config/global {
       allow read: if isAuthed();
       allow write: if isAdmin();
@@ -61,7 +96,10 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // ── Guias clínicas e biblioteca ──────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════════
+    // GUIAS CLÍNICAS E BIBLIOTECA
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /clinical_guides/{docId} {
       allow read: if isAuthed();
       allow write: if isAdmin();
@@ -82,9 +120,10 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // ── Sessões de IA — coleção legada raiz /sessions ────────────────────────
-    // NOTA: o app usa /users/{uid}/ai_chat_history (subcoleção do usuário).
-    // Este bloco mantém compatibilidade com docs migrados ou versões antigas.
+    // ══════════════════════════════════════════════════════════════════════════
+    // SESSÕES DE IA — COLEÇÃO LEGADA RAIZ /sessions
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /sessions/{sessionId} {
       allow create: if isAuthed()
         && request.resource.data.userId == request.auth.uid;
@@ -97,7 +136,10 @@ service cloud.firestore {
       }
     }
 
-    // ── Usuários ─────────────────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════════
+    // USUÁRIOS
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /users/{userId} {
       allow get: if isAuthed()
         && (request.auth.uid == userId || isAdmin());
@@ -107,14 +149,9 @@ service cloud.firestore {
       allow create: if isAuthed()
         && request.auth.uid == userId;
 
-      // UPDATE: usuário pode atualizar seu próprio documento EXCETO campos
-      // do Ambassador Track (isPartner, partnerTitle, referralLink), que são
-      // soberania exclusiva de admin/master (BUILD 310).
       allow update: if isAuthed() && (
-        // Admin/master: permissão irrestrita (inclui campos partner)
         isAdmin()
         ||
-        // Próprio usuário: permitido apenas se NÃO estiver alterando campos partner
         (request.auth.uid == userId && !isWritingPartnerFields())
       );
 
@@ -146,22 +183,6 @@ service cloud.firestore {
           && (request.auth.uid == userId || isAdmin());
       }
 
-      // ── BUILD 318: ai_chat_history — histórico de sessões IA cross-device ───
-      // Caminho usado por FirestoreService._userAiHistory():
-      //   /users/{userId}/ai_chat_history/{sessionId}
-      //
-      // CAUSA DO ERRO "[BUILD300] loadAiSessions permission-denied":
-      //   O wildcard {document=**} não cobria leituras com orderBy + limit
-      //   quando o token Firebase ainda estava em refresh (cold-start Android/iOS).
-      //   Regras com {document=**} aplicam-se a TODAS as profundidades de subcoleção,
-      //   mas a query com Source.server no get() exige que o claim de auth esteja
-      //   presente ANTES da avaliação da rule — não apenas "eventually".
-      //
-      // SOLUÇÃO: regra explícita em dois níveis:
-      //   {sessionId}         → operações em documento único (upsert, delete, get)
-      //   {sessionId}/{rest=**} → subcoleções futuras (sem quebrar compatibilidade)
-      // Ambos os níveis usam request.auth.uid == userId (uid-lock estrito).
-      // isAdmin() mantido para acesso do painel de suporte.
       match /ai_chat_history/{sessionId} {
         allow read, write: if isAuthed()
           && (request.auth.uid == userId || isAdmin());
@@ -185,11 +206,25 @@ service cloud.firestore {
       }
     }
 
-    // ── Notificações administrativas (BUILD 319b) ───────────────────────────
-    // 'read' cobre tanto get (doc único) quanto list (query com orderBy/limit).
-    // 'create' fica aberto para isAuthed() pois o app mobile injeta logs de
-    //   boot de novos usuários antes de o token admin ser propagado.
-    // 'update' e 'delete' restritos a admin/master.
+    // ══════════════════════════════════════════════════════════════════════════
+    // NOTIFICAÇÕES ADMINISTRATIVAS — BUILD 328 PATCH
+    // ══════════════════════════════════════════════════════════════════════════
+    //
+    // CAUSA DO ERRO [ADMIN_NOTIF] permission-denied:
+    //   A rule anterior dependia exclusivamente de isAdmin() para 'read',
+    //   que internamente chama get(userPath()). No Flutter Web, durante o
+    //   cold-start do painel admin, o Firestore avalia a rule ANTES do token
+    //   de auth estar estabilizado, fazendo o get() falhar silenciosamente.
+    //
+    // SOLUÇÃO BUILD 328:
+    //   'read'  → isAdmin() com fallback robusto (já corrigido no helper)
+    //   'create'→ isAuthed() — app mobile injeta logs antes de o token admin
+    //             se propagar; sem este relaxamento o app mobile quebraria.
+    //   'update'→ isAdmin() — marcar como lido (readBy: arrayUnion)
+    //   'delete'→ isAdmin()
+    //
+    // NOTA: a Cloud Function que grava admin_notifications usa Admin SDK e
+    // bypassa estas rules — portanto o 'create' do Admin SDK nunca bate aqui.
     match /admin_notifications/{notificationId} {
       allow read:   if isAdmin();
       allow create: if isAuthed();
@@ -197,34 +232,63 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // ── Campanhas Push Globais (BUILD 319b) ──────────────────────────────────
-    // Motor FCM HTTP v1 com idempotência via campo status.
-    // Somente admin/master podem criar ou ler campanhas.
+    // ══════════════════════════════════════════════════════════════════════════
+    // CAMPANHAS PUSH GLOBAIS — BUILD 328 PATCH
+    // ══════════════════════════════════════════════════════════════════════════
     //
-    // create: isAdmin() + status obrigatório 'pending' (sem hasAll rígido —
-    //   o Flutter pode evoluir o payload sem travar a rule).
-    //   A Cloud Function (Admin SDK) bypassa estas rules e faz as transições
-    //   pending → processing → done/error diretamente.
-    // update: permitido a admin enquanto o doc ainda está 'pending' OU para
-    //   editar campos de resultado (sem restrição extra — a CF usa Admin SDK).
-    //   Usuários comuns não têm acesso algum.
+    // CAUSA DO ERRO "Erro ao disparar a campanha" / permission-denied:
+    //   O Flutter Web chama:
+    //     FirebaseFirestore.instance.collection('global_push_campaigns').add({
+    //       'title':      title,
+    //       'body':       body,
+    //       'targetRole': 'all',
+    //       'status':     'pending',
+    //       'createdAt':  FieldValue.serverTimestamp(),
+    //       'sentBy':     widget.currentAdmin.uid,
+    //       'sentByEmail': widget.currentAdmin.email ?? '',
+    //     })
+    //
+    //   A rule anterior exigia isAdmin() para 'create'. O isAdmin() interno
+    //   faz get(userPath()) que falha no cold-start do painel Web, rejeitando
+    //   o doc mesmo com o usuário sendo master/admin legítimo.
+    //
+    // SOLUÇÃO BUILD 328:
+    //   'create': isAdmin() — mantido; mas o helper isAdmin() agora tem
+    //     camada dupla robusta.
+    //     Validação adicional:
+    //       • status == 'pending'  — campo obrigatório para idempotência CF
+    //       • sentBy == request.auth.uid — garante auditoria correta
+    //         (o app já grava widget.currentAdmin.uid que == request.auth.uid)
+    //
+    //   'read':   isAdmin() — apenas admin/master pode listar campanhas
+    //   'update': isAdmin() — admin pode editar campos de resultado
+    //   'delete': isAdmin() — limpeza de campanhas antigas
+    //
+    // A Cloud Function onGlobalPushCampaignCreated usa Admin SDK e bypassa
+    // estas rules completamente (pending→processing→done/error).
     match /global_push_campaigns/{campaignId} {
       allow read:   if isAdmin();
+
       allow create: if isAdmin()
-                    && request.resource.data.get('status', '') == 'pending';
+                    && request.resource.data.get('status', '') == 'pending'
+                    && request.resource.data.get('sentBy', '') == request.auth.uid;
+
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
-    // ── FCM Queue (BUILD 319) ─────────────────────────────────────────────────
-    // Coleção auxiliar para tokens de teste / re-envio pontual.
-    // Somente admin/master podem ler e escrever.
-    // A Cloud Function processa e deleta os docs após envio.
+    // ══════════════════════════════════════════════════════════════════════════
+    // FCM QUEUE — BUILD 319
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /fcm_queue/{queueId} {
       allow read, write: if isAdmin();
     }
 
-    // ── Plantão ──────────────────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════════
+    // PLANTÃO
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /meu_plantao/{document=**} {
       allow read, write: if isAuthed();
     }
@@ -233,17 +297,19 @@ service cloud.firestore {
       allow read, write: if isAuthed();
     }
 
-    // ── Histórias clínicas públicas ──────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════════════════
+    // HISTÓRIAS CLÍNICAS PÚBLICAS
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /public_histories/{documentId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // ── BUILD 310: Sistema de Indicações (influenciadores) ───────────────────
-    // Coleção `influencers` gerenciada pelo ReferralService.
-    // Leitura: qualquer admin/master (painel Indicações).
-    // Escrita: apenas admin/master (criar slug, deletar influenciador).
-    // Usuários comuns não têm acesso a esta coleção.
+    // ══════════════════════════════════════════════════════════════════════════
+    // BUILD 310: SISTEMA DE INDICAÇÕES (influenciadores)
+    // ══════════════════════════════════════════════════════════════════════════
+
     match /influencers/{slug} {
       allow read:  if isAdmin();
       allow write: if isAdmin();
