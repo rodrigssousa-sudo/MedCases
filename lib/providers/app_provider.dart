@@ -592,6 +592,7 @@ class AppProvider extends ChangeNotifier {
     // Limpa chave, histórico de IA e estado Gemini ao fazer logout
     _openAiKey = '';
     _aiHistory.clear();
+    _sessionMemory.reset();                  // BUILD 326.1: limpa memória clínica (diag, meds, labs) — evita leak entre contas
     _threadManager.reset();                  // BUILD 249: reset thread clínico ao fazer logout
     ClinicalThreadManager.resetStaticState(); // BUILD 304 PURIF-1: limpa _lastTaskLabel/_lastStudyActivityMs
     _geminiConnected = false;
@@ -3466,6 +3467,7 @@ class AppProvider extends ChangeNotifier {
         }
         _activeRequestId = '';
         _aiStreamActive  = false;
+        aiChatProvider.setStreaming(false); // BUILD 326.1: resume timeout — UI desbloqueia
         _aiStreamSub?.cancel();
         _aiStreamSub     = null;
         _aiCallInFlight  = false;
@@ -4081,6 +4083,7 @@ class AppProvider extends ChangeNotifier {
       // do Paid Proxy que chegar após este timer, sem setState em contexto morto.
       if (_activeRequestId == thisRequestId) _activeRequestId = '';
       _aiStreamActive = false;
+      aiChatProvider.setStreaming(false); // BUILD 326: global timeout — UI desbloqueia
       _aiStreamSub?.cancel();
       _aiStreamSub = null;
       accumulator.clear();
@@ -4097,7 +4100,6 @@ class AppProvider extends ChangeNotifier {
           completionFired = true;
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
-        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub = null;
           final rawPartial = accumulator.toString().trim();
           final errCode = chunk.errorCode ?? 'network';
@@ -4196,7 +4198,6 @@ class AppProvider extends ChangeNotifier {
           }
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
-        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
               ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
@@ -4225,7 +4226,6 @@ class AppProvider extends ChangeNotifier {
           // Já tratado pelo listener — apenas limpeza silenciosa
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
-        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           return;
         }
@@ -4241,7 +4241,6 @@ class AppProvider extends ChangeNotifier {
           while (_aiHistory.length > 20) _aiHistory.removeAt(0);
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
-        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           wrappedOnDone(finalText);   // BUILD 254
         } else if (finalText.isNotEmpty && _isFallbackText(finalText)) {
@@ -4249,14 +4248,12 @@ class AppProvider extends ChangeNotifier {
           if (kDebugMode) debugPrint('[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText');
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
-        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           wrappedOnDone(finalText);   // BUILD 254
         } else {
           // Stream fechou vazio — Build 226: tenta paid fallback
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
-        aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           if (kDebugMode) debugPrint('[AI_ROUTER] stream closed empty → paid fallback');
           unawaited(tryPaidFallback('empty_stream'));
