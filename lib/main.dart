@@ -7352,10 +7352,17 @@ class _OfflineDrawerCard extends StatefulWidget {
 class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
   static const _kBlue   = Color(0xFF1D4ED8);
   static const _kBlueLt = Color(0xFFEFF6FF);
+  /// Fallback build number shown when the local manifest has no version yet.
+  /// Kept in sync with pubspec.yaml version field (major.minor.patch+BUILD).
+  static const _kAppBuild = '1641';
 
   // ── Estado reativo do serviço de cache offline ───────────────────────────
   late CalcuCacheState _calcState;
   StreamSubscription<CalcuCacheState>? _calcSub;
+
+  // ── Estado local dos botões (feedback assíncrono) ────────────────────────
+  bool _syncing  = false;  // true enquanto forceUpdate() está em andamento
+  bool _clearing = false;  // true enquanto clearCache() está em andamento
 
   @override
   void initState() {
@@ -7370,6 +7377,90 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
   void dispose() {
     _calcSub?.cancel();
     super.dispose();
+  }
+
+  // ── Actualizar: sincronização assíncrona com feedback ────────────────────
+  Future<void> _doUpdate(BuildContext ctx, AppProvider p, bool isEs) async {
+    if (_syncing || _clearing) return;
+    setState(() => _syncing = true);
+    try {
+      // Dispara ambos os gatilhos em paralelo (AppProvider + CalcuService)
+      await Future.wait([
+        p.cacheAllDataForOffline(),
+        if (!kIsWeb) OfflineCalculatorCacheService.instance.forceUpdate(),
+      ]);
+      if (!mounted) return;
+      ScaffoldMessenger.of(ctx)
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(
+            content: Text(
+              isEs
+                  ? '✅ Base de datos actualizada con éxito'
+                  : '✅ Base de dados atualizada com sucesso',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+            backgroundColor: const Color(0xFF1D4ED8),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(ctx)
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(
+            content: Text(
+              isEs ? '⚠️ Error al actualizar: $e' : '⚠️ Erro ao atualizar: $e',
+              style: const TextStyle(fontSize: 12),
+            ),
+            backgroundColor: const Color(0xFFB91C1C),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 4),
+          ));
+    } finally {
+      if (mounted) setState(() => _syncing = false);
+    }
+  }
+
+  // ── Limpiar cache: limpeza assíncrona com feedback ───────────────────────
+  Future<void> _doClear(BuildContext ctx, bool isEs) async {
+    if (_clearing || _syncing) return;
+    setState(() => _clearing = true);
+    try {
+      if (!kIsWeb) {
+        await OfflineCalculatorCacheService.instance.clearCache();
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(ctx)
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(
+            content: Text(
+              isEs
+                  ? '🧹 Caché local limpiado correctamente'
+                  : '🧹 Cache local limpo com sucesso',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+            backgroundColor: const Color(0xFF374151),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(ctx)
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(
+            content: Text(
+              isEs ? '⚠️ Error al limpiar: $e' : '⚠️ Erro ao limpar: $e',
+              style: const TextStyle(fontSize: 12),
+            ),
+            backgroundColor: const Color(0xFFB91C1C),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 4),
+          ));
+    } finally {
+      if (mounted) setState(() => _clearing = false);
+    }
   }
 
   String _progressLabel(double prog, String lang) {
@@ -7498,11 +7589,13 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
                                         : const Color(0xFF9CA3AF)),
                           ),
                         ),
-                        // BUILD 327: versão compacta — só quando a base está pronta
-                        if (offline && !caching && calcVersion != null) ...[
+                        // BUILD 328: versão dinâmica — manifest local OU build do app
+                        // Sempre visível quando offline (sem a condição calcVersion!=null)
+                        if (offline && !caching) ...[
                           const SizedBox(height: 3),
                           Text(
-                            '${isEs ? 'Versión' : 'Versão'} $calcVersion',
+                            // calcVersion vem do manifest sincronizado; fallback = build do app
+                            '${isEs ? 'Versión' : 'Versão'} ${calcVersion ?? _kAppBuild}',
                             style: TextStyle(
                               fontSize: 9.5,
                               fontWeight: FontWeight.w600,
@@ -7591,67 +7684,100 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
               ),
             ],
 
-            // ── BUILD 327: Botões unificados — Actualizar + Limpiar ───────
-            // Mostrados quando: modo offline ativo E serviço não está baixando.
-            // Não estão condicionados a kIsWeb: no Web, forceUpdate é no-op gracioso.
+            // ── BUILD 328: Botões reativos — Actualizar + Limpiar cache ─────
+            // Visíveis: offline ativo E serviço CalcuCache não está baixando.
+            // _syncing/_clearing: feedback imediato sem bloquear a UI thread.
             if (offline && !caching && !calcActive)
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
                 child: Row(
                   children: [
+
                     // ── Actualizar base ──────────────────────────────────
                     GestureDetector(
-                      onTap: () {
-                        p.cacheAllDataForOffline();
-                        if (!kIsWeb) {
-                          OfflineCalculatorCacheService.instance.forceUpdate();
-                        }
-                      },
-                      child: Container(
+                      onTap: (_syncing || _clearing)
+                          ? null
+                          : () => _doUpdate(context, p, isEs),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(9),
-                          color: _kBlue.withOpacity(0.10),
-                          border: Border.all(color: _kBlue.withOpacity(0.30)),
+                          color: _syncing
+                              ? _kBlue.withOpacity(0.18)
+                              : _kBlue.withOpacity(0.10),
+                          border: Border.all(
+                            color: _syncing
+                                ? _kBlue.withOpacity(0.55)
+                                : _kBlue.withOpacity(0.30),
+                          ),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.sync_rounded, size: 12, color: _kBlue),
+                          // Spinner mini enquanto sincronizando, ícone normal caso contrário
+                          _syncing
+                              ? const SizedBox(
+                                  width: 12, height: 12,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.8,
+                                    color: _kBlue,
+                                  ),
+                                )
+                              : const Icon(Icons.sync_rounded, size: 12, color: _kBlue),
                           const SizedBox(width: 5),
                           Text(
-                            isEs ? 'Actualizar' : 'Atualizar',
+                            _syncing
+                                ? (isEs ? 'Sincronizando…' : 'Sincronizando…')
+                                : (isEs ? 'Actualizar' : 'Atualizar'),
                             style: const TextStyle(
                               fontSize: 10.5, fontWeight: FontWeight.w700, color: _kBlue),
                           ),
                         ]),
                       ),
                     ),
+
                     const SizedBox(width: 8),
+
                     // ── Limpiar cache ────────────────────────────────────
                     GestureDetector(
-                      onTap: () {
-                        if (!kIsWeb) {
-                          OfflineCalculatorCacheService.instance.clearCache();
-                        }
-                      },
-                      child: Container(
+                      onTap: (_clearing || _syncing)
+                          ? null
+                          : () => _doClear(context, isEs),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(9),
-                          color: dark
-                              ? Colors.white.withOpacity(0.05)
-                              : const Color(0xFFF3F4F6),
+                          color: _clearing
+                              ? (dark
+                                  ? Colors.white.withOpacity(0.10)
+                                  : const Color(0xFFE5E7EB))
+                              : (dark
+                                  ? Colors.white.withOpacity(0.05)
+                                  : const Color(0xFFF3F4F6)),
                           border: Border.all(
                             color: dark
-                                ? Colors.white.withOpacity(0.10)
-                                : const Color(0xFFD1D5DB),
+                                ? Colors.white.withOpacity(_clearing ? 0.20 : 0.10)
+                                : (_clearing
+                                    ? const Color(0xFF9CA3AF)
+                                    : const Color(0xFFD1D5DB)),
                           ),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.delete_outline_rounded, size: 12,
-                              color: dark ? Colors.white54 : const Color(0xFF6B7280)),
+                          _clearing
+                              ? SizedBox(
+                                  width: 12, height: 12,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.8,
+                                    color: dark ? Colors.white54 : const Color(0xFF6B7280),
+                                  ),
+                                )
+                              : Icon(Icons.delete_outline_rounded, size: 12,
+                                    color: dark ? Colors.white54 : const Color(0xFF6B7280)),
                           const SizedBox(width: 5),
                           Text(
-                            isEs ? 'Limpiar cache' : 'Limpar cache',
+                            _clearing
+                                ? (isEs ? 'Limpiando…' : 'Limpando…')
+                                : (isEs ? 'Limpiar cache' : 'Limpar cache'),
                             style: TextStyle(
                               fontSize: 10.5, fontWeight: FontWeight.w600,
                               color: dark ? Colors.white54 : const Color(0xFF6B7280),
@@ -7660,6 +7786,7 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
                         ]),
                       ),
                     ),
+
                   ],
                 ),
               ),
