@@ -225,7 +225,7 @@ class MedCasesApp extends StatelessWidget {
       darkTheme: _buildTheme(true),
       themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
 
-      // BUILD 280 — CAMADA 3: Cor primária fixa do MaterialApp
+      // BUILD 330 — CAMADA 3: Cor primária fixa do MaterialApp
       // ─────────────────────────────────────────────────────────────────────
       // MaterialApp.color é a cor usada pelo sistema operacional como "cor do app"
       // no task switcher (iOS app switcher) e como fallback de 1 frame antes do
@@ -1060,18 +1060,17 @@ class _TimedSplash extends StatefulWidget {
 }
 
 class _TimedSplashState extends State<_TimedSplash> {
-  static const _kMinMs = 1200;  // mínimo 1.2s
+  static const _kMinMs = 1200;  // mínimo 1.2s de splash dinâmico visível
   // BUILD 241: watchdog — se o bootstrap não terminar em 20s, força conclusão.
   // Protege contra: browser throttle, Firebase timeout, aba inativa durante boot.
   static const _kWatchdogMs = 20000;
 
   bool _minTimeDone    = false;
   bool _bootDone       = false;
-  // BUILD 313 — SEMÁFORO 3: authResolved
+  // SEMÁFORO 3: authResolved — determina a transição splash → conteúdo real.
   // Só muda para true quando _AuthGateState._onUserResolved() sinaliza que
   // o StreamBuilder<UserModel?> já determinou um estado estável de auth
-  // (aprovado / bloqueado / pendente). Isso garante que remove() nunca dispara
-  // durante o frame intermediário de auth-loading que causava o double-flash iOS.
+  // (aprovado / bloqueado / pendente / não autenticado).
   bool _authResolved   = false;
 
   @override
@@ -1117,9 +1116,9 @@ class _TimedSplashState extends State<_TimedSplash> {
       }
     });
 
-    // BUILD 313 — Watchdog para _authResolved: garante que o splash nunca
-    // fica travado se o callback de auth não for disparado (ex.: fluxo web,
-    // timeout de Firestore, cold start com usuário não autenticado).
+    // Watchdog para _authResolved: garante que o splash nunca fica travado
+    // se o callback de auth não for disparado (ex.: fluxo web, timeout de
+    // Firestore, cold start com usuário não autenticado).
     // Timeout de 8s: tempo suficiente para qualquer fluxo de auth resolver.
     Future<void>.delayed(const Duration(milliseconds: 8000), () {
       if (!mounted || _authResolved) return;
@@ -1128,13 +1127,38 @@ class _TimedSplashState extends State<_TimedSplash> {
     });
   }
 
-  // BUILD 313 — _ready agora exige os 3 semáforos:
-  //   • _minTimeDone  → 1.2s mínimo de splash exibido
-  //   • _bootDone     → Firebase + prefs inicializados
-  //   • _authResolved → StreamBuilder<UserModel?> determinou estado estável
-  // No web (kIsWeb), _authResolved não é relevante para o splash nativo
-  // (não existe FlutterNativeSplash.remove() no web), então _ready ainda
-  // transiciona o AnimatedSwitcher com apenas os dois semáforos originais.
+  // ── GATE 1: remoção do splash nativo iOS ─────────────────────────────────
+  // BUILD 330 — OTIMIZAÇÃO CRÍTICA iOS: desacopla FlutterNativeSplash.remove()
+  // do semáforo _authResolved.
+  //
+  // PROBLEMA ANTERIOR: _ready = _minTimeDone && _bootDone && _authResolved
+  // gateava a remoção do storyboard nativo AO MESMO TEMPO que a transição para
+  // o conteúdo real. _authResolved só dispara após currentUserStream() resolver
+  // (Firestore cold-start = 6–8s em 4G/LTE) → storyboard estático ficava 6–8s.
+  //
+  // SOLUÇÃO: dois gates separados com responsabilidades distintas:
+  //   • _nativeSplashReady = boot concluído → remove storyboard (~1-2s)
+  //     O Flutter engine já pintou o primeiro frame dinâmico (_SplashScreen),
+  //     então o UIKit pode encerrar o storyboard sem flash intermediário.
+  //   • _ready = boot + auth resolvido → transição para o conteúdo real
+  //     (LoginScreen / HomeScreen). Auth pode demorar mais; durante esse
+  //     intervalo o médico vê o splash dinâmico animado, não a tela estática.
+  //
+  // TIMING iOS (BUILD 330):
+  //   [t=0ms]    runApp() → Dart engine ativo
+  //   [t=~200ms] 1º frame Flutter pintado (_SplashScreen com logo respirando)
+  //   [t=~800ms] Firebase + prefs inicializados (_bootDone = true)
+  //   [t=1200ms] _minTimeDone = true → _nativeSplashReady = true
+  //              → FlutterNativeSplash.remove() no próximo frame
+  //              → STORYBOARD ENCERRADO: médico vê splash dinâmico em < 1.5s
+  //   [t=var]    currentUserStream() resolve → _authResolved = true → _ready
+  //              → AnimatedSwitcher transiciona para HomeScreen/LoginScreen
+  bool get _nativeSplashReady => _minTimeDone && _bootDone;
+
+  // ── GATE 2: transição para o conteúdo real ────────────────────────────────
+  // Exige os 3 semáforos: boot + min + auth resolvido.
+  // No web (kIsWeb), _authResolved não é relevante para remoção do splash nativo
+  // (não existe FlutterNativeSplash no web), mas ainda controla o AnimatedSwitcher.
   bool get _ready => _minTimeDone && _bootDone && (kIsWeb || _authResolved);
 
   // Chamado pelo _AuthGateState via widget.onAuthResolved — sinaliza que
@@ -1147,44 +1171,37 @@ class _TimedSplashState extends State<_TimedSplash> {
 
   // BUILD 280 — CAMADA 3: flag de idempotência para FlutterNativeSplash.remove()
   // Garante que remove() seja chamado exatamente UMA VEZ, mesmo que build()
-  // seja invocado múltiplas vezes quando _ready transiciona de false→true.
+  // seja invocado múltiplas vezes quando _nativeSplashReady transiciona false→true.
   // Sem esta flag, múltiplos addPostFrameCallback seriam registrados em builds
   // consecutivos no mesmo frame, causando chamadas duplicadas ao plugin nativo.
   bool _splashRemoved = false;
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 280 — CAMADA 3: remoção sincronizada do splash nativo iOS
+    // BUILD 330 — GATE 1: remoção do splash nativo iOS em < 1.5s
     // ───────────────────────────────────────────────────────────────────────
-    // Quando _ready == true (ambos os semáforos dispararam: timer 1.2s E boot),
-    // agendamos FlutterNativeSplash.remove() para o PRÓXIMO frame via
-    // addPostFrameCallback. Isso garante que:
-    //   1. O Flutter JÁ pintou o primeiro frame real (AuthGate / LoginScreen)
-    //      antes de liberar o UIKit para encerrar o LaunchScreen.storyboard.
-    //   2. O avaliador da Apple nunca vê um frame intermediário vazio/branco.
-    //   3. No Web (kIsWeb=true): a guard evita chamar a API nativa sem sentido.
-    //   4. A flag _splashRemoved previne chamadas duplicadas — o build()
-    //      pode ser chamado várias vezes no mesmo frame em edge cases de Flutter.
+    // Dispara quando Firebase + prefs terminaram E o timer mínimo de 1.2s
+    // expirou — independentemente de _authResolved.
     //
-    // TIMING DIAGRAM (iOS cold start — BUILD 313):
-    //   [t=0ms]    runApp() → Dart engine ativo, Flutter engine inicializa
-    //   [t=~50ms]  main() retorna, storyboard ainda ativo (preserve() ativo)
-    //   [t=~200ms] primeiro frame Flutter pintado (splash _SplashScreen)
-    //   [t=1200ms] _minTimeDone = true (timer mínimo)
-    //   [t=var]    _bootDone = true (Firebase + prefs inicializados)
-    //   [t=var+]   _authResolved = true (StreamBuilder<UserModel?> resolvido)
-    //   [t=max]    _ready = true → addPostFrameCallback agenda remove()
-    //   [t+1frame] FlutterNativeSplash.remove() → storyboard encerrado graciosamente
-    //              UIKit vê frame Flutter já renderizado com auth estável → ZERO flash
-    if (_ready && !_splashRemoved && !kIsWeb) {
+    // Nesse momento o Flutter JÁ pintou pelo menos um frame da _SplashScreen
+    // dinâmica (logo respirando + "Carregando dados clínicos..."), portanto o
+    // UIKit pode encerrar o LaunchScreen.storyboard sem nenhum flash intermediário.
+    //
+    // A guard !kIsWeb é mandatória: no Web não existe FlutterNativeSplash.
+    // A flag _splashRemoved previne chamadas duplicadas entre builds.
+    if (_nativeSplashReady && !_splashRemoved && !kIsWeb) {
       _splashRemoved = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         FlutterNativeSplash.remove();
-        debugPrint('[BUILD280] FlutterNativeSplash.remove() — splash nativo encerrado');
+        debugPrint('[BUILD330] FlutterNativeSplash.remove() — '
+            'storyboard encerrado após boot (sem aguardar auth)');
       });
     }
 
-    // AnimatedSwitcher com fade 350ms entre splash e conteúdo real
+    // GATE 2: AnimatedSwitcher — splash ↔ conteúdo real
+    // Transição de 350ms com fade suave.
+    // _ready exige boot + auth → garante que a transição só ocorre quando
+    // o _AuthGate já sabe se o usuário está autenticado ou não.
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 350),
       // FadeTransition personalizado — evita o piscar de borda do default
