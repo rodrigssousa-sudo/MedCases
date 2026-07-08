@@ -4633,6 +4633,8 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
       // ── SCORES PEDIÁTRICOS — atalhos abaixo dos Vitais ──────────
       // BUILD 327: reativados conforme solicitação UX. Botões de atalho
       // para PEWS e Schwartz aparecem abaixo de Parâmetros Vitais Normais.
+      // iOS FIX: IntrinsicHeight + ConstrainedBox height explícita evitam que
+      // o Impeller/Skia colapse a Row com Expanded-children sem bounds definidos.
       _SectionCard(
         title: isEs ? 'Scores Clínicos Pediátricos' : 'Scores Clínicos Pediátricos',
         icon: Icons.assessment_rounded,
@@ -4644,88 +4646,104 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
             style: TextStyle(fontSize: 12, color: c.textSecondary),
           ),
           const SizedBox(height: 12),
-          Row(children: [
-            // ── PEWS ─────────────────────────────────────────────
-            Expanded(
-              child: GestureDetector(
-                onTap: () => setState(() => _section = _sections.indexOf('PEWS')),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFCC2222).withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFCC2222).withOpacity(0.25)),
+          // IntrinsicHeight garante que todos os botões do Row tenham a mesma
+          // altura calculada pelo filho mais alto — resolve o collapse no iOS.
+          IntrinsicHeight(
+            child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              // ── PEWS ─────────────────────────────────────────────
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _section = _sections.indexOf('PEWS')),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 90),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFCC2222).withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFCC2222).withOpacity(0.25)),
+                      ),
+                      child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
+                        const Icon(Icons.monitor_heart_rounded, size: 24, color: Color(0xFFCC2222)),
+                        const SizedBox(height: 6),
+                        const Text('PEWS',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFFCC2222)),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(isEs ? 'Alerta Precoz' : 'Alerta Precoce',
+                          style: const TextStyle(fontSize: 10, color: Color(0xFFCC2222)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ]),
+                    ),
                   ),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.monitor_heart_rounded, size: 24, color: Color(0xFFCC2222)),
-                    const SizedBox(height: 6),
-                    const Text('PEWS',
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFFCC2222)),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(isEs ? 'Alerta Precoz' : 'Alerta Precoce',
-                      style: const TextStyle(fontSize: 10, color: Color(0xFFCC2222)),
-                      textAlign: TextAlign.center,
-                    ),
-                  ]),
                 ),
               ),
-            ),
-            const SizedBox(width: 10),
-            // ── SCHWARTZ ──────────────────────────────────────────
-            Expanded(
-              child: GestureDetector(
-                onTap: () => setState(() => _section = _sections.indexOf('SCHWARTZ')),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1D4ED8).withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.25)),
+              const SizedBox(width: 10),
+              // ── SCHWARTZ ──────────────────────────────────────────
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _section = _sections.indexOf('SCHWARTZ')),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 90),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1D4ED8).withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.25)),
+                      ),
+                      child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
+                        const Icon(Icons.water_drop_rounded, size: 24, color: Color(0xFF1D4ED8)),
+                        const SizedBox(height: 6),
+                        const Text('Schwartz',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF1D4ED8)),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(isEs ? 'TFG Pediátrica' : 'TFG Pediátrica',
+                          style: const TextStyle(fontSize: 10, color: Color(0xFF1D4ED8)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ]),
+                    ),
                   ),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.water_drop_rounded, size: 24, color: Color(0xFF1D4ED8)),
-                    const SizedBox(height: 6),
-                    const Text('Schwartz',
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF1D4ED8)),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(isEs ? 'TFG Pediátrica' : 'TFG Pediátrica',
-                      style: const TextStyle(fontSize: 10, color: Color(0xFF1D4ED8)),
-                      textAlign: TextAlign.center,
-                    ),
-                  ]),
                 ),
               ),
-            ),
-            const SizedBox(width: 10),
-            // ── REFERÊNCIA ───────────────────────────────────────
-            Expanded(
-              child: GestureDetector(
-                onTap: () => setState(() => _section = _sections.indexOf('REFERÊNCIA')),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF065F46).withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFF065F46).withOpacity(0.25)),
+              const SizedBox(width: 10),
+              // ── REFERÊNCIA ───────────────────────────────────────
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _section = _sections.indexOf('REFERÊNCIA')),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 90),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF065F46).withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFF065F46).withOpacity(0.25)),
+                      ),
+                      child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
+                        const Icon(Icons.menu_book_rounded, size: 24, color: Color(0xFF065F46)),
+                        const SizedBox(height: 6),
+                        Text(isEs ? 'Referencia' : 'Referência',
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF065F46)),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(isEs ? 'Nelson / AAP' : 'Nelson / AAP',
+                          style: const TextStyle(fontSize: 10, color: Color(0xFF065F46)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ]),
+                    ),
                   ),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.menu_book_rounded, size: 24, color: Color(0xFF065F46)),
-                    const SizedBox(height: 6),
-                    Text(isEs ? 'Referencia' : 'Referência',
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Color(0xFF065F46)),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(isEs ? 'Nelson / AAP' : 'Nelson / AAP',
-                      style: const TextStyle(fontSize: 10, color: Color(0xFF065F46)),
-                      textAlign: TextAlign.center,
-                    ),
-                  ]),
                 ),
               ),
-            ),
-          ]),
+            ]),
+          ),
           const SizedBox(height: 10),
           _InfoNote(text: isEs
               ? 'PEWS ≥ 4: activar protocolo de respuesta rápida pediátrica.'

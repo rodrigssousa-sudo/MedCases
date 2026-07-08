@@ -3762,15 +3762,84 @@ class _ShiftTimerBar extends StatefulWidget {
   State<_ShiftTimerBar> createState() => _ShiftTimerBarState();
 }
 
-class _ShiftTimerBarState extends State<_ShiftTimerBar> {
+class _ShiftTimerBarState extends State<_ShiftTimerBar>
+    with WidgetsBindingObserver {
+  // iOS FIX: Timer.periodic congela quando o iOS suspende o isolate Dart.
+  // Persiste DateTime de término em SharedPreferences; recalcula delta no resume.
+  static const _kShiftEndKey   = 'shift_timer_end_time';
+  static const _kShiftLabelKey = 'shift_timer_label';
+  static const _kShiftNotifKey = 'shift_timer_notif_id';
+
   int    _notifId        = -1;    // ID da notificação agendada
   bool   _active         = false; // timer ativo?
-  int    _remainingSecs  = 0;     // segundos restantes (atualizado a cada 1s)
+  int    _remainingSecs  = 0;     // segundos restantes (recalculado por wall-clock)
   Timer? _ticker;
   String _label          = '';    // descrição do timer ativo
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _restoreTimerFromPrefs();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _restoreTimerFromPrefs();
+    }
+  }
+
+  Future<void> _restoreTimerFromPrefs() async {
+    final prefs  = await SharedPreferences.getInstance();
+    final endIso = prefs.getString(_kShiftEndKey);
+    if (endIso == null) return;
+
+    final endTime = DateTime.tryParse(endIso);
+    if (endTime == null) {
+      await prefs.remove(_kShiftEndKey);
+      return;
+    }
+
+    final remaining = endTime.difference(DateTime.now()).inSeconds;
+    if (remaining <= 0) {
+      await _clearTimerPrefs();
+      if (mounted && _active) setState(() { _active = false; _remainingSecs = 0; });
+      return;
+    }
+
+    final label   = prefs.getString(_kShiftLabelKey) ?? '';
+    final notifId = prefs.getInt(_kShiftNotifKey) ?? -1;
+
+    _ticker?.cancel();
+    if (mounted) {
+      setState(() {
+        _active        = true;
+        _remainingSecs = remaining;
+        _label         = label;
+        _notifId       = notifId;
+      });
+    }
+    _ticker = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) { t.cancel(); return; }
+      final secs = endTime.difference(DateTime.now()).inSeconds;
+      setState(() {
+        _remainingSecs = secs > 0 ? secs : 0;
+        if (secs <= 0) { _active = false; t.cancel(); _clearTimerPrefs(); }
+      });
+    });
+  }
+
+  Future<void> _clearTimerPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kShiftEndKey);
+    await prefs.remove(_kShiftLabelKey);
+    await prefs.remove(_kShiftNotifKey);
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _ticker?.cancel();
     if (_notifId >= 0) NotificationService.cancel(_notifId);
     super.dispose();
@@ -3785,22 +3854,27 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
         ? description.trim()
         : (widget.isEs ? 'Recordatorio de Guardia' : 'Lembrete de Plantão');
 
+    final endTime = DateTime.now().add(Duration(seconds: seconds));
+
+    // Persiste endTime para restaurar o countdown se o iOS suspender o app
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString(_kShiftEndKey,   endTime.toIso8601String());
+      prefs.setString(_kShiftLabelKey, label);
+    });
+
     setState(() {
       _active        = true;
       _remainingSecs = seconds;
       _label         = label;
     });
 
-    // Tick a cada segundo para atualizar o contador na UI
+    // Wall-clock based tick — immune to iOS background suspension
     _ticker = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) { t.cancel(); return; }
+      final secs = endTime.difference(DateTime.now()).inSeconds;
       setState(() {
-        _remainingSecs--;
-        if (_remainingSecs <= 0) {
-          _remainingSecs = 0;
-          _active = false;
-          t.cancel();
-        }
+        _remainingSecs = secs > 0 ? secs : 0;
+        if (secs <= 0) { _active = false; t.cancel(); _clearTimerPrefs(); }
       });
     });
 
@@ -3813,6 +3887,8 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
     ).then((id) {
       if (!mounted) return;
       _notifId = id;
+      // Persiste notifId para poder cancelar ao restaurar
+      SharedPreferences.getInstance().then((p) => p.setInt(_kShiftNotifKey, id));
       // Quando o pop-up tocar "Parar", o _cancel() desta barra é chamado
       NotificationService.registerStopCallback(id, _cancel);
     });
@@ -3824,6 +3900,7 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar> {
       NotificationService.cancel(_notifId);
       _notifId = -1;
     }
+    _clearTimerPrefs();
     if (mounted) setState(() { _active = false; _remainingSecs = 0; _label = ''; });
   }
 
@@ -4219,8 +4296,16 @@ class _HistorialCompactCard extends StatefulWidget {
   State<_HistorialCompactCard> createState() => _HistorialCompactCardState();
 }
 
-class _HistorialCompactCardState extends State<_HistorialCompactCard> {
+class _HistorialCompactCardState extends State<_HistorialCompactCard>
+    with WidgetsBindingObserver {
   // ── Pomodoro state ──────────────────────────────────────────
+  // iOS FIX: Timer.periodic congela quando o iOS suspende o isolate Dart.
+  // Solução: persiste o DateTime de término em SharedPreferences e recalcula
+  // o delta restante toda vez que o app retorna ao foreground.
+  static const _kPomodoroEndKey   = 'pomodoro_end_time';
+  static const _kPomodoroLabelKey = 'pomodoro_label';
+  static const _kPomodoroNotifKey = 'pomodoro_notif_id';
+
   Timer? _countdownTimer;
   int    _remainingSecs = 0;
   int    _notifId       = 0;
@@ -4234,17 +4319,97 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard> {
     return '${m.toString().padLeft(2,'0')}:${s.toString().padLeft(2,'0')}';
   }
 
+  // ── Lifecycle ─────────────────────────────────────────────
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Restore timer if app was killed/suspended while timer was running
+    _restoreTimerFromPrefs();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Recalculate remaining seconds from persisted endTime wall-clock
+      _restoreTimerFromPrefs();
+    }
+  }
+
+  Future<void> _restoreTimerFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final endIso = prefs.getString(_kPomodoroEndKey);
+    if (endIso == null) return;
+
+    final endTime = DateTime.tryParse(endIso);
+    if (endTime == null) {
+      await prefs.remove(_kPomodoroEndKey);
+      return;
+    }
+
+    final remaining = endTime.difference(DateTime.now()).inSeconds;
+    if (remaining <= 0) {
+      // Timer already expired while in background — clear and fire expired dialog
+      await _clearTimerPrefs();
+      if (mounted && _timerActive) _onTimerExpired();
+      return;
+    }
+
+    final label  = prefs.getString(_kPomodoroLabelKey) ?? '';
+    final notifId = prefs.getInt(_kPomodoroNotifKey) ?? 0;
+
+    // Restart the tick loop from the wall-clock remainder
+    _countdownTimer?.cancel();
+    if (mounted) {
+      setState(() {
+        _remainingSecs = remaining;
+        _timerLabel    = label;
+        _notifId       = notifId;
+      });
+    }
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) { t.cancel(); return; }
+      final secs = endTime.difference(DateTime.now()).inSeconds;
+      setState(() => _remainingSecs = secs > 0 ? secs : 0);
+      if (secs <= 0) {
+        t.cancel();
+        _clearTimerPrefs();
+        _onTimerExpired();
+      }
+    });
+  }
+
+  Future<void> _clearTimerPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kPomodoroEndKey);
+    await prefs.remove(_kPomodoroLabelKey);
+    await prefs.remove(_kPomodoroNotifKey);
+  }
+
   void _startTimer(int seconds, String label) {
     _cancelTimer();
+    final endTime = DateTime.now().add(Duration(seconds: seconds));
+
+    // Persist endTime so iOS can restore the UI countdown on resume
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString(_kPomodoroEndKey,   endTime.toIso8601String());
+      prefs.setString(_kPomodoroLabelKey, label);
+      if (_notifId > 0) prefs.setInt(_kPomodoroNotifKey, _notifId);
+    });
+
     setState(() {
       _remainingSecs = seconds;
       _timerLabel    = label;
     });
+
+    // Wall-clock based tick — immune to iOS background suspension
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) { t.cancel(); return; }
-      setState(() => _remainingSecs--);
-      if (_remainingSecs <= 0) {
+      final secs = endTime.difference(DateTime.now()).inSeconds;
+      setState(() => _remainingSecs = secs > 0 ? secs : 0);
+      if (secs <= 0) {
         t.cancel();
+        _clearTimerPrefs();
         _onTimerExpired();
       }
     });
@@ -4257,6 +4422,7 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard> {
       NotificationService.cancel(_notifId);
       _notifId = 0;
     }
+    _clearTimerPrefs();
     if (mounted) setState(() => _remainingSecs = 0);
   }
 
@@ -4329,6 +4495,9 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard> {
             payload: 'shift_timer',
             channel: 'medcases_shift',
           );
+          // Persist notifId so _restoreTimerFromPrefs can cancel it on clear
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt(_kPomodoroNotifKey, _notifId);
           _startTimer(secs, body);
         },
       ),
@@ -4337,6 +4506,7 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _cancelTimer();
     super.dispose();
   }
