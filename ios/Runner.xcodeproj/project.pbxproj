@@ -300,7 +300,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# BUILD 327 — Resolve FLUTTER_ROOT dinamicamente se não definido pelo Generated.xcconfig\nif [ -z \"$FLUTTER_ROOT\" ]; then\n  FLUTTER_ROOT=\"$(dirname \"$(dirname \"$(which flutter)\")\")\"\nfi\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+			shellScript = "if [ -z \"$FLUTTER_ROOT\" ]; then\n  export PATH=\"$PATH:/usr/local/bin:/opt/homebrew/bin\"\n  for _d in \"$HOME/flutter\" \"/opt/homebrew/opt/flutter\" \"/usr/local/opt/flutter\" \"$HOME/fvm/default\"; do\n    if [ -f \"$_d/packages/flutter_tools/bin/xcode_backend.sh\" ]; then\n      FLUTTER_ROOT=\"$_d\"\n      break\n    fi\n  done\nfi\nif [ -z \"$FLUTTER_ROOT\" ]; then\n  echo \"error: FLUTTER_ROOT not found. Run flutter pub get before building.\" >&2\n  exit 1\nfi\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
 		7C4EB63658F7A630E7082E24 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -354,7 +354,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# BUILD 327 — Resolve FLUTTER_ROOT dinamicamente se não definido pelo Generated.xcconfig\nif [ -z \"$FLUTTER_ROOT\" ]; then\n  FLUTTER_ROOT=\"$(dirname \"$(dirname \"$(which flutter)\")\")\"\nfi\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "if [ -z \"$FLUTTER_ROOT\" ]; then\n  export PATH=\"$PATH:/usr/local/bin:/opt/homebrew/bin\"\n  for _d in \"$HOME/flutter\" \"/opt/homebrew/opt/flutter\" \"/usr/local/opt/flutter\" \"$HOME/fvm/default\"; do\n    if [ -f \"$_d/packages/flutter_tools/bin/xcode_backend.sh\" ]; then\n      FLUTTER_ROOT=\"$_d\"\n      break\n    fi\n  done\nfi\nif [ -z \"$FLUTTER_ROOT\" ]; then\n  echo \"error: FLUTTER_ROOT not found. Run flutter pub get before building.\" >&2\n  exit 1\nfi\n/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
 		CCB0562B80106CCE36D73083 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
