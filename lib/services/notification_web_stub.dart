@@ -49,7 +49,9 @@ class AndroidNotificationDetails {
     dynamic category,
     bool fullScreenIntent = false,
     bool autoCancel = true,
+    bool ongoing = false,
     dynamic styleInformation,
+    String? ticker,
   });
 }
 class DarwinNotificationDetails {
@@ -69,6 +71,8 @@ class AndroidNotificationChannel {
     dynamic importance,
     bool playSound = true,
     bool enableVibration = true,
+    Int64List? vibrationPattern,
+    bool showBadge = true,
   });
 }
 class AndroidNotificationCategory {
@@ -98,7 +102,10 @@ class UILocalNotificationDateInterpretation {
   const UILocalNotificationDateInterpretation._();
 }
 class InterruptionLevel {
+  static const critical      = InterruptionLevel._();
   static const timeSensitive = InterruptionLevel._();
+  static const active        = InterruptionLevel._();
+  static const passive       = InterruptionLevel._();
   const InterruptionLevel._();
 }
 class NotificationResponse {
@@ -107,7 +114,10 @@ class NotificationResponse {
 }
 class IOSFlutterLocalNotificationsPlugin {
   Future<bool?> requestPermissions({
-    bool alert = false, bool badge = false, bool sound = false,
+    bool alert = false,
+    bool badge = false,
+    bool sound = false,
+    bool critical = false,
   }) async => false;
 }
 class AndroidFlutterLocalNotificationsPlugin {
