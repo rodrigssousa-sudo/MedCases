@@ -1670,16 +1670,18 @@ class _AiScreenState extends State<AiScreen> {
             // Invariante: buffer só cresce ou permanece igual entre chunks.
             // (cleanedChunk = texto acumulado completo do provider, nunca truncado)
             if (streamingMsgIdx == -1) {
-              // Primeiro chunk: cria o slot no buffer interno.
-              // SEM setState — _thinking permanece true, ECG permanece visível.
+              // Primeiro chunk: cria o slot no buffer e dispara primeiro render.
+              // BUILD 332 Fix 2: _streamingTextNotifier ativado para chunk-by-chunk.
               _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
               streamingMsgIdx = _messages.length - 1;
+              // Ativa render imediato do primeiro token (<2s)
+              if (mounted) {
+                setState(() {});
+                _streamingTextNotifier?.value = cleanedChunk;
+              }
             } else {
-              // Chunks subsequentes: apenas atualiza buffer interno.
-              // SEM notifier update, SEM setState, SEM repaint de UI.
+              // Chunks subsequentes: atualiza buffer E notifier para render em tempo real.
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
-                // Guard monotônico: só atualiza se o texto cresceu ou mudou.
-                // Previne regressão de comprimento por strip de falso positivo.
                 final prevLen = _messages[streamingMsgIdx].text.length;
                 if (cleanedChunk.length >= prevLen) {
                   _messages[streamingMsgIdx] = _ChatMsg.withId(
@@ -1687,6 +1689,9 @@ class _AiScreenState extends State<AiScreen> {
                     role: 'ai',
                     text: cleanedChunk,
                   );
+                  // BUILD 332 Fix 2: notifier → repaint localizado na bolha de streaming
+                  // sem rebuild de toda a árvore (economia de UI thread).
+                  _streamingTextNotifier?.value = cleanedChunk;
                 }
               }
             }
@@ -3069,7 +3074,9 @@ class _AiScreenState extends State<AiScreen> {
                           final keyboardH    = mq.viewInsets.bottom;
                           // Com teclado → sem gap extra (o sistema já reposiciona o layout).
                           // Sem teclado, sem scroll → eleva 95px acima do Dock + safe area.
-                          final dynamicBottom = (kbOpenVal || scrollingDown)
+                          // BUILD 332 Fix 4: Remove scrollingDown from dynamicBottom.
+                          // A barra de input permanece fixa — não se oculta com scroll.
+                          final dynamicBottom = kbOpenVal
                               ? 0.0
                               : (nativeBottom + 95.0).clamp(95.0, 160.0);
                           // Congelamento durante streaming: evita AnimatedPadding
@@ -7408,13 +7415,16 @@ class _InputBarState extends State<_InputBar> {
                               widget.onSend();
                             }
                           },
-                          child: TextField(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxHeight: 140),
+                            child: TextField(
                             controller: widget.ctrl,
                             focusNode: widget.focusNode,
-                            maxLines: 1,
+                            // BUILD 332 Fix 4: multiline UX (WhatsApp/ChatGPT style)
+                            maxLines: null,
                             minLines: 1,
-                            textInputAction: TextInputAction.send,
-                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.newline,
+                            keyboardType: TextInputType.multiline,
                             autofillHints: const [],
                             enableSuggestions: true,
                             autocorrect: true,
@@ -7463,6 +7473,7 @@ class _InputBarState extends State<_InputBar> {
                               ),
                             ),
                           ),
+                          ), // ConstrainedBox maxHeight:140
                         ),
                       ),
 

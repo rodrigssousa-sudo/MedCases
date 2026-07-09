@@ -1437,7 +1437,7 @@ class _CardioHubViewState extends State<CardioHubView> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  isEs ? 'Cardiología' : 'Cardiologia',
+                  isEs ? 'Cardiología' : 'Cardiologia', // BUILD 332: badge i18n OK
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w600,
@@ -1494,7 +1494,7 @@ class _CardioHubViewState extends State<CardioHubView> {
               children: [
                 // Fix #2: label i18n PT/ES — arrow embutido na string
                 Text(
-                  isEs ? 'Abrir Calculadora >' : 'Abrir Calculadora >',
+                  isEs ? 'Abrir calculadora >' : 'Abrir Calculadora >',  // BUILD 332 Fix 3: ES lowercase
                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue),
                 ),
                 const SizedBox(width: 2),

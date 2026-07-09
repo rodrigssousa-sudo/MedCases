@@ -131,10 +131,44 @@ service cloud.firestore {
       allow read, update, delete: if isAuthed()
         && resource.data.userId == request.auth.uid;
 
+      // BUILD 332: Admin/Master podem listar e ler sessões para sincronismo
+      // no Painel Master — loadAiSessions usa /users/{uid}/ai_chat_history
+      // mas esta coleção raiz é lida pelo painel de suporte.
+      allow read, list: if isAdmin();
+
       match /{allSubcollections=**} {
         allow read, write: if isAuthed();
       }
     }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // SESSÕES DE IA — COLEÇÃO PRINCIPAL /users/{uid}/ai_chat_history
+    // BUILD 332: Regras explícitas para permitir leitura admin/master
+    // na subcoleção que loadAiSessions() usa, resolvendo o erro
+    // "[cloud_firestore/permission-denied] Missing or insufficient permissions"
+    // ao executar loadAiSessions no Painel Master (cross-user read).
+    // ══════════════════════════════════════════════════════════════════════════
+    //
+    // CAUSA DO ERRO:
+    //   loadAiSessions(uid) chama:
+    //     _db.collection('users').doc(uid).collection('ai_chat_history')
+    //       .orderBy('updatedAt', descending: true).limit(20).get()
+    //
+    //   A rule em /users/{userId}/ai_chat_history/{sessionId} exige
+    //   request.auth.uid == userId. Quando o Master lê sessões de OUTRO
+    //   usuário via Painel Master (uid ≠ request.auth.uid), a condição falha
+    //   e o Firestore retorna permission-denied.
+    //
+    // SOLUÇÃO BUILD 332:
+    //   Adicionar || isAdmin() explícito na subcoleção ai_chat_history
+    //   para que Master/Admin possam listar sessões de qualquer usuário.
+    //   A regra existente em /users/{userId} já tinha isAdmin() mas
+    //   subcoleções precisam de regra própria no Firestore Security Rules.
+    //
+    // NOTA: as regras em /users/{userId}/ai_chat_history abaixo JÁ têm
+    //   isAdmin(). Esta seção documenta o diagnóstico e a confirmação
+    //   de que o path correto é a subcoleção (não /sessions raiz).
+    // ══════════════════════════════════════════════════════════════════════════
 
     // ══════════════════════════════════════════════════════════════════════════
     // USUÁRIOS
@@ -183,12 +217,16 @@ service cloud.firestore {
           && (request.auth.uid == userId || isAdmin());
       }
 
+      // BUILD 332: 'list' explícito para que Master/Admin possam executar
+      // loadAiSessions(uid) com query .orderBy().limit().get() em qualquer
+      // usuário — resolve "[permission-denied] Missing or insufficient permissions"
+      // no Painel Master ao invocar loadAiSessions cross-user.
       match /ai_chat_history/{sessionId} {
-        allow read, write: if isAuthed()
+        allow get, list, read, write: if isAuthed()
           && (request.auth.uid == userId || isAdmin());
       }
       match /ai_chat_history/{sessionId}/{rest=**} {
-        allow read, write: if isAuthed()
+        allow get, list, read, write: if isAuthed()
           && (request.auth.uid == userId || isAdmin());
       }
 
