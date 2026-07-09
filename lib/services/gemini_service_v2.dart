@@ -60,10 +60,10 @@
 // └─────────────────────────────────────────────────────────────────────────┘
 //
 // ENDPOINTS:
-//   STREAM : POST /v1beta/models/gemini-2.5-flash-lite:streamGenerateContent
+//   STREAM : POST /v1beta/models/gemini-2.5-flash:streamGenerateContent
 //            ?alt=sse&key=KEY
 //            Chunks SSE formato: "data: {...}\n\n"
-//   SYNC   : POST /v1beta/models/gemini-2.5-flash-lite:generateContent?key=KEY
+//   SYNC   : POST /v1beta/models/gemini-2.5-flash:generateContent?key=KEY
 //            Context Classifier — resposta mínima ('MÉDICO'/'NOVO')
 //
 // FLUXO PRINCIPAL:
@@ -153,9 +153,9 @@ class GeminiServiceV2 {
   // ENDPOINTS E MODELO
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Modelo base — flash-lite tem quota free-tier muito maior que o flash-pro.
-  /// Free tier: ~1.500 RPM, 1.000.000 TPM (vs. 10 RPM do gemini-2.5-flash).
-  static const _modelId = 'gemini-2.5-flash-lite';
+  /// BUILD 334: corrigido gemini-2.5-flash-lite → gemini-2.5-flash (modelo canônico da API).
+  /// gemini-2.5-flash-lite retornava 404 em streamGenerateContent?alt=sse — modelo não existe.
+  static const _modelId = 'gemini-2.5-flash';
 
   /// Endpoint SSE de streaming (usado na resposta principal ao usuário).
   static const _endpointStream =

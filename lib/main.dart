@@ -1543,6 +1543,21 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
       );
     }
     AppResumeCoordinator.instance.completeLoading('_webgate_${widget.user.uid}'); // BUILD 241
+
+    // BUILD 334 — TAB_RESTORE pós-auth fix:
+    // Quando _ready flipa de false → true, o MainShell é criado NESTE frame.
+    // O _MainShellState field-initializer lê postOAuthTabNotifier.value para
+    // definir _tab inicial. Se o OAuth redirect já consumiu o notifier (value=-1)
+    // mas o provider Gemini está conectado (login/refresh sem redirect), o
+    // MainShell iniciaria com _tab=0 (Home) em vez de permanecer na aba de IA.
+    // Fix: se nenhum OAuth redirect está pendente E a sessão Gemini está ativa,
+    // sinalizar _tab=2 antes de criar o MainShell para que o field-initializer
+    // capte o valor correto. O notifier é imediatamente consumido pelo listener.
+    if (mounted && AppProvider.postOAuthTabNotifier.value < 0 && p.geminiConnected) {
+      AppProvider.postOAuthTabNotifier.value = 2; // IA tab — consumido pelo _MainShellState
+      debugPrint('[BUILD334][TAB_RESTORE] setUser/checkGemini OK → pre-sinaliza tab=2 antes de criar MainShell');
+    }
+
     if (mounted) setState(() => _ready = true);
   }
 

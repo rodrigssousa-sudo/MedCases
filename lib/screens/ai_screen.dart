@@ -7256,8 +7256,8 @@ class _InputBar extends StatefulWidget {
 }
 
 class _InputBarState extends State<_InputBar> {
-  // FocusNode dedicado para o KeyboardListener — separado do focusNode do TextField
-  final FocusNode _keyboardListenerNode = FocusNode();
+  // BUILD 334: _keyboardListenerNode removido — KeyboardListener substituído por
+  // Focus.onKeyEvent que retorna KeyEventResult.handled para consumir Enter sem \n.
 
   @override
   void didUpdateWidget(_InputBar oldWidget) {
@@ -7273,7 +7273,6 @@ class _InputBarState extends State<_InputBar> {
 
   @override
   void dispose() {
-    _keyboardListenerNode.dispose();
     super.dispose();
   }
 
@@ -7400,20 +7399,33 @@ class _InputBarState extends State<_InputBar> {
                       // ADENDO SEGURANÇA Factor 1: TextField bloqueado quando desconectado
                       // readOnly=true impede abertura do teclado físico
                       // enabled=false desativa interação completa com o campo
+                      //
+                      // BUILD 334 — Enter=send (WhatsApp/ChatGPT style):
+                      // Focus.onKeyEvent retorna KeyEventResult.handled para consumir
+                      // o evento de Enter sem Shift/Ctrl, impedindo inserção do \n e
+                      // disparando onSend() imediatamente. Funciona em Web + desktop.
+                      // Shift+Enter: KeyEventResult.ignored → TextField insere \n normalmente.
                       Expanded(
-                        child: KeyboardListener(
-                          focusNode: _keyboardListenerNode,
-                          onKeyEvent: (event) {
-                            // ADENDO SEGURANÇA: Enter bloqueado se desconectado
-                            if (locked) return; // Factor 1 — sem escape via teclado
-                            if (kIsWeb &&
-                                event is KeyDownEvent &&
-                                event.logicalKey == LogicalKeyboardKey.enter &&
-                                !HardwareKeyboard.instance.isShiftPressed &&
-                                !HardwareKeyboard.instance.isControlPressed &&
-                                !widget.thinking) {
+                        child: Focus(
+                          onKeyEvent: (node, event) {
+                            // Factor 1: bloqueio absoluto se desconectado
+                            if (locked) return KeyEventResult.ignored;
+                            // Apenas KeyDown — ignora KeyUp/KeyRepeat para evitar duplo disparo
+                            if (event is! KeyDownEvent) return KeyEventResult.ignored;
+                            if (event.logicalKey != LogicalKeyboardKey.enter) {
+                              return KeyEventResult.ignored;
+                            }
+                            // Shift+Enter ou Ctrl+Enter → quebra de linha normal
+                            if (HardwareKeyboard.instance.isShiftPressed ||
+                                HardwareKeyboard.instance.isControlPressed) {
+                              return KeyEventResult.ignored;
+                            }
+                            // Enter limpo + não pensando → envia e consome o evento
+                            if (!widget.thinking) {
                               widget.onSend();
                             }
+                            // Retorna handled para impedir o \n no TextField
+                            return KeyEventResult.handled;
                           },
                           child: ConstrainedBox(
                             constraints: const BoxConstraints(maxHeight: 140),
@@ -7437,6 +7449,9 @@ class _InputBarState extends State<_InputBar> {
                             // mesmo com enabled:false em algumas implementações de plataforma.
                             // Interceptamos AQUI com verificação explícita de locked e de auth
                             // — zero confiança: se bloqueado, fecha teclado e retorna imediato.
+                            // BUILD 334: em Web/desktop, Enter já é interceptado pelo Focus
+                            // acima — onSubmitted serve de fallback para teclados mobile que
+                            // ignoram o Focus.onKeyEvent e disparam via IME action button.
                             onSubmitted: (value) {
                               if (locked) {
                                 // Bloqueio absoluto: fecha teclado e NÃO propaga nada

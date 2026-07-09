@@ -216,11 +216,10 @@ enum GeminiKeySource {
 }
 
 class GeminiService {
-  // gemini-2.5-flash → quota free tier: 10 RPM (esgota rápido em uso normal)
-  // gemini-2.5-flash-lite → mesma família, quota muito maior no free tier
-  // Troca para flash-lite para evitar 429 constante em produção.
+  // BUILD 334: corrigido gemini-2.5-flash-lite → gemini-2.5-flash (modelo canônico da API).
+  // gemini-2.5-flash-lite retornava 404 em streamGenerateContent — modelo não existe na v1beta.
   static const _endpoint =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
   // ── Client IDs Google OAuth ────────────────────────────────────────────────
   //

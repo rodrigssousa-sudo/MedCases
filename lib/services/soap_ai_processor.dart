@@ -12,8 +12,9 @@ import 'clinical_recorder_service.dart';
 
 class SoapAiProcessor {
 
+  // BUILD 334: gemini-2.5-flash-lite → gemini-2.5-flash (modelo canônico).
   static const _endpoint =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
   // ─────────────────────────────────────────────────────────────────────────
   // structure() — converte transcrição bruta em SoapData

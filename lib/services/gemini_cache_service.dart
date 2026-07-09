@@ -92,8 +92,8 @@ class GeminiCacheService {
       'https://generativelanguage.googleapis.com/v1beta/cachedContents';
 
   /// Modelo compatível com Context Caching.
-  /// DEVE corresponder ao modelo em GeminiServiceV2._modelId.
-  static const _cacheModel = 'models/gemini-2.5-flash-lite';
+  /// BUILD 334: sincronizado com GeminiServiceV2._modelId → gemini-2.5-flash.
+  static const _cacheModel = 'models/gemini-2.5-flash';
 
   // ══ CONFIGURAÇÃO ═══════════════════════════════════════════════════════════
 
