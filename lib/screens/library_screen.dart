@@ -775,32 +775,36 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
   };
 
   // ── Grupos para sub-segmento "Simulações" (casos narrativos) ─────────────
+  // BUILD 331: cores dark premium — sem pastéis, tema escuro MedCases Pro.
+  // color       = fundo do card (escuro profundo adaptativo)
+  // borderColor = borda fina sutil com accent da especialidade
+  // iconColor   = acento vibrante para ícone, título e subtítulo
   static const List<_GrupoConfig> _gruposSimulacao = [
     _GrupoConfig(
       icon: Icons.psychology_outlined,
       titlePt: 'Neurologia',
       titleEs: 'Neurología',
-      color: Color(0xFFF5F0FF),
-      borderColor: Color(0xFFCCBBEE),
-      iconColor: Color(0xFF5C2D91),
+      color:       Color(0xFF1E1A2E),   // dark roxo profundo
+      borderColor: Color(0xFF4A3880),   // roxo médio sutil
+      iconColor:   Color(0xFFA78BFA),   // violeta lavanda vibrante
       ids: {'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus'},
     ),
     _GrupoConfig(
       icon: Icons.favorite_outline_rounded,
       titlePt: 'Cardiologia & Pneumologia',
       titleEs: 'Cardiología & Neumología',
-      color: Color(0xFFFFF0F5),
-      borderColor: Color(0xFFFFCCDD),
-      iconColor: Color(0xFFAA1144),
+      color:       Color(0xFF1F1419),   // dark vermelho profundo
+      borderColor: Color(0xFF7A2035),   // bordô sutil
+      iconColor:   Color(0xFFFC8181),   // vermelho coral vibrante
       ids: {'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave'},
     ),
     _GrupoConfig(
       icon: Icons.biotech_outlined,
       titlePt: 'Infectologia, Emergência & Metabólico',
       titleEs: 'Infectología, Emergencia & Metabólico',
-      color: Color(0xFFF0FFF4),
-      borderColor: Color(0xFFBBE8CC),
-      iconColor: Color(0xFF075F45),
+      color:       Color(0xFF121F19),   // dark verde profundo
+      borderColor: Color(0xFF1A5E38),   // verde escuro médico
+      iconColor:   Color(0xFF34D399),   // verde esmeralda clínico
       ids: {
         'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
         'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
@@ -810,9 +814,9 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
       icon: Icons.local_hospital_outlined,
       titlePt: 'Gastroenterologia & Hepatologia',
       titleEs: 'Gastroenterología & Hepatología',
-      color: Color(0xFFF5F5F0),
-      borderColor: Color(0xFFD8D4C0),
-      iconColor: Color(0xFF555544),
+      color:       Color(0xFF1C1A14),   // dark âmbar profundo
+      borderColor: Color(0xFF6B5500),   // dourado escuro
+      iconColor:   Color(0xFFFBBF24),   // âmbar dourado
       ids: {
         'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
         'hdb_sangrado_rectal_014', 'diverticulitis_aguda_015',
@@ -823,9 +827,9 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
       icon: Icons.science_outlined,
       titlePt: 'Hepatites Virais & Gripe',
       titleEs: 'Hepatitis Virales & Gripe',
-      color: Color(0xFFFFF8EC),
-      borderColor: Color(0xFFEED8A0),
-      iconColor: Color(0xFF8B6000),
+      color:       Color(0xFF141E1C),   // dark teal profundo
+      borderColor: Color(0xFF1A5E55),   // teal escuro
+      iconColor:   Color(0xFF2DD4BF),   // teal menta brilhante
       ids: {
         'hepatitis_b_aguda_detallada_2026', 'hepatitis_c_cronica_detallada_2026',
         'gripe_influenza_010',
@@ -835,9 +839,9 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
       icon: Icons.hearing_outlined,
       titlePt: 'ORL & Medicina Geral',
       titleEs: 'ORL & Medicina General',
-      color: Color(0xFFF0F8FF),
-      borderColor: Color(0xFFBBD6F0),
-      iconColor: Color(0xFF1A5E8A),
+      color:       Color(0xFF141820),   // dark azul profundo
+      borderColor: Color(0xFF1E3A6E),   // azul médico sutil
+      iconColor:   Color(0xFF60A5FA),   // azul céu brilhante
       ids: {
         'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
         'faringitis_viral_011', 'faringitis_bacteriana_012',
@@ -929,36 +933,57 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
     return CustomScrollView(
       primary: false,
       slivers: [
-        // ── Banner de cabeçalho da aba ──────────────────────────────────────
+        // ── Banner de cabeçalho da aba — BUILD 331 dark premium ─────────────
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: dark ? const Color(0xFF252930) : const Color(0xFFEAF5EE),
+                // Fundo escuro com gradiente sutil — integrado ao fundo global
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    const Color(0xFF1A2A20),
+                    const Color(0xFF1A1D23),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: _kGreen.withOpacity(0.3)),
+                border: Border.all(
+                  color: const Color(0xFF1A5E38).withOpacity(0.6),
+                ),
               ),
               child: Row(children: [
-                Icon(Icons.school_outlined, color: _kGreen, size: 22),
+                Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF075f45).withOpacity(0.18),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color(0xFF34D399).withOpacity(0.3)),
+                  ),
+                  child: const Icon(Icons.school_outlined,
+                    color: Color(0xFF34D399), size: 20),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(
                       isEs ? 'Casos de Estudio' : 'Casos de Estudo',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w900,
-                        color: dark ? Colors.white : const Color(0xFF0F1116),
+                        color: Colors.white,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
                       isEs
                           ? '$totalItens casos simulados para fins educacionais'
                           : '$totalItens casos simulados para fins educacionais',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: dark ? Colors.white54 : Colors.black.withOpacity(0.45),
+                      style: const TextStyle(
+                        fontSize: 11.5,
+                        color: Color(0xFF9CA3AF),
                       ),
                     ),
                   ]),
@@ -1299,30 +1324,38 @@ class _SegmentBtn extends StatelessWidget {
     required this.active, required this.dark, required this.onTap,
   });
 
+  // BUILD 331: botões de segmento integrados ao tema escuro — sem verde claro.
+  // Ativo:   fundo esmeralda escuro + borda fina + texto branco
+  // Inativo: fundo neutro profundo + borda ghost sutil + texto cinza
   @override
   Widget build(BuildContext context) {
+    const activeColor  = Color(0xFF065F45);
+    const activeBorder = Color(0xFF34D399);
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 9),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: active
-                ? _kGreen
-                : (dark ? const Color(0xFF252930) : const Color(0xFFEAF5EE)),
+                ? activeColor
+                : const Color(0xFF252930),
             border: Border.all(
-              color: active ? _kGreen : _kGreen.withOpacity(0.25),
+              color: active
+                  ? activeBorder.withOpacity(0.6)
+                  : Colors.white.withOpacity(0.08),
+              width: active ? 1.0 : 0.5,
             ),
           ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Icon(icon, size: 14,
-              color: active ? Colors.white : _kGreen.withOpacity(0.7)),
+              color: active ? const Color(0xFF34D399) : Colors.white38),
             const SizedBox(width: 6),
             Text(label, style: TextStyle(
               fontSize: 12, fontWeight: FontWeight.w800,
-              color: active ? Colors.white : _kGreen.withOpacity(0.85),
+              color: active ? Colors.white : Colors.white60,
             )),
           ]),
         ),
@@ -1381,6 +1414,8 @@ class _GrupoCard extends StatelessWidget {
     if (casos.isEmpty) return const SizedBox.shrink();
     final title = isEs ? titleEs : titlePt;
 
+    // BUILD 331: card dark premium — fundo profundo por especialidade,
+    // borda fina com acento vibrante, texto branco com subtítulo cinza claro.
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => showModalBottomSheet(
@@ -1396,44 +1431,49 @@ class _GrupoCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: color,
-          border: Border.all(color: borderColor),
+          color: color,               // fundo escuro por especialidade
+          border: Border.all(color: borderColor, width: 0.8),
           borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: iconColor.withOpacity(0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(children: [
+          // Ícone com fundo levemente colorido — único detalhe de cor no card
           Container(
-            width: 42, height: 42,
+            width: 44, height: 44,
             decoration: BoxDecoration(
-              color: borderColor.withOpacity(0.55),
+              color: iconColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: iconColor.withOpacity(0.25),
+                width: 0.8,
+              ),
             ),
-            child: Center(child: Icon(icon, size: 20, color: iconColor)),
+            child: Center(child: Icon(icon, size: 22, color: iconColor)),
           ),
           const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: TextStyle(
+            Text(title, style: const TextStyle(
               fontSize: 13.5, fontWeight: FontWeight.w900,
-              color: iconColor, letterSpacing: -0.2,
+              color: Colors.white, letterSpacing: -0.2,
             )),
-            const SizedBox(height: 3),
+            const SizedBox(height: 4),
             Text(
-              // Bilíngue pedagógico: "casos de estudo" em vez de "casos clínicos"
               '${casos.length} ${casos.length == 1
                   ? (isEs ? "caso de estudio" : "caso de estudo")
                   : (isEs ? "casos de estudio" : "casos de estudo")}',
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                color: iconColor.withOpacity(0.55)),
+                color: iconColor.withOpacity(0.75)),
             ),
           ])),
-          Container(
-            width: 32, height: 32,
-            decoration: BoxDecoration(
-              color: borderColor.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(9),
-            ),
-            child: Icon(Icons.chevron_right_rounded, size: 20,
-              color: iconColor.withOpacity(0.8)),
-          ),
+          // Chevron sutil
+          Icon(Icons.chevron_right_rounded, size: 20,
+            color: iconColor.withOpacity(0.55)),
         ]),
       ),
     );
@@ -1465,35 +1505,46 @@ class _SimulacoesSheet extends StatelessWidget {
       initialChildSize: 0.6,
       minChildSize: 0.4,
       maxChildSize: 0.92,
+      // BUILD 331: sheet dark — fundo escuro por especialidade
       builder: (_, ctrl) => Container(
         decoration: BoxDecoration(
-          color: cardColor,
+          color: cardColor,           // fundo escuro da especialidade
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border(
+            top: BorderSide(color: iconColor.withOpacity(0.2), width: 0.8),
+          ),
         ),
         child: Column(children: [
           const SizedBox(height: 10),
           Container(width: 40, height: 4,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.25),
+              color: iconColor.withOpacity(0.35),
               borderRadius: BorderRadius.circular(2),
             )),
           const SizedBox(height: 14),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(children: [
-              Icon(icon, color: iconColor, size: 22),
-              const SizedBox(width: 10),
-              Expanded(child: Text(title, style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w900, color: iconColor,
+              Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: iconColor, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(child: Text(title, style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white,
               ))),
               Text('${casos.length}', style: TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w700,
-                color: iconColor.withOpacity(0.6),
+                color: iconColor.withOpacity(0.7),
               )),
             ]),
           ),
           const SizedBox(height: 12),
-          Divider(color: borderColor, height: 1),
+          Divider(color: iconColor.withOpacity(0.15), height: 1),
           Expanded(
             child: ListView.builder(
               controller: ctrl,
@@ -1510,12 +1561,14 @@ class _SimulacoesSheet extends StatelessWidget {
                   },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 10),
+                    margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.7),
+                      // Fundo levemente mais claro que o sheet para contraste
+                      color: Colors.white.withOpacity(0.06),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderColor),
+                      border: Border.all(
+                        color: iconColor.withOpacity(0.18)),
                     ),
                     child: Row(children: [
                       Container(
@@ -1531,12 +1584,12 @@ class _SimulacoesSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(label, style: const TextStyle(
                           fontSize: 13.5, fontWeight: FontWeight.w800,
-                          color: Color(0xFF0F1116), height: 1.3,
+                          color: Colors.white, height: 1.3,
                         )),
                         if (severity.isNotEmpty) ...[
                           const SizedBox(height: 3),
                           Text(severity, style: TextStyle(
-                            fontSize: 11, color: iconColor.withOpacity(0.7),
+                            fontSize: 11, color: iconColor.withOpacity(0.75),
                             fontWeight: FontWeight.w600,
                           ), maxLines: 1, overflow: TextOverflow.ellipsis),
                         ],

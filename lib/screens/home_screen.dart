@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' show FontFeature;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -4473,6 +4474,18 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
   }
 
   void _openTimerSheet() {
+    // BUILD 331: se timer ATIVO, abre o sheet em modo "countdown" exibindo
+    // o contador regressivo em tempo real + botão de cancelar.
+    // Se NÃO ativo, abre o modo seletor normal (comportamento original).
+    //
+    // endTime é lido do SharedPreferences já carregado no _restoreTimerFromPrefs.
+    // Para evitar uma leitura assíncrona dentro do builder, calculamos o endTime
+    // a partir de _remainingSecs (já sincronizado com wall-clock) + now().
+    final DateTime? activeEndTime = _timerActive
+        ? DateTime.now().add(Duration(seconds: _remainingSecs))
+        : null;
+    final String activeLabel = _timerActive ? _timerLabel : '';
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -4480,9 +4493,12 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
       builder: (_) => _PomodoroSheet(
         dark: widget.dark,
         isEs: widget.isEs,
+        // BUILD 331: passa endTime ativo para o sheet exibir countdown real
+        activeEndTime: activeEndTime,
+        activeLabel:   activeLabel,
+        onCancel: _cancelTimer,           // botão vermelho "Cancelar Alerta"
         onStart: (int secs, String label) async {
           // Agenda notificação push (funciona com app fechado/bloqueado)
-          final lang = widget.isEs ? 'es' : 'pt';
           final title = widget.isEs
               ? '⏰ Revisión de paciente'
               : '⏰ Revisão de paciente';
@@ -4590,7 +4606,6 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
     final timerIcon  = _timerActive
         ? Icons.alarm_on_rounded
         : Icons.alarm_rounded;
-    final timerBadge = _timerActive ? _remainingDisplay : null;
 
     return Container(
       height: 58,
@@ -4623,12 +4638,13 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
             onTap: widget.onOpenNotes,
           ),
           _div(),
-          // [3] TIMER (Pomodoro Clínico) — BUILD 327
+          // [3] TIMER (Pomodoro Clínico) — BUILD 331
+          // Quando ativo: toque abre o sheet em modo countdown (botão Cancelar).
+          // Nunca cancela o timer por acidente com um toque simples.
           _timerActive
               ? Expanded(
                   child: GestureDetector(
-                    onTap: () { AppHaptics.selection(context); _cancelTimer(); },
-                    onLongPress: () { AppHaptics.medium(context); _openTimerSheet(); },
+                    onTap: () { AppHaptics.selection(context); _openTimerSheet(); },
                     behavior: HitTestBehavior.opaque,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -4668,11 +4684,18 @@ class _PomodoroSheet extends StatefulWidget {
   final bool dark;
   final bool isEs;
   final Future<void> Function(int seconds, String label) onStart;
+  // BUILD 331: modo countdown ativo
+  final DateTime? activeEndTime;  // não-null → exibe countdown em tempo real
+  final String activeLabel;       // label do paciente/box ativo
+  final VoidCallback? onCancel;   // cancela o timer e fecha o sheet
 
   const _PomodoroSheet({
     required this.dark,
     required this.isEs,
     required this.onStart,
+    this.activeEndTime,
+    this.activeLabel = '',
+    this.onCancel,
   });
 
   @override
@@ -4686,13 +4709,55 @@ class _PomodoroSheetState extends State<_PomodoroSheet> {
   final _customCtrl = TextEditingController();
   bool _loading = false;
 
+  // BUILD 331: tick para atualizar o countdown em tempo real dentro do sheet
+  Timer? _sheetTick;
+  int _sheetRemaining = 0;
+
   static const _presets = [15, 30, 60];
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.activeEndTime != null) {
+      // Inicializa o countdown com o delta real
+      _sheetRemaining = widget.activeEndTime!
+          .difference(DateTime.now())
+          .inSeconds
+          .clamp(0, 99999);
+      // Tick a cada segundo para atualizar o display dentro do sheet
+      _sheetTick = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (!mounted) return;
+        final secs = widget.activeEndTime!
+            .difference(DateTime.now())
+            .inSeconds
+            .clamp(0, 99999);
+        setState(() => _sheetRemaining = secs);
+        if (secs <= 0) {
+          _sheetTick?.cancel();
+          if (mounted) Navigator.pop(context);
+        }
+      });
+    }
+  }
+
+  @override
   void dispose() {
+    _sheetTick?.cancel();
     _labelCtrl.dispose();
     _customCtrl.dispose();
     super.dispose();
+  }
+
+  // Formata _sheetRemaining como HH:MM:SS ou MM:SS
+  String get _sheetDisplay {
+    final s = _sheetRemaining;
+    final h = s ~/ 3600;
+    final m = (s % 3600) ~/ 60;
+    final sec = s % 60;
+    if (h > 0) {
+      return '${h.toString().padLeft(2,'0')}:${m.toString().padLeft(2,'0')}:${sec.toString().padLeft(2,'0')}';
+    }
+    return '${m.toString().padLeft(2,'0')}:${sec.toString().padLeft(2,'0')}';
   }
 
   Future<void> _confirm() async {
@@ -4716,6 +4781,119 @@ class _PomodoroSheetState extends State<_PomodoroSheet> {
     final text1 = dark ? Colors.white : const Color(0xFF111827);
     final text2 = dark ? Colors.white70 : const Color(0xFF6B7280);
 
+    // ── Handle e wrapper comuns ──────────────────────────────────────────────
+    final handle = Center(child: Container(
+      width: 40, height: 4,
+      decoration: BoxDecoration(
+        color: dark ? Colors.white24 : const Color(0xFFD1D5DB),
+        borderRadius: BorderRadius.circular(2),
+      ),
+    ));
+
+    // ── MODO COUNTDOWN ATIVO ─────────────────────────────────────────────────
+    // BUILD 331: quando activeEndTime != null, exibe o contador regressivo em
+    // tempo real em tamanho grande (MM:SS), label do paciente e botão vermelho
+    // de Cancelar Alerta. NÃO reseta nem pausa o timer de fundo por acidente.
+    if (widget.activeEndTime != null) {
+      return Container(
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: EdgeInsets.only(
+          left: 24, right: 24, top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 40,
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          handle,
+          const SizedBox(height: 24),
+
+          // Ícone + título
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Icon(Icons.alarm_on_rounded, color: Color(0xFF7C3AED), size: 24),
+            const SizedBox(width: 10),
+            Text(
+              isEs ? 'Revisão em andamento' : 'Revisão em andamento',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: text1),
+            ),
+          ]),
+          const SizedBox(height: 6),
+
+          // Label do paciente/box (se houver)
+          if (widget.activeLabel.isNotEmpty)
+            Text(
+              widget.activeLabel,
+              style: TextStyle(fontSize: 13, color: text2, fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+          const SizedBox(height: 28),
+
+          // Contador regressivo em tamanho grande
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+            decoration: BoxDecoration(
+              color: const Color(0xFF7C3AED).withOpacity(0.10),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFF7C3AED).withOpacity(0.25)),
+            ),
+            child: Text(
+              _sheetDisplay,
+              style: const TextStyle(
+                fontSize: 52,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF7C3AED),
+                letterSpacing: 2,
+                fontFeatures: [FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            isEs ? 'restantes para la próxima revisión' : 'restantes para a próxima revisão',
+            style: TextStyle(fontSize: 11, color: text2),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+
+          // Botão vermelho destacado — Cancelar Alerta / Parar Timer
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFDC2626),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                elevation: 0,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                widget.onCancel?.call();
+              },
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                const Icon(Icons.stop_circle_rounded, size: 20, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  isEs ? 'Cancelar Alerta / Parar Timer' : 'Cancelar Alerta / Parar Timer',
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
+                ),
+              ]),
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Botão secundário — fechar sem cancelar
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              isEs ? 'Fechar (timer continua ativo)' : 'Fechar (timer continua ativo)',
+              style: TextStyle(fontSize: 12, color: text2),
+            ),
+          ),
+        ]),
+      );
+    }
+
+    // ── MODO SELETOR (timer não ativo — comportamento original) ───────────────
     return Container(
       decoration: BoxDecoration(
         color: bg,
@@ -4726,14 +4904,7 @@ class _PomodoroSheetState extends State<_PomodoroSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 32,
       ),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Handle
-        Center(child: Container(
-          width: 40, height: 4,
-          decoration: BoxDecoration(
-            color: dark ? Colors.white24 : const Color(0xFFD1D5DB),
-            borderRadius: BorderRadius.circular(2),
-          ),
-        )),
+        handle,
         const SizedBox(height: 20),
 
         // Title

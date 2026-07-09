@@ -134,9 +134,17 @@ class NotificationService {
       final ios = _plugin.resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin>();
       if (ios != null) {
-        return await ios.requestPermissions(
-              alert: true, badge: true, sound: true) ??
-            false;
+        // BUILD 331: solicita 'criticalAlert' além de alert/badge/sound.
+        // CriticalAlert bypassa o modo Não Perturbe e o volume silencioso do
+        // iPhone — essencial para alertas de revisão de paciente no plantão.
+        // Requer entitlement 'com.apple.developer.usernotifications.critical-alerts'
+        // no Xcode. Sem o entitlement a chamada é silenciosa (ignored by iOS).
+        final granted = await ios.requestPermissions(
+              alert: true, badge: true, sound: true,
+              critical: true,                         // NEW: critical alert
+            ) ?? false;
+        debugPrint('[Notif] iOS permissions granted=$granted (critical requested)');
+        return granted;
       }
       final android = _plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
@@ -171,7 +179,10 @@ class NotificationService {
     try {
       final when = tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds));
 
-      final vib = Int64List.fromList([0, 400, 200, 400]);
+      // BUILD 331: padrão de vibração agressivo (3 pulsos longos) — estilo
+      // banco/WhatsApp para não passar despercebido no bolso do médico.
+      // [delay, on, off, on, off, on]  (ms)
+      final vib = Int64List.fromList([0, 600, 200, 600, 200, 800]);
 
       final android = AndroidNotificationDetails(
         channel, _chLabel(channel),
@@ -182,16 +193,21 @@ class NotificationService {
         enableVibration:    true,
         vibrationPattern:   vib,
         category:           AndroidNotificationCategory.alarm,
-        fullScreenIntent:   true,
-        autoCancel:         true,
+        fullScreenIntent:   true,   // heads-up obrigatório mesmo com tela bloqueada
+        autoCancel:         false,  // persiste até o médico tocar (não some sozinho)
+        ongoing:            false,
         styleInformation:   BigTextStyleInformation(body),
+        ticker:             title,
       );
+      // BUILD 331: iOS — interruptionLevel.critical bypassa Não Perturbe e
+      // volume mínimo. Exige entitlement Apple; sem ele iOS silenciosamente
+      // rebaixa para timeSensitive. Ambas as opções forçam banner heads-up.
       const darwin = DarwinNotificationDetails(
-        sound:             'default',
-        presentAlert:      true,
-        presentBadge:      true,
-        presentSound:      true,
-        interruptionLevel: InterruptionLevel.timeSensitive,
+        sound:              'default',
+        presentAlert:       true,
+        presentBadge:       true,
+        presentSound:       true,
+        interruptionLevel:  InterruptionLevel.critical,  // NEW: bypassa DND
       );
 
       await _plugin.zonedSchedule(
@@ -315,13 +331,19 @@ class NotificationService {
     final impl = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     if (impl == null) return;
+    // BUILD 331: vibrationPattern agressivo no canal Android — reproduz o
+    // mesmo padrão de 3 pulsos longos mesmo que a notificação individual
+    // não especifique o padrão (canal sobrescreve).
+    final vib = Int64List.fromList([0, 600, 200, 600, 200, 800]);
     for (final ch in [_chShift, _chCockpit, _chNotes]) {
       await impl.createNotificationChannel(AndroidNotificationChannel(
         ch, _chLabel(ch),
-        description:    _chDesc(ch),
-        importance:     Importance.max,
-        playSound:      true,
-        enableVibration: true,
+        description:      _chDesc(ch),
+        importance:       Importance.max,
+        playSound:        true,
+        enableVibration:  true,
+        vibrationPattern: vib,
+        showBadge:        true,
       ));
     }
   }
