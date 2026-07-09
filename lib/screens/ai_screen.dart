@@ -3738,7 +3738,7 @@ class _EmptyChat extends StatelessWidget {
                   color: const Color(0xFF00E5FF).withOpacity(0.07),
                 ),
                 child: Text(
-                  isEs ? 'Conectar agora' : 'Conectar agora',
+                  isEs ? 'Conectar ahora' : 'Conectar agora', // BUILD 334-FORENSE: tradução ES corrigida
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,

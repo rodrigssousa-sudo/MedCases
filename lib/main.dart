@@ -1544,18 +1544,26 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     }
     AppResumeCoordinator.instance.completeLoading('_webgate_${widget.user.uid}'); // BUILD 241
 
-    // BUILD 334 — TAB_RESTORE pós-auth fix:
+    // BUILD 334 / BUILD 334-FORENSE — TAB_RESTORE pós-auth:
     // Quando _ready flipa de false → true, o MainShell é criado NESTE frame.
     // O _MainShellState field-initializer lê postOAuthTabNotifier.value para
     // definir _tab inicial. Se o OAuth redirect já consumiu o notifier (value=-1)
-    // mas o provider Gemini está conectado (login/refresh sem redirect), o
-    // MainShell iniciaria com _tab=0 (Home) em vez de permanecer na aba de IA.
-    // Fix: se nenhum OAuth redirect está pendente E a sessão Gemini está ativa,
-    // sinalizar _tab=2 antes de criar o MainShell para que o field-initializer
-    // capte o valor correto. O notifier é imediatamente consumido pelo listener.
-    if (mounted && AppProvider.postOAuthTabNotifier.value < 0 && p.geminiConnected) {
+    // mas o provider tem IA conectada (Gemini, BYOK ou OpenAI), o MainShell
+    // iniciaria com _tab=0 (Home) em vez de permanecer na aba de IA.
+    //
+    // COBERTURA EXPANDIDA (FORENSE):
+    //   • BUILD 334 original: cobria apenas geminiConnected.
+    //   • BUILD 334-FORENSE: cobre hasAnyAi (Gemini OAuth + BYOK + OpenAI key)
+    //     para que qualquer usuário com IA ativa abra diretamente na aba IA.
+    //   • Também cobre o caso onde checkGeminiSession() ainda não completou —
+    //     mas setUser() já carregou a chave local (hasApiKey=true).
+    //
+    // Fix: se nenhum OAuth redirect está pendente E usuário tem IA disponível,
+    // sinalizar tab=2 antes de criar o MainShell para que o field-initializer
+    // capture o valor correto. O notifier é consumido pelo initState fast-path.
+    if (mounted && AppProvider.postOAuthTabNotifier.value < 0 && p.hasAnyAi) {
       AppProvider.postOAuthTabNotifier.value = 2; // IA tab — consumido pelo _MainShellState
-      debugPrint('[BUILD334][TAB_RESTORE] setUser/checkGemini OK → pre-sinaliza tab=2 antes de criar MainShell');
+      debugPrint('[BUILD334-FORENSE][TAB_RESTORE] hasAnyAi=true → pre-sinaliza tab=2 antes de criar MainShell (gemini=${p.geminiConnected} key=${p.hasAiKey})');
     }
 
     if (mounted) setState(() => _ready = true);
@@ -1669,21 +1677,36 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // o bool era lido em initState ANTES de checkGeminiSession() setar true.
     // O ValueNotifier dispara em runtime → _onPostOAuthTab() responde imediatamente.
     AppProvider.postOAuthTabNotifier.addListener(_onPostOAuthTab);
-    // BUILD 291/292: race-condition fix — se postOAuthTabNotifier.value já foi setado
-    // antes do listener ser registrado (microtask disparou antes de initState),
-    // consumir o valor imediatamente via addPostFrameCallback.
-    // BUILD 292: o field initializer já inicializou _tab corretamente, mas o
-    // notifier ainda precisa ser resetado para -1 para evitar reprocessamento.
+    // BUILD 291/292 / BUILD 334-FORENSE: race-condition fix multicamada.
+    //
+    // CAMADA 1 (field-initializer): _tab = postOAuthTabNotifier.value >= 0
+    //   ? value.clamp(0,5) : 0  — já executado antes de initState().
+    //
+    // CAMADA 2 (initState fast-path): se o notifier ainda tem valor >= 0
+    //   (pre-sinalizado por _WebMainShellGate._initUser()), confirmar _tab
+    //   via setState e consumir o notifier (reset para -1).
+    //   Uso de addPostFrameCallback garante que o frame inicial já foi
+    //   renderizado antes do setState — evita rebuild durante build.
+    //
+    // CAMADA 3 (NOVA — BUILD 334-FORENSE): listener em runtime via
+    //   _onPostOAuthTab() captura sinalizações tardias de checkGeminiSession()
+    //   que podem completar em background DEPOIS do MainShell ser criado.
     final pendingOAuthTab = AppProvider.postOAuthTabNotifier.value;
     if (pendingOAuthTab >= 0) {
-      debugPrint('[BUILD292][TAB_RESTORE] pending=$pendingOAuthTab applying=true (initState fast-path)');
+      debugPrint('[BUILD334-FORENSE][TAB_RESTORE] pending=$pendingOAuthTab (fast-path initState) _tab=$_tab');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          // _tab já foi inicializado corretamente pelo field initializer.
-          // Confirma e reseta notifier para -1.
-          debugPrint('[BUILD292][TAB_RESTORE] applied tab=${_tab} (field-init path)');
+          // _tab já foi inicializado pelo field initializer — forçar setState
+          // para garantir que o IndexedStack reaja ao valor correto.
+          final correctTab = pendingOAuthTab.clamp(0, 5);
+          if (_tab != correctTab) {
+            setState(() => _tab = correctTab);
+            debugPrint('[BUILD334-FORENSE][TAB_RESTORE] setState tab=$correctTab (field-init divergiu)');
+          } else {
+            debugPrint('[BUILD334-FORENSE][TAB_RESTORE] tab=$_tab já correto (field-init OK)');
+          }
           if (AppProvider.postOAuthTabNotifier.value >= 0) {
-            AppProvider.postOAuthTabNotifier.value = -1;
+            AppProvider.postOAuthTabNotifier.value = -1; // consome notifier
           }
         }
       });
@@ -6447,7 +6470,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
 
             // Avaliação por estrelas
             Text(
-              _isEs ? 'Avaliação' : 'Avaliação',
+              _isEs ? 'Evaluación' : 'Avaliação', // BUILD 334-FORENSE: hardcode PT corrigido
               style: TextStyle(
                   fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
             ),
@@ -6646,7 +6669,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                             color: Colors.white, strokeWidth: 2),
                       )
                     : Text(
-                        _isEs ? 'Abrir e-mail para enviar' : 'Abrir e-mail para enviar',
+                        _isEs ? 'Abrir correo para enviar' : 'Abrir e-mail para enviar', // BUILD 334-FORENSE
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w700),
                       ),
@@ -6754,7 +6777,7 @@ class _SuccessView extends StatelessWidget {
                 elevation: 0,
               ),
               child: Text(
-                isEs ? 'Fechar' : 'Fechar',
+                isEs ? 'Cerrar' : 'Fechar', // BUILD 334-FORENSE: hardcode PT corrigido
                 style: const TextStyle(
                     fontSize: 15, fontWeight: FontWeight.w700),
               ),

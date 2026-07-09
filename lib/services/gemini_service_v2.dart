@@ -1171,6 +1171,20 @@ class GeminiServiceV2 {
       return;
     }
 
+    // BUILD 334 FORENSE: trata 404 explicitamente com fallback silencioso.
+    // 404 = endpoint não existe (modelo inexistente ou URL incorreta).
+    // Emite 'http_404' → ProviderRouterService.shouldTriggerPaidFallback → tryPaidFallback().
+    // O usuário não vê erro — a IA responde normalmente via proxy pago.
+    if (response.statusCode == 404) {
+      debugPrint('[AI_PROVIDER] free=404 endpoint_not_found → fallback=paid silencioso');
+      if (!controller.isClosed) {
+        controller
+          ..add(GeminiChunk.error('http_404'))
+          ..close();
+      }
+      return;
+    }
+
     if (response.statusCode != 200) {
       // BUILD 244: single-line summary — HTTP 5xx → one line, not verbose body
       if (response.statusCode >= 500) {

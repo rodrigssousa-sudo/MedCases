@@ -87,11 +87,22 @@ class ProviderRouterService {
       'https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy';
 
   // ── Erros do Gemini Free que acionam fallback pago ────────────────────────
+  // BUILD 334 FORENSE: adicionado 'http_404' e 'http_400'.
+  //   • http_404 → endpoint inexistente (ex: modelo mal identificado como
+  //     'gemini-2.5-flash-lite' — não existe na API v1beta). O modelo canônico
+  //     é 'gemini-2.5-flash'. Mesmo após a correção do _modelId, manter o
+  //     fallback garante resiliência se a Google deprecar ou renomear endpoints.
+  //   • http_400 → payload malformado / thinkingConfig inválido para o modelo.
+  //     Escalonamento silencioso para o proxy pago evita travamento da UI.
+  //   • http_unexpected → HTTP 4xx/5xx não mapeados explicitamente.
   static const _fallbackTriggerCodes = {
     'http_503',
+    'http_404',   // BUILD 334: endpoint inexistente → fallback silencioso
+    'http_400',   // BUILD 334: payload inválido → fallback silencioso
     'timeout',
     'network',
     'stream_error',
+    'unexpected', // BUILD 334: erros _runPipeline não categorizados
   };
 
   // Códigos que NÃO devem acionar paid fallback

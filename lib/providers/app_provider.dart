@@ -1515,19 +1515,30 @@ class AppProvider extends ChangeNotifier {
       // Sem rede: histórias já carregadas do cache em _loadFromLocal()
     }
 
-    // SYNC-FIX: Ativa stream reativo no mobile (não-web) para atualizações
-    // em tempo real. Cancela stream anterior se usuário mudou.
-    if (!kIsWeb) {
-      await _historiesStreamSub?.cancel();
-      _historiesStreamSub = FirestoreService.streamHistories(uid).listen(
-        (list) {
-          _myHistories = list;
-          notifyListeners();
-          _saveHistoriesLocal(uid).catchError((_) {});
-        },
-        onError: (_) {/* Stream error: mantém dados em memória */},
-      );
-    }
+    // BUILD 334-FORENSE: Fetch-On-Auth-Resolved + stream reativo MULTIPLATAFORMA.
+    //
+    // DIAGNÓSTICO: loadHistories() ativava streamHistories() apenas em !kIsWeb.
+    //   No Web (Safari/Chrome), histórias criadas no iPhone não apareciam em
+    //   tempo real — apenas após reload completo da página.
+    //
+    // SOLUÇÃO: stream Firestore ativado em TODAS as plataformas.
+    //   • iOS/Android: mantém comportamento anterior (stream nativo eficiente).
+    //   • Web: stream via WebSocket do Firestore SDK — atualiza em <1s quando
+    //     qualquer dispositivo da conta salva uma nova HC.
+    //   • _historiesStreamSub protege contra múltiplos listeners (cancel+rebind).
+    //
+    // FETCH-ON-AUTH-RESOLVED: esta função é chamada em setUser() APÓS a chave
+    //   de auth ser carregada (_loadAiKeyFromFirestore) — garantia de que o
+    //   Firestore Rules já validou a permissão antes do primeiro .listen().
+    await _historiesStreamSub?.cancel();
+    _historiesStreamSub = FirestoreService.streamHistories(uid).listen(
+      (list) {
+        _myHistories = list;
+        notifyListeners();
+        _saveHistoriesLocal(uid).catchError((_) {});
+      },
+      onError: (_) {/* Stream error: dados em memória preservados */},
+    );
   }
 
   /// Cancela o stream de histórias (chamado no logout).
@@ -4104,24 +4115,30 @@ class AppProvider extends ChangeNotifier {
           final rawPartial = accumulator.toString().trim();
           final errCode = chunk.errorCode ?? 'network';
 
-          // ── BUILD 278: fallback pago para erros recuperáveis ─────────────
-          // REGRA NOVA (BUILD 278): http_503 SEMPRE escalona para paid,
-          //   independente do tamanho do conteúdo parcial.
-          //   Razão: 503 = stream truncado pela infraestrutura Google.
-          //   Mostrar texto parcial de um 503 = conteúdo incompleto = UX ruim.
+          // ── BUILD 278 / BUILD 334 FORENSE: fallback pago para erros recuperáveis
+          // REGRA A (BUILD 278 + BUILD 334): erros que SEMPRE escalona para paid,
+          //   independente do tamanho do conteúdo parcial:
+          //   • http_503 = stream truncado pela infraestrutura Google.
+          //   • http_404 = endpoint inexistente (modelo renomeado/deprecado).
+          //   • http_400 = payload malformado / thinkingConfig incompatível.
+          //   • unexpected = _runPipeline com exceção não categorizada.
+          //   Mostrar texto parcial desses erros = conteúdo incompleto = UX ruim.
           //   O paid proxy retorna sempre a resposta COMPLETA.
           //
-          // REGRA ANTERIOR (Build 226): outros erros recuperáveis escalona
+          // REGRA B (Build 226): outros erros recuperáveis escalona
           //   somente quando sem conteúdo parcial significativo (≤40 chars).
           //   Mantida para 'quota', 'timeout', 'network', 'stream_error' etc.
-          final bool is503 = errCode == 'http_503';
-          if (is503 && ProviderRouterService.shouldTriggerPaidFallback(errCode)) {
-            if (kDebugMode) debugPrint('[AI_ROUTER] BUILD278 http_503 → limpa buffer parcial e aciona paid (${rawPartial.length}c descartados)');
-            accumulator.clear(); // descarta parcial truncado — nunca exibir 503 parcial
+          const _alwaysFallbackCodes = {
+            'http_503', 'http_404', 'http_400', 'unexpected',
+          };
+          final bool isAlwaysFallback = _alwaysFallbackCodes.contains(errCode);
+          if (isAlwaysFallback && ProviderRouterService.shouldTriggerPaidFallback(errCode)) {
+            if (kDebugMode) debugPrint('[AI_ROUTER] BUILD334 $errCode → fallback=paid silencioso (${rawPartial.length}c descartados)');
+            accumulator.clear(); // descarta parcial — nunca exibir resposta incompleta
             unawaited(tryPaidFallback(errCode));
             return;
           }
-          if (!is503 && ProviderRouterService.shouldTriggerPaidFallback(errCode) &&
+          if (!isAlwaysFallback && ProviderRouterService.shouldTriggerPaidFallback(errCode) &&
               rawPartial.length <= 40) {
             if (kDebugMode) debugPrint('[AI_ROUTER] free_error errCode=$errCode → aciona paid');
             accumulator.clear();
