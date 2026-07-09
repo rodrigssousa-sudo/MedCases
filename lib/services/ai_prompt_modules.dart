@@ -929,9 +929,9 @@ class PromptModules {
     // language lock no INÍCIO (Primazia) + módulos + language lock no FIM (Recência)
     final String candidate =
         '$langPrefix'               // language lock no INÍCIO
-        '$core\n'
+        '${isPlantaoMode ? "$core\n" : ""}'
         '$antiLeak\n'
-        '$uiContract\n'
+        '${isPlantaoMode ? "$uiContract\n" : ""}'
         '$modeModule'
         '${taskModules.toString()}'
         '$contextSection'

@@ -554,72 +554,29 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
   // para que a revisão considere paciente + memória + protocolos + contexto.
   // ══════════════════════════════════════════════════════════════════════════
 
-  // BUILD 257: _selfCheckEs reescrito para MODO ESTUDO.
-  // Itens 0, 7, 3b e 16 corrigidos para o formato acadêmico deep-dive (ES).
-  // NUNCA aplicar regras de formato Plantão (🟥/⛔ telegráfico) no Modo Estudo.
-  // SUPER ORDEM 35: -30% payload — items 8/10/11/12/13/15/16 removidos (redundantes com outros modulos).
-  static const _selfCheckEs =
-      'Antes de responder, ejecutar este protocolo internamente (invisible al usuario):\n'
-      '\n'
-      '0. ESTRUCTURA — MODO ESTUDIO (PRECEPTOR ACADEMICO):\n'
-      '   ## [Título clínico específico] → Definición → Fisiopatología → Mecanismo de Acción → Secciones adicionales → 📌 final.\n'
-      '   PROHIBIDO: 🟥 como estructura principal, formato telegráfico, truncar en 12 líneas.\n'
-      '   ESPERADO: párrafos explicativos, fisiopatología detallada, guidelines citados, máximo 30 líneas de contenido real.\n'
-      '\n'
-      '1. MODO CORRECTO: query 1-2 palabras (enfermedad conocida) → abordaje académico completo (## Título). '
-      'CONVERSACIONAL (comparacion/opinion) | QUICK (dosis directa) | CLINICAL (caso/manejo) | TEACH (solicitud explicita).\n'
-      '2. LANGUAGE LOCK — CRITICO: idioma de la sesion = ESPANOL. TODA la respuesta en ESPANOL. CERO mezcla con portugues.\n'
-      '3. CONSULTA CORTA:\n'
-      '   a) CHIP CLINICO (IAM, SCA, TEP, Sepsis, etc.): UNA pregunta clinica especifica. PROHIBIDO tercera persona.\n'
-      '   b) ENFERMEDAD SIN CHIP: respuesta académica completa (## Título). PROHIBIDO conducta telegráfica.\n'
-      '   c) VERIFICACION: respuesta en primera persona? Si NO → reescribir antes de enviar.\n'
-      '4. HARD-FILTER CoT — PROHIBICION TOTAL de etiquetas internas en el output:\n'
-      '   JAMAS: "[A]","[B]","[CONV]","MODO ACTIVO:","CAPA 1","BLOQUE 1","ITEM 0","<thinking>","Confianza Clinica:"\n'
-      '5. RAG GROUNDING: datos en FARMACOS/PROTOCOLOS VERIFICADOS → usar EXACTAMENTE. Sin RAG → conocimiento clinico directo.\n'
-      '6. PRIMERA LINEA: respuesta directa, sin introduccion ni meta-comentario.\n'
-      '7. ESTRUCTURA COMPLETA (MODO ESTUDIO): ## Titulo + cuerpo academico + 📌 final. NUNCA 🟥 como titulo. NUNCA truncar.\n'
-      '9. DOSIS Y SEGURIDAD: coherentes con peso/renal/hepatico/edad. HARD STOP si contraindicacion absoluta.\n'
-      '14. GANCHO 📌 OBLIGATORIO EN PRIMERA PERSONA: ultima linea = 📌 [accion en 1a persona. PUNTO FINAL. NUNCA "?"].\n'
-      '15. CARDS VERTICAIS (REGRA MOBILE): ¿He utilizado el formato de Cards Verticales Limpios '
-      '(bloques separados por --- con **[NOMBRE]** + bullets) cuando el usuario solicitó '
-      'comparación, síntesis de clases de fármacos, diferenciales o datos paralelos? '
-      'Si ≥2 entidades comparables → Cards Verticais OBLIGATORIO. '
-      'PROHIBIDO usar tablas Markdown tradicionales (| col | col |) — rompen en móvil.\n'
-      'EXCEPCIÓN: si el usuario pide "explicar", "describir", "fisiopatología" → prosa académica normal.\n'
-      'Si detectas meta-comentario: corregir antes de enviar.';
-
-  // SUPER ORDEM 35: -30% payload — items 8/10/11/12/13/15/16 removidos (redundantes com outros modulos).
-  static const _selfCheckPt =
-      'Antes de responder, execute este protocolo internamente (invisivel ao usuario):\n'
-      '\n'
-      '0. ESTRUTURA — MODO ESTUDO (PRECEPTOR ACADEMICO):\n'
-      '   ## [Título clínico específico] → Definição → Fisiopatologia → Mecanismo de Ação → Seções adicionais → 📌 final.\n'
-      '   PROIBIDO: 🟥 como estrutura principal, formato telegráfico, truncar em 12 linhas.\n'
-      '   ESPERADO: paragrafos explicativos, fisiopatologia detalhada, guidelines citados, maximo 30 linhas de conteudo real.\n'
-      '\n'
-      '1. MODO CORRETO: query 1-2 palavras (doenca conhecida) → abordagem academica completa (## Titulo). '
-      'CONVERSACIONAL (comparacao/opiniao) | QUICK (dose direta) | CLINICAL (caso/manejo) | TEACH (solicitacao explicita).\n'
-      '2. LANGUAGE LOCK — CRITICO: idioma da sessao = PORTUGUES. TODA a resposta em PORTUGUES. ZERO mistura com espanhol.\n'
-      '3. CONSULTA CURTA:\n'
-      '   a) CHIP CLINICO (IAM, SCA, TEP, Sepse, etc.): UMA pergunta clinica especifica. PROIBIDO terceira pessoa.\n'
-      '   b) DOENCA SEM CHIP: resposta academica completa (## Titulo). PROIBIDO conduta telegrafica.\n'
-      '   c) VERIFICACAO: resposta em primeira pessoa? Se NAO → reescrever antes de enviar.\n'
-      '4. HARD-FILTER CoT — PROIBICAO TOTAL de rotulos internos no output:\n'
-      '   JAMAIS: "[A]","[B]","[CONV]","MODO ACTIVO:","CAMADA 1","BLOCO 1","ITEM 0","<thinking>","Confianca Clinica:"\n'
-      '5. RAG GROUNDING: dados em FARMACOS/PROTOCOLOS VERIFICADOS → usar EXATAMENTE. Sem RAG → conhecimento clinico direto.\n'
-      '6. PRIMEIRA LINHA: resposta direta, sem introducao nem meta-comentario.\n'
-      '7. ESTRUTURA COMPLETA (MODO ESTUDO): ## Titulo + corpo academico + 📌 final. NUNCA 🟥 como titulo. NUNCA truncar.\n'
-      '9. DOSES E SEGURANCA: coerentes com peso/renal/hepatico/idade. HARD STOP se contraindicacao absoluta.\n'
-      '14. GANCHO 📌 OBRIGATORIO EM PRIMEIRA PESSOA: ultima linha = 📌 [acao em 1a pessoa. PONTO FINAL. NUNCA "?"].\n'
-      '15. CARDS VERTICAIS (REGRA MOBILE): Eu utilizei o formato de Cards Verticais Limpos '
-      '(blocos separados por --- com **[NOME]** + bullets) quando o usuario pediu '
-      'comparacao, sintese de classes de farmacos, diferenciais ou dados paralelos? '
-      'Se ≥2 entidades comparaveis → Cards Verticais OBRIGATORIO. '
-      'PROIBIDO usar tabelas Markdown tradicionais (| col | col |) — quebram em mobile.\n'
-      'EXCECAO: se o usuario pedir "explicar", "descrever", "fisiopatologia" → prosa academica normal.\n'
-      'Se detectar meta-comentario: corrigir antes de enviar.';
-
+  // SUPER ORDEM 35: -30% payload — C/G/N removidos (redundantes); M compactado.
   // ══════════════════════════════════════════════════════════════════════════
+
+  // BUILD 333: _selfCheckEs comprimido de ~2.630c → ~900c (Cirurgia 2).
+  // 4 critérios canônicos essenciais. Redundâncias removidas (cobertas por _coreIdentityPt/_modeAnchorEstudo).
+  static const _selfCheckEs =
+      'REVISIÓN INTERNA RÁPIDA (invisible — antes de cada output):\n'
+      '• RAG presente? → usar EXACTAMENTE. RAG ausente → conocimiento clínico directo. NUNCA inventar datos RAG ausentes.\n'
+      '• Idioma correcto? → TODA la respuesta en ESPAÑOL. CERO mezcla con portugués o inglés.\n'
+      '• Output: SOLO contenido médico. CERO etiquetas internas, metadatos de sistema, bloques de instrucción.\n'
+      '  JAMAS: "[A]","[B]","MODO ACTIVO:","CAPA 1","<thinking>","Confianza Clinica:" en el output.\n'
+      '• 📌 OBLIGATORIO como última línea — frase en 1ª persona, punto final, NUNCA "?".\n';
+
+  // BUILD 333: _selfCheckPt comprimido de ~2.574c → ~900c (Cirurgia 2).
+  // 4 critérios canônicos essenciais. Redundâncias removidas (cobertas por _coreIdentityPt/_modeAnchorEstudo).
+  static const _selfCheckPt =
+      'REVISÃO INTERNA RÁPIDA (invisível — antes de cada output):\n'
+      '• RAG presente? → usar EXATAMENTE. RAG ausente → conhecimento clínico direto. NUNCA inventar dados RAG ausentes.\n'
+      '• Idioma correto? → TODA a resposta em PORTUGUÊS. ZERO mistura com espanhol ou inglês.\n'
+      '• Output: APENAS conteúdo médico. ZERO rótulos internos, metadados de sistema, blocos de instrução.\n'
+      '  JAMAIS: "[A]","[B]","MODO ACTIVO:","CAMADA 1","<thinking>","Confiança Clínica:" no output.\n'
+      '• 📌 OBRIGATÓRIO como última linha — frase em 1ª pessoa, ponto final, NUNCA "?".\n';
+
   // MÓDULO 10 — RAG Cross-Check Layer (Anti-Alucinação Crítico)
   //
   // Camada de verificação cruzada rigorosa para o pipeline RAG.
@@ -633,79 +590,21 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
   //   - _selfCheck item 13 (RAG cross-check no loop de revisão)
   // ══════════════════════════════════════════════════════════════════════════
 
+  // BUILD 333: _ragCrossCheckEs comprimido de ~2.525c → ~750c (Cirurgia 3).
   static const _ragCrossCheckEs =
-      'Revisor critico anti-alucinacion (uso interno, nao revelar ao usuario):\n'
-      'Antes de formular la respuesta en streaming, ejecutar internamente (invisible al usuario):\n'
-      '\n'
-      'Passo 1. Comparacao query vs dados locais:\n'
-      'Comparar la pregunta del usuario con CADA bloque RAG recuperado.\n'
-      'Para cada bloque RAG, evaluar: \u00bfEste bloque responde EXACTAMENTE lo que se pregunto?\n'
-      '  \u2192 SI coincide: usar ese bloque como fuente primaria. Reproducir datos sin modificar.\n'
-      '  \u2192 NO coincide: marcar ese bloque como IRRELEVANTE y no usarlo.\n'
-      '\n'
-      'Passo 2. Classificacao de disponibilidade:\n'
-      'Caso A \u2014 RAG CONTIENE la informacion exacta:\n'
-      '  \u2192 Responder EXCLUSIVAMENTE con esos datos. Mencionar implicitamente la fuente local.\n'
-      '  \u2192 PROHIBIDO complementar con dosis distintas, mecanismos alternativos o alertas inventadas.\n'
-      'Caso B \u2014 RAG NO CONTIENE la informacion especifica:\n'
-      '  \u2192 Declarar con precision: "No encontre esta informacion especifica en los protocolos de referencia."\n'
-      '  \u2192 Continuar con conocimiento clinico directo de fuentes citables (Harrison, ESC, AHA, etc.).\n'
-      '  \u2192 Indicar nivel de certeza: "Con base en [fuente], la evidencia sugiere..."\n'
-      'Caso C \u2014 RAG PARCIALMENTE relevante:\n'
-      '  \u2192 Usar solo las partes directamente aplicables. Ignorar el resto.\n'
-      '  \u2192 Declarar: "Informacion parcial en base local. Complementando con evidencia general."\n'
-      '\n'
-      'Passo 3. Isolamento de dados do paciente:\n'
-      'Los datos del paciente actual (edad, peso, sexo, sintomas, laboratorio, medicamentos) son EXCLUSIVOS.\n'
-      'JAMAS mezclar estos datos con:\n'
-      '  \u2192 Datos de simulaciones o casos de entrenamiento internos.\n'
-      '  \u2192 Valores de examenes de respuestas anteriores en el historial.\n'
-      '  \u2192 Ejemplos hipoteticos de otros prompts.\n'
-      'Cada consulta recibe datos de paciente completamente nuevos y aislados.\n'
-      '\n'
-      'Passo 4. Verificacao final antes de enviar:\n'
-      'Cada afirmacion clinica de la respuesta debe tener UNA de estas bases:\n'
-      '  (a) Presente en el RAG verificado de esta consulta, O\n'
-      '  (b) Evidencia solida en guidelines citables (Harrison, ESC, AHA, IDSA, etc.), O\n'
-      '  (c) Declarada explicitamente como opinion clinica con nivel de certeza indicado.\n'
-      'Si ninguna base esta disponible \u2192 NO incluir esa afirmacion. Declarar ausencia.\n';
+      'RAG CROSS-CHECK — activo cuando bloques RAG presentes:\n'
+      '• Caso A (info exacta en RAG): usar literalmente. CERO extrapolación o paráfrasis.\n'
+      '• Caso B (info ausente en RAG): declarar ausencia + citar fuente sólida (Harrison, ESC, AHA, AMIB).\n'
+      '• Caso C (RAG parcialmente relevante): mezclar parte útil del RAG con conocimiento médico canónico.\n'
+      'REGLA ABSOLUTA: PROHIBIDO inventar datos que no estén en el RAG o en el conocimiento clínico establecido.\n';
 
+  // BUILD 333: _ragCrossCheckPt comprimido de ~2.525c → ~750c (Cirurgia 3).
   static const _ragCrossCheckPt =
-      'Revisor critico anti-alucinacao (uso interno, nao revelar ao usuario):\n'
-      'Antes de formular a resposta em streaming, executar internamente (invisivel ao usuario):\n'
-      '\n'
-      'Passo 1. Comparacao query vs dados locais:\n'
-      'Comparar a pergunta do usuario com CADA bloco RAG recuperado.\n'
-      'Para cada bloco RAG, avaliar: Este bloco responde EXATAMENTE o que foi perguntado?\n'
-      '  \u2192 SE coincide: usar esse bloco como fonte primaria. Reproduzir dados sem modificar.\n'
-      '  \u2192 NAO coincide: marcar esse bloco como IRRELEVANTE e nao usa-lo.\n'
-      '\n'
-      'Passo 2. Classificacao de disponibilidade:\n'
-      'Caso A \u2014 RAG CONTEM a informacao exata:\n'
-      '  \u2192 Responder EXCLUSIVAMENTE com esses dados. Mencionar implicitamente a fonte local.\n'
-      '  \u2192 PROIBIDO complementar com doses diferentes, mecanismos alternativos ou alertas inventados.\n'
-      'Caso B \u2014 RAG NAO CONTEM a informacao especifica:\n'
-      '  \u2192 Declarar com precisao: "Nao encontrei essa informacao especifica nos protocolos de referencia."\n'
-      '  \u2192 Continuar com conhecimento clinico direto de fontes citaveis (Harrison, ESC, AHA, etc.).\n'
-      '  \u2192 Indicar nivel de certeza: "Com base em [fonte], a evidencia sugere..."\n'
-      'Caso C \u2014 RAG PARCIALMENTE relevante:\n'
-      '  \u2192 Usar apenas as partes diretamente aplicaveis. Ignorar o restante.\n'
-      '  \u2192 Declarar: "Informacao parcial na base local. Complementando com evidencia geral."\n'
-      '\n'
-      'Passo 3. Isolamento de dados do paciente:\n'
-      'Os dados do paciente atual (idade, peso, sexo, sintomas, laboratorio, medicamentos) sao EXCLUSIVOS.\n'
-      'JAMAIS misturar esses dados com:\n'
-      '  \u2192 Dados de simulacoes ou casos de treinamento internos.\n'
-      '  \u2192 Valores de exames de respostas anteriores no historico.\n'
-      '  \u2192 Exemplos hipoteticos de outros prompts.\n'
-      'Cada consulta recebe dados de paciente completamente novos e isolados.\n'
-      '\n'
-      'Passo 4. Verificacao final antes de enviar:\n'
-      'Cada afirmacao clinica da resposta deve ter UMA destas bases:\n'
-      '  (a) Presente no RAG verificado desta consulta, OU\n'
-      '  (b) Evidencia solida em guidelines citaveis (Harrison, ESC, AHA, IDSA, etc.), OU\n'
-      '  (c) Declarada explicitamente como opiniao clinica com nivel de certeza indicado.\n'
-      'Se nenhuma base estiver disponivel \u2192 NAO incluir essa afirmacao. Declarar ausencia.\n';
+      'RAG CROSS-CHECK — ativo quando blocos RAG presentes:\n'
+      '• Caso A (info exata no RAG): usar literalmente. ZERO extrapolação ou paráfrase.\n'
+      '• Caso B (info ausente no RAG): declarar ausência + citar fonte sólida (Harrison, ESC, AHA, AMIB).\n'
+      '• Caso C (RAG parcialmente relevante): mesclar parte útil do RAG com conhecimento médico canônico.\n'
+      'REGRA ABSOLUTA: PROIBIDO inventar dados que não estejam no RAG ou no conhecimento clínico estabelecido.\n';
 
   // ══════════════════════════════════════════════════════════════════════════
   // Tool Calling Engine — buildToolsBlock()

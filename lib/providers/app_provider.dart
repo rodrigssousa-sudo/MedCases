@@ -4015,7 +4015,7 @@ class AppProvider extends ChangeNotifier {
     //   • _geminiConnected=true → effectivePriority='academic' → chegamos aqui
     //     normalmente; bypass também se aplica (Free com sessão ativa também
     //     sofre throttling em payloads massivos).
-    const int _kFreeLayerCharCeiling = 14000;
+    const int _kFreeLayerCharCeiling = 20000;
     if (systemPrompt.length > _kFreeLayerCharCeiling) {
       // ignore: avoid_print
       print('[AI_ROUTER] Payload massivo detectado (Chars: ${systemPrompt.length}) '
