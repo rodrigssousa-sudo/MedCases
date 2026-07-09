@@ -4312,6 +4312,12 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
   int    _notifId       = 0;
   String _timerLabel    = '';   // ex: "Box 3 — João"
 
+  // BUILD 331/QA: guard-clause para evitar dupla instância do _PomodoroSheet.
+  // Sem essa flag, toques rápidos e repetidos no badge do timer enquanto o sheet
+  // anima sua abertura podem empilhar múltiplos showModalBottomSheet() na stack
+  // do Navigator, corrompendo o estado do roteamento do Flutter.
+  bool _sheetIsOpen = false;
+
   bool get _timerActive => _remainingSecs > 0;
 
   String get _remainingDisplay {
@@ -4474,13 +4480,18 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
   }
 
   void _openTimerSheet() {
+    // BUILD 331/QA: guard-clause — impede que toques rápidos e repetidos no
+    // badge empilhem múltiplos sheets na stack do Navigator, evitando corrupção
+    // do estado de roteamento do Flutter e o erro "Navigator state mismatch".
+    if (_sheetIsOpen || !mounted) return;
+    _sheetIsOpen = true;
+
     // BUILD 331: se timer ATIVO, abre o sheet em modo "countdown" exibindo
     // o contador regressivo em tempo real + botão de cancelar.
     // Se NÃO ativo, abre o modo seletor normal (comportamento original).
     //
-    // endTime é lido do SharedPreferences já carregado no _restoreTimerFromPrefs.
-    // Para evitar uma leitura assíncrona dentro do builder, calculamos o endTime
-    // a partir de _remainingSecs (já sincronizado com wall-clock) + now().
+    // endTime é calculado a partir de _remainingSecs (já sincronizado com
+    // wall-clock via _restoreTimerFromPrefs) para evitar leitura async no builder.
     final DateTime? activeEndTime = _timerActive
         ? DateTime.now().add(Duration(seconds: _remainingSecs))
         : null;
@@ -4517,7 +4528,12 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
           _startTimer(secs, body);
         },
       ),
-    );
+    ).whenComplete(() {
+      // BUILD 331/QA: reseta o guard APÓS o sheet ser completamente fechado
+      // (animação de saída concluída). O .whenComplete() garante reset mesmo
+      // se o sheet for descartado por swipe, botão de voltar ou Navigator.pop.
+      if (mounted) setState(() => _sheetIsOpen = false);
+    });
   }
 
   @override
@@ -4709,31 +4725,42 @@ class _PomodoroSheetState extends State<_PomodoroSheet> {
   final _customCtrl = TextEditingController();
   bool _loading = false;
 
-  // BUILD 331: tick para atualizar o countdown em tempo real dentro do sheet
+  // BUILD 331: tick para atualizar o countdown em tempo real dentro do sheet.
+  // BUILD 331/QA: _tickCancelled é flag de guard para evitar setState após dispose.
+  // Garante zero memory leak mesmo se o SO atrasar o GC do Timer entre frames.
   Timer? _sheetTick;
+  bool   _tickCancelled = false;
   int _sheetRemaining = 0;
 
   static const _presets = [15, 30, 60];
+
+  // Cancela o tick de forma segura e idempotente — chame antes de qualquer pop.
+  void _cancelSheetTick() {
+    _tickCancelled = true;
+    _sheetTick?.cancel();
+    _sheetTick = null;
+  }
 
   @override
   void initState() {
     super.initState();
     if (widget.activeEndTime != null) {
-      // Inicializa o countdown com o delta real
+      // Inicializa o countdown com o delta real (wall-clock, imune a suspensão iOS)
       _sheetRemaining = widget.activeEndTime!
           .difference(DateTime.now())
           .inSeconds
           .clamp(0, 99999);
-      // Tick a cada segundo para atualizar o display dentro do sheet
+      // BUILD 331/QA: dupla guarda — _tickCancelled + mounted — evita setState
+      // após dispose em qualquer interleaving de frames do Flutter engine.
       _sheetTick = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (!mounted) return;
+        if (_tickCancelled || !mounted) return;
         final secs = widget.activeEndTime!
             .difference(DateTime.now())
             .inSeconds
             .clamp(0, 99999);
         setState(() => _sheetRemaining = secs);
         if (secs <= 0) {
-          _sheetTick?.cancel();
+          _cancelSheetTick();
           if (mounted) Navigator.pop(context);
         }
       });
@@ -4742,7 +4769,10 @@ class _PomodoroSheetState extends State<_PomodoroSheet> {
 
   @override
   void dispose() {
-    _sheetTick?.cancel();
+    // BUILD 331/QA: cancela o tick ANTES do super.dispose() — ordem obrigatória.
+    // Sem isso, o Timer pode disparar um setState no frame após o widget ser
+    // removido da árvore, causando "setState called after dispose" no log.
+    _cancelSheetTick();
     _labelCtrl.dispose();
     _customCtrl.dispose();
     super.dispose();
@@ -4882,8 +4912,14 @@ class _PomodoroSheetState extends State<_PomodoroSheet> {
           const SizedBox(height: 8),
 
           // Botão secundário — fechar sem cancelar
+          // BUILD 331/QA: cancela o _sheetTick ANTES do pop para evitar memory
+          // leak e "setState after dispose" quando o usuário abre/fecha o sheet
+          // múltiplas vezes rapidamente (ex: touch repetido no badge do timer).
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              _cancelSheetTick(); // garante cancel antes do widget sair da árvore
+              Navigator.pop(context);
+            },
             child: Text(
               isEs ? 'Fechar (timer continua ativo)' : 'Fechar (timer continua ativo)',
               style: TextStyle(fontSize: 12, color: text2),

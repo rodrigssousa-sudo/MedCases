@@ -176,51 +176,67 @@ class NotificationService {
 
     if (kIsWeb) return id; // Web só usa in-app
 
-    try {
-      final when = tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds));
+    // BUILD 331/QA: padrão de vibração agressivo (3 pulsos longos) — estilo
+    // banco/WhatsApp para não passar despercebido no bolso do médico.
+    // [delay, on, off, on, off, on]  (ms)
+    final vib = Int64List.fromList([0, 600, 200, 600, 200, 800]);
+    final when = tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds));
 
-      // BUILD 331: padrão de vibração agressivo (3 pulsos longos) — estilo
-      // banco/WhatsApp para não passar despercebido no bolso do médico.
-      // [delay, on, off, on, off, on]  (ms)
-      final vib = Int64List.fromList([0, 600, 200, 600, 200, 800]);
+    final android = AndroidNotificationDetails(
+      channel, _chLabel(channel),
+      channelDescription: _chDesc(channel),
+      importance:         Importance.max,
+      priority:           Priority.high,
+      playSound:          true,
+      enableVibration:    true,
+      vibrationPattern:   vib,
+      category:           AndroidNotificationCategory.alarm,
+      fullScreenIntent:   true,   // heads-up obrigatório mesmo com tela bloqueada
+      autoCancel:         false,  // persiste até o médico tocar (não some sozinho)
+      ongoing:            false,
+      styleInformation:   BigTextStyleInformation(body),
+      ticker:             title,
+    );
 
-      final android = AndroidNotificationDetails(
-        channel, _chLabel(channel),
-        channelDescription: _chDesc(channel),
-        importance:         Importance.max,
-        priority:           Priority.high,
-        playSound:          true,
-        enableVibration:    true,
-        vibrationPattern:   vib,
-        category:           AndroidNotificationCategory.alarm,
-        fullScreenIntent:   true,   // heads-up obrigatório mesmo com tela bloqueada
-        autoCancel:         false,  // persiste até o médico tocar (não some sozinho)
-        ongoing:            false,
-        styleInformation:   BigTextStyleInformation(body),
-        ticker:             title,
-      );
-      // BUILD 331: iOS — interruptionLevel.critical bypassa Não Perturbe e
-      // volume mínimo. Exige entitlement Apple; sem ele iOS silenciosamente
-      // rebaixa para timeSensitive. Ambas as opções forçam banner heads-up.
-      const darwin = DarwinNotificationDetails(
-        sound:              'default',
-        presentAlert:       true,
-        presentBadge:       true,
-        presentSound:       true,
-        interruptionLevel:  InterruptionLevel.critical,  // NEW: bypassa DND
-      );
-
-      await _plugin.zonedSchedule(
-        id, title, body, when,
-        NotificationDetails(android: android, iOS: darwin),
-        payload:                                    payload,
-        androidScheduleMode:                        AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-      );
-      debugPrint('[Notif] Agendado id=$id ${seconds}s "$title"');
-    } catch (e) {
-      debugPrint('[Notif] scheduleTimer error: $e');
+    // BUILD 331: iOS critical bypassa Não Perturbe/volume mínimo.
+    // BUILD 331/QA: Estratégia de downgrade em 3 níveis para garantir entrega
+    // mesmo sem o entitlement 'com.apple.developer.usernotifications.critical-alerts':
+    //   1ª tentativa → InterruptionLevel.critical  (bypassa DND — requer entitlement)
+    //   2ª tentativa → InterruptionLevel.timeSensitive (heads-up sem DND bypass)
+    //   3ª tentativa → InterruptionLevel.active (banner padrão — fallback máximo)
+    // Isso evita que o médico perca o alerta por ausência do entitlement no Xcode.
+    bool _scheduled = false;
+    for (final level in [
+      InterruptionLevel.critical,
+      InterruptionLevel.timeSensitive,
+      InterruptionLevel.active,
+    ]) {
+      try {
+        final darwin = DarwinNotificationDetails(
+          sound:             'default',
+          presentAlert:      true,
+          presentBadge:      true,
+          presentSound:      true,
+          interruptionLevel: level,
+        );
+        await _plugin.zonedSchedule(
+          id, title, body, when,
+          NotificationDetails(android: android, iOS: darwin),
+          payload:                                    payload,
+          androidScheduleMode:                        AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+        );
+        debugPrint('[Notif] Agendado id=$id ${seconds}s "$title" level=$level');
+        _scheduled = true;
+        break; // sucesso — não tenta próximo nível
+      } catch (e) {
+        debugPrint('[Notif] scheduleTimer level=$level falhou: $e — tentando downgrade');
+        // continua loop para próximo nível
+      }
+    }
+    if (!_scheduled) {
+      debugPrint('[Notif] scheduleTimer: todos os níveis falharam para id=$id');
     }
     return id;
   }

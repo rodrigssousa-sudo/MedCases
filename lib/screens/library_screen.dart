@@ -1463,12 +1463,16 @@ class _GrupoCard extends StatelessWidget {
               color: Colors.white, letterSpacing: -0.2,
             )),
             const SizedBox(height: 4),
+            // BUILD 331/QA: letterSpacing 0.2 melhora legibilidade de texto
+            // pequeno (11pt) em brilho reduzido — contexto hospitalar noturno.
+            // Contraste WCAG auditado: mín 6.21:1 (lavanda/Neuro) — PASS AA.
             Text(
               '${casos.length} ${casos.length == 1
                   ? (isEs ? "caso de estudio" : "caso de estudo")
                   : (isEs ? "casos de estudio" : "casos de estudo")}',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                color: iconColor.withOpacity(0.75)),
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+                color: iconColor.withOpacity(0.80)),
             ),
           ])),
           // Chevron sutil
@@ -1588,9 +1592,11 @@ class _SimulacoesSheet extends StatelessWidget {
                         )),
                         if (severity.isNotEmpty) ...[
                           const SizedBox(height: 3),
+                          // BUILD 331/QA: w700 + letterSpacing 0.2 para legibilidade
+                          // em telas com brilho reduzido (turno noturno hospitalar).
                           Text(severity, style: TextStyle(
-                            fontSize: 11, color: iconColor.withOpacity(0.75),
-                            fontWeight: FontWeight.w600,
+                            fontSize: 11, color: iconColor.withOpacity(0.80),
+                            fontWeight: FontWeight.w700, letterSpacing: 0.2,
                           ), maxLines: 1, overflow: TextOverflow.ellipsis),
                         ],
                       ])),
