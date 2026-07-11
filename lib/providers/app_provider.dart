@@ -3842,6 +3842,13 @@ class AppProvider extends ChangeNotifier {
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
     bool completionFired = false;
 
+    // ── BUILD 432: Auto-Retry Engine — contador de retentativas silenciosas ──
+    // Máx 1 retry interno quando a resposta retornar vazia (len=0 / isEmpty).
+    // O UI permanece em _thinking=true com EcgLoadingBlock ativo durante o
+    // soluço de rede — o médico não percebe a retentativa.
+    // Após 1 retry sem sucesso, escala para tryPaidFallback() (Layer 2/3).
+    int _freeStreamRetryCount = 0;
+
     // ── Build 226: requestId único para rastreamento ─────────────────────────
     final requestId = ProviderRouterService.generateRequestId();
 
@@ -4399,12 +4406,115 @@ class AppProvider extends ChangeNotifier {
           _aiStreamSub    = null;
           wrappedOnDone(finalText);   // BUILD 254
         } else {
-          // Stream fechou vazio — Build 226: tenta paid fallback
+          // Stream fechou vazio — BUILD 432: tenta retry silencioso antes do paid fallback
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
-          if (kDebugMode) debugPrint('[AI_ROUTER] stream closed empty → paid fallback');
-          unawaited(tryPaidFallback('empty_stream'));
+
+          // BUILD 432 AUTO-RETRY: até 1 tentativa silenciosa (sem alterar UI)
+          if (_freeStreamRetryCount < 1 && _activeRequestId == thisRequestId) {
+            _freeStreamRetryCount++;
+            completionFired = false; // permite novo disparo após retry
+            accumulator.clear();     // limpa acumulador para resposta nova
+
+            // Re-inicia streaming Free preservando estado de _thinking na UI
+            // (aiChatProvider.setStreaming reativado para manter EcgLoadingBlock)
+            if (kDebugMode) {
+              debugPrint('[BUILD432][AUTO_RETRY] stream empty → retry '
+                  '$_freeStreamRetryCount/1 requestId=$thisRequestId — '
+                  'UI mantida em thinking, soluço de rede ocultado');
+            }
+            // ignore: avoid_print
+            print('[BUILD432][AUTO_RETRY] empty_stream retry=$_freeStreamRetryCount '
+                'requestId=$requestId');
+
+            // Re-aciona stream Free via AiGatewayService (mesmo gateway do fluxo original)
+            unawaited(() async {
+              // Pequeno delay para deixar a rede respirar antes do retry
+              await Future<void>.delayed(const Duration(milliseconds: 800));
+              if (_activeRequestId != thisRequestId) {
+                debugPrint('[BUILD432][AUTO_RETRY] requestId invalidado durante '
+                    'delay → retry cancelado');
+                return;
+              }
+              _aiStreamActive = true;
+              aiChatProvider.setStreaming(true); // reativa indicador de streaming
+              final retryStream = AiGatewayService.sendStream(
+                userMessage:  input,
+                systemPrompt: systemPrompt,
+                apiKey:       geminiApiKey,
+                history:      List<Map<String, String>>.from(_sanitizedHistory),
+                useGrounding: true,
+                longResponse: longResponse,
+                appLanguage:  _lang,
+              );
+              _aiStreamSub = retryStream.listen(
+                (chunk) {
+                  if (!chunk.isError && chunk.text.isNotEmpty) {
+                    accumulator.write(chunk.text);
+                    onChunk(accumulator.toString());
+                  }
+                  if (chunk.isDone && !chunk.isError) {
+                    if (completionFired) return;
+                    completionFired = true;
+                    _globalTimeoutTimer?.cancel();
+                    AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                    final retryText = accumulator.toString().trim();
+                    // ignore: avoid_print
+                    print('[BUILD432][AUTO_RETRY] done len=${retryText.length} '
+                        'requestId=$requestId');
+                    if (retryText.isNotEmpty && !_isFallbackText(retryText)) {
+                      _aiHistory
+                        ..add({'role': 'user',      'content': input})
+                        ..add({'role': 'assistant', 'content': retryText});
+                      while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+                      _aiStreamActive = false;
+                      aiChatProvider.setStreaming(false);
+                      _aiStreamSub = null;
+                      wrappedOnDone(retryText);
+                    } else {
+                      // Retry também veio vazio → escala para paid
+                      _aiStreamActive = false;
+                      aiChatProvider.setStreaming(false);
+                      _aiStreamSub = null;
+                      debugPrint('[BUILD432][AUTO_RETRY] retry also empty → '
+                          'escalando para paid fallback');
+                      unawaited(tryPaidFallback('empty_stream_after_retry'));
+                    }
+                  }
+                },
+                onError: (_) {
+                  if (completionFired) return;
+                  _aiStreamActive = false;
+                  aiChatProvider.setStreaming(false);
+                  _aiStreamSub = null;
+                  unawaited(tryPaidFallback('retry_stream_error'));
+                },
+                onDone: () {
+                  if (completionFired) {
+                    _aiStreamActive = false;
+                    aiChatProvider.setStreaming(false);
+                    _aiStreamSub = null;
+                    return;
+                  }
+                  // Retry onDone sem isDone chunk → paid fallback
+                  completionFired = true;
+                  _aiStreamActive = false;
+                  aiChatProvider.setStreaming(false);
+                  _aiStreamSub = null;
+                  unawaited(tryPaidFallback('empty_retry_onDone'));
+                },
+                cancelOnError: false,
+              );
+            }());
+          } else {
+            // Esgotou retries → paid fallback
+            if (kDebugMode) {
+              debugPrint('[AI_ROUTER] stream closed empty (retry esgotado) → '
+                  'paid fallback requestId=$thisRequestId');
+            }
+            unawaited(tryPaidFallback('empty_stream'));
+          }
         }
       },
       cancelOnError: false,

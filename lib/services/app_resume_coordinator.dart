@@ -110,9 +110,12 @@ class _PendingOp {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Duração máxima de background antes do Context Timeout (ORDEM 53 M3).
-/// Após 5 minutos de inatividade, a sessão clínica é resetada para impedir
-/// que o médico misture pacientes diferentes ao retornar.
-const Duration kContextTimeoutDuration = Duration(minutes: 5);
+/// BUILD 432: ampliado de 5 min → 30 min para evitar hard-reset destrutivo
+/// em pausas normais de plantão (troca de turno, refeição, discussão de caso).
+/// O médico raramente retorna a um paciente diferente em menos de 30 minutos;
+/// resetar em 5 min gerava "amnésia" de contexto e alucinações semânticas
+/// (ex: confundir fórmulas de nutrição enteral com fórmulas magistrais).
+const Duration kContextTimeoutDuration = Duration(minutes: 30);
 
 class AppResumeCoordinator {
   AppResumeCoordinator._();

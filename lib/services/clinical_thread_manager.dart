@@ -500,34 +500,84 @@ class ClinicalThreadManager {
           currentTaskLabel != _lastTaskLabel;
 
       if (intentChanged && fullHistory.isNotEmpty) {
-        // BUILD 307 [AMNESIA_COOLDOWN]: Defesa contra apagamento cognitivo em
-        // perguntas compostas sequenciais no mesmo fármaco-alvo.
-        // Ex: "Qual a dose da amiodarona?" (dose) → "E o mecanismo?" (farmaco)
-        // Apesar da mudança de intent, o fármaco-alvo é o mesmo — preservar thread.
-        final currentDrugTarget = _extractDrugFromHistory(fullHistory);
-        final sameDrugTarget = _lastDrugTarget.isNotEmpty &&
-            currentDrugTarget != null &&
-            currentDrugTarget == _lastDrugTarget;
+        // ── BUILD 432 [PASSO 3]: TRAVA DE SEGURANÇA DE INTENT DO TÓPICO ────────
+        // Palavras polissêmicas que dependem do contexto ativo (ex: 'fórmulas'
+        // pode significar nutrição enteral OU magistral dependendo do tópico
+        // em andamento). Se _lastTaskLabel não está vazio, há tópico ativo
+        // → preservar histórico de transporte SEM wipe, mesmo com taskLabel mudado.
+        //
+        // Bug original [BUILD304][INTENT_RESET]: 'transport_history_cleared'
+        // disparava ao detectar mudança 'geral'→'gotas' quando o médico digitava
+        // "fórmulas" em contexto de nutrição enteral — apagando o histórico que
+        // contextualizava a dieta por sonda, levando o modelo a responder com
+        // farmacologia magistral (alucinação semântica por quebra de histórico).
+        //
+        // PALAVRAS AMBÍGUAS PROTEGIDAS: qualquer uma delas na query atual, com
+        // tópico ativo (_lastTaskLabel não vazio), trava o wipe de histórico.
+        const _kAmbiguousContextWords = <String>[
+          // PT-BR
+          'fórmula', 'formula', 'fórmulas', 'formulas',
+          'gotejo', 'gotejamento', 'gota', 'gotas',
+          'infusão', 'infusao', 'infundir',
+          'dose', 'dosis',
+          'dieta', 'nutrição', 'nutricao', 'enteral', 'parenteral',
+          'sonda', 'nasoentérica', 'nasogástrica',
+          // ES
+          'goteo', 'infusión', 'infusion',
+          'nutrición', 'nutricion', 'dietética', 'dietetica',
+          'sonda nasogástrica', 'sonda nasoentérica',
+        ];
+        // Recupera a última mensagem do usuário do histórico para verificação
+        final lastUserMsg = fullHistory
+            .lastWhere((m) => m['role'] == 'user', orElse: () => {})['content']
+            ?.toLowerCase() ?? '';
+        final hasAmbiguousInQuery = _kAmbiguousContextWords.any(
+          (w) => lastUserMsg.contains(w),
+        );
 
-        if (sameDrugTarget) {
-          // Cooldown: mesma droga detectada após mudança de intent — não apagar.
+        if (hasAmbiguousInQuery && _lastTaskLabel.isNotEmpty) {
+          // TRAVA ATIVA: palavra ambígua detectada com tópico em andamento.
+          // Preserva histórico de transporte — o modelo receberá contexto completo
+          // da sessão ativa, impedindo desvio semântico.
           final prevLabel = _lastTaskLabel;
           _lastStudyActivityMs = nowMs;
           _lastTaskLabel = currentTaskLabel;
-          // _lastDrugTarget permanece inalterado (mesma droga)
-          debugPrint('[BUILD307][AMNESIA_COOLDOWN] intentChanged but sameDrug='
-              '$currentDrugTarget ($prevLabel → $currentTaskLabel) '
-              '→ transport_history_PRESERVED (cooldown ativo)');
+          debugPrint('[BUILD432][TOPIC_LOCK] intentChanged BLOQUEADO: '
+              'palavra ambígua detectada em "$lastUserMsg" '
+              '($prevLabel → $currentTaskLabel) '
+              '→ transport_history_PRESERVED (trava de contexto ativa)');
+          // Continua para a janela micro-deslizante abaixo (não retorna vazio)
         } else {
-          // Fármaco-alvo diferente ou ausente: wipe normal permitido.
-          final prevLabel = _lastTaskLabel;
-          _lastStudyActivityMs = nowMs;
-          _lastTaskLabel = currentTaskLabel;
-          _lastDrugTarget = currentDrugTarget ?? '';
-          debugPrint('[BUILD304][INTENT_RESET] taskLabel changed: '
-              '$prevLabel → $currentTaskLabel '
-              '→ transport_history_cleared (local preserved)');
-          return <Map<String, String>>[];
+          // Sem palavra ambígua: aplica BUILD 307 [AMNESIA_COOLDOWN] normalmente
+          // BUILD 307 [AMNESIA_COOLDOWN]: Defesa contra apagamento cognitivo em
+          // perguntas compostas sequenciais no mesmo fármaco-alvo.
+          // Ex: "Qual a dose da amiodarona?" (dose) → "E o mecanismo?" (farmaco)
+          // Apesar da mudança de intent, o fármaco-alvo é o mesmo — preservar thread.
+          final currentDrugTarget = _extractDrugFromHistory(fullHistory);
+          final sameDrugTarget = _lastDrugTarget.isNotEmpty &&
+              currentDrugTarget != null &&
+              currentDrugTarget == _lastDrugTarget;
+
+          if (sameDrugTarget) {
+            // Cooldown: mesma droga detectada após mudança de intent — não apagar.
+            final prevLabel = _lastTaskLabel;
+            _lastStudyActivityMs = nowMs;
+            _lastTaskLabel = currentTaskLabel;
+            // _lastDrugTarget permanece inalterado (mesma droga)
+            debugPrint('[BUILD307][AMNESIA_COOLDOWN] intentChanged but sameDrug='
+                '$currentDrugTarget ($prevLabel → $currentTaskLabel) '
+                '→ transport_history_PRESERVED (cooldown ativo)');
+          } else {
+            // Fármaco-alvo diferente ou ausente: wipe normal permitido.
+            final prevLabel = _lastTaskLabel;
+            _lastStudyActivityMs = nowMs;
+            _lastTaskLabel = currentTaskLabel;
+            _lastDrugTarget = currentDrugTarget ?? '';
+            debugPrint('[BUILD304][INTENT_RESET] taskLabel changed: '
+                '$prevLabel → $currentTaskLabel '
+                '→ transport_history_cleared (local preserved)');
+            return <Map<String, String>>[];
+          }
         }
       }
 

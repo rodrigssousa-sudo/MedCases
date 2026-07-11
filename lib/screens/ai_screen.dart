@@ -857,20 +857,50 @@ class _AiScreenState extends State<AiScreen> {
     });
   }
 
-  // ── ORDEM 53 M3: Context Timeout — Hard Reset após 5 min de background ───
-  /// Chamado quando AppProvider detecta retorno do background após ≥ 5 minutos.
-  /// Executa hard reset completo:
-  ///   1. Salva sessão anterior (garantia de não perder dados)
-  ///   2. Limpa _messages (UI) → novo chat limpo na tela
-  ///   3. Reseta _aiHistory + sessionId → contexto Gemini zerado
-  ///   4. Reinicia saudação → médico vê interface pronta para novo paciente
+  // ── ORDEM 53 M3: Context Timeout — Hard Reset após 30 min de background ──
+  /// Chamado quando AppProvider detecta retorno do background após ≥ 30 min.
+  ///
+  /// BUILD 432 — MODO ESTUDO PROTEGIDO:
+  ///   Se _longResponse == true (Modo Estudo), o hard reset destrutivo é
+  ///   SUPRIMIDO. Em vez disso, a UI é preservada intacta e o contexto da
+  ///   API é re-alimentado silenciosamente via rebuildAiHistoryFromMessages()
+  ///   na próxima interação do usuário. Isso impede perda de raciocínio clínico
+  ///   durante sessões pedagógicas longas (casos complexos, residência).
+  ///
+  /// MODO PLANTÃO: mantém hard reset completo — pacientes diferentes requerem
+  ///   contexto limpo para evitar cross-contamination clínica.
   void _onContextTimeout() {
     if (!mounted) return;
-    if (kDebugMode) {
-      debugPrint('[ORDEM53_M3] Context Timeout ativado — ≥5 min de background '
-          '→ hard reset de sessão clínica');
-    }
     final p = context.read<AppProvider>();
+
+    // ── BUILD 432: Modo Estudo → bloqueio do hard reset destrutivo ────────────────
+    if (_longResponse) {
+      if (kDebugMode) {
+        debugPrint('[ORDEM53_M3][BUILD432] Context Timeout detectado mas '
+            'Modo Estudo ativo → hard reset SUPRIMIDO. '
+            'UI preservada; contexto será re-alimentado via '
+            'rebuildAiHistoryFromMessages() na próxima interação.');
+      }
+      // Reconstrói _aiHistory no Provider a partir das mensagens visíveis na UI
+      // para resgatar a âncora cognitiva antes do próximo envio.
+      final historyPayload = _messages
+          .where((m) => m.role == 'user' || m.role == 'assistant')
+          .map((m) => {'role': m.role, 'content': m.text})
+          .toList();
+      if (historyPayload.isNotEmpty) {
+        p.rebuildAiHistoryFromMessages(historyPayload);
+        debugPrint('[ORDEM53_M3][BUILD432] rebuildAiHistoryFromMessages '
+            'executado silenciosamente — ${historyPayload.length} entradas '
+            'restauradas no contexto da API (Modo Estudo)');
+      }
+      return; // ← SUPRIME o hard reset abaixo
+    }
+
+    // ── Modo Plantão: hard reset completo (comportamento original) ───────────
+    if (kDebugMode) {
+      debugPrint('[ORDEM53_M3] Context Timeout ativado — ≥30 min de background '
+          '→ hard reset de sessão clínica (Modo Plantão)');
+    }
 
     // 1. Salva sessão anterior antes de destruir
     final hasRealMsgs = _messages.any((m) => m.role == 'user');
@@ -909,7 +939,6 @@ class _AiScreenState extends State<AiScreen> {
 
     debugPrint('[ORDEM53_M3] Hard reset concluído — nova sessão clínica pronta');
   }
-
   void _consumePendingQuery() {
     final q = AiScreen.pendingQuery.value;
     if (q.isEmpty || !mounted) return;
