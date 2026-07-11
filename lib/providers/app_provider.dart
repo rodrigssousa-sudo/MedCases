@@ -1985,16 +1985,48 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
+  // BUILD 336-AUTH-RESILIENCE (PASSO 2): _setGeminiConnectionState agora
+  // sincroniza SEMPRE o AiChatProvider antes de notifyListeners().
+  // Motivo: checkGeminiSession() chama este método, mas connectGemini() e
+  // disconnectGemini() chamavam aiChatProvider.setGeminiConnected() diretamente.
+  // No fluxo Web pós-redirect (currentUser==null), apenas checkGeminiSession()
+  // é executado — e o AiChatProvider ficava fora de sincronia, impedindo a UI
+  // de transicionar para o modo conectado.
+  //
+  // O guard de igualdade foi preservado para estado+email, mas a sincronização
+  // do AiChatProvider é sempre executada quando `connected == true` para garantir
+  // que a árvore da ai_screen reconstrua mesmo em re-emissões do stream de auth.
   void _setGeminiConnectionState({
     required bool connected,
     String email = '',
     bool notify = true,
   }) {
     final nextEmail = connected ? email : '';
-    if (_geminiConnected == connected && _geminiEmail == nextEmail) return;
+    final stateChanged =
+        _geminiConnected != connected || _geminiEmail != nextEmail;
     _geminiConnected = connected;
-    _geminiEmail = nextEmail;
-    if (notify) notifyListeners();
+    _geminiEmail     = nextEmail;
+
+    // BUILD 336 PASSO 2: sincroniza AiChatProvider SEMPRE que conectado=true
+    // (inclusive em re-emissões sem mudança de estado — garante UI responsiva).
+    if (connected || stateChanged) {
+      aiChatProvider.setGeminiConnected(
+        connected: connected,
+        email: nextEmail,
+        hasAnyAi: hasAnyAi,
+        hasAiKey: hasAiKey,
+      );
+    }
+
+    if (notify && stateChanged) notifyListeners();
+    // Força notificação adicional quando conecta, mesmo sem mudança de valor,
+    // para remontar a árvore de UI que pode ter sido renderizada antes do token
+    // estar disponível (race condition Web: currentUser==null durante o boot).
+    if (notify && connected && !stateChanged) {
+      debugPrint('[BUILD336] _setGeminiConnectionState: estado inalterado mas '
+          'connected=true — forçando notifyListeners() para remontar UI');
+      notifyListeners();
+    }
   }
 
   Future<bool> _ensureGeminiApiKey({required String source}) async {

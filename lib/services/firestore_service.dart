@@ -978,16 +978,60 @@ class FirestoreService {
   /// BUILD 300: Força leitura do servidor (Source.server) para evitar cache
   /// stale/preso no WebKit/Safari (ITP). Timeout de 8s com fallback automático
   /// para o cache local caso o usuário esteja sem conectividade.
+  ///
+  /// BUILD 336-AUTH-RESILIENCE (PASSO 1): blindagem robusta contra
+  /// permission-denied. No Web, FirebaseAuth.currentUser pode ser null enquanto
+  /// o Firestore SDK ainda não recebeu o token OAuth customizado — o SDK então
+  /// executa a query sem credenciais e recebe 403/permission-denied.
+  /// Estratégia de recuperação em cascata:
+  ///   1. Tenta servidor (Source.server) com timeout 8s.
+  ///   2. Se permission-denied → tenta cache local offline (Source.cache).
+  ///   3. Se ambos falharem → retorna [] silenciosamente.
+  /// Nunca propaga FirebaseException para fora — o boot da tela NÃO é bloqueado.
   static Future<List<Map<String, dynamic>>> loadAiSessions(String uid) async {
+    // BUILD 336 PASSO 3: normalização de UID de contingência.
+    // Se FirebaseAuth.currentUser == null (Web com token customizado ainda não
+    // propagado ao SDK), mas temos um uid válido vindo do UserModel (cache
+    // customizado da persistência Web), usamos Source.cache imediatamente para
+    // evitar o round-trip ao servidor que geraria permission-denied.
+    // Condição: _isUserAuthenticated=true significa que AuthService.hasCachedToken
+    // está presente (token REST válido), mas o SDK ainda não o absolveu.
+    final sdkHasUser = _isFirebaseReady &&
+        FirebaseAuth.instance.currentUser != null;
+    if (!sdkHasUser && _isUserAuthenticated && uid.isNotEmpty) {
+      debugPrint('[BUILD336][FIRESTORE][PASSO3] loadAiSessions: '
+          'currentUser=null mas token customizado presente — '
+          'usando cache local (uid=$uid) para evitar permission-denied');
+      return await _loadAiSessionsFromCache(uid);
+    }
+
+    // ── Camada 1: tentativa servidor com fallback cache ───────────────────────
     try {
-      // BUILD 300: Força leitura do servidor para evitar cache stale/preso no WebKit/Safari
       QuerySnapshot<Map<String, dynamic>> snap;
       try {
+        // BUILD 300: Force server read to avoid stale cache on WebKit/Safari ITP.
         snap = await _userAiHistory(uid)
             .orderBy('updatedAt', descending: true)
             .limit(20)
             .get(const GetOptions(source: Source.server))
             .timeout(const Duration(seconds: 8));
+      } on FirebaseException catch (e) {
+        // BUILD 336 PASSO 1: permission-denied = SDK sem token autenticado (Web).
+        // Intercepta ANTES do fallback genérico para aplicar estratégia correta.
+        if (e.code == 'permission-denied') {
+          debugPrint('[BUILD336][FIRESTORE] loadAiSessions permission-denied '
+              'uid=$uid — FirebaseAuth.currentUser=null no Web (token ainda não propagado). '
+              'Tentando cache local...');
+          return await _loadAiSessionsFromCache(uid);
+        }
+        // Outros erros de Firebase (unavailable, network-request-failed, etc.)
+        // → fallback para cache padrão
+        debugPrint('[BUILD336][FIRESTORE] loadAiSessions FirebaseException '
+            'code=${e.code} — fallback cache: $e');
+        snap = await _userAiHistory(uid)
+            .orderBy('updatedAt', descending: true)
+            .limit(20)
+            .get();
       } catch (e) {
         debugPrint('[BUILD300][FIRESTORE] loadAiSessions server fetch failed, using fallback cache: $e');
         snap = await _userAiHistory(uid)
@@ -996,6 +1040,39 @@ class FirestoreService {
             .get();
       }
       return snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+    } on FirebaseException catch (e) {
+      // BUILD 336 PASSO 1: captura permission-denied no fallback também.
+      if (e.code == 'permission-denied') {
+        debugPrint('[BUILD336][FIRESTORE] loadAiSessions permission-denied '
+            'no fallback cache uid=$uid — retornando [] silenciosamente');
+        return [];
+      }
+      debugPrint('[BUILD336][FIRESTORE] loadAiSessions FirebaseException final: $e');
+      return [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /// Tenta ler sessões de IA exclusivamente do cache local do SDK (offline-safe).
+  /// Usado como fallback de contingência quando o servidor retorna permission-denied
+  /// (FirebaseAuth.currentUser == null no Web).
+  /// Nunca lança exceção — retorna [] em qualquer falha.
+  static Future<List<Map<String, dynamic>>> _loadAiSessionsFromCache(
+      String uid) async {
+    try {
+      final snap = await _userAiHistory(uid)
+          .orderBy('updatedAt', descending: true)
+          .limit(20)
+          .get(const GetOptions(source: Source.cache));
+      final result = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+      debugPrint('[BUILD336][FIRESTORE] _loadAiSessionsFromCache: '
+          '${result.length} sessões lidas do cache local uid=$uid');
+      return result;
+    } on FirebaseException catch (e) {
+      debugPrint('[BUILD336][FIRESTORE] _loadAiSessionsFromCache falhou '
+          'code=${e.code} uid=$uid — retornando []');
+      return [];
     } catch (_) {
       return [];
     }
@@ -1258,6 +1335,9 @@ class FirestoreService {
     // Estratégia em duas etapas:
     //   1) Tenta Source.server (dados frescos do servidor, sem cache)
     //   2) Se falhar (offline / timeout), usa cache local como fallback
+    //
+    // BUILD 336-AUTH-RESILIENCE (PASSO 1): blindagem permission-denied.
+    // permission-denied não deve bloquear o boot — fallback silencioso para [].
     try {
       // Sem orderBy — evita índice composto. Ordenação em memória.
       final query = _userHistories(uid);
@@ -1268,6 +1348,20 @@ class FirestoreService {
         snap = await query
             .get(const GetOptions(source: Source.server))
             .timeout(const Duration(seconds: 10));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          // BUILD 336 PASSO 1: currentUser==null no Web — cache local como fallback
+          debugPrint('[BUILD336][FIRESTORE] loadHistories permission-denied '
+              'uid=$uid — tentando cache local');
+          try {
+            snap = await query.get(const GetOptions(source: Source.cache));
+          } catch (_) {
+            return [];
+          }
+        } else {
+          // Etapa 2: outros erros → fallback padrão
+          snap = await query.get();
+        }
       } catch (_) {
         // Etapa 2: fallback para cache local (modo offline)
         snap = await query.get();
@@ -1278,6 +1372,10 @@ class FirestoreService {
           .toList();
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list;
+    } on FirebaseException catch (e) {
+      debugPrint('[BUILD336][FIRESTORE] loadHistories FirebaseException '
+          'code=${e.code} uid=$uid — retornando []');
+      return [];
     } catch (_) {
       return [];
     }
