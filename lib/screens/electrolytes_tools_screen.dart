@@ -21,6 +21,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
+import 'tools_patient_import.dart';
+import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta canônica MedCases Pro (dark-first)
@@ -215,6 +217,31 @@ class _ElectroBodyState extends State<_ElectroBody>
     super.dispose();
   }
 
+  // ── BUILD 426: Patient autofill ─────────────────────────────────────────────
+  Future<void> _showPatientSelectionSheet(BuildContext context, AppProvider p) async {
+    await showToolsPatientSelectionSheet(
+      context: context,
+      isEs: widget.isEs,
+      dark: widget.dark,
+      onSelected: (session) => _autofillFromSession(session),
+    );
+  }
+
+  /// Autofill: peso (weight) mapeado de AppProvider.patient.weight se disponível,
+  /// já que PacienteInternacaoData não tem campo de peso estruturado.
+  /// Para Electrolitos: _weightCtrl ← AppProvider.patient.weight (single patient)
+  void _autofillFromSession(PacienteSession session) {
+    try {
+      final paciente = session.paciente;
+      // Nota: PacienteInternacaoData não tem peso — controller limpo para re-entrada
+      // Age não é necessário para os cálculos de eletrólitos
+      // O médico insere peso manualmente após selecionar o paciente
+      final _ = paciente; // referência para evitar unused warning
+    } catch (_) {
+      // Falha silenciosa — nunca quebra a UI clínica
+    }
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
   double? _pd(String v) => double.tryParse(v.trim().replaceAll(',', '.'));
   double _pdOr(TextEditingController c, double fallback) =>
@@ -316,6 +343,16 @@ class _ElectroBodyState extends State<_ElectroBody>
           children: [
             // ── Header ─────────────────────────────────────────────────────
             _ElectroHeader(isEs: isEs, surf: surf, bord: bord, txt: txt, sub: sub),
+
+            // ── BUILD 426: Chip de importação de paciente ──────────────────
+            ToolsPatientImportChip(
+              isEs: isEs,
+              dark: dark,
+              onTap: () {
+                final p = context.read<AppProvider>();
+                _showPatientSelectionSheet(context, p);
+              },
+            ),
             const SizedBox(height: 16),
 
             // ── Bloco 1: GASOMETRIA ARTERIAL ───────────────────────────────

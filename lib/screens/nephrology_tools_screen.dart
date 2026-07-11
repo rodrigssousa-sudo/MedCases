@@ -26,6 +26,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
+import 'tools_patient_import.dart';
+import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta canônica MedCases Pro (dark-first)
@@ -94,6 +96,38 @@ class _NephrologyBodyState extends State<_NephrologyBody>
 
   // ── Error message ──────────────────────────────────────────────────────────
   String? _errorMsg;
+
+  // ── BUILD 426: Patient autofill ──────────────────────────────────────────────
+  /// Abre o modal de seleção de paciente e faz autofill dos controllers demográficos.
+  Future<void> _showPatientSelectionSheet(BuildContext context, AppProvider p) async {
+    await showToolsPatientSelectionSheet(
+      context: context,
+      isEs: widget.isEs,
+      dark: widget.dark,
+      onSelected: (session) => _autofillFromSession(session),
+    );
+  }
+
+  /// Mapeamento demográfico seguro: idade → _ageCtrl, sexo → _isFemale.
+  /// Labs são free-text em internacion → NÃO mapeados (0 crashes garantido).
+  void _autofillFromSession(PacienteSession session) {
+    try {
+      final paciente = session.paciente;
+
+      // Idade → _ageCtrl
+      final age = parseAgeFromString(paciente.idade);
+      if (age != null) _ageCtrl.text = age.toString();
+
+      // Sexo → _isFemale
+      final female = paciente.sexo.trim().toUpperCase() == 'F';
+
+      setState(() {
+        _isFemale = female;
+      });
+    } catch (_) {
+      // Falha silenciosa — nunca quebra a UI clínica
+    }
+  }
 
   @override
   void initState() {
@@ -258,6 +292,19 @@ class _NephrologyBodyState extends State<_NephrologyBody>
               SliverToBoxAdapter(
                 child: _Header(isEs: isEs, dark: dark, txt: txt, sub: sub),
               ),
+
+              // ── BUILD 426: Chip de importação de paciente ─────────────────
+              SliverToBoxAdapter(
+                child: ToolsPatientImportChip(
+                  isEs: isEs,
+                  dark: dark,
+                  onTap: () {
+                    final p = context.read<AppProvider>();
+                    _showPatientSelectionSheet(context, p);
+                  },
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 4)),
 
               // ── Inputs ────────────────────────────────────────────────────
               SliverPadding(

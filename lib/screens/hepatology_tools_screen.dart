@@ -28,6 +28,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
+import 'tools_patient_import.dart';
+import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta canônica MedCases Pro (dark-first) — idêntica a nephrology/cardio
@@ -154,6 +156,38 @@ class _HepatologyBodyState extends State<_HepatologyBody>
     _noduleCountCtrl.dispose();
     _noduleSizesCtrl.dispose();
     super.dispose();
+  }
+
+  // ── BUILD 426: Patient autofill ─────────────────────────────────────────────
+  Future<void> _showPatientSelectionSheet(BuildContext context, AppProvider p) async {
+    await showToolsPatientSelectionSheet(
+      context: context,
+      isEs: widget.isEs,
+      dark: widget.dark,
+      onSelected: (session) => _autofillFromSession(session),
+    );
+  }
+
+  /// Mapeamento demográfico seguro para Hepatologia:
+  ///   idade → _ageCtrl
+  ///   sexo  → _dialysis permanece false (sem campo estruturado)
+  /// Labs (bilirrubina, creatinina, sódio, INR, albumina) são free-text
+  /// no internacion → NÃO mapeados automaticamente.
+  void _autofillFromSession(PacienteSession session) {
+    try {
+      final paciente = session.paciente;
+
+      // Idade → _ageCtrl
+      final age = parseAgeFromString(paciente.idade);
+      if (age != null) _ageCtrl.text = age.toString();
+
+      // Sexo — não há campo direto de sexo nos motores hepáticos,
+      // mas mantemos a info para contexto. _dialysis não é mapeado.
+      // setState mínimo para re-render do campo idade
+      setState(() {});
+    } catch (_) {
+      // Falha silenciosa — nunca quebra a UI clínica
+    }
   }
 
   // ── Helper: parse double seguro ──────────────────────────────────────────
@@ -334,6 +368,19 @@ class _HepatologyBodyState extends State<_HepatologyBody>
               SliverToBoxAdapter(
                 child: _Header(isEs: isEs, dark: dark, txt: txt, sub: sub),
               ),
+
+              // ── BUILD 426: Chip de importação de paciente ─────────────────
+              SliverToBoxAdapter(
+                child: ToolsPatientImportChip(
+                  isEs: isEs,
+                  dark: dark,
+                  onTap: () {
+                    final p = context.read<AppProvider>();
+                    _showPatientSelectionSheet(context, p);
+                  },
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 4)),
 
               // ── Inputs ──────────────────────────────────────────────────
               SliverPadding(
