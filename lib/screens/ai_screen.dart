@@ -359,6 +359,10 @@ class _AiScreenState extends State<AiScreen> {
   int _chatEpoch = 0;
   // Histórico de sessões de chat (até 10)
   final List<_ChatSession> _chatHistory = [];
+
+  // BUILD 430 PASSO 1: guarda o UID para o qual o histórico já foi carregado.
+  // Evita reload duplicado quando geminiConnected muda múltiplas vezes.
+  String? _historyLoadedForUid;
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
   /// ID da sessão restaurada do histórico (se a sessão atual veio do histórico
@@ -520,6 +524,16 @@ class _AiScreenState extends State<AiScreen> {
     });
     // Carrega histórico de chats do SharedPrefs
     _loadChatHistory();
+
+    // BUILD 430 PASSO 1: re-trigger pós-OAuth.
+    // Na Web, após redirect OAuth o AppProvider dispara notifyListeners() com
+    // geminiConnected=true. Se no primeiro _loadChatHistory() o UID ainda era
+    // nulo (pré-auth), re-carregamos agora que o UID real está disponível.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<AppProvider>().addListener(_onAuthStateChanged);
+    });
+
     // Inicializa TTS
     _initTts();
     // Registra callbacks no shell AppBar via notifiers estáticos.
@@ -1014,6 +1028,11 @@ class _AiScreenState extends State<AiScreen> {
     _streamingTextNotifier?.dispose();
     _streamingTextNotifier = null;
 
+    // BUILD 430 PASSO 1: remove listener de auth antes de morrer
+    try {
+      context.read<AppProvider>().removeListener(_onAuthStateChanged);
+    } catch (_) {}
+
     // ── Fix 1: Interceptação de Saída (Lifecycle) ─────────────────────────
     // Quando o widget é destruído (troca de aba, navegação para Home, etc.),
     // força o descarregamento da sessão ativa da RAM para o disco antes de morrer.
@@ -1089,6 +1108,20 @@ class _AiScreenState extends State<AiScreen> {
   /// BUILD 338-HISTORY-ECONOMY: Resolve UID com fallback de contingência.
   /// Quando FirebaseAuth.currentUser==null (Web com persistência REST),
   /// usa AuthService.webUser.value?.uid para evitar que _histKey() caia em 'anon'.
+  // BUILD 430 PASSO 1: callback disparado quando AppProvider notifica mudanças de estado.
+  // Detecta a transição geminiConnected false→true (post-OAuth) e re-carrega o histórico
+  // se ainda não foi carregado com o UID autenticado.
+  void _onAuthStateChanged() {
+    if (!mounted) return;
+    final p = context.read<AppProvider>();
+    final uid = _resolveUid(p);
+    if (uid == null || uid.isEmpty) return;
+    // Só recarrega se o histórico foi carregado com UID nulo/anon ou com UID diferente
+    if (_historyLoadedForUid == uid) return;
+    debugPrint('[BUILD430] post-OAuth uid=$uid — recarregando histórico de chat.');
+    _loadChatHistory();
+  }
+
   String? _resolveUid(AppProvider p) {
     final sdkUid = p.currentUser?.uid;
     if (sdkUid != null && sdkUid.isNotEmpty) return sdkUid;
@@ -1108,6 +1141,9 @@ class _AiScreenState extends State<AiScreen> {
       final p = context.read<AppProvider>();
       // BUILD 338: usa UID resiliente (SDK ou contingência REST)
       final uid = _resolveUid(p);
+
+      // BUILD 430 PASSO 1: marca o UID para evitar reload duplicado pós-OAuth.
+      if (uid != null && uid.isNotEmpty) _historyLoadedForUid = uid;
 
       // 1º tenta Firestore (cross-device)
       if (uid != null && uid.isNotEmpty) {

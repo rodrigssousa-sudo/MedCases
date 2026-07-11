@@ -326,6 +326,7 @@ class _CardioBodyState extends State<_CardioBody>
     if (p.toolsCacheHasData) setState(() => _showRestoreBanner = true);
   }
 
+  // BUILD 430 PASSO 2: restaura todos os campos cardio do cache
   void _restoreFromCache() {
     final p = context.read<AppProvider>();
     final cache = p.toolsInputCache;
@@ -336,6 +337,10 @@ class _CardioBodyState extends State<_CardioBody>
         _agePlus65 = age >= 65;
       }
       _isFemale = (cache['sexo'] ?? '') == 'F';
+      if ((cache['pas']        ?? '').isNotEmpty) _pasCtrl.text = cache['pas']!;
+      if ((cache['colesterol'] ?? '').isNotEmpty) _colCtrl.text = cache['colesterol']!;
+      if ((cache['qtms']       ?? '').isNotEmpty) _qtCtrl.text  = cache['qtms']!;
+      if ((cache['fc']         ?? '').isNotEmpty) _fcCtrl.text  = cache['fc']!;
       _showRestoreBanner = false;
     });
   }
@@ -347,11 +352,15 @@ class _CardioBodyState extends State<_CardioBody>
 
   @override
   void dispose() {
-    // BUILD 427: salva estado atual no cache antes de desmontar
+    // BUILD 430 PASSO 2: salva todos os campos clínicos cardio no cache
     try {
       context.read<AppProvider>().saveToolsCache({
-        'edad': _ageCtrl.text,
-        'sexo': _isFemale ? 'F' : 'M',
+        'edad':       _ageCtrl.text,
+        'sexo':       _isFemale ? 'F' : 'M',
+        'pas':        _pasCtrl.text,
+        'colesterol': _colCtrl.text,
+        'qtms':       _qtCtrl.text,
+        'fc':         _fcCtrl.text,
       });
     } catch (_) {}
     _ageCtrl.dispose();

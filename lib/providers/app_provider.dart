@@ -221,23 +221,46 @@ class AppProvider extends ChangeNotifier {
   //   'plaquetas'  — plaquetas ×10³/µL
   //   'peso'       — peso corporal kg
   //   'sexo'       — 'M' ou 'F'
+  // BUILD 430 PASSO 2: campos expandidos para cobrir todas as 4 calculadoras.
+  //   Cardio   : 'pas', 'colesterol', 'qtms', 'fc'
+  //   Electrolytes: 'cloro', 'hco3', 'glicose', 'calcio', 'bun'
+  //   Nephrology: já coberta por 'creatinina', 'sodio', 'edad', 'peso', 'sexo'
+  //   Hepatology: já coberta por todos os campos originais
   final Map<String, String> toolsInputCache = {
+    // Demográficos
     'edad':        '',
+    'sexo':        '',
+    'peso':        '',
+    // Eletrólitos / Nefrologia
     'sodio':       '',
+    'cloro':       '',
+    'hco3':        '',
+    'glicose':     '',
+    'calcio':      '',
+    'bun':         '',
     'creatinina':  '',
+    // Hepatologia
     'bilirrubina': '',
     'inr':         '',
     'albumina':    '',
     'ast':         '',
     'alt':         '',
     'plaquetas':   '',
-    'peso':        '',
-    'sexo':        '',
+    // Cardio
+    'pas':         '',
+    'colesterol':  '',
+    'qtms':        '',
+    'fc':          '',
   };
 
   /// Retorna true se o cache contém pelo menos um campo clínico relevante preenchido.
+  // BUILD 430 PASSO 2: inclui todos os campos expandidos na checagem de dados.
   bool get toolsCacheHasData {
-    const keys = ['edad', 'creatinina', 'bilirrubina', 'inr', 'albumina', 'ast', 'alt', 'plaquetas', 'sodio'];
+    const keys = [
+      'edad', 'creatinina', 'bilirrubina', 'inr', 'albumina',
+      'ast', 'alt', 'plaquetas', 'sodio', 'cloro', 'hco3',
+      'glicose', 'calcio', 'bun', 'pas', 'colesterol',
+    ];
     return keys.any((k) => (toolsInputCache[k] ?? '').trim().isNotEmpty);
   }
 

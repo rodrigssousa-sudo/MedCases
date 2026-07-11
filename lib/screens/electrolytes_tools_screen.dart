@@ -215,12 +215,19 @@ class _ElectroBodyState extends State<_ElectroBody>
     if (p.toolsCacheHasData) setState(() => _showRestoreBanner = true);
   }
 
+  // BUILD 430 PASSO 2: restaura todos os campos eletrolíticos do cache
   void _restoreFromCache() {
     final p = context.read<AppProvider>();
     final cache = p.toolsInputCache;
     setState(() {
-      if ((cache['sodio']  ?? '').isNotEmpty) _naCtrl.text     = cache['sodio']!;
-      if ((cache['peso']   ?? '').isNotEmpty) _weightCtrl.text = cache['peso']!;
+      if ((cache['sodio']   ?? '').isNotEmpty) _naCtrl.text     = cache['sodio']!;
+      if ((cache['cloro']   ?? '').isNotEmpty) _clCtrl.text     = cache['cloro']!;
+      if ((cache['hco3']    ?? '').isNotEmpty) _hco3Ctrl.text   = cache['hco3']!;
+      if ((cache['glicose'] ?? '').isNotEmpty) _glucCtrl.text   = cache['glicose']!;
+      if ((cache['calcio']  ?? '').isNotEmpty) _caCtrl.text     = cache['calcio']!;
+      if ((cache['albumina']?? '').isNotEmpty) _albumCtrl.text  = cache['albumina']!;
+      if ((cache['bun']     ?? '').isNotEmpty) _bunCtrl.text    = cache['bun']!;
+      if ((cache['peso']    ?? '').isNotEmpty) _weightCtrl.text = cache['peso']!;
       _showRestoreBanner = false;
     });
   }
@@ -232,11 +239,17 @@ class _ElectroBodyState extends State<_ElectroBody>
 
   @override
   void dispose() {
-    // BUILD 427: salva estado atual no cache antes de desmontar
+    // BUILD 430 PASSO 2: salva todos os campos eletrolíticos no cache
     try {
       context.read<AppProvider>().saveToolsCache({
-        'sodio': _naCtrl.text,
-        'peso':  _weightCtrl.text,
+        'sodio':   _naCtrl.text,
+        'cloro':   _clCtrl.text,
+        'hco3':    _hco3Ctrl.text,
+        'glicose': _glucCtrl.text,
+        'calcio':  _caCtrl.text,
+        'albumina':_albumCtrl.text,
+        'bun':     _bunCtrl.text,
+        'peso':    _weightCtrl.text,
       });
     } catch (_) {}
     for (final c in [

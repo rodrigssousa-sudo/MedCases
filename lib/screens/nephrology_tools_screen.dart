@@ -163,12 +163,12 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     }
   }
 
-  // BUILD 427: restaura dados do cache nos controllers locais
+  // BUILD 430 PASSO 2: restaura todos os campos nefro do cache
   void _restoreFromCache() {
     final p = context.read<AppProvider>();
     final cache = p.toolsInputCache;
     setState(() {
-      if ((cache['edad']       ?? '').isNotEmpty) _ageCtrl.text      = cache['edad']!;
+      if ((cache['edad']       ?? '').isNotEmpty) _ageCtrl.text       = cache['edad']!;
       if ((cache['creatinina'] ?? '').isNotEmpty) _creatBaseCtrl.text = cache['creatinina']!;
       if ((cache['sodio']      ?? '').isNotEmpty) _naSerumCtrl.text   = cache['sodio']!;
       if ((cache['peso']       ?? '').isNotEmpty) _weightCtrl.text    = cache['peso']!;
@@ -186,7 +186,7 @@ class _NephrologyBodyState extends State<_NephrologyBody>
 
   @override
   void dispose() {
-    // BUILD 427: salva estado atual no cache antes de desmontar
+    // BUILD 430 PASSO 2: salva todos os campos nefro no cache (expandido)
     try {
       final p = context.read<AppProvider>();
       p.saveToolsCache({
