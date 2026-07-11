@@ -23,9 +23,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
+import 'calculadora_screen.dart' show CalculadoraScreen; // BUILD 429
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
@@ -302,13 +302,12 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   }
 
   // ── Deeplink conduta ────────────────────────────────────────────────────────
-  Future<void> _launchDeeplink() async {
+  // BUILD 429-APPLE-COMPLIANCE: abre WebView interna — NUNCA launchUrl externo.
+  void _launchDeeplink() {
     final r = _result;
     if (r == null) return;
     HapticFeedback.mediumImpact();
 
-    // BUILD 410-URL: payload completo para injeção na aba Dados do Paciente
-    // Chaves e tipos exatos exigidos pela Calculadora Web de produção.
     final payload = jsonEncode({
       'idade':        int.tryParse(_ageCtrl.text.trim()) ?? 0,
       'sexo':         _isFemale ? 'F' : 'M',
@@ -323,26 +322,18 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       'cockcroft':    r.cockcroft,
     });
 
-    // BUILD 410-URL: URL base GitHub Pages + query string segura
     const baseUrl =
         'https://rodrigssousa-sudo.github.io/medcases-calculadora/';
     final encodedPayload = Uri.encodeComponent(payload);
-    final uri = Uri.parse(
-      '$baseUrl?screen=patient_data&payload=$encodedPayload',
-    );
+    final url =
+        '$baseUrl?screen=patient_data&payload=$encodedPayload';
 
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(widget.isEs
-                ? 'No se pudo abrir el Soporte de Decisión Clínica.'
-                : 'Não foi possível abrir o Suporte de Decisão Clínica.'),
-            backgroundColor: _kSurface,
-          ),
-        );
-      }
-    }
+    if (!mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => CalculadoraScreen(initialUrl: url),
+      ),
+    );
   }
 
   // ── Validator genérico ──────────────────────────────────────────────────────

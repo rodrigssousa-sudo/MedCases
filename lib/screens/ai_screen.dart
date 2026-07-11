@@ -6333,6 +6333,17 @@ class _AiBlockBubble extends StatelessWidget {
                 selectable: false,
                 softLineBreak: true,
                 styleSheet: sheet,
+                // BUILD 429-APPLE-COMPLIANCE: intercepta todos os links do chat
+                // e abre na WebView interna (CalculadoraScreen) — NUNCA Safari.
+                onTapLink: (text, href, title) {
+                  if (href != null && href.contains('http')) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CalculadoraScreen(initialUrl: href),
+                      ),
+                    );
+                  }
+                },
               ),
 
             // ── Build 120: Bloco de Referências Colapsável ────────────────

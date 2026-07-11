@@ -25,9 +25,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
+import 'calculadora_screen.dart' show CalculadoraScreen; // BUILD 429
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
@@ -405,7 +405,8 @@ class _HepatologyBodyState extends State<_HepatologyBody>
   }
 
   // ── Deeplink ──────────────────────────────────────────────────────────────
-  Future<void> _launchDeeplink() async {
+  // BUILD 429-APPLE-COMPLIANCE: sync — abre CalculadoraScreen interna.
+  void _launchDeeplink() {
     final r = _result;
     if (r == null) return;
     HapticFeedback.mediumImpact();
@@ -435,22 +436,15 @@ class _HepatologyBodyState extends State<_HepatologyBody>
 
     const baseUrl = 'https://rodrigssousa-sudo.github.io/medcases-calculadora/';
     final encodedPayload = Uri.encodeComponent(payload);
-    final uri = Uri.parse(
-      '$baseUrl?screen=hepatology&payload=$encodedPayload',
-    );
+    final url =
+        '$baseUrl?screen=hepatology&payload=$encodedPayload';
 
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(widget.isEs
-                ? 'No se pudo abrir el Soporte de Decisión Clínica.'
-                : 'Não foi possível abrir o Suporte de Decisão Clínica.'),
-            backgroundColor: _kSurface,
-          ),
-        );
-      }
-    }
+    if (!mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => CalculadoraScreen(initialUrl: url),
+      ),
+    );
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────
