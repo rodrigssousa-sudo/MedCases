@@ -29,6 +29,7 @@ import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
+import 'internacion/services/internacion_firestore_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta canônica MedCases Pro (dark-first)
@@ -108,7 +109,11 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       context: context,
       isEs: widget.isEs,
       dark: widget.dark,
-      onSelected: (session) => _autofillFromSession(session),
+      onSelected: (session) {
+        final p = context.read<AppProvider>();
+        p.setActiveImportedPatient(session);
+        _autofillFromSession(session);
+      },
     );
   }
 
@@ -204,6 +209,49 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     super.dispose();
   }
 
+  // ── BUILD 428: Sync labs + scores to Firestore (fire-and-forget) ──────────
+  void _syncResultToFirestore(_NephroResult r) {
+    try {
+      final p = context.read<AppProvider>();
+      final uid        = p.currentUser?.uid ?? '';
+      final patientKey = p.activeImportedPatientKey ?? '';
+      if (uid.isEmpty || patientKey.isEmpty) return;
+
+      final labData = <String, dynamic>{
+        'creatinina':      _creatBaseCtrl.text,
+        'creatinina_atual': _creatCurrCtrl.text,
+        'sodio_urina':     _naUrineCtrl.text,
+        'na_serico':       _naSerumCtrl.text,
+        'creat_urina':     _creatUrineCtrl.text,
+        'peso':            _weightCtrl.text,
+        'edad':            _ageCtrl.text,
+      };
+
+      final scores = <String, dynamic>{
+        'ckdEpi':     r.ckdEpi,
+        'cockcroft':  r.cockcroft,
+        'kdigoStage': r.kdigoStage,
+        if (r.fena != null) 'fena': r.fena,
+      };
+
+      final scoresText = 'CKD-EPI: ${r.ckdEpi.toStringAsFixed(1)} mL/min/1.73m2, '
+          'Cockcroft: ${r.cockcroft.toStringAsFixed(1)} mL/min, '
+          'KDIGO: Estagio ${r.kdigoStage}'
+          '${r.fena != null ? ", FeNa: ${r.fena!.toStringAsFixed(1)}%" : ""}';
+
+      // ignore: unawaited_futures
+      InternacionFirestoreService.updatePatientLaboratories(
+        uid:        uid,
+        patientKey: patientKey,
+        labData:    labData,
+        scores:     scores,
+        scoresText: scoresText,
+      );
+    } catch (_) {
+      // Fire-and-forget: falhas nunca interrompem a UI clinica
+    }
+  }
+
   // ── Helper: parse double seguro ─────────────────────────────────────────────
   double? _pd(String v) {
     final s = v.trim().replaceAll(',', '.');
@@ -245,6 +293,8 @@ class _NephrologyBodyState extends State<_NephrologyBody>
         creatUrine: creatUrine,
       );
     });
+
+    if (_result != null) _syncResultToFirestore(_result!);
 
     _animCtrl
       ..reset()

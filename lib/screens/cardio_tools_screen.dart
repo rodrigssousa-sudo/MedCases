@@ -24,6 +24,7 @@ import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
+import 'internacion/services/internacion_firestore_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta canônica MedCases Pro (dark-first) — espelhada de nephrology_tools_screen
@@ -255,7 +256,11 @@ class _CardioBodyState extends State<_CardioBody>
       context: context,
       isEs: widget.isEs,
       dark: widget.dark,
-      onSelected: (session) => _autofillFromSession(session),
+      onSelected: (session) {
+        final p = context.read<AppProvider>();
+        p.setActiveImportedPatient(session);
+        _autofillFromSession(session);
+      },
     );
   }
 
@@ -358,6 +363,46 @@ class _CardioBodyState extends State<_CardioBody>
     super.dispose();
   }
 
+  // ── BUILD 428: Sync labs + scores to Firestore (fire-and-forget) ──────────
+  void _syncResultToFirestore(_CardioResult r) {
+    try {
+      final p = context.read<AppProvider>();
+      final uid        = p.currentUser?.uid ?? '';
+      final patientKey = p.activeImportedPatientKey ?? '';
+      if (uid.isEmpty || patientKey.isEmpty) return;
+
+      final labData = <String, dynamic>{
+        'edad':       _ageCtrl.text,
+        'pas':        _pasCtrl.text,
+        'colesterol': _colCtrl.text,
+      };
+
+      final scores = <String, dynamic>{
+        'preventRisk':  r.preventRisk,
+        'cha2Score':    r.cha2Score,
+        'hasbledScore': r.hasbledScore,
+        'qtcMs':        r.qtcMs,
+      };
+
+      final scoresText =
+          'PREVENT/ASCVD: ${r.preventRisk.toStringAsFixed(1)}%, '
+          'CHA2DS2-VASc: ${r.cha2Score}, '
+          'HAS-BLED: ${r.hasbledScore}, '
+          'QTc: ${r.qtcMs.toStringAsFixed(0)}ms';
+
+      // ignore: unawaited_futures
+      InternacionFirestoreService.updatePatientLaboratories(
+        uid:        uid,
+        patientKey: patientKey,
+        labData:    labData,
+        scores:     scores,
+        scoresText: scoresText,
+      );
+    } catch (_) {
+      // Fire-and-forget: falhas nunca interrompem a UI clinica
+    }
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
   double? _pd(String v) => double.tryParse(v.trim().replaceAll(',', '.'));
 
@@ -406,6 +451,8 @@ class _CardioBodyState extends State<_CardioBody>
         qtMs: qt, fcBpm: fc,
       );
     });
+    if (_result != null) _syncResultToFirestore(_result!);
+
     _animCtrl.forward(from: 0);
   }
 

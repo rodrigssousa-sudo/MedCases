@@ -32,6 +32,7 @@ import '../services/app_resume_coordinator.dart';   // BUILD 241: background/res
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
+import '../screens/internacion/services/internacion_persistence.dart' show PacienteSession;
 
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
@@ -252,6 +253,30 @@ class AppProvider extends ChangeNotifier {
     for (final k in toolsInputCache.keys) {
       toolsInputCache[k] = '';
     }
+  }
+
+  // ── BUILD 428: Active Imported Patient Pointer ────────────────────────────
+  // Rastreia qual paciente foi importado pelo médico nas ferramentas de cálculo.
+  // Permite o sync bilateral: ao calcular, o resultado é gravado de volta no
+  // Firestore do paciente selecionado. Limpa ao fechar o app (RAM-only).
+  //
+  // activeImportedSession: sessão completa selecionada no modal (nome, cama, etc.)
+  // activeImportedPatientKey: chave canônica Firestore (sessionKey) do doc
+  PacienteSession? activeImportedSession;
+  String?         activeImportedPatientKey;
+
+  /// Registra o paciente ativo importado pelas ferramentas.
+  /// Chamado no momento da seleção no modal showToolsPatientSelectionSheet.
+  void setActiveImportedPatient(PacienteSession session) {
+    activeImportedSession   = session;
+    activeImportedPatientKey = session.sessionKey;
+    // Não notifica ouvintes — é um ponteiro interno, não causa re-build de UI
+  }
+
+  /// Remove o ponteiro de paciente ativo (ex: ao trocar de paciente ou descartar).
+  void clearActiveImportedPatient() {
+    activeImportedSession    = null;
+    activeImportedPatientKey = null;
   }
 
   // ── Estado — Histórias Clínicas ───────────────────────────────────────────

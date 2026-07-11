@@ -555,6 +555,65 @@ class InternacionFirestoreService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
+  // BUILD 428-BI-DIRECTIONAL-SYNC — Escrita cirúrgica de laboratório e scores
+  //
+  // Persiste exames laboratoriais digitados nas Ferramentas de Cálculo de volta
+  // no documento do paciente em users/{uid}/internaciones/{patientKey}.
+  //
+  // Usa SetOptions(merge: true) — NÃO sobrescreve historial, nome, cama, etc.
+  // Namespace isolado 'laboratorioTools' + 'scoresTools' + 'scoresToolsTexto'.
+  //
+  // Fire-and-forget: chamado sem await nas telas — falhas de rede jamais
+  // bloqueiam a exibição do resultado clínico na tela do médico.
+  // ─────────────────────────────────────────────────────────────────────────
+  static Future<void> updatePatientLaboratories({
+    required String uid,
+    required String patientKey,
+    required Map<String, dynamic> labData,
+    Map<String, dynamic>? scores,
+    String? scoresText,
+  }) async {
+    // Guards estritos
+    if (uid.isEmpty || patientKey.isEmpty) {
+      debugPrint('[BUILD428][InternFire] updatePatientLaboratories SKIP — uid/key vazio');
+      return;
+    }
+    if (labData.isEmpty && (scores == null || scores.isEmpty) &&
+        (scoresText == null || scoresText.isEmpty)) {
+      debugPrint('[BUILD428][InternFire] updatePatientLaboratories SKIP — payload vazio');
+      return;
+    }
+    try {
+      final payload = <String, dynamic>{
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      // Sub-mapa de laboratório (apenas campos não-vazios)
+      final cleanLab = <String, dynamic>{};
+      labData.forEach((k, v) {
+        if (v != null && v.toString().trim().isNotEmpty) cleanLab[k] = v;
+      });
+      if (cleanLab.isNotEmpty) payload['laboratorioTools'] = cleanLab;
+
+      // Scores calculados pelos motores matemáticos
+      if (scores != null && scores.isNotEmpty) payload['scoresTools'] = scores;
+
+      // String legível para injeção no campo de evolução / SOAP
+      if (scoresText != null && scoresText.trim().isNotEmpty) {
+        payload['scoresToolsTexto']    = scoresText.trim();
+        payload['scoresToolsLastUpdate'] = FieldValue.serverTimestamp();
+      }
+
+      await _col(uid).doc(patientKey).set(payload, SetOptions(merge: true));
+      debugPrint('[BUILD428][InternFire] updatePatientLaboratories OK → $patientKey '
+          '(${cleanLab.length} labs, ${scores?.length ?? 0} scores)');
+    } catch (e) {
+      // Silencioso — falhas de rede nunca interrompem o fluxo clínico
+      debugPrint('[BUILD428][InternFire] updatePatientLaboratories ERRO (silencioso): $e');
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // HARD DELETE — remoção definitiva APENAS na tela de Lixeira
   // BUILD 186: único lugar legítimo para chamar .delete(). O botão
   // 'Excluir' na aba Adulto usa SEMPRE softDelete(), nunca este método.

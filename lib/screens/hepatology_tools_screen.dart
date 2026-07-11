@@ -31,6 +31,7 @@ import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
+import 'internacion/services/internacion_firestore_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta canônica MedCases Pro (dark-first) — idêntica a nephrology/cardio
@@ -214,7 +215,11 @@ class _HepatologyBodyState extends State<_HepatologyBody>
       context: context,
       isEs: widget.isEs,
       dark: widget.dark,
-      onSelected: (session) => _autofillFromSession(session),
+      onSelected: (session) {
+        final p = context.read<AppProvider>();
+        p.setActiveImportedPatient(session);
+        _autofillFromSession(session);
+      },
     );
   }
 
@@ -237,6 +242,57 @@ class _HepatologyBodyState extends State<_HepatologyBody>
       setState(() {});
     } catch (_) {
       // Falha silenciosa — nunca quebra a UI clínica
+    }
+  }
+
+  // ── BUILD 428: Sync labs + scores to Firestore (fire-and-forget) ─────────
+  void _syncResultToFirestore(_HepResult r) {
+    try {
+      final p = context.read<AppProvider>();
+      final uid        = p.currentUser?.uid ?? '';
+      final patientKey = p.activeImportedPatientKey ?? '';
+      if (uid.isEmpty || patientKey.isEmpty) return;
+
+      final labData = <String, dynamic>{
+        'bilirrubina': _biliCtrl.text,
+        'creatinina':  _creatCtrl.text,
+        'inr':         _inrCtrl.text,
+        'albumina':    _albCtrl.text,
+        'sodio':       _naCtrl.text,
+        'ast':         _astCtrl.text,
+        'alt':         _altCtrl.text,
+        'plaquetas':   _platCtrl.text,
+        'edad':        _ageCtrl.text,
+      };
+
+      final scores = <String, dynamic>{
+        'meldNa':          r.meldNa,
+        'childPughPoints': r.childPughPoints,
+        'childPughClass':  r.childPughClass,
+        'fib4':            r.fib4,
+        'apri':            r.apri,
+        'factorR':         r.factorR,
+        'maddreyDf':       r.maddreyDf,
+        'milanCriteria':   r.milanCriteria,
+      };
+
+      final scoresText =
+          'MELD-Na: \${r.meldNa}, Child-Pugh: Classe \${r.childPughClass} '
+          '(\${r.childPughPoints}pts), FIB-4: \${r.fib4.toStringAsFixed(2)}, '
+          'APRI: \${r.apri.toStringAsFixed(2)}, '
+          'Maddrey DF: \${r.maddreyDf.toStringAsFixed(1)}, '
+          'Milan: \${r.milanCriteria ? "Dentro" : "Fora"}';
+
+      // ignore: unawaited_futures
+      InternacionFirestoreService.updatePatientLaboratories(
+        uid:        uid,
+        patientKey: patientKey,
+        labData:    labData,
+        scores:     scores,
+        scoresText: scoresText,
+      );
+    } catch (_) {
+      // Fire-and-forget: falhas nunca interrompem a UI clinica
     }
   }
 
@@ -331,6 +387,8 @@ class _HepatologyBodyState extends State<_HepatologyBody>
         hasMacroInvasion: _hasMacroInvasion,
       );
     });
+
+    if (_result != null) _syncResultToFirestore(_result!);
 
     _animCtrl
       ..reset()

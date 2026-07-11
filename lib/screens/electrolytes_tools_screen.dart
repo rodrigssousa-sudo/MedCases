@@ -24,6 +24,7 @@ import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
+import 'internacion/services/internacion_firestore_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta canônica MedCases Pro (dark-first)
@@ -258,7 +259,11 @@ class _ElectroBodyState extends State<_ElectroBody>
       context: context,
       isEs: widget.isEs,
       dark: widget.dark,
-      onSelected: (session) => _autofillFromSession(session),
+      onSelected: (session) {
+        final p = context.read<AppProvider>();
+        p.setActiveImportedPatient(session);
+        _autofillFromSession(session);
+      },
     );
   }
 
@@ -274,6 +279,55 @@ class _ElectroBodyState extends State<_ElectroBody>
       final _ = paciente; // referência para evitar unused warning
     } catch (_) {
       // Falha silenciosa — nunca quebra a UI clínica
+    }
+  }
+
+  // ── BUILD 428: Sync labs + scores to Firestore (fire-and-forget) ──────────
+  void _syncResultToFirestore(_ElectroResult r) {
+    try {
+      final p = context.read<AppProvider>();
+      final uid        = p.currentUser?.uid ?? '';
+      final patientKey = p.activeImportedPatientKey ?? '';
+      if (uid.isEmpty || patientKey.isEmpty) return;
+
+      final labData = <String, dynamic>{
+        'sodio':    _naCtrl.text,
+        'cloro':    _clCtrl.text,
+        'hco3':     _hco3Ctrl.text,
+        'glicose':  _glucCtrl.text,
+        'calcio':   _caCtrl.text,
+        'albumina': _albumCtrl.text,
+        'bun':      _bunCtrl.text,
+        'peso':     _weightCtrl.text,
+      };
+
+      final scores = <String, dynamic>{
+        'anionGap':      r.anionGap,
+        'sodioCorrigido': r.corrNa,
+        'calcioCorrigido': r.corrCa,
+        'osmolaridade':  r.osmolarity,
+        'deficitHco3':   r.bicarbonateDef,
+      };
+
+      final gasLine = r.gasInterp.replaceAll('\n', ' | ');
+      final scoresText =
+          'Anion Gap: ${r.anionGap.toStringAsFixed(1)}, '
+          'Gasometria: $gasLine, '
+          'Na corrigido: ${r.corrNa.toStringAsFixed(1)} mEq/L, '
+          'Ca corrigido: ${r.corrCa.toStringAsFixed(2)} mg/dL, '
+          'Osmolaridade: ${r.osmolarity.toStringAsFixed(0)} mOsm/L, '
+          'Deficit HCO3: ${r.bicarbonateDef.toStringAsFixed(1)} mEq';
+
+      // ignore: unawaited_futures
+      InternacionFirestoreService.updatePatientLaboratories(
+        uid:        uid,
+        patientKey: patientKey,
+        labData:    labData,
+        scores:     scores,
+        scoresText: scoresText,
+      );
+    } catch (_) {
+      // Fire-and-forget: falhas nunca interrompem a UI clinica
     }
   }
 
@@ -309,6 +363,8 @@ class _ElectroBodyState extends State<_ElectroBody>
         be:      _pdOr(_beCtrl,     0),
       );
     });
+    if (_result != null) _syncResultToFirestore(_result!);
+
     _animCtrl.forward(from: 0);
   }
 
