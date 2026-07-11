@@ -315,7 +315,8 @@ class _RecorderPage extends StatefulWidget {
   State<_RecorderPage> createState() => _RecorderPageState();
 }
 
-class _RecorderPageState extends State<_RecorderPage> {
+class _RecorderPageState extends State<_RecorderPage>
+    with WidgetsBindingObserver {
   final ClinicalRecorderService _recorder = ClinicalRecorderService();
   StreamSubscription<String>? _transcriptSub;
   StreamSubscription<bool>? _stateSub;
@@ -326,6 +327,12 @@ class _RecorderPageState extends State<_RecorderPage> {
   bool _isProcessing = false;
   int _elapsedSec = 0;
   Timer? _uiTimer;
+
+  /// Wall-clock anchor: momento em que a gravação foi (re)iniciada.
+  /// Permite recalcular [_elapsedSec] corretamente após suspensão de background.
+  DateTime? _timerStartTime;
+  /// Segundos acumulados antes da pausa atual (para suportar pause/resume).
+  int _elapsedSecBeforePause = 0;
 
   // Para modo soapBlocks
   SoapBlock _currentBlock = SoapBlock.subjective;
@@ -338,6 +345,7 @@ class _RecorderPageState extends State<_RecorderPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // BUILD 335: lifecycle observer
     _transcriptSub = _recorder.transcriptStream.listen((text) {
       if (!mounted) return;
       setState(() {
@@ -365,8 +373,29 @@ class _RecorderPageState extends State<_RecorderPage> {
     _startRecording();
   }
 
+  // ── BUILD 335: LifecycleObserver ─────────────────────────────────────────
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _synchronizeTimer();
+    }
+  }
+
+  /// Recalcula [_elapsedSec] a partir do timestamp absoluto de início.
+  /// Chamado ao retornar do background — imune a suspensão do Event Loop.
+  void _synchronizeTimer() {
+    final start = _timerStartTime;
+    if (start == null || _isPaused || !mounted) return;
+    final realElapsed =
+        _elapsedSecBeforePause +
+        DateTime.now().difference(start).inSeconds;
+    setState(() => _elapsedSec = realElapsed.clamp(0, 900));
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // BUILD 335
     _transcriptSub?.cancel();
     _stateSub?.cancel();
     _uiTimer?.cancel();
@@ -380,9 +409,19 @@ class _RecorderPageState extends State<_RecorderPage> {
     // AVAudioSession não devem causar crash — exibem estado de erro ao usuário.
     try {
       await _recorder.start(lang: widget.lang);
+      // BUILD 335: ancorar wall-clock ao iniciar
+      _elapsedSecBeforePause = 0;
+      _timerStartTime = DateTime.now();
       _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
         if (!mounted) return;
-        setState(() => _elapsedSec = _recorder.elapsedSec);
+        // Wall-clock delta — imune a suspensão do OS
+        final start = _timerStartTime;
+        if (start != null && !_isPaused) {
+          final real =
+              _elapsedSecBeforePause +
+              DateTime.now().difference(start).inSeconds;
+          setState(() => _elapsedSec = real.clamp(0, 900));
+        }
       });
       setState(() {
         _isRecording = true;
@@ -412,8 +451,19 @@ class _RecorderPageState extends State<_RecorderPage> {
 
   void _togglePause() {
     if (_isPaused) {
+      // BUILD 335: re-ancorar wall-clock ao retomar
+      _timerStartTime = DateTime.now();
       _recorder.resume();
     } else {
+      // BUILD 335: acumular tempo decorrido antes de pausar
+      final start = _timerStartTime;
+      if (start != null) {
+        _elapsedSecBeforePause =
+            (_elapsedSecBeforePause +
+             DateTime.now().difference(start).inSeconds)
+                .clamp(0, 900);
+      }
+      _timerStartTime = null;
       _recorder.pause();
     }
     setState(() => _isPaused = !_isPaused);

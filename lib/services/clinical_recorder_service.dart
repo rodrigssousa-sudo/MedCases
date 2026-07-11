@@ -126,6 +126,10 @@ class ClinicalRecorderService {
   Timer? _maxTimer;       // para ao atingir 15min
   Timer? _sessionTimer;   // reinicia sessão STT a cada 55s
 
+  // BUILD 335 — wall-clock anchor para _elapsedSec
+  DateTime? _elapsedAnchor;    // DateTime.now() ao (re)iniciar contagem
+  int       _elapsedSecBase = 0; // segundos acumulados antes da pausa
+
   // Buffer da sessão STT atual (descartado ao reiniciar sessão)
   final StringBuffer _sessionBuffer = StringBuffer();
 
@@ -138,6 +142,7 @@ class ClinicalRecorderService {
     _isRecording = true;
     _isPaused    = false;
     _elapsedSec  = 0;
+    _elapsedSecBase = 0; // BUILD 335: reset acumulador
     _fullTranscript = '';
     _sessionBuffer.clear();
     _stateCtrl.add(true);
@@ -152,6 +157,14 @@ class ClinicalRecorderService {
   // ─────────────────────────────────────────────────────────────────────────
   void pause() {
     if (!_isRecording || _isPaused) return;
+    // BUILD 335: captura elapsed real antes de pausar
+    final anchor = _elapsedAnchor;
+    if (anchor != null) {
+      _elapsedSecBase =
+          (_elapsedSecBase + DateTime.now().difference(anchor).inSeconds)
+              .clamp(0, _maxDurationSec);
+      _elapsedAnchor = null;
+    }
     _isPaused = true;
     _elapsedTimer?.cancel();
     _sessionTimer?.cancel();
@@ -168,7 +181,7 @@ class ClinicalRecorderService {
   void resume() {
     if (!_isRecording || !_isPaused) return;
     _isPaused = false;
-    _startElapsedTimer();
+    _startElapsedTimer(); // BUILD 335: re-ancora wall-clock dentro do método
     _startSttSession();
   }
 
@@ -177,6 +190,14 @@ class ClinicalRecorderService {
   // ─────────────────────────────────────────────────────────────────────────
   Future<String> stop() async {
     if (!_isRecording) return _fullTranscript;
+    // BUILD 335: captura elapsed final via wall-clock antes de cancelar timer
+    final anchor = _elapsedAnchor;
+    if (anchor != null && !_isPaused) {
+      _elapsedSec =
+          (_elapsedSecBase + DateTime.now().difference(anchor).inSeconds)
+              .clamp(0, _maxDurationSec);
+    }
+    _elapsedAnchor = null;
     _isRecording = false;
     _isPaused    = false;
     _elapsedTimer?.cancel();
@@ -211,8 +232,14 @@ class ClinicalRecorderService {
 
   void _startElapsedTimer() {
     _elapsedTimer?.cancel();
+    // BUILD 335: ancora wall-clock para calcular delta real em cada tick
+    _elapsedAnchor = DateTime.now();
     _elapsedTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      _elapsedSec++;
+      final anchor = _elapsedAnchor;
+      if (anchor == null) return;
+      _elapsedSec =
+          (_elapsedSecBase + DateTime.now().difference(anchor).inSeconds)
+              .clamp(0, _maxDurationSec);
     });
   }
 
