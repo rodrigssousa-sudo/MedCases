@@ -5,7 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
-import 'reference_screens.dart'; // Fix#7: Dashboard Grid de Referências
+import 'reference_screens.dart'; // Fix#7: Dashboard Grid de Referências (mantido para uso interno)
+import 'hepatology_tools_screen.dart' show HepatologyToolsScreen; // BUILD 420-HEPATOLOGY
 import '../providers/app_provider.dart';
 import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
@@ -122,7 +123,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                 const CardioToolsScreen(),
                 // BUILD 415-UX-HARMONY: Eletrólitos unificado
                 const ElectrolytesToolsScreen(),
-                _ReferenceTab(),
+                const HepatologyToolsScreen(), // BUILD 420-HEPATOLOGY
               ],
             ),
           ),
@@ -177,7 +178,7 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                         const CardioToolsScreen(),
                         // BUILD 415-UX-HARMONY: Eletrólitos unificado
                         const ElectrolytesToolsScreen(),
-                        _ReferenceTab(),
+                        const HepatologyToolsScreen(), // BUILD 420-HEPATOLOGY
                       ],
                     ),
                   ),
@@ -343,7 +344,7 @@ class _ToolsTabRow extends StatelessWidget {
             )),
             Container(width: 1, height: 14, color: dividerColor),
             Expanded(child: _ToolsFlatTab(
-              label: isEs ? 'REFERENCIAS' : 'REFERÊNCIAS',
+              label: 'HEPATOLOGÍA', // BUILD 420-HEPATOLOGY
               index: 3, tabCtrl: tabCtrl, dark: dark,
             )),
           ],
