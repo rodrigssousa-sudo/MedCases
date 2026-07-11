@@ -74,10 +74,17 @@ const List<CalcShortcut> kAvailableCalcs = [
   CalcShortcut(id: 'calc_hepatologia', labelPt: 'Hepatologia',   labelEs: 'Hepatología',     icon: Icons.layers_outlined,           color: Color(0xFFF59E0B)),
 ];
 
-/// IDs de calculadoras proibidas por Apple Guideline 1.4.1 + regulatório:
-/// "Infusión EV" (calc_infusao) e "Prescripciones" (calc_prescricoes) nunca
-/// aparecem no Home Preview nem na lista de Gestionar, em nenhuma circunstância.
-const Set<String> _kForbiddenCalcIds = {'calc_infusao', 'calc_prescricoes'};
+/// IDs de calculadoras proibidas — nunca renderizadas no dashboard/grid:
+///  • 'calc_infusao', 'calc_prescricoes' — Apple Guideline 1.4.1 + regulatório
+///  • 'calc_eletrólitos' — BUILD 442 [P2]: expurgado da grade MI GUARDIA/MEU PLANTÃO.
+///    O atalho fixo (calc_cardio/nefrologia/hepatologia) já cobre a Row simétrica.
+///    Usuários que tinham 'calc_eletrólitos' pinado não verão card órfão na grid.
+///    O CalcShortcut permanece em kAvailableCalcs para uso em outras telas.
+const Set<String> _kForbiddenCalcIds = {
+  'calc_infusao',
+  'calc_prescricoes',
+  'calc_eletrólitos', // BUILD 442 [P2]: extinção física do card MI GUARDIA
+};
 
 CalcShortcut? calcById(String id) {
   try { return kAvailableCalcs.firstWhere((c) => c.id == id); } catch (_) { return null; }

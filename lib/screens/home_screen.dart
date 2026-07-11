@@ -1338,9 +1338,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       }
 
       // ── LAYER 2: Firestore fetch (tentativa com captura de permission-denied) ──
-      // BUILD 441 [P1]: intercepta 'permission-denied' explicitamente e cai
-      // de volta para o cache local de sessão anônima sem abortar o ciclo.
-      debugPrint('[BUILD441][HomeInlineChat] cache_local_vazio uid=$uid '
+      // BUILD 442 [P1]: intercepta 'permission-denied' explicitamente.
+      // Quando o Firestore está bloqueado (DigitalOcean sem auth ainda) E o cache
+      // local está vazio (primeiro boot) → RESOLVE a sessão como vazia e LIBERA
+      // o chat imediatamente. Define _lastLoadWasEmpty=false + _lastLoadedUid=uid
+      // para que a trava de UID engaje (uid==_lastLoadedUid && !_lastLoadWasEmpty)
+      // e _loadChatHistory() pare de fazer retry — quebrando o loop morto.
+      // O geminiConnected false→true em didUpdateWidget reseta tudo ao fazer OAuth.
+      debugPrint('[BUILD442][HomeInlineChat] cache_local_vazio uid=$uid '
           '→ tentando loadHistories() Firestore direto');
       bool firestoreOk = false;
       try {
@@ -1348,49 +1353,58 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
         firestoreOk = true;
       } catch (e) {
         final errStr = e.toString().toLowerCase();
-        if (errStr.contains('permission-denied') ||
+        final isPermissionDenied = errStr.contains('permission-denied') ||
             errStr.contains('permission_denied') ||
-            errStr.contains('missing or insufficient permissions')) {
-          // BUILD 441: Firestore bloqueado por regra de segurança no servidor
-          // (DigitalOcean runtime sem autenticação inicializada ainda).
-          // NÃO aborta — ativa resgate imediato via SharedPreferences.
-          debugPrint('[BUILD441][HomeInlineChat] PERMISSION_DENIED no Firestore uid=$uid '
-              '→ ativando resgate local imediato');
-          _lastLoadWasEmpty = true;
-          // Tenta ler chave anônima como último recurso (sessões pré-login)
-          final anonKey  = 'anon_$_kHistKey';
-          final rawAnon  = prefs.getString(anonKey);
+            errStr.contains('missing or insufficient permissions');
+        if (isPermissionDenied) {
+          // BUILD 442 [P1]: RESOLUÇÃO FORÇADA — sessão vazia, chat desbloqueado.
+          // Tenta ler chave anônima como último recurso (sessões pré-login).
+          debugPrint('[BUILD442][HomeInlineChat] PERMISSION_DENIED uid=$uid '
+              '→ resolvendo sessão vazia + desbloqueando chat');
+          final anonKey = 'anon_$_kHistKey';
+          final rawAnon = prefs.getString(anonKey);
           if (rawAnon != null && rawAnon.isNotEmpty && _messages.isEmpty && mounted) {
-            debugPrint('[BUILD441][HomeInlineChat] anon_rescue uid=$uid '
+            debugPrint('[BUILD442][HomeInlineChat] anon_rescue uid=$uid '
                 'raw_len=${rawAnon.length}');
             _restoreMessagesFromRaw(rawAnon, uid);
+            // _restoreMessagesFromRaw já seta _lastLoadedUid e _lastLoadWasEmpty=false
+          } else {
+            // Cache completamente vazio — sessão nova, nada a restaurar.
+            // CRÍTICO: _lastLoadWasEmpty=false para travar o UID guard e parar retries.
+            _lastLoadedUid    = uid;
+            _lastLoadWasEmpty = false; // ← trava o loop; chat liberado para digitação
+            if (mounted) setState(() {}); // garante rebuild do campo de texto
+            debugPrint('[BUILD442][HomeInlineChat] sessão_nova uid=$uid '
+                '→ chat 100% liberado, sem histórico anterior');
           }
-          _lastLoadedUid = uid;
           return;
         }
-        debugPrint('[BUILD441][HomeInlineChat] loadHistories error: $e uid=$uid');
+        debugPrint('[BUILD442][HomeInlineChat] loadHistories error (non-perm): $e uid=$uid');
       }
 
-      // ── LAYER 3: re-lê SharedPreferences após fetch Firestore ─────────────
+      // ── LAYER 3: re-lê SharedPreferences após fetch Firestore bem-sucedido ──
       if (!mounted) return;
       if (firestoreOk) {
         final rawAfterFetch = (await SharedPreferences.getInstance()).getString(histKey);
         if (rawAfterFetch == null || rawAfterFetch.isEmpty) {
-          // Firestore respondeu mas não havia histórico para este uid
+          // Firestore respondeu mas não havia histórico para este uid (usuário novo).
+          // BUILD 442: também resolve como sessão vazia + trava UID guard.
           _lastLoadedUid    = uid;
-          _lastLoadWasEmpty = true;
-          debugPrint('[BUILD441][HomeInlineChat] still_empty after Firestore fetch uid=$uid');
+          _lastLoadWasEmpty = false; // sessão nova = resolvida, não empty-loop
+          debugPrint('[BUILD442][HomeInlineChat] usuário_novo uid=$uid '
+              '→ sem histórico, sessão inicializada vazia');
           return;
         }
         _lastLoadWasEmpty = false;
         _restoreMessagesFromRaw(rawAfterFetch, uid);
       } else {
-        // Firestore lançou erro não-permission-denied (ex: timeout de rede)
-        // Tenta o raw original — pode ter sido populado por tentativa anterior
+        // Firestore lançou erro não-permission-denied (ex: timeout de rede).
+        // BUILD 442: também sinaliza como still_empty mas permite retry futuro
+        // (não trava o UID guard — _lastLoadWasEmpty=true permite nova tentativa).
         _lastLoadedUid    = uid;
         _lastLoadWasEmpty = true;
-        debugPrint('[BUILD441][HomeInlineChat] firestore_error_non_perm uid=$uid '
-            '→ marcando still_empty');
+        debugPrint('[BUILD442][HomeInlineChat] firestore_error_non_perm uid=$uid '
+            '→ still_empty, retry permitido na próxima transição');
       }
     } catch (e) {
       debugPrint('[BUILD441][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
