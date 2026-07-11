@@ -7773,33 +7773,24 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
         const green  = Color(0xFF10B981);
         const blue   = Color(0xFF1A73E8); // cor Google azul
 
-        // Determina qual label de status mostrar no badge
+        // BUILD 337-AI-TEXTS: Badge do monitor de servidor
+        // Ativo → pílula verde 'Servidor Activo' (Es) / 'Servidor Ativo' (Pt)
+        // Offline → pílula vermelha 'Servidor Offline'
         final String badgeLabel;
-        // SUPER ORDEM MASTER 15 M3: Expurgo de termos antigos — sem menções GPT
         if (geminiLoading || widget.keyLoading) {
-          badgeLabel = 'Conectando...';
-        } else if (geminiConn) {
-          badgeLabel = 'Gemini online';
+          badgeLabel = isEs ? 'Conectando...' : 'Conectando...';
         } else if (hasAnyAi) {
-          badgeLabel = 'Servidor Ativo'; // era 'GPT online' — PURGADO
+          badgeLabel = isEs ? 'Servidor Activo' : 'Servidor Ativo';
         } else {
-          badgeLabel = 'Base local';
+          badgeLabel = 'Servidor Offline';
         }
+        // Cor da pílula: verde quando ativo, vermelho quando offline
+        final bool serverActive = !geminiLoading && !widget.keyLoading && hasAnyAi;
 
-        final String modeLabel;
-        if (geminiConn) {
-          modeLabel = isEs
-              ? 'Servidor MedCases IA — Integrado ao Google Gemini'
-              : 'Servidor MedCases IA — Integrado ao Google Gemini';
-        } else if (hasAnyAi) {
-          modeLabel = isEs
-              ? 'Servidor MedCases IA — Integrado ao Google Gemini' // era GPT-4o mini
-              : 'Servidor MedCases IA — Integrado ao Google Gemini';
-        } else {
-          modeLabel = isEs
-              ? 'MedCases IA — base clínica integrada'
-              : 'MedCases IA — base clínica integrada';
-        }
+        // BUILD 337-AI-TEXTS: Linha 1 — cabeçalho unificado de servidor
+        // Fixo em todos os estados: descreve a integração do servidor
+        const String modeLabel =
+            'SERVIDOR MEDCASES IA — INTEGRADO A GOOGLE GEMINI';
 
         return Container(
           decoration: BoxDecoration(
@@ -7894,17 +7885,18 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
+                      // BUILD 337: verde=ativo, vermelho=offline (pílula do monitor)
                       color: (geminiLoading || widget.keyLoading)
                           ? Colors.white.withOpacity(0.08)
-                          : (hasAnyAi
+                          : (serverActive
                               ? Colors.white.withOpacity(0.15)
-                              : green.withOpacity(0.1)),
+                              : const Color(0xFFB91C1C).withOpacity(0.18)),
                       border: Border.all(
                         color: (geminiLoading || widget.keyLoading)
                             ? Colors.white.withOpacity(0.15)
-                            : (hasAnyAi
+                            : (serverActive
                                 ? Colors.white.withOpacity(0.3)
-                                : green.withOpacity(0.25))),
+                                : const Color(0xFFEF4444).withOpacity(0.40))),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       if (geminiLoading || widget.keyLoading)
@@ -7921,9 +7913,10 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                           margin: const EdgeInsets.only(right: 5),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: hasAnyAi
+                            // Verde quando ativo, vermelho quando offline
+                            color: serverActive
                                 ? const Color(0xFF10B981)
-                                : (dark ? Colors.white38 : Colors.black26)),
+                                : const Color(0xFFEF4444)),
                         ),
                       const SizedBox(width: 5),
                       Text(
@@ -7932,7 +7925,9 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                           fontSize: 10, fontWeight: FontWeight.w700,
                           color: (geminiLoading || widget.keyLoading)
                               ? Colors.white.withOpacity(0.5)
-                              : (hasAnyAi ? Colors.white : sub))),
+                              : (serverActive
+                                  ? Colors.white
+                                  : const Color(0xFFEF4444)))),
                     ]),
                   ),
                 ]),
@@ -7960,57 +7955,49 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 ]),
                 const SizedBox(height: 8),
 
-                // Linha: base local
+                // BUILD 337 Linha 2: +1000 fármacos · modos (acréscimo/fármacos)
                 Row(children: [
-                  Icon(Icons.local_hospital_rounded, size: 14,
+                  Icon(Icons.medication_rounded, size: 14,
                     color: hasAnyAi
                         ? Colors.white.withOpacity(0.6)
                         : sub),
                   const SizedBox(width: 8),
                   Expanded(child: Text(
                     isEs
-                        ? '628 fármacos · protocolos de urgencias · siempre activo'
-                        : '628 fármacos · protocolos de urgência · sempre ativo',
+                        ? '+1000 FÁRMACOS — MODO ESTUDIO — MODO GUARDIA'
+                        : '+1000 FÁRMACOS — MODO ESTUDO — MODO PLANTÃO',
                     style: TextStyle(
                       fontSize: 11,
+                      letterSpacing: 0.3,
                       color: hasAnyAi
-                          ? Colors.white.withOpacity(0.6)
+                          ? Colors.white.withOpacity(0.7)
                           : sub))),
                 ]),
 
-                if (geminiConn) ...[
-                  const SizedBox(height: 8),
-                  Row(children: [
-                    Icon(Icons.account_circle_rounded, size: 14,
-                      color: const Color(0xFF10B981).withOpacity(0.8)),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(
-                      geminiEmail.isNotEmpty
-                          ? geminiEmail
-                          : (isEs
-                              ? 'Google conectado — Gemini 1.5 Flash activo'
-                              : 'Google conectado — Gemini 1.5 Flash ativo'),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.white.withOpacity(0.65)),
-                      maxLines: 1, overflow: TextOverflow.ellipsis)),
-                  ]),
-                ] else if (hasAnyAi) ...[
-                  const SizedBox(height: 8),
-                  Row(children: [
-                    Icon(Icons.cloud_done_rounded, size: 14,
-                      color: const Color(0xFF10B981).withOpacity(0.8)),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(
-                      // SUPER ORDEM MASTER 15 M3: PURGADO 'GPT-4o mini' — substituiído
-                      isEs
-                          ? 'Servidor MedCases IA — Integrado ao Google Gemini'
-                          : 'Servidor MedCases IA — Integrado ao Google Gemini',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.white.withOpacity(0.6)))),
-                  ]),
-                ],
+                // BUILD 337 Linha 3: modelo unificado LLM — sempre visível
+                const SizedBox(height: 8),
+                Row(children: [
+                  Icon(
+                    geminiConn
+                        ? Icons.account_circle_rounded
+                        : Icons.cloud_done_rounded,
+                    size: 14,
+                    color: const Color(0xFF10B981).withOpacity(0.8)),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(
+                    geminiConn && geminiEmail.isNotEmpty
+                        ? geminiEmail
+                        : 'SERVIDOR MEDCASES IA — INTEGRADO AO GOOGLE GEMINI — GPT MINI 4',
+                    style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: geminiConn && geminiEmail.isNotEmpty
+                          ? 0.0
+                          : 0.2,
+                      color: hasAnyAi
+                          ? Colors.white.withOpacity(0.65)
+                          : sub),
+                    maxLines: 1, overflow: TextOverflow.ellipsis)),
+                ]),
               ]),
             ),
 
@@ -8108,10 +8095,9 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                           children: [
                             const Icon(Icons.account_circle_rounded, size: 20),
                             const SizedBox(width: 8),
+                            // BUILD 337: botão de gatilho OAuth — texto canônico
                             Text(
-                              isEs
-                                  ? 'Conectar con Google  →  IA Clínica'
-                                  : 'Conectar com Google  →  IA Clínica',
+                              'Conectar con Google ➔ IA Clínica',
                               style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w700)),
                           ],
@@ -8121,14 +8107,13 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
 
             const SizedBox(height: 2),
 
-            // Subtexto explicativo abaixo do botão
+            // BUILD 337: subtexto do botão OAuth
+            // '3 clics · usa tu propria cuenta Google' — sem mencionar clave API
             if (!geminiConn)
               Padding(
                 padding: const EdgeInsets.only(top: 6, bottom: 4),
                 child: Text(
-                  isEs
-                      ? '2 clics · usa tu propia cuenta Google · sin clave API'
-                      : '2 cliques · usa sua conta Google · sem chave API',
+                  '3 clics · usa tu propria cuenta Google',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 11,
@@ -8145,34 +8130,30 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 color: cardBg,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: divCol)),
-              // SUPER ORDEM MASTER 15 M3: Info bullets limpos — sem GPT, sem 'Funciona offline'
+              // BUILD 337-AI-TEXTS: cards de benefícios — arquitetura de mensagem definitiva
               child: Column(children: [
+                // Card 1 — Base clínica ativa (ícone de faísca)
                 _InfoRow(
                   icon: Icons.auto_awesome_rounded,
                   iconColor: green,
                   dark: dark,
                   label: isEs
-                      ? 'Base clínica sempre ativa'
-                      : 'Base clínica sempre ativa',
-                  sub: isEs
-                      ? 'Protocolos e fármacos respondem instantaneamente'
-                      : 'Protocolos e fármacos respondem instantaneamente',
+                      ? 'Base clínica activa'
+                      : 'Base clínica ativa',
+                  sub: 'Protocolos e fármacos respondem instantaneamente.',
                 ),
                 const SizedBox(height: 10),
+                // Card 2 — Gemini · GPT enriquece (ícone de hub/IA)
                 _InfoRow(
                   icon: Icons.hub_rounded,
                   iconColor: hasAnyAi ? green : sub,
                   dark: dark,
                   label: isEs
-                      ? 'Gemini enriquece o que a base não cobre'
-                      : 'Gemini enriquece o que a base não cobre',
-                  sub: isEs
-                      ? 'Perguntas fora da base são respondidas com conhecimento médico global'
-                      : 'Perguntas fora da base são respondidas com conhecimento médico global',
+                      ? 'Gemini · GPT enriquece lo que la base no cubre'
+                      : 'Gemini · GPT enriquece o que a base não cobre',
+                  sub: 'Perguntas fora da base são respondidas com conhecimento médico global.',
                   dimmed: !hasAnyAi,
                 ),
-                // SUPER ORDEM MASTER 15 M3: 'Funciona offline' REMOVIDO
-                // A IA requer internet — bullet enganoso eliminado
               ]),
             ),
 
