@@ -14,6 +14,9 @@ import '../services/activity_service.dart';
 import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
 // BUILD 408-NATIVE: substitui _BiometricsTab por NephrologyToolsScreen na tab 0.
 import 'nephrology_tools_screen.dart' show NephrologyToolsScreen;
+// BUILD 415-UX-HARMONY: substitui CardioHubView e _ElectrolytesTab por telas unificadas.
+import 'cardio_tools_screen.dart' show CardioToolsScreen;
+import 'electrolytes_tools_screen.dart' show ElectrolytesToolsScreen;
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -115,8 +118,10 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
               children: [
                 // BUILD 408-NATIVE: Biometria → Função Renal / Nefrología
                 const NephrologyToolsScreen(),
-                CardioHubView(),
-                _ElectrolytesTab(),
+                // BUILD 415-UX-HARMONY: Cardio unificado
+                const CardioToolsScreen(),
+                // BUILD 415-UX-HARMONY: Eletrólitos unificado
+                const ElectrolytesToolsScreen(),
                 _ReferenceTab(),
               ],
             ),
@@ -168,9 +173,10 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                       children: [
                         // BUILD 408-NATIVE: Biometria → Função Renal / Nefrología
                         const NephrologyToolsScreen(),
-                        // BUILD 277-CROMATICO: _ScoresTab() removed
-                        CardioHubView(),
-                        _ElectrolytesTab(),
+                        // BUILD 415-UX-HARMONY: Cardio unificado
+                        const CardioToolsScreen(),
+                        // BUILD 415-UX-HARMONY: Eletrólitos unificado
+                        const ElectrolytesToolsScreen(),
                         _ReferenceTab(),
                       ],
                     ),
