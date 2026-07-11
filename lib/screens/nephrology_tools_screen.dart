@@ -900,6 +900,9 @@ class _ResultsSection extends StatelessWidget {
               ? _ckdStageLabel(result.ckdEpi, es: true)
               : _ckdStageLabel(result.ckdEpi, es: false),
           subColor: _ckdColor(result.ckdEpi),
+          formula: isEs
+              ? 'Ecuación CKD-EPI (2021): TFG basada em Creatinina Sérica sin factor de raza.'
+              : 'Equação CKD-EPI (2021): TFG baseada em Creatinina Sérica sem fator de raça.',
         ),
 
         const SizedBox(height: 10),
@@ -920,6 +923,9 @@ class _ResultsSection extends StatelessWidget {
               ? 'Utilizar para ajuste de dosis de prospecto'
               : 'Utilize para ajuste de dose de bula',
           subColor: sub,
+          formula: isEs
+              ? 'Fórmula: CLcr = ((140 − Edad) × Peso) / (72 × CrS) [× 0.85 si Femenino]'
+              : 'Fórmula: CLcr = ((140 − Idade) × Peso) / (72 × CrS) [× 0.85 se Feminino]',
         ),
 
         const SizedBox(height: 10),
@@ -944,6 +950,7 @@ class _ResultsSection extends StatelessWidget {
               ? _kdigoSubEs(result.kdigoStage)
               : _kdigoSubPt(result.kdigoStage),
           subColor: _kdigoColor(result.kdigoStage).withOpacity(0.85),
+          formula: 'Fórmula: Proporção = CrAtual / CrBasal  |  Δ = CrAtual − CrBasal',
         ),
 
         const SizedBox(height: 10),
@@ -978,6 +985,7 @@ class _ResultsSection extends StatelessWidget {
                 ? 'Fracción de Excreción de Sodio'
                 : 'Fração de Excreção de Sódio',
             subColor: sub,
+            formula: 'Fórmula: FeNa = ((NaU × CrS) / (NaS × CrU)) × 100',
           ),
 
         if (result.fena == null)
@@ -1099,6 +1107,7 @@ class _ResultCard extends StatelessWidget {
   final IconData icon;
   final String title, sub;
   final Widget valueRow;
+  final String? formula; // BUILD 409-COMPLIANCE: rodapé científico discreto
 
   const _ResultCard({
     required this.dark,
@@ -1110,6 +1119,7 @@ class _ResultCard extends StatelessWidget {
     required this.sub,
     required this.valueRow,
     required this.subColor,
+    this.formula,
   });
 
   @override
@@ -1153,6 +1163,17 @@ class _ResultCard extends StatelessWidget {
                     Text(
                       sub,
                       style: TextStyle(color: subColor, fontSize: 11, height: 1.3),
+                    ),
+                  ],
+                  if (formula != null && formula!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      formula!,
+                      style: const TextStyle(
+                        fontSize:  11,
+                        color:     Colors.white54,
+                        height:    1.3,
+                      ),
                     ),
                   ],
                 ],
@@ -1243,8 +1264,8 @@ class _DeeplinkButton extends StatelessWidget {
               children: [
                 Text(
                   isEs
-                      ? 'Ver Conducta y Prescripción de Guardia'
-                      : 'Ver Conduta e Prescrição de Plantão',
+                      ? 'Acceder al Soporte de Decisión Clínica'
+                      : 'Acessar Suporte de Decisão Clínica',
                   style: const TextStyle(
                     fontSize:   13,
                     fontWeight: FontWeight.w800,
