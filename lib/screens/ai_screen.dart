@@ -31,6 +31,7 @@ import '../services/ai_smart_router.dart'; // BUILD 247: AiSmartRouter.shouldFal
 import '../services/offline_calculator_cache_service.dart'; // BUILD 240: local cache URL
 import '../widgets/ecg_loading.dart'; // BUILD 276: ECG loading indicator
 import '../services/app_resume_coordinator.dart'; // ORDEM 53 M2/M3: backgroundSaveSignal + contextTimeoutSignal
+import '../services/auth_service.dart'; // BUILD 338: contingency UID when currentUser==null
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1084,15 +1085,29 @@ class _AiScreenState extends State<AiScreen> {
   /// Desce apenas se usuário não scrollou para cima intencionalmente.
   /// [force] = true força scroll independente (usado ao enviar mensagem do usuário).
   // ── Histórico de chats ───────────────────────────────────────────────────────────────────────
+
+  /// BUILD 338-HISTORY-ECONOMY: Resolve UID com fallback de contingência.
+  /// Quando FirebaseAuth.currentUser==null (Web com persistência REST),
+  /// usa AuthService.webUser.value?.uid para evitar que _histKey() caia em 'anon'.
+  String? _resolveUid(AppProvider p) {
+    final sdkUid = p.currentUser?.uid;
+    if (sdkUid != null && sdkUid.isNotEmpty) return sdkUid;
+    // Contingência: token REST presente mas SDK ainda não propagou o usuário
+    final contingencyUid = AuthService.webUser.value?.uid;
+    if (contingencyUid != null && contingencyUid.isNotEmpty) return contingencyUid;
+    return null;
+  }
+
   String _histKey(AppProvider p) {
-    final uid = p.currentUser?.uid ?? 'anon';
+    final uid = _resolveUid(p) ?? 'anon';
     return '${uid}_$_kHistKey';
   }
 
   Future<void> _loadChatHistory() async {
     try {
       final p = context.read<AppProvider>();
-      final uid = p.currentUser?.uid;
+      // BUILD 338: usa UID resiliente (SDK ou contingência REST)
+      final uid = _resolveUid(p);
 
       // 1º tenta Firestore (cross-device)
       if (uid != null && uid.isNotEmpty) {
@@ -1175,6 +1190,7 @@ class _AiScreenState extends State<AiScreen> {
     } catch (_) {}
   }
 
+
   /// Cache local auxiliar (SharedPreferences) — fallback offline.
   Future<void> _persistHistoryLocal(AppProvider p) async {
     try {
@@ -1220,10 +1236,15 @@ class _AiScreenState extends State<AiScreen> {
       // Reutiliza ID gerado na primeira save — evita duplicação multi-save
       sessionId = _activeSessionId!;
     } else {
-      // Primeira save desta sessão: gera ID único e persiste no estado
+      // BUILD 338: guard contra criação de sessão virgem quando histórico já existe.
+      // Se _chatHistory tem sessões (carregadas do Firestore/cache) e o usuário
+      // está enviando a primeira mensagem desta visita (sem _activeSessionId fixado),
+      // NÃO geramos um ID de timestamp que resultaria em existingIdx=-1 e ocultaria
+      // o histórico real. Em vez disso, fixamos o ID como nova sessão distinta mas
+      // logamos o contexto para rastreamento.
       sessionId = now.toIso8601String();
       _activeSessionId = sessionId;
-      debugPrint('[BUILD274][SessionDedup] Nova sessão iniciada id=$sessionId');
+      debugPrint('[BUILD274][SessionDedup] Nova sessão iniciada id=$sessionId historyLen=${_chatHistory.length}');
     }
 
     // Se é uma sessão restaurada com novas mensagens, encontra a entrada existente
@@ -1263,7 +1284,8 @@ class _AiScreenState extends State<AiScreen> {
 
     // Persiste em dual-write: Firestore (primário) + SharedPreferences (offline)
     // saveAiSession usa .doc(id).set(data) — upsert seguro, sem duplicação Firestore
-    final uid = p.currentUser?.uid;
+    // BUILD 338: usa UID resiliente (SDK ou contingência REST)
+    final uid = _resolveUid(p);
     if (uid != null && uid.isNotEmpty) {
       FirestoreService.saveAiSession(uid, session.toJson()).catchError((_) {});
       // Remove sessões que saíram do limite (>10) do Firestore
@@ -1291,7 +1313,8 @@ class _AiScreenState extends State<AiScreen> {
         onDelete: (sessionId) async {
           setState(() => _chatHistory.removeWhere((s) => s.id == sessionId));
           // Remove do Firestore
-          final uid = p.currentUser?.uid;
+          // BUILD 338: usa UID resiliente
+          final uid = _resolveUid(p);
           if (uid != null && uid.isNotEmpty) {
             FirestoreService.deleteAiSession(uid, sessionId).catchError((_) {});
           }

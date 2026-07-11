@@ -28,9 +28,9 @@
 //   📌 Monitorar: - [parâmetro]
 //   ⚠️ Alerta: - [risco crítico]
 //
-// CAP DE CHARS (BUILD 305 [C3] — 32K Token Economy):
-//   _kCapTotal   = 32.000 chars — ≈8K tokens (4 chars/token) — janela Gemini completa
-//   _kCapContext = 16.000 chars — RAG clínico externo (50% do teto total)
+// CAP DE CHARS (BUILD 338 — Token Diet Economy):
+//   _kCapTotal   = 20.000 chars — ≈5K tokens (4 chars/token) — reduzido de 32K (dieta tokens)
+//   _kCapContext = 10.000 chars — RAG clínico externo (50% do teto total) — reduzido de 16K
 //   _kSuffixReserve = 2.000 chars — sufixo imutável reservado antes do corte
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -76,9 +76,9 @@ class AiSmartRouter {
   // truncamento prematuro. Sufixo imutável aumentado proporcionalmente (2000)
   // para acomodar expansões futuras do output_shield + LangLock.
   // O shrink corta SOMENTE o bodyBuf — suffix permanece sempre intacto.
-  static const int _kCapTotal       = 32000; // 32K chars ≈ 8K tokens
-  static const int _kCapContext      = 16000; // RAG clínico (50% do teto)
-  static const int _kSuffixReserve  =  2000; // sufixo imutável (6.25% do teto)
+  static const int _kCapTotal       = 20000; // BUILD 338: reduzido 32K→20K (5K tokens) — dieta de tokens
+  static const int _kCapContext      = 10000; // BUILD 338: reduzido 16K→10K — RAG clínico cap estrito
+  static const int _kSuffixReserve  =  2000; // sufixo imutável reservado antes do corte
 
   // ══ PADRÕES DE META LEAK — linhas com estes tokens são removidas da resposta ═
   // Usados por sanitizeResponse() e sanitizeAndCheck() para filtrar vazamentos.
@@ -463,18 +463,18 @@ class AiSmartRouter {
     bodyBuf.write('$_modAntiLeak\n');
     bodyBuf.write('$contract\n');
 
-    // Módulos lazy — encapsulados em <instructions> inline
-    if (intent.isAcronym) {
-      bodyBuf.write('<instructions id="siglas">\n$_modSiglas</instructions>\n');
-    }
+    // BUILD 338: Módulos lazy com exclusividade estrita — apenas 1 módulo por turno.
+    // Prioridade: dilution/drops > siglas > interacao > dose.
+    // Evita injeção simultânea de múltiplos módulos pesados (era causa de 23k+ chars).
+    // Estrutura if-else garante no máximo 1 módulo carregado por turno.
     if (intent.isDilution || intent.isDrops) {
       bodyBuf.write('<instructions id="diluicao">\n$_modDiluicao</instructions>\n');
-    }
-    if (intent.isDose && !intent.isDilution && !intent.isDrops) {
-      bodyBuf.write('<instructions id="dose">\n$_modDose</instructions>\n');
-    }
-    if (intent.isInteraction) {
+    } else if (intent.isAcronym) {
+      bodyBuf.write('<instructions id="siglas">\n$_modSiglas</instructions>\n');
+    } else if (intent.isInteraction) {
       bodyBuf.write('<instructions id="interacao">\n$_modInteracao</instructions>\n');
+    } else if (intent.isDose) {
+      bodyBuf.write('<instructions id="dose">\n$_modDose</instructions>\n');
     }
 
     // Contexto RAG clínico — cap estrito; parte do corpo shrinkable
