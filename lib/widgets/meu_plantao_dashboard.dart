@@ -58,7 +58,8 @@ class CalcShortcut {
 }
 
 const List<CalcShortcut> kAvailableCalcs = [
-  CalcShortcut(id: 'calc_biometria',   labelPt: 'Biometria',     labelEs: 'Biometría',      icon: Icons.monitor_weight_outlined,   color: Color(0xFF3B82F6)),
+  // BUILD 408-NATIVE: Biometria → Nefrologia/Función Renal
+  CalcShortcut(id: 'calc_biometria',   labelPt: 'Função Renal',  labelEs: 'Función Renal',  icon: Icons.water_drop_rounded,        color: Color(0xFF00B4CC)),
   CalcShortcut(id: 'calc_scores',      labelPt: 'Scores',        labelEs: 'Scores',         icon: Icons.bar_chart_rounded,         color: Color(0xFF8B5CF6)),
   CalcShortcut(id: 'calc_cardio',      labelPt: 'Cardio',        labelEs: 'Cardio',         icon: Icons.favorite_outline_rounded,  color: Color(0xFFEF4444)),
   CalcShortcut(id: 'calc_eletrólitos', labelPt: 'Eletrólitos',   labelEs: 'Electrolitos',   icon: Icons.science_outlined,          color: Color(0xFFF59E0B)),

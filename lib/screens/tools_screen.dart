@@ -12,6 +12,8 @@ import '../widgets/common_widgets.dart';
 import '../widgets/lab_exam_bottom_sheet.dart';
 import '../services/activity_service.dart';
 import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
+// BUILD 408-NATIVE: substitui _BiometricsTab por NephrologyToolsScreen na tab 0.
+import 'nephrology_tools_screen.dart' show NephrologyToolsScreen;
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -111,7 +113,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
             child: TabBarView(
               controller: _tabCtrl,
               children: [
-                _BiometricsTab(),
+                // BUILD 408-NATIVE: Biometria → Função Renal / Nefrología
+                const NephrologyToolsScreen(),
                 CardioHubView(),
                 _ElectrolytesTab(),
                 _ReferenceTab(),
@@ -163,7 +166,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
                     child: TabBarView(
                       controller: _tabCtrl,
                       children: [
-                        _BiometricsTab(),
+                        // BUILD 408-NATIVE: Biometria → Função Renal / Nefrología
+                        const NephrologyToolsScreen(),
                         // BUILD 277-CROMATICO: _ScoresTab() removed
                         CardioHubView(),
                         _ElectrolytesTab(),
@@ -318,7 +322,7 @@ class _ToolsTabRow extends StatelessWidget {
         child: Row(
           children: [
             Expanded(child: _ToolsFlatTab(
-              label: isEs ? 'BIOMETRÍA' : 'BIOMETRIA',
+              label: isEs ? 'NEFROLOGÍA' : 'NEFROLOGIA', // BUILD 408-NATIVE
               index: 0, tabCtrl: tabCtrl, dark: dark,
             )),
             Container(width: 1, height: 14, color: dividerColor),
