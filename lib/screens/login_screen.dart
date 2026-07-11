@@ -986,14 +986,21 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
       'clínico, los protocolos institucionales ni la evaluación médica '
       'individualizada.';
 
+  // BUILD 431: palette constants — Canvas Premium dark
+  static const _kCyan     = Color(0xFF00E5FF);
+  static const _kSurface  = Color(0xFF1E2128);
+  static const _kBorder   = Color(0x1AFFFFFF);  // 10% white
+  static const _kTextSec  = Color(0xB3FFFFFF);  // white70
+  static const _kTextHint = Color(0xFF8B9BB4);
+
   @override
   Widget build(BuildContext context) {
     final disclaimerText = isEs ? _textEs : _textPt;
     final labelAccept = isEs
-        ? 'Li e aceito os termos acima'
+        ? 'Acepto los términos anteriores'
         : 'Li e aceito os termos acima';
     final errorMsg = isEs
-        ? 'É necessário aceitar o termo para continuar.'
+        ? 'Es necesario aceptar el término para continuar.'
         : 'É necessário aceitar o termo para continuar.';
 
     return Column(
@@ -1003,44 +1010,45 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: hasError
-                ? Colors.red.withOpacity(0.05)
-                : const Color(0xFF0E7C52).withOpacity(0.06),
+            color: _kSurface,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: hasError
-                  ? Colors.red.withOpacity(0.45)
-                  : const Color(0xFF0E7C52).withOpacity(0.30),
-              width: 1.3,
+                  ? Colors.red.withOpacity(0.55)
+                  : _kBorder,
+              width: 1,
             ),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(children: [
-                Icon(
-                  Icons.health_and_safety_rounded,
-                  size: 16,
-                  color: hasError ? Colors.red.shade700 : const Color(0xFF0E7C52),
+              // Escudo centralizado
+              Icon(
+                Icons.health_and_safety_rounded,
+                size: 22,
+                color: hasError ? Colors.red.shade400 : _kCyan,
+              ),
+              const SizedBox(height: 7),
+              Text(
+                isEs ? 'Declaración de uso profesional' : 'Declaração de uso profissional',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: hasError ? Colors.red.shade400 : _kCyan,
+                  decoration: TextDecoration.none,
                 ),
-                const SizedBox(width: 7),
-                Text(
-                  isEs ? 'Declaración de uso profesional' : 'Declaração de uso profissional',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w800,
-                    color: hasError ? Colors.red.shade700 : const Color(0xFF0D2B1E),
-                  ),
-                ),
-              ]),
+              ),
               const SizedBox(height: 8),
               Text(
                 disclaimerText,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 11,
-                  color: Color(0xFF4A6B58),
+                  color: _kTextSec,
                   height: 1.5,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
+                  decoration: TextDecoration.none,
                 ),
               ),
             ],
@@ -1049,46 +1057,67 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
 
         const SizedBox(height: 10),
 
-        // ── Checkbox de aceite ─────────────────────────────────────────────
+        // ── Checkbox de aceite ──────────────────────────────────────────
         GestureDetector(
           onTap: () => onChanged(!accepted),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 22, height: 22,
-                child: Checkbox(
-                  value: accepted,
-                  onChanged: onChanged,
-                  activeColor: const Color(0xFF0E7C52),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4)),
-                  side: BorderSide(
-                    color: hasError
-                        ? Colors.red
-                        : const Color(0xFF4A6B58).withOpacity(0.40),
-                    width: 1.5,
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 160),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: accepted
+                  ? _kCyan.withOpacity(0.08)
+                  : _kSurface,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: hasError
+                    ? Colors.red.withOpacity(0.55)
+                    : accepted
+                        ? _kCyan.withOpacity(0.50)
+                        : _kBorder,
+                width: 1,
               ),
-              const SizedBox(width: 9),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 2),
+            ),
+            child: Row(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: accepted ? _kCyan : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color: hasError
+                          ? Colors.red.withOpacity(0.70)
+                          : accepted
+                              ? _kCyan
+                              : _kTextHint,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: accepted
+                      ? const Icon(Icons.check_rounded,
+                          size: 13, color: Color(0xFF121418))
+                      : null,
+                ),
+                const SizedBox(width: 9),
+                Expanded(
                   child: Text(
                     labelAccept,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: hasError
-                          ? Colors.red.shade700
-                          : const Color(0xFF4A6B58),
+                          ? Colors.red.shade400
+                          : accepted
+                              ? _kCyan
+                              : _kTextSec,
+                      decoration: TextDecoration.none,
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
 
@@ -1097,15 +1126,16 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
           const SizedBox(height: 6),
           Row(children: [
             Icon(Icons.warning_amber_rounded,
-                size: 13, color: Colors.red.shade700),
+                size: 13, color: Colors.red.shade400),
             const SizedBox(width: 5),
             Expanded(
               child: Text(
                 errorMsg,
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.red.shade700,
+                  color: Colors.red.shade400,
                   fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.none,
                 ),
               ),
             ),

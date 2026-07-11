@@ -373,9 +373,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             'calc_cardio':      1,
                             'calc_eletrólitos': 2,
                             'calc_infusao':     0,
-                            'calc_referencia':  3, // SUPER ORDEM VISUAL 10: PEDIATRIA extinta, 4 tabs
+                            'calc_referencia':  3,
                             'calc_prescricoes': 0,
-                            'calc_pediatria':   0, // SUPER ORDEM VISUAL 10: fallback → BIOMETRIA
+                            'calc_pediatria':   0,
+                            // BUILD 431: novos atalhos diretos
+                            'calc_nefrologia':  0,
+                            'calc_hepatologia': 3,
                           };
                           toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
                           widget.onTabChange(4);
@@ -574,8 +577,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 const calcTabMap = {
                   'calc_biometria': 0, 'calc_scores': 0, 'calc_cardio': 1,
                   'calc_eletrólitos': 2, 'calc_infusao': 0,
-                  'calc_referencia': 3, 'calc_prescricoes': 0, // SUPER ORDEM VISUAL 10: 4 tabs
-                  'calc_pediatria': 0, // SUPER ORDEM VISUAL 10: fallback → BIOMETRIA
+                  'calc_referencia': 3, 'calc_prescricoes': 0,
+                  'calc_pediatria': 0, // fallback → BIOMETRIA
+                  // BUILD 431: novos atalhos diretos Nefrologia + Hepatologia
+                  'calc_nefrologia':  0, // tab 0 = NephrologyToolsScreen
+                  'calc_hepatologia': 3, // tab 3 = HepatologyToolsScreen
                 };
                 toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
                 widget.onTabChange(4);
@@ -6552,8 +6558,8 @@ class _CalculadorasShell extends StatelessWidget {
           icon:    Icons.calculate_rounded,
           label:   'CALCULADORA CLÍNICA',
           subtitle: isEs
-              ? 'Scores · Cardio · Electrolitos · Referencia'
-              : 'Scores · Cardio · Eletrólitos · Referência',
+              ? 'Nefrología · Cardio · Electrolitos · Hepatología'
+              : 'Nefrologia · Cardio · Eletrólitos · Hepatologia',
         ),
         const Expanded(child: ToolsScreen(hideHeader: true)),
       ]),

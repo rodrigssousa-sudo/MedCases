@@ -349,22 +349,16 @@ class _ProfessionalDeclarationModalState
   late Animation<double> _fade;
   late Animation<Offset> _slide;
 
-  // ── Paleta branca — design documento real (Apple-friendly) ────────────────
-  static const _bg        = Colors.white;
-  static const _surface   = Color(0xFFF7F9F8);
-  static const _green     = Color(0xFF075f45);
-  static const _greenLt   = Color(0xFF2E8A62);
-  static const _border    = Color(0xFFDDE3E0);
-  static const _textPri   = Color(0xFF0D1611);   // quase-preto
-  static const _textSec   = Color(0xFF3D4A44);   // cinza escuro
-  static const _textHint  = Color(0xFF8A9890);
-  static const _disabled  = Color(0xFFCDD6D2);
-
-  // Vermelho para o bloco de aviso (versão light)
-  static const _redBg     = Color(0xFFFFF1F1);
-  static const _redBorder = Color(0xFFE53E3E);
-  static const _redText   = Color(0xFFB91C1C);
-  static const _redIcon   = Color(0xFFDC2626);
+  // ── BUILD 431 — Canvas Premium dark palette ────────────────────────────────
+  static const _bg        = Color(0xFF121418);
+  static const _surface   = Color(0xFF1E2128);
+  static const _cyan      = Color(0xFF00E5FF);
+  static const _border    = Color(0x1AFFFFFF);   // 10% white
+  static const _borderSub = Color(0x26FFFFFF);   // 15% white
+  static const _textPri   = Colors.white;
+  static const _textSec   = Color(0xB3FFFFFF);   // white70
+  static const _textHint  = Color(0xFF8B9BB4);
+  static const _disabled  = Color(0xFF2A2E38);
 
   @override
   void initState() {
@@ -425,7 +419,7 @@ class _ProfessionalDeclarationModalState
                 color: _bg,
                 borderRadius: BorderRadius.circular(isWide ? 20 : 0),
                 border: isWide
-                    ? Border.all(color: _border, width: 1)
+                    ? Border.all(color: _borderSub, width: 1)
                     : null,
               ),
               child: Column(
@@ -467,9 +461,9 @@ class _ProfessionalDeclarationModalState
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: selected ? _green : Colors.transparent,
+                color: selected ? _cyan.withOpacity(0.15) : Colors.transparent,
                 border: Border.all(
-                  color: selected ? _green : _border,
+                  color: selected ? _cyan.withOpacity(0.70) : _border,
                   width: 1,
                 ),
               ),
@@ -478,7 +472,7 @@ class _ProfessionalDeclarationModalState
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
-                  color: selected ? Colors.white : _textHint,
+                  color: selected ? _cyan : _textHint,
                   letterSpacing: 0.8,
                   decoration: TextDecoration.none,
                 ),
@@ -494,10 +488,10 @@ class _ProfessionalDeclarationModalState
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 18),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: _surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
-        border: Border(bottom: BorderSide(color: _border, width: 1)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(0)),
+        border: Border(bottom: BorderSide(color: _borderSub, width: 1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -505,20 +499,20 @@ class _ProfessionalDeclarationModalState
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Ícone de aviso
+              // Ícone de verificação — cyan
               Container(
                 padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                  color: _redIcon.withOpacity(0.10),
+                  color: _cyan.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: _redIcon.withOpacity(0.25),
+                    color: _cyan.withOpacity(0.25),
                     width: 1,
                   ),
                 ),
                 child: const Icon(
-                  Icons.warning_amber_rounded,
-                  color: _redIcon,
+                  Icons.verified_user_outlined,
+                  color: _cyan,
                   size: 20,
                 ),
               ),
@@ -527,21 +521,18 @@ class _ProfessionalDeclarationModalState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Badge
+                    // Badge minimalista cinza escuro
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 7, vertical: 3),
                       decoration: BoxDecoration(
-                        color: _redBg,
+                        color: const Color(0xFF2A2E38),
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                            color: _redBorder.withOpacity(0.35),
-                            width: 1),
                       ),
                       child: Text(
                         _s.warningBadge,
                         style: const TextStyle(
-                          color: _redText,
+                          color: Color(0xB3FFFFFF),
                           fontSize: 9,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.4,
@@ -580,37 +571,37 @@ class _ProfessionalDeclarationModalState
     );
   }
 
-  // ── 2. Bloco de Disclaimer Obrigatório (destaque máximo) ──────────────────
+  // ── 2. Bloco de Disclaimer Obrigatório (dark surface) ───────────────────
   Widget _buildDisclaimerBlock() {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 18, 20, 0),
       decoration: BoxDecoration(
-        color: _redBg,
+        color: _surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _redBorder.withOpacity(0.55), width: 1.5),
+        border: Border.all(color: _borderSub, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Barra de título vermelha
+          // Barra de título — dark com ícone cyan
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
             decoration: BoxDecoration(
-              color: _redBorder.withOpacity(0.12),
+              color: _cyan.withOpacity(0.06),
               borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(11)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.gpp_bad_rounded,
-                    size: 14, color: _redIcon),
+                const Icon(Icons.info_outline_rounded,
+                    size: 14, color: _cyan),
                 const SizedBox(width: 8),
                 Text(
                   _localLang == 'es'
                       ? 'AVISO IMPORTANTE — LEA ANTES DE CONTINUAR'
                       : 'AVISO IMPORTANTE — LEIA ANTES DE CONTINUAR',
                   style: const TextStyle(
-                    color: _redText,
+                    color: _cyan,
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
@@ -621,28 +612,28 @@ class _ProfessionalDeclarationModalState
             ),
           ),
 
-          // Texto principal do disclaimer — bold para ênfase, sem underline
+          // Texto principal do disclaimer — white70, height 1.65
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
             child: Text(
               _s.disclaimerMain,
               style: const TextStyle(
-                color: _textPri,
+                color: _textSec,
                 fontSize: 13.5,
                 height: 1.65,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 decoration: TextDecoration.none,
               ),
             ),
           ),
 
-          // Divisor
+          // Divisor translúcido
           Container(
             height: 1,
-            color: _redBorder.withOpacity(0.20),
+            color: _border,
           ),
 
-          // Bullets de reforço
+          // Bullets — chevron cyan
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
             child: Column(
@@ -654,11 +645,11 @@ class _ProfessionalDeclarationModalState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(top: 4),
-                        child: Icon(Icons.remove_circle_outline_rounded,
-                            size: 13, color: _redText),
+                        padding: EdgeInsets.only(top: 3),
+                        child: Icon(Icons.chevron_right_rounded,
+                            size: 15, color: _cyan),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           item,
@@ -701,7 +692,7 @@ class _ProfessionalDeclarationModalState
           ),
           const SizedBox(height: 10),
 
-          // Radio chips — fundo branco, borda verde quando selecionado
+          // Radio chips — flat dark, cyan quando selecionado
           // P-6 FIX: minHeight 48px — Apple HIG 44px tap target compliance
           ...List.generate(_s.categories.length, (i) {
             final cat = _s.categories[i];
@@ -717,12 +708,12 @@ class _ProfessionalDeclarationModalState
                     horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: selected
-                      ? _green.withOpacity(0.06)
-                      : Colors.white,
+                      ? _cyan.withOpacity(0.08)
+                      : _surface,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected
-                        ? _greenLt.withOpacity(0.80)
+                        ? _cyan.withOpacity(0.50)
                         : _border,
                     width: selected ? 1.5 : 1,
                   ),
@@ -736,15 +727,15 @@ class _ProfessionalDeclarationModalState
                       height: 20,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: selected ? _green : Colors.transparent,
+                        color: selected ? _cyan : Colors.transparent,
                         border: Border.all(
-                          color: selected ? _green : _textHint,
+                          color: selected ? _cyan : _textHint,
                           width: 1.5,
                         ),
                       ),
                       child: selected
                           ? const Icon(Icons.check_rounded,
-                              size: 13, color: Colors.white)
+                              size: 13, color: Color(0xFF121418))
                           : null,
                     ),
                     const SizedBox(width: 12),
@@ -769,7 +760,7 @@ class _ProfessionalDeclarationModalState
 
           const SizedBox(height: 16),
 
-          // Checkbox de consentimento
+          // Checkbox de consentimento — dark, cyan fill
           // P-6 FIX: minHeight 48px — Apple HIG tap target compliance
           GestureDetector(
             onTap: () => setState(() => _checked = !_checked),
@@ -779,12 +770,12 @@ class _ProfessionalDeclarationModalState
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: _checked
-                    ? _green.withOpacity(0.06)
-                    : Colors.white,
+                    ? _cyan.withOpacity(0.08)
+                    : _surface,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _checked
-                      ? _greenLt.withOpacity(0.75)
+                      ? _cyan.withOpacity(0.50)
                       : _border,
                   width: _checked ? 1.5 : 1,
                 ),
@@ -798,16 +789,16 @@ class _ProfessionalDeclarationModalState
                     width: 22,
                     height: 22,
                     decoration: BoxDecoration(
-                      color: _checked ? _green : Colors.transparent,
+                      color: _checked ? _cyan : Colors.transparent,
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(
-                        color: _checked ? _green : _textHint,
+                        color: _checked ? _cyan : _textHint,
                         width: 1.5,
                       ),
                     ),
                     child: _checked
                         ? const Icon(Icons.check_rounded,
-                            size: 15, color: Colors.white)
+                            size: 15, color: Color(0xFF121418))
                         : null,
                   ),
                   const SizedBox(width: 12),
@@ -859,26 +850,25 @@ class _ProfessionalDeclarationModalState
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
       child: Column(
         children: [
-          // Nota legal — sem underline, sem fundo ouro escuro
+          // Nota legal — dark surface, translucent border
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
             margin: const EdgeInsets.only(bottom: 14),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
+              color: _surface,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                  color: const Color(0xFFD0D0D0), width: 1),
+              border: Border.all(color: _border, width: 1),
             ),
             child: Row(
               children: [
                 const Icon(Icons.lock_outline_rounded,
-                    size: 13, color: Color(0xFF888888)),
+                    size: 13, color: _textHint),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     _s.legalNote,
                     style: const TextStyle(
-                      color: Color(0xFF555555),
+                      color: _textSec,
                       fontSize: 11.5,
                       height: 1.4,
                       decoration: TextDecoration.none,
@@ -889,26 +879,19 @@ class _ProfessionalDeclarationModalState
             ),
           ),
 
-          // Botão principal
+          // Botão principal — solid cyan / gray disabled
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             width: double.infinity,
             height: 52,
             decoration: BoxDecoration(
-              gradient: enabled
-                  ? const LinearGradient(
-                      colors: [Color(0xFF075f45), Color(0xFF0D8A65)],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    )
-                  : null,
-              color: enabled ? null : _disabled,
+              color: enabled ? _cyan : _disabled,
               borderRadius: BorderRadius.circular(12),
               boxShadow: enabled
                   ? [
                       BoxShadow(
-                        color: _green.withOpacity(0.30),
-                        blurRadius: 12,
+                        color: _cyan.withOpacity(0.25),
+                        blurRadius: 14,
                         offset: const Offset(0, 4),
                       ),
                     ]
@@ -926,7 +909,7 @@ class _ProfessionalDeclarationModalState
                           height: 22,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: Color(0xFF121418),
                           ),
                         )
                       : Row(
@@ -938,7 +921,7 @@ class _ProfessionalDeclarationModalState
                                   : Icons.lock_rounded,
                               size: 18,
                               color: enabled
-                                  ? Colors.white
+                                  ? const Color(0xFF121418)
                                   : _textHint,
                             ),
                             const SizedBox(width: 8),
@@ -946,7 +929,7 @@ class _ProfessionalDeclarationModalState
                               _s.button,
                               style: TextStyle(
                                 color: enabled
-                                    ? Colors.white
+                                    ? const Color(0xFF121418)
                                     : _textHint,
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
@@ -976,6 +959,7 @@ class _ProfessionalDeclarationModalState
                 decoration: TextDecoration.none,
               ),
             ),
+            const SizedBox(height: 6),
           ],
         ],
       ),

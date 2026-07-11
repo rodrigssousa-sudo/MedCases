@@ -67,6 +67,9 @@ const List<CalcShortcut> kAvailableCalcs = [
   CalcShortcut(id: 'calc_referencia',  labelPt: 'Referência',    labelEs: 'Referencia',     icon: Icons.menu_book_outlined,        color: Color(0xFF10B981)),
   CalcShortcut(id: 'calc_prescricoes', labelPt: 'Prescrições',   labelEs: 'Prescripciones', icon: Icons.receipt_long_outlined,     color: Color(0xFFC5A365)),
   CalcShortcut(id: 'calc_pediatria',   labelPt: 'Pediatria',     labelEs: 'Pediatría',      icon: Icons.child_care_outlined,       color: Color(0xFFEC4899)),
+  // BUILD 431: Atalhos diretos para Nefrologia e Hepatologia
+  CalcShortcut(id: 'calc_nefrologia',  labelPt: 'Nefrologia',    labelEs: 'Nefrología',     icon: Icons.layers_outlined,           color: Color(0xFF00E5FF)),
+  CalcShortcut(id: 'calc_hepatologia', labelPt: 'Hepatologia',   labelEs: 'Hepatología',    icon: Icons.biotech_outlined,          color: Color(0xFF00E5FF)),
 ];
 
 /// IDs de calculadoras proibidas por Apple Guideline 1.4.1 + regulatório:
@@ -613,12 +616,12 @@ class _PlantaoHeader extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Fix#8 — ATALHOS RÁPIDOS MI GUARDIA (REFERENCIAS · CARDIO · ELECTROLITOS)
+// BUILD 431: ATALHOS RÁPIDOS MI GUARDIA (CARDIO · NEFROLOGÍA · HEPATOLOGÍA)
 // Row de 3 mini-cards sempre visível dentro do header do plantão.
 // Cada card navega diretamente para a sub-aba correspondente em Ferramentas:
-//   • REFERENCIAS  → toolsScreenTabNotifier(3) + onTabChange(4)
 //   • CARDIO       → toolsScreenTabNotifier(1) + onTabChange(4)
-//   • ELECTROLITOS → toolsScreenTabNotifier(2) + onTabChange(4)
+//   • NEFROLOGÍA   → toolsScreenTabNotifier(0) + onTabChange(4)
+//   • HEPATOLOGÍA  → toolsScreenTabNotifier(3) + onTabChange(4)
 // 100% AppColors adaptive — sem cor hardcoded.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -631,26 +634,24 @@ class _GuardiaShortcutsRow extends StatelessWidget {
     required this.onOpenCalc,
   });
 
-  // Fix#8: Os 3 atalhos fixos — REFERENCIAS, CARDIO, ELECTROLITOS
+  // BUILD 431: Os 3 atalhos fixos — CARDIO, NEFROLOGÍA, HEPATOLOGÍA
   // IDs mapeados em home_screen.dart → calcTabMap:
-  //   calc_referencia  → toolsScreenTabNotifier.value = 3 (Referências)
   //   calc_cardio      → toolsScreenTabNotifier.value = 1 (Cardio)
-  //   calc_eletrólitos → toolsScreenTabNotifier.value = 2 (Eletrólitos)
+  //   calc_nefrologia  → toolsScreenTabNotifier.value = 0 (Nefrologia)
+  //   calc_hepatologia → toolsScreenTabNotifier.value = 3 (Hepatologia)
   static const _kShortcutIds = [
-    'calc_referencia',
     'calc_cardio',
-    'calc_eletrólitos',
+    'calc_nefrologia',
+    'calc_hepatologia',
   ];
 
-  // Fix#9 — IDs que NÃO devem aparecer em _PinnedCalcsGrid pois já são
-  // cobertos pelo _GuardiaShortcutsRow acima. Inclui 'calc_scores' porque
-  // o usuário pode tê-lo pinado e ele mapeia para a mesma aba (Biometria/0)
-  // que seria redundante com os atalhos fixos visíveis.
+  // BUILD 431 — IDs que NÃO devem aparecer em _PinnedCalcsGrid pois já são
+  // cobertos pelo _GuardiaShortcutsRow acima.
   // Exposto como Set estático para ser consultado por _PlantaoContent.
   static const kFixedShortcutIds = <String>{
-    'calc_referencia',
     'calc_cardio',
-    'calc_eletrólitos',
+    'calc_nefrologia',
+    'calc_hepatologia',
     'calc_scores', // mapeia para tab 0 — coberto pelo contexto geral
   };
 
