@@ -936,8 +936,20 @@ class AppProvider extends ChangeNotifier {
 
       // Meu Plantão — carregamento local por uid
       _pinnedDrugIds = p.getStringList(_k('pinnedDrugs', uid)) ?? [];
-      _pinnedCalcIds = p.getStringList(_k('pinnedCalcs', uid))
-          ?? ['calc_scores', 'calc_cardio', 'calc_eletrólitos', 'calc_infusao'];
+
+      // BUILD 443 [P2]: default limpo — sem IDs proibidos pelo regulatório/Apple.
+      // IDs removidos do default: 'calc_eletrólitos', 'calc_infusao'.
+      // Default anterior (pré-BUILD 443): ['calc_scores','calc_cardio','calc_eletrólitos','calc_infusao']
+      const _kForbiddenPinnedCalcIds = {'calc_eletrólitos', 'calc_infusao'};
+      final rawPinnedCalcs = p.getStringList(_k('pinnedCalcs', uid))
+          ?? ['calc_scores', 'calc_cardio'];
+
+      // BUILD 443 [P2]: migração de startup — purga IDs proibidos de qualquer
+      // lista persistida anteriormente (usuários que tinham o default antigo).
+      // Executada a cada boot para garantir estado limpo após atualizações.
+      _pinnedCalcIds = rawPinnedCalcs
+          .where((id) => !_kForbiddenPinnedCalcIds.contains(id))
+          .toList();
       _plantaoPatients = (p.getStringList(_k('plantaoPatients', uid)) ?? [])
           .map(PlantaoPatient.fromRaw)
           .whereType<PlantaoPatient>()

@@ -2976,6 +2976,10 @@ class _PinnedCalcsGrid extends StatelessWidget {
           children: [
             for (final id in safeIds)
               Builder(builder: (_) {
+                // BUILD 443 [P2]: guard explícito belt-and-suspenders dentro do loop.
+                // Impede renderização de qualquer ID proibido mesmo que safeIds
+                // contenha um ID que passou pelo filtro upstream por algum motivo.
+                if (_kForbiddenCalcIds.contains(id)) return const SizedBox.shrink();
                 final shortcut = calcById(id);
                 if (shortcut == null) return const SizedBox.shrink();
                 return SizedBox(
@@ -3023,6 +3027,8 @@ class _PinnedCalcsRow extends StatelessWidget {
         itemCount: safeIds.length,
         separatorBuilder: (_, __) => const SizedBox(width: 10),
         itemBuilder: (_, i) {
+          // BUILD 443 [P2]: guard explícito belt-and-suspenders no itemBuilder.
+          if (_kForbiddenCalcIds.contains(safeIds[i])) return const SizedBox.shrink();
           final shortcut = calcById(safeIds[i]);
           if (shortcut == null) return const SizedBox.shrink();
           return _CalcPinnedCard(

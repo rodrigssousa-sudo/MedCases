@@ -524,12 +524,16 @@ class _HomeScreenState extends State<HomeScreen> {
               isEs: isEs,
               onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
               onOpenCalc: (calcId) {
+                // BUILD 443 [P2]: removidos calc_eletrólitos e calc_infusao do mapa
+                // (IDs proibidos — nunca renderizados, entradas mortas purgadas).
                 const calcTabMap = {
-                  'calc_biometria': 0, 'calc_scores': 0, 'calc_cardio': 1,
-                  'calc_eletrólitos': 2, 'calc_infusao': 0,
-                  'calc_referencia': 3, 'calc_prescricoes': 0,
-                  'calc_pediatria': 0, // fallback → BIOMETRIA
-                  // BUILD 431: novos atalhos diretos Nefrologia + Hepatologia
+                  'calc_biometria':   0,
+                  'calc_scores':      0,
+                  'calc_cardio':      1,
+                  'calc_referencia':  3,
+                  'calc_prescricoes': 0,
+                  'calc_pediatria':   0,
+                  // BUILD 431: atalhos diretos Nefrologia + Hepatologia
                   'calc_nefrologia':  0, // tab 0 = NephrologyToolsScreen
                   'calc_hepatologia': 3, // tab 3 = HepatologyToolsScreen
                 };
@@ -1357,26 +1361,49 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
             errStr.contains('permission_denied') ||
             errStr.contains('missing or insufficient permissions');
         if (isPermissionDenied) {
-          // BUILD 442 [P1]: RESOLUÇÃO FORÇADA — sessão vazia, chat desbloqueado.
-          // Tenta ler chave anônima como último recurso (sessões pré-login).
-          debugPrint('[BUILD442][HomeInlineChat] PERMISSION_DENIED uid=$uid '
-              '→ resolvendo sessão vazia + desbloqueando chat');
-          final anonKey = 'anon_$_kHistKey';
-          final rawAnon = prefs.getString(anonKey);
-          if (rawAnon != null && rawAnon.isNotEmpty && _messages.isEmpty && mounted) {
-            debugPrint('[BUILD442][HomeInlineChat] anon_rescue uid=$uid '
-                'raw_len=${rawAnon.length}');
-            _restoreMessagesFromRaw(rawAnon, uid);
-            // _restoreMessagesFromRaw já seta _lastLoadedUid e _lastLoadWasEmpty=false
-          } else {
-            // Cache completamente vazio — sessão nova, nada a restaurar.
-            // CRÍTICO: _lastLoadWasEmpty=false para travar o UID guard e parar retries.
-            _lastLoadedUid    = uid;
-            _lastLoadWasEmpty = false; // ← trava o loop; chat liberado para digitação
-            if (mounted) setState(() {}); // garante rebuild do campo de texto
-            debugPrint('[BUILD442][HomeInlineChat] sessão_nova uid=$uid '
-                '→ chat 100% liberado, sem histórico anterior');
+          // BUILD 443 [P1]: PERMISSION_DENIED — FirebaseAuth.currentUser null no REST
+          // (DigitalOcean Web) faz Firestore rejeitar cronicamente no boot.
+          // Sequência de fallback local INCONDICIONAL — 3 chaves em cascata:
+          //   1. uid-specific key (re-read fresco): dados de sessões anteriores
+          //      gravados por _homePersistTurn (uid pode estar disponível via REST)
+          //   2. anon key: dados de sessão pré-login salva com uid='anon'
+          //   3. session nova vazia: chat 100% liberado, UID guard travado
+          debugPrint('[BUILD443][HomeInlineChat] PERMISSION_DENIED uid=$uid '
+              '→ cascata de fallback local 1→2→3');
+
+          // Fallback 1: re-leitura fresca da chave uid-specific
+          // (SharedPreferences pode ter sido atualizado por _homePersistTurn
+          //  entre a leitura inicial e este ponto — flush de plataforma)
+          if (!mounted) return;
+          final freshPrefs   = await SharedPreferences.getInstance();
+          final rawFreshUid  = freshPrefs.getString(histKey);
+          if (rawFreshUid != null && rawFreshUid.isNotEmpty && _messages.isEmpty) {
+            debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_1 uid=$uid '
+                'raw_len=${rawFreshUid.length} → uid-key fresh read');
+            _restoreMessagesFromRaw(rawFreshUid, uid);
+            return;
           }
+
+          // Fallback 2: chave anônima (sessões pré-login gravadas antes do OAuth)
+          final anonKey = 'anon_$_kHistKey';
+          final rawAnon = freshPrefs.getString(anonKey);
+          if (rawAnon != null && rawAnon.isNotEmpty && _messages.isEmpty && mounted) {
+            debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_2 uid=$uid '
+                'raw_len=${rawAnon.length} → anon-key rescue');
+            _restoreMessagesFromRaw(rawAnon, uid);
+            return;
+          }
+
+          // Fallback 3: sessão nova completamente vazia.
+          // CRÍTICO: _lastLoadWasEmpty=false trava o UID guard e para o loop morto.
+          // O campo de input fica 100% liberado para digitação imediata.
+          // Toda nova mensagem enviada será salva síncronamente (await) via
+          // _homePersistTurn() ANTES da chamada Firestore — histórico sobrevive local.
+          _lastLoadedUid    = uid;
+          _lastLoadWasEmpty = false; // ← engaja trava; sem mais retries até OAuth
+          if (mounted) setState(() {}); // força rebuild do campo de texto
+          debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_3 uid=$uid '
+              '→ sessão nova vazia, chat 100% liberado');
           return;
         }
         debugPrint('[BUILD442][HomeInlineChat] loadHistories error (non-perm): $e uid=$uid');
