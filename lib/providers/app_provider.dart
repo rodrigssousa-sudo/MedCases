@@ -3842,14 +3842,22 @@ class AppProvider extends ChangeNotifier {
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
     bool completionFired = false;
 
-    // ── BUILD 432 / BUILD 437 [PASSO 4]: Auto-Retry Engine ───────────────────
-    // Intercepta resposta vazia (len=0 / finalText.isEmpty) ANTES de mostrar
-    // erro ao usuário. Sequência:
+    // ── BUILD 432 / BUILD 437 / BUILD 440-MASTER-SHIELD [P1 + P2] ────────────
+    // AUTO-RETRY ENGINE — Intercepta resposta vazia (len=0 / finalText.isEmpty)
+    // ANTES de mostrar erro ao usuário. Sequência:
     //   1. Stream fecha com acumulador vazio (soluço de rede ou timeout parcial)
     //   2. _freeStreamRetryCount < 1 → re-inicia stream Free via AiGatewayService
     //   3. UI permanece em _thinking=true (EcgLoadingBlock) — retry invisível
     //   4. Se retry também vazio → escala para tryPaidFallback() (Layer 2/3)
     // Máx: 1 retry silencioso por requisição.
+    //
+    // BUILD 440 [P2] — THREADTOPIC ISOLATION GUARD:
+    // O retry (linhas abaixo) re-usa os valores capturados ANTES do início do
+    // stream: `input`, `systemPrompt`, `geminiApiKey`, `_sanitizedHistory`.
+    // _threadManager.evaluate() NÃO é chamado novamente durante o retry —
+    // portanto o `activeTopic` permanece INALTERADO mesmo que o acumulador
+    // venha vazio ou corrompido. Fragmentos de texto parcial do stream falho
+    // nunca alcançam o ClinicalThreadManager. Isolamento garantido.
     int _freeStreamRetryCount = 0;
 
     // ── Build 226: requestId único para rastreamento ─────────────────────────

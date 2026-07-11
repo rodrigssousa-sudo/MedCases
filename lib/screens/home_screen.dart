@@ -1719,6 +1719,12 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     try {
       await p.sendAiMessage(
         text,
+        // BUILD 440-MASTER-SHIELD [P3]: Boot default Modo Estudo na HomeScreen.
+        // longResponse=true força CONTRACT_ESTUDO (resposta completa e acadêmica)
+        // como padrão para o mini-chat inline da Home. O Modo Plantão
+        // (longResponse=false / CONTRACT_PLANTAO) só é ativo na tela dedicada IA
+        // quando o médico altera o toggle manualmente.
+        longResponse: true,
         onChunk: (acc) {
           if (mounted) {
             // CAMADA 1 — Stream sanitizer: expurga metadados de cabeçalho antes
