@@ -1338,6 +1338,13 @@ class FirestoreService {
     //
     // BUILD 336-AUTH-RESILIENCE (PASSO 1): blindagem permission-denied.
     // permission-denied não deve bloquear o boot — fallback silencioso para [].
+    //
+    // BUILD 427-TOOLS-PERSISTENCE (PASSO 4 — Watchdog Hardening):
+    // permission-denied em Source.server → retorna [] IMEDIATAMENTE.
+    // NÃO tenta Source.cache como segundo round-trip — isso pode acumular
+    // latência e disparar o watchdog de 8 segundos (BUILD 313).
+    // Rationale: se o token não foi propagado, Source.cache também falha;
+    // se o usuário está offline, o timeout de 10s já cobre o caso.
     try {
       // Sem orderBy — evita índice composto. Ordenação em memória.
       final query = _userHistories(uid);
@@ -1350,21 +1357,31 @@ class FirestoreService {
             .timeout(const Duration(seconds: 10));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          // BUILD 336 PASSO 1: currentUser==null no Web — cache local como fallback
-          debugPrint('[BUILD336][FIRESTORE] loadHistories permission-denied '
-              'uid=$uid — tentando cache local');
+          // BUILD 427 PASSO 4: fast-fail instantâneo — sem segundo round-trip.
+          // Retorna [] antes de qualquer tentativa de cache para não acumular
+          // latência e disparar o watchdog de 8 s (BUILD 313).
+          debugPrint('[BUILD427][FIRESTORE] loadHistories permission-denied '
+              'uid=$uid — fast-fail instantâneo (sem cache retry)');
+          return [];
+        } else {
+          // Outros erros FirebaseException → tenta cache local como fallback
           try {
-            snap = await query.get(const GetOptions(source: Source.cache));
+            snap = await query
+                .get(const GetOptions(source: Source.cache))
+                .timeout(const Duration(seconds: 4));
           } catch (_) {
             return [];
           }
-        } else {
-          // Etapa 2: outros erros → fallback padrão
-          snap = await query.get();
         }
       } catch (_) {
-        // Etapa 2: fallback para cache local (modo offline)
-        snap = await query.get();
+        // Timeout / offline → fallback para cache local com timeout curto
+        try {
+          snap = await query
+              .get(const GetOptions(source: Source.cache))
+              .timeout(const Duration(seconds: 4));
+        } catch (_) {
+          return [];
+        }
       }
 
       final list = snap.docs
@@ -1373,7 +1390,7 @@ class FirestoreService {
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list;
     } on FirebaseException catch (e) {
-      debugPrint('[BUILD336][FIRESTORE] loadHistories FirebaseException '
+      debugPrint('[BUILD427][FIRESTORE] loadHistories FirebaseException '
           'code=${e.code} uid=$uid — retornando []');
       return [];
     } catch (_) {

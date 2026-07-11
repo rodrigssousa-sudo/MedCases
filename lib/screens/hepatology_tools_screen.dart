@@ -29,6 +29,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
+import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -105,6 +106,9 @@ class _HepatologyBodyState extends State<_HepatologyBody>
   bool  _hasMetastasis    = false;
   bool  _hasMacroInvasion = false;
 
+  // ── BUILD 427: Restore banner state
+  bool _showRestoreBanner = false;
+
   // ── Resultados e animação ─────────────────────────────────────────────────
   _HepResult? _result;
   String?     _errorMsg;
@@ -133,10 +137,56 @@ class _HepatologyBodyState extends State<_HepatologyBody>
     _astUlnCtrl.text = '40';
     _altUlnCtrl.text = '40';
     _faUlnCtrl.text  = '120';
+
+    // BUILD 427: verifica cache após o primeiro frame
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkRestoreCache());
+  }
+
+  // BUILD 427
+  void _checkRestoreCache() {
+    if (!mounted) return;
+    final p = context.read<AppProvider>();
+    if (p.toolsCacheHasData) setState(() => _showRestoreBanner = true);
+  }
+
+  void _restoreFromCache() {
+    final p = context.read<AppProvider>();
+    final cache = p.toolsInputCache;
+    setState(() {
+      if ((cache['edad']        ?? '').isNotEmpty) _ageCtrl.text   = cache['edad']!;
+      if ((cache['sodio']       ?? '').isNotEmpty) _naCtrl.text    = cache['sodio']!;
+      if ((cache['bilirrubina'] ?? '').isNotEmpty) _biliCtrl.text  = cache['bilirrubina']!;
+      if ((cache['creatinina']  ?? '').isNotEmpty) _creatCtrl.text = cache['creatinina']!;
+      if ((cache['inr']         ?? '').isNotEmpty) _inrCtrl.text   = cache['inr']!;
+      if ((cache['albumina']    ?? '').isNotEmpty) _albCtrl.text   = cache['albumina']!;
+      if ((cache['ast']         ?? '').isNotEmpty) _astCtrl.text   = cache['ast']!;
+      if ((cache['alt']         ?? '').isNotEmpty) _altCtrl.text   = cache['alt']!;
+      if ((cache['plaquetas']   ?? '').isNotEmpty) _platCtrl.text  = cache['plaquetas']!;
+      _showRestoreBanner = false;
+    });
+  }
+
+  void _discardCache() {
+    context.read<AppProvider>().clearToolsCache();
+    setState(() => _showRestoreBanner = false);
   }
 
   @override
   void dispose() {
+    // BUILD 427: salva todos os campos laboratoriais no cache antes de desmontar
+    try {
+      context.read<AppProvider>().saveToolsCache({
+        'edad':        _ageCtrl.text,
+        'sodio':       _naCtrl.text,
+        'bilirrubina': _biliCtrl.text,
+        'creatinina':  _creatCtrl.text,
+        'inr':         _inrCtrl.text,
+        'albumina':    _albCtrl.text,
+        'ast':         _astCtrl.text,
+        'alt':         _altCtrl.text,
+        'plaquetas':   _platCtrl.text,
+      });
+    } catch (_) {}
     _animCtrl.dispose();
     _ageCtrl.dispose();
     _naCtrl.dispose();
@@ -381,6 +431,17 @@ class _HepatologyBodyState extends State<_HepatologyBody>
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 4)),
+
+              // ── BUILD 427: Restore Banner ─────────────────────────────────
+              if (_showRestoreBanner)
+                SliverToBoxAdapter(
+                  child: ToolsRestoreBanner(
+                    isEs: isEs,
+                    dark: dark,
+                    onRestore: _restoreFromCache,
+                    onDiscard: _discardCache,
+                  ),
+                ),
 
               // ── Inputs ──────────────────────────────────────────────────
               SliverPadding(

@@ -22,6 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
+import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -245,6 +246,9 @@ class _CardioBodyState extends State<_CardioBody>
   final _qtCtrl     = TextEditingController();
   final _fcCtrl     = TextEditingController();
 
+  // ── BUILD 427: Restore banner state
+  bool _showRestoreBanner = false;
+
   // ── BUILD 426: Patient autofill ─────────────────────────────────────────────
   Future<void> _showPatientSelectionSheet(BuildContext context, AppProvider p) async {
     await showToolsPatientSelectionSheet(
@@ -306,10 +310,45 @@ class _CardioBodyState extends State<_CardioBody>
       begin: const Offset(0, 0.06),
       end:   Offset.zero,
     ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOutCubic));
+    // BUILD 427: verifica cache após o primeiro frame
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkRestoreCache());
+  }
+
+  // BUILD 427
+  void _checkRestoreCache() {
+    if (!mounted) return;
+    final p = context.read<AppProvider>();
+    if (p.toolsCacheHasData) setState(() => _showRestoreBanner = true);
+  }
+
+  void _restoreFromCache() {
+    final p = context.read<AppProvider>();
+    final cache = p.toolsInputCache;
+    setState(() {
+      if ((cache['edad'] ?? '').isNotEmpty) {
+        _ageCtrl.text = cache['edad']!;
+        final age = int.tryParse(cache['edad']!) ?? 0;
+        _agePlus65 = age >= 65;
+      }
+      _isFemale = (cache['sexo'] ?? '') == 'F';
+      _showRestoreBanner = false;
+    });
+  }
+
+  void _discardCache() {
+    context.read<AppProvider>().clearToolsCache();
+    setState(() => _showRestoreBanner = false);
   }
 
   @override
   void dispose() {
+    // BUILD 427: salva estado atual no cache antes de desmontar
+    try {
+      context.read<AppProvider>().saveToolsCache({
+        'edad': _ageCtrl.text,
+        'sexo': _isFemale ? 'F' : 'M',
+      });
+    } catch (_) {}
     _ageCtrl.dispose();
     _pasCtrl.dispose();
     _colCtrl.dispose();
@@ -450,6 +489,16 @@ class _CardioBodyState extends State<_CardioBody>
               },
             ),
             const SizedBox(height: 16),
+
+            // ── BUILD 427: Restore Banner ────────────────────────────────────
+            if (_showRestoreBanner)
+              ToolsRestoreBanner(
+                isEs: isEs,
+                dark: dark,
+                onRestore: _restoreFromCache,
+                onDiscard: _discardCache,
+              ),
+            if (_showRestoreBanner) const SizedBox(height: 4),
 
             // ── Input Section ───────────────────────────────────────────────
             _InputSection(

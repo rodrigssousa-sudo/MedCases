@@ -22,6 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
+import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -202,10 +203,41 @@ class _ElectroBodyState extends State<_ElectroBody>
       begin: const Offset(0, 0.06),
       end:   Offset.zero,
     ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOutCubic));
+    // BUILD 427: verifica cache após o primeiro frame
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkRestoreCache());
+  }
+
+  // BUILD 427
+  void _checkRestoreCache() {
+    if (!mounted) return;
+    final p = context.read<AppProvider>();
+    if (p.toolsCacheHasData) setState(() => _showRestoreBanner = true);
+  }
+
+  void _restoreFromCache() {
+    final p = context.read<AppProvider>();
+    final cache = p.toolsInputCache;
+    setState(() {
+      if ((cache['sodio']  ?? '').isNotEmpty) _naCtrl.text     = cache['sodio']!;
+      if ((cache['peso']   ?? '').isNotEmpty) _weightCtrl.text = cache['peso']!;
+      _showRestoreBanner = false;
+    });
+  }
+
+  void _discardCache() {
+    context.read<AppProvider>().clearToolsCache();
+    setState(() => _showRestoreBanner = false);
   }
 
   @override
   void dispose() {
+    // BUILD 427: salva estado atual no cache antes de desmontar
+    try {
+      context.read<AppProvider>().saveToolsCache({
+        'sodio': _naCtrl.text,
+        'peso':  _weightCtrl.text,
+      });
+    } catch (_) {}
     for (final c in [
       _phCtrl, _pco2Ctrl, _beCtrl,
       _naCtrl, _clCtrl, _hco3Ctrl, _glucCtrl,
@@ -216,6 +248,9 @@ class _ElectroBodyState extends State<_ElectroBody>
     _animCtrl.dispose();
     super.dispose();
   }
+
+  // ── BUILD 427: Restore banner state
+  bool _showRestoreBanner = false;
 
   // ── BUILD 426: Patient autofill ─────────────────────────────────────────────
   Future<void> _showPatientSelectionSheet(BuildContext context, AppProvider p) async {
@@ -354,6 +389,16 @@ class _ElectroBodyState extends State<_ElectroBody>
               },
             ),
             const SizedBox(height: 16),
+
+            // ── BUILD 427: Restore Banner ────────────────────────────────────
+            if (_showRestoreBanner)
+              ToolsRestoreBanner(
+                isEs: isEs,
+                dark: dark,
+                onRestore: _restoreFromCache,
+                onDiscard: _discardCache,
+              ),
+            if (_showRestoreBanner) const SizedBox(height: 4),
 
             // ── Bloco 1: GASOMETRIA ARTERIAL ───────────────────────────────
             _InputCard(

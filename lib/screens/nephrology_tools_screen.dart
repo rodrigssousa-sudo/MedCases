@@ -27,6 +27,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_provider.dart';
 import 'tools_patient_import.dart';
+import 'tools_restore_banner.dart';
 import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -97,6 +98,9 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   // ── Error message ──────────────────────────────────────────────────────────
   String? _errorMsg;
 
+  // ── BUILD 427: Restore banner state
+  bool _showRestoreBanner = false;
+
   // ── BUILD 426: Patient autofill ──────────────────────────────────────────────
   /// Abre o modal de seleção de paciente e faz autofill dos controllers demográficos.
   Future<void> _showPatientSelectionSheet(BuildContext context, AppProvider p) async {
@@ -141,10 +145,53 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       begin: const Offset(0, 0.06),
       end:   Offset.zero,
     ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOutCubic));
+    // BUILD 427: verifica cache após o primeiro frame
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkRestoreCache());
+  }
+
+  // BUILD 427: verifica se há dados em cache para oferecer restauração
+  void _checkRestoreCache() {
+    if (!mounted) return;
+    final p = context.read<AppProvider>();
+    if (p.toolsCacheHasData) {
+      setState(() => _showRestoreBanner = true);
+    }
+  }
+
+  // BUILD 427: restaura dados do cache nos controllers locais
+  void _restoreFromCache() {
+    final p = context.read<AppProvider>();
+    final cache = p.toolsInputCache;
+    setState(() {
+      if ((cache['edad']       ?? '').isNotEmpty) _ageCtrl.text      = cache['edad']!;
+      if ((cache['creatinina'] ?? '').isNotEmpty) _creatBaseCtrl.text = cache['creatinina']!;
+      if ((cache['sodio']      ?? '').isNotEmpty) _naSerumCtrl.text   = cache['sodio']!;
+      if ((cache['peso']       ?? '').isNotEmpty) _weightCtrl.text    = cache['peso']!;
+      _isFemale = (cache['sexo'] ?? '') == 'F';
+      _showRestoreBanner = false;
+    });
+  }
+
+  // BUILD 427: descarta cache e fecha banner
+  void _discardCache() {
+    final p = context.read<AppProvider>();
+    p.clearToolsCache();
+    setState(() => _showRestoreBanner = false);
   }
 
   @override
   void dispose() {
+    // BUILD 427: salva estado atual no cache antes de desmontar
+    try {
+      final p = context.read<AppProvider>();
+      p.saveToolsCache({
+        'edad':       _ageCtrl.text,
+        'creatinina': _creatBaseCtrl.text,
+        'sodio':      _naSerumCtrl.text,
+        'peso':       _weightCtrl.text,
+        'sexo':       _isFemale ? 'F' : 'M',
+      });
+    } catch (_) {}
     _animCtrl.dispose();
     _ageCtrl.dispose();
     _weightCtrl.dispose();
@@ -305,6 +352,17 @@ class _NephrologyBodyState extends State<_NephrologyBody>
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 4)),
+
+              // ── BUILD 427: Restore Banner ────────────────────────────────
+              if (_showRestoreBanner)
+                SliverToBoxAdapter(
+                  child: ToolsRestoreBanner(
+                    isEs: isEs,
+                    dark: dark,
+                    onRestore: _restoreFromCache,
+                    onDiscard: _discardCache,
+                  ),
+                ),
 
               // ── Inputs ────────────────────────────────────────────────────
               SliverPadding(

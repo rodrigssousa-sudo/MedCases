@@ -203,6 +203,57 @@ class AppProvider extends ChangeNotifier {
   // ── Estado — Pacientes do Plantão ─────────────────────────────────────────
   List<PlantaoPatient> _plantaoPatients = [];
 
+  // ── BUILD 427: Tools Input Cache (RAM-only, volátil por sessão) ───────────
+  // Persiste os valores dos inputs das 4 telas de ferramentas enquanto o médico
+  // navega entre abas. Desmontagem de uma tela salva aqui; remontagem oferece
+  // restauração via pop-up discreto. Sem persistência em disco — limpa ao fechar.
+  //
+  // Chaves canônicas (snake_case neutro, compartilhadas pelas 4 telas):
+  //   'edad'       — idade do paciente (string inteiro)
+  //   'sodio'      — sódio sérico mg/dL ou mEq/L
+  //   'creatinina' — creatinina sérica mg/dL
+  //   'bilirrubina'— bilirrubina total mg/dL
+  //   'inr'        — RNI / INR
+  //   'albumina'   — albumina g/dL
+  //   'ast'        — AST U/L
+  //   'alt'        — ALT U/L
+  //   'plaquetas'  — plaquetas ×10³/µL
+  //   'peso'       — peso corporal kg
+  //   'sexo'       — 'M' ou 'F'
+  final Map<String, String> toolsInputCache = {
+    'edad':        '',
+    'sodio':       '',
+    'creatinina':  '',
+    'bilirrubina': '',
+    'inr':         '',
+    'albumina':    '',
+    'ast':         '',
+    'alt':         '',
+    'plaquetas':   '',
+    'peso':        '',
+    'sexo':        '',
+  };
+
+  /// Retorna true se o cache contém pelo menos um campo clínico relevante preenchido.
+  bool get toolsCacheHasData {
+    const keys = ['edad', 'creatinina', 'bilirrubina', 'inr', 'albumina', 'ast', 'alt', 'plaquetas', 'sodio'];
+    return keys.any((k) => (toolsInputCache[k] ?? '').trim().isNotEmpty);
+  }
+
+  /// Salva um conjunto de valores no cache. Não notifica ouvintes (apenas RAM).
+  void saveToolsCache(Map<String, String> values) {
+    values.forEach((k, v) {
+      if (toolsInputCache.containsKey(k)) toolsInputCache[k] = v;
+    });
+  }
+
+  /// Limpa todos os campos do cache.
+  void clearToolsCache() {
+    for (final k in toolsInputCache.keys) {
+      toolsInputCache[k] = '';
+    }
+  }
+
   // ── Estado — Histórias Clínicas ───────────────────────────────────────────
   List<ClinicalHistoryModel> _myHistories = [];
   List<ClinicalHistoryModel> _publicHistories = [];
