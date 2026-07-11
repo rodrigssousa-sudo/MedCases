@@ -1840,14 +1840,52 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     final dark  = widget.dark;
     final isEs  = widget.isEs;
 
-    // SUPER ORDEM 11: sempre Dark Graphite — paridade total com AiScreen
-    const cardBg      = Color(0xFF1A1D23);
-    const borderColor = Color(0xFF2A2D35);
-    const fieldBg     = Color(0xFF252930);
-    final fieldBorder = Colors.white.withOpacity(0.10);
-    const textColor   = Colors.white;
-    final hintColor   = Colors.white.withOpacity(0.35);
-    const subText     = Color(0xFF6B8ABE);
+    // BUILD 436-LIGHT-CHAT-CARD: paleta adaptativa dark/light.
+    // Dark mode — graphite imersivo idêntico ao AiScreen (SUPER ORDEM 11):
+    //   cardBg=0xFF1A1D23, header=0xFF1E2330, border=0xFF2A2D35,
+    //   fieldBg=0xFF252930, text=white, hint=white35, subText=0xFF6B8ABE
+    // Light mode — superfície branca sofisticada compatível com design system:
+    //   cardBg=white, header=grey.shade50, border=grey.shade200,
+    //   fieldBg=grey.shade100, text=0xFF121418, hint=grey.600, subText=grey.600
+
+    // PASSO 1 — Contêiner / superfície
+    final Color cardBg      = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final Color headerBg    = dark ? const Color(0xFF1E2330) : Colors.grey.shade50;
+    final Color borderColor = dark ? const Color(0xFF2A2D35) : Colors.grey.shade200;
+    final Color headerDivider = dark ? const Color(0xFF2A2D35) : Colors.grey.shade200;
+
+    // PASSO 2 — Tipografia
+    final Color textColor = dark ? Colors.white : const Color(0xFF121418);
+    final Color hintColor = dark
+        ? Colors.white.withOpacity(0.35)
+        : Colors.grey.shade500;
+    final Color subText   = dark ? const Color(0xFF6B8ABE) : Colors.grey.shade600;
+
+    // PASSO 3 — Campo de entrada e botões de ação
+    final Color fieldBg     = dark ? const Color(0xFF252930) : Colors.grey.shade100;
+    final Color fieldBorder = dark
+        ? Colors.white.withOpacity(0.10)
+        : Colors.grey.shade300;
+    // Ícones dos botões de ação (histórico / novo chat)
+    final Color actionIconBg     = dark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.black.withOpacity(0.04);
+    final Color actionIconBorder = dark
+        ? Colors.white.withOpacity(0.10)
+        : Colors.black.withOpacity(0.08);
+    final Color actionIconColor  = dark
+        ? Colors.white.withOpacity(0.55)
+        : Colors.black.withOpacity(0.50);
+    // Botão de envio: disabled/vazio vs. active
+    final Color sendBtnDisabledBg = dark
+        ? const Color(0xFF1A2335)
+        : Colors.grey.shade200;
+    final Color sendBtnEmptyBg    = dark
+        ? Colors.white.withOpacity(0.10)
+        : Colors.grey.shade300;
+    final Color sendBtnEmptyIcon  = dark
+        ? Colors.white.withOpacity(0.35)
+        : Colors.black.withOpacity(0.35);
 
     final hasHistory  = _messages.isNotEmpty;
     final hasStream   = _thinking && _streaming.isNotEmpty;
@@ -1914,6 +1952,13 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           if (text == 'AUTH_REQUIRED' || text.isEmpty) return const SizedBox.shrink();
 
           if (isUser) {
+            // BUILD 436 [PASSO 1+2]: bolha do usuário adaptativa dark/light
+            final userBubbleBg = dark
+                ? const Color(0xFF0F2340)        // dark: azul-marinho imersivo
+                : const Color(0xFFEFF6FF);       // light: azul pastel suave
+            final userBubbleBorder = dark
+                ? _kAiBlueBord.withOpacity(0.25)
+                : const Color(0xFFBFDBFE);       // light: blue.shade200
             return Align(
               alignment: Alignment.centerRight,
               child: Container(
@@ -1921,12 +1966,12 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F2340),  // SUPER ORDEM 11: dark imersivo sempre
+                  color: userBubbleBg,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(14), topRight: Radius.circular(14),
                     bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
                   ),
-                  border: Border.all(color: _kAiBlueBord.withOpacity(0.25)),
+                  border: Border.all(color: userBubbleBorder),
                 ),
                 child: Text(text,
                   style: TextStyle(fontSize: 13, color: textColor, height: 1.45)),
@@ -1960,14 +2005,18 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // BUILD 436 [PASSO 2]: ícone placeholder adaptativo dark/light
               Icon(Icons.psychology_rounded, size: 32,
-                color: _kAiBlue.withOpacity(0.25)),
+                color: dark
+                    ? _kAiBlue.withOpacity(0.25)
+                    : Colors.grey.shade400),
               const SizedBox(height: 8),
               Text(
                 isEs
                     ? 'Haz tu pregunta clínica\no toca para abrir el chat completo'
                     : 'Faça sua pergunta clínica\nou toque para abrir o chat completo',
                 textAlign: TextAlign.center,
+                // subText já é adaptativo via paleta acima
                 style: TextStyle(fontSize: 12, color: subText, height: 1.5),
               ),
             ],
@@ -1976,19 +2025,20 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       );
     }
 
-    // SUPER ORDEM 11: Dark Graphite imersivo — paridade total com AiScreen
+    // BUILD 436: container adaptativo dark/light
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.all(Radius.circular(8)),  // ORDEM 45: mosaico
-        border: Border(
-          top:    BorderSide(color: borderColor, width: 1.2),
-          right:  BorderSide(color: borderColor, width: 1.2),
-          bottom: BorderSide(color: borderColor, width: 1.2),
-          left:   BorderSide(color: borderColor, width: 1.2),
-        ),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),  // ORDEM 45: mosaico
+        border: Border.all(color: borderColor, width: 1.2),
         boxShadow: [
-          BoxShadow(color: Color(0x40000000), blurRadius: 20, offset: Offset(0, 6)),
+          BoxShadow(
+            color: dark
+                ? const Color(0x40000000)
+                : const Color(0x14000000),  // sombra mais suave no light
+            blurRadius: dark ? 20 : 12,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
@@ -1997,15 +2047,16 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
         children: [
 
           // ── Header premium: ícone + MEDCASES IA + botão fechar + expandir ──
+          // BUILD 436: header adaptativo dark/light
           Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF1E2330),
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: headerBg,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
               border: Border(
-                bottom: BorderSide(color: Color(0xFF2A2D35), width: 0.5),
+                bottom: BorderSide(color: headerDivider, width: 0.5),
               ),
             ),
             padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
@@ -2038,15 +2089,17 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
+                          // BUILD 436 [PASSO 2]: título adaptativo dark/light
                           child: RichText(
-                            text: const TextSpan(
+                            text: TextSpan(
                               children: [
                                 TextSpan(
                                   text: 'MEDCASES',
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    // Dark: branco / Light: quase-preto sólido
+                                    color: dark ? Colors.white : const Color(0xFF121418),
                                     letterSpacing: 0.4,
                                   ),
                                 ),
@@ -2055,7 +2108,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFFD4AF37),
+                                    // Dourado médico nos dois modos — lido sobre branco ou grafite
+                                    color: const Color(0xFFD4AF37),
                                     letterSpacing: 0.4,
                                   ),
                                 ),
@@ -2069,6 +2123,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 ),
                 // ORDEM 34 — BOTÃO HISTÓRICO (era: fechar/limpar)
                 // BUILD 328 M3: 26→34px, icon 13→16px — alvo ergônomico
+                // BUILD 436 [PASSO 3]: ícones adaptados para dark/light
                 GestureDetector(
                   onTap: () {
                     AppHaptics.light(context);
@@ -2081,19 +2136,20 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     width: 34, height: 34,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
-                      color: Colors.white.withOpacity(0.06),
+                      color: actionIconBg,
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.10),
+                        color: actionIconBorder,
                         width: 0.8,
                       ),
                     ),
                     child: Icon(Icons.history_rounded, size: 16,
-                      color: Colors.white.withOpacity(0.55)),
+                      color: actionIconColor),
                   ),
                 ),
                 const SizedBox(width: 6),
                 // ORDEM 34 — BOTÃO NOVO CHAT / HARD RESET (era: expandir)
                 // BUILD 328 M3: 26→34px, icon 14→17px — alvo ergônomico
+                // BUILD 436 [PASSO 3]: ícones adaptados para dark/light
                 GestureDetector(
                   onTap: _thinking ? null : () {
                     AppHaptics.light(context);
@@ -2111,14 +2167,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                     width: 34, height: 34,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
-                      color: Colors.white.withOpacity(0.06),
+                      color: actionIconBg,
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.10),
+                        color: actionIconBorder,
                         width: 0.8,
                       ),
                     ),
                     child: Icon(Icons.add_rounded, size: 17,
-                      color: Colors.white.withOpacity(0.55)),
+                      color: actionIconColor),
                   ),
                 ),
               ],
@@ -2138,7 +2194,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
           const SizedBox(height: 10),
 
-          // ── Campo de entrada dark style ───────────────────────────────────
+          // ── Campo de entrada adaptativo dark/light (BUILD 436 PASSO 3) ─────
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: _ctrl,
             builder: (_, val, __) {
@@ -2153,6 +2209,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                 autocorrect: true,
                 enableSuggestions: true,
                 textCapitalization: TextCapitalization.sentences,
+                // BUILD 436 [PASSO 3]: texto digitado adapta dark/light
                 style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => _send(),
@@ -2160,8 +2217,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                   hintText: isEs
                       ? 'Sintomas, fármaco, protocolo…'
                       : 'Sintomas, fármaco, protocolo…',
+                  // BUILD 436 [PASSO 2+3]: hint e fundo adaptativos
                   hintStyle: TextStyle(fontSize: 14, color: hintColor),
-                  // Espaço à esquerda do texto / à direita antes do botão
                   contentPadding: const EdgeInsets.fromLTRB(18, 14, 6, 14),
                   // Borda arredondada estilo Gemini
                   enabledBorder: OutlineInputBorder(
@@ -2170,8 +2227,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(28),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF00E5FF),  // cyan MedCases IA on focus
+                    borderSide: BorderSide(
+                      // Dark: cyan MedCases IA / Light: azul sólido rico
+                      color: dark
+                          ? const Color(0xFF00E5FF)
+                          : const Color(0xFF1B6FD8),
                       width: 1.5,
                     ),
                   ),
@@ -2190,11 +2250,12 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                         width: 36, height: 36,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
+                          // BUILD 436 [PASSO 3]: botão send adaptativo
                           color: _thinking
-                              ? const Color(0xFF1A2335)  // dark send disabled
+                              ? sendBtnDisabledBg
                               : isEmpty
-                                  ? Colors.white.withOpacity(0.10)
-                                  : const Color(0xFF008CA4),  // teal MedCases IA
+                                  ? sendBtnEmptyBg
+                                  : const Color(0xFF008CA4), // teal MedCases IA (ambos modos)
                         ),
                         child: _thinking
                             ? const Padding(
@@ -2210,7 +2271,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
                                     ? Icons.open_in_full_rounded
                                     : Icons.arrow_upward_rounded,
                                 color: isEmpty
-                                    ? Colors.white.withOpacity(0.35)
+                                    ? sendBtnEmptyIcon
                                     : Colors.white,
                                 size: 17,
                               ),
