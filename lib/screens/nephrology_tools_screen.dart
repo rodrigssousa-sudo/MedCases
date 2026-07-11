@@ -176,28 +176,37 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     if (r == null) return;
     HapticFeedback.mediumImpact();
 
+    // BUILD 410-URL: payload completo para injeção na aba Dados do Paciente
+    // Chaves e tipos exatos exigidos pela Calculadora Web de produção.
     final payload = jsonEncode({
-      'idade':       int.tryParse(_ageCtrl.text.trim()) ?? 0,
-      'sexo':        _isFemale ? 'F' : 'M',
-      'peso':        _pd(_weightCtrl.text) ?? 0.0,
-      'creat_basal': _pd(_creatBaseCtrl.text) ?? 0.0,
-      'creat_atual': _pd(_creatCurrCtrl.text) ?? 0.0,
-      'ckd_epi':     r.ckdEpi,
-      'cockcroft':   r.cockcroft,
-      'kdigo':       r.kdigoStage,
-      'fena':        r.fena ?? 0.0,
+      'idade':        int.tryParse(_ageCtrl.text.trim()) ?? 0,
+      'sexo':         _isFemale ? 'F' : 'M',
+      'peso':         _pd(_weightCtrl.text)      ?? 0.0,
+      'altura':       _pd(_heightCtrl.text)      ?? 0.0,
+      'creat_basal':  _pd(_creatBaseCtrl.text)   ?? 0.0,
+      'creat_atual':  _pd(_creatCurrCtrl.text)   ?? 0.0,
+      'na_serico':    _pd(_naSerumCtrl.text)     ?? 0.0,
+      'na_urinario':  _pd(_naUrineCtrl.text)     ?? 0.0,
+      'kdigo':        r.kdigoStage,
+      'ckd_epi':      r.ckdEpi,
+      'cockcroft':    r.cockcroft,
     });
 
+    // BUILD 410-URL: URL base GitHub Pages + query string segura
+    const baseUrl =
+        'https://rodrigssousa-sudo.github.io/medcases-calculadora/';
+    final encodedPayload = Uri.encodeComponent(payload);
     final uri = Uri.parse(
-      'medcases://nefro-webview?payload=${Uri.encodeComponent(payload)}',
+      '$baseUrl?screen=patient_data&payload=$encodedPayload',
     );
-    if (!await launchUrl(uri, mode: LaunchMode.platformDefault)) {
+
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(widget.isEs
-                ? 'No se pudo abrir el módulo de conducta.'
-                : 'Não foi possível abrir o módulo de conduta.'),
+                ? 'No se pudo abrir el Soporte de Decisión Clínica.'
+                : 'Não foi possível abrir o Suporte de Decisão Clínica.'),
             backgroundColor: _kSurface,
           ),
         );
