@@ -529,7 +529,8 @@ class _PlantaoHeader extends StatelessWidget {
   final VoidCallback onHeaderTap;
   final VoidCallback onManageTap;
   final VoidCallback onAddPatient;
-  // Fix#8 — atalhos MI GUARDIA: REFERENCIAS · CARDIO · ELECTROLITOS
+  // BUILD 431/433/435: atalhos MI GUARDIA — CARDIO · NEFROLOGÍA · HEPATOLOGÍA
+  // Electrolitos removido (BUILD 433); 3 cards simétricos tri-cromáticos.
   final void Function(String calcId) onOpenCalc;
 
   const _PlantaoHeader({

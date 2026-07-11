@@ -1317,119 +1317,133 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     }
 
     _isLoadingHistory = true;
-    debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory START uid=$uid '
+    debugPrint('[BUILD441][HomeInlineChat] _loadChatHistory START uid=$uid '
         'lastWasEmpty=$_lastLoadWasEmpty');
 
     try {
       final prefs   = await SharedPreferences.getInstance();
       if (!mounted) return;
       final histKey = '${uid}_$_kHistKey';
-      final raw     = prefs.getString(histKey);
-      if (raw == null || raw.isEmpty) {
-        // BUILD 437 [PASSO 3]: se cache local vazio, tenta fetch direto Firestore
-        // (resiliência extra para o caso onde loadHistories() ainda não preencheu
-        // o SharedPreferences neste ciclo).
-        debugPrint('[BUILD437][HomeInlineChat] cache_empty uid=$uid '
-            '→ tentando loadHistories() Firestore direto');
-        try {
-          await context.read<AppProvider>().loadHistories();
-        } catch (e) {
-          debugPrint('[BUILD437][HomeInlineChat] loadHistories fallback error: $e');
-        }
-        // Tenta reler o cache após o fetch Firestore
-        if (!mounted) return;
-        final rawAfterFetch = (await SharedPreferences.getInstance()).getString(histKey);
-        if (rawAfterFetch == null || rawAfterFetch.isEmpty) {
-          _lastLoadedUid    = uid;
+
+      // ── LAYER 1: SharedPreferences local (sempre disponível, imune a Firestore) ──
+      // BUILD 441 [P1]: lê o cache local PRIMEIRO — sem depender do Firestore.
+      // Se o cache estiver preenchido (gravado por _homePersistTurn), restaura
+      // imediatamente. Só vai ao Firestore se o cache estiver vazio.
+      final raw = prefs.getString(histKey);
+      if (raw != null && raw.isNotEmpty) {
+        // Cache local encontrado — restaura sem tocar no Firestore
+        _lastLoadWasEmpty = false;
+        _restoreMessagesFromRaw(raw, uid);
+        return;
+      }
+
+      // ── LAYER 2: Firestore fetch (tentativa com captura de permission-denied) ──
+      // BUILD 441 [P1]: intercepta 'permission-denied' explicitamente e cai
+      // de volta para o cache local de sessão anônima sem abortar o ciclo.
+      debugPrint('[BUILD441][HomeInlineChat] cache_local_vazio uid=$uid '
+          '→ tentando loadHistories() Firestore direto');
+      bool firestoreOk = false;
+      try {
+        await context.read<AppProvider>().loadHistories();
+        firestoreOk = true;
+      } catch (e) {
+        final errStr = e.toString().toLowerCase();
+        if (errStr.contains('permission-denied') ||
+            errStr.contains('permission_denied') ||
+            errStr.contains('missing or insufficient permissions')) {
+          // BUILD 441: Firestore bloqueado por regra de segurança no servidor
+          // (DigitalOcean runtime sem autenticação inicializada ainda).
+          // NÃO aborta — ativa resgate imediato via SharedPreferences.
+          debugPrint('[BUILD441][HomeInlineChat] PERMISSION_DENIED no Firestore uid=$uid '
+              '→ ativando resgate local imediato');
           _lastLoadWasEmpty = true;
-          debugPrint('[BUILD437][HomeInlineChat] still_empty after Firestore fetch uid=$uid');
+          // Tenta ler chave anônima como último recurso (sessões pré-login)
+          final anonKey  = 'anon_$_kHistKey';
+          final rawAnon  = prefs.getString(anonKey);
+          if (rawAnon != null && rawAnon.isNotEmpty && _messages.isEmpty && mounted) {
+            debugPrint('[BUILD441][HomeInlineChat] anon_rescue uid=$uid '
+                'raw_len=${rawAnon.length}');
+            _restoreMessagesFromRaw(rawAnon, uid);
+          }
+          _lastLoadedUid = uid;
           return;
         }
-        // Cache populado pelo Firestore — continua o parsing abaixo
-        // (re-read raw via rawAfterFetch)
-        _lastLoadWasEmpty = false;
-        final rawToUse = rawAfterFetch;
-        List<dynamic> sessionsFb = [];
-        try {
-          final decoded = jsonDecode(rawToUse);
-          if (decoded is List) sessionsFb = decoded;
-        } catch (_) {}
-        if (sessionsFb.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
-        final latestFb = sessionsFb.first;
-        if (latestFb is! Map) { _lastLoadedUid = uid; return; }
-        final msgsFb = latestFb['messages'];
-        if (msgsFb is! List || msgsFb.isEmpty) { _lastLoadedUid = uid; return; }
-        final restoredFb = msgsFb
-            .whereType<Map>()
-            .map((m) => {
-                  'role':    m['role']?.toString() ?? 'unknown',
-                  'text':    m['text']?.toString() ?? '',
-                  'isError': false,
-                })
-            .where((m) => (m['text'] as String).isNotEmpty)
-            .toList();
-        if (restoredFb.isNotEmpty && _messages.isEmpty && mounted) {
-          setState(() {
-            _messages.addAll(restoredFb);
-            _sessionId = latestFb['id']?.toString();
-          });
-          debugPrint('[BUILD437][HomeInlineChat] RESTORED from Firestore '
-              '${restoredFb.length} msgs uid=$uid');
+        debugPrint('[BUILD441][HomeInlineChat] loadHistories error: $e uid=$uid');
+      }
+
+      // ── LAYER 3: re-lê SharedPreferences após fetch Firestore ─────────────
+      if (!mounted) return;
+      if (firestoreOk) {
+        final rawAfterFetch = (await SharedPreferences.getInstance()).getString(histKey);
+        if (rawAfterFetch == null || rawAfterFetch.isEmpty) {
+          // Firestore respondeu mas não havia histórico para este uid
+          _lastLoadedUid    = uid;
+          _lastLoadWasEmpty = true;
+          debugPrint('[BUILD441][HomeInlineChat] still_empty after Firestore fetch uid=$uid');
+          return;
         }
-        _lastLoadedUid = uid;
-        return;
-      }
-
-      List<dynamic> sessions = [];
-      try {
-        final decoded = jsonDecode(raw);
-        if (decoded is List) sessions = decoded;
-      } catch (_) {}
-
-      if (sessions.isEmpty || !mounted) {
-        _lastLoadedUid = uid;
-        return;
-      }
-
-      // Extrai a sessão mais recente (índice 0 = mais nova)
-      final latest = sessions.first;
-      if (latest is! Map) { _lastLoadedUid = uid; return; }
-      final msgs = latest['messages'];
-      if (msgs is! List || msgs.isEmpty) { _lastLoadedUid = uid; return; }
-
-      // Converte para o formato interno {role, text, isError}
-      final restored = msgs
-          .whereType<Map>()
-          .map((m) => {
-                'role':    m['role']?.toString() ?? 'unknown',
-                'text':    m['text']?.toString() ?? '',
-                'isError': false,
-              })
-          .where((m) => (m['text'] as String).isNotEmpty)
-          .toList();
-
-      if (restored.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
-
-      // Restaura apenas se _messages ainda estiver vazio (não sobrescreve sessão ativa)
-      if (_messages.isEmpty) {
-        setState(() {
-          _messages.addAll(restored);
-          _sessionId = latest['id']?.toString();
-        });
-        // BUILD 435 [PASSO 1]: restauração com sucesso → limpa flag de cache vazio
         _lastLoadWasEmpty = false;
-        debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory RESTORED '
-            '${restored.length} msgs session=${_sessionId ?? "?"} uid=$uid');
+        _restoreMessagesFromRaw(rawAfterFetch, uid);
       } else {
-        debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory skip_restore '
-            'reason=session_active uid=$uid');
+        // Firestore lançou erro não-permission-denied (ex: timeout de rede)
+        // Tenta o raw original — pode ter sido populado por tentativa anterior
+        _lastLoadedUid    = uid;
+        _lastLoadWasEmpty = true;
+        debugPrint('[BUILD441][HomeInlineChat] firestore_error_non_perm uid=$uid '
+            '→ marcando still_empty');
       }
-      _lastLoadedUid = uid;
     } catch (e) {
-      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
+      debugPrint('[BUILD441][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
     } finally {
       _isLoadingHistory = false;
     }
+  }
+
+  // ── BUILD 441: helper de parsing e restauração reutilizável ─────────────────
+  // Extrai a sessão mais recente de um JSON bruto e restaura _messages.
+  // Idempotente: só aplica setState se _messages ainda estiver vazio.
+  void _restoreMessagesFromRaw(String raw, String? uid) {
+    List<dynamic> sessions = [];
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is List) sessions = decoded;
+    } catch (_) {
+      debugPrint('[BUILD441][HomeInlineChat] JSON parse error uid=$uid');
+      _lastLoadedUid = uid;
+      return;
+    }
+    if (sessions.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
+
+    final latest = sessions.first;
+    if (latest is! Map) { _lastLoadedUid = uid; return; }
+    final msgs = latest['messages'];
+    if (msgs is! List || msgs.isEmpty) { _lastLoadedUid = uid; return; }
+
+    final restored = msgs
+        .whereType<Map>()
+        .map((m) => {
+              'role':    m['role']?.toString() ?? 'unknown',
+              'text':    m['text']?.toString() ?? '',
+              'isError': false,
+            })
+        .where((m) => (m['text'] as String).isNotEmpty)
+        .toList();
+
+    if (restored.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
+
+    if (_messages.isEmpty) {
+      setState(() {
+        _messages.addAll(restored);
+        _sessionId = latest['id']?.toString();
+      });
+      _lastLoadWasEmpty = false;
+      debugPrint('[BUILD441][HomeInlineChat] RESTORED '
+          '${restored.length} msgs session=${_sessionId ?? "?"} uid=$uid');
+    } else {
+      debugPrint('[BUILD441][HomeInlineChat] skip_restore '
+          'reason=session_active uid=$uid');
+    }
+    _lastLoadedUid = uid;
   }
 
   @override
@@ -1578,16 +1592,16 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       'messages': msgsPayload,
     };
 
-    // ── Write 1: Firestore (fire-and-forget, sem bloquear a UI) ─────────────
     final uid = p.currentUser?.uid;
-    if (uid != null && uid.isNotEmpty) {
-      FirestoreService.saveAiSession(uid, session).catchError((_) {});
-    }
 
-    // ── Write 2: SharedPreferences (offline cache, mesma chave da IA Tab) ───
+    // ── Write 1: SharedPreferences local — PRIORITÁRIO e SÍNCRONO ───────────
+    // BUILD 441 [P1]: ORDEM INVERTIDA vs. versões anteriores.
+    // O cache local é gravado ANTES do Firestore, garantindo que mesmo em
+    // cenários de 'permission-denied' no servidor (ex: DigitalOcean sem auth
+    // inicializada) o histórico já está disponível para _loadChatHistory().
+    // Esta gravação é AGUARDADA (await) — não é fire-and-forget.
     try {
-      final prefs = await SharedPreferences.getInstance();
-      // BUILD 295: re-verificar mounted após await — Safari pode ter desmontado
+      final prefs   = await SharedPreferences.getInstance();
       if (!mounted) return;
       final histKey = '${uid ?? 'anon'}_$_kHistKey';
       final existing = prefs.getString(histKey);
@@ -1595,7 +1609,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       if (existing != null && existing.isNotEmpty) {
         // BUILD 296: cast seguro — jsonDecode retorna dynamic; em Safari o tipo
         // JS pode não satisfazer 'as List' mas satisfaz 'as List<dynamic>'.
-        // Envolto em try/catch para nunca lançar mesmo com JSON malformado.
         try {
           final decoded = jsonDecode(existing);
           if (decoded is List) histList = decoded;
@@ -1608,7 +1621,28 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       // Mantém apenas as 10 sessões mais recentes (mesmo limite da IA Tab)
       if (histList.length > 10) histList = histList.sublist(0, 10);
       await prefs.setString(histKey, jsonEncode(histList));
-    } catch (_) {}
+      debugPrint('[BUILD441][HomeInlineChat] local_persist OK key=$histKey '
+          'sessions=${histList.length}');
+    } catch (e) {
+      debugPrint('[BUILD441][HomeInlineChat] local_persist ERROR $e');
+    }
+
+    // ── Write 2: Firestore (fire-and-forget, tolerante a permission-denied) ──
+    // BUILD 441 [P1]: Firestore é secundário — enviado após o cache local estar
+    // garantido. Erros de permission-denied são silenciados (logs apenas).
+    if (uid != null && uid.isNotEmpty) {
+      FirestoreService.saveAiSession(uid, session).catchError((e) {
+        final errStr = e.toString().toLowerCase();
+        if (errStr.contains('permission-denied') ||
+            errStr.contains('permission_denied') ||
+            errStr.contains('missing or insufficient permissions')) {
+          debugPrint('[BUILD441][HomeInlineChat] Firestore permission_denied '
+              '(local cache já salvo) uid=$uid');
+        } else {
+          debugPrint('[BUILD441][HomeInlineChat] Firestore saveAiSession error: $e');
+        }
+      });
+    }
   }
 
   /// Botão enviar — comportamento inteligente:
