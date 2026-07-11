@@ -2436,9 +2436,11 @@ class _AiScreenState extends State<AiScreen> {
 
     // BUILD 275: para usuários não-admin/não-master sem conexão, forçar badge
     // 'Desconectado' (vermelho) em vez de 'Conectar IA' — sinaliza que chat está bloqueado.
-    // Admin/master: sem forceDisconnected — exibe 'Conectado'/'Conectar IA' normalmente.
+    // BUILD 339-UI-DEBUGGER: isPrivilegedUser mantido para outros usos; forceDisconnectedLabel
+    // agora depende EXCLUSIVAMENTE de p.geminiConnected — Admin/Master passó pelo fluxo idêntico
+    // ao usuário comum, ativando _GoogleAuthBarrierCard + _DisconnectedInputLock para QA.
     final bool isPrivilegedUser = p.isAdmin || p.isMaster;
-    final bool forceDisconnectedLabel = !isPrivilegedUser && !isConnected;
+    final bool forceDisconnectedLabel = !p.geminiConnected;
 
     Widget chatList = ListView.builder(
             // ORDEM 54 M2: ValueKey(_chatEpoch) — quando _chatEpoch é incrementado
@@ -3251,7 +3253,7 @@ class _MobileAiActionBar extends StatelessWidget {
 
               // ── 1. BOTÃO DA ESQUERDA — POSIÇÃO ABSOLUTA, NUNCA SOBREPÕE O TÍTULO ──
               Positioned(
-                left: 12,
+                left: 17, // BUILD 339: +5px de respiro em relação à quina física
                 top: 0,
                 bottom: 0,
                 child: Align(
