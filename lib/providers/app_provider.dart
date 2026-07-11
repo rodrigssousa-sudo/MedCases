@@ -3842,11 +3842,14 @@ class AppProvider extends ChangeNotifier {
     // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
     bool completionFired = false;
 
-    // ── BUILD 432: Auto-Retry Engine — contador de retentativas silenciosas ──
-    // Máx 1 retry interno quando a resposta retornar vazia (len=0 / isEmpty).
-    // O UI permanece em _thinking=true com EcgLoadingBlock ativo durante o
-    // soluço de rede — o médico não percebe a retentativa.
-    // Após 1 retry sem sucesso, escala para tryPaidFallback() (Layer 2/3).
+    // ── BUILD 432 / BUILD 437 [PASSO 4]: Auto-Retry Engine ───────────────────
+    // Intercepta resposta vazia (len=0 / finalText.isEmpty) ANTES de mostrar
+    // erro ao usuário. Sequência:
+    //   1. Stream fecha com acumulador vazio (soluço de rede ou timeout parcial)
+    //   2. _freeStreamRetryCount < 1 → re-inicia stream Free via AiGatewayService
+    //   3. UI permanece em _thinking=true (EcgLoadingBlock) — retry invisível
+    //   4. Se retry também vazio → escala para tryPaidFallback() (Layer 2/3)
+    // Máx: 1 retry silencioso por requisição.
     int _freeStreamRetryCount = 0;
 
     // ── Build 226: requestId único para rastreamento ─────────────────────────

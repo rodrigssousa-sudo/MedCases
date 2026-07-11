@@ -546,6 +546,25 @@ class _PlantaoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // BUILD 437 [PASSO 1]: paleta adaptativa dark/light para _PlantaoHeader.
+    // Dark mode: kGoldLight (#FFE8A6) — dourado luminoso sobre grafite.
+    // Light mode: tons neutros foscos — sem neon amarelo sobre branco.
+    final bool dark = colors.dark;
+
+    // Título e ícone: dourado no dark, slate-900 fosco no light
+    final Color titleColor = dark ? kGoldLight : const Color(0xFF1E293B);
+
+    // Botão "+ Adicionar Paciente": borda e texto adaptativos
+    final Color btnBorderColor = dark
+        ? kGoldLight.withOpacity(0.55)
+        : Colors.grey.shade300;          // borda sutil, sem neon
+    final Color btnBg = dark
+        ? Colors.white.withOpacity(0.04)
+        : Colors.grey.shade50;           // fundo levemente destacado
+    final Color btnFgColor = dark
+        ? kGoldLight.withOpacity(0.9)
+        : const Color(0xFF374151);       // slate-700 fosco legível
+
     // CORREÇÃO 1: container intermediário removido — botão e atalhos ficam
     // diretamente sobre o fundo do card principal "MEU PLANTÃO", sem camada
     // cinza escura adicional com borda dourada redundante.
@@ -555,15 +574,15 @@ class _PlantaoHeader extends StatelessWidget {
         // ── Linha título: ícone pulso + label ──────────────────────────
         Row(
           children: [
-            const Icon(Icons.monitor_heart_outlined, size: 18, color: kGoldLight),
+            Icon(Icons.monitor_heart_outlined, size: 18, color: titleColor),
             const SizedBox(width: 8),
             Text(
               isEs ? 'MI GUARDIA' : 'MEU PLANTÃO',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 2.2,
-                color: kGoldLight,
+                color: titleColor,
               ),
             ),
           ],
@@ -582,16 +601,15 @@ class _PlantaoHeader extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: kGoldLight.withOpacity(0.55),
+                color: btnBorderColor,
                 width: 1.2,
               ),
-              color: Colors.white.withOpacity(0.04),
+              color: btnBg,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.add_rounded, size: 15,
-                    color: kGoldLight.withOpacity(0.9)),
+                Icon(Icons.add_rounded, size: 15, color: btnFgColor),
                 const SizedBox(width: 6),
                 Text(
                   isEs
@@ -600,7 +618,7 @@ class _PlantaoHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: kGoldLight.withOpacity(0.9),
+                    color: btnFgColor,
                     letterSpacing: 0.2,
                   ),
                 ),
@@ -612,7 +630,7 @@ class _PlantaoHeader extends StatelessWidget {
         // ── Fix#8 — Atalhos rápidos: CARDIO · NEFROLOGÍA · HEPATOLOGÍA ──
         // BUILD 435 [PASSO 3]: passa dark via colors.dark para paleta adaptativa
         const SizedBox(height: 12),
-        _GuardiaShortcutsRow(isEs: isEs, onOpenCalc: onOpenCalc, dark: colors.dark),
+        _GuardiaShortcutsRow(isEs: isEs, onOpenCalc: onOpenCalc, dark: dark),
       ],
     );
   }

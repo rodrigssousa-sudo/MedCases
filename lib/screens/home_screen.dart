@@ -1326,11 +1326,57 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       final histKey = '${uid}_$_kHistKey';
       final raw     = prefs.getString(histKey);
       if (raw == null || raw.isEmpty) {
+        // BUILD 437 [PASSO 3]: se cache local vazio, tenta fetch direto Firestore
+        // (resiliência extra para o caso onde loadHistories() ainda não preencheu
+        // o SharedPreferences neste ciclo).
+        debugPrint('[BUILD437][HomeInlineChat] cache_empty uid=$uid '
+            '→ tentando loadHistories() Firestore direto');
+        try {
+          await context.read<AppProvider>().loadHistories();
+        } catch (e) {
+          debugPrint('[BUILD437][HomeInlineChat] loadHistories fallback error: $e');
+        }
+        // Tenta reler o cache após o fetch Firestore
+        if (!mounted) return;
+        final rawAfterFetch = (await SharedPreferences.getInstance()).getString(histKey);
+        if (rawAfterFetch == null || rawAfterFetch.isEmpty) {
+          _lastLoadedUid    = uid;
+          _lastLoadWasEmpty = true;
+          debugPrint('[BUILD437][HomeInlineChat] still_empty after Firestore fetch uid=$uid');
+          return;
+        }
+        // Cache populado pelo Firestore — continua o parsing abaixo
+        // (re-read raw via rawAfterFetch)
+        _lastLoadWasEmpty = false;
+        final rawToUse = rawAfterFetch;
+        List<dynamic> sessionsFb = [];
+        try {
+          final decoded = jsonDecode(rawToUse);
+          if (decoded is List) sessionsFb = decoded;
+        } catch (_) {}
+        if (sessionsFb.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
+        final latestFb = sessionsFb.first;
+        if (latestFb is! Map) { _lastLoadedUid = uid; return; }
+        final msgsFb = latestFb['messages'];
+        if (msgsFb is! List || msgsFb.isEmpty) { _lastLoadedUid = uid; return; }
+        final restoredFb = msgsFb
+            .whereType<Map>()
+            .map((m) => {
+                  'role':    m['role']?.toString() ?? 'unknown',
+                  'text':    m['text']?.toString() ?? '',
+                  'isError': false,
+                })
+            .where((m) => (m['text'] as String).isNotEmpty)
+            .toList();
+        if (restoredFb.isNotEmpty && _messages.isEmpty && mounted) {
+          setState(() {
+            _messages.addAll(restoredFb);
+            _sessionId = latestFb['id']?.toString();
+          });
+          debugPrint('[BUILD437][HomeInlineChat] RESTORED from Firestore '
+              '${restoredFb.length} msgs uid=$uid');
+        }
         _lastLoadedUid = uid;
-        // BUILD 435 [PASSO 1]: marca cache vazio para permitir retry pós-OAuth
-        _lastLoadWasEmpty = true;
-        debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory done '
-            'reason=empty_cache uid=$uid (will retry on geminiConnected)');
         return;
       }
 
@@ -1393,17 +1439,38 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // o foco não é reclamado automaticamente.
     // Não chama _focus.unfocus() para não interferir com digitação ativa.
 
-    // BUILD 435 [PASSO 1]: detecta transição geminiConnected false→true.
+    // BUILD 437 [PASSO 3]: detecta transição geminiConnected false→true.
     // Indica que o OAuth concluiu e o SDK do Firestore absorveu as credenciais.
-    // Força re-fetch do histórico com delay de 400ms para garantir que o SDK
-    // já processou o token antes de tentar ler o Firestore.
+    //
+    // PROBLEMA CORRIGIDO: _loadChatHistory() apenas lê o SharedPreferences local,
+    // que pode estar vazio se o cache ainda não foi preenchido (boot com
+    // permission-denied temporário). Após o OAuth resolver, precisamos também
+    // acionar p.loadHistories() que faz fetch direto no Firestore + rebind do stream.
+    //
+    // SEQUÊNCIA:
+    //   1. _lastLoadedUid = null  → invalida trava de UID completa
+    //   2. _lastLoadWasEmpty = false → reseta flag de cache vazio
+    //   3. Delay 400ms → SDK Firestore absorve credenciais
+    //   4. p.loadHistories() → fetch direto no servidor + rebind stream reativo
+    //   5. _loadChatHistory() → relê SharedPreferences (agora preenchido pelo loadHistories)
     if (!old.geminiConnected && widget.geminiConnected) {
-      debugPrint('[BUILD435][HomeInlineChat] geminiConnected false→true '
-          'uid=${context.read<AppProvider>().currentUser?.uid ?? "null"} '
-          '→ agendando re-fetch de histórico em 400ms');
-      // Limpa a trava de UID para permitir retry mesmo com mesmo usuário
-      _lastLoadedUid = null;
-      Future.delayed(const Duration(milliseconds: 400), () {
+      AppProvider? pRef;
+      try { pRef = context.read<AppProvider>(); } catch (_) {}
+      debugPrint('[BUILD437][HomeInlineChat] geminiConnected false→true '
+          'uid=${pRef?.currentUser?.uid ?? "null"} '
+          '→ invalidando buffers + loadHistories + re-fetch em 400ms');
+      // Invalida TODA a trava para garantir fetch limpo pós-OAuth
+      _lastLoadedUid  = null;
+      _lastLoadWasEmpty = false;
+      Future.delayed(const Duration(milliseconds: 400), () async {
+        if (!mounted) return;
+        // Step 4: força fetch Firestore + rebind stream reativo
+        try {
+          await context.read<AppProvider>().loadHistories();
+        } catch (e) {
+          debugPrint('[BUILD437][HomeInlineChat] loadHistories error: $e');
+        }
+        // Step 5: relê SharedPreferences (agora populado pelo loadHistories)
         if (mounted) _loadChatHistory();
       });
       return; // evita disparo duplo no mesmo frame
@@ -3723,11 +3790,14 @@ class _HomeMiGuardiaSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardBg = dark ? const Color(0xFF252930) : Colors.white;
-    // Acento dourado na borda esquerda para sinalizar "item especial"
-    final leftAccent = dark ? const Color(0xFFC5A365) : const Color(0xFFB8954E);
+    // BUILD 437 [PASSO 1]: acento lateral adaptativo.
+    // Dark: dourado quente / Light: slate-400 sutil (sem neon amarelo sobre branco)
+    final leftAccent = dark ? const Color(0xFFC5A365) : Colors.grey.shade400;
+    // BUILD 437 [PASSO 1]: borda do card adaptativa.
+    // Dark: branco translúcido / Light: grey.shade300 (borda fina sutil premium)
     final border = dark
         ? Colors.white.withOpacity(0.07)
-        : const Color(0xFFE4EEE9);
+        : Colors.grey.shade300;
 
     return Container(
       decoration: BoxDecoration(
