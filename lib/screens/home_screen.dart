@@ -3166,7 +3166,7 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
                   Text(
                     widget.isEs
                         ? 'Cálculos y Fórmulas de Referencia'
-                        : 'Scores · Cardio · Eletrólitos · Referência',
+                        : 'Nefrologia · Cardio · Hepatologia',
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w500,
@@ -6558,8 +6558,8 @@ class _CalculadorasShell extends StatelessWidget {
           icon:    Icons.calculate_rounded,
           label:   'CALCULADORA CLÍNICA',
           subtitle: isEs
-              ? 'Nefrología · Cardio · Electrolitos · Hepatología'
-              : 'Nefrologia · Cardio · Eletrólitos · Hepatologia',
+              ? 'Nefrología · Cardio · Hepatología'
+              : 'Nefrologia · Cardio · Hepatologia',
         ),
         const Expanded(child: ToolsScreen(hideHeader: true)),
       ]),

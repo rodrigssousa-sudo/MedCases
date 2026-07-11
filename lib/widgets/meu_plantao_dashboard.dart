@@ -69,7 +69,8 @@ const List<CalcShortcut> kAvailableCalcs = [
   CalcShortcut(id: 'calc_pediatria',   labelPt: 'Pediatria',     labelEs: 'Pediatría',      icon: Icons.child_care_outlined,       color: Color(0xFFEC4899)),
   // BUILD 431: Atalhos diretos para Nefrologia e Hepatologia
   CalcShortcut(id: 'calc_nefrologia',  labelPt: 'Nefrologia',    labelEs: 'Nefrología',     icon: Icons.layers_outlined,           color: Color(0xFF00E5FF)),
-  CalcShortcut(id: 'calc_hepatologia', labelPt: 'Hepatologia',   labelEs: 'Hepatología',    icon: Icons.biotech_outlined,          color: Color(0xFF00E5FF)),
+  // BUILD 433: âmbar/ouro profundo — identidade cromática hepática exclusiva
+  CalcShortcut(id: 'calc_hepatologia', labelPt: 'Hepatologia',   labelEs: 'Hepatología',     icon: Icons.account_tree_outlined,     color: Color(0xFFF59E0B)),
 ];
 
 /// IDs de calculadoras proibidas por Apple Guideline 1.4.1 + regulatório:
