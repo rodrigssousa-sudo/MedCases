@@ -70,7 +70,8 @@ const List<CalcShortcut> kAvailableCalcs = [
   // BUILD 431: Atalhos diretos para Nefrologia e Hepatologia
   CalcShortcut(id: 'calc_nefrologia',  labelPt: 'Nefrologia',    labelEs: 'Nefrología',     icon: Icons.layers_outlined,           color: Color(0xFF00E5FF)),
   // BUILD 433: âmbar/ouro profundo — identidade cromática hepática exclusiva
-  CalcShortcut(id: 'calc_hepatologia', labelPt: 'Hepatologia',   labelEs: 'Hepatología',     icon: Icons.account_tree_outlined,     color: Color(0xFFF59E0B)),
+  // BUILD 435 [PASSO 2]: ícone layers_outlined — visualmente distinto de Nefrologia
+  CalcShortcut(id: 'calc_hepatologia', labelPt: 'Hepatologia',   labelEs: 'Hepatología',     icon: Icons.layers_outlined,           color: Color(0xFFF59E0B)),
 ];
 
 /// IDs de calculadoras proibidas por Apple Guideline 1.4.1 + regulatório:
@@ -608,9 +609,10 @@ class _PlantaoHeader extends StatelessWidget {
           ),
         ),
 
-        // ── Fix#8 — Atalhos rápidos: REFERENCIAS · CARDIO · ELECTROLITOS ──
+        // ── Fix#8 — Atalhos rápidos: CARDIO · NEFROLOGÍA · HEPATOLOGÍA ──
+        // BUILD 435 [PASSO 3]: passa dark via colors.dark para paleta adaptativa
         const SizedBox(height: 12),
-        _GuardiaShortcutsRow(isEs: isEs, onOpenCalc: onOpenCalc),
+        _GuardiaShortcutsRow(isEs: isEs, onOpenCalc: onOpenCalc, dark: colors.dark),
       ],
     );
   }
@@ -629,10 +631,13 @@ class _PlantaoHeader extends StatelessWidget {
 class _GuardiaShortcutsRow extends StatelessWidget {
   final bool isEs;
   final void Function(String calcId) onOpenCalc;
+  // BUILD 435 [PASSO 3]: dark flag para paleta pastel no light mode
+  final bool dark;
 
   const _GuardiaShortcutsRow({
     required this.isEs,
     required this.onOpenCalc,
+    required this.dark,
   });
 
   // BUILD 431: Os 3 atalhos fixos — CARDIO, NEFROLOGÍA, HEPATOLOGÍA
@@ -667,6 +672,8 @@ class _GuardiaShortcutsRow extends StatelessWidget {
               calcId: _kShortcutIds[i],
               isEs: isEs,
               onTap: () => onOpenCalc(_kShortcutIds[i]),
+              // BUILD 435 [PASSO 3]: repassa dark para paleta adaptativa
+              dark: dark,
             ),
           ),
         ],
@@ -681,11 +688,14 @@ class _GuardiaShortcutCard extends StatefulWidget {
   final String calcId;
   final bool isEs;
   final VoidCallback onTap;
+  // BUILD 435 [PASSO 3]: dark flag para paleta pastel no light mode
+  final bool dark;
 
   const _GuardiaShortcutCard({
     required this.calcId,
     required this.isEs,
     required this.onTap,
+    required this.dark,
   });
 
   @override
@@ -695,6 +705,15 @@ class _GuardiaShortcutCard extends StatefulWidget {
 class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
   bool _pressed = false;
 
+  // BUILD 435 [PASSO 3]: paleta pastel por card para light mode.
+  // Cada entrada: (bg, border, textIcon)
+  // Dark mode continua com color.withOpacity(0.12/0.30/1.0) — sem mudança.
+  static const _kLightPalette = <String, (Color, Color, Color)>{
+    'calc_cardio':      (Color(0xFFFFEBEE), Color(0xFFEF9A9A), Color(0xFF7F0000)), // red.shade50 / red.shade200 / red.shade900
+    'calc_nefrologia':  (Color(0xFFE3F2FD), Color(0xFF90CAF9), Color(0xFF0D47A1)), // blue.shade50 / blue.shade200 / blue.shade900
+    'calc_hepatologia': (Color(0xFFFFF8E1), Color(0xFFFFCC80), Color(0xFFE65100)), // amber.shade50 / orange.shade200 / orange.shade900
+  };
+
   @override
   Widget build(BuildContext context) {
     final shortcut = calcById(widget.calcId);
@@ -702,6 +721,31 @@ class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
 
     final label = widget.isEs ? shortcut.labelEs : shortcut.labelPt;
     final color = shortcut.color;
+
+    // BUILD 435 [PASSO 3]: paleta adaptativa dark/light
+    final Color bgColor;
+    final Color borderColor;
+    final Color fgColor; // ícone + texto
+
+    if (widget.dark) {
+      // Dark mode: neon tint suave — comportamento original
+      bgColor     = color.withOpacity(0.12);
+      borderColor = color.withOpacity(0.30);
+      fgColor     = color;
+    } else {
+      // Light mode: paleta pastel por card — legibilidade máxima
+      final pastel = _kLightPalette[widget.calcId];
+      if (pastel != null) {
+        bgColor     = pastel.$1;
+        borderColor = pastel.$2;
+        fgColor     = pastel.$3;
+      } else {
+        // Fallback para cards sem paleta definida (future-proof)
+        bgColor     = color.withOpacity(0.08);
+        borderColor = color.withOpacity(0.25);
+        fgColor     = color;
+      }
+    }
 
     return GestureDetector(
       onTap: () {
@@ -718,18 +762,17 @@ class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
           decoration: BoxDecoration(
-            // Fundo com leve tint da cor do atalho — funciona em dark e light
-            color: color.withOpacity(0.12),
+            color: bgColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: color.withOpacity(0.30),
+              color: borderColor,
               width: 1.1,
             ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(shortcut.icon, size: 20, color: color),
+              Icon(shortcut.icon, size: 20, color: fgColor),
               const SizedBox(height: 5),
               Text(
                 label.toUpperCase(),
@@ -740,7 +783,7 @@ class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
                   fontSize: 9.5,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.6,
-                  color: color,
+                  color: fgColor,
                 ),
               ),
             ],

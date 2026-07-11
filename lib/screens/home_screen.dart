@@ -1188,6 +1188,9 @@ class _HomeInlineChatGate extends StatelessWidget {
       dark: dark,
       isEs: isEs,
       onNavigateToAi: onNavigateToAi,
+      // BUILD 435 [PASSO 1]: passa geminiConnected para que didUpdateWidget
+      // detecte a transição false→true e force re-fetch do histórico pós-OAuth.
+      geminiConnected: geminiConnected,
     );
   }
 }
@@ -1201,11 +1204,14 @@ class _HomeInlineChat extends StatefulWidget {
   final bool dark;
   final bool isEs;
   final ValueChanged<int> onNavigateToAi;
+  // BUILD 435 [PASSO 1]: detecta transição false→true para re-fetch pós-OAuth
+  final bool geminiConnected;
 
   const _HomeInlineChat({
     required this.dark,
     required this.isEs,
     required this.onNavigateToAi,
+    required this.geminiConnected,
   });
 
   @override
@@ -1246,6 +1252,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   // UID do último carregamento bem-sucedido — evita re-fetch desnecessário
   // quando o widget rebuilda sem mudança de usuário.
   String? _lastLoadedUid;
+  // BUILD 435 [PASSO 1]: flag de cache vazio no boot.
+  // true  → última tentativa retornou vazio (permission-denied ou cache ocluído).
+  // Permite re-fetch quando geminiConnected transita false→true, mesmo que
+  // _lastLoadedUid já esteja setado para o mesmo UID.
+  bool _lastLoadWasEmpty = false;
 
   @override
   void initState() {
@@ -1295,15 +1306,19 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     }
 
     final uid = p.currentUser?.uid;
-    // Trava de UID: aborta se já carregamos para este usuário
-    if (uid == null || uid == _lastLoadedUid) {
-      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skipped '
-          'reason=${uid == null ? "no_uid" : "already_loaded_uid=$uid"}');
+    // BUILD 435 [PASSO 1]: trava de UID ampliada.
+    // Aborta somente se já carregamos COM SUCESSO (cache não estava vazio).
+    // Se _lastLoadWasEmpty == true, permite nova tentativa (post-OAuth retry).
+    if (uid == null || (uid == _lastLoadedUid && !_lastLoadWasEmpty)) {
+      debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory skipped '
+          'reason=${uid == null ? "no_uid" : "already_loaded_uid=$uid"} '
+          'lastWasEmpty=$_lastLoadWasEmpty');
       return;
     }
 
     _isLoadingHistory = true;
-    debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory START uid=$uid');
+    debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory START uid=$uid '
+        'lastWasEmpty=$_lastLoadWasEmpty');
 
     try {
       final prefs   = await SharedPreferences.getInstance();
@@ -1312,7 +1327,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       final raw     = prefs.getString(histKey);
       if (raw == null || raw.isEmpty) {
         _lastLoadedUid = uid;
-        debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory done reason=empty_cache uid=$uid');
+        // BUILD 435 [PASSO 1]: marca cache vazio para permitir retry pós-OAuth
+        _lastLoadWasEmpty = true;
+        debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory done '
+            'reason=empty_cache uid=$uid (will retry on geminiConnected)');
         return;
       }
 
@@ -1352,10 +1370,13 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
           _messages.addAll(restored);
           _sessionId = latest['id']?.toString();
         });
-        debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory RESTORED '
+        // BUILD 435 [PASSO 1]: restauração com sucesso → limpa flag de cache vazio
+        _lastLoadWasEmpty = false;
+        debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory RESTORED '
             '${restored.length} msgs session=${_sessionId ?? "?"} uid=$uid');
       } else {
-        debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skip_restore reason=session_active uid=$uid');
+        debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory skip_restore '
+            'reason=session_active uid=$uid');
       }
       _lastLoadedUid = uid;
     } catch (e) {
@@ -1371,6 +1392,22 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
     // Se qualquer prop mudou e o widget foi reconstruído, certificar que
     // o foco não é reclamado automaticamente.
     // Não chama _focus.unfocus() para não interferir com digitação ativa.
+
+    // BUILD 435 [PASSO 1]: detecta transição geminiConnected false→true.
+    // Indica que o OAuth concluiu e o SDK do Firestore absorveu as credenciais.
+    // Força re-fetch do histórico com delay de 400ms para garantir que o SDK
+    // já processou o token antes de tentar ler o Firestore.
+    if (!old.geminiConnected && widget.geminiConnected) {
+      debugPrint('[BUILD435][HomeInlineChat] geminiConnected false→true '
+          'uid=${context.read<AppProvider>().currentUser?.uid ?? "null"} '
+          '→ agendando re-fetch de histórico em 400ms');
+      // Limpa a trava de UID para permitir retry mesmo com mesmo usuário
+      _lastLoadedUid = null;
+      Future.delayed(const Duration(milliseconds: 400), () {
+        if (mounted) _loadChatHistory();
+      });
+      return; // evita disparo duplo no mesmo frame
+    }
 
     // BUILD 434 [PASSO 3]: re-dispara carregamento se o UID mudou (ex: troca
     // de conta sem logout completo). A trava _lastLoadedUid garante idempotência.
