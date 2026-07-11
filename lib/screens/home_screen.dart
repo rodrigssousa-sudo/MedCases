@@ -240,38 +240,15 @@ class _HomeScreenState extends State<HomeScreen> {
         //   3. AuthService.currentUser != null — FirebaseAuth SDK. Pode ser null
         //      no Safari por atraso do IndexedDB, mas ainda válido como confirmação.
         //
-        // BUILD 299: FirebaseRuntimeGuard.isUnavailable — guard absoluto via try/catch.
-        Builder(builder: (ctx) {
-          if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-            debugPrint('[BUILD299][HomeInlineChatParent] skipped reason=firebase_runtime_unavailable');
-            return const SizedBox.shrink();
-          }
-          // BUILD 298: lógica multi-fonte — qualquer fonte suficiente para render
-          final providerUser = p.currentUser; // fonte 1: AppProvider (primária)
-          final hasCachedTk  = AuthService.hasCachedToken; // fonte 2: token REST
-          final firebaseUser = AuthService.currentUser;    // fonte 3: SDK (pode ser null no Safari)
-          final bool hasSession = providerUser != null || hasCachedTk || firebaseUser != null;
-          if (kIsWeb && !hasSession) {
-            debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=no_session '
-                'provider=${providerUser?.uid ?? "null"} '
-                'cachedToken=$hasCachedTk '
-                'firebaseUser=${firebaseUser?.uid ?? "null"}');
-            return const SizedBox.shrink();
-          }
-          // Determina fonte para log diagnóstico
-          final String sessionSource = providerUser != null
-              ? 'provider'
-              : hasCachedTk
-                  ? 'cached_token'
-                  : 'firebase';
-          debugPrint('[BUILD298][HomeInlineChatParent] render_inline_chat=true source=$sessionSource '
-              'uid=${providerUser?.uid ?? firebaseUser?.uid ?? "n/a"}');
-          return _HomeInlineChat(
-            dark: dark,
-            isEs: isEs,
-            onNavigateToAi: widget.onTabChange,
-          );
-        }),
+        // BUILD 434 [PASSO 1]: substituído Builder + p.currentUser por
+        // _HomeInlineChatGate com context.select granular.
+        // Só rebuilda quando uid ou geminiConnected mudam — não em qualquer
+        // notifyListeners() do AppProvider durante boot.
+        _HomeInlineChatGate(
+          dark: dark,
+          isEs: isEs,
+          onNavigateToAi: widget.onTabChange,
+        ),
         const SizedBox(height: 14),
 
         // ── Timer Rápido de Plantão ───────────────────────────────────────
@@ -483,40 +460,13 @@ class _HomeScreenState extends State<HomeScreen> {
           // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
           // Azul MedCases IA após Build 138. O chat cresce naturalmente com
           // cada turno, empurrando os cards abaixo no scroll.
-          // BUILD 298: guard multi-fonte de sessão — mesmo lógica do desktop.
-          // Consulta AppProvider, token REST em cache e FirebaseAuth SDK.
-          // Oculta apenas quando NENHUMA fonte confirma sessão válida.
-          Builder(builder: (ctx) {
-            if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-              debugPrint('[BUILD299][HomeInlineChatParent] skipped reason=firebase_runtime_unavailable');
-              return const SizedBox.shrink();
-            }
-            // BUILD 298: lógica multi-fonte — qualquer fonte suficiente para render
-            final providerUser = p.currentUser; // fonte 1: AppProvider (primária)
-            final hasCachedTk  = AuthService.hasCachedToken; // fonte 2: token REST
-            final firebaseUser = AuthService.currentUser;    // fonte 3: SDK (pode ser null no Safari)
-            final bool hasSession = providerUser != null || hasCachedTk || firebaseUser != null;
-            if (kIsWeb && !hasSession) {
-              debugPrint('[BUILD298][HomeInlineChatParent] skipped reason=no_session '
-                  'provider=${providerUser?.uid ?? "null"} '
-                  'cachedToken=$hasCachedTk '
-                  'firebaseUser=${firebaseUser?.uid ?? "null"}');
-              return const SizedBox.shrink();
-            }
-            // Determina fonte para log diagnóstico
-            final String sessionSource = providerUser != null
-                ? 'provider'
-                : hasCachedTk
-                    ? 'cached_token'
-                    : 'firebase';
-            debugPrint('[BUILD298][HomeInlineChatParent] render_inline_chat=true source=$sessionSource '
-                'uid=${providerUser?.uid ?? firebaseUser?.uid ?? "n/a"}');
-            return _HomeInlineChat(
-              dark: dark,
-              isEs: isEs,
-              onNavigateToAi: widget.onTabChange,
-            );
-          }),
+          // BUILD 434 [PASSO 1]: substituído Builder + p.currentUser por
+          // _HomeInlineChatGate com context.select granular (mobile).
+          _HomeInlineChatGate(
+            dark: dark,
+            isEs: isEs,
+            onNavigateToAi: widget.onTabChange,
+          ),
           const SizedBox(height: 4),  // ORDEM 45: esmagamento soberano 8→4
 
           // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
@@ -1165,6 +1115,84 @@ class _SearchResultTile extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// BUILD 434-STATE-LOCK — PASSO 1: _HomeInlineChatGate
+//
+// Widget que decide se _HomeInlineChat deve ser montado, usando context.select
+// GRANULAR em vez de context.read/watch do AppProvider completo.
+//
+// PROBLEMA RESOLVIDO:
+//   Os Builders que referenciavam `p.currentUser` (onde `p` vinha do Builder
+//   pai via context.read) eram reconstruídos cada vez que _HomeScreenState
+//   rebuild era disparado por qualquer context.select (darkMode / lang).
+//   O boot do AppProvider dispara notifyListeners() 10+ vezes → select detecta
+//   mudanças pontuais → _HomeScreenState rebuilda → Builder rebuilda →
+//   _HomeInlineChatState.build() dispara → [BUILD298] loop visível nos logs.
+//
+// SOLUÇÃO:
+//   _HomeInlineChatGate é um StatelessWidget INDEPENDENTE com suas próprias
+//   subscriptions via context.select. Ela só rebuilda quando:
+//     • currentUid muda (login / logout)
+//     • geminiConnected muda (IA disponível / indisponível)
+//   Rebuilds causados por darkMode/lang/offlineProgress/pinnedDrugs/etc.
+//   NÃO chegam até _HomeInlineChatGate → _HomeInlineChatState.build()
+//   só dispara quando realmente necessário.
+// ═══════════════════════════════════════════════════════════════════════════════
+class _HomeInlineChatGate extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final ValueChanged<int> onNavigateToAi;
+
+  const _HomeInlineChatGate({
+    required this.dark,
+    required this.isEs,
+    required this.onNavigateToAi,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // BUILD 434 [PASSO 1]: guard absoluto Firebase — idêntico ao Builder anterior
+    if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint('[BUILD299][HomeInlineChatGate] skipped reason=firebase_runtime_unavailable');
+      return const SizedBox.shrink();
+    }
+
+    // BUILD 434 [PASSO 1]: seletores granulares — só rebuilda quando UID ou
+    // status de conexão mudam. Nunca rebuilda por offlineProgress / pinnedDrugs
+    // / lang (já tratado pelo pai via widget props) / outros campos voláteis.
+    final uid             = context.select<AppProvider, String?>((p) => p.currentUser?.uid);
+    final geminiConnected = context.select<AppProvider, bool>((p) => p.geminiConnected);
+
+    // Fontes 2 e 3: token REST + FirebaseAuth SDK (não observáveis via select —
+    // lidos pontualmente. Mudam apenas na mesma janela onde uid muda.)
+    final hasCachedTk  = AuthService.hasCachedToken;
+    final firebaseUser = AuthService.currentUser;
+
+    final bool hasSession = uid != null || hasCachedTk || firebaseUser != null;
+    if (kIsWeb && !hasSession) {
+      final String source = uid != null ? 'provider' : hasCachedTk ? 'cached_token' : 'none';
+      debugPrint('[BUILD434][HomeInlineChatGate] skipped reason=no_session '
+          'uid=${uid ?? "null"} cachedToken=$hasCachedTk '
+          'firebaseUser=${firebaseUser?.uid ?? "null"} source=$source');
+      return const SizedBox.shrink();
+    }
+
+    final String sessionSource = uid != null
+        ? 'provider'
+        : hasCachedTk
+            ? 'cached_token'
+            : 'firebase';
+    debugPrint('[BUILD434][HomeInlineChatGate] render uid=${uid ?? firebaseUser?.uid ?? "n/a"} '
+        'source=$sessionSource gemini=$geminiConnected');
+
+    return _HomeInlineChat(
+      dark: dark,
+      isEs: isEs,
+      onNavigateToAi: onNavigateToAi,
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // HOME INLINE CHAT — chat real embutido na Home sem trocar de aba.
 // Streaming via AppProvider.sendAiMessage (RAG + GeminiServiceV2 completo).
 // Mostra última Q&A inline; botão "Ver completo" abre aba IA.
@@ -1211,31 +1239,144 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   // Chave SharedPreferences espelhando a convenção de ai_screen.dart
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
+  // BUILD 434 [PASSO 2]: trava idempotente de carregamento de histórico.
+  // Impede race conditions quando didUpdateWidget dispara _loadChatHistory()
+  // em paralelo com uma chamada anterior ainda pendente.
+  bool    _isLoadingHistory = false;
+  // UID do último carregamento bem-sucedido — evita re-fetch desnecessário
+  // quando o widget rebuilda sem mudança de usuário.
+  String? _lastLoadedUid;
+
   @override
   void initState() {
     super.initState();
     // BUILD 295: log diagnóstico com tag estruturada — visível no Safari Web Console.
-    // Garante que qualquer crash imediatamente após este log aponta para o
-    // código ABAIXO de initState (provider, focus, etc.) — nunca para o initState
-    // em si, que é intencionalmente mínimo e livre de dependências assíncronas.
     try {
-      debugPrint('[BUILD295][HomeInlineChat] init_ok — widget montado, sem dependências assíncronas no initState');
+      debugPrint('[BUILD295][HomeInlineChat] init_ok — widget montado');
       // Garante que o FocusNode nunca está focado ao montar/remontar o widget.
       // Previne teclado automático ao retornar para a Home via IndexedStack.
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _focus.unfocus();
+        if (mounted) {
+          _focus.unfocus();
+          // BUILD 434 [PASSO 2]: dispara carregamento inicial do histórico
+          // somente após o primeiro frame — provider já está disponível na árvore.
+          _loadChatHistory();
+        }
       });
     } catch (e, st) {
       debugPrint('[BUILD295][HomeInlineChat] init_error: $e\n$st');
     }
   }
 
+  // BUILD 434 [PASSO 2]: carregamento idempotente do histórico da sessão.
+  //
+  // TRAVA DE CONCORRÊNCIA (_isLoadingHistory):
+  //   Impede execuções paralelas quando didUpdateWidget dispara _loadChatHistory()
+  //   antes que uma chamada anterior tenha terminado (race condition no Safari
+  //   onde microtasks se intercalam com a fila de animações mais agressivamente).
+  //
+  // TRAVA DE UID (_lastLoadedUid):
+  //   Impede re-fetch desnecessário quando o widget rebuilda por mudança de dark/isEs
+  //   sem mudança de usuário — o histórico já está em _messages, nada a fazer.
+  Future<void> _loadChatHistory() async {
+    if (!mounted) return;
+    // Trava de concorrência: aborta se carregamento já em voo
+    if (_isLoadingHistory) {
+      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=already_loading');
+      return;
+    }
+
+    AppProvider p;
+    try {
+      p = context.read<AppProvider>();
+    } catch (_) {
+      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=provider_not_ready');
+      return;
+    }
+
+    final uid = p.currentUser?.uid;
+    // Trava de UID: aborta se já carregamos para este usuário
+    if (uid == null || uid == _lastLoadedUid) {
+      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skipped '
+          'reason=${uid == null ? "no_uid" : "already_loaded_uid=$uid"}');
+      return;
+    }
+
+    _isLoadingHistory = true;
+    debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory START uid=$uid');
+
+    try {
+      final prefs   = await SharedPreferences.getInstance();
+      if (!mounted) return;
+      final histKey = '${uid}_$_kHistKey';
+      final raw     = prefs.getString(histKey);
+      if (raw == null || raw.isEmpty) {
+        _lastLoadedUid = uid;
+        debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory done reason=empty_cache uid=$uid');
+        return;
+      }
+
+      List<dynamic> sessions = [];
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) sessions = decoded;
+      } catch (_) {}
+
+      if (sessions.isEmpty || !mounted) {
+        _lastLoadedUid = uid;
+        return;
+      }
+
+      // Extrai a sessão mais recente (índice 0 = mais nova)
+      final latest = sessions.first;
+      if (latest is! Map) { _lastLoadedUid = uid; return; }
+      final msgs = latest['messages'];
+      if (msgs is! List || msgs.isEmpty) { _lastLoadedUid = uid; return; }
+
+      // Converte para o formato interno {role, text, isError}
+      final restored = msgs
+          .whereType<Map>()
+          .map((m) => {
+                'role':    m['role']?.toString() ?? 'unknown',
+                'text':    m['text']?.toString() ?? '',
+                'isError': false,
+              })
+          .where((m) => (m['text'] as String).isNotEmpty)
+          .toList();
+
+      if (restored.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
+
+      // Restaura apenas se _messages ainda estiver vazio (não sobrescreve sessão ativa)
+      if (_messages.isEmpty) {
+        setState(() {
+          _messages.addAll(restored);
+          _sessionId = latest['id']?.toString();
+        });
+        debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory RESTORED '
+            '${restored.length} msgs session=${_sessionId ?? "?"} uid=$uid');
+      } else {
+        debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skip_restore reason=session_active uid=$uid');
+      }
+      _lastLoadedUid = uid;
+    } catch (e) {
+      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
+    } finally {
+      _isLoadingHistory = false;
+    }
+  }
+
   @override
   void didUpdateWidget(_HomeInlineChat old) {
     super.didUpdateWidget(old);
-    // Se qualquer prop mudou (dark/isEs/etc) e o widget foi reconstruído,
-    // certificar que o foco não é reclamado automaticamente.
-    // Não chama _focus.unfocus() aqui para não interferir com digitação ativa.
+    // Se qualquer prop mudou e o widget foi reconstruído, certificar que
+    // o foco não é reclamado automaticamente.
+    // Não chama _focus.unfocus() para não interferir com digitação ativa.
+
+    // BUILD 434 [PASSO 3]: re-dispara carregamento se o UID mudou (ex: troca
+    // de conta sem logout completo). A trava _lastLoadedUid garante idempotência.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _loadChatHistory();
+    });
   }
 
   @override
