@@ -1971,6 +1971,24 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       // navega mesmo assim — AiScreen exibirá saudação padrão normalmente.
     }
     widget.onNavigateToAi(2);
+
+    // BUILD 456-3: ISOLAMENTO PÓS-NAVEGAÇÃO.
+    // Ao navegar para a AiScreen completa, reseta o estado visual da Home
+    // (post-frame para não interferir na injeção do pendingHistory acima).
+    // Na volta à Home o widget exibirá o card limpo padrão, sem espelhar
+    // o histórico longo que ficou no AiScreen.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _messages.clear();
+          _streaming    = '';
+          _thinking     = false;
+          _sessionId    = null;
+          _lastLoadedUid     = null;
+          _lastLoadWasEmpty  = true;
+        });
+      }
+    });
   }
 
   @override
@@ -2088,25 +2106,34 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     final hasStream   = _thinking && _streaming.isNotEmpty;
     final hasThinking = _thinking && _streaming.isEmpty;
 
+    // ── BUILD 456-1: CLAMP VISUAL — Home exibe no máximo as últimas 4 mensagens.
+    // Históricos longos originados na AiScreen NUNCA esticam a Home.
+    // • homeMessages = últimas 4 do _messages (ou todas se ≤ 4)
+    // • hasTruncation = true → exibe fade top + banner "ver histórico completo"
+    // O estado interno _messages permanece intacto para injeção no AiScreen.
+    const int _kHomeMaxMessages = 4;
+    final bool hasTruncation = _messages.length > _kHomeMaxMessages;
+    final List<Map<String, dynamic>> homeMessages = hasTruncation
+        ? _messages.sublist(_messages.length - _kHomeMaxMessages)
+        : List.unmodifiable(_messages);
+
     // ── Constrói a lista de bolhas como widgets ────────────────────────────
-    // shrinkWrap: true + NeverScrollableScrollPhysics() permite que o chat
-    // cresça verticalmente dentro do SingleChildScrollView externo (home),
-    // empurrando FÁRMACOS/INTERACCIONES para baixo naturalmente.
-    // O ScrollController ainda é mantido para _scrollToBottom() funcionar
-    // via jumpTo / animateTo no parent scroll controller (noop quando
-    // NeverScrollableScrollPhysics está ativa — mas a animação do parent
-    // SingleChildScrollView cuida do scroll).
+    // BUILD 456-2: conversationArea agora tem altura RÍGIDA máxima de 260px.
+    // ClipRect + ConstrainedBox impedem qualquer crescimento além desse limite.
+    // O ListView interno tem scroll habilitado dentro dessa caixa.
+    // ShaderMask aplica fade superior quando hasTruncation para indicar
+    // que há mais histórico acima, sem expô-lo na Home.
     Widget conversationArea;
     if (hasHistory || hasStream || hasThinking) {
-      final itemCount = _messages.length + (_thinking ? 1 : 0);
+      final itemCount = homeMessages.length + (_thinking ? 1 : 0);
       conversationArea = ListView.builder(
         controller: _scrollCtrl,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: false,
+        physics: const ClampingScrollPhysics(),
         itemCount: itemCount,
         itemBuilder: (_, i) {
           // Último item artificial = estado de streaming / thinking dots
-          if (i == _messages.length && _thinking) {
+          if (i == homeMessages.length && _thinking) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: _streaming.isNotEmpty
@@ -2132,17 +2159,17 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
 
           // BUILD 295: index guard — Safari pode reconstruir o ListView com
           // itemCount desatualizado se setState() foi chamado entre frames.
-          // RangeError em _messages[i] lança 'Null check operator' em dart2js.
-          if (i >= _messages.length) return const SizedBox.shrink();
+          // RangeError em homeMessages[i] lança 'Null check operator' em dart2js.
+          if (i >= homeMessages.length) return const SizedBox.shrink();
 
-          final msg     = _messages[i];
+          final msg     = homeMessages[i];
           final isUser  = msg['role'] == 'user';
           // BUILD 295: cast null-safe — msg['text'] pode ser JavaScriptObject
           // no Safari cujo 'as String' lança TypeError em dart2js release mode.
           // toString() é definido para todos os objetos JS — nunca lança.
           final text    = msg['text']?.toString() ?? '';
           final isError = msg['isError'] == true;
-          final isLast  = i == _messages.length - 1;
+          final isLast  = i == homeMessages.length - 1;
 
           // ── BUILD 312 M3 + BUILD 295: Render guard — suprime AUTH_REQUIRED ──
           // Também suprime strings vazias que resultam de valores null no Safari.
@@ -2193,6 +2220,63 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
           }
         },
       );
+
+      // BUILD 456-2: wrap com altura máxima física de 260px + ClipRect.
+      // ShaderMask aplica gradiente de opacidade no topo quando hasTruncation
+      // (histórico longo vindo da AiScreen) — feedback visual sem exposição total.
+      final boundedList = ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 260),
+        child: ClipRect(child: conversationArea),
+      );
+      conversationArea = hasTruncation
+          ? ShaderMask(
+              shaderCallback: (rect) => LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.white,
+                ],
+                stops: const [0.0, 0.18],
+              ).createShader(rect),
+              blendMode: BlendMode.dstIn,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Banner sutil: indica histórico truncado → toque para ver tudo
+                  GestureDetector(
+                    onTap: () => _goToAiTab(null, true),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        children: [
+                          Icon(Icons.unfold_more_rounded, size: 12,
+                              color: dark
+                                  ? const Color(0xFF38BDF8).withOpacity(0.7)
+                                  : const Color(0xFF1B6FD8).withOpacity(0.7)),
+                          const SizedBox(width: 4),
+                          Text(
+                            widget.isEs
+                                ? 'Ver historial completo'
+                                : 'Ver histórico completo',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: dark
+                                  ? const Color(0xFF38BDF8).withOpacity(0.7)
+                                  : const Color(0xFF1B6FD8).withOpacity(0.7),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  boundedList,
+                ],
+              ),
+            )
+          : boundedList;
     } else {
       // Estado inicial — placeholder elegante com mínimo de 120px para o card
       // não ser pequeno demais quando ainda não há histórico.
