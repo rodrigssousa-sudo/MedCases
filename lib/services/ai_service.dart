@@ -879,16 +879,38 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
           : (isEs ? 'DATOS DEL PACIENTE:\n$ptBlock\n'
                   : 'DADOS DO PACIENTE:\n$ptBlock\n');
 
-      // RAG gate (same threshold logic as Estudo path)
+      // BUILD 458-1: RAG gate FLEXIBILIZADO (Plantão path)
+      // Threshold reduzido: queries curtas 0.10→0.07 / longas 0.20→0.12
+      // Razão: médico em plantão usa sinônimos, abreviaturas e termos informais.
+      // Um threshold muito alto descartava fragmentos relevantes silenciosamente.
+      // ZERO-MATCH FALLBACK: se TODOS os itens forem filtrados mas existem dados,
+      // envia o conjunto completo sem filtro — o modelo faz o merge inteligente.
       final qfg = userQuery ?? '';
       final qwc = qfg.trim().split(RegExp(r'\s+')).where((w) => w.length > 2).length;
-      final rThr = qwc <= 2 ? 0.10 : 0.20;
-      final fProto = qfg.isEmpty
-          ? matchedProtocolSummaries
-          : matchedProtocolSummaries.where((p) => ragRelevanceScore(qfg, p) >= rThr).toList();
-      final fDrugs = qfg.isEmpty
-          ? matchedDrugSummaries
-          : matchedDrugSummaries.where((d) => ragRelevanceScore(qfg, d) >= rThr).toList();
+      // Thresholds reduzidos em ~35%: menos rejeição por baixo score
+      final rThr = qwc <= 2 ? 0.07 : 0.12;
+      List<String> fProto;
+      if (qfg.isEmpty) {
+        fProto = matchedProtocolSummaries;
+      } else {
+        final filtered = matchedProtocolSummaries
+            .where((p) => ragRelevanceScore(qfg, p) >= rThr).toList();
+        // Zero-match fallback: se nada passou pelo gate mas havia dados, envia tudo
+        fProto = (filtered.isEmpty && matchedProtocolSummaries.isNotEmpty)
+            ? matchedProtocolSummaries
+            : filtered;
+      }
+      List<String> fDrugs;
+      if (qfg.isEmpty) {
+        fDrugs = matchedDrugSummaries;
+      } else {
+        final filtered = matchedDrugSummaries
+            .where((d) => ragRelevanceScore(qfg, d) >= rThr).toList();
+        // Zero-match fallback: mesma lógica para fármacos
+        fDrugs = (filtered.isEmpty && matchedDrugSummaries.isNotEmpty)
+            ? matchedDrugSummaries
+            : filtered;
+      }
       final hasLocalCtx = localAnswerContext != null &&
           localAnswerContext.isNotEmpty && localAnswerContext.length > 50 &&
           (qfg.isEmpty || ragRelevanceScore(qfg, localAnswerContext) >= rThr);
@@ -1258,29 +1280,29 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
           : '- Medicamentos em uso: $patientMedications');
     }
 
-    // ── RAG Relevance Gate — strictContextIsolation ──────────────────────────
-    // Threshold adaptativo:
-    //   - Queries curtas (≤2 palavras úteis, ex: "diarrea", "fiebre"): 0.10
-    //     Uma única palavra de sobreposição já é suficiente para validar relevância.
-    //   - Queries longas (>2 palavras): 0.20 (sobreposição maior obrigatória)
-    // Se não houver query (userQuery==null), aceita RAG sem filtro (backward compat).
+    // BUILD 458-1: RAG Relevance Gate FLEXIBILIZADO (Estudo path)
+    // Threshold reduzido: queries curtas 0.10→0.07 / longas 0.20→0.12
+    // ZERO-MATCH FALLBACK: se TODOS os itens forem descartados mas existem dados,
+    // envia conjunto completo sem filtro — evita contexto nulo desnecessário.
     final queryForGate = userQuery ?? '';
     final _qwc = queryForGate.trim().split(RegExp(r'\s+')).where((w) => w.length > 2).length;
-    final ragThreshold = _qwc <= 2 ? 0.10 : 0.20;
+    // Thresholds reduzidos em ~35% — menos rejeição por baixo score semântico
+    final ragThreshold = _qwc <= 2 ? 0.07 : 0.12;
 
     // ── Blocos RAG: protocolos + fármacos locais ─────────────────────────────
-    // Aplica o gate individualmente: só concatena itens com score suficiente
     String protocolsBlock;
     if (queryForGate.isEmpty) {
-      // sem query → comportamento legado (sem filtro)
       protocolsBlock = matchedProtocolSummaries.isNotEmpty
           ? matchedProtocolSummaries.join('\n') : '';
     } else {
       final filteredProtocols = matchedProtocolSummaries
           .where((p) => ragRelevanceScore(queryForGate, p) >= ragThreshold)
           .toList();
-      protocolsBlock = filteredProtocols.isNotEmpty
-          ? filteredProtocols.join('\n') : '';
+      // Zero-match fallback: se nada passou mas havia protocolos, envia todos
+      final useProtos = (filteredProtocols.isEmpty && matchedProtocolSummaries.isNotEmpty)
+          ? matchedProtocolSummaries
+          : filteredProtocols;
+      protocolsBlock = useProtos.isNotEmpty ? useProtos.join('\n') : '';
     }
 
     String drugsBlock;
@@ -1291,12 +1313,14 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
       final filteredDrugs = matchedDrugSummaries
           .where((d) => ragRelevanceScore(queryForGate, d) >= ragThreshold)
           .toList();
-      drugsBlock = filteredDrugs.isNotEmpty
-          ? filteredDrugs.join('\n') : '';
+      // Zero-match fallback: mesma lógica para fármacos
+      final useDrugs = (filteredDrugs.isEmpty && matchedDrugSummaries.isNotEmpty)
+          ? matchedDrugSummaries
+          : filteredDrugs;
+      drugsBlock = useDrugs.isNotEmpty ? useDrugs.join('\n') : '';
     }
 
     // ── Contexto local (RAG estruturado) ────────────────────────────────────
-    // Também passa pelo gate: só injeta se contexto for relevante para a query
     final hasLocalContext = localAnswerContext != null &&
         localAnswerContext.isNotEmpty && localAnswerContext.length > 50 &&
         (queryForGate.isEmpty ||
