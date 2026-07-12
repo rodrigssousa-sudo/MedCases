@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// cardio_tools_screen.dart — BUILD 415-UX-HARMONY
+// cardio_tools_screen.dart — BUILD 415-UX-HARMONY / BUILD 445-CROSS-CALC-STATE
 //
 // CENTRAL DE CARDIOLOGIA — Interface nativa unificada ao Design System Premium.
 //
@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
+import '../providers/tools_state_provider.dart'; // BUILD 445
 import 'calculadora_screen.dart' show CalculadoraScreen; // BUILD 429
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
@@ -40,11 +41,21 @@ const _kTextSub = Color(0xFF8B9BB4);
 // ─────────────────────────────────────────────────────────────────────────────
 // Public entry-point
 // ─────────────────────────────────────────────────────────────────────────────
-class CardioToolsScreen extends StatelessWidget {
+// BUILD 445: AutomaticKeepAliveClientMixin → estado visual sobrevive à troca de aba
+class CardioToolsScreen extends StatefulWidget {
   const CardioToolsScreen({super.key});
+  @override
+  State<CardioToolsScreen> createState() => _CardioToolsScreenState();
+}
+
+class _CardioToolsScreenState extends State<CardioToolsScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final p = context.watch<AppProvider>();
     return _CardioBody(isEs: p.lang == 'es', dark: p.darkMode);
   }
@@ -239,11 +250,8 @@ class _CardioBody extends StatefulWidget {
 class _CardioBodyState extends State<_CardioBody>
     with SingleTickerProviderStateMixin {
   // ── Controllers ──────────────────────────────────────────────────────────
-  final _ageCtrl    = TextEditingController();
-  final _pasCtrl    = TextEditingController();
-  final _colCtrl    = TextEditingController();
-  final _qtCtrl     = TextEditingController();
-  final _fcCtrl     = TextEditingController();
+  // BUILD 445: controllers via ToolsStateProvider — age, pas, col, qt, fc.
+  // Sem controllers locais de texto em Cardio.
 
   // ── BUILD 427: Restore banner state
   bool _showRestoreBanner = false;
@@ -265,13 +273,14 @@ class _CardioBodyState extends State<_CardioBody>
   void _autofillFromSession(PacienteSession session) {
     try {
       final paciente = session.paciente;
+      final tp = context.read<ToolsStateProvider>();
       final age = parseAgeFromString(paciente.idade);
       final female = paciente.sexo.trim().toUpperCase() == 'F';
-
+      if (age != null && tp.ageCtrl.text.isEmpty) tp.ageCtrl.text = age.toString();
+      tp.setFemale(female);
       setState(() {
-        if (age != null) _ageCtrl.text = age.toString();
-        _isFemale  = female;
         _agePlus65 = (age ?? 0) >= 65;
+        _isFemale  = female;
       });
     } catch (_) {
       // Falha silenciosa — nunca quebra a UI clínica
@@ -324,21 +333,15 @@ class _CardioBodyState extends State<_CardioBody>
     if (p.toolsCacheHasData) setState(() => _showRestoreBanner = true);
   }
 
-  // BUILD 430 PASSO 2: restaura todos os campos cardio do cache
+  // BUILD 445: restaura campos cardio — todos compartilhados via ToolsStateProvider
   void _restoreFromCache() {
-    final p = context.read<AppProvider>();
-    final cache = p.toolsInputCache;
+    final p  = context.read<AppProvider>();
+    final tp = context.read<ToolsStateProvider>();
+    tp.applyFromCache(p.toolsInputCache);
     setState(() {
-      if ((cache['edad'] ?? '').isNotEmpty) {
-        _ageCtrl.text = cache['edad']!;
-        final age = int.tryParse(cache['edad']!) ?? 0;
-        _agePlus65 = age >= 65;
-      }
-      _isFemale = (cache['sexo'] ?? '') == 'F';
-      if ((cache['pas']        ?? '').isNotEmpty) _pasCtrl.text = cache['pas']!;
-      if ((cache['colesterol'] ?? '').isNotEmpty) _colCtrl.text = cache['colesterol']!;
-      if ((cache['qtms']       ?? '').isNotEmpty) _qtCtrl.text  = cache['qtms']!;
-      if ((cache['fc']         ?? '').isNotEmpty) _fcCtrl.text  = cache['fc']!;
+      _isFemale  = tp.isFemale;
+      final age = int.tryParse(tp.ageCtrl.text) ?? 0;
+      _agePlus65 = age >= 65;
       _showRestoreBanner = false;
     });
   }
@@ -350,22 +353,14 @@ class _CardioBodyState extends State<_CardioBody>
 
   @override
   void dispose() {
-    // BUILD 430 PASSO 2: salva todos os campos clínicos cardio no cache
+    // BUILD 445: controllers pertencem ao ToolsStateProvider — NÃO dispose aqui.
     try {
-      context.read<AppProvider>().saveToolsCache({
-        'edad':       _ageCtrl.text,
-        'sexo':       _isFemale ? 'F' : 'M',
-        'pas':        _pasCtrl.text,
-        'colesterol': _colCtrl.text,
-        'qtms':       _qtCtrl.text,
-        'fc':         _fcCtrl.text,
-      });
+      final p  = context.read<AppProvider>();
+      final tp = context.read<ToolsStateProvider>();
+      tp.setFemale(_isFemale);
+      tp.refreshPendingFlag();
+      p.saveToolsCache(tp.exportToCache());
     } catch (_) {}
-    _ageCtrl.dispose();
-    _pasCtrl.dispose();
-    _colCtrl.dispose();
-    _qtCtrl.dispose();
-    _fcCtrl.dispose();
     _animCtrl.dispose();
     super.dispose();
   }
@@ -378,10 +373,11 @@ class _CardioBodyState extends State<_CardioBody>
       final patientKey = p.activeImportedPatientKey ?? '';
       if (uid.isEmpty || patientKey.isEmpty) return;
 
+      final tp2c = context.read<ToolsStateProvider>();
       final labData = <String, dynamic>{
-        'edad':       _ageCtrl.text,
-        'pas':        _pasCtrl.text,
-        'colesterol': _colCtrl.text,
+        'edad':       tp2c.ageCtrl.text,
+        'pas':        tp2c.pasCtrl.text,
+        'colesterol': tp2c.colCtrl.text,
       };
 
       final scores = <String, dynamic>{
@@ -438,16 +434,17 @@ class _CardioBodyState extends State<_CardioBody>
   void _calculate() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     HapticFeedback.mediumImpact();
-    final age     = int.tryParse(_ageCtrl.text.trim()) ?? 0;
-    final pas     = _pd(_pasCtrl.text) ?? 120.0;
-    final col     = _pd(_colCtrl.text) ?? 200.0;
-    final qt      = _pd(_qtCtrl.text)  ?? 400.0;
-    final fc      = _pd(_fcCtrl.text)  ?? 75.0;
+    final tp  = context.read<ToolsStateProvider>();
+    final age = int.tryParse(tp.ageCtrl.text.trim()) ?? 0;
+    final pas = _pd(tp.pasCtrl.text) ?? 120.0;
+    final col = _pd(tp.colCtrl.text) ?? 200.0;
+    final qt  = _pd(tp.qtCtrl.text)  ?? 400.0;
+    final fc  = _pd(tp.fcCtrl.text)  ?? 75.0;
 
     setState(() {
       _agePlus65 = age >= 65;
       _result = _CardioEngine.compute(
-        age: age, isFemale: _isFemale,
+        age: age, isFemale: tp.isFemale,
         hasDiabetes: _hasDiabetes, isSmoker: _isSmoker,
         hasHtn: _hasHtn, hasCvDisease: _hasCvDisease,
         hasChf: _hasChf, hasCkd: _hasCkd,
@@ -524,9 +521,12 @@ class _CardioBodyState extends State<_CardioBody>
             // ── Input Section ───────────────────────────────────────────────
             _InputSection(
               isEs: isEs, surf: surf, bord: bord, txt: txt, sub: sub,
-              ageCtrl: _ageCtrl, pasCtrl: _pasCtrl,
-              colCtrl: _colCtrl, qtCtrl:  _qtCtrl, fcCtrl: _fcCtrl,
-              isFemale:     _isFemale,
+              ageCtrl: context.read<ToolsStateProvider>().ageCtrl,
+              pasCtrl: context.read<ToolsStateProvider>().pasCtrl,
+              colCtrl: context.read<ToolsStateProvider>().colCtrl,
+              qtCtrl:  context.read<ToolsStateProvider>().qtCtrl,
+              fcCtrl:  context.read<ToolsStateProvider>().fcCtrl,
+              isFemale:     context.read<ToolsStateProvider>().isFemale,
               hasDiabetes:  _hasDiabetes,
               isSmoker:     _isSmoker,
               hasHtn:       _hasHtn,
@@ -537,7 +537,10 @@ class _CardioBodyState extends State<_CardioBody>
               hasBleedHx:   _hasBleedHx,
               hasLabilInr:  _hasLabilInr,
               usesDrugsAlc: _usesDrugsAlc,
-              onToggleFemale:      (v) => setState(() => _isFemale      = v),
+              onToggleFemale: (v) {
+                context.read<ToolsStateProvider>().setFemale(v);
+                setState(() => _isFemale = v);
+              },
               onToggleDiabetes:    (v) => setState(() => _hasDiabetes   = v),
               onToggleSmoker:      (v) => setState(() => _isSmoker      = v),
               onToggleHtn:         (v) => setState(() => _hasHtn        = v),

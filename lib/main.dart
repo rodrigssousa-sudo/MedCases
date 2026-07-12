@@ -22,6 +22,7 @@ import 'theme/app_theme.dart';
 import 'providers/app_provider.dart';
 import 'providers/ui_provider.dart';       // BUILD 326: sub-provider de UI
 import 'providers/ai_chat_provider.dart';  // BUILD 326: sub-provider de IA/chat
+import 'providers/tools_state_provider.dart'; // BUILD 445: estado clínico compartilhado
 import 'services/auth_service.dart';
 import 'services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 import 'models/user_model.dart';
@@ -95,6 +96,8 @@ Future<void> main() async {
 
   // Cria o provider — sem await aqui, boot é disparado em background.
   final provider = AppProvider();
+  // BUILD 445: ToolsStateProvider singleton — estado clínico compartilhado entre as 4 abas
+  final toolsState = ToolsStateProvider();
 
   // ── Future criado ANTES do runApp — sem `late`, sem estado global ────────
   // Ao usar `late final`, o iOS pode reutilizar o isolate após force-close e
@@ -114,6 +117,8 @@ Future<void> main() async {
         ChangeNotifierProvider.value(value: provider),
         ChangeNotifierProvider.value(value: provider.uiProvider),
         ChangeNotifierProvider.value(value: provider.aiChatProvider),
+        // BUILD 445: ToolsStateProvider — controllers clínicos compartilhados
+        ChangeNotifierProvider.value(value: toolsState),
       ],
       child: MedCasesApp(firebaseInit: firebaseInit),
     ),
@@ -1644,6 +1649,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     }
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() => _tab = t);
+    // BUILD 445: notifica ToolsScreen sobre visibilidade (tab 4 = Ferramentas)
+    toolsScreenVisibleNotifier.value = (t == 4);
   }
   void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
   void _onOpenNotes()         => showNotesSheet(context);
@@ -1890,6 +1897,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       FocusManager.instance.primaryFocus?.unfocus();
       setState(() => _tab = t.clamp(0, 5));
       MainShell.pendingTab.value = -1; // reset imediato após consumir
+      // BUILD 445: notifica ToolsScreen sobre visibilidade via pendingTab
+      toolsScreenVisibleNotifier.value = (t == 4);
     }
   }
 

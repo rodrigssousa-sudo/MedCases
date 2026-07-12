@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// hepatology_tools_screen.dart — BUILD 420-HEPATOLOGY
+// hepatology_tools_screen.dart — BUILD 420-HEPATOLOGY / BUILD 445-CROSS-CALC-STATE
 //
 // CENTRAL DE HEPATOLOGÍA CLÍNICA — Interface nativa premium unificada.
 //
@@ -26,6 +26,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
+import '../providers/tools_state_provider.dart'; // BUILD 445
 import 'calculadora_screen.dart' show CalculadoraScreen; // BUILD 429
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
@@ -47,11 +48,21 @@ const _kTextSub = Color(0xFF8B9BB4);
 // ─────────────────────────────────────────────────────────────────────────────
 // HepatologyToolsScreen — ponto de entrada público
 // ─────────────────────────────────────────────────────────────────────────────
-class HepatologyToolsScreen extends StatelessWidget {
+// BUILD 445: AutomaticKeepAliveClientMixin → estado visual sobrevive à troca de aba
+class HepatologyToolsScreen extends StatefulWidget {
   const HepatologyToolsScreen({super.key});
+  @override
+  State<HepatologyToolsScreen> createState() => _HepatologyToolsScreenState();
+}
+
+class _HepatologyToolsScreenState extends State<HepatologyToolsScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final p    = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
     final dark = p.darkMode;
@@ -74,25 +85,15 @@ class _HepatologyBody extends StatefulWidget {
 class _HepatologyBodyState extends State<_HepatologyBody>
     with SingleTickerProviderStateMixin {
 
-  // ── Controllers — Bloco 1: Dados Clínicos e Demográficos ──────────────────
-  final _ageCtrl    = TextEditingController();
-  final _naCtrl     = TextEditingController();
+  // BUILD 445: Controllers COMPARTILHADOS via ToolsStateProvider:
+  //   ageCtrl, naCtrl, biliCtrl (bilirrubina), crCtrl (creatinina), inrCtrl, albCtrl,
+  //   astCtrl, altCtrl, platCtrl.
+  // Controllers PRIVADOS (específicos de hepatologia):
   bool  _dialysis   = false;
-
-  // ── Controllers — Bloco 2: Perfil Laboratorial Hepático e Renal ───────────
-  final _biliCtrl   = TextEditingController();
-  final _creatCtrl  = TextEditingController();
-  final _inrCtrl    = TextEditingController();
-  final _albCtrl    = TextEditingController();
-
-  // ── Controllers — Bloco 3: Enzimas Hepáticas e Plaquetas ─────────────────
-  final _astCtrl    = TextEditingController();
   final _astUlnCtrl = TextEditingController();
-  final _altCtrl    = TextEditingController();
   final _altUlnCtrl = TextEditingController();
   final _faCtrl     = TextEditingController();
   final _faUlnCtrl  = TextEditingController();
-  final _platCtrl   = TextEditingController();
 
   // ── Seletores — Bloco 4: Avaliação de Cirrose (CTP & Maddrey) ────────────
   int _ascites        = 1; // 1=Ausente, 2=Leve/Mod, 3=Grave/Tensa
@@ -150,20 +151,10 @@ class _HepatologyBodyState extends State<_HepatologyBody>
   }
 
   void _restoreFromCache() {
-    final p = context.read<AppProvider>();
-    final cache = p.toolsInputCache;
-    setState(() {
-      if ((cache['edad']        ?? '').isNotEmpty) _ageCtrl.text   = cache['edad']!;
-      if ((cache['sodio']       ?? '').isNotEmpty) _naCtrl.text    = cache['sodio']!;
-      if ((cache['bilirrubina'] ?? '').isNotEmpty) _biliCtrl.text  = cache['bilirrubina']!;
-      if ((cache['creatinina']  ?? '').isNotEmpty) _creatCtrl.text = cache['creatinina']!;
-      if ((cache['inr']         ?? '').isNotEmpty) _inrCtrl.text   = cache['inr']!;
-      if ((cache['albumina']    ?? '').isNotEmpty) _albCtrl.text   = cache['albumina']!;
-      if ((cache['ast']         ?? '').isNotEmpty) _astCtrl.text   = cache['ast']!;
-      if ((cache['alt']         ?? '').isNotEmpty) _altCtrl.text   = cache['alt']!;
-      if ((cache['plaquetas']   ?? '').isNotEmpty) _platCtrl.text  = cache['plaquetas']!;
-      _showRestoreBanner = false;
-    });
+    final p  = context.read<AppProvider>();
+    final tp = context.read<ToolsStateProvider>();
+    tp.applyFromCache(p.toolsInputCache);
+    setState(() => _showRestoreBanner = false);
   }
 
   void _discardCache() {
@@ -173,34 +164,19 @@ class _HepatologyBodyState extends State<_HepatologyBody>
 
   @override
   void dispose() {
-    // BUILD 427: salva todos os campos laboratoriais no cache antes de desmontar
+    // BUILD 445: controllers compartilhados pertencem ao ToolsStateProvider — NÃO dispose aqui.
     try {
-      context.read<AppProvider>().saveToolsCache({
-        'edad':        _ageCtrl.text,
-        'sodio':       _naCtrl.text,
-        'bilirrubina': _biliCtrl.text,
-        'creatinina':  _creatCtrl.text,
-        'inr':         _inrCtrl.text,
-        'albumina':    _albCtrl.text,
-        'ast':         _astCtrl.text,
-        'alt':         _altCtrl.text,
-        'plaquetas':   _platCtrl.text,
-      });
+      final p  = context.read<AppProvider>();
+      final tp = context.read<ToolsStateProvider>();
+      tp.refreshPendingFlag();
+      p.saveToolsCache(tp.exportToCache());
     } catch (_) {}
     _animCtrl.dispose();
-    _ageCtrl.dispose();
-    _naCtrl.dispose();
-    _biliCtrl.dispose();
-    _creatCtrl.dispose();
-    _inrCtrl.dispose();
-    _albCtrl.dispose();
-    _astCtrl.dispose();
+    // Apenas controllers PRIVADOS de hepatologia:
     _astUlnCtrl.dispose();
-    _altCtrl.dispose();
     _altUlnCtrl.dispose();
     _faCtrl.dispose();
     _faUlnCtrl.dispose();
-    _platCtrl.dispose();
     _tpPatientCtrl.dispose();
     _tpControlCtrl.dispose();
     _noduleCountCtrl.dispose();
@@ -230,15 +206,12 @@ class _HepatologyBodyState extends State<_HepatologyBody>
   void _autofillFromSession(PacienteSession session) {
     try {
       final paciente = session.paciente;
+      final tp = context.read<ToolsStateProvider>();
 
-      // Idade → _ageCtrl
+      // Idade → tp.ageCtrl (compartilhado)
       final age = parseAgeFromString(paciente.idade);
-      if (age != null) _ageCtrl.text = age.toString();
-
-      // Sexo — não há campo direto de sexo nos motores hepáticos,
-      // mas mantemos a info para contexto. _dialysis não é mapeado.
-      // setState mínimo para re-render do campo idade
-      setState(() {});
+      if (age != null && tp.ageCtrl.text.isEmpty) tp.ageCtrl.text = age.toString();
+      setState(() {}); // rebuild mínimo
     } catch (_) {
       // Falha silenciosa — nunca quebra a UI clínica
     }
@@ -252,16 +225,17 @@ class _HepatologyBodyState extends State<_HepatologyBody>
       final patientKey = p.activeImportedPatientKey ?? '';
       if (uid.isEmpty || patientKey.isEmpty) return;
 
+      final tp2 = context.read<ToolsStateProvider>();
       final labData = <String, dynamic>{
-        'bilirrubina': _biliCtrl.text,
-        'creatinina':  _creatCtrl.text,
-        'inr':         _inrCtrl.text,
-        'albumina':    _albCtrl.text,
-        'sodio':       _naCtrl.text,
-        'ast':         _astCtrl.text,
-        'alt':         _altCtrl.text,
-        'plaquetas':   _platCtrl.text,
-        'edad':        _ageCtrl.text,
+        'bilirrubina': tp2.biliCtrl.text,
+        'creatinina':  tp2.crCtrl.text,
+        'inr':         tp2.inrCtrl.text,
+        'albumina':    tp2.albCtrl.text,
+        'sodio':       tp2.naCtrl.text,
+        'ast':         tp2.astCtrl.text,
+        'alt':         tp2.altCtrl.text,
+        'plaquetas':   tp2.platCtrl.text,
+        'edad':        tp2.ageCtrl.text,
       };
 
       final scores = <String, dynamic>{
@@ -329,19 +303,20 @@ class _HepatologyBodyState extends State<_HepatologyBody>
     HapticFeedback.lightImpact();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    final age    = int.tryParse(_ageCtrl.text.trim());
-    final na     = _pd(_naCtrl.text);
-    final bili   = _pd(_biliCtrl.text);
-    final creat  = _pd(_creatCtrl.text);
-    final inr    = _pd(_inrCtrl.text);
-    final alb    = _pd(_albCtrl.text);
-    final ast    = _pd(_astCtrl.text);
+    final tp  = context.read<ToolsStateProvider>();
+    final age    = int.tryParse(tp.ageCtrl.text.trim());
+    final na     = _pd(tp.naCtrl.text);
+    final bili   = _pd(tp.biliCtrl.text);
+    final creat  = _pd(tp.crCtrl.text);
+    final inr    = _pd(tp.inrCtrl.text);
+    final alb    = _pd(tp.albCtrl.text);
+    final ast    = _pd(tp.astCtrl.text);
     final astUln = _pd(_astUlnCtrl.text);
-    final alt    = _pd(_altCtrl.text);
+    final alt    = _pd(tp.altCtrl.text);
     final altUln = _pd(_altUlnCtrl.text);
     final fa     = _pd(_faCtrl.text);
     final faUln  = _pd(_faUlnCtrl.text);
-    final plat   = _pd(_platCtrl.text);
+    final plat   = _pd(tp.platCtrl.text);
     final tpPat  = _pd(_tpPatientCtrl.text);
     final tpCtrl = _pd(_tpControlCtrl.text);
 
@@ -479,21 +454,21 @@ class _HepatologyBodyState extends State<_HepatologyBody>
                     txt:              txt,
                     sub:              sub,
                     border:           border,
-                    ageCtrl:          _ageCtrl,
-                    naCtrl:           _naCtrl,
+                    ageCtrl:          context.read<ToolsStateProvider>().ageCtrl,
+                    naCtrl:           context.read<ToolsStateProvider>().naCtrl,
                     dialysis:         _dialysis,
                     onDialysisChange: (v) => setState(() => _dialysis = v),
-                    biliCtrl:         _biliCtrl,
-                    creatCtrl:        _creatCtrl,
-                    inrCtrl:          _inrCtrl,
-                    albCtrl:          _albCtrl,
-                    astCtrl:          _astCtrl,
+                    biliCtrl:         context.read<ToolsStateProvider>().biliCtrl,
+                    creatCtrl:        context.read<ToolsStateProvider>().crCtrl,
+                    inrCtrl:          context.read<ToolsStateProvider>().inrCtrl,
+                    albCtrl:          context.read<ToolsStateProvider>().albCtrl,
+                    astCtrl:          context.read<ToolsStateProvider>().astCtrl,
                     astUlnCtrl:       _astUlnCtrl,
-                    altCtrl:          _altCtrl,
+                    altCtrl:          context.read<ToolsStateProvider>().altCtrl,
                     altUlnCtrl:       _altUlnCtrl,
                     faCtrl:           _faCtrl,
                     faUlnCtrl:        _faUlnCtrl,
-                    platCtrl:         _platCtrl,
+                    platCtrl:         context.read<ToolsStateProvider>().platCtrl,
                     ascites:          _ascites,
                     encephalopathy:   _encephalopathy,
                     onAscitesChange:  (v) => setState(() => _ascites = v),

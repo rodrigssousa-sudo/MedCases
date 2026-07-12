@@ -8,6 +8,7 @@ import '../widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in
 import 'reference_screens.dart'; // Fix#7: Dashboard Grid de Referências (mantido para uso interno)
 import 'hepatology_tools_screen.dart' show HepatologyToolsScreen; // BUILD 420-HEPATOLOGY
 import '../providers/app_provider.dart';
+import '../providers/tools_state_provider.dart'; // BUILD 445
 import '../data/evidence_database.dart';
 import '../widgets/common_widgets.dart';
 import '../widgets/lab_exam_bottom_sheet.dart';
@@ -37,6 +38,11 @@ const kToolGold   = kGoldLight;         // alias para kGoldLight
 // ──────────────────────────────────────────────────────────────────
 final ValueNotifier<int?> toolsScreenTabNotifier = ValueNotifier<int?>(null);
 
+// BUILD 445: Notifier que MainShell usa para avisar quando a tela de Ferramentas
+// fica visível (true) ou oculta (false) no IndexedStack.
+// Permite que ToolsScreen exiba o dialog de retorno ao reentrar na seção.
+final ValueNotifier<bool> toolsScreenVisibleNotifier = ValueNotifier<bool>(false);
+
 class ToolsScreen extends StatefulWidget {
   final bool hideHeader;
   const ToolsScreen({super.key, this.hideHeader = false});
@@ -47,6 +53,10 @@ class ToolsScreen extends StatefulWidget {
 class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabCtrl;
 
+  // BUILD 445 — PASSO 3: controle do dialog de retorno
+  bool _returnDialogPending = false; // evita exibir dialog duas vezes
+  bool _wasEverVisible      = false; // distingue primeira exibição de retorno
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +66,8 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     _tabCtrl = TabController(length: 4, vsync: this);
     // Ouve o notifier externo para mudar de aba
     toolsScreenTabNotifier.addListener(_onExternalTabRequest);
+    // BUILD 445: ouve visibilidade para exibir dialog de retorno
+    toolsScreenVisibleNotifier.addListener(_onVisibilityChanged);
   }
 
   void _onExternalTabRequest() {
@@ -70,9 +82,43 @@ class _ToolsScreenState extends State<ToolsScreen> with SingleTickerProviderStat
     });
   }
 
+  // BUILD 445 — PASSO 3: chamado quando MainShell muda visibilidade desta tela
+  void _onVisibilityChanged() {
+    final visible = toolsScreenVisibleNotifier.value;
+    if (visible && _wasEverVisible && !_returnDialogPending) {
+      // Usuário retornou à seção de Ferramentas
+      _returnDialogPending = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _maybeShowReturnDialog();
+      });
+    }
+    if (visible) _wasEverVisible = true;
+  }
+
+  // BUILD 445 — PASSO 3: verifica dados pendentes e exibe dialog elegante
+  Future<void> _maybeShowReturnDialog() async {
+    _returnDialogPending = false;
+    if (!mounted) return;
+    final tp = context.read<ToolsStateProvider>();
+    tp.refreshPendingFlag();
+    if (!tp.hasPendingData) return; // nenhum dado — não incomoda o médico
+
+    final p    = context.read<AppProvider>();
+    final isEs = p.lang == 'es';
+    final dark = p.darkMode;
+
+    await _showReturnDataDialog(
+      context: context,
+      isEs:    isEs,
+      dark:    dark,
+      tp:      tp,
+    );
+  }
+
   @override
   void dispose() {
     toolsScreenTabNotifier.removeListener(_onExternalTabRequest);
+    toolsScreenVisibleNotifier.removeListener(_onVisibilityChanged);
     _tabCtrl.dispose();
     super.dispose();
   }
@@ -8062,4 +8108,191 @@ class _SourcesButton extends StatelessWidget {
       ),
     );
   }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 445-CROSS-CALC-STATE — PASSO 3: Dialog de Retorno às Ferramentas
+//
+// Aparece quando o médico RETORNA à seção de Ferramentas e havia dados clínicos
+// preenchidos em memória (ToolsStateProvider.hasPendingData == true).
+//
+// Design: dark-first, ciano + vermelho, dois botões estilizados.
+//   Botão 1 (Outlined vermelho)     → "Limpar Tudo"   → tp.clearAll()
+//   Botão 2 (Filled ciano)          → "Usar Anteriores" → mantém estado
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Paleta local do dialog
+const _kDlgBg     = Color(0xFF1A1D23);
+const _kDlgBorder = Color(0xFF2D3340);
+const _kDlgCyan   = Color(0xFF00E5FF);
+const _kDlgRed    = Color(0xFFEF4444);
+const _kDlgSub    = Color(0xFF8B9BB4);
+
+/// Exibe o dialog nativo de retorno com animação scale + fade.
+Future<void> _showReturnDataDialog({
+  required BuildContext context,
+  required bool isEs,
+  required bool dark,
+  required ToolsStateProvider tp,
+}) async {
+  await showGeneralDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    barrierColor: Colors.black.withValues(alpha: 0.55),
+    transitionDuration: const Duration(milliseconds: 240),
+    transitionBuilder: (_, anim, __, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: anim,
+          curve: Curves.easeOutBack,
+        ),
+        child: FadeTransition(
+          opacity: anim,
+          child: child,
+        ),
+      );
+    },
+    pageBuilder: (dialogCtx, _, __) {
+      final bg     = dark ? _kDlgBg     : Colors.white;
+      final txt    = dark ? Colors.white : const Color(0xFF0F1116);
+      final sub    = dark ? _kDlgSub    : const Color(0xFF64748B);
+      final border = dark ? _kDlgBorder : const Color(0xFFE2E8F0);
+
+      return Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 28),
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: _kDlgCyan.withValues(alpha: dark ? 0.25 : 0.20),
+                width: 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: dark ? 0.40 : 0.12),
+                  blurRadius: 32,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Ícone + título ───────────────────────────────────────────
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: _kDlgCyan.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Center(
+                        child: Text('🧪', style: TextStyle(fontSize: 18)),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        isEs
+                            ? 'Datos Anteriores Detectados'
+                            : 'Dados Anteriores Detectados',
+                        style: TextStyle(
+                          color: txt,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+
+                // ── Divider ───────────────────────────────────────────────────
+                Container(height: 1, color: border),
+                const SizedBox(height: 14),
+
+                // ── Mensagem ──────────────────────────────────────────────────
+                Text(
+                  isEs
+                      ? '¿Desea reaprovechar los datos clínicos completados recientemente o prefiere comenzar un nuevo cálculo desde cero?'
+                      : 'Deseja reaproveitar os dados clínicos preenchidos recentemente ou prefere iniciar um novo cálculo do zero?',
+                  style: TextStyle(
+                    color: sub,
+                    fontSize: 13.5,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 22),
+
+                // ── Botões ────────────────────────────────────────────────────
+                Row(
+                  children: [
+                    // Botão 1: Limpar Tudo (outlined vermelho)
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          tp.clearAll();
+                          Navigator.of(dialogCtx).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: _kDlgRed,
+                          side: const BorderSide(color: _kDlgRed, width: 1.2),
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          isEs ? 'Limpiar Todo' : 'Limpar Tudo',
+                          style: const TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+
+                    // Botão 2: Usar Dados Anteriores (filled ciano)
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Mantém estado — apenas fecha o dialog
+                          Navigator.of(dialogCtx).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _kDlgCyan,
+                          foregroundColor: const Color(0xFF0F1116),
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          isEs ? 'Usar Anteriores' : 'Usar Anteriores',
+                          style: const TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

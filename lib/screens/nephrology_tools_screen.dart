@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// nephrology_tools_screen.dart — BUILD 408-NATIVE
+// nephrology_tools_screen.dart — BUILD 408-NATIVE / BUILD 445-CROSS-CALC-STATE
 //
 // CENTRAL DE FUNÇÃO RENAL / NEFROLOGÍA — Interface nativa minimalista.
 //
@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
+import '../providers/tools_state_provider.dart'; // BUILD 445
 import 'calculadora_screen.dart' show CalculadoraScreen; // BUILD 429
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
@@ -44,12 +45,22 @@ const _kTextSub   = Color(0xFF8B9BB4);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // NephrologyToolsScreen — ponto de entrada público
+// BUILD 445: AutomaticKeepAliveClientMixin → estado visual sobrevive à troca de aba
 // ─────────────────────────────────────────────────────────────────────────────
-class NephrologyToolsScreen extends StatelessWidget {
+class NephrologyToolsScreen extends StatefulWidget {
   const NephrologyToolsScreen({super.key});
+  @override
+  State<NephrologyToolsScreen> createState() => _NephrologyToolsScreenState();
+}
+
+class _NephrologyToolsScreenState extends State<NephrologyToolsScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // obrigatório para AutomaticKeepAliveClientMixin
     final p    = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
     final dark = p.darkMode;
@@ -71,18 +82,19 @@ class _NephrologyBody extends StatefulWidget {
 
 class _NephrologyBodyState extends State<_NephrologyBody>
     with SingleTickerProviderStateMixin {
-  // ── Controllers ────────────────────────────────────────────────────────────
-  final _ageCtrl         = TextEditingController();
-  final _weightCtrl      = TextEditingController();
-  final _heightCtrl      = TextEditingController();
-  final _creatBaseCtrl   = TextEditingController();
-  final _creatCurrCtrl   = TextEditingController();
-  final _naUrineCtrl     = TextEditingController();
-  final _naSerumCtrl     = TextEditingController();
-  final _creatUrineCtrl  = TextEditingController();
+  // ── BUILD 445: Shared controllers vêm do ToolsStateProvider ──────────────
+  // Demográficos e labs compartilhados: ageCtrl, weightCtrl, heightCtrl,
+  // crCtrl (creatBase), naCtrl (naSerum) são obtidos via tp.xxxCtrl.
+  // Apenas controllers EXCLUSIVOS de nefrologia permanecem locais:
+  // Privados: apenas dados exclusivos de cálculos nefrológicos
+  final _creatBaseCtrl   = TextEditingController(); // Creatinina basal (KDIGO)
+  final _creatCurrCtrl   = TextEditingController(); // Creatinina atual
+  final _naUrineCtrl     = TextEditingController(); // Sódio urinário (FeNa)
+  final _creatUrineCtrl  = TextEditingController(); // Creatinina urinária (FeNa)
+  // _naSerumCtrl → BUILD 445: substituído por tp.naCtrl (compartilhado)
 
-  // ── Sexo ───────────────────────────────────────────────────────────────────
-  bool _isFemale = false; // false = Masculino / Hombre
+  // ── Sexo — BUILD 445: leitura via ToolsStateProvider.isFemale ─────────────
+  // _isFemale é acessado via tp.isFemale; mutação via tp.setFemale(v)
 
   // ── Resultados ─────────────────────────────────────────────────────────────
   _NephroResult? _result;
@@ -121,17 +133,16 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   void _autofillFromSession(PacienteSession session) {
     try {
       final paciente = session.paciente;
+      final tp = context.read<ToolsStateProvider>();
 
-      // Idade → _ageCtrl
+      // Idade → tp.ageCtrl (compartilhado)
       final age = parseAgeFromString(paciente.idade);
-      if (age != null) _ageCtrl.text = age.toString();
+      if (age != null && tp.ageCtrl.text.isEmpty) tp.ageCtrl.text = age.toString();
 
-      // Sexo → _isFemale
+      // Sexo → tp.setFemale (compartilhado)
       final female = paciente.sexo.trim().toUpperCase() == 'F';
-
-      setState(() {
-        _isFemale = female;
-      });
+      tp.setFemale(female);
+      setState(() {}); // rebuild para reflectir mudança de sexo
     } catch (_) {
       // Falha silenciosa — nunca quebra a UI clínica
     }
@@ -149,7 +160,8 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       begin: const Offset(0, 0.06),
       end:   Offset.zero,
     ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOutCubic));
-    // BUILD 427: verifica cache após o primeiro frame
+    // BUILD 445: controllers compartilhados já estão no ToolsStateProvider —
+    // não é preciso verificar cache aqui (feito pelo dialog de retorno da ToolsScreen).
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkRestoreCache());
   }
 
@@ -162,18 +174,17 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     }
   }
 
-  // BUILD 430 PASSO 2: restaura todos os campos nefro do cache
+  // BUILD 445: restaura campos nefro — compartilhados via ToolsStateProvider,
+  // privados (creatBase) restaurados do cache local.
   void _restoreFromCache() {
-    final p = context.read<AppProvider>();
+    final p  = context.read<AppProvider>();
+    final tp = context.read<ToolsStateProvider>();
     final cache = p.toolsInputCache;
-    setState(() {
-      if ((cache['edad']       ?? '').isNotEmpty) _ageCtrl.text       = cache['edad']!;
-      if ((cache['creatinina'] ?? '').isNotEmpty) _creatBaseCtrl.text = cache['creatinina']!;
-      if ((cache['sodio']      ?? '').isNotEmpty) _naSerumCtrl.text   = cache['sodio']!;
-      if ((cache['peso']       ?? '').isNotEmpty) _weightCtrl.text    = cache['peso']!;
-      _isFemale = (cache['sexo'] ?? '') == 'F';
-      _showRestoreBanner = false;
-    });
+    // Campos compartilhados → ToolsStateProvider
+    tp.applyFromCache(cache);
+    // Campo exclusivo de nefrologia → local
+    if ((cache['creatinina'] ?? '').isNotEmpty) _creatBaseCtrl.text = cache['creatinina']!;
+    setState(() => _showRestoreBanner = false);
   }
 
   // BUILD 427: descarta cache e fecha banner
@@ -185,25 +196,21 @@ class _NephrologyBodyState extends State<_NephrologyBody>
 
   @override
   void dispose() {
-    // BUILD 430 PASSO 2: salva todos os campos nefro no cache (expandido)
+    // BUILD 445: campos compartilhados pertencem ao ToolsStateProvider — NÃO dispose aqui.
+    // Salva snapshot no AppProvider cache para compatibilidade com builds anteriores.
     try {
-      final p = context.read<AppProvider>();
-      p.saveToolsCache({
-        'edad':       _ageCtrl.text,
-        'creatinina': _creatBaseCtrl.text,
-        'sodio':      _naSerumCtrl.text,
-        'peso':       _weightCtrl.text,
-        'sexo':       _isFemale ? 'F' : 'M',
-      });
+      final p  = context.read<AppProvider>();
+      final tp = context.read<ToolsStateProvider>();
+      tp.refreshPendingFlag();
+      p.saveToolsCache(tp.exportToCache()
+        ..['creatinina'] = _creatBaseCtrl.text); // campo exclusivo nefro
     } catch (_) {}
     _animCtrl.dispose();
-    _ageCtrl.dispose();
-    _weightCtrl.dispose();
-    _heightCtrl.dispose();
+    // Apenas controllers PRIVADOS de nefrologia são dispostos aqui:
     _creatBaseCtrl.dispose();
     _creatCurrCtrl.dispose();
     _naUrineCtrl.dispose();
-    _naSerumCtrl.dispose();
+    // _naSerumCtrl removido — BUILD 445: substituído por tp.naCtrl
     _creatUrineCtrl.dispose();
     super.dispose();
   }
@@ -216,14 +223,15 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       final patientKey = p.activeImportedPatientKey ?? '';
       if (uid.isEmpty || patientKey.isEmpty) return;
 
+      final tp2 = context.read<ToolsStateProvider>();
       final labData = <String, dynamic>{
-        'creatinina':      _creatBaseCtrl.text,
-        'creatinina_atual': _creatCurrCtrl.text,
-        'sodio_urina':     _naUrineCtrl.text,
-        'na_serico':       _naSerumCtrl.text,
-        'creat_urina':     _creatUrineCtrl.text,
-        'peso':            _weightCtrl.text,
-        'edad':            _ageCtrl.text,
+        'creatinina':       _creatBaseCtrl.text,
+        'creatinina_atual':  _creatCurrCtrl.text,
+        'sodio_urina':      _naUrineCtrl.text,
+        'na_serico':         tp2.naCtrl.text,
+        'creat_urina':      _creatUrineCtrl.text,
+        'peso':              tp2.weightCtrl.text,
+        'edad':              tp2.ageCtrl.text,
       };
 
       final scores = <String, dynamic>{
@@ -262,14 +270,15 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     HapticFeedback.lightImpact();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    final age        = int.tryParse(_ageCtrl.text.trim());
-    final weight     = _pd(_weightCtrl.text);
+    final tp         = context.read<ToolsStateProvider>();
+    final age        = int.tryParse(tp.ageCtrl.text.trim());
+    final weight     = _pd(tp.weightCtrl.text);
     final creatBase  = _pd(_creatBaseCtrl.text);
     final creatCurr  = _pd(_creatCurrCtrl.text);
 
-    // Opcionais para FeNa
+    // Opcionais para FeNa: Na urina/soro e creat urina são privados de nefro
     final naUrine    = _pd(_naUrineCtrl.text);
-    final naSerum    = _pd(_naSerumCtrl.text);
+    final naSerum    = _pd(tp.naCtrl.text);   // BUILD 445: Na sérico compartilhado
     final creatUrine = _pd(_creatUrineCtrl.text);
 
     if (age == null || weight == null || creatBase == null || creatCurr == null) {
@@ -283,7 +292,7 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       _errorMsg = null;
       _result   = _NephroEngine.compute(
         age:        age,
-        isFemale:   _isFemale,
+        isFemale:   tp.isFemale,
         weight:     weight,
         creatBase:  creatBase,
         creatCurr:  creatCurr,
@@ -397,16 +406,19 @@ class _NephrologyBodyState extends State<_NephrologyBody>
                     txt:           txt,
                     sub:           sub,
                     border:        border,
-                    ageCtrl:       _ageCtrl,
-                    weightCtrl:    _weightCtrl,
-                    heightCtrl:    _heightCtrl,
+                    ageCtrl:       context.read<ToolsStateProvider>().ageCtrl,
+                    weightCtrl:    context.read<ToolsStateProvider>().weightCtrl,
+                    heightCtrl:    context.read<ToolsStateProvider>().heightCtrl,
                     creatBaseCtrl: _creatBaseCtrl,
                     creatCurrCtrl: _creatCurrCtrl,
                     naUrineCtrl:   _naUrineCtrl,
-                    naSerumCtrl:   _naSerumCtrl,
+                    naSerumCtrl:   context.read<ToolsStateProvider>().naCtrl,
                     creatUrineCtrl:_creatUrineCtrl,
-                    isFemale:      _isFemale,
-                    onSexChange:   (v) => setState(() => _isFemale = v),
+                    isFemale:      context.read<ToolsStateProvider>().isFemale,
+                    onSexChange:   (v) {
+                      context.read<ToolsStateProvider>().setFemale(v);
+                      setState(() {});
+                    },
                     validatePos:   _validatePositive,
                     validateNonZ:  _validateNonZero,
                   ),

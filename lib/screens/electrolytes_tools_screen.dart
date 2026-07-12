@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// electrolytes_tools_screen.dart — BUILD 415-UX-HARMONY
+// electrolytes_tools_screen.dart — BUILD 445-CROSS-CALC-STATE — BUILD 415-UX-HARMONY
 //
 // CENTRAL DE ELECTROLITOS Y GASOMETRÍA — Interface nativa unificada.
 //
@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
+import '../providers/tools_state_provider.dart'; // BUILD 445
 import 'calculadora_screen.dart' show CalculadoraScreen; // BUILD 429
 import 'tools_patient_import.dart';
 import 'tools_restore_banner.dart';
@@ -40,11 +41,21 @@ const _kTextSub = Color(0xFF8B9BB4);
 // ─────────────────────────────────────────────────────────────────────────────
 // Public entry-point
 // ─────────────────────────────────────────────────────────────────────────────
-class ElectrolytesToolsScreen extends StatelessWidget {
+// BUILD 445: AutomaticKeepAliveClientMixin → estado visual sobrevive à troca de aba
+class ElectrolytesToolsScreen extends StatefulWidget {
   const ElectrolytesToolsScreen({super.key});
+  @override
+  State<ElectrolytesToolsScreen> createState() => _ElectrolytesToolsScreenState();
+}
+
+class _ElectrolytesToolsScreenState extends State<ElectrolytesToolsScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final p = context.watch<AppProvider>();
     return _ElectroBody(isEs: p.lang == 'es', dark: p.darkMode);
   }
@@ -166,20 +177,10 @@ class _ElectroBody extends StatefulWidget {
 
 class _ElectroBodyState extends State<_ElectroBody>
     with SingleTickerProviderStateMixin {
-  // ── Gas controllers ───────────────────────────────────────────────────────
-  final _phCtrl   = TextEditingController();
-  final _pco2Ctrl = TextEditingController();
-  final _beCtrl   = TextEditingController();
-
-  // ── Electrolyte controllers ───────────────────────────────────────────────
-  final _naCtrl    = TextEditingController();
-  final _clCtrl    = TextEditingController();
-  final _hco3Ctrl  = TextEditingController();
-  final _glucCtrl  = TextEditingController();
-  final _caCtrl    = TextEditingController();
-  final _albumCtrl = TextEditingController();
-  final _bunCtrl   = TextEditingController();
-  final _weightCtrl= TextEditingController();
+  // BUILD 445: controllers compartilhados vêm do ToolsStateProvider:
+  //   naCtrl, hco3Ctrl, albCtrl (albumCtrl), weightCtrl, phCtrl, pco2Ctrl, beCtrl,
+  //   clCtrl, glucCtrl, caCtrl, bunCtrl.
+  // Todos são acessados via context.read<ToolsStateProvider>().xxxCtrl.
 
   // ── State ─────────────────────────────────────────────────────────────────
   _ElectroResult? _result;
@@ -213,21 +214,12 @@ class _ElectroBodyState extends State<_ElectroBody>
     if (p.toolsCacheHasData) setState(() => _showRestoreBanner = true);
   }
 
-  // BUILD 430 PASSO 2: restaura todos os campos eletrolíticos do cache
+  // BUILD 445: restaura campos eletrolíticos — todos compartilhados via ToolsStateProvider
   void _restoreFromCache() {
-    final p = context.read<AppProvider>();
-    final cache = p.toolsInputCache;
-    setState(() {
-      if ((cache['sodio']   ?? '').isNotEmpty) _naCtrl.text     = cache['sodio']!;
-      if ((cache['cloro']   ?? '').isNotEmpty) _clCtrl.text     = cache['cloro']!;
-      if ((cache['hco3']    ?? '').isNotEmpty) _hco3Ctrl.text   = cache['hco3']!;
-      if ((cache['glicose'] ?? '').isNotEmpty) _glucCtrl.text   = cache['glicose']!;
-      if ((cache['calcio']  ?? '').isNotEmpty) _caCtrl.text     = cache['calcio']!;
-      if ((cache['albumina']?? '').isNotEmpty) _albumCtrl.text  = cache['albumina']!;
-      if ((cache['bun']     ?? '').isNotEmpty) _bunCtrl.text    = cache['bun']!;
-      if ((cache['peso']    ?? '').isNotEmpty) _weightCtrl.text = cache['peso']!;
-      _showRestoreBanner = false;
-    });
+    final p  = context.read<AppProvider>();
+    final tp = context.read<ToolsStateProvider>();
+    tp.applyFromCache(p.toolsInputCache);
+    setState(() => _showRestoreBanner = false);
   }
 
   void _discardCache() {
@@ -237,26 +229,13 @@ class _ElectroBodyState extends State<_ElectroBody>
 
   @override
   void dispose() {
-    // BUILD 430 PASSO 2: salva todos os campos eletrolíticos no cache
+    // BUILD 445: controllers pertencem ao ToolsStateProvider — NÃO dispose aqui.
     try {
-      context.read<AppProvider>().saveToolsCache({
-        'sodio':   _naCtrl.text,
-        'cloro':   _clCtrl.text,
-        'hco3':    _hco3Ctrl.text,
-        'glicose': _glucCtrl.text,
-        'calcio':  _caCtrl.text,
-        'albumina':_albumCtrl.text,
-        'bun':     _bunCtrl.text,
-        'peso':    _weightCtrl.text,
-      });
+      final p  = context.read<AppProvider>();
+      final tp = context.read<ToolsStateProvider>();
+      tp.refreshPendingFlag();
+      p.saveToolsCache(tp.exportToCache());
     } catch (_) {}
-    for (final c in [
-      _phCtrl, _pco2Ctrl, _beCtrl,
-      _naCtrl, _clCtrl, _hco3Ctrl, _glucCtrl,
-      _caCtrl, _albumCtrl, _bunCtrl, _weightCtrl,
-    ]) {
-      c.dispose();
-    }
     _animCtrl.dispose();
     super.dispose();
   }
@@ -302,14 +281,14 @@ class _ElectroBodyState extends State<_ElectroBody>
       if (uid.isEmpty || patientKey.isEmpty) return;
 
       final labData = <String, dynamic>{
-        'sodio':    _naCtrl.text,
-        'cloro':    _clCtrl.text,
-        'hco3':     _hco3Ctrl.text,
-        'glicose':  _glucCtrl.text,
-        'calcio':   _caCtrl.text,
-        'albumina': _albumCtrl.text,
-        'bun':      _bunCtrl.text,
-        'peso':     _weightCtrl.text,
+        'sodio':    context.read<ToolsStateProvider>().naCtrl.text,
+        'cloro':    context.read<ToolsStateProvider>().clCtrl.text,
+        'hco3':     context.read<ToolsStateProvider>().hco3Ctrl.text,
+        'glicose':  context.read<ToolsStateProvider>().glucCtrl.text,
+        'calcio':   context.read<ToolsStateProvider>().caCtrl.text,
+        'albumina': context.read<ToolsStateProvider>().albCtrl.text,
+        'bun':      context.read<ToolsStateProvider>().bunCtrl.text,
+        'peso':     context.read<ToolsStateProvider>().weightCtrl.text,
       };
 
       final scores = <String, dynamic>{
@@ -361,17 +340,17 @@ class _ElectroBodyState extends State<_ElectroBody>
 
     setState(() {
       _result = _ElectroEngine.compute(
-        na:      _pdOr(_naCtrl,    140),
-        cl:      _pdOr(_clCtrl,    104),
-        hco3:    _pdOr(_hco3Ctrl,   24),
-        gluc:    _pdOr(_glucCtrl,  100),
-        ca:      _pdOr(_caCtrl,    9.5),
-        albumin: _pdOr(_albumCtrl, 4.0),
-        bun:     _pdOr(_bunCtrl,   14),
-        weight:  _pdOr(_weightCtrl, 70),
-        ph:      _pdOr(_phCtrl,  7.40),
-        pco2:    _pdOr(_pco2Ctrl,  40),
-        be:      _pdOr(_beCtrl,     0),
+        na:      _pdOr(context.read<ToolsStateProvider>().naCtrl,    140),
+        cl:      _pdOr(context.read<ToolsStateProvider>().clCtrl,    104),
+        hco3:    _pdOr(context.read<ToolsStateProvider>().hco3Ctrl,   24),
+        gluc:    _pdOr(context.read<ToolsStateProvider>().glucCtrl,  100),
+        ca:      _pdOr(context.read<ToolsStateProvider>().caCtrl,    9.5),
+        albumin: _pdOr(context.read<ToolsStateProvider>().albCtrl, 4.0),
+        bun:     _pdOr(context.read<ToolsStateProvider>().bunCtrl,   14),
+        weight:  _pdOr(context.read<ToolsStateProvider>().weightCtrl, 70),
+        ph:      _pdOr(context.read<ToolsStateProvider>().phCtrl,  7.40),
+        pco2:    _pdOr(context.read<ToolsStateProvider>().pco2Ctrl,  40),
+        be:      _pdOr(context.read<ToolsStateProvider>().beCtrl,     0),
       );
     });
     if (_result != null) _syncResultToFirestore(_result!);
@@ -448,7 +427,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: 'pH',
-                          ctrl: _phCtrl, hint: '7,40',
+                          ctrl: context.read<ToolsStateProvider>().phCtrl, hint: '7,40',
                           validator: _validateRequired,
                           refRange: '7,35–7,45',
                         ),
@@ -457,7 +436,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: 'pCO₂ (mmHg)',
-                          ctrl: _pco2Ctrl, hint: '40',
+                          ctrl: context.read<ToolsStateProvider>().pco2Ctrl, hint: '40',
                           validator: _validateRequired,
                           refRange: '35–45',
                         ),
@@ -470,7 +449,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: 'HCO₃⁻ (mEq/L)',
-                          ctrl: _hco3Ctrl, hint: '24',
+                          ctrl: context.read<ToolsStateProvider>().hco3Ctrl, hint: '24',
                           validator: _validateRequired,
                           refRange: '22–26',
                         ),
@@ -479,7 +458,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: 'BE (mEq/L)',
-                          ctrl: _beCtrl, hint: '0',
+                          ctrl: context.read<ToolsStateProvider>().beCtrl, hint: '0',
                           validator: _validateRequired,
                           refRange: '−2 a +2',
                         ),
@@ -502,7 +481,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: 'Na⁺ (mEq/L)',
-                          ctrl: _naCtrl, hint: '140',
+                          ctrl: context.read<ToolsStateProvider>().naCtrl, hint: '140',
                           validator: _validateRequired,
                           refRange: '136–145',
                         ),
@@ -511,7 +490,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: 'Cl⁻ (mEq/L)',
-                          ctrl: _clCtrl, hint: '104',
+                          ctrl: context.read<ToolsStateProvider>().clCtrl, hint: '104',
                           validator: _validateRequired,
                           refRange: '98–106',
                         ),
@@ -524,7 +503,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: isEs ? 'Glucosa (mg/dL)' : 'Glicose (mg/dL)',
-                          ctrl: _glucCtrl, hint: '100',
+                          ctrl: context.read<ToolsStateProvider>().glucCtrl, hint: '100',
                           validator: _validateRequired,
                           refRange: '70–100',
                         ),
@@ -533,7 +512,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: 'Ca²⁺ total (mg/dL)',
-                          ctrl: _caCtrl, hint: '9,5',
+                          ctrl: context.read<ToolsStateProvider>().caCtrl, hint: '9,5',
                           validator: _validateRequired,
                           refRange: '8,5–10,5',
                         ),
@@ -546,7 +525,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: isEs ? 'Albúmina (g/dL)' : 'Albumina (g/dL)',
-                          ctrl: _albumCtrl, hint: '4,0',
+                          ctrl: context.read<ToolsStateProvider>().albCtrl, hint: '4,0',
                           validator: _validateRequired,
                           refRange: '3,5–5,0',
                         ),
@@ -555,7 +534,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                       Expanded(
                         child: _NField(
                           label: isEs ? 'BUN (mg/dL)' : 'BUN/Ureia (mg/dL)',
-                          ctrl: _bunCtrl, hint: '14',
+                          ctrl: context.read<ToolsStateProvider>().bunCtrl, hint: '14',
                           validator: _validateRequired,
                           refRange: '7–20',
                         ),
@@ -566,7 +545,7 @@ class _ElectroBodyState extends State<_ElectroBody>
                   // Peso — para déficit HCO₃
                   _NField(
                     label: isEs ? 'Peso corporal (kg)' : 'Peso corporal (kg)',
-                    ctrl: _weightCtrl, hint: '70',
+                    ctrl: context.read<ToolsStateProvider>().weightCtrl, hint: '70',
                     validator: _validateRequired,
                     refRange: '',
                   ),
