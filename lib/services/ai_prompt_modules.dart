@@ -71,7 +71,16 @@ class PromptModules {
   // ════════════════════════════════════════════════════════════════════════════
   static const String core =
       '🔒 IDENTIDADE E REGRAS ABSOLUTAS (MedCases Pro — Modular V2):\n'
-      'Você é um especialista médico de alta confiabilidade (PT-BR / Español).\n'
+      // BUILD 457-FRENTE1: identidade assistencial tolerante — o médico está em
+      // plantão, pode usar sinônimos, abreviações informais ou erros de digitação.
+      // A IA NUNCA deve retornar erro ou mensagem vazia por falta de match exato no RAG.
+      'Você é o MedCases IA, um assistente médico de elite. '
+      'O usuário está em ambiente de plantão e pode cometer erros de digitação '
+      'ou usar sinônimos clínicos. '
+      'Não falhe nem retorne mensagens de erro por falta de correspondência exata no RAG. '
+      'Se o contexto do RAG for escasso, use seu conhecimento médico canônico de base '
+      'para completar a conduta de forma segura, citando que se baseia nas práticas médicas mundiais. '
+      'Você é tolerante, inteligente e resiliente — nunca engessa nem trava por falta de dados externos.\n'
       '\n'
       '[MEDICAL DOMAIN LOCK]\n'
       'Você é uma IA estritamente médica. É MANDATÓRIO interpretar toda e qualquer sigla, '
@@ -894,23 +903,36 @@ class PromptModules {
       taskModules.write('\n$siglasCriticas');
     }
 
-    // ── 5. Build 184: Hard cap de 1800 chars no contextSection ───────────────
-    // Razão: RAG clínico irrestrito inflava prompt para 30k chars → Erro 503.
-    // 1800 chars = ~450 tokens — suficiente para o contexto clínico essencial.
-    // Nenhuma lógica complexa de budget/truncamento — apenas um cap direto.
-    const int kContextHardCap = 1800;
+    // ── 5. BUILD 457-FRENTE1: Hard cap elevado 1800→2400 chars no contextSection ─
+    // BUILD 184 original: 1800 chars evitava 503 (RAG inflado para 30k).
+    // BUILD 457: O cap é ampliado para 2400 chars para permitir que fragmentos de
+    // baixo score também sejam enviados — o modelo faz o merge inteligente em vez
+    // de receber contexto nulo e falhar silenciosamente.
+    // 2400 chars ≈ 600 tokens — ainda seguro contra 503; elimina fast-fail no RAG.
+    const int kContextHardCap = 2400;
     final String rawContext = cleanContext.length > kContextHardCap
         ? cleanContext.substring(0, kContextHardCap)
         : cleanContext;
 
-    final contextSection = rawContext.isNotEmpty
-        ? '\n\n[CONTEXTO CLÍNICO RAG]\n$rawContext'
+    // BUILD 457-FRENTE1: Se contexto RAG estiver vazio/escasso, injeta instrução
+    // explícita para o modelo usar conhecimento canônico sem retornar erro.
+    final String ragFallbackHint = rawContext.trim().isEmpty
+        ? '\n\n[RAG_FALLBACK] Contexto externo ausente ou escasso. '
+          'Use seu conhecimento médico canônico de base (evidências mundiais) '
+          'para completar a conduta de forma segura. Não retorne mensagem de erro.'
         : '';
+
+    final contextSection = rawContext.isNotEmpty
+        ? '\n\n[CONTEXTO CLÍNICO RAG]\n$rawContext$ragFallbackHint'
+        : ragFallbackHint;
 
     if (kDebugMode || _kPromptSizeAudit) {
       if (cleanContext.length > kContextHardCap) {
-        debugPrint('[PM_SIZE] Build184: contextSection truncado '
-            '${cleanContext.length}→$kContextHardCap chars (hard cap)');
+        debugPrint('[PM_SIZE] Build457: contextSection truncado '
+            '${cleanContext.length}→$kContextHardCap chars (hard cap elevado 1800→2400)');
+      }
+      if (rawContext.trim().isEmpty) {
+        debugPrint('[PM_SIZE] Build457: RAG vazio → ragFallbackHint injetado');
       }
     }
 

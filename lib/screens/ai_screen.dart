@@ -2969,6 +2969,16 @@ class _AiScreenState extends State<AiScreen> {
       );
     }
 
+    // BUILD 457-FRENTE2: SelectionArea envolve chatList inteiro — habilita seleção
+    // nativa de qualquer trecho de texto no chat (médico pode copiar dose/conduta
+    // parcial com long-press). Posicionado APÓS o wrap de desktop para que
+    // ConstrainedBox e NotificationListener já estejam em ordem.
+    // MarkdownBody permanece com selectable: false (SelectionArea é a âncora única
+    // de seleção — evitar conflito de dois sistemas de seleção sobrepostos).
+    chatList = SelectionArea(
+      child: chatList,
+    );
+
     // Desktop: sem shell AppBar → mostra _WaHeader próprio.
     // Mobile/tablet: mostra mini barra de ações inline (histórico + limpar)
     // para garantir acesso MESMO com teclado aberto (shell AppBar não está visível).

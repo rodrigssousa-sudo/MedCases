@@ -2470,8 +2470,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-          // ── Área de conversa — cresce dinamicamente com as mensagens ──────
-          conversationArea,
+          // ── BUILD 457-FRENTE2: SelectionArea envolve a área de conversa ────────
+          // Habilita seleção nativa de trecho de texto (long-press / duplo clique)
+          // no inline chat da Home. MarkdownBody permanece selectable:false —
+          // SelectionArea é a única âncora de seleção (evita conflito duplo).
+          SelectionArea(child: conversationArea),
 
           const SizedBox(height: 10),
 
