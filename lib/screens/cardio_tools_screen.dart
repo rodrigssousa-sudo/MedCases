@@ -467,8 +467,11 @@ class _CardioBodyState extends State<_CardioBody>
   void _launchDeeplink() {
     if (_result == null) return;
     HapticFeedback.mediumImpact();
-    // BUILD 444 [P2]: deeplink cirúrgico Cardiologia
-    const conductaUrl = 'https://medcasescalcu.com/condutas/cardiologia';
+    // BUILD 447-URL-PAYLOAD: serializa campos Cardio como query params
+    const baseUrl = 'https://medcasescalcu.com/condutas/cardiologia';
+    final queryParams = context.read<ToolsStateProvider>()
+        .buildQueryStringForSpecialty('cardio');
+    final conductaUrl = '$baseUrl$queryParams';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(

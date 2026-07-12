@@ -316,8 +316,11 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   void _launchDeeplink() {
     if (_result == null) return;
     HapticFeedback.mediumImpact();
-    // BUILD 444 [P2]: deeplink cirúrgico Nefrologia
-    const conductaUrl = 'https://medcasescalcu.com/condutas/nefrologia';
+    // BUILD 447-URL-PAYLOAD: serializa campos Nefrologia como query params
+    const baseUrl = 'https://medcasescalcu.com/condutas/nefrologia';
+    final queryParams = context.read<ToolsStateProvider>()
+        .buildQueryStringForSpecialty('nefro');
+    final conductaUrl = '$baseUrl$queryParams';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(

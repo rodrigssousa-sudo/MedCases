@@ -365,8 +365,11 @@ class _ElectroBodyState extends State<_ElectroBody>
   void _launchDeeplink() {
     if (_result == null) return;
     HapticFeedback.mediumImpact();
-    // BUILD 444 [P2]: deeplink cirúrgico Eletrólitos/Gasometria
-    const conductaUrl = 'https://medcasescalcu.com/condutas/eletrolitos-gasometria';
+    // BUILD 447-URL-PAYLOAD: serializa campos Eletrólitos/Gasometria como query params
+    const baseUrl = 'https://medcasescalcu.com/condutas/eletrolitos-gasometria';
+    final queryParams = context.read<ToolsStateProvider>()
+        .buildQueryStringForSpecialty('eletrolitos');
+    final conductaUrl = '$baseUrl$queryParams';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(

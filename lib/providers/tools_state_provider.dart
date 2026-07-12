@@ -198,6 +198,94 @@ class ToolsStateProvider extends ChangeNotifier {
   };
 
   // ──────────────────────────────────────────────────────────────────────────
+  // buildQueryStringForSpecialty — BUILD 447-URL-PAYLOAD
+  //
+  // Serializa apenas os campos pertinentes de cada especialidade como Query
+  // Parameters para injeção dinâmica na URL da WebView.
+  //
+  // Regras:
+  //   • Chaves com valor vazio são OMITIDAS (URL limpa, sem "?na=&cr=").
+  //   • Sexo biológico: "sex=M" ou "sex=F".
+  //   • Retorna "" (string vazia) quando NENHUM campo está preenchido.
+  //   • Retorna "?key=val&key2=val2" quando há ao menos 1 campo.
+  //
+  // Especialidades suportadas:
+  //   'eletrolitos' → ph, pco2, hco3, be, na, cl, gluc, ca, bun, alb, weight
+  //   'nefro'       → age, sex, weight, height, cr, na
+  //   'cardio'      → age, sex, pas, col, qt, fc
+  //   'hepato'      → age, sex, na, bili, inr, alb, ast, alt, plat
+  // ──────────────────────────────────────────────────────────────────────────
+  String buildQueryStringForSpecialty(String specialty) {
+    // Helper: só adiciona à map se o valor não estiver vazio.
+    final Map<String, String> params = {};
+
+    void _add(String key, String value) {
+      final v = value.trim();
+      if (v.isNotEmpty) params[key] = v;
+    }
+
+    void _addSex() => params['sex'] = _isFemale ? 'F' : 'M';
+
+    switch (specialty) {
+      case 'eletrolitos':
+        _add('ph',     phCtrl.text);
+        _add('pco2',   pco2Ctrl.text);
+        _add('hco3',   hco3Ctrl.text);
+        _add('be',     beCtrl.text);
+        _add('na',     naCtrl.text);
+        _add('cl',     clCtrl.text);
+        _add('gluc',   glucCtrl.text);
+        _add('ca',     caCtrl.text);
+        _add('bun',    bunCtrl.text);
+        _add('alb',    albCtrl.text);
+        _add('weight', weightCtrl.text);
+
+      case 'nefro':
+        _add('age',    ageCtrl.text);
+        _addSex();
+        _add('weight', weightCtrl.text);
+        _add('height', heightCtrl.text);
+        _add('cr',     crCtrl.text);
+        _add('na',     naCtrl.text);
+
+      case 'cardio':
+        _add('age',    ageCtrl.text);
+        _addSex();
+        _add('pas',    pasCtrl.text);
+        _add('col',    colCtrl.text);
+        _add('qt',     qtCtrl.text);
+        _add('fc',     fcCtrl.text);
+
+      case 'hepato':
+        _add('age',    ageCtrl.text);
+        _addSex();
+        _add('na',     naCtrl.text);
+        _add('bili',   biliCtrl.text);
+        _add('inr',    inrCtrl.text);
+        _add('alb',    albCtrl.text);
+        _add('ast',    astCtrl.text);
+        _add('alt',    altCtrl.text);
+        _add('plat',   platCtrl.text);
+
+      default:
+        // Especialidade desconhecida — retorna sem parâmetros
+        return '';
+    }
+
+    if (params.isEmpty) return '';
+
+    // Para 'nefro' e 'cardio', sex=M/F é sempre incluído (mesmo sem dados)
+    // mas só queremos incluir sex se havia ao menos 1 dado clínico real.
+    // Verificação: se params contém APENAS 'sex', omite sex sozinho.
+    if (params.length == 1 && params.containsKey('sex')) return '';
+
+    final query = params.entries
+        .map((e) => '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}')
+        .join('&');
+    return '?$query';
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
   // applyFromPatient — autofill a partir de dados demográficos da H. Clínica
   // ──────────────────────────────────────────────────────────────────────────
   void applyFromPatient({required int? age, required bool? female}) {
