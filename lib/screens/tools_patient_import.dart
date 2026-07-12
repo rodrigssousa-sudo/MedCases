@@ -29,11 +29,13 @@ import 'internacion/services/internacion_persistence.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta de cores local (dark-first, idêntica ao design system das tool screens)
 // ─────────────────────────────────────────────────────────────────────────────
-const _kBg      = Color(0xFF0F1116);
-const _kSurface = Color(0xFF1A1D23);
-const _kBorder  = Color(0xFF2D3340);
-const _kCyan    = Color(0xFF00E5FF);
-const _kTextSub = Color(0xFF8B9BB4);
+const _kBg       = Color(0xFF0F1116);
+const _kSurface  = Color(0xFF1A1D23);
+const _kBorder   = Color(0xFF2D3340);
+const _kCyan     = Color(0xFF00E5FF);
+// BUILD 450/451: Azul Petróleo — acento no Light Mode
+const _kPetroleo = Color(0xFF1A365D);
+const _kTextSub  = Color(0xFF8B9BB4);
 
 // ═════════════════════════════════════════════════════════════════════════════
 // ToolsPatientImportChip — Widget chip reutilizável
@@ -53,6 +55,8 @@ class ToolsPatientImportChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final surf   = dark ? _kSurface : Colors.white;
+    // BUILD 451: acento dinâmico — petróleo no light, cyan no dark
+    final accent = dark ? _kCyan : _kPetroleo;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -61,15 +65,18 @@ class ToolsPatientImportChip extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
-          splashColor: _kCyan.withOpacity(0.12),
-          highlightColor: _kCyan.withOpacity(0.06),
+          splashColor: accent.withOpacity(0.12),
+          highlightColor: accent.withOpacity(0.06),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               color: surf.withOpacity(dark ? 0.80 : 0.95),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: _kCyan.withOpacity(0.45),
+                // BUILD 451: borda petróleo no light, neon no dark
+                color: dark
+                    ? _kCyan.withOpacity(0.45)
+                    : _kPetroleo.withOpacity(0.55),
                 width: 1.3,
               ),
               boxShadow: dark
@@ -101,7 +108,8 @@ class ToolsPatientImportChip extends StatelessWidget {
                       ? 'Importar datos del Paciente'
                       : 'Importar dados do Paciente',
                   style: TextStyle(
-                    color: _kCyan,
+                    // BUILD 451: texto petróleo no light, cyan no dark
+                    color: accent,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.2,
@@ -110,7 +118,8 @@ class ToolsPatientImportChip extends StatelessWidget {
                 const SizedBox(width: 6),
                 Icon(
                   Icons.keyboard_arrow_down_rounded,
-                  color: _kCyan.withOpacity(0.80),
+                  // BUILD 451: ícone petróleo no light, cyan no dark
+                  color: accent.withOpacity(0.80),
                   size: 18,
                 ),
               ],
@@ -260,7 +269,8 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: _kCyan.withOpacity(0.12),
+                      // BUILD 451: ícone ⚡ do sheet — petróleo no light
+                      color: (dark ? _kCyan : _kPetroleo).withOpacity(0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Center(
@@ -310,7 +320,8 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
                             height: 28,
                             child: CircularProgressIndicator(
                               strokeWidth: 2.5,
-                              color: _kCyan,
+                              // BUILD 451: spinner petróleo no light
+                              color: dark ? _kCyan : _kPetroleo,
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -432,8 +443,9 @@ class _PatientListItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        splashColor: _kCyan.withOpacity(0.10),
-        highlightColor: _kCyan.withOpacity(0.05),
+        // BUILD 451: ripple petróleo no light
+        splashColor: (dark ? _kCyan : _kPetroleo).withOpacity(0.10),
+        highlightColor: (dark ? _kCyan : _kPetroleo).withOpacity(0.05),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
@@ -448,14 +460,15 @@ class _PatientListItem extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: _kCyan.withOpacity(0.14),
+                  // BUILD 451: avatar petróleo no light
+                  color: (dark ? _kCyan : _kPetroleo).withOpacity(0.14),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
                   child: Text(
                     initial,
-                    style: const TextStyle(
-                      color: _kCyan,
+                    style: TextStyle(
+                      color: dark ? _kCyan : _kPetroleo,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
@@ -512,9 +525,10 @@ class _PatientListItem extends StatelessWidget {
 
               // ── Ícone de ação ─────────────────────────────────────────
               const SizedBox(width: 8),
+              // BUILD 451: ícone de ação petróleo no light
               Icon(
                 Icons.input_rounded,
-                color: _kCyan.withOpacity(0.70),
+                color: (dark ? _kCyan : _kPetroleo).withOpacity(0.70),
                 size: 20,
               ),
             ],
