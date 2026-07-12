@@ -4548,6 +4548,10 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
       // ── Content ─────────────────────────────────────────────────
       Expanded(
         child: SingleChildScrollView(
+          // BUILD 454-4: AlwaysScrollableScrollPhysics impede que o Flutter trave
+          // o scroll quando a viewport colapsa em contextos bounded (split view /
+          // bottom sheet). Sem isso, os cards de score inferiores desaparecem.
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
           child: _buildSection(isEs, c),
         ),

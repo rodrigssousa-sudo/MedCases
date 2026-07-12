@@ -1222,7 +1222,8 @@ class _HomeInlineChat extends StatefulWidget {
   State<_HomeInlineChat> createState() => _HomeInlineChatState();
 }
 
-class _HomeInlineChatState extends State<_HomeInlineChat> {
+class _HomeInlineChatState extends State<_HomeInlineChat>
+    with WidgetsBindingObserver {
   final _ctrl       = TextEditingController();
   // autofocus: false é obrigatório — o FocusNode NUNCA deve adquirir foco
   // automaticamente. Sem isso, o teclado abre sozinho ao retornar para a Home
@@ -1265,6 +1266,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
   @override
   void initState() {
     super.initState();
+    // BUILD 454-2: registra observer de ciclo de vida para checar TTL do histórico
+    // ao retornar do background — o AiScreen já faz isso via _checkScreenTtl(),
+    // mas o inline chat da Home precisava do mesmo mecanismo.
+    WidgetsBinding.instance.addObserver(this);
     // BUILD 295: log diagnóstico com tag estruturada — visível no Safari Web Console.
     try {
       debugPrint('[BUILD295][HomeInlineChat] init_ok — widget montado');
@@ -1280,6 +1285,48 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
       });
     } catch (e, st) {
       debugPrint('[BUILD295][HomeInlineChat] init_error: $e\n$st');
+    }
+  }
+
+  // BUILD 454-2: TTL check para o inline chat da Home.
+  // Mesma lógica do AiScreenState._checkScreenTtl() — usa a mesma chave
+  // SharedPreferences para manter consistência entre as duas superfícies de chat.
+  // Se passados > 30 min desde a última interação ativa, limpa o histórico local.
+  static const _kScreenTtlMs   = 30 * 60 * 1000; // 30 min em milissegundos
+  static const _kLastActiveKey = 'ai_screen_last_active_ms';
+
+  Future<void> _checkHomeTtl() async {
+    if (!mounted) return;
+    try {
+      final prefs  = await SharedPreferences.getInstance();
+      final lastMs = prefs.getInt(_kLastActiveKey) ?? 0;
+      final nowMs  = DateTime.now().millisecondsSinceEpoch;
+      if (nowMs - lastMs > _kScreenTtlMs) {
+        debugPrint('[BUILD454][HomeInlineChat] TTL expirado — limpando histórico '
+            'elapsed=${(nowMs - lastMs) ~/ 1000}s');
+        if (mounted) {
+          setState(() {
+            _messages.clear();
+            _streaming = '';
+            _thinking  = false;
+            _sessionId = null;
+            _lastLoadedUid    = null;
+            _lastLoadWasEmpty = true;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('[BUILD454][HomeInlineChat] _checkHomeTtl error: $e');
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // BUILD 454-2: ao voltar do background/foreground, verifica se o TTL expirou.
+    // Isso garante que histórico stale não poluí a Home após o usuário ficar
+    // > 30 min fora do app.
+    if (state == AppLifecycleState.resumed) {
+      _checkHomeTtl();
     }
   }
 
@@ -1540,6 +1587,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat> {
 
   @override
   void dispose() {
+    // BUILD 454-2: remove o observer de ciclo de vida ao destruir o widget.
+    WidgetsBinding.instance.removeObserver(this);
     _ctrl.dispose();
     _focus.dispose();
     _scrollCtrl.dispose();

@@ -543,10 +543,13 @@ class _HepatologyBodyState extends State<_HepatologyBody>
                   ),
                 ),
 
-              // BUILD 452-3: padding dinâmico — cresce quando o teclado está visível
-              SliverPadding(
-                padding: EdgeInsets.only(
-                  bottom: 40 + MediaQuery.of(context).viewInsets.bottom,
+              // BUILD 454-3: AnimatedContainer amortece a transição do teclado em
+              // split view — evita o salto brusco que ocultava o campo ativo.
+              SliverToBoxAdapter(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  height: 40 + MediaQuery.of(context).viewInsets.bottom,
                 ),
               ),
             ],

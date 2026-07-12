@@ -206,9 +206,41 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
   // salva no banco) + SharedPreferences (fallback offline / pacientes locais).
   // Funde os resultados por sessionKey, eliminando duplicatas.
   // Garante que pacientes ativos com SOAP salvo no Firestore apareçam na lista.
+  //
+  // BUILD 454-1: Auth race condition fix.
+  // PROBLEMA: FirebaseAuth.currentUser == null nos primeiros ms do boot (Web e iOS
+  // cold-start). Se _loadSessions() dispara antes do token ser propagado, uid fica
+  // vazio → Firestore retorna permission-denied → lista vazia exibida ao usuário.
+  //
+  // SOLUÇÃO: _resolveUid() aguarda authStateChanges() com timeout de 5s.
+  // Se currentUser já está disponível → retorna imediatamente (zero overhead).
+  // Se null → escuta o stream até o primeiro evento não-nulo (token propagado).
+  // Timeout: fallback para uid vazio → apenas cache local é consultado.
+  static Future<String> _resolveUid({
+    Duration timeout = const Duration(seconds: 5),
+  }) async {
+    // Caminho feliz: token já disponível (mobile/iOS pós-boot)
+    final current = FirebaseAuth.instance.currentUser;
+    if (current != null) return current.uid;
+
+    // Web cold-start: aguarda authStateChanges com timeout
+    try {
+      final user = await FirebaseAuth.instance
+          .authStateChanges()
+          .where((u) => u != null)
+          .first
+          .timeout(timeout);
+      return user?.uid ?? '';
+    } catch (_) {
+      // Timeout ou erro — usa cache local
+      return '';
+    }
+  }
+
   Future<void> _loadSessions() async {
     try {
-      final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+      // BUILD 454-1: aguarda resolução do auth antes de qualquer query Firestore
+      final uid = await _resolveUid();
 
       // ── 1. Fonte primária: Firestore (pacientes com status==active) ─────────
       List<PacienteSession> firestoreSessions = [];
