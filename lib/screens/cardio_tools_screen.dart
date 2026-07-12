@@ -32,6 +32,8 @@ const _kBg      = Color(0xFF0F1116);
 const _kSurface = Color(0xFF1A1D23);
 const _kBorder  = Color(0xFF2D3340);
 const _kCyan    = Color(0xFF00E5FF);
+// BUILD 450: Azul Petróleo — substitui neon no Light Mode
+const _kPetroleo = Color(0xFF1A365D);
 const _kGreen   = Color(0xFF10B981);
 const _kAmber   = Color(0xFFF59E0B);
 const _kRed     = Color(0xFFEF4444);
@@ -568,8 +570,9 @@ class _CardioBodyState extends State<_CardioBody>
               child: ElevatedButton(
                 onPressed: _calculate,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _kCyan,
-                  foregroundColor: _kBg,
+                  // BUILD 450: petróleo + branco
+                  backgroundColor: _kPetroleo,
+                  foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -633,10 +636,11 @@ class _CardioHeader extends StatelessWidget {
             Container(
               width: 42, height: 42,
               decoration: BoxDecoration(
-                color: _kCyan.withValues(alpha: 0.12),
+                // BUILD 450: header icon petróleo
+              color: _kPetroleo.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.favorite_rounded, color: _kCyan, size: 20),
+              child: const Icon(Icons.favorite_rounded, color: _kPetroleo, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -1115,8 +1119,9 @@ class _InputCard extends StatelessWidget {
           children: [
             Text(
               title,
+              // BUILD 450: petróleo para legibilidade no light mode
               style: const TextStyle(
-                color: _kCyan,
+                color: _kPetroleo,
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.8,
@@ -1154,40 +1159,49 @@ class _NField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 5),
-        TextFormField(
-          controller: ctrl,
-          validator: validator,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(color: _kTextSub, fontSize: 14),
-            filled: true,
-            fillColor: const Color(0xFF0F1116),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: _kBorder),
+        Builder(builder: (context) {
+          // BUILD 450: inputs light-mode-aware (cinza claro + texto preto)
+          final dark = Theme.of(context).brightness == Brightness.dark;
+          final fill = dark ? const Color(0xFF0F1116) : const Color(0xFFF1F3F5);
+          final bord = dark ? _kBorder : const Color(0xFFCBD5E1);
+          final accent = dark ? _kCyan : _kPetroleo;
+          final txtCol = dark ? Colors.white : Colors.black87;
+          final hintCol = dark ? _kTextSub : const Color(0xFF9CA3AF);
+          return TextFormField(
+            controller: ctrl,
+            validator: validator,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            style: TextStyle(color: txtCol, fontSize: 15, fontWeight: FontWeight.w600),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: TextStyle(color: hintCol, fontSize: 14),
+              filled: true,
+              fillColor: fill,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: bord),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: bord),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: accent, width: 1.5),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: _kRed),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: _kRed),
+              ),
+              errorStyle: const TextStyle(color: _kRed, fontSize: 10),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: _kBorder),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: _kCyan, width: 1.5),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: _kRed),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: _kRed),
-            ),
-            errorStyle: const TextStyle(color: _kRed, fontSize: 10),
-          ),
-        ),
+          );
+        }),
       ],
     );
   }
@@ -1216,11 +1230,14 @@ class _SexToggle extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 5),
-        Container(
+        Builder(builder: (ctx) {
+          final isDk = Theme.of(ctx).brightness == Brightness.dark;
+          return Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF0F1116),
+            // BUILD 450: transparent wrapper — chips gerem a cor internamente
+            color: isDk ? const Color(0xFF0F1116) : const Color(0xFFF1F3F5),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: _kBorder),
+            border: Border.all(color: isDk ? _kBorder : const Color(0xFFCBD5E1)),
           ),
           child: Row(
             children: [
@@ -1230,18 +1247,16 @@ class _SexToggle extends StatelessWidget {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 160),
                     padding: const EdgeInsets.symmetric(vertical: 10),
+                    // BUILD 450: ativo=petróleo sólido/branco, inativo=cinza claro
                     decoration: BoxDecoration(
-                      color: !isFemale ? _kCyan.withValues(alpha: 0.15) : Colors.transparent,
+                      color: !isFemale ? _kPetroleo : const Color(0xFFE2E8F0),
                       borderRadius: const BorderRadius.horizontal(left: Radius.circular(7)),
-                      border: !isFemale
-                          ? Border.all(color: _kCyan.withValues(alpha: 0.5))
-                          : null,
                     ),
                     child: Text(
                       isEs ? 'Masculino' : 'Masculino',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: !isFemale ? _kCyan : _kTextSub,
+                        color: !isFemale ? Colors.white : const Color(0xFF4B5563),
                         fontSize: 12, fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1255,17 +1270,14 @@ class _SexToggle extends StatelessWidget {
                     duration: const Duration(milliseconds: 160),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
-                      color: isFemale ? _kPurple.withValues(alpha: 0.15) : Colors.transparent,
+                      color: isFemale ? _kPetroleo : const Color(0xFFE2E8F0),
                       borderRadius: const BorderRadius.horizontal(right: Radius.circular(7)),
-                      border: isFemale
-                          ? Border.all(color: _kPurple.withValues(alpha: 0.5))
-                          : null,
                     ),
                     child: Text(
                       isEs ? 'Femenino' : 'Feminino',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: isFemale ? _kPurple : _kTextSub,
+                        color: isFemale ? Colors.white : const Color(0xFF4B5563),
                         fontSize: 12, fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1274,7 +1286,8 @@ class _SexToggle extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        );
+        }),
       ],
     );
   }
@@ -1305,13 +1318,14 @@ class _ToggleRow extends StatelessWidget {
                 right: items.indexOf(item) < items.length - 1 ? 8 : 0,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+              // BUILD 450: toggle item light-mode-aware
               decoration: BoxDecoration(
                 color: item.value
-                    ? _kCyan.withValues(alpha: 0.12)
-                    : const Color(0xFF0F1116),
+                    ? _kPetroleo.withOpacity(0.10)
+                    : const Color(0xFFF1F3F5),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: item.value ? _kCyan.withValues(alpha: 0.5) : _kBorder,
+                  color: item.value ? _kPetroleo.withOpacity(0.5) : const Color(0xFFCBD5E1),
                 ),
               ),
               child: Row(
@@ -1321,7 +1335,7 @@ class _ToggleRow extends StatelessWidget {
                     child: Text(
                       item.label,
                       style: TextStyle(
-                        color: item.value ? _kCyan : _kTextSub,
+                        color: item.value ? _kPetroleo : const Color(0xFF4B5563),
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -1334,11 +1348,11 @@ class _ToggleRow extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: item.value
-                          ? _kCyan
-                          : _kBorder,
+                          ? _kPetroleo
+                          : const Color(0xFFCBD5E1),
                     ),
                     child: item.value
-                        ? const Icon(Icons.check, size: 10, color: Color(0xFF0F1116))
+                        ? const Icon(Icons.check, size: 10, color: Colors.white)
                         : null,
                   ),
                 ],
@@ -1436,12 +1450,9 @@ class _DeeplinkButton extends StatelessWidget {
         width: double.infinity,
         height: 50,
         child: DecoratedBox(
+          // BUILD 450: fundo petróleo sólido + texto branco
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF00B4CC), Color(0xFF00E5FF)],
-              begin: Alignment.centerLeft,
-              end:   Alignment.centerRight,
-            ),
+            color: _kPetroleo,
             borderRadius: BorderRadius.circular(12),
           ),
           child: ElevatedButton(
@@ -1449,7 +1460,7 @@ class _DeeplinkButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,
               shadowColor:     Colors.transparent,
-              foregroundColor: const Color(0xFF0F1116),
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

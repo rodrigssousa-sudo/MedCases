@@ -40,6 +40,8 @@ const _kBg      = Color(0xFF0F1116);
 const _kSurface = Color(0xFF1A1D23);
 const _kBorder  = Color(0xFF2D3340);
 const _kCyan    = Color(0xFF00E5FF);
+// BUILD 450: Azul Petróleo — substitui neon no Light Mode
+const _kPetroleo = Color(0xFF1A365D);
 const _kGreen   = Color(0xFF10B981);
 const _kAmber   = Color(0xFFF59E0B);
 const _kRed     = Color(0xFFEF4444);
@@ -576,10 +578,11 @@ class _Header extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: _kCyan.withOpacity(0.12),
+              // BUILD 450: header icon petróleo
+              color: _kPetroleo.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.layers_outlined, color: _kCyan, size: 20),
+            child: const Icon(Icons.layers_outlined, color: _kPetroleo, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -1101,8 +1104,9 @@ class _ResultsSection extends StatelessWidget {
             children: [
               Text(
                 '${result.meldNa}',
+                // BUILD 450: MELD score value petróleo
                 style: const TextStyle(
-                  color: _kCyan, fontSize: 24, fontWeight: FontWeight.w800,
+                  color: _kPetroleo, fontSize: 24, fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(width: 10),
@@ -1414,7 +1418,8 @@ class _ResultsSection extends StatelessWidget {
   Color _factorRColor(double v) {
     if (v > 5.0) return _kRed;
     if (v >= 2.0) return _kAmber;
-    return _kCyan;
+    // BUILD 450: normal Fator R → petróleo
+    return _kPetroleo;
   }
 
   String _factorRLabel(double v, bool es) {
@@ -1502,8 +1507,11 @@ class _FieldBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill   = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF8FAFC);
+    // BUILD 450: light-mode fill = grey[100] + texto preto; dark unchanged
+    final fill   = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF1F3F5);
     final border = dark ? _kBorder : const Color(0xFFCBD5E1);
+    final accent = dark ? _kCyan : _kPetroleo;
+    final inputTxtColor = dark ? txt : Colors.black87;
 
     return TextFormField(
       controller:  ctrl,
@@ -1512,7 +1520,7 @@ class _FieldBox extends StatelessWidget {
         FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
       ],
       validator: validator,
-      style: TextStyle(color: txt, fontSize: 13, fontWeight: FontWeight.w500),
+      style: TextStyle(color: inputTxtColor, fontSize: 13, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText:      label,
         hintText:       hint,
@@ -1528,7 +1536,7 @@ class _FieldBox extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide:   const BorderSide(color: _kCyan, width: 1.5),
+          borderSide:   BorderSide(color: accent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -1564,13 +1572,16 @@ class _FieldBoxFreeText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill   = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF8FAFC);
+    // BUILD 450: light-mode fill = grey[100] + texto preto
+    final fill   = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF1F3F5);
     final border = dark ? _kBorder : const Color(0xFFCBD5E1);
+    final accent = dark ? _kCyan : _kPetroleo;
+    final inputTxtColor = dark ? txt : Colors.black87;
 
     return TextFormField(
       controller:   ctrl,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      style: TextStyle(color: txt, fontSize: 13, fontWeight: FontWeight.w500),
+      style: TextStyle(color: inputTxtColor, fontSize: 13, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText:      label,
         hintText:       hint,
@@ -1586,7 +1597,7 @@ class _FieldBoxFreeText extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide:   const BorderSide(color: _kCyan, width: 1.5),
+          borderSide:   BorderSide(color: accent, width: 1.5),
         ),
       ),
     );
@@ -1633,7 +1644,8 @@ class _DialysisToggle extends StatelessWidget {
           Switch.adaptive(
             value:          dialysis,
             onChanged:      onChange,
-            activeColor:    _kCyan,
+            // BUILD 450: petr\u00f3leo no light, cyan no dark
+            activeColor:    _kPetroleo,
             inactiveThumbColor: Colors.white54,
           ),
         ],
@@ -1681,13 +1693,14 @@ class _ScoreSelector extends StatelessWidget {
                   duration: const Duration(milliseconds: 180),
                   margin: EdgeInsets.only(right: i < options.length - 1 ? 6 : 0),
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  // BUILD 450: ativo=petróleo sólido/branco, inativo=cinza
                   decoration: BoxDecoration(
                     color: active
-                        ? _kCyan.withOpacity(0.15)
-                        : (dark ? const Color(0xFF2A2F3A) : const Color(0xFFF8FAFC)),
+                        ? _kPetroleo
+                        : (dark ? const Color(0xFF2A2F3A) : const Color(0xFFE2E8F0)),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: active ? _kCyan : border,
+                      color: active ? _kPetroleo : border,
                       width: active ? 1.5 : 1.0,
                     ),
                   ),
@@ -1698,7 +1711,7 @@ class _ScoreSelector extends StatelessWidget {
                     style: TextStyle(
                       fontSize:   10,
                       fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-                      color:      active ? _kCyan : sub,
+                      color:      active ? Colors.white : sub,
                     ),
                   ),
                 ),
@@ -1779,8 +1792,9 @@ class _CalcButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onTap,
           style: ElevatedButton.styleFrom(
-            backgroundColor: _kCyan,
-            foregroundColor: const Color(0xFF0F1116),
+            // BUILD 450: petróleo + branco
+            backgroundColor: _kPetroleo,
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

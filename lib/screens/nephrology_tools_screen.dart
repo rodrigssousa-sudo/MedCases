@@ -38,6 +38,8 @@ const _kBg        = Color(0xFF0F1116);
 const _kSurface   = Color(0xFF1A1D23);
 const _kBorder    = Color(0xFF2D3340);
 const _kCyan      = Color(0xFF00E5FF);
+// BUILD 450: Azul Petróleo — substitui neon no Light Mode
+const _kPetroleo  = Color(0xFF1A365D);
 const _kGreen     = Color(0xFF10B981);
 const _kAmber     = Color(0xFFF59E0B);
 const _kRed       = Color(0xFFEF4444);
@@ -514,10 +516,11 @@ class _Header extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: _kCyan.withOpacity(0.12),
+              // BUILD 450: header icon petróleo
+              color: _kPetroleo.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.water_drop_rounded, color: _kCyan, size: 20),
+            child: const Icon(Icons.water_drop_rounded, color: _kPetroleo, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -822,9 +825,12 @@ class _FieldBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill   = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF8FAFC);
+    // BUILD 450: light-mode fill = grey[100] + texto preto; dark unchanged
+    final fill   = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF1F3F5);
     final border = dark ? _kBorder : const Color(0xFFCBD5E1);
+    final accent = dark ? _kCyan : _kPetroleo;
     final errCol = _kRed;
+    final inputTxtColor = dark ? txt : Colors.black87;
 
     return TextFormField(
       controller:  ctrl,
@@ -834,7 +840,7 @@ class _FieldBox extends StatelessWidget {
       ],
       validator: validator,
       style: TextStyle(
-        color: txt, fontSize: 13, fontWeight: FontWeight.w500,
+        color: inputTxtColor, fontSize: 13, fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
         labelText:        label,
@@ -849,7 +855,7 @@ class _FieldBox extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide:   const BorderSide(color: _kCyan, width: 1.5),
+          borderSide:   BorderSide(color: accent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -884,7 +890,8 @@ class _SexToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF8FAFC);
+    // BUILD 450: sex toggle outer container light-mode fill
+    final fill = dark ? const Color(0xFF2A2F3A) : const Color(0xFFF1F3F5);
     final bd   = dark ? _kBorder : const Color(0xFFCBD5E1);
 
     return Column(
@@ -947,8 +954,11 @@ class _SexOption extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
+          // BUILD 450: ativo=petróleo sólido/branco, inativo=cinza claro
           decoration: BoxDecoration(
-            color: active ? _kCyan.withOpacity(0.15) : Colors.transparent,
+            color: active
+                ? (dark ? _kCyan.withOpacity(0.15) : _kPetroleo)
+                : (dark ? Colors.transparent : const Color(0xFFE2E8F0)),
             borderRadius: BorderRadius.only(
               topLeft:     left  ? const Radius.circular(8) : Radius.zero,
               bottomLeft:  left  ? const Radius.circular(8) : Radius.zero,
@@ -962,7 +972,9 @@ class _SexOption extends StatelessWidget {
             style: TextStyle(
               fontSize:   11,
               fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-              color:      active ? _kCyan : (dark ? Colors.white54 : Colors.black45),
+              color: active
+                  ? (dark ? _kCyan : Colors.white)
+                  : (dark ? Colors.white54 : const Color(0xFF4B5563)),
             ),
           ),
         ),
@@ -986,8 +998,9 @@ class _CalcButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onTap,
           style: ElevatedButton.styleFrom(
-            backgroundColor: _kCyan,
-            foregroundColor: const Color(0xFF0F1116),
+            // BUILD 450: petróleo + branco
+            backgroundColor: _kPetroleo,
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -1035,7 +1048,8 @@ class _ResultsSection extends StatelessWidget {
         _ResultCard(
           dark: dark, surf: surf, border: border,
           icon: Icons.science_rounded,
-          iconColor: _kCyan,
+          // BUILD 450: CrCl/eGFR result icon petróleo
+          iconColor: _kPetroleo,
           title: 'CKD-EPI 2021',
           valueRow: Row(
             children: [
@@ -1393,12 +1407,9 @@ class _DeeplinkButton extends StatelessWidget {
         width: double.infinity,
         height: 50,
         child: DecoratedBox(
+          // BUILD 450: fundo petróleo sólido + texto branco (substitui gradiente neon)
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF00B4CC), Color(0xFF00E5FF)],
-              begin: Alignment.centerLeft,
-              end:   Alignment.centerRight,
-            ),
+            color: _kPetroleo,
             borderRadius: BorderRadius.circular(12),
           ),
           child: ElevatedButton(
@@ -1406,7 +1417,7 @@ class _DeeplinkButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,
               shadowColor:     Colors.transparent,
-              foregroundColor: const Color(0xFF0F1116),
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
