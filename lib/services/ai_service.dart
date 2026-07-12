@@ -1237,6 +1237,34 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
         debugPrint('[BUILD272][AiService] PROPRIETARIO_MEDCASES injetado: ${proprietaryDrugContext!.length} chars');
       }
 
+      // ── BUILD 460: CONVERSATIONAL MODE — Anti-Loop de Overprompting ───────────
+      // isFollowUp = !isFirstMessage: Turno > 1 na mesma sessão/tópico.
+      // Quando isFollowUp=true, injeta instrução de altíssima prioridade
+      // ANTES de qualquer outro módulo, suprimindo repeticão de definição/fisiopatologia.
+      // Posição: PRIMEIRO no prompt — sobrescreve todos os módulos subsequentes.
+      final isFollowUp = !isFirstMessage;
+      final ptConversationalMode = isFollowUp
+          ? (isEs
+              ? '[MODO_CONVERSACIONAL] TURNO DE SEGUIMIENTO EN GUARDIA.\n'
+                'El médico YA recibió la definición, fisiopatología y contexto teórico '
+                'en la respuesta anterior visible en el historial.\n'
+                'PROHIBICIÓN ABSOLUTA: repetir definiciones, fisiopatología, mecanismos moleculares '
+                'o cualquier concepto teórico ya explicado en turnos anteriores.\n'
+                'MANDATO: responde DIRECTAMENTE a la nueva duda clínica — dosis, ajuste, '
+                'conducta específica o variación solicitada — de forma quirúrgica y limpia.\n'
+                'Si el historial muestra que el tema cambió completamente, ignora esta restricción '
+                'y trata como turno inicial.\n\n'
+              : '[MODO_CONVERSACIONAL] TURNO DE ACOMPANHAMENTO NO PLANTÃO.\n'
+                'O médico JÁ recebeu a definição, fisiopatologia e contexto teórico '
+                'na resposta anterior visível no histórico.\n'
+                'PROIBIÇÃO ABSOLUTA: repetir definições, fisiopatologia, mecanismos moleculares '
+                'ou qualquer conceito teórico já explicado em turnos anteriores.\n'
+                'MANDATO: responda DIRETAMENTE à nova dúvida clínica — dose, ajuste, '
+                'conduta específica ou variação solicitada — de forma cirúrgica e limpa.\n'
+                'Se o histórico mostrar que o tema mudou completamente, ignore esta restrição '
+                'e trate como turno inicial.\n\n')
+          : '';
+
       // ── PLANTÃO ASSEMBLY — compact modules only ───────────────────────────
       // BUILD 271: ptMatrixCompletion injetado antes de ptSelfCheck para máxima força.
       // BUILD 272: ptProprietaryBlock injetado após RAG local, antes de ptMatrixCompletion.
@@ -1244,7 +1272,9 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
       // BUILD 275-ADENDO: ptUxFlowDoctrine após ptStreamFormat — doutrina UX: gatilho inicial + gancho 📌.
       // BUILD 275-FIX: ptStreamFormat reescrito com REGRA Nº1 nível binário — exemplos BAD/GOOD,
       //   proibição de ASCII 32/9 na coluna 0, self-repair mandate em ptSelfCheck item 7.
-      return '$ptLangHeader'
+      // BUILD 460: ptConversationalMode injetado ANTES de tudo quando isFollowUp=true.
+      return '$ptConversationalMode'
+             '$ptLangHeader'
              '$ptStreamFormat'
              '$ptUxFlowDoctrine'
              '$ptSupremacyRule'
@@ -1654,8 +1684,38 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
     // _sourcesPt/_sourcesEs mantidos: referências bibliográficas são agnósticas de modo.
     final sources = isEs ? '$_sourcesEs\n\n' : '$_sourcesPt\n\n';
 
+    // ── BUILD 460: CONVERSATIONAL MODE — Estudo path ──────────────────────────
+    // Mesma lógica do Plantão path: isFollowUp suprime teoria já explicada.
+    // No Estudo, a teoria é mais densa (fisiopatologia, pathways moleculares) —
+    // o risco de repetição é ainda maior, tornando o anti-loop mais crítico aqui.
+    final isFollowUpEstudo = !isFirstMessage;
+    final conversationalModeEstudo = isFollowUpEstudo
+        ? (isEs
+            ? '[MODO_CONVERSACIONAL] TURNO DE SEGUIMIENTO — MODO ESTUDIO.\n'
+              'El médico YA recibió la definición, fisiopatología, epidemiología y '
+              'pathways moleculares en la respuesta anterior del historial.\n'
+              'PROHIBICIÓN ABSOLUTA: reescribir definición de la condición, fisiopatología, '
+              'mecanismo de acción ya descrito, historia clínica del tema o cualquier '
+              'sección teórica ya cubierta en turnos anteriores.\n'
+              'MANDATO: ve DIRECTAMENTE a la nueva duda — dosis específica, ajuste, '
+              'variación poblacional, manejo de efecto adverso o lo que el médico preguntó. '
+              'Respuesta focalizada, sin preámbulo, sin repetición.\n'
+              'Si el tema cambió completamente, ignora esta restricción.\n\n'
+            : '[MODO_CONVERSACIONAL] TURNO DE ACOMPANHAMENTO — MODO ESTUDO.\n'
+              'O médico JÁ recebeu a definição, fisiopatologia, epidemiologia e '
+              'pathways moleculares na resposta anterior do histórico.\n'
+              'PROIBIÇÃO ABSOLUTA: reescrever definição da condição, fisiopatologia, '
+              'mecanismo de ação já descrito, história clínica do tema ou qualquer '
+              'seção teórica já coberta em turnos anteriores.\n'
+              'MANDATO: vá DIRETAMENTE à nova dúvida — dose específica, ajuste, '
+              'variação populacional, manejo de efeito adverso ou o que o médico perguntou. '
+              'Resposta focada, sem preâmbulo, sem repetição.\n'
+              'Se o tema mudou completamente, ignore esta restrição.\n\n')
+        : '';
+
     if (isEs) {
-      return '$langHeader'
+      return '$conversationalModeEstudo'
+             '$langHeader'
              '$coreIdentity\n\n'
              '$clinicalReasoning\n\n'
              '$specialtyAdaptation\n\n'
@@ -1673,7 +1733,8 @@ REGRAS DE OURO INEGOCIÁVEIS (Build 132):
              '$selfCheck'
              '$contextAnchor';
     } else {
-      return '$langHeader'
+      return '$conversationalModeEstudo'
+             '$langHeader'
              '$coreIdentity\n\n'
              '$clinicalReasoning\n\n'
              '$specialtyAdaptation\n\n'
