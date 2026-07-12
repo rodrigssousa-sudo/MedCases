@@ -385,10 +385,12 @@ class _HepatologyBodyState extends State<_HepatologyBody>
   void _launchDeeplink() {
     if (_result == null) return;
     HapticFeedback.mediumImpact();
-    // BUILD 447-URL-PAYLOAD: serializa campos Hepatologia como query params
+    // BUILD 447-URL-PAYLOAD + BUILD 449-LANG-PAYLOAD: serializa idioma e
+    // campos Hepatologia como query params.
     const baseUrl = 'https://medcasescalcu.com/condutas/hepatologia';
+    final langCode = widget.isEs ? 'es' : 'pt';
     final queryParams = context.read<ToolsStateProvider>()
-        .buildQueryStringForSpecialty('hepato');
+        .buildQueryStringForSpecialty('hepato', langCode);
     final conductaUrl = '$baseUrl$queryParams';
     if (!mounted) return;
     Navigator.of(context).push(

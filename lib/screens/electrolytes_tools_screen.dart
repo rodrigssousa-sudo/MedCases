@@ -365,10 +365,12 @@ class _ElectroBodyState extends State<_ElectroBody>
   void _launchDeeplink() {
     if (_result == null) return;
     HapticFeedback.mediumImpact();
-    // BUILD 447-URL-PAYLOAD: serializa campos Eletrólitos/Gasometria como query params
+    // BUILD 447-URL-PAYLOAD + BUILD 449-LANG-PAYLOAD: serializa idioma e
+    // campos Eletrólitos/Gasometria como query params.
     const baseUrl = 'https://medcasescalcu.com/condutas/eletrolitos-gasometria';
+    final langCode = widget.isEs ? 'es' : 'pt';
     final queryParams = context.read<ToolsStateProvider>()
-        .buildQueryStringForSpecialty('eletrolitos');
+        .buildQueryStringForSpecialty('eletrolitos', langCode);
     final conductaUrl = '$baseUrl$queryParams';
     if (!mounted) return;
     Navigator.of(context).push(

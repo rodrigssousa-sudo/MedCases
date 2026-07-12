@@ -316,10 +316,12 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   void _launchDeeplink() {
     if (_result == null) return;
     HapticFeedback.mediumImpact();
-    // BUILD 447-URL-PAYLOAD: serializa campos Nefrologia como query params
+    // BUILD 447-URL-PAYLOAD + BUILD 449-LANG-PAYLOAD: serializa idioma e
+    // campos Nefrologia como query params.
     const baseUrl = 'https://medcasescalcu.com/condutas/nefrologia';
+    final langCode = widget.isEs ? 'es' : 'pt';
     final queryParams = context.read<ToolsStateProvider>()
-        .buildQueryStringForSpecialty('nefro');
+        .buildQueryStringForSpecialty('nefro', langCode);
     final conductaUrl = '$baseUrl$queryParams';
     if (!mounted) return;
     Navigator.of(context).push(

@@ -198,16 +198,19 @@ class ToolsStateProvider extends ChangeNotifier {
   };
 
   // ──────────────────────────────────────────────────────────────────────────
-  // buildQueryStringForSpecialty — BUILD 447-URL-PAYLOAD
+  // buildQueryStringForSpecialty — BUILD 447-URL-PAYLOAD + BUILD 449-LANG-PAYLOAD
   //
-  // Serializa apenas os campos pertinentes de cada especialidade como Query
-  // Parameters para injeção dinâmica na URL da WebView.
+  // Serializa o idioma ativo e os campos pertinentes de cada especialidade
+  // como Query Parameters para injeção dinâmica na URL da WebView.
   //
   // Regras:
-  //   • Chaves com valor vazio são OMITIDAS (URL limpa, sem "?na=&cr=").
-  //   • Sexo biológico: "sex=M" ou "sex=F".
-  //   • Retorna "" (string vazia) quando NENHUM campo está preenchido.
-  //   • Retorna "?key=val&key2=val2" quando há ao menos 1 campo.
+  //   • [lang] é SEMPRE incluído como primeiro parâmetro ('pt' ou 'es').
+  //   • Chaves clínicas com valor vazio são OMITIDAS (URL limpa).
+  //   • Sexo biológico: "sex=M" ou "sex=F" — incluído apenas quando há ao
+  //     menos 1 outro campo clínico preenchido (evita "?lang=pt&sex=M" sozinho).
+  //   • Retorna "?lang=$lang" (sem dados clínicos) quando nenhum campo clínico
+  //     está preenchido — garante que a calculadora externa abra no idioma certo.
+  //   • Retorna "?lang=$lang&key=val&..." quando há campos preenchidos.
   //
   // Especialidades suportadas:
   //   'eletrolitos' → ph, pco2, hco3, be, na, cl, gluc, ca, bun, alb, weight
@@ -215,16 +218,16 @@ class ToolsStateProvider extends ChangeNotifier {
   //   'cardio'      → age, sex, pas, col, qt, fc
   //   'hepato'      → age, sex, na, bili, inr, alb, ast, alt, plat
   // ──────────────────────────────────────────────────────────────────────────
-  String buildQueryStringForSpecialty(String specialty) {
-    // Helper: só adiciona à map se o valor não estiver vazio.
-    final Map<String, String> params = {};
+  String buildQueryStringForSpecialty(String specialty, String lang) {
+    // Helper: só adiciona à map clínica se o valor não estiver vazio.
+    final Map<String, String> clinical = {};
 
     void _add(String key, String value) {
       final v = value.trim();
-      if (v.isNotEmpty) params[key] = v;
+      if (v.isNotEmpty) clinical[key] = v;
     }
 
-    void _addSex() => params['sex'] = _isFemale ? 'F' : 'M';
+    void _addSex() => clinical['sex'] = _isFemale ? 'F' : 'M';
 
     switch (specialty) {
       case 'eletrolitos':
@@ -268,21 +271,30 @@ class ToolsStateProvider extends ChangeNotifier {
         _add('plat',   platCtrl.text);
 
       default:
-        // Especialidade desconhecida — retorna sem parâmetros
-        return '';
+        // Especialidade desconhecida — retorna apenas o idioma
+        return '?lang=${Uri.encodeQueryComponent(lang)}';
     }
 
-    if (params.isEmpty) return '';
+    // Remove 'sex' sozinho (sem nenhum outro dado clínico real).
+    // Ex.: nefro com todos campos vazios → clinical = {'sex': 'M'} → descarta sex.
+    final hasClinicalBeyondSex =
+        clinical.keys.any((k) => k != 'sex');
+    if (!hasClinicalBeyondSex) clinical.remove('sex');
 
-    // Para 'nefro' e 'cardio', sex=M/F é sempre incluído (mesmo sem dados)
-    // mas só queremos incluir sex se havia ao menos 1 dado clínico real.
-    // Verificação: se params contém APENAS 'sex', omite sex sozinho.
-    if (params.length == 1 && params.containsKey('sex')) return '';
+    // lang é sempre o primeiro parâmetro; clínicos vêm em seguida.
+    final langPair =
+        '${Uri.encodeQueryComponent('lang')}=${Uri.encodeQueryComponent(lang)}';
 
-    final query = params.entries
-        .map((e) => '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}')
+    if (clinical.isEmpty) {
+      // Nenhum campo clínico preenchido → ao menos ?lang=XX
+      return '?$langPair';
+    }
+
+    final clinicalPairs = clinical.entries
+        .map((e) =>
+            '${Uri.encodeQueryComponent(e.key)}=${Uri.encodeQueryComponent(e.value)}')
         .join('&');
-    return '?$query';
+    return '?$langPair&$clinicalPairs';
   }
 
   // ──────────────────────────────────────────────────────────────────────────
