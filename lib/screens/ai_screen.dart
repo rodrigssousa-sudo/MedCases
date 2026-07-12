@@ -365,6 +365,14 @@ class _AiScreenState extends State<AiScreen> {
   String? _historyLoadedForUid;
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
+  // BUILD 452-1: TTL de volatilidade de tela — 30 minutos.
+  // Se o médico retornar à tela após 30+ min de inatividade,
+  // a conversa anterior é descartada e a UI abre totalmente limpa.
+  // A chave SharedPreferences 'ai_screen_last_active_ms' persiste o
+  // timestamp epoch (ms) da última atividade registrada.
+  static const _kScreenTtlMs = 30 * 60 * 1000; // 30 min em ms
+  static const _kLastActiveKey = 'ai_screen_last_active_ms';
+
   /// ID da sessão restaurada do histórico (se a sessão atual veio do histórico
   /// sem nenhuma mensagem nova do usuário, não deve ser re-salva ao limpar).
   String? _restoredSessionId;
@@ -522,6 +530,10 @@ class _AiScreenState extends State<AiScreen> {
       // Consome histórico pendente (caso injetado antes do listener ativo)
       _onPendingHistory();
     });
+    // BUILD 452-1: TTL de volatilidade — verifica se expirou 30 min.
+    // Deve rodar ANTES de _loadChatHistory() para que, em caso de expiração,
+    // o histórico local já esteja limpo quando as sessões forem carregadas.
+    _checkScreenTtl();
     // Carrega histórico de chats do SharedPrefs
     _loadChatHistory();
 
@@ -580,6 +592,61 @@ class _AiScreenState extends State<AiScreen> {
         }
       });
     });
+  }
+
+  // ── BUILD 452-1: TTL de volatilidade de tela (30 minutos) ─────────────
+  /// Ao montar a tela, lê o timestamp da última atividade.
+  /// Se a diferença for > 30 min, limpa a thread em memória e o _messages[]
+  /// apresentando a tela totalmente em branco com saudação fresca.
+  /// Registra também o timestamp atual como "última abertura".
+  Future<void> _checkScreenTtl() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final nowMs = DateTime.now().millisecondsSinceEpoch;
+      final lastMs = prefs.getInt(_kLastActiveKey) ?? 0;
+      // Persiste o novo timestamp imediatamente (próxima abertura vai comparar)
+      await prefs.setInt(_kLastActiveKey, nowMs);
+
+      if (lastMs == 0) return; // primeira abertura — sem histórico para limpar
+
+      final elapsed = nowMs - lastMs;
+      if (elapsed <= _kScreenTtlMs) return; // dentro do TTL — mantém histórico
+
+      // Expirado: reset silencioso — descarta thread visual (sem salvar)
+      if (kDebugMode) {
+        debugPrint('[BUILD452_TTL] elapsed=${elapsed ~/ 60000}min > 30min '
+            '— limpando thread visual e reiniciando sessão limpa.');
+      }
+      // Limpa mensagens em memória; _greetingDone=false força nova saudação
+      if (mounted) {
+        setState(() {
+          _messages.clear();
+          _greetingDone        = false;
+          _chatEpoch++;           // invalida cache gráfico do ListView
+          _activeSessionId     = null;
+          _restoredSessionId   = null;
+          _hasNewMessageAfterRestore = false;
+          _aiError             = false;
+          _networkError        = false;
+          _userScrolledUp      = false;
+        });
+        // Limpa histórico de transporte da IA (context do Gemini)
+        final p = context.read<AppProvider>();
+        p.clearAiHistory();
+      }
+    } catch (e) {
+      // Falha silenciosa — TTL nunca quebra o fluxo principal
+      if (kDebugMode) debugPrint('[BUILD452_TTL] erro: $e');
+    }
+  }
+
+  /// Atualiza o timestamp de última atividade no SharedPreferences.
+  /// Chamado sempre que o usuário envia uma mensagem.
+  Future<void> _updateLastActive() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_kLastActiveKey, DateTime.now().millisecondsSinceEpoch);
+    } catch (_) {}
   }
 
   // ── Inicialização TTS ───────────────────────────────────────────────────
@@ -1650,6 +1717,8 @@ class _AiScreenState extends State<AiScreen> {
 
     _sendGuard = true;
     _focusNode.unfocus();
+    // BUILD 452-1: atualiza timestamp de última atividade (para TTL 30 min)
+    _updateLastActive();
     // Registra no histórico de atividades recentes
     ActivityService.log(
       type: ActivityType.ia,

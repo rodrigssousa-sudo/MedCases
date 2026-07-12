@@ -494,12 +494,14 @@ class _CardioBodyState extends State<_CardioBody>
     final txt   = dark ? Colors.white       : const Color(0xFF0F1116);
     final sub   = dark ? _kTextSub          : const Color(0xFF6B7280);
 
+    // BUILD 452-3: padding bottom dinâmico — cresce com o teclado iOS/Android
+    final kbBottom = MediaQuery.of(context).viewInsets.bottom;
     return ColoredBox(
       color: bg,
       child: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 100 + kbBottom),
           children: [
             // ── Header ─────────────────────────────────────────────────────
             _CardioHeader(isEs: isEs, surf: surf, bord: bord, txt: txt, sub: sub),

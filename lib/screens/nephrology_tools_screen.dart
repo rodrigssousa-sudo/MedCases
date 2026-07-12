@@ -365,7 +365,10 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     final sub    = dark ? _kTextSub  : const Color(0xFF64748B);
     final border = dark ? _kBorder   : const Color(0xFFCBD5E1);
 
+    // BUILD 452-3: resizeToAvoidBottomInset=true — o Scaffold cede espaço
+    // ao teclado e o CustomScrollView rola naturalmente sem comprimir a viewport.
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: bg,
       body: SafeArea(
         child: Form(
@@ -478,7 +481,12 @@ class _NephrologyBodyState extends State<_NephrologyBody>
                   ),
                 ),
 
-              const SliverPadding(padding: EdgeInsets.only(bottom: 40)),
+              // BUILD 452-3: padding dinâmico — cresce quando o teclado está visível
+              SliverPadding(
+                padding: EdgeInsets.only(
+                  bottom: 40 + MediaQuery.of(context).viewInsets.bottom,
+                ),
+              ),
             ],
           ),
         ),

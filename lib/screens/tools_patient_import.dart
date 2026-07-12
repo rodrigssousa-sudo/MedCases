@@ -22,8 +22,11 @@
 //   • Border ciano sutil, fundo translúcido, ícone ⚡ de ação
 // ══════════════════════════════════════════════════════════════════════════════
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 
+import 'internacion/services/internacion_firestore_service.dart';
 import 'internacion/services/internacion_persistence.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -199,12 +202,55 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
     _loadSessions();
   }
 
+  // BUILD 452-2: consulta dual — Firestore (primário, pacientes com evolução
+  // salva no banco) + SharedPreferences (fallback offline / pacientes locais).
+  // Funde os resultados por sessionKey, eliminando duplicatas.
+  // Garante que pacientes ativos com SOAP salvo no Firestore apareçam na lista.
   Future<void> _loadSessions() async {
     try {
-      final sessions = await InternacionPersistence.loadAllSessions();
+      final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+      // ── 1. Fonte primária: Firestore (pacientes com status==active) ─────────
+      List<PacienteSession> firestoreSessions = [];
+      if (uid.isNotEmpty) {
+        try {
+          firestoreSessions =
+              await InternacionFirestoreService.loadAllSessions(uid);
+          if (kDebugMode) {
+            debugPrint('[BUILD452-2] Firestore: ${firestoreSessions.length} sessões ativas');
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            debugPrint('[BUILD452-2] Firestore erro: $e');
+          }
+        }
+      }
+
+      // ── 2. Fonte secundária: SharedPreferences (offline / pacientes locais) ─
+      List<PacienteSession> localSessions = [];
+      try {
+        localSessions = await InternacionPersistence.loadAllSessions();
+        if (kDebugMode) {
+          debugPrint('[BUILD452-2] Local: ${localSessions.length} sessões');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          debugPrint('[BUILD452-2] Local erro: $e');
+        }
+      }
+
+      // ── 3. Funde sem duplicatas (Firestore tem prioridade por sessionKey) ───
+      final seen = <String>{};
+      final merged = <PacienteSession>[];
+      for (final s in [...firestoreSessions, ...localSessions]) {
+        if (seen.add(s.sessionKey)) merged.add(s);
+      }
+      // Ordena por data mais recente primeiro
+      merged.sort((a, b) => b.savedAt.compareTo(a.savedAt));
+
       if (mounted) {
         setState(() {
-          _sessions = sessions;
+          _sessions = merged;
           _loading  = false;
         });
       }
