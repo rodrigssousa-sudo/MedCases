@@ -489,6 +489,20 @@ class _AiScreenState extends State<AiScreen> {
       setState(() => _hasFocus = _focusNode.hasFocus);
       // Fix #5: propaga foco ao FAB central (main.dart oculta o botão)
       AiScreen.chatKeyboardOpen.value = _focusNode.hasFocus;
+      // AUDIT 3.1 — Keyboard auto-scroll:
+      // Quando o teclado abre (campo ganha foco), rola para o fundo do chat
+      // para que a última mensagem e o campo de input permaneçam visíveis.
+      // Usa addPostFrameCallback para aguardar o layout ser recalculado pelo
+      // sistema APÓS o teclado ser mostrado (viewInsets atualizado).
+      // Não dispara durante streaming (_isStreaming) para não interromper leitura.
+      // Guideline Apple 4.0: elementos interativos nunca devem ser cortados.
+      if (_focusNode.hasFocus && !_isStreaming && !_thinking) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_userScrolledUp) {
+            _scrollDown(force: true);
+          }
+        });
+      }
     }
   }
 
@@ -1744,6 +1758,22 @@ class _AiScreenState extends State<AiScreen> {
 
     // ── Índice da bolha de streaming (-1 = não iniciada ainda) ──────────────
     int streamingMsgIdx = -1;
+
+    // ── AUDIT 4.1 — StreamingTextNotifier lifecycle ────────────────────────
+    // Inicializa o ValueNotifier<String> ANTES de sendAiMessage() para garantir
+    // que ele exista quando o primeiro chunk chegar (onChunk callback).
+    //
+    // PROBLEMA ANTERIOR: _streamingTextNotifier era apenas null; as chamadas
+    // `_streamingTextNotifier?.value = cleanedChunk` eram todas no-ops silenciosos.
+    // O notifier nunca era criado → _AiBubble recebia null → streaming ultra-localizado
+    // (sem rebuild da árvore inteira) não funcionava → cada chunk reconstruía
+    // toda a lista via setState() → GC pressure aumentada + UI jitter em respostas longas.
+    //
+    // SOLUÇÃO: criar o notifier aqui (pré-streaming), passá-lo para _AiBubble via
+    // `streamingTextNotifier`, e descartá-lo no onDone/onError como antes.
+    // Garante repaint cirúrgico localizado na bolha ativa.
+    _streamingTextNotifier?.dispose(); // descarta eventual notifier órfão
+    _streamingTextNotifier = ValueNotifier<String>('');
 
     // ── Build 230: Anti-Freezing — trava de header strip após chunk 12 ────────
     // _stripMetadataHeaders() usa RegEx pesado com dotAll=true e múltiplas

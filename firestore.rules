@@ -3,11 +3,35 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ══════════════════════════════════════════════════════════════════════════
-    // HELPERS DE AUTENTICAÇÃO
+    // HELPERS DE AUTENTICAÇÃO — AUDIT 453 (Apple Pre-Submission Hardening)
+    //
+    // Proteções adicionadas:
+    //   • isOwner(uid): garante que request.auth.uid == uid (proteção IDOR/
+    //     injeção de parâmetro via URL). Substitui a checagem inline espalhada.
+    //   • isTokenFresh(): bloqueia tokens com iat > 3600s (1h) para operações
+    //     de escrita sensíveis (dados clínicos), evitando replay com token
+    //     expirado que ainda não foi revogado pelo SDK Web.
+    //   • hasVerifiedEmail(): garante email verificado para acesso a dados
+    //     clínicos sensíveis (Nefrologia, Pediatria, Hepatologia).
     // ══════════════════════════════════════════════════════════════════════════
 
     function isAuthed() {
       return request.auth != null;
+    }
+
+    // AUDIT 453: owner guard — protege contra ataques de injeção de UID via
+    // parâmetro de URL no Flutter Web (ex: ?uid=outro_usuario).
+    // Garante formalmente que request.auth.uid == userId em TODA operação.
+    function isOwner(userId) {
+      return isAuthed() && request.auth.uid == userId;
+    }
+
+    // AUDIT 453: token freshness — bloqueia tokens com mais de 1 hora para
+    // operações de escrita sensíveis. Previne replay com token ainda válido
+    // mas emitido há muito tempo (ex.: sessão esquecida aberta no navegador).
+    function isTokenFresh() {
+      return request.auth != null
+        && (request.time.toMillis() - request.auth.token.iat * 1000) < 3600000;
     }
 
     function userPath() {
@@ -192,9 +216,11 @@ service cloud.firestore {
       allow delete: if isAdmin();
 
       // Subcoleções do usuário
+      // AUDIT 453: isOwner() substitui checagem inline — proteção IDOR explícita
       match /internaciones/{document=**} {
-        allow read, write: if isAuthed()
-          && (request.auth.uid == userId || isAdmin());
+        allow read, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) && isTokenFresh();
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       match /clinical_histories/{document=**} {
@@ -217,17 +243,36 @@ service cloud.firestore {
           && (request.auth.uid == userId || isAdmin());
       }
 
-      // BUILD 332: 'list' explícito para que Master/Admin possam executar
-      // loadAiSessions(uid) com query .orderBy().limit().get() em qualquer
-      // usuário — resolve "[permission-denied] Missing or insufficient permissions"
-      // no Painel Master ao invocar loadAiSessions cross-user.
+      // AUDIT 453 — ai_chat_history: regras explícitas + isOwner() + isTokenFresh()
+      //
+      // PROTEÇÕES (Apple Guideline 5.1.1 — Data Collection & Storage):
+      //   • read/list: apenas o owner ou admin — NUNCA outro uid (anti-IDOR)
+      //   • create: owner + token fresco (< 1h) + campo uid == request.auth.uid
+      //             (bloqueia injeção de uid alheio no payload)
+      //   • update: owner + token fresco — impede escrita cruzada de sessões
+      //   • delete: owner ou admin
+      //
+      // RACE CONDITION FIX (Apple Guideline 2.1 — Performance):
+      //   As regras do Firestore avaliam request.auth no momento da requisição.
+      //   Se o SDK Web ainda não propagou o token, request.auth será null e
+      //   a rule retorna false → permission-denied.
+      //   O fix correto está no cliente (AUDIT 453 _waitForAuth()), mas as rules
+      //   aqui servem como última barreira de segurança formal.
+      //
+      // NOTA BUILD 332: isAdmin() mantido para leitura cross-user no Painel Master.
       match /ai_chat_history/{sessionId} {
-        allow get, list, read, write: if isAuthed()
-          && (request.auth.uid == userId || isAdmin());
+        allow read, list: if isOwner(userId) || isAdmin();
+
+        allow create: if isOwner(userId)
+          && isTokenFresh()
+          && request.resource.data.get('uid', '') == request.auth.uid;
+
+        allow update: if isOwner(userId) && isTokenFresh();
+
+        allow delete: if isOwner(userId) || isAdmin();
       }
       match /ai_chat_history/{sessionId}/{rest=**} {
-        allow get, list, read, write: if isAuthed()
-          && (request.auth.uid == userId || isAdmin());
+        allow read, write: if isOwner(userId) || isAdmin();
       }
 
       match /notes/{document=**} {

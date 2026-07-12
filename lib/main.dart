@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'
-    show Timestamp;
+    show Timestamp, FirebaseFirestore, Settings;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -180,6 +180,37 @@ Future<void> _bootInBackground(AppProvider provider) async {
     // (no Android, vai para LoginScreen; no Web, usa fluxo REST independente)
     // Cobre tanto TimeoutException quanto PlatformException do Firebase
     debugPrint('[MedCases] Firebase.initializeApp falhou (ignorado): $e');
+  }
+
+  // AUDIT 453 — Multi-platform Firestore Persistence Config
+  //
+  // PROBLEMA: Na Web, o SDK Firestore usa IndexedDB para cache offline.
+  // No iOS/Android, usa SQLite nativo. Sem configuração explícita, o cache
+  // pode ficar limitado ou desativado em determinadas plataformas.
+  //
+  // SOLUÇÃO:
+  //   • Nativo (iOS/Android): persistenceEnabled + CACHE_SIZE_UNLIMITED via Settings()
+  //   • Web: não usa Settings() — o SDK Web usa PersistenceSettings/IndexedDB
+  //     e já tem cache habilitado por padrão. Não chamar settings= na Web evita
+  //     o erro "FirebaseException: Cache size must be between 1 MB and 100 MB" (Web SDK).
+  //
+  // NOTA: esta configuração NÃO afeta as Firestore Rules — é apenas cache local.
+  // A leitura dos dados ainda exige autenticação válida (ver _waitForAuth()).
+  try {
+    if (FirebaseRuntimeGuard.isReady && !kIsWeb) {
+      // Mobile: configura persistência e cache ilimitado uma única vez pós-init
+      FirebaseFirestore.instance.settings = const Settings(
+        persistenceEnabled: true,
+        cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+      );
+      debugPrint('[AUDIT453][FIRESTORE] persistência mobile configurada: '
+          'persistenceEnabled=true cacheSizeBytes=UNLIMITED');
+    }
+    // Web: cache IndexedDB já habilitado por padrão pelo SDK — sem configuração extra.
+    // Tentar definir settings= na Web pode lançar exception se o IndexedDB
+    // já tiver uma instância aberta (ex: múltiplas abas).
+  } catch (e) {
+    debugPrint('[AUDIT453][FIRESTORE] settings config ignorado: $e');
   }
 
   // 4. Captura parâmetro ?ref= da URL e persiste em SharedPreferences

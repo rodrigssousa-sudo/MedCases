@@ -4425,7 +4425,10 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
   }
 
   String _bmiLabel(double? v, double? ageY) {
-    if (v == null) return '';
+    // AUDIT 2.1: guard NaN/Infinite antes de comparações — evita crash
+    // quando divisão produz valor não-finito (ex: altura=0 já filtrada em
+    // _bmi getter, mas mantemos defesa em profundidade aqui).
+    if (v == null || !v.isFinite) return '';
     final a = ageY ?? 0;
     if (a < 2) return 'IMC não recomendado < 2 anos';
     if (v < 14) return '⚠ Desnutrição grave';
@@ -7931,13 +7934,22 @@ class _ResultTile extends StatelessWidget {
         Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: AppColors.of(context).textHint)),
         const SizedBox(height: 4),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          // AUDIT 2.1: Flexible + overflow=ellipsis previne RenderFlex overflow
+          // quando valor numérico é exibido em Row com Expanded-siblings.
+          // Sem overflow handler, valores longos (ex: "1234,56") num Row de
+          // dois tiles causa layout exception no iOS/Android (Impeller/Skia).
           Flexible(child: Text(value ?? '—',
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
               color: valueColor, letterSpacing: -0.5))),
           if (unit != null && unit!.isNotEmpty && hasVal) ...[
             const SizedBox(width: 3),
             Padding(padding: const EdgeInsets.only(bottom: 2),
-              child: Text(unit!, style: TextStyle(fontSize: 10, color: AppColors.of(context).textHint))),
+              child: Text(unit!,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyle(fontSize: 10, color: AppColors.of(context).textHint))),
           ],
         ]),
         if (note != null && note!.isNotEmpty) ...[

@@ -972,6 +972,50 @@ class FirestoreService {
   }
 
   /// Carrega as últimas 20 sessões, ordenadas por updatedAt desc.
+  // ── AUDIT 453 — Auth Gate Helper ─────────────────────────────────────────
+  /// Aguarda o token Firebase Auth estar propagado ao SDK antes de qualquer
+  /// leitura Firestore que exija autenticação.
+  ///
+  /// RACE CONDITION (log: "[FIRESTORE] permission-denied / watchdog 8s"):
+  ///   Na Web, FirebaseAuth.currentUser pode ser null durante os primeiros
+  ///   segundos após o boot. O SDK Firestore Web envia a requisição sem o
+  ///   header Authorization → Firestore retorna 403 permission-denied.
+  ///
+  /// ESTRATÉGIA:
+  ///   1. Se currentUser já presente → retorna imediatamente (zero overhead).
+  ///   2. Se null → escuta o primeiro evento de authStateChanges() com timeout
+  ///      de 6 s para não bloquear a UI indefinidamente.
+  ///   3. Se o evento vier como null (usuário realmente desautenticado) → retorna
+  ///      null sinalizado; o chamador usa cache local.
+  ///   4. Timeout expirado → fallback para cache (nunca bloqueia o boot).
+  static Future<User?> _waitForAuth({
+    Duration timeout = const Duration(seconds: 6),
+  }) async {
+    if (!_isFirebaseReady) return null;
+
+    // Verificação rápida: token já disponível no SDK
+    final current = FirebaseAuth.instance.currentUser;
+    if (current != null) return current;
+
+    // Se temos token REST em cache mas o SDK ainda não propagou, aguarda
+    // o próximo evento de authStateChanges (normalmente < 500ms no Web).
+    try {
+      final user = await FirebaseAuth.instance
+          .authStateChanges()
+          .where((u) => u != null) // filtra eventos null (desautenticado)
+          .first
+          .timeout(timeout);
+      return user;
+    } on TimeoutException {
+      debugPrint('[AUDIT453][AUTH_GATE] timeout=${timeout.inSeconds}s '
+          '— auth não disponível; usando cache local.');
+      return null;
+    } catch (e) {
+      debugPrint('[AUDIT453][AUTH_GATE] erro: $e — usando cache local.');
+      return null;
+    }
+  }
+
   /// Usa sdkDocToSafeMap para converter Timestamp → ISO8601 string antes
   /// de passar para _ChatSession.fromJson (que usa DateTime.parse).
   ///
@@ -984,11 +1028,33 @@ class FirestoreService {
   /// o Firestore SDK ainda não recebeu o token OAuth customizado — o SDK então
   /// executa a query sem credenciais e recebe 403/permission-denied.
   /// Estratégia de recuperação em cascata:
-  ///   1. Tenta servidor (Source.server) com timeout 8s.
-  ///   2. Se permission-denied → tenta cache local offline (Source.cache).
-  ///   3. Se ambos falharem → retorna [] silenciosamente.
+  ///   1. Aguarda auth via _waitForAuth() (zero overhead se já autenticado).
+  ///   2. Tenta servidor (Source.server) com timeout 8s.
+  ///   3. Se permission-denied → tenta cache local offline (Source.cache).
+  ///   4. Se ambos falharem → retorna [] silenciosamente.
   /// Nunca propaga FirebaseException para fora — o boot da tela NÃO é bloqueado.
   static Future<List<Map<String, dynamic>>> loadAiSessions(String uid) async {
+    // AUDIT 453 — AUTH GATE: aguarda o token Firebase Auth estar propagado ao SDK
+    // antes de qualquer leitura Firestore. Elimina a race condition que causava
+    // permission-denied na Web (log: "_authResolved watchdog: forçando auth resolved após 8s").
+    // _waitForAuth() retorna imediatamente se currentUser já está presente (mobile/iOS).
+    // Na Web, aguarda authStateChanges() com timeout de 6s para não bloquear a UI.
+    if (_isFirebaseReady && uid.isNotEmpty) {
+      final authedUser = await _waitForAuth();
+      if (authedUser == null) {
+        // Timeout ou usuário realmente desautenticado — usa cache local
+        debugPrint('[AUDIT453][loadAiSessions] auth gate timeout/null '
+            '— uid=$uid fallback para cache local');
+        return await _loadAiSessionsFromCache(uid);
+      }
+      // Valida que o UID do token corresponde ao uid solicitado (proteção IDOR)
+      if (authedUser.uid != uid) {
+        debugPrint('[AUDIT453][loadAiSessions] uid mismatch '
+            'authed=${authedUser.uid} requested=$uid — negando leitura');
+        return [];
+      }
+    }
+
     // BUILD 336 PASSO 3: normalização de UID de contingência.
     // Se FirebaseAuth.currentUser == null (Web com token customizado ainda não
     // propagado ao SDK), mas temos um uid válido vindo do UserModel (cache
