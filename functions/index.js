@@ -25,14 +25,24 @@
  *   GEMINI_PAID_API_KEY NUNCA é retornada ao cliente.
  *   NUNCA é logada. NUNCA aparece no bundle web.
  *   Apenas lida server-side no geminiPaidProxy.
+ *
+ * BUILD 459 — atenderConsultaIA:
+ *   GEMINI_AI_KEY secret dedicado para o motor de IA principal.
+ *   Configurar: firebase functions:secrets:set GEMINI_AI_KEY
+ *   NUNCA retornada ao cliente. NUNCA logada.
  */
 
 const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
-const { onRequest } = require('firebase-functions/v2/https');
+const { onRequest, onCall, HttpsError } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const admin      = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const https      = require('https');
+
+// ── BUILD 459: Secret dedicado ao motor de IA server-side ────────────────────
+// Configurar: firebase functions:secrets:set GEMINI_AI_KEY
+// Nunca exposta ao cliente — lida exclusivamente server-side nesta CF.
+const GEMINI_AI_KEY = defineSecret('GEMINI_AI_KEY');
 
 admin.initializeApp();
 
@@ -1624,3 +1634,335 @@ function buildUserEmailHtml(userName, isEs, isUnblock = false) {
   </table>
 </body></html>`;
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 459 — atenderConsultaIA  (onCall v2 — motor IA server-side)
+//
+// CONTRATO:
+//   Cliente (Flutter / AiEngineService._dispatchViaCloudFunction) envia:
+//     { userMessage, systemPrompt, isEs, history, longResponse, uid }
+//   Servidor retorna:
+//     { text, model, inputTokensApprox, outputTokensApprox, durationMs }
+//   Em caso de erro:
+//     throws HttpsError com código semântico:
+//       unauthenticated   → sem Firebase Auth token
+//       permission-denied → UID mismatch ou conta não aprovada
+//       invalid-argument  → payload inválido
+//       deadline-exceeded → timeout Gemini (85s)
+//       unavailable       → Gemini API error ou secret não configurado
+//       internal          → erro inesperado
+//
+// SEGURANÇA:
+//   • request.auth obrigatório — rejeita se null (unauthenticated)
+//   • UID do payload validado contra request.auth.uid (permission-denied)
+//   • Status do usuário verificado no Firestore (approved)
+//   • GEMINI_AI_KEY lida do Firebase Secret — NUNCA enviada ao cliente
+//   • userMessage truncado em 4000 chars server-side
+//   • systemPrompt truncado em 12000 chars server-side
+//   • history limitado a 16 msgs (8 turnos) server-side
+//
+// MODELO:
+//   gemini-2.5-flash via REST HTTPS nativo (Node.js built-in)
+//   Mesma arquitetura do geminiPaidProxy — zero novas dependências npm
+//
+// DEPLOY:
+//   1. firebase functions:secrets:set GEMINI_AI_KEY    ← colar chave Gemini
+//   2. firebase deploy --only functions:atenderConsultaIA
+//
+// ATIVAR NO FLUTTER (após deploy e teste):
+//   lib/services/ai_engine_service.dart → kUseCloudFunctions = true
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Constantes do motor IA ─────────────────────────────────────────────────
+const AI_GEMINI_MODEL          = 'gemini-2.5-flash';
+const AI_MAX_HISTORY_TURNS     = 8;      // turnos → 16 msgs máx (par user+model)
+const AI_MAX_SYSTEM_PROMPT_LEN = 12000;  // chars — proteção contra payload gigante
+const AI_MAX_USER_MESSAGE_LEN  = 4000;   // chars
+const AI_TIMEOUT_MS_CF         = 82000;  // 82s — margem de 8s antes do limite onCall v2 (90s)
+const AI_MAX_OUTPUT_PLANTAO    = 900;    // tokens — Motor Plantão (rápido, executivo)
+const AI_MAX_OUTPUT_ESTUDO     = 2048;   // tokens — Motor Estudo (denso, acadêmico)
+
+/**
+ * Chama a API REST do Gemini via HTTPS nativo do Node.js.
+ * Reutiliza a mesma arquitetura do geminiPaidProxy (zero novas dependências).
+ *
+ * @param {string} apiKey          Chave Gemini (lida do secret GEMINI_AI_KEY)
+ * @param {string} model           Nome do modelo Gemini
+ * @param {string} systemPrompt    System instruction sanitizado
+ * @param {Array}  contents        [{role, parts:[{text}]}] — histórico + msg atual
+ * @param {number} maxOutputTokens Limite de tokens de saída
+ * @returns {Promise<{text, inputTokensApprox, outputTokensApprox}>}
+ */
+function callGeminiRestAI(apiKey, model, systemPrompt, contents, maxOutputTokens) {
+  return new Promise((resolve, reject) => {
+    const bodyObj = {
+      system_instruction: {
+        parts: [{ text: systemPrompt }],
+      },
+      contents,
+      generationConfig: {
+        maxOutputTokens,
+        temperature:   0.4,
+        topP:          0.95,
+        topK:          40,
+      },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      ],
+    };
+
+    const bodyStr = JSON.stringify(bodyObj);
+    const options = {
+      hostname: GEMINI_API_BASE,
+      path:     `/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      method:   'POST',
+      headers: {
+        'Content-Type':   'application/json',
+        'Content-Length': Buffer.byteLength(bodyStr),
+      },
+      timeout: AI_TIMEOUT_MS_CF,
+    };
+
+    const req = https.request(options, (res) => {
+      let raw = '';
+      res.on('data', (chunk) => { raw += chunk; });
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(raw);
+
+          // Gemini retornou objeto de erro
+          if (parsed.error) {
+            const code = parsed.error.code || 'unknown';
+            const msg  = parsed.error.message || 'Gemini API error';
+            console.error(`[AI_CF][Gemini] API error code=${code}: ${msg}`);
+            return reject(new Error(`gemini_api_error:${code}`));
+          }
+
+          // Extrai texto da resposta
+          const candidate = parsed.candidates && parsed.candidates[0];
+          const text = (candidate?.content?.parts || [])
+            .map(p => p.text || '')
+            .join('');
+
+          if (!text || text.trim().length === 0) {
+            const reason = candidate?.finishReason || 'UNKNOWN';
+            console.warn(`[AI_CF][Gemini] Resposta vazia. finishReason=${reason}`);
+            return reject(new Error(`gemini_empty_response:${reason}`));
+          }
+
+          const inputTokensApprox  = Math.ceil((systemPrompt.length + bodyStr.length) / 4);
+          const outputTokensApprox = Math.ceil(text.length / 4);
+          resolve({ text, inputTokensApprox, outputTokensApprox });
+
+        } catch (parseErr) {
+          console.error('[AI_CF][Gemini] JSON parse falhou:', parseErr.message,
+            '| raw(300):', raw.substring(0, 300));
+          reject(new Error('gemini_parse_error'));
+        }
+      });
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      console.error('[AI_CF][Gemini] Timeout após', AI_TIMEOUT_MS_CF, 'ms');
+      reject(new Error('gemini_timeout'));
+    });
+
+    req.on('error', (err) => {
+      console.error('[AI_CF][Gemini] Erro de rede:', err.code || err.message);
+      reject(new Error(`gemini_network_error:${err.code || err.message}`));
+    });
+
+    req.write(bodyStr);
+    req.end();
+  });
+}
+
+exports.atenderConsultaIA = onCall(
+  {
+    region:         'us-central1',
+    secrets:        [GEMINI_AI_KEY],
+    timeoutSeconds: 90,
+    memory:         '512MiB',
+  },
+  async (request) => {
+    const startMs = Date.now();
+
+    // ── 1. AUTENTICAÇÃO OBRIGATÓRIA ─────────────────────────────────────────
+    // onCall v2: request.auth={uid,token} se o cliente enviou Firebase ID token.
+    // null → cliente não autenticado → recusa imediata.
+    if (!request.auth || !request.auth.uid) {
+      console.warn('[AI_CF] Requisição sem Firebase Auth — rejeitada.');
+      throw new HttpsError(
+        'unauthenticated',
+        'Autenticação Firebase obrigatória. Faça login no aplicativo e tente novamente.'
+      );
+    }
+    const callerUid = request.auth.uid;
+
+    // ── 2. DE-SERIALIZAÇÃO DO PAYLOAD ───────────────────────────────────────
+    // Campos enviados por AiEnginePayload.toCloudFunctionMap():
+    //   userMessage, uid, isEs, systemPrompt, history, longResponse, useGrounding
+    const data = request.data || {};
+    const rawUserMessage  = data.userMessage   || '';
+    const payloadUid      = data.uid           || '';
+    const isEsRaw         = data.isEs          || false;
+    const rawSystemPrompt = data.systemPrompt  || '';
+    const rawHistory      = data.history       || [];
+    const longResponseRaw = data.longResponse  || false;
+    // useGrounding: não implementado server-side nesta versão
+    // (Google Search Grounding via Cloud Function requer setup adicional de billing)
+
+    // ── 3. VALIDAÇÃO DE CONSISTÊNCIA DE UID ────────────────────────────────
+    // Garante que o UID do token Firebase == uid do payload.
+    // Impede que um usuário autenticado envie consultas em nome de outro.
+    if (payloadUid && payloadUid !== callerUid) {
+      console.warn(`[AI_CF] UID mismatch: token=${callerUid} payload=${payloadUid} — rejeitado.`);
+      throw new HttpsError(
+        'permission-denied',
+        'Identidade inconsistente. Saia do aplicativo, faça login novamente e tente outra vez.'
+      );
+    }
+
+    // ── 4. SANITIZAÇÃO DO PAYLOAD ───────────────────────────────────────────
+    const userMessage  = (typeof rawUserMessage  === 'string' ? rawUserMessage  : String(rawUserMessage)).trim();
+    const systemPrompt = (typeof rawSystemPrompt === 'string' ? rawSystemPrompt : String(rawSystemPrompt)).trim();
+    const longResponse = Boolean(longResponseRaw);
+
+    if (!userMessage) {
+      throw new HttpsError('invalid-argument', 'O campo userMessage não pode ser vazio.');
+    }
+
+    // Trunca como proteção extra de segurança server-side
+    const safeUserMessage  = userMessage.substring(0, AI_MAX_USER_MESSAGE_LEN);
+    const safeSystemPrompt = systemPrompt.substring(0, AI_MAX_SYSTEM_PROMPT_LEN);
+
+    // ── 5. VERIFICAÇÃO DE STATUS DO USUÁRIO NO FIRESTORE ───────────────────
+    let userStatus = 'unknown';
+    try {
+      const userDoc = await admin.firestore().collection('users').doc(callerUid).get();
+      if (!userDoc.exists) {
+        console.warn(`[AI_CF] Usuário não encontrado no Firestore uid=${callerUid}`);
+        throw new HttpsError('permission-denied', 'Usuário não registrado no sistema.');
+      }
+      userStatus = userDoc.data().status || 'unknown';
+      if (userStatus !== 'approved') {
+        console.warn(`[AI_CF] Acesso negado uid=${callerUid} status=${userStatus}`);
+        throw new HttpsError(
+          'permission-denied',
+          'Conta pendente de aprovação. Entre em contato com o suporte MedCases Pro.'
+        );
+      }
+    } catch (err) {
+      if (err instanceof HttpsError) throw err;
+      console.error('[AI_CF] Erro ao verificar status Firestore:', err.message);
+      throw new HttpsError('internal', 'Falha na verificação de autorização. Tente novamente.');
+    }
+
+    // ── 6. CHAVE GEMINI DO SECRET ───────────────────────────────────────────
+    // GEMINI_AI_KEY.value() retorna o valor do Firebase Secret configurado.
+    // NUNCA logada. NUNCA enviada ao cliente.
+    const geminiKey = (GEMINI_AI_KEY.value() || '').trim();
+    if (!geminiKey) {
+      console.error('[AI_CF] Secret GEMINI_AI_KEY não configurado. '
+        + 'Execute: firebase functions:secrets:set GEMINI_AI_KEY');
+      throw new HttpsError(
+        'unavailable',
+        'Motor de IA temporariamente indisponível. Tente novamente em instantes.'
+      );
+    }
+
+    // ── 7. MONTAGEM DO ARRAY contents (histórico + mensagem atual) ──────────
+    // Gemini espera: [{role:'user', parts:[{text}]}, {role:'model', parts:[{text}]}, ...]
+    // Flutter envia: [{role:'user'|'model', content:'...'}]  (AiEnginePayload.history)
+    const contents = [];
+
+    const safeHistory = Array.isArray(rawHistory)
+      ? rawHistory.slice(-(AI_MAX_HISTORY_TURNS * 2))  // cap server-side
+      : [];
+
+    for (const turn of safeHistory) {
+      const role    = (turn.role === 'model' || turn.role === 'assistant') ? 'model' : 'user';
+      const content = String(turn.content || turn.text || '').trim();
+      if (content.length > 0) {
+        contents.push({ role, parts: [{ text: content }] });
+      }
+    }
+
+    // Sempre encerra o array com a mensagem atual do usuário
+    contents.push({ role: 'user', parts: [{ text: safeUserMessage }] });
+
+    // ── 8. SELEÇÃO DO LIMITE DE TOKENS ─────────────────────────────────────
+    // longResponse=false → Motor Plantão (rápido, executivo, 900 tokens)
+    // longResponse=true  → Motor Estudo  (denso, acadêmico, 2048 tokens)
+    const maxOutputTokens = longResponse ? AI_MAX_OUTPUT_ESTUDO : AI_MAX_OUTPUT_PLANTAO;
+
+    // ── 9. CHAMADA GEMINI ───────────────────────────────────────────────────
+    console.log(
+      `[AI_CF] → Gemini uid=${callerUid} `
+      + `isEs=${Boolean(isEsRaw)} longResponse=${longResponse} `
+      + `histMsgs=${safeHistory.length} msgLen=${safeUserMessage.length} `
+      + `sysPromptLen=${safeSystemPrompt.length} maxOut=${maxOutputTokens}`
+    );
+
+    let aiResult;
+    try {
+      aiResult = await callGeminiRestAI(
+        geminiKey,
+        AI_GEMINI_MODEL,
+        safeSystemPrompt || 'Você é um assistente médico. Responda de forma clínica e precisa.',
+        contents,
+        maxOutputTokens
+      );
+    } catch (err) {
+      const errMsg = (err && err.message) ? err.message : String(err);
+      console.error('[AI_CF] callGeminiRestAI falhou:', errMsg);
+
+      if (errMsg.includes('timeout')) {
+        throw new HttpsError(
+          'deadline-exceeded',
+          'O motor de IA demorou demais para responder. Tente novamente ou simplifique a pergunta.'
+        );
+      }
+      if (errMsg.includes('gemini_api_error')) {
+        throw new HttpsError(
+          'unavailable',
+          'A API Gemini retornou um erro. Tente novamente em instantes.'
+        );
+      }
+      if (errMsg.includes('gemini_empty_response')) {
+        throw new HttpsError(
+          'internal',
+          'Resposta vazia do motor de IA. Reformule sua pergunta e tente novamente.'
+        );
+      }
+      throw new HttpsError(
+        'internal',
+        'Erro interno no motor de IA. Tente novamente.'
+      );
+    }
+
+    const durationMs = Date.now() - startMs;
+    console.log(
+      `[AI_CF] ✅ uid=${callerUid} durationMs=${durationMs} `
+      + `inputTokensApprox=${aiResult.inputTokensApprox} `
+      + `outputTokensApprox=${aiResult.outputTokensApprox} `
+      + `textLen=${aiResult.text.length}`
+    );
+
+    // ── 10. RETORNO AO FLUTTER ──────────────────────────────────────────────
+    // AiEngineService._dispatchViaCloudFunction lê { text } e simula
+    // streaming word-by-word via Stream<GeminiChunk> no cliente Dart.
+    // Os demais campos são informativos para logging/debug.
+    return {
+      text:               aiResult.text,
+      model:              AI_GEMINI_MODEL,
+      inputTokensApprox:  aiResult.inputTokensApprox,
+      outputTokensApprox: aiResult.outputTokensApprox,
+      durationMs,
+    };
+  }
+);

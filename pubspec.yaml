@@ -46,6 +46,10 @@ dependencies:
   # Firebase Storage — upload de PDFs (Biblioteca Clínica)
   firebase_storage: 12.3.2
 
+  # Firebase Cloud Functions — BUILD 459: chamada da CF atenderConsultaIA
+  # onCall v2 via AiEngineService._dispatchViaCloudFunction (kUseCloudFunctions=true)
+  cloud_functions: ^5.0.0
+
   # Firebase Messaging — FCM push notifications (PARTE 5 BUILD 238)
   # Admin push to admins on new user registration + deep-link to Notifications tab
   firebase_messaging: 15.1.3
