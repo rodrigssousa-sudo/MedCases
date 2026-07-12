@@ -19,7 +19,6 @@
 // INTERNACIONALIZAÇÃO: isEs (Português / Espanhol) em todas as strings.
 // ══════════════════════════════════════════════════════════════════════════════
 
-import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -405,44 +404,18 @@ class _HepatologyBodyState extends State<_HepatologyBody>
   }
 
   // ── Deeplink ──────────────────────────────────────────────────────────────
-  // BUILD 429-APPLE-COMPLIANCE: sync — abre CalculadoraScreen interna.
+  // BUILD 444 [P2+P3]: URL dinâmica Hepatologia → condutas/hepatologia.
+  // Abre CalculadoraScreen (WebView integrada em tela cheia) no endpoint
+  // da especialidade — NUNCA launchUrl externo (Apple compliance).
   void _launchDeeplink() {
-    final r = _result;
-    if (r == null) return;
+    if (_result == null) return;
     HapticFeedback.mediumImpact();
-
-    final payload = jsonEncode({
-      'edad':           int.tryParse(_ageCtrl.text.trim()) ?? 0,
-      'na_serico':      _pd(_naCtrl.text)      ?? 0.0,
-      'bilirrubina':    _pd(_biliCtrl.text)    ?? 0.0,
-      'creatinina':     _pd(_creatCtrl.text)   ?? 0.0,
-      'inr':            _pd(_inrCtrl.text)      ?? 0.0,
-      'albumina':       _pd(_albCtrl.text)     ?? 0.0,
-      'ast':            _pd(_astCtrl.text)      ?? 0.0,
-      'alt':            _pd(_altCtrl.text)      ?? 0.0,
-      'plaquetas':      _pd(_platCtrl.text)    ?? 0.0,
-      'dialisis':       _dialysis,
-      'ascitis':        _ascites,
-      'encefalopatia':  _encephalopathy,
-      'meld_na':        r.meldNa,
-      'child_pugh_pts': r.childPughPoints,
-      'child_pugh_cls': r.childPughClass,
-      'fib4':           r.fib4,
-      'apri':           r.apri,
-      'factor_r':       r.factorR,
-      'maddrey_df':     r.maddreyDf,
-      'milan':          r.milanCriteria,
-    });
-
-    const baseUrl = 'https://rodrigssousa-sudo.github.io/medcases-calculadora/';
-    final encodedPayload = Uri.encodeComponent(payload);
-    final url =
-        '$baseUrl?screen=hepatology&payload=$encodedPayload';
-
+    // BUILD 444 [P2]: deeplink cirúrgico Hepatologia
+    const conductaUrl = 'https://medcasescalcu.com/condutas/hepatologia';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => CalculadoraScreen(initialUrl: url),
+        builder: (_) => CalculadoraScreen(initialUrl: conductaUrl),
       ),
     );
   }
@@ -2055,11 +2028,10 @@ class _DeeplinkButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  isEs
-                      ? 'Acceder al Soporte de Decisión Clínica ➔'
-                      : 'Acessar Suporte de Decisão Clínica ➔',
+                  // BUILD 444 [P1]: string compliance Apple CDS
+                  isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
                   style: const TextStyle(
-                    fontSize:   13,
+                    fontSize:   14,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.2,
                   ),

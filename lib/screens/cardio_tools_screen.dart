@@ -13,8 +13,6 @@
 // COMPLIANCE: zero condutas/prescrições nativas — delegado ao Suporte Web via deeplink.
 // ══════════════════════════════════════════════════════════════════════════════
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -466,47 +464,18 @@ class _CardioBodyState extends State<_CardioBody>
   }
 
   // BUILD 429-APPLE-COMPLIANCE: sync — abre CalculadoraScreen interna.
+  // BUILD 444 [P2+P3]: URL dinâmica Cardio → condutas/cardiologia.
+  // Abre CalculadoraScreen (WebView integrada em tela cheia) no endpoint
+  // da especialidade — NUNCA launchUrl externo (Apple compliance).
   void _launchDeeplink() {
-    final r = _result;
-    if (r == null) return;
+    if (_result == null) return;
     HapticFeedback.mediumImpact();
-
-    final payload = jsonEncode({
-      'modulo':       'cardio',
-      'age':          r.age,
-      'sexo':         r.isFemale ? 'F' : 'M',
-      'pas':          r.pas,
-      'col_total':    r.colTotal,
-      'diabetes':     r.hasDiabetes,
-      'tabagismo':    r.isSmoker,
-      'htn':          r.hasHtn,
-      'cv_disease':   r.hasCvDisease,
-      'ic':           r.hasChf,
-      'ckd':          r.hasCkd,
-      'avc_previo':   r.hadStroke,
-      'sangramento':  r.hasBleedHx,
-      'inr_labil':    r.hasLabilInr,
-      'drogas_alcool': r.usesDrugsAlcohol,
-      'qt_ms':        r.qtMs,
-      'fc_bpm':       r.fcBpm,
-      'prevent_risco': r.preventRisk,
-      'cha2_score':   r.cha2Score,
-      'hasbled_score': r.hasbledScore,
-      'qtc_ms':       r.qtcMs,
-    });
-
-    const baseUrl =
-        'https://rodrigssousa-sudo.github.io/medcases-calculadora/';
-    final encodedPayload = Uri.encodeComponent(payload);
-    final uri = Uri.parse(
-      '$baseUrl?screen=patient_data&payload=$encodedPayload',
-    );
-
-    // BUILD 429-APPLE-COMPLIANCE: abre WebView interna — NUNCA launchUrl externo.
+    // BUILD 444 [P2]: deeplink cirúrgico Cardiologia
+    const conductaUrl = 'https://medcasescalcu.com/condutas/cardiologia';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => CalculadoraScreen(initialUrl: uri.toString()),
+        builder: (_) => CalculadoraScreen(initialUrl: conductaUrl),
       ),
     );
   }
@@ -1482,11 +1451,10 @@ class _DeeplinkButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  isEs
-                      ? 'Acceder al Soporte de Decisión Clínica'
-                      : 'Acessar Suporte de Decisão Clínica',
+                  // BUILD 444 [P1]: string compliance Apple CDS
+                  isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
                   style: const TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.2,
                   ),

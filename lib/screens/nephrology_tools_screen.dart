@@ -17,7 +17,6 @@
 // INTERNACIONALIZAÇÃO: isEs (Português / Espanhol) em todas as strings.
 // ══════════════════════════════════════════════════════════════════════════════
 
-import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -302,36 +301,18 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   }
 
   // ── Deeplink conduta ────────────────────────────────────────────────────────
-  // BUILD 429-APPLE-COMPLIANCE: abre WebView interna — NUNCA launchUrl externo.
+  // BUILD 444 [P2+P3]: URL dinâmica Nefrologia → condutas/nefrologia.
+  // Abre CalculadoraScreen (WebView integrada em tela cheia) no endpoint
+  // da especialidade — NUNCA launchUrl externo (Apple compliance).
   void _launchDeeplink() {
-    final r = _result;
-    if (r == null) return;
+    if (_result == null) return;
     HapticFeedback.mediumImpact();
-
-    final payload = jsonEncode({
-      'idade':        int.tryParse(_ageCtrl.text.trim()) ?? 0,
-      'sexo':         _isFemale ? 'F' : 'M',
-      'peso':         _pd(_weightCtrl.text)      ?? 0.0,
-      'altura':       _pd(_heightCtrl.text)      ?? 0.0,
-      'creat_basal':  _pd(_creatBaseCtrl.text)   ?? 0.0,
-      'creat_atual':  _pd(_creatCurrCtrl.text)   ?? 0.0,
-      'na_serico':    _pd(_naSerumCtrl.text)     ?? 0.0,
-      'na_urinario':  _pd(_naUrineCtrl.text)     ?? 0.0,
-      'kdigo':        r.kdigoStage,
-      'ckd_epi':      r.ckdEpi,
-      'cockcroft':    r.cockcroft,
-    });
-
-    const baseUrl =
-        'https://rodrigssousa-sudo.github.io/medcases-calculadora/';
-    final encodedPayload = Uri.encodeComponent(payload);
-    final url =
-        '$baseUrl?screen=patient_data&payload=$encodedPayload';
-
+    // BUILD 444 [P2]: deeplink cirúrgico Nefrologia
+    const conductaUrl = 'https://medcasescalcu.com/condutas/nefrologia';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => CalculadoraScreen(initialUrl: url),
+        builder: (_) => CalculadoraScreen(initialUrl: conductaUrl),
       ),
     );
   }
@@ -1418,11 +1399,10 @@ class _DeeplinkButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  isEs
-                      ? 'Acceder al Soporte de Decisión Clínica'
-                      : 'Acessar Suporte de Decisão Clínica',
+                  // BUILD 444 [P1]: string compliance Apple CDS
+                  isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
                   style: const TextStyle(
-                    fontSize:   13,
+                    fontSize:   14,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.2,
                   ),

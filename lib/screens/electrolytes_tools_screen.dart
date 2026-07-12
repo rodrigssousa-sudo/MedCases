@@ -13,8 +13,6 @@
 // COMPLIANCE: zero condutas/prescrições nativas — delegado ao Suporte Web via deeplink.
 // ══════════════════════════════════════════════════════════════════════════════
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -382,42 +380,18 @@ class _ElectroBodyState extends State<_ElectroBody>
   }
 
   // BUILD 429-APPLE-COMPLIANCE: sync — abre CalculadoraScreen interna.
+  // BUILD 444 [P2+P3]: URL dinâmica Eletrólitos → condutas/eletrolitos-gasometria.
+  // Abre CalculadoraScreen (WebView integrada em tela cheia) no endpoint
+  // da especialidade — NUNCA launchUrl externo (Apple compliance).
   void _launchDeeplink() {
-    final r = _result;
-    if (r == null) return;
+    if (_result == null) return;
     HapticFeedback.mediumImpact();
-
-    final payload = jsonEncode({
-      'modulo':          'electrolitos',
-      'na':              r.na,
-      'cl':              r.cl,
-      'hco3':            r.hco3,
-      'gluc':            r.gluc,
-      'ca':              r.ca,
-      'albumina':        r.albumin,
-      'bun':             r.bun,
-      'peso':            r.weight,
-      'ph':              r.ph,
-      'pco2':            r.pco2,
-      'be':              r.be,
-      'anion_gap':       r.anionGap,
-      'na_corrigido':    r.corrNa,
-      'ca_corrigido':    r.corrCa,
-      'osmolaridade':    r.osmolarity,
-      'deficit_hco3':    r.bicarbonateDef,
-      'gas_interpretacao': r.gasInterp,
-    });
-
-    const baseUrl =
-        'https://rodrigssousa-sudo.github.io/medcases-calculadora/';
-    final encodedPayload = Uri.encodeComponent(payload);
-    final url =
-        '$baseUrl?screen=patient_data&payload=$encodedPayload';
-
+    // BUILD 444 [P2]: deeplink cirúrgico Eletrólitos/Gasometria
+    const conductaUrl = 'https://medcasescalcu.com/condutas/eletrolitos-gasometria';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => CalculadoraScreen(initialUrl: url),
+        builder: (_) => CalculadoraScreen(initialUrl: conductaUrl),
       ),
     );
   }
@@ -1234,11 +1208,10 @@ class _DeeplinkButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  isEs
-                      ? 'Acceder al Soporte de Decisión Clínica'
-                      : 'Acessar Suporte de Decisão Clínica',
+                  // BUILD 444 [P1]: string compliance Apple CDS
+                  isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
                   style: const TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.2,
                   ),
