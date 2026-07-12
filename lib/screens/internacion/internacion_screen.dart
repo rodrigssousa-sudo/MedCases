@@ -63,6 +63,14 @@ class _InternacionScreenState extends State<InternacionScreen> {
   // _currentSessionKey não muda (ex: evoluir o mesmo paciente consecutivamente).
   int _accordionGeneration = 0;
 
+  // ── BUILD 446-SOAP-FLOW-FIX: Modo Visualização + Detecção de Alterações ──
+  // _isViewMode = true  → Paciente carregado em modo somente-leitura.
+  //              false → Modo de edição/evolução ativo (pode salvar).
+  // _hasChanges = true  → Médico digitou algo em S/O/A/P; guarda de saída ativo.
+  //              false → Nenhuma alteração desde a carga; saída silenciosa.
+  bool _isViewMode = false;
+  bool _hasChanges = false;
+
   @override
   void initState() {
     super.initState();
@@ -74,12 +82,12 @@ class _InternacionScreenState extends State<InternacionScreen> {
     // Aguarda o primeiro frame para ter acesso ao provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initSessions();
-      // Build 195: pré-carrega a sessão passada pelo Mi Guardia card
-      // Usa _evolveSession para colocar o paciente em modo de nova evolução
-      // com o histórico completo carregado no painel lateral.
+      // BUILD 446: pré-carrega a sessão passada pelo Mi Guardia card em modo
+      // SOMENTE LEITURA — NÃO incrementa diaInternacao, NÃO marca como sujo.
+      // O médico decide explicitamente se quer evoluir (botão "Evoluir Paciente").
       final initial = widget.initialSession;
       if (initial != null) {
-        _evolveSession(initial);
+        _viewSession(initial);
       }
     });
   }
@@ -192,7 +200,7 @@ class _InternacionScreenState extends State<InternacionScreen> {
     );
   }
 
-  void _onSaveEvolucion(EvolucionModel ev) async {
+  Future<void> _onSaveEvolucion(EvolucionModel ev) async {
     // ── Build 210: Freio de Mão Absoluto + Sovereign Parent corrigido ────
     //
     // DIAGNÓSTICO B209 (crime):
@@ -365,6 +373,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _draftEvolucion = _newDraft(_safeDoctorName);
       _isEditMode = false;
       _editingEvolucionId = null;
+      // BUILD 446: reseta estado de alterações após salvar com sucesso
+      _isViewMode = false;
+      _hasChanges = false;
     });
 
     // ── Build 197: Captura snapshot ANTES do reset para injeção otimista ──
@@ -397,6 +408,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
         _currentSessionKey  = preClickSessionKey;
         // Devolve o rascunho ao SOAP para que o médico não perca o que digitou
         _draftEvolucion     = ev;
+        // BUILD 446: mantém _hasChanges = true pois os dados não foram salvos
+        _hasChanges         = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(children: [
@@ -431,6 +444,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _currentSessionKey = null;
       _isEditMode = false;
       _editingEvolucionId = null;
+      // BUILD 446: reseta estado de alterações ao limpar workspace
+      _isViewMode = false;
+      _hasChanges = false;
       // Injeção otimista: insere sessão no topo de _savedSessions
       // Remove versão antiga (mesma chave) + insere versão nova atualizada
       final otherSessions = _savedSessions
@@ -559,6 +575,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _currentSessionKey = session.sessionKey;
       _isEditMode = true;
       _editingEvolucionId = lastEv.id;
+      // BUILD 446: modo edição ativo; nenhuma alteração ainda
+      _isViewMode = false;
+      _hasChanges = false;
       // Build 192 Fix 2: incrementa generation para forçar recriação
       // do PatientAccordion e hidratar seus TextEditingControllers
       // com os dados corretos da sessão sendo editada.
@@ -584,6 +603,55 @@ class _InternacionScreenState extends State<InternacionScreen> {
         ),
       ]),
       backgroundColor: InternacionTheme.amber,
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ));
+  }
+
+  // ── BUILD 446: VISUALIZAR — carrega sessão em modo leitura (sem dia + 1) ──
+  // Abre o prontuário exatamente como está salvo — ZERO efeito colateral.
+  // • diaInternacao preservado (NÃO incrementado)
+  // • _hasChanges = false (saída silenciosa se o médico fechar sem editar)
+  // • _isViewMode = true (action bar mostra "Evoluir" em vez de "Salvar")
+  // O SOAP é carregado com a última evolução do historial para exibição.
+  void _viewSession(PacienteSession session) {
+    // Carrega a última evolução para exibição no SOAP (modo leitura)
+    final lastEv = session.historial.isNotEmpty
+        ? session.historial.last
+        : _newDraft(_safeDoctorName);
+    setState(() {
+      _paciente = session.paciente;          // preserva diaInternacao original
+      _historial = session.historial;
+      _draftEvolucion = lastEv;
+      _currentSessionKey = session.sessionKey;
+      _isEditMode = false;
+      _editingEvolucionId = null;
+      _isViewMode = true;
+      _hasChanges = false;
+      _accordionGeneration++;
+      // Remove da lista de salvos (está no workspace agora)
+      _savedSessions = _savedSessions
+          .where((s) => s.sessionKey != session.sessionKey)
+          .toList();
+    });
+    _soapKey.currentState?.resetSoap(lastEv);
+
+    final isEs = _isEs;
+    final nome = session.paciente.nome.isNotEmpty
+        ? session.paciente.nome
+        : (isEs ? 'Paciente' : 'Paciente');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(children: [
+        const Icon(Icons.visibility_rounded, color: Colors.white, size: 16),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(isEs
+              ? 'Visualizando — Día ${session.paciente.diaInternacao} de $nome'
+              : 'Visualizando — Dia ${session.paciente.diaInternacao} de $nome'),
+        ),
+      ]),
+      backgroundColor: const Color(0xFF374151),
       duration: const Duration(seconds: 3),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -616,6 +684,9 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _currentSessionKey = session.sessionKey;
       _isEditMode = false;
       _editingEvolucionId = null;
+      // BUILD 446: sai do modo de visualização; ainda sem alterações
+      _isViewMode = false;
+      _hasChanges = false;
       // Build 192 Fix 2: incrementa generation para forçar recriação
       // do PatientAccordion com carry-over correto de nome/cama/diag.
       _accordionGeneration++;
@@ -772,6 +843,11 @@ class _InternacionScreenState extends State<InternacionScreen> {
       _historial = [];
       _draftEvolucion = freshDraft;
       _currentSessionKey = null;
+      // BUILD 446: reseta estado de alterações no clean slate
+      _isViewMode = false;
+      _hasChanges = false;
+      _isEditMode = false;
+      _editingEvolucionId = null;
       // Build 197: injeta sessão auto-salva otimisticamente no grid
       if (autoSaveOptimistic != null) {
         final snap = autoSaveOptimistic;
@@ -835,6 +911,134 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
   }
 
+  // ── BUILD 446 PASSO 1: Callback do SoapSectionWidget ─────────────────────
+  // Chamado toda vez que qualquer campo S/O/A/P é editado pelo médico.
+  // Se estávamos em modo de visualização, sai do modo de view automaticamente
+  // e entra em modo de edição (sobrescrita do dia atual).
+  void _onSoapFieldChanged() {
+    if (!_hasChanges || _isViewMode) {
+      setState(() {
+        _hasChanges = true;
+        // Se o médico começou a digitar durante a visualização,
+        // sai do modo view e entra em modo de edição do dia atual.
+        if (_isViewMode) {
+          _isViewMode = false;
+          _isEditMode = true;
+          // O id da evolução a sobrescrever é o do último historial
+          if (_historial.isNotEmpty) {
+            _editingEvolucionId = _historial.last.id;
+          }
+        }
+      });
+    }
+  }
+
+  // ── BUILD 446 PASSO 3: Lógica de saída com 3 cenários ────────────────────
+  // Cenário A: sem alterações + paciente existente → pop() silencioso
+  // Cenário B: com alterações → AlertDialog save/discard
+  // Cenário C: novo rascunho nunca salvo → limpa com segurança
+  Future<void> _handleBackPress() async {
+    final isEs = _isEs;
+
+    // ── Cenário A: Nenhuma alteração e paciente já existe no banco ──────────
+    if (!_hasChanges && _currentSessionKey != null) {
+      // Restaura o paciente de volta na lista antes de sair
+      _restoreCurrentSessionToGrid();
+      if (mounted) Navigator.of(context).pop();
+      return;
+    }
+
+    // ── Cenário A (novo): Nenhuma alteração e formulário vazio ──────────────
+    if (!_hasChanges && _currentSessionKey == null && !_isDirty) {
+      if (mounted) Navigator.of(context).pop();
+      return;
+    }
+
+    // ── Cenário B: Alterações pendentes ─────────────────────────────────────
+    if (_hasChanges) {
+      final result = await showDialog<_BackAction>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => _PendingChangesDialog(
+          isEs: isEs,
+          dark: Theme.of(ctx).brightness == Brightness.dark,
+        ),
+      );
+      if (!mounted) return;
+      if (result == _BackAction.save) {
+        // Salva e fecha
+        final childEv = _soapKey.currentState?.currentEvolucion;
+        final ev = _draftEvolucion.copyWith(
+          subjetivo:  childEv?.subjetivo  ?? _draftEvolucion.subjetivo,
+          objetivo:   childEv?.objetivo   ?? _draftEvolucion.objetivo,
+          evaluacion: childEv?.evaluacion ?? _draftEvolucion.evaluacion,
+          plan:       childEv?.plan       ?? _draftEvolucion.plan,
+        );
+        await _onSaveEvolucion(ev);
+        // _onSaveEvolucion já reseta _currentSessionKey; pop após salvar
+        if (mounted) Navigator.of(context).pop();
+      } else if (result == _BackAction.discard) {
+        // Descarta: restaura paciente na grid e fecha
+        _restoreCurrentSessionToGrid();
+        if (mounted) Navigator.of(context).pop();
+      }
+      // result == null → usuário cancelou o dialog, permanece na tela
+      return;
+    }
+
+    // ── Cenário C: Novo rascunho nunca salvo ─────────────────────────────────
+    // _isDirty mas _currentSessionKey == null → formulário preenchido mas não salvo
+    if (_isDirty && _currentSessionKey == null) {
+      final result = await showDialog<_BackAction>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => _NewDraftDiscardDialog(
+          isEs: isEs,
+          dark: Theme.of(ctx).brightness == Brightness.dark,
+        ),
+      );
+      if (!mounted) return;
+      if (result == _BackAction.discard) {
+        if (mounted) Navigator.of(context).pop();
+      }
+      // Cancelou → permanece
+      return;
+    }
+
+    // Fallback seguro
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  // ── BUILD 446: Restaura sessão atual de volta ao grid ao fechar ───────────
+  // Chamado nos cenários de saída (A e B/discard) para garantir que o
+  // paciente volte a aparecer na lista de salvos — sem apagar nem duplicar.
+  void _restoreCurrentSessionToGrid() {
+    final key = _currentSessionKey;
+    if (key == null) return;
+    // Verifica se já está na lista (não duplica)
+    final alreadyInList = _savedSessions.any((s) => s.sessionKey == key);
+    if (!alreadyInList) {
+      final restoredSession = PacienteSession(
+        sessionKey: key,
+        paciente: _paciente,
+        historial: _historial,
+        savedAt: DateTime.now(),
+      );
+      setState(() {
+        _savedSessions = [restoredSession, ..._savedSessions];
+        // Reset do workspace
+        _paciente = const PacienteInternacaoData(diaInternacao: 1);
+        _historial = [];
+        _currentSessionKey = null;
+        _isViewMode = false;
+        _hasChanges = false;
+        _isEditMode = false;
+        _editingEvolucionId = null;
+        _draftEvolucion = _newDraft(_safeDoctorName);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
@@ -861,7 +1065,13 @@ class _InternacionScreenState extends State<InternacionScreen> {
     }
 
     // ── Build 176: Dashboard Clínico compacto ─────────────────────────────
-    return Scaffold(
+    // BUILD 446: PopScope intercepta botão hardware/gesto de voltar no Android/iOS
+    return PopScope(
+      canPop: false, // sempre intercepta — _handleBackPress decide se pode sair
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _handleBackPress();
+      },
+      child: Scaffold(
       backgroundColor: theme.surface,
 
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -913,15 +1123,12 @@ class _InternacionScreenState extends State<InternacionScreen> {
                       ),
                     ),
 
-                    // LEFT: botão Voltar BRANCO — SizedBox 36×36
+                    // LEFT: botão Voltar BRANCO — BUILD 446: usa _handleBackPress
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          final nav = Navigator.of(context);
-                          if (nav.canPop()) nav.pop();
-                        },
+                        onTap: _handleBackPress,
                         child: const SizedBox(
                           width: 36,
                           height: 36,
@@ -1031,7 +1238,18 @@ class _InternacionScreenState extends State<InternacionScreen> {
                 data: _paciente,
                 dark: dark,
                 lang: lang,
-                onChanged: (d) => setState(() => _paciente = d),
+                onChanged: (d) => setState(() {
+                  _paciente = d;
+                  // BUILD 446: editar dados demográficos também marca como alterado
+                  _hasChanges = true;
+                  if (_isViewMode) {
+                    _isViewMode = false;
+                    _isEditMode = true;
+                    if (_historial.isNotEmpty) {
+                      _editingEvolucionId = _historial.last.id;
+                    }
+                  }
+                }),
               ),
             ),
             const SizedBox(height: 8),
@@ -1041,16 +1259,30 @@ class _InternacionScreenState extends State<InternacionScreen> {
               lang: lang,
               onChanged: (list) => setState(() {
                 _draftEvolucion = _draftEvolucion.copyWith(farmacos: list);
+                // BUILD 446: editar fármacos também marca como alterado
+                _hasChanges = true;
+                if (_isViewMode) {
+                  _isViewMode = false;
+                  _isEditMode = true;
+                  if (_historial.isNotEmpty) {
+                    _editingEvolucionId = _historial.last.id;
+                  }
+                }
               }),
             ),
             const SizedBox(height: 16),
 
             // ── SEÇÃO CENTRAL: Divisor textual discreto ───────────────────
+            // BUILD 446: label dinâmico conforme modo (view / edit / novo)
             _SectionDivider(
-              label: isEs
-                  ? 'NUEVA EVOLUCIÓN MÉDICA'
-                  : 'NOVA EVOLUÇÃO MÉDICA',
-              sublabel: 'SOAP',
+              label: _isViewMode
+                  ? (isEs ? 'VISUALIZANDO EVOLUCIÓN' : 'VISUALIZANDO EVOLUÇÃO')
+                  : (_isEditMode
+                      ? (isEs ? 'EDITANDO EVOLUCIÓN ACTUAL' : 'EDITANDO EVOLUÇÃO ATUAL')
+                      : (isEs ? 'NUEVA EVOLUCIÓN MÉDICA' : 'NOVA EVOLUÇÃO MÉDICA')),
+              sublabel: _isViewMode
+                  ? (isEs ? 'SOLO LECTURA' : 'SOMENTE LEITURA')
+                  : 'SOAP',
               dark: dark,
               theme: theme,
             ),
@@ -1067,76 +1299,145 @@ class _InternacionScreenState extends State<InternacionScreen> {
               autorNombre: doctorName,
               paciente: _paciente,
               onSave: _onSaveEvolucion,
+              // BUILD 446: notifica pai quando qualquer campo S/O/A/P é editado
+              onAnyFieldChanged: _onSoapFieldChanged,
             ),
             const SizedBox(height: 14),
 
-            // ── BARRA DE AÇÕES (25% Copiar | 50% Guardar | 25% Papelera) ──
-            Row(
-              children: [
-                // 25% — Copiar (abre ModalBottomSheet duplo Completo/Diário)
-                Expanded(
-                  flex: 25,
-                  child: _ActionButton(
-                    label: isEs ? 'Copiar' : 'Copiar',
-                    icon: Icons.copy_rounded,
-                    color: dark
-                        ? const Color(0xFF374151)
-                        : const Color(0xFFE5E7EB),
-                    textColor: theme.textPrimary,
-                    dark: dark,
-                    onTap: () =>
-                        _soapKey.currentState?.showCopyMenu(context),
+            // ── BARRA DE AÇÕES ─────────────────────────────────────────────
+            // BUILD 446 PASSO 2:
+            //   • Modo Visualização (_isViewMode):
+            //       [Copiar] | [Evoluir Paciente — novo dia] | [Editar Dia Atual]
+            //   • Modo Edição/Novo:
+            //       [Copiar] | [Salvar] | [Lixeira]
+            if (_isViewMode) ...[
+              // ── Modo somente leitura: ações explícitas de evolução ─────────
+              Row(
+                children: [
+                  // Copiar (25%)
+                  Expanded(
+                    flex: 25,
+                    child: _ActionButton(
+                      label: isEs ? 'Copiar' : 'Copiar',
+                      icon: Icons.copy_rounded,
+                      color: dark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFE5E7EB),
+                      textColor: theme.textPrimary,
+                      dark: dark,
+                      onTap: () =>
+                          _soapKey.currentState?.showCopyMenu(context),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                // 50% — Guardar (botão principal)
-                Expanded(
-                  flex: 50,
-                  child: _ActionButton(
-                    label: isEs ? 'Guardar' : 'Salvar',
-                    icon: Icons.save_rounded,
-                    color: InternacionTheme.accentLight,
-                    textColor: Colors.white,
-                    dark: dark,
-                    isPrimary: true,
-                    onTap: () {
-                      // Build 208 FIX INVERSÃO DE FONTE DE VERDADE:
-                      // O PAI (_draftEvolucion) é a fonte absoluta de metadados:
-                      //   id, fecha, autorNombre, farmacos.
-                      // O FILHO (currentEvolucion) é a fonte dos blocos SOAP
-                      //   (subjetivo, objetivo, evaluacion, plan) — que foram
-                      //   sincronizados via addListener+didUpdateWidget (Build 205).
-                      // copyWith do PAI sobrescreve apenas SOAP com dados do filho,
-                      // preservando autorNombre, id, fecha e farmacos do pai.
-                      final childEv = _soapKey.currentState?.currentEvolucion;
-                      final ev = _draftEvolucion.copyWith(
-                        subjetivo:  childEv?.subjetivo  ?? _draftEvolucion.subjetivo,
-                        objetivo:   childEv?.objetivo   ?? _draftEvolucion.objetivo,
-                        evaluacion: childEv?.evaluacion ?? _draftEvolucion.evaluacion,
-                        plan:       childEv?.plan       ?? _draftEvolucion.plan,
-                        // farmacos: mantido do pai (_draftEvolucion) — não sobrescrever
-                        // autorNombre, id, fecha: NUNCA sobrescrevidos pelo filho
-                      );
-                      _onSaveEvolucion(ev);
-                    },
+                  const SizedBox(width: 8),
+                  // Evoluir Paciente (50%) — cria nova folha, dia + 1
+                  Expanded(
+                    flex: 50,
+                    child: _ActionButton(
+                      label: isEs ? 'Evoluir Paciente' : 'Evoluir Paciente',
+                      icon: Icons.add_circle_outline_rounded,
+                      color: InternacionTheme.accentLight,
+                      textColor: Colors.white,
+                      dark: dark,
+                      isPrimary: true,
+                      onTap: () {
+                        // Constrói uma PacienteSession temporária com o estado atual
+                        final currentSession = PacienteSession(
+                          sessionKey: _currentSessionKey ?? '',
+                          paciente: _paciente,
+                          historial: _historial,
+                          savedAt: DateTime.now(),
+                        );
+                        _evolveSession(currentSession);
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                // 25% — Papelera
-                Expanded(
-                  flex: 25,
-                  child: _ActionButton(
-                    label: isEs ? 'Papelera' : 'Lixeira',
-                    icon: Icons.restore_from_trash_rounded,
-                    color: InternacionTheme.red
-                        .withOpacity(dark ? 0.18 : 0.10),
-                    textColor: InternacionTheme.red,
-                    dark: dark,
-                    onTap: () => _showTrashModal(context, dark, lang),
+                  const SizedBox(width: 8),
+                  // Editar Dia Atual (25%) — sobrescreve sem incrementar dia
+                  Expanded(
+                    flex: 25,
+                    child: _ActionButton(
+                      label: isEs ? 'Editar' : 'Editar',
+                      icon: Icons.edit_rounded,
+                      color: InternacionTheme.amber
+                          .withOpacity(dark ? 0.18 : 0.10),
+                      textColor: InternacionTheme.amber,
+                      dark: dark,
+                      onTap: () {
+                        final currentSession = PacienteSession(
+                          sessionKey: _currentSessionKey ?? '',
+                          paciente: _paciente,
+                          historial: _historial,
+                          savedAt: DateTime.now(),
+                        );
+                        _editSession(currentSession);
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ] else ...[
+              // ── Modo edição/novo: layout original ─────────────────────────
+              Row(
+                children: [
+                  // 25% — Copiar
+                  Expanded(
+                    flex: 25,
+                    child: _ActionButton(
+                      label: isEs ? 'Copiar' : 'Copiar',
+                      icon: Icons.copy_rounded,
+                      color: dark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFE5E7EB),
+                      textColor: theme.textPrimary,
+                      dark: dark,
+                      onTap: () =>
+                          _soapKey.currentState?.showCopyMenu(context),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // 50% — Guardar (botão principal)
+                  Expanded(
+                    flex: 50,
+                    child: _ActionButton(
+                      label: isEs ? 'Guardar' : 'Salvar',
+                      icon: Icons.save_rounded,
+                      color: InternacionTheme.accentLight,
+                      textColor: Colors.white,
+                      dark: dark,
+                      isPrimary: true,
+                      onTap: () {
+                        // Build 208 FIX INVERSÃO DE FONTE DE VERDADE:
+                        // O PAI (_draftEvolucion) é a fonte absoluta de metadados.
+                        // O FILHO (currentEvolucion) é a fonte dos blocos SOAP.
+                        final childEv = _soapKey.currentState?.currentEvolucion;
+                        final ev = _draftEvolucion.copyWith(
+                          subjetivo:  childEv?.subjetivo  ?? _draftEvolucion.subjetivo,
+                          objetivo:   childEv?.objetivo   ?? _draftEvolucion.objetivo,
+                          evaluacion: childEv?.evaluacion ?? _draftEvolucion.evaluacion,
+                          plan:       childEv?.plan       ?? _draftEvolucion.plan,
+                        );
+                        _onSaveEvolucion(ev);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // 25% — Papelera
+                  Expanded(
+                    flex: 25,
+                    child: _ActionButton(
+                      label: isEs ? 'Papelera' : 'Lixeira',
+                      icon: Icons.restore_from_trash_rounded,
+                      color: InternacionTheme.red
+                          .withOpacity(dark ? 0.18 : 0.10),
+                      textColor: InternacionTheme.red,
+                      dark: dark,
+                      onTap: () => _showTrashModal(context, dark, lang),
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 24),
 
             // ── SEÇÃO DE PACIENTES GUARDADOS ───────────────────────────────
@@ -1179,7 +1480,8 @@ class _InternacionScreenState extends State<InternacionScreen> {
           ],
         ),
       ),
-    );
+    ), // Scaffold
+    ); // PopScope — BUILD 446
   }
 
   // ── 168-4: Session Preview Dialog ────────────────────────────────────────
@@ -4135,6 +4437,208 @@ class _TrashModalState extends State<_TrashModal> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// BUILD 446-SOAP-FLOW-FIX — Enums e Dialogs para saída inteligente
+// ═════════════════════════════════════════════════════════════════════════════
+
+/// Ação retornada pelos diálogos de saída (BUILD 446 PASSO 3)
+enum _BackAction { save, discard }
+
+// ── Diálogo Cenário B: alterações pendentes ──────────────────────────────────
+// Exibido quando _hasChanges == true e o médico tenta fechar a tela.
+// Opções: Salvar Alterações (primary) | Descartar e Voltar (destructive) | Cancelar (text)
+class _PendingChangesDialog extends StatelessWidget {
+  final bool isEs;
+  final bool dark;
+
+  const _PendingChangesDialog({required this.isEs, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = dark ? const Color(0xFF0D1117) : Colors.white;
+    final textPrimary = dark ? Colors.white : const Color(0xFF111827);
+    final textSecondary = dark ? Colors.white70 : const Color(0xFF374151);
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      backgroundColor: bg,
+      titlePadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      title: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: InternacionTheme.amber.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: const Icon(
+              Icons.edit_note_rounded,
+              size: 20,
+              color: InternacionTheme.amber,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              isEs
+                  ? 'Alteraciones pendientes'
+                  : 'Alterações pendentes',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+      content: Text(
+        isEs
+            ? 'Detectamos cambios no guardados en la evolución del paciente. ¿Desea guardar las modificaciones o descartar y volver?'
+            : 'Detectamos alterações não salvas na evolução do paciente. Deseja salvar as modificações ou descartar e voltar?',
+        style: TextStyle(
+          fontSize: 13.5,
+          height: 1.5,
+          color: textSecondary,
+        ),
+      ),
+      actions: [
+        // Cancelar — permanece na tela
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(null),
+          style: TextButton.styleFrom(
+            foregroundColor: textSecondary,
+          ),
+          child: Text(
+            isEs ? 'Cancelar' : 'Cancelar',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        // Descartar — fecha sem salvar
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(_BackAction.discard),
+          style: TextButton.styleFrom(
+            foregroundColor: InternacionTheme.red,
+          ),
+          child: Text(
+            isEs ? 'Descartar' : 'Descartar',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        // Salvar — persiste e fecha
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(_BackAction.save),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: InternacionTheme.accentLight,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+          ),
+          child: Text(
+            isEs ? 'Guardar' : 'Salvar',
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Diálogo Cenário C: novo rascunho nunca salvo ─────────────────────────────
+// Exibido quando _isDirty && _currentSessionKey == null e o médico tenta fechar.
+// Opções: Manter (cancelar saída) | Descartar (limpa e fecha)
+class _NewDraftDiscardDialog extends StatelessWidget {
+  final bool isEs;
+  final bool dark;
+
+  const _NewDraftDiscardDialog({required this.isEs, required this.dark});
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = dark ? const Color(0xFF0D1117) : Colors.white;
+    final textPrimary = dark ? Colors.white : const Color(0xFF111827);
+    final textSecondary = dark ? Colors.white70 : const Color(0xFF374151);
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      backgroundColor: bg,
+      titlePadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      title: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: InternacionTheme.red.withOpacity(0.13),
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: const Icon(
+              Icons.delete_sweep_rounded,
+              size: 20,
+              color: InternacionTheme.red,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              isEs ? 'Rascunho não salvo' : 'Rascunho não salvo',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+      content: Text(
+        isEs
+            ? 'Este paciente aún no fue guardado en la base de datos. Si vuelve ahora, los datos se perderán definitivamente.'
+            : 'Este paciente ainda não foi salvo no banco de dados. Se voltar agora, os dados serão perdidos definitivamente.',
+        style: TextStyle(
+          fontSize: 13.5,
+          height: 1.5,
+          color: textSecondary,
+        ),
+      ),
+      actions: [
+        // Manter — volta para o formulário
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(null),
+          style: TextButton.styleFrom(
+            foregroundColor: InternacionTheme.accentLight,
+          ),
+          child: Text(
+            isEs ? 'Manter Rascunho' : 'Manter Rascunho',
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ),
+        // Descartar — fecha e limpa
+        ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(_BackAction.discard),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: InternacionTheme.red,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+          ),
+          child: Text(
+            isEs ? 'Descartar y Salir' : 'Descartar e Sair',
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -240,6 +240,10 @@ class SoapSectionWidget extends StatefulWidget {
   /// Callback chamado quando o médico confirma o save da evolução
   final ValueChanged<EvolucionModel> onSave;
 
+  /// BUILD 446: Callback disparado toda vez que qualquer campo S/O/A/P muda.
+  /// O pai usa isso para setar _hasChanges = true.
+  final VoidCallback? onAnyFieldChanged;
+
   const SoapSectionWidget({
     super.key,
     required this.evolucion,
@@ -248,6 +252,7 @@ class SoapSectionWidget extends StatefulWidget {
     required this.onSave,
     this.autorNombre = 'Dr.',
     this.paciente,
+    this.onAnyFieldChanged,
   });
 
   @override
@@ -269,10 +274,25 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
     super.initState();
     _notifier = SoapNotifier(widget.evolucion);
     _notifier.addListener(_onNotifierChanged);
+    // BUILD 446: arma o listener após o primeiro frame para não disparar
+    // onAnyFieldChanged durante a carga inicial dos dados do paciente.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _fieldChangesArmed = true;
+    });
   }
 
+  // BUILD 446: flag que evita disparar onAnyFieldChanged na carga inicial
+  // (resetSoap / initState) — só dispara após o primeiro frame completo.
+  bool _fieldChangesArmed = false;
+
   void _onNotifierChanged() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+      // Notifica o pai somente após a armação (primeiro frame completo)
+      if (_fieldChangesArmed) {
+        widget.onAnyFieldChanged?.call();
+      }
+    }
   }
 
   @override
@@ -298,11 +318,19 @@ class SoapSectionWidgetState extends State<SoapSectionWidget> {
   // Incrementa _draftVersion → força ValueKey a mudar → todos os sub-widgets
   // (SoapSubjetivo, SoapObjetivo, etc.) reconstruídos com controllers zerados.
   // _openIdx = 0 → painel S fica aberto para nova entrada imediata.
+  //
+  // BUILD 446: desarma e rearma _fieldChangesArmed para que a carga de dados
+  // existentes (ex: _viewSession) não dispare onAnyFieldChanged erroneamente.
   void resetSoap(EvolucionModel freshDraft) {
+    _fieldChangesArmed = false; // pausa notificações durante carga
     _notifier.resetAll(freshDraft);
     setState(() {
       _draftVersion++;
       _openIdx = 0;
+    });
+    // Rearma no próximo frame, após os sub-widgets reconstruírem seus controllers
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _fieldChangesArmed = true;
     });
   }
 
