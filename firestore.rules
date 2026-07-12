@@ -223,9 +223,12 @@ service cloud.firestore {
         allow delete: if isOwner(userId) || isAdmin();
       }
 
+      // Histórias Clínicas Privadas (Aba Ferramentas / Histórico Pessoal)
+      // AUDIT 453: isOwner() + isTokenFresh() para writes — proteção IDOR completa
       match /clinical_histories/{document=**} {
-        allow read, write: if isAuthed()
-          && (request.auth.uid == userId || isAdmin());
+        allow read, list: if isOwner(userId) || isAdmin();
+        allow create, update: if isOwner(userId) && isTokenFresh();
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       match /cases/{document=**} {
@@ -272,7 +275,8 @@ service cloud.firestore {
         allow delete: if isOwner(userId) || isAdmin();
       }
       match /ai_chat_history/{sessionId}/{rest=**} {
-        allow read, write: if isOwner(userId) || isAdmin();
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if isOwner(userId) && isTokenFresh();
       }
 
       match /notes/{document=**} {
@@ -383,10 +387,20 @@ service cloud.firestore {
     // ══════════════════════════════════════════════════════════════════════════
     // HISTÓRIAS CLÍNICAS PÚBLICAS
     // ══════════════════════════════════════════════════════════════════════════
-
+    //
+    // MODELO DE PERMISSÃO (consolidado pós-auditoria):
+    //   • read:   público (sem autenticação) — leitura do feed aberto
+    //   • create: qualquer usuário autenticado + token fresco (< 1h)
+    //             → moderação posterior via Admin/Master
+    //   • update, delete: apenas Admin/Master — moderação e controle total
+    //
+    // SEGURANÇA: sem isOwner() no create pois a coleção é pública por design.
+    // O campo 'authorUid' no payload deve ser validado pela Cloud Function
+    // ou pelo cliente antes de exibir (não é dado clínico privado).
     match /public_histories/{documentId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isAuthed() && isTokenFresh();
+      allow update, delete: if isAdmin();
     }
 
     // ══════════════════════════════════════════════════════════════════════════
