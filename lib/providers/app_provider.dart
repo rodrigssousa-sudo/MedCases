@@ -793,10 +793,17 @@ class AppProvider extends ChangeNotifier {
         _currentAuthBarrierState = AppAuthBarrierState.authReady;
         debugPrint('[AUTH_CONVERGENCE][READY] '
             'expectedUid=$expectedUid '
-            'firebaseUid=${fbSdkUser.uid} uidsMatch=true');
-        // BUILD 463-A.2: canonical READY log matching the telemetry schema.
-        debugPrint('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED]');
-        debugPrint('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED]');
+            'firebaseUid=${fbSdkUser.uid} '
+            'uidsMatch=true '
+            'adapterType=live');
+        // BUILD 463-A.2-R1: CREDENTIAL_ACCEPTED and TOKEN_REFRESHED are NOT
+        // re-emitted here. They were already emitted by the originating sign-in
+        // path (email_password in _loginNative, or google_credential handler)
+        // with the correct firebaseUidAfter and uid parameters.
+        // Emitting them again here was producing DUPLICATE telemetry lines and,
+        // on the persistence_restore path, FALSE-SUCCESS lines because the SDK
+        // session had not been established by the REST refresh.
+        // The READY line above is the canonical convergence confirmation.
       }
 
     } catch (e) {
@@ -1073,6 +1080,31 @@ class AppProvider extends ChangeNotifier {
     // BUILD 290: SYNC_TRACE — instrumentação científica para isolar
     // short-circuits e silent exceptions. Cada await tem marcador próprio.
     debugPrint('[SYNC_TRACE][START] Iniciando sincronismo para o uid: $uid');
+
+    // BUILD 463-A.2-R1: AUTH BARRIER CHECK before any network collection reads.
+    //
+    // _syncFromFirestore() is invoked immediately after setUser() resolves the
+    // auth convergence latch. If the latch terminated at authRequired, authMismatch,
+    // or authFailed, every loadFav*/loadCases call will return {} / [] from the
+    // dual-uid barrier. Merging those empty returns into local state and then
+    // persisting them via _saveLocal() is an ARCHITECTURAL VIOLATION:
+    //   • It silently overwrites valid local favorites with zero-length collections.
+    //   • It emits SYNC_TRACE[SUCCESS] on an auth-blocked channel.
+    //
+    // FIX: Abort the entire sync before dispatching any network reads.
+    // The local cache (_favDrugs, _favProtocols, etc.) is preserved intact.
+    if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
+      debugPrint('[SYNC_TRACE][ABORT] '
+          'uid=$uid '
+          'barrierState=${_currentAuthBarrierState.name} '
+          'reason=auth_boundary_active '
+          'action=no_network_reads_no_storage_writes');
+      debugPrint('[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+          '— isAdmin=$isAdmin isMaster=$isMaster '
+          '(aborted_by_auth_barrier)');
+      return;
+    }
+
     try {
       // Snapshot dos favoritos locais ANTES do fetch (para merge correto)
       final localDrugs    = Set<String>.from(_favDrugs);
@@ -1090,6 +1122,21 @@ class AppProvider extends ChangeNotifier {
       debugPrint('[SYNC_TRACE][STEP1_OK] Favoritos carregados: '
           'drugs=${results[0].length} protos=${results[1].length} '
           'prescs=${results[2].length} cases=${results[3].length}');
+
+      // BUILD 463-A.2-R1: secondary auth re-check after async gap.
+      // The barrier state may have changed (e.g. uid_mismatch detected mid-flight)
+      // between STEP1_OK and the merge+write path. Abort before any storage write.
+      if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
+        debugPrint('[SYNC_TRACE][ABORT] '
+            'uid=$uid '
+            'barrierState=${_currentAuthBarrierState.name} '
+            'reason=auth_boundary_active_post_step1 '
+            'action=no_merge_no_storage_writes');
+        debugPrint('[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+            '— isAdmin=$isAdmin isMaster=$isMaster '
+            '(aborted_by_auth_barrier_post_step1)');
+        return;
+      }
 
       // Merge: une Firestore + local — nunca descarta favoritos locais
       _favDrugs         = results[0]..addAll(localDrugs);

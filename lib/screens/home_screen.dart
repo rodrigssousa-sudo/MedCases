@@ -1441,16 +1441,51 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
             return;
           }
 
-          // Fallback 3: sessão nova completamente vazia.
-          // CRÍTICO: _lastLoadWasEmpty=false trava o UID guard e para o loop morto.
-          // O campo de input fica 100% liberado para digitação imediata.
-          // Toda nova mensagem enviada será salva síncronamente (await) via
-          // _homePersistTurn() ANTES da chamada Firestore — histórico sobrevive local.
+          // Fallback 3: permission-denied with no local cache.
+          //
+          // BUILD 463-A.2-R1: AUTH BARRIER CHECK before declaring a new session.
+          //
+          // ARCHITECTURAL VIOLATION CORRECTED:
+          // The prior implementation ALWAYS resolved this path as a new empty
+          // session (usuário_novo) and locked the UID guard. This is WRONG when
+          // the permission-denied was caused by an active auth barrier (the
+          // Firebase SDK session is not yet established). In that case:
+          //   • There is no authoritative confirmation that this user has no history.
+          //   • Locking _lastLoadWasEmpty=false prevents the retry that would
+          //     succeed once the SDK session propagates.
+          //   • Treating it as usuário_novo is a false new-user initialization.
+          //
+          // FIX: Read the current auth barrier state from AppProvider.
+          //   • authReady → barrier open, SDK session confirmed, truly new user.
+          //     Proceed with the original new-session initialization.
+          //   • Any other state → auth boundary active. Enter degraded-wait mode:
+          //     keep chat in a restricted state, allow retry when auth resolves.
+          if (!mounted) return;
+          final appProvider = context.read<AppProvider>();
+          final isAuthReady = appProvider.authBarrierState ==
+              AppAuthBarrierState.authReady;
+
+          if (!isAuthReady) {
+            // AUTH-BLOCKED DEGRADED STATE: do NOT declare a new user session.
+            // Leave _lastLoadWasEmpty=true so the next auth-state transition
+            // triggers a fresh retry instead of being permanently locked out.
+            _lastLoadedUid    = uid;
+            _lastLoadWasEmpty = true; // permits retry on next auth resolution
+            debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_3 uid=$uid '
+                'barrierState=${appProvider.authBarrierState.name} '
+                '→ auth_boundary_active: degraded_wait, retry_permitted');
+            // Do NOT setState() — avoid UI flicker on a recoverable state.
+            return;
+          }
+
+          // authReady confirmed: this is a genuinely new user with no history.
+          // Proceed with the original new-session initialization.
           _lastLoadedUid    = uid;
           _lastLoadWasEmpty = false; // ← engaja trava; sem mais retries até OAuth
           if (mounted) setState(() {}); // força rebuild do campo de texto
           debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_3 uid=$uid '
-              '→ sessão nova vazia, chat 100% liberado');
+              'barrierState=authReady '
+              '→ genuinely_new_session, chat 100% liberado');
           return;
         }
         debugPrint('[BUILD442][HomeInlineChat] loadHistories error (non-perm): $e uid=$uid');
@@ -1461,12 +1496,17 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       if (firestoreOk) {
         final rawAfterFetch = (await SharedPreferences.getInstance()).getString(histKey);
         if (rawAfterFetch == null || rawAfterFetch.isEmpty) {
-          // Firestore respondeu mas não havia histórico para este uid (usuário novo).
-          // BUILD 442: também resolve como sessão vazia + trava UID guard.
+          // Firestore responded (barrier open, authReady confirmed) but this uid
+          // has no history docs — genuinely new user. Safe to initialize empty.
+          // BUILD 463-A.2-R1: this path is only reached when firestoreOk=true
+          // (loadHistories() succeeded without throwing). loadHistories() is
+          // guarded by the dual-uid barrier, so a success here implies the SDK
+          // session was confirmed. Not a false-positive new-user init.
           _lastLoadedUid    = uid;
           _lastLoadWasEmpty = false; // sessão nova = resolvida, não empty-loop
-          debugPrint('[BUILD442][HomeInlineChat] usuário_novo uid=$uid '
-              '→ sem histórico, sessão inicializada vazia');
+          debugPrint('[BUILD442][HomeInlineChat] confirmed_new_user uid=$uid '
+              '→ sem histórico (Firestore authReady confirmed), '
+              'sessão inicializada vazia');
           return;
         }
         _lastLoadWasEmpty = false;

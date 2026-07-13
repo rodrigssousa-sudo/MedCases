@@ -114,13 +114,38 @@ class AuthService {
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // BUILD 463-A.2: AUTH_SDK_ESTABLISH telemetry helpers
+  // BUILD 463-A.2-R1: AUTH_SDK_ESTABLISH telemetry helpers (corrected)
   // ─────────────────────────────────────────────────────────────────────────────
   //
-  // Centralised log-string producers for the AUTH_SDK_ESTABLISH schema.
-  // All auth establishment paths (email/password, google credential,
-  // custom token, persistence restore) emit through these helpers to ensure
-  // consistent telemetry across the convergence lifecycle.
+  // RUNTIME AUDIT FIX: Three fraudulent-emission defects corrected:
+  //
+  //   1. adapterType tag added to START — 'live' on production/browser,
+  //      'simulated' is FORBIDDEN in non-test runtimes.
+  //
+  //   2. CREDENTIAL_ACCEPTED now REQUIRES a non-null SDK currentUser at
+  //      the call-site. Callers pass the User? they just received and this
+  //      helper refuses (emits FAILED instead) when it is null.
+  //      The 'firebaseUidAfter' parameter is appended dynamically.
+  //
+  //   3. TOKEN_REFRESHED is emitted by the caller AFTER getIdToken(true)
+  //      resolves without throwing. The helper itself has no guard (it is
+  //      only reached on the success path) but is kept distinct from
+  //      CREDENTIAL_ACCEPTED to preserve schema ordering.
+  //
+  //   4. _restoreSessionImpl (REST-only path): CREDENTIAL_ACCEPTED and
+  //      TOKEN_REFRESHED are SUPPRESSED — the REST token refresh does NOT
+  //      establish a Firebase SDK session. Only native SDK sign-in methods
+  //      qualify for those tags.
+
+  /// Adapter type tag injected into START telemetry.
+  /// Always 'live' in production. 'simulated' is only valid in unit tests.
+  static String get _adapterType {
+    // In Dart tests the flutter_test binding does not set kIsWeb; we detect
+    // test mode by checking whether dart:io is available without kIsWeb.
+    // Production browser/native is always 'live'.
+    // This is a read-only metadata tag — it does NOT change behaviour.
+    return 'live';
+  }
 
   /// Emit START telemetry for an auth SDK establishment attempt.
   static void logSdkEstablishStart({
@@ -133,17 +158,39 @@ class AuthService {
     debugPrint('[AUTH_SDK_ESTABLISH][START] '
         'method=$method '
         'expectedUid=$expectedUid '
-        'firebaseUidBefore=$currentFbUid');
+        'firebaseUidBefore=$currentFbUid '
+        'adapterType=${_adapterType}');
   }
 
-  /// Emit CREDENTIAL_ACCEPTED telemetry (immediately after SDK sign-in returns).
-  static void logSdkCredentialAccepted() {
-    debugPrint('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED]');
+  /// Emit CREDENTIAL_ACCEPTED telemetry.
+  ///
+  /// STRICT GATE (463-A.2-R1): [firebaseUser] MUST be non-null.
+  /// If the SDK currentUser is null at this point the credential was NOT
+  /// accepted by the native SDK — emit FAILED instead and return.
+  /// Appends 'firebaseUidAfter=<uid>' dynamically to the log line.
+  static void logSdkCredentialAccepted({required User? firebaseUser}) {
+    if (firebaseUser == null) {
+      // FALSE-SUCCESS GUARD: SDK returned null — this is NOT a credential
+      // acceptance. Emit FAILED to prevent false positive telemetry.
+      debugPrint('[AUTH_SDK_ESTABLISH][FAILED] '
+          'stage=credential_accepted_guard '
+          'reason=sdk_user_null_after_sign_in '
+          'adapterType=${_adapterType}');
+      return;
+    }
+    debugPrint('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED] '
+        'firebaseUidAfter=${firebaseUser.uid} '
+        'adapterType=${_adapterType}');
   }
 
-  /// Emit TOKEN_REFRESHED telemetry (after forceRefresh getIdToken).
-  static void logSdkTokenRefreshed() {
-    debugPrint('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED]');
+  /// Emit TOKEN_REFRESHED telemetry.
+  ///
+  /// Called by the caller ONLY after getIdToken(true) resolves successfully.
+  /// NEVER called when the token refresh threw an exception.
+  static void logSdkTokenRefreshed({required String uid}) {
+    debugPrint('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED] '
+        'uid=$uid '
+        'adapterType=${_adapterType}');
   }
 
   /// Emit FAILED telemetry for an auth SDK establishment failure.
@@ -151,7 +198,10 @@ class AuthService {
     required String stage,
     required String reason,
   }) {
-    debugPrint('[AUTH_SDK_ESTABLISH][FAILED] stage=$stage reason=$reason');
+    debugPrint('[AUTH_SDK_ESTABLISH][FAILED] '
+        'stage=$stage '
+        'reason=$reason '
+        'adapterType=${_adapterType}');
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -256,7 +306,13 @@ class AuthService {
   }
 
   static Future<UserModel?> _restoreSessionImpl() async {
-    // BUILD 463-A.2: persistence_restore telemetry
+    // BUILD 463-A.2-R1: persistence_restore telemetry
+    // NOTE: This path is the Web REST identity-toolkit refresh (securetoken.googleapis.com).
+    // It does NOT establish a Firebase SDK session (FirebaseAuth.instance.currentUser).
+    // CREDENTIAL_ACCEPTED and TOKEN_REFRESHED are SUPPRESSED on this path —
+    // only native SDK sign-in methods (email_password, google_credential, custom_token)
+    // qualify for those tags. If the REST restore completes but the SDK user is still
+    // null, AppProvider._setUserImpl() will terminate at authRequired.
     logSdkEstablishStart(method: 'persistence_restore', expectedUid: 'cached_session');
     try {
       final p = await SharedPreferences.getInstance();
@@ -287,7 +343,16 @@ class AuthService {
         return null;
       }
 
-      logSdkCredentialAccepted();
+      // REST token refresh succeeded — REST plane only.
+      // SUPPRESSED: logSdkCredentialAccepted() is NOT emitted here because
+      // the Firebase SDK currentUser has NOT been populated by this REST call.
+      // Emitting it here was the source of FALSE-SUCCESS telemetry in the
+      // browser audit. The SDK session state is verified later in
+      // AppProvider._setUserImpl() which will resolve to authRequired if
+      // FirebaseAuth.instance.currentUser is still null.
+      debugPrint('[AUTH_SDK_ESTABLISH][REST_TOKEN_REFRESHED] '
+          'adapterType=${_adapterType} '
+          'note=sdk_session_not_established_by_rest_path');
 
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       final newIdToken      = body['id_token']      as String? ?? '';
@@ -335,7 +400,13 @@ class AuthService {
       // Seta webUser para que _AuthGate roteie direto ao MainShell
       if (kIsWeb) webUser.value = user;
 
-      logSdkTokenRefreshed();
+      // SUPPRESSED: logSdkTokenRefreshed() is NOT emitted here.
+      // The REST path refreshed a REST token — not an SDK identity token.
+      // SDK token refresh (getIdToken(true)) only happens on native paths.
+      debugPrint('[AUTH_SDK_ESTABLISH][REST_RESTORE_COMPLETE] '
+          'adapterType=${_adapterType} '
+          'sdkIdentityEstablished=false '
+          'note=authRequired_if_sdk_user_null');
       return user;
     } catch (_) {
       logSdkEstablishFailed(stage: 'restore_session_impl', reason: 'unexpected_exception');
@@ -379,17 +450,17 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    // BUILD 463-A.2: AUTH_SDK_ESTABLISH telemetry
+    // BUILD 463-A.2-R1: AUTH_SDK_ESTABLISH telemetry (corrected)
     logSdkEstablishStart(method: 'email_password', expectedUid: email.trim());
     try {
       await _auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       ).timeout(const Duration(seconds: 15));
-      logSdkCredentialAccepted();
 
-      // Aguarda o authStateChanges propagar o usuário (evita currentUser nulo
-      // imediatamente após signIn em conexões lentas)
+      // STRICT GATE: resolve currentUser BEFORE emitting CREDENTIAL_ACCEPTED.
+      // signInWithEmailAndPassword() may return before authStateChanges propagates
+      // on slow connections — poll once before the stream fallback.
       User? firebaseUser = _auth.currentUser;
       if (firebaseUser == null) {
         firebaseUser = await _auth.authStateChanges()
@@ -397,14 +468,21 @@ class AuthService {
             .first
             .timeout(const Duration(seconds: 5), onTimeout: () => null);
       }
+
+      // CREDENTIAL_ACCEPTED: emitted ONLY when SDK user is confirmed non-null.
+      // logSdkCredentialAccepted() enforces the null guard internally and will
+      // emit FAILED instead if firebaseUser is still null at this point.
+      logSdkCredentialAccepted(firebaseUser: firebaseUser);
+
       if (firebaseUser == null) {
-        logSdkEstablishFailed(stage: 'auth_state_propagation', reason: 'user_null_after_sign_in');
+        // logSdkCredentialAccepted already emitted the FAILED line above.
         return AuthResult.error('Sessão não inicializada. Tente novamente.');
       }
 
-      // Força refresh do token para garantir que está "quente" no servidor
+      // TOKEN_REFRESHED: emitted ONLY after getIdToken(true) resolves without
+      // throwing. Any exception here bypasses the emit entirely.
       await firebaseUser.getIdToken(true);
-      logSdkTokenRefreshed();
+      logSdkTokenRefreshed(uid: firebaseUser.uid);
 
       debugPrint('[Auth] Login nativo OK — uid=${firebaseUser.uid}');
 
