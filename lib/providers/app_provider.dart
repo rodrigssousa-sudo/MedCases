@@ -4495,9 +4495,10 @@ class AppProvider extends ChangeNotifier {
                   _gptStreamSub = null;
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
-                  AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                  // MICRO-BUILD 462E-A.5.3.4: releaseCanonicalDecision BEFORE completeAiRequest.
                   ExternalToolLinkEngine.releaseCanonicalDecision(
                       requestId: thisRequestId, decision: canonicalDecision);
+                  AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                   return;
                 }
 
@@ -5182,8 +5183,9 @@ class AppProvider extends ChangeNotifier {
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
         _aiStreamActive = false;
         aiChatProvider.setStreaming(false); // BUILD 326
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        // MICRO-BUILD 462E-A.5.3.4: wrappedOnDone BEFORE completeAiRequest (terminal invariant).
         wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
       });
 
       // Chama proxy pago direto (sem stream Free).
@@ -5363,12 +5365,12 @@ class AppProvider extends ChangeNotifier {
       _aiStreamSub?.cancel();
       _aiStreamSub = null;
       accumulator.clear();
-      // BUILD 241: remove do coordinator (timer interno disparou antes do resume)
-      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+      // MICRO-BUILD 462E-A.5.3.4: enforce terminal order — wrappedOnDone → releaseCanonicalDecision → completeAiRequest LAST.
       // MICRO-BUILD 462E-A.5.1: release cache entry on global TIMEOUT
       ExternalToolLinkEngine.releaseCanonicalDecision(
           requestId: thisRequestId, decision: canonicalDecision);
       wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254: global timer
+      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
     });
 
     _aiStreamSub = stream.listen(
@@ -5474,7 +5476,7 @@ class AppProvider extends ChangeNotifier {
           if (completionFired) return;
           completionFired = true;
           _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
+          // MICRO-BUILD 462E-A.5.3.4: removed premature completeAiRequest (BUILD 241) — correct terminal call is below after full pipeline.
           // BUILD 252: print do rawText ANTES de sanitizeAndCheck — expõe saída bruta.
           final rawText = accumulator.toString().trim();
           // ignore: avoid_print
