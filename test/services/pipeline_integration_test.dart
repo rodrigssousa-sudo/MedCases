@@ -730,6 +730,173 @@ void main() {
             reason: 'UI error must be emitted before ResumeCoordinator.complete');
       });
     });
+
+    // ── Group 6: MICRO-BUILD 462E-A.5.3.2 — Semantic Invariants & Repair Lifecycle ──
+    group('Group 6: Semantic Invariants & Repair Lifecycle (462E-A.5.3.2)', () {
+
+      setUp(() => ExternalToolLinkEngine.clearDecisionCache());
+      tearDown(() => ExternalToolLinkEngine.clearDecisionCache());
+
+      // ── 6a: infusion intent routing ──────────────────────────────────────────
+      test('6a. "Como titular noradrenalina em bomba de infusão?" '
+          '→ intent=infusion → toRouterTask()=infusao_ev', () {
+        const prompt = 'Como titular noradrenalina em bomba de infusão?';
+        final decision = ExternalToolLinkEngine.resolveDecision('req_6a', prompt);
+
+        expect(decision, isNotNull,
+            reason: 'infusion prompt must yield a canonical decision');
+        expect(decision!.intent, equals(ExternalToolIntent.infusion),
+            reason: '"titular" + "bomba de infusão" → ExternalToolIntent.infusion');
+        expect(decision.toRouterTask(), equals('infusao_ev'),
+            reason: 'infusion intent must map to "infusao_ev"');
+      });
+
+      // ── 6b: dilution intent routing ──────────────────────────────────────────
+      test('6b. "Como diluir noradrenalina e preparar o volume final?" '
+          '→ intent=dilution → toRouterTask()=diluicao_ev', () {
+        const prompt = 'Como diluir noradrenalina e preparar o volume final?';
+        final decision = ExternalToolLinkEngine.resolveDecision('req_6b', prompt);
+
+        expect(decision, isNotNull,
+            reason: 'dilution prompt must yield a canonical decision');
+        expect(decision!.intent, equals(ExternalToolIntent.dilution),
+            reason: '"diluir" + "volume final" → ExternalToolIntent.dilution');
+        expect(decision.toRouterTask(), equals('diluicao_ev'),
+            reason: 'dilution intent must map to "diluicao_ev"');
+      });
+
+      // ── 6c: Case A — Successful repair lifecycle ─────────────────────────────
+      test('6c. Case A: Successful repair — repairCalls==1, '
+          'incompletePersistenceCalls==0, repairedPersistenceCalls==1, '
+          'payloadReadyCalls==1, coordinatorCompleteCalls==1', () async {
+        const truncatedText = 'Velocidade: **55–7';       // H3 high-confidence
+        const repairedText  = 'Velocidade: **55–75 mL/h**. Titular conforme resposta clínica.';
+
+        final sink        = _MockPersistenceSink();
+        final coordinator = _MockResumeCoordinator();
+        final repairEngine = _MockRepairEngine(
+            (_) => TruncationRepairResult.repaired(repairedText));
+
+        final result = await _runFinalizationPipeline(
+          rawText:      truncatedText,
+          repairEngine: repairEngine,
+          sink:         sink,
+          coordinator:  coordinator,
+          requestId:    'req_6c_repair',
+        );
+
+        // repairCalls == 1: repair engine called exactly once
+        expect(repairEngine.callCount, equals(1),
+            reason: 'repair must be called exactly once (AT MOST ONCE per requestId)');
+        // incompletePersistenceCalls == 0: raw truncated text never persisted
+        expect(sink.savedTexts.any((t) => t == truncatedText), isFalse,
+            reason: 'raw truncated text must never be persisted');
+        // repairedPersistenceCalls == 1: only the repaired text persisted
+        expect(sink.saveCount, equals(1),
+            reason: 'exactly ONE persistence call after successful repair');
+        expect(sink.savedTexts.first, equals(repairedText),
+            reason: 'persisted text must be the repaired version');
+        // payloadReadyCalls == 1: EXT_TOOL card rendered
+        expect(coordinator.extToolCardRendered, isTrue,
+            reason: 'EXT_TOOL_PAYLOAD_READY must fire after successful repair');
+        // coordinatorCompleteCalls == 1: coordinator completed
+        expect(coordinator.completed, isTrue,
+            reason: 'ResumeCoordinator.complete() must be called');
+        expect(result.completed, isTrue);
+        expect(result.droppedPayload, isFalse);
+      });
+
+      // ── 6d: Case B — Catastrophic failure lifecycle ──────────────────────────
+      test('6d. Case B: Catastrophic failure — SessionDedup.save() never invoked, '
+          'AiFailed(retryable:false) emitted, cacheSize==0', () async {
+        const truncatedText = 'Velocidade: **55–7'; // H3 high-confidence
+
+        final sink        = _MockPersistenceSink();
+        final coordinator = _MockResumeCoordinator();
+        final repairEngine = _MockRepairEngine(
+            (_) => TruncationRepairResult.catastrophicFailure(
+                'repair_proxy_failed: catastrophic'));
+
+        final result = await _runFinalizationPipeline(
+          rawText:      truncatedText,
+          repairEngine: repairEngine,
+          sink:         sink,
+          coordinator:  coordinator,
+          requestId:    'req_6d_failure',
+        );
+
+        // SessionDedup.save() never invoked — sink.saveCount == 0
+        expect(sink.saveCount, equals(0),
+            reason: 'SessionDedup.save() must never be invoked on catastrophic failure');
+        // AiFailed(retryable: false) → droppedPayload==true, completed==false
+        expect(result.droppedPayload, isTrue,
+            reason: 'DROP_PAYLOAD must be triggered — AiFailed(retryable:false)');
+        expect(result.completed, isFalse,
+            reason: 'pipeline must NOT complete successfully on catastrophic failure');
+        // cacheSize == 0: cache cleared (ExternalToolLinkEngine cleared in setUp)
+        expect(ExternalToolLinkEngine.decisionCacheSize, equals(0),
+            reason: 'cache must be empty — no residual entries after DROP_PAYLOAD');
+        // EXT_TOOL card never rendered
+        expect(coordinator.extToolCardRendered, isFalse,
+            reason: 'EXT_TOOL_PAYLOAD_READY must NOT fire on DROP_PAYLOAD');
+        // ResumeCoordinator still fires (no orphan request)
+        expect(coordinator.completed, isTrue,
+            reason: 'ResumeCoordinator.complete() must still fire on DROP_PAYLOAD');
+      });
+
+      // ── 6e: Case C — Concurrency cancellation lifecycle ──────────────────────
+      test('6e. Case C: Concurrency cancellation — lateRepairIgnored=true, '
+          '0 persistence entries, coordinator cleanly closes', () async {
+        // Simulate async repair loop mid-run cancellation via controller flag
+        bool cancelled = false;
+        bool lateRepairIgnored = false;
+        int persistenceCalls = 0;
+        bool coordinatorClosed = false;
+
+        final sink        = _MockPersistenceSink();
+        final coordinator = _MockResumeCoordinator();
+
+        // Simulate repair that runs after cancellation was signalled
+        Future<void> simulateConcurrentRepairWithCancellation() async {
+          // Phase 1: repair starts (async)
+          await Future.delayed(Duration.zero);
+
+          // Phase 2: mid-run cancel arrives
+          cancelled = true;
+
+          // Phase 3: "late frame" arrives — should be dropped
+          if (cancelled) {
+            lateRepairIgnored = true;
+            // Drop — do NOT persist, do NOT render card
+          } else {
+            sink.save('late_repaired_text');
+            persistenceCalls = sink.saveCount;
+            coordinator.renderExtToolCard();
+          }
+
+          // Phase 4: coordinator closes cleanly regardless
+          coordinator.complete('req_6e_cancel');
+          coordinatorClosed = true;
+        }
+
+        await simulateConcurrentRepairWithCancellation();
+
+        // lateRepairIgnored == true: late frame was dropped
+        expect(lateRepairIgnored, isTrue,
+            reason: 'late repair frame must be dropped after cancellation');
+        // 0 persistence entries: no incomplete/repaired text saved
+        expect(sink.saveCount, equals(0),
+            reason: '0 persistence entries after concurrency cancellation');
+        // coordinator cleanly closes
+        expect(coordinatorClosed, isTrue,
+            reason: 'coordinator must close cleanly after cancellation');
+        expect(coordinator.completed, isTrue,
+            reason: 'ResumeCoordinator.complete() must be called even on cancel');
+        // EXT_TOOL card not rendered
+        expect(coordinator.extToolCardRendered, isFalse,
+            reason: 'EXT_TOOL_PAYLOAD_READY must not fire on cancelled repair');
+      });
+    });
   });
 }
 

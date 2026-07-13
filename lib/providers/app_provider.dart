@@ -3993,8 +3993,8 @@ class AppProvider extends ChangeNotifier {
         // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
         wrappedOnDone(_timeoutSafeCard(_lang));
         // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on TIMEOUT (after UI).
-        ExternalToolLinkEngine.releaseDecision(
-            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+        ExternalToolLinkEngine.releaseCanonicalDecision(
+            requestId: thisRequestId, decision: canonicalDecision);
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
       });
 
@@ -4142,8 +4142,8 @@ class AppProvider extends ChangeNotifier {
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
                   AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-                  ExternalToolLinkEngine.releaseDecision(
-                      '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                  ExternalToolLinkEngine.releaseCanonicalDecision(
+                      requestId: thisRequestId, decision: canonicalDecision);
                   return;
                 }
 
@@ -4180,8 +4180,8 @@ class AppProvider extends ChangeNotifier {
                           : 'Não consegui gerar uma resposta. Pode reformular? ⚕'),
                 );
                 // Release canonical decision cache entry — strictly after UI emit (COMPLETED).
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
                 // ResumeCoordinator.complete() — TERMINAL POSITION (after UI + releaseDecision).
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
               } on AiSafeOutputException catch (safeError) {
@@ -4200,8 +4200,8 @@ class AppProvider extends ChangeNotifier {
                       ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
                       : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
                 );
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
@@ -4234,8 +4234,8 @@ class AppProvider extends ChangeNotifier {
                 // MICRO-BUILD 462E-A.5.3: AUDIT FIX — CLINICAL_PARTIAL was missing releaseDecision().
                 // This path IS a final termination vector: must evict cache entry before completing.
                 wrappedOnError(partialWarning);
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
@@ -4252,8 +4252,8 @@ class AppProvider extends ChangeNotifier {
                 // MICRO-BUILD 462E-A.5.3: AUDIT FIX — AUTH_EXPIRED was missing releaseDecision().
                 // This path IS a final termination vector: must evict cache entry before completing.
                 wrappedOnError('[auth_expired] Sessão expirada (${e.code}). Faça login novamente.');
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
@@ -4276,8 +4276,8 @@ class AppProvider extends ChangeNotifier {
                         : 'Erro no assistente IA (${e.code}). Tente novamente. ⚕'),
               );
               // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on FAILED (after UI).
-              ExternalToolLinkEngine.releaseDecision(
-                  '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+              ExternalToolLinkEngine.releaseCanonicalDecision(
+                  requestId: thisRequestId, decision: canonicalDecision);
               AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
 
             // ── AiProviderSwitched: sinaliza troca de provider ───────────────
@@ -4328,8 +4328,8 @@ class AppProvider extends ChangeNotifier {
                 : 'Erro de rede no assistente IA. Tente novamente. ⚕',
           );
           // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on STREAM_EXCEPTION (after UI).
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         },
         onDone: () {
@@ -4365,8 +4365,8 @@ class AppProvider extends ChangeNotifier {
             );
           }
           // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on EOF/CANCELLED (after UI).
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         },
         cancelOnError: false,
@@ -4690,8 +4690,8 @@ class AppProvider extends ChangeNotifier {
           wrappedOnDone(gptText);
           // MICRO-BUILD 462E-A.5.3: Layer 2 handled terminal UI event.
           // Fallback owns release + complete here.
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
           return true; // Layer 2 resolved — handled terminal events
         }
@@ -4771,8 +4771,8 @@ class AppProvider extends ChangeNotifier {
         }
         wrappedOnDone(paidText);          // BUILD 254: notifyListeners() incluso
         // MICRO-BUILD 462E-A.5.3: fallback owns release + complete.
-        ExternalToolLinkEngine.releaseDecision(
-            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+        ExternalToolLinkEngine.releaseCanonicalDecision(
+            requestId: thisRequestId, decision: canonicalDecision);
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         return true; // handled: fallback took ownership of terminal events
       } else {
@@ -4783,8 +4783,8 @@ class AppProvider extends ChangeNotifier {
             : 'Estamos com instabilidade temporária na IA.\nTente novamente em alguns segundos. ⚕';
         wrappedOnError(instabilityMsg);      // BUILD 254
         // Fallback emitted error UI — still owns release + complete.
-        ExternalToolLinkEngine.releaseDecision(
-            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+        ExternalToolLinkEngine.releaseCanonicalDecision(
+            requestId: thisRequestId, decision: canonicalDecision);
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         return true; // handled (error path): fallback took ownership
       }
@@ -4890,16 +4890,16 @@ class AppProvider extends ChangeNotifier {
           }
           wrappedOnDone(paidText);             // BUILD 254
           // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path success).
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         } else {
           debugPrint('[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}');
           // Pago falhou → safe-card (sem tentar Free — intencional no modo crítico)
           wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
           // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path failure).
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         }
       }());
@@ -5012,8 +5012,8 @@ class AppProvider extends ChangeNotifier {
       // BUILD 241: remove do coordinator (timer interno disparou antes do resume)
       AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
       // MICRO-BUILD 462E-A.5.1: release cache entry on global TIMEOUT
-      ExternalToolLinkEngine.releaseDecision(
-          '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+      ExternalToolLinkEngine.releaseCanonicalDecision(
+          requestId: thisRequestId, decision: canonicalDecision);
       wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254: global timer
     });
 
@@ -5056,8 +5056,8 @@ class AppProvider extends ChangeNotifier {
                 wrappedOnError(_lang == 'es'
                     ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
                     : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
               }
             }());
@@ -5074,8 +5074,8 @@ class AppProvider extends ChangeNotifier {
                 wrappedOnError(_lang == 'es'
                     ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
                     : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
               }
             }());
@@ -5202,8 +5202,8 @@ class AppProvider extends ChangeNotifier {
                 ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
                 : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
             // Release canonical decision cache entry (COMPLETED) — after UI emit.
-            ExternalToolLinkEngine.releaseDecision(
-                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            ExternalToolLinkEngine.releaseCanonicalDecision(
+                requestId: thisRequestId, decision: canonicalDecision);
             // ResumeCoordinator.complete() — TERMINAL POSITION (last in pyramid).
             AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
           } on AiSafeOutputException catch (safeError) {
@@ -5222,8 +5222,8 @@ class AppProvider extends ChangeNotifier {
                   ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
                   : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
             );
-            ExternalToolLinkEngine.releaseDecision(
-                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            ExternalToolLinkEngine.releaseCanonicalDecision(
+                requestId: thisRequestId, decision: canonicalDecision);
             AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
           }
         }
@@ -5252,8 +5252,8 @@ class AppProvider extends ChangeNotifier {
                 ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
                 : 'Erro de rede no assistente IA. Tente novamente. ⚕',
           );
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241 — TERMINAL
         }
         // fallbackHandled == true → tryPaidFallback already called release + complete.
@@ -5371,8 +5371,8 @@ class AppProvider extends ChangeNotifier {
                           wrappedOnError(_lang == 'es'
                               ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
                               : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
-                          ExternalToolLinkEngine.releaseDecision(
-                              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                          ExternalToolLinkEngine.releaseCanonicalDecision(
+                              requestId: thisRequestId, decision: canonicalDecision);
                           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                         }
                       }());
@@ -5390,8 +5390,8 @@ class AppProvider extends ChangeNotifier {
                     wrappedOnError(_lang == 'es'
                         ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
                         : 'Erro de rede no assistente IA. Tente novamente. ⚕');
-                    ExternalToolLinkEngine.releaseDecision(
-                        '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                    ExternalToolLinkEngine.releaseCanonicalDecision(
+                        requestId: thisRequestId, decision: canonicalDecision);
                     AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                   }
                 },
@@ -5414,8 +5414,8 @@ class AppProvider extends ChangeNotifier {
                       wrappedOnError(_lang == 'es'
                           ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
                           : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
-                      ExternalToolLinkEngine.releaseDecision(
-                          '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                      ExternalToolLinkEngine.releaseCanonicalDecision(
+                          requestId: thisRequestId, decision: canonicalDecision);
                       AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                     }
                   }());
@@ -5436,8 +5436,8 @@ class AppProvider extends ChangeNotifier {
                 wrappedOnError(_lang == 'es'
                     ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
                     : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
               }
             }());

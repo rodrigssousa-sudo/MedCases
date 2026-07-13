@@ -365,10 +365,70 @@ class ExternalToolLinkEngine {
   // ─────────────────────────────────────────────────────────────────────────
   static void releaseDecision(String decisionKey) {
     final removed = _decisionCache.remove(decisionKey);
+    final didEvict = removed != null;
     // ignore: avoid_print
-    print('[EXT_TOOL_CACHE] RELEASE key=$decisionKey '
-        'found=${removed != null} '
+    print('[EXT_TOOL_CACHE][RELEASE] key=$decisionKey '
+        'found=$didEvict '
         'cacheSize=${_decisionCache.length}');
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.2: releaseByRequestId() — Bulk Lifecycle Release ─
+  //
+  // Flushes ALL cache entries whose key starts with '${requestId}_'.
+  // Covers the case where canonicalDecision is null at terminal time (the
+  // partial key was stored by resolveDecision but the caller no longer holds
+  // a reference to the ExternalToolDecision object).
+  //
+  // Emits a single consolidated telemetry line with removed count.
+  // ─────────────────────────────────────────────────────────────────────────
+  static void releaseByRequestId(String requestId) {
+    final prefix = '${requestId}_';
+    final keys = _decisionCache.keys
+        .where((key) => key.startsWith(prefix))
+        .toList(growable: false);
+
+    if (keys.isEmpty) {
+      // ignore: avoid_print
+      print('[EXT_TOOL_CACHE][RELEASE_BY_REQUEST] requestId=$requestId '
+          'found=false removed=0 cacheSize=${_decisionCache.length}');
+      return;
+    }
+
+    for (final key in keys) {
+      _decisionCache.remove(key);
+    }
+
+    // ignore: avoid_print
+    print('[EXT_TOOL_CACHE][RELEASE_BY_REQUEST] requestId=$requestId '
+        'found=true removed=${keys.length} cacheSize=${_decisionCache.length}');
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.2: releaseCanonicalDecision() — Unified Gateway ──
+  //
+  // Single lifecycle gateway used by ALL terminal call-sites in app_provider.dart.
+  //
+  // Contract:
+  //   • decision != null → release via exact decisionKey (decision.decisionKey
+  //     is NEVER the correct key; the stored key is the partialKey used by
+  //     resolveDecision — so we derive it as '${requestId}_${intent.name}').
+  //   • decision == null → flush all keys matching '${requestId}_' prefix
+  //     via releaseByRequestId() (safe even if cache was never populated).
+  //
+  // This eliminates all manual string concat at the 20 call-sites and
+  // provides a deterministic, single-point telemetry path.
+  // ─────────────────────────────────────────────────────────────────────────
+  static void releaseCanonicalDecision({
+    required String requestId,
+    ExternalToolDecision? decision,
+  }) {
+    if (decision != null) {
+      // The cache stored partialKey = '${requestId}_${intent.name}'.
+      // We derive it the same way resolveDecision() does.
+      final partialKey = '${requestId}_${decision.intent.name}';
+      releaseDecision(partialKey);
+      return;
+    }
+    releaseByRequestId(requestId);
   }
 
   // ── MICRO-BUILD 462E-A.5.1: clearDecisionCache() — Deep Cleanup ────────────
@@ -388,6 +448,9 @@ class ExternalToolLinkEngine {
     // ignore: avoid_print
     print('[EXT_TOOL_CACHE] CLEAR_ALL count=$count reason=lifecycle_deep_clean');
   }
+
+  /// Returns current number of entries in the decision cache (for test assertions).
+  static int get decisionCacheSize => _decisionCache.length;
 
   // ── BUILD 462E-A.3: Input Sovereignty — Deterministic Intent Matchers ──────
   //
