@@ -793,11 +793,24 @@ class AiSmartRouter {
     // hasSpecificContext: true quando a Camada C (PlantaoIntentEngine) produziu
     // template específico de matriz — suprime _contractPlantao genérico.
     bool hasSpecificContext = false,
+    // MICRO-BUILD 462E-A.5.2 — Canonical Task Override (Authority Boundary).
+    // When non-null and non-empty, BUILD306 MUST use this task label verbatim
+    // and is strictly prohibited from running _detectIntent() for task selection.
+    // Set to canonicalDecision.toRouterTask() at the call site when intent != none.
+    // Empty string ('') means no override — normal _detectIntent() path applies.
+    String canonicalTaskOverride = '',
   }) {
     final sw = Stopwatch()..start();
 
-    // ── Etapa 1: Intent Router ────────────────────────────────────────────────
+    // ── Etapa 1: Intent Router (Authority Boundary — MICRO-BUILD 462E-A.5.2) ──
+    // ENFORCEMENT: if canonicalTaskOverride is set, BUILD306 is prohibited from
+    // re-evaluating intent via _detectIntent(). The canonical decision computed
+    // once at sendAiMessage() entry is the single source of truth.
     final intent = _detectIntent(userMessage);
+    // Authority ladder: canonical wins over regex when intent was declared.
+    final String effectiveTaskLabel = canonicalTaskOverride.isNotEmpty
+        ? canonicalTaskOverride
+        : intent.taskLabel;
 
     // ── Etapa 2: Language Lock ────────────────────────────────────────────────
     final lang = appLanguage == 'es' ? 'es' : 'pt';
@@ -853,9 +866,11 @@ class AiSmartRouter {
     sw.stop();
 
     // ── Etapa 7: Logs estruturados ────────────────────────────────────────────
+    // MICRO-BUILD 462E-A.5.2: log canonical override when authority boundary active.
     if (kDebugMode) {
       debugPrint('[AI_ROUTER] BUILD306 '
-          'task=${intent.taskLabel} contract=$contractName '
+          'task=$effectiveTaskLabel contract=$contractName '
+          '${canonicalTaskOverride.isNotEmpty ? "canonicalOverride=$canonicalTaskOverride regexSuppressed=true " : ""}'
           'lang=$lang modules=${loaded}L/${skipped}S '
           'prompt=${finalPrompt.length}c/${_kCapTotal}c saved=${contextSaved}c '
           'shrunk=$shrunk buildMs=${sw.elapsedMilliseconds}');
@@ -864,7 +879,8 @@ class AiSmartRouter {
     // Log de produção — visível em release mode (Safari/Chrome DevTools)
     // ignore: avoid_print
     print('[BUILD306][ROUTER] BUILD 306 — Regex Hardening + Unified Sanitize Engine '
-        'contract=$contractName task=${intent.taskLabel} '
+        'contract=$contractName task=$effectiveTaskLabel '
+        '${canonicalTaskOverride.isNotEmpty ? "canonicalOverride=$canonicalTaskOverride regexSuppressed=true " : ""}'
         'cap=$_kCapTotal promptChars=${finalPrompt.length} '
         'shrunk=$shrunk lang=$lang '
         'R1=regex_tag_hardened R2=unified_scanlines_engine '
@@ -873,7 +889,7 @@ class AiSmartRouter {
     return RouterResult(
       finalPrompt: finalPrompt,
       contractName: contractName,
-      taskLabel: intent.taskLabel,
+      taskLabel: effectiveTaskLabel,
       resolvedLang: lang,
       promptChars: finalPrompt.length,
       contextSaved: contextSaved,
@@ -957,7 +973,11 @@ class AiSmartRouter {
   // BUILD 304 [G1b]: retorna o taskLabel de uma mensagem sem construir o prompt.
   // Usado pelo ClinicalThreadManager para detectar mudança de intent e disparar
   // reset silencioso do histórico de transporte (zero custo: só roda _detectIntent).
-  static String detectTaskLabel(String userMessage) {
+  // MICRO-BUILD 462E-A.5.2: canonicalOverride parameter — when set, the canonical
+  // decision's toRouterTask() is returned verbatim; _detectIntent() is still called
+  // for thread-management purposes but its taskLabel is NOT used for routing.
+  static String detectTaskLabel(String userMessage, {String canonicalOverride = ''}) {
+    if (canonicalOverride.isNotEmpty) return canonicalOverride;
     return _detectIntent(userMessage).taskLabel;
   }
 

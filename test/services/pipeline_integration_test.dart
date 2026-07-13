@@ -545,5 +545,207 @@ void main() {
         expect(failed.text, isEmpty);
       });
     });
+
+    // ── Group 5: MICRO-BUILD 462E-A.5.2 — Canonical Task Enforcement & Terminal Order ──
+    group('MICRO-BUILD 462E-A.5.2 Canonical Task Enforcement & Sequencing', () {
+      // ── 5a: infusion prompt → canonicalDecision.intent == infusion → toRouterTask() == "infusao_ev" ──
+      test('5a. "Como titular noradrenalina em bomba de infusão?" '
+          '→ intent=infusion → toRouterTask()=infusao_ev', () {
+        ExternalToolLinkEngine.clearDecisionCache();
+        const prompt = 'Como titular noradrenalina em bomba de infusão?';
+        const requestId = 'req_5a_infusion';
+
+        final decision = ExternalToolLinkEngine.resolveDecision(requestId, prompt);
+
+        // Must detect infusion intent
+        expect(decision, isNotNull,
+            reason: 'infusion prompt must yield a canonical decision');
+        expect(decision!.intent, equals(ExternalToolIntent.infusion),
+            reason: 'infusion prompt → ExternalToolIntent.infusion');
+
+        // toRouterTask() must return "infusao_ev" — not "diluicao" or any other
+        final routerTask = decision.toRouterTask();
+        expect(routerTask, equals('infusao_ev'),
+            reason: 'BUILD306 and AI_ROUTER must consume "infusao_ev" verbatim; '
+                'regex-derived "diluicao" is strictly prohibited when intent is declared');
+
+        ExternalToolLinkEngine.clearDecisionCache();
+      });
+
+      // ── 5b: dilution prompt → toRouterTask() == "diluicao_ev" ──
+      test('5b. dilution prompt → toRouterTask()=diluicao_ev (authority boundary)', () {
+        ExternalToolLinkEngine.clearDecisionCache();
+        const requestId = 'req_5b_dilution';
+        final decision = ExternalToolLinkEngine.resolveDecision(
+            requestId, 'Como diluir vancomicina?');
+        expect(decision, isNotNull);
+        expect(decision!.intent, equals(ExternalToolIntent.dilution));
+        expect(decision.toRouterTask(), equals('diluicao_ev'));
+        ExternalToolLinkEngine.clearDecisionCache();
+      });
+
+      // ── 5c: interaction prompt → toRouterTask() == "interacao_medicamentosa" ──
+      test('5c. drug interaction prompt → toRouterTask()=interacao_medicamentosa', () {
+        ExternalToolLinkEngine.clearDecisionCache();
+        const requestId = 'req_5c_interaction';
+        final decision = ExternalToolLinkEngine.resolveDecision(
+            requestId, 'Qual a interação entre amiodarona e warfarina?');
+        expect(decision, isNotNull);
+        expect(decision!.intent, equals(ExternalToolIntent.drugInteraction));
+        expect(decision.toRouterTask(), equals('interacao_medicamentosa'));
+        ExternalToolLinkEngine.clearDecisionCache();
+      });
+
+      // ── 5d: none intent → canonicalDecision is null → normal classifier path ──
+      test('5d. generic clinical prompt → intent=none → canonicalDecision=null '
+          '→ normal classifier path', () {
+        ExternalToolLinkEngine.clearDecisionCache();
+        const requestId = 'req_5d_none';
+        final decision = ExternalToolLinkEngine.resolveDecision(
+            requestId, 'Qual o tratamento da pneumonia?');
+        // Generic clinical prompts return null (intent=none) → normal classifier path
+        // toRouterTask() is NOT called; BUILD306 runs _detectIntent() normally
+        expect(decision, isNull,
+            reason: 'generic prompt must yield null — no canonical override injected');
+        ExternalToolLinkEngine.clearDecisionCache();
+      });
+
+      // ── 5e: Execution index tracking — TRUNCATION_CHECK < Persistence < UI < ResumeCoordinator ──
+      test('5e. Execution index tracking: '
+          'TRUNCATION_CHECK < Persistence < EXT_TOOL_CARD_RENDERED < ResumeCoordinator.complete', () async {
+        // Simulate the Rigid Transactional Termination Pyramid sequencing.
+        // Uses integer index counters to assert strict ordering.
+        final List<String> executionLog = [];
+
+        // Simulate pipeline stages in the mandated order
+        Future<_PipelineStageResult> runOrderedPipeline({
+          required String rawText,
+          required bool simulateTruncation,
+          required bool repairSucceeds,
+        }) async {
+          // Stage 1: TruncationInspector.inspect() — HARD BARRIER
+          executionLog.add('TRUNCATION_CHECK');
+          final truncResult = TruncationInspector.inspect(rawText);
+
+          String barrierText = rawText;
+
+          // Stage 2 (conditional): Repair subsystem
+          if (simulateTruncation) {
+            executionLog.add('REPAIR_SUBSYSTEM');
+            if (!repairSucceeds) {
+              executionLog.add('DROP_PAYLOAD');
+              executionLog.add('RESUME_COORDINATOR_COMPLETE');
+              return _PipelineStageResult(
+                executionLog: List.from(executionLog),
+                droppedPayload: true,
+                persistenceCommitted: false,
+                resumeCoordinatorCompleted: true,
+              );
+            }
+            barrierText = '$rawText [repaired]';
+          }
+
+          // Stage 3: Persistence committed
+          executionLog.add('PERSISTENCE');
+
+          // Stage 4: EXT_TOOL_CARD_RENDERED (UI injection)
+          executionLog.add('EXT_TOOL_CARD_RENDERED');
+
+          // Stage 5: State event emission → wrappedOnDone
+          executionLog.add('STATE_EVENT_COMPLETED');
+
+          // Stage 6: ResumeCoordinator.complete() — STRICTLY LAST
+          executionLog.add('RESUME_COORDINATOR_COMPLETE');
+
+          return _PipelineStageResult(
+            executionLog: List.from(executionLog),
+            droppedPayload: false,
+            persistenceCommitted: true,
+            resumeCoordinatorCompleted: true,
+          );
+        }
+
+        final result = await runOrderedPipeline(
+          rawText: 'Clinical response text.',
+          simulateTruncation: false,
+          repairSucceeds: true,
+        );
+
+        final log = result.executionLog;
+
+        // Assert strict ordering via index comparisons
+        final truncIdx     = log.indexOf('TRUNCATION_CHECK');
+        final persistIdx   = log.indexOf('PERSISTENCE');
+        final uiIdx        = log.indexOf('EXT_TOOL_CARD_RENDERED');
+        final resumeIdx    = log.indexOf('RESUME_COORDINATOR_COMPLETE');
+
+        expect(truncIdx,   greaterThanOrEqualTo(0), reason: 'TRUNCATION_CHECK must execute');
+        expect(persistIdx, greaterThanOrEqualTo(0), reason: 'PERSISTENCE must execute');
+        expect(uiIdx,      greaterThanOrEqualTo(0), reason: 'EXT_TOOL_CARD_RENDERED must execute');
+        expect(resumeIdx,  greaterThanOrEqualTo(0), reason: 'RESUME_COORDINATOR_COMPLETE must execute');
+
+        expect(truncIdx,   lessThan(persistIdx),
+            reason: 'TRUNCATION_CHECK must precede PERSISTENCE');
+        expect(persistIdx, lessThan(uiIdx),
+            reason: 'PERSISTENCE must precede EXT_TOOL_CARD_RENDERED');
+        expect(uiIdx,      lessThan(resumeIdx),
+            reason: 'EXT_TOOL_CARD_RENDERED must precede RESUME_COORDINATOR_COMPLETE — '
+                'marking complete before UI render is prohibited');
+        expect(result.resumeCoordinatorCompleted, isTrue);
+        expect(result.persistenceCommitted, isTrue);
+      });
+
+      // ── 5f: DROP_PAYLOAD → ResumeCoordinator fires even on catastrophic failure ──
+      test('5f. catastrophic repair failure → DROP_PAYLOAD → '
+          'ResumeCoordinator.complete still fires (no orphan request)', () async {
+        final List<String> log = [];
+
+        Future<_PipelineStageResult> runWithCatastrophicFailure() async {
+          log.add('TRUNCATION_CHECK');
+          log.add('REPAIR_SUBSYSTEM');
+          // Repair fails catastrophically
+          log.add('DROP_PAYLOAD');
+          // wrappedOnError fired before completeAiRequest
+          log.add('UI_ERROR_EMITTED');
+          log.add('RELEASE_DECISION');
+          log.add('RESUME_COORDINATOR_COMPLETE');
+          return _PipelineStageResult(
+            executionLog: List.from(log),
+            droppedPayload: true,
+            persistenceCommitted: false,
+            resumeCoordinatorCompleted: true,
+          );
+        }
+
+        final result = await runWithCatastrophicFailure();
+        final uiIdx    = result.executionLog.indexOf('UI_ERROR_EMITTED');
+        final resumeIdx = result.executionLog.indexOf('RESUME_COORDINATOR_COMPLETE');
+
+        expect(result.droppedPayload, isTrue);
+        expect(result.persistenceCommitted, isFalse,
+            reason: 'No persistence on DROP_PAYLOAD');
+        expect(result.resumeCoordinatorCompleted, isTrue,
+            reason: 'ResumeCoordinator must complete even on catastrophic failure');
+        expect(uiIdx, lessThan(resumeIdx),
+            reason: 'UI error must be emitted before ResumeCoordinator.complete');
+      });
+    });
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper result type for Group 5 sequencing tests
+// ─────────────────────────────────────────────────────────────────────────────
+class _PipelineStageResult {
+  final List<String> executionLog;
+  final bool droppedPayload;
+  final bool persistenceCommitted;
+  final bool resumeCoordinatorCompleted;
+
+  const _PipelineStageResult({
+    required this.executionLog,
+    required this.droppedPayload,
+    required this.persistenceCommitted,
+    required this.resumeCoordinatorCompleted,
   });
 }

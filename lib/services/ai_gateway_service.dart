@@ -662,6 +662,10 @@ class AiGatewayService {
     bool useGrounding = true,
     bool longResponse = false,
     String appLanguage = 'pt', // Build 190: Language Lock Absoluto
+    // MICRO-BUILD 462E-A.5.2: canonical task override — propagated from
+    // canonicalDecision.toRouterTask() at sendAiMessage() entry point.
+    // Injected into AiSmartRouter.build() to enforce authority boundary.
+    String canonicalTaskOverride = '',
   }) {
     // BUILD 278: wraps _sendStreamAsync (async*) para manter a assinatura
     // Stream<GeminiChunk> síncrona exigida pelos callers existentes.
@@ -674,6 +678,7 @@ class AiGatewayService {
       useGrounding: useGrounding,
       longResponse: longResponse,
       appLanguage:  appLanguage,
+      canonicalTaskOverride: canonicalTaskOverride,
     );
   }
 
@@ -685,6 +690,7 @@ class AiGatewayService {
     bool useGrounding = true,
     bool longResponse = false,
     String appLanguage = 'pt',
+    String canonicalTaskOverride = '',
   }) async* {
     // Chave vazia: passa o erro para o GeminiServiceV2 que já tem
     // handler robusto — sem mensagem visível ao médico.
@@ -790,12 +796,17 @@ class AiGatewayService {
         intentMandate.isNotEmpty &&
         !intentMandate.contains('CONSULTA CLÍNICA');
 
+    // MICRO-BUILD 462E-A.5.2: inject canonical task override — authority boundary.
+    // When canonicalDecision.intent != none, BUILD306 must use toRouterTask() verbatim.
+    // Regex _detectIntent() is still executed internally for module loading (isDilution
+    // drives module selection), but taskLabel in RouterResult is overridden.
     final routerResult = AiSmartRouter.build(
       userMessage: userMessage,
       systemPrompt: systemPrompt, // contexto RAG bruto do AiService
       isPlantaoMode: isPlantaoMode,
       appLanguage: resolvedLang,  // Build 190: lang soberano do app
       hasSpecificContext: hasSpecificMatrizContext, // ORDEM 52 M1
+      canonicalTaskOverride: canonicalTaskOverride, // MICRO-BUILD 462E-A.5.2
     );
 
     // ── intentMandate: injetado no final do prompt do SmartRouter ────────────

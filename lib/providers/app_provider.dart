@@ -3781,6 +3781,14 @@ class AppProvider extends ChangeNotifier {
         'routerTask=${canonicalDecision?.toRouterTask() ?? "normalClinicalClassifier"} '
         'source=original_user_input');
 
+    // MICRO-BUILD 462E-A.5.2: function-scope canonical task override.
+    // Declared here so ALL downstream paths (QA, free stream, paid fallback,
+    // tryPaidFallback) share the same value without re-computing.
+    final String _canonicalTaskOverride = (canonicalDecision != null &&
+            canonicalDecision.intent != ExternalToolIntent.none)
+        ? canonicalDecision.toRouterTask()
+        : '';
+
     // ── BUILD 254 → BUILD 318: wrappers com notifyListeners() ao término ─────
     // wrappedOnDone/wrappedOnError são as ÚNICAS portas de saída do stream.
     // Cada uma: (1) invoca o callback da UI, (2) dispara notifyListeners().
@@ -3946,7 +3954,8 @@ class AppProvider extends ChangeNotifier {
           fullHistory: _sanitizedHistory,
           status: qaThreadStatus,
           isPlantaoMode: !longResponse,
-          currentTaskLabel: AiSmartRouter.detectTaskLabel(input),
+          currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
+              canonicalOverride: _canonicalTaskOverride), // MICRO-BUILD 462E-A.5.2
         ).map((m) => {
           'role':    m['role']    ?? '',
           'content': m['content'] ?? '',
@@ -3981,11 +3990,12 @@ class AppProvider extends ChangeNotifier {
         _aiStreamActive   = false;
         aiChatProvider.setStreaming(false);
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-        // MICRO-BUILD 462E-A.5.1: release cache entry on TIMEOUT
+        // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
+        wrappedOnDone(_timeoutSafeCard(_lang));
+        // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on TIMEOUT (after UI).
         ExternalToolLinkEngine.releaseDecision(
             '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
-        wrappedOnDone(_timeoutSafeCard(_lang));
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
       });
 
       // Criar stream SSE real
@@ -4149,17 +4159,18 @@ class AppProvider extends ChangeNotifier {
                 _activeGptClient = null;
                 _aiStreamActive  = false;
                 aiChatProvider.setStreaming(false);
-                // ── STEP 7: ResumeCoordinator + UI emission ───────────────────
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-                // Release canonical decision cache entry (COMPLETED state)
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
 
                 // ignore: avoid_print
                 print('[AI_E2E][COMPLETED] requestId=$thisRequestId '
                     'finalTextLen=${qaFinalText.length} '
                     'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
                     'provider=${e.usedProvider}');
+
+                // ── STEP 7: UI emission → State Event → ResumeCoordinator (TERMINAL ORDER) ──
+                // MICRO-BUILD 462E-A.5.2: Rigid Transactional Termination Pyramid.
+                // Persistence committed (Step 6) ↑ → UI emitted → ResumeCoordinator.complete
+                // LAST. Marking complete before UI emit is prohibited — it would signal
+                // downstream orchestrators that the transaction finished while render is pending.
                 // [RENDER_AUDIT]: notifyListeners() APENAS aqui (via wrappedOnDone)
                 wrappedOnDone(
                   qaFinalText.isNotEmpty
@@ -4168,6 +4179,11 @@ class AppProvider extends ChangeNotifier {
                           ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
                           : 'Não consegui gerar uma resposta. Pode reformular? ⚕'),
                 );
+                // Release canonical decision cache entry — strictly after UI emit (COMPLETED).
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                // ResumeCoordinator.complete() — TERMINAL POSITION (after UI + releaseDecision).
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
               } on AiSafeOutputException catch (safeError) {
                 // ── TERMINAL: DROP_PAYLOAD — Repair critical failure ───────────
                 // ignore: avoid_print
@@ -4178,14 +4194,15 @@ class AppProvider extends ChangeNotifier {
                 _activeGptClient = null;
                 _aiStreamActive  = false;
                 aiChatProvider.setStreaming(false);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-                ExternalToolLinkEngine.releaseDecision(
-                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
                 wrappedOnError(
                   _lang == 'es'
                       ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
                       : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
                 );
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
 
@@ -4205,7 +4222,6 @@ class AppProvider extends ChangeNotifier {
                 _activeGptClient = null;
                 _aiStreamActive  = false;
                 aiChatProvider.setStreaming(false);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 // Aviso clínico de resposta interrompida — sem persistência
                 final partialWarning = _lang == 'es'
                     ? '⚠️ Respuesta interrumpida antes de la validación final.\n'
@@ -4214,7 +4230,9 @@ class AppProvider extends ChangeNotifier {
                     : '⚠️ Resposta interrompida antes da validação final.\n'
                       'O conteúdo parcial não foi salvo nem validado.\n\n'
                       '${e.partialText}';
+                // MICRO-BUILD 462E-A.5.2: UI first, then completeAiRequest LAST.
                 wrappedOnError(partialWarning);
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
 
@@ -4226,8 +4244,9 @@ class AppProvider extends ChangeNotifier {
                 _activeGptClient = null;
                 _aiStreamActive  = false;
                 aiChatProvider.setStreaming(false);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                // MICRO-BUILD 462E-A.5.2: UI first, then completeAiRequest LAST.
                 wrappedOnError('[auth_expired] Sessão expirada (${e.code}). Faça login novamente.');
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
 
@@ -4238,10 +4257,7 @@ class AppProvider extends ChangeNotifier {
               _activeGptClient = null;
               _aiStreamActive  = false;
               aiChatProvider.setStreaming(false);
-              AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-              // MICRO-BUILD 462E-A.5.1: release cache entry on FAILED
-              ExternalToolLinkEngine.releaseDecision(
-                  '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+              // MICRO-BUILD 462E-A.5.2: UI first, releaseDecision, then completeAiRequest LAST.
               wrappedOnError(
                 e.code == 'gpt_sse_budget_guard'
                     ? (_lang == 'es'
@@ -4251,6 +4267,10 @@ class AppProvider extends ChangeNotifier {
                         ? 'Error en el asistente IA (${e.code}). Intenta nuevamente. ⚕'
                         : 'Erro no assistente IA (${e.code}). Tente novamente. ⚕'),
               );
+              // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on FAILED (after UI).
+              ExternalToolLinkEngine.releaseDecision(
+                  '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+              AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
 
             // ── AiProviderSwitched: sinaliza troca de provider ───────────────
             case AiProviderSwitched e:
@@ -4293,15 +4313,16 @@ class AppProvider extends ChangeNotifier {
           _activeGptClient = null;
           _aiStreamActive  = false;
           aiChatProvider.setStreaming(false);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-          // MICRO-BUILD 462E-A.5.1: release cache entry on STREAM_EXCEPTION
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
           wrappedOnError(
             _lang == 'es'
                 ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
                 : 'Erro de rede no assistente IA. Tente novamente. ⚕',
           );
+          // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on STREAM_EXCEPTION (after UI).
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         },
         onDone: () {
           // Stream SSE fechou sem AiCompleted — limpeza silenciosa
@@ -4320,11 +4341,8 @@ class AppProvider extends ChangeNotifier {
           _activeGptClient = null;
           _aiStreamActive  = false;
           aiChatProvider.setStreaming(false);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-          // MICRO-BUILD 462E-A.5.1: release cache entry on EOF/CANCELLED
-          ExternalToolLinkEngine.releaseDecision(
-              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
           final partialOnEof = qaAccumulator.toString().trim();
+          // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
           if (partialOnEof.isNotEmpty) {
             wrappedOnError(
               _lang == 'es'
@@ -4338,6 +4356,10 @@ class AppProvider extends ChangeNotifier {
                   : 'Sem resposta do assistente. Tente novamente. ⚕',
             );
           }
+          // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on EOF/CANCELLED (after UI).
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         },
         cancelOnError: false,
       );
@@ -4611,7 +4633,9 @@ class AppProvider extends ChangeNotifier {
               fullHistory: _sanitizedHistory,
               status: threadStatus,
               isPlantaoMode: !longResponse,
-              currentTaskLabel: AiSmartRouter.detectTaskLabel(input),
+              // MICRO-BUILD 462E-A.5.2: canonical override in paid fallback path.
+              currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
+                  canonicalOverride: _canonicalTaskOverride),
             ).map((m) => {
               'role':    m['role']    ?? '',
               'content': m['content'] ?? '',
@@ -4676,7 +4700,9 @@ class AppProvider extends ChangeNotifier {
             fullHistory: _sanitizedHistory,
             status: threadStatus,
             isPlantaoMode: !longResponse,
-            currentTaskLabel: AiSmartRouter.detectTaskLabel(input), // BUILD 304 [G1b]
+            // MICRO-BUILD 462E-A.5.2: canonical override in paid proxy path.
+            currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
+                canonicalOverride: _canonicalTaskOverride), // BUILD 304 [G1b]
           ).map((m) => {
             'role':    m['role']    ?? '',
             'content': m['content'] ?? '',
@@ -4789,7 +4815,9 @@ class AppProvider extends ChangeNotifier {
               fullHistory: _sanitizedHistory,
               status: threadStatus,
               isPlantaoMode: !longResponse,
-              currentTaskLabel: AiSmartRouter.detectTaskLabel(input), // BUILD 304 [G1b]
+              // MICRO-BUILD 462E-A.5.2: canonical override in critical direct path.
+              currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
+                  canonicalOverride: _canonicalTaskOverride), // BUILD 304 [G1b]
             ).map((m) => {
               'role':    m['role']    ?? '',
               'content': m['content'] ?? '',
@@ -4886,6 +4914,14 @@ class AppProvider extends ChangeNotifier {
     //   2. Delega para GeminiServiceV2.sendStream() com chave do app
     //   3. SSE direto para generativelanguage.googleapis.com — sem intermediário
     // NOTA: sendStream() inicia HTTP imediatamente (eagerly) — não é lazy.
+    if (_canonicalTaskOverride.isNotEmpty) {
+      // ignore: avoid_print
+      print('[CANONICAL_TASK_ENFORCEMENT] requestId=$thisRequestId '
+          'intent=${canonicalDecision!.intent.name} '
+          'task=$_canonicalTaskOverride '
+          'source=canonicalDecision regexSuppressed=true');
+    }
+
     final stream = AiGatewayService.sendStream(
       userMessage:  input,
       systemPrompt: systemPrompt,
@@ -4895,11 +4931,14 @@ class AppProvider extends ChangeNotifier {
         fullHistory: _sanitizedHistory,
         status: threadStatus,
         isPlantaoMode: !longResponse,
-        currentTaskLabel: AiSmartRouter.detectTaskLabel(input), // BUILD 304 [G1b]
+        // MICRO-BUILD 462E-A.5.2: canonical override propagated to thread label.
+        currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
+            canonicalOverride: _canonicalTaskOverride), // BUILD 304 [G1b]
       )),
       useGrounding: true,
       longResponse: longResponse,  // false=Motor Plantão / true=Motor Estudos
       appLanguage:  _lang,          // Build 190: Language Lock Absoluto — idioma do app
+      canonicalTaskOverride: _canonicalTaskOverride, // MICRO-BUILD 462E-A.5.2
     );
 
     // ── BUILD 320: Timer global — caminho acadêmico (Free→Fallback) ───────────
@@ -5100,12 +5139,16 @@ class AppProvider extends ChangeNotifier {
             _aiStreamActive = false;
             aiChatProvider.setStreaming(false); // BUILD 326
             _aiStreamSub    = null;
-            // Release canonical decision cache entry (COMPLETED)
-            ExternalToolLinkEngine.releaseDecision(
-                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            // MICRO-BUILD 462E-A.5.2: Rigid Transactional Termination Pyramid.
+            // Persistence committed above ↑ → UI emitted → releaseDecision → completeAiRequest LAST.
             wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
                 ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
                 : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
+            // Release canonical decision cache entry (COMPLETED) — after UI emit.
+            ExternalToolLinkEngine.releaseDecision(
+                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            // ResumeCoordinator.complete() — TERMINAL POSITION (last in pyramid).
+            AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
           } on AiSafeOutputException catch (safeError) {
             // ── TERMINAL: DROP_PAYLOAD — free stream repair failure ───────────
             // ignore: avoid_print
@@ -5116,13 +5159,15 @@ class AppProvider extends ChangeNotifier {
             _aiStreamActive = false;
             aiChatProvider.setStreaming(false);
             _aiStreamSub    = null;
-            ExternalToolLinkEngine.releaseDecision(
-                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
             wrappedOnError(
               _lang == 'es'
                   ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
                   : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
             );
+            ExternalToolLinkEngine.releaseDecision(
+                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
           }
         }
       },
@@ -5133,16 +5178,17 @@ class AppProvider extends ChangeNotifier {
         if (completionFired) return;
         completionFired = true;
         _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
         _aiStreamActive = false;
         aiChatProvider.setStreaming(false); // BUILD 326
         _aiStreamSub    = null;
         accumulator.clear();   // descarta texto parcial — nunca exibir
-        // MICRO-BUILD 462E-A.5.1: release cache entry on stream FAILED
+        // Build 226: erro de stream → tenta paid fallback antes de mostrar erro
+        // MICRO-BUILD 462E-A.5.2: tryPaidFallback (UI path) first, then release, then complete LAST.
+        unawaited(tryPaidFallback('stream_exception'));
+        // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on stream FAILED (after UI dispatch).
         ExternalToolLinkEngine.releaseDecision(
             '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
-        // Build 226: erro de stream → tenta paid fallback antes de mostrar erro
-        unawaited(tryPaidFallback('stream_exception'));
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241 — TERMINAL
       },
       onDone: () {
         // onDone do StreamController — garante limpeza mesmo sem chunk isDone
