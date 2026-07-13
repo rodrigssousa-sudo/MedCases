@@ -491,6 +491,23 @@ class AppProvider extends ChangeNotifier {
   // o segundo _syncFromFirestore() retorna o Future já em voo em vez de iniciar novo.
   String? _firestoreSyncUid;
 
+  // BUILD 463-A.2: Auth convergence latch — single in-flight Future per uid.
+  //
+  // Motivation: the auth stream (authStateChanges) can emit multiple times in
+  // rapid succession during boot (restore → sdk propagation), and the splash
+  // gate re-emits on every setState(). Without this latch each re-emission
+  // would start a redundant convergence block, creating multiple parallel
+  // awaits on the Firebase SDK and race-hazards in the boot-lock.
+  //
+  // Contract:
+  //   • Exactly ONE convergence transaction runs per expectedUid per lifecycle.
+  //   • If setUser() is called with the SAME uid while a convergence is already
+  //     in flight, the second call returns the EXISTING Future immediately.
+  //   • A different uid (user-switch) resets the latch and starts a new transaction.
+  //   • clearUser() resets both fields so the next login starts fresh.
+  Future<void>? _authConvergenceInFlight;
+  String?       _authConvergenceUid;
+
   // BUILD 293: flag de sessão — o SecurityWipe só deve rodar UMA vez por login.
   // Sem esta flag, o wipe apaga a chave → rebuild do stream → setUser() re-chamado
   // → checkGeminiSession() → wipe novamente → loop infinito no Safari/Web.
@@ -508,6 +525,14 @@ class AppProvider extends ChangeNotifier {
   bool get firebaseReady => _firebaseReady;
   // BUILD 463-A.1: expõe estado da barreira de auth para FirestoreService e UI.
   AppAuthBarrierState get authBarrierState => _currentAuthBarrierState;
+
+  // BUILD 463-A.2: Explicit credential-plane separation.
+  // hasRestCredential  — Web REST identity-toolkit token in cache.
+  //                      Does NOT imply a live Firebase SDK session.
+  // hasFirebaseSdkIdentity — Firebase SDK currentUser is non-null RIGHT NOW.
+  //                          Only this satisfies Firestore dual-check barriers.
+  bool get hasRestCredential       => AuthService.hasRestCredential;
+  bool get hasFirebaseSdkIdentity  => AuthService.hasFirebaseSdkIdentity;
   bool get loggedIn => _currentUser != null && _currentUser!.isApproved;
   bool get isPending => _currentUser != null && _currentUser!.isPending;
   bool get isAdmin => _currentUser?.isAdmin ?? false;
@@ -601,7 +626,31 @@ class AppProvider extends ChangeNotifier {
   List<DrugModel> get selectedDrugs => const [];
 
   // ── Login com usuário do Firebase ─────────────────────────────────────────
-  Future<void> setUser(UserModel user) async {
+  Future<void> setUser(UserModel user) {
+    // ── BUILD 463-A.2: Single in-flight convergence latch ─────────────────
+    //
+    // If a convergence for this uid is already in progress, return the
+    // existing Future immediately — zero redundant network round-trips.
+    // Rebuild storms (50 rapid provider re-emits) resolve to exactly ONE
+    // underlying boot-lock transaction per expectedUid per lifecycle.
+    if (_authConvergenceInFlight != null && _authConvergenceUid == user.uid) {
+      debugPrint('[AUTH_CONVERGENCE][LATCH_HIT] '
+          'uid=${user.uid} — reusing existing in-flight Future');
+      return _authConvergenceInFlight!;
+    }
+    // Different uid or no latch yet: start a new convergence transaction.
+    _authConvergenceUid       = user.uid;
+    _authConvergenceInFlight  = _setUserImpl(user);
+    _authConvergenceInFlight!.whenComplete(() {
+      // Only clear the latch if it hasn't been replaced by another uid.
+      if (_authConvergenceUid == user.uid) {
+        _authConvergenceInFlight = null;
+      }
+    });
+    return _authConvergenceInFlight!;
+  }
+
+  Future<void> _setUserImpl(UserModel user) async {
     // ── BUILD 463-A.1.1: Auth Convergence Boot-Lock (RIGID INVARIANT) ────
     //
     // INVARIANT: authReady is reached IF AND ONLY IF
@@ -743,7 +792,11 @@ class AppProvider extends ChangeNotifier {
         // MATCHED_USER: fbUser != null AND uid matches → authReady.
         _currentAuthBarrierState = AppAuthBarrierState.authReady;
         debugPrint('[AUTH_CONVERGENCE][READY] '
+            'expectedUid=$expectedUid '
             'firebaseUid=${fbSdkUser.uid} uidsMatch=true');
+        // BUILD 463-A.2: canonical READY log matching the telemetry schema.
+        debugPrint('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED]');
+        debugPrint('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED]');
       }
 
     } catch (e) {
@@ -921,6 +974,9 @@ class AppProvider extends ChangeNotifier {
     // BUILD 290/291: reseta Future e uid de sync — próxima sessão cria um novo.
     _firestoreSyncFuture = null;
     _firestoreSyncUid    = null;
+    // BUILD 463-A.2: reseta latch de convergência — próximo login cria nova transação.
+    _authConvergenceInFlight = null;
+    _authConvergenceUid      = null;
     // BUILD 293: reseta flag de wipe — próximo login pode wipear novamente.
     _apiKeyWipedThisSession = false;
     // Limpa plantão (recarregado ao próximo login)

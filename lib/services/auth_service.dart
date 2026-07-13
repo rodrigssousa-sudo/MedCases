@@ -79,6 +79,81 @@ class AuthService {
       _cachedIdToken.isNotEmpty &&
       DateTime.now().isBefore(_tokenExpiresAt);
 
+  // ── BUILD 463-A.2: Explicit credential type separation ─────────────────────
+  //
+  // These two properties cleanly separate the two credential planes:
+  //
+  //   hasRestCredential      — Web REST identity-toolkit idToken in cache.
+  //                            Does NOT mean the Firebase SDK has a live session.
+  //                            Source: _cachedIdToken populated by _loginWeb() or
+  //                            _restoreSessionImpl() via the REST refresh endpoint.
+  //
+  //   hasFirebaseSdkIdentity — Firebase SDK session active RIGHT NOW.
+  //                            currentUser != null after signInWithEmailAndPassword,
+  //                            signInWithCredential, or authStateChanges emission.
+  //                            This is the ONLY credential type that satisfies the
+  //                            Firestore SDK auth barrier (dual-check in 463-A.1.2).
+  //
+  // KEY DISTINCTION from hasCachedToken:
+  //   hasCachedToken == hasRestCredential (REST plane only).
+  //   hasFirebaseSdkIdentity checks the live SDK — cannot be stale.
+  //   Gemini OAuth state is NEVER reflected in either property.
+
+  /// True if a non-expired REST identity-toolkit idToken is cached in memory.
+  /// This credential belongs to the Web REST plane only.
+  /// It does NOT imply a live Firebase SDK session (hasFirebaseSdkIdentity).
+  /// NEVER pass this token to signInWithCustomToken() — it is not a Custom Token.
+  static bool get hasRestCredential => hasCachedToken;
+
+  /// True if the Firebase Auth SDK currently holds a live authenticated session.
+  /// This is the ONLY credential type that satisfies Firestore SDK read barriers.
+  /// If false, all Firestore SDK reads must be blocked regardless of REST token state.
+  static bool get hasFirebaseSdkIdentity {
+    if (FirebaseRuntimeGuard.isUnavailable) return false;
+    return FirebaseAuth.instance.currentUser != null;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BUILD 463-A.2: AUTH_SDK_ESTABLISH telemetry helpers
+  // ─────────────────────────────────────────────────────────────────────────────
+  //
+  // Centralised log-string producers for the AUTH_SDK_ESTABLISH schema.
+  // All auth establishment paths (email/password, google credential,
+  // custom token, persistence restore) emit through these helpers to ensure
+  // consistent telemetry across the convergence lifecycle.
+
+  /// Emit START telemetry for an auth SDK establishment attempt.
+  static void logSdkEstablishStart({
+    required String method,
+    required String expectedUid,
+  }) {
+    final currentFbUid = FirebaseRuntimeGuard.isReady
+        ? (FirebaseAuth.instance.currentUser?.uid ?? 'null')
+        : 'firebase_unavailable';
+    debugPrint('[AUTH_SDK_ESTABLISH][START] '
+        'method=$method '
+        'expectedUid=$expectedUid '
+        'firebaseUidBefore=$currentFbUid');
+  }
+
+  /// Emit CREDENTIAL_ACCEPTED telemetry (immediately after SDK sign-in returns).
+  static void logSdkCredentialAccepted() {
+    debugPrint('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED]');
+  }
+
+  /// Emit TOKEN_REFRESHED telemetry (after forceRefresh getIdToken).
+  static void logSdkTokenRefreshed() {
+    debugPrint('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED]');
+  }
+
+  /// Emit FAILED telemetry for an auth SDK establishment failure.
+  static void logSdkEstablishFailed({
+    required String stage,
+    required String reason,
+  }) {
+    debugPrint('[AUTH_SDK_ESTABLISH][FAILED] stage=$stage reason=$reason');
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // TOKEN ADMIN — cache + refresh automático
   // ═══════════════════════════════════════════════════════════════════════════
@@ -181,14 +256,22 @@ class AuthService {
   }
 
   static Future<UserModel?> _restoreSessionImpl() async {
+    // BUILD 463-A.2: persistence_restore telemetry
+    logSdkEstablishStart(method: 'persistence_restore', expectedUid: 'cached_session');
     try {
       final p = await SharedPreferences.getInstance();
       final keepLoggedIn = p.getBool(_kKeepLoggedIn) ?? false;
-      if (!keepLoggedIn) return null;
+      if (!keepLoggedIn) {
+        logSdkEstablishFailed(stage: 'prefs_check', reason: 'keep_logged_in_false');
+        return null;
+      }
 
       final refreshToken = p.getString(_kRefreshToken) ?? '';
       final userJson     = p.getString(_kUserJson)     ?? '';
-      if (refreshToken.isEmpty || userJson.isEmpty) return null;
+      if (refreshToken.isEmpty || userJson.isEmpty) {
+        logSdkEstablishFailed(stage: 'prefs_check', reason: 'missing_refresh_token_or_user_json');
+        return null;
+      }
 
       // Troca o refreshToken por um novo idToken
       final resp = await http.post(
@@ -199,9 +282,12 @@ class AuthService {
 
       if (resp.statusCode != 200) {
         // Token inválido/expirado — limpa sessão e força novo login
+        logSdkEstablishFailed(stage: 'token_refresh', reason: 'http_${resp.statusCode}');
         await clearSession();
         return null;
       }
+
+      logSdkCredentialAccepted();
 
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       final newIdToken      = body['id_token']      as String? ?? '';
@@ -249,8 +335,10 @@ class AuthService {
       // Seta webUser para que _AuthGate roteie direto ao MainShell
       if (kIsWeb) webUser.value = user;
 
+      logSdkTokenRefreshed();
       return user;
     } catch (_) {
+      logSdkEstablishFailed(stage: 'restore_session_impl', reason: 'unexpected_exception');
       return null;
     }
   }
@@ -291,11 +379,14 @@ class AuthService {
     required String email,
     required String password,
   }) async {
+    // BUILD 463-A.2: AUTH_SDK_ESTABLISH telemetry
+    logSdkEstablishStart(method: 'email_password', expectedUid: email.trim());
     try {
       await _auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       ).timeout(const Duration(seconds: 15));
+      logSdkCredentialAccepted();
 
       // Aguarda o authStateChanges propagar o usuário (evita currentUser nulo
       // imediatamente após signIn em conexões lentas)
@@ -307,11 +398,13 @@ class AuthService {
             .timeout(const Duration(seconds: 5), onTimeout: () => null);
       }
       if (firebaseUser == null) {
+        logSdkEstablishFailed(stage: 'auth_state_propagation', reason: 'user_null_after_sign_in');
         return AuthResult.error('Sessão não inicializada. Tente novamente.');
       }
 
       // Força refresh do token para garantir que está "quente" no servidor
       await firebaseUser.getIdToken(true);
+      logSdkTokenRefreshed();
 
       debugPrint('[Auth] Login nativo OK — uid=${firebaseUser.uid}');
 

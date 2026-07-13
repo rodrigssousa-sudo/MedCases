@@ -332,26 +332,48 @@ class FirestoreService {
       retryAfter != null && DateTime.now().isBefore(retryAfter);
 
   // ── ORDEM 50 M3: Auth guard síncrono ─────────────────────────────────────
-  // Detecta se há sessão autenticada sem I/O:
-  //   • Nativo: FirebaseAuth SDK popula currentUser após signIn.
-  //   • Web: login via REST não injeta no SDK — detectamos via
-  //     FirebaseAuth.instance.currentUser primeiro; se null e kIsWeb,
-  //     verificamos AuthService.hasCachedToken (sem network).
-  // Retorna true = usuário autenticado; false = anonymous / pré-login.
-  // Usado para suprimir requests Firestore antes da barreira de auth
-  // transposta, eliminando o spam de 403 "permission-denied" no console.
-  static bool get _isUserAuthenticated {
-    // BUILD 294: Se Firebase não inicializou (Safari modo privado, etc.),
-    // FirebaseAuth.instance lança NullError. Delegamos ao AuthService token cache.
+  // BUILD 463-A.2: Dual-credential-plane detection.
+  //
+  // PLANE A — _hasSdkIdentity (strict):
+  //   Firebase SDK currentUser is non-null. This is the ONLY credential that
+  //   satisfies user-private Firestore barriers (loadHistories, loadFav*, etc).
+  //   Used exclusively by the dual-check barriers in 463-A.1.2.
+  //   Must NEVER be substituted with REST token or Gemini OAuth state.
+  //
+  // PLANE B — _hasAnyAuthCredential (broad):
+  //   True if either the SDK session OR a REST identity-toolkit token is present.
+  //   Used ONLY by public/shared-content endpoints (loadPublicHistories,
+  //   _checkAppUpdate, loadPublishedGuides) to suppress pre-login 403 spam.
+  //   Deliberately broader than _hasSdkIdentity because these endpoints accept
+  //   REST-authenticated reads on Web.
+  //   MUST NOT be used for user-private data endpoints.
+  //
+  // SUPERSEDED (deprecated, internal only):
+  //   _isUserAuthenticated → retained as alias for _hasAnyAuthCredential.
+  //   All new code must reference the explicit names above.
+
+  /// Strict SDK identity check — Firebase SDK currentUser is non-null.
+  /// Used exclusively for user-private Firestore read barriers.
+  static bool get _hasSdkIdentity {
+    if (!_isFirebaseReady) return false;
+    return FirebaseAuth.instance.currentUser != null;
+  }
+
+  /// Broad auth check — SDK session OR REST token present.
+  /// Used only by public/shared-content pre-flight guards to suppress 403 spam.
+  /// DO NOT use for user-private data endpoints.
+  static bool get _hasAnyAuthCredential {
     if (!_isFirebaseReady) {
       return kIsWeb ? AuthService.hasCachedToken : false;
     }
-    // Nativo e Web (se SDK tiver usuário — casos de refresh com token válido)
     if (FirebaseAuth.instance.currentUser != null) return true;
-    // Web REST: SDK currentUser sempre null — delegamos ao AuthService
     if (kIsWeb) return AuthService.hasCachedToken;
     return false;
   }
+
+  /// @Deprecated — use [_hasAnyAuthCredential] explicitly for public endpoints
+  /// or [_hasSdkIdentity] for user-private barriers.
+  static bool get _isUserAuthenticated => _hasAnyAuthCredential;
 
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
@@ -1186,11 +1208,13 @@ class FirestoreService {
     // propagado ao SDK), mas temos um uid válido vindo do UserModel (cache
     // customizado da persistência Web), usamos Source.cache imediatamente para
     // evitar o round-trip ao servidor que geraria permission-denied.
-    // Condição: _isUserAuthenticated=true significa que AuthService.hasCachedToken
+    // Condição: _hasAnyAuthCredential=true significa que AuthService.hasCachedToken
     // está presente (token REST válido), mas o SDK ainda não o absolveu.
-    final sdkHasUser = _isFirebaseReady &&
-        FirebaseAuth.instance.currentUser != null;
-    if (!sdkHasUser && _isUserAuthenticated && uid.isNotEmpty) {
+    // BUILD 463-A.2: This is a Web REST fallback for AI sessions (not user-private
+    // Firestore data) — _hasAnyAuthCredential (broad plane) is intentionally used here.
+    // _hasSdkIdentity is used for the SDK-presence check (Plane A).
+    final sdkHasUser = _hasSdkIdentity;
+    if (!sdkHasUser && _hasAnyAuthCredential && uid.isNotEmpty) {
       debugPrint('[BUILD336][FIRESTORE][PASSO3] loadAiSessions: '
           'currentUser=null mas token customizado presente — '
           'usando cache local (uid=$uid) para evitar permission-denied');
@@ -1924,7 +1948,7 @@ class FirestoreService {
   static Future<List<ClinicalHistoryModel>> loadPublicHistories({bool forceRemote = false}) async {
     // ORDEM 50 M3: Auth guard — suprime requests Firestore antes da barreira
     // de auth transposta, eliminando spam de 403 "permission-denied" no console.
-    if (!_isUserAuthenticated) {
+    if (!_hasAnyAuthCredential) {
       _debugPublicHistories('ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier');
       return const <ClinicalHistoryModel>[];
     }
@@ -2273,7 +2297,7 @@ class FirestoreService {
     // consolidation. Instead, set a short cooldown ourselves (5s) and bail —
     // _checkAppUpdate() is re-invoked when the user navigates, so we will
     // retry naturally once the auth token is established.
-    if (!_isUserAuthenticated) {
+    if (!_hasAnyAuthCredential) {
       if (_appUpdateRetryAfter == null) {
         _appUpdateRetryAfter = DateTime.now().add(const Duration(seconds: 5));
         debugPrint('[FirestoreService] app_updates/current — usuário não autenticado, aguardando (5s)');
@@ -3252,7 +3276,7 @@ class FirestoreService {
   static Future<List<GuideModel>> loadPublishedGuides({bool forceRemote = false}) async {
     // ORDEM 50 M3: Auth guard — suprime requests Firestore antes da barreira
     // de auth transposta, eliminando spam de 403 "permission-denied" no console.
-    if (!_isUserAuthenticated) {
+    if (!_hasAnyAuthCredential) {
       _debugGuides('ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier');
       return const <GuideModel>[];
     }
