@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth; // BUILD 309 S3
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, User; // BUILD 309 S3 / BUILD 463-A.1
 import 'package:flutter/foundation.dart';
 // BUILD 326: sub-providers especializados
 import 'ui_provider.dart';
@@ -32,6 +32,7 @@ import '../services/app_resume_coordinator.dart';   // BUILD 241: background/res
 import '../services/ai_stream/ai_event.dart';       // BUILD 462E-A: Anti-Frankenstein event bus
 import '../services/ai_stream/gpt_sse_client.dart'; // BUILD 462E-A: per-request SSE client ref
 import '../services/auth_service.dart';             // BUILD 462E-A: Web token refresh (getAdminToken)
+import '../services/firebase_runtime_guard.dart';   // BUILD 463-A.1: SafeApps guard for auth boot-lock
 import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: canonicalDecision routing
 import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
@@ -54,6 +55,45 @@ enum _QaGateResult {
   firebaseUserNull, // FirebaseAuth.currentUser == null → não autenticado
   authorizedTester, // UID no allowlist OU isAdmin/isMaster=true → bypass permitido
   unauthorizedUser, // autenticado mas fora do allowlist e sem role → bypass negado
+}
+
+// ── BUILD 463-A.1: Authentication State Machine ───────────────────────────────
+// SSOT para o estado de autenticação dual-identity (Firebase SDK + REST token).
+// Elimina a race hazard onde FirestoreService reportava 'authed=true' via
+// hasCachedToken enquanto FirebaseAuth.instance.currentUser == null.
+//
+// Transições permitidas:
+//   authPending → authReady    : UID Firebase confirmado E UID local coincide
+//   authPending → authRequired : Firebase pronto, nenhum usuário autenticado
+//   authPending → authMismatch : UID Firebase diverge do UID local esperado
+//   authPending → authFailed   : Exceção não-recuperável durante inicialização
+//   authReady   → authPending  : início de ciclo de logout/login
+enum AppAuthBarrierState {
+  authPending,   // estado inicial — aguardando resolução do Firebase SDK
+  authReady,     // Firebase UID confirmado E coincide com UID local
+  authMismatch,  // UID Firebase diverge do UID local → SecuritySyndicationException
+  authRequired,  // Firebase pronto, sem usuário autenticado
+  authFailed,    // falha não-recuperável durante boot
+}
+
+// ── BUILD 463-A.1: Non-recoverable identity mismatch exception ───────────────
+// Lançada quando FirebaseAuth.instance.currentUser?.uid != expectedAppUid após
+// inicialização. Dispara wipe completo de SharedPreferences + cache de decisões.
+class SecuritySyndicationException implements Exception {
+  final String expectedUid;
+  final String actualUid;
+  final String reason;
+
+  const SecuritySyndicationException({
+    required this.expectedUid,
+    required this.actualUid,
+    required this.reason,
+  });
+
+  @override
+  String toString() =>
+      'SecuritySyndicationException: expectedUid=$expectedUid '
+      'actualUid=$actualUid reason=$reason';
 }
 
 // ── Paciente salvo no Plantão/Guardia ─────────────────────────────────────────
@@ -187,6 +227,11 @@ class AppProvider extends ChangeNotifier {
   // ── Estado Firebase ───────────────────────────────────────────────────────
   UserModel? _currentUser;
   bool _firebaseReady = false;
+
+  // ── BUILD 463-A.1: Auth Barrier State Machine ─────────────────────────────
+  // SSOT para o estado de autenticação dual-identity.
+  // Inicializa como authPending — transiciona em setUser() / clearUser().
+  AppAuthBarrierState _currentAuthBarrierState = AppAuthBarrierState.authPending;
 
   // ── Estado local ──────────────────────────────────────────────────────────
   String _lang = _systemLang();
@@ -461,6 +506,8 @@ class AppProvider extends ChangeNotifier {
   // ── Getters públicos ──────────────────────────────────────────────────────
   UserModel? get currentUser => _currentUser;
   bool get firebaseReady => _firebaseReady;
+  // BUILD 463-A.1: expõe estado da barreira de auth para FirestoreService e UI.
+  AppAuthBarrierState get authBarrierState => _currentAuthBarrierState;
   bool get loggedIn => _currentUser != null && _currentUser!.isApproved;
   bool get isPending => _currentUser != null && _currentUser!.isPending;
   bool get isAdmin => _currentUser?.isAdmin ?? false;
@@ -555,6 +602,108 @@ class AppProvider extends ChangeNotifier {
 
   // ── Login com usuário do Firebase ─────────────────────────────────────────
   Future<void> setUser(UserModel user) async {
+    // ── BUILD 463-A.1: Auth Convergence Boot-Lock ─────────────────────────
+    // SECTOR 2: Inserir trava de boot no ponto de entrada do ciclo de auth.
+    // Garante que o Firebase SDK confirmou o estado de identidade antes de
+    // qualquer operação Firestore ou escrita de preferências de usuário.
+    _currentAuthBarrierState = AppAuthBarrierState.authPending;
+
+    final bool restTokenPresent = AuthService.hasCachedToken;
+    final bool geminiOAuthPresent = _geminiConnected || (kIsWeb && (
+      (_webGetLS('gemini_google_email') ?? '').isNotEmpty
+    ));
+    final String expectedUid = user.uid;
+    User? fbSdkUser;
+
+    try {
+      // ── Telemetria [AUTH_CONVERGENCE][START] ───────────────────────────
+      debugPrint('[AUTH_CONVERGENCE][START] '
+          'expectedUid=$expectedUid '
+          'firebaseUid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} '
+          'restTokenPresent=$restTokenPresent '
+          'geminiOAuthPresent=$geminiOAuthPresent');
+
+      // ── Await latch: aguarda o Firebase SDK emitir seu primeiro estado ──
+      // Se Firebase não está pronto (Safari modo privado), pula a latch
+      // silenciosamente para não travar o boot.
+      if (FirebaseRuntimeGuard.isReady) {
+        debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK]');
+        try {
+          fbSdkUser = await FirebaseAuth.instance
+              .authStateChanges()
+              .first
+              .timeout(const Duration(seconds: 5), onTimeout: () => null);
+        } catch (e) {
+          debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK] timeout/error: $e — continuando com currentUser');
+          fbSdkUser = FirebaseAuth.instance.currentUser;
+        }
+      } else {
+        fbSdkUser = null;
+      }
+
+      // ── Hydration: SDK null mas REST token presente → tenta custom token ─
+      // (apenas em plataformas onde Firebase está disponível)
+      if (fbSdkUser == null && restTokenPresent && FirebaseRuntimeGuard.isReady) {
+        debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK] '
+            'fbUser=null restToken=present — aguardando propagação SDK...');
+        // Aguarda até 3s pelo stream emitir o usuário (pode demorar se o
+        // token REST ainda está sendo trocado pelo SDK internamente).
+        try {
+          fbSdkUser = await FirebaseAuth.instance
+              .authStateChanges()
+              .where((u) => u != null)
+              .first
+              .timeout(const Duration(seconds: 3), onTimeout: () => null);
+        } catch (_) {
+          fbSdkUser = FirebaseAuth.instance.currentUser;
+        }
+      }
+
+      // ── Security Wipe Trap: UID mismatch → falha controlada ─────────────
+      final String fbUid = fbSdkUser?.uid ?? '';
+      final bool uidsMatch = fbUid.isEmpty || fbUid == expectedUid;
+
+      if (!uidsMatch) {
+        // [SECURITY_GATE] SHIELD DISPATCHED → IDENTITY MISMATCH DETECTED
+        debugPrint('[SECURITY_GATE] SHIELD DISPATCHED -> IDENTITY MISMATCH DETECTED. '
+            'expectedUid=$expectedUid firebaseUid=$fbUid');
+        debugPrint('[AUTH_CONVERGENCE][FAILED] reason=uid_mismatch '
+            'expectedUid=$expectedUid firebaseUid=$fbUid');
+        _currentAuthBarrierState = AppAuthBarrierState.authMismatch;
+        // Wipe completo de estado local
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+        if (kIsWeb) {
+          try {
+            _webRemoveLS('medcases_gak');
+            _webRemoveLS('gemini_google_email');
+            _webRemoveLS('medcases_gsi_pending');
+          } catch (_) {}
+        }
+        // Purge LinkedHashMap de decisões — evita que dados do user anterior
+        // contaminem o próximo usuário.
+        ExternalToolLinkEngine.releaseByRequestId(expectedUid);
+        throw SecuritySyndicationException(
+          expectedUid: expectedUid,
+          actualUid: fbUid,
+          reason: 'uid_mismatch_at_setUser',
+        );
+      }
+
+      // ── Transição para authReady ─────────────────────────────────────────
+      _currentAuthBarrierState = AppAuthBarrierState.authReady;
+      debugPrint('[AUTH_CONVERGENCE][READY] '
+          'firebaseUid=${fbUid.isEmpty ? expectedUid : fbUid} '
+          'uidsMatch=true');
+
+    } catch (e) {
+      if (e is SecuritySyndicationException) rethrow;
+      // Falha inesperada durante boot-lock — falha aberta (não bloqueia app)
+      debugPrint('[AUTH_CONVERGENCE][FAILED] reason=firebase_user_null '
+          'error=$e — continuando com authReady (degraded mode)');
+      _currentAuthBarrierState = AppAuthBarrierState.authReady;
+    }
+
     _currentUser = user;
     _lang = user.lang;
     _darkMode = user.darkMode;
@@ -691,6 +840,8 @@ class AppProvider extends ChangeNotifier {
     AppResumeCoordinator.instance.clear(); // BUILD 241: clear pending ops on logout
     _currentUser = null;
     _firebaseReady = false;
+    // BUILD 463-A.1: reset barrier — próximo login inicia de authPending.
+    _currentAuthBarrierState = AppAuthBarrierState.authPending;
     _favDrugs = {};
     _favProtocols = {};
     _favPrescriptions = {};
@@ -2172,6 +2323,20 @@ class AppProvider extends ChangeNotifier {
     // O FirestoreService já gerencia cooldown interno para erros de rede/quota.
     // Para permission-denied (usuário não-admin), não há cooldown — a chamada
     // é rápida e é esperado que falhe; o fallback para SharedPrefs já foi tentado.
+
+    // ── BUILD 463-A.1: SECTOR 3 — Bloqueia fetch Firestore se barreira não authReady ──
+    // Quando geminiConnected transitiona false→true, verifica o estado da barreira.
+    // Se não estiver authReady, descarta o fetch secundário para evitar amplificação
+    // de race conditions.
+    if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] '
+          'operation=loadGeminiApiKey '
+          'allowed=false '
+          'reason=barrier_active '
+          'state=${_currentAuthBarrierState.name}');
+      _markGeminiConfigUnavailable();
+      return false;
+    }
 
     debugPrint('[checkGeminiSession] API Key ausente — tentando Firestore...');
     try {
