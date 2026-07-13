@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// external_tool_link_engine.dart — Deep Link Router v1.3 (MICRO-BUILD 462E-A.4)
+// external_tool_link_engine.dart — Deep Link Router v1.4 (MICRO-BUILD 462E-A.5)
 //
 // MOTOR 100% LOCAL — DETERMINÍSTICO — SEM IA — SEM REDE — SEM RAG
 //
@@ -9,7 +9,17 @@
 //   • Gerar URL limpa com lang (1º param) + tab + q (NUNCA dados do paciente).
 //   • Retornar label localizado (PT-BR / ES) para o botão _ExternalToolButton.
 //
-// MICRO-BUILD 462E-A.4 — COMPLETE EXT_TOOL INPUT SOVEREIGNTY:
+// MICRO-BUILD 462E-A.5 — POSITIVE-PATH INTENT CONVERGENCE + TRUNCATION FAIL-CLOSED:
+//   • ExternalToolDecision: fábrica imutável e canônica de decisões de roteamento.
+//   • decisionKey: cache por requestId+intent+drugs → idempotência durante rebuilds.
+//   • resolveExternalToolIntent() refatorado: matriz de prioridade mutuamente exclusiva.
+//   • Bloco B (dilution) NUNCA consume tokens de infusão (bomba de infusão → C).
+//   • Bloco C (infusion) promovido a alta prioridade; absorve bomba, velocidade, mg/h.
+//   • Bloco E (drugInformation) adicionado para mecanismo, indicações, etc.
+//   • [EXT_TOOL_DECISION] telemetria: emitida SOMENTE na primeira computação.
+//   • [EXT_TOOL_CARD_RENDERED] e [EXT_TOOL_OPENED_BY_USER] como telemetria isolada.
+//
+// MICRO-BUILD 462E-A.4 — COMPLETE EXT_TOOL INPUT SOVEREIGNTY (mantido):
 //   • ExternalToolIntent enum: representa a intenção SOBERANA da entrada do usuário.
 //   • resolveExternalToolIntent(): executa EXCLUSIVAMENTE contra originalUserInput.
 //   • Total Embargo Gate em build(): se intent == ExternalToolIntent.none →
@@ -79,28 +89,73 @@ enum CalculatorContext {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ExternalToolIntent — MICRO-BUILD 462E-A.4: Sovereign Intent Enum
+// ExternalToolIntent — MICRO-BUILD 462E-A.4 / 462E-A.5: Sovereign Intent Enum
 //
 // Representa a intenção SOBERANA da entrada original do usuário.
 // Resolvido EXCLUSIVAMENTE por resolveExternalToolIntent(originalUserInput).
 // O texto da IA (lastAiResponse) é matematicamente proibido de influenciar
 // este valor.
 //
-// Hierarquia de prioridade (ordem de avaliação em resolveExternalToolIntent):
+// Hierarquia de prioridade (ordem de avaliação em resolveExternalToolIntent v1.4):
 //   A. drugInteraction  → palavras-chave explícitas de interação PT/ES
-//   B. dilution         → palavras-chave de diluição/reconstituição PT/ES
-//   C. infusion         → palavras-chave explícitas de infusão PT/ES
-//   D. dosage           → palavras-chave de dose/posologia/mecanismo PT/ES
-//   E. drugInformation  → (reservado — mapeado via dosage no resolver atual)
+//   B. dilution (STRICT) → APENAS diluir/reconstituir/volume/concentração final
+//                          NÃO consome tokens de infusão (bomba de infusão → C)
+//   C. infusion (HIGH)   → bomba de infus[aã]o, velocidade, mg/h, mL/h, titular
+//   D. dosage           → dose, posologia, ajuste renal PT/ES
+//   E. drugInformation  → mecanismo, indicações, contraindicações, efeitos adversos
 //   F. none             → nenhuma intenção explícita detectada → EMBARGO TOTAL
 // ─────────────────────────────────────────────────────────────────────────────
 enum ExternalToolIntent {
   none,            // Nenhuma intenção explícita → embargo total de ferramentas
   drugInteraction, // Interação entre dois fármacos (explícito PT/ES)
-  dilution,        // Diluição / reconstituição / volume final (explícito PT/ES)
-  infusion,        // Infusão EV / velocidade / bomba (explícito PT/ES)
-  drugInformation, // Informação geral sobre fármaco (reservado)
-  dosage,          // Dose / posologia / mecanismo / ajuste renal (explícito PT/ES)
+  dilution,        // Diluição / reconstituição / volume final APENAS (PT/ES)
+  infusion,        // Infusão EV / velocidade / bomba (alta prioridade PT/ES)
+  drugInformation, // Informação geral: mecanismo, indicações, efeitos adversos
+  dosage,          // Dose / posologia / ajuste renal (explícito PT/ES)
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ExternalToolDecision — MICRO-BUILD 462E-A.5: Immutable Canonical Decision Factory
+//
+// Encapsula o resultado determinístico do roteamento em um objeto imutável.
+// Garante que PLANTAO_ANALYSIS, BUILD306 e EXT_TOOL compartilhem UMA ÚNICA
+// computação — nunca recalculam independentemente.
+//
+// Idempotência: cache por decisionKey em ExternalToolLinkEngine._decisionCache.
+// Se o mesmo decisionKey re-executa durante widget rebuild, bypassa e retorna
+// o estado cacheado. Side-effects disparam EXATAMENTE UMA VEZ.
+//
+// Target Sovereignty Rule:
+//   • primaryDrug e secondaryDrug extraídos EXCLUSIVAMENTE de originalUserInput.
+//   • Se o texto AI introduz fármaco adjacente (ex: input pede Noradrenalina,
+//     output menciona Vasopressina), os parâmetros ficam congelados no input.
+//
+// Telemetria isolada por ação:
+//   • [EXT_TOOL_DECISION]     → cálculo roda UMA VEZ
+//   • [EXT_TOOL_CARD_RENDERED] → loop de pintura do widget
+//   • [EXT_TOOL_OPENED_BY_USER] → tap físico do usuário APENAS
+// ─────────────────────────────────────────────────────────────────────────────
+class ExternalToolDecision {
+  final String requestId;
+  final ExternalToolIntent intent;
+  final String primaryDrug;
+  final String? secondaryDrug;
+  final String targetTab;
+  final String source; // Always "original_user_input"
+
+  const ExternalToolDecision({
+    required this.requestId,
+    required this.intent,
+    required this.primaryDrug,
+    this.secondaryDrug,
+    required this.targetTab,
+    this.source = 'original_user_input',
+  });
+
+  /// Chave única de idempotência: combinação de requestId, intent, primaryDrug e
+  /// secondaryDrug. Mesma chave = mesma decisão → bypassa recalculação.
+  String get decisionKey =>
+      '${requestId}_${intent.name}_${primaryDrug}_${secondaryDrug ?? "none"}';
 }
 
 const String _kBase = 'https://medcasescalcu.com/';
@@ -121,10 +176,61 @@ class ExternalToolLink {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Engine — all static, zero-state, zero-network
+// Engine — all static, zero-state (except _decisionCache), zero-network
 // ─────────────────────────────────────────────────────────────────────────────
 class ExternalToolLinkEngine {
   ExternalToolLinkEngine._();
+
+  // ── MICRO-BUILD 462E-A.5: Idempotency Cache ──────────────────────────────
+  //
+  // Cache de decisões por decisionKey.
+  // Garante que side-effects (telemetria [EXT_TOOL_DECISION], tab selection,
+  // drug parameter binding) disparem EXATAMENTE UMA VEZ por requestId+intent.
+  //
+  // Ciclo de vida: o cache é de escopo estático (persiste durante a sessão).
+  // Widget rebuilds com o mesmo decisionKey retornam o resultado cacheado
+  // sem re-executar o pipeline de roteamento.
+  // ─────────────────────────────────────────────────────────────────────────
+  static final Map<String, ExternalToolDecision> _decisionCache = {};
+
+  /// Registra uma decisão no cache e emite telemetria [EXT_TOOL_DECISION].
+  /// Somente emite a telemetria se a chave ainda não estava no cache (primeira
+  /// computação). Side-effects posteriores com a mesma chave são silenciados.
+  static ExternalToolDecision _cacheDecision(ExternalToolDecision decision) {
+    final key = decision.decisionKey;
+    if (_decisionCache.containsKey(key)) {
+      // Cache hit: retorna estado existente sem re-executar side-effects.
+      return _decisionCache[key]!;
+    }
+    // Cache miss: primeira computação — emite telemetria e armazena.
+    _decisionCache[key] = decision;
+    // ignore: avoid_print
+    print('[EXT_TOOL_DECISION] requestId=${decision.requestId} '
+        'intent=${decision.intent.name} '
+        'primaryDrug=${decision.primaryDrug} '
+        'secondaryDrug=${decision.secondaryDrug ?? "none"} '
+        'targetTab=${decision.targetTab} '
+        'source=${decision.source} '
+        'decisionKey=$key '
+        'computedOnce=true');
+    return decision;
+  }
+
+  /// Emite telemetria de renderização do card (widget paint loop).
+  /// Deve ser chamado dentro do widget build — NUNCA confundir com [EXT_TOOL_DECISION].
+  // ignore: avoid_print
+  static void emitCardRendered(String decisionKey) {
+    // ignore: avoid_print
+    print('[EXT_TOOL_CARD_RENDERED] decisionKey=$decisionKey');
+  }
+
+  /// Emite telemetria de tap físico do usuário na ferramenta externa.
+  /// Deve ser chamado SOMENTE no handler onTap — NUNCA no build.
+  // ignore: avoid_print
+  static void emitOpenedByUser(String decisionKey) {
+    // ignore: avoid_print
+    print('[EXT_TOOL_OPENED_BY_USER] decisionKey=$decisionKey');
+  }
 
   // ── BUILD 462E-A.3: Input Sovereignty — Deterministic Intent Matchers ──────
   //
@@ -176,10 +282,17 @@ class ExternalToolLinkEngine {
   }
 
   /// Retorna true se [userInput] contém palavras-chave EXPLÍCITAS de intenção
-  /// de diluição / reconstituição / infusão em PT-BR ou ES.
+  /// de diluição / reconstituição em PT-BR ou ES.
   ///
-  /// 6 clusters semânticos: diluir, reconstituir, volume final,
-  /// concentração, bomba de infusão — formas PT e ES.
+  /// MICRO-BUILD 462E-A.5 — RESTRIÇÃO ESTRITA:
+  ///   • 'bomba de infusão' / 'bomba de infusión' REMOVIDOS deste método.
+  ///   • Esses tokens pertencem a hasExplicitInfusionIntent() / bloco C de
+  ///     resolveExternalToolIntent() e NUNCA devem ser capturados como dilution.
+  ///   • Dilution = exclusivamente preparação física: diluir, reconstituir,
+  ///     volume final, concentração final.
+  ///
+  /// 5 clusters semânticos (reduzidos de 6): diluir, reconstituir,
+  /// volume final, concentração final — formas PT e ES.
   ///
   /// Apenas [userInput] é aceito — NUNCA o texto da resposta AI.
   static bool hasExplicitDilutionIntent(String userInput) {
@@ -189,27 +302,37 @@ class ExternalToolLinkEngine {
       r'diluir|dilui[cç][aã]o|diluci[oó]n|'
       r'reconstituir|reconstitui[cç][aã]o|reconstituci[oó]n|'
       r'volume final|volumen final|'
-      r'concentra[cç][aã]o|concentraci[oó]n|'
-      r'bomba de infus[aã]o|bomba de infusi[oó]n'
+      r'concentra[cç][aã]o final|concentraci[oó]n final'
       r')\b',
       caseSensitive: false,
     ).hasMatch(normalized);
   }
 
-  // ── BUILD 462E-A.4: Sovereign Intent Resolver ────────────────────────────
+  // ── BUILD 462E-A.5: Sovereign Intent Resolver — Mutually Exclusive Priority Matrix ──
   //
   // Executa EXCLUSIVAMENTE contra originalUserInput (lastUserMessage).
   // NUNCA aceita texto de IA como input — proibição absoluta arquitetural.
   //
-  // Hierarquia de prioridade (A → D):
-  //   A. INTERACTION  → retorna ExternalToolIntent.drugInteraction
-  //   B. DILUTION     → retorna ExternalToolIntent.dilution
-  //   C. INFUSION     → retorna ExternalToolIntent.infusion
-  //   D. DRUG INFO    → retorna ExternalToolIntent.dosage
-  //   fallback        → retorna ExternalToolIntent.none  (embargo total)
+  // Matriz de prioridade MUTUAMENTE EXCLUSIVA (sem fallback ambíguo):
+  //   A. drugInteraction  → interação entre fármacos PT/ES
+  //   B. dilution (STRICT) → SOMENTE: diluir, diluição/dilución,
+  //                          reconstituir/reconstituição/reconstitución,
+  //                          volume final/volumen final,
+  //                          concentração final/concentración final.
+  //                          ⚠️ NÃO inclui bomba de infusão → vai para C.
+  //   C. infusion (ALTA PRIORIDADE) → bomba de infus[aã]o, bomba de infusi[oó]n,
+  //                          infusão, infusión, velocidade, titular, titulação,
+  //                          mcg/kg/min, mg/h, mL/h.
+  //   D. dosage           → dose, dosagem, dosificación, posologia, posología,
+  //                          ajuste renal.
+  //   E. drugInformation  → mecanismo, indicações, contraindicações,
+  //                          efeitos adversos, presentación.
+  //   fallback            → ExternalToolIntent.none (embargo total)
   //
   // Nota sobre Unicode: \b não funciona com 'é' no início de palavra em Dart
   // (é não-ASCII → \b falha). Padrão corrigido: (?:^|\s)[eé] seguro combinar
+  //
+  // Test A invariante: "bomba de infusão" DEVE resolver para infusion (NUNCA dilution).
   // ─────────────────────────────────────────────────────────────────────────
   static ExternalToolIntent resolveExternalToolIntent(String userInput) {
     final normalized = userInput.toLowerCase().trim();
@@ -234,49 +357,81 @@ class ExternalToolLinkEngine {
 
     if (hasInteraction) return ExternalToolIntent.drugInteraction;
 
-    // ── B. DILUTION PATTERNS (PT/ES) ────────────────────────────────────────
+    // ── B. DILUTION PATTERNS — STRICT (PT/ES) ───────────────────────────────
+    //
+    // ⚠️ RESTRIÇÃO CRÍTICA 462E-A.5:
+    //   • Este bloco NÃO inclui 'bomba de infus[aã]o' / 'bomba de infusi[oó]n'.
+    //   • Esses tokens pertencem EXCLUSIVAMENTE ao bloco C (infusion).
+    //   • 'concentra[cç][aã]o final' e 'concentraci[oó]n final' são permitidos
+    //     (concentração de diluição específica) mas 'concentra[cç][aã]o' genérico
+    //     foi removido para evitar colisão com contextos de infusão.
+    // ─────────────────────────────────────────────────────────────────────────
     final hasDilution = RegExp(
       r'\b('
       r'diluir|dilui[cç][aã]o|diluci[oó]n|'
       r'reconstituir|reconstitui[cç][aã]o|reconstituci[oó]n|'
       r'volume final|volumen final|'
-      r'concentra[cç][aã]o|concentraci[oó]n|'
-      r'bomba de infus[aã]o|bomba de infusi[oó]n'
+      r'concentra[cç][aã]o final|concentraci[oó]n final'
       r')\b',
       caseSensitive: false,
     ).hasMatch(normalized);
 
     if (hasDilution) return ExternalToolIntent.dilution;
 
-    // ── C. EXPLICIT INFUSION PATTERNS (PT/ES) ───────────────────────────────
+    // ── C. INFUSION PATTERNS — HIGH PRIORITY (PT/ES) ────────────────────────
+    //
+    // Alta prioridade: captura todos os tokens procedurais de administração EV.
+    // ⚠️ ABSORVE 'bomba de infus[aã]o' que foi REMOVIDO do bloco B.
+    // Novos tokens 462E-A.5: velocidade, mg/h, mL/h.
+    // ─────────────────────────────────────────────────────────────────────────
     final hasInfusion = <RegExp>[
+      RegExp(r'\bbomba de infus[aã]o\b'),        // 462E-A.5: movido de B para C
+      RegExp(r'\bbomba de infusi[oó]n\b'),        // 462E-A.5: movido de B para C
       RegExp(r'\binfus[aã]o\b'),
       RegExp(r'\binfusi[oó]n\b'),
-      RegExp(r'\bvelocidade de infus[aã]o\b'),
-      RegExp(r'\bvelocidad de infusi[oó]n\b'),
+      RegExp(r'\bvelocidade\b'),                  // 462E-A.5: adicionado
+      RegExp(r'\bmg/h\b'),                        // 462E-A.5: adicionado
+      RegExp(r'\bml/h\b'),                        // 462E-A.5: adicionado (case-insensitive)
       RegExp(r'\bmcg/kg/min\b'),
       RegExp(r'\btitular\b'),
-      RegExp(r'\btitula[cç]i[oó]n\b'),
+      RegExp(r'\btitula[cç][aã]o\b'),
+      RegExp(r'\btitulaci[oó]n\b'),
       RegExp(r'\bpreparar infus[aã]o\b'),
       RegExp(r'\bcomo administrar em bomba\b'),
     ].any((p) => p.hasMatch(normalized));
 
     if (hasInfusion) return ExternalToolIntent.infusion;
 
-    // ── D. DRUG INFORMATION & DOSAGE PATTERNS (PT/ES) ───────────────────────
-    final hasDrugInfo = <RegExp>[
+    // ── D. DOSAGE PATTERNS (PT/ES) ───────────────────────────────────────────
+    final hasDosage = <RegExp>[
       RegExp(r'\bdose\b'),
+      RegExp(r'\bdosagem\b'),
+      RegExp(r'\bdosificaci[oó]n\b'),
       RegExp(r'\bposologia\b'),
-      RegExp(r'\bmecanismo\b'),
-      RegExp(r'\bindica[cç][aã]o\b'),
-      RegExp(r'\bcontraindica[cç][aã]o\b'),
-      RegExp(r'\bapresenta[cç][aã]o\b'),
-      RegExp(r'\befeitos adversos\b'),
+      RegExp(r'\bposolog[ií]a\b'),
       RegExp(r'\bajuste renal\b'),
+    ].any((p) => p.hasMatch(normalized));
+
+    if (hasDosage) return ExternalToolIntent.dosage;
+
+    // ── E. DRUG INFORMATION PATTERNS (PT/ES) ─────────────────────────────────
+    //
+    // 462E-A.5: Bloco E adicionado — informações gerais sobre o medicamento.
+    // Separado de dosage para permitir roteamento semântico distinto no futuro.
+    // ─────────────────────────────────────────────────────────────────────────
+    final hasDrugInfo = <RegExp>[
+      RegExp(r'\bmecanismo\b'),
+      RegExp(r'\bindica[cç][õo]es\b'),
+      RegExp(r'\bindica[cç][aã]o\b'),
+      RegExp(r'\bcontraindica[cç][õo]es\b'),
+      RegExp(r'\bcontraindica[cç][aã]o\b'),
+      RegExp(r'\befeitos adversos\b'),
+      RegExp(r'\bapresenta[cç][aã]o\b'),
+      RegExp(r'\bpresentaci[oó]n\b'),
       RegExp(r'\binforma[cç][oõ]es sobre o medicamento\b'),
     ].any((p) => p.hasMatch(normalized));
 
-    if (hasDrugInfo) return ExternalToolIntent.dosage;
+    if (hasDrugInfo) return ExternalToolIntent.drugInformation;
 
     return ExternalToolIntent.none;
   }
