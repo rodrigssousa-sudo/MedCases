@@ -10,7 +10,7 @@
 // Scenario 2: Successfully repaired text → exactly ONE persistence transaction
 //
 // Scenario 3: Catastrophic repair failure → AiSafeOutputException thrown
-//             → pipeline signals DROP_PAYLOAD → no EXT_TOOL_CARD_RENDERED
+//             → pipeline signals DROP_PAYLOAD → no EXT_TOOL_PAYLOAD_READY
 //             → ResumeCoordinator signaled
 //
 // Arquitetura de teste: unit-level stubs — zero rede, zero Firebase, zero UI.
@@ -329,7 +329,7 @@ void main() {
     });
 
     // ── Scenario 3: Catastrophic repair failure → DROP_PAYLOAD ───────────────
-    // → AiFailed(retryable: false) → no EXT_TOOL_CARD_RENDERED
+    // → AiFailed(retryable: false) → no EXT_TOOL_PAYLOAD_READY
     // → ResumeCoordinator signaled
     // ──────────────────────────────────────────────────────────────────────────
     group('Scenario 3: Catastrophic repair failure → DROP_PAYLOAD terminal sequence', () {
@@ -358,7 +358,7 @@ void main() {
             reason: 'Pipeline must NOT complete successfully on DROP_PAYLOAD');
       });
 
-      test('3b. No EXT_TOOL_CARD_RENDERED on DROP_PAYLOAD', () async {
+      test('3b. No EXT_TOOL_PAYLOAD_READY on DROP_PAYLOAD', () async {
         const truncatedText = 'Noradrenalina: titular de **0,05–';
 
         final sink        = _MockPersistenceSink();
@@ -612,7 +612,7 @@ void main() {
 
       // ── 5e: Execution index tracking — TRUNCATION_CHECK < Persistence < UI < ResumeCoordinator ──
       test('5e. Execution index tracking: '
-          'TRUNCATION_CHECK < Persistence < EXT_TOOL_CARD_RENDERED < ResumeCoordinator.complete', () async {
+          'TRUNCATION_CHECK < Persistence < EXT_TOOL_PAYLOAD_READY < ResumeCoordinator.complete', () async {
         // Simulate the Rigid Transactional Termination Pyramid sequencing.
         // Uses integer index counters to assert strict ordering.
         final List<String> executionLog = [];
@@ -648,8 +648,8 @@ void main() {
           // Stage 3: Persistence committed
           executionLog.add('PERSISTENCE');
 
-          // Stage 4: EXT_TOOL_CARD_RENDERED (UI injection)
-          executionLog.add('EXT_TOOL_CARD_RENDERED');
+          // Stage 4: EXT_TOOL_PAYLOAD_READY (UI injection)
+          executionLog.add('EXT_TOOL_PAYLOAD_READY');
 
           // Stage 5: State event emission → wrappedOnDone
           executionLog.add('STATE_EVENT_COMPLETED');
@@ -676,20 +676,20 @@ void main() {
         // Assert strict ordering via index comparisons
         final truncIdx     = log.indexOf('TRUNCATION_CHECK');
         final persistIdx   = log.indexOf('PERSISTENCE');
-        final uiIdx        = log.indexOf('EXT_TOOL_CARD_RENDERED');
+        final uiIdx        = log.indexOf('EXT_TOOL_PAYLOAD_READY');
         final resumeIdx    = log.indexOf('RESUME_COORDINATOR_COMPLETE');
 
         expect(truncIdx,   greaterThanOrEqualTo(0), reason: 'TRUNCATION_CHECK must execute');
         expect(persistIdx, greaterThanOrEqualTo(0), reason: 'PERSISTENCE must execute');
-        expect(uiIdx,      greaterThanOrEqualTo(0), reason: 'EXT_TOOL_CARD_RENDERED must execute');
+        expect(uiIdx,      greaterThanOrEqualTo(0), reason: 'EXT_TOOL_PAYLOAD_READY must execute');
         expect(resumeIdx,  greaterThanOrEqualTo(0), reason: 'RESUME_COORDINATOR_COMPLETE must execute');
 
         expect(truncIdx,   lessThan(persistIdx),
             reason: 'TRUNCATION_CHECK must precede PERSISTENCE');
         expect(persistIdx, lessThan(uiIdx),
-            reason: 'PERSISTENCE must precede EXT_TOOL_CARD_RENDERED');
+            reason: 'PERSISTENCE must precede EXT_TOOL_PAYLOAD_READY');
         expect(uiIdx,      lessThan(resumeIdx),
-            reason: 'EXT_TOOL_CARD_RENDERED must precede RESUME_COORDINATOR_COMPLETE — '
+            reason: 'EXT_TOOL_PAYLOAD_READY must precede RESUME_COORDINATOR_COMPLETE — '
                 'marking complete before UI render is prohibited');
         expect(result.resumeCoordinatorCompleted, isTrue);
         expect(result.persistenceCommitted, isTrue);

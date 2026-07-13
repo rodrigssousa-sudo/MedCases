@@ -4230,8 +4230,12 @@ class AppProvider extends ChangeNotifier {
                     : '⚠️ Resposta interrompida antes da validação final.\n'
                       'O conteúdo parcial não foi salvo nem validado.\n\n'
                       '${e.partialText}';
-                // MICRO-BUILD 462E-A.5.2: UI first, then completeAiRequest LAST.
+                // MICRO-BUILD 462E-A.5.2: UI first, releaseDecision, then completeAiRequest LAST.
+                // MICRO-BUILD 462E-A.5.3: AUDIT FIX — CLINICAL_PARTIAL was missing releaseDecision().
+                // This path IS a final termination vector: must evict cache entry before completing.
                 wrappedOnError(partialWarning);
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
@@ -4244,8 +4248,12 @@ class AppProvider extends ChangeNotifier {
                 _activeGptClient = null;
                 _aiStreamActive  = false;
                 aiChatProvider.setStreaming(false);
-                // MICRO-BUILD 462E-A.5.2: UI first, then completeAiRequest LAST.
+                // MICRO-BUILD 462E-A.5.2: UI first, releaseDecision, then completeAiRequest LAST.
+                // MICRO-BUILD 462E-A.5.3: AUDIT FIX — AUTH_EXPIRED was missing releaseDecision().
+                // This path IS a final termination vector: must evict cache entry before completing.
                 wrappedOnError('[auth_expired] Sessão expirada (${e.code}). Faça login novamente.');
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                 return;
               }
@@ -4598,13 +4606,17 @@ class AppProvider extends ChangeNotifier {
     //   para evitar setState/notifyListeners em contexto já descartado (race condition
     //   que produzia DiagnosticsProperty<void> no Flutter).
     // Nunca expõe a chave paga — usa proxy seguro (Cloud Function).
-    Future<void> tryPaidFallback(String reason) async {
+    Future<bool> tryPaidFallback(String reason) async {
+      // MICRO-BUILD 462E-A.5.3: returns true when fallback assumed ownership
+      // of terminal events (wrappedOnDone/wrappedOnError + release + complete).
+      // Returns false when stale-guard dropped the call or fallback itself failed
+      // silently — caller must then execute its own release + complete sequence.
       // BUILD 320: Id Guard — PRÉ-CHAMADA: descarta se requestId já foi invalidado
       if (_activeRequestId != thisRequestId) {
         debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback PRE-CALL drop: '
             'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
             'activeId=$_activeRequestId — paid proxy call suppressed');
-        return;
+        return false; // stale: caller retains responsibility for terminal events
       }
       if (kDebugMode) debugPrint('[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId');
 
@@ -4622,7 +4634,7 @@ class AppProvider extends ChangeNotifier {
         if (_activeRequestId != thisRequestId) {
           debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 PRE-CALL drop: '
               'reason=$reason activeId=$_activeRequestId');
-          return;
+          return false; // MICRO-BUILD 462E-A.5.3: stale — caller retains terminal responsibility
         }
 
         final gptResult = await ProviderRouterService.callGptProxy(
@@ -4652,7 +4664,7 @@ class AppProvider extends ChangeNotifier {
           debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 POST-AWAIT drop: '
               'reason=$reason activeId=$_activeRequestId textLen=${gptResult.text.length} '
               '— resultado tardio GPT descartado (Id Guard)');
-          return;
+          return false; // stale post-await: caller retains responsibility
         }
 
         if (gptResult.success && gptResult.text.isNotEmpty) {
@@ -4676,7 +4688,12 @@ class AppProvider extends ChangeNotifier {
           debugPrint('[BUILD321][LAYER2] GPT-4o Mini sucesso requestId=$requestId '
               'model=${gptResult.model} durationMs=${gptResult.durationMs}ms');
           wrappedOnDone(gptText);
-          return; // Layer 2 resolveu — não chama Gemini Paid
+          // MICRO-BUILD 462E-A.5.3: Layer 2 handled terminal UI event.
+          // Fallback owns release + complete here.
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          return true; // Layer 2 resolved — handled terminal events
         }
 
         // GPT falhou — cai para Layer 3 (Gemini Paid)
@@ -4689,7 +4706,7 @@ class AppProvider extends ChangeNotifier {
       if (_activeRequestId != thisRequestId) {
         debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback LAYER3 PRE-CALL drop: '
             'reason=$reason activeId=$_activeRequestId — gemini paid suppressed');
-        return;
+        return false; // stale: caller retains responsibility for terminal events
       }
 
       final paidResult = await ProviderRouterService.callPaidProxy(
@@ -4724,7 +4741,7 @@ class AppProvider extends ChangeNotifier {
             'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
             'activeId=$_activeRequestId textLen=${paidResult.text.length} '
             '— resultado tardio descartado (Id Guard)');
-        return;
+        return false; // stale post-await: caller retains responsibility
       }
 
       if (paidResult.success && paidResult.text.isNotEmpty) {
@@ -4753,6 +4770,11 @@ class AppProvider extends ChangeNotifier {
           debugPrint('[HISTORY_SANITIZER] paid_fallback_blocked reason=isFallbackText');
         }
         wrappedOnDone(paidText);          // BUILD 254: notifyListeners() incluso
+        // MICRO-BUILD 462E-A.5.3: fallback owns release + complete.
+        ExternalToolLinkEngine.releaseDecision(
+            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        return true; // handled: fallback took ownership of terminal events
       } else {
         // Paid também falhou — mostra mensagem de instabilidade
         debugPrint('[AI_PROVIDER] both_failed requestId=$requestId reason=${paidResult.errorCode}');
@@ -4760,6 +4782,11 @@ class AppProvider extends ChangeNotifier {
             ? 'Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. ⚕'
             : 'Estamos com instabilidade temporária na IA.\nTente novamente em alguns segundos. ⚕';
         wrappedOnError(instabilityMsg);      // BUILD 254
+        // Fallback emitted error UI — still owns release + complete.
+        ExternalToolLinkEngine.releaseDecision(
+            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        return true; // handled (error path): fallback took ownership
       }
     }
 
@@ -4835,7 +4862,7 @@ class AppProvider extends ChangeNotifier {
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
         _aiStreamActive = false;
         aiChatProvider.setStreaming(false); // BUILD 326
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        // MICRO-BUILD 462E-A.5.3: completeAiRequest moved AFTER UI emission below.
 
         if (paidResult.success && paidResult.text.isNotEmpty) {
           // BUILD 252: print raw antes de sanitizeAndCheck (caminho crítico)
@@ -4862,10 +4889,18 @@ class AppProvider extends ChangeNotifier {
             debugPrint('[HISTORY_SANITIZER] critical_paid_fallback_blocked reason=isFallbackText');
           }
           wrappedOnDone(paidText);             // BUILD 254
+          // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path success).
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         } else {
           debugPrint('[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}');
           // Pago falhou → safe-card (sem tentar Free — intencional no modo crítico)
           wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
+          // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path failure).
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         }
       }());
 
@@ -5014,14 +5049,36 @@ class AppProvider extends ChangeNotifier {
           if (isAlwaysFallback && ProviderRouterService.shouldTriggerPaidFallback(errCode)) {
             if (kDebugMode) debugPrint('[AI_ROUTER] BUILD334 $errCode → fallback=paid silencioso (${rawPartial.length}c descartados)');
             accumulator.clear(); // descarta parcial — nunca exibir resposta incompleta
-            unawaited(tryPaidFallback(errCode));
+            // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
+            unawaited(() async {
+              final handled = await tryPaidFallback(errCode);
+              if (!handled) {
+                wrappedOnError(_lang == 'es'
+                    ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                    : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+              }
+            }());
             return;
           }
           if (!isAlwaysFallback && ProviderRouterService.shouldTriggerPaidFallback(errCode) &&
               rawPartial.length <= 40) {
             if (kDebugMode) debugPrint('[AI_ROUTER] free_error errCode=$errCode → aciona paid');
             accumulator.clear();
-            unawaited(tryPaidFallback(errCode));
+            // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
+            unawaited(() async {
+              final handled = await tryPaidFallback(errCode);
+              if (!handled) {
+                wrappedOnError(_lang == 'es'
+                    ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                    : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+              }
+            }());
             return;
           }
 
@@ -5171,7 +5228,7 @@ class AppProvider extends ChangeNotifier {
           }
         }
       },
-      onError: (e) {
+      onError: (e) async {
         // Erro de stream — descarta texto parcial mas PRESERVA histórico.
         // Build 111: um erro de rede não invalida as trocas anteriores bem-sucedidas.
         debugPrint('[sendAiMessage] stream error: $e');
@@ -5182,13 +5239,24 @@ class AppProvider extends ChangeNotifier {
         aiChatProvider.setStreaming(false); // BUILD 326
         _aiStreamSub    = null;
         accumulator.clear();   // descarta texto parcial — nunca exibir
-        // Build 226: erro de stream → tenta paid fallback antes de mostrar erro
-        // MICRO-BUILD 462E-A.5.2: tryPaidFallback (UI path) first, then release, then complete LAST.
-        unawaited(tryPaidFallback('stream_exception'));
-        // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on stream FAILED (after UI dispatch).
-        ExternalToolLinkEngine.releaseDecision(
-            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241 — TERMINAL
+        // MICRO-BUILD 462E-A.5.3: Fallback Isolation Contract.
+        // await tryPaidFallback — if it returns true it has taken ownership of
+        // wrappedOnDone/wrappedOnError + releaseDecision + completeAiRequest.
+        // Only execute terminal sequence here when fallback returned false (stale/dropped).
+        final fallbackHandled = await tryPaidFallback('stream_exception');
+        if (!fallbackHandled) {
+          // Fallback was stale-guarded or skipped — caller owns terminal events.
+          // Build 226: both providers failed → instability message.
+          wrappedOnError(
+            _lang == 'es'
+                ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
+                : 'Erro de rede no assistente IA. Tente novamente. ⚕',
+          );
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241 — TERMINAL
+        }
+        // fallbackHandled == true → tryPaidFallback already called release + complete.
       },
       onDone: () {
         // onDone do StreamController — garante limpeza mesmo sem chunk isDone
@@ -5295,16 +5363,37 @@ class AppProvider extends ChangeNotifier {
                       _aiStreamSub = null;
                       debugPrint('[BUILD432][AUTO_RETRY] retry also empty → '
                           'escalando para paid fallback');
-                      unawaited(tryPaidFallback('empty_stream_after_retry'));
+                      // MICRO-BUILD 462E-A.5.3: delegate terminal ownership to fallback.
+                      // If fallback returns false (stale), emit instability msg and complete.
+                      unawaited(() async {
+                        final handled = await tryPaidFallback('empty_stream_after_retry');
+                        if (!handled) {
+                          wrappedOnError(_lang == 'es'
+                              ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                              : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                          ExternalToolLinkEngine.releaseDecision(
+                              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                        }
+                      }());
                     }
                   }
                 },
-                onError: (_) {
+                onError: (_) async {
                   if (completionFired) return;
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
                   _aiStreamSub = null;
-                  unawaited(tryPaidFallback('retry_stream_error'));
+                  // MICRO-BUILD 462E-A.5.3: await fallback; handle false (stale) case.
+                  final handled = await tryPaidFallback('retry_stream_error');
+                  if (!handled) {
+                    wrappedOnError(_lang == 'es'
+                        ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
+                        : 'Erro de rede no assistente IA. Tente novamente. ⚕');
+                    ExternalToolLinkEngine.releaseDecision(
+                        '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                    AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                  }
                 },
                 onDone: () {
                   if (completionFired) {
@@ -5318,7 +5407,18 @@ class AppProvider extends ChangeNotifier {
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
                   _aiStreamSub = null;
-                  unawaited(tryPaidFallback('empty_retry_onDone'));
+                  // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
+                  unawaited(() async {
+                    final handled = await tryPaidFallback('empty_retry_onDone');
+                    if (!handled) {
+                      wrappedOnError(_lang == 'es'
+                          ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                          : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                      ExternalToolLinkEngine.releaseDecision(
+                          '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                    }
+                  }());
                 },
                 cancelOnError: false,
               );
@@ -5329,7 +5429,18 @@ class AppProvider extends ChangeNotifier {
               debugPrint('[AI_ROUTER] stream closed empty (retry esgotado) → '
                   'paid fallback requestId=$thisRequestId');
             }
-            unawaited(tryPaidFallback('empty_stream'));
+            // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
+            unawaited(() async {
+              final handled = await tryPaidFallback('empty_stream');
+              if (!handled) {
+                wrappedOnError(_lang == 'es'
+                    ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                    : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+              }
+            }());
           }
         }
       },

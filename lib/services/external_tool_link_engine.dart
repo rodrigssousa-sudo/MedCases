@@ -19,7 +19,7 @@ import 'dart:collection';
 //   • Bloco C (infusion) promovido a alta prioridade; absorve bomba, velocidade, mg/h.
 //   • Bloco E (drugInformation) adicionado para mecanismo, indicações, etc.
 //   • [EXT_TOOL_DECISION] telemetria: emitida SOMENTE na primeira computação.
-//   • [EXT_TOOL_CARD_RENDERED] e [EXT_TOOL_OPENED_BY_USER] como telemetria isolada.
+//   • [EXT_TOOL_PAYLOAD_READY] e [EXT_TOOL_OPENED_BY_USER] como telemetria isolada.
 //
 // MICRO-BUILD 462E-A.4 — COMPLETE EXT_TOOL INPUT SOVEREIGNTY (mantido):
 //   • ExternalToolIntent enum: representa a intenção SOBERANA da entrada do usuário.
@@ -134,7 +134,7 @@ enum ExternalToolIntent {
 //
 // Telemetria isolada por ação:
 //   • [EXT_TOOL_DECISION]     → cálculo roda UMA VEZ
-//   • [EXT_TOOL_CARD_RENDERED] → loop de pintura do widget
+//   • [EXT_TOOL_PAYLOAD_READY] → loop de pintura do widget
 //   • [EXT_TOOL_OPENED_BY_USER] → tap físico do usuário APENAS
 // ─────────────────────────────────────────────────────────────────────────────
 class ExternalToolDecision {
@@ -264,7 +264,7 @@ class ExternalToolLinkEngine {
   // ignore: avoid_print
   static void emitCardRendered(String decisionKey) {
     // ignore: avoid_print
-    print('[EXT_TOOL_CARD_RENDERED] decisionKey=$decisionKey');
+    print('[EXT_TOOL_PAYLOAD_READY] decisionKey=$decisionKey');
   }
 
   /// Emite telemetria de tap físico do usuário na ferramenta externa.
