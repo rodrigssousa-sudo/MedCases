@@ -193,6 +193,122 @@ class HemoData {
   });
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// MICRO-BUILD 462E-A.5.3.7 — AiFinalizationTransaction
+//
+// Per-request state machine that enforces EXACTLY ONE terminal ownership claim
+// across all asynchronous finalization contenders (onDone, timeout timer,
+// onError, chunk.isDone, cancel, fallback paths).
+//
+// INVARIANT: tryAcquireOwnership() is non-reentrant. The first caller wins and
+// receives true; all subsequent callers receive false and must emit
+// [AI_TERMINAL_OWNER][REJECTED] telemetry before silently aborting.
+//
+// Multiple concurrent active requests each own an INDEPENDENT instance.
+// Completing request A NEVER affects the transaction state of request B.
+//
+// Dart event-loop thread safety: bool flips are atomic within a single
+// microtask — no additional locking is required.
+// ══════════════════════════════════════════════════════════════════════════════
+class AiFinalizationTransaction {
+  final String parentRequestId;
+  final String providerRequestId;
+
+  bool _ownershipAcquired      = false;
+  bool _toolResolutionCompleted = false;
+  bool _cacheReleased           = false;
+  bool _coordinatorCompleted    = false;
+  bool _assistantPersisted      = false;
+
+  AiFinalizationTransaction({
+    required this.parentRequestId,
+    required this.providerRequestId,
+  });
+
+  /// Atomically claims terminal ownership for [source].
+  /// Returns true when the caller is the WINNER.
+  /// Returns false with [AI_TERMINAL_OWNER][REJECTED] telemetry for all losers.
+  bool tryAcquireOwnership(String source) {
+    if (_ownershipAcquired) {
+      // ignore: avoid_print
+      print('[AI_TERMINAL_OWNER][REJECTED] '
+          'parentRequestId=$parentRequestId '
+          'providerRequestId=$providerRequestId '
+          'source=$source '
+          'reason=ownership_already_acquired');
+      return false;
+    }
+    _ownershipAcquired = true;
+    // ignore: avoid_print
+    print('[AI_TERMINAL_OWNER][ACQUIRED] '
+        'parentRequestId=$parentRequestId '
+        'source=$source');
+    return true;
+  }
+
+  void markToolResolutionCompleted() => _toolResolutionCompleted = true;
+  void markCacheReleased()           => _cacheReleased = true;
+  void markCoordinatorCompleted()    => _coordinatorCompleted = true;
+  void markAssistantPersisted()      => _assistantPersisted = true;
+
+  bool get isTerminal           => _coordinatorCompleted;
+  bool get ownershipAcquired    => _ownershipAcquired;
+  bool get assistantPersisted   => _assistantPersisted;
+  bool get cacheReleased        => _cacheReleased;
+  bool get coordinatorCompleted => _coordinatorCompleted;
+
+  /// Emits [AI_LATE_EVENT_DROPPED] telemetry and returns true when the
+  /// transaction is already terminal and a late event must be discarded.
+  bool dropIfTerminal({required String event, required String providerReqId}) {
+    if (!_coordinatorCompleted) return false;
+    // ignore: avoid_print
+    print('[AI_LATE_EVENT_DROPPED] '
+        'parentRequestId=$parentRequestId '
+        'providerRequestId=$providerReqId '
+        'event=$event '
+        'terminalState=completed');
+    return true;
+  }
+
+  /// Emits [SESSION_PERSIST] dedup key telemetry.
+  void emitPersistTelemetry({required String sessionId}) {
+    final dedupKey = '$parentRequestId:assistant_final';
+    // ignore: avoid_print
+    print('[SESSION_PERSIST] '
+        'parentRequestId=$parentRequestId '
+        'sessionId=$sessionId '
+        'messageRole=assistant '
+        'phase=assistant_final '
+        'dedupKey=$dedupKey');
+    markAssistantPersisted();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MICRO-BUILD 462E-A.5.3.7 — Sealed ToolResolution
+//
+// Immutable, request-scoped result of the External Tool Gate evaluation.
+// The UI consumes the sealed variant directly — no re-computation of tool
+// decisions in post-frame callbacks is permitted.
+//
+// ToolNotApplicable → intent=none, no external tool card emitted.
+// ToolPayloadReady  → intent resolved, card payload ready for UI mount.
+// ══════════════════════════════════════════════════════════════════════════════
+sealed class ToolResolution {
+  const ToolResolution();
+}
+
+final class ToolNotApplicable extends ToolResolution {
+  final String reason;
+  const ToolNotApplicable({required this.reason});
+}
+
+final class ToolPayloadReady extends ToolResolution {
+  final String intent;
+  final String parentRequestId;
+  const ToolPayloadReady({required this.intent, required this.parentRequestId});
+}
+
 class AppProvider extends ChangeNotifier {
   // ── BUILD 326: Sub-providers especializados ───────────────────────────────
   // Expõos como campos públicos para que main.dart possa registrá-los
@@ -4995,31 +5111,51 @@ class AppProvider extends ChangeNotifier {
 
     final accumulator = StringBuffer();
 
-    // ── MICRO-BUILD 462E-A.5.3.5: Atomic Terminal Ownership Guard ─────────────
-    // Replaces the bare `completionFired` bool with a named closure that makes
-    // the non-reentrant ownership contract explicit and auditable.
+    // ── MICRO-BUILD 462E-A.5.3.7: AiFinalizationTransaction — per-request state machine ──
+    // Replaces the closure-local bool+function pattern with a formal transaction object
+    // that tracks all 5 pipeline phase flags independently per request, emits
+    // [AI_TERMINAL_OWNER][REJECTED] telemetry on contention, and supports late-event
+    // detection via dropIfTerminal() and [SESSION_PERSIST] dedup key emission.
     //
     // INVARIANT: Exactly ONE execution context (chunk.isDone, global timeout,
     // critical timeout, onError, onDone, cancel) may win terminal ownership.
-    // All other concurrent or late-arriving paths call tryAcquireTerminalOwnership()
+    // All other concurrent or late-arriving paths call tryAcquireTerminalOwnership(source)
     // and receive false — they must silent-abort immediately.
     //
-    // Thread safety: Dart is single-threaded (event loop). The bool flip is
-    // atomic within a single microtask — no additional locking is required.
-    // The guard is NOT reset across retry attempts; retries clear it explicitly
-    // before re-registering a new stream listener (line below: _hasTerminalOwnershipAcquired = false).
+    // Multiple concurrent active requests own INDEPENDENT transaction instances.
+    // Completing Request A never touches the transaction state of Request B.
+    //
+    // Thread safety: Dart is single-threaded (event loop). The bool flip inside
+    // tryAcquireOwnership() is atomic within a single microtask — no locking needed.
+    // The guard is NOT reset across retry attempts; retries call
+    // _freeStreamTxn = AiFinalizationTransaction(...) to create a fresh instance.
     bool _hasTerminalOwnershipAcquired = false;
+    // Placeholder transaction — reassigned after providerRequestId (requestId) is declared below.
+    // This allows tryAcquireTerminalOwnership() closures to be defined here while
+    // providerRequestId is not yet available (it is declared in the free-stream scope below).
+    AiFinalizationTransaction _freeStreamTxn = AiFinalizationTransaction(
+      parentRequestId:  thisRequestId,
+      providerRequestId: '', // updated after requestId is declared
+    );
 
     /// Atomically claims terminal ownership for the calling execution path.
+    /// Delegates to _freeStreamTxn.tryAcquireOwnership(source) which emits
+    /// [AI_TERMINAL_OWNER][ACQUIRED] on win or [AI_TERMINAL_OWNER][REJECTED]
+    /// on contention.
     /// Returns true when the caller is the WINNER — it must execute the full
     /// 7-step pipeline (RAW_AI_OUTPUT → TRUNCATION_CHECK → RESPONSE_VALIDATOR
     /// → SessionDedup.save → EXT_TOOL_GATE → EXT_TOOL_CACHE[RELEASE] →
     /// RESUME_COORDINATOR[COMPLETE]).
     /// Returns false when another path already owns the terminal — caller must
     /// silent-abort: drop the payload, cancel any pending timers, return immediately.
-    bool tryAcquireTerminalOwnership() {
-      if (_hasTerminalOwnershipAcquired) return false;
+    bool tryAcquireTerminalOwnership([String source = 'unknown']) {
+      if (_hasTerminalOwnershipAcquired) {
+        // Delegate to transaction for structured telemetry emission.
+        _freeStreamTxn.tryAcquireOwnership(source);
+        return false;
+      }
       _hasTerminalOwnershipAcquired = true;
+      _freeStreamTxn.tryAcquireOwnership(source);
       return true;
     }
 
@@ -5043,6 +5179,13 @@ class AppProvider extends ChangeNotifier {
 
     // ── Build 226: requestId único para rastreamento ─────────────────────────
     final requestId = ProviderRouterService.generateRequestId();
+
+    // MICRO-BUILD 462E-A.5.3.7: Bind providerRequestId now that requestId is declared.
+    // The placeholder transaction created above is replaced with the fully-qualified instance.
+    _freeStreamTxn = AiFinalizationTransaction(
+      parentRequestId:  thisRequestId,
+      providerRequestId: requestId,
+    );
 
     // MICRO-BUILD 462E-A.5.3.6: Emit dual-ID correlation log.
     // parentRequestId  = thisRequestId (registered with AppResumeCoordinator — terminal owner).
@@ -5484,8 +5627,8 @@ class AppProvider extends ChangeNotifier {
       final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
       debugPrint('[AI_TIMEOUT][BUILD320] mode=${longResponse ? "estudo" : "academic"} '
           'timeoutMs=$globalTimeoutMs provider=free elapsedMs=$elapsedMs requestId=$thisRequestId');
-      // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if another path won.
-      if (!tryAcquireTerminalOwnership()) return;
+      // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
+      if (!tryAcquireTerminalOwnership('global_timeout_timer')) return;
       // BUILD 320: invalida o requestId atomicamente — o Id Guard em tryPaidFallback
       // detectará a invalidação e descartará silenciosamente qualquer resposta tardia
       // do Paid Proxy que chegar após este timer, sem setState em contexto morto.
@@ -5505,10 +5648,17 @@ class AppProvider extends ChangeNotifier {
 
     _aiStreamSub = stream.listen(
       (chunk) async {
+        // MICRO-BUILD 462E-A.5.3.7: Late-event guard — drop any chunk that arrives
+        // after the transaction has been fully finalized (coordinator completed).
+        if (_freeStreamTxn.dropIfTerminal(
+          event: chunk.isError ? 'chunk_error' : chunk.isDone ? 'chunk_done' : 'chunk_text',
+          providerReqId: requestId,
+        )) return;
+
         if (chunk.isError) {
           // Build 126 — TOLERÂNCIA A FALHAS: conteúdo parcial válido → exibir.
-          // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate.
-          if (!tryAcquireTerminalOwnership()) return;
+          // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
+          if (!tryAcquireTerminalOwnership('chunk_isError')) return;
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub = null;
@@ -5603,8 +5753,8 @@ class AppProvider extends ChangeNotifier {
 
         if (chunk.isDone && !chunk.isError) {
           // Resposta completa — dispara somente uma vez (guard anti-duplicata)
-          // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if another path won.
-          if (!tryAcquireTerminalOwnership()) return;
+          // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
+          if (!tryAcquireTerminalOwnership('chunk_isDone')) return;
           _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
           // MICRO-BUILD 462E-A.5.3.4: removed premature completeAiRequest (BUILD 241) — correct terminal call is below after full pipeline.
           // BUILD 252: print do rawText ANTES de sanitizeAndCheck — expõe saída bruta.
@@ -5676,6 +5826,8 @@ class AppProvider extends ChangeNotifier {
                 ..add({'role': 'user',      'content': input})
                 ..add({'role': 'assistant', 'content': finalText});
               while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+              // MICRO-BUILD 462E-A.5.3.7: SESSION_PERSIST dedup key telemetry.
+              _freeStreamTxn.emitPersistTelemetry(sessionId: thisRequestId);
             } else if (kDebugMode && finalText.isNotEmpty && _isFallbackText(finalText)) {
               debugPrint('[HISTORY_SANITIZER] free_done_fallback_blocked reason=isFallbackText');
             }
@@ -5684,6 +5836,7 @@ class AppProvider extends ChangeNotifier {
             _aiStreamSub    = null;
             // MICRO-BUILD 462E-A.5.2: Rigid Transactional Termination Pyramid.
             // Persistence committed above ↑ → UI emitted → releaseDecision → completeAiRequest LAST.
+            _freeStreamTxn.markCoordinatorCompleted();
             wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
                 ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
                 : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
@@ -5718,8 +5871,8 @@ class AppProvider extends ChangeNotifier {
         // Erro de stream — descarta texto parcial mas PRESERVA histórico.
         // Build 111: um erro de rede não invalida as trocas anteriores bem-sucedidas.
         debugPrint('[sendAiMessage] stream error: $e');
-        // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if another path won.
-        if (!tryAcquireTerminalOwnership()) return;
+        // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
+        if (!tryAcquireTerminalOwnership('stream_onError')) return;
         _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
         _aiStreamActive = false;
         aiChatProvider.setStreaming(false); // BUILD 326
@@ -5746,8 +5899,8 @@ class AppProvider extends ChangeNotifier {
       },
       onDone: () {
         // onDone do StreamController — garante limpeza mesmo sem chunk isDone
-        // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if chunk.isDone already won.
-        if (!tryAcquireTerminalOwnership()) {
+        // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
+        if (!tryAcquireTerminalOwnership('stream_onDone')) {
           // Já tratado pelo listener — apenas limpeza silenciosa
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
@@ -5790,10 +5943,15 @@ class AppProvider extends ChangeNotifier {
           // BUILD 432 AUTO-RETRY: até 1 tentativa silenciosa (sem alterar UI)
           if (_freeStreamRetryCount < 1 && _activeRequestId == thisRequestId) {
             _freeStreamRetryCount++;
-            // MICRO-BUILD 462E-A.5.3.5: reset ownership for retry — a new stream
-            // listener is registered; the previous terminal path released ownership
-            // of the empty stream. The retry is a fresh attempt with its own lifecycle.
+            // MICRO-BUILD 462E-A.5.3.7: reset ownership for retry — create a fresh
+            // AiFinalizationTransaction for the retry stream. The prior transaction
+            // owned the empty-stream terminal. The retry is an independent attempt
+            // with its own lifecycle and phase flags.
             _hasTerminalOwnershipAcquired = false;
+            _freeStreamTxn = AiFinalizationTransaction(
+              parentRequestId:  thisRequestId,
+              providerRequestId: requestId,
+            );
             accumulator.clear();     // limpa acumulador para resposta nova
 
             // Re-inicia streaming Free preservando estado de _thinking na UI
@@ -5834,8 +5992,8 @@ class AppProvider extends ChangeNotifier {
                     onChunk(accumulator.toString());
                   }
                   if (chunk.isDone && !chunk.isError) {
-                    // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate for retry stream.
-                    if (!tryAcquireTerminalOwnership()) return;
+                    // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate for retry stream.
+                    if (!tryAcquireTerminalOwnership('retry_chunk_isDone')) return;
                     _globalTimeoutTimer?.cancel();
                     final retryText = accumulator.toString().trim();
                     // ignore: avoid_print
@@ -5878,8 +6036,8 @@ class AppProvider extends ChangeNotifier {
                   }
                 },
                 onError: (_) async {
-                  // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate for retry onError.
-                  if (!tryAcquireTerminalOwnership()) return;
+                  // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate for retry onError.
+                  if (!tryAcquireTerminalOwnership('retry_onError')) return;
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
                   _aiStreamSub = null;
@@ -5895,8 +6053,8 @@ class AppProvider extends ChangeNotifier {
                   }
                 },
                 onDone: () {
-                  // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate for retry onDone.
-                  if (!tryAcquireTerminalOwnership()) {
+                  // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate for retry onDone.
+                  if (!tryAcquireTerminalOwnership('retry_onDone')) {
                     _aiStreamActive = false;
                     aiChatProvider.setStreaming(false);
                     _aiStreamSub = null;
