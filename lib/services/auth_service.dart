@@ -510,7 +510,34 @@ class AuthService {
     }
   }
 
-  // ── Login Web via REST ─────────────────────────────────────────────────────
+  // ── Login Web via REST + SDK Bridge ───────────────────────────────────────
+  //
+  // MICRO-BUILD 463-A.2-R2: Web Firebase SDK Credential Bridge
+  //
+  // Prior to this build, _loginWeb used the REST identitytoolkit endpoint
+  // exclusively. While this populated _cachedIdToken (REST credential plane),
+  // it LEFT FirebaseAuth.instance.currentUser == null, causing _setUserImpl()
+  // to resolve authRequired instead of authReady on every web cold boot.
+  //
+  // FIX: After the REST call validates the credentials and returns HTTP 200,
+  // call FirebaseAuth.instance.signInWithEmailAndPassword() to establish the
+  // Firebase SDK session. This sets currentUser non-null, enabling hasFirebaseSdkIdentity
+  // and satisfying the Firestore dual-check barrier.
+  //
+  // DUAL-PLANE EXECUTION ORDER:
+  //   1. REST call → validates credentials server-side, returns idToken + uid
+  //   2. _cacheTokens() → REST plane populated (hasRestCredential = true)
+  //   3. SDK signInWithEmailAndPassword() → SDK session established (hasFirebaseSdkIdentity = true)
+  //   4. SDK currentUser resolved → CREDENTIAL_ACCEPTED telemetry emitted
+  //   5. getIdToken(true) → forced SDK token refresh → TOKEN_REFRESHED telemetry
+  //   6. Firestore REST profile fetch → user document read
+  //   7. webUser.value = user → AuthGate routes to MainShell
+  //
+  // BRIDGE FAILURE HANDLING:
+  //   If the SDK call throws (e.g., network partition after REST succeeded, or
+  //   Firebase SDK unavailable), we log the failure and continue with the REST
+  //   user — the app is functional but authBarrierState will be authRequired.
+  //   The user can retry; the REST token is cached for profile reads.
   static Future<AuthResult> _loginWeb({
     required String email,
     required String password,
@@ -518,8 +545,14 @@ class AuthService {
     debugPrint('[Auth][LOGIN] REQUEST:');
     debugPrint('[Auth][LOGIN]   EMAIL : ${email.trim()}');
 
+    // MICRO-BUILD 463-A.2-R2: emit SDK establish start for the web path.
+    logSdkEstablishStart(method: 'email_password_web', expectedUid: email.trim());
+
     try {
-      // Passo 1 — Auth REST
+      // ── Passo 1: REST credential validation ─────────────────────────────
+      // The REST call validates credentials server-side and returns the
+      // idToken + refreshToken needed for REST API calls (admin operations,
+      // Firestore REST reads). It does NOT establish a Firebase SDK session.
       final authResp = await http.post(
         Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_webApiKey'),
         headers: {'Content-Type': 'application/json'},
@@ -537,14 +570,18 @@ class AuthService {
         debugPrint('[Auth][LOGIN]   ERROR_CODE : $msg');
         if (msg.contains('EMAIL_NOT_FOUND') || msg.contains('INVALID_LOGIN_CREDENTIALS') ||
             msg.contains('WRONG_PASSWORD') || msg.contains('INVALID_PASSWORD')) {
+          logSdkEstablishFailed(stage: 'rest_auth', reason: 'invalid_credentials');
           return AuthResult.error('E-mail ou senha incorretos.');
         }
         if (msg.contains('TOO_MANY_ATTEMPTS') || msg.contains('TOO_MANY_REQUESTS')) {
+          logSdkEstablishFailed(stage: 'rest_auth', reason: 'too_many_attempts');
           return AuthResult.error('Muitas tentativas. Aguarde alguns minutos.');
         }
         if (msg.contains('USER_DISABLED')) {
+          logSdkEstablishFailed(stage: 'rest_auth', reason: 'user_disabled');
           return AuthResult.error('Conta desativada. Entre em contato com o administrador.');
         }
+        logSdkEstablishFailed(stage: 'rest_auth', reason: 'http_${authResp.statusCode}');
         return AuthResult.error('E-mail ou senha incorretos. [$msg]');
       }
 
@@ -552,21 +589,134 @@ class AuthService {
       final idToken      = authBody['idToken']       as String;
       final refreshToken = authBody['refreshToken']  as String? ?? '';
 
-      // Salva tokens em cache para uso posterior (operações admin REST)
+      // Salva tokens em cache para uso posterior (operações admin REST).
+      // REST plane is now populated: hasRestCredential = true.
       _cacheTokens(idToken: idToken, refreshToken: refreshToken);
 
-      // Passo 2 — Firestore REST: ler documento users/{uid}
-      // fix(auth): aguarda 800ms para dar tempo ao token JWT propagar no Firestore
-      // antes do primeiro GET (evita 403 por timing em cadastros recentes).
+      // ── Passo 2: Firebase SDK credential bridge (MICRO-BUILD 463-A.2-R2) ─
+      // The REST call confirmed the credentials are valid. Now establish the
+      // Firebase SDK session by calling signInWithEmailAndPassword() directly.
+      // This is NOT a duplicate network round-trip for credential verification —
+      // the SDK call uses the same email/password that the REST call already
+      // verified, and it populates FirebaseAuth.instance.currentUser which is
+      // required for hasFirebaseSdkIdentity = true and authReady convergence.
+      //
+      // NOTE: We do NOT pass the REST idToken to signInWithCustomToken() here.
+      // The REST idToken is an Identity Toolkit JWT — it is NOT a Firebase
+      // Custom Token. Passing it to signInWithCustomToken() would throw
+      // invalid-custom-token. The correct bridge is email/password re-auth.
+      User? firebaseUser;
+      if (FirebaseRuntimeGuard.isReady) {
+        try {
+          debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+              'uid=$uid — calling SDK signInWithEmailAndPassword '
+              'to establish hasFirebaseSdkIdentity=true');
+          final credential = await _auth
+              .signInWithEmailAndPassword(
+                email: email.trim(),
+                password: password,
+              )
+              .timeout(const Duration(seconds: 15));
+
+          // Resolve currentUser immediately after SDK sign-in.
+          // STRICT GATE: do not emit CREDENTIAL_ACCEPTED until user is confirmed.
+          firebaseUser = credential.user ?? _auth.currentUser;
+          if (firebaseUser == null) {
+            // Poll authStateChanges once as fallback for slow SDK propagation.
+            firebaseUser = await _auth
+                .authStateChanges()
+                .where((u) => u != null)
+                .first
+                .timeout(const Duration(seconds: 5), onTimeout: () => null);
+          }
+
+          // CREDENTIAL_ACCEPTED: null guard enforced inside logSdkCredentialAccepted.
+          logSdkCredentialAccepted(firebaseUser: firebaseUser);
+
+          if (firebaseUser != null) {
+            // Force SDK token refresh to warm the Firestore SDK session.
+            // The refreshed token is fed back into _cacheTokens to unify
+            // the REST plane with the fresh SDK-issued JWT.
+            try {
+              final sdkToken = await firebaseUser.getIdToken(true);
+              logSdkTokenRefreshed(uid: firebaseUser.uid);
+              if (sdkToken != null && sdkToken.isNotEmpty) {
+                // Overwrite the REST-plane cached token with the SDK-refreshed
+                // token so all downstream REST calls use the freshest JWT.
+                _cacheTokens(
+                  idToken:      sdkToken,
+                  refreshToken: firebaseUser.refreshToken ?? refreshToken,
+                );
+                debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+                    'unified_token: REST plane updated with SDK-refreshed JWT '
+                    'uid=${firebaseUser.uid}');
+              }
+            } catch (tokenErr) {
+              // Token refresh failure is non-fatal — REST token is still valid.
+              debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+                  'token_refresh_failed: $tokenErr — REST token retained');
+            }
+            debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+                'sdkIdentityEstablished=true '
+                'uid=${firebaseUser.uid} '
+                'adapterType=${_adapterType}');
+          } else {
+            // SDK returned null user after sign-in — log but do not block login.
+            // hasFirebaseSdkIdentity will be false; authBarrierState → authRequired.
+            debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+                'sdkIdentityEstablished=false '
+                'reason=sdk_user_null_after_signIn '
+                'adapterType=${_adapterType}');
+          }
+        } on FirebaseAuthException catch (sdkErr) {
+          // SDK auth failure after REST success: log and continue.
+          // This can occur during network partition or Firebase SDK initialization race.
+          // The app remains functional via the REST token; authBarrierState → authRequired.
+          logSdkEstablishFailed(
+            stage: 'sdk_bridge_signIn',
+            reason: 'firebase_auth_exception_${sdkErr.code}',
+          );
+          debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+              'sdk_bridge_failed: ${sdkErr.code} — continuing with REST token '
+              'sdkIdentityEstablished=false');
+        } on TimeoutException {
+          logSdkEstablishFailed(
+            stage: 'sdk_bridge_signIn',
+            reason: 'timeout_15s',
+          );
+          debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+              'sdk_bridge_timeout — continuing with REST token '
+              'sdkIdentityEstablished=false');
+        } catch (sdkErr) {
+          logSdkEstablishFailed(
+            stage: 'sdk_bridge_signIn',
+            reason: 'unexpected_${sdkErr.runtimeType}',
+          );
+          debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+              'sdk_bridge_unexpected: $sdkErr — continuing with REST token');
+        }
+      } else {
+        // Firebase SDK unavailable (e.g. Safari private mode / init race).
+        // REST token is cached; SDK bridge cannot be attempted.
+        debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
+            'sdk_unavailable — FirebaseRuntimeGuard.isReady=false '
+            'sdkIdentityEstablished=false');
+      }
+
+      // ── Passo 3: Firestore REST profile fetch ───────────────────────────
+      // Read the users/{uid} document using the current best idToken.
+      // (May be the SDK-refreshed token or the original REST token.)
+      final bestToken = _cachedIdToken.isNotEmpty ? _cachedIdToken : idToken;
+
       final fsResp = await http.get(
         Uri.parse('$_fsBase/users/$uid'),
-        headers: {'Authorization': 'Bearer $idToken'},
+        headers: {'Authorization': 'Bearer $bestToken'},
       );
 
       if (fsResp.statusCode == 404) {
         // Documento ausente: cria com status=approved e retorna OK.
         final user = _buildNewUser(uid: uid, email: email);
-        await _createUserDocRest(user: user, idToken: idToken);
+        await _createUserDocRest(user: user, idToken: bestToken);
         webUser.value = user;
         return AuthResult.success(user);
       }
@@ -577,7 +727,7 @@ class AuthService {
         await Future.delayed(const Duration(milliseconds: 1200));
         final fsRetry = await http.get(
           Uri.parse('$_fsBase/users/$uid'),
-          headers: {'Authorization': 'Bearer $idToken'},
+          headers: {'Authorization': 'Bearer $bestToken'},
         );
         if (fsRetry.statusCode == 200) {
           final retryBody = jsonDecode(fsRetry.body) as Map<String, dynamic>;
@@ -588,14 +738,14 @@ class AuthService {
         }
         if (fsRetry.statusCode == 404) {
           final user = _buildNewUser(uid: uid, email: email);
-          await _createUserDocRest(user: user, idToken: idToken);
+          await _createUserDocRest(user: user, idToken: bestToken);
           webUser.value = user;
           return AuthResult.success(user);
         }
         // Se ainda 403 após retry: retorna usuário aprovado em memória (não bloqueia login).
         final fallbackUser = _buildNewUser(uid: uid, email: email);
         webUser.value = fallbackUser;
-        _createUserDocRest(user: fallbackUser, idToken: idToken).ignore();
+        _createUserDocRest(user: fallbackUser, idToken: bestToken).ignore();
         return AuthResult.success(fallbackUser);
       }
 
@@ -604,7 +754,7 @@ class AuthService {
         // Nunca retorna erro de "perfil" ao usuário — mantém fluxo de login estável.
         final fallbackUser = _buildNewUser(uid: uid, email: email);
         webUser.value = fallbackUser;
-        _createUserDocRest(user: fallbackUser, idToken: idToken).ignore();
+        _createUserDocRest(user: fallbackUser, idToken: bestToken).ignore();
         return AuthResult.success(fallbackUser);
       }
 
