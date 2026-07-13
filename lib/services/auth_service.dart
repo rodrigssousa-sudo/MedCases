@@ -630,6 +630,13 @@ class AuthService {
                 .timeout(const Duration(seconds: 5), onTimeout: () => null);
           }
 
+          // MICRO-BUILD 462E-A.5.3.7.2: Active session connected confirmation.
+          // Emitted immediately after SDK resolves a non-null user — before
+          // token refresh — to mark the precise point of SDK identity establishment.
+          if (firebaseUser != null) {
+            debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] Active session connected.');
+          }
+
           // CREDENTIAL_ACCEPTED: null guard enforced inside logSdkCredentialAccepted.
           logSdkCredentialAccepted(firebaseUser: firebaseUser);
 

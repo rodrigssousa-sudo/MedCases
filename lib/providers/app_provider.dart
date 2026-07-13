@@ -570,6 +570,92 @@ class AiFinalizationTransaction {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
+// MICRO-BUILD 462E-A.5.3.7.2 — TimeoutContentSafetyGuard
+//
+// Enforces content-safety when finalizeAiRequest() is triggered with
+// TerminalCause.timeout.
+//
+// CONTRACT:
+//   1. runTruncationAndRepair() is evaluated UNCONDITIONALLY for timeout paths.
+//   2. If TruncationInspector evaluates the output as truncated AND confidence
+//      is NOT high (low confidence of repair), the raw snapshot is DISCARDED
+//      and the system-defined operational fallback is persisted instead.
+//   3. Under no circumstances may a partial timeout fragment generate an active
+//      ToolResolution payload.
+//   4. If TruncationInspector confidence is HIGH → repair is attempted normally.
+//
+// Fallback messages are system-defined and clinically safe.
+// They are written to persistent local storage in place of the raw fragment.
+// ══════════════════════════════════════════════════════════════════════════════
+abstract final class TimeoutContentSafetyGuard {
+  TimeoutContentSafetyGuard._();
+
+  /// System-defined operational fallback for PT-BR (timeout path).
+  static const String kOperationalFallbackPt =
+      '[Aviso Operacional] A resposta foi interrompida devido a um timeout de rede. '
+      'Para sua segurança e precisão clínica, por favor realize a pergunta novamente.';
+
+  /// System-defined operational fallback for ES (timeout path).
+  static const String kOperationalFallbackEs =
+      '[Aviso Operacional] La respuesta fue interrumpida debido a un timeout de red. '
+      'Para su seguridad y precisión clínica, por favor realice la pregunta nuevamente.';
+
+  /// Returns the language-appropriate operational fallback message.
+  static String fallback(String lang) =>
+      lang == 'es' ? kOperationalFallbackEs : kOperationalFallbackPt;
+
+  /// Evaluates whether a timeout-triggered finalization should discard the
+  /// raw snapshot and substitute the operational fallback.
+  ///
+  /// Returns [TimeoutSafetyVerdict.useOperationalFallback] when:
+  ///   - cause is TerminalCause.timeout AND
+  ///   - TruncationCheckResult reports isTruncated=true AND
+  ///   - confidence is NOT high (cannot be safely repaired).
+  ///
+  /// Returns [TimeoutSafetyVerdict.proceedWithRepair] when the output is
+  /// truncated with HIGH confidence — the repair loop should run normally.
+  ///
+  /// Returns [TimeoutSafetyVerdict.proceedAsIs] when the output is NOT
+  /// truncated — safe to persist.
+  static TimeoutSafetyVerdict evaluate({
+    required TerminalCause cause,
+    required TruncationCheckResult truncResult,
+  }) {
+    if (cause != TerminalCause.timeout) {
+      // Non-timeout path: respect the standard truncation pipeline.
+      return truncResult.isTruncated
+          ? TimeoutSafetyVerdict.proceedWithRepair
+          : TimeoutSafetyVerdict.proceedAsIs;
+    }
+    // Timeout path: apply content-safety enforcement.
+    if (!truncResult.isTruncated) {
+      return TimeoutSafetyVerdict.proceedAsIs;
+    }
+    if (truncResult.confidenceLevel == TruncationConfidence.high) {
+      // Truncated + high confidence → repair may succeed.
+      return TimeoutSafetyVerdict.proceedWithRepair;
+    }
+    // Truncated + low/medium confidence on timeout → discard raw fragment.
+    // ignore: avoid_print
+    print('[TIMEOUT_CONTENT_SAFETY] DISCARD_RAW_FRAGMENT '
+        'isTruncated=${truncResult.isTruncated} '
+        'confidence=${truncResult.confidenceLevel.name} '
+        'reason=low_repair_confidence_on_timeout → operational_fallback');
+    return TimeoutSafetyVerdict.useOperationalFallback;
+  }
+}
+
+/// Result of [TimeoutContentSafetyGuard.evaluate].
+enum TimeoutSafetyVerdict {
+  /// Output is safe to persist as-is.
+  proceedAsIs,
+  /// Output is truncated with high confidence — run repair loop.
+  proceedWithRepair,
+  /// Discard raw fragment — write operational fallback to storage.
+  useOperationalFallback,
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // MICRO-BUILD 462E-A.5.3.7 — Sealed ToolResolution
 //
 // Immutable, request-scoped result of the External Tool Gate evaluation.
