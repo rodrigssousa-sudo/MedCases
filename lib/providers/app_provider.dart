@@ -4147,8 +4147,8 @@ class AppProvider extends ChangeNotifier {
     // wrappedOnDone/wrappedOnError são as ÚNICAS portas de saída do stream.
     // Cada uma: (1) invoca o callback da UI, (2) dispara notifyListeners().
     //
-    // BUILD 318 HARDENING — completionFired elevado para os wrappers:
-    //   O guard `completionFired` já existia no bloco onData (chunk.isDone),
+    // BUILD 318 HARDENING — ownership guard elevado para os wrappers:
+    //   O guard `_hasTerminalOwnershipAcquired` (ex-`completionFired`) já existia no bloco onData (chunk.isDone),
     //   mas os wrappers em si não tinham proteção. Isso permitia que um segundo
     //   disparo (ex: tryPaidFallback em race condition, ou resume-coordinator
     //   disparando wrappedOnDone após o FREE_STREAM já ter chamado wrappedOnDone)
@@ -4912,8 +4912,33 @@ class AppProvider extends ChangeNotifier {
 
     final accumulator = StringBuffer();
 
-    // ── Guard anti-duplicata: onDone/onError devem disparar UMA única vez ──
-    bool completionFired = false;
+    // ── MICRO-BUILD 462E-A.5.3.5: Atomic Terminal Ownership Guard ─────────────
+    // Replaces the bare `completionFired` bool with a named closure that makes
+    // the non-reentrant ownership contract explicit and auditable.
+    //
+    // INVARIANT: Exactly ONE execution context (chunk.isDone, global timeout,
+    // critical timeout, onError, onDone, cancel) may win terminal ownership.
+    // All other concurrent or late-arriving paths call tryAcquireTerminalOwnership()
+    // and receive false — they must silent-abort immediately.
+    //
+    // Thread safety: Dart is single-threaded (event loop). The bool flip is
+    // atomic within a single microtask — no additional locking is required.
+    // The guard is NOT reset across retry attempts; retries clear it explicitly
+    // before re-registering a new stream listener (line below: _hasTerminalOwnershipAcquired = false).
+    bool _hasTerminalOwnershipAcquired = false;
+
+    /// Atomically claims terminal ownership for the calling execution path.
+    /// Returns true when the caller is the WINNER — it must execute the full
+    /// 7-step pipeline (RAW_AI_OUTPUT → TRUNCATION_CHECK → RESPONSE_VALIDATOR
+    /// → SessionDedup.save → EXT_TOOL_GATE → EXT_TOOL_CACHE[RELEASE] →
+    /// RESUME_COORDINATOR[COMPLETE]).
+    /// Returns false when another path already owns the terminal — caller must
+    /// silent-abort: drop the payload, cancel any pending timers, return immediately.
+    bool tryAcquireTerminalOwnership() {
+      if (_hasTerminalOwnershipAcquired) return false;
+      _hasTerminalOwnershipAcquired = true;
+      return true;
+    }
 
     // ── BUILD 432 / BUILD 437 / BUILD 440-MASTER-SHIELD [P1 + P2] ────────────
     // AUTO-RETRY ENGINE — Intercepta resposta vazia (len=0 / finalText.isEmpty)
@@ -5345,8 +5370,8 @@ class AppProvider extends ChangeNotifier {
     //   Plantão (!longResponse): 30s — urgência real, não pode esperar mais.
     //   Estudo   (longResponse):  90s — payload longo, cold-start incluído.
     //
-    // NOTA: o timer só dispara se completionFired=false (stream Free travado).
-    // Quando Free falha e Paid começa, completionFired=true → timer neutered.
+    // NOTA: o timer só dispara se _hasTerminalOwnershipAcquired=false (stream Free travado).
+    // Quando Free falha e Paid começa, tryAcquireTerminalOwnership() retorna false → timer neutered.
     // Útil apenas para hung stream (sem chunks, sem erro, sem done).
     final globalTimeoutMs = longResponse ? 90000 : 30000; // BUILD 320
     Timer? _globalTimeoutTimer;
@@ -5354,8 +5379,8 @@ class AppProvider extends ChangeNotifier {
       final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
       debugPrint('[AI_TIMEOUT][BUILD320] mode=${longResponse ? "estudo" : "academic"} '
           'timeoutMs=$globalTimeoutMs provider=free elapsedMs=$elapsedMs requestId=$thisRequestId');
-      if (completionFired) return;
-      completionFired = true;
+      // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if another path won.
+      if (!tryAcquireTerminalOwnership()) return;
       // BUILD 320: invalida o requestId atomicamente — o Id Guard em tryPaidFallback
       // detectará a invalidação e descartará silenciosamente qualquer resposta tardia
       // do Paid Proxy que chegar após este timer, sem setState em contexto morto.
@@ -5377,8 +5402,8 @@ class AppProvider extends ChangeNotifier {
       (chunk) async {
         if (chunk.isError) {
           // Build 126 — TOLERÂNCIA A FALHAS: conteúdo parcial válido → exibir.
-          if (completionFired) return;
-          completionFired = true;
+          // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate.
+          if (!tryAcquireTerminalOwnership()) return;
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub = null;
@@ -5473,8 +5498,8 @@ class AppProvider extends ChangeNotifier {
 
         if (chunk.isDone && !chunk.isError) {
           // Resposta completa — dispara somente uma vez (guard anti-duplicata)
-          if (completionFired) return;
-          completionFired = true;
+          // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if another path won.
+          if (!tryAcquireTerminalOwnership()) return;
           _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
           // MICRO-BUILD 462E-A.5.3.4: removed premature completeAiRequest (BUILD 241) — correct terminal call is below after full pipeline.
           // BUILD 252: print do rawText ANTES de sanitizeAndCheck — expõe saída bruta.
@@ -5588,8 +5613,8 @@ class AppProvider extends ChangeNotifier {
         // Erro de stream — descarta texto parcial mas PRESERVA histórico.
         // Build 111: um erro de rede não invalida as trocas anteriores bem-sucedidas.
         debugPrint('[sendAiMessage] stream error: $e');
-        if (completionFired) return;
-        completionFired = true;
+        // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if another path won.
+        if (!tryAcquireTerminalOwnership()) return;
         _globalTimeoutTimer?.cancel(); // BUILD 241: cancela timer pois terminamos
         _aiStreamActive = false;
         aiChatProvider.setStreaming(false); // BUILD 326
@@ -5616,17 +5641,15 @@ class AppProvider extends ChangeNotifier {
       },
       onDone: () {
         // onDone do StreamController — garante limpeza mesmo sem chunk isDone
-        // O guard completionFired evita duplo disparo após chunk.isDone=true
-        if (completionFired) {
+        // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate — silent-abort if chunk.isDone already won.
+        if (!tryAcquireTerminalOwnership()) {
           // Já tratado pelo listener — apenas limpeza silenciosa
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
           return;
         }
-        completionFired = true;
         _globalTimeoutTimer?.cancel(); // BUILD 241
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241
         final finalText = accumulator.toString().trim();
         // HOTFIX 247D: nunca adicionar fallback ao histórico da API
         if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
@@ -5637,14 +5660,22 @@ class AppProvider extends ChangeNotifier {
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
+          // MICRO-BUILD 462E-A.5.3.4+R5: wrappedOnDone → release → completeAiRequest LAST.
           wrappedOnDone(finalText);   // BUILD 254
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         } else if (finalText.isNotEmpty && _isFallbackText(finalText)) {
           // É texto de fallback — exibe na UI mas não entra no histórico da API
           if (kDebugMode) debugPrint('[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText');
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub    = null;
+          // MICRO-BUILD 462E-A.5.3.4+R5: wrappedOnDone → release → completeAiRequest LAST.
           wrappedOnDone(finalText);   // BUILD 254
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
         } else {
           // Stream fechou vazio — BUILD 432: tenta retry silencioso antes do paid fallback
           _aiStreamActive = false;
@@ -5654,7 +5685,10 @@ class AppProvider extends ChangeNotifier {
           // BUILD 432 AUTO-RETRY: até 1 tentativa silenciosa (sem alterar UI)
           if (_freeStreamRetryCount < 1 && _activeRequestId == thisRequestId) {
             _freeStreamRetryCount++;
-            completionFired = false; // permite novo disparo após retry
+            // MICRO-BUILD 462E-A.5.3.5: reset ownership for retry — a new stream
+            // listener is registered; the previous terminal path released ownership
+            // of the empty stream. The retry is a fresh attempt with its own lifecycle.
+            _hasTerminalOwnershipAcquired = false;
             accumulator.clear();     // limpa acumulador para resposta nova
 
             // Re-inicia streaming Free preservando estado de _thinking na UI
@@ -5695,10 +5729,9 @@ class AppProvider extends ChangeNotifier {
                     onChunk(accumulator.toString());
                   }
                   if (chunk.isDone && !chunk.isError) {
-                    if (completionFired) return;
-                    completionFired = true;
+                    // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate for retry stream.
+                    if (!tryAcquireTerminalOwnership()) return;
                     _globalTimeoutTimer?.cancel();
-                    AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                     final retryText = accumulator.toString().trim();
                     // ignore: avoid_print
                     print('[BUILD432][AUTO_RETRY] done len=${retryText.length} '
@@ -5711,7 +5744,11 @@ class AppProvider extends ChangeNotifier {
                       _aiStreamActive = false;
                       aiChatProvider.setStreaming(false);
                       _aiStreamSub = null;
+                      // MICRO-BUILD 462E-A.5.3.4+R5: wrappedOnDone → release → completeAiRequest LAST.
                       wrappedOnDone(retryText);
+                      ExternalToolLinkEngine.releaseCanonicalDecision(
+                          requestId: thisRequestId, decision: canonicalDecision);
+                      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
                     } else {
                       // Retry também veio vazio → escala para paid
                       _aiStreamActive = false;
@@ -5736,7 +5773,8 @@ class AppProvider extends ChangeNotifier {
                   }
                 },
                 onError: (_) async {
-                  if (completionFired) return;
+                  // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate for retry onError.
+                  if (!tryAcquireTerminalOwnership()) return;
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
                   _aiStreamSub = null;
@@ -5752,14 +5790,14 @@ class AppProvider extends ChangeNotifier {
                   }
                 },
                 onDone: () {
-                  if (completionFired) {
+                  // MICRO-BUILD 462E-A.5.3.5: atomic ownership gate for retry onDone.
+                  if (!tryAcquireTerminalOwnership()) {
                     _aiStreamActive = false;
                     aiChatProvider.setStreaming(false);
                     _aiStreamSub = null;
                     return;
                   }
                   // Retry onDone sem isDone chunk → paid fallback
-                  completionFired = true;
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
                   _aiStreamSub = null;
@@ -5806,8 +5844,8 @@ class AppProvider extends ChangeNotifier {
     // ── BUILD 238/241: cancela timer global ao concluir normalmente ───────
     // O timer é criado ANTES do listen() — cancela-o quando onDone/onError
     // disparam normalmente para evitar safe-card tardio.
-    // NOTA: os callbacks internos já cancelam via completionFired=true.
-    // O timer lê completionFired antes de agir, então é seguro.
+    // NOTA: os callbacks internos já cancelam via tryAcquireTerminalOwnership().
+    // O timer testa a ownership flag antes de agir — sem duplo disparo possível.
 
     return true; // indica que usou streaming V2
 
