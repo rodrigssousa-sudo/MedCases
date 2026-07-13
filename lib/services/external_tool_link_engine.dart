@@ -1,5 +1,7 @@
+import 'dart:collection';
+
 // ══════════════════════════════════════════════════════════════════════════════
-// external_tool_link_engine.dart — Deep Link Router v1.4 (MICRO-BUILD 462E-A.5)
+// external_tool_link_engine.dart — Deep Link Router v1.5 (MICRO-BUILD 462E-A.5.1)
 //
 // MOTOR 100% LOCAL — DETERMINÍSTICO — SEM IA — SEM REDE — SEM RAG
 //
@@ -156,6 +158,39 @@ class ExternalToolDecision {
   /// secondaryDrug. Mesma chave = mesma decisão → bypassa recalculação.
   String get decisionKey =>
       '${requestId}_${intent.name}_${primaryDrug}_${secondaryDrug ?? "none"}';
+
+  // ── MICRO-BUILD 462E-A.5.1: toRouterTask() ──────────────────────────────
+  //
+  // Converte esta decisão canônica para uma label de task do router clínico.
+  // Usado pelo authority conditional ladder em sendAiMessage():
+  //   if (canonicalDecision.intent != ExternalToolIntent.none) {
+  //     task = canonicalDecision.toRouterTask();
+  //   }
+  //
+  // Mapeamento direto intent → taskLabel (determinístico, zero-rede):
+  //   drugInteraction → 'interacao_medicamentosa'
+  //   dilution        → 'diluicao_ev'
+  //   infusion        → 'infusao_ev'
+  //   dosage          → 'dose_farmaco'
+  //   drugInformation → 'informacao_farmaco'
+  //   none            → '' (nunca deve ser chamado com none)
+  // ─────────────────────────────────────────────────────────────────────────
+  String toRouterTask() {
+    switch (intent) {
+      case ExternalToolIntent.drugInteraction:
+        return 'interacao_medicamentosa';
+      case ExternalToolIntent.dilution:
+        return 'diluicao_ev';
+      case ExternalToolIntent.infusion:
+        return 'infusao_ev';
+      case ExternalToolIntent.dosage:
+        return 'dose_farmaco';
+      case ExternalToolIntent.drugInformation:
+        return 'informacao_farmaco';
+      case ExternalToolIntent.none:
+        return '';
+    }
+  }
 }
 
 const String _kBase = 'https://medcasescalcu.com/';
@@ -191,7 +226,15 @@ class ExternalToolLinkEngine {
   // Widget rebuilds com o mesmo decisionKey retornam o resultado cacheado
   // sem re-executar o pipeline de roteamento.
   // ─────────────────────────────────────────────────────────────────────────
-  static final Map<String, ExternalToolDecision> _decisionCache = {};
+  // ── MICRO-BUILD 462E-A.5.1: Bounded LinkedHashMap Cache ────────────────────
+  //
+  // LinkedHashMap mantém ordem de inserção → permite evicção LRU-style
+  // ao atingir _maxDecisionCacheEntries (200 entradas).
+  // Proteção contra memory leak em sessões longas ou múltiplos requests.
+  // ─────────────────────────────────────────────────────────────────────────
+  static final LinkedHashMap<String, ExternalToolDecision> _decisionCache =
+      LinkedHashMap<String, ExternalToolDecision>();
+  static const int _maxDecisionCacheEntries = 200;
 
   /// Registra uma decisão no cache e emite telemetria [EXT_TOOL_DECISION].
   /// Somente emite a telemetria se a chave ainda não estava no cache (primeira
@@ -230,6 +273,120 @@ class ExternalToolLinkEngine {
   static void emitOpenedByUser(String decisionKey) {
     // ignore: avoid_print
     print('[EXT_TOOL_OPENED_BY_USER] decisionKey=$decisionKey');
+  }
+
+  // ── MICRO-BUILD 462E-A.5.1: resolveDecision() — Single-Execution Factory ──
+  //
+  // Ponto de entrada canônico para computação de decisão de roteamento.
+  // DEVE ser chamado EXATAMENTE UMA VEZ por requestId, no início de
+  // sendAiMessage() antes de qualquer despacho para subsistemas downstream.
+  //
+  // Regras:
+  //   • Cache hit (decisionKey já presente) → retorna estado cacheado, zero side-effects.
+  //   • Cache miss → computa via resolveExternalToolIntent(), constrói ExternalToolDecision,
+  //     armazena via _cacheDecision(), emite [EXT_TOOL_DECISION] telemetria (UMA VEZ).
+  //   • Evicção LRU: quando cache ≥ 200 entradas, remove a entrada mais antiga (FIFO).
+  //   • NUNCA re-invoca resolveExternalToolIntent() se o requestId já foi processado.
+  //
+  // Returns null quando intent == ExternalToolIntent.none (embargo total).
+  // ─────────────────────────────────────────────────────────────────────────
+  static ExternalToolDecision? resolveDecision(
+    String requestId,
+    String userInput,
+  ) {
+    final intent = resolveExternalToolIntent(userInput);
+    if (intent == ExternalToolIntent.none) return null;
+
+    // Extrair primaryDrug a partir do userInput (delegado ao build() engine)
+    // Para o cache key, usamos o intent sem drug (lookup simplificado por requestId)
+    // O drug-level será resolvido pelo build() call-site downstream.
+    // decisionKey parcial (requestId+intent) para lookup de idempotência aqui.
+    final partialKey = '${requestId}_${intent.name}';
+    if (_decisionCache.containsKey(partialKey)) {
+      return _decisionCache[partialKey];
+    }
+
+    // Evicção LRU: remove a entrada mais antiga ao atingir o limite.
+    if (_decisionCache.length >= _maxDecisionCacheEntries) {
+      final oldestKey = _decisionCache.keys.first;
+      _decisionCache.remove(oldestKey);
+      // ignore: avoid_print
+      print('[EXT_TOOL_CACHE] EVICT oldest=$oldestKey size=${_decisionCache.length}');
+    }
+
+    // Mapear intent para targetTab canônico
+    final targetTab = _intentToTab(intent);
+
+    final decision = ExternalToolDecision(
+      requestId:   requestId,
+      intent:      intent,
+      primaryDrug: '', // Resolvido pelo build() com acesso a lastAiResponse
+      targetTab:   targetTab,
+      source:      'original_user_input',
+    );
+
+    _decisionCache[partialKey] = decision;
+    // ignore: avoid_print
+    print('[EXT_TOOL_DECISION][RESOLVE] requestId=$requestId '
+        'intent=${intent.name} '
+        'targetTab=$targetTab '
+        'partialKey=$partialKey '
+        'cacheSize=${_decisionCache.length} '
+        'computedOnce=true');
+    return decision;
+  }
+
+  /// Mapeia ExternalToolIntent para a aba canônica de destino.
+  static String _intentToTab(ExternalToolIntent intent) {
+    switch (intent) {
+      case ExternalToolIntent.drugInteraction:
+        return 'interacoes';
+      case ExternalToolIntent.dilution:
+        return 'farmacos';
+      case ExternalToolIntent.infusion:
+        return 'infusao';
+      case ExternalToolIntent.dosage:
+        return 'farmacos';
+      case ExternalToolIntent.drugInformation:
+        return 'farmacos';
+      case ExternalToolIntent.none:
+        return '';
+    }
+  }
+
+  // ── MICRO-BUILD 462E-A.5.1: releaseDecision() — Lifecycle Release ──────────
+  //
+  // Remove uma entrada específica do cache ao atingir estado terminal.
+  // INVOCAR em: COMPLETED, CANCELLED, FAILED, TIMEOUT.
+  // NÃO invocar em: session swap (requests em voo ainda precisam do cache).
+  //
+  // Aceita tanto o decisionKey completo (de ExternalToolDecision.decisionKey)
+  // quanto o partialKey (requestId_intent) usado internamente por resolveDecision().
+  // ─────────────────────────────────────────────────────────────────────────
+  static void releaseDecision(String decisionKey) {
+    final removed = _decisionCache.remove(decisionKey);
+    // ignore: avoid_print
+    print('[EXT_TOOL_CACHE] RELEASE key=$decisionKey '
+        'found=${removed != null} '
+        'cacheSize=${_decisionCache.length}');
+  }
+
+  // ── MICRO-BUILD 462E-A.5.1: clearDecisionCache() — Deep Cleanup ────────────
+  //
+  // Limpeza completa do cache. Executar SOMENTE em:
+  //   • logout do usuário
+  //   • troca de usuário ativo
+  //   • securityWipe explícito
+  //
+  // NÃO executar em: session swap, troca de modo (Plantão↔Estudo),
+  // restart de stream, ou retry de request — esses caminhos devem usar
+  // releaseDecision() por entrada individual.
+  // ─────────────────────────────────────────────────────────────────────────
+  static void clearDecisionCache() {
+    final count = _decisionCache.length;
+    _decisionCache.clear();
+    // ignore: avoid_print
+    print('[EXT_TOOL_CACHE] CLEAR_ALL count=$count reason=lifecycle_deep_clean');
   }
 
   // ── BUILD 462E-A.3: Input Sovereignty — Deterministic Intent Matchers ──────

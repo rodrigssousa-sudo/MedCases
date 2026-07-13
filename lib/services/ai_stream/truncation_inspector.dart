@@ -305,3 +305,98 @@ class TruncationInspector {
         'repairSucceeded=${result.didFix}');
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TruncationRepairResult — MICRO-BUILD 462E-A.5.1: Repair Engine Output Contract
+//
+// Typed output contract for the TruncationRepair subsystem in AiService.
+//
+// Rules enforced by the repair engine:
+//   • AT MOST ONE repair attempt per requestId (repair suffix tracks this).
+//   • wasRepaired=true only when the repaired text passes re-inspection.
+//   • isValid=false + failureReason set → triggers AiSafeOutputException upstream.
+//   • Raw incomplete response NEVER committed to history (caller responsibility).
+//   • No automated provider/model fallbacks inside the repair path.
+//   • Token deduplication: overlapping tokens between original and extension removed.
+// ─────────────────────────────────────────────────────────────────────────────
+class TruncationRepairResult {
+  /// true if the final text (original or repaired) is safe to persist and render.
+  final bool isValid;
+
+  /// The final text to use. If wasRepaired=true, this is the deduplicated merge
+  /// of original + repaired extension. If wasRepaired=false, equals original.
+  final String text;
+
+  /// true if a repair attempt was made AND the result passed re-inspection.
+  final bool wasRepaired;
+
+  /// Non-null when isValid=false — describes why the repair pipeline failed.
+  /// Passed to AiSafeOutputException.message for DROP_PAYLOAD logging.
+  final String? failureReason;
+
+  TruncationRepairResult({
+    required this.isValid,
+    required this.text,
+    required this.wasRepaired,
+    this.failureReason,
+  });
+
+  /// Factory for a catastrophic repair failure (triggers AiSafeOutputException).
+  factory TruncationRepairResult.catastrophicFailure(String reason) {
+    return TruncationRepairResult(
+      isValid:       false,
+      text:          '',
+      wasRepaired:   false,
+      failureReason: reason,
+    );
+  }
+
+  /// Factory for a successful repair (text is valid, wasRepaired=true).
+  factory TruncationRepairResult.repaired(String finalText) {
+    return TruncationRepairResult(
+      isValid:     true,
+      text:        finalText,
+      wasRepaired: true,
+    );
+  }
+
+  /// Factory for a clean pass (no truncation detected — original text is valid).
+  factory TruncationRepairResult.clean(String originalText) {
+    return TruncationRepairResult(
+      isValid:     true,
+      text:        originalText,
+      wasRepaired: false,
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AiSafeOutputException — MICRO-BUILD 462E-A.5.1: Terminal Pipeline Exception
+//
+// Typed exception for catastrophic pipeline failures in the stream finalizer.
+// Caught by try/on AiSafeOutputException in app_provider.dart's stream handler,
+// which triggers the DROP_PAYLOAD terminal sequence:
+//   • emit AiFailed(retryable: false, code: 'truncation_repair_failed')
+//   • resumeCoordinator.complete(requestId)
+//   • clearActiveRequest(requestId)
+//   • clearStreamBuffers(requestId)
+//   • Hard return — no subsequent provider/model attempts.
+//
+// NEVER throw this for retryable errors — it signals unrecoverable state.
+// ─────────────────────────────────────────────────────────────────────────────
+class AiSafeOutputException implements Exception {
+  /// Human-readable failure description for DROP_PAYLOAD log.
+  final String message;
+
+  /// The requestId associated with this failure (for coordinator release).
+  final String requestId;
+
+  const AiSafeOutputException({
+    required this.message,
+    required this.requestId,
+  });
+
+  @override
+  String toString() =>
+      'AiSafeOutputException(requestId=$requestId, message=$message)';
+}

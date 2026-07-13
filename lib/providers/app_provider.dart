@@ -32,6 +32,8 @@ import '../services/app_resume_coordinator.dart';   // BUILD 241: background/res
 import '../services/ai_stream/ai_event.dart';       // BUILD 462E-A: Anti-Frankenstein event bus
 import '../services/ai_stream/gpt_sse_client.dart'; // BUILD 462E-A: per-request SSE client ref
 import '../services/auth_service.dart';             // BUILD 462E-A: Web token refresh (getAdminToken)
+import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: canonicalDecision routing
+import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -3757,6 +3759,28 @@ class AppProvider extends ChangeNotifier {
       return false;
     }
 
+    // ── MICRO-BUILD 462E-A.5.1: canonicalDecision — SINGLE EXECUTION PER requestId ──
+    //
+    // Computa a decisão de roteamento de ferramenta externa UMA ÚNICA VEZ
+    // por requestId, no ponto de entrada do sendAiMessage(), ANTES de qualquer
+    // despacho para os subsistemas downstream (PLANTAO_ANALYSIS, BUILD306,
+    // stream handler, etc.).
+    //
+    // PROIBIÇÃO ABSOLUTA: nenhum subsistema downstream deve chamar
+    // resolveExternalToolIntent() ou resolveDecision() independentemente.
+    // O canonicalDecision aqui é a ÚNICA fonte de verdade para este ciclo.
+    //
+    // null → intent == none → embargo total (ferramenta externa não ativada).
+    // non-null → intent detectado → authority ladder ativa toRouterTask().
+    // ─────────────────────────────────────────────────────────────────────────
+    final ExternalToolDecision? canonicalDecision =
+        ExternalToolLinkEngine.resolveDecision(thisRequestId, input);
+    // ignore: avoid_print
+    print('[CANONICAL_DECISION] requestId=$thisRequestId '
+        'intent=${canonicalDecision?.intent.name ?? "none"} '
+        'routerTask=${canonicalDecision?.toRouterTask() ?? "normalClinicalClassifier"} '
+        'source=original_user_input');
+
     // ── BUILD 254 → BUILD 318: wrappers com notifyListeners() ao término ─────
     // wrappedOnDone/wrappedOnError são as ÚNICAS portas de saída do stream.
     // Cada uma: (1) invoca o callback da UI, (2) dispara notifyListeners().
@@ -3958,6 +3982,9 @@ class AppProvider extends ChangeNotifier {
         aiChatProvider.setStreaming(false);
         if (_activeRequestId == thisRequestId) _activeRequestId = '';
         AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        // MICRO-BUILD 462E-A.5.1: release cache entry on TIMEOUT
+        ExternalToolLinkEngine.releaseDecision(
+            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
         wrappedOnDone(_timeoutSafeCard(_lang));
       });
 
@@ -3974,7 +4001,7 @@ class AppProvider extends ChangeNotifier {
       );
 
       _gptStreamSub = qaStream.listen(
-        (AiEvent event) {
+        (AiEvent event) async {
           // Guard: descarta eventos de requestId obsoleto
           if (_activeRequestId != thisRequestId) {
             debugPrint('[AI_E2E][STALE_DROP] requestId=$thisRequestId '
@@ -4030,60 +4057,137 @@ class AppProvider extends ChangeNotifier {
                   'T1_before_T2=${qaFirstDelta ? "true" : "NO_DELTA_RECEIVED"} '
                   'provider=${e.usedProvider} attempt=${e.attempt}');
 
-              // Barreira clínica obrigatória: sanitizeAndCheck() ANTES de tudo
+              // ── MICRO-BUILD 462E-A.5.1: Stream Finalization Pyramid ──────────
+              // Rigid execution order (no state finalized before barrier passes):
+              //   1. Transport Completed (here: AiCompleted event received)
+              //   2. Raw Buffer ready
+              //   3. TruncationInspector.inspect() [HARD BARRIER]
+              //   4. Repair subsystem (if isTruncated && confidence==high)
+              //   5. Re-inspection + ResponseValidator
+              //   6. Persistence (SessionDedup / _aiHistory)
+              //   7. AiCompleted UI event + EXT_TOOL Card
+              // Modo Plantão: content provisional until validation passes.
+              // ──────────────────────────────────────────────────────────────────
               final qaRawText = e.fullText.trim();
               // ignore: avoid_print
               print('[AI_E2E][SANITIZED] requestId=$thisRequestId '
                   'rawLen=${qaRawText.length} mode=${longResponse ? "estudo" : "plantao"}');
 
-              final qaSanitized = qaRawText.isNotEmpty
-                  ? AiSmartRouter.sanitizeAndCheck(
-                      qaRawText,
-                      isPlantaoMode: !longResponse,
-                      appLanguage:   _lang,
-                    )
-                  : null;
-              final qaFinalText = qaSanitized?.text ?? qaRawText;
+              try {
+                // ── STEP 3: TruncationInspector HARD BARRIER ──────────────────
+                String qaBarrierText = qaRawText;
+                final qaTruncCheck = TruncationInspector.inspect(qaRawText);
+                TruncationInspector.emitTelemetry(
+                  requestId: thisRequestId,
+                  result: qaTruncCheck,
+                );
 
-              // Validar requestId pós-sanitize (guard de stale state)
-              if (_activeRequestId != thisRequestId) {
-                debugPrint('[AI_E2E][POST_SANITIZE_STALE] requestId=$thisRequestId '
-                    'activeId=$_activeRequestId — descartado após sanitize');
+                if (qaTruncCheck.isTruncated &&
+                    qaTruncCheck.confidenceLevel == TruncationConfidence.high) {
+                  // ── STEP 4: Repair subsystem (AT MOST ONCE per requestId) ──
+                  // ignore: avoid_print
+                  print('[TRUNCATION_CHECK] BARRIER_TRIGGERED requestId=$thisRequestId '
+                      'reason=${qaTruncCheck.violationReason} '
+                      'confidence=high → initiating repair');
+
+                  final qaRepairResult = await AiService.repairTruncated(
+                    originalText:  qaRawText,
+                    requestId:     thisRequestId,
+                    isPlantaoMode: !longResponse,
+                    appLanguage:   _lang,
+                  );
+
+                  if (!qaRepairResult.isValid) {
+                    // Catastrophic failure → DROP_PAYLOAD
+                    throw AiSafeOutputException(
+                      message:   qaRepairResult.failureReason ?? 'repair_failed',
+                      requestId: thisRequestId,
+                    );
+                  }
+                  qaBarrierText = qaRepairResult.text;
+                  TruncationInspector.emitTelemetry(
+                    requestId: thisRequestId,
+                    result: qaTruncCheck.withRepair(
+                      retried: true,
+                      fixed: qaRepairResult.wasRepaired,
+                    ),
+                  );
+                }
+
+                // ── STEP 5: ResponseValidator (sanitizeAndCheck) ───────────────
+                final qaSanitized = qaBarrierText.isNotEmpty
+                    ? AiSmartRouter.sanitizeAndCheck(
+                        qaBarrierText,
+                        isPlantaoMode: !longResponse,
+                        appLanguage:   _lang,
+                      )
+                    : null;
+                final qaFinalText = qaSanitized?.text ?? qaBarrierText;
+
+                // Validar requestId pós-sanitize (guard de stale state)
+                if (_activeRequestId != thisRequestId) {
+                  debugPrint('[AI_E2E][POST_SANITIZE_STALE] requestId=$thisRequestId '
+                      'activeId=$_activeRequestId — descartado após sanitize');
+                  _gptStreamSub = null;
+                  _aiStreamActive = false;
+                  aiChatProvider.setStreaming(false);
+                  AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                  ExternalToolLinkEngine.releaseDecision(
+                      '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                  return;
+                }
+
+                // ── STEP 6: Persistence (_aiHistory) — ONLY after barrier ───────
+                if (qaFinalText.isNotEmpty && !_isFallbackText(qaFinalText)) {
+                  _aiHistory
+                    ..add({'role': 'user',      'content': input})
+                    ..add({'role': 'assistant', 'content': qaFinalText});
+                  while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+                }
+
                 _gptStreamSub = null;
-                _aiStreamActive = false;
+                _activeGptClient = null;
+                _aiStreamActive  = false;
+                aiChatProvider.setStreaming(false);
+                // ── STEP 7: ResumeCoordinator + UI emission ───────────────────
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                // Release canonical decision cache entry (COMPLETED state)
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+
+                // ignore: avoid_print
+                print('[AI_E2E][COMPLETED] requestId=$thisRequestId '
+                    'finalTextLen=${qaFinalText.length} '
+                    'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
+                    'provider=${e.usedProvider}');
+                // [RENDER_AUDIT]: notifyListeners() APENAS aqui (via wrappedOnDone)
+                wrappedOnDone(
+                  qaFinalText.isNotEmpty
+                      ? qaFinalText
+                      : (_lang == 'es'
+                          ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
+                          : 'Não consegui gerar uma resposta. Pode reformular? ⚕'),
+                );
+              } on AiSafeOutputException catch (safeError) {
+                // ── TERMINAL: DROP_PAYLOAD — Repair critical failure ───────────
+                // ignore: avoid_print
+                print('[TRUNCATION_CHECK] DROP_PAYLOAD — REPAIR CRITICAL FAILURE '
+                    'requestId=${safeError.requestId} '
+                    'reason=${safeError.message}');
+                _gptStreamSub = null;
+                _activeGptClient = null;
+                _aiStreamActive  = false;
                 aiChatProvider.setStreaming(false);
                 AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                ExternalToolLinkEngine.releaseDecision(
+                    '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+                wrappedOnError(
+                  _lang == 'es'
+                      ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
+                      : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
+                );
                 return;
               }
-
-              // Persistência apenas de texto válido (não-fallback)
-              if (qaFinalText.isNotEmpty && !_isFallbackText(qaFinalText)) {
-                _aiHistory
-                  ..add({'role': 'user',      'content': input})
-                  ..add({'role': 'assistant', 'content': qaFinalText});
-                while (_aiHistory.length > 20) _aiHistory.removeAt(0);
-              }
-
-              _gptStreamSub = null;
-              _activeGptClient = null;
-              _aiStreamActive  = false;
-              aiChatProvider.setStreaming(false);
-              AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
-
-              // ignore: avoid_print
-              print('[AI_E2E][COMPLETED] requestId=$thisRequestId '
-                  'finalTextLen=${qaFinalText.length} '
-                  'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
-                  'provider=${e.usedProvider}');
-              // [RENDER_AUDIT]: notifyListeners() APENAS aqui (via wrappedOnDone)
-              // Não ocorre durante o streaming — HomeScreen não rebuilda por chunk
-              wrappedOnDone(
-                qaFinalText.isNotEmpty
-                    ? qaFinalText
-                    : (_lang == 'es'
-                        ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
-                        : 'Não consegui gerar uma resposta. Pode reformular? ⚕'),
-              );
 
             // ── AiFailed: falha com código clínico ───────────────────────────
             case AiFailed e:
@@ -4135,6 +4239,9 @@ class AppProvider extends ChangeNotifier {
               _aiStreamActive  = false;
               aiChatProvider.setStreaming(false);
               AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+              // MICRO-BUILD 462E-A.5.1: release cache entry on FAILED
+              ExternalToolLinkEngine.releaseDecision(
+                  '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
               wrappedOnError(
                 e.code == 'gpt_sse_budget_guard'
                     ? (_lang == 'es'
@@ -4187,6 +4294,9 @@ class AppProvider extends ChangeNotifier {
           _aiStreamActive  = false;
           aiChatProvider.setStreaming(false);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          // MICRO-BUILD 462E-A.5.1: release cache entry on STREAM_EXCEPTION
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
           wrappedOnError(
             _lang == 'es'
                 ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
@@ -4211,6 +4321,9 @@ class AppProvider extends ChangeNotifier {
           _aiStreamActive  = false;
           aiChatProvider.setStreaming(false);
           AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          // MICRO-BUILD 462E-A.5.1: release cache entry on EOF/CANCELLED
+          ExternalToolLinkEngine.releaseDecision(
+              '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
           final partialOnEof = qaAccumulator.toString().trim();
           if (partialOnEof.isNotEmpty) {
             wrappedOnError(
@@ -4824,11 +4937,14 @@ class AppProvider extends ChangeNotifier {
       accumulator.clear();
       // BUILD 241: remove do coordinator (timer interno disparou antes do resume)
       AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+      // MICRO-BUILD 462E-A.5.1: release cache entry on global TIMEOUT
+      ExternalToolLinkEngine.releaseDecision(
+          '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
       wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254: global timer
     });
 
     _aiStreamSub = stream.listen(
-      (chunk) {
+      (chunk) async {
         if (chunk.isError) {
           // Build 126 — TOLERÂNCIA A FALHAS: conteúdo parcial válido → exibir.
           if (completionFired) return;
@@ -4918,31 +5034,96 @@ class AppProvider extends ChangeNotifier {
             // ignore: avoid_print
             print('[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta do Free: "${rawText.length < 200 ? rawText : rawText.substring(0, 200)}"');
           }
-          // BUILD 232: sanitizeAndCheck — bloqueia meta leak severo antes de onDone.
-          // Se isRecoverable=false, text já é o fallback clínico seguro.
-          final sanitized = rawText.isNotEmpty
-              ? AiSmartRouter.sanitizeAndCheck(
-                  rawText,
-                  isPlantaoMode: !longResponse,
-                  appLanguage: _lang,
-                )
-              : null;
-          final finalText = sanitized?.text ?? rawText;
-          // HOTFIX 247D: nunca adicionar fallback ao histórico da API
-          if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
-            _aiHistory
-              ..add({'role': 'user',      'content': input})
-              ..add({'role': 'assistant', 'content': finalText});
-            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
-          } else if (kDebugMode && finalText.isNotEmpty && _isFallbackText(finalText)) {
-            debugPrint('[HISTORY_SANITIZER] free_done_fallback_blocked reason=isFallbackText');
+
+          // ── MICRO-BUILD 462E-A.5.1: TruncationInspector HARD BARRIER ──────
+          // Free stream path (Gemini Free / Layer 1).
+          // Barrier runs BEFORE sanitizeAndCheck() and ANY persistence.
+          // Modo Estudo: streaming provisional — no persistence before barrier.
+          // ─────────────────────────────────────────────────────────────────
+          String barrierText = rawText;
+          try {
+            final truncCheck = TruncationInspector.inspect(rawText);
+            TruncationInspector.emitTelemetry(
+              requestId: thisRequestId,
+              result: truncCheck,
+            );
+
+            if (truncCheck.isTruncated &&
+                truncCheck.confidenceLevel == TruncationConfidence.high) {
+              // ignore: avoid_print
+              print('[TRUNCATION_CHECK] BARRIER_TRIGGERED requestId=$thisRequestId '
+                  'reason=${truncCheck.violationReason} '
+                  'confidence=high → initiating repair (free_stream path)');
+
+              final repairResult = await AiService.repairTruncated(
+                originalText:  rawText,
+                requestId:     thisRequestId,
+                isPlantaoMode: !longResponse,
+                appLanguage:   _lang,
+              );
+
+              if (!repairResult.isValid) {
+                throw AiSafeOutputException(
+                  message:   repairResult.failureReason ?? 'repair_failed',
+                  requestId: thisRequestId,
+                );
+              }
+              barrierText = repairResult.text;
+              TruncationInspector.emitTelemetry(
+                requestId: thisRequestId,
+                result: truncCheck.withRepair(
+                  retried: true,
+                  fixed: repairResult.wasRepaired,
+                ),
+              );
+            }
+
+            // BUILD 232: sanitizeAndCheck — bloqueia meta leak severo antes de onDone.
+            // Se isRecoverable=false, text já é o fallback clínico seguro.
+            final sanitized = barrierText.isNotEmpty
+                ? AiSmartRouter.sanitizeAndCheck(
+                    barrierText,
+                    isPlantaoMode: !longResponse,
+                    appLanguage: _lang,
+                  )
+                : null;
+            final finalText = sanitized?.text ?? barrierText;
+            // HOTFIX 247D: nunca adicionar fallback ao histórico da API
+            if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
+              _aiHistory
+                ..add({'role': 'user',      'content': input})
+                ..add({'role': 'assistant', 'content': finalText});
+              while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            } else if (kDebugMode && finalText.isNotEmpty && _isFallbackText(finalText)) {
+              debugPrint('[HISTORY_SANITIZER] free_done_fallback_blocked reason=isFallbackText');
+            }
+            _aiStreamActive = false;
+            aiChatProvider.setStreaming(false); // BUILD 326
+            _aiStreamSub    = null;
+            // Release canonical decision cache entry (COMPLETED)
+            ExternalToolLinkEngine.releaseDecision(
+                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
+                ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
+                : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
+          } on AiSafeOutputException catch (safeError) {
+            // ── TERMINAL: DROP_PAYLOAD — free stream repair failure ───────────
+            // ignore: avoid_print
+            print('[TRUNCATION_CHECK] DROP_PAYLOAD — REPAIR CRITICAL FAILURE '
+                'requestId=${safeError.requestId} '
+                'reason=${safeError.message} '
+                'path=free_stream');
+            _aiStreamActive = false;
+            aiChatProvider.setStreaming(false);
+            _aiStreamSub    = null;
+            ExternalToolLinkEngine.releaseDecision(
+                '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
+            wrappedOnError(
+              _lang == 'es'
+                  ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
+                  : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
+            );
           }
-          _aiStreamActive = false;
-          aiChatProvider.setStreaming(false); // BUILD 326
-          _aiStreamSub    = null;
-          wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
-              ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
-              : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
         }
       },
       onError: (e) {
@@ -4957,6 +5138,9 @@ class AppProvider extends ChangeNotifier {
         aiChatProvider.setStreaming(false); // BUILD 326
         _aiStreamSub    = null;
         accumulator.clear();   // descarta texto parcial — nunca exibir
+        // MICRO-BUILD 462E-A.5.1: release cache entry on stream FAILED
+        ExternalToolLinkEngine.releaseDecision(
+            '${thisRequestId}_${canonicalDecision?.intent.name ?? "none"}');
         // Build 226: erro de stream → tenta paid fallback antes de mostrar erro
         unawaited(tryPaidFallback('stream_exception'));
       },

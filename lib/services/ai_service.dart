@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
+import 'ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationRepairResult, AiSafeOutputException
 import 'clinical_session_memory.dart';
 import 'provider_router_service.dart'; // SUPER ORDEM 38: geminiPaidProxy gateway
 
@@ -85,6 +86,154 @@ class AiService {
     // SUPER ORDEM 38: validação real delegada ao proxy via Firebase Auth.
     // Chave local não tem mais significado operacional.
     return true;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // MICRO-BUILD 462E-A.5.1 — REPAIR ENGINE CONTRACT
+  //
+  // Invocado pelo stream finalizer em app_provider.dart SOMENTE quando:
+  //   TruncationInspector.inspect(rawText).isTruncated == true
+  //   && confidenceLevel == TruncationConfidence.high
+  //
+  // Contrato rígido:
+  //   • AT MOST ONE retry per requestId (sufixo "_repair" rastreado internamente).
+  //   • NUNCA commitar o texto incompleto bruto no histórico (responsabilidade
+  //     do caller — repairTruncated() não toca em histórico, banco ou estado).
+  //   • SEM fallback automático de provider/model no caminho de repair.
+  //   • Apenas solicita continuação/reescrita do chunk corrompido.
+  //   • Deduplicação de tokens sobrepostos entre original e extensão reparada.
+  //
+  // Retorna TruncationRepairResult:
+  //   • isValid=true + wasRepaired=true → text seguro para persistência.
+  //   • isValid=false → lançar AiSafeOutputException no caller → DROP_PAYLOAD.
+  //
+  // requestIdRepair = requestId + "_repair" (rastreável em logs, separado do
+  // request original para não colidir com o anti-retry guard do caller).
+  // ══════════════════════════════════════════════════════════════════════════
+  static Future<TruncationRepairResult> repairTruncated({
+    required String originalText,
+    required String requestId,
+    required bool isPlantaoMode,
+    String appLanguage = 'pt',
+  }) async {
+    final repairRequestId = '${requestId}_repair';
+
+    if (kDebugMode) {
+      debugPrint('[REPAIR_ENGINE] START requestId=$repairRequestId '
+          'originalLen=${originalText.length} '
+          'mode=${isPlantaoMode ? "plantao" : "estudo"}');
+    }
+
+    // Build repair prompt — requests only the continuation of the truncated text.
+    // NO model fallback — uses same proxy as primary call.
+    final repairPrompt = appLanguage == 'es'
+        ? 'La siguiente respuesta médica fue cortada abruptamente. '
+          'Completa SOLO el fragmento faltante desde el punto exacto de corte. '
+          'NO repitas lo que ya fue escrito. NO agregues encabezados ni introducciones. '
+          'Continúa directamente con la información clínica faltante:\n\n'
+          '$originalText'
+        : 'A seguinte resposta médica foi interrompida abruptamente. '
+          'Complete SOMENTE o fragmento ausente a partir do ponto exato de corte. '
+          'NÃO repita o que já foi escrito. NÃO adicione cabeçalhos nem introduções. '
+          'Continue diretamente com a informação clínica ausente:\n\n'
+          '$originalText';
+
+    try {
+      final result = await ProviderRouterService.callPaidProxy(
+        userMessage:     repairPrompt,
+        systemPrompt:    'Você é um assistente médico. Complete o texto clínico truncado.',
+        history:         const [],
+        mode:            isPlantaoMode ? 'plantao' : 'estudo',
+        maxOutputTokens: isPlantaoMode ? 400 : 800,
+      );
+
+      if (!result.success || result.text.isEmpty) {
+        if (kDebugMode) {
+          debugPrint('[REPAIR_ENGINE] FAIL proxy_error requestId=$repairRequestId '
+              'errorCode=${result.errorCode}');
+        }
+        return TruncationRepairResult.catastrophicFailure(
+          'repair_proxy_failed: ${result.errorCode ?? "empty_response"}',
+        );
+      }
+
+      // Deduplicate overlapping tokens between original and repair extension.
+      final repairExtension = result.text.trim();
+      final mergedText = _deduplicateTokenOverlap(originalText, repairExtension);
+
+      if (kDebugMode) {
+        debugPrint('[REPAIR_ENGINE] DEDUP requestId=$repairRequestId '
+            'originalLen=${originalText.length} '
+            'extensionLen=${repairExtension.length} '
+            'mergedLen=${mergedText.length}');
+      }
+
+      // Re-inspect the merged text to confirm truncation is resolved.
+      final reInspection = TruncationInspector.inspect(mergedText);
+      if (reInspection.isTruncated &&
+          reInspection.confidenceLevel == TruncationConfidence.high) {
+        if (kDebugMode) {
+          debugPrint('[REPAIR_ENGINE] RE_INSPECT_FAIL requestId=$repairRequestId '
+              'reason=${reInspection.violationReason}');
+        }
+        return TruncationRepairResult.catastrophicFailure(
+          'reinspect_still_truncated: ${reInspection.violationReason}',
+        );
+      }
+
+      // ignore: avoid_print
+      print('[REPAIR_ENGINE] SUCCESS requestId=$repairRequestId '
+          'mergedLen=${mergedText.length} '
+          'wasRepaired=true');
+
+      return TruncationRepairResult.repaired(mergedText);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[REPAIR_ENGINE] EXCEPTION requestId=$repairRequestId error=$e');
+      }
+      return TruncationRepairResult.catastrophicFailure('repair_exception: $e');
+    }
+  }
+
+  // ── Token overlap deduplication ────────────────────────────────────────────
+  //
+  // Removes overlapping tokens between [original] suffix and [extension] prefix.
+  // Prevents "Frankenstein" concatenation where the model repeats the last few
+  // words of the original text before continuing.
+  //
+  // Algorithm:
+  //   1. Take up to 80 chars from the end of [original].
+  //   2. Find the longest prefix of [extension] that matches a suffix of original.
+  //   3. Trim that overlap from the start of [extension].
+  //   4. Concatenate original + trimmed extension.
+  // ─────────────────────────────────────────────────────────────────────────
+  static String _deduplicateTokenOverlap(String original, String extension) {
+    if (original.isEmpty || extension.isEmpty) return original + extension;
+
+    // Window: last 80 chars of original (enough for sentence-level overlap)
+    final overlapWindow = original.length > 80
+        ? original.substring(original.length - 80)
+        : original;
+
+    // Find longest suffix of overlapWindow that is a prefix of extension
+    int overlapLen = 0;
+    for (int len = overlapWindow.length; len >= 3; len--) {
+      final suffix = overlapWindow.substring(overlapWindow.length - len);
+      if (extension.startsWith(suffix)) {
+        overlapLen = len;
+        break;
+      }
+    }
+
+    if (overlapLen == 0) {
+      // No overlap found — simple concatenation with space if needed
+      final needsSpace = !original.endsWith(' ') && !extension.startsWith(' ');
+      return needsSpace ? '$original $extension' : '$original$extension';
+    }
+
+    // Strip the overlapping prefix from the extension
+    final trimmedExtension = extension.substring(overlapLen);
+    return original + trimmedExtension;
   }
 
   // ══════════════════════════════════════════════════════════════════════════
