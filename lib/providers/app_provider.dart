@@ -602,10 +602,20 @@ class AppProvider extends ChangeNotifier {
 
   // ── Login com usuário do Firebase ─────────────────────────────────────────
   Future<void> setUser(UserModel user) async {
-    // ── BUILD 463-A.1: Auth Convergence Boot-Lock ─────────────────────────
-    // SECTOR 2: Inserir trava de boot no ponto de entrada do ciclo de auth.
-    // Garante que o Firebase SDK confirmou o estado de identidade antes de
-    // qualquer operação Firestore ou escrita de preferências de usuário.
+    // ── BUILD 463-A.1.1: Auth Convergence Boot-Lock (RIGID INVARIANT) ────
+    //
+    // INVARIANT: authReady is reached IF AND ONLY IF
+    //   FirebaseAuth.instance.currentUser != null
+    //   AND currentUser.uid == expectedUid
+    //
+    // Terminal states matrix:
+    //   MATCHED_USER    → fbUser != null, uid == expectedUid  → authReady
+    //   UID_MISMATCH    → fbUser != null, uid != expectedUid  → authMismatch
+    //   STABLE_LOGGED_OUT→ fbUser == null, hydration expired  → authRequired
+    //   TIMEOUT/ERROR   → exception during latch              → authFailed
+    //
+    // "Degraded authReady" (fbUser==null with authReady) is PERMANENTLY REMOVED.
+    // A null user after all hydration attempts → authRequired, NEVER authReady.
     _currentAuthBarrierState = AppAuthBarrierState.authPending;
 
     final bool restTokenPresent = AuthService.hasCachedToken;
@@ -613,41 +623,73 @@ class AppProvider extends ChangeNotifier {
       (_webGetLS('gemini_google_email') ?? '').isNotEmpty
     ));
     final String expectedUid = user.uid;
-    User? fbSdkUser;
+
+    // ── Telemetria [AUTH_CONVERGENCE][START] ─────────────────────────────
+    debugPrint('[AUTH_CONVERGENCE][START] '
+        'expectedUid=$expectedUid '
+        'firebaseUid=${FirebaseRuntimeGuard.isReady ? (FirebaseAuth.instance.currentUser?.uid ?? 'null') : 'firebase_unavailable'} '
+        'restTokenPresent=$restTokenPresent '
+        'geminiOAuthPresent=$geminiOAuthPresent');
 
     try {
-      // ── Telemetria [AUTH_CONVERGENCE][START] ───────────────────────────
-      debugPrint('[AUTH_CONVERGENCE][START] '
-          'expectedUid=$expectedUid '
-          'firebaseUid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} '
-          'restTokenPresent=$restTokenPresent '
-          'geminiOAuthPresent=$geminiOAuthPresent');
+      User? fbSdkUser;
 
-      // ── Await latch: aguarda o Firebase SDK emitir seu primeiro estado ──
-      // Se Firebase não está pronto (Safari modo privado), pula a latch
-      // silenciosamente para não travar o boot.
-      if (FirebaseRuntimeGuard.isReady) {
-        debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK]');
-        try {
-          fbSdkUser = await FirebaseAuth.instance
-              .authStateChanges()
-              .first
-              .timeout(const Duration(seconds: 5), onTimeout: () => null);
-        } catch (e) {
-          debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK] timeout/error: $e — continuando com currentUser');
-          fbSdkUser = FirebaseAuth.instance.currentUser;
+      if (!FirebaseRuntimeGuard.isReady) {
+        // Firebase unavailable (Safari private / first install race).
+        // Cannot confirm identity → authFailed, NOT degraded authReady.
+        debugPrint('[AUTH_CONVERGENCE][FAILED] reason=firebase_unavailable '
+            'expectedUid=$expectedUid — barrier=authFailed');
+        _currentAuthBarrierState = AppAuthBarrierState.authFailed;
+        // Allow the rest of setUser() to proceed (app continues in read-only
+        // degraded mode) but Firestore writes are blocked by barrier check.
+        _currentUser = user;
+        _lang = user.lang;
+        _darkMode = user.darkMode;
+        _firebaseReady = true;
+        await _loadFromLocal(uid: user.uid);
+        await _loadAiKeyFromFirestore(user.uid).timeout(
+          const Duration(seconds: 2),
+          onTimeout: () { _aiKeyLoading = false; },
+        );
+        if (_firestoreSyncFuture == null || _firestoreSyncUid != user.uid) {
+          _firestoreSyncUid    = user.uid;
+          _firestoreSyncFuture = _syncFromFirestore(user.uid);
         }
-      } else {
-        fbSdkUser = null;
+        loadPublicHistories();
+        final _hasPendingOAuth = kIsWeb && (
+          _webGetLS('medcases_gsi_pending') == 'true' ||
+          _webSsGet('medcases_gsi_pending') == 'true'
+        );
+        Future.delayed(
+          _hasPendingOAuth ? const Duration(seconds: 1) : Duration.zero,
+          checkGeminiSession,
+        );
+        _startUsageTimer(user.uid);
+        FirestoreService.incrementLoginCount(user.uid);
+        notifyListeners();
+        return;
       }
 
-      // ── Hydration: SDK null mas REST token presente → tenta custom token ─
-      // (apenas em plataformas onde Firebase está disponível)
-      if (fbSdkUser == null && restTokenPresent && FirebaseRuntimeGuard.isReady) {
+      // ── Latch: first emission from authStateChanges() ──────────────────
+      debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK]');
+      try {
+        fbSdkUser = await FirebaseAuth.instance
+            .authStateChanges()
+            .first
+            .timeout(const Duration(seconds: 5), onTimeout: () => null);
+      } catch (e) {
+        debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK] latch error: $e — '
+            'falling back to currentUser');
+        fbSdkUser = FirebaseAuth.instance.currentUser;
+      }
+
+      // ── Hydration retry: SDK null but REST token present ───────────────
+      // The Firebase SDK may not have resolved the user yet when the REST
+      // token arrived (Web: identity toolkit vs. Firebase Auth SDK race).
+      // Loop until stable: user appears OR timeout expires.
+      if (fbSdkUser == null && restTokenPresent) {
         debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK] '
-            'fbUser=null restToken=present — aguardando propagação SDK...');
-        // Aguarda até 3s pelo stream emitir o usuário (pode demorar se o
-        // token REST ainda está sendo trocado pelo SDK internamente).
+            'fbUser=null restToken=present — awaiting SDK propagation...');
         try {
           fbSdkUser = await FirebaseAuth.instance
               .authStateChanges()
@@ -659,18 +701,26 @@ class AppProvider extends ChangeNotifier {
         }
       }
 
-      // ── Security Wipe Trap: UID mismatch → falha controlada ─────────────
-      final String fbUid = fbSdkUser?.uid ?? '';
-      final bool uidsMatch = fbUid.isEmpty || fbUid == expectedUid;
+      // ── Terminal state determination ───────────────────────────────────
+      if (fbSdkUser == null) {
+        // STABLE_LOGGED_OUT: hydration complete, no Firebase user found.
+        // This is NOT "degraded authReady" — it is authRequired.
+        // Firestore reads will be blocked by the barrier.
+        debugPrint('[AUTH_CONVERGENCE][AUTH_REQUIRED] '
+            'expectedUid=$expectedUid fbUser=null '
+            'restTokenPresent=$restTokenPresent — barrier=authRequired');
+        _currentAuthBarrierState = AppAuthBarrierState.authRequired;
 
-      if (!uidsMatch) {
+      } else if (fbSdkUser.uid != expectedUid) {
+        // UID_MISMATCH: valid Firebase user but wrong identity.
         // [SECURITY_GATE] SHIELD DISPATCHED → IDENTITY MISMATCH DETECTED
         debugPrint('[SECURITY_GATE] SHIELD DISPATCHED -> IDENTITY MISMATCH DETECTED. '
-            'expectedUid=$expectedUid firebaseUid=$fbUid');
+            'expectedUid=$expectedUid firebaseUid=${fbSdkUser.uid}');
         debugPrint('[AUTH_CONVERGENCE][FAILED] reason=uid_mismatch '
-            'expectedUid=$expectedUid firebaseUid=$fbUid');
+            'expectedUid=$expectedUid firebaseUid=${fbSdkUser.uid}');
         _currentAuthBarrierState = AppAuthBarrierState.authMismatch;
-        // Wipe completo de estado local
+
+        // Full wipe of local state — all identity artefacts purged.
         final prefs = await SharedPreferences.getInstance();
         await prefs.clear();
         if (kIsWeb) {
@@ -680,28 +730,29 @@ class AppProvider extends ChangeNotifier {
             _webRemoveLS('medcases_gsi_pending');
           } catch (_) {}
         }
-        // Purge LinkedHashMap de decisões — evita que dados do user anterior
-        // contaminem o próximo usuário.
-        ExternalToolLinkEngine.releaseByRequestId(expectedUid);
+        // BUILD 463-A.1.1: global decision cache sweep on identity mismatch.
+        ExternalToolLinkEngine.clearAllDecisions(reason: 'identity_mismatch');
+
         throw SecuritySyndicationException(
           expectedUid: expectedUid,
-          actualUid: fbUid,
+          actualUid: fbSdkUser.uid,
           reason: 'uid_mismatch_at_setUser',
         );
-      }
 
-      // ── Transição para authReady ─────────────────────────────────────────
-      _currentAuthBarrierState = AppAuthBarrierState.authReady;
-      debugPrint('[AUTH_CONVERGENCE][READY] '
-          'firebaseUid=${fbUid.isEmpty ? expectedUid : fbUid} '
-          'uidsMatch=true');
+      } else {
+        // MATCHED_USER: fbUser != null AND uid matches → authReady.
+        _currentAuthBarrierState = AppAuthBarrierState.authReady;
+        debugPrint('[AUTH_CONVERGENCE][READY] '
+            'firebaseUid=${fbSdkUser.uid} uidsMatch=true');
+      }
 
     } catch (e) {
       if (e is SecuritySyndicationException) rethrow;
-      // Falha inesperada durante boot-lock — falha aberta (não bloqueia app)
-      debugPrint('[AUTH_CONVERGENCE][FAILED] reason=firebase_user_null '
-          'error=$e — continuando com authReady (degraded mode)');
-      _currentAuthBarrierState = AppAuthBarrierState.authReady;
+      // Unexpected exception during latch — AUTH_ERROR terminal state.
+      // NOT degraded authReady: barrier stays at authFailed.
+      debugPrint('[AUTH_CONVERGENCE][FAILED] reason=auth_error '
+          'error=$e expectedUid=$expectedUid — barrier=authFailed');
+      _currentAuthBarrierState = AppAuthBarrierState.authFailed;
     }
 
     _currentUser = user;
@@ -840,8 +891,11 @@ class AppProvider extends ChangeNotifier {
     AppResumeCoordinator.instance.clear(); // BUILD 241: clear pending ops on logout
     _currentUser = null;
     _firebaseReady = false;
-    // BUILD 463-A.1: reset barrier — próximo login inicia de authPending.
+    // BUILD 463-A.1.1: reset barrier — next login starts at authPending.
     _currentAuthBarrierState = AppAuthBarrierState.authPending;
+    // BUILD 463-A.1.1: sweep decision cache on explicit logout to prevent
+    // previous session identity artefacts from persisting into next session.
+    ExternalToolLinkEngine.clearAllDecisions(reason: 'logout');
     _favDrugs = {};
     _favProtocols = {};
     _favPrescriptions = {};
@@ -2324,16 +2378,17 @@ class AppProvider extends ChangeNotifier {
     // Para permission-denied (usuário não-admin), não há cooldown — a chamada
     // é rápida e é esperado que falhe; o fallback para SharedPrefs já foi tentado.
 
-    // ── BUILD 463-A.1: SECTOR 3 — Bloqueia fetch Firestore se barreira não authReady ──
-    // Quando geminiConnected transitiona false→true, verifica o estado da barreira.
-    // Se não estiver authReady, descarta o fetch secundário para evitar amplificação
-    // de race conditions.
+    // ── BUILD 463-A.1.1: Block Gemini Firestore fetch when auth barrier not ready ──
+    // Consistent with the rigid authReady invariant: the barrier must be authReady
+    // AND Firebase must have confirmed a non-null user before any Firestore dispatch.
+    // Covers authPending, authRequired, authMismatch, and authFailed states.
     if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] '
           'operation=loadGeminiApiKey '
           'allowed=false '
-          'reason=barrier_active '
-          'state=${_currentAuthBarrierState.name}');
+          'reason=barrier_not_ready '
+          'state=${_currentAuthBarrierState.name} '
+          'sdkRequestDispatched=false');
       _markGeminiConfigUnavailable();
       return false;
     }

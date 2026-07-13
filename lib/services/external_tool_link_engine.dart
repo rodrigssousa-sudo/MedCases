@@ -442,11 +442,19 @@ class ExternalToolLinkEngine {
   // restart de stream, ou retry de request — esses caminhos devem usar
   // releaseDecision() por entrada individual.
   // ─────────────────────────────────────────────────────────────────────────
-  static void clearDecisionCache() {
-    final count = _decisionCache.length;
+  // BUILD 463-A.1.1: clearDecisionCache() → clearAllDecisions() unified sweep.
+  // Legacy alias preserved for test call-sites that still reference the old name.
+  static void clearDecisionCache() =>
+      clearAllDecisions(reason: 'lifecycle_deep_clean');
+
+  /// BUILD 463-A.1.1: Explicit global cache sweep invoked on authMismatch and logout.
+  /// Eradicates all decision state left by the previous identity context so it
+  /// cannot bleed into the next user's session.
+  static void clearAllDecisions({required String reason}) {
+    final int removedCount = _decisionCache.length;
     _decisionCache.clear();
     // ignore: avoid_print
-    print('[EXT_TOOL_CACHE] CLEAR_ALL count=$count reason=lifecycle_deep_clean');
+    print('[EXT_TOOL_CACHE][CLEAR_ALL] reason=$reason removed=$removedCount cacheSize=${_decisionCache.length}');
   }
 
   /// Returns current number of entries in the decision cache (for test assertions).

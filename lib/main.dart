@@ -1152,15 +1152,19 @@ class _TimedSplashState extends State<_TimedSplash> {
       }
     });
 
-    // Watchdog para _authResolved: garante que o splash nunca fica travado
-    // se o callback de auth não for disparado (ex.: fluxo web, timeout de
-    // Firestore, cold start com usuário não autenticado).
-    // Timeout de 8s: tempo suficiente para qualquer fluxo de auth resolver.
-    Future<void>.delayed(const Duration(milliseconds: 8000), () {
-      if (!mounted || _authResolved) return;
-      debugPrint('[BUILD313] _authResolved watchdog: forçando auth resolved após 8s');
-      setState(() => _authResolved = true);
-    });
+    // BUILD 463-A.1.1: The independent 8-second [BUILD313] _authResolved watchdog
+    // is REMOVED. Its role caused a race condition: it could fire and unlock
+    // the splash gate while the auth convergence manager (AppProvider.setUser())
+    // was still awaiting the Firebase SDK latch, leaving the barrier in authPending
+    // and allowing Firestore reads to proceed before identity was confirmed.
+    //
+    // The auth lifecycle is now fully owned by AppProvider's convergence manager.
+    // The splash gate unblocks when the auth stream emits a stable final state:
+    //   • MATCHED_USER      → _signalAuthResolved() via _onUserResolved()
+    //   • STABLE_LOGGED_OUT → _signalSplashReady() via _buildAuthFlow()
+    // Both paths call _signalAuthResolved() without any independent timer.
+    // The existing 20-second bootstrap watchdog (_kWatchdogMs) remains as the
+    // outer safety net for frozen processes — it does not interfere with auth.
   }
 
   // ── GATE 1: remoção do splash nativo iOS ─────────────────────────────────

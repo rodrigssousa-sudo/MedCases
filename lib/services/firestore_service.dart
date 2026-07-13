@@ -959,10 +959,11 @@ class FirestoreService {
 
   // ── Favoritos de fármacos ─────────────────────────────────────────────────
   static Future<Set<String>> loadFavDrugs(String uid) async {
-    // BUILD 463-A.1: Firestore Auth Barrier
-    if (!_isUserAuthenticated) {
+    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
+    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-          'allowed=false reason=not_authenticated uid=$uid');
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -972,7 +973,8 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
         debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-            'allowed=false reason=permission_denied uid=$uid → authDenied (cache preservado)');
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true → authDenied (cache preservado)');
       }
       return {};
     } catch (_) {
@@ -988,10 +990,11 @@ class FirestoreService {
 
   // ── Favoritos de protocolos ───────────────────────────────────────────────
   static Future<Set<String>> loadFavProtocols(String uid) async {
-    // BUILD 463-A.1: Firestore Auth Barrier
-    if (!_isUserAuthenticated) {
+    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
+    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-          'allowed=false reason=not_authenticated uid=$uid');
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -1001,7 +1004,8 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
         debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-            'allowed=false reason=permission_denied uid=$uid → authDenied (cache preservado)');
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true → authDenied (cache preservado)');
       }
       return {};
     } catch (_) {
@@ -1017,10 +1021,11 @@ class FirestoreService {
 
   // ── Favoritos de prescrições ──────────────────────────────────────────────
   static Future<Set<String>> loadFavPrescriptions(String uid) async {
-    // BUILD 463-A.1: Firestore Auth Barrier
-    if (!_isUserAuthenticated) {
+    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
+    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-          'allowed=false reason=not_authenticated uid=$uid');
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -1030,7 +1035,8 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
         debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-            'allowed=false reason=permission_denied uid=$uid → authDenied (cache preservado)');
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true → authDenied (cache preservado)');
       }
       return {};
     } catch (_) {
@@ -1267,10 +1273,11 @@ class FirestoreService {
 
   // ── Favoritos de casos clínicos ───────────────────────────────────────────
   static Future<Set<String>> loadFavCases(String uid) async {
-    // BUILD 463-A.1: Firestore Auth Barrier
-    if (!_isUserAuthenticated) {
+    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
+    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-          'allowed=false reason=not_authenticated uid=$uid');
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -1280,7 +1287,8 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
         debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-            'allowed=false reason=permission_denied uid=$uid → authDenied (cache preservado)');
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true → authDenied (cache preservado)');
       }
       return {};
     } catch (_) {
@@ -1296,10 +1304,11 @@ class FirestoreService {
 
   // ── Casos clínicos do usuário ─────────────────────────────────────────────
   static Future<List<ClinicalCaseModel>> loadCases(String uid) async {
-    // BUILD 463-A.1: Firestore Auth Barrier
-    if (!_isUserAuthenticated) {
+    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
+    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-          'allowed=false reason=not_authenticated uid=$uid');
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
       return [];
     }
     try {
@@ -1317,7 +1326,8 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
         debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-            'allowed=false reason=permission_denied uid=$uid → authDenied (cache preservado)');
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true → authDenied (cache preservado)');
       }
       return [];
     } catch (_) {
@@ -1535,12 +1545,14 @@ class FirestoreService {
     // Rationale: se o token não foi propagado, Source.cache também falha;
     // se o usuário está offline, o timeout de 10s já cobre o caso.
     //
-    // BUILD 463-A.1 SECTOR 3: Firestore Auth Barrier guard.
-    // Se _isUserAuthenticated retornar false (sem SDK user E sem token REST),
-    // a barreira está ativa — retorna [] preservando o cache local.
-    if (!_isUserAuthenticated) {
+    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch.
+    // Condition: FirebaseAuth.instance.currentUser must be non-null (not just
+    // hasCachedToken). A REST token alone is not sufficient to permit SDK reads.
+    // sdkRequestDispatched=false means zero network call was made.
+    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
-          'allowed=false reason=not_authenticated uid=$uid');
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
       return [];
     }
     try {
@@ -1563,6 +1575,7 @@ class FirestoreService {
               'uid=$uid — fast-fail instantâneo (sem cache retry)');
           debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
               'allowed=false reason=permission_denied uid=$uid '
+              'sdkRequestDispatched=true '
               'result=authDenied — cache local preservado, escrita proibida');
           // Retorna [] para compatibilidade de interface mas sem disparar escrita
           // de "novo usuário" — o chamador não recebe FirestoreLoadResult diretamente
@@ -1609,9 +1622,10 @@ class FirestoreService {
   static Future<FirestoreLoadResult<List<ClinicalHistoryModel>>> loadHistoriesTyped(
     String uid,
   ) async {
-    if (!_isUserAuthenticated) {
+    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-          'allowed=false reason=not_authenticated uid=$uid');
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -1624,7 +1638,8 @@ class FirestoreService {
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
           debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-              'allowed=false reason=permission_denied uid=$uid → authDenied');
+              'allowed=false reason=permission_denied uid=$uid '
+              'sdkRequestDispatched=true → authDenied');
           return FirestoreLoadResult.authDenied();
         }
         try {
