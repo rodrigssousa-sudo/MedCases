@@ -45,6 +45,15 @@ enum PinResult {
   limitReached,   // limite de itens atingido (sem replaceOldest)
 }
 
+// ── BUILD 462E-A.3: QA Gate evaluation result — pure, unit-testable ──────────
+// Usado por AppProvider.evaluateQaGate() e test/services/qa_access_gate_test.dart
+enum _QaGateResult {
+  featureDisabled,  // kForceGptFallbackForQa=false → gate inativo
+  firebaseUserNull, // FirebaseAuth.currentUser == null → não autenticado
+  authorizedTester, // UID no allowlist OU isAdmin/isMaster=true → bypass permitido
+  unauthorizedUser, // autenticado mas fora do allowlist e sem role → bypass negado
+}
+
 // ── Paciente salvo no Plantão/Guardia ─────────────────────────────────────────
 class PlantaoPatient {
   final String id;          // UUID local
@@ -3518,6 +3527,88 @@ class AppProvider extends ChangeNotifier {
   // Ativa exclusivamente para validação E2E do barramento AiEvent.
   static const bool kForceGptFallbackForQa = true;
 
+  // ── BUILD 462E-A.3: Crypto-isolated QA tester UID allowlist ───────────────
+  // UIDs explicitamente autorizados a usar o bypass GPT SSE.
+  // NUNCA expande em produção — apenas para QA controlado.
+  static const Set<String> qaTesterUids = {
+    'Wa1AQN8hvCdewLiR2drd01rQo9G3',
+  };
+
+  // ── BUILD 462E-A.3: Computed gate — identity-isolated QA bypass ──────────
+  //
+  // Avalia 3 condições em sequência:
+  //   1. kForceGptFallbackForQa deve ser true (master feature flag).
+  //   2. FirebaseAuth.instance.currentUser deve ter UID válido (não-nulo/vazio).
+  //   3. UID deve estar no allowlist OU usuário deve ter isAdmin/isMaster=true.
+  //
+  // PROIBIÇÕES:
+  //   • Nunca confiar em UID de local storage, query string ou _currentUser
+  //     interno — apenas FirebaseAuth.instance.currentUser é aceito.
+  //   • Não retornar true para estado não-autenticado mesmo com cache local.
+  //
+  // Telemetria anonimizada ([AI_QA_GATE]) emitida aqui — 3 branches:
+  //   authorized_tester    → uidHash exibido (primeiros 4 chars apenas)
+  //   unauthorized_user    → uid não está no allowlist e não tem role
+  //   firebase_user_null   → FirebaseAuth.currentUser == null
+  // ─────────────────────────────────────────────────────────────────────────
+  //
+  // evaluateQaGate() — pure static function, fully unit-testable.
+  //
+  // Aceita os 3 parâmetros de entrada de forma isolada — sem dependência em
+  // singletons Firebase, sem I/O — permitindo cobertura de todos os 3 branches
+  // em test/services/qa_access_gate_test.dart sem mock de plugin.
+  //
+  // Returns: enum [_QaGateResult] com o resultado do gate e o motivo.
+  //          O getter shouldForceGptFallbackForQa chama este método internamente.
+  // ─────────────────────────────────────────────────────────────────────────
+  static _QaGateResult evaluateQaGate({
+    required bool featureEnabled,
+    required String? authenticatedUid,
+    required bool isAdminUser,
+    required bool isMasterUser,
+  }) {
+    if (!featureEnabled) return _QaGateResult.featureDisabled;
+    if (authenticatedUid == null || authenticatedUid.isEmpty) {
+      return _QaGateResult.firebaseUserNull;
+    }
+    final bool authorized = isAdminUser ||
+        isMasterUser ||
+        qaTesterUids.contains(authenticatedUid);
+    return authorized
+        ? _QaGateResult.authorizedTester
+        : _QaGateResult.unauthorizedUser;
+  }
+
+  bool get shouldForceGptFallbackForQa {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    final authenticatedUid = firebaseUser?.uid;
+
+    final result = evaluateQaGate(
+      featureEnabled: kForceGptFallbackForQa,
+      authenticatedUid: authenticatedUid,
+      isAdminUser: isAdmin,
+      isMasterUser: isMaster,
+    );
+
+    switch (result) {
+      case _QaGateResult.featureDisabled:
+        return false;
+      case _QaGateResult.firebaseUserNull:
+        // ignore: avoid_print
+        print('[AI_QA_GATE] enabled=true authorized=false reason=firebase_user_null');
+        return false;
+      case _QaGateResult.authorizedTester:
+        // ignore: avoid_print
+        print('[AI_QA_GATE] enabled=true authorized=true reason=tester_uid '
+            'uidHash=${authenticatedUid!.substring(0, 4)}...');
+        return true;
+      case _QaGateResult.unauthorizedUser:
+        // ignore: avoid_print
+        print('[AI_QA_GATE] enabled=true authorized=false reason=unauthorized_user');
+        return false;
+    }
+  }
+
   /// StreamSubscription AiEvent para o fluxo GPT SSE (BUILD 462E-A).
   StreamSubscription<AiEvent>? _gptStreamSub;
 
@@ -3702,9 +3793,13 @@ class AppProvider extends ChangeNotifier {
     };
 
     // ══════════════════════════════════════════════════════════════════════════
-    // BUILD 462E-A — QA BYPASS: kForceGptFallbackForQa
+    // BUILD 462E-A / 462E-A.3 — QA BYPASS: shouldForceGptFallbackForQa
     //
-    // Quando kForceGptFallbackForQa=true, pula Layer 0 (Gemini Free) inteira e
+    // BUILD 462E-A.3: kForceGptFallbackForQa (bool estático global) substituído
+    // por shouldForceGptFallbackForQa (getter computado) — bypass isolado por
+    // identidade Firebase autenticada (UID allowlist + isAdmin/isMaster).
+    //
+    // Quando shouldForceGptFallbackForQa=true, pula Layer 0 (Gemini Free) inteira e
     // abre fluxo GPT SSE real via ProviderRouterService.callGptProxyStream().
     //
     // PROIBIÇÕES NESTE BLOCO:
@@ -3725,17 +3820,17 @@ class AppProvider extends ChangeNotifier {
     //   [RENDER_AUDIT][HOME_CHAT_BUILD]    → notifyListeners() amplo (deve ser 0)
     //   [RENDER_AUDIT][ACTIVE_BUBBLE_BUILD]→ rebuild da bolha ativa (esperado)
     // ══════════════════════════════════════════════════════════════════════════
-    if (kForceGptFallbackForQa) {
+    if (shouldForceGptFallbackForQa) {
       // ignore: avoid_print
       print('[AI_E2E][T0] requestId=$thisRequestId attempt=2 '
           'provider=gpt_4o_mini mode=${longResponse ? "estudo" : "plantao"} '
-          'kForceGptFallbackForQa=true globalStartMs=$globalStartMs');
+          'shouldForceGptFallbackForQa=true globalStartMs=$globalStartMs');
 
       // Emitir AiProviderSwitched: Layer 0 bypassada, GPT assume direto
       // ignore: avoid_print
       print('[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
           'fromProvider=gemini_free toProvider=gpt_4o_mini '
-          'reason=kForceGptFallbackForQa attempt=2');
+          'reason=shouldForceGptFallbackForQa attempt=2');
 
       // Obter ID Token para autenticação no gptProxyStream
       // Web: AuthService.getAdminToken() (REST) | Nativo: FirebaseAuth.getIdToken()
@@ -4136,9 +4231,9 @@ class AppProvider extends ChangeNotifier {
 
       return true; // BUILD 462E-A: QA path consumido com sucesso
 
-    } // end kForceGptFallbackForQa block
+    } // end shouldForceGptFallbackForQa block
     // ══════════════════════════════════════════════════════════════════════════
-    // CONTINUA: fluxo normal (Gemini Free → fallbacks) quando kForceGptFallbackForQa=false
+    // CONTINUA: fluxo normal (Gemini Free → fallbacks) quando shouldForceGptFallbackForQa=false
     // ══════════════════════════════════════════════════════════════════════════
 
     // ── Build 156: Client-Side Intelligence — sem gateway intermediário ───

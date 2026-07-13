@@ -86,6 +86,76 @@ class ExternalToolLink {
 class ExternalToolLinkEngine {
   ExternalToolLinkEngine._();
 
+  // ── BUILD 462E-A.3: Input Sovereignty — Deterministic Intent Matchers ──────
+  //
+  // PARADIGMA DE SOBERANIA DE ENTRADA:
+  //   • O estado da aplicação (intent, ferramentas externas, tabs) é governado
+  //     EXCLUSIVAMENTE pela entrada original do usuário (lastUserMessage).
+  //   • O texto gerado pela IA (lastAiResponse) é matematicamente proibido de
+  //     mutar intenções ou disparar ferramentas automáticas no Step 1.
+  //   • 2+ fármacos mencionados no texto de um caso clínico sem palavras-chave
+  //     explícitas de interação NÃO devem disparar o botão de interação.
+  //
+  // REGRA CHAVE:
+  //   Step 1 (interação entre dois fármacos) → gated por hasExplicitInteractionIntent()
+  //   Step 11 (fármaco único da resposta AI) → Build 280 intencional, mantido.
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  /// Retorna true se [userInput] contém palavras-chave EXPLÍCITAS de intenção
+  /// de interação medicamentosa em PT-BR ou ES.
+  ///
+  /// 14 padrões cobrindo formas canônicas e variantes ortográficas:
+  ///   PT: interação entre, interage com, pode usar junto, pode associar,
+  ///       é seguro combinar, contraindicação entre, há interação
+  ///   ES: interacción entre, interactúa con, se puede usar junto,
+  ///       se puede asociar, es seguro combinar, contraindicación entre,
+  ///       hay interacción
+  ///
+  /// Apenas [userInput] é aceito — NUNCA o texto da resposta AI.
+  static bool hasExplicitInteractionIntent(String userInput) {
+    final normalized = userInput.toLowerCase().trim();
+    const patterns = <String>[
+      r'\bintera[cç][aã]o entre\b',
+      r'\binteracci[oó]n entre\b',
+      r'\binterage com\b',
+      r'\binteract[uú]a con\b',
+      r'\bpode usar junto\b',
+      r'\bse puede usar junto\b',
+      r'\bpode associar\b',
+      r'\bse puede asociar\b',
+      r'(?:^|\s)[eé] seguro combinar',
+      r'\bes seguro combinar\b',
+      r'\bcontraindica[cç][aã]o entre\b',
+      r'\bcontraindicaci[oó]n entre\b',
+      r'\bh[aá] intera[cç][aã]o\b',
+      r'\bhay interacci[oó]n\b',
+    ];
+    return patterns.any(
+      (p) => RegExp(p, caseSensitive: false).hasMatch(normalized),
+    );
+  }
+
+  /// Retorna true se [userInput] contém palavras-chave EXPLÍCITAS de intenção
+  /// de diluição / reconstituição / infusão em PT-BR ou ES.
+  ///
+  /// 6 clusters semânticos: diluir, reconstituir, volume final,
+  /// concentração, bomba de infusão — formas PT e ES.
+  ///
+  /// Apenas [userInput] é aceito — NUNCA o texto da resposta AI.
+  static bool hasExplicitDilutionIntent(String userInput) {
+    final normalized = userInput.toLowerCase().trim();
+    return RegExp(
+      r'\b('
+      r'diluir|dilui[cç][aã]o|diluci[oó]n|'
+      r'reconstituir|reconstitui[cç][aã]o|reconstituci[oó]n|'
+      r'volume final|volumen final|'
+      r'concentra[cç][aã]o|concentraci[oó]n|'
+      r'bomba de infus[aã]o|bomba de infusi[oó]n'
+      r')\b',
+      caseSensitive: false,
+    ).hasMatch(normalized);
+  }
+
   /// Returns an [ExternalToolLink] if a relevant external tool is detected,
   /// or null if no match found.
   static ExternalToolLink? build({
@@ -104,7 +174,21 @@ class ExternalToolLinkEngine {
         '${lastUserMessage.toLowerCase()} ${lastAiResponse.toLowerCase()}';
 
     // ── 1. Interações medicamentosas (dois fármacos detectados) ────────────
-    final interacao = _detectDrugInteraction(combined);
+    //
+    // BUILD 462E-A.3 — INPUT SOVEREIGNTY GATE:
+    //   Step 1 SÓ dispara quando o usuário expressou EXPLICITAMENTE a intenção
+    //   de verificar interação (hasExplicitInteractionIntent=true).
+    //
+    //   Motivação: caso clínico com texto da IA mencionando Furosemida +
+    //   Nitroglicerina (dois fármacos) NÃO deve abrir botão de interação se
+    //   o usuário não perguntou sobre interação. O texto da IA (lastAiResponse)
+    //   está presente em `combined` — a única barreira correta é o gate no
+    //   lastUserMessage.
+    //
+    //   Step 11 (fármaco único da bolha AI) é INTENCIONAL (Build 280) e mantido.
+    final interacao = hasExplicitInteractionIntent(lastUserMessage)
+        ? _detectDrugInteraction(combined)
+        : null;
     if (interacao != null) {
       // ORDEM 29 V2: labels DINÂMICAS — nomes clínicos reais, nunca strings fixas.
       final d1 = interacao.$1;  // _TermMatch com .display e .param
