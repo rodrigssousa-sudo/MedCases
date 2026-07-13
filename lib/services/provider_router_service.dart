@@ -44,6 +44,8 @@ import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb;
 import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 import 'gemini_service_v2.dart'; // GeminiChunk — usado pelos métodos de stream (BUILD 462)
+import 'ai_stream/ai_event.dart';
+import 'ai_stream/gpt_sse_client.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PaidProxyResult — resultado da chamada ao proxy pago
@@ -86,6 +88,20 @@ class ProviderRouterService {
   //   → https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy
   static const String _proxyUrl =
       'https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy';
+
+  // ── BUILD 462B — Feature Flag: GPT SSE Real ───────────────────────────────
+  // true  → callGptProxyStream() usa SSE real (gptProxyStream CF onRequest)
+  // false → callGptProxyStream() usa streaming simulado legado (batched)
+  //
+  // Quando kUseGptProxySse=true, nenhuma linha do caminho simulado executa.
+  // O caminho legado permanece disponível para rollback imediato.
+  //
+  // Parear com a env var servidor: USE_GPT_PROXY_SSE=true no deploy da CF.
+  static const bool kUseGptProxySse = true;
+
+  // URL do endpoint SSE real (BUILD 462B)
+  static const String _gptSseUrl =
+      'https://us-central1-medcases-pro.cloudfunctions.net/gptProxyStream';
 
   // ── Erros do Gemini Free que acionam fallback pago ────────────────────────
   // BUILD 334 FORENSE: adicionado 'http_404' e 'http_400'.
@@ -629,12 +645,142 @@ class ProviderRouterService {
     }
   }
 
-  // ── callGptProxyStream — Layer 2 GPT-4o Mini via streaming simulado ──────
-  /// Equivalente a [callGptProxy] mas emite [Stream<GeminiChunk>] em vez de Future.
-  ///
-  /// Mesmo contrato de emissão do [callPaidProxyStream] — compatível com o
-  /// listener do AppProvider que consome GeminiChunk.
-  static Stream<GeminiChunk> callGptProxyStream({
+  // ── callGptProxyStream — Layer 2 GPT-4o Mini ─────────────────────────────
+  //
+  // BUILD 462B-REDIRECIONADA: substitui o streaming simulado por SSE real.
+  //
+  // kUseGptProxySse = true  → SSE real (GptSseClient → gptProxyStream CF)
+  //   • HTTP POST para gptProxyStream
+  //   • response.stream de bytes reais da rede
+  //   • SseParser (UTF-8 incremental) → AiEvent
+  //   • Primeiro delta chega ANTES de a OpenAI terminar a resposta
+  //   • Nenhuma linha do caminho simulado executa
+  //
+  // kUseGptProxySse = false → legado síncrono (rollback imediato)
+  //   • callGptProxy() + fatiamento em chunks de 30 chars / 18ms
+  //   • Comportamento idêntico à BUILD 462
+  //
+  // EMISSÃO (barramento AiEvent):
+  //   AiStarted(attempt=2) → AiTextDelta(sequence=1..N) → AiCompleted
+  //   ou AiFailed
+  //
+  // O chamador (AppProvider) deve:
+  //   1. Emitir AiProviderSwitched + AiStreamReset antes de chamar este método
+  //   2. Após AiCompleted, passar fullText por sanitizeAndCheck()
+  //   3. Somente depois persistir no Firestore / _aiHistory
+  static Stream<AiEvent> callGptProxyStream({
+    required String userMessage,
+    required String systemPrompt,
+    // idToken é opcional: quando vazio, buscado internamente (mesmo padrão
+    // de callGptProxy). Passar explicitamente evita o custo de uma chamada
+    // getIdToken() adicional quando o caller já tem o token em mãos.
+    String idToken = '',
+    List<Map<String, String>> history = const [],
+    String mode = 'plantao',
+    String lang = 'pt',
+    String requestId = '',
+    int maxOutputTokens = 800,
+  }) async* {
+    // ── KILL SWITCH: kUseGptProxySse = false → legado ──────────────────────
+    if (!kUseGptProxySse) {
+      if (kDebugMode) {
+        debugPrint('[GPT_PROXY_STREAM] kUseGptProxySse=false → legado simulado '
+            'requestId=$requestId');
+      }
+      yield* _callGptProxyStreamLegacy(
+        userMessage:     userMessage,
+        systemPrompt:    systemPrompt,
+        history:         history,
+        mode:            mode,
+        lang:            lang,
+        requestId:       requestId,
+        maxOutputTokens: maxOutputTokens,
+      );
+      return;
+    }
+
+    // ── SSE REAL (kUseGptProxySse = true) ──────────────────────────────────
+    if (kDebugMode) {
+      debugPrint('[GPT_PROXY_STREAM] kUseGptProxySse=true → SSE real '
+          'requestId=$requestId endpoint=$_gptSseUrl');
+    }
+
+    // Buscar token se não foi fornecido (idêntico ao padrão de callGptProxy)
+    String resolvedToken = idToken;
+    if (resolvedToken.isEmpty) {
+      if (kIsWeb) {
+        try {
+          resolvedToken = await AuthService.getAdminToken();
+        } catch (e) {
+          yield AiFailed.now(
+            requestId: requestId,
+            attempt:   GptSseClient.kGptAttempt,
+            code:      'token_error',
+            message:   e.toString(),
+            retryable: false,
+          );
+          return;
+        }
+      } else {
+        final firebaseUser = FirebaseAuth.instance.currentUser;
+        if (firebaseUser == null) {
+          yield AiFailed.now(
+            requestId: requestId,
+            attempt:   GptSseClient.kGptAttempt,
+            code:      'unauthenticated',
+            message:   'FirebaseAuth.currentUser is null',
+            retryable: false,
+          );
+          return;
+        }
+        try {
+          resolvedToken = await firebaseUser.getIdToken() ?? '';
+        } catch (e) {
+          yield AiFailed.now(
+            requestId: requestId,
+            attempt:   GptSseClient.kGptAttempt,
+            code:      'token_error',
+            message:   e.toString(),
+            retryable: false,
+          );
+          return;
+        }
+      }
+      if (resolvedToken.isEmpty) {
+        yield AiFailed.now(
+          requestId: requestId,
+          attempt:   GptSseClient.kGptAttempt,
+          code:      'empty_token',
+          message:   'ID Token vazio após getIdToken()',
+          retryable: false,
+        );
+        return;
+      }
+    }
+
+    final payload = GptSsePayload(
+      userMessage:     userMessage,
+      systemPrompt:    systemPrompt,
+      history:         history.cast<Map<String, String>>(),
+      mode:            mode,
+      lang:            lang,
+      requestId:       requestId,
+      maxOutputTokens: maxOutputTokens,
+    );
+
+    final client = GptSseClient(
+      endpointUrl: _gptSseUrl,
+      idToken:     resolvedToken,
+    );
+
+    yield* client.stream(payload);
+  }
+
+  // ── callGptProxyStreamLegacy — ADAPTER LEGADO (rollback) ─────────────────
+  // Emite GeminiChunk convertido para AiEvent usando streaming simulado.
+  // Executado APENAS quando kUseGptProxySse=false.
+  // NÃO REMOVER nesta build.
+  static Stream<AiEvent> _callGptProxyStreamLegacy({
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
@@ -643,37 +789,69 @@ class ProviderRouterService {
     String requestId = '',
     int maxOutputTokens = 800,
   }) async* {
+    final startMs = DateTime.now().millisecondsSinceEpoch;
+    final reqId   = requestId.isEmpty
+        ? 'req_legacy_$startMs'
+        : requestId;
+
     final result = await callGptProxy(
       userMessage:     userMessage,
       systemPrompt:    systemPrompt,
       history:         history,
       mode:            mode,
       lang:            lang,
-      requestId:       requestId,
+      requestId:       reqId,
       maxOutputTokens: maxOutputTokens,
     );
 
     if (!result.success || result.text.isEmpty) {
-      yield GeminiChunk.error(result.errorCode ?? 'gpt_proxy_stream_error');
+      yield AiFailed.now(
+        requestId: reqId,
+        attempt:   GptSseClient.kGptAttempt,
+        code:      result.errorCode ?? 'gpt_proxy_stream_error',
+        message:   'Legacy GPT proxy falhou',
+        retryable: true,
+      );
       return;
     }
 
-    // Streaming simulado
-    int offset = 0;
+    yield AiStarted.now(
+      requestId: reqId,
+      attempt:   GptSseClient.kGptAttempt,
+      model:     result.model.isEmpty ? 'gpt-4o-mini' : result.model,
+      provider:  'gpt_4o_mini',
+    );
+
+    // Streaming simulado legado: 30 chars / 18ms
+    int offset   = 0;
+    int sequence = 1;
     while (offset < result.text.length) {
       final end   = (offset + _kStreamChunkSize).clamp(0, result.text.length);
       final delta = result.text.substring(offset, end);
-      yield GeminiChunk(text: delta, isDone: false);
+      yield AiTextDelta.now(
+        requestId: reqId,
+        attempt:   GptSseClient.kGptAttempt,
+        delta:     delta,
+        sequence:  sequence++,
+      );
       offset = end;
       if (offset < result.text.length) {
         await Future<void>.delayed(_kStreamChunkDelay);
       }
     }
 
-    yield GeminiChunk.done;
+    yield AiCompleted.now(
+      requestId:          reqId,
+      attempt:            GptSseClient.kGptAttempt,
+      fullText:           result.text,
+      usedProvider:       'gpt_4o_mini',
+      inputTokensApprox:  result.inputTokensApprox,
+      outputTokensApprox: result.outputTokensApprox,
+      durationMs:         DateTime.now().millisecondsSinceEpoch - startMs,
+    );
 
     if (kDebugMode) {
-      debugPrint('[GPT_PROXY_STREAM] requestId=$requestId '
+      debugPrint('[GPT_PROXY_STREAM_LEGACY] requestId=$reqId '
           'model=${result.model} textLen=${result.text.length} '
           'durationMs=${result.durationMs}');
     }

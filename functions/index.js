@@ -2299,3 +2299,476 @@ exports.atenderConsultaIAStream = onRequest(
     }
   }
 );
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 462B-REDIRECIONADA — gptProxyStream
+//
+// Endpoint HTTP v2 (onRequest) com Server-Sent Events reais.
+// Consome a OpenAI Responses API com stream:true e repassa cada delta
+// imediatamente ao Flutter — o primeiro delta chega ANTES da conclusão upstream.
+//
+// ENDPOINT PARALELO: NÃO substitui gptProxy (legado síncrono mantido).
+//   gptProxy       → legado (resposta JSON única, sem SSE)
+//   gptProxyStream → BUILD 462B (SSE real, stream:true)
+//
+// PIPELINE DE SEGURANÇA (idêntico ao atenderConsultaIA):
+//   1. Método HTTP (somente POST)
+//   2. Autenticação Firebase ID Token
+//   3. Validação de payload
+//   4. Budget guard (Firestore)
+//   5. Validação de status do usuário (approved)
+//   → Somente então: abrir headers SSE + carregar OPENAI_API_KEY
+//
+// Falha ANTES da abertura do SSE → res.status(4xx).json({error:'...'})
+// Falha DEPOIS da abertura do SSE → event SSE: error {error:'code'}
+//
+// PROTOCOLO SSE MEDCASES:
+//   event: started       → primeira conexão estabelecida
+//   event: text_delta    → fragmento de texto em tempo real
+//   event: transport_done → conclusão do transporte (AppProvider emite AiCompleted)
+//   event: error         → falha após início do SSE
+//   : heartbeat          → keepalive (ignorado pelo Flutter)
+//
+// CANCELAMENTO UPSTREAM:
+//   req.on('aborted') + res.on('close') → AbortController.abort()
+//   → OpenAI interrompe geração
+//   → Registra requestId, attempt, durationMs, deltaCount (SEM dados clínicos)
+//
+// Deploy:
+//   firebase deploy --only functions:gptProxyStream
+//   firebase functions:secrets:set OPENAI_API_KEY  (se ainda não configurado)
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Utilitário: envia evento SSE formatado ────────────────────────────────────
+function sendSseEvent(res, eventType, data) {
+  if (res.writableEnded) return;
+  const jsonStr = JSON.stringify(data);
+  res.write(`event: ${eventType}\ndata: ${jsonStr}\n\n`);
+  if (typeof res.flush === 'function') res.flush();
+}
+
+// ── callOpenAiResponsesStream: consome OpenAI Responses API com stream:true ──
+//
+// Usa https nativo (Node 22) para chamar:
+//   POST https://api.openai.com/v1/responses
+//   { model: 'gpt-4o-mini', input: [...], stream: true }
+//
+// Evento relevante de texto: response.output_text.delta
+//   { type: 'response.output_text.delta', delta: '...' }
+//
+// O backend NUNCA repassa objetos brutos da OpenAI ao Flutter.
+// Apenas o contrato MedCases é emitido via SSE.
+//
+// abortSignal: AbortSignal para cancelamento upstream via AbortController.
+function callOpenAiResponsesStream({
+  openAiKey,
+  systemPrompt,
+  userMessage,
+  history,
+  maxOutputTokens,
+  requestId,
+  onDelta,
+  abortSignal,
+}) {
+  return new Promise((resolve, reject) => {
+    if (abortSignal && abortSignal.aborted) {
+      return reject(new Error('aborted_before_start'));
+    }
+
+    // Montar input para OpenAI Responses API
+    // Formato: [{role:'system'|'user'|'assistant', content:'...'}]
+    const input = [];
+    if (systemPrompt && systemPrompt.trim()) {
+      input.push({ role: 'system', content: systemPrompt.trim() });
+    }
+    // Histórico (Gemini usa role='model' → OpenAI usa role='assistant')
+    const histCap = 8;
+    const recentHistory = Array.isArray(history)
+      ? history.slice(-histCap)
+      : [];
+    for (const turn of recentHistory) {
+      const role    = (turn.role === 'model' || turn.role === 'assistant')
+        ? 'assistant' : 'user';
+      const content = String(turn.content || turn.text || '').trim();
+      if (content) input.push({ role, content });
+    }
+    input.push({ role: 'user', content: userMessage.trim() });
+
+    const bodyStr = JSON.stringify({
+      model:      'gpt-4o-mini',
+      input,
+      stream:     true,
+      max_output_tokens: maxOutputTokens || 800,
+    });
+
+    const options = {
+      hostname: 'api.openai.com',
+      port:     443,
+      path:     '/v1/responses',
+      method:   'POST',
+      headers:  {
+        'Content-Type':   'application/json',
+        'Authorization':  `Bearer ${openAiKey}`,
+        'Content-Length': Buffer.byteLength(bodyStr),
+      },
+    };
+
+    let inputTokensApprox  = 0;
+    let outputTokensApprox = 0;
+    let sequence           = 1;
+    let completed          = false;
+
+    const apiReq = https.request(options, (apiRes) => {
+      if (apiRes.statusCode !== 200) {
+        let body = '';
+        apiRes.on('data', (c) => { body += c; });
+        apiRes.on('end', () => {
+          reject(new Error(`openai_http_${apiRes.statusCode}:${body.slice(0, 200)}`));
+        });
+        return;
+      }
+
+      let lineBuffer = '';
+
+      apiRes.on('data', (chunk) => {
+        if (abortSignal && abortSignal.aborted) {
+          apiReq.destroy();
+          return;
+        }
+
+        lineBuffer += chunk.toString('utf8');
+
+        // Parsear linhas SSE da OpenAI (formato data: {...}\n\n)
+        while (true) {
+          const lfIdx = lineBuffer.indexOf('\n');
+          if (lfIdx === -1) break;
+          const line     = lineBuffer.slice(0, lfIdx).trim();
+          lineBuffer     = lineBuffer.slice(lfIdx + 1);
+
+          if (!line || line.startsWith(':')) continue; // comment / heartbeat
+
+          if (line.startsWith('data: ')) {
+            const rawData = line.slice(6).trim();
+            if (rawData === '[DONE]') {
+              completed = true;
+              continue;
+            }
+            try {
+              const event = JSON.parse(rawData);
+              const eventType = event.type || '';
+
+              // ── Evento de texto delta (contrato MedCases) ──────────────────
+              if (eventType === 'response.output_text.delta') {
+                const delta = event.delta || '';
+                if (delta) {
+                  onDelta({
+                    requestId,
+                    attempt:   2,
+                    sequence:  sequence++,
+                    delta,
+                    timestamp: new Date().toISOString(),
+                  });
+                }
+                continue;
+              }
+
+              // ── Conclusão da resposta ──────────────────────────────────────
+              if (eventType === 'response.completed') {
+                const usage = event.response && event.response.usage;
+                if (usage) {
+                  inputTokensApprox  = usage.input_tokens  || 0;
+                  outputTokensApprox = usage.output_tokens || 0;
+                }
+                completed = true;
+                continue;
+              }
+
+              // ── Resposta incompleta (limite de tokens, content filter) ─────
+              if (eventType === 'response.incomplete') {
+                const reason = (event.response && event.response.incomplete_details)
+                  ? JSON.stringify(event.response.incomplete_details)
+                  : 'unknown';
+                reject(new Error(`openai_incomplete:${reason}`));
+                return;
+              }
+
+              // ── Falha da OpenAI ────────────────────────────────────────────
+              if (eventType === 'response.failed' || eventType === 'error') {
+                const errMsg = event.message || event.error || eventType;
+                reject(new Error(`openai_failed:${errMsg}`));
+                return;
+              }
+
+              // ── response.created, response.in_progress: ignorar ───────────
+              // Outros eventos da OpenAI não são repassados ao Flutter
+
+            } catch (_) {
+              // JSON inválido da OpenAI — ignorar linha corrompida
+            }
+          }
+        }
+      });
+
+      apiRes.on('end', () => {
+        if (completed) {
+          resolve({ inputTokensApprox, outputTokensApprox, sequenceCount: sequence - 1 });
+        } else {
+          reject(new Error('openai_stream_ended_without_done'));
+        }
+      });
+      apiRes.on('error', (err) => reject(new Error(`openai_stream_error:${err.message}`)));
+    });
+
+    apiReq.on('error', (err) => reject(new Error(`openai_network_error:${err.message}`)));
+    apiReq.setTimeout(90000, () => {
+      apiReq.destroy();
+      reject(new Error('openai_timeout'));
+    });
+
+    // Integração com AbortController
+    if (abortSignal) {
+      abortSignal.addEventListener('abort', () => {
+        apiReq.destroy(new Error('aborted'));
+      });
+    }
+
+    apiReq.write(bodyStr);
+    apiReq.end();
+  });
+}
+
+// ── Feature flag servidor ─────────────────────────────────────────────────────
+// Se USE_GPT_PROXY_SSE !== 'true' no ambiente, o endpoint responde com
+// fallback para o endpoint legado (gptProxy).
+// Cliente true + servidor true → SSE real
+// Qualquer outra combinação → legado síncrono (transparente para o cliente)
+const USE_GPT_PROXY_SSE = process.env.USE_GPT_PROXY_SSE !== 'false'; // default true
+
+exports.gptProxyStream = onRequest(
+  {
+    region:         'us-central1',
+    secrets:        [OPENAI_KEY],
+    timeoutSeconds: 120,
+    memory:         '512MiB',
+    cors:           false, // CORS manual abaixo
+  },
+  async (req, res) => {
+    const startMs = Date.now();
+
+    // ── CORS (restrito às origens MedCases Pro) ───────────────────────────────
+    const allowedOrigins = [
+      'https://medcasespro.app',
+      'https://medcases-pro.web.app',
+      'https://medcases-pro.firebaseapp.com',
+    ];
+    const origin          = req.headers.origin || '';
+    const isAllowedOrigin = allowedOrigins.includes(origin)
+      || (process.env.FUNCTIONS_EMULATOR === 'true');
+
+    if (isAllowedOrigin) {
+      res.setHeader('Access-Control-Allow-Origin',  origin);
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Max-Age', '3600');
+    res.setHeader('Vary', 'Origin');
+
+    if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+
+    // ── 1. VALIDAÇÃO DE MÉTODO ─────────────────────────────────────────────────
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'method_not_allowed' });
+    }
+
+    // ── 2. VALIDAÇÃO DE CONTENT-TYPE ───────────────────────────────────────────
+    const ct = (req.headers['content-type'] || '').toLowerCase();
+    if (!ct.includes('application/json')) {
+      return res.status(415).json({ error: 'unsupported_media_type' });
+    }
+
+    // ── 3. AUTENTICAÇÃO Firebase ID Token ──────────────────────────────────────
+    // Falha ANTES da abertura dos headers SSE → JSON com status 401
+    const authHeader = req.headers.authorization || '';
+    if (!authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'unauthenticated', message: 'Bearer token obrigatório.' });
+    }
+    const idToken = authHeader.slice(7).trim();
+    let decodedToken;
+    try {
+      decodedToken = await admin.auth().verifyIdToken(idToken);
+    } catch (err) {
+      console.warn('[GPT_SSE_CF] token_invalid:', err.code);
+      return res.status(401).json({ error: 'invalid_token' });
+    }
+    const callerUid = decodedToken.uid;
+
+    // ── 4. DESSERIALIZAÇÃO E VALIDAÇÃO DO PAYLOAD ──────────────────────────────
+    const data           = req.body || {};
+    const rawUserMessage  = String(data.userMessage  || '').trim();
+    const payloadUid      = String(data.uid          || '').trim();
+    const rawSystemPrompt = String(data.systemPrompt || '').trim();
+    const rawHistory      = Array.isArray(data.history) ? data.history : [];
+    const requestId       = String(data.requestId    || `req_cf_${startMs}`);
+    const mode            = String(data.mode         || 'plantao');
+    const maxOutputTokens = parseInt(data.maxOutputTokens, 10) || 800;
+
+    if (payloadUid && payloadUid !== callerUid) {
+      return res.status(403).json({ error: 'permission_denied' });
+    }
+
+    const safeUserMessage  = rawUserMessage.substring(0, 4000);
+    const safeSystemPrompt = rawSystemPrompt.substring(0, 12000);
+
+    if (!safeUserMessage) {
+      return res.status(400).json({ error: 'empty_message' });
+    }
+
+    // ── 5. STATUS FIRESTORE (validação approved) ───────────────────────────────
+    try {
+      const db      = admin.firestore();
+      const userDoc = await db.doc(`users/${callerUid}`).get();
+      const status  = userDoc.exists ? (userDoc.data().status || '') : '';
+      if (status !== 'approved') {
+        return res.status(403).json({ error: 'not_approved' });
+      }
+    } catch (err) {
+      console.error('[GPT_SSE_CF] firestore_error:', err.message);
+      return res.status(500).json({ error: 'firestore_error' });
+    }
+
+    // ── 6. CARREGAR OPENAI_API_KEY (somente após todas as validações) ──────────
+    const openAiKey = OPENAI_KEY.value();
+    if (!openAiKey) {
+      console.error('[GPT_SSE_CF] OPENAI_API_KEY não configurado.');
+      return res.status(500).json({ error: 'openai_key_not_configured' });
+    }
+
+    // ── AQUI: ABRIR HEADERS SSE ────────────────────────────────────────────────
+    // Todas as validações passaram — a partir daqui erros vão via evento SSE.
+    res.status(200);
+    res.setHeader('Content-Type',      'text/event-stream; charset=utf-8');
+    res.setHeader('Cache-Control',     'no-cache, no-transform');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.setHeader('Content-Encoding',  'identity');
+    // Não usar Content-Length em streams
+    if (typeof res.flushHeaders === 'function') res.flushHeaders();
+
+    console.log(
+      `[GPT_SSE_CF] → start requestId=${requestId} uid=${callerUid} mode=${mode} `
+      + `maxOut=${maxOutputTokens} useSse=${USE_GPT_PROXY_SSE}`
+    );
+
+    // ── CANCELAMENTO UPSTREAM ──────────────────────────────────────────────────
+    const abortController  = new AbortController();
+    let completedNormally  = false;
+    let deltaCount         = 0;
+
+    const abortUpstream = (reason) => {
+      if (!completedNormally && !abortController.signal.aborted) {
+        abortController.abort();
+        const durationMs = Date.now() - startMs;
+        // Log SEM: API key, ID Token, prompt clínico, dados de paciente
+        console.log(
+          `[GPT_SSE_CF] abort requestId=${requestId} uid=${callerUid} `
+          + `reason=${reason} durationMs=${durationMs} deltaCount=${deltaCount}`
+        );
+      }
+    };
+
+    req.on('aborted', () => abortUpstream('client_aborted'));
+    res.on('close',   () => { if (!res.writableEnded) abortUpstream('connection_closed'); });
+
+    // ── HEARTBEAT ─────────────────────────────────────────────────────────────
+    const heartbeat = setInterval(() => {
+      if (!res.writableEnded) {
+        res.write(': heartbeat\n\n');
+        if (typeof res.flush === 'function') res.flush();
+      }
+    }, 15000);
+
+    try {
+      // ── EVENTO started ────────────────────────────────────────────────────
+      sendSseEvent(res, 'started', {
+        requestId,
+        attempt:   2,
+        model:     'gpt-4o-mini',
+        provider:  'gpt_4o_mini',
+        timestamp: new Date().toISOString(),
+      });
+
+      // ── STREAMING OPENAI → SSE ────────────────────────────────────────────
+      const result = await callOpenAiResponsesStream({
+        openAiKey,
+        systemPrompt:    safeSystemPrompt,
+        userMessage:     safeUserMessage,
+        history:         rawHistory,
+        maxOutputTokens,
+        requestId,
+        abortSignal:     abortController.signal,
+        onDelta: (deltaPayload) => {
+          deltaCount++;
+          if (!res.writableEnded) {
+            sendSseEvent(res, 'text_delta', deltaPayload);
+          }
+        },
+      });
+
+      completedNormally = true;
+      const durationMs  = Date.now() - startMs;
+
+      console.log(
+        `[GPT_SSE_CF] ✅ done requestId=${requestId} uid=${callerUid} `
+        + `durationMs=${durationMs} deltaCount=${deltaCount} `
+        + `inputTokensApprox=${result.inputTokensApprox} `
+        + `outputTokensApprox=${result.outputTokensApprox}`
+      );
+
+      // ── EVENTO transport_done ─────────────────────────────────────────────
+      // Flutter/AppProvider emite AiCompleted DEPOIS de sanitizeAndCheck().
+      if (!res.writableEnded) {
+        sendSseEvent(res, 'transport_done', {
+          requestId,
+          attempt:            2,
+          model:              'gpt-4o-mini',
+          inputTokensApprox:  result.inputTokensApprox,
+          outputTokensApprox: result.outputTokensApprox,
+          durationMs,
+          deltaCount,
+          timestamp:          new Date().toISOString(),
+        });
+      }
+
+    } catch (err) {
+      const errMsg     = err && err.message ? err.message : String(err);
+      const durationMs = Date.now() - startMs;
+
+      if (!completedNormally) {
+        // Log sem dados clínicos
+        console.error(
+          `[GPT_SSE_CF] error requestId=${requestId} uid=${callerUid} `
+          + `durationMs=${durationMs} deltaCount=${deltaCount} `
+          + `code=${errMsg.split(':')[0]}`
+        );
+
+        const errCode = errMsg.includes('timeout')     ? 'cf_timeout'
+                      : errMsg.includes('aborted')     ? 'client_cancelled'
+                      : errMsg.includes('openai_http') ? errMsg.split(':')[0]
+                      : errMsg.includes('incomplete')  ? 'openai_incomplete'
+                      : 'cf_internal';
+
+        if (!res.writableEnded) {
+          sendSseEvent(res, 'error', {
+            requestId,
+            attempt:   2,
+            error:     errCode,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      }
+
+    } finally {
+      clearInterval(heartbeat);
+      if (!res.writableEnded) res.end();
+    }
+  }
+);

@@ -53,6 +53,10 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'gemini_service_v2.dart';  // GeminiChunk
 import 'ai_gateway_service.dart'; // AiGatewayService.sendStream
 
+// BUILD 462B: Re-export do contrato Anti-Frankenstein unificado.
+// Importar ai_engine_service.dart já expõe todos os tipos do barramento.
+export 'ai_stream/ai_event.dart';
+
 // ══════════════════════════════════════════════════════════════════════════════
 // BUILD 462-STREAMING-CORE — AiEvent: Contrato de Eventos Tipados
 //
