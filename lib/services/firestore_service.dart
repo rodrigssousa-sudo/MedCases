@@ -959,11 +959,18 @@ class FirestoreService {
 
   // ── Favoritos de fármacos ─────────────────────────────────────────────────
   static Future<Set<String>> loadFavDrugs(String uid) async {
-    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
-    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
+    // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
           'allowed=false reason=firebase_user_null uid=$uid '
           'sdkRequestDispatched=false');
+      return {};
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -990,11 +997,18 @@ class FirestoreService {
 
   // ── Favoritos de protocolos ───────────────────────────────────────────────
   static Future<Set<String>> loadFavProtocols(String uid) async {
-    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
-    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
+    // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
           'allowed=false reason=firebase_user_null uid=$uid '
           'sdkRequestDispatched=false');
+      return {};
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -1021,11 +1035,18 @@ class FirestoreService {
 
   // ── Favoritos de prescrições ──────────────────────────────────────────────
   static Future<Set<String>> loadFavPrescriptions(String uid) async {
-    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
-    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
+    // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
           'allowed=false reason=firebase_user_null uid=$uid '
           'sdkRequestDispatched=false');
+      return {};
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -1273,11 +1294,18 @@ class FirestoreService {
 
   // ── Favoritos de casos clínicos ───────────────────────────────────────────
   static Future<Set<String>> loadFavCases(String uid) async {
-    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
-    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
+    // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
           'allowed=false reason=firebase_user_null uid=$uid '
           'sdkRequestDispatched=false');
+      return {};
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
       return {};
     }
     try {
@@ -1304,11 +1332,18 @@ class FirestoreService {
 
   // ── Casos clínicos do usuário ─────────────────────────────────────────────
   static Future<List<ClinicalCaseModel>> loadCases(String uid) async {
-    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch
-    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
+    // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadCases '
           'allowed=false reason=firebase_user_null uid=$uid '
           'sdkRequestDispatched=false');
+      return [];
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadCases '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
       return [];
     }
     try {
@@ -1528,6 +1563,20 @@ class FirestoreService {
     return {'stringValue': val.toString()};
   }
 
+  /// DEPRECATED — BUILD 463-A.1.2: Use [loadHistoriesTyped] instead.
+  ///
+  /// This untyped variant silently returns `[]` on permission-denied, making it
+  /// impossible for the caller to distinguish an auth failure from an empty list.
+  /// That ambiguity enables false "new user" write paths.
+  ///
+  /// All internal call-sites have been migrated to [loadHistoriesTyped].
+  /// This signature is retained only for backward-compatibility with
+  /// call-sites that cannot immediately adopt the algebraic return type
+  /// (e.g. legacy screen hooks that require a plain List). New code MUST
+  /// use [loadHistoriesTyped] and unwrap the sealed variants explicitly.
+  @Deprecated('Use loadHistoriesTyped() — returns FirestoreLoadResult<T> '
+      'that correctly exposes authDenied/offline states. '
+      'Removed in BUILD 463-A.1.2 internal consumer migration.')
   static Future<List<ClinicalHistoryModel>> loadHistories(String uid) async {
     // ORDEM SYNC-FIX: iOS usa cache Firestore por padrão — histórias criadas
     // na Web não aparecem no mobile na primeira abertura.
@@ -1545,14 +1594,20 @@ class FirestoreService {
     // Rationale: se o token não foi propagado, Source.cache também falha;
     // se o usuário está offline, o timeout de 10s já cobre o caso.
     //
-    // BUILD 463-A.1.1: Firestore Auth Barrier — hard block before SDK dispatch.
-    // Condition: FirebaseAuth.instance.currentUser must be non-null (not just
-    // hasCachedToken). A REST token alone is not sufficient to permit SDK reads.
-    // sdkRequestDispatched=false means zero network call was made.
-    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
+    // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch.
+    // A REST token alone is not sufficient. Firebase SDK user must be non-null
+    // AND uid must match the requested uid to prevent cross-uid leaks.
+    final _fbUserH = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUserH == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
           'allowed=false reason=firebase_user_null uid=$uid '
           'sdkRequestDispatched=false');
+      return [];
+    }
+    if (_fbUserH.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
+          'expectedUid=$uid firebaseUid=${_fbUserH.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
       return [];
     }
     try {
@@ -1616,16 +1671,23 @@ class FirestoreService {
     }
   }
 
-  // ── BUILD 463-A.1: Typed loadHistories returning FirestoreLoadResult ──────
-  // Versão algébrica para uso interno quando o chamador precisa distinguir
-  // entre success, authDenied e offline — previne escrita de "novo usuário".
+  // ── BUILD 463-A.1 / 463-A.1.2: Typed loadHistories returning FirestoreLoadResult
+  // Canonical typed variant. All internal callers must use this method.
+  // Dual-check barrier: (1) null SDK user, (2) uid mismatch — both block dispatch.
   static Future<FirestoreLoadResult<List<ClinicalHistoryModel>>> loadHistoriesTyped(
     String uid,
   ) async {
-    if (!_isFirebaseReady || FirebaseAuth.instance.currentUser == null) {
+    final _fbUserT = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUserT == null) {
       debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
           'allowed=false reason=firebase_user_null uid=$uid '
           'sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUserT.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
+          'expectedUid=$uid firebaseUid=${_fbUserT.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
       return FirestoreLoadResult.authDenied();
     }
     try {

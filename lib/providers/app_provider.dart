@@ -1099,13 +1099,26 @@ class AppProvider extends ChangeNotifier {
     } catch (_) {}
   }
 
+  // BUILD 463-A.1.2: Migrated from deprecated loadHistories() to loadHistoriesTyped().
+  // Unwraps algebraic variants: success→write cache, authDenied/offline→freeze cache.
   Future<void> _syncHistoriesFromFirestore(String uid) async {
     try {
-      final histories = await FirestoreService.loadHistories(uid);
-      _myHistories = histories;
-      notifyListeners();
-      // Persiste histórias no cache local
-      await _saveHistoriesLocal(uid);
+      final result = await FirestoreService.loadHistoriesTyped(uid);
+      if (result.isSuccess) {
+        _myHistories = result.dataOrElse([]);
+        notifyListeners();
+        await _saveHistoriesLocal(uid);
+      } else if (result.shouldFreezeLocalCache) {
+        // authDenied or offline: retain current in-memory state, do not overwrite cache.
+        debugPrint('[APP_PROVIDER][_syncHistoriesFromFirestore] '
+            'uid=$uid result=${result.runtimeType} → cache frozen, no write');
+      }
+      // empty: remote has no docs → accepted as authoritative empty state.
+      else if (result.isEmpty) {
+        _myHistories = [];
+        notifyListeners();
+        await _saveHistoriesLocal(uid);
+      }
     } catch (_) {}
   }
 
@@ -1830,19 +1843,37 @@ class AppProvider extends ChangeNotifier {
   }
 
   // ── Histórias Clínicas ────────────────────────────────────────────────────
+  // BUILD 463-A.1.2: Migrated from deprecated loadHistories() to loadHistoriesTyped().
+  // Explicit algebraic unwrap:
+  //   success    → replace _myHistories, persist cache
+  //   empty      → clear _myHistories, persist empty cache (authoritative)
+  //   authDenied → freeze: retain current in-memory state, show warning badge
+  //   offline    → freeze: retain current in-memory state, show warning badge
+  //   failure    → freeze: retain current in-memory state
   Future<void> loadHistories() async {
     if (_currentUser == null) return;
     final uid = _currentUser!.uid;
     try {
-      // SYNC-FIX: Source.server força leitura direta do Firestore, ignorando
-      // o cache local. Resolve o problema de histórias criadas na Web que
-      // não apareciam no iOS na primeira abertura do app.
-      _myHistories = await FirestoreService.loadHistories(uid);
-      notifyListeners();
-      // Persiste no cache para uso offline
-      await _saveHistoriesLocal(uid);
+      final result = await FirestoreService.loadHistoriesTyped(uid);
+      if (result.isSuccess) {
+        // Remote data received → replace + persist
+        _myHistories = result.dataOrElse([]);
+        notifyListeners();
+        await _saveHistoriesLocal(uid);
+      } else if (result.isEmpty) {
+        // Remote authoritative empty → clear + persist
+        _myHistories = [];
+        notifyListeners();
+        await _saveHistoriesLocal(uid);
+      } else if (result.shouldFreezeLocalCache) {
+        // authDenied / offline / failure → freeze: retain existing data
+        debugPrint('[APP_PROVIDER][loadHistories] '
+            'uid=$uid result=${result.runtimeType} → '
+            'cache frozen, local state preserved (operational warning)');
+        // _myHistories unchanged — notifyListeners not called to avoid UI flicker
+      }
     } catch (_) {
-      // Sem rede: histórias já carregadas do cache em _loadFromLocal()
+      // Unexpected exception: histórias já carregadas do cache em _loadFromLocal()
     }
 
     // BUILD 334-FORENSE: Fetch-On-Auth-Resolved + stream reativo MULTIPLATAFORMA.
