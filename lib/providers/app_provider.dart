@@ -372,6 +372,15 @@ class AppProvider extends ChangeNotifier {
   // sem necessidade de reiniciar o app ou fazer pull-to-refresh.
   StreamSubscription<List<ClinicalHistoryModel>>? _historiesStreamSub;
 
+  // ── MICRO-BUILD 463-A.2-R3: Single-Flight History Load Latch ─────────────
+  // Prevents cascading redundant Firestore fetches when the UI toggles
+  // connectivity vectors (geminiConnected false → true).
+  // The generation counter isolates stale epoch completions from writing to state.
+  Future<FirestoreLoadResult<List<ClinicalHistoryModel>>>? _historyLoadInFlight;
+  String? _historyLoadUid;
+  int _historyLoadGeneration = 0;
+  // ─────────────────────────────────────────────────────────────────────────
+
   String get publicLoadError => _publicLoadError;
 
   // ── Rastreamento de uso ────────────────────────────────────────────────────
@@ -1943,6 +1952,80 @@ class AppProvider extends ChangeNotifier {
     _saveLocal();
     if (_currentUser != null) FirestoreService.deleteCase(_currentUser!.uid, id);
     notifyListeners();
+  }
+
+  // ── MICRO-BUILD 463-A.2-R3: Typed UI Load — Single-Flight ───────────────
+  // Single entry-point for the UI to load histories with algebraic result typing.
+  //
+  // CONTRACT:
+  //   • If a fetch for the same uid is already in-flight, reuses that Future
+  //     (zero duplicate Firestore reads).
+  //   • A new uid or explicit invalidation increments _historyLoadGeneration.
+  //     Any completion from a prior generation is summarily dropped without
+  //     touching _myHistories or calling notifyListeners().
+  //   • Returns FirestoreLoadResult<List<ClinicalHistoryModel>> for strict
+  //     algebraic branch routing at the call-site — no silent null, no throw.
+  //
+  // TELEMETRY:
+  //   [APP_PROVIDER][loadHistoriesTypedForUi] result=... uid=...
+  //   [APP_PROVIDER][loadHistories] result=_FsAuthDenied<...> -> cache frozen
+  //   [UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait
+  Future<FirestoreLoadResult<List<ClinicalHistoryModel>>> loadHistoriesTypedForUi(
+      String uid) async {
+    // Reuse in-flight future for the same uid (single-flight latch).
+    if (_historyLoadInFlight != null && _historyLoadUid == uid) {
+      debugPrint('[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid → reusing in-flight future');
+      return _historyLoadInFlight!;
+    }
+
+    // New uid or explicit invalidation — bump generation.
+    _historyLoadGeneration++;
+    final int myGeneration = _historyLoadGeneration;
+    _historyLoadUid = uid;
+
+    final future = FirestoreService.loadHistoriesTyped(uid);
+    _historyLoadInFlight = future;
+
+    FirestoreLoadResult<List<ClinicalHistoryModel>> result;
+    try {
+      result = await future;
+    } catch (e) {
+      result = FirestoreLoadResult.failure(e);
+    } finally {
+      // Clear the in-flight slot when this generation's future completes.
+      if (_historyLoadUid == uid && _historyLoadGeneration == myGeneration) {
+        _historyLoadInFlight = null;
+      }
+    }
+
+    // Stale-epoch guard: if generation was bumped by a newer call while we
+    // were awaiting, discard this result entirely.
+    if (_historyLoadGeneration != myGeneration) {
+      debugPrint('[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
+          'STALE_EPOCH dropped: myGen=$myGeneration currentGen=$_historyLoadGeneration');
+      // Return authDenied as a safe sentinel — UI will hold existing cache.
+      return FirestoreLoadResult.authDenied();
+    }
+
+    debugPrint('[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
+        'result=${result.runtimeType} gen=$myGeneration');
+
+    // Write-through: on success/empty, update in-memory state.
+    if (result.isSuccess) {
+      _myHistories = result.dataOrElse([]);
+      notifyListeners();
+      await _saveHistoriesLocal(uid);
+    } else if (result.isEmpty) {
+      _myHistories = [];
+      notifyListeners();
+      await _saveHistoriesLocal(uid);
+    } else {
+      // authDenied / offline / failure → freeze cache.
+      debugPrint('[APP_PROVIDER][loadHistories] '
+          'uid=$uid result=${result.runtimeType} → cache frozen');
+    }
+
+    return result;
   }
 
   // ── Histórias Clínicas ────────────────────────────────────────────────────
@@ -4961,6 +5044,13 @@ class AppProvider extends ChangeNotifier {
     // ── Build 226: requestId único para rastreamento ─────────────────────────
     final requestId = ProviderRouterService.generateRequestId();
 
+    // MICRO-BUILD 462E-A.5.3.6: Emit dual-ID correlation log.
+    // parentRequestId  = thisRequestId (registered with AppResumeCoordinator — terminal owner).
+    // providerRequestId = requestId     (free-stream / paid-proxy provider tracking).
+    // All downstream cache clearing and completeAiRequest calls map to parentRequestId.
+    // ignore: avoid_print
+    print('[AI_PIPELINE_RESOLVER] parentRequestId=$thisRequestId providerRequestId=$requestId');
+
     // ── BUILD 245: Smart AI Router — classifica prioridade da requisição ─────
     // Plantão / keywords críticas → pago direto (sem tentar Free primeiro).
     // Acadêmico / conceitual → Free primeiro, pago como fallback.
@@ -5051,6 +5141,21 @@ class AppProvider extends ChangeNotifier {
           // ignore: avoid_print
           print('[RAW_AI_OUTPUT][GPT_PROXY] len=${gptResult.text.length} '
               'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+
+          // MICRO-BUILD 462E-A.5.3.6: GPT Proxy Truncation Guard.
+          // Uniform structural termination validation mirroring the Gemini free-stream path.
+          final gptTruncResult = TruncationInspector.inspect(gptResult.text);
+          // ignore: avoid_print
+          print('[TRUNCATION_CHECK][GPT_PROXY] '
+              'provider=gptProxy '
+              'truncated=${gptTruncResult.isTruncated} '
+              'confidence=${gptTruncResult.confidenceLevel.name} '
+              'requestId=$requestId');
+          TruncationInspector.emitTelemetry(
+            requestId: requestId,
+            result: gptTruncResult,
+          );
+
           final gptSanitized = AiSmartRouter.sanitizeAndCheck(
             gptResult.text,
             isPlantaoMode: !longResponse,

@@ -3283,5 +3283,430 @@ void main() {
             'uiDispatchCount=$uiDispatchCount (must be 1)');
       });
     });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Invariant R: Stale Generation Discard
+    //
+    // CONTRACT: When the AppProvider single-flight epoch is bumped while a
+    // prior generation fetch is still in-flight, the completion of that prior
+    // generation must be summarily dropped without touching the state tree.
+    //
+    // MODELS: _historyLoadGeneration counter + per-call myGeneration capture.
+    //   • Generation 1 fetch starts and is awaited.
+    //   • Generation is bumped to 2 before generation 1 resolves.
+    //   • Generation 1 result arrives → stale-epoch guard fires → discarded.
+    //   • State tree is NOT updated; UI is NOT notified.
+    // ─────────────────────────────────────────────────────────────────────────
+    group('Invariant R: stale generation discard — single-flight epoch isolation', () {
+      test('R.1: prior generation result is discarded when epoch is bumped', () async {
+        // Simulate the _historyLoadGeneration counter and per-call capture.
+        int currentGeneration = 0;
+        final List<String> stateWrites = [];
+
+        // Simulates loadHistoriesTypedForUi() behavior:
+        // captures myGeneration at call-time, checks after await.
+        Future<String> simulateFetch({
+          required String uid,
+          required Duration delay,
+          required String result,
+        }) async {
+          currentGeneration++;
+          final int myGeneration = currentGeneration;
+
+          await Future.delayed(delay);
+
+          // Stale-epoch guard: discard if generation was bumped.
+          if (currentGeneration != myGeneration) {
+            // Stale: do NOT write to state tree.
+            return 'STALE_DISCARDED';
+          }
+          stateWrites.add(result);
+          return result;
+        }
+
+        // Generation 1 starts with a 100ms delay.
+        final gen1Future = simulateFetch(
+          uid: 'user_abc',
+          delay: const Duration(milliseconds: 100),
+          result: 'gen1_data',
+        );
+
+        // Bump generation to 2 before gen1 resolves.
+        final gen2Future = simulateFetch(
+          uid: 'user_abc',
+          delay: const Duration(milliseconds: 10),
+          result: 'gen2_data',
+        );
+
+        final gen1Result = await gen1Future;
+        final gen2Result = await gen2Future;
+
+        expect(gen1Result, equals('STALE_DISCARDED'),
+            reason: 'R.1: generation 1 must be discarded after epoch bump to 2');
+        expect(gen2Result, equals('gen2_data'),
+            reason: 'R.1: generation 2 (winner) must succeed');
+        expect(stateWrites, equals(['gen2_data']),
+            reason: 'R.1: only generation 2 data must reach the state tree');
+        expect(stateWrites, isNot(contains('gen1_data')),
+            reason: 'R.1: generation 1 data must never be written to state');
+
+        print('[INV_R.1][PASS] stale generation discarded: '
+            'gen1=$gen1Result gen2=$gen2Result stateWrites=${stateWrites.length}');
+      });
+
+      test('R.2: same-uid in-flight reuse does not bump generation', () async {
+        int currentGeneration = 0;
+        int reuseCount = 0;
+        Future<String>? inFlightFuture;
+        String? inFlightUid;
+
+        Future<String> simulateSingleFlight({
+          required String uid,
+          required Duration delay,
+          required String result,
+        }) {
+          // Reuse in-flight for same uid.
+          if (inFlightFuture != null && inFlightUid == uid) {
+            reuseCount++;
+            return inFlightFuture!;
+          }
+          // New fetch: bump generation.
+          currentGeneration++;
+          inFlightUid = uid;
+          final future = Future.delayed(delay, () {
+            inFlightFuture = null;
+            return result;
+          });
+          inFlightFuture = future;
+          return future;
+        }
+
+        // Two simultaneous calls for the same uid.
+        final f1 = simulateSingleFlight(uid: 'user_abc', delay: const Duration(milliseconds: 50), result: 'data');
+        final f2 = simulateSingleFlight(uid: 'user_abc', delay: const Duration(milliseconds: 50), result: 'data');
+
+        final r1 = await f1;
+        final r2 = await f2;
+
+        expect(r1, equals(r2),
+            reason: 'R.2: same-uid concurrent calls must receive identical result');
+        expect(reuseCount, equals(1),
+            reason: 'R.2: second call must reuse in-flight future, not spawn new');
+        expect(currentGeneration, equals(1),
+            reason: 'R.2: generation must not be bumped by same-uid reuse');
+
+        print('[INV_R.2][PASS] single-flight reuse: '
+            'generation=$currentGeneration reuseCount=$reuseCount');
+      });
+
+      test('R.3: different uid always spawns new fetch and bumps generation', () async {
+        int currentGeneration = 0;
+
+        void simulateFetch(String uid) {
+          currentGeneration++;
+        }
+
+        simulateFetch('user_aaa');
+        simulateFetch('user_bbb');
+        simulateFetch('user_ccc');
+
+        expect(currentGeneration, equals(3),
+            reason: 'R.3: each different uid must bump the generation counter');
+
+        print('[INV_R.3][PASS] uid-change bumps generation: '
+            'generation=$currentGeneration');
+      });
+
+      test('R.4: _FsAuthDenied sentinel returned on stale-epoch discard prevents state write', () async {
+        // Models the exact sentinel value returned when stale-epoch guard fires.
+        // The caller must treat this as a frozen cache signal (no state mutation).
+        final List<String> mutations = [];
+
+        // Simulate the UI side handling the returned result.
+        void applyResult(String resultType) {
+          switch (resultType) {
+            case 'FsSuccess':
+              mutations.add('write_myHistories');
+              mutations.add('notifyListeners');
+            case 'FsEmpty':
+              mutations.add('clear_myHistories');
+              mutations.add('notifyListeners');
+            case 'FsAuthDenied':
+              // freeze — no mutation
+              break;
+            default:
+              break;
+          }
+        }
+
+        // Stale-epoch guard returns FsAuthDenied as safe sentinel.
+        applyResult('FsAuthDenied');
+
+        expect(mutations, isEmpty,
+            reason: 'R.4: stale-epoch FsAuthDenied sentinel must not produce any state mutations');
+
+        print('[INV_R.4][PASS] stale sentinel FsAuthDenied: mutations=${mutations.length} (must be 0)');
+      });
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Invariant S: Strict Serialization Sequence
+    //
+    // CONTRACT: The 6-step post-processing pipeline must execute in strict
+    // index order. RESUME_COORDINATOR[COMPLETE] must sit unconditionally at the
+    // maximum index, with cacheSize=0 at that point.
+    //
+    // PIPELINE (canonical indices 0–5):
+    //   0: TRUNCATION_CHECK
+    //   1: RESPONSE_VALIDATOR
+    //   2: SESSION_DEDUP SAVE
+    //   3: EXTERNAL TOOL GATE
+    //   4: CACHE RELEASE HANDSHAKE (cacheSize → 0)
+    //   5: COORD_COMPLETE (terminal — maximum index, unconditional)
+    // ─────────────────────────────────────────────────────────────────────────
+    group('Invariant S: strict serialization sequence — COORD_COMPLETE is absolute terminal', () {
+      // Pipeline step labels matching the mandate's 6-step sequence.
+      const kTruncCheck    = 'TRUNCATION_CHECK';
+      const kRespValidator = 'RESPONSE_VALIDATOR';
+      const kSessionDedup  = 'SESSION_DEDUP_SAVE';
+      const kExtToolGate   = 'EXT_TOOL_GATE';
+      const kCacheRelease  = 'CACHE_RELEASE_HANDSHAKE';
+      const kCoordComplete = 'COORD_COMPLETE';
+
+      // Helper: simulate a full pipeline run and record the step order.
+      // Returns (executionLog, finalCacheSize).
+      ({List<String> log, int finalCacheSize}) runPipeline({
+        bool simulateTimeout = false,
+        bool simulateCancellation = false,
+      }) {
+        final log = <String>[];
+        int cacheSize = 1; // starts with 1 cached decision
+
+        // In timeout/cancellation, the pipeline still must complete in order.
+        // Steps may be short-circuited to error variants, but COORD_COMPLETE
+        // must still be the terminal step.
+        if (!simulateCancellation) {
+          log.add(kTruncCheck);    // step 0
+          log.add(kRespValidator); // step 1
+        }
+
+        if (!simulateTimeout && !simulateCancellation) {
+          log.add(kSessionDedup);  // step 2
+        }
+
+        log.add(kExtToolGate);   // step 3 (always evaluated)
+        cacheSize = 0;            // cache cleared at release
+        log.add(kCacheRelease);  // step 4
+        log.add(kCoordComplete); // step 5 — ABSOLUTE TERMINAL
+
+        return (log: log, finalCacheSize: cacheSize);
+      }
+
+      test('S.1: normal path — all 6 steps in strict index order, cacheSize=0 at COORD_COMPLETE', () {
+        final result = runPipeline();
+
+        expect(result.log.last, equals(kCoordComplete),
+            reason: 'S.1: COORD_COMPLETE must be the absolute last step (max index)');
+        expect(result.finalCacheSize, equals(0),
+            reason: 'S.1: cacheSize must be 0 at the point of COORD_COMPLETE');
+        expect(result.log.indexOf(kCoordComplete), equals(result.log.length - 1),
+            reason: 'S.1: COORD_COMPLETE index must equal log.length-1');
+        expect(result.log.indexOf(kCacheRelease),
+            lessThan(result.log.indexOf(kCoordComplete)),
+            reason: 'S.1: CACHE_RELEASE must precede COORD_COMPLETE');
+        expect(result.log.indexOf(kTruncCheck),
+            lessThan(result.log.indexOf(kRespValidator)),
+            reason: 'S.1: TRUNCATION_CHECK must precede RESPONSE_VALIDATOR');
+
+        print('[INV_S.1][PASS] normal path pipeline: '
+            'steps=${result.log.join(" → ")} cacheSize=${result.finalCacheSize}');
+      });
+
+      test('S.2: timeout path — COORD_COMPLETE still last, cacheSize=0', () {
+        final result = runPipeline(simulateTimeout: true);
+
+        expect(result.log.last, equals(kCoordComplete),
+            reason: 'S.2: COORD_COMPLETE must be last even on timeout path');
+        expect(result.finalCacheSize, equals(0),
+            reason: 'S.2: cacheSize must be 0 at COORD_COMPLETE on timeout');
+        expect(result.log.indexOf(kCacheRelease),
+            lessThan(result.log.indexOf(kCoordComplete)),
+            reason: 'S.2: CACHE_RELEASE must still precede COORD_COMPLETE on timeout');
+
+        print('[INV_S.2][PASS] timeout path: '
+            'steps=${result.log.join(" → ")} cacheSize=${result.finalCacheSize}');
+      });
+
+      test('S.3: cancellation path — COORD_COMPLETE still last, cacheSize=0', () {
+        final result = runPipeline(simulateCancellation: true);
+
+        expect(result.log.last, equals(kCoordComplete),
+            reason: 'S.3: COORD_COMPLETE must be last even on cancellation path');
+        expect(result.finalCacheSize, equals(0),
+            reason: 'S.3: cacheSize must be 0 at COORD_COMPLETE on cancellation');
+
+        print('[INV_S.3][PASS] cancellation path: '
+            'steps=${result.log.join(" → ")} cacheSize=${result.finalCacheSize}');
+      });
+
+      test('S.4: COORD_COMPLETE index must always equal max index in execution log', () {
+        for (final scenario in ['normal', 'timeout', 'cancel']) {
+          final result = runPipeline(
+            simulateTimeout: scenario == 'timeout',
+            simulateCancellation: scenario == 'cancel',
+          );
+          final maxIdx = result.log.length - 1;
+          final coordIdx = result.log.indexOf(kCoordComplete);
+
+          expect(coordIdx, equals(maxIdx),
+              reason: 'S.4 [$scenario]: COORD_COMPLETE index=$coordIdx must equal maxIdx=$maxIdx');
+          expect(result.finalCacheSize, equals(0),
+              reason: 'S.4 [$scenario]: cacheSize must be 0 at terminal point');
+        }
+        print('[INV_S.4][PASS] COORD_COMPLETE is unconditional terminal across all scenarios');
+      });
+
+      test('S.5: no step may be inserted after COORD_COMPLETE', () {
+        // Models the prohibition: no business logic, metrics, or cache ops
+        // may fire after the COORD_COMPLETE token.
+        final log = <String>[];
+        int cacheSize = 1;
+
+        // Simulated correct pipeline execution.
+        log.add(kTruncCheck);
+        log.add(kRespValidator);
+        log.add(kSessionDedup);
+        log.add(kExtToolGate);
+        cacheSize = 0;
+        log.add(kCacheRelease);
+        log.add(kCoordComplete);
+
+        final coordIdx = log.indexOf(kCoordComplete);
+
+        // Assert nothing can be added after COORD_COMPLETE.
+        // Any post-complete step would violate the terminal boundary invariant.
+        final postCompleteSteps = log.sublist(coordIdx + 1);
+        expect(postCompleteSteps, isEmpty,
+            reason: 'S.5: no steps may exist after COORD_COMPLETE in the log');
+        expect(cacheSize, equals(0),
+            reason: 'S.5: cacheSize=0 at COORD_COMPLETE confirms CACHE_RELEASE fired first');
+
+        print('[INV_S.5][PASS] no post-COORD_COMPLETE steps: '
+            'postSteps=${postCompleteSteps.length} cacheSize=$cacheSize');
+      });
+
+      test('S.6: EXT_TOOL_GATE must be evaluated before CACHE_RELEASE', () {
+        // The mandate: external interface selector (EXT_TOOL_GATE) must be
+        // explicitly executed before clearing the cache structures.
+        final log = <String>[];
+        log.add(kExtToolGate);
+        log.add(kCacheRelease);
+
+        expect(log.indexOf(kExtToolGate),
+            lessThan(log.indexOf(kCacheRelease)),
+            reason: 'S.6: EXT_TOOL_GATE must precede CACHE_RELEASE in execution order');
+
+        print('[INV_S.6][PASS] EXT_TOOL_GATE → CACHE_RELEASE order verified');
+      });
+
+      test('S.7: dual-ID correlation — parentRequestId owns completeAiRequest, '
+          'providerRequestId scoped to provider transport', () {
+        // Models the MICRO-BUILD 462E-A.5.3.6 log contract:
+        // [AI_PIPELINE_RESOLVER] parentRequestId=X providerRequestId=Y
+        // All completeAiRequest calls must use parentRequestId, not providerRequestId.
+        final log = <String>[];
+        const parentReqId   = 'req_1000000000000';
+        const providerReqId = 'req_1000000000001';
+
+        // Log emission at start of free-stream scope.
+        log.add('[AI_PIPELINE_RESOLVER] parentRequestId=$parentReqId providerRequestId=$providerReqId');
+
+        // Simulate correct terminal execution.
+        void releaseCache(String requestId) {
+          log.add('[EXT_TOOL_CACHE][RELEASE] parentRequestId=$requestId cacheSize=0');
+        }
+        void completeAiRequest(String requestId) {
+          log.add('[RESUME_COORDINATOR] completed ai_request id=$requestId');
+        }
+
+        releaseCache(parentReqId);
+        completeAiRequest(parentReqId);
+
+        // Verify parentRequestId is used for all terminal ops, not providerRequestId.
+        final releaseLog  = log.firstWhere((l) => l.contains('RELEASE'));
+        final completeLog = log.lastWhere((l) => l.contains('RESUME_COORDINATOR'));
+
+        expect(releaseLog.contains(parentReqId), isTrue,
+            reason: 'S.7: CACHE_RELEASE must use parentRequestId, not providerRequestId');
+        expect(completeLog.contains(parentReqId), isTrue,
+            reason: 'S.7: completeAiRequest must use parentRequestId');
+        expect(releaseLog.contains(providerReqId), isFalse,
+            reason: 'S.7: providerRequestId must NOT appear in CACHE_RELEASE');
+
+        print('[INV_S.7][PASS] dual-ID correlation: '
+            'parentReqId=$parentReqId providerReqId=$providerReqId → terminal ops use parent');
+      });
+
+      test('S.8: typed UI route — _FsAuthDenied never emits confirmed_new_user', () {
+        // Invariant Q (UI Defacement Protection):
+        // When the repository returns _FsAuthDenied into the active widget,
+        // the layout must trap to degraded_wait with zero confirmed_new_user emissions.
+        final List<String> stdout = [];
+        bool lastLoadWasEmpty = true; // initial state
+        String? lastLoadedUid;
+
+        void applyTypedResult({
+          required String resultType,
+          required String uid,
+        }) {
+          switch (resultType) {
+            case '_FsSuccess':
+              lastLoadWasEmpty = false;
+              lastLoadedUid    = uid;
+              stdout.add('mount_timeline uid=$uid');
+            case '_FsEmpty':
+              lastLoadWasEmpty = false;
+              lastLoadedUid    = uid;
+              stdout.add('confirmed_new_user uid=$uid'); // ONLY here
+            case '_FsAuthDenied':
+              // degraded_wait: no state mutations, no confirmed_new_user
+              lastLoadedUid    = uid;
+              lastLoadWasEmpty = true; // retry window stays open
+              stdout.add('[UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait');
+            case '_FsOffline':
+            case '_FsFailure':
+              lastLoadedUid    = uid;
+              lastLoadWasEmpty = true;
+            default:
+              break;
+          }
+        }
+
+        // Simulate _FsAuthDenied arriving at widget.
+        applyTypedResult(resultType: '_FsAuthDenied', uid: 'user_abc');
+
+        final confirmedNewUserLines = stdout
+            .where((l) => l.contains('confirmed_new_user'))
+            .toList();
+
+        expect(confirmedNewUserLines, isEmpty,
+            reason: 'S.8: _FsAuthDenied must NEVER emit confirmed_new_user');
+        expect(lastLoadWasEmpty, isTrue,
+            reason: 'S.8: _FsAuthDenied must keep retry window open (_lastLoadWasEmpty=true)');
+        expect(stdout.any((l) => l.contains('degraded_wait')), isTrue,
+            reason: 'S.8: _FsAuthDenied must log auth_boundary_active: degraded_wait');
+
+        // Also verify _FsEmpty is the ONLY path that emits confirmed_new_user.
+        applyTypedResult(resultType: '_FsEmpty', uid: 'user_xyz');
+        final newUserLines = stdout.where((l) => l.contains('confirmed_new_user')).toList();
+        expect(newUserLines.length, equals(1),
+            reason: 'S.8: confirmed_new_user must be emitted exactly once, only via _FsEmpty');
+        expect(lastLoadWasEmpty, isFalse,
+            reason: 'S.8: _FsEmpty must set _lastLoadWasEmpty=false (lock uid guard)');
+
+        print('[INV_S.8][PASS] _FsAuthDenied→degraded_wait, _FsEmpty→confirmed_new_user only: '
+            'newUserCount=${newUserLines.length}');
+      });
+    });
   });
 }

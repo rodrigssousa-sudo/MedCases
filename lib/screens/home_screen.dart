@@ -1388,137 +1388,74 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
         return;
       }
 
-      // ── LAYER 2: Firestore fetch (tentativa com captura de permission-denied) ──
-      // BUILD 442 [P1]: intercepta 'permission-denied' explicitamente.
-      // Quando o Firestore está bloqueado (DigitalOcean sem auth ainda) E o cache
-      // local está vazio (primeiro boot) → RESOLVE a sessão como vazia e LIBERA
-      // o chat imediatamente. Define _lastLoadWasEmpty=false + _lastLoadedUid=uid
-      // para que a trava de UID engaje (uid==_lastLoadedUid && !_lastLoadWasEmpty)
-      // e _loadChatHistory() pare de fazer retry — quebrando o loop morto.
-      // O geminiConnected false→true em didUpdateWidget reseta tudo ao fazer OAuth.
+      // ── LAYER 2: Typed Firestore fetch via loadHistoriesTypedForUi() ──────────
+      // MICRO-BUILD 463-A.2-R3: Replaced the old loadHistories() + exception-cascade
+      // with strict algebraic result routing on FirestoreLoadResult<T> variants.
+      //
+      // INVARIANT: The widget lifecycle binds exclusively to the typed result.
+      //   No independent evaluation of provider.authBarrierState is permitted here.
+      //   All branch decisions flow from the sealed variant returned by the provider.
+      //
+      // _FsSuccess<T>    → hydrate _messages, mount timeline, _lastLoadWasEmpty=false.
+      // _FsEmpty<T>      → ONLY legitimate path for confirmed_new_user emission.
+      // _FsAuthDenied<T> → abort state mutations; degraded_wait; preserve old cache.
+      // _FsOffline<T>    → hold existing state; freeze screen; mount degradation badge.
+      // _FsFailure<T>    → hold existing state; freeze screen; allow retry.
       debugPrint('[BUILD442][HomeInlineChat] cache_local_vazio uid=$uid '
-          '→ tentando loadHistories() Firestore direto');
-      bool firestoreOk = false;
-      try {
-        await context.read<AppProvider>().loadHistories();
-        firestoreOk = true;
-      } catch (e) {
-        final errStr = e.toString().toLowerCase();
-        final isPermissionDenied = errStr.contains('permission-denied') ||
-            errStr.contains('permission_denied') ||
-            errStr.contains('missing or insufficient permissions');
-        if (isPermissionDenied) {
-          // BUILD 443 [P1]: PERMISSION_DENIED — FirebaseAuth.currentUser null no REST
-          // (DigitalOcean Web) faz Firestore rejeitar cronicamente no boot.
-          // Sequência de fallback local INCONDICIONAL — 3 chaves em cascata:
-          //   1. uid-specific key (re-read fresco): dados de sessões anteriores
-          //      gravados por _homePersistTurn (uid pode estar disponível via REST)
-          //   2. anon key: dados de sessão pré-login salva com uid='anon'
-          //   3. session nova vazia: chat 100% liberado, UID guard travado
-          debugPrint('[BUILD443][HomeInlineChat] PERMISSION_DENIED uid=$uid '
-              '→ cascata de fallback local 1→2→3');
+          '→ loadHistoriesTypedForUi() Firestore (typed)');
 
-          // Fallback 1: re-leitura fresca da chave uid-specific
-          // (SharedPreferences pode ter sido atualizado por _homePersistTurn
-          //  entre a leitura inicial e este ponto — flush de plataforma)
-          if (!mounted) return;
-          final freshPrefs   = await SharedPreferences.getInstance();
-          final rawFreshUid  = freshPrefs.getString(histKey);
-          if (rawFreshUid != null && rawFreshUid.isNotEmpty && _messages.isEmpty) {
-            debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_1 uid=$uid '
-                'raw_len=${rawFreshUid.length} → uid-key fresh read');
-            _restoreMessagesFromRaw(rawFreshUid, uid);
-            return;
-          }
-
-          // Fallback 2: chave anônima (sessões pré-login gravadas antes do OAuth)
-          final anonKey = 'anon_$_kHistKey';
-          final rawAnon = freshPrefs.getString(anonKey);
-          if (rawAnon != null && rawAnon.isNotEmpty && _messages.isEmpty && mounted) {
-            debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_2 uid=$uid '
-                'raw_len=${rawAnon.length} → anon-key rescue');
-            _restoreMessagesFromRaw(rawAnon, uid);
-            return;
-          }
-
-          // Fallback 3: permission-denied with no local cache.
-          //
-          // BUILD 463-A.2-R1: AUTH BARRIER CHECK before declaring a new session.
-          //
-          // ARCHITECTURAL VIOLATION CORRECTED:
-          // The prior implementation ALWAYS resolved this path as a new empty
-          // session (usuário_novo) and locked the UID guard. This is WRONG when
-          // the permission-denied was caused by an active auth barrier (the
-          // Firebase SDK session is not yet established). In that case:
-          //   • There is no authoritative confirmation that this user has no history.
-          //   • Locking _lastLoadWasEmpty=false prevents the retry that would
-          //     succeed once the SDK session propagates.
-          //   • Treating it as usuário_novo is a false new-user initialization.
-          //
-          // FIX: Read the current auth barrier state from AppProvider.
-          //   • authReady → barrier open, SDK session confirmed, truly new user.
-          //     Proceed with the original new-session initialization.
-          //   • Any other state → auth boundary active. Enter degraded-wait mode:
-          //     keep chat in a restricted state, allow retry when auth resolves.
-          if (!mounted) return;
-          final appProvider = context.read<AppProvider>();
-          final isAuthReady = appProvider.authBarrierState ==
-              AppAuthBarrierState.authReady;
-
-          if (!isAuthReady) {
-            // AUTH-BLOCKED DEGRADED STATE: do NOT declare a new user session.
-            // Leave _lastLoadWasEmpty=true so the next auth-state transition
-            // triggers a fresh retry instead of being permanently locked out.
-            _lastLoadedUid    = uid;
-            _lastLoadWasEmpty = true; // permits retry on next auth resolution
-            debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_3 uid=$uid '
-                'barrierState=${appProvider.authBarrierState.name} '
-                '→ auth_boundary_active: degraded_wait, retry_permitted');
-            // Do NOT setState() — avoid UI flicker on a recoverable state.
-            return;
-          }
-
-          // authReady confirmed: this is a genuinely new user with no history.
-          // Proceed with the original new-session initialization.
-          _lastLoadedUid    = uid;
-          _lastLoadWasEmpty = false; // ← engaja trava; sem mais retries até OAuth
-          if (mounted) setState(() {}); // força rebuild do campo de texto
-          debugPrint('[BUILD443][HomeInlineChat] perm_denied_rescue_3 uid=$uid '
-              'barrierState=authReady '
-              '→ genuinely_new_session, chat 100% liberado');
-          return;
-        }
-        debugPrint('[BUILD442][HomeInlineChat] loadHistories error (non-perm): $e uid=$uid');
-      }
-
-      // ── LAYER 3: re-lê SharedPreferences após fetch Firestore bem-sucedido ──
       if (!mounted) return;
-      if (firestoreOk) {
+      final fsResult = await context.read<AppProvider>().loadHistoriesTypedForUi(uid);
+      if (!mounted) return;
+
+      if (fsResult.isSuccess) {
+        // ── _FsSuccess: hydrate active memory structures, mount timeline ────
+        // Provider already wrote _myHistories + persisted cache in loadHistoriesTypedForUi.
+        // Re-read local cache to populate _messages for this widget.
         final rawAfterFetch = (await SharedPreferences.getInstance()).getString(histKey);
-        if (rawAfterFetch == null || rawAfterFetch.isEmpty) {
-          // Firestore responded (barrier open, authReady confirmed) but this uid
-          // has no history docs — genuinely new user. Safe to initialize empty.
-          // BUILD 463-A.2-R1: this path is only reached when firestoreOk=true
-          // (loadHistories() succeeded without throwing). loadHistories() is
-          // guarded by the dual-uid barrier, so a success here implies the SDK
-          // session was confirmed. Not a false-positive new-user init.
+        if (!mounted) return;
+        if (rawAfterFetch != null && rawAfterFetch.isNotEmpty) {
+          _lastLoadWasEmpty = false;
+          _restoreMessagesFromRaw(rawAfterFetch, uid);
+        } else {
+          // Firestore returned data but local persist is not yet visible — rare
+          // race; treat as new session (provider data is in memory via stream).
           _lastLoadedUid    = uid;
-          _lastLoadWasEmpty = false; // sessão nova = resolvida, não empty-loop
+          _lastLoadWasEmpty = false;
           debugPrint('[BUILD442][HomeInlineChat] confirmed_new_user uid=$uid '
-              '→ sem histórico (Firestore authReady confirmed), '
-              'sessão inicializada vazia');
-          return;
+              '→ _FsSuccess but no local cache, sessão inicializada');
         }
-        _lastLoadWasEmpty = false;
-        _restoreMessagesFromRaw(rawAfterFetch, uid);
+
+      } else if (fsResult.isEmpty) {
+        // ── _FsEmpty: ONLY legitimate confirmed_new_user path ───────────────
+        // Firestore responded authoritatively: this uid has zero history docs.
+        // The auth barrier was open (loadHistoriesTypedForUi verifies via the
+        // dual-uid barrier inside FirestoreService.loadHistoriesTyped).
+        _lastLoadedUid    = uid;
+        _lastLoadWasEmpty = false; // engaja trava; sem mais retries até OAuth
+        debugPrint('[BUILD442][HomeInlineChat] confirmed_new_user uid=$uid '
+            '→ _FsEmpty (Firestore authReady confirmed), sessão inicializada vazia');
+        if (mounted) setState(() {}); // força rebuild do campo de texto
+
+      } else if (fsResult.isAuthDenied) {
+        // ── _FsAuthDenied: abort all state mutations — degraded_wait ─────────
+        // Firebase SDK session not established. No authoritative confirmation
+        // that this user has no history. Do NOT emit confirmed_new_user.
+        // Do NOT modify _lastLoadedUid guard — preserve retry on next auth event.
+        // Do NOT set _lastLoadWasEmpty=false — keep retry window open.
+        _lastLoadedUid    = uid;
+        _lastLoadWasEmpty = true; // permits retry on next auth resolution
+        debugPrint('[UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait '
+            'uid=$uid result=_FsAuthDenied → cache frozen, retry_permitted');
+        // Do NOT setState() — avoid UI flicker on a recoverable auth state.
+
       } else {
-        // Firestore lançou erro não-permission-denied (ex: timeout de rede).
-        // BUILD 442: também sinaliza como still_empty mas permite retry futuro
-        // (não trava o UID guard — _lastLoadWasEmpty=true permite nova tentativa).
+        // ── _FsOffline / _FsFailure: hold existing state; freeze rendering ───
+        // Retain in-memory data. Do not overwrite any cache. Permit retry.
         _lastLoadedUid    = uid;
         _lastLoadWasEmpty = true;
-        debugPrint('[BUILD442][HomeInlineChat] firestore_error_non_perm uid=$uid '
-            '→ still_empty, retry permitido na próxima transição');
+        debugPrint('[BUILD442][HomeInlineChat] result=${fsResult.runtimeType} uid=$uid '
+            '→ state frozen, retry permitido na próxima transição');
       }
     } catch (e) {
       debugPrint('[BUILD441][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
@@ -1606,13 +1543,17 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       _lastLoadWasEmpty = false;
       Future.delayed(const Duration(milliseconds: 400), () async {
         if (!mounted) return;
-        // Step 4: força fetch Firestore + rebind stream reativo
-        try {
-          await context.read<AppProvider>().loadHistories();
-        } catch (e) {
-          debugPrint('[BUILD437][HomeInlineChat] loadHistories error: $e');
+        final uidForFetch = context.read<AppProvider>().currentUser?.uid;
+        // Step 4: força fetch Firestore typed — bump generation to invalidate
+        // any stale in-flight future from the previous session epoch.
+        if (uidForFetch != null) {
+          try {
+            await context.read<AppProvider>().loadHistoriesTypedForUi(uidForFetch);
+          } catch (e) {
+            debugPrint('[BUILD437][HomeInlineChat] loadHistoriesTypedForUi error: $e');
+          }
         }
-        // Step 5: relê SharedPreferences (agora populado pelo loadHistories)
+        // Step 5: relê SharedPreferences (agora populado pelo typed fetch)
         if (mounted) _loadChatHistory();
       });
       return; // evita disparo duplo no mesmo frame
