@@ -53,6 +53,310 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'gemini_service_v2.dart';  // GeminiChunk
 import 'ai_gateway_service.dart'; // AiGatewayService.sendStream
 
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 462-STREAMING-CORE — AiEvent: Contrato de Eventos Tipados
+//
+// Hierarquia de eventos imutáveis que trafegam no barramento Stream<AiEvent>.
+// Substitui o uso de strings brutas ou snapshots acumulados entre camadas.
+//
+// Ciclo de vida de um request bem-sucedido:
+//   AiStarted → AiTextDelta (N vezes) → AiSources? → AiCompleted
+//
+// Ciclo de vida de um request com erro:
+//   AiStarted? → AiError
+//
+// Uso:
+//   stream.listen((event) => switch (event) {
+//     AiStarted  e => ...,
+//     AiTextDelta e => ...,
+//     AiToolResult e => ...,
+//     AiSources   e => ...,
+//     AiCompleted e => ...,
+//     AiError     e => ...,
+//   });
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// Evento base imutável do barramento de IA.
+/// Todas as subclasses são `final` — nunca mutadas após criação.
+sealed class AiEvent {
+  const AiEvent();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+/// Emitido IMEDIATAMENTE quando a conexão com o backend é estabelecida.
+/// Carrega metadados reais do servidor — requestId, modelo ativo e provedor.
+///
+/// A UI usa este evento para:
+///   • Exibir skeleton screens durante o round-trip inicial (antes do 1º delta)
+///   • Registrar qual modelo/provedor respondeu (telemetria, debug)
+// ─────────────────────────────────────────────────────────────────────────────
+final class AiStarted extends AiEvent {
+  /// ID único do request gerado pelo ProviderRouterService.
+  final String requestId;
+
+  /// Identificador do modelo em uso (ex: 'gemini-2.5-flash', 'gpt-4o-mini').
+  /// Preenchido com 'gemini-direct' na Part 1 (client-side SSE).
+  final String model;
+
+  /// Provedor ativo: 'gemini_free' | 'gemini_paid' | 'gpt_4o_mini' | 'cloud_function'.
+  final String provider;
+
+  /// Timestamp Unix (ms) de quando o evento foi criado — para métricas de TTFT.
+  final int startedAtMs;
+
+  const AiStarted({
+    required this.requestId,
+    required this.model,
+    required this.provider,
+    int? startedAtMs,
+  }) : startedAtMs = startedAtMs ?? 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+/// Fragmento bruto de texto chegando do modelo — o "delta" do SSE.
+///
+/// NUNCA contém o texto acumulado — apenas o fragmento novo desde o delta
+/// anterior. O acumulador é responsabilidade exclusiva do listener (UI/provider).
+///
+/// A UI usa este evento para:
+///   • Empurrar o delta para o networkBuffer (StringBuffer local, zero setState)
+///   • O Timer.periodic(40ms) extrai do buffer e atualiza o visibleTextNotifier
+// ─────────────────────────────────────────────────────────────────────────────
+final class AiTextDelta extends AiEvent {
+  /// Fragmento bruto de texto — pode ser de 1 char a ~60 chars por SSE chunk.
+  final String delta;
+
+  /// Número de sequência monotonicamente crescente (0-based).
+  /// Permite ao listener detectar gaps ou re-ordenação (não esperados mas possíveis).
+  final int sequence;
+
+  const AiTextDelta({
+    required this.delta,
+    required this.sequence,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+/// Resultado de uma ferramenta ou chamada de função (Google Search, RAG, etc.).
+///
+/// Preparado para extensões futuras (tool_use, function_calling).
+/// Atualmente não emitido no fluxo SSE do Gemini (filtrado por _extractText),
+/// mas a estrutura garante que o barramento suporta o contrato futuro sem
+/// quebrar os listeners existentes.
+// ─────────────────────────────────────────────────────────────────────────────
+final class AiToolResult extends AiEvent {
+  /// Nome da ferramenta invocada (ex: 'google_search', 'rag_lookup').
+  final String toolName;
+
+  /// Dados retornados pela ferramenta em formato livre.
+  final Map<String, dynamic> data;
+
+  const AiToolResult({
+    required this.toolName,
+    required this.data,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+/// Metadados bibliográficos das fontes usadas na resposta.
+/// Emitido ANTES de AiCompleted quando o grounding (Google Search) está ativo.
+///
+/// A UI usa este evento para:
+///   • Renderizar a seção "Fontes" / "Fuentes" abaixo da resposta
+// ─────────────────────────────────────────────────────────────────────────────
+final class AiSources extends AiEvent {
+  /// Lista de fontes bibliográficas estruturadas.
+  /// Cada item: {'title': String, 'url': String, 'snippet': String?}
+  final List<Map<String, String>> sources;
+
+  const AiSources({required this.sources});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+/// Evento final de conclusão — sinaliza que o stream terminou com sucesso.
+/// Carrega o payload estruturado de fechamento para telemetria e persistência.
+///
+/// A UI usa este evento para:
+///   • Disparar a substituição única SelectableText → MarkdownBody
+///   • Persistir o turno no _aiHistory e no Firestore
+///   • Desativar o skeleton/cursor e liberar o campo de texto
+// ─────────────────────────────────────────────────────────────────────────────
+final class AiCompleted extends AiEvent {
+  /// Texto final completo e definitivo (acumulação de todos os AiTextDelta.delta).
+  /// É o source-of-truth para persistência em _aiHistory e Firestore.
+  final String fullText;
+
+  /// Número total de tokens de entrada estimados (para telemetria/billing).
+  final int inputTokensApprox;
+
+  /// Número total de tokens de saída estimados.
+  final int outputTokensApprox;
+
+  /// Duração total do request em milissegundos (do AiStarted ao AiCompleted).
+  final int durationMs;
+
+  /// Provedor que efetivamente respondeu (pode diferir do AiStarted.provider
+  /// se houve fallback durante o stream).
+  final String usedProvider;
+
+  const AiCompleted({
+    required this.fullText,
+    this.inputTokensApprox = 0,
+    this.outputTokensApprox = 0,
+    this.durationMs = 0,
+    this.usedProvider = '',
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+/// Evento de erro — encerra o stream com falha identificada.
+/// Nunca emitido simultaneamente com AiCompleted no mesmo request.
+///
+/// A UI usa este evento para:
+///   • Exibir o card nativo de erro com botão de retry
+///   • Escalar para o próximo provedor da cadeia de fallback (layers 2 e 3)
+// ─────────────────────────────────────────────────────────────────────────────
+final class AiError extends AiEvent {
+  /// Código canônico do erro — compatível com os errorCode do GeminiChunk:
+  ///   'quota', 'timeout', 'network', 'http_503', 'api_key_invalid',
+  ///   'cf_unauthenticated', 'cf_timeout', 'cf_internal', etc.
+  final String errorCode;
+
+  /// Mensagem humano-legível (opcional — para debug/logs).
+  final String? message;
+
+  const AiError({
+    required this.errorCode,
+    this.message,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers de conversão: GeminiChunk → AiEvent
+//
+// Permitem a migração incremental: o transporte legado (GeminiChunk) continua
+// funcionando enquanto o barramento de eventos tipados é adotado gradualmente.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Converte um [Stream<GeminiChunk>] para [Stream<AiEvent>].
+///
+/// Mapeamento:
+///   GeminiChunk.isError → AiError(errorCode)
+///   GeminiChunk.isDone  → AiCompleted(fullText: accumulated)
+///   chunk.text.isNotEmpty → AiTextDelta(delta, sequence)
+///
+/// NOTA: O acumulador é gerenciado internamente para produzir o fullText do
+/// AiCompleted. Listeners de AiTextDelta devem acumular localmente.
+Stream<AiEvent> geminiChunkStreamToAiEvents(
+  Stream<GeminiChunk> chunkStream, {
+  String requestId = '',
+  String model = 'gemini-direct',
+  String provider = 'gemini_free',
+}) async* {
+  final startMs = DateTime.now().millisecondsSinceEpoch;
+
+  yield AiStarted(
+    requestId:   requestId,
+    model:       model,
+    provider:    provider,
+    startedAtMs: startMs,
+  );
+
+  int sequence = 0;
+  final accumulator = StringBuffer();
+
+  await for (final chunk in chunkStream) {
+    if (chunk.isError) {
+      yield AiError(
+        errorCode: chunk.errorCode ?? 'unknown',
+        message:   'GeminiChunk error: ${chunk.errorCode}',
+      );
+      return;
+    }
+
+    if (chunk.text.isNotEmpty) {
+      accumulator.write(chunk.text);
+      yield AiTextDelta(delta: chunk.text, sequence: sequence++);
+    }
+
+    if (chunk.isDone) {
+      yield AiCompleted(
+        fullText:     accumulator.toString(),
+        durationMs:   DateTime.now().millisecondsSinceEpoch - startMs,
+        usedProvider: provider,
+      );
+      return;
+    }
+  }
+
+  // Stream fechou sem AiCompleted — emite conclusão com o texto acumulado
+  if (accumulator.isNotEmpty) {
+    yield AiCompleted(
+      fullText:     accumulator.toString(),
+      durationMs:   DateTime.now().millisecondsSinceEpoch - startMs,
+      usedProvider: provider,
+    );
+  }
+}
+
+/// Converte um [PaidProxyResult] (Future) em [Stream<AiEvent>] com deltas
+/// simulados — compatível com o barramento tipado.
+///
+/// Usado pelos fallbacks Layer 2 (GPT) e Layer 3 (Paid Proxy) para que a UI
+/// receba a mesma sequência AiStarted→AiTextDelta→AiCompleted independente
+/// de qual provedor respondeu.
+Stream<AiEvent> paidProxyResultToAiEvents(
+  Future<dynamic> proxyFuture, {
+  required String requestId,
+  required String provider,
+  int chunkSize = 30,
+  Duration chunkDelay = const Duration(milliseconds: 18),
+}) async* {
+  final startMs = DateTime.now().millisecondsSinceEpoch;
+
+  yield AiStarted(
+    requestId:   requestId,
+    model:       provider,
+    provider:    provider,
+    startedAtMs: startMs,
+  );
+
+  dynamic result;
+  try {
+    result = await proxyFuture;
+  } catch (e) {
+    yield AiError(errorCode: 'proxy_exception', message: e.toString());
+    return;
+  }
+
+  // Extrai text e errorCode via duck-typing (compatível com PaidProxyResult)
+  final text      = (result?.text as String?) ?? '';
+  final success   = (result?.success as bool?) ?? false;
+  final errorCode = (result?.errorCode as String?) ?? 'unknown';
+
+  if (!success || text.isEmpty) {
+    yield AiError(errorCode: errorCode.isNotEmpty ? errorCode : 'empty_response');
+    return;
+  }
+
+  // Streaming simulado: fragmenta em chunks para efeito de digitação
+  int offset   = 0;
+  int sequence = 0;
+  while (offset < text.length) {
+    final end   = (offset + chunkSize).clamp(0, text.length);
+    final delta = text.substring(offset, end);
+    yield AiTextDelta(delta: delta, sequence: sequence++);
+    offset = end;
+    if (offset < text.length) await Future<void>.delayed(chunkDelay);
+  }
+
+  yield AiCompleted(
+    fullText:     text,
+    durationMs:   DateTime.now().millisecondsSinceEpoch - startMs,
+    usedProvider: provider,
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // FEATURE FLAG — Part 1 (client-side) vs Part 2 (server-side)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -363,6 +667,35 @@ class AiEngineService {
       history:      history,
       longResponse: longResponse,
       useGrounding: useGrounding,
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // dispatchAsEvents() — barramento de eventos tipados (BUILD 462)
+  // ─────────────────────────────────────────────────────────────────────────
+  /// Despacha um payload e retorna um [Stream<AiEvent>] tipado.
+  ///
+  /// Emite a sequência:
+  ///   [AiStarted] → [AiTextDelta]* → [AiSources]? → [AiCompleted]
+  /// ou em caso de falha:
+  ///   [AiStarted] → [AiError]
+  ///
+  /// Internamente converte o [Stream<GeminiChunk>] legado para o barramento
+  /// tipado via [geminiChunkStreamToAiEvents] — zero duplicação de lógica de
+  /// transporte. Permite migração incremental: callers novos usam AiEvent,
+  /// callers legados continuam com [dispatch] + GeminiChunk.
+  static Stream<AiEvent> dispatchAsEvents(
+    AiEnginePayload payload, {
+    String requestId = '',
+  }) {
+    final chunkStream = dispatch(payload);
+    return geminiChunkStreamToAiEvents(
+      chunkStream,
+      requestId: requestId.isNotEmpty
+          ? requestId
+          : 'req_${DateTime.now().millisecondsSinceEpoch}',
+      model:    kUseCloudFunctions ? 'cloud_function' : 'gemini-direct',
+      provider: kUseCloudFunctions ? 'cloud_function' : 'gemini_free',
     );
   }
 

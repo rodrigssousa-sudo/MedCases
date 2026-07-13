@@ -1966,3 +1966,336 @@ exports.atenderConsultaIA = onCall(
     };
   }
 );
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BUILD 462-STREAMING-CORE — atenderConsultaIAStream
+//
+// Endpoint HTTP com Server-Sent Events (SSE) reais para streaming server-side.
+//
+// RESPONSABILIDADE:
+//   Mesma pipeline de segurança do atenderConsultaIA (onCall) mas retorna
+//   a resposta como stream SSE real via onRequest — eliminando a necessidade
+//   de streaming simulado no cliente (chunks de 25 chars / 18ms delay).
+//
+// VANTAGENS SOBRE onCall (atenderConsultaIA):
+//   • TTFT real: primeiro token chega ao cliente em ~600ms (sem cold-start JSON)
+//   • Sem limite de 10MB por response (onCall JSON único)
+//   • Client observa progresso em tempo real — UX idêntica ao Gemini Free SSE
+//
+// SEGURANÇA:
+//   • Autenticação via Firebase ID Token no header Authorization: Bearer <token>
+//   • Mesma validação de UID e status Firestore do atenderConsultaIA
+//   • GEMINI_AI_KEY lida exclusivamente server-side via Firebase Secret
+//   • CORS restrito — apenas origens confiáveis podem acessar
+//
+// PROTOCOLO SSE (Server-Sent Events):
+//   Content-Type: text/event-stream
+//   Cada evento: "data: {\"delta\":\"...\",\"seq\":N}\n\n"
+//   Conclusão:   "data: {\"done\":true,\"model\":\"...\",\"durationMs\":N}\n\n"
+//   Erro:        "data: {\"error\":\"código\"}\n\n"
+//
+// FLUTTER CLIENT (futuro — quando kUseCloudFunctions=true):
+//   http.Client().send(request) → stream de bytes → parse SSE → GeminiChunk
+//   Sem mudança na UI — o barramento AiEvent absorve transparentemente.
+//
+// DEPLOY:
+//   firebase deploy --only functions:atenderConsultaIAStream
+// ══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Faz streaming da resposta do Gemini via SSE — transmite delta a delta.
+ * @param {string} geminiKey  - Chave da API Gemini (lida do secret)
+ * @param {string} model      - Modelo Gemini a usar
+ * @param {string} systemPrompt - System instruction completa
+ * @param {Array}  contents   - Array de turns [{role, parts:[{text}]}]
+ * @param {number} maxTokens  - Limite de tokens de saída
+ * @param {Function} onDelta  - Callback por fragmento: (delta: string, seq: number) => void
+ * @returns {Promise<{text, inputTokensApprox, outputTokensApprox}>}
+ */
+function callGeminiRestSSE(geminiKey, model, systemPrompt, contents, maxTokens, onDelta) {
+  return new Promise((resolve, reject) => {
+    const modelId  = model || 'gemini-2.5-flash';
+    const endpoint = `/v1beta/models/${modelId}:streamGenerateContent?alt=sse`;
+
+    const bodyObj = {
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents,
+      generationConfig: {
+        maxOutputTokens: maxTokens,
+        temperature:     0.4,
+        topP:            0.95,
+        topK:            40,
+      },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      ],
+    };
+    const bodyStr = JSON.stringify(bodyObj);
+
+    const options = {
+      hostname: 'generativelanguage.googleapis.com',
+      path:     `${endpoint}&key=${geminiKey}`,
+      method:   'POST',
+      headers: {
+        'Content-Type':   'application/json',
+        'Content-Length': Buffer.byteLength(bodyStr),
+      },
+      timeout: AI_TIMEOUT_MS_CF,
+    };
+
+    const req = https.request(options, (res) => {
+      if (res.statusCode !== 200) {
+        let errBody = '';
+        res.on('data', (c) => { errBody += c; });
+        res.on('end',  () => reject(new Error(`gemini_api_error:${res.statusCode}:${errBody.substring(0,200)}`)));
+        return;
+      }
+
+      let buffer       = '';
+      let accumulated  = '';
+      let seq          = 0;
+      let inputTokens  = 0;
+      let outputTokens = 0;
+
+      res.on('data', (chunk) => {
+        buffer += chunk.toString('utf8');
+        // SSE lines: cada evento separado por '\n\n', prefixo 'data: '
+        const lines = buffer.split('\n');
+        buffer = lines.pop(); // mantém linha incompleta no buffer
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith('data:')) continue;
+          const jsonStr = trimmed.slice(5).trim();
+          if (!jsonStr || jsonStr === '[DONE]') continue;
+
+          let parsed;
+          try { parsed = JSON.parse(jsonStr); } catch (_) { continue; }
+
+          const candidate = parsed?.candidates?.[0];
+          if (!candidate) continue;
+
+          // Filtra CoT/thought
+          const parts = candidate?.content?.parts || [];
+          let delta = '';
+          for (const part of parts) {
+            if (part.thought === true) continue;
+            if (typeof part.text === 'string' && part.text) {
+              delta += part.text;
+            }
+          }
+
+          if (delta) {
+            accumulated += delta;
+            onDelta(delta, seq++);
+          }
+
+          // Tokens
+          if (parsed?.usageMetadata) {
+            inputTokens  = parsed.usageMetadata.promptTokenCount     || inputTokens;
+            outputTokens = parsed.usageMetadata.candidatesTokenCount || outputTokens;
+          }
+        }
+      });
+
+      res.on('end', () => {
+        if (!accumulated) {
+          return reject(new Error('gemini_empty_response:SSE'));
+        }
+        resolve({
+          text:               accumulated,
+          inputTokensApprox:  inputTokens  || Math.ceil((systemPrompt.length) / 4),
+          outputTokensApprox: outputTokens || Math.ceil(accumulated.length / 4),
+        });
+      });
+
+      res.on('error', (err) => reject(new Error(`gemini_stream_error:${err.message}`)));
+    });
+
+    req.on('timeout', () => { req.destroy(); reject(new Error('gemini_timeout')); });
+    req.on('error',   (err) => reject(new Error(`gemini_network_error:${err.code || err.message}`)));
+    req.write(bodyStr);
+    req.end();
+  });
+}
+
+exports.atenderConsultaIAStream = onRequest(
+  {
+    region:         'us-central1',
+    secrets:        [GEMINI_AI_KEY],
+    timeoutSeconds: 120,
+    memory:         '512MiB',
+    cors:           false, // CORS manual abaixo — mais granular
+  },
+  async (req, res) => {
+    const startMs = Date.now();
+
+    // ── CORS ──────────────────────────────────────────────────────────────────
+    const allowedOrigins = [
+      'https://medcasespro.app',
+      'https://medcases-pro.web.app',
+      'https://medcases-pro.firebaseapp.com',
+    ];
+    const origin = req.headers.origin || '';
+    const isAllowedOrigin = allowedOrigins.includes(origin) ||
+      (process.env.FUNCTIONS_EMULATOR === 'true'); // permite emulador local
+
+    if (isAllowedOrigin) {
+      res.set('Access-Control-Allow-Origin', origin);
+    }
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.set('Access-Control-Max-Age', '3600');
+
+    if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+    if (req.method !== 'POST')    { res.status(405).json({ error: 'method_not_allowed' }); return; }
+
+    // ── AUTENTICAÇÃO via Firebase ID Token ────────────────────────────────────
+    const authHeader = req.headers.authorization || '';
+    if (!authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ error: 'unauthenticated', message: 'Bearer token obrigatório.' });
+      return;
+    }
+    const idToken = authHeader.slice(7).trim();
+    let decodedToken;
+    try {
+      decodedToken = await admin.auth().verifyIdToken(idToken);
+    } catch (err) {
+      console.warn('[STREAM_CF] Token inválido:', err.code);
+      res.status(401).json({ error: 'invalid_token' });
+      return;
+    }
+    const callerUid = decodedToken.uid;
+
+    // ── DE-SERIALIZAÇÃO DO PAYLOAD ────────────────────────────────────────────
+    const data = req.body || {};
+    const rawUserMessage  = String(data.userMessage  || '').trim();
+    const payloadUid      = String(data.uid          || '').trim();
+    const isEsRaw         = Boolean(data.isEs);
+    const rawSystemPrompt = String(data.systemPrompt || '').trim();
+    const rawHistory      = Array.isArray(data.history) ? data.history : [];
+    const longResponseRaw = Boolean(data.longResponse);
+
+    // ── VALIDAÇÃO UID ─────────────────────────────────────────────────────────
+    if (payloadUid && payloadUid !== callerUid) {
+      res.status(403).json({ error: 'permission_denied' });
+      return;
+    }
+
+    // ── SANITIZAÇÃO ───────────────────────────────────────────────────────────
+    const safeUserMessage  = rawUserMessage.substring(0, 4000);
+    const safeSystemPrompt = rawSystemPrompt.substring(0, 12000);
+    if (!safeUserMessage) {
+      res.status(400).json({ error: 'empty_message' });
+      return;
+    }
+
+    // ── STATUS FIRESTORE ──────────────────────────────────────────────────────
+    try {
+      const db      = admin.firestore();
+      const userDoc = await db.doc(`users/${callerUid}`).get();
+      const status  = userDoc.exists ? (userDoc.data().status || '') : '';
+      if (status !== 'approved') {
+        res.status(403).json({ error: 'not_approved' });
+        return;
+      }
+    } catch (err) {
+      console.error('[STREAM_CF] Firestore check falhou:', err.message);
+      res.status(500).json({ error: 'firestore_error' });
+      return;
+    }
+
+    // ── CHAVE GEMINI ──────────────────────────────────────────────────────────
+    const geminiKey = GEMINI_AI_KEY.value();
+    if (!geminiKey) {
+      console.error('[STREAM_CF] GEMINI_AI_KEY não configurado.');
+      res.status(500).json({ error: 'missing_api_key' });
+      return;
+    }
+
+    // ── MONTA CONTENTS ────────────────────────────────────────────────────────
+    const AI_MAX_HISTORY_TURNS = 8;
+    const safeHistory = rawHistory.slice(-(AI_MAX_HISTORY_TURNS * 2));
+    const contents = [];
+    for (const turn of safeHistory) {
+      const role    = (turn.role === 'model' || turn.role === 'assistant') ? 'model' : 'user';
+      const content = String(turn.content || turn.text || '').trim();
+      if (content) contents.push({ role, parts: [{ text: content }] });
+    }
+    contents.push({ role: 'user', parts: [{ text: safeUserMessage }] });
+
+    const maxOutputTokens = longResponseRaw ? 2048 : 900;
+
+    // ── INICIA RESPOSTA SSE ───────────────────────────────────────────────────
+    res.set('Content-Type',  'text/event-stream; charset=utf-8');
+    res.set('Cache-Control', 'no-cache');
+    res.set('Connection',    'keep-alive');
+    res.set('X-Accel-Buffering', 'no'); // desativa buffer no nginx/proxy
+    res.flushHeaders();
+
+    console.log(
+      `[STREAM_CF] → SSE uid=${callerUid} longResponse=${longResponseRaw} `
+      + `histMsgs=${safeHistory.length} maxOut=${maxOutputTokens}`
+    );
+
+    // ── STREAMING GEMINI → SSE ────────────────────────────────────────────────
+    let totalText = '';
+    try {
+      const result = await callGeminiRestSSE(
+        geminiKey,
+        'gemini-2.5-flash',
+        safeSystemPrompt || 'Você é um assistente médico clínico especializado.',
+        contents,
+        maxOutputTokens,
+        (delta, seq) => {
+          // Envia cada delta como evento SSE imediatamente
+          totalText += delta;
+          const payload = JSON.stringify({ delta, seq });
+          res.write(`data: ${payload}\n\n`);
+          // Express em Cloud Functions gerencia o flush automaticamente
+          // mas em alguns ambientes o flush explícito ajuda:
+          if (typeof res.flush === 'function') res.flush();
+        }
+      );
+
+      const durationMs = Date.now() - startMs;
+      console.log(
+        `[STREAM_CF] ✅ uid=${callerUid} durationMs=${durationMs} `
+        + `textLen=${result.text.length} `
+        + `inputTokensApprox=${result.inputTokensApprox} `
+        + `outputTokensApprox=${result.outputTokensApprox}`
+      );
+
+      // Evento de conclusão — carrega metadados do request
+      const donePayload = JSON.stringify({
+        done:               true,
+        model:              'gemini-2.5-flash',
+        inputTokensApprox:  result.inputTokensApprox,
+        outputTokensApprox: result.outputTokensApprox,
+        durationMs,
+      });
+      res.write(`data: ${donePayload}\n\n`);
+      res.end();
+
+    } catch (err) {
+      const errMsg = (err && err.message) ? err.message : String(err);
+      console.error('[STREAM_CF] Erro no stream Gemini:', errMsg);
+
+      // Envia evento de erro SSE antes de fechar
+      const errCode = errMsg.includes('timeout') ? 'cf_timeout'
+                    : errMsg.includes('unauthenticated') ? 'cf_unauthenticated'
+                    : errMsg.includes('empty_response') ? 'cf_empty_response'
+                    : 'cf_internal';
+
+      try {
+        res.write(`data: ${JSON.stringify({ error: errCode })}\n\n`);
+        res.end();
+      } catch (_) {
+        // Conexão já fechada pelo cliente
+      }
+    }
+  }
+);

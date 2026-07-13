@@ -43,6 +43,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb;
 import 'package:http/http.dart' as http;
 import 'auth_service.dart';
+import 'gemini_service_v2.dart'; // GeminiChunk — usado pelos métodos de stream (BUILD 462)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PaidProxyResult — resultado da chamada ao proxy pago
@@ -546,6 +547,136 @@ class ProviderRouterService {
       outputTokensApprox: outputTokensApprox,
       durationMs:         durationMs,
     );
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // BUILD 462-STREAMING-CORE — Stream variants das chamadas de proxy
+  //
+  // callPaidProxyStream() e callGptProxyStream() são os equivalentes Streaming
+  // dos Futures callPaidProxy() / callGptProxy().
+  //
+  // Contrato de emissão (idêntico ao barramento AiEvent):
+  //   GeminiChunk(isDone:false, text: delta) → fragmentos do texto
+  //   GeminiChunk(isDone:true)               → conclusão
+  //   GeminiChunk.error(code)                → falha
+  //
+  // Estratégia de streaming simulado:
+  //   Os proxies (geminiPaidProxy CF) retornam JSON único — sem SSE nativo.
+  //   Fragmentamos o texto completo em chunks de [_kStreamChunkSize] chars
+  //   com delay de [_kStreamChunkDelay] entre cada um, preservando o efeito
+  //   visual de digitação idêntico ao SSE real do Gemini Free.
+  //
+  // O AppProvider pode substituir os bloco try/await callPaidProxy por
+  // yield* callPaidProxyStream() mantendo a mesma lógica de fallback.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // Configuração do streaming simulado
+  static const int _kStreamChunkSize = 30;
+  static const Duration _kStreamChunkDelay = Duration(milliseconds: 18);
+
+  // ── callPaidProxyStream — Layer 3 Gemini Paid via streaming simulado ─────
+  /// Equivalente a [callPaidProxy] mas emite [Stream<GeminiChunk>] em vez de Future.
+  ///
+  /// A UI recebe a mesma sequência de chunks que receberia do SSE real do
+  /// Gemini Free — sem mudanças no listener do AppProvider ou nas UIs.
+  ///
+  /// Emissão:
+  ///   • GeminiChunk.error(code) se o proxy falhou
+  ///   • GeminiChunk(text: delta, isDone: false) por chunk de texto
+  ///   • GeminiChunk(isDone: true) ao final
+  static Stream<GeminiChunk> callPaidProxyStream({
+    required String userMessage,
+    required String systemPrompt,
+    List<Map<String, String>> history = const [],
+    String mode = 'plantao',
+    String lang = 'pt',
+    String requestId = '',
+    int maxOutputTokens = 800,
+  }) async* {
+    final result = await callPaidProxy(
+      userMessage:     userMessage,
+      systemPrompt:    systemPrompt,
+      history:         history,
+      mode:            mode,
+      lang:            lang,
+      requestId:       requestId,
+      maxOutputTokens: maxOutputTokens,
+    );
+
+    if (!result.success || result.text.isEmpty) {
+      yield GeminiChunk.error(result.errorCode ?? 'proxy_stream_error');
+      return;
+    }
+
+    // Streaming simulado: fragmenta texto em chunks de tamanho fixo
+    int offset   = 0;
+    while (offset < result.text.length) {
+      final end   = (offset + _kStreamChunkSize).clamp(0, result.text.length);
+      final delta = result.text.substring(offset, end);
+      yield GeminiChunk(text: delta, isDone: false);
+      offset = end;
+      if (offset < result.text.length) {
+        await Future<void>.delayed(_kStreamChunkDelay);
+      }
+    }
+
+    yield GeminiChunk.done;
+
+    if (kDebugMode) {
+      debugPrint('[PAID_PROXY_STREAM] requestId=$requestId '
+          'model=${result.model} textLen=${result.text.length} '
+          'durationMs=${result.durationMs}');
+    }
+  }
+
+  // ── callGptProxyStream — Layer 2 GPT-4o Mini via streaming simulado ──────
+  /// Equivalente a [callGptProxy] mas emite [Stream<GeminiChunk>] em vez de Future.
+  ///
+  /// Mesmo contrato de emissão do [callPaidProxyStream] — compatível com o
+  /// listener do AppProvider que consome GeminiChunk.
+  static Stream<GeminiChunk> callGptProxyStream({
+    required String userMessage,
+    required String systemPrompt,
+    List<Map<String, String>> history = const [],
+    String mode = 'plantao',
+    String lang = 'pt',
+    String requestId = '',
+    int maxOutputTokens = 800,
+  }) async* {
+    final result = await callGptProxy(
+      userMessage:     userMessage,
+      systemPrompt:    systemPrompt,
+      history:         history,
+      mode:            mode,
+      lang:            lang,
+      requestId:       requestId,
+      maxOutputTokens: maxOutputTokens,
+    );
+
+    if (!result.success || result.text.isEmpty) {
+      yield GeminiChunk.error(result.errorCode ?? 'gpt_proxy_stream_error');
+      return;
+    }
+
+    // Streaming simulado
+    int offset = 0;
+    while (offset < result.text.length) {
+      final end   = (offset + _kStreamChunkSize).clamp(0, result.text.length);
+      final delta = result.text.substring(offset, end);
+      yield GeminiChunk(text: delta, isDone: false);
+      offset = end;
+      if (offset < result.text.length) {
+        await Future<void>.delayed(_kStreamChunkDelay);
+      }
+    }
+
+    yield GeminiChunk.done;
+
+    if (kDebugMode) {
+      debugPrint('[GPT_PROXY_STREAM] requestId=$requestId '
+          'model=${result.model} textLen=${result.text.length} '
+          'durationMs=${result.durationMs}');
+    }
   }
 
   // ── testPaidProxy — testa a conectividade com a Cloud Function ───────────

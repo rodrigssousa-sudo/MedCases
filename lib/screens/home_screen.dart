@@ -2921,7 +2921,17 @@ String _homeCleanPartialMd(String text) {
 // Streaming safety: _homeCleanPartialMd() fecha ** ímpares antes de passar
 //   para o MarkdownBody — elimina artefatos de tokens incompletos.
 // ─────────────────────────────────────────────────────────────────────────────
-class _AiBubble extends StatelessWidget {
+// ─────────────────────────────────────────────────────────────────────────────
+// _AiBubble — BUILD 462-STREAMING-CORE: Batch Rendering Engine (home mini-chat)
+//
+// Migrado de StatelessWidget → StatefulWidget para suportar:
+//   • networkBuffer + Timer.periodic(40ms): desacopla chegada de chunks da UI
+//   • SelectableText durante streaming ativo (zero overhead de parse Markdown)
+//   • MarkdownBody em disparo único após conclusão (layout premium final)
+//   • Skeleton screen durante fase AiStarted (antes do 1º delta)
+//   • SelectionArea do pai permanece 100% funcional em ambas as fases
+// ─────────────────────────────────────────────────────────────────────────────
+class _AiBubble extends StatefulWidget {
   final String text;
   final bool isError;
   final bool isStreaming;
@@ -2938,118 +2948,208 @@ class _AiBubble extends StatelessWidget {
     this.onExpand,
   });
 
-  static const _kGreen     = Color(0xFF0D7A55);
-  static const _kCyan      = Color(0xFF00E5FF);
-  static const _kTeal      = Color(0xFF008CA4);
-  static const _kFerrari   = Color(0xFFFF2400);
+  @override
+  State<_AiBubble> createState() => _AiBubbleState();
+}
+
+class _AiBubbleState extends State<_AiBubble>
+    with SingleTickerProviderStateMixin {
+  static const _kGreen   = Color(0xFF0D7A55);
+  static const _kCyan    = Color(0xFF00E5FF);
+  static const _kTeal    = Color(0xFF008CA4);
+  static const _kFerrari = Color(0xFFFF2400);
+
+  // ── BUILD 462: Batch Rendering ────────────────────────────────────────────
+  /// Texto visível acumulado localmente (não vem do widget.text durante stream).
+  String _visibleText = '';
+
+  /// Buffer de rede: acumula deltas brutos com zero setState.
+  final StringBuffer _networkBuffer = StringBuffer();
+
+  /// Timer de 40ms — limita rebuilds a 25/s durante streaming.
+  Timer? _renderTimer;
+
+  /// true após isStreaming mudar de true → false (disparo único MarkdownBody).
+  bool _streamingComplete = false;
+
+  // ── Skeleton pulsante ─────────────────────────────────────────────────────
+  late final AnimationController _skeletonCtrl;
+  late final Animation<double> _skeletonOpacity;
 
   @override
-  Widget build(BuildContext context) {
-    final bubbleBg = dark ? const Color(0xFF161616) : const Color(0xFFF9F9F9);
-    final bubbleBorder = isError
-        ? Colors.red.withOpacity(0.3)
-        : (dark ? Colors.white.withOpacity(0.07) : const Color(0xFFE2E8F0));
-    final textCol = isError
-        ? Colors.red.shade400
-        : (dark ? Colors.white.withOpacity(0.88) : const Color(0xFF1A202C));
+  void initState() {
+    super.initState();
+    _visibleText = widget.text;
+    _streamingComplete = !widget.isStreaming;
 
-    // CAMADA 2 (render-time) — limpa metadados, CoT e tags internas.
-    // Para streaming: também aplica sanitização de markdown parcial.
-    String displayText = isError ? text : _cleanHomeAiText(text);
-    if (isStreaming && !isError) {
-      displayText = _homeCleanPartialMd(displayText);
+    // Skeleton animation
+    _skeletonCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat(reverse: true);
+    _skeletonOpacity = Tween<double>(begin: 0.25, end: 0.65).animate(
+      CurvedAnimation(parent: _skeletonCtrl, curve: Curves.easeInOut),
+    );
+
+    // Se não está streamando, começa já completo
+    if (!widget.isStreaming) {
+      _skeletonCtrl.stop();
     }
-    // Remove cursor ▌ do texto antes de passar ao MarkdownBody
-    final mdText = displayText.replaceAll('\u258c', '');
+  }
 
-    // ── MarkdownBody com stylesheet clínico premium ──────────────────────────
-    Widget buildBody() {
-      if (isError) {
+  @override
+  void didUpdateWidget(_AiBubble old) {
+    super.didUpdateWidget(old);
+
+    final streamingJustEnded = old.isStreaming && !widget.isStreaming;
+
+    if (streamingJustEnded) {
+      // Para o timer e drena residual
+      _renderTimer?.cancel();
+      _renderTimer = null;
+      _skeletonCtrl.stop();
+
+      // Comita o texto definitivo do provider como source-of-truth
+      final residual = _networkBuffer.toString();
+      _networkBuffer.clear();
+      final finalText = widget.text.isNotEmpty
+          ? widget.text
+          : (_visibleText + residual);
+
+      try {
+        setState(() {
+          _visibleText       = finalText;
+          _streamingComplete = true;
+        });
+      } catch (_) {}
+      return;
+    }
+
+    // Streaming continua — empurra delta novo para o buffer
+    if (widget.isStreaming && widget.text.length > _visibleText.length + _networkBuffer.length) {
+      final alreadyKnown = _visibleText.length + _networkBuffer.length;
+      final delta = widget.text.substring(alreadyKnown);
+      _networkBuffer.write(delta);
+      _ensureTimerRunning();
+    }
+
+    // Bolha histórica (não streaming): sincroniza texto diretamente
+    if (!widget.isStreaming && !old.isStreaming && old.text != widget.text) {
+      setState(() {
+        _visibleText       = widget.text;
+        _streamingComplete = true;
+      });
+    }
+  }
+
+  void _ensureTimerRunning() {
+    if (_renderTimer != null && _renderTimer!.isActive) return;
+    _renderTimer = Timer.periodic(const Duration(milliseconds: 40), (_) {
+      if (!mounted) { _renderTimer?.cancel(); return; }
+      final pending = _networkBuffer.toString();
+      if (pending.isEmpty) return;
+      _networkBuffer.clear();
+      setState(() { _visibleText += pending; });
+    });
+  }
+
+  @override
+  void dispose() {
+    _renderTimer?.cancel();
+    _skeletonCtrl.dispose();
+    super.dispose();
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
+  @override
+  Widget build(BuildContext context) {
+    final bubbleBg = widget.dark ? const Color(0xFF161616) : const Color(0xFFF9F9F9);
+    final bubbleBorder = widget.isError
+        ? Colors.red.withOpacity(0.3)
+        : (widget.dark ? Colors.white.withOpacity(0.07) : const Color(0xFFE2E8F0));
+    final textCol = widget.isError
+        ? Colors.red.shade400
+        : (widget.dark ? Colors.white.withOpacity(0.88) : const Color(0xFF1A202C));
+
+    Widget buildBodyContent() {
+      // ── SKELETON: fase AiStarted (stream ativo, nenhum texto ainda) ─────────
+      if (widget.isStreaming && _visibleText.isEmpty && _networkBuffer.isEmpty) {
+        return AnimatedBuilder(
+          animation: _skeletonOpacity,
+          builder: (_, __) => Opacity(
+            opacity: _skeletonOpacity.value,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              _skeletonBar(widget.dark, double.infinity),
+              const SizedBox(height: 7),
+              _skeletonBar(widget.dark, double.infinity),
+              const SizedBox(height: 7),
+              _skeletonBar(widget.dark, 140),
+            ]),
+          ),
+        );
+      }
+
+      // ── ERRO: Text simples ─────────────────────────────────────────────────
+      if (widget.isError) {
         return Text(
-          mdText,
+          _visibleText.isNotEmpty ? _visibleText : widget.text,
           style: TextStyle(fontSize: 13, color: textCol, height: 1.5),
         );
       }
 
-      // Limite de linhas durante streaming para performance
-      // (garante que MarkdownBody não re-layout todo o texto a cada chunk)
-      final String renderText;
-      if (isStreaming) {
-        final lines = mdText.split('\n');
-        renderText = lines.length > 22
-            ? lines.sublist(0, 22).join('\n')
-            : mdText;
-      } else {
-        renderText = mdText;
+      // ── STREAMING ATIVO (texto cru): SelectableText — zero parse overhead ──
+      if (widget.isStreaming && !_streamingComplete) {
+        final rawText = _visibleText.replaceAll('\u258c', '');
+        return SelectableText(
+          rawText,
+          style: TextStyle(
+            fontSize: 13.5,
+            color: textCol,
+            height: 1.45,
+          ),
+        );
       }
 
+      // ── PÓS-CONCLUSÃO (disparo único): MarkdownBody com layout premium ─────
+      String displayText = _cleanHomeAiText(_visibleText.isNotEmpty ? _visibleText : widget.text);
+      final mdText = displayText.replaceAll('\u258c', '');
+
       return MarkdownBody(
-        data: renderText,
+        data: mdText,
         selectable: false,
         softLineBreak: true,
         styleSheet: MarkdownStyleSheet(
-          // Parágrafo base: mesma fonte, espaçamento respiro
-          p: TextStyle(
-            fontSize: 13.5,
-            color: textCol,
-            height: 1.55,
-          ),
-          // Negrito (**...***) — cor vibrante exclusiva para fármacos e condutas
-          // Dark: cyan médico / Light: vermelho Ferrari (contraste ≥ 5:1)
+          p: TextStyle(fontSize: 13.5, color: textCol, height: 1.55),
           strong: TextStyle(
-            fontSize: 13.5,
-            fontWeight: FontWeight.w700,
-            color: dark ? _kCyan : _kFerrari,
+            fontSize: 13.5, fontWeight: FontWeight.w700,
+            color: widget.dark ? _kCyan : _kFerrari,
           ),
-          // Itálico: neutro — sem destaque de cor
-          em: TextStyle(
-            fontSize: 13.5,
-            color: textCol,
-            fontStyle: FontStyle.italic,
-          ),
-          // Marcadores de lista — cor discreta, indentação precisa
+          em: TextStyle(fontSize: 13.5, color: textCol, fontStyle: FontStyle.italic),
           listBullet: TextStyle(
             fontSize: 13.5,
-            color: dark ? _kCyan.withOpacity(0.70) : _kTeal,
+            color: widget.dark ? _kCyan.withOpacity(0.70) : _kTeal,
           ),
-          // Títulos — h2 Vermelho Ferrari negrito, h3 cyan/teal
           h2: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w800,
-            color: dark ? _kCyan : _kFerrari,
-            letterSpacing: 0.1,
-            height: 1.3,
+            fontSize: 15, fontWeight: FontWeight.w800,
+            color: widget.dark ? _kCyan : _kFerrari,
+            letterSpacing: 0.1, height: 1.3,
           ),
           h3: TextStyle(
-            fontSize: 13.5,
-            fontWeight: FontWeight.w700,
-            color: dark ? _kCyan : _kTeal,
-            height: 1.3,
+            fontSize: 13.5, fontWeight: FontWeight.w700,
+            color: widget.dark ? _kCyan : _kTeal, height: 1.3,
           ),
-          // Blocos de código — fundo transparente (sem caixas brancas)
-          codeblockDecoration: const BoxDecoration(
-            color: Colors.transparent,
-          ),
-          blockquote: TextStyle(
-            fontSize: 13,
-            color: textCol.withOpacity(0.78),
-          ),
+          codeblockDecoration: const BoxDecoration(color: Colors.transparent),
+          blockquote: TextStyle(fontSize: 13, color: textCol.withOpacity(0.78)),
           blockquoteDecoration: BoxDecoration(
             color: Colors.transparent,
-            border: Border(
-              left: BorderSide(
-                color: dark ? Colors.white24 : Colors.black26,
-                width: 3,
-              ),
-            ),
+            border: Border(left: BorderSide(
+              color: widget.dark ? Colors.white24 : Colors.black26, width: 3,
+            )),
           ),
           horizontalRuleDecoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color: dark ? Colors.white12 : Colors.black12,
-                width: 1,
-              ),
-            ),
+            border: Border(top: BorderSide(
+              color: widget.dark ? Colors.white12 : Colors.black12, width: 1,
+            )),
           ),
           blockSpacing: 5,
           listIndent: 16,
@@ -3068,19 +3168,16 @@ class _AiBubble extends StatelessWidget {
         border: Border.all(color: bubbleBorder),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        buildBody(),
-        // "Ver respuesta completa" / "Ver resposta completa" — só quando fornecido
-        if (!isStreaming && !isError && onExpand != null) ...[
+        buildBodyContent(),
+        if (!widget.isStreaming && !widget.isError && widget.onExpand != null) ...[
           const SizedBox(height: 8),
           GestureDetector(
-            onTap: onExpand,
+            onTap: widget.onExpand,
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Text(
-                isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
+                widget.isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
                 style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: _kGreen,
+                  fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen,
                 ),
               ),
               const SizedBox(width: 3),
@@ -3091,6 +3188,15 @@ class _AiBubble extends StatelessWidget {
       ]),
     );
   }
+
+  Widget _skeletonBar(bool dark, double width) => Container(
+    height: 12,
+    width: width,
+    decoration: BoxDecoration(
+      color: dark ? const Color(0xFF2A3040) : const Color(0xFFE2E8F0),
+      borderRadius: BorderRadius.circular(5),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
