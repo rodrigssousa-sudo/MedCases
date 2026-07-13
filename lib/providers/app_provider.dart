@@ -194,7 +194,173 @@ class HemoData {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// MICRO-BUILD 462E-A.5.3.7 — AiFinalizationTransaction
+// MICRO-BUILD 462E-A.5.3.7.1 — Transaction Unification & Finalizing-State Barrier
+//
+// Upgrades 462E-A.5.3.7 with:
+//   1. TerminalSignal Broker  — single Completer<TerminalSignal> per request.
+//      Transforms chaotic callback races into a single-winner producer/consumer.
+//   2. ProviderAttemptContext — immutable, per-attempt context that isolates
+//      providerRequestId so late chunks from stale providers are rejected.
+//   3. AiTransactionPhase enum — ingesting / finalizing / completed / cancelled.
+//   4. SerialEventQueue — non-reentrant Future chain; enqueue cutoff check
+//      executes at enqueue time, NOT inside downstream buffer mutations.
+//   5. FinalOutputSnapshot — frozen after full queue drainage, NEVER before.
+//   6. finalizeAiRequest() — wrapped in try/catch/finally; coordinator
+//      completed atomically via completeCoordinatorAtomically() (sync, no await).
+//   7. Atomic guards: tryMarkAssistantPersisted / tryMarkToolResolutionStarted /
+//      releaseCanonicalDecisionOnce — each executable exactly once.
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── AiTransactionPhase ────────────────────────────────────────────────────────
+enum AiTransactionPhase {
+  ingesting,   // stream is open — chunks are accepted and queued
+  finalizing,  // terminal signal won — queue is being drained, no new chunks
+  completed,   // finalization succeeded
+  cancelled,   // request was cancelled before completion
+}
+
+// ── TerminalCause ─────────────────────────────────────────────────────────────
+enum TerminalCause {
+  streamDone,           // onDone fired normally
+  chunkIsDone,          // chunk.isDone flag inside the stream
+  timeout,              // deadline timer fired
+  error,                // onError fired
+  cancelled,            // user or system cancellation
+  fallback,             // provider fallback path
+  streamProcessingError,// exception inside SerialEventQueue processStreamEvent
+}
+
+// ── TerminalSignal ────────────────────────────────────────────────────────────
+/// Immutable value submitted by any terminal contender to the Broker.
+/// Only the FIRST submission wins; all subsequent are rejected.
+final class TerminalSignal {
+  final String source;
+  final TerminalCause cause;
+  final Object? error;
+  final StackTrace? stackTrace;
+
+  const TerminalSignal({
+    required this.source,
+    required this.cause,
+    this.error,
+    this.stackTrace,
+  });
+
+  factory TerminalSignal.streamDone(String source) =>
+      TerminalSignal(source: source, cause: TerminalCause.streamDone);
+
+  factory TerminalSignal.chunkIsDone(String source) =>
+      TerminalSignal(source: source, cause: TerminalCause.chunkIsDone);
+
+  factory TerminalSignal.timeout(String source) =>
+      TerminalSignal(source: source, cause: TerminalCause.timeout);
+
+  factory TerminalSignal.error(String source, Object err, StackTrace st) =>
+      TerminalSignal(source: source, cause: TerminalCause.error, error: err, stackTrace: st);
+
+  factory TerminalSignal.cancelled(String source) =>
+      TerminalSignal(source: source, cause: TerminalCause.cancelled);
+
+  factory TerminalSignal.fallback(String source) =>
+      TerminalSignal(source: source, cause: TerminalCause.fallback);
+
+  factory TerminalSignal.streamProcessingError(Object err, StackTrace st) =>
+      TerminalSignal(
+        source: 'serial_event_queue',
+        cause: TerminalCause.streamProcessingError,
+        error: err,
+        stackTrace: st,
+      );
+}
+
+// ── ProviderAttemptContext ────────────────────────────────────────────────────
+/// Immutable, per-attempt context. A retry or paid fallback creates a NEW
+/// instance but preserves the reference to the original transaction.
+/// Late chunks from a stale generation are rejected via [isStale].
+final class ProviderAttemptContext {
+  final String providerRequestId;
+  final int attemptGeneration;
+  final String provider;
+
+  const ProviderAttemptContext({
+    required this.providerRequestId,
+    required this.attemptGeneration,
+    required this.provider,
+  });
+
+  /// Returns true when [activeGeneration] is newer than this attempt —
+  /// meaning this attempt is stale and its events must be dropped.
+  bool isStale(int activeGeneration) => attemptGeneration < activeGeneration;
+}
+
+// ── FinalOutputSnapshot ───────────────────────────────────────────────────────
+/// Immutable snapshot frozen AFTER the SerialEventQueue is fully drained.
+/// NEVER created before queue drainage.
+final class FinalOutputSnapshot {
+  final String rawOutput;
+  final String sessionId;
+  final String parentRequestId;
+  final DateTime frozenAt;
+
+  const FinalOutputSnapshot({
+    required this.rawOutput,
+    required this.sessionId,
+    required this.parentRequestId,
+    required this.frozenAt,
+  });
+}
+
+// ── SerialEventQueue ──────────────────────────────────────────────────────────
+/// Non-reentrant serial Future chain for incoming stream chunks.
+///
+/// The finalizing-phase barrier check executes at ENQUEUE TIME (cutoff),
+/// not inside downstream buffer mutations. Chunks enqueued while [ingesting]
+/// are fully processed even if the phase transitions to [finalizing] before
+/// their execution begins. Chunks arriving after the phase transition are
+/// rejected instantly.
+class SerialEventQueue {
+  final AiFinalizationTransaction transaction;
+  final void Function(TerminalSignal) signalTerminal;
+  final Future<void> Function(Object event) processStreamEvent;
+
+  Future<void> _queue = Future.value();
+
+  SerialEventQueue({
+    required this.transaction,
+    required this.signalTerminal,
+    required this.processStreamEvent,
+  });
+
+  /// Enqueues [event] for serial processing.
+  /// Returns false and emits [AI_LATE_EVENT_DROPPED] if the cutoff has passed.
+  bool enqueue(Object event) {
+    if (transaction.phase != AiTransactionPhase.ingesting) {
+      // ignore: avoid_print
+      print('[AI_LATE_EVENT_DROPPED] '
+          'parentRequestId=${transaction.parentRequestId} '
+          'event=chunk '
+          'reason=phase_cutoff '
+          'phase=${transaction.phase.name}');
+      return false;
+    }
+
+    _queue = _queue.then((_) => processStreamEvent(event)).catchError(
+      (Object err, StackTrace stack) {
+        signalTerminal(TerminalSignal.streamProcessingError(err, stack));
+      },
+    );
+
+    return true;
+  }
+
+  /// Awaits full drainage of the serial queue before returning.
+  /// Must be called by the terminal broker AFTER winning ownership and
+  /// transitioning to [finalizing], and BEFORE [FinalOutputSnapshot] is frozen.
+  Future<void> drain() => _queue;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MICRO-BUILD 462E-A.5.3.7.1 — AiFinalizationTransaction (upgraded)
 //
 // Per-request state machine that enforces EXACTLY ONE terminal ownership claim
 // across all asynchronous finalization contenders (onDone, timeout timer,
@@ -212,18 +378,76 @@ class HemoData {
 // ══════════════════════════════════════════════════════════════════════════════
 class AiFinalizationTransaction {
   final String parentRequestId;
+  // providerRequestId is now per-attempt (ProviderAttemptContext).
+  // Kept here for legacy call sites that reference it directly.
   final String providerRequestId;
 
-  bool _ownershipAcquired      = false;
-  bool _toolResolutionCompleted = false;
-  bool _cacheReleased           = false;
-  bool _coordinatorCompleted    = false;
-  bool _assistantPersisted      = false;
+  // ── Phase state machine ────────────────────────────────────────────────────
+  AiTransactionPhase _phase = AiTransactionPhase.ingesting;
+  AiTransactionPhase get phase => _phase;
+
+  // ── Ownership & atomic guards ──────────────────────────────────────────────
+  bool _ownershipAcquired           = false;
+  bool _toolResolutionStarted       = false;
+  bool _toolResolutionCompleted     = false;
+  bool _cacheReleased               = false;
+  bool _coordinatorCompleted        = false;
+  bool _assistantPersisted          = false;
+  bool _canonicalDecisionReleased   = false;
+
+  // ── Terminal Signal Broker ─────────────────────────────────────────────────
+  // Exactly ONE outer orchestrator awaits this Completer.
+  // Every terminal contender calls signalTerminal() — only the first wins.
+  final Completer<TerminalSignal> _terminalSignal = Completer<TerminalSignal>();
 
   AiFinalizationTransaction({
     required this.parentRequestId,
     required this.providerRequestId,
   });
+
+  // ── Terminal Signal Broker API ─────────────────────────────────────────────
+
+  /// Submits [signal] to the broker. Only the first call wins; subsequent
+  /// calls log [AI_TERMINAL_CONTENDER_REJECTED] and are silently dropped.
+  void signalTerminal(TerminalSignal signal) {
+    if (!_terminalSignal.isCompleted) {
+      _terminalSignal.complete(signal);
+    } else {
+      emitTerminalContenderRejected(signal.source);
+    }
+  }
+
+  /// Awaited by the single outer orchestrator to receive the winning signal.
+  Future<TerminalSignal> get terminalFuture => _terminalSignal.future;
+
+  void emitTerminalContenderRejected(String source) {
+    // ignore: avoid_print
+    print('[AI_TERMINAL_CONTENDER_REJECTED] '
+        'parentRequestId=$parentRequestId '
+        'source=$source '
+        'reason=broker_already_resolved');
+  }
+
+  // ── Phase transitions ──────────────────────────────────────────────────────
+
+  /// Transitions to [finalizing]. Called by the winning terminal signal owner
+  /// before draining the queue. Chunks arriving after this call are rejected.
+  void transitionToFinalizing() {
+    if (_phase == AiTransactionPhase.ingesting) {
+      _phase = AiTransactionPhase.finalizing;
+    }
+  }
+
+  // ── sealAndDrainStreamQueue ────────────────────────────────────────────────
+
+  /// Seals the phase to [finalizing] and drains [queue] before returning.
+  /// The [FinalOutputSnapshot] MUST NOT be frozen before this completes.
+  Future<void> sealAndDrainStreamQueue(SerialEventQueue queue) async {
+    transitionToFinalizing();
+    await queue.drain();
+  }
+
+  // ── Ownership ──────────────────────────────────────────────────────────────
 
   /// Atomically claims terminal ownership for [source].
   /// Returns true when the caller is the WINNER.
@@ -245,6 +469,49 @@ class AiFinalizationTransaction {
         'source=$source');
     return true;
   }
+
+  // ── Atomic once-guards ─────────────────────────────────────────────────────
+
+  /// Returns true on the FIRST call — the caller owns assistant persistence.
+  bool tryMarkAssistantPersisted() {
+    if (_assistantPersisted) return false;
+    _assistantPersisted = true;
+    return true;
+  }
+
+  /// Returns true on the FIRST call — the caller owns tool resolution.
+  bool tryMarkToolResolutionStarted() {
+    if (_toolResolutionStarted) return false;
+    _toolResolutionStarted = true;
+    return true;
+  }
+
+  /// Releases the canonical decision exactly once.
+  /// Subsequent calls are silently ignored.
+  Future<void> releaseCanonicalDecisionOnce() async {
+    if (_canonicalDecisionReleased) return;
+    _canonicalDecisionReleased = true;
+    ExternalToolLinkEngine.releaseCanonicalDecision(requestId: parentRequestId);
+  }
+
+  // ── completeCoordinatorAtomically ─────────────────────────────────────────
+
+  /// Completes the coordinator synchronously (no intermediate awaits).
+  /// Prevents concurrent callback interleaving inside the finally block.
+  /// The [complete] callback is invoked exactly once.
+  void completeCoordinatorAtomically({
+    required TerminalCause cause,
+    required void Function() complete,
+  }) {
+    if (_coordinatorCompleted) return;
+    complete();
+    _coordinatorCompleted = true;
+    _phase = cause == TerminalCause.cancelled
+        ? AiTransactionPhase.cancelled
+        : AiTransactionPhase.completed;
+  }
+
+  // ── Telemetry helpers ──────────────────────────────────────────────────────
 
   void markToolResolutionCompleted() => _toolResolutionCompleted = true;
   void markCacheReleased()           => _cacheReleased = true;
@@ -268,6 +535,24 @@ class AiFinalizationTransaction {
         'event=$event '
         'terminalState=completed');
     return true;
+  }
+
+  /// Emits [AI_LATE_EVENT_DROPPED] for stale provider attempt chunks.
+  void emitLateEventDropped({required String event}) {
+    // ignore: avoid_print
+    print('[AI_LATE_EVENT_DROPPED] '
+        'parentRequestId=$parentRequestId '
+        'providerRequestId=$providerRequestId '
+        'reason=stale_provider_attempt '
+        'event=$event');
+  }
+
+  /// Emits finalization failure telemetry.
+  void emitFinalizationFailure({required Object error, required StackTrace stackTrace}) {
+    // ignore: avoid_print
+    print('[AI_FINALIZATION_FAILURE] '
+        'parentRequestId=$parentRequestId '
+        'error=$error');
   }
 
   /// Emits [SESSION_PERSIST] dedup key telemetry.
