@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// external_tool_link_engine.dart — Deep Link Router v1.2 (Build 280)
+// external_tool_link_engine.dart — Deep Link Router v1.3 (MICRO-BUILD 462E-A.4)
 //
 // MOTOR 100% LOCAL — DETERMINÍSTICO — SEM IA — SEM REDE — SEM RAG
 //
@@ -8,6 +8,21 @@
 //   • Mapear para uma das 10 abas de medcasescalcu.com.
 //   • Gerar URL limpa com lang (1º param) + tab + q (NUNCA dados do paciente).
 //   • Retornar label localizado (PT-BR / ES) para o botão _ExternalToolButton.
+//
+// MICRO-BUILD 462E-A.4 — COMPLETE EXT_TOOL INPUT SOVEREIGNTY:
+//   • ExternalToolIntent enum: representa a intenção SOBERANA da entrada do usuário.
+//   • resolveExternalToolIntent(): executa EXCLUSIVAMENTE contra originalUserInput.
+//   • Total Embargo Gate em build(): se intent == ExternalToolIntent.none →
+//     retorno null imediato, ANTES de qualquer avaliação do texto AI.
+//   • Step 11 (Build 280 — fármaco da bolha AI) é desativado quando intent==none.
+//   • [EXT_TOOL_GATE] telemetry emitida na sequência de interceptação de roteamento.
+//
+// PROIBIÇÃO ABSOLUTA:
+//   • O texto da IA (generatedText, finalText, sanitizedResponse) é MATEMATICAMENTE
+//     proibido de estabelecer, mudar, ou inicializar estados de ferramentas,
+//     seleções de tab, ou parâmetros de fármaco.
+//   • O texto AI SOMENTE pode preencher placeholders dentro de um tipo de ferramenta
+//     que foi PRÉ-AUTORIZADO e inicializado pelo check soberano de entrada.
 //
 // Segurança absoluta:
 //   • Apenas termos técnicos isolados (nome do fármaco, score, calculadora).
@@ -61,6 +76,31 @@ enum CalculatorContext {
   heparin,      // Heparina / anticoagulação
   nutrition,    // Nutrição parenteral / enteral
   dflt,         // Geral / sem contexto específico identificado
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ExternalToolIntent — MICRO-BUILD 462E-A.4: Sovereign Intent Enum
+//
+// Representa a intenção SOBERANA da entrada original do usuário.
+// Resolvido EXCLUSIVAMENTE por resolveExternalToolIntent(originalUserInput).
+// O texto da IA (lastAiResponse) é matematicamente proibido de influenciar
+// este valor.
+//
+// Hierarquia de prioridade (ordem de avaliação em resolveExternalToolIntent):
+//   A. drugInteraction  → palavras-chave explícitas de interação PT/ES
+//   B. dilution         → palavras-chave de diluição/reconstituição PT/ES
+//   C. infusion         → palavras-chave explícitas de infusão PT/ES
+//   D. dosage           → palavras-chave de dose/posologia/mecanismo PT/ES
+//   E. drugInformation  → (reservado — mapeado via dosage no resolver atual)
+//   F. none             → nenhuma intenção explícita detectada → EMBARGO TOTAL
+// ─────────────────────────────────────────────────────────────────────────────
+enum ExternalToolIntent {
+  none,            // Nenhuma intenção explícita → embargo total de ferramentas
+  drugInteraction, // Interação entre dois fármacos (explícito PT/ES)
+  dilution,        // Diluição / reconstituição / volume final (explícito PT/ES)
+  infusion,        // Infusão EV / velocidade / bomba (explícito PT/ES)
+  drugInformation, // Informação geral sobre fármaco (reservado)
+  dosage,          // Dose / posologia / mecanismo / ajuste renal (explícito PT/ES)
 }
 
 const String _kBase = 'https://medcasescalcu.com/';
@@ -156,6 +196,91 @@ class ExternalToolLinkEngine {
     ).hasMatch(normalized);
   }
 
+  // ── BUILD 462E-A.4: Sovereign Intent Resolver ────────────────────────────
+  //
+  // Executa EXCLUSIVAMENTE contra originalUserInput (lastUserMessage).
+  // NUNCA aceita texto de IA como input — proibição absoluta arquitetural.
+  //
+  // Hierarquia de prioridade (A → D):
+  //   A. INTERACTION  → retorna ExternalToolIntent.drugInteraction
+  //   B. DILUTION     → retorna ExternalToolIntent.dilution
+  //   C. INFUSION     → retorna ExternalToolIntent.infusion
+  //   D. DRUG INFO    → retorna ExternalToolIntent.dosage
+  //   fallback        → retorna ExternalToolIntent.none  (embargo total)
+  //
+  // Nota sobre Unicode: \b não funciona com 'é' no início de palavra em Dart
+  // (é não-ASCII → \b falha). Padrão corrigido: (?:^|\s)[eé] seguro combinar
+  // ─────────────────────────────────────────────────────────────────────────
+  static ExternalToolIntent resolveExternalToolIntent(String userInput) {
+    final normalized = userInput.toLowerCase().trim();
+
+    // ── A. INTERACTION PATTERNS (PT/ES) ─────────────────────────────────────
+    final hasInteraction = <RegExp>[
+      RegExp(r'\bintera[cç][aã]o entre\b'),
+      RegExp(r'\binteracci[oó]n entre\b'),
+      RegExp(r'\binterage com\b'),
+      RegExp(r'\binteract[uú]a con\b'),
+      RegExp(r'\bpode(m)? usar junto\b'),
+      RegExp(r'\bse puede usar junto\b'),
+      RegExp(r'\bpode associar\b'),
+      RegExp(r'\bse puede asociar\b'),
+      RegExp(r'(?:^|\s)[eé] seguro combinar'),   // fix: é não-ASCII, \b falha
+      RegExp(r'\bes seguro combinar\b'),
+      RegExp(r'\bcontraindica[cç][aã]o entre\b'),
+      RegExp(r'\bcontraindicaci[oó]n entre\b'),
+      RegExp(r'\bh[aá] intera[cç][aã]o\b'),
+      RegExp(r'\bhay interacci[oó]n\b'),
+    ].any((p) => p.hasMatch(normalized));
+
+    if (hasInteraction) return ExternalToolIntent.drugInteraction;
+
+    // ── B. DILUTION PATTERNS (PT/ES) ────────────────────────────────────────
+    final hasDilution = RegExp(
+      r'\b('
+      r'diluir|dilui[cç][aã]o|diluci[oó]n|'
+      r'reconstituir|reconstitui[cç][aã]o|reconstituci[oó]n|'
+      r'volume final|volumen final|'
+      r'concentra[cç][aã]o|concentraci[oó]n|'
+      r'bomba de infus[aã]o|bomba de infusi[oó]n'
+      r')\b',
+      caseSensitive: false,
+    ).hasMatch(normalized);
+
+    if (hasDilution) return ExternalToolIntent.dilution;
+
+    // ── C. EXPLICIT INFUSION PATTERNS (PT/ES) ───────────────────────────────
+    final hasInfusion = <RegExp>[
+      RegExp(r'\binfus[aã]o\b'),
+      RegExp(r'\binfusi[oó]n\b'),
+      RegExp(r'\bvelocidade de infus[aã]o\b'),
+      RegExp(r'\bvelocidad de infusi[oó]n\b'),
+      RegExp(r'\bmcg/kg/min\b'),
+      RegExp(r'\btitular\b'),
+      RegExp(r'\btitula[cç]i[oó]n\b'),
+      RegExp(r'\bpreparar infus[aã]o\b'),
+      RegExp(r'\bcomo administrar em bomba\b'),
+    ].any((p) => p.hasMatch(normalized));
+
+    if (hasInfusion) return ExternalToolIntent.infusion;
+
+    // ── D. DRUG INFORMATION & DOSAGE PATTERNS (PT/ES) ───────────────────────
+    final hasDrugInfo = <RegExp>[
+      RegExp(r'\bdose\b'),
+      RegExp(r'\bposologia\b'),
+      RegExp(r'\bmecanismo\b'),
+      RegExp(r'\bindica[cç][aã]o\b'),
+      RegExp(r'\bcontraindica[cç][aã]o\b'),
+      RegExp(r'\bapresenta[cç][aã]o\b'),
+      RegExp(r'\befeitos adversos\b'),
+      RegExp(r'\bajuste renal\b'),
+      RegExp(r'\binforma[cç][oõ]es sobre o medicamento\b'),
+    ].any((p) => p.hasMatch(normalized));
+
+    if (hasDrugInfo) return ExternalToolIntent.dosage;
+
+    return ExternalToolIntent.none;
+  }
+
   /// Returns an [ExternalToolLink] if a relevant external tool is detected,
   /// or null if no match found.
   static ExternalToolLink? build({
@@ -169,23 +294,48 @@ class ExternalToolLinkEngine {
     final String lang = _resolveLang(currentLanguage, lastUserMessage, lastAiResponse);
     final bool isEs = lang == 'es';
 
+    // ══════════════════════════════════════════════════════════════════════════
+    // MICRO-BUILD 462E-A.4 — TOTAL EMBARGO GATE
+    //
+    // resolveExternalToolIntent() executa EXCLUSIVAMENTE contra lastUserMessage.
+    // Se intent == ExternalToolIntent.none:
+    //   → retorno null IMEDIATO (nenhum chunk de aiOutput é avaliado)
+    //   → Step 11 (Build 280 — fármaco da bolha AI) é DESATIVADO completamente
+    //   → Nenhuma mutação de: externalToolType, targetTab, taskLabel,
+    //     drugTarget, drug1, drug2, dilutionTarget, infusionTarget
+    //
+    // O texto AI SOMENTE pode preencher parâmetros dentro de um tipo de
+    // ferramenta PRÉ-AUTORIZADO pelo check soberano abaixo.
+    // ══════════════════════════════════════════════════════════════════════════
+    final ExternalToolIntent intent =
+        resolveExternalToolIntent(lastUserMessage);
+    final bool intentAllowed = intent != ExternalToolIntent.none;
+
+    // ── [EXT_TOOL_GATE] Telemetry ─────────────────────────────────────────
+    // ignore: avoid_print
+    print('[EXT_TOOL_GATE] source=original_user_input '
+        'intent=${intent.name} '
+        'allowed=$intentAllowed '
+        'reason=${intentAllowed ? "explicit_input_intent" : "no_explicit_intent"}');
+
+    if (!intentAllowed) {
+      // EMBARGO TOTAL: retorno null antes de qualquer avaliação do texto AI.
+      // Step 11 (fármaco da bolha AI) está incluído neste embargo.
+      return null;
+    }
+
     // Combine user + AI text for detection (lowercase, no diacritics normalization)
+    // Nota: `combined` somente é computado quando intent != none (pós-gate).
     final String combined =
         '${lastUserMessage.toLowerCase()} ${lastAiResponse.toLowerCase()}';
 
     // ── 1. Interações medicamentosas (dois fármacos detectados) ────────────
     //
-    // BUILD 462E-A.3 — INPUT SOVEREIGNTY GATE:
-    //   Step 1 SÓ dispara quando o usuário expressou EXPLICITAMENTE a intenção
-    //   de verificar interação (hasExplicitInteractionIntent=true).
-    //
-    //   Motivação: caso clínico com texto da IA mencionando Furosemida +
-    //   Nitroglicerina (dois fármacos) NÃO deve abrir botão de interação se
-    //   o usuário não perguntou sobre interação. O texto da IA (lastAiResponse)
-    //   está presente em `combined` — a única barreira correta é o gate no
-    //   lastUserMessage.
-    //
-    //   Step 11 (fármaco único da bolha AI) é INTENCIONAL (Build 280) e mantido.
+    // BUILD 462E-A.3 — INPUT SOVEREIGNTY GATE (preservado):
+    //   Step 1 SÓ dispara quando hasExplicitInteractionIntent=true.
+    //   BUILD 462E-A.4: Gate adicional via resolveExternalToolIntent() acima
+    //   garante que chegamos aqui SOMENTE com intent != none.
+    //   Dupla proteção: embargo total (462E-A.4) + gate específico (462E-A.3).
     final interacao = hasExplicitInteractionIntent(lastUserMessage)
         ? _detectDrugInteraction(combined)
         : null;
@@ -328,22 +478,22 @@ class ExternalToolLinkEngine {
     // ── 11. Fármaco isolado via texto da última bolha AI ─────────────────
     // ORDEM 55 M2: LIBERAÇÃO ABSOLUTA DOS BOTÕES — texto da resposta AI é soberano.
     //
-    // NOVA REGRA (Build 280 — substitui Build 270):
-    //   • Detectamos o fármaco EXCLUSIVAMENTE no texto da última mensagem AI
-    //     (lastAiResponse), NÃO no combined (que incluía userMessage e causava
-    //     confusão com step 8).
-    //   • Se o fármaco aparece na bolha AI → botão DEVE aparecer, ponto final.
-    //   • Sem validação de threadTopic ou activeThreadTopic — esses são zerados
-    //     no refresh e causavam o "blocked_ai_only_drug" falso positivo.
-    //   • Proteção anti-zombie (Build 270) mantida IMPLICITAMENTE: o _detectSingleDrug
-    //     usa _matchFirst() que retorna o PRIMEIRO match; como step 8 já consumiu
-    //     qualquer fármaco presente na user msg, step 11 só chega aqui para
-    //     fármacos que estão NA RESPOSTA AI — exatamente o que queremos mostrar.
+    // MICRO-BUILD 462E-A.4 — GOVERNANÇA PELO EMBARGO GATE:
+    //   Este step somente é alcançado quando intent != ExternalToolIntent.none
+    //   (i.e., o Total Embargo Gate no topo de build() foi aprovado).
+    //   Caso contrário (intent == none), o retorno null no embargo gate acima
+    //   impede que qualquer texto da IA seja processado — Step 11 incluído.
     //
-    // Exemplo: médico pergunta sobre Cangrelor → IA responde com Ticagrelor + AAS.
-    //   Step 8: "cangrelor" encontrado na user msg → botão Cangrelor (correto).
-    //   Mas se user perguntou "melhor antiagregante?" sem nomear fármaco →
-    //   Step 8: null. Step 11: "ticagrelor" na bolha AI → botão Ticagrelor (correto).
+    // REGRA Build 280 (mantida quando intent != none):
+    //   • Detectamos o fármaco EXCLUSIVAMENTE no texto da última mensagem AI
+    //     (lastAiResponse), NÃO no combined.
+    //   • Se o fármaco aparece na bolha AI e intent != none → botão aparece.
+    //   • Proteção anti-zombie implícita: step 8 já consumiu fármacos da user msg;
+    //     step 11 só chega aqui para fármacos presentes na resposta AI.
+    //
+    // Exemplo com soberania ativa:
+    //   Input: "analise o caso" → intent=none → embargo total → Step 11 NUNCA executa.
+    //   Input: "qual a dose da noradrenalina?" → intent=dosage → Step 11 pode executar.
     final drug = _detectSingleDrug(lastAiResponse.toLowerCase());
     if (drug != null) {
       final drugCtx = _drugContext(drug.param);
@@ -351,7 +501,7 @@ class ExternalToolLinkEngine {
       final label = _buildDrugLabel(drug.display, drugCtx, isEs);
       // ignore: avoid_print
       print('[EXT_TOOL_CONTEXT][Build280] source=ai_response_text '
-          'q=${drug.param}');
+          'q=${drug.param} intent=${intent.name}');
       _log(lang: lang, tab: 'farmacos', extra: 'q=${drug.param} ctx=$drugCtx');
       return ExternalToolLink(
         label: label,
