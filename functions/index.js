@@ -2544,36 +2544,61 @@ function callOpenAiResponsesStream({
 // Qualquer outra combinação → legado síncrono (transparente para o cliente)
 const USE_GPT_PROXY_SSE = process.env.USE_GPT_PROXY_SSE !== 'false'; // default true
 
+// ── BUILD 462E-A.1: Allowlist explícita de origens para gptProxyStream ──────────
+// Confirmar a origem exata do DevTools e incluir aqui.
+// Origens novas devem ser adicionadas nesta única constante.
+const GPT_STREAM_ALLOWED_ORIGINS = new Set([
+  'https://medcasespro.app',
+  'https://www.medcasespro.app',
+  'https://medcasespro.com',
+  'https://www.medcasespro.com',
+  'https://medcases-pro.web.app',
+  'https://medcases-pro.firebaseapp.com',
+]);
+
 exports.gptProxyStream = onRequest(
   {
     region:         'us-central1',
     secrets:        [OPENAI_KEY],
     timeoutSeconds: 120,
     memory:         '512MiB',
-    cors:           false, // CORS manual abaixo
+    cors:           false, // BUILD 462E-A.1: CORS gerenciado manualmente abaixo
   },
   async (req, res) => {
     const startMs = Date.now();
 
-    // ── CORS (restrito às origens MedCases Pro) ───────────────────────────────
-    const allowedOrigins = [
-      'https://medcasespro.app',
-      'https://medcases-pro.web.app',
-      'https://medcases-pro.firebaseapp.com',
-    ];
+    // ── BUILD 462E-A.1 — CORS: aplicar ANTES de autenticação e de toda resposta ──
+    // Regra: Access-Control-Allow-Origin só é emitido para origens da allowlist.
+    // Vary: Origin emitido incondicionalmente (instrui proxies/CDNs).
+    // Todos os erros (401, 403, 429, 500) retornam com CORS headers já presentes.
     const origin          = req.headers.origin || '';
-    const isAllowedOrigin = allowedOrigins.includes(origin)
-      || (process.env.FUNCTIONS_EMULATOR === 'true');
+    const isAllowedOrigin = GPT_STREAM_ALLOWED_ORIGINS.has(origin)
+                          || (process.env.FUNCTIONS_EMULATOR === 'true');
 
-    if (isAllowedOrigin) {
-      res.setHeader('Access-Control-Allow-Origin',  origin);
+    // Aplicar CORS headers ANTES de qualquer retorno (presentes em toda resposta)
+    if (isAllowedOrigin && origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
     }
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Max-Age', '3600');
-    res.setHeader('Vary', 'Origin');
+    res.setHeader('Vary', 'Origin'); // sempre — instrui caches HTTP a variar por Origin
 
-    if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+    // ── BUILD 462E-A.1 — Preflight OPTIONS ───────────────────────────────────────
+    // OPTIONS não exige Firebase ID Token. Responde 204 apenas para origens válidas.
+    // Origens não autorizadas: 403 imediato (sem revelar headers de auth).
+    if (req.method === 'OPTIONS') {
+      if (!isAllowedOrigin || !origin) {
+        return res.status(403).end();
+      }
+      res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept');
+      res.setHeader('Access-Control-Max-Age', '3600');
+      return res.status(204).end();
+    }
+
+    // ── BUILD 462E-A.1 — Guard CORS para POST ────────────────────────────────────
+    // Bloqueia origens não autorizadas ANTES de autenticação e payload.
+    if (!isAllowedOrigin || !origin) {
+      return res.status(403).json({ error: 'cors_origin_denied' });
+    }
 
     // ── 1. VALIDAÇÃO DE MÉTODO ─────────────────────────────────────────────────
     if (req.method !== 'POST') {
