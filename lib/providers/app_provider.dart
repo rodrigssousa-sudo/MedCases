@@ -29,6 +29,9 @@ import '../services/ai_gateway_service.dart';
 import '../services/ai_smart_router.dart'; // Build 191: sanitizeResponse
 import '../services/provider_router_service.dart'; // Build 226: Gemini Paid Fallback
 import '../services/app_resume_coordinator.dart';   // BUILD 241: background/resume safety
+import '../services/ai_stream/ai_event.dart';       // BUILD 462E-A: Anti-Frankenstein event bus
+import '../services/ai_stream/gpt_sse_client.dart'; // BUILD 462E-A: per-request SSE client ref
+import '../services/auth_service.dart';             // BUILD 462E-A: Web token refresh (getAdminToken)
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -3507,10 +3510,35 @@ class AppProvider extends ChangeNotifier {
   // (getter aiStreaming já declarado nos Getters públicos acima — não duplicar)
   bool _aiStreamActive = false;
 
+  // ── BUILD 462E-A: QA Force-GPT flag ───────────────────────────────────────
+  // true  → sendAiMessage() pula Layer 0 (Gemini Free) e abre SSE GPT direto.
+  //          BLOQUEADO em produção (alterar para false antes de release).
+  // false → fluxo normal (Gemini Free → GPT fallback → Gemini Paid).
+  //
+  // Ativa exclusivamente para validação E2E do barramento AiEvent.
+  static const bool kForceGptFallbackForQa = true;
+
+  /// StreamSubscription AiEvent para o fluxo GPT SSE (BUILD 462E-A).
+  StreamSubscription<AiEvent>? _gptStreamSub;
+
+  /// Cliente SSE ativo — permite cancelamento com AbortController upstream.
+  GptSseClient? _activeGptClient;
+
   /// Cancela o streaming em curso (usuário trocou de tela, limpou chat, etc.)
   StreamSubscription<GeminiChunk>? _aiStreamSub;
 
   void cancelAiStream() {
+    // BUILD 462E-A: cancela também o stream GPT SSE se estiver ativo
+    final wasGptActive = _gptStreamSub != null;
+    if (wasGptActive) {
+      // ignore: avoid_print
+      print('[AI_E2E][CANCELLED] requestId=$_activeRequestId '
+          'reason=user_cancelled_clear provider=gpt_4o_mini');
+    }
+    _gptStreamSub?.cancel();
+    _gptStreamSub = null;
+    _activeGptClient?.cancel(reason: 'user_cancelled_clear');
+    _activeGptClient = null;
     _aiStreamSub?.cancel();
     _aiStreamSub = null;
     // Build 107 FIX: reseta _aiAnswerInProgress também — sem isso, sendAiMessage()
@@ -3672,6 +3700,446 @@ class AppProvider extends ChangeNotifier {
       onError(err);
       notifyListeners();
     };
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // BUILD 462E-A — QA BYPASS: kForceGptFallbackForQa
+    //
+    // Quando kForceGptFallbackForQa=true, pula Layer 0 (Gemini Free) inteira e
+    // abre fluxo GPT SSE real via ProviderRouterService.callGptProxyStream().
+    //
+    // PROIBIÇÕES NESTE BLOCO:
+    //   • NÃO emitir AiCompleted antes de sanitizeAndCheck()
+    //   • NÃO persistir partialText no Firestore ou _aiHistory
+    //   • NÃO disparar notifyListeners() amplos — apenas bolha de chat isolada
+    //   • NÃO concatenar texto de tentativas diferentes
+    //
+    // TAGS E2E OBRIGATÓRIAS (visíveis em flutter logs):
+    //   [AI_E2E][T0]               → início do ciclo
+    //   [AI_E2E][PROVIDER_SWITCH]  → bypass Layer 0, abrindo GPT direto
+    //   [AI_E2E][STARTED]          → AiStarted recebido (modelo + provider)
+    //   [AI_E2E][T1_FIRST_DELTA]   → primeiro AiTextDelta (prova de streaming)
+    //   [AI_E2E][T2_TRANSPORT_DONE]→ AiCompleted recebido do SSE (pré-sanitize)
+    //   [AI_E2E][SANITIZED]        → sanitizeAndCheck() executado
+    //   [AI_E2E][COMPLETED]        → wrappedOnDone chamado (UI atualizada)
+    //   [AI_E2E][CANCELLED]        → cancelamento pelo usuário
+    //   [RENDER_AUDIT][HOME_CHAT_BUILD]    → notifyListeners() amplo (deve ser 0)
+    //   [RENDER_AUDIT][ACTIVE_BUBBLE_BUILD]→ rebuild da bolha ativa (esperado)
+    // ══════════════════════════════════════════════════════════════════════════
+    if (kForceGptFallbackForQa) {
+      // ignore: avoid_print
+      print('[AI_E2E][T0] requestId=$thisRequestId attempt=2 '
+          'provider=gpt_4o_mini mode=${longResponse ? "estudo" : "plantao"} '
+          'kForceGptFallbackForQa=true globalStartMs=$globalStartMs');
+
+      // Emitir AiProviderSwitched: Layer 0 bypassada, GPT assume direto
+      // ignore: avoid_print
+      print('[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
+          'fromProvider=gemini_free toProvider=gpt_4o_mini '
+          'reason=kForceGptFallbackForQa attempt=2');
+
+      // Obter ID Token para autenticação no gptProxyStream
+      // Web: AuthService.getAdminToken() (REST) | Nativo: FirebaseAuth.getIdToken()
+      // Tratamento de auth_expired: AiFailed(code:'auth_expired') controlado
+      String gptQaToken = '';
+      if (kIsWeb) {
+        try {
+          gptQaToken = await AuthService.getAdminToken();
+        } catch (e) {
+          debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=token_fetch_failed detail=$e');
+          wrappedOnError('[auth_expired] Sessão expirada. Faça login novamente.');
+          return true;
+        }
+        if (gptQaToken.isEmpty) {
+          debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=auth_expired token_empty=true');
+          wrappedOnError('[auth_expired] Token vazio. Faça login novamente.');
+          return true;
+        }
+      } else {
+        final fbUser = FirebaseAuth.instance.currentUser;
+        if (fbUser == null) {
+          debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=unauthenticated firebaseUser=null');
+          wrappedOnError('[auth_expired] Usuário não autenticado.');
+          return true;
+        }
+        try {
+          // Force-refresh: garante token fresco, evita 401 por expiração silenciosa
+          gptQaToken = await fbUser.getIdToken(true) ?? '';
+        } catch (e) {
+          debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=getIdToken_failed detail=$e');
+          wrappedOnError('[auth_expired] Erro ao renovar token. Tente novamente.');
+          return true;
+        }
+        if (gptQaToken.isEmpty) {
+          debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=auth_expired token_empty=true nativo');
+          wrappedOnError('[auth_expired] Token vazio no nativo. Faça login novamente.');
+          return true;
+        }
+      }
+
+      // Montar systemPrompt para este ciclo QA
+      // Reutiliza o mesmo pipeline de contexto (RAG, sessionLang, intent)
+      final qaSessionLang = _resolveSessionLang(input);
+      final qaIntent      = _classifyIntent(input);
+      final qaTopicReset  = _sessionMemory.resetIfTopicChanged(input);
+      final qaThreadStatus = _threadManager.evaluate(
+        currentUserText: input,
+        isPlantaoMode:   !longResponse,
+        cameFromButton:  fromButton,
+      );
+      if (qaThreadStatus.action == ThreadAction.newThread && !longResponse) {
+        final removed = _aiHistory.length;
+        _aiHistory.clear();
+        _sessionMemory.reset();
+        debugPrint('[AI_E2E][HISTORY_RESET] requestId=$thisRequestId '
+            'removed=$removed reason=${qaThreadStatus.reason}');
+      }
+      final qaExpandedInput = qaTopicReset ? input : _expandedQuery(input);
+      final qaNormalized    = _normalize(qaExpandedInput);
+      final qaProtos        = _matchProtocolsExtended(qaNormalized);
+      final qaFinalProtos   = qaProtos.isNotEmpty ? qaProtos : _matchProtocols(qaNormalized);
+      final qaLocalCtx      = _buildLocalAnswer(input);
+
+      final qaSystemPrompt = AiService.buildClinicalSystemPrompt(
+        lang:                   qaSessionLang,
+        matchedProtocolSummaries: qaFinalProtos,
+        matchedDrugSummaries:   const [],
+        localAnswerContext:     qaLocalCtx,
+        queryIntent:            qaIntent,
+        patientAge:             _patient.age.isNotEmpty ? _patient.age : null,
+        patientSex:             _patient.sex.isNotEmpty ? _patient.sex : null,
+        patientWeight:          _patient.weight.isNotEmpty ? _patient.weight : null,
+        patientClcr:            clcr,
+        patientMedications:     _patient.medications.isNotEmpty ? _patient.medications : null,
+        userQuery:              input,
+        memory:                 _sessionMemory,
+        isFirstMessage:         _aiHistory.isEmpty,
+        isPlantaoMode:          !longResponse,
+        proprietaryDrugContext: null,
+      );
+
+      final qaHistory = List<Map<String, String>>.from(
+        ClinicalThreadManager.buildThreadHistory(
+          fullHistory: _sanitizedHistory,
+          status: qaThreadStatus,
+          isPlantaoMode: !longResponse,
+          currentTaskLabel: AiSmartRouter.detectTaskLabel(input),
+        ).map((m) => {
+          'role':    m['role']    ?? '',
+          'content': m['content'] ?? '',
+        }),
+      );
+
+      // Acumulador local — Anti-Frankenstein: isolado por attempt
+      final qaAccumulator = StringBuffer();
+      bool qaFirstDelta   = false;
+      bool qaCompFired    = false;
+      int  qaDeltaCount   = 0;
+
+      // Ativar estado de streaming (bolha de chat isolada)
+      _aiStreamActive = true;
+      aiChatProvider.setStreaming(true);
+      // [RENDER_AUDIT]: apenas AiChatProvider rebuild — HomeScreen não é notificado
+      // aqui. O notifyListeners() amplo ocorrerá SOMENTE em wrappedOnDone/wrappedOnError.
+
+      // Timer de segurança QA (90s — mesmo orçamento do Modo Estudo)
+      final qaTimeoutMs = longResponse ? 90000 : 45000;
+      Timer? qaTimer;
+      qaTimer = Timer(Duration(milliseconds: qaTimeoutMs), () {
+        if (qaCompFired) return;
+        qaCompFired = true;
+        debugPrint('[AI_E2E][TIMEOUT] requestId=$thisRequestId '
+            'timeoutMs=$qaTimeoutMs elapsedMs='
+            '${DateTime.now().millisecondsSinceEpoch - globalStartMs}');
+        _gptStreamSub?.cancel();
+        _gptStreamSub     = null;
+        _activeGptClient?.cancel(reason: 'qa_timeout');
+        _activeGptClient  = null;
+        _aiStreamActive   = false;
+        aiChatProvider.setStreaming(false);
+        if (_activeRequestId == thisRequestId) _activeRequestId = '';
+        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        wrappedOnDone(_timeoutSafeCard(_lang));
+      });
+
+      // Criar stream SSE real
+      final qaStream = ProviderRouterService.callGptProxyStream(
+        userMessage:     input,
+        systemPrompt:    qaSystemPrompt,
+        idToken:         gptQaToken,
+        history:         qaHistory,
+        mode:            longResponse ? 'estudo' : 'plantao',
+        lang:            _lang,
+        requestId:       thisRequestId, // ID UNIFICADO propagado para o GptSseClient
+        maxOutputTokens: longResponse ? 2500 : 3200,
+      );
+
+      _gptStreamSub = qaStream.listen(
+        (AiEvent event) {
+          // Guard: descarta eventos de requestId obsoleto
+          if (_activeRequestId != thisRequestId) {
+            debugPrint('[AI_E2E][STALE_DROP] requestId=$thisRequestId '
+                'activeId=$_activeRequestId event=${event.runtimeType}');
+            return;
+          }
+
+          switch (event) {
+            // ── AiStarted: conexão estabelecida ──────────────────────────────
+            case AiStarted e:
+              // ignore: avoid_print
+              print('[AI_E2E][STARTED] requestId=$thisRequestId '
+                  'model=${e.model} provider=${e.provider} attempt=${e.attempt} '
+                  'startedAtMs=${e.startedAtMs} '
+                  'ttConnect=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
+
+            // ── AiTextDelta: fragmento real da rede ──────────────────────────
+            case AiTextDelta e:
+              if (e.delta.isEmpty) break;
+              // Anti-Frankenstein: descarta fragmentos de attempt errado
+              if (e.attempt != GptSseClient.kGptAttempt) {
+                debugPrint('[AI_E2E][FRANKENSTEIN_DROP] requestId=$thisRequestId '
+                    'delta_attempt=${e.attempt} expected=${GptSseClient.kGptAttempt}');
+                break;
+              }
+              qaDeltaCount++;
+              qaAccumulator.write(e.delta);
+              // T1: primeiro delta (prova matemática de streaming real)
+              if (!qaFirstDelta) {
+                qaFirstDelta = true;
+                // ignore: avoid_print
+                print('[AI_E2E][T1_FIRST_DELTA] requestId=$thisRequestId '
+                    'sequence=${e.sequence} delta="${e.delta.length > 20 ? e.delta.substring(0, 20) : e.delta}..." '
+                    'T1_ms=${DateTime.now().millisecondsSinceEpoch} '
+                    'elapsed=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
+              }
+              // [RENDER_AUDIT][ACTIVE_BUBBLE_BUILD]: onChunk atualiza SOMENTE a bolha ativa
+              // notifyListeners() NÃO é chamado aqui — o AiVisualBuffer usa
+              // Timer.periodic(40ms) para drenar e atualizar visibleTextNotifier.
+              onChunk(qaAccumulator.toString());
+
+            // ── AiCompleted: transport_done recebido ─────────────────────────
+            case AiCompleted e:
+              if (qaCompFired) break;
+              qaCompFired = true;
+              qaTimer?.cancel();
+              // ignore: avoid_print
+              print('[AI_E2E][T2_TRANSPORT_DONE] requestId=$thisRequestId '
+                  'T2_ms=${DateTime.now().millisecondsSinceEpoch} '
+                  'elapsed=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
+                  'deltaCount=$qaDeltaCount '
+                  'textLen=${e.fullText.length} '
+                  'T1_before_T2=${qaFirstDelta ? "true" : "NO_DELTA_RECEIVED"} '
+                  'provider=${e.usedProvider} attempt=${e.attempt}');
+
+              // Barreira clínica obrigatória: sanitizeAndCheck() ANTES de tudo
+              final qaRawText = e.fullText.trim();
+              // ignore: avoid_print
+              print('[AI_E2E][SANITIZED] requestId=$thisRequestId '
+                  'rawLen=${qaRawText.length} mode=${longResponse ? "estudo" : "plantao"}');
+
+              final qaSanitized = qaRawText.isNotEmpty
+                  ? AiSmartRouter.sanitizeAndCheck(
+                      qaRawText,
+                      isPlantaoMode: !longResponse,
+                      appLanguage:   _lang,
+                    )
+                  : null;
+              final qaFinalText = qaSanitized?.text ?? qaRawText;
+
+              // Validar requestId pós-sanitize (guard de stale state)
+              if (_activeRequestId != thisRequestId) {
+                debugPrint('[AI_E2E][POST_SANITIZE_STALE] requestId=$thisRequestId '
+                    'activeId=$_activeRequestId — descartado após sanitize');
+                _gptStreamSub = null;
+                _aiStreamActive = false;
+                aiChatProvider.setStreaming(false);
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                return;
+              }
+
+              // Persistência apenas de texto válido (não-fallback)
+              if (qaFinalText.isNotEmpty && !_isFallbackText(qaFinalText)) {
+                _aiHistory
+                  ..add({'role': 'user',      'content': input})
+                  ..add({'role': 'assistant', 'content': qaFinalText});
+                while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+              }
+
+              _gptStreamSub = null;
+              _activeGptClient = null;
+              _aiStreamActive  = false;
+              aiChatProvider.setStreaming(false);
+              AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+
+              // ignore: avoid_print
+              print('[AI_E2E][COMPLETED] requestId=$thisRequestId '
+                  'finalTextLen=${qaFinalText.length} '
+                  'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
+                  'provider=${e.usedProvider}');
+              // [RENDER_AUDIT]: notifyListeners() APENAS aqui (via wrappedOnDone)
+              // Não ocorre durante o streaming — HomeScreen não rebuilda por chunk
+              wrappedOnDone(
+                qaFinalText.isNotEmpty
+                    ? qaFinalText
+                    : (_lang == 'es'
+                        ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
+                        : 'Não consegui gerar uma resposta. Pode reformular? ⚕'),
+              );
+
+            // ── AiFailed: falha com código clínico ───────────────────────────
+            case AiFailed e:
+              if (qaCompFired) break;
+              qaCompFired = true;
+              qaTimer?.cancel();
+
+              // Parcial clínico significativo (≥ 80 chars) — não persistir
+              if (e.hasSignificantPartial) {
+                // ignore: avoid_print
+                print('[AI_E2E][CLINICAL_PARTIAL] requestId=$thisRequestId '
+                    'code=${e.code} partialLen=${e.partialText!.length} '
+                    'hasSignificantPartial=true — NÃO persistido, exibe aviso');
+                _gptStreamSub = null;
+                _activeGptClient = null;
+                _aiStreamActive  = false;
+                aiChatProvider.setStreaming(false);
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                // Aviso clínico de resposta interrompida — sem persistência
+                final partialWarning = _lang == 'es'
+                    ? '⚠️ Respuesta interrumpida antes de la validación final.\n'
+                      'El contenido parcial no fue guardado ni validado.\n\n'
+                      '${e.partialText}'
+                    : '⚠️ Resposta interrompida antes da validação final.\n'
+                      'O conteúdo parcial não foi salvo nem validado.\n\n'
+                      '${e.partialText}';
+                wrappedOnError(partialWarning);
+                return;
+              }
+
+              // Falha sem parcial significativo — 401 específico
+              if (e.code == 'gpt_sse_unauthenticated' || e.code == 'auth_expired') {
+                debugPrint('[AI_E2E][AUTH_EXPIRED] requestId=$thisRequestId '
+                    'code=${e.code} retryable=${e.retryable}');
+                _gptStreamSub = null;
+                _activeGptClient = null;
+                _aiStreamActive  = false;
+                aiChatProvider.setStreaming(false);
+                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                wrappedOnError('[auth_expired] Sessão expirada (${e.code}). Faça login novamente.');
+                return;
+              }
+
+              debugPrint('[AI_E2E][FAILED] requestId=$thisRequestId '
+                  'code=${e.code} message=${e.message} retryable=${e.retryable} '
+                  'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
+              _gptStreamSub = null;
+              _activeGptClient = null;
+              _aiStreamActive  = false;
+              aiChatProvider.setStreaming(false);
+              AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+              wrappedOnError(
+                e.code == 'gpt_sse_budget_guard'
+                    ? (_lang == 'es'
+                        ? 'Límite de uso alcanzado. Intenta en unos minutos. ⚕'
+                        : 'Limite de uso atingido. Tente em alguns minutos. ⚕')
+                    : (_lang == 'es'
+                        ? 'Error en el asistente IA (${e.code}). Intenta nuevamente. ⚕'
+                        : 'Erro no assistente IA (${e.code}). Tente novamente. ⚕'),
+              );
+
+            // ── AiProviderSwitched: sinaliza troca de provider ───────────────
+            case AiProviderSwitched e:
+              // ignore: avoid_print
+              print('[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
+                  'from=${e.fromProvider} to=${e.toProvider} reason=${e.reason}');
+              // Limpar acumulador se parcial < 80 chars (Anti-Frankenstein)
+              final partial = qaAccumulator.toString();
+              if (partial.length < AiFailed.kSignificantPartialThreshold) {
+                qaAccumulator.clear();
+                qaFirstDelta = false;
+                qaDeltaCount = 0;
+                debugPrint('[AI_E2E][STREAM_RESET_AUTO] requestId=$thisRequestId '
+                    'partialLen=${partial.length} < 80 → buffer limpo');
+              }
+              // Se parcial ≥ 80: AiFailed virá em seguida (responsabilidade do GptSseClient)
+
+            // ── AiStreamReset: limpa buffers do attempt anterior ─────────────
+            case AiStreamReset e:
+              // ignore: avoid_print
+              print('[AI_E2E][STREAM_RESET] requestId=$thisRequestId '
+                  'reason=${e.reason} attempt=${e.attempt}');
+              qaAccumulator.clear();
+              qaFirstDelta = false;
+              qaDeltaCount = 0;
+
+            // ── AiToolResult / AiSources: ignorados no QA path ───────────────
+            case AiToolResult _:
+            case AiSources _:
+              break;
+          }
+        },
+        onError: (Object e) {
+          if (qaCompFired) return;
+          qaCompFired = true;
+          qaTimer?.cancel();
+          debugPrint('[AI_E2E][STREAM_EXCEPTION] requestId=$thisRequestId error=$e '
+              'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
+          _gptStreamSub    = null;
+          _activeGptClient = null;
+          _aiStreamActive  = false;
+          aiChatProvider.setStreaming(false);
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          wrappedOnError(
+            _lang == 'es'
+                ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
+                : 'Erro de rede no assistente IA. Tente novamente. ⚕',
+          );
+        },
+        onDone: () {
+          // Stream SSE fechou sem AiCompleted — limpeza silenciosa
+          if (qaCompFired) {
+            _gptStreamSub = null;
+            _aiStreamActive = false;
+            aiChatProvider.setStreaming(false);
+            return;
+          }
+          // EOF sem conclusão e sem AiFailed — segurança
+          qaCompFired = true;
+          qaTimer?.cancel();
+          debugPrint('[AI_E2E][EOF_NO_COMPLETION] requestId=$thisRequestId '
+              'accumulatorLen=${qaAccumulator.length}');
+          _gptStreamSub    = null;
+          _activeGptClient = null;
+          _aiStreamActive  = false;
+          aiChatProvider.setStreaming(false);
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          final partialOnEof = qaAccumulator.toString().trim();
+          if (partialOnEof.isNotEmpty) {
+            wrappedOnError(
+              _lang == 'es'
+                  ? 'Respuesta incompleta recibida. Intenta nuevamente. ⚕'
+                  : 'Resposta incompleta recebida. Tente novamente. ⚕',
+            );
+          } else {
+            wrappedOnError(
+              _lang == 'es'
+                  ? 'Sin respuesta del asistente. Intenta nuevamente. ⚕'
+                  : 'Sem resposta do assistente. Tente novamente. ⚕',
+            );
+          }
+        },
+        cancelOnError: false,
+      );
+
+      return true; // BUILD 462E-A: QA path consumido com sucesso
+
+    } // end kForceGptFallbackForQa block
+    // ══════════════════════════════════════════════════════════════════════════
+    // CONTINUA: fluxo normal (Gemini Free → fallbacks) quando kForceGptFallbackForQa=false
+    // ══════════════════════════════════════════════════════════════════════════
 
     // ── Build 156: Client-Side Intelligence — sem gateway intermediário ───
     // AiGatewayService é agora um shim que injeta âncora de modo e delega
