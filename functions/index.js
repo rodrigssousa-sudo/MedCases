@@ -2589,7 +2589,7 @@ exports.gptProxyStream = onRequest(
         return res.status(403).end();
       }
       res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept');
+      res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept, Cache-Control');
       res.setHeader('Access-Control-Max-Age', '3600');
       return res.status(204).end();
     }
