@@ -35,6 +35,7 @@ import '../services/auth_service.dart';             // BUILD 462E-A: Web token r
 import '../services/firebase_runtime_guard.dart';   // BUILD 463-A.1: SafeApps guard for auth boot-lock
 import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: canonicalDecision routing
 import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
+import '../services/ai/timeout_content_safety_guard.dart'; // MICRO-BUILD 462E-A.5.3.7.2.1: TerminalCause, TimeoutSafetyVerdict, TimeoutContentSafetyGuard
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -219,16 +220,9 @@ enum AiTransactionPhase {
   cancelled,   // request was cancelled before completion
 }
 
-// ── TerminalCause ─────────────────────────────────────────────────────────────
-enum TerminalCause {
-  streamDone,           // onDone fired normally
-  chunkIsDone,          // chunk.isDone flag inside the stream
-  timeout,              // deadline timer fired
-  error,                // onError fired
-  cancelled,            // user or system cancellation
-  fallback,             // provider fallback path
-  streamProcessingError,// exception inside SerialEventQueue processStreamEvent
-}
+// ── TerminalCause — defined in lib/services/ai/timeout_content_safety_guard.dart ──
+// Imported above (MICRO-BUILD 462E-A.5.3.7.2.1). All TerminalCause references
+// in this file resolve via that import.
 
 // ── TerminalSignal ────────────────────────────────────────────────────────────
 /// Immutable value submitted by any terminal contender to the Broker.
@@ -570,90 +564,13 @@ class AiFinalizationTransaction {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// MICRO-BUILD 462E-A.5.3.7.2 — TimeoutContentSafetyGuard
+// MICRO-BUILD 462E-A.5.3.7.2.1 — TimeoutContentSafetyGuard + TimeoutSafetyVerdict
+// EXTRACTED to lib/services/ai/timeout_content_safety_guard.dart
 //
-// Enforces content-safety when finalizeAiRequest() is triggered with
-// TerminalCause.timeout.
-//
-// CONTRACT:
-//   1. runTruncationAndRepair() is evaluated UNCONDITIONALLY for timeout paths.
-//   2. If TruncationInspector evaluates the output as truncated AND confidence
-//      is NOT high (low confidence of repair), the raw snapshot is DISCARDED
-//      and the system-defined operational fallback is persisted instead.
-//   3. Under no circumstances may a partial timeout fragment generate an active
-//      ToolResolution payload.
-//   4. If TruncationInspector confidence is HIGH → repair is attempted normally.
-//
-// Fallback messages are system-defined and clinically safe.
-// They are written to persistent local storage in place of the raw fragment.
+// TimeoutContentSafetyGuard, TimeoutSafetyVerdict, and TerminalCause are now
+// owned by the canonical guard module and imported at the top of this file.
+// All call sites in this file continue to resolve correctly via that import.
 // ══════════════════════════════════════════════════════════════════════════════
-abstract final class TimeoutContentSafetyGuard {
-  TimeoutContentSafetyGuard._();
-
-  /// System-defined operational fallback for PT-BR (timeout path).
-  static const String kOperationalFallbackPt =
-      '[Aviso Operacional] A resposta foi interrompida devido a um timeout de rede. '
-      'Para sua segurança e precisão clínica, por favor realize a pergunta novamente.';
-
-  /// System-defined operational fallback for ES (timeout path).
-  static const String kOperationalFallbackEs =
-      '[Aviso Operacional] La respuesta fue interrumpida debido a un timeout de red. '
-      'Para su seguridad y precisión clínica, por favor realice la pregunta nuevamente.';
-
-  /// Returns the language-appropriate operational fallback message.
-  static String fallback(String lang) =>
-      lang == 'es' ? kOperationalFallbackEs : kOperationalFallbackPt;
-
-  /// Evaluates whether a timeout-triggered finalization should discard the
-  /// raw snapshot and substitute the operational fallback.
-  ///
-  /// Returns [TimeoutSafetyVerdict.useOperationalFallback] when:
-  ///   - cause is TerminalCause.timeout AND
-  ///   - TruncationCheckResult reports isTruncated=true AND
-  ///   - confidence is NOT high (cannot be safely repaired).
-  ///
-  /// Returns [TimeoutSafetyVerdict.proceedWithRepair] when the output is
-  /// truncated with HIGH confidence — the repair loop should run normally.
-  ///
-  /// Returns [TimeoutSafetyVerdict.proceedAsIs] when the output is NOT
-  /// truncated — safe to persist.
-  static TimeoutSafetyVerdict evaluate({
-    required TerminalCause cause,
-    required TruncationCheckResult truncResult,
-  }) {
-    if (cause != TerminalCause.timeout) {
-      // Non-timeout path: respect the standard truncation pipeline.
-      return truncResult.isTruncated
-          ? TimeoutSafetyVerdict.proceedWithRepair
-          : TimeoutSafetyVerdict.proceedAsIs;
-    }
-    // Timeout path: apply content-safety enforcement.
-    if (!truncResult.isTruncated) {
-      return TimeoutSafetyVerdict.proceedAsIs;
-    }
-    if (truncResult.confidenceLevel == TruncationConfidence.high) {
-      // Truncated + high confidence → repair may succeed.
-      return TimeoutSafetyVerdict.proceedWithRepair;
-    }
-    // Truncated + low/medium confidence on timeout → discard raw fragment.
-    // ignore: avoid_print
-    print('[TIMEOUT_CONTENT_SAFETY] DISCARD_RAW_FRAGMENT '
-        'isTruncated=${truncResult.isTruncated} '
-        'confidence=${truncResult.confidenceLevel.name} '
-        'reason=low_repair_confidence_on_timeout → operational_fallback');
-    return TimeoutSafetyVerdict.useOperationalFallback;
-  }
-}
-
-/// Result of [TimeoutContentSafetyGuard.evaluate].
-enum TimeoutSafetyVerdict {
-  /// Output is safe to persist as-is.
-  proceedAsIs,
-  /// Output is truncated with high confidence — run repair loop.
-  proceedWithRepair,
-  /// Discard raw fragment — write operational fallback to storage.
-  useOperationalFallback,
-}
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MICRO-BUILD 462E-A.5.3.7 — Sealed ToolResolution
@@ -736,6 +653,18 @@ class AppProvider extends ChangeNotifier {
   Set<String> _favProtocols = {};
   Set<String> _favPrescriptions = {};
   Set<String> _favCases = {};
+
+  // ── MICRO-BUILD 463-A.2.2: Write-barrier state ────────────────────────────
+  // _writeBackFrozen: set true on FsWriteAuthDenied/FsWriteFailure;
+  //   prevents further background write-backs until the session is re-validated.
+  // _lastVerified* snapshots: restored on write failure (revert path).
+  bool _writeBackFrozen = false;
+  Set<String> _lastVerifiedFavDrugs = {};
+  Set<String> _lastVerifiedFavProtocols = {};
+  Set<String> _lastVerifiedFavPrescriptions = {};
+  Set<String> _lastVerifiedFavCases = {};
+  List<ClinicalHistoryModel> _lastVerifiedHistories = [];
+  // ─────────────────────────────────────────────────────────────────────────
 
   // ── Estado — Meu Plantão (itens fixados) ──────────────────────────────────
   // Listas ordenadas: o primeiro item é o mais recente.
@@ -1324,6 +1253,9 @@ class AppProvider extends ChangeNotifier {
     _lang = user.lang;
     _darkMode = user.darkMode;
     _firebaseReady = true;
+    // MICRO-BUILD 463-A.2.2: Reset write-back freeze on every fresh session.
+    // A new setUser() means auth has been re-validated; allow writes again.
+    _writeBackFrozen = false;
 
     // 1️⃣ Carrega cache local IMEDIATAMENTE — app responde sem esperar rede
     await _loadFromLocal(uid: user.uid);
@@ -2222,32 +2154,117 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── MICRO-BUILD 463-A.2.2: Write-barrier helpers ─────────────────────────
+
+  /// Snapshot the four favourite sets before a write attempt.
+  /// Called inside every toggleFav* method immediately before the optimistic
+  /// local mutation, so the revert path always has a clean pre-mutation state.
+  void _snapshotFavourites() {
+    _lastVerifiedFavDrugs         = Set.from(_favDrugs);
+    _lastVerifiedFavProtocols     = Set.from(_favProtocols);
+    _lastVerifiedFavPrescriptions = Set.from(_favPrescriptions);
+    _lastVerifiedFavCases         = Set.from(_favCases);
+  }
+
+  /// Snapshot the history list before a write attempt.
+  void _snapshotHistories() {
+    _lastVerifiedHistories = List.from(_myHistories);
+  }
+
+  /// Called on FsWriteAuthDenied or FsWriteFailure for favourite writes.
+  /// Reverts optimistic local mutation and freezes further write-backs.
+  void _onFavWriteFailure(FirestoreWriteResult result, String operation) {
+    debugPrint('[WRITE_BARRIER_REVERT] operation=$operation '
+        'result=${result.runtimeType} → reverting local state, freezing write-back');
+    _favDrugs         = _lastVerifiedFavDrugs;
+    _favProtocols     = _lastVerifiedFavProtocols;
+    _favPrescriptions = _lastVerifiedFavPrescriptions;
+    _favCases         = _lastVerifiedFavCases;
+    _writeBackFrozen  = true;
+    _saveLocal();
+    notifyListeners();
+    // Operational error notification — visible to user in next frame
+    debugPrint('[OPERATIONAL_ERROR] write_back_frozen=true '
+        'reason=${result.runtimeType} operation=$operation');
+  }
+
+  /// Called on FsWriteAuthDenied or FsWriteFailure for history writes.
+  /// Reverts optimistic local mutation and freezes further write-backs.
+  void _onHistoryWriteFailure(FirestoreWriteResult result, String operation) {
+    debugPrint('[WRITE_BARRIER_REVERT] operation=$operation '
+        'result=${result.runtimeType} → reverting local history state, freezing write-back');
+    _myHistories      = _lastVerifiedHistories;
+    _writeBackFrozen  = true;
+    _saveLocal();
+    notifyListeners();
+    debugPrint('[OPERATIONAL_ERROR] write_back_frozen=true '
+        'reason=${result.runtimeType} operation=$operation');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+
   void toggleFavDrug(String id) {
+    _snapshotFavourites();
     if (_favDrugs.contains(id)) _favDrugs.remove(id); else _favDrugs.add(id);
     _saveLocal();
-    if (_currentUser != null) FirestoreService.saveFavDrugs(_currentUser!.uid, _favDrugs);
     notifyListeners();
+    if (_currentUser != null && !_writeBackFrozen) {
+      final uid = _currentUser!.uid;
+      final snapshot = Set<String>.from(_favDrugs);
+      FirestoreService.saveFavoritesTyped(uid, 'drugs', snapshot).then((result) {
+        if (result is FsWriteAuthDenied || result is FsWriteFailure) {
+          _onFavWriteFailure(result, 'toggleFavDrug');
+        }
+      });
+    }
   }
 
   void toggleFavProtocol(String id) {
+    _snapshotFavourites();
     if (_favProtocols.contains(id)) _favProtocols.remove(id); else _favProtocols.add(id);
     _saveLocal();
-    if (_currentUser != null) FirestoreService.saveFavProtocols(_currentUser!.uid, _favProtocols);
     notifyListeners();
+    if (_currentUser != null && !_writeBackFrozen) {
+      final uid = _currentUser!.uid;
+      final snapshot = Set<String>.from(_favProtocols);
+      FirestoreService.saveFavoritesTyped(uid, 'protocols', snapshot).then((result) {
+        if (result is FsWriteAuthDenied || result is FsWriteFailure) {
+          _onFavWriteFailure(result, 'toggleFavProtocol');
+        }
+      });
+    }
   }
 
   void toggleFavPrescription(String id) {
+    _snapshotFavourites();
     if (_favPrescriptions.contains(id)) _favPrescriptions.remove(id); else _favPrescriptions.add(id);
     _saveLocal();
-    if (_currentUser != null) FirestoreService.saveFavPrescriptions(_currentUser!.uid, _favPrescriptions);
     notifyListeners();
+    if (_currentUser != null && !_writeBackFrozen) {
+      final uid = _currentUser!.uid;
+      final snapshot = Set<String>.from(_favPrescriptions);
+      FirestoreService.saveFavoritesTyped(uid, 'prescriptions', snapshot).then((result) {
+        if (result is FsWriteAuthDenied || result is FsWriteFailure) {
+          _onFavWriteFailure(result, 'toggleFavPrescription');
+        }
+      });
+    }
   }
 
   void toggleFavCase(String id) {
+    _snapshotFavourites();
     if (_favCases.contains(id)) _favCases.remove(id); else _favCases.add(id);
     _saveLocal();
-    if (_currentUser != null) FirestoreService.saveFavCases(_currentUser!.uid, _favCases);
     notifyListeners();
+    if (_currentUser != null && !_writeBackFrozen) {
+      final uid = _currentUser!.uid;
+      final snapshot = Set<String>.from(_favCases);
+      FirestoreService.saveFavoritesTyped(uid, 'fav_cases', snapshot).then((result) {
+        if (result is FsWriteAuthDenied || result is FsWriteFailure) {
+          _onFavWriteFailure(result, 'toggleFavCase');
+        }
+      });
+    }
   }
 
   // ── Meu Plantão — Pin / Unpin ─────────────────────────────────────────────
@@ -2726,8 +2743,12 @@ class AppProvider extends ChangeNotifier {
 
   Future<void> saveHistory(ClinicalHistoryModel h) async {
     if (_currentUser == null) return;
+    final uid = _currentUser!.uid;
 
-    // ── 1. Atualiza _myHistories na memória ──────────────────────────────────
+    // ── 1. Snapshot pre-mutation state for potential revert ──────────────────
+    _snapshotHistories();
+
+    // ── 2. Atualiza _myHistories na memória ──────────────────────────────────
     final idx = _myHistories.indexWhere((x) => x.id == h.id);
     if (idx >= 0) {
       _myHistories[idx] = h;
@@ -2735,7 +2756,7 @@ class AppProvider extends ChangeNotifier {
       _myHistories.insert(0, h);
     }
 
-    // ── 2. Atualiza _publicHistories na memória imediatamente ────────────────
+    // ── 3. Atualiza _publicHistories na memória imediatamente ────────────────
     // Faz isso ANTES do Firestore para que o criador veja a própria HC
     // na aba Comunidade sem precisar recarregar.
     if (h.isPublic) {
@@ -2757,44 +2778,61 @@ class AppProvider extends ChangeNotifier {
       _publicHistories.removeWhere((x) => x.id == h.id);
     }
 
-    // ── 3. Persiste no cache local e notifica UI ─────────────────────────────
-    await _saveHistoriesLocal(_currentUser!.uid);
+    // ── 4. Persiste no cache local e notifica UI ─────────────────────────────
+    await _saveHistoriesLocal(uid);
     notifyListeners();
 
-    // ── 4. Sincroniza com Firestore em background ────────────────────────────
-    // Agora awaita + propaga o uploadedAt real de volta ao modelo local
-    FirestoreService.saveHistory(_currentUser!.uid, h).then((uploadedAt) {
-      if (uploadedAt != null && uploadedAt.isNotEmpty && h.isPublic) {
-        // Atualiza uploadedAt no modelo local com o valor confirmado pelo servidor
-        final pubIdx = _publicHistories.indexWhere((x) => x.id == h.id);
-        if (pubIdx >= 0 && _publicHistories[pubIdx].uploadedAt != uploadedAt) {
-          _publicHistories[pubIdx] = _publicHistories[pubIdx].copyWith(uploadedAt: uploadedAt);
-          // Também sincroniza em _myHistories
-          final myIdx = _myHistories.indexWhere((x) => x.id == h.id);
-          if (myIdx >= 0) {
-            _myHistories[myIdx] = _myHistories[myIdx].copyWith(uploadedAt: uploadedAt);
-          }
-          _saveHistoriesLocal(_currentUser!.uid).catchError((_) {});
-          notifyListeners();
+    // ── 5. Sincroniza com Firestore em background via typed barrier ──────────
+    if (!_writeBackFrozen) {
+      FirestoreService.saveHistoryTyped(uid, h).then((payload) {
+        final result = payload.result;
+        if (result is FsWriteAuthDenied || result is FsWriteFailure) {
+          _onHistoryWriteFailure(result, 'saveHistory');
+          return;
         }
-      }
-    }).catchError((_) {
-      // Falha no Firestore: dados já estão na memória/cache local.
-      // Na próxima conexão, loadHistories() sincroniza automaticamente.
-    });
+        // FsWriteSuccess — propagate confirmed uploadedAt if available
+        final uploadedAt = payload.uploadedAt;
+        if (uploadedAt != null && uploadedAt.isNotEmpty && h.isPublic) {
+          final pubIdx = _publicHistories.indexWhere((x) => x.id == h.id);
+          if (pubIdx >= 0 && _publicHistories[pubIdx].uploadedAt != uploadedAt) {
+            _publicHistories[pubIdx] =
+                _publicHistories[pubIdx].copyWith(uploadedAt: uploadedAt);
+            final myIdx = _myHistories.indexWhere((x) => x.id == h.id);
+            if (myIdx >= 0) {
+              _myHistories[myIdx] =
+                  _myHistories[myIdx].copyWith(uploadedAt: uploadedAt);
+            }
+            _saveHistoriesLocal(uid).catchError((_) {});
+            notifyListeners();
+          }
+        }
+      });
+    }
   }
 
   Future<void> deleteHistory(String id, {bool wasPublic = false}) async {
     if (_currentUser == null) return;
+    final uid = _currentUser!.uid;
+
+    // Snapshot before optimistic removal
+    _snapshotHistories();
+
     _myHistories.removeWhere((h) => h.id == id);
     // Remove da lista pública local também (independente de wasPublic)
     _publicHistories.removeWhere((h) => h.id == id);
     // Atualiza cache local imediatamente
-    await _saveHistoriesLocal(_currentUser!.uid);
+    await _saveHistoriesLocal(uid);
     notifyListeners();
-    // Sincroniza deleção com Firestore em background
-    FirestoreService.deleteHistory(_currentUser!.uid, id, wasPublic: wasPublic)
-        .catchError((_) {});
+
+    // Sincroniza deleção com Firestore via typed barrier
+    if (!_writeBackFrozen) {
+      FirestoreService.deleteHistoryTyped(uid, id, wasPublic: wasPublic)
+          .then((result) {
+        if (result is FsWriteAuthDenied || result is FsWriteFailure) {
+          _onHistoryWriteFailure(result, 'deleteHistory');
+        }
+      });
+    }
   }
 
   Future<void> toggleHistoryPublic(ClinicalHistoryModel h) async {

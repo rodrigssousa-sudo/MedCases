@@ -24,6 +24,10 @@
 
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:medcases/services/ai/timeout_content_safety_guard.dart'
+    show TerminalCause, TimeoutContentSafetyGuard, TimeoutSafetyVerdict;
+import 'package:medcases/services/ai_stream/truncation_inspector.dart'
+    show TruncationCheckResult, TruncationConfidence;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Inline stubs — replicate the production types from app_provider.dart so this
@@ -32,16 +36,6 @@ import 'package:flutter_test/flutter_test.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 enum AiTransactionPhase { ingesting, finalizing, completed, cancelled }
-
-enum TerminalCause {
-  streamDone,
-  chunkIsDone,
-  timeout,
-  error,
-  cancelled,
-  fallback,
-  streamProcessingError,
-}
 
 final class TerminalSignal {
   final String source;
@@ -111,70 +105,6 @@ class _StubExternalToolLinkEngine {
   static final List<String> releasedIds = [];
   static void releaseCanonicalDecision(String id) => releasedIds.add(id);
   static void reset() => releasedIds.clear();
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Invariant U stubs — replicate TruncationInspector & TimeoutContentSafetyGuard
-// types from production code so this test file remains zero-dependency.
-// Mirrors the exact contracts defined in MICRO-BUILD 462E-A.5.3.7.2.
-// ─────────────────────────────────────────────────────────────────────────────
-
-enum _TruncationConfidence { high, medium, low }
-
-class _TruncationInspectionResult {
-  final bool isTruncated;
-  final _TruncationConfidence confidenceLevel;
-
-  const _TruncationInspectionResult({
-    required this.isTruncated,
-    required this.confidenceLevel,
-  });
-
-  /// Convenience factory — truncated with explicit confidence.
-  factory _TruncationInspectionResult.truncated(_TruncationConfidence confidence) =>
-      _TruncationInspectionResult(isTruncated: true, confidenceLevel: confidence);
-
-  /// Convenience factory — clean / not truncated.
-  factory _TruncationInspectionResult.clean() => const _TruncationInspectionResult(
-        isTruncated: false,
-        confidenceLevel: _TruncationConfidence.high,
-      );
-}
-
-enum _TimeoutSafetyVerdict { proceedAsIs, proceedWithRepair, useOperationalFallback }
-
-/// Test-local mirror of [TimeoutContentSafetyGuard] from app_provider.dart.
-/// Logic must match exactly so tests exercise the real decision table.
-abstract final class _TimeoutContentSafetyGuard {
-  _TimeoutContentSafetyGuard._();
-
-  static const String kOperationalFallbackPt =
-      '[Aviso Operacional] A resposta foi interrompida devido a um timeout de rede. '
-      'Para sua segurança e precisão clínica, por favor realize a pergunta novamente.';
-  static const String kOperationalFallbackEs =
-      '[Aviso Operacional] La respuesta fue interrumpida debido a un timeout de red. '
-      'Para su seguridad y precisión clínica, por favor realice la pregunta nuevamente.';
-
-  static String fallback(String lang) =>
-      lang == 'es' ? kOperationalFallbackEs : kOperationalFallbackPt;
-
-  static _TimeoutSafetyVerdict evaluate({
-    required TerminalCause cause,
-    required _TruncationInspectionResult truncResult,
-  }) {
-    if (cause != TerminalCause.timeout) {
-      return truncResult.isTruncated
-          ? _TimeoutSafetyVerdict.proceedWithRepair
-          : _TimeoutSafetyVerdict.proceedAsIs;
-    }
-    if (!truncResult.isTruncated) return _TimeoutSafetyVerdict.proceedAsIs;
-    if (truncResult.confidenceLevel == _TruncationConfidence.high) {
-      return _TimeoutSafetyVerdict.proceedWithRepair;
-    }
-    print('[TIMEOUT_CONTENT_SAFETY] DISCARD_RAW_FRAGMENT '
-        'cause=timeout isTruncated=true confidence=${truncResult.confidenceLevel.name}');
-    return _TimeoutSafetyVerdict.useOperationalFallback;
-  }
 }
 
 // ── AiFinalizationTransaction (test-local mirror) ─────────────────────────────
@@ -849,24 +779,25 @@ void main() {
       final rawFragment = buffer.toString();
       expect(rawFragment, isNotEmpty); // raw fragment exists — dangerous
 
-      // Act: evaluate timeout content safety guard
-      final truncResult = _TruncationInspectionResult.truncated(
-        _TruncationConfidence.low, // low confidence → cannot safely repair
+      // Act: evaluate timeout content safety guard using real production types
+      final truncation = TruncationCheckResult(
+        isTruncated: true,
+        confidenceLevel: TruncationConfidence.low, // low confidence → cannot safely repair
       );
-      final verdict = _TimeoutContentSafetyGuard.evaluate(
+      final verdict = TimeoutContentSafetyGuard.evaluate(
         cause: signal.cause,
-        truncResult: truncResult,
+        truncation: truncation,
       );
 
       // Assert: verdict must be useOperationalFallback
-      expect(verdict, equals(_TimeoutSafetyVerdict.useOperationalFallback));
+      expect(verdict, equals(TimeoutSafetyVerdict.useOperationalFallback));
 
       // The persisted text must be the safe fallback — NOT the raw fragment
-      final persistedText = verdict == _TimeoutSafetyVerdict.useOperationalFallback
-          ? _TimeoutContentSafetyGuard.fallback('pt')
+      final persistedText = verdict == TimeoutSafetyVerdict.useOperationalFallback
+          ? TimeoutContentSafetyGuard.fallback('pt')
           : rawFragment;
 
-      expect(persistedText, equals(_TimeoutContentSafetyGuard.kOperationalFallbackPt));
+      expect(persistedText, equals(TimeoutContentSafetyGuard.kOperationalFallbackPt));
       expect(persistedText, isNot(equals(rawFragment)));
 
       // Persistence guard fires exactly once with the safe fallback text
@@ -876,7 +807,7 @@ void main() {
         parentRequestId: tx.parentRequestId,
         frozenAt: DateTime.now(),
       );
-      expect(snapshot.rawOutput, equals(_TimeoutContentSafetyGuard.kOperationalFallbackPt));
+      expect(snapshot.rawOutput, equals(TimeoutContentSafetyGuard.kOperationalFallbackPt));
       expect(tx.tryMarkAssistantPersisted(), isTrue);
       expect(tx.tryMarkAssistantPersisted(), isFalse); // exactly once
 
@@ -916,22 +847,23 @@ void main() {
       final rawText = buffer.toString();
 
       // Act: TruncationInspector determines output is NOT truncated
-      final truncResult = _TruncationInspectionResult.clean();
-      final verdict = _TimeoutContentSafetyGuard.evaluate(
+      // (TruncationCheckResult.clean: isTruncated=false, confidence=low)
+      const truncation = TruncationCheckResult.clean;
+      final verdict = TimeoutContentSafetyGuard.evaluate(
         cause: signal.cause,
-        truncResult: truncResult,
+        truncation: truncation,
       );
 
       // Assert: proceedAsIs — the complete output is safe to persist
-      expect(verdict, equals(_TimeoutSafetyVerdict.proceedAsIs));
+      expect(verdict, equals(TimeoutSafetyVerdict.proceedAsIs));
 
       // Persisted text must be the original raw text, not the fallback
-      final persistedText = verdict == _TimeoutSafetyVerdict.useOperationalFallback
-          ? _TimeoutContentSafetyGuard.fallback('pt')
+      final persistedText = verdict == TimeoutSafetyVerdict.useOperationalFallback
+          ? TimeoutContentSafetyGuard.fallback('pt')
           : rawText;
 
       expect(persistedText, equals(rawText));
-      expect(persistedText, isNot(equals(_TimeoutContentSafetyGuard.kOperationalFallbackPt)));
+      expect(persistedText, isNot(equals(TimeoutContentSafetyGuard.kOperationalFallbackPt)));
 
       final snapshot = FinalOutputSnapshot(
         rawOutput: persistedText,
@@ -968,35 +900,36 @@ void main() {
       final rawText = buffer.toString();
 
       // Act: non-timeout cause with truncated output at any confidence level
-      final truncResult = _TruncationInspectionResult.truncated(
-        _TruncationConfidence.medium,
+      final truncation = TruncationCheckResult(
+        isTruncated: true,
+        confidenceLevel: TruncationConfidence.medium,
       );
-      final verdict = _TimeoutContentSafetyGuard.evaluate(
+      final verdict = TimeoutContentSafetyGuard.evaluate(
         cause: signal.cause, // TerminalCause.streamDone — NOT timeout
-        truncResult: truncResult,
+        truncation: truncation,
       );
 
       // Assert: proceedWithRepair — truncation repair should be attempted,
       // but the operational fallback is NOT used for non-timeout causes.
-      expect(verdict, equals(_TimeoutSafetyVerdict.proceedWithRepair));
-      expect(verdict, isNot(equals(_TimeoutSafetyVerdict.useOperationalFallback)));
+      expect(verdict, equals(TimeoutSafetyVerdict.proceedWithRepair));
+      expect(verdict, isNot(equals(TimeoutSafetyVerdict.useOperationalFallback)));
 
       // The raw text is preserved for repair — not replaced by the fallback
-      final persistedText = verdict == _TimeoutSafetyVerdict.useOperationalFallback
-          ? _TimeoutContentSafetyGuard.fallback('pt')
+      final persistedText = verdict == TimeoutSafetyVerdict.useOperationalFallback
+          ? TimeoutContentSafetyGuard.fallback('pt')
           : rawText;
 
       expect(persistedText, equals(rawText));
-      expect(persistedText, isNot(equals(_TimeoutContentSafetyGuard.kOperationalFallbackPt)));
+      expect(persistedText, isNot(equals(TimeoutContentSafetyGuard.kOperationalFallbackPt)));
     });
 
     // ── U-4: Spanish fallback locale is correct ─────────────────────────────
     test('fallback() returns Spanish message when lang == "es"', () {
-      final es = _TimeoutContentSafetyGuard.fallback('es');
-      final pt = _TimeoutContentSafetyGuard.fallback('pt');
+      final es = TimeoutContentSafetyGuard.fallback('es');
+      final pt = TimeoutContentSafetyGuard.fallback('pt');
 
-      expect(es, equals(_TimeoutContentSafetyGuard.kOperationalFallbackEs));
-      expect(pt, equals(_TimeoutContentSafetyGuard.kOperationalFallbackPt));
+      expect(es, equals(TimeoutContentSafetyGuard.kOperationalFallbackEs));
+      expect(pt, equals(TimeoutContentSafetyGuard.kOperationalFallbackPt));
       expect(es, isNot(equals(pt)));
 
       // Spanish message contains the correct text
@@ -1008,31 +941,33 @@ void main() {
     // ── U-5: Timeout + truncated + HIGH confidence → proceedWithRepair ───────
     test('timeout + truncated + high confidence → proceedWithRepair, not fallback', () {
       // High confidence means repair can be attempted even on timeout
-      final truncResult = _TruncationInspectionResult.truncated(
-        _TruncationConfidence.high,
+      final truncation = TruncationCheckResult(
+        isTruncated: true,
+        confidenceLevel: TruncationConfidence.high,
       );
-      final verdict = _TimeoutContentSafetyGuard.evaluate(
+      final verdict = TimeoutContentSafetyGuard.evaluate(
         cause: TerminalCause.timeout,
-        truncResult: truncResult,
+        truncation: truncation,
       );
 
       // High confidence → repair path (NOT the unsafe raw discard or fallback)
-      expect(verdict, equals(_TimeoutSafetyVerdict.proceedWithRepair));
-      expect(verdict, isNot(equals(_TimeoutSafetyVerdict.useOperationalFallback)));
+      expect(verdict, equals(TimeoutSafetyVerdict.proceedWithRepair));
+      expect(verdict, isNot(equals(TimeoutSafetyVerdict.useOperationalFallback)));
     });
 
     // ── U-6: Timeout + truncated + MEDIUM confidence → useOperationalFallback
     test('timeout + truncated + medium confidence → useOperationalFallback', () {
       // Medium is NOT high → falls to the discard/fallback branch
-      final truncResult = _TruncationInspectionResult.truncated(
-        _TruncationConfidence.medium,
+      final truncation = TruncationCheckResult(
+        isTruncated: true,
+        confidenceLevel: TruncationConfidence.medium,
       );
-      final verdict = _TimeoutContentSafetyGuard.evaluate(
+      final verdict = TimeoutContentSafetyGuard.evaluate(
         cause: TerminalCause.timeout,
-        truncResult: truncResult,
+        truncation: truncation,
       );
 
-      expect(verdict, equals(_TimeoutSafetyVerdict.useOperationalFallback));
+      expect(verdict, equals(TimeoutSafetyVerdict.useOperationalFallback));
     });
   });
 }

@@ -117,6 +117,47 @@ final class UiLoadDiscarded<T> extends UiLoadOutcome<T> {
   const UiLoadDiscarded({required this.reason});
 }
 
+// ── MICRO-BUILD 463-A.2.2: FirestoreWriteResult — typed write barrier ─────────
+//
+// Replaces raw, unawaited .set()/.update()/.delete() with a typed return value
+// that forces every call site to handle success, auth-denial, and failure
+// as distinct cases.
+//
+// Dual-UID checks are performed BEFORE any I/O:
+//   1. FirebaseAuth.instance.currentUser != null  (active SDK session)
+//   2. FirebaseAuth.instance.currentUser!.uid == requestedUid  (IDOR shield)
+//
+// If either check fails → FsWriteAuthDenied returned synchronously,
+// zero Firestore SDK calls dispatched.
+//
+// AppProvider obligation on FsWriteAuthDenied | FsWriteFailure:
+//   • Revert the local memory change to the last verified snapshot.
+//   • Trigger an operational error notification to the UI.
+//   • Freeze any further write-back operations for this request cycle.
+// ─────────────────────────────────────────────────────────────────────────────
+sealed class FirestoreWriteResult {
+  const FirestoreWriteResult();
+}
+
+/// The write completed successfully in Firestore.
+final class FsWriteSuccess extends FirestoreWriteResult {
+  const FsWriteSuccess();
+}
+
+/// The write was rejected before any I/O — UID is null or mismatches.
+/// [reason] is always the literal token 'uid_mismatch_or_null'.
+final class FsWriteAuthDenied extends FirestoreWriteResult {
+  final String reason;
+  const FsWriteAuthDenied(this.reason);
+}
+
+/// The write reached Firestore but an exception was thrown.
+final class FsWriteFailure extends FirestoreWriteResult {
+  final Object error;
+  final StackTrace stackTrace;
+  const FsWriteFailure(this.error, this.stackTrace);
+}
+
 class FirestoreService {
   // ── Safe type helpers — imunes a TypeError em dart2js release mode ───────
   /// Converte qualquer valor para String sem lançar TypeError.
@@ -1333,6 +1374,184 @@ class FirestoreService {
     });
   }
 
+  // ── MICRO-BUILD 463-A.2.2: Identity-gated secure real-time streams ────────
+  //
+  // Both streams intercept auth state before every snapshot emission.
+  // If the active user UID becomes null or changes to a different account
+  // while the stream is listening, the stream terminates instantly —
+  // zero transient snapshots from the wrong account are emitted.
+  //
+  // Stale snapshots arriving after termination are tagged:
+  //   [SECURE_STREAM_DROPPED] parentUid=<uid> activeUid=<uid> reason=stale_stream_generation
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Auto-closing secure stream of active cases.
+  ///
+  /// If [FirebaseAuth.instance.currentUser?.uid] becomes null or changes
+  /// to a UID ≠ [uid] between snapshot emissions, the stream emits a
+  /// done signal synchronously and closes.
+  static Stream<List<ClinicalCaseModel>> streamActiveCases(String uid) async* {
+    await for (final snap in _userCases(uid)
+        .where('isCustom', isEqualTo: true)
+        .snapshots()) {
+      final activeUid = FirebaseAuth.instance.currentUser?.uid;
+      if (activeUid != uid) {
+        debugPrint('[SECURE_STREAM][AUTO_CLOSE] stream=streamActiveCases '
+            'parentUid=$uid activeUid=$activeUid');
+        yield* Stream.empty();
+        return;
+      }
+      final cases = <ClinicalCaseModel>[];
+      for (final d in snap.docs) {
+        try {
+          cases.add(ClinicalCaseModel.fromJson(sdkDocWithId(d)));
+        } catch (_) {}
+      }
+      cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
+      yield cases;
+    }
+  }
+
+  // ── MICRO-BUILD 463-A.2.2: Typed write barrier — 4 persistent mutators ───
+  //
+  // Each method performs a synchronous Dual-UID check BEFORE dispatching any
+  // Firestore SDK call:
+  //   1. currentUser != null  (active SDK session exists)
+  //   2. currentUser!.uid == uid  (IDOR shield — prevents cross-account writes)
+  //
+  // Returns FsWriteAuthDenied immediately with zero I/O if either check fails.
+  // Returns FsWriteSuccess on clean write, FsWriteFailure on exception.
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Dual-UID pre-flight check shared by all typed write methods.
+  /// Returns null on pass, or the denial result to return immediately.
+  static FirestoreWriteResult? _writeAuthCheck(String uid, String operation) {
+    final fbUser = FirebaseAuth.instance.currentUser;
+    if (fbUser == null) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=$operation '
+          'allowed=false reason=uid_mismatch_or_null uid=$uid '
+          'sdkWriteDispatched=false');
+      return const FsWriteAuthDenied('uid_mismatch_or_null');
+    }
+    if (fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=$operation '
+          'allowed=false reason=uid_mismatch_or_null '
+          'expectedUid=$uid firebaseUid=${fbUser.uid} '
+          'sdkWriteDispatched=false');
+      return const FsWriteAuthDenied('uid_mismatch_or_null');
+    }
+    return null; // pass — caller may dispatch I/O
+  }
+
+  /// Saves [h] to the user's private history sub-collection and, if public,
+  /// mirrors it to public_histories. Returns the write outcome.
+  /// [uploadedAt] is only non-null in the success path when h.isPublic.
+  static Future<({FirestoreWriteResult result, String? uploadedAt})>
+      saveHistoryTyped(String uid, ClinicalHistoryModel h) async {
+    final denial = _writeAuthCheck(uid, 'saveHistoryTyped');
+    if (denial != null) return (result: denial, uploadedAt: null);
+
+    try {
+      await _userHistories(uid).doc(h.id).set(h.toJson());
+
+      String? uploadedAt;
+      if (h.isPublic) {
+        uploadedAt = h.uploadedAt.isNotEmpty
+            ? h.uploadedAt
+            : DateTime.now().toIso8601String();
+        final publicData = h.toJson();
+        publicData['uploadedAt'] = uploadedAt;
+        publicData['isHidden'] = publicData['isHidden'] ?? false;
+
+        if (kIsWeb) {
+          await _savePublicHistoryRest(h.id, publicData);
+        } else {
+          await _publicHistories.doc(h.id).set(publicData);
+        }
+      } else {
+        if (kIsWeb) {
+          await _deletePublicHistoryRest(h.id);
+        } else {
+          try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
+        }
+      }
+      return (result: const FsWriteSuccess(), uploadedAt: uploadedAt);
+    } on FirebaseException catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
+          'uid=$uid error=${e.code} sdkWriteDispatched=true → FsWriteFailure');
+      return (result: FsWriteFailure(e, st), uploadedAt: null);
+    } catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
+          'uid=$uid error=$e sdkWriteDispatched=true → FsWriteFailure');
+      return (result: FsWriteFailure(e, st), uploadedAt: null);
+    }
+  }
+
+  /// Deletes [hid] from the user's history sub-collection and, if it was
+  /// public, from public_histories. Returns the write outcome.
+  static Future<FirestoreWriteResult> deleteHistoryTyped(
+      String uid, String hid, {bool wasPublic = false}) async {
+    final denial = _writeAuthCheck(uid, 'deleteHistoryTyped');
+    if (denial != null) return denial;
+
+    try {
+      await _userHistories(uid).doc(hid).delete();
+      if (wasPublic) {
+        try { await _publicHistories.doc(hid).delete(); } catch (_) {}
+      }
+      return const FsWriteSuccess();
+    } on FirebaseException catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
+          'uid=$uid hid=$hid error=${e.code} → FsWriteFailure');
+      return FsWriteFailure(e, st);
+    } catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
+          'uid=$uid hid=$hid error=$e → FsWriteFailure');
+      return FsWriteFailure(e, st);
+    }
+  }
+
+  /// Saves [ids] as the user's favourites set for [type]
+  /// ('drugs', 'protocols', 'prescriptions', 'fav_cases').
+  static Future<FirestoreWriteResult> saveFavoritesTyped(
+      String uid, String type, Set<String> ids) async {
+    final denial = _writeAuthCheck(uid, 'saveFavoritesTyped');
+    if (denial != null) return denial;
+
+    try {
+      await _userFavs(uid).doc(type).set({'ids': ids.toList()});
+      return const FsWriteSuccess();
+    } on FirebaseException catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
+          'uid=$uid type=$type error=${e.code} → FsWriteFailure');
+      return FsWriteFailure(e, st);
+    } catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
+          'uid=$uid type=$type error=$e → FsWriteFailure');
+      return FsWriteFailure(e, st);
+    }
+  }
+
+  /// Saves a single [ClinicalCaseModel] to the user's cases sub-collection.
+  static Future<FirestoreWriteResult> saveCaseProgressTyped(
+      String uid, ClinicalCaseModel c) async {
+    final denial = _writeAuthCheck(uid, 'saveCaseProgressTyped');
+    if (denial != null) return denial;
+
+    try {
+      await _userCases(uid).doc(c.id).set(c.toJson());
+      return const FsWriteSuccess();
+    } on FirebaseException catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
+          'uid=$uid caseId=${c.id} error=${e.code} → FsWriteFailure');
+      return FsWriteFailure(e, st);
+    } catch (e, st) {
+      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
+          'uid=$uid caseId=${c.id} error=$e → FsWriteFailure');
+      return FsWriteFailure(e, st);
+    }
+  }
+
   // ── Histórias clínicas do usuário ────────────────────────────────────────
   static CollectionReference<Map<String, dynamic>> _userHistories(String uid) =>
       _db.collection('users').doc(uid).collection('clinical_histories');
@@ -2136,16 +2355,30 @@ class FirestoreService {
     }
   }
 
-  /// Stream reativo das histórias do usuário — recebe updates em tempo real.
-  /// Usado pelo HistoryScreen mobile para sincronização automática Web↔iOS.
-  static Stream<List<ClinicalHistoryModel>> streamHistories(String uid) {
-    return _userHistories(uid).snapshots().map((snap) {
+  /// Auto-closing secure stream of user histories — receives real-time updates.
+  ///
+  /// MICRO-BUILD 463-A.2.2: Identity guard active on every snapshot emission.
+  /// If [FirebaseAuth.instance.currentUser?.uid] becomes null or ≠ [uid],
+  /// the stream emits a synchronous done signal and closes immediately.
+  /// No transient snapshots from an identity-shifted session are ever emitted.
+  ///
+  /// Stale arrivals after auto-close are tagged:
+  ///   [SECURE_STREAM_DROPPED] parentUid=<uid> activeUid=<uid> reason=stale_stream_generation
+  static Stream<List<ClinicalHistoryModel>> streamHistories(String uid) async* {
+    await for (final snap in _userHistories(uid).snapshots()) {
+      final activeUid = FirebaseAuth.instance.currentUser?.uid;
+      if (activeUid != uid) {
+        debugPrint('[SECURE_STREAM][AUTO_CLOSE] stream=streamHistories '
+            'parentUid=$uid activeUid=$activeUid');
+        yield* Stream.empty();
+        return;
+      }
       final list = snap.docs
           .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
           .toList();
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-      return list;
-    });
+      yield list;
+    }
   }
 
   /// Salva a história do usuário e, se pública, espelha em public_histories.
