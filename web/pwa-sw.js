@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '48.1.0';
-const CACHE_APP    = 'medcases-app-v48.1.0';  // ← Build 155: Dois motores independentes /stream/plantao + /stream/estudo
+const SW_VERSION   = '48.1.1';
+const CACHE_APP    = 'medcases-app-v48.1.1';  // ← Build 155: Dois motores independentes /stream/plantao + /stream/estudo
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
@@ -54,11 +54,9 @@ function isStaticAsset(url) {
 
 // ── INSTALL ────────────────────────────────────────────────────────────────────
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_APP)
-      .then(cache => Promise.allSettled(PRECACHE.map(u => cache.add(u).catch(() => {}))))
-      .then(() => self.skipWaiting())   // ativa imediatamente
-  );
+  // Availability-first: o install nunca depende de rede ou precache.
+  // Os assets são armazenados sob demanda pelo fetch handler após a ativação.
+  event.waitUntil(self.skipWaiting());
 });
 
 // ── ACTIVATE ───────────────────────────────────────────────────────────────────
