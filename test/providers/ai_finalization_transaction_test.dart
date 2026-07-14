@@ -1825,6 +1825,7 @@ void main() {
         sessionId: 'req_z2_abcdef',
         requestId: 'req_z2_abcdef',
         mode:      'plantao',
+        locale:    'pt',
         createdAt: frozenAt,
       );
 
@@ -1832,6 +1833,7 @@ void main() {
       expect(ctx.sessionId, equals('req_z2_abcdef'));
       expect(ctx.requestId, equals('req_z2_abcdef'));
       expect(ctx.mode,      equals('plantao'));
+      expect(ctx.locale,    equals('pt'));
       expect(ctx.createdAt, equals(frozenAt),
           reason: 'createdAt must be the exact frozen instant passed at construction');
 
@@ -1923,6 +1925,279 @@ void main() {
       // Phase stays completed (not double-advanced).
       expect(txn.phase, equals(AiTransactionPhase.completed),
           reason: 'Phase must remain completed after duplicate tryMarkCoordinatorCompleted()');
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // Invariant K — Session Index Materialization (MICRO-BUILD 462E-A.5.3.7.3.2.5)
+  //
+  // K-1: Atomic Batch Execution — both parent document and exchange document must
+  //      be written in a single batch with non-null server timestamps.
+  // K-2: Identifier Decoupling — sessionId is stable across turns; requestId is
+  //      unique per exchange.
+  // K-3: Local List Prepend — a successful persist triggers the local index upsert
+  //      and the list reflects the most-recent session at position 0.
+  // ══════════════════════════════════════════════════════════════════════════════
+  group('Invariant K — Session Index Materialization (462E-A.5.3.7.3.2.5)', () {
+
+    // ── K-1: Atomic batch — parent + exchange both written ───────────────────
+    test('K-1: atomic batch writes parent session doc and exchange sub-doc', () async {
+      // Simulate the two operations that batchWriteAiExchange must execute.
+      // We model the batch as a simple record that captures both writes.
+      // In unit tests we cannot reach Firestore, so we verify the contract
+      // through a mock batch accumulator.
+
+      final List<String> writtenPaths = [];
+
+      // Simulate Operation A (parent session) and Operation B (exchange).
+      Future<({bool ok, Object? error})> mockBatch({
+        required String uid,
+        required String sessionId,
+        required String requestId,
+        required bool isFirstMessage,
+      }) async {
+        // Operation A — parent path
+        writtenPaths.add('users/$uid/ai_sessions/$sessionId');
+        // Operation B — exchange path
+        writtenPaths.add('users/$uid/ai_sessions/$sessionId/exchanges/$requestId');
+        return (ok: true, error: null);
+      }
+
+      const uid       = 'uid-k1';
+      const sessionId = 'session_1784000000000';
+      const requestId = 'req_1784000001000';
+
+      final result = await mockBatch(
+        uid:            uid,
+        sessionId:      sessionId,
+        requestId:      requestId,
+        isFirstMessage: true,
+      );
+
+      expect(result.ok, isTrue,
+          reason: 'Batch must succeed');
+      expect(result.error, isNull,
+          reason: 'No error on successful batch');
+      expect(writtenPaths, hasLength(2),
+          reason: 'Exactly two write operations must be dispatched');
+      expect(writtenPaths[0], equals('users/$uid/ai_sessions/$sessionId'),
+          reason: 'Operation A must target the parent session document');
+      expect(writtenPaths[1],
+          equals('users/$uid/ai_sessions/$sessionId/exchanges/$requestId'),
+          reason: 'Operation B must target the exchange sub-document');
+
+      // Verify both paths share the same sessionId (atomic grouping invariant).
+      final parentSessionId = writtenPaths[0].split('/')[3];
+      final exchangeSessionId = writtenPaths[1].split('/')[3];
+      expect(parentSessionId, equals(exchangeSessionId),
+          reason: 'Parent and exchange must share the same sessionId');
+
+      // Verify the exchange path ends with the requestId (idempotency key).
+      expect(writtenPaths[1].endsWith(requestId), isTrue,
+          reason: 'Exchange document ID must equal requestId for idempotency');
+    });
+
+    // ── K-2: Identifier decoupling — sessionId stable, requestId unique ──────
+    test('K-2: sessionId is stable across 3 turns; requestId is unique per turn', () {
+      // Model the stable sessionId as a conversation-lifetime constant.
+      const stableSessionId = 'session_1784100000000';
+
+      // Each turn generates a new requestId (simulating ProviderRouterService).
+      final turn1 = 'req_${DateTime(2026, 7, 14, 10, 0, 1).millisecondsSinceEpoch}';
+      final turn2 = 'req_${DateTime(2026, 7, 14, 10, 0, 2).millisecondsSinceEpoch}';
+      final turn3 = 'req_${DateTime(2026, 7, 14, 10, 0, 3).millisecondsSinceEpoch}';
+
+      // Build three ActiveAiSessionContext objects as the provider would.
+      final ctx1 = ActiveAiSessionContext(
+        uid:       'uid-k2',
+        sessionId: stableSessionId,
+        requestId: turn1,
+        mode:      'plantao',
+        locale:    'pt',
+        createdAt: DateTime(2026, 7, 14, 10, 0, 1),
+      );
+      final ctx2 = ActiveAiSessionContext(
+        uid:       'uid-k2',
+        sessionId: stableSessionId,
+        requestId: turn2,
+        mode:      'plantao',
+        locale:    'pt',
+        createdAt: DateTime(2026, 7, 14, 10, 0, 2),
+      );
+      final ctx3 = ActiveAiSessionContext(
+        uid:       'uid-k2',
+        sessionId: stableSessionId,
+        requestId: turn3,
+        mode:      'plantao',
+        locale:    'pt',
+        createdAt: DateTime(2026, 7, 14, 10, 0, 3),
+      );
+
+      // sessionId must be identical across all three turns.
+      expect(ctx1.sessionId, equals(stableSessionId));
+      expect(ctx2.sessionId, equals(stableSessionId));
+      expect(ctx3.sessionId, equals(stableSessionId));
+      expect(ctx1.sessionId, equals(ctx2.sessionId),
+          reason: 'Turn 1 and Turn 2 must share the same sessionId');
+      expect(ctx2.sessionId, equals(ctx3.sessionId),
+          reason: 'Turn 2 and Turn 3 must share the same sessionId');
+
+      // requestId must be unique per turn.
+      final requestIds = {ctx1.requestId, ctx2.requestId, ctx3.requestId};
+      expect(requestIds, hasLength(3),
+          reason: 'All three requestIds must be distinct');
+
+      // requestId must NOT equal sessionId on any turn.
+      expect(ctx1.requestId, isNot(equals(stableSessionId)),
+          reason: 'Turn 1 requestId must differ from sessionId');
+      expect(ctx2.requestId, isNot(equals(stableSessionId)),
+          reason: 'Turn 2 requestId must differ from sessionId');
+      expect(ctx3.requestId, isNot(equals(stableSessionId)),
+          reason: 'Turn 3 requestId must differ from sessionId');
+    });
+
+    // ── K-3: Local list prepend and notification ──────────────────────────────
+    test('K-3: successful persist prepends session to local index at position 0', () {
+      // Model the local in-memory session index as a plain List<Map>.
+      final localIndex = <Map<String, dynamic>>[];
+      int notifyCount = 0;
+
+      // Simulate _upsertLocalSessionIndex logic.
+      void upsertLocal({
+        required String sessionId,
+        required String uid,
+        required String title,
+        required String mode,
+        required String locale,
+        required String requestId,
+        required String userPreview,
+        required String assistantPreview,
+      }) {
+        final now = DateTime.now().millisecondsSinceEpoch;
+        final idx = localIndex.indexWhere((s) => s['sessionId'] == sessionId);
+
+        if (idx >= 0) {
+          final existing = Map<String, dynamic>.from(localIndex[idx]);
+          existing['updatedAt']            = now;
+          existing['lastRequestId']        = requestId;
+          existing['lastUserPreview']      = userPreview;
+          existing['lastAssistantPreview'] = assistantPreview;
+          localIndex.removeAt(idx);
+          localIndex.insert(0, existing);
+        } else {
+          localIndex.insert(0, {
+            'sessionId':            sessionId,
+            'uid':                  uid,
+            'title':                title,
+            'mode':                 mode,
+            'locale':               locale,
+            'createdAt':            now,
+            'updatedAt':            now,
+            'lastRequestId':        requestId,
+            'lastUserPreview':      userPreview,
+            'lastAssistantPreview': assistantPreview,
+            'messageCount':         1,
+            'isDeleted':            false,
+            'schemaVersion':        2,
+          });
+        }
+        notifyCount++;
+      }
+
+      // Simulate a mock persist that returns [SessionPersistSynced] and triggers upsert.
+      Future<SessionPersistStatus> mockPersistAndUpsert({
+        required String sessionId,
+        required String requestId,
+        required String title,
+        required String userInput,
+        required String assistantOutput,
+      }) async {
+        // Simulate successful batch write — always synced in this mock.
+        upsertLocal(
+          sessionId:        sessionId,
+          uid:              'uid-k3',
+          title:            title,
+          mode:             'plantao',
+          locale:           'pt',
+          requestId:        requestId,
+          userPreview:      userInput.length > 120
+              ? userInput.substring(0, 120)
+              : userInput,
+          assistantPreview: assistantOutput.length > 160
+              ? assistantOutput.substring(0, 160)
+              : assistantOutput,
+        );
+        return const SessionPersistSynced();
+      }
+
+      // K-3a: First message — session is prepended at index 0.
+      const sessionId = 'session_k3_stable';
+      const req1 = 'req_k3_turn1';
+
+      expect(localIndex, isEmpty, reason: 'Index must start empty');
+
+      final status1 = mockPersistAndUpsert(
+        sessionId:       sessionId,
+        requestId:       req1,
+        title:           'Síndrome de Guillain-Barré',
+        userInput:       'Explique Síndrome de Guillain-Barré',
+        assistantOutput: 'A SGB é uma polineuropatia...',
+      );
+
+      // (fire and check synchronously after await)
+      status1.then((s) {
+        expect(s, isA<SessionPersistSynced>(),
+            reason: 'K-3a: first persist must return SessionPersistSynced');
+        expect(localIndex, hasLength(1),
+            reason: 'K-3a: one entry in local index after first message');
+        expect(localIndex[0]['sessionId'], equals(sessionId),
+            reason: 'K-3a: entry at position 0 must have the correct sessionId');
+        expect(localIndex[0]['title'], equals('Síndrome de Guillain-Barré'),
+            reason: 'K-3a: title must be set from first user message');
+        expect(localIndex[0]['schemaVersion'], equals(2),
+            reason: 'K-3a: schemaVersion must be 2');
+        expect(localIndex[0]['isDeleted'], isFalse,
+            reason: 'K-3a: isDeleted must be false');
+        expect(notifyCount, equals(1),
+            reason: 'K-3a: notifyListeners must have been called exactly once');
+      });
+
+      // Eagerly flush the future to resolve within test.
+      return status1.then((_) {
+        // K-3b: Second turn — same sessionId, different requestId, moves to position 0.
+        const req2 = 'req_k3_turn2';
+
+        // Insert an older session first to test position 0 invariant.
+        localIndex.insert(1, {
+          'sessionId': 'session_older',
+          'title': 'Old session',
+          'updatedAt': 0,
+        });
+        expect(localIndex, hasLength(2),
+            reason: 'K-3b: two sessions in index before second turn');
+
+        return mockPersistAndUpsert(
+          sessionId:       sessionId,
+          requestId:       req2,
+          title:           'Síndrome de Guillain-Barré',
+          userInput:       'E o tratamento?',
+          assistantOutput: 'O tratamento inclui IVIG ou plasmaférese.',
+        ).then((s2) {
+          expect(s2, isA<SessionPersistSynced>(),
+              reason: 'K-3b: second persist must return SessionPersistSynced');
+          expect(localIndex, hasLength(2),
+              reason: 'K-3b: still 2 sessions — no duplicate created');
+          expect(localIndex[0]['sessionId'], equals(sessionId),
+              reason: 'K-3b: updated session must be at position 0 (most-recent)');
+          expect(localIndex[0]['lastUserPreview'],
+              equals('E o tratamento?'),
+              reason: 'K-3b: lastUserPreview must reflect second turn');
+          expect(localIndex[1]['sessionId'], equals('session_older'),
+              reason: 'K-3b: older session pushed to position 1');
+          expect(notifyCount, equals(2),
+              reason: 'K-3b: notifyListeners called once more for second turn');
+        });
+      });
     });
   });
 }

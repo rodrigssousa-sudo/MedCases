@@ -1187,6 +1187,12 @@ class FirestoreService {
   static CollectionReference<Map<String, dynamic>> _userAiHistory(String uid) =>
       _db.collection('users').doc(uid).collection('ai_chat_history');
 
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5: Canonical AI session index ───────────
+  // Parent path: users/{uid}/ai_sessions — schema v2, queryable by isDeleted +
+  // updatedAt. Exchange sub-path: …/ai_sessions/{sessionId}/exchanges/{requestId}.
+  static CollectionReference<Map<String, dynamic>> _userAiSessions(String uid) =>
+      _db.collection('users').doc(uid).collection('ai_sessions');
+
   /// Salva UMA sessão de chat no Firestore (upsert por session.id).
   /// Injeta sempre `updatedAt` como server timestamp para que a query
   /// orderBy('updatedAt') funcione em todos os dispositivos.
@@ -1207,6 +1213,84 @@ class FirestoreService {
     try {
       await _userAiHistory(uid).doc(sessionId).delete();
     } catch (_) {}
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 1]: Atomic batch session write ─
+  //
+  // Writes exactly two Firestore documents in a single WriteBatch:
+  //   Operation A — Parent session document (upsert/merge):
+  //     users/{uid}/ai_sessions/{sessionId}
+  //   Operation B — Immutable exchange document (set, idempotent by requestId):
+  //     users/{uid}/ai_sessions/{sessionId}/exchanges/{requestId}
+  //
+  // Schema v2 fields on the parent document are described in the mandate.
+  // Operation B uses requestId as the document ID — duplicate writes are
+  // safe (last-write-wins, same content).
+  //
+  // Returns [SessionPersistSynced] when both writes succeed, or
+  // [SessionPersistFailed] on any error (never throws).
+  //
+  // IMPORTANT: This method is called ONLY from persistAiExchangeOnce()
+  // which already enforces idempotency via _persistedExchangeIds.
+  static Future<({bool ok, Object? error})> batchWriteAiExchange({
+    required String uid,
+    required String sessionId,
+    required String requestId,
+    required String mode,
+    required String locale,
+    required String title,
+    required bool isFirstMessage,
+    required String userPreview,
+    required String assistantPreview,
+    required String userInputFull,
+    required String assistantOutputFull,
+  }) async {
+    try {
+      final batch = _db.batch();
+
+      // ── Operation A: Parent session document (upsert with merge) ──────────
+      final sessionRef = _userAiSessions(uid).doc(sessionId);
+      final parentData = <String, Object>{
+        'sessionId':             sessionId,
+        'uid':                   uid,
+        'title':                 title,
+        'mode':                  mode,
+        'locale':                locale,
+        'updatedAt':             FieldValue.serverTimestamp(),
+        'lastRequestId':         requestId,
+        'lastUserPreview':       userPreview,
+        'lastAssistantPreview':  assistantPreview,
+        'messageCount':          FieldValue.increment(1),
+        'isDeleted':             false,
+        'schemaVersion':         2,
+      };
+      if (isFirstMessage) {
+        // createdAt is set only once — on the very first exchange.
+        parentData['createdAt'] = FieldValue.serverTimestamp();
+      }
+      // SetOptions(merge: true) ensures we do not overwrite createdAt on
+      // subsequent turns (it is absent from parentData on turns > 1).
+      batch.set(sessionRef, parentData, SetOptions(merge: true));
+
+      // ── Operation B: Immutable exchange document (idempotent by requestId) ─
+      final exchangeRef = sessionRef.collection('exchanges').doc(requestId);
+      batch.set(exchangeRef, {
+        'requestId':        requestId,
+        'sessionId':        sessionId,
+        'uid':              uid,
+        'userInput':        userInputFull,
+        'assistantOutput':  assistantOutputFull,
+        'mode':             mode,
+        'locale':           locale,
+        'createdAt':        FieldValue.serverTimestamp(),
+        'schemaVersion':    2,
+      });
+
+      await batch.commit();
+      return (ok: true, error: null);
+    } catch (e) {
+      return (ok: false, error: e);
+    }
   }
 
   // ── MICRO-BUILD 463-A.2.1.1 PURGE ────────────────────────────────────────

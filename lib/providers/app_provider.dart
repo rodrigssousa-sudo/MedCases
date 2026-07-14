@@ -2753,6 +2753,11 @@ class AppProvider extends ChangeNotifier {
     _sessionMemory.reset();     // zera memória clínica estruturada (diag, meds, labs)
     _threadManager.reset();                  // BUILD 249: reset thread clínico ativo
     ClinicalThreadManager.resetStaticState(); // BUILD 304 PURIF-1: limpa _lastTaskLabel/_lastStudyActivityMs
+    // MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: Reset conversation lifetime
+    // identifiers so the next sendAiMessage() starts a fresh sessionId.
+    _currentConversationSessionId = '';
+    _currentConversationTitle     = '';
+    _isFirstMessageOfSession      = true;
     debugPrint('[AppProvider] resetAiSessionFull — sessão clínica zerada');
   }
 
@@ -4490,6 +4495,28 @@ class AppProvider extends ChangeNotifier {
   // alongside _completedResolutions and _completedRequestIds.
   final Set<String> _persistedExchangeIds = {};
 
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: Stable conversation sessionId ─
+  // A single sessionId covers ALL turns of one conversation. Generated once on
+  // the first sendAiMessage() call after resetAiSessionFull() / screen mount.
+  // NEVER overwritten with thisRequestId inside the pipeline.
+  String _currentConversationSessionId = '';
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 4]: Titling engine state ──────
+  // Title is generated ONCE from the first user message and frozen thereafter.
+  String _currentConversationTitle = '';
+  bool   _isFirstMessageOfSession  = true;
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 3]: Local in-memory session index ─
+  // Mirrors the Firestore ai_sessions collection query result for instant UI
+  // refresh — updated synchronously after every SessionPersistSynced without
+  // waiting for a Firestore reload.
+  final List<Map<String, dynamic>> _localAiSessionIndex = [];
+
+  /// Returns the local in-memory session index (most-recent-first).
+  /// Callers can read this list to populate the history drawer immediately.
+  List<Map<String, dynamic>> get localAiSessionIndex =>
+      List.unmodifiable(_localAiSessionIndex);
+
   void _completeAiRequestOnce(String requestId) {
     // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 3]: Coordinator latch guard.
     // _completedRequestIds is the idempotency set — tryMarkCoordinatorCompleted()
@@ -4534,10 +4561,14 @@ class AppProvider extends ChangeNotifier {
     AppResumeCoordinator.instance.completeAiRequest(requestId);
   }
 
-  // ── MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2]: Atomic AI exchange persistence ──
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 1]: Atomic AI exchange persistence ─
   //
   // Persists the AI exchange (userInput + assistantOutput) exactly ONCE per
   // requestId using an idempotency key derived from context.requestId.
+  //
+  // Full atomic Firestore WriteBatch with exactly two operations:
+  //   Operation A — parent session upsert at users/{uid}/ai_sessions/{sessionId}
+  //   Operation B — exchange write at …/exchanges/{requestId} (idempotent by key)
   //
   // Returns a typed [SessionPersistStatus] — NEVER throws. The caller logs the
   // variant and continues the pipeline regardless of persist outcome.
@@ -4546,9 +4577,8 @@ class AppProvider extends ChangeNotifier {
   //   • First call with this key → write proceeds.
   //   • Subsequent calls (retry/duplicate) → [SessionPersistSkipped] returned.
   //
-  // OFFLINE BEHAVIOUR: If no connectivity, the exchange is queued in local
-  // _aiHistory (already committed by the caller before this method is invoked).
-  // The typed result allows the caller to emit structured telemetry.
+  // On [SessionPersistSynced], the local in-memory session index is updated
+  // synchronously and notifyListeners() is called exactly once (PILLAR 3).
   Future<SessionPersistStatus> persistAiExchangeOnce({
     required ActiveAiSessionContext context,
     required String userInput,
@@ -4563,21 +4593,134 @@ class AppProvider extends ChangeNotifier {
     }
     _persistedExchangeIds.add(context.requestId);
 
+    // ── PILLAR 4: Titling engine — generate once from first user message ────
+    final bool isFirst = _isFirstMessageOfSession;
+    if (isFirst) {
+      _currentConversationTitle = _generateConversationTitle(userInput);
+      _isFirstMessageOfSession  = false;
+    }
+    final String title = _currentConversationTitle;
+
+    // ── Short previews for the session index document ────────────────────────
+    final String userPreview = userInput.length > 120
+        ? '${userInput.substring(0, 120)}\u2026'
+        : userInput;
+    final String assistantPreview = assistantOutput.length > 160
+        ? '${assistantOutput.substring(0, 160)}\u2026'
+        : assistantOutput;
+
     try {
-      // _aiHistory is already committed by the STEP 6 caller (prior to this).
-      // This method handles any additional structured logging/telemetry.
+      // ── PILLAR 1: Atomic Firestore batch (Operations A + B) ──────────────
+      final batchResult = await FirestoreService.batchWriteAiExchange(
+        uid:                 context.uid,
+        sessionId:           context.sessionId,
+        requestId:           context.requestId,
+        mode:                context.mode,
+        locale:              context.locale,
+        title:               title,
+        isFirstMessage:      isFirst,
+        userPreview:         userPreview,
+        assistantPreview:    assistantPreview,
+        userInputFull:       userInput,
+        assistantOutputFull: assistantOutput,
+      );
+
+      if (!batchResult.ok) {
+        // ignore: avoid_print
+        print('[SESSION_PERSIST][FAILED] requestId=${context.requestId} '
+            'error=${batchResult.error}');
+        return SessionPersistFailed(batchResult.error ?? 'unknown_batch_error');
+      }
+
+      // ── PILLAR 3: Local index upsert — prepend or update in-memory list ───
+      _upsertLocalSessionIndex(
+        sessionId:        context.sessionId,
+        uid:              context.uid,
+        title:            title,
+        mode:             context.mode,
+        locale:           context.locale,
+        requestId:        context.requestId,
+        userPreview:      userPreview,
+        assistantPreview: assistantPreview,
+      );
+
       // ignore: avoid_print
       print('[SESSION_PERSIST][SYNCED] requestId=${context.requestId} '
           'uid=${context.uid.isNotEmpty ? "${context.uid.substring(0, context.uid.length.clamp(0, 8))}..." : "anon"} '
           'sessionId=${context.sessionId} '
           'mode=${context.mode} '
-          'outputLen=${assistantOutput.length}');
+          'outputLen=${assistantOutput.length} '
+          'title="${title.substring(0, title.length.clamp(0, 40))}"');
       return const SessionPersistSynced();
     } catch (e) {
       // ignore: avoid_print
       print('[SESSION_PERSIST][FAILED] requestId=${context.requestId} error=$e');
       return SessionPersistFailed(e);
     }
+  }
+
+  // ── PILLAR 4: Title generation ─────────────────────────────────────────────
+  // Extracts a short, meaningful title from the first user message.
+  // Strips markdown symbols, takes the first meaningful segment (up to 60 chars).
+  String _generateConversationTitle(String userInput) {
+    final cleaned = userInput
+        .replaceAll(RegExp(r'[*_`#>~\[\]()]'), '')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    if (cleaned.isEmpty) return _lang == 'es' ? 'Nueva consulta' : 'Nova consulta';
+    if (cleaned.length <= 60) return cleaned;
+    final truncated = cleaned.substring(0, 60);
+    final lastSpace = truncated.lastIndexOf(' ');
+    return lastSpace > 30 ? truncated.substring(0, lastSpace) : truncated;
+  }
+
+  // ── PILLAR 3: Local session index upsert ──────────────────────────────────
+  // Prepends or updates the in-memory session list, then calls notifyListeners()
+  // exactly once to refresh the UI drawer without a Firestore round-trip.
+  void _upsertLocalSessionIndex({
+    required String sessionId,
+    required String uid,
+    required String title,
+    required String mode,
+    required String locale,
+    required String requestId,
+    required String userPreview,
+    required String assistantPreview,
+  }) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final idx = _localAiSessionIndex
+        .indexWhere((s) => s['sessionId'] == sessionId);
+
+    if (idx >= 0) {
+      // Update existing entry in-place, then move to position 0 (most-recent).
+      final existing = Map<String, dynamic>.from(_localAiSessionIndex[idx]);
+      existing['updatedAt']            = now;
+      existing['lastRequestId']        = requestId;
+      existing['lastUserPreview']      = userPreview;
+      existing['lastAssistantPreview'] = assistantPreview;
+      _localAiSessionIndex.removeAt(idx);
+      _localAiSessionIndex.insert(0, existing);
+    } else {
+      // First turn — prepend a brand-new entry.
+      _localAiSessionIndex.insert(0, {
+        'sessionId':            sessionId,
+        'uid':                  uid,
+        'title':                title,
+        'mode':                 mode,
+        'locale':               locale,
+        'createdAt':            now,
+        'updatedAt':            now,
+        'lastRequestId':        requestId,
+        'lastUserPreview':      userPreview,
+        'lastAssistantPreview': assistantPreview,
+        'messageCount':         1,
+        'isDeleted':            false,
+        'schemaVersion':        2,
+      });
+    }
+    // ignore: avoid_print
+    print('[AI_SESSION_INDEX][UPSERT_LOCAL] sessionId=$sessionId position=0');
+    notifyListeners();
   }
 
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2/3]: GPT happy-path finalizer ──
@@ -4759,14 +4902,21 @@ class AppProvider extends ChangeNotifier {
     _persistedExchangeIds.clear();
 
     // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 1]: Immutable request-scoped context.
-    // Captured NOW — uid, sessionId, mode are frozen before any async operation.
-    // Passed to _finalizeGptSuccessfulRequest() for atomic persistence (Step B).
-    // sessionId == thisRequestId: each AI turn has a unique session boundary.
+    // MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: sessionId is now stable across
+    // ALL turns of a conversation — generated once and frozen until resetAiSessionFull().
+    // requestId remains unique per message exchange (1:1 with thisRequestId).
+    if (_currentConversationSessionId.isEmpty) {
+      final ts = DateTime.now().millisecondsSinceEpoch;
+      _currentConversationSessionId = 'session_$ts';
+      // ignore: avoid_print
+      print('[AI_SESSION_INDEX][NEW_SESSION] sessionId=$_currentConversationSessionId');
+    }
     final activeSessionCtx = ActiveAiSessionContext(
       uid:       _currentUser?.uid ?? '',
-      sessionId: thisRequestId,
+      sessionId: _currentConversationSessionId,
       requestId: thisRequestId,
       mode:      longResponse ? 'estudo' : 'plantao',
+      locale:    _lang,
       createdAt: DateTime.now(),
     );
 

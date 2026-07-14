@@ -23,17 +23,24 @@ import 'timeout_content_safety_guard.dart' show TerminalCause;
 /// requiring any mutable state lookup mid-pipeline. Once created, every field
 /// is guaranteed non-null and immutable throughout the full pipeline execution.
 ///
+/// MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: locale added for schema v2
+/// compliance. sessionId is now a stable conversation-lifetime identifier,
+/// decoupled from requestId (which is unique per message exchange).
+///
 /// Invariants:
 ///   • Created exactly once per sendAiMessage() call, before any async work.
 ///   • uid and sessionId are captured at request-start — never lazily resolved.
-///   • requestId matches AppProvider's thisRequestId (1:1 correlation).
+///   • sessionId is stable across all turns of the same conversation.
+///   • requestId matches AppProvider's thisRequestId (1:1 correlation per turn).
 ///   • mode is 'estudo' | 'plantao' — derived from longResponse flag.
+///   • locale is 'pt' | 'es' — the app language at request time.
 ///   • createdAt is the wall-clock instant of sendAiMessage() invocation.
 final class ActiveAiSessionContext {
   final String uid;
   final String sessionId;
   final String requestId;
   final String mode;
+  final String locale;
   final DateTime createdAt;
 
   const ActiveAiSessionContext({
@@ -41,6 +48,7 @@ final class ActiveAiSessionContext {
     required this.sessionId,
     required this.requestId,
     required this.mode,
+    required this.locale,
     required this.createdAt,
   });
 }
