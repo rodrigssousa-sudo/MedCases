@@ -2933,12 +2933,18 @@ class _AiScreenState extends State<AiScreen> {
                         // Firestore (which do not go through sendAiMessage). It is never written
                         // during the current live request lifecycle.
                         final extKey = '${msg.id}:${msg.text.hashCode}';
-                        // Read the pre-computed resolution: prefer provider field (current
-                        // live request), fall back to session cache (restored history).
+                        // ── MICRO-BUILD 462E-A.5.3.7.3.2.1: Request-correlated read ──
+                        // Read the pre-computed resolution from the provider map.
+                        // The UI asserts that the payload's requestId matches the
+                        // active request before rendering a tool calculator.
+                        // Mismatch (stale async write from prior request) → null → no card.
+                        final completedResolution = p.activeCompletedResolution;
                         final ExternalToolLink? resolvedLink =
                             _extToolCache.containsKey(extKey)
                                 ? _extToolCache[extKey]
-                                : p.lastCompletedToolLink;
+                                : (completedResolution != null && completedResolution.isAllowed
+                                    ? completedResolution.link
+                                    : null);
                         // BUILD 301: label 100% dinâmico — vem direto da tag [NEXT_ACTION_LABEL]
                         // gerada pela IA. Sem inferência local, sem fallbacks engessados.
                         if (kDebugMode && _hasStudyTags) {

@@ -4423,23 +4423,35 @@ class AppProvider extends ChangeNotifier {
   // BUILD 238 ADENDO: requestId ativo — invalida respostas atrasadas
   String _activeRequestId = '';
 
-  // ── MICRO-BUILD 462E-A.5.3.7.3.2: Immutable Tool Resolution Storage ───────
-  // Set ONCE inside the canonical finalizer (chunk_isDone path) by the
-  // EXT_TOOL_GATE after tryMarkToolResolutionStarted() wins.
-  // Cleared on every new sendAiMessage() call (pre-request reset).
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.1: Request-Correlated Tool Resolution Map ─
+  // Replaces the bare ExternalToolLink? _lastCompletedToolLink field with an
+  // immutable, requestId-keyed map of CompletedToolResolution payloads.
   //
   // CONTRACT:
-  //   • Populated exclusively by the canonical finalizer — never by the UI layer.
-  //   • Reading this field from the UI widget tree is the ONLY permitted way to
-  //     access the tool resolution — ExternalToolLinkEngine.build() must NOT be
-  //     called from widget build() methods.
-  //   • Re-rendering the widget tree any number of times MUST produce exactly
-  //     zero ExternalToolLinkEngine invocations and zero log emissions.
-  ExternalToolLink? _lastCompletedToolLink;
+  //   • Written ONCE per requestId by the canonical finalizer — never by UI.
+  //   • The UI MUST call getResolutionForRequest(activeRequestId) and assert
+  //     that the returned payload's requestId matches the displayed message's
+  //     requestId before rendering any tool calculator.
+  //   • A requestId mismatch (late async write from a stale request) MUST NOT
+  //     render any tool card for the currently displayed message.
+  //   • Entries are removed when a new request starts (pre-request reset) or
+  //     when the request's coordinator completes on the abrupt path.
+  final Map<String, CompletedToolResolution> _completedResolutions = {};
 
-  /// Immutable snapshot of the tool resolution computed by the canonical
-  /// finalizer. Null until the first canonical completion of each request.
-  ExternalToolLink? get lastCompletedToolLink => _lastCompletedToolLink;
+  /// Returns the immutable [CompletedToolResolution] for [requestId], or null
+  /// if the finalizer has not yet written a result for that request.
+  ///
+  /// The UI widget MUST verify the returned payload's [requestId] matches the
+  /// currently displayed assistant message's requestId before rendering a tool
+  /// calculator. Any mismatch → do not render.
+  CompletedToolResolution? getResolutionForRequest(String requestId) {
+    return _completedResolutions[requestId];
+  }
+
+  /// Convenience getter for the active request's resolution.
+  /// Returns null when no completed resolution exists for the active request.
+  CompletedToolResolution? get activeCompletedResolution =>
+      _completedResolutions[_activeRequestId];
 
   // Safe-card de timeout (sem EvidenceBox, sem ActionButtons, sem ExternalToolLink)
   //
@@ -4458,6 +4470,51 @@ class AppProvider extends ChangeNotifier {
     return '$kSafeCardMarkerPt\n'
         '⚠️ Não consegui concluir a resposta com segurança dentro do tempo limite.\n'
         '📌 Reformule com diagnóstico, sinais vitais ou exames principais.';
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.1: Single Completion Executor ──────────────
+  // ALL terminal paths must call this method instead of directly invoking
+  // AppResumeCoordinator.instance.completeAiRequest(). This is the ONLY
+  // point in the codebase that executes coordinator completion.
+  //
+  // Invariants enforced here:
+  //   • Exactly-once guarantee: the coordinator guard prevents double-completion.
+  //   • Telemetry: emits [RESUME_COORDINATOR] completed log on every invocation.
+  //   • Zero direct calls to AppResumeCoordinator.instance.completeAiRequest()
+  //     are permitted outside this method within sendAiMessage.
+  final Set<String> _completedRequestIds = {};
+
+  void _completeAiRequestOnce(String requestId) {
+    if (_completedRequestIds.contains(requestId)) {
+      // ignore: avoid_print
+      print('[RESUME_COORDINATOR][DUPLICATE_DROPPED] requestId=$requestId '
+          'reason=already_completed');
+      return;
+    }
+    _completedRequestIds.add(requestId);
+
+    // ── ABRUPT PATH: Store CompletedToolResolution if not yet written ──────
+    // If the happy path (canonical finalizer) already wrote a payload, this
+    // is a no-op. Otherwise we write an isAllowed=false sentinel so the UI
+    // has a correlated payload to assert against for this requestId (and it
+    // will correctly skip rendering the tool calculator).
+    if (!_completedResolutions.containsKey(requestId)) {
+      _completedResolutions[requestId] = CompletedToolResolution(
+        requestId:      requestId,
+        parentRequestId: requestId,
+        transactionId:  'txn_${requestId.substring(0, requestId.length > 16 ? 16 : requestId.length)}',
+        link:           null,
+        reason:         'abrupt_terminal',
+        isAllowed:      false,
+      );
+      // ignore: avoid_print
+      print('[EXT_TOOL_GATE][ABRUPT] requestId=$requestId '
+          'isAllowed=false reason=abrupt_terminal');
+    }
+
+    // ignore: avoid_print
+    print('[RESUME_COORDINATOR] completed ai_request id=$requestId');
+    AppResumeCoordinator.instance.completeAiRequest(requestId);
   }
 
   Future<bool> sendAiMessage(
@@ -4503,10 +4560,13 @@ class AppProvider extends ChangeNotifier {
     final globalStartMs = DateTime.now().millisecondsSinceEpoch;
     if (kDebugMode) debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
 
-    // MICRO-BUILD 462E-A.5.3.7.3.2: Reset immutable tool resolution storage.
-    // Cleared at request start so the UI never reads a stale result from a
-    // prior request while the new request is in flight.
-    _lastCompletedToolLink = null;
+    // MICRO-BUILD 462E-A.5.3.7.3.2.1: Reset request-correlated resolution map
+    // and single-executor dedup set. Remove all prior entries so the UI never
+    // reads a stale payload from a completed request while the new request is
+    // in flight. Only the entry for thisRequestId will be written by the
+    // canonical finalizer or the abrupt-path sentinel in _completeAiRequestOnce.
+    _completedResolutions.clear();
+    _completedRequestIds.clear();
 
     // BUILD 241: registra request no coordinator para verificação no resume.
     // BUILD 320: passa isEstudoMode para que o coordinator use deadline 90s
@@ -4781,7 +4841,7 @@ class AppProvider extends ChangeNotifier {
         // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on TIMEOUT (after UI).
         ExternalToolLinkEngine.releaseCanonicalDecision(
             requestId: thisRequestId, decision: canonicalDecision);
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        _completeAiRequestOnce(thisRequestId);
       });
 
       // Criar stream SSE real
@@ -4930,7 +4990,7 @@ class AppProvider extends ChangeNotifier {
                   // MICRO-BUILD 462E-A.5.3.4: releaseCanonicalDecision BEFORE completeAiRequest.
                   ExternalToolLinkEngine.releaseCanonicalDecision(
                       requestId: thisRequestId, decision: canonicalDecision);
-                  AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                  _completeAiRequestOnce(thisRequestId);
                   return;
                 }
 
@@ -4970,7 +5030,7 @@ class AppProvider extends ChangeNotifier {
                 ExternalToolLinkEngine.releaseCanonicalDecision(
                     requestId: thisRequestId, decision: canonicalDecision);
                 // ResumeCoordinator.complete() — TERMINAL POSITION (after UI + releaseDecision).
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                _completeAiRequestOnce(thisRequestId);
               } on AiSafeOutputException catch (safeError) {
                 // ── TERMINAL: DROP_PAYLOAD — Repair critical failure ───────────
                 // ignore: avoid_print
@@ -4989,7 +5049,7 @@ class AppProvider extends ChangeNotifier {
                 );
                 ExternalToolLinkEngine.releaseCanonicalDecision(
                     requestId: thisRequestId, decision: canonicalDecision);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                _completeAiRequestOnce(thisRequestId);
                 return;
               }
 
@@ -5023,7 +5083,7 @@ class AppProvider extends ChangeNotifier {
                 wrappedOnError(partialWarning);
                 ExternalToolLinkEngine.releaseCanonicalDecision(
                     requestId: thisRequestId, decision: canonicalDecision);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                _completeAiRequestOnce(thisRequestId);
                 return;
               }
 
@@ -5041,7 +5101,7 @@ class AppProvider extends ChangeNotifier {
                 wrappedOnError('[auth_expired] Sessão expirada (${e.code}). Faça login novamente.');
                 ExternalToolLinkEngine.releaseCanonicalDecision(
                     requestId: thisRequestId, decision: canonicalDecision);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                _completeAiRequestOnce(thisRequestId);
                 return;
               }
 
@@ -5065,7 +5125,7 @@ class AppProvider extends ChangeNotifier {
               // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on FAILED (after UI).
               ExternalToolLinkEngine.releaseCanonicalDecision(
                   requestId: thisRequestId, decision: canonicalDecision);
-              AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+              _completeAiRequestOnce(thisRequestId);
 
             // ── AiProviderSwitched: sinaliza troca de provider ───────────────
             case AiProviderSwitched e:
@@ -5117,7 +5177,7 @@ class AppProvider extends ChangeNotifier {
           // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on STREAM_EXCEPTION (after UI).
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          _completeAiRequestOnce(thisRequestId);
         },
         onDone: () {
           // Stream SSE fechou sem AiCompleted — limpeza silenciosa
@@ -5154,7 +5214,7 @@ class AppProvider extends ChangeNotifier {
           // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on EOF/CANCELLED (after UI).
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          _completeAiRequestOnce(thisRequestId);
         },
         cancelOnError: false,
       );
@@ -5567,7 +5627,7 @@ class AppProvider extends ChangeNotifier {
           // Fallback owns release + complete here.
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          _completeAiRequestOnce(thisRequestId);
           return true; // Layer 2 resolved — handled terminal events
         }
 
@@ -5648,7 +5708,7 @@ class AppProvider extends ChangeNotifier {
         // MICRO-BUILD 462E-A.5.3: fallback owns release + complete.
         ExternalToolLinkEngine.releaseCanonicalDecision(
             requestId: thisRequestId, decision: canonicalDecision);
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        _completeAiRequestOnce(thisRequestId);
         return true; // handled: fallback took ownership of terminal events
       } else {
         // Paid também falhou — mostra mensagem de instabilidade
@@ -5660,7 +5720,7 @@ class AppProvider extends ChangeNotifier {
         // Fallback emitted error UI — still owns release + complete.
         ExternalToolLinkEngine.releaseCanonicalDecision(
             requestId: thisRequestId, decision: canonicalDecision);
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        _completeAiRequestOnce(thisRequestId);
         return true; // handled (error path): fallback took ownership
       }
     }
@@ -5705,7 +5765,7 @@ class AppProvider extends ChangeNotifier {
         aiChatProvider.setStreaming(false); // BUILD 326
         // MICRO-BUILD 462E-A.5.3.4: wrappedOnDone BEFORE completeAiRequest (terminal invariant).
         wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        _completeAiRequestOnce(thisRequestId);
       });
 
       // Chama proxy pago direto (sem stream Free).
@@ -5768,7 +5828,7 @@ class AppProvider extends ChangeNotifier {
           // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path success).
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          _completeAiRequestOnce(thisRequestId);
         } else {
           debugPrint('[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}');
           // Pago falhou → safe-card (sem tentar Free — intencional no modo crítico)
@@ -5776,7 +5836,7 @@ class AppProvider extends ChangeNotifier {
           // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path failure).
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          _completeAiRequestOnce(thisRequestId);
         }
       }());
 
@@ -5890,7 +5950,7 @@ class AppProvider extends ChangeNotifier {
       ExternalToolLinkEngine.releaseCanonicalDecision(
           requestId: thisRequestId, decision: canonicalDecision);
       wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254: global timer
-      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+      _completeAiRequestOnce(thisRequestId);
     });
 
     _aiStreamSub = stream.listen(
@@ -5941,7 +6001,7 @@ class AppProvider extends ChangeNotifier {
                     : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
                 ExternalToolLinkEngine.releaseCanonicalDecision(
                     requestId: thisRequestId, decision: canonicalDecision);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                _completeAiRequestOnce(thisRequestId);
               }
             }());
             return;
@@ -5959,7 +6019,7 @@ class AppProvider extends ChangeNotifier {
                     : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
                 ExternalToolLinkEngine.releaseCanonicalDecision(
                     requestId: thisRequestId, decision: canonicalDecision);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                _completeAiRequestOnce(thisRequestId);
               }
             }());
             return;
@@ -6099,6 +6159,11 @@ class AppProvider extends ChangeNotifier {
             // All EXT_TOOL_GATE logs carry fully correlated telemetry:
             //   requestId, parentRequestId, transactionId, attemptId, phase,
             //   callSite, ownershipAcquired, toolAllowed, reason.
+            // ── MICRO-BUILD 462E-A.5.3.7.3.2.1 [HAPPY PATH]: Canonical Tool Resolution ──
+            // Store CompletedToolResolution keyed by requestId. The UI reads
+            // getResolutionForRequest(activeRequestId) and MUST verify the
+            // returned payload's requestId matches the displayed message's
+            // requestId before rendering any tool calculator.
             if (!_freeStreamTxn.dropIfBusinessEventTerminal(callSite: 'canonical_finalizer')) {
               if (_freeStreamTxn.tryMarkToolResolutionStarted()) {
                 // ── Canonical engine invocation — exactly once per request ──
@@ -6112,8 +6177,20 @@ class AppProvider extends ChangeNotifier {
                   transactionId:    _freeStreamTxn.transactionId,
                   attemptId:        _freeStreamTxn.attemptId,
                 );
-                // Store immutable result — UI consumes this field directly.
-                _lastCompletedToolLink = resolvedLink;
+                final bool toolAllowed = resolvedLink != null;
+                final String toolReason = toolAllowed
+                    ? 'explicit_input_intent'
+                    : 'no_explicit_intent';
+                // Store immutable, request-correlated payload.
+                _completedResolutions[_freeStreamTxn.parentRequestId] =
+                    CompletedToolResolution(
+                      requestId:     _freeStreamTxn.parentRequestId,
+                      parentRequestId: _freeStreamTxn.parentRequestId,
+                      transactionId: _freeStreamTxn.transactionId,
+                      link:          resolvedLink,
+                      reason:        toolReason,
+                      isAllowed:     toolAllowed,
+                    );
                 // ignore: avoid_print
                 print('[EXT_TOOL_GATE] '
                     'requestId=${_freeStreamTxn.parentRequestId} '
@@ -6123,9 +6200,9 @@ class AppProvider extends ChangeNotifier {
                     'phase=${_freeStreamTxn.phase.name} '
                     'callSite=canonical_finalizer '
                     'ownershipAcquired=true '
-                    'toolAllowed=${resolvedLink != null} '
-                    'reason=${resolvedLink != null ? "explicit_input_intent" : "no_explicit_intent"}');
-                if (resolvedLink != null) {
+                    'toolAllowed=$toolAllowed '
+                    'reason=$toolReason');
+                if (toolAllowed) {
                   // ignore: avoid_print
                   print('[EXT_TOOL_PAYLOAD_READY] '
                       'requestId=${_freeStreamTxn.parentRequestId}');
@@ -6151,7 +6228,7 @@ class AppProvider extends ChangeNotifier {
             ExternalToolLinkEngine.releaseCanonicalDecision(
                 requestId: thisRequestId, decision: canonicalDecision);
             // ResumeCoordinator.complete() — TERMINAL POSITION (last in pyramid).
-            AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+            _completeAiRequestOnce(thisRequestId);
           } on AiSafeOutputException catch (safeError) {
             // ── TERMINAL: DROP_PAYLOAD — free stream repair failure ───────────
             // ignore: avoid_print
@@ -6170,7 +6247,7 @@ class AppProvider extends ChangeNotifier {
             );
             ExternalToolLinkEngine.releaseCanonicalDecision(
                 requestId: thisRequestId, decision: canonicalDecision);
-            AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+            _completeAiRequestOnce(thisRequestId);
           }
         }
       },
@@ -6200,7 +6277,7 @@ class AppProvider extends ChangeNotifier {
           );
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId); // BUILD 241 — TERMINAL
+          _completeAiRequestOnce(thisRequestId); // BUILD 241 — TERMINAL
         }
         // fallbackHandled == true → tryPaidFallback already called release + complete.
       },
@@ -6229,7 +6306,7 @@ class AppProvider extends ChangeNotifier {
           wrappedOnDone(finalText);   // BUILD 254
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          _completeAiRequestOnce(thisRequestId);
         } else if (finalText.isNotEmpty && _isFallbackText(finalText)) {
           // É texto de fallback — exibe na UI mas não entra no histórico da API
           if (kDebugMode) debugPrint('[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText');
@@ -6240,7 +6317,7 @@ class AppProvider extends ChangeNotifier {
           wrappedOnDone(finalText);   // BUILD 254
           ExternalToolLinkEngine.releaseCanonicalDecision(
               requestId: thisRequestId, decision: canonicalDecision);
-          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+          _completeAiRequestOnce(thisRequestId);
         } else {
           // Stream fechou vazio — BUILD 432: tenta retry silencioso antes do paid fallback
           _aiStreamActive = false;
@@ -6318,7 +6395,7 @@ class AppProvider extends ChangeNotifier {
                       wrappedOnDone(retryText);
                       ExternalToolLinkEngine.releaseCanonicalDecision(
                           requestId: thisRequestId, decision: canonicalDecision);
-                      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                      _completeAiRequestOnce(thisRequestId);
                     } else {
                       // Retry também veio vazio → escala para paid
                       _aiStreamActive = false;
@@ -6336,7 +6413,7 @@ class AppProvider extends ChangeNotifier {
                               : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
                           ExternalToolLinkEngine.releaseCanonicalDecision(
                               requestId: thisRequestId, decision: canonicalDecision);
-                          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                          _completeAiRequestOnce(thisRequestId);
                         }
                       }());
                     }
@@ -6356,7 +6433,7 @@ class AppProvider extends ChangeNotifier {
                         : 'Erro de rede no assistente IA. Tente novamente. ⚕');
                     ExternalToolLinkEngine.releaseCanonicalDecision(
                         requestId: thisRequestId, decision: canonicalDecision);
-                    AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                    _completeAiRequestOnce(thisRequestId);
                   }
                 },
                 onDone: () {
@@ -6380,7 +6457,7 @@ class AppProvider extends ChangeNotifier {
                           : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
                       ExternalToolLinkEngine.releaseCanonicalDecision(
                           requestId: thisRequestId, decision: canonicalDecision);
-                      AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                      _completeAiRequestOnce(thisRequestId);
                     }
                   }());
                 },
@@ -6402,7 +6479,7 @@ class AppProvider extends ChangeNotifier {
                     : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
                 ExternalToolLinkEngine.releaseCanonicalDecision(
                     requestId: thisRequestId, decision: canonicalDecision);
-                AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+                _completeAiRequestOnce(thisRequestId);
               }
             }());
           }
@@ -6442,7 +6519,7 @@ class AppProvider extends ChangeNotifier {
       // Se o stream ainda estiver ativo, o completeAiRequest virá pelo onDone/timeout.
       // Se _aiStreamActive=false aqui, o request já terminou ou falhou antes do listen.
       if (!_aiStreamActive) {
-        AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        _completeAiRequestOnce(thisRequestId);
       }
     }
   }

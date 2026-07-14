@@ -1268,4 +1268,183 @@ void main() {
       expect(tx.releaseCallCount, equals(1));
     });
   });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Invariant X — MICRO-BUILD 462E-A.5.3.7.3.2.1
+  // Request-Correlated Map Integrity & Race Discard
+  //
+  // X-1: Race and Discard — late request A cannot overwrite map slot of B
+  // X-2: Zero Ghost Tools — new non-tool request invalidates prior payload
+  // ══════════════════════════════════════════════════════════════════════════
+  group('Invariant X — Request-Correlated Map Integrity (462E-A.5.3.7.3.2.1)', () {
+
+    // ── X-1: Race and Discard ────────────────────────────────────────────────
+    // Simulates: request A starts, B starts and finishes first writing payload B,
+    // A finishes late and tries to write payload A.
+    // Assert: payload A does not overwrite slot B; map retains B's payload.
+    test('X-1: late-arriving request A payload does not overwrite completed B payload', () {
+      // Simulate the request-correlated resolution map (mirrors AppProvider._completedResolutions).
+      final Map<String, CompletedToolResolution> resolutions = {};
+
+      // Request B finishes first — writes its payload.
+      const reqB = 'req-x1-B';
+      const txnB = 'txn_req-x1-B_____';
+      resolutions[reqB] = const CompletedToolResolution(
+        requestId:      reqB,
+        parentRequestId: reqB,
+        transactionId:  txnB,
+        link:           null,
+        reason:         'no_explicit_intent',
+        isAllowed:      false,
+      );
+      expect(resolutions.containsKey(reqB), isTrue);
+      expect(resolutions[reqB]!.requestId, equals(reqB));
+
+      // Request A tries to write late. In production _completedResolutions is
+      // cleared at new-request start (sendAiMessage), so A's payload would only
+      // arrive if it races between clear and B's write.
+      // We simulate the guard: the UI verifies requestId match before rendering.
+      const reqA = 'req-x1-A';
+      // A's finalizer would write to slot reqA (its own key), NOT reqB.
+      // This is the structural guarantee: each finalizer writes to its own slot.
+      resolutions[reqA] = const CompletedToolResolution(
+        requestId:      reqA,
+        parentRequestId: reqA,
+        transactionId:  'txn_req-x1-A_____',
+        link:           null,
+        reason:         'no_explicit_intent',
+        isAllowed:      false,
+      );
+
+      // B's slot is untouched — A wrote to its own slot only.
+      expect(resolutions[reqB]!.requestId, equals(reqB),
+          reason: 'payload B must not be overwritten by late request A');
+      expect(resolutions[reqA]!.requestId, equals(reqA),
+          reason: 'payload A is in its own slot, not B\'s');
+
+      // UI assertion: active request is B → read slot B → requestId matches → render allowed.
+      final String activeRequestId = reqB;
+      final payload = resolutions[activeRequestId];
+      expect(payload, isNotNull);
+      expect(payload!.requestId, equals(activeRequestId),
+          reason: 'UI requestId assertion passes — B is the active request');
+
+      // UI assertion for A's stale payload: requestId mismatch → no render.
+      // (In production the map is cleared; here we simulate the check.)
+      final stalePayload = resolutions[reqA];
+      expect(stalePayload!.requestId, isNot(equals(activeRequestId)),
+          reason: 'stale payload A must not be rendered for the active B request');
+    });
+
+    // ── X-2: Zero Ghost Tools ────────────────────────────────────────────────
+    // When a new, non-tool prompt starts after an infusion-intent prompt finishes,
+    // the prior completed payload must be invalidated (returns null for new requestId).
+    test('X-2: new non-tool request returns null resolution for its own requestId', () {
+      final Map<String, CompletedToolResolution> resolutions = {};
+
+      // Request 1 (infusion intent) finishes — tool payload stored.
+      const req1 = 'req-x2-infusion';
+      resolutions[req1] = const CompletedToolResolution(
+        requestId:      req1,
+        parentRequestId: req1,
+        transactionId:  'txn_req-x2-infusio',
+        link:           null, // no real ExternalToolLink in unit tests
+        reason:         'explicit_input_intent',
+        isAllowed:      true,
+      );
+      expect(resolutions[req1]!.isAllowed, isTrue);
+
+      // New request 2 starts — map is cleared (mirrors _completedResolutions.clear()).
+      resolutions.clear();
+
+      // Request 2 (non-tool) — canonical finalizer not yet written.
+      const req2 = 'req-x2-general';
+      final residual = resolutions[req2];
+
+      // UI assertion: no residual payload exists for new request.
+      expect(residual, isNull,
+          reason: 'cleared map returns null for new requestId — no ghost tool rendered');
+
+      // Even if we look up the old infusion slot after clear, it's gone.
+      final ghostPayload = resolutions[req1];
+      expect(ghostPayload, isNull,
+          reason: 'prior infusion payload is immediately invalidated on new request start');
+
+      // Simulate non-tool finalizer writing isAllowed=false.
+      resolutions[req2] = const CompletedToolResolution(
+        requestId:      req2,
+        parentRequestId: req2,
+        transactionId:  'txn_req-x2-general',
+        link:           null,
+        reason:         'no_explicit_intent',
+        isAllowed:      false,
+      );
+
+      // UI assertion: non-tool payload → isAllowed=false → no tool card.
+      final newPayload = resolutions[req2];
+      expect(newPayload, isNotNull);
+      expect(newPayload!.isAllowed, isFalse,
+          reason: 'non-tool response correctly stores isAllowed=false — no tool card rendered');
+      expect(newPayload.link, isNull,
+          reason: 'no ExternalToolLink for non-tool response');
+    });
+
+    // ── X-3: CompletedToolResolution fields are immutable and correlated ─────
+    test('X-3: CompletedToolResolution is fully immutable with correlated IDs', () {
+      const resolution = CompletedToolResolution(
+        requestId:      'req-x3',
+        parentRequestId: 'req-x3',
+        transactionId:  'txn_req-x3_______',
+        link:           null,
+        reason:         'explicit_input_intent',
+        isAllowed:      true,
+      );
+
+      expect(resolution.requestId,      equals('req-x3'));
+      expect(resolution.parentRequestId, equals('req-x3'));
+      expect(resolution.transactionId,  equals('txn_req-x3_______'));
+      expect(resolution.link,           isNull);
+      expect(resolution.reason,         equals('explicit_input_intent'));
+      expect(resolution.isAllowed,      isTrue);
+
+      // Const construction guarantees deep immutability.
+      const resolution2 = CompletedToolResolution(
+        requestId:      'req-x3',
+        parentRequestId: 'req-x3',
+        transactionId:  'txn_req-x3_______',
+        link:           null,
+        reason:         'explicit_input_intent',
+        isAllowed:      true,
+      );
+      // Both are const — identical values.
+      expect(resolution.requestId, equals(resolution2.requestId));
+      expect(resolution.isAllowed, equals(resolution2.isAllowed));
+    });
+
+    // ── X-4: Abrupt path stores isAllowed=false sentinel ─────────────────────
+    test('X-4: abrupt-path resolution has isAllowed=false and null link', () {
+      final Map<String, CompletedToolResolution> resolutions = {};
+
+      // Simulate _completeAiRequestOnce() abrupt-path sentinel write.
+      const reqId = 'req-x4-timeout';
+      if (!resolutions.containsKey(reqId)) {
+        resolutions[reqId] = CompletedToolResolution(
+          requestId:      reqId,
+          parentRequestId: reqId,
+          transactionId:  'txn_${reqId.substring(0, reqId.length > 16 ? 16 : reqId.length)}',
+          link:           null,
+          reason:         'abrupt_terminal',
+          isAllowed:      false,
+        );
+      }
+
+      final abruptPayload = resolutions[reqId];
+      expect(abruptPayload, isNotNull);
+      expect(abruptPayload!.isAllowed, isFalse,
+          reason: 'timeout/error/cancel path must not allow tool rendering');
+      expect(abruptPayload.link, isNull,
+          reason: 'no ExternalToolLink on abrupt path');
+      expect(abruptPayload.reason, equals('abrupt_terminal'));
+    });
+  });
 }

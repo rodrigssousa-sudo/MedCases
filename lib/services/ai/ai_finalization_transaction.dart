@@ -15,6 +15,37 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import '../external_tool_link_engine.dart'; // for releaseCanonicalDecision
 import 'timeout_content_safety_guard.dart' show TerminalCause;
 
+// ── CompletedToolResolution ───────────────────────────────────────────────────
+/// Immutable, request-scoped result of the External Tool Gate evaluation.
+///
+/// MICRO-BUILD 462E-A.5.3.7.3.2.1 — Payload container replacing the bare
+/// ExternalToolLink? field. Stored in AppProvider._completedResolutions keyed
+/// by requestId so the UI can assert identity before rendering a tool card.
+///
+/// Invariants:
+///   • Created exactly once per request by the canonical finalizer.
+///   • isAllowed=true only on the happy path (stream complete + tool intent).
+///   • isAllowed=false on all abrupt paths (timeout, error, cancel).
+///   • The UI MUST verify completedToolResolution.requestId == activeRequestId
+///     before rendering any tool calculator. Mismatches = no render.
+final class CompletedToolResolution {
+  final String requestId;
+  final String parentRequestId;
+  final String transactionId;
+  final ExternalToolLink? link;
+  final String reason;
+  final bool isAllowed;
+
+  const CompletedToolResolution({
+    required this.requestId,
+    required this.parentRequestId,
+    required this.transactionId,
+    this.link,
+    required this.reason,
+    required this.isAllowed,
+  });
+}
+
 // ── AiTransactionPhase ────────────────────────────────────────────────────────
 enum AiTransactionPhase {
   ingesting,   // stream is open — chunks are accepted and queued
