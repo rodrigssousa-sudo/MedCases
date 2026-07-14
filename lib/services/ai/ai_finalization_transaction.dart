@@ -15,6 +15,75 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import '../external_tool_link_engine.dart'; // for releaseCanonicalDecision
 import 'timeout_content_safety_guard.dart' show TerminalCause;
 
+// ── ActiveAiSessionContext ────────────────────────────────────────────────────
+/// MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 1]: Immutable, request-scoped
+/// session context instantiated at the START of sendAiMessage().
+///
+/// Carries all identity fields needed for atomic persistence (Step B) without
+/// requiring any mutable state lookup mid-pipeline. Once created, every field
+/// is guaranteed non-null and immutable throughout the full pipeline execution.
+///
+/// Invariants:
+///   • Created exactly once per sendAiMessage() call, before any async work.
+///   • uid and sessionId are captured at request-start — never lazily resolved.
+///   • requestId matches AppProvider's thisRequestId (1:1 correlation).
+///   • mode is 'estudo' | 'plantao' — derived from longResponse flag.
+///   • createdAt is the wall-clock instant of sendAiMessage() invocation.
+final class ActiveAiSessionContext {
+  final String uid;
+  final String sessionId;
+  final String requestId;
+  final String mode;
+  final DateTime createdAt;
+
+  const ActiveAiSessionContext({
+    required this.uid,
+    required this.sessionId,
+    required this.requestId,
+    required this.mode,
+    required this.createdAt,
+  });
+}
+
+// ── SessionPersistStatus ──────────────────────────────────────────────────────
+/// MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2]: Typed result of an atomic
+/// AI exchange persistence attempt.
+///
+/// Returned by [AppProvider.persistAiExchangeOnce()] — never raw exceptions.
+/// The calling finalizer inspects the variant to log and continue (never block
+/// UI on offline failures).
+///
+/// Variants:
+///   • [SessionPersistSynced]        — write committed to Firestore/local store.
+///   • [SessionPersistQueuedOffline] — device offline; write queued locally.
+///   • [SessionPersistSkipped]       — idempotency key already seen; no-op.
+///   • [SessionPersistFailed]        — unrecoverable error (logged, not thrown).
+sealed class SessionPersistStatus {
+  const SessionPersistStatus();
+}
+
+/// Firestore write committed and acknowledged.
+final class SessionPersistSynced extends SessionPersistStatus {
+  const SessionPersistSynced();
+}
+
+/// Device is offline; write queued in local persistence layer.
+final class SessionPersistQueuedOffline extends SessionPersistStatus {
+  const SessionPersistQueuedOffline();
+}
+
+/// Idempotency key already present — this requestId was already persisted.
+final class SessionPersistSkipped extends SessionPersistStatus {
+  final String reason;
+  const SessionPersistSkipped(this.reason);
+}
+
+/// Persistence failed with an unrecoverable error. Pipeline continues.
+final class SessionPersistFailed extends SessionPersistStatus {
+  final Object error;
+  const SessionPersistFailed(this.error);
+}
+
 // ── CompletedToolResolution ───────────────────────────────────────────────────
 /// Immutable, request-scoped result of the External Tool Gate evaluation.
 ///

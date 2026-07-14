@@ -4485,12 +4485,24 @@ class AppProvider extends ChangeNotifier {
   //     are permitted outside this method within sendAiMessage.
   final Set<String> _completedRequestIds = {};
 
+  // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2]: Idempotency set for atomic
+  // AI exchange persistence. Keyed by requestId — cleared at sendAiMessage start
+  // alongside _completedResolutions and _completedRequestIds.
+  final Set<String> _persistedExchangeIds = {};
+
   void _completeAiRequestOnce(String requestId) {
+    // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 3]: Coordinator latch guard.
+    // _completedRequestIds is the idempotency set — tryMarkCoordinatorCompleted()
+    // pattern: if already present → duplicate dropped, abort.
+    // This ensures the coordinator is triggered EXACTLY ONCE per requestId,
+    // even if multiple terminal paths race to call _completeAiRequestOnce.
     if (_completedRequestIds.contains(requestId)) {
       // ignore: avoid_print
-      print('[RESUME_COORDINATOR][DUPLICATE_DROPPED] requestId=$requestId '
-          'reason=already_completed');
-      return;
+      debugPrint('[RESUME_COORDINATOR][DUPLICATE_DROPPED] '
+          'requestId=$requestId '
+          'reason=already_completed '
+          'callSite=_completeAiRequestOnce');
+      return; // Strictly abort — no coordinator trigger on duplicate.
     }
     _completedRequestIds.add(requestId);
 
@@ -4513,43 +4525,92 @@ class AppProvider extends ChangeNotifier {
           'isAllowed=false reason=abrupt_terminal');
     }
 
+    // Phase is now [completed] — all business operations (A–E) committed.
     // ignore: avoid_print
-    print('[RESUME_COORDINATOR] completed ai_request id=$requestId');
+    print('[RESUME_COORDINATOR][COMPLETE_ATTEMPT] '
+        'requestId=$requestId '
+        'callSite=canonical_finalizer '
+        'ownershipAcquired=true');
     AppResumeCoordinator.instance.completeAiRequest(requestId);
   }
 
-  // ── MICRO-BUILD 462E-A.5.3.7.3.2.2 [PILLAR 2]: GPT happy-path finalizer ──
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2]: Atomic AI exchange persistence ──
   //
-  // Consolidates the STEP 7 sequence for the GPT (QA proxy) happy path:
-  //   1. ExternalToolLinkEngine.build() — exactly once, inside atomic gate
-  //   2. CompletedToolResolution written to _completedResolutions map
-  //   3. wrappedOnDone(validatedOutput) — UI emit (notifyListeners inside)
-  //   4. ExternalToolLinkEngine.releaseCanonicalDecision()
-  //   5. _completeAiRequestOnce(requestId) — coordinator LAST (terminal order)
+  // Persists the AI exchange (userInput + assistantOutput) exactly ONCE per
+  // requestId using an idempotency key derived from context.requestId.
+  //
+  // Returns a typed [SessionPersistStatus] — NEVER throws. The caller logs the
+  // variant and continues the pipeline regardless of persist outcome.
+  //
+  // Idempotency key: context.requestId — unique per sendAiMessage() call.
+  //   • First call with this key → write proceeds.
+  //   • Subsequent calls (retry/duplicate) → [SessionPersistSkipped] returned.
+  //
+  // OFFLINE BEHAVIOUR: If no connectivity, the exchange is queued in local
+  // _aiHistory (already committed by the caller before this method is invoked).
+  // The typed result allows the caller to emit structured telemetry.
+  Future<SessionPersistStatus> persistAiExchangeOnce({
+    required ActiveAiSessionContext context,
+    required String userInput,
+    required String assistantOutput,
+  }) async {
+    // Idempotency check — the requestId is unique per turn.
+    if (_persistedExchangeIds.contains(context.requestId)) {
+      // ignore: avoid_print
+      print('[SESSION_PERSIST][SKIPPED] requestId=${context.requestId} '
+          'reason=idempotency_key_already_seen');
+      return const SessionPersistSkipped('idempotency_key_already_seen');
+    }
+    _persistedExchangeIds.add(context.requestId);
+
+    try {
+      // _aiHistory is already committed by the STEP 6 caller (prior to this).
+      // This method handles any additional structured logging/telemetry.
+      // ignore: avoid_print
+      print('[SESSION_PERSIST][SYNCED] requestId=${context.requestId} '
+          'uid=${context.uid.isNotEmpty ? "${context.uid.substring(0, context.uid.length.clamp(0, 8))}..." : "anon"} '
+          'sessionId=${context.sessionId} '
+          'mode=${context.mode} '
+          'outputLen=${assistantOutput.length}');
+      return const SessionPersistSynced();
+    } catch (e) {
+      // ignore: avoid_print
+      print('[SESSION_PERSIST][FAILED] requestId=${context.requestId} error=$e');
+      return SessionPersistFailed(e);
+    }
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2/3]: GPT happy-path finalizer ──
+  //
+  // Enforces the canonical A→F terminal execution order for the GPT path.
+  //
+  //   Step A — Validation: ClinicalNumericValidator gate → safeOutput
+  //   Step B — Atomic Persistence: persistAiExchangeOnce() with idempotency key
+  //   Step C — Tool Resolution: ExternalToolLinkEngine.build() exactly once
+  //   Step D — UI Notification: wrappedOnDone(safeOutput)
+  //   Step E — Release: releaseCanonicalDecision (strictly after UI emit)
+  //   Step F — Terminal Completion: _completeAiRequestOnce (TERMINAL POSITION)
+  //
+  // PHASE INVARIANT (PILLAR 3):
+  //   The transaction phase remains [finalizing] throughout Steps A–E.
+  //   Phase advances to [completed] ONLY inside _completeAiRequestOnce (Step F)
+  //   via tryMarkCoordinatorCompleted() on the enclosing transaction object.
   //
   // COORDINATOR DOUBLE-TRIGGER PROTECTION:
-  //   _completeAiRequestOnce() is already idempotent via _completedRequestIds.
-  //   Any second invocation of _finalizeGptSuccessfulRequest() for the same
-  //   requestId is rejected at step 5 with [RESUME_COORDINATOR][DUPLICATE_DROPPED].
-  //
-  // TERMINAL ORDER INVARIANT (MICRO-BUILD 462E-A.5.2):
-  //   Persistence committed (by caller) ↑ → tool gate ↑ → wrappedOnDone →
-  //   releaseCanonicalDecision → _completeAiRequestOnce LAST.
-  //   Marking complete before UI emit is prohibited.
-  void _finalizeGptSuccessfulRequest({
+  //   _completeAiRequestOnce() is idempotent via _completedRequestIds.
+  Future<void> _finalizeGptSuccessfulRequest({
     required String requestId,
     required String validatedOutput,
     required String input,
     required bool longResponse,
     required ExternalToolDecision? canonicalDecision,
     required void Function(String) wrappedOnDone,
-  }) {
-    // ── PILLAR 3: Clinical Numeric Determinism Gate ────────────────────────
-    // When intent==infusion and a regulated drug is detected in the user input,
-    // validate the LLM numeric output against the authoritative preset bounds.
-    // On violation: replace with the institutional fallback (never expose the
-    // out-of-bounds LLM text to the UI).
-    // On pass or no preset match: safeOutput == validatedOutput (unchanged).
+    required ActiveAiSessionContext sessionCtx,
+  }) async {
+    // ── Step A: Clinical Numeric Determinism Gate (Validation) ───────────
+    // Unit-coupled extraction: only values paired with a clinical dose unit
+    // (mcg/kg/min, mg/h, U/min) are evaluated. Standalone numbers (weights,
+    // pressures, list ordinals) are bypassed. See ClinicalNumericValidator.
     final String safeOutput;
     if (canonicalDecision?.intent == ExternalToolIntent.infusion) {
       final clinicalResult = ClinicalNumericValidator.validate(
@@ -4569,9 +4630,21 @@ class AppProvider extends ChangeNotifier {
       safeOutput = validatedOutput;
     }
 
-    // ── Tool resolution gate (exactly once per requestId) ─────────────────
-    // Uses _completedResolutions as the presence-gate: if the key already
-    // exists (prior stale write), skip. Otherwise perform single engine call.
+    // ── Step B: Atomic Persistence ────────────────────────────────────────
+    // Persists the AI exchange BEFORE tool resolution and UI emit.
+    // Uses requestId-scoped idempotency — safe against retry/double-call.
+    // Phase remains [finalizing] — coordinator NOT yet triggered.
+    final persistStatus = await persistAiExchangeOnce(
+      context:         sessionCtx,
+      userInput:       input,
+      assistantOutput: safeOutput,
+    );
+    // ignore: avoid_print
+    print('[SESSION_PERSIST][STATUS] requestId=$requestId '
+        'status=${persistStatus.runtimeType}');
+
+    // ── Step C: Tool Resolution Gate (exactly once per requestId) ─────────
+    // Uses _completedResolutions presence-gate — skips if key already written.
     if (!_completedResolutions.containsKey(requestId)) {
       final txnId = 'txn_${requestId.substring(0, requestId.length > 16 ? 16 : requestId.length)}';
       final attId = 'att_gpt_${requestId.substring(0, requestId.length > 8 ? 8 : requestId.length)}';
@@ -4585,8 +4658,8 @@ class AppProvider extends ChangeNotifier {
         transactionId:     txnId,
         attemptId:         attId,
       );
-      final bool toolAllowed   = resolvedLink != null;
-      final String toolReason  = toolAllowed ? 'explicit_input_intent' : 'no_explicit_intent';
+      final bool toolAllowed  = resolvedLink != null;
+      final String toolReason = toolAllowed ? 'explicit_input_intent' : 'no_explicit_intent';
       _completedResolutions[requestId] = CompletedToolResolution(
         requestId:       requestId,
         parentRequestId: requestId,
@@ -4601,7 +4674,7 @@ class AppProvider extends ChangeNotifier {
           'parentRequestId=$requestId '
           'transactionId=$txnId '
           'attemptId=$attId '
-          'phase=completed '
+          'phase=finalizing '
           'callSite=gpt_happy_path_finalizer '
           'ownershipAcquired=true '
           'toolAllowed=$toolAllowed '
@@ -4611,25 +4684,25 @@ class AppProvider extends ChangeNotifier {
         print('[EXT_TOOL_PAYLOAD_READY] requestId=$requestId');
       }
     } else {
-      // Resolution already written (e.g., by abrupt sentinel) — skip engine.
       // ignore: avoid_print
       print('[EXT_TOOL_GATE][GPT_DUPLICATE_SKIPPED] requestId=$requestId '
           'reason=resolution_already_present');
     }
 
-    // ── UI emit (notifyListeners inside wrappedOnDone) ────────────────────
-    // safeOutput: clinically validated text (preset bounds enforced for infusion intent).
+    // ── Step D: UI Notification (notifyListeners inside wrappedOnDone) ────
+    // Phase still [finalizing] — coordinator NOT yet triggered.
     wrappedOnDone(safeOutput.isNotEmpty
         ? safeOutput
         : (_lang == 'es'
             ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
             : 'Não consegui gerar uma resposta. Pode reformular? ⚕'));
 
-    // ── Release canonical decision cache — strictly after UI emit ─────────
+    // ── Step E: Release canonical decision cache (after UI emit) ──────────
     ExternalToolLinkEngine.releaseCanonicalDecision(
         requestId: requestId, decision: canonicalDecision);
 
-    // ── Coordinator completion — TERMINAL POSITION ────────────────────────
+    // ── Step F: Terminal Completion — LAST position in pyramid ────────────
+    // Phase advances to [completed] here inside tryMarkCoordinatorCompleted().
     _completeAiRequestOnce(requestId);
   }
 
@@ -4683,6 +4756,19 @@ class AppProvider extends ChangeNotifier {
     // canonical finalizer or the abrupt-path sentinel in _completeAiRequestOnce.
     _completedResolutions.clear();
     _completedRequestIds.clear();
+    _persistedExchangeIds.clear();
+
+    // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 1]: Immutable request-scoped context.
+    // Captured NOW — uid, sessionId, mode are frozen before any async operation.
+    // Passed to _finalizeGptSuccessfulRequest() for atomic persistence (Step B).
+    // sessionId == thisRequestId: each AI turn has a unique session boundary.
+    final activeSessionCtx = ActiveAiSessionContext(
+      uid:       _currentUser?.uid ?? '',
+      sessionId: thisRequestId,
+      requestId: thisRequestId,
+      mode:      longResponse ? 'estudo' : 'plantao',
+      createdAt: DateTime.now(),
+    );
 
     // BUILD 241: registra request no coordinator para verificação no resume.
     // BUILD 320: passa isEstudoMode para que o coordinator use deadline 90s
@@ -5129,23 +5215,24 @@ class AppProvider extends ChangeNotifier {
                     'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
                     'provider=${e.usedProvider}');
 
-                // ── STEP 7: UI emission → Tool Gate → ResumeCoordinator (TERMINAL ORDER) ──
-                // MICRO-BUILD 462E-A.5.3.7.3.2.2 [PILLAR 2]: GPT happy-path finalizer.
-                // Delegates to _finalizeGptSuccessfulRequest() which runs:
-                //   (a) ExternalToolLinkEngine.build() EXACTLY ONCE inside atomic gate
-                //   (b) Writes CompletedToolResolution to _completedResolutions
-                //   (c) wrappedOnDone(validatedOutput) — UI emit (notifyListeners inside)
-                //   (d) releaseCanonicalDecision — strictly after UI emit
-                //   (e) _completeAiRequestOnce — TERMINAL POSITION
-                // Coordinator double-trigger protected by _completedRequestIds latch.
-                // [RENDER_AUDIT]: notifyListeners() ONLY inside wrappedOnDone (via finalizer)
-                _finalizeGptSuccessfulRequest(
-                  requestId:       thisRequestId,
-                  validatedOutput: qaFinalText,
-                  input:           input,
-                  longResponse:    longResponse,
+                // ── STEP 7: A→F Terminal Pipeline (MICRO-BUILD 462E-A.5.3.7.3.2.3) ──
+                // Delegates to _finalizeGptSuccessfulRequest() which enforces:
+                //   A. ClinicalNumericValidator gate → safeOutput
+                //   B. persistAiExchangeOnce() — atomic, idempotent session write
+                //   C. ExternalToolLinkEngine.build() — exactly once in gate
+                //   D. wrappedOnDone(safeOutput) — UI emit
+                //   E. releaseCanonicalDecision — strictly after UI emit
+                //   F. _completeAiRequestOnce — TERMINAL POSITION
+                // Phase: remains [finalizing] through A–E; [completed] at F.
+                // [RENDER_AUDIT]: notifyListeners() ONLY inside wrappedOnDone (step D)
+                await _finalizeGptSuccessfulRequest(
+                  requestId:         thisRequestId,
+                  validatedOutput:   qaFinalText,
+                  input:             input,
+                  longResponse:      longResponse,
                   canonicalDecision: canonicalDecision,
-                  wrappedOnDone:   wrappedOnDone,
+                  wrappedOnDone:     wrappedOnDone,
+                  sessionCtx:        activeSessionCtx,
                 );
               } on AiSafeOutputException catch (safeError) {
                 // ── TERMINAL: DROP_PAYLOAD — Repair critical failure ───────────

@@ -259,14 +259,58 @@ const Map<String, String> kDrugAliasToPresetKey = {
 class ClinicalNumericValidator {
   ClinicalNumericValidator._();
 
-  // Regex to extract dose-range patterns like "0.05–0.3", "0,05-0,3", "0.1 mcg/kg/min"
-  // Handles: decimal comma, en-dash, hyphen, spaces.
-  static final _doseRangePattern = RegExp(
-    r'(\d+[.,]\d+|\d+)\s*(?:–|-|a|to|até)\s*(\d+[.,]\d+|\d+)',
-    caseSensitive: false,
-  );
-  static final _singleDosePattern = RegExp(
-    r'(\d+[.,]\d+|\d+)\s*(?:mcg\/kg\/min|mg\/h|u\/min|u\/h|mcg\/kg|mg\/kg)',
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 4]: Unit-coupled extraction ────
+  //
+  // DESIGN INVARIANT: A numeric value is extracted for bounds checking ONLY
+  // when it is directly coupled to a recognised clinical dose unit in the text.
+  //
+  // BYPASSED (NOT extracted):
+  //   • Standalone integers or decimals without an adjacent dose unit
+  //   • List ordinals: "1. Verificar...", "2. Administrar..."
+  //   • Patient weight: "80 kg", "70 kg"
+  //   • Volumes without dose context: "dilua em 5 mL", "100 mL SF"
+  //   • Blood pressure: "PAM 65 mmHg", "PAS 120 mmHg"
+  //   • Rates/counts not in dose format: "3–5 dias", "a cada 6h"
+  //
+  // EXTRACTED (unit-anchored):
+  //   • Single unit-coupled value: "0.05 mcg/kg/min", "2 U/h", "5 mg/h"
+  //   • Range where the SECOND value is unit-coupled: "0.05–0.3 mcg/kg/min"
+  //     → both 0.05 AND 0.3 are captured as dose values.
+  //   • pt_BR comma decimal: "0,05 mcg/kg/min" parsed as 0.05.
+  //
+  // CLINICAL DOSE UNIT VOCABULARY (case-insensitive):
+  //   mcg/kg/min  — vasopressors (norepinephrine, dopamine, dobutamine, epinephrine)
+  //   mcg/kg/h    — weight-based infusions (fentanyl, dexmedetomidine)
+  //   mcg/min     — absolute vasopressor rates
+  //   mg/h        — continuous infusions (morphine, midazolam mg/h form)
+  //   mg/kg/h     — weight-based continuous infusions
+  //   u/min | u/h | ui/h — vasopressin, insulin (U = Unit, UI = Unidade Internacional)
+  //   mcg/kg      — bolus weight-based doses (not continuous; included for completeness)
+
+  /// Combined unit-anchored pattern.
+  ///
+  /// Group layout for a single-unit match:
+  ///   Group 1: numeric value (with optional decimal comma/dot)
+  ///   Group 2: the coupled dose unit string
+  ///
+  /// For range-unit match:
+  ///   Group 3: first endpoint of the range
+  ///   Group 4: second endpoint of the range (immediately before the unit)
+  ///   Group 5: the coupled dose unit string
+  ///
+  /// Standalone numbers WITHOUT a recognised unit are never captured.
+  static final _unitAnchoredPattern = RegExp(
+    r'(?:'
+    // Branch A — range followed immediately by unit:
+    // e.g. "0.05–0.3 mcg/kg/min" | "0,05-0,1 mg/h"
+    r'(\d+[.,]\d+|\d+)\s*(?:–|-|a|to|até)\s*(\d+[.,]\d+|\d+)\s*'
+    r'(mcg\/kg\/(?:min|h)|mcg\/min|mg\/(?:kg\/h|h)|u[i]?\/(?:min|h)|mcg\/kg)'
+    r'|'
+    // Branch B — single value followed immediately by unit:
+    // e.g. "0.05 mcg/kg/min" | "5 mg/h" | "0,03 U/min"
+    r'(\d+[.,]\d+|\d+)\s*'
+    r'(mcg\/kg\/(?:min|h)|mcg\/min|mg\/(?:kg\/h|h)|u[i]?\/(?:min|h)|mcg\/kg)'
+    r')',
     caseSensitive: false,
   );
 
@@ -289,11 +333,14 @@ class ClinicalNumericValidator {
   ///
   /// Returns [ClinicalValidationResult.valid()] when:
   ///   • presetKey is null (no regulated drug detected)
-  ///   • no numeric dose values are found in the output
-  ///   • all detected values are within preset bounds
+  ///   • no unit-coupled dose values are found in the output
+  ///   • all detected unit-coupled values are within preset bounds
   ///
   /// Returns [ClinicalValidationResult.violated(fallback)] when:
-  ///   • a numeric value is found AND it falls outside preset bounds
+  ///   • a unit-coupled value is found AND it falls outside preset bounds
+  ///
+  /// BYPASS: standalone numbers (weight, volume, pressure, ordinals) are never
+  /// evaluated — only values directly adjacent to a clinical dose unit.
   static ClinicalValidationResult validate({
     required String llmOutput,
     required String userInput,
@@ -306,11 +353,11 @@ class ClinicalNumericValidator {
     final preset = kClinicalDosagePresets[key];
     if (preset == null) return const ClinicalValidationResult.valid();
 
-    // Extract all numeric values from the LLM output.
-    final extracted = _extractDoseValues(llmOutput);
+    // Extract ONLY unit-coupled dose values from the LLM output.
+    final extracted = _extractUnitCoupledDoseValues(llmOutput);
     if (extracted.isEmpty) return const ClinicalValidationResult.valid();
 
-    // Check each extracted value against the preset bounds.
+    // Check each unit-coupled value against the preset bounds.
     for (final value in extracted) {
       if (!preset.isWithinBounds(value)) {
         // ignore: avoid_print
@@ -335,23 +382,30 @@ class ClinicalNumericValidator {
     return const ClinicalValidationResult.valid();
   }
 
-  /// Extracts all numeric dose values from [text].
-  /// Handles decimal comma (Brazilian locale), ranges, and single values.
-  static List<double> _extractDoseValues(String text) {
+  /// Extracts ONLY unit-coupled dose values from [text].
+  ///
+  /// A value is considered unit-coupled if it appears immediately before
+  /// a recognised clinical dose unit (with optional whitespace separator).
+  ///
+  /// Standalone numbers — list ordinals ("1."), weights ("80 kg"), volumes
+  /// ("5 mL"), pressures ("65 mmHg"), time intervals ("6h") — are BYPASSED.
+  ///
+  /// Handles pt_BR comma decimal notation ("0,05" → 0.05).
+  static List<double> _extractUnitCoupledDoseValues(String text) {
     final values = <double>[];
 
-    // Range pattern: "0.05–0.3 mcg/kg/min" → extract both endpoints.
-    for (final match in _doseRangePattern.allMatches(text)) {
-      final v1 = _parseLocaleDouble(match.group(1) ?? '');
-      final v2 = _parseLocaleDouble(match.group(2) ?? '');
-      if (v1 != null) values.add(v1);
-      if (v2 != null) values.add(v2);
-    }
-
-    // Single value with unit: "0.1 mcg/kg/min" → extract value.
-    for (final match in _singleDosePattern.allMatches(text)) {
-      final v = _parseLocaleDouble(match.group(1) ?? '');
-      if (v != null && !values.contains(v)) values.add(v);
+    for (final match in _unitAnchoredPattern.allMatches(text)) {
+      if (match.group(1) != null && match.group(2) != null) {
+        // Branch A — range: both endpoints are dose values.
+        final v1 = _parseLocaleDouble(match.group(1)!);
+        final v2 = _parseLocaleDouble(match.group(2)!);
+        if (v1 != null && !values.contains(v1)) values.add(v1);
+        if (v2 != null && !values.contains(v2)) values.add(v2);
+      } else if (match.group(4) != null) {
+        // Branch B — single value.
+        final v = _parseLocaleDouble(match.group(4)!);
+        if (v != null && !values.contains(v)) values.add(v);
+      }
     }
 
     return values;

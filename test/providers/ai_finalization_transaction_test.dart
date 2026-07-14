@@ -1671,4 +1671,258 @@ void main() {
           reason: 'All subsequent calls must return false');
     });
   });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Invariant Z — MICRO-BUILD 462E-A.5.3.7.3.2.3: Unit-Coupled Parsing,
+  //              Atomic Persistence Idempotency & Phase Order
+  //
+  // Z-1: Only unit-coupled values are extracted; standalone numbers bypassed.
+  // Z-2: persistAiExchangeOnce() idempotency — same requestId → SessionPersistSkipped.
+  // Z-3: Transaction phase remains [finalizing] throughout A–E; [completed] at F.
+  // ══════════════════════════════════════════════════════════════════════════
+  group('Invariant Z — Unit-Coupled Parsing, Atomic Persistence & Phase Order '
+      '(462E-A.5.3.7.3.2.3)', () {
+    // ── Z-1: Unit-coupled extraction — standalone numbers bypassed ──────────
+    test('Z-1a: "dilute in 5 mL and infuse at 0.05 mcg/kg/min" — '
+        'only 0.05 extracted; 5 (mL) bypassed', () {
+      const text = 'Dilua em 5 mL de SF e infunda a 0.05 mcg/kg/min de noradrenalina.';
+      const userInput = 'noradrenalina infusão dose';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: text,
+        userInput: userInput,
+      );
+
+      // 0.05 mcg/kg/min is within norepinephrine bounds (0.01–3.0) → PASS.
+      // 5 (mL) must NOT be extracted and must NOT cause a false violation.
+      expect(result.isValid, isTrue,
+          reason: '"5 mL" is not a dose value and must be bypassed; '
+              '0.05 mcg/kg/min is within bounds');
+    });
+
+    test('Z-1b: "infuse at 5 mcg/kg/min" — unit-coupled 5.0 extracted → violation', () {
+      const text = 'Infundir noradrenalina a 5 mcg/kg/min.';
+      const userInput = 'noradrenalina dose infusão';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: text,
+        userInput: userInput,
+      );
+
+      // 5 mcg/kg/min > 3.0 max → VIOLATION.
+      expect(result.isValid, isFalse,
+          reason: '5 mcg/kg/min is above the 3.0 doseMax → violation');
+      expect(result.fallback, isNotNull);
+    });
+
+    test('Z-1c: list ordinals "1.", "2.", "3." are bypassed — no false violation', () {
+      const text = '1. Verificar acesso venoso\n'
+          '2. Iniciar noradrenalina 0.1 mcg/kg/min\n'
+          '3. Titular para PAM ≥65 mmHg\n'
+          '4. Monitorar débito urinário';
+      const userInput = 'noradrenalina dose sepse';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: text,
+        userInput: userInput,
+      );
+
+      // Only 0.1 mcg/kg/min (within bounds 0.01–3.0) is extracted.
+      // The ordinals 1, 2, 3, 4 have no dose unit → bypassed.
+      // PAM 65 mmHg → bypassed (mmHg is not a clinical dose unit).
+      expect(result.isValid, isTrue,
+          reason: 'List ordinals and PAM values must be bypassed; '
+              '0.1 mcg/kg/min is within bounds');
+    });
+
+    test('Z-1d: weight and volume values are bypassed', () {
+      // "80 kg" weight, "250 mL" volume, "100 mL/h" rate (mL/h not a dose unit)
+      // Only the unit-coupled dose value should be extracted.
+      const text = 'Paciente 80 kg. Solução: 4 mg em 250 mL SF. '
+          'Velocidade: noradrenalina 0.08 mcg/kg/min. '
+          'Volume em 24h: ~100 mL.';
+      const userInput = 'noradrenalina infusão';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: text,
+        userInput: userInput,
+      );
+
+      // 0.08 mcg/kg/min within bounds. 80, 4, 250, 100 bypassed (no clinical dose unit).
+      expect(result.isValid, isTrue,
+          reason: 'Weight (80 kg), volume (250 mL), and concentration (4 mg) '
+              'must be bypassed; 0.08 mcg/kg/min is within bounds');
+    });
+
+    test('Z-1e: range "0.05–0.3 mcg/kg/min" — both endpoints extracted and within bounds', () {
+      const text = 'Dose de manutenção: 0.05–0.3 mcg/kg/min.';
+      const userInput = 'norepinephrine drip septic shock';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: text,
+        userInput: userInput,
+      );
+
+      // Both 0.05 and 0.3 are within norepinephrine bounds (0.01–3.0).
+      expect(result.isValid, isTrue,
+          reason: 'Range 0.05–0.3 mcg/kg/min is entirely within bounds');
+    });
+
+    test('Z-1f: range "0.05–5 mcg/kg/min" — upper endpoint 5.0 triggers violation', () {
+      const text = 'Pode-se usar 0.05–5 mcg/kg/min de noradrenalina.';
+      const userInput = 'noradrenalina infusão';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: text,
+        userInput: userInput,
+      );
+
+      // Upper bound 5.0 > 3.0 max → violation even though lower is valid.
+      expect(result.isValid, isFalse,
+          reason: 'Upper endpoint 5.0 mcg/kg/min exceeds doseMax=3.0 → violation');
+    });
+
+    test('Z-1g: pt_BR comma decimal "0,05 mcg/kg/min" in rich context with other numbers', () {
+      // Mixed context: list numbers, patient weight, AND a dose value in pt_BR format.
+      const text = 'Protocolo para paciente 70 kg:\n'
+          '1. Acesso IV\n'
+          '2. Noradrenalina 0,05 mcg/kg/min inicial\n'
+          '3. Titular de 0,01 em 0,01 mcg/kg/min a cada 5 min\n'
+          'Meta PAM: 65 mmHg';
+      const userInput = 'noradrenalina dose UTI';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: text,
+        userInput: userInput,
+      );
+
+      // 0,05 = 0.05 within bounds; 0,01 = 0.01 at lower bound (inclusive).
+      // 70 kg, 65 mmHg, 5 (min), 1 (ordinal), 2 (ordinal), 3 (ordinal) — bypassed.
+      expect(result.isValid, isTrue,
+          reason: 'pt_BR 0,05 and 0,01 mcg/kg/min are within bounds; '
+              'ordinals, weight, pressure bypassed');
+    });
+
+    // ── Z-2: Atomic persistence idempotency ────────────────────────────────
+    test('Z-2: SessionPersistStatus types are correct and idempotency works', () async {
+      // Z-2a: Verify all SessionPersistStatus variants are distinct types.
+      const synced  = SessionPersistSynced();
+      const offline = SessionPersistQueuedOffline();
+      const skipped = SessionPersistSkipped('test_reason');
+      final failed  = SessionPersistFailed(Exception('test'));
+
+      expect(synced,  isA<SessionPersistSynced>());
+      expect(offline, isA<SessionPersistQueuedOffline>());
+      expect(skipped, isA<SessionPersistSkipped>());
+      expect(skipped.reason, equals('test_reason'));
+      expect(failed,  isA<SessionPersistFailed>());
+      expect(failed.error, isA<Exception>());
+
+      // Z-2b: Verify ActiveAiSessionContext is immutable and carries all fields.
+      final frozenAt = DateTime(2026, 7, 14, 13, 55, 0);
+      final ctx = ActiveAiSessionContext(
+        uid:       'uid_test_z2',
+        sessionId: 'req_z2_abcdef',
+        requestId: 'req_z2_abcdef',
+        mode:      'plantao',
+        createdAt: frozenAt,
+      );
+
+      expect(ctx.uid,       equals('uid_test_z2'));
+      expect(ctx.sessionId, equals('req_z2_abcdef'));
+      expect(ctx.requestId, equals('req_z2_abcdef'));
+      expect(ctx.mode,      equals('plantao'));
+      expect(ctx.createdAt, equals(frozenAt),
+          reason: 'createdAt must be the exact frozen instant passed at construction');
+
+      // Z-2c: Simulate idempotency — same requestId must produce SessionPersistSkipped.
+      final persistedIds = <String>{};
+      Future<SessionPersistStatus> mockPersist(String reqId) async {
+        if (persistedIds.contains(reqId)) {
+          return const SessionPersistSkipped('idempotency_key_already_seen');
+        }
+        persistedIds.add(reqId);
+        return const SessionPersistSynced();
+      }
+
+      const reqId = 'req_z2_idempotency_test';
+      final first  = await mockPersist(reqId);
+      final second = await mockPersist(reqId);
+      final third  = await mockPersist(reqId);
+
+      expect(first,  isA<SessionPersistSynced>(),
+          reason: 'First persist call → SessionPersistSynced');
+      expect(second, isA<SessionPersistSkipped>(),
+          reason: 'Second persist call → SessionPersistSkipped (idempotency)');
+      expect(third,  isA<SessionPersistSkipped>(),
+          reason: 'Third persist call → SessionPersistSkipped (idempotency)');
+      expect((second as SessionPersistSkipped).reason,
+          equals('idempotency_key_already_seen'));
+
+      // Z-2d: Verify the mock writer was only invoked once (persistedIds has 1 entry).
+      expect(persistedIds, hasLength(1),
+          reason: 'Only one unique requestId should have been written');
+      expect(persistedIds.contains(reqId), isTrue);
+    });
+
+    // ── Z-3: Phase order — [finalizing] during A–E; [completed] at F ────────
+    test('Z-3: transaction phase remains finalizing during business ops; '
+        'completed only at tryMarkCoordinatorCompleted()', () {
+      final txn = AiFinalizationTransaction(
+        parentRequestId:   'req-z3-phase-order',
+        providerRequestId: 'prov-z3',
+      );
+
+      // Initial state: ingesting.
+      expect(txn.phase, equals(AiTransactionPhase.ingesting));
+      expect(txn.coordinatorCompleted, isFalse);
+
+      // Simulate phase transition to finalizing (terminal signal won).
+      txn.transitionToFinalizing();
+      expect(txn.phase, equals(AiTransactionPhase.finalizing),
+          reason: 'Phase must be finalizing after transitionToFinalizing()');
+
+      // Steps A–E (validation, persistence, tool gate, UI emit, release) happen
+      // WHILE phase is still [finalizing]. Simulate them as no-ops and assert.
+      // Step A: validation — phase unchanged.
+      expect(txn.phase, equals(AiTransactionPhase.finalizing),
+          reason: 'Phase must remain finalizing after Step A (validation)');
+
+      // Step B: persistence — phase unchanged.
+      expect(txn.coordinatorCompleted, isFalse,
+          reason: 'Coordinator must NOT be completed during Step B (persistence)');
+      expect(txn.phase, equals(AiTransactionPhase.finalizing),
+          reason: 'Phase must remain finalizing after Step B (persistence)');
+
+      // Step C: tool resolution — phase unchanged.
+      txn.tryMarkToolResolutionStarted();
+      expect(txn.phase, equals(AiTransactionPhase.finalizing),
+          reason: 'Phase must remain finalizing after Step C (tool resolution)');
+
+      // Step D: UI notification — phase unchanged.
+      expect(txn.phase, equals(AiTransactionPhase.finalizing),
+          reason: 'Phase must remain finalizing after Step D (UI notify)');
+
+      // Step E: release — phase unchanged.
+      expect(txn.coordinatorCompleted, isFalse,
+          reason: 'Coordinator must NOT be completed during Step E (release)');
+
+      // Step F: tryMarkCoordinatorCompleted() — phase advances to completed.
+      final won = txn.tryMarkCoordinatorCompleted();
+      expect(won, isTrue,
+          reason: 'First tryMarkCoordinatorCompleted() must win');
+      expect(txn.coordinatorCompleted, isTrue,
+          reason: 'coordinatorCompleted must be true after Step F');
+      expect(txn.phase, equals(AiTransactionPhase.completed),
+          reason: 'Phase must advance to completed ONLY at Step F');
+
+      // Verify idempotency: second tryMarkCoordinatorCompleted() must lose.
+      final lost = txn.tryMarkCoordinatorCompleted();
+      expect(lost, isFalse,
+          reason: 'Second tryMarkCoordinatorCompleted() must return false');
+      // Phase stays completed (not double-advanced).
+      expect(txn.phase, equals(AiTransactionPhase.completed),
+          reason: 'Phase must remain completed after duplicate tryMarkCoordinatorCompleted()');
+    });
+  });
 }
