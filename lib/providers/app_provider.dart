@@ -36,6 +36,7 @@ import '../services/firebase_runtime_guard.dart';   // BUILD 463-A.1: SafeApps g
 import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: canonicalDecision routing
 import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
 import '../services/ai/timeout_content_safety_guard.dart'; // MICRO-BUILD 462E-A.5.3.7.2.1: TerminalCause, TimeoutSafetyVerdict, TimeoutContentSafetyGuard
+import '../services/ai/ai_finalization_transaction.dart'; // MICRO-BUILD 462E-A.5.3.7.3.2: AiTransactionPhase, TerminalSignal, ProviderAttemptContext, FinalOutputSnapshot, SerialEventQueue, AiFinalizationTransaction
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -195,428 +196,16 @@ class HemoData {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// MICRO-BUILD 462E-A.5.3.7.1 — Transaction Unification & Finalizing-State Barrier
+// MICRO-BUILD 462E-A.5.3.7.3.2 — AiFinalizationTransaction EXTRACTED
 //
-// Upgrades 462E-A.5.3.7 with:
-//   1. TerminalSignal Broker  — single Completer<TerminalSignal> per request.
-//      Transforms chaotic callback races into a single-winner producer/consumer.
-//   2. ProviderAttemptContext — immutable, per-attempt context that isolates
-//      providerRequestId so late chunks from stale providers are rejected.
-//   3. AiTransactionPhase enum — ingesting / finalizing / completed / cancelled.
-//   4. SerialEventQueue — non-reentrant Future chain; enqueue cutoff check
-//      executes at enqueue time, NOT inside downstream buffer mutations.
-//   5. FinalOutputSnapshot — frozen after full queue drainage, NEVER before.
-//   6. finalizeAiRequest() — wrapped in try/catch/finally; coordinator
-//      completed atomically via completeCoordinatorAtomically() (sync, no await).
-//   7. Atomic guards: tryMarkAssistantPersisted / tryMarkToolResolutionStarted /
-//      releaseCanonicalDecisionOnce — each executable exactly once.
+// AiTransactionPhase, TerminalSignal, ProviderAttemptContext,
+// FinalOutputSnapshot, SerialEventQueue, and AiFinalizationTransaction have
+// been moved to their canonical home:
+//   lib/services/ai/ai_finalization_transaction.dart
+//
+// All symbols are re-exported below via the import so existing call sites
+// in this file continue to resolve without modification.
 // ══════════════════════════════════════════════════════════════════════════════
-
-// ── AiTransactionPhase ────────────────────────────────────────────────────────
-enum AiTransactionPhase {
-  ingesting,   // stream is open — chunks are accepted and queued
-  finalizing,  // terminal signal won — queue is being drained, no new chunks
-  completed,   // finalization succeeded
-  cancelled,   // request was cancelled before completion
-}
-
-// ── TerminalCause — defined in lib/services/ai/timeout_content_safety_guard.dart ──
-// Imported above (MICRO-BUILD 462E-A.5.3.7.2.1). All TerminalCause references
-// in this file resolve via that import.
-
-// ── TerminalSignal ────────────────────────────────────────────────────────────
-/// Immutable value submitted by any terminal contender to the Broker.
-/// Only the FIRST submission wins; all subsequent are rejected.
-final class TerminalSignal {
-  final String source;
-  final TerminalCause cause;
-  final Object? error;
-  final StackTrace? stackTrace;
-
-  const TerminalSignal({
-    required this.source,
-    required this.cause,
-    this.error,
-    this.stackTrace,
-  });
-
-  factory TerminalSignal.streamDone(String source) =>
-      TerminalSignal(source: source, cause: TerminalCause.streamDone);
-
-  factory TerminalSignal.chunkIsDone(String source) =>
-      TerminalSignal(source: source, cause: TerminalCause.chunkIsDone);
-
-  factory TerminalSignal.timeout(String source) =>
-      TerminalSignal(source: source, cause: TerminalCause.timeout);
-
-  factory TerminalSignal.error(String source, Object err, StackTrace st) =>
-      TerminalSignal(source: source, cause: TerminalCause.error, error: err, stackTrace: st);
-
-  factory TerminalSignal.cancelled(String source) =>
-      TerminalSignal(source: source, cause: TerminalCause.cancelled);
-
-  factory TerminalSignal.fallback(String source) =>
-      TerminalSignal(source: source, cause: TerminalCause.fallback);
-
-  factory TerminalSignal.streamProcessingError(Object err, StackTrace st) =>
-      TerminalSignal(
-        source: 'serial_event_queue',
-        cause: TerminalCause.streamProcessingError,
-        error: err,
-        stackTrace: st,
-      );
-}
-
-// ── ProviderAttemptContext ────────────────────────────────────────────────────
-/// Immutable, per-attempt context. A retry or paid fallback creates a NEW
-/// instance but preserves the reference to the original transaction.
-/// Late chunks from a stale generation are rejected via [isStale].
-final class ProviderAttemptContext {
-  final String providerRequestId;
-  final int attemptGeneration;
-  final String provider;
-
-  const ProviderAttemptContext({
-    required this.providerRequestId,
-    required this.attemptGeneration,
-    required this.provider,
-  });
-
-  /// Returns true when [activeGeneration] is newer than this attempt —
-  /// meaning this attempt is stale and its events must be dropped.
-  bool isStale(int activeGeneration) => attemptGeneration < activeGeneration;
-}
-
-// ── FinalOutputSnapshot ───────────────────────────────────────────────────────
-/// Immutable snapshot frozen AFTER the SerialEventQueue is fully drained.
-/// NEVER created before queue drainage.
-final class FinalOutputSnapshot {
-  final String rawOutput;
-  final String sessionId;
-  final String parentRequestId;
-  final DateTime frozenAt;
-
-  const FinalOutputSnapshot({
-    required this.rawOutput,
-    required this.sessionId,
-    required this.parentRequestId,
-    required this.frozenAt,
-  });
-}
-
-// ── SerialEventQueue ──────────────────────────────────────────────────────────
-/// Non-reentrant serial Future chain for incoming stream chunks.
-///
-/// The finalizing-phase barrier check executes at ENQUEUE TIME (cutoff),
-/// not inside downstream buffer mutations. Chunks enqueued while [ingesting]
-/// are fully processed even if the phase transitions to [finalizing] before
-/// their execution begins. Chunks arriving after the phase transition are
-/// rejected instantly.
-class SerialEventQueue {
-  final AiFinalizationTransaction transaction;
-  final void Function(TerminalSignal) signalTerminal;
-  final Future<void> Function(Object event) processStreamEvent;
-
-  Future<void> _queue = Future.value();
-
-  SerialEventQueue({
-    required this.transaction,
-    required this.signalTerminal,
-    required this.processStreamEvent,
-  });
-
-  /// Enqueues [event] for serial processing.
-  /// Returns false and emits [AI_LATE_EVENT_DROPPED] if the cutoff has passed.
-  bool enqueue(Object event) {
-    if (transaction.phase != AiTransactionPhase.ingesting) {
-      // ignore: avoid_print
-      print('[AI_LATE_EVENT_DROPPED] '
-          'parentRequestId=${transaction.parentRequestId} '
-          'event=chunk '
-          'reason=phase_cutoff '
-          'phase=${transaction.phase.name}');
-      return false;
-    }
-
-    _queue = _queue.then((_) => processStreamEvent(event)).catchError(
-      (Object err, StackTrace stack) {
-        signalTerminal(TerminalSignal.streamProcessingError(err, stack));
-      },
-    );
-
-    return true;
-  }
-
-  /// Awaits full drainage of the serial queue before returning.
-  /// Must be called by the terminal broker AFTER winning ownership and
-  /// transitioning to [finalizing], and BEFORE [FinalOutputSnapshot] is frozen.
-  Future<void> drain() => _queue;
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// MICRO-BUILD 462E-A.5.3.7.1 — AiFinalizationTransaction (upgraded)
-//
-// Per-request state machine that enforces EXACTLY ONE terminal ownership claim
-// across all asynchronous finalization contenders (onDone, timeout timer,
-// onError, chunk.isDone, cancel, fallback paths).
-//
-// INVARIANT: tryAcquireOwnership() is non-reentrant. The first caller wins and
-// receives true; all subsequent callers receive false and must emit
-// [AI_TERMINAL_OWNER][REJECTED] telemetry before silently aborting.
-//
-// Multiple concurrent active requests each own an INDEPENDENT instance.
-// Completing request A NEVER affects the transaction state of request B.
-//
-// Dart event-loop thread safety: bool flips are atomic within a single
-// microtask — no additional locking is required.
-// ══════════════════════════════════════════════════════════════════════════════
-class AiFinalizationTransaction {
-  final String parentRequestId;
-  // providerRequestId is now per-attempt (ProviderAttemptContext).
-  // Kept here for legacy call sites that reference it directly.
-  final String providerRequestId;
-
-  // ── Correlated telemetry identities ────────────────────────────────────────
-  // MICRO-BUILD 462E-A.5.3.7.3.1: Immutable per-request identities for
-  // structured [EXT_TOOL_GATE] and [AI_LATE_BUSINESS_EVENT_DROPPED] telemetry.
-  //
-  // transactionId — generated exactly once per parent request lifetime.
-  //   Derived from parentRequestId; stable across retries and fallbacks.
-  //   Format: "txn_<first16chars_of_parentRequestId>"
-  //
-  // attemptId — bound to the providerRequestId supplied at construction.
-  //   Each retry or fallback creates a fresh AiFinalizationTransaction with a
-  //   new providerRequestId, producing a distinct attemptId while sharing the
-  //   same transactionId (same parentRequestId).
-  //   Format: "att_<first12chars_of_providerRequestId>"
-  late final String transactionId;
-  late final String attemptId;
-
-  // ── Phase state machine ────────────────────────────────────────────────────
-  AiTransactionPhase _phase = AiTransactionPhase.ingesting;
-  AiTransactionPhase get phase => _phase;
-
-  // ── Ownership & atomic guards ──────────────────────────────────────────────
-  bool _ownershipAcquired           = false;
-  bool _toolResolutionStarted       = false;
-  bool _toolResolutionCompleted     = false;
-  bool _cacheReleased               = false;
-  bool _coordinatorCompleted        = false;
-  bool _assistantPersisted          = false;
-  bool _canonicalDecisionReleased   = false;
-
-  // ── Terminal Signal Broker ─────────────────────────────────────────────────
-  // Exactly ONE outer orchestrator awaits this Completer.
-  // Every terminal contender calls signalTerminal() — only the first wins.
-  final Completer<TerminalSignal> _terminalSignal = Completer<TerminalSignal>();
-
-  AiFinalizationTransaction({
-    required this.parentRequestId,
-    required this.providerRequestId,
-  }) {
-    // Derive stable identities from the immutable IDs at construction time.
-    // Slicing keeps log lines short while retaining sufficient uniqueness.
-    final pLen = parentRequestId.length;
-    final rLen = providerRequestId.length;
-    transactionId = 'txn_${parentRequestId.substring(0, pLen > 16 ? 16 : pLen)}';
-    attemptId     = 'att_${providerRequestId.isEmpty ? "none" : providerRequestId.substring(0, rLen > 12 ? 12 : rLen)}';
-  }
-
-  // ── Terminal Signal Broker API ─────────────────────────────────────────────
-
-  /// Submits [signal] to the broker. Only the first call wins; subsequent
-  /// calls log [AI_TERMINAL_CONTENDER_REJECTED] and are silently dropped.
-  void signalTerminal(TerminalSignal signal) {
-    if (!_terminalSignal.isCompleted) {
-      _terminalSignal.complete(signal);
-    } else {
-      emitTerminalContenderRejected(signal.source);
-    }
-  }
-
-  /// Awaited by the single outer orchestrator to receive the winning signal.
-  Future<TerminalSignal> get terminalFuture => _terminalSignal.future;
-
-  void emitTerminalContenderRejected(String source) {
-    // ignore: avoid_print
-    print('[AI_TERMINAL_CONTENDER_REJECTED] '
-        'parentRequestId=$parentRequestId '
-        'source=$source '
-        'reason=broker_already_resolved');
-  }
-
-  // ── Phase transitions ──────────────────────────────────────────────────────
-
-  /// Transitions to [finalizing]. Called by the winning terminal signal owner
-  /// before draining the queue. Chunks arriving after this call are rejected.
-  void transitionToFinalizing() {
-    if (_phase == AiTransactionPhase.ingesting) {
-      _phase = AiTransactionPhase.finalizing;
-    }
-  }
-
-  // ── sealAndDrainStreamQueue ────────────────────────────────────────────────
-
-  /// Seals the phase to [finalizing] and drains [queue] before returning.
-  /// The [FinalOutputSnapshot] MUST NOT be frozen before this completes.
-  Future<void> sealAndDrainStreamQueue(SerialEventQueue queue) async {
-    transitionToFinalizing();
-    await queue.drain();
-  }
-
-  // ── Ownership ──────────────────────────────────────────────────────────────
-
-  /// Atomically claims terminal ownership for [source].
-  /// Returns true when the caller is the WINNER.
-  /// Returns false with [AI_TERMINAL_OWNER][REJECTED] telemetry for all losers.
-  bool tryAcquireOwnership(String source) {
-    if (_ownershipAcquired) {
-      // ignore: avoid_print
-      print('[AI_TERMINAL_OWNER][REJECTED] '
-          'parentRequestId=$parentRequestId '
-          'providerRequestId=$providerRequestId '
-          'source=$source '
-          'reason=ownership_already_acquired');
-      return false;
-    }
-    _ownershipAcquired = true;
-    // ignore: avoid_print
-    print('[AI_TERMINAL_OWNER][ACQUIRED] '
-        'parentRequestId=$parentRequestId '
-        'source=$source');
-    return true;
-  }
-
-  // ── Atomic once-guards ─────────────────────────────────────────────────────
-
-  /// Returns true on the FIRST call — the caller owns assistant persistence.
-  bool tryMarkAssistantPersisted() {
-    if (_assistantPersisted) return false;
-    _assistantPersisted = true;
-    return true;
-  }
-
-  /// Returns true on the FIRST call — the caller owns tool resolution.
-  bool tryMarkToolResolutionStarted() {
-    if (_toolResolutionStarted) return false;
-    _toolResolutionStarted = true;
-    return true;
-  }
-
-  /// Releases the canonical decision exactly once.
-  /// Subsequent calls are silently ignored.
-  Future<void> releaseCanonicalDecisionOnce() async {
-    if (_canonicalDecisionReleased) return;
-    _canonicalDecisionReleased = true;
-    ExternalToolLinkEngine.releaseCanonicalDecision(requestId: parentRequestId);
-  }
-
-  // ── completeCoordinatorAtomically ─────────────────────────────────────────
-
-  /// Completes the coordinator synchronously (no intermediate awaits).
-  /// Prevents concurrent callback interleaving inside the finally block.
-  /// The [complete] callback is invoked exactly once.
-  void completeCoordinatorAtomically({
-    required TerminalCause cause,
-    required void Function() complete,
-  }) {
-    if (_coordinatorCompleted) return;
-    complete();
-    _coordinatorCompleted = true;
-    _phase = cause == TerminalCause.cancelled
-        ? AiTransactionPhase.cancelled
-        : AiTransactionPhase.completed;
-  }
-
-  // ── Telemetry helpers ──────────────────────────────────────────────────────
-
-  void markToolResolutionCompleted() => _toolResolutionCompleted = true;
-  void markCacheReleased()           => _cacheReleased = true;
-  void markCoordinatorCompleted()    => _coordinatorCompleted = true;
-  void markAssistantPersisted()      => _assistantPersisted = true;
-
-  bool get isTerminal           => _coordinatorCompleted;
-  bool get ownershipAcquired    => _ownershipAcquired;
-  bool get assistantPersisted   => _assistantPersisted;
-  bool get cacheReleased        => _cacheReleased;
-  bool get coordinatorCompleted => _coordinatorCompleted;
-
-  /// Emits [AI_LATE_EVENT_DROPPED] telemetry and returns true when the
-  /// transaction is already terminal and a late event must be discarded.
-  bool dropIfTerminal({required String event, required String providerReqId}) {
-    if (!_coordinatorCompleted) return false;
-    // ignore: avoid_print
-    print('[AI_LATE_EVENT_DROPPED] '
-        'parentRequestId=$parentRequestId '
-        'providerRequestId=$providerReqId '
-        'event=$event '
-        'terminalState=completed');
-    return true;
-  }
-
-  /// Hard, synchronous post-completion barrier for business-level events.
-  ///
-  /// MICRO-BUILD 462E-A.5.3.7.3.1 — PILLAR 1:
-  /// Returns true and emits [AI_LATE_BUSINESS_EVENT_DROPPED] when the
-  /// transaction is already terminal (coordinator completed, or phase is
-  /// completed/cancelled). Returns false when the transaction is still active —
-  /// the caller may proceed with business logic.
-  ///
-  /// Invariants (enforced by the correlated log):
-  ///   • Zero state changes on true return.
-  ///   • Zero storage persist triggers on true return.
-  ///   • Zero coordinator re-completions on true return.
-  ///   • Every field in the log is immutable and set at construction time.
-  bool dropIfBusinessEventTerminal({required String callSite}) {
-    final bool isTerminalPhase =
-        _phase == AiTransactionPhase.completed ||
-        _phase == AiTransactionPhase.cancelled;
-    if (!_coordinatorCompleted && !isTerminalPhase) return false;
-    final String phaseName = _phase == AiTransactionPhase.cancelled
-        ? 'cancelled'
-        : 'completed';
-    // ignore: avoid_print
-    print('[AI_LATE_BUSINESS_EVENT_DROPPED] '
-        'requestId=$parentRequestId '
-        'parentRequestId=$parentRequestId '
-        'transactionId=$transactionId '
-        'attemptId=$attemptId '
-        'callSite=$callSite '
-        'phase=$phaseName');
-    return true;
-  }
-
-  /// Emits [AI_LATE_EVENT_DROPPED] for stale provider attempt chunks.
-  void emitLateEventDropped({required String event}) {
-    // ignore: avoid_print
-    print('[AI_LATE_EVENT_DROPPED] '
-        'parentRequestId=$parentRequestId '
-        'providerRequestId=$providerRequestId '
-        'reason=stale_provider_attempt '
-        'event=$event');
-  }
-
-  /// Emits finalization failure telemetry.
-  void emitFinalizationFailure({required Object error, required StackTrace stackTrace}) {
-    // ignore: avoid_print
-    print('[AI_FINALIZATION_FAILURE] '
-        'parentRequestId=$parentRequestId '
-        'error=$error');
-  }
-
-  /// Emits [SESSION_PERSIST] dedup key telemetry.
-  void emitPersistTelemetry({required String sessionId}) {
-    final dedupKey = '$parentRequestId:assistant_final';
-    // ignore: avoid_print
-    print('[SESSION_PERSIST] '
-        'parentRequestId=$parentRequestId '
-        'sessionId=$sessionId '
-        'messageRole=assistant '
-        'phase=assistant_final '
-        'dedupKey=$dedupKey');
-    markAssistantPersisted();
-  }
-}
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MICRO-BUILD 462E-A.5.3.7.2.1 — TimeoutContentSafetyGuard + TimeoutSafetyVerdict
@@ -4834,6 +4423,24 @@ class AppProvider extends ChangeNotifier {
   // BUILD 238 ADENDO: requestId ativo — invalida respostas atrasadas
   String _activeRequestId = '';
 
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2: Immutable Tool Resolution Storage ───────
+  // Set ONCE inside the canonical finalizer (chunk_isDone path) by the
+  // EXT_TOOL_GATE after tryMarkToolResolutionStarted() wins.
+  // Cleared on every new sendAiMessage() call (pre-request reset).
+  //
+  // CONTRACT:
+  //   • Populated exclusively by the canonical finalizer — never by the UI layer.
+  //   • Reading this field from the UI widget tree is the ONLY permitted way to
+  //     access the tool resolution — ExternalToolLinkEngine.build() must NOT be
+  //     called from widget build() methods.
+  //   • Re-rendering the widget tree any number of times MUST produce exactly
+  //     zero ExternalToolLinkEngine invocations and zero log emissions.
+  ExternalToolLink? _lastCompletedToolLink;
+
+  /// Immutable snapshot of the tool resolution computed by the canonical
+  /// finalizer. Null until the first canonical completion of each request.
+  ExternalToolLink? get lastCompletedToolLink => _lastCompletedToolLink;
+
   // Safe-card de timeout (sem EvidenceBox, sem ActionButtons, sem ExternalToolLink)
   //
   // BUILD 244: prefixo canônico estável — ai_screen detecta via _kSafeCardMarker.
@@ -4895,6 +4502,11 @@ class AppProvider extends ChangeNotifier {
     _activeRequestId = thisRequestId;
     final globalStartMs = DateTime.now().millisecondsSinceEpoch;
     if (kDebugMode) debugPrint('[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
+
+    // MICRO-BUILD 462E-A.5.3.7.3.2: Reset immutable tool resolution storage.
+    // Cleared at request start so the UI never reads a stale result from a
+    // prior request while the new request is in flight.
+    _lastCompletedToolLink = null;
 
     // BUILD 241: registra request no coordinator para verificação no resume.
     // BUILD 320: passa isEstudoMode para que o coordinator use deadline 90s
@@ -6470,34 +6082,62 @@ class AppProvider extends ChangeNotifier {
             aiChatProvider.setStreaming(false); // BUILD 326
             _aiStreamSub    = null;
 
-            // ── MICRO-BUILD 462E-A.5.3.7.3.1 [PILLAR 2]: EXT_TOOL_GATE ──────
-            // tryMarkToolResolutionStarted() is the atomic exactly-once gate that
-            // guards tool resolution inside the canonical finalizer. It is called
-            // AFTER persistence and BEFORE completeCoordinatorAtomically so that
-            // any late callback racing here after coordinator completion will be
-            // blocked by dropIfBusinessEventTerminal (Pillar 1).
+            // ── MICRO-BUILD 462E-A.5.3.7.3.2 [PILLAR 2]: Canonical Tool Resolution ──
+            // ExternalToolLinkEngine.build() is called EXACTLY ONCE per requestId,
+            // strictly inside the canonical finalizer, AFTER persistence and BEFORE
+            // completeCoordinatorAtomically.
             //
-            // The gate is permitted here because:
-            //   1. tryAcquireTerminalOwnership('chunk_isDone') already returned true
-            //      — we are the single winning execution context.
-            //   2. sealAndDrainStreamQueue() semantics: phase=finalizing, queue drained.
-            //   3. Persistence (emitPersistTelemetry) committed above.
+            // ESTATE-CONTROLLED INVOCATION INVARIANTS:
+            //   1. tryAcquireTerminalOwnership('chunk_isDone') returned true —
+            //      this is the single winning execution context for this request.
+            //   2. dropIfBusinessEventTerminal guards against any late-racing path.
+            //   3. tryMarkToolResolutionStarted() is the exactly-once atomic gate.
+            //   4. Result is stored in _lastCompletedToolLink (AppProvider field) —
+            //      the UI reads this field; it NEVER calls ExternalToolLinkEngine.build().
+            //   5. Re-rendering the widget tree any number of times = ZERO engine calls.
             //
-            // All EXT_TOOL_GATE logs carry the full correlated telemetry set:
+            // All EXT_TOOL_GATE logs carry fully correlated telemetry:
             //   requestId, parentRequestId, transactionId, attemptId, phase,
-            //   callSite, allowed, reason.
+            //   callSite, ownershipAcquired, toolAllowed, reason.
             if (!_freeStreamTxn.dropIfBusinessEventTerminal(callSite: 'canonical_finalizer')) {
-              final bool _toolGateAllowed = _freeStreamTxn.tryMarkToolResolutionStarted();
-              // ignore: avoid_print
-              print('[EXT_TOOL_GATE] '
-                  'requestId=${_freeStreamTxn.parentRequestId} '
-                  'parentRequestId=${_freeStreamTxn.parentRequestId} '
-                  'transactionId=${_freeStreamTxn.transactionId} '
-                  'attemptId=${_freeStreamTxn.attemptId} '
-                  'phase=${_freeStreamTxn.phase.name} '
-                  'callSite=canonical_finalizer '
-                  'allowed=$_toolGateAllowed '
-                  'reason=${_toolGateAllowed ? "first_resolution" : "duplicate_dropped"}');
+              if (_freeStreamTxn.tryMarkToolResolutionStarted()) {
+                // ── Canonical engine invocation — exactly once per request ──
+                final resolvedLink = ExternalToolLinkEngine.build(
+                  lastUserMessage:  input,
+                  lastAiResponse:   finalText,
+                  isPlantaoMode:    !longResponse,
+                  currentLanguage:  _lang,
+                  activeThreadTopic: _threadManager.activeTopic,
+                  requestId:        _freeStreamTxn.parentRequestId,
+                  transactionId:    _freeStreamTxn.transactionId,
+                  attemptId:        _freeStreamTxn.attemptId,
+                );
+                // Store immutable result — UI consumes this field directly.
+                _lastCompletedToolLink = resolvedLink;
+                // ignore: avoid_print
+                print('[EXT_TOOL_GATE] '
+                    'requestId=${_freeStreamTxn.parentRequestId} '
+                    'parentRequestId=${_freeStreamTxn.parentRequestId} '
+                    'transactionId=${_freeStreamTxn.transactionId} '
+                    'attemptId=${_freeStreamTxn.attemptId} '
+                    'phase=${_freeStreamTxn.phase.name} '
+                    'callSite=canonical_finalizer '
+                    'ownershipAcquired=true '
+                    'toolAllowed=${resolvedLink != null} '
+                    'reason=${resolvedLink != null ? "explicit_input_intent" : "no_explicit_intent"}');
+                if (resolvedLink != null) {
+                  // ignore: avoid_print
+                  print('[EXT_TOOL_PAYLOAD_READY] '
+                      'requestId=${_freeStreamTxn.parentRequestId}');
+                }
+              } else {
+                // Duplicate gate call — should never happen in correct ordering,
+                // but logged for post-mortem analysis.
+                // ignore: avoid_print
+                print('[EXT_TOOL_GATE][DUPLICATE_DROPPED] '
+                    'requestId=${_freeStreamTxn.parentRequestId} '
+                    'callSite=canonical_finalizer');
+              }
             }
 
             // MICRO-BUILD 462E-A.5.2: Rigid Transactional Termination Pyramid.

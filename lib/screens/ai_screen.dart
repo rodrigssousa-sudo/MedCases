@@ -2918,31 +2918,27 @@ class _AiScreenState extends State<AiScreen> {
                             .lastWhere((m) => m.role == 'user',
                                 orElse: () => _ChatMsg(role: 'user', text: ''))
                             .text;
-                        // ── EXT_TOOL cache ───────────────────────────────────────
+                        // ── MICRO-BUILD 462E-A.5.3.7.3.2: Pure renderer — zero engine calls ──
+                        // ExternalToolLinkEngine.build() is STRICTLY FORBIDDEN here.
+                        // The tool resolution was computed exactly once inside the canonical
+                        // finalizer (sendAiMessage → chunk_isDone → EXT_TOOL_GATE) and stored
+                        // in AppProvider._lastCompletedToolLink.
+                        //
+                        // Re-rendering this widget 100 times produces:
+                        //   • ZERO ExternalToolLinkEngine invocations
+                        //   • ZERO [EXT_TOOL_GATE] log emissions
+                        //   • ZERO state changes
+                        //
+                        // The _extToolCache is kept for reading historical sessions loaded from
+                        // Firestore (which do not go through sendAiMessage). It is never written
+                        // during the current live request lifecycle.
                         final extKey = '${msg.id}:${msg.text.hashCode}';
-                        final ExternalToolLink? resolvedLink;
-                        if (_extToolCache.containsKey(extKey)) {
-                          // BUILD 308 [EXT_TOOL_DEDUP]: log apenas 1× por extKey —
-                          // evita spam de 18+ debugPrints/s durante rebuilds de streaming.
-                          if (kDebugMode && !_loggedExtToolKeys.contains(extKey)) {
-                            _loggedExtToolKeys.add(extKey);
-                            debugPrint('[EXT_TOOL_DEDUP] hit=true messageId=${msg.id} textHash=${msg.text.hashCode}');
-                          }
-                          resolvedLink = _extToolCache[extKey];
-                        } else {
-                          // BUILD 249: pass activeThreadTopic to guard stale drug detection
-                          resolvedLink = ExternalToolLinkEngine.build(
-                            lastUserMessage: lastUser,
-                            lastAiResponse: _cleanDisplayText,
-                            isPlantaoMode: !_longResponse,
-                            currentLanguage: p.lang,
-                            activeThreadTopic: p.activeThreadTopic,
-                          );
-                          _extToolCache[extKey] = resolvedLink;
-                          if (kDebugMode) {
-                            debugPrint('[EXT_TOOL_DEDUP] hit=false (resolved) messageId=${msg.id} textHash=${msg.text.hashCode}');
-                          }
-                        }
+                        // Read the pre-computed resolution: prefer provider field (current
+                        // live request), fall back to session cache (restored history).
+                        final ExternalToolLink? resolvedLink =
+                            _extToolCache.containsKey(extKey)
+                                ? _extToolCache[extKey]
+                                : p.lastCompletedToolLink;
                         // BUILD 301: label 100% dinâmico — vem direto da tag [NEXT_ACTION_LABEL]
                         // gerada pela IA. Sem inferência local, sem fallbacks engessados.
                         if (kDebugMode && _hasStudyTags) {
