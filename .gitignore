@@ -30,9 +30,10 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-# build/ — ignorar tudo EXCETO build/web (necessário para deploy no DigitalOcean)
-# Nota: /build/ + !build/web não funciona no git (pai ignorado bloqueia a exceção)
-# Solução: ignorar subdiretórios de build individualmente
+# build/ — CASE A Source-Build Framework (DigitalOcean Dockerfile compiles at deploy time)
+# build/web/ artifacts are produced by the DO multi-stage Dockerfile — never commit them.
+# DO Stage 1 runs: flutter build web --release --dart-define=BUILD_COMMIT=... etc.
+# Committing build/web/ would create staleness risk and inflate repo size unnecessarily.
 build/android/
 build/app/
 build/ios/
@@ -57,9 +58,8 @@ build/share_plus/
 build/shared_preferences_android/
 build/url_launcher_android/
 build/[0-9a-f]*/
-# CanvasKit — servido pelo CDN do Google (não commitar)
-build/web/canvaskit/
-build/web/*.symbols
+# Web build artifacts — compiled by DO Dockerfile, never tracked in git
+build/web/
 /coverage/
 
 # Symbolication related

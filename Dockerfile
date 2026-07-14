@@ -33,8 +33,21 @@ COPY . .
 RUN flutter pub get
 # Limita heap do Dart VM a 1024MB para evitar OOM no container DigitalOcean
 ENV DART_VM_OPTIONS="--old_gen_heap_size=1024"
+
+# ── Build identity injection (MICRO-BUILD 462E-A.5.3.7.3.2.5.3.1) ───────────
+# BUILD_COMMIT, BUNDLE_VERSION, BUILT_AT are captured at Docker build time and
+# injected into the Dart VM via --dart-define. The Flutter app reads them via
+# String.fromEnvironment() — no hardcoded SHA in source ever again.
+# These ARGs can be overridden by DO App Platform build args or docker build --build-arg.
+ARG BUILD_COMMIT=unknown
+ARG BUNDLE_VERSION=dev
+ARG BUILT_AT=unknown
+
 # -O1: nível de otimização reduzido — menos RAM que O2/O3, suficiente para produção
-RUN flutter build web --release --no-tree-shake-icons -O1
+RUN flutter build web --release --no-tree-shake-icons -O1 \
+      --dart-define=BUILD_COMMIT="$BUILD_COMMIT" \
+      --dart-define=BUNDLE_VERSION="$BUNDLE_VERSION" \
+      --dart-define=BUILT_AT="$BUILT_AT"
 
 # ── Estágio 2: Servidor Nginx ──────────────────────────────────────────────────
 FROM nginx:1.25.5-alpine
