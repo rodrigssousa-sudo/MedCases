@@ -78,6 +78,45 @@ class _FsFailure<T> extends FirestoreLoadResult<T> {
   const _FsFailure(this.error);
 }
 
+// ── MICRO-BUILD 463-A.2.1.3: UiLoadOutcome<T> — single-flight latch wrapper ──
+//
+// Separates the lifecycle of a single-flight provider request from the
+// algebraic content of the Firestore result.
+//
+// MOTIVATION: Using FirestoreLoadResult.authDenied() as a stale-epoch sentinel
+// is an architectural violation — it conflates a chronological lifecycle event
+// ("this completion arrived after a newer generation took ownership") with an
+// authentication breach ("Firebase returned permission-denied").  A stale epoch
+// is silent routing infrastructure, not a credential alarm.
+//
+// CONTRACT:
+//   UiLoadApplied(result) — completion belongs to the current generation;
+//                           the caller must route through result's algebraic
+//                           variants (success/empty/authDenied/offline/failure).
+//   UiLoadDiscarded(reason) — completion arrived after a newer generation
+//                             superseded this request; the caller must
+//                             silently skip ALL state-tree mutations.
+//
+// USAGE: loadAiSessionsTypedForUi() returns UiLoadOutcome<…>.
+// The consumer (ai_screen._loadChatHistory) pattern-matches on the outer
+// wrapper first, then routes the inner FirestoreLoadResult algebraically.
+sealed class UiLoadOutcome<T> {
+  const UiLoadOutcome();
+}
+
+/// The result is current-generation: route through [result]'s variants.
+final class UiLoadApplied<T> extends UiLoadOutcome<T> {
+  final FirestoreLoadResult<T> result;
+  const UiLoadApplied(this.result);
+}
+
+/// The result belongs to a superseded generation: discard silently.
+/// [reason] is a lowercase_underscore diagnostic token — never shown in UI.
+final class UiLoadDiscarded<T> extends UiLoadOutcome<T> {
+  final String reason; // always "stale_generation"
+  const UiLoadDiscarded({required this.reason});
+}
+
 class FirestoreService {
   // ── Safe type helpers — imunes a TypeError em dart2js release mode ───────
   /// Converte qualquer valor para String sem lançar TypeError.

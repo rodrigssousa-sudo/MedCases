@@ -2561,44 +2561,66 @@ class AppProvider extends ChangeNotifier {
     return result;
   }
 
-  // ── MICRO-BUILD 463-A.2.1.2: Single-Flight AI Sessions Load ──────────────
+  // ── MICRO-BUILD 463-A.2.1.3: Testable fetch seam ────────────────────────
+  // Subclasses (test doubles) may override fetchAiSessions() to inject
+  // a controlled Future without touching Firebase.  Production code calls
+  // FirestoreService.loadAiSessionsTyped() via this single indirection point.
+  @visibleForTesting
+  Future<FirestoreLoadResult<List<Map<String, dynamic>>>> fetchAiSessions(
+      String uid) =>
+      FirestoreService.loadAiSessionsTyped(uid);
+
+  // ── MICRO-BUILD 463-A.2.1.3: Single-Flight AI Sessions Load ─────────────
   //
-  // Provides the request-scoped single-flight generation latch for AI session
-  // retrieval, preventing overlapping async calls from initState, reconnect
-  // loops, or fast UI rebuilds from producing concurrent Firestore fetches.
+  // Returns UiLoadOutcome<List<Map<String,dynamic>>> so the lifecycle of the
+  // single-flight latch is cleanly separated from the Firestore algebraic result.
   //
   // SINGLE-FLIGHT CONTRACT:
-  //   • If a query is already in flight for the same UID → reuse the Future.
-  //   • If a new UID arrives → bump generation, start fresh, drop stale completions.
-  //   • Stale epoch completions (from a prior generation) are dropped silently —
-  //     the caller receives authDenied() as a safe freeze sentinel.
+  //   • Same UID already in flight → reuse the existing Future (no new fetch).
+  //   • New UID → atomically bump generation, register new future, start fetch.
+  //   • Stale-epoch (generation bumped while awaiting) → UiLoadDiscarded("stale_generation").
+  //     This is a chronological routing event — NOT an auth breach.
+  //     authDenied() is reserved exclusively for Firebase permission-denied signals.
+  //   • Current-epoch completion → UiLoadApplied(result) for normal algebraic routing.
+  //
+  // DRAIN GUARD (MICRO-BUILD 463-A.2.1.3 fix):
+  //   The finally block uses a dual token check — both generation equality AND
+  //   identity of the Future object — before clearing _sessionsLoadInFlight.
+  //   This prevents a delayed UID-A future from accidentally sweeping the slot
+  //   after UID-B has already registered a new in-flight future there.
   //
   // ALGEBRAIC ROUTING (handled by the caller, ai_screen._loadChatHistory):
-  //   success(data)  → hydrate UI session list
-  //   empty()        → authoritative clear (only path allowed to clear)
-  //   authDenied()   → freeze local state, preserve existing sessions
-  //   offline()      → freeze local state, retain currently loaded sessions
-  //   failure(e)     → freeze local state, log diagnostic error
+  //   UiLoadDiscarded → silently return; no state-tree mutation, no telemetry alarm.
+  //   UiLoadApplied(success(data))  → hydrate UI session list
+  //   UiLoadApplied(empty())        → authoritative clear (ONLY valid clear path)
+  //   UiLoadApplied(authDenied())   → freeze + show auth SnackBar
+  //   UiLoadApplied(offline())      → freeze + show offline SnackBar
+  //   UiLoadApplied(failure(e))     → freeze + log runtimeType
   //
   // TELEMETRY:
-  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... result=... gen=...
-  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... STALE_EPOCH dropped
-  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... → reusing in-flight future
-  Future<FirestoreLoadResult<List<Map<String, dynamic>>>> loadAiSessionsTypedForUi(
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... result=applied gen=...
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... result=discarded reason=stale_generation
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... reuse in-flight future
+  Future<UiLoadOutcome<List<Map<String, dynamic>>>> loadAiSessionsTypedForUi(
       String uid) async {
-    // Reuse in-flight future for the same uid (single-flight latch).
+    // ── Single-flight reuse: same UID already in flight ───────────────────
     if (_sessionsLoadInFlight != null && _sessionsLoadUid == uid) {
-      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid → reusing in-flight future');
-      return _sessionsLoadInFlight!;
+      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid reuse in-flight future');
+      // Await the shared future and wrap as applied (generation is still ours).
+      FirestoreLoadResult<List<Map<String, dynamic>>> reusedResult;
+      try {
+        reusedResult = await _sessionsLoadInFlight!;
+      } catch (e) {
+        reusedResult = FirestoreLoadResult.failure(e);
+      }
+      return UiLoadApplied(reusedResult);
     }
 
-    // New uid or explicit invalidation — bump generation to invalidate
-    // any still-completing futures from the prior epoch.
-    _sessionsLoadGeneration++;
-    final int myGeneration = _sessionsLoadGeneration;
+    // ── New UID (or explicit invalidation): atomically register generation ─
+    final int generation = ++_sessionsLoadGeneration;
     _sessionsLoadUid = uid;
 
-    final future = FirestoreService.loadAiSessionsTyped(uid);
+    final future = fetchAiSessions(uid);
     _sessionsLoadInFlight = future;
 
     FirestoreLoadResult<List<Map<String, dynamic>>> result;
@@ -2607,24 +2629,33 @@ class AppProvider extends ChangeNotifier {
     } catch (e) {
       result = FirestoreLoadResult.failure(e);
     } finally {
-      // Clear the in-flight slot once this generation's future settles.
-      if (_sessionsLoadUid == uid && _sessionsLoadGeneration == myGeneration) {
+      // DRAIN GUARD: only clear the slot when BOTH conditions hold —
+      //   (1) generation matches  — we are still the current epoch
+      //   (2) identity matches    — UID-B has not already registered its own future
+      // Without the identity check, a delayed UID-A future could null out the
+      // slot that UID-B just registered, causing UID-B's second caller to
+      // miss the single-flight reuse path and spawn a duplicate Firestore fetch.
+      if (_sessionsLoadGeneration == generation &&
+          identical(_sessionsLoadInFlight, future)) {
         _sessionsLoadInFlight = null;
+        _sessionsLoadUid = null;
       }
     }
 
-    // Stale-epoch guard: if generation was bumped by a newer call while we
-    // were awaiting, this completion belongs to a superseded request — drop it.
-    if (_sessionsLoadGeneration != myGeneration) {
+    // ── Stale-epoch guard ─────────────────────────────────────────────────
+    // Generation was bumped by a newer call while we were awaiting.
+    // This is a chronological lifecycle event — return UiLoadDiscarded so the
+    // caller skips all state-tree mutations silently.
+    if (_sessionsLoadGeneration != generation) {
       debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid '
-          'STALE_EPOCH dropped: myGen=$myGeneration currentGen=$_sessionsLoadGeneration');
-      // Return authDenied() as a safe freeze sentinel — UI retains existing sessions.
-      return FirestoreLoadResult.authDenied();
+          'result=discarded reason=stale_generation '
+          'myGen=$generation currentGen=$_sessionsLoadGeneration');
+      return const UiLoadDiscarded(reason: 'stale_generation');
     }
 
     debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid '
-        'result=${result.runtimeType} gen=$myGeneration');
-    return result;
+        'result=applied gen=$generation inner=${result.runtimeType}');
+    return UiLoadApplied(result);
   }
 
   // ── Histórias Clínicas ────────────────────────────────────────────────────

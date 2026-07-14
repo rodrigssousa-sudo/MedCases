@@ -33,6 +33,12 @@
 
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
+// Production types — imported for Invariant X (MICRO-BUILD 463-A.2.1.3).
+// The latch logic, UiLoadOutcome routing, and drain guard are tested against
+// the real AppProvider and UiLoadOutcome sealed hierarchy.
+import 'package:medcases/providers/app_provider.dart';
+import 'package:medcases/services/firestore_service.dart'
+    show FirestoreLoadResult, UiLoadOutcome, UiLoadApplied, UiLoadDiscarded;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Inline stubs — mirror the production types from firestore_service.dart
@@ -336,136 +342,105 @@ class _StubHistoryProvider {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _StubConsumerController — mirrors _AiScreenState session management logic.
+// Production mock adapter for Invariant X — MICRO-BUILD 463-A.2.1.3
 //
-// Tracks exactly the state that the UI layer maintains:
-//   • sessionList  — the in-memory chat session list (mirrors _chatHistory)
-//   • loadGeneration — counter bumped each time a load starts (mirrors
-//                      _AiScreenState._sessionsLoadGeneration)
-//   • wasCleared   — set to true if sessionList was explicitly cleared
-//   • wasFrozen    — set to true if a non-empty result caused a freeze
+// _MockAppProvider subclasses the real AppProvider and overrides only the
+// fetchAiSessions() seam, so ALL latch logic (single-flight reuse, drain
+// guard, generation counter, UiLoadOutcome wrapping) runs as production code.
 //
-// routeResult() mirrors the exhaustive algebraic routing in _loadChatHistory():
-//   .success(data)  → hydrate sessionList with data
-//   .empty()        → clear sessionList (authoritative_clear — ONLY this path)
-//   .authDenied()   → freeze (preserve sessionList, set wasFrozen)
-//   .offline()      → freeze (preserve sessionList, set wasFrozen)
-//   .failure(e)     → freeze (preserve sessionList, set wasFrozen)
+// Network/database layer is replaced by a Completer-based mock that the test
+// controls completely.  No Firebase, no SharedPreferences, no widgets.
 // ─────────────────────────────────────────────────────────────────────────────
-class _StubConsumerController {
-  List<Map<String, dynamic>> sessionList;
-  int loadGeneration = 0;
-  bool wasCleared = false;
-  bool wasFrozen = false;
+class _MockAppProvider extends AppProvider {
+  /// Inject the next fetch result via this completer before calling
+  /// loadAiSessionsTypedForUi().  Each test controls the timing and value.
+  Completer<_FirestoreLoadResult<List<Map<String, dynamic>>>> pendingFetch =
+      Completer();
 
-  _StubConsumerController({List<Map<String, dynamic>>? initial})
-      : sessionList = initial ?? [];
+  /// Number of times fetchAiSessions() was actually invoked (not reused).
+  int fetchCallCount = 0;
 
-  /// Mirrors _loadChatHistory() algebraic routing.
-  /// Returns false if the stale-epoch guard caused early exit.
-  bool routeResult(
-      _FirestoreLoadResult<List<Map<String, dynamic>>> result, {
-      required int myGeneration,
-  }) {
-    // UI-side stale-epoch guard: if generation was bumped while we awaited,
-    // discard the completion without touching sessionList.
-    if (loadGeneration != myGeneration) {
-      print('[STUB][routeResult] STALE_EPOCH discarded '
-          'myGen=$myGeneration currentGen=$loadGeneration');
-      return false; // stale — no state mutation
-    }
+  @override
+  Future<FirestoreLoadResult<List<Map<String, dynamic>>>> fetchAiSessions(
+      String uid) async {
+    fetchCallCount++;
+    // Bridge: convert the stub _FirestoreLoadResult to the production
+    // FirestoreLoadResult using the same algebraic variant names.
+    final stubResult = await pendingFetch.future;
+    return _bridgeResult(stubResult);
+  }
 
-    if (result.isSuccess) {
-      sessionList = List<Map<String, dynamic>>.from(
-          result.dataOrElse(<Map<String, dynamic>>[]));
-      print('[AI_SESSIONS_LOAD] result=success action=hydrate '
-          'count=${sessionList.length} writeBack=false');
-      return true;
-    } else if (result.isEmpty) {
-      sessionList = [];
-      wasCleared = true;
-      print('[AI_SESSIONS_LOAD] result=empty action=authoritative_clear writeBack=false');
-      return true;
-    } else if (result.isAuthDenied) {
-      wasFrozen = true;
-      print('[AI_SESSIONS_LOAD] result=authDenied action=freeze writeBack=false');
-      return true;
-    } else if (result.isOffline) {
-      wasFrozen = true;
-      print('[AI_SESSIONS_LOAD] result=offline action=freeze writeBack=false');
-      return true;
+  /// Converts a test-local _FirestoreLoadResult to the production type.
+  static FirestoreLoadResult<List<Map<String, dynamic>>> _bridgeResult(
+      _FirestoreLoadResult<List<Map<String, dynamic>>> stub) {
+    if (stub.isSuccess) {
+      return FirestoreLoadResult.success(stub.dataOrElse([]));
+    } else if (stub.isEmpty) {
+      return FirestoreLoadResult.empty();
+    } else if (stub.isAuthDenied) {
+      return FirestoreLoadResult.authDenied();
+    } else if (stub.isOffline) {
+      return FirestoreLoadResult.offline();
     } else {
-      // failure
-      wasFrozen = true;
-      print('[AI_SESSIONS_LOAD] result=failure action=freeze writeBack=false '
-          'error=${result.runtimeType}');
-      return true;
+      return FirestoreLoadResult.failure(Exception('stubbed-failure'));
     }
   }
 
-  /// Starts a new load: bumps generation, returns the generation token.
-  int startLoad() {
-    loadGeneration++;
-    return loadGeneration;
+  /// Convenience: reset for a fresh fetch in the same test.
+  void resetFetch() {
+    pendingFetch = Completer();
+    fetchCallCount = 0;
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _StubAppProviderLatch — mirrors AppProvider.loadAiSessionsTypedForUi().
+// _SessionConsumer — minimal state-holder that mirrors the routing logic of
+// _AiScreenState._loadChatHistory() without any Flutter widget machinery.
 //
-// Implements the single-flight generation latch logic exactly:
-//   • Same UID with in-flight future → reuse that future
-//   • New UID → bump generation, create new future
-//   • Stale-epoch (generation mismatch after await) → return authDenied()
-//
-// Takes a factory function that produces the raw Firestore Future so tests
-// can inject any result (success, offline, authDenied, etc.) controllably.
+// Executes the SAME two-layer algebraic routing on the real UiLoadOutcome
+// returned by the production AppProvider.loadAiSessionsTypedForUi():
+//   UiLoadDiscarded                  → discarded flag, no state-tree mutation
+//   UiLoadApplied(success(data))     → hydrate sessionList
+//   UiLoadApplied(empty())           → authoritative clear (wasCleared)
+//   UiLoadApplied(authDenied()|…)    → freeze (wasFrozen), list intact
 // ─────────────────────────────────────────────────────────────────────────────
-class _StubAppProviderLatch {
-  Future<_FirestoreLoadResult<List<Map<String, dynamic>>>>? _inFlight;
-  String? _uid;
-  int _generation = 0;
+class _SessionConsumer {
+  List<Map<String, dynamic>> sessionList;
+  bool wasCleared = false;
+  bool wasFrozen = false;
+  bool wasDiscarded = false;
 
-  /// Call history for assertion.
-  final List<String> log = [];
+  _SessionConsumer({List<Map<String, dynamic>>? initial})
+      : sessionList = initial ?? [];
 
-  Future<_FirestoreLoadResult<List<Map<String, dynamic>>>> loadForUi(
-      String uid,
-      Future<_FirestoreLoadResult<List<Map<String, dynamic>>>> Function() fetchFactory,
-  ) async {
-    // Single-flight: reuse in-flight future for same uid.
-    if (_inFlight != null && _uid == uid) {
-      log.add('reuse uid=$uid');
-      return _inFlight!;
+  /// Applies [outcome] from the production AppProvider using the same routing
+  /// as _loadChatHistory().  Returns immediately without touching state when
+  /// the outcome is UiLoadDiscarded.
+  void applyOutcome(UiLoadOutcome<List<Map<String, dynamic>>> outcome) {
+    // ── Outer layer: UiLoadOutcome ──────────────────────────────────────────
+    if (outcome is UiLoadDiscarded<List<Map<String, dynamic>>>) {
+      wasDiscarded = true;
+      print('[CONSUMER] result=discarded reason=${outcome.reason}');
+      return; // NO state mutation
     }
 
-    _generation++;
-    final int myGeneration = _generation;
-    _uid = uid;
+    // ── Inner layer: FirestoreLoadResult ────────────────────────────────────
+    final result =
+        (outcome as UiLoadApplied<List<Map<String, dynamic>>>).result;
 
-    final future = fetchFactory();
-    _inFlight = future;
-
-    _FirestoreLoadResult<List<Map<String, dynamic>>> result;
-    try {
-      result = await future;
-    } catch (e) {
-      result = _FirestoreLoadResult.failure(e);
-    } finally {
-      if (_uid == uid && _generation == myGeneration) {
-        _inFlight = null;
-      }
+    if (result.isSuccess) {
+      sessionList = List<Map<String, dynamic>>.from(
+          result.dataOrElse(<Map<String, dynamic>>[]));
+      print('[CONSUMER] result=success action=hydrate count=${sessionList.length}');
+    } else if (result.isEmpty) {
+      sessionList = [];
+      wasCleared = true;
+      print('[CONSUMER] result=empty action=authoritative_clear');
+    } else {
+      // authDenied | offline | failure → freeze
+      wasFrozen = true;
+      print('[CONSUMER] result=${result.runtimeType} action=freeze');
     }
-
-    // Stale-epoch guard: if generation was bumped by a newer call,
-    // this completion is from a superseded epoch — return authDenied() sentinel.
-    if (_generation != myGeneration) {
-      log.add('STALE_EPOCH uid=$uid myGen=$myGeneration currentGen=$_generation');
-      return _FirestoreLoadResult.authDenied();
-    }
-
-    log.add('complete uid=$uid result=${result.runtimeType} gen=$myGeneration');
-    return result;
   }
 }
 
@@ -1051,284 +1026,317 @@ void main() {
     });
   });
 
-  // ── MICRO-BUILD 463-A.2.1.2 — Invariant X: Consumer Safety ──────────────
-  group('Invariant X — Consumer Safety: algebraic routing preserves session list', () {
-    // ── X-1: offline() preserves existing session list ────────────────────
-    test('X-1: offline() result does NOT clear existing session list', () {
-      // Precondition: consumer has an established session list.
+  // ── MICRO-BUILD 463-A.2.1.3 — Invariant X: Consumer Safety ──────────────
+  // All tests in this group exercise the REAL production AppProvider via
+  // _MockAppProvider (subclass with injected fetch seam) and route outcomes
+  // through _SessionConsumer (mirrors _loadChatHistory() routing logic).
+  // Zero stubs of the latch or routing logic — production code runs end-to-end.
+  group('Invariant X — Consumer Safety: production AppProvider latch + algebraic routing', () {
+
+    // ── X-1: offline() preserves existing session list via production latch ─
+    test('X-1: offline() → production UiLoadApplied(offline) → session list intact', () async {
+      final provider = _MockAppProvider();
       final existing = [
         {'id': 'session-A', 'title': 'Cardiology consult'},
         {'id': 'session-B', 'title': 'Nephrology review'},
       ];
-      final controller = _StubConsumerController(initial: List.from(existing));
+      final consumer = _SessionConsumer(initial: List.from(existing));
 
-      final gen = controller.startLoad();
-      final offlineResult =
-          _FirestoreLoadResult<List<Map<String, dynamic>>>.offline();
+      // Queue the injected result before calling loadAiSessionsTypedForUi().
+      provider.pendingFetch.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.offline());
 
-      final handled = controller.routeResult(offlineResult, myGeneration: gen);
+      final outcome = await provider.loadAiSessionsTypedForUi('user-001');
+      consumer.applyOutcome(outcome);
 
-      // offline() must FREEZE — session list untouched.
-      expect(handled, isTrue,
-          reason: 'routeResult must process the result (not discard as stale)');
-      expect(controller.wasCleared, isFalse,
+      // Production latch must wrap offline() as UiLoadApplied (not Discarded).
+      expect(outcome, isA<UiLoadApplied<List<Map<String, dynamic>>>>(),
+          reason: 'Current-epoch result must be UiLoadApplied');
+      expect((outcome as UiLoadApplied).result.isOffline, isTrue,
+          reason: 'Inner result must be offline()');
+
+      // Consumer routing: offline() → freeze, list preserved.
+      expect(consumer.wasCleared, isFalse,
           reason: 'offline() must NOT clear the session list');
-      expect(controller.wasFrozen, isTrue,
-          reason: 'offline() triggers a freeze');
-      expect(controller.sessionList, equals(existing),
+      expect(consumer.wasFrozen, isTrue,
+          reason: 'offline() triggers freeze in _SessionConsumer');
+      expect(consumer.sessionList, equals(existing),
           reason: 'offline() preserves every existing session entry');
-      expect(controller.sessionList.length, equals(2),
-          reason: 'No session was added or removed by offline()');
+      expect(consumer.wasDiscarded, isFalse,
+          reason: 'offline() is applied, not discarded');
+
+      // Exactly one real fetch was made (no reuse, no stale drop).
+      expect(provider.fetchCallCount, equals(1));
     });
 
-    // ── X-2: authDenied() preserves existing session list ────────────────
-    test('X-2: authDenied() result does NOT clear existing session list', () {
-      final existing = [
-        {'id': 'session-C', 'title': 'Hepatology case'},
-      ];
-      final controller = _StubConsumerController(initial: List.from(existing));
+    // ── X-2: authDenied() preserves existing session list ─────────────────
+    test('X-2: authDenied() → production UiLoadApplied(authDenied) → list intact', () async {
+      final provider = _MockAppProvider();
+      final existing = [{'id': 'session-C', 'title': 'Hepatology case'}];
+      final consumer = _SessionConsumer(initial: List.from(existing));
 
-      final gen = controller.startLoad();
-      final authDeniedResult =
-          _FirestoreLoadResult<List<Map<String, dynamic>>>.authDenied();
+      provider.pendingFetch.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.authDenied());
 
-      final handled = controller.routeResult(authDeniedResult, myGeneration: gen);
+      final outcome = await provider.loadAiSessionsTypedForUi('user-002');
+      consumer.applyOutcome(outcome);
 
-      // authDenied() must FREEZE — session list untouched.
-      expect(handled, isTrue);
-      expect(controller.wasCleared, isFalse,
+      expect(outcome, isA<UiLoadApplied<List<Map<String, dynamic>>>>());
+      expect((outcome as UiLoadApplied).result.isAuthDenied, isTrue,
+          reason: 'Real Firebase permission-denied → authDenied() inside Applied');
+
+      expect(consumer.wasCleared, isFalse,
           reason: 'authDenied() must NOT clear the session list');
-      expect(controller.wasFrozen, isTrue,
-          reason: 'authDenied() triggers a freeze');
-      expect(controller.sessionList, equals(existing),
+      expect(consumer.wasFrozen, isTrue,
+          reason: 'authDenied() triggers freeze');
+      expect(consumer.sessionList, equals(existing),
           reason: 'authDenied() preserves every existing session entry');
+      expect(consumer.wasDiscarded, isFalse);
+      expect(provider.fetchCallCount, equals(1));
     });
 
-    // ── X-3: only empty() clears the session list ─────────────────────────
-    test('X-3: only empty() result may physically clear an established session list', () {
+    // ── X-3: empty() is the ONLY path that clears the session list ─────────
+    test('X-3: empty() → production UiLoadApplied(empty) → authoritative clear', () async {
       final existing = [
         {'id': 'session-D', 'title': 'Oncology review'},
         {'id': 'session-E', 'title': 'Emergency consult'},
       ];
-      final controller = _StubConsumerController(initial: List.from(existing));
 
-      final gen = controller.startLoad();
-      final emptyResult =
-          _FirestoreLoadResult<List<Map<String, dynamic>>>.empty();
+      // Case A: empty() clears the list.
+      final providerA = _MockAppProvider();
+      final consumerA = _SessionConsumer(initial: List.from(existing));
+      providerA.pendingFetch.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.empty());
 
-      final handled = controller.routeResult(emptyResult, myGeneration: gen);
+      final outcomeA = await providerA.loadAiSessionsTypedForUi('user-003a');
+      consumerA.applyOutcome(outcomeA);
 
-      // empty() is the ONLY authoritative clear — sessionList must be empty.
-      expect(handled, isTrue);
-      expect(controller.wasCleared, isTrue,
+      expect(outcomeA, isA<UiLoadApplied<List<Map<String, dynamic>>>>());
+      expect((outcomeA as UiLoadApplied).result.isEmpty, isTrue);
+      expect(consumerA.wasCleared, isTrue,
           reason: 'empty() is the only authoritative clear path');
-      expect(controller.sessionList, isEmpty,
+      expect(consumerA.sessionList, isEmpty,
           reason: 'empty() must wipe the session list completely');
-      expect(controller.wasFrozen, isFalse,
-          reason: 'empty() does not freeze — it is a server-authoritative operation');
+      expect(consumerA.wasFrozen, isFalse,
+          reason: 'empty() is a server-authoritative result, not a freeze');
 
-      // Confirm: offline() on a fresh controller with the same pre-existing
-      // sessions still preserves the list (contrast with empty() above).
-      final controller2 = _StubConsumerController(initial: List.from(existing));
-      final gen2 = controller2.startLoad();
-      controller2.routeResult(
-          _FirestoreLoadResult<List<Map<String, dynamic>>>.offline(),
-          myGeneration: gen2);
-      expect(controller2.wasCleared, isFalse,
-          reason: 'offline() on same precondition must not clear the list');
-      expect(controller2.sessionList.length, equals(2),
+      // Case B: offline() on same precondition does NOT clear.
+      final providerB = _MockAppProvider();
+      final consumerB = _SessionConsumer(initial: List.from(existing));
+      providerB.pendingFetch.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.offline());
+
+      final outcomeB = await providerB.loadAiSessionsTypedForUi('user-003b');
+      consumerB.applyOutcome(outcomeB);
+
+      expect(consumerB.wasCleared, isFalse,
+          reason: 'offline() must NOT clear the list');
+      expect(consumerB.sessionList.length, equals(2),
           reason: 'offline() leaves the 2 sessions intact');
     });
 
-    // ── X-4: stale generation completion is rejected ──────────────────────
-    test('X-4: stale generation completion is discarded without touching session list', () {
-      // Scenario: two overlapping loads. The first load starts and the
-      // consumer bumps generation for the second load before the first
-      // completion arrives.  The first completion must be a no-op.
-      final existing = [
-        {'id': 'session-F', 'title': 'Paediatrics consult'},
-      ];
-      final controller = _StubConsumerController(initial: List.from(existing));
+    // ── X-4: production stale-epoch guard returns UiLoadDiscarded ─────────
+    test('X-4: stale-generation completion → real UiLoadDiscarded, no state mutation', () async {
+      // Scenario: UID-A fetch starts; while it is in flight, a UID-B call
+      // arrives, bumping the generation.  When UID-A settles, the production
+      // stale-epoch guard must return UiLoadDiscarded (not a success/freeze).
+      final provider = _MockAppProvider();
+      final existingForA = [{'id': 'session-stale', 'title': 'Stale epoch data'}];
+      final consumerA = _SessionConsumer(initial: List.from(existingForA));
 
-      // Generation 1 starts (myGeneration=1).
-      final gen1 = controller.startLoad(); // loadGeneration == 1
+      // Start UID-A — pendingFetch is not completed yet so it stays in-flight.
+      final futureA = provider.loadAiSessionsTypedForUi('user-A');
 
-      // Before gen1 result arrives, a new load starts (generation bumped to 2).
-      final gen2 = controller.startLoad(); // loadGeneration == 2
+      // Immediately register UID-B — this bumps _sessionsLoadGeneration from 1 to 2.
+      provider.pendingFetch.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.success([
+        {'id': 'user-B-session', 'title': 'UID-B result'},
+      ]));
+      // Replace the pending fetch slot for UID-B before awaiting UID-A.
+      provider.resetFetch();
+      final providerB_fetchCompleter = provider.pendingFetch;
+      final futureB = provider.loadAiSessionsTypedForUi('user-B');
 
-      // gen1's success result now arrives — but it is stale (gen1 != gen2).
-      final staleResult = _FirestoreLoadResult<List<Map<String, dynamic>>>.success([
-        {'id': 'stale-session', 'title': 'Stale data from old epoch'},
-      ]);
-      final handledStale = controller.routeResult(staleResult, myGeneration: gen1);
+      // Now resolve UID-B's fetch.
+      providerB_fetchCompleter.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.success([
+        {'id': 'user-B-session', 'title': 'UID-B fresh result'},
+      ]));
 
-      // Must be discarded — no state mutation.
-      expect(handledStale, isFalse,
-          reason: 'Stale generation result must be discarded by the epoch guard');
-      expect(controller.sessionList, equals(existing),
-          reason: 'Stale completion must not hydrate sessionList');
-      expect(controller.wasCleared, isFalse,
-          reason: 'Stale completion must not clear sessionList');
+      final outcomeA = await futureA;
+      final outcomeB = await futureB;
 
-      // Now gen2's (current generation) result arrives — must be applied.
-      final freshResult = _FirestoreLoadResult<List<Map<String, dynamic>>>.success([
-        {'id': 'session-G', 'title': 'Current epoch data'},
-      ]);
-      final handledFresh = controller.routeResult(freshResult, myGeneration: gen2);
+      // UID-A's completion → production stale-epoch guard → UiLoadDiscarded.
+      consumerA.applyOutcome(outcomeA);
+      expect(outcomeA, isA<UiLoadDiscarded<List<Map<String, dynamic>>>>(),
+          reason: 'Stale UID-A must return UiLoadDiscarded from production guard');
+      expect(consumerA.wasDiscarded, isTrue,
+          reason: '_SessionConsumer must set wasDiscarded for UiLoadDiscarded');
+      expect(consumerA.sessionList, equals(existingForA),
+          reason: 'Stale discarded result must not touch the session list');
+      expect(consumerA.wasCleared, isFalse,
+          reason: 'UiLoadDiscarded must not clear the list');
+      expect(consumerA.wasFrozen, isFalse,
+          reason: 'UiLoadDiscarded is not a freeze — it is a silent lifecycle discard');
 
-      expect(handledFresh, isTrue,
-          reason: 'Current generation result must be applied');
-      expect(controller.sessionList.length, equals(1));
-      expect(controller.sessionList.first['id'], equals('session-G'),
-          reason: 'sessionList must reflect the fresh result, not the stale one');
+      // UID-B is the current epoch — must be UiLoadApplied with success.
+      expect(outcomeB, isA<UiLoadApplied<List<Map<String, dynamic>>>>(),
+          reason: 'Current-epoch UID-B must return UiLoadApplied');
+      expect((outcomeB as UiLoadApplied).result.isSuccess, isTrue,
+          reason: 'UID-B result is success()');
     });
 
-    // ── X-5: success(data) always hydrates the session list ───────────────
-    test('X-5: success(data) hydrates session list regardless of prior state', () {
-      // Case A: hydrating into an empty session list.
-      final controllerA = _StubConsumerController(); // starts empty
-      final genA = controllerA.startLoad();
+    // ── X-5: success(data) hydrates via production latch ──────────────────
+    test('X-5: success(data) → production UiLoadApplied(success) → list hydrated', () async {
       final newSessions = [
         {'id': 'session-H', 'title': 'Rheumatology'},
         {'id': 'session-I', 'title': 'Endocrinology'},
         {'id': 'session-J', 'title': 'Pulmonology'},
       ];
-      controllerA.routeResult(
+
+      // Case A: hydrate into empty list.
+      final providerA = _MockAppProvider();
+      final consumerA = _SessionConsumer(); // starts empty
+      providerA.pendingFetch.complete(
           _FirestoreLoadResult<List<Map<String, dynamic>>>.success(
-              List.from(newSessions)),
-          myGeneration: genA);
+              List.from(newSessions)));
 
-      expect(controllerA.sessionList.length, equals(3),
-          reason: 'success() into empty list → hydrate all entries');
-      expect(controllerA.wasCleared, isFalse,
-          reason: 'success() does not set the cleared flag');
-      expect(controllerA.wasFrozen, isFalse,
-          reason: 'success() does not freeze');
+      final outcomeA = await providerA.loadAiSessionsTypedForUi('user-005a');
+      consumerA.applyOutcome(outcomeA);
 
-      // Case B: hydrating over an existing non-empty list (replace, not append).
-      final existing = [
-        {'id': 'old-session-1', 'title': 'Old data'},
-      ];
-      final controllerB = _StubConsumerController(initial: List.from(existing));
-      final genB = controllerB.startLoad();
-      controllerB.routeResult(
+      expect(consumerA.sessionList.length, equals(3),
+          reason: 'success() into empty list hydrates all 3 entries');
+      expect(consumerA.wasCleared, isFalse);
+      expect(consumerA.wasFrozen, isFalse);
+
+      // Case B: hydrate over non-empty existing list (replace, not append).
+      final providerB = _MockAppProvider();
+      final consumerB = _SessionConsumer(
+          initial: [{'id': 'old-session', 'title': 'Old data'}]);
+      providerB.pendingFetch.complete(
           _FirestoreLoadResult<List<Map<String, dynamic>>>.success(
-              List.from(newSessions)),
-          myGeneration: genB);
+              List.from(newSessions)));
 
-      expect(controllerB.sessionList.length, equals(3),
-          reason: 'success() replaces existing session list with new data');
-      expect(controllerB.sessionList.first['id'], equals('session-H'),
-          reason: 'sessionList reflects the server-fresh data after success()');
-      expect(controllerB.sessionList.any((s) => s['id'] == 'old-session-1'),
-          isFalse,
-          reason: 'Old session must be replaced by the new hydration');
+      final outcomeB = await providerB.loadAiSessionsTypedForUi('user-005b');
+      consumerB.applyOutcome(outcomeB);
+
+      expect(consumerB.sessionList.length, equals(3),
+          reason: 'success() replaces existing list with new data');
+      expect(consumerB.sessionList.any((s) => s['id'] == 'old-session'), isFalse,
+          reason: 'Old session must be replaced');
+      expect(consumerB.sessionList.first['id'], equals('session-H'));
     });
 
-    // ── X-6: failure() preserves existing session list ────────────────────
-    test('X-6: failure() result does NOT clear existing session list', () {
+    // ── X-6: failure() preserves existing session list ─────────────────────
+    test('X-6: failure() → production UiLoadApplied(failure) → list intact', () async {
       final existing = [
         {'id': 'session-K', 'title': 'Neurology consult'},
         {'id': 'session-L', 'title': 'Cardiology follow-up'},
       ];
-      final controller = _StubConsumerController(initial: List.from(existing));
+      final provider = _MockAppProvider();
+      final consumer = _SessionConsumer(initial: List.from(existing));
 
-      final gen = controller.startLoad();
-      final failureResult =
+      provider.pendingFetch.complete(
           _FirestoreLoadResult<List<Map<String, dynamic>>>.failure(
-              Exception('internal-error'));
+              Exception('internal-error')));
 
-      final handled = controller.routeResult(failureResult, myGeneration: gen);
+      final outcome = await provider.loadAiSessionsTypedForUi('user-006');
+      consumer.applyOutcome(outcome);
 
-      // failure() must FREEZE — session list untouched.
-      expect(handled, isTrue);
-      expect(controller.wasCleared, isFalse,
+      expect(outcome, isA<UiLoadApplied<List<Map<String, dynamic>>>>());
+      expect((outcome as UiLoadApplied).result.isFailure, isTrue);
+      expect(consumer.wasCleared, isFalse,
           reason: 'failure() must NOT clear the session list');
-      expect(controller.wasFrozen, isTrue,
-          reason: 'failure() triggers a freeze');
-      expect(controller.sessionList, equals(existing),
+      expect(consumer.wasFrozen, isTrue,
+          reason: 'failure() triggers freeze');
+      expect(consumer.sessionList, equals(existing),
           reason: 'failure() preserves every existing session entry');
+      expect(provider.fetchCallCount, equals(1));
     });
 
-    // ── X-7: provider latch single-flight reuse ───────────────────────────
-    test('X-7: single-flight latch reuses in-flight future for same UID', () async {
-      final latch = _StubAppProviderLatch();
-      final completer =
-          Completer<_FirestoreLoadResult<List<Map<String, dynamic>>>>();
+    // ── X-7: single-flight latch reuse on real AppProvider ────────────────
+    test('X-7: real AppProvider single-flight latch reuses in-flight Future for same UID', () async {
+      final provider = _MockAppProvider();
 
-      // Launch two concurrent calls for the same uid — second must reuse the
-      // in-flight future rather than spawning a new Firestore request.
-      final callCount = <int>[0];
-      Future<_FirestoreLoadResult<List<Map<String, dynamic>>>> factory() {
-        callCount[0]++;
-        return completer.future;
-      }
+      // Two concurrent calls for the same UID.
+      // fetchAiSessions() must be invoked only ONCE — second call reuses _inFlight.
+      final f1 = provider.loadAiSessionsTypedForUi('user-007');
+      final f2 = provider.loadAiSessionsTypedForUi('user-007'); // same UID
 
-      final f1 = latch.loadForUi('user-x', factory);
-      final f2 = latch.loadForUi('user-x', factory); // same uid → reuse
-
-      // Complete the shared future.
-      completer.complete(_FirestoreLoadResult.success([
+      // Complete the single shared fetch.
+      provider.pendingFetch.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.success([
         {'id': 'shared-session', 'title': 'Shared result'},
       ]));
 
-      final r1 = await f1;
-      final r2 = await f2;
+      final o1 = await f1;
+      final o2 = await f2;
 
-      expect(callCount[0], equals(1),
-          reason: 'Factory must only be called once — second call reuses in-flight future');
-      expect(r1.isSuccess, isTrue, reason: 'First caller gets the success result');
-      expect(r2.isSuccess, isTrue, reason: 'Second caller also gets the success result');
-      expect(latch.log.any((e) => e.startsWith('reuse')), isTrue,
-          reason: 'Latch log must record the reuse event');
+      // fetchAiSessions() called exactly once — latch prevented the second dispatch.
+      expect(provider.fetchCallCount, equals(1),
+          reason: 'fetchAiSessions() must only be dispatched once for same UID');
+
+      // Both callers receive a valid UiLoadApplied with the same success result.
+      expect(o1, isA<UiLoadApplied<List<Map<String, dynamic>>>>(),
+          reason: 'First caller gets UiLoadApplied');
+      expect(o2, isA<UiLoadApplied<List<Map<String, dynamic>>>>(),
+          reason: 'Second (reused) caller also gets UiLoadApplied');
+      final applied1 = o1 as UiLoadApplied<List<Map<String, dynamic>>>;
+      final applied2 = o2 as UiLoadApplied<List<Map<String, dynamic>>>;
+      expect(applied1.result.isSuccess, isTrue);
+      expect(applied2.result.isSuccess, isTrue);
+      expect(applied1.result.dataOrElse([]).first['id'], equals('shared-session'));
+      expect(applied2.result.dataOrElse([]).first['id'], equals('shared-session'));
     });
 
-    // ── X-8: stale-epoch guard in provider latch ──────────────────────────
-    test('X-8: stale-epoch guard returns authDenied() when a newer UID takes ownership', () async {
-      final latch = _StubAppProviderLatch();
+    // ── X-8: stale-epoch guard is distinct from auth error ────────────────
+    // The drain guard (identical() + generation check) ensures the correct
+    // behaviour: UiLoadDiscarded.reason == 'stale_generation', NOT authDenied().
+    // This is the core fix of MICRO-BUILD 463-A.2.1.3:
+    // stale generation is a silent lifecycle event, not an auth alarm.
+    test('X-8: UiLoadDiscarded.reason is stale_generation, never authDenied variant', () async {
+      // UID-A starts in-flight.
+      final provider = _MockAppProvider();
+      final futureA = provider.loadAiSessionsTypedForUi('user-A');
 
-      // Simulate UID-A request in flight.
-      final completerA =
-          Completer<_FirestoreLoadResult<List<Map<String, dynamic>>>>();
-
-      // Simulate UID-B request, which will bump the generation before UID-A resolves.
-      final completerB =
-          Completer<_FirestoreLoadResult<List<Map<String, dynamic>>>>();
-
-      // Start UID-A.
-      final futureA = latch.loadForUi('user-A', () => completerA.future);
-
-      // Start UID-B — this bumps the generation, making UID-A's future stale.
-      final futureB = latch.loadForUi('user-B', () => completerB.future);
-
-      // Complete UID-A's underlying fetch (stale epoch).
-      completerA.complete(_FirestoreLoadResult.success([
-        {'id': 'user-A-session', 'title': 'UID-A result'},
+      // Before UID-A resolves, UID-B bumps the generation.
+      provider.pendingFetch.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.success([
+        {'id': 'A-session'},
+      ]));
+      provider.resetFetch();
+      final completerB = provider.pendingFetch;
+      final futureB = provider.loadAiSessionsTypedForUi('user-B');
+      completerB.complete(
+          _FirestoreLoadResult<List<Map<String, dynamic>>>.success([
+        {'id': 'B-session'},
       ]));
 
-      // Complete UID-B's underlying fetch (current epoch).
-      completerB.complete(_FirestoreLoadResult.success([
-        {'id': 'user-B-session', 'title': 'UID-B result'},
-      ]));
+      final oA = await futureA;
+      final oB = await futureB;
 
-      final rA = await futureA;
-      final rB = await futureB;
+      // ── Core invariant: stale-epoch → UiLoadDiscarded, not authDenied ──
+      expect(oA, isA<UiLoadDiscarded<List<Map<String, dynamic>>>>(),
+          reason: 'Stale UID-A must return UiLoadDiscarded (chronological lifecycle)');
+      // The reason tag must be 'stale_generation' — NOT anything auth-related.
+      final discarded = oA as UiLoadDiscarded<List<Map<String, dynamic>>>;
+      expect(discarded.reason, equals('stale_generation'),
+          reason: 'Stale epoch reason must be stale_generation, not an auth code');
 
-      // UID-A's result arrived after the generation was bumped by UID-B.
-      // The stale-epoch guard must return authDenied() as the safe sentinel.
-      expect(rA.isAuthDenied, isTrue,
-          reason: 'Stale-epoch UID-A completion must be converted to authDenied()');
-      expect(rA.isSuccess, isFalse,
-          reason: 'Stale result must NOT propagate success data to caller');
+      // UID-B (current epoch) must be a clean UiLoadApplied success.
+      expect(oB, isA<UiLoadApplied<List<Map<String, dynamic>>>>(),
+          reason: 'Current-epoch UID-B is UiLoadApplied');
+      final appliedB = oB as UiLoadApplied<List<Map<String, dynamic>>>;
+      expect(appliedB.result.isSuccess, isTrue,
+          reason: 'UID-B result must be success()');
+      expect(appliedB.result.dataOrElse([]).first['id'], equals('B-session'));
 
-      // UID-B's result is the current epoch — must come through correctly.
-      expect(rB.isSuccess, isTrue,
-          reason: 'Current-epoch UID-B completion must succeed');
-      expect(rB.dataOrElse([]).first['id'], equals('user-B-session'));
-
-      // Log must record the stale epoch event.
-      expect(latch.log.any((e) => e.contains('STALE_EPOCH')), isTrue,
-          reason: 'Latch must log the stale-epoch guard activation');
+      // Authorship: stale completion must NOT surface as authDenied() anywhere.
+      // If someone accidentally calls .result on the discarded outcome, the type
+      // system should prevent it — UiLoadDiscarded has no .result field.
+      // Verify via runtimeType that the discarded outcome is not UiLoadApplied.
+      expect(oA is UiLoadApplied, isFalse,
+          reason: 'Stale epoch must never be wrapped in UiLoadApplied');
     });
   });
 }

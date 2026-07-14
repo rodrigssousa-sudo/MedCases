@@ -1261,28 +1261,46 @@ class _AiScreenState extends State<AiScreen> {
       // BUILD 430 PASSO 1: marca o UID para evitar reload duplicado pós-OAuth.
       if (uid != null && uid.isNotEmpty) _historyLoadedForUid = uid;
 
-      // ── MICRO-BUILD 463-A.2.1.2: Typed session load with algebraic routing ──
-      // Routes through AppProvider.loadAiSessionsTypedForUi() which provides:
-      //   • Single-flight generation latch (no concurrent Firestore fetches)
-      //   • Stale-epoch detection (generation counter drops old completions)
-      // Explicit algebraic variant routing — NO dataOrElse([]) semantic collapse.
+      // ── MICRO-BUILD 463-A.2.1.3: Two-layer algebraic routing ────────────────
+      // Outer layer: UiLoadOutcome — separates latch lifecycle from content.
+      //   UiLoadDiscarded → silent return; NO state-tree mutation.
+      //   UiLoadApplied   → inner FirestoreLoadResult routing.
+      // Inner layer: FirestoreLoadResult — exhaustive content routing.
+      //   success(data)  → hydrate _chatHistory
+      //   empty()        → authoritative clear (ONLY valid clear path)
+      //   authDenied()   → freeze + auth SnackBar  (real Firebase permission-denied)
+      //   offline()      → freeze + offline SnackBar
+      //   failure(e)     → freeze + log
+      // NO dataOrElse([]) semantic collapse anywhere in this block.
       if (uid != null && uid.isNotEmpty) {
-        // Bump the UI-side generation counter so any prior in-flight completion
-        // arriving after this point can be detected and discarded as stale.
+        // UI-side generation counter: lets the screen detect its own stale
+        // completions independently of the provider-side latch.
         _sessionsLoadGeneration++;
         final int myGeneration = _sessionsLoadGeneration;
 
-        final typedResult = await p.loadAiSessionsTypedForUi(uid);
+        final outcome = await p.loadAiSessionsTypedForUi(uid);
 
-        // Stale-epoch guard: a newer _loadChatHistory() call superseded us —
-        // discard this completion entirely without touching _chatHistory.
+        // UI-side stale-epoch guard: if this widget was rebuilt and a new
+        // _loadChatHistory() started while we awaited, discard silently.
         if (!mounted || _sessionsLoadGeneration != myGeneration) {
           debugPrint('[AI_SESSIONS_LOAD] uid=$uid STALE_EPOCH discarded '
               'myGen=$myGeneration currentGen=$_sessionsLoadGeneration');
           return;
         }
 
-        // ── Algebraic variant routing ───────────────────────────────────────
+        // ── Outer: UiLoadOutcome routing ────────────────────────────────────
+        if (outcome is UiLoadDiscarded<List<Map<String, dynamic>>>) {
+          // Provider-side stale generation: a newer UID took ownership while
+          // we were awaiting.  No state-tree mutation of any kind.
+          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=discarded '
+              'reason=${outcome.reason}');
+          return;
+        }
+
+        // outcome is UiLoadApplied — extract the inner FirestoreLoadResult.
+        final typedResult = (outcome as UiLoadApplied<List<Map<String, dynamic>>>).result;
+
+        // ── Inner: FirestoreLoadResult algebraic routing ─────────────────────
         if (typedResult.isSuccess) {
           // SUCCESS: Hydrate the UI session list from authoritative server data.
           // BUILD 274: de-dup by ID — Firestore may return stale docs written
@@ -1328,8 +1346,8 @@ class _AiScreenState extends State<AiScreen> {
           return;
 
         } else if (typedResult.isAuthDenied) {
-          // AUTH_DENIED: Freeze local state. Preserve existing sessions.
-          // _chatHistory is NOT touched — existing data remains in-memory.
+          // AUTH_DENIED: Firebase returned permission-denied (real auth breach).
+          // Freeze local state — _chatHistory is NOT touched.
           debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=authDenied '
               'action=freeze writeBack=false');
           if (mounted) {
@@ -1344,7 +1362,7 @@ class _AiScreenState extends State<AiScreen> {
           return;
 
         } else if (typedResult.isOffline) {
-          // OFFLINE: Freeze local state. Retain currently loaded sessions.
+          // OFFLINE: No connectivity. Retain currently loaded sessions.
           // _chatHistory is NOT touched — existing data remains in-memory.
           debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=offline '
               'action=freeze writeBack=false');
@@ -1360,8 +1378,7 @@ class _AiScreenState extends State<AiScreen> {
           return;
 
         } else {
-          // FAILURE: Freeze local state. Preserve existing sessions.
-          // Log the diagnostic error; do not surface raw errors to the user.
+          // FAILURE: Unexpected error. Freeze local state; log for diagnostics.
           debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=failure '
               'action=freeze writeBack=false '
               'error=${typedResult.runtimeType}');
