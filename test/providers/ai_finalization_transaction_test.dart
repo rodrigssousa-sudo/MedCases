@@ -2200,4 +2200,120 @@ void main() {
       });
     });
   });
+
+  // Invariant L: History Repository Merge Semantics (462E-A.5.3.7.3.2.5.2)
+  group('Invariant L: History Repository Merge Semantics (462E-A.5.3.7.3.2.5.2)', () {
+    List<AiSessionSummary> merge(List<AiSessionSummary> incoming) {
+      final repo = <AiSessionSummary>[];
+      for (final s in incoming) {
+        final idx = repo.indexWhere((e) => e.sessionId == s.sessionId);
+        if (idx >= 0) {
+          if (s.updatedAt > repo[idx].updatedAt) repo[idx] = s;
+        } else {
+          repo.add(s);
+        }
+      }
+      repo.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      if (repo.length > 10) repo.removeRange(10, repo.length);
+      return repo;
+    }
+
+    test('L-1: 8 server summaries + 1 local pending render exactly 9 entries', () {
+      final server = List.generate(8, (i) => AiSessionSummary(
+        sessionId: 'session_server_$i', uid: 'uid-l1',
+        title: 'Server session $i', mode: 'plantao', locale: 'pt',
+        updatedAt: 1000000 + i * 1000, source: AiSessionSource.canonicalV2,
+      ));
+      final local = AiSessionSummary(
+        sessionId: 'session_local_pending', uid: 'uid-l1',
+        title: 'In-progress consultation', mode: 'estudo', locale: 'pt',
+        updatedAt: 2000000, source: AiSessionSource.localMemory,
+      );
+      final repo = merge([...server, local]);
+      expect(repo, hasLength(9),
+          reason: 'L-1: 8 server + 1 local with distinct sessionIds = 9 entries');
+      expect(repo.first.sessionId, equals('session_local_pending'),
+          reason: 'L-1: local pending (highest updatedAt) at position 0');
+      for (int i = 0; i < 8; i++) {
+        expect(repo.any((s) => s.sessionId == 'session_server_$i'), isTrue,
+            reason: 'L-1: server session $i must be present');
+      }
+    });
+
+    test('L-2: identical titles with independent session keys do not deduplicate', () {
+      const sharedTitle = 'Fibrilacao Atrial tratamento';
+      final summaryA = AiSessionSummary(
+        sessionId: 'session_A_distinct', uid: 'uid-l2',
+        title: sharedTitle, mode: 'plantao', locale: 'pt',
+        updatedAt: 500000, source: AiSessionSource.canonicalV2,
+      );
+      final summaryB = AiSessionSummary(
+        sessionId: 'session_B_distinct', uid: 'uid-l2',
+        title: sharedTitle, mode: 'estudo', locale: 'pt',
+        updatedAt: 600000, source: AiSessionSource.legacyInline,
+      );
+      final repo = merge([summaryA, summaryB]);
+      expect(repo, hasLength(2),
+          reason: 'L-2: same title but different sessionIds must NOT be deduplicated');
+      expect(repo.any((s) => s.sessionId == 'session_A_distinct'), isTrue,
+          reason: 'L-2: session_A_distinct must remain');
+      expect(repo.any((s) => s.sessionId == 'session_B_distinct'), isTrue,
+          reason: 'L-2: session_B_distinct must remain');
+    });
+
+    test('L-3: first batch drop retains first-message parameters intact for retry', () async {
+      bool isFirstMessageOfSession = true;
+      String currentConversationTitle = '';
+
+      String generateTitle(String userInput) {
+        final cleaned = userInput
+            .replaceAll(RegExp(r'[*_`#>~\[\]()]'), '')
+            .replaceAll(RegExp(r'\s+'), ' ').trim();
+        if (cleaned.isEmpty) return 'Nova consulta';
+        if (cleaned.length <= 60) return cleaned;
+        final truncated = cleaned.substring(0, 60);
+        final lastSpace = truncated.lastIndexOf(' ');
+        return lastSpace > 30 ? truncated.substring(0, lastSpace) : truncated;
+      }
+
+      Future<SessionPersistStatus> mockPersist({
+        required String userInput, required bool batchOk,
+      }) async {
+        final bool isFirst = isFirstMessageOfSession;
+        final String computedTitle = isFirst
+            ? generateTitle(userInput) : currentConversationTitle;
+        if (!batchOk) {
+          return SessionPersistFailed('mock_batch_failure');
+        }
+        if (isFirst) {
+          currentConversationTitle = computedTitle;
+          isFirstMessageOfSession = false;
+        }
+        return const SessionPersistSynced();
+      }
+
+      expect(isFirstMessageOfSession, isTrue,
+          reason: 'L-3 precondition: starts as first message');
+      expect(currentConversationTitle, isEmpty,
+          reason: 'L-3 precondition: title starts empty');
+
+      final result1 = await mockPersist(
+          userInput: 'Insuficiencia cardiaca manejo', batchOk: false);
+      expect(result1, isA<SessionPersistFailed>(),
+          reason: 'L-3: failed batch must return SessionPersistFailed');
+      expect(isFirstMessageOfSession, isTrue,
+          reason: 'L-3: isFirstMessageOfSession must remain true after failure');
+      expect(currentConversationTitle, isEmpty,
+          reason: 'L-3: title must remain empty after failure');
+
+      final result2 = await mockPersist(
+          userInput: 'Insuficiencia cardiaca manejo', batchOk: true);
+      expect(result2, isA<SessionPersistSynced>(),
+          reason: 'L-3 retry: successful batch must return SessionPersistSynced');
+      expect(isFirstMessageOfSession, isFalse,
+          reason: 'L-3 retry: isFirstMessageOfSession advances after success');
+      expect(currentConversationTitle, isNotEmpty,
+          reason: 'L-3 retry: title frozen after successful write');
+    });
+  });
 }

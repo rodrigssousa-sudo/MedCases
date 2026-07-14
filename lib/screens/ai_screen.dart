@@ -19,6 +19,8 @@ import '../providers/ai_chat_provider.dart'; // BUILD 326: granular rebuild dura
 
 import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
+import '../services/ai/ai_finalization_transaction.dart'
+    show AiSessionSummary, AiSessionSource;
 import '../services/activity_service.dart';
 import '../services/ai_next_action_engine.dart'; // Build 233: Smart Next Action Engine
 import 'package:url_launcher/url_launcher.dart'; // BUILD 310: WhatsApp share Ambassador
@@ -1467,6 +1469,21 @@ class _AiScreenState extends State<AiScreen> {
       return;
     }
 
+    // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 5]: Dual-write termination ─
+    // If the active conversation is a canonical v2 session (schemaVersion == 2),
+    // skip the legacy saveAiSession() write entirely. Canonical sessions are
+    // persisted atomically via persistAiExchangeOnce() → batchWriteAiExchange()
+    // and must NEVER be duplicated into ai_chat_history.
+    // The provider's stable _currentConversationSessionId is the v2 session anchor.
+    final String providerSessionId = p.currentConversationSessionId;
+    if (providerSessionId.isNotEmpty) {
+      // This screen's current conversation is owned by the canonical v2 pipeline.
+      debugPrint('[LEGACY_WRITE][SKIPPED] '
+          'reason=canonical_session_owned '
+          'requestId=${p.currentRequestId}');
+      return;
+    }
+
     // Filtra só mensagens reais (exclui saudação inicial)
     final userMsgs = _messages.where((m) => m.role == 'user').toList();
     if (userMsgs.isEmpty) return;
@@ -1553,29 +1570,42 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   /// Abre o bottom sheet de histórico de chats.
+  // MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 3]:
+  // No longer passes 'sessions' as a constructor parameter — the sheet binds
+  // reactively to p.visibleAiSessionSummaries via Selector inside its builder.
   void _openHistory(AppProvider p) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ChatHistorySheet(
-        sessions: _chatHistory,
-        dark: p.darkMode,
-        lang: p.lang,
-        onRestore: (session) {
-          Navigator.pop(context);
-          _restoreSession(session, p);
-        },
-        onDelete: (sessionId) async {
-          setState(() => _chatHistory.removeWhere((s) => s.id == sessionId));
-          // Remove do Firestore
-          // BUILD 338: usa UID resiliente
-          final uid = _resolveUid(p);
-          if (uid != null && uid.isNotEmpty) {
-            FirestoreService.deleteAiSession(uid, sessionId).catchError((_) {});
-          }
-          // Atualiza cache local
-          _persistHistoryLocal(p);
+      builder: (modalCtx) => Selector<AppProvider, List<AiSessionSummary>>(
+        selector: (_, prov) => prov.visibleAiSessionSummaries,
+        builder: (_, sessions, __) {
+          // Emit reactive render trace (safe — no user content in metrics).
+          debugPrint('[HISTORY_MODAL][RENDER] '
+              'visibleCount=${sessions.length} '
+              'topSource=${sessions.isEmpty ? "none" : sessions.first.source.name} '
+              'topSessionIdHash=${sessions.isEmpty ? "none" : sessions.first.sessionId.hashCode} '
+              'topTitleLen=${sessions.isEmpty ? 0 : sessions.first.title.length}');
+          return _ChatHistorySheet(
+            dark: p.darkMode,
+            lang: p.lang,
+            onRestoreSummary: (summary) {
+              Navigator.pop(modalCtx);
+              _restoreFromSummary(summary, p);
+            },
+            onDelete: (sessionId) async {
+              // Remove from legacy chat history if present.
+              setState(() => _chatHistory.removeWhere((s) => s.id == sessionId));
+              // Remove do Firestore (legacy path)
+              final uid = _resolveUid(p);
+              if (uid != null && uid.isNotEmpty) {
+                FirestoreService.deleteAiSession(uid, sessionId).catchError((_) {});
+              }
+              _persistHistoryLocal(p);
+            },
+            sessions: sessions,
+          );
         },
       ),
     );
@@ -1620,6 +1650,163 @@ class _AiScreenState extends State<AiScreen> {
     // MarkdownBody diretamente. Sem cache de pipeline a pré-popular na restauração.
 
     _scrollDown(force: true);
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 4]: Source-aware restore ─────
+  // Restores a session selected from the history modal timeline.
+  // Strategy is determined by AiSessionSummary.source:
+  //   legacyInline  → messages are embedded; repopulate directly.
+  //   canonicalV2   → fire async exchange loader, expand to chat bubbles.
+  //   localMemory   → treat as canonicalV2 if sessionId matches; fallback to empty.
+  void _restoreFromSummary(AiSessionSummary summary, AppProvider p) {
+    debugPrint('[SESSION_RESTORE][START] '
+        'source=${summary.source.name} '
+        'sessionIdHash=${summary.sessionId.hashCode}');
+
+    p.cancelAiStream();
+    _streamingTextNotifier?.dispose();
+    _streamingTextNotifier = null;
+    _loggedSafeCardIds.clear();
+    _loggedEvidenceIds.clear();
+    _loggedExtToolKeys.clear();
+
+    switch (summary.source) {
+      case AiSessionSource.legacyInline:
+        // ── Legacy inline path: messages embedded in the summary ─────────────
+        final inlineMsgs = summary.legacyMessages ?? [];
+        final chatMsgs = inlineMsgs.map((m) {
+          final role = (m['role'] as String?) ?? 'user';
+          final text = (m['text'] as String?) ?? (m['content'] as String?) ?? '';
+          return _ChatMsg(role: role, text: text);
+        }).toList();
+
+        setState(() {
+          _messages.clear();
+          _messages.addAll(chatMsgs.isNotEmpty ? chatMsgs : []);
+          _lastAiIndex   = -1;
+          _greetingDone  = true;
+          _userScrolledUp = false;
+          _restoredSessionId = summary.sessionId;
+          _activeSessionId   = null;
+          _hasNewMessageAfterRestore = false;
+          _thinking   = false;
+          _isStreaming = false;
+          _sendGuard  = false;
+        });
+
+        p.rebuildAiHistoryFromMessages(chatMsgs
+            .where((m) => m.role == 'user' || m.role == 'ai')
+            .map((m) => {'role': m.role == 'ai' ? 'assistant' : 'user',
+                          'content': m.text})
+            .toList());
+
+        debugPrint('[SESSION_RESTORE][COMPLETED] '
+            'source=legacyInline '
+            'messageCount=${chatMsgs.length}');
+        _scrollDown(force: true);
+
+      case AiSessionSource.canonicalV2:
+      case AiSessionSource.localMemory:
+        // ── Canonical v2 path: load exchanges from Firestore sub-collection ───
+        setState(() {
+          _messages.clear();
+          _lastAiIndex   = -1;
+          _greetingDone  = true;
+          _userScrolledUp = false;
+          _restoredSessionId = summary.sessionId;
+          _activeSessionId   = null;
+          _hasNewMessageAfterRestore = false;
+          _thinking   = true;   // show loading indicator during fetch
+          _isStreaming = false;
+          _sendGuard  = false;
+        });
+
+        final uid = _resolveUid(p) ?? '';
+        if (uid.isEmpty) {
+          // No UID — abort restore, retain empty state.
+          if (mounted) setState(() { _thinking = false; });
+          return;
+        }
+
+        // Fire background async exchange loader — NEVER await in a lifecycle cb.
+        () async {
+          try {
+            final result = await FirestoreService.loadAiSessionExchangesTyped(
+                uid, summary.sessionId);
+
+            if (result.isSuccess) {
+              final exchanges = result.dataOrElse([]);
+              debugPrint('[SESSION_EXCHANGES_LOAD][SUCCESS] '
+                  'sessionIdHash=${summary.sessionId.hashCode} '
+                  'exchangeCount=${exchanges.length} '
+                  'messageCount=${exchanges.length * 2}');
+
+              // Expand each exchange into two chat bubbles (user + assistant).
+              final chatMsgs = <_ChatMsg>[];
+              for (final ex in exchanges) {
+                final userInput = (ex['userInput'] as String?) ?? '';
+                final aiOutput  = (ex['assistantOutput'] as String?) ?? '';
+                if (userInput.isNotEmpty) {
+                  chatMsgs.add(_ChatMsg(role: 'user', text: userInput));
+                }
+                if (aiOutput.isNotEmpty) {
+                  chatMsgs.add(_ChatMsg(role: 'ai', text: aiOutput));
+                }
+              }
+
+              if (!mounted) return;
+              setState(() {
+                _messages.clear();
+                _messages.addAll(chatMsgs);
+                _thinking = false;
+              });
+
+              p.rebuildAiHistoryFromMessages(chatMsgs
+                  .where((m) => m.role == 'user' || m.role == 'ai')
+                  .map((m) => {'role': m.role == 'ai' ? 'assistant' : 'user',
+                                'content': m.text})
+                  .toList());
+
+              debugPrint('[SESSION_RESTORE][COMPLETED] '
+                  'source=${summary.source.name} '
+                  'messageCount=${chatMsgs.length}');
+              _scrollDown(force: true);
+            } else if (result.isEmpty) {
+              // Session exists but no exchanges yet — safe empty state.
+              if (!mounted) return;
+              setState(() { _thinking = false; });
+              debugPrint('[SESSION_RESTORE][COMPLETED] '
+                  'source=${summary.source.name} messageCount=0');
+            } else if (result.isAuthDenied) {
+              // Permission denied — freeze current layout, abort restore.
+              if (!mounted) return;
+              setState(() {
+                _thinking = false;
+                _restoredSessionId = null;  // clear the restore anchor
+              });
+              debugPrint('[SESSION_RESTORE][ABORTED] reason=auth_denied '
+                  'sessionIdHash=${summary.sessionId.hashCode}');
+            } else if (result.isOffline) {
+              // Network error — freeze current layout, do not render empty.
+              if (!mounted) return;
+              setState(() { _thinking = false; });
+              debugPrint('[SESSION_RESTORE][ABORTED] reason=offline '
+                  'sessionIdHash=${summary.sessionId.hashCode}');
+            } else {
+              // Unrecoverable error — freeze current layout, never empty.
+              if (!mounted) return;
+              setState(() { _thinking = false; });
+              debugPrint('[SESSION_RESTORE][ABORTED] reason=failure '
+                  'sessionIdHash=${summary.sessionId.hashCode}');
+            }
+          } catch (err) {
+            if (!mounted) return;
+            setState(() { _thinking = false; });
+            debugPrint('[SESSION_RESTORE][ABORTED] reason=exception '
+                'sessionIdHash=${summary.sessionId.hashCode} err=$err');
+          }
+        }();
+    }
   }
 
   /// Desce para o fundo do chat.
@@ -8756,18 +8943,23 @@ class _InfoRow extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // HISTÓRICO DE CHATS — bottom sheet com até 10 sessões salvas
 // ─────────────────────────────────────────────────────────────────────────────
+// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 3]:
+// _ChatHistorySheet no longer holds sessions as a constructor parameter.
+// Instead, sessions are injected by the Selector builder in _openHistory()
+// and passed as a typed List<AiSessionSummary> — pure data, reactive.
 class _ChatHistorySheet extends StatelessWidget {
-  final List<_ChatSession> sessions;
+  // sessions is passed from the Selector builder — no manual param tracking.
+  final List<AiSessionSummary> sessions;
   final bool dark;
   final String lang;
-  final void Function(_ChatSession) onRestore;
+  final void Function(AiSessionSummary) onRestoreSummary;
   final void Function(String) onDelete;
 
   const _ChatHistorySheet({
     required this.sessions,
     required this.dark,
     required this.lang,
-    required this.onRestore,
+    required this.onRestoreSummary,
     required this.onDelete,
   });
 
@@ -8858,7 +9050,7 @@ class _ChatHistorySheet extends StatelessWidget {
         // Divisor
         Container(height: 1, color: divC, margin: const EdgeInsets.only(bottom: 4)),
 
-        // Lista de sessões
+        // Lista de sessões — driven by Selector<AppProvider, List<AiSessionSummary>>
         sessions.isEmpty
             ? Padding(
                 padding: const EdgeInsets.all(40),
@@ -8884,9 +9076,16 @@ class _ChatHistorySheet extends StatelessWidget {
                     Container(height: 1, color: divC, margin: const EdgeInsets.symmetric(horizontal: 18)),
                   itemBuilder: (context, i) {
                     final s = sessions[i];
-                    final userCount = s.messages.where((m) => m.role == 'user').length;
+                    // Source badge colour: green=v2, amber=legacy, grey=local.
+                    final sourceDot = s.source == AiSessionSource.canonicalV2
+                        ? const Color(0xFF10B981)
+                        : s.source == AiSessionSource.legacyInline
+                            ? const Color(0xFFF59E0B)
+                            : Colors.grey;
+                    // Date from millisecond epoch.
+                    final updatedDt = DateTime.fromMillisecondsSinceEpoch(s.updatedAt);
                     return Dismissible(
-                      key: ValueKey(s.id),
+                      key: ValueKey(s.sessionId),
                       direction: DismissDirection.endToStart,
                       background: Container(
                         alignment: Alignment.centerRight,
@@ -8895,25 +9094,25 @@ class _ChatHistorySheet extends StatelessWidget {
                         child: const Icon(Icons.delete_outline_rounded,
                           color: Color(0xFFCC2222), size: 22),
                       ),
-                      onDismissed: (_) => onDelete(s.id),
+                      onDismissed: (_) => onDelete(s.sessionId),
                       child: InkWell(
-                        onTap: () => onRestore(s),
+                        onTap: () => onRestoreSummary(s),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                           child: Row(children: [
-                            // Ícone de sessão
+                            // Session icon with source-coloured index badge.
                             Container(
                               width: 38, height: 38,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xFF10B981).withOpacity(0.1),
+                                color: sourceDot.withOpacity(0.1),
                               ),
                               child: Center(
                                 child: Text(
                                   '${i + 1}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w800,
-                                    color: Color(0xFF10B981)),
+                                    color: sourceDot),
                                 ),
                               ),
                             ),
@@ -8922,7 +9121,7 @@ class _ChatHistorySheet extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  s.summary.isNotEmpty ? s.summary : '(sem resumo)',
+                                  s.title.isNotEmpty ? s.title : '(sem resumo)',
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -8931,18 +9130,22 @@ class _ChatHistorySheet extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 3),
                                 Row(children: [
-                                  Icon(Icons.chat_bubble_outline_rounded,
-                                    size: 10, color: textS),
+                                  Icon(Icons.cloud_done_outlined,
+                                    size: 10, color: sourceDot),
                                   const SizedBox(width: 4),
                                   Text(
-                                    '$userCount ${lang == 'es' ? 'preguntas' : 'perguntas'}',
+                                    s.source == AiSessionSource.canonicalV2
+                                        ? 'v2'
+                                        : s.source == AiSessionSource.legacyInline
+                                            ? 'legacy'
+                                            : 'local',
                                     style: TextStyle(fontSize: 10, color: textS)),
                                   const SizedBox(width: 10),
                                   Icon(Icons.access_time_rounded,
                                     size: 10, color: textS),
                                   const SizedBox(width: 4),
                                   Text(
-                                    _formatDate(s.savedAt),
+                                    _formatDate(updatedDt),
                                     style: TextStyle(fontSize: 10, color: textS)),
                                 ]),
                               ],

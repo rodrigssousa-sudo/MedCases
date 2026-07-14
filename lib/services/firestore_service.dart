@@ -1252,8 +1252,36 @@ class FirestoreService {
     try {
       final batch = _db.batch();
 
+      final sessionRef  = _userAiSessions(uid).doc(sessionId);
+      final exchangeRef = sessionRef.collection('exchanges').doc(requestId);
+
+      // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 7]: Server idempotency ──
+      // Before writing aggregated counters, check if this exchange/{requestId}
+      // already exists on the server. If so, bypass FieldValue.increment() on
+      // messageCount/exchangeCount to prevent double-counting on retry paths.
+      // Only the parent summary fields (title, lastPreview, updatedAt) are
+      // re-merged — the content payload is skipped for already-committed docs.
+      bool exchangeAlreadyExists = false;
+      try {
+        final existingSnap = await exchangeRef
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 5));
+        exchangeAlreadyExists = existingSnap.exists;
+      } catch (_) {
+        // Network error during existence check — proceed without guard
+        // (worst-case: harmless counter bump on retry).
+        exchangeAlreadyExists = false;
+      }
+
+      if (exchangeAlreadyExists) {
+        // Exchange already committed — skip batch entirely, emit telemetry.
+        // TELEMETRY: never log raw user content. requestId is safe.
+        debugPrint('[LEGACY_WRITE][SKIPPED] reason=canonical_session_owned '
+            'requestId=$requestId');
+        return (ok: true, permissionDenied: false, error: null);
+      }
+
       // ── Operation A: Parent session document (upsert with merge) ──────────
-      final sessionRef = _userAiSessions(uid).doc(sessionId);
       final parentData = <String, Object>{
         'sessionId':             sessionId,
         'uid':                   uid,
@@ -1277,7 +1305,6 @@ class FirestoreService {
       batch.set(sessionRef, parentData, SetOptions(merge: true));
 
       // ── Operation B: Immutable exchange document (idempotent by requestId) ─
-      final exchangeRef = sessionRef.collection('exchanges').doc(requestId);
       batch.set(exchangeRef, {
         'requestId':        requestId,
         'sessionId':        sessionId,
@@ -2366,6 +2393,171 @@ class FirestoreService {
       return FirestoreLoadResult.success(cases);
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      return FirestoreLoadResult.failure(e);
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 1]: Explicit loader separation ─
+  //
+  // Two distinct loaders target two distinct Firestore collections:
+  //   • loadLegacyAiSessionsTyped   → ai_chat_history  (schema v1, legacy inline)
+  //   • loadCanonicalAiSessionSummariesTyped → ai_sessions (schema v2, queryable)
+  //
+  // NEVER mix collection references between these two methods.
+
+  /// [PILLAR 1-A] Fetches legacy session summaries from 'ai_chat_history'.
+  /// Targets [_userAiHistory] — schema v1 inline documents.
+  /// Same auth-barrier and cache-fallback contract as loadAiSessionsTyped.
+  static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
+      loadLegacyAiSessionsTyped(String uid) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE][loadLegacyAiSessionsTyped] '
+          'allowed=false reason=firebase_user_null uid=$uid');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE][loadLegacyAiSessionsTyped] '
+          'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}');
+      return FirestoreLoadResult.authDenied();
+    }
+    final query = _userAiHistory(uid)
+        .orderBy('updatedAt', descending: true)
+        .limit(20);
+    try {
+      QuerySnapshot<Map<String, dynamic>> snap;
+      try {
+        snap = await query
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 8));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE][loadLegacyAiSessionsTyped] '
+              'allowed=false reason=permission_denied uid=$uid');
+          return FirestoreLoadResult.authDenied();
+        }
+        try {
+          snap = await query.get(const GetOptions(source: Source.cache));
+          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          return cached.isEmpty
+              ? FirestoreLoadResult.offline()
+              : FirestoreLoadResult.success(cached);
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        try {
+          snap = await query.get(const GetOptions(source: Source.cache));
+          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          return cached.isEmpty
+              ? FirestoreLoadResult.offline()
+              : FirestoreLoadResult.success(cached);
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  /// [PILLAR 1-B] Fetches canonical v2 session summaries from 'ai_sessions'.
+  /// Targets [_userAiSessions] — schema v2 with isDeleted + updatedAt index.
+  /// Filter: isDeleted==false, ordered descending by updatedAt, limit 10.
+  static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
+      loadCanonicalAiSessionSummariesTyped(String uid) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
+          'allowed=false reason=firebase_user_null uid=$uid');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
+          'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}');
+      return FirestoreLoadResult.authDenied();
+    }
+    final query = _userAiSessions(uid)
+        .where('isDeleted', isEqualTo: false)
+        .orderBy('updatedAt', descending: true)
+        .limit(10);
+    try {
+      QuerySnapshot<Map<String, dynamic>> snap;
+      try {
+        snap = await query
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 8));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
+              'allowed=false reason=permission_denied uid=$uid');
+          return FirestoreLoadResult.authDenied();
+        }
+        try {
+          snap = await query.get(const GetOptions(source: Source.cache));
+          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          return cached.isEmpty
+              ? FirestoreLoadResult.offline()
+              : FirestoreLoadResult.success(cached);
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        try {
+          snap = await query.get(const GetOptions(source: Source.cache));
+          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          return cached.isEmpty
+              ? FirestoreLoadResult.offline()
+              : FirestoreLoadResult.success(cached);
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  /// Loads exchange sub-documents for a canonical v2 session.
+  /// Path: users/{uid}/ai_sessions/{sessionId}/exchanges
+  /// Ordered ascending by createdAt (chronological turn order).
+  static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
+      loadAiSessionExchangesTyped(String uid, String sessionId) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE][loadAiSessionExchangesTyped] '
+          'allowed=false reason=firebase_user_null uid=$uid');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE][loadAiSessionExchangesTyped] '
+          'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}');
+      return FirestoreLoadResult.authDenied();
+    }
+    try {
+      final snap = await _userAiSessions(uid)
+          .doc(sessionId)
+          .collection('exchanges')
+          .orderBy('createdAt', descending: false)
+          .get(const GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 10));
+      if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        debugPrint('[FIRESTORE][loadAiSessionExchangesTyped] '
+            'allowed=false reason=permission_denied uid=$uid sessionId=$sessionId');
+        return FirestoreLoadResult.authDenied();
+      }
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);

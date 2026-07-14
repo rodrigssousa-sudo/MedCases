@@ -614,3 +614,129 @@ class AiFinalizationTransaction {
     markAssistantPersisted();
   }
 }
+
+// ── AiSessionSource ───────────────────────────────────────────────────────────
+/// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]:
+/// Discriminates between the two Firestore collection origins for a session
+/// summary returned by [visibleAiSessionSummaries].
+///
+///   • [canonicalV2]    — from 'ai_sessions' (schema v2, exchange sub-docs)
+///   • [legacyInline]   — from 'ai_chat_history' (schema v1, inline messages)
+///   • [localMemory]    — in-memory upsert not yet confirmed from server
+enum AiSessionSource {
+  canonicalV2,
+  legacyInline,
+  localMemory,
+}
+
+// ── AiSessionSummary ──────────────────────────────────────────────────────────
+/// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]:
+/// Unified read model for the history modal. Normalises schema-v1 and
+/// schema-v2 session documents into a single, immutable view object.
+///
+/// Invariants:
+///   • [sessionId] is the deduplication key — NEVER deduplicate by title.
+///   • [updatedAt] is used for collision resolution and timeline ordering.
+///   • [source] drives the restore strategy in PILLAR 4.
+///   • [legacyMessages] is non-null ONLY for [AiSessionSource.legacyInline].
+final class AiSessionSummary {
+  final String           sessionId;
+  final String           uid;
+  final String           title;
+  final String           mode;
+  final String           locale;
+  final int              updatedAt;    // milliseconds since epoch
+  final AiSessionSource  source;
+
+  // Legacy inline payload — only populated for legacyInline sessions.
+  // null for canonicalV2 and localMemory.
+  final List<Map<String, dynamic>>? legacyMessages;
+
+  const AiSessionSummary({
+    required this.sessionId,
+    required this.uid,
+    required this.title,
+    required this.mode,
+    required this.locale,
+    required this.updatedAt,
+    required this.source,
+    this.legacyMessages,
+  });
+
+  /// Normalise a Firestore updatedAt field (int epoch ms or Timestamp) → int ms.
+  static int _toMs(dynamic raw) {
+    if (raw is int) return raw;
+    if (raw == null) return 0;
+    try {
+      final secs = (raw as dynamic).seconds as int? ?? 0;
+      return secs * 1000;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  /// Constructs from a schema-v2 canonical 'ai_sessions' document.
+  factory AiSessionSummary.fromCanonicalJson(Map<String, dynamic> json) {
+    final int updatedMs = AiSessionSummary._toMs(json['updatedAt']);
+    return AiSessionSummary(
+      sessionId:      (json['sessionId'] as String?) ?? '',
+      uid:            (json['uid']       as String?) ?? '',
+      title:          (json['title']     as String?) ?? '',
+      mode:           (json['mode']      as String?) ?? 'plantao',
+      locale:         (json['locale']    as String?) ?? 'pt',
+      updatedAt:      updatedMs,
+      source:         AiSessionSource.canonicalV2,
+      legacyMessages: null,
+    );
+  }
+
+  /// Constructs from a schema-v1 legacy 'ai_chat_history' document.
+  /// [legacyMessages] preserves the inline message array for restore.
+  factory AiSessionSummary.fromLegacyJson(Map<String, dynamic> json) {
+    // Prefer updatedAt; fall back to savedAt for legacy docs without updatedAt.
+    final int updatedMs = json['updatedAt'] != null
+        ? AiSessionSummary._toMs(json['updatedAt'])
+        : (json['savedAt'] is int ? json['savedAt'] as int : 0);
+
+    // Extract inline messages list from legacy document if present.
+    final msgs = json['messages'];
+    List<Map<String, dynamic>>? legacyMsgs;
+    if (msgs is List) {
+      legacyMsgs = msgs.map((m) {
+        if (m is Map<String, dynamic>) return m;
+        if (m is Map) return Map<String, dynamic>.from(m);
+        return <String, dynamic>{};
+      }).toList();
+    }
+
+    // Derive title: prefer 'summary' (legacy field) then 'title'.
+    final title = ((json['summary'] as String?)?.isNotEmpty == true
+        ? json['summary'] as String
+        : (json['title'] as String?) ?? '');
+
+    return AiSessionSummary(
+      sessionId:      (json['id']    as String?) ?? (json['sessionId'] as String?) ?? '',
+      uid:            (json['uid']   as String?) ?? '',
+      title:          title,
+      mode:           (json['mode']  as String?) ?? 'plantao',
+      locale:         (json['lang']  as String?) ?? (json['locale'] as String?) ?? 'pt',
+      updatedAt:      updatedMs,
+      source:         AiSessionSource.legacyInline,
+      legacyMessages: legacyMsgs,
+    );
+  }
+
+  /// Constructs from the local in-memory session index map.
+  factory AiSessionSummary.fromLocalMap(Map<String, dynamic> map) {
+    return AiSessionSummary(
+      sessionId:      (map['sessionId'] as String?) ?? '',
+      uid:            (map['uid']       as String?) ?? '',
+      title:          (map['title']     as String?) ?? '',
+      mode:           (map['mode']      as String?) ?? 'plantao',
+      locale:         (map['locale']    as String?) ?? 'pt',
+      updatedAt:      (map['updatedAt'] as int?)    ?? 0,
+      source:         AiSessionSource.localMemory,
+      legacyMessages: null,
+    );
+  }
+}

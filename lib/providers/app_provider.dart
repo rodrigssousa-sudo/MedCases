@@ -4501,21 +4501,36 @@ class AppProvider extends ChangeNotifier {
   // NEVER overwritten with thisRequestId inside the pipeline.
   String _currentConversationSessionId = '';
 
+  /// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 5]: Public read-only accessor.
+  /// Non-empty when the current conversation is owned by the canonical v2 pipeline.
+  /// Used by _saveCurrentSessionToHistory() to detect and suppress legacy writes.
+  String get currentConversationSessionId => _currentConversationSessionId;
+
+  /// Current in-flight requestId (last sent).  Empty between turns.
+  /// Safe for telemetry emission — never contains user content.
+  String get currentRequestId => _activeRequestId;
+
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 4]: Titling engine state ──────
   // Title is generated ONCE from the first user message and frozen thereafter.
   String _currentConversationTitle = '';
   bool   _isFirstMessageOfSession  = true;
 
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 3]: Local in-memory session index ─
-  // Mirrors the Firestore ai_sessions collection query result for instant UI
-  // refresh — updated synchronously after every SessionPersistSynced without
-  // waiting for a Firestore reload.
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]: Unified session repository ─
+  // Replaces the raw _localAiSessionIndex (Map<String,dynamic> list) with a
+  // typed AiSessionSummary list.  Updated via _upsertLocalSessionSummary().
+  // Retained alongside legacy _localAiSessionIndex raw maps for internal upsert
+  // compatibility — the public API is visibleAiSessionSummaries.
   final List<Map<String, dynamic>> _localAiSessionIndex = [];
+  final List<AiSessionSummary> _localAiSessionSummaries = [];
 
-  /// Returns the local in-memory session index (most-recent-first).
-  /// Callers can read this list to populate the history drawer immediately.
-  List<Map<String, dynamic>> get localAiSessionIndex =>
-      List.unmodifiable(_localAiSessionIndex);
+  /// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]:
+  /// Single reactive selector — deduplicated, sorted by updatedAt desc, ≤10.
+  /// Merge order: canonicalV2 server > legacyInline server > localMemory.
+  /// Deduplication key: sessionId (NEVER title).
+  /// Collision resolution: highest updatedAt wins.
+  List<AiSessionSummary> get visibleAiSessionSummaries =>
+      List.unmodifiable(_localAiSessionSummaries);
 
   void _completeAiRequestOnce(String requestId) {
     // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 3]: Coordinator latch guard.
@@ -4593,13 +4608,15 @@ class AppProvider extends ChangeNotifier {
     }
     _persistedExchangeIds.add(context.requestId);
 
-    // ── PILLAR 4: Titling engine — generate once from first user message ────
+    // ── PILLAR 4 / MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 6]: ─────────────
+    // First-message commit semantics: capture isFirst and compute title BEFORE
+    // the network call, but do NOT mutate _isFirstMessageOfSession or freeze
+    // _currentConversationTitle until the batch write is confirmed successful.
     final bool isFirst = _isFirstMessageOfSession;
-    if (isFirst) {
-      _currentConversationTitle = _generateConversationTitle(userInput);
-      _isFirstMessageOfSession  = false;
-    }
-    final String title = _currentConversationTitle;
+    final String computedTitle = isFirst
+        ? _generateConversationTitle(userInput)
+        : _currentConversationTitle;
+    final String title = computedTitle;
 
     // ── Short previews for the session index document ────────────────────────
     final String userPreview = userInput.length > 120
@@ -4649,10 +4666,24 @@ class AppProvider extends ChangeNotifier {
       }
 
       if (!batchResult.ok) {
+        // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 6]: Retain first-message ─
+        // Batch failed — do NOT commit _isFirstMessageOfSession=false or freeze
+        // _currentConversationTitle. The caller may retry and must re-attempt
+        // generating the title from the first message.
+        debugPrint('[LEGACY_WRITE][SKIPPED] '
+            'reason=batch_failed_retaining_first_message_state');
         // ignore: avoid_print
         print('[SESSION_PERSIST][FAILED] requestId=${context.requestId} '
             'error=${batchResult.error}');
         return SessionPersistFailed(batchResult.error ?? 'unknown_batch_error');
+      }
+
+      // ── PILLAR 6: Secure state assignment — AFTER write confirmation ───────
+      // Only now that the batch is confirmed committed do we freeze the title
+      // and advance _isFirstMessageOfSession → false.
+      if (isFirst) {
+        _currentConversationTitle = computedTitle;
+        _isFirstMessageOfSession  = false;
       }
 
       // ── PILLAR 3: Local index upsert — prepend or update in-memory list ───
@@ -4743,6 +4774,93 @@ class AppProvider extends ChangeNotifier {
     }
     // ignore: avoid_print
     print('[AI_SESSION_INDEX][UPSERT_LOCAL] sessionId=$sessionId position=0');
+
+    // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]: Sync typed summary list ─
+    // Mirror the raw index update into _localAiSessionSummaries so that
+    // visibleAiSessionSummaries reflects the most-recent local state.
+    final summary = AiSessionSummary(
+      sessionId: sessionId,
+      uid:       uid,
+      title:     title,
+      mode:      mode,
+      locale:    locale,
+      updatedAt: now,
+      source:    AiSessionSource.localMemory,
+    );
+    _mergeIntoSummaries([summary]);
+
+    notifyListeners();
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]: Merge helper ────────────
+  // Deduplicates by sessionId, keeps highest updatedAt, sorts desc, trims ≤10.
+  void _mergeIntoSummaries(List<AiSessionSummary> incoming) {
+    for (final s in incoming) {
+      final existingIdx = _localAiSessionSummaries
+          .indexWhere((e) => e.sessionId == s.sessionId);
+      if (existingIdx >= 0) {
+        // Collision — keep the one with the higher updatedAt.
+        if (s.updatedAt > _localAiSessionSummaries[existingIdx].updatedAt) {
+          _localAiSessionSummaries[existingIdx] = s;
+        }
+      } else {
+        _localAiSessionSummaries.add(s);
+      }
+    }
+    // Sort descending by updatedAt.
+    _localAiSessionSummaries.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    // Enforce ≤10 slot bound.
+    if (_localAiSessionSummaries.length > 10) {
+      _localAiSessionSummaries.removeRange(10, _localAiSessionSummaries.length);
+    }
+  }
+
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]: Repository load ─────────
+  // Fetches both collections, maps to AiSessionSummary, merges with local
+  // in-memory entries, deduplicates by sessionId, and emits telemetry.
+  Future<void> loadAndMergeAiSessionSummaries(String uid) async {
+    // Run both fetches concurrently.
+    final results = await Future.wait([
+      FirestoreService.loadCanonicalAiSessionSummariesTyped(uid),
+      FirestoreService.loadLegacyAiSessionsTyped(uid),
+    ]);
+
+    final canonicalResult = results[0];
+    final legacyResult    = results[1];
+
+    final List<AiSessionSummary> canonicalSummaries = [];
+    final List<AiSessionSummary> legacySummaries    = [];
+
+    if (canonicalResult.isSuccess) {
+      final data = canonicalResult.dataOrElse([]);
+      canonicalSummaries.addAll(data.map(AiSessionSummary.fromCanonicalJson));
+    }
+
+    if (legacyResult.isSuccess) {
+      final data = legacyResult.dataOrElse([]);
+      legacySummaries.addAll(data.map(AiSessionSummary.fromLegacyJson));
+    }
+
+    // Merge server results into the unified list (server wins over localMemory
+    // for same sessionId — canonicalV2 or legacyInline has higher authority).
+    // First merge canonical (higher authority), then legacy, then local memory
+    // is already present in _localAiSessionSummaries.
+    final serverSummaries = [...canonicalSummaries, ...legacySummaries];
+    _mergeIntoSummaries(serverSummaries);
+
+    final visibleCount      = _localAiSessionSummaries.length;
+    final canonicalCount    = canonicalSummaries.length;
+    final legacyCount       = legacySummaries.length;
+    final localCount        = _localAiSessionIndex.length;
+    final deduplicatedCount = (canonicalCount + legacyCount + localCount) - visibleCount;
+
+    debugPrint('[HISTORY_REPOSITORY][LOAD] '
+        'canonicalServerCount=$canonicalCount '
+        'canonicalLocalCount=$localCount '
+        'legacyCount=$legacyCount '
+        'visibleCount=$visibleCount '
+        'deduplicatedCount=${deduplicatedCount.clamp(0, 999)}');
+
     notifyListeners();
   }
 
