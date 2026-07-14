@@ -1,6 +1,7 @@
 // ══════════════════════════════════════════════════════════════════════════════
 // test/providers/firestore_typed_reads_test.dart
 // MICRO-BUILD 463-A.2.1 — Typed Secondary Collection Reads Test Suite
+// MICRO-BUILD 463-A.2.1.1 — Authoritative Empty Semantics Enforcement
 //
 // Verifies the algebraic read contracts for all secondary Firestore collections:
 //
@@ -9,8 +10,19 @@
 //   are null — no background watchdogs, no timers, no blocking waits.
 //
 // Invariant W (Cache Preservation under Offline):
-//   When server read fails but valid cache data exists locally, the result
-//   is success(cachedData) — never a false-positive empty().
+//   When server read fails, the cache is consulted as a fallback.
+//   AUTHORITATIVE RULE (463-A.2.1.1):
+//     server-fail + cache hit  → success(cachedData)
+//     server-fail + cache miss → offline()    ← NOT empty()
+//     server-fail + cache error → offline()
+//
+// Scenarios 1–6 (463-A.2.1.1 Strict Matrix):
+//   1. Server success + 0 docs → empty(), shouldFreezeLocalCache == false
+//   2. Server failure + cache miss → offline(), shouldFreezeLocalCache == true
+//   3. Server failure + cache hit → success(cached), shouldFreezeLocalCache == false
+//   4. Permission-denied never collapses to empty() under any configuration
+//   5. offline() history load result never triggers new-user state in stub provider
+//   6. offline() favs/cases load result prevents write-back via shouldFreezeLocalCache
 //
 // Architecture: unit-level stubs — zero Firebase, zero network, zero UI.
 // All production types are mirrored inline so this file has zero Flutter
@@ -24,7 +36,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Inline stubs — mirror the production types from firestore_service.dart
-// These replicate the exact contracts from MICRO-BUILD 463-A.2.1.
+// These replicate the exact contracts from MICRO-BUILD 463-A.2.1.1.
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Algebraic result type — mirrors FirestoreLoadResult<T> from production.
@@ -89,6 +101,7 @@ class _FakeFirebaseUser {
 // ─────────────────────────────────────────────────────────────────────────────
 enum _StubServerBehaviour {
   success,           // server returns data normally
+  successEmpty,      // server returns 0 documents (authoritative empty)
   permissionDenied,  // server returns FirebaseException('permission-denied')
   networkError,      // server throws generic Exception (offline / unreachable)
   timeout,           // server throws TimeoutException (no connectivity)
@@ -96,7 +109,7 @@ enum _StubServerBehaviour {
 
 enum _StubCacheBehaviour {
   hit,    // cache has data — returns it
-  miss,   // cache has no document (exists = false)
+  miss,   // cache has no document (exists = false / returns null)
   error,  // cache throws too
 }
 
@@ -116,11 +129,13 @@ class _StubFavsDoc {
     this.cacheData  = const {},
   });
 
-  Future<Set<String>> readFromServer() async {
+  Future<Set<String>?> readFromServer() async {
     serverCallCount++;
     switch (serverBehaviour) {
       case _StubServerBehaviour.success:
         return Set<String>.from(serverData);
+      case _StubServerBehaviour.successEmpty:
+        return <String>{}; // authoritative empty from server
       case _StubServerBehaviour.permissionDenied:
         throw _StubFirebaseException('permission-denied');
       case _StubServerBehaviour.networkError:
@@ -136,7 +151,7 @@ class _StubFavsDoc {
       case _StubCacheBehaviour.hit:
         return Set<String>.from(cacheData);
       case _StubCacheBehaviour.miss:
-        return null; // document does not exist
+        return null; // document does not exist in cache
       case _StubCacheBehaviour.error:
         throw Exception('cache-unavailable');
     }
@@ -153,8 +168,13 @@ class _StubFirebaseException implements Exception {
 // ─────────────────────────────────────────────────────────────────────────────
 // _StubFirestoreService — mirrors FirestoreService.loadFav*Typed() contract
 //
-// Accepts a _FakeFirebaseUser? (currentUser) and a _StubFavsDoc.
-// Implements the exact dual-check barrier + cache-fallback logic from production.
+// Implements the CORRECTED algebraic matrix from MICRO-BUILD 463-A.2.1.1:
+//   server success + data     → success(data)
+//   server success + 0 docs   → empty()
+//   server permission-denied  → authDenied()
+//   server fail + cache hit   → success(cached)
+//   server fail + cache miss  → offline()   ← CRITICAL: NOT empty()
+//   server fail + cache error → offline()
 // ─────────────────────────────────────────────────────────────────────────────
 class _StubFirestoreService {
   final _FakeFirebaseUser? currentUser;
@@ -170,11 +190,15 @@ class _StubFirestoreService {
     this.isFirebaseReady = true,
   });
 
-  /// Mirrors FirestoreService.loadFavDrugsTyped(uid) logic exactly:
+  /// Mirrors FirestoreService.loadFavDrugsTyped(uid) logic with the corrected
+  /// algebraic matrix from MICRO-BUILD 463-A.2.1.1:
   ///   1. Dual-check barrier → authDenied immediately (no timer)
-  ///   2. Try server → permissionDenied → authDenied
-  ///   3. Try server → network error → try cache → success(cached) or offline()
-  ///   4. Server success → success(data)
+  ///   2. Server permissionDenied → authDenied
+  ///   3. Server fail + cache hit  → success(cached)
+  ///   4. Server fail + cache miss → offline()   ← NOT empty()
+  ///   5. Server fail + cache error → offline()
+  ///   6. Server success + empty set → empty()
+  ///   7. Server success + data → success(data)
   Future<_FirestoreLoadResult<Set<String>>> loadFavTyped(String uid) async {
     // Invariant V: authDenied immediately, no timer started
     if (!isFirebaseReady || currentUser == null) {
@@ -190,26 +214,29 @@ class _StubFirestoreService {
     }
     try {
       final data = await stubDoc.readFromServer();
-      if (data.isEmpty) return _FirestoreLoadResult.empty();
+      // data == null should not happen in success/successEmpty paths
+      if (data == null || data.isEmpty) return _FirestoreLoadResult.empty();
       return _FirestoreLoadResult.success(data);
     } on _StubFirebaseException catch (e) {
       if (e.code == 'permission-denied') {
         return _FirestoreLoadResult.authDenied();
       }
       // Other Firebase error → try cache
+      // ALGEBRAIC RULE 463-A.2.1.1: cache miss after server failure → offline()
       try {
         final cached = await stubDoc.readFromCache();
-        if (cached == null) return _FirestoreLoadResult.empty();
+        if (cached == null) return _FirestoreLoadResult.offline();
         return _FirestoreLoadResult.success(cached);
       } catch (_) {
         return _FirestoreLoadResult.offline();
       }
     } catch (_) {
       // Network/timeout → try cache before returning offline()
+      // ALGEBRAIC RULE 463-A.2.1.1: cache miss after server failure → offline()
       try {
         final cached = await stubDoc.readFromCache();
-        if (cached == null) return _FirestoreLoadResult.empty();
-        // Invariant W: cache hit → success(cached), NOT empty()
+        if (cached == null) return _FirestoreLoadResult.offline();
+        // Invariant W: cache hit → success(cached)
         return _FirestoreLoadResult.success(cached);
       } catch (_) {
         return _FirestoreLoadResult.offline();
@@ -217,7 +244,8 @@ class _StubFirestoreService {
     }
   }
 
-  /// Mirrors loadAiSessionsTyped() — same auth guard, same cache-fallback logic.
+  /// Mirrors loadAiSessionsTyped() — same auth guard, same corrected cache-fallback.
+  /// ALGEBRAIC RULE 463-A.2.1.1: server fail + empty cache → offline(), not empty().
   Future<_FirestoreLoadResult<List<Map<String, dynamic>>>> loadAiSessionsTyped(
       String uid) async {
     if (!isFirebaseReady || currentUser == null) {
@@ -232,27 +260,77 @@ class _StubFirestoreService {
     try {
       // Server read
       final data = await stubDoc.readFromServer();
-      if (data.isEmpty) return _FirestoreLoadResult.empty();
+      if (data == null || data.isEmpty) return _FirestoreLoadResult.empty();
       return _FirestoreLoadResult.success(data.map((id) => {'id': id}).toList());
     } on _StubFirebaseException catch (e) {
       if (e.code == 'permission-denied') return _FirestoreLoadResult.authDenied();
+      // ALGEBRAIC RULE 463-A.2.1.1: cache miss after server failure → offline()
       try {
         final cached = await stubDoc.readFromCache();
-        if (cached == null) return _FirestoreLoadResult.empty();
+        if (cached == null) return _FirestoreLoadResult.offline();
         return _FirestoreLoadResult.success(
             cached.map((id) => {'id': id}).toList());
       } catch (_) {
         return _FirestoreLoadResult.offline();
       }
     } catch (_) {
+      // ALGEBRAIC RULE 463-A.2.1.1: cache miss after server failure → offline()
       try {
         final cached = await stubDoc.readFromCache();
-        if (cached == null) return _FirestoreLoadResult.empty();
+        if (cached == null) return _FirestoreLoadResult.offline();
         return _FirestoreLoadResult.success(
             cached.map((id) => {'id': id}).toList());
       } catch (_) {
         return _FirestoreLoadResult.offline();
       }
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _StubHistoryProvider — minimal stub for Scenarios 5 and 6.
+// Simulates an AppProvider that tracks new-user detection and write-back.
+// ─────────────────────────────────────────────────────────────────────────────
+class _StubHistoryProvider {
+  // Set to true if a confirmed_new_user event would have been emitted.
+  bool confirmedNewUserFired = false;
+
+  // Set to true if any write-back to Firestore was attempted.
+  bool writeBackAttempted = false;
+
+  /// Simulates _syncFromFirestore() processing of a history load result.
+  /// With the corrected semantics: offline() → freeze cache, no new-user event.
+  void processHistoryResult(_FirestoreLoadResult<List<String>> result) {
+    if (result.shouldFreezeLocalCache) {
+      // FREEZE: do nothing — no write-back, no new-user detection
+      print('[STUB][processHistoryResult] shouldFreezeLocalCache=true → no write-back');
+      return;
+    }
+    if (result.isEmpty) {
+      // Authoritative empty from server → trigger new-user check
+      confirmedNewUserFired = true;
+      print('[STUB][processHistoryResult] isEmpty=true → confirmed_new_user fired');
+      return;
+    }
+    if (result.isSuccess) {
+      // Write back to local state
+      writeBackAttempted = true;
+      print('[STUB][processHistoryResult] success → write-back');
+    }
+  }
+
+  /// Simulates _syncFromFirestore() processing of a favs/cases load result.
+  /// offline() must prevent the write-back routine from running.
+  void processFavsResult(_FirestoreLoadResult<Set<String>> result) {
+    if (result.shouldFreezeLocalCache) {
+      // FREEZE: local data preserved — no overwrite, no reset
+      print('[STUB][processFavsResult] shouldFreezeLocalCache=true → write-back blocked');
+      return;
+    }
+    if (result.isSuccess || result.isEmpty) {
+      // Write back (update local store)
+      writeBackAttempted = true;
+      print('[STUB][processFavsResult] success/empty → write-back');
     }
   }
 }
@@ -309,7 +387,7 @@ void main() {
       expect(stub.cacheCallCount, equals(0));
     });
 
-    // ── V-3: uid mismatch → authDenied (IDOR protection) ───────────────────
+    // ── V-3: uid mismatch → authDenied (IDOR protection) ─────────────────────
     test('uid mismatch → authDenied immediately, IDOR protection', () async {
       final stub = _StubFavsDoc(
         serverBehaviour: _StubServerBehaviour.success,
@@ -457,25 +535,9 @@ void main() {
           containsAll(['protocol-cached-A', 'protocol-cached-B']));
     });
 
-    // ── W-3: network error + cache miss → empty() (document not created) ─────
-    test('network error + cache miss → empty(), not offline()', () async {
-      // Cache has no document at all (never been cached)
-      final stub = _StubFavsDoc(
-        serverBehaviour: _StubServerBehaviour.networkError,
-        cacheBehaviour: _StubCacheBehaviour.miss,
-      );
-      final svc = _StubFirestoreService(
-        currentUser: const _FakeFirebaseUser('new-user'),
-        stubDoc: stub,
-      );
-
-      final result = await svc.loadFavTyped('new-user');
-
-      // Cache miss means the document simply doesn't exist — empty() is correct
-      expect(result.isEmpty, isTrue,
-          reason: 'Cache miss after network error → empty() (no data exists)');
-      expect(result.isSuccess, isFalse);
-    });
+    // W-3 DELETED (MICRO-BUILD 463-A.2.1.1):
+    // The incorrect assertion "network error + cache miss → empty()" has been
+    // removed. The correct behaviour is offline() — see Scenario 2 below.
 
     // ── W-4: network error + cache error → offline() ─────────────────────────
     test('network error + cache error → offline(), local state frozen', () async {
@@ -652,6 +714,206 @@ void main() {
       expect(result.dataOrElse({}), contains('drug-from-cache'));
       expect(stub.serverCallCount, equals(1), reason: 'Server was attempted');
       expect(stub.cacheCallCount, equals(1), reason: 'Cache was consulted as fallback');
+    });
+  });
+
+  // ── MICRO-BUILD 463-A.2.1.1 — Strict Algebraic Matrix Scenarios ──────────
+  group('463-A.2.1.1 Strict Matrix — Authoritative Empty vs Offline Semantics', () {
+    // ── Scenario 1: Server success + 0 docs → empty(), shouldFreeze == false ─
+    test('Scenario 1: server success + 0 documents → empty(), shouldFreezeLocalCache == false', () async {
+      // Server returns 0 records authoritatively (the user genuinely has no data).
+      final stub = _StubFavsDoc(
+        serverBehaviour: _StubServerBehaviour.successEmpty,
+        cacheBehaviour: _StubCacheBehaviour.miss,
+      );
+      final svc = _StubFirestoreService(
+        currentUser: const _FakeFirebaseUser('new-user-uuid'),
+        stubDoc: stub,
+      );
+
+      final result = await svc.loadFavTyped('new-user-uuid');
+
+      expect(result.isEmpty, isTrue,
+          reason: 'Server-authoritative 0-doc result → empty() (new user)');
+      expect(result.isOffline, isFalse,
+          reason: 'Server succeeded — must NOT be offline()');
+      expect(result.isSuccess, isFalse,
+          reason: 'No data returned — must NOT be success()');
+      // shouldFreezeLocalCache is false: a server-authoritative empty is a valid
+      // write-back signal (the caller may clear local favourites accordingly).
+      expect(result.shouldFreezeLocalCache, isFalse,
+          reason: 'Authoritative empty from server → write-back allowed (shouldFreeze=false)');
+      // Cache must NOT be consulted — the server answered definitively.
+      expect(stub.cacheCallCount, equals(0),
+          reason: 'Server succeeded — cache must not be read');
+    });
+
+    // ── Scenario 2: Server failure + cache miss → offline(), shouldFreeze == true
+    test('Scenario 2: server failure + cache miss → offline(), shouldFreezeLocalCache == true', () async {
+      // The server is unreachable AND the document was never cached locally.
+      // This MUST be offline(), not empty() — we have no authority to declare
+      // the user has no data when we could not reach the server.
+      final stub = _StubFavsDoc(
+        serverBehaviour: _StubServerBehaviour.networkError,
+        cacheBehaviour: _StubCacheBehaviour.miss, // cache doc does not exist
+      );
+      final svc = _StubFirestoreService(
+        currentUser: const _FakeFirebaseUser('offline-new-user'),
+        stubDoc: stub,
+      );
+
+      final result = await svc.loadFavTyped('offline-new-user');
+
+      expect(result.isOffline, isTrue,
+          reason: 'Server failed + cache miss → offline() — cannot declare empty without server authority');
+      expect(result.isEmpty, isFalse,
+          reason: 'Cache miss during server failure MUST NOT produce empty() — core 463-A.2.1.1 rule');
+      expect(result.isSuccess, isFalse);
+      expect(result.shouldFreezeLocalCache, isTrue,
+          reason: 'offline() must freeze local cache — no write-back allowed');
+      // Both server and cache were attempted
+      expect(stub.serverCallCount, equals(1));
+      expect(stub.cacheCallCount, equals(1));
+    });
+
+    // ── Scenario 3: Server failure + cache hit → success(cached) ─────────────
+    test('Scenario 3: server failure + cache hit → success(cached), shouldFreezeLocalCache == false', () async {
+      // The server is unreachable but we have valid cached data.
+      // The result is success(cachedData) so the UI renders from cache.
+      final stub = _StubFavsDoc(
+        serverBehaviour: _StubServerBehaviour.timeout,
+        cacheBehaviour: _StubCacheBehaviour.hit,
+        cacheData: {'fav-drug-cached-A', 'fav-drug-cached-B'},
+      );
+      final svc = _StubFirestoreService(
+        currentUser: const _FakeFirebaseUser('user-with-cache'),
+        stubDoc: stub,
+      );
+
+      final result = await svc.loadFavTyped('user-with-cache');
+
+      expect(result.isSuccess, isTrue,
+          reason: 'Server fail + cache hit → success(cachedData)');
+      expect(result.isOffline, isFalse,
+          reason: 'Cache salvaged the read — must not be offline()');
+      expect(result.dataOrElse({}),
+          containsAll(['fav-drug-cached-A', 'fav-drug-cached-B']));
+      // success() does not freeze — the caller can write back the cached data
+      // to in-memory provider state.
+      expect(result.shouldFreezeLocalCache, isFalse,
+          reason: 'success() from cache fallback: shouldFreezeLocalCache == false');
+      expect(stub.serverCallCount, equals(1));
+      expect(stub.cacheCallCount, equals(1));
+    });
+
+    // ── Scenario 4: permission-denied never collapses to empty() ─────────────
+    test('Scenario 4: permission-denied never collapses to empty() under any configuration', () async {
+      // Verify that permission-denied → authDenied(), even when cache has data.
+      // This ensures the error is never silently swallowed as "user has no data".
+      final stubWithCacheHit = _StubFavsDoc(
+        serverBehaviour: _StubServerBehaviour.permissionDenied,
+        cacheBehaviour: _StubCacheBehaviour.hit,
+        cacheData: {'cached-drug-should-not-matter'},
+      );
+      final svcA = _StubFirestoreService(
+        currentUser: const _FakeFirebaseUser('user-perm-denied'),
+        stubDoc: stubWithCacheHit,
+      );
+
+      final resultA = await svcA.loadFavTyped('user-perm-denied');
+
+      expect(resultA.isAuthDenied, isTrue,
+          reason: 'permission-denied → authDenied(), NEVER empty()');
+      expect(resultA.isEmpty, isFalse,
+          reason: 'permission-denied must NOT collapse to empty()');
+      expect(resultA.isOffline, isFalse,
+          reason: 'permission-denied is an auth error, not a network error');
+      expect(resultA.shouldFreezeLocalCache, isTrue,
+          reason: 'authDenied → shouldFreezeLocalCache == true');
+
+      // Also verify with cache miss — still authDenied
+      final stubWithCacheMiss = _StubFavsDoc(
+        serverBehaviour: _StubServerBehaviour.permissionDenied,
+        cacheBehaviour: _StubCacheBehaviour.miss,
+      );
+      final svcB = _StubFirestoreService(
+        currentUser: const _FakeFirebaseUser('user-perm-denied-miss'),
+        stubDoc: stubWithCacheMiss,
+      );
+
+      final resultB = await svcB.loadFavTyped('user-perm-denied-miss');
+
+      expect(resultB.isAuthDenied, isTrue,
+          reason: 'permission-denied + cache miss → authDenied(), not empty()');
+      expect(resultB.isEmpty, isFalse,
+          reason: 'Cache miss does not change a permission-denied to empty()');
+    });
+
+    // ── Scenario 5: offline() history result never triggers new-user event ───
+    test('Scenario 5: offline() history load never triggers confirmed_new_user or state reset', () async {
+      // When the history load returns offline() (server unreachable, cache miss),
+      // the AppProvider must NOT interpret this as "user has no history" and
+      // must NOT emit a confirmed_new_user event.
+      final provider = _StubHistoryProvider();
+
+      // Simulate an offline() result (what loadHistoriesTyped returns when
+      // server fails and cache is empty — the 463-A.2.1.1 fix)
+      final offlineResult = _FirestoreLoadResult<List<String>>.offline();
+
+      provider.processHistoryResult(offlineResult);
+
+      expect(provider.confirmedNewUserFired, isFalse,
+          reason: 'offline() history result must NOT trigger confirmed_new_user — '
+              'we have no server authority to declare the user is new');
+      expect(provider.writeBackAttempted, isFalse,
+          reason: 'offline() must freeze local state — no write-back of any kind');
+
+      // Verify: an authoritative empty() from the server DOES trigger new-user
+      // (confirming the fix does not break the legitimate new-user detection path)
+      final emptyResult = _FirestoreLoadResult<List<String>>.empty();
+      provider.processHistoryResult(emptyResult);
+
+      expect(provider.confirmedNewUserFired, isTrue,
+          reason: 'Server-authoritative empty() → confirmed_new_user is correct');
+    });
+
+    // ── Scenario 6: offline() favs/cases result prevents write-back ──────────
+    test('Scenario 6: offline() favorites/cases result blocks write-back via shouldFreezeLocalCache', () async {
+      // When loadFavDrugsTyped (or any typed fav/cases method) returns offline(),
+      // the AppProvider must check shouldFreezeLocalCache before updating local
+      // state — preventing the user's cached favourites from being overwritten.
+      final provider = _StubHistoryProvider();
+
+      // Case A: offline() result — write-back must be blocked
+      final offlineFavsResult = _FirestoreLoadResult<Set<String>>.offline();
+      provider.processFavsResult(offlineFavsResult);
+
+      expect(provider.writeBackAttempted, isFalse,
+          reason: 'offline() shouldFreezeLocalCache=true → write-back must be blocked');
+
+      // Case B: success() result — write-back must proceed normally
+      final provider2 = _StubHistoryProvider();
+      final successResult = _FirestoreLoadResult<Set<String>>.success({'drug-A', 'drug-B'});
+      provider2.processFavsResult(successResult);
+
+      expect(provider2.writeBackAttempted, isTrue,
+          reason: 'success() shouldFreezeLocalCache=false → write-back must proceed');
+
+      // Case C: empty() from server — write-back is also allowed (clear local favs)
+      final provider3 = _StubHistoryProvider();
+      final emptyResult = _FirestoreLoadResult<Set<String>>.empty();
+      provider3.processFavsResult(emptyResult);
+
+      expect(provider3.writeBackAttempted, isTrue,
+          reason: 'empty() shouldFreezeLocalCache=false → write-back proceeds (clear local)');
+
+      // Case D: authDenied() — also freezes (no write-back)
+      final provider4 = _StubHistoryProvider();
+      final authDeniedResult = _FirestoreLoadResult<Set<String>>.authDenied();
+      provider4.processFavsResult(authDeniedResult);
+
+      expect(provider4.writeBackAttempted, isFalse,
+          reason: 'authDenied() shouldFreezeLocalCache=true → write-back blocked');
     });
   });
 }

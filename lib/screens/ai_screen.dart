@@ -1256,8 +1256,12 @@ class _AiScreenState extends State<AiScreen> {
       if (uid != null && uid.isNotEmpty) _historyLoadedForUid = uid;
 
       // 1º tenta Firestore (cross-device)
+      // MICRO-BUILD 463-A.2.1.1: Migrated from loadAiSessions() (deleted) to
+      // loadAiSessionsTyped() which returns FirestoreLoadResult<List<Map<String,dynamic>>>.
+      // shouldFreezeLocalCache prevents write-back on offline()/authDenied()/failure().
       if (uid != null && uid.isNotEmpty) {
-        final remote = await FirestoreService.loadAiSessions(uid);
+        final typedResult = await FirestoreService.loadAiSessionsTyped(uid);
+        final remote = typedResult.dataOrElse(<Map<String, dynamic>>[]);
         if (remote.isNotEmpty) {
           // BUILD 274: de-dup by ID before inserting — Firestore may return
           // stale docs written before the session-ID fix. Keep the first

@@ -980,6 +980,10 @@ class FirestoreService {
   }
 
   // ── Favoritos de fármacos ─────────────────────────────────────────────────
+  /// @Deprecated('Use loadFavDrugsTyped() — returns FirestoreLoadResult<Set<String>>'
+  ///             'with shouldFreezeLocalCache semantics.')
+  /// MICRO-BUILD 463-A.2.1.1: Marked defunct. No external consumers remain.
+  /// Retained as dead code only; will be physically removed in a future purge.
   static Future<Set<String>> loadFavDrugs(String uid) async {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
@@ -1018,6 +1022,9 @@ class FirestoreService {
   }
 
   // ── Favoritos de protocolos ───────────────────────────────────────────────
+  /// @Deprecated('Use loadFavProtocolsTyped() — returns FirestoreLoadResult<Set<String>>'
+  ///             'with shouldFreezeLocalCache semantics.')
+  /// MICRO-BUILD 463-A.2.1.1: Marked defunct. No external consumers remain.
   static Future<Set<String>> loadFavProtocols(String uid) async {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
@@ -1056,6 +1063,9 @@ class FirestoreService {
   }
 
   // ── Favoritos de prescrições ──────────────────────────────────────────────
+  /// @Deprecated('Use loadFavPrescriptionsTyped() — returns FirestoreLoadResult<Set<String>>'
+  ///             'with shouldFreezeLocalCache semantics.')
+  /// MICRO-BUILD 463-A.2.1.1: Marked defunct. No external consumers remain.
   static Future<Set<String>> loadFavPrescriptions(String uid) async {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
@@ -1119,188 +1129,35 @@ class FirestoreService {
     } catch (_) {}
   }
 
-  /// Carrega as últimas 20 sessões, ordenadas por updatedAt desc.
-  // ── AUDIT 453 — Auth Gate Helper ─────────────────────────────────────────
-  // MICRO-BUILD 463-A.2.1 TOMBSTONE: _waitForAuth() is a legacy 6-second
-  // polling helper retained ONLY for the untyped loadAiSessions() legacy path.
-  // All new callers MUST use loadAiSessionsTyped(), which short-circuits with
-  // authDenied() instantly when currentUser == null — no timers, no watchdogs.
+  // ── MICRO-BUILD 463-A.2.1.1 PURGE ────────────────────────────────────────
+  // _waitForAuth() has been PHYSICALLY DELETED. This 6-second polling helper
+  // was the last remnant of the [BUILD313] auth-watchdog pattern, exterminated
+  // in stages:
+  //   • [BUILD313] _authResolved 8s watchdog   → removed in BUILD 463-A.1.1
+  //   • _waitForAuth() 6s polling helper        → PHYSICALLY DELETED here
+  //   • loadAiSessions() untyped path           → PHYSICALLY DELETED here
+  //   • _loadAiSessionsFromCache() helper        → PHYSICALLY DELETED here
   //
-  // The independent [BUILD313] _authResolved 8-second watchdog was EXTERMINATED
-  // in BUILD 463-A.1.1 (lib/main.dart). Purge confirmed: MICRO-BUILD 463-A.2.1.
-  //
-  /// Aguarda o token Firebase Auth estar propagado ao SDK antes de qualquer
-  /// leitura Firestore que exija autenticação.
-  ///
-  /// RACE CONDITION (log: "[FIRESTORE] permission-denied / watchdog 8s"):
-  ///   Na Web, FirebaseAuth.currentUser pode ser null durante os primeiros
-  ///   segundos após o boot. O SDK Firestore Web envia a requisição sem o
-  ///   header Authorization → Firestore retorna 403 permission-denied.
-  ///
-  /// ESTRATÉGIA:
-  ///   1. Se currentUser já presente → retorna imediatamente (zero overhead).
-  ///   2. Se null → escuta o primeiro evento de authStateChanges() com timeout
-  ///      de 6 s para não bloquear a UI indefinidamente.
-  ///   3. Se o evento vier como null (usuário realmente desautenticado) → retorna
-  ///      null sinalizado; o chamador usa cache local.
-  ///   4. Timeout expirado → fallback para cache (nunca bloqueia o boot).
-  static Future<User?> _waitForAuth({
-    Duration timeout = const Duration(seconds: 6),
-  }) async {
-    if (!_isFirebaseReady) return null;
-
-    // Verificação rápida: token já disponível no SDK
-    final current = FirebaseAuth.instance.currentUser;
-    if (current != null) return current;
-
-    // Se temos token REST em cache mas o SDK ainda não propagou, aguarda
-    // o próximo evento de authStateChanges (normalmente < 500ms no Web).
-    try {
-      final user = await FirebaseAuth.instance
-          .authStateChanges()
-          .where((u) => u != null) // filtra eventos null (desautenticado)
-          .first
-          .timeout(timeout);
-      return user;
-    } on TimeoutException {
-      debugPrint('[AUDIT453][AUTH_GATE] timeout=${timeout.inSeconds}s '
-          '— auth não disponível; usando cache local.');
-      return null;
-    } catch (e) {
-      debugPrint('[AUDIT453][AUTH_GATE] erro: $e — usando cache local.');
-      return null;
-    }
-  }
+  // All callers route through loadAiSessionsTyped(), which short-circuits with
+  // authDenied() instantly when currentUser == null — no timers, no polling.
+  // ─────────────────────────────────────────────────────────────────────────
 
   /// Usa sdkDocToSafeMap para converter Timestamp → ISO8601 string antes
   /// de passar para _ChatSession.fromJson (que usa DateTime.parse).
   ///
-  /// BUILD 300: Força leitura do servidor (Source.server) para evitar cache
-  /// stale/preso no WebKit/Safari (ITP). Timeout de 8s com fallback automático
-  /// para o cache local caso o usuário esteja sem conectividade.
-  ///
-  /// BUILD 336-AUTH-RESILIENCE (PASSO 1): blindagem robusta contra
-  /// permission-denied. No Web, FirebaseAuth.currentUser pode ser null enquanto
-  /// o Firestore SDK ainda não recebeu o token OAuth customizado — o SDK então
-  /// executa a query sem credenciais e recebe 403/permission-denied.
-  /// Estratégia de recuperação em cascata:
-  ///   1. Aguarda auth via _waitForAuth() (zero overhead se já autenticado).
-  ///   2. Tenta servidor (Source.server) com timeout 8s.
-  ///   3. Se permission-denied → tenta cache local offline (Source.cache).
-  ///   4. Se ambos falharem → retorna [] silenciosamente.
-  /// Nunca propaga FirebaseException para fora — o boot da tela NÃO é bloqueado.
-  static Future<List<Map<String, dynamic>>> loadAiSessions(String uid) async {
-    // AUDIT 453 — AUTH GATE: aguarda o token Firebase Auth estar propagado ao SDK
-    // antes de qualquer leitura Firestore. Elimina a race condition que causava
-    // permission-denied na Web (log: "_authResolved watchdog: forçando auth resolved após 8s").
-    // _waitForAuth() retorna imediatamente se currentUser já está presente (mobile/iOS).
-    // Na Web, aguarda authStateChanges() com timeout de 6s para não bloquear a UI.
-    if (_isFirebaseReady && uid.isNotEmpty) {
-      final authedUser = await _waitForAuth();
-      if (authedUser == null) {
-        // Timeout ou usuário realmente desautenticado — usa cache local
-        debugPrint('[AUDIT453][loadAiSessions] auth gate timeout/null '
-            '— uid=$uid fallback para cache local');
-        return await _loadAiSessionsFromCache(uid);
-      }
-      // Valida que o UID do token corresponde ao uid solicitado (proteção IDOR)
-      if (authedUser.uid != uid) {
-        debugPrint('[AUDIT453][loadAiSessions] uid mismatch '
-            'authed=${authedUser.uid} requested=$uid — negando leitura');
-        return [];
-      }
-    }
-
-    // BUILD 336 PASSO 3: normalização de UID de contingência.
-    // Se FirebaseAuth.currentUser == null (Web com token customizado ainda não
-    // propagado ao SDK), mas temos um uid válido vindo do UserModel (cache
-    // customizado da persistência Web), usamos Source.cache imediatamente para
-    // evitar o round-trip ao servidor que geraria permission-denied.
-    // Condição: _hasAnyAuthCredential=true significa que AuthService.hasCachedToken
-    // está presente (token REST válido), mas o SDK ainda não o absolveu.
-    // BUILD 463-A.2: This is a Web REST fallback for AI sessions (not user-private
-    // Firestore data) — _hasAnyAuthCredential (broad plane) is intentionally used here.
-    // _hasSdkIdentity is used for the SDK-presence check (Plane A).
-    final sdkHasUser = _hasSdkIdentity;
-    if (!sdkHasUser && _hasAnyAuthCredential && uid.isNotEmpty) {
-      debugPrint('[BUILD336][FIRESTORE][PASSO3] loadAiSessions: '
-          'currentUser=null mas token customizado presente — '
-          'usando cache local (uid=$uid) para evitar permission-denied');
-      return await _loadAiSessionsFromCache(uid);
-    }
-
-    // ── Camada 1: tentativa servidor com fallback cache ───────────────────────
-    try {
-      QuerySnapshot<Map<String, dynamic>> snap;
-      try {
-        // BUILD 300: Force server read to avoid stale cache on WebKit/Safari ITP.
-        snap = await _userAiHistory(uid)
-            .orderBy('updatedAt', descending: true)
-            .limit(20)
-            .get(const GetOptions(source: Source.server))
-            .timeout(const Duration(seconds: 8));
-      } on FirebaseException catch (e) {
-        // BUILD 336 PASSO 1: permission-denied = SDK sem token autenticado (Web).
-        // Intercepta ANTES do fallback genérico para aplicar estratégia correta.
-        if (e.code == 'permission-denied') {
-          debugPrint('[BUILD336][FIRESTORE] loadAiSessions permission-denied '
-              'uid=$uid — FirebaseAuth.currentUser=null no Web (token ainda não propagado). '
-              'Tentando cache local...');
-          return await _loadAiSessionsFromCache(uid);
-        }
-        // Outros erros de Firebase (unavailable, network-request-failed, etc.)
-        // → fallback para cache padrão
-        debugPrint('[BUILD336][FIRESTORE] loadAiSessions FirebaseException '
-            'code=${e.code} — fallback cache: $e');
-        snap = await _userAiHistory(uid)
-            .orderBy('updatedAt', descending: true)
-            .limit(20)
-            .get();
-      } catch (e) {
-        debugPrint('[BUILD300][FIRESTORE] loadAiSessions server fetch failed, using fallback cache: $e');
-        snap = await _userAiHistory(uid)
-            .orderBy('updatedAt', descending: true)
-            .limit(20)
-            .get();
-      }
-      return snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
-    } on FirebaseException catch (e) {
-      // BUILD 336 PASSO 1: captura permission-denied no fallback também.
-      if (e.code == 'permission-denied') {
-        debugPrint('[BUILD336][FIRESTORE] loadAiSessions permission-denied '
-            'no fallback cache uid=$uid — retornando [] silenciosamente');
-        return [];
-      }
-      debugPrint('[BUILD336][FIRESTORE] loadAiSessions FirebaseException final: $e');
-      return [];
-    } catch (_) {
-      return [];
-    }
-  }
-
-  /// Tenta ler sessões de IA exclusivamente do cache local do SDK (offline-safe).
-  /// Usado como fallback de contingência quando o servidor retorna permission-denied
-  /// (FirebaseAuth.currentUser == null no Web).
-  /// Nunca lança exceção — retorna [] em qualquer falha.
-  static Future<List<Map<String, dynamic>>> _loadAiSessionsFromCache(
-      String uid) async {
-    try {
-      final snap = await _userAiHistory(uid)
-          .orderBy('updatedAt', descending: true)
-          .limit(20)
-          .get(const GetOptions(source: Source.cache));
-      final result = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
-      debugPrint('[BUILD336][FIRESTORE] _loadAiSessionsFromCache: '
-          '${result.length} sessões lidas do cache local uid=$uid');
-      return result;
-    } on FirebaseException catch (e) {
-      debugPrint('[BUILD336][FIRESTORE] _loadAiSessionsFromCache falhou '
-          'code=${e.code} uid=$uid — retornando []');
-      return [];
-    } catch (_) {
-      return [];
-    }
-  }
+  // ── MICRO-BUILD 463-A.2.1.1: loadAiSessions() PHYSICALLY DELETED ────────
+  // The untyped loadAiSessions(uid) → Future<List<Map<String,dynamic>>> has been
+  // completely removed from disk. It called the now-deleted _waitForAuth() polling
+  // helper and the now-deleted _loadAiSessionsFromCache() helper.
+  //
+  // MIGRATION: lib/screens/ai_screen.dart previously called loadAiSessions(uid)
+  // at line 1260. That call site has been updated to use loadAiSessionsTyped(uid)
+  // via the algebraic result pattern. loadAiSessionsTyped() provides the same
+  // cache-fallback behaviour with correct offline() vs. empty() semantics.
+  //
+  // _loadAiSessionsFromCache() PHYSICALLY DELETED — was only called by the
+  // now-deleted loadAiSessions() and the now-deleted _waitForAuth() path.
+  // ─────────────────────────────────────────────────────────────────────────
 
   // ── Recentes cross-device ─────────────────────────────────────────────────
   static DocumentReference<Map<String, dynamic>> _userRecents(String uid) =>
@@ -1325,6 +1182,9 @@ class FirestoreService {
   }
 
   // ── Favoritos de casos clínicos ───────────────────────────────────────────
+  /// @Deprecated('Use loadFavCasesTyped() — returns FirestoreLoadResult<Set<String>>'
+  ///             'with shouldFreezeLocalCache semantics.')
+  /// MICRO-BUILD 463-A.2.1.1: Marked defunct. No external consumers remain.
   static Future<Set<String>> loadFavCases(String uid) async {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
@@ -1363,6 +1223,9 @@ class FirestoreService {
   }
 
   // ── Casos clínicos do usuário ─────────────────────────────────────────────
+  /// @Deprecated('Use loadCasesTyped() — returns FirestoreLoadResult<List<ClinicalCaseModel>>'
+  ///             'with shouldFreezeLocalCache semantics.')
+  /// MICRO-BUILD 463-A.2.1.1: Marked defunct. No external consumers remain.
   static Future<List<ClinicalCaseModel>> loadCases(String uid) async {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
@@ -1736,6 +1599,8 @@ class FirestoreService {
               'sdkRequestDispatched=true → authDenied');
           return FirestoreLoadResult.authDenied();
         }
+        // Network/unavailable FirebaseException → cache fallback.
+        // ALGEBRAIC RULE: server failed → 0 cache docs = offline(), not empty().
         try {
           snap = await query
               .get(const GetOptions(source: Source.cache))
@@ -1743,7 +1608,15 @@ class FirestoreService {
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
+        if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
+        final listCached = snap.docs
+            .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
+            .toList();
+        listCached.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+        return FirestoreLoadResult.success(listCached);
       } catch (_) {
+        // Timeout or unknown error → cache fallback.
+        // ALGEBRAIC RULE: server failed → 0 cache docs = offline(), not empty().
         try {
           snap = await query
               .get(const GetOptions(source: Source.cache))
@@ -1751,7 +1624,14 @@ class FirestoreService {
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
+        if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
+        final listCached = snap.docs
+            .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
+            .toList();
+        listCached.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+        return FirestoreLoadResult.success(listCached);
       }
+      // Server succeeded — authoritative empty is valid here.
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       final list = snap.docs
           .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
@@ -1822,11 +1702,12 @@ class FirestoreService {
           return FirestoreLoadResult.authDenied();
         }
         // Network/unavailable error → try local cache before returning offline()
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('drugs')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
@@ -1834,11 +1715,12 @@ class FirestoreService {
         }
       } catch (_) {
         // Timeout or other error → cache fallback
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('drugs')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
@@ -1887,22 +1769,24 @@ class FirestoreService {
               'allowed=false reason=permission_denied uid=$uid → authDenied');
           return FirestoreLoadResult.authDenied();
         }
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('protocols')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       } catch (_) {
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('protocols')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
@@ -1951,22 +1835,24 @@ class FirestoreService {
               'allowed=false reason=permission_denied uid=$uid → authDenied');
           return FirestoreLoadResult.authDenied();
         }
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('prescriptions')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       } catch (_) {
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('prescriptions')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
@@ -2015,22 +1901,24 @@ class FirestoreService {
               'allowed=false reason=permission_denied uid=$uid → authDenied');
           return FirestoreLoadResult.authDenied();
         }
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('fav_cases')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       } catch (_) {
+        // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
           doc = await _userFavs(uid)
               .doc('fav_cases')
               .get(const GetOptions(source: Source.cache));
-          if (!doc.exists) return FirestoreLoadResult.empty();
+          if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
               safeStringList(doc.data()?['ids']).toSet());
         } catch (_) {
@@ -2080,7 +1968,8 @@ class FirestoreService {
               'allowed=false reason=permission_denied uid=$uid → authDenied');
           return FirestoreLoadResult.authDenied();
         }
-        // Network/unavailable → try cache — offline() if cache also fails
+        // Network/unavailable → try cache.
+        // ALGEBRAIC RULE: server failed → 0 cache docs = offline(), not empty().
         try {
           snap = await _userCases(uid)
               .where('isCustom', isEqualTo: true)
@@ -2088,7 +1977,16 @@ class FirestoreService {
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
+        if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
+        final casesCached = <ClinicalCaseModel>[];
+        for (final d in snap.docs) {
+          try { casesCached.add(ClinicalCaseModel.fromJson(sdkDocWithId(d))); } catch (_) {}
+        }
+        casesCached.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
+        return FirestoreLoadResult.success(casesCached);
       } catch (_) {
+        // Timeout or unknown → try cache.
+        // ALGEBRAIC RULE: server failed → 0 cache docs = offline(), not empty().
         try {
           snap = await _userCases(uid)
               .where('isCustom', isEqualTo: true)
@@ -2096,7 +1994,15 @@ class FirestoreService {
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
+        if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
+        final casesCached = <ClinicalCaseModel>[];
+        for (final d in snap.docs) {
+          try { casesCached.add(ClinicalCaseModel.fromJson(sdkDocWithId(d))); } catch (_) {}
+        }
+        casesCached.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
+        return FirestoreLoadResult.success(casesCached);
       }
+      // Server succeeded — authoritative empty is valid here.
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       final cases = <ClinicalCaseModel>[];
       for (final d in snap.docs) {
@@ -2152,27 +2058,29 @@ class FirestoreService {
               'allowed=false reason=permission_denied uid=$uid → authDenied');
           return FirestoreLoadResult.authDenied();
         }
-        // Network error → try cache; return success(cached) if available
+        // Network error → try cache.
+        // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
           final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
               'source=cache count=${cached.length} uid=$uid');
           return cached.isEmpty
-              ? FirestoreLoadResult.empty()
+              ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       } catch (_) {
-        // Timeout or unknown error → cache fallback
+        // Timeout or unknown error → cache fallback.
+        // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
           final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
               'source=cache(timeout_fallback) count=${cached.length} uid=$uid');
           return cached.isEmpty
-              ? FirestoreLoadResult.empty()
+              ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
         } catch (_) {
           return FirestoreLoadResult.offline();
