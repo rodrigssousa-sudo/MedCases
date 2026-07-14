@@ -1608,18 +1608,25 @@ class AppProvider extends ChangeNotifier {
       final localPrescs   = Set<String>.from(_favPrescriptions);
       final localCases    = Set<String>.from(_favCases);
 
-      debugPrint('[SYNC_TRACE][STEP1] Carregando favoritos do Firestore...');
-      final results = await Future.wait([
-        FirestoreService.loadFavDrugs(uid),
-        FirestoreService.loadFavProtocols(uid),
-        FirestoreService.loadFavPrescriptions(uid),
-        FirestoreService.loadFavCases(uid),
-      ]);
-      debugPrint('[SYNC_TRACE][STEP1_OK] Favoritos carregados: '
-          'drugs=${results[0].length} protos=${results[1].length} '
-          'prescs=${results[2].length} cases=${results[3].length}');
+      // MICRO-BUILD 463-A.2.1: Typed reads — algebraic result unwrapping.
+      // authDenied / offline / failure → freeze local cache (no overwrite).
+      // success → merge Firestore data with local-only additions.
+      // Individual awaits guarantee static type safety (no List<dynamic> cast).
+      debugPrint('[SYNC_TRACE][STEP1] Carregando favoritos do Firestore (typed)...');
+      final (drugsResult, protosResult, prescsResult, casesResult) = await (
+        FirestoreService.loadFavDrugsTyped(uid),
+        FirestoreService.loadFavProtocolsTyped(uid),
+        FirestoreService.loadFavPrescriptionsTyped(uid),
+        FirestoreService.loadFavCasesTyped(uid),
+      ).wait;
 
-      // BUILD 463-A.2-R1: secondary auth re-check after async gap.
+      debugPrint('[SYNC_TRACE][STEP1_OK] Favoritos carregados (typed): '
+          'drugs=${drugsResult.runtimeType} '
+          'protos=${protosResult.runtimeType} '
+          'prescs=${prescsResult.runtimeType} '
+          'cases=${casesResult.runtimeType}');
+
+      // BUILD 463-A.2-R1 + MICRO-BUILD 463-A.2.1: secondary auth re-check after async gap.
       // The barrier state may have changed (e.g. uid_mismatch detected mid-flight)
       // between STEP1_OK and the merge+write path. Abort before any storage write.
       if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
@@ -1634,14 +1641,39 @@ class AppProvider extends ChangeNotifier {
         return;
       }
 
-      // Merge: une Firestore + local — nunca descarta favoritos locais
-      _favDrugs         = results[0]..addAll(localDrugs);
-      _favProtocols     = results[1]..addAll(localProtos);
-      _favPrescriptions = results[2]..addAll(localPrescs);
-      _favCases         = results[3]..addAll(localCases);
+      // Unwrap typed results: authDenied/offline/failure → freeze (keep local),
+      // success/empty → authoritative from Firestore, then merge with local-only.
+      if (drugsResult.shouldFreezeLocalCache ||
+          protosResult.shouldFreezeLocalCache ||
+          prescsResult.shouldFreezeLocalCache ||
+          casesResult.shouldFreezeLocalCache) {
+        debugPrint('[SYNC_TRACE][STEP1_FREEZE] '
+            'uid=$uid '
+            'reason=one_or_more_favs_returned_authDenied_or_offline '
+            'action=local_cache_preserved_no_write');
+      } else {
+        // Merge: une Firestore + local — nunca descarta favoritos locais
+        final remoteDrugs  = drugsResult.dataOrElse(<String>{});
+        final remoteProtos = protosResult.dataOrElse(<String>{});
+        final remotePrescs = prescsResult.dataOrElse(<String>{});
+        final remoteCases  = casesResult.dataOrElse(<String>{});
 
-      debugPrint('[SYNC_TRACE][STEP2] Carregando casos customizados...');
-      _customCases      = await FirestoreService.loadCases(uid);
+        _favDrugs         = remoteDrugs..addAll(localDrugs);
+        _favProtocols     = remoteProtos..addAll(localProtos);
+        _favPrescriptions = remotePrescs..addAll(localPrescs);
+        _favCases         = remoteCases..addAll(localCases);
+      }
+
+      debugPrint('[SYNC_TRACE][STEP2] Carregando casos customizados (typed)...');
+      final casesTyped = await FirestoreService.loadCasesTyped(uid);
+      if (casesTyped.isSuccess) {
+        _customCases = casesTyped.dataOrElse([]);
+      } else if (casesTyped.shouldFreezeLocalCache) {
+        debugPrint('[SYNC_TRACE][STEP2_FREEZE] '
+            'uid=$uid result=${casesTyped.runtimeType} → casos locais preservados');
+      } else {
+        _customCases = []; // empty — remote says no custom cases
+      }
       debugPrint('[SYNC_TRACE][STEP2_OK] Casos carregados: ${_customCases.length}');
 
       notifyListeners();
@@ -1650,14 +1682,19 @@ class AppProvider extends ChangeNotifier {
       await _saveLocal();
       debugPrint('[SYNC_TRACE][STEP3_OK] Cache local salvo.');
 
-      // Re-salva no Firestore se o merge adicionou itens que estavam só no local
-      if (_favDrugs.length > results[0].length)
+      // Re-salva no Firestore se o merge adicionou itens que estavam só no local.
+      // Only re-save when the typed read succeeded — never write on authDenied/offline.
+      final remoteDrugsLen  = drugsResult.dataOrElse(<String>{}).length;
+      final remoteProtosLen = protosResult.dataOrElse(<String>{}).length;
+      final remotePrescsLen = prescsResult.dataOrElse(<String>{}).length;
+      final remoteCasesLen  = casesResult.dataOrElse(<String>{}).length;
+      if (!drugsResult.shouldFreezeLocalCache && _favDrugs.length > remoteDrugsLen)
         FirestoreService.saveFavDrugs(uid, _favDrugs).catchError((_) {});
-      if (_favProtocols.length > results[1].length)
+      if (!protosResult.shouldFreezeLocalCache && _favProtocols.length > remoteProtosLen)
         FirestoreService.saveFavProtocols(uid, _favProtocols).catchError((_) {});
-      if (_favPrescriptions.length > results[2].length)
+      if (!prescsResult.shouldFreezeLocalCache && _favPrescriptions.length > remotePrescsLen)
         FirestoreService.saveFavPrescriptions(uid, _favPrescriptions).catchError((_) {});
-      if (_favCases.length > results[3].length)
+      if (!casesResult.shouldFreezeLocalCache && _favCases.length > remoteCasesLen)
         FirestoreService.saveFavCases(uid, _favCases).catchError((_) {});
 
       debugPrint('[SYNC_TRACE][STEP4] Disparando sync de histórias e recentes (background)...');

@@ -1121,6 +1121,14 @@ class FirestoreService {
 
   /// Carrega as últimas 20 sessões, ordenadas por updatedAt desc.
   // ── AUDIT 453 — Auth Gate Helper ─────────────────────────────────────────
+  // MICRO-BUILD 463-A.2.1 TOMBSTONE: _waitForAuth() is a legacy 6-second
+  // polling helper retained ONLY for the untyped loadAiSessions() legacy path.
+  // All new callers MUST use loadAiSessionsTyped(), which short-circuits with
+  // authDenied() instantly when currentUser == null — no timers, no watchdogs.
+  //
+  // The independent [BUILD313] _authResolved 8-second watchdog was EXTERMINATED
+  // in BUILD 463-A.1.1 (lib/main.dart). Purge confirmed: MICRO-BUILD 463-A.2.1.
+  //
   /// Aguarda o token Firebase Auth estar propagado ao SDK antes de qualquer
   /// leitura Firestore que exija autenticação.
   ///
@@ -1753,6 +1761,427 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       debugPrint('[FirestoreService] loadHistoriesTyped FirebaseException '
           'code=${e.code} uid=$uid');
+      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      return FirestoreLoadResult.failure(e);
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // MICRO-BUILD 463-A.2.1 — Typed Secondary Collection Reads
+  //
+  // Every secondary data retrieval operation returns FirestoreLoadResult<T>
+  // with strict operational isolation:
+  //   • authDenied()  — short-circuit when SDK user is null or uid mismatches.
+  //                     No Firestore SDK call is ever dispatched.
+  //   • success(data) — server read succeeded; data is authoritative.
+  //   • offline()     — server read failed; valid cache data is returned
+  //                     via success(cachedData). Under no circumstances does
+  //                     an offline error collapse into a false positive empty().
+  //   • failure(e)    — unexpected error; caller must freeze local cache.
+  //
+  // All methods follow the dual-check barrier pattern from loadHistoriesTyped():
+  //   (1) FirebaseAuth.instance.currentUser == null → authDenied immediately
+  //   (2) currentUser.uid != uid              → authDenied immediately
+  // Neither check ever starts a background timer or watchdog.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── MICRO-BUILD 463-A.2.1: loadFavDrugsTyped ─────────────────────────────
+  /// Returns the IDs of the user's favourite drugs as a typed algebraic result.
+  /// Short-circuits with authDenied() if the SDK user is null or uid mismatches.
+  /// Falls back to Source.cache on network failure — never collapses to empty().
+  static Future<FirestoreLoadResult<Set<String>>> loadFavDrugsTyped(
+    String uid,
+  ) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    try {
+      DocumentSnapshot<Map<String, dynamic>> doc;
+      try {
+        doc = await _userFavs(uid)
+            .doc('drugs')
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 10));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
+              'allowed=false reason=permission_denied uid=$uid '
+              'sdkRequestDispatched=true → authDenied');
+          return FirestoreLoadResult.authDenied();
+        }
+        // Network/unavailable error → try local cache before returning offline()
+        try {
+          doc = await _userFavs(uid)
+              .doc('drugs')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        // Timeout or other error → cache fallback
+        try {
+          doc = await _userFavs(uid)
+              .doc('drugs')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (!doc.exists) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          safeStringList(doc.data()?['ids']).toSet());
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      return FirestoreLoadResult.failure(e);
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  // ── MICRO-BUILD 463-A.2.1: loadFavProtocolsTyped ─────────────────────────
+  /// Returns the IDs of the user's favourite protocols as a typed algebraic result.
+  static Future<FirestoreLoadResult<Set<String>>> loadFavProtocolsTyped(
+    String uid,
+  ) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    try {
+      DocumentSnapshot<Map<String, dynamic>> doc;
+      try {
+        doc = await _userFavs(uid)
+            .doc('protocols')
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 10));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
+              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          return FirestoreLoadResult.authDenied();
+        }
+        try {
+          doc = await _userFavs(uid)
+              .doc('protocols')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        try {
+          doc = await _userFavs(uid)
+              .doc('protocols')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (!doc.exists) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          safeStringList(doc.data()?['ids']).toSet());
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      return FirestoreLoadResult.failure(e);
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  // ── MICRO-BUILD 463-A.2.1: loadFavPrescriptionsTyped ─────────────────────
+  /// Returns the IDs of the user's favourite prescriptions as a typed algebraic result.
+  static Future<FirestoreLoadResult<Set<String>>> loadFavPrescriptionsTyped(
+    String uid,
+  ) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    try {
+      DocumentSnapshot<Map<String, dynamic>> doc;
+      try {
+        doc = await _userFavs(uid)
+            .doc('prescriptions')
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 10));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
+              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          return FirestoreLoadResult.authDenied();
+        }
+        try {
+          doc = await _userFavs(uid)
+              .doc('prescriptions')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        try {
+          doc = await _userFavs(uid)
+              .doc('prescriptions')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (!doc.exists) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          safeStringList(doc.data()?['ids']).toSet());
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      return FirestoreLoadResult.failure(e);
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  // ── MICRO-BUILD 463-A.2.1: loadFavCasesTyped ─────────────────────────────
+  /// Returns the IDs of the user's favourite cases as a typed algebraic result.
+  static Future<FirestoreLoadResult<Set<String>>> loadFavCasesTyped(
+    String uid,
+  ) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    try {
+      DocumentSnapshot<Map<String, dynamic>> doc;
+      try {
+        doc = await _userFavs(uid)
+            .doc('fav_cases')
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 10));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
+              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          return FirestoreLoadResult.authDenied();
+        }
+        try {
+          doc = await _userFavs(uid)
+              .doc('fav_cases')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        try {
+          doc = await _userFavs(uid)
+              .doc('fav_cases')
+              .get(const GetOptions(source: Source.cache));
+          if (!doc.exists) return FirestoreLoadResult.empty();
+          return FirestoreLoadResult.success(
+              safeStringList(doc.data()?['ids']).toSet());
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (!doc.exists) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          safeStringList(doc.data()?['ids']).toSet());
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      return FirestoreLoadResult.failure(e);
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  // ── MICRO-BUILD 463-A.2.1: loadCasesTyped ────────────────────────────────
+  /// Returns the user's custom clinical cases as a typed algebraic result.
+  /// Auth-denied immediately when SDK user is null — no watchdog, no timer.
+  static Future<FirestoreLoadResult<List<ClinicalCaseModel>>> loadCasesTyped(
+    String uid,
+  ) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    try {
+      QuerySnapshot<Map<String, dynamic>> snap;
+      try {
+        snap = await _userCases(uid)
+            .where('isCustom', isEqualTo: true)
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 10));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
+              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          return FirestoreLoadResult.authDenied();
+        }
+        // Network/unavailable → try cache — offline() if cache also fails
+        try {
+          snap = await _userCases(uid)
+              .where('isCustom', isEqualTo: true)
+              .get(const GetOptions(source: Source.cache));
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        try {
+          snap = await _userCases(uid)
+              .where('isCustom', isEqualTo: true)
+              .get(const GetOptions(source: Source.cache));
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
+      final cases = <ClinicalCaseModel>[];
+      for (final d in snap.docs) {
+        try { cases.add(ClinicalCaseModel.fromJson(sdkDocWithId(d))); } catch (_) {}
+      }
+      cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
+      return FirestoreLoadResult.success(cases);
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      return FirestoreLoadResult.failure(e);
+    } catch (e) {
+      return FirestoreLoadResult.failure(e);
+    }
+  }
+
+  // ── MICRO-BUILD 463-A.2.1: loadAiSessionsTyped ───────────────────────────
+  /// Returns the user's AI chat sessions as a typed algebraic result.
+  ///
+  /// INVARIANT: If FirebaseAuth.instance.currentUser is null, returns
+  /// authDenied() immediately — no _waitForAuth(), no timer, no polling.
+  /// The UI data layer reacts solely to AppAuthBarrierState convergence signals.
+  ///
+  /// Cache preservation: a network failure returns success(cachedData) when
+  /// valid cache entries exist. It never collapses to empty() silently.
+  static Future<FirestoreLoadResult<List<Map<String, dynamic>>>> loadAiSessionsTyped(
+    String uid,
+  ) async {
+    final _fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady || _fbUser == null) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+          'allowed=false reason=firebase_user_null uid=$uid '
+          'sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    if (_fbUser.uid != uid) {
+      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      return FirestoreLoadResult.authDenied();
+    }
+    final query = _userAiHistory(uid)
+        .orderBy('updatedAt', descending: true)
+        .limit(20);
+    try {
+      QuerySnapshot<Map<String, dynamic>> snap;
+      try {
+        snap = await query
+            .get(const GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 8));
+      } on FirebaseException catch (e) {
+        if (e.code == 'permission-denied') {
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          return FirestoreLoadResult.authDenied();
+        }
+        // Network error → try cache; return success(cached) if available
+        try {
+          snap = await query.get(const GetOptions(source: Source.cache));
+          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+              'source=cache count=${cached.length} uid=$uid');
+          return cached.isEmpty
+              ? FirestoreLoadResult.empty()
+              : FirestoreLoadResult.success(cached);
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      } catch (_) {
+        // Timeout or unknown error → cache fallback
+        try {
+          snap = await query.get(const GetOptions(source: Source.cache));
+          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+              'source=cache(timeout_fallback) count=${cached.length} uid=$uid');
+          return cached.isEmpty
+              ? FirestoreLoadResult.empty()
+              : FirestoreLoadResult.success(cached);
+        } catch (_) {
+          return FirestoreLoadResult.offline();
+        }
+      }
+      if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
+      return FirestoreLoadResult.success(
+          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+    } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
