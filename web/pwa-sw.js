@@ -82,6 +82,20 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = request.url;   // string — NÃO é um objeto URL
 
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.3.4-T3: deploy_meta.json network bypass ──
+  // Maximum-priority guard: runs before ANY cache logic.
+  // Bypasses caches.match AND cache.put entirely for deploy_meta.json.
+  // Handles ?ts= cache-busting query params via pathname check.
+  // Fail-safe .catch() returns a structured unavailable JSON response —
+  // prevents silent failures and unhandled promise rejections in the console.
+  if (new URL(url).pathname.endsWith('/deploy_meta.json')) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .catch(() => Response.json({ status: 'unavailable', reason: 'network_error' }))
+    );
+    return;
+  }
+
   if (request.method !== 'GET') return;
   if (neverCache(url)) return;
   if (url.startsWith('chrome-extension://')) return;

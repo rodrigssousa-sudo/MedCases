@@ -104,7 +104,7 @@ Future<void> main() async {
   const String bundleVersion = String.fromEnvironment('BUNDLE_VERSION', defaultValue: 'dev');
   const String builtAt       = String.fromEnvironment('BUILT_AT',       defaultValue: 'unknown');
   // ignore: avoid_print
-  print('[BUILD_COMMIT]\nsha=$buildCommit\nbundleVersion=$bundleVersion\nbuiltAt=$builtAt');
+  print('[COMPILE_IDENTITY]\nsha=$buildCommit\nbundleVersion=$bundleVersion\nbuiltAt=$builtAt');
 
   // Cria o provider — sem await aqui, boot é disparado em background.
   final provider = AppProvider();
@@ -152,23 +152,28 @@ Future<void> _loadDeployMeta() async {
   if (!kIsWeb) return;
   try {
     final ts  = DateTime.now().millisecondsSinceEpoch;
-    final uri = Uri.parse('/deploy_meta.json?ts=$ts');
+    final uri = Uri.base.resolve('deploy_meta.json?ts=$ts');
     final res = await http.get(uri).timeout(const Duration(seconds: 5));
     if (res.statusCode == 200) {
       final Map<String, dynamic> meta =
           jsonDecode(res.body) as Map<String, dynamic>;
+      final String status             = meta['status']             as String? ?? 'unavailable';
       final String deployCommit       = meta['deployCommit']       as String? ?? 'unknown';
       final String metaBundleVersion  = meta['bundleVersion']      as String? ?? 'unknown';
       final String containerStartedAt = meta['containerStartedAt'] as String? ?? 'unknown';
-      debugPrint('[DEPLOY_IDENTITY] '
-          'deployCommit=$deployCommit '
-          'bundleVersion=$metaBundleVersion '
-          'containerStartedAt=$containerStartedAt');
+      if (status == 'available') {
+        debugPrint('[DEPLOY_IDENTITY] '
+            'deployCommit=$deployCommit '
+            'bundleVersion=$metaBundleVersion '
+            'containerStartedAt=$containerStartedAt');
+      } else {
+        debugPrint('[DEPLOY_IDENTITY_UNAVAILABLE] reason=metadata_unavailable');
+      }
     } else {
-      debugPrint('[DEPLOY_IDENTITY_UNAVAILABLE] status=${res.statusCode}');
+      debugPrint('[DEPLOY_IDENTITY_UNAVAILABLE] reason=metadata_unavailable status=${res.statusCode}');
     }
   } catch (_) {
-    debugPrint('[DEPLOY_IDENTITY_UNAVAILABLE]');
+    debugPrint('[DEPLOY_IDENTITY_UNAVAILABLE] reason=metadata_unavailable');
   }
 }
 

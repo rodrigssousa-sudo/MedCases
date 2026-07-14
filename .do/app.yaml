@@ -10,8 +10,9 @@
 #   doctl apps create --spec .do/app.yaml
 #   doctl apps update <APP_ID> --spec .do/app.yaml
 #
-# IMPORTANTE: GEMINI_API_KEY deve ser configurada como SECRET no painel DO.
-#   Nunca coloque a chave em plaintext neste arquivo.
+# IMPORTANTE: GEMINI_API_KEY deve ser configurada como SECRET no painel DO,
+#   exclusivamente no componente ai-gateway. Nunca coloque a chave no
+#   componente web (medcases) — chaves de IA não pertencem ao bundle estático.
 # ══════════════════════════════════════════════════════════════════════════════
 
 name:   medcases-pro
@@ -20,7 +21,7 @@ region: nyc
 services:
 
   # ── 1. Flutter Web — nginx estático ─────────────────────────────────────────
-  - name: medcases-web
+  - name: medcases
     github:
       repo:           rodrigssousa-sudo/MedCases
       branch:         main
@@ -46,13 +47,13 @@ services:
         value: production
         scope: RUN_TIME
       # DEPLOY_COMMIT: injected by DO App Platform at container boot time.
-      # ${_self.COMMIT_HASH} is a DO App Platform built-in reference that resolves
-      # to the git SHA of the commit that triggered this deploy — available as a
-      # RUN_TIME env var inside the running container (nginx entrypoint reads it).
+      # ${_self.COMMIT_SHA} is the official DO App Platform built-in token
+      # that resolves to the git SHA of the commit that triggered this deploy —
+      # available as a RUN_TIME env var inside the running nginx container.
       # This is intentionally NOT a Docker build ARG: the SHA must survive
       # image layer caching and remain accurate for every runtime container.
       - key:   DEPLOY_COMMIT
-        value: ${_self.COMMIT_HASH}
+        value: ${_self.COMMIT_SHA}
         scope: RUN_TIME
       # BUNDLE_VERSION: semantic version injected at both build and run time.
       # Available to the entrypoint script and any runtime tooling.
