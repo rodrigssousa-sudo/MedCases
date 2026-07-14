@@ -279,6 +279,59 @@ service cloud.firestore {
         allow write: if isOwner(userId) && isTokenFresh();
       }
 
+      // ════════════════════════════════════════════════════════════════════════
+      // MICRO-BUILD 462E-A.5.3.7.3.2.5.1: Canonical AI session index
+      // Schema v2 — path: users/{uid}/ai_sessions/{sessionId}
+      //
+      // LEAST-PRIVILEGE POLICY:
+      //   • read:   strict owner-only (no cross-user reads, not even admin —
+      //             clinical conversation content is private by design).
+      //   • create: owner must be auth'd; payload uid == auth.uid and
+      //             payload sessionId == path sessionId (anti-injection).
+      //   • update: same owner/payload invariants plus resource.data.uid
+      //             check (prevents UID swap on existing doc).
+      //   • delete: owner-only soft delete (isDeleted flag) — hard delete
+      //             allowed but must be owner.
+      //
+      // Exchange sub-documents (immutable, one per message exchange):
+      //   path: …/ai_sessions/{sessionId}/exchanges/{requestId}
+      //   • create: owner + uid/sessionId/requestId all anchored to their
+      //             path-segment counterparts (anti-replay, anti-injection).
+      //   • update: owner + same three-field invariant.
+      //   • delete: owner-only.
+      // ════════════════════════════════════════════════════════════════════════
+      match /ai_sessions/{sessionId} {
+        allow read: if isOwner(userId);
+
+        allow create: if isOwner(userId)
+          && request.resource.data.uid == userId
+          && request.resource.data.sessionId == sessionId;
+
+        allow update: if isOwner(userId)
+          && resource.data.uid == userId
+          && request.resource.data.uid == userId
+          && request.resource.data.sessionId == sessionId;
+
+        allow delete: if isOwner(userId);
+
+        match /exchanges/{requestId} {
+          allow read: if isOwner(userId);
+
+          allow create: if isOwner(userId)
+            && request.resource.data.uid == userId
+            && request.resource.data.sessionId == sessionId
+            && request.resource.data.requestId == requestId;
+
+          allow update: if isOwner(userId)
+            && resource.data.uid == userId
+            && request.resource.data.uid == userId
+            && request.resource.data.sessionId == sessionId
+            && request.resource.data.requestId == requestId;
+
+          allow delete: if isOwner(userId);
+        }
+      }
+
       match /notes/{document=**} {
         allow read, write: if isAuthed()
           && (request.auth.uid == userId || isAdmin());

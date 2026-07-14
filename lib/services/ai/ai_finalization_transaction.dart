@@ -57,6 +57,11 @@ final class ActiveAiSessionContext {
 /// MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2]: Typed result of an atomic
 /// AI exchange persistence attempt.
 ///
+/// MICRO-BUILD 462E-A.5.3.7.3.2.5.1 [PILLAR 2]: Added [SessionPersistAuthDenied]
+/// to strictly isolate Firestore permission-denied rejections from network
+/// failures. CRITICAL: permission-denied MUST NOT enter the offline queue —
+/// it is a security architecture lock, not a transient network drop.
+///
 /// Returned by [AppProvider.persistAiExchangeOnce()] — never raw exceptions.
 /// The calling finalizer inspects the variant to log and continue (never block
 /// UI on offline failures).
@@ -65,6 +70,8 @@ final class ActiveAiSessionContext {
 ///   • [SessionPersistSynced]        — write committed to Firestore/local store.
 ///   • [SessionPersistQueuedOffline] — device offline; write queued locally.
 ///   • [SessionPersistSkipped]       — idempotency key already seen; no-op.
+///   • [SessionPersistAuthDenied]    — Firestore permission-denied; security lock.
+///                                     NEVER queued offline. Carries path context.
 ///   • [SessionPersistFailed]        — unrecoverable error (logged, not thrown).
 sealed class SessionPersistStatus {
   const SessionPersistStatus();
@@ -84,6 +91,24 @@ final class SessionPersistQueuedOffline extends SessionPersistStatus {
 final class SessionPersistSkipped extends SessionPersistStatus {
   final String reason;
   const SessionPersistSkipped(this.reason);
+}
+
+/// MICRO-BUILD 462E-A.5.3.7.3.2.5.1 [PILLAR 2]: Firestore returned
+/// permission-denied — this is a SECURITY ARCHITECTURE LOCK, not a network
+/// failure. The write is permanently rejected. MUST NOT be placed in any
+/// offline pending queue. Carries the parent path and exchange path for
+/// production telemetry emission.
+///
+/// Telemetry tag: [SESSION_PERSIST][AUTH_DENIED]
+final class SessionPersistAuthDenied extends SessionPersistStatus {
+  /// The parent session document path: users/{uid}/ai_sessions/{sessionId}
+  final String parentPath;
+  /// The exchange document path: …/exchanges/{requestId}
+  final String exchangePath;
+  const SessionPersistAuthDenied({
+    required this.parentPath,
+    required this.exchangePath,
+  });
 }
 
 /// Persistence failed with an unrecoverable error. Pipeline continues.

@@ -1232,7 +1232,11 @@ class FirestoreService {
   //
   // IMPORTANT: This method is called ONLY from persistAiExchangeOnce()
   // which already enforces idempotency via _persistedExchangeIds.
-  static Future<({bool ok, Object? error})> batchWriteAiExchange({
+  // MICRO-BUILD 462E-A.5.3.7.3.2.5.1 [PILLAR 2]: Return record extended with
+  // [permissionDenied] flag. When true, the caller MUST map to
+  // [SessionPersistAuthDenied] and MUST NOT enqueue into the offline queue.
+  static Future<({bool ok, bool permissionDenied, Object? error})>
+      batchWriteAiExchange({
     required String uid,
     required String sessionId,
     required String requestId,
@@ -1287,9 +1291,17 @@ class FirestoreService {
       });
 
       await batch.commit();
-      return (ok: true, error: null);
+      return (ok: true, permissionDenied: false, error: null);
+    } on FirebaseException catch (e) {
+      // MICRO-BUILD 462E-A.5.3.7.3.2.5.1 [PILLAR 2]: Explicit permission-denied
+      // isolation — maps to a distinct flag so the caller produces
+      // SessionPersistAuthDenied, NOT SessionPersistQueuedOffline.
+      if (e.code == 'permission-denied') {
+        return (ok: false, permissionDenied: true, error: e);
+      }
+      return (ok: false, permissionDenied: false, error: e);
     } catch (e) {
-      return (ok: false, error: e);
+      return (ok: false, permissionDenied: false, error: e);
     }
   }
 

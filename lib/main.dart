@@ -101,9 +101,9 @@ Future<void> main() async {
   // Format is machine-parseable for CI log scraping.
   // ignore: avoid_print
   print('[BUILD_COMMIT] '
-      'sha=168a68b78433865c8388ac81d0fb82e683f391a3 '
-      'bundleVersion=1.0.0+3464 '
-      'builtAt=2026-07-14T15:00:00');
+      'sha=d904c8422f1a1e84cf37b5c13dbc5cbdbf11e312 '
+      'bundleVersion=1.0.0+3465 '
+      'builtAt=2026-07-14T16:00:00');
 
   // Cria o provider — sem await aqui, boot é disparado em background.
   final provider = AppProvider();

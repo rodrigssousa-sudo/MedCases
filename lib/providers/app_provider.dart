@@ -4609,6 +4609,11 @@ class AppProvider extends ChangeNotifier {
         ? '${assistantOutput.substring(0, 160)}\u2026'
         : assistantOutput;
 
+    // Pre-compute canonical Firestore paths for telemetry.
+    final String parentPath =
+        'users/${context.uid}/ai_sessions/${context.sessionId}';
+    final String exchangePath = '$parentPath/exchanges/${context.requestId}';
+
     try {
       // ── PILLAR 1: Atomic Firestore batch (Operations A + B) ──────────────
       final batchResult = await FirestoreService.batchWriteAiExchange(
@@ -4624,6 +4629,24 @@ class AppProvider extends ChangeNotifier {
         userInputFull:       userInput,
         assistantOutputFull: assistantOutput,
       );
+
+      // ── PILLAR 2: Strict permission-denied isolation ───────────────────────
+      // CRITICAL: permission-denied is a SECURITY ARCHITECTURE LOCK.
+      // It MUST NOT be treated as an offline state or queued for retry.
+      // Map exclusively to SessionPersistAuthDenied — never to
+      // SessionPersistQueuedOffline or SessionPersistFailed.
+      if (batchResult.permissionDenied) {
+        // ignore: avoid_print
+        print('[SESSION_PERSIST][AUTH_DENIED] '
+            'requestId=${context.requestId} '
+            'sessionId=${context.sessionId} '
+            'parentPath=$parentPath '
+            'exchangePath=$exchangePath');
+        return SessionPersistAuthDenied(
+          parentPath:   parentPath,
+          exchangePath: exchangePath,
+        );
+      }
 
       if (!batchResult.ok) {
         // ignore: avoid_print
@@ -4652,7 +4675,7 @@ class AppProvider extends ChangeNotifier {
           'outputLen=${assistantOutput.length} '
           'title="${title.substring(0, title.length.clamp(0, 40))}"');
       return const SessionPersistSynced();
-    } catch (e) {
+    } on Exception catch (e) {
       // ignore: avoid_print
       print('[SESSION_PERSIST][FAILED] requestId=${context.requestId} error=$e');
       return SessionPersistFailed(e);
