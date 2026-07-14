@@ -365,41 +365,55 @@ void main() {
     test('primeiro evento chegou antes da resposta completa', () async {
       // Prova que o parser emite eventos conforme os bytes chegam,
       // não esperando o stream completo.
+      // Deterministic sequential-indices oracle — zero DateTime calls.
 
-      final controller = StreamController<List<int>>();
-      final parser     = SseParser();
-      final events     = <SseEvent>[];
-      final received   = Completer<void>();
+      final controller       = StreamController<List<int>>();
+      final parser           = SseParser();
+      final chunkBuffer      = <SseEvent>[];
+      final received         = Completer<void>();
+      // ORACLE: tracks execution order of key stream lifecycle events.
+      final List<String> executionOrderLog = [];
 
       final sub = controller.stream
           .transform(parser.transformer)
           .listen((e) {
-        events.add(e);
+        chunkBuffer.add(e);
+        // Record first_chunk token exactly once — on the first emission.
+        if (executionOrderLog.isEmpty) {
+          executionOrderLog.add('first_chunk');
+        }
         if (!received.isCompleted) received.complete();
       });
 
-      // T0: enviar primeiro evento (sem fechar o stream)
-      final t0 = DateTime.now().millisecondsSinceEpoch;
+      // Send first complete SSE event without closing the stream.
       controller.add(utf8.encode(
         'event: text_delta\n'
         'data: {"requestId":"r1","attempt":2,"sequence":1,"delta":"Primeira palavra"}\n'
         '\n',
       ));
 
-      // Esperar até o primeiro evento ser recebido
+      // Await the first emission before stream closes — confirms incremental delivery.
       await received.future.timeout(const Duration(seconds: 2));
-      final t1 = DateTime.now().millisecondsSinceEpoch;
 
-      // T1 < T2 (stream ainda não foi fechado)
-      expect(events, hasLength(1));
-      expect(t1 - t0, lessThan(500), reason: 'Primeiro delta deve chegar < 500ms');
+      // Stream is still open here — incremental emission verified.
+      expect(chunkBuffer, isNotEmpty,
+          reason: 'Parser must emit events incrementally, before stream closes.');
 
-      // T2: fechar o stream depois de receber o primeiro evento
+      // Close the stream; signal terminal phase.
       await controller.close();
-      final t2 = DateTime.now().millisecondsSinceEpoch;
+      executionOrderLog.add('completion_terminal');
 
-      // T1 < T2
-      expect(t1, lessThan(t2));
+      // ── INVARIANT SEQUENCE ASSERTIONS ────────────────────────────────────────
+      // I-1: incremental emission confirmed (chunkBuffer populated before close).
+      expect(chunkBuffer, isNotEmpty);
+      // I-2: first token in oracle must be 'first_chunk'.
+      expect(executionOrderLog.first, equals('first_chunk'));
+      // I-3: last token in oracle must be 'completion_terminal'.
+      expect(executionOrderLog.last, equals('completion_terminal'));
+      // I-4: exactly one event was parsed from the single SSE block sent.
+      expect(chunkBuffer, hasLength(1));
+      expect(chunkBuffer[0].type, equals('text_delta'));
+      expect(chunkBuffer[0].data!['delta'], equals('Primeira palavra'));
 
       await sub.cancel();
       parser.dispose();

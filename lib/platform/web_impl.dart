@@ -1,10 +1,11 @@
-// Implementação real para Web — usa dart:html e dart:js
+// Implementação real para Web — usa dart:html e dart:js_interop
 // Este arquivo SÓ é importado quando kIsWeb == true (via conditional import)
 
-// ignore: avoid_web_libraries_in_flutter
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
-// ignore: avoid_web_libraries_in_flutter
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:js' as js;
+import 'dart:js_interop';
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -74,8 +75,10 @@ Future<String> _runOcr(String dataUrl) async {
     '''(function(){ return Tesseract.recognize("$dataUrl","por+spa").then(r=>r.data.text); })()'''
   ]);
   final obj = js.JsObject.fromBrowserObject(promise);
-  obj.callMethod('then', [js.allowInterop((dynamic v) => c.complete(v?.toString() ?? ''))]);
-  obj.callMethod('catch', [js.allowInterop((dynamic e) => c.completeError(e?.toString() ?? 'OCR error'))]);
+  // [PILLAR TASK 2] L77: allowInterop removed — explicit closure wrapper with .toJS
+  obj.callMethod('then', [((JSAny? v) => c.complete((v as dynamic)?.toString() ?? '')).toJS]);
+  // [PILLAR TASK 2] L78: allowInterop removed — explicit closure wrapper with .toJS
+  obj.callMethod('catch', [((JSAny? e) => c.completeError((e as dynamic)?.toString() ?? 'OCR error')).toJS]);
   return c.future;
 }
 
@@ -126,7 +129,8 @@ class WebSpeechRecognizer {
     // Para maximizar precisão médica, usamos maxAlternatives=3 (o browser retorna
     // as 3 transcrições mais prováveis — o plugin usa a de maior confiança [0]).
 
-    recog['onresult'] = js.allowInterop((dynamic event) {
+    // [PILLAR TASK 2] L129: allowInterop removed — typed JSAny? wrapper with .toJS
+    recog['onresult'] = ((JSAny? event) {
       try {
         final ev      = event as js.JsObject;
         final results = ev['results'] as js.JsObject;
@@ -138,27 +142,29 @@ class WebSpeechRecognizer {
           final isFinal  = r['isFinal'] as bool? ?? false;
           final alt      = js.JsObject.fromBrowserObject(r.callMethod('item', [0]) ?? r[0]);
           final text     = alt['transcript'] as String? ?? '';
-          if (isFinal) onResult(text, true) ; else interim += text;
+          if (isFinal) { onResult(text, true); } else { interim += text; }
         }
         if (interim.isNotEmpty) onResult(interim, false);
       } catch (_) {}
-    });
+    }).toJS;
 
-    recog['onerror'] = js.allowInterop((dynamic event) {
+    // [PILLAR TASK 2] L147: allowInterop removed — typed JSAny? wrapper with .toJS
+    recog['onerror'] = ((JSAny? event) {
       String? code;
       try { code = (event as js.JsObject)['error'] as String?; } catch (_) {}
       if (code == 'no-speech') return;
       _listening = false;
       onError(code);
-    });
+    }).toJS;
 
-    recog['onend'] = js.allowInterop((dynamic _) {
+    // [PILLAR TASK 2] L155: allowInterop removed — typed JSAny? wrapper with .toJS
+    recog['onend'] = ((JSAny? _) {
       if (_listening && _activeKey == key) {
         try { recog.callMethod('start', []); return; } catch (_) {}
       }
       _listening = false;
       onEnd();
-    });
+    }).toJS;
 
     recog.callMethod('start', []);
     _recog     = recog;
