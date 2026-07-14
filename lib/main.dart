@@ -94,16 +94,17 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // ── MICRO-BUILD 462E-A.5.3.7.3.2.3: Runtime boot identity verification ──
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.3.1: Runtime boot identity verification ──
   // Emitted immediately after WidgetsFlutterBinding — before any async work.
   // Proves that the active browser cache is executing our latest compiled code
   // and prevents service-worker stale-caching from silently serving old bundles.
+  // Values injected at compile time via --dart-define; never hardcoded.
   // Format is machine-parseable for CI log scraping.
+  const String buildCommit   = String.fromEnvironment('BUILD_COMMIT',   defaultValue: 'unknown');
+  const String bundleVersion = String.fromEnvironment('BUNDLE_VERSION', defaultValue: 'dev');
+  const String builtAt       = String.fromEnvironment('BUILT_AT',       defaultValue: 'unknown');
   // ignore: avoid_print
-  print('[BUILD_COMMIT] '
-      'sha=ee9a1799753ec5ab974579a7e19ea529fa73b665 '
-      'bundleVersion=1.0.0+3467 '
-      'builtAt=2026-07-14T18:00:00');
+  print('[BUILD_COMMIT]\nsha=$buildCommit\nbundleVersion=$bundleVersion\nbuiltAt=$builtAt');
 
   // Cria o provider — sem await aqui, boot é disparado em background.
   final provider = AppProvider();

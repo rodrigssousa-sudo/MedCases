@@ -1,11 +1,12 @@
-// update_service_web.dart — Implementação Web usando dart:js.
+// update_service_web.dart — Implementação Web usando dart:js / dart:js_interop.
 //
 // Este arquivo é compilado APENAS na plataforma Web (conditional import).
 // iOS/Android usam update_service_stub.dart, que não importa dart:js.
 // Resolve o erro "Undefined name 'context'" no compilador nativo (Xcode).
 
-// ignore: avoid_web_libraries_in_flutter
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:js' as js;
+import 'dart:js_interop';
 import 'package:flutter/foundation.dart';
 
 /// Registra `window.onFlutterWebUpdateAvailable` no JS e verifica se já
@@ -27,7 +28,8 @@ void setupUpdateListenerImpl(void Function() onUpdate) {
     final viewportWidth = _getViewportWidth();
     final isMobileWeb = viewportWidth < 768;
 
-    js.context['onFlutterWebUpdateAvailable'] = js.allowInterop(() {
+    // [CC1] L30: allowInterop removed — parameterless closure wrapped with .toJS
+    js.context['onFlutterWebUpdateAvailable'] = (() {
       // No mobile, não notifica o Dart — o JS já exibiu o toast HTML
       if (isMobileWeb) {
         debugPrint('[UpdateService] Mobile web — notificação de SW bloqueada (toast HTML ativo).');
@@ -35,7 +37,7 @@ void setupUpdateListenerImpl(void Function() onUpdate) {
       }
       debugPrint('[UpdateService] Nova versão do SW detectada — update disponível (desktop).');
       onUpdate();
-    });
+    }).toJS;
 
     // Race condition: SW pode ter sido detectado antes do Dart bootar.
     // BUILD 281: no mobile, _mcUpdatePending foi zerado pelo JS após 8s
