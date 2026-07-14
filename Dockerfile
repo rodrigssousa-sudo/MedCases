@@ -58,6 +58,13 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copia nossa config Nginx customizada (anti-cache, SPA routing, health check)
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
+# ── PILAR 2: Runtime metadata bootstrapper ────────────────────────────────────
+# Hooks into nginx:alpine's /docker-entrypoint.d/ initialization sequence.
+# Runs BEFORE nginx starts — generates /deploy_meta.json from DO runtime env vars
+# (DEPLOY_COMMIT = ${_self.COMMIT_HASH}, BUNDLE_VERSION from app.yaml envs).
+COPY docker/40-generate-deploy-meta.sh /docker-entrypoint.d/40-generate-deploy-meta.sh
+RUN chmod +x /docker-entrypoint.d/40-generate-deploy-meta.sh
+
 # Copia os artefatos do Flutter Web compilados no estágio anterior
 COPY --from=build-env /app/build/web /usr/share/nginx/html
 
