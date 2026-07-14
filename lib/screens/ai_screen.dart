@@ -1278,7 +1278,7 @@ class _AiScreenState extends State<AiScreen> {
         _sessionsLoadGeneration++;
         final int myGeneration = _sessionsLoadGeneration;
 
-        final outcome = await p.loadAiSessionsTypedForUi(uid);
+        final outcome = await p.loadAiSessionsTypedForUi(uid, caller: '_loadChatHistory');
 
         // UI-side stale-epoch guard: if this widget was rebuilt and a new
         // _loadChatHistory() started while we awaited, discard silently.
@@ -1449,6 +1449,24 @@ class _AiScreenState extends State<AiScreen> {
   /// user-send save e AI-response save geravam IDs diferentes (timestamps
   /// distintos), resultando em dois documentos Firestore para o mesmo chat.
   Future<void> _saveCurrentSessionToHistory(AppProvider p) async {
+    // MICRO-BUILD 462E-A.5.3.7.3 — DISPOSE GUARD:
+    // Resolve active session identity and uid defensively before any access.
+    // This replaces scattered null-assertion flow control with a single clean
+    // early-return that covers the dispose lifecycle path, where widget state
+    // may be partially torn down and context may no longer be reliable.
+    //
+    // currentSession: the active session id — either the restored session or the
+    //   in-flight session that has already been assigned an id.
+    // currentUid:     the Firebase user id — resolved via _resolveUid() which
+    //   checks both the SDK user and the REST contingency user.
+    final String? currentSession = _restoredSessionId ?? _activeSessionId;
+    final String? currentUid = _resolveUid(p);
+    if (currentSession == null || currentUid == null || _messages.isEmpty) {
+      debugPrint('[AI_SCREEN][DISPOSE_SAVE] skipped reason=missing_context_or_empty '
+          'session=$currentSession uid=$currentUid msgCount=${_messages.length}');
+      return;
+    }
+
     // Filtra só mensagens reais (exclui saudação inicial)
     final userMsgs = _messages.where((m) => m.role == 'user').toList();
     if (userMsgs.isEmpty) return;

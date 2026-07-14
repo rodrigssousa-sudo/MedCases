@@ -2614,15 +2614,20 @@ class AppProvider extends ChangeNotifier {
   //   UiLoadApplied(offline())      → freeze + show offline SnackBar
   //   UiLoadApplied(failure(e))     → freeze + log runtimeType
   //
-  // TELEMETRY:
-  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... result=applied gen=...
-  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... result=discarded reason=stale_generation
-  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... reuse in-flight future
+  // TELEMETRY (MICRO-BUILD 462E-A.5.3.7.3):
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] providerInstanceId=<hash> caller=<caller> uid=<uid> generation=<gen> currentGeneration=<_sessionsLoadGeneration> result=applied
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] providerInstanceId=<hash> caller=<caller> uid=<uid> generation=<gen> currentGeneration=<_sessionsLoadGeneration> result=discarded reason=stale_generation
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] providerInstanceId=<hash> caller=<caller> uid=<uid> result=reuse_in_flight
   Future<UiLoadOutcome<List<Map<String, dynamic>>>> loadAiSessionsTypedForUi(
-      String uid) async {
+      String uid, {String caller = 'unknown'}) async {
+    // Stable per-instance hash for log correlation across concurrent calls.
+    final String instanceId = hashCode.toRadixString(16);
+
     // ── Single-flight reuse: same UID already in flight ───────────────────
     if (_sessionsLoadInFlight != null && _sessionsLoadUid == uid) {
-      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid reuse in-flight future');
+      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] '
+          'providerInstanceId=$instanceId caller=$caller uid=$uid '
+          'result=reuse_in_flight');
       // Await the shared future and wrap as applied (generation is still ours).
       FirestoreLoadResult<List<Map<String, dynamic>>> reusedResult;
       try {
@@ -2659,19 +2664,28 @@ class AppProvider extends ChangeNotifier {
       }
     }
 
-    // ── Stale-epoch guard ─────────────────────────────────────────────────
-    // Generation was bumped by a newer call while we were awaiting.
-    // This is a chronological lifecycle event — return UiLoadDiscarded so the
-    // caller skips all state-tree mutations silently.
+    // ── Stale-epoch guard (MICRO-BUILD 462E-A.5.3.7.3) ───────────────────
+    // A generation mismatch means a newer call has superseded this one while we
+    // were awaiting the Firestore fetch — return UiLoadDiscarded so the caller
+    // skips all state-tree mutations silently.
+    //
+    // Note: _sessionsLoadUid is cleared to null by the DRAIN GUARD above when
+    // this IS still the current generation (generation matches AND future
+    // identity matches). We therefore use the generation counter as the sole
+    // stale-epoch discriminant here to avoid a false-discard of a successful,
+    // current-epoch load caused by the null-after-drain value of _sessionsLoadUid.
     if (_sessionsLoadGeneration != generation) {
-      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid '
-          'result=discarded reason=stale_generation '
-          'myGen=$generation currentGen=$_sessionsLoadGeneration');
+      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] '
+          'providerInstanceId=$instanceId caller=$caller uid=$uid '
+          'generation=$generation currentGeneration=$_sessionsLoadGeneration '
+          'result=discarded reason=stale_generation');
       return const UiLoadDiscarded(reason: 'stale_generation');
     }
 
-    debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid '
-        'result=applied gen=$generation inner=${result.runtimeType}');
+    debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] '
+        'providerInstanceId=$instanceId caller=$caller uid=$uid '
+        'generation=$generation currentGeneration=$_sessionsLoadGeneration '
+        'result=applied');
     return UiLoadApplied(result);
   }
 
@@ -5694,6 +5708,20 @@ class AppProvider extends ChangeNotifier {
     /// Delegates to _freeStreamTxn.tryAcquireOwnership(source) which emits
     /// [AI_TERMINAL_OWNER][ACQUIRED] on win or [AI_TERMINAL_OWNER][REJECTED]
     /// on contention.
+    ///
+    /// [EXT_TOOL_GATE] CONTRACT — MICRO-BUILD 462E-A.5.3.7.3:
+    ///   • resolveExternalToolExactlyOnce / EXT_TOOL_GATE triggers MUST execute
+    ///     EXACTLY ONCE per requestId, strictly inside the terminal ownership block.
+    ///   • Permitted call sites: stream chunk.isDone handlers, onDone callbacks,
+    ///     onError callbacks, timeout timers, and paid-fallback resolvers —
+    ///     all of which are downstream of tryAcquireTerminalOwnership().
+    ///   • FORBIDDEN: EXT_TOOL_GATE triggers inside stream delta listeners (before
+    ///     isDone), first-delta callbacks, or unawaited futures that bypass the
+    ///     RESUME_COORDINATOR completion event.
+    ///   • All releaseCanonicalDecision() call-sites in this function are
+    ///     co-located with completeAiRequest() and appear only after the terminal
+    ///     pipeline (wrappedOnDone/wrappedOnError) has executed.
+    ///
     /// Returns true when the caller is the WINNER — it must execute the full
     /// 7-step pipeline (RAW_AI_OUTPUT → TRUNCATION_CHECK → RESPONSE_VALIDATOR
     /// → SessionDedup.save → EXT_TOOL_GATE → EXT_TOOL_CACHE[RELEASE] →
