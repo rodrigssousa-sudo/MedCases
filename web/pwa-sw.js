@@ -88,10 +88,29 @@ self.addEventListener('fetch', event => {
   // Handles ?ts= cache-busting query params via pathname check.
   // Fail-safe .catch() returns a structured unavailable JSON response —
   // prevents silent failures and unhandled promise rejections in the console.
-  if (new URL(url).pathname.endsWith('/deploy_meta.json')) {
+  const requestUrl = new URL(event.request.url);
+
+  if (
+    requestUrl.origin === self.location.origin &&
+    requestUrl.pathname === '/deploy_meta.json'
+  ) {
     event.respondWith(
-      fetch(event.request, { cache: 'no-store' })
-        .catch(() => Response.json({ status: 'unavailable', reason: 'network_error' }))
+      fetch(event.request, { cache: 'no-store' }).catch(
+        () =>
+          new Response(
+            JSON.stringify({
+              status: 'unavailable',
+              reason: 'network_error',
+            }),
+            {
+              status: 503,
+              headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-store',
+              },
+            },
+          ),
+      ),
     );
     return;
   }
