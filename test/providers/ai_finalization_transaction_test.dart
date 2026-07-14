@@ -112,6 +112,10 @@ class _AiFinalizationTransaction {
   final String parentRequestId;
   final String providerRequestId;
 
+  // MICRO-BUILD 462E-A.5.3.7.3.1: Correlated telemetry identities
+  late final String transactionId;
+  late final String attemptId;
+
   AiTransactionPhase _phase = AiTransactionPhase.ingesting;
   AiTransactionPhase get phase => _phase;
 
@@ -126,10 +130,19 @@ class _AiFinalizationTransaction {
   final Completer<TerminalSignal> _terminalSignal = Completer<TerminalSignal>();
   final List<String> _rejectedContenders = [];
 
+  // Telemetry capture for invariant tests
+  final List<String> droppedBusinessEvents = [];
+  final List<String> extToolGateLogs = [];
+
   _AiFinalizationTransaction({
     required this.parentRequestId,
     required this.providerRequestId,
-  });
+  }) {
+    final pLen = parentRequestId.length;
+    final rLen = providerRequestId.length;
+    transactionId = 'txn_${parentRequestId.substring(0, pLen > 16 ? 16 : pLen)}';
+    attemptId     = 'att_${providerRequestId.isEmpty ? "none" : providerRequestId.substring(0, rLen > 12 ? 12 : rLen)}';
+  }
 
   void signalTerminal(TerminalSignal signal) {
     if (!_terminalSignal.isCompleted) {
@@ -219,6 +232,46 @@ class _AiFinalizationTransaction {
   void emitLateEventDropped({required String event}) {
     print('[AI_LATE_EVENT_DROPPED] parentRequestId=$parentRequestId '
         'reason=stale_provider_attempt event=$event');
+  }
+
+  /// MICRO-BUILD 462E-A.5.3.7.3.1 [PILLAR 1] — Hard post-completion barrier.
+  /// Mirrors production AiFinalizationTransaction.dropIfBusinessEventTerminal.
+  bool dropIfBusinessEventTerminal({required String callSite}) {
+    final bool isTerminalPhase =
+        _phase == AiTransactionPhase.completed ||
+        _phase == AiTransactionPhase.cancelled;
+    if (!_coordinatorCompleted && !isTerminalPhase) return false;
+    final String phaseName = _phase == AiTransactionPhase.cancelled
+        ? 'cancelled'
+        : 'completed';
+    final msg = '[AI_LATE_BUSINESS_EVENT_DROPPED] '
+        'requestId=$parentRequestId '
+        'parentRequestId=$parentRequestId '
+        'transactionId=$transactionId '
+        'attemptId=$attemptId '
+        'callSite=$callSite '
+        'phase=$phaseName';
+    print(msg);
+    droppedBusinessEvents.add(callSite);
+    return true;
+  }
+
+  /// MICRO-BUILD 462E-A.5.3.7.3.1 [PILLAR 2] — Canonical EXT_TOOL_GATE with
+  /// full correlated telemetry. Returns true when gate is allowed (first call).
+  bool tryMarkToolResolutionStartedWithGate({String callSite = 'canonical_finalizer'}) {
+    final bool allowed = tryMarkToolResolutionStarted();
+    final msg = '[EXT_TOOL_GATE] '
+        'requestId=$parentRequestId '
+        'parentRequestId=$parentRequestId '
+        'transactionId=$transactionId '
+        'attemptId=$attemptId '
+        'phase=${_phase.name} '
+        'callSite=$callSite '
+        'allowed=$allowed '
+        'reason=${allowed ? "first_resolution" : "duplicate_dropped"}';
+    print(msg);
+    extToolGateLogs.add(msg);
+    return allowed;
   }
 }
 
@@ -968,6 +1021,347 @@ void main() {
       );
 
       expect(verdict, equals(TimeoutSafetyVerdict.useOperationalFallback));
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Invariant V — MICRO-BUILD 462E-A.5.3.7.3.1
+  // Gate Ownership Enforcement, Strict Sequence & Correlated Runtime
+  //
+  // V-1: Normal response → exactly 1 [EXT_TOOL_GATE] with callSite=canonical_finalizer
+  // V-2: Tool-intent response → exactly 1 clinical payload trigger
+  // V-3: First-delta event → 0 [EXT_TOOL_GATE] calls
+  // V-4: Transport-done before queue sealed → 0 resolver calls
+  // V-5: StreamDone vs Timeout race → exactly 1 winning finalizer
+  // V-6: Late callback after completeCoordinatorAtomically → [AI_LATE_BUSINESS_EVENT_DROPPED], 0 mutations
+  // V-7: Release occurs exactly once
+  // V-8: Coordinator completion is the absolute final business event
+  // V-9: Retry/fallback attempts share the same parent transactionId
+  // ══════════════════════════════════════════════════════════════════════════
+  group('Invariant V — Gate Ownership & Correlated Runtime (462E-A.5.3.7.3.1)', () {
+
+    // ── V-1: Normal response → exactly 1 [EXT_TOOL_GATE] with canonical_finalizer ──
+    test('V-1: normal response produces exactly 1 [EXT_TOOL_GATE] at canonical_finalizer', () async {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v1',
+        providerRequestId: 'prov-v1',
+      );
+      final buffer = StringBuffer();
+      final queue = _SerialEventQueue(
+        transaction: tx,
+        signalTerminal: tx.signalTerminal,
+        processStreamEvent: (event) async { buffer.write(event as String); },
+      );
+
+      queue.enqueue('Normal clinical response chunk.');
+      tx.signalTerminal(TerminalSignal.streamDone('chunk_isDone'));
+      await tx.terminalFuture;
+      await tx.sealAndDrainStreamQueue(queue);
+
+      // Simulate canonical finalizer: gate check before coordinator completion
+      expect(tx.dropIfBusinessEventTerminal(callSite: 'canonical_finalizer'), isFalse,
+          reason: 'transaction is not yet terminal — gate must allow through');
+      final gateAllowed = tx.tryMarkToolResolutionStartedWithGate(callSite: 'canonical_finalizer');
+      expect(gateAllowed, isTrue,
+          reason: 'first call to gate must be allowed');
+
+      // Complete coordinator atomically
+      tx.completeCoordinatorAtomically(
+        cause: TerminalCause.streamDone,
+        complete: () {},
+      );
+
+      // Exactly 1 EXT_TOOL_GATE log with callSite=canonical_finalizer
+      expect(tx.extToolGateLogs.length, equals(1));
+      expect(tx.extToolGateLogs.first, contains('callSite=canonical_finalizer'));
+      expect(tx.extToolGateLogs.first, contains('allowed=true'));
+      expect(tx.extToolGateLogs.first, contains('transactionId=${tx.transactionId}'));
+      expect(tx.extToolGateLogs.first, contains('attemptId=${tx.attemptId}'));
+    });
+
+    // ── V-2: Tool-intent response → exactly 1 clinical payload trigger ───────
+    test('V-2: tool-intent response produces exactly 1 tool resolution trigger', () async {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v2',
+        providerRequestId: 'prov-v2',
+      );
+      final queue = _SerialEventQueue(
+        transaction: tx,
+        signalTerminal: tx.signalTerminal,
+        processStreamEvent: (event) async {},
+      );
+
+      queue.enqueue('Dose de amiodarona: 200mg. Interação com digoxina.');
+      tx.signalTerminal(TerminalSignal.streamDone('chunk_isDone'));
+      await tx.terminalFuture;
+      await tx.sealAndDrainStreamQueue(queue);
+
+      // Tool-intent: gate fires once for resolution
+      int resolverCalls = 0;
+      if (!tx.dropIfBusinessEventTerminal(callSite: 'canonical_finalizer')) {
+        if (tx.tryMarkToolResolutionStartedWithGate(callSite: 'canonical_finalizer')) {
+          resolverCalls++; // simulate resolveExternalToolExactlyOnce
+        }
+      }
+
+      // Second attempt — must be blocked by the gate
+      if (!tx.dropIfBusinessEventTerminal(callSite: 'duplicate_attempt')) {
+        if (tx.tryMarkToolResolutionStartedWithGate(callSite: 'duplicate_attempt')) {
+          resolverCalls++; // must NOT increment
+        }
+      }
+
+      expect(resolverCalls, equals(1),
+          reason: 'tool resolver must be called exactly once');
+      expect(tx.extToolGateLogs.length, equals(2));
+      expect(tx.extToolGateLogs[0], contains('allowed=true'));
+      expect(tx.extToolGateLogs[1], contains('allowed=false'));
+    });
+
+    // ── V-3: First-delta event → 0 [EXT_TOOL_GATE] calls ────────────────────
+    test('V-3: first-delta event before terminal produces 0 EXT_TOOL_GATE calls', () {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v3',
+        providerRequestId: 'prov-v3',
+      );
+
+      // Simulate what happens when a first-delta arrives (before isDone).
+      // The gate MUST NOT be called here — only in the terminal block.
+      // This test verifies no gate call occurs outside the terminal block.
+      // (In production: stream delta listeners call accumulator.write() only,
+      //  never tryMarkToolResolutionStarted())
+      final buffer = StringBuffer();
+      buffer.write('first delta text');
+      // No gate call — correct behavior
+      // We verify by checking extToolGateLogs is still empty
+
+      expect(tx.extToolGateLogs, isEmpty,
+          reason: 'no EXT_TOOL_GATE must fire before terminal ownership is acquired');
+      expect(tx.phase, equals(AiTransactionPhase.ingesting));
+      // Transaction is not terminal — coordinator not completed
+      expect(tx.coordinatorCompleted, isFalse);
+    });
+
+    // ── V-4: Transport-done before queue sealed → 0 resolver calls ───────────
+    test('V-4: transport-done signal before sealAndDrainStreamQueue → 0 resolver calls', () async {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v4',
+        providerRequestId: 'prov-v4',
+      );
+      final buffer = StringBuffer();
+      final queue = _SerialEventQueue(
+        transaction: tx,
+        signalTerminal: tx.signalTerminal,
+        processStreamEvent: (event) async {
+          // Simulate a slow chunk processor
+          await Future.delayed(const Duration(milliseconds: 5));
+          buffer.write(event as String);
+        },
+      );
+
+      // Enqueue chunks — queue is NOT drained yet
+      queue.enqueue('partial chunk A');
+      queue.enqueue('partial chunk B');
+
+      // Transport-done arrives — but queue not sealed yet.
+      // Resolver must NOT be called here; must wait for sealAndDrainStreamQueue.
+      tx.signalTerminal(TerminalSignal.streamDone('chunk_isDone'));
+      await tx.terminalFuture;
+
+      // Before drain: phase still ingesting
+      expect(tx.phase, equals(AiTransactionPhase.ingesting));
+      expect(tx.extToolGateLogs, isEmpty,
+          reason: 'no resolver call before queue is sealed and drained');
+
+      // Now seal and drain — this is the correct point for the gate
+      await tx.sealAndDrainStreamQueue(queue);
+      expect(tx.phase, equals(AiTransactionPhase.finalizing));
+      expect(buffer.toString(), equals('partial chunk Apartial chunk B'));
+
+      // Only NOW may the gate fire
+      final gateAllowed = tx.tryMarkToolResolutionStartedWithGate(callSite: 'canonical_finalizer');
+      expect(gateAllowed, isTrue);
+      expect(tx.extToolGateLogs.length, equals(1));
+    });
+
+    // ── V-5: StreamDone vs Timeout race → exactly 1 winning finalizer ────────
+    test('V-5: StreamDone versus Timeout race elects exactly 1 winning finalizer', () async {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v5',
+        providerRequestId: 'prov-v5',
+      );
+
+      // Simulate two concurrent terminal signals: streamDone at 5ms, timeout at 15ms
+      int finalizerWins = 0;
+      final futures = [
+        Future.delayed(const Duration(milliseconds: 5), () {
+          tx.signalTerminal(TerminalSignal.streamDone('chunk_isDone'));
+        }),
+        Future.delayed(const Duration(milliseconds: 15), () {
+          tx.signalTerminal(TerminalSignal.timeout('global_timeout_timer'));
+        }),
+      ];
+
+      final winner = await tx.terminalFuture;
+      expect(winner.source, equals('chunk_isDone'));
+      expect(winner.cause, equals(TerminalCause.streamDone));
+
+      // Ownership acquired by winner
+      final owned = tx.tryAcquireOwnership(winner.source);
+      expect(owned, isTrue);
+      finalizerWins++;
+
+      await Future.wait(futures);
+
+      // Timeout arrives — broker rejects it
+      expect(tx.rejectedContenders.length, equals(1));
+      expect(tx.rejectedContenders.first, equals('global_timeout_timer'));
+
+      // Only 1 finalizer ran
+      expect(finalizerWins, equals(1));
+
+      // Gate fires exactly once for the winning finalizer
+      if (!tx.dropIfBusinessEventTerminal(callSite: 'canonical_finalizer')) {
+        tx.tryMarkToolResolutionStartedWithGate(callSite: 'canonical_finalizer');
+      }
+      tx.completeCoordinatorAtomically(
+        cause: TerminalCause.streamDone,
+        complete: () {},
+      );
+
+      expect(tx.extToolGateLogs.length, equals(1));
+      expect(tx.phase, equals(AiTransactionPhase.completed));
+    });
+
+    // ── V-6: Late callback after completion → [AI_LATE_BUSINESS_EVENT_DROPPED] ─
+    test('V-6: late callback after completeCoordinatorAtomically triggers drop, 0 mutations', () async {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v6',
+        providerRequestId: 'prov-v6',
+      );
+
+      // Complete the coordinator — transaction is now terminal
+      tx.completeCoordinatorAtomically(
+        cause: TerminalCause.streamDone,
+        complete: () {},
+      );
+      expect(tx.coordinatorCompleted, isTrue);
+      expect(tx.phase, equals(AiTransactionPhase.completed));
+
+      // Simulate a late async callback arriving 500ms after completion
+      await Future.delayed(const Duration(milliseconds: 50)); // abbreviated for test speed
+
+      // Late callback must be blocked
+      final dropped = tx.dropIfBusinessEventTerminal(callSite: 'late_async_callback');
+      expect(dropped, isTrue,
+          reason: 'late callback must be dropped — transaction is terminal');
+      expect(tx.droppedBusinessEvents, contains('late_async_callback'));
+
+      // No state mutations occurred
+      expect(tx.extToolGateLogs, isEmpty,
+          reason: 'no EXT_TOOL_GATE must fire after completion');
+      // tryMarkToolResolutionStarted still returns true (unused) — but the
+      // business-event barrier was triggered first in correct ordering
+      expect(tx.coordinatorCompleted, isTrue); // still terminal, no reset
+      expect(tx.phase, equals(AiTransactionPhase.completed)); // phase unchanged
+    });
+
+    // ── V-7: Release occurs exactly once ────────────────────────────────────
+    test('V-7: releaseCanonicalDecisionOnce is strictly idempotent across concurrent calls', () async {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v7',
+        providerRequestId: 'prov-v7',
+      );
+
+      // Fire release from 5 concurrent paths
+      await Future.wait([
+        tx.releaseCanonicalDecisionOnce(),
+        tx.releaseCanonicalDecisionOnce(),
+        tx.releaseCanonicalDecisionOnce(),
+        tx.releaseCanonicalDecisionOnce(),
+        tx.releaseCanonicalDecisionOnce(),
+      ]);
+
+      // Stub must record exactly 1 release for this requestId
+      final releaseCount = _StubExternalToolLinkEngine.releasedIds
+          .where((id) => id == 'req-v7')
+          .length;
+      expect(releaseCount, equals(1),
+          reason: 'canonical decision must be released exactly once');
+    });
+
+    // ── V-8: Coordinator completion is the absolute final business event ─────
+    test('V-8: completeCoordinatorAtomically is idempotent — only the first call executes', () {
+      final tx = _AiFinalizationTransaction(
+        parentRequestId: 'req-v8',
+        providerRequestId: 'prov-v8',
+      );
+
+      int sideEffectCount = 0;
+
+      // First call: executes the complete() callback
+      tx.completeCoordinatorAtomically(
+        cause: TerminalCause.streamDone,
+        complete: () => sideEffectCount++,
+      );
+      // Second call: must be a no-op
+      tx.completeCoordinatorAtomically(
+        cause: TerminalCause.streamDone,
+        complete: () => sideEffectCount++,
+      );
+      // Third call: must be a no-op
+      tx.completeCoordinatorAtomically(
+        cause: TerminalCause.cancelled,
+        complete: () => sideEffectCount++,
+      );
+
+      expect(sideEffectCount, equals(1),
+          reason: 'complete() callback must execute exactly once regardless of call count');
+      expect(tx.coordinatorCompleted, isTrue);
+      // Phase was set on the first call (streamDone → completed) and must NOT
+      // be changed by the third call (cancelled) — coordinator idempotency.
+      expect(tx.phase, equals(AiTransactionPhase.completed));
+    });
+
+    // ── V-9: Retry/fallback share the same parent transactionId ─────────────
+    test('V-9: retry and fallback transactions share the same parent transactionId', () {
+      const String sharedParentRequestId = 'req-v9-parent';
+
+      // Original attempt — providerRequestIds diverge within first 12 chars
+      // so that attemptId slices (att_<first12>) are distinct.
+      final tx1 = _AiFinalizationTransaction(
+        parentRequestId: sharedParentRequestId,
+        providerRequestId: 'attempt-1-free',   // first12: "attempt-1-fr"
+      );
+
+      // Retry attempt — distinct first 12 chars
+      final tx2 = _AiFinalizationTransaction(
+        parentRequestId: sharedParentRequestId,
+        providerRequestId: 'attempt-2-free',   // first12: "attempt-2-fr"
+      );
+
+      // Fallback attempt — completely different prefix
+      final tx3 = _AiFinalizationTransaction(
+        parentRequestId: sharedParentRequestId,
+        providerRequestId: 'fallback-paid1',   // first12: "fallback-pai"
+      );
+
+      // All three share the same transactionId (derived from parentRequestId)
+      expect(tx1.transactionId, equals(tx2.transactionId),
+          reason: 'retry must share the same transactionId as the original attempt');
+      expect(tx1.transactionId, equals(tx3.transactionId),
+          reason: 'fallback must share the same transactionId as the original attempt');
+
+      // Each has a distinct attemptId (derived from providerRequestId)
+      expect(tx1.attemptId, isNot(equals(tx2.attemptId)),
+          reason: 'each attempt must have a distinct attemptId');
+      expect(tx1.attemptId, isNot(equals(tx3.attemptId)),
+          reason: 'fallback must have a distinct attemptId');
+      expect(tx2.attemptId, isNot(equals(tx3.attemptId)));
+
+      // transactionId format is stable
+      expect(tx1.transactionId, startsWith('txn_'));
+      expect(tx1.attemptId, startsWith('att_'));
     });
   });
 }

@@ -666,12 +666,19 @@ class ExternalToolLinkEngine {
 
   /// Returns an [ExternalToolLink] if a relevant external tool is detected,
   /// or null if no match found.
+  ///
+  /// [requestId], [transactionId], [attemptId] — optional correlated telemetry
+  /// fields for [EXT_TOOL_GATE] log lines (MICRO-BUILD 462E-A.5.3.7.3.1).
+  /// Pass empty strings when not available (e.g., UI-layer widget rebuilds).
   static ExternalToolLink? build({
     required String lastUserMessage,
     required String lastAiResponse,
     required bool isPlantaoMode,
     required String currentLanguage,
     String activeThreadTopic = '', // BUILD 249: active thread topic for stale-detection guard
+    String requestId    = '',      // MICRO-BUILD 462E-A.5.3.7.3.1: correlated telemetry
+    String transactionId = '',     // MICRO-BUILD 462E-A.5.3.7.3.1: correlated telemetry
+    String attemptId    = '',      // MICRO-BUILD 462E-A.5.3.7.3.1: correlated telemetry
   }) {
     // ── Resolve lang (priority: explicit > text-detect > fallback pt) ──────
     final String lang = _resolveLang(currentLanguage, lastUserMessage, lastAiResponse);
@@ -695,9 +702,17 @@ class ExternalToolLinkEngine {
     final bool intentAllowed = intent != ExternalToolIntent.none;
 
     // ── [EXT_TOOL_GATE] Telemetry ─────────────────────────────────────────
+    // MICRO-BUILD 462E-A.5.3.7.3.1 [PILLAR 3]: Full correlated telemetry.
+    // requestId/transactionId/attemptId are empty when called from UI layer
+    // (widget rebuild); populated when called from the canonical pipeline.
     // ignore: avoid_print
-    print('[EXT_TOOL_GATE] source=original_user_input '
-        'intent=${intent.name} '
+    print('[EXT_TOOL_GATE] '
+        'requestId=${requestId.isEmpty ? "ui_layer" : requestId} '
+        'parentRequestId=${requestId.isEmpty ? "ui_layer" : requestId} '
+        'transactionId=${transactionId.isEmpty ? "ui_layer" : transactionId} '
+        'attemptId=${attemptId.isEmpty ? "ui_layer" : attemptId} '
+        'phase=resolving '
+        'callSite=external_tool_link_engine_build '
         'allowed=$intentAllowed '
         'reason=${intentAllowed ? "explicit_input_intent" : "no_explicit_intent"}');
 

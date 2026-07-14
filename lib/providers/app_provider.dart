@@ -376,6 +376,22 @@ class AiFinalizationTransaction {
   // Kept here for legacy call sites that reference it directly.
   final String providerRequestId;
 
+  // ── Correlated telemetry identities ────────────────────────────────────────
+  // MICRO-BUILD 462E-A.5.3.7.3.1: Immutable per-request identities for
+  // structured [EXT_TOOL_GATE] and [AI_LATE_BUSINESS_EVENT_DROPPED] telemetry.
+  //
+  // transactionId — generated exactly once per parent request lifetime.
+  //   Derived from parentRequestId; stable across retries and fallbacks.
+  //   Format: "txn_<first16chars_of_parentRequestId>"
+  //
+  // attemptId — bound to the providerRequestId supplied at construction.
+  //   Each retry or fallback creates a fresh AiFinalizationTransaction with a
+  //   new providerRequestId, producing a distinct attemptId while sharing the
+  //   same transactionId (same parentRequestId).
+  //   Format: "att_<first12chars_of_providerRequestId>"
+  late final String transactionId;
+  late final String attemptId;
+
   // ── Phase state machine ────────────────────────────────────────────────────
   AiTransactionPhase _phase = AiTransactionPhase.ingesting;
   AiTransactionPhase get phase => _phase;
@@ -397,7 +413,14 @@ class AiFinalizationTransaction {
   AiFinalizationTransaction({
     required this.parentRequestId,
     required this.providerRequestId,
-  });
+  }) {
+    // Derive stable identities from the immutable IDs at construction time.
+    // Slicing keeps log lines short while retaining sufficient uniqueness.
+    final pLen = parentRequestId.length;
+    final rLen = providerRequestId.length;
+    transactionId = 'txn_${parentRequestId.substring(0, pLen > 16 ? 16 : pLen)}';
+    attemptId     = 'att_${providerRequestId.isEmpty ? "none" : providerRequestId.substring(0, rLen > 12 ? 12 : rLen)}';
+  }
 
   // ── Terminal Signal Broker API ─────────────────────────────────────────────
 
@@ -528,6 +551,38 @@ class AiFinalizationTransaction {
         'providerRequestId=$providerReqId '
         'event=$event '
         'terminalState=completed');
+    return true;
+  }
+
+  /// Hard, synchronous post-completion barrier for business-level events.
+  ///
+  /// MICRO-BUILD 462E-A.5.3.7.3.1 — PILLAR 1:
+  /// Returns true and emits [AI_LATE_BUSINESS_EVENT_DROPPED] when the
+  /// transaction is already terminal (coordinator completed, or phase is
+  /// completed/cancelled). Returns false when the transaction is still active —
+  /// the caller may proceed with business logic.
+  ///
+  /// Invariants (enforced by the correlated log):
+  ///   • Zero state changes on true return.
+  ///   • Zero storage persist triggers on true return.
+  ///   • Zero coordinator re-completions on true return.
+  ///   • Every field in the log is immutable and set at construction time.
+  bool dropIfBusinessEventTerminal({required String callSite}) {
+    final bool isTerminalPhase =
+        _phase == AiTransactionPhase.completed ||
+        _phase == AiTransactionPhase.cancelled;
+    if (!_coordinatorCompleted && !isTerminalPhase) return false;
+    final String phaseName = _phase == AiTransactionPhase.cancelled
+        ? 'cancelled'
+        : 'completed';
+    // ignore: avoid_print
+    print('[AI_LATE_BUSINESS_EVENT_DROPPED] '
+        'requestId=$parentRequestId '
+        'parentRequestId=$parentRequestId '
+        'transactionId=$transactionId '
+        'attemptId=$attemptId '
+        'callSite=$callSite '
+        'phase=$phaseName');
     return true;
   }
 
@@ -6414,8 +6469,40 @@ class AppProvider extends ChangeNotifier {
             _aiStreamActive = false;
             aiChatProvider.setStreaming(false); // BUILD 326
             _aiStreamSub    = null;
+
+            // ── MICRO-BUILD 462E-A.5.3.7.3.1 [PILLAR 2]: EXT_TOOL_GATE ──────
+            // tryMarkToolResolutionStarted() is the atomic exactly-once gate that
+            // guards tool resolution inside the canonical finalizer. It is called
+            // AFTER persistence and BEFORE completeCoordinatorAtomically so that
+            // any late callback racing here after coordinator completion will be
+            // blocked by dropIfBusinessEventTerminal (Pillar 1).
+            //
+            // The gate is permitted here because:
+            //   1. tryAcquireTerminalOwnership('chunk_isDone') already returned true
+            //      — we are the single winning execution context.
+            //   2. sealAndDrainStreamQueue() semantics: phase=finalizing, queue drained.
+            //   3. Persistence (emitPersistTelemetry) committed above.
+            //
+            // All EXT_TOOL_GATE logs carry the full correlated telemetry set:
+            //   requestId, parentRequestId, transactionId, attemptId, phase,
+            //   callSite, allowed, reason.
+            if (!_freeStreamTxn.dropIfBusinessEventTerminal(callSite: 'canonical_finalizer')) {
+              final bool _toolGateAllowed = _freeStreamTxn.tryMarkToolResolutionStarted();
+              // ignore: avoid_print
+              print('[EXT_TOOL_GATE] '
+                  'requestId=${_freeStreamTxn.parentRequestId} '
+                  'parentRequestId=${_freeStreamTxn.parentRequestId} '
+                  'transactionId=${_freeStreamTxn.transactionId} '
+                  'attemptId=${_freeStreamTxn.attemptId} '
+                  'phase=${_freeStreamTxn.phase.name} '
+                  'callSite=canonical_finalizer '
+                  'allowed=$_toolGateAllowed '
+                  'reason=${_toolGateAllowed ? "first_resolution" : "duplicate_dropped"}');
+            }
+
             // MICRO-BUILD 462E-A.5.2: Rigid Transactional Termination Pyramid.
-            // Persistence committed above ↑ → UI emitted → releaseDecision → completeAiRequest LAST.
+            // Persistence committed above ↑ → EXT_TOOL_GATE checked ↑ →
+            // UI emitted → releaseDecision → completeAiRequest LAST.
             _freeStreamTxn.markCoordinatorCompleted();
             wrappedOnDone(finalText.isNotEmpty ? finalText : _lang == 'es'  // BUILD 254
                 ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
