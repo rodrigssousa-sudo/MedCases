@@ -868,6 +868,15 @@ class AppProvider extends ChangeNotifier {
   int _historyLoadGeneration = 0;
   // ─────────────────────────────────────────────────────────────────────────
 
+  // ── MICRO-BUILD 463-A.2.1.2: Single-Flight AI Sessions Load Latch ────────
+  // Mirrors the history latch pattern exactly. Prevents overlapping Firestore
+  // fetches triggered by initState, _onAuthStateChanged, and fast UI rebuilds.
+  // The generation counter invalidates stale completions from old UID epochs.
+  Future<FirestoreLoadResult<List<Map<String, dynamic>>>>? _sessionsLoadInFlight;
+  String? _sessionsLoadUid;
+  int _sessionsLoadGeneration = 0;
+  // ─────────────────────────────────────────────────────────────────────────
+
   String get publicLoadError => _publicLoadError;
 
   // ── Rastreamento de uso ────────────────────────────────────────────────────
@@ -2549,6 +2558,72 @@ class AppProvider extends ChangeNotifier {
           'uid=$uid result=${result.runtimeType} → cache frozen');
     }
 
+    return result;
+  }
+
+  // ── MICRO-BUILD 463-A.2.1.2: Single-Flight AI Sessions Load ──────────────
+  //
+  // Provides the request-scoped single-flight generation latch for AI session
+  // retrieval, preventing overlapping async calls from initState, reconnect
+  // loops, or fast UI rebuilds from producing concurrent Firestore fetches.
+  //
+  // SINGLE-FLIGHT CONTRACT:
+  //   • If a query is already in flight for the same UID → reuse the Future.
+  //   • If a new UID arrives → bump generation, start fresh, drop stale completions.
+  //   • Stale epoch completions (from a prior generation) are dropped silently —
+  //     the caller receives authDenied() as a safe freeze sentinel.
+  //
+  // ALGEBRAIC ROUTING (handled by the caller, ai_screen._loadChatHistory):
+  //   success(data)  → hydrate UI session list
+  //   empty()        → authoritative clear (only path allowed to clear)
+  //   authDenied()   → freeze local state, preserve existing sessions
+  //   offline()      → freeze local state, retain currently loaded sessions
+  //   failure(e)     → freeze local state, log diagnostic error
+  //
+  // TELEMETRY:
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... result=... gen=...
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... STALE_EPOCH dropped
+  //   [APP_PROVIDER][loadAiSessionsTypedForUi] uid=... → reusing in-flight future
+  Future<FirestoreLoadResult<List<Map<String, dynamic>>>> loadAiSessionsTypedForUi(
+      String uid) async {
+    // Reuse in-flight future for the same uid (single-flight latch).
+    if (_sessionsLoadInFlight != null && _sessionsLoadUid == uid) {
+      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid → reusing in-flight future');
+      return _sessionsLoadInFlight!;
+    }
+
+    // New uid or explicit invalidation — bump generation to invalidate
+    // any still-completing futures from the prior epoch.
+    _sessionsLoadGeneration++;
+    final int myGeneration = _sessionsLoadGeneration;
+    _sessionsLoadUid = uid;
+
+    final future = FirestoreService.loadAiSessionsTyped(uid);
+    _sessionsLoadInFlight = future;
+
+    FirestoreLoadResult<List<Map<String, dynamic>>> result;
+    try {
+      result = await future;
+    } catch (e) {
+      result = FirestoreLoadResult.failure(e);
+    } finally {
+      // Clear the in-flight slot once this generation's future settles.
+      if (_sessionsLoadUid == uid && _sessionsLoadGeneration == myGeneration) {
+        _sessionsLoadInFlight = null;
+      }
+    }
+
+    // Stale-epoch guard: if generation was bumped by a newer call while we
+    // were awaiting, this completion belongs to a superseded request — drop it.
+    if (_sessionsLoadGeneration != myGeneration) {
+      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid '
+          'STALE_EPOCH dropped: myGen=$myGeneration currentGen=$_sessionsLoadGeneration');
+      // Return authDenied() as a safe freeze sentinel — UI retains existing sessions.
+      return FirestoreLoadResult.authDenied();
+    }
+
+    debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] uid=$uid '
+        'result=${result.runtimeType} gen=$myGeneration');
     return result;
   }
 

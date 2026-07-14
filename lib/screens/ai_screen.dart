@@ -365,6 +365,12 @@ class _AiScreenState extends State<AiScreen> {
   String? _historyLoadedForUid;
   static const _kHistKey = 'medcases_ia_chat_history_v1';
 
+  // MICRO-BUILD 463-A.2.1.2: UI-side session load generation counter.
+  // Incremented each time _loadChatHistory() starts a new Firestore fetch.
+  // Any completion arriving after a newer generation has started is discarded
+  // without touching _chatHistory — prevents stale async writes post-rebuild.
+  int _sessionsLoadGeneration = 0;
+
   // BUILD 452-1: TTL de volatilidade de tela — 30 minutos.
   // Se o médico retornar à tela após 30+ min de inatividade,
   // a conversa anterior é descartada e a UI abre totalmente limpa.
@@ -1255,25 +1261,43 @@ class _AiScreenState extends State<AiScreen> {
       // BUILD 430 PASSO 1: marca o UID para evitar reload duplicado pós-OAuth.
       if (uid != null && uid.isNotEmpty) _historyLoadedForUid = uid;
 
-      // 1º tenta Firestore (cross-device)
-      // MICRO-BUILD 463-A.2.1.1: Migrated from loadAiSessions() (deleted) to
-      // loadAiSessionsTyped() which returns FirestoreLoadResult<List<Map<String,dynamic>>>.
-      // shouldFreezeLocalCache prevents write-back on offline()/authDenied()/failure().
+      // ── MICRO-BUILD 463-A.2.1.2: Typed session load with algebraic routing ──
+      // Routes through AppProvider.loadAiSessionsTypedForUi() which provides:
+      //   • Single-flight generation latch (no concurrent Firestore fetches)
+      //   • Stale-epoch detection (generation counter drops old completions)
+      // Explicit algebraic variant routing — NO dataOrElse([]) semantic collapse.
       if (uid != null && uid.isNotEmpty) {
-        final typedResult = await FirestoreService.loadAiSessionsTyped(uid);
-        final remote = typedResult.dataOrElse(<Map<String, dynamic>>[]);
-        if (remote.isNotEmpty) {
-          // BUILD 274: de-dup by ID before inserting — Firestore may return
-          // stale docs written before the session-ID fix. Keep the first
-          // occurrence of each ID (already ordered desc by updatedAt).
+        // Bump the UI-side generation counter so any prior in-flight completion
+        // arriving after this point can be detected and discarded as stale.
+        _sessionsLoadGeneration++;
+        final int myGeneration = _sessionsLoadGeneration;
+
+        final typedResult = await p.loadAiSessionsTypedForUi(uid);
+
+        // Stale-epoch guard: a newer _loadChatHistory() call superseded us —
+        // discard this completion entirely without touching _chatHistory.
+        if (!mounted || _sessionsLoadGeneration != myGeneration) {
+          debugPrint('[AI_SESSIONS_LOAD] uid=$uid STALE_EPOCH discarded '
+              'myGen=$myGeneration currentGen=$_sessionsLoadGeneration');
+          return;
+        }
+
+        // ── Algebraic variant routing ───────────────────────────────────────
+        if (typedResult.isSuccess) {
+          // SUCCESS: Hydrate the UI session list from authoritative server data.
+          // BUILD 274: de-dup by ID — Firestore may return stale docs written
+          // before the session-ID fix. Keep first occurrence (desc by updatedAt).
+          final raw = typedResult.dataOrElse(<Map<String, dynamic>>[]);
           final seen = <String>{};
-          final sessions = remote
+          final sessions = raw
               .map((e) => _ChatSession.fromJson(e))
               .where((s) => seen.add(s.id))
               .toList();
 
+          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=success '
+              'action=hydrate count=${sessions.length} writeBack=false');
+
           // ORDEM 27 — TELEMETRIA DE MIGRAÇÃO (Firestore path):
-          // Classifica cada sessão carregada e emite log por tipo de payload.
           if (kDebugMode) {
             for (final s in sessions) {
               final fmt = _detectSessionFormat(s.messages);
@@ -1292,8 +1316,55 @@ class _AiScreenState extends State<AiScreen> {
             _chatHistory.clear();
             _chatHistory.addAll(sessions);
           });
-          // Atualiza cache local
           _persistHistoryLocal(p);
+          return;
+
+        } else if (typedResult.isEmpty) {
+          // EMPTY: Server-authoritative — user has no sessions. This is the
+          // ONLY path that may physically clear _chatHistory.
+          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=empty '
+              'action=authoritative_clear writeBack=false');
+          if (mounted) setState(() => _chatHistory.clear());
+          return;
+
+        } else if (typedResult.isAuthDenied) {
+          // AUTH_DENIED: Freeze local state. Preserve existing sessions.
+          // _chatHistory is NOT touched — existing data remains in-memory.
+          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=authDenied '
+              'action=freeze writeBack=false');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Sessão expirada — reconectando…'),
+                duration: Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+          return;
+
+        } else if (typedResult.isOffline) {
+          // OFFLINE: Freeze local state. Retain currently loaded sessions.
+          // _chatHistory is NOT touched — existing data remains in-memory.
+          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=offline '
+              'action=freeze writeBack=false');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Sem conexão — usando dados locais'),
+                duration: Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+          return;
+
+        } else {
+          // FAILURE: Freeze local state. Preserve existing sessions.
+          // Log the diagnostic error; do not surface raw errors to the user.
+          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=failure '
+              'action=freeze writeBack=false '
+              'error=${typedResult.runtimeType}');
           return;
         }
       }
