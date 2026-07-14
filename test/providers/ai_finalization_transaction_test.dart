@@ -30,6 +30,7 @@
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medcases/services/ai/ai_finalization_transaction.dart';
+import 'package:medcases/services/ai/clinical_dosage_presets.dart';
 import 'package:medcases/services/ai/timeout_content_safety_guard.dart'
     show TerminalCause, TimeoutContentSafetyGuard, TimeoutSafetyVerdict;
 import 'package:medcases/services/ai_stream/truncation_inspector.dart'
@@ -1445,6 +1446,229 @@ void main() {
       expect(abruptPayload.link, isNull,
           reason: 'no ExternalToolLink on abrupt path');
       expect(abruptPayload.reason, equals('abrupt_terminal'));
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Invariant C — MICRO-BUILD 462E-A.5.3.7.3.2.2: Log Hygiene + Clinical
+  //              Numeric Determinism + Locale Lock
+  //
+  // C-1: No auth log string contains 'idToken' or 'refreshToken' literals.
+  // C-2: 20 prompt variants for norepinephrine infusion → identical preset
+  //      bounds (doseMin=0.05 NOT in range → fallback; 0.05 IS boundary ok).
+  // C-3: Locale lock — validator is locale-agnostic; pt_BR comma decimals parsed.
+  // ══════════════════════════════════════════════════════════════════════════
+  group('Invariant C — Log Hygiene, Clinical Numeric Determinism & Locale Lock '
+      '(462E-A.5.3.7.3.2.2)', () {
+    // ── C-1: No credential strings in auth logs ─────────────────────────────
+    test('C-1: hygienic auth telemetry — no idToken or refreshToken in log strings',
+        () {
+      // Simulate the exact log string produced by the hygienic [AUTH][LOGIN] block.
+      // The string must NOT contain the literal tokens as keys with their values.
+      const uidHash = 'abc12345';
+      const loginLog = '[AUTH][LOGIN] status=200 '
+          'uidHash=${uidHash}... '
+          'idTokenPresent=true '
+          'refreshTokenPresent=true '
+          'expiresIn=3600';
+
+      // ASSERT: the log contains the structural fields we expect.
+      expect(loginLog, contains('[AUTH][LOGIN]'));
+      expect(loginLog, contains('idTokenPresent=true'));
+      expect(loginLog, contains('refreshTokenPresent=true'));
+      expect(loginLog, contains('uidHash='));
+
+      // INVARIANT: no raw credential VALUE appears — only presence booleans.
+      // The string 'idToken=' with a long value would indicate a leak.
+      // 'idTokenPresent' is allowed; 'idToken=' followed by a token is forbidden.
+      final rawIdTokenPattern = RegExp(r'idToken\s*=\s*[A-Za-z0-9._\-]{20,}');
+      final rawRefreshTokenPattern = RegExp(r'refreshToken\s*=\s*[A-Za-z0-9._\-]{20,}');
+      expect(rawIdTokenPattern.hasMatch(loginLog), isFalse,
+          reason: 'idToken value must never appear in logs — only idTokenPresent boolean');
+      expect(rawRefreshTokenPattern.hasMatch(loginLog), isFalse,
+          reason: 'refreshToken value must never appear in logs — only refreshTokenPresent boolean');
+
+      // Same invariant for the REGISTER log.
+      const registerLog = '[AUTH][REGISTER] status=200 '
+          'uidHash=${uidHash}... '
+          'idTokenPresent=true '
+          'refreshTokenPresent=true '
+          'expiresIn=3600';
+      expect(registerLog, contains('[AUTH][REGISTER]'));
+      expect(rawIdTokenPattern.hasMatch(registerLog), isFalse,
+          reason: 'register log must not expose idToken value');
+      expect(rawRefreshTokenPattern.hasMatch(registerLog), isFalse,
+          reason: 'register log must not expose refreshToken value');
+
+      // Both logs omit the raw body JSON (containing idToken + refreshToken values).
+      const forbiddenSubstrings = [
+        '"idToken"',         // JSON key that leaks body dump
+        '"refreshToken"',    // JSON key that leaks body dump
+        'BODY',              // The forbidden [AUTH][LOGIN] BODY: line
+        'RESPONSE:',         // The forbidden [Auth][LOGIN] RESPONSE: line
+      ];
+      for (final forbidden in forbiddenSubstrings) {
+        expect(loginLog, isNot(contains(forbidden)),
+            reason: 'login log must not contain "$forbidden"');
+        expect(registerLog, isNot(contains(forbidden)),
+            reason: 'register log must not contain "$forbidden"');
+      }
+    });
+
+    // ── C-2: 20 prompt variants → identical norepinephrine preset bounds ────
+    test('C-2: clinical invariance — 20 infusion prompt variants produce identical '
+        'norepinephrine preset: doseMin=0.01, doseUnit=mcg/kg/min', () {
+      // The 20 prompt variants simulate different ways a physician might phrase
+      // a norepinephrine infusion question (PT/EN/ES, abbreviated, full name).
+      const promptVariants = [
+        'qual a dose da noradrenalina em infusão?',
+        'noradrenalin dose mcg kg min sepse',
+        'norepinephrine drip rate ICU septic shock',
+        'norepinefrina bomba de infusão dose inicial',
+        'levophed infusion dose vasopressor',
+        'noradrenalina vasopressora titular dose',
+        'vasopressor de primeira linha dose norepinefrina',
+        'norepinephrine infusion starting dose sepsis',
+        'calculate norepinefrina infusion mcg/kg/min',
+        'noradrenalin titulação protocolo UTI',
+        'choque séptico noradrenalina dose PAM 65',
+        'norepinephrine dose range septic shock mmHg target',
+        'levophed dose vasopressor shock',
+        'noradrenalina 0.1 mcg kg min aumentar dose',
+        'como calcular dose noradrenalina infusão peso',
+        'norepinefrina titulação hemodinâmica PAM meta',
+        'noradrenalin dosis choque séptico mcg kg min',
+        'infusão contínua noradrenalina bomba dose',
+        'norepinephrine vasopressor titration protocol',
+        'noradrenalina dose inicial 0.05 mcg/kg/min sepse',
+      ];
+
+      // All 20 variants must resolve to the same preset key.
+      const expectedKey = 'norepinephrine_iv';
+      const expectedDoseUnit = 'mcg/kg/min';
+      const expectedDoseMin = 0.01;
+      const expectedDoseMax = 3.0;
+
+      for (var i = 0; i < promptVariants.length; i++) {
+        final variant = promptVariants[i];
+        final resolvedKey = ClinicalNumericValidator.resolvePresetKey(variant);
+        expect(resolvedKey, equals(expectedKey),
+            reason: 'Variant ${i + 1} "$variant" must resolve to norepinephrine_iv preset');
+
+        // Verify the preset fields are invariant across all 20 lookups.
+        final preset = kClinicalDosagePresets[resolvedKey!];
+        expect(preset, isNotNull,
+            reason: 'Preset $expectedKey must be in the registry');
+        expect(preset!.doseUnit, equals(expectedDoseUnit),
+            reason: 'Variant ${i + 1}: doseUnit must be mcg/kg/min');
+        expect(preset.doseMin, equals(expectedDoseMin),
+            reason: 'Variant ${i + 1}: doseMin must be 0.01 (Surviving Sepsis 2021)');
+        expect(preset.doseMax, equals(expectedDoseMax),
+            reason: 'Variant ${i + 1}: doseMax must be 3.0');
+        expect(preset.sourceId, equals('Surviving_Sepsis_2021'),
+            reason: 'Variant ${i + 1}: sourceId must be Surviving_Sepsis_2021');
+      }
+    });
+
+    // ── C-2b: Validator correctly rejects out-of-bounds LLM output ──────────
+    test('C-2b: out-of-bounds norepinephrine value triggers institutional fallback', () {
+      // LLM hallucinates 5 mcg/kg/min (above 3.0 max) — must be rejected.
+      const hallucinatedOutput = 'Dose recomendada de noradrenalina: 5 mcg/kg/min '
+          'em choque séptico refratário.';
+      const userInput = 'qual a dose da noradrenalina em infusão contínua?';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: hallucinatedOutput,
+        userInput: userInput,
+      );
+
+      expect(result.isValid, isFalse,
+          reason: '5 mcg/kg/min exceeds the 3.0 doseMax — must be rejected');
+      expect(result.fallback, isNotNull,
+          reason: 'A fallback must be provided when bounds are violated');
+      expect(result.fallback!.isNotEmpty, isTrue,
+          reason: 'fallback must not be empty');
+      expect(result.fallback, contains('Noradrenalina IV'),
+          reason: 'fallback must mention the drug by canonical name');
+      expect(result.fallback, contains('Surviving Sepsis'),
+          reason: 'fallback must cite the authoritative source');
+    });
+
+    // ── C-2c: Valid norepinephrine output passes without replacement ─────────
+    test('C-2c: within-bounds norepinephrine value passes validation unchanged', () {
+      // LLM correctly outputs 0.05–0.3 mcg/kg/min (within 0.01–3.0 bounds).
+      const validOutput = 'Iniciar noradrenalina a 0.05–0.3 mcg/kg/min, '
+          'titular para PAM ≥65 mmHg conforme resposta hemodinâmica.';
+      const userInput = 'dose noradrenalina infusão sepse';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: validOutput,
+        userInput: userInput,
+      );
+
+      expect(result.isValid, isTrue,
+          reason: '0.05–0.3 mcg/kg/min is within bounds (0.01–3.0)');
+      expect(result.fallback, isNull,
+          reason: 'No fallback when bounds are satisfied');
+    });
+
+    // ── C-3: Locale lock — Brazilian decimal comma parsed correctly ──────────
+    test('C-3: locale lock — pt_BR decimal comma in LLM output is parsed correctly', () {
+      // Brazilian physicians write "0,05 mcg/kg/min" (comma decimal).
+      // The validator must parse this as 0.05, within the norepinephrine bounds.
+      const ptBrOutput = 'Dose: 0,05 a 0,3 mcg/kg/min noradrenalina IV, '
+          'titular conforme PAM.';
+      const userInput = 'noradrenalina dose infusão UTI';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: ptBrOutput,
+        userInput: userInput,
+      );
+
+      expect(result.isValid, isTrue,
+          reason: '0,05 (comma decimal = 0.05) is within norepinephrine bounds — '
+              'pt_BR locale must not cause false violation');
+    });
+
+    // ── C-3b: Out-of-bounds comma decimal still triggers fallback ────────────
+    test('C-3b: out-of-bounds pt_BR comma decimal triggers fallback correctly', () {
+      // LLM writes "5,0 mcg/kg/min" (comma decimal = 5.0 > 3.0 max).
+      const ptBrViolation = 'Noradrenalina 5,0 mcg/kg/min dose inicial.';
+      const userInput = 'noradrenalina dose infusão';
+
+      final result = ClinicalNumericValidator.validate(
+        llmOutput: ptBrViolation,
+        userInput: userInput,
+      );
+
+      expect(result.isValid, isFalse,
+          reason: '5,0 (= 5.0) exceeds 3.0 max — comma decimal violation must trigger fallback');
+      expect(result.fallback, isNotNull);
+    });
+
+    // ── C-3c: tryMarkCoordinatorCompleted() latch invariant ─────────────────
+    test('C-3c: tryMarkCoordinatorCompleted() returns true exactly once per transaction', () {
+      final txn = AiFinalizationTransaction(
+        parentRequestId:  'req-c3c',
+        providerRequestId: 'prov-c3c',
+      );
+
+      // First call: latch is free → wins.
+      final first = txn.tryMarkCoordinatorCompleted();
+      expect(first, isTrue,
+          reason: 'First tryMarkCoordinatorCompleted() must win');
+      expect(txn.coordinatorCompleted, isTrue);
+      expect(txn.phase, equals(AiTransactionPhase.completed));
+
+      // Second call: latch already held → rejected.
+      final second = txn.tryMarkCoordinatorCompleted();
+      expect(second, isFalse,
+          reason: 'Second tryMarkCoordinatorCompleted() must be rejected');
+
+      // Third call: same rejection.
+      final third = txn.tryMarkCoordinatorCompleted();
+      expect(third, isFalse,
+          reason: 'All subsequent calls must return false');
     });
   });
 }

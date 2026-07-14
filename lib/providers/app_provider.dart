@@ -37,6 +37,7 @@ import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: 
 import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
 import '../services/ai/timeout_content_safety_guard.dart'; // MICRO-BUILD 462E-A.5.3.7.2.1: TerminalCause, TimeoutSafetyVerdict, TimeoutContentSafetyGuard
 import '../services/ai/ai_finalization_transaction.dart'; // MICRO-BUILD 462E-A.5.3.7.3.2: AiTransactionPhase, TerminalSignal, ProviderAttemptContext, FinalOutputSnapshot, SerialEventQueue, AiFinalizationTransaction
+import '../services/ai/clinical_dosage_presets.dart'; // MICRO-BUILD 462E-A.5.3.7.3.2.2: ClinicalNumericValidator, ClinicalDosagePreset
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
 import '../screens/internacion/components/patient_accordion.dart' show PacienteInternacaoData;
@@ -4517,6 +4518,121 @@ class AppProvider extends ChangeNotifier {
     AppResumeCoordinator.instance.completeAiRequest(requestId);
   }
 
+  // ── MICRO-BUILD 462E-A.5.3.7.3.2.2 [PILLAR 2]: GPT happy-path finalizer ──
+  //
+  // Consolidates the STEP 7 sequence for the GPT (QA proxy) happy path:
+  //   1. ExternalToolLinkEngine.build() — exactly once, inside atomic gate
+  //   2. CompletedToolResolution written to _completedResolutions map
+  //   3. wrappedOnDone(validatedOutput) — UI emit (notifyListeners inside)
+  //   4. ExternalToolLinkEngine.releaseCanonicalDecision()
+  //   5. _completeAiRequestOnce(requestId) — coordinator LAST (terminal order)
+  //
+  // COORDINATOR DOUBLE-TRIGGER PROTECTION:
+  //   _completeAiRequestOnce() is already idempotent via _completedRequestIds.
+  //   Any second invocation of _finalizeGptSuccessfulRequest() for the same
+  //   requestId is rejected at step 5 with [RESUME_COORDINATOR][DUPLICATE_DROPPED].
+  //
+  // TERMINAL ORDER INVARIANT (MICRO-BUILD 462E-A.5.2):
+  //   Persistence committed (by caller) ↑ → tool gate ↑ → wrappedOnDone →
+  //   releaseCanonicalDecision → _completeAiRequestOnce LAST.
+  //   Marking complete before UI emit is prohibited.
+  void _finalizeGptSuccessfulRequest({
+    required String requestId,
+    required String validatedOutput,
+    required String input,
+    required bool longResponse,
+    required ExternalToolDecision? canonicalDecision,
+    required void Function(String) wrappedOnDone,
+  }) {
+    // ── PILLAR 3: Clinical Numeric Determinism Gate ────────────────────────
+    // When intent==infusion and a regulated drug is detected in the user input,
+    // validate the LLM numeric output against the authoritative preset bounds.
+    // On violation: replace with the institutional fallback (never expose the
+    // out-of-bounds LLM text to the UI).
+    // On pass or no preset match: safeOutput == validatedOutput (unchanged).
+    final String safeOutput;
+    if (canonicalDecision?.intent == ExternalToolIntent.infusion) {
+      final clinicalResult = ClinicalNumericValidator.validate(
+        llmOutput: validatedOutput,
+        userInput: input,
+      );
+      if (!clinicalResult.isValid && clinicalResult.fallback != null) {
+        // ignore: avoid_print
+        print('[CLINICAL_NUMERIC_GATE][REPLACED] requestId=$requestId '
+            'reason=bounds_violated '
+            'replacement_len=${clinicalResult.fallback!.length}');
+        safeOutput = clinicalResult.fallback!;
+      } else {
+        safeOutput = validatedOutput;
+      }
+    } else {
+      safeOutput = validatedOutput;
+    }
+
+    // ── Tool resolution gate (exactly once per requestId) ─────────────────
+    // Uses _completedResolutions as the presence-gate: if the key already
+    // exists (prior stale write), skip. Otherwise perform single engine call.
+    if (!_completedResolutions.containsKey(requestId)) {
+      final txnId = 'txn_${requestId.substring(0, requestId.length > 16 ? 16 : requestId.length)}';
+      final attId = 'att_gpt_${requestId.substring(0, requestId.length > 8 ? 8 : requestId.length)}';
+      final resolvedLink = ExternalToolLinkEngine.build(
+        lastUserMessage:   input,
+        lastAiResponse:    safeOutput,
+        isPlantaoMode:     !longResponse,
+        currentLanguage:   _lang,
+        activeThreadTopic: _threadManager.activeTopic,
+        requestId:         requestId,
+        transactionId:     txnId,
+        attemptId:         attId,
+      );
+      final bool toolAllowed   = resolvedLink != null;
+      final String toolReason  = toolAllowed ? 'explicit_input_intent' : 'no_explicit_intent';
+      _completedResolutions[requestId] = CompletedToolResolution(
+        requestId:       requestId,
+        parentRequestId: requestId,
+        transactionId:   txnId,
+        link:            resolvedLink,
+        reason:          toolReason,
+        isAllowed:       toolAllowed,
+      );
+      // ignore: avoid_print
+      print('[EXT_TOOL_GATE] '
+          'requestId=$requestId '
+          'parentRequestId=$requestId '
+          'transactionId=$txnId '
+          'attemptId=$attId '
+          'phase=completed '
+          'callSite=gpt_happy_path_finalizer '
+          'ownershipAcquired=true '
+          'toolAllowed=$toolAllowed '
+          'reason=$toolReason');
+      if (toolAllowed) {
+        // ignore: avoid_print
+        print('[EXT_TOOL_PAYLOAD_READY] requestId=$requestId');
+      }
+    } else {
+      // Resolution already written (e.g., by abrupt sentinel) — skip engine.
+      // ignore: avoid_print
+      print('[EXT_TOOL_GATE][GPT_DUPLICATE_SKIPPED] requestId=$requestId '
+          'reason=resolution_already_present');
+    }
+
+    // ── UI emit (notifyListeners inside wrappedOnDone) ────────────────────
+    // safeOutput: clinically validated text (preset bounds enforced for infusion intent).
+    wrappedOnDone(safeOutput.isNotEmpty
+        ? safeOutput
+        : (_lang == 'es'
+            ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
+            : 'Não consegui gerar uma resposta. Pode reformular? ⚕'));
+
+    // ── Release canonical decision cache — strictly after UI emit ─────────
+    ExternalToolLinkEngine.releaseCanonicalDecision(
+        requestId: requestId, decision: canonicalDecision);
+
+    // ── Coordinator completion — TERMINAL POSITION ────────────────────────
+    _completeAiRequestOnce(requestId);
+  }
+
   Future<bool> sendAiMessage(
     String input, {
     required void Function(String accumulated) onChunk,
@@ -5013,24 +5129,24 @@ class AppProvider extends ChangeNotifier {
                     'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
                     'provider=${e.usedProvider}');
 
-                // ── STEP 7: UI emission → State Event → ResumeCoordinator (TERMINAL ORDER) ──
-                // MICRO-BUILD 462E-A.5.2: Rigid Transactional Termination Pyramid.
-                // Persistence committed (Step 6) ↑ → UI emitted → ResumeCoordinator.complete
-                // LAST. Marking complete before UI emit is prohibited — it would signal
-                // downstream orchestrators that the transaction finished while render is pending.
-                // [RENDER_AUDIT]: notifyListeners() APENAS aqui (via wrappedOnDone)
-                wrappedOnDone(
-                  qaFinalText.isNotEmpty
-                      ? qaFinalText
-                      : (_lang == 'es'
-                          ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
-                          : 'Não consegui gerar uma resposta. Pode reformular? ⚕'),
+                // ── STEP 7: UI emission → Tool Gate → ResumeCoordinator (TERMINAL ORDER) ──
+                // MICRO-BUILD 462E-A.5.3.7.3.2.2 [PILLAR 2]: GPT happy-path finalizer.
+                // Delegates to _finalizeGptSuccessfulRequest() which runs:
+                //   (a) ExternalToolLinkEngine.build() EXACTLY ONCE inside atomic gate
+                //   (b) Writes CompletedToolResolution to _completedResolutions
+                //   (c) wrappedOnDone(validatedOutput) — UI emit (notifyListeners inside)
+                //   (d) releaseCanonicalDecision — strictly after UI emit
+                //   (e) _completeAiRequestOnce — TERMINAL POSITION
+                // Coordinator double-trigger protected by _completedRequestIds latch.
+                // [RENDER_AUDIT]: notifyListeners() ONLY inside wrappedOnDone (via finalizer)
+                _finalizeGptSuccessfulRequest(
+                  requestId:       thisRequestId,
+                  validatedOutput: qaFinalText,
+                  input:           input,
+                  longResponse:    longResponse,
+                  canonicalDecision: canonicalDecision,
+                  wrappedOnDone:   wrappedOnDone,
                 );
-                // Release canonical decision cache entry — strictly after UI emit (COMPLETED).
-                ExternalToolLinkEngine.releaseCanonicalDecision(
-                    requestId: thisRequestId, decision: canonicalDecision);
-                // ResumeCoordinator.complete() — TERMINAL POSITION (after UI + releaseDecision).
-                _completeAiRequestOnce(thisRequestId);
               } on AiSafeOutputException catch (safeError) {
                 // ── TERMINAL: DROP_PAYLOAD — Repair critical failure ───────────
                 // ignore: avoid_print

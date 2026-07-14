@@ -559,11 +559,21 @@ class AuthService {
         body: jsonEncode({'email': email.trim(), 'password': password, 'returnSecureToken': true}),
       );
 
-      debugPrint('[Auth][LOGIN] RESPONSE:');
-      debugPrint('[Auth][LOGIN]   STATUS : ${authResp.statusCode}');
-      debugPrint('[Auth][LOGIN]   BODY   : ${authResp.body}');
-
+      // ── MICRO-BUILD 462E-A.5.3.7.3.2.2: Hygienic auth telemetry ──────────
+      // FORBIDDEN: printing idToken, refreshToken, or raw body JSON.
+      // Only structural metadata is logged — zero credential values.
       final authBody = jsonDecode(authResp.body) as Map<String, dynamic>;
+      {
+        final _loginUid  = authBody['localId'] as String? ?? '';
+        final _uidHash   = _loginUid.isNotEmpty
+            ? _loginUid.substring(0, _loginUid.length.clamp(0, 8))
+            : 'unknown';
+        debugPrint('[AUTH][LOGIN] status=${authResp.statusCode} '
+            'uidHash=${_uidHash}... '
+            'idTokenPresent=${(authBody['idToken'] as String? ?? '').isNotEmpty} '
+            'refreshTokenPresent=${(authBody['refreshToken'] as String? ?? '').isNotEmpty} '
+            'expiresIn=${authBody['expiresIn'] ?? 'unknown'}');
+      }
 
       if (authResp.statusCode != 200) {
         final msg = ((authBody['error']?['message'] as String?) ?? '').toUpperCase();
@@ -891,12 +901,21 @@ class AuthService {
         body: jsonEncode(payload),
       );
 
-      // ── DIAGNÓSTICO: loga SEMPRE status + body cru da Identity Toolkit ──
-      debugPrint('[Auth][REGISTER] RESPONSE:');
-      debugPrint('[Auth][REGISTER]   STATUS : ${resp.statusCode}');
-      debugPrint('[Auth][REGISTER]   BODY   : ${resp.body}');
-
+      // ── MICRO-BUILD 462E-A.5.3.7.3.2.2: Hygienic register telemetry ─────
+      // FORBIDDEN: printing idToken, refreshToken, or raw body JSON.
+      // Single decode — body reused for both telemetry and business logic.
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
+      {
+        final _regUid  = body['localId'] as String? ?? '';
+        final _regHash = _regUid.isNotEmpty
+            ? _regUid.substring(0, _regUid.length.clamp(0, 8))
+            : 'unknown';
+        debugPrint('[AUTH][REGISTER] status=${resp.statusCode} '
+            'uidHash=${_regHash}... '
+            'idTokenPresent=${(body['idToken'] as String? ?? '').isNotEmpty} '
+            'refreshTokenPresent=${(body['refreshToken'] as String? ?? '').isNotEmpty} '
+            'expiresIn=${body['expiresIn'] ?? 'unknown'}');
+      }
 
       if (resp.statusCode != 200) {
         final msg = ((body['error']?['message'] as String?) ?? '').toUpperCase();

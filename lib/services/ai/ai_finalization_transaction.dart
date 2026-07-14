@@ -396,6 +396,32 @@ class AiFinalizationTransaction {
         : AiTransactionPhase.completed;
   }
 
+  // ── tryMarkCoordinatorCompleted ────────────────────────────────────────────
+
+  /// MICRO-BUILD 462E-A.5.3.7.3.2.2 [PILLAR 2]: Atomic latch for coordinator
+  /// double-trigger protection.
+  ///
+  /// Returns true on the FIRST call — the caller is authorised to invoke
+  /// AppResumeCoordinator.instance.completeAiRequest().
+  ///
+  /// Returns false on all subsequent calls — the caller MUST NOT invoke
+  /// completeAiRequest() and MUST emit [RESUME_COORDINATOR][DUPLICATE_DROPPED].
+  ///
+  /// Invariants:
+  ///   • Exactly one caller receives true per transaction lifetime.
+  ///   • The phase is advanced to [completed] on the winning call.
+  ///   • All subsequent callers receive false; transaction state is unchanged.
+  ///   • Thread-safe within Dart's single-threaded event loop.
+  bool tryMarkCoordinatorCompleted() {
+    if (_coordinatorCompleted) return false;
+    _coordinatorCompleted = true;
+    if (_phase == AiTransactionPhase.ingesting ||
+        _phase == AiTransactionPhase.finalizing) {
+      _phase = AiTransactionPhase.completed;
+    }
+    return true;
+  }
+
   // ── Telemetry helpers ──────────────────────────────────────────────────────
 
   void markToolResolutionCompleted() => _toolResolutionCompleted = true;
