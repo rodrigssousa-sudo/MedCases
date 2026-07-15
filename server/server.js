@@ -71,6 +71,48 @@ const express    = require('express');
 const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
+const admin      = require('firebase-admin');
+
+// ── Inicialização do Firebase Admin SDK ────────────────────────────────────────
+try {
+  if (admin.apps.length === 0) {
+    admin.initializeApp({
+      projectId: process.env.FIREBASE_PROJECT_ID || 'medcases-pro',
+    });
+    console.log('[INIT] Firebase Admin SDK inicializado com sucesso.');
+  }
+} catch (error) {
+  console.error('[ERROR] Falha crítica ao inicializar Firebase Admin:', error);
+}
+
+// ── Middleware: Autenticação Criptográfica Firebase ──────────────────────────
+async function authenticateFirebaseToken(req, res, next) {
+  if (req.path === '/health') {
+    return next();
+  }
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      error: 'unauthorized',
+      reason: 'Cabecalho Authorization invalido ou ausente.'
+    });
+  }
+
+  const idToken = authHeader.split('Bearer ')[1].trim();
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken; // Injeta metadados de auditoria do médico
+    next();
+  } catch (error) {
+    console.warn('[WARN] Token do Firebase rejeitado:', error.message);
+    return res.status(403).json({
+      error: 'forbidden',
+      reason: 'Token expirado ou invalido.'
+    });
+  }
+}
 
 // ── Configuração de ambiente ──────────────────────────────────────────────────
 const PORT           = parseInt(process.env.PORT ?? '8080', 10);
@@ -966,6 +1008,9 @@ function validateStreamBody(body) {
 
 const app = express();
 
+// Ativa a interceptacao de seguranca para toda a borda
+app.use(authenticateFirebaseToken);
+
 // ── Middlewares globais ───────────────────────────────────────────────────────
 
 app.use(helmet({
@@ -1046,9 +1091,8 @@ async function handleStreamRequest(req, res, forcedMode) {
   const routeName = forcedMode ? '/stream/estudo' : '/stream/plantao';
   log.info(`[${requestId}] POST ${routeName}`);
 
-  // ── Validação da API key ──────────────────────────────────────────────────
-  const bearerKey = (req.headers.authorization ?? '').replace(/^Bearer\s+/i, '').trim();
-  const apiKey    = bearerKey || GEMINI_API_KEY;
+  // ── Validação da API key (Isolada de Borda) ────────────────────────────────
+  const apiKey = GEMINI_API_KEY;
 
   if (!apiKey) {
     log.error(`[${requestId}] GEMINI_API_KEY não configurada`);
@@ -1177,8 +1221,7 @@ app.post('/api/ai/sync', streamLimiter, async (req, res) => {
   const requestId = req.headers['x-request-id'] ?? `req_${Date.now()}`;
   log.info(`[${requestId}] POST /api/ai/sync`);
 
-  const bearerKey = (req.headers.authorization ?? '').replace(/^Bearer\s+/i, '').trim();
-  const apiKey    = bearerKey || GEMINI_API_KEY;
+  const apiKey = GEMINI_API_KEY;
 
   if (!apiKey) {
     return res.status(500).json({ error: 'server_misconfigured' });
