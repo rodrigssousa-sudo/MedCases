@@ -1025,33 +1025,161 @@ function _sendSseError(res, errorCode) {
  * @param {number} maxTokens
  * @returns {Promise<{text: string}|{error: string}>}
  */
-async function syncRequest(prompt, apiKey, maxTokens = 20) {
+// FASE 2.5 — Contrato síncrono compatível com o ProviderRouterService.
+//
+// O cliente legado ainda envia gemini-2.5-pro para o Modo Estudo.
+// Essa identificação aparece no catálogo, mas retorna 404 para a chave atual.
+// O gateway realiza a convergência server-side para o modelo Pro validado.
+const SYNC_MODEL_ALIASES = Object.freeze({
+  'gemini-2.5-pro': 'gemini-3.1-pro-preview',
+});
+
+const SYNC_ALLOWED_MODELS = new Set([
+  'gemini-2.5-flash-lite',
+  'gemini-2.5-flash',
+  'gemini-3.1-pro-preview',
+]);
+
+function resolveSyncModel({ model, mode, modelTier, tier }) {
+  const requestedModel =
+    typeof model === 'string' ? model.trim() : '';
+
+  const aliasedModel =
+    SYNC_MODEL_ALIASES[requestedModel] ?? requestedModel;
+
+  if (
+    aliasedModel &&
+    SYNC_ALLOWED_MODELS.has(aliasedModel)
+  ) {
+    return aliasedModel;
+  }
+
+  const isStudyMode =
+    mode === 'estudo' ||
+    modelTier === 'pro' ||
+    tier === 'cognitive';
+
+  if (isStudyMode) {
+    return 'gemini-3.1-pro-preview';
+  }
+
+  const isPlantaoMode =
+    mode === 'plantao' ||
+    modelTier === 'speed' ||
+    tier === 'speed';
+
+  if (isPlantaoMode) {
+    return 'gemini-2.5-flash';
+  }
+
+  // Preserva o comportamento anterior para consumidores genéricos.
+  return GEMINI_MODEL;
+}
+
+function clampNumber(value, fallback, minimum, maximum) {
+  const parsed = Number(value);
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(
+    maximum,
+    Math.max(minimum, parsed),
+  );
+}
+
+async function syncRequest(
+  prompt,
+  apiKey,
+  {
+    model = GEMINI_MODEL,
+    maxTokens = 20,
+    temperature = 0.1,
+  } = {},
+) {
+  const safeMaxTokens = Math.trunc(
+    clampNumber(maxTokens, 20, 1, 8192),
+  );
+
+  const safeTemperature = clampNumber(
+    temperature,
+    0.1,
+    0,
+    2,
+  );
+
+  const endpoint =
+    `https://generativelanguage.googleapis.com/` +
+    `v1beta/models/${encodeURIComponent(model)}:` +
+    'generateContent';
+
   const payload = JSON.stringify({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: { maxOutputTokens: maxTokens, temperature: 0.1 },
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: prompt }],
+      },
+    ],
+    generationConfig: {
+      maxOutputTokens: safeMaxTokens,
+      temperature: safeTemperature,
+    },
     safetySettings: SAFETY_SETTINGS,
   });
 
+  const timeoutMs = model.includes('pro')
+    ? 55_000
+    : 30_000;
+
   try {
-    const resp = await fetch(ENDPOINT_SYNC, {
-      method:  'POST',
+    const resp = await fetch(endpoint, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-goog-api-key': apiKey,
       },
-      body:    payload,
-      signal:  AbortSignal.timeout(8_000), // 8s timeout
+      body: payload,
+      signal: AbortSignal.timeout(timeoutMs),
     });
 
-    if (!resp.ok) return { error: `http_${resp.status}` };
+    if (!resp.ok) {
+      return {
+        error: `http_${resp.status}`,
+        model,
+      };
+    }
 
-    const data  = await resp.json();
-    const parts = data?.candidates?.[0]?.content?.parts ?? [];
-    const text  = parts.map(p => p.text ?? '').join('').trim();
+    const data = await resp.json();
 
-    return { text };
+    const parts =
+      data?.candidates?.[0]?.content?.parts ?? [];
+
+    const text = parts
+      .map(part => part.text ?? '')
+      .join('')
+      .trim();
+
+    const providerOutputTokens = Number(
+      data?.usageMetadata?.candidatesTokenCount,
+    );
+
+    const outputTokensApprox = Number.isFinite(
+      providerOutputTokens,
+    )
+      ? Math.trunc(providerOutputTokens)
+      : Math.ceil(text.length / 4);
+
+    return {
+      text,
+      model,
+      outputTokensApprox,
+    };
   } catch (err) {
-    return { error: err.message };
+    return {
+      error: err.message,
+      model,
+    };
   }
 }
 
@@ -1293,34 +1421,210 @@ app.post('/api/ai/stream', streamLimiter, (req, res) => {
 // ════════════════════════════════════════════════════════════════════════════
 
 app.post('/api/ai/sync', streamLimiter, async (req, res) => {
-  const requestId = req.headers['x-request-id'] ?? `req_${Date.now()}`;
+  const requestId =
+    req.headers['x-request-id'] ?? `req_${Date.now()}`;
+
   log.info(`[${requestId}] POST /api/ai/sync`);
 
   const apiKey = GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'server_misconfigured' });
+    return res
+      .status(500)
+      .json({ error: 'server_misconfigured' });
   }
 
-  const { userMessage, systemPrompt, maxTokens = 20 } = req.body ?? {};
+  const {
+    userMessage,
+    systemPrompt,
+    history = [],
+    lang = 'pt',
+    provider = 'gemini',
+    maxTokens,
+    maxOutputTokens,
+    temperature,
+    model,
+    model_tier: modelTier,
+    tier,
+    mode,
+  } = req.body ?? {};
 
-  if (!userMessage || typeof userMessage !== 'string') {
-    return res.status(400).json({ error: 'bad_request', message: 'userMessage ausente' });
+  if (
+    !userMessage ||
+    typeof userMessage !== 'string' ||
+    !userMessage.trim()
+  ) {
+    return res.status(400).json({
+      error: 'bad_request',
+      message: 'userMessage ausente',
+    });
   }
 
-  const fullPrompt = systemPrompt
-    ? `${systemPrompt}\n\n${userMessage}`
-    : userMessage;
+  const normalizedProvider =
+    typeof provider === 'string'
+      ? provider.trim().toLowerCase()
+      : 'gemini';
 
-  const result = await syncRequest(fullPrompt, apiKey, maxTokens);
+  // O endpoint /api/ai/sync é exclusivamente Gemini.
+  // GPT continua isolado no proxy Firebase até sua migração própria.
+  if (normalizedProvider !== 'gemini') {
+    log.warn(
+      `[${requestId}] unsupported provider: ` +
+      `${normalizedProvider || 'empty'}`,
+    );
+
+    return res.status(400).json({
+      error: 'unsupported_provider',
+      provider: normalizedProvider || 'empty',
+    });
+  }
+
+  const normalizedLang =
+    lang === 'es' ? 'es' : 'pt';
+
+  const historyCap =
+    mode === 'estudo' ? 8 : 4;
+
+  const normalizedHistory = (
+    Array.isArray(history) ? history : []
+  )
+    .slice(-historyCap)
+    .map(entry => {
+      if (
+        !entry ||
+        typeof entry !== 'object'
+      ) {
+        return null;
+      }
+
+      const rawRole =
+        typeof entry.role === 'string'
+          ? entry.role.trim().toLowerCase()
+          : '';
+
+      const role =
+        rawRole === 'assistant' ||
+        rawRole === 'model'
+          ? 'assistant'
+          : 'user';
+
+      const rawContent = [
+        entry.content,
+        entry.text,
+        entry.message,
+      ].find(value => (
+        typeof value === 'string' &&
+        value.trim()
+      ));
+
+      if (!rawContent) {
+        return null;
+      }
+
+      return {
+        role,
+        content: rawContent.trim(),
+      };
+    })
+    .filter(Boolean);
+
+  const resolvedModel = resolveSyncModel({
+    model,
+    mode,
+    modelTier,
+    tier,
+  });
+
+  const resolvedMaxTokens =
+    maxOutputTokens ?? maxTokens ?? 20;
+
+  const resolvedTemperature =
+    temperature ??
+    (
+      mode === 'estudo'
+        ? 0.4
+        : mode === 'plantao'
+          ? 0.2
+          : 0.1
+    );
+
+  const userLabel =
+    normalizedLang === 'es'
+      ? 'USUARIO'
+      : 'USUÁRIO';
+
+  const assistantLabel =
+    normalizedLang === 'es'
+      ? 'ASISTENTE'
+      : 'ASSISTENTE';
+
+  const historyPrompt = normalizedHistory
+    .map(entry => {
+      const label =
+        entry.role === 'assistant'
+          ? assistantLabel
+          : userLabel;
+
+      return `${label}: ${entry.content}`;
+    })
+    .join('\n\n');
+
+  const safeSystemPrompt =
+    typeof systemPrompt === 'string'
+      ? systemPrompt.trim()
+      : '';
+
+  const fullPrompt = [
+    safeSystemPrompt,
+    historyPrompt,
+    `${userLabel}: ${userMessage.trim()}`,
+  ]
+    .filter(section => section.length > 0)
+    .join('\n\n');
+
+  log.info(
+    `[${requestId}] sync contract ` +
+    `provider=${normalizedProvider} ` +
+    `mode=${mode ?? 'generic'} ` +
+    `lang=${normalizedLang} ` +
+    `historyEntries=${normalizedHistory.length} ` +
+    `requestedModel=${model ?? 'none'} ` +
+    `resolvedModel=${resolvedModel}`,
+  );
+
+  const result = await syncRequest(
+    fullPrompt,
+    apiKey,
+    {
+      model: resolvedModel,
+      maxTokens: resolvedMaxTokens,
+      temperature: resolvedTemperature,
+    },
+  );
 
   if (result.error) {
-    log.error(`[${requestId}] sync error: ${result.error}`);
-    return res.status(502).json({ error: result.error });
+    log.error(
+      `[${requestId}] sync error: ` +
+      `${result.error} model=${result.model}`,
+    );
+
+    return res.status(502).json({
+      error: result.error,
+      model: result.model,
+    });
   }
 
-  log.debug(`[${requestId}] sync ok: "${result.text.slice(0, 60)}"`);
-  return res.json({ text: result.text });
+  log.debug(
+    `[${requestId}] sync ok ` +
+    `model=${result.model} ` +
+    `outputTokensApprox=${result.outputTokensApprox}`,
+  );
+
+  return res.json({
+    text: result.text,
+    model: result.model,
+    outputTokensApprox: result.outputTokensApprox,
+  });
 });
 
 // ════════════════════════════════════════════════════════════════════════════
