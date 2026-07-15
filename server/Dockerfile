@@ -4,7 +4,7 @@
 # ══════════════════════════════════════════════════════════════════════════════
 
 # ── Stage 1: dependencies ─────────────────────────────────────────────────────
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev --no-audit --no-fund
 
 # ── Stage 2: runtime ──────────────────────────────────────────────────────────
-FROM node:20-alpine AS runtime
+FROM node:22-alpine AS runtime
 
 # Cria usuário não-root para segurança
 RUN addgroup -g 1001 -S nodejs && \

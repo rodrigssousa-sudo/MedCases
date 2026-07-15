@@ -71,45 +71,112 @@ const express    = require('express');
 const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
-const admin      = require('firebase-admin');
+const {
+  initializeApp,
+  cert,
+  getApp,
+  getApps,
+} = require('firebase-admin/app');
+const { getAuth } = require('firebase-admin/auth');
 
-// ── Inicialização do Firebase Admin SDK ────────────────────────────────────────
-try {
-  if (admin.apps.length === 0) {
-    admin.initializeApp({
-      projectId: process.env.FIREBASE_PROJECT_ID || 'medcases-pro',
-    });
-    console.log('[INIT] Firebase Admin SDK inicializado com sucesso.');
+// ── Firebase Admin: credencial exclusiva do gateway ───────────────────────────
+const FIREBASE_PROJECT_ID =
+  process.env.FIREBASE_PROJECT_ID?.trim() ?? '';
+const FIREBASE_SERVICE_ACCOUNT_JSON =
+  process.env.FIREBASE_SERVICE_ACCOUNT_JSON?.trim() ?? '';
+
+function initializeFirebaseAdmin() {
+  if (!FIREBASE_PROJECT_ID) {
+    throw new Error('FIREBASE_PROJECT_ID ausente');
   }
-} catch (error) {
-  console.error('[ERROR] Falha crítica ao inicializar Firebase Admin:', error);
+  if (!FIREBASE_SERVICE_ACCOUNT_JSON) {
+    throw new Error('FIREBASE_SERVICE_ACCOUNT_JSON ausente');
+  }
+
+  let serviceAccount;
+  try {
+    serviceAccount = JSON.parse(FIREBASE_SERVICE_ACCOUNT_JSON);
+  } catch (_) {
+    throw new Error('FIREBASE_SERVICE_ACCOUNT_JSON não é um JSON válido');
+  }
+
+  if (
+    typeof serviceAccount !== 'object' ||
+    !serviceAccount.project_id ||
+    !serviceAccount.client_email ||
+    !serviceAccount.private_key
+  ) {
+    throw new Error(
+      'FIREBASE_SERVICE_ACCOUNT_JSON não contém os campos obrigatórios'
+    );
+  }
+
+  if (serviceAccount.project_id !== FIREBASE_PROJECT_ID) {
+    throw new Error(
+      'FIREBASE_PROJECT_ID não corresponde ao project_id da service account'
+    );
+  }
+
+  if (getApps().length > 0) {
+    return getApp();
+  }
+
+  return initializeApp({
+    credential: cert(serviceAccount),
+    projectId: FIREBASE_PROJECT_ID,
+  });
 }
 
-// ── Middleware: Autenticação Criptográfica Firebase ──────────────────────────
+let firebaseAdminApp;
+try {
+  firebaseAdminApp = initializeFirebaseAdmin();
+  console.log('[INIT] Firebase Admin SDK pronto.');
+} catch (error) {
+  console.error(
+    '[FATAL] Firebase Admin SDK não pôde ser inicializado:',
+    error.message,
+  );
+  process.exit(1);
+}
+
+const firebaseAuth = getAuth(firebaseAdminApp);
+
+// ── Autenticação Firebase para rotas /api/ai ─────────────────────────────────
 async function authenticateFirebaseToken(req, res, next) {
-  if (req.path === '/health') {
+  if (req.method === 'OPTIONS') {
     return next();
   }
 
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const requestId =
+    req.headers['x-request-id'] ?? `req_${Date.now()}`;
+  const authHeader = req.headers.authorization ?? '';
+  const bearerMatch = authHeader.match(/^Bearer\s+(.+)$/i);
+
+  if (!bearerMatch || !bearerMatch[1].trim()) {
     return res.status(401).json({
       error: 'unauthorized',
-      reason: 'Cabecalho Authorization invalido ou ausente.'
+      reason: 'firebase_id_token_missing',
     });
   }
 
-  const idToken = authHeader.split('Bearer ')[1].trim();
+  const idToken = bearerMatch[1].trim();
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    req.user = decodedToken; // Injeta metadados de auditoria do médico
-    next();
+    const decodedToken =
+      await firebaseAuth.verifyIdToken(idToken);
+    req.auth = {
+      uid: decodedToken.uid,
+      email: decodedToken.email ?? null,
+    };
+    return next();
   } catch (error) {
-    console.warn('[WARN] Token do Firebase rejeitado:', error.message);
-    return res.status(403).json({
-      error: 'forbidden',
-      reason: 'Token expirado ou invalido.'
+    log.warn(
+      `[${requestId}] Firebase ID token rejeitado ` +
+      `code=${error.code ?? 'unknown'}`,
+    );
+    return res.status(401).json({
+      error: 'unauthorized',
+      reason: 'firebase_id_token_invalid',
     });
   }
 }
@@ -1008,8 +1075,7 @@ function validateStreamBody(body) {
 
 const app = express();
 
-// Ativa a interceptacao de seguranca para toda a borda
-app.use(authenticateFirebaseToken);
+
 
 // ── Middlewares globais ───────────────────────────────────────────────────────
 
@@ -1043,6 +1109,9 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '512kb' }));
+
+// CORS já processou o preflight; somente as rotas de IA exigem Firebase Auth.
+app.use('/api/ai', authenticateFirebaseToken);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 
