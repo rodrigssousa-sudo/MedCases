@@ -855,9 +855,12 @@ async function relayStream(res, body, apiKey, attempt = 0) {
   }
 
   try {
-    const fetchResp = await fetch(`${ENDPOINT_STREAM}&key=${apiKey}`, {
+    const fetchResp = await fetch(ENDPOINT_STREAM, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
       body,
       signal: abortCtrl.signal,
     });
@@ -1030,9 +1033,12 @@ async function syncRequest(prompt, apiKey, maxTokens = 20) {
   });
 
   try {
-    const resp = await fetch(`${ENDPOINT_SYNC}?key=${apiKey}`, {
+    const resp = await fetch(ENDPOINT_SYNC, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
       body:    payload,
       signal:  AbortSignal.timeout(8_000), // 8s timeout
     });
