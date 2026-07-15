@@ -736,8 +736,8 @@
     // BUILD 281: versão bumped para forçar limpeza de SWs antigos nos usuários
     // que ainda têm o SW desatualizado (pre-BUILD281). A limpeza agora é cirúrgica
     // (preserva caches de Firebase Auth/Firestore) — sem destruir sessões.
-    var APP_VERSION = '48.1.1';
-    var SW_URL      = 'pwa-sw.js?v=48.1.1';
+    var APP_VERSION = '48.1.2';
+    var SW_URL      = 'pwa-sw.js?v=48.1.2';
 
     // ── Remoção do splash ────────────────────────────────────────────
     var _splashRemoved = false;
@@ -1079,42 +1079,10 @@
       bootFlutter();
 
       if (storedVersion !== APP_VERSION) {
-        // Versão nova detectada: limpa SW + caches antigos EM PARALELO com o boot.
-        // Flutter já está iniciando — limpeza não bloqueia mais a splash.
-        var swClean = navigator.serviceWorker.getRegistrations()
-          .then(function(regs) {
-            return Promise.all(regs.map(function(r) { return r.unregister(); }));
-          }).catch(function() {});
-
-        // BUILD 281: cacheClean cirúrgico — preserva IndexedDB/LocalStorage do Firebase Auth.
-        // O cache nativo do browser (CacheStorage) pode conter entradas do Firebase Auth
-        // sob prefixos 'firebaseLocalStorage', 'firebase-', 'firebaseauth-' etc.
-        // Apagar esses caches durante atualização de versão destruía a sessão do usuário
-        // em browsers mobile, forçando re-login após qualquer deploy.
-        // Fix: filtra APENAS os caches de assets do Flutter (prefixo 'flutter_' ou 'CACHE_')
-        // e deixa INTOCADOS qualquer cache que contenha 'firebase' ou 'auth' no nome.
-        var cacheClean = ('caches' in window)
-          ? caches.keys().then(function(keys) {
-              var safeKeys = keys.filter(function(k) {
-                var lower = k.toLowerCase();
-                // Preserva caches de autenticação Firebase/Google
-                if (lower.indexOf('firebase') !== -1) return false;
-                if (lower.indexOf('auth') !== -1) return false;
-                if (lower.indexOf('google') !== -1) return false;
-                // Preserva caches de dados do usuário (Firestore offline)
-                if (lower.indexOf('firestore') !== -1) return false;
-                // Apaga apenas caches de assets Flutter
-                return true;
-              });
-              return Promise.all(safeKeys.map(function(k) { return caches.delete(k); }));
-            }).catch(function() {})
-          : Promise.resolve();
-
-        Promise.all([swClean, cacheClean])
-          .catch(function() {})
-          .then(function() {
-            try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
-          });
+        // O registerSW() é o único proprietário do ciclo de vida do PWA.
+        // Não remover a registration enquanto o novo worker está instalando.
+        // A rotação de CACHE_APP e o evento activate removem os caches antigos.
+        try { localStorage.setItem('medcases_app_version', APP_VERSION); } catch(e) {}
       }
 
       function registerSW() {
