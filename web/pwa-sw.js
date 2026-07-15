@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '48.1.2';
-const CACHE_APP    = 'medcases-app-v48.1.2';  // ← Build 155: Dois motores independentes /stream/plantao + /stream/estudo
+const SW_VERSION   = '48.1.3';
+const CACHE_APP    = 'medcases-app-v48.1.3';  // ← Build 155: Dois motores independentes /stream/plantao + /stream/estudo
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)
@@ -50,6 +50,41 @@ function isBigAsset(url) {
 }
 function isStaticAsset(url) {
   return /\.(js|css|png|jpg|jpeg|svg|ico|woff|woff2|ttf|json|wasm)(\?.*)?$/.test(url);
+}
+
+// ── CACHE PUT SEGURO ──────────────────────────────────────────────────────────
+// CacheStorage rejeita respostas cujo header Vary contém "*".
+//
+// A resposta de rede continua sendo entregue normalmente; somente a persistência
+// no cache é ignorada. Qualquer outra falha do CacheStorage também é contida para
+// nunca rejeitar o fetch handler nem afetar o boot do Flutter.
+async function safeCachePut(cache, request, response) {
+  if (!response || !response.ok) return false;
+
+  const vary = response.headers
+    ? response.headers.get('Vary')
+    : null;
+
+  if (
+    vary &&
+    vary.split(',').some(value => value.trim() === '*')
+  ) {
+    console.warn('[SW][CACHE_PUT_SKIPPED] reason=vary_star');
+    return false;
+  }
+
+  try {
+    await cache.put(request, response.clone());
+    return true;
+  } catch (error) {
+    const reason =
+      error && error.name
+        ? error.name
+        : 'cache_put_failed';
+
+    console.warn('[SW][CACHE_PUT_SKIPPED] reason=' + reason);
+    return false;
+  }
 }
 
 // ── INSTALL ────────────────────────────────────────────────────────────────────
@@ -123,7 +158,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.open(CACHE_FONTS).then(cache =>
         cache.match(request).then(hit => hit || fetch(request).then(res => {
-          if (res.ok) cache.put(request, res.clone());
+          if (res.ok) safeCachePut(cache, request, res);
           return res;
         }))
       )
@@ -137,7 +172,7 @@ self.addEventListener('fetch', event => {
       fetch(request)
         .then(res => {
           if (res.ok) {
-            caches.open(CACHE_APP).then(c => c.put(request, res.clone()));
+            caches.open(CACHE_APP).then(c => safeCachePut(c, request, res));
           }
           return res;
         })
@@ -172,8 +207,8 @@ self.addEventListener('fetch', event => {
       fetch(request, { cache: 'no-store' })
         .then(res => {
           if (res && res.ok) {
-            const clone = res.clone();
-            caches.open(CACHE_APP).then(cache => cache.put(request, clone));
+            caches.open(CACHE_APP)
+              .then(cache => safeCachePut(cache, request, res));
           }
           return res;
         })
@@ -191,7 +226,8 @@ self.addEventListener('fetch', event => {
       fetch(request, { cache: 'no-store' })
         .then(res => {
           if (res && res.ok) {
-            caches.open(CACHE_APP).then(cache => cache.put(request, res.clone()));
+            caches.open(CACHE_APP)
+              .then(cache => safeCachePut(cache, request, res));
           }
           return res;
         })
@@ -208,7 +244,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.open(CACHE_APP).then(cache =>
         cache.match(request).then(hit => hit || fetch(request).then(res => {
-          if (res.ok) cache.put(request, res.clone());
+          if (res.ok) safeCachePut(cache, request, res);
           return res;
         }).catch(() => null))
       )
