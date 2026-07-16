@@ -133,6 +133,10 @@ class GptSseClient {
   bool _cancelled  = false;
   bool _completed  = false;
 
+  // Identidade real informada pelo backend no evento started.
+  String _activeModel    = 'gpt-4o-mini';
+  String _activeProvider = 'gpt_4o_mini';
+
   // Métricas de cancelamento
   int _deltaCount  = 0;
   int _startMs     = 0;
@@ -162,10 +166,14 @@ class GptSseClient {
     _cancelled  = false;
     _completed  = false;
     _deltaCount = 0;
+    _activeModel    = 'gpt-4o-mini';
+    _activeProvider = 'gpt_4o_mini';
 
     final reqId   = payload.requestId.isEmpty
-        ? 'req_${_startMs}'
+        ? 'req_$_startMs'
         : payload.requestId;
+
+    _currentRequestId = reqId;
 
     // Criar http.Client dedicado a este request
     _httpClient = http.Client();
@@ -324,13 +332,18 @@ class GptSseClient {
         // Processar evento por tipo
         switch (sseEvent.type) {
           case 'started':
-            final data  = sseEvent.data ?? {};
-            final model = data['model'] as String? ?? 'gpt-4o-mini';
+            final data = sseEvent.data ?? {};
+
+            _activeModel =
+                data['model'] as String? ?? _activeModel;
+            _activeProvider =
+                data['provider'] as String? ?? _activeProvider;
+
             yield AiStarted.now(
               requestId: reqId,
               attempt:   kGptAttempt,
-              model:     model,
-              provider:  'gpt_4o_mini',
+              model:     _activeModel,
+              provider:  _activeProvider,
             );
 
           case 'text_delta':
@@ -370,7 +383,13 @@ class GptSseClient {
             // AppProvider emitirá AiCompleted APÓS sanitizeAndCheck()
             transportDoneReceived = true;
             _completed = true;
-            final data            = sseEvent.data ?? {};
+            final data = sseEvent.data ?? {};
+
+            _activeModel =
+                data['model'] as String? ?? _activeModel;
+            _activeProvider =
+                data['provider'] as String? ?? _activeProvider;
+
             final inputTok        = (data['inputTokensApprox'] as num?)?.toInt() ?? 0;
             final outputTok       = (data['outputTokensApprox'] as num?)?.toInt() ?? 0;
             final durationMs      = DateTime.now().millisecondsSinceEpoch - _startMs;
@@ -384,7 +403,7 @@ class GptSseClient {
               requestId:          reqId,
               attempt:            kGptAttempt,
               fullText:           accumulator.toString(),
-              usedProvider:       'gpt_4o_mini',
+              usedProvider:       _activeProvider,
               inputTokensApprox:  inputTok,
               outputTokensApprox: outputTok,
               durationMs:         durationMs,
@@ -481,9 +500,10 @@ class GptSseClient {
     final durationMs = DateTime.now().millisecondsSinceEpoch - _startMs;
 
     // Log de cancelamento — SEM API key, ID Token, prompt, dados do paciente
-    debugPrint('[GPT_SSE] cancel requestId=${_currentRequestId} '
-        'attempt=$kGptAttempt provider=gpt_4o_mini '
-        'reason=$reason durationMs=$durationMs deltaCount=$_deltaCount');
+    debugPrint('[GPT_SSE] cancel requestId=$_currentRequestId '
+        'attempt=$kGptAttempt provider=$_activeProvider '
+        'model=$_activeModel reason=$reason '
+        'durationMs=$durationMs deltaCount=$_deltaCount');
 
     return GptSseCancellation(
       requestId:   _currentRequestId,

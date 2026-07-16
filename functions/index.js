@@ -39,6 +39,9 @@ const admin      = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const https      = require('https');
 
+// ── FASE 3B: projetor incremental de Structured Outputs ────────────────
+const { IncrementalDisplayTextProjector } = require('./lib/structured_output_stream');
+
 // ── BUILD 459: Secret dedicado ao motor de IA server-side ────────────────────
 // Configurar: firebase functions:secrets:set GEMINI_AI_KEY
 // Nunca exposta ao cliente — lida exclusivamente server-side nesta CF.
@@ -2347,11 +2350,82 @@ function sendSseEvent(res, eventType, data) {
   if (typeof res.flush === 'function') res.flush();
 }
 
+
+// ── FASE 3B: GPT-5.6 + Structured Outputs ───────────────────────────────────
+const GPT_STRUCTURED_MODEL = 'gpt-5.6';
+const GPT_LEGACY_MODEL = 'gpt-4o-mini';
+
+/*
+ * Ativação clínica independente do transporte SSE.
+ *
+ * Default false:
+ * um deploy não muda automaticamente o modelo nem o formato da resposta.
+ *
+ * Ativar explicitamente no ambiente:
+ * USE_GPT_56_STRUCTURED_OUTPUTS=true
+ */
+const USE_GPT_56_STRUCTURED_OUTPUTS =
+  process.env.USE_GPT_56_STRUCTURED_OUTPUTS === 'true';
+
+const GPT_CLINICAL_RESPONSE_SCHEMA = {
+  type: 'object',
+  properties: {
+    displayText: {
+      type: 'string',
+      description:
+        'Resposta médica completa em Markdown legível para exibição ao usuário.',
+    },
+    structuredOutput: {
+      type: ['object', 'null'],
+      description:
+        'Metadados clínicos estruturados apenas quando aplicáveis ao caso.',
+      properties: {
+        diagnosticoHeuristico: {
+          type: 'string',
+        },
+        condutaImediata: {
+          type: 'string',
+        },
+        prescricao: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              farmaco: {
+                type: 'string',
+              },
+              posologia: {
+                type: 'string',
+              },
+            },
+            required: [
+              'farmaco',
+              'posologia',
+            ],
+            additionalProperties: false,
+          },
+        },
+      },
+      required: [
+        'diagnosticoHeuristico',
+        'condutaImediata',
+        'prescricao',
+      ],
+      additionalProperties: false,
+    },
+  },
+  required: [
+    'displayText',
+    'structuredOutput',
+  ],
+  additionalProperties: false,
+};
+
 // ── callOpenAiResponsesStream: consome OpenAI Responses API com stream:true ──
 //
 // Usa https nativo (Node 22) para chamar:
 //   POST https://api.openai.com/v1/responses
-//   { model: 'gpt-4o-mini', input: [...], stream: true }
+//   { model: GPT_STRUCTURED_MODEL, input: [...], stream: true, text: { format } }
 //
 // Evento relevante de texto: response.output_text.delta
 //   { type: 'response.output_text.delta', delta: '...' }
@@ -2394,12 +2468,31 @@ function callOpenAiResponsesStream({
     }
     input.push({ role: 'user', content: userMessage.trim() });
 
-    const bodyStr = JSON.stringify({
-      model:      'gpt-4o-mini',
+    const structuredEnabled =
+      USE_GPT_56_STRUCTURED_OUTPUTS;
+
+    const requestBody = {
+      model:
+        structuredEnabled
+          ? GPT_STRUCTURED_MODEL
+          : GPT_LEGACY_MODEL,
       input,
-      stream:     true,
+      stream: true,
       max_output_tokens: maxOutputTokens || 800,
-    });
+    };
+
+    if (structuredEnabled) {
+      requestBody.text = {
+        format: {
+          type: 'json_schema',
+          name: 'medcases_clinical_response',
+          strict: true,
+          schema: GPT_CLINICAL_RESPONSE_SCHEMA,
+        },
+      };
+    }
+
+    const bodyStr = JSON.stringify(requestBody);
 
     const options = {
       hostname: 'api.openai.com',
@@ -2417,6 +2510,12 @@ function callOpenAiResponsesStream({
     let outputTokensApprox = 0;
     let sequence           = 1;
     let completed          = false;
+    let finalEnvelope      = null;
+
+    const projector =
+      structuredEnabled
+        ? new IncrementalDisplayTextProjector()
+        : null;
 
     const apiReq = https.request(options, (apiRes) => {
       if (apiRes.statusCode !== 200) {
@@ -2450,7 +2549,6 @@ function callOpenAiResponsesStream({
           if (line.startsWith('data: ')) {
             const rawData = line.slice(6).trim();
             if (rawData === '[DONE]') {
-              completed = true;
               continue;
             }
             try {
@@ -2459,26 +2557,67 @@ function callOpenAiResponsesStream({
 
               // ── Evento de texto delta (contrato MedCases) ──────────────────
               if (eventType === 'response.output_text.delta') {
-                const delta = event.delta || '';
-                if (delta) {
-                  onDelta({
-                    requestId,
-                    attempt:   2,
-                    sequence:  sequence++,
-                    delta,
-                    timestamp: new Date().toISOString(),
-                  });
+                const rawDelta =
+                  typeof event.delta === 'string'
+                    ? event.delta
+                    : '';
+
+                if (rawDelta) {
+                  const displayDelta =
+                    structuredEnabled
+                      ? projector.push(rawDelta)
+                      : rawDelta;
+
+                  if (displayDelta) {
+                    onDelta({
+                      requestId,
+                      attempt: 2,
+                      sequence: sequence++,
+                      delta: displayDelta,
+                      timestamp: new Date().toISOString(),
+                    });
+                  }
                 }
+
+                continue;
+              }
+
+              if (eventType === 'response.output_text.done') {
+                const finalRawText =
+                  typeof event.text === 'string'
+                    ? event.text
+                    : '';
+
+                if (
+                  structuredEnabled &&
+                  finalRawText &&
+                  finalRawText !== projector.rawJson
+                ) {
+                  throw new Error(
+                    'structured_output_done_mismatch',
+                  );
+                }
+
                 continue;
               }
 
               // ── Conclusão da resposta ──────────────────────────────────────
               if (eventType === 'response.completed') {
-                const usage = event.response && event.response.usage;
+                const usage =
+                  event.response &&
+                  event.response.usage;
+
                 if (usage) {
-                  inputTokensApprox  = usage.input_tokens  || 0;
-                  outputTokensApprox = usage.output_tokens || 0;
+                  inputTokensApprox =
+                    usage.input_tokens || 0;
+                  outputTokensApprox =
+                    usage.output_tokens || 0;
                 }
+
+                if (structuredEnabled) {
+                  finalEnvelope = projector.finish();
+                }
+
                 completed = true;
                 continue;
               }
@@ -2502,18 +2641,61 @@ function callOpenAiResponsesStream({
               // ── response.created, response.in_progress: ignorar ───────────
               // Outros eventos da OpenAI não são repassados ao Flutter
 
-            } catch (_) {
-              // JSON inválido da OpenAI — ignorar linha corrompida
+            } catch (error) {
+              const message =
+                error && error.message
+                  ? error.message
+                  : String(error);
+
+              if (
+                message.startsWith('structured_')
+              ) {
+                reject(error);
+                apiReq.destroy();
+                return;
+              }
+
+              // Evento SSE individual com JSON inválido:
+              // preservar o comportamento legado de descarte.
             }
           }
         }
       });
 
       apiRes.on('end', () => {
-        if (completed) {
-          resolve({ inputTokensApprox, outputTokensApprox, sequenceCount: sequence - 1 });
+        const validCompletion =
+          completed &&
+          (
+            !structuredEnabled ||
+            finalEnvelope
+          );
+
+        if (validCompletion) {
+          resolve({
+            inputTokensApprox,
+            outputTokensApprox,
+            sequenceCount: sequence - 1,
+            model:
+              structuredEnabled
+                ? GPT_STRUCTURED_MODEL
+                : GPT_LEGACY_MODEL,
+            provider:
+              structuredEnabled
+                ? 'gpt_5_6'
+                : 'gpt_4o_mini',
+            structuredOutput:
+              finalEnvelope
+                ? finalEnvelope.structuredOutput
+                : null,
+          });
         } else {
-          reject(new Error('openai_stream_ended_without_done'));
+          reject(
+            new Error(
+              completed
+                ? 'structured_output_final_envelope_missing'
+                : 'openai_stream_ended_without_response_completed',
+            ),
+          );
         }
       });
       apiRes.on('error', (err) => reject(new Error(`openai_stream_error:${err.message}`)));
@@ -2682,7 +2864,8 @@ exports.gptProxyStream = onRequest(
 
     console.log(
       `[GPT_SSE_CF] → start requestId=${requestId} uid=${callerUid} mode=${mode} `
-      + `maxOut=${maxOutputTokens} useSse=${USE_GPT_PROXY_SSE}`
+      + `maxOut=${maxOutputTokens} useSse=${USE_GPT_PROXY_SSE} `
+      + `structured=${USE_GPT_56_STRUCTURED_OUTPUTS}`
     );
 
     // ── CANCELAMENTO UPSTREAM ──────────────────────────────────────────────────
@@ -2718,8 +2901,16 @@ exports.gptProxyStream = onRequest(
       sendSseEvent(res, 'started', {
         requestId,
         attempt:   2,
-        model:     'gpt-4o-mini',
-        provider:  'gpt_4o_mini',
+        model:
+          USE_GPT_56_STRUCTURED_OUTPUTS
+            ? GPT_STRUCTURED_MODEL
+            : GPT_LEGACY_MODEL,
+        provider:
+          USE_GPT_56_STRUCTURED_OUTPUTS
+            ? 'gpt_5_6'
+            : 'gpt_4o_mini',
+        structuredOutputs:
+          USE_GPT_56_STRUCTURED_OUTPUTS,
         timestamp: new Date().toISOString(),
       });
 
@@ -2756,11 +2947,14 @@ exports.gptProxyStream = onRequest(
         sendSseEvent(res, 'transport_done', {
           requestId,
           attempt:            2,
-          model:              'gpt-4o-mini',
+          model:              result.model,
+          provider:           result.provider,
+          structuredOutputs:  USE_GPT_56_STRUCTURED_OUTPUTS,
           inputTokensApprox:  result.inputTokensApprox,
           outputTokensApprox: result.outputTokensApprox,
           durationMs,
           deltaCount,
+          structuredOutput:   result.structuredOutput,
           timestamp:          new Date().toISOString(),
         });
       }
