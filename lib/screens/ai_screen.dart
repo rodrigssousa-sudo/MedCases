@@ -2865,6 +2865,13 @@ class _AiScreenState extends State<AiScreen> {
   void _cancelActiveStream() {
     final p = context.read<AppProvider>();
     p.cancelAiStream();  // cancela _aiStreamSub no AppProvider
+
+    // PHASE 4 — fechamento local soberano:
+    // remove imediatamente o listener da bolha ativa e impede que deltas
+    // tardios continuem atualizando uma resposta já cancelada.
+    _streamingTextNotifier?.dispose();
+    _streamingTextNotifier = null;
+
     setState(() {
       _thinking    = false;
       _isStreaming  = false;
