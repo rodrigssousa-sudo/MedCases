@@ -2211,9 +2211,18 @@ class _AiScreenState extends State<AiScreen> {
               // BUILD 332 Fix 2: _streamingTextNotifier ativado para chunk-by-chunk.
               _messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));
               streamingMsgIdx = _messages.length - 1;
-              // Ativa render imediato do primeiro token (<2s)
+
+              // PHASE 4 — transição soberana:
+              // aguardando/ECG → primeiro delta → bolha de streaming.
+              //
+              // O primeiro delta encerra o estado de espera, ativa a bolha
+              // corrente e conecta o ValueNotifier ao streaming visível.
               if (mounted) {
-                setState(() {});
+                setState(() {
+                  _thinking = false;
+                  _isStreaming = true;
+                  _lastAiIndex = streamingMsgIdx;
+                });
                 _streamingTextNotifier?.value = cleanedChunk;
               }
             } else {
