@@ -2838,6 +2838,11 @@ class _AiScreenState extends State<AiScreen> {
     _saveCurrentSessionToHistory(p);
     // Build 107 — cancela streaming ativo antes de limpar
     p.cancelAiStream();
+
+    // PHASE 4 — encerra também o canal local da bolha ativa.
+    _streamingTextNotifier?.dispose();
+    _streamingTextNotifier = null;
+
     setState(() {
       _messages
         ..clear()
@@ -2892,6 +2897,11 @@ class _AiScreenState extends State<AiScreen> {
     _saveCurrentSessionToHistory(p);
     // Build 107 — cancela streaming ativo antes de abrir novo chat
     p.cancelAiStream();
+
+    // PHASE 4 — impede que deltas tardios alcancem a sessão nova.
+    _streamingTextNotifier?.dispose();
+    _streamingTextNotifier = null;
+
     // 2. Limpa UI e reseta flags de sessão — novo chat em branco
     setState(() {
       _messages
