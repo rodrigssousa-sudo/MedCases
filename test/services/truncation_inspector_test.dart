@@ -8,6 +8,7 @@
 //   H2. Numeric range abrupt end on separator (55–, 10-, >) → confidence=high
 //   H3. Mid-numeric / mid-unit cut → confidence=high
 //   H4. Non-punctuation abrupt end → confidence=medium
+//   H5. Unclosed delimiter → confidence=high
 //   CLEAN: Complete well-formed text → TruncationCheckResult.clean
 //
 // BIOHAZARD CLÍNICO:
@@ -25,7 +26,6 @@ void main() {
   // Test C (MANDATORY — 462E-A.5 mandate): Velocidade: **55–7
   // ─────────────────────────────────────────────────────────────────────────
   group('Test C (Mandatory 462E-A.5) — Fail-Closed Intercept', () {
-
     // ── Test C exact: "Velocidade: **55–7" ────────────────────────────────
     //
     // MANDATE: Inject sample string "Velocidade: 55–7"
@@ -46,24 +46,30 @@ void main() {
               '(clinical biohazard: partial dosage number)');
 
       expect(result.violationReason, isNotNull,
-          reason: 'Test C: violation reason must be populated for high confidence truncation');
+          reason:
+              'Test C: violation reason must be populated for high confidence truncation');
     });
 
     // ── Test C variant: "Velocidade: 55–7" (no bold) ─────────────────────
-    test('Test C (no bold) — "Velocidade: 55–7" → truncated=true, confidence=high', () {
+    test(
+        'Test C (no bold) — "Velocidade: 55–7" → truncated=true, confidence=high',
+        () {
       const input = 'Velocidade: 55–7';
 
       final result = TruncationInspector.inspect(input);
 
       expect(result.isTruncated, isTrue,
-          reason: 'Test C no-bold: 55–7 numeric range without unit → truncated');
+          reason:
+              'Test C no-bold: 55–7 numeric range without unit → truncated');
 
       expect(result.confidenceLevel, equals(TruncationConfidence.high),
-          reason: 'Test C no-bold: numeric range cut must still yield confidence=high');
+          reason:
+              'Test C no-bold: numeric range cut must still yield confidence=high');
     });
 
     // ── Test C variant: "Dose: **55–" (no upper bound) ───────────────────
-    test('Test C (no upper) — "Dose: **55–" → truncated=true, confidence=high', () {
+    test('Test C (no upper) — "Dose: **55–" → truncated=true, confidence=high',
+        () {
       const input = 'Dose: **55–';
 
       final result = TruncationInspector.inspect(input);
@@ -72,7 +78,8 @@ void main() {
           reason: 'Test C no-upper: range separator at EOF → truncated');
 
       expect(result.confidenceLevel, equals(TruncationConfidence.high),
-          reason: 'Test C no-upper: abrupt range end must yield confidence=high');
+          reason:
+              'Test C no-upper: abrupt range end must yield confidence=high');
     });
 
     // ── Test C: Verify repair fields (default state pre-pipeline) ─────────
@@ -89,22 +96,28 @@ void main() {
     });
 
     // ── Test C: withRepair() copies result with updated repair state ───────
-    test('Test C withRepair — repair attempted but failed → didRetry=true, didFix=false', () {
+    test(
+        'Test C withRepair — repair attempted but failed → didRetry=true, didFix=false',
+        () {
       final initial = TruncationInspector.inspect('Velocidade: **55–7');
       final afterFailedRetry = initial.withRepair(retried: true, fixed: false);
 
       expect(afterFailedRetry.isTruncated, isTrue,
-          reason: 'Test C withRepair: isTruncated preserved after failed repair');
-      expect(afterFailedRetry.confidenceLevel, equals(TruncationConfidence.high),
+          reason:
+              'Test C withRepair: isTruncated preserved after failed repair');
+      expect(
+          afterFailedRetry.confidenceLevel, equals(TruncationConfidence.high),
           reason: 'Test C withRepair: confidence preserved');
       expect(afterFailedRetry.didRetry, isTrue,
           reason: 'Test C withRepair: didRetry=true after retry attempt');
       expect(afterFailedRetry.didFix, isFalse,
-          reason: 'Test C withRepair: didFix=false after failed repair → DROP PAYLOAD');
+          reason:
+              'Test C withRepair: didFix=false after failed repair → DROP PAYLOAD');
     });
 
     // ── Test C: withRepair() — successful repair ───────────────────────────
-    test('Test C withRepair — repair successful → didRetry=true, didFix=true', () {
+    test('Test C withRepair — repair successful → didRetry=true, didFix=true',
+        () {
       final initial = TruncationInspector.inspect('Velocidade: **55–7');
       final afterSuccessRetry = initial.withRepair(retried: true, fixed: true);
 
@@ -118,8 +131,8 @@ void main() {
   // H1: Markdown Unclosed Bold **
   // ─────────────────────────────────────────────────────────────────────────
   group('H1 — Markdown Unclosed Bold (**) → confidence=high', () {
-
-    test('H1a — text ends with literal "**" → truncated=true, confidence=high', () {
+    test('H1a — text ends with literal "**" → truncated=true, confidence=high',
+        () {
       const input = 'Dose máxima de vancomicina: **';
       final result = TruncationInspector.inspect(input);
       expect(result.isTruncated, isTrue);
@@ -143,7 +156,8 @@ void main() {
       // H1 should NOT fire (even count, does not end with **)
       // May fire H4 if no punctuation at end — but H1 specifically must not fire
       if (result.isTruncated) {
-        expect(result.violationReason, isNot(equals('unclosed_markdown_bold_at_eof')),
+        expect(result.violationReason,
+            isNot(equals('unclosed_markdown_bold_at_eof')),
             reason: 'H1c: balanced ** must not trigger H1 unclosed bold');
       }
     });
@@ -160,7 +174,6 @@ void main() {
   // H2: Numeric Range Abrupt End on Separator
   // ─────────────────────────────────────────────────────────────────────────
   group('H2 — Numeric Range Abrupt End → confidence=high', () {
-
     test('H2a — "55–" at EOF (en-dash, no upper bound) → truncated=true', () {
       final result = TruncationInspector.inspect('Velocidade: 55–');
       expect(result.isTruncated, isTrue);
@@ -173,7 +186,9 @@ void main() {
       expect(result.confidenceLevel, equals(TruncationConfidence.high));
     });
 
-    test('H2c — numeric "> " at EOF (digit before >) → truncated=true, confidence=high', () {
+    test(
+        'H2c — numeric "> " at EOF (digit before >) → truncated=true, confidence=high',
+        () {
       // H2 regex: \d+\s*[–\-—>]\s*$ — requires digit before the separator.
       // "SpO2 > " has no digit immediately before ">" so H2 doesn't fire;
       // use "93 >" to trigger H2 properly.
@@ -200,14 +215,14 @@ void main() {
   // H3: Mid-Numeric / Mid-Unit Cut
   // ─────────────────────────────────────────────────────────────────────────
   group('H3 — Mid-Numeric / Mid-Unit Cut → confidence=high', () {
-
     test('H3a — "**55–7" bold range cut → truncated=true, confidence=high', () {
       final result = TruncationInspector.inspect('Dose máxima: **55–7');
       expect(result.isTruncated, isTrue);
       expect(result.confidenceLevel, equals(TruncationConfidence.high));
     });
 
-    test('H3b — "55–7" at EOF without unit → truncated=true (mandate exact)', () {
+    test('H3b — "55–7" at EOF without unit → truncated=true (mandate exact)',
+        () {
       // Mandate Test C: "Velocidade: 55–7" (without bold) must also catch
       final result = TruncationInspector.inspect('Velocidade: 55–7');
       expect(result.isTruncated, isTrue);
@@ -231,15 +246,17 @@ void main() {
   // H4: Non-Punctuation Abrupt End → confidence=medium
   // ─────────────────────────────────────────────────────────────────────────
   group('H4 — Non-Punctuation Abrupt End → confidence=medium', () {
-
-    test('H4a — text ending in word without punctuation → confidence=medium', () {
+    test('H4a — text ending in word without punctuation → confidence=medium',
+        () {
       // Does not match H1/H2/H3, so H4 fires with medium confidence
-      const input = 'Administrar vancomicina por infusão venosa lenta de uma hora em solução salina';
+      const input =
+          'Administrar vancomicina por infusão venosa lenta de uma hora em solução salina';
       final result = TruncationInspector.inspect(input);
       // H4 fires — trailing word without punctuation
       if (result.isTruncated) {
         expect(result.confidenceLevel, equals(TruncationConfidence.medium),
-            reason: 'H4a: non-punctuation end (no numeric signal) must yield medium confidence');
+            reason:
+                'H4a: non-punctuation end (no numeric signal) must yield medium confidence');
       }
     });
 
@@ -262,7 +279,87 @@ void main() {
       const input = 'Protocolo de vancomicina:';
       final result = TruncationInspector.inspect(input);
       expect(result.isTruncated, isFalse,
-          reason: 'H4d: colon at EOF is not considered abrupt in this heuristic');
+          reason:
+              'H4d: colon at EOF is not considered abrupt in this heuristic');
+    });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // H5 — Unclosed structural delimiters
+  // ─────────────────────────────────────────────────────────────────────────
+  group('H5 — Unclosed delimiters', () {
+    test('Unclosed parenthesis → high confidence', () {
+      const input =
+          'Adrenalina IV (se hipotensão refratária a adrenalina IM e fluidos.';
+
+      final result = TruncationInspector.inspect(input);
+
+      expect(result.isTruncated, isTrue);
+      expect(result.confidenceLevel, TruncationConfidence.high);
+      expect(
+        result.violationReason,
+        'unclosed_parenthesis_at_eof',
+      );
+    });
+
+    test('Unclosed square bracket → high confidence', () {
+      const input = 'Monitorar [pressão arterial continuamente.';
+
+      final result = TruncationInspector.inspect(input);
+
+      expect(result.isTruncated, isTrue);
+      expect(result.confidenceLevel, TruncationConfidence.high);
+      expect(
+        result.violationReason,
+        'unclosed_square_bracket_at_eof',
+      );
+    });
+
+    test('Unclosed curly brace → high confidence', () {
+      const input = 'Configuração clínica {dose ajustada.';
+
+      final result = TruncationInspector.inspect(input);
+
+      expect(result.isTruncated, isTrue);
+      expect(result.confidenceLevel, TruncationConfidence.high);
+      expect(
+        result.violationReason,
+        'unclosed_curly_brace_at_eof',
+      );
+    });
+
+    test('Balanced delimiters remain clean', () {
+      const samples = [
+        'Adrenalina IV (se hipotensão refratária).',
+        'Monitorar [pressão arterial continuamente].',
+        'Configuração clínica {dose ajustada}.',
+        'Texto clínico sem delimitadores.',
+      ];
+
+      for (final input in samples) {
+        final result = TruncationInspector.inspect(input);
+        expect(
+          result.isTruncated,
+          isFalse,
+          reason: 'Balanced text should remain clean: $input',
+        );
+      }
+    });
+
+    test('Delimiters inside code are ignored', () {
+      const inlineCode = 'Exemplo técnico: `funcao(`.';
+      final fence = String.fromCharCodes(const [96, 96, 96]);
+      final fencedCode =
+          'Exemplo:\n${fence}dart\nfuncao(\n$fence\nTexto clínico completo.';
+
+      expect(
+        TruncationInspector.inspect(inlineCode).isTruncated,
+        isFalse,
+      );
+      expect(
+        TruncationInspector.inspect(fencedCode).isTruncated,
+        isFalse,
+      );
     });
   });
 
@@ -270,25 +367,25 @@ void main() {
   // CLEAN texts — complete, well-formed medical responses
   // ─────────────────────────────────────────────────────────────────────────
   group('Clean texts — TruncationCheckResult.clean expected', () {
-
     test('Complete dosage instruction → clean', () {
       const input =
           '**Vancomicina EV:** 15–20 mg/kg a cada 8–12h (ajustar pela função renal). '
           'Infundir em 60 minutos. Monitorar nível sérico.';
       final result = TruncationInspector.inspect(input);
       expect(result.isTruncated, isFalse,
-          reason: 'Clean text with complete dosage range and unit must not be flagged');
+          reason:
+              'Clean text with complete dosage range and unit must not be flagged');
       expect(result.confidenceLevel, equals(TruncationConfidence.low));
     });
 
     test('Complete infusion protocol → clean', () {
-      const input =
-          'Noradrenalina: iniciar em 0.01 mcg/kg/min. '
+      const input = 'Noradrenalina: iniciar em 0.01 mcg/kg/min. '
           'Titular a cada 5 minutos conforme PAM alvo (>65 mmHg). '
           'Dose máxima: 3 mcg/kg/min.';
       final result = TruncationInspector.inspect(input);
       expect(result.isTruncated, isFalse,
-          reason: 'Complete infusion protocol with proper punctuation must be clean');
+          reason:
+              'Complete infusion protocol with proper punctuation must be clean');
     });
 
     test('Empty string → clean (not truncated)', () {
@@ -299,7 +396,8 @@ void main() {
     });
 
     test('Single sentence ending in "!" → clean', () {
-      final result = TruncationInspector.inspect('Atenção: risco de hipotensão!');
+      final result =
+          TruncationInspector.inspect('Atenção: risco de hipotensão!');
       expect(result.isTruncated, isFalse);
     });
 
@@ -316,10 +414,11 @@ void main() {
   // TruncationCheckResult utility tests
   // ─────────────────────────────────────────────────────────────────────────
   group('TruncationCheckResult — utility and contract', () {
-
-    test('TruncationCheckResult.clean has isTruncated=false, confidence=low', () {
+    test('TruncationCheckResult.clean has isTruncated=false, confidence=low',
+        () {
       expect(TruncationCheckResult.clean.isTruncated, isFalse);
-      expect(TruncationCheckResult.clean.confidenceLevel, equals(TruncationConfidence.low));
+      expect(TruncationCheckResult.clean.confidenceLevel,
+          equals(TruncationConfidence.low));
       expect(TruncationCheckResult.clean.violationReason, isNull);
       expect(TruncationCheckResult.clean.didRetry, isFalse);
       expect(TruncationCheckResult.clean.didFix, isFalse);
@@ -327,11 +426,13 @@ void main() {
 
     test('TruncationConfidence enum has three values: low, medium, high', () {
       expect(TruncationConfidence.values.length, equals(3));
-      expect(TruncationConfidence.values, containsAll([
-        TruncationConfidence.low,
-        TruncationConfidence.medium,
-        TruncationConfidence.high,
-      ]));
+      expect(
+          TruncationConfidence.values,
+          containsAll([
+            TruncationConfidence.low,
+            TruncationConfidence.medium,
+            TruncationConfidence.high,
+          ]));
     });
 
     test('withRepair() preserves isTruncated and confidence', () {

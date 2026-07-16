@@ -2594,9 +2594,11 @@ exports.gptProxyStream = onRequest(
       return res.status(204).end();
     }
 
-    // ── BUILD 462E-A.1 — Guard CORS para POST ────────────────────────────────────
-    // Bloqueia origens não autorizadas ANTES de autenticação e payload.
-    if (!isAllowedOrigin || !origin) {
+    // ── CORS para POST ───────────────────────────────────────────────────────────
+    // Apps nativos iOS/Android normalmente não enviam o header Origin.
+    // Bloqueia somente quando um Origin explícito foi enviado e não está na allowlist.
+    // A autenticação Firebase permanece obrigatória abaixo.
+    if (origin && !isAllowedOrigin) {
       return res.status(403).json({ error: 'cors_origin_denied' });
     }
 

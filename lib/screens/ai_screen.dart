@@ -322,6 +322,10 @@ class _AiScreenState extends State<AiScreen> {
   final _queryCtrl  = TextEditingController();
   final _scrollCtrl = ScrollController();
   final _focusNode  = FocusNode();
+
+  // Referência obtida enquanto o BuildContext está ativo.
+  // Usada no dispose() sem consultar ancestrais de um elemento desativado.
+  AppProvider? _appProviderRef;
   final List<_ChatMsg> _messages = [];
   bool _thinking      = false;
   bool _hasFocus      = false;
@@ -442,8 +446,10 @@ class _AiScreenState extends State<AiScreen> {
     if (AiScreen.historyCountNotifier.value != cnt) {
       AiScreen.historyCountNotifier.value = cnt;
     }
-    // aiConnected: gemini ou chave OpenAI configurada
-    final p = context.read<AppProvider>();
+    // aiConnected: gemini ou chave OpenAI configurada.
+    // Callback pós-frame: nunca consulta ancestrais por um context desativado.
+    final p = _appProviderRef;
+    if (p == null) return;
     final connected = p.geminiConnected || p.hasAnyAi;
     if (AiScreen.aiConnectedNotifier.value != connected) {
       AiScreen.aiConnectedNotifier.value = connected;
@@ -565,7 +571,7 @@ class _AiScreenState extends State<AiScreen> {
     // nulo (pré-auth), re-carregamos agora que o UID real está disponível.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      context.read<AppProvider>().addListener(_onAuthStateChanged);
+      _appProviderRef?.addListener(_onAuthStateChanged);
     });
 
     // Inicializa TTS
@@ -575,7 +581,9 @@ class _AiScreenState extends State<AiScreen> {
     AiScreen.clearChatCallback.value   = _clearChat;
     AiScreen.openHistoryCallback.value = () {
       if (!mounted) return;
-      _openHistory(context.read<AppProvider>());
+      final p = _appProviderRef;
+      if (p == null) return;
+      _openHistory(p);
     };
     AiScreen.openSettingsCallback.value = () {
       if (!mounted) return;
@@ -591,7 +599,8 @@ class _AiScreenState extends State<AiScreen> {
     if (kIsWeb) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        final p = context.read<AppProvider>();
+        final p = _appProviderRef;
+        if (p == null) return;
         if (!p.geminiConnected) {
           p.checkGeminiSession();
         }
@@ -606,7 +615,8 @@ class _AiScreenState extends State<AiScreen> {
       if (!mounted) return;
       Future.delayed(const Duration(milliseconds: 400), () {
         if (!mounted) return;
-        final p = context.read<AppProvider>();
+        final p = _appProviderRef;
+        if (p == null) return;
         final bool connected = p.geminiConnected || p.hasAnyAi;
         if (!connected) {
           _openAiSettings(); // abre modal de conexão automaticamente
@@ -1031,10 +1041,14 @@ class _AiScreenState extends State<AiScreen> {
   void _consumePendingQuery() {
     final q = AiScreen.pendingQuery.value;
     if (q.isEmpty || !mounted) return;
+
+    // Captura o provider enquanto o BuildContext ainda está ativo.
+    // O callback atrasado não pode consultar ancestrais após a tela ser desativada.
+    final p = context.read<AppProvider>();
+
     AiScreen.pendingQuery.value = '';  // limpa imediatamente para não re-disparar
     Future.delayed(const Duration(milliseconds: 150), () {
       if (!mounted) return;
-      final p = context.read<AppProvider>();
       _send(q, p);
     });
   }
@@ -1084,16 +1098,26 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _appProviderRef = context.read<AppProvider>();
+  }
+
+  @override
   void dispose() {
     // BUILD 300: Garante a persistência do snapshot da sessão ativa ao fechar ou desempilhar a tela de IA.
     // Dispara _saveCurrentSessionToHistory via Provider antes de qualquer limpeza de controllers/streams,
     // pois após o cancelamento dos listeners o contexto pode estar inacessível.
     try {
-      final provider = Provider.of<AppProvider>(context, listen: false);
-      _saveCurrentSessionToHistory(provider);
-      debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save dispatched successfully.');
+      final provider = _appProviderRef;
+      if (provider != null) {
+        _saveCurrentSessionToHistory(provider);
+        debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save dispatched successfully.');
+      } else {
+        debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save skipped: provider cache empty.');
+      }
     } catch (e) {
-      debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save skipped or context empty: $e');
+      debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save skipped: $e');
     }
 
     // ── Build 118: dispose() hardening — Zero Memory Leak ─────────────────
@@ -1146,9 +1170,9 @@ class _AiScreenState extends State<AiScreen> {
     _streamingTextNotifier?.dispose();
     _streamingTextNotifier = null;
 
-    // BUILD 430 PASSO 1: remove listener de auth antes de morrer
+    // BUILD 430 PASSO 1: remove listener de auth sem consultar context no dispose.
     try {
-      context.read<AppProvider>().removeListener(_onAuthStateChanged);
+      _appProviderRef?.removeListener(_onAuthStateChanged);
     } catch (_) {}
 
     // ── Fix 1: Interceptação de Saída (Lifecycle) ─────────────────────────
@@ -1231,7 +1255,12 @@ class _AiScreenState extends State<AiScreen> {
   // se ainda não foi carregado com o UID autenticado.
   void _onAuthStateChanged() {
     if (!mounted) return;
-    final p = context.read<AppProvider>();
+
+    // O ChangeNotifier pode disparar enquanto o Element já está desativado,
+    // embora mounted ainda seja true. Usa a referência previamente cacheada.
+    final p = _appProviderRef;
+    if (p == null) return;
+
     final uid = _resolveUid(p);
     if (uid == null || uid.isEmpty) return;
     // Só recarrega se o histórico foi carregado com UID nulo/anon ou com UID diferente
@@ -1256,7 +1285,11 @@ class _AiScreenState extends State<AiScreen> {
 
   Future<void> _loadChatHistory() async {
     try {
-      final p = context.read<AppProvider>();
+      // Pode ser chamado pelo listener de auth durante uma transição de rota.
+      // Não consulta ancestrais usando um BuildContext potencialmente desativado.
+      final p = _appProviderRef;
+      if (p == null) return;
+
       // BUILD 338: usa UID resiliente (SDK ou contingência REST)
       final uid = _resolveUid(p);
 
@@ -2049,7 +2082,7 @@ class _AiScreenState extends State<AiScreen> {
     // Salva o estado corrente (incluindo a pergunta do usuário) ANTES de aguardar
     // a resposta da IA. Garante que a mensagem não se perde se o usuário sair da
     // aba imediatamente após enviar — o histórico já está no disco.
-    _saveCurrentSessionToHistory(context.read<AppProvider>());
+    _saveCurrentSessionToHistory(p);
     _queryCtrl.clear();
     _scrollDown(force: true); // força scroll ao enviar mensagem do usuário
 
@@ -2238,7 +2271,7 @@ class _AiScreenState extends State<AiScreen> {
             // ou timeout de resume que descarta o contexto antes do stream concluir).
             if (!mounted) return;
             // Persiste o turno (pergunta + safe-card) imediatamente
-            _saveCurrentSessionToHistory(context.read<AppProvider>());
+            _saveCurrentSessionToHistory(p);
             return; // pula _enforceMedicalFormat, _plantaoTruncationGuard e renderers
           }
 
@@ -2297,7 +2330,7 @@ class _AiScreenState extends State<AiScreen> {
                 ? finalText  // Modo Estudo: texto sem modificação
                 : _enforceMedicalFormat(
                     finalText,
-                    context.read<AppProvider>().lang,
+                    p.lang,
                   );
 
             // ── Build 226: Plantão Truncation Guard ──────────────────────────
@@ -2307,7 +2340,7 @@ class _AiScreenState extends State<AiScreen> {
             if (!_longResponse) {
               safeFinalText = _plantaoTruncationGuard(
                 safeFinalText,
-                context.read<AppProvider>().lang,
+                p.lang,
                 userQuery: trimmed, // BUILD 248B: passa query para detecção de intent
               );
             }
@@ -2413,7 +2446,7 @@ class _AiScreenState extends State<AiScreen> {
             // desmontado lança FlutterError (DiagnosticsProperty<void>). O onDone
             // pode chegar tarde (Paid Proxy 60-75s) após navegação ou timeout.
             if (!mounted) return;
-            _saveCurrentSessionToHistory(context.read<AppProvider>());
+            _saveCurrentSessionToHistory(p);
 
             // ── BUILD 318: Scroll final (4 frames encadeados) ────────────────
             // 4 frames em vez de 3: garante que o _PlantaoRenderer (que monta

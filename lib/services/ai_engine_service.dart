@@ -203,12 +203,17 @@ final class AiCompleted extends AiEvent {
   /// se houve fallback durante o stream).
   final String usedProvider;
 
+  /// Motivo objetivo de encerramento recebido do provedor.
+  /// null para provedores ou transportes que não oferecem essa informação.
+  final String? finishReason;
+
   const AiCompleted({
     required this.fullText,
     this.inputTokensApprox = 0,
     this.outputTokensApprox = 0,
     this.durationMs = 0,
     this.usedProvider = '',
+    this.finishReason,
   });
 }
 
@@ -288,6 +293,7 @@ Stream<AiEvent> geminiChunkStreamToAiEvents(
         fullText:     accumulator.toString(),
         durationMs:   DateTime.now().millisecondsSinceEpoch - startMs,
         usedProvider: provider,
+        finishReason: chunk.finishReason,
       );
       return;
     }

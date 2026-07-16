@@ -84,3 +84,8 @@ firebase-adminsdk.json
 *adminsdk*.json
 lib/data/drugs_database.dart.bak2
 .github/
+
+# Backups e scripts temporários de manutenção local
+*.backup*
+*.broken*
+patch_router.py

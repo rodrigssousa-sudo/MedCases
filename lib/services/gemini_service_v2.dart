@@ -103,6 +103,11 @@ class GeminiChunk {
   /// ou stream encerrado normalmente).
   final bool isDone;
 
+  /// Motivo objetivo informado pelo provedor ao encerrar a geração.
+  /// Exemplos: STOP, MAX_TOKENS, SAFETY e RECITATION.
+  /// null quando o stream terminou sem finishReason explícito.
+  final String? finishReason;
+
   /// Código de erro se a requisição falhou (null = sucesso normal).
   /// Códigos possíveis: 'quota', 'api_key_invalid', 'timeout', 'network',
   /// 'stream_error', 'http_XXX', 'unexpected'.
@@ -111,6 +116,7 @@ class GeminiChunk {
   const GeminiChunk({
     required this.text,
     this.isDone = false,
+    this.finishReason,
     this.errorCode,
   });
 
@@ -1304,6 +1310,8 @@ class GeminiServiceV2 {
                     // Sem esse guard, a UI recebe isDone antes do retry ser
                     // executado, quebrando a sincronia do streaming.
                     isDone: finishReason != null && !shouldRetryWithoutGrounding,
+                    finishReason:
+                        shouldRetryWithoutGrounding ? null : finishReason,
                   ));
                 }
               } else if (finishReason != null &&
@@ -1312,7 +1320,11 @@ class GeminiServiceV2 {
                 // Chunk vazio com finishReason sem retry pendente
                 // (ex: SAFETY sem texto gerado, já na segunda tentativa)
                 if (!controller.isClosed) {
-                  controller.add(const GeminiChunk(text: '', isDone: true));
+                  controller.add(GeminiChunk(
+                    text: '',
+                    isDone: true,
+                    finishReason: finishReason,
+                  ));
                 }
               }
 

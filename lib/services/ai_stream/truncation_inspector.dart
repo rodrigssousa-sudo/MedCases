@@ -22,6 +22,7 @@
 //   H2. Numeric Range Abrupt End: dosagem terminando em separador (55–, 10-, >).
 //   H3. Mid-Numeric Cut: linha cortando no meio de número/unidade.
 //   H4. Non-Punctuation Abrupt End: texto terminando sem pontuação padrão.
+//   H5. Unclosed Delimiter: (, [ ou { aberto sem fechamento correspondente.
 //
 // Telemetria estruturada:
 //   [TRUNCATION_CHECK] requestId=... truncated=... confidence=... reason=...
@@ -116,9 +117,10 @@ class TruncationCheckResult {
 //   • H1 (Markdown unclosed **) → confidence=high
 //   • H2 (Range numérico abruptamente encerrado em separador) → confidence=high
 //   • H3 (Corte mid-numeric/unit) → confidence=high
-//   • H4 (Terminação sem pontuação) → confidence=medium (sem override de H1-H3)
+//   • H4 (Terminação sem pontuação) → confidence=medium
+//   • H5 (Delimitador aberto sem fechamento) → confidence=high
 //
-// Se QUALQUER H1/H2/H3 disparar → isTruncated=true, confidence=high.
+// Se QUALQUER H1/H2/H3/H5 disparar → isTruncated=true, confidence=high.
 // Se APENAS H4 disparar → isTruncated=true, confidence=medium.
 // Nenhuma heurística disparada → TruncationCheckResult.clean.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -217,7 +219,17 @@ class TruncationInspector {
   // Usado como indicador complementar, não suficiente sozinho para confidence=high.
   // ─────────────────────────────────────────────────────────────────────────
   static const Set<String> _closingPunctuation = {
-    '.', '?', '!', ':', ')', ']', '}', '"', "'", '»', '…',
+    '.',
+    '?',
+    '!',
+    ':',
+    ')',
+    ']',
+    '}',
+    '"',
+    "'",
+    '»',
+    '…',
   };
 
   static bool _hasAbruptNonPunctuationEnd(String text) {
@@ -227,6 +239,49 @@ class TruncationInspector {
     // Dígito ao EOF (sem unidade/pontuação) é sinal de truncamento
     if (RegExp(r'\d').hasMatch(lastChar)) return true;
     return !_closingPunctuation.contains(lastChar);
+  }
+
+  // ── H5: Unclosed Delimiter ────────────────────────────────────────────────
+  //
+  // Detecta (, [ ou { abertos sem fechamento correspondente.
+  // Conteúdo em código inline ou fenced code é removido antes da inspeção.
+  // ─────────────────────────────────────────────────────────────────────────
+  static String? _unclosedDelimiterReason(String text) {
+    final inspectable = text
+        .replaceAll(RegExp(r'`{3}[\s\S]*?`{3}'), '')
+        .replaceAll(RegExp(r'`[^`\n]*`'), '');
+
+    final stack = <String>[];
+    const openerForCloser = {
+      ')': '(',
+      ']': '[',
+      '}': '{',
+    };
+
+    for (var index = 0; index < inspectable.length; index++) {
+      final char = inspectable[index];
+
+      if (char == '(' || char == '[' || char == '{') {
+        stack.add(char);
+        continue;
+      }
+
+      final expectedOpener = openerForCloser[char];
+      if (expectedOpener == null) continue;
+
+      if (stack.isNotEmpty && stack.last == expectedOpener) {
+        stack.removeLast();
+      }
+    }
+
+    if (stack.isEmpty) return null;
+
+    return switch (stack.last) {
+      '(' => 'unclosed_parenthesis_at_eof',
+      '[' => 'unclosed_square_bracket_at_eof',
+      '{' => 'unclosed_curly_brace_at_eof',
+      _ => 'unclosed_delimiter_at_eof',
+    };
   }
 
   // ── inspect() — ponto de entrada público ─────────────────────────────────
@@ -267,6 +322,16 @@ class TruncationInspector {
         isTruncated: true,
         confidenceLevel: TruncationConfidence.high,
         violationReason: 'mid_numeric_or_unit_cut',
+      );
+    }
+
+    // ── H5: Unclosed Delimiter ───────────────────────────────────────────
+    final delimiterViolation = _unclosedDelimiterReason(text);
+    if (delimiterViolation != null) {
+      return TruncationCheckResult(
+        isTruncated: true,
+        confidenceLevel: TruncationConfidence.high,
+        violationReason: delimiterViolation,
       );
     }
 
@@ -344,9 +409,9 @@ class TruncationRepairResult {
   /// Factory for a catastrophic repair failure (triggers AiSafeOutputException).
   factory TruncationRepairResult.catastrophicFailure(String reason) {
     return TruncationRepairResult(
-      isValid:       false,
-      text:          '',
-      wasRepaired:   false,
+      isValid: false,
+      text: '',
+      wasRepaired: false,
       failureReason: reason,
     );
   }
@@ -354,8 +419,8 @@ class TruncationRepairResult {
   /// Factory for a successful repair (text is valid, wasRepaired=true).
   factory TruncationRepairResult.repaired(String finalText) {
     return TruncationRepairResult(
-      isValid:     true,
-      text:        finalText,
+      isValid: true,
+      text: finalText,
       wasRepaired: true,
     );
   }
@@ -363,8 +428,8 @@ class TruncationRepairResult {
   /// Factory for a clean pass (no truncation detected — original text is valid).
   factory TruncationRepairResult.clean(String originalText) {
     return TruncationRepairResult(
-      isValid:     true,
-      text:        originalText,
+      isValid: true,
+      text: originalText,
       wasRepaired: false,
     );
   }

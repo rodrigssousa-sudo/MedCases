@@ -5041,15 +5041,24 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
     });
   }
 
-  void _cancelTimer() {
+  void _cancelTimer({bool updateUi = true}) {
     _countdownTimer?.cancel();
     _countdownTimer = null;
+
     if (_notifId > 0) {
       NotificationService.cancel(_notifId);
       _notifId = 0;
     }
+
     _clearTimerPrefs();
-    if (mounted) setState(() => _remainingSecs = 0);
+
+    // Durante dispose(), mounted ainda pode ser true enquanto o Element
+    // já está sendo desmontado. Nesse caso, nunca chama setState().
+    if (updateUi && mounted) {
+      setState(() => _remainingSecs = 0);
+    } else {
+      _remainingSecs = 0;
+    }
   }
 
   void _onTimerExpired() {
@@ -5158,7 +5167,7 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _cancelTimer();
+    _cancelTimer(updateUi: false);
     super.dispose();
   }
 

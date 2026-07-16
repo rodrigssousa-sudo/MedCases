@@ -86,7 +86,11 @@ class ProviderRouterService {
   // Substitua pela URL real após o deploy:
   //   firebase deploy --only functions
   //   → https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy
-  static const String _proxyUrl =
+  // Gateway Gemini Paid síncrono — rollout canário.
+  static const String _proxyUrl = 'https://medcasespro.com/api/ai/sync';
+
+  // Contingência legada: somente para falhas de infraestrutura.
+  static const String _legacyProxyUrl =
       'https://us-central1-medcases-pro.cloudfunctions.net/geminiPaidProxy';
 
   // ── BUILD 462B — Feature Flag: GPT SSE Real ───────────────────────────────
@@ -114,8 +118,8 @@ class ProviderRouterService {
   //   • http_unexpected → HTTP 4xx/5xx não mapeados explicitamente.
   static const _fallbackTriggerCodes = {
     'http_503',
-    'http_404',   // BUILD 334: endpoint inexistente → fallback silencioso
-    'http_400',   // BUILD 334: payload inválido → fallback silencioso
+    'http_404', // BUILD 334: endpoint inexistente → fallback silencioso
+    'http_400', // BUILD 334: payload inválido → fallback silencioso
     'timeout',
     'network',
     'stream_error',
@@ -161,6 +165,8 @@ class ProviderRouterService {
     int maxOutputTokens = 800,
   }) async {
     final startMs = DateTime.now().millisecondsSinceEpoch;
+    final effectiveRequestId =
+        requestId.isEmpty ? generateRequestId() : requestId;
 
     // ── Obtém ID Token do usuário autenticado ─────────────────────────────
     // Web: FirebaseAuth.instance.currentUser é sempre null (login via REST
@@ -171,20 +177,24 @@ class ProviderRouterService {
     if (kIsWeb) {
       try {
         idToken = await AuthService.getAdminToken();
-        debugPrint('[WEB_AUTH] source=REST token=${idToken.isNotEmpty} endpoint=geminiPaidProxy');
+        debugPrint(
+            '[WEB_AUTH] source=REST token=${idToken.isNotEmpty} endpoint=geminiPaidProxy');
       } catch (e) {
-        debugPrint('[PAID_PROXY] requestId=$requestId token_error=$e');
+        debugPrint('[PAID_PROXY] requestId=$effectiveRequestId token_error=$e');
         return PaidProxyResult.failure('token_error');
       }
       if (idToken.isEmpty) {
-        debugPrint('[PAID_PROXY] requestId=$requestId error=unauthenticated (token REST vazio)');
+        debugPrint(
+            '[PAID_PROXY] requestId=$effectiveRequestId error=unauthenticated (token REST vazio)');
         return PaidProxyResult.failure('unauthenticated');
       }
     } else {
       final firebaseUser = FirebaseAuth.instance.currentUser;
-      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${firebaseUser?.uid ?? 'null'} endpoint=geminiPaidProxy');
+      debugPrint(
+          '[NATIVE_AUTH] source=FirebaseSDK uid=${firebaseUser?.uid ?? 'null'} endpoint=geminiPaidProxy');
       if (firebaseUser == null) {
-        debugPrint('[PAID_PROXY] requestId=$requestId error=unauthenticated (nativo)');
+        debugPrint(
+            '[PAID_PROXY] requestId=$effectiveRequestId error=unauthenticated (nativo)');
         return PaidProxyResult.failure('unauthenticated');
       }
       try {
@@ -192,11 +202,12 @@ class ProviderRouterService {
         // O token é renovado automaticamente pelo Firebase SDK quando necessario.
         idToken = await firebaseUser.getIdToken() ?? '';
       } catch (e) {
-        debugPrint('[PAID_PROXY] requestId=$requestId token_error=$e');
+        debugPrint('[PAID_PROXY] requestId=$effectiveRequestId token_error=$e');
         return PaidProxyResult.failure('token_error');
       }
       if (idToken.isEmpty) {
-        debugPrint('[PAID_PROXY] requestId=$requestId error=empty_token');
+        debugPrint(
+            '[PAID_PROXY] requestId=$effectiveRequestId error=empty_token');
         return PaidProxyResult.failure('empty_token');
       }
     }
@@ -206,8 +217,11 @@ class ProviderRouterService {
     // Estudo mantém 8 entries (resposta acadêmica precisa de mais contexto).
     // Cada entry de histórico = ~500-1500 chars → 4 entries ≈ 2000-6000 chars.
     final isPlantao = mode == 'plantao';
-    final histCap = isPlantao ? 4 : 8;  // BUILD 261: 4 para Plantão, 8 para Estudo
-    final recentHistory = history.length > histCap ? history.sublist(history.length - histCap) : history;
+    final histCap =
+        isPlantao ? 4 : 8; // BUILD 261: 4 para Plantão, 8 para Estudo
+    final recentHistory = history.length > histCap
+        ? history.sublist(history.length - histCap)
+        : history;
 
     // ORDEM 42: chaves de engine explícitas no payload para forçar o desvio
     // correto de modelo no geminiPaidProxy.
@@ -226,34 +240,35 @@ class ProviderRouterService {
     // mapeamento interno de mode→model. Se 'model' estiver presente e válido,
     // o proxy deve usá-lo diretamente. 'model_tier' e 'temperature' são sinais
     // secundários de confirmação para proxies que não lêem 'model' diretamente.
-    final _activeModel      = isPlantao ? 'gemini-2.5-flash' : 'gemini-2.5-pro';
-    final _activeModelTier  = isPlantao ? 'speed' : 'pro';
-    final _activeTemp       = isPlantao ? 0.2 : 0.4;
+    final activeModel = isPlantao ? 'gemini-2.5-flash' : 'gemini-2.5-pro';
+    final activeModelTier = isPlantao ? 'speed' : 'pro';
+    final activeTemp = isPlantao ? 0.2 : 0.4;
 
     final payload = {
-      'userMessage':     userMessage,
-      'systemPrompt':    systemPrompt,
-      'history':         recentHistory,
-      'mode':            mode,
-      'lang':            lang,
-      'requestId':       requestId,
-      'maxOutputTokens': maxOutputTokens,  // BUILD 261: forwarded to Cloud Function
+      'userMessage': userMessage,
+      'systemPrompt': systemPrompt,
+      'history': recentHistory,
+      'mode': mode,
+      'lang': lang,
+      'requestId': effectiveRequestId,
+      'maxOutputTokens':
+          maxOutputTokens, // BUILD 261: forwarded to Cloud Function
       // ORDEM 42: engine override keys — forçam o modelo correto server-side
-      'model':           _activeModel,      // override direto de modelo
-      'model_tier':      _activeModelTier,  // tag de tier ('speed'|'pro')
-      'temperature':     _activeTemp,       // temperatura por modo
+      'model': activeModel, // override direto de modelo
+      'model_tier': activeModelTier, // tag de tier ('speed'|'pro')
+      'temperature': activeTemp, // temperatura por modo
       // ORDEM 47 M2: 'tier' como terceira tag de bypass físico no servidor.
       // 'cognitive' = Gemini 2.5 Pro (Estudo) | 'speed' = Flash (Plantão).
       // Tripla sinalização: model + model_tier + tier → desvio garantido.
-      'tier':            isPlantao ? 'speed' : 'cognitive',
+      'tier': isPlantao ? 'speed' : 'cognitive',
     };
 
     if (kDebugMode) {
       debugPrint('[ORDEM47_PAYLOAD] mode=$mode '
-          'model=$_activeModel '
-          'model_tier=$_activeModelTier '
+          'model=$activeModel '
+          'model_tier=$activeModelTier '
           'tier=${isPlantao ? "speed" : "cognitive"} '
-          'temperature=$_activeTemp '
+          'temperature=$activeTemp '
           'maxOutputTokens=$maxOutputTokens');
     }
 
@@ -262,7 +277,7 @@ class ProviderRouterService {
     // BUILD 252: print diagnóstico do payload — expõe tamanho real do contexto.
     // Sempre visível (não apenas kDebugMode) para diagnóstico de truncamento.
     // ignore: avoid_print
-    print('[PAYLOAD_AUDIT] requestId=$requestId mode=$mode '
+    print('[PAYLOAD_AUDIT] requestId=$effectiveRequestId mode=$mode '
         'historyEntries=${recentHistory.length} '
         'userMsgLen=${userMessage.length} '
         'systemPromptLen=${systemPrompt.length} '
@@ -271,12 +286,12 @@ class ProviderRouterService {
       // ignore: avoid_print
       print('[PAYLOAD_AUDIT] ⚠️  ALERTA: payload acima de 5000 tokens '
           '(inputTokensApprox=$inputTokensApprox) — risco de truncamento no proxy. '
-          'historyEntries=${recentHistory.length} requestId=$requestId');
+          'historyEntries=${recentHistory.length} requestId=$effectiveRequestId');
     }
 
     if (kDebugMode) {
       debugPrint('[PROVIDER_ROUTER] '
-          'requestId=$requestId '
+          'requestId=$effectiveRequestId '
           'mode=$mode '
           'primary=gemini_free '
           'fallback=gemini_paid '
@@ -284,40 +299,172 @@ class ProviderRouterService {
           'inputTokensApprox=$inputTokensApprox');
     }
 
-    // ── HTTP POST para a Cloud Function ───────────────────────────────────
-    http.Response response;
+    // ── HTTP POST com failover canário granular ─────────────────────────────
+    Future<http.Response> postPaidProxy({
+      required String url,
+      required Duration timeout,
+    }) {
+      return http
+          .post(
+            Uri.parse(url),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $idToken',
+            },
+            body: jsonEncode(payload),
+          )
+          .timeout(timeout);
+    }
+
+    late http.Response response;
+    String? fallbackReason;
+    bool usedLegacyFallback = false;
+
+    // Primeira tentativa: gateway síncrono da DigitalOcean.
     try {
-      response = await http.post(
-        Uri.parse(_proxyUrl),
-        headers: {
-          'Content-Type':  'application/json',
-          'Authorization': 'Bearer $idToken',
-        },
-        body: jsonEncode(payload),
-      ).timeout(const Duration(seconds: 60)); // BUILD 266: 55s→60s (RAG reativado)
+      response = await postPaidProxy(
+        url: _proxyUrl,
+        timeout: const Duration(seconds: 40),
+      );
+
+      // Somente falhas de infraestrutura acionam o Firebase legado.
+      if (response.statusCode == 502 ||
+          response.statusCode == 503 ||
+          response.statusCode == 504) {
+        fallbackReason = 'http_${response.statusCode}';
+
+        debugPrint(
+          '[PAID_PROXY] '
+          'requestId=$effectiveRequestId '
+          'provider=digitalocean '
+          'status=${response.statusCode} '
+          'action=fallback',
+        );
+      }
     } on TimeoutException {
-      final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
-      debugPrint('[PAID_PROXY] requestId=$requestId success=false status=timeout durationMs=$durationMs');
-      return PaidProxyResult.failure('proxy_timeout');
+      fallbackReason = 'gateway_timeout';
+
+      debugPrint(
+        '[PAID_PROXY] '
+        'requestId=$effectiveRequestId '
+        'provider=digitalocean '
+        'status=timeout '
+        'action=fallback',
+      );
+    } on http.ClientException catch (e) {
+      fallbackReason = 'gateway_transport_error';
+
+      debugPrint(
+        '[PAID_PROXY] '
+        'requestId=$effectiveRequestId '
+        'provider=digitalocean '
+        'status=transport_error '
+        'errorType=${e.runtimeType} '
+        'action=fallback',
+      );
     } catch (e) {
       final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
-      debugPrint('[PAID_PROXY] requestId=$requestId success=false status=network_error durationMs=$durationMs error=$e');
-      return PaidProxyResult.failure('proxy_network_error');
+
+      // Exceções inesperadas não devem gerar uma segunda chamada.
+      debugPrint(
+        '[PAID_PROXY] '
+        'requestId=$effectiveRequestId '
+        'provider=digitalocean '
+        'status=unexpected_client_error '
+        'durationMs=$durationMs '
+        'errorType=${e.runtimeType}',
+      );
+
+      return PaidProxyResult.failure(
+        'proxy_unexpected_client_error',
+      );
+    }
+
+    // Segunda e última tentativa: Firebase legado.
+    if (fallbackReason != null) {
+      usedLegacyFallback = true;
+
+      debugPrint(
+        '[PAID_PROXY] '
+        'requestId=$effectiveRequestId '
+        'provider=firebase_legacy '
+        'attempt=fallback '
+        'reason=$fallbackReason',
+      );
+
+      try {
+        response = await postPaidProxy(
+          url: _legacyProxyUrl,
+          timeout: const Duration(seconds: 60),
+        );
+      } on TimeoutException {
+        final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+
+        debugPrint(
+          '[PAID_PROXY] '
+          'requestId=$effectiveRequestId '
+          'provider=firebase_legacy '
+          'status=timeout '
+          'durationMs=$durationMs',
+        );
+
+        return PaidProxyResult.failure('proxy_timeout');
+      } on http.ClientException catch (e) {
+        final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+
+        debugPrint(
+          '[PAID_PROXY] '
+          'requestId=$effectiveRequestId '
+          'provider=firebase_legacy '
+          'status=transport_error '
+          'durationMs=$durationMs '
+          'errorType=${e.runtimeType}',
+        );
+
+        return PaidProxyResult.failure(
+          'proxy_network_error',
+        );
+      } catch (e) {
+        final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+
+        debugPrint(
+          '[PAID_PROXY] '
+          'requestId=$effectiveRequestId '
+          'provider=firebase_legacy '
+          'status=unexpected_client_error '
+          'durationMs=$durationMs '
+          'errorType=${e.runtimeType}',
+        );
+
+        return PaidProxyResult.failure(
+          'proxy_network_error',
+        );
+      }
     }
 
     final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+
+    if (kDebugMode) {
+      debugPrint(
+        '[PAID_PROXY_ROUTE] '
+        'requestId=$effectiveRequestId '
+        'usedLegacyFallback=$usedLegacyFallback '
+        'fallbackReason=${fallbackReason ?? "none"}',
+      );
+    }
 
     // ── Parse da resposta ─────────────────────────────────────────────────
     if (response.statusCode == 429) {
       debugPrint('[BUDGET_GUARD] '
           'allowed=false '
           'reason=paid_budget_guard_triggered '
-          'requestId=$requestId');
+          'requestId=$effectiveRequestId');
       return PaidProxyResult.failure('paid_budget_guard_triggered');
     }
 
     if (response.statusCode == 503) {
-      debugPrint('[PAID_PROXY] requestId=$requestId success=false status=paid_fallback_disabled');
+      debugPrint(
+          '[PAID_PROXY] requestId=$effectiveRequestId success=false status=paid_fallback_disabled');
       return PaidProxyResult.failure('paid_fallback_disabled');
     }
 
@@ -326,11 +473,13 @@ class ProviderRouterService {
       try {
         // ORDEM 50 M2: allowMalformed:true tolera bytes órfãos na borda do
         // stream (emojis truncados por timeout) sem travar o canvas de fontes.
-        final decodedErr = utf8.decode(response.bodyBytes, allowMalformed: true);
+        final decodedErr =
+            utf8.decode(response.bodyBytes, allowMalformed: true);
         final body = jsonDecode(decodedErr) as Map<String, dynamic>;
         errorCode = body['error']?.toString() ?? errorCode;
       } catch (_) {}
-      debugPrint('[PAID_PROXY] requestId=$requestId success=false status=${response.statusCode} '
+      debugPrint(
+          '[PAID_PROXY] requestId=$effectiveRequestId success=false status=${response.statusCode} '
           'error=$errorCode durationMs=$durationMs');
       return PaidProxyResult.failure(errorCode);
     }
@@ -344,21 +493,24 @@ class ProviderRouterService {
       final decodedBody = utf8.decode(response.bodyBytes, allowMalformed: true);
       body = jsonDecode(decodedBody) as Map<String, dynamic>;
     } catch (e) {
-      debugPrint('[PAID_PROXY] requestId=$requestId success=false status=parse_error');
+      debugPrint(
+          '[PAID_PROXY] requestId=$effectiveRequestId success=false status=parse_error');
       return PaidProxyResult.failure('parse_error');
     }
 
-    final text              = body['text']?.toString() ?? '';
-    final model             = body['model']?.toString() ?? '';
-    final outputTokensApprox = (body['outputTokensApprox'] as num?)?.toInt() ?? (text.length / 4).ceil();
+    final text = body['text']?.toString() ?? '';
+    final model = body['model']?.toString() ?? '';
+    final outputTokensApprox = (body['outputTokensApprox'] as num?)?.toInt() ??
+        (text.length / 4).ceil();
 
     if (text.isEmpty) {
-      debugPrint('[PAID_PROXY] requestId=$requestId success=false status=empty_response');
+      debugPrint(
+          '[PAID_PROXY] requestId=$effectiveRequestId success=false status=empty_response');
       return PaidProxyResult.failure('empty_response');
     }
 
     debugPrint('[PAID_PROXY] '
-        'requestId=$requestId '
+        'requestId=$effectiveRequestId '
         'success=true '
         'status=200 '
         'model=$model '
@@ -367,7 +519,7 @@ class ProviderRouterService {
         'durationMs=$durationMs');
 
     debugPrint('[PROVIDER_ROUTER] '
-        'requestId=$requestId '
+        'requestId=$effectiveRequestId '
         'mode=$mode '
         'primary=gemini_free '
         'fallback=gemini_paid '
@@ -378,12 +530,12 @@ class ProviderRouterService {
         'durationMs=$durationMs');
 
     return PaidProxyResult(
-      text:               text,
-      success:            true,
-      model:              model,
-      inputTokensApprox:  inputTokensApprox,
+      text: text,
+      success: true,
+      model: model,
+      inputTokensApprox: inputTokensApprox,
       outputTokensApprox: outputTokensApprox,
-      durationMs:         durationMs,
+      durationMs: durationMs,
     );
   }
 
@@ -408,20 +560,24 @@ class ProviderRouterService {
     if (kIsWeb) {
       try {
         idToken = await AuthService.getAdminToken();
-        debugPrint('[WEB_AUTH] source=REST token=${idToken.isNotEmpty} endpoint=gptProxy');
+        debugPrint(
+            '[WEB_AUTH] source=REST token=${idToken.isNotEmpty} endpoint=gptProxy');
       } catch (e) {
         debugPrint('[GPT_PROXY] requestId=$requestId token_error=$e');
         return PaidProxyResult.failure('token_error');
       }
       if (idToken.isEmpty) {
-        debugPrint('[GPT_PROXY] requestId=$requestId error=unauthenticated (token REST vazio)');
+        debugPrint(
+            '[GPT_PROXY] requestId=$requestId error=unauthenticated (token REST vazio)');
         return PaidProxyResult.failure('unauthenticated');
       }
     } else {
       final firebaseUser = FirebaseAuth.instance.currentUser;
-      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${firebaseUser?.uid ?? 'null'} endpoint=gptProxy');
+      debugPrint(
+          '[NATIVE_AUTH] source=FirebaseSDK uid=${firebaseUser?.uid ?? 'null'} endpoint=gptProxy');
       if (firebaseUser == null) {
-        debugPrint('[GPT_PROXY] requestId=$requestId error=unauthenticated (nativo)');
+        debugPrint(
+            '[GPT_PROXY] requestId=$requestId error=unauthenticated (nativo)');
         return PaidProxyResult.failure('unauthenticated');
       }
       try {
@@ -437,22 +593,22 @@ class ProviderRouterService {
     }
 
     // ── Payload: igual ao callPaidProxy + provider='openai' ───────────────
-    final isPlantao   = mode == 'plantao';
-    final histCap     = isPlantao ? 4 : 8;
+    final isPlantao = mode == 'plantao';
+    final histCap = isPlantao ? 4 : 8;
     final recentHistory = history.length > histCap
         ? history.sublist(history.length - histCap)
         : history;
 
     final payload = {
-      'userMessage':     userMessage,
-      'systemPrompt':    systemPrompt,
-      'history':         recentHistory,
-      'mode':            mode,
-      'lang':            lang,
-      'requestId':       requestId,
+      'userMessage': userMessage,
+      'systemPrompt': systemPrompt,
+      'history': recentHistory,
+      'mode': mode,
+      'lang': lang,
+      'requestId': requestId,
       'maxOutputTokens': maxOutputTokens,
       // BUILD 321: diretiva de roteamento — CF lê este campo e usa OpenAI
-      'provider':        'openai',
+      'provider': 'openai',
     };
 
     final inputTokensApprox = (jsonEncode(payload).length / 4).ceil();
@@ -475,21 +631,25 @@ class ProviderRouterService {
     // ── HTTP POST para a mesma Cloud Function ─────────────────────────────
     http.Response response;
     try {
-      response = await http.post(
-        Uri.parse(_proxyUrl),
-        headers: {
-          'Content-Type':  'application/json',
-          'Authorization': 'Bearer $idToken',
-        },
-        body: jsonEncode(payload),
-      ).timeout(const Duration(seconds: 60));
+      response = await http
+          .post(
+            Uri.parse(_legacyProxyUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $idToken',
+            },
+            body: jsonEncode(payload),
+          )
+          .timeout(const Duration(seconds: 60));
     } on TimeoutException {
       final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
-      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=timeout durationMs=$durationMs');
+      debugPrint(
+          '[GPT_PROXY] requestId=$requestId success=false status=timeout durationMs=$durationMs');
       return PaidProxyResult.failure('gpt_proxy_timeout');
     } catch (e) {
       final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
-      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=network_error durationMs=$durationMs error=$e');
+      debugPrint(
+          '[GPT_PROXY] requestId=$requestId success=false status=network_error durationMs=$durationMs error=$e');
       return PaidProxyResult.failure('gpt_proxy_network_error');
     }
 
@@ -497,21 +657,25 @@ class ProviderRouterService {
 
     // ── Parse da resposta (mesma estrutura do callPaidProxy) ──────────────
     if (response.statusCode == 429) {
-      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=budget_guard');
+      debugPrint(
+          '[GPT_PROXY] requestId=$requestId success=false status=budget_guard');
       return PaidProxyResult.failure('paid_budget_guard_triggered');
     }
     if (response.statusCode == 503) {
-      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=openai_key_not_configured');
+      debugPrint(
+          '[GPT_PROXY] requestId=$requestId success=false status=openai_key_not_configured');
       return PaidProxyResult.failure('openai_key_not_configured');
     }
     if (response.statusCode != 200) {
       String errorCode = 'gpt_proxy_error_${response.statusCode}';
       try {
-        final decodedErr = utf8.decode(response.bodyBytes, allowMalformed: true);
+        final decodedErr =
+            utf8.decode(response.bodyBytes, allowMalformed: true);
         final body = jsonDecode(decodedErr) as Map<String, dynamic>;
         errorCode = body['error']?.toString() ?? errorCode;
       } catch (_) {}
-      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=${response.statusCode} '
+      debugPrint(
+          '[GPT_PROXY] requestId=$requestId success=false status=${response.statusCode} '
           'error=$errorCode durationMs=$durationMs');
       return PaidProxyResult.failure(errorCode);
     }
@@ -521,17 +685,19 @@ class ProviderRouterService {
       final decodedBody = utf8.decode(response.bodyBytes, allowMalformed: true);
       body = jsonDecode(decodedBody) as Map<String, dynamic>;
     } catch (e) {
-      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=parse_error');
+      debugPrint(
+          '[GPT_PROXY] requestId=$requestId success=false status=parse_error');
       return PaidProxyResult.failure('parse_error');
     }
 
-    final text               = body['text']?.toString() ?? '';
-    final model              = body['model']?.toString() ?? 'gpt-4o-mini';
-    final outputTokensApprox = (body['outputTokensApprox'] as num?)?.toInt()
-        ?? (text.length / 4).ceil();
+    final text = body['text']?.toString() ?? '';
+    final model = body['model']?.toString() ?? 'gpt-4o-mini';
+    final outputTokensApprox = (body['outputTokensApprox'] as num?)?.toInt() ??
+        (text.length / 4).ceil();
 
     if (text.isEmpty) {
-      debugPrint('[GPT_PROXY] requestId=$requestId success=false status=empty_response');
+      debugPrint(
+          '[GPT_PROXY] requestId=$requestId success=false status=empty_response');
       return PaidProxyResult.failure('empty_response');
     }
 
@@ -556,12 +722,12 @@ class ProviderRouterService {
         'durationMs=$durationMs');
 
     return PaidProxyResult(
-      text:               text,
-      success:            true,
-      model:              model,
-      inputTokensApprox:  inputTokensApprox,
+      text: text,
+      success: true,
+      model: model,
+      inputTokensApprox: inputTokensApprox,
       outputTokensApprox: outputTokensApprox,
-      durationMs:         durationMs,
+      durationMs: durationMs,
     );
   }
 
@@ -610,12 +776,12 @@ class ProviderRouterService {
     int maxOutputTokens = 800,
   }) async* {
     final result = await callPaidProxy(
-      userMessage:     userMessage,
-      systemPrompt:    systemPrompt,
-      history:         history,
-      mode:            mode,
-      lang:            lang,
-      requestId:       requestId,
+      userMessage: userMessage,
+      systemPrompt: systemPrompt,
+      history: history,
+      mode: mode,
+      lang: lang,
+      requestId: requestId,
       maxOutputTokens: maxOutputTokens,
     );
 
@@ -625,9 +791,9 @@ class ProviderRouterService {
     }
 
     // Streaming simulado: fragmenta texto em chunks de tamanho fixo
-    int offset   = 0;
+    int offset = 0;
     while (offset < result.text.length) {
-      final end   = (offset + _kStreamChunkSize).clamp(0, result.text.length);
+      final end = (offset + _kStreamChunkSize).clamp(0, result.text.length);
       final delta = result.text.substring(offset, end);
       yield GeminiChunk(text: delta, isDone: false);
       offset = end;
@@ -688,12 +854,12 @@ class ProviderRouterService {
             'requestId=$requestId');
       }
       yield* _callGptProxyStreamLegacy(
-        userMessage:     userMessage,
-        systemPrompt:    systemPrompt,
-        history:         history,
-        mode:            mode,
-        lang:            lang,
-        requestId:       requestId,
+        userMessage: userMessage,
+        systemPrompt: systemPrompt,
+        history: history,
+        mode: mode,
+        lang: lang,
+        requestId: requestId,
         maxOutputTokens: maxOutputTokens,
       );
       return;
@@ -714,9 +880,9 @@ class ProviderRouterService {
         } catch (e) {
           yield AiFailed.now(
             requestId: requestId,
-            attempt:   GptSseClient.kGptAttempt,
-            code:      'token_error',
-            message:   e.toString(),
+            attempt: GptSseClient.kGptAttempt,
+            code: 'token_error',
+            message: e.toString(),
             retryable: false,
           );
           return;
@@ -726,9 +892,9 @@ class ProviderRouterService {
         if (firebaseUser == null) {
           yield AiFailed.now(
             requestId: requestId,
-            attempt:   GptSseClient.kGptAttempt,
-            code:      'unauthenticated',
-            message:   'FirebaseAuth.currentUser is null',
+            attempt: GptSseClient.kGptAttempt,
+            code: 'unauthenticated',
+            message: 'FirebaseAuth.currentUser is null',
             retryable: false,
           );
           return;
@@ -738,9 +904,9 @@ class ProviderRouterService {
         } catch (e) {
           yield AiFailed.now(
             requestId: requestId,
-            attempt:   GptSseClient.kGptAttempt,
-            code:      'token_error',
-            message:   e.toString(),
+            attempt: GptSseClient.kGptAttempt,
+            code: 'token_error',
+            message: e.toString(),
             retryable: false,
           );
           return;
@@ -749,9 +915,9 @@ class ProviderRouterService {
       if (resolvedToken.isEmpty) {
         yield AiFailed.now(
           requestId: requestId,
-          attempt:   GptSseClient.kGptAttempt,
-          code:      'empty_token',
-          message:   'ID Token vazio após getIdToken()',
+          attempt: GptSseClient.kGptAttempt,
+          code: 'empty_token',
+          message: 'ID Token vazio após getIdToken()',
           retryable: false,
         );
         return;
@@ -759,18 +925,18 @@ class ProviderRouterService {
     }
 
     final payload = GptSsePayload(
-      userMessage:     userMessage,
-      systemPrompt:    systemPrompt,
-      history:         history.cast<Map<String, String>>(),
-      mode:            mode,
-      lang:            lang,
-      requestId:       requestId,
+      userMessage: userMessage,
+      systemPrompt: systemPrompt,
+      history: history.cast<Map<String, String>>(),
+      mode: mode,
+      lang: lang,
+      requestId: requestId,
       maxOutputTokens: maxOutputTokens,
     );
 
     final client = GptSseClient(
       endpointUrl: _gptSseUrl,
-      idToken:     resolvedToken,
+      idToken: resolvedToken,
     );
 
     yield* client.stream(payload);
@@ -790,26 +956,24 @@ class ProviderRouterService {
     int maxOutputTokens = 800,
   }) async* {
     final startMs = DateTime.now().millisecondsSinceEpoch;
-    final reqId   = requestId.isEmpty
-        ? 'req_legacy_$startMs'
-        : requestId;
+    final reqId = requestId.isEmpty ? 'req_legacy_$startMs' : requestId;
 
     final result = await callGptProxy(
-      userMessage:     userMessage,
-      systemPrompt:    systemPrompt,
-      history:         history,
-      mode:            mode,
-      lang:            lang,
-      requestId:       reqId,
+      userMessage: userMessage,
+      systemPrompt: systemPrompt,
+      history: history,
+      mode: mode,
+      lang: lang,
+      requestId: reqId,
       maxOutputTokens: maxOutputTokens,
     );
 
     if (!result.success || result.text.isEmpty) {
       yield AiFailed.now(
         requestId: reqId,
-        attempt:   GptSseClient.kGptAttempt,
-        code:      result.errorCode ?? 'gpt_proxy_stream_error',
-        message:   'Legacy GPT proxy falhou',
+        attempt: GptSseClient.kGptAttempt,
+        code: result.errorCode ?? 'gpt_proxy_stream_error',
+        message: 'Legacy GPT proxy falhou',
         retryable: true,
       );
       return;
@@ -817,22 +981,22 @@ class ProviderRouterService {
 
     yield AiStarted.now(
       requestId: reqId,
-      attempt:   GptSseClient.kGptAttempt,
-      model:     result.model.isEmpty ? 'gpt-4o-mini' : result.model,
-      provider:  'gpt_4o_mini',
+      attempt: GptSseClient.kGptAttempt,
+      model: result.model.isEmpty ? 'gpt-4o-mini' : result.model,
+      provider: 'gpt_4o_mini',
     );
 
     // Streaming simulado legado: 30 chars / 18ms
-    int offset   = 0;
+    int offset = 0;
     int sequence = 1;
     while (offset < result.text.length) {
-      final end   = (offset + _kStreamChunkSize).clamp(0, result.text.length);
+      final end = (offset + _kStreamChunkSize).clamp(0, result.text.length);
       final delta = result.text.substring(offset, end);
       yield AiTextDelta.now(
         requestId: reqId,
-        attempt:   GptSseClient.kGptAttempt,
-        delta:     delta,
-        sequence:  sequence++,
+        attempt: GptSseClient.kGptAttempt,
+        delta: delta,
+        sequence: sequence++,
       );
       offset = end;
       if (offset < result.text.length) {
@@ -841,13 +1005,13 @@ class ProviderRouterService {
     }
 
     yield AiCompleted.now(
-      requestId:          reqId,
-      attempt:            GptSseClient.kGptAttempt,
-      fullText:           result.text,
-      usedProvider:       'gpt_4o_mini',
-      inputTokensApprox:  result.inputTokensApprox,
+      requestId: reqId,
+      attempt: GptSseClient.kGptAttempt,
+      fullText: result.text,
+      usedProvider: 'gpt_4o_mini',
+      inputTokensApprox: result.inputTokensApprox,
       outputTokensApprox: result.outputTokensApprox,
-      durationMs:         DateTime.now().millisecondsSinceEpoch - startMs,
+      durationMs: DateTime.now().millisecondsSinceEpoch - startMs,
     );
 
     if (kDebugMode) {
@@ -863,16 +1027,22 @@ class ProviderRouterService {
   static Future<({bool online, String detail})> testPaidProxy() async {
     try {
       final result = await callPaidProxy(
-        userMessage:  'Teste de conectividade MedCases Pro. Responda apenas: OK',
+        userMessage: 'Teste de conectividade MedCases Pro. Responda apenas: OK',
         systemPrompt: 'Responda em uma palavra.',
-        mode:         'test',
-        requestId:    'admin_test_${DateTime.now().millisecondsSinceEpoch}',
+        mode: 'test',
+        requestId: 'admin_test_${DateTime.now().millisecondsSinceEpoch}',
       );
       if (result.success && result.text.isNotEmpty) {
-        debugPrint('[ADMIN_AI_KEY] test=true status=online model=${result.model}');
-        return (online: true, detail: 'gemini_paid online • ${result.model} • ${result.durationMs}ms');
+        debugPrint(
+            '[ADMIN_AI_KEY] test=true status=online model=${result.model}');
+        return (
+          online: true,
+          detail:
+              'gemini_paid online • ${result.model} • ${result.durationMs}ms'
+        );
       }
-      debugPrint('[ADMIN_AI_KEY] test=true status=offline error=${result.errorCode}');
+      debugPrint(
+          '[ADMIN_AI_KEY] test=true status=offline error=${result.errorCode}');
       return (online: false, detail: result.errorCode ?? 'unknown_error');
     } catch (e) {
       debugPrint('[ADMIN_AI_KEY] test=true status=offline error=$e');
