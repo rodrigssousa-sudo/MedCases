@@ -2445,8 +2445,33 @@ function callOpenAiResponsesStream({
   abortSignal,
 }) {
   return new Promise((resolve, reject) => {
+    /*
+     * Barreira de conclusão única.
+     *
+     * destroy(), timeout, error e end podem ocorrer quase simultaneamente.
+     * Somente o primeiro resultado conclui a Promise.
+     */
+    let settled = false;
+
+    const settleResolve = (value) => {
+      if (settled) return false;
+
+      settled = true;
+      resolve(value);
+
+      return true;
+    };
+
+    const settleReject = (error) => {
+      if (settled) return false;
+
+      settled = true;
+      reject(error);
+
+      return true;
+    };
     if (abortSignal && abortSignal.aborted) {
-      return reject(new Error('aborted_before_start'));
+      return settleReject(new Error('aborted_before_start'));
     }
 
     // Montar input para OpenAI Responses API
@@ -2522,7 +2547,7 @@ function callOpenAiResponsesStream({
         let body = '';
         apiRes.on('data', (c) => { body += c; });
         apiRes.on('end', () => {
-          reject(new Error(`openai_http_${apiRes.statusCode}:${body.slice(0, 200)}`));
+          settleReject(new Error(`openai_http_${apiRes.statusCode}:${body.slice(0, 200)}`));
         });
         return;
       }
@@ -2530,6 +2555,8 @@ function callOpenAiResponsesStream({
       let lineBuffer = '';
 
       apiRes.on('data', (chunk) => {
+        if (settled) return;
+
         if (abortSignal && abortSignal.aborted) {
           apiReq.destroy();
           return;
@@ -2622,19 +2649,64 @@ function callOpenAiResponsesStream({
                 continue;
               }
 
-              // ── Resposta incompleta (limite de tokens, content filter) ─────
+              // ── Recusa explícita do modelo ───────────────────────────────
+              if (
+                eventType === 'response.refusal.delta' ||
+                eventType === 'response.refusal.done'
+              ) {
+                /*
+                 * Não encaminhar o conteúdo bruto da recusa nem incluí-lo
+                 * em logs. O consumidor recebe somente um código estável.
+                 */
+                settleReject(new Error('openai_refusal'));
+
+                apiRes.destroy();
+                apiReq.destroy();
+
+                return;
+              }
+
+              // ── Resposta incompleta (tokens ou filtro de conteúdo) ─────────
               if (eventType === 'response.incomplete') {
-                const reason = (event.response && event.response.incomplete_details)
-                  ? JSON.stringify(event.response.incomplete_details)
-                  : 'unknown';
-                reject(new Error(`openai_incomplete:${reason}`));
+                const reason =
+                  event.response &&
+                  event.response.incomplete_details
+                    ? JSON.stringify(
+                        event.response.incomplete_details,
+                      )
+                    : 'unknown';
+
+                settleReject(
+                  new Error(
+                    `openai_incomplete:${reason}`,
+                  ),
+                );
+
+                apiRes.destroy();
+                apiReq.destroy();
+
                 return;
               }
 
               // ── Falha da OpenAI ────────────────────────────────────────────
-              if (eventType === 'response.failed' || eventType === 'error') {
-                const errMsg = event.message || event.error || eventType;
-                reject(new Error(`openai_failed:${errMsg}`));
+              if (
+                eventType === 'response.failed' ||
+                eventType === 'error'
+              ) {
+                const errMsg =
+                  event.message ||
+                  event.error ||
+                  eventType;
+
+                settleReject(
+                  new Error(
+                    `openai_failed:${errMsg}`,
+                  ),
+                );
+
+                apiRes.destroy();
+                apiReq.destroy();
+
                 return;
               }
 
@@ -2650,7 +2722,7 @@ function callOpenAiResponsesStream({
               if (
                 message.startsWith('structured_')
               ) {
-                reject(error);
+                settleReject(error);
                 apiReq.destroy();
                 return;
               }
@@ -2663,6 +2735,8 @@ function callOpenAiResponsesStream({
       });
 
       apiRes.on('end', () => {
+        if (settled) return;
+
         const validCompletion =
           completed &&
           (
@@ -2671,7 +2745,7 @@ function callOpenAiResponsesStream({
           );
 
         if (validCompletion) {
-          resolve({
+          settleResolve({
             inputTokensApprox,
             outputTokensApprox,
             sequenceCount: sequence - 1,
@@ -2689,7 +2763,7 @@ function callOpenAiResponsesStream({
                 : null,
           });
         } else {
-          reject(
+          settleReject(
             new Error(
               completed
                 ? 'structured_output_final_envelope_missing'
@@ -2698,13 +2772,13 @@ function callOpenAiResponsesStream({
           );
         }
       });
-      apiRes.on('error', (err) => reject(new Error(`openai_stream_error:${err.message}`)));
+      apiRes.on('error', (err) => settleReject(new Error(`openai_stream_error:${err.message}`)));
     });
 
-    apiReq.on('error', (err) => reject(new Error(`openai_network_error:${err.message}`)));
+    apiReq.on('error', (err) => settleReject(new Error(`openai_network_error:${err.message}`)));
     apiReq.setTimeout(90000, () => {
       apiReq.destroy();
-      reject(new Error('openai_timeout'));
+      settleReject(new Error('openai_timeout'));
     });
 
     // Integração com AbortController
