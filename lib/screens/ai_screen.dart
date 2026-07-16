@@ -1961,6 +1961,11 @@ class _AiScreenState extends State<AiScreen> {
   // Streaming V2: true enquanto chunks chegam (controla cursor ▌ na bolha ativa)
   bool _isStreaming = false;
 
+  // PHASE 4 — geração soberana da requisição visível.
+  // Todo cancelamento/reset incrementa este token. Callbacks pertencentes
+  // a uma geração anterior são descartados antes de tocar na árvore da UI.
+  int _aiUiRequestGeneration = 0;
+
   // Build 188 — ValueNotifier para streaming ultra-localizado:
   // Atualiza APENAS o widget da bolha ativa em vez de reconstruir toda a tela.
   // Criado ao iniciar streaming, descartado ao terminar.
@@ -2100,6 +2105,9 @@ class _AiScreenState extends State<AiScreen> {
     _queryCtrl.clear();
     _scrollDown(force: true); // força scroll ao enviar mensagem do usuário
 
+    // PHASE 4 — captura a propriedade desta requisição na UI.
+    final int uiRequestGeneration = ++_aiUiRequestGeneration;
+
     // ── Índice da bolha de streaming (-1 = não iniciada ainda) ──────────────
     int streamingMsgIdx = -1;
 
@@ -2142,6 +2150,8 @@ class _AiScreenState extends State<AiScreen> {
         longResponse:  _longResponse,  // Motor de Partida (Build 149)
         fromButton:    fromButton,      // BUILD 262: preserves thread on action buttons
         onChunk: (accumulated) {
+          if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
+
           // ── BUILD 276: SUPPRESSED CHUNK RENDERING ─────────────────────────
           // Arquitectura: mantém _thinking=true e EcgLoadingBlock visível
           // durante todo o streaming. Chunks são bufferizados internamente
@@ -2247,7 +2257,7 @@ class _AiScreenState extends State<AiScreen> {
           }
         },
         onDone: (finalText) {
-          if (!mounted) return;
+          if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
           // ── Detecta tipo de resultado ─────────────────────────────────────
           final isKeyError = finalText.startsWith('ERRO') && finalText.contains('API');
           // Detecta erro de rede — NÃO usa finalText.contains('🚨') como critério
@@ -2516,7 +2526,11 @@ class _AiScreenState extends State<AiScreen> {
           }
         },
         onStructuredDone: (finalText, clinicalOutput) {
-          if (!mounted || clinicalOutput == null) return;
+          if (!mounted ||
+              uiRequestGeneration != _aiUiRequestGeneration ||
+              clinicalOutput == null) {
+            return;
+          }
 
           final messageId = committedAiMessageId;
           final committedText = committedAiMessageText;
@@ -2579,7 +2593,7 @@ class _AiScreenState extends State<AiScreen> {
           }
         },
         onError: (errorMsg) {
-          if (!mounted) return;
+          if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
           // Build 188: descarta notifier de streaming no onError
           _streamingTextNotifier?.dispose();
           _streamingTextNotifier = null;
@@ -2670,7 +2684,7 @@ class _AiScreenState extends State<AiScreen> {
       );
     } on Exception catch (e) {
       // Captura exceções não tratadas (ex: TimeoutException, SocketException)
-      if (!mounted) return;
+      if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
       // Build 188: descarta notifier de streaming em exceção não tratada
       _streamingTextNotifier?.dispose();
       _streamingTextNotifier = null;
@@ -2838,6 +2852,7 @@ class _AiScreenState extends State<AiScreen> {
     _saveCurrentSessionToHistory(p);
     // Build 107 — cancela streaming ativo antes de limpar
     p.cancelAiStream();
+    _aiUiRequestGeneration++;
 
     // PHASE 4 — encerra também o canal local da bolha ativa.
     _streamingTextNotifier?.dispose();
@@ -2870,6 +2885,7 @@ class _AiScreenState extends State<AiScreen> {
   void _cancelActiveStream() {
     final p = context.read<AppProvider>();
     p.cancelAiStream();  // cancela _aiStreamSub no AppProvider
+    _aiUiRequestGeneration++;
 
     // PHASE 4 — fechamento local soberano:
     // remove imediatamente o listener da bolha ativa e impede que deltas
@@ -2897,6 +2913,7 @@ class _AiScreenState extends State<AiScreen> {
     _saveCurrentSessionToHistory(p);
     // Build 107 — cancela streaming ativo antes de abrir novo chat
     p.cancelAiStream();
+    _aiUiRequestGeneration++;
 
     // PHASE 4 — impede que deltas tardios alcancem a sessão nova.
     _streamingTextNotifier?.dispose();
