@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints, PharmacologicalDisclaimer, EvidenceCardWidget, EvidenceBadgesRow;
 import '../models/drug_model.dart' show DrugEvidenceModel;
+import '../models/clinical_structured_output.dart';
 import '../data/evidence_database.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
@@ -118,11 +119,24 @@ class _ChatMsg {
   final String role;
   final String text;
 
-  _ChatMsg({required this.role, required this.text})
-      : id = '${role}_${DateTime.now().microsecondsSinceEpoch}';
+  /// Metadado clínico estruturado associado ao texto definitivo desta bolha.
+  ///
+  /// Volátil nesta etapa: não é serializado nem restaurado do Firestore.
+  final ClinicalStructuredOutput? clinicalOutput;
+
+  _ChatMsg({
+    required this.role,
+    required this.text,
+    this.clinicalOutput,
+  }) : id = '${role}_${DateTime.now().microsecondsSinceEpoch}';
 
   // Construtor para restauração do histórico JSON (pode não ter id)
-  _ChatMsg.withId({required this.id, required this.role, required this.text});
+  _ChatMsg.withId({
+    required this.id,
+    required this.role,
+    required this.text,
+    this.clinicalOutput,
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2105,6 +2119,12 @@ class _AiScreenState extends State<AiScreen> {
     _streamingTextNotifier?.dispose(); // descarta eventual notifier órfão
     _streamingTextNotifier = ValueNotifier<String>('');
 
+    // Associação volátil do Structured Output à bolha final.
+    // Só será preenchida quando o texto definitivo da UI permanecer exatamente
+    // igual ao displayText validado pelo backend.
+    String? committedAiMessageId;
+    String? committedAiMessageText;
+
     // ── Build 230: Anti-Freezing — trava de header strip após chunk 12 ────────
     // _stripMetadataHeaders() usa RegEx pesado com dotAll=true e múltiplas
     // alternâncias — rodar em CADA chunk bloqueia o main thread e congela o
@@ -2205,6 +2225,7 @@ class _AiScreenState extends State<AiScreen> {
                     id: _messages[streamingMsgIdx].id,
                     role: 'ai',
                     text: cleanedChunk,
+                    clinicalOutput: _messages[streamingMsgIdx].clinicalOutput,
                   );
                   // BUILD 332 Fix 2: notifier → repaint localizado na bolha de streaming
                   // sem rebuild de toda a árvore (economia de UI thread).
@@ -2412,6 +2433,8 @@ class _AiScreenState extends State<AiScreen> {
                   text: safeFinalText,
                 );
                 newBubbleMsgId = _messages[streamingMsgIdx].id;
+                committedAiMessageId = newBubbleMsgId;
+                committedAiMessageText = safeFinalText;
                 // ORDEM 29 FIX: _lastAiIndex DEVE apontar para streamingMsgIdx.
                 // No caminho de streaming normal (streamingMsgIdx >= 0), a bolha é
                 // atualizada in-place — mas _lastAiIndex nunca era sincronizado,
@@ -2426,6 +2449,8 @@ class _AiScreenState extends State<AiScreen> {
                 final newMsg = _ChatMsg(role: 'ai', text: safeFinalText);
                 _messages.add(newMsg);
                 newBubbleMsgId = newMsg.id;
+                committedAiMessageId = newMsg.id;
+                committedAiMessageText = safeFinalText;
               }
               // BUILD 276: register fade-in target
               _fadingInMsgId = newBubbleMsgId;
@@ -2479,6 +2504,69 @@ class _AiScreenState extends State<AiScreen> {
                 });
               });
             });
+          }
+        },
+        onStructuredDone: (finalText, clinicalOutput) {
+          if (!mounted || clinicalOutput == null) return;
+
+          final messageId = committedAiMessageId;
+          final committedText = committedAiMessageText;
+
+          // O Structured Output descreve literalmente o displayText validado
+          // pelo backend. Qualquer transformação posterior da UI invalida a
+          // associação e exige descarte fail-closed.
+          if (messageId == null ||
+              committedText == null ||
+              committedText != finalText) {
+            if (kDebugMode) {
+              debugPrint(
+                '[STRUCTURED_UI][DISCARDED] '
+                'reason=final_text_changed '
+                'backendLen=${finalText.length} '
+                'uiLen=${committedText?.length ?? 0}',
+              );
+            }
+            return;
+          }
+
+          final messageIndex =
+              _messages.indexWhere((message) => message.id == messageId);
+          if (messageIndex < 0) {
+            if (kDebugMode) {
+              debugPrint(
+                '[STRUCTURED_UI][DISCARDED] '
+                'reason=final_bubble_not_found',
+              );
+            }
+            return;
+          }
+
+          final currentMessage = _messages[messageIndex];
+          if (currentMessage.text != finalText) {
+            if (kDebugMode) {
+              debugPrint(
+                '[STRUCTURED_UI][DISCARDED] '
+                'reason=bubble_text_mismatch',
+              );
+            }
+            return;
+          }
+
+          setState(() {
+            _messages[messageIndex] = _ChatMsg.withId(
+              id: currentMessage.id,
+              role: currentMessage.role,
+              text: currentMessage.text,
+              clinicalOutput: clinicalOutput,
+            );
+          });
+
+          if (kDebugMode) {
+            debugPrint(
+              '[STRUCTURED_UI][ATTACHED] '
+              'messageId=$messageId '
+              'prescriptionCount=${clinicalOutput.prescricao.length}',
+            );
           }
         },
         onError: (errorMsg) {

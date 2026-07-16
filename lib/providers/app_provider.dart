@@ -30,6 +30,7 @@ import '../services/ai_gateway_service.dart';
 import '../services/ai_smart_router.dart'; // Build 191: sanitizeResponse
 import '../services/provider_router_service.dart'; // Build 226: Gemini Paid Fallback
 import '../services/app_resume_coordinator.dart'; // BUILD 241: background/resume safety
+import '../models/clinical_structured_output.dart';
 import '../services/ai_stream/ai_event.dart'; // BUILD 462E-A: Anti-Frankenstein event bus
 import '../services/ai_stream/gpt_sse_client.dart'; // BUILD 462E-A: per-request SSE client ref
 import '../services/auth_service.dart'; // BUILD 462E-A: Web token refresh (getAdminToken)
@@ -5282,8 +5283,9 @@ class AppProvider extends ChangeNotifier {
     required String input,
     required bool longResponse,
     required ExternalToolDecision? canonicalDecision,
-    required void Function(String) wrappedOnDone,
+    required void Function(String, [ClinicalStructuredOutput?]) wrappedOnDone,
     required ActiveAiSessionContext sessionCtx,
+    ClinicalStructuredOutput? clinicalOutput,
   }) async {
     // ── Step A: Clinical Numeric Determinism Gate (Validation) ───────────
     // Unit-coupled extraction: only values paired with a clinical dose unit
@@ -5307,6 +5309,12 @@ class AppProvider extends ChangeNotifier {
     } else {
       safeOutput = validatedOutput;
     }
+
+    // O objeto estruturado descreve exatamente o displayText validado pelo
+    // backend. Se qualquer barreira local substituir esse texto, os dois
+    // deixam de formar uma unidade atômica e o objeto deve ser descartado.
+    final ClinicalStructuredOutput? safeClinicalOutput =
+        safeOutput == validatedOutput ? clinicalOutput : null;
 
     // ── Step B: Atomic Persistence ────────────────────────────────────────
     // Persists the AI exchange BEFORE tool resolution and UI emit.
@@ -5372,11 +5380,12 @@ class AppProvider extends ChangeNotifier {
 
     // ── Step D: UI Notification (notifyListeners inside wrappedOnDone) ────
     // Phase still [finalizing] — coordinator NOT yet triggered.
-    wrappedOnDone(safeOutput.isNotEmpty
+    final finalUiText = safeOutput.isNotEmpty
         ? safeOutput
         : (_lang == 'es'
             ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕'
-            : 'Não consegui gerar uma resposta. Pode reformular? ⚕'));
+            : 'Não consegui gerar uma resposta. Pode reformular? ⚕');
+    wrappedOnDone(finalUiText, safeClinicalOutput);
 
     // ── Step E: Release canonical decision cache (after UI emit) ──────────
     ExternalToolLinkEngine.releaseCanonicalDecision(
@@ -5391,6 +5400,10 @@ class AppProvider extends ChangeNotifier {
     String input, {
     required void Function(String accumulated) onChunk,
     required void Function(String finalText) onDone,
+    void Function(
+      String finalText,
+      ClinicalStructuredOutput? clinicalOutput,
+    )? onStructuredDone,
     required void Function(String errorMsg) onError,
     bool longResponse = false, // Motor de Partida (Build 149)
     bool fromButton =
@@ -5548,14 +5561,20 @@ class AppProvider extends ChangeNotifier {
       //     • Texto truncado se o segundo call vinha com texto vazio/parcial
       //   Solução: flag `_wrapperFired` local, atômico, fecha a porta após o 1º disparo.
       bool _wrapperFired = false;
-      final wrappedOnDone = (String text) {
+      void Function(String, [ClinicalStructuredOutput?]) wrappedOnDone = (
+        String text, [
+        ClinicalStructuredOutput? clinicalOutput,
+      ]) {
         if (_wrapperFired) {
           debugPrint('[BUILD318][DEDUP] wrappedOnDone dropped — already fired '
               'requestId=$thisRequestId textLen=${text.length}');
           return;
         }
         _wrapperFired = true;
+        // O contrato legado continua sendo a porta soberana de fechamento da UI.
+        // O callback estruturado é apenas um hook aditivo executado depois.
         onDone(text);
+        onStructuredDone?.call(text, clinicalOutput);
         notifyListeners();
       };
       final wrappedOnError = (String err) {
@@ -5945,6 +5964,7 @@ class AppProvider extends ChangeNotifier {
                     canonicalDecision: canonicalDecision,
                     wrappedOnDone: wrappedOnDone,
                     sessionCtx: activeSessionCtx,
+                    clinicalOutput: e.clinicalOutput,
                   );
                 } on AiSafeOutputException catch (safeError) {
                   // ── TERMINAL: DROP_PAYLOAD — Repair critical failure ───────────

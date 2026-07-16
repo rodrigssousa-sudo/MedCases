@@ -1,3 +1,5 @@
+import '../../models/clinical_structured_output.dart';
+
 // ══════════════════════════════════════════════════════════════════════════════
 // lib/services/ai_stream/ai_event.dart
 // BUILD 462B-REDIRECIONADA — Anti-Frankenstein Typed Event Contract
@@ -92,12 +94,13 @@ final class AiStarted extends AiEvent {
     required int attempt,
     required String model,
     required String provider,
-  }) => AiStarted(
-        requestId:   requestId,
-        attempt:     attempt,
-        timestamp:   AiEvent.nowIso(),
-        model:       model,
-        provider:    provider,
+  }) =>
+      AiStarted(
+        requestId: requestId,
+        attempt: attempt,
+        timestamp: AiEvent.nowIso(),
+        model: model,
+        provider: provider,
         startedAtMs: DateTime.now().millisecondsSinceEpoch,
       );
 }
@@ -137,12 +140,13 @@ final class AiTextDelta extends AiEvent {
     required int attempt,
     required String delta,
     required int sequence,
-  }) => AiTextDelta(
+  }) =>
+      AiTextDelta(
         requestId: requestId,
-        attempt:   attempt,
+        attempt: attempt,
         timestamp: AiEvent.nowIso(),
-        delta:     delta,
-        sequence:  sequence,
+        delta: delta,
+        sequence: sequence,
       );
 }
 
@@ -183,13 +187,14 @@ final class AiProviderSwitched extends AiEvent {
     required String fromProvider,
     required String toProvider,
     required String reason,
-  }) => AiProviderSwitched(
-        requestId:    requestId,
-        attempt:      attempt,
-        timestamp:    AiEvent.nowIso(),
+  }) =>
+      AiProviderSwitched(
+        requestId: requestId,
+        attempt: attempt,
+        timestamp: AiEvent.nowIso(),
         fromProvider: fromProvider,
-        toProvider:   toProvider,
-        reason:       reason,
+        toProvider: toProvider,
+        reason: reason,
       );
 }
 
@@ -227,11 +232,12 @@ final class AiStreamReset extends AiEvent {
     required String requestId,
     required int attempt,
     required String reason,
-  }) => AiStreamReset(
+  }) =>
+      AiStreamReset(
         requestId: requestId,
-        attempt:   attempt,
+        attempt: attempt,
         timestamp: AiEvent.nowIso(),
-        reason:    reason,
+        reason: reason,
       );
 }
 
@@ -301,6 +307,11 @@ final class AiCompleted extends AiEvent {
   /// Provedor que efetivamente respondeu.
   final String usedProvider;
 
+  /// Resultado clínico estruturado validado pelo backend.
+  ///
+  /// Null no caminho legado ou quando a resposta não possui estrutura aplicável.
+  final ClinicalStructuredOutput? clinicalOutput;
+
   const AiCompleted({
     required super.requestId,
     required super.attempt,
@@ -310,6 +321,7 @@ final class AiCompleted extends AiEvent {
     this.outputTokensApprox = 0,
     this.durationMs = 0,
     this.usedProvider = '',
+    this.clinicalOutput,
   });
 
   factory AiCompleted.now({
@@ -320,15 +332,18 @@ final class AiCompleted extends AiEvent {
     int inputTokensApprox = 0,
     int outputTokensApprox = 0,
     int durationMs = 0,
-  }) => AiCompleted(
-        requestId:          requestId,
-        attempt:            attempt,
-        timestamp:          AiEvent.nowIso(),
-        fullText:           fullText,
-        inputTokensApprox:  inputTokensApprox,
+    ClinicalStructuredOutput? clinicalOutput,
+  }) =>
+      AiCompleted(
+        requestId: requestId,
+        attempt: attempt,
+        timestamp: AiEvent.nowIso(),
+        fullText: fullText,
+        inputTokensApprox: inputTokensApprox,
         outputTokensApprox: outputTokensApprox,
-        durationMs:         durationMs,
-        usedProvider:       usedProvider,
+        durationMs: durationMs,
+        usedProvider: usedProvider,
+        clinicalOutput: clinicalOutput,
       );
 }
 
@@ -381,13 +396,14 @@ final class AiFailed extends AiEvent {
     required String message,
     required bool retryable,
     String? partialText,
-  }) => AiFailed(
-        requestId:   requestId,
-        attempt:     attempt,
-        timestamp:   AiEvent.nowIso(),
-        code:        code,
-        message:     message,
-        retryable:   retryable,
+  }) =>
+      AiFailed(
+        requestId: requestId,
+        attempt: attempt,
+        timestamp: AiEvent.nowIso(),
+        code: code,
+        message: message,
+        retryable: retryable,
         partialText: partialText,
       );
 
@@ -397,5 +413,6 @@ final class AiFailed extends AiEvent {
 
   /// Retorna true se [partialText] ultrapassa o limiar clínico.
   bool get hasSignificantPartial =>
-      partialText != null && partialText!.length >= kSignificantPartialThreshold;
+      partialText != null &&
+      partialText!.length >= kSignificantPartialThreshold;
 }

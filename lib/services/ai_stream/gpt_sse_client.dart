@@ -34,8 +34,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:http/http.dart' as http;
+import '../../models/clinical_structured_output.dart';
 import 'ai_event.dart';
 import 'sse_parser.dart';
+
+typedef GptHttpClientFactory = http.Client Function();
 
 // ─────────────────────────────────────────────────────────────────────────────
 /// Payload clínico para o endpoint gptProxyStream.
@@ -53,22 +56,22 @@ class GptSsePayload {
   const GptSsePayload({
     required this.userMessage,
     required this.systemPrompt,
-    this.history         = const [],
-    this.mode            = 'plantao',
-    this.lang            = 'pt',
-    this.requestId       = '',
+    this.history = const [],
+    this.mode = 'plantao',
+    this.lang = 'pt',
+    this.requestId = '',
     this.maxOutputTokens = 800,
   });
 
   Map<String, dynamic> toJson() => {
-    'userMessage':     userMessage,
-    'systemPrompt':    systemPrompt,
-    'history':         history,
-    'mode':            mode,
-    'lang':            lang,
-    'requestId':       requestId,
-    'maxOutputTokens': maxOutputTokens,
-  };
+        'userMessage': userMessage,
+        'systemPrompt': systemPrompt,
+        'history': history,
+        'mode': mode,
+        'lang': lang,
+        'requestId': requestId,
+        'maxOutputTokens': maxOutputTokens,
+      };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -127,24 +130,26 @@ class GptSseClient {
 
   final String endpointUrl;
   final String idToken;
+  final GptHttpClientFactory _clientFactory;
 
   // Estado interno — um cliente HTTP por request
   http.Client? _httpClient;
-  bool _cancelled  = false;
-  bool _completed  = false;
+  bool _cancelled = false;
+  bool _completed = false;
 
   // Identidade real informada pelo backend no evento started.
-  String _activeModel    = 'gpt-4o-mini';
+  String _activeModel = 'gpt-4o-mini';
   String _activeProvider = 'gpt_4o_mini';
 
   // Métricas de cancelamento
-  int _deltaCount  = 0;
-  int _startMs     = 0;
+  int _deltaCount = 0;
+  int _startMs = 0;
 
   GptSseClient({
     required this.endpointUrl,
     required this.idToken,
-  });
+    GptHttpClientFactory? clientFactory,
+  }) : _clientFactory = clientFactory ?? (() => http.Client());
 
   /// Cria cliente com endpoint padrão de produção.
   factory GptSseClient.production({required String idToken}) =>
@@ -162,25 +167,25 @@ class GptSseClient {
   ///   • Bytes reais da rede → SseParser → AiEvent
   // ──────────────────────────────────────────────────────────────────────────
   Stream<AiEvent> stream(GptSsePayload payload) async* {
-    _startMs    = DateTime.now().millisecondsSinceEpoch;
-    _cancelled  = false;
-    _completed  = false;
+    _startMs = DateTime.now().millisecondsSinceEpoch;
+    _cancelled = false;
+    _completed = false;
     _deltaCount = 0;
-    _activeModel    = 'gpt-4o-mini';
+    _activeModel = 'gpt-4o-mini';
     _activeProvider = 'gpt_4o_mini';
 
-    final reqId   = payload.requestId.isEmpty
-        ? 'req_$_startMs'
-        : payload.requestId;
+    final reqId =
+        payload.requestId.isEmpty ? 'req_$_startMs' : payload.requestId;
 
     _currentRequestId = reqId;
 
-    // Criar http.Client dedicado a este request
-    _httpClient = http.Client();
+    // Criar http.Client dedicado a este request.
+    // Em produção usa http.Client(); testes podem injetar transporte determinístico.
+    _httpClient = _clientFactory();
 
     final parser = SseParser();
     final filter = SseEventFilter(
-      requestId:      reqId,
+      requestId: reqId,
       expectedAttempt: kGptAttempt,
     );
 
@@ -208,9 +213,9 @@ class GptSseClient {
     try {
       final request = http.Request('POST', Uri.parse(endpointUrl))
         ..headers.addAll({
-          'Content-Type':  'application/json; charset=utf-8',
+          'Content-Type': 'application/json; charset=utf-8',
           'Authorization': 'Bearer $idToken',
-          'Accept':        'text/event-stream',
+          'Accept': 'text/event-stream',
           'Cache-Control': 'no-cache',
         })
         ..body = jsonEncode(payload.toJson());
@@ -222,9 +227,9 @@ class GptSseClient {
       if (_cancelled) return; // cancelado antes da conexão — silencioso
       yield AiFailed.now(
         requestId: reqId,
-        attempt:   kGptAttempt,
-        code:      'gpt_sse_connect_error',
-        message:   e.toString(),
+        attempt: kGptAttempt,
+        code: 'gpt_sse_connect_error',
+        message: e.toString(),
         retryable: true,
       );
       parser.dispose();
@@ -237,9 +242,9 @@ class GptSseClient {
       _httpClient = null;
       yield AiFailed.now(
         requestId: reqId,
-        attempt:   kGptAttempt,
-        code:      'gpt_sse_unauthenticated',
-        message:   'HTTP 401 — antes dos headers SSE',
+        attempt: kGptAttempt,
+        code: 'gpt_sse_unauthenticated',
+        message: 'HTTP 401 — antes dos headers SSE',
         retryable: false,
       );
       parser.dispose();
@@ -251,9 +256,9 @@ class GptSseClient {
       _httpClient = null;
       yield AiFailed.now(
         requestId: reqId,
-        attempt:   kGptAttempt,
-        code:      'gpt_sse_budget_guard',
-        message:   'HTTP 429 — budget guard acionado',
+        attempt: kGptAttempt,
+        code: 'gpt_sse_budget_guard',
+        message: 'HTTP 429 — budget guard acionado',
         retryable: false,
       );
       parser.dispose();
@@ -265,9 +270,9 @@ class GptSseClient {
       _httpClient = null;
       yield AiFailed.now(
         requestId: reqId,
-        attempt:   kGptAttempt,
-        code:      'gpt_sse_http_${streamedResponse.statusCode}',
-        message:   'HTTP ${streamedResponse.statusCode}',
+        attempt: kGptAttempt,
+        code: 'gpt_sse_http_${streamedResponse.statusCode}',
+        message: 'HTTP ${streamedResponse.statusCode}',
         retryable: streamedResponse.statusCode >= 500,
       );
       parser.dispose();
@@ -281,9 +286,9 @@ class GptSseClient {
       _httpClient = null;
       yield AiFailed.now(
         requestId: reqId,
-        attempt:   kGptAttempt,
-        code:      'gpt_sse_wrong_content_type',
-        message:   'Content-Type=$contentType (esperado text/event-stream)',
+        attempt: kGptAttempt,
+        code: 'gpt_sse_wrong_content_type',
+        message: 'Content-Type=$contentType (esperado text/event-stream)',
         retryable: false,
       );
       parser.dispose();
@@ -298,9 +303,8 @@ class GptSseClient {
 
     // ── CONSUMO REAL DO STREAM DE BYTES ──────────────────────────────────────
     try {
-      await for (final sseEvent in streamedResponse.stream
-          .transform(parser.transformer)) {
-
+      await for (final sseEvent
+          in streamedResponse.stream.transform(parser.transformer)) {
         // Cancelado → fechar
         if (_cancelled) break;
 
@@ -309,11 +313,11 @@ class GptSseClient {
           final err = protocolError!;
           protocolError = null;
           yield AiFailed.now(
-            requestId:   reqId,
-            attempt:     kGptAttempt,
-            code:        'sse_protocol_json_error',
-            message:     err.errorMessage,
-            retryable:   false,
+            requestId: reqId,
+            attempt: kGptAttempt,
+            code: 'sse_protocol_json_error',
+            message: err.errorMessage,
+            retryable: false,
             partialText: accumulator.isNotEmpty ? accumulator.toString() : null,
           );
           break;
@@ -334,36 +338,34 @@ class GptSseClient {
           case 'started':
             final data = sseEvent.data ?? {};
 
-            _activeModel =
-                data['model'] as String? ?? _activeModel;
-            _activeProvider =
-                data['provider'] as String? ?? _activeProvider;
+            _activeModel = data['model'] as String? ?? _activeModel;
+            _activeProvider = data['provider'] as String? ?? _activeProvider;
 
             yield AiStarted.now(
               requestId: reqId,
-              attempt:   kGptAttempt,
-              model:     _activeModel,
-              provider:  _activeProvider,
+              attempt: kGptAttempt,
+              model: _activeModel,
+              provider: _activeProvider,
             );
 
           case 'text_delta':
-            final data  = sseEvent.data ?? {};
+            final data = sseEvent.data ?? {};
             final delta = data['delta'] as String? ?? '';
             if (delta.isNotEmpty) {
               final seq = (data['sequence'] as num?)?.toInt() ?? sequence;
-              sequence  = seq + 1;
+              sequence = seq + 1;
               _deltaCount++;
               accumulator.write(delta);
               yield AiTextDelta.now(
                 requestId: reqId,
-                attempt:   kGptAttempt,
-                delta:     delta,
-                sequence:  seq,
+                attempt: kGptAttempt,
+                delta: delta,
+                sequence: seq,
               );
             }
 
           case 'sources':
-            final data    = sseEvent.data ?? {};
+            final data = sseEvent.data ?? {};
             final rawList = data['sources'];
             if (rawList is List) {
               final sources = rawList
@@ -372,9 +374,9 @@ class GptSseClient {
                   .toList();
               yield AiSources(
                 requestId: reqId,
-                attempt:   kGptAttempt,
+                attempt: kGptAttempt,
                 timestamp: AiEvent.nowIso(),
-                sources:   sources,
+                sources: sources,
               );
             }
 
@@ -385,14 +387,62 @@ class GptSseClient {
             _completed = true;
             final data = sseEvent.data ?? {};
 
-            _activeModel =
-                data['model'] as String? ?? _activeModel;
-            _activeProvider =
-                data['provider'] as String? ?? _activeProvider;
+            _activeModel = data['model'] as String? ?? _activeModel;
+            _activeProvider = data['provider'] as String? ?? _activeProvider;
 
-            final inputTok        = (data['inputTokensApprox'] as num?)?.toInt() ?? 0;
-            final outputTok       = (data['outputTokensApprox'] as num?)?.toInt() ?? 0;
-            final durationMs      = DateTime.now().millisecondsSinceEpoch - _startMs;
+            final inputTok = (data['inputTokensApprox'] as num?)?.toInt() ?? 0;
+            final outputTok =
+                (data['outputTokensApprox'] as num?)?.toInt() ?? 0;
+
+            final rawStructuredOutput = data['structuredOutput'];
+            ClinicalStructuredOutput? clinicalOutput;
+
+            if (rawStructuredOutput != null) {
+              try {
+                if (rawStructuredOutput is! Map) {
+                  throw const FormatException(
+                    'clinical_structured_output_invalid_root',
+                  );
+                }
+
+                clinicalOutput = ClinicalStructuredOutput.fromJson(
+                  Map<String, dynamic>.from(rawStructuredOutput),
+                );
+              } on FormatException catch (error) {
+                // Um payload estruturado não nulo representa um contrato
+                // explícito do backend. Falhas de forma ou conteúdo não podem
+                // ser degradadas silenciosamente para o caminho legado.
+                transportDoneReceived = true;
+                _completed = false;
+
+                yield AiFailed.now(
+                  requestId: reqId,
+                  attempt: kGptAttempt,
+                  code: 'gpt_sse_invalid_structured_output',
+                  message: error.message.toString(),
+                  retryable: false,
+                  partialText:
+                      accumulator.isNotEmpty ? accumulator.toString() : null,
+                );
+                break;
+              } on TypeError catch (error) {
+                transportDoneReceived = true;
+                _completed = false;
+
+                yield AiFailed.now(
+                  requestId: reqId,
+                  attempt: kGptAttempt,
+                  code: 'gpt_sse_invalid_structured_output',
+                  message: error.toString(),
+                  retryable: false,
+                  partialText:
+                      accumulator.isNotEmpty ? accumulator.toString() : null,
+                );
+                break;
+              }
+            }
+
+            final durationMs = DateTime.now().millisecondsSinceEpoch - _startMs;
             if (kDebugMode) {
               debugPrint('[GPT_SSE] ✅ transport_done requestId=$reqId '
                   'attempt=$kGptAttempt deltaCount=$_deltaCount '
@@ -400,27 +450,29 @@ class GptSseClient {
             }
             // Emitir AiCompleted com texto acumulado (sanitizeAndCheck() é responsabilidade do AppProvider)
             yield AiCompleted.now(
-              requestId:          reqId,
-              attempt:            kGptAttempt,
-              fullText:           accumulator.toString(),
-              usedProvider:       _activeProvider,
-              inputTokensApprox:  inputTok,
+              requestId: reqId,
+              attempt: kGptAttempt,
+              fullText: accumulator.toString(),
+              usedProvider: _activeProvider,
+              inputTokensApprox: inputTok,
               outputTokensApprox: outputTok,
-              durationMs:         durationMs,
+              durationMs: durationMs,
+              clinicalOutput: clinicalOutput,
             );
             break;
 
           case 'error':
-            final data    = sseEvent.data ?? {};
-            final code    = data['error'] as String? ?? 'gpt_sse_server_error';
+            final data = sseEvent.data ?? {};
+            final code = data['error'] as String? ?? 'gpt_sse_server_error';
             final message = data['message'] as String? ?? '';
             yield AiFailed.now(
-              requestId:   reqId,
-              attempt:     kGptAttempt,
-              code:        code,
-              message:     message,
-              retryable:   _isRetryable(code),
-              partialText: accumulator.isNotEmpty ? accumulator.toString() : null,
+              requestId: reqId,
+              attempt: kGptAttempt,
+              code: code,
+              message: message,
+              retryable: _isRetryable(code),
+              partialText:
+                  accumulator.isNotEmpty ? accumulator.toString() : null,
             );
             break;
 
@@ -443,11 +495,11 @@ class GptSseClient {
         if (!transportDoneReceived) {
           final partialLen = accumulator.length;
           yield AiFailed.now(
-            requestId:   reqId,
-            attempt:     kGptAttempt,
-            code:        'gpt_sse_stream_error',
-            message:     e.toString(),
-            retryable:   true,
+            requestId: reqId,
+            attempt: kGptAttempt,
+            code: 'gpt_sse_stream_error',
+            message: e.toString(),
+            retryable: true,
             partialText: partialLen > 0 ? accumulator.toString() : null,
           );
         }
@@ -461,11 +513,11 @@ class GptSseClient {
               'partialLen=${accumulator.length} durationMs=$durationMs');
         }
         yield AiFailed.now(
-          requestId:   reqId,
-          attempt:     kGptAttempt,
-          code:        'eof_no_transport_done',
-          message:     'Stream encerrou sem transport_done',
-          retryable:   false,
+          requestId: reqId,
+          attempt: kGptAttempt,
+          code: 'eof_no_transport_done',
+          message: 'Stream encerrou sem transport_done',
+          retryable: false,
           partialText: accumulator.toString(),
         );
       }
@@ -506,22 +558,22 @@ class GptSseClient {
         'durationMs=$durationMs deltaCount=$_deltaCount');
 
     return GptSseCancellation(
-      requestId:   _currentRequestId,
-      attempt:     kGptAttempt,
-      deltaCount:  _deltaCount,
-      durationMs:  durationMs,
-      reason:      reason,
+      requestId: _currentRequestId,
+      attempt: kGptAttempt,
+      deltaCount: _deltaCount,
+      durationMs: durationMs,
+      reason: reason,
     );
   }
 
   String _currentRequestId = '';
 
   static bool _isRetryable(String code) => switch (code) {
-    'cf_timeout'   => true,
-    'cf_internal'  => true,
-    'timeout'      => true,
-    'network'      => true,
-    'http_503'     => true,
-    _              => false,
-  };
+        'cf_timeout' => true,
+        'cf_internal' => true,
+        'timeout' => true,
+        'network' => true,
+        'http_503' => true,
+        _ => false,
+      };
 }

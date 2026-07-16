@@ -15,31 +15,39 @@
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:medcases/models/clinical_structured_output.dart';
 import 'package:medcases/services/ai_stream/ai_event.dart';
 
 void main() {
   group('AiEvent — base contract', () {
-    test('AiStarted carrega requestId + attempt + timestamp + model + provider', () {
+    test('AiStarted carrega requestId + attempt + timestamp + model + provider',
+        () {
       final event = AiStarted.now(
         requestId: 'req_123',
-        attempt:   1,
-        model:     'gemini-2.5-flash',
-        provider:  'gemini_free',
+        attempt: 1,
+        model: 'gemini-2.5-flash',
+        provider: 'gemini_free',
       );
       expect(event.requestId, equals('req_123'));
-      expect(event.attempt,   equals(1));
-      expect(event.timestamp,  isNotEmpty);
-      expect(event.model,      equals('gemini-2.5-flash'));
-      expect(event.provider,   equals('gemini_free'));
+      expect(event.attempt, equals(1));
+      expect(event.timestamp, isNotEmpty);
+      expect(event.model, equals('gemini-2.5-flash'));
+      expect(event.provider, equals('gemini_free'));
       expect(event.startedAtMs, greaterThan(0));
     });
 
     test('AiTextDelta carrega delta bruto + sequence (não acumulado)', () {
       final e1 = AiTextDelta.now(
-        requestId: 'req_123', attempt: 2, delta: 'Iniciar', sequence: 1,
+        requestId: 'req_123',
+        attempt: 2,
+        delta: 'Iniciar',
+        sequence: 1,
       );
       final e2 = AiTextDelta.now(
-        requestId: 'req_123', attempt: 2, delta: ' norepinefrina', sequence: 2,
+        requestId: 'req_123',
+        attempt: 2,
+        delta: ' norepinefrina',
+        sequence: 2,
       );
       expect(e1.delta, equals('Iniciar'));
       expect(e2.delta, equals(' norepinefrina'));
@@ -51,50 +59,86 @@ void main() {
 
     test('AiTextDelta GPT attempt=2 sequence começa em 1', () {
       final delta = AiTextDelta.now(
-        requestId: 'req_gpt_test', attempt: 2, delta: 'X', sequence: 1,
+        requestId: 'req_gpt_test',
+        attempt: 2,
+        delta: 'X',
+        sequence: 1,
       );
-      expect(delta.attempt,  equals(2));
+      expect(delta.attempt, equals(2));
       expect(delta.sequence, equals(1));
     });
 
     test('AiCompleted carrega fullText + usedProvider + durationMs', () {
       final event = AiCompleted.now(
-        requestId:   'req_abc',
-        attempt:     2,
-        fullText:    'Texto médico completo aqui',
+        requestId: 'req_abc',
+        attempt: 2,
+        fullText: 'Texto médico completo aqui',
         usedProvider: 'gpt_4o_mini',
-        durationMs:  1234,
-        inputTokensApprox:  120,
+        durationMs: 1234,
+        inputTokensApprox: 120,
         outputTokensApprox: 45,
+        clinicalOutput: ClinicalStructuredOutput.fromJson(
+          const <String, dynamic>{
+            'diagnosticoHeuristico': 'Pneumonia',
+            'condutaImediata': 'Estabilizar e investigar.',
+            'prescricao': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'farmaco': 'Ceftriaxona',
+                'posologia': '1 g IV a cada 24 horas',
+              },
+            ],
+          },
+        ),
       );
-      expect(event.fullText,    equals('Texto médico completo aqui'));
+      expect(event.fullText, equals('Texto médico completo aqui'));
       expect(event.usedProvider, equals('gpt_4o_mini'));
-      expect(event.durationMs,  equals(1234));
-      expect(event.attempt,     equals(2));
+      expect(event.durationMs, equals(1234));
+      expect(event.attempt, equals(2));
+      expect(
+        event.clinicalOutput?.diagnosticoHeuristico,
+        equals('Pneumonia'),
+      );
+      expect(
+        event.clinicalOutput?.condutaImediata,
+        equals('Estabilizar e investigar.'),
+      );
+      expect(
+        event.clinicalOutput?.prescricao.single.farmaco,
+        equals('Ceftriaxona'),
+      );
+      expect(
+        event.clinicalOutput?.prescricao.single.posologia,
+        equals('1 g IV a cada 24 horas'),
+      );
     });
   });
 
   group('AiProviderSwitched — Anti-Frankenstein', () {
-    test('carrega fromProvider + toProvider + reason + requestId + attempt + timestamp', () {
+    test(
+        'carrega fromProvider + toProvider + reason + requestId + attempt + timestamp',
+        () {
       final event = AiProviderSwitched.now(
-        requestId:    'req_456',
-        attempt:      2,
+        requestId: 'req_456',
+        attempt: 2,
         fromProvider: 'gemini_free',
-        toProvider:   'gpt_4o_mini',
-        reason:       'quota',
+        toProvider: 'gpt_4o_mini',
+        reason: 'quota',
       );
-      expect(event.requestId,    equals('req_456'));
-      expect(event.attempt,      equals(2));
-      expect(event.timestamp,    isNotEmpty);
+      expect(event.requestId, equals('req_456'));
+      expect(event.attempt, equals(2));
+      expect(event.timestamp, isNotEmpty);
       expect(event.fromProvider, equals('gemini_free'));
-      expect(event.toProvider,   equals('gpt_4o_mini'));
-      expect(event.reason,       equals('quota'));
+      expect(event.toProvider, equals('gpt_4o_mini'));
+      expect(event.reason, equals('quota'));
     });
 
     test('é uma AiEvent (sealed class member)', () {
       final AiEvent event = AiProviderSwitched.now(
-        requestId: 'r', attempt: 2,
-        fromProvider: 'a', toProvider: 'b', reason: 'c',
+        requestId: 'r',
+        attempt: 2,
+        fromProvider: 'a',
+        toProvider: 'b',
+        reason: 'c',
       );
       expect(event, isA<AiProviderSwitched>());
     });
@@ -104,18 +148,20 @@ void main() {
     test('carrega reason + requestId + attempt + timestamp', () {
       final event = AiStreamReset.now(
         requestId: 'req_789',
-        attempt:   2,
-        reason:    'provider_switch_no_partial',
+        attempt: 2,
+        reason: 'provider_switch_no_partial',
       );
       expect(event.requestId, equals('req_789'));
-      expect(event.attempt,   equals(2));
-      expect(event.timestamp,  isNotEmpty);
-      expect(event.reason,     equals('provider_switch_no_partial'));
+      expect(event.attempt, equals(2));
+      expect(event.timestamp, isNotEmpty);
+      expect(event.reason, equals('provider_switch_no_partial'));
     });
 
     test('é uma AiEvent (sealed class member)', () {
       final AiEvent event = AiStreamReset.now(
-        requestId: 'r', attempt: 2, reason: 'test',
+        requestId: 'r',
+        attempt: 2,
+        reason: 'test',
       );
       expect(event, isA<AiStreamReset>());
     });
@@ -124,25 +170,25 @@ void main() {
   group('AiFailed — falha clínica', () {
     test('carrega code + message + retryable + partialText', () {
       final event = AiFailed.now(
-        requestId:   'req_fail',
-        attempt:     2,
-        code:        'eof_no_transport_done',
-        message:     'Stream encerrou sem transport_done',
-        retryable:   false,
+        requestId: 'req_fail',
+        attempt: 2,
+        code: 'eof_no_transport_done',
+        message: 'Stream encerrou sem transport_done',
+        retryable: false,
         partialText: 'Texto parcial acumulado antes da falha...',
       );
-      expect(event.code,       equals('eof_no_transport_done'));
-      expect(event.message,    isNotEmpty);
-      expect(event.retryable,  isFalse);
+      expect(event.code, equals('eof_no_transport_done'));
+      expect(event.message, isNotEmpty);
+      expect(event.retryable, isFalse);
       expect(event.partialText, isNotNull);
     });
 
     test('sem partialText quando nenhum texto foi recebido', () {
       final event = AiFailed.now(
         requestId: 'req_fail2',
-        attempt:   2,
-        code:      'gpt_sse_connect_error',
-        message:   'Connection refused',
+        attempt: 2,
+        code: 'gpt_sse_connect_error',
+        message: 'Connection refused',
         retryable: true,
       );
       expect(event.partialText, isNull);
@@ -152,8 +198,12 @@ void main() {
     test('hasSignificantPartial false quando parcial < 80 chars', () {
       const shortText = 'Curto'; // 5 chars
       final event = AiFailed.now(
-        requestId: 'r', attempt: 2, code: 'x', message: 'm',
-        retryable: false, partialText: shortText,
+        requestId: 'r',
+        attempt: 2,
+        code: 'x',
+        message: 'm',
+        retryable: false,
+        partialText: shortText,
       );
       expect(event.hasSignificantPartial, isFalse);
     });
@@ -161,8 +211,12 @@ void main() {
     test('hasSignificantPartial true quando parcial >= 80 chars', () {
       final longText = 'A' * 80; // exatamente 80 chars = threshold
       final event = AiFailed.now(
-        requestId: 'r', attempt: 2, code: 'x', message: 'm',
-        retryable: false, partialText: longText,
+        requestId: 'r',
+        attempt: 2,
+        code: 'x',
+        message: 'm',
+        retryable: false,
+        partialText: longText,
       );
       expect(event.hasSignificantPartial, isTrue);
     });
@@ -173,23 +227,33 @@ void main() {
 
     test('retryable=true para erros de rede (timeout, network)', () {
       final event = AiFailed.now(
-        requestId: 'r', attempt: 2,
-        code: 'timeout', message: 'timeout', retryable: true,
+        requestId: 'r',
+        attempt: 2,
+        code: 'timeout',
+        message: 'timeout',
+        retryable: true,
       );
       expect(event.retryable, isTrue);
     });
 
     test('retryable=false para erros de autenticação', () {
       final event = AiFailed.now(
-        requestId: 'r', attempt: 2,
-        code: 'unauthenticated', message: 'auth', retryable: false,
+        requestId: 'r',
+        attempt: 2,
+        code: 'unauthenticated',
+        message: 'auth',
+        retryable: false,
       );
       expect(event.retryable, isFalse);
     });
 
     test('é uma AiEvent (sealed class member)', () {
       final AiEvent event = AiFailed.now(
-        requestId: 'r', attempt: 2, code: 'x', message: 'm', retryable: false,
+        requestId: 'r',
+        attempt: 2,
+        code: 'x',
+        message: 'm',
+        retryable: false,
       );
       expect(event, isA<AiFailed>());
     });
@@ -200,11 +264,27 @@ void main() {
       final events = <AiEvent>[
         AiStarted.now(requestId: 'r', attempt: 1, model: 'm', provider: 'p'),
         AiTextDelta.now(requestId: 'r', attempt: 1, delta: 'x', sequence: 0),
-        AiToolResult(requestId: 'r', attempt: 1, timestamp: '', toolName: 't', data: const {}),
+        AiToolResult(
+            requestId: 'r',
+            attempt: 1,
+            timestamp: '',
+            toolName: 't',
+            data: const {}),
         AiSources(requestId: 'r', attempt: 1, timestamp: '', sources: const []),
-        AiCompleted.now(requestId: 'r', attempt: 1, fullText: '', usedProvider: ''),
-        AiFailed.now(requestId: 'r', attempt: 1, code: 'e', message: 'm', retryable: false),
-        AiProviderSwitched.now(requestId: 'r', attempt: 2, fromProvider: 'a', toProvider: 'b', reason: 'c'),
+        AiCompleted.now(
+            requestId: 'r', attempt: 1, fullText: '', usedProvider: ''),
+        AiFailed.now(
+            requestId: 'r',
+            attempt: 1,
+            code: 'e',
+            message: 'm',
+            retryable: false),
+        AiProviderSwitched.now(
+            requestId: 'r',
+            attempt: 2,
+            fromProvider: 'a',
+            toProvider: 'b',
+            reason: 'c'),
         AiStreamReset.now(requestId: 'r', attempt: 2, reason: 'd'),
       ];
 
@@ -212,14 +292,22 @@ void main() {
       int handled = 0;
       for (final event in events) {
         switch (event) {
-          case AiStarted():          handled++;
-          case AiTextDelta():        handled++;
-          case AiToolResult():       handled++;
-          case AiSources():          handled++;
-          case AiCompleted():        handled++;
-          case AiFailed():           handled++;
-          case AiProviderSwitched(): handled++;
-          case AiStreamReset():      handled++;
+          case AiStarted():
+            handled++;
+          case AiTextDelta():
+            handled++;
+          case AiToolResult():
+            handled++;
+          case AiSources():
+            handled++;
+          case AiCompleted():
+            handled++;
+          case AiFailed():
+            handled++;
+          case AiProviderSwitched():
+            handled++;
+          case AiStreamReset():
+            handled++;
         }
       }
       expect(handled, equals(events.length));
@@ -227,7 +315,8 @@ void main() {
   });
 
   group('Identidade de fragmento', () {
-    test('requestId + attempt + sequence identificam unicamente um fragmento', () {
+    test('requestId + attempt + sequence identificam unicamente um fragmento',
+        () {
       const reqId = 'req_unique';
       final fragments = [
         AiTextDelta.now(requestId: reqId, attempt: 2, delta: 'A', sequence: 1),
@@ -238,7 +327,7 @@ void main() {
       // Todos têm o mesmo requestId e attempt
       for (final f in fragments) {
         expect(f.requestId, equals(reqId));
-        expect(f.attempt,   equals(2));
+        expect(f.attempt, equals(2));
       }
 
       // Sequences são únicas e crescentes
