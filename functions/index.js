@@ -2793,6 +2793,18 @@ function callOpenAiResponsesStream({
   });
 }
 
+/*
+ * Superfície interna exclusiva para testes automatizados.
+ *
+ * NODE_ENV diferente de "test" não adiciona exports e não cria
+ * nenhuma Cloud Function adicional durante análise ou deploy.
+ */
+if (process.env.NODE_ENV === 'test') {
+  exports.__test = Object.freeze({
+    callOpenAiResponsesStream,
+  });
+}
+
 // ── Feature flag servidor ─────────────────────────────────────────────────────
 // Se USE_GPT_PROXY_SSE !== 'true' no ambiente, o endpoint responde com
 // fallback para o endpoint legado (gptProxy).
