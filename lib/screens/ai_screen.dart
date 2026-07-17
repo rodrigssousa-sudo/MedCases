@@ -2869,7 +2869,6 @@ class _AiScreenState extends State<AiScreen> {
 
     // No desktop: centraliza o chat com largura máxima elegante
     final double? chatMaxWidth = bp.isDesktop ? 960 : null;
-    final hPad = bp.isDesktop ? 0.0 : 12.0;
 
     // SUPER ORDEM MASTER 15 M2: Estado de conexão da IA com verificação ESTRITA.
     // isConnected = estado geral para lógica interna (ex: forceDisconnectedLabel)
@@ -2888,10 +2887,8 @@ class _AiScreenState extends State<AiScreen> {
 
     // BUILD 275: para usuários não-admin/não-master sem conexão, forçar badge
     // 'Desconectado' (vermelho) em vez de 'Conectar IA' — sinaliza que chat está bloqueado.
-    // BUILD 339-UI-DEBUGGER: isPrivilegedUser mantido para outros usos; forceDisconnectedLabel
-    // agora depende EXCLUSIVAMENTE de p.geminiConnected — Admin/Master passó pelo fluxo idêntico
-    // ao usuário comum, ativando _GoogleAuthBarrierCard + _DisconnectedInputLock para QA.
-    final bool isPrivilegedUser = p.isAdmin || p.isMaster;
+    // BUILD 339-UI-DEBUGGER: força o mesmo fluxo de conexão para todos os usuários.
+    // Admin e Master também exibem _GoogleAuthBarrierCard + _DisconnectedInputLock para QA.
     final bool forceDisconnectedLabel = !p.geminiConnected;
 
     Widget chatList = ListView.builder(
@@ -3305,7 +3302,7 @@ class _AiScreenState extends State<AiScreen> {
             else
               chatList,
             // ORDEM 47 M1: Auth barrier SOBERANA — baseada EXCLUSIVAMENTE em
-            // forceDisconnectedLabel (= !isPrivilegedUser && !isConnected).
+            // forceDisconnectedLabel (= !p.geminiConnected).
             // Não depende mais de _messages.any(). O overlay cobre TODA a timeline
             // independente de haver mensagens — proteção financeira de API absoluta.
             if (forceDisconnectedLabel)
