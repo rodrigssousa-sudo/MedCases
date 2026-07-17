@@ -19,6 +19,7 @@ import 'ai/widgets/action_buttons_row.dart';
 import 'ai/widgets/user_bubble.dart';
 import 'ai/widgets/suggestion_carousel.dart';
 import 'ai/widgets/empty_chat.dart';
+import 'ai/widgets/ai_error_banner.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -3460,9 +3461,9 @@ class _AiScreenState extends State<AiScreen> {
 
       // ── Banner de erro de chave ───────────────────────────────────────────
       if (_aiError)
-        _AiErrorBanner(
-          dark: dark,
+        AiErrorBanner(
           lang: p.lang,
+          isGeminiError: p.geminiConnected,
           onFix: _openAiSettings,
         ),
 
@@ -6973,58 +6974,6 @@ class _ResponseModeToggle extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _AiErrorBanner extends StatelessWidget {
-  final bool dark;
-  final String lang;
-  final VoidCallback onFix;
-  const _AiErrorBanner({required this.dark, required this.lang, required this.onFix});
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs = lang == 'es';
-    // Detecta se o erro foi de token Gemini expirado para mensagem específica
-    final p = context.read<AppProvider>();
-    final isGeminiError = p.geminiConnected;
-
-    final String msg;
-    if (isGeminiError) {
-      msg = isEs
-          ? 'Sesión Google expirada — toca para reconectar'
-          : 'Sessão Google expirada — toque para reconectar';
-    } else {
-      msg = isEs
-          ? 'Clave API inválida — toca para configurar'
-          : 'Chave API inválida — toque para configurar';
-    }
-
-    return GestureDetector(
-      onTap: onFix,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        color: const Color(0xFFB91C1C).withOpacity(0.12),
-        child: Row(children: [
-          Icon(
-            isGeminiError
-                ? Icons.account_circle_outlined
-                : Icons.error_outline_rounded,
-            color: const Color(0xFFEF4444), size: 16),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              msg,
-              style: const TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w600,
-                color: Color(0xFFEF4444)),
-            ),
-          ),
-          const Icon(Icons.chevron_right_rounded, color: Color(0xFFEF4444), size: 16),
-        ]),
       ),
     );
   }
