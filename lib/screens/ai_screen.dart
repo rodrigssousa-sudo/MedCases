@@ -19,6 +19,7 @@ import 'ai/widgets/mobile_ai_action_bar.dart';
 import 'ai/widgets/collapsible_content_blocks.dart';
 import 'ai/widgets/ambassador_panel_helpers.dart';
 import 'ai/widgets/ai_skeleton_lines.dart';
+import 'ai/widgets/ai_block_bubble.dart';
 import 'ai/widgets/disconnected_input_lock.dart';
 import 'ai/widgets/google_auth_barrier_card.dart';
 import 'ai/widgets/wa_header.dart';
@@ -42,7 +43,6 @@ import 'package:url_launcher/url_launcher.dart'; // BUILD 310: WhatsApp share Am
 import '../models/user_model.dart'; // BUILD 310: UserModel.isPartner access
 import '../services/referral_service.dart'; // BUILD 310: referral count for Ambassador panel
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
-import 'calculadora_screen.dart'; // Build 189: ExternalToolButton abre tela interna
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
 import '../services/ai_smart_router.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
 import '../widgets/ecg_loading.dart'; // BUILD 276: ECG loading indicator
@@ -4592,7 +4592,7 @@ String _cleanAiText(String raw) {
   // _isListItem() ter chance de detectá-los. Isso causava dois bugs:
   //   1. Asteriscos visíveis: o texto escapava sem ser detectado como lista
   //   2. Fragmentação: sem detecção de lista, _splitIntoBlocks() criava
-  //      um _AiBlockBubble por parágrafo separado por \n\n
+  //      um AiBlockBubble por parágrafo separado por \n\n
   //
   // NOVA ESTRATÉGIA: Processamento linha a linha para PRESERVAR marcadores
   // de lista ('* texto', '* **Negrito') e remover apenas asteriscos realmente
@@ -4742,338 +4742,14 @@ String _cleanAiText(String raw) {
 
 /// Widget de um único bloco da IA — bolha hospitalar com hierarquia visual.
 /// P4: Densidade hospitalar + leitura rápida de plantão.
-class _AiBlockBubble extends StatelessWidget {
-  final String block;
-  final bool dark;
-  final bool isLast;
-  final VoidCallback? onCopy;
-  final VoidCallback? onTts;
-  final bool ttsPlaying;
-  final bool ttsReady;
-  final String lang;  // globalLanguageLock — controla textos da UI
-  /// Build 120 — ActionChip: ao clicar, injeta texto no input e dispara _send()
-  final void Function(String chipText)? onChipTap;
 
-  const _AiBlockBubble({
-    required this.block,
-    required this.dark,
-    this.isLast = false,
-    this.onCopy,
-    this.onTts,
-    this.ttsPlaying = false,
-    this.ttsReady = false,
-    this.lang = 'pt',
-    this.onChipTap,
-  });
-
-  // ── ORDEM VISUAL 01: detectores de linha individuais EXTINTOS ───────────
-  // _isHardStop / _isH2 / _isSectionHeader / _isWarning / _isReference /
-  // _isListItem foram todos removidos. O MarkdownBody único processa o texto
-  // completo com softLineBreak:true — sem loop linha-a-linha na UI.
-
-  // ── Build 122: Separa linhas do bloco de referências (📚) ────────────────
-  // O bloco termina ao encontrar uma nova seção clínica estruturada.
-  (List<String>, List<String>) _splitRefLines(List<String> lines) {
-    bool inRef = false;
-    final body = <String>[];
-    final refs = <String>[];
-
-    bool isReferenceHeader(String value) {
-      final normalized = value
-          .replaceAll(RegExp(r'^[#*\s]+'), '')
-          .replaceAll(':', '')
-          .trim()
-          .toUpperCase();
-
-      return normalized == '📚 REFERENCIAS' ||
-          normalized == '📚 REFERÊNCIAS' ||
-          normalized == 'REFERENCIAS' ||
-          normalized == 'REFERÊNCIAS';
-    }
-
-    bool startsNewSection(String value) {
-      if (value.isEmpty) return false;
-
-      return value.startsWith('#') ||
-          value.startsWith('🟥') ||
-          value.startsWith('⛔') ||
-          value.startsWith('📌') ||
-          value.startsWith('🎯') ||
-          value.startsWith('🚨') ||
-          value.startsWith('💊') ||
-          value.startsWith('📊') ||
-          value.startsWith('⚠️') ||
-          value.startsWith('✅') ||
-          value.startsWith('🔴') ||
-          value.startsWith('🟡') ||
-          value.startsWith('🟢');
-    }
-
-    for (final line in lines) {
-      final trimmed = line.trim();
-
-      if (!inRef) {
-        if (isReferenceHeader(trimmed)) {
-          inRef = true;
-        } else {
-          body.add(line);
-        }
-        continue;
-      }
-
-      if (startsNewSection(trimmed) && !isReferenceHeader(trimmed)) {
-        inRef = false;
-        body.add(line);
-        continue;
-      }
-
-      refs.add(line);
-    }
-
-    return (body, refs);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // ── ORDEM VISUAL 01 — MarkdownBody ÚNICO, sem loop linha-a-linha ─────────
-    // Toda a lógica de detecção manual de 🟥 / ⛔ / HARD STOP foi extinta.
-    // O texto completo flui para um único MarkdownBody com softLineBreak:true.
-    // Identidade visual: cor dos emojis nativos do modelo — 100% flat, sem
-    // sub-containers, sem Row/Padding segregados por tipo de linha.
-
-    const kGreen      = Color(0xFF008CA4);
-    // B140: Vermelho Ferrari — títulos H2 e **strong** no light mode
-    const kFerrariRed = Color(0xFFFF2400);
-
-    final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
-
-    // ── M2: Normalização de soft-line-breaks ─────────────────────────────────
-    // Converte cada \n isolado em \n\n para que o MarkdownBody quebre a linha
-    // corretamente com softLineBreak:true, preservando parágrafos já duplos.
-    // Algoritmo: substitui qualquer \n que NÃO esteja já precedido por \n
-    // e NÃO esteja já seguido por \n → insere o segundo \n apenas onde falta.
-    final normalizedText = block
-        .replaceAll('\r\n', '\n')           // normaliza CRLF → LF
-        .replaceAll(RegExp(r'\n{3,}'), '\n\n')  // colapsa 3+ \n → 2
-        .replaceAllMapped(
-          RegExp(r'(?<!\n)\n(?!\n)'),       // \n isolado (não duplo)
-          (_) => '\n\n',                    // → duplo para MD paragraph break
-        );
-
-    final lines = normalizedText.split('\n');
-    final (bodyLines, refLines) = _splitRefLines(lines);
-    final bool hasRefBlock = refLines.isNotEmpty;
-
-    // Reconstrói o corpo normalizado para o MarkdownBody
-    final mdText = bodyLines.join('\n').trim();
-
-    // ── MarkdownStyleSheet premium — tipografia clínica flat ─────────────────
-    final sheet = MarkdownStyleSheet(
-      // p: height 1.55 — respiro clínico máximo para checklists de Plantão
-      p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
-      // strong (**...**) = ÚNICO receptor de cor vibrante
-      // Dark: cyan médico 0xFF00E5FF (contraste 12:1 sobre fundo escuro)
-      // Light: Vermelho Ferrari 0xFFFF2400 (contraste 5.2:1 sobre branco)
-      strong: TextStyle(
-        fontSize: 13.5,
-        fontWeight: FontWeight.w700,
-        color: dark ? const Color(0xFF00E5FF) : kFerrariRed,
-      ),
-      em: TextStyle(fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
-      listBullet: TextStyle(fontSize: 13.5, color: textColor),
-      // H2: título principal — Vermelho Ferrari bold (B140)
-      h2: const TextStyle(
-        fontSize: 17,
-        fontWeight: FontWeight.w800,
-        color: kFerrariRed,
-        letterSpacing: 0.1,
-        height: 1.3,
-      ),
-      // H3: sub-seção clínica — cyan no dark, verde médico no light
-      h3: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w700,
-        color: dark ? const Color(0xFF00E5FF) : kGreen,
-        height: 1.3,
-      ),
-      blockquote: TextStyle(fontSize: 13, color: textColor.withOpacity(0.8)),
-      // Força fundos transparentes — evita herança de ThemeData.cardColor
-      blockquoteDecoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(
-          left: BorderSide(
-            color: dark ? Colors.white24 : Colors.black26,
-            width: 3,
-          ),
-        ),
-      ),
-      codeblockDecoration: const BoxDecoration(color: Colors.transparent),
-      horizontalRuleDecoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: dark ? Colors.white12 : Colors.black12,
-            width: 1,
-          ),
-        ),
-      ),
-      blockSpacing: 6,
-      listIndent: 18,
-
-      // ── Tabelas Comparativas GFM — Modo Estudo (Build TableMD) ───────────
-      // Ativadas por _modeAnchorEstudo (ai_gateway_service.dart) para síntese
-      // de classes farmacológicas, diferenciais e dados correlacionados.
-      // Dark: fundo naval translúcido + borda ciano sutil
-      // Light: fundo gelo + borda cinza elegante
-      tableHead: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w700,
-        color: dark ? const Color(0xFF00E5FF) : const Color(0xFF1A1D23),
-        letterSpacing: 0.2,
-      ),
-      tableBody: TextStyle(
-        fontSize: 12,
-        color: textColor,
-        height: 1.4,
-      ),
-      tablePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      tableCellsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      tableColumnWidth: const FlexColumnWidth(),
-      tableBorder: TableBorder.all(
-        color: dark
-            ? const Color(0xFF00E5FF).withOpacity(0.18)
-            : const Color(0xFF1A1D23).withOpacity(0.12),
-        width: 0.5,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      tableHeadAlign: TextAlign.left,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0).copyWith(
-        bottom: isLast ? 8 : 4,
-      ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisSize.min: crescimento ilimitado vertical sem disputar
-          // altura máxima com o ListView pai (evita truncação de texto longo).
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── ÚNICO MarkdownBody — processa tudo (🟥 ⛔ ## ### bullets) ──
-            if (mdText.isNotEmpty)
-              MarkdownBody(
-                data: mdText,
-                selectable: false,
-                softLineBreak: true,
-                styleSheet: sheet,
-                // BUILD 429-APPLE-COMPLIANCE: intercepta todos os links do chat
-                // e abre na WebView interna (CalculadoraScreen) — NUNCA Safari.
-                onTapLink: (text, href, title) {
-                  if (href != null && href.contains('http')) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CalculadoraScreen(initialUrl: href),
-                      ),
-                    );
-                  }
-                },
-              ),
-
-            // ── Build 120: Bloco de Referências Colapsável ────────────────
-            if (hasRefBlock)
-              CollapsibleReferencesBlock(
-                lines: refLines,
-                dark: dark,
-                lang: lang,
-              ),
-
-            // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
-            if (isLast) ...[
-              const SizedBox(height: 5),
-              Row(children: [
-                Text(
-                  _fakeTime(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: dark ? Colors.white24 : Colors.black26,
-                  ),
-                ),
-                const Spacer(),
-                if (onTts != null && ttsReady) ...[
-                  GestureDetector(
-                    onTap: onTts,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: ttsPlaying
-                            ? kGreen.withOpacity(0.15)
-                            : Colors.transparent,
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(
-                          ttsPlaying
-                              ? Icons.stop_circle_rounded
-                              : Icons.volume_up_rounded,
-                          size: 13,
-                          color: ttsPlaying
-                              ? kGreen
-                              : (dark ? Colors.white38 : Colors.black38),
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          ttsPlaying
-                              ? (lang == 'es' ? 'Detener' : 'Parar')
-                              : (lang == 'es' ? 'Escuchar' : 'Ouvir'),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: ttsPlaying
-                                ? kGreen
-                                : (dark ? Colors.white38 : Colors.black38),
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-                if (onCopy != null)
-                  GestureDetector(
-                    onTap: onCopy,
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.copy_rounded, size: 12,
-                        color: dark ? Colors.white24 : Colors.black26),
-                      const SizedBox(width: 3),
-                      Text(lang == 'es' ? 'Copiar' : 'Copiar',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: dark ? Colors.white24 : Colors.black26)),
-                    ]),
-                  ),
-              ]),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _fakeTime() {
-    final now = DateTime.now();
-    return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-  }
-}
-
-/// Widget pai que divide a resposta completa em múltiplas _AiBlockBubble.
+/// Widget pai que divide a resposta completa em múltiplas AiBlockBubble.
 class _AiBubble extends StatefulWidget {
   final String text;
   final bool dark;
   final VoidCallback onCopy;
   final bool animate;
-  final String lang;  // globalLanguageLock — propagado para _AiBlockBubble
+  final String lang;  // globalLanguageLock — propagado para AiBlockBubble
   // TTS
   final bool ttsPlaying;
   final bool ttsReady;
@@ -5364,7 +5040,7 @@ class _AiBubbleState extends State<_AiBubble> {
     // Build 123 — DESTRUIÇÃO DO SPLIT:
     // _splitIntoBlocks() foi removido do pipeline de renderização.
     // 100% do texto da IA é retornado como UM ÚNICO elemento de lista.
-    // _AiBlockBubble recebe o texto completo e renderiza com MarkdownBody fluido.
+    // AiBlockBubble recebe o texto completo e renderiza com MarkdownBody fluido.
     // ZERO fatiamento. ZERO containers escuros múltiplos. ZERO fallback de blocos.
     //
     // ORDEM 27 — ISOLAMENTO ABSOLUTO DO PIPELINE DO PLANTÃO:
@@ -5423,7 +5099,7 @@ class _AiBubbleState extends State<_AiBubble> {
   ///
   /// Build 112 — REACTIVE CARD DETECTION (substitui supressão do Build 108):
   /// Ao detectar emoji de card (🟥 ⛔ 📌 📚 🚨 💊) na última linha, NÃO suprimir.
-  /// Em vez disso, completar o token para que o _AiBlockBubble abra o container
+  /// Em vez disso, completar o token para que o AiBlockBubble abra o container
   /// do card IMEDIATAMENTE, mesmo com texto parcial — eliminando o "vazamento cru".
   ///
   /// Estratégia v2:
@@ -5448,20 +5124,20 @@ class _AiBubbleState extends State<_AiBubble> {
     // Quando a última linha começa com um emoji de card, abrimos o container
     // do card imediatamente — sem threshold de supressão.
     // Se o emoji está totalmente sozinho (sem nenhum char após), injetamos
-    // um placeholder mínimo para que o _AiBlockBubble reconheça como header
+    // um placeholder mínimo para que o AiBlockBubble reconheça como header
     // e instancie o card colorido antes do texto chegar.
     final cardEmojiRx = RegExp(r'^(🟥|⛔|📌|📚|🚨|💊)');
     if (cardEmojiRx.hasMatch(trimmedLast)) {
       final afterEmoji = trimmedLast.replaceFirst(cardEmojiRx, '').trim();
       if (afterEmoji.isEmpty) {
         // Emoji sozinho → preserva a linha com um espaço após o emoji para que
-        // o _AiBlockBubble reconheça o token e instancie o container do card.
+        // o AiBlockBubble reconheça o token e instancie o container do card.
         // O texto real substituirá o espaço nos próximos chunks do stream.
         // Não há artefato visual: o container aparece imediatamente mas vazio.
         last = '$trimmedLast ';
       }
       // Se já tem qualquer texto após o emoji, deixa passar normalmente.
-      // O _AiBlockBubble já abre o card com conteúdo parcial disponível.
+      // O AiBlockBubble já abre o card com conteúdo parcial disponível.
     }
     // ── Supressão de pensamento interno vazado (linha sem emoji de card) ────
     // Padrões de CoT que ainda podem aparecer na última linha durante streaming:
@@ -5636,7 +5312,7 @@ class _AiBubbleState extends State<_AiBubble> {
       );
     }
 
-    // ── Streaming concluído ou bolha histórica: _AiBlockBubble com MarkdownBody
+    // ── Streaming concluído ou bolha histórica: AiBlockBubble com MarkdownBody
     // Build 123 — texto único direto: sem join, sem fragmentação.
     // Build 188: usa _displayText (pode vir do notifier) em vez de widget.text.
     final unified = _cachedBlocks.isNotEmpty
@@ -5646,7 +5322,7 @@ class _AiBubbleState extends State<_AiBubble> {
     if (unified.isEmpty) return const SizedBox.shrink();
 
     return RepaintBoundary(
-      child: _AiBlockBubble(
+      child: AiBlockBubble(
         block: unified,
         dark: widget.dark,
         isLast: true,
