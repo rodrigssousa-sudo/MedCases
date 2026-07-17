@@ -2919,16 +2919,16 @@ class _AiScreenState extends State<AiScreen> {
               // salvas no histórico com texto antigo.
               // Safe-cards NÃO renderizam: EvidenceBox, ActionButtons, ExternalToolLink,
               // PlantaoRenderer. Log limitado a 1x por messageId — sem spam em rebuilds.
-              final bool _isSafeCard =
+              final bool isSafeCard =
                   MessageRenderPolicy.isSafeCard(msg.text);
-              if (kDebugMode && _isSafeCard && !_loggedSafeCardIds.contains(msg.id)) {
+              if (kDebugMode && isSafeCard && !_loggedSafeCardIds.contains(msg.id)) {
                 _loggedSafeCardIds.add(msg.id);
                 debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=true');
               }
 
               // Evidência farmacológica: só detectar se NÃO for safe-card
               final detectedEv =
-                  _isSafeCard ? null : DrugEvidenceDetector.detect(msg.text);
+                  isSafeCard ? null : DrugEvidenceDetector.detect(msg.text);
 
               // ── BUILD 301: tag dupla — extrai LABEL + PROMPT, limpa bolha ────
               // A IA gera ao final de cada resposta de Modo Estudo:
@@ -2940,10 +2940,10 @@ class _AiScreenState extends State<AiScreen> {
                 text: msg.text,
                 isStudyMode: _longResponse,
               );
-              final String _nextActionPrompt = studyAction.prompt;
-              final String _nextActionLabel = studyAction.label;
-              final bool _hasStudyTags = studyAction.hasAction;
-              final String _cleanDisplayText = studyAction.displayText;
+              final String nextActionPrompt = studyAction.prompt;
+              final String nextActionLabel = studyAction.label;
+              final bool hasStudyTags = studyAction.hasAction;
+              final String cleanDisplayText = studyAction.displayText;
 
               // ── ORDEM 56 M1: RENDER UNIFICADO ────────────────────────────────
               // SUPER ORDEM 56: PlantatoPipeline, _PlantaoRenderer e _PlantaoFallbackCard
@@ -2954,7 +2954,7 @@ class _AiScreenState extends State<AiScreen> {
               // Elimina duplicação de cards pós-refresh e alivia o rebuild do histórico.
               if (kDebugMode) {
                 debugPrint('[RENDER_56] msgId=${msg.id} → _AiBubble unificado'
-                    '${_hasStudyTags ? " [BUILD301] label=\"$_nextActionLabel\"" : ""}');
+                    '${hasStudyTags ? " [BUILD301] label=\"$nextActionLabel\"" : ""}');
               }
 
               // BUILD 276: Fade-in wrapper — applied only to the freshly committed
@@ -2969,19 +2969,19 @@ class _AiScreenState extends State<AiScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Bubble unificada: _AiBubble (MarkdownBody agnostico) ────
-                    // BUILD 300: usa _cleanDisplayText — tag [NEXT_ACTION_PROMPT]
+                    // BUILD 300: usa cleanDisplayText — tag [NEXT_ACTION_PROMPT]
                     // removida do texto visível. msg.text permanece intacto no modelo.
                     _AiBubble(
                       key: ValueKey('ai_${msg.id}'),
-                      text: _cleanDisplayText,
+                      text: cleanDisplayText,
                       dark: dark,
                       animate: i == _lastAiIndex,
                       lang: p.lang,
-                      onCopy: () => _copyMsg(_cleanDisplayText),
+                      onCopy: () => _copyMsg(cleanDisplayText),
                       ttsPlaying: _ttsPlayingIndex == i,
                       ttsReady: _ttsReady,
                       onTts: _ttsReady
-                          ? () => _toggleTts(i, _cleanDisplayText, p.lang)
+                          ? () => _toggleTts(i, cleanDisplayText, p.lang)
                           : null,
                       scrollGeneration: _scrollGeneration,
                       onBlockRevealed: _onBlockRevealed,
@@ -3031,7 +3031,7 @@ class _AiScreenState extends State<AiScreen> {
                     // ou em respostas legadas sem structuredOutput.
                     if (msg.clinicalOutput != null &&
                         !isActiveStreamingBubble &&
-                        !_isSafeCard) ...[
+                        !isSafeCard) ...[
                       const SizedBox(height: 12),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -3057,7 +3057,7 @@ class _AiScreenState extends State<AiScreen> {
                     // Só após onDone fechar o stream E _lastAiIndex ser sincronizado
                     // (ORDEM 29 fix) é que ExternalToolLinkEngine.build() é chamado
                     // com metadados completos do response final. Sem race condition.
-                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2 && !_isSafeCard)
+                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2 && !isSafeCard)
                       Builder(builder: (_) {
                         final lastUser = _messages
                             .lastWhere((m) => m.role == 'user',
@@ -3092,21 +3092,21 @@ class _AiScreenState extends State<AiScreen> {
                                     : null);
                         // BUILD 301: label 100% dinâmico — vem direto da tag [NEXT_ACTION_LABEL]
                         // gerada pela IA. Sem inferência local, sem fallbacks engessados.
-                        if (kDebugMode && _hasStudyTags) {
+                        if (kDebugMode && hasStudyTags) {
                           debugPrint('[BUILD301][NEXT_ACTION] msgId=${msg.id} '
-                              'label="$_nextActionLabel" '
-                              'promptChars=${_nextActionPrompt.length}');
+                              'label="$nextActionLabel" '
+                              'promptChars=${nextActionPrompt.length}');
                         }
                         return ActionButtonsRow(
                           lastUserMessage: lastUser,
-                          lastAiResponse: _cleanDisplayText,
+                          lastAiResponse: cleanDisplayText,
                           isPlantaoMode: !_longResponse,
                           lang: p.lang,
                           dark: dark,
                           chatHistory: _messages.map((m) => m.text).toList(),
                           cachedLink: resolvedLink,
-                          studyNextPrompt: _nextActionPrompt,
-                          studyNextLabel: _nextActionLabel,
+                          studyNextPrompt: nextActionPrompt,
+                          studyNextLabel: nextActionLabel,
                           lastSentStudyPrompt: _lastSentStudyPrompt,
                           onActionTap: (prompt, {bool isStudyNext = false}) {
                             if (_isStreaming) return;
@@ -3126,13 +3126,13 @@ class _AiScreenState extends State<AiScreen> {
                     // ORDEM 56: _PlantaoRenderer removido — evidência sempre visível
                     // quando detectada e não for safe-card. Sem risco de duplicação.
                     // BUILD 246: dedup por messageId+textHash — evita loop de log.
-                    if (detectedEv != null && !_isSafeCard)
+                    if (detectedEv != null && !isSafeCard)
                       Builder(builder: (_) {
                         if (kDebugMode) {
                           final evKey = '${msg.id}_${msg.text.hashCode}';
                           if (!_loggedEvidenceIds.contains(evKey)) {
                             _loggedEvidenceIds.add(evKey);
-                            debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} isSafeCard=$_isSafeCard showing=true');
+                            debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} isSafeCard=$isSafeCard showing=true');
                           }
                         }
                         return Padding(
