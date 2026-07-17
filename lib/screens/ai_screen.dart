@@ -15,6 +15,7 @@ import '../widgets/clinical/structured_clinical_output_view.dart';
 import 'ai/widgets/prompt_composer.dart';
 import 'ai/widgets/message_render_policy.dart';
 import 'ai/widgets/drug_evidence_detector.dart';
+import 'ai/widgets/action_button_policy.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -4799,12 +4800,14 @@ class _ActionButtonsRow extends StatelessWidget {
     // Nao chama ExternalToolLinkEngine.build() aqui -- elimina duplicacao em rebuilds.
     final link = cachedLink;
 
-    // BUILD 300: Modo Estudo com tag NEXT_ACTION_PROMPT — botão azul dinâmico
-    // Quando o Modo Estudo gera a tag, o botão azul usa o label contextual e
-    // envia o prompt específico gerado pela IA ao invés do genérico.
-    final bool hasStudyNext = !isPlantaoMode &&
-        studyNextPrompt.isNotEmpty &&
-        studyNextLabel.isNotEmpty;
+    final studyAction = ActionButtonPolicy.resolveStudyAction(
+      isPlantaoMode: isPlantaoMode,
+      studyNextPrompt: studyNextPrompt,
+      studyNextLabel: studyNextLabel,
+      lastSentStudyPrompt: lastSentStudyPrompt,
+      languageCode: lang,
+    );
+    final hasStudyNext = studyAction.hasStudyNext;
 
     // Nenhum botão disponível → sem widget
     // Modo Estudo: sempre mostra o botão se hasStudyNext=true, mesmo sem action
@@ -4812,28 +4815,8 @@ class _ActionButtonsRow extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // ── BUILD 308 [FISIOP_DEDUP]: Loop Guard de Fisiopatologia ───────────────
-    // Problema: botão "Aprofundar Fisiopatologia >" → mesmo prompt → mesma IA
-    // → mesmo botão → loop infinito para o médico.
-    // Solução: Se o studyNextPrompt atual contém "fisiopatolog" (PT/ES) e o
-    // prompt enviado anteriormente (_lastSentStudyPrompt) também, substituir
-    // o prompt por avanço linear obrigatório e mutá o label.
-    // Garante progressão cognitiva real em vez de repetição.
-    final _kFisiopRx = RegExp(r'fisiopatol', caseSensitive: false);
-    final bool isRepeatedFisiop = hasStudyNext &&
-        lastSentStudyPrompt.isNotEmpty &&
-        _kFisiopRx.hasMatch(studyNextPrompt) &&
-        _kFisiopRx.hasMatch(lastSentStudyPrompt);
-
-    // Se loop detectado: override prompt e label para avanço linear.
-    final String effectiveStudyPrompt = isRepeatedFisiop
-        ? 'Expanda a discussão anterior trazendo os mecanismos celulares '
-          'avançados e alterações moleculares que não foram mencionadas na '
-          'resposta de cima. Proibido repetir conceitos já apresentados.'
-        : studyNextPrompt;
-    final String effectiveStudyLabel = isRepeatedFisiop
-        ? (lang == 'es' ? 'Mecanismos Moleculares Avanzados >' : 'Mecanismos Moleculares Avançados >')
-        : studyNextLabel;
+    final effectiveStudyPrompt = studyAction.prompt;
+    final effectiveStudyLabel = studyAction.label;
 
     // BUILD 301: label do botão azul — 100% dinâmico via tag [NEXT_ACTION_LABEL].
     // hasStudyNext=true → studyNextLabel vem direto da tag gerada pela IA.
@@ -4852,8 +4835,8 @@ class _ActionButtonsRow extends StatelessWidget {
     // Exemplos: '💊 Abrir Amiodarona' → 'Abrir Amiodarona'
     //           '⚗️ Potássio (eletrólitos)' → 'Potássio (eletrólitos)'
     //           '✨ Aprofundar Fisiopatologia >' → 'Aprofundar Fisiopatologia >'
-    final emojiStripRx   = RegExp(r'^[^a-zA-Z0-9À-ÿ]+');
-    final cleanLinkLabel = link?.label.replaceFirst(emojiStripRx, '').trim() ?? '';
+    final cleanLinkLabel =
+        link == null ? '' : ActionButtonPolicy.sanitizeToolLabel(link.label);
     // Label do botão Calculadora — Build 223: usa link.label (context-aware)
     // ORDEM VISUAL 02: emoji stripped antes de passar para ActionCardButton.title.
     // A decisão de qual calculadora abrir acontece no pipeline (ExternalToolLinkEngine),
