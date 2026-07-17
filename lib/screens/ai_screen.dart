@@ -20,6 +20,7 @@ import 'ai/widgets/collapsible_content_blocks.dart';
 import 'ai/widgets/ambassador_panel_helpers.dart';
 import 'ai/widgets/ai_skeleton_lines.dart';
 import 'ai/widgets/disconnected_input_lock.dart';
+import 'ai/widgets/google_auth_barrier_card.dart';
 import 'ai/widgets/wa_header.dart';
 import 'ai/widgets/suggestion_carousel.dart';
 import 'ai/widgets/empty_chat.dart';
@@ -2853,7 +2854,7 @@ class _AiScreenState extends State<AiScreen> {
     // BUILD 275: para usuários não-admin/não-master sem conexão, forçar badge
     // 'Desconectado' (vermelho) em vez de 'Conectar IA' — sinaliza que chat está bloqueado.
     // BUILD 339-UI-DEBUGGER: força o mesmo fluxo de conexão para todos os usuários.
-    // Admin e Master também exibem _GoogleAuthBarrierCard + DisconnectedInputLock para QA.
+    // Admin e Master também exibem GoogleAuthBarrierCard + DisconnectedInputLock para QA.
     final bool forceDisconnectedLabel = !p.geminiConnected;
 
     Widget chatList = ListView.builder(
@@ -3271,7 +3272,7 @@ class _AiScreenState extends State<AiScreen> {
             // Não depende mais de _messages.any(). O overlay cobre TODA a timeline
             // independente de haver mensagens — proteção financeira de API absoluta.
             if (forceDisconnectedLabel)
-              _GoogleAuthBarrierCard(
+              GoogleAuthBarrierCard(
                 dark: dark,
                 lang: p.lang,
                 onConnect: _openAiSettings,
@@ -3591,157 +3592,11 @@ class _AiScreenState extends State<AiScreen> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _GoogleAuthBarrierCard — SUPER ORDEM 42 M4
+// GoogleAuthBarrierCard — SUPER ORDEM 42 M4
 // Card proeminente centralizado para usuários não autenticados.
 // Exibido quando forceDisconnectedLabel=true && _messages.isEmpty.
 // Substitui o WiFi-off overlay com CTA de Google Sign-In.
 // ─────────────────────────────────────────────────────────────────────────────
-class _GoogleAuthBarrierCard extends StatelessWidget {
-  final bool dark;
-  final String lang;
-  final VoidCallback? onConnect;
-  const _GoogleAuthBarrierCard({
-    required this.dark,
-    required this.lang,
-    this.onConnect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs = lang == 'es';
-    final cardBg = dark
-        ? const Color(0xFF1E2128)
-        : Colors.white;
-    final borderColor = dark
-        ? const Color(0xFF2D3340)
-        : const Color(0xFFE5E0D8);
-    final titleColor = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subtitleColor = dark
-        ? Colors.white.withOpacity(0.55)
-        : Colors.black.withOpacity(0.45);
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28.0),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-          decoration: BoxDecoration(
-            color: cardBg,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: borderColor, width: 1.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(dark ? 0.40 : 0.08),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Google logo icon ─────────────────────────────────────────
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: dark
-                      ? const Color(0xFF252930)
-                      : const Color(0xFFF5F3EE),
-                  border: Border.all(
-                    color: borderColor,
-                    width: 1.0,
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'G',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF4285F4), // Google blue
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // ── Headline ─────────────────────────────────────────────────
-              Text(
-                isEs
-                    ? 'Conecta tu cuenta Google'
-                    : 'Conecte sua conta Google',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                  color: titleColor,
-                  letterSpacing: -0.3,
-                  height: 1.25,
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              // ── Subtitle / value prop ─────────────────────────────────────
-              Text(
-                isEs
-                    ? 'para activar la Inteligencia Artificial Gratuita'
-                    : 'para ativar a Inteligência Artificial Gratuita',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: subtitleColor,
-                  height: 1.45,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // ── CTA Button ───────────────────────────────────────────────
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: onConnect,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4285F4),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        '🔑',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        isEs
-                            ? 'Conectar con Google'
-                            : 'Conectar com o Google',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SUPER ORDEM 41 M3 — _applyPlantaoAestheticGuard
