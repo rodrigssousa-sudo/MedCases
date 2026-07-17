@@ -5748,31 +5748,64 @@ class _AiBlockBubble extends StatelessWidget {
   // completo com softLineBreak:true — sem loop linha-a-linha na UI.
 
   // ── Build 122: Separa linhas do bloco de referências (📚) ────────────────
-  // Retorna [bodyLines, refLines] pré-separados.
+  // O bloco termina ao encontrar uma nova seção clínica estruturada.
   (List<String>, List<String>) _splitRefLines(List<String> lines) {
     bool inRef = false;
     final body = <String>[];
     final refs = <String>[];
+
+    bool isReferenceHeader(String value) {
+      final normalized = value
+          .replaceAll(RegExp(r'^[#*\s]+'), '')
+          .replaceAll(':', '')
+          .trim()
+          .toUpperCase();
+
+      return normalized == '📚 REFERENCIAS' ||
+          normalized == '📚 REFERÊNCIAS' ||
+          normalized == 'REFERENCIAS' ||
+          normalized == 'REFERÊNCIAS';
+    }
+
+    bool startsNewSection(String value) {
+      if (value.isEmpty) return false;
+
+      return value.startsWith('#') ||
+          value.startsWith('🟥') ||
+          value.startsWith('⛔') ||
+          value.startsWith('📌') ||
+          value.startsWith('🎯') ||
+          value.startsWith('🚨') ||
+          value.startsWith('💊') ||
+          value.startsWith('📊') ||
+          value.startsWith('⚠️') ||
+          value.startsWith('✅') ||
+          value.startsWith('🔴') ||
+          value.startsWith('🟡') ||
+          value.startsWith('🟢');
+    }
+
     for (final line in lines) {
-      final t = line.trim();
+      final trimmed = line.trim();
+
       if (!inRef) {
-        if (t == '📚 REFERENCIAS' || t == '📚 REFERÊNCIAS' ||
-            t == '📚 REFERENCIAS:' || t == '📚 REFERÊNCIAS:') {
+        if (isReferenceHeader(trimmed)) {
           inRef = true;
         } else {
           body.add(line);
         }
-      } else {
-        if (t.startsWith('##') || t.startsWith('🟥') || t.startsWith('⛔') ||
-            t.startsWith('📌') || t.startsWith('🎯') || t.startsWith('🚨') ||
-            t.startsWith('💊')) {
-          inRef = false;
-          body.add(line);
-        } else {
-          refs.add(line);
-        }
+        continue;
       }
+
+      if (startsNewSection(trimmed) && !isReferenceHeader(trimmed)) {
+        inRef = false;
+        body.add(line);
+        continue;
+      }
+
+      refs.add(line);
     }
+
     return (body, refs);
   }
 
@@ -8343,51 +8376,48 @@ class _CollapsibleReferencesBlockState
             ),
           ),
 
-          // ── Conteúdo expandido ─────────────────────────────────────────────
+          // ── Conteúdo expandido: texto simples e compacto ────────────────────
           AnimatedSize(
             duration: const Duration(milliseconds: 260),
             curve: Curves.easeInOut,
             child: _expanded
                 ? Padding(
-                    padding: const EdgeInsets.only(top: 8, left: 4),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.lines
-                          .where((l) => l.trim().isNotEmpty)
-                          .map((l) {
-                        // Strip de marcadores de bullet (* - •)
-                        final content = l.trim()
-                            .replaceFirst(RegExp(r'^[-\*•]\s*'), '');
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 3),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5, right: 6),
-                                child: Container(
-                                  width: 3, height: 3,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: textColor.withOpacity(0.6),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  content,
-                                  style: TextStyle(
-                                    fontSize: 10.5,
-                                    color: textColor,
-                                    fontStyle: FontStyle.italic,
-                                    height: 1.45,
-                                  ),
-                                ),
-                              ),
-                            ],
+                    padding: const EdgeInsets.only(top: 8, left: 2, right: 4),
+                    child: Builder(
+                      builder: (context) {
+                        final references = widget.lines
+                            .map((line) => line
+                                .trim()
+                                .replaceFirst(
+                                  RegExp(r'^(?:[-*•]|\d+[.)])\s*'),
+                                  '',
+                                )
+                                .replaceAll(RegExp(r'^[#]+\s*'), '')
+                                .trim())
+                            .where((line) => line.isNotEmpty)
+                            .where((line) {
+                              final normalized = line
+                                  .replaceAll(':', '')
+                                  .trim()
+                                  .toUpperCase();
+                              return normalized != 'REFERENCIAS' &&
+                                  normalized != 'REFERÊNCIAS' &&
+                                  normalized != '📚 REFERENCIAS' &&
+                                  normalized != '📚 REFERÊNCIAS';
+                            })
+                            .toSet()
+                            .toList();
+
+                        return Text(
+                          references.join('\n'),
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            color: textColor,
+                            fontStyle: FontStyle.italic,
+                            height: 1.5,
                           ),
                         );
-                      }).toList(),
+                      },
                     ),
                   )
                 : const SizedBox.shrink(),
