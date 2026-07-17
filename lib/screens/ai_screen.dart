@@ -18,6 +18,7 @@ import 'ai/widgets/mobile_ai_action_bar.dart';
 import 'ai/widgets/collapsible_content_blocks.dart';
 import 'ai/widgets/ambassador_panel.dart';
 import 'ai/widgets/ai_bubble.dart';
+import 'ai/widgets/ai_shimmer_dots.dart';
 import 'ai/widgets/response_mode_toggle.dart';
 import 'ai/widgets/chat_history_sheet.dart';
 import 'ai/widgets/ai_status_sheet.dart';
@@ -41,7 +42,6 @@ import '../services/activity_service.dart';
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
 import '../services/ai_smart_router.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
-import '../widgets/ecg_loading.dart'; // BUILD 276: ECG loading indicator
 import '../services/app_resume_coordinator.dart'; // ORDEM 53 M2/M3: backgroundSaveSignal + contextTimeoutSignal
 import '../services/auth_service.dart'; // BUILD 338: contingency UID when currentUser==null
 
@@ -2011,7 +2011,7 @@ class _AiScreenState extends State<AiScreen> {
           if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
 
           // ── BUILD 276: SUPPRESSED CHUNK RENDERING ─────────────────────────
-          // Arquitectura: mantém _thinking=true e EcgLoadingBlock visível
+          // Arquitectura: mantém _thinking=true e AiShimmerDots visível
           // durante todo o streaming. Chunks são bufferizados internamente
           // no slot de _messages (criado no primeiro chunk) SEM nenhuma
           // mudança de estado de UI. A resposta é commitada em único setState
@@ -2885,13 +2885,13 @@ class _AiScreenState extends State<AiScreen> {
                 return SizedBox(key: _bottomKey, height: 1);
               }
               if (_thinking && i == _messages.length) {
-                // BUILD 276: EcgLoadingBlock replaces the old 3-dot ThinkingBubble.
+                // Indicador premium desacoplado enquanto a IA prepara a resposta.
                 // RepaintBoundary isolates the animated CustomPainter so it does NOT
                 // trigger full-list repaints on every animation frame.
                 return RepaintBoundary(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(12, 8, 52, 8),
-                    child: EcgLoadingBlock(dark: dark, lang: p.lang),
+                    child: AiShimmerDots(dark: dark),
                   ),
                 );
               }
