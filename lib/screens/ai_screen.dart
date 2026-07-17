@@ -5386,9 +5386,9 @@ class _ActionTile extends StatelessWidget {
 //      → extrai apenas o conteúdo interno (emojis âncora já presentes).
 //   2. Normaliza ALLCAPS de labels de matriz (DOSE:, ALERTA:, etc.)
 //      → Title Case canônico para consistência visual nativa iOS/Android.
-//   3. Aplica teto de 12 linhas não-vazias (resposta executiva Plantão).
+//   3. Preserva integralmente todas as linhas clínicas produzidas.
 //
-// NUNCA inventa conteúdo clínico. Apenas normaliza forma visual.
+// NUNCA inventa, limita ou descarta conteúdo clínico. Apenas normaliza forma visual.
 // Executado APÓS todos os guards de segurança e ANTES do POST-STREAM LOCK.
 // ─────────────────────────────────────────────────────────────────────────────
 String _applyPlantaoAestheticGuard(String text) {
@@ -5428,25 +5428,10 @@ String _applyPlantaoAestheticGuard(String text) {
     return line;
   }).toList();
 
-  // ── 3. Teto de 12 linhas não-vazias ──────────────────────────────────────
-  const _kMaxLines = 12;
-  final nonEmpty = lines.where((l) => l.trim().isNotEmpty).length;
-  if (nonEmpty > _kMaxLines) {
-    int counted = 0;
-    final capped = <String>[];
-    for (final line in lines) {
-      capped.add(line);
-      if (line.trim().isNotEmpty) {
-        counted++;
-        if (counted >= _kMaxLines) break;
-      }
-    }
-    if (kDebugMode) {
-      debugPrint('[AESTHETIC_GUARD] line_cap: $nonEmpty → $_kMaxLines non-empty lines');
-    }
-    return capped.join('\n').trimRight();
-  }
-
+  // ── 3. Preservação clínica integral ──────────────────────────────────────
+  // Limites de tamanho pertencem ao prompt/provedor, nunca à camada visual.
+  // Cortar por quantidade de linhas pode remover contraindicações, alertas,
+  // doses ou próximos passos já recebidos corretamente do modelo.
   return lines.join('\n');
 }
 
