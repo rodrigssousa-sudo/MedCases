@@ -5128,7 +5128,7 @@ String _cleanAiText(String raw) {
   // Build 126: removidos prefixos ambíguos curtos ("I need to", "Let me",
   // "Para responder", "Deixe-me") que geravam falsos-positivos em texto clínico.
   // Mantidos apenas os inequívocos e longos.
-  final _cotPhrases = RegExp(
+  final cotPhrases = RegExp(
     r"^(My response should\s|I will structure\s|Let me think\s|I'll organize\s|"
     r"I should focus on\s|I'm going to\s|Vou estruturar\s|Devo focar\s|"
     r"Mi respuesta debe\s|Voy a estructurar\s|Estructurando la respuesta|"
@@ -5138,7 +5138,7 @@ String _cleanAiText(String raw) {
     caseSensitive: false,
     multiLine: true,
   );
-  s = s.replaceAll(_cotPhrases, '');
+  s = s.replaceAll(cotPhrases, '');
 
   // ── 4. Linhas de meta-comentário (Build 126 — removidos "Let me"/"Deixe-me") ──
   // "Let me" é ambíguo: "Let me clarify the dose..." é texto clínico legítimo.
