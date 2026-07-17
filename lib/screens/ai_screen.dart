@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints, PharmacologicalDisclaimer, EvidenceCardWidget, EvidenceBadgesRow;
 import '../models/drug_model.dart' show DrugEvidenceModel;
 import '../models/clinical_structured_output.dart';
+import '../models/chat_message.dart';
 import '../widgets/clinical/structured_clinical_output_view.dart';
 import 'ai/widgets/prompt_composer.dart';
 import '../data/evidence_database.dart';
@@ -114,32 +115,8 @@ const _suggestions = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-class _ChatMsg {
-  // ID único estável — garante que Keys do ListView nunca mudam para a mesma mensagem.
-  // Evita que o Flutter destrua/recrie bubbles ao rebuild durante streaming.
-  final String id;
-  final String role;
-  final String text;
-
-  /// Metadado clínico estruturado associado ao texto definitivo desta bolha.
-  ///
-  /// Volátil nesta etapa: não é serializado nem restaurado do Firestore.
-  final ClinicalStructuredOutput? clinicalOutput;
-
-  _ChatMsg({
-    required this.role,
-    required this.text,
-    this.clinicalOutput,
-  }) : id = '${role}_${DateTime.now().microsecondsSinceEpoch}';
-
-  // Construtor para restauração do histórico JSON (pode não ter id)
-  _ChatMsg.withId({
-    required this.id,
-    required this.role,
-    required this.text,
-    this.clinicalOutput,
-  });
-}
+/// Alias privado temporário para preservar os call sites do monólito durante a extração.
+typedef _ChatMsg = ChatMessage;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Modelo de sessão de chat salva no histórico
