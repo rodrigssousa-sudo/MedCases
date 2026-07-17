@@ -149,6 +149,19 @@ void main() {
           reason: 'H1b: odd ** count indicates unclosed markdown bold');
     });
 
+    test('H1c0 — texto terminando com negrito fechado não é truncado', () {
+      const input =
+          '⛔ Hard stop: evitar nitrato ou betabloqueante em **choque cardiogênico**';
+      final result = TruncationInspector.inspect(input);
+
+      expect(
+        result.violationReason,
+        isNot(equals('unclosed_markdown_bold_at_eof')),
+        reason:
+            'Um token ** de fechamento válido no EOF não pode ser tratado como truncamento.',
+      );
+    });
+
     test('H1c — balanced ** tokens → clean (not truncated by H1)', () {
       // "**Dose:** 10mg/kg" — 2 **, even count, well-formed
       const input = '**Dose:** 10mg/kg. Administrar em 60 minutos.';

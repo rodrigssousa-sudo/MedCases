@@ -139,11 +139,10 @@ class TruncationInspector {
   static bool _hasUnclosedMarkdownBold(String text) {
     final trimmed = text.trimRight();
 
-    // Case A: termina literalmente com **
-    if (trimmed.endsWith('**')) return true;
-
-    // Case B: contagem ímpar de ** no texto → token sem fechamento
-    // Remove code fences para não contar `` backtick blocks
+    // Uma resposta pode terminar legitimamente com um fechamento em **.
+    // Portanto, o EOF isoladamente não prova truncamento: somente uma
+    // quantidade ímpar de tokens indica negrito realmente não fechado.
+    // Remove code fences para não contar tokens dentro de blocos de código.
     final withoutCodeFences = trimmed.replaceAll(RegExp(r'```[\s\S]*?```'), '');
     final boldTokenCount = '**'.allMatches(withoutCodeFences).length;
     if (boldTokenCount.isOdd) return true;
