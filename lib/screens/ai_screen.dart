@@ -18,6 +18,7 @@ import 'ai/widgets/drug_evidence_detector.dart';
 import 'ai/widgets/action_buttons_row.dart';
 import 'ai/widgets/user_bubble.dart';
 import 'ai/widgets/suggestion_carousel.dart';
+import 'ai/widgets/empty_chat.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -3328,7 +3329,7 @@ class _AiScreenState extends State<AiScreen> {
             // Card "IA Desconectada" — sobreposto quando IA não está conectada
             // e o médico ainda não enviou nenhuma mensagem (usuário privilegiado)
             else if (showDisconnectCard)
-              _EmptyChat(
+              EmptyChat(
                 dark: dark,
                 lang: p.lang,
                 isConnected: false,
@@ -4173,95 +4174,6 @@ class _WaHeader extends StatelessWidget {
             ],
           ),
         ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Card de desconexão — "IA Desconectada"
-// Exibido como overlay centralizado quando a IA não está conectada.
-// Some automaticamente ao conectar (isConnected = true).
-// ─────────────────────────────────────────────────────────────────────────────
-class _EmptyChat extends StatelessWidget {
-  final bool dark;
-  final String lang;
-  final bool isConnected;
-  final VoidCallback? onConnectApi;
-  const _EmptyChat({
-    required this.dark,
-    required this.lang,
-    this.isConnected = false,
-    this.onConnectApi,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Se a IA já está conectada, o card não é renderizado
-    if (isConnected) return const SizedBox.shrink();
-
-    final isEs = lang == 'es';
-
-    // BUILD 283 ORDEM 10.3: WiFi-off icon + "CONECTAR IA" gold — área clicável inteira
-    // SUPER ORDEM MASTER 308 M3: CTA visual central elegante
-    // Mensagem limpa em tipografia premium — desaparece ao conectar
-    return GestureDetector(
-      onTap: onConnectApi,
-      behavior: HitTestBehavior.opaque,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Ícone sutil ──────────────────────────────────────────────
-              Icon(
-                Icons.lock_outline_rounded,
-                size: 36,
-                color: const Color(0xFF00E5FF).withOpacity(0.35),
-              ),
-              const SizedBox(height: 20),
-
-              // ── Mensagem principal ───────────────────────────────────────
-              Text(
-                isEs
-                    ? 'Conecte su cuenta para liberar\nel asistente clínico inteligente.'
-                    : 'Conecte a sua conta para liberar\no assistente clínico inteligente.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white.withOpacity(0.62),
-                  height: 1.55,
-                  letterSpacing: 0.1,
-                ),
-              ),
-              const SizedBox(height: 22),
-
-              // ── CTA toque ────────────────────────────────────────────────
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22),
-                  border: Border.all(
-                    color: const Color(0xFF00E5FF).withOpacity(0.35),
-                    width: 1,
-                  ),
-                  color: const Color(0xFF00E5FF).withOpacity(0.07),
-                ),
-                child: Text(
-                  isEs ? 'Conectar ahora' : 'Conectar agora', // BUILD 334-FORENSE: tradução ES corrigida
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF00E5FF),
-                    letterSpacing: 0.2,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
