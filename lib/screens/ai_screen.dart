@@ -4422,26 +4422,26 @@ String _stripCodeFencesAndExtractJson(String text) {
 
   // ── Estratégia B: JSON com chaves-emoji (🟥, 💊, etc.) ─────────────────
   // Verifica se alguma chave é um emoji-âncora canônico
-  const _kAnchors = [
+  const anchors = [
     '🟥', '💊', '🔄', '⛔', '📌', '⚠️',
     '📈', '✅', '❌', '🔎', '🧪', '🧮', '📖',
   ];
-  const _kAnchorOrder = [
+  const anchorOrder = [
     '🟥', '💊', '🔄', '⛔', '🔎', '🧪', '🧮', '📖', '📈', '❌', '📌', '✅', '⚠️',
   ];
 
   final hasEmojiKeys = jsonMap.keys.any(
-    (k) => _kAnchors.any((a) => k.contains(a)),
+    (k) => anchors.any((a) => k.contains(a)),
   );
 
   if (hasEmojiKeys) {
     final sb = StringBuffer();
     // Usa prefixo como linha extra se não começar com emoji
-    if (prefix.isNotEmpty && !_kAnchors.any((a) => prefix.startsWith(a))) {
+    if (prefix.isNotEmpty && !anchors.any((a) => prefix.startsWith(a))) {
       sb.writeln(prefix);
     }
     // Itera em ordem canônica para garantir sequência correta
-    for (final anchor in _kAnchorOrder) {
+    for (final anchor in anchorOrder) {
       // Busca chave que contenha o emoji (tolerante a sufixos de texto)
       final matchKey = jsonMap.keys
           .where((k) => k.contains(anchor))
@@ -4461,7 +4461,7 @@ String _stripCodeFencesAndExtractJson(String text) {
 
   // ── Estratégia C: JSON com campos semânticos em texto ─────────────────────
   // Mapeia campos conhecidos para âncoras canônicas
-  final _fieldToAnchor = <String, String>{
+  final fieldToAnchor = <String, String>{
     // 🟥 conduta / título
     'conduta':        '🟥',
     'conducta':       '🟥',
@@ -4507,7 +4507,7 @@ String _stripCodeFencesAndExtractJson(String text) {
         .toLowerCase()
         .replaceAll(' ', '_')
         .replaceAll(RegExp(r'[^a-záéíóúàãõâêîôûçñü_0-9]', unicode: true), '');
-    final anchor = _fieldToAnchor[keyNorm];
+    final anchor = fieldToAnchor[keyNorm];
     if (anchor == null) continue;
     final val = entry.value?.toString().trim() ?? '';
     if (val.isEmpty) continue;
@@ -4517,7 +4517,7 @@ String _stripCodeFencesAndExtractJson(String text) {
   if (anchorLines.isNotEmpty) {
     final sb = StringBuffer();
     if (prefix.isNotEmpty) sb.writeln(prefix);
-    for (final anchor in _kAnchorOrder) {
+    for (final anchor in anchorOrder) {
       final val = anchorLines[anchor];
       if (val == null) continue;
       sb.writeln('$anchor $val');
