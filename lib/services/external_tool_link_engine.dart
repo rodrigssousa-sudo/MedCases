@@ -647,7 +647,7 @@ class ExternalToolLinkEngine {
     // 462E-A.5: Bloco E adicionado — informações gerais sobre o medicamento.
     // Separado de dosage para permitir roteamento semântico distinto no futuro.
     // ─────────────────────────────────────────────────────────────────────────
-    final hasDrugInfo = <RegExp>[
+    final hasDrugInfoKeyword = <RegExp>[
       RegExp(r'\bmecanismo\b'),
       RegExp(r'\bindica[cç][õo]es\b'),
       RegExp(r'\bindica[cç][aã]o\b'),
@@ -659,7 +659,13 @@ class ExternalToolLinkEngine {
       RegExp(r'\binforma[cç][oõ]es sobre o medicamento\b'),
     ].any((p) => p.hasMatch(normalized));
 
-    if (hasDrugInfo) return ExternalToolIntent.drugInformation;
+    // Termos farmacológicos genéricos dentro de um caso clínico não
+    // autorizam ferramenta externa sem um fármaco explícito na pergunta.
+    final hasExplicitDrugTarget = _detectSingleDrug(normalized) != null;
+
+    if (hasDrugInfoKeyword && hasExplicitDrugTarget) {
+      return ExternalToolIntent.drugInformation;
+    }
 
     return ExternalToolIntent.none;
   }

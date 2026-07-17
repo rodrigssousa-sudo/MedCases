@@ -463,6 +463,40 @@ void main() {
           reason: '462E-A.5 block E: presentación must yield drugInformation intent');
     });
 
+
+    test('generic contraindications inside clinical case → none', () {
+      const input =
+          'Paciente de 68 años con dolor torácico. Indique diagnóstico, '
+          'medicamentos, dosis, contraindicaciones, exámenes y complicaciones.';
+
+      final intent =
+          ExternalToolLinkEngine.resolveExternalToolIntent(input);
+
+      expect(
+        intent,
+        equals(ExternalToolIntent.none),
+        reason: 'Generic pharmacology wording without an explicit drug target '
+            'must not override the normal clinical classifier.',
+      );
+    });
+
+    test('generic medication indications without named drug → none', () {
+      const input =
+          'Quais são os medicamentos indicados, contraindicações e efeitos adversos?';
+
+      final intent =
+          ExternalToolLinkEngine.resolveExternalToolIntent(input);
+
+      expect(intent, equals(ExternalToolIntent.none));
+    });
+
+    test('named drug plus contraindications → drugInformation', () {
+      final intent = ExternalToolLinkEngine.resolveExternalToolIntent(
+          'Quais são as contraindicações da amiodarona?');
+
+      expect(intent, equals(ExternalToolIntent.drugInformation));
+    });
+
     // ── velocidade (new infusion token — 462E-A.5) ───────────────────────────
     test('[462E-A.5] "velocidade" keyword → ExternalToolIntent.infusion', () {
       final intent = ExternalToolLinkEngine.resolveExternalToolIntent(
