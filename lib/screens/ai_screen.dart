@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints, PharmacologicalDisclaimer, EvidenceCardWidget, EvidenceBadgesRow;
 import '../models/drug_model.dart' show DrugEvidenceModel;
 import '../models/clinical_structured_output.dart';
+import '../widgets/clinical/structured_clinical_output_view.dart';
 import '../data/evidence_database.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
@@ -3250,6 +3251,26 @@ class _AiScreenState extends State<AiScreen> {
                         _sendDebounced(sendText, context.read<AppProvider>());
                       },
                     ),
+
+                    // ── PHASE 4: Structured Clinical Output tipado ─────────────
+                    // Renderizado somente após associação fail-closed ao texto
+                    // definitivo. Nunca aparece durante streaming, em safe-cards
+                    // ou em respostas legadas sem structuredOutput.
+                    if (msg.clinicalOutput != null &&
+                        !isActiveStreamingBubble &&
+                        !_isSafeCard) ...[
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: StructuredClinicalOutputView(
+                          key: ValueKey('clinical_output_${msg.id}'),
+                          output: msg.clinicalOutput!,
+                          isPlantaoMode: !_longResponse,
+                          languageCode: p.lang,
+                        ),
+                      ),
+                    ],
+
                     // ── Build 192 / BUILD 232: ActionButtonsRow + EXT_TOOL cache ───
                     // Aparece apenas na última bolha AI sem streaming.
                     // BUILD 238 SAFE_CARD_GUARD: safe-cards NÃO mostram ActionButtons
