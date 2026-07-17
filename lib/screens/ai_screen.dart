@@ -6645,7 +6645,7 @@ class _ResponseModeToggle extends StatelessWidget {
         ? const Color(0xFF374151)
         : const Color(0xFFE0E0E0);
 
-    Widget _pill({
+    Widget pill({
       required String label,
       required bool isActive,
       required VoidCallback onTap,
@@ -6687,13 +6687,13 @@ class _ResponseModeToggle extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           // BUILD 283 ORDEM 10.4: Estudos ESQUERDA (gratuito/padrão) | Plantão DIREITA
           children: [
-            _pill(
+            pill(
               label: labelEstudio,
               isActive: value,
               onTap: () => onChanged(true),
             ),
             const SizedBox(width: 8),
-            _pill(
+            pill(
               label: labelGuardia,
               isActive: !value,
               onTap: () => onChanged(false),
