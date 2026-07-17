@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/drug_model.dart' show DrugEvidenceModel;
-import '../../../widgets/common_widgets.dart'
-    show EvidenceBadgesRow, EvidenceCardWidget, PharmacologicalDisclaimer;
-
 class CollapsibleReferencesBlock extends StatefulWidget {
   final List<String> lines; // linhas de referência (sem o cabeçalho 📚)
   final bool dark;
@@ -126,87 +122,95 @@ class CollapsibleReferencesBlockState
   }
 }
 
-class CollapsibleEvidenceBlock extends StatefulWidget {
-  final DrugEvidenceModel ev;
+class CollapsibleClinicalReferenceBlock extends StatefulWidget {
+  final List<String> lines;
   final bool dark;
-  const CollapsibleEvidenceBlock({
+  final String lang;
+
+  const CollapsibleClinicalReferenceBlock({
     super.key,
-    required this.ev,
+    required this.lines,
     required this.dark,
+    this.lang = 'pt',
   });
 
   @override
-  State<CollapsibleEvidenceBlock> createState() =>
-      CollapsibleEvidenceBlockState();
+  State<CollapsibleClinicalReferenceBlock> createState() =>
+      CollapsibleClinicalReferenceBlockState();
 }
 
-class CollapsibleEvidenceBlockState extends State<CollapsibleEvidenceBlock> {
+class CollapsibleClinicalReferenceBlockState
+    extends State<CollapsibleClinicalReferenceBlock> {
   bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
-    final dark = widget.dark;
-
-    // Build 127 — Flat UI total: sem fundo sólido, label colorido flutuante no scaffold
-    final labelColor = dark ? const Color(0xFF34D399) : const Color(0xFF059669);
+    final isEs = widget.lang == 'es';
+    final labelColor =
+        widget.dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final textColor =
+        widget.dark ? const Color(0xFFCBD5E1) : const Color(0xFF475569);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Trigger: label flutuante, zero container fill ────────────────────
         GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () => setState(() => _expanded = !_expanded),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('📊',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: labelColor.withValues(alpha: 0.8))),
-                const SizedBox(width: 5),
+                Icon(
+                  Icons.menu_book_outlined,
+                  size: 14,
+                  color: labelColor,
+                ),
+                const SizedBox(width: 6),
                 Text(
-                  'EVIDÊNCIA CIENTÍFICA',
+                  isEs ? 'Referencia clínica' : 'Referência clínica',
                   style: TextStyle(
-                    fontSize: 10.5,
+                    fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                     color: labelColor,
-                    letterSpacing: 0.65,
                   ),
                 ),
                 const SizedBox(width: 4),
                 AnimatedRotation(
-                  turns: _expanded ? 0.5 : 0.0,
+                  turns: _expanded ? 0.5 : 0,
                   duration: const Duration(milliseconds: 220),
-                  child: Icon(Icons.expand_more_rounded,
-                      size: 14, color: labelColor.withValues(alpha: 0.65)),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 16,
+                    color: labelColor,
+                  ),
                 ),
               ],
             ),
           ),
         ),
-
-        // ── Conteúdo expandido — flat, sem borda ou fundo ────────────────────
         AnimatedSize(
-          duration: const Duration(milliseconds: 250),
+          duration: const Duration(milliseconds: 240),
           curve: Curves.easeInOut,
           child: _expanded
-              ? Container(
-                  margin: const EdgeInsets.only(top: 2, bottom: 4),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                  ),
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 4, left: 2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      EvidenceBadgesRow(ev: widget.ev, compact: true),
-                      const SizedBox(height: 6),
-                      EvidenceCardWidget(ev: widget.ev),
-                      const SizedBox(height: 6),
-                      const PharmacologicalDisclaimer(),
+                      for (final line in widget.lines)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Text(
+                            '• $line',
+                            style: TextStyle(
+                              fontSize: 11,
+                              height: 1.4,
+                              color: textColor,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 )

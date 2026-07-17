@@ -11,7 +11,7 @@ import '../models/chat_message.dart';
 import '../widgets/clinical/structured_clinical_output_view.dart';
 import 'ai/widgets/prompt_composer.dart';
 import 'ai/widgets/message_render_policy.dart';
-import 'ai/widgets/drug_evidence_detector.dart';
+import 'ai/widgets/clinical_reference_resolver.dart';
 import 'ai/widgets/action_buttons_row.dart';
 import 'ai/widgets/user_bubble.dart';
 import 'ai/widgets/mobile_ai_action_bar.dart';
@@ -2929,9 +2929,23 @@ class _AiScreenState extends State<AiScreen> {
                 debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=true');
               }
 
-              // Evidência farmacológica: só detectar se NÃO for safe-card
-              final detectedEv =
-                  isSafeCard ? null : DrugEvidenceDetector.detect(msg.text);
+              // Referências clínicas: associa a resposta à pergunta anterior.
+              // Safe-cards e bolha ainda em streaming não recebem o bloco.
+              String precedingUserText = '';
+              for (var previous = i - 1; previous >= 0; previous--) {
+                if (_messages[previous].role == 'user') {
+                  precedingUserText = _messages[previous].text;
+                  break;
+                }
+              }
+              final clinicalReference =
+                  isSafeCard || isActiveStreamingBubble
+                      ? null
+                      : ClinicalReferenceResolver.resolve(
+                          userText: precedingUserText,
+                          aiText: msg.text,
+                          lang: p.lang,
+                        );
 
               // ── BUILD 301: tag dupla — extrai LABEL + PROMPT, limpa bolha ────
               // A IA gera ao final de cada resposta de Modo Estudo:
@@ -3124,23 +3138,30 @@ class _AiScreenState extends State<AiScreen> {
                           },
                         );
                       }),
-                    // ── Evidência farmacológica (card colapsível) ────────────────
-                    // Build 192: 20px gap entre botões e evidência
-                    // ORDEM 56: _PlantaoRenderer removido — evidência sempre visível
-                    // quando detectada e não for safe-card. Sem risco de duplicação.
-                    // BUILD 246: dedup por messageId+textHash — evita loop de log.
-                    if (detectedEv != null && !isSafeCard)
+                    // ── Referência clínica textual e colapsável ───────────────
+                    // Um fármaco usa sua ficha específica; polifarmácia usa
+                    // referências do protocolo temático; sem match usa livros-base.
+                    if (clinicalReference != null)
                       Builder(builder: (_) {
                         if (kDebugMode) {
                           final evKey = '${msg.id}_${msg.text.hashCode}';
                           if (!_loggedEvidenceIds.contains(evKey)) {
                             _loggedEvidenceIds.add(evKey);
-                            debugPrint('[EVIDENCE_GUARD] messageId=${msg.id} isSafeCard=$isSafeCard showing=true');
+                            debugPrint(
+                              '[REFERENCE_RESOLVER] messageId=${msg.id} '
+                              'source=${clinicalReference.sourceType} '
+                              'protocol=${clinicalReference.protocolId ?? "none"} '
+                              'drugs=${clinicalReference.drugKeys.length}',
+                            );
                           }
                         }
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
-                          child: CollapsibleEvidenceBlock(ev: detectedEv, dark: dark),
+                          child: CollapsibleClinicalReferenceBlock(
+                            lines: clinicalReference.lines,
+                            dark: dark,
+                            lang: p.lang,
+                          ),
                         );
                       }),
 
