@@ -2486,18 +2486,18 @@ class _AiScreenState extends State<AiScreen> {
           // Detecta erro de rede — NÃO usa errorMsg.contains('🚨') como critério
           // pois 🚨 é também marcador de seção clínica válida.
           // Usamos apenas keywords textuais específicas de mensagens de erro de rede.
-          final _em = errorMsg.toLowerCase();
-          final isNetErr = _em.contains('sem conex') ||
-              _em.contains('sin conex') ||
-              _em.contains('timeout') ||
-              _em.contains('falha na conex') ||
-              _em.contains('falla de red') ||
-              _em.contains('conexão necessária') ||
-              _em.contains('conexión requerida') ||
-              _em.contains('verifique sua conex') ||
-              _em.contains('verifique sua rede') ||
-              _em.contains('ia indisponível') ||
-              _em.contains('ia indisponible');
+          final normalizedErrorMessage = errorMsg.toLowerCase();
+          final isNetErr = normalizedErrorMessage.contains('sem conex') ||
+              normalizedErrorMessage.contains('sin conex') ||
+              normalizedErrorMessage.contains('timeout') ||
+              normalizedErrorMessage.contains('falha na conex') ||
+              normalizedErrorMessage.contains('falla de red') ||
+              normalizedErrorMessage.contains('conexão necessária') ||
+              normalizedErrorMessage.contains('conexión requerida') ||
+              normalizedErrorMessage.contains('verifique sua conex') ||
+              normalizedErrorMessage.contains('verifique sua rede') ||
+              normalizedErrorMessage.contains('ia indisponível') ||
+              normalizedErrorMessage.contains('ia indisponible');
           setState(() {
             _thinking    = false;
             _isStreaming  = false;
