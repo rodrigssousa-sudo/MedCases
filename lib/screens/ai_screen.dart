@@ -20,6 +20,7 @@ import 'ai/widgets/user_bubble.dart';
 import 'ai/widgets/suggestion_carousel.dart';
 import 'ai/widgets/empty_chat.dart';
 import 'ai/widgets/ai_error_banner.dart';
+import 'ai/widgets/info_row.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -7436,7 +7437,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
               // BUILD 337-AI-TEXTS: cards de benefícios — arquitetura de mensagem definitiva
               child: Column(children: [
                 // Card 1 — Base clínica ativa (ícone de faísca)
-                _InfoRow(
+                InfoRow(
                   icon: Icons.auto_awesome_rounded,
                   iconColor: green,
                   dark: dark,
@@ -7447,7 +7448,7 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
                 ),
                 const SizedBox(height: 10),
                 // Card 2 — Gemini · GPT enriquece (ícone de hub/IA)
-                _InfoRow(
+                InfoRow(
                   icon: Icons.hub_rounded,
                   iconColor: hasAnyAi ? green : sub,
                   dark: dark,
@@ -7484,53 +7485,6 @@ class _AiStatusSheetState extends State<_AiStatusSheet> {
         );
       },
     );
-  }
-}
-
-// Widget auxiliar: linha de informação com ícone
-class _InfoRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final bool dark;
-  final String label;
-  final String sub;
-  final bool dimmed;
-  const _InfoRow({
-    required this.icon,
-    required this.iconColor,
-    required this.dark,
-    required this.label,
-    required this.sub,
-    this.dimmed = false,
-  });
-  @override
-  Widget build(BuildContext context) {
-    final textC = (dark ? Colors.white : const Color(0xFF1A1D23))
-        .withOpacity(dimmed ? 0.4 : 1.0);
-    final subC = (dark ? Colors.white54 : Colors.black45)
-        .withOpacity(dimmed ? 0.4 : 1.0);
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-        width: 30, height: 30,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: iconColor.withOpacity(dimmed ? 0.06 : 0.1)),
-        child: Center(child: Icon(icon, size: 15,
-          color: iconColor.withOpacity(dimmed ? 0.4 : 1.0))),
-      ),
-      const SizedBox(width: 10),
-      Expanded(child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label,
-            style: TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w700, color: textC)),
-          const SizedBox(height: 2),
-          Text(sub,
-            style: TextStyle(fontSize: 11, color: subC, height: 1.4)),
-        ],
-      )),
-    ]);
   }
 }
 
