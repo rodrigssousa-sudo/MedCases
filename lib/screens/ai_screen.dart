@@ -20,6 +20,7 @@ import 'ai/widgets/collapsible_content_blocks.dart';
 import 'ai/widgets/ambassador_panel_helpers.dart';
 import 'ai/widgets/ai_skeleton_lines.dart';
 import 'ai/widgets/ai_block_bubble.dart';
+import 'ai/widgets/response_mode_toggle.dart';
 import 'ai/widgets/disconnected_input_lock.dart';
 import 'ai/widgets/google_auth_barrier_card.dart';
 import 'ai/widgets/wa_header.dart';
@@ -3445,7 +3446,7 @@ class _AiScreenState extends State<AiScreen> {
                 !_messages.any((m) => m.role == 'user'))
               Padding(
                 padding: const EdgeInsets.only(top: 4, bottom: 0),
-                child: _ResponseModeToggle(
+                child: ResponseModeToggle(
                   value: _longResponse,
                   dark: dark,
                   lang: p.lang,
@@ -5361,97 +5362,6 @@ class _AiBubbleState extends State<_AiBubble> {
 // Posicionado entre o carrossel de sugestões e a barra de input.
 // Mantém estado em _AiScreenState._longResponse e passa ao sendAiMessage().
 // ─────────────────────────────────────────────────────────────────────────────
-class _ResponseModeToggle extends StatelessWidget {
-  final bool value;        // Build 152: renamed from longResponse → value (state-binding fix)
-  final bool dark;
-  final String lang;
-  final ValueChanged<bool> onChanged;
-
-  const _ResponseModeToggle({
-    required this.value,
-    required this.dark,
-    required this.lang,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isEs = lang == 'es';
-
-    // Build 158.2 — Labels texto puro, sem emojis/ícones (visual sóbrio e profissional)
-    final labelGuardia = isEs ? 'Guardia' : 'Plantão';
-    final labelEstudio = isEs ? 'Estudio'  : 'Estudos';
-
-    // Build 158.2 — Pills minimalistas:
-    // Ativo: fundo transparente + borda ciano fina e nítida (SEM glow/sombra)
-    // Inativo: fundo cinza sólido discreto, sem borda especial
-    const neonCyan   = Color(0xFF00E5FF);
-    final inactiveText = dark
-        ? Colors.white.withOpacity(0.55)
-        : Colors.black.withOpacity(0.45);
-    final inactiveBg   = dark
-        ? const Color(0xFF374151)
-        : const Color(0xFFE0E0E0);
-
-    Widget pill({
-      required String label,
-      required bool isActive,
-      required VoidCallback onTap,
-    }) {
-      return GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-          decoration: BoxDecoration(
-            // Ativo: transparente + borda ciano sólida e nítida (sem glow)
-            // Inativo: cinza sólido sem borda especial
-            color: isActive ? Colors.transparent : inactiveBg,
-            borderRadius: BorderRadius.circular(24),
-            border: isActive
-                ? Border.all(color: neonCyan, width: 1.5)
-                : Border.all(color: Colors.transparent, width: 1.5),
-            // Build 158.2: sem boxShadow — eliminado glow neon por completo
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-              color: isActive ? neonCyan : inactiveText,
-              letterSpacing: 0.2,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
-      child: Align(
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          // BUILD 283 ORDEM 10.4: Estudos ESQUERDA (gratuito/padrão) | Plantão DIREITA
-          children: [
-            pill(
-              label: labelEstudio,
-              isActive: value,
-              onTap: () => onChanged(true),
-            ),
-            const SizedBox(width: 8),
-            pill(
-              label: labelGuardia,
-              isActive: !value,
-              onTap: () => onChanged(false),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Sheet de status da IA — mostra estado atual + botão "Conectar com Google"
