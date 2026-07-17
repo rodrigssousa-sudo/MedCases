@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:flutter/services.dart';
@@ -2868,7 +2869,7 @@ class _AiScreenState extends State<AiScreen> {
             // da viewport. Elimina o re-layout de MarkdownBody que causava o
             // "scroll stutter" ao subir no histórico durante o streaming.
             // Impacto de memória negligenciável: ~5 bolhas fora da viewport.
-            cacheExtent: 2500,
+            scrollCacheExtent: const ScrollCacheExtent.pixels(2500),
             physics: const ClampingScrollPhysics(),
             // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
