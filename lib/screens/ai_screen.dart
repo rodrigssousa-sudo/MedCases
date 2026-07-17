@@ -13,6 +13,7 @@ import '../models/clinical_structured_output.dart';
 import '../models/chat_message.dart';
 import '../widgets/clinical/structured_clinical_output_view.dart';
 import 'ai/widgets/prompt_composer.dart';
+import 'ai/widgets/message_render_policy.dart';
 import '../data/evidence_database.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
@@ -2731,39 +2732,6 @@ class _AiScreenState extends State<AiScreen> {
     return null;
   }
 
-  // ── BUILD 301: tag helpers — sistema de tag dupla ────────────────────────
-  // A IA gera no final absoluto de cada resposta de Modo Estudo duas tags:
-  //   [NEXT_ACTION_LABEL: Rótulo Curto]   → texto exato do botão azul
-  //   [NEXT_ACTION_PROMPT: Query Avançada] → query oculta disparada no clique
-  // Ambas são extraídas e expurgadas do texto visível na bolha.
-
-  // Extrai o conteúdo de [NEXT_ACTION_PROMPT:...].
-  // Retorna '' se ausente (Modo Plantão ou resposta sem tag).
-  static String _extractNextActionTag(String text) {
-    final rx = RegExp(r'\[NEXT_ACTION_PROMPT:\s*(.*?)(?:\]|$)', dotAll: true);
-    final m = rx.firstMatch(text);
-    return m != null ? (m.group(1) ?? '').trim() : '';
-  }
-
-  // Extrai o conteúdo de [NEXT_ACTION_LABEL:...].
-  // BUILD 301: rótulo 100% dinâmico — texto exato proposto pela IA para o botão.
-  // Retorna '' se ausente (fallback neutro será aplicado pelo _ActionButtonsRow).
-  static String _extractNextActionLabel(String text) {
-    final rx = RegExp(r'\[NEXT_ACTION_LABEL:\s*(.*?)(?:\]|$)', dotAll: true);
-    final m = rx.firstMatch(text);
-    return m != null ? (m.group(1) ?? '').trim() : '';
-  }
-
-  // Remove AMBAS as tags do texto exibido ao usuário — bolha sempre limpa.
-  static String _cleanNextActionTag(String text) {
-    return text
-        .replaceAll(
-            RegExp(r'\[NEXT_ACTION_LABEL:\s*.*?(?:\]|$)', dotAll: true), '')
-        .replaceAll(
-            RegExp(r'\[NEXT_ACTION_PROMPT:\s*.*?(?:\]|$)', dotAll: true), '')
-        .trimRight();
-  }
-
   void _copyMsg(String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -3116,14 +3084,7 @@ class _AiScreenState extends State<AiScreen> {
               // Safe-cards NÃO renderizam: EvidenceBox, ActionButtons, ExternalToolLink,
               // PlantaoRenderer. Log limitado a 1x por messageId — sem spam em rebuilds.
               final bool _isSafeCard =
-                  msg.text.startsWith(AppProvider.kSafeCardMarkerPt) ||
-                  msg.text.startsWith(AppProvider.kSafeCardMarkerEs) ||
-                  // Legacy — backward compat com histórico salvo em builds anteriores
-                  msg.text.contains('não consegui completar a resposta') ||
-                  msg.text.contains('não consegui concluir a resposta') ||
-                  msg.text.contains('no pude completar la respuesta') ||
-                  msg.text.contains('estamos ajustando a resposta') ||
-                  msg.text.contains('estamos ajustando la respuesta');
+                  MessageRenderPolicy.isSafeCard(msg.text);
               if (kDebugMode && _isSafeCard && !_loggedSafeCardIds.contains(msg.id)) {
                 _loggedSafeCardIds.add(msg.id);
                 debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=true');
@@ -3138,17 +3099,14 @@ class _AiScreenState extends State<AiScreen> {
               //   [NEXT_ACTION_PROMPT: Query Avançada] → query disparada no clique
               // Ambas são extraídas e removidas do texto visível na bolha.
               // msg.text original é preservado intacto (hash estável para cache).
-              final String _nextActionPrompt = !_longResponse
-                  ? '' // Modo Plantão — sem tags
-                  : _extractNextActionTag(msg.text);
-              final String _nextActionLabel = !_longResponse
-                  ? ''
-                  : _extractNextActionLabel(msg.text);
-              // cleanDisplayText: texto sem nenhuma das duas tags
-              final bool _hasStudyTags = _nextActionPrompt.isNotEmpty || _nextActionLabel.isNotEmpty;
-              final String _cleanDisplayText = _hasStudyTags
-                  ? _cleanNextActionTag(msg.text)
-                  : msg.text;
+              final studyAction = MessageRenderPolicy.parseStudyAction(
+                text: msg.text,
+                isStudyMode: _longResponse,
+              );
+              final String _nextActionPrompt = studyAction.prompt;
+              final String _nextActionLabel = studyAction.label;
+              final bool _hasStudyTags = studyAction.hasAction;
+              final String _cleanDisplayText = studyAction.displayText;
 
               // ── ORDEM 56 M1: RENDER UNIFICADO ────────────────────────────────
               // SUPER ORDEM 56: PlantatoPipeline, _PlantaoRenderer e _PlantaoFallbackCard
