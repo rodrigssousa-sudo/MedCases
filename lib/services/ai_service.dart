@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
+import 'package:flutter/foundation.dart'
+    show kDebugMode, debugPrint, visibleForTesting;
 import 'ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationRepairResult, AiSafeOutputException
 import 'clinical_session_memory.dart';
 import 'provider_router_service.dart'; // SUPER ORDEM 38: geminiPaidProxy gateway
@@ -385,6 +386,13 @@ class AiService {
   //   3. Trim that overlap from the start of [extension].
   //   4. Concatenate original + trimmed extension.
   // ─────────────────────────────────────────────────────────────────────────
+  @visibleForTesting
+  static String deduplicateTokenOverlapForTesting(
+    String original,
+    String extension,
+  ) =>
+      _deduplicateTokenOverlap(original, extension);
+
   static String _deduplicateTokenOverlap(String original, String extension) {
     if (original.isEmpty || extension.isEmpty) return original + extension;
 
@@ -404,8 +412,16 @@ class AiService {
     }
 
     if (overlapLen == 0) {
-      // No overlap found — simple concatenation with space if needed
-      final needsSpace = !original.endsWith(' ') && !extension.startsWith(' ');
+      // Provider repairs continue from the exact truncation boundary.
+      // A digit followed immediately by another digit represents one numeric
+      // token split between providers, for example: "18" + "0 mg" = "180 mg".
+      final isSplitNumericToken = RegExp(r'\d$').hasMatch(original) &&
+          RegExp(r'^\d').hasMatch(extension);
+
+      final needsSpace = !isSplitNumericToken &&
+          !original.endsWith(' ') &&
+          !extension.startsWith(' ');
+
       return needsSpace ? '$original $extension' : '$original$extension';
     }
 
