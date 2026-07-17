@@ -6482,14 +6482,6 @@ class _ThinkingBubbleState extends State<_ThinkingBubble>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _TypingIndicator — 3 pontos animados (alias de _ThinkingBubble)
-//
-// Exibido enquanto a IA está processando (fase de "pensando" antes do
-// primeiro chunk chegar). Transição natural: ThinkingBubble → streaming bubble.
-// ─────────────────────────────────────────────────────────────────────────────
-typedef _TypingIndicator = _ThinkingBubble;
-
-// ─────────────────────────────────────────────────────────────────────────────
 // _DisconnectedInputLock — BUILD 277
 //
 // Replaces the InputBar for non-admin/non-master users when no AI connection
