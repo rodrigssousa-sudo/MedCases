@@ -1554,47 +1554,6 @@ class _AiScreenState extends State<AiScreen> {
     );
   }
 
-  /// Restaura uma sessão do histórico para o chat atual.
-  void _restoreSession(_ChatSession session, AppProvider p) {
-    // Build 107: cancela streaming ativo para liberar os guards
-    p.cancelAiStream();
-    // Build 188: descarta notifier de streaming ao restaurar sessão
-    _streamingTextNotifier?.dispose();
-    _streamingTextNotifier = null;
-    // BUILD 244B/246: limpa sets de log-dedup ao restaurar sessão
-    _loggedSafeCardIds.clear();
-    _loggedEvidenceIds.clear();
-      _loggedExtToolKeys.clear(); // BUILD 308
-    setState(() {
-      _messages.clear();
-      _messages.addAll(session.messages);
-      _lastAiIndex = -1;
-      _greetingDone = true;
-      _userScrolledUp = false;
-      _restoredSessionId = session.id;
-      _activeSessionId = null;         // BUILD 274: sessão restaurada usa _restoredSessionId, não _activeSessionId
-      _hasNewMessageAfterRestore = false;
-      _thinking   = false;
-      _isStreaming = false;
-      _sendGuard  = false;
-    });
-    // Build 110 FIX: reconstrói _aiHistory a partir das mensagens restauradas.
-    // clearAiHistory() limpava o histórico sem repopular — a próxima mensagem
-    // enviada após restaurar uma sessão chegava ao Gemini sem nenhum contexto.
-    p.rebuildAiHistoryFromMessages(session.messages
-        .where((m) => m.role == 'user' || m.role == 'ai')
-        .map((m) => {
-              'role':    m.role == 'ai' ? 'assistant' : 'user',
-              'content': m.text,
-            })
-        .toList());
-
-    // ORDEM 56: _plantaoPipelineCache removido — _AiBubble renderiza tudo via
-    // MarkdownBody diretamente. Sem cache de pipeline a pré-popular na restauração.
-
-    _scrollDown(force: true);
-  }
-
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 4]: Source-aware restore ─────
   // Restores a session selected from the history modal timeline.
   // Strategy is determined by AiSessionSummary.source:
