@@ -345,14 +345,6 @@ class _AiScreenState extends State<AiScreen> {
   // ── STT (Speech-to-Text via Web Speech API) ──────────────────────────────
   bool   _sttListening    = false; // microfone ativo
   double _sttSoundLevel   = 0.0;   // nível de som normalizado 0.0–1.0 (onda de áudio)
-  // Buffer de texto parcial — acumulamos aqui durante o reconhecimento e só
-  // comprometemos no TextEditingController quando isFinal=true (evita eco "eu eu eu").
-  // Na web (isFinal guard no stt_helper_web.dart) este buffer não é usado
-  // para parciais — onResult já chega como final. No mobile, o buffer também
-  // não é necessário pois _handleResult só chama onResult quando isFinal.
-  // Mantido aqui como salvaguarda de estado para futuros refactors.
-  String _sttPartialBuffer = '';
-
   // Sugestões ficam visíveis apenas no estado vazio + sem foco
   bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
 
@@ -680,7 +672,6 @@ class _AiScreenState extends State<AiScreen> {
     setState(() {
       _sttListening     = true;
       _sttSoundLevel    = 0.0;
-      _sttPartialBuffer = '';
     });
     final lang = context.read<AppProvider>().lang;
     // STT-GUARD: proteção extra no call-site — stt_helper_mobile já captura
@@ -700,7 +691,6 @@ class _AiScreenState extends State<AiScreen> {
         setState(() {
           _sttListening     = false;
           _sttSoundLevel    = 0.0;
-          _sttPartialBuffer = '';
           // Preserva qualquer texto que o usuário tenha digitado manualmente
           // antes de iniciar o ditado, anexando o resultado ao final.
           final existing = _queryCtrl.text.trim();
@@ -722,7 +712,6 @@ class _AiScreenState extends State<AiScreen> {
         setState(() {
           _sttListening     = false;
           _sttSoundLevel    = 0.0;
-          _sttPartialBuffer = '';
         });
         _showSttErrorSnack(code);
       },
@@ -760,7 +749,6 @@ class _AiScreenState extends State<AiScreen> {
     if (mounted) setState(() {
       _sttListening     = false;
       _sttSoundLevel    = 0.0;
-      _sttPartialBuffer = '';
     });
   }
 
