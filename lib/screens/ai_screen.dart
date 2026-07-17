@@ -17,6 +17,7 @@ import 'ai/widgets/action_buttons_row.dart';
 import 'ai/widgets/user_bubble.dart';
 import 'ai/widgets/mobile_ai_action_bar.dart';
 import 'ai/widgets/collapsible_content_blocks.dart';
+import 'ai/widgets/ambassador_panel_helpers.dart';
 import 'ai/widgets/suggestion_carousel.dart';
 import 'ai/widgets/empty_chat.dart';
 import 'ai/widgets/ai_error_banner.dart';
@@ -7368,7 +7369,7 @@ class _AmbassadorPanelState extends State<_AmbassadorPanel> {
                 // ═══════════════════════════════════════════════════════════
                 // SEÇÃO A — Crescimento: Referral Link + Share + Count
                 // ═══════════════════════════════════════════════════════════
-                _SectionHeader(
+                AmbassadorSectionHeader(
                   icon: Icons.link_rounded,
                   label: lang == 'es' ? 'Su red de crecimiento' : 'Sua rede de crescimento',
                 ),
@@ -7398,14 +7399,14 @@ class _AmbassadorPanelState extends State<_AmbassadorPanel> {
                 // Action buttons row
                 Row(children: [
                   // Copy button
-                  Expanded(child: _GoldButton(
+                  Expanded(child: AmbassadorGoldButton(
                     icon: Icons.copy_rounded,
                     label: lang == 'es' ? 'Copiar link' : 'Copiar link',
                     onTap: _copyLink,
                   )),
                   const SizedBox(width: 10),
                   // WhatsApp share button
-                  Expanded(child: _GoldButton(
+                  Expanded(child: AmbassadorGoldButton(
                     icon: Icons.share_rounded,
                     label: 'WhatsApp',
                     onTap: _shareWhatsApp,
@@ -7442,7 +7443,7 @@ class _AmbassadorPanelState extends State<_AmbassadorPanel> {
                 // ═══════════════════════════════════════════════════════════
                 // SEÇÃO B — Segunda Opinião
                 // ═══════════════════════════════════════════════════════════
-                _SectionHeader(
+                AmbassadorSectionHeader(
                   icon: Icons.auto_awesome_rounded,
                   label: lang == 'es' ? 'Superpoder Clínico' : 'Superpoder Clínico',
                 ),
@@ -7603,69 +7604,3 @@ class _AmbassadorPanelState extends State<_AmbassadorPanel> {
     );
   }
 }
-
-// ── Ambassador Panel helpers ──────────────────────────────────────────────────
-class _SectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _SectionHeader({required this.icon, required this.label});
-  @override
-  Widget build(BuildContext context) => Row(children: [
-    Icon(icon, color: const Color(0xFFD4AF37), size: 16),
-    const SizedBox(width: 8),
-    Text(label, style: const TextStyle(
-        color: Color(0xFFFFE8A6), fontSize: 13, fontWeight: FontWeight.w800)),
-    const SizedBox(width: 8),
-    Expanded(child: Container(height: 0.5, color: const Color(0x44D4AF37))),
-  ]);
-}
-
-class _GoldButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final Color color;
-  const _GoldButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.color = const Color(0xFFD4AF37),
-  });
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(vertical: 11),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.10),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.45)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 15),
-          const SizedBox(width: 6),
-          Text(label, style: TextStyle(
-              color: color, fontSize: 12, fontWeight: FontWeight.w700)),
-        ],
-      ),
-    ),
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _CollapsibleReferencesBlock — Build 120
-// Chip colapsável para o bloco "📚 REFERENCIAS / REFERÊNCIAS" gerado pela IA.
-// Padrão: chip "📚 Ver Referencias Médicas ▾" (collapsed)
-// Expandido: lista de bullets de referência em texto compacto cinza
-// ─────────────────────────────────────────────────────────────────────────────
-
-
-
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _CollapsibleEvidenceBlock — chip colapsável de evidência no chat da IA
-// Padrão: 1 linha "📊 EVIDENCIA CIENTÍFICA ▾"
-// Expandido: EvidenceBadgesRow + EvidenceCardWidget + PharmacologicalDisclaimer
-// ─────────────────────────────────────────────────────────────────────────────
