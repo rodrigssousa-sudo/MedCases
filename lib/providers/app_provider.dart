@@ -6930,26 +6930,34 @@ class AppProvider extends ChangeNotifier {
       _globalTimeoutTimer = Timer(Duration(milliseconds: globalTimeoutMs), () {
         final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
         debugPrint(
-            '[AI_TIMEOUT][BUILD320] mode=${longResponse ? "estudo" : "academic"} '
+            '[AI_TIMEOUT][BUILD320] mode=${longResponse ? "estudo" : "plantao"} '
             'timeoutMs=$globalTimeoutMs provider=free elapsedMs=$elapsedMs requestId=$thisRequestId');
-        // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
+
+        // PHASE 4 — o timeout encerra somente a tentativa Free.
+        // A propriedade terminal impede onDone/chunks tardios do stream antigo,
+        // enquanto o requestId permanece válido para o fallback dedicado.
         if (!tryAcquireTerminalOwnership('global_timeout_timer')) return;
-        // BUILD 320: invalida o requestId atomicamente — o Id Guard em tryPaidFallback
-        // detectará a invalidação e descartará silenciosamente qualquer resposta tardia
-        // do Paid Proxy que chegar após este timer, sem setState em contexto morto.
-        if (_activeRequestId == thisRequestId) _activeRequestId = '';
+
         _aiStreamActive = false;
-        aiChatProvider
-            .setStreaming(false); // BUILD 326: global timeout — UI desbloqueia
+        aiChatProvider.setStreaming(false);
         _aiStreamSub?.cancel();
         _aiStreamSub = null;
         accumulator.clear();
-        // MICRO-BUILD 462E-A.5.3.4: enforce terminal order — wrappedOnDone → releaseCanonicalDecision → completeAiRequest LAST.
-        // MICRO-BUILD 462E-A.5.1: release cache entry on global TIMEOUT
-        ExternalToolLinkEngine.releaseCanonicalDecision(
-            requestId: thisRequestId, decision: canonicalDecision);
-        wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254: global timer
-        _completeAiRequestOnce(thisRequestId);
+
+        unawaited(() async {
+          final fallbackHandled = await tryPaidFallback('global_timeout_free');
+
+          if (fallbackHandled) return;
+
+          // O request pode ter sido invalidado por cancelamento/reset enquanto
+          // o fallback estava em voo. Nesse caso, apenas fecha o ciclo canônico,
+          // sem reintroduzir conteúdo ou safe-card numa sessão já descartada.
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+            requestId: thisRequestId,
+            decision: canonicalDecision,
+          );
+          _completeAiRequestOnce(thisRequestId);
+        }());
       });
 
       _aiStreamSub = stream.listen(
