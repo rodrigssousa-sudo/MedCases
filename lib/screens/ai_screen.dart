@@ -4304,7 +4304,7 @@ String _applyPlantaoAestheticGuard(String text) {
   // ── 2. ALLCAPS label → Title Case ────────────────────────────────────────
   // Only matches standalone label tokens (WORD:) in all-caps.
   // Preserves clinical acronyms (IAM, PCR, mg/kg…) that are mid-sentence.
-  const _kLabels = [
+  const labels = [
     'DOSE', 'DOSAGEM', 'ALERTA', 'ALERTAS', 'ALTERNATIVA',
     'CONDUTA', 'EVITAR', 'MONITORAR', 'MONITORAMENTO',
     'CONTRAINDICACAO', 'CONTRAINDICAÇÕES', 'CONTRAINDICACION',
@@ -4314,7 +4314,7 @@ String _applyPlantaoAestheticGuard(String text) {
     'OBSERVAR', 'OBSERVACAO', 'OBSERVAÇÃO', 'VIGILAR',
   ];
   lines = lines.map((line) {
-    for (final label in _kLabels) {
+    for (final label in labels) {
       if (line.contains('$label:')) {
         final titled = label[0].toUpperCase() +
             label.substring(1).toLowerCase();
