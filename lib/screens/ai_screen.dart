@@ -3595,7 +3595,6 @@ class _MobileAiActionBar extends StatelessWidget {
   final VoidCallback? onAmbassador; // BUILD 310
 
   const _MobileAiActionBar({
-    super.key,
     required this.dark,
     required this.lang,
     required this.historyCount,
