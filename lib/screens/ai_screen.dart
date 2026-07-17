@@ -14,7 +14,7 @@ import '../models/chat_message.dart';
 import '../widgets/clinical/structured_clinical_output_view.dart';
 import 'ai/widgets/prompt_composer.dart';
 import 'ai/widgets/message_render_policy.dart';
-import '../data/evidence_database.dart';
+import 'ai/widgets/drug_evidence_detector.dart';
 import '../widgets/error_state_widget.dart'
     show InlineConnectionBanner;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -2696,42 +2696,6 @@ class _AiScreenState extends State<AiScreen> {
     }
   }
 
-  /// Detecta si el texto de la IA menciona un fármaco y retorna su evidencia global.
-  /// Busca las primeras 3 palabras de cada línea como posible nombre de fármaco.
-  DrugEvidenceModel? _detectDrugEvidence(String text) {
-    // Palabras clave que indican contenido farmacológico
-    final pharmKeywords = RegExp(
-      r'\b(dosis|dose|administr|mg\/kg|mcg\/kg|infus[ií]on|bolo|IV|IM|SC|ampollas?|comprimido|'
-      r'antibi[oó]tico|analgésico|sedaci[oó]n|anticoagulante|vasopressor|broncodilatador)\b',
-      caseSensitive: false,
-    );
-    if (!pharmKeywords.hasMatch(text)) return null;
-
-    // Lista de fármacos de alta prioridad para detección
-    const drugKeywords = [
-      'adenosina', 'amiodarona', 'noradrenalina', 'adrenalina', 'epinefrina',
-      'atropina', 'morfina', 'fentanil', 'fentanilo', 'ketamina',
-      'midazolam', 'propofol', 'dexmedetomidina', 'haloperidol',
-      'metoprolol', 'furosemida', 'dobutamina', 'dopamina', 'vasopresina',
-      'nitroglicerina', 'heparina', 'enoxaparina', 'rivaroxabana', 'varfarina',
-      'clopidogrel', 'salbutamol', 'dexametasona', 'insulina', 'metformina',
-      'omeprazol', 'ondansetrona', 'enalapril', 'losartana', 'paracetamol',
-      'ibuprofeno', 'tramadol', 'naloxona', 'succinilcolina', 'ceftriaxona',
-      'vancomicina', 'meropenem', 'piperacilina', 'fluconazol', 'aciclovir',
-      'sulfato de magnesio', 'ácido tranexámico', 'levetiracetam', 'fenitoína',
-      'clonazepam',
-    ];
-
-    final textLower = text.toLowerCase();
-    for (final keyword in drugKeywords) {
-      if (textLower.contains(keyword)) {
-        final ev = getGlobalEvidence(keyword);
-        if (ev != null) return ev;
-      }
-    }
-    return null;
-  }
-
   void _copyMsg(String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -3091,7 +3055,8 @@ class _AiScreenState extends State<AiScreen> {
               }
 
               // Evidência farmacológica: só detectar se NÃO for safe-card
-              final detectedEv = _isSafeCard ? null : _detectDrugEvidence(msg.text);
+              final detectedEv =
+                  _isSafeCard ? null : DrugEvidenceDetector.detect(msg.text);
 
               // ── BUILD 301: tag dupla — extrai LABEL + PROMPT, limpa bolha ────
               // A IA gera ao final de cada resposta de Modo Estudo:
