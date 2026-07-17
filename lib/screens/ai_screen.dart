@@ -2118,18 +2118,18 @@ class _AiScreenState extends State<AiScreen> {
           // Detecta erro de rede — NÃO usa finalText.contains('🚨') como critério
           // pois 🚨 é também marcador de seção clínica válida (ex: "🚨 INFARTO AGUDO DO MIOCÁRDIO").
           // Usamos apenas keywords textuais específicas de mensagens de erro de rede.
-          final _ft = finalText.toLowerCase();
-          final isNetErr = _ft.contains('sem conex') ||
-              _ft.contains('sin conex') ||
-              _ft.contains('timeout') ||
-              _ft.contains('falha na conex') ||
-              _ft.contains('falla de red') ||
-              _ft.contains('conexão necessária') ||
-              _ft.contains('conexión requerida') ||
-              _ft.contains('verifique sua conex') ||
-              _ft.contains('verifique sua rede') ||
-              _ft.contains('ia indisponível') ||
-              _ft.contains('ia indisponible');
+          final normalizedFinalText = finalText.toLowerCase();
+          final isNetErr = normalizedFinalText.contains('sem conex') ||
+              normalizedFinalText.contains('sin conex') ||
+              normalizedFinalText.contains('timeout') ||
+              normalizedFinalText.contains('falha na conex') ||
+              normalizedFinalText.contains('falla de red') ||
+              normalizedFinalText.contains('conexão necessária') ||
+              normalizedFinalText.contains('conexión requerida') ||
+              normalizedFinalText.contains('verifique sua conex') ||
+              normalizedFinalText.contains('verifique sua rede') ||
+              normalizedFinalText.contains('ia indisponível') ||
+              normalizedFinalText.contains('ia indisponible');
 
           // ── BUILD 244B: safe-card path — caminho limpo antes de isNetErr ─────
           // Detecta safe-card de timeout pelo prefixo canônico (AppProvider).
