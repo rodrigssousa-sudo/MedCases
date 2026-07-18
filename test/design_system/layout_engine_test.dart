@@ -3,9 +3,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:medcases/design_system/design_system.dart';
 
 void main() {
-  Widget buildTestApp(
+  Future<void> pumpTestApp(
+    WidgetTester tester,
     Widget child, {
     Size size = const Size(390, 844),
+  }) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = size;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MedTheme.light,
+        darkTheme: MedTheme.dark,
+        home: child,
+      ),
+    );
   }) {
     return MaterialApp(
       theme: MedTheme.light,
@@ -21,9 +34,9 @@ void main() {
     testWidgets('resolves mobile window class', (tester) async {
       MedWindowClass? resolved;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          SizedBox(
+      await pumpTestApp(
+        tester,
+        SizedBox(
             width: 390,
             child: MedResponsiveBuilder(
               builder: (context, windowClass, constraints) {
@@ -32,7 +45,7 @@ void main() {
               },
             ),
           ),
-        ),
+        size: const Size(390, 844),
       );
 
       expect(resolved, MedWindowClass.mobile);
@@ -41,9 +54,9 @@ void main() {
     testWidgets('resolves tablet window class', (tester) async {
       MedWindowClass? resolved;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          SizedBox(
+      await pumpTestApp(
+        tester,
+        SizedBox(
             width: 768,
             child: MedResponsiveBuilder(
               builder: (context, windowClass, constraints) {
@@ -52,8 +65,7 @@ void main() {
               },
             ),
           ),
-          size: const Size(768, 1024),
-        ),
+        size: const Size(768, 1024),
       );
 
       expect(resolved, MedWindowClass.tablet);
@@ -62,9 +74,9 @@ void main() {
     testWidgets('resolves desktop window class', (tester) async {
       MedWindowClass? resolved;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          SizedBox(
+      await pumpTestApp(
+        tester,
+        SizedBox(
             width: 1280,
             child: MedResponsiveBuilder(
               builder: (context, windowClass, constraints) {
@@ -73,8 +85,7 @@ void main() {
               },
             ),
           ),
-          size: const Size(1280, 800),
-        ),
+        size: const Size(1280, 800),
       );
 
       expect(resolved, MedWindowClass.desktop);
@@ -83,9 +94,9 @@ void main() {
     testWidgets('resolves wide desktop window class', (tester) async {
       MedWindowClass? resolved;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          SizedBox(
+      await pumpTestApp(
+        tester,
+        SizedBox(
             width: 1600,
             child: MedResponsiveBuilder(
               builder: (context, windowClass, constraints) {
@@ -94,8 +105,7 @@ void main() {
               },
             ),
           ),
-          size: const Size(1600, 900),
-        ),
+        size: const Size(1600, 900),
       );
 
       expect(resolved, MedWindowClass.wideDesktop);
@@ -104,16 +114,15 @@ void main() {
 
   group('MedContentLayout', () {
     testWidgets('renders centered constrained content', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          const Scaffold(
+      await pumpTestApp(
+        tester,
+        const Scaffold(
             body: MedContentLayout(
               maxWidth: 600,
               child: Text('Conteúdo'),
             ),
           ),
-          size: const Size(1200, 800),
-        ),
+        size: const Size(1200, 800),
       );
 
       expect(find.text('Conteúdo'), findsOneWidget);
@@ -143,16 +152,16 @@ void main() {
 
   group('MedSafeArea', () {
     testWidgets('delegates official safe area configuration', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          const Scaffold(
+      await pumpTestApp(
+        tester,
+        const Scaffold(
             body: MedSafeArea(
               left: false,
               bottom: false,
               child: Text('Seguro'),
             ),
           ),
-        ),
+        size: const Size(390, 844),
       );
 
       final SafeArea safeArea = tester.widget<SafeArea>(
@@ -171,9 +180,9 @@ void main() {
     testWidgets('renders header, body, footer and floating action', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          MedPageLayout(
+      await pumpTestApp(
+        tester,
+        MedPageLayout(
             header: AppBar(
               title: const Text('Cabeçalho'),
             ),
@@ -181,7 +190,7 @@ void main() {
             floatingActionButton: const Icon(Icons.add),
             child: const Text('Corpo'),
           ),
-        ),
+        size: const Size(390, 844),
       );
 
       expect(find.text('Cabeçalho'), findsOneWidget);
@@ -191,14 +200,14 @@ void main() {
     });
 
     testWidgets('supports unconstrained page content', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          const MedPageLayout(
+      await pumpTestApp(
+        tester,
+        const MedPageLayout(
             centerContent: false,
             useSafeArea: false,
             child: Text('Livre'),
           ),
-        ),
+        size: const Size(390, 844),
       );
 
       expect(find.text('Livre'), findsOneWidget);
@@ -218,9 +227,9 @@ void main() {
     }
 
     testWidgets('uses one column on mobile', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             body: SizedBox(
               width: 390,
               child: MedGrid(
@@ -228,7 +237,7 @@ void main() {
               ),
             ),
           ),
-        ),
+        size: const Size(390, 844),
       );
 
       final GridView grid = tester.widget<GridView>(
@@ -241,9 +250,9 @@ void main() {
     });
 
     testWidgets('uses two columns on tablet', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             body: SizedBox(
               width: 768,
               child: MedGrid(
@@ -251,8 +260,7 @@ void main() {
               ),
             ),
           ),
-          size: const Size(768, 1024),
-        ),
+        size: const Size(768, 1024),
       );
 
       final GridView grid = tester.widget<GridView>(
@@ -265,9 +273,9 @@ void main() {
     });
 
     testWidgets('uses three columns on desktop', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             body: SizedBox(
               width: 1280,
               child: MedGrid(
@@ -275,8 +283,7 @@ void main() {
               ),
             ),
           ),
-          size: const Size(1280, 800),
-        ),
+        size: const Size(1280, 800),
       );
 
       final GridView grid = tester.widget<GridView>(
@@ -289,9 +296,9 @@ void main() {
     });
 
     testWidgets('uses four columns on wide desktop', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             body: SizedBox(
               width: 1600,
               child: MedGrid(
@@ -299,8 +306,7 @@ void main() {
               ),
             ),
           ),
-          size: const Size(1600, 900),
-        ),
+        size: const Size(1600, 900),
       );
 
       final GridView grid = tester.widget<GridView>(

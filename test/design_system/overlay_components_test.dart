@@ -3,12 +3,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:medcases/design_system/design_system.dart';
 
 void main() {
-  Widget buildTestApp(Widget child) {
-    return MaterialApp(
-      theme: MedTheme.light,
-      darkTheme: MedTheme.dark,
-      home: Scaffold(
-        body: Center(child: child),
+  Future<void> pumpTestApp(
+    WidgetTester tester,
+    Widget child, {
+    Size size = const Size(800, 900),
+  }) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = size;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MedTheme.light,
+        darkTheme: MedTheme.dark,
+        home: Scaffold(
+          body: Center(child: child),
+        ),
       ),
     );
   }
@@ -18,17 +28,17 @@ void main() {
       var primary = 0;
       var secondary = 0;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          MedDialog(
-            title: 'Confirmar ação',
-            content: const Text('Deseja continuar?'),
-            primaryActionLabel: 'Confirmar',
-            onPrimaryAction: () => primary += 1,
-            secondaryActionLabel: 'Cancelar',
-            onSecondaryAction: () => secondary += 1,
-          ),
+      await pumpTestApp(
+        tester,
+        MedDialog(
+          title: 'Confirmar ação',
+          content: const Text('Deseja continuar?'),
+          primaryActionLabel: 'Confirmar',
+          onPrimaryAction: () => primary += 1,
+          secondaryActionLabel: 'Cancelar',
+          onSecondaryAction: () => secondary += 1,
         ),
+        size: const Size(800, 900),
       );
 
       expect(find.text('Confirmar ação'), findsOneWidget);
@@ -46,16 +56,16 @@ void main() {
 
     testWidgets('supports every official variant', (tester) async {
       for (final variant in MedDialogVariant.values) {
-        await tester.pumpWidget(
-          buildTestApp(
-            MedDialog(
-              key: ValueKey<MedDialogVariant>(variant),
-              title: variant.name,
-              content: const Text('Conteúdo'),
-              variant: variant,
-              showCloseButton: false,
-            ),
+        await pumpTestApp(
+          tester,
+          MedDialog(
+            key: ValueKey<MedDialogVariant>(variant),
+            title: variant.name,
+            content: const Text('Conteúdo'),
+            variant: variant,
+            showCloseButton: false,
           ),
+          size: const Size(800, 900),
         );
 
         expect(find.text(variant.name), findsOneWidget);
@@ -63,26 +73,26 @@ void main() {
     });
 
     testWidgets('static show opens and closes dialog', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Builder(
-            builder: (context) {
-              return ElevatedButton(
-                onPressed: () {
-                  MedDialog.show<void>(
-                    context: context,
-                    title: 'Diálogo aberto',
-                    content: const Text('Conteúdo do diálogo'),
-                  );
-                },
-                child: const Text('Abrir'),
-              );
-            },
-          ),
+      await pumpTestApp(
+        tester,
+        Builder(
+          builder: (context) {
+            return ElevatedButton(
+              onPressed: () {
+                MedDialog.show<void>(
+                  context: context,
+                  title: 'Diálogo aberto',
+                  content: const Text('Conteúdo do diálogo'),
+                );
+              },
+              child: const Text('Abrir'),
+            );
+          },
         ),
+        size: const Size(800, 900),
       );
 
-      await tester.tap(find.text('Abrir'));
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Abrir'));
       await tester.pumpAndSettle();
 
       expect(find.text('Diálogo aberto'), findsOneWidget);
@@ -96,20 +106,20 @@ void main() {
 
   group('MedModal', () {
     testWidgets('renders header, content and footer', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          const MedModal(
-            title: 'Paciente',
-            subtitle: 'Dados clínicos',
-            leading: Icon(MedIcons.person),
-            actions: <Widget>[
-              Icon(MedIcons.edit),
-            ],
-            footer: Text('Rodapé'),
-            showCloseButton: false,
-            child: Text('Conteúdo principal'),
-          ),
+      await pumpTestApp(
+        tester,
+        const MedModal(
+          title: 'Paciente',
+          subtitle: 'Dados clínicos',
+          leading: Icon(MedIcons.person),
+          actions: <Widget>[
+            Icon(MedIcons.edit),
+          ],
+          footer: Text('Rodapé'),
+          showCloseButton: false,
+          child: Text('Conteúdo principal'),
         ),
+        size: const Size(800, 900),
       );
 
       expect(find.text('Paciente'), findsOneWidget);
@@ -121,26 +131,26 @@ void main() {
     });
 
     testWidgets('static show opens and closes modal', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Builder(
-            builder: (context) {
-              return ElevatedButton(
-                onPressed: () {
-                  MedModal.show<void>(
-                    context: context,
-                    title: 'Modal aberto',
-                    child: const Text('Corpo do modal'),
-                  );
-                },
-                child: const Text('Abrir modal'),
-              );
-            },
-          ),
+      await pumpTestApp(
+        tester,
+        Builder(
+          builder: (context) {
+            return ElevatedButton(
+              onPressed: () {
+                MedModal.show<void>(
+                  context: context,
+                  title: 'Modal aberto',
+                  child: const Text('Corpo do modal'),
+                );
+              },
+              child: const Text('Abrir modal'),
+            );
+          },
         ),
+        size: const Size(800, 900),
       );
 
-      await tester.tap(find.text('Abrir modal'));
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Abrir modal'));
       await tester.pumpAndSettle();
 
       expect(find.text('Modal aberto'), findsOneWidget);
@@ -155,23 +165,23 @@ void main() {
 
   group('MedBottomSheet', () {
     testWidgets('renders header, content and footer', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          const SizedBox(
-            height: 600,
-            child: MedBottomSheet(
-              title: 'Filtros',
-              subtitle: 'Refine os resultados',
-              leading: Icon(MedIcons.search),
-              actions: <Widget>[
-                Icon(MedIcons.settings),
-              ],
-              footer: Text('Aplicar filtros'),
-              showCloseButton: false,
-              child: Text('Opções de filtro'),
-            ),
+      await pumpTestApp(
+        tester,
+        const SizedBox(
+          height: 600,
+          child: MedBottomSheet(
+            title: 'Filtros',
+            subtitle: 'Refine os resultados',
+            leading: Icon(MedIcons.search),
+            actions: <Widget>[
+              Icon(MedIcons.settings),
+            ],
+            footer: Text('Aplicar filtros'),
+            showCloseButton: false,
+            child: Text('Opções de filtro'),
           ),
         ),
+        size: const Size(800, 900),
       );
 
       expect(find.text('Filtros'), findsOneWidget);
@@ -183,26 +193,26 @@ void main() {
     });
 
     testWidgets('static show opens and closes sheet', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Builder(
-            builder: (context) {
-              return ElevatedButton(
-                onPressed: () {
-                  MedBottomSheet.show<void>(
-                    context: context,
-                    title: 'Sheet aberta',
-                    child: const Text('Corpo da sheet'),
-                  );
-                },
-                child: const Text('Abrir sheet'),
-              );
-            },
-          ),
+      await pumpTestApp(
+        tester,
+        Builder(
+          builder: (context) {
+            return ElevatedButton(
+              onPressed: () {
+                MedBottomSheet.show<void>(
+                  context: context,
+                  title: 'Sheet aberta',
+                  child: const Text('Corpo da sheet'),
+                );
+              },
+              child: const Text('Abrir sheet'),
+            );
+          },
         ),
+        size: const Size(800, 900),
       );
 
-      await tester.tap(find.text('Abrir sheet'));
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Abrir sheet'));
       await tester.pumpAndSettle();
 
       expect(find.text('Sheet aberta'), findsOneWidget);

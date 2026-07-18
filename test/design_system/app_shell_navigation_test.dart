@@ -22,9 +22,22 @@ void main() {
     ),
   ];
 
-  Widget buildTestApp(
+  Future<void> pumpTestApp(
+    WidgetTester tester,
     Widget child, {
     required Size size,
+  }) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = size;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MedTheme.light,
+        darkTheme: MedTheme.dark,
+        home: child,
+      ),
+    );
   }) {
     return MaterialApp(
       theme: MedTheme.light,
@@ -58,17 +71,16 @@ void main() {
     testWidgets('renders destinations and handles selection', (tester) async {
       int? selected;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             bottomNavigationBar: MedBottomNavigation(
               destinations: destinations,
               selectedIndex: 0,
               onDestinationSelected: (index) => selected = index,
             ),
           ),
-          size: const Size(390, 844),
-        ),
+        size: const Size(390, 844),
       );
 
       expect(find.text('Início'), findsOneWidget);
@@ -87,9 +99,9 @@ void main() {
     testWidgets('renders expanded side navigation', (tester) async {
       int? selected;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             body: MedSideNavigation(
               destinations: destinations,
               selectedIndex: 0,
@@ -101,8 +113,7 @@ void main() {
               footer: const Text('Perfil'),
             ),
           ),
-          size: const Size(1440, 900),
-        ),
+        size: const Size(1440, 900),
       );
 
       expect(find.text('MedCases'), findsOneWidget);
@@ -117,9 +128,9 @@ void main() {
     });
 
     testWidgets('supports collapsed side navigation', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             body: MedSideNavigation(
               destinations: destinations,
               selectedIndex: 0,
@@ -127,8 +138,7 @@ void main() {
               expanded: false,
             ),
           ),
-          size: const Size(1440, 900),
-        ),
+        size: const Size(1440, 900),
       );
 
       final Size size = tester.getSize(find.byType(MedSideNavigation));
@@ -140,9 +150,9 @@ void main() {
     testWidgets('renders drawer and selects destination', (tester) async {
       int? selected;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          Scaffold(
+      await pumpTestApp(
+        tester,
+        Scaffold(
             drawer: MedNavigationDrawer(
               destinations: destinations,
               selectedIndex: 0,
@@ -158,8 +168,7 @@ void main() {
               },
             ),
           ),
-          size: const Size(768, 1024),
-        ),
+        size: const Size(768, 1024),
       );
 
       await tester.tap(find.text('Abrir'));
@@ -177,17 +186,16 @@ void main() {
 
   group('MedAppShell', () {
     testWidgets('uses bottom navigation on mobile', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          MedAppShell(
+      await pumpTestApp(
+        tester,
+        MedAppShell(
             destinations: destinations,
             selectedIndex: 0,
             onDestinationSelected: (_) {},
             toolbar: const MedToolbar(title: 'Mobile'),
             body: const Text('Conteúdo mobile'),
           ),
-          size: const Size(390, 844),
-        ),
+        size: const Size(390, 844),
       );
 
       expect(find.byType(MedBottomNavigation), findsOneWidget);
@@ -197,17 +205,16 @@ void main() {
     });
 
     testWidgets('uses drawer navigation on tablet', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          MedAppShell(
+      await pumpTestApp(
+        tester,
+        MedAppShell(
             destinations: destinations,
             selectedIndex: 0,
             onDestinationSelected: (_) {},
             toolbar: const MedToolbar(title: 'Tablet'),
             body: const Text('Conteúdo tablet'),
           ),
-          size: const Size(768, 1024),
-        ),
+        size: const Size(768, 1024),
       );
 
       final Scaffold scaffold = tester.widget<Scaffold>(
@@ -221,17 +228,16 @@ void main() {
     });
 
     testWidgets('uses side navigation on desktop', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          MedAppShell(
+      await pumpTestApp(
+        tester,
+        MedAppShell(
             destinations: destinations,
             selectedIndex: 0,
             onDestinationSelected: (_) {},
             toolbar: const MedToolbar(title: 'Desktop'),
             body: const Text('Conteúdo desktop'),
           ),
-          size: const Size(1280, 800),
-        ),
+        size: const Size(1280, 800),
       );
 
       expect(find.byType(MedSideNavigation), findsOneWidget);
@@ -240,17 +246,16 @@ void main() {
     });
 
     testWidgets('supports forced navigation mode', (tester) async {
-      await tester.pumpWidget(
-        buildTestApp(
-          MedAppShell(
+      await pumpTestApp(
+        tester,
+        MedAppShell(
             destinations: destinations,
             selectedIndex: 0,
             onDestinationSelected: (_) {},
             mode: MedAppShellNavigationMode.side,
             body: const Text('Modo forçado'),
           ),
-          size: const Size(390, 844),
-        ),
+        size: const Size(390, 844),
       );
 
       expect(find.byType(MedSideNavigation), findsOneWidget);
@@ -260,16 +265,15 @@ void main() {
     testWidgets('propagates destination selection', (tester) async {
       int? selected;
 
-      await tester.pumpWidget(
-        buildTestApp(
-          MedAppShell(
+      await pumpTestApp(
+        tester,
+        MedAppShell(
             destinations: destinations,
             selectedIndex: 0,
             onDestinationSelected: (index) => selected = index,
             body: const Text('Conteúdo'),
           ),
-          size: const Size(390, 844),
-        ),
+        size: const Size(390, 844),
       );
 
       await tester.tap(find.text('Cálculos'));
