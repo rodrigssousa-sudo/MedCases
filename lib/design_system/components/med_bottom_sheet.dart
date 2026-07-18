@@ -57,6 +57,7 @@ class MedBottomSheet extends StatelessWidget {
 
     return Semantics(
       container: true,
+      explicitChildNodes: true,
       scopesRoute: true,
       namesRoute: true,
       label: semanticLabel ?? title,
