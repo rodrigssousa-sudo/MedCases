@@ -1,14 +1,17 @@
 export 'components/med_avatar.dart';
 export 'components/med_badge.dart';
+export 'components/med_bottom_sheet.dart';
 export 'components/med_button.dart';
 export 'components/med_card.dart';
 export 'components/med_chip.dart';
+export 'components/med_dialog.dart';
 export 'components/med_divider.dart';
 export 'components/med_empty_state.dart';
 export 'components/med_header.dart';
 export 'components/med_icon_button.dart';
 export 'components/med_input.dart';
 export 'components/med_loading.dart';
+export 'components/med_modal.dart';
 export 'components/med_search_bar.dart';
 export 'components/med_section.dart';
 export 'components/med_text_field.dart';
