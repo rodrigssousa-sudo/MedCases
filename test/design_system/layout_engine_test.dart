@@ -173,13 +173,13 @@ void main() {
     ) async {
       await tester.pumpWidget(
         buildTestApp(
-          const MedPageLayout(
+          MedPageLayout(
             header: AppBar(
-              title: Text('Cabeçalho'),
+              title: const Text('Cabeçalho'),
             ),
-            footer: Text('Rodapé'),
-            floatingActionButton: Icon(Icons.add),
-            child: Text('Corpo'),
+            footer: const Text('Rodapé'),
+            floatingActionButton: const Icon(Icons.add),
+            child: const Text('Corpo'),
           ),
         ),
       );

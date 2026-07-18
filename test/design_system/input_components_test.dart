@@ -135,12 +135,12 @@ void main() {
         ),
       );
 
-      final field = tester.widget<TextFormField>(
-        find.byType(TextFormField),
+      final editableText = tester.widget<EditableText>(
+        find.byType(EditableText),
       );
 
-      expect(field.minLines, 3);
-      expect(field.maxLines, 6);
+      expect(editableText.minLines, 3);
+      expect(editableText.maxLines, 6);
     });
 
     testWidgets('supports password configuration', (tester) async {
@@ -153,12 +153,12 @@ void main() {
         ),
       );
 
-      final field = tester.widget<TextFormField>(
-        find.byType(TextFormField),
+      final editableText = tester.widget<EditableText>(
+        find.byType(EditableText),
       );
 
-      expect(field.obscureText, isTrue);
-      expect(field.maxLines, 1);
+      expect(editableText.obscureText, isTrue);
+      expect(editableText.maxLines, 1);
     });
   });
 
