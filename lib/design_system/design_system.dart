@@ -1,5 +1,8 @@
+export 'components/med_avatar.dart';
+export 'components/med_badge.dart';
 export 'components/med_button.dart';
 export 'components/med_card.dart';
+export 'components/med_chip.dart';
 export 'components/med_divider.dart';
 export 'components/med_icon_button.dart';
 export 'components/med_input.dart';
