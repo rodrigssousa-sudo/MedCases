@@ -38,15 +38,6 @@ void main() {
         home: child,
       ),
     );
-  }) {
-    return MaterialApp(
-      theme: MedTheme.light,
-      darkTheme: MedTheme.dark,
-      home: MediaQuery(
-        data: MediaQueryData(size: size),
-        child: child,
-      ),
-    );
   }
 
   group('MedNavigationDestination', () {
@@ -74,12 +65,12 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            bottomNavigationBar: MedBottomNavigation(
-              destinations: destinations,
-              selectedIndex: 0,
-              onDestinationSelected: (index) => selected = index,
-            ),
+          bottomNavigationBar: MedBottomNavigation(
+            destinations: destinations,
+            selectedIndex: 0,
+            onDestinationSelected: (index) => selected = index,
           ),
+        ),
         size: const Size(390, 844),
       );
 
@@ -102,17 +93,17 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            body: MedSideNavigation(
-              destinations: destinations,
-              selectedIndex: 0,
-              onDestinationSelected: (index) => selected = index,
-              header: const MedSideNavigationHeader(
-                title: 'MedCases',
-                subtitle: 'Next',
-              ),
-              footer: const Text('Perfil'),
+          body: MedSideNavigation(
+            destinations: destinations,
+            selectedIndex: 0,
+            onDestinationSelected: (index) => selected = index,
+            header: const MedSideNavigationHeader(
+              title: 'MedCases',
+              subtitle: 'Next',
             ),
+            footer: const Text('Perfil'),
           ),
+        ),
         size: const Size(1440, 900),
       );
 
@@ -131,13 +122,13 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            body: MedSideNavigation(
-              destinations: destinations,
-              selectedIndex: 0,
-              onDestinationSelected: (_) {},
-              expanded: false,
-            ),
+          body: MedSideNavigation(
+            destinations: destinations,
+            selectedIndex: 0,
+            onDestinationSelected: (_) {},
+            expanded: false,
           ),
+        ),
         size: const Size(1440, 900),
       );
 
@@ -153,21 +144,21 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            drawer: MedNavigationDrawer(
-              destinations: destinations,
-              selectedIndex: 0,
-              onDestinationSelected: (index) => selected = index,
-              header: const Text('Menu'),
-            ),
-            body: Builder(
-              builder: (context) {
-                return ElevatedButton(
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                  child: const Text('Abrir'),
-                );
-              },
-            ),
+          drawer: MedNavigationDrawer(
+            destinations: destinations,
+            selectedIndex: 0,
+            onDestinationSelected: (index) => selected = index,
+            header: const Text('Menu'),
           ),
+          body: Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () => Scaffold.of(context).openDrawer(),
+                child: const Text('Abrir'),
+              );
+            },
+          ),
+        ),
         size: const Size(768, 1024),
       );
 
@@ -189,12 +180,12 @@ void main() {
       await pumpTestApp(
         tester,
         MedAppShell(
-            destinations: destinations,
-            selectedIndex: 0,
-            onDestinationSelected: (_) {},
-            toolbar: const MedToolbar(title: 'Mobile'),
-            body: const Text('Conteúdo mobile'),
-          ),
+          destinations: destinations,
+          selectedIndex: 0,
+          onDestinationSelected: (_) {},
+          toolbar: const MedToolbar(title: 'Mobile'),
+          body: const Text('Conteúdo mobile'),
+        ),
         size: const Size(390, 844),
       );
 
@@ -208,12 +199,12 @@ void main() {
       await pumpTestApp(
         tester,
         MedAppShell(
-            destinations: destinations,
-            selectedIndex: 0,
-            onDestinationSelected: (_) {},
-            toolbar: const MedToolbar(title: 'Tablet'),
-            body: const Text('Conteúdo tablet'),
-          ),
+          destinations: destinations,
+          selectedIndex: 0,
+          onDestinationSelected: (_) {},
+          toolbar: const MedToolbar(title: 'Tablet'),
+          body: const Text('Conteúdo tablet'),
+        ),
         size: const Size(768, 1024),
       );
 
@@ -231,12 +222,12 @@ void main() {
       await pumpTestApp(
         tester,
         MedAppShell(
-            destinations: destinations,
-            selectedIndex: 0,
-            onDestinationSelected: (_) {},
-            toolbar: const MedToolbar(title: 'Desktop'),
-            body: const Text('Conteúdo desktop'),
-          ),
+          destinations: destinations,
+          selectedIndex: 0,
+          onDestinationSelected: (_) {},
+          toolbar: const MedToolbar(title: 'Desktop'),
+          body: const Text('Conteúdo desktop'),
+        ),
         size: const Size(1280, 800),
       );
 
@@ -249,12 +240,12 @@ void main() {
       await pumpTestApp(
         tester,
         MedAppShell(
-            destinations: destinations,
-            selectedIndex: 0,
-            onDestinationSelected: (_) {},
-            mode: MedAppShellNavigationMode.side,
-            body: const Text('Modo forçado'),
-          ),
+          destinations: destinations,
+          selectedIndex: 0,
+          onDestinationSelected: (_) {},
+          mode: MedAppShellNavigationMode.side,
+          body: const Text('Modo forçado'),
+        ),
         size: const Size(390, 844),
       );
 
@@ -268,11 +259,11 @@ void main() {
       await pumpTestApp(
         tester,
         MedAppShell(
-            destinations: destinations,
-            selectedIndex: 0,
-            onDestinationSelected: (index) => selected = index,
-            body: const Text('Conteúdo'),
-          ),
+          destinations: destinations,
+          selectedIndex: 0,
+          onDestinationSelected: (index) => selected = index,
+          body: const Text('Conteúdo'),
+        ),
         size: const Size(390, 844),
       );
 

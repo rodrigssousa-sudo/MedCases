@@ -19,15 +19,6 @@ void main() {
         home: child,
       ),
     );
-  }) {
-    return MaterialApp(
-      theme: MedTheme.light,
-      darkTheme: MedTheme.dark,
-      home: MediaQuery(
-        data: MediaQueryData(size: size),
-        child: child,
-      ),
-    );
   }
 
   group('MedResponsiveBuilder', () {
@@ -37,14 +28,14 @@ void main() {
       await pumpTestApp(
         tester,
         SizedBox(
-            width: 390,
-            child: MedResponsiveBuilder(
-              builder: (context, windowClass, constraints) {
-                resolved = windowClass;
-                return const SizedBox();
-              },
-            ),
+          width: 390,
+          child: MedResponsiveBuilder(
+            builder: (context, windowClass, constraints) {
+              resolved = windowClass;
+              return const SizedBox();
+            },
           ),
+        ),
         size: const Size(390, 844),
       );
 
@@ -57,14 +48,14 @@ void main() {
       await pumpTestApp(
         tester,
         SizedBox(
-            width: 768,
-            child: MedResponsiveBuilder(
-              builder: (context, windowClass, constraints) {
-                resolved = windowClass;
-                return const SizedBox();
-              },
-            ),
+          width: 768,
+          child: MedResponsiveBuilder(
+            builder: (context, windowClass, constraints) {
+              resolved = windowClass;
+              return const SizedBox();
+            },
           ),
+        ),
         size: const Size(768, 1024),
       );
 
@@ -77,14 +68,14 @@ void main() {
       await pumpTestApp(
         tester,
         SizedBox(
-            width: 1280,
-            child: MedResponsiveBuilder(
-              builder: (context, windowClass, constraints) {
-                resolved = windowClass;
-                return const SizedBox();
-              },
-            ),
+          width: 1280,
+          child: MedResponsiveBuilder(
+            builder: (context, windowClass, constraints) {
+              resolved = windowClass;
+              return const SizedBox();
+            },
           ),
+        ),
         size: const Size(1280, 800),
       );
 
@@ -97,14 +88,14 @@ void main() {
       await pumpTestApp(
         tester,
         SizedBox(
-            width: 1600,
-            child: MedResponsiveBuilder(
-              builder: (context, windowClass, constraints) {
-                resolved = windowClass;
-                return const SizedBox();
-              },
-            ),
+          width: 1600,
+          child: MedResponsiveBuilder(
+            builder: (context, windowClass, constraints) {
+              resolved = windowClass;
+              return const SizedBox();
+            },
           ),
+        ),
         size: const Size(1600, 900),
       );
 
@@ -117,11 +108,11 @@ void main() {
       await pumpTestApp(
         tester,
         const Scaffold(
-            body: MedContentLayout(
-              maxWidth: 600,
-              child: Text('Conteúdo'),
-            ),
+          body: MedContentLayout(
+            maxWidth: 600,
+            child: Text('Conteúdo'),
           ),
+        ),
         size: const Size(1200, 800),
       );
 
@@ -155,12 +146,12 @@ void main() {
       await pumpTestApp(
         tester,
         const Scaffold(
-            body: MedSafeArea(
-              left: false,
-              bottom: false,
-              child: Text('Seguro'),
-            ),
+          body: MedSafeArea(
+            left: false,
+            bottom: false,
+            child: Text('Seguro'),
           ),
+        ),
         size: const Size(390, 844),
       );
 
@@ -183,13 +174,13 @@ void main() {
       await pumpTestApp(
         tester,
         MedPageLayout(
-            header: AppBar(
-              title: const Text('Cabeçalho'),
-            ),
-            footer: const Text('Rodapé'),
-            floatingActionButton: const Icon(Icons.add),
-            child: const Text('Corpo'),
+          header: AppBar(
+            title: const Text('Cabeçalho'),
           ),
+          footer: const Text('Rodapé'),
+          floatingActionButton: const Icon(Icons.add),
+          child: const Text('Corpo'),
+        ),
         size: const Size(390, 844),
       );
 
@@ -203,10 +194,10 @@ void main() {
       await pumpTestApp(
         tester,
         const MedPageLayout(
-            centerContent: false,
-            useSafeArea: false,
-            child: Text('Livre'),
-          ),
+          centerContent: false,
+          useSafeArea: false,
+          child: Text('Livre'),
+        ),
         size: const Size(390, 844),
       );
 
@@ -230,13 +221,13 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            body: SizedBox(
-              width: 390,
-              child: MedGrid(
-                children: items(),
-              ),
+          body: SizedBox(
+            width: 390,
+            child: MedGrid(
+              children: items(),
             ),
           ),
+        ),
         size: const Size(390, 844),
       );
 
@@ -253,13 +244,13 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            body: SizedBox(
-              width: 768,
-              child: MedGrid(
-                children: items(),
-              ),
+          body: SizedBox(
+            width: 768,
+            child: MedGrid(
+              children: items(),
             ),
           ),
+        ),
         size: const Size(768, 1024),
       );
 
@@ -276,13 +267,13 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            body: SizedBox(
-              width: 1280,
-              child: MedGrid(
-                children: items(),
-              ),
+          body: SizedBox(
+            width: 1280,
+            child: MedGrid(
+              children: items(),
             ),
           ),
+        ),
         size: const Size(1280, 800),
       );
 
@@ -299,13 +290,13 @@ void main() {
       await pumpTestApp(
         tester,
         Scaffold(
-            body: SizedBox(
-              width: 1600,
-              child: MedGrid(
-                children: items(),
-              ),
+          body: SizedBox(
+            width: 1600,
+            child: MedGrid(
+              children: items(),
             ),
           ),
+        ),
         size: const Size(1600, 900),
       );
 
