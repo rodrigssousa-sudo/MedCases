@@ -44,8 +44,7 @@ class HomeScreenV3 extends StatelessWidget {
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           final bool wide = constraints.maxWidth >= 900;
-          final double horizontalPadding =
-              wide ? MedSpacing.xxl : MedSpacing.lg;
+          final double horizontalPadding = wide ? MedSpacing.xl : MedSpacing.lg;
           final double maxContentWidth = wide ? 1180 : 720;
 
           return SingleChildScrollView(
@@ -55,7 +54,7 @@ class HomeScreenV3 extends StatelessWidget {
               horizontalPadding,
               MedSpacing.lg,
               horizontalPadding,
-              MedSpacing.xxxl,
+              MedSpacing.xl,
             ),
             child: Center(
               child: ConstrainedBox(
@@ -285,46 +284,48 @@ class _HomeV3PrimaryActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> children = <Widget>[
-      Expanded(
-        child: _HomeV3ActionCard(
-          actionKey: const Key('home-v3-calculator'),
-          icon: Icons.calculate_rounded,
-          title: 'Calculadoras',
-          subtitle: 'Scores, doses e ferramentas clínicas',
-          surface: surface,
-          border: border,
-          primaryText: primaryText,
-          secondaryText: secondaryText,
-          onTap: onOpenCalculator,
-        ),
-      ),
-      SizedBox(
-        width: wide ? MedSpacing.md : 0,
-        height: wide ? 0 : MedSpacing.md,
-      ),
-      Expanded(
-        child: _HomeV3ActionCard(
-          actionKey: const Key('home-v3-drugs'),
-          icon: Icons.medication_rounded,
-          title: 'Fármacos',
-          subtitle: 'Biblioteca e consulta rápida',
-          surface: surface,
-          border: border,
-          primaryText: primaryText,
-          secondaryText: secondaryText,
-          onTap: onOpenDrugs,
-        ),
-      ),
-    ];
+    final Widget calculator = _HomeV3ActionCard(
+      actionKey: const Key('home-v3-calculator'),
+      icon: Icons.calculate_rounded,
+      title: 'Calculadoras',
+      subtitle: 'Scores, doses e ferramentas clínicas',
+      surface: surface,
+      border: border,
+      primaryText: primaryText,
+      secondaryText: secondaryText,
+      onTap: onOpenCalculator,
+    );
+
+    final Widget drugs = _HomeV3ActionCard(
+      actionKey: const Key('home-v3-drugs'),
+      icon: Icons.medication_rounded,
+      title: 'Fármacos',
+      subtitle: 'Biblioteca e consulta rápida',
+      surface: surface,
+      border: border,
+      primaryText: primaryText,
+      secondaryText: secondaryText,
+      onTap: onOpenDrugs,
+    );
 
     if (wide) {
-      return Row(children: children);
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(child: calculator),
+          const SizedBox(width: MedSpacing.md),
+          Expanded(child: drugs),
+        ],
+      );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: children,
+      children: <Widget>[
+        calculator,
+        const SizedBox(height: MedSpacing.md),
+        drugs,
+      ],
     );
   }
 }
@@ -526,12 +527,12 @@ class _HomeV3ActionCard extends StatelessWidget {
                   color: MedColors.primary,
                   size: 26,
                 ),
-                const Spacer(),
+                const SizedBox(height: MedSpacing.lg),
                 Text(
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: MedTypography.titleSmall.copyWith(
+                  style: MedTypography.titleMedium.copyWith(
                     color: primaryText,
                   ),
                 ),
