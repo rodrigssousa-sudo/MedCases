@@ -2758,7 +2758,7 @@ class _FloatingFooterState extends State<_FloatingFooter> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
+                  padding: EdgeInsets.zero,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 220),
                     curve: Curves.easeOutCubic,

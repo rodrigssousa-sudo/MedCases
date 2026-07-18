@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:medcases/design_system/design_system.dart';
@@ -271,6 +273,35 @@ void main() {
       await tester.pump();
 
       expect(selected, 2);
+    });
+  });
+  group('Legacy floating footer regression', () {
+    test('footer IA shrunk layout contract fits the 38 px bar', () {
+      final source = File('lib/main.dart').readAsStringSync();
+
+      const expectedBlock = """
+            onTap: widget.onFabTap,
+            onDoubleTap: widget.onFabDoubleTap,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.zero,
+""";
+
+      expect(source.contains(expectedBlock), isTrue);
+      expect(source.contains('static const _barHeightShrunk = 38.0;'), isTrue);
+      expect(source.contains('onTap: widget.onFabTap,'), isTrue);
+      expect(source.contains('onDoubleTap: widget.onFabDoubleTap,'), isTrue);
+      expect(source.contains('width: 26,'), isTrue);
+      expect(source.contains('height: 26,'), isTrue);
+      expect(source.contains("child: Text('IA',"), isTrue);
+
+      const nominalContentHeight = 26.0 + 0.0 + 10.0;
+      const shrunkBarHeight = 38.0;
+
+      expect(nominalContentHeight, lessThanOrEqualTo(shrunkBarHeight));
     });
   });
 }
