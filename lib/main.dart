@@ -41,7 +41,10 @@ import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/professional_gate_screen.dart';
 import 'screens/fontes_screen.dart';
+// Mantido temporariamente para rollback imediato da Home V3.
+// ignore: unused_import
 import 'screens/home_screen.dart' show HomeScreen;
+import 'screens/v3/home_screen_v3.dart' show HomeScreenV3;
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
 import 'services/firestore_service.dart';
@@ -1935,7 +1938,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     _staticScreens = [
       RepaintBoundary(
         // 0 — tela inicial
-        child: HomeScreen(
+        child: HomeScreenV3(
           onTabChange: _onTabChange,
           onSubTabChange: _onSubTabChange,
           openProtocol: _openProtocol,
