@@ -83,45 +83,29 @@ class MedChip extends StatelessWidget {
       ],
     );
 
-    final Widget chip = AnimatedContainer(
-      duration: MedAnimation.fade,
-      curve: MedAnimation.standard,
-      constraints: const BoxConstraints(
-        minHeight: 36,
-      ),
-      decoration: BoxDecoration(
-        color: palette.background,
-        borderRadius: MedRadius.pill,
-        border: Border.all(
-          color: palette.border,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: _isInteractive ? onPressed : null,
-          borderRadius: MedRadius.pill,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: MedSpacing.md,
-              vertical: MedSpacing.sm,
-            ),
-            child: SizedBox.shrink(),
-          ),
-        ),
-      ),
-    );
-
     return Semantics(
       button: _isInteractive,
       enabled: enabled,
       selected: selected || variant == MedChipVariant.selected,
       label: semanticLabel ?? label,
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          chip,
-          IgnorePointer(
+      child: AnimatedContainer(
+        duration: MedAnimation.fade,
+        curve: MedAnimation.standard,
+        constraints: const BoxConstraints(
+          minHeight: 36,
+        ),
+        decoration: BoxDecoration(
+          color: palette.background,
+          borderRadius: MedRadius.pill,
+          border: Border.all(
+            color: palette.border,
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _isInteractive ? onPressed : null,
+            borderRadius: MedRadius.pill,
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: MedSpacing.md,
@@ -130,7 +114,7 @@ class MedChip extends StatelessWidget {
               child: content,
             ),
           ),
-        ],
+        ),
       ),
     );
   }

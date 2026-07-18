@@ -7,12 +7,12 @@ void main() {
     Widget child, {
     Size size = const Size(390, 844),
   }) {
-    return MediaQuery(
-      data: MediaQueryData(size: size),
-      child: MaterialApp(
-        theme: MedTheme.light,
-        darkTheme: MedTheme.dark,
-        home: child,
+    return MaterialApp(
+      theme: MedTheme.light,
+      darkTheme: MedTheme.dark,
+      home: MediaQuery(
+        data: MediaQueryData(size: size),
+        child: child,
       ),
     );
   }
