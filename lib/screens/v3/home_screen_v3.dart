@@ -249,10 +249,34 @@ class _HomeV3AiEntry extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: MedSpacing.sm),
-                Icon(
-                  Icons.arrow_forward_rounded,
-                  color: secondaryText,
+                const SizedBox(width: MedSpacing.md),
+                Container(
+                  key: const Key('home-v3-ai-cta'),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: MedSpacing.md,
+                    vertical: MedSpacing.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: border),
+                    borderRadius: MedRadius.medium,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        'ABRIR IA',
+                        style: MedTypography.bodySmall.copyWith(
+                          color: primaryText,
+                        ),
+                      ),
+                      const SizedBox(width: MedSpacing.xs),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        color: secondaryText,
+                        size: 18,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

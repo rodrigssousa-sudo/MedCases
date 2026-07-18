@@ -46,6 +46,8 @@ void main() {
 
     expect(find.byKey(const Key('home-v3-title')), findsOneWidget);
     expect(find.byKey(const Key('home-v3-ai')), findsOneWidget);
+    expect(find.byKey(const Key('home-v3-ai-cta')), findsOneWidget);
+    expect(find.text('ABRIR IA'), findsOneWidget);
     expect(find.byKey(const Key('home-v3-calculator')), findsOneWidget);
     expect(find.byKey(const Key('home-v3-drugs')), findsOneWidget);
     expect(find.byKey(const Key('home-v3-navigation-grid')), findsOneWidget);
@@ -78,6 +80,28 @@ void main() {
 
     expect(tabs, <int>[2, 4]);
     expect(subTabs, <int>[0]);
+  });
+
+  testWidgets('keeps the explicit AI action inside the existing AI card', (
+    WidgetTester tester,
+  ) async {
+    final List<int> tabs = <int>[];
+
+    await pumpHome(
+      tester,
+      onTabChange: tabs.add,
+      onSubTabChange: (_) {},
+      openProtocol: (_) {},
+      onOpenNotes: () {},
+    );
+
+    expect(find.byKey(const Key('home-v3-ai-cta')), findsOneWidget);
+    expect(find.text('ABRIR IA'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('home-v3-ai-cta')));
+    await tester.pump();
+
+    expect(tabs, <int>[2]);
   });
 
   testWidgets('preserves navigation and auxiliary callbacks', (
