@@ -5,12 +5,10 @@ import 'package:medcases/design_system/design_system.dart';
 void main() {
   Future<void> pumpTestApp(
     WidgetTester tester,
-    Widget child, {
-    Size size = const Size(800, 900),
-  }) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = size;
-    addTearDown(tester.view.reset);
+    Widget child,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1024, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
       MaterialApp(
@@ -21,6 +19,8 @@ void main() {
         ),
       ),
     );
+
+    await tester.pump();
   }
 
   group('MedDialog', () {
@@ -38,16 +38,19 @@ void main() {
           secondaryActionLabel: 'Cancelar',
           onSecondaryAction: () => secondary += 1,
         ),
-        size: const Size(800, 900),
       );
 
       expect(find.text('Confirmar ação'), findsOneWidget);
       expect(find.text('Deseja continuar?'), findsOneWidget);
 
-      await tester.tap(find.text('Confirmar'));
+      await tester.tap(
+        find.widgetWithText(MedButton, 'Confirmar'),
+      );
       await tester.pump();
 
-      await tester.tap(find.text('Cancelar'));
+      await tester.tap(
+        find.widgetWithText(MedButton, 'Cancelar'),
+      );
       await tester.pump();
 
       expect(primary, 1);
@@ -65,7 +68,6 @@ void main() {
             variant: variant,
             showCloseButton: false,
           ),
-          size: const Size(800, 900),
         );
 
         expect(find.text(variant.name), findsOneWidget);
@@ -89,15 +91,23 @@ void main() {
             );
           },
         ),
-        size: const Size(800, 900),
       );
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Abrir'));
+      await tester.tap(
+        find.widgetWithText(ElevatedButton, 'Abrir'),
+      );
+      await tester.pump();
       await tester.pumpAndSettle();
 
       expect(find.text('Diálogo aberto'), findsOneWidget);
+      expect(find.text('Conteúdo do diálogo'), findsOneWidget);
 
-      await tester.tap(find.byIcon(MedIcons.close));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(MedDialog),
+          matching: find.byIcon(MedIcons.close),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Diálogo aberto'), findsNothing);
@@ -119,7 +129,6 @@ void main() {
           showCloseButton: false,
           child: Text('Conteúdo principal'),
         ),
-        size: const Size(800, 900),
       );
 
       expect(find.text('Paciente'), findsOneWidget);
@@ -147,16 +156,23 @@ void main() {
             );
           },
         ),
-        size: const Size(800, 900),
       );
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Abrir modal'));
+      await tester.tap(
+        find.widgetWithText(ElevatedButton, 'Abrir modal'),
+      );
+      await tester.pump();
       await tester.pumpAndSettle();
 
       expect(find.text('Modal aberto'), findsOneWidget);
       expect(find.text('Corpo do modal'), findsOneWidget);
 
-      await tester.tap(find.byIcon(MedIcons.close));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(MedModal),
+          matching: find.byIcon(MedIcons.close),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Modal aberto'), findsNothing);
@@ -181,7 +197,6 @@ void main() {
             child: Text('Opções de filtro'),
           ),
         ),
-        size: const Size(800, 900),
       );
 
       expect(find.text('Filtros'), findsOneWidget);
@@ -209,16 +224,23 @@ void main() {
             );
           },
         ),
-        size: const Size(800, 900),
       );
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Abrir sheet'));
+      await tester.tap(
+        find.widgetWithText(ElevatedButton, 'Abrir sheet'),
+      );
+      await tester.pump();
       await tester.pumpAndSettle();
 
       expect(find.text('Sheet aberta'), findsOneWidget);
       expect(find.text('Corpo da sheet'), findsOneWidget);
 
-      await tester.tap(find.byIcon(MedIcons.close));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(MedBottomSheet),
+          matching: find.byIcon(MedIcons.close),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Sheet aberta'), findsNothing);
