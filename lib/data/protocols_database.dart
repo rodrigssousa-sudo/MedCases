@@ -3050,6 +3050,8 @@ const List<ProtocolModel> protocolsDatabase = [
   // ─────────────────────────────────────────────
   ProtocolModel(
     id: 'cad_shh',
+    canonicalFamilyId: 'medcases.dkahhs.adult_nonpregnant',
+    canonicalProtocolId: 'medcases.protocol.dkahhs.adult_nonpregnant.cad_ehh_combined.v1',
     title: {'pt': 'Cetoacidose Diabética (CAD) e Estado Hiperosmolar (EHH)', 'es': 'Cetoacidosis Diabética (CAD) y Estado Hiperosmolar (EHH)'},
     severity: {'pt': '🔴 Crítico — Emergência Endocrinometabólica', 'es': '🔴 Crítico — Emergencia Endocrinometabólica'},
     definition: {
@@ -3094,7 +3096,7 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     redFlags: {
       'pt': [
-        'K+ <3,3 mEq/L ao início: NUNCA iniciar insulina — hipopotassemia fatal pela insulina',
+        'K+ ≤3,5 mEq/L ao início: NUNCA iniciar insulina — hipopotassemia fatal pela insulina',
         'pH <7,0: CAD grave — risco de arritmia cardíaca fatal, PCR, coma',
         'Glicemia >800 mg/dL + osmolaridade >350 + Glasgow <10 → EHH extremo — coma iminente',
         'Creatinina >3 mg/dL: IRA grave por desidratação — fluido urgente',
@@ -3103,7 +3105,7 @@ const List<ProtocolModel> protocolsDatabase = [
         '"CAD euglicêmica" em uso de SGLT2i: glicemia <250 mg/dL mas com cetose — diagnóstico tardio comum',
       ],
       'es': [
-        'K+ <3,3 mEq/L al inicio: NUNCA iniciar insulina — hipopotasemia fatal por insulina',
+        'K+ ≤3,5 mEq/L al inicio: NUNCA iniciar insulina — hipopotasemia fatal por insulina',
         'pH <7,0: CAD grave — riesgo de arritmia cardíaca fatal, PCR, coma',
         'Glucemia >800 mg/dL + osmolaridad >350 + Glasgow <10 → EHH extremo — coma inminente',
         'Creatinina >3 mg/dL: IRA grave por deshidratación — fluido urgente',
@@ -3133,7 +3135,7 @@ const List<ProtocolModel> protocolsDatabase = [
     exams: {
       'pt': [
         'Glicemia capilar (imediata) + Gasometria arterial (pH, HCO3, PCO2) + cetonemia ou cetonúria',
-        'Eletrólitos: Na+ corrigido, K+ (CRÍTICO — nunca insulina se K+ <3,3), Cl-, Mg2+, Fósforo',
+        'Eletrólitos: Na+ corrigido, K+ (CRÍTICO — nunca insulina se K+ ≤3,5), Cl-, Mg2+, Fósforo',
         'Ânion-gap = Na+ – (Cl- + HCO3); normal <12 mEq/L; na CAD: elevado (12–20+)',
         'Osmolaridade efetiva = 2×Na+ + Glicemia/18 (calcular em todo EHH)',
         'Ureia, creatinina, função renal (IRA por desidratação frequente)',
@@ -3144,7 +3146,7 @@ const List<ProtocolModel> protocolsDatabase = [
       ],
       'es': [
         'Glucemia capilar (inmediata) + Gasometría arterial (pH, HCO3, PCO2) + cetonemia o cetonuria',
-        'Electrólitos: Na+ corregido, K+ (CRÍTICO — nunca insulina si K+ <3,3), Cl-, Mg2+, Fósforo',
+        'Electrólitos: Na+ corregido, K+ (CRÍTICO — nunca insulina si K+ ≤3,5), Cl-, Mg2+, Fósforo',
         'Anión-gap = Na+ – (Cl- + HCO3); en CAD: elevado (12–20+)',
         'Osmolaridad efectiva = 2×Na+ + Glucemia/18 (calcular en todo EHH)',
         'Urea, creatinina, función renal (IRA por deshidratación frecuente)',
@@ -3156,7 +3158,7 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     objectives: {
       'pt': [
-        'Queda de glicemia 50–75 mg/dL/hora (não mais rápido — risco de edema cerebral)',
+        'Segurança da queda glicêmica: usar valores verificados + timestamps reais; 90–120 mg/dL/h é faixa superior de segurança, NÃO meta terapêutica',
         'K+ entre 3,5–5,5 mEq/L durante todo o tratamento (reposição contínua)',
         'Resolução de CAD: pH >7,30 + HCO3 ≥15 mEq/L + ânion-gap normalizado (<12)',
         'Resolução de EHH: osmolaridade <315 mOsm/kg + glicemia <250–300 mg/dL + Glasgow normal',
@@ -3165,7 +3167,7 @@ const List<ProtocolModel> protocolsDatabase = [
         'Transição segura para insulina SC com sobreposição de 1–2h com insulina IV',
       ],
       'es': [
-        'Caída de glucemia 50–75 mg/dL/hora (no más rápido — riesgo de edema cerebral)',
+        'Seguridad del descenso glucémico: usar valores verificados + timestamps reales; 90–120 mg/dL/h es banda superior de seguridad, NO objetivo terapéutico',
         'K+ entre 3,5–5,5 mEq/L durante todo el tratamiento (reposición continua)',
         'Resolución de CAD: pH >7,30 + HCO3 ≥15 mEq/L + anión-gap normalizado (<12)',
         'Resolución de EHH: osmolaridad <315 mOsm/kg + glucemia <250–300 mg/dL + Glasgow normal',
@@ -3177,22 +3179,23 @@ const List<ProtocolModel> protocolsDatabase = [
     actions: {
       'pt': [
         'FASE 1 — RESSUSCITAÇÃO (1ª hora):',
-        '1. SF 0,9% 1 L/h IV na 1ª hora (hidratação é a intervenção mais importante)',
-        '2. Colher K+ IMEDIATAMENTE — insulina é PROIBIDA se K+ <3,3 mEq/L',
-        '3. Se K+ <3,3: repor 40 mEq/h de KCl IV até K+ >3,3 ANTES de iniciar insulina',
-        '4. Se K+ ≥3,3 mEq/L: Insulina Regular 0,1 UI/kg/h IV contínuo (sem bolus)',
-        '   Alternativa (ADA 2024): 0,14 UI/kg/h sem bolus inicial — tão eficaz, menos hipoglicemia',
+        'AVISO SC — Alternativa subcutânea para CAD leve/moderada não complicada selecionada: apenas informativa, NÃO autorada/validada/executável neste lote; sem dose, elegibilidade automática, prescrição, cópia ou atalho IV→SC; exige fluxo separado governado.',
+        '1. Fluidos: via padrão BLOQUEADA se gravidez ou alto risco estiver confirmado/desconhecido; alto risco confirmado → fluxo protegido separado; não gestante + não alto risco confirmados libera apenas o roteamento, sem autorizar tratamento.',
+        '2. K+ ausente/não verificado/atualidade desconhecida/desatualizado ou ≤3,5 mmol/L mantém HARD STOP do pré-requisito de insulina.',
+        '3. Somente K+ atual e confirmado >3,5 mmol/L libera o pré-requisito do potássio; NÃO inicia nem define dose de insulina.',
+        '4. Início e dose de insulina permanecem decisões separadas das demais verificações governadas.',
+        '',
         '',
         'FASE 2 — MANUTENÇÃO (2ª hora em diante):',
-        '5. Hidratação: após 1ª hora, ajustar por Na+ corrigido:',
-        '   — Na+ corrigido baixo ou normal → continuar SF 0,9% 250–500 mL/h',
-        '   — Na+ corrigido alto → trocar para SF 0,45% 250–500 mL/h',
-        '6. Meta glicêmica: queda 50–75 mg/dL/hora (se >100 mg/dL/h → reduzir insulina à metade)',
+        '5. Fluidos subsequentes permanecem sob roteamento governado; não selecionar solução/velocidade automaticamente com gravidez/alto risco desconhecidos ou confirmados.',
+        '',
+        '',
+        '6. Queda glicêmica = (anterior − atual)/horas reais entre timestamps. 90–120 mg/dL/h é faixa superior de segurança, NÃO meta; >120 → reavaliar, sem alteração automática de insulina/fluidos.',
         '7. Transição para SG 5% + insulina: quando glicemia <200 mg/dL (CAD) ou <300 mg/dL (EHH)',
         '   Manter insulina 0,02–0,05 UI/kg/h + SG para evitar hipoglicemia',
         '',
         'REPOSIÇÃO DE K+ (contínua durante todo tratamento):',
-        '8. K+ <3,5: KCl 40 mEq/h IV (suspender insulina se K+ <3,3)',
+        '8. K+ <3,5: KCl 40 mEq/h IV (suspender insulina se K+ ≤3,5)',
         '9. K+ 3,5–5,5: KCl 20–30 mEq/h (manter insulina)',
         '10. K+ >5,5: não repor; monitorar a cada 2h',
         '',
@@ -3207,20 +3210,21 @@ const List<ProtocolModel> protocolsDatabase = [
       ],
       'es': [
         'FASE 1 — RESUCITACIÓN (1ª hora):',
-        '1. SF 0,9% 1 L/h IV en 1ª hora (hidratación es la intervención más importante)',
-        '2. Colectar K+ INMEDIATAMENTE — insulina PROHIBIDA si K+ <3,3 mEq/L',
-        '3. Si K+ <3,3: reponer 40 mEq/h de KCl IV hasta K+ >3,3 ANTES de iniciar insulina',
-        '4. Si K+ ≥3,3 mEq/L: Insulina Regular 0,1 UI/kg/h IV continuo (sin bolo)',
+        'AVISO SC — Alternativa subcutánea para CAD leve/moderada no complicada seleccionada: solo informativa, NO autorada/validada/ejecutable en este lote; sin dosis, elegibilidad automática, prescripción, copia ni atajo IV→SC; exige flujo separado gobernado.',
+        '1. Fluidos: vía estándar BLOQUEADA si embarazo o alto riesgo está confirmado/desconocido; alto riesgo confirmado → flujo protegido separado; no gestante + no alto riesgo confirmados libera solo el ruteo, sin autorizar tratamiento.',
+        '2. K+ ausente/no verificado/actualidad desconocida/desactualizado o ≤3,5 mmol/L mantiene HARD STOP del prerrequisito de insulina.',
+        '3. Solo K+ actual y confirmado >3,5 mmol/L libera el prerrequisito de potasio; NO inicia ni define dosis de insulina.',
+        '4. Inicio y dosis de insulina siguen siendo decisiones separadas de las demás verificaciones gobernadas.',
         '',
         'FASE 2 — MANTENIMIENTO (2ª hora en adelante):',
-        '5. Hidratación: ajustar por Na+ corregido:',
-        '   — Na+ corregido bajo o normal → continuar SF 0,9% 250–500 mL/h',
-        '   — Na+ corregido alto → cambiar a SF 0,45% 250–500 mL/h',
-        '6. Meta glucémica: caída 50–75 mg/dL/hora (si >100 → reducir insulina a la mitad)',
+        '5. Fluidos posteriores permanecen bajo ruteo gobernado; no seleccionar solución/velocidad automáticamente con embarazo/alto riesgo desconocidos o confirmados.',
+        '',
+        '',
+        '6. Descenso glucémico = (previa − actual)/horas reales entre timestamps. 90–120 mg/dL/h es banda superior de seguridad, NO objetivo; >120 → reevaluar, sin cambio automático de insulina/fluidos.',
         '7. Transición a SG 5% + insulina: cuando glucemia <200 mg/dL (CAD) o <300 mg/dL (EHH)',
         '',
         'REPOSICIÓN DE K+ (continua):',
-        '8. K+ <3,5: KCl 40 mEq/h IV (suspender insulina si K+ <3,3)',
+        '8. K+ <3,5: KCl 40 mEq/h IV (suspender insulina si K+ ≤3,5)',
         '9. K+ 3,5–5,5: KCl 20–30 mEq/h',
         '10. K+ >5,5: no reponer; monitorar cada 2 h',
         '',
@@ -3237,12 +3241,12 @@ const List<ProtocolModel> protocolsDatabase = [
     drugsFirstLine: {
       'pt': [
         'SF 0,9% (Soro Fisiológico) — 1 L/h na 1ª hora; 250–500 mL/h depois (ajustar por Na+ e débito urinário)',
-        'Insulina Regular — 0,1 UI/kg/h IV contínuo (SEM bolus inicial — ADA 2024); após K+ >3,3 confirmado',
+        'Insulina Regular — 0,1 UI/kg/h IV contínuo (SEM bolus inicial — ADA 2024); após K+ >3,5 confirmado',
         'KCl (Cloreto de Potássio) — 20–40 mEq/h IV (manter K+ 3,5–5,5 durante todo tratamento)',
       ],
       'es': [
         'SF 0,9% (Suero Fisiológico) — 1 L/h en 1ª hora; 250–500 mL/h después (ajustar por Na+ y diuresis)',
-        'Insulina Regular — 0,1 UI/kg/h IV continuo (SIN bolo inicial — ADA 2024); tras K+ >3,3 confirmado',
+        'Insulina Regular — 0,1 UI/kg/h IV continuo (SIN bolo inicial — ADA 2024); tras K+ >3,5 confirmado',
         'KCl (Cloruro de Potasio) — 20–40 mEq/h IV (mantener K+ 3,5–5,5 durante todo tratamiento)',
       ],
     },
@@ -3264,14 +3268,14 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     drugsContraindicated: {
       'pt': [
-        'Insulina com K+ <3,3 mEq/L: hipopotassemia fatal — PARAR insulina e repor K+ primeiro',
+        'Insulina com K+ ≤3,5 mEq/L: hipopotassemia fatal — PARAR insulina e repor K+ primeiro',
         'Bicarbonato de rotina (pH >7,0): piora hipopotassemia, causa alcalose de rebote, piora captação tissular de O2',
         'Insulina SC isolada em CAD grave: absorção errática e lenta — usar IV contínuo',
         'Metformina durante a crise: risco de acidose láctica; suspender até estabilização e função renal recuperada',
         'Insulina em bolus IV em vez de infusão contínua: quedas glicêmicas bruscas e risco de hipoglicemia',
       ],
       'es': [
-        'Insulina con K+ <3,3 mEq/L: hipopotasemia fatal — DETENER insulina y reponer K+ primero',
+        'Insulina con K+ ≤3,5 mEq/L: hipopotasemia fatal — DETENER insulina y reponer K+ primero',
         'Bicarbonato de rutina (pH >7,0): empeora hipopotasemia, causa alcalosis de rebote',
         'Insulina SC aislada en CAD grave: absorción errática y lenta — usar IV continuo',
         'Metformina durante la crisis: riesgo de acidosis láctica',
@@ -3302,7 +3306,7 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     doNotDo: {
       'pt': [
-        'NUNCA iniciar insulina com K+ <3,3 mEq/L — hipopotassemia + insulina = fibrilação ventricular fatal',
+        'NUNCA iniciar insulina com K+ ≤3,5 mEq/L — hipopotassemia + insulina = fibrilação ventricular fatal',
         'Não usar bicarbonato de rotina (pH >7,0) — piora hipopotassemia, edema cerebral, sem benefício',
         'Não correr glicose mais rápido que 75 mg/dL/hora — risco de edema cerebral (especialmente em crianças)',
         'Não fazer transição para insulina SC sem sobreposição de 1–2h com a infusão IV',
@@ -3311,7 +3315,7 @@ const List<ProtocolModel> protocolsDatabase = [
         'Não liberar insulina NPH como monodose ao final — usar insulina basal + bolus individualizada',
       ],
       'es': [
-        'NUNCA iniciar insulina con K+ <3,3 mEq/L — hipopotasemia + insulina = fibrilación ventricular fatal',
+        'NUNCA iniciar insulina con K+ ≤3,5 mEq/L — hipopotasemia + insulina = fibrilación ventricular fatal',
         'No usar bicarbonato de rutina (pH >7,0) — empeora hipopotasemia, edema cerebral, sin beneficio',
         'No bajar glucemia más de 75 mg/dL/hora — riesgo de edema cerebral (especialmente en niños)',
         'No hacer transición a insulina SC sin superposición de 1–2 h con infusión IV',
@@ -3356,8 +3360,8 @@ const List<ProtocolModel> protocolsDatabase = [
       ],
     },
     avoid: {
-      'pt': 'NUNCA iniciar insulina com K+ <3,3 mEq/L (hipopotassemia fatal). Evitar bicarbonato rotineiro (piora hipopotassemia, alcalose). Não usar insulina rápida SC isolada em CAD grave. Evitar queda glicêmica rápida (edema cerebral em criança).',
-      'es': 'NUNCA iniciar insulina con K+ <3,3 mEq/L. Evitar bicarbonato rutinario. No usar insulina rápida SC aislada en CAD grave.',
+      'pt': 'NUNCA iniciar insulina com K+ ≤3,5 mEq/L (hipopotassemia fatal). Evitar bicarbonato rotineiro (piora hipopotassemia, alcalose). Não usar insulina rápida SC isolada em CAD grave. Evitar queda glicêmica rápida (edema cerebral em criança).',
+      'es': 'NUNCA iniciar insulina con K+ ≤3,5 mEq/L. Evitar bicarbonato rutinario. No usar insulina rápida SC aislada en CAD grave.',
     },
     drugs: ['insulina_regular', 'cloreto_potassio', 'bicarbonato_sodio'],
   ),
@@ -4649,6 +4653,8 @@ const List<ProtocolModel> protocolsDatabase = [
   // ─────────────────────────────────────────────
   ProtocolModel(
     id: 'cetoacidose_diabetica',
+    canonicalFamilyId: 'medcases.dkahhs.adult_nonpregnant',
+    canonicalProtocolId: 'medcases.protocol.dkahhs.adult_nonpregnant.cad.v1',
     title: {'pt': 'Cetoacidose Diabética (CAD)', 'es': 'Cetoacidosis Diabética (CAD)'},
     severity: {'pt': '🔴 Crítico — Emergência Metabólica Endócrina', 'es': '🔴 Crítico — Emergencia Metabólica Endócrina'},
     definition: {
@@ -4689,7 +4695,7 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     redFlags: {
       'pt': [
-        '🔴 K+ <3,5 mEq/L + acidose: HIPOPOTASSEMIA GRAVE — repor KCl agora, ANTES de iniciar insulina (risco de PCR)',
+        '🔴 K+ ≤3,5 mEq/L + acidose: pré-requisito de insulina BLOQUEADO até K+ atual e confirmado >3,5',
         '🔴 Glicemia <250 mg/dL + cetonemia + acidose: CAD euglicêmica (SGLT2i) — NÃO excluir CAD por glicemia "normal"',
         '🔴 Edema cerebral: queda rápida de glicemia/osmolaridade em criança → cefaleia + vômito + agitação → risco de herniação',
         '🟠 Ânion gap persistente após glicemia <200 mg/dL: critério de resolução é o ÂNION GAP, não a glicemia',
@@ -4697,7 +4703,7 @@ const List<ProtocolModel> protocolsDatabase = [
         '🟡 Dor abdominal intensa em CAD: pode ser do próprio quadro metabólico; investigar pancreatite/cirúrgico se persistir após hidratação',
       ],
       'es': [
-        '🔴 K+ <3,5 mEq/L + acidosis: HIPOPOTASEMIA GRAVE — reponer KCl ANTES de insulina (riesgo PCR)',
+        '🔴 K+ ≤3,5 mEq/L + acidosis: prerrequisito de insulina BLOQUEADO hasta K+ actual y confirmado >3,5',
         '🔴 Glucemia <250 mg/dL + cetonemia + acidosis: CAD euglucémica (SGLT2i) — NO excluir CAD por glucemia "normal"',
         '🔴 Edema cerebral: caída rápida de glucemia/osmolaridad en niño → riesgo de herniación',
         '🟠 Anion gap persistente tras glucemia <200 mg/dL: criterio de resolución es el ANION GAP, no la glucemia',
@@ -4763,10 +4769,11 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     actions: {
       'pt': [
-        '1. VERIFICAR K+ ANTES DE TUDO: K+ <3,5 → repor KCl 20–40 mEq/h IV antes de insulina. K+ >5,5 → iniciar insulina sem KCl. K+ 3,5–5,5 → insulina + KCl simultâneos',
-        '2. Hidratação: SF 0,9% — 1 L em 1h; depois 500 mL/h × 2–4h; depois 250 mL/h conforme débito urinário e resposta clínica',
-        '3. Insulina Regular IV contínua: 0,14 UI/kg/h (SEM bolus inicial — aumenta risco de hipocalemia); só iniciar após confirmar K+ ≥3,5',
-        '4. Meta: queda glicêmica 50–75 mg/dL/h. Quando glicemia <250 mg/dL → trocar SF para SG 5–10% para manter infusão de insulina (não suspender insulina!)',
+        'AVISO SC — Alternativa subcutânea para CAD leve/moderada não complicada selecionada: apenas informativa, NÃO autorada/validada/executável; sem dose, elegibilidade automática, prescrição, cópia ou atalho IV→SC; exige fluxo separado governado.',
+        '1. POTÁSSIO: ausente/não verificado/atualidade desconhecida/desatualizado ou ≤3,5 mantém HARD STOP; somente K+ atual confirmado >3,5 libera o pré-requisito, sem iniciar/definir dose de insulina.',
+        '2. FLUIDOS: via padrão bloqueada se gravidez/alto risco estiver confirmado ou desconhecido; alto risco → fluxo protegido; não gestante + não alto risco libera apenas o roteamento.',
+        '3. Início/dose de insulina permanece decisão separada; K+ >3,5 libera apenas o pré-requisito do potássio.',
+        '4. Queda glicêmica = (anterior − atual)/horas reais entre timestamps. 90–120 mg/dL/h é faixa superior de segurança, NÃO meta; >120 → reavaliar sem alteração automática de insulina/fluidos.',
         '5. Reposição de K+: adicionar 20–40 mEq KCl em cada litro de SF se K+ 3,5–5,5; checar a cada 2h',
         '6. Bicarbonato: APENAS se pH <6,9 → 100 mEq NaHCO3 em 1–2h; monitorar K+ após (bicarbonato causa shift K+ intracelular)',
         '7. Monitorar: glicemia a cada hora, K+ e gasometria a cada 2–4h',
@@ -4774,10 +4781,11 @@ const List<ProtocolModel> protocolsDatabase = [
         '9. Transição para insulina SC: fazer insulina basal SC 1h ANTES de suspender infusão IV (evitar rebote)',
       ],
       'es': [
-        '1. VERIFICAR K+ ANTES DE TODO: K+ <3,5 → reponer KCl 20–40 mEq/h IV ANTES de insulina. K+ >5,5 → insulina sin KCl. K+ 3,5–5,5 → insulina + KCl simultáneos',
-        '2. Hidratación: SF 0,9% — 1 L en 1h; luego 500 mL/h × 2–4 h; luego 250 mL/h',
-        '3. Insulina Regular IV: 0,14 UI/kg/h (SIN bolo inicial); solo iniciar tras confirmar K+ ≥3,5',
-        '4. Meta: caída glucémica 50–75 mg/dL/h. Cuando <250 mg/dL → cambiar SF a SG 5–10%',
+        'AVISO SC — Alternativa subcutánea para CAD leve/moderada no complicada seleccionada: solo informativa, NO autorada/validada/ejecutable; sin dosis, elegibilidad automática, prescripción, copia ni atajo IV→SC; exige flujo separado gobernado.',
+        '1. POTASIO: ausente/no verificado/actualidad desconocida/desactualizado o ≤3,5 mantiene HARD STOP; solo K+ actual confirmado >3,5 libera el prerrequisito, sin iniciar/definir dosis de insulina.',
+        '2. FLUIDOS: vía estándar bloqueada si embarazo/alto riesgo está confirmado o desconocido; alto riesgo → flujo protegido; no gestante + no alto riesgo libera solo el ruteo.',
+        '3. Inicio/dosis de insulina sigue siendo decisión separada; K+ >3,5 libera solo el prerrequisito de potasio.',
+        '4. Descenso glucémico = (previa − actual)/horas reales entre timestamps. 90–120 mg/dL/h es banda superior de seguridad, NO objetivo; >120 → reevaluar sin cambio automático de insulina/fluidos.',
         '5. Reposición K+: 20–40 mEq KCl por litro de SF si K+ 3,5–5,5; controlar c/2 h',
         '6. Bicarbonato: SOLO si pH <6,9 → 100 mEq NaHCO3 en 1–2 h',
         '7. Monitorizar: glucemia horaria, K+ y gasometría c/2–4 h',
@@ -4786,13 +4794,13 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     drugsFirstLine: {
       'pt': [
-        'Insulina Regular IV — 0,14 UI/kg/h (sem bolus); NUNCA iniciar sem K+ ≥3,5; troca para SC após resolução',
+        'Insulina Regular IV — 0,14 UI/kg/h (sem bolus); pré-requisito exige K+ atual confirmado >3,5; isso não inicia nem define dose; troca para SC após resolução',
         'SF 0,9% — 1 L/h na 1ª hora; depois ajustar; trocar para SG 5–10% quando glicemia <250 mg/dL',
         'KCl (cloreto de potássio) — 20–40 mEq/L de SF IV; IMPRESCINDÍVEL para evitar PCR por hipocalemia',
         'Tiamina 100 mg IV — se suspeita de alcoolismo/desnutrição ANTES do soro glicosado',
       ],
       'es': [
-        'Insulina Regular IV — 0,14 UI/kg/h (sin bolo); NUNCA iniciar sin K+ ≥3,5',
+        'Insulina Regular IV — 0,14 UI/kg/h (sin bolo); prerrequisito exige K+ actual confirmado >3,5; esto no inicia ni define dosis',
         'SF 0,9% — 1 L/h en la 1ª hora; cambiar a SG 5–10% cuando glucemia <250 mg/dL',
         'KCl (cloruro de potasio) — 20–40 mEq/L de SF IV; IMPRESCINDIBLE para evitar PCR por hipopotasemia',
         'Tiamina 100 mg IV — si sospecha de alcoholismo/desnutrición ANTES del suero glucosado',
@@ -4813,14 +4821,14 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     drugsContraindicated: {
       'pt': [
-        'Insulina sem K+ ≥3,5: hipopotassemia fatal — ECG com FV/assistolia antes de corrigir',
+        'Insulina com K+ ausente/não atual/não verificado ou ≤3,5: pré-requisito bloqueado — ECG com FV/assistolia antes de corrigir',
         'Bicarbonato rotineiro: piora hipopotassemia (shift K+ intracelular), acidose intracelular paradoxal, edema cerebral',
         'SGLT2i durante tratamento da CAD: perpetua cetogênese',
         'Diuréticos na fase inicial: desidratação já grave; diuréticos pioram hipovolemia e hipocalemia',
         'Hidratação excessiva rápida em criança: edema cerebral (causa mais comum de morte em CAD pediátrica)',
       ],
       'es': [
-        'Insulina sin K+ ≥3,5: hipopotasemia fatal',
+        'Insulina con K+ ausente/no actual/no verificado o ≤3,5: prerrequisito bloqueado',
         'Bicarbonato rutinario: empeora hipopotasemia, acidosis intracelular paradójica',
         'SGLT2i durante tratamiento de la CAD: perpetúa cetogénesis',
         'Diuréticos en fase inicial: empeoran hipovolemia e hipopotasemia',
@@ -4867,7 +4875,7 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     doNotDo: {
       'pt': [
-        'NÃO iniciar insulina sem checar e corrigir K+ ≥3,5 (hipocalemia causa PCR)',
+        'NÃO iniciar insulina com K+ ausente/não atual/não verificado ou ≤3,5; K+ atual confirmado >3,5 libera somente o pré-requisito',
         'NÃO suspender insulina quando glicemia <200 sem verificar ânion gap (cetoacidose pode persistir)',
         'NÃO usar bicarbonato rotineiramente (piora hipocalemia, acidose paradoxal cerebral)',
         'NÃO usar bolus de insulina no início (aumenta risco de hipocalemia aguda)',
@@ -4876,7 +4884,7 @@ const List<ProtocolModel> protocolsDatabase = [
         'NÃO confundir resolução da CAD com normalização da glicemia (critério real é ânion gap fechado)',
       ],
       'es': [
-        'NO iniciar insulina sin verificar y corregir K+ ≥3,5',
+        'NO iniciar insulina con K+ ausente/no actual/no verificado o ≤3,5; K+ actual confirmado >3,5 libera solamente el prerrequisito',
         'NO suspender insulina cuando glucemia <200 sin verificar anion gap',
         'NO usar bicarbonato rutinariamente',
         'NO usar bolo de insulina al inicio',

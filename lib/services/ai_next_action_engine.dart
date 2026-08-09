@@ -11,6 +11,7 @@
 // ══════════════════════════════════════════════════════════════════════════════
 
 
+import 'dkahhs/dkahhs_runtime_safety_contract.dart';
 class SmartNextAction {
   final String label;
   final String promptToSend;
@@ -184,6 +185,7 @@ class NextActionEngine {
     required String currentLanguage,
     List<String> chatHistory = const [],
   }) {
+    if (isPlantaoMode && DkahhsRuntimeSafetyContract.isScAlternativeRequest(lastUserMessage)) return const SmartNextAction(label: '', promptToSend: '');
     final lang = _resolveLanguage(currentLanguage, lastUserMessage, lastAiResponse);
     final corpus = '${lastUserMessage.toLowerCase()} ${lastAiResponse.toLowerCase()}';
     final topic = _detectTopic(corpus);

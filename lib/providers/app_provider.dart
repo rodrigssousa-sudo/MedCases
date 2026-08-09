@@ -47,6 +47,7 @@ import '../screens/internacion/components/patient_accordion.dart'
 import '../screens/internacion/services/internacion_persistence.dart'
     show PacienteSession;
 
+import '../services/dkahhs/dkahhs_runtime_safety_contract.dart';
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
   success, // item fixado com sucesso
@@ -298,6 +299,11 @@ class AppProvider extends ChangeNotifier {
 
   PatientData _patient = PatientData();
   HemoData _hemo = HemoData();
+  DkahhsPregnancyStatus _dkahhsPregnancyStatus = DkahhsPregnancyStatus.unknown;
+  DkahhsHighRiskStatus _dkahhsHighRiskStatus = DkahhsHighRiskStatus.unknown;
+  DkahhsPotassiumObservation? _dkahhsPotassiumObservation;
+  DkahhsGlucoseSample? _dkahhsPreviousGlucoseSample;
+  DkahhsGlucoseSample? _dkahhsCurrentGlucoseSample;
 
   List<String> _selectedDrugIds = [];
   String _activeDrugId = '';
@@ -1083,6 +1089,7 @@ class AppProvider extends ChangeNotifier {
     _activeDrugId = '';
     _patient = PatientData();
     _hemo = HemoData();
+    _resetDkahhsSafetyContext();
     // Limpa chave, histórico de IA e estado Gemini ao fazer logout
     _openAiKey = '';
     _aiHistory.clear();
@@ -1841,9 +1848,23 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  DkahhsFluidRouteDecision get dkahhsFluidRouteDecision => DkahhsRuntimeSafetyContract.evaluateFluidRoute(pregnancyStatus:_dkahhsPregnancyStatus,highRiskStatus:_dkahhsHighRiskStatus);
+  DkahhsPotassiumGateDecision get dkahhsPotassiumGateDecision => DkahhsRuntimeSafetyContract.evaluatePotassiumGate(_dkahhsPotassiumObservation);
+  DkahhsGlucoseDeclineAssessment get dkahhsGlucoseDeclineAssessment => DkahhsRuntimeSafetyContract.assessGlucoseDecline(previous:_dkahhsPreviousGlucoseSample,current:_dkahhsCurrentGlucoseSample);
+  void updateDkahhsPregnancyStatus(DkahhsPregnancyStatus v){_dkahhsPregnancyStatus=v;notifyListeners();}
+  void updateDkahhsHighRiskStatus(DkahhsHighRiskStatus v){_dkahhsHighRiskStatus=v;notifyListeners();}
+  void updateDkahhsPotassiumObservation(DkahhsPotassiumObservation? v){_dkahhsPotassiumObservation=v;notifyListeners();}
+  void recordDkahhsGlucoseSample(DkahhsGlucoseSample v){_dkahhsPreviousGlucoseSample=_dkahhsCurrentGlucoseSample;_dkahhsCurrentGlucoseSample=v;notifyListeners();}
+  void clearDkahhsSafetyContext(){_resetDkahhsSafetyContext();notifyListeners();}
+  void _resetDkahhsSafetyContext(){_dkahhsPregnancyStatus=DkahhsPregnancyStatus.unknown;_dkahhsHighRiskStatus=DkahhsHighRiskStatus.unknown;_dkahhsPotassiumObservation=null;_dkahhsPreviousGlucoseSample=null;_dkahhsCurrentGlucoseSample=null;}
+  String _dkahhsFluidRouteText(bool es)=>DkahhsRuntimeSafetyContract.fluidRouteMessage(dkahhsFluidRouteDecision,spanish:es);
+  String _dkahhsPotassiumGateText(bool es)=>DkahhsRuntimeSafetyContract.potassiumGateMessage(dkahhsPotassiumGateDecision,spanish:es);
+  String _dkahhsGlucoseDeclineText(bool es)=>DkahhsRuntimeSafetyContract.glucoseDeclineMessage(dkahhsGlucoseDeclineAssessment,spanish:es);
+
   void updatePatient(String key, String value) {
     switch (key) {
       case 'patientId':
+        if (_patient.patientId != value) _resetDkahhsSafetyContext();
         _patient.patientId = value;
         break;
       case 'age':
@@ -1872,6 +1893,7 @@ class AppProvider extends ChangeNotifier {
     _patient = PatientData();
     _selectedDrugIds = [];
     _activeDrugId = '';
+    _resetDkahhsSafetyContext();
     notifyListeners();
   }
 
@@ -9124,9 +9146,7 @@ class AppProvider extends ChangeNotifier {
           'BUN/Cr'
         ],
         flags: [
-          es
-              ? 'K+ <3,3 → SUSPENDER insulina y reponer K+ primero'
-              : 'K+ <3,3 → SUSPENDER insulina e repor K+ primeiro'
+          _dkahhsPotassiumGateText(es),
         ],
         differentials: es
             ? [
@@ -9145,17 +9165,17 @@ class AppProvider extends ChangeNotifier {
               ],
         treatment: es
             ? [
-                '1. Hidratación: SF 0,9% 1 L/h × 2h → 0,5 L/h según PVC/diuresis',
-                '2. K+ >3,3 y <5,5: insulina regular 0,1 U/kg bolus → 0,1 U/kg/h; K+ <3,3: SUSPENDER insulina, reponer KCl 40 mEq/h primero',
-                '3. Meta: reducir glucemia 50-70 mg/dL/h; cuando <200 → añadir SG5%',
+                _dkahhsFluidRouteText(true),
+                _dkahhsPotassiumGateText(true),
+                _dkahhsGlucoseDeclineText(true),
                 '4. K+ cada 2h: meta 4-5 mEq/L (la insulina baja K+ — riesgo fatal)',
                 '5. Bicarbonato solo si pH <6,9 (100 mEq en 2h)',
                 '6. Buscar causa: infección, abandono insulina, IAM, pancreatitis — tratar causa'
               ]
             : [
-                '1. Hidratação: SF 0,9% 1 L/h × 2h → 0,5 L/h conforme PVC/diurese',
-                '2. K+ >3,3 e <5,5: insulina regular 0,1 U/kg bolus → 0,1 U/kg/h; K+ <3,3: SUSPENDER insulina, repor KCl 40 mEq/h primeiro',
-                '3. Meta: reduzir glicemia 50-70 mg/dL/h; quando <200 → adicionar SG5%',
+                _dkahhsFluidRouteText(false),
+                _dkahhsPotassiumGateText(false),
+                _dkahhsGlucoseDeclineText(false),
                 '4. K+ a cada 2h: meta 4-5 mEq/L (insulina baixa K+ — risco fatal)',
                 '5. Bicarbonato apenas se pH <6,9 (100 mEq em 2h)',
                 '6. Buscar causa: infecção, abandono insulina, IAM, pancreatite — tratar causa'

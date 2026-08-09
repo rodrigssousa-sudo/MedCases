@@ -4,6 +4,13 @@
 class ProtocolModel {
   // ── Campos originais (obrigatórios) ─────────────────────────────────────
   final String id;
+
+  // ── Identidade canônica de governança (opcional / retrocompatível) ─────
+  /// Família canônica estável; não substitui o ID legado.
+  final String? canonicalFamilyId;
+
+  /// Identificador canônico da variante; não substitui o ID legado.
+  final String? canonicalProtocolId;
   final Map<String, String> title;
   final Map<String, String> severity;      // nível geral: Crítico / Alto / Moderado
   final Map<String, String> recognize;     // apresentação clínica (legado v1.0; default vazio em v2.0)
@@ -68,6 +75,8 @@ class ProtocolModel {
 
   const ProtocolModel({
     required this.id,
+    this.canonicalFamilyId,
+    this.canonicalProtocolId,
     required this.title,
     required this.severity,
     this.recognize = const {},   // legado v1.0 — v2.0 usa definition
