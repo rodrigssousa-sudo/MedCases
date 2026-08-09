@@ -1,3 +1,6 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+// Historical owner lint containment: 116 pre-existing infos surfaced when this file is reanalyzed.
+
 // ══════════════════════════════════════════════════════════════════════════════
 // ai_next_action_engine.dart — Smart Next Action Engine v3 (Build 286)
 //
@@ -10,14 +13,21 @@
 //   • Respeitar modo (Plantão/Estudo) e idioma (PT-BR/ES) com rigor absoluto.
 // ══════════════════════════════════════════════════════════════════════════════
 
+import 'ai_pipeline/plantao/contracts/plantao_continuation_type.dart';
+import 'ai_pipeline/plantao/contracts/plantao_section.dart';
 
+import 'dkahhs/dkahhs_runtime_safety_contract.dart';
 class SmartNextAction {
   final String label;
   final String promptToSend;
+  final PlantaoContinuationType continuationType;
+  final List<PlantaoSection> requestedSections;
 
   const SmartNextAction({
     required this.label,
     required this.promptToSend,
+    this.continuationType = PlantaoContinuationType.freeFollowUp,
+    this.requestedSections = const <PlantaoSection>[],
   });
 }
 
@@ -184,8 +194,11 @@ class NextActionEngine {
     required String currentLanguage,
     List<String> chatHistory = const [],
   }) {
+    if (isPlantaoMode && DkahhsRuntimeSafetyContract.isScAlternativeRequest(lastUserMessage)) return _emptyGuardiaAction;
     final lang = _resolveLanguage(currentLanguage, lastUserMessage, lastAiResponse);
-    final corpus = '${lastUserMessage.toLowerCase()} ${lastAiResponse.toLowerCase()}';
+    final corpus =
+        '${_withoutHypotheticalSepsisAnchors(_withoutNegatedSepsisAnchors(lastUserMessage.toLowerCase()))}} '
+        '${_withoutHypotheticalSepsisAnchors(_withoutNegatedSepsisAnchors(lastAiResponse.toLowerCase()))}}';
     final topic = _detectTopic(corpus);
 
     return _selectAction(
@@ -214,15 +227,67 @@ class NextActionEngine {
     'diagnostico', 'protocolo', 'conduta clínica', 'monitorar', 'monitoramento',
     'evolução', 'evolucao', 'exames', 'resumo', 'orientações', 'orientacoes',
     'seguimento', 'internação', 'internacao', 'alta', 'conduta imediata',
-    // ES equivalents
+    'causas prováveis', 'causas provaveis', 'causas possíveis',
+    'causas possiveis',
+    // ES/EN equivalents
     'conducta', 'tratamiento', 'inmediata', 'inmediato', 'monitoreo',
     'diagnóstico', 'diagnostico', 'protocolo', 'manejo', 'seguimiento',
+    'causas probables', 'causas posibles', 'probable causes',
+    'possible causes',
   ];
 
   static bool _isLayoutTerm(String name) {
     final lower = name.toLowerCase();
     // Exact match or starts-with against any layout term
     return _kLayoutTerms.any((t) => lower == t || lower.startsWith('$t ') || lower.startsWith('$t:'));
+  }
+
+  static String _topicFromUserQuery(String value) {
+    final compact = value.replaceAll('\n', ' ').trim();
+
+    if (compact.isEmpty) {
+      return '';
+    }
+
+    final stripped = compact
+        .replaceFirst(
+          RegExp(
+            r'^(?:tratamento|tratamiento|conduta|conducta|manejo|terapia|'
+            r'como tratar|cómo tratar|qual o tratamento|cuál es el tratamiento)'
+            r'\s*(?:de|do|da|del|para)?\s*[:\-—–]?\s*',
+            caseSensitive: false,
+          ),
+          '',
+        )
+        .trim();
+
+    final candidate = stripped.isNotEmpty ? stripped : compact;
+
+    if (_isLayoutTerm(candidate)) {
+      return '';
+    }
+
+    return candidate.length > 80
+        ? '${candidate.substring(0, 80)}…'
+        : candidate;
+  }
+
+  static String _stripTrailingIntentSuffix(String value) {
+    final compact = value.trim();
+    final stripped = compact
+        .replaceFirst(
+          RegExp(
+            r'\s*(?:[-—–:]\s*)?'
+            r'(?:tratamento|tratamiento|manejo|conduta|conducta|terapia|'
+            r'diferenciais?\s+priorit[aá]rios|diferenciales?\s+prioritarios)'
+            r'\s*$',
+            caseSensitive: false,
+          ),
+          '',
+        )
+        .trim();
+
+    return stripped.isNotEmpty ? stripped : compact;
   }
 
   static String _extractPathologyName(
@@ -235,11 +300,12 @@ class NextActionEngine {
     for (final line in lines) {
       final trimmed = line.trim();
       if (trimmed.startsWith('🟥')) {
-        final name = trimmed
+        final rawName = trimmed
             .replaceFirst('🟥', '')
             .trim()
             .replaceFirst(RegExp(r'^[\-—–:\s]+'), '')
             .trim();
+        final name = _stripTrailingIntentSuffix(rawName);
         // Skip empty, too-short, or layout/template sub-headings
         if (name.isNotEmpty && name.length >= 3 && !_isLayoutTerm(name)) {
           return name;
@@ -249,10 +315,10 @@ class NextActionEngine {
       }
     }
 
-    // ── Priority 2: lastUserMessage (the query that generated this response) ──
-    final userQuery = lastUserMessage.replaceAll('\n', ' ').trim();
-    if (userQuery.isNotEmpty && !_isLayoutTerm(userQuery)) {
-      return userQuery.length > 80 ? '${userQuery.substring(0, 80)}…' : userQuery;
+    // ── Priority 2: tema lexical da pergunta que gerou a resposta ─────────
+    final userTopic = _topicFromUserQuery(lastUserMessage);
+    if (userTopic.isNotEmpty) {
+      return userTopic;
     }
 
     // ── Priority 3: FIRST user message in chatHistory (session anchor) ────────
@@ -291,6 +357,451 @@ class NextActionEngine {
     return options.last;
   }
 
+  static const SmartNextAction _emptyGuardiaAction = SmartNextAction(
+    label: '',
+    promptToSend: '',
+  );
+
+  static const Set<String> _progressionIntentTokens = {
+    'management',
+    'dose',
+    'studies',
+    'monitoring',
+    'questions',
+    'pathophysiology',
+  };
+
+  static const Set<String> _progressionStopWords = {
+    'a',
+    'al',
+    'as',
+    'caso',
+    'clinica',
+    'clinicas',
+    'clinico',
+    'clinicos',
+    'com',
+    'como',
+    'con',
+    'cual',
+    'cuales',
+    'da',
+    'das',
+    'de',
+    'debo',
+    'del',
+    'deve',
+    'devem',
+    'do',
+    'dos',
+    'e',
+    'el',
+    'em',
+    'en',
+    'esta',
+    'este',
+    'imediata',
+    'imediatas',
+    'inmediata',
+    'inmediatas',
+    'la',
+    'las',
+    'los',
+    'mais',
+    'maneira',
+    'o',
+    'os',
+    'paciente',
+    'para',
+    'por',
+    'protocolo',
+    'qual',
+    'quais',
+    'que',
+    'recomendada',
+    'recomendadas',
+    'recomendado',
+    'recomendados',
+    'segun',
+    'se',
+    'si',
+    'tema',
+    'un',
+    'uma',
+    'um',
+    'una',
+    'urgencia',
+    'urgente',
+    'y',
+  };
+
+  static SmartNextAction _pickGuardiaAction({
+    required List<SmartNextAction> options,
+    required List<String> history,
+    required String lastUserMessage,
+    required String lastAiResponse,
+  }) {
+    if (options.isEmpty) return _emptyGuardiaAction;
+
+    final visibleResponse = _visibleResponseForProgression(
+      lastAiResponse,
+    );
+
+    final comparisonHistory = history
+        .map(_visibleResponseForProgression)
+        .where((item) => item.trim().isNotEmpty)
+        .toList(growable: false);
+
+    for (final option in options) {
+      if (_isSameClinicalRequest(
+        option.promptToSend,
+        lastUserMessage,
+      )) {
+        continue;
+      }
+
+      if (_candidateCoveredByText(
+        option,
+        visibleResponse,
+      )) {
+        continue;
+      }
+
+      final alreadyUsed = comparisonHistory.any((item) {
+        final repeatedQuestion = item.length <= 280 &&
+            _isSameClinicalRequest(
+              option.promptToSend,
+              item,
+            );
+
+        return repeatedQuestion ||
+            _candidateCoveredByText(
+              option,
+              item,
+            );
+      });
+
+      if (!alreadyUsed) return option;
+    }
+
+    return _emptyGuardiaAction;
+  }
+
+  static bool _isSameClinicalRequest(
+    String candidate,
+    String original,
+  ) {
+    final candidateKey = _progressionComparisonKey(candidate);
+    final originalKey = _progressionComparisonKey(original);
+
+    if (candidateKey.isEmpty || originalKey.isEmpty) {
+      return false;
+    }
+
+    if (candidateKey == originalKey) return true;
+
+    final candidateTokens = _progressionTokens(candidate);
+    final originalTokens = _progressionTokens(original);
+
+    final candidateFocus = _progressionFocusIntents(
+      candidateTokens,
+    );
+    final originalFocus = _progressionFocusIntents(
+      originalTokens,
+    );
+    final sharedFocus = candidateFocus.intersection(
+      originalFocus,
+    );
+
+    const minimumEmbeddedLength = 12;
+
+    if (sharedFocus.isNotEmpty) {
+      if (candidateKey.length >= minimumEmbeddedLength &&
+          originalKey.contains(candidateKey)) {
+        return true;
+      }
+
+      if (originalKey.length >= minimumEmbeddedLength &&
+          candidateKey.contains(originalKey)) {
+        return true;
+      }
+    }
+
+    if (sharedFocus.isEmpty) {
+      return false;
+    }
+
+    final candidateClinical = candidateTokens.difference(
+      _progressionIntentTokens,
+    );
+    final originalClinical = originalTokens.difference(
+      _progressionIntentTokens,
+    );
+
+    return candidateClinical
+        .intersection(originalClinical)
+        .isNotEmpty;
+  }
+
+  static Set<String> _progressionFocusIntents(
+    Set<String> tokens,
+  ) {
+    final intents = tokens.intersection(
+      _progressionIntentTokens,
+    );
+
+    if (intents.contains('questions')) {
+      return const {'questions'};
+    }
+
+    if (intents.contains('studies') ||
+        intents.contains('monitoring')) {
+      return {
+        if (intents.contains('studies')) 'studies',
+        if (intents.contains('monitoring')) 'monitoring',
+      };
+    }
+
+    if (intents.contains('pathophysiology')) {
+      return const {'pathophysiology'};
+    }
+
+    return intents;
+  }
+
+  static bool _candidateCoveredByText(
+    SmartNextAction candidate,
+    String text,
+  ) {
+    if (text.trim().isEmpty) return false;
+
+    final candidateTokens = _progressionTokens(
+      '${candidate.label} ${candidate.promptToSend}',
+    );
+    final textTokens = _progressionTokens(text);
+
+    if (candidateTokens.isEmpty || textTokens.isEmpty) {
+      return false;
+    }
+
+    final candidateIntents = candidateTokens.intersection(
+      _progressionIntentTokens,
+    );
+    final candidateClinical = candidateTokens.difference(
+      _progressionIntentTokens,
+    );
+    final sharedClinical = candidateClinical.intersection(
+      textTokens,
+    );
+
+    if (candidateIntents.isNotEmpty) {
+      return textTokens.containsAll(candidateIntents) &&
+          (candidateClinical.isEmpty ||
+              sharedClinical.isNotEmpty);
+    }
+
+    if (candidateClinical.length < 2 ||
+        sharedClinical.length < 2) {
+      return false;
+    }
+
+    final coverage =
+        sharedClinical.length / candidateClinical.length;
+
+    return coverage >= 0.30;
+  }
+
+  static Set<String> _progressionTokens(String value) {
+    final result = <String>{};
+    final normalized = _progressionComparisonText(value);
+
+    for (final rawToken in normalized.split(' ')) {
+      if (rawToken.isEmpty) continue;
+
+      final token = _canonicalProgressionToken(rawToken);
+
+      if (token.isEmpty ||
+          _progressionStopWords.contains(token)) {
+        continue;
+      }
+
+      final numeric = RegExp(r'^\d+$').hasMatch(token);
+
+      if (token.length < 3 && !numeric) continue;
+
+      result.add(token);
+    }
+
+    if (RegExp(
+      r'\b\d+(?:[.,]\d+)?\s*'
+      r'(?:mg|mcg|ug|g|ui|u|ml|meq|mmol)'
+      r'(?:\s*/\s*(?:kg|h|min))?\b',
+      caseSensitive: false,
+    ).hasMatch(value)) {
+      result.add('dose');
+    }
+
+    return result;
+  }
+
+  static String _canonicalProgressionToken(
+    String token,
+  ) {
+    const management = {
+      'conduta',
+      'condutas',
+      'conducta',
+      'conductas',
+      'manejo',
+      'tratamento',
+      'tratamientos',
+      'tratamiento',
+      'tratamentos',
+      'terapeutica',
+      'terapeutico',
+    };
+
+    const doses = {
+      'dose',
+      'doses',
+      'dosagem',
+      'dosagens',
+      'dosis',
+      'posologia',
+      'titulacao',
+      'titulacion',
+    };
+
+    const studies = {
+      'estudio',
+      'estudios',
+      'exame',
+      'exames',
+      'examen',
+      'examenes',
+      'investigacao',
+      'investigacion',
+    };
+
+    const monitoring = {
+      'evolucao',
+      'evolucion',
+      'monitoramento',
+      'monitorear',
+      'monitoreo',
+      'monitorar',
+      'monitorizacao',
+      'monitorizacion',
+    };
+
+    const questions = {
+      'anamnese',
+      'anamnesis',
+      'pergunta',
+      'perguntas',
+      'pregunta',
+      'preguntas',
+    };
+
+    const pathophysiology = {
+      'fisiopatologia',
+      'fisiopatologica',
+      'fisiopatologico',
+    };
+
+    if (management.contains(token)) return 'management';
+    if (doses.contains(token)) return 'dose';
+    if (studies.contains(token)) return 'studies';
+    if (monitoring.contains(token)) return 'monitoring';
+    if (questions.contains(token)) return 'questions';
+    if (pathophysiology.contains(token)) {
+      return 'pathophysiology';
+    }
+
+    return token;
+  }
+
+  static String _progressionComparisonKey(
+    String value,
+  ) {
+    return _progressionComparisonText(value).replaceAll(
+      ' ',
+      '',
+    );
+  }
+
+  static String _progressionComparisonText(
+    String value,
+  ) {
+    var normalized = value.toLowerCase();
+
+    const replacements = {
+      'á': 'a',
+      'à': 'a',
+      'â': 'a',
+      'ã': 'a',
+      'ä': 'a',
+      'é': 'e',
+      'è': 'e',
+      'ê': 'e',
+      'ë': 'e',
+      'í': 'i',
+      'ì': 'i',
+      'î': 'i',
+      'ï': 'i',
+      'ó': 'o',
+      'ò': 'o',
+      'ô': 'o',
+      'õ': 'o',
+      'ö': 'o',
+      'ú': 'u',
+      'ù': 'u',
+      'û': 'u',
+      'ü': 'u',
+      'ç': 'c',
+      'ñ': 'n',
+    };
+
+    replacements.forEach((source, target) {
+      normalized = normalized.replaceAll(
+        source,
+        target,
+      );
+    });
+
+    return normalized
+        .replaceAll(
+          RegExp(r'[^a-z0-9]+'),
+          ' ',
+        )
+        .replaceAll(
+          RegExp(r'\s+'),
+          ' ',
+        )
+        .trim();
+  }
+
+  static String _visibleResponseForProgression(
+    String value,
+  ) {
+    final visible = <String>[];
+
+    for (final line in value.split('\n')) {
+      final normalized = _progressionComparisonText(line);
+
+      if (RegExp(
+        r'^(?:proximo\s+(?:paso|passo)|'
+        r'siguiente\s+paso|resumo|resumen)\b',
+      ).hasMatch(normalized)) {
+        break;
+      }
+
+      visible.add(line);
+    }
+
+    return visible.join('\n');
+  }
+
   static String _resolveLanguage(String current, String userMsg, String aiResp) {
     if (current == 'pt' || current == 'es') return current;
     final userLower = userMsg.toLowerCase();
@@ -303,6 +814,89 @@ class NextActionEngine {
   static const _ptTokens = ['ção', 'ões', 'não', 'também', 'então', 'conduta', 'ampola', 'tratamento', 'gestação', 'dilua'];
 
   static bool _any(String corpus, List<String> tokens) => tokens.any((t) => corpus.contains(t));
+
+  /// Removes only sepsis/shock anchors that are explicitly negated.
+  ///
+  /// Positive evidence outside the negated clause remains untouched.
+  static String _withoutNegatedSepsisAnchors(String text) {
+    var sanitized = text;
+    final negatedSepsisClauses = <RegExp>[
+      RegExp(
+        r'\b(?:'
+        r'sem(?:\s+sinais?)?(?:\s+de)?|'
+        r'sem\s+evid[eê]ncias?\s+de|'
+        r'aus[eê]ncia\s+de|'
+        r'n[aã]o\s+h[aá](?:\s+sinais?\s+de)?|'
+        r'n[aã]o\s+apresenta(?:\s+sinais?\s+de)?|'
+        r'nega(?:\s+sinais?\s+de)?|'
+        r'sin(?:\s+signos?)?(?:\s+de)?|'
+        r'sin\s+evidencias?\s+de|'
+        r'ausencia\s+de|'
+        r'no\s+hay(?:\s+signos?\s+de)?|'
+        r'no\s+presenta(?:\s+signos?\s+de)?|'
+        r'niega(?:\s+signos?\s+de)?'
+        r')\s+'
+        r'(?:'
+        r'sepse|sepsis|'
+        r'choque(?:\s+s[eé]ptico)?|'
+        r'shock(?:\s+s[eé]ptico)?|'
+        r'instabilidade\s+hemodin[aâ]mica|'
+        r'inestabilidad\s+hemodin[aá]mica'
+        r')'
+        r'(?:\s*(?:,|e|ou|nem|y|o|ni)\s*'
+        r'(?:'
+        r'sepse|sepsis|'
+        r'choque(?:\s+s[eé]ptico)?|'
+        r'shock(?:\s+s[eé]ptico)?|'
+        r'instabilidade\s+hemodin[aâ]mica|'
+        r'inestabilidad\s+hemodin[aá]mica'
+        r'))*',
+        caseSensitive: false,
+      ),
+    ];
+
+    for (final pattern in negatedSepsisClauses) {
+      sanitized = sanitized.replaceAll(pattern, ' ');
+    }
+
+    return sanitized
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
+  /// Removes explicit hypothetical sepsis/shock mentions.
+  ///
+  /// Active evidence outside the hypothetical phrase remains untouched.
+  static String _withoutHypotheticalSepsisAnchors(String text) {
+    var sanitized = text;
+    final hypotheticalSepsisClauses = <RegExp>[
+      RegExp(
+        r'\b(?:'
+        r'considerar|'
+        r'considera-se|'
+        r'considerar\s+a\s+possibilidade\s+de|'
+        r'evaluar\s+a\s+possibilidade\s+de|'
+        r'avaliar\s+a\s+possibilidade\s+de|'
+        r'considerar\s+la\s+posibilidad\s+de|'
+        r'evaluar\s+la\s+posibilidad\s+de'
+        r')\s+'
+        r'(?:'
+        r'sepse|sepsis|'
+        r'choque(?:\s+s[eé]ptico)?|'
+        r'shock(?:\s+s[eé]ptico)?'
+        r')',
+        caseSensitive: false,
+      ),
+    ];
+
+    for (final pattern in hypotheticalSepsisClauses) {
+      sanitized = sanitized.replaceAll(pattern, ' ');
+    }
+
+    return sanitized
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
 
   static ClinicalTopic _detectTopic(String corpus) {
     if (_any(corpus, ['isrs', 'irsn', 'fluoxetina', 'sertralina', 'escitalopram', 'venlafaxina', 'duloxetina', 'síndrome serotoninérgica'])) return ClinicalTopic.antidepressivos;
@@ -424,6 +1018,178 @@ class NextActionEngine {
     return ClinicalTopic.nenhum;
   }
 
+  static String _normalizedStageText(String value) =>
+      _progressionComparisonText(value);
+
+  static bool _containsDifferentialAnchor(String value) {
+    final normalized = _normalizedStageText(value);
+    return normalized.contains('diferenciais prioritarios') ||
+        normalized.contains('diferenciales prioritarios');
+  }
+
+  static bool _containsQuestionsStage(String value) {
+    final normalized = _normalizedStageText(value);
+    return normalized.contains('perguntas chave') ||
+        normalized.contains('perguntas clinicas chave') ||
+        normalized.contains('perguntas importantes') ||
+        normalized.contains('preguntas clave') ||
+        normalized.contains('preguntas clinicas clave') ||
+        normalized.contains('preguntas importantes');
+  }
+
+  static bool _containsExamsStage(String value) {
+    final normalized = _normalizedStageText(value);
+    return normalized.contains('exames complementares') ||
+        normalized.contains('examenes complementarios') ||
+        normalized.contains('exames e imagens') ||
+        normalized.contains('estudos e imagens') ||
+        normalized.contains('estudios e imagenes');
+  }
+
+  static bool _containsTherapeuticStage(String value) {
+    final normalized = _normalizedStageText(value);
+    return normalized.contains('tratamento farmacologico') ||
+        normalized.contains('tratamiento farmacologico') ||
+        normalized.contains('conduta terapeutica') ||
+        normalized.contains('conducta terapeutica');
+  }
+
+  static SmartNextAction? _adaptiveUndifferentiatedAction({
+    required bool isPlantaoMode,
+    required String lang,
+    required String lastUserMessage,
+    required String lastAiResponse,
+    required List<String> chatHistory,
+  }) {
+    if (!isPlantaoMode) return null;
+
+    final currentIsDifferential = _containsDifferentialAnchor(lastAiResponse);
+    final currentIsQuestions = _containsQuestionsStage(lastAiResponse);
+    final currentIsExams = _containsExamsStage(lastAiResponse);
+    final requestedQuestionsNow = _containsQuestionsStage(lastUserMessage);
+    final requestedExamsNow = _containsExamsStage(lastUserMessage);
+    final currentIsTherapeutic = _containsTherapeuticStage(lastAiResponse);
+    final priorDifferential = chatHistory.any(_containsDifferentialAnchor);
+    final inDifferentialFlow = currentIsDifferential ||
+        (priorDifferential &&
+            (currentIsQuestions ||
+                currentIsExams ||
+                requestedQuestionsNow ||
+                requestedExamsNow));
+
+    if (!inDifferentialFlow || currentIsTherapeutic) return null;
+
+    final es = lang == 'es';
+    final historyHasQuestions = chatHistory.any(_containsQuestionsStage);
+    final historyHasExams = chatHistory.any(_containsExamsStage);
+
+    // Depois que o botão pediu perguntas/exames, espera os dados do usuário.
+    if (currentIsQuestions ||
+        currentIsExams ||
+        requestedQuestionsNow ||
+        requestedExamsNow) {
+      return _emptyGuardiaAction;
+    }
+
+    final topicName = _extractPathologyName(
+      lastAiResponse,
+      lastUserMessage,
+      chatHistory: chatHistory,
+    );
+    final suffix = topicName.isEmpty ? '' : ' de $topicName';
+
+    if (!historyHasQuestions) {
+      return SmartNextAction(
+        label: es ? 'Preguntas clave' : 'Perguntas-chave',
+        promptToSend: es
+            ? 'Enumera solamente las preguntas clínicas clave que debo hacer al paciente para discriminar los diagnósticos diferenciales$suffix. No inventes respuestas del paciente.'
+            : 'Liste somente as perguntas clínicas-chave que devo fazer ao paciente para discriminar os diagnósticos diferenciais$suffix. Não invente respostas do paciente.',
+      );
+    }
+
+    if (!historyHasExams) {
+      return SmartNextAction(
+        label: es ? 'Estudios e imágenes' : 'Exames e imagens',
+        continuationType: PlantaoContinuationType.examsEvolution,
+        requestedSections: const <PlantaoSection>[
+          PlantaoSection.exams,
+          PlantaoSection.monitoring,
+        ],
+        promptToSend: es
+            ? 'Indica solamente los estudios complementarios e imágenes que mejor discriminan los diagnósticos diferenciales$suffix, priorizados por utilidad clínica. No asumas resultados.'
+            : 'Indique somente os exames complementares e imagens que melhor discriminam os diagnósticos diferenciais$suffix, priorizados por utilidade clínica. Não presuma resultados.',
+      );
+    }
+
+    return SmartNextAction(
+      label: es ? 'Conducta y tratamiento' : 'Conduta e tratamento',
+      continuationType: PlantaoContinuationType.treatmentExpansion,
+      requestedSections: const <PlantaoSection>[
+        PlantaoSection.immediateActions,
+        PlantaoSection.fullTreatment,
+        PlantaoSection.dosageClarification,
+      ],
+      promptToSend: es
+          ? 'Con los datos clínicos y resultados ya aportados en esta conversación, define la conducta y tratamiento solo si el diagnóstico o la indicación están suficientemente sustentados. Si aún faltan datos, dilo sin inventarlos.'
+          : 'Com os dados clínicos e resultados já fornecidos nesta conversa, defina a conduta e o tratamento somente se o diagnóstico ou a indicação estiverem suficientemente sustentados. Se ainda faltarem dados, informe isso sem inventá-los.',
+    );
+  }
+
+  static bool _isConfirmedStElevationMi(String userText, String aiText) {
+    final normalized = _normalizedStageText('$userText $aiText');
+    final hasStElevationMi = normalized.contains('iamcsst') ||
+        normalized.contains('iamcest') ||
+        normalized.contains('stemi') ||
+        normalized.contains('infarto com supra') ||
+        normalized.contains('infarto con elevacion');
+    final confirmed = normalized.contains('confirmado') ||
+        normalized.contains('confirmada') ||
+        normalized.contains('confirmed');
+    return hasStElevationMi && confirmed;
+  }
+
+  static bool _isTherapeuticAcuteCoronaryStage(
+    String userText,
+    String aiText,
+  ) {
+    final normalized = _normalizedStageText('$userText $aiText');
+    final hasScaIdentity = normalized.contains('infarto agudo do miocardio') ||
+        normalized.contains('infarto agudo de miocardio') ||
+        normalized.contains('sindrome coronaria aguda') ||
+        normalized.contains('iamcsst') ||
+        normalized.contains('iamcest') ||
+        normalized.contains('iamssst') ||
+        normalized.contains('iamsest') ||
+        normalized.contains('stemi') ||
+        normalized.contains('nstemi') ||
+        RegExp(r'(^| )iam( |$)').hasMatch(normalized);
+
+    if (!hasScaIdentity || !_containsTherapeuticStage(aiText)) {
+      return false;
+    }
+
+    final hasAdvancedTherapy = <String>[
+      'clopidogrel',
+      'ticagrelor',
+      'prasugrel',
+      'heparina',
+      'enoxaparina',
+      'anticoagul',
+      'nitroglicerina',
+      'nitrato',
+    ].any(normalized.contains);
+
+    final hasInvasivePlan = <String>[
+      'cateter',
+      'hemodinam',
+      'angioplast',
+      'intervencao coronaria',
+      'intervencion coronaria',
+    ].any(normalized.contains);
+
+    return hasAdvancedTherapy || hasInvasivePlan;
+  }
+
   static SmartNextAction _selectAction({
     required ClinicalTopic topic,
     required bool isPlantaoMode,
@@ -434,41 +1200,98 @@ class NextActionEngine {
   }) {
     final es = lang == 'es';
 
+    final adaptiveAction = _adaptiveUndifferentiatedAction(
+      isPlantaoMode: isPlantaoMode,
+      lang: lang,
+      lastUserMessage: lastUserMessage,
+      lastAiResponse: lastAiResponse,
+      chatHistory: chatHistory,
+    );
+    if (adaptiveAction != null) return adaptiveAction;
+
+    if (isPlantaoMode &&
+        topic == ClinicalTopic.sca &&
+        _isConfirmedStElevationMi(lastUserMessage, lastAiResponse)) {
+      return SmartNextAction(
+        label: es ? 'Estrategia de reperfusión' : 'Estratégia de reperfusão',
+        continuationType: PlantaoContinuationType.treatmentExpansion,
+        requestedSections: const <PlantaoSection>[
+          PlantaoSection.immediateActions,
+          PlantaoSection.fullTreatment,
+          PlantaoSection.monitoring,
+        ],
+        promptToSend: es
+            ? 'IAMCEST confirmado: detalla la estrategia de reperfusión inmediata, tiempos objetivo, ICP primaria y cuándo considerar fibrinólisis si la ICP no está disponible a tiempo. No repitas ECG/troponina como siguiente paso diagnóstico.'
+            : 'IAMCSST confirmado: detalhe a estratégia de reperfusão imediata, tempos-alvo, ICP primária e quando considerar fibrinólise se a ICP não estiver disponível em tempo adequado. Não repita ECG/troponina como próximo passo diagnóstico.',
+      );
+    }
+
+    if (isPlantaoMode &&
+        topic == ClinicalTopic.sca &&
+        _isTherapeuticAcuteCoronaryStage(
+          lastUserMessage,
+          lastAiResponse,
+        )) {
+      return SmartNextAction(
+        label: es
+            ? 'Estrategia terapéutica y monitorización'
+            : 'Estratégia terapêutica e monitorização',
+        continuationType: PlantaoContinuationType.treatmentExpansion,
+        requestedSections: const <PlantaoSection>[
+          PlantaoSection.immediateActions,
+          PlantaoSection.fullTreatment,
+          PlantaoSection.monitoring,
+        ],
+        promptToSend: es
+            ? 'IAM/SCA ya en etapa terapéutica: detalla estratificación de riesgo, estrategia invasiva cuando esté indicada, monitorización y manejo de complicaciones. No repitas ECG/troponina ni la antiagregación ya informada como siguiente paso diagnóstico.'
+            : 'IAM/SCA já em etapa terapêutica: detalhe estratificação de risco, estratégia invasiva quando indicada, monitorização e manejo de complicações. Não repita ECG/troponina ou a antiagregação já fornecida como próximo passo diagnóstico.',
+      );
+    }
+
     final Map<ClinicalTopic, List<SmartNextAction>> plantaoMap = {
       ClinicalTopic.sca: [
         SmartNextAction(label: 'ECG + Troponina urgente', promptToSend: es ? 'ECG de 12 derivaciones en ≤10min y troponina ultrasensible en SCA: protocolo.' : 'ECG de 12 derivações em ≤10min e troponina ultrassensível no SCA: protocolo.'),
-        SmartNextAction(label: 'Dupla antiagregação: doses', promptToSend: es ? 'Doses de AAS + Clopidogrel ou Ticagrelor na dupla antiagregação imediata do SCA.' : 'Doses de AAS + Clopidogrel ou Ticagrelor na dupla antiagregação imediata do SCA.'),
-        SmartNextAction(label: 'Fibrinólise: dose por peso', promptToSend: es ? 'Doses por peso de Tenecteplase ou Alteplase IV no SCA com supradesnivelamento.' : 'Doses por peso de Tenecteplase ou Alteplase IV no SCA com supradesnivelamento.'),
+        SmartNextAction(label: es ? 'Doble antiagregación: dosis' : 'Dupla antiagregação: doses', promptToSend: es ? 'Dosis de AAS más Clopidogrel o Ticagrelor en la doble antiagregación inmediata del SCA.' : 'Doses de AAS + Clopidogrel ou Ticagrelor na dupla antiagregação imediata do SCA.'),
+        SmartNextAction(label: es ? 'Fibrinólisis: dosis por peso' : 'Fibrinólise: dose por peso', promptToSend: es ? 'Dosis según peso de Tenecteplasa o Alteplasa IV en el SCA con elevación del ST.' : 'Doses por peso de Tenecteplase ou Alteplase IV no SCA com supradesnivelamento.'),
       ],
       ClinicalTopic.sepse: [
-        SmartNextAction(label: 'Titulação de vasopressores', promptToSend: es ? 'Dose e titulação de Noradrenalina IV no choque séptico; quando associar Vasopressina.' : 'Dose e titulação de Noradrenalina IV no choque séptico; quando associar Vasopressina.'),
-        SmartNextAction(label: 'Bundle da hora 1: exames', promptToSend: es ? 'Bundle hora 1: culturas, lactato sérico e cristaloides por peso na sepse.' : 'Bundle hora 1: culturas, lactato sérico e cristaloides por peso na sepse.'),
+        SmartNextAction(label: es ? 'Titulación de vasopresores' : 'Titulação de vasopressores', promptToSend: es ? 'Dosis y titulación de Noradrenalina IV en el shock séptico; cuándo asociar Vasopresina.' : 'Dose e titulação de Noradrenalina IV no choque séptico; quando associar Vasopressina.'),
+        SmartNextAction(label: es ? 'Paquete de la primera hora: estudios' : 'Bundle da hora 1: exames', promptToSend: es ? 'Paquete de la primera hora: cultivos, lactato sérico y cristaloides según peso en la sepsis.' : 'Bundle hora 1: culturas, lactato sérico e cristaloides por peso na sepse.'),
       ],
       ClinicalTopic.pcr: [
-        SmartNextAction(label: 'Algoritmo ACLS Chocável', promptToSend: es ? 'PCR em FV/TVSP: doses de Adrenalina, Amiodarona e protocolo de desfibrilação.' : 'PCR em FV/TVSP: doses de Adrenalina, Amiodarona e protocolo de desfibrilação.'),
-        SmartNextAction(label: 'Manejo de causas: 5Hs e 5Ts', promptToSend: es ? 'Causas reversíveis de PCR — diagnóstico e tratamento imediato das 5Hs e 5Ts.' : 'Causas reversíveis de PCR — diagnóstico e tratamento imediato das 5Hs e 5Ts.'),
+        SmartNextAction(label: es ? 'Algoritmo ACLS desfibrilable' : 'Algoritmo ACLS Chocável', promptToSend: es ? 'PCR en FV/TVSP: dosis de Adrenalina, Amiodarona y protocolo de desfibrilación.' : 'PCR em FV/TVSP: doses de Adrenalina, Amiodarona e protocolo de desfibrilação.'),
+        SmartNextAction(label: es ? 'Manejo de causas: 5H y 5T' : 'Manejo de causas: 5Hs e 5Ts', promptToSend: es ? 'Causas reversibles de PCR: diagnóstico y tratamiento inmediato de las 5H y 5T.' : 'Causas reversíveis de PCR — diagnóstico e tratamento imediato das 5Hs e 5Ts.'),
       ],
       ClinicalTopic.intubacao: [
-        SmartNextAction(label: 'Doses da Sequência Rápida', promptToSend: es ? 'SRI: doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocurônio/Succinilcolina).' : 'SRI: doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocurônio/Succinilcolina).'),
+        SmartNextAction(label: es ? 'Dosis de secuencia rápida' : 'Doses da Sequência Rápida', promptToSend: es ? 'SRI: dosis de inductores (Etomidato/Cetamina) y bloqueantes neuromusculares (Rocuronio/Succinilcolina).' : 'SRI: doses de indutores (Etomidato/Cetamina) e bloqueadores (Rocurônio/Succinilcolina).'),
       ],
     };
 
     final Map<ClinicalTopic, List<SmartNextAction>> estudoMap = {
       ClinicalTopic.sca: [
-        SmartNextAction(label: 'IAMCSST × IAMSSST: diagnóstico', promptToSend: es ? 'Diferença fisiopatológica e diagnóstico diferencial entre IAMCSST e IAMSSST.' : 'Diferença fisiopatológica e diagnóstico diferencial entre IAMCSST e IAMSSST.'),
-        SmartNextAction(label: 'Escores de risco e prognóstico', promptToSend: es ? 'Variáveis e valor prognóstico dos escores GRACE, TIMI e HEART no SCA.' : 'Variáveis e valor prognóstico dos escores GRACE, TIMI e HEART no SCA.'),
+        SmartNextAction(label: es ? 'IAMCEST × IAMSEST: diagnóstico' : 'IAMCSST × IAMSSST: diagnóstico', promptToSend: es ? 'Diferencia fisiopatológica y diagnóstico diferencial entre IAMCEST e IAMSEST.' : 'Diferença fisiopatológica e diagnóstico diferencial entre IAMCSST e IAMSSST.'),
+        SmartNextAction(label: es ? 'Escalas de riesgo y pronóstico' : 'Escores de risco e prognóstico', promptToSend: es ? 'Variables y valor pronóstico de las escalas GRACE, TIMI y HEART en el SCA.' : 'Variáveis e valor prognóstico dos escores GRACE, TIMI e HEART no SCA.'),
       ],
       ClinicalTopic.sepse: [
-        SmartNextAction(label: 'Critérios Sepsis-3 e SOFA', promptToSend: es ? 'Critérios Sepsis-3 e pontuação completa do SOFA: revisão objetiva.' : 'Critérios Sepsis-3 e pontuação completa do SOFA: revisão objetiva.'),
+        SmartNextAction(label: es ? 'Criterios Sepsis-3 y SOFA' : 'Critérios Sepsis-3 e SOFA', promptToSend: es ? 'Criterios Sepsis-3 y puntuación completa del SOFA: revisión objetiva.' : 'Critérios Sepsis-3 e pontuação completa do SOFA: revisão objetiva.'),
       ],
       ClinicalTopic.antidepressivos: [
-        SmartNextAction(label: 'ISRS × IRSN: farmacodinâmica', promptToSend: es ? 'Comparativo entre ISRS e IRSN: receptores, diferenças clínicas e interações de CYP.' : 'Comparativo entre ISRS e IRSN: receptores, diferenças clínicas e interações de CYP.'),
+        SmartNextAction(label: es ? 'ISRS × IRSN: farmacodinámica' : 'ISRS × IRSN: farmacodinâmica', promptToSend: es ? 'Comparación entre ISRS e IRSN: receptores, diferencias clínicas e interacciones del CYP.' : 'Comparativo entre ISRS e IRSN: receptores, diferenças clínicas e interações de CYP.'),
       ],
     };
 
     final targetList = isPlantaoMode ? plantaoMap[topic] : estudoMap[topic];
 
     if (targetList != null) {
+      if (isPlantaoMode) {
+        return _pickGuardiaAction(
+          options: targetList,
+          history: chatHistory,
+          lastUserMessage: lastUserMessage,
+          lastAiResponse: lastAiResponse,
+        );
+      }
+
       return _pickAction(targetList, chatHistory);
     }
 
@@ -487,19 +1310,34 @@ class NextActionEngine {
     if (isPlantaoMode) {
       // BUILD 313 — Plantão: prompts humanizados — frases orgânicas de médico,
       // nunca comandos de sistema rígidos que disparam guardrails de segurança.
-      return _pickAction([
+      return _pickGuardiaAction(
+        options: [
         SmartNextAction(
-          label: es ? 'Condutas e dosagens' : 'Condutas e dosagens',
+          label: es ? 'Conductas y dosis' : 'Condutas e dosagens',
+          continuationType: PlantaoContinuationType.treatmentExpansion,
+          requestedSections: const <PlantaoSection>[
+            PlantaoSection.immediateActions,
+            PlantaoSection.fullTreatment,
+            PlantaoSection.dosageClarification,
+          ],
           promptToSend: es
               ? (hasTopicName
                   ? '¿Cuáles son las conductas clínicas inmediatas y las dosis recomendadas para este caso de $topicName?'
-                  : 'Quais são as condutas clínicas imediatas e as dosagens recomendadas para este caso de urgência?')
+                  : '¿Cuáles son las conductas clínicas inmediatas y las dosis recomendadas para este caso de urgencia?')
               : (hasTopicName
                   ? 'Quais são as condutas clínicas imediatas e as dosagens recomendadas para este caso de $topicName?'
                   : 'Quais são as condutas clínicas imediatas e as dosagens recomendadas para este caso de urgência?'),
         ),
         SmartNextAction(
-          label: es ? 'Exames e evolução' : 'Exames e evolução',
+          label: es ? 'Estudios y evolución' : 'Exames e evolução',
+          continuationType: PlantaoContinuationType.examsEvolution,
+          requestedSections: const <PlantaoSection>[
+            PlantaoSection.exams,
+            PlantaoSection.monitoring,
+            PlantaoSection.evolution,
+            PlantaoSection.responseCriteria,
+            PlantaoSection.worseningCriteria,
+          ],
           promptToSend: es
               ? (hasTopicName
                   ? '¿Qué exámenes complementarios solicitar y cómo monitorear la evolución en $topicName?'
@@ -509,7 +1347,7 @@ class NextActionEngine {
                   : 'Quais exames e parâmetros devo monitorar neste caso?'),
         ),
         SmartNextAction(
-          label: es ? 'Perguntas importantes' : 'Perguntas importantes',
+          label: es ? 'Preguntas importantes' : 'Perguntas importantes',
           promptToSend: es
               ? (hasTopicName
                   ? '¿Qué preguntas clave debo hacer al paciente para orientar el manejo de $topicName?'
@@ -518,7 +1356,11 @@ class NextActionEngine {
                   ? 'Quais perguntas-chave devo fazer ao paciente para orientar o manejo de $topicName?'
                   : 'Quais perguntas-chave devo fazer para orientar este caso clínico?'),
         ),
-      ], chatHistory);
+        ],
+        history: chatHistory,
+        lastUserMessage: lastUserMessage,
+        lastAiResponse: lastAiResponse,
+      );
     } else {
       // BUILD 313 — Estudo: prompts humanizados para fins acadêmicos,
       // soam como perguntas naturais de um médico em contexto educacional.
@@ -547,8 +1389,8 @@ class NextActionEngine {
           label: es ? '✨ Comorbilidades y Alertas >' : '✨ Comorbidades e Alertas >',
           promptToSend: es
               ? (hasTopicName
-                  ? '¿Qué comorbidades y alertas clínicos debo considerar en el manejo de $topicName?'
-                  : '¿Qué comorbidades y alertas clínicos son relevantes en este caso?')
+                  ? '¿Qué comorbilidades y alertas clínicos debo considerar en el manejo de $topicName?'
+                  : '¿Qué comorbilidades y alertas clínicos son relevantes en este caso?')
               : (hasTopicName
                   ? 'Quais comorbidades e alertas clínicos devo considerar no manejo de $topicName?'
                   : 'Quais comorbidades e alertas clínicos são relevantes neste caso?'),

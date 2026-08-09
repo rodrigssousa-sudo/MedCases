@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'dkahhs/dkahhs_runtime_safety_contract.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // external_tool_link_engine.dart — Deep Link Router v1.5 (MICRO-BUILD 462E-A.5.1)
 //
@@ -294,6 +295,7 @@ class ExternalToolLinkEngine {
     String requestId,
     String userInput,
   ) {
+    if (DkahhsRuntimeSafetyContract.isScAlternativeRequest(userInput)) return null;
     final intent = resolveExternalToolIntent(userInput);
     if (intent == ExternalToolIntent.none) return null;
 
@@ -703,6 +705,8 @@ class ExternalToolLinkEngine {
     // O texto AI SOMENTE pode preencher parâmetros dentro de um tipo de
     // ferramenta PRÉ-AUTORIZADO pelo check soberano abaixo.
     // ══════════════════════════════════════════════════════════════════════════
+    if (DkahhsRuntimeSafetyContract.isScAlternativeRequest(lastUserMessage)) return null;
+
     final ExternalToolIntent intent =
         resolveExternalToolIntent(lastUserMessage);
     final bool intentAllowed = intent != ExternalToolIntent.none;
