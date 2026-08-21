@@ -71,6 +71,7 @@ const express    = require('express');
 const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
+const { registerAudioTranscriptionRoutes } = require('./audio_transcription_routes');
 const {
   initializeApp,
   cert,
@@ -1236,15 +1237,31 @@ app.use(cors({
     }
   },
   methods:          ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders:   ['Content-Type', 'Authorization', 'X-Request-ID'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Request-ID',
+    'X-MedCases-Idempotency-Key',
+    'X-MedCases-Audio-Retention',
+  ],
   exposedHeaders:   ['X-Request-ID'],
   credentials:      true,
   maxAge:           86_400,
 }));
 
+// Rotas de áudio têm autenticação/parser próprios e PRECISAM ser registradas
+// antes do Firebase global: /audio/transcriptions recebe grant MedCases no
+// Authorization, enquanto /audio/grant aplica Firebase explicitamente.
+registerAudioTranscriptionRoutes({
+  app,
+  authenticateFirebaseToken,
+  log,
+  isProd: IS_PROD,
+});
+
 app.use(express.json({ limit: '512kb' }));
 
-// CORS já processou o preflight; somente as rotas de IA exigem Firebase Auth.
+// CORS já processou o preflight; somente as demais rotas de IA exigem Firebase Auth.
 app.use('/api/ai', authenticateFirebaseToken);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
