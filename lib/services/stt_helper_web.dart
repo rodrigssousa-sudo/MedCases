@@ -21,47 +21,54 @@ import 'dart:html' as html;
 
 html.SpeechRecognition? _recognition;
 Timer? _levelTimer; // emite nível constante na web enquanto ativo
+int _sessionEpoch = 0;
 
 Future<void> startSttImpl({
   required String locale,
   required void Function(String text) onResult,
   required void Function(String error) onError,
   required void Function() onEnd,
+  void Function(String text)? onPartialResult,
   void Function(double level)? onSoundLevelChange,
 }) async {
   try {
-    stopSttImpl();
+    await stopSttImpl();
+    final sessionEpoch = ++_sessionEpoch;
+    var ended = false;
+
+    void finishEnd() {
+      if (ended || sessionEpoch != _sessionEpoch) return;
+      ended = true;
+      _stopLevelTimer();
+      onSoundLevelChange?.call(0.0);
+      _recognition = null;
+      onEnd();
+    }
 
     final sr = html.SpeechRecognition();
     _recognition = sr;
 
     sr.lang = locale;
-    sr.interimResults = true;  // feedback visual imediato (chunks parciais)
-    sr.maxAlternatives = 3;    // avalia mais candidatos para maior precisão médica
+    sr.interimResults = true; // feedback visual imediato (chunks parciais)
+    sr.maxAlternatives = 3; // avalia mais candidatos para maior precisão médica
     sr.continuous = false;
 
     sr.onResult.listen((event) {
+      if (sessionEpoch != _sessionEpoch) return;
       try {
         final results = event.results;
         if (results != null && results.isNotEmpty) {
-          // results é List<SpeechRecognitionResult>
           final firstResult = results[0];
-
-          // ── CORREÇÃO DE ECO ──────────────────────────────────────────────
-          // Só processa quando isFinal=true para evitar concatenações
-          // acumulativas de chunks parciais ("eu eu eu").
-          // interimResults=true mantido para dar feedback visual ao sistema,
-          // mas o texto só é comprometido no resultado final.
           final isFinal = firstResult.isFinal ?? false;
-          if (!isFinal) return; // ignora todos os chunks parciais
-
           final length = firstResult.length ?? 0;
           if (length > 0) {
-            // SpeechRecognitionResult.item(int) → SpeechRecognitionAlternative
             final alt = firstResult.item(0);
-            final transcript = alt.transcript ?? '';
-            if (transcript.isNotEmpty) {
+            final transcript = (alt.transcript ?? '').trim();
+            if (transcript.isEmpty) return;
+            if (isFinal) {
               onResult(transcript);
+            } else {
+              onPartialResult?.call(transcript);
             }
           }
         }
@@ -69,22 +76,18 @@ Future<void> startSttImpl({
     });
 
     sr.onError.listen((event) {
+      if (sessionEpoch != _sessionEpoch) return;
       try {
-        _stopLevelTimer();
         final dynamic ev = event;
         onError(ev.error?.toString() ?? 'unknown');
       } catch (_) {
-        _stopLevelTimer();
         onError('unknown');
       }
+      finishEnd();
     });
 
     sr.onEnd.listen((_) {
-      _stopLevelTimer();
-      // Emite nível zero ao encerrar — colapsa a onda de áudio para pontos
-      onSoundLevelChange?.call(0.0);
-      _recognition = null;
-      onEnd();
+      finishEnd();
     });
 
     sr.start();
@@ -97,7 +100,6 @@ Future<void> startSttImpl({
         onSoundLevelChange(0.5);
       });
     }
-
   } catch (e) {
     _stopLevelTimer();
     onError(e.toString());
@@ -111,10 +113,12 @@ void _stopLevelTimer() {
 }
 
 Future<void> stopSttImpl() async {
+  _sessionEpoch++;
   _stopLevelTimer();
-  try {
-    _recognition?.stop();
-    _recognition?.abort();
-  } catch (_) {}
+  final recognition = _recognition;
   _recognition = null;
+  try {
+    recognition?.stop();
+    recognition?.abort();
+  } catch (_) {}
 }

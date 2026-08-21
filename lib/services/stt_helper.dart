@@ -24,7 +24,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 // Mobile/Desktop  → stt_helper_mobile.dart (compilado apenas com dart:io)
 import 'stt_helper_stub.dart'
     if (dart.library.html) 'stt_helper_web.dart'
-    if (dart.library.io)   'stt_helper_mobile.dart';
+    if (dart.library.io) 'stt_helper_mobile.dart';
 
 /// Interface estática de STT — delegada à implementação correta por plataforma.
 class SttHelper {
@@ -33,7 +33,9 @@ class SttHelper {
   /// Inicia o reconhecimento de voz.
   ///
   /// [locale]             — código BCP-47 do idioma (ex: 'pt-BR', 'es-ES').
-  /// [onResult]           — chamado com o texto reconhecido final (não parcial).
+  /// [onResult]           — chamado com o texto reconhecido final.
+  /// [onPartialResult]    — chamado com a hipótese parcial mais recente; o
+  ///                        consumidor deve substituir, nunca concatenar.
   /// [onError]            — chamado com o código de erro ('permission_denied',
   ///                        'not_available', 'no_speech', 'network', etc.).
   /// [onEnd]              — chamado quando a sessão encerra (com ou sem resultado).
@@ -45,6 +47,7 @@ class SttHelper {
     required void Function(String text) onResult,
     required void Function(String error) onError,
     required void Function() onEnd,
+    void Function(String text)? onPartialResult,
     void Function(double level)? onSoundLevelChange,
   }) async {
     await startSttImpl(
@@ -52,6 +55,7 @@ class SttHelper {
       onResult: onResult,
       onError: onError,
       onEnd: onEnd,
+      onPartialResult: onPartialResult,
       onSoundLevelChange: onSoundLevelChange,
     );
   }

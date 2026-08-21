@@ -56,8 +56,8 @@ import 'package:speech_to_text/speech_to_text.dart';
 // ── Singleton ─────────────────────────────────────────────────────────────────
 SpeechToText _stt = SpeechToText();
 
-bool _initialized  = false;
-bool _listening    = false;
+bool _initialized = false;
+bool _listening = false;
 
 // Timestamp do início do listen() — usado para ignorar 'done' precoce
 DateTime? _listenStartedAt;
@@ -66,9 +66,14 @@ DateTime? _listenStartedAt;
 bool _bypassActive = false;
 
 void Function(String)? _onResultCb;
+void Function(String)? _onPartialResultCb;
 void Function(String)? _onErrorCb;
-void Function()?       _onEndCb;
+void Function()? _onEndCb;
 void Function(double)? _onLevelCb;
+
+int _sessionEpoch = 0;
+int _activeSessionEpoch = 0;
+bool _terminalDelivered = false;
 
 // ── Helpers de cast seguro ────────────────────────────────────────────────────
 bool _safeBool(dynamic v, {bool fallback = false}) {
@@ -115,7 +120,8 @@ Future<bool> _ensureInit() async {
     }
 
     if (attempt > 0) {
-      debugPrint('[STT] Recriando SpeechToText() para tentativa ${attempt + 1}...');
+      debugPrint(
+          '[STT] Recriando SpeechToText() para tentativa ${attempt + 1}...');
       _stt = SpeechToText();
       _initialized = false;
     }
@@ -124,11 +130,12 @@ Future<bool> _ensureInit() async {
       debugPrint('[STT] initialize() tentativa ${attempt + 1}/3...');
       final dynamic rawResult = await _stt.initialize(
         onStatus: _handleStatus,
-        onError:  _handleError,
+        onError: _handleError,
         debugLogging: false,
       );
       _initialized = _safeBool(rawResult, fallback: false);
-      debugPrint('[STT] → initialized=$_initialized | isAvailable=${_stt.isAvailable}');
+      debugPrint(
+          '[STT] → initialized=$_initialized | isAvailable=${_stt.isAvailable}');
 
       // Verificação dupla: initialized=true mas isAvailable=false indica que
       // o SFSpeechRecognizer ainda não está pronto → forçar retry.
@@ -172,8 +179,8 @@ Future<bool> _ensureInit() async {
 // ordem e detectamos o erro no listen().
 Future<String> _resolveLocale(String preferredLocale) async {
   try {
-    final List<LocaleName> available = await _stt.locales()
-        .timeout(const Duration(seconds: 3));
+    final List<LocaleName> available =
+        await _stt.locales().timeout(const Duration(seconds: 3));
 
     final ids = available.map((l) => l.localeId).toList();
     debugPrint('[STT] Locales disponíveis no dispositivo: $ids');
@@ -196,23 +203,52 @@ Future<String> _resolveLocale(String preferredLocale) async {
     }
 
     // 3. Locale do sistema (quase sempre disponível e pronto)
-    final systemLocale = await _stt.systemLocale()
-        .timeout(const Duration(seconds: 2));
+    final systemLocale =
+        await _stt.systemLocale().timeout(const Duration(seconds: 2));
     if (systemLocale != null && systemLocale.localeId.isNotEmpty) {
-      debugPrint('[STT] Fallback para locale do sistema: ${systemLocale.localeId}');
+      debugPrint(
+          '[STT] Fallback para locale do sistema: ${systemLocale.localeId}');
       return systemLocale.localeId;
     }
 
     // 4. en-US — garantido em todos os iPhones
     debugPrint('[STT] Fallback final: en-US');
     return 'en-US';
-
   } catch (e) {
     // Se locales() falhar (plugin ainda não inicializado, timeout), usa
     // o locale solicitado diretamente e deixa o iOS decidir.
-    debugPrint('[STT] locales() exception — usando locale direto: $preferredLocale ($e)');
+    debugPrint(
+        '[STT] locales() exception — usando locale direto: $preferredLocale ($e)');
     return preferredLocale;
   }
+}
+
+void _clearCallbacks() {
+  _onResultCb = null;
+  _onPartialResultCb = null;
+  _onErrorCb = null;
+  _onEndCb = null;
+  _onLevelCb = null;
+}
+
+void _finishSession() {
+  if (_terminalDelivered) return;
+  _terminalDelivered = true;
+  _listening = false;
+  _bypassActive = false;
+  _listenStartedAt = null;
+  final levelCb = _onLevelCb;
+  final endCb = _onEndCb;
+  _clearCallbacks();
+  levelCb?.call(0.0);
+  endCb?.call();
+}
+
+void _failSession(String code) {
+  if (_terminalDelivered) return;
+  final errorCb = _onErrorCb;
+  errorCb?.call(code);
+  _finishSession();
 }
 
 // ── Handler de status ─────────────────────────────────────────────────────────
@@ -221,72 +257,51 @@ void _handleStatus(String status) {
   debugPrint('[STT] onStatus: $status (${ms}ms após listen)');
 
   if (status == 'done' || status == 'notListening') {
-    // GUARD: ignora 'done' precoce enquanto o bypass do bug null-bool está ativo.
-    // O plugin dispara onStatus('done') em ~200ms mesmo com microfone aberto.
-    // Ignoramos por 1500ms para dar tempo ao iOS estabilizar a sessão.
     if (_bypassActive && ms < 1500) {
-      debugPrint('[STT] ⚠️ onStatus("$status") ignorado — muito precoce (${ms}ms).');
+      debugPrint('[STT] Status terminal precoce ignorado (${ms}ms).');
+      return;
+    }
+
+    // Um status atrasado da sessão anterior não pode encerrar a sessão nova.
+    if (_stt.isListening) {
+      debugPrint(
+          '[STT] Status terminal ignorado porque o recognizer segue ativo.');
       return;
     }
 
     if (_listening) {
-      debugPrint('[STT] Sessão encerrada via onStatus("$status") após ${ms}ms.');
-      _listening    = false;
-      _bypassActive = false;
-      final cb = _onEndCb;
-      _onResultCb = null;
-      _onErrorCb  = null;
-      _onEndCb    = null;
-      _onLevelCb  = null;
-      cb?.call();
+      _finishSession();
     }
   }
 
   if (status == 'listening') {
-    debugPrint('[STT] ✅ Microfone confirmado ativo.');
+    debugPrint('[STT] Microfone confirmado ativo.');
     _bypassActive = false;
   }
 }
 
 // ── Handler de erro ───────────────────────────────────────────────────────────
 void _handleError(dynamic errorNotification) {
-  final dynamic rawMsg  = errorNotification?.errorMsg;
+  final dynamic rawMsg = errorNotification?.errorMsg;
   final dynamic rawPerm = errorNotification?.permanent;
-  final errorMsg  = _safeString(rawMsg,  fallback: 'unknown');
-  final permanent = _safeBool(rawPerm,   fallback: false);
+  final errorMsg = _safeString(rawMsg, fallback: 'unknown');
+  final permanent = _safeBool(rawPerm, fallback: false);
   final ms = _msSinceListen();
 
-  debugPrint('[STT] onError: "$errorMsg" (permanent: $permanent, ${ms}ms após listen)');
+  debugPrint(
+    '[STT] onError code=$errorMsg permanent=$permanent elapsedMs=$ms',
+  );
 
-  // error_no_match: iOS não reconheceu a fala com confiança suficiente.
-  // Encerra silenciosamente — não é erro fatal.
+  if (!_listening || _terminalDelivered) return;
+
+  // Ausência de correspondência não é falha fatal; encerra e deixa o owner
+  // decidir se uma nova sessão deve ser iniciada.
   if (errorMsg == 'error_no_match') {
-    if (_listening) {
-      _listening    = false;
-      _bypassActive = false;
-      final cb = _onEndCb;
-      _onResultCb = null;
-      _onErrorCb  = null;
-      _onEndCb    = null;
-      _onLevelCb  = null;
-      cb?.call();
-    }
+    _finishSession();
     return;
   }
 
-  if (_listening) {
-    _listening    = false;
-    _bypassActive = false;
-    final code    = _mapErrorCode(errorMsg);
-    final cbError = _onErrorCb;
-    final cbEnd   = _onEndCb;
-    _onResultCb = null;
-    _onErrorCb  = null;
-    _onEndCb    = null;
-    _onLevelCb  = null;
-    cbError?.call(code);
-    cbEnd?.call();
-  }
+  _failSession(_mapErrorCode(errorMsg));
 }
 
 // ── Mapeamento de erros ───────────────────────────────────────────────────────
@@ -303,43 +318,48 @@ String _mapErrorCode(String errorMsg) {
   final r = errorMsg.toLowerCase();
   if (r.contains('speech_recognizer_not_available') ||
       r.contains('recognizer_not_available')) return 'not_available';
-  if (r.contains('permission'))               return 'permission_denied';
-  if (r.contains('not_availab'))              return 'not_available';
+  if (r.contains('permission')) return 'permission_denied';
+  if (r.contains('not_availab')) return 'not_available';
   if (r.contains('no_speech') ||
-      r.contains('no match')  ||
-      r.contains('no_match'))                 return 'no_speech';
-  if (r.contains('network'))                  return 'network';
-  if (r.contains('audio'))                    return 'audio_session';
+      r.contains('no match') ||
+      r.contains('no_match')) return 'no_speech';
+  if (r.contains('network')) return 'network';
+  if (r.contains('audio')) return 'audio_session';
   return 'unknown';
 }
 
 // ── Handler de resultado ──────────────────────────────────────────────────────
-void _handleResult(dynamic result) {
+void _handleResult(dynamic result, int sessionEpoch) {
+  if (sessionEpoch != _activeSessionEpoch ||
+      !_listening ||
+      _terminalDelivered) {
+    return;
+  }
+
   final dynamic rawFinal = result?.finalResult;
   final dynamic rawWords = result?.recognizedWords;
   final isFinal = _safeBool(rawFinal, fallback: false);
-  final words   = _safeString(rawWords, fallback: '');
+  final words = _safeString(rawWords, fallback: '').trim();
   final ms = _msSinceListen();
 
-  debugPrint('[STT] onResult: "$words" final=$isFinal (${ms}ms)');
+  // Não registrar conteúdo clínico reconhecido.
+  debugPrint(
+    '[STT] onResult final=$isFinal chars=${words.length} elapsedMs=$ms',
+  );
 
-  if (isFinal) {
-    final text = words.trim();
-    _listening    = false;
-    _bypassActive = false;
-    final cbResult = _onResultCb;
-    final cbEnd    = _onEndCb;
-    _onResultCb = null;
-    _onEndCb    = null;
-    _onLevelCb  = null;
-
-    if (text.isNotEmpty) {
-      cbResult?.call(text);
-    } else {
-      debugPrint('[STT] Resultado final vazio — encerrando silenciosamente.');
-    }
-    cbEnd?.call();
+  if (words.isEmpty) {
+    if (isFinal) _finishSession();
+    return;
   }
+
+  if (!isFinal) {
+    _onPartialResultCb?.call(words);
+    return;
+  }
+
+  final resultCb = _onResultCb;
+  resultCb?.call(words);
+  _finishSession();
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -355,28 +375,32 @@ Future<void> startSttImpl({
   required void Function(String text) onResult,
   required void Function(String error) onError,
   required void Function() onEnd,
+  void Function(String text)? onPartialResult,
   void Function(double level)? onSoundLevelChange,
 }) async {
-  _onResultCb = onResult;
-  _onErrorCb  = onError;
-  _onEndCb    = onEnd;
-  _onLevelCb  = onSoundLevelChange;
+  // Primeiro encerra a sessão anterior; só depois instala os callbacks novos.
+  if (_listening || _stt.isListening) await stopSttImpl();
 
-  if (_listening) await stopSttImpl();
+  final sessionEpoch = ++_sessionEpoch;
+  _activeSessionEpoch = sessionEpoch;
+  _terminalDelivered = false;
+  _onResultCb = onResult;
+  _onPartialResultCb = onPartialResult;
+  _onErrorCb = onError;
+  _onEndCb = onEnd;
+  _onLevelCb = onSoundLevelChange;
 
   // ── Etapa 1: Inicialização com retry ─────────────────────────────────────
   final ok = await _ensureInit();
   if (!ok) {
     debugPrint('[STT] ❌ Falha na inicialização após retries.');
-    onError('not_available');
-    onEnd();
+    _failSession('not_available');
     return;
   }
 
   if (!_stt.isAvailable) {
     debugPrint('[STT] ❌ isAvailable=false após init.');
-    onError('not_available');
-    onEnd();
+    _failSession('not_available');
     return;
   }
 
@@ -389,8 +413,8 @@ Future<void> startSttImpl({
   // ── Etapa 3: Iniciar sessão de escuta ────────────────────────────────────
   debugPrint('[STT] Iniciando listen()...');
   _listenStartedAt = DateTime.now();
-  _bypassActive    = false;
-  _listening       = true;
+  _bypassActive = false;
+  _listening = true;
 
   try {
     // ─────────────────────────────────────────────────────────────────────
@@ -437,7 +461,7 @@ Future<void> startSttImpl({
     //   curtas de fundo de menor confiança (threshold interno do modelo).
     // ─────────────────────────────────────────────────────────────────────
     final dynamic rawStarted = await _stt.listen(
-      onResult: _handleResult,
+      onResult: (result) => _handleResult(result, sessionEpoch),
       onSoundLevelChange: (level) {
         // Normaliza o nível de dB do plugin (range típico: -2.0 a 10.0 dB)
         // para 0.0–1.0 usando clamp. Valores abaixo de 0 = silêncio.
@@ -445,13 +469,14 @@ Future<void> startSttImpl({
         _onLevelCb?.call(normalized);
       },
       listenOptions: SpeechListenOptions(
-        localeId:       resolvedLocale,
-        listenMode:     ListenMode.dictation,
-        pauseFor:       const Duration(seconds: 5),   // ↑ 4s→5s: tolerância a pausas médicas
-        listenFor:      const Duration(seconds: 90),  // ↑ 60s→90s: anamneses longas
+        localeId: resolvedLocale,
+        listenMode: ListenMode.dictation,
+        pauseFor:
+            const Duration(seconds: 5), // ↑ 4s→5s: tolerância a pausas médicas
+        listenFor: const Duration(seconds: 90), // ↑ 60s→90s: anamneses longas
         partialResults: true,
-        cancelOnError:  true,
-        onDevice:       false,
+        cancelOnError: true,
+        onDevice: false,
       ),
     );
 
@@ -476,29 +501,29 @@ Future<void> startSttImpl({
 
       try {
         final dynamic rawRetry = await _stt.listen(
-          onResult: _handleResult,
+          onResult: (result) => _handleResult(result, sessionEpoch),
           onSoundLevelChange: (level) {
             final normalized = ((level + 2.0) / 12.0).clamp(0.0, 1.0);
             _onLevelCb?.call(normalized);
           },
           listenOptions: SpeechListenOptions(
-            localeId:       '',            // ← iOS usa locale de Ditado dos Ajustes
-            listenMode:     ListenMode.dictation,
-            pauseFor:       const Duration(seconds: 5),
-            listenFor:      const Duration(seconds: 90),
+            localeId: '', // ← iOS usa locale de Ditado dos Ajustes
+            listenMode: ListenMode.dictation,
+            pauseFor: const Duration(seconds: 5),
+            listenFor: const Duration(seconds: 90),
             partialResults: true,
-            cancelOnError:  true,
-            onDevice:       false,
+            cancelOnError: true,
+            onDevice: false,
           ),
         );
         // Bypass deliberado: rawRetry pode ser null (BUG 1) — tratamos null
         // como true porque nesse caso o microfone já está ativo.
         final bool retryStarted = _safeBool(rawRetry, fallback: true);
         if (!retryStarted) {
-          debugPrint('[STT] ❌ Retry sem locale também falhou — STT indisponível.');
+          debugPrint(
+              '[STT] ❌ Retry sem locale também falhou — STT indisponível.');
           _listening = false;
-          onError('not_available');
-          onEnd();
+          _failSession('not_available');
         } else {
           debugPrint('[STT] ✅ listen() OK via locale do sistema (fallback).');
         }
@@ -511,8 +536,7 @@ Future<void> startSttImpl({
         } else {
           debugPrint('[STT] TypeError no retry sem locale: $te');
           _listening = false;
-          onError('unknown');
-          onEnd();
+          _failSession('unknown');
         }
       } catch (re) {
         if (_isNullBoolBug(re)) {
@@ -522,38 +546,36 @@ Future<void> startSttImpl({
         } else {
           debugPrint('[STT] Retry sem locale exception: $re');
           _listening = false;
-          onError('unknown');
-          onEnd();
+          _failSession('unknown');
         }
       }
     } else {
-      debugPrint('[STT] ✅ listen() OK — aguardando fala em "$resolvedLocale"...');
+      debugPrint(
+          '[STT] ✅ listen() OK — aguardando fala em "$resolvedLocale"...');
     }
-
   } on TypeError catch (e) {
     // ── BYPASS PRIMÁRIO — BUG 1: TypeError "Null is not a subtype of bool" ──
     // O plugin lança TypeError ao converter o retorno nil do Swift.
     // O microfone JÁ está ativo quando este erro ocorre no iOS.
     if (_isNullBoolBug(e)) {
       _bypassActive = true;
-      debugPrint('[STT] ⚠️ BYPASS (TypeError): microfone ativo, ignorando done por 1500ms.');
+      debugPrint(
+          '[STT] ⚠️ BYPASS (TypeError): microfone ativo, ignorando done por 1500ms.');
     } else {
       debugPrint('[STT] TypeError inesperado: $e');
       _listening = false;
-      onError('unknown');
-      onEnd();
+      _failSession('unknown');
     }
-
   } catch (e) {
     // ── BYPASS SECUNDÁRIO — catch genérico (variantes do BUG 1) ─────────────
     if (_isNullBoolBug(e)) {
       _bypassActive = true;
-      debugPrint('[STT] ⚠️ BYPASS (catch): microfone ativo, ignorando done por 1500ms.');
+      debugPrint(
+          '[STT] ⚠️ BYPASS (catch): microfone ativo, ignorando done por 1500ms.');
     } else {
       debugPrint('[STT] listen() exception: $e');
       _listening = false;
-      onError('unknown');
-      onEnd();
+      _failSession('unknown');
     }
   }
 }
@@ -566,12 +588,13 @@ Future<void> stopSttImpl() async {
   debugPrint('[STT] stopSttImpl() chamado.');
   _bypassActive = false;
   try {
+    // stop(), ao contrário de cancel(), permite ao provider entregar o final.
     await _stt.stop();
   } catch (e) {
-    debugPrint('[STT] stop() exception: $e');
+    debugPrint('[STT] stop() exception: ${e.runtimeType}');
   }
-  _listening  = false;
-  _onResultCb = null;
-  _onErrorCb  = null;
-  _onEndCb    = null;
+
+  if (!_terminalDelivered) {
+    _finishSession();
+  }
 }
