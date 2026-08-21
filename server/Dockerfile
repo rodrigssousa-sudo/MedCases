@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=deps --chown=medcases:nodejs /app/node_modules ./node_modules
 
 # Copia código-fonte
-COPY --chown=medcases:nodejs server.js ./
+COPY --chown=medcases:nodejs server.js audio_transcription_routes.js ./
 
 # Variáveis de ambiente com defaults seguros
 ENV NODE_ENV=production \
