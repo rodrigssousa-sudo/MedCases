@@ -11,6 +11,8 @@ import '../services/audio/clinical_long_form_session_directory_layout.dart';
 import '../services/audio/record_long_form_audio_provider.dart';
 import '../services/clinical_recorder_service.dart';
 
+import '../models/study_long_form_audio_handoff.dart';
+
 final class _AudioRuntimePalette {
   const _AudioRuntimePalette({
     required this.page,
@@ -262,9 +264,11 @@ class NotesAudioLongFormLocalRuntimeScreen extends StatefulWidget {
   const NotesAudioLongFormLocalRuntimeScreen({
     super.key,
     required this.isEs,
+    this.onCompleted,
   });
 
   final bool isEs;
+  final ValueChanged<StudyLongFormAudioHandoff>? onCompleted;
 
   @override
   State<NotesAudioLongFormLocalRuntimeScreen> createState() =>
@@ -501,7 +505,30 @@ class _NotesAudioLongFormLocalRuntimeScreenState
 
       await session.stop(now);
       _ticker?.cancel();
-      _stoppedManifest = session.snapshot(now);
+      final manifest = session.snapshot(now);
+      _stoppedManifest = manifest;
+
+      final segments = manifest.segments
+          .where((segment) => segment.completed)
+          .map(
+            (segment) => StudyLongFormAudioSegment(
+              index: segment.index,
+              path: segment.path,
+              activeDurationMs: segment.activeDuration.inMilliseconds,
+            ),
+          )
+          .toList(growable: false);
+
+      if (segments.isNotEmpty) {
+        widget.onCompleted?.call(
+          StudyLongFormAudioHandoff(
+            sessionId: manifest.sessionId,
+            locale: manifest.locale,
+            totalActiveDurationMs: manifest.totalActiveDuration.inMilliseconds,
+            segments: segments,
+          ),
+        );
+      }
     } catch (error) {
       if (mounted) {
         setState(() => _error = '$error');

@@ -6,16 +6,19 @@ import 'package:flutter/material.dart';
 import '../models/study_workspace_model.dart';
 import '../services/study/study_artifact_generator.dart';
 import '../services/study/study_multimodal_extraction_service.dart';
+import '../models/study_long_form_audio_handoff.dart';
+import '../services/study/study_library_service.dart';
+import '../services/study/study_long_form_segment_loader.dart';
+import '../services/study/study_pdf_export_service.dart';
+import 'notes_audio_local_runtime_screen.dart';
 
 class StudyWorkspaceScreen extends StatefulWidget {
   const StudyWorkspaceScreen({
     super.key,
     required this.isEs,
-    required this.onOpenLongFormAudio,
   });
 
   final bool isEs;
-  final VoidCallback onOpenLongFormAudio;
 
   @override
   State<StudyWorkspaceScreen> createState() => _StudyWorkspaceScreenState();
@@ -27,6 +30,8 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   bool _educationalConfirmed = false;
   bool _busy = false;
   StudyArtifactType _artifactType = StudyArtifactType.fullSummary;
+  List<Study> _library = const <Study>[];
+  final Map<String, List<String>> _recordedRawPaths = <String, List<String>>{};
 
   @override
   void initState() {
@@ -73,6 +78,99 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     if (index < 0) throw StateError('study_source_missing');
     list[index] = source;
     setState(() => _study = _study.copyWith(sources: list));
+  }
+
+  Future<void> _persistStudy() async {
+    await StudyLibraryService.save(_study);
+    _library = await StudyLibraryService.loadAll();
+  }
+
+  Future<void> _newStudy() async {
+    final now = DateTime.now().toUtc();
+    setState(() {
+      _study = Study(
+        id: 'study_${now.microsecondsSinceEpoch}',
+        title: widget.isEs ? 'Nuevo estudio' : 'Novo estudo',
+        locale: widget.isEs ? 'es-ES' : 'pt-BR',
+        createdAtUtc: now,
+      );
+      _title.text = _study.title;
+      _recordedRawPaths.clear();
+    });
+    await _persistStudy();
+  }
+
+  Future<void> _openLibrary() async {
+    final studies = await StudyLibraryService.loadAll();
+    if (!mounted) return;
+    _library = studies;
+
+    final selected = await showDialog<Study>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+            widget.isEs ? 'Biblioteca de estudios' : 'Biblioteca de estudos'),
+        content: SizedBox(
+          width: 430,
+          child: studies.isEmpty
+              ? Text(
+                  widget.isEs
+                      ? 'Todavía no hay estudios guardados.'
+                      : 'Ainda não há estudos salvos.',
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: studies.length,
+                  itemBuilder: (_, index) {
+                    final study = studies[index];
+                    return ListTile(
+                      dense: true,
+                      title: Text(study.title),
+                      subtitle: Text(
+                        '${study.sources.length} '
+                        '${widget.isEs ? "fuentes" : "fontes"} · '
+                        '${study.artifacts.length} '
+                        '${widget.isEs ? "productos" : "produtos"}',
+                      ),
+                      onTap: () => Navigator.pop(dialogContext, study),
+                    );
+                  },
+                ),
+        ),
+      ),
+    );
+
+    if (selected == null || !mounted) return;
+    setState(() {
+      _study = selected;
+      _title.text = selected.title;
+      _recordedRawPaths.clear();
+    });
+  }
+
+  Future<void> _exportPdf() async {
+    if (_study.acceptedSources.isEmpty && _study.artifacts.isEmpty) {
+      _message(
+        widget.isEs
+            ? 'Agrega contenido antes de exportar.'
+            : 'Adicione conteúdo antes de exportar.',
+      );
+      return;
+    }
+
+    setState(() => _busy = true);
+    try {
+      await _persistStudy();
+      await StudyPdfExportService.share(_study, isEs: widget.isEs);
+    } catch (error) {
+      _message(
+        widget.isEs
+            ? 'No se pudo generar el PDF: $error'
+            : 'Não foi possível gerar o PDF: $error',
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   Future<void> _addText() async {
@@ -134,19 +232,119 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     }
   }
 
-  void _recordLecture() {
-    _addSource(
+  Future<void> _recordLecture() async {
+    if (!_educationalConfirmed) {
+      _message(
+        widget.isEs
+            ? 'Confirma primero que la grabación será material educativo sin '
+                'datos identificables de pacientes.'
+            : 'Confirme primeiro que a gravação será material educacional sem '
+                'dados identificáveis de pacientes.',
+      );
+      return;
+    }
+
+    final sourceId = _addSource(
       StudySourceType.recordedAudio,
       widget.isEs ? 'Clase grabada' : 'Aula gravada',
     );
-    _message(
-      widget.isEs
-          ? 'Se abre el grabador largo existente. El handoff automático del '
-                'M4A revisado a esta fuente entra en la siguiente macrobuild.'
-          : 'O gravador longo existente será aberto. O handoff automático do '
-                'M4A revisado para esta fonte entra na próxima macrobuild.',
+
+    if (!mounted) return;
+
+    final handoff = await Navigator.of(context).push<StudyLongFormAudioHandoff>(
+      MaterialPageRoute<StudyLongFormAudioHandoff>(
+        builder: (routeContext) => NotesAudioLongFormLocalRuntimeScreen(
+          isEs: widget.isEs,
+          onCompleted: (value) {
+            if (Navigator.of(routeContext).canPop()) {
+              Navigator.of(routeContext).pop(value);
+            }
+          },
+        ),
+      ),
     );
-    widget.onOpenLongFormAudio();
+
+    if (handoff == null || !handoff.isUsable) {
+      _replace(
+        _source(sourceId).transition(
+          StudySourceState.failed,
+          error: 'recording_not_completed',
+        ),
+      );
+      await _persistStudy();
+      return;
+    }
+
+    var source = _source(sourceId).transition(StudySourceState.processing);
+    _replace(source);
+    setState(() => _busy = true);
+
+    try {
+      final texts = <String>[];
+      final refs = <SourceRef>[];
+      final paths = handoff.segments.map((segment) => segment.path).toList();
+      var offsetMs = 0;
+
+      for (final segment in handoff.segments) {
+        final bytes = await StudyLongFormSegmentLoader.read(segment.path);
+        final extraction = await StudyMultimodalExtractionService.binary(
+          sourceId: sourceId,
+          type: StudySourceType.recordedAudio,
+          fileName: 'segment_${segment.index}.m4a',
+          mimeType: 'audio/mp4',
+          bytes: Uint8List.fromList(bytes),
+          isEs: widget.isEs,
+        );
+
+        texts.add(extraction.text);
+        for (final ref in extraction.refs) {
+          refs.add(
+            SourceRef(
+              sourceId: sourceId,
+              sourceType: StudySourceType.recordedAudio,
+              timestampStartMs: (ref.timestampStartMs ?? 0) + offsetMs,
+              timestampEndMs: ref.timestampEndMs == null
+                  ? null
+                  : ref.timestampEndMs! + offsetMs,
+            ),
+          );
+        }
+
+        offsetMs += segment.activeDurationMs;
+      }
+
+      _recordedRawPaths[sourceId] = List<String>.unmodifiable(paths);
+      source = source.transition(
+        StudySourceState.review,
+        extractedText: texts.join('\n\n'),
+        sourceRefs: List<SourceRef>.unmodifiable(refs),
+      );
+      _replace(source);
+      await _persistStudy();
+
+      _message(
+        widget.isEs
+            ? 'Transcripción lista para revisar. El audio bruto se elimina '
+                'solo al aceptar la fuente.'
+            : 'Transcrição pronta para revisão. O áudio bruto é excluído '
+                'somente ao aceitar a fonte.',
+      );
+    } catch (error) {
+      _replace(
+        source.transition(
+          StudySourceState.failed,
+          error: error.toString(),
+        ),
+      );
+      await _persistStudy();
+      _message(
+        widget.isEs
+            ? 'No se pudo transcribir la grabación: $error'
+            : 'Não foi possível transcrever a gravação: $error',
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   Future<void> _pick(StudySourceType type, List<String> extensions) async {
@@ -154,9 +352,9 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       _message(
         widget.isEs
             ? 'Confirma primero que el archivo es material educativo sin '
-                  'datos identificables de pacientes.'
+                'datos identificables de pacientes.'
             : 'Confirme primeiro que o arquivo é material educacional sem '
-                  'dados identificáveis de pacientes.',
+                'dados identificáveis de pacientes.',
       );
       return;
     }
@@ -214,8 +412,24 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     }
   }
 
-  void _accept(StudySource source) {
+  Future<void> _accept(StudySource source) async {
+    final rawPaths = _recordedRawPaths[source.id] ?? const <String>[];
+    if (source.type == StudySourceType.recordedAudio && rawPaths.isNotEmpty) {
+      try {
+        await StudyLongFormSegmentLoader.deleteAll(rawPaths);
+      } catch (error) {
+        _message(
+          widget.isEs
+              ? 'No se pudo eliminar el audio bruto. Intenta nuevamente.'
+              : 'Não foi possível excluir o áudio bruto. Tente novamente.',
+        );
+        return;
+      }
+    }
+
+    _recordedRawPaths.remove(source.id);
     _replace(source.transition(StudySourceState.accepted));
+    await _persistStudy();
   }
 
   Future<void> _generate() async {
@@ -243,12 +457,12 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
         type: _artifactType,
         isEs: widget.isEs,
       );
-      final artifacts =
-          _study.artifacts
-              .where((item) => item.type != artifact.type)
-              .toList(growable: true)
-            ..add(artifact);
+      final artifacts = _study.artifacts
+          .where((item) => item.type != artifact.type)
+          .toList(growable: true)
+        ..add(artifact);
       setState(() => _study = _study.copyWith(artifacts: artifacts));
+      await _persistStudy();
     } catch (error) {
       _message(
         widget.isEs
@@ -384,12 +598,12 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                 onTap: _busy
                     ? null
                     : () => _pick(StudySourceType.uploadedAudio, const <String>[
-                        'm4a',
-                        'mp3',
-                        'wav',
-                        'aac',
-                        'mp4',
-                      ]),
+                          'm4a',
+                          'mp3',
+                          'wav',
+                          'aac',
+                          'mp4',
+                        ]),
               ),
               _Action(
                 icon: Icons.picture_as_pdf_outlined,
@@ -404,17 +618,32 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                 onTap: _busy
                     ? null
                     : () => _pick(StudySourceType.image, const <String>[
-                        'jpg',
-                        'jpeg',
-                        'png',
-                        'webp',
-                        'gif',
-                      ]),
+                          'jpg',
+                          'jpeg',
+                          'png',
+                          'webp',
+                          'gif',
+                        ]),
               ),
               _Action(
                 icon: Icons.text_snippet_outlined,
                 label: 'Texto',
                 onTap: _busy ? null : _addText,
+              ),
+              _Action(
+                icon: Icons.library_books_outlined,
+                label: widget.isEs ? 'Biblioteca' : 'Biblioteca',
+                onTap: _busy ? null : _openLibrary,
+              ),
+              _Action(
+                icon: Icons.add_rounded,
+                label: widget.isEs ? 'Nuevo' : 'Novo',
+                onTap: _busy ? null : _newStudy,
+              ),
+              _Action(
+                icon: Icons.picture_as_pdf_rounded,
+                label: 'PDF final',
+                onTap: _busy ? null : _exportPdf,
               ),
             ],
           ),
@@ -566,9 +795,9 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
           Text(
             widget.isEs
                 ? 'Foundation V1 · biblioteca persistente, PDF final y handoff '
-                      'automático de la grabación larga: próxima expansión.'
+                    'automático de la grabación larga: próxima expansión.'
                 : 'Foundation V1 · biblioteca persistente, PDF final e handoff '
-                      'automático da gravação longa: próxima expansão.',
+                    'automático da gravação longa: próxima expansão.',
             style: TextStyle(color: sub, fontSize: 10, height: 1.35),
           ),
         ],
@@ -718,10 +947,8 @@ class _SourceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final preview = source.text.trim();
-    final refs = source.refs
-        .take(4)
-        .map((ref) => ref.label(isEs: isEs))
-        .join(' · ');
+    final refs =
+        source.refs.take(4).map((ref) => ref.label(isEs: isEs)).join(' · ');
 
     return _Card(
       color: card,
@@ -745,9 +972,8 @@ class _SourceTile extends StatelessWidget {
               Text(
                 source.state.name.toUpperCase(),
                 style: TextStyle(
-                  color: source.state == StudySourceState.accepted
-                      ? accent
-                      : sub,
+                  color:
+                      source.state == StudySourceState.accepted ? accent : sub,
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
                 ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models/study_long_form_audio_handoff.dart';
+
 final class _WebAudioPalette {
   const _WebAudioPalette({
     required this.page,
@@ -58,9 +60,11 @@ class NotesAudioLongFormLocalRuntimeScreen extends StatelessWidget {
   const NotesAudioLongFormLocalRuntimeScreen({
     super.key,
     required this.isEs,
+    this.onCompleted,
   });
 
   final bool isEs;
+  final ValueChanged<StudyLongFormAudioHandoff>? onCompleted;
 
   @override
   Widget build(BuildContext context) {

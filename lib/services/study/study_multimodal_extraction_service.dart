@@ -72,8 +72,7 @@ final class StudyMultimodalExtractionService {
       throw StateError('study_ai_not_ready');
     }
 
-    final prompt =
-        """
+    final prompt = """
 MODO ESTUDIO MEDCASES — EXTRACCIÓN DE MATERIAL EDUCATIVO.
 Archivo: $fileName
 Idioma de salida: ${isEs ? "español" : "português"}.
@@ -150,6 +149,7 @@ Devuelve SOLO JSON válido:
           'image/webp',
           'image/gif',
         }.contains(mime);
+      case StudySourceType.recordedAudio:
       case StudySourceType.uploadedAudio:
         return <String>{
           'audio/mp4',
@@ -158,7 +158,6 @@ Devuelve SOLO JSON válido:
           'audio/x-wav',
           'audio/aac',
         }.contains(mime);
-      case StudySourceType.recordedAudio:
       case StudySourceType.text:
         return false;
     }
@@ -242,8 +241,7 @@ Devuelve SOLO JSON válido:
           pageNumber: _positive(item['pageNumber']),
           timestampStartMs: _nonNegative(item['startMs']),
           timestampEndMs: _nonNegative(item['endMs']),
-          imageIndex:
-              _positive(item['imageIndex']) ??
+          imageIndex: _positive(item['imageIndex']) ??
               (type == StudySourceType.image ? 1 : null),
         ),
       );
