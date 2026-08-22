@@ -2656,8 +2656,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                     reverseTransitionDuration: Duration.zero,
                     pageBuilder: (_, __, ___) => Column(
                       children: [
-                        if (leftPaneIndex == 0)
-                          _WebWorkspaceBrandBar(dark: dark),
+                        if (leftPaneIndex == 0) _WebWorkspaceBrandBar(),
                         Expanded(
                           child: RepaintBoundary(
                             child: _staticScreens[leftPaneIndex],
@@ -3713,20 +3712,20 @@ class _MobileAppBar extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // MEDCASES_WEB_SPLIT_TOPBAR_CALCULATOR_40PCT_V1_B_R14
 class _WebWorkspaceBrandBar extends StatelessWidget {
-  const _WebWorkspaceBrandBar({required this.dark});
-
-  final bool dark;
+  const _WebWorkspaceBrandBar();
 
   @override
   Widget build(BuildContext context) {
+    // MEDCASES_WEB_DARK_HOME_TOPBAR_THEME_CONTEXT_PARITY_V1_B_R0_R3
+    // Mesma fonte de verdade da WaHeader: o próprio BuildContext.
+    final dark = Theme.of(context).brightness == Brightness.dark;
     // MEDCASES_WEB_CANONICAL_TOPBAR_REAL_MENU_V1_B_R15
     // Replica a superfície canônica da topbar mobile.
     final foreground = dark ? Colors.white : const Color(0xFF05070A);
     // MEDCASES_WEB_LIGHT_MOBILE_PARITY_SUBSTRATE_V1_B_R0
     // Mantém o glass 70% obrigatório, porém sobre o mesmo substrato da página
     // mobile. Assim o Light não herda o fundo escuro do shell Web.
-    final substrate =
-        dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final substrate = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
     final glass = dark
         ? const Color(0xFF252930).withOpacity(0.70)
         : Colors.white.withOpacity(0.70);
@@ -3736,47 +3735,47 @@ class _WebWorkspaceBrandBar extends StatelessWidget {
       color: substrate,
       child: ClipRect(
         child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-        child: Container(
-          width: double.infinity,
-          height: 48,
-          decoration: BoxDecoration(
-            color: glass,
-            border: Border(bottom: BorderSide(color: divider, width: 0.7)),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              IgnorePointer(
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'MEDCASES',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                          color: foreground,
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: Container(
+            width: double.infinity,
+            height: 48,
+            decoration: BoxDecoration(
+              color: glass,
+              border: Border(bottom: BorderSide(color: divider, width: 0.7)),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                IgnorePointer(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'MEDCASES',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.8,
+                            color: foreground,
+                          ),
                         ),
-                      ),
-                      const TextSpan(
-                        text: ' PRO',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.8,
-                          color: Color(0xFF10B981),
+                        const TextSpan(
+                          text: ' PRO',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.8,
+                            color: Color(0xFF10B981),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
         ),
       ),
     );
