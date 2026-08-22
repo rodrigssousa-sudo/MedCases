@@ -763,6 +763,10 @@ class _AuthGateState extends State<_AuthGate> {
         // Sem usuário → preview pré-login com histórias públicas
         if (user == null) {
           _onLogout();
+          // R15-R2: anonymous is a stable Web auth state. Without this
+          // signal the real PreLoginPreview is mounted behind _TimedSplash
+          // but the splash cover never releases.
+          _signalSplashReady(context);
           return _wrapAuth(const PreLoginPreview());
         }
 
@@ -770,11 +774,15 @@ class _AuthGateState extends State<_AuthGate> {
         if (user.isBlocked) {
           AuthService.logout();
           _onLogout();
+          // R15-R2: blocked is also a final renderable auth state.
+          _signalSplashReady(context);
           return _wrapAuth(_BlockedScreen(user: user));
         }
 
         // Usuário pendente
         if (user.isPending) {
+          // R15-R2: pending is a final renderable auth state.
+          _signalSplashReady(context);
           return _wrapAuth(_PendingScreen(user: user));
         }
 
@@ -3706,49 +3714,62 @@ class _MobileAppBar extends StatelessWidget {
 // MEDCASES_WEB_SPLIT_TOPBAR_CALCULATOR_40PCT_V1_B_R14
 class _WebWorkspaceBrandBar extends StatelessWidget {
   const _WebWorkspaceBrandBar({required this.dark});
+
   final bool dark;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: const BoxDecoration(
-        color: Color(0xFF0C0E12),
-        border: Border(
-          bottom: BorderSide(color: Color(0xFF1E2128), width: 0.5),
-        ),
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          IgnorePointer(
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'MEDCASES',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                      color: Colors.white,
-                    ),
-                  ),
-                  TextSpan(
-                    text: ' PRO',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                      color: Color(0xFF10B981),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    // MEDCASES_WEB_CANONICAL_TOPBAR_REAL_MENU_V1_B_R15
+    // Replica a superfície canônica da topbar mobile.
+    final foreground = dark ? Colors.white : const Color(0xFF05070A);
+    final glass = dark
+        ? const Color(0xFF252930).withOpacity(0.70)
+        : Colors.white.withOpacity(0.70);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          width: double.infinity,
+          height: 48,
+          decoration: BoxDecoration(
+            color: glass,
+            border: Border(bottom: BorderSide(color: divider, width: 0.7)),
           ),
-        ],
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              IgnorePointer(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'MEDCASES',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.8,
+                          color: foreground,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' PRO',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.8,
+                          color: Color(0xFF10B981),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
