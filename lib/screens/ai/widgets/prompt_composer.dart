@@ -118,20 +118,16 @@ class _PromptComposerState extends State<PromptComposer> {
     final palette = HomeV2Palette.resolve(dark);
 
     // MEDCASES_AI_LIGHT_COMPOSER_UNIFIED_SURFACE_V1_B_R0
-    // Light: uma superfície grafite contínua; campo interno transparente.
-    // Dark: mantém os mesmos tokens canônicos anteriores.
-    final composerSurface =
-        dark ? palette.surfaceSoft : const Color(0xFF59636E);
-    final composerText = dark ? palette.textPrimary : Colors.white;
-    final composerSecondary = dark
-        ? palette.textSecondary
-        : Colors.white.withValues(alpha: 0.78);
-    final composerBorder = dark
-        ? (widget.hasFocus ? palette.borderActive : palette.border)
-        : (widget.hasFocus ? palette.accent : const Color(0xFF59636E));
+    // MEDCASES_WEB_LIGHT_MOBILE_PARITY_COMPOSER_V1_B_R0
+    // Mantém a geometria unificada, mas Light e Dark voltam a consumir os
+    // próprios tokens da Home V2, exatamente como no mobile.
+    final composerSurface = palette.surfaceSoft;
+    final composerText = palette.textPrimary;
+    final composerSecondary = palette.textSecondary;
+    final composerBorder =
+        widget.hasFocus ? palette.borderActive : palette.border;
 
-    final disabledColor =
-        (dark ? palette.textSecondary : Colors.white).withValues(
+    final disabledColor = palette.textSecondary.withValues(
       alpha: 0.42,
     );
 

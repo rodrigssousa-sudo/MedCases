@@ -3722,13 +3722,20 @@ class _WebWorkspaceBrandBar extends StatelessWidget {
     // MEDCASES_WEB_CANONICAL_TOPBAR_REAL_MENU_V1_B_R15
     // Replica a superfície canônica da topbar mobile.
     final foreground = dark ? Colors.white : const Color(0xFF05070A);
+    // MEDCASES_WEB_LIGHT_MOBILE_PARITY_SUBSTRATE_V1_B_R0
+    // Mantém o glass 70% obrigatório, porém sobre o mesmo substrato da página
+    // mobile. Assim o Light não herda o fundo escuro do shell Web.
+    final substrate =
+        dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
     final glass = dark
         ? const Color(0xFF252930).withOpacity(0.70)
         : Colors.white.withOpacity(0.70);
     final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
 
-    return ClipRect(
-      child: BackdropFilter(
+    return ColoredBox(
+      color: substrate,
+      child: ClipRect(
+        child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
         child: Container(
           width: double.infinity,
@@ -3769,6 +3776,7 @@ class _WebWorkspaceBrandBar extends StatelessWidget {
               ),
             ],
           ),
+        ),
         ),
       ),
     );
