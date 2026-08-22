@@ -54,6 +54,7 @@ import 'screens/laboratory_screen.dart'
     show LaboratoryMainShellWorkspace, LaboratorySessionBridge;
 import 'screens/remote_audio_consent_sheet.dart';
 import 'screens/notes_audio_local_runtime_screen.dart';
+import 'screens/study_workspace_screen.dart';
 import 'screens/calculadora_screen.dart' show CalculadoraScreen;
 import 'services/firestore_service.dart';
 import 'services/activity_service.dart';
@@ -8071,15 +8072,26 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
                     onTap: () => setState(() => _section = 1),
                   ),
                   _NotesAudioWorkspaceTab(
-                    label: isEs ? 'Historial' : 'Histórico',
-                    icon: Icons.history_rounded,
+                    label: isEs ? 'Estudio' : 'Estudos',
+                    icon: Icons.auto_stories_outlined,
                     selected: _section == 2,
                     accent: accent,
                     text: text,
                     sub: sub,
                     border: border,
-                    showDivider: false,
+                    showDivider: true,
                     onTap: () => setState(() => _section = 2),
+                  ),
+                  _NotesAudioWorkspaceTab(
+                    label: isEs ? 'Historial' : 'Histórico',
+                    icon: Icons.history_rounded,
+                    selected: _section == 3,
+                    accent: accent,
+                    text: text,
+                    sub: sub,
+                    border: border,
+                    showDivider: false,
+                    onTap: () => setState(() => _section = 3),
                   ),
                 ],
               ),
@@ -8101,6 +8113,10 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
                     text: text,
                     sub: sub,
                     accent: accent,
+                  ),
+                  StudyWorkspaceScreen(
+                    isEs: isEs,
+                    onOpenLongFormAudio: () => setState(() => _section = 1),
                   ),
                   _NotesAudioWorkspaceHistory(
                     isEs: isEs,
