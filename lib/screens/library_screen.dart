@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:ui' show ImageFilter;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2
 import '../providers/app_provider.dart';
@@ -10,13 +12,14 @@ import '../services/firestore_service.dart';
 import '../models/guide_model.dart';
 import '../models/protocol_model.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints;
-import 'protocols_screen.dart' show showProtocolDetail;
+import '../home_v2/theme/home_v2_palette.dart';
+import '../home_v2/components/common/home_v2_press_surface.dart';
+import 'protocols_screen.dart' show openSimulationProtocolPage;
 
+// MEDCASES_SIMULATION_VISUAL_STANDARD_V1_R1
+// MEDCASES_SIMULATION_DETAIL_CONTEXT_V1_R2
 // Paleta dark unificada — verde-escuro legacy removido (PR #65)
-const _kDark  = Color(0xFF1A1D23); // preto/cinza neutro padrão
 const _kGreen = Color(0xFF075f45); // mantido apenas para textos/acentos ativos
-const _kGold  = Color(0xFFC5A365);
-const _kGoldL = Color(0xFFFFE8A6);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LIBRARY SCREEN — Biblioteca Clínica
@@ -24,20 +27,51 @@ const _kGoldL = Color(0xFFFFE8A6);
 // Apple App Store Compliance: terminologia estritamente educacional/pedagógica.
 // Nenhuma aba ou string usa "Protocolo" como rótulo navegável.
 // ─────────────────────────────────────────────────────────────────────────────
+enum ClinicalLearningDestination {
+  guide,
+  simulation,
+}
+
+class ClinicalGuideScreen extends StatelessWidget {
+  const ClinicalGuideScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const LibraryScreen(
+      destination: ClinicalLearningDestination.guide,
+    );
+  }
+}
+
+class ClinicalSimulationScreen extends StatelessWidget {
+  const ClinicalSimulationScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const LibraryScreen(
+      destination: ClinicalLearningDestination.simulation,
+    );
+  }
+}
+
 class LibraryScreen extends StatefulWidget {
-  const LibraryScreen({super.key});
+  const LibraryScreen({
+    super.key,
+    required this.destination,
+  });
+
+  final ClinicalLearningDestination destination;
 
   @override
   State<LibraryScreen> createState() => _LibraryScreenState();
 }
 
-class _LibraryScreenState extends State<LibraryScreen>
-    with SingleTickerProviderStateMixin {
+class _LibraryScreenState extends State<LibraryScreen> {
   // 2 abas: índice 0 = Guias PDF, índice 1 = Casos de Estudo
-  late TabController _tabCtrl;
+
   final _searchCtrl = TextEditingController();
-  String _search    = '';
-  String _category  = 'Todos';
+  String _search = '';
+  String _category = 'Todos';
 
   StreamSubscription<List<GuideModel>>? _sub;
   List<GuideModel> _guides = [];
@@ -59,7 +93,8 @@ class _LibraryScreenState extends State<LibraryScreen>
     String reason = 'manual',
     bool showLoader = false,
   }) async {
-    _log('refresh start reason=$reason forceRemote=$forceRemote kIsWeb=$kIsWeb');
+    _log(
+        'refresh start reason=$reason forceRemote=$forceRemote kIsWeb=$kIsWeb');
     if (mounted && showLoader) {
       setState(() {
         _loading = true;
@@ -81,13 +116,13 @@ class _LibraryScreenState extends State<LibraryScreen>
         if (list.isNotEmpty || _guides.isEmpty) {
           _guides = list;
         }
-        _guidesError = (_guides.isEmpty && serviceError.isNotEmpty)
-            ? serviceError
-            : '';
+        _guidesError =
+            (_guides.isEmpty && serviceError.isNotEmpty) ? serviceError : '';
         _syncCategoryWithData();
         _loading = false;
       });
-      _log('refresh done reason=$reason count=${list.length} error="$serviceError"');
+      _log(
+          'refresh done reason=$reason count=${list.length} error="$serviceError"');
     } catch (e) {
       _log('refresh failed reason=$reason error=$e');
       if (!mounted) return;
@@ -101,47 +136,46 @@ class _LibraryScreenState extends State<LibraryScreen>
   void _subscribeGuidesStream() {
     _log('subscribe stream start kIsWeb=$kIsWeb');
     _sub?.cancel();
-    _sub = FirestoreService.guidesStream()
-        .timeout(
-          const Duration(seconds: 25),
-          onTimeout: (sink) {
-            sink.addError(
-              TimeoutException('Library guides stream timeout: no events in 25s'),
-            );
-          },
-        )
-        .listen((list) {
-          _log('stream event count=${list.length}');
-          if (!mounted) return;
-          setState(() {
-            if (list.isNotEmpty || _guides.isEmpty) {
-              _guides = list;
-            }
-            _guidesError = (_guides.isEmpty &&
-                    FirestoreService.lastGuidesErrorMessage.isNotEmpty)
-                ? FirestoreService.lastGuidesErrorMessage
-                : '';
-            _syncCategoryWithData();
-            _loading = false;
-          });
-        }, onError: (Object error, StackTrace stackTrace) async {
-          _log('stream error=$error');
-          if (mounted) {
-            setState(() {
-              _guidesError = error.toString();
-              _loading = false;
-            });
-          }
-          await _refreshGuides(
-            forceRemote: true,
-            reason: 'stream-error',
-          );
+    _sub = FirestoreService.guidesStream().timeout(
+      const Duration(seconds: 25),
+      onTimeout: (sink) {
+        sink.addError(
+          TimeoutException('Library guides stream timeout: no events in 25s'),
+        );
+      },
+    ).listen((list) {
+      _log('stream event count=${list.length}');
+      if (!mounted) return;
+      setState(() {
+        if (list.isNotEmpty || _guides.isEmpty) {
+          _guides = list;
+        }
+        _guidesError = (_guides.isEmpty &&
+                FirestoreService.lastGuidesErrorMessage.isNotEmpty)
+            ? FirestoreService.lastGuidesErrorMessage
+            : '';
+        _syncCategoryWithData();
+        _loading = false;
+      });
+    }, onError: (Object error, StackTrace stackTrace) async {
+      _log('stream error=$error');
+      if (mounted) {
+        setState(() {
+          _guidesError = error.toString();
+          _loading = false;
         });
+      }
+      await _refreshGuides(
+        forceRemote: true,
+        reason: 'stream-error',
+      );
+    });
   }
 
   Future<void> _handleManualRefresh() async {
     _log('manual refresh requested');
-    await FirestoreService.clearPublishedGuidesCache(reason: 'manual-refresh-button');
+    await FirestoreService.clearPublishedGuidesCache(
+        reason: 'manual-refresh-button');
     await _refreshGuides(
       forceRemote: true,
       reason: 'manual-refresh-button',
@@ -155,7 +189,8 @@ class _LibraryScreenState extends State<LibraryScreen>
     _log('init start kIsWeb=$kIsWeb');
     try {
       try {
-        final cacheCleared = await FirestoreService.clearPublishedGuidesCacheOnFirstOpen();
+        final cacheCleared =
+            await FirestoreService.clearPublishedGuidesCacheOnFirstOpen();
         _log('init first-open cacheCleared=$cacheCleared');
       } catch (e) {
         _log('error clear cache first open: $e');
@@ -201,17 +236,21 @@ class _LibraryScreenState extends State<LibraryScreen>
   @override
   void initState() {
     super.initState();
-    // SUPER ORDEM VISUAL 07: 2 abas — Guias PDF (0), Casos de Estudo (1). GENERAL extinta.
-    _tabCtrl = TabController(length: 2, vsync: this);
-    _initGuides();
-    _searchCtrl.addListener(() {
-      if (mounted) setState(() => _search = _searchCtrl.text.toLowerCase());
-    });
+
+    if (widget.destination == ClinicalLearningDestination.guide) {
+      _initGuides();
+      _searchCtrl.addListener(() {
+        if (mounted) {
+          setState(() => _search = _searchCtrl.text.toLowerCase());
+        }
+      });
+    } else {
+      _loading = false;
+    }
   }
 
   @override
   void dispose() {
-    _tabCtrl.dispose();
     _sub?.cancel();
     _searchCtrl.dispose();
     super.dispose();
@@ -219,12 +258,13 @@ class _LibraryScreenState extends State<LibraryScreen>
 
   List<GuideModel> get _filtered {
     return _guides.where((g) {
-      final matchCat  = _category == 'Todos' || g.category == _category;
+      final matchCat = _category == 'Todos' || g.category == _category;
       final matchText = _search.isEmpty ||
           g.title.toLowerCase().contains(_search) ||
           g.description.toLowerCase().contains(_search) ||
           g.authors.toLowerCase().contains(_search) ||
-          g.category.toLowerCase().contains(_search);
+          g.category.toLowerCase().contains(_search) ||
+          g.year.toLowerCase().contains(_search);
       return matchCat && matchText;
     }).toList();
   }
@@ -251,7 +291,11 @@ class _LibraryScreenState extends State<LibraryScreen>
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
-    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    final isSimulation =
+        widget.destination == ClinicalLearningDestination.simulation;
+    final bg = dark
+        ? const Color(0xFF1A1D23)
+        : const Color(0xFFECF1F3);
     final filtered = _filtered;
     final isDesktop = MedBreakpoints.of(context).isDesktop;
 
@@ -266,8 +310,9 @@ class _LibraryScreenState extends State<LibraryScreen>
     // para trás da status bar física. topPad lido via View.of() — imune ao
     // MediaQuery.removePadding do MainShell.
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    final double topPad = View.of(context).padding.top /
-        View.of(context).devicePixelRatio;
+    final double topPad =
+        View.of(context).padding.top / View.of(context).devicePixelRatio;
+    const double topbarHeight = 48.0;
 
     return ColoredBox(
       color: bg,
@@ -278,39 +323,29 @@ class _LibraryScreenState extends State<LibraryScreen>
           Column(
             children: [
               // Reserva espaço para a topbar (fica por baixo do Positioned)
-              const SizedBox(height: 56),
+              SizedBox(height: topbarHeight),
               // BUILD 331: Seletor de abas desacoplado da Topbar — fica no corpo
-              _LibTabRow(
-                dark: dark,
-                isEs: isEs,
-                tabCtrl: _tabCtrl,
-              ),
               // PERF-FIX: RepaintBoundary isola a lista de guias da topbar.
               // Scroll, filtro de categoria e carregamento não invalidam
               // o layer do background da topbar no Impeller.
               Expanded(
                 child: RepaintBoundary(
-                child: TabBarView(
-                  controller: _tabCtrl,
-                  children: [
-                    // Aba 0: Guias PDF
-                    _GuidesTab(
-                      dark: dark,
-                      isEs: isEs,
-                      loading: _loading,
-                      filtered: filtered,
-                      categories: _categories,
-                      selectedCategory: _category,
-                      searchCtrl: _searchCtrl,
-                      errorMessage: _guidesError,
-                      onCategorySelect: (c) => setState(() => _category = c),
-                      onOpen: _openPdf,
-                      onRetry: _handleManualRefresh,
-                    ),
-                    // Aba 1: Casos de Estudo
-                    _CasosDeEstudoTab(dark: dark, isEs: isEs, p: p),
-                  ],
-                ),
+                  child: widget.destination == ClinicalLearningDestination.guide
+                      ? _GuidesTab(
+                          dark: dark,
+                          isEs: isEs,
+                          loading: _loading,
+                          filtered: filtered,
+                          categories: _categories,
+                          selectedCategory: _category,
+                          searchCtrl: _searchCtrl,
+                          errorMessage: _guidesError,
+                          onCategorySelect: (c) =>
+                              setState(() => _category = c),
+                          onOpen: _openPdf,
+                          onRetry: _handleManualRefresh,
+                        )
+                      : _CasosDeEstudoTab(dark: dark, isEs: isEs, p: p),
                 ), // RepaintBoundary
               ),
             ],
@@ -321,8 +356,12 @@ class _LibraryScreenState extends State<LibraryScreen>
             top: -topPad,
             left: 0,
             right: 0,
-            height: topPad + 56,
-            child: const _LibraryTopbarBg(),
+            height: topPad + topbarHeight,
+            child: _LibraryTopbarBg(
+              /* MEDCASES_SIMULATION_VISUAL_STANDARD_V1_R1 */
+              isDark: Theme.of(context).brightness == Brightness.dark,
+              flatSimulation: isSimulation,
+            ),
           ),
 
           // ── CAMADA 2: Conteúdo interativo — permanece em y=0 ─────────
@@ -330,12 +369,20 @@ class _LibraryScreenState extends State<LibraryScreen>
             top: 0,
             left: 0,
             right: 0,
-            height: 56,
+            height: topbarHeight,
             child: _LibraryTopbarContent(
+              title: widget.destination == ClinicalLearningDestination.guide
+                  ? (isEs ? 'GUÍA CLÍNICA' : 'GUIA CLÍNICO')
+                  : (isEs ? 'SIMULACIÓN' : 'SIMULAÇÃO'),
               dark: dark,
               isEs: isEs,
               isDesktop: isDesktop,
-              onRefreshGuides: isDesktop ? _handleManualRefresh : null,
+              canonicalHomeStyle: true,
+              onRefreshGuides:
+                  widget.destination == ClinicalLearningDestination.guide &&
+                          isDesktop
+                      ? _handleManualRefresh
+                      : null,
               refreshing: isDesktop ? _loading : false,
             ),
           ),
@@ -353,32 +400,63 @@ class _LibraryScreenState extends State<LibraryScreen>
 // ─────────────────────────────────────────────────────────────────────────────
 // ── Fundo da topbar Biblioteca (gradiente, sem conteúdo interativo) ──────────
 class _LibraryTopbarBg extends StatelessWidget {
-  const _LibraryTopbarBg();
+  final bool isDark;
+  final bool flatSimulation;
 
-  // PERF-FIX: BoxDecoration totalmente const — o Impeller cacheia esta camada
-  // permanentemente; nenhum rebuild da LibraryScreen a invalida.
-  // BUILD 331 BIBLIOTECA: gradiente idêntico ao card BIBLIOTECA da Home.
-  static const _kDecoration = BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [Color(0xFF222D42), Color(0xFF4B5E7F)],
-    ),
-    border: Border(
-      bottom: BorderSide(color: Color(0xFF334155), width: 0.5),
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: Color(0x59000000), // Colors.black.withOpacity(0.35) equivalente
-        blurRadius: 6,
-        offset: Offset(0, 2),
-      ),
-    ],
-  );
+  const _LibraryTopbarBg({
+    required this.isDark,
+    this.flatSimulation = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const DecoratedBox(decoration: _kDecoration);
+    if (flatSimulation) {
+      // MEDCASES_SIMULACAO_HOME_TOPBAR_V1_B_R0
+      // Simulação: replica a topbar canônica da Home sem alterar o título da tela.
+      return ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF252930).withOpacity(0.70)
+                  : Colors.white.withOpacity(0.70),
+              border: Border(
+                bottom: BorderSide(
+                  color: isDark
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFE2E7EC),
+                  width: 0.7,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // MEDCASES_GUIA_CLINICO_HOME_TOPBAR_V1_B_R0
+    // Guia Clínico: replica a topbar canônica da Home sem copiar "MEDCASES PRO".
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: isDark
+                ? const Color(0xFF252930).withOpacity(0.70)
+                : Colors.white.withOpacity(0.70),
+            border: Border(
+              bottom: BorderSide(
+                color: isDark
+                    ? const Color(0xFF374151)
+                    : const Color(0xFFE2E7EC),
+                width: 0.7,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -387,13 +465,17 @@ class _LibraryTopbarContent extends StatelessWidget {
   final bool dark;
   final bool isEs;
   final bool isDesktop;
+  final bool canonicalHomeStyle;
+  final String title;
   final VoidCallback? onRefreshGuides;
   final bool refreshing;
 
   const _LibraryTopbarContent({
+    required this.title,
     required this.dark,
     required this.isEs,
     required this.isDesktop,
+    required this.canonicalHomeStyle,
     this.onRefreshGuides,
     this.refreshing = false,
   });
@@ -406,13 +488,17 @@ class _LibraryTopbarContent extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // ── CENTER: título BRANCO ─────────────────────────────────────
-          const Text(
-            'BIBLIOTECA',
+          Text(
+            title,
             style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.2,
-              color: Colors.white,
+              fontSize: canonicalHomeStyle ? 16 : 20,
+              fontWeight:
+                  canonicalHomeStyle ? FontWeight.w900 : FontWeight.w600,
+              letterSpacing: canonicalHomeStyle ? 1.2 : 0.4,
+              color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */
+                  Theme.of(context).brightness == Brightness.dark
+                      ? (Colors.white)
+                      : (const Color(0xFF05070A)),
             ),
           ),
           // ── LEFT: botão de voltar ─────────────────────────────────────
@@ -428,13 +514,16 @@ class _LibraryTopbarContent extends StatelessWidget {
                   MainShell.pendingTab.value = 0;
                 }
               },
-              child: const SizedBox(
+              child: SizedBox(
                 width: 36,
                 height: 36,
                 child: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 20,
-                  color: Colors.white,
+                  color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */
+                      Theme.of(context).brightness == Brightness.dark
+                          ? (Colors.white)
+                          : (const Color(0xFF05070A)),
                 ),
               ),
             ),
@@ -463,7 +552,8 @@ class _LibraryTopbarContent extends StatelessWidget {
                             padding: EdgeInsets.all(9),
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : const Icon(
@@ -641,21 +731,39 @@ class _GuidesTab extends StatelessWidget {
   final VoidCallback onRetry;
 
   const _GuidesTab({
-    required this.dark, required this.isEs, required this.loading,
-    required this.filtered, required this.categories,
-    required this.selectedCategory, required this.searchCtrl,
-    required this.errorMessage, required this.onCategorySelect,
-    required this.onOpen, required this.onRetry,
+    required this.dark,
+    required this.isEs,
+    required this.loading,
+    required this.filtered,
+    required this.categories,
+    required this.selectedCategory,
+    required this.searchCtrl,
+    required this.errorMessage,
+    required this.onCategorySelect,
+    required this.onOpen,
+    required this.onRetry,
   });
 
   @override
   Widget build(BuildContext context) {
+    // MEDCASES_GUIA_CLINICA_COMPACT_CLINICAL_HUB_V1_B_R0
     final hasSearch = searchCtrl.text.isNotEmpty;
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+    final primary = dark ? Colors.white : const Color(0xFF05070A);
+    final secondary =
+        dark ? const Color(0xFFCBD5E1) : const Color(0xFF59636E);
+    final surface = dark ? const Color(0xFF252930) : Colors.white;
+    final border =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
     final bodySliver = loading
         ? const SliverFillRemaining(
             hasScrollBody: false,
             child: Center(
-              child: CircularProgressIndicator(color: _kGreen, strokeWidth: 2),
+              child: CircularProgressIndicator(
+                color: _kGreen,
+                strokeWidth: 2,
+              ),
             ),
           )
         : filtered.isEmpty
@@ -675,7 +783,12 @@ class _GuidesTab extends StatelessWidget {
                       ),
               )
             : SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                padding: EdgeInsets.fromLTRB(
+                  4,
+                  4,
+                  4,
+                  114 + safeBottom,
+                ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (_, i) => _GuideCard(
@@ -690,50 +803,126 @@ class _GuidesTab extends StatelessWidget {
 
     return CustomScrollView(
       primary: false,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       slivers: [
-        if (categories.length > 1)
-          SliverToBoxAdapter(
-            child: _CategoryFilter(
-              categories: categories,
-              selected: selectedCategory,
-              dark: dark,
-              onSelect: onCategorySelect,
-            ),
-          ),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: TextField(
-              controller: searchCtrl,
-              style: const TextStyle(fontSize: 13),
-              decoration: InputDecoration(
-                hintText: isEs ? 'Buscar guías...' : 'Buscar guias...',
-                hintStyle: TextStyle(fontSize: 13, color: Colors.grey[400]),
-                prefixIcon: const Icon(Icons.search_rounded, size: 18),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                isDense: true,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            padding: const EdgeInsets.fromLTRB(4, 8, 4, 3),
+            child: SizedBox(
+              height: 42,
+              child: TextField(
+                controller: searchCtrl,
+                textInputAction: TextInputAction.search,
+                scrollPadding: const EdgeInsets.only(bottom: 16),
+                onTapOutside: (_) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
+                onSubmitted: (_) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
+                style: TextStyle(
+                  color: primary,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                ),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: surface,
+                  hintText: isEs
+                      ? 'Buscar patología, guía o especialidad'
+                      : 'Buscar patologia, guia ou especialidade',
+                  hintStyle: TextStyle(
+                    fontSize: 11.5,
+                    color: secondary.withValues(alpha: 0.76),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    size: 18,
+                    color: secondary,
+                  ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 38,
+                    minHeight: 38,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 9,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: border,
+                      width: 0.7,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF008F66),
+                      width: 1,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
         ),
+        if (categories.length > 1)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: _CategoryFilter(
+                categories: categories,
+                selected: selectedCategory,
+                dark: dark,
+                isEs: isEs,
+                onSelect: (value) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  onCategorySelect(value);
+                },
+              ),
+            ),
+          ),
+        if (!loading && filtered.isNotEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 3, 8, 2),
+              child: Row(
+                children: [
+                  Text(
+                    isEs ? 'GUÍAS' : 'GUIAS',
+                    style: TextStyle(
+                      color: secondary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${filtered.length}',
+                    style: TextStyle(
+                      color: secondary,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         bodySliver,
       ],
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ABA 1 — Casos de Estudo
-// Fusão pedagógica: Casos Clínicos (simulações interativas) + Fluxos Simulados
-// por Especialidade (conteúdo antes em "Protocolos"). Nomenclatura 100%
-// educacional — sem qualquer rótulo de "Protocolo" visível ao usuário.
-// ─────────────────────────────────────────────────────────────────────────────
+
 class _CasosDeEstudoTab extends StatefulWidget {
   final bool dark;
   final bool isEs;
   final AppProvider p;
-  const _CasosDeEstudoTab({required this.dark, required this.isEs, required this.p});
+  const _CasosDeEstudoTab(
+      {required this.dark, required this.isEs, required this.p});
 
   @override
   State<_CasosDeEstudoTab> createState() => _CasosDeEstudoTabState();
@@ -748,7 +937,8 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
   // ── IDs que são "Casos Clínicos Narrativos" (mantidos da lógica original) ──
   static const Set<String> _casoNarrativoIds = {
     'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus',
-    'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave',
+    'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco',
+    'caso_pac_grave',
     'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
     'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
     'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
@@ -784,54 +974,72 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
       icon: Icons.psychology_outlined,
       titlePt: 'Neurologia',
       titleEs: 'Neurología',
-      color:       Color(0xFF1E1A2E),   // dark roxo profundo
-      borderColor: Color(0xFF4A3880),   // roxo médio sutil
-      iconColor:   Color(0xFFA78BFA),   // violeta lavanda vibrante
-      ids: {'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus'},
+      color: Color(0xFF1E1A2E), // dark roxo profundo
+      borderColor: Color(0xFF4A3880), // roxo médio sutil
+      iconColor: Color(0xFFA78BFA), // violeta lavanda vibrante
+      ids: {
+        'caso_enxaqueca_aura',
+        'caso_avc_isquemico',
+        'caso_status_epilepticus'
+      },
     ),
     _GrupoConfig(
       icon: Icons.favorite_outline_rounded,
       titlePt: 'Cardiologia & Pneumologia',
       titleEs: 'Cardiología & Neumología',
-      color:       Color(0xFF1F1419),   // dark vermelho profundo
-      borderColor: Color(0xFF7A2035),   // bordô sutil
-      iconColor:   Color(0xFFFC8181),   // vermelho coral vibrante
-      ids: {'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco', 'caso_pac_grave'},
+      color: Color(0xFF1F1419), // dark vermelho profundo
+      borderColor: Color(0xFF7A2035), // bordô sutil
+      iconColor: Color(0xFFFC8181), // vermelho coral vibrante
+      ids: {
+        'caso_stemi',
+        'caso_icc_descompensada',
+        'caso_tep_alto_risco',
+        'caso_pac_grave'
+      },
     ),
     _GrupoConfig(
       icon: Icons.biotech_outlined,
       titlePt: 'Infectologia, Emergência & Metabólico',
       titleEs: 'Infectología, Emergencia & Metabólico',
-      color:       Color(0xFF121F19),   // dark verde profundo
-      borderColor: Color(0xFF1A5E38),   // verde escuro médico
-      iconColor:   Color(0xFF34D399),   // verde esmeralda clínico
+      color: Color(0xFF121F19), // dark verde profundo
+      borderColor: Color(0xFF1A5E38), // verde escuro médico
+      iconColor: Color(0xFF34D399), // verde esmeralda clínico
       ids: {
-        'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
-        'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
+        'caso_cistite_aguda',
+        'caso_itu_recorrente',
+        'caso_sepse_idoso',
+        'caso_cetoacidose_diabetica',
+        'caso_anafilaxia_grave',
+        'caso_hda_varicosa',
       },
     ),
     _GrupoConfig(
       icon: Icons.local_hospital_outlined,
       titlePt: 'Gastroenterologia & Hepatologia',
       titleEs: 'Gastroenterología & Hepatología',
-      color:       Color(0xFF1C1A14),   // dark âmbar profundo
-      borderColor: Color(0xFF6B5500),   // dourado escuro
-      iconColor:   Color(0xFFFBBF24),   // âmbar dourado
+      color: Color(0xFF1C1A14), // dark âmbar profundo
+      borderColor: Color(0xFF6B5500), // dourado escuro
+      iconColor: Color(0xFFFBBF24), // âmbar dourado
       ids: {
-        'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
-        'hdb_sangrado_rectal_014', 'diverticulitis_aguda_015',
-        'sindrome_ascitico_debut_016', 'sindrome_ascitico_edematoso_017',
+        'pancreatitis_aguda_005',
+        'diarrea_aguda_009',
+        'hda_ulcera_peptica_013',
+        'hdb_sangrado_rectal_014',
+        'diverticulitis_aguda_015',
+        'sindrome_ascitico_debut_016',
+        'sindrome_ascitico_edematoso_017',
       },
     ),
     _GrupoConfig(
       icon: Icons.science_outlined,
       titlePt: 'Hepatites Virais & Gripe',
       titleEs: 'Hepatitis Virales & Gripe',
-      color:       Color(0xFF141E1C),   // dark teal profundo
-      borderColor: Color(0xFF1A5E55),   // teal escuro
-      iconColor:   Color(0xFF2DD4BF),   // teal menta brilhante
+      color: Color(0xFF141E1C), // dark teal profundo
+      borderColor: Color(0xFF1A5E55), // teal escuro
+      iconColor: Color(0xFF2DD4BF), // teal menta brilhante
       ids: {
-        'hepatitis_b_aguda_detallada_2026', 'hepatitis_c_cronica_detallada_2026',
+        'hepatitis_b_aguda_detallada_2026',
+        'hepatitis_c_cronica_detallada_2026',
         'gripe_influenza_010',
       },
     ),
@@ -839,12 +1047,14 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
       icon: Icons.hearing_outlined,
       titlePt: 'ORL & Medicina Geral',
       titleEs: 'ORL & Medicina General',
-      color:       Color(0xFF141820),   // dark azul profundo
-      borderColor: Color(0xFF1E3A6E),   // azul médico sutil
-      iconColor:   Color(0xFF60A5FA),   // azul céu brilhante
+      color: Color(0xFF141820), // dark azul profundo
+      borderColor: Color(0xFF1E3A6E), // azul médico sutil
+      iconColor: Color(0xFF60A5FA), // azul céu brilhante
       ids: {
-        'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
-        'faringitis_viral_011', 'faringitis_bacteriana_012',
+        'rinosinusitis_aguda_007',
+        'faringitis_estreptococica_008',
+        'faringitis_viral_011',
+        'faringitis_bacteriana_012',
       },
     ),
   ];
@@ -852,42 +1062,134 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
   // ── Categorias para sub-segmento "Fluxos Simulados" ──────────────────────
   // Classificação dinâmica por keywords no id — igual à lógica anterior
   static const _catDefs = [
-    ('Todos',            'Todos',           Icons.apps_rounded,          <String>[]),
-    ('Emergências',      'Emergencias',     Icons.emergency_rounded,      <String>[
-      'pcr', 'anafilaxia', 'sepse', 'choque', 'tep_agudo', 'tromboembolismo_pulmonar',
-      'politrauma', 'caso_anafilaxia', 'caso_tep', 'caso_stemi', 'caso_sepse',
-    ]),
-    ('Cardio / Neuro',   'Cardio / Neuro',  Icons.favorite_rounded,       <String>[
-      'iam', 'fa_aguda', 'tpsv', 'hipertensiva',
-      'avc', 'status_epilepticus',
-      'caso_avc', 'caso_icc', 'caso_status_epilep', 'caso_enxaqueca',
-    ]),
-    ('Respiratório',     'Respiratorio',    Icons.air_rounded,            <String>[
-      'asma', 'dpoc', 'pneumonia', 'bronquiolite', 'laringite', 'caso_pac',
-    ]),
-    ('Metabólico',       'Metabólico',      Icons.science_rounded,        <String>[
-      'cad_shh', 'cetoacidose', 'hipoglicemia', 'hiperpotassemia',
-      'lesao_renal', 'crise_adrenal', 'crise_tireotoxica', 'caso_cetoacidose',
-    ]),
-    ('Digestivo',        'Digestivo',       Icons.local_hospital_rounded, <String>[
-      'hda', 'hdb', 'pancreatite', 'pancreatitis',
-      'coagulacao_intravascular', 'diverticulitis', 'diarrea',
-      'sindrome_ascitico', 'caso_hda',
-    ]),
-    ('Infecto',          'Infectología',    Icons.bug_report_rounded,     <String>[
-      'meningite', 'neutropenia_febril', 'faringit', 'faringitis',
-      'rinosinusitis', 'gripe', 'hepatitis', 'sepse_foco',
-      'caso_cistite', 'caso_itu', 'caso_pac_grave',
-    ]),
-    ('Intoxicações',     'Intoxicaciones',  Icons.warning_rounded,        <String>[
-      'intox', 'intoxicacao',
-    ]),
-    ('Outros',           'Otros',           Icons.more_horiz_rounded,     <String>[
-      'eclampsia', 'agitacao', 'caso_',
-    ]),
-    ('Pediátrico',       'Pediátrico',      Icons.child_care_rounded,     <String>[
-      '_ped', 'pcr_ped', 'bronquiolite', 'laringite',
-    ]),
+    ('Todos', 'Todos', Icons.apps_rounded, <String>[]),
+    (
+      'Emergências',
+      'Emergencias',
+      Icons.emergency_rounded,
+      <String>[
+        'pcr',
+        'anafilaxia',
+        'sepse',
+        'choque',
+        'tep_agudo',
+        'tromboembolismo_pulmonar',
+        'politrauma',
+        'caso_anafilaxia',
+        'caso_tep',
+        'caso_stemi',
+        'caso_sepse',
+      ]
+    ),
+    (
+      'Cardio / Neuro',
+      'Cardio / Neuro',
+      Icons.favorite_rounded,
+      <String>[
+        'iam',
+        'fa_aguda',
+        'tpsv',
+        'hipertensiva',
+        'avc',
+        'status_epilepticus',
+        'caso_avc',
+        'caso_icc',
+        'caso_status_epilep',
+        'caso_enxaqueca',
+      ]
+    ),
+    (
+      'Respiratório',
+      'Respiratorio',
+      Icons.air_rounded,
+      <String>[
+        'asma',
+        'dpoc',
+        'pneumonia',
+        'bronquiolite',
+        'laringite',
+        'caso_pac',
+      ]
+    ),
+    (
+      'Metabólico',
+      'Metabólico',
+      Icons.science_rounded,
+      <String>[
+        'cad_shh',
+        'cetoacidose',
+        'hipoglicemia',
+        'hiperpotassemia',
+        'lesao_renal',
+        'crise_adrenal',
+        'crise_tireotoxica',
+        'caso_cetoacidose',
+      ]
+    ),
+    (
+      'Digestivo',
+      'Digestivo',
+      Icons.local_hospital_rounded,
+      <String>[
+        'hda',
+        'hdb',
+        'pancreatite',
+        'pancreatitis',
+        'coagulacao_intravascular',
+        'diverticulitis',
+        'diarrea',
+        'sindrome_ascitico',
+        'caso_hda',
+      ]
+    ),
+    (
+      'Infecto',
+      'Infectología',
+      Icons.bug_report_rounded,
+      <String>[
+        'meningite',
+        'neutropenia_febril',
+        'faringit',
+        'faringitis',
+        'rinosinusitis',
+        'gripe',
+        'hepatitis',
+        'sepse_foco',
+        'caso_cistite',
+        'caso_itu',
+        'caso_pac_grave',
+      ]
+    ),
+    (
+      'Intoxicações',
+      'Intoxicaciones',
+      Icons.warning_rounded,
+      <String>[
+        'intox',
+        'intoxicacao',
+      ]
+    ),
+    (
+      'Outros',
+      'Otros',
+      Icons.more_horiz_rounded,
+      <String>[
+        'eclampsia',
+        'agitacao',
+        'caso_',
+      ]
+    ),
+    (
+      'Pediátrico',
+      'Pediátrico',
+      Icons.child_care_rounded,
+      <String>[
+        '_ped',
+        'pcr_ped',
+        'bronquiolite',
+        'laringite',
+      ]
+    ),
   ];
 
   int _fluxoCat = 0;
@@ -898,7 +1200,9 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
   void initState() {
     super.initState();
     _searchFluxoCtrl.addListener(() {
-      if (mounted) setState(() => _queryFluxo = _searchFluxoCtrl.text.toLowerCase().trim());
+      if (mounted)
+        setState(
+            () => _queryFluxo = _searchFluxoCtrl.text.toLowerCase().trim());
     });
   }
 
@@ -926,77 +1230,17 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
     final seen = <String>{};
     final allDB = p.protocolsDB.where((x) => seen.add(x.id)).toList();
 
-    // Conta total de itens de estudo (todos os IDs absorvidos)
-    final totalItens = allDB.where((d) => _casoNarrativoIds.contains(d.id)).length
-        + allDB.where((d) => !_casoNarrativoIds.contains(d.id)).length;
-
     return CustomScrollView(
       primary: false,
       slivers: [
-        // ── Banner de cabeçalho da aba — BUILD 331 dark premium ─────────────
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                // Fundo escuro com gradiente sutil — integrado ao fundo global
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    const Color(0xFF1A2A20),
-                    const Color(0xFF1A1D23),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: const Color(0xFF1A5E38).withOpacity(0.6),
-                ),
-              ),
-              child: Row(children: [
-                Container(
-                  width: 40, height: 40,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF075f45).withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFF34D399).withOpacity(0.3)),
-                  ),
-                  child: const Icon(Icons.school_outlined,
-                    color: Color(0xFF34D399), size: 20),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(
-                      isEs ? 'Casos de Estudio' : 'Casos de Estudo',
-                      style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      isEs
-                          ? '$totalItens casos simulados para fins educacionais'
-                          : '$totalItens casos simulados para fins educacionais',
-                      style: const TextStyle(
-                        fontSize: 11.5,
-                        color: Color(0xFF9CA3AF),
-                      ),
-                    ),
-                  ]),
-                ),
-              ]),
-            ),
-          ),
-        ),
-
         // ── Seletor de sub-segmento ─────────────────────────────────────────
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+            // MEDCASES_SIMULACAO_LAYOUT_CARDS_V1_B_R1
+            // MEDCASES_SIMULACAO_CANONICAL_DENSITY_V1_B_R0_R3
+            // Densidade canônica local; topbar e shell global congelados.
+            // Primeiro conteúdo visível: 6 px abaixo da topbar.
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Row(children: [
               _SegmentBtn(
                 label: isEs ? 'Simulaciones' : 'Simulações',
@@ -1005,7 +1249,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                 dark: dark,
                 onTap: () => setState(() => _segment = 0),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 0),
               _SegmentBtn(
                 label: isEs ? 'Fluxos Simulados' : 'Fluxos Simulados',
                 icon: Icons.account_tree_outlined,
@@ -1028,7 +1272,10 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
 
   // ── Sub-segmento 0: Simulações (grupos de casos narrativos) ────────────────
   List<Widget> _buildSimulacoesSliver(
-    List<ProtocolModel> allDB, bool dark, bool isEs, AppProvider p,
+    List<ProtocolModel> allDB,
+    bool dark,
+    bool isEs,
+    AppProvider p,
   ) {
     final groups = _gruposSimulacao
         .where((g) => allDB.any((item) => g.ids.contains(item.id)))
@@ -1052,13 +1299,15 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
 
     return [
       SliverPadding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+        padding: const EdgeInsets.fromLTRB(16, 6, 16, 100),
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (_, i) {
               final group = groups[i];
               return Padding(
-                padding: EdgeInsets.only(bottom: i == groups.length - 1 ? 0 : 10),
+                padding: EdgeInsets.only(
+                  bottom: i == groups.length - 1 ? 0 : 3,
+                ),
                 child: _GrupoCard(
                   icon: group.icon,
                   titlePt: group.titlePt,
@@ -1070,6 +1319,7 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                   allDB: allDB,
                   isEs: isEs,
                   p: p,
+                  dark: dark,
                 ),
               );
             },
@@ -1082,33 +1332,41 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
 
   // ── Sub-segmento 1: Fluxos Simulados (todos os demais, com busca + filtro) ─
   List<Widget> _buildFluxosSliver(
-    List<ProtocolModel> allDB, bool dark, bool isEs,
+    List<ProtocolModel> allDB,
+    bool dark,
+    bool isEs,
   ) {
     final List<ProtocolModel> fluxos;
     if (_queryFluxo.isNotEmpty) {
       fluxos = allDB.where((pr) {
-        final t = (pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '').toLowerCase();
+        final t = (pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '')
+            .toLowerCase();
         return t.contains(_queryFluxo);
       }).toList();
     } else if (_fluxoCat == 0) {
       fluxos = [...allDB]..sort((a, b) {
-          final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
-          final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
+          final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '')
+              .toLowerCase();
+          final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '')
+              .toLowerCase();
           return ta.compareTo(tb);
         });
     } else {
-      fluxos = allDB
-          .where((pr) => _catIndexForId(pr.id) == _fluxoCat)
-          .toList()
+      fluxos = allDB.where((pr) => _catIndexForId(pr.id) == _fluxoCat).toList()
         ..sort((a, b) {
-            final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '').toLowerCase();
-            final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '').toLowerCase();
-            return ta.compareTo(tb);
-          });
+          final ta = (a.title[isEs ? 'es' : 'pt'] ?? a.title['pt'] ?? '')
+              .toLowerCase();
+          final tb = (b.title[isEs ? 'es' : 'pt'] ?? b.title['pt'] ?? '')
+              .toLowerCase();
+          return ta.compareTo(tb);
+        });
     }
 
-    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
-    final borderC = dark ? const Color(0xFF374151) : const Color(0xFFDCEDDC);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    final fieldBg = dark ? const Color(0xFF252930) : const Color(0xFFF8FAFC);
+    final cardPalette = HomeV2Palette.resolve(dark);
 
     final bodySliver = fluxos.isEmpty
         ? SliverFillRemaining(
@@ -1116,7 +1374,9 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
             child: _LibraryTabEmptyState(
               dark: dark,
               icon: Icons.search_off_rounded,
-              title: isEs ? 'Sin casos en esta categoría' : 'Nenhum caso nesta categoria',
+              title: isEs
+                  ? 'Sin casos en esta categoría'
+                  : 'Nenhum caso nesta categoria',
               subtitle: _queryFluxo.isNotEmpty
                   ? (isEs
                       ? 'Intenta ajustar tu búsqueda.'
@@ -1127,77 +1387,104 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
             ),
           )
         : SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 100),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (ctx, i) {
                   final item = fluxos[i];
                   final title = item.getField(item.title, isEs ? 'es' : 'pt');
-                  final severity = item.getField(item.severity, isEs ? 'es' : 'pt');
+                  final severity =
+                      item.getField(item.severity, isEs ? 'es' : 'pt');
                   final sevLow = severity.toLowerCase();
                   final Color sevColor;
-                  if (sevLow.contains('crítico') || sevLow.contains('crítica') ||
-                      sevLow.contains('grave') || sevLow.contains('alto')) {
+                  if (sevLow.contains('crítico') ||
+                      sevLow.contains('crítica') ||
+                      sevLow.contains('grave') ||
+                      sevLow.contains('alto')) {
                     sevColor = const Color(0xFFDC2626);
-                  } else if (sevLow.contains('moderado') || sevLow.contains('médio') ||
-                      sevLow.contains('urgência') || sevLow.contains('urgencia')) {
+                  } else if (sevLow.contains('moderado') ||
+                      sevLow.contains('médio') ||
+                      sevLow.contains('urgência') ||
+                      sevLow.contains('urgencia')) {
                     sevColor = const Color(0xFFD97706);
                   } else {
                     sevColor = const Color(0xFF16A34A);
                   }
-                  return GestureDetector(
-                    onTap: () => showProtocolDetail(context, item),
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-                      decoration: BoxDecoration(
-                        color: cardBg,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: borderC),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(dark ? 0.2 : 0.05),
-                            blurRadius: 6, offset: const Offset(0, 2),
+
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: i == fluxos.length - 1 ? 0 : 3,
+                    ),
+                    child: HomeV2PressSurface(
+                      palette: cardPalette,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(
+                            HomeV2SurfaceTokens.radius,
                           ),
-                        ],
-                      ),
-                      child: Row(children: [
-                        Container(
-                          width: 36, height: 36,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: sevColor.withOpacity(0.12),
-                          ),
-                          child: Icon(Icons.school_outlined, size: 18, color: sevColor),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(title,
-                              style: TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.w700,
-                                color: dark ? Colors.white : const Color(0xFF1A1D23),
-                                height: 1.3,
+                          overlayColor: cardPalette.pressedOverlay,
+                          onTap: () =>
+                              openSimulationProtocolPage(context, item),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 56),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(10, 7, 8, 7),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 28,
+                                    child: Icon(
+                                      Icons.school_outlined,
+                                      size: 16,
+                                      color: sevColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          title,
+                                          style: TextStyle(
+                                            fontSize: 12.5,
+                                            fontWeight: FontWeight.w700,
+                                            color: cardPalette.textPrimary,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                        if (severity.isNotEmpty) ...[
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            severity,
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w700,
+                                              color: sevColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 18,
+                                    color: cardPalette.textSecondary
+                                        .withValues(alpha: 0.75),
+                                  ),
+                                ],
                               ),
                             ),
-                            if (severity.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: sevColor.withOpacity(0.12),
-                                ),
-                                child: Text(severity,
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: sevColor)),
-                              ),
-                            ],
-                          ]),
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        Icon(Icons.chevron_right_rounded, size: 20,
-                          color: dark ? Colors.white24 : Colors.black.withOpacity(0.20)),
-                      ]),
+                      ),
                     ),
                   );
                 },
@@ -1207,49 +1494,57 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
           );
 
     return [
-      // Barra de busca (estilo escuro igual ao anterior)
       SliverToBoxAdapter(
-        child: Container(
-          color: _kDark,
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
           child: TextField(
             controller: _searchFluxoCtrl,
-            style: const TextStyle(color: Colors.white, fontSize: 13),
+            style: TextStyle(color: primary, fontSize: 12.5),
             decoration: InputDecoration(
-              hintText: isEs ? 'Buscar caso simulado…' : 'Buscar caso simulado…',
-              hintStyle: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 13),
-              prefixIcon: const Icon(Icons.search_rounded, color: _kGold, size: 18),
+              hintText:
+                  isEs ? 'Buscar caso simulado…' : 'Buscar caso simulado…',
+              hintStyle: TextStyle(color: secondary, fontSize: 12),
+              prefixIcon: const Icon(
+                Icons.search_rounded,
+                color: Color(0xFF10B981),
+                size: 16,
+              ),
               suffixIcon: _queryFluxo.isNotEmpty
                   ? GestureDetector(
                       onTap: () => _searchFluxoCtrl.clear(),
-                      child: const Icon(Icons.close_rounded, color: Colors.white38, size: 18),
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: secondary,
+                        size: 16,
+                      ),
                     )
                   : null,
               filled: true,
-              fillColor: Colors.white.withOpacity(0.08),
-              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              fillColor: fieldBg,
+              isDense: true,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.white.withOpacity(0.15)),
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: divider),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.white.withOpacity(0.15)),
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: divider),
               ),
-              focusedBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                borderSide: BorderSide(color: _kGold),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide:
+                    const BorderSide(color: Color(0xFF10B981), width: 1),
               ),
             ),
           ),
         ),
       ),
-      // Filtro de categoria (visível quando sem busca)
       if (_queryFluxo.isEmpty)
         SliverToBoxAdapter(
-          child: Container(
-            color: dark ? const Color(0xFF252930) : const Color(0xFFF2F8F2),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 2, 12, 4),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -1258,30 +1553,40 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
                   final ci = _catDefs[i];
                   final lbl = isEs ? ci.$2 : ci.$1;
                   final ico = ci.$3;
+                  final color = active ? const Color(0xFF10B981) : secondary;
+
                   return GestureDetector(
                     onTap: () => setState(() => _fluxoCat = i),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 160),
-                      margin: const EdgeInsets.only(right: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      margin: const EdgeInsets.only(right: 12),
+                      padding: const EdgeInsets.fromLTRB(4, 7, 4, 7),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: active ? _kGreen : Colors.transparent,
-                        border: Border.all(
-                          color: active
-                              ? _kGreen
-                              : (dark ? Colors.white24 : Colors.black.withOpacity(0.12)),
+                        border: Border(
+                          bottom: active
+                              ? const BorderSide(
+                                  color: Color(0xFF10B981),
+                                  width: 2,
+                                )
+                              : BorderSide.none,
                         ),
                       ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(ico, size: 12,
-                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withOpacity(0.45))),
-                        const SizedBox(width: 5),
-                        Text(lbl, style: TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w700,
-                          color: active ? Colors.white : (dark ? Colors.white54 : Colors.black.withOpacity(0.54)),
-                        )),
-                      ]),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(ico, size: 12, color: color),
+                          const SizedBox(width: 5),
+                          Text(
+                            lbl,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight:
+                                  active ? FontWeight.w700 : FontWeight.w600,
+                              color: color,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }),
@@ -1289,18 +1594,16 @@ class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
             ),
           ),
         ),
-      // Contador de resultados durante busca
       if (_queryFluxo.isNotEmpty)
         SliverToBoxAdapter(
-          child: Container(
-            width: double.infinity,
-            color: dark ? const Color(0xFF252930) : const Color(0xFFF2F8F2),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 2),
             child: Text(
               '${fluxos.length} resultado(s) para "$_queryFluxo"',
               style: TextStyle(
-                fontSize: 11, fontWeight: FontWeight.w600,
-                color: dark ? Colors.white54 : Colors.black.withOpacity(0.45),
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: secondary,
               ),
             ),
           ),
@@ -1319,45 +1622,62 @@ class _SegmentBtn extends StatelessWidget {
   final bool active;
   final bool dark;
   final VoidCallback onTap;
+
   const _SegmentBtn({
-    required this.label, required this.icon,
-    required this.active, required this.dark, required this.onTap,
+    required this.label,
+    required this.icon,
+    required this.active,
+    required this.dark,
+    required this.onTap,
   });
 
-  // BUILD 331: botões de segmento integrados ao tema escuro — sem verde claro.
-  // Ativo:   fundo esmeralda escuro + borda fina + texto branco
-  // Inativo: fundo neutro profundo + borda ghost sutil + texto cinza
   @override
   Widget build(BuildContext context) {
-    const activeColor  = Color(0xFF065F45);
-    const activeBorder = Color(0xFF34D399);
+    const activeColor = Color(0xFF10B981);
+    final inactiveColor =
+        dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+
     return Expanded(
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          height: 44,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: active
-                ? activeColor
-                : const Color(0xFF252930),
-            border: Border.all(
-              color: active
-                  ? activeBorder.withOpacity(0.6)
-                  : Colors.white.withOpacity(0.08),
-              width: active ? 1.0 : 0.5,
+            border: Border(
+              bottom: active
+                  ? const BorderSide(
+                      color: Color(0xFF10B981),
+                      width: 2,
+                    )
+                  : BorderSide.none,
             ),
           ),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(icon, size: 14,
-              color: active ? const Color(0xFF34D399) : Colors.white38),
-            const SizedBox(width: 6),
-            Text(label, style: TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w800,
-              color: active ? Colors.white : Colors.white60,
-            )),
-          ]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 15,
+                color: active ? activeColor : inactiveColor,
+              ),
+              const SizedBox(width: 5),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+                    color: active ? activeColor : inactiveColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1401,84 +1721,97 @@ class _GrupoCard extends StatelessWidget {
   final List<ProtocolModel> allDB;
   final bool isEs;
   final AppProvider p;
+  final bool dark;
 
   const _GrupoCard({
-    required this.icon, required this.titlePt, required this.titleEs,
-    required this.color, required this.borderColor, required this.iconColor,
-    required this.ids, required this.allDB, required this.isEs, required this.p,
+    required this.icon,
+    required this.titlePt,
+    required this.titleEs,
+    required this.color,
+    required this.borderColor,
+    required this.iconColor,
+    required this.ids,
+    required this.allDB,
+    required this.isEs,
+    required this.p,
+    required this.dark,
   });
 
   @override
   Widget build(BuildContext context) {
     final casos = allDB.where((d) => ids.contains(d.id)).toList();
     if (casos.isEmpty) return const SizedBox.shrink();
-    final title = isEs ? titleEs : titlePt;
 
-    // BUILD 331: card dark premium — fundo profundo por especialidade,
-    // borda fina com acento vibrante, texto branco com subtítulo cinza claro.
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (_) => _SimulacoesSheet(
-          title: title, icon: icon,
-          cardColor: color, borderColor: borderColor, iconColor: iconColor,
-          casos: casos, p: p, isEs: isEs,
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: color,               // fundo escuro por especialidade
-          border: Border.all(color: borderColor, width: 0.8),
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: iconColor.withOpacity(0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(children: [
-          // Ícone com fundo levemente colorido — único detalhe de cor no card
-          Container(
-            width: 44, height: 44,
-            decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: iconColor.withOpacity(0.25),
-                width: 0.8,
+    final title = isEs ? titleEs : titlePt;
+    final palette = HomeV2Palette.resolve(dark);
+
+    return HomeV2PressSurface(
+      // MEDCASES_SIMULACAO_HOME_CARD_STANDARD_V1_B_R2
+      palette: palette,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(HomeV2SurfaceTokens.radius),
+          overlayColor: palette.pressedOverlay,
+          onTap: () => Navigator.of(context).push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => _SimulacoesGroupPage(
+                titlePt: titlePt,
+                titleEs: titleEs,
+                icon: icon,
+                iconColor: iconColor,
+                casos: casos,
               ),
             ),
-            child: Center(child: Icon(icon, size: 22, color: iconColor)),
           ),
-          const SizedBox(width: 14),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: const TextStyle(
-              fontSize: 13.5, fontWeight: FontWeight.w900,
-              color: Colors.white, letterSpacing: -0.2,
-            )),
-            const SizedBox(height: 4),
-            // BUILD 331/QA: letterSpacing 0.2 melhora legibilidade de texto
-            // pequeno (11pt) em brilho reduzido — contexto hospitalar noturno.
-            // Contraste WCAG auditado: mín 6.21:1 (lavanda/Neuro) — PASS AA.
-            Text(
-              '${casos.length} ${casos.length == 1
-                  ? (isEs ? "caso de estudio" : "caso de estudo")
-                  : (isEs ? "casos de estudio" : "casos de estudo")}',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                letterSpacing: 0.2,
-                color: iconColor.withOpacity(0.80)),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 56),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 7, 8, 7),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 28,
+                    child: Icon(icon, size: 16, color: iconColor),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            color: palette.textPrimary,
+                            height: 1.3,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${casos.length} ${casos.length == 1 ? (isEs ? "caso de estudio" : "caso de estudo") : (isEs ? "casos de estudio" : "casos de estudo")}',
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
+                            color: iconColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 18,
+                    color: palette.textSecondary.withValues(alpha: 0.75),
+                  ),
+                ],
+              ),
             ),
-          ])),
-          // Chevron sutil
-          Icon(Icons.chevron_right_rounded, size: 20,
-            color: iconColor.withOpacity(0.55)),
-        ]),
+          ),
+        ),
       ),
     );
   }
@@ -1487,128 +1820,196 @@ class _GrupoCard extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // BOTTOM SHEET — lista de simulações do grupo
 // ─────────────────────────────────────────────────────────────────────────────
-class _SimulacoesSheet extends StatelessWidget {
-  final String title;
+class _SimulacoesGroupPage extends StatelessWidget {
+  final String titlePt;
+  final String titleEs;
   final IconData icon;
-  final Color cardColor;
-  final Color borderColor;
   final Color iconColor;
   final List<ProtocolModel> casos;
-  final AppProvider p;
-  final bool isEs;
 
-  const _SimulacoesSheet({
-    required this.title, required this.icon,
-    required this.cardColor, required this.borderColor, required this.iconColor,
-    required this.casos, required this.p, required this.isEs,
+  const _SimulacoesGroupPage({
+    required this.titlePt,
+    required this.titleEs,
+    required this.icon,
+    required this.iconColor,
+    required this.casos,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.4,
-      maxChildSize: 0.92,
-      // BUILD 331: sheet dark — fundo escuro por especialidade
-      builder: (_, ctrl) => Container(
-        decoration: BoxDecoration(
-          color: cardColor,           // fundo escuro da especialidade
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          border: Border(
-            top: BorderSide(color: iconColor.withOpacity(0.2), width: 0.8),
-          ),
-        ),
-        child: Column(children: [
-          const SizedBox(height: 10),
-          Container(width: 40, height: 4,
-            decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.35),
-              borderRadius: BorderRadius.circular(2),
-            )),
-          const SizedBox(height: 14),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(children: [
-              Container(
-                width: 36, height: 36,
+    final p = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+    final title = isEs ? titleEs : titlePt;
+    final palette = HomeV2Palette.resolve(dark);
+    final bg = HomeV2SurfaceTokens.pageBackground(dark);
+    final topbarGlass = dark
+        ? const Color(0xFF252930).withValues(alpha: 0.70)
+        : Colors.white.withValues(alpha: 0.70);
+    final topbarDivider =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final topbarForeground = dark ? Colors.white : const Color(0xFF05070A);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: dark ? Brightness.dark : Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: bg,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+              child: Container(
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, color: iconColor, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(child: Text(title, style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white,
-              ))),
-              Text('${casos.length}', style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w700,
-                color: iconColor.withOpacity(0.7),
-              )),
-            ]),
-          ),
-          const SizedBox(height: 12),
-          Divider(color: iconColor.withOpacity(0.15), height: 1),
-          Expanded(
-            child: ListView.builder(
-              controller: ctrl,
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
-              itemCount: casos.length,
-              itemBuilder: (_, i) {
-                final caso = casos[i];
-                final label = p.tDB(caso.title);
-                final severity = p.tDB(caso.severity);
-                return InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                    showProtocolDetail(context, caso);
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      // Fundo levemente mais claro que o sheet para contraste
-                      color: Colors.white.withOpacity(0.06),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: iconColor.withOpacity(0.18)),
-                    ),
-                    child: Row(children: [
-                      Container(
-                        width: 36, height: 36,
-                        decoration: BoxDecoration(
-                          color: iconColor.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(Icons.school_outlined, size: 18, color: iconColor),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(label, style: const TextStyle(
-                          fontSize: 13.5, fontWeight: FontWeight.w800,
-                          color: Colors.white, height: 1.3,
-                        )),
-                        if (severity.isNotEmpty) ...[
-                          const SizedBox(height: 3),
-                          // BUILD 331/QA: w700 + letterSpacing 0.2 para legibilidade
-                          // em telas com brilho reduzido (turno noturno hospitalar).
-                          Text(severity, style: TextStyle(
-                            fontSize: 11, color: iconColor.withOpacity(0.80),
-                            fontWeight: FontWeight.w700, letterSpacing: 0.2,
-                          ), maxLines: 1, overflow: TextOverflow.ellipsis),
-                        ],
-                      ])),
-                      Icon(Icons.arrow_forward_ios_rounded, size: 13,
-                        color: iconColor.withOpacity(0.5)),
-                    ]),
+                  color: topbarGlass,
+                  border: Border(
+                    bottom: BorderSide(color: topbarDivider, width: 0.7),
                   ),
-                );
-              },
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: SizedBox(
+                    height: 48,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 48),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  title.toUpperCase(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.2,
+                                    color: topbarForeground,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => Navigator.of(context).pop(),
+                              child: SizedBox(
+                                width: 36,
+                                height: 36,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                    size: 20,
+                                    color: topbarForeground,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ]),
+        ),
+        body: ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 32),
+          itemCount: casos.length,
+          itemBuilder: (_, i) {
+            final caso = casos[i];
+            final label = p.tDB(caso.title);
+            final severity = p.tDB(caso.severity);
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: i == casos.length - 1 ? 0 : 3,
+              ),
+              child: HomeV2PressSurface(
+                // MEDCASES_SIMULATION_GROUP_FULL_PAGE_V1_B_R0
+                palette: palette,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius:
+                        BorderRadius.circular(HomeV2SurfaceTokens.radius),
+                    overlayColor: palette.pressedOverlay,
+                    onTap: () => openSimulationProtocolPage(context, caso),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 56),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 7, 8, 7),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 28,
+                              child: Icon(
+                                Icons.school_outlined,
+                                size: 16,
+                                color: iconColor,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    label,
+                                    style: TextStyle(
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w700,
+                                      color: palette.textPrimary,
+                                      height: 1.3,
+                                    ),
+                                  ),
+                                  if (severity.isNotEmpty) ...[
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      severity,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                        color: iconColor,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              size: 18,
+                              color: palette.textSecondary
+                                  .withValues(alpha: 0.75),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -1621,42 +2022,96 @@ class _CategoryFilter extends StatelessWidget {
   final List<String> categories;
   final String selected;
   final bool dark;
+  final bool isEs;
   final ValueChanged<String> onSelect;
+
   const _CategoryFilter({
-    required this.categories, required this.selected,
-    required this.dark, required this.onSelect,
+    required this.categories,
+    required this.selected,
+    required this.dark,
+    required this.isEs,
+    required this.onSelect,
   });
+
+  String _label(String category) {
+    if (!isEs) return category;
+
+    switch (category) {
+      case 'Geral':
+        return 'General';
+      case 'Emergência':
+        return 'Urgencias';
+      case 'Cardiologia':
+        return 'Cardiología';
+      case 'Infectologia':
+        return 'Infectología';
+      case 'Pediatria':
+        return 'Pediatría';
+      case 'Neurologia':
+        return 'Neurología';
+      case 'Pneumologia':
+        return 'Neumología';
+      case 'UTI / Intensivismo':
+        return 'UCI / Intensivismo';
+      case 'Farmacologia':
+        return 'Farmacología';
+      default:
+        return category;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // MEDCASES_GUIA_CLINICA_SPECIALTY_FILTER_V1_B_R0
+    final inactive =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFFFFFFF);
+    final border =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final text =
+        dark ? const Color(0xFFCBD5E1) : const Color(0xFF59636E);
+
     return SizedBox(
       height: 38,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
         itemCount: categories.length,
         itemBuilder: (_, i) {
-          final cat    = categories[i];
-          final active = cat == selected;
-          return GestureDetector(
-            onTap: () => onSelect(cat),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: active
-                    ? _kGreen
-                    : (dark ? const Color(0xFF2D3340) : Colors.white),
-                border: Border.all(
-                  color: active ? _kGreen : (dark ? Colors.white12 : Colors.black.withOpacity(0.12)),
+          final category = categories[i];
+          final active = category == selected;
+
+          return Padding(
+            padding: EdgeInsets.only(
+              right: i == categories.length - 1 ? 0 : 3,
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => onSelect(category),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 140),
+                height: 36,
+                constraints: const BoxConstraints(minWidth: 62),
+                padding: const EdgeInsets.symmetric(horizontal: 11),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: active ? _kGreen : inactive,
+                  border: Border.all(
+                    color: active ? _kGreen : border,
+                    width: 0.7,
+                  ),
+                ),
+                child: Text(
+                  _label(category),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w800,
+                    color: active ? Colors.white : text,
+                  ),
                 ),
               ),
-              child: Text(cat, style: TextStyle(
-                fontSize: 12, fontWeight: FontWeight.w700,
-                color: active ? Colors.white : (dark ? Colors.white60 : Colors.black.withOpacity(0.54)),
-              )),
             ),
           );
         },
@@ -1665,6 +2120,7 @@ class _CategoryFilter extends StatelessWidget {
   }
 }
 
+
 // ─────────────────────────────────────────────────────────────────────────────
 // CARD DE GUIA PDF
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1672,161 +2128,297 @@ class _GuideCard extends StatelessWidget {
   final GuideModel guide;
   final bool dark;
   final VoidCallback onOpen;
-  const _GuideCard({required this.guide, required this.dark, required this.onOpen});
+
+  const _GuideCard({
+    required this.guide,
+    required this.dark,
+    required this.onOpen,
+  });
 
   Color get _categoryColor {
     switch (guide.category) {
-      case 'Emergência':         return const Color(0xFFEF4444);
-      case 'Cardiologia':        return const Color(0xFFEC4899);
-      case 'Infectologia':       return const Color(0xFF10B981);
-      case 'Pediatria':          return const Color(0xFF3B82F6);
-      case 'Neurologia':         return const Color(0xFF8B5CF6);
-      case 'Pneumologia':        return const Color(0xFF06B6D4);
-      case 'UTI / Intensivismo': return const Color(0xFFF97316);
-      case 'Farmacologia':       return const Color(0xFFA855F7);
-      default:                   return _kGreen;
+      case 'Emergência':
+        return const Color(0xFFEF4444);
+      case 'Cardiologia':
+        return const Color(0xFFEC4899);
+      case 'Infectologia':
+        return const Color(0xFF10B981);
+      case 'Pediatria':
+        return const Color(0xFF3B82F6);
+      case 'Neurologia':
+        return const Color(0xFF8B5CF6);
+      case 'Pneumologia':
+        return const Color(0xFF06B6D4);
+      case 'UTI / Intensivismo':
+        return const Color(0xFFF97316);
+      case 'Farmacologia':
+        return const Color(0xFFA855F7);
+      default:
+        return dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
     }
+  }
+
+  String _categoryLabel(bool isEs) {
+    if (!isEs) return guide.category;
+
+    switch (guide.category) {
+      case 'Geral':
+        return 'General';
+      case 'Emergência':
+        return 'Urgencias';
+      case 'Cardiologia':
+        return 'Cardiología';
+      case 'Infectologia':
+        return 'Infectología';
+      case 'Pediatria':
+        return 'Pediatría';
+      case 'Neurologia':
+        return 'Neurología';
+      case 'Pneumologia':
+        return 'Neumología';
+      case 'UTI / Intensivismo':
+        return 'UCI / Intensivismo';
+      case 'Farmacologia':
+        return 'Farmacología';
+      default:
+        return guide.category;
+    }
+  }
+
+  Widget _thumbnailFallback({
+    required Color accent,
+    required Color surfaceSoft,
+    required Color border,
+  }) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: surfaceSoft,
+        borderRadius: BorderRadius.circular(7),
+        border: Border.all(
+          color: border,
+          width: 0.7,
+        ),
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned(
+            left: 9,
+            top: 9,
+            child: Container(
+              width: 18,
+              height: 2,
+              color: accent,
+            ),
+          ),
+          Center(
+            child: Icon(
+              Icons.menu_book_rounded,
+              size: 27,
+              color: accent,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final cardBg   = dark ? const Color(0xFF252930) : Colors.white;
-    final border   = dark ? Colors.white.withOpacity(0.07) : Colors.black.withOpacity(0.06);
-    final catColor = _categoryColor;
+    // MEDCASES_GUIA_CLINICA_COMPACT_CARD_V1_B_R0
+    final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
+    final surface = dark ? const Color(0xFF252930) : Colors.white;
+    final surfaceSoft =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFF4F7F8);
+    final border =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final primary = dark ? Colors.white : const Color(0xFF05070A);
+    final secondary =
+        dark ? const Color(0xFFCBD5E1) : const Color(0xFF59636E);
+    final muted =
+        dark ? const Color(0xFF94A3B8) : const Color(0xFF7B8794);
+    final accent = _categoryColor;
+    final category = _categoryLabel(isEs);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: cardBg, borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: border),
-        boxShadow: [BoxShadow(
-          color: Colors.black.withOpacity(dark ? 0.25 : 0.06),
-          blurRadius: 8, offset: const Offset(0, 2),
-        )],
-      ),
+    final meta = <String>[
+      if (guide.authors.trim().isNotEmpty) guide.authors.trim(),
+      if (guide.year.trim().isNotEmpty) guide.year.trim(),
+    ].join(' • ');
+
+    final utility = <String>[
+      if (guide.fileSizeLabel.isNotEmpty) guide.fileSizeLabel,
+      if (guide.downloadCount > 0)
+        isEs
+            ? '${guide.downloadCount} descargas'
+            : '${guide.downloadCount} downloads',
+    ].join(' • ');
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 3),
       child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        color: surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+            color: border,
+            width: 0.7,
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
           onTap: onOpen,
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              // ── Thumbnail dinâmico (Build 169) ─────────────────────────────
-              // Se coverUrl preenchida → CachedNetworkImage com bordas arredondadas
-              // Se vazia → fallback ao ícone clássico verde de PDF (retrocompat.)
-              if (guide.coverUrl.isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: CachedNetworkImage(
-                    imageUrl: guide.coverUrl,
-                    width: 56, height: 64,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      width: 56, height: 64,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: catColor.withOpacity(0.12),
-                      ),
-                      child: Center(
-                        child: SizedBox(
-                          width: 18, height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(catColor),
+            padding: const EdgeInsets.all(7),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 72,
+                  height: 88,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(7),
+                    child: guide.coverUrl.trim().isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: guide.coverUrl.trim(),
+                            fit: BoxFit.cover,
+                            fadeInDuration:
+                                const Duration(milliseconds: 120),
+                            placeholder: (_, __) => DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: surfaceSoft,
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.6,
+                                    color: accent,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (_, __, ___) =>
+                                _thumbnailFallback(
+                              accent: accent,
+                              surfaceSoft: surfaceSoft,
+                              border: border,
+                            ),
+                          )
+                        : _thumbnailFallback(
+                            accent: accent,
+                            surfaceSoft: surfaceSoft,
+                            border: border,
+                          ),
+                  ),
+                ),
+                const SizedBox(width: 9),
+                Expanded(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 88),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: accent,
+                            fontSize: 9.8,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.55,
                           ),
                         ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      width: 56, height: 64,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: catColor.withOpacity(0.12),
-                        border: Border.all(color: catColor.withOpacity(0.3)),
-                      ),
-                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
-                        Text('PDF', style: TextStyle(
-                          fontSize: 8, fontWeight: FontWeight.w900, color: catColor)),
-                      ]),
+                        const SizedBox(height: 3),
+                        Text(
+                          guide.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: primary,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w800,
+                            height: 1.15,
+                          ),
+                        ),
+                        if (meta.isNotEmpty) ...[
+                          const SizedBox(height: 3),
+                          Text(
+                            meta,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: muted,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                        if (guide.description.trim().isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            guide.description.trim(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: secondary,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              height: 1.25,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.picture_as_pdf_outlined,
+                              size: 13,
+                              color: muted,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                utility.isEmpty ? 'PDF' : 'PDF • $utility',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: muted,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Abrir',
+                              style: TextStyle(
+                                color: dark
+                                    ? const Color(0xFF00C781)
+                                    : const Color(0xFF008F66),
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              size: 17,
+                              color: dark
+                                  ? const Color(0xFF00C781)
+                                  : const Color(0xFF008F66),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                )
-              else
-                Container(
-                  width: 56, height: 64,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: catColor.withOpacity(0.12),
-                    border: Border.all(color: catColor.withOpacity(0.3)),
-                  ),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Icon(Icons.picture_as_pdf_rounded, color: catColor, size: 24),
-                    Text('PDF', style: TextStyle(
-                      fontSize: 8, fontWeight: FontWeight.w900, color: catColor)),
-                  ]),
                 ),
-              // ───────────────────────────────────────────────────────────────
-              const SizedBox(width: 14),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: catColor.withOpacity(0.12),
-                  ),
-                  child: Text(guide.category, style: TextStyle(
-                    fontSize: 10, fontWeight: FontWeight.w800, color: catColor)),
-                ),
-                const SizedBox(height: 6),
-                Text(guide.title, style: TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w800,
-                  color: dark ? Colors.white : const Color(0xFF0F1116), height: 1.3,
-                )),
-                if (guide.authors.isNotEmpty || guide.year.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    [if (guide.authors.isNotEmpty) guide.authors,
-                     if (guide.year.isNotEmpty) guide.year].join(' • '),
-                    style: TextStyle(fontSize: 11,
-                      color: dark ? Colors.white38 : Colors.black.withOpacity(0.38)),
-                    maxLines: 1, overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                if (guide.description.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(guide.description, style: TextStyle(fontSize: 12,
-                    color: dark ? Colors.white54 : Colors.black.withOpacity(0.54), height: 1.4),
-                    maxLines: 2, overflow: TextOverflow.ellipsis),
-                ],
-                const SizedBox(height: 10),
-                Row(children: [
-                  if (guide.fileSizeLabel.isNotEmpty)
-                    _Chip(label: guide.fileSizeLabel, icon: Icons.storage_rounded, dark: dark),
-                  if (guide.downloadCount > 0) ...[
-                    const SizedBox(width: 6),
-                    _Chip(label: '${guide.downloadCount}',
-                      icon: Icons.download_rounded, dark: dark),
-                  ],
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                    decoration: BoxDecoration(
-                      // BUILD 277-CROMATICO: BorderRadius.circular(12)
-                      borderRadius: BorderRadius.circular(12), color: _kGreen,
-                    ),
-                    child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.open_in_new_rounded, size: 13, color: Colors.white),
-                      SizedBox(width: 5),
-                      Text('Abrir', style: TextStyle(fontSize: 12,
-                        fontWeight: FontWeight.w800, color: Colors.white)),
-                    ]),
-                  ),
-                ]),
-              ])),
-            ]),
+              ],
+            ),
           ),
         ),
       ),
@@ -1834,34 +2426,7 @@ class _GuideCard extends StatelessWidget {
   }
 }
 
-class _Chip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool dark;
-  const _Chip({required this.label, required this.icon, required this.dark});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: dark ? Colors.white.withOpacity(0.06)
-                    : Colors.black.withOpacity(0.05),
-      ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 11, color: dark ? Colors.white38 : Colors.black.withOpacity(0.38)),
-        const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
-          color: dark ? Colors.white38 : Colors.black.withOpacity(0.38))),
-      ]),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ESTADOS VAZIOS / ERRO
-// ─────────────────────────────────────────────────────────────────────────────
 class _LibraryTabEmptyState extends StatelessWidget {
   final bool dark;
   final IconData icon;
@@ -1883,20 +2448,25 @@ class _LibraryTabEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 52,
-              color: dark ? Colors.white12 : Colors.black.withOpacity(0.12)),
+            Icon(icon,
+                size: 52,
+                color: dark ? Colors.white12 : Colors.black.withOpacity(0.12)),
             const SizedBox(height: 14),
-            Text(title,
+            Text(
+              title,
               style: TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w700,
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
                 color: dark ? Colors.white54 : Colors.black.withOpacity(0.52),
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text(subtitle,
+            Text(
+              subtitle,
               style: TextStyle(
-                fontSize: 12, height: 1.4,
+                fontSize: 12,
+                height: 1.4,
                 color: dark ? Colors.white30 : Colors.black.withOpacity(0.34),
               ),
               textAlign: TextAlign.center,
@@ -1929,18 +2499,24 @@ class _GuideErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.cloud_off_rounded, size: 56,
-                color: dark ? Colors.orangeAccent.withOpacity(0.7) : Colors.redAccent),
+            Icon(Icons.cloud_off_rounded,
+                size: 56,
+                color: dark
+                    ? Colors.orangeAccent.withOpacity(0.7)
+                    : Colors.redAccent),
             const SizedBox(height: 14),
             Text(
               isEs ? 'Error al cargar guías' : 'Erro ao carregar guias',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: fg),
+              style: TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.w800, color: fg),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            Text(message,
+            Text(
+              message,
               style: TextStyle(
-                fontSize: 12, height: 1.4,
+                fontSize: 12,
+                height: 1.4,
                 color: dark ? Colors.white54 : Colors.black.withOpacity(0.62),
               ),
               textAlign: TextAlign.center,
@@ -1966,7 +2542,8 @@ class _EmptyState extends StatelessWidget {
   final bool dark;
   final bool isEs;
   final bool hasSearch;
-  const _EmptyState({required this.dark, required this.isEs, this.hasSearch = false});
+  const _EmptyState(
+      {required this.dark, required this.isEs, this.hasSearch = false});
 
   @override
   Widget build(BuildContext context) {
@@ -1983,9 +2560,12 @@ class _EmptyState extends StatelessWidget {
           Text(
             hasSearch
                 ? (isEs ? 'Sin resultados' : 'Nenhum resultado')
-                : (isEs ? 'Sin guías disponibles aún' : 'Nenhuma guia disponível ainda'),
+                : (isEs
+                    ? 'Sin guías disponibles aún'
+                    : 'Nenhuma guia disponível ainda'),
             style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w700,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
               color: dark ? Colors.white30 : Colors.black.withOpacity(0.26),
             ),
             textAlign: TextAlign.center,
@@ -1993,10 +2573,13 @@ class _EmptyState extends StatelessWidget {
           if (!hasSearch) ...[
             const SizedBox(height: 8),
             Text(
-              isEs ? 'El administrador aún no subió guías'
-                   : 'O administrador ainda não enviou guias',
-              style: TextStyle(fontSize: 13,
-                color: dark ? Colors.white24 : Colors.black.withOpacity(0.12)),
+              isEs
+                  ? 'El administrador aún no subió guías'
+                  : 'O administrador ainda não enviou guias',
+              style: TextStyle(
+                  fontSize: 13,
+                  color:
+                      dark ? Colors.white24 : Colors.black.withOpacity(0.12)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -2017,10 +2600,10 @@ class _GeneralTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg    = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
-    final card  = dark ? const Color(0xFF22262F) : Colors.white;
-    final text1 = dark ? Colors.white          : const Color(0xFF0F1116);
-    final text2 = dark ? Colors.white54        : Colors.black54;
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    final card = dark ? const Color(0xFF22262F) : Colors.white;
+    final text1 = dark ? Colors.white : const Color(0xFF0F1116);
+    final text2 = dark ? Colors.white54 : Colors.black54;
 
     final items = [
       _GenItem(
@@ -2051,7 +2634,9 @@ class _GeneralTab extends StatelessWidget {
           Text(
             isEs ? 'Bienvenido a la Biblioteca' : 'Bem-vindo à Biblioteca',
             style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.w800, color: text1,
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: text1,
             ),
           ),
           const SizedBox(height: 4),
@@ -2063,39 +2648,45 @@ class _GeneralTab extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           ...items.map((item) => Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: card,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: dark
-                    ? Colors.white.withOpacity(0.06)
-                    : Colors.black.withOpacity(0.06),
-              ),
-            ),
-            child: Row(children: [
-              Container(
-                width: 44, height: 44,
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: item.color.withOpacity(dark ? 0.22 : 0.12),
+                  color: card,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: dark
+                        ? Colors.white.withOpacity(0.06)
+                        : Colors.black.withOpacity(0.06),
+                  ),
                 ),
-                child: Icon(item.icon, color: item.color, size: 22),
-              ),
-              const SizedBox(width: 14),
-              Expanded(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item.title,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: text1)),
-                  const SizedBox(height: 3),
-                  Text(item.subtitle,
-                    style: TextStyle(fontSize: 12, color: text2, height: 1.4)),
-                ],
+                child: Row(children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: item.color.withOpacity(dark ? 0.22 : 0.12),
+                    ),
+                    child: Icon(item.icon, color: item.color, size: 22),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.title,
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: text1)),
+                      const SizedBox(height: 3),
+                      Text(item.subtitle,
+                          style: TextStyle(
+                              fontSize: 12, color: text2, height: 1.4)),
+                    ],
+                  )),
+                ]),
               )),
-            ]),
-          )),
         ]),
       ),
     );
@@ -2107,5 +2698,9 @@ class _GenItem {
   final Color color;
   final String title;
   final String subtitle;
-  const _GenItem({required this.icon, required this.color, required this.title, required this.subtitle});
+  const _GenItem(
+      {required this.icon,
+      required this.color,
+      required this.title,
+      required this.subtitle});
 }

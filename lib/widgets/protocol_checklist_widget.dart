@@ -1,4 +1,5 @@
 // protocol_checklist_widget.dart
+// MEDCASES_SIMULATION_CHECKLIST_FLAT_V1_R3_R1
 // Feature 1 — Checklists Interativos de Emergência
 //
 // Uso:
@@ -25,11 +26,13 @@ import '../widgets/common_widgets.dart';
 class ProtocolChecklistWidget extends StatefulWidget {
   final List<String> steps;
   final bool isEs;
+  final bool flat;
 
   const ProtocolChecklistWidget({
     super.key,
     required this.steps,
     this.isEs = true,
+    this.flat = false,
   });
 
   @override
@@ -105,6 +108,7 @@ class _ProtocolChecklistWidgetState extends State<ProtocolChecklistWidget>
           total: _total,
           isEs: widget.isEs,
           colors: c,
+          flat: widget.flat,
           onReset: _checkedCount > 0 ? _reset : null,
         ),
         const SizedBox(height: 10),
@@ -121,6 +125,7 @@ class _ProtocolChecklistWidgetState extends State<ProtocolChecklistWidget>
             isChecked: _checked[i],
             onTap: () => _toggle(i),
             colors: c,
+            flat: widget.flat,
           );
         }),
 
@@ -128,7 +133,11 @@ class _ProtocolChecklistWidgetState extends State<ProtocolChecklistWidget>
         FadeTransition(
           opacity: _completionFade,
           child: _allDone
-              ? _CompletionBanner(isEs: widget.isEs, colors: c)
+              ? _CompletionBanner(
+                  isEs: widget.isEs,
+                  colors: c,
+                  flat: widget.flat,
+                )
               : const SizedBox.shrink(),
         ),
       ],
@@ -145,6 +154,7 @@ class _ChecklistHeader extends StatelessWidget {
   final int total;
   final bool isEs;
   final AppColors colors;
+  final bool flat;
   final VoidCallback? onReset;
 
   const _ChecklistHeader({
@@ -152,32 +162,30 @@ class _ChecklistHeader extends StatelessWidget {
     required this.total,
     required this.isEs,
     required this.colors,
+    this.flat = false,
     this.onReset,
   });
 
   @override
   Widget build(BuildContext context) {
     final label = isEs ? 'LISTA DE ACCIONES' : 'LISTA DE AÇÕES';
-    final countLabel = '$checkedCount/$total ${isEs ? 'completados' : 'concluídos'}';
+    final countLabel =
+        '$checkedCount/$total ${isEs ? 'completados' : 'concluídos'}';
 
     return Row(
       children: [
-        // Ícone
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: colors.green.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(
-            Icons.checklist_rounded,
-            size: 16,
-            color: colors.green,
-          ),
-        ),
+        flat
+            ? Icon(Icons.checklist_rounded, size: 17, color: colors.green)
+            : Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: colors.green.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(Icons.checklist_rounded,
+                    size: 16, color: colors.green),
+              ),
         const SizedBox(width: 10),
-
-        // Título + contador
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,8 +195,8 @@ class _ChecklistHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: 1.8,
-                  color: colors.gold,
+                  letterSpacing: flat ? 0.9 : 1.8,
+                  color: flat ? colors.green : colors.gold,
                 ),
               ),
               const SizedBox(height: 2),
@@ -203,36 +211,56 @@ class _ChecklistHeader extends StatelessWidget {
             ],
           ),
         ),
-
-        // Botão de reset — só aparece quando há marcações
         AnimatedOpacity(
           opacity: onReset != null ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 250),
           child: GestureDetector(
             onTap: onReset,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: colors.surface,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: colors.border),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.restart_alt_rounded,
-                      size: 13, color: colors.textHint),
-                  const SizedBox(width: 4),
-                  Text(
-                    isEs ? 'Reiniciar' : 'Reiniciar',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: colors.textHint,
+            child: flat
+                ? Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.restart_alt_rounded,
+                            size: 13, color: colors.textHint),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Reiniciar',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: colors.textHint,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: colors.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: colors.border),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.restart_alt_rounded,
+                            size: 13, color: colors.textHint),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Reiniciar',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: colors.textHint,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
       ],
@@ -285,6 +313,7 @@ class _ChecklistItem extends StatelessWidget {
   final bool isChecked;
   final VoidCallback onTap;
   final AppColors colors;
+  final bool flat;
 
   const _ChecklistItem({
     required this.index,
@@ -292,81 +321,94 @@ class _ChecklistItem extends StatelessWidget {
     required this.isChecked,
     required this.onTap,
     required this.colors,
+    this.flat = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 280),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            color: isChecked
-                ? colors.green.withOpacity(colors.dark ? 0.10 : 0.06)
-                : colors.cardBg,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isChecked
-                  ? colors.green.withOpacity(0.35)
-                  : colors.border,
-              width: isChecked ? 1.5 : 1.0,
+    final content = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 22,
+          child: Text(
+            '${index + 1}',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color:
+                  isChecked ? colors.green.withOpacity(0.6) : colors.textHint,
+              height: 1.5,
             ),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Número do passo
-              SizedBox(
-                width: 22,
-                child: Text(
-                  '${index + 1}',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w900,
-                    color: isChecked
-                        ? colors.green.withOpacity(0.6)
-                        : colors.textHint,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-
-              // Texto do passo
-              Expanded(
-                child: AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 280),
-                  curve: Curves.easeOutCubic,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w600,
-                    height: 1.45,
-                    color: isChecked
-                        ? colors.textPrimary.withOpacity(0.38)
-                        : colors.textPrimary,
-                    decoration: isChecked
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                    decorationColor:
-                        colors.textSecondary.withOpacity(0.5),
-                    decorationThickness: 1.5,
-                  ),
-                  child: Text(text),
-                ),
-              ),
-
-              const SizedBox(width: 10),
-
-              // Checkbox customizado
-              _CustomCheckbox(isChecked: isChecked, colors: colors),
-            ],
+        ),
+        Expanded(
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeOutCubic,
+            style: TextStyle(
+              fontSize: 13.5,
+              fontWeight: FontWeight.w600,
+              height: 1.45,
+              color: isChecked
+                  ? colors.textPrimary.withOpacity(0.38)
+                  : colors.textPrimary,
+              decoration:
+                  isChecked ? TextDecoration.lineThrough : TextDecoration.none,
+              decorationColor: colors.textSecondary.withOpacity(0.5),
+              decorationThickness: 1.5,
+            ),
+            child: Text(text),
           ),
         ),
-      ),
+        const SizedBox(width: 10),
+        flat
+            ? Icon(
+                isChecked
+                    ? Icons.check_circle_rounded
+                    : Icons.radio_button_unchecked_rounded,
+                size: 21,
+                color: isChecked ? colors.green : colors.borderStrong,
+              )
+            : _CustomCheckbox(isChecked: isChecked, colors: colors),
+      ],
+    );
+
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: flat
+          ? Container(
+              padding: const EdgeInsets.symmetric(vertical: 11),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: colors.border, width: 0.7),
+                ),
+              ),
+              child: content,
+            )
+          : Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeOutCubic,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: isChecked
+                      ? colors.green.withOpacity(colors.dark ? 0.10 : 0.06)
+                      : colors.cardBg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isChecked
+                        ? colors.green.withOpacity(0.35)
+                        : colors.border,
+                    width: isChecked ? 1.5 : 1.0,
+                  ),
+                ),
+                child: content,
+              ),
+            ),
     );
   }
 }
@@ -392,9 +434,7 @@ class _CustomCheckbox extends StatelessWidget {
         color: isChecked ? colors.green : Colors.transparent,
         borderRadius: BorderRadius.circular(7),
         border: Border.all(
-          color: isChecked
-              ? colors.green
-              : colors.borderStrong,
+          color: isChecked ? colors.green : colors.borderStrong,
           width: 1.8,
         ),
         boxShadow: isChecked
@@ -421,42 +461,62 @@ class _CustomCheckbox extends StatelessWidget {
 class _CompletionBanner extends StatelessWidget {
   final bool isEs;
   final AppColors colors;
+  final bool flat;
 
-  const _CompletionBanner({required this.isEs, required this.colors});
+  const _CompletionBanner({
+    required this.isEs,
+    required this.colors,
+    this.flat = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: const Color(0xFF22C55E).withOpacity(0.10),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: const Color(0xFF22C55E).withOpacity(0.30),
+    final text = isEs
+        ? 'Protocolo completado. Continúe con la monitorización del paciente.'
+        : 'Protocolo concluído. Prossiga com a monitorização do paciente.';
+
+    final content = Row(
+      children: [
+        const Icon(Icons.check_circle_rounded,
+            size: 18, color: Color(0xFF16A34A)),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF16A34A),
+              height: 1.4,
+            ),
           ),
         ),
-        child: Row(
-          children: [
-            const Text('✅', style: TextStyle(fontSize: 18)),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                isEs
-                    ? 'Protocolo completado. Continúe con la monitorización del paciente.'
-                    : 'Protocolo concluído. Prossiga com a monitorização do paciente.',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF16A34A),
-                  height: 1.4,
+      ],
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: flat
+          ? Container(
+              padding: const EdgeInsets.fromLTRB(0, 12, 0, 4),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: colors.border, width: 0.7),
                 ),
               ),
+              child: content,
+            )
+          : Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: const Color(0xFF22C55E).withOpacity(0.10),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: const Color(0xFF22C55E).withOpacity(0.30),
+                ),
+              ),
+              child: content,
             ),
-          ],
-        ),
-      ),
     );
   }
 }

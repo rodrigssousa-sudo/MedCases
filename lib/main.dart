@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'home_v2/home_screen_v2.dart';
+import 'screens/home_screen.dart' show PediatricsMainShellWorkspace;
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,6 +20,7 @@ import 'package:cloud_firestore/cloud_firestore.dart'
     show Timestamp, FirebaseFirestore, Settings;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 import 'firebase_options.dart';
 import 'theme/app_theme.dart';
 import 'providers/app_provider.dart';
@@ -41,11 +45,16 @@ import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
 import 'screens/professional_gate_screen.dart';
 import 'screens/fontes_screen.dart';
-import 'screens/home_screen.dart' show HomeScreen;
+// Mantido temporariamente para rollback imediato da Home V3.
+// ignore: unused_import
 import 'screens/notes_screen.dart';
-import 'screens/notes_audio_local_runtime_screen.dart';
-import 'screens/remote_audio_consent_sheet.dart';
 import 'screens/library_screen.dart';
+import 'screens/vaccines_screen.dart';
+import 'screens/laboratory_screen.dart'
+    show LaboratoryMainShellWorkspace, LaboratorySessionBridge;
+import 'screens/remote_audio_consent_sheet.dart';
+import 'screens/notes_audio_local_runtime_screen.dart';
+import 'screens/calculadora_screen.dart' show CalculadoraScreen;
 import 'services/firestore_service.dart';
 import 'services/activity_service.dart';
 import 'services/gemini_service.dart';
@@ -58,8 +67,7 @@ import 'services/app_resume_coordinator.dart'; // BUILD 241: background/resume s
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
 import 'widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
-import 'platform/web_impl.dart'
-    if (dart.library.io) 'platform/web_stub.dart'
+import 'platform/web_impl.dart' if (dart.library.io) 'platform/web_stub.dart'
     as webPlatform;
 
 Future<void> main() async {
@@ -104,38 +112,28 @@ Future<void> main() async {
   // and prevents service-worker stale-caching from silently serving old bundles.
   // Values injected at compile time via --dart-define; never hardcoded.
   // Format is machine-parseable for CI log scraping.
-  const String buildCommit = String.fromEnvironment(
-    'BUILD_COMMIT',
-    defaultValue: 'unknown',
-  );
-  const String bundleVersion = String.fromEnvironment(
-    'BUNDLE_VERSION',
-    defaultValue: 'dev',
-  );
-  const String builtAt = String.fromEnvironment(
-    'BUILT_AT',
-    defaultValue: 'unknown',
-  );
-  final bool compileIdentityAvailable =
-      buildCommit != 'unknown' &&
+  const String buildCommit =
+      String.fromEnvironment('BUILD_COMMIT', defaultValue: 'unknown');
+  const String bundleVersion =
+      String.fromEnvironment('BUNDLE_VERSION', defaultValue: 'dev');
+  const String builtAt =
+      String.fromEnvironment('BUILT_AT', defaultValue: 'unknown');
+  final bool compileIdentityAvailable = buildCommit != 'unknown' &&
       buildCommit.isNotEmpty &&
       bundleVersion != 'dev' &&
       bundleVersion.isNotEmpty &&
       builtAt != 'unknown' &&
       builtAt.isNotEmpty;
 
-  final String compileIdentityState = compileIdentityAvailable
-      ? 'AVAILABLE'
-      : 'FALLBACK';
+  final String compileIdentityState =
+      compileIdentityAvailable ? 'AVAILABLE' : 'FALLBACK';
 
   // ignore: avoid_print
-  print(
-    '[COMPILE_IDENTITY][$compileIdentityState]\n'
-    'sha=$buildCommit\n'
-    'bundleVersion=$bundleVersion\n'
-    'builtAt=$builtAt\n'
-    'canonical=false',
-  );
+  print('[COMPILE_IDENTITY][$compileIdentityState]\n'
+      'sha=$buildCommit\n'
+      'bundleVersion=$bundleVersion\n'
+      'builtAt=$builtAt\n'
+      'canonical=false');
 
   // Cria o provider — sem await aqui, boot é disparado em background.
   final provider = AppProvider();
@@ -195,38 +193,30 @@ Future<void> _loadDeployMeta() async {
       final String containerStartedAt =
           meta['containerStartedAt'] as String? ?? 'unknown';
       if (status == 'available') {
-        debugPrint(
-          '[DEPLOY_IDENTITY][AVAILABLE] '
-          'sha=$deployCommit '
-          'bundleVersion=$metaBundleVersion '
-          'containerStartedAt=$containerStartedAt '
-          'source=runtime_metadata '
-          'canonical=true',
-        );
+        debugPrint('[DEPLOY_IDENTITY][AVAILABLE] '
+            'sha=$deployCommit '
+            'bundleVersion=$metaBundleVersion '
+            'containerStartedAt=$containerStartedAt '
+            'source=runtime_metadata '
+            'canonical=true');
       } else {
-        debugPrint(
-          '[DEPLOY_IDENTITY][UNAVAILABLE] '
-          'reason=metadata_unavailable '
-          'source=runtime_metadata '
-          'canonical=false',
-        );
+        debugPrint('[DEPLOY_IDENTITY][UNAVAILABLE] '
+            'reason=metadata_unavailable '
+            'source=runtime_metadata '
+            'canonical=false');
       }
     } else {
-      debugPrint(
-        '[DEPLOY_IDENTITY][UNAVAILABLE] '
-        'reason=http_status '
-        'httpStatus=${res.statusCode} '
-        'source=runtime_metadata '
-        'canonical=false',
-      );
+      debugPrint('[DEPLOY_IDENTITY][UNAVAILABLE] '
+          'reason=http_status '
+          'httpStatus=${res.statusCode} '
+          'source=runtime_metadata '
+          'canonical=false');
     }
   } catch (_) {
-    debugPrint(
-      '[DEPLOY_IDENTITY][UNAVAILABLE] '
-      'reason=metadata_unavailable '
-      'source=runtime_metadata '
-      'canonical=false',
-    );
+    debugPrint('[DEPLOY_IDENTITY][UNAVAILABLE] '
+        'reason=metadata_unavailable '
+        'source=runtime_metadata '
+        'canonical=false');
   }
 }
 
@@ -308,10 +298,8 @@ Future<void> _bootInBackground(AppProvider provider) async {
         persistenceEnabled: true,
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
       );
-      debugPrint(
-        '[AUDIT453][FIRESTORE] persistência mobile configurada: '
-        'persistenceEnabled=true cacheSizeBytes=UNLIMITED',
-      );
+      debugPrint('[AUDIT453][FIRESTORE] persistência mobile configurada: '
+          'persistenceEnabled=true cacheSizeBytes=UNLIMITED');
     }
     // Web: cache IndexedDB já habilitado por padrão pelo SDK — sem configuração extra.
     // Tentar definir settings= na Web pode lançar exception se o IndexedDB
@@ -351,9 +339,179 @@ Future<void> _bootInBackground(AppProvider provider) async {
   }
 }
 
-class MedCasesApp extends StatelessWidget {
+class MedCasesApp extends StatefulWidget {
   final Future<void> firebaseInit;
   const MedCasesApp({super.key, required this.firebaseInit});
+
+  @override
+  State<MedCasesApp> createState() => _MedCasesAppState();
+
+  static ThemeData _buildTheme(bool dark) => ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+        brightness: dark ? Brightness.dark : Brightness.light,
+        // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
+        drawerTheme: DrawerThemeData(
+          scrimColor: Colors.black.withOpacity(0.52),
+          // width: null → cada Drawer define a própria via MediaQuery
+        ),
+        colorScheme: dark
+            ? ColorScheme.dark(
+                // ── Dark mode: neutro, menos verde, maior contraste ──────────
+                primary: const Color(0xFF00E5FF), // ouro
+                onPrimary: const Color(0xFF1C1C1C),
+                secondary: const Color(0xFF10B981), // verde médio
+                onSecondary: const Color(0xFFFFFFFF),
+                surface: const Color(0xFF252930), // cards
+                onSurface: const Color(0xFFFFFFFF), // texto principal
+                surfaceContainerHighest: const Color(0xFF252930),
+                surfaceContainerHigh: const Color(0xFF252930),
+                surfaceContainer: const Color(0xFF252930),
+                surfaceContainerLow: const Color(0xFF1A1D23),
+                surfaceDim: const Color(0xFF1A1D23),
+                outline: const Color(0xFF374151),
+                outlineVariant: const Color(0xFF2D3340),
+                error: const Color(0xFFFF7070),
+                onError: Colors.white,
+                inverseSurface: const Color(0xFFFFFFFF),
+                onInverseSurface: const Color(0xFF1A1D23),
+              )
+            : const ColorScheme.light(
+                // LIGHT_MODE_PREMIUM_V1_A_R14_ROOT_THEME
+                primary: Color(0xFF0F172A),
+                onPrimary: Color(0xFFFFFFFF),
+                secondary: Color(0xFF059669),
+                onSecondary: Color(0xFFFFFFFF),
+                surface: Color(0xFFFFFFFF),
+                onSurface: Color(0xFF0F172A),
+                surfaceContainerHighest: Color(0xFFF1F5F9),
+                surfaceContainerHigh: Color(0xFFF8FAFC),
+                surfaceContainer: Color(0xFFFFFFFF),
+                surfaceContainerLow: Color(0xFFF8FAFC),
+                surfaceDim: Color(0xFFE2E8F0),
+                outline: Color(0xFFCBD5E1),
+                outlineVariant: Color(0xFFE2E8F0),
+                error: Color(0xFFDC2626),
+                onError: Color(0xFFFFFFFF),
+                inverseSurface: Color(0xFF1A1D23),
+                onInverseSurface: Color(0xFFFFFFFF),
+              ),
+        scaffoldBackgroundColor:
+            dark ? const Color(0xFF1A1D23) : const Color(0xFFF4F7FA),
+        cardColor: dark ? const Color(0xFF252930) : Colors.white,
+        dividerColor: dark ? const Color(0xFF2D3340) : const Color(0xFFE2E6EA),
+        // Textos padrão do tema
+        textTheme: dark
+            ? const TextTheme(
+                bodyLarge: TextStyle(color: Color(0xFFFFFFFF)),
+                bodyMedium: TextStyle(color: Color(0xFFFFFFFF)),
+                bodySmall: TextStyle(color: Color(0xFFA8B2C1)),
+                titleLarge: TextStyle(color: Color(0xFFFFFFFF)),
+                titleMedium: TextStyle(color: Color(0xFFFFFFFF)),
+                titleSmall: TextStyle(color: Color(0xFFA8B2C1)),
+                labelLarge: TextStyle(color: Color(0xFFFFFFFF)),
+                labelMedium: TextStyle(color: Color(0xFFA8B2C1)),
+                labelSmall: TextStyle(color: Color(0xFF6B7280)),
+              )
+            : const TextTheme(
+                displayLarge: TextStyle(color: Color(0xFF0F172A)),
+                displayMedium: TextStyle(color: Color(0xFF0F172A)),
+                displaySmall: TextStyle(color: Color(0xFF0F172A)),
+                headlineLarge: TextStyle(color: Color(0xFF0F172A)),
+                headlineMedium: TextStyle(color: Color(0xFF0F172A)),
+                headlineSmall: TextStyle(color: Color(0xFF0F172A)),
+                titleLarge: TextStyle(color: Color(0xFF0F172A)),
+                titleMedium: TextStyle(color: Color(0xFF0F172A)),
+                titleSmall: TextStyle(color: Color(0xFF334155)),
+                bodyLarge: TextStyle(color: Color(0xFF0F172A)),
+                bodyMedium: TextStyle(color: Color(0xFF334155)),
+                bodySmall: TextStyle(color: Color(0xFF64748B)),
+                labelLarge: TextStyle(color: Color(0xFF0F172A)),
+                labelMedium: TextStyle(color: Color(0xFF475569)),
+                labelSmall: TextStyle(color: Color(0xFF64748B)),
+              ),
+        inputDecorationTheme: dark
+            ? const InputDecorationTheme()
+            : InputDecorationTheme(
+                filled: true,
+                fillColor: const Color(0xFFFFFFFF),
+                hintStyle: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontWeight: FontWeight.w500,
+                ),
+                labelStyle: const TextStyle(
+                  color: Color(0xFF475569),
+                  fontWeight: FontWeight.w600,
+                ),
+                floatingLabelStyle: const TextStyle(
+                  color: Color(0xFF334155),
+                  fontWeight: FontWeight.w600,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF059669),
+                    width: 1.4,
+                  ),
+                ),
+              ),
+        // Transições de página suaves
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          },
+        ),
+      );
+
+  static ThemeData get _authTheme => ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0F1116),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFC5A365),
+          secondary: Color(0xFF10B981),
+          surface: Color(0xFF0F1116),
+          onSurface: Colors.white,
+        ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          },
+        ),
+      );
+}
+
+class _MedCasesAppState extends State<MedCasesApp> {
+  final GlobalKey<NavigatorState> _rootNavigatorKey =
+      GlobalKey<NavigatorState>();
+
+  late final _AuthGate _stableAuthGate;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // O fluxo de autenticação e o shell são criados uma única vez por sessão.
+    // A troca de tema atualiza somente ThemeMode e cores herdadas.
+    _stableAuthGate = _AuthGate(firebaseInit: widget.firebaseInit);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -361,157 +519,94 @@ class MedCasesApp extends StatelessWidget {
     // UiProvider é notificado SOMENTE por toggleDarkMode() / setLang() —
     // completamente isolado do streaming de IA e outros notifyListeners().
     final darkMode = context.select<UiProvider, bool>((p) => p.darkMode);
-    return NotificationOverlay(
-      child: MaterialApp(
-        title: 'MedCases Pro',
-        debugShowCheckedModeBanner: false,
-        theme: _buildTheme(false),
-        darkTheme: _buildTheme(true),
-        themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+    return MaterialApp(
+      navigatorKey: _rootNavigatorKey,
+      title: 'MedCases Pro',
+      debugShowCheckedModeBanner: false,
+      theme: (() {
+        // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R2
+        final baseTheme = MedCasesApp._buildTheme(false);
+        return baseTheme.copyWith(
+          appBarTheme: baseTheme.appBarTheme.copyWith(
+            backgroundColor: const Color(0xFFECF1F3),
+            foregroundColor: const Color(0xFF05070A),
+            surfaceTintColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: Color(0xFF05070A),
+            ),
+            actionsIconTheme: const IconThemeData(
+              color: Color(0xFF05070A),
+            ),
+            titleTextStyle: baseTheme.textTheme.titleLarge?.copyWith(
+              color: const Color(0xFF05070A),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        );
+      })(),
+      darkTheme: MedCasesApp._buildTheme(true),
+      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+      // Troca instantânea: evita frames híbridos entre AppProvider e Theme.
+      themeAnimationDuration: Duration.zero,
+      themeAnimationCurve: Curves.linear,
 
-        // BUILD 330 — CAMADA 3: Cor primária fixa do MaterialApp
-        // ─────────────────────────────────────────────────────────────────────
-        // MaterialApp.color é a cor usada pelo sistema operacional como "cor do app"
-        // no task switcher (iOS app switcher) e como fallback de 1 frame antes do
-        // ThemeData ser injetado pela árvore de providers.
-        //
-        // Se o Provider ainda não propagou darkMode=true quando o MaterialApp
-        // constrói (ex: SharedPreferences ainda carregando), o Flutter pode pintar
-        // 1 frame com a cor padrão do sistema (branca no iOS light mode).
-        // Fixar #0F1116 aqui neutraliza esse frame residual de forma nativa — sem
-        // depender da velocidade do SharedPreferences ou do ThemeData.
-        color: const Color(0xFF0F1116), // Dark background canônico do MedCases
-        // ── Localização: informa ao Flutter os idiomas suportados ──────────────
-        // Necessário para que widgets nativos (DatePicker, etc.) usem o idioma certo
-        // e para que Localizations.localeOf(context) funcione corretamente.
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('pt', 'BR'), // Português Brasil
-          Locale('pt'), // Português (genérico)
-          Locale('es'), // Espanhol
-          Locale('en'), // Inglês (fallback padrão do Flutter)
-        ],
-        home: _AuthGate(firebaseInit: firebaseInit),
+      // BUILD 330 — CAMADA 3: Cor primária fixa do MaterialApp
+      // ─────────────────────────────────────────────────────────────────────
+      // MaterialApp.color é a cor usada pelo sistema operacional como "cor do app"
+      // no task switcher (iOS app switcher) e como fallback de 1 frame antes do
+      // ThemeData ser injetado pela árvore de providers.
+      //
+      // Se o Provider ainda não propagou darkMode=true quando o MaterialApp
+      // constrói (ex: SharedPreferences ainda carregando), o Flutter pode pintar
+      // 1 frame com a cor padrão do sistema (branca no iOS light mode).
+      // Fixar #0F1116 aqui neutraliza esse frame residual de forma nativa — sem
+      // depender da velocidade do SharedPreferences ou do ThemeData.
+      color: darkMode ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF),
 
-        // BUILD 280 — CAMADA 3: Builder com ColoredBox de segurança
-        // ─────────────────────────────────────────────────────────────────────
-        // O builder do MaterialApp é chamado em TODOS os frames antes do child
-        // estar pronto. Sem esta proteção, qualquer frame onde child==null
-        // resulta em um SizedBox vazio sobre fundo branco (padrão do UIKit).
-        //
-        // ColoredBox garante que mesmo antes do primeiro frame real do Flutter,
-        // qualquer pixel renderizado pela engine seja #0F1116 — nunca branco.
-        // Isso fecha o último vetor de flash residual após FlutterNativeSplash.
-        //
-        // ── Layout 100% responsivo — sem restrição de largura máxima ─────────
-        // O app ocupa toda a tela em qualquer dispositivo: Web, iPhone, iPad e tablet.
-        // O layout responsivo é gerenciado internamente por MedBreakpoints:
-        //   < 1024 px  → mobile/tablet shell (AppBar + bottom nav)
-        //   >= 1024 px → desktop shell (sidebar lateral + conteúdo expandido)
-        // Não há mais centralização forçada ou clamp de 560 px no iPad.
-        builder: (context, child) => ColoredBox(
-          color: const Color(
-            0xFF0F1116,
-          ), // camada de segurança — fundo escuro MedCases
+      // ── Localização: informa ao Flutter os idiomas suportados ──────────────
+      // Necessário para que widgets nativos (DatePicker, etc.) usem o idioma certo
+      // e para que Localizations.localeOf(context) funcione corretamente.
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('pt', 'BR'), // Português Brasil
+        Locale('pt'), // Português (genérico)
+        Locale('es'), // Espanhol
+        Locale('en'), // Inglês (fallback padrão do Flutter)
+      ],
+      home: _stableAuthGate,
+
+      // BUILD 280 — CAMADA 3: Builder com ColoredBox de segurança
+      // ─────────────────────────────────────────────────────────────────────
+      // O builder do MaterialApp é chamado em TODOS os frames antes do child
+      // estar pronto. Sem esta proteção, qualquer frame onde child==null
+      // resulta em um SizedBox vazio sobre fundo branco (padrão do UIKit).
+      //
+      // ColoredBox garante que mesmo antes do primeiro frame real do Flutter,
+      // qualquer pixel renderizado pela engine seja #0F1116 — nunca branco.
+      // Isso fecha o último vetor de flash residual após FlutterNativeSplash.
+      //
+      // ── Layout 100% responsivo — sem restrição de largura máxima ─────────
+      // O app ocupa toda a tela em qualquer dispositivo: Web, iPhone, iPad e tablet.
+      // O layout responsivo é gerenciado internamente por MedBreakpoints:
+      //   < 1024 px  → mobile/tablet shell (AppBar + bottom nav)
+      //   >= 1024 px → desktop shell (sidebar lateral + conteúdo expandido)
+      // Não há mais centralização forçada ou clamp de 560 px no iPad.
+      builder: (context, child) => NotificationOverlay(
+        child: ColoredBox(
+          color: darkMode ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF),
           child: child ?? const SizedBox.shrink(),
         ),
       ),
-    ); // fecha NotificationOverlay
+    );
   }
-
-  ThemeData _buildTheme(bool dark) => ThemeData(
-    useMaterial3: true,
-    fontFamily: 'Roboto',
-    brightness: dark ? Brightness.dark : Brightness.light,
-    // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
-    drawerTheme: DrawerThemeData(
-      scrimColor: Colors.black.withOpacity(0.52),
-      // width: null → cada Drawer define a própria via MediaQuery
-    ),
-    colorScheme: dark
-        ? ColorScheme.dark(
-            // ── Dark mode: neutro, menos verde, maior contraste ──────────
-            primary: const Color(0xFF00E5FF), // ouro
-            onPrimary: const Color(0xFF1C1C1C),
-            secondary: const Color(0xFF10B981), // verde médio
-            onSecondary: const Color(0xFFFFFFFF),
-            surface: const Color(0xFF252930), // cards
-            onSurface: const Color(0xFFFFFFFF), // texto principal
-            surfaceContainerHighest: const Color(0xFF252930),
-            surfaceContainerHigh: const Color(0xFF252930),
-            surfaceContainer: const Color(0xFF252930),
-            surfaceContainerLow: const Color(0xFF1A1D23),
-            surfaceDim: const Color(0xFF1A1D23),
-            outline: const Color(0xFF374151),
-            outlineVariant: const Color(0xFF2D3340),
-            error: const Color(0xFFFF7070),
-            onError: Colors.white,
-            inverseSurface: const Color(0xFFFFFFFF),
-            onInverseSurface: const Color(0xFF1A1D23),
-          )
-        : ColorScheme.light(
-            primary: const Color(0xFF0F1116),
-            secondary: const Color(0xFF10B981),
-            surface: const Color(0xFFFFFFFF),
-            onSurface: const Color(0xFF0F1116),
-            surfaceContainerHighest: const Color(0xFFF9F9F9),
-          ),
-    scaffoldBackgroundColor: dark
-        ? const Color(0xFF1A1D23)
-        : const Color(0xFFFFFFFF),
-    cardColor: dark ? const Color(0xFF252930) : Colors.white,
-    dividerColor: dark ? const Color(0xFF2D3340) : const Color(0xFFE2E6EA),
-    // Textos padrão do tema
-    textTheme: dark
-        ? const TextTheme(
-            bodyLarge: TextStyle(color: Color(0xFFFFFFFF)),
-            bodyMedium: TextStyle(color: Color(0xFFFFFFFF)),
-            bodySmall: TextStyle(color: Color(0xFFA8B2C1)),
-            titleLarge: TextStyle(color: Color(0xFFFFFFFF)),
-            titleMedium: TextStyle(color: Color(0xFFFFFFFF)),
-            titleSmall: TextStyle(color: Color(0xFFA8B2C1)),
-            labelLarge: TextStyle(color: Color(0xFFFFFFFF)),
-            labelMedium: TextStyle(color: Color(0xFFA8B2C1)),
-            labelSmall: TextStyle(color: Color(0xFF6B7280)),
-          )
-        : null,
-    // Transições de página suaves
-    pageTransitionsTheme: const PageTransitionsTheme(
-      builders: {
-        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
-        TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
-        TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-      },
-    ),
-  );
-
-  static ThemeData get _authTheme => ThemeData(
-    useMaterial3: true,
-    fontFamily: 'Roboto',
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF0F1116),
-    colorScheme: const ColorScheme.dark(
-      primary: Color(0xFFC5A365),
-      secondary: Color(0xFF10B981),
-      surface: Color(0xFF0F1116),
-      onSurface: Colors.white,
-    ),
-    pageTransitionsTheme: const PageTransitionsTheme(
-      builders: {
-        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
-        TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-        TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
-        TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-      },
-    ),
-  );
 }
 
 // ── Auth Gate ─────────────────────────────────────────────────────────────────
@@ -560,8 +655,10 @@ class _AuthGateState extends State<_AuthGate> {
   final GlobalKey<_TimedSplashState> _timedSplashKey =
       GlobalKey<_TimedSplashState>();
 
-  Widget _wrapAuth(Widget child) =>
-      Theme(data: MedCasesApp._authTheme, child: child);
+  Widget _wrapAuth(Widget child) => Theme(
+        data: MedCasesApp._authTheme,
+        child: child,
+      );
 
   void _signalTimedSplashReady() {
     if (!mounted) return;
@@ -674,7 +771,7 @@ class _AuthGateState extends State<_AuthGate> {
 
   @override
   Widget build(BuildContext context) {
-    // _TimedSplash garante visibilidade mínima de 1.2s + fade-out suave.
+    // _TimedSplash garante visibilidade mínima de 3.2s + fade-out suave.
     // Quando splash e boot terminam → readyBuilder() exibe o fluxo real de auth.
     // A lógica de auth (FutureBuilder → StreamBuilder) é preservada intacta.
     // BUILD 313: _TimedSplash recebe onAuthResolved para atrasar
@@ -829,15 +926,16 @@ class _MaintenanceShellState extends State<_MaintenanceShell> {
         final bypassMaintenance = widget.user.isAdmin || widget.user.isMaster;
 
         if (isMaintenanceEnabled && !bypassMaintenance) {
-          return widget.wrapAuth(
-            MaintenanceScreen(message: maintenanceMessage),
-          );
+          return widget
+              .wrapAuth(MaintenanceScreen(message: maintenanceMessage));
         }
 
         // Aprovado → MainShell (com gate de declaração profissional)
         // NÃO há addPostFrameCallback aqui — setUser() é gerenciado pelo
         // _AuthGateState._onUserResolved() com flag de idempotência.
-        return const ProfessionalDeclarationGateWidget(child: MainShell());
+        return const ProfessionalDeclarationGateWidget(
+          child: MainShell(),
+        );
       },
     );
   }
@@ -871,31 +969,26 @@ class _ConsentGateState extends State<_ConsentGate> {
     if (_hasConsented == null) {
       return const Scaffold(
         backgroundColor: Color(0xFF0F1116),
-        body: Center(
-          child: CircularProgressIndicator(color: Color(0xFF00E5FF)),
-        ),
+        body:
+            Center(child: CircularProgressIndicator(color: Color(0xFF00E5FF))),
       );
     }
     if (_hasConsented!) return const LoginScreen();
-    return Stack(
-      children: [
-        const LoginScreen(),
-        Positioned.fill(
-          child: ColoredBox(color: Colors.black.withOpacity(0.55)),
+    return Stack(children: [
+      const LoginScreen(),
+      Positioned.fill(child: ColoredBox(color: Colors.black.withOpacity(0.55))),
+      Positioned(
+        left: 0,
+        right: 0,
+        bottom: 0,
+        child: ConsentModal(
+          lang: Localizations.localeOf(context).languageCode == 'es'
+              ? 'es'
+              : 'pt',
+          onAccepted: _onAccepted,
         ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: ConsentModal(
-            lang: Localizations.localeOf(context).languageCode == 'es'
-                ? 'es'
-                : 'pt',
-            onAccepted: _onAccepted,
-          ),
-        ),
-      ],
-    );
+      ),
+    ]);
   }
 }
 
@@ -914,7 +1007,7 @@ class _ConsentGateState extends State<_ConsentGate> {
 //
 // DESIGN:
 //   • Background: Color(0xFF0F1116) — idêntico ao storyboard/XML gerado
-//   • Logo: app_icon.png 120×120 com glow verde esmeralda
+//   • Logo: M+ isolado 150×150, sem moldura, giro 3D horizontal Y 360° no próprio centro + zoom suave
 //   • Título: "MedCases Pro" branco, bold, 26px, letterSpacing 1.2
 //   • Tagline: "IA Clínica de bolso" verde clínico, w500
 //   • Loader: CircularProgressIndicator verde + "Carregando dados clínicos..."
@@ -926,11 +1019,15 @@ class _SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<_SplashScreen>
     with TickerProviderStateMixin {
-  // ── Entrada (700 ms) ─────────────────────────────────────────
+  // ── Entrada premium (1450 ms) ─────────────────────────────────
   late AnimationController _ctrl;
   late Animation<double> _scale;
   late Animation<double> _fade;
   late Animation<Offset> _slide;
+
+  // MEDCASES_SPLASH_MPLUS_360_ZOOM_PREMIUM_V1_B_R5
+  late Animation<double> _logoTurns;
+  late Animation<double> _logoIntroScale;
 
   // ── Pulso contínuo do logo (2400 ms, repeat) ─────────────────
   // Opacity: 1.0 → 0.55 → 1.0 (Curves.easeInOut)
@@ -944,36 +1041,42 @@ class _SplashScreenState extends State<_SplashScreen>
     super.initState();
     // ── Animação de entrada ──────────────────────────────────────
     _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 700),
+        vsync: this, duration: const Duration(milliseconds: 1450));
+    _scale = Tween<double>(begin: 0.82, end: 1.0)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
+    _fade = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.65)));
+    _slide = Tween<Offset>(begin: const Offset(0, 0.10), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+
+    _logoTurns = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOutCubic),
     );
-    _scale = Tween<double>(
-      begin: 0.82,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
-    _fade = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.65)));
-    _slide = Tween<Offset>(
-      begin: const Offset(0, 0.10),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+
+    _logoIntroScale = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.92, end: 1.10).chain(
+          CurveTween(curve: Curves.easeOutCubic),
+        ),
+        weight: 72,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.10, end: 1.00).chain(
+          CurveTween(curve: Curves.easeInOutCubic),
+        ),
+        weight: 28,
+      ),
+    ]).animate(_ctrl);
+
     _ctrl.forward();
 
     // ── Pulso contínuo — inicia após a entrada terminar ──────────
     _pulseCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2400),
-    );
-    _pulseOpacity = Tween<double>(
-      begin: 1.0,
-      end: 0.55,
-    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
-    _pulseScale = Tween<double>(
-      begin: 1.0,
-      end: 1.06,
-    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+        vsync: this, duration: const Duration(milliseconds: 2400));
+    _pulseOpacity = Tween<double>(begin: 1.0, end: 0.55)
+        .animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    _pulseScale = Tween<double>(begin: 1.0, end: 1.06)
+        .animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
     // Começa o pulso depois que a animação de entrada termina
     _ctrl.addStatusListener((status) {
       if (status == AnimationStatus.completed && mounted) {
@@ -998,155 +1101,128 @@ class _SplashScreenState extends State<_SplashScreen>
       // Garante continuidade visual perfeita: o storyboard nativo e este widget
       // têm exatamente o mesmo pixel de fundo — zero flash na transição.
       backgroundColor: const Color(0xFF0F1116),
-      body: Stack(
-        children: [
-          // ── Detalhe geométrico sutil — profundidade sem poluição visual ────────
-          Positioned(
-            top: -h * 0.04,
-            right: -70,
-            child: Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF0E7C52).withOpacity(0.055),
-              ),
+      body: Stack(children: [
+        // ── Detalhe geométrico sutil — profundidade sem poluição visual ────────
+        Positioned(
+          top: -h * 0.04,
+          right: -70,
+          child: Container(
+            width: 240,
+            height: 240,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF0E7C52).withOpacity(0.055),
             ),
           ),
-          Positioned(
-            bottom: h * 0.12,
-            left: -50,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF13A06A).withOpacity(0.035),
-              ),
+        ),
+        Positioned(
+          bottom: h * 0.12,
+          left: -50,
+          child: Container(
+            width: 160,
+            height: 160,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF13A06A).withOpacity(0.035),
             ),
           ),
+        ),
 
-          // ── Bloco central: logo + título + tagline ────────────────────────────
-          // Posicionado no terço superior da tela para hierarquia visual clara.
-          Positioned(
-            top: h * 0.27,
-            left: 0,
-            right: 0,
-            child: FadeTransition(
-              opacity: _fade,
-              child: SlideTransition(
-                position: _slide,
-                child: ScaleTransition(
-                  scale: _scale,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // ── Logo 120×120 com glow verde + pulso suave ─────────────
-                      // AnimatedBuilder reage ao _pulseCtrl (repeat reverse):
-                      // opacidade 1.0↔0.55 e escala 1.0↔1.06 com easeInOut 2.4s.
-                      AnimatedBuilder(
-                        animation: _pulseCtrl,
-                        builder: (_, child) => Opacity(
-                          opacity: _pulseOpacity.value,
-                          child: Transform.scale(
-                            scale: _pulseScale.value,
+        // ── Bloco central: logo + título + tagline ────────────────────────────
+        // Posicionado no terço superior da tela para hierarquia visual clara.
+        Positioned(
+          top: h * 0.27,
+          left: 0,
+          right: 0,
+          child: FadeTransition(
+            opacity: _fade,
+            child: SlideTransition(
+              position: _slide,
+              child: ScaleTransition(
+                scale: _scale,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ── M+ 150px: giro horizontal Y 360° + zoom, depois pulso ──
+                    // AnimatedBuilder reage ao _pulseCtrl (repeat reverse):
+                    // opacidade 1.0↔0.55 e escala 1.0↔1.06 com easeInOut 2.4s.
+                    AnimatedBuilder(
+                      animation: Listenable.merge([_ctrl, _pulseCtrl]),
+                      builder: (_, child) => Opacity(
+                        opacity: _pulseOpacity.value,
+                        child: Transform.scale(
+                          scale: _logoIntroScale.value * _pulseScale.value,
+                          alignment: Alignment.center,
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 2, 0.0016)
+                              ..rotateY(
+                                _logoTurns.value * 6.283185307179586,
+                              ),
                             child: child,
                           ),
                         ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(
-                                  0xFF0E7C52,
-                                ).withOpacity(0.30),
-                                blurRadius: 60,
-                                spreadRadius: 12,
-                              ),
-                            ],
-                          ),
+                      ),
+                      child: SizedBox.square(
+                        dimension: 150,
+                        child: Center(
                           child: Image.asset(
-                            'assets/icon/app_icon.png',
-                            width: 120,
-                            height: 120,
+                            'assets/icon/splash_mplus_premium.png',
+                            width: 150,
+                            height: 150,
                             fit: BoxFit.contain,
-                            // Fallback elegante caso o asset falhe (ex: hot-reload parcial)
-                            errorBuilder: (_, __, ___) => Container(
-                              width: 120,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(28),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF0F1C14),
-                                    Color(0xFF1F6B48),
-                                  ],
-                                ),
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  'M+',
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFFFFE8A6),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            filterQuality: FilterQuality.high,
                           ),
                         ),
                       ),
+                    ),
 
-                      const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                      // ── Título principal ───────────────────────────────────────
-                      // letterSpacing 1.2 para legibilidade premium em splash.
-                      const Text(
-                        'MedCases Pro',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 1.2,
-                        ),
+                    // ── Título principal ───────────────────────────────────────
+                    // letterSpacing 1.2 para legibilidade premium em splash.
+                    const Text(
+                      'MedCases Pro',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
                       ),
+                    ),
 
-                      const SizedBox(height: 8),
+                    const SizedBox(height: 8),
 
-                      // ── Tagline de produto ─────────────────────────────────────
-                      Text(
-                        'IA Clínica de bolso',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: const Color(0xFF13A06A).withOpacity(0.85),
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1.1,
-                        ),
+                    // ── Tagline de produto ─────────────────────────────────────
+                    Text(
+                      'IA Clínica de bolso',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: const Color(0xFF13A06A).withOpacity(0.85),
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.1,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+        ),
 
-          // ── Bloco inferior: progress indicator animado + label ciclante ──────
-          // Posicionado a 72px do fundo com safeBottom para respeitar o sistema.
-          Positioned(
-            bottom: 72,
-            left: 0,
-            right: 0,
-            child: FadeTransition(
-              opacity: _fade,
-              child: _SplashLoadingIndicator(pulseCtrl: _pulseCtrl),
-            ),
+        // ── Bloco inferior: progress indicator animado + label ciclante ──────
+        // Posicionado a 72px do fundo com safeBottom para respeitar o sistema.
+        Positioned(
+          bottom: 72,
+          left: 0,
+          right: 0,
+          child: FadeTransition(
+            opacity: _fade,
+            child: _SplashLoadingIndicator(pulseCtrl: _pulseCtrl),
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }
@@ -1226,7 +1302,7 @@ class _SplashLoadingIndicatorState extends State<_SplashLoadingIndicator> {
 // independentemente de quão rápido o boot terminar.
 // Sem _TimedSplash: se o Firebase inicializar em < 200ms, a splash pisca
 // brevemente — visível apenas em cold starts rápidos (cache quente, WiFi).
-// Com _TimedSplash: a splash sempre exibe por mínimo 1.2s → transição suave.
+// Com _TimedSplash: a splash sempre exibe por mínimo 3.2s → transição suave.
 //
 // Lógica: dois semáforos em paralelo —
 //   • timer 1.2s           → _minTimeDone = true
@@ -1256,7 +1332,7 @@ class _TimedSplash extends StatefulWidget {
 }
 
 class _TimedSplashState extends State<_TimedSplash> {
-  static const _kMinMs = 1200; // mínimo 1.2s de splash dinâmico visível
+  static const _kMinMs = 3520; // mínimo 3.2s de splash dinâmico visível
   // BUILD 241: watchdog — se o bootstrap não terminar em 20s, força conclusão.
   // Protege contra: browser throttle, Firebase timeout, aba inativa durante boot.
   static const _kWatchdogMs = 20000;
@@ -1269,9 +1345,30 @@ class _TimedSplashState extends State<_TimedSplash> {
   // (aprovado / bloqueado / pendente / não autenticado).
   bool _authResolved = false;
 
+  // MEDCASES_SPLASH_NO_GRAY_HANDOFF_V1_B_R8
+  // O conteúdo real é montado atrás da splash; a splash só começa a sair
+  // depois que auth está estável e o conteúdo teve frames reais para pintar.
+  bool _handoffScheduled = false;
+  bool _handoffFade = false;
+  bool _handoffDone = false;
+
   @override
   void initState() {
     super.initState();
+
+    // MEDCASES_SPLASH_NATIVE_TO_FLUTTER_VISUAL_READY_HANDOFF_V1_B_R0
+    // O LaunchScreen nativo permanece sobre o Flutter enquanto o Splash 2 real
+    // monta e o asset premium M+ é decodificado. A remoção nativa só ocorre
+    // depois do precache + dois frames completos de paint do Splash 2.
+    //
+    // Isso evita que o primeiro frame genérico/sem asset descubra a superfície
+    // Flutter e elimina a disputa entre dois owners de FlutterNativeSplash.remove().
+    if (!kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _releaseNativeSplashAfterVisualReady();
+      });
+    }
 
     // Timer mínimo
     Future<void>.delayed(const Duration(milliseconds: _kMinMs), () {
@@ -1283,7 +1380,6 @@ class _TimedSplashState extends State<_TimedSplash> {
       if (mounted)
         setState(() {
           _bootDone = true;
-          _minTimeDone = true; // se boot terminou, min também está OK
         });
       AppResumeCoordinator.instance.completeBootstrap(); // BUILD 241
     });
@@ -1295,10 +1391,8 @@ class _TimedSplashState extends State<_TimedSplash> {
     AppResumeCoordinator.instance.registerBootstrap(
       onTimeout: () {
         final elapsed = DateTime.now().difference(bootStart).inMilliseconds;
-        debugPrint(
-          '[BOOTSTRAP_WATCHDOG] elapsedMs=$elapsed '
-          'action=force_complete (resume timeout)',
-        );
+        debugPrint('[BOOTSTRAP_WATCHDOG] elapsedMs=$elapsed '
+            'action=force_complete (resume timeout)');
         if (mounted)
           setState(() {
             _bootDone = true;
@@ -1314,8 +1408,7 @@ class _TimedSplashState extends State<_TimedSplash> {
       if (!_bootDone) {
         final elapsed = DateTime.now().difference(bootStart).inMilliseconds;
         debugPrint(
-          '[BOOTSTRAP_WATCHDOG] elapsedMs=$elapsed action=force_complete (timer)',
-        );
+            '[BOOTSTRAP_WATCHDOG] elapsedMs=$elapsed action=force_complete (timer)');
         setState(() {
           _bootDone = true;
           _minTimeDone = true;
@@ -1339,40 +1432,12 @@ class _TimedSplashState extends State<_TimedSplash> {
     // outer safety net for frozen processes — it does not interfere with auth.
   }
 
-  // ── GATE 1: remoção do splash nativo iOS ─────────────────────────────────
-  // BUILD 330 — OTIMIZAÇÃO CRÍTICA iOS: desacopla FlutterNativeSplash.remove()
-  // do semáforo _authResolved.
-  //
-  // PROBLEMA ANTERIOR: _ready = _minTimeDone && _bootDone && _authResolved
-  // gateava a remoção do storyboard nativo AO MESMO TEMPO que a transição para
-  // o conteúdo real. _authResolved só dispara após currentUserStream() resolver
-  // (Firestore cold-start = 6–8s em 4G/LTE) → storyboard estático ficava 6–8s.
-  //
-  // SOLUÇÃO: dois gates separados com responsabilidades distintas:
-  //   • _nativeSplashReady = boot concluído → remove storyboard (~1-2s)
-  //     O Flutter engine já pintou o primeiro frame dinâmico (_SplashScreen),
-  //     então o UIKit pode encerrar o storyboard sem flash intermediário.
-  //   • _ready = boot + auth resolvido → transição para o conteúdo real
-  //     (LoginScreen / HomeScreen). Auth pode demorar mais; durante esse
-  //     intervalo o médico vê o splash dinâmico animado, não a tela estática.
-  //
-  // TIMING iOS (BUILD 330):
-  //   [t=0ms]    runApp() → Dart engine ativo
-  //   [t=~200ms] 1º frame Flutter pintado (_SplashScreen com logo respirando)
-  //   [t=~800ms] Firebase + prefs inicializados (_bootDone = true)
-  //   [t=1200ms] _minTimeDone = true → _nativeSplashReady = true
-  //              → FlutterNativeSplash.remove() no próximo frame
-  //              → STORYBOARD ENCERRADO: médico vê splash dinâmico em < 1.5s
-  //   [t=var]    currentUserStream() resolve → _authResolved = true → _ready
-  //              → AnimatedSwitcher transiciona para HomeScreen/LoginScreen
-  bool get _nativeSplashReady => _minTimeDone && _bootDone;
-
   // ── GATE 2: monta o fluxo real após boot + tempo mínimo ───────────────
   // BUILD 331 — correção de deadlock circular:
   // _authResolved é produzido por widgets construídos dentro de readyBuilder().
   // Portanto, ele não pode ser pré-requisito para montar o próprio readyBuilder.
   //
-  // Após boot + 1.2s, _buildAuthFlow() é montado. Enquanto Firebase/Auth ainda
+  // Após boot + 3.2s, _buildAuthFlow() é montado. Enquanto Firebase/Auth ainda
   // estiverem resolvendo, o próprio fluxo retorna _SplashScreen; quando chegar
   // a um estado final, ele troca para Login/Home sem tela branca.
   bool get _ready => _minTimeDone && _bootDone;
@@ -1392,45 +1457,109 @@ class _TimedSplashState extends State<_TimedSplash> {
   // consecutivos no mesmo frame, causando chamadas duplicadas ao plugin nativo.
   bool _splashRemoved = false;
 
+  // MEDCASES_SPLASH_NATIVE_TO_FLUTTER_VISUAL_READY_HANDOFF_V1_B_R0
+  // ÚNICO owner produtivo de FlutterNativeSplash.remove().
+  Future<void> _releaseNativeSplashAfterVisualReady() async {
+    if (!mounted || _splashRemoved || kIsWeb) return;
+
+    // O primeiro frame Flutter já terminou porque este método é iniciado por
+    // addPostFrameCallback no initState. Agora garantimos que o M+ premium
+    // esteja efetivamente decodificado antes de descobrir a superfície Flutter.
+    try {
+      await precacheImage(
+        const AssetImage('assets/icon/splash_mplus_premium.png'),
+        context,
+      ).timeout(const Duration(milliseconds: 1500));
+    } catch (e) {
+      debugPrint(
+        '[SPLASH_VISUAL_READY_HANDOFF] precache fallback: $e',
+      );
+    }
+    if (!mounted || _splashRemoved) return;
+
+    // Frame A: Splash 2 com o asset já disponível atravessa layout/paint.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || _splashRemoved) return;
+
+    // Frame B: segunda passagem completa para evitar descoberta durante
+    // rasterização/primeira composição do asset no iOS.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || _splashRemoved) return;
+
+    _splashRemoved = true;
+    FlutterNativeSplash.remove();
+    debugPrint(
+      '[SPLASH_VISUAL_READY_HANDOFF] '
+      'native splash removed after asset precache + 2 painted frames',
+    );
+  }
+
+  Future<void> _releaseSplashAfterContentPaint() async {
+    // Frame 1: conteúdo real foi montado atrás da splash.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+
+    // Pequeno buffer para layout/paint/fontes/imagens síncronas estabilizarem.
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    if (!mounted) return;
+
+    // Frame 2: garante pelo menos um novo pipeline completo antes do fade.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+
+    setState(() => _handoffFade = true);
+
+    // Mantém cobertura durante todo o fade.
+    await Future<void>.delayed(const Duration(milliseconds: 350));
+    if (!mounted) return;
+
+    setState(() => _handoffDone = true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // BUILD 330 — GATE 1: remoção do splash nativo iOS em < 1.5s
-    // ───────────────────────────────────────────────────────────────────────
-    // Dispara quando Firebase + prefs terminaram E o timer mínimo de 1.2s
-    // expirou — independentemente de _authResolved.
-    //
-    // Nesse momento o Flutter JÁ pintou pelo menos um frame da _SplashScreen
-    // dinâmica (logo respirando + "Carregando dados clínicos..."), portanto o
-    // UIKit pode encerrar o LaunchScreen.storyboard sem nenhum flash intermediário.
-    //
-    // A guard !kIsWeb é mandatória: no Web não existe FlutterNativeSplash.
-    // A flag _splashRemoved previne chamadas duplicadas entre builds.
-    if (_nativeSplashReady && !_splashRemoved && !kIsWeb) {
-      _splashRemoved = true;
+    // O handoff Splash 1 → Splash 2 é resolvido exclusivamente por
+    // _releaseNativeSplashAfterVisualReady(). Não existe segundo remove() aqui.
+
+    // GATE 2 — R8: conteúdo real monta ATRÁS da splash.
+    // O cinza intermediário não pode ficar exposto ao usuário.
+    if (!_ready) {
+      return KeyedSubtree(
+        key: const ValueKey('splash'),
+        child: widget.splash,
+      );
+    }
+
+    if (_authResolved && !_handoffScheduled) {
+      _handoffScheduled = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        FlutterNativeSplash.remove();
-        debugPrint(
-          '[BUILD330] FlutterNativeSplash.remove() — '
-          'storyboard encerrado após boot (sem aguardar auth)',
-        );
+        if (!mounted) return;
+        _releaseSplashAfterContentPaint();
       });
     }
 
-    // GATE 2: AnimatedSwitcher — splash ↔ conteúdo real
-    // Transição de 350ms com fade suave.
-    // _ready exige boot + auth → garante que a transição só ocorre quando
-    // o _AuthGate já sabe se o usuário está autenticado ou não.
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 350),
-      // FadeTransition personalizado — evita o piscar de borda do default
-      transitionBuilder: (child, animation) =>
-          FadeTransition(opacity: animation, child: child),
-      child: _ready
-          ? KeyedSubtree(
-              key: const ValueKey('ready'),
-              child: widget.readyBuilder(context),
-            )
-          : KeyedSubtree(key: const ValueKey('splash'), child: widget.splash),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        KeyedSubtree(
+          key: const ValueKey('ready-content-behind-splash'),
+          child: widget.readyBuilder(context),
+        ),
+        if (!_handoffDone)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: AnimatedOpacity(
+                opacity: _handoffFade ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeOutCubic,
+                child: KeyedSubtree(
+                  key: const ValueKey('splash-cover-until-rendered'),
+                  child: widget.splash,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -1474,8 +1603,7 @@ class _PendingScreenState extends State<_PendingScreen> {
           platform: kIsWeb ? 'web' : 'ios',
         );
         debugPrint(
-          '[PendingScreen] ensureUserProfileExists concluído — uid=${firebaseUser.uid}',
-        );
+            '[PendingScreen] ensureUserProfileExists concluído — uid=${firebaseUser.uid}');
       } else {
         // Fallback: se currentUser for null, tenta approveUser diretamente
         await AuthService.approveUser(widget.user.uid, 'system-auto');
@@ -1542,35 +1670,28 @@ class _PendingScreenState extends State<_PendingScreen> {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.orange.withOpacity(0.3)),
                 ),
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.hourglass_top_rounded,
-                      color: Colors.orange,
-                      size: 48,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Cadastro em análise',
-                      style: TextStyle(
+                child: Column(children: [
+                  const Icon(Icons.hourglass_top_rounded,
+                      color: Colors.orange, size: 48),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Cadastro em análise',
+                    style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Olá, ${widget.user.displayName.split(' ').first}!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso assim que for aprovada.',
-                      style: TextStyle(
+                        color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Olá, ${widget.user.displayName.split(' ').first}!\n\nSua conta está aguardando aprovação do administrador. Você receberá acesso assim que for aprovada.',
+                    style: TextStyle(
                         fontSize: 13,
                         color: Colors.white.withOpacity(0.7),
-                        height: 1.6,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                        height: 1.6),
+                    textAlign: TextAlign.center,
+                  ),
+                ]),
               ),
               const SizedBox(height: 24),
               Container(
@@ -1580,27 +1701,20 @@ class _PendingScreenState extends State<_PendingScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'E-mail cadastrado:',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.white.withOpacity(0.4),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.user.email,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('E-mail cadastrado:',
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.white.withOpacity(0.4),
+                              fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 4),
+                      Text(widget.user.email,
+                          style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700)),
+                    ]),
               ),
 
               // Feedback de verificação
@@ -1616,10 +1730,9 @@ class _PendingScreenState extends State<_PendingScreen> {
                   child: Text(
                     _checkMsg!,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withOpacity(0.8),
-                      height: 1.5,
-                    ),
+                        fontSize: 12,
+                        color: Colors.white.withOpacity(0.8),
+                        height: 1.5),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -1635,25 +1748,19 @@ class _PendingScreenState extends State<_PendingScreen> {
                         width: 16,
                         height: 16,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Color(0xFF0F1116),
-                        ),
+                            strokeWidth: 2, color: Color(0xFF0F1116)),
                       )
                     : const Icon(Icons.refresh_rounded, size: 16),
-                label: Text(
-                  _checking ? 'Verificando...' : 'Verificar aprovação',
-                ),
+                label:
+                    Text(_checking ? 'Verificando...' : 'Verificar aprovação'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFC5A365),
                   foregroundColor: const Color(0xFF0F1116),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   textStyle: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                  ),
+                      fontSize: 13, fontWeight: FontWeight.w800),
                 ),
               ),
               const SizedBox(height: 12),
@@ -1667,8 +1774,7 @@ class _PendingScreenState extends State<_PendingScreen> {
                   foregroundColor: Colors.white60,
                   side: BorderSide(color: Colors.white.withOpacity(0.2)),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
@@ -1705,35 +1811,28 @@ class _BlockedScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.red.withOpacity(0.25)),
                 ),
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.block_rounded,
-                      color: Colors.redAccent,
-                      size: 48,
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Acceso suspendido',
-                      style: TextStyle(
+                child: Column(children: [
+                  const Icon(Icons.block_rounded,
+                      color: Colors.redAccent, size: 48),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Acceso suspendido',
+                    style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Tu cuenta ha sido suspendida por el administrador.\n\nComunícate con soporte para más información.',
-                      style: TextStyle(
+                        color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Tu cuenta ha sido suspendida por el administrador.\n\nComunícate con soporte para más información.',
+                    style: TextStyle(
                         fontSize: 13,
                         color: Colors.white.withOpacity(0.7),
-                        height: 1.6,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                        height: 1.6),
+                    textAlign: TextAlign.center,
+                  ),
+                ]),
               ),
               const SizedBox(height: 32),
               OutlinedButton.icon(
@@ -1746,8 +1845,7 @@ class _BlockedScreen extends StatelessWidget {
                   foregroundColor: Colors.white60,
                   side: BorderSide(color: Colors.white.withOpacity(0.2)),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      borderRadius: BorderRadius.circular(12)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
@@ -1795,10 +1893,8 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
       '_webgate_${widget.user.uid}',
       onTimeout: () {
         final ms = DateTime.now().difference(_initStart).inMilliseconds;
-        debugPrint(
-          '[BOOTSTRAP_WATCHDOG] webGate elapsedMs=$ms '
-          'action=force_ready (resume timeout)',
-        );
+        debugPrint('[BOOTSTRAP_WATCHDOG] webGate elapsedMs=$ms '
+            'action=force_ready (resume timeout)');
         if (mounted && !_ready) setState(() => _ready = true);
       },
     );
@@ -1807,12 +1903,10 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
       if (!mounted || _ready) return;
       final ms = DateTime.now().difference(_initStart).inMilliseconds;
       debugPrint(
-        '[BOOTSTRAP_WATCHDOG] webGate elapsedMs=$ms action=force_ready (timer)',
-      );
+          '[BOOTSTRAP_WATCHDOG] webGate elapsedMs=$ms action=force_ready (timer)');
       setState(() => _ready = true);
-      AppResumeCoordinator.instance.completeLoading(
-        '_webgate_${widget.user.uid}',
-      );
+      AppResumeCoordinator.instance
+          .completeLoading('_webgate_${widget.user.uid}');
     });
     _initUser();
   }
@@ -1824,21 +1918,18 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     if (p.currentUser?.uid != widget.user.uid) {
       // Timeout de segurança de 3s: se setUser() travar (rede lenta),
       // mostra o app mesmo assim — dados mínimos já carregados pelo loadPrefs().
-      await p
-          .setUser(widget.user)
-          .timeout(
+      await p.setUser(widget.user).timeout(
             const Duration(seconds: 3),
             onTimeout: () {}, // silencioso — app abre com dados locais
           );
     } else {
       await p.checkGeminiSession().timeout(
-        const Duration(seconds: 2),
-        onTimeout: () {},
-      );
+            const Duration(seconds: 2),
+            onTimeout: () {},
+          );
     }
-    AppResumeCoordinator.instance.completeLoading(
-      '_webgate_${widget.user.uid}',
-    ); // BUILD 241
+    AppResumeCoordinator.instance
+        .completeLoading('_webgate_${widget.user.uid}'); // BUILD 241
 
     // BUILD 334 / BUILD 334-FORENSE — TAB_RESTORE pós-auth:
     // Quando _ready flipa de false → true, o MainShell é criado NESTE frame.
@@ -1861,8 +1952,7 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
       AppProvider.postOAuthTabNotifier.value =
           2; // IA tab — consumido pelo _MainShellState
       debugPrint(
-        '[BUILD334-FORENSE][TAB_RESTORE] hasAnyAi=true → pre-sinaliza tab=2 antes de criar MainShell (gemini=${p.geminiConnected} key=${p.hasAiKey})',
-      );
+          '[BUILD334-FORENSE][TAB_RESTORE] hasAnyAi=true → pre-sinaliza tab=2 antes de criar MainShell (gemini=${p.geminiConnected} key=${p.hasAiKey})');
     }
 
     if (mounted) setState(() => _ready = true);
@@ -1875,7 +1965,9 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     if (!_ready) {
       return const _SplashScreen();
     }
-    return const ProfessionalDeclarationGateWidget(child: MainShell());
+    return const ProfessionalDeclarationGateWidget(
+      child: MainShell(),
+    );
   }
 }
 
@@ -1924,10 +2016,29 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // da classe, não lambdas inline) e reutilizá-las via IndexedStack.
   late final List<Widget> _staticScreens;
 
+  // iPad >=1024: workspace esquerdo independente + IA persistente à direita.
+  // Ao tocar na aba IA, preserva a última tela não-IA no painel esquerdo.
+  int _lastNonAiWorkspaceTab = 0;
+
   // ── Callbacks estáveis para HomeScreen ────────────────────────────────────
   // Lambdas inline no build() são recriadas a cada rebuild — geram instabilidade.
   // Métodos da classe são referências estáveis: mesma instância entre rebuilds.
+  // PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_BACK
+  void _closePediatrics() => _onTabChange(0);
+
+  // LABORATORIO_SUPER_PREMIUM_MAIN_SHELL_V1_B_R0_BACK
+  void _closeLaboratory() => _onTabChange(0);
+
   void _onTabChange(int t) {
+    // LABORATORIO_SUPER_PREMIUM_MAIN_SHELL_V1_B_R0_RESET
+    if (_tab == 9 && t != 9) {
+      LaboratorySessionBridge.reset();
+    }
+
+    if (t != 2) {
+      _lastNonAiWorkspaceTab = t;
+    }
+
     // Fecha o teclado SEMPRE que o utilizador muda de aba.
     // Isso previne o bug de "teclado automático" onde o FocusNode da aba anterior
     // (especialmente o AiScreen tab 2) permanece ativo no IndexedStack e
@@ -1938,8 +2049,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // ocorre — é iniciada pelo usuário, não por código de boot.
     if (t == 0 && AppProvider.postOAuthTabNotifier.value >= 0) {
       debugPrint(
-        '[BUILD292][TAB_RESTORE] ignored_reset_to_home reason=user_tap_home_while_pending_oauth_tab',
-      );
+          '[BUILD292][TAB_RESTORE] ignored_reset_to_home reason=user_tap_home_while_pending_oauth_tab');
     }
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() => _tab = t);
@@ -1947,10 +2057,25 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     toolsScreenVisibleNotifier.value = (t == 4);
   }
 
-  void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
-  void _onOpenNotes() => _onTabChange(6);
-  void _closeNotesWorkspace() => _onTabChange(0);
+  void _openClinicalGuide() {
+    _onTabChange(5);
+  }
 
+  void _openSimulation() {
+    _onTabChange(7);
+  }
+
+  void _openVaccines() {
+    _onTabChange(6);
+  }
+
+  void _closeVaccines() {
+    _onTabChange(0);
+  }
+
+  void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
+  void _onOpenNotes() => _onTabChange(10);
+  void _closeNotesWorkspace() => _onTabChange(0);
   void _onScrollNotification(ScrollNotification n) {
     // BUILD 329 — Motor de scroll dinâmico para a bottom nav (todas as abas).
     // Threshold de 4px para ignorar micro-vibrações do overscroll iOS.
@@ -1997,8 +2122,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     final pendingOAuthTab = AppProvider.postOAuthTabNotifier.value;
     if (pendingOAuthTab >= 0) {
       debugPrint(
-        '[BUILD334-FORENSE][TAB_RESTORE] pending=$pendingOAuthTab (fast-path initState) _tab=$_tab',
-      );
+          '[BUILD334-FORENSE][TAB_RESTORE] pending=$pendingOAuthTab (fast-path initState) _tab=$_tab');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           // _tab já foi inicializado pelo field initializer — forçar setState
@@ -2007,12 +2131,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           if (_tab != correctTab) {
             setState(() => _tab = correctTab);
             debugPrint(
-              '[BUILD334-FORENSE][TAB_RESTORE] setState tab=$correctTab (field-init divergiu)',
-            );
+                '[BUILD334-FORENSE][TAB_RESTORE] setState tab=$correctTab (field-init divergiu)');
           } else {
             debugPrint(
-              '[BUILD334-FORENSE][TAB_RESTORE] tab=$_tab já correto (field-init OK)',
-            );
+                '[BUILD334-FORENSE][TAB_RESTORE] tab=$_tab já correto (field-init OK)');
           }
           if (AppProvider.postOAuthTabNotifier.value >= 0) {
             AppProvider.postOAuthTabNotifier.value = -1; // consome notifier
@@ -2027,11 +2149,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     _staticScreens = [
       RepaintBoundary(
         // 0 — tela inicial
-        child: HomeScreen(
+        child: HomeScreenV2(
           onTabChange: _onTabChange,
           onSubTabChange: _onSubTabChange,
           openProtocol: _openProtocol,
           onOpenNotes: _onOpenNotes,
+          onOpenClinicalGuide: _openClinicalGuide,
+          onOpenSimulation: _openSimulation,
+          onOpenVaccine: _openVaccines,
           onCheckUpdate: _forceShowUpdate,
         ),
       ),
@@ -2045,12 +2170,29 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       const RepaintBoundary(child: AiScreen()), // 2
       const RepaintBoundary(child: HistoryScreen()), // 3
       const RepaintBoundary(child: ToolsScreen()), // 4
-      const RepaintBoundary(child: LibraryScreen()), // 5
+      const RepaintBoundary(
+        child: ClinicalGuideScreen(),
+      ), // 5 — GUIA CLÍNICO / GUÍA CLÍNICA
+      RepaintBoundary(
+        child: VaccinesScreen(onBack: _closeVaccines),
+      ), // 6 — VACINA/VACUNA workspace interno
+      const RepaintBoundary(
+        child: ClinicalSimulationScreen(),
+      ), // 7 — SIMULAÇÃO / SIMULACIÓN workspace interno
+      // PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_TAB_8
+      RepaintBoundary(
+        child: PediatricsMainShellWorkspace(onBack: _closePediatrics),
+      ), // 8 — PEDIATRIA / PEDIATRÍA workspace interno com footer global
+
+      // LABORATORIO_SUPER_PREMIUM_MAIN_SHELL_V1_B_R0_TAB_9
+      RepaintBoundary(
+        child: LaboratoryMainShellWorkspace(onBack: _closeLaboratory),
+      ), // 9 — LABORATORIO / LABORATÓRIO com footer global
 
       RepaintBoundary(
         child: _NotesAudioWorkspace(onBack: _closeNotesWorkspace),
-      ), // 6 — NOTAS / ÁUDIO scoped web release workspace
-    ];
+      ), // 10 — NOTAS / ÁUDIO workspace interno
+];
 
     // ── Auto-Update / Cache Eviction (Service Worker) ──────────────────────
     // Registra window.onFlutterWebUpdateAvailable ANTES do primeiro frame.
@@ -2083,9 +2225,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           // duplicate coordinator.onForeground() call)
           if (mounted) {
             try {
-              context.read<AppProvider>().resumeUsageTimer(
-                fromVisibility: true,
-              );
+              context
+                  .read<AppProvider>()
+                  .resumeUsageTimer(fromVisibility: true);
             } catch (_) {}
           }
         },
@@ -2215,9 +2357,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   @override
   void dispose() {
     MainShell.pendingTab.removeListener(_onPendingTab);
-    AppProvider.postOAuthTabNotifier.removeListener(
-      _onPostOAuthTab,
-    ); // BUILD 315
+    AppProvider.postOAuthTabNotifier
+        .removeListener(_onPostOAuthTab); // BUILD 315
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -2290,8 +2431,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Evita que os 8+ notifyListeners() do boot rebuildem toda a árvore.
     final dark = context.select<AppProvider, bool>((p) => p.darkMode);
     final _ = context.select<AppProvider, String>(
-      (p) => p.lang,
-    ); // reativa nav bar ao trocar idioma
+        (p) => p.lang); // reativa nav bar ao trocar idioma
     // p via read — _AppDrawer (abre on-tap) e p.t() já reativado pelo select acima
     final p = context.read<AppProvider>();
 
@@ -2326,11 +2466,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   /// Layout desktop: Row(sidebar | conteúdo) — sem AppHeader (barra superior removida)
   /// Build 136-B: width >= 1024 + tab == 2 (AI) → Split-View 40/60
   Widget _buildDesktopShell(
-    BuildContext context,
-    bool dark,
-    AppProvider p,
-    double width,
-  ) {
+      BuildContext context, bool dark, AppProvider p, double width) {
     final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
     final divColor = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
     final stackIdx = _tab.clamp(0, _staticScreens.length - 1);
@@ -2338,7 +2474,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Split-View: iPad 13" / desktop largo quando na tela de IA (tab 2)
     // Exibe HomeDashboard (40%) + AiScreen (60%) simultaneamente.
     // Em outras tabs o IndexedStack normal garante a tela selecionada.
-    final bool showSplit = width >= 1024 && _tab == 2;
+    final bool showPersistentAiSplit = width >= 1024;
+    final int leftPaneIndex = _tab == 2 ? _lastNonAiWorkspaceTab : stackIdx;
 
     return Scaffold(
       backgroundColor: bg,
@@ -2381,9 +2518,9 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               child: Column(
                 children: [
                   Expanded(
-                    child: showSplit
+                    child: showPersistentAiSplit
                         // ── SPLIT-VIEW: HomeDashboard 40% | AiScreen 60% ──────
-                        ? _buildSplitView(dark, divColor)
+                        ? _buildSplitView(dark, divColor, leftPaneIndex)
                         // ── IndexedStack normal para todas as outras tabs ──────
                         : RepaintBoundary(
                             child: IndexedStack(
@@ -2412,14 +2549,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   /// Build 136-B — Split-View para iPad 13" / desktop largo na tab IA.
   /// HomeDashboard (40%) + divisor + AiScreen (60%).
   /// Ambos os painéis ficam vivos — sem remontar ao alternar.
-  Widget _buildSplitView(bool dark, Color divColor) {
+  Widget _buildSplitView(bool dark, Color divColor, int leftPaneIndex) {
     return Row(
       children: [
         // ── Painel esquerdo: HomeDashboard (40%) ──────────────────────────────
         Flexible(
           flex: 40,
           child: RepaintBoundary(
-            child: _staticScreens[0], // HomeScreen — sempre visível no split
+            child: _staticScreens[leftPaneIndex], // workspace independente
           ),
         ),
 
@@ -2446,6 +2583,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
     return Scaffold(
       backgroundColor: bg,
+      extendBodyBehindAppBar: isHome,
       endDrawer: _AppDrawer(p: p),
       drawerScrimColor: Colors.black.withOpacity(0.52),
       // ── AppBar HOME: sempre visível ───────────────────────────────────────
@@ -2484,7 +2622,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         },
         child: MediaQuery.removePadding(
           context: context,
-          removeTop: true,
+          removeTop: !isHome,
           child: Builder(
             builder: (scaffoldBodyCtx) => SizedBox.expand(
               child: Stack(
@@ -2497,15 +2635,26 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   // cobre a notificação de SW — o banner Flutter gerava o DUPLO
                   // botão "ATUALIZAR" visível nas screenshots do bug.
                   // Demais abas (sem topbar própria) recebem padding.top manual.
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: (isHome || _tab == 2 || _tab == 6)
-                          ? 0
-                          : MediaQuery.of(context).padding.top,
+                  // HISTORY_CLINICAL_V1_C_R14_R4_EDITOR_TOP_INSET_LIGHT_CONTINUITY
+                  ValueListenableBuilder<bool>(
+                    valueListenable: HistoryScreen.editorActive,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        // LABORATORIO_R8_HOME_TOP_INSET_OWNER
+                        top: (isHome || _tab == 2 || _tab == 4 || _tab == 8 || _tab == 9)
+                            ? 0
+                            : MediaQuery.of(context).padding.top,
+                      ),
+                      child: IndexedStack(
+                          index: stackIdx, children: _staticScreens),
                     ),
-                    child: IndexedStack(
-                      index: stackIdx,
-                      children: _staticScreens,
+                    builder: (_, historyEditorOpen, child) => ColoredBox(
+                      color: dark
+                          ? const Color(0xFF1A1D23)
+                          : historyEditorOpen
+                              ? const Color(0xFFECF1F3)
+                              : bg,
+                      child: child!,
                     ),
                   ),
 
@@ -2516,10 +2665,20 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   // via MainShell.navScrollingDown — suporte a TODAS as abas.
                   ValueListenableBuilder<bool>(
                     valueListenable: HistoryScreen.editorActive,
-                    builder: (_, editorOpen, __) => ValueListenableBuilder<bool>(
+                    builder: (_, editorOpen, __) =>
+                        ValueListenableBuilder<bool>(
                       valueListenable: AiScreen.chatKeyboardOpen,
                       builder: (_, kbOpen, __) {
-                        final hidden = editorOpen || kbOpen;
+                        // LABORATORIO_R8_KEYBOARD_FOOTER_VISIBILITY
+                        // MEDCASES_FERRAMENTAS_KEYBOARD_VIEWPORT_SCROLL_PARITY_V1_B_R0
+                        final toolsKeyboardOpen = _tab == 4 &&
+                            MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
+                        final labKeyboardOpen = _tab == 9 &&
+                            MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
+                        final hidden = editorOpen ||
+                            kbOpen ||
+                            toolsKeyboardOpen ||
+                            labKeyboardOpen;
                         return _FloatingFooter(
                           hidden: hidden,
                           dark: dark,
@@ -2604,35 +2763,91 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         ..clearSnackBars()
         ..showSnackBar(
           SnackBar(
-            content: Row(
-              children: [
-                const Icon(
-                  Icons.restart_alt_rounded,
-                  size: 16,
-                  color: Colors.white,
+            // MEDCASES_AI_NEW_CHAT_PREMIUM_TOAST_V1_B_R0
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(milliseconds: 2600),
+            margin: const EdgeInsets.fromLTRB(18, 0, 18, 84),
+            padding: EdgeInsets.zero,
+            dismissDirection: DismissDirection.down,
+            content: Container(
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+              decoration: BoxDecoration(
+                color: p.darkMode
+                    ? const Color(0xFF252930)
+                    : const Color(0xFFFFFFFF),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: p.darkMode
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFE7EBEF),
+                  width: 0.6,
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    isEs
-                        ? 'Nueva consulta iniciada — contexto anterior eliminado'
-                        : 'Nova consulta iniciada — contexto anterior eliminado',
-                    style: const TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 3,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: p.darkMode
+                          ? const Color(0xFF00C781)
+                          : const Color(0xFF008F66),
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 10),
+                  Icon(
+                    Icons.check_circle_outline_rounded,
+                    size: 19,
+                    color: p.darkMode
+                        ? const Color(0xFF00C781)
+                        : const Color(0xFF008F66),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs
+                              ? 'Nueva consulta iniciada'
+                              : 'Nova consulta iniciada',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w800,
+                            height: 1.15,
+                            color: p.darkMode
+                                ? Colors.white
+                                : const Color(0xFF05070A),
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          isEs
+                              ? 'La consulta anterior quedó guardada en el historial.'
+                              : 'A consulta anterior foi salva no histórico.',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12.2,
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                            color: p.darkMode
+                                ? const Color(0xFFA7B0BA)
+                                : const Color(0xFF59636E),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            backgroundColor: const Color(0xFF0A7C4E),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
           ),
         );
     });
@@ -2669,6 +2884,80 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 //   • Botão Menu M+: avatar circular estilo Instagram com fundo verde esmeralda
 //     e logotipo "M+" em ouro metálico, abre o endDrawer lateral
 // ─────────────────────────────────────────────────────────────────────────────
+
+class _IaDynamicFloat extends StatefulWidget {
+  const _IaDynamicFloat({
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  State<_IaDynamicFloat> createState() => _IaDynamicFloatState();
+}
+
+class _IaDynamicFloatState extends State<_IaDynamicFloat>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _lift;
+  late final Animation<double> _tilt;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1900),
+    )..repeat(reverse: true);
+
+    _lift = Tween<double>(
+      begin: 0,
+      end: -4,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _tilt = Tween<double>(
+      begin: -0.5235987755982988,
+      end: 0.5235987755982988,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      child: widget.child,
+      builder: (context, child) => Transform.translate(
+        offset: Offset(
+          0,
+          2 + _lift.value,
+        ),
+        child: Transform.rotate(
+          angle: _tilt.value,
+          alignment: Alignment.bottomCenter,
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 class _FloatingFooter extends StatefulWidget {
   final bool hidden;
   final bool dark;
@@ -2697,17 +2986,16 @@ class _FloatingFooter extends StatefulWidget {
 }
 
 class _FloatingFooterState extends State<_FloatingFooter> {
-  static const _neonCyan = Color(0xFF00E5FF);
-  // Paleta do avatar M+ — verde esmeralda médico + ouro metálico
-  static const _avatarGreen = Color(0xFF0D7A5F); // verde petróleo esmeralda
-  static const _avatarGreenLight = Color(0xFF34D399); // borda luminosa
-  static const _avatarGold = Color(0xFFD4AF37); // ouro fosco canônico
+  static const _medcasesGreen = Color(0xFF00C781);
+  // M+ usa branco em repouso e verde enquanto pressionado.
+  static const _menuLightGreen = Color(0xFF008F66);
 
   // Alturas da barra: normal e encolhida
   static const _barHeightFull = 50.0;
   static const _barHeightShrunk = 38.0;
 
   bool _shrunk = false; // reflexo local do navScrollingDown
+  bool _menuPressed = false;
 
   @override
   void initState() {
@@ -2756,7 +3044,7 @@ class _FloatingFooterState extends State<_FloatingFooter> {
     return Positioned(
       left: 0,
       right: 0,
-      bottom: safeBottom,
+      bottom: 0,
       child: AnimatedSlide(
         // Slide total quando hidden (teclado aberto / editor de história)
         offset: Offset(0, widget.hidden ? 1.0 : 0.0),
@@ -2774,61 +3062,68 @@ class _FloatingFooterState extends State<_FloatingFooter> {
               // não quando o conteúdo da tela principal atualiza.
               RepaintBoundary(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-                  child: ClipRRect(
-                    // PERF-FIX: borderRadius const → o Impeller não recalcula o
-                    // clipper a cada frame; cache de layer garantido.
-                    borderRadius: const BorderRadius.all(Radius.circular(32)),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                      child: AnimatedContainer(
-                        // BUILD 329: animação suave de encolhimento via scroll
-                        duration: const Duration(milliseconds: 280),
-                        curve: Curves.easeInOutCubic,
-                        height: barHeight,
-                        decoration: BoxDecoration(
-                          color: navBg,
-                          borderRadius: BorderRadius.circular(32),
-                          border: Border.all(
-                            color: widget.dark
-                                ? _neonCyan.withOpacity(0.18)
-                                // Modo claro: borda teal petróleo slim — identifica o dock
-                                // sobre fundos brancos sem pesar no glassmorphism
-                                : const Color(0xFF0F766E).withOpacity(0.18),
-                            width: 0.9,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: widget.dark
-                                  ? Colors.black.withOpacity(0.45)
-                                  : Colors.black.withOpacity(0.08),
-                              blurRadius: 20,
-                              offset: const Offset(0, -4),
-                            ),
-                            if (widget.dark)
-                              BoxShadow(
-                                color: _neonCyan.withOpacity(0.05),
-                                blurRadius: 24,
-                                offset: const Offset(0, -4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ClipRRect(
+                        // PERF-FIX: borderRadius const → o Impeller não recalcula o
+                        // clipper a cada frame; cache de layer garantido.
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(32)),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: AnimatedContainer(
+                            // BUILD 329: animação suave de encolhimento via scroll
+                            duration: const Duration(milliseconds: 280),
+                            curve: Curves.easeInOutCubic,
+                            height: barHeight,
+                            decoration: BoxDecoration(
+                              color: navBg,
+                              borderRadius: BorderRadius.circular(32),
+                              border: Border.all(
+                                color: widget.dark
+                                    ? const Color(0xFF374151)
+                                    // Modo claro: borda teal petróleo slim — identifica o dock
+                                    // sobre fundos brancos sem pesar no glassmorphism
+                                    : const Color(0xFFE2E7EC),
+                                width: 0.9,
                               ),
-                          ],
+                              boxShadow: [
+                                BoxShadow(
+                                  color: widget.dark
+                                      ? Colors.black.withOpacity(0.45)
+                                      : Colors.black.withOpacity(0.08),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, -4),
+                                ),
+                                if (widget.dark)
+                                  BoxShadow(
+                                    color: _medcasesGreen.withOpacity(0.05),
+                                    blurRadius: 24,
+                                    offset: const Offset(0, -4),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
-                        // BUILD 331: Row contextual — muda conforme a aba ativa.
-                        // Aba IA (isAiActive) → [Início|Histórico|Novo Chat|Menu]
-                        // Demais abas              → [Início|IA|Ferramentas|Menu]
-                        child: widget.isAiActive
-                            ? _buildAiRow()
-                            : _buildNavRow(),
                       ),
-                    ),
+                      Positioned.fill(
+                        child:
+                            widget.isAiActive ? _buildAiRow() : _buildNavRow(),
+                      ),
+                    ],
                   ),
                 ),
               ), // RepaintBoundary
-              // ── LegalBar — faz parte do bloco animado ─────────────────────
-              _LegalBar(dark: widget.dark, insideSafeArea: true),
+
+              // ── Base de vidro até a borda física da tela ────────────────
+              _LegalGlassShelf(
+                dark: widget.dark,
+                safeBottom: safeBottom,
+                child: _LegalBar(dark: widget.dark, insideSafeArea: true),
+              ),
             ],
           ),
         ),
@@ -2837,354 +3132,274 @@ class _FloatingFooterState extends State<_FloatingFooter> {
   }
 
   // ── Row padrão (abas Home / Ferramentas / etc) ─────────────────────────────
-  // [Início | IA | Ferramentas | Menu] — 4×Expanded 25%
+  // [Início | IA | Menu] — Biblioteca removida; 3 ações independentes
   Widget _buildNavRow() => Row(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      // 1. INÍCIO — home_outlined inativo / home_rounded (filled) ativo
-      Expanded(
-        child: _NavItem(
-          icon: Icons.home_outlined,
-          iconActive: Icons.home_rounded,
-          label: widget.lang == 'es' ? 'Inicio' : 'Início',
-          isActive: widget.currentTab == 0,
-          dark: widget.dark,
-          shrunk: _shrunk,
-          onTap: () => widget.onTabChange(0),
-        ),
-      ),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. INÍCIO — home_outlined inativo / home_rounded (filled) ativo
+          Expanded(
+              child: _NavItem(
+            icon: Icons.home_outlined,
+            iconActive: Icons.home_rounded,
+            label: widget.lang == 'es' ? 'Inicio' : 'Início',
+            isActive: widget.currentTab == 0,
+            dark: widget.dark,
+            shrunk: _shrunk,
+            onTap: () => widget.onTabChange(0),
+          )),
 
-      // 2. IA — círculo gradiente + label "IA"
-      Expanded(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onFabTap,
-          onDoubleTap: widget.onFabDoubleTap,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 3),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  curve: Curves.easeOutCubic,
-                  width: 26,
-                  height: 26,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: widget.isAiActive
-                          ? [const Color(0xFF008CA4), const Color(0xFF005566)]
-                          : [const Color(0xFF374151), const Color(0xFF1E2330)],
+          // 2. IA — círculo gradiente + label "IA"
+          Expanded(
+              child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onFabTap,
+            onDoubleTap: widget.onFabDoubleTap,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _IaDynamicFloat(
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      curve: Curves.easeOutCubic,
+                      width: 54,
+                      height: 31.5,
+                      child: OverflowBox(
+                        alignment: Alignment.bottomCenter,
+                        minWidth: 54,
+                        maxWidth: 54,
+                        minHeight: 54,
+                        maxHeight: 54,
+                        child: SvgPicture.asset(
+                          'assets/icons/home_v2/ic_ia.svg',
+                          width: 54,
+                          height: 54,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: widget.isAiActive
-                          ? _neonCyan.withOpacity(0.80)
-                          : const Color(0xFF4B5563),
-                      width: 1.5,
-                    ),
-                    boxShadow: widget.isAiActive
-                        ? [
-                            BoxShadow(
-                              color: _neonCyan.withOpacity(0.50),
-                              blurRadius: 12,
-                            ),
-                          ]
-                        : [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.30),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                  ),
-                  child: Icon(
-                    Icons.psychology_rounded,
-                    size: 16,
-                    color: widget.isAiActive ? _neonCyan : Colors.white70,
                   ),
                 ),
-              ),
-              AnimatedOpacity(
-                opacity: _shrunk ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: Text(
-                  'IA',
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    fontWeight: widget.isAiActive
-                        ? FontWeight.w700
-                        : FontWeight.w400,
-                    color: widget.isAiActive
-                        // Ativo: neon (dark) / preto sólido estilo Instagram (light)
-                        ? (widget.dark ? _neonCyan : Colors.black87)
-                        // Inativo: cinza médio (dark) / cinza escuro sólido (light)
-                        : (widget.dark
-                              ? const Color(0xFF6B7280)
-                              : const Color(0xFF4B5563)),
-                    height: 1.0,
-                  ),
+                AnimatedOpacity(
+                  opacity: _shrunk ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text('IA',
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        fontWeight: widget.isAiActive
+                            ? FontWeight.w700
+                            : FontWeight.w400,
+                        color: widget.isAiActive
+                            ? (widget.dark ? _medcasesGreen : _menuLightGreen)
+                            : (widget.dark
+                                ? Colors.white
+                                : const Color(0xFF4B5563)),
+                        height: 1.0,
+                      )),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-
-      // 3. FERRAMENTAS — calculate_outlined inativo / calculate_rounded (filled) ativo
-      Expanded(
-        child: _NavItem(
-          icon: Icons.calculate_outlined,
-          iconActive: Icons.calculate_rounded,
-          label: widget.lang == 'es' ? 'Herramientas' : 'Ferramentas',
-          isActive: widget.currentTab == 4,
-          dark: widget.dark,
-          shrunk: _shrunk,
-          onTap: () => widget.onTabChange(4),
-        ),
-      ),
-
-      // 4. MENU M+
-      Expanded(child: _buildMenuButton()),
-    ],
-  );
+              ],
+            ),
+          )),
+          // 4. MENU M+
+          Expanded(child: _buildMenuButton()),
+        ],
+      );
 
   // ── Row contextual IA — substitui toda a barra quando a aba IA está ativa ──
   // [Início | Histórico | Novo Chat | Menu] — 4×Expanded 25%
   Widget _buildAiRow() => Row(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      // 1. INÍCIO — volta para Home (sempre inativo no contexto IA)
-      Expanded(
-        child: _NavItem(
-          icon: Icons.home_outlined,
-          iconActive: Icons.home_rounded,
-          label: widget.lang == 'es' ? 'Inicio' : 'Início',
-          isActive: false, // nunca ativo quando estamos na aba IA
-          dark: widget.dark,
-          shrunk: _shrunk,
-          onTap: () => widget.onTabChange(0),
-        ),
-      ),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. INÍCIO — volta para Home (sempre inativo no contexto IA)
+          Expanded(
+              child: _NavItem(
+            icon: Icons.home_outlined,
+            iconActive: Icons.home_rounded,
+            label: widget.lang == 'es' ? 'Inicio' : 'Início',
+            isActive: false, // nunca ativo quando estamos na aba IA
+            dark: widget.dark, shrunk: _shrunk,
+            onTap: () => widget.onTabChange(0),
+          )),
 
-      // 2. HISTÓRICO — abre histórico de sessões do chat
-      Expanded(
-        child: ValueListenableBuilder<VoidCallback?>(
-          valueListenable: AiScreen.openHistoryCallback,
-          builder: (_, callback, __) => ValueListenableBuilder<int>(
-            valueListenable: AiScreen.historyCountNotifier,
-            builder: (_, count, __) => GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: callback,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3),
-                    // Badge de contagem sobre o ícone
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Icon(
-                          Icons.history_rounded,
-                          size: 22,
-                          // Cinza escuro sólido no light — contraste premium
-                          color: widget.dark
-                              ? const Color(0xFF6B7280)
-                              : const Color(0xFF4B5563),
-                        ),
-                        if (count > 0)
-                          Positioned(
-                            top: -4,
-                            right: -6,
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFFC5A365),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '$count',
-                                  style: const TextStyle(
-                                    fontSize: 7,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF1A1100),
-                                  ),
+          // 2. HISTÓRICO — abre histórico de sessões do chat
+          Expanded(
+              child: ValueListenableBuilder<VoidCallback?>(
+            valueListenable: AiScreen.openHistoryCallback,
+            builder: (_, callback, __) => Selector<AppProvider, int>(
+              selector: (_, provider) =>
+                  provider.visibleAiSessionSummaries.length,
+              builder: (_, count, __) => GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: callback,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3),
+                      // Badge de contagem sobre o ícone
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Icon(Icons.history_rounded,
+                              size: 22,
+                              // Cinza escuro sólido no light — contraste premium
+                              color: widget.dark
+                                  ? Colors.white
+                                  : const Color(0xFF4B5563)),
+                          if (count > 0)
+                            Positioned(
+                              top: -4,
+                              right: -6,
+                              child: Container(
+                                width: 14,
+                                height: 14,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xFFC5A365),
+                                ),
+                                child: Center(
+                                  child: Text('$count',
+                                      style: const TextStyle(
+                                        fontSize: 7,
+                                        fontWeight: FontWeight.w900,
+                                        color: Color(0xFF1A1100),
+                                      )),
                                 ),
                               ),
                             ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  AnimatedOpacity(
-                    opacity: _shrunk ? 0.0 : 1.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Text(
-                      widget.lang == 'es' ? 'Historial' : 'Histórico',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w400,
-                        // Cinza escuro sólido no light — contraste premium estilo Instagram
-                        color: widget.dark
-                            ? const Color(0xFF6B7280)
-                            : const Color(0xFF4B5563),
-                        height: 1.0,
+                        ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-
-      // 3. NOVO CHAT — círculo com gradiente neonCyan, ícone add_rounded
-      Expanded(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onFabDoubleTap, // mesma ação do double-tap do FAB
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.zero,
-                child: Container(
-                  width: 26,
-                  height: 26,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFF008CA4),
-                        const Color(0xFF005566),
-                      ],
-                    ),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: _neonCyan.withOpacity(0.75),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _neonCyan.withOpacity(0.35),
-                        blurRadius: 10,
-                        spreadRadius: 0,
+                    AnimatedOpacity(
+                      opacity: _shrunk ? 0.0 : 1.0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Text(
+                        widget.lang == 'es' ? 'Historial' : 'Histórico',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 10.0, fontWeight: FontWeight.w400,
+                          // Cinza escuro sólido no light — contraste premium estilo Instagram
+                          color: widget.dark
+                              ? Colors.white
+                              : const Color(0xFF4B5563),
+                          height: 1.0,
+                        ),
                       ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.add_rounded,
-                    size: 16,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              AnimatedOpacity(
-                opacity: _shrunk ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: Text(
-                  widget.lang == 'es' ? 'Nuevo' : 'Novo',
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    fontWeight: FontWeight.w500,
-                    color: widget.dark ? _neonCyan : const Color(0xFF008CA4),
-                    height: 1.0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-
-      // 4. MENU M+
-      Expanded(child: _buildMenuButton()),
-    ],
-  );
-
-  // ── Avatar M+ circular — compartilhado entre as duas Rows ──────────────────
-  Widget _buildMenuButton() => GestureDetector(
-    behavior: HitTestBehavior.opaque,
-    onTap: widget.onMenuTap,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: EdgeInsets.zero,
-          child: Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF16A87C), Color(0xFF0A5C45)],
-              ),
-              border: Border.all(
-                color: _avatarGreenLight.withOpacity(0.70),
-                width: 1.8,
-              ),
-              boxShadow: [
-                BoxShadow(color: _avatarGreen.withOpacity(0.45), blurRadius: 8),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                'M+',
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w900,
-                  color: _avatarGold,
-                  letterSpacing: 0.3,
-                  height: 1.0,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black.withOpacity(0.40),
-                      blurRadius: 3,
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-        ),
-        AnimatedOpacity(
-          opacity: _shrunk ? 0.0 : 1.0,
-          duration: const Duration(milliseconds: 200),
-          child: Text(
-            widget.lang == 'es' ? 'Menú' : 'Menu',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 10.0,
-              fontWeight: FontWeight.w500,
-              // Cinza escuro sólido (light) — consistente com padrão Instagram
-              color: widget.dark
-                  ? const Color(0xFF6B7280)
-                  : const Color(0xFF4B5563),
-              height: 1.0,
+          )),
+
+          // 3. NOVO CHAT — branco no dark, cinza oficial no light
+          Expanded(
+              child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onFabDoubleTap,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 26,
+                  height: 26,
+                  child: Icon(
+                    Icons.add_rounded,
+                    size: 20,
+                    color: widget.dark ? Colors.white : const Color(0xFF4B5563),
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: _shrunk ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    widget.lang == 'es' ? 'Nuevo' : 'Novo',
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 10.0,
+                      fontWeight: FontWeight.w500,
+                      color:
+                          widget.dark ? Colors.white : const Color(0xFF4B5563),
+                      height: 1.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
+
+          // 4. MENU M+
+          Expanded(child: _buildMenuButton()),
+        ],
+      );
+
+  // ── Avatar M+ circular — compartilhado entre as duas Rows ──────────────────
+  Widget _buildMenuButton() {
+    final menuColor = _menuPressed
+        ? (widget.dark ? _medcasesGreen : _menuLightGreen)
+        : (widget.dark ? Colors.white : const Color(0xFF4B5563));
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) {
+        if (!_menuPressed) {
+          setState(() {
+            _menuPressed = true;
+          });
+        }
+      },
+      onTapUp: (_) {
+        if (_menuPressed) {
+          setState(() {
+            _menuPressed = false;
+          });
+        }
+      },
+      onTapCancel: () {
+        if (_menuPressed) {
+          setState(() {
+            _menuPressed = false;
+          });
+        }
+      },
+      onTap: widget.onMenuTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Icon(
+              Icons.menu_rounded,
+              size: 24,
+              color: menuColor,
             ),
           ),
-        ),
-      ],
-    ),
-  );
+          AnimatedOpacity(
+            opacity: _shrunk ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 200),
+            child: Text(
+              widget.lang == 'es' ? 'Menú' : 'Menu',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10.0,
+                fontWeight: FontWeight.w500,
+                color: menuColor,
+                height: 1.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ── Item individual da bottom nav ─────────────────────────────────────────────
@@ -3215,12 +3430,11 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Dark mode: neon cyan ativo / cinza médio inativo (contraste sobre escuro)
-    // Light mode: preto absoluto ativo / cinza escuro sólido inativo (Instagram-style)
-    final activeColor = dark ? const Color(0xFF00E5FF) : Colors.black87;
-    final inactiveColor = dark
-        ? const Color(0xFF6B7280)
-        : const Color(0xFF4B5563);
+    // Dark: branco em repouso e verde no item selecionado.
+    // Light: cinza-escuro em repouso e verde no item selecionado.
+    final activeColor =
+        dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
+    final inactiveColor = dark ? Colors.white : const Color(0xFF4B5563);
     final color = isActive ? activeColor : inactiveColor;
 
     // Alterna ícone filled↔outline conforme estado (quando iconActive fornecido)
@@ -3286,80 +3500,91 @@ class _MobileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 331 HOME: topbar SEMPRE Black Piano (#000000) — identidade premium.
-    // Nunca branco, nunca transparente — fundo sólido absoluto.
-    // MEDCASES (branco w900) + PRO (dourado #FFD700 w900) — RichText bicolor.
-    const barDecoration = BoxDecoration(
-      color: Color(0xFF000000), // Black Piano absoluto
-      border: Border(bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5)),
-      boxShadow: [
-        BoxShadow(
-          color: Color(0x59000000), // black 35% opacity
-          blurRadius: 6.0,
-          offset: Offset(0, 2),
-        ),
-      ],
-    );
+    // HOME V2 — vidro esmerilado cinza de alta opacidade.
+    final glassColor = dark
+        ? const Color(0xFF252930).withOpacity(0.70)
+        : Colors.white.withOpacity(0.70);
 
-    return Container(
-      decoration: barDecoration,
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
-          // padding do sistema (notch / Dynamic Island / status bar).
-          // BUILD 328 M2: altura 36→46px — AppBar mais robusta e imponente
-          // BUILD 329 M3: +2px → 48px — respiro perfeito ao cabeçalho
-          height: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // ── Título centralizado (HOME e IA tab) ───────────────────
-                // BUILD 278: "MEDCASES IA" com "IA" em ouro fosco na aba AI
-                // BUILD 331 HOME: Black Piano → título sempre branco + dourado
-                // "MEDCASES " branco w900 | "PRO"/"IA" dourado #FFD700 w900
-                if (isHome || currentTab == _kAiTab)
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: 'MEDCASES ',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                            color: Colors.white, // SEMPRE branco
-                          ),
-                        ),
-                        TextSpan(
-                          text: currentTab == _kAiTab ? 'IA' : 'PRO',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                            color: Color(0xFFFFD700), // SEMPRE dourado
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+    final borderColor =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
 
-                // ── Row com botões contextuais (direita) ──────────────────
-                // BUILD 329: hambúrguer removido — apenas botões IA contextuais
-                // à direita. Título centralizado pelo Stack acima sem placeholder.
-                // BUILD 331: Topbar IA limpa — botões Histórico/Novo Chat migrados
-                // para a bottom nav contextual (isAiActive). Apenas título centralizado.
-                Row(
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          decoration: BoxDecoration(
+            color: glassColor,
+            border: Border(
+              bottom: BorderSide(color: borderColor, width: 0.7),
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: SizedBox(
+              // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
+              // padding do sistema (notch / Dynamic Island / status bar).
+              // BUILD 328 M2: altura 36→46px — AppBar mais robusta e imponente
+              // BUILD 329 M3: +2px → 48px — respiro perfeito ao cabeçalho
+              height: 48,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    const Spacer(),
-                    // (sem botões — topbar só título)
-                  ],
-                ), // end inner Row
-              ], // end Stack children
-            ), // end Stack
+                    // ── Título centralizado (HOME e IA tab) ───────────────────
+                    // BUILD 278: "MEDCASES IA" com "IA" em ouro fosco na aba AI
+                    // BUILD 331 HOME: Black Piano → título sempre branco + dourado
+                    // "MEDCASES " branco w900 | "PRO"/"IA" dourado #FFD700 w900
+                    if (isHome || currentTab == _kAiTab)
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'MEDCASES ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.2,
+                                color: dark
+                                    ? Colors.white
+                                    : const Color(0xFF05070A),
+                              ),
+                            ),
+                            TextSpan(
+                              text: currentTab == _kAiTab ? 'IA' : 'PRO',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.2,
+                                color: currentTab == _kAiTab
+                                    ? (dark
+                                        ? const Color(0xFF00C781)
+                                        : const Color(0xFF059669))
+                                    : (dark
+                                        ? const Color(0xFF10B981)
+                                        : const Color(0xFF059669)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    // ── Row com botões contextuais (direita) ──────────────────
+                    // BUILD 329: hambúrguer removido — apenas botões IA contextuais
+                    // à direita. Título centralizado pelo Stack acima sem placeholder.
+                    // BUILD 331: Topbar IA limpa — botões Histórico/Novo Chat migrados
+                    // para a bottom nav contextual (isAiActive). Apenas título centralizado.
+                    Row(
+                      children: [
+                        const Spacer(),
+                        // (sem botões — topbar só título)
+                      ],
+                    ), // end inner Row
+                  ], // end Stack children
+                ), // end Stack
+              ),
+            ),
           ),
         ),
       ),
@@ -3391,9 +3616,8 @@ class _DesktopSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
     final activeCol = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
-    final inactiveCol = dark
-        ? const Color(0xFF6B7280)
-        : const Color(0xFFADB5BD);
+    final inactiveCol =
+        dark ? const Color(0xFF6B7280) : const Color(0xFFADB5BD);
     final activeBg = dark
         ? const Color(0xFF10B981).withOpacity(0.12)
         : const Color(0xFF0A7C4E).withOpacity(0.08);
@@ -3441,14 +3665,11 @@ class _DesktopSidebar extends StatelessWidget {
                         height: 46,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => const Center(
-                          child: Text(
-                            'M+',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFFFFE8A6),
-                            ),
-                          ),
+                          child: Text('M+',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFFFFE8A6))),
                         ),
                       ),
                     ),
@@ -3486,9 +3707,8 @@ class _DesktopSidebar extends StatelessWidget {
               label: 'IA',
               active: currentTab == 2,
               dark: dark,
-              activeCol: dark
-                  ? const Color(0xFF00E5FF)
-                  : const Color(0xFF008CA4),
+              activeCol:
+                  dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
               inactiveCol: inactiveCol,
               activeBg: const Color(0xFF00E5FF).withOpacity(0.10),
               onTap: () => onTabChange(2),
@@ -3547,14 +3767,10 @@ class _DesktopSidebar extends StatelessWidget {
                   onTap: onOpenDrawer,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 160),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 6,
-                    ),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.transparent,
@@ -3563,7 +3779,11 @@ class _DesktopSidebar extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // Ícone hambúrguer (3 linhas) — claramente indica "menu"
-                        Icon(Icons.menu_rounded, size: 26, color: inactiveCol),
+                        Icon(
+                          Icons.menu_rounded,
+                          size: 26,
+                          color: inactiveCol,
+                        ),
                         const SizedBox(height: 3),
                         Text(
                           'Menu',
@@ -3663,7 +3883,10 @@ class _RxProtoCombo extends StatefulWidget {
   final int subTab;
   final ValueChanged<int> onSubTabChange;
 
-  const _RxProtoCombo({required this.subTab, required this.onSubTabChange});
+  const _RxProtoCombo({
+    required this.subTab,
+    required this.onSubTabChange,
+  });
 
   @override
   State<_RxProtoCombo> createState() => _RxProtoComboState();
@@ -3693,77 +3916,73 @@ class _RxProtoComboState extends State<_RxProtoCombo> {
     final bg = dark ? const Color(0xFF121E18) : const Color(0xFFFFFFFF);
     final borderCol = dark ? const Color(0xFF2A3A30) : const Color(0xFFE0E4E8);
 
-    return Column(
-      children: [
-        // ── Seletor de sub-tab ────────────────────────────────────────────────
-        Container(
-          color: bg,
-          padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
-          child: Container(
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: dark ? const Color(0xFF1A2620) : Colors.white,
-              border: Border.all(color: borderCol, width: 0.8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(dark ? 0.18 : 0.04),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                _SubTabBtn(
-                  icon: Icons.description_rounded,
-                  label: p.t('prescriptions'),
-                  active: _sub == 0,
-                  dark: dark,
-                  onTap: () => _select(0),
-                ),
-                Container(width: 1, height: 24, color: borderCol),
-                _SubTabBtn(
-                  icon: Icons.medication_rounded,
-                  label: p.t('drugs'),
-                  active: _sub == 1,
-                  dark: dark,
-                  onTap: () => _select(1),
-                ),
-                Container(width: 1, height: 24, color: borderCol),
-                _SubTabBtn(
-                  icon: Icons.emergency_rounded,
-                  label: p.t('protocols'),
-                  active: _sub == 2,
-                  dark: dark,
-                  onTap: () => _select(2),
-                ),
-                Container(width: 1, height: 24, color: borderCol),
-                _SubTabBtn(
-                  icon: Icons.folder_open_rounded,
-                  label: p.t('cases'),
-                  active: _sub == 3,
-                  dark: dark,
-                  onTap: () => _select(3),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // ── Conteúdo ──────────────────────────────────────────────────────────
-        Expanded(
-          child: IndexedStack(
-            index: _sub,
-            children: const [
-              PrescripcionesScreen(),
-              DrugsScreen(),
-              ProtocolsScreen(),
-              CasesScreen(),
+    return Column(children: [
+      // ── Seletor de sub-tab ────────────────────────────────────────────────
+      Container(
+        color: bg,
+        padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: dark ? const Color(0xFF1A2620) : Colors.white,
+            border: Border.all(color: borderCol, width: 0.8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(dark ? 0.18 : 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
             ],
           ),
+          child: Row(children: [
+            _SubTabBtn(
+              icon: Icons.description_rounded,
+              label: p.t('prescriptions'),
+              active: _sub == 0,
+              dark: dark,
+              onTap: () => _select(0),
+            ),
+            Container(width: 1, height: 24, color: borderCol),
+            _SubTabBtn(
+              icon: Icons.medication_rounded,
+              label: p.t('drugs'),
+              active: _sub == 1,
+              dark: dark,
+              onTap: () => _select(1),
+            ),
+            Container(width: 1, height: 24, color: borderCol),
+            _SubTabBtn(
+              icon: Icons.emergency_rounded,
+              label: p.t('protocols'),
+              active: _sub == 2,
+              dark: dark,
+              onTap: () => _select(2),
+            ),
+            Container(width: 1, height: 24, color: borderCol),
+            _SubTabBtn(
+              icon: Icons.folder_open_rounded,
+              label: p.t('cases'),
+              active: _sub == 3,
+              dark: dark,
+              onTap: () => _select(3),
+            ),
+          ]),
         ),
-      ],
-    );
+      ),
+      // ── Conteúdo ──────────────────────────────────────────────────────────
+      Expanded(
+        child: IndexedStack(
+          index: _sub,
+          children: const [
+            PrescripcionesScreen(),
+            DrugsScreen(),
+            ProtocolsScreen(),
+            CasesScreen(),
+          ],
+        ),
+      ),
+    ]);
   }
 }
 
@@ -3784,12 +4003,10 @@ class _SubTabBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = dark
-        ? const Color(0xFFFFE8A6)
-        : const Color(0xFF0F1116);
-    final inactiveColor = dark
-        ? Colors.white.withOpacity(0.30)
-        : const Color(0xFFB8BEC4);
+    final activeColor =
+        dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1116);
+    final inactiveColor =
+        dark ? Colors.white.withOpacity(0.30) : const Color(0xFFB8BEC4);
     final activeBg = dark
         ? const Color(0xFF2D3340) // kBorderSoft — active highlight
         : const Color(0xFF0F1116).withOpacity(0.09);
@@ -3808,36 +4025,36 @@ class _SubTabBtn extends StatelessWidget {
             boxShadow: active
                 ? [
                     BoxShadow(
-                      color:
-                          (dark
-                                  ? const Color(0xFFFFE8A6)
-                                  : const Color(0xFF0F1116))
-                              .withOpacity(0.08),
+                      color: (dark
+                              ? const Color(0xFFFFE8A6)
+                              : const Color(0xFF0F1116))
+                          .withOpacity(0.08),
                       blurRadius: 6,
                       offset: const Offset(0, 1),
                     ),
                   ]
                 : null,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 14, color: active ? activeColor : inactiveColor),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 10.5,
-                    fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                    color: active ? activeColor : inactiveColor,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(
+              icon,
+              size: 14,
+              color: active ? activeColor : inactiveColor,
+            ),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                  color: active ? activeColor : inactiveColor,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       ),
     );
@@ -3850,11 +4067,8 @@ class _MiniContextBar extends StatelessWidget {
   final int tab;
   final bool dark;
   final VoidCallback onHome;
-  const _MiniContextBar({
-    required this.tab,
-    required this.dark,
-    required this.onHome,
-  });
+  const _MiniContextBar(
+      {required this.tab, required this.dark, required this.onHome});
 
   static const _tabNames = [
     '',
@@ -3887,95 +4101,85 @@ class _MiniContextBar extends StatelessWidget {
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 7, 10, 7),
-          child: Row(
-            children: [
-              // Breadcrumb: logo → nome da aba
-              GestureDetector(
-                onTap: onHome,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const BrandMark(small: true),
-                    const SizedBox(width: 6),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      size: 13,
-                      color: Colors.white.withOpacity(0.35),
-                    ),
-                    const SizedBox(width: 3),
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        letterSpacing: -0.2,
-                      ),
-                    ),
-                  ],
+          child: Row(children: [
+            // Breadcrumb: logo → nome da aba
+            GestureDetector(
+              onTap: onHome,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const BrandMark(small: true),
+                const SizedBox(width: 6),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 13,
+                  color: Colors.white.withOpacity(0.35),
                 ),
-              ),
-              const Spacer(),
-              // Botão home
-              GestureDetector(
-                onTap: onHome,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(9),
-                    color: Colors.white.withOpacity(0.07),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.13),
-                      width: 0.8,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.home_rounded,
-                        size: 13,
-                        color: const Color(0xFFFFE8A6).withOpacity(0.85),
-                      ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Inicio',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFFFE8A6),
-                        ),
-                      ),
-                    ],
+                const SizedBox(width: 3),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: -0.2,
                   ),
                 ),
-              ),
-              const SizedBox(width: 6),
-              // Botão menu
-              GestureDetector(
-                onTap: () => Scaffold.of(context).openEndDrawer(),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(9),
-                    color: Colors.white.withOpacity(0.07),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.13),
-                      width: 0.8,
-                    ),
+              ]),
+            ),
+            const Spacer(),
+            // Botão home
+            GestureDetector(
+              onTap: onHome,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(9),
+                  color: Colors.white.withOpacity(0.07),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.13),
+                    width: 0.8,
                   ),
-                  child: Icon(
-                    Icons.menu_rounded,
-                    size: 16,
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(
+                    Icons.home_rounded,
+                    size: 13,
                     color: const Color(0xFFFFE8A6).withOpacity(0.85),
                   ),
+                  const SizedBox(width: 4),
+                  const Text(
+                    'Inicio',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFFFFE8A6),
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+            const SizedBox(width: 6),
+            // Botão menu
+            GestureDetector(
+              onTap: () => Scaffold.of(context).openEndDrawer(),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(9),
+                  color: Colors.white.withOpacity(0.07),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.13),
+                    width: 0.8,
+                  ),
+                ),
+                child: Icon(
+                  Icons.menu_rounded,
+                  size: 16,
+                  color: const Color(0xFFFFE8A6).withOpacity(0.85),
                 ),
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       ),
     );
@@ -4019,11 +4223,8 @@ class _UpdateBanner extends StatelessWidget {
           child: Row(
             children: [
               // Ícone
-              const Icon(
-                Icons.system_update_alt_rounded,
-                color: Color(0xFFC5A365),
-                size: 20,
-              ),
+              const Icon(Icons.system_update_alt_rounded,
+                  color: Color(0xFFC5A365), size: 20),
               const SizedBox(width: 10),
               // Texto
               const Expanded(
@@ -4044,10 +4245,8 @@ class _UpdateBanner extends StatelessWidget {
                 style: TextButton.styleFrom(
                   backgroundColor: const Color(0xFFC5A365),
                   foregroundColor: const Color(0xFF07110d),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
@@ -4063,11 +4262,8 @@ class _UpdateBanner extends StatelessWidget {
               // Botão fechar
               const SizedBox(width: 4),
               IconButton(
-                icon: const Icon(
-                  Icons.close_rounded,
-                  color: Colors.white54,
-                  size: 18,
-                ),
+                icon: const Icon(Icons.close_rounded,
+                    color: Colors.white54, size: 18),
                 onPressed: UpdateService.dismissUpdate,
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
@@ -4075,6 +4271,48 @@ class _UpdateBanner extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LegalGlassShelf extends StatelessWidget {
+  final bool dark;
+  final double safeBottom;
+  final Widget child;
+
+  const _LegalGlassShelf({
+    required this.dark,
+    required this.safeBottom,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final glassColor = dark
+        ? const Color(0xFF252930).withOpacity(0.70)
+        : Colors.white.withOpacity(0.70);
+
+    final borderColor =
+        dark ? const Color(0xFF374151) : const Color(0xFFDDE4EA);
+
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(bottom: safeBottom),
+          decoration: BoxDecoration(
+            color: glassColor,
+            border: Border(
+              top: BorderSide(
+                color: borderColor,
+                width: 0.7,
+              ),
+            ),
+          ),
+          child: child,
         ),
       ),
     );
@@ -4092,62 +4330,88 @@ class _LegalBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // context.select — rebuild apenas quando lang muda
     final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
-    final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFF0F2F4);
-    final border = dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6);
-    // Apple 1.4.1 — disclaimer deve ser legível: opacidade 0.85 no dark, cor
-    // sólida no light. Não usar valores abaixo de 0.70.
-    final textColor = dark
-        ? Colors.white.withOpacity(0.85)
-        : const Color(0xFF5A6370);
 
-    // Texto exigido pela Apple guideline 1.4.1 — permanece visível em todas as telas
+    // Apple 1.4.1 — contraste sólido e texto permanentemente visível.
+    final textColor =
+        dark ? Colors.white.withOpacity(0.88) : const Color(0xFF4B5563);
+
     final disclaimer = isEs
         ? 'Herramienta educativa de apoyo clínico. La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.'
         : 'Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.';
 
-    final content = Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border(top: BorderSide(color: border, width: 0.5)),
+    final centeredContent = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 6,
       ),
-      // BUILD 328 M4: padding v:1→5 — disclaimer totalmente visível acima da nav
-      // fontSize 9→10, maxLines 1→2, icon 8→10 — legibilidade Apple 1.4.1
-      // BUILD 329 M3: fontSize 10→11 — legibilidade definitiva e sólida
-      // BUILD 331 LB: −2px everywhere — vertical 5→3, icon 11→9, fontSize 11→9 (minimalista)
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            Icons.info_outline_rounded,
-            size: 9,
-            color: textColor.withOpacity(0.55),
+          SizedBox(
+            width: 18,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Icon(
+                Icons.info_outline_rounded,
+                size: 10,
+                color: textColor.withOpacity(0.68),
+              ),
+            ),
           ),
-          const SizedBox(width: 3),
           Expanded(
             child: Text(
               disclaimer,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 9,
+                fontSize: 9.5,
                 color: textColor,
-                height: 1.3,
-                letterSpacing: 0.0,
+                height: 1.28,
+                letterSpacing: 0,
                 fontWeight: FontWeight.w400,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
+
+          // Compensa a largura do ícone para centralização geométrica real.
+          const SizedBox(width: 18),
         ],
       ),
     );
 
-    // insideSafeArea=true → conteúdo puro (SafeArea já aplicado pelo pai).
-    // insideSafeArea=false → envolve com SafeArea(top:false) para standalone.
-    if (insideSafeArea) return content;
-    return SafeArea(top: false, child: content);
+    // Mobile: fundo e proteção inferior pertencem à _LegalGlassShelf.
+    if (insideSafeArea) {
+      return SizedBox(
+        width: double.infinity,
+        child: centeredContent,
+      );
+    }
+
+    // Desktop/tablet: faixa tradicional e SafeArea próprias.
+    final standaloneBg =
+        dark ? const Color(0xFF1A1D23) : const Color(0xFFF0F2F4);
+
+    final standaloneBorder =
+        dark ? const Color(0xFF374151) : const Color(0xFFDDE1E6);
+
+    return SafeArea(
+      top: false,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: standaloneBg,
+          border: Border(
+            top: BorderSide(
+              color: standaloneBorder,
+              width: 0.5,
+            ),
+          ),
+        ),
+        child: centeredContent,
+      ),
+    );
   }
 }
 
@@ -4171,6 +4435,150 @@ class _AppDrawerState extends State<_AppDrawer> {
 
   void _close(BuildContext context) => Navigator.of(context).pop();
 
+  // SIDEBAR_PROFILE_V1_B_R0_R1 — avatar local por usuário.
+  // Não altera UserModel/Firestore. A foto escolhida fica somente neste
+  // dispositivo, em SharedPreferences, usando bytes comprimidos pelo picker.
+  String? _avatarBase64;
+
+  String get _avatarPrefsKey {
+    final uid = p.currentUser?.uid.trim();
+    return 'medcases_profile_avatar_${(uid != null && uid.isNotEmpty) ? uid : 'local'}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocalAvatar();
+  }
+
+  Future<void> _loadLocalAvatar() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString(_avatarPrefsKey);
+      if (mounted) setState(() => _avatarBase64 = saved);
+    } catch (_) {
+      // Avatar opcional; falha local nunca bloqueia o Drawer.
+    }
+  }
+
+  Future<void> _pickLocalAvatar() async {
+    try {
+      final file = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 900,
+        maxHeight: 900,
+        imageQuality: 82,
+      );
+      if (file == null) return;
+
+      final bytes = await file.readAsBytes();
+      if (bytes.isEmpty) return;
+
+      final encoded = base64Encode(bytes);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_avatarPrefsKey, encoded);
+
+      if (mounted) setState(() => _avatarBase64 = encoded);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            p.lang == 'es'
+                ? 'No fue posible cargar la foto.'
+                : 'Não foi possível carregar a foto.',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> _removeLocalAvatar() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_avatarPrefsKey);
+      if (mounted) setState(() => _avatarBase64 = null);
+    } catch (_) {}
+  }
+
+  Future<void> _showAvatarActions(BuildContext context) async {
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+    final bg = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: bg,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Color(0xFF10B981),
+                ),
+                title: Text(
+                  isEs ? 'Elegir foto' : 'Escolher foto',
+                  style: TextStyle(
+                    color: primary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                subtitle: Text(
+                  isEs
+                      ? 'Se guarda solo en este dispositivo'
+                      : 'Salva apenas neste dispositivo',
+                  style: TextStyle(
+                    color: secondary,
+                    fontSize: 11,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _pickLocalAvatar();
+                },
+              ),
+              if (_avatarBase64 != null && _avatarBase64!.isNotEmpty) ...[
+                Divider(height: 1, color: divider),
+                ListTile(
+                  leading: const Icon(
+                    Icons.delete_outline_rounded,
+                    color: Color(0xFFCC3333),
+                  ),
+                  title: Text(
+                    isEs ? 'Quitar foto' : 'Remover foto',
+                    style: const TextStyle(
+                      color: Color(0xFFCC3333),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _removeLocalAvatar();
+                  },
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   // ── Dialog de eliminação de conta ────────────────────────────────────────
   // ── Task 8 — Exclusão de Conta Obrigatória (Apple Guideline 5.1.1(v)) ─────
   // Diálogo em 2 etapas:
@@ -4179,9 +4587,7 @@ class _AppDrawerState extends State<_AppDrawer> {
   // Chama AuthService.deleteAccount() que apaga: subcoleções Firestore,
   // documento users/{uid}, credencial Firebase Auth e sessão local.
   Future<void> _showDeleteAccountDialog(
-    BuildContext context,
-    AppProvider p,
-  ) async {
+      BuildContext context, AppProvider p) async {
     final isEs = p.lang == 'es';
     final dark = p.darkMode;
     final uid = p.currentUser?.uid ?? '';
@@ -4191,17 +4597,17 @@ class _AppDrawerState extends State<_AppDrawer> {
     final titleT = isEs ? 'Eliminar cuenta' : 'Excluir minha conta';
     final body1 = isEs
         ? 'Esta acción es PERMANENTE e IRREVERSIBLE.\n\n'
-              '• Todos tus datos clínicos serán eliminados\n'
-              '• Historial de consultas con la IA\n'
-              '• Anotaciones y configuraciones\n'
-              '• Tu acceso a MedCases Pro\n\n'
-              'Esta operación no puede deshacerse.'
+            '• Todos tus datos clínicos serán eliminados\n'
+            '• Historial de consultas con la IA\n'
+            '• Anotaciones y configuraciones\n'
+            '• Tu acceso a MedCases Pro\n\n'
+            'Esta operación no puede deshacerse.'
         : 'Esta ação é PERMANENTE e IRREVERSÍVEL.\n\n'
-              '• Todos os seus dados clínicos serão apagados\n'
-              '• Histórico de consultas com a IA\n'
-              '• Anotações e configurações\n'
-              '• Seu acesso ao MedCases Pro\n\n'
-              'Esta operação não pode ser desfeita.';
+            '• Todos os seus dados clínicos serão apagados\n'
+            '• Histórico de consultas com a IA\n'
+            '• Anotações e configurações\n'
+            '• Seu acesso ao MedCases Pro\n\n'
+            'Esta operação não pode ser desfeita.';
     final step1Label = isEs
         ? 'Para continuar, escribe EXCLUIR a continuación:'
         : 'Para continuar, digite EXCLUIR abaixo:';
@@ -4235,11 +4641,8 @@ class _AppDrawerState extends State<_AppDrawer> {
             if (loading) return;
             final pwd = passCtrl.text.trim();
             if (!kIsWeb && pwd.isEmpty) {
-              setS(
-                () => passErr = isEs
-                    ? 'Contraseña obligatoria'
-                    : 'Senha obrigatória',
-              );
+              setS(() => passErr =
+                  isEs ? 'Contraseña obligatoria' : 'Senha obrigatória');
               return;
             }
             setS(() {
@@ -4272,69 +4675,52 @@ class _AppDrawerState extends State<_AppDrawer> {
             }
 
             if (result.requiresReauth && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isEs
-                        ? 'Por seguridad, inicia sesión de nuevo e intenta otra vez.'
-                        : 'Por segurança, faça login novamente e tente outra vez.',
-                  ),
-                  backgroundColor: const Color(0xFFCC3333),
-                  duration: const Duration(seconds: 4),
-                ),
-              );
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(isEs
+                    ? 'Por seguridad, inicia sesión de nuevo e intenta otra vez.'
+                    : 'Por segurança, faça login novamente e tente outra vez.'),
+                backgroundColor: const Color(0xFFCC3333),
+                duration: const Duration(seconds: 4),
+              ));
               return;
             }
 
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    result.error ??
-                        (isEs
-                            ? 'Error al eliminar la cuenta.'
-                            : 'Erro ao excluir conta.'),
-                  ),
-                  backgroundColor: const Color(0xFFCC3333),
-                  duration: const Duration(seconds: 4),
-                ),
-              );
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(result.error ??
+                    (isEs
+                        ? 'Error al eliminar la cuenta.'
+                        : 'Erro ao excluir conta.')),
+                backgroundColor: const Color(0xFFCC3333),
+                duration: const Duration(seconds: 4),
+              ));
             }
           }
 
           return AlertDialog(
             backgroundColor: dark ? const Color(0xFF252930) : Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
             contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-            title: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFCC3333).withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.delete_forever_rounded,
-                    color: Color(0xFFCC3333),
-                    size: 22,
-                  ),
+            title: Row(children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCC3333).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(width: 10),
-                Flexible(
-                  child: Text(
-                    titleT,
+                child: const Icon(Icons.delete_forever_rounded,
+                    color: Color(0xFFCC3333), size: 22),
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(titleT,
                     style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFFCC3333),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFFCC3333))),
+              ),
+            ]),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -4348,61 +4734,48 @@ class _AppDrawerState extends State<_AppDrawer> {
                         color: const Color(0xFFCC3333).withOpacity(0.07),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: const Color(0xFFCC3333).withOpacity(0.25),
-                        ),
+                            color: const Color(0xFFCC3333).withOpacity(0.25)),
                       ),
-                      child: Text(
-                        body1,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          height: 1.6,
-                          color: dark
-                              ? Colors.white70
-                              : const Color(0xFF333344),
-                        ),
-                      ),
+                      child: Text(body1,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            height: 1.6,
+                            color:
+                                dark ? Colors.white70 : const Color(0xFF333344),
+                          )),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      step1Label,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: dark ? Colors.white60 : const Color(0xFF555555),
-                      ),
-                    ),
+                    Text(step1Label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color:
+                              dark ? Colors.white60 : const Color(0xFF555555),
+                        )),
                     const SizedBox(height: 8),
                     TextField(
                       controller: confirmCtrl,
                       autofocus: true,
                       textCapitalization: TextCapitalization.characters,
                       style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 2.0,
-                      ),
+                          fontWeight: FontWeight.w800, letterSpacing: 2.0),
                       decoration: InputDecoration(
                         hintText: 'EXCLUIR',
                         errorText: confirmErr,
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 11,
-                        ),
+                            horizontal: 12, vertical: 11),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                            borderRadius: BorderRadius.circular(10)),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: const BorderSide(
-                            color: Color(0xFFCC3333),
-                            width: 1.5,
-                          ),
+                              color: Color(0xFFCC3333), width: 1.5),
                         ),
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFCC3333),
-                          ),
+                          borderSide:
+                              const BorderSide(color: Color(0xFFCC3333)),
                         ),
                       ),
                       onChanged: (_) {
@@ -4413,22 +4786,18 @@ class _AppDrawerState extends State<_AppDrawer> {
                     ),
                   ] else ...[
                     // ── Etapa 2: confirmação de senha (nativo) ─
-                    Text(
-                      step2Title,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: dark ? Colors.white : const Color(0xFF222222),
-                      ),
-                    ),
+                    Text(step2Title,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: dark ? Colors.white : const Color(0xFF222222),
+                        )),
                     const SizedBox(height: 6),
-                    Text(
-                      step2Label,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: dark ? Colors.white60 : Colors.grey[600],
-                      ),
-                    ),
+                    Text(step2Label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: dark ? Colors.white60 : Colors.grey[600],
+                        )),
                     const SizedBox(height: 8),
                     TextField(
                       controller: passCtrl,
@@ -4439,26 +4808,20 @@ class _AppDrawerState extends State<_AppDrawer> {
                         errorText: passErr,
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 11,
-                        ),
+                            horizontal: 12, vertical: 11),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                            borderRadius: BorderRadius.circular(10)),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: const BorderSide(
-                            color: Color(0xFFCC3333),
-                            width: 1.5,
-                          ),
+                              color: Color(0xFFCC3333), width: 1.5),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            passObscure
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            size: 20,
-                          ),
+                              passObscure
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              size: 20),
                           onPressed: () =>
                               setS(() => passObscure = !passObscure),
                         ),
@@ -4475,18 +4838,15 @@ class _AppDrawerState extends State<_AppDrawer> {
             actions: [
               TextButton(
                 onPressed: loading ? null : () => Navigator.pop(ctx),
-                child: Text(
-                  cancelT,
-                  style: const TextStyle(color: Color(0xFF6B7280)),
-                ),
+                child: Text(cancelT,
+                    style: const TextStyle(color: Color(0xFF6B7280))),
               ),
               if (!step2)
                 FilledButton(
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFFCC3333),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () {
                     if (confirmCtrl.text.trim().toUpperCase() != 'EXCLUIR') {
@@ -4508,8 +4868,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFFCC3333),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: loading ? null : doDelete,
                   child: loading
@@ -4517,10 +4876,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
+                              strokeWidth: 2, color: Colors.white))
                       : Text(confirmT),
                 ),
             ],
@@ -4549,10 +4905,8 @@ class _AppDrawerState extends State<_AppDrawer> {
       );
     }
 
-    final result = await AuthService.deleteAccount(
-      uid: uid,
-      password: password,
-    );
+    final result =
+        await AuthService.deleteAccount(uid: uid, password: password);
 
     if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
 
@@ -4562,18 +4916,12 @@ class _AppDrawerState extends State<_AppDrawer> {
     }
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            result.error ??
-                (isEs
-                    ? 'Error al eliminar la cuenta.'
-                    : 'Erro ao excluir conta.'),
-          ),
-          backgroundColor: const Color(0xFFCC3333),
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(result.error ??
+            (isEs ? 'Error al eliminar la cuenta.' : 'Erro ao excluir conta.')),
+        backgroundColor: const Color(0xFFCC3333),
+        duration: const Duration(seconds: 4),
+      ));
     }
   }
 
@@ -4583,26 +4931,25 @@ class _AppDrawerState extends State<_AppDrawer> {
     // fiquem isolados — não fecham o drawer ao mudar darkMode/offlineMode.
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFFAFBFC);
-    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFF0EDE8);
-    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-    final subCol = dark
-        ? Colors.white.withOpacity(0.36)
-        : const Color(0xFF9AA0A8);
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    final textCol = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final subCol =
+        dark ? Colors.white.withOpacity(0.52) : const Color(0xFF64748B);
 
     final initials = p.userName.isNotEmpty
         ? p.userName
-              .trim()
-              .split(' ')
-              .take(2)
-              .map((w) => w[0].toUpperCase())
-              .join()
+            .trim()
+            .split(' ')
+            .take(2)
+            .map((w) => w[0].toUpperCase())
+            .join()
         : 'MC';
 
     // ── Largura responsiva: max 300 em tablets/desktop, 72% em mobile ────────
     final screenW = MediaQuery.of(context).size.width;
     final isTablet = screenW >= 600;
-    final drawerW = isTablet ? screenW.clamp(0.0, 300.0) : screenW * 0.72;
+    final drawerW = isTablet ? screenW.clamp(0.0, 320.0) : screenW * 0.66;
 
     // ── Shape: cantos arredondados à esquerda apenas em tablets ──────────────
     // (endDrawer desliza da direita → arredondar topLeft + bottomLeft)
@@ -4627,6 +4974,8 @@ class _AppDrawerState extends State<_AppDrawer> {
             p: p,
             initials: initials,
             dark: dark,
+            avatarBase64: _avatarBase64,
+            onAvatarTap: () => _showAvatarActions(context),
             onClose: () => _close(context),
             onEditProfile: () {
               _close(context);
@@ -4649,17 +4998,15 @@ class _AppDrawerState extends State<_AppDrawer> {
                 // Permissões inalteradas: if (p.isAdmin || p.isMaster)
                 if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
                   _DrawerSectionLabel(
-                    label: p.isMaster ? '⚡ MASTER' : '⚡ ADMIN',
+                    label: p.lang == 'es' ? 'GESTIÓN' : 'GESTÃO',
                     dark: dark,
-                    color: const Color(0xFFFF8C00),
                   ),
                   _DrawerBlock(
                     children: [
                       _DrawerRow(
                         icon: Icons.admin_panel_settings_rounded,
-                        iconColor: const Color(0xFFFF8C00),
+                        iconColor: const Color(0xFF10B981),
                         title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
-                        subtitle: 'Usuários · Links · Indicações',
                         dark: dark,
                         textCol: textCol,
                         subCol: subCol,
@@ -4669,11 +5016,11 @@ class _AppDrawerState extends State<_AppDrawer> {
                           final admin = p.currentUser;
                           if (admin == null) return;
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => AdminScreen(currentAdmin: admin),
-                            ),
-                          );
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    AdminScreen(currentAdmin: admin),
+                              ));
                         },
                       ),
                     ],
@@ -4681,7 +5028,12 @@ class _AppDrawerState extends State<_AppDrawer> {
                   const SizedBox(height: 4),
                 ],
 
-                // ─── 2. Bloco: Premium (upgrade) — oculto em modo de revisão Apple
+                // ─── 2. Plano / Premium ─────────────────────────────────
+                if (!kIsReviewMode)
+                  _DrawerSectionLabel(
+                    label: p.lang == 'es' ? 'PLAN' : 'PLANO',
+                    dark: dark,
+                  ),
                 if (!kIsReviewMode)
                   _DrawerBlock(
                     children: [
@@ -4711,17 +5063,6 @@ class _AppDrawerState extends State<_AppDrawer> {
                 //   _DrawerQuickAccess(p: p, dark: dark, onClose: () => _close(context)),
                 // ],
 
-                // ─── 4. Sua Atividade (oculto se vazio) ──────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'TU ACTIVIDAD' : 'SUA ATIVIDADE',
-                  dark: dark,
-                ),
-                _DrawerActivity(
-                  p: p,
-                  dark: dark,
-                  onClose: () => _close(context),
-                ),
-
                 // ─── 5. Suporte ──────────────────────────────────────────
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
@@ -4733,13 +5074,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                     // ── Fontes e Diretrizes (Task 6 — App Store Guideline 1.4.1) ──
                     _DrawerRow(
                       icon: Icons.menu_book_rounded,
-                      iconColor: const Color(0xFF0D7A55),
-                      title: p.lang == 'es'
-                          ? 'Fuentes y Directrices'
-                          : 'Fontes e Diretrizes',
-                      subtitle: p.lang == 'es'
-                          ? 'AHA, Harrison, ESC, IDSA y más'
-                          : 'AHA, Harrison, ESC, IDSA e mais',
+                      iconColor: const Color(0xFF10B981),
+                      title: p.lang == 'es' ? 'Fuentes' : 'Fontes',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4750,10 +5086,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                     ),
                     _DrawerRow(
                       icon: Icons.support_agent_rounded,
-                      iconColor: const Color(0xFF7C3AED),
-                      title: p.lang == 'es'
-                          ? 'Feedback y Soporte'
-                          : 'Feedback e Suporte',
+                      iconColor: const Color(0xFF10B981),
+                      title: p.lang == 'es' ? 'Soporte' : 'Suporte',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4782,11 +5116,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                     // Idioma — toca para alternar PT ↔ ES
                     _DrawerRow(
                       icon: Icons.language_rounded,
-                      iconColor: const Color(0xFF1E88E5),
+                      iconColor: const Color(0xFF10B981),
                       title: 'Idioma',
-                      subtitle: p.lang == 'es'
-                          ? 'Toca para cambiar a Português'
-                          : 'Toque para mudar para Español',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4794,9 +5125,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                       onTap: () {
                         final newLang = p.lang == 'pt' ? 'es' : 'pt';
                         p.setLang(newLang);
-                        SharedPreferences.getInstance().then(
-                          (prefs) => prefs.setString('lang', newLang),
-                        );
+                        SharedPreferences.getInstance()
+                            .then((prefs) => prefs.setString('lang', newLang));
                       },
                     ),
                     // Tema
@@ -4804,9 +5134,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                       icon: dark
                           ? Icons.light_mode_rounded
                           : Icons.dark_mode_rounded,
-                      iconColor: dark
-                          ? const Color(0xFFFFCC44)
-                          : const Color(0xFF6B6B8A),
+                      iconColor: const Color(0xFF10B981),
                       title: p.lang == 'es' ? 'Apariencia' : 'Aparência',
                       dark: dark,
                       textCol: textCol,
@@ -4825,7 +5153,6 @@ class _AppDrawerState extends State<_AppDrawer> {
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'MODO SIN CONEXIÓN' : 'MODO OFFLINE',
                   dark: dark,
-                  color: const Color(0xFF1D4ED8),
                 ),
                 // BUILD 327: _OfflineDrawerCard unificado — inclui controles da
                 // calculadora offline (Versão, Actualizar, Limpiar) dentro do
@@ -4842,10 +5169,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                   children: [
                     _DrawerRow(
                       icon: Icons.info_outline_rounded,
-                      iconColor: const Color(0xFF0D9488),
-                      title: p.lang == 'es'
-                          ? 'Sobre MedCases Pro'
-                          : 'Sobre o MedCases Pro',
+                      iconColor: const Color(0xFF10B981),
+                      title: p.lang == 'es' ? 'Sobre' : 'Sobre',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4863,10 +5188,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                     _DrawerLegalRow(
                       icon: Icons.article_outlined,
                       iconColor: const Color(0xFF546E7A),
-                      title: p.lang == 'es'
-                          ? 'Términos de Uso'
-                          : 'Termos de Uso',
-                      subtitle: p.lang == 'es' ? 'Ver en la app' : 'Ver no app',
+                      title: p.lang == 'es' ? 'Términos' : 'Termos',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4883,10 +5205,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                     _DrawerLegalRow(
                       icon: Icons.shield_outlined,
                       iconColor: const Color(0xFF546E7A),
-                      title: p.lang == 'es'
-                          ? 'Política de Privacidad'
-                          : 'Política de Privacidade',
-                      subtitle: p.lang == 'es' ? 'Ver en la app' : 'Ver no app',
+                      title: p.lang == 'es' ? 'Privacidad' : 'Privacidade',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4905,7 +5224,7 @@ class _AppDrawerState extends State<_AppDrawer> {
 
                 // ─── 9. Conta e Gestão (zona de perigo — SEMPRE NO FINAL) ───
                 _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'CUENTA Y GESTIÓN' : 'CONTA E GESTÃO',
+                  label: p.lang == 'es' ? 'CUENTA' : 'CONTA',
                   dark: dark,
                   color: const Color(0xFFCC3333),
                 ),
@@ -4915,9 +5234,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                     _DrawerRow(
                       icon: Icons.delete_outline_rounded,
                       iconColor: const Color(0xFFCC3333),
-                      title: p.lang == 'es'
-                          ? 'Eliminar Cuenta'
-                          : 'Excluir Conta',
+                      title:
+                          p.lang == 'es' ? 'Eliminar Cuenta' : 'Excluir Conta',
                       dark: dark,
                       textCol: const Color(0xFFCC3333),
                       subCol: subCol,
@@ -4953,7 +5271,7 @@ class _AppDrawerState extends State<_AppDrawer> {
           Container(
             padding: const EdgeInsets.fromLTRB(16, 9, 16, 10),
             decoration: BoxDecoration(
-              color: dark ? const Color(0xFF0F1116) : const Color(0xFFF0EDE8),
+              color: dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3),
               border: Border(top: BorderSide(color: divider, width: 0.5)),
             ),
             child: SafeArea(
@@ -4963,11 +5281,10 @@ class _AppDrawerState extends State<_AppDrawer> {
               child: Text(
                 'MedCases Pro · ${p.lang == 'es' ? 'Solo uso educativo' : 'Uso educacional'}',
                 style: TextStyle(
-                  fontSize: 9.5,
-                  color: subCol,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.2,
-                ),
+                    fontSize: 9.5,
+                    color: subCol,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.2),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -4987,6 +5304,8 @@ class _DrawerHeader extends StatelessWidget {
   final AppProvider p;
   final String initials;
   final bool dark;
+  final String? avatarBase64;
+  final VoidCallback onAvatarTap;
   final VoidCallback onClose;
   final VoidCallback onEditProfile;
 
@@ -4994,24 +5313,79 @@ class _DrawerHeader extends StatelessWidget {
     required this.p,
     required this.initials,
     required this.dark,
+    required this.avatarBase64,
+    required this.onAvatarTap,
     required this.onClose,
     required this.onEditProfile,
   });
 
-  static const _kGold = Color(0xFFC5A365);
-  static const _kGoldL = Color(0xFFFFE8A6);
+  static const _kGreen = Color(0xFF10B981);
+
+  Widget _avatarFallback(Color avatarBg, Color divider) {
+    return Container(
+      width: 52,
+      height: 52,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: avatarBg,
+        border: Border.all(color: divider, width: 0.8),
+      ),
+      child: Text(
+        initials,
+        style: const TextStyle(
+          color: _kGreen,
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+
+  Widget _avatar(Color avatarBg, Color divider) {
+    final encoded = avatarBase64;
+    if (encoded != null && encoded.isNotEmpty) {
+      try {
+        final bytes = base64Decode(encoded);
+        return Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: divider, width: 0.8),
+          ),
+          child: ClipOval(
+            child: Image.memory(
+              bytes,
+              width: 52,
+              height: 52,
+              fit: BoxFit.cover,
+              gaplessPlayback: true,
+              errorBuilder: (_, __, ___) => _avatarFallback(avatarBg, divider),
+            ),
+          ),
+        );
+      } catch (_) {
+        return _avatarFallback(avatarBg, divider);
+      }
+    }
+    return _avatarFallback(avatarBg, divider);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final hasBadge = p.isAdmin || p.isMaster;
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+    final tertiary = const Color(0xFF64748B);
+    final avatarBg = dark ? const Color(0xFF252930) : Colors.white;
 
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF0F1116), Color(0xFF1A1D23), Color(0xFF252930)],
-          stops: [0.0, 0.45, 1.0],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: bg,
+        border: Border(
+          bottom: BorderSide(color: divider, width: 0.6),
         ),
       ),
       child: SafeArea(
@@ -5019,237 +5393,121 @@ class _DrawerHeader extends StatelessWidget {
         left: false,
         right: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 14, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+          padding: const EdgeInsets.fromLTRB(16, 12, 8, 14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // ── Linha 1: badge (opcional) | Spacer | botão ✕ ─────────────────
-              // BUILD 326 — M1: BrandMark removido; X e badge mantidos no topo
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Badge Admin/Master — inline na linha do topo
-                  if (hasBadge) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: _kGold.withOpacity(0.14),
-                        border: Border.all(color: _kGold.withOpacity(0.40)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.verified_rounded,
-                            size: 9,
-                            color: _kGoldL,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            p.isMaster ? 'MASTER' : 'ADMIN',
-                            style: const TextStyle(
-                              fontSize: 8.5,
-                              fontWeight: FontWeight.w900,
-                              color: _kGoldL,
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                        ],
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onAvatarTap,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    _avatar(avatarBg, divider),
+                    Positioned(
+                      right: -1,
+                      bottom: -1,
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: bg,
+                          border: Border.all(color: divider, width: 0.7),
+                        ),
+                        child: const Icon(
+                          Icons.photo_camera_outlined,
+                          size: 10,
+                          color: _kGreen,
+                        ),
                       ),
                     ),
                   ],
-                  const Spacer(),
-                  // Botão fechar
-                  GestureDetector(
-                    onTap: onClose,
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(9),
-                        color: Colors.white.withOpacity(0.07),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.10),
-                          width: 0.8,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: 14,
-                        color: Colors.white.withOpacity(0.55),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-
-              const SizedBox(height: 10),
-
-              // ── BUILD 326 — M1: Selo centralizado  ——  [M+]  —— ──────────────
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: const Color(0xFF334155).withOpacity(0.45),
-                      endIndent: 10,
-                      thickness: 0.8,
-                    ),
-                  ),
-                  const Text(
-                    'M+',
-                    style: TextStyle(
-                      color: Color(0xFFD4AF37),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 15,
-                      letterSpacing: 2.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: const Color(0xFF334155).withOpacity(0.45),
-                      indent: 10,
-                      thickness: 0.8,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 18),
-
-              // ── BUILD 326 — M2/M3: Avatar 58px + Stack lápis + coluna de texto ─
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // BUILD 326 — M2: Avatar 58px com overlay de lápis (Stack)
-                  GestureDetector(
-                    onTap: onEditProfile,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        // Círculo principal 58px
-                        Container(
-                          width: 58,
-                          height: 58,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                            ),
-                            border: Border.all(
-                              color: const Color(0xFF34D399).withOpacity(0.50),
-                              width: 1.8,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(
-                                  0xFF34D399,
-                                ).withOpacity(0.15),
-                                blurRadius: 12,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              initials,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFFD4AF37),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Overlay lápis: 22px círculo verde no canto inferior direito
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            width: 22,
-                            height: 22,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF34D399),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.edit_rounded,
-                              size: 11,
-                              color: Color(0xFF0F172A),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(width: 14),
-
-                  // BUILD 326 — M3: Coluna vertical: nome + profissão + instituição
-                  Expanded(
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onEditProfile,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Título: nome do usuário
                         Text(
                           p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: -0.3,
-                            height: 1.15,
-                          ),
-                          overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                        ),
-                        // Subtítulo 1: profissão (fontSize 13, opacity 0.65)
-                        if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
-                          const SizedBox(height: 3),
-                          Text(
-                            p.currentUser!.profession!,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white.withOpacity(0.65),
-                              fontWeight: FontWeight.w500,
-                              height: 1.2,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: primary,
+                            fontSize: 15,
+                            height: 1.15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.2,
                           ),
-                        ],
-                        // Subtítulo 2: instituição (fontSize 11, opacity 0.42)
-                        if (p.currentUser?.institution?.isNotEmpty ??
-                            false) ...[
+                        ),
+                        if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
                           const SizedBox(height: 2),
                           Text(
-                            p.currentUser!.institution!,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.white.withOpacity(0.42),
-                              fontWeight: FontWeight.w400,
-                              height: 1.25,
-                            ),
+                            p.currentUser!.profession!,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                            style: TextStyle(
+                              color: secondary,
+                              fontSize: 11.5,
+                              height: 1.2,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
+                        if (p.currentUser?.institution?.isNotEmpty ??
+                            false) ...[
+                          const SizedBox(height: 1),
+                          Text(
+                            p.currentUser!.institution!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: tertiary,
+                              fontSize: 10.5,
+                              height: 1.2,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 3),
+                        Text(
+                          'Editar perfil',
+                          style: const TextStyle(
+                            color: _kGreen,
+                            fontSize: 10,
+                            height: 1.1,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  // BUILD 326 — M5: Botão "Editar" externo REMOVIDO
-                ],
+                ),
               ),
-
-              const SizedBox(height: 4),
+              IconButton(
+                onPressed: onClose,
+                tooltip: p.lang == 'es' ? 'Cerrar' : 'Fechar',
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints.tightFor(
+                  width: 36,
+                  height: 36,
+                ),
+                icon: Icon(
+                  Icons.close_rounded,
+                  size: 20,
+                  color: secondary,
+                ),
+              ),
             ],
           ),
         ),
@@ -5273,18 +5531,30 @@ class _DrawerSectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final col =
-        color ??
-        (dark ? Colors.white.withOpacity(0.28) : const Color(0xFFAAB0B8));
+        color ?? (dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B));
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 5),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 9.5,
-          fontWeight: FontWeight.w800,
-          color: col,
-          letterSpacing: 1.2,
-        ),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 6),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w700,
+              color: col,
+              letterSpacing: 0.85,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Container(
+              height: 0.55,
+              color: color == null ? divider : col.withValues(alpha: 0.35),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -5295,47 +5565,32 @@ class _DrawerBlock extends StatelessWidget {
   final List<Widget> children;
   final Color? dividerColor;
 
-  const _DrawerBlock({required this.children, this.dividerColor});
+  const _DrawerBlock({
+    required this.children,
+    this.dividerColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
-    final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFECE9E4);
-    final divCol =
-        dividerColor ??
-        (dark ? const Color(0xFF2D3340) : const Color(0xFFECE9E4));
+    final dark = context.select<AppProvider, bool>((p) => p.darkMode);
+    final divCol = dividerColor ??
+        (dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7));
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderCol, width: 0.8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(dark ? 0.18 : 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (int i = 0; i < children.length; i++) ...[
+          children[i],
+          if (i < children.length - 1)
+            Divider(
+              height: 1,
+              thickness: 0.55,
+              color: divCol,
+              indent: 48,
+              endIndent: 0,
+            ),
         ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (int i = 0; i < children.length; i++) ...[
-            children[i],
-            if (i < children.length - 1)
-              Divider(
-                height: 1,
-                thickness: 0.5,
-                color: divCol,
-                indent: 50,
-                endIndent: 0,
-              ),
-          ],
-        ],
-      ),
+      ],
     );
   }
 }
@@ -5344,84 +5599,79 @@ class _DrawerBlock extends StatelessWidget {
 class _DrawerItemPremium extends StatelessWidget {
   final bool dark;
   final VoidCallback onTap;
-  const _DrawerItemPremium({required this.dark, required this.onTap});
+
+  const _DrawerItemPremium({
+    required this.dark,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: dark
-                ? [const Color(0xFF252930), const Color(0xFF1A1D23)]
-                : [const Color(0xFF2D3340), const Color(0xFF0F1116)],
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFFC5A365).withOpacity(0.18),
-              ),
-              child: const Icon(
-                Icons.workspace_premium_rounded,
-                size: 18,
-                color: Color(0xFFFFE8A6),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Upgrade Premium',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFFFFE8A6),
-                      letterSpacing: -0.1,
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    'Acesso completo · 500+ casos clínicos',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.white.withOpacity(0.40),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
-                color: const Color(0xFFC5A365).withOpacity(0.22),
-                border: Border.all(
-                  color: const Color(0xFFC5A365).withOpacity(0.50),
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    const accent = Color(0xFF10B981);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        splashColor: accent.withValues(alpha: 0.05),
+        highlightColor: accent.withValues(alpha: 0.025),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 32,
+                child: Icon(
+                  Icons.workspace_premium_outlined,
+                  size: 19,
+                  color: accent,
                 ),
               ),
-              child: const Text(
+              const SizedBox(width: 4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Upgrade Premium',
+                      style: TextStyle(
+                        color: primary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      'Acesso completo · 500+ casos clínicos',
+                      style: TextStyle(
+                        color: secondary,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Text(
                 'VER',
                 style: TextStyle(
+                  color: accent,
                   fontSize: 9,
-                  fontWeight: FontWeight.w900,
-                  color: Color(0xFFFFE8A6),
-                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(width: 4),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 16,
+                color: secondary,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -5456,57 +5706,59 @@ class _DrawerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      splashColor: iconColor.withOpacity(0.07),
-      highlightColor: iconColor.withOpacity(0.04),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-        child: Row(
-          children: [
-            // Ícone simples (sem container/borda ao redor)
-            SizedBox(width: 36, child: Icon(icon, size: 20, color: iconColor)),
-            const SizedBox(width: 4),
-            // Título + subtítulo opcional
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w600,
-                      color: textCol,
-                      letterSpacing: -0.1,
-                    ),
-                  ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 1),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        splashColor: iconColor.withOpacity(0.05),
+        highlightColor: iconColor.withOpacity(0.025),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 32,
+                child: Icon(icon, size: 19, color: iconColor),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     Text(
-                      subtitle!,
+                      title,
                       style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w500,
-                        color: subCol.withOpacity(0.65),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: textCol,
+                        letterSpacing: -0.05,
                       ),
                     ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 1),
+                      Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w400,
+                          color: subCol,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            // Trailing ou chevron
-            if (trailing != null)
-              trailing!
-            else
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 16,
-                color: subCol.withOpacity(0.45),
-              ),
-          ],
+              if (trailing != null)
+                trailing!
+              else
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 16,
+                  color: subCol.withOpacity(0.70),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -5521,7 +5773,6 @@ class _DrawerLegalRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
-  final String? subtitle;
   final bool dark;
   final Color textCol;
   final Color subCol;
@@ -5540,96 +5791,78 @@ class _DrawerLegalRow extends StatelessWidget {
     required this.externalUrl,
     required this.externalTooltip,
     required this.onTap,
-    this.subtitle,
     this.showDivider = true,
   });
 
-  // BUILD 323 — MANDATO 2: abre documento legal in-app em vez de browser externo.
-  // MANDATO 1: título semântico visível, URL encapsulada e invisível.
   void _launch(BuildContext context) {
     openAcademicSourceSecurely(context, title, externalUrl);
   }
 
   @override
   Widget build(BuildContext context) {
-    final dividerColor = dark
-        ? const Color(0xFF1A2E22)
-        : const Color(0xFFF0EDE8);
+    final dividerColor =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
-          splashColor: iconColor.withOpacity(0.07),
-          highlightColor: iconColor.withOpacity(0.04),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 11, 4, 11),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 36,
-                  child: Icon(icon, size: 20, color: iconColor),
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w600,
-                          color: textCol,
-                          letterSpacing: -0.1,
-                        ),
-                      ),
-                      if (subtitle != null) ...[
-                        const SizedBox(height: 1),
-                        Text(
-                          subtitle!,
-                          style: TextStyle(
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w500,
-                            color: subCol.withOpacity(0.65),
-                          ),
-                        ),
-                      ],
-                    ],
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            splashColor: iconColor.withValues(alpha: 0.05),
+            highlightColor: iconColor.withValues(alpha: 0.025),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 6, 10),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 32,
+                    child: Icon(icon, size: 19, color: iconColor),
                   ),
-                ),
-                // BUILD 323 MANDATO 2: ícone abre in-app WebView (não browser externo)
-                Tooltip(
-                  message: externalTooltip,
-                  child: IconButton(
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: textCol,
+                        letterSpacing: -0.05,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => _launch(context),
+                    tooltip: externalTooltip,
+                    visualDensity: VisualDensity.compact,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 36,
+                      height: 36,
+                    ),
+                    padding: EdgeInsets.zero,
                     icon: Icon(
                       Icons.open_in_new_rounded,
-                      size: 18,
-                      color: const Color(0xFF1E88E5).withOpacity(0.75),
-                    ),
-                    onPressed: () => _launch(context),
-                    splashRadius: 18,
-                    padding: const EdgeInsets.all(8),
-                    constraints: const BoxConstraints(
-                      minWidth: 36,
-                      minHeight: 36,
+                      size: 15,
+                      color: subCol.withValues(alpha: 0.85),
                     ),
                   ),
-                ),
-              ],
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 16,
+                    color: subCol.withValues(alpha: 0.70),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
         if (showDivider)
           Divider(
             height: 1,
-            thickness: 0.7,
+            thickness: 0.55,
             color: dividerColor,
-            indent: 14,
-            endIndent: 14,
+            indent: 48,
           ),
       ],
     );
@@ -5646,20 +5879,22 @@ class _LangBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = lang == 'pt' ? 'PT' : 'ES';
+    const accent = Color(0xFF10B981);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: const Color(0xFFC5A365).withOpacity(0.12),
-        border: Border.all(color: const Color(0xFFC5A365).withOpacity(0.38)),
+        borderRadius: BorderRadius.circular(6),
+        color: accent.withValues(alpha: 0.10),
+        border: Border.all(color: accent.withValues(alpha: 0.32)),
       ),
       child: Text(
         label,
         style: const TextStyle(
-          fontSize: 11,
+          fontSize: 10.5,
           fontWeight: FontWeight.w800,
-          color: Color(0xFFC5A365),
-          letterSpacing: 1.2,
+          color: accent,
+          letterSpacing: 1.0,
         ),
       ),
     );
@@ -5681,17 +5916,15 @@ class _ThemeToggle extends StatelessWidget {
         color: dark ? const Color(0xFF10B981) : const Color(0xFFA8B2C1),
       ),
       child: AnimatedAlign(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 90),
         curve: Curves.easeOutCubic,
         alignment: dark ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           width: 18,
           height: 18,
           margin: const EdgeInsets.symmetric(horizontal: 2),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-          ),
+          decoration:
+              const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
         ),
       ),
     );
@@ -5720,10 +5953,8 @@ class _OnOffToggle extends StatelessWidget {
           width: 18,
           height: 18,
           margin: const EdgeInsets.symmetric(horizontal: 2),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-          ),
+          decoration:
+              const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
         ),
       ),
     );
@@ -5756,9 +5987,8 @@ class _DrawerQuickAccess extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEs = p.lang == 'es';
     final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-    final subCol = dark
-        ? Colors.white.withOpacity(0.36)
-        : const Color(0xFF9AA0A8);
+    final subCol =
+        dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
     final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
 
     return _DrawerBlock(
@@ -5816,498 +6046,6 @@ class _DrawerQuickAccess extends StatelessWidget {
   }
 }
 
-// ── Bloco "Sua Atividade" do Drawer ───────────────────────────────────────────
-// Mostra as últimas atividades recentes do usuário no app (IA, Protocolos, etc.)
-// Sempre visível após a primeira ação. Abre _RecentActivitySheet ao tocar.
-class _DrawerActivity extends StatelessWidget {
-  final AppProvider p;
-  final bool dark;
-  final VoidCallback onClose;
-
-  const _DrawerActivity({
-    required this.p,
-    required this.dark,
-    required this.onClose,
-  });
-
-  void _openSheet(BuildContext context) {
-    onClose();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!context.mounted) return;
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (_) => _RecentActivitySheet(dark: dark, lang: p.lang),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<ActivityItem>>(
-      valueListenable: ActivityService.items,
-      builder: (context, items, _) {
-        if (items.isEmpty) return const SizedBox.shrink();
-
-        final isEs = p.lang == 'es';
-        final textCol = dark
-            ? const Color(0xFFEEEEEE)
-            : const Color(0xFF0F1116);
-        final subCol = dark
-            ? Colors.white.withOpacity(0.36)
-            : const Color(0xFF9AA0A8);
-        final divider = dark
-            ? const Color(0xFF1A2E22)
-            : const Color(0xFFF0EDE8);
-        final recent = items.take(3).toList();
-        final total = items.length;
-
-        return _DrawerBlock(
-          dividerColor: divider,
-          children: [
-            // ── Header clicável ─────────────────────────────────────────────
-            _DrawerRow(
-              icon: Icons.history_edu_rounded,
-              iconColor: const Color(0xFF6366F1),
-              title: isEs ? 'Historial de Consultas' : 'Histórico de Consultas',
-              subtitle: isEs
-                  ? '$total ${total == 1 ? 'acción reciente' : 'acciones recientes'}'
-                  : '$total ${total == 1 ? 'ação recente' : 'ações recentes'}',
-              dark: dark,
-              textCol: textCol,
-              subCol: subCol,
-              showDivider: recent.isNotEmpty,
-              onTap: () => _openSheet(context),
-            ),
-            // ── Preview das 3 mais recentes ─────────────────────────────────
-            ...recent.asMap().entries.map((entry) {
-              final idx = entry.key;
-              final item = entry.value;
-              final isLast = idx == recent.length - 1;
-              return _DrawerActivityRow(
-                item: item,
-                lang: p.lang,
-                dark: dark,
-                textCol: textCol,
-                subCol: subCol,
-                showDivider: !isLast,
-                onTap: () => _openSheet(context),
-              );
-            }),
-          ],
-        );
-      },
-    );
-  }
-}
-
-// ── Mini-row de item de atividade no Drawer ────────────────────────────────────
-class _DrawerActivityRow extends StatelessWidget {
-  final ActivityItem item;
-  final String lang;
-  final bool dark;
-  final Color textCol;
-  final Color subCol;
-  final bool showDivider;
-  final VoidCallback onTap;
-
-  const _DrawerActivityRow({
-    required this.item,
-    required this.lang,
-    required this.dark,
-    required this.textCol,
-    required this.subCol,
-    required this.showDivider,
-    required this.onTap,
-  });
-
-  String _timeAgo(DateTime dt, String lang) {
-    final diff = DateTime.now().difference(dt);
-    final isEs = lang == 'es';
-    if (diff.inMinutes < 1) return isEs ? 'ahora' : 'agora';
-    if (diff.inMinutes < 60)
-      return isEs ? 'hace ${diff.inMinutes} min' : 'há ${diff.inMinutes} min';
-    if (diff.inHours < 24)
-      return isEs ? 'hace ${diff.inHours} h' : 'há ${diff.inHours} h';
-    return isEs ? 'hace ${diff.inDays} d' : 'há ${diff.inDays} d';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Color(item.type.colorValue);
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-            child: Row(
-              children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(Icons.circle, size: 8, color: color),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: textCol,
-                        ),
-                      ),
-                      if (item.subtitle.isNotEmpty)
-                        Text(
-                          '${item.type.label(lang)} · ${item.subtitle}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 10.5, color: subCol),
-                        )
-                      else
-                        Text(
-                          item.type.label(lang),
-                          style: TextStyle(fontSize: 10.5, color: subCol),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  _timeAgo(item.timestamp, lang),
-                  style: TextStyle(fontSize: 9.5, color: subCol),
-                ),
-              ],
-            ),
-          ),
-          if (showDivider)
-            Divider(
-              height: 1,
-              indent: 52,
-              color: dark
-                  ? Colors.white.withOpacity(0.06)
-                  : const Color(0xFFEEEEEE),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Bottom Sheet completo de Atividades Recentes ──────────────────────────────
-class _RecentActivitySheet extends StatelessWidget {
-  final bool dark;
-  final String lang;
-  const _RecentActivitySheet({required this.dark, required this.lang});
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs = lang == 'es';
-    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
-    final handle = dark
-        ? Colors.white.withOpacity(0.18)
-        : const Color(0xFFA8B2C1);
-    final title = dark ? Colors.white : const Color(0xFF0F1116);
-    final sub = dark ? Colors.white.withOpacity(0.45) : const Color(0xFF9AA0A8);
-    final div = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFF0F0F0);
-
-    return ValueListenableBuilder<List<ActivityItem>>(
-      valueListenable: ActivityService.items,
-      builder: (context, items, _) {
-        return Container(
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.80,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Handle ──────────────────────────────────────────────────────
-              const SizedBox(height: 10),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: handle,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 14),
-
-              // ── Header ──────────────────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF6366F1).withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(
-                        Icons.history_edu_rounded,
-                        size: 18,
-                        color: Color(0xFF6366F1),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isEs
-                                ? 'Historial de Consultas'
-                                : 'Histórico de Consultas',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              color: title,
-                            ),
-                          ),
-                          Text(
-                            isEs
-                                ? 'Tus últimas acciones en el app'
-                                : 'Suas últimas ações no app',
-                            style: TextStyle(fontSize: 11, color: sub),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (items.isNotEmpty)
-                      TextButton(
-                        onPressed: () async {
-                          await ActivityService.clear();
-                        },
-                        child: Text(
-                          isEs ? 'Limpiar' : 'Limpar',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFFEF4444),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Divider(height: 1, color: div),
-
-              // ── Lista ou empty state ─────────────────────────────────────────
-              if (items.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 48),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.history_toggle_off_rounded,
-                        size: 52,
-                        color: dark ? Colors.white24 : Colors.black12,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        isEs
-                            ? 'Sin actividad reciente'
-                            : 'Sem atividade recente',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: sub,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        isEs
-                            ? 'Consulta protocolos, fármacos o usa la IA'
-                            : 'Consulte protocolos, fármacos ou use a IA',
-                        style: TextStyle(fontSize: 12, color: sub),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                )
-              else
-                Flexible(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.only(bottom: 32),
-                    shrinkWrap: true,
-                    itemCount: items.length,
-                    separatorBuilder: (_, __) =>
-                        Divider(height: 1, indent: 68, color: div),
-                    itemBuilder: (context, i) {
-                      final item = items[i];
-                      final color = Color(item.type.colorValue);
-                      return _ActivityTile(
-                        item: item,
-                        color: color,
-                        lang: lang,
-                        dark: dark,
-                        titleCol: title,
-                        subCol: sub,
-                      );
-                    },
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ── Tile individual no sheet de atividades ─────────────────────────────────────
-class _ActivityTile extends StatelessWidget {
-  final ActivityItem item;
-  final Color color;
-  final String lang;
-  final bool dark;
-  final Color titleCol;
-  final Color subCol;
-
-  const _ActivityTile({
-    required this.item,
-    required this.color,
-    required this.lang,
-    required this.dark,
-    required this.titleCol,
-    required this.subCol,
-  });
-
-  String _timeAgo(DateTime dt) {
-    final diff = DateTime.now().difference(dt);
-    final isEs = lang == 'es';
-    if (diff.inMinutes < 1) return isEs ? 'ahora mismo' : 'agora mesmo';
-    if (diff.inMinutes < 60)
-      return isEs ? 'hace ${diff.inMinutes} min' : 'há ${diff.inMinutes} min';
-    if (diff.inHours < 24)
-      return isEs ? 'hace ${diff.inHours} h' : 'há ${diff.inHours} h';
-    if (diff.inDays == 1) return isEs ? 'ayer' : 'ontem';
-    return isEs ? 'hace ${diff.inDays} días' : 'há ${diff.inDays} dias';
-  }
-
-  // Ícone real por tipo (flutter IconData)
-  IconData get _icon {
-    switch (item.type) {
-      case ActivityType.ia:
-        return Icons.psychology_rounded;
-      case ActivityType.protocolo:
-        return Icons.fact_check_rounded;
-      case ActivityType.farmaco:
-        return Icons.medication_rounded;
-      case ActivityType.calculadora:
-        return Icons.calculate_rounded;
-      case ActivityType.interacao:
-        return Icons.swap_horiz_rounded;
-      case ActivityType.prescricao:
-        return Icons.receipt_long_rounded;
-      case ActivityType.laboratorio:
-        return Icons.biotech_rounded;
-      case ActivityType.caso:
-        return Icons.person_rounded;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-      child: Row(
-        children: [
-          // ── Ícone colorido ──────────────────────────────────────────────────
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color.withOpacity(0.20)),
-            ),
-            child: Icon(_icon, size: 18, color: color),
-          ),
-          const SizedBox(width: 12),
-          // ── Textos ─────────────────────────────────────────────────────────
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
-                    color: titleCol,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.10),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Text(
-                        item.type.label(lang),
-                        style: TextStyle(
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w700,
-                          color: color,
-                        ),
-                      ),
-                    ),
-                    if (item.subtitle.isNotEmpty) ...[
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          item.subtitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 11, color: subCol),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          // ── Timestamp ──────────────────────────────────────────────────────
-          Text(
-            _timeAgo(item.timestamp),
-            style: TextStyle(fontSize: 10, color: subCol),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 // ── Header do app ─────────────────────────────────────────────────────────────
 class _AppHeader extends StatelessWidget {
   final ValueChanged<int> onTabChange;
@@ -6344,70 +6082,68 @@ class _AppHeader extends StatelessWidget {
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 11, 14, 13),
-          child: Row(
-            children: [
-              // Logo clicável
-              GestureDetector(
-                onTap: () => onTabChange(0),
-                child: const BrandMark(small: true),
-              ),
-              const SizedBox(width: 12),
-              // Nome + subtítulo
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      userName.isNotEmpty ? userName : 'MedCases IA',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF00E5FF),
-                        letterSpacing: -0.2,
-                        height: 1.1,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+          child: Row(children: [
+            // Logo clicável
+            GestureDetector(
+              onTap: () => onTabChange(0),
+              child: const BrandMark(small: true),
+            ),
+            const SizedBox(width: 12),
+            // Nome + subtítulo
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    userName.isNotEmpty ? userName : 'MedCases IA',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF00E5FF),
+                      letterSpacing: -0.2,
+                      height: 1.1,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      lang == 'es'
-                          ? 'Apoyo clínico educativo'
-                          : 'Apoio clínico educacional',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white.withOpacity(0.48),
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              // Botão hamburguer — limpo, sem badge de idioma
-              GestureDetector(
-                onTap: () => Scaffold.of(context).openEndDrawer(),
-                child: Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.white.withOpacity(0.07),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.13),
-                      width: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    lang == 'es'
+                        ? 'Apoyo clínico educativo'
+                        : 'Apoio clínico educacional',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.white.withOpacity(0.48),
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.1,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.menu_rounded,
-                    size: 20,
-                    color: Color(0xFFFFE8A6),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Botão hamburguer — limpo, sem badge de idioma
+            GestureDetector(
+              onTap: () => Scaffold.of(context).openEndDrawer(),
+              child: Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white.withOpacity(0.07),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.13),
+                    width: 1,
                   ),
                 ),
+                child: const Icon(
+                  Icons.menu_rounded,
+                  size: 20,
+                  color: Color(0xFFFFE8A6),
+                ),
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
       ),
     );
@@ -6438,101 +6174,76 @@ class _AboutAppSheet extends StatelessWidget {
     final accent = dark ? _kGold : _kGreen;
 
     Widget infoRow(IconData icon, String label, String value) => Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: card,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: bdr),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: accent.withOpacity(0.10),
-              borderRadius: BorderRadius.circular(8),
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+              color: card,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: bdr)),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                  color: accent.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(8)),
+              child: Icon(icon, size: 16, color: accent),
             ),
-            child: Icon(icon, size: 16, color: accent),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w800,
-                    color: accent,
-                    letterSpacing: 0.9,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w600,
-                    color: ttl,
-                    height: 1.3,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(width: 12),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(label,
+                      style: TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w800,
+                          color: accent,
+                          letterSpacing: 0.9)),
+                  const SizedBox(height: 3),
+                  Text(value,
+                      style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w600,
+                          color: ttl,
+                          height: 1.3)),
+                ])),
+          ]),
+        );
 
     Widget textBlock(IconData icon, String label, String value) => Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      decoration: BoxDecoration(
-        color: card,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: bdr),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: accent.withOpacity(0.10),
-              borderRadius: BorderRadius.circular(8),
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+              color: card,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: bdr)),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                  color: accent.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(8)),
+              child: Icon(icon, size: 16, color: accent),
             ),
-            child: Icon(icon, size: 16, color: accent),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w800,
-                    color: accent,
-                    letterSpacing: 0.9,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  value,
-                  style: TextStyle(fontSize: 13, color: sub, height: 1.55),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(width: 12),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(label,
+                      style: TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w800,
+                          color: accent,
+                          letterSpacing: 0.9)),
+                  const SizedBox(height: 5),
+                  Text(value,
+                      style: TextStyle(fontSize: 13, color: sub, height: 1.55)),
+                ])),
+          ]),
+        );
 
     // ── DraggableScrollableSheet garante header sempre fixo no topo ──────────
     // initialChildSize=0.82: ocupa 82% da tela ao abrir
@@ -6562,9 +6273,7 @@ class _AboutAppSheet extends StatelessWidget {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: hdl,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+                        color: hdl, borderRadius: BorderRadius.circular(2)),
                   ),
                 ),
               ),
@@ -6572,37 +6281,30 @@ class _AboutAppSheet extends StatelessWidget {
               // ── Título + botão X — fixo, nunca scrolla ─────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 2, 8, 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        isEs ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
-                        style: TextStyle(
+                child: Row(children: [
+                  Expanded(
+                    child: Text(
+                      isEs ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
+                      style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w900,
                           color: ttl,
-                          letterSpacing: -0.3,
-                        ),
+                          letterSpacing: -0.3),
+                    ),
+                  ),
+                  // Botão fechar — SEMPRE visível no topo direito
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () => Navigator.of(ctx).pop(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Icon(Icons.close_rounded, size: 24, color: sub),
                       ),
                     ),
-                    // Botão fechar — SEMPRE visível no topo direito
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () => Navigator.of(ctx).pop(),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Icon(
-                            Icons.close_rounded,
-                            size: 24,
-                            color: sub,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ]),
               ),
 
               // ── Divisor ────────────────────────────────────────────────
@@ -6620,212 +6322,168 @@ class _AboutAppSheet extends StatelessWidget {
                       padding: const EdgeInsets.all(20),
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
-                        color: card,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: bdr),
-                      ),
-                      child: Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Image.asset(
-                              'assets/icon/app_icon.png',
+                          color: card,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: bdr)),
+                      child: Row(children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(
+                            'assets/icon/app_icon.png',
+                            width: 56,
+                            height: 56,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
                               width: 56,
                               height: 56,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
-                                width: 56,
-                                height: 56,
-                                decoration: BoxDecoration(
+                              decoration: BoxDecoration(
                                   color: _kGreen,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Icon(
-                                  Icons.local_hospital_rounded,
-                                  size: 28,
-                                  color: Colors.white,
-                                ),
-                              ),
+                                  borderRadius: BorderRadius.circular(16)),
+                              child: const Icon(Icons.local_hospital_rounded,
+                                  size: 28, color: Colors.white),
                             ),
                           ),
-                          const SizedBox(width: 14),
-                          Expanded(
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'MedCases Pro',
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                              Text('MedCases Pro',
                                   style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: ttl,
-                                    letterSpacing: -0.4,
-                                  ),
-                                ),
-                                const SizedBox(height: 3),
-                                Text(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                      color: ttl,
+                                      letterSpacing: -0.4)),
+                              const SizedBox(height: 3),
+                              Text(
                                   isEs
                                       ? 'Apoyo clínico educativo'
                                       : 'Apoio clínico educacional',
                                   style: TextStyle(
-                                    fontSize: 12,
-                                    color: sub,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                      fontSize: 12,
+                                      color: sub,
+                                      fontWeight: FontWeight.w500)),
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: accent.withOpacity(0.10),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                      color: accent.withOpacity(0.25)),
                                 ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 3,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: accent.withOpacity(0.10),
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                      color: accent.withOpacity(0.25),
-                                    ),
-                                  ),
-                                  child: Text(
+                                child: Text(
                                     isEs
                                         ? 'Herramienta educativa'
                                         : 'Ferramenta educacional',
                                     style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      color: accent,
-                                      letterSpacing: 0.3,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        color: accent,
+                                        letterSpacing: 0.3)),
+                              ),
+                            ])),
+                      ]),
                     ),
 
                     // Desenvolvedor
                     infoRow(
-                      Icons.person_outline_rounded,
-                      isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
-                      'Bruno Rodrigues de Sousa',
-                    ),
+                        Icons.person_outline_rounded,
+                        isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
+                        'Bruno Rodrigues de Sousa'),
 
                     // Contato
                     infoRow(
-                      Icons.email_outlined,
-                      isEs
-                          ? 'CONTACTO TÉCNICO Y SOPORTE'
-                          : 'CONTATO TÉCNICO E SUPORTE',
-                      'medcasespro@gmail.com',
-                    ),
+                        Icons.email_outlined,
+                        isEs
+                            ? 'CONTACTO TÉCNICO Y SOPORTE'
+                            : 'CONTATO TÉCNICO E SUPORTE',
+                        'medcasespro@gmail.com'),
 
                     // Comitê de Revisão Clínica
                     Container(
                       margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
-                        color: card,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: _kGreenLight.withOpacity(0.35),
+                          color: card,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: _kGreenLight.withOpacity(0.35))),
+                      child: Column(children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: _kGreenLight.withOpacity(dark ? 0.20 : 0.10),
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(12)),
+                          ),
+                          child: Row(children: [
+                            const Icon(Icons.verified_user_rounded,
+                                size: 16, color: _kGreenLight),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                isEs
+                                    ? 'RESPONSABILIDAD TÉCNICA Y REVISIÓN MÉDICA'
+                                    : 'RESPONSABILIDADE TÉCNICA E REVISÃO MÉDICA',
+                                style: const TextStyle(
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: _kGreenLight,
+                                    letterSpacing: 0.8),
+                              ),
+                            ),
+                          ]),
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _kGreenLight.withOpacity(
-                                dark ? 0.20 : 0.10,
-                              ),
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.verified_user_rounded,
-                                  size: 16,
-                                  color: _kGreenLight,
-                                ),
-                                const SizedBox(width: 8),
-                                Flexible(
-                                  child: Text(
-                                    isEs
-                                        ? 'RESPONSABILIDAD TÉCNICA Y REVISIÓN MÉDICA'
-                                        : 'RESPONSABILIDADE TÉCNICA E REVISÃO MÉDICA',
-                                    style: const TextStyle(
-                                      fontSize: 9.5,
-                                      fontWeight: FontWeight.w800,
-                                      color: _kGreenLight,
-                                      letterSpacing: 0.8,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                          child: Text(
+                            isEs
+                                ? 'El contenido científico, los algoritmos de dosificación, las calculadoras '
+                                    'pediátricas y las directrices clínicas incluidos en esta aplicación son '
+                                    'revisados, actualizados y validados de forma continua por el Comitê de '
+                                    'Revisão Clínica MedCases Pro. Este comité está integrado por profesionales '
+                                    'médicos titulados y estudiantes avanzados de medicina, con base en las '
+                                    'directrices internacionales vigentes de la World Allergy Organization (WAO), '
+                                    'UpToDate y comités de pediatría de referencia.'
+                                : 'O conteúdo científico, algoritmos de dosagem, calculadoras pediátricas e '
+                                    'diretrizes clínicas contidos neste aplicativo são revisados, atualizados e '
+                                    'validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, '
+                                    'composto por profissionais médicos diplomados e acadêmicos seniores de '
+                                    'medicina, com base nas diretrizes internacionais atualizadas da World Allergy '
+                                    'Organization (WAO), UpToDate e comitês de pediatria de referência.',
+                            style: TextStyle(
+                                fontSize: 13, color: sub, height: 1.55),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                            child: Text(
-                              isEs
-                                  ? 'El contenido científico, los algoritmos de dosificación, las calculadoras '
-                                        'pediátricas y las directrices clínicas incluidos en esta aplicación son '
-                                        'revisados, actualizados y validados de forma continua por el Comitê de '
-                                        'Revisão Clínica MedCases Pro. Este comité está integrado por profesionales '
-                                        'médicos titulados y estudiantes avanzados de medicina, con base en las '
-                                        'directrices internacionales vigentes de la World Allergy Organization (WAO), '
-                                        'UpToDate y comités de pediatría de referencia.'
-                                  : 'O conteúdo científico, algoritmos de dosagem, calculadoras pediátricas e '
-                                        'diretrizes clínicas contidos neste aplicativo são revisados, atualizados e '
-                                        'validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, '
-                                        'composto por profissionais médicos diplomados e acadêmicos seniores de '
-                                        'medicina, com base nas diretrizes internacionais atualizadas da World Allergy '
-                                        'Organization (WAO), UpToDate e comitês de pediatria de referência.',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: sub,
-                                height: 1.55,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ]),
                     ),
 
                     // Propósito
                     textBlock(
-                      Icons.gavel_rounded,
-                      isEs ? 'PROPÓSITO' : 'PROPÓSITO',
-                      isEs
-                          ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la '
+                        Icons.gavel_rounded,
+                        isEs ? 'PROPÓSITO' : 'PROPÓSITO',
+                        isEs
+                            ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la '
                                 'toma de decisiones clínicas. No reemplaza el juicio clínico del profesional '
                                 'de salud, ni constituye prescripción médica.'
-                          : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada '
+                            : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada '
                                 'de decisão clínica. Não substitui o julgamento clínico do profissional de '
-                                'saúde, nem constitui prescrição médica.',
-                    ),
+                                'saúde, nem constitui prescrição médica.'),
 
                     // Site — BUILD 323 MANDATO 2: in-app WebView
                     GestureDetector(
                       onTap: () => openAcademicSourceSecurely(
-                        context,
-                        isEs
-                            ? 'MedCases Pro — Sitio Web'
-                            : 'MedCases Pro — Site Oficial',
-                        _kSiteUrl,
-                      ),
-                      child: infoRow(
-                        Icons.language_outlined,
-                        isEs ? 'SITIO WEB' : 'SITE',
-                        'promedcases.com',
-                      ),
+                          context,
+                          isEs
+                              ? 'MedCases Pro — Sitio Web'
+                              : 'MedCases Pro — Site Oficial',
+                          _kSiteUrl),
+                      child: infoRow(Icons.language_outlined,
+                          isEs ? 'SITIO WEB' : 'SITE', 'promedcases.com'),
                     ),
 
                     const SizedBox(height: 8),
@@ -6835,10 +6493,9 @@ class _AboutAppSheet extends StatelessWidget {
                       'MedCases Pro © ${DateTime.now().year} — '
                       '${isEs ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}',
                       style: TextStyle(
-                        fontSize: 11,
-                        color: sub.withOpacity(0.6),
-                        fontWeight: FontWeight.w500,
-                      ),
+                          fontSize: 11,
+                          color: sub.withOpacity(0.6),
+                          fontWeight: FontWeight.w500),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -6888,11 +6545,9 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
   Future<void> _save() async {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
-      setState(
-        () => _error = widget.p.lang == 'es'
-            ? 'El nombre no puede estar vacío.'
-            : 'O nome não pode ficar em branco.',
-      );
+      setState(() => _error = widget.p.lang == 'es'
+          ? 'El nombre no puede estar vacío.'
+          : 'O nome não pode ficar em branco.');
       return;
     }
     setState(() {
@@ -6923,14 +6578,12 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
     final bg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final titleColor = dark ? Colors.white : const Color(0xFF0F1116);
     final subColor = dark ? Colors.white54 : const Color(0xFF6B7280);
-    final borderColor = dark
-        ? const Color(0xFF2D3340)
-        : const Color(0xFFE5E7EB);
+    final borderColor =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
 
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         decoration: BoxDecoration(
           color: bg,
@@ -6956,66 +6609,53 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
             const SizedBox(height: 20),
 
             // Título + botão fechar
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFFC5A365).withOpacity(0.15),
-                    border: Border.all(
-                      color: const Color(0xFFC5A365).withOpacity(0.4),
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.person_outline_rounded,
-                    size: 18,
-                    color: Color(0xFFC5A365),
-                  ),
+            Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xFFC5A365).withOpacity(0.15),
+                  border: Border.all(
+                      color: const Color(0xFFC5A365).withOpacity(0.4)),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
+                child: const Icon(Icons.person_outline_rounded,
+                    size: 18, color: Color(0xFFC5A365)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(
                         widget.p.lang == 'es'
                             ? 'Editar perfil'
                             : 'Editar perfil',
                         style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: titleColor,
-                        ),
-                      ),
-                      Text(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w900,
+                            color: titleColor)),
+                    Text(
                         widget.p.lang == 'es'
                             ? 'Tu información profesional'
                             : 'Suas informações profissionais',
                         style: TextStyle(
-                          fontSize: 11,
-                          color: subColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, size: 22, color: subColor),
-                  onPressed: () => Navigator.pop(context),
-                  padding: const EdgeInsets.all(8),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ],
-            ),
+                            fontSize: 11,
+                            color: subColor,
+                            fontWeight: FontWeight.w500)),
+                  ])),
+              IconButton(
+                icon: Icon(Icons.close_rounded, size: 22, color: subColor),
+                onPressed: () => Navigator.pop(context),
+                padding: const EdgeInsets.all(8),
+                visualDensity: VisualDensity.compact,
+              ),
+            ]),
             const SizedBox(height: 24),
 
             // Campo — Nome
             _SheetField(
-              label: widget.p.lang == 'es'
-                  ? 'Nombre completo'
-                  : 'Nome completo',
+              label:
+                  widget.p.lang == 'es' ? 'Nombre completo' : 'Nome completo',
               controller: _nameCtrl,
               icon: Icons.badge_outlined,
               dark: dark,
@@ -7057,83 +6697,68 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
                   color: Colors.red.withOpacity(0.08),
                   border: Border.all(color: Colors.red.withOpacity(0.3)),
                 ),
-                child: Text(
-                  _error!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: Text(_error!,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600)),
               ),
             ],
 
             const SizedBox(height: 20),
 
             // Botões
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _saving ? null : () => Navigator.pop(context),
-                    child: Container(
-                      height: 46,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: borderColor),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        widget.p.lang == 'es' ? 'Cancelar' : 'Cancelar',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: subColor,
-                        ),
-                      ),
+            Row(children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _saving ? null : () => Navigator.pop(context),
+                  child: Container(
+                    height: 46,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: borderColor),
                     ),
+                    alignment: Alignment.center,
+                    child: Text(widget.p.lang == 'es' ? 'Cancelar' : 'Cancelar',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: subColor)),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _saving ? null : _save,
-                    child: Container(
-                      height: 46,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: const Color(0xFF0F1116),
-                        boxShadow: [
-                          BoxShadow(
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: _saving ? null : _save,
+                  child: Container(
+                    height: 46,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color(0xFF0F1116),
+                      boxShadow: [
+                        BoxShadow(
                             color: const Color(0xFF0F1116).withOpacity(0.35),
                             blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: _saving
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Color(0xFFFFE8A6),
-                              ),
-                            )
-                          : Text(
-                              widget.p.lang == 'es' ? 'Guardar' : 'Salvar',
-                              style: const TextStyle(
+                            offset: const Offset(0, 4))
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: _saving
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Color(0xFFFFE8A6)))
+                        : Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar',
+                            style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w900,
-                                color: Color(0xFFFFE8A6),
-                              ),
-                            ),
-                    ),
+                                color: Color(0xFFFFE8A6))),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ]),
           ],
         ),
       ),
@@ -7163,9 +6788,8 @@ class _SheetField extends StatelessWidget {
     final fillColor = dark ? const Color(0xFF252930) : const Color(0xFFF9F9F9);
     final textColor = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
-    final borderColor = dark
-        ? const Color(0xFF2D3340)
-        : const Color(0xFFE5E7EB);
+    final borderColor =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
 
     return TextField(
       controller: controller,
@@ -7175,36 +6799,25 @@ class _SheetField extends StatelessWidget {
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       onSubmitted: onSubmitted,
       style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: textColor,
-      ),
+          fontSize: 14, fontWeight: FontWeight.w600, color: textColor),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          fontSize: 12,
-          color: hintColor,
-          fontWeight: FontWeight.w600,
-        ),
+            fontSize: 12, color: hintColor, fontWeight: FontWeight.w600),
         prefixIcon: Icon(icon, size: 18, color: const Color(0xFFC5A365)),
         filled: true,
         fillColor: fillColor,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: borderColor),
-        ),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: borderColor)),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFC5A365), width: 1.5),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFC5A365), width: 1.5)),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     );
   }
@@ -7232,155 +6845,123 @@ class _AppUpdateDialog extends StatelessWidget {
       backgroundColor: Colors.white,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                gradient: LinearGradient(
-                  colors: [_kDark, Color(0xFF1B3D2A)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          // Header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              gradient: LinearGradient(
+                colors: [_kDark, Color(0xFF1B3D2A)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: _kGold.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.auto_awesome_rounded,
+                      color: _kGoldL, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white),
+                  ),
+                ),
+              ]),
+              const SizedBox(height: 8),
+              Row(children: [
+                if (version.isNotEmpty) ...[
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _kGold.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: _kGold.withOpacity(0.4)),
+                    ),
+                    child: Text('v$version',
+                        style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: _kGoldL)),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                if (date.isNotEmpty)
+                  Text(date,
+                      style: TextStyle(
+                          fontSize: 11, color: Colors.white.withOpacity(0.5))),
+              ]),
+            ]),
+          ),
+          // Lista de novidades
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: _kGold.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.auto_awesome_rounded,
-                          color: _kGoldL,
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      if (version.isNotEmpty) ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _kGold.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: _kGold.withOpacity(0.4)),
-                          ),
-                          child: Text(
-                            'v$version',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              color: _kGoldL,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                      if (date.isNotEmpty)
-                        Text(
-                          date,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white.withOpacity(0.5),
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            // Lista de novidades
-            Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: items
-                      .map(
-                        (item) => Padding(
+                children: items
+                    .map((item) => Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 3),
-                                width: 6,
-                                height: 6,
-                                decoration: const BoxDecoration(
-                                  color: _kGreen,
-                                  shape: BoxShape.circle,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(top: 3),
+                                  width: 6,
+                                  height: 6,
+                                  decoration: const BoxDecoration(
+                                      color: _kGreen, shape: BoxShape.circle),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF1A1D23),
-                                    height: 1.4,
-                                  ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(item,
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFF1A1D23),
+                                          height: 1.4)),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
+                              ]),
+                        ))
+                    .toList(),
               ),
             ),
-            // Botão
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _kDark,
-                    foregroundColor: _kGoldL,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Entendido!',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
-                  ),
+          ),
+          // Botão
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _kDark,
+                  foregroundColor: _kGoldL,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
                 ),
+                child: const Text('Entendido!',
+                    style:
+                        TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
               ),
             ),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }
@@ -7443,11 +7024,9 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
   Future<void> _send() async {
     final msg = _msgCtrl.text.trim();
     if (msg.isEmpty) {
-      setState(
-        () => _error = _isEs
-            ? 'Escribe tu mensaje antes de enviar.'
-            : 'Escreva sua mensagem antes de enviar.',
-      );
+      setState(() => _error = _isEs
+          ? 'Escribe tu mensaje antes de enviar.'
+          : 'Escreva sua mensagem antes de enviar.');
       return;
     }
     setState(() {
@@ -7455,18 +7034,14 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
       _error = null;
     });
     try {
-      final userName = widget.p.userName.isNotEmpty
-          ? widget.p.userName
-          : 'Usuário';
-      final userEmail = widget.p.userEmail.isNotEmpty
-          ? widget.p.userEmail
-          : 'sem-email';
-      final stars = _rating > 0
-          ? '${'⭐' * _rating} ($_rating/5)'
-          : 'Não avaliado';
-      final subject = Uri.encodeComponent(
-        '[MedCases Feedback] $_category — $userName',
-      );
+      final userName =
+          widget.p.userName.isNotEmpty ? widget.p.userName : 'Usuário';
+      final userEmail =
+          widget.p.userEmail.isNotEmpty ? widget.p.userEmail : 'sem-email';
+      final stars =
+          _rating > 0 ? '${'⭐' * _rating} ($_rating/5)' : 'Não avaliado';
+      final subject =
+          Uri.encodeComponent('[MedCases Feedback] $_category — $userName');
       final body = Uri.encodeComponent(
         '━━━━━━━━━━━━━━━━━━━━━━━\n'
         'FEEDBACK & SUPORTE — MedCases Pro\n'
@@ -7543,48 +7118,38 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: dark
-                      ? const Color(0xFF48484A)
-                      : const Color(0xFFD1D5DB),
+                  color:
+                      dark ? const Color(0xFF48484A) : const Color(0xFFD1D5DB),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
 
             // Título + botão fechar
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF7C3AED).withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.support_agent_rounded,
-                    color: Color(0xFF7C3AED),
-                    size: 20,
-                  ),
+            Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF7C3AED).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
+                child: const Icon(Icons.support_agent_rounded,
+                    color: Color(0xFF7C3AED), size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
                   child: Text(
-                    _isEs ? 'Feedback y Soporte' : 'Feedback e Suporte',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: textCol,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, size: 22, color: subCol),
-                  onPressed: () => Navigator.pop(context),
-                  padding: const EdgeInsets.all(8),
-                  visualDensity: VisualDensity.compact,
-                ),
-              ],
-            ),
+                _isEs ? 'Feedback y Soporte' : 'Feedback e Suporte',
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.w800, color: textCol),
+              )),
+              IconButton(
+                icon: Icon(Icons.close_rounded, size: 22, color: subCol),
+                onPressed: () => Navigator.pop(context),
+                padding: const EdgeInsets.all(8),
+                visualDensity: VisualDensity.compact,
+              ),
+            ]),
             const SizedBox(height: 4),
             Text(
               _isEs
@@ -7600,10 +7165,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                   ? 'Evaluación'
                   : 'Avaliação', // BUILD 334-FORENSE: hardcode PT corrigido
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: textCol,
-              ),
+                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
             ),
             const SizedBox(height: 10),
             Row(
@@ -7618,8 +7180,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                       color: filled
                           ? const Color(0xFFFBBF24)
                           : (dark
-                                ? const Color(0xFF48484A)
-                                : const Color(0xFFD1D5DB)),
+                              ? const Color(0xFF48484A)
+                              : const Color(0xFFD1D5DB)),
                       size: 34,
                     ),
                   ),
@@ -7632,10 +7194,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             Text(
               _isEs ? 'Categoría' : 'Categoria',
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: textCol,
-              ),
+                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
             ),
             const SizedBox(height: 10),
             Wrap(
@@ -7647,10 +7206,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                   onTap: () => setState(() => _category = cat['label']!),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 7,
-                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
                       color: selected
                           ? const Color(0xFF7C3AED).withOpacity(0.12)
@@ -7667,9 +7224,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                       '${cat['icon']}  ${cat['label']}',
                       style: TextStyle(
                         fontSize: 13,
-                        fontWeight: selected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
+                        fontWeight:
+                            selected ? FontWeight.w700 : FontWeight.w500,
                         color: selected ? const Color(0xFF7C3AED) : textCol,
                       ),
                     ),
@@ -7683,10 +7239,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             Text(
               _isEs ? 'Mensaje' : 'Mensagem',
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: textCol,
-              ),
+                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -7708,10 +7261,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF7C3AED),
-                    width: 1.5,
-                  ),
+                  borderSide:
+                      const BorderSide(color: Color(0xFF7C3AED), width: 1.5),
                 ),
                 contentPadding: const EdgeInsets.all(14),
               ),
@@ -7720,25 +7271,16 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             // Erro
             if (_error != null) ...[
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.error_outline_rounded,
-                    size: 14,
-                    color: Color(0xFFEF4444),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      _error!,
+              Row(children: [
+                const Icon(Icons.error_outline_rounded,
+                    size: 14, color: Color(0xFFEF4444)),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(_error!,
                       style: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFEF4444),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                          fontSize: 12, color: Color(0xFFEF4444))),
+                ),
+              ]),
             ],
 
             const SizedBox(height: 20),
@@ -7746,71 +7288,59 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
             // Site link — BUILD 323 MANDATO 2: in-app WebView
             GestureDetector(
               onTap: () => openAcademicSourceSecurely(
-                context,
-                _isEs
-                    ? 'MedCases Pro — Sitio Web'
-                    : 'MedCases Pro — Site Oficial',
-                _kSiteUrl,
-              ),
+                  context,
+                  _isEs
+                      ? 'MedCases Pro — Sitio Web'
+                      : 'MedCases Pro — Site Oficial',
+                  _kSiteUrl),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 12,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: surfCol,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: dark
-                        ? const Color(0xFF48484A)
-                        : const Color(0xFFD1D5DB),
+                      color: dark
+                          ? const Color(0xFF48484A)
+                          : const Color(0xFFD1D5DB)),
+                ),
+                child: Row(children: [
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF7C3AED).withOpacity(0.10),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.language_outlined,
+                        size: 16, color: Color(0xFF7C3AED)),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF7C3AED).withOpacity(0.10),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.language_outlined,
-                        size: 16,
-                        color: Color(0xFF7C3AED),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
+                  const SizedBox(width: 12),
+                  Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _isEs ? 'SITIO WEB' : 'SITE',
-                            style: const TextStyle(
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF7C3AED),
-                              letterSpacing: 0.9,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            'promedcases.com',
-                            style: TextStyle(
-                              fontSize: 13.5,
-                              fontWeight: FontWeight.w600,
-                              color: textCol,
-                            ),
-                          ),
-                        ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _isEs ? 'SITIO WEB' : 'SITE',
+                        style: const TextStyle(
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF7C3AED),
+                            letterSpacing: 0.9),
                       ),
-                    ),
-                    Icon(Icons.open_in_new_rounded, size: 16, color: subCol),
-                  ],
-                ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'promedcases.com',
+                        style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                            color: textCol),
+                      ),
+                    ],
+                  )),
+                  Icon(Icons.open_in_new_rounded, size: 16, color: subCol),
+                ]),
               ),
             ),
             const SizedBox(height: 12),
@@ -7824,12 +7354,10 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF7C3AED),
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: const Color(
-                    0xFF7C3AED,
-                  ).withOpacity(0.5),
+                  disabledBackgroundColor:
+                      const Color(0xFF7C3AED).withOpacity(0.5),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                      borderRadius: BorderRadius.circular(14)),
                   elevation: 0,
                 ),
                 child: _sending
@@ -7837,18 +7365,14 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
+                            color: Colors.white, strokeWidth: 2),
                       )
                     : Text(
                         _isEs
                             ? 'Abrir correo para enviar'
                             : 'Abrir e-mail para enviar', // BUILD 334-FORENSE
                         style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
+                            fontSize: 15, fontWeight: FontWeight.w700),
                       ),
               ),
             ),
@@ -7911,26 +7435,20 @@ class _SuccessView extends StatelessWidget {
           // Ícone de sucesso
           Container(
             width: 72,
-            height: 72,
+            height: 71,
             decoration: BoxDecoration(
               color: const Color(0xFF7C3AED).withOpacity(0.12),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.mark_email_read_rounded,
-              color: Color(0xFF7C3AED),
-              size: 36,
-            ),
+            child: const Icon(Icons.mark_email_read_rounded,
+                color: Color(0xFF7C3AED), size: 36),
           ),
           const SizedBox(height: 20),
 
           Text(
             isEs ? '¡Listo!' : 'Pronto!',
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: textCol,
-            ),
+                fontSize: 22, fontWeight: FontWeight.w900, color: textCol),
           ),
           const SizedBox(height: 8),
           Padding(
@@ -7954,18 +7472,15 @@ class _SuccessView extends StatelessWidget {
                 backgroundColor: const Color(0xFF7C3AED),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                    borderRadius: BorderRadius.circular(14)),
                 elevation: 0,
               ),
               child: Text(
                 isEs
                     ? 'Cerrar'
                     : 'Fechar', // BUILD 334-FORENSE: hardcode PT corrigido
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
               ),
             ),
           ),
@@ -7980,6 +7495,12 @@ class _SuccessView extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────────────────────────────
 // ABRE O PAINEL DE NOTAS COMO BOTTOM SHEET (igual a Recentes / Favoritos)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES NOTAS + ÁUDIO — FULLSCREEN WORKSPACE V1
+// Home NOTAS -> MainShell tab 9. Reuses the productive Notes owner.
+// Audio remains fail-closed: no real-patient remote callsite is wired here.
 // ─────────────────────────────────────────────────────────────────────────────
 class _NotesAudioWorkspace extends StatefulWidget {
   const _NotesAudioWorkspace({required this.onBack});
@@ -8003,8 +7524,12 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
     final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
     final subnav = dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
     final border = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
-    final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
-    final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF52606D);
+    final text = dark
+        ? const Color(0xFFF8FAFC)
+        : const Color(0xFF111827);
+    final sub = dark
+        ? const Color(0xFFC6CED9)
+        : const Color(0xFF52606D);
     final accent = dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
 
     return Material(
@@ -8167,7 +7692,8 @@ class _NotesAudioWorkspaceTab extends StatelessWidget {
                     style: TextStyle(
                       color: selected ? text : sub,
                       fontSize: 11,
-                      fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                      fontWeight:
+                          selected ? FontWeight.w800 : FontWeight.w600,
                     ),
                   ),
                 ],
@@ -8224,7 +7750,8 @@ class _NotesAudioWorkspaceAudio extends StatelessWidget {
     required String mode,
     required bool longForm,
   }) async {
-    final accepted = await ClinicalLongFormRemoteAudioConsentUi.showIfNeeded(
+    final accepted =
+        await ClinicalLongFormRemoteAudioConsentUi.showIfNeeded(
       context,
       language: isEs ? 'es' : 'pt',
     );
@@ -8484,78 +8011,78 @@ class _NotesAudioModeCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.fromLTRB(12, 11, 10, 11),
-        decoration: BoxDecoration(
-          color: surface,
-          borderRadius: BorderRadius.circular(8),
-          border: null,
-        ),
-        child: Row(
-          children: [
-            SizedBox(width: 32, child: Icon(icon, size: 19, color: accent)),
-            const SizedBox(width: 7),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: text,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w800,
-                    ),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: null,
+      ),
+      child: Row(
+        children: [
+          SizedBox(width: 32, child: Icon(icon, size: 19, color: accent)),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: text,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w800,
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: sub,
-                      fontSize: 10.5,
-                      height: 1.3,
-                      fontWeight: FontWeight.w500,
-                    ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: sub,
+                    fontSize: 10.5,
+                    height: 1.3,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: accent.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(99),
-                        ),
-                        child: Text(
-                          badge,
-                          style: TextStyle(
-                            color: accent,
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w800,
-                          ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(99),
+                      ),
+                      child: Text(
+                        badge,
+                        style: TextStyle(
+                          color: accent,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: Text(
-                          lockedLabel,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: sub,
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w600,
-                          ),
+                    ),
+                    const SizedBox(width: 7),
+                    Expanded(
+                      child: Text(
+                        lockedLabel,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: sub,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Icon(Icons.chevron_right_rounded, size: 18, color: sub),
-          ],
-        ),
+          ),
+          Icon(Icons.chevron_right_rounded, size: 18, color: sub),
+        ],
+      ),
       ),
     );
   }
@@ -8637,37 +8164,41 @@ void showNotesSheet(BuildContext context) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => DraggableScrollableSheet(
-      initialChildSize: 0.82,
-      minChildSize: 0.50,
+      initialChildSize: 0.52,
+      minChildSize: 0.36,
       maxChildSize: 0.92,
       expand: false,
       builder: (ctx, scrollController) {
         final dark = Theme.of(ctx).brightness == Brightness.dark;
+        final panelBg =
+            dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+        final surfaceStrong =
+            dark ? const Color(0xFF2D3340) : const Color(0xFFE9EDF2);
+        final border = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
         return Container(
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: dark ? const Color(0xFF161616) : const Color(0xFFFFFFFF),
+            color: panelBg,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            border: Border.all(color: border, width: 0.8),
           ),
-          child: Column(
-            children: [
-              // Pill handle
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                width: 38,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: dark ? Colors.white24 : Colors.black26,
-                  borderRadius: BorderRadius.circular(4),
-                ),
+          child: Column(children: [
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 9, 0, 5),
+              width: 38,
+              height: 4,
+              decoration: BoxDecoration(
+                color: surfaceStrong,
+                borderRadius: BorderRadius.circular(99),
               ),
-              Expanded(
-                child: _NotesPanelContent(
-                  onClose: () => Navigator.pop(ctx),
-                  scrollController: scrollController,
-                ),
+            ),
+            Expanded(
+              child: _NotesPanelContent(
+                onClose: () => Navigator.pop(ctx),
+                scrollController: scrollController,
               ),
-            ],
-          ),
+            ),
+          ]),
         );
       },
     ),
@@ -8725,36 +8256,38 @@ class _SideNotesPanelState extends State<_SideNotesPanel>
     // Largura do painel: 88% em mobile, máx 400px
     final panelW = (size.width * 0.88).clamp(0.0, 400.0);
 
-    return Stack(
-      children: [
-        // ── Overlay escuro quando aberto ──────────────────────────────────────
-        if (widget.isOpen)
-          FadeTransition(
-            opacity: _fadeAnim,
-            child: GestureDetector(
-              onTap: widget.onToggle,
-              child: Container(color: Colors.black.withOpacity(0.45)),
+    return Stack(children: [
+      // ── Overlay escuro quando aberto ──────────────────────────────────────
+      if (widget.isOpen)
+        FadeTransition(
+          opacity: _fadeAnim,
+          child: GestureDetector(
+            onTap: widget.onToggle,
+            child: Container(
+              color: Colors.black.withOpacity(0.45),
             ),
           ),
-
-        // ── Painel deslizante (slide da esquerda) ─────────────────────────────
-        AnimatedBuilder(
-          animation: _slideAnim,
-          builder: (_, __) {
-            final offset = (1.0 - _slideAnim.value) * -(panelW + 8);
-            return Positioned(
-              left: offset,
-              top: 0,
-              bottom: 0,
-              width: panelW,
-              child: _NotesPanelContent(onClose: widget.onToggle),
-            );
-          },
         ),
 
-        // Botão tab lateral removido — acesso via botão Notas na HomeScreen
-      ],
-    );
+      // ── Painel deslizante (slide da esquerda) ─────────────────────────────
+      AnimatedBuilder(
+        animation: _slideAnim,
+        builder: (_, __) {
+          final offset = (1.0 - _slideAnim.value) * -(panelW + 8);
+          return Positioned(
+            left: offset,
+            top: 0,
+            bottom: 0,
+            width: panelW,
+            child: _NotesPanelContent(
+              onClose: widget.onToggle,
+            ),
+          );
+        },
+      ),
+
+      // Botão tab lateral removido — acesso via botão Notas na HomeScreen
+    ]);
   }
 }
 
@@ -8842,247 +8375,239 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          NoteEditorSheet(uid: uid, note: note, dark: dark, lang: lang),
+      builder: (_) => NoteEditorSheet(
+        uid: uid,
+        note: note,
+        dark: dark,
+        lang: lang,
+        onDelete: note == null || (note['id'] as String? ?? '').isEmpty
+            ? null
+            : () => _deleteNote(note['id'] as String),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // NOTES V3.0 — PAINEL MINIMALISTA SEM CARDS ANINHADOS
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    final panelBg = dark ? const Color(0xFF161616) : const Color(0xFFFFFFFF);
-    final searchBg = dark ? const Color(0xFF222222) : Colors.white;
-    final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE0E0E0);
-    final textCol = dark ? Colors.white : const Color(0xFF0F1116);
-    final subCol = dark ? Colors.white54 : Colors.black45;
+    final panelBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
 
     return Material(
       color: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(color: panelBg),
+      child: ColoredBox(
+        color: panelBg,
         child: Column(
           children: [
-            // ── Header do painel ───────────────────────────────────────────────
             if (!widget.workspaceMode)
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: dark
-                        ? [
-                            const Color(0xFF0F1116),
-                            const Color(0xFF2D3340),
-                            const Color(0xFF1F3A28),
-                          ]
-                        : [
-                            const Color(0xFF0F1116),
-                            const Color(0xFF1B3D2A),
-                            const Color(0xFF10B981),
-                          ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 4, 14, 10),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: widget.onClose,
+                    tooltip: isEs ? 'Volver' : 'Voltar',
+                    icon: const Icon(Icons.chevron_left_rounded),
+                    iconSize: 25,
+                    color: textCol,
+                    padding: const EdgeInsets.all(8),
+                    constraints: const BoxConstraints(
+                      minWidth: 44,
+                      minHeight: 44,
+                    ),
                   ),
-                ),
-                child: SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                  const SizedBox(width: 2),
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            // Botão fechar painel
-                            GestureDetector(
-                              onTap: widget.onClose,
-                              child: Container(
-                                width: 34,
-                                height: 34,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white.withOpacity(0.10),
-                                ),
-                                child: const Icon(
-                                  Icons.chevron_left_rounded,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    isEs
-                                        ? 'Mis Anotaciones'
-                                        : 'Minhas Anotações',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.white,
-                                      letterSpacing: -0.3,
-                                    ),
-                                  ),
-                                  Text(
-                                    _allNotes.isEmpty
-                                        ? (isEs
-                                              ? 'Sin anotaciones'
-                                              : 'Nenhuma anotação')
-                                        : '${_allNotes.length} ${isEs ? 'anotación${_allNotes.length != 1 ? "es" : ""}' : 'anotaç${_allNotes.length != 1 ? "ões" : "ão"}'}',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.white.withOpacity(0.55),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // Botão nova nota
-                            GestureDetector(
-                              onTap: () => _openEditor(),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 7,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  color: const Color(0xFF10B981),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF10B981,
-                                      ).withOpacity(0.45),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.add_rounded,
-                                      color: Colors.white,
-                                      size: 15,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      isEs ? 'Nueva' : 'Nova',
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        // Busca
-                        Container(
-                          height: 38,
-                          decoration: BoxDecoration(
-                            color: searchBg,
-                            borderRadius: BorderRadius.circular(11),
-                            border: Border.all(color: borderCol, width: 0.8),
+                        Text(
+                          isEs ? 'Mis Anotaciones' : 'Minhas Anotações',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: textCol,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.2,
                           ),
-                          child: Row(
-                            children: [
-                              const SizedBox(width: 10),
-                              Icon(
-                                Icons.search_rounded,
-                                size: 15,
-                                color: subCol,
-                              ),
-                              const SizedBox(width: 7),
-                              Expanded(
-                                child: TextField(
-                                  controller: _searchCtrl,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: textCol,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: isEs
-                                        ? 'Buscar...'
-                                        : 'Buscar anotações...',
-                                    hintStyle: TextStyle(
-                                      fontSize: 12,
-                                      color: subCol,
-                                    ),
-                                    border: InputBorder.none,
-                                    isDense: true,
-                                    contentPadding: EdgeInsets.zero,
-                                  ),
-                                ),
-                              ),
-                              if (_search.isNotEmpty)
-                                GestureDetector(
-                                  onTap: () => _searchCtrl.clear(),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Icon(
-                                      Icons.close_rounded,
-                                      size: 14,
-                                      color: subCol,
-                                    ),
-                                  ),
-                                ),
-                            ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _allNotes.isEmpty
+                              ? (isEs ? 'Sin anotaciones' : 'Nenhuma anotação')
+                              : '${_allNotes.length} ${isEs ? 'anotación${_allNotes.length != 1 ? "es" : ""}' : 'anotaç${_allNotes.length != 1 ? "ões" : "ão"}'}',
+                          style: TextStyle(
+                            color: subCol,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  TextButton.icon(
+                    onPressed: () => _openEditor(),
+                    style: TextButton.styleFrom(
+                      foregroundColor: accent,
+                      backgroundColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 10,
+                      ),
+                      minimumSize: const Size(44, 44),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    icon: const Icon(Icons.add_rounded, size: 19),
+                    label: Text(
+                      isEs ? 'Nueva' : 'Nova',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // MEDCASES_NOTES_SEARCH_BAR_VISUAL_V1_R1
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: SizedBox(
+                height: 40,
+                child: TextField(
+                  controller: _searchCtrl,
+                  style: TextStyle(
+                    color: textCol,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  decoration: InputDecoration(
+                    hintText:
+                        isEs ? 'Buscar anotaciones...' : 'Buscar anotações...',
+                    hintStyle: TextStyle(
+                      color: subCol,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      size: 16,
+                      color: subCol,
+                    ),
+                    prefixIconConstraints: const BoxConstraints(
+                      minWidth: 40,
+                      minHeight: 40,
+                    ),
+                    suffixIcon: _search.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              _searchCtrl.clear();
+                              setState(() => _search = '');
+                            },
+                            tooltip: isEs ? 'Limpiar' : 'Limpar',
+                            visualDensity: VisualDensity.compact,
+                            icon: Icon(
+                              Icons.close_rounded,
+                              size: 16,
+                              color: subCol,
+                            ),
+                          )
+                        : null,
+                    filled: true,
+                    fillColor: surface,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.fromLTRB(0, 10, 8, 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: borderCol,
+                        width: 0.7,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: borderCol,
+                        width: 0.7,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: accent,
+                        width: 1,
+                      ),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: borderCol,
+                        width: 0.7,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() => _search = value.trim().toLowerCase());
+                  },
                 ),
               ),
-
-            // ── Lista de notas ─────────────────────────────────────────────────
+            ),
+            Container(height: 0.7, color: borderCol),
             Expanded(
               child: _loading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF10B981),
-                        strokeWidth: 2,
+                  ? Center(
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          color: accent,
+                          strokeWidth: 2,
+                        ),
                       ),
                     )
                   : _filtered.isEmpty
-                  ? _PanelEmptyState(
-                      isEs: isEs,
-                      dark: dark,
-                      onNew: () => _openEditor(),
-                    )
-                  : ListView.separated(
-                      controller: widget.scrollController,
-                      padding: EdgeInsets.fromLTRB(
-                        12,
-                        12,
-                        12,
-                        widget.workspaceMode ? 112 : 24,
-                      ),
-                      itemCount: _filtered.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
-                      itemBuilder: (ctx, i) {
-                        final note = _filtered[i];
-                        return _PanelNoteCard(
-                          note: note,
-                          dark: dark,
+                      ? _PanelEmptyState(
                           isEs: isEs,
-                          onTap: () => _openEditor(note: note),
-                          onDelete: () =>
-                              _deleteNote(note['id'] as String? ?? ''),
-                        );
-                      },
-                    ),
+                          dark: dark,
+                          onNew: () => _openEditor(),
+                        )
+                      : ListView.separated(
+                          controller: widget.scrollController,
+                          padding: EdgeInsets.fromLTRB(
+                            16,
+                            4,
+                            16,
+                            widget.workspaceMode ? 112 : 18,
+                          ),
+                          itemCount: _filtered.length,
+                          separatorBuilder: (_, __) => Divider(
+                            height: 1,
+                            thickness: 0.7,
+                            color: borderCol,
+                          ),
+                          itemBuilder: (ctx, i) {
+                            final note = _filtered[i];
+                            return _PanelNoteCard(
+                              note: note,
+                              dark: dark,
+                              isEs: isEs,
+                              onTap: () => _openEditor(note: note),
+                              onDelete: () => _deleteNote(
+                                note['id'] as String? ?? '',
+                              ),
+                            );
+                          },
+                        ),
             ),
           ],
         ),
@@ -9098,74 +8623,77 @@ class _PanelEmptyState extends StatelessWidget {
   final bool isEs;
   final bool dark;
   final VoidCallback onNew;
-  const _PanelEmptyState({
-    required this.isEs,
-    required this.dark,
-    required this.onNew,
-  });
+  const _PanelEmptyState(
+      {required this.isEs, required this.dark, required this.onNew});
 
   @override
   Widget build(BuildContext context) {
-    final subCol = dark ? Colors.white30 : Colors.black26;
+    // NOTES V3.1 — ESTADO VAZIO MINIMALISTA
+    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
+
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.edit_note_rounded,
-            size: 48,
-            color: dark
-                ? const Color(0xFF10B981).withOpacity(0.50)
-                : const Color(0xFF10B981).withOpacity(0.35),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            isEs ? 'Sin anotaciones aún' : 'Nenhuma anotação ainda',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: dark ? Colors.white54 : Colors.black45,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.note_alt_outlined,
+              size: 30,
+              color: accent,
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            isEs ? 'Toca "Nueva" para comenzar' : 'Toque "Nova" para começar',
-            style: TextStyle(fontSize: 12, color: subCol),
-          ),
-          const SizedBox(height: 20),
-          GestureDetector(
-            onTap: onNew,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF10B981),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF10B981).withOpacity(0.40),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.add_rounded, color: Colors.white, size: 16),
-                  const SizedBox(width: 6),
-                  Text(
-                    isEs ? 'Nueva anotación' : 'Nova anotação',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+            const SizedBox(height: 10),
+            Text(
+              isEs ? 'Ninguna anotación' : 'Nenhuma anotação',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: textCol,
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 6),
+            Text(
+              isEs
+                  ? 'Crea una nota para guardar información importante.'
+                  : 'Crie uma nota para guardar informações importantes.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: subCol,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w500,
+                height: 1.35,
+              ),
+            ),
+            const SizedBox(height: 14),
+            TextButton.icon(
+              onPressed: onNew,
+              style: TextButton.styleFrom(
+                foregroundColor: accent,
+                backgroundColor: Colors.transparent,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 10,
+                ),
+                minimumSize: const Size(44, 44),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              icon: const Icon(
+                Icons.add_rounded,
+                size: 18,
+              ),
+              label: Text(
+                isEs ? 'Nueva anotación' : 'Nova anotação',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -9179,57 +8707,48 @@ class _NoteColor2 {
   final Color light;
   final Color dark;
   final Color border;
-  const _NoteColor2({
-    required this.hex,
-    required this.light,
-    required this.dark,
-    required this.border,
-  });
+  const _NoteColor2(
+      {required this.hex,
+      required this.light,
+      required this.dark,
+      required this.border});
 }
 
 const _panelNoteColors = [
   _NoteColor2(
-    hex: '#FFFEF0',
-    light: Color(0xFFFFFEF0),
-    dark: Color(0xFF2A2800),
-    border: Color(0xFFE8E0A0),
-  ),
+      hex: '#FFFEF0',
+      light: Color(0xFFFFFEF0),
+      dark: Color(0xFF2A2800),
+      border: Color(0xFFE8E0A0)),
   _NoteColor2(
-    hex: '#F0FFF4',
-    light: Color(0xFFF0FFF4),
-    dark: Color(0xFF002A0F),
-    border: Color(0xFFA0DEB8),
-  ),
+      hex: '#F0FFF4',
+      light: Color(0xFFF0FFF4),
+      dark: Color(0xFF002A0F),
+      border: Color(0xFFA0DEB8)),
   _NoteColor2(
-    hex: '#F0F4FF',
-    light: Color(0xFFF0F4FF),
-    dark: Color(0xFF00102A),
-    border: Color(0xFFA0B8E8),
-  ),
+      hex: '#F0F4FF',
+      light: Color(0xFFF0F4FF),
+      dark: Color(0xFF00102A),
+      border: Color(0xFFA0B8E8)),
   _NoteColor2(
-    hex: '#FFF0F4',
-    light: Color(0xFFFFF0F4),
-    dark: Color(0xFF2A0010),
-    border: Color(0xFFE8A0B8),
-  ),
+      hex: '#FFF0F4',
+      light: Color(0xFFFFF0F4),
+      dark: Color(0xFF2A0010),
+      border: Color(0xFFE8A0B8)),
   _NoteColor2(
-    hex: '#FFF6F0',
-    light: Color(0xFFFFF6F0),
-    dark: Color(0xFF2A1200),
-    border: Color(0xFFE8C0A0),
-  ),
+      hex: '#FFF6F0',
+      light: Color(0xFFFFF6F0),
+      dark: Color(0xFF2A1200),
+      border: Color(0xFFE8C0A0)),
   _NoteColor2(
-    hex: '#F6F0FF',
-    light: Color(0xFFF6F0FF),
-    dark: Color(0xFF1A0028),
-    border: Color(0xFFC0A0E8),
-  ),
+      hex: '#F6F0FF',
+      light: Color(0xFFF6F0FF),
+      dark: Color(0xFF1A0028),
+      border: Color(0xFFC0A0E8)),
 ];
 
-_NoteColor2 _panelColorFromHex(String hex) => _panelNoteColors.firstWhere(
-  (c) => c.hex == hex,
-  orElse: () => _panelNoteColors[0],
-);
+_NoteColor2 _panelColorFromHex(String hex) => _panelNoteColors
+    .firstWhere((c) => c.hex == hex, orElse: () => _panelNoteColors[0]);
 
 class _PanelNoteCard extends StatelessWidget {
   final Map<String, dynamic> note;
@@ -9262,93 +8781,100 @@ class _PanelNoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // NOTES V3.0 — ITEM MINIMALISTA COM MARCADOR SEMÂNTICO
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
+    final deleteCol = dark ? const Color(0xFFF28B82) : const Color(0xFFB42318);
+
     final hex = note['color'] as String? ?? '#FFFEF0';
     final nc = _panelColorFromHex(hex);
-    final cardBg = dark ? nc.dark : nc.light;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subCol = dark ? Colors.white54 : Colors.black45;
-    final title = note['title'] as String? ?? '';
-    final content = note['content'] as String? ?? '';
-    final dateStr = _formatDate(note['updatedAt'] ?? note['createdAt']);
+    final noteAccent = nc.border;
 
-    return GestureDetector(
+    final title = (note['title'] as String? ?? '').trim();
+    final content = (note['content'] as String? ?? '').trim();
+    final dateStr = _formatDate(
+      note['updatedAt'] ?? note['createdAt'],
+    );
+    final displayTitle =
+        title.isEmpty ? (isEs ? 'Sin título' : 'Sem título') : title;
+
+    return InkWell(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-        decoration: BoxDecoration(
-          color: cardBg,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: nc.border.withOpacity(0.70), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(dark ? 0.25 : 0.07),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Container(
+              width: 3,
+              height: content.isEmpty ? 38 : 52,
+              decoration: BoxDecoration(
+                color: noteAccent,
+                borderRadius: BorderRadius.circular(99),
+              ),
+            ),
+            const SizedBox(width: 13),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (title.isNotEmpty) ...[
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: textCol,
-                      ),
+                  Text(
+                    displayTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: textCol,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w800,
                     ),
-                    const SizedBox(height: 3),
-                  ],
-                  if (content.isNotEmpty)
+                  ),
+                  if (content.isNotEmpty) ...[
+                    const SizedBox(height: 4),
                     Text(
                       content,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11,
                         color: subCol,
-                        height: 1.4,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        height: 1.3,
                       ),
                     ),
+                  ],
                   if (dateStr.isNotEmpty) ...[
                     const SizedBox(height: 5),
                     Text(
                       dateStr,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 10,
-                        color: dark ? Colors.white30 : Colors.black26,
+                        color: subCol,
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ],
               ),
             ),
-            // Botão deletar
-            GestureDetector(
-              onTap: () {
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: () {
                 showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
-                    backgroundColor: dark
-                        ? const Color(0xFF252930)
-                        : Colors.white,
+                    backgroundColor: surface,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     title: Text(
                       isEs ? 'Eliminar nota' : 'Excluir anotação',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: dark ? Colors.white : const Color(0xFF1A1D23),
+                        color: textCol,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                     content: Text(
@@ -9356,16 +8882,20 @@ class _PanelNoteCard extends StatelessWidget {
                           ? '¿Eliminar esta nota?'
                           : 'Deseja excluir esta anotação?',
                       style: TextStyle(
-                        fontSize: 13,
-                        color: dark ? Colors.white54 : Colors.black54,
+                        color: subCol,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
                         child: Text(
-                          isEs ? 'Cancelar' : 'Cancelar',
-                          style: const TextStyle(color: Colors.grey),
+                          'Cancelar',
+                          style: TextStyle(
+                            color: subCol,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       TextButton(
@@ -9373,11 +8903,11 @@ class _PanelNoteCard extends StatelessWidget {
                           Navigator.pop(context);
                           onDelete();
                         },
-                        child: const Text(
-                          'Excluir',
+                        child: Text(
+                          isEs ? 'Eliminar' : 'Excluir',
                           style: TextStyle(
-                            color: Color(0xFFE53935),
-                            fontWeight: FontWeight.w700,
+                            color: deleteCol,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
@@ -9385,13 +8915,12 @@ class _PanelNoteCard extends StatelessWidget {
                   ),
                 );
               },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 6, top: 2),
-                child: Icon(
-                  Icons.delete_outline_rounded,
-                  size: 17,
-                  color: dark ? Colors.white24 : Colors.black26,
-                ),
+              visualDensity: VisualDensity.compact,
+              tooltip: isEs ? 'Eliminar' : 'Excluir',
+              icon: Icon(
+                Icons.delete_outline_rounded,
+                color: deleteCol,
+                size: 19,
               ),
             ),
           ],
@@ -9401,22 +8930,9 @@ class _PanelNoteCard extends StatelessWidget {
   }
 }
 
-// ── BUILD 327: Bloco offline unificado ────────────────────────────────────
-// Fusão do antigo _OfflineDrawerCard (switch Modo sin conexión) +
-// _CalcuOfflineStatusCard (versão da base, Actualizar, Limpiar cache).
-//
-// ESTRATÉGIA App Store:
-//   • Não exibe rótulo "Calculadora" — controles de atualização da base ficam
-//     discretamente integrados ao bloco "Modo sin conexión" já aprovado.
-//   • Não exibe contagem de arquivos ("37 arquivos em cache") nem tempo
-//     relativo ("Agora mismo") — remove evidências de download dinâmico.
-//   • Exibe apenas "Versão X" — string inócua que não levanta suspeitas.
-//
-// REATIVIDADE:
-//   • StatefulWidget escuta OfflineCalculatorCacheService.stateStream
-//     via StreamSubscription — localVersion atualiza em tempo real sem reiniciar.
-//   • Botões "Actualizar" e "Limpiar cache" disparam forceUpdate/clearCache
-//     e o estado muda reativamente via stateStream.
+// ── MEDCASES_OFFLINE_MINIMAL_CACHE_REFRESH_V1_R2 ─────────────────────────────────────────────
+// Contrato visual: somente Ativar/Desativar Offline + Limpar cache.
+// "Limpar cache" limpa/recria a base offline da Calculadora e solicita reload.
 class _OfflineDrawerCard extends StatefulWidget {
   final AppProvider p;
   final bool dark;
@@ -9427,46 +8943,21 @@ class _OfflineDrawerCard extends StatefulWidget {
 }
 
 class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
-  static const _kBlue = Color(0xFF1D4ED8);
-  static const _kBlueLt = Color(0xFFEFF6FF);
+  // MEDCASES_OFFLINE_MINIMAL_CACHE_REFRESH_V1_R2
+  bool _clearing = false;
 
-  /// Fallback build number shown when the local manifest has no version yet.
-  /// Kept in sync with pubspec.yaml version field (major.minor.patch+BUILD).
-  static const _kAppBuild = '1641';
+  Future<void> _doClear(BuildContext ctx, bool isEs) async {
+    if (_clearing) return;
+    setState(() => _clearing = true);
 
-  // ── Estado reativo do serviço de cache offline ───────────────────────────
-  late CalcuCacheState _calcState;
-  StreamSubscription<CalcuCacheState>? _calcSub;
-
-  // ── Estado local dos botões (feedback assíncrono) ────────────────────────
-  bool _syncing = false; // true enquanto forceUpdate() está em andamento
-  bool _clearing = false; // true enquanto clearCache() está em andamento
-
-  @override
-  void initState() {
-    super.initState();
-    _calcState = OfflineCalculatorCacheService.instance.state;
-    _calcSub = OfflineCalculatorCacheService.instance.stateStream.listen((s) {
-      if (mounted) setState(() => _calcState = s);
-    });
-  }
-
-  @override
-  void dispose() {
-    _calcSub?.cancel();
-    super.dispose();
-  }
-
-  // ── Actualizar: sincronização assíncrona com feedback ────────────────────
-  Future<void> _doUpdate(BuildContext ctx, AppProvider p, bool isEs) async {
-    if (_syncing || _clearing) return;
-    setState(() => _syncing = true);
     try {
-      // Dispara ambos os gatilhos em paralelo (AppProvider + CalcuService)
-      await Future.wait([
-        p.cacheAllDataForOffline(),
-        if (!kIsWeb) OfflineCalculatorCacheService.instance.forceUpdate(),
-      ]);
+      if (!kIsWeb) {
+        await OfflineCalculatorCacheService.instance.clearCache();
+        await OfflineCalculatorCacheService.instance.forceUpdate();
+      }
+
+      CalculadoraScreen.requestCacheRefresh();
+
       if (!mounted) return;
       ScaffoldMessenger.of(ctx)
         ..clearSnackBars()
@@ -9474,46 +8965,16 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
           SnackBar(
             content: Text(
               isEs
-                  ? '✅ Base de datos actualizada con éxito'
-                  : '✅ Base de dados atualizada com sucesso',
+                  ? 'Caché de la calculadora borrada y actualizada'
+                  : 'Cache da calculadora limpo e atualizado',
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
             backgroundColor: const Color(0xFF1D4ED8),
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 3),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
           ),
         );
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(ctx)
-        ..clearSnackBars()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              isEs ? '⚠️ Error al actualizar: $e' : '⚠️ Erro ao atualizar: $e',
-              style: const TextStyle(fontSize: 12),
-            ),
-            backgroundColor: const Color(0xFFB91C1C),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 4),
-          ),
-        );
-    } finally {
-      if (mounted) setState(() => _syncing = false);
-    }
-  }
-
-  // ── Limpiar cache: limpeza assíncrona com feedback ───────────────────────
-  Future<void> _doClear(BuildContext ctx, bool isEs) async {
-    if (_clearing || _syncing) return;
-    setState(() => _clearing = true);
-    try {
-      if (!kIsWeb) {
-        await OfflineCalculatorCacheService.instance.clearCache();
-      }
       if (!mounted) return;
       ScaffoldMessenger.of(ctx)
         ..clearSnackBars()
@@ -9521,27 +8982,8 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
           SnackBar(
             content: Text(
               isEs
-                  ? '🧹 Caché local limpiado correctamente'
-                  : '🧹 Cache local limpo com sucesso',
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-            backgroundColor: const Color(0xFF374151),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 3),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(ctx)
-        ..clearSnackBars()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              isEs ? '⚠️ Error al limpiar: $e' : '⚠️ Erro ao limpar: $e',
-              style: const TextStyle(fontSize: 12),
+                  ? 'No se pudo actualizar la caché de la calculadora'
+                  : 'Não foi possível atualizar o cache da calculadora',
             ),
             backgroundColor: const Color(0xFFB91C1C),
             behavior: SnackBarBehavior.floating,
@@ -9553,22 +8995,6 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
     }
   }
 
-  String _progressLabel(double prog, String lang) {
-    if (prog < 0.45)
-      return lang == 'es'
-          ? '📦 Guardando fármacos (501)…'
-          : '📦 Salvando fármacos (501)…';
-    if (prog < 0.75)
-      return lang == 'es'
-          ? '📋 Guardando protocolos…'
-          : '📋 Salvando protocolos…';
-    if (prog < 0.95)
-      return lang == 'es'
-          ? '🩺 Guardando casos clínicos…'
-          : '🩺 Salvando casos clínicos…';
-    return lang == 'es' ? '✅ Finalizando…' : '✅ Finalizando…';
-  }
-
   @override
   Widget build(BuildContext context) {
     final p = widget.p;
@@ -9576,389 +9002,48 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
     final isEs = p.lang == 'es';
     final offline = p.offlineMode;
     final caching = p.offlineCaching;
-    final progress = p.offlineProgress;
+    final textCol = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final subCol = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
 
-    // ── CalcuService: estado reativo ─────────────────────────────────────
-    final calcActive = _calcState.isActive; // baixando ou pausado
-    final calcVersion = _calcState.localVersion; // ex: "290" ou null
-
-    final cardBg = dark
-        ? (offline ? _kBlue.withOpacity(0.18) : const Color(0xFF1A2030))
-        : (offline ? _kBlueLt : Colors.white);
-    final cardBorder = offline
-        ? _kBlue.withOpacity(dark ? 0.5 : 0.35)
-        : (dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE8ECEF));
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: cardBg,
-          border: Border.all(color: cardBorder, width: 1.2),
+    return _DrawerBlock(
+      dividerColor: divider,
+      children: [
+        _DrawerRow(
+          icon: offline ? Icons.offline_bolt_rounded : Icons.cloud_off_outlined,
+          iconColor: const Color(0xFF1D4ED8),
+          title: isEs ? 'Modo sin conexión' : 'Modo offline',
+          dark: dark,
+          textCol: textCol,
+          subCol: subCol,
+          trailing: _OnOffToggle(value: offline),
+          onTap: () {
+            if (caching || _clearing) return;
+            p.setOfflineMode(!offline);
+          },
         ),
-        child: Column(
-          children: [
-            // ── Linha principal: ícone + texto + toggle ──────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-              child: Row(
-                children: [
-                  // Ícone animado (base de dados caching)
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: caching
-                        ? SizedBox(
-                            key: const ValueKey('loading'),
-                            width: 36,
-                            height: 36,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                CircularProgressIndicator(
-                                  value: progress,
-                                  strokeWidth: 2.5,
-                                  color: _kBlue,
-                                  backgroundColor: _kBlue.withOpacity(0.15),
-                                ),
-                                Text(
-                                  '${(progress * 100).toInt()}',
-                                  style: const TextStyle(
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w900,
-                                    color: _kBlue,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Container(
-                            key: const ValueKey('icon'),
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: offline
-                                  ? _kBlue.withOpacity(0.15)
-                                  : (dark
-                                        ? Colors.white.withOpacity(0.07)
-                                        : const Color(0xFFF0F4F8)),
-                              border: Border.all(
-                                color: offline
-                                    ? _kBlue.withOpacity(0.45)
-                                    : Colors.transparent,
-                              ),
-                            ),
-                            child: Icon(
-                              offline
-                                  ? Icons.wifi_off_rounded
-                                  : Icons.download_for_offline_outlined,
-                              size: 18,
-                              color: offline
-                                  ? _kBlue
-                                  : (dark
-                                        ? Colors.white54
-                                        : const Color(0xFF6B7280)),
-                            ),
-                          ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // Texto principal + versão compacta da base
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isEs ? 'Modo sin conexión' : 'Modo offline',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: offline
-                                ? _kBlue
-                                : (dark
-                                      ? Colors.white70
-                                      : const Color(0xFF374151)),
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        // BUILD 327: subtítulo neutro — sem tempo relativo nem contagem
-                        Text(
-                          caching
-                              ? (isEs
-                                    ? 'Guardando base de datos…'
-                                    : 'Salvando base de dados…')
-                              : offline
-                              ? (isEs
-                                    ? 'Base guardada localmente'
-                                    : 'Base salva localmente')
-                              : (isEs
-                                    ? 'Guardar toda la base local'
-                                    : 'Salvar toda a base localmente'),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: offline
-                                ? _kBlue.withOpacity(0.7)
-                                : (dark
-                                      ? Colors.white38
-                                      : const Color(0xFF9CA3AF)),
-                          ),
-                        ),
-                        // BUILD 328: versão dinâmica — manifest local OU build do app
-                        // Sempre visível quando offline (sem a condição calcVersion!=null)
-                        if (offline && !caching) ...[
-                          const SizedBox(height: 3),
-                          Text(
-                            // calcVersion vem do manifest sincronizado; fallback = build do app
-                            '${isEs ? 'Versión' : 'Versão'} ${calcVersion ?? _kAppBuild}',
-                            style: TextStyle(
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w600,
-                              color: dark
-                                  ? Colors.white38
-                                  : const Color(0xFF9CA3AF),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-
-                  // Toggle on/off
-                  GestureDetector(
-                    onTap: caching ? null : () => p.setOfflineMode(!offline),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      width: 44,
-                      height: 26,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(13),
-                        color: offline
-                            ? _kBlue
-                            : (dark
-                                  ? Colors.white.withOpacity(0.15)
-                                  : const Color(0xFFD1D5DB)),
-                      ),
-                      child: AnimatedAlign(
-                        duration: const Duration(milliseconds: 250),
-                        alignment: offline
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child: Container(
-                          margin: const EdgeInsets.all(3),
-                          width: 20,
-                          height: 20,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // ── Barra de progresso da base (só durante caching) ──────
-            if (caching)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        minHeight: 4,
-                        backgroundColor: _kBlue.withOpacity(0.15),
-                        valueColor: const AlwaysStoppedAnimation(_kBlue),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      _progressLabel(progress, p.lang),
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        color: _kBlue.withOpacity(0.75),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            // ── Chips de conteúdo (só quando offline ativo e base pronta) ─
-            if (offline && !caching) ...[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                child: Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  children: [
-                    _OfflineChip(
-                      label: isEs ? '501 fármacos' : '501 fármacos',
-                      icon: Icons.medication_rounded,
-                    ),
-                    _OfflineChip(
-                      label: isEs ? 'Protocolos' : 'Protocolos',
-                      icon: Icons.assignment_rounded,
-                    ),
-                    _OfflineChip(
-                      label: isEs ? 'Casos clínicos' : 'Casos clínicos',
-                      icon: Icons.cases_rounded,
-                    ),
-                    _OfflineChip(
-                      label: isEs ? 'PEWS · Doses' : 'PEWS · Doses',
-                      icon: Icons.child_care_rounded,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-
-            // ── BUILD 328: Botões reativos — Actualizar + Limpiar cache ─────
-            // Visíveis: offline ativo E serviço CalcuCache não está baixando.
-            // _syncing/_clearing: feedback imediato sem bloquear a UI thread.
-            if (offline && !caching && !calcActive)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                child: Row(
-                  children: [
-                    // ── Actualizar base ──────────────────────────────────
-                    GestureDetector(
-                      onTap: (_syncing || _clearing)
-                          ? null
-                          : () => _doUpdate(context, p, isEs),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 11,
-                          vertical: 7,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9),
-                          color: _syncing
-                              ? _kBlue.withOpacity(0.18)
-                              : _kBlue.withOpacity(0.10),
-                          border: Border.all(
-                            color: _syncing
-                                ? _kBlue.withOpacity(0.55)
-                                : _kBlue.withOpacity(0.30),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Spinner mini enquanto sincronizando, ícone normal caso contrário
-                            _syncing
-                                ? const SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1.8,
-                                      color: _kBlue,
-                                    ),
-                                  )
-                                : const Icon(
-                                    Icons.sync_rounded,
-                                    size: 12,
-                                    color: _kBlue,
-                                  ),
-                            const SizedBox(width: 5),
-                            Text(
-                              _syncing
-                                  ? (isEs ? 'Sincronizando…' : 'Sincronizando…')
-                                  : (isEs ? 'Actualizar' : 'Atualizar'),
-                              style: const TextStyle(
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                                color: _kBlue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    // ── Limpiar cache ────────────────────────────────────
-                    GestureDetector(
-                      onTap: (_clearing || _syncing)
-                          ? null
-                          : () => _doClear(context, isEs),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 11,
-                          vertical: 7,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9),
-                          color: _clearing
-                              ? (dark
-                                    ? Colors.white.withOpacity(0.10)
-                                    : const Color(0xFFE5E7EB))
-                              : (dark
-                                    ? Colors.white.withOpacity(0.05)
-                                    : const Color(0xFFF3F4F6)),
-                          border: Border.all(
-                            color: dark
-                                ? Colors.white.withOpacity(
-                                    _clearing ? 0.20 : 0.10,
-                                  )
-                                : (_clearing
-                                      ? const Color(0xFF9CA3AF)
-                                      : const Color(0xFFD1D5DB)),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _clearing
-                                ? SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1.8,
-                                      color: dark
-                                          ? Colors.white54
-                                          : const Color(0xFF6B7280),
-                                    ),
-                                  )
-                                : Icon(
-                                    Icons.delete_outline_rounded,
-                                    size: 12,
-                                    color: dark
-                                        ? Colors.white54
-                                        : const Color(0xFF6B7280),
-                                  ),
-                            const SizedBox(width: 5),
-                            Text(
-                              _clearing
-                                  ? (isEs ? 'Limpiando…' : 'Limpando…')
-                                  : (isEs ? 'Limpiar cache' : 'Limpar cache'),
-                              style: TextStyle(
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w600,
-                                color: dark
-                                    ? Colors.white54
-                                    : const Color(0xFF6B7280),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
+        _DrawerRow(
+          icon: Icons.cleaning_services_outlined,
+          iconColor: const Color(0xFF64748B),
+          title: _clearing
+              ? (isEs ? 'Limpiando…' : 'Limpando…')
+              : (isEs ? 'Limpiar caché' : 'Limpar cache'),
+          dark: dark,
+          textCol: textCol,
+          subCol: subCol,
+          trailing: _clearing
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 1.6),
+                )
+              : const Icon(Icons.refresh_rounded, size: 18),
+          onTap: () {
+            if (_clearing) return;
+            _doClear(context, isEs);
+          },
         ),
-      ),
+      ],
     );
   }
 }
@@ -10021,39 +9106,6 @@ class _DeletingAccountOverlay extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _OfflineChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  const _OfflineChip({required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: const Color(0xFF1D4ED8).withOpacity(0.10),
-        border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.25)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 10, color: const Color(0xFF1D4ED8)),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF1D4ED8),
-            ),
-          ),
-        ],
       ),
     );
   }

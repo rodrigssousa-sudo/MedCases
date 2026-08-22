@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
 // Build 187: Gray Screen Fix — Web usa HtmlElementView/iframe; iOS/Android mantém WebView nativo.
 // dart:io Platform removido — usa kIsWeb para guards de plataforma.
 // BUILD 240: OfflineCalculatorCacheService resolve URL local antes de carregar WebView.
 // BUILD 283: allowFileAccess + allowFileAccessFromFileURLs via AndroidWebViewController
 //            para resolver net::ERR_ACCESS_DENIED ao carregar file:// offline cache.
-import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
+import 'package:flutter/foundation.dart'
+    show ValueNotifier, debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -186,6 +190,15 @@ class CalculadoraScreen extends StatefulWidget {
 
   const CalculadoraScreen({super.key, this.initialUrl});
 
+  // MEDCASES_OFFLINE_MINIMAL_CACHE_REFRESH_V1_R2
+  static final ValueNotifier<int> cacheRefreshGeneration =
+      ValueNotifier<int>(0);
+  static int _webViewCacheClearedGeneration = 0;
+
+  static void requestCacheRefresh() {
+    cacheRefreshGeneration.value += 1;
+  }
+
   @override
   State<CalculadoraScreen> createState() => _CalculadoraScreenState();
 }
@@ -199,7 +212,187 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   bool _webviewReady = false;
   // Build 187: URL da calculadora — compartilhada entre Web (iframe) e native (WebView)
   // Build 189: pode ser sobrescrita por initialUrl (ExternalToolButton deep link)
-  late final String _webUrl;
+  late String _webUrl;
+
+  // MEDCASES_PATIENT_CONTEXT_SESSION_BRIDGE_V1_B_R0_R1
+  // Snapshot efêmero por abertura da calculadora.
+  // Nunca envia patientId, nome, prontuário, e-mail ou medicações.
+  late final Map<String, String> _calculatorPatientPayload;
+  bool _calculatorExitInProgress = false;
+
+  String _normalizeCalculatorSex(String raw) {
+    final v = raw.trim().toLowerCase();
+    if (v == 'f' || v.startsWith('fem')) return 'F';
+    if (v == 'm' || v.startsWith('mas')) return 'M';
+    return '';
+  }
+
+  bool _hasAnyQueryAlias(
+    Map<String, String> params,
+    List<String> aliases,
+  ) {
+    return aliases.any(
+      (key) => (params[key] ?? '').trim().isNotEmpty,
+    );
+  }
+
+  String _withPatientContext(
+    String rawUrl,
+    AppProvider provider,
+  ) {
+    final parsed = Uri.tryParse(rawUrl);
+    if (parsed == null) return rawUrl;
+
+    final params = <String, String>{...parsed.queryParameters};
+    final patient = provider.patient;
+
+    void addIfMissing(
+      String canonical,
+      List<String> aliases,
+      String rawValue,
+    ) {
+      final value = rawValue.trim();
+      if (value.isEmpty) return;
+      if (_hasAnyQueryAlias(params, aliases)) return;
+      params[canonical] = value;
+    }
+
+    // Precedência absoluta: payload explícito do deeplink > AppProvider.
+    addIfMissing('idade', const ['idade', 'age', 'edad'], patient.age);
+    addIfMissing('peso', const ['peso', 'weight'], patient.weight);
+    addIfMissing('altura', const ['altura', 'height'], patient.height);
+    addIfMissing(
+      'creatinina',
+      const ['creatinina', 'creatinine', 'cr'],
+      patient.creatinine,
+    );
+
+    final calculatedClcr = provider.clcr ?? '';
+    addIfMissing('clcr', const ['clcr', 'clearance'], calculatedClcr);
+
+    final hasBasePatient = patient.age.trim().isNotEmpty ||
+        patient.weight.trim().isNotEmpty ||
+        patient.height.trim().isNotEmpty ||
+        patient.creatinine.trim().isNotEmpty ||
+        calculatedClcr.trim().isNotEmpty;
+
+    // Evita enviar o sexo default do provider quando não há paciente clínico.
+    if (hasBasePatient &&
+        !_hasAnyQueryAlias(params, const ['sexo', 'sex', 'gender'])) {
+      final sex = _normalizeCalculatorSex(patient.sex);
+      if (sex.isNotEmpty) params['sexo'] = sex;
+    }
+
+    return parsed.replace(queryParameters: params).toString();
+  }
+
+  Map<String, String> _patientPayloadFromUrl(String rawUrl) {
+    final parsed = Uri.tryParse(rawUrl);
+    if (parsed == null) return <String, String>{};
+
+    const aliases = <String, String>{
+      'age': 'idade',
+      'edad': 'idade',
+      'sex': 'sexo',
+      'gender': 'sexo',
+      'weight': 'peso',
+      'height': 'altura',
+      'cr': 'creatinina',
+      'creatinine': 'creatinina',
+      'egfr': 'tfg',
+      'gestante': 'pregnant',
+      'embarazo': 'pregnant',
+      'hemodialise': 'hemodialysis',
+      'dialysis': 'hemodialysis',
+    };
+
+    const accepted = <String>{
+      'lang', 'idioma', 'modulo',
+      'peso', 'altura', 'idade', 'creatinina', 'clcr', 'sexo',
+      'tfg', 'pregnant', 'hemodialysis',
+      'ph', 'pco2', 'hco3', 'be', 'na', 'cl', 'gluc', 'ca', 'bun', 'alb',
+      'pas', 'col', 'qt', 'fc',
+      'bili', 'inr', 'ast', 'alt', 'plat',
+      'k', 'mg', 'kdigo', 'child_pugh', 'chads_vasc', 'has_bled', 'ascvd',
+    };
+
+    final payload = <String, String>{};
+    for (final entry in parsed.queryParameters.entries) {
+      final canonical = aliases[entry.key] ?? entry.key;
+      final value = entry.value.trim();
+      if (accepted.contains(canonical) && value.isNotEmpty) {
+        payload.putIfAbsent(canonical, () => value);
+      }
+    }
+    return payload;
+  }
+
+
+  // MEDCASES_CALCULATOR_THEME_SYNC_V2_B_R0
+  String _withCalculatorTheme(String rawUrl, String theme) {
+    final parsed = Uri.tryParse(rawUrl);
+    if (parsed == null) return rawUrl;
+    final params = <String, String>{
+      ...parsed.queryParameters,
+      'theme': theme,
+    };
+    return parsed.replace(queryParameters: params).toString();
+  }
+
+  // MEDCASES_OFFLINE_MINIMAL_CACHE_REFRESH_V1_R2
+  String _withCacheRefreshToken(String rawUrl, int generation) {
+    if (generation <= 0) return rawUrl;
+    final parsed = Uri.tryParse(rawUrl);
+    if (parsed == null) return rawUrl;
+    final params = <String, String>{
+      ...parsed.queryParameters,
+      '_mc_refresh': generation.toString(),
+    };
+    return parsed.replace(queryParameters: params).toString();
+  }
+
+  Future<void> _clearNativeWebViewCacheIfNeeded(int generation) async {
+    if (kIsWeb ||
+        generation <= CalculadoraScreen._webViewCacheClearedGeneration) {
+      return;
+    }
+    await _controller.clearCache();
+    CalculadoraScreen._webViewCacheClearedGeneration = generation;
+  }
+
+  void _onCalculatorCacheRefreshRequested() {
+    if (!mounted) return;
+    unawaited(_reloadAfterExternalCacheRefresh());
+  }
+
+  Future<void> _reloadAfterExternalCacheRefresh() async {
+    if (!mounted) return;
+    final generation = CalculadoraScreen.cacheRefreshGeneration.value;
+
+    if (kIsWeb) {
+      final refreshed = _withCacheRefreshToken(_webUrl, generation);
+      if (!mounted) return;
+      setState(() => _webUrl = refreshed);
+      return;
+    }
+
+    try {
+      await _clearNativeWebViewCacheIfNeeded(generation);
+      final localUrl =
+          await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
+      final targetUrl =
+          _withCacheRefreshToken(localUrl ?? _webUrl, generation);
+      if (!mounted) return;
+      _webviewReady = false;
+      await _controller.loadRequest(Uri.parse(targetUrl));
+    } catch (e) {
+      debugPrint('[CalculadoraScreen][cache-refresh] reload error: $e');
+      if (!mounted) return;
+      final fallback = _withCacheRefreshToken(_webUrl, generation);
+      await _controller.loadRequest(Uri.parse(fallback));
+    }
+  }
+
 
   @override
   void initState() {
@@ -211,11 +404,23 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     _dark           = p.darkMode;
     // Build 189: initialUrl tem prioridade sobre URL padrão do provider.
     // ExternalToolLinkEngine já injeta lang+tab+q — não sobrescrever.
-    _webUrl = widget.initialUrl ?? '$_kBaseUrl?lang=$langParam';
+    final themeParam = _dark ? 'dark' : 'light';
+    final initialWebUrl = _withCalculatorTheme(
+      widget.initialUrl ?? '$_kBaseUrl?lang=$langParam',
+      themeParam,
+    );
+    _webUrl = _withCacheRefreshToken(
+      initialWebUrl,
+      CalculadoraScreen.cacheRefreshGeneration.value,
+    );
+    _webUrl = _withPatientContext(_webUrl, p);
+    _calculatorPatientPayload = _patientPayloadFromUrl(_webUrl);
 
     // Fix#6: escuta mudanças de tema do AppProvider — injeta tema na WebView
     // imediatamente após toggle, sem necessidade de recarregar a página.
     p.addListener(_onProviderChanged);
+    CalculadoraScreen.cacheRefreshGeneration
+        .addListener(_onCalculatorCacheRefreshRequested);
 
     // Build 187: Web não tem suporte a WebViewWidget — usa iframe (calcu_web.dart).
     // iOS/Android continuam com WebViewController nativo.
@@ -251,6 +456,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             // Fix#6: injeta tema assim que a página termina de carregar
             _webviewReady = true;
             await _injectTheme();
+            await _injectPatientContext();
           },
           onWebResourceError: (WebResourceError error) {
             // BUILD 283: loga erros de WebView no Logcat com código e URL exatos.
@@ -302,6 +508,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (!mounted) return;
         try {
+          await _clearNativeWebViewCacheIfNeeded(
+            CalculadoraScreen.cacheRefreshGeneration.value,
+          );
           final localUrl = await OfflineCalculatorCacheService.instance
               .buildLocalUrl(_webUrl);
           if (localUrl != null && mounted) {
@@ -327,17 +536,137 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     if (!kIsWeb && _webviewReady) _injectTheme();
   }
 
-  // Fix#6: injeta window.updateMedCasesTheme('dark'|'light') na WebView nativa
+  // MEDCASES_CALCULATOR_THEME_BRIDGE_V1_B_R0
+  // Receiver produtivo da calculadora: window.MedCasesBridge.setTheme('dark'|'light').
+  // Mantém fallback para updateMedCasesTheme durante compatibilidade retroativa.
   Future<void> _injectTheme() async {
     if (kIsWeb) return;
     final theme = _dark ? 'dark' : 'light';
     try {
       await _controller.runJavaScript(
-        "if(typeof window.updateMedCasesTheme==='function'){window.updateMedCasesTheme('$theme');}",
+        """
+(function(theme) {
+  var attempts = 0;
+
+  function syncThemeDom() {
+    var isLight = theme === 'light';
+    var root = document.documentElement;
+    var body = document.body;
+
+    if (root) {
+      root.classList.toggle('light-mode', isLight);
+      root.classList.toggle('theme-light', isLight);
+      root.setAttribute('data-theme', theme);
+      root.setAttribute('data-current-theme', theme);
+      root.style.colorScheme = theme;
+    }
+
+    if (body) {
+      body.classList.toggle('light-mode', isLight);
+      body.classList.toggle('theme-light', isLight);
+      body.setAttribute('data-theme', theme);
+      body.setAttribute('data-current-theme', theme);
+    }
+  }
+
+  function applyTheme() {
+    // MEDCASES_CALCULATOR_THEME_SYNC_V2_B_R0
+    syncThemeDom();
+
+    if (window.MedCasesBridge &&
+        typeof window.MedCasesBridge.setTheme === 'function') {
+      window.MedCasesBridge.setTheme(theme);
+      syncThemeDom();
+      return;
+    }
+    if (typeof window.updateMedCasesTheme === 'function') {
+      window.updateMedCasesTheme(theme);
+      syncThemeDom();
+      return;
+    }
+    if (attempts < 12) {
+      attempts += 1;
+      setTimeout(applyTheme, 100);
+    }
+  }
+
+  applyTheme();
+})('$theme');
+""",
       );
     } catch (e) {
       debugPrint('[CalculadoraScreen][theme] inject error: $e');
     }
+  }
+
+
+  Future<void> _injectPatientContext() async {
+    if (kIsWeb || _calculatorPatientPayload.isEmpty) return;
+
+    final payloadJson = jsonEncode(_calculatorPatientPayload);
+    try {
+      await _controller.runJavaScript(
+        r"""
+(function(payload) {
+  var attempts = 0;
+  function apply() {
+    if (window.MedCasesPatientSession &&
+        typeof window.MedCasesPatientSession.hydrate === 'function') {
+      window.MedCasesPatientSession.hydrate(payload, 'flutter-onPageFinished');
+      return;
+    }
+    if (attempts < 30) {
+      attempts += 1;
+      setTimeout(apply, 100);
+    }
+  }
+  apply();
+})(PAYLOAD_JSON);
+""".replaceFirst('PAYLOAD_JSON', payloadJson),
+      );
+    } catch (e) {
+      debugPrint('[CalculadoraScreen][patient-context] inject error: $e');
+    }
+  }
+
+  Future<void> _clearCalculatorSession() async {
+    if (kIsWeb) return;
+    try {
+      await _controller.runJavaScript(
+        r"""
+(function() {
+  if (window.MedCasesPatientSession &&
+      typeof window.MedCasesPatientSession.clear === 'function') {
+    window.MedCasesPatientSession.clear('flutter-exit');
+    return;
+  }
+  try { localStorage.removeItem('medcases_hm_patient_v1'); } catch (_) {}
+  try { localStorage.removeItem('pacienteAtual'); } catch (_) {}
+  try { sessionStorage.removeItem('medcases_hm_patient_v1'); } catch (_) {}
+  try { sessionStorage.removeItem('pacienteAtual'); } catch (_) {}
+  window.hmPatientState = {};
+  window.patientData = {};
+})();
+""",
+      );
+    } catch (e) {
+      debugPrint('[CalculadoraScreen][patient-context] clear error: $e');
+    }
+  }
+
+  Future<void> _exitCalculator() async {
+    if (_calculatorExitInProgress) return;
+    _calculatorExitInProgress = true;
+
+    await _clearCalculatorSession();
+
+    if (!mounted) return;
+    final nav = Navigator.of(context);
+    if (nav.canPop()) {
+      nav.pop();
+      return;
+    }
+    _calculatorExitInProgress = false;
   }
 
   /// Detecta iOS sem usar dart:io Platform (compatível com Flutter Web).
@@ -348,10 +677,14 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   @override
   void dispose() {
+    // MEDCASES_PATIENT_CONTEXT_SESSION_BRIDGE_V1_B_R0_R1: best-effort em gesto/back do SO.
+    if (!kIsWeb) unawaited(_clearCalculatorSession());
     // Fix#6: remove listener para evitar memory leak
     if (mounted) {
       context.read<AppProvider>().removeListener(_onProviderChanged);
     }
+    CalculadoraScreen.cacheRefreshGeneration
+        .removeListener(_onCalculatorCacheRefreshRequested);
     super.dispose();
   }
 
@@ -361,7 +694,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     // SUPER ORDEM VISUAL 09: barBg/borderCol/textPrimary/textSecondary removidos
     // — o AppBar agora usa gradiente roxo const; só scaffoldBg permanece.
     // Fix#6: _dark agora é mutável — atualizado pelo listener do AppProvider.
-    final Color scaffoldBg  = _dark ? const Color(0xFF0F091E) : const Color(0xFFF8F9FA);
+    final Color scaffoldBg  = _dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -375,20 +708,27 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF3B0764), // roxo profundo
-                  Color(0xFF7E22CE), // roxo vibrante (idêntico ao card Home)
-                  Color(0xFFA855F7), // roxo claro
-                ],
-              ),
-              border: Border(
-                bottom: BorderSide(color: Color(0xFF4C1D95), width: 0.5),
-              ),
-            ),
+      // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R8
+            // MEDCASES_FARMACOS_WEBVIEW_TOPBAR_V1_B_R0
+            decoration: Theme.of(context).brightness == Brightness.dark
+                ? const BoxDecoration(
+                    color: Color(0xFF1A1D23),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color(0xFF2D3340),
+                        width: 0.5,
+                      ),
+                    ),
+                  )
+                : const BoxDecoration(
+                    color: Color(0xFFECF1F3),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color(0xFFD8E0E7),
+                        width: 0.5,
+                      ),
+                    ),
+                  ),
             child: SafeArea(
               bottom: false,
               child: Padding(
@@ -397,13 +737,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                   alignment: Alignment.center,
                   children: [
                     // CENTER: título isolado e absolutamente centrado
-                    const Text(
-                      'CALCULADORA CLÍNICA',
+                    Text(
+                      'FÁRMACOS',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        letterSpacing: -0.2,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).brightness == Brightness.dark ? (Colors.white) : const Color(0xFF05070A),
+                        letterSpacing: 0.4,
                       ),
                     ),
                     // LEFT: botão de voltar — canPop guard (SUPER ORDEM 313)
@@ -412,14 +752,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          final nav = Navigator.of(context);
-                          if (nav.canPop()) nav.pop();
+                          unawaited(_exitCalculator());
                         },
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white,
+                            color: Theme.of(context).brightness == Brightness.dark ? (Colors.white) : const Color(0xFF05070A),
                             size: 20,
                           ),
                         ),
