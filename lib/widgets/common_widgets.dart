@@ -440,10 +440,9 @@ class MedInput extends StatelessWidget {
   final String? initialValue;
   final int? maxLines;
   final TextInputAction? textInputAction;
-  /// Força capitalize por palavra (padrão para campos de texto médico).
-  /// Passe [TextCapitalization.none] para campos numéricos/técnicos.
   final TextCapitalization textCapitalization;
-
+  final bool clinicalCompact;
+  final IconData? prefixIcon;
   const MedInput({
     super.key,
     this.controller,
@@ -454,35 +453,103 @@ class MedInput extends StatelessWidget {
     this.maxLines = 1,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.sentences,
+    this.clinicalCompact = false,
+    this.prefixIcon,
   });
-
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    // Campos numéricos não precisam de autocorrect/sugestões
-    final isNumeric = keyboardType == TextInputType.number ||
-        keyboardType == TextInputType.numberWithOptions(decimal: true) ||
-        keyboardType == TextInputType.numberWithOptions(decimal: false);
+    // HISTORY_CLINICAL_V1_C_R8_COMMON_MEDINPUT
+    final colors = AppColors.of(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final numeric =
+        keyboardType == TextInputType.number ||
+        keyboardType == const TextInputType.numberWithOptions(decimal: true) ||
+        keyboardType == const TextInputType.numberWithOptions(decimal: false);
+    final fill = clinicalCompact && dark
+        ? const Color(0xFF2D3340)
+        : colors.inputBg;
+    final borderColor = clinicalCompact && dark
+        ? const Color(0xFF374151)
+        : colors.border;
+    final radius = clinicalCompact ? 10.0 : 14.0;
+    final focusColor = clinicalCompact ? const Color(0xFF10B981) : colors.gold;
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
       onChanged: onChanged,
       maxLines: maxLines,
-      textInputAction: textInputAction ?? (maxLines == 1 ? TextInputAction.next : TextInputAction.newline),
-      // ── Sugestões e autocorreção do teclado nativo ────────────────────────
-      enableSuggestions: !isNumeric,
-      autocorrect: !isNumeric,
-      textCapitalization: isNumeric ? TextCapitalization.none : textCapitalization,
-      // ─────────────────────────────────────────────────────────────────────
-      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: c.textPrimary),
+      textInputAction:
+          textInputAction ??
+          (maxLines == 1 ? TextInputAction.next : TextInputAction.newline),
+      scrollPadding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom + 88,
+      ),
+      onSubmitted: (_) {
+        final action =
+            textInputAction ??
+            (maxLines == 1 ? TextInputAction.next : TextInputAction.newline);
+        if (action == TextInputAction.next) {
+          FocusScope.of(context).nextFocus();
+        } else if (action == TextInputAction.done) {
+          FocusScope.of(context).unfocus();
+        }
+      },
+      enableSuggestions: !numeric,
+      autocorrect: !numeric,
+      textCapitalization: numeric
+          ? TextCapitalization.none
+          : textCapitalization,
+      style: TextStyle(
+        fontWeight: clinicalCompact ? FontWeight.w500 : FontWeight.w700,
+        fontSize: clinicalCompact ? 14 : 15,
+        color: colors.textPrimary,
+      ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: c.textHint, fontWeight: FontWeight.w500),
-        filled: true, fillColor: c.inputBg,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.border)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.border)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.gold, width: 1.5)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        hintStyle: TextStyle(
+          color: clinicalCompact && dark ? Colors.white54 : colors.textHint,
+          fontWeight: FontWeight.w500,
+          fontSize: clinicalCompact ? 13.5 : null,
+        ),
+        prefixIcon: prefixIcon == null
+            ? null
+            : Icon(
+                prefixIcon,
+                size: 17,
+                color: clinicalCompact && dark
+                    ? Colors.white60
+                    : colors.textHint,
+              ),
+        prefixIconConstraints: prefixIcon == null
+            ? null
+            : const BoxConstraints(minWidth: 40, minHeight: 40),
+        filled: true,
+        fillColor: fill,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(
+            color: borderColor,
+            width: clinicalCompact ? 0.8 : 1.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(
+            color: borderColor,
+            width: clinicalCompact ? 0.8 : 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(
+            color: focusColor,
+            width: clinicalCompact ? 1.0 : 1.5,
+          ),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: clinicalCompact ? 10 : 12,
+        ),
         isDense: true,
       ),
     );

@@ -2454,7 +2454,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         final width = constraints.maxWidth;
 
         // Desktop/tablet largo: sidebar lateral + conteúdo (com ou sem split)
-        if (!kIsWeb && width >= 768) {
+        final bool useWideShell = kIsWeb ? width >= 1024 : width >= 768;
+        if (useWideShell) {
           return _buildDesktopShell(context, dark, p, width);
         }
         // Mobile / tablet estreito / browser redimensionado — layout nativo
@@ -2485,7 +2486,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       body: Row(
         children: [
           // ── Sidebar de navegação vertical (contém logo + nav + hamburger) ──
-          SafeArea(
+          if (!kIsWeb) SafeArea(
             right: false,
             child: Builder(
               builder: (scaffoldCtx) => _DesktopSidebar(
@@ -2509,7 +2510,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           ),
 
           // ── Divisor vertical sutil (sidebar → conteúdo) ───────────────────
-          Container(width: 1, color: divColor),
+          if (!kIsWeb) Container(width: 1, color: divColor),
 
           // ── Área de conteúdo principal ─────────────────────────────────────
           Expanded(

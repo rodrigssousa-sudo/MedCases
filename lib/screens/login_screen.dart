@@ -43,14 +43,14 @@ class _LoginScreenState extends State<LoginScreen>
   // ── Nova paleta ────────────────────────────────────────────────────────────
   // Verde profundo diferente do anterior (#0F1C14 → #061A12)
   static const kBg        = Color(0xFF0F1116);   // fundo hero — verde bem escuro
+  // MEDCASES_AUTH_FLAT_SINGLE_SURFACE_CREATE_ACCOUNT_V1_B_R0_R4
   static const kForest    = Color(0xFF0D3324);   // camada intermediária
-  static const kGreen     = Color(0xFF0E7C52);   // verde principal (mais vivo)
-  static const kGreenMid  = Color(0xFF13A06A);   // verde médio — novo acento
-  static const kPanel     = Color(0xFFF0F4F0);   // painel inferior — gelo levemente verde
-  static const kPanelCard = Color(0xFFFFFFFF);   // cartão interno
-  static const kText      = Color(0xFF0D2B1E);   // texto escuro no painel
-  static const kTextMid   = Color(0xFF4A6B58);   // texto médio
-  static const kGold      = Color(0xFFD4A853);   // dourado — acento
+  static const kGreen     = Color(0xFF10B981);   // verde clínico canônico
+  static const kGreenMid  = Color(0xFF10B981);   // mesmo acento: superfície flat
+  static const kPanel     = Color(0x00000000);   // transparente: sem painel/sheet
+  static const kText      = Color(0xFFF1F5F9);   // texto primário sobre dark
+  static const kTextMid   = Color(0xFFA8B2C1);   // texto secundário canônico
+  static const kGold      = Color(0xFFC5A365);   // dourado MedCases
   static const kGoldL     = Color(0xFFFFE8A6);   // dourado claro
 
   static const _kPrefEmail    = 'login_saved_email';
@@ -280,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Container(
                   decoration: const BoxDecoration(
                     color: kPanel,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                    borderRadius: BorderRadius.zero,
                   ),
                   child: SingleChildScrollView(
                     padding: EdgeInsets.only(
@@ -297,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen>
                           width: 40, height: 4,
                           margin: const EdgeInsets.only(bottom: 24),
                           decoration: BoxDecoration(
-                            color: kTextMid.withOpacity(0.20),
+                            color: Colors.transparent,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -496,15 +496,15 @@ class _LoginScreenState extends State<LoginScreen>
           fontSize: 12, color: kTextMid, fontWeight: FontWeight.w500),
         prefixIcon: Icon(icon, size: 18, color: kGreenMid),
         filled: true,
-        fillColor: kPanelCard,
+        fillColor: Colors.transparent,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: kTextMid.withOpacity(0.18))),
+          borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: kGreen, width: 2)),
+          borderSide: BorderSide.none),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.red)),
@@ -540,15 +540,15 @@ class _LoginScreenState extends State<LoginScreen>
           onPressed: () => setState(() => _obscure = !_obscure),
         ),
         filled: true,
-        fillColor: kPanelCard,
+        fillColor: Colors.transparent,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: kTextMid.withOpacity(0.18))),
+          borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: kGreen, width: 2)),
+          borderSide: BorderSide.none),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.red)),
@@ -617,11 +617,11 @@ class _LoginScreenState extends State<LoginScreen>
           borderRadius: BorderRadius.circular(10),
           gradient: _loading ? null : LinearGradient(
             begin: Alignment.topLeft, end: Alignment.bottomRight,
-            colors: [kGreenMid, kGreen, const Color(0xFF075A3A)],
+            colors: [kGreen, kGreen, kGreen],
           ),
           boxShadow: _loading ? null : [
             BoxShadow(
-              color: kGreen.withOpacity(0.38),
+              color: Colors.transparent,
               blurRadius: 12, offset: const Offset(0, 5)),
           ],
         ),
@@ -709,7 +709,7 @@ class _LoginScreenState extends State<LoginScreen>
   String get _modeTitle {
     switch (_mode) {
       case _Mode.login:    return _isEs ? 'Acceder a mi cuenta'        : 'Acessar minha conta';
-      case _Mode.register: return _isEs ? 'Solicitar acceso'           : 'Solicitar acesso';
+      case _Mode.register: return _isEs ? 'Crear cuenta' : 'Criar conta';
       case _Mode.reset:    return _isEs ? 'Recuperar contraseña'       : 'Recuperar senha';
     }
   }
@@ -717,7 +717,7 @@ class _LoginScreenState extends State<LoginScreen>
   String get _modeSubtitle {
     switch (_mode) {
       case _Mode.login:    return _isEs ? 'Plataforma exclusiva para profesionales'         : 'Plataforma exclusiva para profissionais';
-      case _Mode.register: return _isEs ? 'Acceso aprobado por el equipo MedCases'         : 'Acesso aprovado pela equipe MedCases';
+      case _Mode.register: return _isEs ? 'Crea tu cuenta para acceder a MedCases Pro' : 'Crie sua conta para acessar o MedCases Pro';
       case _Mode.reset:    return _isEs ? 'Te enviamos un enlace de recuperación por email' : 'Enviaremos um link de recuperação por e-mail';
     }
   }
@@ -725,12 +725,12 @@ class _LoginScreenState extends State<LoginScreen>
   String get _modeBtn {
     switch (_mode) {
       case _Mode.login:    return _isEs ? 'Iniciar sesión'    : 'Entrar';
-      case _Mode.register: return _isEs ? 'Enviar solicitud'   : 'Enviar solicitação';
+      case _Mode.register: return _isEs ? 'Crear cuenta' : 'Criar conta';
       case _Mode.reset:    return _isEs ? 'Enviar enlace'     : 'Enviar link';
     }
   }
 
-  String get _keepLoggedInLabel   => _isEs ? 'Mantener sesión activa'                  : 'Manter-me conectado';
+  String get _keepLoggedInLabel   => _isEs ? 'Mantener sesión activa' : 'Manter sessão ativa';
   String get _fullNameLabel       => _isEs ? 'Nombre completo'                         : 'Nome completo';
   String get _nameRequiredMsg     => _isEs ? 'Ingresa tu nombre'                       : 'Informe seu nome';
   String get _emailLabel          => _isEs ? 'E-mail institucional'                    : 'E-mail institucional';
@@ -740,7 +740,7 @@ class _LoginScreenState extends State<LoginScreen>
   String get _institutionLabel    => _isEs ? 'Hospital / Institución'                  : 'Hospital / Instituição';
   String get _forgotPasswordLabel => _isEs ? '¿Olvidaste tu contraseña?'               : 'Esqueceu a senha?';
   String get _noAccountLabel      => _isEs ? '¿Sin cuenta?  '                          : 'Sem conta?  ';
-  String get _signUpLabel         => _isEs ? 'Solicitar acceso'                         : 'Solicitar acesso';
+  String get _signUpLabel         => _isEs ? 'Crear cuenta' : 'Criar conta';
   String get _backToLoginLabel    => _isEs ? '← Volver al inicio'                      : '← Voltar ao início';
   String get _passwordLabel       => _isEs ? 'Contraseña'                               : 'Senha';
   String get _passwordMinMsg      => _isEs ? 'Mínimo 6 caracteres'                      : 'Mínimo 6 caracteres';
@@ -750,8 +750,8 @@ class _LoginScreenState extends State<LoginScreen>
       : 'Ferramenta de apoio clínico educacional. Não substitui o julgamento clínico individual nem as diretrizes institucionais vigentes.';
 
   String _registerSuccessMsg() => _isEs
-      ? 'Solicitud enviada. Tu acceso será revisado y habilitado por el equipo MedCases en breve.'
-      : 'Solicitação enviada. Seu acesso será revisado e habilitado pela equipe MedCases em breve.';
+      ? 'Cuenta creada correctamente.'
+      : 'Conta criada com sucesso.';
 
   String _resetSuccessMsg(String email) => _isEs
       ? 'Enlace de recuperación enviado a $email. Revisa tu bandeja de entrada.'
